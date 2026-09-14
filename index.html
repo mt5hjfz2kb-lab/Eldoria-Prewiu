@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#11151b" />
+  <title>Eldoria — El despertar de la Brecha</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2311151b' stroke='%23d6b66f' stroke-width='4' d='M32 3 57 15 52 50 32 61 12 50 7 15Z'/%3E%3Cpath fill='%23d6b66f' d='M20 17h25v7H28v6h14v7H28v7h18v7H20Z'/%3E%3C/svg%3E" />
+  <style>
+:root{--ink:#ebe5d3;--muted:#aaa797;--panel:#171c22ee;--gold:#d6b66f;--green:#78a96c;--rift:#b335ff;--danger:#bd4d4d;--line:#ffffff19}*{box-sizing:border-box}html,body{margin:0;height:100%;background:#090c0f;color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden}button{font:inherit;color:inherit}.game-shell{height:100%;max-width:1180px;margin:auto;position:relative;background:#11171b;box-shadow:0 0 80px #000}.topbar{height:76px;display:flex;align-items:center;gap:16px;padding:10px 18px;background:linear-gradient(#171d23f7,#10151bf3);border-bottom:1px solid #d6b66f33;position:relative;z-index:20}.brand{width:46px;height:46px;border:1px solid var(--gold);background:linear-gradient(135deg,#3c3321,#17150f);font-size:30px;color:var(--gold);clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);cursor:pointer}.realm-title{min-width:150px}.realm-title strong{display:block;font-size:15px;letter-spacing:.06em}.realm-title span{font:11px Arial,sans-serif;color:var(--muted)}.resources{display:flex;gap:8px;flex:1;justify-content:center}.resource{min-width:108px;background:#080b0dcc;border:1px solid var(--line);padding:7px 10px;display:grid;grid-template-columns:22px 1fr;line-height:1}.resource i{grid-row:1/3;color:var(--gold);font-style:normal}.resource span{font:bold 14px Arial}.resource small{font:9px Arial;color:#80b783;margin-top:4px}.r-food i{color:#c89b57}.r-wood i{color:#8f673e}.r-stone i{color:#a6a9ad}.r-iron i{color:#829ca7}.icon-button{border:1px solid var(--line);border-radius:50%;background:#0a0d10;width:36px;height:36px;color:var(--gold);cursor:pointer}.icon-button.muted{opacity:.35}.scene{position:absolute;inset:76px 0 76px;overflow:hidden;transition:.5s;background:#1b2423}.kingdom-scene{background:linear-gradient(#1c2c35 0 30%,#26392f 58%,#14231c)}.sky-glow{position:absolute;inset:0;background:radial-gradient(circle at 18% 10%,#e3a44b3b,transparent 29%),linear-gradient(115deg,transparent 55%,#6821932c)}.terrain{position:absolute;width:120%;left:-10%;border-radius:50% 50% 0 0}.terrain-back{height:52%;bottom:19%;background:#243c31;clip-path:polygon(0 40%,12% 24%,22% 36%,34% 15%,48% 33%,62% 4%,74% 32%,87% 14%,100% 36%,100% 100%,0 100%)}.terrain-front{height:68%;bottom:-25%;background:radial-gradient(ellipse,#314f3b,#172b22 70%);transform:perspective(400px) rotateX(15deg);border-top:2px solid #7584641f}.rift{position:absolute;z-index:2;filter:drop-shadow(0 0 14px #9f2fff)}.rift i{position:absolute;width:5px;background:linear-gradient(transparent,#f4c5ff,#8d26dd,transparent);transform-origin:center;box-shadow:0 0 14px #cc58ff}.rift i:nth-child(1){height:130px;transform:rotate(11deg);left:24px}.rift i:nth-child(2){height:92px;transform:rotate(-15deg);left:8px;top:29px}.rift i:nth-child(3){height:62px;transform:rotate(24deg);left:40px;top:58px}.rift-distant{right:11%;top:8%;opacity:.78;transform:scale(.75)}.buildings{position:absolute;inset:0;z-index:5}.building{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;text-align:center;cursor:pointer;filter:drop-shadow(0 7px 6px #0009);transition:.2s}.building:hover{transform:translate(-50%,-53%) scale(1.05)}.building-art{display:grid;place-items:center;width:84px;height:74px;background:linear-gradient(150deg,#807158,#413d35);border:2px solid #a59571;border-radius:45% 45% 13% 13%;font-size:42px;color:#1b2020;text-shadow:0 2px #cabd94}.building-keep .building-art{width:120px;height:100px;font-size:65px;background:linear-gradient(150deg,#8a806a,#3a3f3c)}.building strong{display:block;background:#111817e8;border:1px solid #d6b66f44;padding:3px 9px;font-size:12px;margin-top:-4px}.building small{font:9px Arial;color:#bcd1bc;background:#0c1213db;padding:2px 5px}.building .level{position:absolute;right:-6px;top:-4px;border-radius:14px;background:#a67d3b;padding:4px 7px;font:bold 9px Arial;color:white}.character{position:absolute;z-index:9;border:0;background:transparent;bottom:15%;left:56%;cursor:pointer;text-align:center}.character-glow{position:absolute;width:70px;height:24px;bottom:24px;left:50%;transform:translateX(-50%);background:#e0bc6550;border-radius:50%;filter:blur(8px)}.helmet{position:relative;display:block;font-size:58px;color:#d9d2bb;text-shadow:0 5px 8px #000}.character-label{display:block;background:#111a;border:1px solid #d6b66f66;padding:4px 10px;font-size:12px}.gate{position:absolute;right:4%;bottom:8%;z-index:9;display:flex;flex-direction:column;align-items:center;border:1px solid var(--gold);background:#111a;padding:10px 18px;cursor:pointer}.gate span{font-size:30px}.gate b{font-size:11px;letter-spacing:.12em}.gate.locked{filter:grayscale(1);opacity:.55}.quest-panel{position:absolute;z-index:16;top:96px;left:18px;width:265px;background:linear-gradient(90deg,#12181be8,#12181bc7);border-left:3px solid var(--gold);padding:12px 15px;box-shadow:0 8px 25px #0005}.quest-kicker{font:9px Arial;color:var(--gold);letter-spacing:.18em}.quest-panel strong{display:block;margin:4px 0;font-size:16px}.quest-panel p{font:11px Arial;color:#c5c4ba;margin:0 0 8px;line-height:1.35}.quest-progress{height:3px;background:#fff1}.quest-progress span{display:block;height:100%;background:var(--gold);transition:.5s}.bottom-nav{height:76px;position:absolute;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;background:#0d1217f7;border-top:1px solid #d6b66f33}.bottom-nav button{position:relative;width:120px;border:0;border-left:1px solid #fff08;background:transparent;color:#858a89;cursor:pointer}.bottom-nav button:last-child{border-right:1px solid #fff08}.bottom-nav button span{display:block;font-size:24px}.bottom-nav button b{font:10px Arial;letter-spacing:.08em}.bottom-nav button.active{color:var(--gold);background:linear-gradient(#d6b66f18,transparent)}.bottom-nav em{position:absolute;top:8px;right:32px;border-radius:50%;background:#9c35ce;padding:3px 6px;font:bold 9px Arial;color:white}.world-scene{background:linear-gradient(#111621,#1e2630 45%,#131c19)}.moon{position:absolute;width:140px;height:140px;border-radius:50%;background:#e9dbc0;box-shadow:0 0 60px #e4d4b366;left:12%;top:9%}.corruption{position:absolute;inset:35% 0 0;background:radial-gradient(circle at 72% 30%,#7e21a36b,transparent 25%),linear-gradient(150deg,#222a25,#181b20);clip-path:polygon(0 20%,12% 3%,28% 22%,42% 0,55% 25%,71% 6%,88% 25%,100% 7%,100% 100%,0 100%)}.path{position:absolute;width:22%;height:75%;bottom:-20%;left:38%;background:linear-gradient(90deg,transparent,#726958 30%,#7f7663 70%,transparent);transform:perspective(300px) rotateX(30deg)}.rift-near{right:20%;top:12%;transform:scale(1.7)}.rift-near b{position:absolute;top:128px;left:-25px;width:110px;text-align:center;font:9px Arial;letter-spacing:.2em;color:#e2b9f3}.enemy{position:absolute;right:25%;bottom:17%;z-index:5;border:0;background:transparent;text-align:center;cursor:pointer}.enemy span{display:block;font-size:68px;color:#b05ad8;text-shadow:0 0 20px #801cad}.enemy b,.enemy em{display:block;background:#110d16df;padding:4px 10px}.enemy b{font-size:12px}.enemy em{font:9px Arial;color:#d698ef}.player-token{position:absolute;left:41%;bottom:10%;font-size:58px;color:#d8d2bb;text-shadow:0 7px 10px #000}.return{position:absolute;left:20px;bottom:20px;border:1px solid var(--line);background:#111b;padding:10px 18px;cursor:pointer}.overlay{position:fixed;inset:0;z-index:50;background:#020405bb;backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px;animation:fade .2s}.modal{position:relative;width:min(520px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#21272d,#101419);border:1px solid #d6b66f66;box-shadow:0 30px 100px #000;padding:26px}.modal:before{content:'';position:absolute;inset:7px;border:1px solid #ffffff0c;pointer-events:none}.modal h2{text-align:center;font-weight:normal;color:var(--gold);margin:0 30px 22px;letter-spacing:.04em}.modal h3{font-size:24px;margin:5px 0}.modal p{font:14px/1.55 Arial;color:#c8c7bd}.close{position:absolute;right:12px;top:9px;border:0;background:transparent;font-size:28px;color:#8f928f;cursor:pointer}.primary,.secondary{display:block;width:100%;margin-top:20px;padding:13px;border:1px solid #e0c781;background:linear-gradient(#b1904e,#6c5225);font:bold 12px Arial;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.secondary{background:#171d21}.primary:disabled{opacity:.5}.dialogue,.hero-sheet{display:flex;gap:18px;align-items:center}.portrait{min-width:90px;height:105px;display:grid;place-items:center;font-size:64px;color:#ddd3bb;background:radial-gradient(circle,#7c6c4c,#252a28 70%);border:1px solid #a58a4e}.modal-icon{text-align:center;font-size:68px;color:var(--gold)}.statline{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font:13px Arial}.costs{display:flex;justify-content:center;gap:12px;margin-top:18px}.cost{border:1px solid var(--line);padding:7px 10px;font:bold 12px Arial}.cost.ok{color:#9bc491}.cost.bad{color:#d87979}.maxed{text-align:center;color:var(--gold)!important}.combat{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;text-align:center}.combatant span{font-size:60px;display:block}.combatant.foe span{color:#ba58e4}.combatant b{font-size:12px}.versus{color:var(--gold)}.hp{height:8px;background:#080a0c;margin-top:10px;border:1px solid #fff2}.hp i{display:block;height:100%;width:100%;background:#8cb66e;transition:.3s}.foe .hp i{background:#a342af}.danger{background:linear-gradient(#a74e47,#5d2727)}.impact{animation:impact .25s}.reward-card{width:250px;min-height:335px;margin:0 auto;padding:22px;text-align:center;border:2px solid #b95be5;background:radial-gradient(circle at 50% 30%,#672b82,#211326 67%);box-shadow:0 0 25px #aa42d555,inset 0 0 30px #000;border-radius:8px}.reward-card span{display:block;font-size:78px;color:#e1a8fa;text-shadow:0 0 25px #cb50ff;margin:32px 0}.reward-card strong{display:block;font-size:20px;color:#eed7f5}.reward-card small,.reward-card p{font:11px Arial;color:#c7afcd}.rarity,.tag{font:9px Arial;letter-spacing:.2em;color:#dc98fa}.reward-card.small{min-height:280px}.reward-card.small span{margin:20px}.reward-card.spent{filter:grayscale(1);opacity:.55}.empty{text-align:center;padding:50px}.empty span{font-size:70px;color:#555}.stats{display:flex;gap:16px}.stats b{color:var(--gold)}.stats small{display:block;color:var(--muted);font:9px Arial}.toast{position:fixed;z-index:80;left:50%;bottom:95px;transform:translate(-50%,20px);opacity:0;background:#111d;border:1px solid #d6b66f77;padding:11px 18px;font:12px Arial;transition:.3s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.particles{position:absolute;left:50%;top:50%;z-index:40}.particles i{position:absolute;width:6px;height:6px;border-radius:50%;background:#f7d477;animation:burst .8s forwards;transform:rotate(var(--a)) translateX(var(--d))}.particles i:nth-child(2n){background:#77c89a}.particles i:nth-child(3n){background:#be5af0}@keyframes fade{from{opacity:0}}@keyframes impact{50%{transform:scale(.96);filter:brightness(1.8)}}@keyframes burst{from{transform:rotate(var(--a)) translateX(0);opacity:1}to{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
+@media(max-width:720px){.topbar{height:112px;align-items:flex-start}.realm-title{min-width:0}.resources{position:absolute;left:8px;right:8px;bottom:8px;gap:3px}.resource{min-width:0;flex:1;padding:6px;grid-template-columns:18px 1fr}.resource small{font-size:8px}.scene{inset:112px 0 70px}.quest-panel{top:125px;width:220px}.building-art{width:64px;height:58px;font-size:32px}.building-keep .building-art{width:90px;height:78px;font-size:50px}.building small{display:none}.bottom-nav{height:70px}.bottom-nav button{width:25%}.rift-distant{right:5%}.modal{padding:22px 18px}.dialogue{align-items:flex-start}.portrait{min-width:72px;height:84px;font-size:50px}}
+
+/* v0.2: orientación inequívoca en la transición reino → mundo */
+.gate.objective{box-shadow:0 0 0 0 #d6b66f88,0 0 24px #d6b66f66;animation:objectivePulse 1.6s infinite}
+.gate.objective em{position:absolute;bottom:100%;margin-bottom:8px;background:#d6b66f;color:#17140d;padding:5px 9px;font:bold 9px Arial;font-style:normal;letter-spacing:.12em;white-space:nowrap}
+.gate.objective i{position:absolute;right:-19px;font-size:34px;color:var(--gold);animation:nudge 1s infinite}
+.scene-enter{animation:sceneEnter .7s}
+.location-title{position:absolute;z-index:8;top:25px;left:50%;transform:translateX(-50%);text-align:center;text-shadow:0 2px 8px #000}
+.location-title small{display:block;font:9px Arial;letter-spacing:.24em;color:var(--gold)}
+.location-title strong{font-size:23px;font-weight:normal}
+.path i{position:absolute;left:48%;width:8px;height:8px;border-radius:50%;background:#e0c879;box-shadow:0 0 10px #efdc95}
+.path i:nth-child(1){bottom:34%}.path i:nth-child(2){bottom:48%;transform:scale(.8)}.path i:nth-child(3){bottom:60%;transform:scale(.6)}
+.enemy .objective-arrow{font:9px Arial;color:#17140d;text-shadow:none;background:#d6b66f;padding:5px 8px;margin:0 auto 5px;animation:arrowBounce 1s infinite}
+@keyframes sceneEnter{from{opacity:.2;filter:brightness(.2);transform:scale(1.04)}}
+@keyframes objectivePulse{50%{box-shadow:0 0 0 12px #d6b66f00,0 0 38px #d6b66f99}}
+@keyframes nudge{50%{transform:translateX(5px)}}
+@keyframes arrowBounce{50%{transform:translateY(-4px)}}
+
+/* v0.3: combate táctico y consecuencia de La Brecha */
+.enemy-intent{margin:18px auto 8px;padding:7px 10px;width:max-content;max-width:100%;background:#27251e;border:1px solid #d6b66f55;font:bold 10px Arial;letter-spacing:.08em;color:#d7caa5}
+.enemy-intent.heavy{background:#401d22;border-color:#d86060;color:#ffaaaa;animation:warningPulse .7s infinite}
+.combat-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.combat-actions .action{min-height:66px;border:1px solid #ffffff24;background:#1b2227;cursor:pointer;padding:8px}
+.combat-actions .action b,.combat-actions .action small{display:block}.combat-actions .action small{margin-top:5px;font:9px Arial;color:#aaa}
+.combat-actions .attack-action{border-color:#b65d54}.combat-actions .guard-action{border-color:#6e91a8}.combat-actions .rift-action{border-color:#a64fd0;background:#28182f}.combat-actions .action:disabled{opacity:.35}
+.enemy-intent b,.enemy-intent span{display:block}.enemy-intent span{margin-top:5px;font:9px Arial;letter-spacing:.12em}
+.combat-actions .guard-action.recommended{background:#244b52;border:2px solid #8fd4d0;box-shadow:0 0 0 0 #8fd4d088,0 0 22px #67bdc477;animation:defendNow 1s infinite}
+.combat-actions .guard-action.recommended small{color:#bffffa}.combat-actions .attack-action.risky{opacity:.62;background:#31191b}.combat-actions .attack-action.risky small{color:#ff9c9c}
+.rift-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.rift-choices .choice{min-height:115px;padding:15px;border:1px solid;background:#171d21;cursor:pointer}.rift-choices b,.rift-choices small{display:block}.rift-choices b{font-size:17px}.rift-choices small{margin-top:10px;font:11px/1.4 Arial;color:#bbb}.rift-choices .contain{border-color:#72af9b}.rift-choices .exploit{border-color:#b94ce9;background:#27172d}
+.rift-choices .choice>span{display:block;font-size:45px;margin-bottom:10px}.rift-choices .contain>span{color:#91dbc3;text-shadow:0 0 18px #50c9a4}.rift-choices .exploit>span{color:#dc87ff;text-shadow:0 0 18px #c13ef6}.rift-choices .choice:hover{transform:translateY(-3px);filter:brightness(1.18)}
+.contained-card{border-color:#6fb39c;background:radial-gradient(circle at 50% 30%,#285f58,#142523 67%)}.contained-card span{color:#9de1c7;text-shadow:0 0 25px #58d1ad}
+.kingdom-scene.rift-exploit:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 62% 75%,#9f2fff32,transparent 32%);box-shadow:inset 0 0 70px #8e24b82e}
+.kingdom-scene.rift-contain:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 72% 72%,#65c49b24,transparent 32%)}
+@keyframes warningPulse{50%{filter:brightness(1.5)}}
+@keyframes defendNow{50%{box-shadow:0 0 0 7px #8fd4d000,0 0 30px #67bdc499;transform:translateY(-2px)}}
+@media(max-width:560px){.combat-actions{grid-template-columns:1fr}.combat-actions .action{min-height:48px}.rift-choices{grid-template-columns:1fr}.rift-choices .choice{min-height:80px}}
+
+/* v0.6: informe local de playtest */
+.privacy-note{font-size:11px!important;color:#8eb7a6!important;text-align:center}.playtest-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:18px 0}.playtest-stats div{background:#0d1215;border:1px solid #ffffff16;padding:12px 6px;text-align:center}.playtest-stats b,.playtest-stats small{display:block}.playtest-stats b{font-size:18px;color:var(--gold)}.playtest-stats small{margin-top:5px;font:9px Arial;color:#aaa}#report-text{width:100%;min-height:145px;resize:none;background:#090d10;color:#bfc5bf;border:1px solid #ffffff20;padding:12px;font:11px/1.5 monospace}@media(max-width:520px){.playtest-stats{grid-template-columns:1fr 1fr}}
+
+/* v0.6.1: controles resistentes a resoluciones y zoom diferentes */
+.topbar,.resources,.resource,.bottom-nav button,.modal,.combat-actions>*{min-width:0}
+.resource span{overflow:hidden;text-overflow:ellipsis}.bottom-nav button{overflow:hidden}
+.modal button{white-space:normal;overflow-wrap:anywhere;line-height:1.25}
+.combat-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.rift-choices{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:720px){.realm-title{max-width:150px;overflow:hidden}.realm-title strong,.realm-title span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gate{right:3%;bottom:5%}.quest-panel{max-width:58vw}.modal h2{font-size:20px}.costs{flex-wrap:wrap}}
+@media(max-width:560px){.combat-actions,.rift-choices{grid-template-columns:1fr}.combat-actions .action,.rift-choices .choice{height:auto;min-height:56px}.modal{max-height:92vh}}
+@media(max-height:680px){.modal{max-height:94vh;padding:18px}.modal h2{margin-bottom:12px}.combatant span{font-size:42px}.combat-actions .action{min-height:48px}.enemy-intent{margin:10px auto 5px}.bottom-nav{height:64px}.scene{bottom:64px}}
+
+/* v0.7: premisa clara y guía contextual paso a paso */
+.intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
+
+</style>
+</head>
+<body>
+  <main id="game" class="game-shell" aria-live="polite">
+    <header class="topbar">
+      <button id="brand" class="brand" aria-label="Eldoria">E</button>
+      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div>
+      <div id="resources" class="resources"></div>
+      <button id="sound-toggle" class="icon-button" aria-label="Activar o desactivar sonido">◉</button>
+    </header>
+
+    <section id="scene" class="scene kingdom-scene">
+      <div class="sky-glow"></div>
+      <div class="rift rift-distant" aria-label="La Brecha"><i></i><i></i><i></i></div>
+      <div class="terrain terrain-back"></div>
+      <div class="terrain terrain-front"></div>
+      <div id="buildings" class="buildings"></div>
+      <button id="aldric" class="character aldric" aria-label="Sir Aldric">
+        <span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span>
+      </button>
+      <button id="gate" class="gate locked" aria-label="Puerta exterior"><span>⚔</span><b data-i18n="explore"></b></button>
+      <div id="particles" class="particles"></div>
+    </section>
+
+    <aside id="quest" class="quest-panel">
+      <div class="quest-kicker" data-i18n="firstQuest"></div>
+      <strong id="quest-title"></strong>
+      <p id="quest-copy"></p>
+      <div class="quest-progress"><span id="quest-bar"></span></div>
+    </aside>
+
+    <nav id="nav" class="bottom-nav">
+      <button class="active" data-view="kingdom"><span>♜</span><b data-i18n="kingdom"></b></button>
+      <button data-view="heroes"><span>♞</span><b data-i18n="heroes"></b></button>
+      <button data-view="cards"><span>✦</span><b data-i18n="cards"></b><em id="card-badge" hidden>1</em></button>
+      <button data-view="world"><span>⌖</span><b data-i18n="world"></b></button>
+    </nav>
+  </main>
+
+  <div id="modal-root"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script>
+window.ELDORIA_DATA = {
+  resources: {
+    food: { icon: '●', label: 'Comida' }, wood: { icon: '▰', label: 'Madera' },
+    stone: { icon: '◆', label: 'Piedra' }, iron: { icon: '⬟', label: 'Hierro' }
+  },
+  buildings: {
+    keep: { name: 'Fortaleza', icon: '♜', x: 48, y: 43, max: 2,
+      levels: [{ cost: {}, production: {} }, { cost: { wood: 60, stone: 50 }, production: {} }] },
+    farm: { name: 'Granero', icon: '♨', x: 23, y: 62, max: 2,
+      levels: [{ cost: {}, production: { food: 4 } }, { cost: { wood: 35, stone: 15 }, production: { food: 9 } }] },
+    lumber: { name: 'Aserradero', icon: '♠', x: 70, y: 64, max: 2,
+      levels: [{ cost: {}, production: { wood: 3 } }, { cost: { food: 30, stone: 20 }, production: { wood: 7 } }] },
+    quarry: { name: 'Cantera', icon: '▲', x: 82, y: 44, max: 2,
+      levels: [{ cost: {}, production: { stone: 2 } }, { cost: { food: 35, wood: 30 }, production: { stone: 5 } }] },
+    forge: { name: 'Forja', icon: '⚒', x: 34, y: 43, max: 2,
+      levels: [{ cost: {}, production: { iron: 1 } }, { cost: { wood: 40, stone: 35 }, production: { iron: 3 } }] }
+  },
+  i18n: { realmName: 'Bastión de Valoria', explore: 'Explorar', firstQuest: 'MISIÓN PRINCIPAL', kingdom: 'Reino', heroes: 'Héroes', cards: 'Cartas', world: 'Mundo' }
+};
+
+</script>
+  <script>
+(() => {
+  'use strict';
+  const D = window.ELDORIA_DATA;
+  const initialState = () => ({
+    resources: { food: 80, wood: 110, stone: 75, iron: 25 },
+    buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1 },
+    stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
+    hasCard: false, cardUsed: false, complete: false, worldSeen: false, riftChoice: null,
+    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, lastTick: Date.now(),
+    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, riftChoice: null, completedSeconds: null }
+  });
+  let state = load();
+  let view = 'kingdom';
+  let modal = null;
+  let combatTurn = 0;
+  let riftAvailable = true;
+
+  const $ = s => document.querySelector(s);
+  const el = (tag, cls, html='') => { const n=document.createElement(tag); n.className=cls; n.innerHTML=html; return n; };
+  const fmt = n => Math.floor(n).toLocaleString('es-ES');
+  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save')||'{}'); return { ...base, ...stored, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save', JSON.stringify(state)); }
+
+  function init(){
+    document.querySelectorAll('[data-i18n]').forEach(n => n.textContent=D.i18n[n.dataset.i18n]);
+    $('#aldric').onclick = talkAldric; $('#gate').onclick = () => { if(state.firstUpgrade) showWorld(); else toast('Sir Aldric necesita hablar contigo.'); };
+    $('#brand').onclick = showMenu; $('#sound-toggle').onclick = soundToggle;
+    document.querySelectorAll('#nav button').forEach(b => b.onclick=()=>navigate(b.dataset.view));
+    applyOfflineProduction(); render(); setInterval(tick, 1000);
+    if(state.stage===0&&!state.introSeen) setTimeout(showIntro,350);
+  }
+  function applyOfflineProduction(){
+    const seconds=Math.min(120, Math.max(0,(Date.now()-(state.lastTick||Date.now()))/1000));
+    if(seconds>3){ Object.entries(production()).forEach(([k,v])=>state.resources[k]+=v*seconds); toast(`Producción acumulada durante ${Math.floor(seconds)} s.`); }
+  }
+  function production(){
+    const out={food:0,wood:0,stone:0,iron:0};
+    Object.entries(state.buildings).forEach(([id,lvl])=>Object.entries(D.buildings[id].levels[lvl-1].production).forEach(([r,v])=>out[r]+=v));
+    if(state.riftChoice==='contain'&&state.cardUsed) Object.keys(out).forEach(r=>out[r]*=1.5);
+    return out;
+  }
+  function tick(){ if(view==='kingdom'){ const p=production(); Object.entries(p).forEach(([k,v])=>state.resources[k]+=v); renderResources(p); save(); } }
+  function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=state.riftChoice==='contain'&&state.cardUsed?' · Sello activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=!state.hasCard||state.cardUsed; save(); }
+  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardUsed)document.querySelector('[data-view="cards"]').classList.add('objective'); }
+  function renderGate(){
+    const gate=$('#gate'); if(!gate)return;
+    const objective=(state.firstUpgrade&&!state.hasCard)||(state.loop2Choice&&!state.secondVictory);
+    gate.classList.toggle('locked',!state.firstUpgrade); gate.classList.toggle('objective',objective);
+    gate.innerHTML=`${objective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${objective?(state.loop2Choice?'Segunda expedición':'Salir al mundo'):'Explorar'}</b>`;
+  }
+  function renderResources(prod={}){
+    $('#resources').innerHTML=Object.entries(D.resources).map(([k,r])=>`<div class="resource r-${k}" title="${r.label}"><i>${r.icon}</i><span>${fmt(state.resources[k])}</span><small>+${prod[k]||0}/s</small></div>`).join('');
+  }
+  function renderBuildings(){
+    $('#buildings').innerHTML='';
+    Object.entries(D.buildings).forEach(([id,b])=>{
+      const guided=(state.talked&&!state.firstUpgrade&&id==='farm')||
+        (state.cardUsed&&!state.loop2Unlocked&&id==='keep')||
+        (state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry'));
+      const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':'ELIGE UNA RUTA'}</em>`:''}<span class="building-art">${b.icon}</span><span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
+      n.style.left=`${b.x}%`; n.style.top=`${b.y}%`; n.onclick=()=>buildingModal(id); $('#buildings').append(n);
+    });
+  }
+  function productionLabel(id){ const p=D.buildings[id].levels[state.buildings[id]-1].production; return Object.entries(p).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · ')||'Centro del reino'; }
+  function renderQuest(){
+    const qs = state.complete ? ['Prueba completada','Has terminado todo el contenido disponible. Copia tu resumen.'] :
+      !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
+      !state.firstUpgrade ? ['Alimenta a Valoria','Toca el Granero marcado y mejóralo para producir más comida.'] :
+      !state.hasCard ? ['Ecos en el bosque','Pulsa “Salir al mundo”, sigue el sendero y derrota al Acechador.'] :
+      !state.cardUsed ? ['Convierte la victoria en progreso','Abre Cartas —el botón iluminado— y usa la recompensa.'] :
+      !state.loop2Unlocked ? ['El bastión renace','Toca la Fortaleza marcada y utiliza los recursos obtenidos para mejorarla.'] :
+      !state.loop2Choice ? ['Prepara la segunda expedición','Elige: Forja para atacar más fuerte o Cantera para defender mejor.'] :
+      ['La Brecha responde','Sal de nuevo al mundo. Tu elección cambiará el siguiente combate.'];
+    $('#quest-title').textContent=qs[0]; $('#quest-copy').textContent=qs[1];
+    const progress=state.complete?100:[0,14,28,48,60,72,84,94][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
+  }
+  function showIntro(){
+    openModal('Eldoria',`<div class="intro-mark">E</div><p class="intro-lead">Valoria está en ruinas. Una anomalía llamada <strong>La Brecha</strong> corrompe el mundo y cada decisión sobre su poder tendrá consecuencias.</p><div class="dialogue intro-dialogue"><div class="portrait">♜</div><p><strong>Sir Aldric</strong><br>“Reconstruye el reino, cruza las murallas y descubre si la Brecha debe ser contenida… o utilizada.”</p></div><button id="begin" class="primary">Comenzar la reconstrucción</button>`);
+    modal.querySelector('.close').remove(); $('#begin').onclick=()=>{state.introSeen=true;state.talked=true;state.stage=1;closeModal();render();toast('Objetivo: mejora el Granero marcado.');};
+  }
+  function talkAldric(){ dialogue('Sir Aldric',state.firstUpgrade?'La puerta está abierta. La Brecha nos espera más allá de las murallas.':'Sin más alimento, Valoria no sobrevivirá. Mejora el Granero marcado para asegurar nuestras reservas.'); }
+  function buildingModal(id){
+    const b=D.buildings[id], lvl=state.buildings[id], next=b.levels[lvl];
+    let body=`<div class="modal-icon">${b.icon}</div><p>${buildingCopy(id)}</p><div class="statline"><span>Nivel actual</span><b>${lvl} / ${b.max}</b></div>${buildingEffect(id,lvl)}`;
+    if(state.talked&&!state.firstUpgrade&&id!=='farm'){ body+=`<p class="maxed">Objetivo actual: mejora primero el Granero marcado para alimentar a Valoria.</p>`; }
+    else if(id==='keep'&&!state.cardUsed){ body+=`<p class="maxed">La Fortaleza requiere energía estabilizada de la Brecha.</p>`; }
+    else if(next){ const costs=Object.entries(next.cost).map(([r,v])=>`<span class="cost ${state.resources[r]>=v?'ok':'bad'}">${D.resources[r].icon} ${v}</span>`).join(''); body+=`<div class="costs">${costs}</div><button id="upgrade" class="primary">Mejorar ahora</button>`; }
+    else body+=`<p class="maxed">Nivel máximo del prototipo</p>`;
+    openModal(b.name,body); if(next&&$('#upgrade')) $('#upgrade').onclick=()=>upgrade(id,next.cost);
+  }
+  function buildingEffect(id,lvl){ const current=productionLabel(id),next=D.buildings[id].levels[lvl]?.production; const after=next&&Object.entries(next).length?Object.entries(next).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · '):id==='keep'&&lvl<2?'Desbloquea la defensa del bastión':'Nivel máximo'; return `<div class="effectline"><span>Ahora: ${current}</span><strong>Después: ${after}</strong></div>`; }
+  function buildingCopy(id){ return ({keep:'El corazón político y defensivo de Valoria.',farm:'Alimenta a quienes aún resisten.',lumber:'Convierte el bosque intacto en futuro.',quarry:'Extrae piedra para levantar defensas.',forge:'Da forma al hierro y prepara la guerra.'})[id]; }
+  function upgrade(id,cost){
+    if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v)){ toast('Faltan recursos para esta mejora.'); return; }
+    Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v); state.buildings[id]++; burst();
+    if(id!=='keep'&&!state.firstUpgrade){ state.firstUpgrade=true; state.stage=2; state.metrics.firstUpgradeSeconds=elapsed(); closeModal(); render(); dialogue('Sir Aldric','Eso bastará por ahora. La puerta está abierta. Ven conmigo: debes ver lo que está devorando nuestras tierras.'); }
+    else if(id==='keep'&&state.cardUsed&&!state.loop2Unlocked){
+      state.loop2Unlocked=true; state.stage=5; closeModal(); render();
+      dialogue('Sir Aldric','La Fortaleza resiste, pero la Brecha ha respondido. Elige cómo preparar a Valoria: mejora la Forja para causar más daño o la Cantera para resistir mejor.');
+    }
+    else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')){
+      state.loop2Choice=id; state.stage=6; closeModal(); render();
+      const route=id==='forge'?'La Forja equipa a Aldric: tus ataques causarán más daño.':'La Cantera refuerza su escudo: Defender reducirá aún más el daño.';
+      dialogue('Preparativos completados',route+' La segunda expedición ya está disponible.');
+    }
+    else { closeModal(); toast(`${D.buildings[id].name} mejorado a nivel ${state.buildings[id]}.`); render(); }
+  }
+  function showWorld(){ view='world'; navActive('world');
+    $('#scene').className='scene world-scene scene-enter'; $('#scene').innerHTML=`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
+    $('#return').onclick=showKingdom; $('#enemy').onclick=startCombat; renderQuest();
+    if(!state.worldSeen){ state.worldSeen=true; state.metrics.worldSeconds=elapsed(); save(); setTimeout(()=>dialogue('Sir Aldric','Más allá de estas puertas comienza el Bosque de Ceniza. Sigue el sendero: esa herida violeta es La Brecha, y el Acechador bloquea nuestro paso.'),350); }
+  }
+  function startCombat(){
+    state.secondCombat=!!(state.loop2Choice&&!state.secondVictory);
+    const copy=state.secondCombat?'La Brecha ha enviado un Guardián de Ceniza. La mejora elegida afectará a este combate.':'El Acechador anuncia sus golpes. Ataca para dañarlo, defiende ante un golpe brutal o canaliza una vez el poder de la Brecha… pagando su precio.';
+    dialogue('Sir Aldric',copy,()=>combatModal());
+  }
+  function combatModal(){
+    openModal(state.secondCombat?'Segunda expedición':'Combate en la Brecha',`<div class="combat"><div class="combatant hero"><span>♜</span><b>Sir Aldric</b><div class="hp"><i id="player-hp"></i></div></div><div class="versus">VS</div><div class="combatant foe"><span>♝</span><b>${state.secondCombat?'Guardián de Ceniza':'Acechador'}</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div id="enemy-intent" class="enemy-intent"></div><p id="combat-log">Mira la intención del enemigo antes de elegir.</p><div class="combat-actions"><button id="attack" class="action attack-action"><b>⚔ Atacar</b><small id="attack-help">Daño estable</small></button><button id="guard" class="action guard-action"><b>⛉ Defender</b><small id="guard-help">Reduce el próximo golpe</small></button><button id="rift-strike" class="action rift-action"><b>✦ Canalizar</b><small>Gran daño · coste vital</small></button></div>`);
+    state.enemyHp=state.secondCombat?135:100; state.playerHp=100; combatTurn=0; riftAvailable=true;
+    $('#attack').onclick=()=>combatAction('attack'); $('#guard').onclick=()=>combatAction('guard'); $('#rift-strike').onclick=()=>combatAction('rift'); updateHp(); updateIntent();
+  }
+  function updateIntent(){
+    const heavy=combatTurn%3===2, guard=$('#guard'), attack=$('#attack');
+    $('#enemy-intent').className=`enemy-intent ${heavy?'heavy':''}`;
+    $('#enemy-intent').innerHTML=heavy?'<b>⚠ GOLPE BRUTAL ENTRANTE · 28 daño</b><span>DEFENDER ES LA RESPUESTA SEGURA</span>':'<b>ATAQUE NORMAL · 14 daño</b><span>PUEDES ATACAR O ARRIESGARTE A CANALIZAR</span>';
+    guard.classList.toggle('recommended',heavy); attack.classList.toggle('risky',heavy);
+    $('#guard-help').textContent=heavy?'RECOMENDADO · reduce a 8':'Reduce el próximo golpe';
+    $('#attack-help').textContent=heavy?'RIESGO · recibirás 28':'Daño estable';
+  }
+  function combatAction(type){
+    const heavy=combatTurn%3===2; let incoming=heavy?28:14; let dmg=0; let copy='';
+    state.metrics.combatTurns++;
+    if(type==='attack'){ dmg=22+Math.floor(Math.random()*9)+(state.secondCombat&&state.loop2Choice==='forge'?10:0); copy=`Aldric golpea y causa ${dmg}.`; }
+    if(type==='guard'){ state.metrics.guardUses++; if(heavy)state.metrics.heavyGuards++; dmg=7; incoming=Math.floor(incoming*(state.secondCombat&&state.loop2Choice==='quarry'?.15:.3)); state.playerHp=Math.min(100,state.playerHp+5); copy='Aldric alza el escudo, recupera 5 y contraataca.'; }
+    if(type==='rift'){ if(!riftAvailable)return; dmg=48; incoming+=12; riftAvailable=false; $('#rift-strike').disabled=true; copy='La Brecha atraviesa al enemigo, pero quema a Aldric.'; }
+    state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); updateHp();
+    $('#combat-log').textContent=`${copy} Recibe ${incoming} de daño.`;
+    if(state.enemyHp<=0){ disableCombat(); return setTimeout(victory,550); }
+    if(state.playerHp<=0){ disableCombat(); $('#combat-log').textContent='Aldric cae. La Brecha no perdona una decisión precipitada.'; return setTimeout(combatDefeat,500); }
+    combatTurn++; updateIntent();
+  }
+  function disableCombat(){ document.querySelectorAll('.combat-actions button').forEach(b=>b.disabled=true); }
+  function combatDefeat(){ openModal('La expedición fracasa',`<p>Has aprendido a leer los ataques del Acechador. Defiende cuando prepare su golpe brutal.</p><button id="retry" class="primary">Reintentar combate</button>`); $('#retry').onclick=combatModal; }
+  function updateHp(){ $('#enemy-hp').style.width=`${state.enemyHp}%`; $('#player-hp').style.width=`${state.playerHp}%`; }
+  function victory(){
+    if(state.secondCombat){
+      state.secondVictory=true; state.complete=true; state.stage=7; state.metrics.completedSeconds=elapsed();
+      state.resources.iron+=80; state.resources.stone+=120; save(); renderQuest();
+      openModal('Vertical slice completado',`<div class="intro-mark">✓</div><p class="intro-lead">Has completado las dos expediciones y comprobado cómo una mejora de ciudad cambia el combate.</p><p><strong>Nivel máximo de esta prueba: 2.</strong><br>No necesitas seguir mejorando.</p><button id="finish-report" class="primary">Ver y copiar resumen</button>`);
+      $('#finish-report').onclick=showPlaytestSummary; return;
+    }
+    openModal('El poder exige una decisión',`<p>El fragmento puede convertirse en un motor de crecimiento o romperse para liberar todo su poder ahora. Ninguna opción es gratuita.</p><div class="rift-choices"><button id="contain" class="choice contain"><span>⛨</span><b>Forjar el Gran Sello</b><small><strong>CRECIMIENTO:</strong> +50% de producción permanente en esta partida.<br>Botín inmediato moderado.</small></button><button id="exploit" class="choice exploit"><span>✦</span><b>Desatar la Brecha</b><small><strong>PODER:</strong> enorme botín inmediato.<br>La corrupción marcará Valoria.</small></button></div>`);
+    $('#contain').onclick=()=>claimReward('contain'); $('#exploit').onclick=()=>claimReward('exploit');
+  }
+  function claimReward(choice){
+    state.riftChoice=choice; state.metrics.riftChoice=choice; state.hasCard=true; state.stage=3; save();
+    const exploit=choice==='exploit', name=exploit?'Pulso de Abundancia':'Gran Sello de la Vigilia';
+    openModal(exploit?'La Brecha ha sido explotada':'La Brecha ha sido contenida',`<div class="reward-card ${exploit?'':'contained-card'}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${exploit?'Gran descarga de recursos inmediatos.':'Recursos equilibrados obtenidos al estabilizar el fragmento.'}</p><small>${exploit?'El poder deja una cicatriz violeta en Valoria.':'El bosque respira, pero el fragmento pierde parte de su fuerza.'}</small></div><button id="claim" class="primary">Guardar carta y regresar</button>`);
+    $('#claim').onclick=()=>{closeModal();showKingdom();toast('Tu decisión ha cambiado el reino.');render();};
+  }
+  function showKingdom(){
+    view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''}`;
+    const gateObjective=state.firstUpgrade&&!state.hasCard?' objective':'';
+    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div><div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>Salir al mundo</b></button><div id="particles" class="particles"></div>`;
+    $('#aldric').onclick=talkAldric; $('#gate').onclick=showWorld; render();
+  }
+  function navigate(target){
+    if(target==='kingdom') return showKingdom(); if(target==='world') return state.firstUpgrade?showWorld():toast('Completa la primera mejora para abrir el mundo.');
+    navActive(target); if(target==='heroes') openModal('Héroes',`<div class="hero-sheet"><div class="portrait">♜</div><div><span class="tag">VALORIA · ÉPICO</span><h3>Sir Aldric</h3><p>Caballero · Guardián</p><div class="stats"><b>820 <small>Poder</small></b><b>640 <small>Defensa</small></b><b>390 <small>Ataque</small></b></div></div></div><p>Primer héroe del prototipo. Sus futuros caminos de evolución se desbloquearán tras decidir el destino de la Brecha.</p>`);
+    if(target==='cards') cardsModal();
+  }
+  function cardsModal(){
+    const exploit=state.riftChoice==='exploit'; const name=exploit?'Pulso de Abundancia':'Gran Sello de la Vigilia'; const amounts=exploit?'+220 comida · +180 madera · +110 piedra · +70 hierro':'+90 comida · +90 madera · +90 piedra · +40 hierro · después +50% producción';
+    const card=state.hasCard?`<div class="reward-card small ${exploit?'':'contained-card'} ${state.cardUsed?'spent':''}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${amounts}</p></div>`:`<div class="empty"><span>◇</span><p>Tu primera carta aguarda más allá de la Brecha.</p></div>`;
+    openModal('Cartas',`${card}${state.hasCard&&!state.cardUsed?'<button id="use-card" class="primary">Usar carta</button>':''}`); if($('#use-card')) $('#use-card').onclick=useCard;
+  }
+  function useCard(){ const reward=state.riftChoice==='exploit'?{food:220,wood:180,stone:110,iron:70}:{food:90,wood:90,stone:90,iron:40}; Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; closeModal(); showKingdom(); burst(); toast(state.riftChoice==='contain'?'Gran Sello activo: producción +50%.':'Poder de la Brecha liberado.'); render(); }
+  function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
+  function openModal(title,body){ closeModal(); modal=el('div','overlay',`<section class="modal"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
+  function closeModal(){ if(modal){modal.remove();modal=null;} }
+  function navActive(target){ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===target)); }
+  function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),2600); }
+  function burst(){ const p=$('#particles'); if(!p)return; p.innerHTML=Array.from({length:16},(_,i)=>`<i style="--a:${i*22.5}deg;--d:${50+Math.random()*90}px"></i>`).join(''); setTimeout(()=>p.innerHTML='',900); }
+  function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
+  function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
+  function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.8-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function showPlaytestSummary(){
+    const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
+    openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
+    $('#copy-report').onclick=copyReport;
+  }
+  function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
+  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save');location.reload();}; }
+  init();
+})();
+
+</script>
+</body>
+</html>
