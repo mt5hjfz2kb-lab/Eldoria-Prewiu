@@ -61,6 +61,14 @@
 .intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
 
 
+/* v0.8: cierre de la segunda vuelta */
+.future-signal{position:absolute;z-index:16;left:50%;top:15%;transform:translateX(-50%);width:min(78%,310px);padding:9px 14px;border:1px solid #a78bdb;background:linear-gradient(90deg,#20152fdd,#44205ddd,#20152fdd);color:#f4eaff;box-shadow:0 0 24px #a45cff66;font:700 10px Arial;letter-spacing:1px;animation:futureSignal 1.5s ease-in-out infinite}
+.future-signal span{display:block;font-size:18px;margin-bottom:3px}.future-signal small{display:block;margin-top:3px;color:#d2c2e8;font:9px Arial;letter-spacing:0}
+.second-reward{margin:12px auto;padding:18px;border:1px solid #bc91e8;background:radial-gradient(circle at 50% 20%,#58277a,#17101f 68%);text-align:center;box-shadow:inset 0 0 28px #a052d844}
+.second-reward>span{display:block;font-size:58px;filter:drop-shadow(0 0 18px #bd72ff)}.second-reward strong{display:block;margin:6px 0;color:#f3dcff;font:700 20px Georgia,serif}.second-reward b{display:block;color:#efd28b;font:700 12px Arial}.second-reward small{display:block;margin-top:10px;color:#cfc5d5;font:11px/1.4 Arial}
+.continuation-choices{display:grid;gap:9px;margin-top:14px}.continuation-choices .choice{text-align:left}.continuation-choices .choice span{font-size:24px}.continuation-choices .choice.stop{opacity:.78}
+@keyframes futureSignal{50%{filter:brightness(1.25);box-shadow:0 0 34px #b76cff99}}
+
 /* v0.8: impacto de elecciones */
 .choice-impact-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle,#2b2112 0,#080b0e 68%);animation:impactReveal .35s ease-out}
 .choice-impact-overlay.quarry-impact{background:radial-gradient(circle,#253947 0,#080b0e 68%)}
@@ -153,7 +161,7 @@ window.ELDORIA_DATA = {
     buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1 },
     stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
     hasCard: false, cardUsed: false, complete: false, worldSeen: false, riftChoice: null,
-    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, lastTick: Date.now(),
+    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, continuationChoice: null, lastTick: Date.now(),
     metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, riftChoice: null, completedSeconds: null }
   });
   let state = load();
@@ -211,6 +219,7 @@ window.ELDORIA_DATA = {
   function productionLabel(id){ const p=D.buildings[id].levels[state.buildings[id]-1].production; return Object.entries(p).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · ')||'Centro del reino'; }
   function renderQuest(){
     const qs = state.complete ? ['Prueba completada','Has terminado todo el contenido disponible. Copia tu resumen.'] :
+      state.secondVictory ? ['El futuro de Valoria',state.secondRewardClaimed?'Toca la señal del horizonte y decide qué querrías hacer después.':'Recoge el Núcleo de Ceniza y regresa a Valoria.'] :
       !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
       !state.firstUpgrade ? ['Alimenta a Valoria','Toca el Granero marcado y mejóralo para producir más comida.'] :
       !state.hasCard ? ['Ecos en el bosque','Pulsa “Salir al mundo”, sigue el sendero y derrota al Acechador.'] :
@@ -219,7 +228,7 @@ window.ELDORIA_DATA = {
       !state.loop2Choice ? ['Prepara la segunda expedición','Elige: Forja para atacar más fuerte o Cantera para defender mejor.'] :
       ['La Brecha responde','Sal de nuevo al mundo. Tu elección cambiará el siguiente combate.'];
     $('#quest-title').textContent=qs[0]; $('#quest-copy').textContent=qs[1];
-    const progress=state.complete?100:[0,14,28,48,60,72,84,94][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
+    const progress=state.complete?100:state.secondVictory?98:[0,14,28,48,60,72,84,94][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
   }
   function showIntro(){
     openModal('Eldoria',`<div class="intro-mark">E</div><p class="intro-lead">Valoria está en ruinas. Una anomalía llamada <strong>La Brecha</strong> corrompe el mundo y cada decisión sobre su poder tendrá consecuencias.</p><div class="dialogue intro-dialogue"><div class="portrait">♜</div><p><strong>Sir Aldric</strong><br>“Reconstruye el reino, cruza las murallas y descubre si la Brecha debe ser contenida… o utilizada.”</p></div><button id="begin" class="primary">Comenzar la reconstrucción</button>`);
@@ -300,13 +309,31 @@ window.ELDORIA_DATA = {
   function updateHp(){ $('#enemy-hp').style.width=`${state.enemyHp}%`; $('#player-hp').style.width=`${state.playerHp}%`; }
   function victory(){
     if(state.secondCombat){
-      state.secondVictory=true; state.complete=true; state.stage=7; state.metrics.completedSeconds=elapsed();
-      state.resources.iron+=80; state.resources.stone+=120; save(); renderQuest();
-      openModal('Vertical slice completado',`<div class="intro-mark">✓</div><p class="intro-lead">Has completado las dos expediciones y comprobado cómo una mejora de ciudad cambia el combate.</p><p><strong>Nivel máximo de esta prueba: 2.</strong><br>No necesitas seguir mejorando.</p><button id="finish-report" class="primary">Ver y copiar resumen</button>`);
-      $('#finish-report').onclick=showPlaytestSummary; return;
+      state.secondVictory=true; state.stage=7; save(); renderQuest(); showSecondReward(); return;
     }
     openModal('El poder exige una decisión',`<p>El fragmento puede convertirse en un motor de crecimiento o romperse para liberar todo su poder ahora. Ninguna opción es gratuita.</p><div class="rift-choices"><button id="contain" class="choice contain"><span>⛨</span><b>Forjar el Gran Sello</b><small><strong>CRECIMIENTO:</strong> +50% de producción permanente en esta partida.<br>Botín inmediato moderado.</small></button><button id="exploit" class="choice exploit"><span>✦</span><b>Desatar la Brecha</b><small><strong>PODER:</strong> enorme botín inmediato.<br>La corrupción marcará Valoria.</small></button></div>`);
     $('#contain').onclick=()=>claimReward('contain'); $('#exploit').onclick=()=>claimReward('exploit');
+  }
+  function showSecondReward(){
+    openModal('Núcleo de Ceniza',`<p class="intro-lead">El Guardián cae, pero su corazón continúa latiendo.</p><div class="second-reward"><span>◆</span><strong>NÚCLEO DE CENIZA</strong><b>+120 piedra · +80 hierro</b><small>En su interior aparece un mapa imposible: una nueva señal responde desde el norte.</small></div><button id="claim-second" class="primary">Recoger y regresar a Valoria</button>`);
+    $('#claim-second').onclick=()=>{
+      if(!state.secondRewardClaimed){state.resources.stone+=120;state.resources.iron+=80;state.secondRewardClaimed=true;save();}
+      closeModal();showKingdom();burst();toast('El Núcleo de Ceniza ha llegado a Valoria.');
+      setTimeout(showContinuationChoice,650);
+    };
+  }
+  function showFutureStep(){ state.secondRewardClaimed?showContinuationChoice():showSecondReward(); }
+  function showContinuationChoice(){
+    openModal('Una señal más allá del bosque',`<p class="intro-lead">La Brecha no era la única. En el Núcleo aparece una fortaleza sepultada al norte.</p><p><strong>Esto no es contenido jugable todavía.</strong> Si pudieras continuar ahora, ¿qué preferirías hacer?</p><div class="continuation-choices"><button id="next-world" class="choice"><span>⚔</span><b>Perseguir la señal</b><small>Explorar otra región, combatir y descubrir qué despertó.</small></button><button id="next-city" class="choice"><span>♜</span><b>Expandir Valoria</b><small>Construir, producir y preparar un ejército antes de partir.</small></button><button id="next-stop" class="choice stop"><span>◇</span><b>Pararía aquí</b><small>No siento suficiente curiosidad para seguir ahora.</small></button></div>`);
+    $('#next-world').onclick=()=>finishSlice('world');
+    $('#next-city').onclick=()=>finishSlice('city');
+    $('#next-stop').onclick=()=>finishSlice('stop');
+  }
+  function finishSlice(choice){
+    state.continuationChoice=choice;state.complete=true;state.metrics.completedSeconds=elapsed();save();renderQuest();
+    const label=choice==='world'?'Perseguir la señal':choice==='city'?'Expandir Valoria':'Parar aquí';
+    openModal('Vertical slice completado',`<div class="intro-mark">✓</div><p class="intro-lead">Has completado las dos expediciones.</p><p>Tu siguiente deseo: <strong>${label}</strong>.</p><p><strong>Nivel máximo de esta prueba: 2.</strong><br>No necesitas seguir mejorando.</p><button id="finish-report" class="primary">Ver y copiar resumen</button>`);
+    $('#finish-report').onclick=showPlaytestSummary;
   }
   function claimReward(choice){
     state.riftChoice=choice; state.metrics.riftChoice=choice; state.hasCard=true; state.stage=3; save();
@@ -317,8 +344,8 @@ window.ELDORIA_DATA = {
   function showKingdom(){
     view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''}`;
     const gateObjective=state.firstUpgrade&&!state.hasCard?' objective':'';
-    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div><div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>Salir al mundo</b></button><div id="particles" class="particles"></div>`;
-    $('#aldric').onclick=talkAldric; $('#gate').onclick=showWorld; render();
+    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${state.secondVictory&&!state.complete?`<button id="future-signal" class="future-signal"><span>◆</span>${state.secondRewardClaimed?'SEÑAL DEL NORTE<small>DECIDE EL PRÓXIMO PASO</small>':'NÚCLEO DE CENIZA<small>RECOGE LA RECOMPENSA</small>'}</button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>Salir al mundo</b></button><div id="particles" class="particles"></div>`;
+    $('#aldric').onclick=talkAldric; $('#gate').onclick=showWorld; if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
   }
   function navigate(target){
     if(target==='kingdom') return showKingdom(); if(target==='world') return state.firstUpgrade?showWorld():toast('Completa la primera mejora para abrir el mundo.');
@@ -340,7 +367,7 @@ window.ELDORIA_DATA = {
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.8-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.8-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nQuerría continuar con: ${state.continuationChoice==='world'?'Exploración y combate':state.continuationChoice==='city'?'Construcción de la ciudad':state.continuationChoice==='stop'?'No continuaría ahora':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
