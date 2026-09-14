@@ -62,7 +62,7 @@
 
 
 /* v0.8: impacto de elecciones */
-.choice-impact-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle,#2b2112 0,#080b0e 68%);animation:impactFade 1.45s forwards}
+.choice-impact-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle,#2b2112 0,#080b0e 68%);animation:impactReveal .35s ease-out}
 .choice-impact-overlay.quarry-impact{background:radial-gradient(circle,#253947 0,#080b0e 68%)}
 .choice-impact-overlay:before{content:"";position:absolute;width:150vmax;height:150vmax;border:2px solid #e7bd5f55;border-radius:50%;animation:impactRing 1.2s ease-out}
 .choice-impact{position:relative;text-align:center;padding:28px;color:#fff;text-shadow:0 3px 18px #000}
@@ -71,7 +71,7 @@
 .choice-impact small{display:block;margin-bottom:8px;font:700 10px/1 Arial;letter-spacing:3px;color:#d6b66f}
 .choice-impact strong{display:block;font:700 30px/1.05 Georgia,serif;letter-spacing:1px}
 .choice-impact b{display:inline-block;margin-top:18px;padding:9px 14px;border:1px solid #d6b66f;background:#0008;color:#ffe4a1;font:700 14px Arial}
-.choice-impact p{margin:12px auto 0;max-width:290px;color:#ddd;font:13px/1.45 Arial}
+.choice-impact p{margin:12px auto 0;max-width:290px;color:#ddd;font:13px/1.45 Arial}.choice-impact-continue{margin-top:22px;min-width:170px;padding:12px 20px;border:1px solid #e7bd5f;background:linear-gradient(#8b6327,#553710);color:#fff7df;font:700 12px Arial;letter-spacing:2px;box-shadow:0 0 24px #e7bd5f44}.quarry-impact .choice-impact-continue{border-color:#8fdcff;background:linear-gradient(#376a83,#1d3d4e);box-shadow:0 0 24px #78d4ff44}
 .route-banner{margin:-2px 0 14px;padding:10px 12px;border:1px solid #c89b4a;background:linear-gradient(90deg,#4a2b10,#17110b);display:flex;justify-content:space-between;gap:12px;align-items:center;font:11px/1.25 Arial}
 .route-banner.quarry-route{border-color:#6ca4c4;background:linear-gradient(90deg,#183444,#10171c)}
 .route-banner b{color:#fff}.route-banner span{color:#d8c99f;text-align:right}
@@ -79,7 +79,7 @@
 .kingdom-scene.route-quarry .building-quarry{filter:drop-shadow(0 0 18px #73cfff)}
 @keyframes impactIcon{0%{transform:scale(.2) rotate(-18deg);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1)}}
 @keyframes impactRing{0%{transform:scale(.05);opacity:1}100%{transform:scale(1);opacity:0}}
-@keyframes impactFade{0%,78%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes impactReveal{from{opacity:0}to{opacity:1}}
 
 </style>
 </head>
@@ -256,9 +256,9 @@ window.ELDORIA_DATA = {
   }
   function choiceImpact(id,done){
     const forge=id==='forge';
-    const impact=el('div','choice-impact-overlay '+(forge?'forge-impact':'quarry-impact'),`<div class="choice-impact"><small>DECISIÓN TOMADA</small><span>${forge?'⚒':'▲'}</span><strong>${forge?'JURAMENTO DE ACERO':'BASTIÓN DE PIEDRA'}</strong><b>${forge?'ATAQUE +10':'DAÑO AL DEFENDER ÷2'}</b><p>Tu reino y el próximo combate han cambiado.</p></div>`);
+    const impact=el('div','choice-impact-overlay '+(forge?'forge-impact':'quarry-impact'),`<div class="choice-impact"><small>DECISIÓN TOMADA</small><span>${forge?'⚒':'▲'}</span><strong>${forge?'JURAMENTO DE ACERO':'BASTIÓN DE PIEDRA'}</strong><b>${forge?'ATAQUE +10':'DAÑO AL DEFENDER ÷2'}</b><p>Tu reino y el próximo combate han cambiado.</p><button class="choice-impact-continue">CONTINUAR</button></div>`);
     document.body.append(impact);
-    setTimeout(()=>{impact.remove();if(done)done();},1450);
+    $('.choice-impact-continue',impact).onclick=()=>{impact.remove();if(done)done();};
   }
   function showWorld(){ view='world'; navActive('world');
     $('#scene').className='scene world-scene scene-enter'; $('#scene').innerHTML=`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
