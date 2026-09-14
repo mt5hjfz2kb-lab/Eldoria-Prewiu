@@ -61,12 +61,23 @@
 .intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
 
 
+/* v0.8: diferenciación de la segunda expedición */
+.world-scene.second-world{background:linear-gradient(#100f1b 0 42%,#21192a 70%,#0b0c10);box-shadow:inset 0 0 100px #6b2c7d55}
+.world-scene.second-world .moon{left:12%;right:auto;background:#d6b0e8;box-shadow:0 0 45px #9a58c788}
+.world-scene.second-world .rift-near{right:7%;top:18%;transform:scale(1.25)}
+.world-scene.second-world .enemy{right:auto;left:62%;bottom:25%}
+.world-scene.second-world .enemy .guardian-symbol{font-size:82px;color:#e08b56;text-shadow:0 0 12px #ff7438,0 0 30px #8e36af}
+.world-scene.second-world .player-token{left:22%;bottom:12%}
+.world-scene.second-world .path{transform:rotate(-13deg) scaleX(1.12)}
+.effect-status{margin-top:10px;padding:9px 11px;border:1px solid #e0c781;background:#0b0f12;color:#fff;text-align:center;font:700 11px/1.35 Arial;letter-spacing:.04em}
+.effect-status.permanent{border-color:#72c7a8;color:#caffe9}.effect-status.instant{border-color:#d48bf0;color:#f2d1ff}
+
 /* v0.8: cierre de la segunda vuelta */
 .future-signal{position:absolute;z-index:16;left:50%;top:15%;transform:translateX(-50%);width:min(78%,310px);padding:9px 14px;border:1px solid #a78bdb;background:linear-gradient(90deg,#20152fdd,#44205ddd,#20152fdd);color:#f4eaff;box-shadow:0 0 24px #a45cff66;font:700 10px Arial;letter-spacing:1px;animation:futureSignal 1.5s ease-in-out infinite}
 .future-signal span{display:block;font-size:18px;margin-bottom:3px}.future-signal small{display:block;margin-top:3px;color:#d2c2e8;font:9px Arial;letter-spacing:0}
 .second-reward{margin:12px auto;padding:18px;border:1px solid #bc91e8;background:radial-gradient(circle at 50% 20%,#58277a,#17101f 68%);text-align:center;box-shadow:inset 0 0 28px #a052d844}
 .second-reward>span{display:block;font-size:58px;filter:drop-shadow(0 0 18px #bd72ff)}.second-reward strong{display:block;margin:6px 0;color:#f3dcff;font:700 20px Georgia,serif}.second-reward b{display:block;color:#efd28b;font:700 12px Arial}.second-reward small{display:block;margin-top:10px;color:#cfc5d5;font:11px/1.4 Arial}
-.continuation-choices{display:grid;gap:9px;margin-top:14px}.continuation-choices .choice{text-align:left}.continuation-choices .choice span{font-size:24px}.continuation-choices .choice.stop{opacity:.78}
+.continuation-choices{display:grid;gap:10px;margin-top:14px}.continuation-choices .choice{display:block;width:100%;padding:14px;text-align:left;color:#fff;background:#10151a;border:2px solid #d6b66f;box-shadow:inset 0 0 18px #d6b66f12;cursor:pointer}.continuation-choices .choice span{display:inline-block;margin-right:8px;font-size:24px;color:#f5d77f;vertical-align:middle}.continuation-choices .choice b{color:#fff;font:700 16px/1.2 Arial}.continuation-choices .choice small{display:block;margin:7px 0 0 34px;color:#e7e4dc;font:12px/1.4 Arial}.continuation-choices #next-world{border-color:#e3a34c;background:#352311}.continuation-choices #next-city{border-color:#69b9d0;background:#142c35}.continuation-choices .choice.stop{border-color:#9da3aa;background:#25292d;opacity:1}.continuation-choices .choice.stop span{color:#d6d9dd}
 @keyframes futureSignal{50%{filter:brightness(1.25);box-shadow:0 0 34px #b76cff99}}
 
 /* v0.8: impacto de elecciones */
@@ -270,7 +281,11 @@ window.ELDORIA_DATA = {
     $('.choice-impact-continue',impact).onclick=()=>{impact.remove();if(done)done();};
   }
   function showWorld(){ view='world'; navActive('world');
-    $('#scene').className='scene world-scene scene-enter'; $('#scene').innerHTML=`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
+    const second=!!(state.loop2Choice&&!state.secondVictory);
+    $('#scene').className=`scene world-scene scene-enter ${second?'second-world':''}`;
+    $('#scene').innerHTML=second
+      ?`<div class="location-title"><small>FRONTERA NORTE</small><strong>Ruinas de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>FALLA DE CENIZA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">SEGUNDO OBJETIVO ↘</span><span class="guardian-symbol">♛</span><b>Guardián de Ceniza</b><em>Protege el Núcleo</em></button><button id="return" class="return">‹ Reino</button>`
+      :`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">PRIMER OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
     $('#return').onclick=showKingdom; $('#enemy').onclick=startCombat; renderQuest();
     if(!state.worldSeen){ state.worldSeen=true; state.metrics.worldSeconds=elapsed(); save(); setTimeout(()=>dialogue('Sir Aldric','Más allá de estas puertas comienza el Bosque de Ceniza. Sigue el sendero: esa herida violeta es La Brecha, y el Acechador bloquea nuestro paso.'),350); }
   }
@@ -354,10 +369,18 @@ window.ELDORIA_DATA = {
   }
   function cardsModal(){
     const exploit=state.riftChoice==='exploit'; const name=exploit?'Pulso de Abundancia':'Gran Sello de la Vigilia'; const amounts=exploit?'+220 comida · +180 madera · +110 piedra · +70 hierro':'+90 comida · +90 madera · +90 piedra · +40 hierro · después +50% producción';
-    const card=state.hasCard?`<div class="reward-card small ${exploit?'':'contained-card'} ${state.cardUsed?'spent':''}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${amounts}</p></div>`:`<div class="empty"><span>◇</span><p>Tu primera carta aguarda más allá de la Brecha.</p></div>`;
+    const status=exploit
+      ?`<div class="effect-status instant">${state.cardUsed?'CONSUMIDA · RECURSOS ENTREGADOS UNA VEZ':'EFECTO INSTANTÁNEO · SE CONSUME AL USARLA'}</div>`
+      :`<div class="effect-status permanent">${state.cardUsed?'ACTIVA · HASTA REINICIAR LA PARTIDA':'DURACIÓN: TODA ESTA PARTIDA'}</div>`;
+    const card=state.hasCard?`<div class="reward-card small ${exploit?'':'contained-card'} ${state.cardUsed?'spent':''}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${amounts}</p></div>${status}`:`<div class="empty"><span>◇</span><p>Tu primera carta aguarda más allá de la Brecha.</p></div>`;
     openModal('Cartas',`${card}${state.hasCard&&!state.cardUsed?'<button id="use-card" class="primary">Usar carta</button>':''}`); if($('#use-card')) $('#use-card').onclick=useCard;
   }
-  function useCard(){ const reward=state.riftChoice==='exploit'?{food:220,wood:180,stone:110,iron:70}:{food:90,wood:90,stone:90,iron:40}; Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; closeModal(); showKingdom(); burst(); toast(state.riftChoice==='contain'?'Gran Sello activo: producción +50%.':'Poder de la Brecha liberado.'); render(); }
+  function useCard(){
+    const exploit=state.riftChoice==='exploit', reward=exploit?{food:220,wood:180,stone:110,iron:70}:{food:90,wood:90,stone:90,iron:40};
+    Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; save();
+    openModal(exploit?'Carta consumida':'Bonificación activada',`<div class="intro-mark">${exploit?'✦':'⛨'}</div><p class="intro-lead">${exploit?'Los recursos se han añadido una sola vez. Esta carta no tiene duración: su efecto es instantáneo.':'Producción +50% durante toda esta partida, sin límite de tiempo. Solo termina al reiniciar.'}</p><div class="effect-status ${exploit?'instant':'permanent'}">${exploit?'EFECTO FINALIZADO · RECURSOS ENTREGADOS':'ACTIVA · PERMANENTE EN ESTA PARTIDA'}</div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
+    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();toast(exploit?'Recursos añadidos.':'Gran Sello activo permanentemente.');render();};
+  }
   function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
   function openModal(title,body){ closeModal(); modal=el('div','overlay',`<section class="modal"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
   function closeModal(){ if(modal){modal.remove();modal=null;} }
