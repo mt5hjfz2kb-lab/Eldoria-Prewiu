@@ -251,8 +251,8 @@ window.ELDORIA_DATA = {
   const heroProgress = id => (state.heroXp[id]||0)%100;
   function awardXp(id,amount){ state.heroXp[id]=(state.heroXp[id]||0)+amount; }
 
-  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
-  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save', JSON.stringify(state)); }
+  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v010')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v010', JSON.stringify(state)); }
 
   function init(){
     document.querySelectorAll('[data-i18n]').forEach(n => n.textContent=D.i18n[n.dataset.i18n]);
@@ -614,7 +614,7 @@ window.ELDORIA_DATA = {
     $('#copy-report').onclick=copyReport;
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
-  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save');location.reload();}; }
+  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v010');location.reload();}; }
   init();
 })();
 
