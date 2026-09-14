@@ -158,6 +158,8 @@
 .locked-reveals b,.locked-reveals small{display:block}.locked-reveals b{color:#fff;font:11px Arial}.locked-reveals small{margin-top:4px;color:#bbb;font:9px Arial}
 .locked-chapter>p{margin:12px 0 0;color:#dff8ff;text-align:center;font-style:italic}
 @media(max-width:420px){.locked-reveals{grid-template-columns:1fr 1fr}.campaign-banner{display:block}.campaign-banner span{display:block;margin-top:4px;text-align:left}}
+
+.route-ready{margin:12px 0;padding:10px;border:1px solid #d7b75d;background:#211b0e;color:#f5e7bd;font:11px/1.45 Arial}
 </style>
 </head>
 <body>
@@ -322,9 +324,14 @@ window.ELDORIA_DATA = {
     let body=`<div class="modal-icon">${b.icon}</div><p>${buildingCopy(id)}</p><div class="statline"><span>Nivel actual</span><b>${lvl} / ${b.max}</b></div>${buildingEffect(id,lvl)}`;
     if(state.talked&&!state.firstUpgrade&&id!=='farm'){ body+=`<p class="maxed">Objetivo actual: mejora primero el Granero marcado para alimentar a Valoria.</p>`; }
     else if(id==='keep'&&!state.cardUsed){ body+=`<p class="maxed">La Fortaleza requiere energía estabilizada de la Brecha.</p>`; }
+    else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')&&lvl>=2){
+      body+=`<p class="route-ready">Este edificio ya estaba mejorado. Puedes convertirlo en la preparación oficial de la expedición sin volver a pagar.</p><button id="choose-existing-route" class="primary">Elegir ${id==='forge'?'Forja':'Cantera'} como ruta</button>`;
+    }
     else if(next){ const costs=Object.entries(next.cost).map(([r,v])=>`<span class="cost ${state.resources[r]>=v?'ok':'bad'}">${D.resources[r].icon} ${v}</span>`).join(''); body+=`<div class="costs">${costs}</div><button id="upgrade" class="primary">Mejorar ahora</button>`; }
     else body+=`<p class="maxed">Nivel máximo del prototipo</p>`;
-    openModal(b.name,body); if(next&&$('#upgrade')) $('#upgrade').onclick=()=>upgrade(id,next.cost);
+    openModal(b.name,body);
+    if(next&&$('#upgrade')) $('#upgrade').onclick=()=>upgrade(id,next.cost);
+    if($('#choose-existing-route')) $('#choose-existing-route').onclick=()=>selectLoop2Choice(id,true);
   }
   function buildingEffect(id,lvl){ const current=productionLabel(id),next=D.buildings[id].levels[lvl]?.production; const after=next&&Object.entries(next).length?Object.entries(next).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · '):id==='keep'&&lvl<2?'Desbloquea la defensa del bastión':'Nivel máximo'; return `<div class="effectline"><span>Ahora: ${current}</span><strong>Después: ${after}</strong></div>`; }
   function buildingCopy(id){ return ({keep:'El corazón político y defensivo de Valoria.',farm:'Alimenta a quienes aún resisten.',lumber:'Convierte el bosque intacto en futuro.',quarry:'Extrae piedra para levantar defensas.',forge:'Da forma al hierro y prepara la guerra.'})[id]; }
@@ -337,13 +344,17 @@ window.ELDORIA_DATA = {
       dialogue('Sir Aldric','La Fortaleza resiste, pero la Brecha ha respondido. Elige cómo preparar a Valoria: mejora la Forja para causar más daño o la Cantera para resistir mejor.');
     }
     else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')){
-      state.loop2Choice=id; state.stage=6; closeModal(); render();
-      $('#scene')?.classList.add('route-'+id);
-      choiceImpact(id,()=>dialogue(id==='forge'?'Juramento de Acero':'Bastión de Piedra',id==='forge'
-        ?'<strong>ATAQUE +10 por golpe.</strong><br>La Forja convierte recursos en daño inmediato. La segunda expedición ya está disponible.'
-        :'<strong>Daño recibido al Defender reducido a la mitad.</strong><br>La Cantera convierte recursos en supervivencia. La segunda expedición ya está disponible.'));
+      selectLoop2Choice(id,false);
     }
     else { closeModal(); toast(`${D.buildings[id].name} mejorado a nivel ${state.buildings[id]}.`); render(); }
+  }
+  function selectLoop2Choice(id,alreadyBuilt=false){
+    if(state.loop2Choice||!state.loop2Unlocked||!(id==='forge'||id==='quarry'))return;
+    state.loop2Choice=id; state.stage=6; closeModal(); render();
+    $('#scene')?.classList.add('route-'+id);
+    choiceImpact(id,()=>dialogue(id==='forge'?'Juramento de Acero':'Bastión de Piedra',(alreadyBuilt?'<strong>EDIFICIO YA CONSTRUIDO:</strong> se adopta como ruta sin coste adicional.<br>':'')+(id==='forge'
+      ?'<strong>ATAQUE +10 por golpe.</strong><br>La Forja convierte recursos en daño inmediato. La segunda expedición ya está disponible.'
+      :'<strong>Daño recibido al Defender reducido a la mitad.</strong><br>La Cantera convierte recursos en supervivencia. La segunda expedición ya está disponible.')));
   }
   function choiceImpact(id,done){
     const forge=id==='forge';
