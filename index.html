@@ -61,6 +61,15 @@
 .intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
 
 
+/* v0.9: salón, experiencia y equipo */
+.hero-roster-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#ddd;font:11px Arial}.hero-roster-head b{color:#f0d68b;font-size:13px}
+.hero-progress-card{padding:14px;border:1px solid #4f5961;background:linear-gradient(145deg,#182027,#0d1115);display:grid;grid-template-columns:66px 1fr;gap:12px;align-items:start}
+.hero-progress-card+.hero-progress-card{margin-top:10px}.hero-progress-card.companion{border-color:#4ea9bd}.hero-avatar{height:76px;display:grid;place-items:center;background:#090d10;border:1px solid #ffffff18;font-size:45px;color:#eadcae}
+.hero-progress-card.companion .hero-avatar{color:#8be2f1}.hero-main h3{margin:0;color:#fff;font:700 19px Georgia,serif}.hero-main>small{color:#aeb7bd;font:10px Arial}.hero-level{display:flex;justify-content:space-between;margin-top:9px;color:#f1d789;font:700 10px Arial}
+.xp-track{height:7px;margin-top:5px;background:#080b0d;border:1px solid #ffffff18}.xp-track i{display:block;height:100%;background:linear-gradient(90deg,#3c9ec0,#86e3ee);box-shadow:0 0 8px #48c4df}
+.hero-skill{margin-top:9px;padding:7px 8px;background:#111b20;color:#dff8fc;font:10px/1.35 Arial}.hero-power{margin-top:6px;color:#ddd;font:700 10px Arial}
+.equipment-panel{margin-top:16px;padding:13px;border:1px solid #7d693e;background:#12110e}.equipment-panel h3{margin:0 0 9px;color:#f0d68b;font:17px Georgia,serif}.gear-slots{display:grid;gap:7px}.gear-slot{display:flex;justify-content:space-between;gap:12px;padding:8px;border:1px solid #ffffff18;background:#0b0e10;font:10px Arial}.gear-slot span{color:#aaa}.gear-slot b{color:#fff;text-align:right}.gear-slot.legendary{border-color:#be8bf0;background:#201329}.gear-slot.legendary b{color:#edceff}
+#equip-relic{margin-top:12px}.heroes-note{margin:12px 0 0!important;color:#aeb8bd!important;font-size:11px!important}
 /* v0.9: celebración de victoria */
 .victory-impact-overlay{background:radial-gradient(circle,#4b3615 0,#120f0a 42%,#050709 75%)}
 .victory-impact-overlay.victory-second{background:radial-gradient(circle,#54234c 0,#18101d 45%,#050709 75%)}
@@ -197,7 +206,7 @@ window.ELDORIA_DATA = {
     buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1 },
     stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
     hasCard: false, cardUsed: false, complete: false, worldSeen: false, riftChoice: null,
-    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, continueIntent: null, lastTick: Date.now(),
+    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, relicOwned: false, relicEquipped: false, firstXpAwarded: false, heroXp: { aldric: 0, lyra: 0, maelis: 0 }, continueIntent: null, lastTick: Date.now(),
     metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, riftChoice: null, completedSeconds: null }
   });
   let state = load();
@@ -210,7 +219,11 @@ window.ELDORIA_DATA = {
   const $ = s => document.querySelector(s);
   const el = (tag, cls, html='') => { const n=document.createElement(tag); n.className=cls; n.innerHTML=html; return n; };
   const fmt = n => Math.floor(n).toLocaleString('es-ES');
-  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save')||'{}'); return { ...base, ...stored, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  const heroLevel = id => Math.min(20,1+Math.floor((state.heroXp[id]||0)/100));
+  const heroProgress = id => (state.heroXp[id]||0)%100;
+  function awardXp(id,amount){ state.heroXp[id]=(state.heroXp[id]||0)+amount; }
+
+  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
   function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save', JSON.stringify(state)); }
 
   function init(){
@@ -233,7 +246,7 @@ window.ELDORIA_DATA = {
   }
   function tick(){ if(view==='kingdom'){ const p=production(); Object.entries(p).forEach(([k,v])=>state.resources[k]+=v); renderResources(p); save(); } }
   function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=state.riftChoice==='contain'&&state.cardUsed?' · Sello activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=!state.hasCard||state.cardUsed; save(); }
-  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardUsed)document.querySelector('[data-view="cards"]').classList.add('objective'); }
+  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardUsed)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
   function renderGate(){
     const gate=$('#gate'); if(!gate)return;
     const thirdObjective=state.companion&&!state.thirdVictory;
@@ -257,7 +270,7 @@ window.ELDORIA_DATA = {
   function productionLabel(id){ const p=D.buildings[id].levels[state.buildings[id]-1].production; return Object.entries(p).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · ')||'Centro del reino'; }
   function renderQuest(){
     const qs = state.complete ? ['Prueba completada','Has terminado todo el contenido disponible. Copia tu resumen.'] :
-      state.thirdVictory ? ['La llamada continúa','Recoge la reliquia y decide si seguirías jugando.'] :
+      state.thirdVictory ? !state.thirdRewardClaimed?['La llamada continúa','Recoge el Eco del Primer Rey.']:!state.relicEquipped?['Equipa la reliquia','Abre Héroes —el botón iluminado— y equipa el Eco del Primer Rey.']:['El futuro de Eldoria','Toca la señal y responde si seguirías jugando.'] :
       state.companion ? ['La fortaleza sepultada','Sal al mundo con tu nuevo compañero y derrota al Avatar de la Brecha.'] :
       state.secondVictory ? ['Un aliado responde',state.secondRewardClaimed?'Elige al compañero que llevará el Núcleo de Ceniza.':'Recoge el Núcleo de Ceniza y regresa a Valoria.'] :
       !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
@@ -268,7 +281,7 @@ window.ELDORIA_DATA = {
       !state.loop2Choice ? ['Prepara la segunda expedición','Elige: Forja para atacar más fuerte o Cantera para defender mejor.'] :
       ['La Brecha responde','Sal de nuevo al mundo. Tu elección cambiará el siguiente combate.'];
     $('#quest-title').textContent=qs[0]; $('#quest-copy').textContent=qs[1];
-    const progress=state.complete?100:state.thirdVictory?99:state.companion?96:state.secondVictory?92:[0,12,24,40,52,64,75,84][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
+    const progress=state.complete?100:state.relicEquipped?99:state.thirdVictory?97:state.companion?93:state.secondVictory?88:[0,12,24,40,52,64,75,82][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
   }
     function showIntro(){
     openModal('Eldoria',`<div class="intro-mark">E</div><p class="intro-lead">Valoria está en ruinas. Una anomalía llamada <strong>La Brecha</strong> corrompe el mundo y cada decisión sobre su poder tendrá consecuencias.</p><div class="dialogue intro-dialogue"><div class="portrait">♜</div><p><strong>Sir Aldric</strong><br>“Reconstruye el reino, cruza las murallas y descubre si la Brecha debe ser contenida… o utilizada.”</p></div><button id="begin" class="primary">Comenzar la reconstrucción</button>`);
@@ -372,21 +385,25 @@ window.ELDORIA_DATA = {
       icon:third?'♛':second?'◆':'⚔',
       title:third?'AVATAR DESTRUIDO':second?'GUARDIÁN DERROTADO':'ACECHADOR DERROTADO',
       result:third?'El trono de la Brecha ha caído.':second?'El Núcleo de Ceniza es tuyo.':'La Brecha ha quedado expuesta.',
+      reward:third?'+80 XP AL GRUPO':second?'+60 XP · SIR ALDRIC':'+40 XP · SIR ALDRIC',
       action:third?'RECLAMAR EL TRONO':second?'TOMAR EL NÚCLEO':'ACERCARSE A LA BRECHA'
     },resolveVictory);
   }
   function victoryImpact(data,done){
-    const impact=el('div',`choice-impact-overlay victory-impact-overlay ${data.cls}`,`<div class="choice-impact victory-impact"><small>${data.eyebrow}</small><span>${data.icon}</span><strong>${data.title}</strong><b>ENEMIGO ELIMINADO</b><p>${data.result}</p><button class="choice-impact-continue victory-continue">${data.action}</button></div>`);
+    const impact=el('div',`choice-impact-overlay victory-impact-overlay ${data.cls}`,`<div class="choice-impact victory-impact"><small>${data.eyebrow}</small><span>${data.icon}</span><strong>${data.title}</strong><b>${data.reward}</b><p>${data.result}</p><button class="choice-impact-continue victory-continue">${data.action}</button></div>`);
     document.body.append(impact);
     $('.victory-continue',impact).onclick=()=>{impact.remove();done();};
   }
   function resolveVictory(){
     if(state.thirdCombat){
+      if(!state.thirdVictory){awardXp('aldric',80);awardXp(state.companion,80);}
       state.thirdVictory=true;state.stage=8;save();renderQuest();showThirdReward();return;
     }
     if(state.secondCombat){
+      if(!state.secondVictory)awardXp('aldric',60);
       state.secondVictory=true; state.stage=7; save(); renderQuest(); showSecondReward(); return;
     }
+    if(!state.firstXpAwarded){awardXp('aldric',40);state.firstXpAwarded=true;save();}
     openModal('El poder exige una decisión',`<p>El fragmento puede convertirse en un motor de crecimiento o romperse para liberar todo su poder ahora. Ninguna opción es gratuita.</p><div class="rift-choices"><button id="contain" class="choice contain"><span>⛨</span><b>Forjar el Gran Sello</b><small><strong>CRECIMIENTO:</strong> +50% de producción permanente en esta partida.<br>Botín inmediato moderado.</small></button><button id="exploit" class="choice exploit"><span>✦</span><b>Desatar la Brecha</b><small><strong>PODER:</strong> enorme botín inmediato.<br>La corrupción marcará Valoria.</small></button></div>`);
     $('#contain').onclick=()=>claimReward('contain'); $('#exploit').onclick=()=>claimReward('exploit');
   }
@@ -402,7 +419,8 @@ window.ELDORIA_DATA = {
     if(!state.secondRewardClaimed)return showSecondReward();
     if(!state.companion)return showCompanionChoice();
     if(!state.thirdVictory)return showWorld();
-    return state.thirdRewardClaimed?showIntentChoice():showThirdReward();
+    if(!state.thirdRewardClaimed)return showThirdReward();
+    return state.relicEquipped?showIntentChoice():heroesModal();
   }
   function showCompanionChoice(){
     openModal('Elige a tu compañero',`<p class="intro-lead">El Núcleo ha despertado a dos supervivientes. Esta elección cambia la habilidad disponible en la tercera expedición.</p><div class="continuation-choices"><button id="choose-lyra" class="choice companion-choice"><span>➶</span><b>Lyra, Exploradora del Velo</b><small><strong>LLUVIA DE FLECHAS:</strong> 55 de daño una vez por combate.</small></button><button id="choose-maelis" class="choice companion-choice alt"><span>✧</span><b>Maelis, Guardiana del Alba</b><small><strong>LUZ RESTAURADORA:</strong> cura 35 y causa 22 de daño una vez.</small></button></div>`);
@@ -419,8 +437,8 @@ window.ELDORIA_DATA = {
   function showThirdReward(){
     openModal('Eco del Primer Rey',`<p class="intro-lead">El Avatar se deshace. Bajo su trono aparece una memoria que pronuncia el nombre de Aldric.</p><div class="second-reward"><span>♛</span><strong>ECO DEL PRIMER REY</strong><b>RELIQUIA LEGENDARIA · +150 hierro</b><small>La reconstrucción de Valoria solo era el comienzo.</small></div><button id="claim-third" class="primary">Reclamar reliquia y regresar</button>`);
     $('#claim-third').onclick=()=>{
-      if(!state.thirdRewardClaimed){state.resources.iron+=150;state.thirdRewardClaimed=true;save();}
-      closeModal();showKingdom();burst();setTimeout(showIntentChoice,650);
+      if(!state.thirdRewardClaimed){state.resources.iron+=150;state.thirdRewardClaimed=true;state.relicOwned=true;save();}
+      closeModal();showKingdom();burst();toast('Nueva reliquia: abre Héroes para equiparla.');
     };
   }
   function showIntentChoice(){
@@ -445,20 +463,36 @@ window.ELDORIA_DATA = {
     view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''}`;
     const gateObjective=(state.firstUpgrade&&!state.hasCard)||(state.companion&&!state.thirdVictory)?' objective':'';
     const future=!state.complete&&state.secondVictory;
-    const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?'DECISIÓN FINAL':'RELIQUIA LEGENDARIA'):state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
-    const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?'¿SEGUIRÍAS JUGANDO?':'RECOGE LA RECOMPENSA'):state.companion?'TERCERA EXPEDICIÓN':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
+    const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'DECISIÓN FINAL':'SALÓN DE HÉROES'):'RELIQUIA LEGENDARIA'):state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
+    const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'¿SEGUIRÍAS JUGANDO?':'EQUIPA EL ECO DEL REY'):'RECOGE LA RECOMPENSA'):state.companion?'TERCERA EXPEDICIÓN':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
     $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>◆</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${state.companion&&!state.thirdVictory?'Fortaleza sepultada':'Salir al mundo'}</b></button><div id="particles" class="particles"></div>`;
     $('#aldric').onclick=talkAldric; $('#gate').onclick=showWorld; if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
+  }
+  function heroCard(id){
+    const isAldric=id==='aldric', lyra=id==='lyra';
+    const name=isAldric?'Sir Aldric':lyra?'Lyra':'Maelis';
+    const role=isAldric?'Caballero · Guardián':lyra?'Exploradora · Tiradora':'Guardiana · Sanadora';
+    const icon=isAldric?'♜':lyra?'➶':'✧';
+    const skill=isAldric?'Guardia férrea · reduce el daño':lyra?'Lluvia de flechas · 55 daño':'Luz restauradora · cura 35';
+    const level=heroLevel(id), progress=heroProgress(id), base=isAldric?820:lyra?610:625;
+    const power=base+(level-1)*25+(isAldric&&state.relicEquipped?120:0);
+    return `<article class="hero-progress-card ${isAldric?'':'companion'}"><div class="hero-avatar">${icon}</div><div class="hero-main"><h3>${name}</h3><small>${role}</small><div class="hero-level"><span>NIVEL ${level}</span><span>${progress} / 100 XP</span></div><div class="xp-track"><i style="width:${progress}%"></i></div><div class="hero-skill"><b>HABILIDAD</b><br>${skill}</div><div class="hero-power">PODER ${power.toLocaleString('es-ES')}</div></div></article>`;
+  }
+  function heroesModal(){
+    const roster=heroCard('aldric')+(state.companion?heroCard(state.companion):'');
+    const relic=state.relicOwned?`<div class="gear-slot legendary"><span>RELIQUIA</span><b>♛ Eco del Primer Rey ${state.relicEquipped?'· EQUIPADO':'· +120 poder'}</b></div>`:`<div class="gear-slot"><span>RELIQUIA</span><b>Vacío</b></div>`;
+    openModal('Salón de Héroes',`<div class="hero-roster-head"><b>HÉROES ${state.companion?'2':'1'} / 12</b><span>Poder y progresión</span></div><div class="hero-roster">${roster}</div><section class="equipment-panel"><h3>Equipo de Sir Aldric</h3><div class="gear-slots"><div class="gear-slot"><span>ARMA</span><b>Espada de Valoria</b></div><div class="gear-slot"><span>ARMADURA</span><b>Malla del Guardián</b></div>${relic}</div>${state.relicOwned&&!state.relicEquipped?'<button id="equip-relic" class="primary">Equipar reliquia</button>':''}</section><p class="heroes-note">Cada 100 XP aumenta el nivel. En el juego final, nivel, habilidades y equipo tendrán progresión independiente.</p>`);
+    if($('#equip-relic'))$('#equip-relic').onclick=equipRelic;
+  }
+  function equipRelic(){
+    state.relicEquipped=true;save();renderQuest();renderNavigationGuides();
+    openModal('Reliquia equipada',`<div class="intro-mark">♛</div><p class="intro-lead"><strong>Eco del Primer Rey</strong> aumenta el poder de Sir Aldric en 120.</p><div class="effect-status permanent">SIR ALDRIC · PODER +120</div><button id="equipment-continue" class="primary">Continuar</button>`);
+    $('#equipment-continue').onclick=()=>{closeModal();showKingdom();setTimeout(showIntentChoice,500);};
   }
   function navigate(target){
     if(target==='kingdom') return showKingdom(); if(target==='world') return state.firstUpgrade?showWorld():toast('Completa la primera mejora para abrir el mundo.');
     navActive(target);
-    if(target==='heroes'){
-      const companion=state.companion?(state.companion==='lyra'
-        ?`<div class="hero-sheet companion-sheet"><div class="portrait">➶</div><div><span class="tag">VELO · RARA</span><h3>Lyra</h3><p>Exploradora · Tiradora</p><div class="stats"><b>55 <small>Daño de habilidad</small></b><b>1 <small>Uso por combate</small></b></div></div></div>`
-        :`<div class="hero-sheet companion-sheet"><div class="portrait">✧</div><div><span class="tag">ALBA · RARA</span><h3>Maelis</h3><p>Guardiana · Sanadora</p><div class="stats"><b>35 <small>Curación</small></b><b>22 <small>Daño</small></b></div></div></div>`):'';
-      openModal('Héroes',`<div class="hero-roster"><div class="hero-sheet"><div class="portrait">♜</div><div><span class="tag">VALORIA · ÉPICO</span><h3>Sir Aldric</h3><p>Caballero · Guardián</p><div class="stats"><b>820 <small>Poder</small></b><b>640 <small>Defensa</small></b><b>390 <small>Ataque</small></b></div></div></div>${companion}</div><p>${state.companion?'Tu compañero aportará una habilidad exclusiva en la Fortaleza Sepultada.':'Otros héroes responderán al poder de la Brecha.'}</p>`);
-    }
+    if(target==='heroes')heroesModal();
     if(target==='cards') cardsModal();
   }
   function cardsModal(){
@@ -484,7 +518,7 @@ window.ELDORIA_DATA = {
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.9-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.9-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
