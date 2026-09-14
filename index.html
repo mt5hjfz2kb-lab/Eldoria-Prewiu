@@ -61,6 +61,17 @@
 .intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
 
 
+/* v0.9: celebración de victoria */
+.victory-impact-overlay{background:radial-gradient(circle,#4b3615 0,#120f0a 42%,#050709 75%)}
+.victory-impact-overlay.victory-second{background:radial-gradient(circle,#54234c 0,#18101d 45%,#050709 75%)}
+.victory-impact-overlay.victory-third{background:radial-gradient(circle,#17445b 0,#10172a 45%,#040609 75%)}
+.victory-impact-overlay:after{content:"";position:absolute;inset:-30%;background:conic-gradient(from 0deg,transparent,#f6d57822,transparent 12%,transparent 25%,#f6d57818,transparent 38%,transparent 65%,#f6d5781d,transparent 78%);animation:victoryRays 8s linear infinite}
+.victory-impact{z-index:1}.victory-impact>span{font-size:94px;animation:victoryCrown .75s cubic-bezier(.18,.88,.25,1.25);filter:drop-shadow(0 0 30px #ffd76b)}
+.victory-second .victory-impact>span{filter:drop-shadow(0 0 30px #e879da)}.victory-third .victory-impact>span{filter:drop-shadow(0 0 32px #67ddff)}
+.victory-impact strong{font-size:34px}.victory-impact b{background:#080a0bdd}.victory-impact p{font-size:14px;color:#fff}
+@keyframes victoryCrown{0%{transform:translateY(40px) scale(.25);opacity:0}70%{transform:translateY(-5px) scale(1.15)}100%{transform:none;opacity:1}}
+@keyframes victoryRays{to{transform:rotate(360deg)}}
+
 /* v0.9: compañero y tercera expedición */
 .world-scene.third-world{background:linear-gradient(#090d19 0 38%,#17253a 69%,#080a0f);box-shadow:inset 0 0 120px #2686aa44}
 .world-scene.third-world .moon{left:67%;right:auto;top:8%;width:78px;height:78px;background:#9edbe7;box-shadow:0 0 55px #49b9db88}
@@ -354,6 +365,22 @@ window.ELDORIA_DATA = {
   function combatDefeat(){ openModal('La expedición fracasa',`<p>Has aprendido a leer los ataques del Acechador. Defiende cuando prepare su golpe brutal.</p><button id="retry" class="primary">Reintentar combate</button>`); $('#retry').onclick=combatModal; }
   function updateHp(){ $('#enemy-hp').style.width=`${state.enemyHp}%`; $('#player-hp').style.width=`${state.playerHp}%`; }
   function victory(){
+    const third=state.thirdCombat, second=state.secondCombat;
+    victoryImpact({
+      cls:third?'victory-third':second?'victory-second':'victory-first',
+      eyebrow:third?'FORTALEZA CONQUISTADA':second?'VICTORIA DECISIVA':'PRIMERA VICTORIA',
+      icon:third?'♛':second?'◆':'⚔',
+      title:third?'AVATAR DESTRUIDO':second?'GUARDIÁN DERROTADO':'ACECHADOR DERROTADO',
+      result:third?'El trono de la Brecha ha caído.':second?'El Núcleo de Ceniza es tuyo.':'La Brecha ha quedado expuesta.',
+      action:third?'RECLAMAR EL TRONO':second?'TOMAR EL NÚCLEO':'ACERCARSE A LA BRECHA'
+    },resolveVictory);
+  }
+  function victoryImpact(data,done){
+    const impact=el('div',`choice-impact-overlay victory-impact-overlay ${data.cls}`,`<div class="choice-impact victory-impact"><small>${data.eyebrow}</small><span>${data.icon}</span><strong>${data.title}</strong><b>ENEMIGO ELIMINADO</b><p>${data.result}</p><button class="choice-impact-continue victory-continue">${data.action}</button></div>`);
+    document.body.append(impact);
+    $('.victory-continue',impact).onclick=()=>{impact.remove();done();};
+  }
+  function resolveVictory(){
     if(state.thirdCombat){
       state.thirdVictory=true;state.stage=8;save();renderQuest();showThirdReward();return;
     }
