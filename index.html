@@ -60,6 +60,27 @@
 /* v0.7: premisa clara y guía contextual paso a paso */
 .intro-mark{width:74px;height:74px;margin:0 auto 18px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);background:linear-gradient(135deg,#6b5730,#211b11);color:var(--gold);font-size:48px}.intro-lead{text-align:center;font-size:16px!important;line-height:1.55!important}.intro-dialogue{margin-top:20px;padding-top:18px;border-top:1px solid #ffffff18}.intro-dialogue p{font-size:14px}.building.objective{z-index:14;animation:buildingGuide 1.4s infinite}.building.objective em{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:8px;background:var(--gold);color:#17140d;padding:5px 8px;font:bold 9px Arial;font-style:normal;white-space:nowrap}.bottom-nav button.objective{color:#f4dc9a;background:#6a522f;box-shadow:inset 0 0 20px #d6b66f55;animation:navGuide 1.3s infinite}.effectline{display:grid;gap:6px;margin-top:10px;padding:10px;background:#0d1216;border:1px solid #ffffff13;font:11px/1.35 Arial}.effectline span{color:#aaa}.effectline strong{color:#a7d4ad}@keyframes buildingGuide{50%{filter:drop-shadow(0 0 18px #f1cf73);transform:translate(-50%,-55%) scale(1.06)}}@keyframes navGuide{50%{box-shadow:inset 0 0 28px #d6b66f99;filter:brightness(1.2)}}
 
+
+/* v0.8: impacto de elecciones */
+.choice-impact-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle,#2b2112 0,#080b0e 68%);animation:impactFade 1.45s forwards}
+.choice-impact-overlay.quarry-impact{background:radial-gradient(circle,#253947 0,#080b0e 68%)}
+.choice-impact-overlay:before{content:"";position:absolute;width:150vmax;height:150vmax;border:2px solid #e7bd5f55;border-radius:50%;animation:impactRing 1.2s ease-out}
+.choice-impact{position:relative;text-align:center;padding:28px;color:#fff;text-shadow:0 3px 18px #000}
+.choice-impact>span{display:block;font-size:88px;filter:drop-shadow(0 0 25px #e7bd5f);animation:impactIcon .7s cubic-bezier(.2,.9,.2,1.3)}
+.quarry-impact .choice-impact>span{filter:drop-shadow(0 0 25px #7ed5ff)}
+.choice-impact small{display:block;margin-bottom:8px;font:700 10px/1 Arial;letter-spacing:3px;color:#d6b66f}
+.choice-impact strong{display:block;font:700 30px/1.05 Georgia,serif;letter-spacing:1px}
+.choice-impact b{display:inline-block;margin-top:18px;padding:9px 14px;border:1px solid #d6b66f;background:#0008;color:#ffe4a1;font:700 14px Arial}
+.choice-impact p{margin:12px auto 0;max-width:290px;color:#ddd;font:13px/1.45 Arial}
+.route-banner{margin:-2px 0 14px;padding:10px 12px;border:1px solid #c89b4a;background:linear-gradient(90deg,#4a2b10,#17110b);display:flex;justify-content:space-between;gap:12px;align-items:center;font:11px/1.25 Arial}
+.route-banner.quarry-route{border-color:#6ca4c4;background:linear-gradient(90deg,#183444,#10171c)}
+.route-banner b{color:#fff}.route-banner span{color:#d8c99f;text-align:right}
+.kingdom-scene.route-forge .building-forge{filter:drop-shadow(0 0 18px #ff923c)}
+.kingdom-scene.route-quarry .building-quarry{filter:drop-shadow(0 0 18px #73cfff)}
+@keyframes impactIcon{0%{transform:scale(.2) rotate(-18deg);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes impactRing{0%{transform:scale(.05);opacity:1}100%{transform:scale(1);opacity:0}}
+@keyframes impactFade{0%,78%{opacity:1}100%{opacity:0;visibility:hidden}}
+
 </style>
 </head>
 <body>
@@ -226,10 +247,18 @@ window.ELDORIA_DATA = {
     }
     else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')){
       state.loop2Choice=id; state.stage=6; closeModal(); render();
-      const route=id==='forge'?'La Forja equipa a Aldric: tus ataques causarán más daño.':'La Cantera refuerza su escudo: Defender reducirá aún más el daño.';
-      dialogue('Preparativos completados',route+' La segunda expedición ya está disponible.');
+      $('#scene')?.classList.add('route-'+id);
+      choiceImpact(id,()=>dialogue(id==='forge'?'Juramento de Acero':'Bastión de Piedra',id==='forge'
+        ?'<strong>ATAQUE +10 por golpe.</strong><br>La Forja convierte recursos en daño inmediato. La segunda expedición ya está disponible.'
+        :'<strong>Daño recibido al Defender reducido a la mitad.</strong><br>La Cantera convierte recursos en supervivencia. La segunda expedición ya está disponible.'));
     }
     else { closeModal(); toast(`${D.buildings[id].name} mejorado a nivel ${state.buildings[id]}.`); render(); }
+  }
+  function choiceImpact(id,done){
+    const forge=id==='forge';
+    const impact=el('div','choice-impact-overlay '+(forge?'forge-impact':'quarry-impact'),`<div class="choice-impact"><small>DECISIÓN TOMADA</small><span>${forge?'⚒':'▲'}</span><strong>${forge?'JURAMENTO DE ACERO':'BASTIÓN DE PIEDRA'}</strong><b>${forge?'ATAQUE +10':'DAÑO AL DEFENDER ÷2'}</b><p>Tu reino y el próximo combate han cambiado.</p></div>`);
+    document.body.append(impact);
+    setTimeout(()=>{impact.remove();if(done)done();},1450);
   }
   function showWorld(){ view='world'; navActive('world');
     $('#scene').className='scene world-scene scene-enter'; $('#scene').innerHTML=`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
@@ -242,7 +271,7 @@ window.ELDORIA_DATA = {
     dialogue('Sir Aldric',copy,()=>combatModal());
   }
   function combatModal(){
-    openModal(state.secondCombat?'Segunda expedición':'Combate en la Brecha',`<div class="combat"><div class="combatant hero"><span>♜</span><b>Sir Aldric</b><div class="hp"><i id="player-hp"></i></div></div><div class="versus">VS</div><div class="combatant foe"><span>♝</span><b>${state.secondCombat?'Guardián de Ceniza':'Acechador'}</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div id="enemy-intent" class="enemy-intent"></div><p id="combat-log">Mira la intención del enemigo antes de elegir.</p><div class="combat-actions"><button id="attack" class="action attack-action"><b>⚔ Atacar</b><small id="attack-help">Daño estable</small></button><button id="guard" class="action guard-action"><b>⛉ Defender</b><small id="guard-help">Reduce el próximo golpe</small></button><button id="rift-strike" class="action rift-action"><b>✦ Canalizar</b><small>Gran daño · coste vital</small></button></div>`);
+    openModal(state.secondCombat?'Segunda expedición':'Combate en la Brecha',`${state.secondCombat?`<div class="route-banner ${state.loop2Choice==='quarry'?'quarry-route':''}"><b>${state.loop2Choice==='forge'?'⚒ FORJA ACTIVA':'▲ CANTERA ACTIVA'}</b><span>${state.loop2Choice==='forge'?'+10 daño en cada ataque':'Defender recibe la mitad de daño'}</span></div>`:''}<div class="combat"><div class="combatant hero"><span>♜</span><b>Sir Aldric</b><div class="hp"><i id="player-hp"></i></div></div><div class="versus">VS</div><div class="combatant foe"><span>♝</span><b>${state.secondCombat?'Guardián de Ceniza':'Acechador'}</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div id="enemy-intent" class="enemy-intent"></div><p id="combat-log">Mira la intención del enemigo antes de elegir.</p><div class="combat-actions"><button id="attack" class="action attack-action"><b>⚔ Atacar</b><small id="attack-help">Daño estable</small></button><button id="guard" class="action guard-action"><b>⛉ Defender</b><small id="guard-help">Reduce el próximo golpe</small></button><button id="rift-strike" class="action rift-action"><b>✦ Canalizar</b><small>Gran daño · coste vital</small></button></div>`);
     state.enemyHp=state.secondCombat?135:100; state.playerHp=100; combatTurn=0; riftAvailable=true;
     $('#attack').onclick=()=>combatAction('attack'); $('#guard').onclick=()=>combatAction('guard'); $('#rift-strike').onclick=()=>combatAction('rift'); updateHp(); updateIntent();
   }
@@ -251,14 +280,14 @@ window.ELDORIA_DATA = {
     $('#enemy-intent').className=`enemy-intent ${heavy?'heavy':''}`;
     $('#enemy-intent').innerHTML=heavy?'<b>⚠ GOLPE BRUTAL ENTRANTE · 28 daño</b><span>DEFENDER ES LA RESPUESTA SEGURA</span>':'<b>ATAQUE NORMAL · 14 daño</b><span>PUEDES ATACAR O ARRIESGARTE A CANALIZAR</span>';
     guard.classList.toggle('recommended',heavy); attack.classList.toggle('risky',heavy);
-    $('#guard-help').textContent=heavy?'RECOMENDADO · reduce a 8':'Reduce el próximo golpe';
-    $('#attack-help').textContent=heavy?'RIESGO · recibirás 28':'Daño estable';
+    $('#guard-help').textContent=heavy?(state.secondCombat&&state.loop2Choice==='quarry'?'CANTERA · reduce a 4':'RECOMENDADO · reduce a 8'):(state.secondCombat&&state.loop2Choice==='quarry'?'CANTERA · defensa reforzada':'Reduce el próximo golpe');
+    $('#attack-help').textContent=heavy?'RIESGO · recibirás 28':(state.secondCombat&&state.loop2Choice==='forge'?'FORJA · +10 daño':'Daño estable');
   }
   function combatAction(type){
     const heavy=combatTurn%3===2; let incoming=heavy?28:14; let dmg=0; let copy='';
     state.metrics.combatTurns++;
-    if(type==='attack'){ dmg=22+Math.floor(Math.random()*9)+(state.secondCombat&&state.loop2Choice==='forge'?10:0); copy=`Aldric golpea y causa ${dmg}.`; }
-    if(type==='guard'){ state.metrics.guardUses++; if(heavy)state.metrics.heavyGuards++; dmg=7; incoming=Math.floor(incoming*(state.secondCombat&&state.loop2Choice==='quarry'?.15:.3)); state.playerHp=Math.min(100,state.playerHp+5); copy='Aldric alza el escudo, recupera 5 y contraataca.'; }
+    if(type==='attack'){ dmg=22+Math.floor(Math.random()*9)+(state.secondCombat&&state.loop2Choice==='forge'?10:0); copy=`Aldric golpea y causa ${dmg}.${state.secondCombat&&state.loop2Choice==='forge'?' Forja: +10 de daño.':''}`; }
+    if(type==='guard'){ state.metrics.guardUses++; if(heavy)state.metrics.heavyGuards++; dmg=7; incoming=Math.floor(incoming*(state.secondCombat&&state.loop2Choice==='quarry'?.15:.3)); state.playerHp=Math.min(100,state.playerHp+5); copy=state.secondCombat&&state.loop2Choice==='quarry'?'La Cantera absorbe el impacto. Aldric recupera 5 y contraataca.':'Aldric alza el escudo, recupera 5 y contraataca.'; }
     if(type==='rift'){ if(!riftAvailable)return; dmg=48; incoming+=12; riftAvailable=false; $('#rift-strike').disabled=true; copy='La Brecha atraviesa al enemigo, pero quema a Aldric.'; }
     state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); updateHp();
     $('#combat-log').textContent=`${copy} Recibe ${incoming} de daño.`;
@@ -286,7 +315,7 @@ window.ELDORIA_DATA = {
     $('#claim').onclick=()=>{closeModal();showKingdom();toast('Tu decisión ha cambiado el reino.');render();};
   }
   function showKingdom(){
-    view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''}`;
+    view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''}`;
     const gateObjective=state.firstUpgrade&&!state.hasCard?' objective':'';
     $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div><div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>Salir al mundo</b></button><div id="particles" class="particles"></div>`;
     $('#aldric').onclick=talkAldric; $('#gate').onclick=showWorld; render();
