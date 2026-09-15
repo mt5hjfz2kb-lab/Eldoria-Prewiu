@@ -1290,7 +1290,7 @@ window.ELDORIA_DATA = {
     duel.finished=true;const score=duelScore();state.duelStats.games++;
     let result='EMPATE',cls='draw',copy='La Brecha no reconoce un vencedor.';
     if(score.player>score.cpu){result='VICTORIA',cls='win';copy='Tu colección ha dominado el tablero.';state.duelStats.wins++;state.metrics.duelWins=(state.metrics.duelWins||0)+1;}
-    else if(score.player<score.cpu){result='DERROTA',cls='loss';copy='Consumir cartas poderosas puede debilitar tu mano.';state.duelStats.losses++;}
+    else if(score.player<score.cpu){result='DERROTA',cls='loss';copy=state.cardsConsumed.length?'Los Ecos de las cartas consumidas han debilitado tu mano.':'Orin ha leído mejor el tablero. Tu colección conserva todo su potencial.';state.duelStats.losses++;}
     else state.duelStats.draws++;
     save();
     const root=$('#duel-root');root.innerHTML=`<div class="duel-result ${cls}"><small>DUELO TERMINADO</small><span>${cls==='win'?'♛':cls==='loss'?'◇':'⚖'}</span><h3>${result} · ${score.player}—${score.cpu}</h3><p>${copy}</p><button id="duel-again" class="primary">Jugar otra partida</button><button id="return-cards" class="secondary">Volver al Archivo</button></div>`;
