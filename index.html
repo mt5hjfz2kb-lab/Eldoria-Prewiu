@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#11151b" />
-  <title>Eldoria v0.14.2 — El despertar de la Brecha</title>
-  <meta name="eldoria-version" content="0.14.2" />
+  <title>Eldoria v0.15.0 — Las Cenizas de Valoria</title>
+  <meta name="eldoria-version" content="0.15.0" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2311151b' stroke='%23d6b66f' stroke-width='4' d='M32 3 57 15 52 50 32 61 12 50 7 15Z'/%3E%3Cpath fill='%23d6b66f' d='M20 17h25v7H28v6h14v7H28v7h18v7H20Z'/%3E%3C/svg%3E" />
   <style>
 :root{--ink:#ebe5d3;--muted:#aaa797;--panel:#171c22ee;--gold:#d6b66f;--green:#78a96c;--rift:#b335ff;--danger:#bd4d4d;--line:#ffffff19}*{box-sizing:border-box}html,body{margin:0;height:100%;background:#090c0f;color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden}button{font:inherit;color:inherit}.game-shell{height:100%;max-width:1180px;margin:auto;position:relative;background:#11171b;box-shadow:0 0 80px #000}.topbar{height:76px;display:flex;align-items:center;gap:16px;padding:10px 18px;background:linear-gradient(#171d23f7,#10151bf3);border-bottom:1px solid #d6b66f33;position:relative;z-index:20}.brand{width:46px;height:46px;border:1px solid var(--gold);background:linear-gradient(135deg,#3c3321,#17150f);font-size:30px;color:var(--gold);clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);cursor:pointer}.realm-title{min-width:150px}.realm-title strong{display:block;font-size:15px;letter-spacing:.06em}.realm-title span{font:11px Arial,sans-serif;color:var(--muted)}.resources{display:flex;gap:8px;flex:1;justify-content:center}.resource{min-width:108px;background:#080b0dcc;border:1px solid var(--line);padding:7px 10px;display:grid;grid-template-columns:22px 1fr;line-height:1}.resource i{grid-row:1/3;color:var(--gold);font-style:normal}.resource span{font:bold 14px Arial}.resource small{font:9px Arial;color:#80b783;margin-top:4px}.r-food i{color:#c89b57}.r-wood i{color:#8f673e}.r-stone i{color:#a6a9ad}.r-iron i{color:#829ca7}.icon-button{border:1px solid var(--line);border-radius:50%;background:#0a0d10;width:36px;height:36px;color:var(--gold);cursor:pointer}.icon-button.muted{opacity:.35}.scene{position:absolute;inset:76px 0 76px;overflow:hidden;transition:.5s;background:#1b2423}.kingdom-scene{background:linear-gradient(#1c2c35 0 30%,#26392f 58%,#14231c)}.sky-glow{position:absolute;inset:0;background:radial-gradient(circle at 18% 10%,#e3a44b3b,transparent 29%),linear-gradient(115deg,transparent 55%,#6821932c)}.terrain{position:absolute;width:120%;left:-10%;border-radius:50% 50% 0 0}.terrain-back{height:52%;bottom:19%;background:#243c31;clip-path:polygon(0 40%,12% 24%,22% 36%,34% 15%,48% 33%,62% 4%,74% 32%,87% 14%,100% 36%,100% 100%,0 100%)}.terrain-front{height:68%;bottom:-25%;background:radial-gradient(ellipse,#314f3b,#172b22 70%);transform:perspective(400px) rotateX(15deg);border-top:2px solid #7584641f}.rift{position:absolute;z-index:2;filter:drop-shadow(0 0 14px #9f2fff)}.rift i{position:absolute;width:5px;background:linear-gradient(transparent,#f4c5ff,#8d26dd,transparent);transform-origin:center;box-shadow:0 0 14px #cc58ff}.rift i:nth-child(1){height:130px;transform:rotate(11deg);left:24px}.rift i:nth-child(2){height:92px;transform:rotate(-15deg);left:8px;top:29px}.rift i:nth-child(3){height:62px;transform:rotate(24deg);left:40px;top:58px}.rift-distant{right:11%;top:8%;opacity:.78;transform:scale(.75)}.buildings{position:absolute;inset:0;z-index:5}.building{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;text-align:center;cursor:pointer;filter:drop-shadow(0 7px 6px #0009);transition:.2s}.building:hover{transform:translate(-50%,-53%) scale(1.05)}.building-art{display:grid;place-items:center;width:84px;height:74px;background:linear-gradient(150deg,#807158,#413d35);border:2px solid #a59571;border-radius:45% 45% 13% 13%;font-size:42px;color:#1b2020;text-shadow:0 2px #cabd94}.building-keep .building-art{width:120px;height:100px;font-size:65px;background:linear-gradient(150deg,#8a806a,#3a3f3c)}.building strong{display:block;background:#111817e8;border:1px solid #d6b66f44;padding:3px 9px;font-size:12px;margin-top:-4px}.building small{font:9px Arial;color:#bcd1bc;background:#0c1213db;padding:2px 5px}.building .level{position:absolute;right:-6px;top:-4px;border-radius:14px;background:#a67d3b;padding:4px 7px;font:bold 9px Arial;color:white}.character{position:absolute;z-index:9;border:0;background:transparent;bottom:15%;left:56%;cursor:pointer;text-align:center}.character-glow{position:absolute;width:70px;height:24px;bottom:24px;left:50%;transform:translateX(-50%);background:#e0bc6550;border-radius:50%;filter:blur(8px)}.helmet{position:relative;display:block;font-size:58px;color:#d9d2bb;text-shadow:0 5px 8px #000}.character-label{display:block;background:#111a;border:1px solid #d6b66f66;padding:4px 10px;font-size:12px}.gate{position:absolute;right:4%;bottom:8%;z-index:9;display:flex;flex-direction:column;align-items:center;border:1px solid var(--gold);background:#111a;padding:10px 18px;cursor:pointer}.gate span{font-size:30px}.gate b{font-size:11px;letter-spacing:.12em}.gate.locked{filter:grayscale(1);opacity:.55}.quest-panel{position:absolute;z-index:16;top:96px;left:18px;width:265px;background:linear-gradient(90deg,#12181be8,#12181bc7);border-left:3px solid var(--gold);padding:12px 15px;box-shadow:0 8px 25px #0005}.quest-kicker{font:9px Arial;color:var(--gold);letter-spacing:.18em}.quest-panel strong{display:block;margin:4px 0;font-size:16px}.quest-panel p{font:11px Arial;color:#c5c4ba;margin:0 0 8px;line-height:1.35}.quest-progress{height:3px;background:#fff1}.quest-progress span{display:block;height:100%;background:var(--gold);transition:.5s}.bottom-nav{height:76px;position:absolute;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;background:#0d1217f7;border-top:1px solid #d6b66f33}.bottom-nav button{position:relative;width:120px;border:0;border-left:1px solid #fff08;background:transparent;color:#858a89;cursor:pointer}.bottom-nav button:last-child{border-right:1px solid #fff08}.bottom-nav button span{display:block;font-size:24px}.bottom-nav button b{font:10px Arial;letter-spacing:.08em}.bottom-nav button.active{color:var(--gold);background:linear-gradient(#d6b66f18,transparent)}.bottom-nav em{position:absolute;top:8px;right:32px;border-radius:50%;background:#9c35ce;padding:3px 6px;font:bold 9px Arial;color:white}.world-scene{background:linear-gradient(#111621,#1e2630 45%,#131c19)}.moon{position:absolute;width:140px;height:140px;border-radius:50%;background:#e9dbc0;box-shadow:0 0 60px #e4d4b366;left:12%;top:9%}.corruption{position:absolute;inset:35% 0 0;background:radial-gradient(circle at 72% 30%,#7e21a36b,transparent 25%),linear-gradient(150deg,#222a25,#181b20);clip-path:polygon(0 20%,12% 3%,28% 22%,42% 0,55% 25%,71% 6%,88% 25%,100% 7%,100% 100%,0 100%)}.path{position:absolute;width:22%;height:75%;bottom:-20%;left:38%;background:linear-gradient(90deg,transparent,#726958 30%,#7f7663 70%,transparent);transform:perspective(300px) rotateX(30deg)}.rift-near{right:20%;top:12%;transform:scale(1.7)}.rift-near b{position:absolute;top:128px;left:-25px;width:110px;text-align:center;font:9px Arial;letter-spacing:.2em;color:#e2b9f3}.enemy{position:absolute;right:25%;bottom:17%;z-index:5;border:0;background:transparent;text-align:center;cursor:pointer}.enemy span{display:block;font-size:68px;color:#b05ad8;text-shadow:0 0 20px #801cad}.enemy b,.enemy em{display:block;background:#110d16df;padding:4px 10px}.enemy b{font-size:12px}.enemy em{font:9px Arial;color:#d698ef}.player-token{position:absolute;left:41%;bottom:10%;font-size:58px;color:#d8d2bb;text-shadow:0 7px 10px #000}.return{position:absolute;left:20px;bottom:20px;border:1px solid var(--line);background:#111b;padding:10px 18px;cursor:pointer}.overlay{position:fixed;inset:0;z-index:50;background:#020405bb;backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px;animation:fade .2s}.modal{position:relative;width:min(520px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#21272d,#101419);border:1px solid #d6b66f66;box-shadow:0 30px 100px #000;padding:26px}.modal:before{content:'';position:absolute;inset:7px;border:1px solid #ffffff0c;pointer-events:none}.modal h2{text-align:center;font-weight:normal;color:var(--gold);margin:0 30px 22px;letter-spacing:.04em}.modal h3{font-size:24px;margin:5px 0}.modal p{font:14px/1.55 Arial;color:#c8c7bd}.close{position:absolute;right:12px;top:9px;border:0;background:transparent;font-size:28px;color:#8f928f;cursor:pointer}.primary,.secondary{display:block;width:100%;margin-top:20px;padding:13px;border:1px solid #e0c781;background:linear-gradient(#b1904e,#6c5225);font:bold 12px Arial;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.secondary{background:#171d21}.primary:disabled{opacity:.5}.dialogue,.hero-sheet{display:flex;gap:18px;align-items:center}.portrait{min-width:90px;height:105px;display:grid;place-items:center;font-size:64px;color:#ddd3bb;background:radial-gradient(circle,#7c6c4c,#252a28 70%);border:1px solid #a58a4e}.modal-icon{text-align:center;font-size:68px;color:var(--gold)}.statline{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font:13px Arial}.costs{display:flex;justify-content:center;gap:12px;margin-top:18px}.cost{border:1px solid var(--line);padding:7px 10px;font:bold 12px Arial}.cost.ok{color:#9bc491}.cost.bad{color:#d87979}.maxed{text-align:center;color:var(--gold)!important}.combat{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;text-align:center}.combatant span{font-size:60px;display:block}.combatant.foe span{color:#ba58e4}.combatant b{font-size:12px}.versus{color:var(--gold)}.hp{height:8px;background:#080a0c;margin-top:10px;border:1px solid #fff2}.hp i{display:block;height:100%;width:100%;background:#8cb66e;transition:.3s}.foe .hp i{background:#a342af}.danger{background:linear-gradient(#a74e47,#5d2727)}.impact{animation:impact .25s}.reward-card{width:250px;min-height:335px;margin:0 auto;padding:22px;text-align:center;border:2px solid #b95be5;background:radial-gradient(circle at 50% 30%,#672b82,#211326 67%);box-shadow:0 0 25px #aa42d555,inset 0 0 30px #000;border-radius:8px}.reward-card span{display:block;font-size:78px;color:#e1a8fa;text-shadow:0 0 25px #cb50ff;margin:32px 0}.reward-card strong{display:block;font-size:20px;color:#eed7f5}.reward-card small,.reward-card p{font:11px Arial;color:#c7afcd}.rarity,.tag{font:9px Arial;letter-spacing:.2em;color:#dc98fa}.reward-card.small{min-height:280px}.reward-card.small span{margin:20px}.reward-card.spent{filter:grayscale(1);opacity:.55}.empty{text-align:center;padding:50px}.empty span{font-size:70px;color:#555}.stats{display:flex;gap:16px}.stats b{color:var(--gold)}.stats small{display:block;color:var(--muted);font:9px Arial}.toast{position:fixed;z-index:80;left:50%;bottom:95px;transform:translate(-50%,20px);opacity:0;background:#111d;border:1px solid #d6b66f77;padding:11px 18px;font:12px Arial;transition:.3s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.particles{position:absolute;left:50%;top:50%;z-index:40}.particles i{position:absolute;width:6px;height:6px;border-radius:50%;background:#f7d477;animation:burst .8s forwards;transform:rotate(var(--a)) translateX(var(--d))}.particles i:nth-child(2n){background:#77c89a}.particles i:nth-child(3n){background:#be5af0}@keyframes fade{from{opacity:0}}@keyframes impact{50%{transform:scale(.96);filter:brightness(1.8)}}@keyframes burst{from{transform:rotate(var(--a)) translateX(0);opacity:1}to{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
@@ -332,7 +332,7 @@
 }
 
 
-/* v0.14.2 — identidad visual: menos interfaz, más mundo */
+/* v0.15.0 — identidad visual, narrativa y progresión de cartas */
 .version-badge{align-self:center;padding:4px 7px;border:1px solid #d7b45b45;background:#0a0f13a8;color:#d9c58f;font:700 8px Arial;letter-spacing:.12em;white-space:nowrap}
 .kingdom-scene{background:
   radial-gradient(ellipse at 48% 78%,#7b5b2926 0,transparent 20%),
@@ -448,7 +448,7 @@ mix-blend-mode:screen;opacity:.65}
 }
 
 
-/* v0.14.2 — Códice, Duelo de Reliquias y feedback sistémico */
+/* Códice, Duelo de Reliquias y feedback sistémico */
 :root{--common:#8e999f;--uncommon:#5cae84;--rare:#4c91d7;--epic:#a85bd1;--legendary:#e2a94f}
 .version-badge{color:#f1d58a;border-color:#b89a58}
 .screen-feedback{position:fixed;z-index:10020;left:50%;top:23%;transform:translateX(-50%);min-width:190px;padding:10px 20px;text-align:center;border:1px solid #d7b45b;background:#080c10ed;color:#ffe5a0;box-shadow:0 0 30px #d5aa4d55,0 16px 40px #000;font:700 12px Arial;letter-spacing:.08em;pointer-events:none;animation:systemFeedback 1.5s forwards}
@@ -524,13 +524,14 @@ mix-blend-mode:screen;opacity:.65}
   .duel-header{margin-bottom:6px}.duel-layout{display:flex;flex-direction:column;gap:7px}.duel-board{width:min(100%,43dvh);max-height:43dvh;flex:0 0 auto}.duel-hand{width:100%}.duel-hand>div{display:flex;gap:6px;overflow-x:auto;padding:8px 2px 12px;scroll-snap-type:x mandatory}.duel-hand-card{flex:0 0 78px;scroll-snap-align:center}.duel-hand-card .relic-card{width:78px;height:108px}.duel-help{position:sticky;bottom:0;margin:2px 0!important;background:#15101ceF}
   .card-collection{padding-bottom:16px}.duel-callout{position:sticky;top:62px;z-index:2}
 }
+.duel-locked{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;padding:14px;border:1px solid #6d6470;background:linear-gradient(135deg,#171820,#2a2030);color:#bdb6c1;border-radius:12px;margin:10px 0}.duel-locked>span{grid-row:1/3;font-size:28px}.duel-locked small{display:block;color:#9d96a2}.reward-cards{justify-content:center;margin:12px auto}.playtest-survey{display:grid;gap:12px;max-height:52vh;overflow:auto;padding:4px 3px 16px}.playtest-survey fieldset{border:1px solid #4d5355;border-radius:10px;padding:10px;margin:0}.playtest-survey legend{padding:0 5px;color:#e9ddc5;font-weight:700}.survey-options{display:flex;gap:7px;flex-wrap:wrap}.survey-options label{flex:1;min-width:80px}.survey-options input{position:absolute;opacity:0}.survey-options span{display:block;border:1px solid #5f6264;border-radius:8px;padding:9px;text-align:center;background:#171b1d;color:#d8d0c1}.survey-options input:checked+span{border-color:#c9a75c;background:#42361f;color:#fff}.playtest-survey>label{display:grid;gap:6px;font-weight:700;color:#e9ddc5}.playtest-survey textarea{min-height:64px;resize:vertical;background:#111719;color:#fff;border:1px solid #555d60;border-radius:8px;padding:10px;font:inherit}.duel-help.tutorial{border-color:#c9a75c;color:#f5e6bf;box-shadow:0 0 18px #c9a75c22}@media(max-width:680px){.playtest-survey{max-height:58vh}.survey-options{display:grid;grid-template-columns:repeat(3,1fr)}.survey-options label{min-width:0}.reward-cards .relic-card{width:min(38vw,150px)}}
 </style>
 </head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
     <header class="topbar">
       <button id="brand" class="brand" aria-label="Eldoria">E</button>
-      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div><span class="version-badge">v0.14.2</span>
+      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div><span class="version-badge">v0.15.0</span>
       <div id="resources" class="resources"></div>
       <button id="sound-toggle" class="icon-button" aria-label="Activar o desactivar sonido">◉</button>
     </header>
@@ -613,9 +614,9 @@ window.ELDORIA_DATA = {
     resources: { food: 80, wood: 110, stone: 75, iron: 25 },
     buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1, barracks: 1 },
     stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
-    hasCard: false, cardUsed: false, cardDecisionMade: false, duelIntroSeen: false, cardsOwned: [], cardsConsumed: [], cardCooldowns: {}, cardChoices: {}, activeCardEffects: [], troopReserve: 0, cardCombatShield: 0, profile: { name: 'Guardián', avatar: '♜' }, duelStats: { games: 0, wins: 0, losses: 0, draws: 0 }, complete: false, worldSeen: false, riftChoice: null,
+    hasCard: false, cardUsed: false, cardDecisionMade: false, cardTutorialSeen: false, duelIntroSeen: false, duelUnlocked: false, cardsOwned: [], cardsConsumed: [], cardsDiscovered: [], cardCooldowns: {}, cardChoices: {}, activeCardEffects: [], troopReserve: 0, cardCombatShield: 0, profile: { name: 'Guardián', avatar: '♜' }, duelStats: { games: 0, wins: 0, losses: 0, draws: 0 }, complete: false, worldSeen: false, riftChoice: null, playtestAnswers: {},
     loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, relicOwned: false, relicEquipped: false, firstXpAwarded: false, ashFragments: 0, warPlan: null, troopType: null, troopCount: 0, combatMode: null, combatVerdict: null, hookSeen: false, heroXp: { aldric: 0, lyra: 0, maelis: 0 }, continueIntent: null, lastTick: Date.now(),
-    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, troopType: null, combatMode: null, autoSkillUses: 0, troopLosses: 0, hookSeenSeconds: null, riftChoice: null, cardsUsed: 0, cardsKept: 0, indestructibleFound: 0, duelPromptSeen: 0, duelGames: 0, duelWins: 0, completedSeconds: null }
+    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, troopType: null, combatMode: null, autoSkillUses: 0, troopLosses: 0, hookSeenSeconds: null, riftChoice: null, cardDrops: 0, cardsUsed: 0, cardsKept: 0, indestructibleFound: 0, duelPromptSeen: 0, duelGames: 0, duelWins: 0, completedSeconds: null }
   });
   let state = load();
   let view = 'kingdom';
@@ -641,14 +642,14 @@ window.ELDORIA_DATA = {
   function awardXp(id,amount){state.heroXp[id]=(state.heroXp[id]||0)+amount;screenFeedback(`+${amount} XP · ${id==='aldric'?'Sir Aldric':id==='lyra'?'Lyra':'Maelis'}`,'xp');}
 
   function load(){ try {
-    const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v012')||'{}');
+    const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v015')||'{}');
     const merged={...base,...stored,profile:{...base.profile,...(stored.profile||{})},duelStats:{...base.duelStats,...(stored.duelStats||{})},heroXp:{...base.heroXp,...(stored.heroXp||{})},metrics:{...base.metrics,...(stored.metrics||{})}};
-    if(merged.hasCard&&!(merged.cardsOwned||[]).length&&!merged.cardsConsumed.length)merged.cardsOwned=CARDS.map(card=>({id:card.id,indestructible:false}));
-    // Compatibilidad con partidas anteriores: usar una carta ya contaba como tomar la decisión.
-    if(merged.cardUsed)merged.cardDecisionMade=true;
+    merged.cardsDiscovered=merged.cardsDiscovered||[...(merged.cardsOwned||[]).map(c=>c.id),...(merged.cardsConsumed||[])];
+    merged.hasCard=merged.cardsDiscovered.length>0;
+    merged.duelUnlocked=merged.cardsDiscovered.length>=5;
     return merged;
   } catch { return initialState(); } }
-  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v012', JSON.stringify(state)); }
+  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v015', JSON.stringify(state)); }
 
   function init(){
     document.querySelectorAll('[data-i18n]').forEach(n => n.textContent=D.i18n[n.dataset.i18n]);
@@ -669,8 +670,8 @@ window.ELDORIA_DATA = {
     return out;
   }
   function tick(){ if(view==='kingdom'){ const p=production(); Object.entries(p).forEach(([k,v])=>state.resources[k]+=v); renderResources(p); save(); } }
-  function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=(state.activeCardEffects||[]).includes('rift')?' · Pulso activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=!state.hasCard; $('#card-badge').textContent=state.cardsOwned?.length||0; save(); }
-  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardDecisionMade)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
+  function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=(state.activeCardEffects||[]).includes('rift')?' · Pulso activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=false; $('#card-badge').textContent=`${state.cardsDiscovered?.length||0}/5`; save(); }
+  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardTutorialSeen)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
   function renderGate(){
     const gate=$('#gate'); if(!gate)return;
     const troopObjective=state.companion&&!state.troopType&&!state.thirdVictory;
@@ -698,7 +699,7 @@ window.ELDORIA_DATA = {
     $('#buildings').innerHTML='';
     Object.entries(D.buildings).forEach(([id,b])=>{
       const guided=(state.talked&&!state.firstUpgrade&&id==='farm')||
-        (state.cardDecisionMade&&!state.loop2Unlocked&&id==='keep')||
+        (state.hasCard&&!state.loop2Unlocked&&id==='keep')||
         (state.companion&&!state.troopType&&!state.thirdVictory&&id==='barracks')||
         (state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry'));
       const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':id==='barracks'?'RECLUTA TROPAS':'ELIGE UNA RUTA'}</em>`:''}${buildingArt(id)}<span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
@@ -717,7 +718,6 @@ window.ELDORIA_DATA = {
       !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
       !state.firstUpgrade ? ['Alimenta a Valoria','Toca el Granero marcado y mejóralo para producir más comida.'] :
       !state.hasCard ? ['Ecos en el bosque','Pulsa “Salir al mundo”, sigue el sendero y derrota al Acechador.'] :
-      !state.cardDecisionMade ? ['El precio del poder','Abre Cartas y decide: consumir el Pulso para fortalecer Valoria o conservarlo para el Duelo.'] :
       !state.loop2Unlocked ? ['El bastión renace','Toca la Fortaleza marcada y utiliza los recursos obtenidos para mejorarla.'] :
       !state.loop2Choice ? ['Prepara la segunda expedición','Elige: Forja para atacar más fuerte o Cantera para defender mejor.'] :
       ['La Brecha responde','Sal de nuevo al mundo. Tu elección cambiará el siguiente combate.'];
@@ -725,16 +725,16 @@ window.ELDORIA_DATA = {
     const progress=state.complete?100:state.relicEquipped?99:state.thirdVictory?97:state.warPlan?94:state.companion?90:state.secondVictory?86:[0,12,24,40,52,64,75,82][Math.min(state.stage,7)]||0; $('#quest-bar').style.width=`${progress}%`;
   }
     function showIntro(){
-    openModal('Eldoria',`<div class="intro-mark">E</div><p class="intro-lead">Valoria está en ruinas. Una anomalía llamada <strong>La Brecha</strong> corrompe el mundo y cada decisión sobre su poder tendrá consecuencias.</p><div class="dialogue intro-dialogue"><div class="portrait">♜</div><p><strong>Sir Aldric</strong><br>“Reconstruye el reino, cruza las murallas y descubre si la Brecha debe ser contenida… o utilizada.”</p></div><button id="begin" class="primary">Comenzar la reconstrucción</button>`);
+    openModal('Capítulo I · Las Cenizas de Valoria',`<div class="intro-mark">E</div><p class="intro-lead"><strong>Eldoria</strong> fue protegida por reinos faro. Valoria custodiaba el camino oriental hasta que, hace tres noches, el cielo se abrió.</p><div class="dialogue intro-dialogue"><div class="portrait">♜</div><p><strong>Sir Aldric · último guardián juramentado</strong><br>“La corona desapareció y la Brecha enfermó la tierra. Tú puedes despertar lo que queda del reino. Empieza por alimentar a los supervivientes.”</p></div><button id="begin" class="primary">Entrar en Valoria</button>`);
     modal.querySelector('.close').remove(); $('#begin').onclick=()=>{state.introSeen=true;state.talked=true;state.stage=1;closeModal();render();toast('Objetivo: mejora el Granero marcado.');};
   }
-  function talkAldric(){ dialogue('Sir Aldric',state.firstUpgrade?'La puerta está abierta. La Brecha nos espera más allá de las murallas.':'Sin más alimento, Valoria no sobrevivirá. Mejora el Granero marcado para asegurar nuestras reservas.'); }
+  function talkAldric(){ dialogue('Sir Aldric',state.firstUpgrade?'La puerta está abierta. Afuera, los árboles tienen vetas de cristal desde que apareció la Brecha.':'Yo mantuve esta puerta cuando la corona huyó. Pero un juramento no alimenta a nadie: mejora el Granero marcado.'); }
   function buildingModal(id){
     if(id==='barracks')return barracksModal();
     const b=D.buildings[id], lvl=state.buildings[id], next=b.levels[lvl];
     let body=`<div class="modal-icon">${b.icon}</div><p>${buildingCopy(id)}</p><div class="statline"><span>Nivel actual</span><b>${lvl} / ${b.max}</b></div>${buildingEffect(id,lvl)}`;
     if(state.talked&&!state.firstUpgrade&&id!=='farm'){ body+=`<p class="maxed">Objetivo actual: mejora primero el Granero marcado para alimentar a Valoria.</p>`; }
-    else if(id==='keep'&&!state.cardDecisionMade){ body+=`<p class="maxed">Antes debes decidir si consumes o conservas la carta de la Brecha.</p>`; }
+    else if(id==='keep'&&!state.hasCard){ body+=`<p class="maxed">La piedra no responde. Necesitas recuperar primero un vestigio de la Brecha.</p>`; }
     else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')&&lvl>=2){
       body+=`<p class="route-ready">Este edificio ya estaba mejorado. Puedes convertirlo en la preparación oficial de la expedición sin volver a pagar.</p><button id="choose-existing-route" class="primary">Elegir ${id==='forge'?'Forja':'Cantera'} como ruta</button>`;
     }
@@ -750,7 +750,7 @@ window.ELDORIA_DATA = {
     if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v)){ toast('Faltan recursos para esta mejora.'); return; }
     resourceFeedback(cost,-1); Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v); state.buildings[id]++; burst(); buildingImpact(id);
     if(id!=='keep'&&!state.firstUpgrade){ state.firstUpgrade=true; state.stage=2; state.metrics.firstUpgradeSeconds=elapsed(); closeModal(); render(); dialogue('Sir Aldric','Eso bastará por ahora. La puerta está abierta. Ven conmigo: debes ver lo que está devorando nuestras tierras.'); }
-    else if(id==='keep'&&state.cardDecisionMade&&!state.loop2Unlocked){
+    else if(id==='keep'&&state.hasCard&&!state.loop2Unlocked){
       state.loop2Unlocked=true; state.stage=5; closeModal(); render();
       dialogue('Sir Aldric','La Fortaleza resiste, pero la Brecha ha respondido. Elige cómo preparar a Valoria: mejora la Forja para causar más daño o la Cantera para resistir mejor.');
     }
@@ -977,12 +977,19 @@ window.ELDORIA_DATA = {
     $('#combat-fit-no').onclick=()=>recordCombatVerdict('no');
   }
   function recordCombatVerdict(value){state.combatVerdict=value;save();showThirdReward();}
+  function showCardAcquisition(ids,source,done){
+    const gained=grantCards(ids);save();
+    const cards=gained.map(owned=>cardFace(cardSpec(owned.id),owned,true)).join('');
+    const anomalies=gained.filter(c=>c.indestructible).map(c=>cardSpec(c.id).name);
+    openModal('Reliquias recuperadas',`<div class="reward-reveal-stage"><small>${safeText(source)} · COLECCIÓN ${state.cardsDiscovered.length}/5</small><div class="card-collection reward-cards">${cards}</div><p>Quedan guardadas en el Archivo. Puedes <strong>usarlas</strong> por su efecto o <strong>conservarlas</strong> para el Duelo; no tienes que decidir ahora.</p></div>${anomalies.length?`<div class="indestructible-reveal"><small>ANOMALÍA EXCEPCIONAL</small><strong>INDESTRUCTIBLE</strong><p>${safeText(anomalies.join(', '))} no se consumirá al usarla: entrará en cooldown.</p></div>`:''}<button id="cards-acquired" class="primary">Guardar en el Archivo</button>`);
+    $('#cards-acquired').onclick=()=>{closeModal();render();if(done)done();};
+  }
   function showSecondReward(){
     openModal('Núcleo de Ceniza',`<p class="intro-lead">El Guardián cae, pero su corazón continúa latiendo.</p><div class="second-reward"><span>◆</span><strong>NÚCLEO DE CENIZA</strong><b>+120 piedra · +80 hierro · +3 fragmentos</b><small>Dos voces responden desde el norte. Sus fragmentos solo bastarán para una inversión de campaña.</small></div><button id="claim-second" class="primary">Recoger y regresar a Valoria</button>`);
     $('#claim-second').onclick=()=>{
       if(!state.secondRewardClaimed){resourceFeedback({stone:120,iron:80},1);state.resources.stone+=120;state.resources.iron+=80;state.ashFragments=3;state.secondRewardClaimed=true;save();}
       closeModal();showKingdom();burst();toast('El Núcleo de Ceniza ha llegado a Valoria.');
-      setTimeout(showCompanionChoice,650);
+      setTimeout(()=>showCardAcquisition(['hammer','banner'],'BOTÍN DEL GUARDIÁN',()=>setTimeout(showCompanionChoice,350)),500);
     };
   }
   function showFutureStep(){
@@ -1044,7 +1051,8 @@ window.ELDORIA_DATA = {
     openModal('Eco del Primer Rey',`<p class="intro-lead">El Avatar se deshace. Bajo su trono aparece una memoria que pronuncia el nombre de Aldric.</p><div class="second-reward"><span>♛</span><strong>ECO DEL PRIMER REY</strong><b>RELIQUIA LEGENDARIA · +150 hierro</b><small>La reconstrucción de Valoria solo era el comienzo.</small></div><button id="claim-third" class="primary">Reclamar reliquia y regresar</button>`);
     $('#claim-third').onclick=()=>{
       if(!state.thirdRewardClaimed){resourceFeedback({iron:150},1);state.resources.iron+=150;state.thirdRewardClaimed=true;state.relicOwned=true;save();}
-      closeModal();showKingdom();burst();toast('Nueva reliquia: abre Héroes para equiparla.');
+      closeModal();showKingdom();burst();
+      setTimeout(()=>showCardAcquisition(['rations','crown'],'TESORO DEL TRONO',()=>{showKingdom();toast('Nueva reliquia: abre Héroes para equiparla.');if(state.duelUnlocked&&!state.duelIntroSeen)setTimeout(showDuelUnlock,550);}),450);
     };
   }
   function showContinuationHook(){
@@ -1059,21 +1067,38 @@ window.ELDORIA_DATA = {
     $('#intent-no').onclick=()=>finishSlice('no');
   }
   function finishSlice(choice){
-    state.continueIntent=choice;state.complete=true;state.metrics.completedSeconds=elapsed();save();renderQuest();
-    const label=choice==='yes'?'Sí, continuaría ahora':choice==='maybe'?'Quizá continuaría':'No continuaría';
-    openModal('Vertical slice completado',`<div class="intro-mark">✓</div><p class="intro-lead">Has completado las tres expediciones disponibles.</p><p>Tu respuesta: <strong>${label}</strong>.</p><p><strong>Nivel máximo de esta prueba: 3.</strong><br>No necesitas seguir mejorando.</p><button id="finish-report" class="primary">Ver y copiar resumen</button>`);
-    $('#finish-report').onclick=showPlaytestSummary;
+    state.continueIntent=choice;save();showPlaytestSurvey();
+  }
+  function showPlaytestSurvey(){
+    const options=(name,labels)=>`<div class="survey-options">${labels.map(([value,label])=>`<label><input type="radio" name="${name}" value="${value}"><span>${label}</span></label>`).join('')}</div>`;
+    openModal('Informe del Capítulo I',`<p class="privacy-note">Último paso · las respuestas solo se guardan en este dispositivo y aparecerán en el resumen que puedes copiar.</p><div class="playtest-survey">
+      <fieldset><legend>¿Entendiste qué hacer sin ayuda?</legend>${options('understood',[['yes','Sí'],['partly','En parte'],['no','No']])}</fieldset>
+      <fieldset><legend>¿Preferiste el combate semiautomático?</legend>${options('semi',[['yes','Sí'],['maybe','Dudas'],['no','No']])}</fieldset>
+      <fieldset><legend>¿Te interesaron las cartas?</legend>${options('cards',[['yes','Sí'],['some','Algo'],['no','No']])}</fieldset>
+      <fieldset><legend>¿Te costó decidir entre usar o conservar?</legend>${options('decision',[['yes','Sí'],['some','Un poco'],['no','No']])}</fieldset>
+      <fieldset><legend>¿Te apeteció probar el Duelo de Reliquias?</legend>${options('duel',[['yes','Sí'],['maybe','Quizá'],['no','No']])}</fieldset>
+      <fieldset><legend>¿La Brecha te generó curiosidad?</legend>${options('breach',[['yes','Sí'],['some','Algo'],['no','No']])}</fieldset>
+      <label>¿Qué parte te gustó más?<textarea id="survey-best" maxlength="300" placeholder="Respuesta breve"></textarea></label>
+      <label>¿Qué parte fue confusa o mejorable?<textarea id="survey-confusing" maxlength="300" placeholder="Respuesta breve"></textarea></label>
+      <label>¿Qué te hizo querer continuar o dejarlo?<textarea id="survey-why" maxlength="300" placeholder="Respuesta breve"></textarea></label>
+    </div><button id="save-survey" class="primary">Guardar respuestas y ver resumen</button><button id="skip-survey" class="text-button">Omitir preguntas y ver resumen</button>`);
+    $('#save-survey').onclick=()=>completeSurvey(false);$('#skip-survey').onclick=()=>completeSurvey(true);
+  }
+  function completeSurvey(skipped){
+    const pick=name=>document.querySelector(`input[name="${name}"]:checked`)?.value||'—';
+    state.playtestAnswers=skipped?{skipped:true}:{understood:pick('understood'),semi:pick('semi'),cards:pick('cards'),decision:pick('decision'),duel:pick('duel'),breach:pick('breach'),best:$('#survey-best').value.trim(),confusing:$('#survey-confusing').value.trim(),why:$('#survey-why').value.trim()};
+    state.complete=true;state.metrics.completedSeconds=elapsed();save();renderQuest();showPlaytestSummary();
   }
   function claimReward(choice){
     state.riftChoice=choice;state.metrics.riftChoice=choice;state.hasCard=true;state.stage=3;
     const reward=choice==='exploit'?{food:180,wood:180,stone:140,iron:55}:{food:90,wood:100,stone:80,iron:30};
     resourceFeedback(reward,1);Object.entries(reward).forEach(([key,value])=>state.resources[key]+=value);
-    const indestructible=grantStarterCards(),exploit=choice==='exploit';
+    const owned=grantCard('rift'),exploit=choice==='exploit';
     save();
-    const rare=cardSpec('rift'),owned=ownedCard('rift');
-    const rareMoment=indestructible?`<div class="indestructible-reveal"><small>ANOMALÍA IMPOSIBLE</small><strong>INDESTRUCTIBLE</strong><p>${cardSpec(indestructible.id).name} sobrevivirá a cada uso y entrará en cooldown.</p></div>`:'';
-    openModal('El Códice responde',`<div class="reward-reveal-stage"><small>PRIMER CÓDICE · CINCO RELIQUIAS</small>${cardFace(rare,owned)}<p>${exploit?'<strong>+180 comida · +180 madera · +140 piedra · +55 hierro.</strong><br>La Brecha entrega poder inmediato, pero cada carta consumida debilitará tu mano de Duelo.':'<strong>+90 comida · +100 madera · +80 piedra · +30 hierro · producción +50%.</strong><br>El Sello estabiliza el códice. Ahora debes decidir qué poder gastar y cuál conservar.'}</p></div>${rareMoment}<button id="claim" class="primary">Guardar códice y regresar</button>`);
-    $('#claim').onclick=()=>{closeModal();showKingdom();burst();toast('Cinco cartas añadidas al Archivo.');render();};
+    const rare=cardSpec('rift');
+    const rareMoment=owned.indestructible?`<div class="indestructible-reveal"><small>ANOMALÍA EXCEPCIONAL</small><strong>INDESTRUCTIBLE</strong><p>Esta cualidad surgió al obtenerla. Podrás usarla sin perderla; después entrará en cooldown.</p></div>`:'';
+    openModal('Primera carta recuperada',`<div class="reward-reveal-stage"><small>MISIÓN COMPLETADA · COLECCIÓN 1/5</small>${cardFace(rare,owned)}<p>${exploit?'<strong>+180 comida · +180 madera · +140 piedra · +55 hierro.</strong>':'<strong>+90 comida · +100 madera · +80 piedra · +30 hierro · producción +50%.</strong>'}<br><br><strong>USAR</strong> activa su poder y la consume. <strong>CONSERVAR</strong> mantiene sus valores para el futuro Duelo. No tienes que decidir ahora.</p></div>${rareMoment}<button id="claim" class="primary">Guardar en el Archivo</button>`);
+    $('#claim').onclick=()=>{closeModal();showKingdom();burst();toast('Primera carta obtenida · Archivo 1/5.');render();};
   }
   function showKingdom(){
     view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene scene-enter ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''} ${state.warPlan?`plan-${state.warPlan}`:''}`;
@@ -1116,16 +1141,16 @@ window.ELDORIA_DATA = {
     if(target==='heroes')heroesModal();
     if(target==='cards') cardsModal();
   }
-  function starterCollection(){
-    return CARDS.map(card=>({id:card.id,indestructible:Math.random()<CARD_CONFIG.indestructibleChance}));
+  function grantCard(id){
+    if((state.cardsDiscovered||[]).includes(id))return ownedCard(id);
+    const card={id,indestructible:Math.random()<CARD_CONFIG.indestructibleChance};
+    state.cardsOwned.push(card);state.cardsDiscovered.push(id);state.hasCard=true;
+    state.metrics.cardDrops=(state.metrics.cardDrops||0)+1;
+    if(card.indestructible)state.metrics.indestructibleFound=(state.metrics.indestructibleFound||0)+1;
+    if(state.cardsDiscovered.length>=5)state.duelUnlocked=true;
+    return card;
   }
-  function grantStarterCards(){
-    if((state.cardsOwned||[]).length||state.cardsConsumed.length)return null;
-    state.cardsOwned=starterCollection();
-    const rare=state.cardsOwned.find(card=>card.indestructible);
-    if(rare){state.metrics.indestructibleFound=(state.metrics.indestructibleFound||0)+1;}
-    return rare;
-  }
+  function grantCards(ids){return ids.map(grantCard).filter(Boolean);}
   function cardSpec(id){return CARDS.find(card=>card.id===id);}
   function ownedCard(id){return (state.cardsOwned||[]).find(card=>card.id===id);}
   function cooldownLeft(id){return Math.max(0,Math.ceil((((state.cardCooldowns||{})[id]||0)-Date.now())/1000));}
@@ -1143,18 +1168,21 @@ window.ELDORIA_DATA = {
   function cardsModal(){
     const cards=(state.cardsOwned||[]).map(owned=>({owned,spec:cardSpec(owned.id)})).filter(x=>x.spec);
     if(!state.hasCard||!cards.length&&!state.cardsConsumed.length){
-      openModal('Archivo de Reliquias','<div class="empty"><span>◇</span><p>Las primeras cartas aguardan más allá de La Brecha.</p></div>');return;
+      openModal('Archivo de Reliquias','<div class="empty"><span>◇</span><p><strong>COLECCIÓN 0 / 5</strong><br>Las reliquias no se entregan: se recuperan de enemigos, misiones y lugares tocados por La Brecha.</p></div>');return;
     }
+    if(!state.cardTutorialSeen){state.cardTutorialSeen=true;save();renderNavigationGuides();}
     const featured=!state.cardDecisionMade&&ownedCard('rift')
       ?`<section class="card-decision"><div><small>DECISIÓN DE COLECCIÓN</small><h3>¿Poder ahora o valor futuro?</h3><p>Consumir el Pulso activa +50% de producción durante esta partida, pero deja un Eco vacío en tu mano de Duelo.</p></div>${cardFace(cardSpec('rift'),ownedCard('rift'),true)}<div class="card-decision-actions"><button id="use-card" class="primary">Consumir y activar</button><button id="keep-card" class="secondary">Conservar para Duelo</button></div></section>`:'';
     const grid=cards.map(({owned,spec})=>`<button class="card-tile" data-card-id="${spec.id}" aria-label="Ver ${spec.name}">${cardFace(spec,owned,true)}</button>`).join('');
     const consumed=(state.cardsConsumed||[]).length;
     const rarityLedger='<div class="rarity-ledger"><span class="common">COMÚN</span><span class="uncommon">POCO COMÚN</span><span class="rare">RARA</span><span class="epic">ÉPICA</span><span class="legendary">LEGENDARIA ♛</span></div>';
-    openModal('Archivo de Reliquias',`<div class="collection-head"><div><b>${cards.length} / 5</b><small>cartas conservadas</small></div><div><b>${consumed}</b><small>consumidas</small></div><div><b>${state.duelStats.wins}</b><small>victorias</small></div></div><button id="open-duel" class="primary duel-entry duel-callout"><span>⚔</span><b>DUELO DE RELIQUIAS</b><small>${state.duelStats.games?'Jugar otra partida':'NUEVA ACTIVIDAD · Partida de 2–3 minutos'}</small></button>${rarityLedger}<p class="card-quality-note"><strong>INDESTRUCTIBLE no es una rareza:</strong> es una cualidad excepcional que puede aparecer al azar en cualquier carta, desde Común hasta Legendaria.</p>${featured}<div class="card-collection">${grid}</div><p class="duel-note">Una carta consumida se sustituye por un Eco vacío de valores 1/1/1/1.</p>`);
+    const progress=state.cardsDiscovered.length;
+    const duelEntry=state.duelUnlocked?`<button id="open-duel" class="primary duel-entry duel-callout"><span>⚔</span><b>DUELO DE RELIQUIAS</b><small>${state.duelStats.games?'Jugar otra partida':'DISPONIBLE · Maestre Orin aguarda'}</small></button>`:`<div class="duel-entry duel-locked"><span>◇</span><b>DUELO DE RELIQUIAS · BLOQUEADO</b><small>Recupera ${5-progress} ${5-progress===1?'reliquia más':'reliquias más'} · colección ${progress}/5</small></div>`;
+    openModal('Archivo de Reliquias',`<div class="collection-head"><div><b>${progress} / 5</b><small>descubiertas</small></div><div><b>${cards.length}</b><small>conservadas</small></div><div><b>${consumed}</b><small>consumidas</small></div></div>${duelEntry}${rarityLedger}<p class="card-quality-note"><strong>Usar:</strong> activa su poder; salvo que sea Indestructible, se consume. <strong>Conservar:</strong> mantiene sus valores laterales para el futuro Duelo.</p>${featured}<div class="card-collection">${grid}</div><p class="duel-note">No tienes que decidir ahora. Una carta consumida deja un Eco 1/1/1/1 en tu mano.</p>`);
     if($('#use-card'))$('#use-card').onclick=()=>useCard('rift');
     if($('#keep-card'))$('#keep-card').onclick=()=>keepCard('rift');
     document.querySelectorAll('.card-tile').forEach(button=>button.onclick=()=>cardDetail(button.dataset.cardId));
-    $('#open-duel').onclick=openDuel;
+    if($('#open-duel'))$('#open-duel').onclick=openDuel;
   }
   function cardDetail(id){
     const spec=cardSpec(id),owned=ownedCard(id);if(!spec||!owned)return cardsModal();
@@ -1166,10 +1194,10 @@ window.ELDORIA_DATA = {
     if(!ownedCard(id))return;
     if(!state.cardChoices[id]){state.metrics.cardsKept=(state.metrics.cardsKept||0)+1;}
     state.cardChoices[id]='kept';
-    if(id==='rift'){state.cardDecisionMade=true;state.stage=Math.max(state.stage,4);}
+    if(id==='rift')state.cardDecisionMade=true;
     save();
     openModal('Carta conservada',`<div class="conserve-impact">${cardFace(cardSpec(id),ownedCard(id),true)}<h3>PERMANECE EN TU COLECCIÓN</h3><p>Podrás usarla más adelante, pero conservarla mantiene su fuerza en el Duelo de Reliquias.</p></div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
-    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();render();toast('Carta conservada para el Duelo.');if(id==='rift'&&!state.duelIntroSeen)setTimeout(showDuelUnlock,350);};
+    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();render();toast('Carta conservada para el futuro Duelo.');};
   }
   function useCard(id='rift'){
     const spec=cardSpec(id),owned=ownedCard(id);if(!spec||!owned)return;
@@ -1188,7 +1216,7 @@ window.ELDORIA_DATA = {
     if(spec.effect==='shield'){state.cardCombatShield=(state.cardCombatShield||0)+40;copy='El próximo combate comenzará con 40 puntos de escudo real.';}
     if(gains){resourceFeedback(gains,1);Object.entries(gains).forEach(([r,v])=>state.resources[r]+=v);}
     state.cardChoices[id]='used';state.cardUsed=true;state.metrics.cardsUsed=(state.metrics.cardsUsed||0)+1;
-    if(id==='rift'){state.cardDecisionMade=true;state.stage=Math.max(state.stage,4);}
+    if(id==='rift')state.cardDecisionMade=true;
     if(owned.indestructible){
       state.cardCooldowns[id]=Date.now()+CARD_CONFIG.indestructibleCooldownSeconds*1000;
     }else{
@@ -1197,11 +1225,12 @@ window.ELDORIA_DATA = {
     }
     save();
     openModal(owned.indestructible?'Poder Indestructible':'Carta consumida',`<div class="card-use-impact ${owned.indestructible?'indestructible-use':''}">${cardFace(spec,owned,true)}<small>${owned.indestructible?'LA CARTA SOBREVIVE':'EFECTO ACTIVADO'}</small><h3>${spec.effectLabel}</h3><p>${copy}</p>${owned.indestructible?`<div class="cooldown-orbit">COOLDOWN · ${CARD_CONFIG.indestructibleCooldownSeconds} s</div>`:''}</div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
-    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();render();toast(owned.indestructible?'La carta permanece en la colección.':'La carta ha dejado un Eco vacío.');if(id==='rift'&&!state.duelIntroSeen)setTimeout(showDuelUnlock,350);};
+    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();render();toast(owned.indestructible?'La carta permanece en la colección.':'La carta ha dejado un Eco vacío.');};
   }
   function showDuelUnlock(){
+    if(!state.duelUnlocked)return;
     state.duelIntroSeen=true;state.metrics.duelPromptSeen=(state.metrics.duelPromptSeen||0)+1;save();
-    openModal('Nueva actividad desbloqueada',`<div class="duel-unlock"><span>⚔</span><small>EL ARCHIVO HA DESPERTADO</small><h3>DUELO DE RELIQUIAS</h3><p>Usa tus cinco cartas en un tablero 3×3. Sus valores laterales capturan cartas rivales. Las cartas que consumas serán más débiles en el Duelo.</p></div><button id="duel-now" class="primary">Jugar el primer Duelo</button><button id="duel-later" class="secondary">Seguir con el reino</button>`);
+    openModal('El custodio del Archivo',`<div class="duel-unlock"><span>⚔</span><small>COLECCIÓN 5 / 5 · EL SELLO RESPONDE</small><h3>DUELO DE RELIQUIAS</h3><p><strong>Maestre Orin:</strong> “Cinco vestigios forman una mano. Demuéstrame que sabes conservar poder, no solo gastarlo.”</p><p>Valores enfrentados capturan reliquias en un tablero 3×3. El primer duelo te enseñará jugando.</p></div><button id="duel-now" class="primary">Aceptar el desafío de Orin</button><button id="duel-later" class="secondary">Volver más tarde</button>`);
     $('#duel-now').onclick=openDuel;$('#duel-later').onclick=()=>{closeModal();showKingdom();};
   }
   function playerDuelDeck(){
@@ -1210,9 +1239,10 @@ window.ELDORIA_DATA = {
     return deck;
   }
   function openDuel(){
+    if(!state.duelUnlocked)return toast(`El Duelo se abre con 5 reliquias descubiertas (${state.cardsDiscovered.length}/5).`);
     state.metrics.duelGames=(state.metrics.duelGames||0)+1;save();
-    duel={board:Array(9).fill(null),playerHand:playerDuelDeck().map(card=>({...card,played:false})),cpuHand:CARDS.slice().reverse().map(card=>({...card,instance:'cpu-'+card.id,played:false})),selected:null,turn:'player',finished:false};
-    openModal('Duelo de Reliquias',`<div id="duel-root"></div>`);
+    duel={board:Array(9).fill(null),playerHand:playerDuelDeck().map(card=>({...card,played:false})),cpuHand:CARDS.slice().reverse().map(card=>({...card,instance:'cpu-'+card.id,played:false})),selected:null,turn:'player',finished:false,tutorial:state.duelStats.games===0,tutorialStep:0};
+    openModal('Duelo de Reliquias · Maestre Orin',`<div id="duel-root"></div>`);
     renderDuel();
   }
   function effectiveSide(piece,side){return piece.card.sides[side]+(piece.bonus||0);}
@@ -1232,8 +1262,9 @@ window.ELDORIA_DATA = {
   }
   function playerPlace(index){
     if(duel.finished||duel.turn!=='player'||duel.selected===null||duel.board[index])return;
+    if(duel.tutorial&&duel.tutorialStep===1&&index!==4)return toast('Primer paso: coloca la reliquia en el centro resonante.');
     const card=duel.playerHand[duel.selected];if(!card||card.played)return;
-    placeDuelCard(index,card,'player');duel.selected=null;duel.turn='cpu';renderDuel();
+    placeDuelCard(index,card,'player');duel.selected=null;duel.turn='cpu';if(duel.tutorial)duel.tutorialStep=2;renderDuel();
     if(duel.board.every(Boolean))return finishDuel();
     setTimeout(cpuTurn,420);
   }
@@ -1250,8 +1281,9 @@ window.ELDORIA_DATA = {
     const root=$('#duel-root');if(!root)return;const score=duelScore();
     const board=duel.board.map((piece,index)=>`<button class="duel-cell ${index===4?'resonance':''} ${piece?piece.owner:''} ${duel.lastPlaced===index?'just-played':''} ${(duel.lastCaptured||[]).includes(index)?'captured':''}" data-cell="${index}" ${piece?'disabled':''}>${piece?cardFace(piece.card,piece.card.owned,true):index===4?'<span class="rift-sigil">✦<small>+1</small></span>':''}</button>`).join('');
     const hand=duel.playerHand.map((card,index)=>card.played?'':`<button class="duel-hand-card ${duel.selected===index?'selected':''}" data-hand="${index}">${cardFace(card,card.owned,true)}</button>`).join('');
-    root.innerHTML=`<div class="duel-header"><div><small>TÚ</small><b>${score.player}</b></div><p><strong>RESONANCIA DE LA BRECHA</strong><br>La carta jugada en el centro recibe +1 en sus cuatro lados.</p><div><small>RIVAL</small><b>${score.cpu}</b></div></div><div class="duel-layout"><div class="duel-board">${board}</div><aside class="duel-hand"><small>MANO · ELIGE CARTA</small><div>${hand}</div></aside></div><p class="duel-help">${(duel.lastCaptured||[]).length?'¡La Brecha cambia de dueño una reliquia!':duel.turn==='cpu'?'El rival invoca una reliquia…':duel.selected===null?'Selecciona una carta y colócala en una casilla vacía.':'Ahora elige una casilla del tablero.'}</p>`;
-    if(duel.turn==='player')root.querySelectorAll('.duel-hand-card').forEach(button=>button.onclick=()=>{duel.selected=Number(button.dataset.hand);renderDuel();});
+    const help=duel.tutorial&&duel.tutorialStep===0?'ORIN · Elige una reliquia. Los cuatro números son su fuerza en cada dirección.':duel.tutorial&&duel.tutorialStep===1?'ORIN · Colócala en el centro: la Resonancia suma +1 a todos sus lados.':duel.tutorial&&duel.tutorialStep===2?'ORIN · Un valor mayor captura la carta vecina. A partir de ahora decide tú.':(duel.lastCaptured||[]).length?'¡La Brecha cambia de dueño una reliquia!':duel.turn==='cpu'?'Orin invoca una reliquia…':duel.selected===null?'Selecciona una carta y colócala en una casilla vacía.':'Ahora elige una casilla del tablero.';
+    root.innerHTML=`<div class="duel-header"><div><small>TÚ</small><b>${score.player}</b></div><p><strong>RESONANCIA DE LA BRECHA</strong><br>La carta jugada en el centro recibe +1 en sus cuatro lados.</p><div><small>ORIN</small><b>${score.cpu}</b></div></div><div class="duel-layout"><div class="duel-board">${board}</div><aside class="duel-hand"><small>MANO · ELIGE CARTA</small><div>${hand}</div></aside></div><p class="duel-help ${duel.tutorial?'tutorial':''}">${help}</p>`;
+    if(duel.turn==='player')root.querySelectorAll('.duel-hand-card').forEach(button=>button.onclick=()=>{duel.selected=Number(button.dataset.hand);if(duel.tutorial&&duel.tutorialStep===0)duel.tutorialStep=1;else if(duel.tutorial&&duel.tutorialStep===2)duel.tutorialStep=3;renderDuel();});
     root.querySelectorAll('.duel-cell:not(:disabled)').forEach(button=>button.onclick=()=>playerPlace(Number(button.dataset.cell)));
   }
   function finishDuel(){
@@ -1314,7 +1346,7 @@ window.ELDORIA_DATA = {
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.14.2 | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla semiautomática':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nCartas conservadas: ${(state.cardsOwned||[]).length} / 5\nCartas consumidas: ${(state.cardsConsumed||[]).length}\nUsos de cartas: ${m.cardsUsed||0}\nDecisiones de conservación: ${m.cardsKept||0}\nIndestructibles obtenidas: ${m.indestructibleFound||0}\nAviso de Duelo visto: ${m.duelPromptSeen?'Sí':'No'}\nDuelos jugados: ${state.duelStats.games||0} · Victorias: ${state.duelStats.wins||0}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics,a=state.playtestAnswers||{}; return `ELDORIA PLAYTEST v0.15.0 | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla semiautomática':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nCartas descubiertas: ${(state.cardsDiscovered||[]).length} / 5\nCartas conservadas: ${(state.cardsOwned||[]).length}\nCartas consumidas: ${(state.cardsConsumed||[]).length}\nCartas obtenidas durante el recorrido: ${m.cardDrops||0}\nUsos de cartas: ${m.cardsUsed||0}\nDecisiones de conservación: ${m.cardsKept||0}\nIndestructibles obtenidas: ${m.indestructibleFound||0}\nAviso de Duelo visto: ${m.duelPromptSeen?'Sí':'No'}\nDuelos jugados: ${state.duelStats.games||0} · Victorias: ${state.duelStats.wins||0}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nEntendió sin ayuda: ${a.understood||'—'}\nPrefirió combate semiautomático: ${a.semi||'—'}\nInterés por cartas: ${a.cards||'—'}\nDificultad usar/conservar: ${a.decision||'—'}\nDeseo de probar Duelo: ${a.duel||'—'}\nCuriosidad por La Brecha: ${a.breach||'—'}\nParte favorita: ${a.best||'—'}\nConfuso o mejorable: ${a.confusing||'—'}\nMotivo para continuar/dejarlo: ${a.why||'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
@@ -1322,10 +1354,10 @@ window.ELDORIA_DATA = {
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
   function showMenu(){
-    openModal('Eldoria',`<div class="menu-profile"><div class="profile-avatar">${state.profile.avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${safeText(state.profile.name)}</h3><p>v0.14.2 · Poder ${820+(heroLevel('aldric')-1)*25}</p></div></div><div class="menu-grid"><button id="open-profile" class="secondary">Perfil</button><button id="open-rankings" class="secondary">Clasificaciones</button><button id="open-archive" class="secondary">Archivo de cartas</button><button id="open-menu-duel" class="secondary">Duelo de Reliquias</button></div>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="text-button">Reiniciar partida</button>`);
-    $('#open-profile').onclick=showProfile;$('#open-rankings').onclick=()=>showRankings();$('#open-archive').onclick=cardsModal;$('#open-menu-duel').onclick=()=>state.hasCard?openDuel():toast('Descubre primero el Códice de la Brecha.');
+    openModal('Eldoria',`<div class="menu-profile"><div class="profile-avatar">${state.profile.avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${safeText(state.profile.name)}</h3><p>v0.15.0 · Poder ${820+(heroLevel('aldric')-1)*25}</p></div></div><div class="menu-grid"><button id="open-profile" class="secondary">Perfil</button><button id="open-rankings" class="secondary">Clasificaciones</button><button id="open-archive" class="secondary">Archivo de cartas · ${(state.cardsDiscovered||[]).length}/5</button><button id="open-menu-duel" class="secondary">${state.duelUnlocked?'Duelo de Reliquias':'Duelo bloqueado'}</button></div>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="text-button">Reiniciar partida</button>`);
+    $('#open-profile').onclick=showProfile;$('#open-rankings').onclick=()=>showRankings();$('#open-archive').onclick=cardsModal;$('#open-menu-duel').onclick=()=>state.duelUnlocked?openDuel():toast(`Recupera 5 reliquias para abrir el Duelo (${state.cardsDiscovered.length}/5).`);
     if($('#view-report'))$('#view-report').onclick=showPlaytestSummary;
-    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();};
+    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v015');location.reload();};
   }
   init();
 })();
