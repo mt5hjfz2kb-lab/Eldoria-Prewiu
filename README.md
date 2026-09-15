@@ -1,13 +1,13 @@
-# Eldoria v0.9 — paquete de revisión
+# Eldoria v0.14.0 — prototipo jugable
+
+Última versión válida: **v0.14.0**.
 
 ## Abrir el prototipo
 
-Abre `index.html` en un navegador. No necesita instalación.
-
 Preview pública: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/
 
-## Revisar el proyecto
+El prototipo es web, autocontenido y no requiere instalación. Incluye el flujo reino → mundo → combate semiautomático → recompensa, cinco cartas funcionales, decisión usar/conservar, atributo Indestructible configurable, Duelo de Reliquias 3×3, perfil local y rankings simulados.
 
-Antes de analizar el prototipo, lee `HANDOFF_CHATGPT.md`. Contiene el estado de las versiones, el alcance validado, las limitaciones y las preguntas para una revisión crítica independiente.
+## Alcance
 
-La fuente de verdad del proyecto continúa siendo `Eldoria_Documento_Maestro_Work_v1.0(1).docx`, que debe adjuntarse por separado cuando sea necesario.
+No incluye backend, clanes, PvP online, tienda, VIP, servidores ni Unity.
