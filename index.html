@@ -160,6 +160,24 @@
 @media(max-width:420px){.locked-reveals{grid-template-columns:1fr 1fr}.campaign-banner{display:block}.campaign-banner span{display:block;margin-top:4px;text-align:left}}
 
 .route-ready{margin:12px 0;padding:10px;border:1px solid #d7b75d;background:#211b0e;color:#f5e7bd;font:11px/1.45 Arial}
+
+/* v0.11: Cuartel, tropas y comparación de combate */
+.building-barracks{z-index:4}.building-barracks .building-art{color:#e7d09a}
+.barracks-status{padding:16px;border:1px solid #c7a55c;background:linear-gradient(145deg,#2a2113,#101418);text-align:center}
+.barracks-status span{display:block;font-size:52px;color:#f2d37e}.barracks-status strong,.barracks-status small{display:block}.barracks-status strong{color:#fff;font:700 18px Georgia,serif}.barracks-status small{margin-top:6px;color:#d8d1bf;font:11px Arial}
+.troop-options,.mode-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.troop-options button,.mode-options button{padding:14px 10px;border:2px solid #7e6840;background:#17191b;color:#fff;text-align:center;cursor:pointer}
+.troop-options button:first-child{border-color:#cfad62;background:#2b2315}.troop-options button:last-child{border-color:#62aec5;background:#132a32}
+.troop-options span,.mode-options span{display:block;font-size:38px;color:#f0d17c}.troop-options b,.troop-options small,.troop-options em,.mode-options b,.mode-options small{display:block}
+.troop-options b,.mode-options b{margin-top:6px;font:700 13px Arial}.troop-options small,.mode-options small{margin-top:6px;color:#ddd;font:10px/1.35 Arial}.troop-options em{margin-top:9px;color:#ffdc82;font:700 9px Arial;font-style:normal}
+.mode-options button:first-child{border-color:#d8a75c;background:#302013}.mode-options button:last-child{border-color:#68cce0;background:#112b35}.mode-options button:last-child span{color:#75e1f3}
+.troop-banner{margin:0 0 10px;padding:9px 11px;border:1px solid #ad9255;background:#19160f;display:flex;justify-content:space-between;gap:8px;color:#fff;font:10px Arial}.troop-banner b{color:#ffe29a}.troop-banner span{text-align:right;color:#ddd}
+.auto-battle{display:grid;grid-template-columns:1fr 42px 1fr;align-items:center;gap:5px;min-height:190px;padding:15px;background:radial-gradient(circle at 50% 45%,#69364955,#101820 55%,#090c10);border:1px solid #ffffff20}
+.auto-side{text-align:center}.auto-side>span{display:block;font-size:60px;color:#e9d6a4;text-shadow:0 0 18px #d4a957}.auto-side>i{position:absolute;color:#70d8ea;font-size:28px}.auto-side>b{display:block;color:#fff;font:700 9px Arial}.enemy-side>span{color:#80e7fa;text-shadow:0 0 22px #3bd9ff}.troop-rank{margin:3px 0;color:#e7c46d;font-size:13px;letter-spacing:3px}.auto-clash{text-align:center;color:#ffd36b;font-size:28px;animation:pulse 1s infinite}.auto-side .hp{margin-top:8px}
+.auto-status{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.auto-status>div{padding:8px;border:1px solid #ffffff20;background:#0b0f12}.auto-status small{color:#aaa;font:8px Arial}.charge-track{height:8px;margin-top:6px;background:#10181d;border:1px solid #4c7e8c}.charge-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2e91ae,#81edf5);transition:width .25s}
+.auto-skill{width:100%}.auto-skill small{display:block;margin-top:3px;font-size:9px}.auto-skill:disabled{opacity:.4}
+.troop-impact{background:radial-gradient(circle,#4c3a18 0,#12100b 45%,#050709 75%)}
+@media(max-width:420px){.troop-options,.mode-options{grid-template-columns:1fr 1fr}.troop-options button,.mode-options button{padding:11px 7px}.troop-banner{display:block}.troop-banner span{display:block;margin-top:4px;text-align:left}}
 </style>
 </head>
 <body>
@@ -217,7 +235,9 @@ window.ELDORIA_DATA = {
     quarry: { name: 'Cantera', icon: '▲', x: 82, y: 44, max: 2,
       levels: [{ cost: {}, production: { stone: 2 } }, { cost: { food: 35, wood: 30 }, production: { stone: 5 } }] },
     forge: { name: 'Forja', icon: '⚒', x: 34, y: 43, max: 2,
-      levels: [{ cost: {}, production: { iron: 1 } }, { cost: { wood: 40, stone: 35 }, production: { iron: 3 } }] }
+      levels: [{ cost: {}, production: { iron: 1 } }, { cost: { wood: 40, stone: 35 }, production: { iron: 3 } }] },
+    barracks: { name: 'Cuartel', icon: '⚑', x: 55, y: 68, max: 1,
+      levels: [{ cost: {}, production: {} }] }
   },
   i18n: { realmName: 'Bastión de Valoria', explore: 'Explorar', firstQuest: 'MISIÓN PRINCIPAL', kingdom: 'Reino', heroes: 'Héroes', cards: 'Cartas', world: 'Mundo' }
 };
@@ -229,11 +249,11 @@ window.ELDORIA_DATA = {
   const D = window.ELDORIA_DATA;
   const initialState = () => ({
     resources: { food: 80, wood: 110, stone: 75, iron: 25 },
-    buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1 },
+    buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1, barracks: 1 },
     stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
     hasCard: false, cardUsed: false, complete: false, worldSeen: false, riftChoice: null,
-    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, relicOwned: false, relicEquipped: false, firstXpAwarded: false, ashFragments: 0, warPlan: null, hookSeen: false, heroXp: { aldric: 0, lyra: 0, maelis: 0 }, continueIntent: null, lastTick: Date.now(),
-    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, hookSeenSeconds: null, riftChoice: null, completedSeconds: null }
+    loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, relicOwned: false, relicEquipped: false, firstXpAwarded: false, ashFragments: 0, warPlan: null, troopType: null, troopCount: 0, combatMode: null, combatVerdict: null, hookSeen: false, heroXp: { aldric: 0, lyra: 0, maelis: 0 }, continueIntent: null, lastTick: Date.now(),
+    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, troopType: null, combatMode: null, autoSkillUses: 0, troopLosses: 0, hookSeenSeconds: null, riftChoice: null, completedSeconds: null }
   });
   let state = load();
   let view = 'kingdom';
@@ -245,6 +265,10 @@ window.ELDORIA_DATA = {
   let enemyArmor = 0;
   let campaignShield = 0;
   let enemyMaxHp = 100;
+  let playerMaxHp = 100;
+  let autoTimer = null;
+  let autoCharge = 0;
+  let battleTroops = 0;
 
   const $ = s => document.querySelector(s);
   const el = (tag, cls, html='') => { const n=document.createElement(tag); n.className=cls; n.innerHTML=html; return n; };
@@ -253,8 +277,8 @@ window.ELDORIA_DATA = {
   const heroProgress = id => (state.heroXp[id]||0)%100;
   function awardXp(id,amount){ state.heroXp[id]=(state.heroXp[id]||0)+amount; }
 
-  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v010')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
-  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v010', JSON.stringify(state)); }
+  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v011')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v011', JSON.stringify(state)); }
 
   function init(){
     document.querySelectorAll('[data-i18n]').forEach(n => n.textContent=D.i18n[n.dataset.i18n]);
@@ -279,11 +303,12 @@ window.ELDORIA_DATA = {
   function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardUsed)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
   function renderGate(){
     const gate=$('#gate'); if(!gate)return;
-    const councilObjective=state.companion&&!state.warPlan&&!state.thirdVictory;
-    const thirdObjective=state.companion&&state.warPlan&&!state.thirdVictory;
-    const objective=(state.firstUpgrade&&!state.hasCard)||(state.loop2Choice&&!state.secondVictory)||councilObjective||thirdObjective;
+    const troopObjective=state.companion&&!state.troopType&&!state.thirdVictory;
+    const councilObjective=state.companion&&state.troopType&&!state.warPlan&&!state.thirdVictory;
+    const thirdObjective=state.companion&&state.troopType&&state.warPlan&&!state.thirdVictory;
+    const objective=(state.firstUpgrade&&!state.hasCard)||(state.loop2Choice&&!state.secondVictory)||troopObjective||councilObjective||thirdObjective;
     gate.classList.toggle('locked',!state.firstUpgrade); gate.classList.toggle('objective',objective);
-    gate.innerHTML=`${objective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>${councilObjective?'⚒':'⚔'}</span><b>${councilObjective?'Consejo de guerra':thirdObjective?'Tercera expedición':objective?(state.loop2Choice?'Segunda expedición':'Salir al mundo'):'Explorar'}</b>`;
+    gate.innerHTML=`${objective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>${troopObjective?'⚑':councilObjective?'⚒':'⚔'}</span><b>${troopObjective?'Reclutar tropas':councilObjective?'Consejo de guerra':thirdObjective?'Tercera expedición':objective?(state.loop2Choice?'Segunda expedición':'Salir al mundo'):'Explorar'}</b>`;
   }
   function renderResources(prod={}){
     $('#resources').innerHTML=Object.entries(D.resources).map(([k,r])=>`<div class="resource r-${k}" title="${r.label}"><i>${r.icon}</i><span>${fmt(state.resources[k])}</span><small>+${prod[k]||0}/s</small></div>`).join('');
@@ -293,16 +318,20 @@ window.ELDORIA_DATA = {
     Object.entries(D.buildings).forEach(([id,b])=>{
       const guided=(state.talked&&!state.firstUpgrade&&id==='farm')||
         (state.cardUsed&&!state.loop2Unlocked&&id==='keep')||
+        (state.companion&&!state.troopType&&!state.thirdVictory&&id==='barracks')||
         (state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry'));
-      const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':'ELIGE UNA RUTA'}</em>`:''}<span class="building-art">${b.icon}</span><span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
+      const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':id==='barracks'?'RECLUTA TROPAS':'ELIGE UNA RUTA'}</em>`:''}<span class="building-art">${b.icon}</span><span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
       n.style.left=`${b.x}%`; n.style.top=`${b.y}%`; n.onclick=()=>buildingModal(id); $('#buildings').append(n);
     });
   }
-  function productionLabel(id){ const p=D.buildings[id].levels[state.buildings[id]-1].production; return Object.entries(p).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · ')||'Centro del reino'; }
+  function productionLabel(id){
+    if(id==='barracks')return state.troopType?`${state.troopCount} ${state.troopType==='infantry'?'Guardias':'Arqueros'}`:'Sin compañía';
+    const p=D.buildings[id].levels[state.buildings[id]-1].production; return Object.entries(p).map(([r,v])=>`+${v} ${D.resources[r].label}/s`).join(' · ')||'Centro del reino';
+  }
   function renderQuest(){
     const qs = state.complete ? ['Prueba completada','Has terminado todo el contenido disponible. Copia tu resumen.'] :
       state.thirdVictory ? !state.thirdRewardClaimed?['La llamada continúa','Recoge el Eco del Primer Rey.']:!state.relicEquipped?['Equipa la reliquia','Abre Héroes —el botón iluminado— y equipa el Eco del Primer Rey.']:['El futuro de Eldoria','Toca la señal para descubrir lo que permanece bloqueado.'] :
-      state.companion ? !state.warPlan?['Consejo de guerra','Solo tienes 3 fragmentos. Elige una inversión para la expedición; no podrás pagar otra.']:['La fortaleza sepultada','Sal al mundo. Tu inversión de campaña tendrá un efecto visible en el combate.'] :
+      state.companion ? !state.troopType?['Forma una compañía','Toca el Cuartel marcado y recluta tropas para acompañar a los héroes.']:!state.warPlan?['Consejo de guerra','Solo tienes 3 fragmentos. Elige una inversión para la expedición; no podrás pagar otra.']:['La fortaleza sepultada','Sal al mundo. Elige cómo dirigir el asalto y comprueba el efecto de tus tropas.'] :
       state.secondVictory ? ['Un aliado responde',state.secondRewardClaimed?'Elige al compañero que llevará el Núcleo de Ceniza.':'Recoge el Núcleo y sus 3 fragmentos.'] :
       !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
       !state.firstUpgrade ? ['Alimenta a Valoria','Toca el Granero marcado y mejóralo para producir más comida.'] :
@@ -320,6 +349,7 @@ window.ELDORIA_DATA = {
   }
   function talkAldric(){ dialogue('Sir Aldric',state.firstUpgrade?'La puerta está abierta. La Brecha nos espera más allá de las murallas.':'Sin más alimento, Valoria no sobrevivirá. Mejora el Granero marcado para asegurar nuestras reservas.'); }
   function buildingModal(id){
+    if(id==='barracks')return barracksModal();
     const b=D.buildings[id], lvl=state.buildings[id], next=b.levels[lvl];
     let body=`<div class="modal-icon">${b.icon}</div><p>${buildingCopy(id)}</p><div class="statline"><span>Nivel actual</span><b>${lvl} / ${b.max}</b></div>${buildingEffect(id,lvl)}`;
     if(state.talked&&!state.firstUpgrade&&id!=='farm'){ body+=`<p class="maxed">Objetivo actual: mejora primero el Granero marcado para alimentar a Valoria.</p>`; }
@@ -369,7 +399,7 @@ window.ELDORIA_DATA = {
   }
   function showWorld(){ view='world'; navActive('world');
     if(state.companion&&!state.warPlan&&!state.thirdVictory){showWarCouncil();return;}
-    const third=!!(state.companion&&state.warPlan&&!state.thirdVictory);
+    const third=!!(state.companion&&state.troopType&&state.warPlan&&!state.thirdVictory);
     const second=!third&&!!(state.loop2Choice&&!state.secondVictory);
     const plan=third?warPlanInfo():null;
     $('#scene').className=`scene world-scene scene-enter ${third?`third-world plan-${state.warPlan}`:second?'second-world':''}`;
@@ -382,21 +412,84 @@ window.ELDORIA_DATA = {
     if(!state.worldSeen){ state.worldSeen=true; state.metrics.worldSeconds=elapsed(); save(); setTimeout(()=>dialogue('Sir Aldric','Más allá de estas puertas comienza el Bosque de Ceniza. Sigue el sendero: esa herida violeta es La Brecha, y el Acechador bloquea nuestro paso.'),350); }
   }
   function startCombat(){
-    state.thirdCombat=!!(state.companion&&state.warPlan&&!state.thirdVictory);
+    state.thirdCombat=!!(state.companion&&state.troopType&&state.warPlan&&!state.thirdVictory);
     state.secondCombat=!state.thirdCombat&&!!(state.loop2Choice&&!state.secondVictory);
+    if(state.thirdCombat&&!state.combatMode)return showCombatModeChoice();
+    launchCombat();
+  }
+  function showCombatModeChoice(){
+    openModal('¿Cómo dirigirás el asalto?',`<p class="intro-lead">La misma compañía puede luchar de dos maneras. Elige la que te resulte más propia de Eldoria.</p><div class="mode-options"><button id="mode-tactical"><span>⚔</span><b>Mando táctico</b><small>Eliges cada acción: atacar, defender o usar Ruptura.</small></button><button id="mode-auto"><span>▶</span><b>Batalla de héroes</b><small>La compañía combate sola; tú activas la habilidad cuando se carga.</small></button></div><p class="privacy-note">Registraremos la modalidad elegida en el resumen local.</p>`);
+    $('#mode-tactical').onclick=()=>selectCombatMode('tactical');
+    $('#mode-auto').onclick=()=>selectCombatMode('auto');
+  }
+  function selectCombatMode(mode){
+    state.combatMode=mode;state.metrics.combatMode=mode;save();closeModal();launchCombat();
+  }
+  function launchCombat(){
     const plan=state.thirdCombat?warPlanInfo():null;
+    const troop=state.troopType==='infantry'?'Guardias de Valoria':'Arqueros de Ceniza';
     const copy=state.thirdCombat
-      ?`La fortaleza está viva. ${plan.name} ya está desplegada. Atacar y defender generan energía; gasta 2 en Ruptura para quebrar la armadura del Avatar.`
+      ?`La fortaleza está viva. ${troop} marchan con los héroes y ${plan.name} ya está desplegada. ${state.combatMode==='auto'?'La compañía atacará por sí misma: activa la habilidad del héroe cuando esté cargada.':'Atacar y defender generan energía; gasta 2 en Ruptura.'}`
       :state.secondCombat?'El Guardián lleva dos capas de armadura. Genera energía atacando o defendiendo y usa Ruptura cuando decidas abrir su defensa.':'El Acechador protege su cuerpo con armadura. Atacar y defender generan energía. Con 2 puntos, Ruptura elimina su armadura.';
-    dialogue('Sir Aldric',copy,()=>combatModal());
+    dialogue('Sir Aldric',copy,()=>state.thirdCombat&&state.combatMode==='auto'?autoCombatModal():combatModal());
+  }
+  function troopInfo(){
+    return state.troopType==='infantry'
+      ?{icon:'⚔',name:'GUARDIAS DE VALORIA',effect:'Vida +30 · daño recibido −20%'}
+      :{icon:'➶',name:'ARQUEROS DE CENIZA',effect:'Ataque manual +8 · ofensiva automática'};
+  }
+  function registerTroopLosses(incoming){
+    if(!state.thirdCombat||incoming<=0)return;
+    const divisor=state.troopType==='infantry'?13:9;
+    battleTroops=Math.max(0,battleTroops-Math.floor(incoming/divisor));
+    const count=$('#battle-troop-count');if(count)count.textContent=`${battleTroops} en pie`;
+  }
+  function autoCombatModal(){
+    const plan=warPlanInfo(),troop=troopInfo(),companion=state.companion==='lyra'?{icon:'➶',skill:'Lluvia de flechas',copy:'55 daño y rompe armadura'}:{icon:'✧',skill:'Luz restauradora',copy:'Cura 30 y causa 25'};
+    openModal('Batalla de héroes',`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="troop-banner"><b>${troop.icon} ${troop.name}</b><span id="battle-troop-count">${state.troopCount} en pie</span></div><div class="auto-battle"><div class="auto-side allied"><span>♜</span><i>${state.companion==='lyra'?'➶':'✧'}</i><div class="troop-rank">${state.troopType==='infantry'?'⚔ ⚔ ⚔':'➶ ➶ ➶'}</div><b>COMPAÑÍA DE VALORIA</b><div class="hp"><i id="player-hp"></i></div></div><div class="auto-clash">⚡</div><div class="auto-side enemy-side"><span>♚</span><b>AVATAR</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="auto-status"><div><small>HABILIDAD</small><div class="charge-track"><i id="auto-charge"></i></div></div><div id="auto-armor" class="armor-status"></div></div><p id="combat-log">La compañía avanza. Espera a que la habilidad esté cargada.</p><button id="auto-skill" class="primary auto-skill" disabled>${companion.icon} ${companion.skill}<small>${companion.copy}</small></button>`);
+    enemyMaxHp=180;playerMaxHp=state.troopType==='infantry'?130:100;
+    state.enemyHp=enemyMaxHp;state.playerHp=playerMaxHp;enemyArmor=state.warPlan==='ballista'?1:3;campaignShield=state.warPlan==='ward'?24:0;
+    battleTroops=state.troopCount;autoCharge=0;combatTurn=0;
+    $('#auto-skill').onclick=autoHeroSkill;updateHp();updateAutoUi();
+    autoTimer=setInterval(autoBattleTick,850);
+  }
+  function autoBattleTick(){
+    if(state.enemyHp<=0||state.playerHp<=0)return;
+    state.metrics.combatTurns++;combatTurn++;
+    const raw=state.troopType==='archers'?27:19;
+    const forge=state.loop2Choice==='forge'?5:0;
+    const damage=Math.max(8,raw+forge-enemyArmor*3);
+    let incoming=state.troopType==='infantry'?10:14;
+    if(campaignShield>0){const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;}
+    if(state.warPlan==='hospital'&&combatTurn%2===0){state.playerHp=Math.min(playerMaxHp,state.playerHp+8);state.metrics.fieldHealing+=8;}
+    state.enemyHp=Math.max(0,state.enemyHp-damage);state.playerHp=Math.max(0,state.playerHp-incoming);
+    autoCharge=Math.min(100,autoCharge+25);registerTroopLosses(incoming);updateHp();updateAutoUi();save();
+    $('#combat-log').textContent=`La compañía causa ${damage} y recibe ${incoming}. ${autoCharge===100?'La habilidad está lista.':''}`;
+    if(state.enemyHp<=0){clearInterval(autoTimer);autoTimer=null;$('#auto-skill').disabled=true;return setTimeout(victory,500);}
+    if(state.playerHp<=0){clearInterval(autoTimer);autoTimer=null;return combatDefeat();}
+  }
+  function autoHeroSkill(){
+    if(autoCharge<100)return;autoCharge=0;state.metrics.autoSkillUses++;state.metrics.companionUses++;
+    if(enemyArmor>0){enemyArmor=0;state.metrics.armorBreaks++;}
+    if(state.companion==='lyra'){state.enemyHp=Math.max(0,state.enemyHp-55);$('#combat-log').textContent='Lyra desata una lluvia de flechas y rompe la armadura.';}
+    else{state.enemyHp=Math.max(0,state.enemyHp-25);state.playerHp=Math.min(playerMaxHp,state.playerHp+30);$('#combat-log').textContent='Maelis restaura la línea y quiebra la armadura con su luz.';}
+    updateHp();updateAutoUi();save();
+    if(state.enemyHp<=0){clearInterval(autoTimer);autoTimer=null;$('#auto-skill').disabled=true;setTimeout(victory,500);}
+  }
+  function updateAutoUi(){
+    if($('#auto-charge'))$('#auto-charge').style.width=`${autoCharge}%`;
+    if($('#auto-skill'))$('#auto-skill').disabled=autoCharge<100;
+    if($('#auto-armor')){$('#auto-armor').className=`armor-status ${enemyArmor===0?'broken':''}`;$('#auto-armor').textContent=enemyArmor>0?`⛨ ARMADURA · ${enemyArmor}`:'◇ ARMADURA ROTA';}
   }
   function combatModal(){
     const advanced=state.secondCombat||state.thirdCombat;
     const companion=state.companion==='lyra'?{name:'Lyra',skill:'Lluvia de flechas',help:'55 de daño · un uso',icon:'➶'}:{name:'Maelis',skill:'Luz restauradora',help:'Cura 35 · causa 22',icon:'✧'};
-    const plan=state.thirdCombat?warPlanInfo():null;
-    openModal(state.thirdCombat?'Asalto a la fortaleza':state.secondCombat?'Segunda expedición':'Combate en la Brecha',`${advanced?`<div class="route-banner ${state.loop2Choice==='quarry'?'quarry-route':''}"><b>${state.loop2Choice==='forge'?'⚒ FORJA ACTIVA':'▲ CANTERA ACTIVA'}</b><span>${state.loop2Choice==='forge'?'+10 daño en cada ataque':'Defender recibe la mitad de daño'}</span></div>`:''}${state.thirdCombat?`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="companion-banner"><b>${companion.icon} ${companion.name.toUpperCase()}</b><span>${companion.skill} · un uso</span></div>`:''}<div class="combat"><div class="combatant hero"><span>♜</span><b>Sir Aldric</b><div class="hp"><i id="player-hp"></i></div></div><div class="versus">VS</div><div class="combatant foe"><span>${state.thirdCombat?'♚':'♝'}</span><b>${state.thirdCombat?'Avatar de la Brecha':state.secondCombat?'Guardián de Ceniza':'Acechador'}</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="combat-depth"><div><b>ENERGÍA</b><span id="energy-pips" class="energy-pips"></span></div><div id="armor-status" class="armor-status"></div></div><div id="enemy-intent" class="enemy-intent"></div><p id="combat-log">Ataca o defiende para generar energía. Tú decides cuándo romper la armadura.</p><div class="combat-actions"><button id="attack" class="action attack-action"><b>⚔ Atacar</b><small id="attack-help">Daño · +1 energía</small></button><button id="guard" class="action guard-action"><b>⛉ Defender</b><small id="guard-help">Reduce daño · +1 energía</small></button><button id="rift-strike" class="action rift-action" disabled><b>✦ Ruptura</b><small id="technique-help">Cuesta 2 energía</small></button>${state.thirdCombat?`<button id="companion-skill" class="action companion-action"><b>${companion.icon} ${companion.skill}</b><small>${companion.help}</small></button>`:''}</div>`);
+    const plan=state.thirdCombat?warPlanInfo():null,troop=state.thirdCombat?troopInfo():null;
+    openModal(state.thirdCombat?'Mando táctico':state.secondCombat?'Segunda expedición':'Combate en la Brecha',`${advanced?`<div class="route-banner ${state.loop2Choice==='quarry'?'quarry-route':''}"><b>${state.loop2Choice==='forge'?'⚒ FORJA ACTIVA':'▲ CANTERA ACTIVA'}</b><span>${state.loop2Choice==='forge'?'+10 daño en cada ataque':'Defender recibe la mitad de daño'}</span></div>`:''}${state.thirdCombat?`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="troop-banner"><b>${troop.icon} ${troop.name}</b><span id="battle-troop-count">${state.troopCount} en pie · ${troop.effect}</span></div><div class="companion-banner"><b>${companion.icon} ${companion.name.toUpperCase()}</b><span>${companion.skill} · un uso</span></div>`:''}<div class="combat"><div class="combatant hero"><span>♜</span><b>Sir Aldric</b><div class="hp"><i id="player-hp"></i></div></div><div class="versus">VS</div><div class="combatant foe"><span>${state.thirdCombat?'♚':'♝'}</span><b>${state.thirdCombat?'Avatar de la Brecha':state.secondCombat?'Guardián de Ceniza':'Acechador'}</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="combat-depth"><div><b>ENERGÍA</b><span id="energy-pips" class="energy-pips"></span></div><div id="armor-status" class="armor-status"></div></div><div id="enemy-intent" class="enemy-intent"></div><p id="combat-log">Ataca o defiende para generar energía. Tú decides cuándo romper la armadura.</p><div class="combat-actions"><button id="attack" class="action attack-action"><b>⚔ Atacar</b><small id="attack-help">Daño · +1 energía</small></button><button id="guard" class="action guard-action"><b>⛉ Defender</b><small id="guard-help">Reduce daño · +1 energía</small></button><button id="rift-strike" class="action rift-action" disabled><b>✦ Ruptura</b><small id="technique-help">Cuesta 2 energía</small></button>${state.thirdCombat?`<button id="companion-skill" class="action companion-action"><b>${companion.icon} ${companion.skill}</b><small>${companion.help}</small></button>`:''}</div>`);
     enemyMaxHp=state.thirdCombat?180:state.secondCombat?135:100;
-    state.enemyHp=enemyMaxHp; state.playerHp=100; combatTurn=0; companionAvailable=true; combatEnergy=0;
+    playerMaxHp=state.thirdCombat&&state.troopType==='infantry'?130:100;
+    state.enemyHp=enemyMaxHp; state.playerHp=playerMaxHp; combatTurn=0; companionAvailable=true; combatEnergy=0;
+    battleTroops=state.thirdCombat?state.troopCount:0;
     enemyArmor=state.thirdCombat?(state.warPlan==='ballista'?1:3):state.secondCombat?2:1;
     campaignShield=state.thirdCombat&&state.warPlan==='ward'?24:0;
     $('#attack').onclick=()=>combatAction('attack'); $('#guard').onclick=()=>combatAction('guard'); $('#rift-strike').onclick=()=>combatAction('technique'); if($('#companion-skill'))$('#companion-skill').onclick=()=>combatAction('companion'); updateHp(); updateCombatDepth(); updateIntent();
@@ -420,14 +513,14 @@ window.ELDORIA_DATA = {
     const heavy=combatTurn%3===2, advanced=state.secondCombat||state.thirdCombat; let incoming=heavy?28:14; let dmg=0; let copy='';
     state.metrics.combatTurns++;
     if(type==='attack'){
-      const raw=22+Math.floor(Math.random()*9)+(advanced&&state.loop2Choice==='forge'?10:0);
+      const raw=22+Math.floor(Math.random()*9)+(advanced&&state.loop2Choice==='forge'?10:0)+(state.thirdCombat&&state.troopType==='archers'?8:0);
       const blocked=enemyArmor*4; dmg=Math.max(6,raw-blocked); combatEnergy=Math.min(3,combatEnergy+1);
       copy=`Aldric golpea y causa ${dmg}.${blocked?` La armadura bloquea ${raw-dmg}.`:''}${advanced&&state.loop2Choice==='forge'?' Forja: +10 de daño base.':''}`;
     }
     if(type==='guard'){
       state.metrics.guardUses++; if(heavy)state.metrics.heavyGuards++; dmg=7; incoming=Math.floor(incoming*(advanced&&state.loop2Choice==='quarry'?.15:.3)); combatEnergy=Math.min(3,combatEnergy+1);
       let healing=5;if(state.thirdCombat&&state.warPlan==='hospital'){healing+=8;state.metrics.fieldHealing+=8;}
-      state.playerHp=Math.min(100,state.playerHp+healing);
+      state.playerHp=Math.min(playerMaxHp,state.playerHp+healing);
       copy=state.thirdCombat&&state.warPlan==='hospital'?`El Hospital atiende a Aldric: recupera ${healing} y contraataca.`:advanced&&state.loop2Choice==='quarry'?'La Cantera absorbe el impacto. Aldric recupera 5 y contraataca.':'Aldric alza el escudo, recupera 5 y contraataca.';
     }
     if(type==='technique'){
@@ -441,19 +534,24 @@ window.ELDORIA_DATA = {
       if(state.companion==='lyra'){dmg=55;copy='Lyra cubre el cielo con flechas y causa 55 de daño.';}
       else{dmg=22;state.playerHp=Math.min(100,state.playerHp+35);copy='Maelis restaura 35 de vida y su luz causa 22 de daño.';}
     }
+    if(state.thirdCombat&&state.troopType==='infantry')incoming=Math.floor(incoming*.8);
     if(campaignShield>0&&incoming>0){
       const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;
       copy+=` La Égida absorbe ${absorbed} de daño${campaignShield>0?` (${campaignShield} restantes)`:' y se consume'}.`;
     }
-    state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); updateHp();updateCombatDepth(); save();
+    state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); registerTroopLosses(incoming); updateHp();updateCombatDepth(); save();
     $('#combat-log').textContent=`${copy} Recibes ${incoming} de daño.`;
     if(state.enemyHp<=0){ disableCombat(); return setTimeout(victory,550); }
     if(state.playerHp<=0){ disableCombat(); $('#combat-log').textContent='Aldric cae. La Brecha no perdona una decisión precipitada.'; return setTimeout(combatDefeat,500); }
     combatTurn++; updateIntent();
   }
   function disableCombat(){ document.querySelectorAll('.combat-actions button').forEach(b=>b.disabled=true); }
-  function combatDefeat(){ openModal('La expedición fracasa',`<p>Has aprendido a leer los ataques del Acechador. Defiende cuando prepare su golpe brutal.</p><button id="retry" class="primary">Reintentar combate</button>`); $('#retry').onclick=combatModal; }
-  function updateHp(){ $('#enemy-hp').style.width=`${Math.max(0,state.enemyHp/enemyMaxHp*100)}%`; $('#player-hp').style.width=`${state.playerHp}%`; }
+  function combatDefeat(){
+    if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
+    openModal('La expedición fracasa',`<p>La compañía se repliega. Las bajas de un intento fallido no se guardan en esta prueba.</p><button id="retry" class="primary">Reintentar combate</button>`);
+    $('#retry').onclick=()=>state.thirdCombat&&state.combatMode==='auto'?autoCombatModal():combatModal();
+  }
+  function updateHp(){ $('#enemy-hp').style.width=`${Math.max(0,state.enemyHp/enemyMaxHp*100)}%`; $('#player-hp').style.width=`${Math.max(0,state.playerHp/playerMaxHp*100)}%`; }
   function victory(){
     const third=state.thirdCombat, second=state.secondCombat;
     victoryImpact({
@@ -473,8 +571,11 @@ window.ELDORIA_DATA = {
   }
   function resolveVictory(){
     if(state.thirdCombat){
-      if(!state.thirdVictory){awardXp('aldric',80);awardXp(state.companion,80);}
-      state.thirdVictory=true;state.stage=8;save();renderQuest();showThirdReward();return;
+      if(!state.thirdVictory){
+        awardXp('aldric',80);awardXp(state.companion,80);
+        const losses=Math.max(0,(state.troopCount||0)-battleTroops);state.metrics.troopLosses=losses;state.troopCount=battleTroops;
+      }
+      state.thirdVictory=true;state.stage=8;save();renderQuest();showCombatVerdict();return;
     }
     if(state.secondCombat){
       if(!state.secondVictory)awardXp('aldric',60);
@@ -484,6 +585,14 @@ window.ELDORIA_DATA = {
     openModal('El poder exige una decisión',`<p>El fragmento puede convertirse en un motor de crecimiento o romperse para liberar todo su poder ahora. Ninguna opción es gratuita.</p><div class="rift-choices"><button id="contain" class="choice contain"><span>⛨</span><b>Forjar el Gran Sello</b><small><strong>CRECIMIENTO:</strong> +50% de producción permanente en esta partida.<br>Botín inmediato moderado.</small></button><button id="exploit" class="choice exploit"><span>✦</span><b>Desatar la Brecha</b><small><strong>PODER:</strong> enorme botín inmediato.<br>La corrupción marcará Valoria.</small></button></div>`);
     $('#contain').onclick=()=>claimReward('contain'); $('#exploit').onclick=()=>claimReward('exploit');
   }
+  function showCombatVerdict(){
+    const label=state.combatMode==='auto'?'Batalla de héroes':'Mando táctico';
+    openModal('¿Este combate encaja con Eldoria?',`<p class="intro-lead">Has completado el asalto con <strong>${label}</strong>. Valora el modelo, no la calidad visual de esta maqueta.</p><div class="intent-choices"><button id="combat-fit-yes"><b>Sí, encaja</b><small>Querría profundizar en esta dirección.</small></button><button id="combat-fit-maybe" class="maybe"><b>Tengo dudas</b><small>Hay algo aprovechable, pero necesita cambiar.</small></button><button id="combat-fit-no" class="no"><b>No encaja</b><small>Eldoria debería combatir de otra manera.</small></button></div>`);
+    $('#combat-fit-yes').onclick=()=>recordCombatVerdict('yes');
+    $('#combat-fit-maybe').onclick=()=>recordCombatVerdict('maybe');
+    $('#combat-fit-no').onclick=()=>recordCombatVerdict('no');
+  }
+  function recordCombatVerdict(value){state.combatVerdict=value;save();showThirdReward();}
   function showSecondReward(){
     openModal('Núcleo de Ceniza',`<p class="intro-lead">El Guardián cae, pero su corazón continúa latiendo.</p><div class="second-reward"><span>◆</span><strong>NÚCLEO DE CENIZA</strong><b>+120 piedra · +80 hierro · +3 fragmentos</b><small>Dos voces responden desde el norte. Sus fragmentos solo bastarán para una inversión de campaña.</small></div><button id="claim-second" class="primary">Recoger y regresar a Valoria</button>`);
     $('#claim-second').onclick=()=>{
@@ -495,6 +604,7 @@ window.ELDORIA_DATA = {
   function showFutureStep(){
     if(!state.secondRewardClaimed)return showSecondReward();
     if(!state.companion)return showCompanionChoice();
+    if(!state.troopType&&!state.thirdVictory)return barracksModal();
     if(!state.warPlan&&!state.thirdVictory)return showWarCouncil();
     if(!state.thirdVictory)return showWorld();
     if(!state.thirdRewardClaimed)return showThirdReward();
@@ -510,7 +620,26 @@ window.ELDORIA_DATA = {
     const lyra=id==='lyra';
     const impact=el('div','choice-impact-overlay companion-impact',`<div class="choice-impact"><small>NUEVO HÉROE</small><span>${lyra?'➶':'✧'}</span><strong>${lyra?'LYRA':'MAELIS'}</strong><b>${lyra?'LLUVIA DE FLECHAS · 55 DAÑO':'LUZ RESTAURADORA · CURA 35'}</b><p>Se ha unido a la expedición de Aldric.</p><button class="choice-impact-continue">CONTINUAR</button></div>`);
     document.body.append(impact);
-    $('.choice-impact-continue',impact).onclick=()=>{impact.remove();showKingdom();toast('Objetivo: decide cómo gastar los fragmentos del Núcleo.');setTimeout(showWarCouncil,500);};
+    $('.choice-impact-continue',impact).onclick=()=>{impact.remove();showKingdom();toast('Objetivo: recluta una compañía en el Cuartel.');setTimeout(barracksModal,500);};
+  }
+  function barracksModal(){
+    if(!state.companion)return openModal('Cuartel de Valoria','<p class="intro-lead">El Cuartel está vacío. Primero necesitas un héroe que reúna a los supervivientes.</p>');
+    if(state.troopType){
+      const infantry=state.troopType==='infantry';
+      return openModal('Cuartel de Valoria',`<div class="barracks-status"><span>${infantry?'⚔':'➶'}</span><strong>${state.troopCount} ${infantry?'GUARDIAS DE VALORIA':'ARQUEROS DE CENIZA'}</strong><small>${infantry?'Protegen al grupo y reducen las bajas.':'Aumentan el daño de la compañía.'}</small></div><button id="barracks-continue" class="primary">Continuar</button>`),$('#barracks-continue').onclick=()=>{closeModal();showKingdom();};
+    }
+    openModal('Recluta una compañía',`<p class="intro-lead">Los héroes no asaltarán solos la fortaleza. Los recursos solo permiten formar una compañía.</p><div class="troop-options"><button id="recruit-infantry"><span>⚔</span><b>30 Guardias de Valoria</b><small>+30 vida al grupo · 20% menos daño recibido.</small><em>80 comida · 40 hierro</em></button><button id="recruit-archers"><span>➶</span><b>24 Arqueros de Ceniza</b><small>+8 daño en ataques manuales · mayor daño automático.</small><em>60 comida · 55 hierro</em></button></div><p class="privacy-note">Solo podrás mantener una compañía en esta prueba.</p>`);
+    $('#recruit-infantry').onclick=()=>recruitTroops('infantry');
+    $('#recruit-archers').onclick=()=>recruitTroops('archers');
+  }
+  function recruitTroops(type){
+    const cost=type==='infantry'?{food:80,iron:40}:{food:60,iron:55};
+    if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v))return toast('No tienes recursos suficientes para esta compañía.');
+    Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v);
+    state.troopType=type;state.troopCount=type==='infantry'?30:24;state.metrics.troopType=type;save();closeModal();
+    const infantry=type==='infantry';
+    const impact=el('div','choice-impact-overlay troop-impact',`<div class="choice-impact"><small>COMPAÑÍA FORMADA</small><span>${infantry?'⚔':'➶'}</span><strong>${infantry?'GUARDIAS DE VALORIA':'ARQUEROS DE CENIZA'}</strong><b>${infantry?'RESISTENCIA +20% · VIDA +30':'DAÑO DE COMPAÑÍA AUMENTADO'}</b><p>Marcharán junto a Aldric y ${state.companion==='lyra'?'Lyra':'Maelis'}.</p><button class="choice-impact-continue">CONTINUAR</button></div>`);
+    document.body.append(impact);$('.choice-impact-continue',impact).onclick=()=>{impact.remove();showKingdom();toast('Ahora decide la inversión de campaña.');setTimeout(showWarCouncil,450);};
   }
   function showWarCouncil(){
     const left=state.ashFragments||0;
@@ -540,7 +669,7 @@ window.ELDORIA_DATA = {
     $('#hook-continue').onclick=()=>{closeModal();showIntentChoice();};
   }
   function showIntentChoice(){
-    openModal('¿Seguirías jugando?',`<p class="intro-lead">Has reconstruido Valoria, elegido dos mejoras, reclutado un héroe y superado tres combates.</p><p>Si hubiera más contenido disponible ahora mismo, ¿jugarías diez minutos más?</p><div class="intent-choices"><button id="intent-yes"><b>Sí, continuaría ahora</b><small>Quiero descubrir qué ocurre después.</small></button><button id="intent-maybe" class="maybe"><b>Quizá</b><small>Dependería del contenido o de las recompensas.</small></button><button id="intent-no" class="no"><b>No, pararía aquí</b><small>El recorrido no me genera suficiente interés.</small></button></div>`);
+    openModal('¿Seguirías jugando?',`<p class="intro-lead">Has reconstruido Valoria, elegido mejoras, reclutado héroes y tropas, y superado tres combates.</p><p>Si hubiera más contenido disponible ahora mismo, ¿jugarías diez minutos más?</p><div class="intent-choices"><button id="intent-yes"><b>Sí, continuaría ahora</b><small>Quiero descubrir qué ocurre después.</small></button><button id="intent-maybe" class="maybe"><b>Quizá</b><small>Dependería del contenido o de las recompensas.</small></button><button id="intent-no" class="no"><b>No, pararía aquí</b><small>El recorrido no me genera suficiente interés.</small></button></div>`);
     $('#intent-yes').onclick=()=>finishSlice('yes');
     $('#intent-maybe').onclick=()=>finishSlice('maybe');
     $('#intent-no').onclick=()=>finishSlice('no');
@@ -559,14 +688,17 @@ window.ELDORIA_DATA = {
   }
   function showKingdom(){
     view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''} ${state.warPlan?`plan-${state.warPlan}`:''}`;
-    const needsCouncil=state.companion&&!state.warPlan&&!state.thirdVictory;
+    const needsTroops=state.companion&&!state.troopType&&!state.thirdVictory;
+    const needsCouncil=state.companion&&state.troopType&&!state.warPlan&&!state.thirdVictory;
     const gateObjective=(state.firstUpgrade&&!state.hasCard)||(state.companion&&!state.thirdVictory)?' objective':'';
     const future=!state.complete&&state.secondVictory;
-    const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'CAPÍTULO II':'SALÓN DE HÉROES'):'RELIQUIA LEGENDARIA'):needsCouncil?'CONSEJO DE GUERRA':state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
-    const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'DESCUBRE QUÉ AGUARDA':'EQUIPA EL ECO DEL REY'):'RECOGE LA RECOMPENSA'):needsCouncil?'INVIERTE 2 DE 3 FRAGMENTOS':state.companion?'TERCERA EXPEDICIÓN':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
-    const gateName=needsCouncil?'Preparar expedición':state.companion&&!state.thirdVictory?'Fortaleza sepultada':'Salir al mundo';
-    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>◆</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
-    $('#aldric').onclick=talkAldric; $('#gate').onclick=needsCouncil?showWarCouncil:showWorld; if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
+    const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'CAPÍTULO II':'SALÓN DE HÉROES'):'RELIQUIA LEGENDARIA'):needsTroops?'CUARTEL DE VALORIA':needsCouncil?'CONSEJO DE GUERRA':state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
+    const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'DESCUBRE QUÉ AGUARDA':'EQUIPA EL ECO DEL REY'):'RECOGE LA RECOMPENSA'):needsTroops?'RECLUTA UNA COMPAÑÍA':needsCouncil?'INVIERTE 2 DE 3 FRAGMENTOS':state.companion?'ELIGE CÓMO DIRIGIR EL ASALTO':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
+    const gateName=needsTroops?'Reclutar tropas':needsCouncil?'Preparar expedición':state.companion&&!state.thirdVictory?'Fortaleza sepultada':'Salir al mundo';
+    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>${needsTroops?'⚑':'◆'}</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
+    $('#aldric').onclick=talkAldric;
+    $('#gate').onclick=needsTroops?barracksModal:needsCouncil?showWarCouncil:showWorld;
+    if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
   }
   function heroCard(id){
     const isAldric=id==='aldric', lyra=id==='lyra';
@@ -611,21 +743,21 @@ window.ELDORIA_DATA = {
   }
   function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
   function openModal(title,body){ closeModal(); modal=el('div','overlay',`<section class="modal"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
-  function closeModal(){ if(modal){modal.remove();modal=null;} }
+  function closeModal(){ if(autoTimer){clearInterval(autoTimer);autoTimer=null;} if(modal){modal.remove();modal=null;} }
   function navActive(target){ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===target)); }
   function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),2600); }
   function burst(){ const p=$('#particles'); if(!p)return; p.innerHTML=Array.from({length:16},(_,i)=>`<i style="--a:${i*22.5}deg;--d:${50+Math.random()*90}px"></i>`).join(''); setTimeout(()=>p.innerHTML='',900); }
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.10-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.11-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
     $('#copy-report').onclick=copyReport;
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
-  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v010');location.reload();}; }
+  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v011');location.reload();}; }
   init();
 })();
 
