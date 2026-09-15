@@ -1456,7 +1456,7 @@ window.ELDORIA_DATA = {
     openModal('Eldoria',`<div class="menu-profile"><div class="profile-avatar">${state.profile.avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${safeText(state.profile.name)}</h3><p>v0.17.0 · Poder ${fmt(powerBreakdown().total)}</p></div></div><div class="menu-grid"><button id="open-profile" class="secondary">Perfil</button><button id="open-rankings" class="secondary">Clasificaciones</button><button id="open-archive" class="secondary">Archivo de cartas · ${(state.cardsDiscovered||[]).length}/5</button><button id="open-menu-duel" class="secondary">${state.duelUnlocked?'Duelo de Reliquias':'Duelo bloqueado'}</button></div>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="text-button">Reiniciar partida</button>`);
     $('#open-profile').onclick=showProfile;$('#open-rankings').onclick=()=>showRankings();$('#open-archive').onclick=cardsModal;$('#open-menu-duel').onclick=()=>state.duelUnlocked?openDuel():toast(`Recupera 5 reliquias para abrir el Duelo (${state.cardsDiscovered.length}/5).`);
     if($('#view-report'))$('#view-report').onclick=showPlaytestSummary;
-    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v017');location.reload();};
+    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v017');localStorage.removeItem('eldoria-save-v016');location.reload();};
   }
   init();
 })();
