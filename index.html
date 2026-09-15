@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#11151b" />
-  <title>Eldoria — El despertar de la Brecha</title>
+  <title>Eldoria v0.13.0 — El despertar de la Brecha</title>
+  <meta name="eldoria-version" content="0.13.0" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2311151b' stroke='%23d6b66f' stroke-width='4' d='M32 3 57 15 52 50 32 61 12 50 7 15Z'/%3E%3Cpath fill='%23d6b66f' d='M20 17h25v7H28v6h14v7H28v7h18v7H20Z'/%3E%3C/svg%3E" />
   <style>
 :root{--ink:#ebe5d3;--muted:#aaa797;--panel:#171c22ee;--gold:#d6b66f;--green:#78a96c;--rift:#b335ff;--danger:#bd4d4d;--line:#ffffff19}*{box-sizing:border-box}html,body{margin:0;height:100%;background:#090c0f;color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden}button{font:inherit;color:inherit}.game-shell{height:100%;max-width:1180px;margin:auto;position:relative;background:#11171b;box-shadow:0 0 80px #000}.topbar{height:76px;display:flex;align-items:center;gap:16px;padding:10px 18px;background:linear-gradient(#171d23f7,#10151bf3);border-bottom:1px solid #d6b66f33;position:relative;z-index:20}.brand{width:46px;height:46px;border:1px solid var(--gold);background:linear-gradient(135deg,#3c3321,#17150f);font-size:30px;color:var(--gold);clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);cursor:pointer}.realm-title{min-width:150px}.realm-title strong{display:block;font-size:15px;letter-spacing:.06em}.realm-title span{font:11px Arial,sans-serif;color:var(--muted)}.resources{display:flex;gap:8px;flex:1;justify-content:center}.resource{min-width:108px;background:#080b0dcc;border:1px solid var(--line);padding:7px 10px;display:grid;grid-template-columns:22px 1fr;line-height:1}.resource i{grid-row:1/3;color:var(--gold);font-style:normal}.resource span{font:bold 14px Arial}.resource small{font:9px Arial;color:#80b783;margin-top:4px}.r-food i{color:#c89b57}.r-wood i{color:#8f673e}.r-stone i{color:#a6a9ad}.r-iron i{color:#829ca7}.icon-button{border:1px solid var(--line);border-radius:50%;background:#0a0d10;width:36px;height:36px;color:var(--gold);cursor:pointer}.icon-button.muted{opacity:.35}.scene{position:absolute;inset:76px 0 76px;overflow:hidden;transition:.5s;background:#1b2423}.kingdom-scene{background:linear-gradient(#1c2c35 0 30%,#26392f 58%,#14231c)}.sky-glow{position:absolute;inset:0;background:radial-gradient(circle at 18% 10%,#e3a44b3b,transparent 29%),linear-gradient(115deg,transparent 55%,#6821932c)}.terrain{position:absolute;width:120%;left:-10%;border-radius:50% 50% 0 0}.terrain-back{height:52%;bottom:19%;background:#243c31;clip-path:polygon(0 40%,12% 24%,22% 36%,34% 15%,48% 33%,62% 4%,74% 32%,87% 14%,100% 36%,100% 100%,0 100%)}.terrain-front{height:68%;bottom:-25%;background:radial-gradient(ellipse,#314f3b,#172b22 70%);transform:perspective(400px) rotateX(15deg);border-top:2px solid #7584641f}.rift{position:absolute;z-index:2;filter:drop-shadow(0 0 14px #9f2fff)}.rift i{position:absolute;width:5px;background:linear-gradient(transparent,#f4c5ff,#8d26dd,transparent);transform-origin:center;box-shadow:0 0 14px #cc58ff}.rift i:nth-child(1){height:130px;transform:rotate(11deg);left:24px}.rift i:nth-child(2){height:92px;transform:rotate(-15deg);left:8px;top:29px}.rift i:nth-child(3){height:62px;transform:rotate(24deg);left:40px;top:58px}.rift-distant{right:11%;top:8%;opacity:.78;transform:scale(.75)}.buildings{position:absolute;inset:0;z-index:5}.building{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;text-align:center;cursor:pointer;filter:drop-shadow(0 7px 6px #0009);transition:.2s}.building:hover{transform:translate(-50%,-53%) scale(1.05)}.building-art{display:grid;place-items:center;width:84px;height:74px;background:linear-gradient(150deg,#807158,#413d35);border:2px solid #a59571;border-radius:45% 45% 13% 13%;font-size:42px;color:#1b2020;text-shadow:0 2px #cabd94}.building-keep .building-art{width:120px;height:100px;font-size:65px;background:linear-gradient(150deg,#8a806a,#3a3f3c)}.building strong{display:block;background:#111817e8;border:1px solid #d6b66f44;padding:3px 9px;font-size:12px;margin-top:-4px}.building small{font:9px Arial;color:#bcd1bc;background:#0c1213db;padding:2px 5px}.building .level{position:absolute;right:-6px;top:-4px;border-radius:14px;background:#a67d3b;padding:4px 7px;font:bold 9px Arial;color:white}.character{position:absolute;z-index:9;border:0;background:transparent;bottom:15%;left:56%;cursor:pointer;text-align:center}.character-glow{position:absolute;width:70px;height:24px;bottom:24px;left:50%;transform:translateX(-50%);background:#e0bc6550;border-radius:50%;filter:blur(8px)}.helmet{position:relative;display:block;font-size:58px;color:#d9d2bb;text-shadow:0 5px 8px #000}.character-label{display:block;background:#111a;border:1px solid #d6b66f66;padding:4px 10px;font-size:12px}.gate{position:absolute;right:4%;bottom:8%;z-index:9;display:flex;flex-direction:column;align-items:center;border:1px solid var(--gold);background:#111a;padding:10px 18px;cursor:pointer}.gate span{font-size:30px}.gate b{font-size:11px;letter-spacing:.12em}.gate.locked{filter:grayscale(1);opacity:.55}.quest-panel{position:absolute;z-index:16;top:96px;left:18px;width:265px;background:linear-gradient(90deg,#12181be8,#12181bc7);border-left:3px solid var(--gold);padding:12px 15px;box-shadow:0 8px 25px #0005}.quest-kicker{font:9px Arial;color:var(--gold);letter-spacing:.18em}.quest-panel strong{display:block;margin:4px 0;font-size:16px}.quest-panel p{font:11px Arial;color:#c5c4ba;margin:0 0 8px;line-height:1.35}.quest-progress{height:3px;background:#fff1}.quest-progress span{display:block;height:100%;background:var(--gold);transition:.5s}.bottom-nav{height:76px;position:absolute;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;background:#0d1217f7;border-top:1px solid #d6b66f33}.bottom-nav button{position:relative;width:120px;border:0;border-left:1px solid #fff08;background:transparent;color:#858a89;cursor:pointer}.bottom-nav button:last-child{border-right:1px solid #fff08}.bottom-nav button span{display:block;font-size:24px}.bottom-nav button b{font:10px Arial;letter-spacing:.08em}.bottom-nav button.active{color:var(--gold);background:linear-gradient(#d6b66f18,transparent)}.bottom-nav em{position:absolute;top:8px;right:32px;border-radius:50%;background:#9c35ce;padding:3px 6px;font:bold 9px Arial;color:white}.world-scene{background:linear-gradient(#111621,#1e2630 45%,#131c19)}.moon{position:absolute;width:140px;height:140px;border-radius:50%;background:#e9dbc0;box-shadow:0 0 60px #e4d4b366;left:12%;top:9%}.corruption{position:absolute;inset:35% 0 0;background:radial-gradient(circle at 72% 30%,#7e21a36b,transparent 25%),linear-gradient(150deg,#222a25,#181b20);clip-path:polygon(0 20%,12% 3%,28% 22%,42% 0,55% 25%,71% 6%,88% 25%,100% 7%,100% 100%,0 100%)}.path{position:absolute;width:22%;height:75%;bottom:-20%;left:38%;background:linear-gradient(90deg,transparent,#726958 30%,#7f7663 70%,transparent);transform:perspective(300px) rotateX(30deg)}.rift-near{right:20%;top:12%;transform:scale(1.7)}.rift-near b{position:absolute;top:128px;left:-25px;width:110px;text-align:center;font:9px Arial;letter-spacing:.2em;color:#e2b9f3}.enemy{position:absolute;right:25%;bottom:17%;z-index:5;border:0;background:transparent;text-align:center;cursor:pointer}.enemy span{display:block;font-size:68px;color:#b05ad8;text-shadow:0 0 20px #801cad}.enemy b,.enemy em{display:block;background:#110d16df;padding:4px 10px}.enemy b{font-size:12px}.enemy em{font:9px Arial;color:#d698ef}.player-token{position:absolute;left:41%;bottom:10%;font-size:58px;color:#d8d2bb;text-shadow:0 7px 10px #000}.return{position:absolute;left:20px;bottom:20px;border:1px solid var(--line);background:#111b;padding:10px 18px;cursor:pointer}.overlay{position:fixed;inset:0;z-index:50;background:#020405bb;backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px;animation:fade .2s}.modal{position:relative;width:min(520px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#21272d,#101419);border:1px solid #d6b66f66;box-shadow:0 30px 100px #000;padding:26px}.modal:before{content:'';position:absolute;inset:7px;border:1px solid #ffffff0c;pointer-events:none}.modal h2{text-align:center;font-weight:normal;color:var(--gold);margin:0 30px 22px;letter-spacing:.04em}.modal h3{font-size:24px;margin:5px 0}.modal p{font:14px/1.55 Arial;color:#c8c7bd}.close{position:absolute;right:12px;top:9px;border:0;background:transparent;font-size:28px;color:#8f928f;cursor:pointer}.primary,.secondary{display:block;width:100%;margin-top:20px;padding:13px;border:1px solid #e0c781;background:linear-gradient(#b1904e,#6c5225);font:bold 12px Arial;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.secondary{background:#171d21}.primary:disabled{opacity:.5}.dialogue,.hero-sheet{display:flex;gap:18px;align-items:center}.portrait{min-width:90px;height:105px;display:grid;place-items:center;font-size:64px;color:#ddd3bb;background:radial-gradient(circle,#7c6c4c,#252a28 70%);border:1px solid #a58a4e}.modal-icon{text-align:center;font-size:68px;color:var(--gold)}.statline{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font:13px Arial}.costs{display:flex;justify-content:center;gap:12px;margin-top:18px}.cost{border:1px solid var(--line);padding:7px 10px;font:bold 12px Arial}.cost.ok{color:#9bc491}.cost.bad{color:#d87979}.maxed{text-align:center;color:var(--gold)!important}.combat{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;text-align:center}.combatant span{font-size:60px;display:block}.combatant.foe span{color:#ba58e4}.combatant b{font-size:12px}.versus{color:var(--gold)}.hp{height:8px;background:#080a0c;margin-top:10px;border:1px solid #fff2}.hp i{display:block;height:100%;width:100%;background:#8cb66e;transition:.3s}.foe .hp i{background:#a342af}.danger{background:linear-gradient(#a74e47,#5d2727)}.impact{animation:impact .25s}.reward-card{width:250px;min-height:335px;margin:0 auto;padding:22px;text-align:center;border:2px solid #b95be5;background:radial-gradient(circle at 50% 30%,#672b82,#211326 67%);box-shadow:0 0 25px #aa42d555,inset 0 0 30px #000;border-radius:8px}.reward-card span{display:block;font-size:78px;color:#e1a8fa;text-shadow:0 0 25px #cb50ff;margin:32px 0}.reward-card strong{display:block;font-size:20px;color:#eed7f5}.reward-card small,.reward-card p{font:11px Arial;color:#c7afcd}.rarity,.tag{font:9px Arial;letter-spacing:.2em;color:#dc98fa}.reward-card.small{min-height:280px}.reward-card.small span{margin:20px}.reward-card.spent{filter:grayscale(1);opacity:.55}.empty{text-align:center;padding:50px}.empty span{font-size:70px;color:#555}.stats{display:flex;gap:16px}.stats b{color:var(--gold)}.stats small{display:block;color:var(--muted);font:9px Arial}.toast{position:fixed;z-index:80;left:50%;bottom:95px;transform:translate(-50%,20px);opacity:0;background:#111d;border:1px solid #d6b66f77;padding:11px 18px;font:12px Arial;transition:.3s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.particles{position:absolute;left:50%;top:50%;z-index:40}.particles i{position:absolute;width:6px;height:6px;border-radius:50%;background:#f7d477;animation:burst .8s forwards;transform:rotate(var(--a)) translateX(var(--d))}.particles i:nth-child(2n){background:#77c89a}.particles i:nth-child(3n){background:#be5af0}@keyframes fade{from{opacity:0}}@keyframes impact{50%{transform:scale(.96);filter:brightness(1.8)}}@keyframes burst{from{transform:rotate(var(--a)) translateX(0);opacity:1}to{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
@@ -330,13 +331,129 @@
   .building-farm{left:16%!important}.building-lumber{left:84%!important}
 }
 
+
+/* v0.13.0 — identidad visual: menos interfaz, más mundo */
+.version-badge{align-self:center;padding:4px 7px;border:1px solid #d7b45b45;background:#0a0f13a8;color:#d9c58f;font:700 8px Arial;letter-spacing:.12em;white-space:nowrap}
+.kingdom-scene{background:
+  radial-gradient(ellipse at 48% 78%,#7b5b2926 0,transparent 20%),
+  radial-gradient(circle at 83% 16%,#9d25c329 0,transparent 23%),
+  linear-gradient(180deg,#101825 0 30%,#172326 54%,#101a14 73%,#070b09)}
+.kingdom-scene:before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:
+  linear-gradient(112deg,transparent 0 48%,#7b1d9840 49%,transparent 51%),
+  radial-gradient(ellipse at 50% 100%,transparent 33%,#020507a6 86%);
+mix-blend-mode:screen;opacity:.65}
+.kingdom-silhouette{height:76%;filter:drop-shadow(0 22px 24px #000) contrast(1.08)}
+.citadel-lights{position:absolute;z-index:4;left:36%;top:24%;width:30%;height:28%;pointer-events:none;filter:drop-shadow(0 0 9px #ffc65b)}
+.citadel-lights i{position:absolute;width:5px;height:9px;background:#ffc95c;clip-path:polygon(50% 0,100% 35%,100% 100%,0 100%,0 35%);animation:windowFlicker 2.8s infinite alternate}
+.citadel-lights i:nth-child(1){left:20%;top:45%}.citadel-lights i:nth-child(2){left:41%;top:29%;animation-delay:-.7s}.citadel-lights i:nth-child(3){left:55%;top:55%;animation-delay:-1.4s}.citadel-lights i:nth-child(4){left:72%;top:38%;animation-delay:-2s}.citadel-lights i:nth-child(5){left:87%;top:61%;animation-delay:-.3s}
+.rift-corruption{position:absolute;z-index:4;inset:0;pointer-events:none;overflow:hidden;opacity:.7}
+.rift-corruption i{position:absolute;right:5%;top:1%;width:2px;height:78%;background:linear-gradient(transparent,#d54bff,#5f156f,transparent);box-shadow:0 0 10px #ba39f4;transform-origin:top;clip-path:polygon(40% 0,100% 16%,20% 31%,85% 47%,10% 68%,65% 83%,45% 100%,0 82%,45% 66%,0 46%,55% 29%,10% 13%);animation:veinPulse 3.5s infinite alternate}
+.rift-corruption i:nth-child(2){right:13%;height:54%;transform:rotate(16deg);animation-delay:-1s}.rift-corruption i:nth-child(3){right:20%;height:42%;transform:rotate(32deg);animation-delay:-2s}
+.rift-distant{right:10%;top:10%;transform:scale(1.28);filter:drop-shadow(0 0 18px #d95aff) drop-shadow(0 0 60px #5c127f)}
+.rift-distant:before{height:160px;width:90px}.rift-distant:after{height:190px;width:128px}
+.building{transition:filter .2s,transform .2s}.building:hover{z-index:18;transform:translate(-50%,-53%) scale(1.04)}
+.building-visual{position:relative;display:grid;place-items:end center;width:112px;height:88px;border:0;border-radius:0;background:transparent!important;box-shadow:none!important;overflow:visible}
+.building-keep .building-visual{width:142px;height:112px}
+.building-visual svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 10px 6px #000c)}
+.building-visual .stone{fill:#7c7767;stroke:#a99977;stroke-width:1}.building-visual .stone-dark{fill:#373d3b;stroke:#887c62;stroke-width:1}
+.building-visual .roof{fill:#3b2522;stroke:#8e6248;stroke-width:1}.building-visual .door,.building-visual .gate-dark{fill:#141718;stroke:#8e7b56;stroke-width:1}
+.building-visual .window{fill:#ffd06e;filter:drop-shadow(0 0 5px #ffbd43)}.building-visual .ground{stroke:#17130e;stroke-width:7;stroke-linecap:round}
+.building-visual .wood,.building-visual .palisade{fill:#62462c;stroke:#9b7043;stroke-width:5}.building-visual .tree{fill:#203729;stroke:#4d7250;stroke-width:2}
+.building-visual .saw{fill:none;stroke:#b8ac90;stroke-width:3;stroke-dasharray:3 2}.building-visual .rock{fill:#4f5960;stroke:#84909a;stroke-width:2}.building-visual .rock-light{fill:#69747b}
+.building-visual .beam,.building-visual .chain,.building-visual .hook{fill:none;stroke:#92714a;stroke-width:4}.building-visual .chain{stroke-width:2}
+.building-visual .chimney{fill:#3c3a35;stroke:#877660;stroke-width:2}.building-visual .smoke{fill:none;stroke:#85898b55;stroke-width:8;stroke-linecap:round}
+.building-visual .fire{fill:#e26b2f;filter:drop-shadow(0 0 7px #ff8b3d)}.building-visual .anvil{fill:#7f898c}.building-visual .banner{fill:#7d2632;stroke:#d7b45b;stroke-width:2}
+.building.objective .building-visual svg{filter:drop-shadow(0 0 4px #ffe597) drop-shadow(0 10px 8px #000)}
+.building.level-up .building-visual{animation:structureAscend .9s cubic-bezier(.2,.9,.25,1.2)}
+.building.level-up .building-visual svg{filter:brightness(1.55) drop-shadow(0 0 16px #ffd263)}
+.building strong{margin-top:-5px;clip-path:polygon(7% 0,93% 0,100% 50%,93% 100%,7% 100%,0 50%);padding:5px 13px}
+.building .level{top:10%;right:3%;border-color:#e6c46a;background:#090c0f;color:#ffe09a;box-shadow:0 0 10px #000}
+.world-scene{box-shadow:inset 0 0 130px #000}
+.world-scene:before{content:"";position:absolute;z-index:3;inset:0;pointer-events:none;background:
+ radial-gradient(ellipse at 75% 57%,#bd37df32,transparent 24%),
+ repeating-linear-gradient(103deg,transparent 0 44px,#80359c0a 45px 46px,transparent 47px 91px)}
+.world-scene:after{content:"";position:absolute;z-index:5;left:0;right:0;bottom:0;height:33%;pointer-events:none;background:linear-gradient(transparent,#050708c7),repeating-linear-gradient(76deg,transparent 0 55px,#121919 56px 58px)}
+.rift-near{transform:scale(1.55);right:11%;top:14%}
+.rift-near:before{width:104px;height:214px;box-shadow:0 0 18px #fff,0 0 55px #e244ff,0 0 140px #7c149e}
+.rift-near:after{width:155px;height:250px;border-width:2px}
+.rift-near b{letter-spacing:.24em;text-shadow:0 0 11px #ef8aff,0 3px 8px #000}
+.corruption{background:
+ radial-gradient(circle at 75% 18%,#e267ff55 0 2px,transparent 3px),
+ radial-gradient(circle at 58% 35%,#d44cff40 0 2px,transparent 3px),
+ linear-gradient(145deg,#1c2924,#0a0d10);box-shadow:inset 0 18px 35px #6f188538}
+.enemy>span:not(.objective-arrow){font-size:92px;filter:drop-shadow(0 0 20px #b940e3)}
+.scene-enter{animation:sceneCinematic .75s cubic-bezier(.18,.78,.2,1)}
+.modal-backdrop{backdrop-filter:blur(9px) saturate(.8)}
+.modal{border-color:#9a814d;background:linear-gradient(155deg,#111921f7,#070b0ff8);box-shadow:0 30px 100px #000,0 0 0 1px #000,inset 0 1px #fff1}
+.modal h2{color:#f4e1aa;text-shadow:0 2px 12px #000}
+.auto-battle{position:relative;overflow:hidden;min-height:250px;border-color:#864aa0;background:
+ radial-gradient(circle at 50% 52%,#c351e52e 0,transparent 22%),
+ linear-gradient(180deg,#0c1320 0 49%,#19211f 50%,#080c0c 100%);box-shadow:inset 0 0 60px #000,0 12px 35px #0008}
+.battle-atmosphere{position:absolute;z-index:0;inset:0;pointer-events:none;overflow:hidden}
+.battle-atmosphere:before{content:"";position:absolute;left:0;right:0;top:47%;height:2px;background:#bd57df;box-shadow:0 0 16px #c94ced}
+.battle-atmosphere:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,#d85dff12 50%,transparent 65%);animation:battleSweep 2.8s infinite}
+.battle-atmosphere i{position:absolute;bottom:42%;width:2px;height:38%;background:#9d3fc4;box-shadow:0 0 8px #d25cff;transform:rotate(18deg)}
+.battle-atmosphere i:nth-child(1){left:46%}.battle-atmosphere i:nth-child(2){left:54%;transform:rotate(-20deg);height:30%}.battle-atmosphere i:nth-child(3){left:50%;height:46%;transform:rotate(4deg)}
+.battle-atmosphere b{position:absolute;left:50%;top:44%;width:70px;height:70px;border:1px solid #d75bfa55;border-radius:50%;transform:translate(-50%,-50%) scaleX(.35);box-shadow:0 0 30px #ab31d8;animation:riftHalo 2.2s infinite}
+.auto-side{z-index:2}.auto-side>span{font-size:78px}.auto-side>i{font-size:32px;filter:drop-shadow(0 0 10px #7ee8ff)}
+.auto-side.allied:before{content:"";position:absolute;left:50%;bottom:26px;width:105px;height:22px;border-radius:50%;transform:translateX(-50%);background:#d7b45b38;filter:blur(8px)}
+.auto-side.enemy-side:before{content:"";position:absolute;left:50%;bottom:26px;width:105px;height:22px;border-radius:50%;transform:translateX(-50%);background:#c044ff48;filter:blur(8px)}
+.auto-side.allied.shielded:after{content:"";position:absolute;inset:-12px 4px 17px;border:2px solid #72e4ff;border-radius:50%;box-shadow:inset 0 0 25px #5cddff33,0 0 20px #4cd8ff88;animation:shieldBreathe 1.1s infinite alternate}
+.auto-side.striking{animation:heroLunge .42s cubic-bezier(.2,.8,.3,1)}
+.auto-clash{z-index:4;font-size:42px;color:#ffe09b}.auto-clash.bursting{animation:clashBurst .42s}
+.auto-skill:not(:disabled){background:linear-gradient(180deg,#7c368e,#3a174a);border-color:#ed98ff;box-shadow:0 0 24px #c63be988,inset 0 1px #fff3;animation:skillSummon 1s infinite alternate}
+.charge-track{height:11px;border-color:#66d8ef;box-shadow:inset 0 2px 6px #000}.charge-track i{box-shadow:0 0 13px #56e9ff}
+.damage-number{font-size:30px;-webkit-text-stroke:1px #360506}
+.reward-modal{border-width:2px}
+.reward-card,.second-reward{min-height:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:
+ radial-gradient(circle at 50% 38%,#7c2aa270 0,transparent 34%),
+ linear-gradient(145deg,#21152b,#080a0e 72%);border:2px solid #d79bf0;box-shadow:0 0 0 1px #000,0 0 50px #b539d16b,inset 0 0 45px #000}
+.reward-card>span,.second-reward>span{font-size:82px;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 32px #d35aff);animation:relicHover 2.2s ease-in-out infinite}
+.reward-card strong,.second-reward strong{font-size:24px;letter-spacing:.05em;text-shadow:0 2px 12px #000}
+.reward-card .rarity{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:5px 18px;letter-spacing:.22em;background:#b37a30;color:#fff5d5;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)}
+.second-reward:before{content:"RECOMPENSA DE EXPEDICIÓN";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:max-content;color:#f1d58a;font:700 9px Arial;letter-spacing:.22em}
+.victory-impact-overlay{background:
+ radial-gradient(circle at 50% 47%,#9b5d274f 0,transparent 26%),
+ radial-gradient(circle,#30210e 0,#0c0a08 48%,#020405 78%)}
+.victory-impact-overlay.victory-second{background:radial-gradient(circle at 50% 42%,#a540a45c,#160b1b 43%,#020405 78%)}
+.victory-impact-overlay.victory-third{background:radial-gradient(circle at 50% 42%,#26759e66,#08131b 43%,#020405 78%)}
+.victory-impact:before{content:"";position:absolute;left:50%;top:42%;width:210px;height:210px;border:1px solid #f1cb6b77;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 60px #eebc4860,inset 0 0 45px #eebc4833;animation:victorySeal 2.8s infinite}
+.victory-impact strong{position:relative;font-size:38px;letter-spacing:.05em}.victory-impact b{position:relative;border:1px solid #d9b75b;padding:8px 18px}
+.primary{position:relative;overflow:hidden;letter-spacing:.08em}.primary:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#fff4 48%,transparent 66%);transform:translateX(-130%);animation:buttonSheen 4s infinite}
+@keyframes windowFlicker{50%{opacity:.48;filter:brightness(.7)}}
+@keyframes veinPulse{to{opacity:.25;filter:blur(1px);transform:translateX(-7px) scaleY(1.04)}}
+@keyframes structureAscend{0%{transform:translateY(16px) scale(.72);opacity:.3}60%{transform:translateY(-8px) scale(1.12)}100%{transform:none}}
+@keyframes sceneCinematic{0%{opacity:0;filter:brightness(.25) blur(4px);transform:scale(1.045)}100%{opacity:1;filter:none;transform:none}}
+@keyframes battleSweep{0%,25%{transform:translateX(-65%)}80%,100%{transform:translateX(65%)}}
+@keyframes shieldBreathe{to{transform:scale(1.05);opacity:.68}}
+@keyframes heroLunge{35%{transform:translateX(34px) scale(1.12);filter:brightness(1.8)}70%{transform:translateX(-4px)}}
+@keyframes clashBurst{35%{transform:scale(1.9) rotate(12deg);filter:brightness(2.5)}100%{transform:none}}
+@keyframes skillSummon{to{filter:brightness(1.25);box-shadow:0 0 38px #d45fff}}
+@keyframes relicHover{50%{transform:translateY(-8px) scale(1.04);filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 42px #d35aff)}}
+@keyframes victorySeal{50%{transform:translate(-50%,-50%) scale(1.08);opacity:.58}}
+@media(max-width:720px){
+  .version-badge{position:absolute;top:70px;right:9px}
+  .kingdom-silhouette{height:70%}.citadel-lights{left:31%;top:24%;width:38%}
+  .rift-distant{right:4%;top:11%;transform:scale(.9)}
+  .building-visual{width:76px;height:62px}.building-keep .building-visual{width:94px;height:78px}
+  .building strong{margin-top:-4px;padding:4px 9px}
+  .auto-battle{min-height:230px}.auto-side>span{font-size:62px}
+  .rift-near{transform:scale(1.16)}
+}
+@media(max-width:420px){
+  .version-badge{font-size:7px}
+  .citadel-lights{top:26%}
+  .reward-card,.second-reward{min-height:220px}.reward-card>span,.second-reward>span{font-size:68px}
+  .victory-impact strong{font-size:30px}
+}
+
 </style>
 </head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
     <header class="topbar">
       <button id="brand" class="brand" aria-label="Eldoria">E</button>
-      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div>
+      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div><span class="version-badge">v0.13.0</span>
       <div id="resources" class="resources"></div>
       <button id="sound-toggle" class="icon-button" aria-label="Activar o desactivar sonido">◉</button>
     </header>
@@ -345,6 +462,8 @@
       <div class="kingdom-atmosphere"><i></i><i></i><i></i></div>
       <svg class="kingdom-silhouette" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="citadel-start" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#354047"/><stop offset="1" stop-color="#101619"/></linearGradient></defs><path fill="#0b1014" opacity=".78" d="M0 245 95 182 180 226 270 118 330 202 455 136 530 224 650 92 735 210 842 142 930 225 1040 128 1200 226V520H0Z"/><path fill="url(#citadel-start)" stroke="#9d8756" stroke-opacity=".25" d="M430 330V190h34v-44h20v44h45v-78h22v-33h22v33h25v78h54v-55h22v55h32v140H430Z"/><path fill="#080c0f" d="M0 390Q160 335 310 386T610 372t310 8 280-5v145H0Z"/></svg>
       <div class="sky-glow"></div>
+      <div class="citadel-lights"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="rift-corruption"><i></i><i></i><i></i></div>
       <div class="rift rift-distant" aria-label="La Brecha"><i></i><i></i><i></i></div>
       <div class="terrain terrain-back"></div>
       <div class="terrain terrain-front"></div>
@@ -467,6 +586,17 @@ window.ELDORIA_DATA = {
   function renderResources(prod={}){
     $('#resources').innerHTML=Object.entries(D.resources).map(([k,r])=>`<div class="resource r-${k}" title="${r.label}"><i>${r.icon}</i><span>${fmt(state.resources[k])}</span><small>+${prod[k]||0}/s</small></div>`).join('');
   }
+  function buildingArt(id){
+    const art={
+      keep:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="stone-dark" d="M18 80V31h15V17h13v14h28V11h14v20h15v49z"/><path class="stone" d="M29 80V36h18v-9h10v9h17V26h10v10h10v44z"/><path class="roof" d="M23 31h28l-6-10H30zm45 0h29L88 20H75z"/><path class="door" d="M52 80V58q8-12 16 0v22z"/><path class="window" d="M36 46h7v10h-7zm43 0h7v10h-7z"/></svg>',
+      farm:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="ground" d="M12 80h96"/><path class="stone-dark" d="M24 80V42h72v38z"/><path class="roof" d="M15 45 60 16l45 29-8 8-37-24-37 24z"/><path class="door" d="M49 80V53h22v27z"/><path class="window" d="M31 55h11v10H31zm47 0h11v10H78z"/></svg>',
+      lumber:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="wood" d="M20 80V52h65v28z"/><path class="roof" d="m13 54 39-25 40 25-8 7-32-19-32 19z"/><path class="tree" d="m89 20-15 23h10L70 62h38L94 43h10z"/><path class="door" d="M45 80V58h17v22z"/><circle class="saw" cx="83" cy="69" r="11"/></svg>',
+      quarry:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="rock" d="m13 80 19-30 20 8 14-30 40 52z"/><path class="rock-light" d="m32 50 20 8-14 22H13zm34-22 12 52H48z"/><path class="beam" d="M28 24h55v6H28zm4 0h6v37h-6zm43 4h6v42h-6z"/><path class="chain" d="M79 30v20"/><path class="hook" d="M73 49q6 16 12 0"/></svg>',
+      forge:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="stone-dark" d="M20 80V48h68v32z"/><path class="roof" d="m13 50 42-28 43 28-8 8-35-23-35 23z"/><path class="chimney" d="M76 35V12h15v34z"/><path class="smoke" d="M84 9q-14-10 0-18 12-7 3-16"/><path class="door fire" d="M45 80V58h22v22z"/><path class="anvil" d="M78 66h24l-7 8H81z"/></svg>',
+      barracks:'<svg viewBox="0 0 120 92" aria-hidden="true"><path class="palisade" d="M18 80V37l8-9 8 9v43m12 0V37l8-9 8 9v43m12 0V37l8-9 8 9v43"/><path class="stone-dark" d="M24 80V49h68v31z"/><path class="gate-dark" d="M48 80V56h20v24z"/><path class="banner" d="M59 49V12m2 3h25l-8 10 8 10H61z"/></svg>'
+    };
+    return `<span class="building-art building-visual visual-${id}">${art[id]}</span>`;
+  }
   function renderBuildings(){
     $('#buildings').innerHTML='';
     Object.entries(D.buildings).forEach(([id,b])=>{
@@ -474,7 +604,7 @@ window.ELDORIA_DATA = {
         (state.cardUsed&&!state.loop2Unlocked&&id==='keep')||
         (state.companion&&!state.troopType&&!state.thirdVictory&&id==='barracks')||
         (state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry'));
-      const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':id==='barracks'?'RECLUTA TROPAS':'ELIGE UNA RUTA'}</em>`:''}<span class="building-art">${b.icon}</span><span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
+      const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':id==='barracks'?'RECLUTA TROPAS':'ELIGE UNA RUTA'}</em>`:''}${buildingArt(id)}<span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
       n.style.left=`${b.x}%`; n.style.top=`${b.y}%`; n.onclick=()=>buildingModal(id); $('#buildings').append(n);
     });
   }
@@ -601,7 +731,7 @@ window.ELDORIA_DATA = {
   }
   function autoCombatModal(){
     const plan=warPlanInfo(),troop=troopInfo(),companion=state.companion==='lyra'?{icon:'➶',skill:'Lluvia de flechas',copy:'55 daño y rompe armadura'}:{icon:'✧',skill:'Luz restauradora',copy:'Cura 30 y causa 25'};
-    openModal('Batalla de héroes',`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="troop-banner"><b>${troop.icon} ${troop.name}</b><span id="battle-troop-count">${state.troopCount} en pie</span></div><div class="auto-battle"><div class="auto-side allied"><span>♜</span><i>${state.companion==='lyra'?'➶':'✧'}</i><div class="troop-rank">${state.troopType==='infantry'?'⚔ ⚔ ⚔':'➶ ➶ ➶'}</div><b>COMPAÑÍA DE VALORIA</b><div class="hp"><i id="player-hp"></i></div></div><div class="auto-clash">⚡</div><div class="auto-side enemy-side"><span>♚</span><b>AVATAR</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="auto-status"><div><small>HABILIDAD</small><div class="charge-track"><i id="auto-charge"></i></div></div><div id="auto-armor" class="armor-status"></div></div><p id="combat-log">La compañía avanza. Espera a que la habilidad esté cargada.</p><button id="auto-skill" class="primary auto-skill" disabled>${companion.icon} ${companion.skill}<small>${companion.copy}</small></button>`);
+    openModal('Batalla de héroes',`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="troop-banner"><b>${troop.icon} ${troop.name}</b><span id="battle-troop-count">${state.troopCount} en pie</span></div><div class="auto-battle"><div class="battle-atmosphere"><i></i><i></i><i></i><b></b></div><div class="auto-side allied"><span>♜</span><i>${state.companion==='lyra'?'➶':'✧'}</i><div class="troop-rank">${state.troopType==='infantry'?'⚔ ⚔ ⚔':'➶ ➶ ➶'}</div><b>COMPAÑÍA DE VALORIA</b><div class="hp"><i id="player-hp"></i></div></div><div class="auto-clash">⚡</div><div class="auto-side enemy-side"><span>♚</span><b>AVATAR</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="auto-status"><div><small>HABILIDAD</small><div class="charge-track"><i id="auto-charge"></i></div></div><div id="auto-armor" class="armor-status"></div></div><p id="combat-log">La compañía avanza. Espera a que la habilidad esté cargada.</p><button id="auto-skill" class="primary auto-skill" disabled>${companion.icon} ${companion.skill}<small>${companion.copy}</small></button>`);
     enemyMaxHp=180;playerMaxHp=state.troopType==='infantry'?130:100;
     state.enemyHp=enemyMaxHp;state.playerHp=playerMaxHp;enemyArmor=state.warPlan==='ballista'?1:3;campaignShield=state.warPlan==='ward'?24:0;
     battleTroops=state.troopCount;autoCharge=0;combatTurn=0;
@@ -632,6 +762,8 @@ window.ELDORIA_DATA = {
     if(state.enemyHp<=0){clearInterval(autoTimer);autoTimer=null;$('#auto-skill').disabled=true;setTimeout(victory,500);}
   }
   function updateAutoUi(){
+    const allied=$('.auto-side.allied');
+    if(allied)allied.classList.toggle('shielded',campaignShield>0);
     if($('#auto-charge'))$('#auto-charge').style.width=`${autoCharge}%`;
     if($('#auto-skill'))$('#auto-skill').disabled=autoCharge<100;
     if($('#auto-armor')){$('#auto-armor').className=`armor-status ${enemyArmor===0?'broken':''}`;$('#auto-armor').textContent=enemyArmor>0?`⛨ ARMADURA · ${enemyArmor}`:'◇ ARMADURA ROTA';}
@@ -850,7 +982,7 @@ window.ELDORIA_DATA = {
     const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'CAPÍTULO II':'SALÓN DE HÉROES'):'RELIQUIA LEGENDARIA'):needsTroops?'CUARTEL DE VALORIA':needsCouncil?'CONSEJO DE GUERRA':state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
     const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'DESCUBRE QUÉ AGUARDA':'EQUIPA EL ECO DEL REY'):'RECOGE LA RECOMPENSA'):needsTroops?'RECLUTA UNA COMPAÑÍA':needsCouncil?'INVIERTE 2 DE 3 FRAGMENTOS':state.companion?'ELIGE CÓMO DIRIGIR EL ASALTO':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
     const gateName=needsTroops?'Reclutar tropas':needsCouncil?'Preparar expedición':state.companion&&!state.thirdVictory?'Fortaleza sepultada':'Salir al mundo';
-    $('#scene').innerHTML=`<div class="kingdom-atmosphere"><i></i><i></i><i></i></div><svg class="kingdom-silhouette" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="citadel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#354047"/><stop offset="1" stop-color="#101619"/></linearGradient></defs><path fill="#0b1014" opacity=".78" d="M0 245 95 182 180 226 270 118 330 202 455 136 530 224 650 92 735 210 842 142 930 225 1040 128 1200 226V520H0Z"/><path fill="url(#citadel)" stroke="#9d8756" stroke-opacity=".25" d="M430 330V190h34v-44h20v44h45v-78h22v-33h22v33h25v78h54v-55h22v55h32v140H430Z"/><path fill="#080c0f" d="M0 390Q160 335 310 386T610 372t310 8 280-5v145H0Z"/></svg><div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>${needsTroops?'⚑':'◆'}</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
+    $('#scene').innerHTML=`<div class="kingdom-atmosphere"><i></i><i></i><i></i></div><svg class="kingdom-silhouette" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="citadel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#354047"/><stop offset="1" stop-color="#101619"/></linearGradient></defs><path fill="#0b1014" opacity=".78" d="M0 245 95 182 180 226 270 118 330 202 455 136 530 224 650 92 735 210 842 142 930 225 1040 128 1200 226V520H0Z"/><path fill="url(#citadel)" stroke="#9d8756" stroke-opacity=".25" d="M430 330V190h34v-44h20v44h45v-78h22v-33h22v33h25v78h54v-55h22v55h32v140H430Z"/><path fill="#080c0f" d="M0 390Q160 335 310 386T610 372t310 8 280-5v145H0Z"/></svg><div class="sky-glow"></div><div class="citadel-lights"><i></i><i></i><i></i><i></i><i></i></div><div class="rift-corruption"><i></i><i></i><i></i></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>${needsTroops?'⚑':'◆'}</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
     $('#aldric').onclick=talkAldric;
     $('#gate').onclick=needsTroops?barracksModal:needsCouncil?showWarCouncil:showWorld;
     if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
@@ -911,6 +1043,9 @@ window.ELDORIA_DATA = {
   }
   function combatFeedback(type,dmg,incoming){
     const hero=$('.combatant.hero')||$('.auto-side.allied'),foe=$('.combatant.foe')||$('.auto-side.enemy-side');
+    const clash=$('.auto-clash');
+    if(hero&&dmg>0){hero.classList.remove('striking');void hero.offsetWidth;hero.classList.add('striking');setTimeout(()=>hero.classList.remove('striking'),430);}
+    if(clash&&dmg>0){clash.classList.remove('bursting');void clash.offsetWidth;clash.classList.add('bursting');}
     if(foe&&dmg>0){foe.classList.remove('hit');void foe.offsetWidth;foe.classList.add(type==='skill'||type==='technique'?'skill-hit':'hit');const p=el('b','damage-number enemy-damage',`−${dmg}`);foe.append(p);setTimeout(()=>p.remove(),850);}
     if(hero&&incoming>0){hero.classList.remove('hit');void hero.offsetWidth;hero.classList.add('hit');const p=el('b','damage-number hero-damage',`−${incoming}`);hero.append(p);setTimeout(()=>p.remove(),850);}
     const scene=$('.modal');if(scene&&(type==='skill'||type==='technique')){scene.classList.remove('skill-flash');void scene.offsetWidth;scene.classList.add('skill-flash');}
@@ -920,14 +1055,14 @@ window.ELDORIA_DATA = {
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.12-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.13.0 | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
     $('#copy-report').onclick=copyReport;
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
-  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();}; }
+  function showMenu(){ openModal('Eldoria',`<p>v0.13.0 · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();}; }
   init();
 })();
 
