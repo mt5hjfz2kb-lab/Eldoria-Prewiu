@@ -178,6 +178,106 @@
 .auto-skill{width:100%}.auto-skill small{display:block;margin-top:3px;font-size:9px}.auto-skill:disabled{opacity:.4}
 .troop-impact{background:radial-gradient(circle,#4c3a18 0,#12100b 45%,#050709 75%)}
 @media(max-width:420px){.troop-options,.mode-options{grid-template-columns:1fr 1fr}.troop-options button,.mode-options button{padding:11px 7px}.troop-banner{display:block}.troop-banner span{display:block;margin-top:4px;text-align:left}}
+
+/* v0.12 — dirección de arte y game feel */
+:root{--ink:#f1ead7;--muted:#a9adb0;--panel:#0d1319f2;--gold:#d7b45b;--gold-bright:#ffe39a;--rift:#c346ff;--rift-hot:#f39cff;--blood:#d55e57;--ice:#69c7d8}
+.game-shell{background:#080d12;isolation:isolate}
+.topbar{background:linear-gradient(180deg,#111820fa,#090e14f7);box-shadow:0 8px 30px #0009,inset 0 -1px #d7b45b20}
+.brand{position:relative;background:radial-gradient(circle at 50% 35%,#6e5530,#17130e 67%);box-shadow:0 0 20px #d7aa5140,inset 0 0 12px #000}
+.realm-title strong{color:#f7edd1;text-shadow:0 2px 8px #000}.realm-title span{color:#aab5b8}
+.resource{position:relative;overflow:hidden;background:linear-gradient(145deg,#111820ee,#070b0eee);border-color:#d7b45b20;box-shadow:inset 0 1px #fff08}
+.resource:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,#fff08 48%,transparent 70%);transform:translateX(-130%);animation:resourceSheen 9s infinite}
+.scene{background:#090f14;transition:filter .45s,opacity .45s,transform .45s}
+.kingdom-scene{background:linear-gradient(180deg,#111c28 0 34%,#17231f 62%,#080d0c)}
+.kingdom-silhouette{position:absolute;z-index:1;inset:0;width:100%;height:70%;filter:drop-shadow(0 18px 18px #000);opacity:.92}
+.kingdom-atmosphere{position:absolute;z-index:3;inset:0;pointer-events:none;overflow:hidden}
+.kingdom-atmosphere:before{content:"";position:absolute;left:-5%;right:-5%;bottom:16%;height:28%;background:linear-gradient(transparent,#bcc9bd0e,#bdc9bc22,transparent);filter:blur(10px);animation:mistDrift 14s ease-in-out infinite alternate}
+.kingdom-atmosphere i{position:absolute;width:3px;height:3px;border-radius:50%;background:#e6cb7b;box-shadow:0 0 8px #ffd36c;animation:emberRise 7s linear infinite}
+.kingdom-atmosphere i:nth-child(1){left:18%;bottom:8%;animation-delay:-1s}.kingdom-atmosphere i:nth-child(2){left:62%;bottom:13%;animation-delay:-4s}.kingdom-atmosphere i:nth-child(3){left:83%;bottom:7%;animation-delay:-6s}
+.sky-glow{z-index:2;background:radial-gradient(circle at 16% 8%,#d48d392f,transparent 24%),radial-gradient(circle at 82% 9%,#b728ef24,transparent 23%),linear-gradient(115deg,transparent 52%,#52126920)}
+.terrain-back{z-index:2;background:linear-gradient(180deg,#26372f,#101b17);filter:drop-shadow(0 -8px 18px #000)}
+.terrain-front{z-index:3;background:radial-gradient(ellipse at 45% 5%,#354b39,#122019 58%,#090f0c);border-top-color:#8f946229}
+.buildings{z-index:6}.building{filter:drop-shadow(0 10px 8px #000b)}.building-art{background:linear-gradient(150deg,#70664f,#252c2a 70%);border-color:#9f8b62;box-shadow:inset 0 0 18px #0008,0 0 0 1px #000}
+.building:hover .building-art{filter:brightness(1.15);box-shadow:inset 0 0 18px #0006,0 0 22px #d7b45b2e}
+.building.level-up{z-index:15;animation:buildingRise .9s cubic-bezier(.2,.9,.25,1.2)}.building.level-up .building-art{box-shadow:0 0 0 3px #ffe49b,0 0 45px #f2bd51,inset 0 0 22px #fff5;filter:brightness(1.5)}
+.building strong{background:linear-gradient(90deg,#0a0f12ed,#18201fed,#0a0f12ed);border-color:#d6b66f55;box-shadow:0 5px 12px #0008}
+.character{z-index:10;filter:drop-shadow(0 14px 10px #000)}.character:before{content:"";position:absolute;z-index:-1;left:50%;top:8px;width:46px;height:68px;transform:translateX(-50%);background:linear-gradient(145deg,#7a2637,#270d17);clip-path:polygon(40% 0,65% 0,100% 100%,0 100%);filter:drop-shadow(0 4px 4px #000)}
+.character-glow{width:96px;height:34px;background:#d7b45b35;filter:blur(12px);animation:aldricAura 3.5s ease-in-out infinite}
+.helmet{font-size:66px;color:#e6dfc8;text-shadow:0 2px #fff4,0 8px 12px #000}
+.character-label{min-width:154px;background:linear-gradient(90deg,#080c10e8,#162027f2,#080c10e8);border-color:#d6b66f70;padding:5px 10px}.character-label b,.character-label small{display:block}.character-label b{font-size:12px;color:#f5e8c3}.character-label small{margin-top:2px;color:#9fb2b8;font:8px Arial;letter-spacing:.06em}
+.gate{background:linear-gradient(145deg,#161d22e8,#080c0feb);box-shadow:0 12px 25px #000a,inset 0 1px #fff1;backdrop-filter:blur(6px)}.gate span{filter:drop-shadow(0 0 8px #d7b45b70)}
+.quest-panel{background:linear-gradient(100deg,#090e13f2,#111a20e5);border-left-color:#d9b657;box-shadow:0 12px 35px #0009,inset 0 1px #fff08;backdrop-filter:blur(6px)}
+.quest-panel:before{content:"";position:absolute;left:-3px;top:0;bottom:0;width:3px;background:linear-gradient(transparent,#ffe39a,transparent);animation:questGlow 3s infinite}
+.bottom-nav{background:linear-gradient(180deg,#10171df8,#070b0ffb);box-shadow:0 -8px 26px #0008}
+.bottom-nav button.active{color:#f3d789;background:radial-gradient(circle at 50% 0,#d6b66f2b,transparent 65%)}
+
+/* La Brecha: firma visual */
+.rift{isolation:isolate}
+.rift:before{content:"";position:absolute;z-index:-1;left:-13px;top:8px;width:70px;height:122px;border-radius:50%;background:radial-gradient(ellipse,#fff 0 2%,#ef9cff 5%,#b52ff5 18%,#48106f 39%,#05030a 62%);box-shadow:0 0 14px #fff,0 0 35px #d13cff,0 0 80px #7f1fcf;transform:rotate(7deg) scaleX(.43);animation:riftCore 1.8s ease-in-out infinite alternate}
+.rift:after{content:"";position:absolute;z-index:-2;left:-30px;top:-15px;width:105px;height:155px;border:1px solid #d55dff55;border-radius:50%;filter:blur(2px);transform:rotate(-8deg) scaleX(.5);animation:riftHalo 2.8s ease-in-out infinite}
+.rift i{z-index:2;background:linear-gradient(transparent,#fff,#f09cff,#9b2ce8,transparent);box-shadow:0 0 12px #fff,0 0 22px #d84cff}
+.rift-distant{opacity:.9}.rift-near{filter:drop-shadow(0 0 20px #c43aff) drop-shadow(0 0 50px #6b148c)}
+.world-scene{background:linear-gradient(180deg,#080d17,#141d26 42%,#0b1210)}
+.world-stars{position:absolute;inset:0 0 45%;opacity:.55;background-image:radial-gradient(#d8edff 1px,transparent 1px),radial-gradient(#dba6ff 1px,transparent 1px);background-size:53px 53px,79px 79px;background-position:10px 15px,30px 4px}
+.world-mist{position:absolute;z-index:4;inset:0;pointer-events:none;overflow:hidden}.world-mist i{position:absolute;left:-20%;width:140%;height:18%;border-radius:50%;background:#aeb9be12;filter:blur(18px);animation:worldMist 12s ease-in-out infinite alternate}.world-mist i:nth-child(1){bottom:8%}.world-mist i:nth-child(2){bottom:30%;animation-delay:-5s}.world-mist i:nth-child(3){top:31%;opacity:.5;animation-delay:-8s}
+.moon{background:radial-gradient(circle at 35% 35%,#fff5d7,#b9b8ac 55%,#626a70);box-shadow:0 0 70px #d9e1cf50;filter:drop-shadow(0 0 8px #fff8)}
+.corruption{background:radial-gradient(circle at 72% 30%,#9f2bc47d,transparent 24%),linear-gradient(150deg,#1d2924,#101317);filter:drop-shadow(0 -10px 22px #000)}
+.path{filter:drop-shadow(0 0 12px #000)}.path i{animation:pathSpark 1.8s ease-in-out infinite}.path i:nth-child(2){animation-delay:.3s}.path i:nth-child(3){animation-delay:.6s}
+.enemy{filter:drop-shadow(0 12px 10px #000)}.enemy>span:not(.objective-arrow){animation:enemyIdle 2.4s ease-in-out infinite}.enemy b,.enemy em{background:linear-gradient(90deg,#08060bdd,#1d0e25f2,#08060bdd);border-left:1px solid #b650dd55;border-right:1px solid #b650dd55}
+
+/* Pantallas menos planas */
+.overlay{background:radial-gradient(circle at 50% 35%,#25303c99,#030507e8 58%);backdrop-filter:blur(8px) saturate(.8)}
+.modal{background:linear-gradient(145deg,#1a232bed,#090e13fa);border-color:#d6b66f70;box-shadow:0 35px 110px #000,0 0 55px #7a2f9a18;animation:modalRise .35s cubic-bezier(.18,.82,.28,1)}
+.modal:after{content:"";position:absolute;z-index:-1;inset:-1px;background:linear-gradient(125deg,#d8b85b55,transparent 25%,transparent 70%,#ad43dc38);filter:blur(8px)}
+.modal h2{color:#efd486;text-shadow:0 2px 10px #000}
+.primary{position:relative;overflow:hidden;background:linear-gradient(180deg,#c19a4b,#62491f);box-shadow:0 7px 16px #0008,inset 0 1px #fff5;transition:.18s transform,.18s filter}.primary:hover{filter:brightness(1.15);transform:translateY(-1px)}.primary:active{transform:translateY(2px) scale(.985)}
+.primary:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 20%,#fff4 48%,transparent 75%);transform:translateX(-140%);animation:buttonSheen 4.5s infinite}
+.portrait{position:relative;background:radial-gradient(circle at 50% 28%,#a18a5b,#29302e 62%,#0b0f10);box-shadow:inset 0 0 30px #000,0 8px 22px #0008}.portrait:after{content:"SIR ALDRIC";position:absolute;bottom:5px;font:700 7px Arial;letter-spacing:.16em;color:#f3da96}
+.dialogue p strong{color:#efd789}
+.reward-overlay{background:radial-gradient(circle,#5d421a88 0,#120c17e8 42%,#020304f4 75%)}
+.reward-modal{overflow:hidden;border-color:#f1d072;box-shadow:0 0 45px #e1b84b3d,0 35px 110px #000}.reward-modal:before{border-color:#f3d98120}
+.reward-modal:after{z-index:0;inset:-60%;background:conic-gradient(transparent,#ffdc7130,transparent 13%,transparent 31%,#c965ee22,transparent 47%,transparent 75%,#ffdc7126,transparent 87%);filter:none;animation:rewardRays 10s linear infinite;pointer-events:none}.reward-modal>*{position:relative;z-index:1}
+.reward-card{position:relative;overflow:hidden;box-shadow:0 0 35px #c449ef70,inset 0 0 34px #000;animation:rewardCardEnter .7s cubic-bezier(.15,.85,.25,1.15)}.reward-card:after{content:"";position:absolute;inset:-20%;background:linear-gradient(115deg,transparent 35%,#fff5 48%,transparent 61%);transform:translateX(-100%);animation:cardGlint 2.8s infinite}
+.second-reward{position:relative;overflow:hidden;animation:rewardCardEnter .65s cubic-bezier(.15,.85,.25,1.15)}.second-reward:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent,#fff2,transparent);transform:translateX(-120%);animation:cardGlint 2.5s .5s infinite}
+.choice-impact>span,.victory-impact>span{animation:rewardCardEnter .7s cubic-bezier(.15,.9,.22,1.2);filter:drop-shadow(0 0 25px #f4d26d)}
+.choice-impact-overlay{backdrop-filter:blur(9px)}
+
+/* Feedback inmediato */
+.resource-feedback{position:absolute;z-index:95;top:82px;right:18px;display:grid;gap:6px;pointer-events:none}
+.resource-feedback span{min-width:160px;padding:8px 12px;background:#080d11ed;border:1px solid #fff2;box-shadow:0 8px 25px #000a;font:700 11px Arial;animation:resourcePop 1.7s forwards}.resource-feedback i{margin-right:7px;font-style:normal}.resource-feedback .gain{color:#aee4a6;border-color:#66b97988}.resource-feedback .spend{color:#f0b19b;border-color:#c4614e88}
+.combatant,.auto-side{position:relative;transform-origin:center bottom}.combatant.hit,.auto-side.hit{animation:takeHit .35s}.combatant.skill-hit,.auto-side.skill-hit{animation:skillHit .55s}
+.damage-number{position:absolute;z-index:8;top:20%;left:50%;color:#ff8379;font:bold 24px Arial;text-shadow:0 2px 4px #000,0 0 10px #ff322e;animation:damageFloat .8s forwards;pointer-events:none}.hero-damage{color:#ffad82}.enemy-damage{color:#ff776e}
+.skill-flash:before{content:"";position:absolute;z-index:8;inset:0;background:linear-gradient(110deg,transparent,#d969ff35,transparent);pointer-events:none;animation:skillFlash .5s}
+.hp{height:10px;border-color:#ffffff35;box-shadow:inset 0 2px 4px #000}.hp i{background:linear-gradient(90deg,#4d883f,#9ed76e);box-shadow:0 0 10px #73bd59}.foe .hp i,.enemy-side .hp i{background:linear-gradient(90deg,#6d207d,#dd55ec);box-shadow:0 0 12px #c23bdf}
+.enemy-intent{box-shadow:0 5px 15px #0007}.combat-actions .action{position:relative;overflow:hidden;transition:.15s transform,.15s filter,.15s box-shadow}.combat-actions .action:hover{filter:brightness(1.14);transform:translateY(-2px)}.combat-actions .action:active{transform:translateY(2px) scale(.97)}.combat-actions .rift-action:not(:disabled){box-shadow:0 0 22px #c454e060;animation:skillReady 1.25s infinite}
+.auto-clash{filter:drop-shadow(0 0 10px #ffd36b)}
+
+/* Movimiento */
+@keyframes resourceSheen{0%,75%{transform:translateX(-130%)}90%,100%{transform:translateX(140%)}}
+@keyframes mistDrift{to{transform:translateX(5%) scaleY(1.15)}}
+@keyframes emberRise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translate(25px,-250px);opacity:0}}
+@keyframes buildingRise{0%{transform:translate(-50%,-35%) scale(.75);opacity:.4}55%{transform:translate(-50%,-58%) scale(1.16)}100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes aldricAura{50%{transform:translateX(-50%) scale(1.25);opacity:.55}}
+@keyframes questGlow{50%{filter:brightness(1.8);box-shadow:0 0 12px #ffd66b}}
+@keyframes riftCore{to{filter:brightness(1.35);transform:rotate(4deg) scaleX(.5) scaleY(1.04)}}
+@keyframes riftHalo{50%{opacity:.25;transform:rotate(12deg) scaleX(.63) scaleY(1.08)}}
+@keyframes riftHalo{50%{opacity:.25;transform:rotate(12deg) scaleX(.63) scaleY(1.08)}}
+@keyframes worldMist{to{transform:translateX(12%) scaleY(1.25)}}
+@keyframes pathSpark{50%{filter:brightness(1.8);box-shadow:0 0 18px #ffe69a}}
+@keyframes enemyIdle{50%{transform:translateY(-6px);filter:brightness(1.25)}}
+@keyframes modalRise{from{opacity:0;transform:translateY(18px) scale(.97)}}
+@keyframes buttonSheen{0%,72%{transform:translateX(-140%)}88%,100%{transform:translateX(140%)}}
+@keyframes rewardRays{to{transform:rotate(360deg)}}
+@keyframes rewardCardEnter{0%{opacity:0;transform:translateY(32px) scale(.72)}65%{transform:translateY(-5px) scale(1.04)}100%{opacity:1;transform:none}}
+@keyframes cardGlint{0%,45%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
+@keyframes resourcePop{0%{opacity:0;transform:translateX(35px) scale(.9)}15%{opacity:1;transform:none}75%{opacity:1;transform:translateY(-8px)}100%{opacity:0;transform:translateY(-28px)}}
+@keyframes takeHit{20%{transform:translateX(-8px);filter:brightness(2)}45%{transform:translateX(7px)}70%{transform:translateX(-3px)}}
+@keyframes skillHit{15%{transform:scale(1.12);filter:brightness(2.4)}45%{transform:translateX(12px) rotate(2deg)}70%{transform:translateX(-8px) rotate(-1deg)}}
+@keyframes damageFloat{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-45px) scale(.9)}}
+@keyframes skillFlash{from{opacity:0;transform:translateX(-50%)}40%{opacity:1}to{opacity:0;transform:translateX(50%)}}
+@keyframes skillReady{50%{filter:brightness(1.25);box-shadow:0 0 35px #d05fff99}}
+@media(max-width:720px){.kingdom-silhouette{height:64%}.character{left:58%;bottom:13%}.character-label{min-width:130px}.resource-feedback{top:118px;right:8px}.resource-feedback span{min-width:140px}.quest-panel{backdrop-filter:blur(4px)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -190,13 +290,15 @@
     </header>
 
     <section id="scene" class="scene kingdom-scene">
+      <div class="kingdom-atmosphere"><i></i><i></i><i></i></div>
+      <svg class="kingdom-silhouette" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="citadel-start" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#354047"/><stop offset="1" stop-color="#101619"/></linearGradient></defs><path fill="#0b1014" opacity=".78" d="M0 245 95 182 180 226 270 118 330 202 455 136 530 224 650 92 735 210 842 142 930 225 1040 128 1200 226V520H0Z"/><path fill="url(#citadel-start)" stroke="#9d8756" stroke-opacity=".25" d="M430 330V190h34v-44h20v44h45v-78h22v-33h22v33h25v78h54v-55h22v55h32v140H430Z"/><path fill="#080c0f" d="M0 390Q160 335 310 386T610 372t310 8 280-5v145H0Z"/></svg>
       <div class="sky-glow"></div>
       <div class="rift rift-distant" aria-label="La Brecha"><i></i><i></i><i></i></div>
       <div class="terrain terrain-back"></div>
       <div class="terrain terrain-front"></div>
       <div id="buildings" class="buildings"></div>
       <button id="aldric" class="character aldric" aria-label="Sir Aldric">
-        <span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span>
+        <span class="character-glow"></span><span class="helmet">♜</span><span class="character-label"><b>Sir Aldric</b><small>Último guardián de Valoria</small></span>
       </button>
       <button id="gate" class="gate locked" aria-label="Puerta exterior"><span>⚔</span><b data-i18n="explore"></b></button>
       <div id="particles" class="particles"></div>
@@ -277,8 +379,8 @@ window.ELDORIA_DATA = {
   const heroProgress = id => (state.heroXp[id]||0)%100;
   function awardXp(id,amount){ state.heroXp[id]=(state.heroXp[id]||0)+amount; }
 
-  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v011')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
-  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v011', JSON.stringify(state)); }
+  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v012')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v012', JSON.stringify(state)); }
 
   function init(){
     document.querySelectorAll('[data-i18n]').forEach(n => n.textContent=D.i18n[n.dataset.i18n]);
@@ -367,7 +469,7 @@ window.ELDORIA_DATA = {
   function buildingCopy(id){ return ({keep:'El corazón político y defensivo de Valoria.',farm:'Alimenta a quienes aún resisten.',lumber:'Convierte el bosque intacto en futuro.',quarry:'Extrae piedra para levantar defensas.',forge:'Da forma al hierro y prepara la guerra.'})[id]; }
   function upgrade(id,cost){
     if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v)){ toast('Faltan recursos para esta mejora.'); return; }
-    Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v); state.buildings[id]++; burst();
+    resourceFeedback(cost,-1); Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v); state.buildings[id]++; burst(); buildingImpact(id);
     if(id!=='keep'&&!state.firstUpgrade){ state.firstUpgrade=true; state.stage=2; state.metrics.firstUpgradeSeconds=elapsed(); closeModal(); render(); dialogue('Sir Aldric','Eso bastará por ahora. La puerta está abierta. Ven conmigo: debes ver lo que está devorando nuestras tierras.'); }
     else if(id==='keep'&&state.cardUsed&&!state.loop2Unlocked){
       state.loop2Unlocked=true; state.stage=5; closeModal(); render();
@@ -398,16 +500,17 @@ window.ELDORIA_DATA = {
     return {icon:'✚',name:'HOSPITAL DE CAMPAÑA',effect:'Defender cura +8'};
   }
   function showWorld(){ view='world'; navActive('world');
-    if(state.companion&&!state.warPlan&&!state.thirdVictory){showWarCouncil();return;}
+    if(state.companion&&!state.troopType&&!state.thirdVictory){barracksModal();return;}
+    if(state.companion&&state.troopType&&!state.warPlan&&!state.thirdVictory){showWarCouncil();return;}
     const third=!!(state.companion&&state.troopType&&state.warPlan&&!state.thirdVictory);
     const second=!third&&!!(state.loop2Choice&&!state.secondVictory);
     const plan=third?warPlanInfo():null;
     $('#scene').className=`scene world-scene scene-enter ${third?`third-world plan-${state.warPlan}`:second?'second-world':''}`;
     $('#scene').innerHTML=third
-      ?`<div class="location-title"><small>CONFÍN SEPTENTRIONAL</small><strong>Fortaleza Sepultada</strong></div><div class="moon"></div><div class="campaign-mark"><span>${plan.icon}</span><b>${plan.name}</b><small>DESPLEGADO</small></div><div class="rift rift-near"><i></i><i></i><i></i><b>PORTAL DEL TRONO</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">JEFE FINAL ↘</span><span class="avatar-symbol">♚</span><b>Avatar de la Brecha</b><em>La fortaleza ha despertado</em></button><button id="return" class="return">‹ Reino</button>`
+      ?`<div class="world-mist"><i></i><i></i><i></i></div><div class="world-stars"></div><div class="location-title"><small>CONFÍN SEPTENTRIONAL</small><strong>Fortaleza Sepultada</strong></div><div class="moon"></div><div class="campaign-mark"><span>${plan.icon}</span><b>${plan.name}</b><small>DESPLEGADO</small></div><div class="rift rift-near"><i></i><i></i><i></i><b>PORTAL DEL TRONO</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">JEFE FINAL ↘</span><span class="avatar-symbol">♚</span><b>Avatar de la Brecha</b><em>La fortaleza ha despertado</em></button><button id="return" class="return">‹ Reino</button>`
       :second
-      ?`<div class="location-title"><small>FRONTERA NORTE</small><strong>Ruinas de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>FALLA DE CENIZA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">SEGUNDO OBJETIVO ↘</span><span class="guardian-symbol">♛</span><b>Guardián de Ceniza</b><em>Protege el Núcleo</em></button><button id="return" class="return">‹ Reino</button>`
-      :`<div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">PRIMER OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
+      ?`<div class="world-mist"><i></i><i></i><i></i></div><div class="world-stars"></div><div class="location-title"><small>FRONTERA NORTE</small><strong>Ruinas de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>FALLA DE CENIZA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">SEGUNDO OBJETIVO ↘</span><span class="guardian-symbol">♛</span><b>Guardián de Ceniza</b><em>Protege el Núcleo</em></button><button id="return" class="return">‹ Reino</button>`
+      :`<div class="world-mist"><i></i><i></i><i></i></div><div class="world-stars"></div><div class="location-title"><small>TIERRAS EXTERIORES</small><strong>Bosque de Ceniza</strong></div><div class="moon"></div><div class="rift rift-near"><i></i><i></i><i></i><b>LA BRECHA</b></div><div class="corruption"></div><div class="path"><i></i><i></i><i></i></div><div id="player-token" class="player-token">♜</div><button id="enemy" class="enemy objective"><span class="objective-arrow">PRIMER OBJETIVO ▼</span><span>♝</span><b>Acechador corrupto</b><em>Toca para combatir</em></button><button id="return" class="return">‹ Reino</button>`;
     $('#return').onclick=showKingdom; $('#enemy').onclick=startCombat; renderQuest();
     if(!state.worldSeen){ state.worldSeen=true; state.metrics.worldSeconds=elapsed(); save(); setTimeout(()=>dialogue('Sir Aldric','Más allá de estas puertas comienza el Bosque de Ceniza. Sigue el sendero: esa herida violeta es La Brecha, y el Acechador bloquea nuestro paso.'),350); }
   }
@@ -463,7 +566,7 @@ window.ELDORIA_DATA = {
     if(campaignShield>0){const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;}
     if(state.warPlan==='hospital'&&combatTurn%2===0){state.playerHp=Math.min(playerMaxHp,state.playerHp+8);state.metrics.fieldHealing+=8;}
     state.enemyHp=Math.max(0,state.enemyHp-damage);state.playerHp=Math.max(0,state.playerHp-incoming);
-    autoCharge=Math.min(100,autoCharge+25);registerTroopLosses(incoming);updateHp();updateAutoUi();save();
+    autoCharge=Math.min(100,autoCharge+25);registerTroopLosses(incoming);updateHp();updateAutoUi();combatFeedback('auto',damage,incoming);save();
     $('#combat-log').textContent=`La compañía causa ${damage} y recibe ${incoming}. ${autoCharge===100?'La habilidad está lista.':''}`;
     if(state.enemyHp<=0){clearInterval(autoTimer);autoTimer=null;$('#auto-skill').disabled=true;return setTimeout(victory,500);}
     if(state.playerHp<=0){clearInterval(autoTimer);autoTimer=null;return combatDefeat();}
@@ -473,7 +576,7 @@ window.ELDORIA_DATA = {
     if(enemyArmor>0){enemyArmor=0;state.metrics.armorBreaks++;}
     if(state.companion==='lyra'){state.enemyHp=Math.max(0,state.enemyHp-55);$('#combat-log').textContent='Lyra desata una lluvia de flechas y rompe la armadura.';}
     else{state.enemyHp=Math.max(0,state.enemyHp-25);state.playerHp=Math.min(playerMaxHp,state.playerHp+30);$('#combat-log').textContent='Maelis restaura la línea y quiebra la armadura con su luz.';}
-    updateHp();updateAutoUi();save();
+    updateHp();updateAutoUi();combatFeedback('skill',state.companion==='lyra'?55:25,0);save();
     if(state.enemyHp<=0){clearInterval(autoTimer);autoTimer=null;$('#auto-skill').disabled=true;setTimeout(victory,500);}
   }
   function updateAutoUi(){
@@ -539,7 +642,7 @@ window.ELDORIA_DATA = {
       const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;
       copy+=` La Égida absorbe ${absorbed} de daño${campaignShield>0?` (${campaignShield} restantes)`:' y se consume'}.`;
     }
-    state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); registerTroopLosses(incoming); updateHp();updateCombatDepth(); save();
+    state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); registerTroopLosses(incoming); updateHp();updateCombatDepth(); combatFeedback(type,dmg,incoming); save();
     $('#combat-log').textContent=`${copy} Recibes ${incoming} de daño.`;
     if(state.enemyHp<=0){ disableCombat(); return setTimeout(victory,550); }
     if(state.playerHp<=0){ disableCombat(); $('#combat-log').textContent='Aldric cae. La Brecha no perdona una decisión precipitada.'; return setTimeout(combatDefeat,500); }
@@ -596,7 +699,7 @@ window.ELDORIA_DATA = {
   function showSecondReward(){
     openModal('Núcleo de Ceniza',`<p class="intro-lead">El Guardián cae, pero su corazón continúa latiendo.</p><div class="second-reward"><span>◆</span><strong>NÚCLEO DE CENIZA</strong><b>+120 piedra · +80 hierro · +3 fragmentos</b><small>Dos voces responden desde el norte. Sus fragmentos solo bastarán para una inversión de campaña.</small></div><button id="claim-second" class="primary">Recoger y regresar a Valoria</button>`);
     $('#claim-second').onclick=()=>{
-      if(!state.secondRewardClaimed){state.resources.stone+=120;state.resources.iron+=80;state.ashFragments=3;state.secondRewardClaimed=true;save();}
+      if(!state.secondRewardClaimed){resourceFeedback({stone:120,iron:80},1);state.resources.stone+=120;state.resources.iron+=80;state.ashFragments=3;state.secondRewardClaimed=true;save();}
       closeModal();showKingdom();burst();toast('El Núcleo de Ceniza ha llegado a Valoria.');
       setTimeout(showCompanionChoice,650);
     };
@@ -635,7 +738,7 @@ window.ELDORIA_DATA = {
   function recruitTroops(type){
     const cost=type==='infantry'?{food:80,iron:40}:{food:60,iron:55};
     if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v))return toast('No tienes recursos suficientes para esta compañía.');
-    Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v);
+    resourceFeedback(cost,-1);Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v);
     state.troopType=type;state.troopCount=type==='infantry'?30:24;state.metrics.troopType=type;save();closeModal();
     const infantry=type==='infantry';
     const impact=el('div','choice-impact-overlay troop-impact',`<div class="choice-impact"><small>COMPAÑÍA FORMADA</small><span>${infantry?'⚔':'➶'}</span><strong>${infantry?'GUARDIAS DE VALORIA':'ARQUEROS DE CENIZA'}</strong><b>${infantry?'RESISTENCIA +20% · VIDA +30':'DAÑO DE COMPAÑÍA AUMENTADO'}</b><p>Marcharán junto a Aldric y ${state.companion==='lyra'?'Lyra':'Maelis'}.</p><button class="choice-impact-continue">CONTINUAR</button></div>`);
@@ -659,7 +762,7 @@ window.ELDORIA_DATA = {
   function showThirdReward(){
     openModal('Eco del Primer Rey',`<p class="intro-lead">El Avatar se deshace. Bajo su trono aparece una memoria que pronuncia el nombre de Aldric.</p><div class="second-reward"><span>♛</span><strong>ECO DEL PRIMER REY</strong><b>RELIQUIA LEGENDARIA · +150 hierro</b><small>La reconstrucción de Valoria solo era el comienzo.</small></div><button id="claim-third" class="primary">Reclamar reliquia y regresar</button>`);
     $('#claim-third').onclick=()=>{
-      if(!state.thirdRewardClaimed){state.resources.iron+=150;state.thirdRewardClaimed=true;state.relicOwned=true;save();}
+      if(!state.thirdRewardClaimed){resourceFeedback({iron:150},1);state.resources.iron+=150;state.thirdRewardClaimed=true;state.relicOwned=true;save();}
       closeModal();showKingdom();burst();toast('Nueva reliquia: abre Héroes para equiparla.');
     };
   }
@@ -687,7 +790,7 @@ window.ELDORIA_DATA = {
     $('#claim').onclick=()=>{closeModal();showKingdom();toast('Tu decisión ha cambiado el reino.');render();};
   }
   function showKingdom(){
-    view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''} ${state.warPlan?`plan-${state.warPlan}`:''}`;
+    view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene scene-enter ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''} ${state.warPlan?`plan-${state.warPlan}`:''}`;
     const needsTroops=state.companion&&!state.troopType&&!state.thirdVictory;
     const needsCouncil=state.companion&&state.troopType&&!state.warPlan&&!state.thirdVictory;
     const gateObjective=(state.firstUpgrade&&!state.hasCard)||(state.companion&&!state.thirdVictory)?' objective':'';
@@ -695,7 +798,7 @@ window.ELDORIA_DATA = {
     const futureLabel=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'CAPÍTULO II':'SALÓN DE HÉROES'):'RELIQUIA LEGENDARIA'):needsTroops?'CUARTEL DE VALORIA':needsCouncil?'CONSEJO DE GUERRA':state.companion?'FORTALEZA SEPULTADA':state.secondRewardClaimed?'ELIGE COMPAÑERO':'NÚCLEO DE CENIZA';
     const futureSmall=state.thirdVictory?(state.thirdRewardClaimed?(state.relicEquipped?'DESCUBRE QUÉ AGUARDA':'EQUIPA EL ECO DEL REY'):'RECOGE LA RECOMPENSA'):needsTroops?'RECLUTA UNA COMPAÑÍA':needsCouncil?'INVIERTE 2 DE 3 FRAGMENTOS':state.companion?'ELIGE CÓMO DIRIGIR EL ASALTO':state.secondRewardClaimed?'DOS HÉROES RESPONDEN':'RECOGE LA RECOMPENSA';
     const gateName=needsTroops?'Reclutar tropas':needsCouncil?'Preparar expedición':state.companion&&!state.thirdVictory?'Fortaleza sepultada':'Salir al mundo';
-    $('#scene').innerHTML=`<div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>${needsTroops?'⚑':'◆'}</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
+    $('#scene').innerHTML=`<div class="kingdom-atmosphere"><i></i><i></i><i></i></div><svg class="kingdom-silhouette" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="citadel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#354047"/><stop offset="1" stop-color="#101619"/></linearGradient></defs><path fill="#0b1014" opacity=".78" d="M0 245 95 182 180 226 270 118 330 202 455 136 530 224 650 92 735 210 842 142 930 225 1040 128 1200 226V520H0Z"/><path fill="url(#citadel)" stroke="#9d8756" stroke-opacity=".25" d="M430 330V190h34v-44h20v44h45v-78h22v-33h22v33h25v78h54v-55h22v55h32v140H430Z"/><path fill="#080c0f" d="M0 390Q160 335 310 386T610 372t310 8 280-5v145H0Z"/></svg><div class="sky-glow"></div><div class="rift rift-distant"><i></i><i></i><i></i></div><div class="terrain terrain-back"></div><div class="terrain terrain-front"></div>${future?`<button id="future-signal" class="future-signal"><span>${needsTroops?'⚑':'◆'}</span>${futureLabel}<small>${futureSmall}</small></button>`:''}<div id="buildings" class="buildings"></div><button id="aldric" class="character aldric"><span class="character-glow"></span><span class="helmet">♜</span><span class="character-label">Sir Aldric</span></button><button id="gate" class="gate${gateObjective}">${gateObjective?'<em>SIGUIENTE PASO</em><i>›</i>':''}<span>⚔</span><b>${gateName}</b></button><div id="particles" class="particles"></div>`;
     $('#aldric').onclick=talkAldric;
     $('#gate').onclick=needsTroops?barracksModal:needsCouncil?showWarCouncil:showWorld;
     if($('#future-signal'))$('#future-signal').onclick=showFutureStep; render();
@@ -737,27 +840,42 @@ window.ELDORIA_DATA = {
   }
   function useCard(){
     const exploit=state.riftChoice==='exploit', reward=exploit?{food:220,wood:180,stone:110,iron:70}:{food:90,wood:90,stone:90,iron:40};
-    Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; save();
+    resourceFeedback(reward,1);Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; save();
     openModal(exploit?'Carta consumida':'Bonificación activada',`<div class="intro-mark">${exploit?'✦':'⛨'}</div><p class="intro-lead">${exploit?'Los recursos se han añadido una sola vez. Esta carta no tiene duración: su efecto es instantáneo.':'Producción +50% durante toda esta partida, sin límite de tiempo. Solo termina al reiniciar.'}</p><div class="effect-status ${exploit?'instant':'permanent'}">${exploit?'EFECTO FINALIZADO · RECURSOS ENTREGADOS':'ACTIVA · PERMANENTE EN ESTA PARTIDA'}</div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
     $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();toast(exploit?'Recursos añadidos.':'Gran Sello activo permanentemente.');render();};
   }
   function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
-  function openModal(title,body){ closeModal(); modal=el('div','overlay',`<section class="modal"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
+  function openModal(title,body){ closeModal(); const rewardLike=/Núcleo de Ceniza|Eco del Primer Rey|Carta|Reliquia equipada|recompensa/i.test(title); modal=el('div',`overlay ${rewardLike?'reward-overlay':''}`,`<section class="modal ${rewardLike?'reward-modal':''}"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
   function closeModal(){ if(autoTimer){clearInterval(autoTimer);autoTimer=null;} if(modal){modal.remove();modal=null;} }
   function navActive(target){ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===target)); }
+  function resourceFeedback(changes,sign=1){
+    const entries=Object.entries(changes||{}).filter(([,v])=>v);
+    if(!entries.length)return;
+    const root=el('div','resource-feedback',entries.map(([r,v])=>`<span class="${sign>0?'gain':'spend'}"><i>${D.resources[r]?.icon||'◆'}</i>${sign>0?'+':'−'}${Math.abs(v)} ${D.resources[r]?.label||r}</span>`).join(''));
+    document.querySelector('.game-shell').append(root);setTimeout(()=>root.remove(),1700);
+  }
+  function buildingImpact(id){
+    setTimeout(()=>{const n=$('.building-'+id);if(n){n.classList.add('level-up');setTimeout(()=>n.classList.remove('level-up'),900);}},30);
+  }
+  function combatFeedback(type,dmg,incoming){
+    const hero=$('.combatant.hero')||$('.auto-side.allied'),foe=$('.combatant.foe')||$('.auto-side.enemy-side');
+    if(foe&&dmg>0){foe.classList.remove('hit');void foe.offsetWidth;foe.classList.add(type==='skill'||type==='technique'?'skill-hit':'hit');const p=el('b','damage-number enemy-damage',`−${dmg}`);foe.append(p);setTimeout(()=>p.remove(),850);}
+    if(hero&&incoming>0){hero.classList.remove('hit');void hero.offsetWidth;hero.classList.add('hit');const p=el('b','damage-number hero-damage',`−${incoming}`);hero.append(p);setTimeout(()=>p.remove(),850);}
+    const scene=$('.modal');if(scene&&(type==='skill'||type==='technique')){scene.classList.remove('skill-flash');void scene.offsetWidth;scene.classList.add('skill-flash');}
+  }
   function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),2600); }
   function burst(){ const p=$('#particles'); if(!p)return; p.innerHTML=Array.from({length:16},(_,i)=>`<i style="--a:${i*22.5}deg;--d:${50+Math.random()*90}px"></i>`).join(''); setTimeout(()=>p.innerHTML='',900); }
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.11-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.12-dev | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
     $('#copy-report').onclick=copyReport;
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
-  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v011');location.reload();}; }
+  function showMenu(){ openModal('Eldoria',`<p>Vertical slice · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();}; }
   init();
 })();
 
