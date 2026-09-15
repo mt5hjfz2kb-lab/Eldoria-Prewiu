@@ -1097,7 +1097,7 @@ window.ELDORIA_DATA = {
   function showHeroUnlock(id,done){
     const h=HERO_PRESENTATION[id];if(!h){if(done)done();return;}
     if(state.heroUnlocks[id]){screenFeedback(`${t(h.name)} · ${state.locale==='en'?'progress gained':'progreso obtenido'}`,'xp');if(done)done();return;}
-    state.heroUnlocks[id]=true;save();closeModal();
+    state.heroUnlocks[id]=true;save();closeModal();document.querySelector('.tutorial-hint')?.remove();
     modal=el('div','overlay hero-ceremony',`<section class="modal ceremony-modal"><div class="hero-reveal"><small>${t('hero.unlock.title')}</small><div class="hero-portrait">${h.icon}</div><h3>${t(h.name)}</h3><div class="hero-tags"><span>${state.locale==='en'?'ROLE':'ROL'} · ${t(h.role)}</span><span>${state.locale==='en'?'AFFINITY':'AFINIDAD'} · ${t(h.affinity)}</span></div><p>${state.locale==='en'?h.reasonEn:h.reasonEs}</p><blockquote>“${t(h.quote)}”</blockquote><button id="hero-unlock-continue" class="primary">${t('ui.continue')}</button></div></section>`);$('#modal-root').append(modal);$('#hero-unlock-continue').onclick=()=>{closeModal();render();if(done)done();};
   }
   function chooseCompanion(id){
@@ -1415,7 +1415,7 @@ window.ELDORIA_DATA = {
     document.querySelectorAll('[data-ranking]').forEach(button=>button.onclick=()=>showRankings(button.dataset.ranking));
   }
     function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">${t('ui.continue')}</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
-  function openModal(title,body){ closeModal(); const rewardLike=/Núcleo de Ceniza|Ash Core|Eco del Primer Rey|First King|Carta|Card|Reliquia|Relic|recompensa|reward/i.test(title); modal=el('div',`overlay ${rewardLike?'reward-overlay':''}`,`<section class="modal ${rewardLike?'reward-modal':''}"><button class="close" aria-label="${t('ui.close')}">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
+  function openModal(title,body){ closeModal();document.querySelector('.tutorial-hint')?.remove(); const rewardLike=/Núcleo de Ceniza|Ash Core|Eco del Primer Rey|First King|Carta|Card|Reliquia|Relic|recompensa|reward/i.test(title); modal=el('div',`overlay ${rewardLike?'reward-overlay':''}`,`<section class="modal ${rewardLike?'reward-modal':''}"><button class="close" aria-label="${t('ui.close')}">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
   function closeModal(){ if(autoTimer){clearInterval(autoTimer);autoTimer=null;} if(modal){modal.remove();modal=null;} }
   function navActive(target){ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===target)); }
   function screenFeedback(copy,type='info'){
