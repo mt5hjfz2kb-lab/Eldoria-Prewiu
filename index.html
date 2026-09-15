@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#11151b" />
-  <title>Eldoria v0.13.0 — El despertar de la Brecha</title>
-  <meta name="eldoria-version" content="0.13.0" />
+  <title>Eldoria v0.14.0 — El despertar de la Brecha</title>
+  <meta name="eldoria-version" content="0.14.0" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2311151b' stroke='%23d6b66f' stroke-width='4' d='M32 3 57 15 52 50 32 61 12 50 7 15Z'/%3E%3Cpath fill='%23d6b66f' d='M20 17h25v7H28v6h14v7H28v7h18v7H20Z'/%3E%3C/svg%3E" />
   <style>
 :root{--ink:#ebe5d3;--muted:#aaa797;--panel:#171c22ee;--gold:#d6b66f;--green:#78a96c;--rift:#b335ff;--danger:#bd4d4d;--line:#ffffff19}*{box-sizing:border-box}html,body{margin:0;height:100%;background:#090c0f;color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden}button{font:inherit;color:inherit}.game-shell{height:100%;max-width:1180px;margin:auto;position:relative;background:#11171b;box-shadow:0 0 80px #000}.topbar{height:76px;display:flex;align-items:center;gap:16px;padding:10px 18px;background:linear-gradient(#171d23f7,#10151bf3);border-bottom:1px solid #d6b66f33;position:relative;z-index:20}.brand{width:46px;height:46px;border:1px solid var(--gold);background:linear-gradient(135deg,#3c3321,#17150f);font-size:30px;color:var(--gold);clip-path:polygon(50% 0,92% 20%,84% 83%,50% 100%,16% 83%,8% 20%);cursor:pointer}.realm-title{min-width:150px}.realm-title strong{display:block;font-size:15px;letter-spacing:.06em}.realm-title span{font:11px Arial,sans-serif;color:var(--muted)}.resources{display:flex;gap:8px;flex:1;justify-content:center}.resource{min-width:108px;background:#080b0dcc;border:1px solid var(--line);padding:7px 10px;display:grid;grid-template-columns:22px 1fr;line-height:1}.resource i{grid-row:1/3;color:var(--gold);font-style:normal}.resource span{font:bold 14px Arial}.resource small{font:9px Arial;color:#80b783;margin-top:4px}.r-food i{color:#c89b57}.r-wood i{color:#8f673e}.r-stone i{color:#a6a9ad}.r-iron i{color:#829ca7}.icon-button{border:1px solid var(--line);border-radius:50%;background:#0a0d10;width:36px;height:36px;color:var(--gold);cursor:pointer}.icon-button.muted{opacity:.35}.scene{position:absolute;inset:76px 0 76px;overflow:hidden;transition:.5s;background:#1b2423}.kingdom-scene{background:linear-gradient(#1c2c35 0 30%,#26392f 58%,#14231c)}.sky-glow{position:absolute;inset:0;background:radial-gradient(circle at 18% 10%,#e3a44b3b,transparent 29%),linear-gradient(115deg,transparent 55%,#6821932c)}.terrain{position:absolute;width:120%;left:-10%;border-radius:50% 50% 0 0}.terrain-back{height:52%;bottom:19%;background:#243c31;clip-path:polygon(0 40%,12% 24%,22% 36%,34% 15%,48% 33%,62% 4%,74% 32%,87% 14%,100% 36%,100% 100%,0 100%)}.terrain-front{height:68%;bottom:-25%;background:radial-gradient(ellipse,#314f3b,#172b22 70%);transform:perspective(400px) rotateX(15deg);border-top:2px solid #7584641f}.rift{position:absolute;z-index:2;filter:drop-shadow(0 0 14px #9f2fff)}.rift i{position:absolute;width:5px;background:linear-gradient(transparent,#f4c5ff,#8d26dd,transparent);transform-origin:center;box-shadow:0 0 14px #cc58ff}.rift i:nth-child(1){height:130px;transform:rotate(11deg);left:24px}.rift i:nth-child(2){height:92px;transform:rotate(-15deg);left:8px;top:29px}.rift i:nth-child(3){height:62px;transform:rotate(24deg);left:40px;top:58px}.rift-distant{right:11%;top:8%;opacity:.78;transform:scale(.75)}.buildings{position:absolute;inset:0;z-index:5}.building{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;text-align:center;cursor:pointer;filter:drop-shadow(0 7px 6px #0009);transition:.2s}.building:hover{transform:translate(-50%,-53%) scale(1.05)}.building-art{display:grid;place-items:center;width:84px;height:74px;background:linear-gradient(150deg,#807158,#413d35);border:2px solid #a59571;border-radius:45% 45% 13% 13%;font-size:42px;color:#1b2020;text-shadow:0 2px #cabd94}.building-keep .building-art{width:120px;height:100px;font-size:65px;background:linear-gradient(150deg,#8a806a,#3a3f3c)}.building strong{display:block;background:#111817e8;border:1px solid #d6b66f44;padding:3px 9px;font-size:12px;margin-top:-4px}.building small{font:9px Arial;color:#bcd1bc;background:#0c1213db;padding:2px 5px}.building .level{position:absolute;right:-6px;top:-4px;border-radius:14px;background:#a67d3b;padding:4px 7px;font:bold 9px Arial;color:white}.character{position:absolute;z-index:9;border:0;background:transparent;bottom:15%;left:56%;cursor:pointer;text-align:center}.character-glow{position:absolute;width:70px;height:24px;bottom:24px;left:50%;transform:translateX(-50%);background:#e0bc6550;border-radius:50%;filter:blur(8px)}.helmet{position:relative;display:block;font-size:58px;color:#d9d2bb;text-shadow:0 5px 8px #000}.character-label{display:block;background:#111a;border:1px solid #d6b66f66;padding:4px 10px;font-size:12px}.gate{position:absolute;right:4%;bottom:8%;z-index:9;display:flex;flex-direction:column;align-items:center;border:1px solid var(--gold);background:#111a;padding:10px 18px;cursor:pointer}.gate span{font-size:30px}.gate b{font-size:11px;letter-spacing:.12em}.gate.locked{filter:grayscale(1);opacity:.55}.quest-panel{position:absolute;z-index:16;top:96px;left:18px;width:265px;background:linear-gradient(90deg,#12181be8,#12181bc7);border-left:3px solid var(--gold);padding:12px 15px;box-shadow:0 8px 25px #0005}.quest-kicker{font:9px Arial;color:var(--gold);letter-spacing:.18em}.quest-panel strong{display:block;margin:4px 0;font-size:16px}.quest-panel p{font:11px Arial;color:#c5c4ba;margin:0 0 8px;line-height:1.35}.quest-progress{height:3px;background:#fff1}.quest-progress span{display:block;height:100%;background:var(--gold);transition:.5s}.bottom-nav{height:76px;position:absolute;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;background:#0d1217f7;border-top:1px solid #d6b66f33}.bottom-nav button{position:relative;width:120px;border:0;border-left:1px solid #fff08;background:transparent;color:#858a89;cursor:pointer}.bottom-nav button:last-child{border-right:1px solid #fff08}.bottom-nav button span{display:block;font-size:24px}.bottom-nav button b{font:10px Arial;letter-spacing:.08em}.bottom-nav button.active{color:var(--gold);background:linear-gradient(#d6b66f18,transparent)}.bottom-nav em{position:absolute;top:8px;right:32px;border-radius:50%;background:#9c35ce;padding:3px 6px;font:bold 9px Arial;color:white}.world-scene{background:linear-gradient(#111621,#1e2630 45%,#131c19)}.moon{position:absolute;width:140px;height:140px;border-radius:50%;background:#e9dbc0;box-shadow:0 0 60px #e4d4b366;left:12%;top:9%}.corruption{position:absolute;inset:35% 0 0;background:radial-gradient(circle at 72% 30%,#7e21a36b,transparent 25%),linear-gradient(150deg,#222a25,#181b20);clip-path:polygon(0 20%,12% 3%,28% 22%,42% 0,55% 25%,71% 6%,88% 25%,100% 7%,100% 100%,0 100%)}.path{position:absolute;width:22%;height:75%;bottom:-20%;left:38%;background:linear-gradient(90deg,transparent,#726958 30%,#7f7663 70%,transparent);transform:perspective(300px) rotateX(30deg)}.rift-near{right:20%;top:12%;transform:scale(1.7)}.rift-near b{position:absolute;top:128px;left:-25px;width:110px;text-align:center;font:9px Arial;letter-spacing:.2em;color:#e2b9f3}.enemy{position:absolute;right:25%;bottom:17%;z-index:5;border:0;background:transparent;text-align:center;cursor:pointer}.enemy span{display:block;font-size:68px;color:#b05ad8;text-shadow:0 0 20px #801cad}.enemy b,.enemy em{display:block;background:#110d16df;padding:4px 10px}.enemy b{font-size:12px}.enemy em{font:9px Arial;color:#d698ef}.player-token{position:absolute;left:41%;bottom:10%;font-size:58px;color:#d8d2bb;text-shadow:0 7px 10px #000}.return{position:absolute;left:20px;bottom:20px;border:1px solid var(--line);background:#111b;padding:10px 18px;cursor:pointer}.overlay{position:fixed;inset:0;z-index:50;background:#020405bb;backdrop-filter:blur(5px);display:grid;place-items:center;padding:18px;animation:fade .2s}.modal{position:relative;width:min(520px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#21272d,#101419);border:1px solid #d6b66f66;box-shadow:0 30px 100px #000;padding:26px}.modal:before{content:'';position:absolute;inset:7px;border:1px solid #ffffff0c;pointer-events:none}.modal h2{text-align:center;font-weight:normal;color:var(--gold);margin:0 30px 22px;letter-spacing:.04em}.modal h3{font-size:24px;margin:5px 0}.modal p{font:14px/1.55 Arial;color:#c8c7bd}.close{position:absolute;right:12px;top:9px;border:0;background:transparent;font-size:28px;color:#8f928f;cursor:pointer}.primary,.secondary{display:block;width:100%;margin-top:20px;padding:13px;border:1px solid #e0c781;background:linear-gradient(#b1904e,#6c5225);font:bold 12px Arial;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.secondary{background:#171d21}.primary:disabled{opacity:.5}.dialogue,.hero-sheet{display:flex;gap:18px;align-items:center}.portrait{min-width:90px;height:105px;display:grid;place-items:center;font-size:64px;color:#ddd3bb;background:radial-gradient(circle,#7c6c4c,#252a28 70%);border:1px solid #a58a4e}.modal-icon{text-align:center;font-size:68px;color:var(--gold)}.statline{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font:13px Arial}.costs{display:flex;justify-content:center;gap:12px;margin-top:18px}.cost{border:1px solid var(--line);padding:7px 10px;font:bold 12px Arial}.cost.ok{color:#9bc491}.cost.bad{color:#d87979}.maxed{text-align:center;color:var(--gold)!important}.combat{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;text-align:center}.combatant span{font-size:60px;display:block}.combatant.foe span{color:#ba58e4}.combatant b{font-size:12px}.versus{color:var(--gold)}.hp{height:8px;background:#080a0c;margin-top:10px;border:1px solid #fff2}.hp i{display:block;height:100%;width:100%;background:#8cb66e;transition:.3s}.foe .hp i{background:#a342af}.danger{background:linear-gradient(#a74e47,#5d2727)}.impact{animation:impact .25s}.reward-card{width:250px;min-height:335px;margin:0 auto;padding:22px;text-align:center;border:2px solid #b95be5;background:radial-gradient(circle at 50% 30%,#672b82,#211326 67%);box-shadow:0 0 25px #aa42d555,inset 0 0 30px #000;border-radius:8px}.reward-card span{display:block;font-size:78px;color:#e1a8fa;text-shadow:0 0 25px #cb50ff;margin:32px 0}.reward-card strong{display:block;font-size:20px;color:#eed7f5}.reward-card small,.reward-card p{font:11px Arial;color:#c7afcd}.rarity,.tag{font:9px Arial;letter-spacing:.2em;color:#dc98fa}.reward-card.small{min-height:280px}.reward-card.small span{margin:20px}.reward-card.spent{filter:grayscale(1);opacity:.55}.empty{text-align:center;padding:50px}.empty span{font-size:70px;color:#555}.stats{display:flex;gap:16px}.stats b{color:var(--gold)}.stats small{display:block;color:var(--muted);font:9px Arial}.toast{position:fixed;z-index:80;left:50%;bottom:95px;transform:translate(-50%,20px);opacity:0;background:#111d;border:1px solid #d6b66f77;padding:11px 18px;font:12px Arial;transition:.3s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.particles{position:absolute;left:50%;top:50%;z-index:40}.particles i{position:absolute;width:6px;height:6px;border-radius:50%;background:#f7d477;animation:burst .8s forwards;transform:rotate(var(--a)) translateX(var(--d))}.particles i:nth-child(2n){background:#77c89a}.particles i:nth-child(3n){background:#be5af0}@keyframes fade{from{opacity:0}}@keyframes impact{50%{transform:scale(.96);filter:brightness(1.8)}}@keyframes burst{from{transform:rotate(var(--a)) translateX(0);opacity:1}to{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
@@ -332,7 +332,7 @@
 }
 
 
-/* v0.13.0 — identidad visual: menos interfaz, más mundo */
+/* v0.14.0 — identidad visual: menos interfaz, más mundo */
 .version-badge{align-self:center;padding:4px 7px;border:1px solid #d7b45b45;background:#0a0f13a8;color:#d9c58f;font:700 8px Arial;letter-spacing:.12em;white-space:nowrap}
 .kingdom-scene{background:
   radial-gradient(ellipse at 48% 78%,#7b5b2926 0,transparent 20%),
@@ -447,13 +447,75 @@ mix-blend-mode:screen;opacity:.65}
   .victory-impact strong{font-size:30px}
 }
 
+
+/* v0.14.0 — Códice, Duelo de Reliquias y feedback sistémico */
+:root{--common:#8e999f;--uncommon:#5cae84;--rare:#4c91d7;--epic:#a85bd1;--legendary:#e2a94f}
+.version-badge{color:#f1d58a;border-color:#b89a58}
+.screen-feedback{position:fixed;z-index:10020;left:50%;top:23%;transform:translateX(-50%);min-width:190px;padding:10px 20px;text-align:center;border:1px solid #d7b45b;background:#080c10ed;color:#ffe5a0;box-shadow:0 0 30px #d5aa4d55,0 16px 40px #000;font:700 12px Arial;letter-spacing:.08em;pointer-events:none;animation:systemFeedback 1.5s forwards}
+.screen-feedback.xp{border-color:#69cee3;color:#bdefff}.screen-feedback.heal{border-color:#6bc88a;color:#adf0c0}.screen-feedback.shield{border-color:#63c8e1;color:#bceeff}.screen-feedback.loss{border-color:#cf665e;color:#ffaaa2}
+.rift:before{background:radial-gradient(ellipse,#fff 0 1%,#f6b2ff 3%,#d748ff 11%,#7b1caf 28%,#21042c 49%,#020205 68%);animation:riftCore 1.35s ease-in-out infinite alternate}
+.rift:after{border-color:#ee83ff78;box-shadow:0 0 35px #b937eb55;animation:riftHalo 2.1s ease-in-out infinite}
+.rift i{animation:riftLightning 1.8s infinite alternate}.rift i:nth-child(2){animation-delay:-.6s}.rift i:nth-child(3){animation-delay:-1.2s}
+.world-scene .rift-near{filter:drop-shadow(0 0 24px #ef91ff) drop-shadow(0 0 80px #861ca5)}
+.world-scene .corruption:after{content:"";position:absolute;inset:0;background:repeating-radial-gradient(ellipse at 76% 23%,transparent 0 18px,#ae39d31a 20px 21px,transparent 23px 41px);animation:corruptionBreath 5s infinite alternate}
+.recommended-mode{border-color:#d28df1!important;background:radial-gradient(circle at 50% 0,#71368d,#24122d 70%)!important;box-shadow:0 0 24px #b746d65c}.recommended-mode:before{content:"DIRECCIÓN PRINCIPAL";display:block;margin:-4px auto 5px;color:#f3c7ff;font:700 8px Arial;letter-spacing:.16em}
+.card-collection{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}
+.card-tile,.duel-hand-card{padding:0;border:0;background:transparent;color:inherit;cursor:pointer;min-width:0}.card-tile:hover .relic-card,.duel-hand-card:hover .relic-card{transform:translateY(-5px);filter:brightness(1.12)}
+.relic-card{--rarity:var(--common);position:relative;width:160px;height:224px;padding:27px 14px 13px;overflow:hidden;border:2px solid var(--rarity);background:linear-gradient(155deg,#20272b,#080b0e 72%);box-shadow:0 13px 28px #000b,inset 0 0 28px #000;color:#f6f2e7;text-align:center;transition:.2s transform,.2s filter}
+.relic-card:before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--rarity) 48%,transparent);clip-path:polygon(0 8%,8% 0,92% 0,100% 8%,100% 92%,92% 100%,8% 100%,0 92%)}
+.relic-card:after{content:"";position:absolute;inset:-30%;background:linear-gradient(112deg,transparent 37%,#fff3 48%,transparent 59%);transform:translateX(-80%);animation:cardSurface 5s infinite}
+.relic-card.uncommon{--rarity:var(--uncommon);background:linear-gradient(155deg,#193127,#070c0a 72%)}.relic-card.rare{--rarity:var(--rare);background:linear-gradient(155deg,#172d45,#070a0e 72%)}.relic-card.epic{--rarity:var(--epic);background:linear-gradient(155deg,#321942,#09060d 72%)}.relic-card.legendary{--rarity:var(--legendary);background:radial-gradient(circle at 50% 35%,#67451e,#120c07 67%)}.relic-card.echo{--rarity:#555;background:repeating-linear-gradient(135deg,#151719,#151719 8px,#0d0f10 8px,#0d0f10 16px);filter:saturate(0)}
+.card-rarity{position:absolute;z-index:2;top:7px;left:50%;transform:translateX(-50%);color:var(--rarity);font:700 8px Arial;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}.relic-card h3{position:relative;z-index:2;margin:6px 0 4px;color:#fff;font:700 13px/1.15 Georgia,serif}.relic-card>small{position:relative;z-index:2;display:block;color:#d7d4ca;font:8px/1.3 Arial}
+.card-illustration{position:relative;z-index:1;width:86px;height:112px;margin:5px auto 0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle,var(--rarity) 0 2%,#182128 4%,#070a0d 68%);border:1px solid color-mix(in srgb,var(--rarity) 64%,#111);clip-path:polygon(12% 0,88% 0,100% 12%,100% 88%,88% 100%,12% 100%,0 88%,0 12%)}
+.card-illustration i{position:absolute;width:76px;height:76px;border:1px solid var(--rarity);border-radius:50%;opacity:.35;animation:cardRune 8s linear infinite}.card-illustration i:before,.card-illustration i:after{content:"";position:absolute;inset:13px;border:1px solid var(--rarity);transform:rotate(45deg)}.card-illustration strong{font-size:54px;color:#f7ead0;text-shadow:0 0 15px var(--rarity),0 5px 8px #000}
+.art-rift strong{color:#f3bdff}.art-crown strong{color:#ffe09a}.art-banner strong{color:#e7c26e}.art-echo strong{color:#777}
+.side{position:absolute;z-index:4;width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--rarity);border-radius:50%;background:#06090c;color:#fff;font:700 11px Arial;box-shadow:0 0 9px #000}.side.north{top:25px;left:50%;transform:translateX(-50%)}.side.south{bottom:38px;left:50%;transform:translateX(-50%)}.side.east{right:5px;top:50%;transform:translateY(-50%)}.side.west{left:5px;top:50%;transform:translateY(-50%)}
+.relic-card.compact{width:112px;height:158px;padding:21px 9px 8px}.relic-card.compact .card-illustration{width:62px;height:75px}.relic-card.compact .card-illustration strong{font-size:38px}.relic-card.compact h3{font-size:10px}.relic-card.compact>small{font-size:7px}.relic-card.compact .side{width:18px;height:18px;font-size:9px}.relic-card.compact .side.north{top:19px}.relic-card.compact .side.south{bottom:28px}
+.relic-card.indestructible{--rarity:#fff0a5;border-color:#fff3b2;box-shadow:0 0 12px #fff,0 0 35px #eac45b,0 14px 30px #000}.relic-card.indestructible:after{background:conic-gradient(from 30deg,transparent,#fff7,transparent 12%,transparent 40%,#f6d87066,transparent 53%);animation:indestructibleHalo 3s linear infinite}.indestructible-mark{position:absolute;z-index:5;top:0;left:0;right:0;padding:3px;background:linear-gradient(90deg,#704d0c,#fff0a4,#704d0c);color:#1b1204;font:900 6px Arial;letter-spacing:.12em}
+.collection-head{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.collection-head>div{padding:9px;border:1px solid #ffffff18;background:#080c10;text-align:center}.collection-head b,.collection-head small{display:block}.collection-head b{color:#f1d17b;font-size:18px}.collection-head small{font:8px Arial;color:#aaa}
+.card-decision{display:grid;grid-template-columns:1fr auto;gap:13px;align-items:center;margin:14px 0;padding:14px;border:1px solid #bd6add;background:radial-gradient(circle at 80% 50%,#67257455,#11141a 68%);box-shadow:inset 0 0 32px #8d32a533}.card-decision h3{margin:3px 0;color:#fff}.card-decision p{font-size:11px}.card-decision-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.card-detail{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}.card-lore>b{color:#d9b970;font:700 10px Arial;letter-spacing:.08em}.card-lore p{line-height:1.55}.text-button{width:100%;margin-top:10px;padding:9px;border:0;background:transparent;color:#bcb6a8;cursor:pointer;text-decoration:underline}
+.duel-entry{margin-top:4px}.duel-note{color:#999!important;text-align:center;font-size:10px!important}
+.reward-reveal-stage{position:relative;padding:18px;text-align:center;background:radial-gradient(circle at 50% 42%,#78348955,transparent 43%);border:1px solid #a65dc1}.reward-reveal-stage>small{display:block;margin-bottom:10px;color:#edd493;font:700 9px Arial;letter-spacing:.2em}.reward-reveal-stage .relic-card{margin:auto;animation:cardReveal 1s cubic-bezier(.14,.84,.2,1.15)}.reward-reveal-stage>p{max-width:460px;margin:14px auto 0}
+.indestructible-reveal{position:relative;margin:12px 0;padding:15px;text-align:center;border:2px solid #ffe89d;background:radial-gradient(circle,#7e6329,#151006 72%);box-shadow:0 0 25px #ffe0836b;animation:indestructibleMoment 1.2s infinite alternate}.indestructible-reveal small,.indestructible-reveal strong{display:block}.indestructible-reveal small{font:700 8px Arial;letter-spacing:.22em}.indestructible-reveal strong{margin:4px;color:#fff3b6;font-size:22px}
+.card-use-impact,.conserve-impact{text-align:center}.card-use-impact .relic-card,.conserve-impact .relic-card{margin:auto}.card-use-impact>small{display:block;margin-top:12px;color:#e0c477;font:700 9px Arial;letter-spacing:.2em}.card-use-impact h3,.conserve-impact h3{color:#fff}.indestructible-use{padding:14px;border:1px solid #ffe596;background:#5b471622}.cooldown-orbit{margin:10px auto;padding:8px;border:1px solid #f1d578;color:#fce6a8;font:700 9px Arial;letter-spacing:.14em}
+.modal:has(#duel-root){width:min(940px,96vw);max-width:940px}.modal:has(.card-collection){width:min(880px,96vw);max-width:880px}
+.duel-header{display:grid;grid-template-columns:90px 1fr 90px;align-items:center;gap:12px;margin-bottom:12px;text-align:center}.duel-header>div{padding:9px;border:1px solid #ffffff20;background:#080c10}.duel-header small,.duel-header b{display:block}.duel-header b{color:#f2d37f;font-size:24px}.duel-header p{margin:0!important;font-size:11px!important}.duel-header strong{color:#e8bdf7;letter-spacing:.08em}
+.duel-layout{display:grid;grid-template-columns:minmax(330px,470px) 1fr;gap:16px;align-items:start}.duel-board{aspect-ratio:1;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:8px;background:radial-gradient(circle at 50% 50%,#7b258550,#111820 55%);border:2px solid #765180;box-shadow:inset 0 0 45px #000,0 15px 35px #0009}.duel-cell{position:relative;min-width:0;min-height:0;padding:4px;border:1px solid #6f6673;background:linear-gradient(145deg,#20282b,#0a0f13);cursor:pointer}.duel-cell:not(:disabled):hover{border-color:#d597e7;background:#31203a}.duel-cell.resonance{background:radial-gradient(circle,#8933a255,#11141b 65%);box-shadow:inset 0 0 22px #c449e344}.rift-sigil{font-size:34px;color:#db83f3;text-shadow:0 0 18px #c642e5}.rift-sigil small{display:block;font:700 9px Arial}.duel-cell.player{border-color:#d7b45b}.duel-cell.cpu{border-color:#a74fd1}
+.duel-cell .relic-card{width:100%;height:100%;padding:17% 6% 5%;box-shadow:none}.duel-cell .card-illustration{width:62%;height:58%;margin:0 auto}.duel-cell .card-illustration strong{font-size:34px}.duel-cell .relic-card h3{font-size:8px}.duel-cell .relic-card>small{display:none}.duel-cell .side{width:17px;height:17px;font-size:8px}.duel-cell .side.north{top:14%}.duel-cell .side.south{bottom:16%}
+.duel-hand>small{display:block;margin-bottom:8px;color:#d9c58c;font:700 8px Arial;letter-spacing:.14em}.duel-hand>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}.duel-hand-card.selected .relic-card{transform:translateY(-7px);box-shadow:0 0 0 2px #fff2a5,0 0 28px #d8b851}.duel-help{text-align:center;color:#d9cfae!important;font-size:11px!important}.duel-result{text-align:center;padding:28px;border:1px solid #d4b45b;background:radial-gradient(circle,#5a431d,#0d0d0b 70%)}.duel-result.loss{border-color:#9b4e5a;background:radial-gradient(circle,#4d1f2a,#0d090b 70%)}.duel-result.draw{border-color:#7e8589;background:radial-gradient(circle,#34383a,#0b0d0e 70%)}.duel-result>span{display:block;font-size:78px}.duel-result h3{font-size:30px;color:#fff}
+.menu-profile,.profile-card{display:grid;grid-template-columns:78px 1fr;gap:14px;align-items:center;padding:13px;border:1px solid #8e7547;background:linear-gradient(135deg,#191810,#0b1014)}.profile-avatar{width:72px;height:72px;display:grid;place-items:center;border:2px solid #d4b35d;background:radial-gradient(circle,#59451e,#090b0d 72%);color:#ffe19a;font-size:42px;clip-path:polygon(50% 0,94% 18%,86% 82%,50% 100%,14% 82%,6% 18%)}.menu-profile h3,.profile-card h3{margin:2px 0;color:#fff}.menu-profile small,.profile-card small{color:#d9bf78;font:700 8px Arial;letter-spacing:.14em}.menu-profile p,.profile-card p{margin:3px 0!important;font-size:10px!important}.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0}.profile-label{display:grid;gap:6px;margin:14px 0;color:#cdbb8a;font:700 10px Arial}.profile-label input{width:100%;padding:11px;border:1px solid #776642;background:#080c10;color:#fff;font:15px Georgia}.avatar-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.avatar-picker button{padding:12px;border:1px solid #796941;background:#11161a;color:#e9d393;font-size:26px;cursor:pointer}
+.ranking-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}.ranking-tabs button{flex:0 0 auto;padding:8px 10px;border:1px solid #ffffff22;background:#11171b;color:#bbb;font:9px Arial;cursor:pointer}.ranking-tabs button.active{border-color:#d7b45b;background:#342917;color:#ffe19b}.ranking-list{list-style:none;margin:8px 0;padding:0}.ranking-list li{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;padding:11px;border-bottom:1px solid #ffffff13;background:#0b1013}.ranking-list li:nth-child(1){border-left:3px solid #e8c35e}.ranking-list li:nth-child(2){border-left:3px solid #aeb8bd}.ranking-list li:nth-child(3){border-left:3px solid #a96c47}.ranking-list li.me{background:#322718;border:1px solid #d3af56}.ranking-list span{color:#888}.ranking-list b{color:#fff}.ranking-list em{color:#e4ca82;font-style:normal}
+@keyframes systemFeedback{0%{opacity:0;transform:translate(-50%,20px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.05)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-35px)}}
+@keyframes riftLightning{to{filter:brightness(1.8);transform:rotate(3deg) scaleY(1.07)}}
+@keyframes corruptionBreath{to{opacity:.38;transform:scale(1.08)}}
+@keyframes cardSurface{0%,65%{transform:translateX(-80%)}90%,100%{transform:translateX(80%)}}
+@keyframes cardRune{to{transform:rotate(360deg)}}
+@keyframes indestructibleHalo{to{transform:rotate(360deg)}}
+@keyframes cardReveal{0%{opacity:0;transform:translateY(45px) rotateY(90deg) scale(.7)}70%{transform:translateY(-8px) rotateY(-7deg) scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes indestructibleMoment{to{filter:brightness(1.22);box-shadow:0 0 45px #ffe08399}}
+@media(max-width:720px){
+  .card-collection{grid-template-columns:repeat(3,1fr)}.card-collection .relic-card{width:100%;height:160px}
+  .card-decision{grid-template-columns:1fr}.card-decision .relic-card{margin:auto}.card-decision-actions{grid-column:1}
+  .duel-layout{grid-template-columns:1fr}.duel-board{width:min(100%,430px);margin:auto}.duel-hand>div{grid-template-columns:repeat(5,1fr);overflow-x:auto}
+  .duel-hand-card .relic-card{width:92px;height:130px}.duel-header{grid-template-columns:58px 1fr 58px}
+}
+@media(max-width:460px){
+  .card-collection{grid-template-columns:1fr 1fr;gap:8px}.card-collection .relic-card{height:168px}
+  .card-detail{grid-template-columns:1fr}.card-detail .relic-card{margin:auto}
+  .card-decision-actions,.menu-grid{grid-template-columns:1fr}
+  .duel-board{width:100%;padding:5px;gap:3px}.duel-cell{padding:2px}.duel-cell .card-illustration strong{font-size:27px}.duel-cell .relic-card h3{font-size:6px}.duel-cell .side{width:14px;height:14px;font-size:7px}
+  .duel-hand>div{grid-template-columns:repeat(5,88px)}.duel-hand-card .relic-card{width:84px;height:120px}
+  .duel-header p{font-size:9px!important}.profile-card,.menu-profile{grid-template-columns:62px 1fr}.profile-avatar{width:58px;height:58px;font-size:34px}
+}
+
 </style>
 </head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
     <header class="topbar">
       <button id="brand" class="brand" aria-label="Eldoria">E</button>
-      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div><span class="version-badge">v0.13.0</span>
+      <div class="realm-title"><strong data-i18n="realmName"></strong><span id="realm-level"></span></div><span class="version-badge">v0.14.0</span>
       <div id="resources" class="resources"></div>
       <button id="sound-toggle" class="icon-button" aria-label="Activar o desactivar sonido">◉</button>
     </header>
@@ -493,6 +555,10 @@ mix-blend-mode:screen;opacity:.65}
   <div id="modal-root"></div>
   <div id="toast" class="toast" role="status"></div>
   <script>
+window.ELDORIA_CONFIG = window.ELDORIA_CONFIG || {
+  indestructibleChance: 0.005,
+  indestructibleCooldownSeconds: 60
+};
 window.ELDORIA_DATA = {
   resources: {
     food: { icon: '●', label: 'Comida' }, wood: { icon: '▰', label: 'Madera' },
@@ -520,13 +586,21 @@ window.ELDORIA_DATA = {
 (() => {
   'use strict';
   const D = window.ELDORIA_DATA;
+  const CARD_CONFIG = window.ELDORIA_CONFIG;
+  const CARDS = [
+    {id:'rations',rarity:'Común',tier:'common',name:'Raciones del Último Muro',icon:'❖',art:'granary',sides:{n:2,e:1,s:3,w:1},effect:'food',effectLabel:'+220 comida',description:'Reservas selladas durante la caída de Valoria. Muy útil para reconstruir; débil en duelo.'},
+    {id:'hammer',rarity:'Poco común',tier:'uncommon',name:'Martillo de los Albañiles',icon:'⚒',art:'forge',sides:{n:3,e:4,s:2,w:2},effect:'build',effectLabel:'+140 madera · +90 piedra',description:'Herramienta juramentada de los primeros restauradores del Bastión.'},
+    {id:'rift',rarity:'Rara',tier:'rare',name:'Pulso de la Brecha',icon:'✦',art:'rift',sides:{n:5,e:2,s:4,w:3},effect:'rift',effectLabel:'+50% producción · esta partida',description:'Una descarga peligrosa: extraordinaria para el reino, irregular en el tablero.'},
+    {id:'banner',rarity:'Épica',tier:'epic',name:'Estandarte de Ceniza',icon:'⚑',art:'banner',sides:{n:6,e:6,s:3,w:5},effect:'troops',effectLabel:'+8 tropas presentes o en reserva',description:'Quienes marchan bajo este paño recuerdan que Valoria todavía respira.'},
+    {id:'crown',rarity:'Legendaria',tier:'legendary',name:'Juramento del Primer Rey',icon:'♛',art:'crown',sides:{n:8,e:7,s:8,w:6},effect:'shield',effectLabel:'+40 escudo en el próximo combate',description:'Su efecto es contenido; su verdadero valor está en el Duelo de Reliquias.'}
+  ];
   const initialState = () => ({
     resources: { food: 80, wood: 110, stone: 75, iron: 25 },
     buildings: { keep: 1, farm: 1, lumber: 1, quarry: 1, forge: 1, barracks: 1 },
     stage: 0, introSeen: false, talked: false, firstUpgrade: false, enemyHp: 100, playerHp: 100,
-    hasCard: false, cardUsed: false, complete: false, worldSeen: false, riftChoice: null,
+    hasCard: false, cardUsed: false, cardDecisionMade: false, cardsOwned: [], cardsConsumed: [], cardCooldowns: {}, cardChoices: {}, activeCardEffects: [], troopReserve: 0, cardCombatShield: 0, profile: { name: 'Guardián', avatar: '♜' }, duelStats: { games: 0, wins: 0, losses: 0, draws: 0 }, complete: false, worldSeen: false, riftChoice: null,
     loop2Unlocked: false, loop2Choice: null, secondCombat: false, secondVictory: false, secondRewardClaimed: false, companion: null, thirdCombat: false, thirdVictory: false, thirdRewardClaimed: false, relicOwned: false, relicEquipped: false, firstXpAwarded: false, ashFragments: 0, warPlan: null, troopType: null, troopCount: 0, combatMode: null, combatVerdict: null, hookSeen: false, heroXp: { aldric: 0, lyra: 0, maelis: 0 }, continueIntent: null, lastTick: Date.now(),
-    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, troopType: null, combatMode: null, autoSkillUses: 0, troopLosses: 0, hookSeenSeconds: null, riftChoice: null, completedSeconds: null }
+    metrics: { runId: Math.random().toString(36).slice(2,8).toUpperCase(), startedAt: Date.now(), firstUpgradeSeconds: null, worldSeconds: null, combatTurns: 0, guardUses: 0, heavyGuards: 0, companionUses: 0, techniqueUses: 0, armorBreaks: 0, shieldAbsorbed: 0, fieldHealing: 0, warPlan: null, troopType: null, combatMode: null, autoSkillUses: 0, troopLosses: 0, hookSeenSeconds: null, riftChoice: null, cardsUsed: 0, cardsKept: 0, indestructibleFound: 0, duelGames: 0, duelWins: 0, completedSeconds: null }
   });
   let state = load();
   let view = 'kingdom';
@@ -542,15 +616,23 @@ window.ELDORIA_DATA = {
   let autoTimer = null;
   let autoCharge = 0;
   let battleTroops = 0;
+  let duel = null;
 
   const $ = s => document.querySelector(s);
   const el = (tag, cls, html='') => { const n=document.createElement(tag); n.className=cls; n.innerHTML=html; return n; };
   const fmt = n => Math.floor(n).toLocaleString('es-ES');
   const heroLevel = id => Math.min(20,1+Math.floor((state.heroXp[id]||0)/100));
   const heroProgress = id => (state.heroXp[id]||0)%100;
-  function awardXp(id,amount){ state.heroXp[id]=(state.heroXp[id]||0)+amount; }
+  function awardXp(id,amount){state.heroXp[id]=(state.heroXp[id]||0)+amount;screenFeedback(`+${amount} XP · ${id==='aldric'?'Sir Aldric':id==='lyra'?'Lyra':'Maelis'}`,'xp');}
 
-  function load(){ try { const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v012')||'{}'); return { ...base, ...stored, heroXp:{...base.heroXp,...(stored.heroXp||{})}, metrics:{...base.metrics,...(stored.metrics||{})} }; } catch { return initialState(); } }
+  function load(){ try {
+    const base=initialState(), stored=JSON.parse(localStorage.getItem('eldoria-save-v012')||'{}');
+    const merged={...base,...stored,profile:{...base.profile,...(stored.profile||{})},duelStats:{...base.duelStats,...(stored.duelStats||{})},heroXp:{...base.heroXp,...(stored.heroXp||{})},metrics:{...base.metrics,...(stored.metrics||{})}};
+    if(merged.hasCard&&!(merged.cardsOwned||[]).length&&!merged.cardsConsumed.length)merged.cardsOwned=CARDS.map(card=>({id:card.id,indestructible:false}));
+    // Compatibilidad con partidas anteriores: usar una carta ya contaba como tomar la decisión.
+    if(merged.cardUsed)merged.cardDecisionMade=true;
+    return merged;
+  } catch { return initialState(); } }
   function save(){ state.lastTick=Date.now(); localStorage.setItem('eldoria-save-v012', JSON.stringify(state)); }
 
   function init(){
@@ -559,7 +641,7 @@ window.ELDORIA_DATA = {
     $('#brand').onclick = showMenu; $('#sound-toggle').onclick = soundToggle;
     document.querySelectorAll('#nav button').forEach(b => b.onclick=()=>navigate(b.dataset.view));
     applyOfflineProduction(); render(); setInterval(tick, 1000);
-    if(state.stage===0&&!state.introSeen) setTimeout(showIntro,350);
+    if(state.stage===0&&!state.introSeen) setTimeout(()=>{if(!modal)showIntro();},350);
   }
   function applyOfflineProduction(){
     const seconds=Math.min(120, Math.max(0,(Date.now()-(state.lastTick||Date.now()))/1000));
@@ -568,12 +650,12 @@ window.ELDORIA_DATA = {
   function production(){
     const out={food:0,wood:0,stone:0,iron:0};
     Object.entries(state.buildings).forEach(([id,lvl])=>Object.entries(D.buildings[id].levels[lvl-1].production).forEach(([r,v])=>out[r]+=v));
-    if(state.riftChoice==='contain'&&state.cardUsed) Object.keys(out).forEach(r=>out[r]*=1.5);
+    if(state.riftChoice==='contain'||(state.activeCardEffects||[]).includes('rift')) Object.keys(out).forEach(r=>out[r]*=1.5);
     return out;
   }
   function tick(){ if(view==='kingdom'){ const p=production(); Object.entries(p).forEach(([k,v])=>state.resources[k]+=v); renderResources(p); save(); } }
-  function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=state.riftChoice==='contain'&&state.cardUsed?' · Sello activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=!state.hasCard||state.cardUsed; save(); }
-  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardUsed)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
+  function render(){ renderResources(production()); renderBuildings(); renderQuest(); const status=(state.activeCardEffects||[]).includes('rift')?' · Pulso activo +50% producción':state.riftChoice==='exploit'?' · Poder corrupto':' '; $('#realm-level').textContent=`Nivel ${state.buildings.keep}${status}`; renderGate(); renderNavigationGuides(); $('#card-badge').hidden=!state.hasCard; $('#card-badge').textContent=state.cardsOwned?.length||0; save(); }
+  function renderNavigationGuides(){ document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('objective')); if(state.hasCard&&!state.cardDecisionMade)document.querySelector('[data-view="cards"]').classList.add('objective'); if(state.thirdRewardClaimed&&!state.relicEquipped&&!state.complete)document.querySelector('[data-view="heroes"]').classList.add('objective'); }
   function renderGate(){
     const gate=$('#gate'); if(!gate)return;
     const troopObjective=state.companion&&!state.troopType&&!state.thirdVictory;
@@ -601,7 +683,7 @@ window.ELDORIA_DATA = {
     $('#buildings').innerHTML='';
     Object.entries(D.buildings).forEach(([id,b])=>{
       const guided=(state.talked&&!state.firstUpgrade&&id==='farm')||
-        (state.cardUsed&&!state.loop2Unlocked&&id==='keep')||
+        (state.cardDecisionMade&&!state.loop2Unlocked&&id==='keep')||
         (state.companion&&!state.troopType&&!state.thirdVictory&&id==='barracks')||
         (state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry'));
       const n=el('button',`building building-${id}${guided?' objective':''}`,`${guided?`<em>${id==='farm'?'TOCA Y MEJORA':id==='keep'?'REFUERZA EL BASTIÓN':id==='barracks'?'RECLUTA TROPAS':'ELIGE UNA RUTA'}</em>`:''}${buildingArt(id)}<span class="level">Nv. ${state.buildings[id]}</span><strong>${b.name}</strong><small>${productionLabel(id)}</small>`);
@@ -620,7 +702,7 @@ window.ELDORIA_DATA = {
       !state.talked ? ['Las cenizas de Valoria','Conoce a Sir Aldric y descubre por qué debes reconstruir.'] :
       !state.firstUpgrade ? ['Alimenta a Valoria','Toca el Granero marcado y mejóralo para producir más comida.'] :
       !state.hasCard ? ['Ecos en el bosque','Pulsa “Salir al mundo”, sigue el sendero y derrota al Acechador.'] :
-      !state.cardUsed ? ['Convierte la victoria en progreso','Abre Cartas —el botón iluminado— y usa la recompensa.'] :
+      !state.cardDecisionMade ? ['El precio del poder','Abre Cartas y decide: consumir el Pulso para fortalecer Valoria o conservarlo para el Duelo.'] :
       !state.loop2Unlocked ? ['El bastión renace','Toca la Fortaleza marcada y utiliza los recursos obtenidos para mejorarla.'] :
       !state.loop2Choice ? ['Prepara la segunda expedición','Elige: Forja para atacar más fuerte o Cantera para defender mejor.'] :
       ['La Brecha responde','Sal de nuevo al mundo. Tu elección cambiará el siguiente combate.'];
@@ -637,7 +719,7 @@ window.ELDORIA_DATA = {
     const b=D.buildings[id], lvl=state.buildings[id], next=b.levels[lvl];
     let body=`<div class="modal-icon">${b.icon}</div><p>${buildingCopy(id)}</p><div class="statline"><span>Nivel actual</span><b>${lvl} / ${b.max}</b></div>${buildingEffect(id,lvl)}`;
     if(state.talked&&!state.firstUpgrade&&id!=='farm'){ body+=`<p class="maxed">Objetivo actual: mejora primero el Granero marcado para alimentar a Valoria.</p>`; }
-    else if(id==='keep'&&!state.cardUsed){ body+=`<p class="maxed">La Fortaleza requiere energía estabilizada de la Brecha.</p>`; }
+    else if(id==='keep'&&!state.cardDecisionMade){ body+=`<p class="maxed">Antes debes decidir si consumes o conservas la carta de la Brecha.</p>`; }
     else if(state.loop2Unlocked&&!state.loop2Choice&&(id==='forge'||id==='quarry')&&lvl>=2){
       body+=`<p class="route-ready">Este edificio ya estaba mejorado. Puedes convertirlo en la preparación oficial de la expedición sin volver a pagar.</p><button id="choose-existing-route" class="primary">Elegir ${id==='forge'?'Forja':'Cantera'} como ruta</button>`;
     }
@@ -653,7 +735,7 @@ window.ELDORIA_DATA = {
     if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v)){ toast('Faltan recursos para esta mejora.'); return; }
     resourceFeedback(cost,-1); Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v); state.buildings[id]++; burst(); buildingImpact(id);
     if(id!=='keep'&&!state.firstUpgrade){ state.firstUpgrade=true; state.stage=2; state.metrics.firstUpgradeSeconds=elapsed(); closeModal(); render(); dialogue('Sir Aldric','Eso bastará por ahora. La puerta está abierta. Ven conmigo: debes ver lo que está devorando nuestras tierras.'); }
-    else if(id==='keep'&&state.cardUsed&&!state.loop2Unlocked){
+    else if(id==='keep'&&state.cardDecisionMade&&!state.loop2Unlocked){
       state.loop2Unlocked=true; state.stage=5; closeModal(); render();
       dialogue('Sir Aldric','La Fortaleza resiste, pero la Brecha ha respondido. Elige cómo preparar a Valoria: mejora la Forja para causar más daño o la Cantera para resistir mejor.');
     }
@@ -703,7 +785,7 @@ window.ELDORIA_DATA = {
     launchCombat();
   }
   function showCombatModeChoice(){
-    openModal('¿Cómo dirigirás el asalto?',`<p class="intro-lead">La misma compañía puede luchar de dos maneras. Elige la que te resulte más propia de Eldoria.</p><div class="mode-options"><button id="mode-tactical"><span>⚔</span><b>Mando táctico</b><small>Eliges cada acción: atacar, defender o usar Ruptura.</small></button><button id="mode-auto"><span>▶</span><b>Batalla de héroes</b><small>La compañía combate sola; tú activas la habilidad cuando se carga.</small></button></div><p class="privacy-note">Registraremos la modalidad elegida en el resumen local.</p>`);
+    openModal('¿Cómo dirigirás el asalto?',`<p class="intro-lead">La misma compañía puede luchar de dos maneras. Elige la que te resulte más propia de Eldoria.</p><div class="mode-options"><button id="mode-auto" class="recommended-mode"><span>▶</span><b>Batalla semiautomática</b><small>DIRECCIÓN PRINCIPAL · La compañía lucha; tú decides cuándo desatar la habilidad.</small></button><button id="mode-tactical"><span>⚔</span><b>Mando táctico</b><small>Modo de comparación · Eliges cada acción.</small></button></div><p class="privacy-note">Registraremos la modalidad elegida en el resumen local.</p>`);
     $('#mode-tactical').onclick=()=>selectCombatMode('tactical');
     $('#mode-auto').onclick=()=>selectCombatMode('auto');
   }
@@ -725,15 +807,16 @@ window.ELDORIA_DATA = {
   }
   function registerTroopLosses(incoming){
     if(!state.thirdCombat||incoming<=0)return;
-    const divisor=state.troopType==='infantry'?13:9;
+    const divisor=state.troopType==='infantry'?13:9,before=battleTroops;
     battleTroops=Math.max(0,battleTroops-Math.floor(incoming/divisor));
+    const lost=before-battleTroops;if(lost>0)screenFeedback(`−${lost} tropas`,'loss');
     const count=$('#battle-troop-count');if(count)count.textContent=`${battleTroops} en pie`;
   }
   function autoCombatModal(){
     const plan=warPlanInfo(),troop=troopInfo(),companion=state.companion==='lyra'?{icon:'➶',skill:'Lluvia de flechas',copy:'55 daño y rompe armadura'}:{icon:'✧',skill:'Luz restauradora',copy:'Cura 30 y causa 25'};
     openModal('Batalla de héroes',`<div class="campaign-banner plan-${state.warPlan}"><b>${plan.icon} ${plan.name}</b><span>${plan.effect}</span></div><div class="troop-banner"><b>${troop.icon} ${troop.name}</b><span id="battle-troop-count">${state.troopCount} en pie</span></div><div class="auto-battle"><div class="battle-atmosphere"><i></i><i></i><i></i><b></b></div><div class="auto-side allied"><span>♜</span><i>${state.companion==='lyra'?'➶':'✧'}</i><div class="troop-rank">${state.troopType==='infantry'?'⚔ ⚔ ⚔':'➶ ➶ ➶'}</div><b>COMPAÑÍA DE VALORIA</b><div class="hp"><i id="player-hp"></i></div></div><div class="auto-clash">⚡</div><div class="auto-side enemy-side"><span>♚</span><b>AVATAR</b><div class="hp"><i id="enemy-hp"></i></div></div></div><div class="auto-status"><div><small>HABILIDAD</small><div class="charge-track"><i id="auto-charge"></i></div></div><div id="auto-armor" class="armor-status"></div></div><p id="combat-log">La compañía avanza. Espera a que la habilidad esté cargada.</p><button id="auto-skill" class="primary auto-skill" disabled>${companion.icon} ${companion.skill}<small>${companion.copy}</small></button>`);
     enemyMaxHp=180;playerMaxHp=state.troopType==='infantry'?130:100;
-    state.enemyHp=enemyMaxHp;state.playerHp=playerMaxHp;enemyArmor=state.warPlan==='ballista'?1:3;campaignShield=state.warPlan==='ward'?24:0;
+    state.enemyHp=enemyMaxHp;state.playerHp=playerMaxHp;enemyArmor=state.warPlan==='ballista'?1:3;campaignShield=(state.warPlan==='ward'?24:0)+(state.cardCombatShield||0);state.cardCombatShield=0;save();
     battleTroops=state.troopCount;autoCharge=0;combatTurn=0;
     $('#auto-skill').onclick=autoHeroSkill;updateHp();updateAutoUi();
     autoTimer=setInterval(autoBattleTick,850);
@@ -745,8 +828,8 @@ window.ELDORIA_DATA = {
     const forge=state.loop2Choice==='forge'?5:0;
     const damage=Math.max(8,raw+forge-enemyArmor*3);
     let incoming=state.troopType==='infantry'?10:14;
-    if(campaignShield>0){const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;}
-    if(state.warPlan==='hospital'&&combatTurn%2===0){state.playerHp=Math.min(playerMaxHp,state.playerHp+8);state.metrics.fieldHealing+=8;}
+    if(campaignShield>0){const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;if(absorbed)screenFeedback(`ESCUDO · ${absorbed} absorbido`,'shield');}
+    if(state.warPlan==='hospital'&&combatTurn%2===0){state.playerHp=Math.min(playerMaxHp,state.playerHp+8);state.metrics.fieldHealing+=8;screenFeedback('+8 curación','heal');}
     state.enemyHp=Math.max(0,state.enemyHp-damage);state.playerHp=Math.max(0,state.playerHp-incoming);
     autoCharge=Math.min(100,autoCharge+25);registerTroopLosses(incoming);updateHp();updateAutoUi();combatFeedback('auto',damage,incoming);save();
     $('#combat-log').textContent=`La compañía causa ${damage} y recibe ${incoming}. ${autoCharge===100?'La habilidad está lista.':''}`;
@@ -778,7 +861,7 @@ window.ELDORIA_DATA = {
     state.enemyHp=enemyMaxHp; state.playerHp=playerMaxHp; combatTurn=0; companionAvailable=true; combatEnergy=0;
     battleTroops=state.thirdCombat?state.troopCount:0;
     enemyArmor=state.thirdCombat?(state.warPlan==='ballista'?1:3):state.secondCombat?2:1;
-    campaignShield=state.thirdCombat&&state.warPlan==='ward'?24:0;
+    campaignShield=(state.thirdCombat&&state.warPlan==='ward'?24:0)+(state.cardCombatShield||0);state.cardCombatShield=0;save();
     $('#attack').onclick=()=>combatAction('attack'); $('#guard').onclick=()=>combatAction('guard'); $('#rift-strike').onclick=()=>combatAction('technique'); if($('#companion-skill'))$('#companion-skill').onclick=()=>combatAction('companion'); updateHp(); updateCombatDepth(); updateIntent();
   }
   function updateCombatDepth(){
@@ -806,7 +889,7 @@ window.ELDORIA_DATA = {
     }
     if(type==='guard'){
       state.metrics.guardUses++; if(heavy)state.metrics.heavyGuards++; dmg=7; incoming=Math.floor(incoming*(advanced&&state.loop2Choice==='quarry'?.15:.3)); combatEnergy=Math.min(3,combatEnergy+1);
-      let healing=5;if(state.thirdCombat&&state.warPlan==='hospital'){healing+=8;state.metrics.fieldHealing+=8;}
+      let healing=5;if(state.thirdCombat&&state.warPlan==='hospital'){healing+=8;state.metrics.fieldHealing+=8;screenFeedback(`+${healing} curación`,'heal');}
       state.playerHp=Math.min(playerMaxHp,state.playerHp+healing);
       copy=state.thirdCombat&&state.warPlan==='hospital'?`El Hospital atiende a Aldric: recupera ${healing} y contraataca.`:advanced&&state.loop2Choice==='quarry'?'La Cantera absorbe el impacto. Aldric recupera 5 y contraataca.':'Aldric alza el escudo, recupera 5 y contraataca.';
     }
@@ -824,7 +907,7 @@ window.ELDORIA_DATA = {
     if(state.thirdCombat&&state.troopType==='infantry')incoming=Math.floor(incoming*.8);
     if(campaignShield>0&&incoming>0){
       const absorbed=Math.min(campaignShield,incoming);campaignShield-=absorbed;incoming-=absorbed;state.metrics.shieldAbsorbed+=absorbed;
-      copy+=` La Égida absorbe ${absorbed} de daño${campaignShield>0?` (${campaignShield} restantes)`:' y se consume'}.`;
+      copy+=` La Égida absorbe ${absorbed} de daño${campaignShield>0?` (${campaignShield} restantes)`:' y se consume'}.`;screenFeedback(`ESCUDO · ${absorbed} absorbido`,'shield');
     }
     state.enemyHp=Math.max(0,state.enemyHp-dmg); state.playerHp=Math.max(0,state.playerHp-incoming); registerTroopLosses(incoming); updateHp();updateCombatDepth(); combatFeedback(type,dmg,incoming); save();
     $('#combat-log').textContent=`${copy} Recibes ${incoming} de daño.`;
@@ -873,8 +956,8 @@ window.ELDORIA_DATA = {
     $('#contain').onclick=()=>claimReward('contain'); $('#exploit').onclick=()=>claimReward('exploit');
   }
   function showCombatVerdict(){
-    const label=state.combatMode==='auto'?'Batalla de héroes':'Mando táctico';
-    openModal('¿Este combate encaja con Eldoria?',`<p class="intro-lead">Has completado el asalto con <strong>${label}</strong>. Valora el modelo, no la calidad visual de esta maqueta.</p><div class="intent-choices"><button id="combat-fit-yes"><b>Sí, encaja</b><small>Querría profundizar en esta dirección.</small></button><button id="combat-fit-maybe" class="maybe"><b>Tengo dudas</b><small>Hay algo aprovechable, pero necesita cambiar.</small></button><button id="combat-fit-no" class="no"><b>No encaja</b><small>Eldoria debería combatir de otra manera.</small></button></div>`);
+    const label=state.combatMode==='auto'?'Batalla semiautomática':'Mando táctico';
+    openModal('¿Este combate encaja con Eldoria?',`<p class="intro-lead">Has completado el asalto con <strong>${label}</strong>. Valora el ritmo, la lectura de la batalla y tu intervención con la habilidad.</p><div class="intent-choices"><button id="combat-fit-yes"><b>Sí, encaja</b><small>Querría profundizar en esta dirección.</small></button><button id="combat-fit-maybe" class="maybe"><b>Tengo dudas</b><small>Hay algo aprovechable, pero necesita cambiar.</small></button><button id="combat-fit-no" class="no"><b>No encaja</b><small>Eldoria debería combatir de otra manera.</small></button></div>`);
     $('#combat-fit-yes').onclick=()=>recordCombatVerdict('yes');
     $('#combat-fit-maybe').onclick=()=>recordCombatVerdict('maybe');
     $('#combat-fit-no').onclick=()=>recordCombatVerdict('no');
@@ -923,7 +1006,7 @@ window.ELDORIA_DATA = {
     const cost=type==='infantry'?{food:80,iron:40}:{food:60,iron:55};
     if(!Object.entries(cost).every(([r,v])=>state.resources[r]>=v))return toast('No tienes recursos suficientes para esta compañía.');
     resourceFeedback(cost,-1);Object.entries(cost).forEach(([r,v])=>state.resources[r]-=v);
-    state.troopType=type;state.troopCount=type==='infantry'?30:24;state.metrics.troopType=type;save();closeModal();
+    state.troopType=type;state.troopCount=(type==='infantry'?30:24)+(state.troopReserve||0);state.troopReserve=0;state.metrics.troopType=type;save();closeModal();
     const infantry=type==='infantry';
     const impact=el('div','choice-impact-overlay troop-impact',`<div class="choice-impact"><small>COMPAÑÍA FORMADA</small><span>${infantry?'⚔':'➶'}</span><strong>${infantry?'GUARDIAS DE VALORIA':'ARQUEROS DE CENIZA'}</strong><b>${infantry?'RESISTENCIA +20% · VIDA +30':'DAÑO DE COMPAÑÍA AUMENTADO'}</b><p>Marcharán junto a Aldric y ${state.companion==='lyra'?'Lyra':'Maelis'}.</p><button class="choice-impact-continue">CONTINUAR</button></div>`);
     document.body.append(impact);$('.choice-impact-continue',impact).onclick=()=>{impact.remove();showKingdom();toast('Ahora decide la inversión de campaña.');setTimeout(showWarCouncil,450);};
@@ -968,10 +1051,15 @@ window.ELDORIA_DATA = {
     $('#finish-report').onclick=showPlaytestSummary;
   }
   function claimReward(choice){
-    state.riftChoice=choice; state.metrics.riftChoice=choice; state.hasCard=true; state.stage=3; save();
-    const exploit=choice==='exploit', name=exploit?'Pulso de Abundancia':'Gran Sello de la Vigilia';
-    openModal(exploit?'La Brecha ha sido explotada':'La Brecha ha sido contenida',`<div class="reward-card ${exploit?'':'contained-card'}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${exploit?'Gran descarga de recursos inmediatos.':'Recursos equilibrados obtenidos al estabilizar el fragmento.'}</p><small>${exploit?'El poder deja una cicatriz violeta en Valoria.':'El bosque respira, pero el fragmento pierde parte de su fuerza.'}</small></div><button id="claim" class="primary">Guardar carta y regresar</button>`);
-    $('#claim').onclick=()=>{closeModal();showKingdom();toast('Tu decisión ha cambiado el reino.');render();};
+    state.riftChoice=choice;state.metrics.riftChoice=choice;state.hasCard=true;state.stage=3;
+    const reward=choice==='exploit'?{food:180,wood:180,stone:140,iron:55}:{food:90,wood:100,stone:80,iron:30};
+    resourceFeedback(reward,1);Object.entries(reward).forEach(([key,value])=>state.resources[key]+=value);
+    const indestructible=grantStarterCards(),exploit=choice==='exploit';
+    save();
+    const rare=cardSpec('rift'),owned=ownedCard('rift');
+    const rareMoment=indestructible?`<div class="indestructible-reveal"><small>ANOMALÍA IMPOSIBLE</small><strong>INDESTRUCTIBLE</strong><p>${cardSpec(indestructible.id).name} sobrevivirá a cada uso y entrará en cooldown.</p></div>`:'';
+    openModal('El Códice responde',`<div class="reward-reveal-stage"><small>PRIMER CÓDICE · CINCO RELIQUIAS</small>${cardFace(rare,owned)}<p>${exploit?'<strong>+180 comida · +180 madera · +140 piedra · +55 hierro.</strong><br>La Brecha entrega poder inmediato, pero cada carta consumida debilitará tu mano de Duelo.':'<strong>+90 comida · +100 madera · +80 piedra · +30 hierro · producción +50%.</strong><br>El Sello estabiliza el códice. Ahora debes decidir qué poder gastar y cuál conservar.'}</p></div>${rareMoment}<button id="claim" class="primary">Guardar códice y regresar</button>`);
+    $('#claim').onclick=()=>{closeModal();showKingdom();burst();toast('Cinco cartas añadidas al Archivo.');render();};
   }
   function showKingdom(){
     view='kingdom'; navActive('kingdom'); $('#scene').className=`scene kingdom-scene scene-enter ${state.riftChoice?`rift-${state.riftChoice}`:''} ${state.loop2Choice?`route-${state.loop2Choice}`:''} ${state.warPlan?`plan-${state.warPlan}`:''}`;
@@ -1014,24 +1102,173 @@ window.ELDORIA_DATA = {
     if(target==='heroes')heroesModal();
     if(target==='cards') cardsModal();
   }
+  function starterCollection(){
+    return CARDS.map(card=>({id:card.id,indestructible:Math.random()<CARD_CONFIG.indestructibleChance}));
+  }
+  function grantStarterCards(){
+    if((state.cardsOwned||[]).length||state.cardsConsumed.length)return null;
+    state.cardsOwned=starterCollection();
+    const rare=state.cardsOwned.find(card=>card.indestructible);
+    if(rare){state.metrics.indestructibleFound=(state.metrics.indestructibleFound||0)+1;}
+    return rare;
+  }
+  function cardSpec(id){return CARDS.find(card=>card.id===id);}
+  function ownedCard(id){return (state.cardsOwned||[]).find(card=>card.id===id);}
+  function cooldownLeft(id){return Math.max(0,Math.ceil((((state.cardCooldowns||{})[id]||0)-Date.now())/1000));}
+  function safeText(value){return String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function cardFace(spec,owned=null,compact=false){
+    const ind=owned?.indestructible;
+    return `<article class="relic-card ${spec.tier} ${compact?'compact':''} ${ind?'indestructible':''}" data-card="${spec.id}">
+      <span class="card-rarity">${spec.rarity}</span>
+      ${ind?'<b class="indestructible-mark">INDESTRUCTIBLE</b>':''}
+      <span class="side north">${spec.sides.n}</span><span class="side east">${spec.sides.e}</span><span class="side south">${spec.sides.s}</span><span class="side west">${spec.sides.w}</span>
+      <div class="card-illustration art-${spec.art}"><i></i><strong>${spec.icon}</strong></div>
+      <h3>${spec.name}</h3><small>${spec.effectLabel}</small>
+    </article>`;
+  }
   function cardsModal(){
-    const exploit=state.riftChoice==='exploit'; const name=exploit?'Pulso de Abundancia':'Gran Sello de la Vigilia'; const amounts=exploit?'+220 comida · +180 madera · +110 piedra · +70 hierro':'+90 comida · +90 madera · +90 piedra · +40 hierro · después +50% producción';
-    const status=exploit
-      ?`<div class="effect-status instant">${state.cardUsed?'CONSUMIDA · RECURSOS ENTREGADOS UNA VEZ':'EFECTO INSTANTÁNEO · SE CONSUME AL USARLA'}</div>`
-      :`<div class="effect-status permanent">${state.cardUsed?'ACTIVA · HASTA REINICIAR LA PARTIDA':'DURACIÓN: TODA ESTA PARTIDA'}</div>`;
-    const card=state.hasCard?`<div class="reward-card small ${exploit?'':'contained-card'} ${state.cardUsed?'spent':''}"><div class="rarity">RARA</div><span>${exploit?'✦':'⛨'}</span><strong>${name}</strong><p>${amounts}</p></div>${status}`:`<div class="empty"><span>◇</span><p>Tu primera carta aguarda más allá de la Brecha.</p></div>`;
-    openModal('Cartas',`${card}${state.hasCard&&!state.cardUsed?'<button id="use-card" class="primary">Usar carta</button>':''}`); if($('#use-card')) $('#use-card').onclick=useCard;
+    const cards=(state.cardsOwned||[]).map(owned=>({owned,spec:cardSpec(owned.id)})).filter(x=>x.spec);
+    if(!state.hasCard||!cards.length&&!state.cardsConsumed.length){
+      openModal('Archivo de Reliquias','<div class="empty"><span>◇</span><p>Las primeras cartas aguardan más allá de La Brecha.</p></div>');return;
+    }
+    const featured=!state.cardDecisionMade&&ownedCard('rift')
+      ?`<section class="card-decision"><div><small>DECISIÓN DE COLECCIÓN</small><h3>¿Poder ahora o valor futuro?</h3><p>Consumir el Pulso activa +50% de producción durante esta partida, pero deja un Eco vacío en tu mano de Duelo.</p></div>${cardFace(cardSpec('rift'),ownedCard('rift'),true)}<div class="card-decision-actions"><button id="use-card" class="primary">Consumir y activar</button><button id="keep-card" class="secondary">Conservar para Duelo</button></div></section>`:'';
+    const grid=cards.map(({owned,spec})=>`<button class="card-tile" data-card-id="${spec.id}" aria-label="Ver ${spec.name}">${cardFace(spec,owned,true)}</button>`).join('');
+    const consumed=(state.cardsConsumed||[]).length;
+    openModal('Archivo de Reliquias',`<div class="collection-head"><div><b>${cards.length} / 5</b><small>cartas conservadas</small></div><div><b>${consumed}</b><small>consumidas</small></div><div><b>${state.duelStats.wins}</b><small>victorias</small></div></div>${featured}<div class="card-collection">${grid}</div><button id="open-duel" class="primary duel-entry">⚔ Jugar Duelo de Reliquias</button><p class="duel-note">Una carta consumida se sustituye por un Eco vacío de valores 1/1/1/1.</p>`);
+    if($('#use-card'))$('#use-card').onclick=()=>useCard('rift');
+    if($('#keep-card'))$('#keep-card').onclick=()=>keepCard('rift');
+    document.querySelectorAll('.card-tile').forEach(button=>button.onclick=()=>cardDetail(button.dataset.cardId));
+    $('#open-duel').onclick=openDuel;
   }
-  function useCard(){
-    const exploit=state.riftChoice==='exploit', reward=exploit?{food:220,wood:180,stone:110,iron:70}:{food:90,wood:90,stone:90,iron:40};
-    resourceFeedback(reward,1);Object.entries(reward).forEach(([r,v])=>state.resources[r]+=v); state.cardUsed=true; state.stage=4; save();
-    openModal(exploit?'Carta consumida':'Bonificación activada',`<div class="intro-mark">${exploit?'✦':'⛨'}</div><p class="intro-lead">${exploit?'Los recursos se han añadido una sola vez. Esta carta no tiene duración: su efecto es instantáneo.':'Producción +50% durante toda esta partida, sin límite de tiempo. Solo termina al reiniciar.'}</p><div class="effect-status ${exploit?'instant':'permanent'}">${exploit?'EFECTO FINALIZADO · RECURSOS ENTREGADOS':'ACTIVA · PERMANENTE EN ESTA PARTIDA'}</div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
-    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();toast(exploit?'Recursos añadidos.':'Gran Sello activo permanentemente.');render();};
+  function cardDetail(id){
+    const spec=cardSpec(id),owned=ownedCard(id);if(!spec||!owned)return cardsModal();
+    const left=cooldownLeft(id);
+    openModal(spec.name,`<div class="card-detail">${cardFace(spec,owned)}<div class="card-lore"><b>${spec.rarity.toUpperCase()} · VALORES N ${spec.sides.n} / E ${spec.sides.e} / S ${spec.sides.s} / O ${spec.sides.w}</b><p>${spec.description}</p><div class="effect-status ${owned.indestructible?'permanent':'instant'}">${owned.indestructible?(left?`COOLDOWN · ${left} s`:'NO SE CONSUME · ENTRA EN COOLDOWN'):'SE CONSUME AL USARLA'}</div><button id="detail-use" class="primary" ${left?'disabled':''}>${left?'En cooldown':`Usar · ${spec.effectLabel}`}</button><button id="detail-keep" class="secondary">Conservar para Duelo</button></div></div><button id="back-cards" class="text-button">‹ Volver al Archivo</button>`);
+    $('#detail-use').onclick=()=>useCard(id);$('#detail-keep').onclick=()=>keepCard(id);$('#back-cards').onclick=cardsModal;
   }
-  function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
+  function keepCard(id){
+    if(!ownedCard(id))return;
+    if(!state.cardChoices[id]){state.metrics.cardsKept=(state.metrics.cardsKept||0)+1;}
+    state.cardChoices[id]='kept';
+    if(id==='rift'){state.cardDecisionMade=true;state.stage=Math.max(state.stage,4);}
+    save();
+    openModal('Carta conservada',`<div class="conserve-impact">${cardFace(cardSpec(id),ownedCard(id),true)}<h3>PERMANECE EN TU COLECCIÓN</h3><p>Podrás usarla más adelante, pero conservarla mantiene su fuerza en el Duelo de Reliquias.</p></div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
+    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();render();toast('Carta conservada para el Duelo.');};
+  }
+  function useCard(id='rift'){
+    const spec=cardSpec(id),owned=ownedCard(id);if(!spec||!owned)return;
+    const left=cooldownLeft(id);if(left)return toast(`Esta carta estará lista en ${left} s.`);
+    let gains=null,copy='';
+    if(spec.effect==='food'){gains={food:220};copy='Las reservas del Bastión reciben 220 de comida.';}
+    if(spec.effect==='build'){gains={wood:140,stone:90};copy='Los talleres reciben madera y piedra para reconstruir.';}
+    if(spec.effect==='rift'){
+      if(!(state.activeCardEffects||[]).includes('rift'))state.activeCardEffects.push('rift');
+      copy='El Pulso aumenta un 50% toda la producción durante esta partida.';
+    }
+    if(spec.effect==='troops'){
+      if(state.troopType){state.troopCount+=8;copy='Ocho veteranos se incorporan inmediatamente a la compañía.';}
+      else{state.troopReserve=(state.troopReserve||0)+8;copy='Ocho veteranos aguardarán en el Cuartel cuando formes la compañía.';}
+    }
+    if(spec.effect==='shield'){state.cardCombatShield=(state.cardCombatShield||0)+40;copy='El próximo combate comenzará con 40 puntos de escudo real.';}
+    if(gains){resourceFeedback(gains,1);Object.entries(gains).forEach(([r,v])=>state.resources[r]+=v);}
+    state.cardChoices[id]='used';state.cardUsed=true;state.metrics.cardsUsed=(state.metrics.cardsUsed||0)+1;
+    if(id==='rift'){state.cardDecisionMade=true;state.stage=Math.max(state.stage,4);}
+    if(owned.indestructible){
+      state.cardCooldowns[id]=Date.now()+CARD_CONFIG.indestructibleCooldownSeconds*1000;
+    }else{
+      state.cardsOwned=state.cardsOwned.filter(card=>card.id!==id);
+      if(!state.cardsConsumed.includes(id))state.cardsConsumed.push(id);
+    }
+    save();
+    openModal(owned.indestructible?'Poder Indestructible':'Carta consumida',`<div class="card-use-impact ${owned.indestructible?'indestructible-use':''}">${cardFace(spec,owned,true)}<small>${owned.indestructible?'LA CARTA SOBREVIVE':'EFECTO ACTIVADO'}</small><h3>${spec.effectLabel}</h3><p>${copy}</p>${owned.indestructible?`<div class="cooldown-orbit">COOLDOWN · ${CARD_CONFIG.indestructibleCooldownSeconds} s</div>`:''}</div><button id="card-result-continue" class="primary">Continuar a Valoria</button>`);
+    $('#card-result-continue').onclick=()=>{closeModal();showKingdom();burst();render();toast(owned.indestructible?'La carta permanece en la colección.':'La carta ha dejado un Eco vacío.');};
+  }
+  function playerDuelDeck(){
+    const deck=(state.cardsOwned||[]).slice(0,5).map(owned=>({...cardSpec(owned.id),owned,instance:'player-'+owned.id}));
+    while(deck.length<5){const i=deck.length+1;deck.push({id:'echo-'+i,instance:'echo-'+i,name:'Eco vacío',rarity:'Residuo',tier:'echo',icon:'◇',art:'echo',effectLabel:'Carta consumida',description:'Solo queda su huella.',sides:{n:1,e:1,s:1,w:1},owned:null});}
+    return deck;
+  }
+  function openDuel(){
+    state.metrics.duelGames=(state.metrics.duelGames||0)+1;save();
+    duel={board:Array(9).fill(null),playerHand:playerDuelDeck().map(card=>({...card,played:false})),cpuHand:CARDS.slice().reverse().map(card=>({...card,instance:'cpu-'+card.id,played:false})),selected:null,turn:'player',finished:false};
+    openModal('Duelo de Reliquias',`<div id="duel-root"></div>`);
+    renderDuel();
+  }
+  function effectiveSide(piece,side){return piece.card.sides[side]+(piece.bonus||0);}
+  function resolveCaptures(index){
+    const row=Math.floor(index/3),col=index%3,piece=duel.board[index];
+    const dirs=[[-1,0,'n','s'],[1,0,'s','n'],[0,-1,'w','e'],[0,1,'e','w']];
+    dirs.forEach(([dr,dc,side,opposite])=>{
+      const r=row+dr,c=col+dc;if(r<0||r>2||c<0||c>2)return;
+      const other=duel.board[r*3+c];if(!other||other.owner===piece.owner)return;
+      if(effectiveSide(piece,side)>effectiveSide(other,opposite))other.owner=piece.owner;
+    });
+  }
+  function placeDuelCard(index,card,owner){
+    duel.board[index]={card,owner,bonus:index===4?1:0};card.played=true;resolveCaptures(index);
+  }
+  function playerPlace(index){
+    if(duel.finished||duel.turn!=='player'||duel.selected===null||duel.board[index])return;
+    const card=duel.playerHand[duel.selected];if(!card||card.played)return;
+    placeDuelCard(index,card,'player');duel.selected=null;duel.turn='cpu';renderDuel();
+    if(duel.board.every(Boolean))return finishDuel();
+    setTimeout(cpuTurn,420);
+  }
+  function cpuTurn(){
+    if(duel.finished)return;
+    const card=duel.cpuHand.filter(c=>!c.played).sort((a,b)=>Object.values(b.sides).reduce((x,y)=>x+y,0)-Object.values(a.sides).reduce((x,y)=>x+y,0))[0];
+    const spots=[4,0,2,6,8,1,3,5,7].filter(i=>!duel.board[i]);
+    let best=spots[0],score=-1;
+    spots.forEach(index=>{const center=index===4?2:0;let captures=0;const row=Math.floor(index/3),col=index%3;[[-1,0,'n','s'],[1,0,'s','n'],[0,-1,'w','e'],[0,1,'e','w']].forEach(([dr,dc,s,o])=>{const r=row+dr,c=col+dc,other=r>=0&&r<3&&c>=0&&c<3?duel.board[r*3+c]:null;if(other&&other.owner==='player'&&card.sides[s]+(index===4?1:0)>effectiveSide(other,o))captures++;});if(captures*10+center>score){score=captures*10+center;best=index;}});
+    placeDuelCard(best,card,'cpu');duel.turn='player';renderDuel();if(duel.board.every(Boolean))finishDuel();
+  }
+  function duelScore(){return {player:duel.board.filter(p=>p?.owner==='player').length,cpu:duel.board.filter(p=>p?.owner==='cpu').length};}
+  function renderDuel(){
+    const root=$('#duel-root');if(!root)return;const score=duelScore();
+    const board=duel.board.map((piece,index)=>`<button class="duel-cell ${index===4?'resonance':''} ${piece?piece.owner:''}" data-cell="${index}" ${piece?'disabled':''}>${piece?cardFace(piece.card,piece.card.owned,true):index===4?'<span class="rift-sigil">✦<small>+1</small></span>':''}</button>`).join('');
+    const hand=duel.playerHand.map((card,index)=>card.played?'':`<button class="duel-hand-card ${duel.selected===index?'selected':''}" data-hand="${index}">${cardFace(card,card.owned,true)}</button>`).join('');
+    root.innerHTML=`<div class="duel-header"><div><small>TÚ</small><b>${score.player}</b></div><p><strong>RESONANCIA DE LA BRECHA</strong><br>La carta jugada en el centro recibe +1 en sus cuatro lados.</p><div><small>RIVAL</small><b>${score.cpu}</b></div></div><div class="duel-layout"><div class="duel-board">${board}</div><aside class="duel-hand"><small>MANO · ELIGE CARTA</small><div>${hand}</div></aside></div><p class="duel-help">${duel.turn==='cpu'?'El rival invoca una reliquia…':duel.selected===null?'Selecciona una carta y colócala en una casilla vacía.':'Ahora elige una casilla del tablero.'}</p>`;
+    if(duel.turn==='player')root.querySelectorAll('.duel-hand-card').forEach(button=>button.onclick=()=>{duel.selected=Number(button.dataset.hand);renderDuel();});
+    root.querySelectorAll('.duel-cell:not(:disabled)').forEach(button=>button.onclick=()=>playerPlace(Number(button.dataset.cell)));
+  }
+  function finishDuel(){
+    duel.finished=true;const score=duelScore();state.duelStats.games++;
+    let result='EMPATE',cls='draw',copy='La Brecha no reconoce un vencedor.';
+    if(score.player>score.cpu){result='VICTORIA',cls='win';copy='Tu colección ha dominado el tablero.';state.duelStats.wins++;state.metrics.duelWins=(state.metrics.duelWins||0)+1;}
+    else if(score.player<score.cpu){result='DERROTA',cls='loss';copy='Consumir cartas poderosas puede debilitar tu mano.';state.duelStats.losses++;}
+    else state.duelStats.draws++;
+    save();
+    const root=$('#duel-root');root.innerHTML=`<div class="duel-result ${cls}"><small>DUELO TERMINADO</small><span>${cls==='win'?'♛':cls==='loss'?'◇':'⚖'}</span><h3>${result} · ${score.player}—${score.cpu}</h3><p>${copy}</p><button id="duel-again" class="primary">Jugar otra partida</button><button id="return-cards" class="secondary">Volver al Archivo</button></div>`;
+    $('#duel-again').onclick=openDuel;$('#return-cards').onclick=cardsModal;
+  }
+  function showProfile(){
+    const avatar=state.profile.avatar,name=safeText(state.profile.name);
+    openModal('Perfil del Guardián',`<div class="profile-card"><div id="profile-avatar" class="profile-avatar">${avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${name}</h3><p>Poder ${820+(heroLevel('aldric')-1)*25} · Reino nivel ${state.buildings.keep}</p></div></div><label class="profile-label">Nombre<input id="profile-name" maxlength="18" value="${name}"></label><div class="avatar-picker"><button data-avatar="♜">♜</button><button data-avatar="⚔">⚔</button><button data-avatar="⛉">⛉</button><button data-avatar="✦">✦</button></div><button id="save-profile" class="primary">Guardar perfil</button>`);
+    document.querySelectorAll('[data-avatar]').forEach(button=>button.onclick=()=>{state.profile.avatar=button.dataset.avatar;$('#profile-avatar').textContent=state.profile.avatar;});
+    $('#save-profile').onclick=()=>{state.profile.name=($('#profile-name').value.trim()||'Guardián').slice(0,18);save();showMenu();toast('Perfil actualizado.');};
+  }
+  const RANKING_DATA={
+    power:[['Vael Thorn',18420],['Serah del Velo',16810],['Orik Ceniza',15190],['Mira Noctis',13970]],
+    kingdom:[['Casa Umbra',12],['Valoria Renacida',11],['Bastión Gris',10],['Linde Carmesí',9]],
+    cards:[['Ilyra',47],['Korr',42],['Nemea',38],['Sable',34]],
+    duel:[['El Astrólogo',1280],['Varda',1195],['Darian',1140],['Nyx',1090]],
+    rift:[['Orden del Sello',8420],['Los Sin Alba',7910],['Custodios',7440],['Vigías',6980]]
+  };
+  function showRankings(category='power'){
+    const labels={power:'Poder',kingdom:'Reino',cards:'Cartas',duel:'Duelo de Reliquias',rift:'Contribución a La Brecha'};
+    const own={power:820+(heroLevel('aldric')-1)*25,kingdom:state.buildings.keep,cards:(state.cardsOwned||[]).length,duel:1000+state.duelStats.wins*35-state.duelStats.losses*12,rift:(state.metrics.armorBreaks||0)*120+state.thirdVictory*500}[category];
+    const rows=[...RANKING_DATA[category],[state.profile.name,own]].sort((a,b)=>b[1]-a[1]).map((row,index)=>`<li class="${row[0]===state.profile.name?'me':''}"><span>${index+1}</span><b>${safeText(row[0])}</b><em>${Number(row[1]).toLocaleString('es-ES')}</em></li>`).join('');
+    openModal('Clasificaciones',`<div class="ranking-tabs">${Object.entries(labels).map(([id,label])=>`<button data-ranking="${id}" class="${id===category?'active':''}">${label}</button>`).join('')}</div><ol class="ranking-list">${rows}</ol><p class="privacy-note">Clasificación simulada y local. No representa jugadores reales.</p>`);
+    document.querySelectorAll('[data-ranking]').forEach(button=>button.onclick=()=>showRankings(button.dataset.ranking));
+  }
+    function dialogue(name,copy,done){ openModal(name,`<div class="dialogue"><div class="portrait">♜</div><p>${copy}</p></div><button id="continue" class="primary">Continuar</button>`); $('#continue').onclick=()=>{closeModal(); if(done)done();}; }
   function openModal(title,body){ closeModal(); const rewardLike=/Núcleo de Ceniza|Eco del Primer Rey|Carta|Reliquia equipada|recompensa/i.test(title); modal=el('div',`overlay ${rewardLike?'reward-overlay':''}`,`<section class="modal ${rewardLike?'reward-modal':''}"><button class="close" aria-label="Cerrar">×</button><h2>${title}</h2>${body}</section>`); $('#modal-root').append(modal); modal.querySelector('.close').onclick=closeModal; }
   function closeModal(){ if(autoTimer){clearInterval(autoTimer);autoTimer=null;} if(modal){modal.remove();modal=null;} }
   function navActive(target){ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===target)); }
+  function screenFeedback(copy,type='info'){
+    const root=el('div',`screen-feedback ${type}`,copy);document.querySelector('.game-shell').append(root);setTimeout(()=>root.remove(),1500);
+  }
   function resourceFeedback(changes,sign=1){
     const entries=Object.entries(changes||{}).filter(([,v])=>v);
     if(!entries.length)return;
@@ -1055,14 +1292,19 @@ window.ELDORIA_DATA = {
   function soundToggle(){ $('#sound-toggle').classList.toggle('muted'); toast($('#sound-toggle').classList.contains('muted')?'Sonido desactivado':'Sonido activado'); }
   function elapsed(){ return Math.max(0,Math.round((Date.now()-state.metrics.startedAt)/1000)); }
   function duration(seconds){ if(seconds===null||seconds===undefined)return '—'; const m=Math.floor(seconds/60),s=seconds%60; return `${m}m ${s}s`; }
-  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.13.0 | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla de héroes':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
+  function reportText(){ const m=state.metrics; return `ELDORIA PLAYTEST v0.14.0 | Partida ${m.runId}\nPrimera mejora: ${duration(m.firstUpgradeSeconds)}\nEntrada al mundo: ${duration(m.worldSeconds)}\nTurnos de combate: ${m.combatTurns}\nUsos de Defender: ${m.guardUses}\nGolpes brutales defendidos: ${m.heavyGuards}\nDecisión: ${m.riftChoice==='contain'?'Forjar el Gran Sello':m.riftChoice==='exploit'?'Desatar la Brecha':'—'}\nPreparación: ${state.loop2Choice==='forge'?'Forja · ataque':state.loop2Choice==='quarry'?'Cantera · defensa':'—'}\nSegunda expedición: ${state.secondVictory?'Completada':'—'}\nCompañero: ${state.companion==='lyra'?'Lyra · daño':state.companion==='maelis'?'Maelis · curación':'—'}\nNivel de Aldric: ${heroLevel('aldric')} · XP total: ${state.heroXp.aldric||0}\nNivel de compañero: ${state.companion?heroLevel(state.companion):'—'}\nHabilidad de compañero usada: ${m.companionUses||0}\nCompañía: ${state.troopType==='infantry'?'Guardias de Valoria':state.troopType==='archers'?'Arqueros de Ceniza':'—'} · ${state.troopCount||0} supervivientes\nModo de combate final: ${state.combatMode==='auto'?'Batalla semiautomática':state.combatMode==='tactical'?'Mando táctico':'—'}\nHabilidades automáticas activadas: ${m.autoSkillUses||0}\nBajas de tropas: ${m.troopLosses||0}\n¿El combate encaja?: ${state.combatVerdict==='yes'?'Sí':state.combatVerdict==='maybe'?'Dudas':state.combatVerdict==='no'?'No':'—'}\nInversión de campaña: ${state.warPlan==='ballista'?'Balista rompeasedios':state.warPlan==='ward'?'Égida rúnica':state.warPlan==='hospital'?'Hospital de campaña':'—'}\nFragmentos restantes: ${state.ashFragments||0}\nTécnicas usadas: ${m.techniqueUses||0}\nArmaduras rotas: ${m.armorBreaks||0}\nDaño absorbido por Égida: ${m.shieldAbsorbed||0}\nCuración del Hospital: ${m.fieldHealing||0}\nGancho del Capítulo II visto: ${state.hookSeen?'Sí · '+duration(m.hookSeenSeconds):'No'}\nCartas conservadas: ${(state.cardsOwned||[]).length} / 5\nCartas consumidas: ${(state.cardsConsumed||[]).length}\nUsos de cartas: ${m.cardsUsed||0}\nDecisiones de conservación: ${m.cardsKept||0}\nIndestructibles obtenidas: ${m.indestructibleFound||0}\nDuelos jugados: ${state.duelStats.games||0} · Victorias: ${state.duelStats.wins||0}\nReliquia equipada: ${state.relicEquipped?'Eco del Primer Rey':'—'}\nTercera expedición: ${state.thirdVictory?'Completada':'—'}\n¿Jugaría 10 minutos más?: ${state.continueIntent==='yes'?'Sí':state.continueIntent==='maybe'?'Quizá':state.continueIntent==='no'?'No':'—'}\nTiempo total: ${duration(m.completedSeconds)}`; }
   function showPlaytestSummary(){
     const m=state.metrics, defense=m.heavyGuards>0?'Comprendió la defensa contextual':'No defendió ningún golpe brutal';
     openModal('Informe de la expedición',`<p class="privacy-note">Estos datos permanecen en este dispositivo. No se envía información por Internet.</p><div class="playtest-stats"><div><b>${duration(m.completedSeconds)}</b><small>Tiempo total</small></div><div><b>${m.combatTurns}</b><small>Turnos</small></div><div><b>${m.guardUses}</b><small>Defensas</small></div><div><b>${m.heavyGuards}</b><small>Defensas oportunas</small></div></div><p><strong>${defense}</strong><br>Elección: ${m.riftChoice==='contain'?'Forjar el Gran Sello':'Desatar la Brecha'}</p><textarea id="report-text" readonly>${reportText()}</textarea><button id="copy-report" class="primary">Copiar resumen</button>`);
     $('#copy-report').onclick=copyReport;
   }
   function copyReport(){ const field=$('#report-text'),done=()=>toast('Resumen copiado.'); if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(field.value).then(done).catch(()=>{field.select();document.execCommand('copy');done();}); else{field.select();document.execCommand('copy');done();} }
-  function showMenu(){ openModal('Eldoria',`<p>v0.13.0 · El despertar de la Brecha</p>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="secondary">Reiniciar partida</button>`); if($('#view-report'))$('#view-report').onclick=showPlaytestSummary; $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();}; }
+  function showMenu(){
+    openModal('Eldoria',`<div class="menu-profile"><div class="profile-avatar">${state.profile.avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${safeText(state.profile.name)}</h3><p>v0.14.0 · Poder ${820+(heroLevel('aldric')-1)*25}</p></div></div><div class="menu-grid"><button id="open-profile" class="secondary">Perfil</button><button id="open-rankings" class="secondary">Clasificaciones</button><button id="open-archive" class="secondary">Archivo de cartas</button><button id="open-menu-duel" class="secondary">Duelo de Reliquias</button></div>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="text-button">Reiniciar partida</button>`);
+    $('#open-profile').onclick=showProfile;$('#open-rankings').onclick=()=>showRankings();$('#open-archive').onclick=cardsModal;$('#open-menu-duel').onclick=()=>state.hasCard?openDuel():toast('Descubre primero el Códice de la Brecha.');
+    if($('#view-report'))$('#view-report').onclick=showPlaytestSummary;
+    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v012');location.reload();};
+  }
   init();
 })();
 
