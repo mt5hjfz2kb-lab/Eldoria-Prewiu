@@ -278,6 +278,11 @@
 @keyframes skillReady{50%{filter:brightness(1.25);box-shadow:0 0 35px #d05fff99}}
 @media(max-width:720px){.kingdom-silhouette{height:64%}.character{left:58%;bottom:13%}.character-label{min-width:130px}.resource-feedback{top:118px;right:8px}.resource-feedback span{min-width:140px}.quest-panel{backdrop-filter:blur(4px)}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+/* v0.12 visual QA */
+.modal{overflow-x:hidden}
+.modal:not(.reward-modal):after{inset:0;filter:none;opacity:.55}
+.rift-near{transform-origin:top center}
 </style>
 </head>
 <body>
