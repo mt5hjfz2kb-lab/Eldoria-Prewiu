@@ -1,17 +1,23 @@
-# Eldoria v0.14.2 — prototipo jugable
+# Eldoria v0.15.0 — prototipo jugable
 
-Última versión válida: **v0.14.2**.
+Última versión válida: **v0.15.0**.
 
 ## Abrir el prototipo
 
 Preview pública: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/
 
-El prototipo es web, autocontenido y no requiere instalación. Hotfix móvil: Archivo y Duelo a pantalla completa, acceso visible y presentación de actividad desbloqueada.
+No necesita instalación. Empieza una partida nueva: esta versión usa un guardado independiente.
 
-Hotfix anterior: combate 3 directamente semiautomático, taxonomía de cartas aclarada, Duelo reforzado y posición de Aldric corregida en PC.
+## Qué valida
 
-Incluye el flujo reino → mundo → combate semiautomático → recompensa, cinco cartas funcionales, decisión usar/conservar, atributo Indestructible configurable, Duelo de Reliquias 3×3, perfil local y rankings simulados.
+- Capítulo I contextual y comprensible sin ayuda externa.
+- Inicio con 0 cartas y obtención progresiva durante tres expediciones.
+- Decisión usar/consumir o conservar.
+- Indestructible como cualidad aleatoria de cualquier rareza.
+- Duelo de Reliquias desbloqueado al completar la colección 5/5.
+- Combate final semiautomático, gancho del Capítulo II y deseo de continuar.
+- Cuestionario y telemetría guardados solo en el dispositivo.
 
 ## Alcance
 
-No incluye backend, clanes, PvP online, tienda, VIP, servidores ni Unity.
+Sin backend, clanes, PvP online, tienda, VIP, servidores ni Unity.
