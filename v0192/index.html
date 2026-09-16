@@ -20,7 +20,8 @@
     const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
     if(typeof DecompressionStream==='undefined') throw new Error('Este navegador no soporta descompresión web.');
     const ds=new DecompressionStream('gzip');
-    const html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
+    let html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
+    html=html.replace('</head>','<style>.chapter-list[hidden]{display:none!important}</style></head>');
     document.open(); document.write(html); document.close();
   }catch(e){
     document.getElementById('s').textContent='No se pudo cargar Eldoria v0.19.2. Recarga la página.';
