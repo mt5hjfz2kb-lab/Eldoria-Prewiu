@@ -22,6 +22,29 @@
     const ds=new DecompressionStream('gzip');
     let html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
     html=html.replace('</head>','<style>.chapter-list[hidden]{display:none!important}</style></head>');
+    html=html.replace('</body>',`<script>
+(function(){
+  function apply(open){
+    const list=document.getElementById('chapter-list');
+    const btn=document.getElementById('chapter-toggle');
+    if(!list||!btn)return;
+    list.dataset.manualOpen=open?'1':'0';
+    list.hidden=!open;
+    list.style.setProperty('display',open?'grid':'none','important');
+    const sp=btn.querySelector('span'); if(sp) sp.textContent=open?'⌃':'⌄';
+  }
+  setTimeout(()=>apply(false),150);
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest&&e.target.closest('#chapter-toggle');
+    if(!btn)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const list=document.getElementById('chapter-list');
+    const open=!(list&&list.dataset.manualOpen==='1');
+    apply(open);
+  },true);
+})();
+<\/script></body>`);
     document.open(); document.write(html); document.close();
   }catch(e){
     document.getElementById('s').textContent='No se pudo cargar Eldoria v0.19.2. Recarga la página.';
