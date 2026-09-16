@@ -21,40 +21,54 @@
     if(typeof DecompressionStream==='undefined') throw new Error('Este navegador no soporta descompresión web.');
     const ds=new DecompressionStream('gzip');
     let html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
-    const hotfix=`<style>
-.chapter-list[hidden]{display:none!important}
-@media(max-width:680px){
-.modal{padding:20px 18px 24px;max-height:94dvh;overscroll-behavior:contain}.modal h2{margin:0 28px 18px;font-size:21px;line-height:1.25}.modal h3{line-height:1.3}.modal p{font-size:13px;line-height:1.65;margin:12px 0}.modal .primary,.modal .secondary{margin-top:14px;padding:14px 12px;line-height:1.35}.dialogue,.hero-sheet{gap:14px}
-.quest-panel{top:88px;width:min(300px,82vw);max-width:none;padding:12px 13px;max-height:calc(100dvh - 180px);overflow:auto}.quest-panel p{font-size:11px;line-height:1.5;margin-bottom:10px}.chapter-toggle{padding:9px 10px;font-size:9px}.chapter-list{gap:8px;max-height:42dvh;margin-top:10px}.chapter-mission{padding:8px 9px;gap:8px;font-size:9px;line-height:1.4}
-.hero-hall-compact{gap:14px}.hero-unit{padding:12px}.hero-stats{gap:7px;margin-top:11px}.hero-skill-box{margin-top:10px;padding:10px;line-height:1.45}.hero-actions{gap:8px;margin-top:10px}.resonance-panel{margin-top:16px;padding:12px}.card-collection{gap:12px}.card-decision{padding:16px 13px;gap:16px}.card-lore p{line-height:1.65}
-.overlay:has(#duel-root){padding:0;place-items:stretch}.modal:has(#duel-root){width:100vw;max-width:none;height:100dvh;max-height:100dvh;padding:12px 12px 18px;border-left:0;border-right:0;overflow-y:auto}.modal:has(#duel-root) h2{margin-bottom:10px;font-size:18px}.duel-header{grid-template-columns:52px 1fr 52px;gap:7px;margin-bottom:8px}.duel-header>div{padding:6px 4px}.duel-header b{font-size:19px}.duel-header p{font-size:8px!important;line-height:1.25!important}.duel-header strong{font-size:8px}.duel-layout{display:flex;flex-direction:column;gap:10px;align-items:stretch}.duel-board{width:min(86vw,330px,43dvh);height:auto;aspect-ratio:1;margin:0 auto;padding:5px;gap:3px;flex:none}.duel-cell{padding:2px;overflow:hidden}.duel-cell .relic-card{width:100%;height:100%;padding:0;border-width:1px;display:block;overflow:hidden}.duel-cell .card-rarity,.duel-cell .relic-card h3,.duel-cell .relic-card>small{display:none!important}.duel-cell .card-illustration{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52%;height:52%;margin:0}.duel-cell .card-illustration strong{font-size:clamp(20px,7vw,30px)}.duel-cell .side{width:17px;height:17px;font-size:8px;line-height:1;border-radius:5px;background:#05080bef;box-shadow:0 0 5px #000}.duel-cell .side.north{top:3px}.duel-cell .side.south{bottom:3px}.duel-cell .side.east{right:3px}.duel-cell .side.west{left:3px}.rift-sigil{font-size:28px}.rift-sigil small{font-size:8px}.duel-hand{width:100%;min-width:0}.duel-hand>small{margin:0 0 6px;text-align:center}.duel-hand>div{display:flex;gap:8px;overflow-x:auto;padding:3px 2px 7px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}.duel-hand-card{flex:0 0 72px;scroll-snap-align:center}.duel-hand-card .relic-card{width:72px;height:102px;padding:17px 5px 6px}.duel-hand-card .card-rarity{font-size:5px;top:5px;letter-spacing:.08em}.duel-hand-card .card-illustration{width:42px;height:52px;margin-top:2px}.duel-hand-card .card-illustration strong{font-size:27px}.duel-hand-card .relic-card h3{font-size:7px;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.duel-hand-card .relic-card>small{display:none}.duel-hand-card .side{width:15px;height:15px;font-size:7px;border-radius:4px}.duel-hand-card .side.north{top:14px}.duel-hand-card .side.south{bottom:19px}.duel-hand-card .side.east{right:2px}.duel-hand-card .side.west{left:2px}.duel-help{min-height:0;margin:8px 0 0!important;padding:8px 10px!important;font-size:10px!important;line-height:1.4!important}
-}
-@media(max-width:390px){.modal{padding-left:14px;padding-right:14px}.duel-board{width:min(84vw,300px,41dvh)}.duel-hand-card{flex-basis:66px}.duel-hand-card .relic-card{width:66px;height:96px}.duel-cell .side{width:16px;height:16px;font-size:7px}}
-</style>`;
-    html=html.replace('</head>',hotfix+'</head>');
-    html=html.replace('</body>',`<script>
-(function(){
-  function apply(open){
-    const list=document.getElementById('chapter-list');
-    const btn=document.getElementById('chapter-toggle');
-    if(!list||!btn)return;
-    list.dataset.manualOpen=open?'1':'0';
-    list.hidden=!open;
-    list.style.setProperty('display',open?'grid':'none','important');
-    const sp=btn.querySelector('span'); if(sp) sp.textContent=open?'⌃':'⌄';
+
+    /* Estado y lógica de capítulo */
+    html=html.replace('heroTutorialSeen:false, chapterPanelOpen:false, minorBattleDone:false, continueIntent: null,','heroTutorialSeen:false, chapterPanelOpen:false, chapterStartedSeen:false, chapterRewardClaimed:false, minorBattleDone:false, continueIntent: null,');
+    html=html.replace("{id:'fortress',title:'Fortaleza Sepultada',copy:'Completa el asalto final.',done:()=>state.thirdVictory}","{id:'fortress',title:'Fortaleza Sepultada',copy:'Derrota al Avatar y reclama su reliquia.',done:()=>state.thirdRewardClaimed}");
+    html=html.replace("$('#intro-next').onclick=()=>{if(!last)return showIntro(step+1);state.profile.name=(($('#intro-name')?.value||'').trim()||'Guardián').slice(0,18);state.introSeen=true;state.talked=true;state.stage=1;closeModal();render();toast('Capítulo I: mejora el Granero marcado.');};","$('#intro-next').onclick=()=>{if(!last)return showIntro(step+1);state.profile.name=(($('#intro-name')?.value||'').trim()||'Guardián').slice(0,18);state.introSeen=true;state.talked=true;state.stage=1;closeModal();render();setTimeout(showChapterStart,180);};");
+    html=html.replace('  function talkAldric(){',`  function showChapterStart(){
+    if(state.chapterStartedSeen)return;
+    state.chapterStartedSeen=true; save();
+    openModal('Capítulo I · Las Cenizas de Valoria',\`<div class="chapter-ceremony"><small>COMIENZA EL CAPÍTULO</small><span>♜</span><h3>Las Cenizas de Valoria</h3><p>Reconstruye el bastión, descubre qué ocurre fuera de sus murallas y reúne fuerza suficiente para responder a La Brecha.</p><div class="chapter-reward-preview"><b>RECOMPENSA DEL CAPÍTULO</b><small>Cofre de Valoria · recursos + 1 Esencia Heroica</small></div></div><button id="chapter-start-go" class="primary">Comenzar</button>\`);
+    modal.querySelector('.close')?.remove();
+    $('#chapter-start-go').onclick=()=>{closeModal();toast('Primera misión: mejora el Granero marcado.');};
   }
-  setTimeout(()=>apply(false),150);
-  document.addEventListener('click',function(e){
-    const btn=e.target.closest&&e.target.closest('#chapter-toggle');
-    if(!btn)return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    const list=document.getElementById('chapter-list');
-    const open=!(list&&list.dataset.manualOpen==='1');
-    apply(open);
-  },true);
-})();
-<\/script></body>`);
+  function showChapterComplete(){
+    if(state.chapterRewardClaimed)return showContinuationHook();
+    openModal('Capítulo I completado',\`<div class="chapter-ceremony complete"><small>CAPÍTULO COMPLETADO</small><span>✦</span><h3>Las Cenizas de Valoria</h3><p>Valoria vuelve a respirar. La victoria no ha cerrado La Brecha: ha revelado que el mundo es mucho mayor de lo que parecía.</p><div class="chapter-reward-box"><b>COFRE DE VALORIA</b><span>+200 comida · +200 madera<br>+150 piedra · +100 hierro<br>+1 Esencia Heroica</span></div></div><button id="chapter-reward" class="primary">Recoger recompensa</button>\`);
+    modal.querySelector('.close')?.remove();
+    $('#chapter-reward').onclick=()=>{state.resources.food+=200;state.resources.wood+=200;state.resources.stone+=150;state.resources.iron+=100;state.heroEssence=(state.heroEssence||0)+1;state.chapterRewardClaimed=true;save();resourceFeedback({food:200,wood:200,stone:150,iron:100},1);closeModal();burst();toast('Capítulo I completado · recompensa recibida.');setTimeout(showContinuationHook,500);};
+  }
+  function talkAldric(){`);
+    html=html.replace("setTimeout(()=>showCardAcquisition(['rations','crown'],'TESORO DEL TRONO',()=>{showKingdom();toast('Nueva reliquia: abre Héroes para equiparla.');if(state.duelUnlocked&&!state.duelIntroSeen)setTimeout(showDuelUnlock,550);}),450);","setTimeout(()=>showCardAcquisition(['rations','crown'],'TESORO DEL TRONO',()=>{showKingdom();toast('Nueva reliquia recuperada.');setTimeout(showChapterComplete,450);}),450);");
+
+    /* CSS de usabilidad móvil */
+    html=html.replace('</head>',`<style>
+      .chapter-list[hidden]{display:none!important}
+      .chapter-ceremony{text-align:center;padding:8px 2px}.chapter-ceremony>small{font:700 9px Arial;letter-spacing:.2em;color:var(--gold)}.chapter-ceremony>span{display:block;font-size:58px;color:var(--gold);margin:14px 0 6px}.chapter-ceremony h3{margin:0 0 10px}.chapter-ceremony p{max-width:390px;margin:0 auto}.chapter-reward-preview,.chapter-reward-box{margin:18px auto 0;padding:12px;border:1px solid #d6b66f55;background:#17130b}.chapter-reward-preview b,.chapter-reward-box b{display:block;color:var(--gold);font:700 10px Arial;letter-spacing:.12em}.chapter-reward-preview small,.chapter-reward-box span{display:block;margin-top:6px;font:10px/1.5 Arial;color:#d7d1c3}
+      @media(max-width:560px){
+        .quest-panel{top:84px;left:8px;width:min(205px,56vw);padding:7px 8px;border-left-width:2px;box-shadow:0 5px 15px #0007}
+        .quest-kicker{font-size:7px;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .quest-panel strong{font-size:12px;margin:3px 0 5px;line-height:1.15}#quest-copy{display:none}.quest-progress{height:2px}
+        .chapter-toggle{margin-top:6px!important;padding:6px 7px!important;font-size:8px!important;white-space:nowrap}
+        .chapter-list:not([hidden]){position:fixed!important;left:10px!important;right:10px!important;bottom:86px!important;top:auto!important;width:auto!important;max-height:34dvh!important;overflow:auto!important;background:#10161bf5!important;border:1px solid #d6b66f55!important;box-shadow:0 12px 40px #000d!important;padding:8px!important;z-index:49!important;margin:0!important;display:grid!important;gap:5px!important}
+        .chapter-mission{padding:6px 7px!important;min-height:0!important;font-size:8px!important}.chapter-mission b{font-size:9px!important}.chapter-mission small{font-size:7px!important;line-height:1.2!important}
+        .modal:has(#claim){padding-bottom:12px}.modal:has(#claim) .reward-card{width:min(210px,62vw)!important;min-height:255px!important;padding:12px!important}.modal:has(#claim) .reward-card span{font-size:52px!important;margin:16px 0!important}.modal:has(#claim) .reward-card strong{font-size:16px!important}.modal:has(#claim) .reward-reveal-stage p{font-size:11px!important;line-height:1.35!important;margin:8px 0!important}#claim{position:sticky!important;bottom:0!important;z-index:60!important;margin-top:10px!important;box-shadow:0 -10px 25px #101419}
+        .duel-cell .relic-card{position:relative!important}.duel-cell .side{position:absolute!important;width:18px!important;height:18px!important;font-size:9px!important;line-height:1!important;border-radius:4px!important;padding:0!important;margin:0!important;display:grid!important;place-items:center!important}
+        .duel-cell .side.north{top:2px!important;left:50%!important;right:auto!important;bottom:auto!important;transform:translateX(-50%)!important}.duel-cell .side.south{bottom:2px!important;left:50%!important;right:auto!important;top:auto!important;transform:translateX(-50%)!important}.duel-cell .side.west{left:2px!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important}.duel-cell .side.east{right:2px!important;top:50%!important;left:auto!important;bottom:auto!important;transform:translateY(-50%)!important}.duel-cell .card-illustration{width:40%!important;height:40%!important}
+      }
+      @media(max-width:390px){.duel-cell .side{width:16px!important;height:16px!important;font-size:8px!important}.quest-panel{width:min(190px,54vw)}}
+    </style></head>`);
+
+    /* Plegado robusto del panel de misiones */
+    html=html.replace('</body>',`<script>
+      (function(){
+        function apply(open){const list=document.getElementById('chapter-list');const btn=document.getElementById('chapter-toggle');if(!list||!btn)return;list.dataset.manualOpen=open?'1':'0';list.hidden=!open;list.style.setProperty('display',open?'grid':'none','important');const sp=btn.querySelector('span');if(sp)sp.textContent=open?'⌃':'⌄';}
+        setTimeout(()=>apply(false),150);
+        document.addEventListener('click',function(e){const btn=e.target.closest&&e.target.closest('#chapter-toggle');if(!btn)return;e.preventDefault();e.stopImmediatePropagation();const list=document.getElementById('chapter-list');apply(!(list&&list.dataset.manualOpen==='1'));},true);
+      })();
+    <\/script></body>`);
+
     document.open(); document.write(html); document.close();
   }catch(e){
     document.getElementById('s').textContent='No se pudo cargar Eldoria v0.19.2. Recarga la página.';
