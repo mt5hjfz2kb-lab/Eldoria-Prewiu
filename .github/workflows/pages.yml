@@ -25,6 +25,15 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Build consolidated r7
+        run: node tools/build-r7.mjs
+      - name: Structural publication checks
+        run: |
+          test -s playtest/index.html
+          ! grep -q '../v0195-r6/index.html' playtest/index.html
+          grep -q '0.19.5-r7' playtest/index.html
+          grep -q 'onboardingDone' playtest/index.html
+          grep -q 'MAR DE CRISTAL' playtest/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
