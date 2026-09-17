@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Eldoria v0.19.4</title>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><title>Eldoria v0.19.4</title>
 <style>
 :root{--bg:#090c0f;--panel:#11181e;--gold:#d6b66f;--text:#eee8d9;--muted:#a7aca8;--ok:#9fc08e}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow:hidden}
@@ -34,7 +34,7 @@
 <div id="menuPanel" class="menuPanel hidden"><h3>Menú</h3><button id="closeMenu">Volver al reino</button><button id="resetGame" class="danger">Reiniciar partida desde cero</button></div>
 <script>
 (()=>{
-const BUILD='0194-r6',MIG='eldoria-v0194-build',KEY='eldoria-v0194-flow2',OLD='eldoria-save-v0192',BUILD_MS=1500;
+const BUILD='0194-r7',MIG='eldoria-v0194-build',KEY='eldoria-v0194-flow2',OLD='eldoria-save-v0192',BUILD_MS=1500;
 const steps=[
 {id:'farm',name:'Granero',title:'Devuelve alimento a Valoria',why:'Los supervivientes necesitan comida antes que cualquier otra cosa. Reconstruye el Granero.'},
 {id:'lumber',name:'Aserradero',title:'Recupera la madera',why:'Ya hay alimento. Ahora hacen falta vigas, puertas y andamios. Recupera el Aserradero.'},
@@ -62,10 +62,12 @@ function prepareBase(){let b={};try{b=JSON.parse(localStorage.getItem(OLD)||'{}'
 function claimReward(){if(s.rewardClaimed)return;let b={};try{b=JSON.parse(localStorage.getItem(OLD)||'{}')}catch{}b.resources=b.resources||{food:80,wood:110,stone:75,iron:25};b.resources.food=(b.resources.food||0)+180;b.resources.wood=(b.resources.wood||0)+180;b.resources.stone=(b.resources.stone||0)+120;b.resources.iron=(b.resources.iron||0)+30;b.heroEssence=(b.heroEssence||0)+1;localStorage.setItem(OLD,JSON.stringify(b));s.rewardClaimed=true;save();prepareBase()}
 function chapter2Intro(){s.phase='chapter2';save();$('#chapter1').classList.add('hidden');modal('COMIENZA EL CAPÍTULO','Capítulo II · Ecos de la Brecha','<p>Valoria puede sostener una expedición. Ahora toca cruzar sus puertas y descubrir qué está ocurriendo fuera.</p>','Salir al mundo',()=>startChapter2())}
 function startChapter2(){prepareBase();/* Do not skip hero/card/duel tutorial state here: v0.19.2 owns that progression. */s.chapter2Started=true;save();$('#chapter1').classList.add('hidden');$('#chapter2host').classList.remove('hidden');const f=$('#game');f.src='../v0192/?chapter2='+Date.now();f.addEventListener('load',patchBase,{once:true})}
-function patchBase(){const f=$('#game');let d;try{d=f.contentDocument}catch{return}if(!d)return;setTimeout(()=>{try{d.title='Eldoria v0.19.4';const exact=new Map([['CAPÍTULO I · LAS CENIZAS DE VALORIA','CAPÍTULO II · ECOS DE LA BRECHA'],['Capítulo I · Las Cenizas de Valoria','Capítulo II · Ecos de la Brecha']]);const w=d.createTreeWalker(d.body,NodeFilter.SHOW_TEXT);while(w.nextNode()){const n=w.currentNode;const raw=(n.nodeValue||'').trim();if(exact.has(raw))n.nodeValue=n.nodeValue.replace(raw,exact.get(raw))}}catch{}},250)}
+function patchBase(){const f=$('#game');let tries=0;const apply=()=>{let d;try{d=f.contentDocument}catch{return}if(!d||!d.body)return;try{d.title='Eldoria v0.19.4';const exact=new Map([['CAPÍTULO I · LAS CENIZAS DE VALORIA','CAPÍTULO II · ECOS DE LA BRECHA'],['Capítulo I · Las Cenizas de Valoria','Capítulo II · Ecos de la Brecha'],['v0.19.2','v0.19.4']]);const w=d.createTreeWalker(d.body,NodeFilter.SHOW_TEXT);while(w.nextNode()){const n=w.currentNode;const raw=(n.nodeValue||'').trim();if(exact.has(raw))n.nodeValue=n.nodeValue.replace(raw,exact.get(raw))}d.querySelectorAll('*').forEach(el=>{if(el.childNodes.length===1&&el.firstChild?.nodeType===3&&el.textContent.trim()==='v0.19.2')el.textContent='v0.19.4'})}catch{}if(++tries<20)setTimeout(apply,250)};setTimeout(apply,100)}
 $('#menuBtn').onclick=()=>$('#menuPanel').classList.remove('hidden');$('#closeMenu').onclick=()=>$('#menuPanel').classList.add('hidden');$('#resetGame').onclick=reset;document.querySelectorAll('.building').forEach(b=>b.onclick=()=>{if(b.dataset.id===steps[s.step]?.id)startBuild()});
-const params=new URLSearchParams(location.search);if(params.has('fresh')){s={...defaults};save();history.replaceState(null,'',location.pathname)}
-const hasProgress=s.phase!=='intro'||s.introStep>0||s.step>0||s.rewardClaimed||s.chapter2Started;
-if(hasProgress&&!params.has('fresh'))resumePrompt();else startFromState();
+const params=new URLSearchParams(location.search);
+// En esta build de playtest, abrir la URL pública siempre inicia una sesión limpia.
+// La reanudación solo ocurre si se pide explícitamente con ?resume=1.
+if(!params.has('resume')){localStorage.removeItem(KEY);localStorage.removeItem(OLD);localStorage.removeItem('eldoria-v0194-flow');s={...defaults};save();}
+startFromState();
 })();
 </script></body></html>
