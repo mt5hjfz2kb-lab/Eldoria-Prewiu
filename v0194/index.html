@@ -25,7 +25,7 @@
 <div id="menuPanel" class="menuPanel hidden"><h3>Menú</h3><button id="closeMenu">Volver al reino</button><button id="resetGame" class="danger">Reiniciar partida desde cero</button></div>
 <script>
 (()=>{
-const KEY='eldoria-v0194-flow2',OLD='eldoria-save-v0192',BUILD_MS=1500;
+const BUILD='0194-r5',MIG='eldoria-v0194-build',KEY='eldoria-v0194-flow2',OLD='eldoria-save-v0192',BUILD_MS=1500;
 const steps=[
 {id:'farm',name:'Granero',title:'Devuelve alimento a Valoria',why:'Los supervivientes necesitan comida antes que cualquier otra cosa. Reconstruye el Granero.'},
 {id:'lumber',name:'Aserradero',title:'Recupera la madera',why:'Ya hay alimento. Ahora hacen falta vigas, puertas y andamios. Recupera el Aserradero.'},
@@ -34,7 +34,8 @@ const steps=[
 {id:'barracks',name:'Cuartel',title:'Devuelve la defensa',why:'El reino puede sostenerse. Falta poder defenderlo antes de abrir las puertas al mundo.'}
 ];
 const defaults={phase:'intro',introStep:0,step:0,building:null,rewardClaimed:false,chapter2Started:false};
-let s={...defaults};try{s={...s,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{}
+let s={...defaults};
+if(localStorage.getItem(MIG)!==BUILD){localStorage.removeItem(KEY);localStorage.removeItem(OLD);localStorage.removeItem('eldoria-v0194-flow');localStorage.setItem(MIG,BUILD);}else{try{s={...s,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{}}
 const $=q=>document.querySelector(q), save=()=>localStorage.setItem(KEY,JSON.stringify(s));
 function reset(){for(const k of Object.keys(localStorage))if(k.startsWith('eldoria-'))localStorage.removeItem(k);location.replace(location.pathname+'?fresh='+Date.now())}
 function modal(k,title,html,label,cb){document.querySelector('.overlay')?.remove();const o=document.createElement('div');o.className='overlay';o.innerHTML=`<div class="card"><small class="k">${k}</small><h2>${title}</h2>${html}<button class="primary">${label}</button></div>`;document.body.append(o);o.querySelector('.primary').onclick=()=>{o.remove();cb&&cb()};return o}
