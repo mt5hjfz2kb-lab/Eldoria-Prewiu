@@ -4,11 +4,11 @@ html,body{margin:0;height:100%;background:#090c0f;overflow:hidden}#game{position
 (()=>{
 const SAVE='eldoria-save-v0192',PKEY='eldoria-v0193-prologue';
 const order=[
-{id:'farm',name:'Granero',title:'Devuelve alimento a Valoria',copy:'Reconstruye el Granero y devuelve una producción básica de comida.'},
-{id:'lumber',name:'Aserradero',title:'Recupera la madera',copy:'Reconstruye el Aserradero para que Valoria pueda volver a crecer.'},
-{id:'quarry',name:'Cantera',title:'Levanta los cimientos',copy:'Devuelve la Cantera al servicio del Bastión.'},
-{id:'forge',name:'Forja',title:'Enciende las fraguas',copy:'Reconstruye la Forja para preparar herramientas, armas y futuras expediciones.'},
-{id:'barracks',name:'Cuartel',title:'Valoria vuelve a defenderse',copy:'Reconstruye el Cuartel y devuelve una estructura militar a Valoria.'}
+{id:'farm',aliases:['farm','granary','food'],name:'Granero',title:'Devuelve alimento a Valoria',copy:'Reconstruye el Granero y devuelve una producción básica de comida.'},
+{id:'lumber',aliases:['lumber','wood','sawmill','lumbermill'],name:'Aserradero',title:'Recupera la madera',copy:'Reconstruye el Aserradero para que Valoria pueda volver a crecer.'},
+{id:'quarry',aliases:['quarry','stone','mine'],name:'Cantera',title:'Levanta los cimientos',copy:'Devuelve la Cantera al servicio del Bastión.'},
+{id:'forge',aliases:['forge','smithy','iron'],name:'Forja',title:'Enciende las fraguas',copy:'Reconstruye la Forja para preparar herramientas, armas y futuras expediciones.'},
+{id:'barracks',aliases:['barracks','military'],name:'Cuartel',title:'Valoria vuelve a defenderse',copy:'Reconstruye el Cuartel y devuelve una estructura militar a Valoria.'}
 ];
 let p={step:0,intro:false,done:false,chapter2Shown:false};try{p={...p,...JSON.parse(localStorage.getItem(PKEY)||'{}')}}catch{}
 if(!p.intro&&!p.done){const old=localStorage.getItem(SAVE);if(old&&!localStorage.getItem(SAVE+'-backup-v0193'))localStorage.setItem(SAVE+'-backup-v0193',old);localStorage.removeItem(SAVE);}
@@ -18,8 +18,31 @@ function modal(k,title,copy,button,cb,reward=''){const sh=document.createElement
 function gameDoc(){try{return f.contentDocument}catch{return null}}
 function state(){try{return JSON.parse(localStorage.getItem(SAVE)||'null')}catch{return null}}
 function saveState(s){localStorage.setItem(SAVE,JSON.stringify(s));}
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();}
+function findBuilding(d,b){
+  for(const a of [b.id,...(b.aliases||[])]){
+    for(const sel of [`.building-${a}`,`[data-building="${a}"]`,`#building-${a}`]){
+      const n=d.querySelector(sel);if(n)return n;
+    }
+  }
+  const want=[norm(b.name),...(b.aliases||[]).map(norm)];
+  const candidates=[...d.querySelectorAll('[class*="building"],button,.building-card,.structure')];
+  for(const n of candidates){
+    const txt=norm(n.textContent);
+    if(want.some(w=>w&&txt.includes(w))){
+      const host=n.closest?.('[class*="building"],.building-card,.structure')||n;
+      return host;
+    }
+  }
+  const strongs=[...d.querySelectorAll('strong,h3,h4')];
+  for(const s of strongs){
+    const txt=norm(s.textContent);
+    if(want.some(w=>w&&txt.includes(w))){return s.closest?.('[class*="building"],button,.card,.panel,div')||s.parentElement;}
+  }
+  return null;
+}
 function startChapter(){if(p.intro||p.done)return;p.intro=true;store();$('#hud').classList.remove('hidden');modal('COMIENZA EL CAPÍTULO','Capítulo I · Las Cenizas de Valoria','Valoria no necesita que mejores una ciudad terminada: necesita volver a existir. Reconstruye sus edificios esenciales uno a uno.','Comenzar',()=>apply(),'Cofre de Reconstrucción · recursos + 1 Esencia Heroica');}
-function apply(){if(p.done)return;$('#hud').classList.remove('hidden');$('#prog').textContent=`${p.step}/5`;const d=gameDoc();if(!d)return;const q=d.querySelector('.quest-panel');if(q)q.style.display='none';const gate=d.querySelector('#gate');if(gate){gate.style.opacity='.25';gate.style.pointerEvents='none';}['world','map'].forEach(v=>{const n=d.querySelector(`[data-view="${v}"]`);if(n){n.style.opacity='.25';n.style.pointerEvents='none';}});order.forEach((b,i)=>{const n=d.querySelector('.building-'+b.id);if(!n)return;const built=i<p.step,current=i===p.step;n.style.opacity=built?'1':current?'1':'.48';n.style.filter=built?'':current?'drop-shadow(0 0 18px #d6b66f)':'grayscale(.8)';n.dataset.prologue=current?'1':'0';const strong=n.querySelector('strong');if(strong)strong.textContent=built?b.name:'Ruinas de '+b.name;const small=n.querySelector('small');if(small)small.textContent=built?'Reconstruido':current?'Toca para reconstruir':'Pendiente';const lvl=n.querySelector('.level');if(lvl)lvl.style.display=built?'':'none';const em=n.querySelector('em');if(current){if(em){em.textContent='RECONSTRUYE';em.style.display='block';}else{const e=d.createElement('em');e.textContent='RECONSTRUYE';n.prepend(e);}}else if(em&&em.textContent==='RECONSTRUYE')em.style.display='none';});}
+function apply(){if(p.done)return;$('#hud').classList.remove('hidden');$('#prog').textContent=`${p.step}/5`;const d=gameDoc();if(!d)return;const q=d.querySelector('.quest-panel');if(q)q.style.display='none';const gate=d.querySelector('#gate');if(gate){gate.style.opacity='.25';gate.style.pointerEvents='none';}['world','map'].forEach(v=>{const n=d.querySelector(`[data-view="${v}"]`);if(n){n.style.opacity='.25';n.style.pointerEvents='none';}});order.forEach((b,i)=>{const n=findBuilding(d,b);if(!n)return;const built=i<p.step,current=i===p.step;n.style.opacity=built?'1':current?'1':'.48';n.style.filter=built?'':current?'drop-shadow(0 0 18px #d6b66f)':'grayscale(.8)';n.dataset.prologue=current?'1':'0';const strong=n.querySelector('strong');if(strong)strong.textContent=built?b.name:'Ruinas de '+b.name;const small=n.querySelector('small');if(small)small.textContent=built?'Reconstruido':current?'Toca para reconstruir':'Pendiente';const lvl=n.querySelector('.level');if(lvl)lvl.style.display=built?'':'none';const em=n.querySelector('em');if(current){if(em){em.textContent='RECONSTRUYE';em.style.display='block';}else{const e=d.createElement('em');e.textContent='RECONSTRUYE';n.prepend(e);}}else if(em&&em.textContent==='RECONSTRUYE')em.style.display='none';});}
 function buildCurrent(){const b=order[p.step];if(!b)return;modal(`MISIÓN ${p.step+1} DE 5`,b.title,b.copy,`Reconstruir ${b.name}`,()=>{p.step++;store();$('#prog').textContent=`${p.step}/5`;apply();if(p.step>=order.length)finish();else setTimeout(()=>{const nx=order[p.step];modal('NUEVA MISIÓN',nx.title,`Has recuperado ${b.name}. ${nx.copy}`,'Continuar',()=>apply());},180);});}
 function finish(){p.done=true;store();modal('CAPÍTULO COMPLETADO','Las Cenizas de Valoria','El Granero alimenta, el Aserradero trabaja, la Cantera vuelve a dar piedra, la Forja arde y el Cuartel vuelve a tener techo. Valoria ya no es solo una ruina.','Recoger recompensa y abrir las puertas',()=>{let s=state()||{};s.firstUpgrade=true;s.talked=true;s.stage=2;s.chapterStartedSeen=true;s.introSeen=true;s.resources=s.resources||{food:80,wood:110,stone:75,iron:25};s.resources.food=(s.resources.food||0)+180;s.resources.wood=(s.resources.wood||0)+180;s.resources.stone=(s.resources.stone||0)+120;s.resources.iron=(s.resources.iron||0)+30;s.heroEssence=(s.heroEssence||0)+1;saveState(s);$('#hud').classList.add('hidden');showChapter2();},'+180 comida · +180 madera · +120 piedra · +30 hierro · +1 Esencia Heroica');}
 function showChapter2(){if(p.chapter2Shown){f.src='../v0192/?v0193done='+Date.now();return;}p.chapter2Shown=true;store();modal('COMIENZA EL CAPÍTULO','Capítulo II · Ecos de la Brecha','Valoria vuelve a sostenerse. Ahora debes cruzar sus puertas y descubrir qué está ocurriendo fuera.','Salir al mundo',()=>{f.src='../v0192/?v0193done='+Date.now();},'Explora · combate · recupera reliquias · reúne aliados');}
