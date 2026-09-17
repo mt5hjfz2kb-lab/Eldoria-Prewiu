@@ -44,6 +44,11 @@ jobs:
           ! grep -q '../v0195-r6/index.html' playtest/index.html
           grep -q 'chapter1-intro-v020' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
+          grep -q 'alt="Sir Aldric"' playtest/index.html
+          grep -q 'data:image/jpeg;base64' playtest/index.html
+          ! grep -q '<div class="aldric-portrait">⚔</div>' playtest/index.html
+          grep -q '<meta name="eldoria-version" content="0.20.1"' playtest/index.html
+          grep -q '<title>Eldoria v0.20.1' playtest/index.html
           grep -q 'v0201-ux-script' playtest/index.html
           grep -q 'eldoria-v020-ch1-intro' playtest/index.html
           grep -q 'aldric-cinematic' playtest/index.html
