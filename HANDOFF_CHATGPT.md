@@ -1,105 +1,20 @@
-# Eldoria v0.9 — paquete de revisión para otro ChatGPT
+# Eldoria — Handoff ChatGPT
 
-## Instrucción de revisión
+## Estado actual
+Candidata pública: **v0.19.5 r7 — Vertical Slice Candidate · Polished**.
+Fecha: 2026-09-17.
+Repositorio de publicación: `mt5hjfz2kb-lab/Eldoria-Prewiu`.
+Ruta pública candidata: `/v0195-r7/`.
+La raíz apunta a r7 durante el playtest de aprobación.
 
-Lee este documento y `index.html` antes de responder.
+## Flujo de trabajo recuperado
+La publicación histórica usa GitHub Pages y, cuando el tamaño del artefacto supera lo cómodo para el conector, loaders/parches de texto sobre una base estable. r7 usa r6 como base web y aplica `v0195-r7/r7patch.js` antes de renderizar. No reconstruir desde cero ni migrar a otro hosting sin necesidad.
 
-Realiza una revisión crítica e independiente de la versión actual del vertical slice. No reconstruyas el proyecto, no publiques cambios y no confundas esta versión con el MVP completo. La fuente de verdad de diseño sigue siendo `Eldoria_Documento_Maestro_Work_v1.0(1).docx`, que el usuario conserva en el chat original o puede adjuntar por separado.
+## Fuente de desarrollo
+La baseline de desarrollo r7 es la build consolidada/separada `index.html + styles.css + config.js + app.js`. El loader web es distribución, no la nueva arquitectura fuente.
 
-El usuario solicita sinceridad absoluta. Señala problemas aunque contradigan decisiones ya tomadas.
+## Gate inmediato
+Cristian debe jugar desde móvil sin instrucciones externas, desde partida nueva hasta el cierre/Mar de Cristal. Registrar cualquier bloqueo, overlay, botón fuera de pantalla, tutorial confuso o tramo muerto. No añadir nuevos sistemas antes de esa validación.
 
-## Cómo abrirlo
-
-- Ejecutable: `index.html`.
-- No requiere instalación ni servidor.
-- Puede abrirse directamente en un navegador.
-- Preview: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/
-- Para empezar de cero: usar una ventana privada o pulsar `E` y elegir **Reiniciar partida**.
-
-## Estado de versiones
-
-- v0.7 original: congelada y no sobrescrita.
-- v0.8: segunda vuelta jugable y cierre claro.
-- v0.9 incluida en este paquete: versión actual de revisión.
-- Desarrollo privado: `mt5hjfz2kb-lab/Eldoria`.
-- La web pública de este paquete es únicamente una preview de pruebas.
-
-## Contenido de v0.9
-
-1. Reconstrucción inicial de Valoria.
-2. Producción y mejora del Granero.
-3. Primera salida al mundo y combate.
-4. Decisión sobre la Brecha:
-   - Forjar el Gran Sello.
-   - Desatar la Brecha.
-5. Carta con efecto instantáneo o permanente claramente comunicado.
-6. Mejora de Fortaleza.
-7. Elección estratégica:
-   - Forja: bonificación ofensiva.
-   - Cantera: bonificación defensiva.
-8. Segunda región y Guardián de Ceniza.
-9. Elección de compañero:
-   - Lyra: habilidad ofensiva.
-   - Maelis: curación y daño.
-10. Tercera región y Avatar de la Brecha.
-11. Celebración manual y diferenciada tras cada victoria.
-12. Salón de Héroes:
-   - Plantilla.
-   - Nivel y experiencia.
-   - Habilidades.
-   - Poder.
-   - Espacios de equipo.
-13. Reliquia legendaria equipable.
-14. Pregunta final de intención de continuar.
-15. Informe local copiable.
-
-## Qué valida esta maqueta
-
-- Comprensión sin asistencia.
-- Claridad del ciclo ciudad → mundo → combate → recompensa.
-- Percepción de consecuencias.
-- Interés por héroes, experiencia y equipo.
-- Sensación de progreso.
-- Deseo declarado de continuar.
-
-## Qué no valida
-
-- Cuentas y persistencia remota.
-- Servidores o mundos.
-- Clanes, chat y cooperación.
-- PvP.
-- Rankings y eventos reales.
-- Economía multijugador.
-- Retención a varios días.
-- Calidad gráfica final.
-- Arquitectura o rendimiento de Unity.
-
-Unity será el cliente del producto. Los recursos, tiempos, inventario, combate, clanes y clasificaciones deberán ser controlados por un backend autoritativo.
-
-## Validación técnica realizada
-
-Se ejecutan pruebas automáticas en viewport móvil que completan:
-
-- Ruta ofensiva con Forja y Lyra.
-- Ruta defensiva con Cantera y Maelis.
-- Las tres expediciones.
-- Experiencia y subida de nivel.
-- Equipamiento de la reliquia.
-- Informe final.
-
-La última validación terminó correctamente antes de crear este paquete.
-
-## Preguntas para la revisión
-
-1. ¿El ciclo central parece suficientemente atractivo para justificar pasar a Unity?
-2. ¿Qué parte aporta valor real y qué parte parece relleno?
-3. ¿Las elecciones producen consecuencias perceptibles?
-4. ¿El combate tiene suficiente profundidad para un MVP o necesita otro sistema?
-5. ¿La progresión de héroes resulta comprensible y deseable?
-6. ¿Qué riesgos ves al añadir servidores, clanes y PvP?
-7. ¿Qué debe eliminarse, cambiarse o validarse antes de invertir en backend y Unity?
-8. Da un veredicto claro: continuar, iterar el núcleo o detener el proyecto.
-
-## Restricción importante
-
-No interpretes la cantidad de pantallas como prueba de diversión. Evalúa el comportamiento que el prototipo puede demostrar y separa claramente hechos, inferencias y opinión.
+## Regla de veracidad
+No afirmar que un E2E o playtest completo pasó si no fue ejecutado. El QA estructural r7 pasó `node --check`; el E2E local quedó bloqueado por restricciones de navegación del sandbox.
