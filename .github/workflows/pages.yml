@@ -27,6 +27,7 @@ jobs:
           enablement: true
       - name: Use canonical v0.20.1 base or build it once
         run: |
+          mkdir -p playtest
           if [ -s v0201/index.html ]; then
             cp v0201/index.html playtest/index.html
             echo "Using consolidated v0.20.1 canonical base"
