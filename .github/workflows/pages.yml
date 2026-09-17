@@ -25,17 +25,21 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Build Eldoria v0.20.1
+      - name: Build validated v0.20 narrative base
         run: |
           node tools/build-r7.mjs
-          node tools/postprocess-v020.mjs
+          python3 tools/restore-v020.py
+      - name: Apply v0.20.1 onboarding improvements
+        run: node tools/postprocess-v020.mjs
       - name: Structural publication checks
         run: |
           test -s playtest/index.html
           ! grep -q '../v0195-r6/index.html' playtest/index.html
-          grep -q '0.20.1-onboarding' playtest/index.html
+          grep -q 'chapter1-intro-v020' playtest/index.html
+          grep -q 'Sir Aldric' playtest/index.html
           grep -q 'v0201-ux-script' playtest/index.html
-          grep -q 'onboardingDone' playtest/index.html
+          grep -q 'eldoria-v020-ch1-intro' playtest/index.html
+          grep -q 'aldric-cinematic' playtest/index.html
           grep -q 'Duelo de Reliquias' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
       - uses: actions/upload-pages-artifact@v3
