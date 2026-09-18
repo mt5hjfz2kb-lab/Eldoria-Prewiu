@@ -78,6 +78,12 @@ jobs:
           grep -q 'probabilidad muy baja' playtest/index.html
           grep -q 'orin-approved' playtest/index.html
           grep -q '../assets/orin-portrait.jpg' playtest/index.html
+          grep -q 'eldoria-final-ux-lock' playtest/index.html
+          grep -q 'DECISIÓN OBLIGATORIA · 1 DE 2' playtest/index.html
+          grep -q 'Necesitas escribir un nick para continuar' playtest/index.html
+          grep -q "if(!nick)" playtest/index.html
+          grep -q '#contain,#exploit,#choose-lyra,#choose-maelis' playtest/index.html
+          grep -q 'orin-character-panel' playtest/index.html
           test -s assets/orin-portrait.jpg
           grep -q 'Custodio del Códice' playtest/index.html
           grep -q 'Guardar en el Códice' playtest/index.html
