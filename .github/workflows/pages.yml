@@ -69,6 +69,15 @@ jobs:
           grep -q 'aldric-typed' playtest/index.html
           grep -q 'XP → nivel · Esencia → habilidad' playtest/index.html
           grep -q 'equal-war-choice' playtest/index.html
+          grep -q 'MAESTRE ORIN' playtest/index.html
+          grep -q 'orin-cinematic' playtest/index.html
+          grep -q 'showOrinDuelStep' playtest/index.html
+          grep -q 'Códice de Reliquias' playtest/index.html
+          grep -q 'USAR UNA CARTA TIENE UN COSTE' playtest/index.html
+          grep -q 'Eco 1/1/1/1' playtest/index.html
+          grep -q 'hero-arrival-cinematic' playtest/index.html
+          grep -q 'botón Héroes de la barra inferior' playtest/index.html
+          grep -q 'botón Códice en la barra inferior' playtest/index.html
           grep -q "const required=\['understood','semi','cards','decision','duel','breach'\]" playtest/index.html
           grep -q "localStorage.removeItem('eldoria-v020-ch1-intro')" playtest/index.html
           grep -q 'D.resources\[r\].label' playtest/index.html
