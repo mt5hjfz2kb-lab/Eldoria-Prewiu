@@ -58,8 +58,8 @@ jobs:
           grep -q 'Cantera del Vigía' playtest/index.html
           grep -q 'Corruptos de la Brecha' playtest/index.html
           grep -q 'Los Guardias resolvieron el choque sobre el mapa' playtest/index.html
-          grep -q 'UN JURAMENTO REGRESA' playtest/index.html
-          grep -q 'Lyra, Arquera de Ceniza' playtest/index.html
+          grep -q 'LYRA · ARQUERA DE CENIZA' playtest/index.html
+          grep -q 'Lyra · Arquera de Ceniza' playtest/index.html
           grep -q 'FISURA SOMETIDA' playtest/index.html
           grep -q 'NODO AGOTADO' playtest/index.html
           grep -q 'El enemigo deja botín, pero no crea Poder' playtest/index.html
