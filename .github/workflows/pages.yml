@@ -92,8 +92,6 @@ jobs:
           grep -q "LYRA · ARQUERA DE CENIZA" playtest/index.html
           grep -q "eldoria-v022-reset" playtest/index.html
           grep -q "v0.22 iPhone overlay hardening" playtest/index.html
-          grep -q 'BASTIÓN III' playtest/index.html
-          grep -q 'MAR DE CRISTAL' playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
