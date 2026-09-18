@@ -1909,94 +1909,82 @@ window.ELDORIA_DATA = {
 .orin-wait{text-align:center!important;font-size:10px!important;letter-spacing:.12em!important;color:#817286!important}.orin-dialogue.done .orin-wait{display:none!important}.orin-continue{width:100%!important;margin-top:17px!important;opacity:0!important;pointer-events:none!important;transform:translateY(4px)!important;transition:.2s!important}.orin-dialogue.done .orin-continue{opacity:1!important;pointer-events:auto!important;transform:none!important}
 @media(max-width:430px){.orin-cinematic{padding:10px!important}.orin-dialogue{padding:16px!important}.orin-copy{font-size:17px!important;min-height:150px!important}.orin-portrait{width:50px;height:50px;flex-basis:50px}}
 </style>
+
 <style id="v022-core-loop-style">
-body.v022-core-active{overflow:hidden;background:#070a0d}
+body.v022-core-active{margin:0;overflow:hidden;background:#06090b}
 body.v022-core-active>.game-shell{display:none!important}
-#eldoria-core-loop{position:fixed;inset:0;z-index:1000;background:#090d10;color:#eee7d5;font-family:Georgia,'Times New Roman',serif;overflow:hidden}
-.v22-shell{height:100%;max-width:980px;margin:auto;position:relative;background:#111820;box-shadow:0 0 80px #000}
-.v22-top{height:82px;padding:10px 14px;display:flex;align-items:center;gap:12px;background:linear-gradient(#171e25,#0d1217);border-bottom:1px solid #d6b66f44;position:relative;z-index:5}
-.v22-crest{width:48px;height:48px;display:grid;place-items:center;border:1px solid #d6b66f;color:#e5c675;background:#241d11;font-size:27px}
-.v22-title{min-width:135px}.v22-title b,.v22-title small{display:block}.v22-title small{font:9px Arial;color:#a9a89d;letter-spacing:.12em;margin-top:3px}
-.v22-res{margin-left:auto;display:flex;gap:7px}.v22-res span{min-width:82px;padding:7px 9px;background:#090d10;border:1px solid #ffffff16;font:11px Arial}.v22-res b{display:block;color:#fff;margin-top:3px;font-size:14px}
-.v22-main{position:absolute;inset:82px 0 72px;overflow:auto;background:radial-gradient(circle at 75% 15%,#67218d33,transparent 24%),linear-gradient(#182932,#17251e 52%,#0d1713)}
-.v22-quest{position:sticky;top:0;z-index:4;padding:10px 14px;background:#0c1215eF;border-bottom:1px solid #d6b66f33;font:11px Arial}.v22-quest small{color:#d6b66f;letter-spacing:.14em}.v22-quest b{display:block;margin-top:4px;font:15px Georgia;color:#fff}
-.v22-kingdom{min-height:570px;position:relative;padding:24px 14px 160px;background:radial-gradient(ellipse at 50% 90%,#37523b,#16261f 60%,transparent 61%)}
-.v22-rift{position:absolute;right:8%;top:7%;font-size:70px;color:#c260ff;filter:drop-shadow(0 0 20px #a62de8);opacity:.8}
-.v22-keep{margin:40px auto 0;width:min(330px,82%);text-align:center;position:relative}.v22-keep-art{height:180px;display:grid;place-items:center;font-size:110px;filter:grayscale(.35) drop-shadow(0 12px 12px #000);background:radial-gradient(ellipse,#ffffff0e,transparent 65%)}.v22-keep.ruined .v22-keep-art{filter:grayscale(.8) brightness(.65)}.v22-keep h1{font-size:23px;margin:0;color:#f2dfad}.v22-keep p{font:12px/1.45 Arial;color:#c3c2b8;margin:7px auto;max-width:330px}
-.v22-goal{margin:13px auto 0;max-width:330px;padding:12px;border:1px solid #d6b66f55;background:#0b1014dd;text-align:left;font:11px Arial}.v22-goal strong{display:block;color:#f3d58c;font:14px Georgia;margin-bottom:7px}.v22-costs{display:flex;gap:7px;flex-wrap:wrap}.v22-costs span{padding:6px 8px;border:1px solid #ffffff1b;background:#111820}.v22-costs .ok{color:#9fd09c}.v22-costs .bad{color:#e58e85}
-.v22-buildings{display:flex;justify-content:center;gap:12px;margin-top:28px}.v22-building{width:145px;padding:12px;border:1px solid #ffffff22;background:#10171be8;text-align:center}.v22-building i{font-style:normal;font-size:42px}.v22-building b,.v22-building small{display:block}.v22-building b{margin-top:5px}.v22-building small{font:9px Arial;color:#aaa;margin-top:4px}
-.v22-btn{width:100%;margin-top:11px;padding:12px;border:1px solid #e0c781;background:linear-gradient(#a98848,#60491f);color:white;font:bold 11px Arial;letter-spacing:.08em;text-transform:uppercase}.v22-btn.secondary{background:#151d22}.v22-btn:disabled{opacity:.35}
-.v22-bottom{position:absolute;bottom:0;left:0;right:0;height:72px;display:grid;grid-template-columns:1fr 1fr;background:#0b1014;border-top:1px solid #d6b66f33;z-index:6}.v22-bottom button{border:0;border-right:1px solid #ffffff12;background:transparent;color:#999;font:11px Arial}.v22-bottom button.active{color:#e5c675;background:#d6b66f0d}.v22-bottom span{display:block;font-size:25px;margin-bottom:3px}
-.v22-world{min-height:650px;padding:22px 14px 130px;position:relative;background:radial-gradient(circle at 70% 25%,#8522a655,transparent 20%),linear-gradient(155deg,#15202a,#20291f 52%,#111719)}
-.v22-world-head{text-align:center}.v22-world-head small{font:9px Arial;color:#d6b66f;letter-spacing:.18em}.v22-world-head h2{margin:5px 0;font-weight:normal}.v22-world-head p{font:11px Arial;color:#aaa;margin:0}
-.v22-map{margin:25px auto;max-width:540px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.v22-node{min-height:145px;padding:14px;border:1px solid #ffffff20;background:#0d1317e8;text-align:left;position:relative}.v22-node.done{border-color:#6f9e6a;opacity:.72}.v22-node.enemy{border-color:#9a4bb0}.v22-node.locked{opacity:.35}.v22-node i{font-style:normal;font-size:40px}.v22-node b,.v22-node small{display:block}.v22-node b{margin-top:6px}.v22-node small{font:10px/1.4 Arial;color:#aaa;margin-top:4px}.v22-node em{position:absolute;right:8px;top:8px;font:9px Arial;color:#e2c97e;font-style:normal}
-.v22-march{position:fixed;inset:0;z-index:1100;background:#05080be8;display:grid;place-items:center;text-align:center;padding:30px}.v22-march .unit{font-size:72px;animation:v22march 1s infinite}.v22-march h2{color:#f1db9d}.v22-march p{font:12px Arial;color:#aaa;max-width:320px}.v22-bar{width:min(320px,80vw);height:5px;background:#ffffff16;margin:16px auto;overflow:hidden}.v22-bar i{display:block;height:100%;background:#d6b66f;animation:v22bar 1.8s linear forwards}
-.v22-result{padding:22px;border:1px solid #d6b66f55;background:#111820;max-width:360px}.v22-result strong{font-size:25px;color:#e7cd87}.v22-result p{font:12px/1.5 Arial;color:#ccc}.v22-reward{font:bold 15px Arial;color:#9fd09c}
-.v22-celebrate{position:fixed;inset:0;z-index:1200;background:radial-gradient(circle,#4b3c1dbb,#050709f4 65%);display:grid;place-items:center;text-align:center;padding:24px}.v22-celebrate .castle{font-size:105px;filter:drop-shadow(0 0 30px #e0bd62)}.v22-celebrate h1{color:#f0d58d;margin:8px 0}.v22-celebrate p{font:13px/1.5 Arial;color:#d3d0c4;max-width:390px}.v22-next{margin:16px auto;padding:12px;border:1px solid #9d4fd0;background:#24152c;max-width:350px;font:11px Arial}.v22-next b{display:block;color:#e3a7ff;font:16px Georgia;margin-bottom:5px}
-.v22-toast{position:fixed;left:50%;bottom:90px;z-index:1300;transform:translateX(-50%);padding:10px 15px;background:#0b1115;border:1px solid #d6b66f66;font:11px Arial;opacity:0;transition:.25s}.v22-toast.show{opacity:1}
-@keyframes v22march{50%{transform:translateX(18px)}}@keyframes v22bar{from{width:0}to{width:100%}}
-@media(max-width:600px){.v22-top{height:108px;align-items:flex-start}.v22-main{top:108px}.v22-res{position:absolute;left:8px;right:8px;bottom:7px}.v22-res span{flex:1;min-width:0;padding:5px 7px}.v22-map{grid-template-columns:1fr 1fr}.v22-building{width:46%}.v22-keep{margin-top:22px}.v22-keep-art{height:145px;font-size:88px}}
+#eldoria-core-loop{position:fixed;inset:0;z-index:1000;color:#f0ead9;font-family:Georgia,serif;background:#09100f;overflow:hidden}
+.v22{height:100%;max-width:900px;margin:auto;position:relative;overflow:hidden;background:#101a18}
+.hud{position:absolute;z-index:30;top:0;left:0;right:0;height:78px;padding:9px 12px;display:flex;align-items:center;gap:10px;background:linear-gradient(#0c1216f5,#10171bea);border-bottom:1px solid #d8ba6c55}
+.crest{width:46px;height:46px;display:grid;place-items:center;border:1px solid #d8ba6c;background:#241c0e;color:#e5c56c;font-size:28px}.realm b,.realm small{display:block}.realm small{font:8px Arial;color:#aaa;letter-spacing:.12em}
+.res{margin-left:auto;display:flex;gap:5px}.res span{padding:6px 8px;min-width:70px;background:#070b0ddd;border:1px solid #ffffff18;font:9px Arial}.res b{display:block;font-size:13px;margin-top:2px}
+.scene{position:absolute;inset:78px 0 62px;overflow:hidden}
+.quest{position:absolute;z-index:25;left:12px;top:12px;max-width:290px;padding:9px 12px;background:#091014e8;border-left:3px solid #d8ba6c;box-shadow:0 8px 25px #0008;pointer-events:none}.quest small{font:8px Arial;color:#e0bf6b;letter-spacing:.15em}.quest b{display:block;margin-top:3px;font-size:14px}
+.kingdom{background:linear-gradient(#1a2d35 0 35%,#324638 36% 64%,#14251d 65%);perspective:600px}
+.sky{position:absolute;inset:0;background:radial-gradient(circle at 18% 12%,#efb65d55,transparent 27%),radial-gradient(circle at 80% 15%,#a72ed044,transparent 24%)}
+.mountains{position:absolute;left:-5%;right:-5%;top:20%;height:30%;background:#1c2927;clip-path:polygon(0 65%,10% 35%,18% 62%,29% 20%,40% 66%,54% 15%,67% 60%,79% 27%,90% 65%,100% 35%,100% 100%,0 100%)}
+.ground{position:absolute;left:-15%;right:-15%;bottom:-24%;height:75%;border-radius:50% 50% 0 0;background:radial-gradient(ellipse,#415a40,#1a2c22 68%);transform:rotateX(12deg)}
+.rift{position:absolute;right:8%;top:9%;font-size:100px;color:#d574ff;text-shadow:0 0 12px #e18aff,0 0 45px #9a22c7;transform:rotate(9deg);animation:riftPulse 2s infinite}
+.keep{position:absolute;z-index:8;left:50%;top:41%;transform:translate(-50%,-50%);width:250px;height:210px;border:0;background:transparent;color:white;cursor:pointer;text-align:center}.keep .art{font-size:120px;filter:drop-shadow(0 14px 10px #000)}.keep.ruin .art{filter:grayscale(.75) brightness(.62) drop-shadow(0 14px 10px #000)}.keep label{display:block;margin-top:-20px;padding:6px;background:#0a1012d9;border:1px solid #d8ba6c66;font:bold 11px Arial}.keep .pulse{position:absolute;inset:20px;border:2px solid #d8ba6c77;border-radius:50%;animation:pulse 1.5s infinite;pointer-events:none}
+.poi{position:absolute;z-index:9;width:120px;border:0;background:transparent;color:white;text-align:center;cursor:pointer}.poi .icon{display:block;font-size:58px;filter:drop-shadow(0 9px 7px #000)}.poi label{display:block;padding:4px;background:#0a1012d9;border:1px solid #ffffff22;font:bold 9px Arial}.poi small{display:block;color:#ccc;font:8px Arial}.sawmill{left:10%;bottom:17%}.wall{right:9%;bottom:15%}.poi.objective{animation:poiPulse 1.4s infinite}.poi.locked{filter:grayscale(1);opacity:.42}
+.road{position:absolute;z-index:3;left:50%;bottom:-8%;width:18%;height:52%;transform:translateX(-50%) perspective(250px) rotateX(25deg);background:linear-gradient(90deg,transparent,#8b7a5e88 25%,#8b7a5e99 75%,transparent)}
+.world{background:linear-gradient(#111c27,#253029 42%,#121b17)}.world .terrain{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 70%,#2d4c35 0 13%,transparent 14%),radial-gradient(ellipse at 70% 25%,#542461 0 12%,transparent 13%),radial-gradient(ellipse at 70% 75%,#3c4335 0 17%,transparent 18%),linear-gradient(135deg,transparent 49%,#88765d55 50% 52%,transparent 53%)}
+.world-title{position:absolute;z-index:5;top:18px;left:50%;transform:translateX(-50%);text-align:center}.world-title small{font:8px Arial;color:#e0bf6b;letter-spacing:.18em}.world-title b{display:block;font-size:19px}
+.mapnode{position:absolute;z-index:8;width:115px;height:115px;border:0;background:transparent;color:white;cursor:pointer;text-align:center}.mapnode .icon{font-size:58px;display:block;filter:drop-shadow(0 8px 8px #000)}.mapnode label{display:block;padding:4px;background:#091014e8;border:1px solid #ffffff25;font:bold 9px Arial}.mapnode small{font:8px Arial;color:#ccc}.mapnode.done{opacity:.5}.mapnode.locked{filter:grayscale(1);opacity:.35}.forest{left:10%;top:28%}.quarry{right:12%;bottom:16%}.camp{right:16%;top:23%}.boss{left:18%;bottom:12%}.home{left:45%;top:56%}
+.army{position:absolute;z-index:20;font-size:34px;transition:left 1.5s linear,top 1.5s linear;filter:drop-shadow(0 5px 4px #000);pointer-events:none}.battlefx{position:absolute;z-index:22;font-size:42px;animation:clash .25s infinite alternate;pointer-events:none}
+.reward{position:absolute;z-index:28;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,86%);padding:18px;text-align:center;background:#0b1115f4;border:1px solid #d8ba6c88;box-shadow:0 20px 70px #000}.reward strong{display:block;color:#edd48e;font-size:23px}.reward p{font:11px/1.45 Arial;color:#ccc}.reward b{color:#9ed39a}.reward button,.upgrade button{width:100%;padding:11px;border:1px solid #e0c67c;background:linear-gradient(#9b7b3e,#5c431b);color:#fff;font:bold 10px Arial;letter-spacing:.08em}
+.upgrade{position:absolute;z-index:26;left:50%;bottom:18px;transform:translateX(-50%);width:min(340px,90%);padding:12px;background:#091014ee;border:1px solid #d8ba6c77}.upgrade b{color:#efd48b}.upgrade p{margin:5px 0 9px;font:10px Arial;color:#bbb}.costs{display:flex;gap:5px;margin-bottom:8px}.costs span{flex:1;padding:5px;text-align:center;border:1px solid #ffffff18;font:9px Arial}.bad{color:#e88b83}.ok{color:#a7d2a0}
+.nav{position:absolute;z-index:30;bottom:0;left:0;right:0;height:62px;display:grid;grid-template-columns:1fr 1fr;background:#090e12f5;border-top:1px solid #d8ba6c44}.nav button{border:0;background:transparent;color:#929894;font:9px Arial}.nav button span{display:block;font-size:24px}.nav button.active{color:#e4c56d;background:#d8ba6c10}
+.cinematic{position:fixed;z-index:1500;inset:0;background:#020405e8;display:grid;place-items:center;padding:22px}.cinematic .card{max-width:390px;text-align:center}.cinematic .big{font-size:110px;filter:drop-shadow(0 0 28px #d8ba6c)}.cinematic h1{color:#efd58d;margin:5px}.cinematic p{font:12px/1.55 Arial;color:#d2d0c5}.cinematic button{width:100%;padding:12px;border:1px solid #e0c67c;background:#80642f;color:white;font:bold 10px Arial}.next{padding:11px;border:1px solid #a34ed1;background:#26152d;margin:14px 0}.next b{display:block;color:#e4a5ff;font-size:16px}
+@keyframes pulse{50%{transform:scale(1.12);opacity:.2}}@keyframes poiPulse{50%{filter:drop-shadow(0 0 18px #e8c86e);transform:scale(1.06)}}@keyframes riftPulse{50%{filter:brightness(1.5);transform:rotate(9deg) scale(1.05)}}@keyframes clash{from{transform:scale(.8) rotate(-8deg)}to{transform:scale(1.25) rotate(8deg)}}
+@media(max-width:600px){.hud{height:105px;align-items:flex-start}.scene{top:105px}.res{position:absolute;left:8px;right:8px;bottom:6px}.res span{flex:1;min-width:0;padding:4px 6px}.quest{max-width:62%;top:8px}.keep{top:42%;width:200px}.keep .art{font-size:100px}.poi{width:95px}.poi .icon{font-size:48px}.mapnode{width:95px}.mapnode .icon{font-size:50px}.forest{left:5%;top:30%}.camp{right:6%;top:25%}.quarry{right:7%;bottom:17%}.boss{left:7%;bottom:14%}}
 </style>
 <div id="eldoria-core-loop" data-testid="v022-core-loop"></div>
 <script id="v022-core-loop-script">
 (()=>{
-  const KEY='eldoria-v022-core-loop';
-  const fresh=()=>({wood:240,stone:160,power:1850,bastion:1,sawmill:false,forest:false,quarry:false,camp:false,view:'kingdom',started:Date.now()});
-  let s;try{s={...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){s=fresh()}
-  const root=document.getElementById('eldoria-core-loop'); document.body.classList.add('v022-core-active');
-  const save=()=>localStorage.setItem(KEY,JSON.stringify(s));
-  const fmt=n=>Math.floor(n).toLocaleString('es-ES');
-  const enough=()=>s.wood>=450&&s.stone>=300&&s.power>=2200;
-  function toast(t){let x=document.querySelector('.v22-toast');if(!x){x=document.createElement('div');x.className='v22-toast';document.body.appendChild(x)}x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1500)}
-  function top(){return '<div class="v22-top"><div class="v22-crest">E</div><div class="v22-title"><b>VALORIA</b><small>REINO EN RECONSTRUCCIÓN</small></div><div class="v22-res"><span>🌲 Madera<b>'+fmt(s.wood)+'</b></span><span>🪨 Piedra<b>'+fmt(s.stone)+'</b></span><span>⚔ Poder<b>'+fmt(s.power)+'</b></span></div></div>'}
-  function bottom(){return '<div class="v22-bottom"><button data-act="kingdom" class="'+(s.view==='kingdom'?'active':'')+'"><span>🏰</span>VALORIA</button><button data-act="world" class="'+(s.view==='world'?'active':'')+'"><span>🗺️</span>MUNDO</button></div>'}
-  function quest(){
-    if(s.bastion>=2)return '<small>OBJETIVO CONSEGUIDO</small><b>El Bastión vuelve a alzarse. Ahora Valoria necesita crecer.</b>';
-    if(!s.sawmill)return '<small>OBJETIVO · BASTIÓN II</small><b>Reactiva el Aserradero para comenzar la reconstrucción.</b>';
-    if(!s.forest||!s.quarry)return '<small>OBJETIVO · BASTIÓN II</small><b>Valoria no tiene suficientes recursos. Sal al mundo.</b>';
-    if(!s.camp)return '<small>OBJETIVO · BASTIÓN II</small><b>Los Corruptos bloquean la ruta. Despeja el camino.</b>';
-    return '<small>OBJETIVO · BASTIÓN II</small><b>Ya tienes lo necesario. Regresa y levanta el Bastión.</b>';
-  }
-  function kingdom(){
-    const wc=s.wood>=450?'ok':'bad',sc=s.stone>=300?'ok':'bad',pc=s.power>=2200?'ok':'bad';
-    return '<div class="v22-quest">'+quest()+'</div><section class="v22-kingdom"><div class="v22-rift">ϟ</div><div class="v22-keep '+(s.bastion===1?'ruined':'')+'"><div class="v22-keep-art">🏰</div><h1>Bastión de Valoria · Nv. '+s.bastion+'</h1><p>'+(s.bastion===1?'La fortaleza sobrevivió, pero Valoria no. Recuperar el Bastión es el primer paso para reclamar el reino.':'Las murallas vuelven a tener vida. Desde aquí comienza la reconquista.')+'</p><div class="v22-goal"><strong>'+(s.bastion===1?'SIGUIENTE META · BASTIÓN II':'NUEVA META · BASTIÓN III')+'</strong>'+(s.bastion===1?'<div class="v22-costs"><span class="'+wc+'">🌲 450</span><span class="'+sc+'">🪨 300</span><span class="'+pc+'">⚔ 2.200</span></div><button data-act="upgrade" class="v22-btn" '+(!enough()?'disabled':'')+'>Levantar Bastión II</button>':'<div class="v22-next"><b>Necesitas un nuevo héroe</b>Una amenaza de la Brecha protege la ruta hacia el Mar de Cristal.</div>')+'</div></div><div class="v22-buildings"><div class="v22-building"><i>🪚</i><b>Aserradero</b><small>'+(s.sawmill?'Activo · producción restaurada':'En ruinas · imprescindible para avanzar')+'</small><button data-act="sawmill" class="v22-btn secondary" '+(s.sawmill?'disabled':'')+'>'+(s.sawmill?'Reactivado':'Reactivar · 🌲 80')+'</button></div><div class="v22-building"><i>🛡️</i><b>Muralla Este</b><small>'+(s.bastion>=2?'Acceso recuperado':'Bloqueada hasta Bastión II')+'</small><button class="v22-btn secondary" disabled>'+(s.bastion>=2?'Próximamente':'Bloqueada')+'</button></div></div></section>';
-  }
-  function node(id,icon,name,desc,reward,enemy=false,locked=false){
-    const done=!!s[id];return '<button data-node="'+id+'" class="v22-node '+(done?'done ':'')+(enemy?'enemy ':'')+(locked?'locked':'')+'" '+(done||locked?'disabled':'')+'><em>'+(done?'COMPLETADO':enemy?'AMENAZA':'RECURSO')+'</em><i>'+icon+'</i><b>'+name+'</b><small>'+desc+'</small><small>'+reward+'</small></button>';
-  }
-  function world(){
-    return '<div class="v22-quest">'+quest()+'</div><section class="v22-world"><div class="v22-world-head"><small>FRONTERA DE VALORIA</small><h2>El mundo alimenta tu reino</h2><p>Consigue lo que Valoria necesita. Los peligros crecerán con La Brecha.</p></div><div class="v22-map">'+
-      node('forest','🌲','Bosque antiguo · Nv. 1','Sin amenaza · 3 s de marcha','Recompensa: +360 madera')+
-      node('quarry','⛏️','Cantera abandonada · Nv. 1','Sin amenaza · 3 s de marcha','Recompensa: +260 piedra')+
-      node('camp','👹','Corruptos de la Brecha · Nv. 1','Poder 2.050 · Riesgo bajo','Recompensa: +180 Poder',true,!s.forest||!s.quarry)+
-      node('riftBoss','🌀','Fisura inestable · Nv. 3','Poder ??? · Un héroe no basta','Recompensa desconocida',true,true)+
-      '</div><button data-act="kingdom" class="v22-btn secondary">Regresar a Valoria</button></section>';
-  }
-  function render(){root.innerHTML='<div class="v22-shell">'+top()+'<main class="v22-main">'+(s.view==='world'?world():kingdom())+'</main>'+bottom()+'</div>';bind()}
-  function bind(){
-    root.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{
-      const a=b.dataset.act;
-      if(a==='kingdom'||a==='world'){if(a==='world'&&!s.sawmill)return toast('Primero reactiva el Aserradero.');s.view=a;save();render()}
-      if(a==='sawmill'){if(s.wood<80)return toast('No tienes madera suficiente.');s.wood-=80;s.sawmill=true;s.power+=170;save();toast('+170 Poder · Aserradero activo');setTimeout(()=>{s.view='world';save();render()},900)}
-      if(a==='upgrade'&&enough()){s.wood-=450;s.stone-=300;s.power+=900;s.bastion=2;save();celebrate()}
-    });
-    root.querySelectorAll('[data-node]').forEach(b=>b.onclick=()=>runNode(b.dataset.node));
-  }
-  function runNode(id){
-    const enemy=id==='camp';const label=id==='forest'?'Bosque antiguo':id==='quarry'?'Cantera abandonada':'Corruptos de la Brecha';
-    const o=document.createElement('div');o.className='v22-march';o.innerHTML='<div><div class="unit">♞</div><h2>Marchando hacia '+label+'</h2><p>'+(enemy?'Tus tropas resolverán este encuentro automáticamente. El combate normal no interrumpe el ritmo del mundo.':'La compañía se desplaza por el mapa.')+'</p><div class="v22-bar"><i></i></div></div>';document.body.appendChild(o);
-    setTimeout(()=>{
-      if(id==='forest'){s.forest=true;s.wood+=360;finishNode(o,'RECURSOS ASEGURADOS','+360 madera','El bosque ya abastece a Valoria.')}
-      else if(id==='quarry'){s.quarry=true;s.stone+=260;finishNode(o,'RECURSOS ASEGURADOS','+260 piedra','La cantera vuelve a estar bajo tu control.')}
-      else {o.innerHTML='<div><div class="unit">⚔️</div><h2>Encuentro en curso</h2><p>Guardias de Valoria contra Corruptos · resolución automática</p><div class="v22-bar"><i></i></div></div>';setTimeout(()=>{s.camp=true;s.power+=180;finishNode(o,'VICTORIA','+180 Poder','La ruta está despejada. No hubo una pantalla de combate: tu ejército expresó el poder que ya habías construido.')},1100)}
-    },1800);
-  }
-  function finishNode(o,title,reward,copy){save();o.innerHTML='<div class="v22-result"><strong>'+title+'</strong><p>'+copy+'</p><div class="v22-reward">'+reward+'</div><button class="v22-btn">Continuar</button></div>';o.querySelector('button').onclick=()=>{o.remove();render()}}
-  function celebrate(){
-    const o=document.createElement('div');o.className='v22-celebrate';o.innerHTML='<div><div class="castle">🏰</div><h1>BASTIÓN II</h1><p>Valoria cambia porque tú la has hecho crecer. Las murallas vuelven a abrirse y una nueva ambición aparece.</p><div class="v22-next"><b>LYRA · ARQUERA DE CENIZA</b>La Fisura de nivel 3 exige un segundo héroe. Ahora sabes por qué quieres conseguirla.</div><p><strong>Próximo deseo:</strong> conseguir a Lyra y abrir la ruta al Mar de Cristal.</p><button class="v22-btn">Ver mi Valoria</button></div>';document.body.appendChild(o);o.querySelector('button').onclick=()=>{o.remove();render();setTimeout(()=>toast('Nueva meta desbloqueada · Bastión III'),300)}}
-  window.ELDORIA_V022={reset:()=>{localStorage.removeItem(KEY);location.reload()},state:()=>JSON.parse(JSON.stringify(s))};
-  render();
+ const KEY='eldoria-v022-visual-loop',fresh=()=>({wood:240,stone:160,power:1850,bastion:1,sawmill:false,forest:false,quarry:false,camp:false,view:'kingdom'});
+ let s;try{s={...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){s=fresh()}
+ const root=document.getElementById('eldoria-core-loop');document.body.classList.add('v022-core-active');const save=()=>localStorage.setItem(KEY,JSON.stringify(s)),fmt=n=>Math.floor(n).toLocaleString('es-ES');
+ const enough=()=>s.wood>=450&&s.stone>=300&&s.power>=2200;
+ function hud(){return '<div class="hud"><div class="crest">E</div><div class="realm"><b>VALORIA</b><small>LAS CENIZAS DESPIERTAN</small></div><div class="res"><span>🌲 Madera<b>'+fmt(s.wood)+'</b></span><span>🪨 Piedra<b>'+fmt(s.stone)+'</b></span><span>⚔ Poder<b>'+fmt(s.power)+'</b></span></div></div>'}
+ function q(){if(s.bastion>1)return ['NUEVA AMBICIÓN','Consigue a Lyra y alcanza Bastión III.'];if(!s.sawmill)return ['BASTIÓN II','Toca el Aserradero en ruinas.'];if(!s.forest||!s.quarry)return ['BASTIÓN II','Valoria necesita recursos. Explora el mundo.'];if(!s.camp)return ['BASTIÓN II','Los Corruptos bloquean la ruta.'];return ['BASTIÓN II','Regresa a Valoria y levanta el Bastión.']}
+ function quest(){const x=q();return '<div class="quest"><small>OBJETIVO · '+x[0]+'</small><b>'+x[1]+'</b></div>'}
+ function nav(){return '<div class="nav"><button data-view="kingdom" class="'+(s.view==='kingdom'?'active':'')+'"><span>🏰</span>VALORIA</button><button data-view="world" class="'+(s.view==='world'?'active':'')+'"><span>🗺️</span>MUNDO</button></div>'}
+ function kingdom(){
+  const c='<div class="costs"><span class="'+(s.wood>=450?'ok':'bad')+'">🌲 450</span><span class="'+(s.stone>=300?'ok':'bad')+'">🪨 300</span><span class="'+(s.power>=2200?'ok':'bad')+'">⚔ 2.200</span></div>';
+  return '<div class="scene kingdom"><div class="sky"></div><div class="mountains"></div><div class="ground"></div><div class="road"></div><div class="rift">ϟ</div>'+quest()+
+  '<button class="keep '+(s.bastion===1?'ruin':'')+'" data-poi="keep"><span class="pulse"></span><span class="art">🏰</span><label>Bastión de Valoria · Nv. '+s.bastion+'</label></button>'+
+  '<button class="poi sawmill '+(!s.sawmill?'objective':'')+'" data-poi="sawmill"><span class="icon">'+(s.sawmill?'🪚':'🛖')+'</span><label>Aserradero</label><small>'+(s.sawmill?'Activo':'En ruinas')+'</small></button>'+
+  '<button class="poi wall '+(s.bastion<2?'locked':'')+'" data-poi="wall"><span class="icon">🛡️</span><label>Muralla Este</label><small>'+(s.bastion<2?'Bloqueada':'Recuperada')+'</small></button>'+
+  (s.camp&&s.bastion===1?'<div class="upgrade"><b>El Bastión puede levantarse</b><p>Los recursos recuperados ya son suficientes.</p>'+c+'<button data-upgrade>RECONSTRUIR BASTIÓN II</button></div>':'')+'</div>';
+ }
+ function node(cls,id,icon,name,sub,locked){return '<button class="mapnode '+cls+' '+(s[id]?'done ':'')+(locked?'locked':'')+'" data-node="'+id+'" '+(s[id]||locked?'disabled':'')+'><span class="icon">'+icon+'</span><label>'+name+'</label><small>'+sub+'</small></button>'}
+ function world(){return '<div class="scene world"><div class="terrain"></div>'+quest()+'<div class="world-title"><small>FRONTERA DE VALORIA</small><b>El mundo alimenta tu reino</b></div>'+
+ node('forest','forest','🌲','Bosque I','+360 madera',false)+node('quarry','quarry','⛏️','Cantera I','+260 piedra',false)+node('camp','camp','👹','Corruptos I','Poder 2.050',!s.forest||!s.quarry)+node('boss','boss','🌀','Fisura III','Poder ???',true)+
+ '<div class="mapnode home"><span class="icon">🏰</span><label>Valoria</label><small>Tu reino</small></div></div>'}
+ function render(){root.innerHTML='<div class="v22">'+hud()+(s.view==='world'?world():kingdom())+nav()+'</div>';bind()}
+ function bind(){
+  root.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='world'&&!s.sawmill)return hint('El Aserradero sigue en ruinas.');s.view=b.dataset.view;save();render()});
+  root.querySelectorAll('[data-poi]').forEach(b=>b.onclick=()=>poi(b.dataset.poi));
+  root.querySelectorAll('[data-node]').forEach(b=>b.onclick=()=>march(b.dataset.node,b));
+  const u=root.querySelector('[data-upgrade]');if(u)u.onclick=upgrade;
+ }
+ function hint(t){const d=document.createElement('div');d.className='reward';d.innerHTML='<strong>'+t+'</strong><p>Toca directamente los lugares del reino y del mapa para actuar.</p><button>Continuar</button>';root.querySelector('.scene').appendChild(d);d.querySelector('button').onclick=()=>d.remove()}
+ function poi(id){
+  if(id==='sawmill'&&!s.sawmill){if(s.wood<80)return hint('Falta madera.');const d=document.createElement('div');d.className='reward';d.innerHTML='<strong>ASERRADERO EN RUINAS</strong><p>Reactivarlo devolverá producción a Valoria y aumentará tu Poder.</p><b>Coste: 80 madera</b><button>RECONSTRUIR</button>';root.querySelector('.scene').appendChild(d);d.querySelector('button').onclick=()=>{s.wood-=80;s.sawmill=true;s.power+=170;save();render();setTimeout(()=>{s.view='world';save();render()},700)};return}
+  if(id==='keep'){if(s.bastion===1&&!s.camp)return hint('Bastión II necesita 450 madera · 300 piedra · 2.200 Poder.');if(s.bastion===1&&enough())return upgrade();return hint('Bastión III exige un nuevo héroe. La Fisura oculta a alguien capaz de abrir la siguiente ruta.')}
+  if(id==='wall')return hint(s.bastion<2?'La Muralla Este se abrirá cuando el Bastión alcance nivel II.':'La Muralla Este vuelve a proteger Valoria.');
+ }
+ function march(id,target){
+  const scene=root.querySelector('.scene'),r=scene.getBoundingClientRect(),tr=target.getBoundingClientRect();const a=document.createElement('div');a.className='army';a.textContent='♞';a.style.left='48%';a.style.top='62%';scene.appendChild(a);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{a.style.left=(tr.left-r.left+tr.width*.3)+'px';a.style.top=(tr.top-r.top+tr.height*.35)+'px'}));
+  setTimeout(()=>{if(id==='camp'){const fx=document.createElement('div');fx.className='battlefx';fx.textContent='⚔️';fx.style.left=a.style.left;fx.style.top=a.style.top;scene.appendChild(fx);setTimeout(()=>{fx.remove();resolve(id,a)},850)}else resolve(id,a)},1600);
+ }
+ function resolve(id,a){a.remove();let title,copy,reward;if(id==='forest'){s.forest=true;s.wood+=360;title='BOSQUE ASEGURADO';copy='Los carros vuelven hacia Valoria.';reward='+360 madera'}else if(id==='quarry'){s.quarry=true;s.stone+=260;title='CANTERA RECUPERADA';copy='La piedra ya puede alimentar la reconstrucción.';reward='+260 piedra'}else{s.camp=true;s.power+=180;title='VICTORIA';copy='Tus tropas resolvieron el encuentro sobre el mapa. Sin minijuego ni interrupción.';reward='+180 Poder'}save();render();const d=document.createElement('div');d.className='reward';d.innerHTML='<strong>'+title+'</strong><p>'+copy+'</p><b>'+reward+'</b><button>CONTINUAR</button>';root.querySelector('.scene').appendChild(d);d.querySelector('button').onclick=()=>{d.remove();if(s.camp){s.view='kingdom';save();render()}}}
+ function upgrade(){if(!enough())return hint('Todavía no tienes los recursos necesarios.');s.wood-=450;s.stone-=300;s.power+=900;s.bastion=2;save();render();const c=document.createElement('div');c.className='cinematic';c.innerHTML='<div class="card"><div class="big">🏰</div><h1>BASTIÓN II</h1><p>Las ruinas vuelven a levantarse. Valoria cambia porque has salido al mundo y has recuperado lo que necesitaba.</p><div class="next"><b>LYRA · ARQUERA DE CENIZA</b>La Fisura de nivel III exige un segundo héroe. Ahora tienes una razón para encontrarla.</div><p><strong>Siguiente deseo:</strong> Lyra → Fisura III → Bastión III.</p><button>VOLVER A VALORIA</button></div>';document.body.appendChild(c);c.querySelector('button').onclick=()=>c.remove()}
+ window.ELDORIA_V022={reset:()=>{localStorage.removeItem(KEY);location.reload()},state:()=>JSON.parse(JSON.stringify(s))};render();
 })();
 </script>
+
 </body>
 </html>
