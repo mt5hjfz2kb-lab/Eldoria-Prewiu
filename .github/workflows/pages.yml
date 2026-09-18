@@ -61,6 +61,8 @@ jobs:
           grep -q 'UN NUEVO JURAMENTO DESPIERTA EN VALORIA' playtest/index.html
           grep -q 'ORIN · ECO DE LA BRECHA' playtest/index.html
           grep -q 'Valoria fue uno de los reinos' playtest/index.html
+          grep -q "BUILD_SCHEMA='0202-dialogue-reset'" playtest/index.html
+          grep -q "localStorage.removeItem('eldoria-v020-ch1-intro')" playtest/index.html
           grep -q 'D.resources\[r\].label' playtest/index.html
           ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
           grep -q "piece?piece.owner" playtest/index.html
