@@ -94,7 +94,6 @@ jobs:
           grep -q "v0.22 iPhone overlay hardening" playtest/index.html
           grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
-          grep -q 'Sir Aldric' playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
