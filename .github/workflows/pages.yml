@@ -127,6 +127,16 @@ jobs:
           grep -q "graniteQuarry=true" playtest/index.html
           grep -q "passiveStoneRate" playtest/index.html
           grep -q "+2 piedra/s" playtest/index.html
+          # Bastion VI-X recovered systems
+          grep -q "function gatherIron()" playtest/index.html
+          grep -q "Veta de hierro · Nv.2" playtest/index.html
+          grep -q "function forgePoi()" playtest/index.html
+          grep -q "function recoverRelic()" playtest/index.html
+          grep -q "CÓDICE DE RELIQUIAS" playtest/index.html
+          grep -q "function discoverKael()" playtest/index.html
+          grep -q "function finalAssault()" playtest/index.html
+          grep -q "VERTICAL SLICE · ARCO I COMPLETADO" playtest/index.html
+          grep -q "bastion10:true" playtest/index.html
           # Progressive UI, Power hook, ranking and visual quality pass
           grep -q "v022-premium-visual-pass" playtest/index.html
           grep -q "function openPower()" playtest/index.html
