@@ -66,6 +66,9 @@ jobs:
           grep -q 'Poder de marcha' playtest/index.html
           grep -q 'Bosque II · 12k' playtest/index.html
           grep -q 'Fortaleza ???' playtest/index.html
+          grep -q 'PERFIL DEL JUGADOR' playtest/index.html
+          grep -q 'REINICIAR PARTIDA' playtest/index.html
+          grep -q '¿REINICIAR VALORIA?' playtest/index.html
           grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
