@@ -72,6 +72,8 @@ jobs:
           grep -q 'MAESTRE ORIN' playtest/index.html
           grep -q 'orin-cinematic' playtest/index.html
           grep -q 'showOrinDuelStep' playtest/index.html
+          grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
+          grep -q 'choice neutrality: decisions must not imply a recommended answer' playtest/index.html
           grep -q 'Códice de Reliquias' playtest/index.html
           grep -q 'USAR UNA CARTA TIENE UN COSTE' playtest/index.html
           grep -q 'Eco 1/1/1/1' playtest/index.html
