@@ -84,11 +84,13 @@ jobs:
           grep -q 'taskdock' playtest/index.html
           grep -q 'Puedes seguir jugando mientras se completa' playtest/index.html
           grep -q "const need2=()=>s.wood>=450&&s.stone>=300&&s.camp" playtest/index.html
-          grep -q "need3=()=>s.wood>=700&&s.stone>=520&&s.lyra" playtest/index.html
+          grep -q "need3=()=>s.wood>=650&&s.stone>=500&&s.lyra&&s.boss" playtest/index.html
           ! grep -q "3.300 Poder" playtest/index.html
-          grep -q "SEGUIR EL RASTRO" playtest/index.html
+          grep -q "SEGUIR LAS HUELLAS" playtest/index.html
           grep -q "function clearOverlays()" playtest/index.html
-          grep -q "mobile overlay containment v2" playtest/index.html
+          grep -q "v0.22 overlay system" playtest/index.html
+          grep -q "overlaySystem:'e22-overlay-v3'" playtest/index.html
+          ! grep -q "Bastión III exige 700 madera, 520 piedra" playtest/index.html
           ! grep -q "Todavía faltan recursos o Poder" playtest/index.html
           ! grep -q "Necesitas 450 madera, 300 piedra y 2.150 Poder" playtest/index.html
           grep -q "El Poder no es un requisito para esta mejora" playtest/index.html
