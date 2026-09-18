@@ -127,6 +127,14 @@ jobs:
           grep -q "graniteQuarry=true" playtest/index.html
           grep -q "passiveStoneRate" playtest/index.html
           grep -q "+2 piedra/s" playtest/index.html
+          # Progressive UI, Power hook, ranking and visual quality pass
+          grep -q "v022-premium-visual-pass" playtest/index.html
+          grep -q "function openPower()" playtest/index.html
+          grep -q "function openRanking()" playtest/index.html
+          grep -q "rankingUnlock:'bastion5-stoneworks'" playtest/index.html
+          grep -q "progressiveUI:true" playtest/index.html
+          grep -q "visualTier:'bastion-driven'" playtest/index.html
+          grep -q "s.lyra?'<button data-view=\"heroes\"" playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
