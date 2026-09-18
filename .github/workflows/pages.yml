@@ -118,6 +118,15 @@ jobs:
           grep -q "let worldPan={x:0,y:0}" playtest/index.html
           ! grep -q "s.troops+=14" playtest/index.html
           ! grep -q "s.troops+=20" playtest/index.html
+          # Bastion IV/V progression
+          grep -q "ELEVANDO BASTIÓN IV" playtest/index.html
+          grep -q "bastion4Unlock:'none'" playtest/index.html
+          grep -q "ELEVANDO BASTIÓN V" playtest/index.html
+          grep -q "bastion5Unlock:'stoneworks-passive'" playtest/index.html
+          grep -q "CONSTRUYENDO CANTERA" playtest/index.html
+          grep -q "graniteQuarry=true" playtest/index.html
+          grep -q "passiveStoneRate" playtest/index.html
+          grep -q "+2 piedra/s" playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
