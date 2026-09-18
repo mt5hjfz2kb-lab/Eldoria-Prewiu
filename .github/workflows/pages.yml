@@ -26,11 +26,11 @@ jobs:
         with:
           enablement: true
 
-      - name: Use canonical v0.21.0 playtest base
+      - name: Use canonical v0.22.0 desire-loop base
         run: |
-          test -s v0210/index.html
+          test -s v0220/index.html
           mkdir -p playtest
-          cp v0210/index.html playtest/index.html
+          cp v0220/index.html playtest/index.html
 
       - name: JavaScript syntax check
         run: |
@@ -44,55 +44,24 @@ jobs:
           PY
           for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
 
-      - name: Deep structural and regression checks
+      - name: Core-loop structural and regression checks
         run: |
           test -s playtest/index.html
           test -s assets/orin-portrait.jpg
-          grep -q '<meta name="eldoria-version" content="0.21.0"' playtest/index.html
-          grep -q '<title>Eldoria v0.21.0' playtest/index.html
-          grep -q 'external-test-ready' playtest/index.html
-          grep -q "BUILD_SCHEMA='0210-playtest-clean'" playtest/index.html
-          grep -q 'Sir Aldric' playtest/index.html
-          grep -q 'alt="Sir Aldric"' playtest/index.html
-          grep -q 'aldric-cinematic' playtest/index.html
-          grep -q 'firstReconstructionBriefingSeen' playtest/index.html
-          grep -q 'Antes de reconstruir el Granero, hay algo que debe saber' playtest/index.html
-          grep -q 'orin-aldric-parity' playtest/index.html
-          grep -q 'class="orin-portrait"' playtest/index.html
-          grep -q '../assets/orin-portrait.jpg' playtest/index.html
-          grep -q 'showOrinCollectionTutorial' playtest/index.html
-          grep -q 'showOrinDuelStep' playtest/index.html
-          grep -q 'Común, Poco común, Rara, Épica y Legendaria' playtest/index.html
-          grep -q 'probabilidad muy baja' playtest/index.html
-          grep -q 'Códice de Reliquias' playtest/index.html
-          grep -q 'Guardar en el Códice' playtest/index.html
-          ! grep -q 'Guardar en el Archivo' playtest/index.html
-          ! grep -q 'Archivo de cartas' playtest/index.html
-          ! grep -q 'v0201-ux-script' playtest/index.html
-          grep -q 'DECISIÓN OBLIGATORIA · 1 DE 2' playtest/index.html
-          grep -q 'Necesitas escribir un nick para continuar' playtest/index.html
-          grep -q '#contain,#exploit,#choose-lyra,#choose-maelis' playtest/index.html
-          grep -q 'UN JURAMENTO REGRESA A VALORIA' playtest/index.html
-          grep -q 'hero-arrival-cinematic' playtest/index.html
-          grep -q 'CONOCE A TU HÉROE' playtest/index.html
-          grep -q 'botón Héroes de la barra inferior' playtest/index.html
-          grep -q 'botón Códice en la barra inferior' playtest/index.html
-          grep -q 'next-objective' playtest/index.html
-          grep -q 'Marchando · 3 s' playtest/index.html
-          grep -q 'state.resources.wood+=180' playtest/index.html
-          ! grep -q 'Madera +120' playtest/index.html
-          grep -q 'piece?piece.owner' playtest/index.html
-          ! grep -q "i%2?'v020-owner-rival'" playtest/index.html
-          grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
-          grep -q 'Duelo de Reliquias' playtest/index.html
-          grep -q 'Eco 1/1/1/1' playtest/index.html
+          grep -q '<meta name="eldoria-version" content="0.22.0"' playtest/index.html
+          grep -q 'desire-loop-v1' playtest/index.html
+          grep -q 'v022-core-loop' playtest/index.html
+          grep -q 'Bastión de Valoria' playtest/index.html
+          grep -q 'El mundo alimenta tu reino' playtest/index.html
+          grep -q 'Bosque antiguo · Nv. 1' playtest/index.html
+          grep -q 'Cantera abandonada · Nv. 1' playtest/index.html
+          grep -q 'Corruptos de la Brecha · Nv. 1' playtest/index.html
+          grep -q 'resolución automática' playtest/index.html
+          grep -q 'BASTIÓN II' playtest/index.html
+          grep -q 'LYRA · ARQUERA DE CENIZA' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
-          grep -q "const required=\['understood','pacing','guides','heroes','cards','duel','world'\]" playtest/index.html
-          grep -q '¿Hubo algún momento en el que no supieras qué hacer o dónde tocar?' playtest/index.html
-          grep -q '¿Qué cambiarías primero para que el juego fuese mejor?' playtest/index.html
-          grep -q '¿Viste algún error, texto superpuesto, botón que no funcionase o comportamiento extraño?' playtest/index.html
-          grep -q 'Copiar informe para enviar' playtest/index.html
-          ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
+          grep -q 'Sir Aldric' playtest/index.html
+          grep -q 'Duelo de Reliquias' playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
