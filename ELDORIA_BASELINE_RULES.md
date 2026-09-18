@@ -15,7 +15,7 @@ Este archivo es parte del proceso de desarrollo, no documentación opcional.
 
 ## Contrato de baseline
 
-- Baseline actual: `v0202/index.html` (v0.20.2).
+- Baseline actual: `v0210/index.html` (v0.21.0 · external playtest).
 - Toda mejora parte de esta baseline materializada.
 - No se reconstruye desde r7/r6/0.19.x para producir una 0.20.x futura.
 - Una corrección se aplica incrementalmente sobre la baseline actual.
@@ -51,7 +51,15 @@ Este archivo es parte del proceso de desarrollo, no documentación opcional.
 
 ## Punto de recuperación v0.20.2
 
-- Fuente canónica desplegable: `v0202/index.html`.
+- Fuente canónica desplegable: `v0210/index.html`.
 - URL pública: `/playtest/`, generada siempre desde esa fuente.
-- `v0201/index.html` queda como histórico anterior y no debe volver a usarse como fuente de despliegue.
+- `v0201/index.html` y `v0202/index.html` quedan como históricos y no deben volver a usarse como fuente de despliegue.
 - Todo cambio posterior debe modificar primero la baseline canónica y pasar los gates de regresión antes de publicar.
+
+
+## Baseline v0.21.0 — ronda externa
+
+- La v0.21.0 es el punto de recuperación para la nueva ronda de testers.
+- No modificar `v0210/index.html` durante la ronda salvo hotfix que bloquee o invalide el test; cualquier hotfix debe quedar documentado.
+- El despliegue de Pages copia exclusivamente `v0210/index.html` a `playtest/index.html` y ejecuta comprobación de sintaxis JS + gates de regresión.
+- La encuesta final de v0.21.0 mide claridad autónoma, ritmo, utilidad de Aldric/Orin, héroes, cartas, Duelo, mundo global, confusión, mejora prioritaria y bugs.
