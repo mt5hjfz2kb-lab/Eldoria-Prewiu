@@ -72,6 +72,13 @@ jobs:
           grep -q 'MAESTRE ORIN' playtest/index.html
           grep -q 'orin-cinematic' playtest/index.html
           grep -q 'showOrinDuelStep' playtest/index.html
+          grep -q 'orinCollectionTutorialSeen' playtest/index.html
+          grep -q 'showOrinCollectionTutorial' playtest/index.html
+          grep -q 'Común, Poco común, Rara, Épica y Legendaria' playtest/index.html
+          grep -q 'probabilidad muy baja' playtest/index.html
+          grep -q 'orin-character' playtest/index.html
+          grep -q 'Custodio del Códice' playtest/index.html
+          grep -q 'Guardar en el Códice' playtest/index.html
           grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
           grep -q 'choice neutrality: decisions must not imply a recommended answer' playtest/index.html
           grep -q 'Códice de Reliquias' playtest/index.html
