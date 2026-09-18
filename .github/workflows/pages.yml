@@ -69,7 +69,7 @@ jobs:
           grep -q 'aldric-typed' playtest/index.html
           grep -q 'XP → nivel · Esencia → habilidad' playtest/index.html
           grep -q 'equal-war-choice' playtest/index.html
-          grep -q 'MAESTRE ORIN' playtest/index.html
+          grep -q '<div class="orin-name">ORIN</div>' playtest/index.html
           grep -q 'orin-cinematic' playtest/index.html
           grep -q 'showOrinDuelStep' playtest/index.html
           grep -q 'orinCollectionTutorialSeen' playtest/index.html
