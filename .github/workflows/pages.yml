@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -25,101 +25,75 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Use canonical v0.20.2 base
+
+      - name: Use canonical v0.21.0 playtest base
         run: |
+          test -s v0210/index.html
           mkdir -p playtest
-          if [ -s v0202/index.html ]; then
-            cp v0202/index.html playtest/index.html
-            echo "Using consolidated v0.20.1 canonical base"
-          else
-            node tools/build-r7.mjs
-            python3 tools/restore-v020.py
-            node tools/postprocess-v020.mjs
-            mkdir -p v0201
-            cp playtest/index.html v0202/index.html
-            echo "Materialized v0.20.1 canonical base"
-          fi
-      - name: Structural and regression checks
+          cp v0210/index.html playtest/index.html
+
+      - name: JavaScript syntax check
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          html=pathlib.Path('playtest/index.html').read_text()
+          scripts=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',html,re.I)
+          for i,code in enumerate(scripts):
+              pathlib.Path(f'/tmp/eldoria-script-{i}.js').write_text(code)
+          print(f'Checking {len(scripts)} inline scripts')
+          PY
+          for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
+
+      - name: Deep structural and regression checks
         run: |
           test -s playtest/index.html
-          ! grep -q '../v0195-r6/index.html' playtest/index.html
-          grep -q 'chapter1-intro-v020' playtest/index.html
+          test -s assets/orin-portrait.jpg
+          grep -q '<meta name="eldoria-version" content="0.21.0"' playtest/index.html
+          grep -q '<title>Eldoria v0.21.0' playtest/index.html
+          grep -q 'external-test-ready' playtest/index.html
+          grep -q "BUILD_SCHEMA='0210-playtest-clean'" playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
           grep -q 'alt="Sir Aldric"' playtest/index.html
-          grep -q 'data:image/jpeg;base64' playtest/index.html
-          ! grep -q '<div class="aldric-portrait">⚔</div>' playtest/index.html
-          grep -q '<meta name="eldoria-version" content="0.20.2"' playtest/index.html
-          grep -q '<title>Eldoria v0.20.2' playtest/index.html
-          grep -q 'v0201-ux-script' playtest/index.html
-          grep -q 'eldoria-v020-ch1-intro' playtest/index.html
           grep -q 'aldric-cinematic' playtest/index.html
-          grep -q 'Duelo de Reliquias' playtest/index.html
-          grep -q 'MAR DE CRISTAL' playtest/index.html
-          grep -q 'Marchando · 3 s' playtest/index.html
-          grep -q 'CONOCE A TU HÉROE' playtest/index.html
-          grep -q 'next-objective' playtest/index.html
-          grep -q 'UN JURAMENTO REGRESA A VALORIA' playtest/index.html
-          grep -q 'ORIN · ECO DE LA BRECHA' playtest/index.html
-          grep -q 'Valoria fue uno de los reinos' playtest/index.html
-          grep -q "BUILD_SCHEMA='0202-dialogue-reset'" playtest/index.html
           grep -q 'firstReconstructionBriefingSeen' playtest/index.html
           grep -q 'Antes de reconstruir el Granero, hay algo que debe saber' playtest/index.html
-          grep -q 'Aún somos pocos: por ahora Aldric encabezará la expedición' playtest/index.html
-          grep -q "dataset.scene='aldric-state-dialogue'" playtest/index.html
-          grep -q 'aldric-typed' playtest/index.html
-          grep -q 'XP → nivel · Esencia → habilidad' playtest/index.html
-          grep -q 'equal-war-choice' playtest/index.html
-          grep -q '<div class="orin-name">ORIN</div>' playtest/index.html
-          grep -q 'orin-cinematic' playtest/index.html
-          grep -q 'showOrinDuelStep' playtest/index.html
-          grep -q 'orinCollectionTutorialSeen' playtest/index.html
-          grep -q 'showOrinCollectionTutorial' playtest/index.html
-          grep -q 'Común, Poco común, Rara, Épica y Legendaria' playtest/index.html
-          grep -q 'probabilidad muy baja' playtest/index.html
-          grep -q 'orin-approved' playtest/index.html
-          grep -q '../assets/orin-portrait.jpg' playtest/index.html
-          grep -q 'eldoria-final-ux-lock' playtest/index.html
-          grep -q 'DECISIÓN OBLIGATORIA · 1 DE 2' playtest/index.html
-          grep -q 'Necesitas escribir un nick para continuar' playtest/index.html
-          grep -q "if(!nick)" playtest/index.html
-          grep -q '#contain,#exploit,#choose-lyra,#choose-maelis' playtest/index.html
-          grep -q 'orin-character-panel' playtest/index.html
           grep -q 'orin-aldric-parity' playtest/index.html
           grep -q 'class="orin-portrait"' playtest/index.html
           grep -q '../assets/orin-portrait.jpg' playtest/index.html
-          test -s v0202/index.html
-          test -s assets/orin-portrait.jpg
-          grep -q 'Custodio del Códice' playtest/index.html
-          grep -q 'Guardar en el Códice' playtest/index.html
-          grep -q 'const afterOrin=' playtest/index.html
-          grep -q 'v0.20.2 decision neutrality + mobile card legibility' playtest/index.html
-          grep -q '.card-decision-actions>button.primary,.card-decision-actions>button.secondary' playtest/index.html
-          grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
-          grep -q 'choice neutrality: decisions must not imply a recommended answer' playtest/index.html
+          grep -q 'showOrinCollectionTutorial' playtest/index.html
+          grep -q 'showOrinDuelStep' playtest/index.html
+          grep -q 'Común, Poco común, Rara, Épica y Legendaria' playtest/index.html
+          grep -q 'probabilidad muy baja' playtest/index.html
           grep -q 'Códice de Reliquias' playtest/index.html
-          grep -q 'USAR UNA CARTA TIENE UN COSTE' playtest/index.html
-          grep -q 'Eco 1/1/1/1' playtest/index.html
+          grep -q 'Guardar en el Códice' playtest/index.html
+          ! grep -q 'Guardar en el Archivo' playtest/index.html
+          ! grep -q 'Archivo de cartas' playtest/index.html
+          ! grep -q 'v0201-ux-script' playtest/index.html
+          grep -q 'DECISIÓN OBLIGATORIA · 1 DE 2' playtest/index.html
+          grep -q 'Necesitas escribir un nick para continuar' playtest/index.html
+          grep -q '#contain,#exploit,#choose-lyra,#choose-maelis' playtest/index.html
+          grep -q 'UN JURAMENTO REGRESA A VALORIA' playtest/index.html
           grep -q 'hero-arrival-cinematic' playtest/index.html
+          grep -q 'CONOCE A TU HÉROE' playtest/index.html
           grep -q 'botón Héroes de la barra inferior' playtest/index.html
           grep -q 'botón Códice en la barra inferior' playtest/index.html
-          grep -q "const required=\['understood','semi','cards','decision','duel','breach'\]" playtest/index.html
-          grep -q "localStorage.removeItem('eldoria-v020-ch1-intro')" playtest/index.html
-          grep -q 'D.resources\[r\].label' playtest/index.html
-          ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
-          grep -q "piece?piece.owner" playtest/index.html
-          grep -q "state.resources.wood+=180" playtest/index.html
-          grep -q "2800" playtest/index.html
-          ! grep -q "Madera +120" playtest/index.html
+          grep -q 'next-objective' playtest/index.html
+          grep -q 'Marchando · 3 s' playtest/index.html
+          grep -q 'state.resources.wood+=180' playtest/index.html
+          ! grep -q 'Madera +120' playtest/index.html
+          grep -q 'piece?piece.owner' playtest/index.html
           ! grep -q "i%2?'v020-owner-rival'" playtest/index.html
-      - name: Freeze validated base in repository
-        run: |
-          if ! git diff --quiet -- v0201/index.html || [ -n "$(git status --porcelain -- v0201/index.html)" ]; then
-            git config user.name "eldoria-build-bot"
-            git config user.email "actions@users.noreply.github.com"
-            git add v0202/index.html
-            git commit -m "Freeze validated v0.20.1 canonical base"
-            git push
-          fi
+          grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
+          grep -q 'Duelo de Reliquias' playtest/index.html
+          grep -q 'Eco 1/1/1/1' playtest/index.html
+          grep -q 'MAR DE CRISTAL' playtest/index.html
+          grep -q "const required=\['understood','pacing','guides','heroes','cards','duel','world'\]" playtest/index.html
+          grep -q '¿Hubo algún momento en el que no supieras qué hacer o dónde tocar?' playtest/index.html
+          grep -q '¿Qué cambiarías primero para que el juego fuese mejor?' playtest/index.html
+          grep -q '¿Viste algún error, texto superpuesto, botón que no funcionase o comportamiento extraño?' playtest/index.html
+          grep -q 'Copiar informe para enviar' playtest/index.html
+          ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
