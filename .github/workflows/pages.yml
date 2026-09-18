@@ -58,7 +58,7 @@ jobs:
           grep -q 'Marchando · 3 s' playtest/index.html
           grep -q 'CONOCE A TU HÉROE' playtest/index.html
           grep -q 'next-objective' playtest/index.html
-          grep -q 'UN NUEVO JURAMENTO DESPIERTA EN VALORIA' playtest/index.html
+          grep -q 'UN JURAMENTO REGRESA A VALORIA' playtest/index.html
           grep -q 'ORIN · ECO DE LA BRECHA' playtest/index.html
           grep -q 'Valoria fue uno de los reinos' playtest/index.html
           grep -q "BUILD_SCHEMA='0202-dialogue-reset'" playtest/index.html
