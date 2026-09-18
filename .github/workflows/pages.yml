@@ -82,6 +82,11 @@ jobs:
           grep -q 'aldric-portrait' playtest/index.html
           grep -q 'aldric-continue primary' playtest/index.html
           grep -q 'Guardián de Valoria' playtest/index.html
+          grep -q 'Crónica de Eldoria' playtest/index.html
+          grep -q 'taskdock' playtest/index.html
+          grep -q 'Puedes seguir jugando mientras se completa' playtest/index.html
+          grep -q "const need2=()=>s.wood>=450&&s.stone>=300&&s.camp" playtest/index.html
+          ! grep -q "Todavía faltan recursos o Poder" playtest/index.html
           grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
