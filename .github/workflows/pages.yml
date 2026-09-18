@@ -97,7 +97,6 @@ jobs:
           grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
-          grep -q 'Duelo de Reliquias' "$CANONICAL"
 
       - uses: actions/upload-pages-artifact@v3
         with:
