@@ -768,10 +768,13 @@ window.ELDORIA_DATA = {
     ward:{name:'Sello del Guardián',icon:'◇',copy:'DEF +10 · escudo inicial +8'},
     echo:{name:'Eco de la Brecha',icon:'✦',copy:'IMPACTO +8 · Poder de Expedición +70'}
   };
-  const BUILD_SCHEMA='0200';
+  const BUILD_SCHEMA='0202-dialogue-reset';
   const BUILD_KEY='eldoria-v0195-build';
   if(localStorage.getItem(BUILD_KEY)!==BUILD_SCHEMA){
     localStorage.removeItem('eldoria-save-v0195');
+    localStorage.removeItem('eldoria-v020-ch1-intro');
+    localStorage.removeItem('eldoria-aldric-story-r7-v3');
+    localStorage.removeItem('eldoria-v0201-ux');
     localStorage.setItem(BUILD_KEY,BUILD_SCHEMA);
   }
 
@@ -874,7 +877,7 @@ window.ELDORIA_DATA = {
     applyLanguage();
     $('#aldric').onclick = talkAldric; $('#gate').onclick = () => { if(state.chapter1Complete) showWorld(); else toast('Primero reconstruye los edificios esenciales de Valoria.'); };
     $('#brand').onclick = showMenu; $('#power-indicator').onclick=showPowerPanel; $('#language-toggle').onclick=toggleLanguage; $('#sound-toggle').onclick = soundToggle;
-    if(new URLSearchParams(location.search).get('qa')==='1'){document.body.classList.add('qa-mode');window.ELDORIA_QA={getState:()=>JSON.parse(JSON.stringify(state)),getPower:()=>powerBreakdown(),getExpeditionPower:()=>expeditionPower(),reset:()=>{localStorage.removeItem('eldoria-save-v0195');location.reload();},report:()=>reportText()};$('#qa-chip').onclick=()=>{const snapshot=window.ELDORIA_QA.getState();openModal('QA STATE',`<textarea style="width:100%;min-height:45vh;background:#090d10;color:#d8e8ec">${safeText(JSON.stringify(snapshot,null,2))}</textarea><button id="qa-reset" class="secondary">Reset</button>`);$('#qa-reset').onclick=window.ELDORIA_QA.reset;};}
+    if(new URLSearchParams(location.search).get('qa')==='1'){document.body.classList.add('qa-mode');window.ELDORIA_QA={getState:()=>JSON.parse(JSON.stringify(state)),getPower:()=>powerBreakdown(),getExpeditionPower:()=>expeditionPower(),reset:()=>{['eldoria-save-v0195','eldoria-v020-ch1-intro','eldoria-aldric-story-r7-v3','eldoria-v0201-ux'].forEach(k=>localStorage.removeItem(k));location.reload();},report:()=>reportText()};$('#qa-chip').onclick=()=>{const snapshot=window.ELDORIA_QA.getState();openModal('QA STATE',`<textarea style="width:100%;min-height:45vh;background:#090d10;color:#d8e8ec">${safeText(JSON.stringify(snapshot,null,2))}</textarea><button id="qa-reset" class="secondary">Reset</button>`);$('#qa-reset').onclick=window.ELDORIA_QA.reset;};}
     document.querySelectorAll('#nav button').forEach(b => b.onclick=()=>navigate(b.dataset.view));
     applyOfflineProduction(); render(); setInterval(tick, 1000);
     if(state.buildingConstruction){const id=state.buildingConstruction.id;if(Date.now()>=state.buildingConstruction.endsAt)finishConstruction(id);else setTimeout(()=>showConstructionProgress(id),80);}
@@ -1810,7 +1813,7 @@ window.ELDORIA_DATA = {
     openModal('Eldoria',`<div class="menu-profile"><div class="profile-avatar">${state.profile.avatar}</div><div><small>GUARDIÁN DE VALORIA</small><h3>${safeText(state.profile.name)}</h3><p>v0.20.1 · Poder ${fmt(powerBreakdown().total)}</p></div></div><div class="menu-grid"><button id="open-profile" class="secondary">Perfil</button><button id="open-rankings" class="secondary">Clasificaciones</button><button id="open-archive" class="secondary">Archivo de cartas · ${(state.cardsDiscovered||[]).length}/5</button><button id="open-menu-duel" class="secondary">${state.duelUnlocked?'Duelo de Reliquias':'Duelo bloqueado'}</button><button id="open-world-map" class="secondary">Mapa global · prueba 4X</button><button id="menu-language" class="secondary">Idioma · ${state.language==='en'?'English':'Español'}</button></div>${state.complete?'<button id="view-report" class="primary">Ver informe de prueba</button>':''}<button id="restart" class="text-button">Reiniciar partida</button>`);
     $('#open-profile').onclick=showProfile;$('#open-rankings').onclick=()=>showRankings();if($('#open-world-map'))$('#open-world-map').onclick=()=>{closeModal();showWorldMap();};if($('#menu-language'))$('#menu-language').onclick=toggleLanguage;$('#open-archive').onclick=cardsModal;$('#open-menu-duel').onclick=()=>state.duelUnlocked?openDuel():toast(`Recupera 5 reliquias para abrir el Duelo (${state.cardsDiscovered.length}/5).`);
     if($('#view-report'))$('#view-report').onclick=showPlaytestSummary;
-    $('#restart').onclick=()=>{localStorage.removeItem('eldoria-save-v0195');location.reload();};
+    $('#restart').onclick=()=>{['eldoria-save-v0195','eldoria-v020-ch1-intro','eldoria-aldric-story-r7-v3','eldoria-v0201-ux'].forEach(k=>localStorage.removeItem(k));location.reload();};
   }
   const languageObserver=new MutationObserver(mutations=>{if(state.language!=='en')return;for(const m of mutations)for(const n of m.addedNodes){if(n.nodeType===1)translateTree(n);else if(n.nodeType===3)n.nodeValue=translateText(n.nodeValue);}});languageObserver.observe(document.body,{subtree:true,childList:true});
   init();
