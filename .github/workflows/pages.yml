@@ -102,6 +102,22 @@ jobs:
           grep -q ".e22-overlay" playtest/index.html
           grep -q ".e22-dialog" playtest/index.html
           ! grep -q "body.v022-core-active .modal" playtest/index.html
+          # v0.22 progression invariants: construction unlocks, food economy and one pannable world
+          grep -q "camp:0,barracks:false,granary:false" playtest/index.html
+          grep -q "barracksUnlock:'bastion2-build-required'" playtest/index.html
+          grep -q "CONSTRUYENDO CUARTEL" playtest/index.html
+          grep -q "s.barracks=true;s.power+=260" playtest/index.html
+          grep -q "foodUnlock:'bastion3-granary+hunting'" playtest/index.html
+          grep -q "worldExpansion:'single-pannable-map'" playtest/index.html
+          grep -q "CONSTRUYENDO GRANERO" playtest/index.html
+          grep -q "s.granary=true;s.power+=300" playtest/index.html
+          grep -q "RECOGIENDO CARNE" playtest/index.html
+          grep -q "s.food+=140" playtest/index.html
+          grep -q "s.food+=190" playtest/index.html
+          grep -q "data-worldpan" playtest/index.html
+          grep -q "let worldPan={x:0,y:0}" playtest/index.html
+          ! grep -q "s.troops+=14" playtest/index.html
+          ! grep -q "s.troops+=20" playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
