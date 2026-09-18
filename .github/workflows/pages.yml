@@ -64,6 +64,10 @@ jobs:
           grep -q "BUILD_SCHEMA='0202-dialogue-reset'" playtest/index.html
           grep -q 'firstReconstructionBriefingSeen' playtest/index.html
           grep -q 'Reconstrúyalo y devolveremos a Valoria su primer latido' playtest/index.html
+          grep -q 'Aún somos pocos: por ahora Aldric encabezará la expedición' playtest/index.html
+          grep -q 'XP → nivel · Esencia → habilidad' playtest/index.html
+          grep -q 'equal-war-choice' playtest/index.html
+          grep -q "const required=\['understood','semi','cards','decision','duel','breach'\]" playtest/index.html
           grep -q "localStorage.removeItem('eldoria-v020-ch1-intro')" playtest/index.html
           grep -q 'D.resources\[r\].label' playtest/index.html
           ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
