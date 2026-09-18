@@ -58,6 +58,11 @@ jobs:
           grep -q 'Marchando · 3 s' playtest/index.html
           grep -q 'CONOCE A TU HÉROE' playtest/index.html
           grep -q 'next-objective' playtest/index.html
+          grep -q 'UN NUEVO JURAMENTO DESPIERTA EN VALORIA' playtest/index.html
+          grep -q 'ORIN · ECO DE LA BRECHA' playtest/index.html
+          grep -q 'Valoria fue uno de los reinos' playtest/index.html
+          grep -q 'D.resources\[r\].label' playtest/index.html
+          ! grep -q 'Omitir preguntas y ver resumen' playtest/index.html
           grep -q "piece?piece.owner" playtest/index.html
           grep -q "state.resources.wood+=180" playtest/index.html
           grep -q "2800" playtest/index.html
