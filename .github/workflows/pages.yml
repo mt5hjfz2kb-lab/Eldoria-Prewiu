@@ -51,14 +51,17 @@ jobs:
           grep -q '<meta name="eldoria-version" content="0.22.0"' playtest/index.html
           grep -q 'desire-loop-v1' playtest/index.html
           grep -q 'v022-core-loop' playtest/index.html
+          grep -q 'RECONSTRUYE · EXPLORA · CONQUISTA' playtest/index.html
           grep -q 'Bastión de Valoria' playtest/index.html
           grep -q 'El mundo alimenta tu reino' playtest/index.html
-          grep -q "'🌲','Bosque I'" playtest/index.html
-          grep -q "'⛏️','Cantera I'" playtest/index.html
-          grep -q "'👹','Corruptos I'" playtest/index.html
-          grep -q 'Tus tropas resolvieron el encuentro sobre el mapa' playtest/index.html
-          grep -q 'BASTIÓN II' playtest/index.html
-          grep -q 'LYRA · ARQUERA DE CENIZA' playtest/index.html
+          grep -q 'Bosque de Ceniza' playtest/index.html
+          grep -q 'Cantera del Vigía' playtest/index.html
+          grep -q 'Corruptos de la Brecha' playtest/index.html
+          grep -q 'Los Guardias resolvieron el choque sobre el mapa' playtest/index.html
+          grep -q 'UN JURAMENTO REGRESA' playtest/index.html
+          grep -q 'Lyra, Arquera de Ceniza' playtest/index.html
+          grep -q 'FISURA SOMETIDA' playtest/index.html
+          grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
           grep -q 'Duelo de Reliquias' playtest/index.html
