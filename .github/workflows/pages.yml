@@ -25,18 +25,18 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Use canonical v0.20.1 base or build it once
+      - name: Use canonical v0.20.2 base
         run: |
           mkdir -p playtest
-          if [ -s v0201/index.html ]; then
-            cp v0201/index.html playtest/index.html
+          if [ -s v0202/index.html ]; then
+            cp v0202/index.html playtest/index.html
             echo "Using consolidated v0.20.1 canonical base"
           else
             node tools/build-r7.mjs
             python3 tools/restore-v020.py
             node tools/postprocess-v020.mjs
             mkdir -p v0201
-            cp playtest/index.html v0201/index.html
+            cp playtest/index.html v0202/index.html
             echo "Materialized v0.20.1 canonical base"
           fi
       - name: Structural and regression checks
@@ -84,6 +84,10 @@ jobs:
           grep -q "if(!nick)" playtest/index.html
           grep -q '#contain,#exploit,#choose-lyra,#choose-maelis' playtest/index.html
           grep -q 'orin-character-panel' playtest/index.html
+          grep -q 'orin-aldric-parity' playtest/index.html
+          grep -q 'class="orin-portrait"' playtest/index.html
+          grep -q '../assets/orin-portrait.jpg' playtest/index.html
+          test -s v0202/index.html
           test -s assets/orin-portrait.jpg
           grep -q 'Custodio del Códice' playtest/index.html
           grep -q 'Guardar en el Códice' playtest/index.html
@@ -112,7 +116,7 @@ jobs:
           if ! git diff --quiet -- v0201/index.html || [ -n "$(git status --porcelain -- v0201/index.html)" ]; then
             git config user.name "eldoria-build-bot"
             git config user.email "actions@users.noreply.github.com"
-            git add v0201/index.html
+            git add v0202/index.html
             git commit -m "Freeze validated v0.20.1 canonical base"
             git push
           fi
