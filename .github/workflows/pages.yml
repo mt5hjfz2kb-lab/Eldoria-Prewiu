@@ -79,6 +79,9 @@ jobs:
           grep -q 'orin-character' playtest/index.html
           grep -q 'Custodio del Códice' playtest/index.html
           grep -q 'Guardar en el Códice' playtest/index.html
+          grep -q 'const afterOrin=' playtest/index.html
+          grep -q 'v0.20.2 decision neutrality + mobile card legibility' playtest/index.html
+          grep -q '.card-decision-actions>button.primary,.card-decision-actions>button.secondary' playtest/index.html
           grep -q "if(step===3){duel.tutorial=false;duel.tutorialStep=4;}" playtest/index.html
           grep -q 'choice neutrality: decisions must not imply a recommended answer' playtest/index.html
           grep -q 'Códice de Reliquias' playtest/index.html
