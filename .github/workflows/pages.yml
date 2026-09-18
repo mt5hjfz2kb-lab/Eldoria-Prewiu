@@ -63,8 +63,10 @@ jobs:
           grep -q 'Valoria fue uno de los reinos' playtest/index.html
           grep -q "BUILD_SCHEMA='0202-dialogue-reset'" playtest/index.html
           grep -q 'firstReconstructionBriefingSeen' playtest/index.html
-          grep -q 'Reconstrúyalo y devolveremos a Valoria su primer latido' playtest/index.html
+          grep -q 'Antes de reconstruir el Granero, hay algo que debe saber' playtest/index.html
           grep -q 'Aún somos pocos: por ahora Aldric encabezará la expedición' playtest/index.html
+          grep -q "dataset.scene='aldric-state-dialogue'" playtest/index.html
+          grep -q 'aldric-typed' playtest/index.html
           grep -q 'XP → nivel · Esencia → habilidad' playtest/index.html
           grep -q 'equal-war-choice' playtest/index.html
           grep -q "const required=\['understood','semi','cards','decision','duel','breach'\]" playtest/index.html
