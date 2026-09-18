@@ -48,13 +48,16 @@ jobs:
           grep -q 'alt="Sir Aldric"' playtest/index.html
           grep -q 'data:image/jpeg;base64' playtest/index.html
           ! grep -q '<div class="aldric-portrait">⚔</div>' playtest/index.html
-          grep -q '<meta name="eldoria-version" content="0.20.1"' playtest/index.html
-          grep -q '<title>Eldoria v0.20.1' playtest/index.html
+          grep -q '<meta name="eldoria-version" content="0.20.2"' playtest/index.html
+          grep -q '<title>Eldoria v0.20.2' playtest/index.html
           grep -q 'v0201-ux-script' playtest/index.html
           grep -q 'eldoria-v020-ch1-intro' playtest/index.html
           grep -q 'aldric-cinematic' playtest/index.html
           grep -q 'Duelo de Reliquias' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
+          grep -q 'Marchando · 3 s' playtest/index.html
+          grep -q 'CONOCE A TU HÉROE' playtest/index.html
+          grep -q 'next-objective' playtest/index.html
           grep -q "piece?piece.owner" playtest/index.html
           grep -q "state.resources.wood+=180" playtest/index.html
           grep -q "2800" playtest/index.html
