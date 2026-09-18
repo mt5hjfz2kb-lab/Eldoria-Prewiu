@@ -137,6 +137,14 @@ jobs:
           grep -q "function finalAssault()" playtest/index.html
           grep -q "VERTICAL SLICE · ARCO I COMPLETADO" playtest/index.html
           grep -q "bastion10:true" playtest/index.html
+          # QA automation contract
+          grep -q "function testIdMarkup" playtest/index.html
+          grep -q "data-testid=\\\"screen-" playtest/index.html
+          grep -q "data-testid=\\\"poi-" playtest/index.html
+          grep -q "data-testid=\\\"node-" playtest/index.html
+          grep -q "data-testid=\\\"upgrade-bastion-" playtest/index.html
+          grep -q "function qaMode()" playtest/index.html
+          grep -q "data-testid=\\\"qa-reset\\\"" playtest/index.html
           # Progressive UI, Power hook, ranking and visual quality pass
           grep -q "v022-premium-visual-pass" playtest/index.html
           grep -q "function openPower()" playtest/index.html
