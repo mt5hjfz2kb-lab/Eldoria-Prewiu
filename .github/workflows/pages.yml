@@ -53,10 +53,10 @@ jobs:
           grep -q 'v022-core-loop' playtest/index.html
           grep -q 'Bastión de Valoria' playtest/index.html
           grep -q 'El mundo alimenta tu reino' playtest/index.html
-          grep -q 'Bosque antiguo · Nv. 1' playtest/index.html
-          grep -q 'Cantera abandonada · Nv. 1' playtest/index.html
-          grep -q 'Corruptos de la Brecha · Nv. 1' playtest/index.html
-          grep -q 'resolución automática' playtest/index.html
+          grep -q "'🌲','Bosque I'" playtest/index.html
+          grep -q "'⛏️','Cantera I'" playtest/index.html
+          grep -q "'👹','Corruptos I'" playtest/index.html
+          grep -q 'Tus tropas resolvieron el encuentro sobre el mapa' playtest/index.html
           grep -q 'BASTIÓN II' playtest/index.html
           grep -q 'LYRA · ARQUERA DE CENIZA' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
