@@ -61,6 +61,11 @@ jobs:
           grep -q 'UN JURAMENTO REGRESA' playtest/index.html
           grep -q 'Lyra, Arquera de Ceniza' playtest/index.html
           grep -q 'FISURA SOMETIDA' playtest/index.html
+          grep -q 'NODO AGOTADO' playtest/index.html
+          grep -q 'El enemigo deja botín, pero no crea Poder' playtest/index.html
+          grep -q 'Poder de marcha' playtest/index.html
+          grep -q 'Bosque II · 12k' playtest/index.html
+          grep -q 'Fortaleza ???' playtest/index.html
           grep -q 'BASTIÓN III' playtest/index.html
           grep -q 'MAR DE CRISTAL' playtest/index.html
           grep -q 'Sir Aldric' playtest/index.html
