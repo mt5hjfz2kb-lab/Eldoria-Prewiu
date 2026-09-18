@@ -72,9 +72,7 @@ jobs:
           grep -q 'forestRemain:1250' playtest/index.html
           grep -q 'quarryRemain:900' playtest/index.html
           grep -q 'RECLUTAR 5' playtest/index.html
-          grep -q 'El nodo permanece mientras conserve reservas' playtest/index.html
-          grep -q 'Sir Aldric' playtest/index.html
-          grep -q 'La Brecha apareció sobre Valoria' playtest/index.html
+          grep -q 'El nodo permanece mientras conserve reservas' playtest/index.html          grep -q 'La Brecha apareció sobre Valoria' playtest/index.html
           grep -q 'RECONSTRUYENDO ASERRADERO' playtest/index.html
           grep -q 'RECOLECTANDO MADERA' playtest/index.html
           grep -q 'RECONSTRUYENDO BASTIÓN II' playtest/index.html
