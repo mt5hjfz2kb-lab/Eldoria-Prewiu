@@ -60,6 +60,8 @@ jobs:
       - name: E2E sawmill construction completes
         run: E2E_PHASE=complete node qa/e2e-smoke.js
 
+      - name: E2E core progression regression
+        run: node qa/e2e-core-flow.js
       - name: Recovery regression checks
         run: |
           test -s playtest/index.html
