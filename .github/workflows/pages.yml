@@ -62,6 +62,10 @@ jobs:
 
       - name: E2E core progression regression
         run: node qa/e2e-core-flow.js
+      - name: E2E every building interaction
+        run: node qa/e2e-all-buildings.js
+      - name: E2E every world-node interaction
+        run: node qa/e2e-all-nodes.js
       - name: Recovery regression checks
         run: |
           test -s playtest/index.html
