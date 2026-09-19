@@ -2,15 +2,19 @@
 
 This repository is the source of truth. Chat history is disposable.
 
-## Read before changing anything
-1. `PROJECT_STATE.md` — exact current operational state, open bugs, last verification.
-2. `ELDORIA_CONTINUIDAD.md` — product, canonical player flow, systems and pending content.
-3. `DESIGN_DECISIONS.md` — decisions that must be preserved.
-4. `ELDORIA_BASELINE_RULES.md` — baseline/regression rules.
-5. `QA_AND_DEPLOY.md` — how to run, test and publish.
-6. `CHANGELOG.md` — recent implementation history.
-7. `PLAYTEST_RESULTS.md` only when interpreting player feedback.
-Historical docs under `docs/` and old version directories are reference material, not the active specification.
+## ARRANQUE RÁPIDO DE UNA NUEVA SESIÓN
+1. Leer `SESSION_HANDOFF.md`.
+2. Leer `PROJECT_STATE.md`.
+3. Comprobar rama activa y HEAD reales en GitHub.
+4. Si coinciden con el handoff, empezar a trabajar directamente.
+5. Leer `DESIGN_DECISIONS.md`, `ELDORIA_CONTINUIDAD.md`, `ELDORIA_BASELINE_RULES.md`, `QA_AND_DEPLOY.md`, `CHANGELOG.md` u otros documentos solo cuando la tarea concreta lo requiera.
+6. No hacer una auditoría completa del repositorio en cada sesión.
+7. No releer documentación extensa que no sea necesaria para la tarea actual.
+8. Antes de modificar código, inspeccionar únicamente los archivos y secciones relacionados con la tarea.
+9. Ejecutar primero las pruebas mínimas relacionadas con el cambio; hacer QA completo cuando corresponda por alcance o antes de declarar un hito estable.
+10. Al terminar un bloque importante, actualizar `SESSION_HANDOFF.md` para que refleje exactamente dónde continuar.
+
+`SESSION_HANDOFF.md` es un índice operativo breve, no otro documento maestro. El repositorio sigue siendo la única fuente de verdad. Los documentos históricos bajo `docs/` y versiones antiguas son referencia bajo demanda, no lectura obligatoria.
 
 ## Current state
 - Active development line: `development/v0.23-clean`.
