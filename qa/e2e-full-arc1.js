@@ -6,9 +6,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await p.goto(URL,{waitUntil:'domcontentloaded'});
   const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
   const closeAll=async()=>{for(let i=0;i<5;i++){const x=p.locator('.e22-overlay .btn:visible');if(!await x.count())break;await x.last().tap();await p.waitForTimeout(120)}};
-  const view=async name=>{await closeAll();const n=p.locator('[data-view="'+name+'"]');await n.waitFor({state:'visible'});await n.tap();};
-  const building=async id=>{const n=p.locator('[data-testid="building-'+id+'"]');await n.waitFor({state:'visible'});await n.tap();const a=p.locator('[data-testid="building-action-'+id+'"]');await a.waitFor({state:'visible'});await a.tap();};
-  const node=async id=>{const n=p.locator('[data-testid="world-node-'+id+'"]');await n.waitFor({state:'visible'});await n.tap();const a=p.locator('[data-testid="world-action-'+id+'"]');await a.waitFor({state:'visible'});await a.tap();};
+  const view=async name=>{await closeAll();const n=p.locator('#eldoria-core-loop [data-view="'+name+'"]');await n.waitFor({state:'visible'});await n.tap();};
+  const building=async id=>{const n=p.locator('#eldoria-core-loop [data-testid="building-'+id+'"]');await n.waitFor({state:'visible'});await n.tap();const a=p.locator('#eldoria-core-loop [data-testid="building-action-'+id+'"]');await a.waitFor({state:'visible'});await a.tap();};
+  const node=async id=>{const n=p.locator('#eldoria-core-loop [data-testid="world-node-'+id+'"]');await n.waitFor({state:'visible'});await n.tap();const a=p.locator('#eldoria-core-loop [data-testid="world-action-'+id+'"]');await a.waitFor({state:'visible'});await a.tap();};
   const waitState=async(fn,timeout=25000)=>p.waitForFunction(fn,null,{timeout});
   const economy=async seconds=>{await p.evaluate(s=>window.ELDORIA_V023.advanceEconomy(s),seconds);return seconds};
   let virtualWait=0;
@@ -48,7 +48,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await view('world');await node('nareth');await p.waitForTimeout(1900);await closeAll();if(!(await state()).maelis)throw Error('Maelis missing');
 
   await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===9,15000);await closeAll();
-  await view('heroes');const march=p.locator('[data-march]');await march.waitFor({state:'visible'});await march.tap();const partner=p.locator('[data-partner="maelis"]');await partner.tap();await closeAll();if(!(await state()).marchConfigured)throw Error('March configuration failed');
+  await view('heroes');const march=p.locator('#eldoria-core-loop [data-march]');await march.waitFor({state:'visible'});await march.tap();const partner=p.locator('[data-partner="maelis"]');await partner.tap();await closeAll();if(!(await state()).marchConfigured)throw Error('March configuration failed');
 
   await view('world');await node('trial');await p.waitForTimeout(1900);await closeAll();if(!(await state()).trialWon)throw Error('March Trial failed');
   await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===10,15000);await closeAll();
