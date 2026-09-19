@@ -22,6 +22,12 @@ Updated: 2026-09-19
 9. Update this handoff after every important work block; update PROJECT_STATE/CHANGELOG for milestones.
 10. Read extended docs only when the current task requires them.
 
+## Working method
+- Primary iteration: local canonical build + Playwright; batch blockers before pushing.
+- Failure output: step + state/resources + screenshot where possible.
+- Separate regression, uninterrupted fresh-save, and player-like experiential passes.
+- GitHub Actions is final certification/deployment, not the normal debugger.
+
 ## Minimum verification
 - Syntax/workflow: push to `main` and inspect `.github/workflows/pages.yml`.
 - Gameplay change: targeted Playwright test first; for progression/release run `node qa/e2e-full-arc1.js` plus workflow regressions.
