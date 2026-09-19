@@ -2,7 +2,7 @@
 Updated: 2026-09-19\nRelease candidate: v0.23.17 fresh-save Arc I gate
 
 ## Current version
-- Runtime/API: **v0.23.17**.
+- Runtime/API: **v0.23.18**.
 - Canonical source: `v0220/index.html`.
 - Development branch: `development/v0.23-clean`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
