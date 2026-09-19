@@ -65,3 +65,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published v0.22
+        run: |
+          URL="${{ steps.deployment.outputs.page_url }}"
+          for i in 1 2 3 4 5 6; do
+            HTML="$(curl -fsSL "$URL" || true)"
+            if printf '%s' "$HTML" | grep -q 'eldoria-version" content="0.22.0' && printf '%s' "$HTML" | grep -q "const KEY='eldoria-v022'"; then
+              echo "Published v0.22 verified at $URL"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Published page did not expose current v0.22"
+          exit 1
