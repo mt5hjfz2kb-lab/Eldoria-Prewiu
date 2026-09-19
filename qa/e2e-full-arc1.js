@@ -11,7 +11,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   const node=async id=>{await closeAll();const n=p.locator('#eldoria-core-loop [data-testid="world-node-'+id+'"]');await n.waitFor({state:'visible'});await n.tap({force:true});const a=p.locator('#eldoria-core-loop [data-testid="world-action-'+id+'"]');await a.waitFor({state:'visible'});await a.tap({force:true});};
   const waitState=async(fn,timeout=25000)=>p.waitForFunction(fn,null,{timeout});
   const economy=async seconds=>{await p.evaluate(s=>window.ELDORIA_V023.advanceEconomy(s),seconds);return seconds};
+  const upgradeProd=async(id,target)=>{for(let guard=0;guard<12;guard++){let q=await state(),lvl=(q.buildingLevels||{})[id]||0;if(lvl>=Math.min(target,q.bastionLevel))return;let need=120*lvl,stone=Math.round(need*.65);if(q.wood<need||q.stone<stone){let wr=Math.max(1,(q.buildingLevels||{}).sawmill||1),sr=Math.max(2,((q.buildingLevels||{}).stoneworks||1)*2),sec=Math.max(60,Math.ceil(Math.max((need-q.wood)/wr,(stone-q.stone)/sr)));virtualWait+=await economy(sec);continue}await building(id);await p.waitForTimeout(150)}throw Error('Production upgrade guard exceeded: '+id)};
   let virtualWait=0;
+  const sweep=[];
+  const checkpoint=async(label,fn,recover)=>{try{await fn();sweep.push({label,ok:true})}catch(e){let snap=null;try{snap=await state()}catch{};sweep.push({label,ok:false,error:String(e&&e.message||e),state:snap});console.error('SWEEP BLOCKER '+label+' '+String(e&&e.message||e));try{await p.screenshot({path:'qa-failure-'+label.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.png',fullPage:true})}catch{};if(recover)await recover(snap,e);else throw e}};
   if((await state()).bastionLevel!==1)throw Error('Fresh save did not start at Bastion I');
 
   await building('sawmill'); await p.waitForTimeout(6500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,4000);
@@ -36,7 +39,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await upgradeProd('sawmill',4);await upgradeProd('granary',4);virtualWait+=await economy(300);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===5,22000).catch(async()=>{throw new Error('Bastion V timeout: '+JSON.stringify(await state()))});await closeAll();
   virtualWait+=await economy(180);await building('stoneworks');let confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().graniteQuarry===true,15000).catch(async()=>{throw new Error('Stoneworks timeout: '+JSON.stringify(await state()))});await closeAll();
 
-  virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000).catch(async()=>{throw new Error('Bastion VI timeout: '+JSON.stringify(await state()))});await closeAll();
+  await checkpoint('bastion-vi',async()=>{virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000).catch(async()=>{throw new Error('Bastion VI timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000}));await building('keep');let x=p.locator('.e22-overlay .btn:visible');if(await x.count())await x.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000);await closeAll()});
   await building('forge');await waitState(()=>window.ELDORIA_V023.state().forge===true,13000);await closeAll();
 
   virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===7,15000);await closeAll();
@@ -55,5 +58,6 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await view('world');await node('final');await p.waitForTimeout(1900);const end=await state();if(!end.finalWon)throw Error('Final assault failed');
   if(virtualWait>4500)throw Error('Economy requires excessive passive wait: '+virtualWait+'s');
   console.log('FULL FRESH-SAVE ARC I PASS · accelerated passive time '+virtualWait+'s');
+  console.log('SWEEP SUMMARY '+JSON.stringify(sweep));
   await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});
