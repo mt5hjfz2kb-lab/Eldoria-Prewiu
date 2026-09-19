@@ -44,9 +44,8 @@ const assert = require('assert');
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:9,bastion:9,view:'world',introSeen:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,maelis:true,troops:100,aldricLvl:20,lyraLvl:20,marchSlots:['aldric','lyra'],marchConfigured:true,trial9Done:false,heroEquipment:{aldric:{},lyra:{},maelis:{}}}));
  await page.waitForSelector('[data-node="trial9"]:visible');
  await page.locator('[data-node="trial9"]').evaluate(el=>el.click());
- await page.waitForSelector('.aldric-cinematic:visible');
- await page.locator('.aldric-cinematic').click({position:{x:5,y:5}}); await page.waitForTimeout(50);
- await page.locator('.aldric-cinematic button').click(); await page.waitForSelector('[data-testid="march-trial"]:visible');
+ await page.waitForSelector('[data-testid="cinematic"]:visible');
+ await page.locator('[data-testid="cinematic"] button').click(); await page.waitForSelector('[data-testid="march-trial"]:visible');
  for(let i=0;i<40 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done));i++){
    const g=page.locator('[data-testid="trial-guard"]:visible'); if(await g.count()) await g.click();
    const a=page.locator('[data-testid="trial-action"]:visible:not([disabled])'); if(await a.count()) await a.click();
@@ -54,14 +53,14 @@ const assert = require('assert');
  }
  assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done),true,'Bastion IX trial could not be completed through player controls');
  // Close trial victory cinematic.
- if(await page.locator('.aldric-cinematic:visible').count()){await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(30);await page.locator('.aldric-cinematic button').click();}
+ if(await page.locator('[data-testid="cinematic"]:visible').count())await page.locator('[data-testid="cinematic"] button').click();
  // Exercise the real two-phase final encounter through visible controls.
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:10,bastion:10,view:'world',troops:120,aldricLvl:24,lyraLvl:24,trial9Done:true,finalVictory:false,marchSlots:['aldric','lyra'],marchConfigured:true}));
  await page.waitForSelector('[data-node="final"]:visible'); await page.locator('[data-node="final"]').evaluate(el=>el.click());
  await page.waitForSelector('.aldric-cinematic:visible'); await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(30);await page.locator('.aldric-cinematic button').click();
  await page.waitForSelector('[data-testid="final-combat"]:visible');
  for(let i=0;i<120 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.finalVictory));i++){
-   if(await page.locator('.aldric-cinematic:visible').count()){await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(20);await page.locator('.aldric-cinematic button').click();await page.waitForTimeout(40);continue}
+   if(await page.locator('[data-testid="cinematic"]:visible').count()){await page.locator('[data-testid="cinematic"] button').click();await page.waitForTimeout(40);continue}
    const sp=page.locator('[data-testid="final-specialist"]:visible:not([disabled])'); if(await sp.count()) await sp.click();
    const gd=page.locator('[data-testid="final-guard"]:visible:not([disabled])'); if(await gd.count()) await gd.click();
    const br=page.locator('[data-testid="final-break"]:visible:not([disabled])'); if(await br.count()) await br.click();
