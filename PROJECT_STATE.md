@@ -2,7 +2,7 @@
 Updated: 2026-09-19
 
 ## Current version
-- Runtime/API: **v0.23.16**.
+- Runtime/API: **v0.23.17**.
 - Canonical source: `v0220/index.html`.
 - Development branch: `development/v0.23-clean`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
@@ -36,8 +36,8 @@ v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570
 - Economy from early game to Bastion X has not been proven deadlock/grind-free by an uninterrupted playthrough.
 - Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
-## Next work
-1. Extend the now-green early + late mobile coverage into one real uninterrupted fresh-save progression traversal and fix every blocker found.
+## Work now under verification\n- Added `qa/e2e-full-arc1.js`, an uninterrupted fresh-save mobile traversal from Bastion I to the Arc I finale. It uses real taps/clicks for gameplay and only accelerates passive production through `advanceEconomy()`; it does not use `setQA/loadState` to jump progression.\n- Early economy blocker found before Bastion V: the old Quarry reserve/load could not fund the required stone before Stoneworks unlocked. Quarry reserve is now 2,800 with 700-stone loads; this change is pending full CI verification.\n\n## Next work
+1. Certify the new uninterrupted fresh-save progression traversal in CI and on the published build; fix every blocker it exposes.
 3. Then address task persistence, Bastion gates/modal removal, true building levels, equipment swap, Hero Hall/test IDs, end-of-test flow and deeper combat.
 4. Keep visual baseline protected throughout.
 
