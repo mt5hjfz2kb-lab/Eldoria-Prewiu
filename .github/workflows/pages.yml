@@ -70,7 +70,7 @@ jobs:
         run: node qa/e2e-real-progression.js
       - name: E2E real late Arc I progression
         run: node qa/e2e-late-progression.js
-      - name: Recovery regression checks
+      - name: E2E uninterrupted fresh-save Arc I\n        run: node qa/e2e-full-arc1.js\n      - name: Recovery regression checks
         run: |
           test -s playtest/index.html
           test -s assets/orin-portrait.jpg
