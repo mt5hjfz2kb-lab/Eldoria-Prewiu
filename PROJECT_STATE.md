@@ -16,7 +16,7 @@ v0.23 moved routine building/world interaction to object-local contextual contro
 ## Currently verified
 The standard CI has previously passed boot, sawmill contextual/start/complete, core state fixtures, building action availability, world-node action availability, recovery checks, deploy and published-build Chromium checks. These checks do **not** constitute a complete fresh-save Chapter I playthrough.
 
-The newest dedicated real regression `qa/e2e-real-progression.js` targets Fissure → Lyra recruitment. At the pre-documentation HEAD the test had undergone several fixes and the latest workflow was still in progress. Therefore **Fissure→Lyra and the complete progression are not yet certified as passing** in this state document.
+The newest dedicated real regression `qa/e2e-real-progression.js` targets Fissure → Lyra recruitment. At the pre-documentation HEAD, workflow run `35456645132` for commit `feee035322acc58108bed0e41a748cbbf87539cf` **completed with failure**. Therefore **Fissure→Lyra and the complete progression are not certified as passing**. This is the exact verification state to resume from after the documentation-only consolidation.
 
 ## Open bugs / risks
 - Finish and obtain a green real mobile Fissure→Lyra regression, then verify on the deployed URL.
