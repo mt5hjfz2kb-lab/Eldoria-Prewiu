@@ -68,6 +68,8 @@ jobs:
         run: node qa/e2e-all-nodes.js
       - name: E2E real early progression
         run: node qa/e2e-real-progression.js
+      - name: E2E real late Arc I progression
+        run: node qa/e2e-late-progression.js
       - name: Recovery regression checks
         run: |
           test -s playtest/index.html
