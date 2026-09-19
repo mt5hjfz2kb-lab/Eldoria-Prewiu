@@ -42,15 +42,23 @@ jobs:
           PY
           for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
 
-      - name: Mobile gameplay E2E
+      - name: Install Playwright QA browser
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
+      - name: Start local QA build
+        run: |
           python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
-          SERVER_PID=$!
-          trap 'kill $SERVER_PID || true' EXIT
           sleep 2
-          E2E_PHASE=complete node qa/e2e-smoke.js
+          curl --fail http://127.0.0.1:4173/playtest/ >/dev/null
+      - name: E2E boot canonical game
+        run: E2E_PHASE=boot node qa/e2e-smoke.js
+      - name: E2E sawmill contextual action
+        run: E2E_PHASE=context node qa/e2e-smoke.js
+      - name: E2E sawmill construction starts
+        run: E2E_PHASE=start node qa/e2e-smoke.js
+      - name: E2E sawmill construction completes
+        run: E2E_PHASE=complete node qa/e2e-smoke.js
 
       - name: Recovery regression checks
         run: |
