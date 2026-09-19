@@ -1,65 +1,37 @@
-# Eldoria — Reglas de baseline y prevención de regresiones
+# Eldoria — Baseline and regression rules
 
-Este archivo es parte del proceso de desarrollo, no documentación opcional.
+## Active baseline
+- Canonical editable source: `v0220/index.html`.
+- Runtime/API: v0.23.14 at the 2026-09-19 documentation consolidation.
+- Active development branch: `development/v0.23-clean`.
+- Protected user-approved visual recovery point: commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`, branch `stable/visual-good-f139968c`. **Never modify it.**
+- Historical v0.19/v0.20/v0.21 directories are reference/recovery only.
 
-## Errores que no deben repetirse
+## Never repeat these regressions
+1. Rebuild a new version from an older branch/file.
+2. Roll back the approved visual layer while fixing logic.
+3. Declare a gameplay bug fixed from syntax, grep or DOM presence alone.
+4. Confuse fixture/state QA with uninterrupted player reachability.
+5. Let world pan/touch handlers swallow object actions.
+6. Render giant/global action bars for routine interactions. Actions belong to the selected object.
+7. Reintroduce the obsolete long Aldric tutorial/intro.
+8. Give Power as enemy loot.
+9. Put cards/relics in Chest/inventory; they belong to Codex.
+10. Delete/clean the legacy runtime before proving nothing active depends on it.
+11. Use historical generation scripts to rebuild the active file without explicit recovery need.
+12. Claim deployment before Pages has completed, or claim visual/mobile validation without an actual browser run.
 
-1. **Reconstruir una versión nueva desde una base antigua.** Una versión validada es el único punto de partida permitido para la siguiente iteración.
-2. **Congelar como canónica una build solo porque compila o pasa greps.** La validación exige preservar también assets, narrativa, orden, UX y comportamiento ya aprobados.
-3. **Perder assets aprobados al consolidar.** Sir Aldric debe conservar su retrato real; el placeholder de espadas está prohibido.
-4. **Recuperar un primer boceto de textos o tutoriales.** Las correcciones narrativas posteriores tienen prioridad y deben mantenerse acumulativamente.
-5. **Usar texto visible/regex como sustituto del estado real del juego cuando exista un evento o estado fiable.** Los disparadores narrativos deben migrar hacia estado/acciones reales.
-6. **Añadir feedback falso.** Recompensas, propiedad de cartas, progreso y estados visuales deben derivar del estado real.
-7. **Crear ramas/versiones/patches paralelos por inercia.** Una sola línea de avance; versiones solo por hito o hotfix con motivo.
-8. **Declarar una versión validada sin revisión de regresión.** Antes de congelar: comparar contra la baseline anterior y comprobar los elementos ya aprobados.
+## Protected behavior
+- Opening Narrator → brief Aldric → gameplay.
+- Valoria-first loop and mobile-first layout.
+- Contextual building/node actions below object; timer above.
+- Finite world nodes and real resource rewards.
+- Fissure creates the need for Lyra; first Fissure event recruits her, then the Fissure can be defeated.
+- Bastion progression, real troops, hero/inventory scaffolding, Forge/Aether/Maelis/March Trial/final Arc I scaffolding.
+- Cards → Codex; gear/materials → inventory.
+- Public path is built from canonical `v0220/index.html`.
 
-## Contrato de baseline
+## Acceptance discipline
+For a gameplay fix: reproduce → modify canonical source → targeted real Playwright interaction → regressions → deploy → published Chromium check. If any stage fails, document it as open in `PROJECT_STATE.md`.
 
-- Baseline actual: `v0210/index.html` (v0.21.0 · external playtest).
-- Toda mejora parte de esta baseline materializada.
-- No se reconstruye desde r7/r6/0.19.x para producir una 0.20.x futura.
-- Una corrección se aplica incrementalmente sobre la baseline actual.
-- Tras QA y validación, la build completa resultante sustituye a la baseline.
-- La publicación debe fallar si desaparece un elemento protegido.
-
-## Elementos protegidos actuales
-
-- Retrato real de Sir Aldric en sus cinemáticas.
-- Orin conserva la estructura cinematográfica validada equivalente a Aldric, con paleta púrpura y `assets/orin-portrait.jpg`; no sustituirla por layouts completos ni recreaciones CSS.
-- Introducción contextual de Capítulo I y flujo narrativo de Aldric.
-- Typewriter estable y botón Continuar manual en diálogos importantes.
-- Orden canónico Capítulo I → Capítulo II → mundo global → Héroes/Reliquias/Duelo → Mar de Cristal.
-- Bosque Seguro con recompensa real de +180 madera y marcha visible.
-- Propiedad visual del Duelo derivada de `piece.owner`, nunca alternada por índice.
-- Archivo, Héroes, Resonancias y Duelo con onboarding progresivo.
-- Mar de Cristal como teaser del Capítulo III.
-- Prioridad móvil.
-
-## Checklist antes de congelar
-
-- Build y sintaxis.
-- Partida nueva/reset.
-- Comparación contra baseline anterior.
-- Assets aprobados presentes.
-- Textos y escenas aprobados presentes y en su orden.
-- Sin placeholders reintroducidos.
-- Sin recompensas/propiedad simuladas.
-- Metadatos de versión coherentes.
-- Publicación correcta.
-- Solo entonces puede marcarse como nueva baseline canónica.
-
-
-## Punto de recuperación v0.20.2
-
-- Fuente canónica desplegable: `v0210/index.html`.
-- URL pública: `/playtest/`, generada siempre desde esa fuente.
-- `v0201/index.html` y `v0202/index.html` quedan como históricos y no deben volver a usarse como fuente de despliegue.
-- Todo cambio posterior debe modificar primero la baseline canónica y pasar los gates de regresión antes de publicar.
-
-
-## Baseline v0.21.0 — ronda externa
-
-- La v0.21.0 es el punto de recuperación para la nueva ronda de testers.
-- No modificar `v0210/index.html` durante la ronda salvo hotfix que bloquee o invalide el test; cualquier hotfix debe quedar documentado.
-- El despliegue de Pages copia exclusivamente `v0210/index.html` a `playtest/index.html` y ejecuta comprobación de sintaxis JS + gates de regresión.
-- La encuesta final de v0.21.0 mide claridad autónoma, ritmo, utilidad de Aldric/Orin, héroes, cartas, Duelo, mundo global, confusión, mejora prioritaria y bugs.
+A visual recovery may compare against `f139968c`, but active logic must not be replaced by that old commit.
