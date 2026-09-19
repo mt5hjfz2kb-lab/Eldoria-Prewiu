@@ -41,7 +41,7 @@ Add stable `data-testid` to every important new action/state. Forge/Hero Hall co
 - `qa/e2e-core-flow.js`: loads deterministic states and runs runtime assertions; this is state/render regression, not a playthrough.
 - `qa/e2e-all-buildings.js`: verifies contextual actions exist for main buildings; mostly availability, not every action to completion.
 - `qa/e2e-all-nodes.js`: verifies world contextual actions and compact dimensions; forest is executed into a gather task, many other nodes are availability checks. Some paths still use DOM click rather than real touch.
-- `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression under active development at v0.23.14.
+- `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression.\n- `qa/e2e-late-progression.js`: real mobile late Arc I traversal using controlled phase setup.\n- `qa/e2e-full-arc1.js`: uninterrupted fresh-save Arc I traversal. It never uses `setQA/loadState` to jump progression; `advanceEconomy(seconds)` only advances the same passive-production path so CI can audit long waits without sleeping in real time.
 
 ## Required full-playthrough target
 A future canonical E2E must start from a clean save without jumping progression with `setQA/loadState`, and perform the playable flow through the current end of Arc I. It must assert each state transition, not only DOM presence. Shortened deterministic timers may be introduced in QA mode if they use the same production resolution path.
