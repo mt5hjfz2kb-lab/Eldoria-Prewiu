@@ -99,3 +99,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published build with Chromium
+        run: |
+          sleep 12
+          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' E2E_PHASE=complete node qa/e2e-smoke.js
+          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-all-nodes.js
