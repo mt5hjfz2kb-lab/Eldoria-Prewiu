@@ -42,6 +42,16 @@ jobs:
           PY
           for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
 
+      - name: Mobile gameplay E2E
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          sleep 2
+          node qa/e2e-smoke.js
+
       - name: Recovery regression checks
         run: |
           test -s playtest/index.html
