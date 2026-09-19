@@ -828,7 +828,31 @@ body>.e22-overlay>.e22-dialog{position:relative;width:min(680px,calc(100vw - 28p
  #app>.e22 .world .node small{font-size:7px!important;line-height:1.15!important}
  #app>.e22 .mapHint{bottom:68px!important;font-size:8px!important;line-height:1.2!important;padding:5px 8px!important}
 }
-</style></head>
+<style id="v022-mobile-art-review-fixes">
+@media(max-width:600px){
+ #app>.e22 .kingdom .keep{left:50%!important;right:auto!important;top:auto!important;bottom:12.5%!important;width:190px!important;max-width:190px!important;transform:translateX(-50%) scale(.76)!important;transform-origin:center bottom!important;z-index:11!important}
+ #app>.e22 .kingdom .keep .art{font-size:56px!important}
+ #app>.e22 .kingdom .keep label{font-size:11px!important}
+ #app>.e22 .kingdom .keep small{font-size:8px!important}
+ #app>.e22 .kingdom .poi{width:38vw!important;max-width:145px!important}
+ #app>.e22 .kingdom .sawmill{left:8px!important;right:auto!important;top:196px!important;transform:scale(.76)!important;transform-origin:left top!important}
+ #app>.e22 .kingdom .barracks{left:auto!important;right:8px!important;top:196px!important;transform:scale(.76)!important;transform-origin:right top!important}
+ #app>.e22 .kingdom .granary{left:8px!important;right:auto!important;top:282px!important;transform:scale(.76)!important;transform-origin:left top!important}
+ #app>.e22 .kingdom .stoneworks{left:auto!important;right:8px!important;top:282px!important;transform:scale(.76)!important;transform-origin:right top!important}
+ #app>.e22 .kingdom .forge{left:50%!important;right:auto!important;top:368px!important;transform:translateX(-50%) scale(.76)!important;transform-origin:center top!important}
+ #app>.e22 .kingdom>.e22Quest{left:10px!important;right:auto!important;top:68px!important;width:min(230px,59vw)!important;max-width:230px!important;z-index:32!important}
+ #app>.e22 .kingdom [data-testid="realm-status"]{left:auto!important;right:8px!important;top:70px!important;bottom:auto!important;width:142px!important;max-width:37vw!important;min-width:0!important;z-index:31!important}
+ #app>.e22 .kingdom .commandPrompt{left:auto!important;right:8px!important;top:122px!important;bottom:auto!important;width:142px!important;max-width:37vw!important;min-width:0!important;z-index:31!important}
+ #app>.e22 .kingdom .oathPrompt{top:174px!important}
+ #app>.e22 .world>.e22Quest{left:10px!important;right:auto!important;top:68px!important;width:min(220px,56vw)!important;max-width:220px!important;z-index:34!important}
+ #app>.e22 .worldPan{position:absolute!important;inset:0 auto auto 0!important;width:1040px!important;min-width:1040px!important;height:640px!important;min-height:640px!important;transform-origin:0 0}
+ #app>.e22 .world .node{min-width:94px!important;max-width:116px!important;padding:6px!important;transform:translate(-50%,-50%) scale(.68)!important}
+ #app>.e22 .world .node>span{font-size:20px!important}
+ #app>.e22 .world .node b{font-size:10px!important}
+ #app>.e22 .world .node small{font-size:6.5px!important}
+ #app>.e22 .mapHint{left:18px!important;right:18px!important;bottom:70px!important;width:auto!important;max-width:none!important;font-size:7px!important;letter-spacing:.05em!important}
+}
+</style></style></head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
     <button id="qa-chip" class="qa-chip" data-testid="qa-state">QA STATE</button>
