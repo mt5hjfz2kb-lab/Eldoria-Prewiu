@@ -725,6 +725,7 @@ button:focus-visible{outline:2px solid currentColor;outline-offset:3px}.modal{ov
 /* v0.22 runtime isolation hotfix: active core owns the viewport */
 body.v022-core-active{overflow:hidden;background:#05080b;color:#ebe5d3}
 body.v022-core-active>#game{display:none!important}
+body.v022-core-active>#qa-chip,body.v022-core-active>#toast,body.v022-core-active>.topbar,body.v022-core-active>#scene,body.v022-core-active>#quest,body.v022-core-active>#nav,body.v022-core-active>#modal{display:none!important}
 body.v022-core-active.e22{position:relative;width:100vw;height:100dvh;min-height:100vh;max-width:none;margin:0;font-family:Georgia,'Times New Roman',serif;background:#05080b;color:#ebe5d3}
 body.v022-core-active.e22>.e22Hud{position:fixed;z-index:100;top:0;left:0;right:0;height:58px;display:flex;align-items:center;gap:9px;padding:7px 12px;background:linear-gradient(180deg,#111820fa,#080d12f2);border-bottom:1px solid #d6b66f33;box-shadow:0 8px 28px #0009}
 body.v022-core-active.e22>.e22Hud button,body.v022-core-active.e22>.e22Hud .resource{appearance:none;-webkit-appearance:none;border:1px solid #ffffff18;background:#0d1318;color:#eee4ca;border-radius:4px}
