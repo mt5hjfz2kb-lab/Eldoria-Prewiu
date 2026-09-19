@@ -48,7 +48,7 @@ const assert = require('assert');
  await page.locator('[data-testid="cinematic"] button').evaluate(el=>el.click()); await page.waitForSelector('[data-testid="march-trial"]:visible');
  for(let i=0;i<40 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done));i++){
    await page.evaluate(()=>{const m=document.querySelector('body > .e22-overlay[data-testid="march-trial"]');m?.querySelector('[data-testid="trial-guard"]')?.click();document.querySelector('body > .e22-overlay[data-testid="march-trial"] [data-testid="trial-action"]:not([disabled])')?.click()});
-   await page.waitForTimeout(80);if(i===7)console.log('TRIAL_DIAG',JSON.stringify(await page.evaluate(()=>({state:window.ELDORIA_V022_QA.getState().state,overlay:document.querySelector('body > .e22-overlay[data-testid="march-trial"]')?.innerText||''}))));
+   await page.waitForTimeout(80);if(i<10)console.log('TRIAL_STEP',i,JSON.stringify(await page.evaluate(()=>({done:window.ELDORIA_V022_QA.getState().state.trial9Done,trial:document.querySelector('body > .e22-overlay[data-testid="march-trial"]')?.innerText||'',cinema:document.querySelector('[data-testid="cinematic"]')?.innerText||''}))));
  }
  assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done),true,'Bastion IX trial could not be completed through player controls');
  // Close trial victory cinematic.
