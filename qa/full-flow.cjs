@@ -9,7 +9,7 @@ const assert = require('assert');
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({introSeen:true,view:'kingdom'}));
  await page.waitForSelector('.e22Hud',{state:'visible'});
  await page.waitForSelector('.keep',{state:'visible'});
- assert.equal(await page.locator('body.v022-core-active.e22').count(),1);
+ assert.equal(await page.locator('body.v022-core-active > .e22').count(),1);
  assert.equal(await page.locator('#game:visible').count(),0);
  await page.click('[data-poi="sawmill"]');
  await page.waitForSelector('[data-context-confirm]:visible');
