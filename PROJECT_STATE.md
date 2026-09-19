@@ -1,88 +1,43 @@
-# Eldoria — Estado actual del proyecto
+# Eldoria — PROJECT STATE
+Updated: 2026-09-19
 
-> **Leer este archivo primero al abrir un chat o sesión nueva.**  
-> Fuente de verdad operativa: repositorio + Documento Maestro + este estado. El chat no es la memoria principal.
+## Current version
+- Runtime/API: **v0.23.14**.
+- Canonical source: `v0220/index.html`.
+- Development branch: `development/v0.23-clean`.
+- Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
+- Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
+- Protected visual recovery point: `f139968ccbfdeb3e1d37f58568187374faf6d1f2`, branch `stable/visual-good-f139968c`.
+- Pre-documentation development HEAD: `feee035322acc58108bed0e41a748cbbf87539cf`.
 
-## Estado actual
+## Last functional milestone
+v0.23 moved routine building/world interaction to object-local contextual controls. Node/building actions are intended to appear below the tapped object and timers above it. The first Fissure interaction is being changed so attacking the Fissure when Lyra is absent triggers the Lyra recruitment event; after recruitment the Fissure can be attacked/defeated normally.
 
-- Proyecto: **Eldoria / Reinos de Eldoria**
-- Fase: vertical slice web en ronda de playtest externo.
-- Baseline canónica: **v0.21.0 external playtest**
-- Fuente canónica: `v0210/index.html`
-- URL pública: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/`
-- La v0.21.0 queda congelada durante la ronda salvo hotfix que bloquee o invalide el test.
-- `v0201` y `v0202` son históricos y no son fuentes de despliegue.
-- Reglas de recuperación/regresión: `ELDORIA_BASELINE_RULES.md`.
+## Currently verified
+The standard CI has previously passed boot, sawmill contextual/start/complete, core state fixtures, building action availability, world-node action availability, recovery checks, deploy and published-build Chromium checks. These checks do **not** constitute a complete fresh-save Chapter I playthrough.
 
-## Objetivo inmediato
+The newest dedicated real regression `qa/e2e-real-progression.js` targets Fissure → Lyra recruitment. At the pre-documentation HEAD the test had undergone several fixes and the latest workflow was still in progress. Therefore **Fissure→Lyra and the complete progression are not yet certified as passing** in this state document.
 
-Recoger aproximadamente **5–8 playtests externos** de v0.21.0, comparar patrones y decidir qué necesita validación/corrección antes del salto tecnológico.
+## Open bugs / risks
+- Finish and obtain a green real mobile Fissure→Lyra regression, then verify on the deployed URL.
+- Build a true uninterrupted fresh-save progression test. Current tests use QA fixtures for substantial portions.
+- Verify camp and boss actions through real pointer/touch paths, not merely action-panel presence.
+- Timed actions store task metadata but completion callbacks are in-memory; reload during a task can strand progression. Replace with serializable/resumable task resolution.
+- Bastion VI–X still use confirmation-modal behavior and need explicit progression gates, not only resource costs.
+- Stoneworks construction still uses an old confirmation popup; routine actions should be object-local.
+- Resource buildings display Bastion-derived levels/rates but do not yet have true independent upgrade levels capped by Bastion.
+- Equipping a replacement item can discard the previously equipped item instead of returning it to inventory.
+- Forge and Hero Hall need complete stable test IDs/wrappers; Hero Hall needs fuller hero switching/stats/skills/XP/equipment UX.
+- End-of-test survey, session export/copy and full tester reset requirements are incomplete.
+- Later special combats are functional progression placeholders, not the intended polished semiautomatic combat.
+- Economy from early game to Bastion X has not been proven deadlock/grind-free by an uninterrupted playthrough.
+- Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
-No añadir sistemas nuevos a la build congelada durante esta ronda. Registrar los resultados en `PLAYTEST_RESULTS.md`.
+## Next work
+1. Complete the Fissure→Lyra fix and make its real mobile regression green locally and on Pages.
+2. Extend QA into a real uninterrupted progression traversal and fix every blocker found.
+3. Then address task persistence, Bastion gates/modal removal, true building levels, equipment swap, Hero Hall/test IDs, end-of-test flow and deeper combat.
+4. Keep visual baseline protected throughout.
 
-## Dirección para Unity
-
-La opción de trabajo preferida es un **vertical slice de producción**:
-
-- reconstruir en Unity únicamente la experiencia/sistemas que hayan demostrado valor;
-- diseñar los sistemas importantes de forma reutilizable y data-driven;
-- evitar tanto una demo desechable como sobrearquitecturar un MMO antes de tiempo;
-- permitir ampliar después héroes, cartas, edificios, tropas, mapa, combate y futuros sistemas sin rehacer el núcleo;
-- priorizar datos editables frente a valores enterrados en código, para que el propietario del proyecto pueda ajustar contenido sin saber C#.
-
-**Todavía no iniciar una migración irreversible de sistemas que puedan cambiar por los resultados de la ronda v0.21.**
-
-## Restricción económica
-
-**Presupuesto actual: 0 €.** No comprar assets, plugins, música, modelos, servicios, servidores ni contratar trabajo mientras no exista evidencia suficiente de que Eldoria tiene posibilidades reales. Usar herramientas gratuitas, assets provisionales/gratuitos y trabajo propio.
-
-## Filosofía de producto
-
-- Lo validado no se vuelve a fabricar: se conserva y se evoluciona.
-- La web sirve para validar diseño y flujo a bajo coste.
-- Unity debe convertir lo validado en una base de videojuego, no reiniciar el diseño desde cero.
-- Prioridad móvil.
-- El jugador debe saber siempre: **qué intenta hacer, por qué y dónde tocar**.
-- Aldric = anfitrión/guía narrativo.
-- Orin = guía diegética de Códice, cartas, Brecha y Duelo.
-- Tutoriales progresivos y contextuales.
-- No simular estados, recompensas o multijugador que no existan realmente.
-
-## Loop y contenido actual
-
-Flujo validado a alto nivel:
-**Reino → decisión/mejora → mundo → combate semiautomático → recompensa → regreso**, ampliado con héroes, cartas/Códice, Duelo de Reliquias y mapa global.
-
-Capítulo I reconstruye Valoria. Capítulo II introduce expediciones, Brecha, cartas, Orin, héroes, mundo global y Duelo. Capítulo III / **Mar de Cristal** permanece como teaser.
-
-## Riesgos/hipótesis a contrastar en playtest
-
-No convertir estas hipótesis en cambios hasta observar patrones:
-- comprensión del sistema de héroes;
-- comprensión/valor de usar vs conservar cartas;
-- comprensión y atractivo del Duelo;
-- ritmo posiblemente demasiado rápido;
-- transiciones narrativas y claridad de objetivos;
-- calidad/integración final del retrato de Orin;
-- game feel del Duelo;
-- transición posterior al onboarding del mundo global.
-
-## Verificación técnica actual
-
-La publicación de Pages usa `v0210/index.html` y ejecuta comprobación de sintaxis JavaScript y gates estructurales/regresión. La última v0.21.0 fue desplegada correctamente.
-
-Esto **no equivale a un E2E completo de navegador/móvil**; no afirmar que existe si no se ha ejecutado.
-
-## Cómo continuar desde un chat nuevo
-
-1. Recuperar este repositorio; **no reconstruir el proyecto**.
-2. Leer `PROJECT_STATE.md`.
-3. Leer `ELDORIA_BASELINE_RULES.md`.
-4. Leer `DESIGN_DECISIONS.md`.
-5. Leer `PLAYTEST_RESULTS.md`.
-6. Consultar el Documento Maestro cuando una decisión requiera lore/diseño de mayor alcance.
-7. Continuar desde la baseline/commit actual y actualizar estos documentos cuando cambie una decisión importante.
-
-## Regla de mantenimiento
-
-Cada cambio de fase, baseline, arquitectura, restricción económica, decisión de diseño importante o resultado de playtest debe reflejarse en estos archivos. El objetivo es que cambiar de chat no implique perder el proyecto.
+## Maintenance rule
+This file is the short operational truth. Update it whenever version, verified traversal, open blocker, next work, canonical path or stable recovery commit changes.
