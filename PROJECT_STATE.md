@@ -36,10 +36,27 @@ v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570
 - Economy from early game to Bastion X has not been proven deadlock/grind-free by an uninterrupted playthrough.
 - Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
-## Work now under verification\n- Added `qa/e2e-full-arc1.js`, an uninterrupted fresh-save mobile traversal from Bastion I to the Arc I finale. It uses real taps/clicks for gameplay and only accelerates passive production through `advanceEconomy()`; it does not use `setQA/loadState` to jump progression.\n- Early economy blocker found before Bastion V: the old Quarry reserve/load could not fund the required stone before Stoneworks unlocked. Quarry reserve is now 2,800 with 700-stone loads; this change is pending full CI verification.\n\n## Next work
-1. Certify the new uninterrupted fresh-save progression traversal in CI and on the published build; fix every blocker it exposes.
-3. Then address task persistence, Bastion gates/modal removal, true building levels, equipment swap, Hero Hall/test IDs, end-of-test flow and deeper combat.
-4. Keep visual baseline protected throughout.
+## Work now under verification\n- Added `qa/e2e-full-arc1.js`, an uninterrupted fresh-save mobile traversal from Bastion I to the Arc I finale. It uses real taps/clicks for gameplay and only accelerates passive production through `advanceEconomy()`; it does not use `setQA/loadState` to jump progression.\n- Early economy blocker found before Bastion V: the old Quarry reserve/load could not fund the required stone before Stoneworks unlocked. Quarry reserve is now 2,800 with 700-stone loads; this change is pending full CI verification.\n\n## Product course correction — 2026-09-20
+The MVP is being refocused on the original product question: does the compact Eldoria loop create understanding, satisfaction and desire to continue? Do not add more breadth beyond the current Arc I scaffold until that is demonstrated.
+
+Required MVP proof:
+1. Rebuild/upgrade Valoria with a real economic trade-off.
+2. Leave because the kingdom needs something; encounter La Brecha/world danger.
+3. Fight/gather/discover and obtain a meaningful reward.
+4. Return and visibly use that reward to change kingdom/hero progression.
+5. Introduce one relic into Codex with a meaningful use-now vs conserve choice, explained diegetically by Orin.
+6. Show a truthful, explicitly simulated 4X horizon: another realm, a safe node, a contested node and Breach influence/territory.
+7. End with a new ambition/mystery, not merely a higher Bastion number.
+
+Existing v0.21 Codex/Duel/world-4X code is a system bank. Reconnect only the smallest useful slice; do not restore the old long tutorial chain wholesale.
+
+## Next work
+1. Repair the current final-assault QA regression caused by the new pre-assault Aldric dialogue, then certify the uninterrupted fresh-save Arc I traversal.
+2. Reconnect the smallest meaningful Codex/relic choice to the current v0.23 flow.
+3. Add/restore a concise truthful 4X horizon and one genuine economic opportunity-cost choice.
+4. Add QA assertions for the MVP desire loop itself, not only reachability to Bastion X.
+5. Run a player-like mobile pass and human playtest before any Unity migration or scope expansion.
+6. Keep visual baseline protected throughout.
 
 ## Maintenance rule
 This file is the short operational truth. Update it whenever version, verified traversal, open blocker, next work, canonical path or stable recovery commit changes.
