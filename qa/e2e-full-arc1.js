@@ -14,7 +14,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   let virtualWait=0;
   if((await state()).bastionLevel!==1)throw Error('Fresh save did not start at Bastion I');
 
-  await building('sawmill'); await waitState(()=>window.ELDORIA_V023.state().sawmill===true,9000);
+  await building('sawmill'); await p.waitForTimeout(6500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,4000);
   await view('world');
   for(let i=0;i<3;i++){await node('forest');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-forest'),10000)}
   for(let i=0;i<4;i++){await node('quarry');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry'),10000)}
