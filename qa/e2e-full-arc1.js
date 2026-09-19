@@ -32,9 +32,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   for(let i=0;i<4;i++){await node('meat');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-meat'),10000)}
   for(const id of ['wolf','boar']){await node(id);await p.waitForTimeout(2800);await closeAll()}
 
-  await view('kingdom');virtualWait+=await economy(800);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===4,20000).catch(async()=>{throw new Error('Bastion IV timeout: '+JSON.stringify(await state()))});await closeAll();
-  virtualWait+=await economy(1100);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===5,22000).catch(async()=>{throw new Error('Bastion V timeout: '+JSON.stringify(await state()))});await closeAll();
-  await building('stoneworks');let confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().graniteQuarry===true,15000).catch(async()=>{throw new Error('Stoneworks timeout: '+JSON.stringify(await state()))});await closeAll();
+  await view('kingdom');await upgradeProd('sawmill',3);await upgradeProd('granary',3);virtualWait+=await economy(300);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===4,20000).catch(async()=>{throw new Error('Bastion IV timeout: '+JSON.stringify(await state()))});await closeAll();
+  await upgradeProd('sawmill',4);await upgradeProd('granary',4);virtualWait+=await economy(300);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===5,22000).catch(async()=>{throw new Error('Bastion V timeout: '+JSON.stringify(await state()))});await closeAll();
+  virtualWait+=await economy(180);await building('stoneworks');let confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().graniteQuarry===true,15000).catch(async()=>{throw new Error('Stoneworks timeout: '+JSON.stringify(await state()))});await closeAll();
 
   virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000).catch(async()=>{throw new Error('Bastion VI timeout: '+JSON.stringify(await state()))});await closeAll();
   await building('forge');await waitState(()=>window.ELDORIA_V023.state().forge===true,13000);await closeAll();
