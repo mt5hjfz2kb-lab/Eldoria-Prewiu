@@ -15,7 +15,7 @@ const assert = require('assert');
  await page.waitForSelector('[data-context-confirm]:visible');
  assert.match(await page.locator('[data-context-action]').innerText(),/80 madera/i);
  await page.click('[data-context-confirm]');
- await page.waitForTimeout(1200); const afterBuild=await page.evaluate(()=>({qa:qaMode(),state:window.ELDORIA_V022_QA.getState().state,buildType:typeof buildRoutine})); console.log('AFTER_BUILD',JSON.stringify(afterBuild)); assert.equal(afterBuild.state.sawmill,true,'sawmill construction did not complete');
+ await page.waitForTimeout(1200); const afterBuild=await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state); console.log('AFTER_BUILD',JSON.stringify({sawmill:afterBuild.sawmill,view:afterBuild.view,tasks:afterBuild.tasks,wood:afterBuild.wood})); assert.equal(afterBuild.sawmill,true,'sawmill construction did not complete');
  assert.equal((await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.view)),'world');
  let before=await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.wood);
  await page.click('[data-node="forest"]'); await page.waitForSelector('[data-node-confirm]:visible');
