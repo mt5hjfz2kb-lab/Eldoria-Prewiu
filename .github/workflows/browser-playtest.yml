@@ -1,7 +1,7 @@
 name: Eldoria Browser Playtest
 on:
   push:
-    branches: [main]
+    branches: [main, recovery/visual-v022]
   workflow_dispatch:
 concurrency:
   group: eldoria-browser-playtest
