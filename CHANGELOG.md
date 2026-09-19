@@ -1,5 +1,11 @@
 # Eldoria — Changelog
 
+## QA milestone — 2026-09-19
+- Added real mobile late Arc I traversal covering Bastion VI, Forge, Devorador/Ascua, equipment forging, Nareth/Maelis, March Trial, Bastion X and final assault.
+- Workflow `35458031436` passed all local regressions, both real progression tests, Pages deploy and published Chromium verification.
+- Remaining verification gap: one uninterrupted fresh-save run rather than segmented QA-state setup.
+
+
 Only milestones and important regressions/fixes are recorded here. Historical 0.19–0.21 material remains in the repository.
 
 ## v0.23.16 — 2026-09-19
