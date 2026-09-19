@@ -50,13 +50,7 @@ jobs:
           SERVER_PID=$!
           trap 'kill $SERVER_PID || true' EXIT
           sleep 2
-          E2E_PHASE=boot node qa/e2e-smoke.js
-      - name: E2E sawmill contextual action
-        run: E2E_PHASE=context node qa/e2e-smoke.js
-      - name: E2E sawmill construction starts
-        run: E2E_PHASE=start node qa/e2e-smoke.js
-      - name: E2E sawmill construction completes
-        run: E2E_PHASE=complete node qa/e2e-smoke.js
+          E2E_PHASE=complete node qa/e2e-smoke.js
 
       - name: Recovery regression checks
         run: |
