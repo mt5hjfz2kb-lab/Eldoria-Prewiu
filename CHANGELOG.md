@@ -2,6 +2,11 @@
 
 Only milestones and important regressions/fixes are recorded here. Historical 0.19–0.21 material remains in the repository.
 
+## v0.23.15 — 2026-09-19
+- Hardened Fissure→Lyra discovery against duplicate cinema overlays.
+- Dedicated regression now taps both Fissure action and Lyra recruitment through Playwright mobile input rather than DOM-click fallback.
+- Verification pending the next workflow run.
+
 ## v0.23.14 — 2026-09-19
 - Current runtime version.
 - First Fissure interaction changed toward deterministic Lyra recruitment: when Lyra is absent, the Fissure encounter must lead to the Lyra recruitment cinematic; after recruitment, the Fissure can be fought normally.
