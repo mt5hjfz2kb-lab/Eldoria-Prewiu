@@ -756,6 +756,8 @@ body>.e22-overlay,body>.aldric-cinematic{position:fixed!important;inset:0!import
 body>.e22-overlay{display:grid!important;place-items:center!important;background:#020407c9!important;padding:18px!important}
 body>.e22-overlay>.e22-dialog{position:relative;z-index:2001;width:min(680px,calc(100vw - 28px));max-height:90dvh;overflow:auto}
 body>.aldric-cinematic{z-index:2100!important}
+body>.e22-overlay,body>.aldric-cinematic{z-index:2147483000!important}
+body>.e22-overlay>.e22-dialog{pointer-events:auto!important}
 @media(max-width:600px){body>.e22-overlay{padding:8px!important}body>.e22-overlay>.e22-dialog{width:calc(100vw - 16px);max-height:92dvh}}
 </style></head>
 <body>
