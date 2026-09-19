@@ -1,0 +1,32 @@
+const { chromium } = require('playwright');
+const assert = require('assert');
+(async()=>{
+ const browser=await chromium.launch({headless:true});
+ const page=await browser.newPage({viewport:{width:1440,height:900}});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:4173/?qa=1',{waitUntil:'load'});
+ await page.waitForFunction(()=>window.ELDORIA_V022_QA);
+ const checkScene=async(state,label)=>{
+   await page.evaluate(p=>window.ELDORIA_V022_QA.setState(p),state);
+   await page.waitForSelector('.scene:visible');
+   const r=await page.evaluate(()=>{const scene=document.querySelector('body>.e22 .scene'),q=document.querySelector('.e22Quest'),nav=document.querySelector('.e22Nav');const b=scene.getBoundingClientRect();return {w:b.width,h:b.height,quest:q?.innerText||'',nav:!!nav,overflowX:document.documentElement.scrollWidth>innerWidth+2}});
+   assert(r.w>900&&r.h>500,label+' scene collapsed');assert(r.nav,label+' nav missing');assert(!r.overflowX,label+' horizontal page overflow');
+ };
+ await checkScene({introSeen:true,view:'kingdom',bastionLevel:1,bastion:1,sawmill:false},'Bastion I');
+ assert.equal(await page.locator('.e22Citadel:visible').count(),1,'Valoria citadel art missing');
+ assert.equal(await page.locator('.rift-distant:visible').count(),1,'Breach art missing');
+ await checkScene({introSeen:true,view:'kingdom',bastionLevel:10,bastion:10,sawmill:true,sawmillLvl:10,barracks:true,barracksLvl:10,granary:true,granaryLvl:10,graniteQuarry:true,quarryLvl:10,forge:true,forgeLvl:10,lyra:true,maelis:true,trial9Done:true,finalVictory:false},'Bastion X');
+ assert((await page.locator('.growth:visible').innerText()).length>0,'kingdom growth art missing');
+ await checkScene({introSeen:true,view:'world',bastionLevel:9,bastion:9,sawmill:true,lyra:true,maelis:true,marchConfigured:true,marchSlots:['aldric','lyra'],trial9Done:false},'World IX');
+ assert.equal(await page.locator('.worldHorizon:visible').count(),1,'world horizon art missing');
+ assert.equal(await page.locator('.worldRift:visible').count(),1,'world Breach art missing');
+ await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'heroes',introSeen:true,bastionLevel:9,bastion:9,lyra:true,maelis:true,forge:true}));
+ await page.waitForSelector('[data-testid="hero-hall"]:visible');
+ const hall=await page.locator('[data-testid="hero-hall"]').innerText();assert.match(hall,/Sir Aldric/i);assert.match(hall,/Lyra/i);assert.match(hall,/Maelis/i);
+ await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'kingdom',introSeen:true,bastionLevel:10,bastion:10,lyra:true,maelis:true,aetherHuntDone:true,codexUnlocked:true,trial9Done:true,finalVictory:true,breachIntel:1,veteranMarks:2}));
+ await page.click('[data-testid="menu-open"]');await page.click('[data-testid="chronicle-open"]');const lore=await page.locator('[data-testid="chronicle"]').innerText();
+ for(const term of ['LAS CENIZAS DE VALORIA','EL PULSO','ASCUA DE ÉTER','NARETH','LA MARCHA','MÁS ALLÁ DE LA BRECHA'])assert(lore.includes(term),'chronicle missing '+term);
+ const mobile=await browser.newPage({viewport:{width:390,height:844}});await mobile.goto('http://127.0.0.1:4173/?qa=1');await mobile.waitForFunction(()=>window.ELDORIA_V022_QA);await mobile.evaluate(()=>window.ELDORIA_V022_QA.setState({introSeen:true,view:'kingdom',bastionLevel:10,bastion:10,sawmill:true,sawmillLvl:10,barracks:true,barracksLvl:10,granary:true,granaryLvl:10,graniteQuarry:true,quarryLvl:10,forge:true,forgeLvl:10,lyra:true,maelis:true}));await mobile.waitForSelector('.e22Citadel:visible');const dims=await mobile.evaluate(()=>({sw:document.documentElement.scrollWidth,iw:innerWidth,nav:document.querySelector('.e22Nav')?.getBoundingClientRect()}));assert(dims.sw<=dims.iw+2,'mobile page overflows');assert(dims.nav&&dims.nav.bottom<=845,'mobile nav offscreen');
+ assert.equal(errors.length,0,'browser errors: '+errors.join(' | '));
+ console.log('ELDORIA_VISUAL_LORE_AUDIT_OK');await mobile.close();await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
