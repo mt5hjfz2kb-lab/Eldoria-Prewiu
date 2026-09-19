@@ -1,5 +1,15 @@
 # Eldoria — Decisions that must survive chat changes
 
+## MVP course correction — 2026-09-20
+- Stop expanding breadth after the current Arc I technical blockers are closed. Bastion X is a scaffold/ceiling, not a reason to add Bastion XI or more systems.
+- MVP success is not system count. It must prove a compact desire loop that makes the player want to continue.
+- Canonical validation loop: **Valoria → need/meaningful choice → world → gather/fight/discover → valuable reward → return → reward changes kingdom/hero → new ambition**.
+- Before MVP closure the active flow must demonstrate four protected promises: **La Brecha changes gameplay**, **economy creates a real trade-off**, **a relic/card has real utility and reaches Codex**, **the player sees evidence of a larger shared 4X world**.
+- Cards/Codex return as a small meaningful layer, not a large early tutorial. First relic should create a clear use-now vs conserve-for-later choice. Orin owns this explanation.
+- World 4X must be a truthful prototype: other realms/territorial conflict may be simulated and explicitly labelled; never imply real multiplayer.
+- At least one progression choice must be mutually exclusive or opportunity-cost based. Following a single highlighted next button to Bastion X is not sufficient proof of strategy.
+- Do not migrate to Unity until this compact MVP loop is playable, fresh-save certified and human-playtested.
+
 ## Product / loop
 - Mobile-first dark medieval fantasy city-builder/4X/RPG vertical slice.
 - Core loop: **Valoria → need/decision → world → gather/fight → reward → return → visible growth → new ambition**.
