@@ -2,7 +2,7 @@
 Updated: 2026-09-19
 
 - Active development branch: `development/v0.23-clean`.
-- HEAD / last valid commit at handoff creation: `f9d57b687b70b973eb381bebe563b15c5a98bec0` (main and development aligned).
+- HEAD before this organization-only documentation block: `f9d57b687b70b973eb381bebe563b15c5a98bec0`; after this block, use GitHub HEAD as authoritative and verify it at session start.
 - Runtime: **v0.23.24**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
 - Last verified point: targeted early + late Arc I tests pass; uninterrupted fresh-save Arc I currently reaches Bastion III/Granary gate. Latest run was recalibrated from 180s to 210s passive economy after arriving with 219/240 wood.
