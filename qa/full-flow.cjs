@@ -41,16 +41,16 @@ const assert = require('assert');
  }
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'heroes'})); await page.waitForSelector('[data-testid="hero-hall"]:visible');
  // Exercise Bastion IX composition trial with a deliberately strong QA company.
- await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:9,bastion:9,view:'world',introSeen:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,maelis:true,troops:100,aldricLvl:20,lyraLvl:20,marchSlots:['aldric','lyra'],marchConfigured:true,trial9Done:false,heroEquipment:{aldric:{},lyra:{},maelis:{}}}));
+ await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:9,bastion:9,view:'world',introSeen:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,maelis:true,troops:100,aldricLvl:40,lyraLvl:40,marchSlots:['aldric','lyra'],marchConfigured:true,trial9Done:false,heroEquipment:{aldric:{},lyra:{},maelis:{}}}));
  await page.waitForSelector('[data-node="trial9"]:visible');
  await page.locator('[data-node="trial9"]').evaluate(el=>el.click());
  await page.waitForSelector('[data-testid="cinematic"]:visible');
  await page.locator('[data-testid="cinematic"] button').evaluate(el=>el.click()); await page.waitForSelector('[data-testid="march-trial"]:visible');
  for(let i=0;i<40 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done));i++){
    await page.evaluate(()=>document.querySelector('body > .e22-overlay[data-testid="march-trial"] [data-testid="trial-guard"]')?.click());
-   await page.waitForTimeout(30);
+   await page.waitForTimeout(100);
    await page.evaluate(()=>document.querySelector('body > .e22-overlay[data-testid="march-trial"] [data-testid="trial-action"]:not([disabled])')?.click());
-   await page.waitForTimeout(90);
+   await page.waitForTimeout(140);
  }
  assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done),true,'Bastion IX trial could not be completed through player controls');
  // Close trial victory cinematic.
