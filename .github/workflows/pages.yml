@@ -53,6 +53,13 @@ jobs:
           grep -q 'buildingTimer' playtest/index.html
           grep -q 'data-equip' playtest/index.html
           grep -q 'passiveRates' playtest/index.html
+          grep -q 'function qaAssertions' playtest/index.html
+          grep -q 'function qaState' playtest/index.html
+          grep -q 'data-testid="building-sawmill"' playtest/index.html
+          grep -q 'data-testid="building-keep"' playtest/index.html
+          grep -q 'data-testid="world-action-' playtest/index.html
+          ! grep -q "id=\"v020-chapter1-intro\"" playtest/index.html
+          ! grep -q "eldoria-aldric-story-r7-v3';let seen" playtest/index.html
           grep -q 'v022-premium-visual-pass' playtest/index.html
           grep -q 'Bastión de Valoria' playtest/index.html
           grep -q 'function recoverAether()' playtest/index.html
