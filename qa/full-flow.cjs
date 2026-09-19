@@ -47,8 +47,8 @@ const assert = require('assert');
  await page.waitForSelector('[data-testid="cinematic"]:visible');
  await page.locator('[data-testid="cinematic"] button').evaluate(el=>el.click()); await page.waitForSelector('[data-testid="march-trial"]:visible');
  for(let i=0;i<40 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done));i++){
-   const g=page.locator('[data-testid="trial-guard"]:visible'); if(await g.count()) await g.click();
-   const a=page.locator('[data-testid="trial-action"]:visible:not([disabled])'); if(await a.count()) await a.click();
+   const g=page.locator('[data-testid="trial-guard"]:visible'); if(await g.count()) await g.evaluate(el=>el.click());
+   const a=page.locator('[data-testid="trial-action"]:visible:not([disabled])'); if(await a.count()) await a.evaluate(el=>el.click());
    await page.waitForTimeout(80);
  }
  assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done),true,'Bastion IX trial could not be completed through player controls');
@@ -61,9 +61,9 @@ const assert = require('assert');
  await page.waitForSelector('[data-testid="final-combat"]:visible');
  for(let i=0;i<120 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.finalVictory));i++){
    if(await page.locator('[data-testid="cinematic"]:visible').count()){await page.locator('[data-testid="cinematic"] button').evaluate(el=>el.click());await page.waitForTimeout(40);continue}
-   const sp=page.locator('[data-testid="final-specialist"]:visible:not([disabled])'); if(await sp.count()) await sp.click();
-   const gd=page.locator('[data-testid="final-guard"]:visible:not([disabled])'); if(await gd.count()) await gd.click();
-   const br=page.locator('[data-testid="final-break"]:visible:not([disabled])'); if(await br.count()) await br.click();
+   const sp=page.locator('[data-testid="final-specialist"]:visible:not([disabled])'); if(await sp.count()) await sp.evaluate(el=>el.click());
+   const gd=page.locator('[data-testid="final-guard"]:visible:not([disabled])'); if(await gd.count()) await gd.evaluate(el=>el.click());
+   const br=page.locator('[data-testid="final-break"]:visible:not([disabled])'); if(await br.count()) await br.evaluate(el=>el.click());
    await page.waitForTimeout(80);
  }
  assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.finalVictory),true,'Final encounter could not be completed through player controls');
