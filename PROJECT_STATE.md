@@ -2,7 +2,7 @@
 Updated: 2026-09-19
 
 ## Current version
-- Runtime/API: **v0.23.15**.
+- Runtime/API: **v0.23.16**.
 - Canonical source: `v0220/index.html`.
 - Development branch: `development/v0.23-clean`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
