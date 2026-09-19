@@ -14,12 +14,15 @@ Updated: 2026-09-19
 v0.23 moved routine building/world interaction to object-local contextual controls. Node/building actions are intended to appear below the tapped object and timers above it. The first Fissure interaction is being changed so attacking the Fissure when Lyra is absent triggers the Lyra recruitment event; after recruitment the Fissure can be attacked/defeated normally.
 
 ## Currently verified
+Workflow run `35458031436` completed successfully after adding `qa/e2e-late-progression.js`: real mobile early progression through Fissure→Lyra and the late Arc I chain Bastion VI→Forge→Devorador→Ascua→forja de equipo→Bastion VIII→Nareth/Maelis→Bastion IX→March Trial→Bastion X→final assault all pass, followed by successful Pages deployment and published-build Chromium verification.
+
+This is strong segmented end-to-end coverage, but it still uses QA state setup between major phases; a single uninterrupted fresh-save run from the opening through Arc I remains the next verification target.
+
 The standard CI has previously passed boot, sawmill contextual/start/complete, core state fixtures, building action availability, world-node action availability, recovery checks, deploy and published-build Chromium checks. These checks do **not** constitute a complete fresh-save Chapter I playthrough.
 
 v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570522` completed successfully: the real mobile Fissure→Lyra regression passed locally, all existing regressions passed, Pages deployed, and the selected Chromium checks including the Fissure→Lyra flow passed against the published URL. The **full uninterrupted fresh-save Arc I traversal is still not yet implemented**, so later progression remains to be certified.
 
 ## Open bugs / risks
-- Finish and obtain a green real mobile Fissure→Lyra regression, then verify on the deployed URL.
 - Build a true uninterrupted fresh-save progression test. Current tests use QA fixtures for substantial portions.
 - Verify camp and boss actions through real pointer/touch paths, not merely action-panel presence.
 - Timed actions store task metadata but completion callbacks are in-memory; reload during a task can strand progression. Replace with serializable/resumable task resolution.
@@ -34,8 +37,7 @@ v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570
 - Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
 ## Next work
-1. Complete the Fissure→Lyra fix and make its real mobile regression green locally and on Pages.
-2. Extend QA into a real uninterrupted progression traversal and fix every blocker found.
+1. Extend the now-green early + late mobile coverage into one real uninterrupted fresh-save progression traversal and fix every blocker found.
 3. Then address task persistence, Bastion gates/modal removal, true building levels, equipment swap, Hero Hall/test IDs, end-of-test flow and deeper combat.
 4. Keep visual baseline protected throughout.
 
