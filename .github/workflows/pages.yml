@@ -2,7 +2,7 @@ name: Publish Eldoria Preview
 
 on:
   push:
-    branches: [main]
+    branches: [main, development/recovered-visual-base]
   workflow_dispatch:
 
 permissions:
@@ -133,6 +133,16 @@ jobs:
           grep -q "progressiveUI:true" playtest/index.html
           grep -q "visualTier:'bastion-driven'" playtest/index.html
           grep -q "s.lyra?'<button data-view=\"heroes\"" playtest/index.html
+          # Recovered late-game systems must exist without replacing the validated visual layer
+          grep -q "function recoverAether()" playtest/index.html
+          grep -q "function rescueNareth()" playtest/index.html
+          grep -q "function marchTrial()" playtest/index.html
+          grep -q "function finalAssault()" playtest/index.html
+          grep -q "function openHeroHall()" playtest/index.html
+          grep -q "visualRecoveryBase:'f139968c'" playtest/index.html
+          grep -q "Devorador de Éter" playtest/index.html
+          grep -q "Ruinas de Nareth" playtest/index.html
+          grep -q "Corazón de la Brecha" playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
