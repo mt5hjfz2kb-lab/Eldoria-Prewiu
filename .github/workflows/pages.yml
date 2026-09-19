@@ -23,8 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Use canonical v0.22.0 desire-loop base
         run: |
