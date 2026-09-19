@@ -35,9 +35,9 @@ const assert = require('assert');
  ];
  for(const [idx,st] of stages.entries()){
    await page.evaluate(p=>window.ELDORIA_V022_QA.setState(p),st.p);
-   await page.waitForSelector('.scene:visible');
-   const txt=await page.locator('.e22Quest').innerText(); assert.match(txt,st.q,'stage '+(idx+1)+': '+txt);
-   const box=await page.locator('.scene').boundingBox(); assert(box&&box.width>600&&box.height>400,'scene collapsed at stage '+(idx+1));
+   await page.waitForSelector('#app .scene:visible');
+   const txt=await page.locator('#app .e22Quest').innerText(); assert.match(txt,st.q,'stage '+(idx+1)+': '+txt);
+   const box=await page.locator('#app .scene').boundingBox(); assert(box&&box.width>600&&box.height>400,'scene collapsed at stage '+(idx+1));
  }
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'heroes'})); await page.waitForSelector('[data-testid="hero-hall"]:visible');
  // Exercise Bastion IX composition trial with a deliberately strong QA company.
