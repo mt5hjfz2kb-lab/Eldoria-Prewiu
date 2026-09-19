@@ -6,8 +6,8 @@ Updated: 2026-09-19
 - Runtime: **v0.23.24**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
 - Last verified point: targeted early + late Arc I tests pass; uninterrupted fresh-save Arc I currently reaches Bastion III/Granary gate. Latest run was recalibrated from 180s to 210s passive economy after arriving with 219/240 wood.
-- Work in progress: certify one uninterrupted fresh-save mobile Arc I traversal after independent production-building levels/economy changes.
-- Next task: inspect the latest Actions run for `f9d57b...`; if full Arc I fails, fix the exact blocker, rerun; if green, verify deploy/published Chromium before declaring test-ready.
+- Work in progress: MVP course correction. Preserve current Arc I, but stop scope expansion and prove the original Eldoria desire loop: meaningful kingdom choice → world/Breach → reward → return/use reward → new ambition, with a small Codex/relic decision and truthful 4X horizon.
+- Next task: fix the final-assault QA regression introduced by Aldric's pre-assault dialogue; certify fresh-save Arc I; then reconnect the smallest Codex/relic choice and 4X proof to the current flow before any new breadth.
 - Open bugs: full fresh-save Arc I not yet green after latest calibration; Bastion VI–X and Stoneworks still have routine modal UX debt; Forge/Hero Hall stable IDs/UX incomplete; survey/export/reset incomplete; special combats remain placeholders; legacy runtime remains embedded.
 
 ## Critical rules
@@ -20,7 +20,7 @@ Updated: 2026-09-19
 7. Fixture QA is not proof of fresh-save reachability.
 8. Do not claim gameplay fixed/published until the relevant real QA/deploy verification passes.
 9. Update this handoff after every important work block; update PROJECT_STATE/CHANGELOG for milestones.
-10. Read extended docs only when the current task requires them.
+10. MVP success = desire to continue, not system count. Do not expand beyond current Arc I until economy choice + Codex relic + truthful 4X horizon + return/reward loop are proven.
 
 ## Working method
 - Primary iteration: local canonical build + Playwright; batch blockers before pushing.
