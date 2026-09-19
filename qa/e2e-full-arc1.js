@@ -27,7 +27,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await node('boss');await p.waitForTimeout(2800);await closeAll();if(!(await state()).boss)throw Error('Fissure not defeated');
 
   await view('kingdom');await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===3,18000);await closeAll();
-  await building('granary').catch(async e=>{console.log('GRANARY_DEBUG',JSON.stringify(await state()),await p.locator('#eldoria-core-loop').evaluate(el=>({html:el.innerHTML.slice(-12000),selected:[...el.querySelectorAll('[data-testid]')].map(x=>x.getAttribute('data-testid'))})));throw e});await waitState(()=>window.ELDORIA_V023.state().granary===true,12000);
+  virtualWait+=await economy(180);await building('granary');await waitState(()=>window.ELDORIA_V023.state().granary===true,12000);
   await view('world');
   for(let i=0;i<4;i++){await node('meat');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-meat'),10000)}
   for(const id of ['wolf','boar']){await node(id);await p.waitForTimeout(2800);await closeAll()}
