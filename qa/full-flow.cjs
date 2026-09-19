@@ -40,7 +40,42 @@ const assert = require('assert');
    const box=await page.locator('.scene').boundingBox(); assert(box&&box.width>600&&box.height>400,'scene collapsed at stage '+(idx+1));
  }
  await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'heroes'})); await page.waitForSelector('[data-testid="hero-hall"]:visible');
- await page.evaluate(()=>window.ELDORIA_V022_QA.setState({view:'world'})); await page.waitForSelector('[data-node="final"]:visible');
+ // Exercise Bastion IX composition trial with a deliberately strong QA company.
+ await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:9,bastion:9,view:'world',introSeen:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,maelis:true,troops:100,aldricLvl:20,lyraLvl:20,marchSlots:['aldric','lyra'],marchConfigured:true,trial9Done:false,heroEquipment:{aldric:{},lyra:{},maelis:{}}}));
+ await page.waitForSelector('[data-node="trial9"]:visible');
+ await page.locator('[data-node="trial9"]').evaluate(el=>el.click());
+ await page.waitForSelector('.aldric-cinematic:visible');
+ await page.locator('.aldric-cinematic').click({position:{x:5,y:5}}); await page.waitForTimeout(50);
+ await page.locator('.aldric-cinematic button').click(); await page.waitForSelector('[data-testid="march-trial"]:visible');
+ for(let i=0;i<40 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done));i++){
+   const g=page.locator('[data-testid="trial-guard"]:visible'); if(await g.count()) await g.click();
+   const a=page.locator('[data-testid="trial-action"]:visible:not([disabled])'); if(await a.count()) await a.click();
+   await page.waitForTimeout(80);
+ }
+ assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.trial9Done),true,'Bastion IX trial could not be completed through player controls');
+ // Close trial victory cinematic.
+ if(await page.locator('.aldric-cinematic:visible').count()){await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(30);await page.locator('.aldric-cinematic button').click();}
+ // Exercise the real two-phase final encounter through visible controls.
+ await page.evaluate(()=>window.ELDORIA_V022_QA.setState({bastionLevel:10,bastion:10,view:'world',troops:120,aldricLvl:24,lyraLvl:24,trial9Done:true,finalVictory:false,marchSlots:['aldric','lyra'],marchConfigured:true}));
+ await page.waitForSelector('[data-node="final"]:visible'); await page.locator('[data-node="final"]').evaluate(el=>el.click());
+ await page.waitForSelector('.aldric-cinematic:visible'); await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(30);await page.locator('.aldric-cinematic button').click();
+ await page.waitForSelector('[data-testid="final-combat"]:visible');
+ for(let i=0;i<120 && !(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.finalVictory));i++){
+   if(await page.locator('.aldric-cinematic:visible').count()){await page.locator('.aldric-cinematic').click({position:{x:5,y:5}});await page.waitForTimeout(20);await page.locator('.aldric-cinematic button').click();await page.waitForTimeout(40);continue}
+   const sp=page.locator('[data-testid="final-specialist"]:visible:not([disabled])'); if(await sp.count()) await sp.click();
+   const gd=page.locator('[data-testid="final-guard"]:visible:not([disabled])'); if(await gd.count()) await gd.click();
+   const br=page.locator('[data-testid="final-break"]:visible:not([disabled])'); if(await br.count()) await br.click();
+   await page.waitForTimeout(80);
+ }
+ assert.equal(await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.finalVictory),true,'Final encounter could not be completed through player controls');
+ // Mobile sanity: HUD/nav/scene remain usable and contextual actions stay on-screen.
+ const mobile=await browser.newPage({viewport:{width:390,height:844}});
+ const mobileErrors=[];mobile.on('pageerror',e=>mobileErrors.push(e.message));
+ await mobile.goto('http://127.0.0.1:4173/?qa=1',{waitUntil:'load'});await mobile.waitForFunction(()=>window.ELDORIA_V022_QA);
+ await mobile.evaluate(()=>window.ELDORIA_V022_QA.setState({introSeen:true,view:'kingdom',sawmill:false,bastionLevel:1,bastion:1,wood:600,stone:300}));
+ await mobile.waitForSelector('[data-poi="sawmill"]:visible');await mobile.locator('[data-poi="sawmill"]').click();await mobile.waitForSelector('[data-context-action]:visible');
+ const mb=await mobile.locator('[data-context-action]').boundingBox();assert(mb&&mb.x>=0&&mb.x+mb.width<=390&&mb.y>=0&&mb.y<844,'mobile contextual action leaves viewport');
+ assert.equal(await mobile.locator('.e22Nav:visible').count(),1);assert.equal(mobileErrors.length,0,'mobile browser errors: '+mobileErrors.join(' | '));await mobile.close();
  assert.equal(errors.length,0,'browser errors: '+errors.join(' | '));
  console.log('ELDORIA_FULL_FLOW_SMOKE_OK');
  await browser.close();
