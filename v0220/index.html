@@ -751,6 +751,12 @@ body.v022-core-active>#app>.e22{position:relative;width:100%;height:100%;min-hei
 #app>.e22>.e22Nav{z-index:500!important;isolation:isolate;pointer-events:auto}
 #app>.e22>.scene{z-index:1}
 #app>.e22>.e22Quest{z-index:80!important}
+</style><style id="v022-overlay-layering">
+body>.e22-overlay,body>.aldric-cinematic{position:fixed!important;inset:0!important;z-index:2000!important;pointer-events:auto!important}
+body>.e22-overlay{display:grid!important;place-items:center!important;background:#020407c9!important;padding:18px!important}
+body>.e22-overlay>.e22-dialog{position:relative;z-index:2001;width:min(680px,calc(100vw - 28px));max-height:90dvh;overflow:auto}
+body>.aldric-cinematic{z-index:2100!important}
+@media(max-width:600px){body>.e22-overlay{padding:8px!important}body>.e22-overlay>.e22-dialog{width:calc(100vw - 16px);max-height:92dvh}}
 </style></head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
