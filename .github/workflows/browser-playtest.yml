@@ -1,0 +1,25 @@
+name: Eldoria Browser Playtest
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  playtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install browser test runtime
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Serve v0.22
+        run: |
+          python3 -m http.server 4173 --directory v0220 >/tmp/eldoria-http.log 2>&1 &
+          sleep 2
+      - name: Full gameplay smoke
+        run: node qa/full-flow.cjs
