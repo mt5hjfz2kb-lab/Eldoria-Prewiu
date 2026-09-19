@@ -34,9 +34,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 
   await view('kingdom');virtualWait+=await economy(800);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===4,20000).catch(async()=>{throw new Error('Bastion IV timeout: '+JSON.stringify(await state()))});await closeAll();
   virtualWait+=await economy(1100);await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===5,22000).catch(async()=>{throw new Error('Bastion V timeout: '+JSON.stringify(await state()))});await closeAll();
-  await building('stoneworks');let confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().graniteQuarry===true,15000);await closeAll();
+  await building('stoneworks');let confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().graniteQuarry===true,15000).catch(async()=>{throw new Error('Stoneworks timeout: '+JSON.stringify(await state()))});await closeAll();
 
-  virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000);await closeAll();
+  virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===6,15000).catch(async()=>{throw new Error('Bastion VI timeout: '+JSON.stringify(await state()))});await closeAll();
   await building('forge');await waitState(()=>window.ELDORIA_V023.state().forge===true,13000);await closeAll();
 
   virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===7,15000);await closeAll();
