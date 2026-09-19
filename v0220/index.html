@@ -746,6 +746,11 @@ body.v022-core-active.e22{width:100vw;height:100dvh;min-height:100vh;max-width:n
 </style><style id="v022-runtime-root-cleanup">
 body.v022-core-active>#app{position:fixed;inset:0;z-index:10;width:100vw;height:100dvh;overflow:hidden;background:#03070a}
 body.v022-core-active>#app>.e22{position:relative;width:100%;height:100%;min-height:100%;max-width:none;margin:0}
+</style><style id="v022-layering-cleanup">
+#app>.e22>.e22Hud{z-index:500!important;isolation:isolate;pointer-events:auto}
+#app>.e22>.e22Nav{z-index:500!important;isolation:isolate;pointer-events:auto}
+#app>.e22>.scene{z-index:1}
+#app>.e22>.e22Quest{z-index:80!important}
 </style></head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
