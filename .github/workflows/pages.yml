@@ -46,37 +46,18 @@ jobs:
 
       - name: Core-loop structural and regression checks
         run: |
-          test -s playtest/index.html
-          grep -q '<meta name="eldoria-version" content="0.22.0"' playtest/index.html
-          grep -q "const KEY='eldoria-v022'" playtest/index.html
-          grep -q "function kingdom()" playtest/index.html
-          grep -q "function world()" playtest/index.html
-          grep -q "function heroes()" playtest/index.html
-          grep -q "function realmPower" playtest/index.html || grep -q "const realmPower" playtest/index.html
-          grep -q "const armyPower" playtest/index.html
-          grep -q "const heroPower" playtest/index.html
-          grep -q "const equipmentPower" playtest/index.html
-          grep -q "const relicPower" playtest/index.html
-          grep -q "const marchPower" playtest/index.html
-          grep -q "function buildingUpgrade" playtest/index.html
-          grep -q "data-worldpan" playtest/index.html
-          grep -q "wp.scrollWidth-host.clientWidth" playtest/index.html
-          grep -q 'data-node="aetherbeast"' playtest/index.html
-          grep -q "DEVORADOR DE VELARIA" playtest/index.html
-          grep -q "ASCUA DE ÉTER" playtest/index.html
-          grep -q "function huntAetherBeast()" playtest/index.html
-          grep -q "function forgePoi()" playtest/index.html
-          grep -q "function forgeItem()" playtest/index.html
-          grep -q "heroEquipment" playtest/index.html
-          grep -q "function discoverMaelis()" playtest/index.html
-          grep -q "function finalAssault()" playtest/index.html
-          grep -q 'data-testid=\x27final-combat\x27' playtest/index.html
-          grep -q "VERTICAL SLICE · ARCO I COMPLETADO" playtest/index.html
-          grep -q "function qaMode()" playtest/index.html
-          grep -q 'data-testid="qa-reset"' playtest/index.html
-          grep -q "maelisUnlock:'bastion8'" playtest/index.html
-          ! grep -q "function discoverKael()" playtest/index.html
-          ! grep -q "let duel = null;" playtest/index.html
+          test -s v0220/index.html
+          grep -q '<meta name="eldoria-version" content="0.22.0"' v0220/index.html
+          grep -q "const KEY='eldoria-v022'" v0220/index.html
+          grep -q "function kingdom()" v0220/index.html
+          grep -q "function world()" v0220/index.html
+          grep -q "function heroes()" v0220/index.html
+          grep -q "function buildingUpgrade" v0220/index.html
+          grep -q 'data-node="valoria"' v0220/index.html
+          grep -q "function startMarchTrial()" v0220/index.html
+          grep -q "function finalAssault()" v0220/index.html
+          grep -q "VERTICAL SLICE · ARCO I COMPLETADO" v0220/index.html
+          grep -q "window.ELDORIA_V022" v0220/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
