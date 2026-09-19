@@ -27,8 +27,10 @@ jobs:
       - name: Use canonical v0.23 clean vertical-slice base
         run: |
           test -s v0220/index.html
+          test -s v0220/runtime-hotfix.js
           mkdir -p playtest
           cp v0220/index.html playtest/index.html
+          sed -i 's#</body>#<script src="../v0220/runtime-hotfix.js"></script></body>#' playtest/index.html
 
       - name: JavaScript syntax check
         run: |
@@ -41,6 +43,7 @@ jobs:
           print(f'Checking {len(scripts)} inline scripts')
           PY
           for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
+          node --check v0220/runtime-hotfix.js
 
       - name: Install Playwright QA browser
         run: |
@@ -111,6 +114,7 @@ jobs:
           grep -q 'function finalAssault()' playtest/index.html
           grep -q 'function openHeroHall()' playtest/index.html
           grep -q "visualRecoveryBase:'f139968c'" playtest/index.html
+          grep -q 'runtime-hotfix.js' playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
