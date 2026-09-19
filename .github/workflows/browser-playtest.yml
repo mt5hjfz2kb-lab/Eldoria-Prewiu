@@ -26,3 +26,5 @@ jobs:
           sleep 2
       - name: Full gameplay smoke
         run: node qa/full-flow.cjs
+      - name: Visual and lore audit
+        run: node qa/visual-lore.cjs
