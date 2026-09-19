@@ -28,3 +28,10 @@ jobs:
         run: node qa/full-flow.cjs
       - name: Visual and lore audit
         run: node qa/visual-lore.cjs
+      - name: Capture mobile review screenshot
+        run: node qa/mobile-shot.cjs
+      - name: Upload mobile review screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mobile-review
+          path: qa/mobile-review.png
