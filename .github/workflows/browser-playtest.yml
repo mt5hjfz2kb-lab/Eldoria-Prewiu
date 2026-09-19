@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eldoria-mobile-review
-          path: qa/mobile-review.png
+          path: qa/mobile-review*.png
