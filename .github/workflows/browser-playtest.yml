@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+concurrency:
+  group: eldoria-browser-playtest
+  cancel-in-progress: true
 jobs:
   playtest:
     runs-on: ubuntu-latest
