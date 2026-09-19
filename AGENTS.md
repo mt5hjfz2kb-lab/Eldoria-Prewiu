@@ -42,3 +42,10 @@ Read the current canonical source and the latest workflow result. Check the curr
 
 ## Definition of done for a gameplay change
 The implementation exists in `v0220/index.html`; appropriate stable test IDs exist; targeted Playwright test performs the real user interaction; regression suite passes; main deploy succeeds; published URL is checked with Chromium when the change affects playability; `PROJECT_STATE.md` + `CHANGELOG.md` reflect the result.
+
+## Fast local QA protocol
+- Do not use GitHub Actions as the primary debugger. During active development, run the canonical build and Playwright locally and iterate there until the relevant traversal is green.
+- Failure diagnostics must capture at minimum: traversal step, serialized game state/resources, and a screenshot when possible.
+- Batch-discover and fix multiple consecutive blockers locally before pushing.
+- Keep three distinct passes: targeted/regression QA; uninterrupted fresh-save progression; player-like experiential playtest using normal visible interactions and no injected progression state.
+- Use GitHub Actions only as final clean-environment certification/deployment after local QA is green, except when the current environment cannot execute the local browser suite.
