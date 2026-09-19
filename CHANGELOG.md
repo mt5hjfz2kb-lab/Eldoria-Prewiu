@@ -2,6 +2,9 @@
 
 Only milestones and important regressions/fixes are recorded here. Historical 0.19–0.21 material remains in the repository.
 
+## v0.23.16 — 2026-09-19
+- QA mode now suppresses narrative overlays deterministically so mobile interaction tests cannot be intercepted by the legacy Aldric cinematic.
+
 ## v0.23.15 — 2026-09-19
 - Hardened Fissure→Lyra discovery against duplicate cinema overlays.
 - Dedicated regression now taps both Fissure action and Lyra recruitment through Playwright mobile input rather than DOM-click fallback.
