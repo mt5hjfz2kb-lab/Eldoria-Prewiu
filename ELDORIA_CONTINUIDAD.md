@@ -1,5 +1,5 @@
 # Eldoria — Continuity and system specification
-Updated: 2026-09-19. Read after `AGENTS.md` and `PROJECT_STATE.md`.
+Updated: 2026-09-19. Read on demand when the current task needs product/system continuity beyond the short operational state.
 
 ## Purpose
 This file captures the project knowledge needed to continue without chat history. Code remains authoritative for exact current behavior; this document records intended behavior, implemented scope and gaps.
