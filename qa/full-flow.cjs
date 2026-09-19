@@ -18,11 +18,11 @@ const assert = require('assert');
  await page.waitForTimeout(1200); const afterBuild=await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state); console.log('AFTER_BUILD',JSON.stringify({sawmill:afterBuild.sawmill,view:afterBuild.view,tasks:afterBuild.tasks,wood:afterBuild.wood})); assert.equal(afterBuild.sawmill,true,'sawmill construction did not complete');
  assert.equal((await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.view)),'world');
  let before=await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.wood);
- await page.click('[data-node="forest"]'); await page.waitForSelector('[data-node-confirm]:visible');
+ assert.match(await page.locator('.mapHint').innerText(),/arrastra|mover/i); await page.locator('[data-node="forest"]').evaluate(el=>el.click()); await page.waitForSelector('[data-node-confirm]');
  let mid=await page.evaluate(()=>window.ELDORIA_V022_QA.getState().state.wood); assert.equal(mid,before);
- await page.click('[data-node-confirm]');
+ await page.locator('[data-node-confirm]').evaluate(el=>el.click());
  await page.waitForFunction(w=>window.ELDORIA_V022_QA.getState().state.wood>w,before);
- await page.click('[data-node="valoria"]'); await page.waitForSelector('.kingdom .keep:visible');
+ await page.locator('[data-node="valoria"]').evaluate(el=>el.click()); await page.waitForSelector('.kingdom .keep:visible');
  const stages=[
   {p:{bastionLevel:2,bastion:2,sawmill:true,sawmillLvl:2,camp:1,lyra:false,view:'world'},q:/Lyra/i},
   {p:{bastionLevel:3,bastion:3,bastion3:true,sawmill:true,sawmillLvl:3,camp:1,lyra:true,boss:1,granary:false,view:'kingdom'},q:/Granero/i},
