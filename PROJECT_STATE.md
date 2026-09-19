@@ -1,5 +1,5 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-19
+Updated: 2026-09-19\nRelease candidate: v0.23.17 fresh-save Arc I gate
 
 ## Current version
 - Runtime/API: **v0.23.17**.
