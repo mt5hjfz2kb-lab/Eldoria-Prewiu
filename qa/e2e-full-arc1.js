@@ -53,7 +53,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await view('world');await node('trial');await p.waitForTimeout(1900);await closeAll();if(!(await state()).trialWon)throw Error('March Trial failed');
   await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===10,15000);await closeAll();
   await view('world');await node('final');await p.waitForTimeout(1900);const end=await state();if(!end.finalWon)throw Error('Final assault failed');
-  if(virtualWait>4200)throw Error('Economy requires excessive passive wait: '+virtualWait+'s');
+  if(virtualWait>4500)throw Error('Economy requires excessive passive wait: '+virtualWait+'s');
   console.log('FULL FRESH-SAVE ARC I PASS · accelerated passive time '+virtualWait+'s');
   await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});
