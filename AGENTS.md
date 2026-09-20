@@ -44,6 +44,8 @@ Read the current canonical source and the latest workflow result. Check the curr
 The implementation exists in `v0220/index.html`; appropriate stable test IDs exist; targeted Playwright test performs the real user interaction; regression suite passes; main deploy succeeds; published URL is checked with Chromium when the change affects playability; `PROJECT_STATE.md` + `CHANGELOG.md` reflect the result.
 
 ## Fast local QA protocol
+- **Mandatory command before release/certification:** `npm run validate:local`. Do not return a gameplay block to the owner merely because code was changed or a remote run was started. Fix and rerun locally until this gate is green, unless the current environment genuinely cannot run the browser suite.
+- Do not make a development commit for every discovered defect. Batch related fixes in the working copy; commit/push the coherent green block. Every player-reported regression becomes a permanent automated assertion.
 - Do not use GitHub Actions as the primary debugger. During active development, run the canonical build and Playwright locally and iterate there until the relevant traversal is green.
 - Failure diagnostics must capture at minimum: traversal step, serialized game state/resources, and a screenshot when possible.
 - Batch-discover and fix multiple consecutive blockers locally before pushing.
