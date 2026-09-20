@@ -5,15 +5,15 @@ Updated: 2026-09-20
 - Current milestone: v0.24.0; always verify actual GitHub HEAD at session start.
 - Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
-- Last verified point: v0.24.0 is under final fresh-save certification; earlier queued runs are intentionally cancelled by workflow concurrency.
-- Work in progress: certify the cleaned v0.24.0 playtest from fresh save, deploy it, and verify the published build before handing it to Cristian.
-- Next task: resolve any failure from the single latest v0.24.0 certification run; do not launch iterative CI commits when local/inspection fixes suffice.
-- Open bugs: full fresh-save Arc I not yet green after latest calibration; Bastion VI–X and Stoneworks still have routine modal UX debt; Forge/Hero Hall stable IDs/UX incomplete; survey/export/reset incomplete; special combats remain placeholders; legacy runtime remains embedded.
+- Last verified point: previous v0.24 baseline `bc868c73` completed fresh-save certification. Current cleanup integrates core dialogue into canonical runtime, fixes live economy/mobile actions/background gathering, and is awaiting the new deterministic certification gate.
+- Work in progress: finish the clean v0.24 baseline, deploy it, and verify the *published* fresh-save Arc I before handing it to Cristian.
+- Next task: resolve any failure from the latest certification run without stacking hotfixes; core behavior must remain canonical.
+- Open debt after stabilization: Bastion VI–X and Stoneworks routine modal UX; Forge/Hero Hall stable IDs/UX; survey/export/reset; placeholder special combats; deliberate subsystem extraction from the large canonical HTML.
 
 ## Critical rules
 1. Repository is the only source of truth; never reconstruct from chat or an old build.
 2. Never modify `stable/visual-good-f139968c` / `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
-3. Make surgical changes to `v0220/index.html`; preserve the approved visual baseline.
+3. Make surgical changes to `v0220/index.html`; preserve the approved visual baseline. `runtime-hotfix.js` is migration-only: never add core gameplay/UI/dialogue behavior there.
 4. Routine build/upgrade/gather/attack is object-local: action below, timer above; avoid confirmation modals.
 5. Cards/relics → Codex; equipment/materials → Chest/inventory.
 6. Use stable test IDs and real tap/click paths for important interactions.
@@ -26,7 +26,7 @@ Updated: 2026-09-20
 - Primary iteration: local canonical build + Playwright; batch blockers before pushing.
 - Failure output: step + state/resources + screenshot where possible.
 - Separate regression, uninterrupted fresh-save, and player-like experiential passes.
-- GitHub Actions is final certification/deployment, not the normal debugger.
+- GitHub Actions is final certification/deployment, not the normal debugger. Certification runs do not cancel one another; published verification includes the uninterrupted fresh-save Arc I.
 
 ## Minimum verification
 - Syntax/workflow: push to `main` and inspect `.github/workflows/pages.yml`.
