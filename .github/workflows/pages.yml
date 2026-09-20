@@ -164,9 +164,10 @@ jobs:
       - name: Verify published build with Chromium
         run: |
           sleep 30
-          URL='${{ steps.deployment.outputs.page_url }}playtest/?qa=1&published=${{ github.sha }}'
+          URL='${{ steps.deployment.outputs.page_url }}playtest/?qa=1&published=${{ github.sha }}&cb=${{ github.run_id }}'
           for attempt in 1 2 3 4; do
             echo "Published verification attempt $attempt"
+            curl -fsSL -H "Cache-Control: no-cache" "$URL" | grep -q "eldoria-version" || { sleep 10; continue; }
             if ELDORIA_URL="$URL" E2E_PHASE=complete node qa/e2e-smoke.js && \
                ELDORIA_URL="$URL" node qa/e2e-all-nodes.js && \
                ELDORIA_URL="$URL" node qa/e2e-real-progression.js && \
