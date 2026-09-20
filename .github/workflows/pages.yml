@@ -68,29 +68,59 @@ jobs:
           sleep 2
           curl --fail http://127.0.0.1:4173/playtest/ >/dev/null
       - name: E2E boot canonical game
+        id: qa_boot
+        continue-on-error: true
         run: E2E_PHASE=boot node qa/e2e-smoke.js
       - name: E2E sawmill contextual action
+        id: qa_context
+        continue-on-error: true
         run: E2E_PHASE=context node qa/e2e-smoke.js
       - name: E2E sawmill construction starts
+        id: qa_start
+        continue-on-error: true
         run: E2E_PHASE=start node qa/e2e-smoke.js
       - name: E2E sawmill construction completes
+        id: qa_complete
+        continue-on-error: true
         run: E2E_PHASE=complete node qa/e2e-smoke.js
 
       - name: E2E behavior regression
+        id: qa_behavior
+        continue-on-error: true
         run: node qa/e2e-behavior-regression.js
       - name: E2E core progression regression
+        id: qa_core
+        continue-on-error: true
         run: node qa/e2e-core-flow.js
       - name: E2E every building interaction
+        id: qa_buildings
+        continue-on-error: true
         run: node qa/e2e-all-buildings.js
       - name: E2E every world-node interaction
+        id: qa_nodes
+        continue-on-error: true
         run: node qa/e2e-all-nodes.js
       - name: E2E real early progression
+        id: qa_early
+        continue-on-error: true
         run: node qa/e2e-real-progression.js
       - name: E2E real late Arc I progression
+        id: qa_late
+        continue-on-error: true
         run: node qa/e2e-late-progression.js
       - name: E2E mandatory fresh-save Arc I
         id: arc1_sweep
+        continue-on-error: true
         run: node qa/e2e-full-arc1.js
+      - name: Certification gate — fail after complete diagnostic sweep
+        run: |
+          node - <<'NODE'
+          const r=${{ toJSON(steps) }};
+          const ids=['qa_boot','qa_context','qa_start','qa_complete','qa_behavior','qa_core','qa_buildings','qa_nodes','qa_early','qa_late','arc1_sweep'];
+          const failed=ids.filter(id=>r[id]&&r[id].outcome!=='success');
+          if(failed.length){console.error('QA failures collected:',failed.join(', '));process.exit(1)}
+          console.log('COMPLETE QA SWEEP PASS');
+          NODE
       - name: Upload player-experience report
         if: always()
         uses: actions/upload-artifact@v4
