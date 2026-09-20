@@ -117,7 +117,7 @@ jobs:
           node - <<'NODE'
           const r=${{ toJSON(steps) }};
           const ids=['qa_boot','qa_context','qa_start','qa_complete','qa_behavior','qa_core','qa_buildings','qa_nodes','qa_early','qa_late','arc1_sweep'];
-          const failed=ids.filter(id=>r[id]&&r[id].outcome!=='success');
+          const failed=ids.filter(id=>r[id]&&r[id].conclusion!=='success');
           if(failed.length){console.error('QA failures collected:',failed.join(', '));process.exit(1)}
           console.log('COMPLETE QA SWEEP PASS');
           NODE
