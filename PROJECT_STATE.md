@@ -66,3 +66,12 @@ Existing v0.21 Codex/Duel/world-4X code is a system bank. Reconnect only the sma
 
 ## Maintenance rule
 This file is the short operational truth. Update it whenever version, verified traversal, open blocker, next work, canonical path or stable recovery commit changes.
+
+
+## Consolidación arquitectónica v0.24 — completada
+- Baseline de recuperación: `baseline/v0.24-certified`.
+- `v0220/index.html` conserva la composición/render del vertical slice, pero las primitivas estables están separadas en `v0220/js/state-economy.js`, `tasks-offline.js`, `dialogue-tutorial.js`, `ui.js` y `gameplay.js`.
+- Eliminado del HTML canónico el runtime legacy deshabilitado (~164 KB de código inalcanzable). La recuperación histórica queda en la rama baseline.
+- `runtime-hotfix.js` queda exclusivamente para compatibilidad/migraciones, no gameplay/UI/diálogo.
+- `qa/e2e-behavior-regression.js` valida límites de módulos, economía/offline, tareas timestamp y gates de Bastión además de la regresión de recorrido existente.
+- El workflow de release es manual (`workflow_dispatch`) para certificar bloques coherentes, no cada commit.
