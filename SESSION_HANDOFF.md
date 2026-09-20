@@ -1,9 +1,9 @@
 # Eldoria — SESSION HANDOFF
-Updated: 2026-09-19
+Updated: 2026-09-20
 
-- Active development branch: `development/v0.23-clean`.
+- Active development branch: `main` (v0.24.0 playtest cleanup/certification).
 - HEAD before this organization-only documentation block: `f9d57b687b70b973eb381bebe563b15c5a98bec0`; after this block, use GitHub HEAD as authoritative and verify it at session start.
-- Runtime: **v0.23.24**.
+- Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
 - Last verified point: targeted early + late Arc I tests pass; uninterrupted fresh-save Arc I currently reaches Bastion III/Granary gate. Latest run was recalibrated from 180s to 210s passive economy after arriving with 219/240 wood.
 - Work in progress: MVP course correction. Preserve current Arc I, but stop scope expansion and prove the original Eldoria desire loop: meaningful kingdom choice → world/Breach → reward → return/use reward → new ambition, with a small Codex/relic decision and truthful 4X horizon.
