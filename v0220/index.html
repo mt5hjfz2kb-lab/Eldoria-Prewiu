@@ -2051,6 +2051,19 @@ function qaAssertions(){let issues=[];const req=(ok,msg)=>{if(!ok)issues.push(ms
 let liveResourceSave=0;setInterval(()=>{accruePassive();let taskChanged=recoverFinishedTasks();if(taskChanged){render();return}let bars=root.querySelectorAll('.res>span b');if(bars[0])bars[0].textContent=fmt(s.wood);if(bars[1])bars[1].textContent=fmt(s.stone);if(s.bastion3&&bars[2])bars[2].textContent=fmt(s.food);root.querySelectorAll('[data-taskdock] .taskchip').forEach(()=>{});if(Date.now()-liveResourceSave>2000){liveResourceSave=Date.now();localStorage.setItem(KEY,JSON.stringify(s))}},500);
 if(new URLSearchParams(location.search).get('qa')==='1'){s.introSeen=true;document.querySelectorAll('.aldric-cinematic,.e22-overlay').forEach(x=>x.remove())}window.ELDORIA_V023={version:'0.24.0',assert:qaAssertions,loadState:qaState,qa:()=>({need2:need2(),need3:need3(),powerSources:'buildings+troops+heroes+collection',foodUnlock:'bastion3-granary+hunting',worldExpansion:'single-pannable-map',bastion4Unlock:'none',bastion5Unlock:'stoneworks-passive',stonePerSecond:passiveStoneRate(),rankingUnlock:'bastion5-stoneworks',progressiveUI:true,visualTier:'bastion-driven',barracksUnlock:'bastion2-build-required',bastion2PowerGate:false,bastion3PowerGate:false,overlaySystem:'e22-overlay-v3',bastion:s.bastionLevel,forge:s.forge,aether:s.aetherEmber,maelis:s.maelis,marchConfigured:s.marchConfigured,trialWon:s.trialWon,finalWon:s.finalWon,visualRecoveryBase:'f139968c',unityMigrationReady:true}),advanceEconomy:(seconds=0)=>{const n=Math.max(0,Math.min(3600,Number(seconds)||0));s.lastPassiveAt-=n*1000;accruePassive();save();render();return JSON.parse(JSON.stringify(s))},reset:()=>{localStorage.removeItem(KEY);localStorage.removeItem('eldoria-v020-ch1-intro');localStorage.removeItem('eldoria-aldric-story-r7-v3');sessionStorage.setItem('eldoria-v022-reset','1');location.reload()},state:()=>{recoverFinishedTasks();return JSON.parse(JSON.stringify(s))},setQA:(patch={})=>{Object.assign(s,patch);save();render();return JSON.parse(JSON.stringify(s))}};window.ELDORIA_V022=window.ELDORIA_V023;render();if(!s.introSeen)setTimeout(opening,250);
 })();
+
+// Canonical Aldric dialogue helper. Kept inside the game runtime so the published
+// build no longer depends on a separate runtime hotfix for core dialogue.
+window.dialogue = function(name, copy, done) {
+  if (name !== 'Sir Aldric') { if (typeof done === 'function') done(); return; }
+  document.querySelectorAll('.aldric-cinematic').forEach(x=>x.remove());
+  const full=String(copy||'').replace(/<[^>]+>/g,' '),o=document.createElement('div');
+  o.className='aldric-cinematic';o.dataset.scene='aldric-state-dialogue';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+  o.innerHTML='<div class="aldric-dialogue"><div class="aldric-head"><div class="aldric-portrait"><img src="'+(document.querySelector('.aldric-portrait img')?.src||'')+'" alt="Sir Aldric"></div><div><div class="aldric-name">SIR ALDRIC</div><div class="aldric-role">Guardián de Valoria</div></div></div><div class="aldric-copy"><div class="aldric-ghost"></div><div class="aldric-typed"></div></div><div class="aldric-wait">ESCUCHA…</div><button class="aldric-continue primary" type="button">Continuar</button></div>';
+  document.body.appendChild(o);document.documentElement.style.overflow='hidden';const box=o.querySelector('.aldric-dialogue'),ghost=o.querySelector('.aldric-ghost'),typed=o.querySelector('.aldric-typed'),btn=o.querySelector('.aldric-continue');ghost.textContent=full;let n=0;
+  (function type(){if(n<full.length){typed.textContent=full.slice(0,++n);setTimeout(type,full[n-1]==='.'?130:full[n-1]===','?65:22)}else{typed.textContent=full;box.classList.add('done');btn.focus()}})();
+  btn.onclick=()=>{if(!box.classList.contains('done'))return;o.remove();document.documentElement.style.overflow='';if(typeof done==='function')done()};
+};
 </script>
 
 
