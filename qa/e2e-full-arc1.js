@@ -80,3 +80,6 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   if(blockers.length)process.exitCode=2;
   await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});
+
+// CI watchdog: never let a browser/page handle leave the mandatory sweep hanging forever.
+setTimeout(()=>{console.error('FULL ARC I WATCHDOG TIMEOUT');process.exit(124)},240000).unref();
