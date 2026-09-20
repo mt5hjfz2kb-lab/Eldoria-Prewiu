@@ -24,15 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
 
-      - name: Use canonical v0.24 clean vertical-slice base
-        run: |
-          test -s v0220/index.html
-          test -s v0220/runtime-hotfix.js
-          mkdir -p playtest
-          cp v0220/index.html playtest/index.html
-          rm -rf playtest/js
-          cp -R v0220/js playtest/js
-          sed -i 's#</body>#<script src="../v0220/runtime-hotfix.js"></script></body>#' playtest/index.html
+      - name: Build canonical preview
+        run: node tools/build-preview.mjs
 
       - name: Upload local QA source snapshot
         uses: actions/upload-artifact@v4
@@ -43,18 +36,8 @@ jobs:
             qa/
           retention-days: 1
 
-      - name: JavaScript syntax check
-        run: |
-          python3 - <<'PY'
-          import re, pathlib
-          html=pathlib.Path('playtest/index.html').read_text()
-          scripts=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',html,re.I)
-          for i,code in enumerate(scripts):
-              pathlib.Path(f'/tmp/eldoria-script-{i}.js').write_text(code)
-          print(f'Checking {len(scripts)} inline scripts')
-          PY
-          for f in /tmp/eldoria-script-*.js; do node --check "$f"; done
-          node --check v0220/runtime-hotfix.js
+      - name: JavaScript syntax and contract check
+        run: node tools/check-preview.mjs
 
       - name: Install Playwright QA browser
         run: |
