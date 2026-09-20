@@ -14,7 +14,7 @@ This file contains transient operational state only. Permanent rules: `AGENTS.md
 ## Last completed work block
 Repository/workflow coherence audit completed. Canonical hierarchy is now:
 `AGENTS.md` → `SESSION_HANDOFF.md` → `PROJECT_STATE.md` → specialized docs on demand.
-Redundant `HANDOFF_CHATGPT.md` and `PROJECT_STATUS.md` were removed. README/baseline/design/continuity/QA docs were aligned so old branch/version/protocol claims cannot compete with the active state. Historical version directories remain recovery-only.
+Redundant legacy handoff/status pointer files were removed. README/baseline/design/continuity/QA docs were aligned so old branch/version/protocol claims cannot compete with the active state. Historical version directories remain recovery-only.
 
 The development protocol is now local-first: targeted iteration → `npm run validate:local` → one coherent commit/push → manual Pages certification only for a playable/release candidate. The Pages workflow no longer repeats separate copies of the full regression/fresh-save matrix after the canonical validation command; published verification is intentionally smaller.
 
