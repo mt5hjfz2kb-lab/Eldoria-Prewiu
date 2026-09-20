@@ -1,16 +1,15 @@
 # Eldoria — Web Vertical Slice
 
-**Repository source of truth.** Start with `AGENTS.md`.
+Start with **`AGENTS.md`**. It defines the repository hierarchy and permanent workflow.
 
-Current active runtime: **v0.23.14**. Canonical editable game: `v0220/index.html`. GitHub Pages publishes it to `/playtest/` through `.github/workflows/pages.yml`.
+- Active development: `main`.
+- Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
+- Active runtime milestone: **v0.24.0**.
+- `v0220` is a compatibility directory name; it does not mean the active version is v0.22.
+- `playtest/` is generated deployment output.
+- Last certified stable recovery baseline: `baseline/v0.24-certified` at `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
+- `v019*`, `v020*`, `v0210`, r7 tooling and old docs are historical/recovery only and do not participate in normal work.
 
-The directories `v019*`, `v020*`, `v0210` and the old r7 tooling are historical/recovery material. They must not be used to reconstruct the current game.
-
-Operational state: `PROJECT_STATE.md`  
-Full continuity/system specification: `ELDORIA_CONTINUIDAD.md`  
-Design rules: `DESIGN_DECISIONS.md`  
-Regression/baseline rules: `ELDORIA_BASELINE_RULES.md`  
-QA/deploy: `QA_AND_DEPLOY.md`  
-History: `CHANGELOG.md`
+After `AGENTS.md`, a new session reads only `SESSION_HANDOFF.md` and `PROJECT_STATE.md`. Specialized documentation is consulted on demand.
 
 Public playtest: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
