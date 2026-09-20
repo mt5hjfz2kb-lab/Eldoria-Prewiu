@@ -25,7 +25,7 @@ Runtime exposes `window.ELDORIA_V023` (and compatibility alias `ELDORIA_V022`):
 
 Known deterministic fixtures: `start`, `sawmill`, `world`, `lyra`, `forge`, `endgame`. They are useful for targeted regression but are **not evidence of uninterrupted reachability**.
 
-Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for compatibility even though runtime version is v0.23.x.
+Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.24.0.
 
 Important IDs already used include:
 - `v022-core-loop`
@@ -43,8 +43,8 @@ Add stable `data-testid` to every important new action/state. Forge/Hero Hall co
 - `qa/e2e-all-nodes.js`: verifies world contextual actions and compact dimensions; forest is executed into a gather task, many other nodes are availability checks. Some paths still use DOM click rather than real touch.
 - `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression.\n- `qa/e2e-late-progression.js`: real mobile late Arc I traversal using controlled phase setup.\n- `qa/e2e-full-arc1.js`: uninterrupted fresh-save Arc I traversal. It never uses `setQA/loadState` to jump progression; `advanceEconomy(seconds)` only advances the same passive-production path so CI can audit long waits without sleeping in real time.
 
-## Required full-playthrough target
-A future canonical E2E must start from a clean save without jumping progression with `setQA/loadState`, and perform the playable flow through the current end of Arc I. It must assert each state transition, not only DOM presence. Shortened deterministic timers may be introduced in QA mode if they use the same production resolution path.
+## Canonical full-playthrough gate
+`qa/e2e-full-arc1.js` is the mandatory uninterrupted fresh-save Arc I gate. It must start from a clean save without jumping progression with `setQA/loadState`, perform the playable flow through the current end of Arc I, and assert state transitions rather than only DOM presence. It also covers persistence-sensitive paths such as gathering continuing when the player returns to Valoria. Shortened deterministic timers may be used only when they execute the same production resolution path.
 
 For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
 
@@ -64,7 +64,10 @@ For every gameplay bug: reproduce with Playwright → fix → prove the exact in
 If a pre-deploy test fails, Pages is not deployed. Do not call a commit “published” unless Deploy to GitHub Pages completed. Do not call gameplay “verified” unless the relevant real interaction test completed; green syntax/static checks are insufficient.
 
 ## Release procedure
-Work on `development/v0.23-clean` → commit surgical change → run/review tests → fast-forward `main` only when appropriate → wait for Actions → inspect each step → if successful, test the deployed URL → update `PROJECT_STATE.md` and `CHANGELOG.md`. Use a cache-busting query when sharing a playable URL.
+Use the repository truth from `SESSION_HANDOFF.md`. Keep the current validated build as the baseline, make surgical canonical changes, run targeted regression plus `qa/e2e-full-arc1.js`, then allow Pages deployment only when the complete gate is green. Inspect the published URL before calling a build playable. Use a cache-busting query when sharing it.
+
+## Architecture guardrail
+Core gameplay/dialogue/economy behavior belongs in `v0220/index.html` until modules are extracted deliberately. `runtime-hotfix.js` is compatibility/migration-only and must not accumulate new core behavior. Before adding content, prefer extracting stable subsystems behind the same DOM/test contracts rather than layering another hotfix.
 
 ## Historical tools
 `tools/build-r7.mjs`, `tools/postprocess-v020.mjs`, and `tools/restore-v020.py` are historical/recovery tooling. Do not use them casually to regenerate the active game; they can reintroduce old visual/runtime layers.
