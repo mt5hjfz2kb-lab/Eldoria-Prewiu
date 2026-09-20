@@ -58,22 +58,12 @@ GitHub Pages certification is deliberately `workflow_dispatch` only. Dispatch it
 For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
 
 ## Workflow / deploy
-`.github/workflows/pages.yml` runs only by explicit `workflow_dispatch` after `npm run validate:local` is green for a coherent development block:
-1. checkout the exact release HEAD;
-2. copy canonical `v0220/index.html` to `playtest/index.html`;
-3. syntax-check inline JS;
-4. install Playwright + Chromium;
-5. serve local build;
-6. run E2E/regression jobs;
-7. recovery greps;
-8. upload Pages artifact;
-9. deploy Pages;
-10. run selected Chromium checks against the public Pages URL.
+`.github/workflows/pages.yml` is manual-only (`workflow_dispatch`). It is a final clean-environment certification/deploy, not a development debugger. It runs the same `npm run validate:local` gate, uploads diagnostics, deploys Pages, then runs a small published-site smoke/behavior check. It intentionally does **not** repeat the entire fresh-save/regression matrix a second time against Pages.
 
-If a pre-deploy test fails, Pages is not deployed. Do not call a commit “published” unless Deploy to GitHub Pages completed. Do not call gameplay “verified” unless the relevant real interaction test completed; green syntax/static checks are insufficient.
+Do not dispatch it for documentation-only work or every small commit. Do not call a build published until Pages deployment succeeds; do not call the public build verified until its Chromium check succeeds.
 
 ## Release procedure
-Use the repository truth from `SESSION_HANDOFF.md`. Keep the current validated build as the baseline and batch a coherent set of surgical canonical changes. Do not dispatch certification for each small commit. Once the block is internally coherent, explicitly dispatch the workflow for that exact HEAD; Pages deploys only when the complete gate is green. Inspect the published URL before calling a build playable. Use a cache-busting query when sharing it.
+Batch a coherent gameplay block locally. Iterate with targeted tests; run `npm run validate:local` once the candidate is coherent. Fix/repeat locally until green, commit/push once, then dispatch one manual Pages certification only when a playable/release build is requested. Documentation/process-only commits require consistency verification and push, not a Pages deployment.
 
 ## Architecture guardrail
 Core gameplay/dialogue/economy behavior belongs in `v0220/index.html` until modules are extracted deliberately. `runtime-hotfix.js` is compatibility/migration-only and must not accumulate new core behavior. Before adding content, prefer extracting stable subsystems behind the same DOM/test contracts rather than layering another hotfix.
