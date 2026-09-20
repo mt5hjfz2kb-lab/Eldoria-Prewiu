@@ -24,8 +24,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
 
-      - name: Build canonical preview
-        run: node tools/build-preview.mjs
+      - name: Install Playwright QA browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Full local-equivalent certification gate
+        run: npm run validate:local
 
       - name: Upload local QA source snapshot
         uses: actions/upload-artifact@v4
@@ -35,21 +39,6 @@ jobs:
             v0220/
             qa/
           retention-days: 1
-
-      - name: JavaScript syntax and contract check
-        run: node tools/check-preview.mjs
-
-      - name: Install Playwright QA browser
-        run: |
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
-      - name: Start local QA build
-        run: |
-          python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
-          sleep 2
-          curl --fail http://127.0.0.1:4173/playtest/ >/dev/null
-      - name: Full local-equivalent certification gate
-        run: npm run validate:local
 
       - name: Upload player-experience report
         if: always()
