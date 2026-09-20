@@ -1,8 +1,8 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-19\nRelease candidate: v0.23.17 fresh-save Arc I gate
+Updated: 2026-09-19\nRelease candidate: v0.24.0 clean playtest milestone
 
 ## Current version
-- Runtime/API: **v0.23.24**.
+- Runtime/API: **v0.24.0**..
 - Canonical source: `v0220/index.html`.
 - Development branch: `development/v0.23-clean`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
