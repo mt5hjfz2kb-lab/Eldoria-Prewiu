@@ -1,0 +1,2 @@
+import fs from 'node:fs';
+fs.mkdirSync('playtest',{recursive:true});fs.copyFileSync('v0220/index.html','playtest/index.html');fs.rmSync('playtest/js',{recursive:true,force:true});fs.cpSync('v0220/js','playtest/js',{recursive:true});let html=fs.readFileSync('playtest/index.html','utf8');if(!html.includes('runtime-hotfix.js'))html=html.replace('</body>','<script src="../v0220/runtime-hotfix.js"></script></body>');fs.writeFileSync('playtest/index.html',html);console.log('Built playtest from v0220 canonical source');
