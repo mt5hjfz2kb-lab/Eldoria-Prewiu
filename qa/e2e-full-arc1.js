@@ -5,6 +5,12 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   await p.goto(URL,{waitUntil:'domcontentloaded'});
   const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
+  // Player-experience telemetry: capture the actual mobile journey without changing gameplay.
+  const px={startedAt:Date.now(),events:[],dialogs:[],screens:[],issues:[]};
+  const pxMark=async(type,label)=>{let snap=null;try{snap=await state()}catch{};px.events.push({t:Date.now()-px.startedAt,type,label,view:snap&&snap.view,bastion:snap&&snap.bastionLevel,wood:snap&&snap.wood,stone:snap&&snap.stone,food:snap&&snap.food});};
+  p.on('console',msg=>{if(msg.type()==='error')px.issues.push({t:Date.now()-px.startedAt,type:'console-error',text:msg.text()})});
+  const pxSample=async(label)=>{await pxMark('sample',label);const visible=await p.locator('.e22-overlay:visible,.e22-cinema:visible,.e22-dialogue:visible').evaluateAll(ns=>ns.map(n=>(n.innerText||'').trim()).filter(Boolean)).catch(()=>[]);for(const text of visible){if(!px.dialogs.some(x=>x.text===text))px.dialogs.push({t:Date.now()-px.startedAt,label,text:text.slice(0,700)})}const buttons=await p.locator('button:visible,.btn:visible').evaluateAll(ns=>ns.map(n=>({text:(n.innerText||'').trim(),r:n.getBoundingClientRect().toJSON()}))).catch(()=>[]);for(const x of buttons){if(x.r.width<40||x.r.height<40)px.issues.push({t:Date.now()-px.startedAt,type:'small-touch-target',label,text:x.text,w:Math.round(x.r.width),h:Math.round(x.r.height)})}};
+
   const closeAll=async()=>{let empty=0;for(let i=0;i<10&&empty<2;i++){await p.waitForTimeout(180);const x=p.locator('.e22-overlay .btn:visible');if(!await x.count()){empty++;continue}empty=0;await x.last().tap({force:true})}};
   const view=async name=>{await closeAll();const n=p.locator('#eldoria-core-loop [data-view="'+name+'"]');await n.first().click({force:true});await p.waitForTimeout(120);};
   const building=async id=>{await closeAll();const n=p.locator('#eldoria-core-loop [data-testid="building-'+id+'"]');await n.waitFor({state:'visible'});const a=p.locator('#eldoria-core-loop [data-testid="building-action-'+id+'"]');await n.tap();await a.waitFor({state:'visible',timeout:4000});await a.tap();};
@@ -14,7 +20,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   const upgradeProd=async(id,target)=>{for(let guard=0;guard<12;guard++){let q=await state(),lvl=(q.buildingLevels||{})[id]||0;if(lvl>=Math.min(target,q.bastionLevel))return;let need=120*lvl,stone=Math.round(need*.65);if(q.wood<need||q.stone<stone){let wr=Math.max(1,(q.buildingLevels||{}).sawmill||1),sr=Math.max(2,((q.buildingLevels||{}).stoneworks||1)*2),sec=Math.max(60,Math.ceil(Math.max((need-q.wood)/wr,(stone-q.stone)/sr)));virtualWait+=await economy(sec);continue}await building(id);await p.waitForTimeout(150)}throw Error('Production upgrade guard exceeded: '+id)};
   let virtualWait=0;
   const sweep=[];
-  const checkpoint=async(label,fn,recover)=>{console.log('SWEEP START '+label);try{await Promise.race([fn(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Checkpoint timeout after 45s')),45000))]);sweep.push({label,ok:true});console.log('SWEEP PASS '+label)}catch(e){let snap=null;try{snap=await state()}catch{};sweep.push({label,ok:false,error:String(e&&e.message||e),state:snap});console.error('SWEEP BLOCKER '+label+' '+String(e&&e.message||e));try{await p.screenshot({path:'qa-failure-'+label.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.png',fullPage:true})}catch{};if(recover)await recover(snap,e);else throw e}};
+  const checkpoint=async(label,fn,recover)=>{await pxSample(label+'-start');console.log('SWEEP START '+label);try{await Promise.race([fn(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Checkpoint timeout after 45s')),45000))]);sweep.push({label,ok:true});await pxSample(label+'-pass');console.log('SWEEP PASS '+label)}catch(e){let snap=null;try{snap=await state()}catch{};sweep.push({label,ok:false,error:String(e&&e.message||e),state:snap});console.error('SWEEP BLOCKER '+label+' '+String(e&&e.message||e));try{await p.screenshot({path:'qa-failure-'+label.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.png',fullPage:true})}catch{};if(recover)await recover(snap,e);else throw e}};
   if((await state()).bastionLevel!==1)throw Error('Fresh save did not start at Bastion I');
 
   await building('sawmill'); await p.waitForTimeout(6500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,4000);
@@ -78,6 +84,14 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   console.log((blockers.length?'FULL ARC I SWEEP COMPLETE WITH '+blockers.length+' BLOCKER(S)':'FULL FRESH-SAVE ARC I PASS')+' · accelerated passive time '+virtualWait+'s');
   console.log('SWEEP SUMMARY '+JSON.stringify(sweep));
   if(blockers.length)process.exitCode=2;
+  await pxSample('arc1-complete');
+  const fs=require('fs');
+  const elapsed=Date.now()-px.startedAt;
+  const uniqueIssues=[...new Map(px.issues.map(x=>[x.type+'|'+x.label+'|'+x.text, x])).values()];
+  const report={generatedAt:new Date().toISOString(),viewport:'390x844 mobile touch',elapsedMs:elapsed,virtualEconomySeconds:virtualWait,checkpoints:sweep,events:px.events,dialogues:px.dialogs,issues:uniqueIssues,finalState:await state()};
+  fs.writeFileSync('qa-player-experience.json',JSON.stringify(report,null,2));
+  fs.writeFileSync('qa-player-experience.md',['# Eldoria automated player-experience pass','', '- Mobile viewport: 390x844 touch', '- Real elapsed: '+Math.round(elapsed/1000)+'s', '- Simulated economy wait: '+virtualWait+'s', '- Checkpoints: '+sweep.filter(x=>x.ok).length+'/'+sweep.length, '- Unique UX/console observations: '+uniqueIssues.length,'','## Checkpoints',...sweep.map(x=>'- '+(x.ok?'PASS':'FAIL')+' — '+x.label),'','## Observations',...(uniqueIssues.length?uniqueIssues.map(x=>'- '+x.type+' @ '+(x.label||'runtime')+(x.text?' — '+x.text:'')+(x.w?' ('+x.w+'x'+x.h+')':'')):['- No automated heuristic issues detected.']),'','## Dialogue surfaces observed',...px.dialogs.map(x=>'- '+x.label+': '+x.text.replace(/\\s+/g,' ').slice(0,220))].join('\\n'));
+
   await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});
 
