@@ -33,3 +33,6 @@ Updated: 2026-09-19
 - Gameplay change: targeted Playwright test first; for progression/release run `node qa/e2e-full-arc1.js` plus workflow regressions.
 - Release/test-ready: Pages deploy + published Chromium verification must pass.
 - Details when needed: `PROJECT_STATE.md`, `QA_AND_DEPLOY.md`, `DESIGN_DECISIONS.md`, `ELDORIA_CONTINUIDAD.md`, `ELDORIA_BASELINE_RULES.md`, `CHANGELOG.md`.
+
+## EXECUTION RULE — LARGE AUTONOMOUS BLOCKS
+When the user says **hazlo / sigue / adelante / continúa**, do not stop after launching CI or after finding the next technical blocker. Work through the largest executable block in the same turn: inspect → fix clear technical/progression blockers → test → iterate → commit → certify → deploy → verify published build. Return control only when there is a genuinely useful playable/verified state or a design decision/risk that requires the user. GitHub Actions is final certification, not the primary debugging loop. Do not send intermediate bug-by-bug progress reports.
