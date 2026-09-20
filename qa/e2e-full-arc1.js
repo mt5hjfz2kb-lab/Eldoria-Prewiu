@@ -37,8 +37,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await view('kingdom');await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===2,14000);await closeAll();
   await building('barracks');await waitState(()=>window.ELDORIA_V023.state().barracks===true,11000);await building('barracks');if((await state()).troops<41)throw Error('Troop recruitment did not apply');
 
-  await view('world');await node('boss');let recruit=p.locator('.e22-cinema .btn');await recruit.waitFor({state:'visible'});await recruit.tap();await closeAll();if(!(await state()).lyra)throw Error('Lyra not recruited');
-  await node('boss');await p.waitForTimeout(2800);await closeAll();if(!(await state()).boss)throw Error('Fissure not defeated');
+  await view('world');await node('boss');let recruit=p.locator('.e22-cinema .btn');await recruit.waitFor({state:'visible'});await recruit.tap();await p.locator('.e22-cinema .btn').waitFor({state:'visible'});await p.locator('.e22-cinema .btn').tap();await closeAll();if(!(await state()).lyra)throw Error('Lyra not recruited');
+  await view('world');await node('boss');await p.waitForTimeout(2800);await closeAll();if(!(await state()).boss)throw Error('Fissure not defeated');
 
   await view('kingdom');await building('keep');await p.waitForTimeout(14500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().bastionLevel===3,4000);await closeAll();
   virtualWait+=await economy(210);await building('granary');await waitState(()=>window.ELDORIA_V023.state().granary===true,12000).catch(async e=>{throw new Error('Granary build timeout: '+JSON.stringify(await state()))});
