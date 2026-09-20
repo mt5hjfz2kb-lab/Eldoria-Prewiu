@@ -72,6 +72,8 @@ jobs:
       - name: E2E sawmill construction completes
         run: E2E_PHASE=complete node qa/e2e-smoke.js
 
+      - name: E2E behavior regression
+        run: node qa/e2e-behavior-regression.js
       - name: E2E core progression regression
         run: node qa/e2e-core-flow.js
       - name: E2E every building interaction
@@ -120,6 +122,11 @@ jobs:
           grep -q 'function openHeroHall()' playtest/index.html
           grep -q "visualRecoveryBase:'f139968c'" playtest/index.html
           grep -q 'runtime-hotfix.js' playtest/index.html
+          grep -q 'js/state-economy.js' playtest/index.html
+          grep -q 'js/tasks-offline.js' playtest/index.html
+          grep -q 'js/dialogue-tutorial.js' playtest/index.html
+          grep -q 'js/ui.js' playtest/index.html
+          grep -q 'js/gameplay.js' playtest/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
