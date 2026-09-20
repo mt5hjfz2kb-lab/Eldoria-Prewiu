@@ -29,7 +29,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   const offlineForestAfter=await state();
   if(offlineForestAfter.tasks.some(t=>t.key==='gather-forest')||offlineForestAfter.wood<=offlineForestBefore.wood||offlineForestAfter.forestRemain>=offlineForestBefore.forestRemain)throw Error('Offline gathering did not complete while closed');
   if((await state()).forestRemain>0){await node('forest');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-forest'),45000)}
-  if((await state()).quarryRemain>0){await node('quarry');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry'),45000)}
+  if((await state()).quarryRemain>0){await node('quarry');await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry'),5000);await waitState(()=>window.ELDORIA_V023.state().quarry>0,45000)}
   {const preCamp=await state();if(!preCamp.forest||!preCamp.quarry)throw Error('Resource tutorial did not unlock Corrupt camp: '+JSON.stringify({forest:preCamp.forest,quarry:preCamp.quarry,forestRemain:preCamp.forestRemain,quarryRemain:preCamp.quarryRemain,tasks:preCamp.tasks}));}
   await node('camp');await p.waitForTimeout(2800);await closeAll();if(!(await state()).camp)throw Error('Corrupt camp did not resolve');
 
