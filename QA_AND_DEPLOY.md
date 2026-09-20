@@ -36,6 +36,15 @@ Important IDs already used include:
 
 Add stable `data-testid` to every important new action/state. Forge/Hero Hall coverage is incomplete and should be normalized.
 
+## Mandatory development loop
+Run `npm install` once per working copy, then use **one command** during active development:
+```bash
+npm run validate:local
+```
+It builds the canonical preview, checks JavaScript/contracts, starts the local server, runs the targeted blocker suite, the complete regression suite, and the uninterrupted fresh-save Arc I traversal. A gameplay change is not ready to push/certify until this command is green. When it fails, fix locally and rerun it; do not use GitHub Actions as the debugger.
+
+GitHub Pages certification is deliberately `workflow_dispatch` only. Dispatch it once, after local validation is green, then verify the deployed URL. Every player-reported regression must be added to automated QA so it cannot silently return.
+
 ## Automated tests
 - `qa/e2e-smoke.js`: boot and real sawmill contextual/start/complete phases.
 - `qa/e2e-core-flow.js`: loads deterministic states and runs runtime assertions; this is state/render regression, not a playthrough.
@@ -49,7 +58,7 @@ Add stable `data-testid` to every important new action/state. Forge/Hero Hall co
 For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
 
 ## Workflow / deploy
-`.github/workflows/pages.yml` runs only by explicit `workflow_dispatch` after a coherent development block is ready for certification:
+`.github/workflows/pages.yml` runs only by explicit `workflow_dispatch` after `npm run validate:local` is green for a coherent development block:
 1. checkout the exact release HEAD;
 2. copy canonical `v0220/index.html` to `playtest/index.html`;
 3. syntax-check inline JS;
