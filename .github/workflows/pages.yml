@@ -1,8 +1,6 @@
 name: Publish Eldoria Preview
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
