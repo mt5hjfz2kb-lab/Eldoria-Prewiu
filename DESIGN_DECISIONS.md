@@ -34,11 +34,11 @@
 - Large unlocks deserve ceremony; routine actions do not.
 
 ## World, economy and power
-- Nodes have finite reserves and loads smaller than total reserves. Current base values: Forest 1,250/load 360; Quarry 900/load 260; Meat 1,100/load 300.
+- Resource nodes have finite reserves and per-trip loads smaller than total reserves. Depleted nodes leave the active map and later respawn/reappear; exact current tuning belongs to code, not this design document.
 - Enemy victories give loot/XP/items, not magical Power.
 - Total Power represents development/possessions (buildings, troops, heroes, relevant equipment/collection). March Power represents the deployed force.
 - Construction/recollection use visible compressed timers in the slice. Future production can use longer queues, but waiting must represent real activity.
-- Resource buildings are intended eventually to have their own levels capped by Bastion and improve output. Current implementation only approximates this via Bastion-scaled rates.
+- Resource buildings have independent persistent levels capped by Bastion; upgrades improve their production.
 
 ## Buildings / progression
 - Bastion is the main progression spine, currently scaffolded to level X.
