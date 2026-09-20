@@ -6,8 +6,8 @@ Updated: 2026-09-20
 - Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
 - Last verified point: full uninterrupted fresh-save Arc I, regressions, Pages deploy and published Chromium verification all passed for `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
-- Work in progress: post-baseline stabilization on `main`. Lyra inspection/recruitment flow, extra early resource nodes, anchored world guidance and mobile interaction corrections are integrated. Local clean-environment QA passes; published Pages verification is being hardened against stale CDN revisions.
-- Next task: finish a green published Chromium certification for the current mainline, then freeze that gameplay SHA before resuming product/MVP work. Published verification must retry the deployed revision rather than accepting a stale Pages response.
+- Work in progress: v0.24 stabilization plus release-pipeline consolidation. Build is now reproducible through `npm run build` / `npm run check`; release certification is explicit/manual rather than triggered by every small commit. Lyra inspection/recruitment, extra early resource nodes, anchored world guidance and mobile interaction corrections are integrated.
+- Next task: certify the current coherent mainline with the consolidated build path, verify the exact Pages deployment in Chromium, then freeze that gameplay SHA before resuming MVP work.
 - Open debt after stabilization: Bastion VI–X and Stoneworks routine modal UX; Forge/Hero Hall stable IDs/UX; survey/export/reset; placeholder special combats; deliberate subsystem extraction from the large canonical HTML.
 
 ## Critical rules
@@ -36,3 +36,10 @@ Updated: 2026-09-20
 
 ## EXECUTION RULE — LARGE AUTONOMOUS BLOCKS
 When the user says **hazlo / sigue / adelante / continúa**, do not stop after launching CI or after finding the next technical blocker. Work through the largest executable block in the same turn: inspect → fix clear technical/progression blockers → test → iterate → commit → certify → deploy → verify published build. Return control only when there is a genuinely useful playable/verified state or a design decision/risk that requires the user. GitHub Actions is final certification, not the primary debugging loop. Do not send intermediate bug-by-bug progress reports.
+
+## Release pipeline consolidation — 2026-09-20
+- `package.json` defines canonical build/check/regression/fresh-save commands.
+- `tools/build-preview.mjs` is the single build recipe used by humans and CI.
+- `tools/check-preview.mjs` performs syntax + canonical contract checks.
+- Pages workflow is `workflow_dispatch` only: small development commits no longer create/cancel/queue full releases.
+- GitHub Actions remains final clean-environment certification/deploy; active debugging should use the same scripts locally when a browser runtime is available.
