@@ -687,7 +687,7 @@ button:focus-visible{outline:2px solid currentColor;outline-offset:3px}.modal{ov
 .nodeWrap{position:absolute;z-index:12;width:112px;height:115px;overflow:visible;pointer-events:none}
 .nodeWrap>.node{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:112px;height:115px;pointer-events:auto;touch-action:manipulation}
 .nodeWrap.forest{left:8%;top:29%}.nodeWrap.quarry{right:10%;bottom:17%}.nodeWrap.camp{right:13%;top:25%}.nodeWrap.boss{left:14%;bottom:14%}
-.nodeWrap.meat{left:7%;top:16%}.nodeWrap.wolf{right:8%;top:18%}.nodeWrap.boar{right:10%;bottom:10%}.nodeWrap.devourer{left:8%;bottom:10%}.nodeWrap.nareth{right:8%;top:12%}.nodeWrap.trial{left:8%;top:12%}.nodeWrap.final{right:8%;bottom:10%}.nodeWrap.forest2{left:30%;top:12%}.nodeWrap.quarry2{right:31%;bottom:8%}.nodeWrap.meat2{left:39%;bottom:24%}
+.nodeWrap.meat{left:7%;top:16%}.nodeWrap.wolf{right:8%;top:18%}.nodeWrap.boar{right:10%;bottom:10%}.nodeWrap.devourer{left:8%;bottom:10%}.nodeWrap.nareth{right:8%;top:12%}.nodeWrap.trial{left:8%;top:12%}.nodeWrap.final{right:8%;bottom:10%}.nodeWrap.forest2{left:30%;top:12%}.nodeWrap.quarry2{right:31%;bottom:8%}.nodeWrap.meat2{left:39%;bottom:24%}.nodeWrap.extraNodeA{left:3%;bottom:4%;top:auto}.nodeWrap.extraNodeB{right:3%;top:48%;left:auto}
 .nodeWrap>.objectAction{position:absolute;z-index:80;left:50%;top:100%;transform:translateX(-50%);width:150px;box-sizing:border-box;padding:7px;background:rgba(9,14,17,.97);border:1px solid rgba(217,183,96,.72);border-radius:8px;text-align:center;box-shadow:0 8px 20px #000a;pointer-events:auto}
 .nodeWrap>.objectAction small{display:block;margin-bottom:5px;font:700 9px/1.2 Arial;color:#ddd4bd}
 .nodeWrap>.objectAction .btn{min-height:32px;padding:6px 8px;font-size:9px}
@@ -909,8 +909,8 @@ function actionPanel(id){let gi=gatherInfo(id),gather=!!gi,combat=['camp','boss'
 function world(){let bossLock=!s.lyra, campLock=!s.forest||!s.quarry;return '<div class="scene world tier-'+s.bastionLevel+'"><div class="world-atmo"><i></i><i></i></div><div class="worldpan" data-worldpan><div class="terrain"></div>'+quest()+'<div class="worldtitle"><small>FRONTERA DE VALORIA</small><b>El mundo alimenta tu reino</b></div>'+
 node('forest','forest','🌲','Bosque · Nv.1',(s.forestRemain<=0?'AGOTADO':fmt(s.forestRemain)+' madera · recolección completa'))+
 node('quarry','quarry','⛏️','Cantera · Nv.1',(s.quarryRemain<=0?'AGOTADA':fmt(s.quarryRemain)+' piedra · recolección completa'))+
-node('forest extraNodeA','forestExtra','🌲','Pinar · Nv.1',fmt(s.forestExtraRemain)+' madera · recolección completa')+
-node('quarry extraNodeB','quarryExtra','🪨','Veta de piedra · Nv.1',fmt(s.quarryExtraRemain)+' piedra · recolección completa')+
+node('extraNodeA','forestExtra','🌲','Pinar · Nv.1',fmt(s.forestExtraRemain)+' madera · recolección completa')+
+node('extraNodeB','quarryExtra','🪨','Veta de piedra · Nv.1',fmt(s.quarryExtraRemain)+' piedra · recolección completa')+
 node('camp','camp','👹','Corruptos · Nv.1',campLock?'Explora primero':'Marcha 1.900 · riesgo bajo',campLock)+
 node('boss','boss','🌀','Fisura · Nv.3',s.lyra?'Marcha 3.050 · riesgo medio':'Corrupción desconocida · investigar',false)+
 '<button class="node home" data-home><span class="icon">🏰</span><label>Valoria</label><small>Volver al reino</small></button>'+
