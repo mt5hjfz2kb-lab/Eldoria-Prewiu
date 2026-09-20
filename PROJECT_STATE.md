@@ -8,6 +8,7 @@ Release candidate: v0.24.0 clean playtest milestone
 - Development branch: `main`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
+- Certified functional recovery point: `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`, branch `baseline/v0.24-certified` (full fresh-save Arc I + regressions + deployed-site Chromium verification green).
 - Protected visual recovery point: `f139968ccbfdeb3e1d37f58568187374faf6d1f2`, branch `stable/visual-good-f139968c`.
 - Pre-documentation development HEAD: `feee035322acc58108bed0e41a748cbbf87539cf`.
 
@@ -15,13 +16,11 @@ Release candidate: v0.24.0 clean playtest milestone
 v0.23 moved routine building/world interaction to object-local contextual controls. Node/building actions are intended to appear below the tapped object and timers above it. The first Fissure interaction is being changed so attacking the Fissure when Lyra is absent triggers the Lyra recruitment event; after recruitment the Fissure can be attacked/defeated normally.
 
 ## Currently verified
-Workflow run `35458031436` completed successfully after adding `qa/e2e-late-progression.js`: real mobile early progression through Fissure→Lyra and the late Arc I chain Bastion VI→Forge→Devorador→Ascua→forja de equipo→Bastion VIII→Nareth/Maelis→Bastion IX→March Trial→Bastion X→final assault all pass, followed by successful Pages deployment and published-build Chromium verification.
+The v0.24.0 baseline at `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435` is fully certified. Workflow run `35527395192` passed syntax, boot, contextual sawmill construction, core regression, all building actions, all world-node actions, real early progression, real late Arc I progression, the uninterrupted fresh-save Arc I traversal, recovery checks, GitHub Pages deployment, and Chromium verification against the published build.
 
-The uninterrupted fresh-save Arc I test now exists as `qa/e2e-full-arc1.js`; the last certified baseline `bc868c73` passed it. The current cleanup must pass the same gate again before it is handed to a player.
+This commit is protected by branch `baseline/v0.24-certified`. Structural cleanup must preserve its observable gameplay, approved art and stable QA contracts. If cleanup regresses behavior, compare/recover from this branch rather than reconstructing from older v0.22/v0.21 code.
 
-The standard CI has previously passed boot, sawmill contextual/start/complete, core state fixtures, building action availability, world-node action availability, recovery checks, deploy and published-build Chromium checks. These checks do **not** constitute a complete fresh-save Chapter I playthrough.
-
-v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570522` completed successfully: the real mobile Fissure→Lyra regression passed locally, all existing regressions passed, Pages deployed, and the selected Chromium checks including the Fissure→Lyra flow passed against the published URL. The **full uninterrupted fresh-save Arc I traversal is still not yet implemented**, so later progression remains to be certified.
+`runtime-hotfix.js` is migration-only (623 bytes at baseline); core gameplay/dialogue/UI belongs in the canonical runtime.
 
 ## Open bugs / risks
 - Verify camp and boss actions through real pointer/touch paths, not merely action-panel presence.
@@ -36,11 +35,14 @@ v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570
 - Economy from early game to Bastion X has not been proven deadlock/grind-free by an uninterrupted playthrough.
 - Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
-## Work now under verification
-- Core Aldric dialogue behavior has been consolidated into the canonical runtime; `runtime-hotfix.js` is migration-only.
-- Live passive resources, background gathering across city/world navigation, narrator typewriter/continue behavior and mobile action clearance are part of the current stabilization block.
-- CI certification is release-only, cannot self-cancel on follow-up commits, and verifies the uninterrupted fresh-save Arc I both before deployment and against the published Pages build.
-\n## Product course correction — 2026-09-20
+## Structural consolidation now active
+- Certified v0.24 is the new functional baseline; the historical v0.22 filename/save/API aliases remain only for compatibility.
+- Do not rename/migrate those compatibility identifiers during stabilization.
+- Consolidate duplicate CSS/runtime layers progressively and test each block.
+- Dead legacy runtime may be removed only after proving equivalent behavior through the existing real-interaction and fresh-save gates.
+- Do not add gameplay breadth until this consolidation is stable.
+
+## Product course correction — 2026-09-20
 The MVP is being refocused on the original product question: does the compact Eldoria loop create understanding, satisfaction and desire to continue? Do not add more breadth beyond the current Arc I scaffold until that is demonstrated.
 
 Required MVP proof:
