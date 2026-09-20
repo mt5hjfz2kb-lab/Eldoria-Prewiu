@@ -1,4 +1,4 @@
-// Runtime bridge for the active v0.22 slice.
+// Runtime bridge for the active v0.24 playtest milestone.
 // The late Arc I runtime calls dialogue() from its own script scope; expose the
 // Aldric cinematic helper globally until the canonical scripts are consolidated.
 window.dialogue = function(name, copy, done) {
