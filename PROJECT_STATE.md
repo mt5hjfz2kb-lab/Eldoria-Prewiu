@@ -1,10 +1,11 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-19\nRelease candidate: v0.24.0 clean playtest milestone
+Updated: 2026-09-20
+Release candidate: v0.24.0 clean playtest milestone
 
 ## Current version
-- Runtime/API: **v0.24.0**..
+- Runtime/API: **v0.24.0**.
 - Canonical source: `v0220/index.html`.
-- Development branch: `development/v0.23-clean`.
+- Development branch: `main`.
 - Public deployment source: the workflow copies `v0220/index.html` to `playtest/index.html`.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - Protected visual recovery point: `f139968ccbfdeb3e1d37f58568187374faf6d1f2`, branch `stable/visual-good-f139968c`.
@@ -16,27 +17,30 @@ v0.23 moved routine building/world interaction to object-local contextual contro
 ## Currently verified
 Workflow run `35458031436` completed successfully after adding `qa/e2e-late-progression.js`: real mobile early progression through Fissure→Lyra and the late Arc I chain Bastion VI→Forge→Devorador→Ascua→forja de equipo→Bastion VIII→Nareth/Maelis→Bastion IX→March Trial→Bastion X→final assault all pass, followed by successful Pages deployment and published-build Chromium verification.
 
-This is strong segmented end-to-end coverage, but it still uses QA state setup between major phases; a single uninterrupted fresh-save run from the opening through Arc I remains the next verification target.
+The uninterrupted fresh-save Arc I test now exists as `qa/e2e-full-arc1.js`; the last certified baseline `bc868c73` passed it. The current cleanup must pass the same gate again before it is handed to a player.
 
 The standard CI has previously passed boot, sawmill contextual/start/complete, core state fixtures, building action availability, world-node action availability, recovery checks, deploy and published-build Chromium checks. These checks do **not** constitute a complete fresh-save Chapter I playthrough.
 
 v0.23.16 makes QA-mode overlay suppression deterministic. Workflow run `35457570522` completed successfully: the real mobile Fissure→Lyra regression passed locally, all existing regressions passed, Pages deployed, and the selected Chromium checks including the Fissure→Lyra flow passed against the published URL. The **full uninterrupted fresh-save Arc I traversal is still not yet implemented**, so later progression remains to be certified.
 
 ## Open bugs / risks
-- Build a true uninterrupted fresh-save progression test. Current tests use QA fixtures for substantial portions.
 - Verify camp and boss actions through real pointer/touch paths, not merely action-panel presence.
-- Timed actions store task metadata but completion callbacks are in-memory; reload during a task can strand progression. Replace with serializable/resumable task resolution.
+- Timed actions are serializable/resumable through absolute timestamps and `recoverFinishedTasks()`; keep regression coverage for view changes and reload/offline completion.
 - Bastion VI–X still use confirmation-modal behavior and need explicit progression gates, not only resource costs.
 - Stoneworks construction still uses an old confirmation popup; routine actions should be object-local.
 - Resource buildings display Bastion-derived levels/rates but do not yet have true independent upgrade levels capped by Bastion.
-- Equipping a replacement item can discard the previously equipped item instead of returning it to inventory.
+- Equipment replacement returns the previous item to inventory; preserve this behavior in future inventory work.
 - Forge and Hero Hall need complete stable test IDs/wrappers; Hero Hall needs fuller hero switching/stats/skills/XP/equipment UX.
 - End-of-test survey, session export/copy and full tester reset requirements are incomplete.
 - Later special combats are functional progression placeholders, not the intended polished semiautomatic combat.
 - Economy from early game to Bastion X has not been proven deadlock/grind-free by an uninterrupted playthrough.
 - Dead legacy runtime remains physically inside the monolithic HTML, although disabled. Do not remove blindly.
 
-## Work now under verification\n- Added `qa/e2e-full-arc1.js`, an uninterrupted fresh-save mobile traversal from Bastion I to the Arc I finale. It uses real taps/clicks for gameplay and only accelerates passive production through `advanceEconomy()`; it does not use `setQA/loadState` to jump progression.\n- Early economy blocker found before Bastion V: the old Quarry reserve/load could not fund the required stone before Stoneworks unlocked. Quarry reserve is now 2,800 with 700-stone loads; this change is pending full CI verification.\n\n## Product course correction — 2026-09-20
+## Work now under verification
+- Core Aldric dialogue behavior has been consolidated into the canonical runtime; `runtime-hotfix.js` is migration-only.
+- Live passive resources, background gathering across city/world navigation, narrator typewriter/continue behavior and mobile action clearance are part of the current stabilization block.
+- CI certification is release-only, cannot self-cancel on follow-up commits, and verifies the uninterrupted fresh-save Arc I both before deployment and against the published Pages build.
+\n## Product course correction — 2026-09-20
 The MVP is being refocused on the original product question: does the compact Eldoria loop create understanding, satisfaction and desire to continue? Do not add more breadth beyond the current Arc I scaffold until that is demonstrated.
 
 Required MVP proof:
