@@ -2,12 +2,12 @@
 Updated: 2026-09-20
 
 - Active development branch: `main` (v0.24.0 playtest cleanup/certification).
-- HEAD before this organization-only documentation block: `f9d57b687b70b973eb381bebe563b15c5a98bec0`; after this block, use GitHub HEAD as authoritative and verify it at session start.
+- Current milestone: v0.24.0; always verify actual GitHub HEAD at session start.
 - Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
-- Last verified point: targeted early + late Arc I tests pass; uninterrupted fresh-save Arc I currently reaches Bastion III/Granary gate. Latest run was recalibrated from 180s to 210s passive economy after arriving with 219/240 wood.
-- Work in progress: MVP course correction. Preserve current Arc I, but stop scope expansion and prove the original Eldoria desire loop: meaningful kingdom choice → world/Breach → reward → return/use reward → new ambition, with a small Codex/relic decision and truthful 4X horizon.
-- Next task: fix the final-assault QA regression introduced by Aldric's pre-assault dialogue; certify fresh-save Arc I; then reconnect the smallest Codex/relic choice and 4X proof to the current flow before any new breadth.
+- Last verified point: v0.24.0 is under final fresh-save certification; earlier queued runs are intentionally cancelled by workflow concurrency.
+- Work in progress: certify the cleaned v0.24.0 playtest from fresh save, deploy it, and verify the published build before handing it to Cristian.
+- Next task: resolve any failure from the single latest v0.24.0 certification run; do not launch iterative CI commits when local/inspection fixes suffice.
 - Open bugs: full fresh-save Arc I not yet green after latest calibration; Bastion VI–X and Stoneworks still have routine modal UX debt; Forge/Hero Hall stable IDs/UX incomplete; survey/export/reset incomplete; special combats remain placeholders; legacy runtime remains embedded.
 
 ## Critical rules
