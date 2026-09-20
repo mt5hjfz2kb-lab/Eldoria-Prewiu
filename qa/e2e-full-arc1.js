@@ -19,7 +19,15 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 
   await building('sawmill'); await p.waitForTimeout(6500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,4000);
   await view('world');
-  for(let i=0;i<3;i++){await node('forest');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-forest'),10000)}
+  // Offline task semantics: gathering continues against absolute wall-clock time while the game is closed.
+  await node('forest');
+  const offlineForestBefore=await state(),offlineTask=offlineForestBefore.tasks.find(t=>t.key==='gather-forest');
+  if(!offlineTask)throw Error('Offline gather task did not start');
+  await p.evaluate(()=>{let q=JSON.parse(localStorage.getItem('eldoria-v022-consistent-loop'));let t=q.tasks.find(x=>x.key==='gather-forest');t.start-=8000;t.end-=8000;localStorage.setItem('eldoria-v022-consistent-loop',JSON.stringify(q))});
+  await p.reload({waitUntil:'domcontentloaded'});
+  const offlineForestAfter=await state();
+  if(offlineForestAfter.tasks.some(t=>t.key==='gather-forest')||offlineForestAfter.wood<=offlineForestBefore.wood||offlineForestAfter.forestRemain>=offlineForestBefore.forestRemain)throw Error('Offline gathering did not complete while closed');
+  for(let i=0;i<2;i++){await node('forest');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-forest'),10000)}
   for(let i=0;i<5;i++){await node('quarry');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry'),10000)}
   await node('camp');await p.waitForTimeout(2800);await closeAll();if(!(await state()).camp)throw Error('Corrupt camp did not resolve');
 
