@@ -23,6 +23,8 @@ Updated: 2026-09-20
 10. MVP success = desire to continue, not system count. Do not expand beyond current Arc I until economy choice + Codex relic + truthful 4X horizon + return/reward loop are proven.
 
 ## Working method
+- Mandatory local gate: `npm run validate:local` = build → syntax/contracts → local server → targeted blockers → regressions → uninterrupted fresh-save Arc I. Fix/repeat inside the same working session until green; only then dispatch one final Pages certification.
+- Player-reported regressions are permanent QA assertions. Current blocker coverage includes hunting visibility, live gather countdown, and pre-Lyra Fissure inspection.
 - Primary iteration: local canonical build + Playwright; batch blockers before pushing.
 - Failure output: step + state/resources + screenshot where possible.
 - Separate regression, uninterrupted fresh-save, and player-like experiential passes.
@@ -42,4 +44,5 @@ When the user says **hazlo / sigue / adelante / continúa**, do not stop after l
 - `tools/build-preview.mjs` is the single build recipe used by humans and CI.
 - `tools/check-preview.mjs` performs syntax + canonical contract checks.
 - Pages workflow is `workflow_dispatch` only: small development commits no longer create/cancel/queue full releases.
+- `tools/validate-local.mjs` is the single-command autonomous local validation harness used before remote certification.
 - GitHub Actions remains final clean-environment certification/deploy; active debugging should use the same scripts locally when a browser runtime is available.
