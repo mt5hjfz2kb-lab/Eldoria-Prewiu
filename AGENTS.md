@@ -17,13 +17,13 @@ This repository is the source of truth. Chat history is disposable.
 `SESSION_HANDOFF.md` es un índice operativo breve, no otro documento maestro. El repositorio sigue siendo la única fuente de verdad. Los documentos históricos bajo `docs/` y versiones antiguas son referencia bajo demanda, no lectura obligatoria.
 
 ## Current state
-- Active development line: `development/v0.23-clean`.
-- Canonical editable game: `v0220/index.html`.
-- Runtime/API version: **v0.23.14**.
+- Active development line: `main`.
+- Canonical editable game: `v0220/index.html` with stable subsystem modules under `v0220/js/`.
+- Runtime/API version: **v0.24.0**.
 - Public build is produced from that file into `playtest/index.html` by `.github/workflows/pages.yml`.
 - Protected visual recovery point: commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / branch `stable/visual-good-f139968c`. Never modify that branch.
-- Current development HEAD immediately before this documentation consolidation: `feee035322acc58108bed0e41a748cbbf87539cf`.
-- The real Fissure→Lyra regression test was still being debugged at that HEAD; do not describe the full game as E2E-verified until a fresh complete run actually passes.
+- Certified recovery baseline: `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435` / `baseline/v0.24-certified`.
+- Current `main` may be ahead of that baseline during stabilization; always inspect real HEAD and latest certification before reporting a build as verified.
 
 ## Non-negotiable working rules
 - Never reconstruct the project from an older version. Make surgical changes to the canonical file.
