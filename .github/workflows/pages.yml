@@ -91,6 +91,16 @@ jobs:
       - name: E2E mandatory fresh-save Arc I
         id: arc1_sweep
         run: node qa/e2e-full-arc1.js
+      - name: Upload player-experience report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: player-experience-${{ github.run_number }}
+          path: |
+            qa-player-experience.json
+            qa-player-experience.md
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Upload Arc I diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
