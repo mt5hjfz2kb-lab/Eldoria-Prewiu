@@ -4,6 +4,7 @@ Updated: 2026-09-20
 This file contains transient operational state only. Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
+- Repository HEAD after coherence audit: `48123af6bbb6fed0879ac0a6ca958b7205e7b8ca` (documentation/workflow-only consolidation; no gameplay changes in the audit block).
 - Branch: `main`.
 - Active runtime milestone: **v0.24.0**; do not label v0.24.1 until a later candidate is fully certified.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
