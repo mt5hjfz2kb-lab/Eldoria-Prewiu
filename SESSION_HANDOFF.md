@@ -2,12 +2,12 @@
 Updated: 2026-09-20
 
 - Active development branch: `main` (v0.24.0 playtest cleanup/certification).
-- Current milestone: v0.24.0; always verify actual GitHub HEAD at session start.
+- Current milestone: **v0.24.0 certified baseline** at `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`; protected recovery branch `baseline/v0.24-certified`.
 - Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
-- Last verified point: previous v0.24 baseline `bc868c73` completed fresh-save certification. Current cleanup integrates core dialogue into canonical runtime, fixes live economy/mobile actions/background gathering, and is awaiting the new deterministic certification gate.
-- Work in progress: finish the clean v0.24 baseline, deploy it, and verify the *published* fresh-save Arc I before handing it to Cristian.
-- Next task: resolve any failure from the latest certification run without stacking hotfixes; core behavior must remain canonical.
+- Last verified point: full uninterrupted fresh-save Arc I, regressions, Pages deploy and published Chromium verification all passed for `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
+- Work in progress: structural consolidation from the certified baseline. Preserve behavior/art; remove duplication and legacy layering progressively. `runtime-hotfix.js` is already migration-only.
+- Next task: audit/extract stable canonical subsystems in small testable blocks, beginning with duplicated contextual/mobile CSS and dead legacy runtime; never delete legacy code until equivalent behavior is covered by QA.
 - Open debt after stabilization: Bastion VI–X and Stoneworks routine modal UX; Forge/Hero Hall stable IDs/UX; survey/export/reset; placeholder special combats; deliberate subsystem extraction from the large canonical HTML.
 
 ## Critical rules
