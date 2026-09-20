@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
 
-      - name: Use canonical v0.23 clean vertical-slice base
+      - name: Use canonical v0.24 clean vertical-slice base
         run: |
           test -s v0220/index.html
           test -s v0220/runtime-hotfix.js
@@ -103,7 +103,7 @@ jobs:
           test -s assets/orin-portrait.jpg
           grep -q 'v022-core-loop' playtest/index.html
           grep -q 'ELDORIA_V023' playtest/index.html
-          grep -Eq "version:'0\.23\.[0-9]+'" playtest/index.html
+          grep -q "version:'0.24.0'" playtest/index.html
           grep -q 'data-object-action' playtest/index.html
           grep -q 'buildingTimer' playtest/index.html
           grep -q 'data-equip' playtest/index.html
