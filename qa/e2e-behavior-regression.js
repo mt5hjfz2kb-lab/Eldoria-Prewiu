@@ -11,5 +11,8 @@ const result=await p.evaluate(()=>{
  ok(E.gameplay.canBastion2({wood:450,stone:300,food:0,camp:true}),'bastion2-rule');ok(!E.gameplay.canBastion2({wood:450,stone:300,food:0,camp:false}),'bastion2-gate');
  ok(E.gameplay.canBastion3({wood:650,stone:500,food:0,lyra:true,boss:true}),'bastion3-rule');
  const a=api.assert();ok(a&&typeof a==='object','runtime-assertions');return{fail,a,version:api.version};
-});console.log('BEHAVIOR REGRESSION '+JSON.stringify(result));await b.close();if(result.fail.length)process.exit(2);
+});console.log('BEHAVIOR REGRESSION '+JSON.stringify(result));
+  // Tutorial guidance must never cover the contextual action it is explaining on mobile.
+  await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'world',bastionLevel:2,bastion:2,forest:false,wood:300,stone:0,food:0}));await p.reload({waitUntil:'domcontentloaded'});await p.waitForTimeout(300);const target=p.locator('[data-testid="world-node-forest"]');await target.tap({force:true});await p.waitForTimeout(150);const guide=p.locator('.tutorialHand:visible');const action=p.locator('[data-testid="world-action-forest"]:visible');if(await guide.count()&&await action.count()){const [g,a]=await Promise.all([guide.first().boundingBox(),action.first().boundingBox()]);if(g&&a&&g.x<a.x+a.width&&g.x+g.width>a.x&&g.y<a.y+a.height&&g.y+g.height>a.y)throw Error('Tutorial guidance overlaps contextual action');}
+await b.close();if(result.fail.length)process.exit(2);
 })().catch(e=>{console.error(e);process.exit(1)});
