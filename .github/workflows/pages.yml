@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # A certification run must finish once started. Cancelling it on every small
+  # follow-up commit was leaving Eldoria permanently between certifications.
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -82,21 +84,17 @@ jobs:
         run: node qa/e2e-real-progression.js
       - name: E2E real late Arc I progression
         run: node qa/e2e-late-progression.js
-      - name: E2E diagnostic full Arc I sweep
+      - name: E2E mandatory fresh-save Arc I
         id: arc1_sweep
-        continue-on-error: true
         run: node qa/e2e-full-arc1.js
-      - name: Upload Arc I sweep diagnostics
-        if: always()
+      - name: Upload Arc I diagnostics
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: arc1-sweep-diagnostics-${{ github.run_number }}
           path: |
             qa-failure-*.png
           if-no-files-found: ignore
-      - name: Enforce fresh-save Arc I result
-        if: steps.arc1_sweep.outcome != 'success'
-        run: exit 1
       - name: Recovery regression checks
         run: |
           test -s playtest/index.html
@@ -137,3 +135,4 @@ jobs:
           ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' E2E_PHASE=complete node qa/e2e-smoke.js
           ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-all-nodes.js
           ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-real-progression.js
+          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-full-arc1.js
