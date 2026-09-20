@@ -49,8 +49,8 @@ Add stable `data-testid` to every important new action/state. Forge/Hero Hall co
 For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
 
 ## Workflow / deploy
-`.github/workflows/pages.yml` runs on pushes to `main`:
-1. checkout;
+`.github/workflows/pages.yml` runs only by explicit `workflow_dispatch` after a coherent development block is ready for certification:
+1. checkout the exact release HEAD;
 2. copy canonical `v0220/index.html` to `playtest/index.html`;
 3. syntax-check inline JS;
 4. install Playwright + Chromium;
@@ -64,7 +64,7 @@ For every gameplay bug: reproduce with Playwright → fix → prove the exact in
 If a pre-deploy test fails, Pages is not deployed. Do not call a commit “published” unless Deploy to GitHub Pages completed. Do not call gameplay “verified” unless the relevant real interaction test completed; green syntax/static checks are insufficient.
 
 ## Release procedure
-Use the repository truth from `SESSION_HANDOFF.md`. Keep the current validated build as the baseline, make surgical canonical changes, run targeted regression plus `qa/e2e-full-arc1.js`, then allow Pages deployment only when the complete gate is green. Inspect the published URL before calling a build playable. Use a cache-busting query when sharing it.
+Use the repository truth from `SESSION_HANDOFF.md`. Keep the current validated build as the baseline and batch a coherent set of surgical canonical changes. Do not dispatch certification for each small commit. Once the block is internally coherent, explicitly dispatch the workflow for that exact HEAD; Pages deploys only when the complete gate is green. Inspect the published URL before calling a build playable. Use a cache-busting query when sharing it.
 
 ## Architecture guardrail
 Core gameplay/dialogue/economy behavior belongs in `v0220/index.html` until modules are extracted deliberately. `runtime-hotfix.js` is compatibility/migration-only and must not accumulate new core behavior. Before adding content, prefer extracting stable subsystems behind the same DOM/test contracts rather than layering another hotfix.
