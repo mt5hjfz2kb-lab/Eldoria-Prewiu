@@ -6,8 +6,8 @@ Updated: 2026-09-20
 - Runtime: **v0.24.0**.
 - Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
 - Last verified point: full uninterrupted fresh-save Arc I, regressions, Pages deploy and published Chromium verification all passed for `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
-- Work in progress: structural consolidation from the certified baseline. Preserve behavior/art; remove duplication and legacy layering progressively. `runtime-hotfix.js` is already migration-only.
-- Next task: audit/extract stable canonical subsystems in small testable blocks, beginning with duplicated contextual/mobile CSS and dead legacy runtime; never delete legacy code until equivalent behavior is covered by QA.
+- Work in progress: post-baseline stabilization on `main`. Lyra inspection/recruitment flow, extra early resource nodes, anchored world guidance and mobile interaction corrections are integrated. Local clean-environment QA passes; published Pages verification is being hardened against stale CDN revisions.
+- Next task: finish a green published Chromium certification for the current mainline, then freeze that gameplay SHA before resuming product/MVP work. Published verification must retry the deployed revision rather than accepting a stale Pages response.
 - Open debt after stabilization: Bastion VI–X and Stoneworks routine modal UX; Forge/Hero Hall stable IDs/UX; survey/export/reset; placeholder special combats; deliberate subsystem extraction from the large canonical HTML.
 
 ## Critical rules
