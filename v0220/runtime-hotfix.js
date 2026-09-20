@@ -39,3 +39,23 @@ window.dialogue = function(name, copy, done) {
     if (typeof done === 'function') done();
   };
 };
+
+// One-time economy migration: the pre-Stoneworks quarry reserve introduced in
+// the current baseline still leaves a fresh save short of the Stoneworks build.
+// Add one extra 700-stone load once per save/browser without creating a
+// repeatable reload exploit. This preserves the current gameplay direction and
+// only removes the hard progression deadlock found by the uninterrupted QA run.
+(() => {
+  const migrationKey = 'eldoria-hotfix-quarry-4200-v1';
+  if (localStorage.getItem(migrationKey)) return;
+  const api = window.ELDORIA_V023;
+  if (!api || typeof api.state !== 'function' || typeof api.setQA !== 'function') return;
+  const state = api.state();
+  if (!state || state.graniteQuarry || state.bastionLevel > 5) {
+    localStorage.setItem(migrationKey, 'skipped');
+    return;
+  }
+  const current = Number(state.quarryRemain || 0);
+  api.setQA({quarryRemain: current + 700});
+  localStorage.setItem(migrationKey, 'applied');
+})();
