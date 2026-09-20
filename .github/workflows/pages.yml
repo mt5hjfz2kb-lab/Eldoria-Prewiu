@@ -181,7 +181,15 @@ jobs:
       - name: Verify published build with Chromium
         run: |
           sleep 30
-          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' E2E_PHASE=complete node qa/e2e-smoke.js
-          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-all-nodes.js
-          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-real-progression.js
-          ELDORIA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}' node qa/e2e-full-arc1.js
+          URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&published=${{ github.sha }}'
+          for attempt in 1 2 3 4; do
+            echo "Published verification attempt $attempt"
+            if ELDORIA_URL="$URL" E2E_PHASE=complete node qa/e2e-smoke.js && \
+               ELDORIA_URL="$URL" node qa/e2e-all-nodes.js && \
+               ELDORIA_URL="$URL" node qa/e2e-real-progression.js && \
+               ELDORIA_URL="$URL" node qa/e2e-full-arc1.js; then
+              exit 0
+            fi
+            [ "$attempt" -lt 4 ] && sleep 30
+          done
+          exit 1
