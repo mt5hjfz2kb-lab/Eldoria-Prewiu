@@ -1,48 +1,37 @@
 # Eldoria — SESSION HANDOFF
 Updated: 2026-09-20
 
-- Active development branch: `main` (v0.24.0 playtest cleanup/certification).
-- Current milestone: **v0.24.0 certified baseline** at `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`; protected recovery branch `baseline/v0.24-certified`.
-- Runtime: **v0.24.0**.
-- Canonical editable game: `v0220/index.html`; active fresh-save traversal: `qa/e2e-full-arc1.js`.
-- Last verified point: full uninterrupted fresh-save Arc I, regressions, Pages deploy and published Chromium verification all passed for `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
-- Work in progress: v0.24 stabilization plus release-pipeline consolidation. Build is now reproducible through `npm run build` / `npm run check`; release certification is explicit/manual rather than triggered by every small commit. Lyra inspection/recruitment, extra early resource nodes, anchored world guidance and mobile interaction corrections are integrated.
-- Next task: certify the current coherent mainline with the consolidated build path, verify the exact Pages deployment in Chromium, then freeze that gameplay SHA before resuming MVP work.
-- Open debt after stabilization: Bastion VI–X and Stoneworks routine modal UX; Forge/Hero Hall stable IDs/UX; survey/export/reset; placeholder special combats; deliberate subsystem extraction from the large canonical HTML.
+This file contains transient operational state only. Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
-## Critical rules
-1. Repository is the only source of truth; never reconstruct from chat or an old build.
-2. Never modify `stable/visual-good-f139968c` / `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
-3. Make surgical changes to `v0220/index.html`; preserve the approved visual baseline. `runtime-hotfix.js` is migration-only: never add core gameplay/UI/dialogue behavior there.
-4. Routine build/upgrade/gather/attack is object-local: action below, timer above; avoid confirmation modals.
-5. Cards/relics → Codex; equipment/materials → Chest/inventory.
-6. Use stable test IDs and real tap/click paths for important interactions.
-7. Fixture QA is not proof of fresh-save reachability.
-8. Do not claim gameplay fixed/published until the relevant real QA/deploy verification passes.
-9. Update this handoff after every important work block; update PROJECT_STATE/CHANGELOG for milestones.
-10. MVP success = desire to continue, not system count. Do not expand beyond current Arc I until economy choice + Codex relic + truthful 4X horizon + return/reward loop are proven.
+## Current working state
+- Branch: `main`.
+- Active runtime milestone: **v0.24.0**; do not label v0.24.1 until a later candidate is fully certified.
+- Canonical editable source: `v0220/index.html` + `v0220/js/`.
+- Generated deployment output: `playtest/`; never edit it as source.
+- Last certified stable baseline: `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435` / `baseline/v0.24-certified`.
+- Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 
-## Working method
-- Mandatory local gate: `npm run validate:local` = build → syntax/contracts → local server → targeted blockers → regressions → uninterrupted fresh-save Arc I. Fix/repeat inside the same working session until green; only then dispatch one final Pages certification.
-- Player-reported regressions are permanent QA assertions. Current blocker coverage includes hunting visibility, live gather countdown, and pre-Lyra Fissure inspection.
-- Primary iteration: local canonical build + Playwright; batch blockers before pushing.
-- Failure output: step + state/resources + screenshot where possible.
-- Separate regression, uninterrupted fresh-save, and player-like experiential passes.
-- GitHub Actions is final certification/deployment, not the normal debugger. Certification runs do not cancel one another; published verification includes the uninterrupted fresh-save Arc I.
+## Last completed work block
+Repository/workflow coherence audit completed. Canonical hierarchy is now:
+`AGENTS.md` → `SESSION_HANDOFF.md` → `PROJECT_STATE.md` → specialized docs on demand.
+Redundant `HANDOFF_CHATGPT.md` and `PROJECT_STATUS.md` were removed. README/baseline/design/continuity/QA docs were aligned so old branch/version/protocol claims cannot compete with the active state. Historical version directories remain recovery-only.
 
-## Minimum verification
-- Syntax/workflow: push to `main` and inspect `.github/workflows/pages.yml`.
-- Gameplay change: targeted Playwright test first; for progression/release run `node qa/e2e-full-arc1.js` plus workflow regressions.
-- Release/test-ready: Pages deploy + published Chromium verification must pass.
-- Details when needed: `PROJECT_STATE.md`, `QA_AND_DEPLOY.md`, `DESIGN_DECISIONS.md`, `ELDORIA_CONTINUIDAD.md`, `ELDORIA_BASELINE_RULES.md`, `CHANGELOG.md`.
+The development protocol is now local-first: targeted iteration → `npm run validate:local` → one coherent commit/push → manual Pages certification only for a playable/release candidate. The Pages workflow no longer repeats separate copies of the full regression/fresh-save matrix after the canonical validation command; published verification is intentionally smaller.
 
-## EXECUTION RULE — LARGE AUTONOMOUS BLOCKS
-When the user says **hazlo / sigue / adelante / continúa**, do not stop after launching CI or after finding the next technical blocker. Work through the largest executable block in the same turn: inspect → fix clear technical/progression blockers → test → iterate → commit → certify → deploy → verify published build. Return control only when there is a genuinely useful playable/verified state or a design decision/risk that requires the user. GitHub Actions is final certification, not the primary debugging loop. Do not send intermediate bug-by-bug progress reports.
+## Current gameplay candidate status
+Post-baseline main contains the recent world/narrative/regression fixes (hunting visibility/respawn, live gather countdown, Fissure inspection/Lyra flow, additional renewable nodes and dialogue work). The previous publication run for pre-audit commit `be138290...` passed all pre-deploy/local-equivalent QA and deployed Pages, but its published verification failed on stale test expectations/intermittent public interaction checks. Therefore **the last certified stable baseline remains `2ef3058...`** and current main must not yet be called v0.24.1/stable.
 
-## Release pipeline consolidation — 2026-09-20
-- `package.json` defines canonical build/check/regression/fresh-save commands.
-- `tools/build-preview.mjs` is the single build recipe used by humans and CI.
-- `tools/check-preview.mjs` performs syntax + canonical contract checks.
-- Pages workflow is `workflow_dispatch` only: small development commits no longer create/cancel/queue full releases.
-- `tools/validate-local.mjs` is the single-command autonomous local validation harness used before remote certification.
-- GitHub Actions remains final clean-environment certification/deploy; active debugging should use the same scripts locally when a browser runtime is available.
+## Next task
+Resume stabilization of the current gameplay candidate using the new local-first protocol: reconcile the published-test expectations with the canonical dialogue/node behavior, run `npm run validate:local` until green, then perform one manual Pages certification. If the final published build is green, consolidate the milestone as v0.24.1 and update this handoff + `PROJECT_STATE.md` + `CHANGELOG.md`.
+
+## Open operational blockers
+- Published `e2e-real-progression.js` still expected the obsolete `aldric-state-dialogue` selector after dialogue unification.
+- One published all-nodes attempt observed a zero-size meat contextual action; verify/reproduce locally before changing gameplay.
+- Do not expand gameplay while these stabilization checks remain open.
+
+## Minimal commands
+- Iteration: run only the relevant `qa/e2e-*.js` test.
+- Pre-push gameplay gate: `npm run validate:local`.
+- Final release: manually dispatch `.github/workflows/pages.yml` once, only after local green.
+
+Do not reread historical directories/docs during normal startup. Read specialized documentation only when the next task actually needs it.
