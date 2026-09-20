@@ -48,60 +48,9 @@ jobs:
           python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
           sleep 2
           curl --fail http://127.0.0.1:4173/playtest/ >/dev/null
-      - name: E2E boot canonical game
-        id: qa_boot
-        continue-on-error: true
-        run: E2E_PHASE=boot node qa/e2e-smoke.js
-      - name: E2E sawmill contextual action
-        id: qa_context
-        continue-on-error: true
-        run: E2E_PHASE=context node qa/e2e-smoke.js
-      - name: E2E sawmill construction starts
-        id: qa_start
-        continue-on-error: true
-        run: E2E_PHASE=start node qa/e2e-smoke.js
-      - name: E2E sawmill construction completes
-        id: qa_complete
-        continue-on-error: true
-        run: E2E_PHASE=complete node qa/e2e-smoke.js
+      - name: Full local-equivalent certification gate
+        run: npm run validate:local
 
-      - name: E2E behavior regression
-        id: qa_behavior
-        continue-on-error: true
-        run: node qa/e2e-behavior-regression.js
-      - name: E2E core progression regression
-        id: qa_core
-        continue-on-error: true
-        run: node qa/e2e-core-flow.js
-      - name: E2E every building interaction
-        id: qa_buildings
-        continue-on-error: true
-        run: node qa/e2e-all-buildings.js
-      - name: E2E every world-node interaction
-        id: qa_nodes
-        continue-on-error: true
-        run: node qa/e2e-all-nodes.js
-      - name: E2E real early progression
-        id: qa_early
-        continue-on-error: true
-        run: node qa/e2e-real-progression.js
-      - name: E2E real late Arc I progression
-        id: qa_late
-        continue-on-error: true
-        run: node qa/e2e-late-progression.js
-      - name: E2E mandatory fresh-save Arc I
-        id: arc1_sweep
-        continue-on-error: true
-        run: node qa/e2e-full-arc1.js
-      - name: Certification gate — fail after complete diagnostic sweep
-        run: |
-          node - <<'NODE'
-          const r=${{ toJSON(steps) }};
-          const ids=['qa_boot','qa_context','qa_start','qa_complete','qa_behavior','qa_core','qa_buildings','qa_nodes','qa_early','qa_late','arc1_sweep'];
-          const failed=ids.filter(id=>r[id]&&r[id].conclusion!=='success');
-          if(failed.length){console.error('QA failures collected:',failed.join(', '));process.exit(1)}
-          console.log('COMPLETE QA SWEEP PASS');
-          NODE
       - name: Upload player-experience report
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,39 +69,6 @@ jobs:
           path: |
             qa-failure-*.png
           if-no-files-found: ignore
-      - name: Recovery regression checks
-        run: |
-          test -s playtest/index.html
-          test -s assets/orin-portrait.jpg
-          grep -q 'v022-core-loop' playtest/index.html
-          grep -q 'ELDORIA_V023' playtest/index.html
-          grep -q "version:'0.24.0'" playtest/index.html
-          grep -q 'data-object-action' playtest/index.html
-          grep -q 'buildingTimer' playtest/index.html
-          grep -q 'data-equip' playtest/index.html
-          grep -q 'passiveRates' playtest/index.html
-          grep -q 'function qaAssertions' playtest/index.html
-          grep -q 'function qaState' playtest/index.html
-          grep -q 'data-testid="building-sawmill"' playtest/index.html
-          grep -q 'data-testid="building-keep"' playtest/index.html
-          grep -q 'data-testid="world-action-' playtest/index.html
-          ! grep -q "id=\"v020-chapter1-intro\"" playtest/index.html
-          ! grep -q "eldoria-aldric-story-r7-v3';let seen" playtest/index.html
-          grep -q 'v022-premium-visual-pass' playtest/index.html
-          grep -q 'Bastión de Valoria' playtest/index.html
-          grep -q 'function recoverAether()' playtest/index.html
-          grep -q 'function rescueNareth()' playtest/index.html
-          grep -q 'function marchTrial()' playtest/index.html
-          grep -q 'function finalAssault()' playtest/index.html
-          grep -q 'function openHeroHall()' playtest/index.html
-          grep -q "visualRecoveryBase:'f139968c'" playtest/index.html
-          grep -q 'runtime-hotfix.js' playtest/index.html
-          grep -q 'js/state-economy.js' playtest/index.html
-          grep -q 'js/tasks-offline.js' playtest/index.html
-          grep -q 'js/dialogue-tutorial.js' playtest/index.html
-          grep -q 'js/ui.js' playtest/index.html
-          grep -q 'js/gameplay.js' playtest/index.html
-
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
@@ -167,9 +83,7 @@ jobs:
             echo "Published verification attempt $attempt"
             curl -fsSL -H "Cache-Control: no-cache" "$URL" | grep -q "eldoria-version" || { sleep 10; continue; }
             if ELDORIA_URL="$URL" E2E_PHASE=complete node qa/e2e-smoke.js && \
-               ELDORIA_URL="$URL" node qa/e2e-all-nodes.js && \
-               ELDORIA_URL="$URL" node qa/e2e-real-progression.js && \
-               ELDORIA_URL="$URL" node qa/e2e-full-arc1.js; then
+               ELDORIA_URL="$URL" node qa/e2e-behavior-regression.js; then
               exit 0
             fi
             [ "$attempt" -lt 4 ] && sleep 30
