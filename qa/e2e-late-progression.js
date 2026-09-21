@@ -8,19 +8,8 @@ await clearStory();await set({...await state(),view:'world'});await tapNode('dev
 await clearStory();await set({...await state(),view:'kingdom'});forge=p.locator('[data-poi="forge"]');await forge.tap();act=p.locator('[data-testid="building-action-forge"]');await act.tap();confirm=p.locator('.e22-overlay .btn');await confirm.tap();await p.waitForTimeout(200);if(!(await state()).inventory.some(x=>x&&x.slot==='weapon'))throw Error('Forge item failed');await closePopup();
 await clearStory();await set({...await state(),view:'kingdom',wood:9999,stone:9999,food:9999});keep=p.locator('[data-testid="building-keep"]');await keep.tap();act=p.locator('[data-testid="building-action-keep"]');await act.tap();confirm=p.locator('.e22-overlay .btn');await confirm.tap();await p.waitForTimeout(12500);if((await state()).bastionLevel!==7)throw Error('Bastion VII failed');await closePopup();
 await clearStory();await set({...await state(),view:'kingdom',wood:9999,stone:9999,food:9999});keep=p.locator('[data-testid="building-keep"]');await keep.tap();act=p.locator('[data-testid="building-action-keep"]');await act.tap();confirm=p.locator('.e22-overlay .btn');await confirm.tap();await p.waitForTimeout(12500);if((await state()).bastionLevel!==8)throw Error('Bastion VIII failed');await closePopup();
-await clearStory();await set({...await state(),view:'world'});await tapNode('nareth');await p.waitForTimeout(1900);
-for(let guard=0;guard<30&&!((await state()).maelis);guard++){
-  const story=p.locator('.aldric-cinematic[data-scene="story-dialogue"]:visible .aldric-continue').last();
-  if(await story.count()){
-    await story.click({force:true});await p.waitForTimeout(25);
-    const again=p.locator('.aldric-cinematic[data-scene="story-dialogue"]:visible .aldric-continue').last();
-    if(await again.count())await again.click({force:true}).catch(()=>{});
-    await p.waitForTimeout(60);continue;
-  }
-  const ceremony=p.locator('.e22-cinema:visible .btn').last();
-  if(await ceremony.count()){await ceremony.click({force:true});await p.waitForTimeout(80);continue}
-  await p.waitForTimeout(100);
-}
+await clearStory();await set({...await state(),view:'world'});await tapNode('nareth');await p.waitForTimeout(1800);
+await p.evaluate(async()=>{for(let guard=0;guard<40&&!window.ELDORIA_V023.state().maelis;guard++){const btn=document.querySelector('.aldric-cinematic[data-scene="story-dialogue"] .aldric-continue');if(btn){btn.click();await new Promise(r=>setTimeout(r,12));btn.click();await new Promise(r=>setTimeout(r,20));continue}const ceremony=document.querySelector('.e22-cinema .btn');if(ceremony){ceremony.click();await new Promise(r=>setTimeout(r,20));continue}await new Promise(r=>setTimeout(r,50))}});
 if(!(await state()).maelis)throw Error('Maelis rescue failed');await closePopup();
 await clearStory();await set({...await state(),view:'kingdom',wood:9999,stone:9999,food:9999});keep=p.locator('[data-testid="building-keep"]');await keep.tap();act=p.locator('[data-testid="building-action-keep"]');await act.tap();confirm=p.locator('.e22-overlay .btn');await confirm.tap();await p.waitForTimeout(12500);if((await state()).bastionLevel!==9)throw Error('Bastion IX failed');await closePopup();
 await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),marchConfigured:true,marchSlots:['aldric','maelis'],view:'world'}));await tapNode('trial');await p.waitForTimeout(1900);if(!(await state()).trialWon)throw Error('March trial failed');await closePopup();
