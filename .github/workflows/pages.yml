@@ -13,8 +13,9 @@ permissions:
 concurrency:
   group: pages
   # Each coherent green push certifies and publishes the exact candidate.
-  # A running certification is never cancelled by a later push.
-  cancel-in-progress: false
+  # Only the newest main candidate matters during an active development block.
+  # Superseded runs are cancelled so stale candidates cannot block final certification.
+  cancel-in-progress: true
 
 jobs:
   deploy:
