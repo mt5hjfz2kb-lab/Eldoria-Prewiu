@@ -14,7 +14,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 - Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
 
 ## v0.26.2 delivery block
-Built on the certified v0.26.1 baseline. The Códice/Relic layer now recovers the useful v0.21 rules: clear use-vs-conserve trade-off, consumed cards become weak 1/1/1/1 Echoes for Duelo, Indestructible remains a quality and survives use by entering cooldown, and conserving is not irreversible. Orus provides a guided orientation training while the formal Duelo remains a 5-relic milestone.
+Built on the certified v0.26.1 baseline. The Códice/Relic layer now recovers the useful v0.21 rules: clear use-vs-conserve trade-off, consumed cards become weak 1/1/1/1 Echoes for Duelo, Indestructible remains a quality and survives use by entering cooldown, and conserving is not irreversible. Orus provides guided orientation training. At 5 discovered relics, the formal Duelo opens as a playable 3×3 board with N/E/S/O edge comparisons, adjacent captures, a +1 central resonance cell and consumed-card Echoes 1/1/1/1.
 
 Arcón and Códice are now dedicated full-screen game views, like Mundo/Valoria, rather than modal overlays on top of the map. Arcón remains strictly objects/materials/equipment; Códice remains strictly cards/relics.
 
@@ -32,4 +32,4 @@ npm run validate:local
 ```
 
 
-v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearly explains USAR vs CONSERVAR; normal-card consumption/Echo rule is visible; Indestructible survives use and enters cooldown; conservation permits later use; Orus training teaches N/E/S/O orientation; formal Duelo milestone counts discovered relics including consumed Echoes; uninterrupted Arc I and prior v0.26.1 regression suite remain green.
+v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearly explains USAR vs CONSERVAR; normal-card consumption/Echo rule is visible; Indestructible survives use and enters cooldown; conservation permits later use; Orus training teaches N/E/S/O orientation; formal Duelo milestone counts discovered relics including consumed Echoes; the playable 3×3 board must support real card selection, placement, capture and CPU response; uninterrupted Arc I and prior v0.26.1 regression suite remain green.
