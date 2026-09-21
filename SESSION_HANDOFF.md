@@ -8,7 +8,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 - Branch: `main`.
 - Active release candidate: **v0.25.0**.
-- Gameplay/release commit: `687f2247045f0df49290c647dd44179416966f7b`.
+- Current owner-feedback candidate: `443d70161e54fbad928aaae6687bb8c03223d9d0`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -31,9 +31,13 @@ The external-playtest closeout is now complete: explicit end screen, contextual 
 - Final survey and session summary: **PASS**.
 - GitHub Pages/published Chromium result: check the workflow attached to the v0.25.0 push before calling the public URL certified.
 
+## Current owner-feedback block
+
+Implemented the reported early/mid-Arc blockers: canonical Aldric portrait, Corrupt combat dialogue surface, HUD Arcón unlocked from the early strange find, Fissure manuscript stored in inventory, Hero Hall close control, contextual-only Bastion upgrades, correct Sawmill level, building upgrade costs/timers, stronger Power/Ranking explanation, additional 4X horizon cues, and explicit Bastion VI elite visibility. Permanent mobile regression coverage was added. Candidate is awaiting the Pages certification/deployment workflow before owner handoff.
+
 ## Next task
 
-If the v0.25.0 Pages workflow is green, hand the public build to the owner for human playtest. New feedback must follow the block protocol in `AGENTS.md`: reproduce all items, implement one coherent batch, targeted QA, full local gate, one push, published verification, then return the stable build.
+Do not hand this candidate to the owner until the workflow for `443d70161e54fbad928aaae6687bb8c03223d9d0` is green and the published Chromium verification passes.
 
 ## Minimal commands
 
