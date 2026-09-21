@@ -1,5 +1,13 @@
 # Eldoria — Changelog
 
+## v0.25.1 — 2026-09-21
+
+- Corrected the owner playtest block: canonical Aldric portrait/dialogues, HUD Arcón de Valoria and manuscript inventory, Hero Hall close control, contextual Bastion upgrades, correct building levels, visible costs and timed upgrades, Power explanation, denser 4X horizon cues and explicit elite visibility.
+- Added permanent real-touch regression coverage for the corrected inventory, building and elite flows.
+- Updated the uninterrupted fresh-save Arc I certification for timed production upgrades; 16/16 checkpoints pass.
+- Certified and deployed the public build in GitHub Pages run 793, including published Chromium verification.
+
+
 ## v0.25.0 — 2026-09-21
 
 - Closed the external-playtest loop with an unmistakable Arc I completion screen, compact survey, copyable session summary, JSON export and full local reset.
