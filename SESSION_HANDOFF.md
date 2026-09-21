@@ -6,7 +6,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active release candidate: **v0.26.2**.
+- Active release candidate: **v0.26.3**.
 - Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
@@ -33,3 +33,13 @@ npm run validate:local
 
 
 v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearly explains USAR vs CONSERVAR; normal-card consumption/Echo rule is visible; Indestructible survives use and enters cooldown; conservation permits later use; Orus training teaches N/E/S/O orientation; formal Duelo milestone counts discovered relics including consumed Echoes; the playable 3×3 board must support real card selection, placement, capture and CPU response; uninterrupted Arc I and prior v0.26.1 regression suite remain green.
+
+## v0.26.3 owner-feedback block
+- Bastion IX mobile reliability: configured marches expose a persistent ATACAR objective outside the pannable map, so the action cannot disappear with device-specific pan/layout state.
+- Salón de Héroes is now a dedicated full-screen view with hero roles, ATQ/DEF/APO explanations, equipment and march formation in one place.
+- March setup explicitly explains Aldric as leader, companion roles, troop contribution and the difference between Power and combat composition.
+- Códice first-visit education now includes an Orus-guided tutorial for cards, N/E/S/O, USAR vs CONSERVAR, consumed Echo 1/1/1/1 and Indestructible cooldown semantics.
+- Bastion VI/Forge and Bastion VIII/Nareth narrative ordering was corrected so materials and Maelis are not explained before the player discovers them; repeated post-discovery dialogue was reduced.
+- Contextual tutorial guidance now continues through Forge, Devorador, Códice, Nareth and Bastion IX march/trial milestones.
+- Construction and upgrade resources are committed when the timer begins; completion no longer charges twice. Old in-flight saves retain a compatibility fallback.
+- Permanent QA covers 390x844 touch layout, full-screen Hero Hall, march persistence, Bastion IX CTA visibility and immediate resource spending.
