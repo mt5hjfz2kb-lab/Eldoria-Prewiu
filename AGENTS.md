@@ -28,7 +28,7 @@ If documents disagree, this hierarchy wins. Reconcile the stale lower-level docu
 - Development branch: `main`.
 - Canonical editable runtime: `v0220/index.html` plus `v0220/js/`.
 - `v0220` is a compatibility directory name, **not** the active product version.
-- Active runtime/API milestone: **v0.24.0** until a later milestone is explicitly certified.
+- Active runtime/API milestone: **v0.25.0**.
 - Generated public build: `playtest/`; never edit it as source.
 - Last certified stable recovery baseline: branch `baseline/v0.24-certified`, commit `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
 - Protected visual recovery: `stable/visual-good-f139968c`, commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
@@ -52,8 +52,8 @@ For ordinary development, work in one session and do not use GitHub Actions as t
 3. Run the smallest relevant targeted test while iterating.
 4. Before pushing a gameplay/release candidate, run `npm run validate:local`.
 5. If it fails, fix locally and rerun; do not push defect-by-defect.
-6. Commit/push the coherent green block.
-7. GitHub Pages workflow is **manual-only** (`workflow_dispatch`) and is used once for final clean-environment certification/deployment when a playable/release build is requested.
+6. Commit/push the coherent green block once.
+7. The push to `main` runs the clean-environment GitHub Pages certification/deployment. `workflow_dispatch` remains available for an intentional rerun.
 8. Verify the deployed URL with Chromium before calling it playable/verified.
 
 Every player-reported regression becomes a permanent automated assertion when practical.
@@ -61,11 +61,21 @@ Every player-reported regression becomes a permanent automated assertion when pr
 ### QA tiers
 - **During iteration:** relevant targeted test(s) only.
 - **Pre-push gameplay gate:** `npm run validate:local` (build + contracts + targeted regression + regression suite + uninterrupted fresh-save Arc I).
-- **Final publication:** one manual Pages certification. Do not run the heavy workflow for documentation-only changes or every small modification.
+- **Final publication:** one coherent green push to `main`; its Pages workflow certifies and publishes that exact commit. Avoid piecemeal pushes.
+
+### Owner-feedback block protocol
+When the owner sends corrections or improvements, treat them as one delivery block:
+1. Reproduce and group all feasible items before editing.
+2. Implement the whole coherent block without asking for intermediate confirmation unless a real product decision is unavoidable.
+3. Run targeted real-touch tests while iterating, then the full local gate.
+4. Correct every failure found by that gate, including regressions outside the originally reported symptom.
+5. Push once, wait for the clean Pages certification, verify the public build, and only then return a stable build for owner testing.
+
+The next owner-facing message should therefore be either a verified stable build or a precise blocker that genuinely requires owner action—not a stream of partial patches.
 
 ## Definition of done
 - Documentation/process-only change: docs/workflow/package consistency checked, commit/push complete; no gameplay publication required.
 - Gameplay change: implementation + targeted real interaction + `npm run validate:local` green + coherent commit/push.
-- Playable/release delivery: gameplay definition above + manual Pages certification/deploy + Chromium check of published build.
+- Playable/release delivery: gameplay definition above + successful Pages certification/deploy + Chromium check of the published build.
 
 When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn. Do not send bug-by-bug status messages. Return only with a useful verified result, a required design decision, or a genuine tool/access blocker.

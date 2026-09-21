@@ -11,7 +11,7 @@ python3 -m http.server 4173
 ```
 Open `http://127.0.0.1:4173/playtest/?qa=1`.
 
-CI installs `playwright@1.55.0` and Chromium. The canonical mobile emulation used by tests is 390×844, `isMobile:true`, `hasTouch:true`.
+Install dependencies with `npm install`, then install the browser once with `npm run qa:setup`. CI performs the same setup. The canonical mobile emulation used by tests is 390×844, `isMobile:true`, `hasTouch:true`.
 
 ## QA/Test Mode
 Runtime exposes `window.ELDORIA_V023` (and compatibility alias `ELDORIA_V022`):
@@ -25,7 +25,7 @@ Runtime exposes `window.ELDORIA_V023` (and compatibility alias `ELDORIA_V022`):
 
 Known deterministic fixtures: `start`, `sawmill`, `world`, `lyra`, `forge`, `endgame`. They are useful for targeted regression but are **not evidence of uninterrupted reachability**.
 
-Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.24.0.
+Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.25.0.
 
 Important IDs already used include:
 - `v022-core-loop`
@@ -43,7 +43,7 @@ npm run validate:local
 ```
 It builds the canonical preview, checks JavaScript/contracts, starts the local server, runs the targeted blocker suite, the complete regression suite, and the uninterrupted fresh-save Arc I traversal. A gameplay change is not ready to push/certify until this command is green. When it fails, fix locally and rerun it; do not use GitHub Actions as the debugger.
 
-GitHub Pages certification is deliberately `workflow_dispatch` only. Dispatch it once, after local validation is green, then verify the deployed URL. Every player-reported regression must be added to automated QA so it cannot silently return.
+GitHub Pages certification runs on a coherent push to `main`; `workflow_dispatch` is retained for intentional reruns. Push only after local validation is green, then verify the deployed URL. Every player-reported regression must be added to automated QA so it cannot silently return.
 
 ## Automated tests
 - `qa/e2e-smoke.js`: boot and real sawmill contextual/start/complete phases.
@@ -63,7 +63,7 @@ For every gameplay bug: reproduce with Playwright → fix → prove the exact in
 Do not dispatch it for documentation-only work or every small commit. Do not call a build published until Pages deployment succeeds; do not call the public build verified until its Chromium check succeeds.
 
 ## Release procedure
-Batch a coherent gameplay block locally. Iterate with targeted tests; run `npm run validate:local` once the candidate is coherent. Fix/repeat locally until green, commit/push once, then dispatch one manual Pages certification only when a playable/release build is requested. Documentation/process-only commits require consistency verification and push, not a Pages deployment.
+Batch a coherent gameplay block locally. Iterate with targeted tests; run `npm run validate:local` once the candidate is coherent. Fix/repeat locally until green, then commit/push once. That push performs clean-environment certification and deployment. Verify the published URL before handing the build to the owner.
 
 ## Architecture guardrail
 Core gameplay/dialogue/economy behavior belongs in `v0220/index.html` until modules are extracted deliberately. `runtime-hotfix.js` is compatibility/migration-only and must not accumulate new core behavior. Before adding content, prefer extracting stable subsystems behind the same DOM/test contracts rather than layering another hotfix.

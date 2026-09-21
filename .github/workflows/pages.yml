@@ -12,8 +12,8 @@ permissions:
 
 concurrency:
   group: pages
-  # A certification run must finish once started. Cancelling it on every small
-  # follow-up commit was leaving Eldoria permanently between certifications.
+  # Each coherent green push certifies and publishes the exact candidate.
+  # A running certification is never cancelled by a later push.
   cancel-in-progress: false
 
 jobs:

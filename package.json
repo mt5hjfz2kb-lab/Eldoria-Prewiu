@@ -1,8 +1,9 @@
 {
   "name": "eldoria-preview",
   "private": true,
-  "version": "0.24.1",
+  "version": "0.25.0",
   "scripts": {
+    "qa:setup": "playwright install chromium",
     "build": "node tools/build-preview.mjs",
     "check": "node tools/check-preview.mjs",
     "qa:regression": "node qa/e2e-behavior-regression.js && node qa/e2e-core-flow.js && node qa/e2e-all-buildings.js && node qa/e2e-all-nodes.js && node qa/e2e-real-progression.js && node qa/e2e-late-progression.js",

@@ -1,0 +1,6 @@
+node_modules/
+playtest/
+qa-player-experience.json
+qa-player-experience.md
+qa/screenshots/
+*.log
