@@ -4,7 +4,7 @@ Updated: 2026-09-21
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.26.1**.
+- Runtime/API milestone: **v0.26.2**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -38,7 +38,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Hero Hall needs deeper hero stats/skills/equipment UX; this is intentionally not expanded in the stabilization milestone.
 - Special late combats are placeholders for the intended richer semiautomatic layer.
 - Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
-- The current Códice introduces the relic mystery, but the full use/conserve card economy and Duelo de Reliquias remain deliberately outside this stabilized Arc I slice.
+- The Códice now implements the first real use/conserve decision, Indestructible cooldown behavior, consumed-card Echo consequences and Orus orientation training. A deeper multi-card Duelo board and wider relic economy remain future scope.
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
@@ -54,3 +54,14 @@ Change this file only when implemented functionality, product scope, verified st
 - Hero Hall and Codex receive high-contrast presentation.
 - Bastion IX attack interaction is part of release acceptance; real player path must remain actionable.
 - Codex / Orus / Relic Duel preserve the v0.21 clarity reference while staying integrated with current Arc I lore.
+
+
+## v0.26.2 — Códice / Reliquias / Arcón
+- Arcón is a dedicated full-screen view and no longer opens as a floating modal over the current map.
+- Códice is a dedicated full-screen archive view with stronger hierarchy and card presentation.
+- The v0.21 card principle is restored: using a normal relic consumes it for its immediate effect and leaves a weak Echo 1/1/1/1 for Duelo; conserving preserves its full N/E/S/O values and does not prevent later use.
+- Indestructible is a quality, not a rarity. Indestructible relics survive activation and enter cooldown.
+- The first Sello de Ceniza has a concrete outside-Duelo effect and a visible use/conserve decision.
+- Orus offers guided N/E/S/O training before the formal Duelo milestone.
+- Formal Duelo unlock progress is based on 5 discovered relics; consumed discoveries still count but enter the future hand as Echoes.
+- qa/e2e-codex-chest.js protects dedicated views, use/conserve explanation, Indestructible cooldown semantics and Orus orientation training.
