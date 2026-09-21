@@ -4,12 +4,12 @@ Updated: 2026-09-21
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.25.0**.
+- Runtime/API milestone: **v0.25.1**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Current certified playable baseline: `445661a318195315a6a8f56ade3bfa6642e6af58` (v0.24.1, certification run 749).
+- Current certified playable baseline: `b9d69605c650e1b54f2cff6dfc8514c27add9691` (v0.25.1 hotfix candidate, certification run 793 green).
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
@@ -33,7 +33,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
-v0.24.1 at `445661a318195315a6a8f56ade3bfa6642e6af58` remains the last certified recovery baseline while v0.25.0 is being validated. Exact current repository HEAD and certification result belong in `SESSION_HANDOFF.md`.
+v0.25.1 correction block passed full local-equivalent certification, uninterrupted fresh-save Arc I, deployment and published Chromium verification in run 793. Exact current repository HEAD and certification result belong in `SESSION_HANDOFF.md`.
 
 ## Maintenance
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
