@@ -10,6 +10,17 @@
 - At least one progression choice must be mutually exclusive or opportunity-cost based. Following a single highlighted next button to Bastion X is not sufficient proof of strategy.
 - Do not migrate to Unity until this compact MVP loop is playable, fresh-save certified and human-playtested.
 
+## Tutorial/prologue contract — 2026-09-21
+- **Bastion I–X is the complete playable prologue/tutorial.** By Bastion X a first-time player must understand Eldoria's core loop without external instructions: rebuild/upgrade → produce → explore → gather/fight/discover → obtain a meaningful reward → return → strengthen Valoria/heroes → pursue the next ambition.
+- I–III = survival and discovery; IV–VI = expansion and preparation; VII–VIII = mystery/collection/hero consequences; IX = independent mastery check; X = graduation/finale that resolves the immediate threat while opening the larger Breach mystery.
+- The tutorial must create curiosity, not merely explain controls. Early events should seed unanswered questions about the Breach, disappearances, anomalous materials/relics and the larger world without explaining the full truth.
+- Hero recruitment is a narrative event, never a routine reward. Every major hero first appears in-context, exchanges dialogue with Aldric/other relevant characters, states a believable motive, and receives a ceremony before joining.
+- **Lyra recruitment is two-phase:** investigate the Fissure perimeter → meet Lyra while she is searching for traces of the disappeared → establish her motive and alliance through Aldric↔Lyra dialogue → then assault the Fissure together.
+- The Fissure assault with Lyra awards an **unknown manuscript**. It is deliberately unusable during the current prologue; it seeds a later Barracks troop unlock and must be stored as a future-purpose discovery, not explained away.
+- Character/narrator story beats use the canonical typed dialogue surface. Sir Aldric dialogue always uses his canonical portrait; do not create a parallel dialogue system.
+- The world should feel populated. Resource nodes and beasts/enemies are distinct categories: beasts primarily return food; Breach/corrupted enemies return combat/rare progression rewards. Higher node levels can be visible as locked/aspirational content before unlock.
+- Preserve the current working loop and certified visual baseline. This is a reorganization/reinforcement of the MVP, not a rewrite.
+
 ## Product / loop
 - Mobile-first dark medieval fantasy city-builder/4X/RPG vertical slice.
 - Core loop: **Valoria → need/decision → world → gather/fight → reward → return → visible growth → new ambition**.
