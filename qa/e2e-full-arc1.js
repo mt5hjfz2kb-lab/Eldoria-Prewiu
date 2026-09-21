@@ -36,7 +36,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   if(!cityGather.tasks.some(t=>t.key==='gather-forest'))throw Error('Gathering stopped when returning to Valoria');
   await view('world');
   await p.evaluate(()=>{let q=window.ELDORIA_V023.state(),tasks=q.tasks.map(t=>t.key==='gather-forest'?{...t,start:t.start-60000,end:t.end-60000}:t);window.ELDORIA_V023.setQA({tasks})});
+  const rawBeforeReload=await p.evaluate(()=>JSON.parse(localStorage.getItem('eldoria-v022-consistent-loop')||'{}'));
   await p.reload({waitUntil:'domcontentloaded'});
+  const rawAfterReload=await p.evaluate(()=>JSON.parse(localStorage.getItem('eldoria-v022-consistent-loop')||'{}'));
   const offlineForestAfter=await state();
   if(offlineForestAfter.tasks.some(t=>t.key==='gather-forest')||offlineForestAfter.wood<=offlineForestBefore.wood||offlineForestAfter.forestRemain>=offlineForestBefore.forestRemain)throw Error('Offline gathering did not complete while closed: '+JSON.stringify({before:{wood:offlineForestBefore.wood,forestRemain:offlineForestBefore.forestRemain,tasks:offlineForestBefore.tasks},rawBeforeReload,rawAfterReload,after:{wood:offlineForestAfter.wood,forestRemain:offlineForestAfter.forestRemain,tasks:offlineForestAfter.tasks}}));
   if((await state()).forestRemain>0){await node('forest');await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-forest'),45000)}
