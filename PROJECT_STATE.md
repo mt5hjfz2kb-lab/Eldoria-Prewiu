@@ -1,15 +1,15 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-20
+Updated: 2026-09-21
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.24.0**.
+- Runtime/API milestone: **v0.24.1**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Last certified stable recovery baseline: `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435` / `baseline/v0.24-certified`.
+- Current certified playable baseline: `445661a318195315a6a8f56ade3bfa6642e6af58` (v0.24.1, certification run 749).
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
@@ -30,10 +30,10 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - End-of-test survey, session export/copy and full tester reset are incomplete.
 - Special late combats are placeholders for the intended richer semiautomatic layer.
 - Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
-- Current post-baseline development includes renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work; these are not a new stable baseline until final publication certification is green.
+- Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work are included in the certified v0.24.1 build.
 
 ## Verification state
-The last **certified stable** build remains `2ef3058...`, which passed regressions, uninterrupted fresh-save Arc I, Pages deployment and published Chromium verification. Current `main` is ahead of it. Exact current HEAD, blockers and next task are intentionally kept only in `SESSION_HANDOFF.md`.
+v0.24.1 at `445661a318195315a6a8f56ade3bfa6642e6af58` passed the canonical local-equivalent validation gate, uninterrupted fresh-save Arc I traversal, Pages deployment and published Chromium verification in certification run 749. Exact current repository HEAD and next task remain in `SESSION_HANDOFF.md`.
 
 ## Maintenance
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
