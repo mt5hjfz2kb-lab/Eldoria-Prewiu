@@ -38,7 +38,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Hero Hall needs deeper hero stats/skills/equipment UX; this is intentionally not expanded in the stabilization milestone.
 - Special late combats are placeholders for the intended richer semiautomatic layer.
 - Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
-- The Códice now implements the first real use/conserve decision, Indestructible cooldown behavior, consumed-card Echo consequences and Orus orientation training. A deeper multi-card Duelo board and wider relic economy remain future scope.
+- The Códice implements the use/conserve decision, Indestructible cooldown behavior, consumed-card Echo consequences, Orus orientation training and a playable 3×3 formal Duelo de Reliquias board. A wider relic economy and broader card pool remain future scope.
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
@@ -63,5 +63,6 @@ Change this file only when implemented functionality, product scope, verified st
 - Indestructible is a quality, not a rarity. Indestructible relics survive activation and enter cooldown.
 - The first Sello de Ceniza has a concrete outside-Duelo effect and a visible use/conserve decision.
 - Orus offers guided N/E/S/O training before the formal Duelo milestone.
-- Formal Duelo unlock progress is based on 5 discovered relics; consumed discoveries still count but enter the future hand as Echoes.
+- At 5 discovered relics, the formal Duelo opens as a playable 3×3 board: select a card, choose a cell, compare touching N/E/S/O values, capture weaker adjacent cards, and gain +1 N/E/S/O in the central Breach-resonance cell.
+- Formal Duelo unlock progress is based on 5 discovered relics; consumed discoveries still count but enter the hand as Echoes 1/1/1/1.
 - qa/e2e-codex-chest.js protects dedicated views, use/conserve explanation, Indestructible cooldown semantics and Orus orientation training.
