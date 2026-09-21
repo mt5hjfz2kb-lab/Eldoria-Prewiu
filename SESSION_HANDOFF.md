@@ -6,7 +6,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active release candidate: **v0.26.0**.
+- Active release candidate: **v0.26.1**.
 - Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
@@ -30,3 +30,6 @@ npm install
 npm run qa:setup
 npm run validate:local
 ```
+
+
+v0.26.1 acceptance: fresh save I-X, explicit Bastion IX march configuration -> world -> select Trial -> visible ATACAR -> resolve -> Bastion X; mobile contrast review for Hero Hall/Codex; timed relocated node respawn.
