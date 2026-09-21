@@ -44,8 +44,12 @@ const {chromium}=require('playwright');
  for(const kind of ['resource','fauna','threat','breach'])if(!await p.locator('[data-node-kind="'+kind+'"]').count())throw Error('World node category cue missing '+kind);
  // Touch targets: primary nav and contextual primary actions >=44px.
  for(const el of await p.locator('[data-testid="primary-nav"] button:visible,.contextSheet .primaryAction:visible').all()){const r=await el.boundingBox();if(r&&(r.height<44||r.width<44))throw Error('Touch target below 44px: '+JSON.stringify(r))}
- // Critical functional surface IDs must remain.
- const critical=['player-menu','power-total','nav-kingdom','nav-world','nav-heroes','valoria-chest','nav-codex','building-keep','building-sawmill','building-barracks','building-granary','building-forge','building-hall','world-node-forest','world-node-quarry','world-node-trial','trial-objective-dock'];
- for(const tid of critical){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('Functional parity element missing '+tid)}
+ // Critical functional surfaces must remain in their real screens.
+ const always=['player-menu','power-total','nav-kingdom','nav-world','nav-heroes','valoria-chest','nav-codex'];
+ for(const tid of always){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('Functional parity element missing '+tid)}
+ await set({view:'kingdom',bastionLevel:9,bastion:2,bastion3:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,chestUnlocked:true,codexUnlocked:true});
+ for(const tid of ['building-keep','building-sawmill','building-barracks','building-granary','building-stoneworks','building-forge','building-hall']){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('City parity element missing '+tid)}
+ await set({view:'world',bastionLevel:9,bastion3:true,sawmill:true,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false,forestRemain:900,quarryRemain:900});
+ for(const tid of ['world-node-forest','world-node-quarry','world-node-trial','trial-objective-dock']){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('World parity element missing '+tid)}
  await b.close();console.log('v0.26.4 UI PARITY + MOBILE UX PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
