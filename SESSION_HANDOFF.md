@@ -1,10 +1,10 @@
 # Eldoria — SESSION HANDOFF
-Updated: 2026-09-20
+Updated: 2026-09-21
 
 This file contains transient operational state only. Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
-- Repository HEAD after coherence audit: `48123af6bbb6fed0879ac0a6ca958b7205e7b8ca` (documentation/workflow-only consolidation; no gameplay changes in the audit block).
+- Repository HEAD entering the next executable QA block: `7b2b59fc9e10e682cafea7f3a66e1c04d5262483` (manual-only Pages workflow restored after the mobile-node QA fix).
 - Branch: `main`.
 - Active runtime milestone: **v0.24.0**; do not label v0.24.1 until a later candidate is fully certified.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
@@ -13,22 +13,22 @@ This file contains transient operational state only. Permanent rules: `AGENTS.md
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 
 ## Last completed work block
-Repository/workflow coherence audit completed. Canonical hierarchy is now:
-`AGENTS.md` → `SESSION_HANDOFF.md` → `PROJECT_STATE.md` → specialized docs on demand.
-Redundant legacy handoff/status pointer files were removed. README/baseline/design/continuity/QA docs were aligned so old branch/version/protocol claims cannot compete with the active state. Historical version directories remain recovery-only.
+Workflow consistency restored. The accidental `push: main` trigger was removed from `.github/workflows/pages.yml`; Pages certification is again manual-only as required by `AGENTS.md` and `QA_AND_DEPLOY.md`.
 
-The development protocol is now local-first: targeted iteration → `npm run validate:local` → one coherent commit/push → manual Pages certification only for a playable/release candidate. The Pages workflow no longer repeats separate copies of the full regression/fresh-save matrix after the canonical validation command; published verification is intentionally smaller.
+The known mobile all-nodes blocker was also patched in `qa/e2e-all-nodes.js`: world nodes are scrolled into the mobile viewport before the real Playwright tap, so offscreen nodes such as `forest2` can be tested as actual touch interactions rather than failing only because they start outside the viewport.
 
 ## Current gameplay candidate status
 Post-baseline main contains the recent world/narrative/regression fixes (hunting visibility/respawn, live gather countdown, Fissure inspection/Lyra flow, additional renewable nodes and dialogue work). The previous publication run for pre-audit commit `be138290...` passed all pre-deploy/local-equivalent QA and deployed Pages, but its published verification failed on stale test expectations/intermittent public interaction checks. Therefore **the last certified stable baseline remains `2ef3058...`** and current main must not yet be called v0.24.1/stable.
 
 ## Next task
-Resume stabilization of the current gameplay candidate using the new local-first protocol: reconcile the published-test expectations with the canonical dialogue/node behavior, run `npm run validate:local` until green, then perform one manual Pages certification. If the final published build is green, consolidate the milestone as v0.24.1 and update this handoff + `PROJECT_STATE.md` + `CHANGELOG.md`.
+In an execution-capable session, start from this exact HEAD and run `npm run validate:local`. Fix every discovered regression in the same technical loop until green. Only then commit/push the coherent candidate and manually dispatch `.github/workflows/pages.yml` once. Inspect the certification run/logs, fix/repeat if needed, and finish only after the published Chromium verification is green. Then consolidate v0.24.1 in runtime/package/docs and record the certified HEAD.
+
+Do not use ordinary pushes to trigger Pages and do not use Actions as the normal debugger.
 
 ## Open operational blockers
-- Published `e2e-real-progression.js` still expected the obsolete `aldric-state-dialogue` selector after dialogue unification.
-- One published all-nodes attempt observed a zero-size meat contextual action; verify/reproduce locally before changing gameplay.
-- Do not expand gameplay while these stabilization checks remain open.
+- No known code blocker should be assumed resolved solely by this handoff; the full local gate must establish the real remaining set.
+- This chat session could edit GitHub but did not expose a local checkout/terminal/Playwright runner or a fresh workflow-dispatch operation. That is an execution-environment limitation, not a repository/gameplay blocker.
+- Do not expand gameplay while stabilization/certification remains open.
 
 ## Minimal commands
 - Iteration: run only the relevant `qa/e2e-*.js` test.
