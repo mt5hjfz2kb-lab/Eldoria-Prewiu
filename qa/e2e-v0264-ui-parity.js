@@ -29,8 +29,8 @@ const {chromium}=require('playwright');
  for(const term of ['Abrazadera','MATERIAL','CANTIDAD','UTILIDAD','PROCEDENCIA'])if(!detail.includes(term))throw Error('Chest detail missing '+term);
  // Forge is a full screen and keeps craft functionality.
  await set({view:'kingdom',bastionLevel:9,forge:true,forgeLvl:1,aetherEmber:true,inventory:[{id:'aether-ember',name:'Ascua de Éter',type:'material'}]});
- await p.locator('[data-testid="building-forge"]').tap({force:true});await p.locator('[data-testid="building-action-forge"]').tap({force:true});
- await p.locator('[data-testid="forge-view"]').waitFor({state:'visible'});if(await p.locator('.e22-overlay:visible').count())throw Error('Forge is not full screen');
+ await p.locator('[data-testid="building-forge"]').tap({force:true});
+ await p.locator('[data-testid="forge-view"]').waitFor({state:'visible',timeout:5000});if(await p.locator('.e22-overlay:visible').count())throw Error('Forge is not full screen');
  await p.locator('[data-testid="forge-craft-aether"]').tap({force:true});const forged=await state();if(!forged.inventory.some(x=>x&&x.slot==='weapon'&&x.name==='Hoja de Éter'))throw Error('Forge craft functionality lost');if(forged.view!=='forge')throw Error('Forge left management screen after craft');
  // Building context sheet stays above nav.
  await set({view:'kingdom',bastionLevel:3,bastion:2,bastion3:true,sawmill:true,granary:true,buildingLevels:{sawmill:1,granary:1},wood:2000,stone:2000,food:1000,selectedAction:'sawmill'});
