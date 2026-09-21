@@ -1,32 +1,46 @@
 # Eldoria — SESSION HANDOFF
+
 Updated: 2026-09-21
 
-This file contains transient operational state only. Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
+Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
+
 - Branch: `main`.
-- Active certified milestone: **v0.24.1**.
-- Certified gameplay/deployment HEAD: `445661a318195315a6a8f56ade3bfa6642e6af58`.
-- Current repository HEAD is documentation/workflow-only ahead of that certified gameplay commit.
-- Canonical editable source: `v0220/index.html` + `v0220/js/`.
-- Generated deployment output: `playtest/`; never edit it as source.
-- Pages workflow: manual-only (`workflow_dispatch`).
-- Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
+- Active release candidate: **v0.25.0**.
+- Gameplay/release commit: `687f2247045f0df49290c647dd44179416966f7b`.
+- Canonical source: `v0220/index.html` + `v0220/js/`.
+- Generated output: `playtest/`; never edit it directly.
+- Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
+- Pages certification runs on a coherent push to `main`; `workflow_dispatch` is available only for an intentional rerun.
+- Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
 
-## Last completed work block
-v0.24.1 stabilization and certification completed. Mobile world-node QA now tolerates canonical runtime rerenders while still using real Playwright touch. The uninterrupted fresh-save Arc I route uses independent renewable quarry nodes for Bastion VIII–X rather than depending on one depleted node respawning inside the same sweep.
+## Last completed block
 
-Certification run **749** passed the complete `npm run validate:local` gate, uploaded the Pages artifact, deployed successfully, and passed the published-build Chromium verification.
+v0.25.0 audited the current repository and complete Arc I flow. It fixes the mobile Forge/Granary pointer collision, keeps the first Sawmill action on-screen, delays the Bastion III panel until the required troop recruitment is complete, normalizes important QA selectors and raises key mobile actions to a 44 px touch target.
 
-## Current status
-**v0.24.1 is the current certified playable build.** No stabilization blocker remains from the v0.24.1 certification cycle.
+The external-playtest closeout is now complete: explicit end screen, contextual survey, copyable summary, JSON export, structured local session data and full reset. Documentation and setup were consolidated around one reproducible local gate.
+
+## Verification
+
+- `npm run validate:local`: **PASS**.
+- Mobile touch viewport: **390×844**.
+- Fresh-save Arc I: **16/16 checkpoints PASS**.
+- Automated UX/console observations: **0**.
+- Accelerated equivalent economy time: **4,368 s**.
+- Final survey and session summary: **PASS**.
+- GitHub Pages/published Chromium result: check the workflow attached to the v0.25.0 push before calling the public URL certified.
 
 ## Next task
-Resume normal product development from v0.24.1. Before changing gameplay, read the relevant specialized design document only for the subsystem being changed. Keep the local-first loop: targeted test → `npm run validate:local` → coherent commit/push → one manual Pages certification for the next playable milestone.
+
+If the v0.25.0 Pages workflow is green, hand the public build to the owner for human playtest. New feedback must follow the block protocol in `AGENTS.md`: reproduce all items, implement one coherent batch, targeted QA, full local gate, one push, published verification, then return the stable build.
 
 ## Minimal commands
-- Iteration: relevant `qa/e2e-*.js` test.
-- Pre-push gameplay gate: `npm run validate:local`.
-- Release candidate: manually dispatch `.github/workflows/pages.yml` once after local green.
 
-Do not reread historical directories/docs during normal startup.
+```bash
+npm install
+npm run qa:setup
+npm run validate:local
+```
+
+No known automated progression blocker remains. Honest product limitations are recorded in `PROJECT_STATE.md`.
