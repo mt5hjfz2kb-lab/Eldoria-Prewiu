@@ -10,10 +10,10 @@ await clearStory();await set({...await state(),view:'kingdom',wood:9999,stone:99
 await clearStory();await set({...await state(),view:'kingdom',wood:9999,stone:9999,food:9999});keep=p.locator('[data-testid="building-keep"]');await keep.tap();act=p.locator('[data-testid="building-action-keep"]');await act.tap();confirm=p.locator('.e22-overlay .btn');await confirm.tap();await p.waitForTimeout(12500);if((await state()).bastionLevel!==8)throw Error('Bastion VIII failed');await closePopup();
 await clearStory();await set({...await state(),view:'world'});await tapNode('nareth');await p.waitForTimeout(1900);
 for(let guard=0;guard<30&&!((await state()).maelis);guard++){
-  const story=p.locator('.aldric-cinematic:visible .aldric-continue').last();
+  const story=p.locator('.aldric-cinematic[data-scene="story-dialogue"]:visible .aldric-continue').last();
   if(await story.count()){
     await story.click({force:true});await p.waitForTimeout(25);
-    const again=p.locator('.aldric-cinematic:visible .aldric-continue').last();
+    const again=p.locator('.aldric-cinematic[data-scene="story-dialogue"]:visible .aldric-continue').last();
     if(await again.count())await again.click({force:true}).catch(()=>{});
     await p.waitForTimeout(60);continue;
   }
