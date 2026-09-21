@@ -52,5 +52,5 @@ const {chromium}=require('playwright');
   const formalText=await p.locator('.duelFormal026').innerText();
   for(const term of ['+1','Ecos 1/1/1/1','N','E','S','O'])if(!formalText.includes(term))throw Error('Formal duel rule surface missing '+term);
   await b.close();
-  console.log('CODEX + CHEST v0.26.3 PASS');
+  console.log('CODEX + CHEST v0.26.4 PASS');
 })().catch(e=>{console.error(e);process.exit(1)});

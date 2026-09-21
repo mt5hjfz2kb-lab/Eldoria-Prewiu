@@ -4,7 +4,7 @@ Updated: 2026-09-21
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.26.3**.
+- Runtime/API milestone: **v0.26.4**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -76,3 +76,15 @@ Change this file only when implemented functionality, product scope, verified st
 - Narrative reveals now respect discovery order: the Forge does not explain Aether before the material is found, and Maelis is not introduced before reaching Nareth. Duplicate explanatory beats were reduced.
 - Timed construction/upgrade costs are deducted when work starts. Completion applies the result only; legacy unpaid in-flight tasks remain migration-safe.
 - v0.26.3 acceptance adds mobile 390×844 checks for march/attack reachability and start-time resource spending while preserving the full Arc I regression.
+
+
+## v0.26.4 — unified visual / UX system
+- Functional rules are unchanged; this milestone is a presentation/navigation pass with explicit parity protection.
+- Bottom navigation is normalized to Ciudad, Mundo, Héroes, Arcón and Códice; Ranking remains available in the HUD.
+- Routine city/world interactions use a shared contextual bottom-sheet pattern while deep management remains full-screen.
+- Forge joins Héroes, Arcón and Códice as a full-screen management view.
+- Arcón presents an inventory grid plus non-destructive in-screen item details.
+- World node categories are visually differentiated without changing node behavior or rewards.
+- Mobile map movement uses direct pointer tracking, restrained inertia and dynamic limits while preserving object taps.
+- UI scale, spacing, safe areas, touch targets, panel hierarchy and restrained color semantics are centralized in the v0.26.4 visual layer.
+- `UI_PARITY_0264.md` and `qa/e2e-v0264-ui-parity.js` define and protect the before/after contract.

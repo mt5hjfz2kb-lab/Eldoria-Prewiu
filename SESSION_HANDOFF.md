@@ -6,7 +6,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active release candidate: **v0.26.3**.
+- Active release candidate: **v0.26.4**.
 - Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
@@ -43,3 +43,19 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Contextual tutorial guidance now continues through Forge, Devorador, Códice, Nareth and Bastion IX march/trial milestones.
 - Construction and upgrade resources are committed when the timer begins; completion no longer charges twice. Old in-flight saves retain a compatibility fallback.
 - Permanent QA covers 390x844 touch layout, full-screen Hero Hall, march persistence, Bastion IX CTA visibility and immediate resource spending.
+
+
+## v0.26.4 visual / UX parity block
+- No gameplay/economy/progression/narrative rule changes.
+- Primary bottom navigation is Ciudad · Mundo · Héroes · Arcón · Códice, preserving progression gates.
+- Ranking remains available from the HUD instead of occupying a sixth primary-nav slot.
+- City/world quick actions use a common bottom contextual sheet while the scene remains visible.
+- Hero Hall, Arcón, Códice and Forge use full-screen management surfaces.
+- Arcón adds in-screen object inspection without changing inventory semantics.
+- World nodes expose consistent visual categories for resources, fauna, threats, elite/location and Breach.
+- Mobile world pan uses direct pointer tracking plus restrained inertia and dynamic bounds.
+- A single v0.26.4 scale/token layer harmonizes typography, spacing, panels, buttons, safe areas and touch targets.
+- Functional parity inventory: `UI_PARITY_0264.md`; permanent QA: `qa/e2e-v0264-ui-parity.js`.
+
+## v0.26.4 acceptance
+100% v0.26.3 functional parity, full fresh-save Bastion I→X, mobile 390×844 navigation/context/map checks, all legacy regression suites green, Pages deployment green and published Chromium verification green.
