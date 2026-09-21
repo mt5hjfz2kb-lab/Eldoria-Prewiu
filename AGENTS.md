@@ -28,7 +28,7 @@ If documents disagree, this hierarchy wins. Reconcile the stale lower-level docu
 - Development branch: `main`.
 - Canonical editable runtime: `v0220/index.html` plus `v0220/js/`.
 - `v0220` is a compatibility directory name, **not** the active product version.
-- Active runtime/API milestone: **v0.26.2**.
+- Active runtime/API milestone: **v0.26.3**.
 - Generated public build: `playtest/`; never edit it as source.
 - Last certified stable recovery baseline: branch `baseline/v0.24-certified`, commit `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
 - Protected visual recovery: `stable/visual-good-f139968c`, commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
