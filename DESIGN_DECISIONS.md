@@ -21,6 +21,19 @@
 - The world should feel populated. Resource nodes and beasts/enemies are distinct categories: beasts primarily return food; Breach/corrupted enemies return combat/rare progression rewards. Higher node levels can be visible as locked/aspirational content before unlock.
 - Preserve the current working loop and certified visual baseline. This is a reorganization/reinforcement of the MVP, not a rewrite.
 
+## Canonical Bastion I–X chronology — 2026-09-21
+- **Bastion I — Las Cenizas:** Aldric carries the opening with more narrative weight. Rebuild, first world trip, gather, return and improve. The first expedition exposes an unexplained corruption mark that Aldric recognizes but refuses to explain fully. Core question planted: what really happened to Valoria?
+- **Bastion II — Troops and first threat:** Barracks, real troops and first Corrupt combat. Victory leaves an anomalous residue rather than a routine reward-only beat, reinforcing that the Breach is changing the world.
+- **Bastion III — The world opens:** Granary, Food, hunting and a denser frontier. Higher-level resources/beasts/enemies are visible before they are reachable to create aspiration. The Fissure and Lyra are the first major epic beat; Lyra's alliance is contextual and the Fissure assault follows as phase two.
+- **Bastion IV — Early autonomy:** richer map and wider decisions while explicit tutorial guidance recedes. The player should begin choosing what to improve and where to go rather than following a single hand.
+- **Bastion V — Quarry and extraction:** unlock the productive Quarry and seed the idea that extraction can reveal anomalous objects/materials. Do not over-explain or lock final RNG design yet.
+- **Bastion VI — Forge and closed progression loop:** Breach elite → special material → Forge → first equipment ceremony. This is the first complete kingdom → exploration → combat → material → equipment → hero strength → Power loop.
+- **Bastion VII — Codex mystery:** first card/relic arrives as a special discovery, unlocks the Codex and enables future relic drops. Explain collection, not ultimate purpose. Protected question: what are these relics really for?
+- **Bastion VIII — Maelis:** a bespoke world situation, dialogue, motive, consequence and hero ceremony. Maelis never joins as a generic mission-complete reward.
+- **Bastion IX — Independent mastery:** stop teaching. Present a multi-system preparation problem with no step-by-step guidance; the player must apply economy, heroes, equipment, troops and march knowledge independently.
+- **Bastion X — Prologue finale:** a meaningful expedition uses the learned loop, resolves the immediate frontier danger and reveals that the Breach is part of something much larger. End with **CAPÍTULO I COMPLETADO** while preserving the larger mystery.
+- Narrative escalation across the prologue: **I something is wrong → II it was not an accident → III Lyra proves it extends beyond Valoria → V–VI corruption produces strange matter → VII relics introduce a second unknown → VIII Nareth proves other realms are affected → IX the player can survive independently → X the local threat is only one expression of the Breach.**
+
 ## Product / loop
 - Mobile-first dark medieval fantasy city-builder/4X/RPG vertical slice.
 - Core loop: **Valoria → need/decision → world → gather/fight → reward → return → visible growth → new ambition**.
