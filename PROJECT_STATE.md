@@ -4,12 +4,12 @@ Updated: 2026-09-21
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.25.1**.
+- Runtime/API milestone: **v0.26.0**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Current certified playable baseline: `b9d69605c650e1b54f2cff6dfc8514c27add9691` (v0.25.1 hotfix candidate, certification run 793 green).
+- Previous certified playable baseline: `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd` (v0.25.1). v0.26.0 is the active release candidate pending the certification run attached to the final v0.26 documentation commit.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
@@ -24,6 +24,15 @@ The MVP question is whether the compact loop creates understanding, satisfaction
 
 Before scope expansion/Unity migration, the slice still needs to prove: a genuine economic trade-off, meaningful Breach gameplay, a useful relic/card reaching Codex with use/conserve tension, and a truthful simulated larger 4X horizon.
 
+## v0.26 implemented product block
+- Combat language now separates hunting PvE from threat PvE; PvP is explicitly reserved architecturally and not exposed as a fake live system.
+- Hero Hall and expedition configuration expose readable attack/defense/support roles and explain that Power is a development summary rather than a single combat verdict.
+- Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics remain strictly in Códice.
+- World activity now yields named upgrade materials (ancient iron brace, ash hide, stone tusk) used by production-building upgrades, connecting exploration to city progression.
+- Bastion VII introduces the first relic through Orus, opens Códice and a guided Duelo de Reliquias. Indestructible remains a quality, never a rarity.
+- Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
+- Macro systems (server Breach, deep talents, resonances, oracle and full PvP) remain documented future scope, not implemented.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
 - Hero Hall needs deeper hero stats/skills/equipment UX; this is intentionally not expanded in the stabilization milestone.
@@ -33,7 +42,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
-v0.25.1 correction block passed full local-equivalent certification, uninterrupted fresh-save Arc I, deployment and published Chromium verification in run 793. Exact current repository HEAD and certification result belong in `SESSION_HANDOFF.md`.
+v0.26.0 must only be called certified after its final Pages workflow passes the full local-equivalent gate, uninterrupted fresh-save Arc I and published Chromium verification. Exact result belongs in `SESSION_HANDOFF.md`.
 
 ## Maintenance
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
