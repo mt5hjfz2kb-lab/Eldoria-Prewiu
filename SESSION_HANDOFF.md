@@ -7,8 +7,8 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 ## Current working state
 
 - Branch: `main`.
-- Active release candidate: **v0.25.0**.
-- Current owner-feedback candidate: `443d70161e54fbad928aaae6687bb8c03223d9d0`.
+- Active release: **v0.25.1**.
+- Certified owner-feedback candidate: `b9d69605c650e1b54f2cff6dfc8514c27add9691` (run 793 green).
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -37,7 +37,7 @@ Implemented the reported early/mid-Arc blockers: canonical Aldric portrait, Corr
 
 ## Next task
 
-Do not hand this candidate to the owner until the workflow for `443d70161e54fbad928aaae6687bb8c03223d9d0` is green and the published Chromium verification passes.
+Owner human playtest of the certified public v0.25.1 build. Any new feedback starts a new coherent owner-feedback block.
 
 ## Minimal commands
 
