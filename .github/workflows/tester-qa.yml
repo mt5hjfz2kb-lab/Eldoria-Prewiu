@@ -3,6 +3,8 @@ name: Validate Closed Tester Build
 on:
   push:
     branches: [work/testers-v0265]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
