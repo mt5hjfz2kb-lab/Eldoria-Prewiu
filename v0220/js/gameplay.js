@@ -7,7 +7,7 @@ const ENEMIES={
   wolf:{id:'wolf',name:'Lobo ceniciento',level:1,kind:'hunt',stats:{attack:52,defense:42,health:360,break:18,power:1450}},
   boar:{id:'boar',name:'Jabalí de roca',level:1,kind:'hunt',stats:{attack:64,defense:58,health:470,break:12,power:2050}},
   spawnling:{id:'spawnling',name:'Engendro de la Fisura',level:1,kind:'common',stats:{attack:76,defense:64,health:620,break:28,power:2250}},
-  ashStalker:{id:'ashStalker',name:'Acechador de Ceniza',level:3,kind:'uncommon',trait:{id:'ambush',name:'Emboscada',copy:'Golpea con fuerza al inicio, pero expone su defensa después del primer choque.'},stats:{attack:132,defense:68,health:980,break:54,power:3600}},
+  ashStalker:{id:'ashStalker',name:'Acechador de Ceniza',level:3,kind:'uncommon',trait:{id:'ambush',name:'Emboscada',copy:'Golpea con fuerza al inicio, pero expone su defensa después del primer choque.'},stats:{attack:132,defense:68,health:920,break:54,power:3600}},
   herald:{id:'herald',name:'Heraldo de la Fisura',level:5,kind:'worldboss',trait:{id:'riftPulse',name:'Pulso de la Brecha',copy:'Sus pulsos castigan marchas mal preparadas. Una intervención de héroe puede cambiar el intercambio.'},stats:{attack:188,defense:122,health:2250,break:78,power:6200}}
 };
 const HERO_COMBAT={
