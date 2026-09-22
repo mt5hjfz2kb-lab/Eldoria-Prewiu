@@ -6,7 +6,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active normal-development milestone: **v0.26.5**.
+- Active normal-development milestone: **v0.26.6**.
 - Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
@@ -101,14 +101,13 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 
 ## Frozen external tester build — 2026-09-22
 - Name: **Eldoria Closed Playtest T1**.
-- Tester version: **0.26.5-test.1**.
-- Frozen game source: `67f6ff8fd10a01a428d29b22c678f51e5a7225f1`.
-- Certified integration commit: `84c0a4071f3be639154f021689109719e9ba6cf7`.
-- Frozen reference branch: `frozen/testers-v0265-t1`.
-- Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
-- **Do not edit `tester-v0265/` during T1 except for a critical test-invalidating defect.**
+- Tester version: **0.26.5-test.2**.
+- Frozen game source: `a6bf164180083938adaceffff293b5709e27269a`.
+- Frozen integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
+- - Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
+- **Do not edit `tester-v0265/` during T1 except for a critical test-invalidating defect. The current frozen tester bytes are not a development source.**
 - `main` is the only active development line. Normal product work continues from `v0220/`; no visible tester intro/reporting/survey layer belongs in the active runtime.
-- Pages now enforces a drift guard against certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`; a main push cannot silently change tester bytes.
+- Pages enforces a drift guard against frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`; a main push cannot silently change tester bytes.
 - Main publication only checks that the frozen tester URL remains available; it no longer reruns tester research instrumentation or inserts QA feedback on every normal deployment.
 - Feedback persistence: Supabase project **Eldoria Playtest Feedback**, raw evidence in `public.eldoria_feedback`.
 - Grouped evidence/tracing: `public.eldoria_feedback_findings` + `public.eldoria_feedback_finding_links`.
@@ -119,3 +118,17 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Continue design, systems, bugfixes, UX, content and vertical-slice work normally on `main`.
 - Feedback never auto-implements. First group equivalent evidence, classify, prioritize and record the decision/result with traceability.
 - At the end of T1, compare consolidated evidence with the vertical-slice questions before deciding on major redesign or Unity migration.
+
+
+## v0.26.6 layered PvE combat — 2026-09-22
+- Development remains on `main`; canonical runtime remains `v0220/index.html` + `v0220/js/`.
+- Caza: Lobo ceniciento and Jabalí de roca resolve automatically by Power.
+- Common: Engendro de la Fisura Nv.1 teaches PREPARAR MARCHA and ATQ / DEF / VIDA / RUP / PODER.
+- Uncommon: Acechador de Ceniza Nv.3 uses Emboscada (opening burst + exposed defense); composition materially changes results.
+- World boss: Heraldo de la Fisura Nv.5 is timed and uses semiautomatic basics plus one hero intervention.
+- Battle reports explain outcome causes and round exchanges instead of only showing victory/defeat.
+- Recruitment visible to the player is Arqueros only. Troop-family architecture is extensible internally; future families stay hidden until discovered/unlocked narratively.
+- PvP is not implemented or surfaced.
+- Breach Manuscript acquisition/visibility/function remains exactly on its existing flow; no duplicate or early reveal was added.
+- Permanent QA: `qa/e2e-v0266-pve-combat.js`; full gate remains `npm run validate:local`.
+- Next owner step after green Pages certification: test the normal development URL; do not use the frozen tester build as a development baseline.
