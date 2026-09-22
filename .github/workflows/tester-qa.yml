@@ -27,3 +27,9 @@ jobs:
         run: python3 -m http.server 4173 >/tmp/eldoria-http.log 2>&1 &
       - name: Closed tester layer E2E
         run: node qa/e2e-tester-build.js
+      - name: Frozen runtime targeted regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:targeted
+      - name: Frozen runtime full regression
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:regression
+      - name: Frozen runtime uninterrupted fresh-save Arc I
+        run: ELDORIA_URL='http://127.0.0.1:4173/tester-v0265/?qa=1&testerlayer=off' npm run qa:arc1
