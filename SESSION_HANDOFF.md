@@ -132,3 +132,10 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Breach Manuscript acquisition/visibility/function remains exactly on its existing flow; no duplicate or early reveal was added.
 - Permanent QA: `qa/e2e-v0266-pve-combat.js`; full gate remains `npm run validate:local`.
 - Next owner step after green Pages certification: test the normal development URL; do not use the frozen tester build as a development baseline.
+
+
+## MVP art-direction canonicalization — 2026-09-22
+- Added `docs/MVP_ART_DIRECTION.md` as the canonical visual target for the MVP and later Unity production.
+- Direction: stylized semi-realistic dark fantasy; monumental rebuilt Valoria; readable strategic 4X world; violet/magenta Breach corruption; compact mobile-first UI.
+- Visual ambition must never override gameplay readability, tap clarity or performance.
+- This is a documentation/design change only. It does not alter the frozen tester build or require gameplay publication.

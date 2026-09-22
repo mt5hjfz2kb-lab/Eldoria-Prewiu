@@ -105,3 +105,14 @@
 - Internally, the troop-family seam may reserve future families. **Paladines** are intended around Bastión 11 with narrative justification; **Brujos** are later and tied to La Brecha. Neither is currently recruitable or visible to players.
 - The existing **Manuscrito de la Fisura** remains on its current acquisition/storage flow. Do not duplicate it, rename its purpose, or reveal its troop-unlock connection early.
 - Mobile combat UX must preserve the world as context: compact selection, march preparation, report, timer/combat, and return flow; no oversized permanent panels.
+
+
+## MVP visual direction — 2026-09-22
+- Canonical art target: **stylized semi-realistic dark fantasy 4X**, not photorealism and not bright/cartoon fantasy.
+- Valoria is a compact vertical bastion rebuilt inside monumental imperial ruins; progression should visually recover/repopulate damaged space rather than become a generic field of small buildings.
+- The world is a strategic fractured continent. Settlements, routes, marches, resources, fauna, corrupted threats, fissures and regional geography must read as gameplay, not as decoration.
+- La Brecha is a dimensional wound with violet/magenta/black-violet corruption that can affect terrain, atmosphere and creatures. It must be distinctive without visually erasing the normal world.
+- UI is dark/elegant/compact and mobile-first. The playfield remains dominant; readability and interaction clarity beat decorative density.
+- Final visual target is documented in `docs/MVP_ART_DIRECTION.md`.
+- The web slice validates gameplay and compatibility with the target; it should not waste time recreating final Unity production art.
+- Future Unity production must preserve the direction while adapting camera, asset density, VFX and performance for real gameplay.

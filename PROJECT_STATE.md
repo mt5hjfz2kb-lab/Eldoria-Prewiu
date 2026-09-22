@@ -111,3 +111,12 @@ Change this file only when implemented functionality, product scope, verified st
 - All deep management surfaces follow the mobile vertical-scroll contract.
 - Códice now frames discovery, conservation and activation as its core loop, and its first Duelo is a guided 3×3 training match with five temporary loan cards that never mutate the permanent collection.
 - The world frontier remains one pannable map but uses a larger spatial footprint and wider node distribution to communicate future 4X scale without pretending the final shared-world system exists.
+
+
+## Canonical MVP visual target — 2026-09-22
+- Art direction is now explicitly part of the MVP product definition: **stylized semi-realistic dark fantasy**, premium/solemn but mobile-readable.
+- Canonical city target: monumental vertical Valoria rebuilt over imperial ruins, with distinct interactive landmarks and visible reconstruction.
+- Canonical world target: readable 4X territory with routes, settlements, resources, marches, threats and integrated Breach corruption.
+- La Brecha uses a violet/magenta dimensional-corruption language and is a world phenomenon, not a generic portal.
+- Final-production visuals belong primarily to the future Unity phase; the web slice only needs enough presentation fidelity to validate gameplay/UX against this direction.
+- Source: `docs/MVP_ART_DIRECTION.md`.
