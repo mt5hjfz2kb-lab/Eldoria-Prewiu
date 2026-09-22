@@ -1,5 +1,5 @@
 const {chromium}=require('playwright');
-const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&launcher=1';
+const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 (async()=>{
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
