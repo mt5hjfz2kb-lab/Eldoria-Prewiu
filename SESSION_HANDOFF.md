@@ -82,3 +82,18 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Construction timers remain directly above the selected building.
 - Permanent QA now asserts both Aserradero and Bastion contextual actions are attached within 10px beneath their actual building hitbox.
 - No gameplay, cost, timer or progression logic changed.
+
+
+## v0.26.5 unified owner-improvement block — 2026-09-22
+- Initial guidance now explains the next action and adds contextual shortage guidance with exact missing resource quantities, source locations and a direct destination action.
+- World navigation preserves the player's pan position across node selection, gathering and World ↔ Valoria transitions; mobile pan remains free during active tasks. The pannable frontier and node distribution were expanded to create more exploration horizon without introducing a fake final 4X map.
+- Valoria building positions were rebalanced for mobile spacing while retaining object-local actions and timers.
+- Barracks now separates building upgrades from troop recruitment. Recruitment has its own quantity/cost/time interface and timestamp task, including offline completion; Barracks level is a real infrastructure level.
+- Lyra's recruitment explicitly unlocks and highlights Heroes, explaining hero stats, equipment, Power and expedition relevance.
+- Bastion IV now requires Aserradero, Cuartel and Granero at level 2 in addition to resources and the Fissure gate; missing infrastructure guides the player to the correct building.
+- Defeating the Devourer now triggers a canonical narrative consequence before the Aether Ember reward is resolved.
+- Arcón items use distinct pictograms and stronger type/use/origin presentation; basic resources remain outside inventory and Reliquias remain in Códice.
+- Forge, Códice, Arcón, Heroes, Power and related dialogs now share a mobile vertical-scroll contract for 390×844.
+- Códice received a purpose/collection/decision UX pass with clearer rarity, N/E/S/O, effects, status and Echo presentation.
+- First Duelo access now launches a real guided 3×3 tutorial using five temporary loan cards. The tutorial teaches placement, directional comparisons, captures and control progressively; loan cards never enter the permanent collection and are removed on completion.
+- Permanent QA: `qa/e2e-v0265-owner-block.js`, included in targeted and regression suites. Fresh-save Arc I now includes timed recruitment and Barracks infrastructure before Bastion IV.

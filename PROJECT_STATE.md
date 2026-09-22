@@ -1,5 +1,5 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-21
+Updated: 2026-09-22
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
@@ -88,3 +88,15 @@ Change this file only when implemented functionality, product scope, verified st
 - Mobile map movement uses direct pointer tracking, restrained inertia and dynamic limits while preserving object taps.
 - UI scale, spacing, safe areas, touch targets, panel hierarchy and restrained color semantics are centralized in the v0.26.4 visual layer.
 - `UI_PARITY_0264.md` and `qa/e2e-v0264-ui-parity.js` define and protect the before/after contract.
+
+
+## v0.26.5 — guidance, infrastructure and collection onboarding
+- Contextual progression guidance now names missing resources, quantities and where to obtain them, and can direct the player to the relevant world node or city building.
+- Barracks has two distinct loops: infrastructure upgrades and timestamp-based troop recruitment. Recruitment persists through view changes/offline time.
+- Bastion IV requires level-2 Aserradero, Cuartel and Granero, establishing the infrastructure gate before further fortification growth.
+- Lyra recruitment is the explicit onboarding moment for the Heroes layer.
+- The Devourer has a post-combat narrative consequence before the Aether material/Forge loop.
+- Arcón uses object-specific visual identity; Códice remains the exclusive Reliquia/card surface.
+- All deep management surfaces follow the mobile vertical-scroll contract.
+- Códice now frames discovery, conservation and activation as its core loop, and its first Duelo is a guided 3×3 training match with five temporary loan cards that never mutate the permanent collection.
+- The world frontier remains one pannable map but uses a larger spatial footprint and wider node distribution to communicate future 4X scale without pretending the final shared-world system exists.
