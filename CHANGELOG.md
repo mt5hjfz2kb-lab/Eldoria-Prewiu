@@ -1,5 +1,7 @@
 # Eldoria — Changelog
 
+> History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
+
 ## v0.27 — 2026-09-22
 
 - Replaced the persistent guided-step overlay with a compact chapter mission system and mobile-safe mission drawer.
