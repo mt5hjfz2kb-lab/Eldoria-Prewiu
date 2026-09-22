@@ -1,11 +1,19 @@
 const {chromium}=require('playwright');
 const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&launcher=1';
-(async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await p.goto(URL,{waitUntil:'domcontentloaded'});const load=id=>p.evaluate(x=>window.ELDORIA_QA.loadPreset(x),id);const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
-await p.locator('[data-testid="qa-launcher"]').waitFor({state:'visible'});if(await p.locator('[data-qa-preset]').count()<12)throw Error('QA launcher preset catalog incomplete');
-await load('b2-spawnling');await p.locator('[data-testid="world-node-spawnling"]').waitFor({state:'visible'});let s=await state();if(s.bastionLevel!==2||s.chapterProgress.current!==2||s.barracks!==true)throw Error('Spawnling preset incoherent');
-await load('accelerators');await p.locator('[data-testid="chest-tab-speedups"]').waitFor({state:'visible'});if(!(await state()).tasks.some(t=>t.key==='upgrade-building-sawmill-3'))throw Error('Accelerator preset lacks real timed task');
-await load('b7-codex');await p.locator('[data-testid="chapter-compact"]').waitFor({state:'visible'});s=await state();if(!s.codexUnlocked||s.codex.length<3||s.chapterProgress.current!==7)throw Error('Codex preset incoherent');
-await load('worldboss');const herald=p.locator('[data-testid="world-node-herald"]');await herald.waitFor({state:'visible'});await herald.tap({force:true});await p.locator('[data-testid="world-action-herald"]').waitFor({state:'attached'});
-await load('segment-vi-viii');s=await state();if(s.bastionLevel!==6||s.forge||s.codexUnlocked)throw Error('VI-VIII segment must start before Forge/Codex');
-await p.evaluate(()=>window.ELDORIA_QA.fresh());await p.waitForLoadState('domcontentloaded');await p.waitForFunction(()=>window.ELDORIA_V023?.state().bastionLevel===1);s=await state();if(s.bastionLevel!==1||s.sawmill)throw Error('QA fresh save failed');
-await b.close();console.log('QA LAUNCHER + PRESETS PASS');})().catch(e=>{console.error(e);process.exit(1)});
+(async()=>{
+ const b=await chromium.launch({headless:true});
+ const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ await p.goto(URL,{waitUntil:'domcontentloaded'});
+ const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
+ const open=async()=>{const d=p.locator('[data-testid="qa-launcher"]');if(!await d.count()){await p.locator('[data-testid="qa-launcher-button"]').tap({force:true});await d.waitFor({state:'visible'});}return d};
+ const choose=async id=>{const d=await open();const x=d.locator('[data-qa-preset="'+id+'"]');await x.scrollIntoViewIfNeeded();await x.tap({force:true});await p.waitForFunction(k=>sessionStorage.getItem('eldoria-qa-active-preset')===k,id);};
+ let d=await open();if(await d.locator('[data-qa-preset]').count()<12)throw Error('QA launcher preset catalog incomplete');
+ await choose('b2-spawnling');await p.locator('[data-testid="world-node-spawnling"]').waitFor({state:'visible'});let s=await state();if(s.bastionLevel!==2||s.chapterProgress.current!==2||s.barracks!==true)throw Error('Spawnling preset incoherent');
+ await choose('accelerators');await p.locator('[data-testid="chest-tab-speedups"]').waitFor({state:'visible'});s=await state();if(!s.tasks.some(t=>t.key==='upgrade-building-sawmill-3'))throw Error('Accelerator preset lacks real timed task');
+ await choose('b7-codex');await p.locator('[data-testid="chapter-compact"]').waitFor({state:'visible'});s=await state();if(!s.codexUnlocked||s.codex.length<3||s.chapterProgress.current!==7)throw Error('Codex preset incoherent');
+ await choose('worldboss');await p.locator('[data-testid="world-node-herald"]').waitFor({state:'visible'});s=await state();if(s.bastionLevel!==10||!s.marchConfigured||s.chapterProgress.current!==10)throw Error('Worldboss preset incoherent');
+ await choose('segment-vi-viii');s=await state();if(s.bastionLevel!==6||s.forge||s.codexUnlocked)throw Error('VI-VIII segment must start before Forge/Codex');
+ d=await open();await d.locator('[data-qa-fresh]').tap({force:true});await p.waitForLoadState('domcontentloaded');await p.waitForFunction(()=>window.ELDORIA_V023?.state().bastionLevel===1);s=await state();if(s.bastionLevel!==1||s.sawmill)throw Error('QA fresh save failed');
+ if(!await p.evaluate(()=>window.ELDORIA_QA_STORAGE?.hasNormalSave?.()===false||typeof window.ELDORIA_QA_STORAGE?.hasNormalSave==='function'))throw Error('QA storage isolation API missing');
+ await b.close();console.log('QA LAUNCHER + PRESETS + FRESH SAVE PASS');
+})().catch(e=>{console.error(e);process.exit(1)});
