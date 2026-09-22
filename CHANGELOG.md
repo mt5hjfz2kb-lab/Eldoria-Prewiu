@@ -36,4 +36,4 @@
 
 - Consolidated object-local kingdom/world actions, offline-safe timestamp tasks, independent production-building levels, equipment replacement safety and the uninterrupted fresh-save Arc I regression gate.
 
-Latest stable release: **v0.25.0** once the current `main` certification finishes successfully.
+Latest development milestone: **v0.26.6**. Certification status for the current `main` HEAD is tracked in `SESSION_HANDOFF.md` / the Pages workflow.
