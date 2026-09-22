@@ -97,3 +97,16 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Códice received a purpose/collection/decision UX pass with clearer rarity, N/E/S/O, effects, status and Echo presentation.
 - First Duelo access now launches a real guided 3×3 tutorial using five temporary loan cards. The tutorial teaches placement, directional comparisons, captures and control progressively; loan cards never enter the permanent collection and are removed on completion.
 - Permanent QA: `qa/e2e-v0265-owner-block.js`, included in targeted and regression suites. Fresh-save Arc I now includes timed recruitment and Barracks infrastructure before Bastion IV.
+
+
+## Frozen external tester build — 2026-09-22
+- Name: **Eldoria Closed Playtest T1**.
+- Tester version: **0.26.5-test.1**.
+- Frozen game source: `67f6ff8fd10a01a428d29b22c678f51e5a7225f1`.
+- Certified integration commit: `84c0a4071f3be639154f021689109719e9ba6cf7`.
+- Frozen reference branch: `frozen/testers-v0265-t1`.
+- Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
+- The tester runtime lives under `tester-v0265/` and is a frozen snapshot. Do not edit it during the test window except for a critical bug that invalidates testing.
+- `main` remains the only active development line; normal product work continues in `v0220/`.
+- Feedback persistence: Supabase project **Eldoria Playtest Feedback**, table `public.eldoria_feedback`, anonymous browser access is INSERT-only under RLS; reading/analysis stays owner/admin-side.
+- Certification completed: closed tester layer E2E, offline queue/retry, negative follow-up, blocked/help flow, final 10-question survey, real backend insertion/query, full regression, uninterrupted fresh-save Arc I, GitHub Pages deployment, published normal-build Chromium verification and published closed-tester Chromium verification all green.
