@@ -1,15 +1,15 @@
 {
   "name": "eldoria-preview",
   "private": true,
-  "version": "0.26.6",
+  "version": "0.27.0",
   "scripts": {
     "qa:setup": "playwright install chromium",
     "build": "node tools/build-preview.mjs",
     "check": "node tools/check-preview.mjs",
-    "qa:regression": "node qa/e2e-behavior-regression.js && node qa/e2e-core-flow.js && node qa/e2e-all-buildings.js && node qa/e2e-all-nodes.js && node qa/e2e-real-progression.js && node qa/e2e-late-progression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js",
+    "qa:regression": "node qa/e2e-behavior-regression.js && node qa/e2e-core-flow.js && node qa/e2e-all-buildings.js && node qa/e2e-all-nodes.js && node qa/e2e-real-progression.js && node qa/e2e-late-progression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js",
     "qa:arc1": "node qa/e2e-full-arc1.js",
     "validate:local": "node tools/validate-local.mjs",
-    "qa:targeted": "node qa/e2e-offline-isolated.js && node qa/e2e-behavior-regression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0263-owner-feedback.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js"
+    "qa:targeted": "node qa/e2e-offline-isolated.js && node qa/e2e-behavior-regression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0263-owner-feedback.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js"
   },
   "devDependencies": {
     "playwright": "1.55.0"
