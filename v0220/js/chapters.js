@@ -35,14 +35,12 @@ function grant(s,reward,source,api={}){if(!reward)return;normalizeState(s);
  else if(k==='speedup15'){s.speedups.m15+=v;api.record?.('speedup_received',{unit:'15m',qty:v,source})}
  else if(k==='specialRelic'&&v){let id='valoria-dawn';s.codex=s.codex||[];if(!s.codex.some(x=>x.id===id)){s.codex.push({id,name:'Alba de Valoria',rarity:'Legendaria',quality:'Indestructible',values:{N:6,E:5,S:6,O:5},copy:'Reliquia del primer arco. Conserva la memoria del reino que sobrevivió a la Brecha.'});api.record?.('relic_obtained',{id,source})}}}
 }
-function sync(s,h={},api={},ceremony=false){normalizeState(s);let changed=false;
- for(const ch of defs()){
-   if(ch.id===s.chapterProgress.current&&!s.chapterProgress.chapterStarted[ch.id]){s.chapterProgress.chapterStarted[ch.id]=Date.now();api.record?.('chapter_started',{chapter:ch.id,title:ch.title});changed=true}
-   for(const m of ch.missions){let p=progress(s,m,h);if(p.done&&!s.chapterProgress.completedMissions[m.id]){s.chapterProgress.completedMissions[m.id]=Date.now();api.record?.('mission_completed',{chapter:ch.id,mission:m.id,title:m.title});if(!s.chapterProgress.missionRewards[m.id]){grant(s,m.reward,'mission:'+m.id,api);s.chapterProgress.missionRewards[m.id]=Date.now()}changed=true}}
-   let all=ch.missions.every(m=>s.chapterProgress.completedMissions[m.id]);
-   if(all&&!s.chapterProgress.claimedChapters[ch.id]){grant(s,ch.chapterReward,'chapter:'+ch.id,api);s.chapterProgress.claimedChapters[ch.id]=Date.now();api.record?.('chapter_completed',{chapter:ch.id,title:ch.title});api.record?.('chapter_reward_claimed',{chapter:ch.id,reward:ch.chapterReward});s.chapterProgress.current=Math.min(10,ch.id+1);changed=true;
-     if(ceremony&&!api.isQA?.())setTimeout(()=>api.cinema?.('✦','CAPÍTULO COMPLETADO','<b>'+ch.title+'</b><br><br>Valoria avanza porque sus sistemas, ejército y descubrimientos empiezan a sostenerse entre sí.','RECOMPENSA · '+rewardText(ch.chapterReward),'CONTINUAR',()=>{api.save?.();api.render?.()}),80);
-   }
+function sync(s,h={},api={},ceremony=false){normalizeState(s);let changed=false,ch=defs().find(x=>x.id===s.chapterProgress.current)||defs()[0];if(!ch)return false;
+ if(!s.chapterProgress.chapterStarted[ch.id]){s.chapterProgress.chapterStarted[ch.id]=Date.now();api.record?.('chapter_started',{chapter:ch.id,title:ch.title});changed=true}
+ for(const m of ch.missions){let p=progress(s,m,h);if(p.done&&!s.chapterProgress.completedMissions[m.id]){s.chapterProgress.completedMissions[m.id]=Date.now();api.record?.('mission_completed',{chapter:ch.id,mission:m.id,title:m.title});if(!s.chapterProgress.missionRewards[m.id]){grant(s,m.reward,'mission:'+m.id,api);s.chapterProgress.missionRewards[m.id]=Date.now()}changed=true}}
+ let all=ch.missions.every(m=>s.chapterProgress.completedMissions[m.id]);
+ if(all&&!s.chapterProgress.claimedChapters[ch.id]){grant(s,ch.chapterReward,'chapter:'+ch.id,api);s.chapterProgress.claimedChapters[ch.id]=Date.now();api.record?.('chapter_completed',{chapter:ch.id,title:ch.title});api.record?.('chapter_reward_claimed',{chapter:ch.id,reward:ch.chapterReward});s.chapterProgress.current=Math.min(10,ch.id+1);changed=true;
+   if(!api.isQA?.())setTimeout(()=>api.cinema?.('✦','CAPÍTULO COMPLETADO','<b>'+ch.title+'</b><br><br>Valoria avanza porque sus sistemas, ejército y descubrimientos empiezan a sostenerse entre sí.','RECOMPENSA · '+rewardText(ch.chapterReward),'CONTINUAR',()=>{api.save?.();api.render?.()}),80);
  }
  if(changed)api.persist?.();return changed;
 }
