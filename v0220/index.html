@@ -802,6 +802,69 @@ html,body{background:#070b0f}.game-shell{background:#0b1116}.scene{inset:var(--u
 #eldoria-core-loop .worldObjectiveDock .btn{height:38px!important;min-height:38px!important}
 }
 </style>
+<style id="v0264-local-context-recovery">
+@media(max-width:620px){
+/* World markers return to icon-first presentation: no rectangular button cards. */
+#eldoria-core-loop .nodeWrap{width:82px!important;height:88px!important;max-width:82px!important;overflow:visible!important}
+#eldoria-core-loop .nodeWrap>.node{
+  width:82px!important;min-width:82px!important;height:88px!important;min-height:88px!important;
+  padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;outline:0!important;transform:none!important;overflow:visible!important;
+}
+#eldoria-core-loop .nodeWrap>.node:before,#eldoria-core-loop .nodeWrap>.node:after{display:none!important}
+#eldoria-core-loop .node .nodeTypeMark{display:none!important}
+#eldoria-core-loop .node .icon{
+  width:54px!important;height:54px!important;margin:0 auto 2px!important;
+  display:grid!important;place-items:center!important;font-size:34px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;filter:drop-shadow(0 4px 5px #000b)!important;
+}
+#eldoria-core-loop .node label{display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;color:#efe8d7!important;font-size:8px!important;line-height:1.05!important;text-shadow:0 1px 3px #000,0 0 4px #000!important}
+#eldoria-core-loop .node small{display:none!important}
+
+/* Context is a small local card directly below the selected icon. */
+#eldoria-core-loop .nodeWrap>.objectAction.contextSheet{
+  position:absolute!important;left:50%!important;right:auto!important;top:calc(100% + 3px)!important;bottom:auto!important;
+  transform:translateX(-50%)!important;width:132px!important;max-width:132px!important;max-height:none!important;
+  padding:6px!important;border-radius:7px!important;overflow:visible!important;
+  background:#0a0f13f5!important;border:1px solid #d6b66f66!important;box-shadow:0 6px 16px #000a!important;z-index:360!important;
+}
+#eldoria-core-loop .nodeWrap>.objectAction .compactContextTop{margin:0 0 3px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactContextTop small{display:none!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactContextTop b{font-size:9px!important;line-height:1.05!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactFacts0264{display:block!important;margin:0 0 4px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactFacts0264 span{display:none!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactFacts0264 span:first-child{display:block!important;padding:3px 4px!important;background:#10171c!important;border-radius:5px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactFacts0264 small{font-size:5px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactFacts0264 b{font-size:7px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .contextDetailsBody0264{margin:0 0 4px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .contextMoreOpen0264{min-height:20px!important;height:20px!important;padding:0 6px!important;font-size:5px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .contextMore0264{font-size:6px!important;padding:4px!important}
+#eldoria-core-loop .nodeWrap>.objectAction .compactPrimary0264{
+  width:100%!important;height:34px!important;min-height:34px!important;margin:0!important;padding:3px 6px!important;
+  border-radius:6px!important;font-size:7px!important;letter-spacing:.06em!important;
+}
+
+/* City interactions use the same local, compact pattern beneath the building. */
+#eldoria-core-loop .buildingWrap>.buildingAction.contextSheet{
+  position:absolute!important;left:50%!important;right:auto!important;top:calc(100% + 4px)!important;bottom:auto!important;
+  transform:translateX(-50%)!important;width:132px!important;max-width:132px!important;max-height:none!important;
+  padding:6px!important;border-radius:7px!important;overflow:visible!important;
+  background:#0a0f13f5!important;border:1px solid #d6b66f66!important;box-shadow:0 6px 16px #000a!important;z-index:360!important;
+}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactContextTop{margin:0 0 3px!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactContextTop small{display:none!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactContextTop b{font-size:9px!important;line-height:1.05!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactFacts0264{display:block!important;margin:0 0 4px!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactFacts0264 span{display:none!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactFacts0264 span:first-child{display:block!important;padding:3px 4px!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .contextDetailsBody0264{display:none!important}
+#eldoria-core-loop .buildingWrap>.buildingAction .compactPrimary0264{
+  width:100%!important;height:34px!important;min-height:34px!important;margin:0!important;padding:3px 6px!important;
+  border-radius:6px!important;font-size:7px!important;letter-spacing:.06em!important;
+}
+}
+</style>
 </head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
@@ -1053,7 +1116,7 @@ function heroes(){let troop=troopStats(),ex=expeditionStats(),ids=['aldric'].con
 function taskDock(){if(!s.tasks.length)return '';return '<button class="queueToggle" data-queue>⚒ COLAS · '+s.tasks.length+'</button><div class="taskdock" data-taskdock>'+s.tasks.map(t=>{let p=Math.max(0,Math.min(1,1-(t.end-Date.now())/(t.end-t.start)));return '<div class="taskchip"><b><span>'+t.title+'</span><span>'+Math.max(0,Math.ceil((t.end-Date.now())/1000))+'s</span></b><div class="timerbar"><i style="width:'+(p*100)+'%"></i></div></div>'}).join('')+'</div>'}function placeBuildingUI(){root.querySelectorAll('[data-poi]').forEach(el=>{let id=el.dataset.poi,r=el.getBoundingClientRect(),a=root.querySelector('[data-building-action="'+id+'"]')?.closest('.buildingAction'),t=root.querySelector('[data-building-timer="'+id+'"]');if(a&&!a.closest('.buildingWrap')){a.style.left=(r.left+r.width/2)+'px';a.style.top=Math.min(innerHeight-a.offsetHeight-8,r.bottom+5)+'px'}if(t&&!t.closest('.buildingWrap')){t.style.left=(r.left+r.width/2)+'px';t.style.top=Math.max(8,r.top-t.offsetHeight-5)+'px'}})}function applyTutorialFocus(){let t=tutorialTarget();if(!t)return;let el=t.kind==='poi'?root.querySelector('[data-poi="'+t.id+'"]'):t.kind==='node'?root.querySelector('[data-node="'+t.id+'"]'):root.querySelector('[data-view="'+t.id+'"]');if(!el)return;el.classList.add('tutorialFocus');let h=document.createElement('div');h.className='tutorialHand';h.innerHTML='<small>'+t.copy+'</small><span>↓</span>';if(t.kind==='node'){let host=el.closest('.nodeWrap');if(host){h.classList.add('worldAnchored');host.appendChild(h);return}}let r=el.getBoundingClientRect(),above=r.top>190;h.style.left=Math.max(76,Math.min(innerWidth-76,r.left+r.width/2))+'px';h.style.top=(above?Math.max(84,r.top-104):Math.min(innerHeight-138,r.bottom+12))+'px';h.querySelector('small').style.maxWidth='152px';h.querySelector('small').style.whiteSpace='normal';h.querySelector('small').style.lineHeight='1.2';if(!above){h.classList.add('below');h.querySelector('span').textContent='↑'}document.body.appendChild(h)}
 function tutorialBeat(){if(s.bastionLevel>3)return;let key=!s.sawmill?'start':s.sawmill&&!s.forest?'world':s.bastion>=2&&!s.barracks?'barracks':s.bastion3&&!s.granary?'granary':s.bastion3&&s.granary&&!s.lyra?'breach':s.boss?'afterBreach':null;if(!key||s.tutorialSeen[key])return;s.tutorialSeen[key]=true;save();let beats={start:['NARRADOR','Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.'],world:['Sir Aldric','El aserradero vuelve a respirar. Ahora mira más allá de las murallas: recolectamos fuera para crecer dentro. Cada nodo se recoge por completo: cuanto mayor sea su reserva, más tiempo necesitará la marcha.'],barracks:['Sir Aldric','Las murallas ya se sostienen. Un reino sin soldados, no. El Cuartel transforma recursos en tropas y aumenta lo que podemos afrontar fuera.'],breach:['NARRADOR','Más allá de la ruta despejada, Aldric distingue huellas recientes junto a la Fisura. No ataques todavía: inspecciona los alrededores y descubre quién sigue con vida.'],afterBreach:['Sir Aldric','La frontera nos ha dado recursos, un aliado y una victoria. Ahora debemos volver a Valoria. Ese es nuestro ritmo: explorar, regresar y crecer.'],granary:['NARRADOR','Nuevo recurso: Comida. El Granero produce comida de forma continua y la caza aporta reservas adicionales. La comida sostiene tropas y será necesaria para ampliar Valoria.']}[key];setTimeout(()=>guideDialogue(beats[0],beats[1]),280)}
 function toastFeedback026(title,copy){document.querySelectorAll('.microToast026').forEach(x=>x.remove());let t=document.createElement('div');t.className='microToast026';t.innerHTML='<b>'+title+'</b><span>'+copy+'</span>';document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),220)},2200)}
-function normalizeContextPanels0264(){let scene=root.querySelector('.scene.world,.scene.kingdom');if(!scene)return;root.querySelectorAll('.objectAction.contextSheet,.buildingAction.contextSheet').forEach(p=>{if(p.parentElement!==scene)scene.appendChild(p)})}
+function normalizeContextPanels0264(){/* Context actions intentionally remain attached to their world node/building so the action appears directly beside what the player tapped. */}
 function bindV0264UX(){root.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>{s.chestInspectId=b.dataset.item;save();render()});root.querySelectorAll('[data-item-close]').forEach(b=>b.onclick=()=>{s.chestInspectId=null;save();render()});let openForge=root.querySelector('[data-open-forge]');if(openForge)openForge.onclick=e=>{e.preventDefault();e.stopPropagation();s.view='forge';s.selectedAction=null;save();render()};let craft=root.querySelector('[data-forge-craft]');if(craft)craft.onclick=craftAetherBlade026}
 function enhanceWorldPan0264(){let wp=root.querySelector('[data-worldpan]');if(!wp)return;let scene=wp.closest('.scene.world'),x=worldPan.x||0,y=worldPan.y||0,startX=0,startY=0,baseX=x,baseY=y,lastX=0,lastY=0,lastT=0,vx=0,vy=0,drag=false,moved=false,raf=0;const bounds=()=>({minX:Math.min(0,(scene?.clientWidth||innerWidth)-(wp.scrollWidth||wp.offsetWidth)-24),minY:Math.min(0,(scene?.clientHeight||innerHeight)-(wp.scrollHeight||wp.offsetHeight)-24)}),clamp=()=>{let b=bounds();x=Math.max(b.minX,Math.min(0,x));y=Math.max(b.minY,Math.min(0,y));worldPan={x,y};wp.style.transform='translate3d('+x+'px,'+y+'px,0)'},stop=()=>{if(raf)cancelAnimationFrame(raf);raf=0},inertia=()=>{vx*=.91;vy*=.91;if(Math.abs(vx)<.12&&Math.abs(vy)<.12){raf=0;return}x+=vx*16;y+=vy*16;clamp();raf=requestAnimationFrame(inertia)};stop();wp.style.transform='translate3d('+x+'px,'+y+'px,0)';wp.style.willChange='transform';wp.style.touchAction='none';wp.onpointerdown=e=>{if(e.target.closest('button,.objectAction,.objectTimer'))return;stop();drag=true;moved=false;startX=e.clientX;startY=e.clientY;baseX=x;baseY=y;lastX=e.clientX;lastY=e.clientY;lastT=performance.now();vx=vy=0;try{wp.setPointerCapture(e.pointerId)}catch(_){}};wp.onpointermove=e=>{if(!drag)return;let now=performance.now(),dt=Math.max(8,now-lastT),dx=e.clientX-lastX,dy=e.clientY-lastY;x=baseX+(e.clientX-startX);y=baseY+(e.clientY-startY);vx=dx/dt;vy=dy/dt;if(Math.abs(e.clientX-startX)>3||Math.abs(e.clientY-startY)>3)moved=true;lastX=e.clientX;lastY=e.clientY;lastT=now;clamp()};wp.onpointerup=e=>{if(!drag)return;drag=false;try{wp.releasePointerCapture(e.pointerId)}catch(_){}if(moved){e.preventDefault();e.stopPropagation();raf=requestAnimationFrame(inertia)}};wp.onpointercancel=()=>{drag=false;stop()};wp.onclick=e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false}}}
 function render(){document.querySelectorAll('.tutorialHand').forEach(x=>x.remove());root.innerHTML='<div class="e22">'+hud()+taskDock()+(s.view==='world'?world():s.view==='heroes'?heroes():s.view==='codex'?codexView():s.view==='chest'?chestView():s.view==='forge'?forgeView():kingdom())+nav()+'</div>';normalizeContextPanels0264();bind();bindV0264UX();requestAnimationFrame(()=>{enhanceWorldPan0264();placeBuildingUI();applyTutorialFocus();tutorialBeat();worldIntro();maybeCodexTutorial()})}
