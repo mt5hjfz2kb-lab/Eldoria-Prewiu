@@ -83,5 +83,5 @@ jobs:
           exit 1
       - name: Verify published closed tester build
         run: |
-          TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?testerqa=1&cb=${{ github.run_id }}'
+          TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?qa=1&testerqa=1&cb=${{ github.run_id }}'
           ELDORIA_TESTER_URL="$TESTER_URL" node qa/e2e-tester-build.js
