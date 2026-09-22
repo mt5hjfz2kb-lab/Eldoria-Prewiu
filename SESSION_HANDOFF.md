@@ -6,8 +6,8 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active normal-development milestone: **v0.26.6**.
-- Current certification target: **v0.26.6 on `main`**. The exact certified HEAD is the latest successful `Publish Eldoria Preview` run; do not rely on older baseline text.
+- Active normal-development milestone: **v0.27**.
+- Current certification target: **v0.27 on `main`**. The exact certified HEAD is the latest successful `Publish Eldoria Preview` run; do not rely on older baseline text.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -19,7 +19,7 @@ Built on the certified v0.26.1 baseline. The Códice/Relic layer now recovers th
 Arcón and Códice are now dedicated full-screen game views, like Mundo/Valoria, rather than modal overlays on top of the map. Arcón remains strictly objects/materials/equipment; Códice remains strictly cards/relics.
 
 ## Verification
-v0.26.6 is only certified when the `Publish Eldoria Preview` workflow for the current HEAD completes green, including `npm run validate:local`, tester drift guard, Pages deployment and published Chromium verification.
+v0.27 is only certified when the `Publish Eldoria Preview` workflow for the current HEAD completes green, including `npm run validate:local`, tester drift guard, Pages deployment and published Chromium verification.
 
 ## Next task
 After green certification, owner tests the normal development URL. The frozen tester URL remains research-only and is not a development baseline.
@@ -139,3 +139,17 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Direction: stylized semi-realistic dark fantasy; monumental rebuilt Valoria; readable strategic 4X world; violet/magenta Breach corruption; compact mobile-first UI.
 - Visual ambition must never override gameplay readability, tap clarity or performance.
 - This is a documentation/design change only. It does not alter the frozen tester build or require gameplay publication.
+
+
+## v0.27 mission-system delivery
+- Replaced the old persistent guided-step block with compact chapter missions and a mobile-safe drawer.
+- Missions support real numeric progress, state objectives, combat wins, infrastructure, Códice/relic decisions and accelerator use.
+- Chapter rewards grant resources, Power and universal accelerators once only.
+- Universal accelerators shorten authoritative timestamp tasks for construction/upgrades/recruitment; gathering remains non-accelerable.
+- Códice is now part of the main chapter progression.
+- Economy costs through Bastion X were retuned and the fresh-save certification sweep was aligned with the new pacing.
+- Permanent QA: `qa/e2e-v027-chapters.js`.
+- The external tester build remains frozen at 0.26.5-test.2 and must not be edited from this development line.
+
+## Next task
+Owner tests the normal v0.27 development URL. Any correction continues on `main`, preserving the frozen tester snapshot unless an explicitly versioned tester hotfix is requested.
