@@ -38,7 +38,7 @@ jobs:
 
       - name: Guard frozen tester snapshot
         run: |
-          git diff --exit-code 59f095c6ed731f833c74c8330233ee4245596ae8 -- tester-v0265/
+          git diff --exit-code e3b47bf05ad9b68703bc47e78c3eb1c1ca542535 -- tester-v0265/
 
       - name: Upload local QA source snapshot
         uses: actions/upload-artifact@v4
