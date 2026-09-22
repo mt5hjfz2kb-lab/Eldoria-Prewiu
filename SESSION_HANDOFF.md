@@ -153,3 +153,11 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 
 ## Next task
 Owner tests the normal v0.27 development URL. Any correction continues on `main`, preserving the frozen tester snapshot unless an explicitly versioned tester hotfix is requested.
+
+
+## v0.27 owner-test correction — Spawnling + Arcón categories
+- Chapter II no longer asks for an unreachable target: **Engendro de la Fisura Nv.1** is present from Bastion II, before the Bastion III mission.
+- Arcón now has utility tabs: **Todo · Aceleradores · Materiales · Equipo · Especiales**.
+- Universal speedups earned from mission/chapter rewards are represented inside Arcón with quantity and usage explanation; they remain applied from eligible timed tasks.
+- Permanent regression: `qa/e2e-v027-owner-feedback.js`.
+- Frozen tester build remains untouched.
