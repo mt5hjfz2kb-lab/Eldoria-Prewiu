@@ -90,3 +90,18 @@
 - Preserve stable IDs and move logic gradually toward data-driven state/costs/unlocks/rewards/actions/serializable tasks/narrative events so later Unity migration is feasible.
 - Do not fake multiplayer, ownership, rewards or state.
 - Repository is the source of truth; update state/changelog with important work.
+
+
+## Layered PvE combat and troop progression — v0.26.6
+- Combat complexity is introduced in layers, not all at once: **Caza → Poder**, **enemigo común → estadísticas + composición**, **poco común → rasgo + contra-juego**, **jefe del mundo → semiautomático + una intervención mínima del héroe**.
+- Current combat statistics are **ATQ / DEF / VIDA / RUPTURA / PODER**. These values must affect resolution; they are not decorative UI.
+- Hunting stays intentionally simple and resolves from Power without a march-composition screen.
+- Common threats introduce PREPARAR MARCHA with real archer count and hero selection, followed by a report that explains the result.
+- Uncommon threats must have a real mechanical trait. Acechador de Ceniza establishes the pattern with **Emboscada**: stronger opening pressure followed by exposed defense. A different march composition must be capable of changing the outcome.
+- World bosses use automatic troops/basic exchanges. The player gets at most one small role-consistent hero intervention in this scaffold; this is an architecture seam, not the final hero-skill system.
+- **PvP is not implemented yet** and must not be implied by fake opponents, rankings or combat language.
+- The only recruitable troop family in the current player-facing build is **Arqueros**.
+- Troop progression follows **encontrar → comprender → desbloquear**. Do not preview future troop families in UI, locked cards, silhouettes or tooltips before their narrative discovery.
+- Internally, the troop-family seam may reserve future families. **Paladines** are intended around Bastión 11 with narrative justification; **Brujos** are later and tied to La Brecha. Neither is currently recruitable or visible to players.
+- The existing **Manuscrito de la Fisura** remains on its current acquisition/storage flow. Do not duplicate it, rename its purpose, or reveal its troop-unlock connection early.
+- Mobile combat UX must preserve the world as context: compact selection, march preparation, report, timer/combat, and return flow; no oversized permanent panels.
