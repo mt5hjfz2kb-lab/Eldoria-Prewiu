@@ -28,7 +28,7 @@ If documents disagree, this hierarchy wins. Reconcile the stale lower-level docu
 - Development branch: `main`.
 - Canonical editable runtime: `v0220/index.html` plus `v0220/js/`.
 - `v0220` is a compatibility directory name, **not** the active product version.
-- Active runtime/API milestone: **v0.26.4**.
+- Active runtime/API milestone: **v0.26.6**.
 - Generated public build: `playtest/`; never edit it as source.
 - Last certified stable recovery baseline: branch `baseline/v0.24-certified`, commit `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
 - Protected visual recovery: `stable/visual-good-f139968c`, commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
@@ -82,9 +82,9 @@ When the owner says **hazlo / sigue / adelante / continúa**, execute the larges
 
 
 ## Frozen tester isolation
-- **Eldoria Closed Playtest T1** is an immutable research snapshot: version `0.26.5-test.1`, certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`, ref `frozen/testers-v0265-t1`, public path `/tester-v0265/`.
+- **Eldoria Closed Playtest T1** is an immutable research snapshot: version `0.26.5-test.2`, frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`, public path `/tester-v0265/`.
 - `main` remains the only active development line. Never branch normal product development from the tester snapshot and never maintain a second evolving tester game line.
 - Do not edit `tester-v0265/` during the test window except for a critical defect that invalidates the playtest. Any such exception requires an explicit new tester version, certification and freeze record.
 - Normal `main` work must not inherit the visible tester layer: no tester intro, permanent report CTA, research prompts or tester survey in the active runtime unless the owner explicitly promotes a specific element into the product.
-- The Pages workflow must guard `tester-v0265/` against drift from certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`. Main may continue to deploy; the tester bytes must remain identical.
+- The Pages workflow must guard `tester-v0265/` against drift from frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`. Main may continue to deploy; the tester bytes must remain identical.
 - Feedback is evidence, not an automatic backlog. Use `TESTER_FEEDBACK_PROTOCOL.md` for grouping, prioritization, aggregation and traceability before changing the product.
