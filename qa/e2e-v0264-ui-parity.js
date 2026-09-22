@@ -43,6 +43,9 @@ const {chromium}=require('playwright');
  // Hard mobile composition budgets: HUD/nav/tutorial stay compact while the map keeps most of the viewport.
  const vh=844;
  const hudBox=await p.locator('.hud').boundingBox();if(hudBox&&hudBox.height>vh*.12)throw Error('HUD exceeds 12% viewport: '+hudBox.height);
+ const resourceIcons=await p.locator('[data-testid="resource-bar"] .resChip i').allInnerTexts();if(resourceIcons[0]!=='🌲'||resourceIcons[1]!=='🪨'||(resourceIcons[2]&&resourceIcons[2]!=='🍖'))throw Error('Clear resource pictograms regressed: '+JSON.stringify(resourceIcons));
+ const topEls=await p.locator('.hud > .crest,.hud > .res,.hud > .hudTools').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}}));for(let i=0;i<topEls.length-1;i++){if(topEls[i].w&&topEls[i+1].w&&topEls[i].right>topEls[i+1].x+1)throw Error('HUD groups overlap: '+JSON.stringify(topEls))}
+ const hudOverflow=await p.locator('.hud').evaluate(el=>el.scrollWidth-el.clientWidth);if(hudOverflow>1)throw Error('HUD overflows viewport by '+hudOverflow+'px');
  const navBox=await p.locator('[data-testid="primary-nav"]').boundingBox();if(navBox&&navBox.height>vh*.10)throw Error('Nav exceeds 10% viewport: '+navBox.height);
  const questBox=await p.locator('.quest:visible').boundingBox();if(questBox&&questBox.height>vh*.08)throw Error('Quest/tutorial exceeds 8% viewport: '+questBox.height);
  const sceneBox=await p.locator('.scene.world').boundingBox();if(sceneBox&&sceneBox.height/vh<.65)throw Error('World scene visible share below 65%: '+(sceneBox.height/vh).toFixed(3));

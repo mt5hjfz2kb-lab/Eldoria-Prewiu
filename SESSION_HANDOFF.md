@@ -1,6 +1,6 @@
 # Eldoria — SESSION HANDOFF
 
-Updated: 2026-09-21
+Updated: 2026-09-22
 
 Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
@@ -66,3 +66,11 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - World nodes recover relative visual presence while tutorial emphasis and Breach decoration are restrained.
 - Permanent QA now enforces HUD <=12% vh, tutorial <=8% vh, navigation <=10% vh, context <=22% vh and >=65% visible world share at 390x844.
 - Gameplay, logic, economy, narrative, progression and action semantics are unchanged.
+
+
+## v0.26.4 resource HUD readability correction — 2026-09-22
+- Restored the previously clear resource pictograms: 🌲 wood, 🪨 stone, 🍖 food and ⚔️ Power.
+- Mobile top HUD is reduced to 50px and uses compact icon/value chips; the realm label is hidden on mobile to preserve playfield width.
+- Resource and Power groups flex within the available width instead of pushing/covering HUD controls. Ranking remains a compact top control; duplicate Arcón HUD access stays hidden because Arcón already exists in primary navigation.
+- Permanent mobile QA now checks the pictograms, horizontal HUD overflow and overlap between the profile/resources/tool groups.
+- No economy, gameplay, progression or resource values changed.
