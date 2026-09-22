@@ -41,6 +41,7 @@ const {chromium}=require('playwright');
  const dims=await p.evaluate(()=>({w:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth,q:window.ELDORIA_TESTER.queue().length}));
  if(dims.w>dims.cw+2)throw Error('Mobile horizontal overflow '+JSON.stringify(dims));
  if(dims.q!==0)throw Error('Queue unexpectedly non-empty after reload');
+ await p.evaluate(async()=>{delete window.__ELDORIA_TESTER_SUBMIT__;await window.ELDORIA_TESTER.submit('qa-real-backend','Real backend persistence QA','PASS',{kind:'qa-backend'});const f=await window.ELDORIA_TESTER.flush();if(f.pending)throw Error('Real backend feedback remained queued')});
  await b.close();
  console.log('CLOSED TESTER LAYER QA PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
