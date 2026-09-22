@@ -21,7 +21,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const panAfterSelect=await p.locator('[data-worldpan]').evaluate(el=>el.style.transform);if(panAfterSelect!==pan0)throw Error('node selection moved camera: '+pan0+' -> '+panAfterSelect);
  await p.locator('[data-testid="world-action-forest"]').tap({force:true});await p.waitForTimeout(1900);
  if(!(await state()).tasks.some(t=>t.key==='gather-forest'))throw Error('gather task did not start');
- const panDuring=await dragWorld(-70,40);if(panDuring===panAfterSelect)throw Error('map cannot move while gathering');
+ const panDuring=await dragWorld(-25,15);if(panDuring===panAfterSelect)throw Error('map cannot move while gathering');
  await p.locator('[data-testid="nav-kingdom"]').tap({force:true});await p.locator('[data-testid="nav-world"]').tap({force:true});
  const panReturn=await p.locator('[data-worldpan]').evaluate(el=>el.style.transform);if(panReturn!==panDuring)throw Error('world camera was reset by view transition');
  // 3. Barracks recruitment has its own timed flow and survives leaving/reloading.
