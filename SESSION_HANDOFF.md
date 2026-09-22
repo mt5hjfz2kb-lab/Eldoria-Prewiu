@@ -1,48 +1,41 @@
 # Eldoria — SESSION HANDOFF
 
-Updated: 2026-09-22
+Updated: 2026-09-23
 
-Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. History: `CHANGELOG.md` only.
+Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA: `QA_AND_DEPLOY.md`. History: `CHANGELOG.md` only.
 
 ## Current working state
-- Documentation coherence check: entry-point docs agree on `main` / **v0.27** / `v0220` canonical source / frozen tester isolation.
-- Branch: `main` — the only active development line.
+- Branch: `main`, only active development line.
 - Active development version: **v0.27**.
-- Live HEAD: verify the real `main` HEAD at session start; do not infer it from historical docs or chat.
-- Canonical editable source: `v0220/index.html` + `v0220/js/`.
-- `v0220` is a compatibility directory name, not the product version.
-- Generated public output: `playtest/`; never edit it directly.
+- Verify the real live HEAD at session start; never infer it from chat/history.
+- Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
+- Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
-- Protected recovery baselines: `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
+- QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
+
+## Current v0.27 product state
+- Chapter mission system and universal accelerators are active.
+- Arcón includes utility tabs, including Aceleradores.
+- Chapter II Engendro is reachable/visible in its intended sequence.
+- Layered PvE remains active; only Arqueros are player-facing/recruitable; PvP remains unimplemented.
+
+## QA workflow now in force
+Three separate levels exist:
+1. **Focused** — exact system preset / dedicated test for small changes.
+2. **Segment** — coherent progression block preset for medium changes.
+3. **Integral** — `npm run validate:local` + uninterrupted fresh save for milestones, progression/economy/sequencing changes and release candidates.
+
+Do not automatically replay all of Arc I for every small correction. Escalate QA according to risk, while keeping the integral gate mandatory before important stable releases.
+
+The development-only QA Launcher is injected during `playtest/` generation and appears only with `?qa=1`. Its storage layer isolates the canonical save key to a QA-only save, so presets/fresh QA do not alter normal saves. Shared fixture definitions live in `v0220/js/qa-fixtures.js` and should be reused by Playwright where practical.
+
+Current focal presets: Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias/Duelo, Maelis, marcha/ataque, Heraldo semiautomático, capítulos v0.27, aceleradores and final Bastión X. Segment presets: VI→VIII and IX→X.
 
 ## Frozen tester isolation
-- Build: **Eldoria Closed Playtest T1 / 0.26.5-test.2**.
+- **Eldoria Closed Playtest T1 / 0.26.5-test.2**.
 - Frozen integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
 - URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
-- `tester-v0265/` is frozen research output, not a development baseline.
-- Normal work on `main` must not edit or inherit the tester layer.
-- Pages drift guard must keep the tester bytes identical to the frozen integration snapshot.
-
-## Current v0.27 state
-- Chapter mission system replaces the old persistent guided-step block.
-- Mission/chapter rewards and universal accelerators are active.
-- Arcón organizes stored content by utility, including an Aceleradores tab.
-- Chapter II's Engendro de la Fisura is reachable in the intended mission sequence.
-- Layered PvE from v0.26.6 remains part of the active v0.27 runtime.
-- Current player-facing recruitable troop family remains Arqueros only.
-- PvP remains unimplemented.
-
-## Verification / workflow
-- Documentation-only changes: check hierarchy/version/source/tester isolation, commit and push; no gameplay publication is required.
-- Gameplay/release work: `npm run validate:local` must pass before the coherent push to `main`.
-- A build is only called published/verified after the corresponding Pages workflow and published Chromium verification pass.
+- Frozen research output only; never use as source and never inject the QA Launcher into it.
 
 ## Next task
-Continue owner testing and v0.27 development from the normal development URL. Do not base fixes on the frozen tester snapshot.
-
-## Minimal commands
-```bash
-npm install
-npm run qa:setup
-npm run validate:local
-```
+Continue normal v0.27 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
