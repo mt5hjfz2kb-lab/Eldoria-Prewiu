@@ -73,7 +73,7 @@ When the owner sends corrections/improvements: reproduce and group the coherent 
 When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn and return only with a verified result, a required product decision, or a genuine blocker.
 
 ## Frozen tester isolation
-- **Eldoria Closed Playtest T1** is immutable research: `0.26.5-test.2`, frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`, path `/tester-v0265/`.
+- **Eldoria Closed Playtest T1** is immutable research: `0.26.5-test.2`, frozen integration commit `df618e86be9da399bb827d5e6cebc3f13e55ff97` (re-frozen after the approved final-survey contrast hotfix), path `/tester-v0265/`.
 - Do not edit `tester-v0265/` during the test window except for an explicitly versioned critical tester defect.
 - Main development must not inherit tester intro/report/survey layers unless explicitly promoted into product.
 - Pages must guard tester bytes against drift from the frozen integration commit.
