@@ -10,7 +10,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  // Regression: Chapter II asks for Spawnling before Bastion III, so it must exist in Bastion II.
  const completed={'c2-barracks':Date.now(),'c2-train':Date.now(),'c2-power':Date.now()};
  await set({view:'world',introSeen:true,sawmill:true,bastion:2,bastionLevel:2,barracks:true,forest:1,quarry:1,camp:1,troops:56,wood:9999,stone:9999,selectedAction:null,enemyRespawns:{},chapterProgress:{version:27,current:2,completedMissions:completed,claimedChapters:{1:Date.now()},missionRewards:{},chapterStarted:{2:Date.now()},counters:{gathered:{wood:600,stone:500,food:0},trained:20,hunts:0,wins:{spawnling:0,ashStalker:0,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},speedups:{m1:3,m5:1,m15:2}});
- const spawn=p.locator('[data-testid="world-node-spawnling"]');await spawn.waitFor({state:'visible'});
+ const spawn=p.locator('[data-testid="world-node-spawnling"]');await spawn.waitFor({state:'visible'});const spawnBox=await spawn.boundingBox();const sceneBox=await p.locator('.scene.world').boundingBox();if(!spawnBox||!sceneBox||spawnBox.x<sceneBox.x||spawnBox.x+spawnBox.width>sceneBox.x+sceneBox.width||spawnBox.y<sceneBox.y||spawnBox.y+spawnBox.height>sceneBox.y+sceneBox.height)throw Error('Chapter II Spawnling exists but is not visible in the initial frontier viewport: '+JSON.stringify({spawnBox,sceneBox}));
  await spawn.evaluate(el=>el.click());await p.locator('[data-testid="world-action-spawnling"]').waitFor({state:'visible'});
  const chapter=p.locator('[data-testid="chapter-compact"]');const chapterText=await chapter.innerText();if(!/Engendro de la Fisura/i.test(chapterText))throw Error('Chapter II current objective is not Spawnling: '+chapterText);
 
