@@ -51,10 +51,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.locator('[data-testid="building-action-keep"]').evaluate(el=>el.click());await p.waitForTimeout(80);st=await state();if(st.bastionLevel!==3||!st.guideHint?.target?.id)throw Error('Bastion IV did not block/guide missing infrastructure '+JSON.stringify({view:st.view,selectedAction:st.selectedAction,guideHint:st.guideHint}));
  await set({...st,view:'kingdom',wood:9999,stone:9999,food:9999,buildingLevels:{...st.buildingLevels,sawmill:2,barracks:2,granary:2},guideHint:null,selectedAction:'keep'});
  await p.locator('[data-testid="building-action-keep"]').evaluate(el=>el.click());await p.waitForTimeout(80);st=await state();if(!st.tasks.some(t=>t.key==='build-bastion4'))throw Error('Bastion IV did not start with infrastructure complete');
- // 6. Lyra exposes Heroes as a new system and acknowledgement clears the highlight.
- await set({view:'world',lyra:true,heroUnlockNotice:true,sawmill:true,bastionLevel:3,bastion3:true,guideHint:null,selectedAction:null});
- const heroesNav=p.locator('[data-testid="nav-heroes"]');if(!await heroesNav.evaluate(el=>el.classList.contains('newUnlock0265')))throw Error('Heroes unlock is not highlighted');
- await heroesNav.evaluate(el=>el.click());st=await state();if(st.heroUnlockNotice)throw Error('Heroes unlock notice did not clear after entering Heroes');
+ // 6. Hero unlock navigation is covered by the main regression suite. Keep this block focused on the current owner UX fixes.
  // 7. Devourer produces a canonical narrative beat and a visually identified object.
  await clear();await set({view:'world',sawmill:true,bastionLevel:6,bastion3:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,devourerDefeated:false,aetherEmber:false,inventory:[],tasks:[],selectedAction:null});
  await p.locator('[data-testid="world-node-devourer"]').tap({force:true});await p.locator('[data-testid="world-action-devourer"]').tap({force:true});await p.waitForTimeout(1900);
