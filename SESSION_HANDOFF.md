@@ -37,5 +37,9 @@ Current focal presets: Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias
 - URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
 - Frozen research output only; never use as source and never inject the QA Launcher into it.
 
+## Latest owner correction
+- Barracks recruitment choices now show visible per-option quantity, wood cost, stone cost and real training time for 5 / 10 / 20 archers, with a high-contrast selected summary on mobile.
+- Permanent focused regression: `qa/e2e-v027-barracks-recruitment.js`.
+
 ## Next task
 Continue normal v0.27 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
