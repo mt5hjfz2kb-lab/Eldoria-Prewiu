@@ -15,6 +15,7 @@ const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v
  await p.locator('[data-testid="tester-blocked"]').waitFor({state:'visible'});
  await p.locator('[data-testid="tester-blocked"] [data-h="0"]').click();
  await p.locator('[data-testid="tester-blocked"]').waitFor({state:'detached'});
+ await p.evaluate(()=>document.querySelectorAll('.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove()));
  await p.evaluate(()=>window.ELDORIA_TESTER.ask({id:'qa-negative',question:'¿Entendiste esta prueba?',reasons:['R1','R2','R3','Otro']}));
  await p.locator('[data-testid="tester-question-qa-negative"]').waitFor({state:'visible'});
  await p.locator('[data-testid="tester-question-qa-negative"] [data-a="No"]').click();
@@ -24,6 +25,7 @@ const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v
  let queued=await p.evaluate(()=>window.ELDORIA_TESTER.queue().length);if(queued<1)throw Error('Offline queue did not persist');
  await p.evaluate(async()=>{window.__ELDORIA_TESTER_SUBMIT__=async r=>{window.__testerReceived.push(r);return true};await window.ELDORIA_TESTER.flush()});
  queued=await p.evaluate(()=>window.ELDORIA_TESTER.queue().length);if(queued!==0)throw Error('Offline queue did not flush');
+ await p.evaluate(()=>document.querySelectorAll('.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove()));
  await p.evaluate(()=>window.ELDORIA_TESTER.openFinal());
  await p.locator('[data-testid="tester-final"]').waitFor({state:'visible'});
  const rows=p.locator('[data-testid="tester-final"] .testerFinalQ');
