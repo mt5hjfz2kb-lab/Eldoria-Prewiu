@@ -79,3 +79,12 @@ The next owner-facing message should therefore be either a verified stable build
 - Playable/release delivery: gameplay definition above + successful Pages certification/deploy + Chromium check of the published build.
 
 When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn. Do not send bug-by-bug status messages. Return only with a useful verified result, a required design decision, or a genuine tool/access blocker.
+
+
+## Frozen tester isolation
+- **Eldoria Closed Playtest T1** is an immutable research snapshot: version `0.26.5-test.1`, certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`, ref `frozen/testers-v0265-t1`, public path `/tester-v0265/`.
+- `main` remains the only active development line. Never branch normal product development from the tester snapshot and never maintain a second evolving tester game line.
+- Do not edit `tester-v0265/` during the test window except for a critical defect that invalidates the playtest. Any such exception requires an explicit new tester version, certification and freeze record.
+- Normal `main` work must not inherit the visible tester layer: no tester intro, permanent report CTA, research prompts or tester survey in the active runtime unless the owner explicitly promotes a specific element into the product.
+- The Pages workflow must guard `tester-v0265/` against drift from certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`. Main may continue to deploy; the tester bytes must remain identical.
+- Feedback is evidence, not an automatic backlog. Use `TESTER_FEEDBACK_PROTOCOL.md` for grouping, prioritization, aggregation and traceability before changing the product.
