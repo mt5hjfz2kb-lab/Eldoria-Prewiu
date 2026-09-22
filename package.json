@@ -9,10 +9,10 @@
     "qa:focus": "node tools/run-qa-mode.mjs focus",
     "qa:segment": "node tools/run-qa-mode.mjs segment",
     "qa:launcher": "node qa/e2e-qa-launcher.js",
-    "qa:regression": "node qa/e2e-behavior-regression.js && node qa/e2e-core-flow.js && node qa/e2e-all-buildings.js && node qa/e2e-all-nodes.js && node qa/e2e-real-progression.js && node qa/e2e-late-progression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js && node qa/e2e-v027-owner-feedback.js && node qa/e2e-qa-launcher.js",
+    "qa:regression": "node qa/e2e-behavior-regression.js && node qa/e2e-core-flow.js && node qa/e2e-all-buildings.js && node qa/e2e-all-nodes.js && node qa/e2e-real-progression.js && node qa/e2e-late-progression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js && node qa/e2e-v027-owner-feedback.js && node qa/e2e-v027-barracks-recruitment.js && node qa/e2e-qa-launcher.js",
     "qa:arc1": "node qa/e2e-full-arc1.js",
     "validate:local": "node tools/validate-local.mjs",
-    "qa:targeted": "node qa/e2e-offline-isolated.js && node qa/e2e-behavior-regression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0263-owner-feedback.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js && node qa/e2e-v027-owner-feedback.js"
+    "qa:targeted": "node qa/e2e-offline-isolated.js && node qa/e2e-behavior-regression.js && node qa/e2e-codex-chest.js && node qa/e2e-v0263-owner-feedback.js && node qa/e2e-v0264-ui-parity.js && node qa/e2e-v0265-owner-block.js && node qa/e2e-v0266-pve-combat.js && node qa/e2e-v027-chapters.js && node qa/e2e-v027-owner-feedback.js && node qa/e2e-v027-barracks-recruitment.js"
   },
   "devDependencies": {"playwright": "1.55.0"}
 }
