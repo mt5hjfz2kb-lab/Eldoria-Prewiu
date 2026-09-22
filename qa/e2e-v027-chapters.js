@@ -27,7 +27,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  s=await state();if(!s.chapterProgress.claimedChapters['1'])throw Error('chapter I did not complete');
  if((s.speedups.m1||0)!==2)throw Error('chapter I must grant exactly two 1m speedups');
  let events=(s.sessionLog||[]).map(x=>x.type);for(const e of ['chapter_started','mission_completed','chapter_completed','chapter_reward_claimed','speedup_received'])if(!events.includes(e))throw Error('analytics missing '+e);
- const rewardSnapshot=[s.wood,s.stone,s.speedups.m1];await set({...s});await p.waitForTimeout(80);s=await state();if([s.wood,s.stone,s.speedups.m1].join('|')!==rewardSnapshot.join('|'))throw Error('chapter reward duplicated');
+ const rewardSnapshot={m1:s.speedups.m1,claim:s.chapterProgress.claimedChapters['1'],rewardEvents:(s.sessionLog||[]).filter(x=>x.type==='chapter_reward_claimed'&&x.data?.chapter===1).length};await set({...s});await p.waitForTimeout(80);s=await state();if(s.speedups.m1!==rewardSnapshot.m1||s.chapterProgress.claimedChapters['1']!==rewardSnapshot.claim||(s.sessionLog||[]).filter(x=>x.type==='chapter_reward_claimed'&&x.data?.chapter===1).length!==rewardSnapshot.rewardEvents)throw Error('chapter reward duplicated');
 
  // Speedup modifies authoritative timestamp, resolves eligible task, persists one leftover.
  const now=Date.now();s.chapterProgress.current=4;s.chapterProgress.counters.speedupsUsed=0;
