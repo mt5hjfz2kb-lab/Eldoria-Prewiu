@@ -49,3 +49,9 @@
 - Consolidated object-local kingdom/world actions, offline-safe timestamp tasks, independent production-building levels, equipment replacement safety and the uninterrupted fresh-save Arc I regression gate.
 
 Latest development milestone: **v0.27**. Certification status for the current `main` HEAD is tracked in `SESSION_HANDOFF.md` / the Pages workflow.
+
+
+## v0.27 owner-test hotfix — Spawnling / Arcón
+- Fixed Chapter II progression so the Engendro de la Fisura is available before Bastion III.
+- Added Arcón category tabs and made Universal Speedups visible there with quantities and purpose.
+- Added regression coverage for the exact owner-reported flow.
