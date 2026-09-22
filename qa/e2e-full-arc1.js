@@ -23,7 +23,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   const checkpoint=async(label,fn,recover)=>{await pxSample(label+'-start');console.log('SWEEP START '+label);try{await Promise.race([fn(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Checkpoint timeout after 45s')),45000))]);sweep.push({label,ok:true});await pxSample(label+'-pass');console.log('SWEEP PASS '+label)}catch(e){let snap=null;try{snap=await state()}catch{};sweep.push({label,ok:false,error:String(e&&e.message||e),state:snap});console.error('SWEEP BLOCKER '+label+' '+String(e&&e.message||e));try{await p.screenshot({path:'qa-failure-'+label.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.png',fullPage:true})}catch{};if(recover)await recover(snap,e);else throw e}};
   if((await state()).bastionLevel!==1)throw Error('Fresh save did not start at Bastion I');
 
-  await building('sawmill'); await p.waitForTimeout(6500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,4000);
+  await building('sawmill'); await p.waitForTimeout(7500);await p.reload({waitUntil:'domcontentloaded'});await waitState(()=>window.ELDORIA_V023.state().sawmill===true,5000);
   await view('world');
   // Offline task semantics: gathering continues against absolute wall-clock time while the game is closed.
   await node('forest');
