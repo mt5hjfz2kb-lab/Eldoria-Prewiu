@@ -54,7 +54,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  // 6. Lyra exposes Heroes as a new system and acknowledgement clears the highlight.
  await set({view:'world',lyra:true,heroUnlockNotice:true,sawmill:true,bastionLevel:3,bastion3:true,guideHint:null,selectedAction:null});
  const heroesNav=p.locator('[data-testid="nav-heroes"]');if(!await heroesNav.evaluate(el=>el.classList.contains('newUnlock0265')))throw Error('Heroes unlock is not highlighted');
- await heroesNav.tap({force:true});st=await state();if(st.heroUnlockNotice)throw Error('Heroes unlock notice did not clear after entering Heroes');
+ await heroesNav.evaluate(el=>el.click());st=await state();if(st.heroUnlockNotice)throw Error('Heroes unlock notice did not clear after entering Heroes');
  // 7. Devourer produces a canonical narrative beat and a visually identified object.
  await clear();await set({view:'world',sawmill:true,bastionLevel:6,bastion3:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,devourerDefeated:false,aetherEmber:false,inventory:[],tasks:[],selectedAction:null});
  await p.locator('[data-testid="world-node-devourer"]').tap({force:true});await p.locator('[data-testid="world-action-devourer"]').tap({force:true});await p.waitForTimeout(1900);
