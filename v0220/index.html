@@ -1296,5 +1296,64 @@ window.dialogue = function(name, copy, done) {
 #eldoria-core-loop .node .icon,#eldoria-core-loop .ghost i{transform:translateZ(0)}
 @media(max-width:600px){#eldoria-core-loop .nodeWrap.meat{left:18%!important;top:16%!important}#eldoria-core-loop .nodeWrap.wolf{left:62%!important;top:18%!important}#eldoria-core-loop .nodeWrap.boar{left:42%!important;top:43%!important}#eldoria-core-loop .nodeWrap.devourer{left:8%!important;right:auto!important;top:auto!important;bottom:10%!important}#eldoria-core-loop .nodeWrap.nareth{left:auto!important;right:8%!important;top:12%!important;bottom:auto!important}#eldoria-core-loop .nodeWrap.trial{left:8%!important;right:auto!important;top:12%!important;bottom:auto!important}#eldoria-core-loop .nodeWrap.final{left:auto!important;right:8%!important;top:auto!important;bottom:10%!important}#eldoria-core-loop .nodeWrap.forest2{left:30%!important;top:12%!important}#eldoria-core-loop .nodeWrap.quarry2{left:auto!important;right:31%!important;top:auto!important;bottom:8%!important}#eldoria-core-loop .nodeWrap.meat2{left:54%!important;top:37%!important;bottom:auto!important}#eldoria-core-loop .worldpan{transition:none!important}.hero026,.codex026{top:10%!important;max-height:72%;overflow:auto}.duelBoard{grid-template-columns:1fr}.duelBoard>strong{font-size:9px}.combatReadout{width:150px}}
 </style>
+
+<style id="v0264-local-context-icon-recovery">
+@media(max-width:620px){
+/* World nodes return to icon-first markers: no card/rectangle around the icon itself. */
+#eldoria-core-loop .nodeWrap{width:92px!important;height:94px!important;max-width:92px!important}
+#eldoria-core-loop .nodeWrap>.node{
+  width:92px!important;height:94px!important;min-width:92px!important;min-height:94px!important;
+  padding:3px!important;background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;outline:0!important;transform:none!important;
+}
+#eldoria-core-loop .nodeWrap>.node::before,#eldoria-core-loop .nodeWrap>.node::after{display:none!important}
+#eldoria-core-loop .nodeWrap>.node .nodeTypeMark{display:none!important}
+#eldoria-core-loop .nodeWrap>.node .icon{
+  width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;
+  padding:0!important;margin:0 auto 2px!important;background:transparent!important;border:0!important;
+  border-radius:0!important;box-shadow:none!important;font-size:34px!important;line-height:1!important;
+  filter:drop-shadow(0 4px 4px #000a)!important;
+}
+#eldoria-core-loop .nodeWrap>.node label{
+  display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;
+  font-size:8px!important;line-height:1.05!important;text-shadow:0 2px 3px #000!important;
+}
+#eldoria-core-loop .nodeWrap>.node small{
+  display:block!important;margin-top:1px!important;padding:0!important;background:transparent!important;border:0!important;
+  font-size:6px!important;line-height:1!important;text-shadow:0 2px 3px #000!important;
+}
+/* Context belongs to the selected object, directly beneath it, not to the bottom of the screen. */
+#eldoria-core-loop .nodeWrap>.compactContext0264,
+#eldoria-core-loop .buildingWrap>.compactContext0264{
+  position:absolute!important;left:50%!important;right:auto!important;top:calc(100% + 2px)!important;bottom:auto!important;
+  width:126px!important;max-width:126px!important;max-height:none!important;min-height:0!important;
+  transform:translateX(-50%)!important;padding:5px!important;border-radius:7px!important;
+  background:#0a1015f2!important;border:1px solid #d2b66a66!important;box-shadow:0 5px 14px #0009!important;
+  overflow:visible!important;z-index:360!important;
+}
+#eldoria-core-loop .nodeWrap:has(>.compactContext0264),
+#eldoria-core-loop .buildingWrap:has(>.compactContext0264){z-index:350!important}
+#eldoria-core-loop .compactContext0264 .compactContextTop{margin:0 0 3px!important}
+#eldoria-core-loop .compactContext0264 .compactContextTop small{font-size:5px!important}
+#eldoria-core-loop .compactContext0264 .compactContextTop b{font-size:9px!important;line-height:1.05!important}
+#eldoria-core-loop .compactContext0264 .compactFacts0264{
+  display:block!important;margin:0 0 4px!important;
+}
+#eldoria-core-loop .compactContext0264 .compactFacts0264 span{
+  display:block!important;padding:3px 4px!important;border-radius:5px!important;
+}
+#eldoria-core-loop .compactContext0264 .compactFacts0264 span:nth-child(n+2){display:none!important}
+#eldoria-core-loop .compactContext0264 .compactFacts0264 small{font-size:4.8px!important}
+#eldoria-core-loop .compactContext0264 .compactFacts0264 b{font-size:7px!important}
+#eldoria-core-loop .compactContext0264 .contextDetails0264,
+#eldoria-core-loop .compactContext0264 .contextDetailsBody0264{display:none!important}
+#eldoria-core-loop .compactContext0264 .compactPrimary0264{
+  width:100%!important;height:44px!important;min-height:44px!important;margin:0!important;
+  padding:3px 6px!important;border-radius:6px!important;font-size:7px!important;letter-spacing:.05em!important;
+}
+#eldoria-core-loop .buildingWrap>.buildingAction{top:calc(100% + 2px)!important;bottom:auto!important}
+}
+</style>
+
 </body>
 </html>
