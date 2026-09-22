@@ -1,5 +1,5 @@
 const {chromium}=require('playwright');
-const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v0265/?testerqa=1';
+const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v0265/?qa=1&testerqa=1';
 (async()=>{
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
