@@ -1,9 +1,10 @@
 const {chromium}=require('playwright');
+const TESTER_URL=process.env.ELDORIA_TESTER_URL||'http://127.0.0.1:4173/tester-v0265/?testerqa=1';
 (async()=>{
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await p.addInitScript(()=>{window.__testerReceived=[];window.__ELDORIA_TESTER_SUBMIT__=async r=>{window.__testerReceived.push(r);return true}});
- await p.goto('http://127.0.0.1:4173/tester-v0265/?testerqa=1',{waitUntil:'domcontentloaded'});
+ await p.goto(TESTER_URL,{waitUntil:'domcontentloaded'});
  await p.locator('[data-testid="tester-intro"]').waitFor({state:'visible'});
  await p.locator('[data-start]').click();
  await p.locator('[data-testid="tester-intro"]').waitFor({state:'detached'});
