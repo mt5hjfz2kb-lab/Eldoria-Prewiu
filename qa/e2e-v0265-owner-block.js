@@ -14,6 +14,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const guide=p.locator('[data-testid="resource-guide"]');await guide.waitFor({state:'visible'});
  const guideText=await guide.innerText();for(const t of ['madera','piedra'])if(!guideText.toLowerCase().includes(t))throw Error('resource guide missing '+t+': '+guideText);
  if(!await guide.locator('[data-guide-go]').count())throw Error('resource guide has no destination action');
+ await guide.locator('[data-guide-go]').first().tap({force:true});await p.waitForTimeout(80);
+ if(await p.locator('[data-testid="resource-guide"]').count())throw Error('resource shortage panel stayed visible after travelling to the World');
+ let guideState=await state();if(guideState.view!=='world'||guideState.guideHint?.target?.kind!=='node')throw Error('resource destination focus was not preserved after travel '+JSON.stringify(guideState.guideHint));
  // 2. World selection/action never owns the camera; map remains draggable and transition-safe.
  await set({view:'world',introSeen:true,sawmill:true,bastion:2,bastionLevel:3,bastion3:true,barracks:true,granary:true,lyra:true,forest:1,quarry:1,forestRemain:900,wood:9999,stone:9999,food:9999,selectedAction:null,guideHint:null});
  const pan0=await dragWorld(-24,-12);
@@ -36,8 +39,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  st=await state();if(st.troops!==46||st.tasks.some(t=>/^recruit-guards-/.test(t.key)))throw Error('offline recruitment did not resolve '+JSON.stringify({troops:st.troops,tasks:st.tasks}));
  // 4. Barracks upgrade is distinct from recruitment.
  await set({...st,view:'kingdom',bastionLevel:3,barracks:true,buildingLevels:{...(st.buildingLevels||{}),barracks:1},wood:9999,stone:9999,tasks:[]});
- await tapBuilding('barracks');await p.waitForTimeout(120);const up=p.locator('[data-testid="building-upgrade-barracks"]');await up.waitFor({state:'visible'});await up.tap({force:true});
+ await tapBuilding('barracks');await p.waitForTimeout(120);const barracksCtx=p.locator('[data-testid="building-context-barracks"]');const barracksText=await barracksCtx.innerText();if(!/MEJORA EL CUARTEL A NIVEL 2/i.test(barracksText))throw Error('barracks objective still reads like troop recruitment: '+barracksText);const up=p.locator('[data-testid="building-upgrade-barracks"]');await up.waitFor({state:'visible'});const recruit=p.locator('[data-testid="building-action-barracks"]');const upBox=await up.boundingBox(),recruitBox=await recruit.boundingBox();if(!upBox||!recruitBox||upBox.y>=recruitBox.y)throw Error('barracks upgrade objective is not presented before recruitment');await up.tap({force:true});
  st=await state();let upTask=st.tasks.find(t=>/^upgrade-barracks-2/.test(t.key));if(!upTask)throw Error('barracks upgrade task missing');
+ const timer=p.locator('[data-building-timer="barracks"] b');await timer.waitFor({state:'visible'});const t0=parseInt(await timer.innerText(),10);await p.waitForTimeout(1200);const t1=parseInt(await timer.innerText(),10);if(!(t1<t0))throw Error('building timer is frozen: '+t0+' -> '+t1);
+ const dockRemaining=p.locator('[data-task-key="'+upTask.key+'"] [data-task-remaining]');if(await dockRemaining.count()){const d0=parseInt(await dockRemaining.innerText(),10);await p.waitForTimeout(1100);const d1=parseInt(await dockRemaining.innerText(),10);if(!(d1<d0))throw Error('queue timer is frozen: '+d0+' -> '+d1)}
  await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^upgrade-barracks-2/.test(t.key)?{...t,end:now-1}:t)})});st=await state();if((st.buildingLevels?.barracks||0)!==2)throw Error('barracks did not upgrade to level 2');
  // 5. Bastion IV requires infrastructure and guides to the missing building.
  await set({view:'kingdom',introSeen:true,sawmill:true,barracks:true,granary:true,bastion:2,bastion3:true,bastionLevel:3,boss:true,lyra:true,wood:9999,stone:9999,food:9999,buildingLevels:{sawmill:1,barracks:1,granary:1},tasks:[],selectedAction:'keep',guideHint:null});
@@ -74,5 +79,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.locator('[data-testid="duel-training-finish"]').waitFor({state:'visible'});await p.locator('[data-testid="duel-training-finish"]').tap({force:true});await clear();
  st=await state();if(!st.duelTutorialComplete||st.codex.length!==1||st.codex[0].id!=='ash-sigil'||st.codex.some(x=>String(x.id).startsWith('loan-')))throw Error('training cards leaked into permanent collection '+JSON.stringify({done:st.duelTutorialComplete,codex:st.codex}));
  if(st.view!=='codex')throw Error('training did not return to Codex');
+ // 10. Genuine two-option decisions must not visually imply a correct answer.
+ const neutral=await p.evaluate(()=>{const host=document.createElement('div');host.className='rift-choices';host.style.position='fixed';host.style.left='0';host.style.top='0';host.innerHTML='<button class="choice contain"><span>◇</span>A</button><button class="choice exploit"><span>◇</span>B</button>';document.body.appendChild(host);const [a,b]=host.querySelectorAll('button'),pick=x=>{const s=getComputedStyle(x);return{background:s.backgroundColor,border:s.borderColor,shadow:s.boxShadow,color:s.color}},out={a:pick(a),b:pick(b)};host.remove();return out});if(JSON.stringify(neutral.a)!==JSON.stringify(neutral.b))throw Error('two-option decision still has unequal visual weight '+JSON.stringify(neutral));
  await b.close();console.log('v0.26.5 OWNER IMPROVEMENT BLOCK PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
