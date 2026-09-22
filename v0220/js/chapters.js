@@ -33,7 +33,7 @@ function grant(s,reward,source,api={}){if(!reward)return;normalizeState(s);
  else if(k==='speedup1'){s.speedups.m1+=v;api.record?.('speedup_received',{unit:'1m',qty:v,source})}
  else if(k==='speedup5'){s.speedups.m5+=v;api.record?.('speedup_received',{unit:'5m',qty:v,source})}
  else if(k==='speedup15'){s.speedups.m15+=v;api.record?.('speedup_received',{unit:'15m',qty:v,source})}
- else if(k==='specialRelic'&&v){let id='valoria-dawn';s.codex=s.codex||[];if(!s.codex.some(x=>x.id===id)){s.codex.push({id,name:'Alba de Valoria',rarity:'Legendaria',quality:'Indestructible',values:{N:6,E:5,S:6,O:5},copy:'Reliquia del primer arco. Conserva la memoria del reino que sobrevivió a la Brecha.'});api.record?.('relic_obtained',{id,source})}}}
+ else if(k==='specialRelic'&&v){let id='valoria-dawn';s.codex=s.codex||[];if(!s.codex.some(x=>x.id===id)){s.codex.push({id:id,name:'Alba de Valoria',rarity:'Legendaria',quality:'Indestructible',values:{N:6,E:5,S:6,O:5},copy:'Reliquia del primer arco. Conserva la memoria del reino que sobrevivió a la Brecha.'});api.record?.('relic_obtained',{id,source})}}}
 }
 function sync(s,h={},api={},ceremony=false){normalizeState(s);let changed=false,ch=defs().find(x=>x.id===s.chapterProgress.current)||defs()[0];if(!ch)return false;
  if(!s.chapterProgress.chapterStarted[ch.id]){s.chapterProgress.chapterStarted[ch.id]=Date.now();api.record?.('chapter_started',{chapter:ch.id,title:ch.title});changed=true}
