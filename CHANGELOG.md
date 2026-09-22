@@ -12,6 +12,7 @@
 - Retuned late Bastion economy costs and aligned the uninterrupted Arc I sweep with v0.27 pacing.
 - Added permanent chapter/speedup coverage in `qa/e2e-v027-chapters.js` while preserving all prior regression suites.
 - Frozen tester build remains unchanged.
+- Owner-test correction: Chapter II's Engendro de la Fisura is available before Bastion III; Arcón now groups stored content by utility and exposes Universal Speedups with quantity/purpose; regression coverage protects the flow.
 
 
 ## v0.26.6 — 2026-09-22
@@ -49,11 +50,3 @@
 ## v0.23.x — 2026-09-19
 
 - Consolidated object-local kingdom/world actions, offline-safe timestamp tasks, independent production-building levels, equipment replacement safety and the uninterrupted fresh-save Arc I regression gate.
-
-Latest development milestone: **v0.27**. Certification status for the current `main` HEAD is tracked in `SESSION_HANDOFF.md` / the Pages workflow.
-
-
-## v0.27 owner-test hotfix — Spawnling / Arcón
-- Fixed Chapter II progression so the Engendro de la Fisura is available before Bastion III.
-- Added Arcón category tabs and made Universal Speedups visible there with quantities and purpose.
-- Added regression coverage for the exact owner-reported flow.

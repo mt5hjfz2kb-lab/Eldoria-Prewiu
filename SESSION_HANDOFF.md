@@ -5,6 +5,7 @@ Updated: 2026-09-22
 Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. History: `CHANGELOG.md` only.
 
 ## Current working state
+- Documentation coherence check: entry-point docs agree on `main` / **v0.27** / `v0220` canonical source / frozen tester isolation.
 - Branch: `main` — the only active development line.
 - Active development version: **v0.27**.
 - Live HEAD: verify the real `main` HEAD at session start; do not infer it from historical docs or chat.

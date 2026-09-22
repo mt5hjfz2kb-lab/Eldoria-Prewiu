@@ -27,7 +27,7 @@ The MVP question is whether the compact loop creates understanding, satisfaction
 
 Before scope expansion/Unity migration, the slice still needs to prove: a genuine economic trade-off, meaningful Breach gameplay, a useful relic/card reaching Codex with use/conserve tension, and a truthful simulated larger 4X horizon.
 
-## v0.26 implemented product block
+## Implemented baseline inherited from v0.26 (historical label; active in v0.27)
 - Combat language now separates hunting PvE from threat PvE; PvP is explicitly reserved architecturally and not exposed as a fake live system.
 - Hero Hall and expedition configuration expose readable attack/defense/support roles and explain that Power is a development summary rather than a single combat verdict.
 - Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics remain strictly in Códice.
@@ -36,7 +36,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
 - Macro systems (server Breach, deep talents, resonances, oracle and full PvP) remain documented future scope, not implemented.
 
-## v0.26.6 layered PvE combat
+## Layered PvE combat (introduced in v0.26.6; active in v0.27)
 - **Hunting:** Lobo ceniciento and Jabalí de roca resolve automatically from expedition Power and explain the threshold in the battle report.
 - **Common threat:** Engendro de la Fisura Nv.1 unlocks after the first route threat and introduces PREPARAR MARCHA, archer count, hero selection and the real ATQ / DEF / VIDA / RUP / PODER comparison.
 - **Uncommon threat:** Acechador de Ceniza Nv.3 has a real Emboscada trait: extra opening damage followed by exposed defense. Changing march composition changes the simulated result.
@@ -62,7 +62,10 @@ Normal development continues exclusively on `main`. The frozen external tester c
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
 
 
-## v0.26.1 — coherence pass
+## Historical implementation notes retained for context
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.27.
+
+### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
 - Combat and expedition expose ATQ / DEF / APO for heroes, troops and the active march; Power remains a summary.
 - Hero Hall and Codex receive high-contrast presentation.
@@ -70,7 +73,7 @@ Change this file only when implemented functionality, product scope, verified st
 - Codex / Orus / Relic Duel preserve the v0.21 clarity reference while staying integrated with current Arc I lore.
 
 
-## v0.26.2 — Códice / Reliquias / Arcón
+### v0.26.2 — Códice / Reliquias / Arcón
 - Arcón is a dedicated full-screen view and no longer opens as a floating modal over the current map.
 - Códice is a dedicated full-screen archive view with stronger hierarchy and card presentation.
 - The v0.21 card principle is restored: using a normal relic consumes it for its immediate effect and leaves a weak Echo 1/1/1/1 for Duelo; conserving preserves its full N/E/S/O values and does not prevent later use.
@@ -82,7 +85,7 @@ Change this file only when implemented functionality, product scope, verified st
 - qa/e2e-codex-chest.js protects dedicated views, use/conserve explanation, Indestructible cooldown semantics and Orus orientation training.
 
 
-## v0.26.3 — guidance, Hero Hall and sequencing
+### v0.26.3 — guidance, Hero Hall and sequencing
 - Salón de Héroes is a dedicated full-screen management surface. It combines hero role/stat reading, equipment and expedition formation instead of splitting them across modal flows.
 - Bastion IX has a device-independent persistent attack objective once a valid march exists; the action sits outside the pannable world transform.
 - Tutorial guidance extends beyond the opening chapters into Forge/Devorador, Códice/Orus, Nareth and the Bastion IX march trial.
@@ -92,7 +95,7 @@ Change this file only when implemented functionality, product scope, verified st
 - v0.26.3 acceptance adds mobile 390×844 checks for march/attack reachability and start-time resource spending while preserving the full Arc I regression.
 
 
-## v0.26.4 — unified visual / UX system
+### v0.26.4 — unified visual / UX system
 - Functional rules are unchanged; this milestone is a presentation/navigation pass with explicit parity protection.
 - Bottom navigation is normalized to Ciudad, Mundo, Héroes, Arcón and Códice; Ranking remains available in the HUD.
 - Routine city/world interactions use a shared contextual bottom-sheet pattern while deep management remains full-screen.
@@ -104,7 +107,7 @@ Change this file only when implemented functionality, product scope, verified st
 - `UI_PARITY_0264.md` and `qa/e2e-v0264-ui-parity.js` define and protect the before/after contract.
 
 
-## v0.26.5 — guidance, infrastructure and collection onboarding
+### v0.26.5 — guidance, infrastructure and collection onboarding
 - Contextual progression guidance now names missing resources, quantities and where to obtain them, and can direct the player to the relevant world node or city building.
 - Barracks has two distinct loops: infrastructure upgrades and timestamp-based troop recruitment. Recruitment persists through view changes/offline time.
 - Bastion IV requires level-2 Aserradero, Cuartel and Granero, establishing the infrastructure gate before further fortification growth.
