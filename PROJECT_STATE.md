@@ -5,13 +5,16 @@ This file describes **functional project state only**. Operational HEAD/current 
 
 ## Active product
 - Runtime/API milestone: **v0.27**.
-- Canonical source: `v0220/index.html` + `v0220/js/`.
-- Development branch: `main`.
+- Development branch: `main`, the only active development line.
+- Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
+- Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - `playtest/` is generated deployment output, never editable source.
-- Certified normal-development baseline: v0.27 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
+- Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** in `tester-v0265/`; it is isolated research output and is never a development source.
+- Frozen tester integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
+- Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
-- Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
+- Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
 
 ## Implemented Arc I scaffold
 The active slice supports the Valoria-first progression through Bastion X: rebuilding/production, world gathering, Corrupts, Fissure/Lyra, food/hunting, Cantera, Forge/Aether equipment, Nareth/Maelis, march configuration/trial and final Breach assault. The playtest now ends explicitly with an Arc I completion screen, survey, copyable summary, JSON session export and complete local reset. World combat now uses a layered PvE scaffold: hunting teaches Power, common threats teach five combat statistics and march composition, uncommon threats add real traits/counter-play, and world bosses use semiautomatic combat with one minimal hero intervention. PvP remains unimplemented and hidden.
