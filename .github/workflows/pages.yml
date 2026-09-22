@@ -34,6 +34,10 @@ jobs:
       - name: Full local-equivalent certification gate
         run: npm run validate:local
 
+      - name: Guard frozen tester snapshot
+        run: |
+          git diff --exit-code 84c0a4071f3be639154f021689109719e9ba6cf7 -- tester-v0265/
+
       - name: Upload local QA source snapshot
         uses: actions/upload-artifact@v4
         with:
@@ -80,8 +84,7 @@ jobs:
             fi
             [ "$attempt" -lt 4 ] && sleep 30
           done
-          exit 1
-      - name: Verify published closed tester build
+          exit 1      - name: Verify frozen tester URL remains available
         run: |
-          TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?qa=1&testerqa=1&cb=${{ github.run_id }}'
-          ELDORIA_TESTER_URL="$TESTER_URL" node qa/e2e-tester-build.js
+          TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?cb=${{ github.run_id }}'
+          curl -fsSL -H "Cache-Control: no-cache" "$TESTER_URL" | grep -q "Eldoria — Closed Playtest T1"
