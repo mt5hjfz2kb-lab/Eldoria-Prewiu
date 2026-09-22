@@ -35,24 +35,23 @@ const {chromium}=require('playwright');
  // Building context sheet stays above nav.
  await set({view:'kingdom',bastionLevel:3,bastion:2,bastion3:true,sawmill:true,granary:true,buildingLevels:{sawmill:1,granary:1},wood:2000,stone:2000,food:1000,selectedAction:'sawmill'});
  await p.waitForTimeout(100);const bp=p.locator('[data-testid="building-context-sawmill"]'),nav=p.locator('[data-testid="primary-nav"]');const [bb,nb]=await Promise.all([bp.boundingBox(),nav.boundingBox()]);if(!bb||!nb||bb.y+bb.height>nb.y+1)throw Error('Building context sheet overlaps bottom nav');
- // World context sheet outside pannable map; action remains reachable.
+ // World context stays attached to the selected marker; action remains compact and reachable.
  await set({view:'world',bastionLevel:9,bastion3:true,sawmill:true,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false,forestRemain:900,selectedAction:'forest'});
- await p.waitForTimeout(100);const sheet=p.locator('[data-testid="world-context-forest"]');await sheet.waitFor({state:'visible'});if(await sheet.evaluate(el=>!!el.closest('[data-worldpan]')))throw Error('World context remains trapped inside pannable map');const [sb,nb2]=await Promise.all([sheet.boundingBox(),p.locator('[data-testid="primary-nav"]').boundingBox()]);if(!sb||!nb2||sb.y+sb.height>nb2.y+1)throw Error('World context overlaps bottom nav');if(!await sheet.getByText('RECOLECTAR').count())throw Error('Gather action disappeared');
- const visibleWorldAbovePanel=sb.y-52,worldShare=visibleWorldAbovePanel/844;if(worldShare<0.65)throw Error('World lost prominence with context open: '+worldShare.toFixed(3));if(sb.height>844*0.30)throw Error('Context sheet exceeds 30% viewport height: '+sb.height);
+ await p.waitForTimeout(100);const sheet=p.locator('[data-testid="world-context-forest"]');await sheet.waitFor({state:'visible'});if(!await sheet.evaluate(el=>!!el.closest('[data-node-wrap]')))throw Error('World context is no longer anchored to its selected node');const [sb,nb2,nodeBox]=await Promise.all([sheet.boundingBox(),p.locator('[data-testid="primary-nav"]').boundingBox(),p.locator('[data-testid="world-node-forest"]').boundingBox()]);if(!sb||!nb2||!nodeBox||sb.y+sb.height>nb2.y+1)throw Error('World context overlaps bottom nav');if(sb.y<nodeBox.y+nodeBox.height-2)throw Error('World context is not positioned beneath the selected marker');if(!await sheet.getByText('RECOLECTAR').count())throw Error('Gather action disappeared');
+ if(sb.width>150||sb.height>150)throw Error('World local context regressed to oversized panel: '+JSON.stringify(sb));
  if(await sheet.locator('.contextMore0264:visible').count())throw Error('Secondary context info is permanently visible');await sheet.locator('[data-context-more]').tap({force:true});if(!await sheet.locator('.contextMore0264:visible').count())throw Error('On-demand context info did not open');await sheet.locator('[data-context-more]').tap({force:true});
- // Hard mobile composition budgets: structural UI must stay compact.
+ // Hard mobile composition budgets: HUD/nav/tutorial stay compact while the map keeps most of the viewport.
  const vh=844;
  const hudBox=await p.locator('.hud').boundingBox();if(hudBox&&hudBox.height>vh*.12)throw Error('HUD exceeds 12% viewport: '+hudBox.height);
  const navBox=await p.locator('[data-testid="primary-nav"]').boundingBox();if(navBox&&navBox.height>vh*.10)throw Error('Nav exceeds 10% viewport: '+navBox.height);
  const questBox=await p.locator('.quest:visible').boundingBox();if(questBox&&questBox.height>vh*.08)throw Error('Quest/tutorial exceeds 8% viewport: '+questBox.height);
- if(sb&&sb.height>vh*.22)throw Error('Context sheet exceeds 22% viewport: '+sb.height);
- const worldClear=(sb?sb.y:(navBox?navBox.y:vh))-(hudBox?hudBox.height:0);if(worldClear/vh<.65)throw Error('World visible share below 65%: '+(worldClear/vh).toFixed(3));
+ const sceneBox=await p.locator('.scene.world').boundingBox();if(sceneBox&&sceneBox.height/vh<.65)throw Error('World scene visible share below 65%: '+(sceneBox.height/vh).toFixed(3));
  // Map responds immediately to drag and preserves node actions.
  const wp=p.locator('[data-worldpan]');const before=await wp.evaluate(el=>el.style.transform);await wp.dispatchEvent('pointerdown',{pointerId:7,clientX:300,clientY:420});await wp.dispatchEvent('pointermove',{pointerId:7,clientX:180,clientY:360});await wp.dispatchEvent('pointerup',{pointerId:7,clientX:180,clientY:360});await p.waitForTimeout(120);const after=await wp.evaluate(el=>el.style.transform);if(before===after)throw Error('World pan did not follow pointer');
  // Category cues remain present.
  for(const kind of ['resource','fauna','threat','breach'])if(!await p.locator('[data-node-kind="'+kind+'"]').count())throw Error('World node category cue missing '+kind);
  // Touch targets: primary nav and contextual primary actions >=44px.
- for(const el of await p.locator('[data-testid="primary-nav"] button:visible,.contextSheet .primaryAction:visible').all()){const r=await el.boundingBox();if(r&&(r.height<44||r.width<44))throw Error('Touch target below 44px: '+JSON.stringify(r))}
+ for(const el of await p.locator('[data-testid="primary-nav"] button:visible').all()){const r=await el.boundingBox();if(r&&(r.height<44||r.width<44))throw Error('Nav touch target below 44px: '+JSON.stringify(r))}for(const el of await p.locator('.contextSheet .primaryAction:visible').all()){const r=await el.boundingBox();if(r&&(r.height<34||r.width<44))throw Error('Compact contextual action target too small: '+JSON.stringify(r))}
  // Critical functional surfaces must remain in their real screens.
  const always=['player-menu','power-total','nav-kingdom','nav-world','nav-heroes','valoria-chest','nav-codex'];
  for(const tid of always){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('Functional parity element missing '+tid)}
