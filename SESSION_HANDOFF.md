@@ -33,7 +33,7 @@ Current focal presets: Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias
 
 ## Frozen tester isolation
 - **Eldoria Closed Playtest T1 / 0.26.5-test.2**.
-- Frozen integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
+- Frozen integration commit: `df618e86be9da399bb827d5e6cebc3f13e55ff97` (current re-frozen snapshot after the final-survey contrast hotfix).
 - URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
 - Frozen research output only; never use as source and never inject the QA Launcher into it.
 
