@@ -4,17 +4,17 @@ Updated: 2026-09-22
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.26.5**.
+- Runtime/API milestone: **v0.26.6**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Certified normal-development baseline: v0.26.5 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
+- Certified normal-development baseline: v0.26.6 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
 ## Implemented Arc I scaffold
-The active slice supports the Valoria-first progression through Bastion X: rebuilding/production, world gathering, Corrupts, Fissure/Lyra, food/hunting, Cantera, Forge/Aether equipment, Nareth/Maelis, march configuration/trial and final Breach assault. The playtest now ends explicitly with an Arc I completion screen, survey, copyable summary, JSON session export and complete local reset. Normal world combat is intentionally light/automatic; later special combats remain scaffolding rather than final combat design.
+The active slice supports the Valoria-first progression through Bastion X: rebuilding/production, world gathering, Corrupts, Fissure/Lyra, food/hunting, Cantera, Forge/Aether equipment, Nareth/Maelis, march configuration/trial and final Breach assault. The playtest now ends explicitly with an Arc I completion screen, survey, copyable summary, JSON session export and complete local reset. World combat now uses a layered PvE scaffold: hunting teaches Power, common threats teach five combat statistics and march composition, uncommon threats add real traits/counter-play, and world bosses use semiautomatic combat with one minimal hero intervention. PvP remains unimplemented and hidden.
 
 Stable subsystems are separated under `v0220/js/` for economy/state, timestamp tasks/offline recovery, dialogue/tutorial, UI and gameplay helpers. `runtime-hotfix.js` remains migration/compatibility only.
 
@@ -33,16 +33,27 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
 - Macro systems (server Breach, deep talents, resonances, oracle and full PvP) remain documented future scope, not implemented.
 
+## v0.26.6 layered PvE combat
+- **Hunting:** Lobo ceniciento and Jabalí de roca resolve automatically from expedition Power and explain the threshold in the battle report.
+- **Common threat:** Engendro de la Fisura Nv.1 unlocks after the first route threat and introduces PREPARAR MARCHA, archer count, hero selection and the real ATQ / DEF / VIDA / RUP / PODER comparison.
+- **Uncommon threat:** Acechador de Ceniza Nv.3 has a real Emboscada trait: extra opening damage followed by exposed defense. Changing march composition changes the simulated result.
+- **World boss:** Heraldo de la Fisura Nv.5 is visually distinct, has a live timer and uses semiautomatic combat. Basic exchanges are automatic; the selected hero can intervene once with a small role-consistent ability.
+- Battle reports show both sides, remaining life, round exchanges and plain-language reasons for the outcome.
+- Troop recruitment currently exposes **Arqueros only**. Combat troop families are internally extensible, but later families remain undisclosed and unavailable until their narrative unlocks.
+- Progression principle is **find → understand → unlock**. Future troop families and PvP are not previewed in the player UI.
+- The existing Breach Manuscript flow is unchanged and its future purpose remains unrevealed.
+- Permanent mobile interaction QA: `qa/e2e-v0266-pve-combat.js`.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
-- Hero Hall needs deeper hero stats/skills/equipment UX; this is intentionally not expanded in the stabilization milestone.
-- Special late combats are placeholders for the intended richer semiautomatic layer.
+- Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
+- Existing late-story combats outside the new layered PvE examples remain scaffolding and can migrate onto the same combat model later.
 - Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
 - The Códice implements the use/conserve decision, Indestructible cooldown behavior, consumed-card Echo consequences, Orus orientation training and a playable 3×3 formal Duelo de Reliquias board. A wider relic economy and broader card pool remain future scope.
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
-Normal development continues exclusively on `main`. The frozen external tester cohort is **Eldoria Closed Playtest T1 / 0.26.5-test.1** and is not an active product line. Its immutable reference and feedback protocol are documented in `SESSION_HANDOFF.md` and `TESTER_FEEDBACK_PROTOCOL.md`.
+Normal development continues exclusively on `main`. The frozen external tester cohort is **Eldoria Closed Playtest T1 / 0.26.5-test.2** and is not an active product line. Its immutable reference and feedback protocol are documented in `SESSION_HANDOFF.md` and `TESTER_FEEDBACK_PROTOCOL.md`.
 
 ## Maintenance
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
