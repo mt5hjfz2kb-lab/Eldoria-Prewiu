@@ -1345,8 +1345,16 @@ window.dialogue = function(name, copy, done) {
 #eldoria-core-loop .compactContext0264 .compactFacts0264 span:nth-child(n+2){display:none!important}
 #eldoria-core-loop .compactContext0264 .compactFacts0264 small{font-size:4.8px!important}
 #eldoria-core-loop .compactContext0264 .compactFacts0264 b{font-size:7px!important}
-#eldoria-core-loop .compactContext0264 .contextDetails0264,
-#eldoria-core-loop .compactContext0264 .contextDetailsBody0264{display:none!important}
+#eldoria-core-loop .compactContext0264 .contextDetails0264{display:none!important}
+#eldoria-core-loop .compactContext0264 .contextDetailsBody0264{display:block!important;margin:0 0 3px!important}
+#eldoria-core-loop .compactContext0264 .contextMoreOpen0264{
+  display:inline-flex!important;min-height:20px!important;height:20px!important;padding:0 5px!important;
+  border:0!important;background:transparent!important;color:#9ca6aa!important;font-size:5px!important;
+}
+#eldoria-core-loop .compactContext0264 .contextDetailsBody0264:not([open]) .contextMore0264{display:none!important}
+#eldoria-core-loop .compactContext0264 .contextDetailsBody0264[open] .contextMore0264{
+  display:flex!important;margin:2px 0 3px!important;padding:3px 4px!important;font-size:5.5px!important;
+}
 #eldoria-core-loop .compactContext0264 .compactPrimary0264{
   width:100%!important;height:44px!important;min-height:44px!important;margin:0!important;
   padding:3px 6px!important;border-radius:6px!important;font-size:7px!important;letter-spacing:.05em!important;
