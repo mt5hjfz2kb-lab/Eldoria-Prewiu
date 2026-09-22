@@ -1,74 +1,92 @@
 # Eldoria — QA, Test Mode and deployment
 
-## Local build
-There is no compilation/bundling step for the active game. Canonical source is `v0220/index.html`.
+## Development build
+Canonical gameplay source remains `v0220/index.html` + `v0220/js/`. `tools/build-preview.mjs` generates `playtest/` and, only for that development build, injects the isolated QA support files. Never edit `playtest/` directly.
 
-Equivalent local serving flow:
+Local setup:
 ```bash
-mkdir -p playtest
-cp v0220/index.html playtest/index.html
+npm install
+npm run qa:setup
+npm run build
 python3 -m http.server 4173
 ```
-Open `http://127.0.0.1:4173/playtest/?qa=1`.
+Normal development game: `http://127.0.0.1:4173/playtest/`
+QA Launcher: `http://127.0.0.1:4173/playtest/?qa=1&launcher=1`
 
-Install dependencies with `npm install`, then install the browser once with `npm run qa:setup`. CI performs the same setup. The canonical mobile emulation used by tests is 390×844, `isMobile:true`, `hasTouch:true`.
+## QA storage isolation
+`qa/qa-storage-isolation.js` loads before the game runtime when `?qa=1`. It transparently redirects only the canonical save key `eldoria-v022-consistent-loop` to a QA-only key. Therefore:
+- loading presets does not overwrite a normal player save;
+- QA fresh save resets only the QA save;
+- leaving QA mode returns to the untouched normal save;
+- the frozen tester snapshot does not contain this launcher/injection.
 
-## QA/Test Mode
-Runtime exposes `window.ELDORIA_V023` (and compatibility alias `ELDORIA_V022`):
-- `version`
-- `assert()`
-- `loadState(name)`
-- `qa()`
-- `reset()`
-- `state()`
-- `setQA(patch)`
+Do not replace this with fixture writes against the real save key.
 
-Known deterministic fixtures: `start`, `sawmill`, `world`, `lyra`, `forge`, `endgame`. They are useful for targeted regression but are **not evidence of uninterrupted reachability**.
+## QA Launcher modes
+The launcher is development-only and exposes three human paths:
 
-Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.26.6.
+### Probar solo el cambio
+Loads one deterministic preset exactly at the system under test. Current presets:
+- Bastión II — Engendro de la Fisura
+- Bastión III — Fisura / Lyra
+- Bastión VI — Forja / Devorador
+- Bastión VII — Códice / Reliquias / Duelo
+- Bastión VIII — Maelis
+- Bastión IX — preparación de marcha / ataque
+- Jefe del mundo semiautomático
+- Misiones y capítulos v0.27
+- Aceleradores
+- Final Bastión X
 
-Important IDs already used include:
-- `v022-core-loop`
-- `building-sawmill`, `building-barracks`, `building-granary`, `building-stoneworks`, `building-keep`
-- `building-action-<id>`
-- `world-node-<id>`
-- `world-action-<id>`
+### Probar un tramo
+Current segment presets:
+- Bastión VI → VIII
+- Bastión IX → X
 
-Add stable `data-testid` to every important new action/state. Forge/Hero Hall coverage is incomplete and should be normalized.
+A segment starts before the first system in the block and leaves the relevant later dependencies unresolved so the tester genuinely traverses the block.
 
-## Mandatory development loop
-Run `npm install` once per working copy, then use **one command** during active development:
+### Jugar desde cero
+`FRESH SAVE` clears the isolated QA save and reloads Bastion I. It does not clear the normal player save.
+
+The preset catalog is `v0220/js/qa-fixtures.js`. It is UMD so the same fixture source can be reused by browser QA and Node/Playwright tooling. Presets must be deterministic, coherent with actual progression, and must not expose future player-facing systems early.
+
+## Automated QA tiers
+### Fast focused iteration
+Use the smallest test that proves the change. For launcher/fixture integrity:
+```bash
+npm run qa:focus
+```
+The relevant dedicated Playwright file is preferred when one exists.
+
+### Segment QA
+For changes spanning a progression block:
+```bash
+npm run qa:segment
+```
+Combine with system-specific regressions as needed.
+
+### Integral / fresh-save QA
+For milestones, progression/economy/sequencing changes and release candidates:
 ```bash
 npm run validate:local
 ```
-It builds the canonical preview, checks JavaScript/contracts, starts the local server, runs the targeted blocker suite, the complete regression suite, and the uninterrupted fresh-save Arc I traversal. A gameplay change is not ready to push/certify until this command is green. When it fails, fix locally and rerun it; do not use GitHub Actions as the debugger.
+This remains the full release-candidate gate: build + contracts + targeted blockers + regression suite + uninterrupted fresh-save Arc I.
 
-GitHub Pages certification runs on a coherent push to `main`; `workflow_dispatch` is retained for intentional reruns. Push only after local validation is green, then verify the deployed URL. Every player-reported regression must be added to automated QA so it cannot silently return.
+`qa/e2e-full-arc1.js` remains the canonical uninterrupted reachability proof and may not use `setQA/loadState` to jump progression. Deterministic presets are not a substitute for this gate.
 
-## Automated tests
-- `qa/e2e-smoke.js`: boot and real sawmill contextual/start/complete phases.
-- `qa/e2e-core-flow.js`: loads deterministic states and runs runtime assertions; this is state/render regression, not a playthrough.
-- `qa/e2e-all-buildings.js`: verifies contextual actions exist for main buildings; mostly availability, not every action to completion.
-- `qa/e2e-all-nodes.js`: verifies world contextual actions and compact dimensions; forest is executed into a gather task, many other nodes are availability checks. Some paths still use DOM click rather than real touch.
-- `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression.\n- `qa/e2e-late-progression.js`: real mobile late Arc I traversal using controlled phase setup.
-- `qa/e2e-v0266-pve-combat.js`: 390×844 real interaction coverage for layered PvE: Power-only hunting, five-stat march prep, Emboscada counter-play, timed world boss, hero intervention and archer-only recruitment.
-- `qa/e2e-full-arc1.js`: uninterrupted fresh-save Arc I traversal. It never uses `setQA/loadState` to jump progression; `advanceEconomy(seconds)` only advances the same passive-production path so CI can audit long waits without sleeping in real time.
+## Runtime QA API
+The runtime still exposes `window.ELDORIA_V023` / compatibility alias `ELDORIA_V022`, including `loadState`, `state`, `setQA`, `reset`, assertions and economy acceleration for automated tests. The development launcher adds `window.ELDORIA_QA` only under `?qa=1`, with `list()`, `loadPreset(id)`, `fresh()`, `normal()` and `state()`.
 
-## Canonical full-playthrough gate
-`qa/e2e-full-arc1.js` is the mandatory uninterrupted fresh-save Arc I gate. It must start from a clean save without jumping progression with `setQA/loadState`, perform the playable flow through the current end of Arc I, and assert state transitions rather than only DOM presence. It also covers persistence-sensitive paths such as gathering continuing when the player returns to Valoria. Shortened deterministic timers may be used only when they execute the same production resolution path.
+## Playwright rules
+- Reuse launcher fixtures for targeted state setup whenever practical.
+- A fixture must preserve dependencies important to the system under test; do not use impossible god states that hide blockers.
+- Prefer real `tap/click` interactions over JS DOM clicks.
+- Every player-reported regression should become a permanent assertion when practical.
+- Focused/segment fixture success is evidence for that surface only; it does not prove uninterrupted progression.
 
-For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
+Canonical mobile emulation remains 390×844, `isMobile:true`, `hasTouch:true`.
 
-## Workflow / deploy
-`.github/workflows/pages.yml` runs on pushes to `main` and also supports `workflow_dispatch`. It is the final clean-environment certification/deploy, not the preferred development debugger. It runs the same `npm run validate:local` gate, uploads diagnostics, deploys Pages, then runs a small published-site smoke/behavior check. It intentionally does **not** repeat the entire fresh-save/regression matrix a second time against Pages.
+## Deployment
+`.github/workflows/pages.yml` runs on pushes to `main`. It remains final clean-environment certification/deployment and guards the frozen tester snapshot. Important/release candidates still run the integral gate before being called stable. Do not use Actions as the normal iteration debugger when local targeted QA is sufficient.
 
-Do not intentionally dispatch it for documentation-only work or every small commit. Normal coherent development pushes trigger it automatically. Do not call a build published until Pages deployment succeeds; do not call the public build verified until its Chromium check succeeds.
-
-## Release procedure
-Batch a coherent gameplay block locally. Iterate with targeted tests; run `npm run validate:local` once the candidate is coherent. Fix/repeat locally until green, then commit/push once. That push performs clean-environment certification and deployment. Verify the published URL before handing the build to the owner.
-
-## Architecture guardrail
-Core gameplay/dialogue/economy behavior belongs in `v0220/index.html` until modules are extracted deliberately. `runtime-hotfix.js` is compatibility/migration-only and must not accumulate new core behavior. Before adding content, prefer extracting stable subsystems behind the same DOM/test contracts rather than layering another hotfix.
-
-## Historical tools
-`tools/build-r7.mjs`, `tools/postprocess-v020.mjs`, and `tools/restore-v020.py` are historical/recovery tooling. Do not use them casually to regenerate the active game; they can reintroduce old visual/runtime layers.
+A build is only called published after Pages deployment succeeds and only called verified after the published Chromium check succeeds.
