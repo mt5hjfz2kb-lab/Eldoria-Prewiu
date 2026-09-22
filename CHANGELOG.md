@@ -1,5 +1,15 @@
 # Eldoria — Changelog
 
+## v0.26.6 — 2026-09-22
+
+- Added layered PvE progression: Power-only hunting, common five-stat march preparation, uncommon trait/counter-play and a timed semiautomatic world boss.
+- Added Engendro de la Fisura Nv.1, Acechador de Ceniza Nv.3 with real Emboscada, and Heraldo de la Fisura Nv.5 with one hero intervention.
+- Added real ATQ / DEF / VIDA / RUP / PODER combat resolution plus readable post-battle explanations and round logs.
+- Recruitment now presents Arqueros as the only currently available troop family; future families remain hidden while the combat architecture is extensible.
+- Preserved the existing Breach Manuscript flow and kept PvP unimplemented.
+- Added permanent 390×844 interaction/regression coverage in `qa/e2e-v0266-pve-combat.js`.
+
+
 ## v0.25.1 — 2026-09-21
 
 - Corrected the owner playtest block: canonical Aldric portrait/dialogues, HUD Arcón de Valoria and manuscript inventory, Hero Hall close control, contextual Bastion upgrades, correct building levels, visible costs and timed upgrades, Power explanation, denser 4X horizon cues and explicit elite visibility.
