@@ -50,7 +50,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.reload({waitUntil:'domcontentloaded'});await p.locator('[data-testid="chapter-compact"]').waitFor({state:'visible'});s=await state();if(s.chapterProgress?.version!==27||s.speedups.m1!==1)throw Error('chapter/speedup persistence failed');
 
  // Current troop surface remains archers-only.
- await set({...s,view:'kingdom',barracks:true,selectedAction:'barracks',tasks:[]});await p.locator('[data-testid="building-action-barracks"]').tap({force:true});const rt=(await p.locator('[data-testid="recruit-dialog"]').innerText()).toLowerCase();if(!rt.includes('arquer'))throw Error('archers missing');for(const bad of ['palad','brujo'])if(rt.includes(bad))throw Error('future troop leak '+bad);
+ await set({...s,view:'kingdom',barracks:true,selectedAction:'barracks',tasks:[],missionPanelOpen:false});await p.locator('[data-testid="building-action-barracks"]').evaluate(el=>el.click());const rt=(await p.locator('[data-testid="recruit-dialog"]').innerText()).toLowerCase();if(!rt.includes('arquer'))throw Error('archers missing');for(const bad of ['palad','brujo'])if(rt.includes(bad))throw Error('future troop leak '+bad);
 
  await b.close();console.log('v0.27 CHAPTERS + MISSIONS + SPEEDUPS PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
