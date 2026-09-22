@@ -59,3 +59,10 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 
 ## v0.26.4 acceptance
 100% v0.26.3 functional parity, full fresh-save Bastion I→X, mobile 390×844 navigation/context/map checks, all legacy regression suites green, Pages deployment green and published Chromium verification green.
+
+## v0.26.4 mobile structural layout correction — 2026-09-22
+- Owner rejected the previous oversized mobile composition; the mobile layout now follows hard viewport budgets.
+- HUD: 56px. Bottom navigation: 58px. Quest/tutorial: <=58px / <=8vh. Normal contextual sheet: <=19vh, with secondary information under INFO.
+- World nodes recover relative visual presence while tutorial emphasis and Breach decoration are restrained.
+- Permanent QA now enforces HUD <=12% vh, tutorial <=8% vh, navigation <=10% vh, context <=22% vh and >=65% visible world share at 390x844.
+- Gameplay, logic, economy, narrative, progression and action semantics are unchanged.
