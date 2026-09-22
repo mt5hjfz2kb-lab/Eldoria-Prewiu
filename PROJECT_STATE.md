@@ -11,7 +11,7 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - `playtest/` is generated deployment output, never editable source.
 - Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** in `tester-v0265/`; it is isolated research output and is never a development source.
-- Frozen tester integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
+- Frozen tester integration commit: `df618e86be9da399bb827d5e6cebc3f13e55ff97` (current re-frozen snapshot after the final-survey contrast hotfix).
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
