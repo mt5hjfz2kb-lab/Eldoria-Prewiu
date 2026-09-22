@@ -6,7 +6,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 
 ## Current working state
 - Branch: `main`.
-- Active release candidate: **v0.26.4**.
+- Active normal-development milestone: **v0.26.5**.
 - Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
@@ -106,7 +106,16 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Certified integration commit: `84c0a4071f3be639154f021689109719e9ba6cf7`.
 - Frozen reference branch: `frozen/testers-v0265-t1`.
 - Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
-- The tester runtime lives under `tester-v0265/` and is a frozen snapshot. Do not edit it during the test window except for a critical bug that invalidates testing.
-- `main` remains the only active development line; normal product work continues in `v0220/`.
-- Feedback persistence: Supabase project **Eldoria Playtest Feedback**, table `public.eldoria_feedback`, anonymous browser access is INSERT-only under RLS; reading/analysis stays owner/admin-side.
-- Certification completed: closed tester layer E2E, offline queue/retry, negative follow-up, blocked/help flow, final 10-question survey, real backend insertion/query, full regression, uninterrupted fresh-save Arc I, GitHub Pages deployment, published normal-build Chromium verification and published closed-tester Chromium verification all green.
+- **Do not edit `tester-v0265/` during T1 except for a critical test-invalidating defect.**
+- `main` is the only active development line. Normal product work continues from `v0220/`; no visible tester intro/reporting/survey layer belongs in the active runtime.
+- Pages now enforces a drift guard against certified commit `84c0a4071f3be639154f021689109719e9ba6cf7`; a main push cannot silently change tester bytes.
+- Main publication only checks that the frozen tester URL remains available; it no longer reruns tester research instrumentation or inserts QA feedback on every normal deployment.
+- Feedback persistence: Supabase project **Eldoria Playtest Feedback**, raw evidence in `public.eldoria_feedback`.
+- Grouped evidence/tracing: `public.eldoria_feedback_findings` + `public.eldoria_feedback_finding_links`.
+- Aggregated binary metrics: admin-only view `public.eldoria_feedback_quick_stats`.
+- Analysis/prioritization rules: `TESTER_FEEDBACK_PROTOCOL.md`.
+
+## Current operating rule after T1 freeze
+- Continue design, systems, bugfixes, UX, content and vertical-slice work normally on `main`.
+- Feedback never auto-implements. First group equivalent evidence, classify, prioritize and record the decision/result with traceability.
+- At the end of T1, compare consolidated evidence with the vertical-slice questions before deciding on major redesign or Unity migration.
