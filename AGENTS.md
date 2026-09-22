@@ -4,87 +4,77 @@ The repository is the source of truth. Chat history is disposable.
 
 ## Source-of-truth hierarchy
 1. **AGENTS.md** — permanent working rules and protocol.
-2. **SESSION_HANDOFF.md** — current branch/version, current operational state, blockers and next task. Verify the live `main` HEAD at session start; do not trust a hard-coded historical SHA.
-3. **PROJECT_STATE.md** — current functional product state: implemented systems, verified scope, known gaps.
-4. Specialized docs — read only when the task needs them:
-   - `DESIGN_DECISIONS.md`: product/design decisions.
-   - `QA_AND_DEPLOY.md`: QA/test/deploy details.
-   - `ELDORIA_CONTINUIDAD.md`: deeper system/narrative continuity.
-   - `ELDORIA_BASELINE_RULES.md`: protected regression/recovery constraints.
-   - `CHANGELOG.md`: history only; never current-state authority.
-   - `docs/`, old version directories and historical tools: recovery/reference only.
+2. **SESSION_HANDOFF.md** — current branch/version, current operational state, blockers and next task. Verify live `main` HEAD at session start.
+3. **PROJECT_STATE.md** — current functional product state.
+4. Specialized docs — read only when needed: `DESIGN_DECISIONS.md`, `QA_AND_DEPLOY.md`, `ELDORIA_CONTINUIDAD.md`, `ELDORIA_BASELINE_RULES.md`. `CHANGELOG.md` is history only.
 
-If documents disagree, this hierarchy wins. Reconcile the stale lower-level document as part of the task; never reconstruct active code from history.
+If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; never reconstruct active code from history.
 
-## Fast start — every new session
+## Fast start
 1. Read this file.
 2. Read `SESSION_HANDOFF.md`.
 3. Read `PROJECT_STATE.md`.
 4. Confirm real branch + HEAD.
-5. If they match the handoff, work immediately. Read specialized docs only for the concrete task.
-6. Inspect only the code/tests related to the task. Do not audit/re-read the whole repository unless explicitly requested.
+5. Work from the canonical source and inspect only task-relevant code/tests unless a wider audit is explicitly requested.
 
 ## Active line and versions
-- Development branch: `main`.
-- Canonical editable runtime: `v0220/index.html` plus `v0220/js/`.
-- `v0220` is a compatibility directory name, **not** the active product version. Do not infer the active version from directory names, save/API aliases, changelog headings or historical sections.
+- Development branch: `main` only.
+- Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
+- `v0220` is a compatibility directory name, not the product version.
 - Active development version: **v0.27**.
-- Generated public build: `playtest/`; never edit it as source.
-- Last certified stable recovery baseline: branch `baseline/v0.24-certified`, commit `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
-- Protected visual recovery: `stable/visual-good-f139968c`, commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
-- `v019*`, `v020*`, `v0210`, old r7 assets/tools and `docs/R7*` are historical only. Never use them in normal development or deployment.
+- Generated development build: `playtest/`; never edit it as source.
+- Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** at `/tester-v0265/`; never use it as a development baseline.
+- Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
 
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
-- Preserve approved art unless the owner explicitly requests visual redesign.
-- `runtime-hotfix.js` is compatibility/migration-only; no new gameplay/UI/dialogue belongs there.
-- Stable important interactions need `data-testid` and real Playwright tap/click coverage.
-- Fixture/state QA proves a targeted state, not uninterrupted player reachability.
-- Routine build/upgrade/gather/attack is object-local: action below the object, timer above; avoid routine confirmation modals.
-- Cards/relics → Codex. Equipment/materials → Chest/inventory.
-- Keep claims exact: code changed ≠ verified; local green ≠ published; deployed ≠ published interaction verified.
-- Update `SESSION_HANDOFF.md` after every important work block. Update `PROJECT_STATE.md` only when functional state/gaps change. Update `CHANGELOG.md` for meaningful milestones/fixes, not every tiny commit.
+- Preserve approved art unless the owner requests visual redesign.
+- `runtime-hotfix.js` is migration/compatibility-only; no new gameplay/UI/dialogue belongs there.
+- Stable interactions need `data-testid` and real Playwright tap/click coverage.
+- Fixture QA proves the targeted state, not uninterrupted player reachability.
+- Cards/relics → Códice. Equipment/materials → Arcón/inventory.
+- Keep claims exact: changed ≠ verified; local green ≠ published; deployed ≠ published interaction verified.
+- Update `SESSION_HANDOFF.md` after important work blocks. Update `PROJECT_STATE.md` only when product functionality/scope changes.
 
-## Development / QA / release protocol
-For ordinary development, work in one session and do not use GitHub Actions as the debugger:
-1. Inspect/reproduce the task.
-2. Implement the whole coherent batch locally.
-3. Run the smallest relevant targeted test while iterating.
-4. Before pushing a gameplay/release candidate, run `npm run validate:local`.
-5. If it fails, fix locally and rerun; do not push defect-by-defect.
-6. Commit/push the coherent green block once.
-7. The push to `main` runs the clean-environment GitHub Pages certification/deployment. `workflow_dispatch` remains available for an intentional rerun.
-8. Verify the deployed URL with Chromium before calling it playable/verified.
+## QA model — focus, segment, integral
+Eldoria has three deliberately separate QA layers. Do not run the entire game after every small iteration unless the change can affect global progression.
 
-Every player-reported regression becomes a permanent automated assertion when practical.
+### 1. Focused QA — “probar solo el cambio”
+Use a deterministic QA Launcher preset or the related Playwright fixture for the exact system changed. The preset must start from a coherent reachable state and preserve relevant dependencies. Typical command: `npm run qa:focus` or the specific regression file.
 
-### QA tiers
-- **During iteration:** relevant targeted test(s) only.
-- **Pre-push gameplay gate:** `npm run validate:local` (build + contracts + targeted regression + regression suite + uninterrupted fresh-save Arc I).
-- **Final publication:** one coherent green push to `main`; its Pages workflow certifies and publishes that exact commit. Avoid piecemeal pushes.
+### 2. Segment QA — “probar un tramo”
+Use a segment preset when a change may affect a progression block, e.g. Bastion VI–VIII or IX–X. Typical command: `npm run qa:segment`, plus the related tests.
 
-### Owner-feedback block protocol
-When the owner sends corrections or improvements, treat them as one delivery block:
-1. Reproduce and group all feasible items before editing.
-2. Implement the whole coherent block without asking for intermediate confirmation unless a real product decision is unavoidable.
-3. Run targeted real-touch tests while iterating, then the full local gate.
-4. Correct every failure found by that gate, including regressions outside the originally reported symptom.
-5. Push once, wait for the clean Pages certification, verify the public build, and only then return a stable build for owner testing.
+### 3. Integral QA — fresh save
+Use `npm run validate:local` for milestones, progression/economy/sequencing changes, release candidates and any change whose risk crosses multiple systems. It retains the uninterrupted fresh-save Arc I traversal.
 
-The next owner-facing message should therefore be either a verified stable build or a precise blocker that genuinely requires owner action—not a stream of partial patches.
+Decision rule:
+- small/local change → focused test;
+- medium/system block change → focused + segment;
+- milestone, progression/economy/sequencing, release candidate → `npm run validate:local` + fresh save;
+- before declaring an important build stable → integral gate remains mandatory.
+
+## Development-only QA Launcher
+- Manual launcher exists only in the generated development build when opened with `?qa=1`.
+- QA storage is isolated from the normal save key before runtime boot. Presets and QA fresh saves must never overwrite the player's normal save.
+- Browser fixture catalog lives in `v0220/js/qa-fixtures.js`; Playwright should reuse these presets where practical instead of inventing unrelated ad-hoc states.
+- Development injection is performed by `tools/build-preview.mjs`; do not add QA launcher UI to the normal canonical runtime or tester snapshot.
+- Adding a preset should mean adding one coherent fixture entry, a stable target interaction, and automated coverage when useful.
+
+## Owner-feedback block protocol
+When the owner sends corrections/improvements: reproduce and group the coherent block, implement it without piecemeal handoffs, run the smallest valuable QA while iterating, escalate to segment/integral based on risk, correct regressions found, push a coherent green result, verify the published development build, then return the build. Avoid bug-by-bug status messages.
 
 ## Definition of done
-- Documentation/process-only change: docs/workflow/package consistency checked, commit/push complete; no gameplay publication required.
-- Gameplay change: implementation + targeted real interaction + `npm run validate:local` green + coherent commit/push.
-- Playable/release delivery: gameplay definition above + successful Pages certification/deploy + Chromium check of the published build.
+- Documentation/process-only: consistency checked + commit/push.
+- Small gameplay/UI correction: focused real interaction green; add segment if cross-system risk exists.
+- Medium block: focused + related segment green.
+- Important/release delivery: `npm run validate:local` green + push + Pages certification + published Chromium verification.
 
-When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn. Do not send bug-by-bug status messages. Return only with a useful verified result, a required design decision, or a genuine tool/access blocker.
-
+When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn and return only with a verified result, a required product decision, or a genuine blocker.
 
 ## Frozen tester isolation
-- **Eldoria Closed Playtest T1** is an immutable research snapshot: version `0.26.5-test.2`, frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`, public path `/tester-v0265/`.
-- `main` remains the only active development line. Never branch normal product development from the tester snapshot and never maintain a second evolving tester game line.
-- Do not edit `tester-v0265/` during the test window except for a critical defect that invalidates the playtest. Any such exception requires an explicit new tester version, certification and freeze record.
-- Normal `main` work must not inherit the visible tester layer: no tester intro, permanent report CTA, research prompts or tester survey in the active runtime unless the owner explicitly promotes a specific element into the product.
-- The Pages workflow must guard `tester-v0265/` against drift from frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`. Main may continue to deploy; the tester bytes must remain identical.
-- Feedback is evidence, not an automatic backlog. Use `TESTER_FEEDBACK_PROTOCOL.md` for grouping, prioritization, aggregation and traceability before changing the product.
+- **Eldoria Closed Playtest T1** is immutable research: `0.26.5-test.2`, frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`, path `/tester-v0265/`.
+- Do not edit `tester-v0265/` during the test window except for an explicitly versioned critical tester defect.
+- Main development must not inherit tester intro/report/survey layers unless explicitly promoted into product.
+- Pages must guard tester bytes against drift from the frozen integration commit.
+- Feedback is evidence, not an automatic backlog; use `TESTER_FEEDBACK_PROTOCOL.md`.
