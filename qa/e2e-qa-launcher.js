@@ -1,0 +1,11 @@
+const {chromium}=require('playwright');
+const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&launcher=1';
+(async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await p.goto(URL,{waitUntil:'domcontentloaded'});const load=id=>p.evaluate(x=>window.ELDORIA_QA.loadPreset(x),id);const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
+await p.locator('[data-testid="qa-launcher"]').waitFor({state:'visible'});if(await p.locator('[data-qa-preset]').count()<12)throw Error('QA launcher preset catalog incomplete');
+await load('b2-spawnling');await p.locator('[data-testid="world-node-spawnling"]').waitFor({state:'visible'});let s=await state();if(s.bastionLevel!==2||s.chapterProgress.current!==2||s.barracks!==true)throw Error('Spawnling preset incoherent');
+await load('accelerators');await p.locator('[data-testid="chest-tab-speedups"]').waitFor({state:'visible'});if(!(await state()).tasks.some(t=>t.key==='upgrade-building-sawmill-3'))throw Error('Accelerator preset lacks real timed task');
+await load('b7-codex');await p.locator('[data-testid="chapter-compact"]').waitFor({state:'visible'});s=await state();if(!s.codexUnlocked||s.codex.length<3||s.chapterProgress.current!==7)throw Error('Codex preset incoherent');
+await load('worldboss');await p.locator('[data-testid="world-node-herald"]').waitFor({state:'visible'});await p.locator('[data-testid="world-node-herald"]').tap({force:true});await p.locator('[data-testid="world-action-herald"]').waitFor({state:'visible'});
+await load('segment-vi-viii');s=await state();if(s.bastionLevel!==6||s.forge||s.codexUnlocked)throw Error('VI-VIII segment must start before Forge/Codex');
+await p.evaluate(()=>window.ELDORIA_QA.fresh());await p.waitForLoadState('domcontentloaded');await p.waitForFunction(()=>window.ELDORIA_V023?.state().bastionLevel===1);s=await state();if(s.bastionLevel!==1||s.sawmill)throw Error('QA fresh save failed');
+await b.close();console.log('QA LAUNCHER + PRESETS PASS');})().catch(e=>{console.error(e);process.exit(1)});
