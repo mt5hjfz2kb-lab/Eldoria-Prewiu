@@ -74,3 +74,11 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Resource and Power groups flex within the available width instead of pushing/covering HUD controls. Ranking remains a compact top control; duplicate Arcón HUD access stays hidden because Arcón already exists in primary navigation.
 - Permanent mobile QA now checks the pictograms, horizontal HUD overflow and overlap between the profile/resources/tool groups.
 - No economy, gameplay, progression or resource values changed.
+
+
+## v0.26.4 Bastion contextual-anchor correction — 2026-09-22
+- Bastion now follows the exact same object-local interaction rule as the other city buildings on mobile.
+- Its interactive visual box was tightened to the visible Bastion footprint, so MEJORAR/CONSTRUIR appears immediately below the Bastion instead of being displaced by the old oversized invisible button area.
+- Construction timers remain directly above the selected building.
+- Permanent QA now asserts both Aserradero and Bastion contextual actions are attached within 10px beneath their actual building hitbox.
+- No gameplay, cost, timer or progression logic changed.

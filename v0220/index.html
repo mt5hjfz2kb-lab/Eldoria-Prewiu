@@ -1409,5 +1409,57 @@ window.dialogue = function(name, copy, done) {
 }
 </style>
 
+
+<style id="v0264-building-local-anchor-fix">
+@media(max-width:620px){
+/* Bastion follows the same object-local action rule as every other city building. */
+#eldoria-core-loop .keepWrap{
+  width:150px!important;
+  height:136px!important;
+  left:50%!important;
+  top:34%!important;
+  transform:translateX(-50%)!important;
+}
+#eldoria-core-loop .keepWrap>.keep{
+  width:150px!important;
+  height:136px!important;
+  min-height:136px!important;
+  padding:0!important;
+  display:block!important;
+  overflow:visible!important;
+}
+#eldoria-core-loop .keepWrap>.keep .art{
+  display:block!important;
+  font-size:88px!important;
+  line-height:1!important;
+  margin:0 auto!important;
+}
+#eldoria-core-loop .keepWrap>.keep label{
+  width:max-content!important;
+  max-width:150px!important;
+  margin:-8px auto 0!important;
+  padding:4px 6px!important;
+  box-sizing:border-box!important;
+}
+#eldoria-core-loop .buildingWrap>.buildingAction{
+  left:50%!important;
+  right:auto!important;
+  top:calc(100% + 2px)!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+}
+#eldoria-core-loop .keepWrap>.buildingAction{
+  top:calc(100% + 2px)!important;
+}
+#eldoria-core-loop .buildingWrap>.buildingTimer{
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:calc(100% + 2px)!important;
+  transform:translateX(-50%)!important;
+}
+}
+</style>
+
 </body>
 </html>
