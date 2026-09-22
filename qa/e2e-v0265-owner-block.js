@@ -36,7 +36,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  st=await state();if(st.troops!==46||st.tasks.some(t=>/^recruit-guards-/.test(t.key)))throw Error('offline recruitment did not resolve '+JSON.stringify({troops:st.troops,tasks:st.tasks}));
  // 4. Barracks upgrade is distinct from recruitment.
  await set({...st,view:'kingdom',bastionLevel:3,barracks:true,buildingLevels:{...(st.buildingLevels||{}),barracks:1},wood:9999,stone:9999,tasks:[]});
- await tapBuilding('barracks');const up=p.locator('[data-testid="building-upgrade-barracks"]');await up.waitFor({state:'visible'});await up.tap({force:true});
+ await tapBuilding('barracks');await p.waitForTimeout(120);const up=p.locator('[data-testid="building-upgrade-barracks"]');await up.waitFor({state:'visible'});await up.tap({force:true});
  st=await state();let upTask=st.tasks.find(t=>/^upgrade-barracks-2/.test(t.key));if(!upTask)throw Error('barracks upgrade task missing');
  await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^upgrade-barracks-2/.test(t.key)?{...t,end:now-1}:t)})});st=await state();if((st.buildingLevels?.barracks||0)!==2)throw Error('barracks did not upgrade to level 2');
  // 5. Bastion IV requires infrastructure and guides to the missing building.
