@@ -25,7 +25,7 @@ Runtime exposes `window.ELDORIA_V023` (and compatibility alias `ELDORIA_V022`):
 
 Known deterministic fixtures: `start`, `sawmill`, `world`, `lyra`, `forge`, `endgame`. They are useful for targeted regression but are **not evidence of uninterrupted reachability**.
 
-Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.25.0.
+Active save key: `eldoria-v022-consistent-loop`. It is intentionally retained for save compatibility even though the active runtime milestone is v0.26.6.
 
 Important IDs already used include:
 - `v022-core-loop`
@@ -50,7 +50,9 @@ GitHub Pages certification runs on a coherent push to `main`; `workflow_dispatch
 - `qa/e2e-core-flow.js`: loads deterministic states and runs runtime assertions; this is state/render regression, not a playthrough.
 - `qa/e2e-all-buildings.js`: verifies contextual actions exist for main buildings; mostly availability, not every action to completion.
 - `qa/e2e-all-nodes.js`: verifies world contextual actions and compact dimensions; forest is executed into a gather task, many other nodes are availability checks. Some paths still use DOM click rather than real touch.
-- `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression.\n- `qa/e2e-late-progression.js`: real mobile late Arc I traversal using controlled phase setup.\n- `qa/e2e-full-arc1.js`: uninterrupted fresh-save Arc I traversal. It never uses `setQA/loadState` to jump progression; `advanceEconomy(seconds)` only advances the same passive-production path so CI can audit long waits without sleeping in real time.
+- `qa/e2e-real-progression.js`: dedicated Fissure→Lyra real regression.\n- `qa/e2e-late-progression.js`: real mobile late Arc I traversal using controlled phase setup.
+- `qa/e2e-v0266-pve-combat.js`: 390×844 real interaction coverage for layered PvE: Power-only hunting, five-stat march prep, Emboscada counter-play, timed world boss, hero intervention and archer-only recruitment.
+- `qa/e2e-full-arc1.js`: uninterrupted fresh-save Arc I traversal. It never uses `setQA/loadState` to jump progression; `advanceEconomy(seconds)` only advances the same passive-production path so CI can audit long waits without sleeping in real time.
 
 ## Canonical full-playthrough gate
 `qa/e2e-full-arc1.js` is the mandatory uninterrupted fresh-save Arc I gate. It must start from a clean save without jumping progression with `setQA/loadState`, perform the playable flow through the current end of Arc I, and assert state transitions rather than only DOM presence. It also covers persistence-sensitive paths such as gathering continuing when the player returns to Valoria. Shortened deterministic timers may be used only when they execute the same production resolution path.
@@ -58,9 +60,9 @@ GitHub Pages certification runs on a coherent push to `main`; `workflow_dispatch
 For every gameplay bug: reproduce with Playwright → fix → prove the exact interaction → run regressions. Prefer Playwright `tap/click` to JS DOM clicks so pointer/pan/overlay bugs are detectable.
 
 ## Workflow / deploy
-`.github/workflows/pages.yml` is manual-only (`workflow_dispatch`). It is a final clean-environment certification/deploy, not a development debugger. It runs the same `npm run validate:local` gate, uploads diagnostics, deploys Pages, then runs a small published-site smoke/behavior check. It intentionally does **not** repeat the entire fresh-save/regression matrix a second time against Pages.
+`.github/workflows/pages.yml` runs on pushes to `main` and also supports `workflow_dispatch`. It is the final clean-environment certification/deploy, not the preferred development debugger. It runs the same `npm run validate:local` gate, uploads diagnostics, deploys Pages, then runs a small published-site smoke/behavior check. It intentionally does **not** repeat the entire fresh-save/regression matrix a second time against Pages.
 
-Do not dispatch it for documentation-only work or every small commit. Do not call a build published until Pages deployment succeeds; do not call the public build verified until its Chromium check succeeds.
+Do not intentionally dispatch it for documentation-only work or every small commit. Normal coherent development pushes trigger it automatically. Do not call a build published until Pages deployment succeeds; do not call the public build verified until its Chromium check succeeds.
 
 ## Release procedure
 Batch a coherent gameplay block locally. Iterate with targeted tests; run `npm run validate:local` once the candidate is coherent. Fix/repeat locally until green, then commit/push once. That push performs clean-environment certification and deployment. Verify the published URL before handing the build to the owner.
