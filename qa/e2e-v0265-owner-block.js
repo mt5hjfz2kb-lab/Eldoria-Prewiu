@@ -26,7 +26,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const panReturn=await p.locator('[data-worldpan]').evaluate(el=>el.style.transform);if(panReturn!==panDuring)throw Error('world camera was reset by view transition');
  // 3. Barracks recruitment has its own timed flow and survives leaving/reloading.
  await set({view:'kingdom',introSeen:true,sawmill:true,bastion:2,bastionLevel:3,bastion3:true,barracks:true,buildingLevels:{sawmill:2,barracks:1,granary:2},wood:9999,stone:9999,food:9999,troops:36,tasks:[],selectedAction:null});
- await tapBuilding('barracks');await p.locator('[data-testid="building-action-barracks"]').tap({force:true});await p.locator('[data-testid="recruit-dialog"]').waitFor({state:'visible'});
+ await tapBuilding('barracks');await p.waitForTimeout(120);await p.locator('[data-testid="building-action-barracks"]').tap({force:true});await p.locator('[data-testid="recruit-dialog"]').waitFor({state:'visible'});
  const rt=await p.locator('[data-testid="recruit-dialog"]').innerText();for(const t of ['CANTIDAD','COSTE','TIEMPO'])if(!rt.includes(t))throw Error('recruit UI missing '+t);
  await p.locator('[data-recruit-qty="10"]').tap({force:true});await p.locator('[data-testid="recruit-start"]').tap({force:true});
  let st=await state(),task=st.tasks.find(t=>/^recruit-guards-/.test(t.key));if(!task||task.qty!==10||st.troops!==36)throw Error('recruit timer/task semantics wrong '+JSON.stringify({task,troops:st.troops}));
