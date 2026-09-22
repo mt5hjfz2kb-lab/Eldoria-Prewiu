@@ -1,5 +1,17 @@
 # Eldoria — Changelog
 
+## v0.27 — 2026-09-22
+
+- Replaced the persistent guided-step overlay with a compact chapter mission system and mobile-safe mission drawer.
+- Added chapter objectives with numeric progress, contextual destinations and one-time chapter rewards.
+- Integrated Códice objectives into the main progression path.
+- Introduced universal accelerators for eligible construction, upgrade and recruitment timestamp tasks; gathering remains non-accelerable.
+- Added persistent mission/chapter analytics and idempotent reward handling.
+- Retuned late Bastion economy costs and aligned the uninterrupted Arc I sweep with v0.27 pacing.
+- Added permanent chapter/speedup coverage in `qa/e2e-v027-chapters.js` while preserving all prior regression suites.
+- Frozen tester build remains unchanged.
+
+
 ## v0.26.6 — 2026-09-22
 
 - Added layered PvE progression: Power-only hunting, common five-stat march preparation, uncommon trait/counter-play and a timed semiautomatic world boss.
@@ -36,4 +48,4 @@
 
 - Consolidated object-local kingdom/world actions, offline-safe timestamp tasks, independent production-building levels, equipment replacement safety and the uninterrupted fresh-save Arc I regression gate.
 
-Latest development milestone: **v0.26.6**. Certification status for the current `main` HEAD is tracked in `SESSION_HANDOFF.md` / the Pages workflow.
+Latest development milestone: **v0.27**. Certification status for the current `main` HEAD is tracked in `SESSION_HANDOFF.md` / the Pages workflow.
