@@ -4,7 +4,7 @@ The repository is the source of truth. Chat history is disposable.
 
 ## Source-of-truth hierarchy
 1. **AGENTS.md** — permanent working rules and protocol.
-2. **SESSION_HANDOFF.md** — current branch/HEAD, current operational state, blockers and next task.
+2. **SESSION_HANDOFF.md** — current branch/version, current operational state, blockers and next task. Verify the live `main` HEAD at session start; do not trust a hard-coded historical SHA.
 3. **PROJECT_STATE.md** — current functional product state: implemented systems, verified scope, known gaps.
 4. Specialized docs — read only when the task needs them:
    - `DESIGN_DECISIONS.md`: product/design decisions.
@@ -28,7 +28,7 @@ If documents disagree, this hierarchy wins. Reconcile the stale lower-level docu
 - Development branch: `main`.
 - Canonical editable runtime: `v0220/index.html` plus `v0220/js/`.
 - `v0220` is a compatibility directory name, **not** the active product version.
-- Active runtime/API milestone: **v0.26.6**.
+- Active runtime/API milestone: **v0.27**.
 - Generated public build: `playtest/`; never edit it as source.
 - Last certified stable recovery baseline: branch `baseline/v0.24-certified`, commit `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
 - Protected visual recovery: `stable/visual-good-f139968c`, commit `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
