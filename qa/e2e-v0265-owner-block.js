@@ -16,7 +16,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  if(!await guide.locator('[data-guide-go]').count())throw Error('resource guide has no destination action');
  // 2. World selection/action never owns the camera; map remains draggable and transition-safe.
  await set({view:'world',introSeen:true,sawmill:true,bastion:2,bastionLevel:3,bastion3:true,barracks:true,granary:true,lyra:true,forest:1,quarry:1,forestRemain:900,wood:9999,stone:9999,food:9999,selectedAction:null,guideHint:null});
- const pan0=await dragWorld(-120,-60);
+ const pan0=await dragWorld(-24,-12);
  const forest=p.locator('[data-testid="world-node-forest"]');await forest.tap({force:true});await p.waitForTimeout(80);
  const panAfterSelect=await p.locator('[data-worldpan]').evaluate(el=>el.style.transform);if(panAfterSelect!==pan0)throw Error('node selection moved camera: '+pan0+' -> '+panAfterSelect);
  await p.locator('[data-testid="world-action-forest"]').tap({force:true});await p.waitForTimeout(1900);
