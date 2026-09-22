@@ -4,12 +4,12 @@ Updated: 2026-09-22
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.26.4**.
+- Runtime/API milestone: **v0.26.5**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Previous certified playable baseline: `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd` (v0.25.1). v0.26.1 is the active release candidate pending the certification run attached to the final v0.26 documentation commit.
+- Certified normal-development baseline: v0.26.5 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
@@ -42,7 +42,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
-v0.26.1 must only be called certified after its final Pages workflow passes the full local-equivalent gate, uninterrupted fresh-save Arc I and published Chromium verification. Exact result belongs in `SESSION_HANDOFF.md`.
+Normal development continues exclusively on `main`. The frozen external tester cohort is **Eldoria Closed Playtest T1 / 0.26.5-test.1** and is not an active product line. Its immutable reference and feedback protocol are documented in `SESSION_HANDOFF.md` and `TESTER_FEEDBACK_PROTOCOL.md`.
 
 ## Maintenance
 Change this file only when implemented functionality, product scope, verified stable baseline, or known functional gaps change. Do not put transient next-task/HEAD information here.
