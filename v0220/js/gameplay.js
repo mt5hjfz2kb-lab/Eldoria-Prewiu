@@ -15,7 +15,8 @@ const HERO_COMBAT={
   lyra:{name:'Lyra',attack:116,defense:62,health:300,break:82,skill:{id:'piercingShot',name:'Disparo de Ruptura',copy:'Inflige daño inmediato y debilita la defensa enemiga.'}},
   maelis:{name:'Maelis',attack:72,defense:92,health:390,break:48,skill:{id:'ward',name:'Velo de Nareth',copy:'Recupera vida de la marcha y reduce daño del siguiente golpe.'}}
 };
-const troopProfile=(bastionLevel=1)=>{const t=Math.max(1,Math.min(10,Number(bastionLevel)||1));return{type:'archer',name:'Arqueros',attack:18+t*2,defense:11+t,health:34+t*3,break:9+t*2,power:24+t*3}};
+const TROOP_FAMILIES={archer:{id:'archer',name:'Arqueros',profile:t=>({attack:18+t*2,defense:11+t,health:34+t*3,break:9+t*2,power:24+t*3})}};
+const troopProfile=(bastionLevel=1,type='archer')=>{const t=Math.max(1,Math.min(10,Number(bastionLevel)||1)),family=TROOP_FAMILIES[type]||TROOP_FAMILIES.archer;return{type:family.id,name:family.name,...family.profile(t)}};
 const playerStats=({troops=1,bastionLevel=1,hero='aldric',gearPower=0}={})=>{
   const n=Math.max(1,Math.floor(Number(troops)||1)),tp=troopProfile(bastionLevel),h=HERO_COMBAT[hero]||HERO_COMBAT.aldric,scale=Math.sqrt(n);
   const attack=Math.round(tp.attack*scale+h.attack+gearPower*.16);
@@ -63,6 +64,6 @@ E.gameplay={
   BASTION_COSTS,canAfford,
   canBastion2:s=>canAfford(s,BASTION_COSTS[2])&&!!s.camp,
   canBastion3:s=>canAfford(s,BASTION_COSTS[3])&&!!s.barracks&&s.troops>=41,
-  combat:{ENEMIES,HERO_COMBAT,troopProfile,playerStats,simulate,huntResult}
+  combat:{ENEMIES,HERO_COMBAT,TROOP_FAMILIES,troopProfile,playerStats,simulate,huntResult}
 };
 })();
