@@ -43,8 +43,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2}},
  {id:'rift-shard',name:'Fragmento de Fisura',rarity:'Común',values:{N:2,E:3,S:2,O:1}},
  {id:'ash-veil',name:'Velo de Ceniza',rarity:'Épica',values:{N:4,E:2,S:5,O:3}}
- ],chapterProgress:{version:27,current:7,completedMissions:{},claimedChapters:{},missionRewards:{},chapterStarted:{7:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:0,hunts:0,wins:{spawnling:0,ashStalker:0,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},missionPanelOpen:true});
- await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});txt=await p.locator('[data-testid="chapter-drawer"]').innerText();if(!/EL CÓDICE/i.test(txt)||!/Descubre 3 Reliquias/i.test(txt))throw Error('Codex chapter missing');
+ ],chapterProgress:{version:27,current:7,completedMissions:{},claimedChapters:{},missionRewards:{},chapterStarted:{7:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:0,hunts:0,wins:{spawnling:0,ashStalker:0,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},missionPanelOpen:false});
+ await p.locator('[data-testid="chapter-compact"]').tap({force:true});await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});txt=await p.locator('[data-testid="chapter-drawer"]').innerText();if(!/EL CÓDICE/i.test(txt)||!/Descubre 3 Reliquias/i.test(txt))throw Error('Codex chapter missing');
 
  // Persistence survives reload.
  await p.reload({waitUntil:'domcontentloaded'});await p.locator('[data-testid="chapter-compact"]').waitFor({state:'visible'});s=await state();if(s.chapterProgress?.version!==27||s.speedups.m1!==1)throw Error('chapter/speedup persistence failed');
