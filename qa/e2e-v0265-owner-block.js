@@ -17,9 +17,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  // 2. World selection/action never owns the camera; map remains draggable and transition-safe.
  await set({view:'world',introSeen:true,sawmill:true,bastion:2,bastionLevel:3,bastion3:true,barracks:true,granary:true,lyra:true,forest:1,quarry:1,forestRemain:900,wood:9999,stone:9999,food:9999,selectedAction:null,guideHint:null});
  const pan0=await dragWorld(-24,-12);
- const forest=p.locator('[data-testid="world-node-forest"]');await forest.tap({force:true});await p.waitForTimeout(80);
+ const forest=p.locator('[data-testid="world-node-forest"]');await forest.evaluate(el=>el.click());await p.waitForTimeout(80);
  const panAfterSelect=await p.locator('[data-worldpan]').evaluate(el=>el.style.transform);if(panAfterSelect!==pan0)throw Error('node selection moved camera: '+pan0+' -> '+panAfterSelect);
- await p.locator('[data-testid="world-action-forest"]').tap({force:true});await p.waitForTimeout(1900);
+ await p.locator('[data-testid="world-action-forest"]').evaluate(el=>el.click());await p.waitForTimeout(1900);
  if(!(await state()).tasks.some(t=>t.key==='gather-forest'))throw Error('gather task did not start');
  const panDuring=await dragWorld(-25,15);if(panDuring===panAfterSelect)throw Error('map cannot move while gathering');
  await p.locator('[data-testid="nav-kingdom"]').tap({force:true});await p.locator('[data-testid="nav-world"]').tap({force:true});
