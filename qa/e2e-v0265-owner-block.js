@@ -14,9 +14,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const guide=p.locator('[data-testid="resource-guide"]');await guide.waitFor({state:'visible'});
  const guideText=await guide.innerText();for(const t of ['madera','piedra'])if(!guideText.toLowerCase().includes(t))throw Error('resource guide missing '+t+': '+guideText);
  if(!await guide.locator('[data-guide-go]').count())throw Error('resource guide has no destination action');
- await guide.locator('[data-guide-go]').first().tap({force:true});await p.waitForTimeout(80);
- if(await p.locator('[data-testid="resource-guide"]').isVisible().catch(()=>false))throw Error('resource shortage panel stayed visible after travelling to the World');
- let guideState=await state();if(guideState.view!=='world'||guideState.guideHint?.target?.kind!=='node')throw Error('resource destination focus was not preserved after travel '+JSON.stringify(guideState.guideHint));
+ await guide.locator('[data-guide-go]').first().tap({force:true});
+ await p.waitForTimeout(120);
+ let guideState=await state();if(guideState.view!=='world'||guideState.guideHint?.target?.kind!=='node'||!guideState.guideHint?.arrived)throw Error('resource destination focus was not preserved after travel '+JSON.stringify({view:guideState.view,guideHint:guideState.guideHint}));
+ if(await p.locator('[data-testid="resource-guide"]').isVisible().catch(()=>false))throw Error('resource shortage panel stayed visible after travelling to the World '+JSON.stringify({view:guideState.view,arrived:guideState.guideHint?.arrived,target:guideState.guideHint?.target}));
  // 2. World selection/action never owns the camera; map remains draggable and transition-safe.
  await set({view:'world',introSeen:true,sawmill:true,bastion:2,bastionLevel:3,bastion3:true,barracks:true,granary:true,lyra:true,forest:1,quarry:1,forestRemain:900,wood:9999,stone:9999,food:9999,selectedAction:null,guideHint:null});
  const pan0=await dragWorld(-24,-12);
