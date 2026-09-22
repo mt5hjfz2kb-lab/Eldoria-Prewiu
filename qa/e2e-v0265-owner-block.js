@@ -48,9 +48,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  // 5. Bastion IV requires infrastructure and guides to the missing building.
  await set({view:'kingdom',introSeen:true,sawmill:true,barracks:true,granary:true,bastion:2,bastion3:true,bastionLevel:3,boss:true,lyra:true,wood:9999,stone:9999,food:9999,buildingLevels:{sawmill:1,barracks:1,granary:1},tasks:[],selectedAction:'keep',guideHint:null});
  const keepCtx=p.locator('[data-testid="building-context-keep"]');await keepCtx.waitFor({state:'visible'});const keepText=await keepCtx.innerText();if(!/INFRAESTRUCTURA/i.test(keepText))throw Error('Bastion IV context does not expose infrastructure requirements');
- await p.locator('[data-testid="building-action-keep"]').tap({force:true});st=await state();if(st.bastionLevel!==3||!st.guideHint?.target?.id)throw Error('Bastion IV did not block/guide missing infrastructure '+JSON.stringify(st.guideHint));
+ await p.locator('[data-testid="building-action-keep"]').evaluate(el=>el.click());await p.waitForTimeout(80);st=await state();if(st.bastionLevel!==3||!st.guideHint?.target?.id)throw Error('Bastion IV did not block/guide missing infrastructure '+JSON.stringify({view:st.view,selectedAction:st.selectedAction,guideHint:st.guideHint}));
  await set({...st,view:'kingdom',wood:9999,stone:9999,food:9999,buildingLevels:{...st.buildingLevels,sawmill:2,barracks:2,granary:2},guideHint:null,selectedAction:'keep'});
- await p.locator('[data-testid="building-action-keep"]').tap({force:true});st=await state();if(!st.tasks.some(t=>t.key==='build-bastion4'))throw Error('Bastion IV did not start with infrastructure complete');
+ await p.locator('[data-testid="building-action-keep"]').evaluate(el=>el.click());await p.waitForTimeout(80);st=await state();if(!st.tasks.some(t=>t.key==='build-bastion4'))throw Error('Bastion IV did not start with infrastructure complete');
  // 6. Lyra exposes Heroes as a new system and acknowledgement clears the highlight.
  await set({view:'world',lyra:true,heroUnlockNotice:true,sawmill:true,bastionLevel:3,bastion3:true});
  const heroesNav=p.locator('[data-testid="nav-heroes"]');if(!await heroesNav.evaluate(el=>el.classList.contains('newUnlock0265')))throw Error('Heroes unlock is not highlighted');
