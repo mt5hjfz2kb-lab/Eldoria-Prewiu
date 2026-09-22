@@ -133,3 +133,10 @@ Change this file only when implemented functionality, product scope, verified st
 - Bastion VI–X economy costs were retuned to preserve resource pressure while remaining reachable through production, gathering and chapter rewards.
 - Permanent QA: `qa/e2e-v027-chapters.js`, plus the uninterrupted Arc I sweep with v0.27 economy pacing.
 - Frozen tester build remains untouched and is not a source for v0.27 development.
+
+
+## v0.27 owner-test correction — 2026-09-22
+- Chapter II's **Engendro de la Fisura** is reachable at Bastion II, matching the mission sequence.
+- Arcón classifies stored content by utility with dedicated tabs for Aceleradores, Materiales, Equipo and Especiales.
+- Universal accelerators awarded by chapters/missions are visible in Arcón as counted consumables; applying them still requires a compatible active timed task.
+- The correction is protected by mobile Playwright regression in `qa/e2e-v027-owner-feedback.js`.
