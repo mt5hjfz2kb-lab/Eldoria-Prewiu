@@ -7,7 +7,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`.
 ## Current working state
 - Branch: `main`.
 - Active normal-development milestone: **v0.26.6**.
-- Previous certified public baseline: v0.25.1 at `343b7bde7dd0dd75e5c0bd47984938dcd7a6f6bd`.
+- Current certification target: **v0.26.6 on `main`**. The exact certified HEAD is the latest successful `Publish Eldoria Preview` run; do not rely on older baseline text.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Generated output: `playtest/`; never edit it directly.
 - Public URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -19,10 +19,10 @@ Built on the certified v0.26.1 baseline. The Códice/Relic layer now recovers th
 Arcón and Códice are now dedicated full-screen game views, like Mundo/Valoria, rather than modal overlays on top of the map. Arcón remains strictly objects/materials/equipment; Códice remains strictly cards/relics.
 
 ## Verification
-Final v0.26 certification is the Pages workflow attached to this documentation push. Do not call the build certified until the workflow's full gate and published Chromium verification are green.
+v0.26.6 is only certified when the `Publish Eldoria Preview` workflow for the current HEAD completes green, including `npm run validate:local`, tester drift guard, Pages deployment and published Chromium verification.
 
 ## Next task
-If certification is green, owner human playtest of v0.26. Any feedback becomes one coherent owner-feedback block.
+After green certification, owner tests the normal development URL. The frozen tester URL remains research-only and is not a development baseline.
 
 ## Minimal commands
 ```bash
@@ -104,7 +104,7 @@ v0.26.2 acceptance: Arcón and Códice are full-screen views; first relic clearl
 - Tester version: **0.26.5-test.2**.
 - Frozen game source: `a6bf164180083938adaceffff293b5709e27269a`.
 - Frozen integration commit: `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`.
-- - Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
+- Public tester URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
 - **Do not edit `tester-v0265/` during T1 except for a critical test-invalidating defect. The current frozen tester bytes are not a development source.**
 - `main` is the only active development line. Normal product work continues from `v0220/`; no visible tester intro/reporting/survey layer belongs in the active runtime.
 - Pages enforces a drift guard against frozen integration commit `e3b47bf05ad9b68703bc47e78c3eb1c1ca542535`; a main push cannot silently change tester bytes.
