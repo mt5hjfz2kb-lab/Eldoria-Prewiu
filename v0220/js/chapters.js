@@ -139,7 +139,7 @@ function runtimeTick027(){if(runtimeSyncing027)return;let api=runtimeBridge027()
  injectRuntimeUI027(api,s);showMissionIntro027(api,s);if(res.newChapter)showCeremony027(res.newChapter);
 }
 function scheduleRuntime027(){if(runtimeScheduled027)return;runtimeScheduled027=true;setTimeout(()=>{runtimeScheduled027=false;runtimeTick027()},30)}
-const obs027=new MutationObserver(scheduleRuntime027);let root027=document.getElementById('eldoria-core-loop');if(root027)obs027.observe(root027,{childList:true,subtree:true});setInterval(runtimeTick027,1000);setTimeout(runtimeTick027,60);
+/* v0.27 is integrated directly by the canonical runtime; legacy bridge remains available for isolated QA only. */
 
 E.chapters={normalizeState,progress,currentChapter,currentMission,panel,missionTarget,taskControls,bind,applySpeedup,intro,sync,count,rewardText,runtimeTick:runtimeTick027};
 })();
