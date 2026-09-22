@@ -19,7 +19,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 
  // Numeric mission progress.
  let s=await state();s.chapterProgress.counters.gathered.wood=340;
- await set({...s,missionPanelOpen:false});txt=await compact.innerText();if(!/340 \/ 600/.test(txt))throw Error('numeric mission progress missing '+txt);
+ await set({...s,sawmill:true,missionPanelOpen:false});await p.waitForTimeout(80);txt=await compact.innerText();if(!/340 \/ 600/.test(txt))throw Error('numeric mission progress missing '+txt);
 
  // Complete Chapter I from real facts + counters; rewards are idempotent.
  s=await state();s.chapterProgress.counters.gathered.wood=600;s.chapterProgress.counters.gathered.stone=500;
