@@ -4,12 +4,12 @@ Updated: 2026-09-22
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.26.6**.
+- Runtime/API milestone: **v0.27**.
 - Canonical source: `v0220/index.html` + `v0220/js/`.
 - Development branch: `main`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
 - `playtest/` is generated deployment output, never editable source.
-- Certified normal-development baseline: v0.26.6 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
+- Certified normal-development baseline: v0.27 systems on `main`; exact operational HEAD belongs in `SESSION_HANDOFF.md`.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210` and r7 material are historical/reference only.
 
@@ -120,3 +120,16 @@ Change this file only when implemented functionality, product scope, verified st
 - La Brecha uses a violet/magenta dimensional-corruption language and is a world phenomenon, not a generic portal.
 - Final-production visuals belong primarily to the future Unity phase; the web slice only needs enough presentation fidelity to validate gameplay/UX against this direction.
 - Source: `docs/MVP_ART_DIRECTION.md`.
+
+
+## v0.27 — chapter missions, rewards and accelerators
+- The old persistent guided-step block has been replaced by a compact chapter mission system that preserves guidance without covering the playfield.
+- Progression is organized into chapter objectives with numeric progress where appropriate, contextual destinations and chapter-completion rewards.
+- The mission panel is available from a compact control and opens as a mobile-budget drawer rather than a full-screen obstruction.
+- Resource collection objectives require meaningful quantities rather than a single interaction.
+- The Códice is integrated into the main progression instead of being treated as optional side content.
+- Universal accelerators are introduced as a real inventory/currency for eligible construction, upgrade and recruitment timestamp tasks. Gathering cannot be accelerated.
+- Mission/chapter rewards are idempotent and persist across reloads; analytics record chapter starts, mission completion, chapter completion, rewards and accelerator use.
+- Bastion VI–X economy costs were retuned to preserve resource pressure while remaining reachable through production, gathering and chapter rewards.
+- Permanent QA: `qa/e2e-v027-chapters.js`, plus the uninterrupted Arc I sweep with v0.27 economy pacing.
+- Frozen tester build remains untouched and is not a source for v0.27 development.
