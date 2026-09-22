@@ -1,2 +1,12 @@
 import fs from 'node:fs';
-fs.mkdirSync('playtest',{recursive:true});fs.copyFileSync('v0220/index.html','playtest/index.html');fs.rmSync('playtest/js',{recursive:true,force:true});fs.cpSync('v0220/js','playtest/js',{recursive:true});let html=fs.readFileSync('playtest/index.html','utf8');if(!html.includes('runtime-hotfix.js'))html=html.replace('</body>','<script src="../v0220/runtime-hotfix.js"></script></body>');fs.writeFileSync('playtest/index.html',html);console.log('Built playtest from v0220 canonical source');
+fs.mkdirSync('playtest',{recursive:true});
+fs.copyFileSync('v0220/index.html','playtest/index.html');
+fs.rmSync('playtest/js',{recursive:true,force:true});
+fs.cpSync('v0220/js','playtest/js',{recursive:true});
+fs.mkdirSync('playtest/qa',{recursive:true});
+for(const f of ['qa-storage-isolation.js','qa-launcher.js'])fs.copyFileSync('qa/'+f,'playtest/qa/'+f);
+let html=fs.readFileSync('playtest/index.html','utf8');
+html=html.replace('<head>','<head><script src="qa/qa-storage-isolation.js"></script>');
+if(!html.includes('runtime-hotfix.js'))html=html.replace('</body>','<script src="../v0220/runtime-hotfix.js"></script></body>');
+html=html.replace('</body>','<script src="js/qa-fixtures.js"></script><script src="qa/qa-launcher.js"></script></body>');
+fs.writeFileSync('playtest/index.html',html);console.log('Built development playtest from v0220 canonical source with isolated QA Launcher');
