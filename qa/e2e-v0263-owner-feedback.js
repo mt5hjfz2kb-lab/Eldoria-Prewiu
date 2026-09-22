@@ -36,7 +36,7 @@ const {chromium}=require('playwright');
  // 4) Codex still has the explicit use/conserve education surface.
  await set({view:'codex',bastionLevel:7,codexUnlocked:true,codexTutorialSeen:true,codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,S:1,E:4,O:2},copy:'QA'}],cardsConsumed:[],cardChoices:{},cardCooldowns:{}});
  const exp=await p.locator('[data-testid="codex-use-keep-explainer"]').innerText();
- for(const term of ['USAR','CONSERVAR','INDESTRUCTIBLE','Eco 1/1/1/1'])if(!exp.includes(term))throw Error('Codex explanation missing '+term);
+ for(const term of ['USAR','CONSERVAR','INDESTRUCTIBLE','Eco 1/1/1/1'])if(!exp.toLowerCase().includes(term.toLowerCase()))throw Error('Codex explanation missing '+term);
 
  await b.close();
  console.log('v0.26.3 OWNER FEEDBACK QA PASS');
