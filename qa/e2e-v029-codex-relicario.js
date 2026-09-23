@@ -22,7 +22,7 @@ const {chromium}=require('playwright');
  await p.locator('[data-testid="relicario-collection"]').waitFor({state:'visible'});
  const oneText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
  for(const term of ['RARA','EFECTO','USAR','CONSERVAR','INDESTRUCTIBLE'])if(!oneText.includes(term))throw Error('First relic surface missing '+term);
- if(/\bN\s*3\b|\bE\s*4\b|\bS\s*1\b|\bO\s*2\b/.test(oneText))throw Error('Side values revealed before five relics');
+ if(/\bN\s*3\b|\bE\s*4\b|\bS\s*1\b|\bO\s*2\b|TABLERO|ECO 1\/1\/1\/1/.test(oneText))throw Error('Board language revealed before five relics');
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  const locked=(await p.locator('[data-testid="relicario-practice"]').innerText()).toUpperCase();
  if(!locked.includes('1/5')||!locked.includes('AÚN NO ES EL MOMENTO'))throw Error('Practice not gated before threshold');
@@ -55,10 +55,17 @@ const {chromium}=require('playwright');
  if(!fiveText.includes('N 3')||!fiveText.includes('E 4'))throw Error('Side values not revealed at threshold');
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  await p.locator('[data-testid="open-relic-training"]').waitFor({state:'visible'});
+ const beforePractice=await state();const beforeIds=beforePractice.codex.map(x=>x.id).sort().join('|');
  await p.locator('[data-testid="open-relic-training"]').evaluate(el=>el.click());
  await p.locator('[data-testid="duel-training"]').waitFor({state:'visible'});
  if(await p.locator('[data-testid^="training-cell-"]').count()!==9)throw Error('Practice board is not 3x3');
- await p.locator('[data-close-training]').evaluate(el=>el.click());
+ for(const [card,cell] of [[0,4],[1,2],[2,1],[3,7]]){await p.locator('[data-testid="training-card-'+card+'"]').evaluate(el=>el.click());await p.locator('[data-testid="training-cell-'+cell+'"]').evaluate(el=>el.click());await p.waitForTimeout(40)}
+ await p.locator('[data-testid="duel-training-finish"]').evaluate(el=>el.click());
+ await p.evaluate(()=>document.querySelectorAll('.aldric-cinematic').forEach(x=>x.remove()));
+ await p.locator('[data-testid="relicario-practice"]').waitFor({state:'visible'});
+ const afterPractice=await state();const afterIds=afterPractice.codex.map(x=>x.id).sort().join('|');
+ if(!afterPractice.duelTutorialComplete||afterPractice.view!=='relicario'||afterPractice.relicarioTab!=='practice')throw Error('Guided practice completion state wrong');
+ if(beforeIds!==afterIds)throw Error('Practice permanently changed relic collection');
 
  // PvP is visible but explicitly inactive.
  await p.locator('[data-relic-tab="pvp"]').evaluate(el=>el.click());
