@@ -6,19 +6,25 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.27**.
+- Active development version: **v0.28**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
 
-## Current v0.27 product state
+## Current v0.28 product state
 - Chapter mission system and universal accelerators are active.
 - Arcón includes utility tabs, including Aceleradores.
 - Chapter II Engendro is reachable/visible in its intended sequence.
 - Layered PvE remains active; only Arqueros are player-facing/recruitable; PvP remains unimplemented.
 - Hero/troop/march base domain is now active for Aldric + Lyra: roles, affinities, inherited base stats, skill-slot/rank schema, exclusive-talent seam, troop roster and explicit march composition. Paladines are reserved structurally but still hidden/unbalanced; Maelis remains for a later integration pass.
+
+## Versioning rule now in force
+- Minor `v0.X` advances only for a consolidated, validated functional/playable milestone.
+- Corrections, bugs, visual polish and balance inside that milestone use `v0.X.Y`.
+- Agents choose the target version when a substantial block starts and promote only after integration + validation; the owner does not need to request the bump.
+- The just-certified integrated military layer is the milestone that promotes active development from v0.27 to **v0.28**.
 
 ## QA workflow now in force
 Three separate levels exist:
