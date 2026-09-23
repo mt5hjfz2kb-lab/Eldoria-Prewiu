@@ -27,6 +27,7 @@ The launcher is development-only and exposes three human paths:
 
 ### Probar solo el cambio
 Loads one deterministic preset exactly at the system under test. Current presets:
+- Héroes + Tropas + Marcha
 - Bastión II — Engendro de la Fisura
 - Bastión III — Fisura / Lyra
 - Bastión VI — Forja / Devorador
@@ -47,6 +48,8 @@ A segment starts before the first system in the block and leaves the relevant la
 
 ### Jugar desde cero
 `FRESH SAVE` clears the isolated QA save and reloads Bastion I. It does not clear the normal player save.
+
+Direct preset deep links use `?qa=1&preset=<preset-id>` and load the requested isolated state automatically. Example: `playtest/?qa=1&preset=hero-army-base`.
 
 The preset catalog is `v0220/js/qa-fixtures.js`. It is UMD so the same fixture source can be reused by browser QA and Node/Playwright tooling. Presets must be deterministic, coherent with actual progression, and must not expose future player-facing systems early.
 
