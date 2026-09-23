@@ -44,8 +44,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  if(data.roster.archer[1]!==140||data.roster.archer[2]!==60||data.roster.archer[3]!==0)throw Error('tiered roster fixture wrong');
  if(data.mixed.heroes.length!==2||data.mixed.stats.power<=0)throw Error('mixed march model invalid');
  const hall=p.locator('[data-testid="hero-hall"]');try{await hall.waitFor({state:'visible',timeout:5000})}catch(e){const diag=await p.evaluate(()=>({state:window.ELDORIA_V023?.state(),root:document.querySelector('#eldoria-core-loop')?.innerText?.slice(0,1800),html:document.querySelector('#eldoria-core-loop')?.innerHTML?.slice(0,1800)}));throw Error('Hero Hall did not render '+JSON.stringify({diag,pageErrors}))}
- await p.locator('[data-testid="army-inventory"]').waitFor({state:'visible'});
- for(const id of ['army-archer-t1','army-archer-t2','army-archer-t3'])await p.locator('[data-testid="'+id+'"]').waitFor({state:'visible'});
+ if(await p.locator('[data-testid="army-inventory"]').count())throw Error('Hero Hall must not mix troop inventory');
+ if(await p.locator('[data-testid="march-builder"]').count())throw Error('Hero Hall must not mix march builder');
+ const locked=await p.locator('.lockedHero0301').count();if(locked<1)throw Error('Hero collection must expose locked hero slots');
  await p.locator('[data-testid="hero-aldric"]').tap({force:true});
  await p.locator('[data-testid="hero-profile-aldric"]').waitFor({state:'visible'});
  let txt=(await p.locator('[data-testid="hero-profile-aldric"]').innerText()).replace(/\s+/g,' ');
@@ -58,7 +59,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  await p.locator('[data-testid="hero-lyra"]').tap({force:true});
  await p.locator('[data-testid="hero-profile-lyra"]').waitFor({state:'visible'});
  txt=(await p.locator('[data-testid="hero-profile-lyra"]').innerText()).replace(/\s+/g,' ').toUpperCase();
- for(const needle of ['LYRA','DPS','ARQUEROS','+3% ATQ'])if(!txt.includes(needle))throw Error('Lyra profile missing '+needle);
+ for(const needle of ['LYRA','DPS','ARQUEROS','+3 %'])if(!txt.includes(needle))throw Error('Lyra profile missing '+needle);
+ await p.locator('[data-open-march]').tap({force:true});await p.locator('[data-testid="march-screen"]').waitFor({state:'visible'});await p.locator('[data-testid="march-builder"]').waitFor({state:'visible'});
+ const marchText=(await p.locator('[data-testid="march-builder"]').innerText()).toUpperCase();for(const needle of ['HÉROES','TROPAS','COMPOSICIÓN','PODER DE MARCHA','CONFIRMAR MARCHA'])if(!marchText.includes(needle))throw Error('March screen missing '+needle);
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'heroes',heroDetailOpen:true,heroSelected:'lyra'}));await p.locator('[data-testid="hero-profile-lyra"]').waitFor({state:'visible'});
  const overflow=await p.locator('[data-testid="hero-profile-lyra"]').evaluate(el=>({w:el.scrollWidth,cw:el.clientWidth,h:el.scrollHeight,ch:el.clientHeight}));
  if(overflow.w>overflow.cw+3)throw Error('hero profile horizontal overflow on mobile '+JSON.stringify(overflow));
  await b.close();console.log('v0.27 HERO + TROOP + MARCH BASE PASS');
