@@ -21,7 +21,7 @@ If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; ne
 - Development branch: `main` only.
 - Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
 - `v0220` is a compatibility directory name, not the product version.
-- Active development version: **v0.28**.
+- Active development version: **v0.29**.
 - Generated development build: `playtest/`; never edit it as source.
 - Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** at `/tester-v0265/`; never use it as a development baseline.
 - Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
@@ -41,7 +41,7 @@ If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; ne
 - `runtime-hotfix.js` is migration/compatibility-only; no new gameplay/UI/dialogue belongs there.
 - Stable interactions need `data-testid` and real Playwright tap/click coverage.
 - Fixture QA proves the targeted state, not uninterrupted player reachability.
-- Cards/relics → Códice. Equipment/materials → Arcón/inventory.
+- World knowledge/discoveries → Códice. Cards/Reliquias → Relicario. Equipment/materials → Arcón/inventory.
 - Keep claims exact: changed ≠ verified; local green ≠ published; deployed ≠ published interaction verified.
 - Update `SESSION_HANDOFF.md` after important work blocks. Update `PROJECT_STATE.md` only when product functionality/scope changes.
 
