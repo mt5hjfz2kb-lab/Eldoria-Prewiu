@@ -33,10 +33,14 @@ const {chromium}=require('playwright');
  if(!box||box.y+box.height>844)throw Error('Bastion IX attack CTA is off-screen on mobile');
  if(!await dock.getByText('ATACAR').count())throw Error('Bastion IX attack CTA missing');
 
- // 4) Codex still has the explicit use/conserve education surface.
- await set({view:'codex',bastionLevel:7,codexUnlocked:true,codexTutorialSeen:true,codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,S:1,E:4,O:2},copy:'QA'}],cardsConsumed:[],cardChoices:{},cardCooldowns:{}});
- const exp=await p.locator('[data-testid="codex-use-keep-explainer"]').innerText();
- for(const term of ['USAR','CONSERVAR','INDESTRUCTIBLE','Eco 1/1/1/1'])if(!exp.toLowerCase().includes(term.toLowerCase()))throw Error('Codex explanation missing '+term);
+ // 4) Codex is knowledge-only; Relicario owns use/conserve decisions.
+ await set({view:'codex',bastionLevel:7,codexUnlocked:true,codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,S:1,E:4,O:2},copy:'QA'}],cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:false,relicarioTab:'collection'});
+ const codex=await p.locator('[data-testid="codex-scroll"]').innerText();
+ for(const term of ['CÓDICE DE ELDORIA','LA BRECHA','BESTIARIO','MUNDO','PERSONAJES'])if(!codex.toUpperCase().includes(term))throw Error('Codex knowledge surface missing '+term);
+ if(await p.locator('[data-card-use],[data-card-keep]').count())throw Error('Relic decisions leaked into Codex');
+ await p.locator('[data-testid="open-relicario"]').evaluate(el=>el.click());
+ const exp=await p.locator('[data-testid="relicario-collection"]').innerText();
+ for(const term of ['USAR','CONSERVAR','INDESTRUCTIBLE'])if(!exp.toUpperCase().includes(term))throw Error('Relicario explanation missing '+term);
 
  await b.close();
  console.log('v0.26.3 OWNER FEEDBACK QA PASS');
