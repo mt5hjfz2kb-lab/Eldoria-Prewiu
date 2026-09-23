@@ -50,7 +50,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
 
  // Accelerator picker on a compatible task.
  s=await state();const now=Date.now();await set({...s,view:'kingdom',tasks:[{key:'upgrade-building-sawmill-3',title:'MEJORANDO ASERRADERO',target:'sawmill',start:now,end:now+180000,costPaid:true,cost:{wood:240,stone:156}}],speedups:{m1:2,m5:1,m15:1}});
- await p.locator('[data-queue]').evaluate(el=>el.click());const accel=p.locator('[data-testid="speedup-open"]');await accel.waitFor({state:'visible'});await accel.evaluate(el=>el.click());
+ const queue=p.locator('[data-testid="task-queue-toggle"]');await queue.waitFor({state:'visible'});if(!(await queue.innerText()).toUpperCase().includes('ACELERAR'))throw Error('Compatible task does not advertise acceleration');
+ await queue.evaluate(el=>el.click());const accel=p.locator('[data-testid="speedup-open"]');await accel.waitFor({state:'visible'});await accel.evaluate(el=>el.click());
  const task=p.locator('[data-task-key="upgrade-building-sawmill-3"]');txt=(await task.innerText()).toUpperCase();
  if(!txt.includes('ACELERADORES DISPONIBLES')||!txt.includes('−60S')||!txt.includes('NO FUNCIONAN SOBRE RECOLECCIÓN'))throw Error('Accelerator explanation incomplete '+txt);
 
