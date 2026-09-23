@@ -2,6 +2,20 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.30.1 — 2026-09-23
+
+- Separated Barracks, Troops, Heroes and March into clear player-facing responsibilities.
+- Rebuilt Hero Hall as hero-only collection and moved expedition composition to a dedicated March screen.
+- Added short contextual onboarding for Barracks, Troops, Hero Hall and March, including concrete affinity explanations.
+- Improved mission-panel discoverability, touch targets and compact mobile behavior.
+- Added first-acquisition Speedup education and an explicit ACCELERATE picker on compatible timed processes.
+- Normalized city building labels to name + level only.
+- Upgraded the Breach Manuscript into a meaningful narrative discovery ceremony without adding new Breach mechanics.
+- Strengthened proportional reward ceremonies, contrast, readability and English coverage across affected surfaces.
+- Added permanent novice-player QA acceptance: Discoverability → Comprehension → Interaction → Feedback → Next step.
+- Added `qa/e2e-v0301-ux-clarity.js` and updated military/chapter/fresh-save regressions.
+- Full integral release gate passed on the correction candidate before patch metadata promotion.
+
 ## v0.30 — 2026-09-23
 
 - Added four meaningful development-priority choices across Bastion IV, VI, VIII and IX, replacing forced-wait style progression pressure with immediate strategic trade-offs.
