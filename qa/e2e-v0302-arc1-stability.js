@@ -47,7 +47,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  for(const need of ['PODER','PREVISIÓN','CAPARAZÓN DE ÉTER','ATAQUE','DEFENSA','RUPTURA'])if(!t.toUpperCase().includes(need))throw Error('Devourer prep missing '+need+': '+t);
  if(/undefined|null|\barcher\b/i.test(t))throw Error('Technical token leaked in Devourer prep: '+t);
  await prep.locator('[data-testid="combat-launch-devourer"]').tap();const report=p.locator('[data-testid="battle-report"]');await report.waitFor({state:'visible'});t=(await report.innerText()).replace(/\s+/g,' ');
- for(const need of ['PARTICIPANTES','DAÑO INFLIGIDO','¿POR QUÉ OCURRIÓ?','CAPARAZÓN DE ÉTER'])if(!t.toUpperCase().includes(need))throw Error('Devourer report missing '+need+': '+t);
+ for(const need of ['PARTICIPANTES','PODER DE MARCHA','PODER ENEMIGO','DAÑO INFLIGIDO','RUP','CAPARAZÓN DE ÉTER'])if(!t.toUpperCase().includes(need))throw Error('Devourer report missing '+need+': '+t);
  if(/undefined|null/i.test(t))throw Error('Technical token leaked in Devourer report: '+t);
  await report.locator('[data-battle-close]').tap();await close();
 
