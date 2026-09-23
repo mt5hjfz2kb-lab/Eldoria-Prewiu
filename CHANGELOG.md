@@ -2,6 +2,19 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.30.2 — 2026-09-23
+
+- Fixed the Bastion VI → VII softlock by making forged equipment remain canonically owned when equipped; mission, counter and gate now agree.
+- Converted the Ether Devourer from the legacy instant combat readout to the shared modeled PvE preparation, forecast, trait and battle-report flow.
+- Removed the visible `APO undefined` failure and strengthened combat reports with participants, damage and matchup reasoning.
+- Allowed valid Aldric-only March composition before Lyra exists; retained the two-hero requirement for the later March Trial.
+- Routed expedition objectives to the March screen and clarified Power versus matchup forecast.
+- Unified Lyra's +3% Archer Attack affinity from the canonical hero/troop domain and removed the leaked internal `archer` label.
+- Prevented decorative world labels from stealing taps and raised active city action hitboxes, covering the Bastion III Boar and Bastion VI Forge cases.
+- Replaced audited player-visible development placeholders/implementation language with in-world or locked-state copy and tightened the Bastion IV/Devourer narrative cadence.
+- Added exact forge → equip → 1/1 mission → Bastion VII regression plus mobile checks for March, Boar, Forge, Lyra and Devourer.
+- Full release certification remains governed by `npm run validate:local`, uninterrupted fresh-save Arc I and the published Pages browser check.
+
 ## v0.30.1 — 2026-09-23
 
 - Separated Barracks, Troops, Heroes and March into clear player-facing responsibilities.
