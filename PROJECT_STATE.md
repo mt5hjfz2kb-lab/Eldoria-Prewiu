@@ -4,7 +4,7 @@ Updated: 2026-09-23
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.30.1**.
+- Runtime/API milestone: **v0.30.2**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,15 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.30.2 Arc I completion hardening
+- Bastion VI → VII now uses one canonical equipment-ownership rule across mission progress, equipped gear and the Bastion gate; equipping the forged Aether Blade cannot revert the mission counter.
+- Ether Devourer now uses modeled PvE preparation, matchup forecast, trait resolution and the shared post-combat report instead of the legacy instant readout.
+- March accepts Aldric as a valid single-hero expedition before the late-game March Trial; the two-hero requirement remains reserved for the trial stage.
+- Lyra's affinity is rendered from the canonical hero/troop domain as +3% Archer Attack across Hero and March surfaces.
+- Decorative world labels no longer intercept node taps; active building actions are raised above neighboring city hitboxes, including mobile.
+- Player-facing development placeholders in the audited Arc I surfaces were replaced with in-world/locked-state language.
+- Permanent regression coverage includes the exact forge → equip → mission 1/1 → Bastion VII sequence plus mobile hitbox/combat checks.
 
 ## Implemented Arc I scaffold
 The active slice supports the Valoria-first progression through Bastion X: rebuilding/production, world gathering, Corrupts, Fissure/Lyra, food/hunting, Cantera, Forge/Aether equipment, Nareth/Maelis, march configuration/trial and final Breach assault. The playtest now ends explicitly with an Arc I completion screen, survey, copyable summary, JSON session export and complete local reset. World combat now uses a layered PvE scaffold: hunting teaches Power, common threats teach five combat statistics and march composition, uncommon threats add real traits/counter-play, and world bosses use semiautomatic combat with one minimal hero intervention. PvP combat remains unimplemented; the Relicario exposes only a clearly locked future Duelo PvP tab, with no active matchmaking or rewards.
