@@ -80,7 +80,7 @@ This is permanent cross-session behavior, not a one-session preference.
 - Contrast/legibility and English coverage were audited across the modified surfaces.
 - Permanent QA policy now requires **Discoverability → Comprehension → Interaction → Feedback → Next step** in addition to technical correctness.
 - Focused regression: `qa/e2e-v0301-ux-clarity.js`.
-- Pre-promotion certification: runtime candidate `e7d42197`, GitHub Actions run 1266, integral fresh-save Bastion I–X + mobile UX + tester guard + Pages + published Chromium all green.
+- Final certified v0.30.1 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Integral fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification all green.
 
 ## Next task
 Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
