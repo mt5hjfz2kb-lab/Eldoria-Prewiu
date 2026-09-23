@@ -4,7 +4,7 @@ Updated: 2026-09-23
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.30**.
+- Runtime/API milestone: **v0.30.1**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -96,6 +96,23 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Ceremonies were reduced to real milestones; routine chapter completions use compact feedback.
 - Códice/Relicario separation remains intact; PvP remains future/locked; no new Breach mechanics, heroes, buildings or alliance systems were added.
 - Permanent focused regression: `qa/e2e-v030-depth.js`. Final certified v0.30 candidate: `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5` (GitHub Actions run 1231). Full release certification passed: fresh-save Arc I/Bastion I–X, mobile interaction, frozen tester guard, Pages deploy, published Chromium verification and frozen tester URL verification.
+
+## v0.30.1 — UX clarity, responsibility boundaries and novice-player QA
+- Barracks, Troops, Heroes and March are now separated by responsibility: Barracks recruits/upgrades, Troops shows owned army, Hero Hall manages characters only, and March is a dedicated expedition-composition screen.
+- First-entry micro-explanations were added for Barracks, Troops, Hero Hall and March without long text walls.
+- Hero Hall initial view is hero-only, with portrait collection, power/level summary and visible undiscovered slots; troop inventory and march composition no longer appear there.
+- Individual hero profiles keep full-character focus, Power, level, role, affinity, Skills/Talents tabs and prepared equipment slots.
+- March preparation now uses explicit hierarchy: Heroes → Troops → Composition → March Power → Confirm. Affinity copy explains concrete march bonuses where applicable.
+- Building labels are normalized to building name + Level X only; production/timers/resources moved out of city labels.
+- Mission panel discoverability now includes a compact first-use affordance, chevron state and touch-safe close control without growing the mobile HUD.
+- Universal Speedups now teach their purpose on first acquisition and expose a clearly visible ACCELERATE picker on compatible timed tasks; gathering remains non-accelerable.
+- Breach Manuscript acquisition is promoted to a short narrative ceremony with item presentation, Aldric reaction and a restrained mystery hook linking Valoria and the Breach without expanding Breach mechanics.
+- Important reward presentation was audited and strengthened proportionally for manuscript/Aether-style rare milestones while routine rewards remain compact.
+- Contrast/readability was hardened across dialogs, tutorials, missions, heroes, troops, march, Codex, Reliquary, Chest and Settings; touch targets were raised where the mobile pass found weak discoverability.
+- English localization was extended across the new UX clarity surfaces.
+- Permanent novice-player QA rule added to AGENTS.md and QA_AND_DEPLOY.md: **Discoverability → Comprehension → Interaction → Feedback → Next step**. Technical function alone is no longer sufficient for acceptance.
+- Permanent focused regression: `qa/e2e-v0301-ux-clarity.js`, plus updated military/chapter/fresh-save regressions.
+- Certified candidate before metadata promotion: `e7d42197`, GitHub Actions run 1266, full integral gate green including fresh-save Bastion I–X, mobile UX, frozen tester guard, Pages deploy and published Chromium verification.
 
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
