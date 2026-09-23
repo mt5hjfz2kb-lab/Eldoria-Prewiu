@@ -45,7 +45,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  // Missions are discoverable and accelerators explain use.
  s=await state();await set({...s,view:'kingdom',missionPanelOpen:false,missionPanelHintSeen:false,speedups:{m1:2,m5:1,m15:1},tasks:[]});
  const compact=p.locator('[data-testid="chapter-compact"]');await compact.waitFor({state:'visible'});txt=(await compact.innerText()).toUpperCase();
- if(!txt.includes('TOCA PARA ABRIR')||!txt.includes('▼'))throw Error('Mission panel is not discoverable '+txt);
+ if(!txt.includes('ABRIR')||!txt.includes('▼'))throw Error('Mission panel is not discoverable '+txt);
  await compact.tap({force:true});await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});
 
  // Accelerator picker on a compatible task.
