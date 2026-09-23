@@ -1,10 +1,10 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-22
+Updated: 2026-09-23
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.27**.
+- Runtime/API milestone: **v0.28**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -47,7 +47,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - The existing Breach Manuscript flow is unchanged and its future purpose remains unrevealed.
 - Permanent mobile interaction QA: `qa/e2e-v0266-pve-combat.js`.
 
-## v0.27 — base system for heroes, troops and marches
+## v0.28 — base system for heroes, troops and marches
 - A dedicated domain model now defines heroes, roles, affinities, base combat statistics, troop families and march composition independently from the final Hero Hall presentation.
 - **Sir Aldric** is defined as **Tank** with **Paladines** affinity: +3% Defense applies only to Paladines present in the march. The affinity grants a bonus but never restricts what troops or heroes may be combined.
 - **Lyra** is defined as **DPS** with **Arqueros** affinity: +3% Attack applies only to Arqueros present in the march and does not modify other troop families.
@@ -58,7 +58,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Maelis remains outside this new hero-domain integration for a later pass; her existing slice behavior is preserved.
 - Permanent focused QA: `qa/e2e-v027-hero-army.js`. Focused development preset: `hero-army-base`.
 
-## v0.27 — integrated military progression layer
+## v0.28 — integrated military progression layer
 - The military loop is now treated as one progression layer: **Barracks → troop inventory/tiers → Hero Hall → individual hero profile → march preparation → expedition stats/combat**.
 - Barracks progression is independent from Bastion progression. Bastion only gates how far the Barracks may develop; upgrading the Barracks never grants troops automatically.
 - Archer tiers are persistent and coexist: T1 unlocks at Barracks 1, T2 at Barracks 4 and T3 at Barracks 10. Older tiers remain in the roster after higher tiers unlock.
@@ -87,7 +87,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.27.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.28.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
