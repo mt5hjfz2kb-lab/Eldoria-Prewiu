@@ -4,7 +4,7 @@ Updated: 2026-09-23
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.28**.
+- Runtime/API milestone: **v0.29**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -25,7 +25,7 @@ Stable subsystems are separated under `v0220/js/` for economy/state, timestamp t
 The MVP question is whether the compact loop creates understanding, satisfaction and desire to continue:
 **Valoria → need/meaningful choice → world → gather/fight/discover → valuable reward → return → visible growth → new ambition.**
 
-Before scope expansion/Unity migration, the slice still needs to prove: a genuine economic trade-off, meaningful Breach gameplay, a useful relic/card reaching Codex with use/conserve tension, and a truthful simulated larger 4X horizon.
+Before scope expansion/Unity migration, the slice still needs to prove: a genuine economic trade-off, meaningful Breach gameplay, a useful relic/card reaching the Relicario with use/conserve tension, and a truthful simulated larger 4X horizon.
 
 ## Implemented baseline inherited from v0.26 (historical label; active in v0.27)
 - Combat language now separates hunting PvE from threat PvE; PvP is explicitly reserved architecturally and not exposed as a fake live system.
@@ -71,12 +71,23 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - The central global Power model remains unchanged; hero power, troop/march power and global account Power are presented as distinct concepts and are not added twice to the global total.
 - Focused QA: `qa/e2e-v027-hero-army.js`, `qa/e2e-v027-military-circuit.js`, and the expanded Barracks recruitment regression.
 
+## v0.29 — Códice de Eldoria + Relicario
+- **Códice de Eldoria** is now a knowledge/discovery archive rather than a card manager. Its current sections are **La Brecha, Bestiario, Mundo and Personajes**, populated progressively from real state/discoveries.
+- **Relicario** is the dedicated card/Reliquia system and is entered from the Códice. It has three mobile-first tabs: **Colección**, **Práctica** and **Duelo PvP**.
+- Colección shows rarity, effect and state. Use/conserve remains intact: a normal Reliquia is consumed when used; an Indestructible remains in collection, enters cooldown and remains valid for practice/duel systems.
+- Tutorial phase 1 deliberately hides board language: the first Reliquia teaches only what it is, rarity/effect and the use-vs-conserve decision.
+- At five discovered Reliquias, **Maestre Orin** reveals side values and directs the player into Práctica by playing rather than through a rules wall.
+- Práctica uses the existing 3×3 capture mechanics with temporary cards and no permanent collection loss. After the guided pass, practice remains repeatable against Orin.
+- **Duelo PvP** is visible but explicitly locked/future; no matchmaking, rewards or fake PvP functionality are active.
+- Chapter 7/9 relic objectives now route to the Relicario while the Códice objective remains knowledge-oriented.
+- Focused QA preset: `relicario-v029`. Permanent regression: `qa/e2e-v029-codex-relicario.js`, plus updated legacy Codex/Chest and guided-practice coverage.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
 - Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
 - Existing late-story combats outside the new layered PvE examples remain scaffolding and can migrate onto the same combat model later.
 - Economy pacing to Bastion X needs human/player-experience validation even when automated reachability is green.
-- The Códice implements the use/conserve decision, Indestructible cooldown behavior, consumed-card Echo consequences, Orus orientation training and a playable 3×3 formal Duelo de Reliquias board. A wider relic economy and broader card pool remain future scope.
+- The Relicario implements use/conserve decisions, Indestructible cooldown behavior, consumed-card discovery/Echo consequences and a 3×3 Practice board against Maestre Orin. PvP remains visibly future/locked. A wider relic economy and broader card pool remain future scope.
 - Renewable/additional world nodes, hunting respawn, live timers and expanded canonical narrative/dialogue work remain implemented.
 
 ## Verification state
@@ -87,7 +98,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.28.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.29.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
