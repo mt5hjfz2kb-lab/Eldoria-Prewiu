@@ -4,7 +4,7 @@ Start with **`AGENTS.md`**. It defines the repository hierarchy and permanent wo
 
 - Active development: `main`.
 - Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
-- Active development version: **v0.30**.
+- Active development version: **v0.30.1**.
 - `v0220` is a compatibility directory name; it does not mean the active version is v0.22.
 - `playtest/` is generated deployment output; never edit it as source.
 - Last certified stable recovery baseline: `baseline/v0.24-certified` at `2ef3058da8b78f235dac7b6a1bcd0c0cc0d52435`.
