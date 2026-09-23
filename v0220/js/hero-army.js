@@ -5,7 +5,7 @@ const SKILL_RANKS=['I','II','III','IV','V'];
 const emptySkill=(slot)=>({slot,id:null,name:null,rank:1,maxRank:5,status:'reserved',effects:[],requirements:[],costs:[]});
 const skillTrack=(first=null)=>[first?{slot:1,rank:1,maxRank:5,status:'active',effects:[],requirements:[],costs:[],...first}:emptySkill(1),emptySkill(2)];
 const HEROES={
- aldric:{id:'aldric',name:'Sir Aldric',role:{id:'tank',name:'Tanque'},affinity:{troopType:'archer',futureTroopType:'paladin',label:'Paladines',stat:'defense',modifier:0.03,activeWhen:'paladin'},statsSource:'existing-v0266-combat',baseStats:{attack:78,defense:112,health:420,break:34},skills:{pve:skillTrack({id:'bulwark',name:'Baluarte',effectId:'next_hit_mitigation'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}},
+ aldric:{id:'aldric',name:'Sir Aldric',role:{id:'tank',name:'Tanque'},affinity:{troopType:'paladin',label:'Paladines',stat:'defense',modifier:0.03,activeWhen:'paladin'},statsSource:'existing-v0266-combat',baseStats:{attack:78,defense:112,health:420,break:34},skills:{pve:skillTrack({id:'bulwark',name:'Baluarte',effectId:'next_hit_mitigation'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}},
  lyra:{id:'lyra',name:'Lyra',role:{id:'dps',name:'DPS'},affinity:{troopType:'archer',label:'Arqueros',stat:'attack',modifier:0.03,activeWhen:'archer'},statsSource:'existing-v0266-combat',baseStats:{attack:116,defense:62,health:300,break:82},skills:{pve:skillTrack({id:'piercingShot',name:'Disparo de Ruptura',effectId:'direct_damage_defense_break'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}}
 };
 const legacyProfile=t=>({attack:18+t*2,defense:11+t,health:34+t*3,break:9+t*2,power:24+t*3});
@@ -20,11 +20,12 @@ const TROOPS={
  warlock:{id:'warlock',name:'Brujos',status:'reserved',playerFacing:false,tiers:{}}
 };
 const n=v=>Math.max(0,Math.floor(Number(v)||0));
-const emptyRoster=()=>({archer:{1:0,2:0,3:0}});
+const emptyRoster=()=>({archer:{1:0,2:0,3:0},paladin:{},warlock:{}});
 function normalizeRoster(input,legacyTotal=0){
  const out=emptyRoster(),src=input&&typeof input==='object'?input:{};
  if(typeof src.archer==='number')out.archer[1]=n(src.archer);
  else if(src.archer&&typeof src.archer==='object')for(const t of [1,2,3])out.archer[t]=n(src.archer[t]??src.archer['T'+t]);
+ for(const type of ['paladin','warlock'])if(src[type]&&typeof src[type]==='object')for(const [tier,count] of Object.entries(src[type]))out[type][tier]=n(count);
  if(!Object.values(out.archer).some(Boolean)&&legacyTotal)out.archer[1]=n(legacyTotal);
  return out;
 }
