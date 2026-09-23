@@ -21,10 +21,19 @@ If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; ne
 - Development branch: `main` only.
 - Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
 - `v0220` is a compatibility directory name, not the product version.
-- Active development version: **v0.27**.
+- Active development version: **v0.28**.
 - Generated development build: `playtest/`; never edit it as source.
 - Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** at `/tester-v0265/`; never use it as a development baseline.
 - Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
+
+## Permanent versioning policy
+- A **minor milestone** `v0.X` increases only when a relevant functional block or new playable milestone has been consolidated and validated.
+- Corrections, bug fixes, visual adjustments and balance changes inside the same milestone use **patch versions** `v0.X.Y`.
+- Do not increment versions for individual development commits or arbitrary intermediate states.
+- Do not wait for the owner to request a version bump. When starting a substantial block, determine the next target version as part of planning; keep the current active version during implementation and promote to the target version only after the block is integrated and validated.
+- When a milestone or patch version changes, synchronize at minimum `PROJECT_STATE.md`, `CHANGELOG.md`, `package.json`, `package-lock.json`, `SESSION_HANDOFF.md`, `README.md`, runtime version metadata/API and any version-sensitive QA assertion.
+- Historical headings/test filenames may retain the version in which a subsystem was introduced; do not rename them merely because the active version advanced.
+- Version promotion is release metadata, not a gameplay change. It must not alter balance, progression or frozen tester output.
 
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
