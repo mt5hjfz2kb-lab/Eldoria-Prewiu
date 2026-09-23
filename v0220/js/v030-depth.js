@@ -124,8 +124,10 @@ const choices={
 };
 function openChoice(level){
  const s=state(),def=choices[level];if(!def||s.developmentChoices?.[level])return false;
- document.querySelector('[data-testid="v030-choice"]')?.closest('.e22-overlay')?.remove();
- const o=document.createElement('div');o.className='e22-overlay v030Overlay';o.innerHTML='<div class="e22-dialog choice030" data-testid="v030-choice"><small>'+tr('DECISIÓN DE DESARROLLO','DEVELOPMENT DECISION')+' · '+tr('BASTIÓN','BASTION')+' '+level+'</small><h1>'+def.title[cfg.locale==='en'?1:0]+'</h1><p>'+def.copy[cfg.locale==='en'?1:0]+'</p><div class="choiceGrid030">'+def.options.map(x=>'<button data-choice="'+x.id+'"><span>'+x.icon+'</span><b>'+x.name[cfg.locale==='en'?1:0]+'</b><small>'+x.copy[cfg.locale==='en'?1:0]+'</small></button>').join('')+'</div><p class="choiceFoot030">'+tr('Las tres rutas son viables. Esta elección cambia tu siguiente prioridad, no bloquea contenido.','All three routes are viable. This choice changes your next priority; it does not lock content.')+'</p></div>';document.body.appendChild(o);
+ const active=document.querySelector('[data-testid="v030-choice"]');
+ if(active&&Number(active.dataset.level)===Number(level))return true;
+ active?.closest('.e22-overlay')?.remove();
+ const o=document.createElement('div');o.className='e22-overlay v030Overlay';o.innerHTML='<div class="e22-dialog choice030" data-testid="v030-choice" data-level="'+level+'"><small>'+tr('DECISIÓN DE DESARROLLO','DEVELOPMENT DECISION')+' · '+tr('BASTIÓN','BASTION')+' '+level+'</small><h1>'+def.title[cfg.locale==='en'?1:0]+'</h1><p>'+def.copy[cfg.locale==='en'?1:0]+'</p><div class="choiceGrid030">'+def.options.map(x=>'<button data-choice="'+x.id+'"><span>'+x.icon+'</span><b>'+x.name[cfg.locale==='en'?1:0]+'</b><small>'+x.copy[cfg.locale==='en'?1:0]+'</small></button>').join('')+'</div><p class="choiceFoot030">'+tr('Las tres rutas son viables. Esta elección cambia tu siguiente prioridad, no bloquea contenido.','All three routes are viable. This choice changes your next priority; it does not lock content.')+'</p></div>';document.body.appendChild(o);
  o.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>applyChoice(level,b.dataset.choice,o));return true;
 }
 function applyChoice(level,id,o){
@@ -136,6 +138,7 @@ function applyChoice(level,id,o){
  update(patch);tone(660,.12,.035,'triangle');o?.remove();showToast(tr('DECISIÓN APLICADA','CHOICE APPLIED'),opt.name[cfg.locale==='en'?1:0]);
 }
 function maybeChoice(){
+ if(document.querySelector('[data-testid="v030-choice"]'))return;
  const s=state();for(const level of [4,6,8,9])if(s.bastionLevel>=level&&!s.developmentChoices?.[level]){if(QA&&new URLSearchParams(location.search).get('v030Manual')!=='1'){const def=choices[level],opt=def.options[2]||def.options[0],dc=Object.assign({},s.developmentChoices||{}, {[level]:{id:opt.id,at:Date.now(),qa:true}}),patch={developmentChoices:dc};for(const [k,v] of Object.entries(opt.grant))patch[k]=(Number(s[k])||0)+v;update(patch)}else openChoice(level);break}
 }
 
