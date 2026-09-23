@@ -44,7 +44,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Battle reports show both sides, remaining life, round exchanges and plain-language reasons for the outcome.
 - Troop recruitment currently exposes **Arqueros only**. Combat troop families are internally extensible, but later families remain undisclosed and unavailable until their narrative unlocks.
 - Progression principle is **find → understand → unlock**. Future troop families and PvP are not previewed in the player UI.
-- The existing Breach Manuscript flow is unchanged and its future purpose remains unrevealed.
+- The Breach Manuscript still preserves its unrevealed future purpose, but v0.30.1 now presents its acquisition as a short narrative ceremony with Aldric's reaction and a restrained Valoria/Breach mystery hook.
 - Permanent mobile interaction QA: `qa/e2e-v0266-pve-combat.js`.
 
 ## v0.28 — base system for heroes, troops and marches
@@ -130,7 +130,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.30.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.30.1.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
