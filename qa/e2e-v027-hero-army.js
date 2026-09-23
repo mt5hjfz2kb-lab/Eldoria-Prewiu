@@ -13,7 +13,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
    const lyraPaladins=H.buildMarch({heroIds:['lyra'],troops:{paladin:10},bastionLevel:4,profileOverrides:synthetic});
    const lyraCombat=C.playerStats({troops:10,troopComposition:{archer:10,paladin:0},bastionLevel:4,hero:'lyra',heroes:['lyra']});
    return{
-     heroes:H.HEROES,troops:H.TROOPS,ranks:H.SKILL_RANKS,
+     heroes:H.HEROES,troopMeta:{archerHasProfile:typeof H.TROOPS.archer.profile==='function',archerPlayerFacing:H.TROOPS.archer.playerFacing,paladinStatus:H.TROOPS.paladin.status,paladinPlayerFacing:H.TROOPS.paladin.playerFacing,paladinHasProfile:typeof H.TROOPS.paladin.profile==='function'},ranks:H.SKILL_RANKS,
      mixed,aldricArchers,lyraPaladins,lyraCombat,state:s
    };
  });
@@ -26,8 +26,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
    for(const slot of [...h.skills.pve,...h.skills.pvp])if(slot.maxRank!==5)throw Error('hero skill max rank wrong');
    if(h.talents.mode!=='exclusive-choice'||!Array.isArray(h.talents.choices))throw Error('exclusive talent decision seam missing');
  }
- if(!result.troops.archer.profile||result.troops.archer.playerFacing!==true)throw Error('archer own stats/profile missing');
- if(result.troops.paladin.status!=='reserved'||result.troops.paladin.playerFacing!==false||result.troops.paladin.profile!==null)throw Error('paladin must stay reserved until balanced');
+ if(!result.troopMeta.archerHasProfile||result.troopMeta.archerPlayerFacing!==true)throw Error('archer own stats/profile missing');
+ if(result.troopMeta.paladinStatus!=='reserved'||result.troopMeta.paladinPlayerFacing!==false||result.troopMeta.paladinHasProfile)throw Error('paladin must stay reserved until balanced');
  if(result.mixed.families.archer.stats.attack!==103||result.mixed.families.archer.stats.defense!==100)throw Error('Lyra affinity did not affect archers only');
  if(result.mixed.families.paladin.stats.defense!==103||result.mixed.families.paladin.stats.attack!==100)throw Error('Aldric affinity did not affect paladins only');
  if(result.aldricArchers.affinities.length!==0||result.lyraPaladins.affinities.length!==0)throw Error('affinity incorrectly restricts/nonmatching troops');
