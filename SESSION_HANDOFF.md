@@ -18,6 +18,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Arcón includes utility tabs, including Aceleradores.
 - Chapter II Engendro is reachable/visible in its intended sequence.
 - Layered PvE remains active; only Arqueros are player-facing/recruitable; PvP remains unimplemented.
+- Hero/troop/march base domain is now active for Aldric + Lyra: roles, affinities, inherited base stats, skill-slot/rank schema, exclusive-talent seam, troop roster and explicit march composition. Paladines are reserved structurally but still hidden/unbalanced; Maelis remains for a later integration pass.
 
 ## QA workflow now in force
 Three separate levels exist:
@@ -29,7 +30,7 @@ Do not automatically replay all of Arc I for every small correction. Escalate QA
 
 The development-only QA Launcher is injected during `playtest/` generation and appears only with `?qa=1`. Its storage layer isolates the canonical save key to a QA-only save, so presets/fresh QA do not alter normal saves. Shared fixture definitions live in `v0220/js/qa-fixtures.js` and should be reused by Playwright where practical.
 
-Current focal presets: Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias/Duelo, Maelis, marcha/ataque, Heraldo semiautomático, capítulos v0.27, aceleradores and final Bastión X. Segment presets: VI→VIII and IX→X.
+Current focal presets: Héroes + Tropas + Marcha, Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias/Duelo, Maelis, marcha/ataque, Heraldo semiautomático, capítulos v0.27, aceleradores and final Bastión X. Segment presets: VI→VIII and IX→X.
 
 ## Permanent owner delivery rule
 Every future implementation delivery inherits the repository-level owner link contract from `AGENTS.md` / `QA_AND_DEPLOY.md`:
@@ -47,9 +48,12 @@ This is permanent cross-session behavior, not a one-session preference.
 - URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
 - Frozen research output only; never use as source and never inject the QA Launcher into it.
 
-## Latest owner correction
-- Barracks recruitment choices now show visible per-option quantity, wood cost, stone cost and real training time for 5 / 10 / 20 archers, with a high-contrast selected summary on mobile.
-- Permanent focused regression: `qa/e2e-v027-barracks-recruitment.js`.
+## Latest development block
+- Base Héroe + Rol + Afinidad + Estadísticas + Tropas + Marcha implemented for Aldric and Lyra without redesigning the final Hero Hall UI.
+- Aldric: Tank, Paladines affinity, +3% Defense to Paladines in the march only.
+- Lyra: DPS, Arqueros affinity, +3% Attack to Arqueros in the march only.
+- Existing balanced values were reused; no new Paladin combat values were invented. Maelis is intentionally deferred.
+- Focused preset: `hero-army-base`. Permanent regression: `qa/e2e-v027-hero-army.js`.
 
 ## Next task
 Continue normal v0.27 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
