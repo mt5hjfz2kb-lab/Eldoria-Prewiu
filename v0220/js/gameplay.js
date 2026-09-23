@@ -40,11 +40,11 @@ const CHAPTERS=[
 {id:'c6-gear',title:'Forja tu primer equipo',type:'equipment',value:1,target:{kind:'poi',id:'forge'},reward:{food:260}},
 {id:'c6-expedition',title:'Alcanza 2.800 de Poder de expedición',type:'expedition',value:2800,target:{kind:'nav',id:'heroes'},reward:{power:180}},
 {id:'c6-bastion',title:'Eleva el Bastión a nivel 7',type:'state',path:'bastionLevel',value:7,target:{kind:'poi',id:'keep'},reward:{power:300}}],chapterReward:{wood:480,stone:420,food:360,speedup5:1,power:340}},
-{id:7,title:'EL CÓDICE',context:'Las Reliquias no son un desvío: son memoria, colección y una nueva forma de preparar Valoria.',missions:[
-{id:'c7-codex',title:'Desbloquea el Códice',type:'flag',path:'codexUnlocked',value:1,target:{kind:'nav',id:'codex'},reward:{power:160}},
-{id:'c7-relics',title:'Descubre 3 Reliquias',type:'relics',value:3,target:{kind:'nav',id:'codex'},reward:{stone:260}},
-{id:'c7-decision',title:'Decide el destino de una Reliquia',type:'counter',counter:'relicDecisions',value:1,target:{kind:'nav',id:'codex'},reward:{speedup1:2}},
-{id:'c7-duel',title:'Completa el Duelo guiado',type:'flag',path:'duelTutorialComplete',value:1,target:{kind:'nav',id:'codex'},reward:{power:220}},
+{id:7,title:'CÓDICE Y RELICARIO',context:'El Códice registra lo que Eldoria aprende. El Relicario reúne las cartas y decisiones que nacen de esos descubrimientos.',missions:[
+{id:'c7-codex',title:'Consulta el Códice de Eldoria',type:'flag',path:'codexUnlocked',value:1,target:{kind:'nav',id:'codex'},reward:{power:160}},
+{id:'c7-relics',title:'Descubre 3 Reliquias',type:'relics',value:3,target:{kind:'nav',id:'relicario'},reward:{stone:260}},
+{id:'c7-decision',title:'Decide el destino de una Reliquia',type:'counter',counter:'relicDecisions',value:1,target:{kind:'nav',id:'relicario'},reward:{speedup1:2}},
+{id:'c7-duel',title:'Completa la Práctica guiada',type:'flag',path:'duelTutorialComplete',value:1,target:{kind:'nav',id:'relicario'},reward:{power:220}},
 {id:'c7-bastion',title:'Eleva el Bastión a nivel 8',type:'state',path:'bastionLevel',value:8,target:{kind:'poi',id:'keep'},reward:{power:320}}],chapterReward:{wood:520,stone:460,food:400,speedup15:1,power:420}},
 {id:8,title:'VOCES DE NARETH',context:'La composición empieza a importar más que la suma bruta de Poder.',missions:[
 {id:'c8-nareth',title:'Investiga las ruinas de Nareth',type:'flag',path:'narethRescued',value:1,target:{kind:'node',id:'nareth'},reward:{food:300}},
@@ -52,10 +52,10 @@ const CHAPTERS=[
 {id:'c8-equip',title:'Equipa a un héroe',type:'equipped',value:1,target:{kind:'nav',id:'heroes'},reward:{stone:260}},
 {id:'c8-expedition',title:'Alcanza 3.200 de Poder de expedición',type:'expedition',value:3200,target:{kind:'nav',id:'heroes'},reward:{power:180}},
 {id:'c8-bastion',title:'Eleva el Bastión a nivel 9',type:'state',path:'bastionLevel',value:9,target:{kind:'poi',id:'keep'},reward:{power:360}}],chapterReward:{wood:600,stone:520,food:460,speedup5:1,power:460}},
-{id:9,title:'PREPARATIVOS DE GUERRA',context:'Reino, ejército, héroes, equipo y Códice deben empezar a funcionar como un único sistema.',missions:[
+{id:9,title:'PREPARATIVOS DE GUERRA',context:'Reino, ejército, héroes, equipo, Códice y Relicario deben empezar a funcionar como un único sistema.',missions:[
 {id:'c9-march',title:'Prepara una expedición completa',type:'flag',path:'marchConfigured',value:1,target:{kind:'nav',id:'heroes'},reward:{food:320}},
 {id:'c9-power',title:'Alcanza 14.000 de Poder total',type:'totalPower',value:14000,reward:{power:200}},
-{id:'c9-collection',title:'Mantén 3 Reliquias descubiertas',type:'relics',value:3,target:{kind:'nav',id:'codex'},reward:{speedup5:1}},
+{id:'c9-collection',title:'Mantén 3 Reliquias descubiertas',type:'relics',value:3,target:{kind:'nav',id:'relicario'},reward:{speedup5:1}},
 {id:'c9-trial',title:'Supera la Prueba de Marcha',type:'flag',path:'trialWon',value:1,target:{kind:'node',id:'trial'},reward:{power:260}},
 {id:'c9-bastion',title:'Eleva el Bastión a nivel 10',type:'state',path:'bastionLevel',value:10,target:{kind:'poi',id:'keep'},reward:{power:420}}],chapterReward:{wood:680,stone:600,food:520,speedup15:1,power:520}},
 {id:10,title:'LA PRIMERA BRECHA',context:'Ya no se trata de recolectar. Se trata de demostrar que Valoria sabe prepararse y luchar.',missions:[
