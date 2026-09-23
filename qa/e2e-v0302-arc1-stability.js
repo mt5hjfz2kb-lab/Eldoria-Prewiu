@@ -35,7 +35,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  // Bastion V on iPhone: Ash Stalker is rendered, guided into view and tappable.
  await goto('hero-army-base');s=await state();await set({...s,view:'world',bastionLevel:5,bastion3:true,lyra:true,graniteQuarry:true,selectedAction:null,enemyRespawns:{...(s.enemyRespawns||{}),ashStalker:0},chapterProgress:{...(s.chapterProgress||{}),current:5,completedMissions:{...((s.chapterProgress||{}).completedMissions||{}),'c5-stoneworks':true,'c5-stone':true,'c5-army':true},claimedChapters:{...((s.chapterProgress||{}).claimedChapters||{})}}});
  const stalker=p.locator('[data-testid="world-node-ashStalker"]');await stalker.waitFor({state:'visible',timeout:4000});
- await p.evaluate(()=>{const el=document.querySelector('[data-node="ashStalker"]');if(typeof centerGuidedWorldNode0267!=='function'||!el)throw new Error('guided world centering helper unavailable');centerGuidedWorldNode0267(el)});
+ await p.evaluate(()=>{const el=document.querySelector('[data-node="ashStalker"]');if(typeof window.ELDORIA?.centerGuidedWorldNode0267!=='function'||!el)throw new Error('guided world centering helper unavailable');window.ELDORIA.centerGuidedWorldNode0267(el)});
  await p.waitForTimeout(120);const sbox=await stalker.boundingBox();if(!sbox)throw Error('Ash Stalker has no mobile hitbox');
  if(sbox.x+sbox.width<0||sbox.x>390||sbox.y+sbox.height<0||sbox.y>844)throw Error('Ash Stalker cannot be centered in iPhone viewport: '+JSON.stringify(sbox));
  const stop=await p.evaluate(({x,y})=>document.elementFromPoint(x,y)?.closest('[data-node="ashStalker"]')?.getAttribute('data-node')||null,{x:sbox.x+sbox.width/2,y:sbox.y+sbox.height/2});
