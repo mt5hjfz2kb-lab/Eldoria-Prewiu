@@ -39,7 +39,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const gnow=Date.now();await set({...s,tasks:[{key:'gather-forest',title:'RECOLECTANDO MADERA',target:'forest',start:gnow,end:gnow+30000}]});await p.locator('[data-queue]').tap({force:true});if(await p.locator('[data-speedup-task="gather-forest"]').count())throw Error('gathering incorrectly accepts speedups');
 
  // Codex chapter is main progression, and real gameplay discoveries count.
- s=await state();await set({...s,tasks:[],view:'codex',bastionLevel:7,developmentChoices:{...(s.developmentChoices||{}),4:{id:'balanced',at:Date.now(),qa:true},6:{id:'reserve',at:Date.now(),qa:true}},codexUnlocked:true,codex:[
+ s=await state();await set({...s,tasks:[],view:'kingdom',bastionLevel:7,developmentChoices:{...(s.developmentChoices||{}),4:{id:'balanced',at:Date.now(),qa:true},6:{id:'reserve',at:Date.now(),qa:true}},codexUnlocked:true,codex:[
  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2}},
  {id:'rift-shard',name:'Fragmento de Fisura',rarity:'Común',values:{N:2,E:3,S:2,O:1}},
  {id:'ash-veil',name:'Velo de Ceniza',rarity:'Épica',values:{N:4,E:2,S:5,O:3}}
