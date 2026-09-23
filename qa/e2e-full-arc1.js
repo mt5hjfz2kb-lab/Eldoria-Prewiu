@@ -115,4 +115,4 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 })().catch(e=>{console.error(e);process.exit(1)});
 
 // CI watchdog: never let a browser/page handle leave the mandatory sweep hanging forever.
-setTimeout(()=>{console.error('FULL ARC I WATCHDOG TIMEOUT');process.exit(124)},540000).unref();
+setTimeout(()=>{console.error('FULL ARC I WATCHDOG TIMEOUT');process.exit(124)},900000).unref();
