@@ -66,18 +66,24 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  for(const [view,tid] of [['chest','chest-scroll'],['heroes',null],['codex','codex-scroll']]){await set({...await state(),view});const loc=tid?p.locator('[data-testid="'+tid+'"]'):p.locator('.heroArchiveScene');await loc.waitFor({state:'visible'});const css=await loc.evaluate(el=>({overflowY:getComputedStyle(el).overflowY,touchAction:getComputedStyle(el).touchAction,can:el.scrollHeight>el.clientHeight,before:el.scrollTop,sh:el.scrollHeight,ch:el.clientHeight}));if(!/auto|scroll/.test(css.overflowY)||!css.touchAction.includes('pan-y'))throw Error(view+' mobile scroll contract missing '+JSON.stringify(css));await loc.evaluate(el=>el.scrollTop=Math.min(180,el.scrollHeight-el.clientHeight));if((await loc.evaluate(el=>el.scrollTop))<=0&&css.can)throw Error(view+' cannot scroll vertically')}
  await set({...await state(),view:'kingdom',forge:true,aetherEmber:true,inventory:[{id:'aether-ember',name:'Ascua de Éter',type:'material'},...manyItems]});await p.locator('[data-testid="building-forge"]').tap({force:true});const forge=p.locator('[data-testid="forge-view"]');await forge.waitFor({state:'visible'});const fcss=await forge.evaluate(el=>({o:getComputedStyle(el).overflowY,t:getComputedStyle(el).touchAction}));if(!/auto|scroll/.test(fcss.o)||!fcss.t.includes('pan-y'))throw Error('Forge scroll contract missing '+JSON.stringify(fcss));
  await p.locator('[data-testid="power-total"]').tap({force:true});const power=p.locator('.e22-dialog.powerCard');await power.waitFor({state:'visible'});const pcss=await power.evaluate(el=>({o:getComputedStyle(el).overflowY,t:getComputedStyle(el).touchAction}));if(!/auto|scroll/.test(pcss.o)||!pcss.t.includes('pan-y'))throw Error('Power dialog scroll contract missing '+JSON.stringify(pcss));await clear();
- // 9. Codex hierarchy + real guided Duel with five temporary loan cards.
- const realCodex=[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'Una reliquia real del jugador.'}];
- await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,cardsConsumed:[],duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{}});
- const codexText=await p.locator('[data-testid="codex-scroll"]').innerText();for(const t of ['DESCUBRIR','CONSERVAR','UTILIZAR','N 3','E 4','S 1','O 2'])if(!codexText.includes(t))throw Error('Codex UX missing '+t);
- await p.locator('[data-testid="open-relic-training"]').tap({force:true});const training=p.locator('[data-testid="duel-training"]');await training.waitFor({state:'visible'});
+ // 9. Codex knowledge + Relicario Practice with five temporary loan cards.
+ const realCodex=[
+  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'Una reliquia real del jugador.'},
+  {id:'r2',name:'R2',rarity:'Común',values:{N:2,E:3,S:2,O:1},copy:'QA'},
+  {id:'r3',name:'R3',rarity:'Épica',values:{N:4,E:2,S:5,O:3},copy:'QA'}
+ ];
+ await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,cardsConsumed:['r4','r5'],duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:true,relicarioTab:'collection'});
+ const codexText=await p.locator('[data-testid="codex-scroll"]').innerText();for(const t of ['CÓDICE DE ELDORIA','LA BRECHA','BESTIARIO','MUNDO','PERSONAJES'])if(!codexText.toUpperCase().includes(t))throw Error('Codex UX missing '+t);
+ await p.locator('[data-testid="open-relicario"]').evaluate(el=>el.click());
+ await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="open-relic-training"]').evaluate(el=>el.click());const training=p.locator('[data-testid="duel-training"]');await training.waitFor({state:'visible'});
  if(await p.locator('[data-testid^="training-cell-"]').count()!==9)throw Error('training board is not 3x3');
  if(await p.locator('[data-testid="training-loan-count"]').innerText()!=='5')throw Error('five temporary cards were not lent');
  const grid=p.locator('[data-testid="training-board"]'),gb=await grid.boundingBox();if(!gb||gb.width>370)throw Error('training board does not fit mobile width '+JSON.stringify(gb));
  for(const [card,cell] of [[0,4],[1,2],[2,1],[3,7]]){await p.locator('[data-testid="training-card-'+card+'"]').tap({force:true});await p.locator('[data-testid="training-cell-'+cell+'"]').tap({force:true});await p.waitForTimeout(80)}
- await p.locator('[data-testid="duel-training-finish"]').waitFor({state:'visible'});await p.locator('[data-testid="duel-training-finish"]').tap({force:true});await clear();
- st=await state();if(!st.duelTutorialComplete||st.codex.length!==1||st.codex[0].id!=='ash-sigil'||st.codex.some(x=>String(x.id).startsWith('loan-')))throw Error('training cards leaked into permanent collection '+JSON.stringify({done:st.duelTutorialComplete,codex:st.codex}));
- if(st.view!=='codex')throw Error('training did not return to Codex');
+ await p.locator('[data-testid="duel-training-finish"]').waitFor({state:'visible'});await p.locator('[data-testid="duel-training-finish"]').evaluate(el=>el.click());await clear();
+ st=await state();if(!st.duelTutorialComplete||st.codex.length!==3||st.codex.some(x=>String(x.id).startsWith('loan-')))throw Error('training cards leaked into permanent collection '+JSON.stringify({done:st.duelTutorialComplete,codex:st.codex}));
+ if(st.view!=='relicario'||st.relicarioTab!=='practice')throw Error('training did not return to Relicario Practice');
  // 10. Genuine two-option decisions must not visually imply a correct answer.
  const neutral=await p.evaluate(()=>{const host=document.createElement('div');host.className='rift-choices';host.style.position='fixed';host.style.left='0';host.style.top='0';host.innerHTML='<button class="choice contain"><span>◇</span>A</button><button class="choice exploit"><span>◇</span>B</button>';document.body.appendChild(host);const [a,b]=host.querySelectorAll('button'),pick=x=>{const s=getComputedStyle(x);return{background:s.backgroundColor,border:s.borderColor,shadow:s.boxShadow,color:s.color}},out={a:pick(a),b:pick(b)};host.remove();return out});if(JSON.stringify(neutral.a)!==JSON.stringify(neutral.b))throw Error('two-option decision still has unequal visual weight '+JSON.stringify(neutral));
  await b.close();console.log('v0.26.5 OWNER IMPROVEMENT BLOCK PASS');
