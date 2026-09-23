@@ -4,7 +4,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await p.goto(URL,{waitUntil:'domcontentloaded'});
- await p.waitForFunction(()=>window.ELDORIA?.heroArmy&&window.ELDORIA_V023?.state().view==='heroes');
+ await p.waitForFunction(()=>window.ELDORIA?.heroArmy&&sessionStorage.getItem('eldoria-qa-active-preset')==='hero-army-base'&&window.ELDORIA_V023?.state().view==='heroes'&&!window.ELDORIA_V023.state().heroDetailOpen);
  const data=await p.evaluate(()=>{
    const H=window.ELDORIA.heroArmy,s=window.ELDORIA_V023.state();
    const roster=H.normalizeRoster(s.troopRoster,s.troops);
