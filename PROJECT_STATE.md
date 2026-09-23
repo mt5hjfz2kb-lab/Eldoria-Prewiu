@@ -95,7 +95,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - First audio layer uses lightweight ambient music and action feedback with persistent music/SFX toggles in settings.
 - Ceremonies were reduced to real milestones; routine chapter completions use compact feedback.
 - Códice/Relicario separation remains intact; PvP remains future/locked; no new Breach mechanics, heroes, buildings or alliance systems were added.
-- Permanent focused regression: `qa/e2e-v030-depth.js`. Full release certification passed including fresh Arc I, mobile interaction, frozen tester guard, Pages deploy and published Chromium verification.
+- Permanent focused regression: `qa/e2e-v030-depth.js`. Final certified v0.30 candidate: `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5` (GitHub Actions run 1231). Full release certification passed: fresh-save Arc I/Bastion I–X, mobile interaction, frozen tester guard, Pages deploy, published Chromium verification and frozen tester URL verification.
 
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
