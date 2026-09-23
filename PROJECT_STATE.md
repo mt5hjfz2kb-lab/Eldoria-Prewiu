@@ -112,7 +112,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - English localization was extended across the new UX clarity surfaces.
 - Permanent novice-player QA rule added to AGENTS.md and QA_AND_DEPLOY.md: **Discoverability → Comprehension → Interaction → Feedback → Next step**. Technical function alone is no longer sufficient for acceptance.
 - Permanent focused regression: `qa/e2e-v0301-ux-clarity.js`, plus updated military/chapter/fresh-save regressions.
-- Certified candidate before metadata promotion: `e7d42197`, GitHub Actions run 1266, full integral gate green including fresh-save Bastion I–X, mobile UX, frozen tester guard, Pages deploy and published Chromium verification.
+- Final certified v0.30.1 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Full integral gate green including fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification.
 
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
