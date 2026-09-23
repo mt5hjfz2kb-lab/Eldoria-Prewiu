@@ -15,15 +15,21 @@ const {chromium}=require('playwright');
  if(started.wood!==before.wood-80)throw Error('Sawmill cost was not deducted at construction start');
  if(!started.tasks.some(t=>t.key==='build-sawmill'&&t.costPaid))throw Error('Construction task did not persist immediate-spend marker');
 
- // 2) Hero Hall is a dedicated full-screen view, with understandable march builder.
- await set({view:'heroes',bastionLevel:9,lyra:true,maelis:true,troops:41,troopRoster:{archer:{1:41,2:0,3:0},paladin:{},warlock:{}},marchSetup:{heroIds:['aldric'],troops:{archer:{1:41,2:0,3:0}}},marchSlots:['aldric'],marchConfigured:false,inventory:[],heroSelected:'aldric',heroDetailOpen:false});
- await p.locator('.heroArchiveScene').waitFor({state:'visible',timeout:3000});
+ // 2) Hero Hall is hero-only; troops and march live in separate full-screen surfaces.
+ await set({view:'heroes',bastionLevel:9,lyra:true,maelis:true,troops:41,troopRoster:{archer:{1:41,2:0,3:0},paladin:{},warlock:{}},marchSetup:{heroIds:['aldric'],troops:{archer:{1:41,2:0,3:0}}},marchSlots:['aldric'],marchConfigured:false,inventory:[],heroSelected:'aldric',heroDetailOpen:false,uxCoachSeen:{heroes:true}});
+ await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible',timeout:3000});
  if(await p.locator('.e22-overlay:visible').count())throw Error('Hero Hall regressed to overlay');
- const hall=await p.locator('.heroArchiveScene').innerText();
- for(const term of ['ARQUEROS','T1','T2','T3','PREPARACIÓN DE MARCHA','ATQ','DEF','VIDA','RUP'])if(!hall.toUpperCase().includes(term))throw Error('Hero Hall military contract missing '+term);
+ const hall=await p.locator('[data-testid="hero-hall"]').innerText();
+ for(const forbidden of ['ARQUEROS T1','PREPARACIÓN DE MARCHA','PODER DE MARCHA'])if(hall.toUpperCase().includes(forbidden))throw Error('Hero Hall mixes military systems: '+forbidden);
+ if(await p.locator('[data-testid="army-inventory"],[data-testid="march-builder"]').count())throw Error('Troops or march leaked into Hero Hall');
+ await p.locator('[data-testid="hero-maelis"]').tap({force:true});
+ await p.locator('[data-testid="hero-profile-maelis"]').waitFor({state:'visible'});
+ await p.locator('[data-open-march]').evaluate(el=>el.click());
+ await p.locator('[data-testid="march-screen"]').waitFor({state:'visible'});
+ for(const term of ['HÉROES','TROPAS','COMPOSICIÓN','PODER DE MARCHA','CONFIRMAR MARCHA'])if(!(await p.locator('[data-testid="march-screen"]').innerText()).toUpperCase().includes(term))throw Error('Separated march screen missing '+term);
  await p.locator('[data-march-hero="maelis"]').tap({force:true});
  const march=await state();
- if(!march.marchSetup?.heroIds?.includes('maelis'))throw Error('March hero selection did not persist from full-screen Hall');
+ if(!march.marchSetup?.heroIds?.includes('maelis'))throw Error('March hero selection did not persist from march screen');
 
  // 3) IX must expose a robust attack action on 390x844 mobile after march configuration.
  await set({view:'world',bastionLevel:9,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false,troops:41,selectedAction:null});
