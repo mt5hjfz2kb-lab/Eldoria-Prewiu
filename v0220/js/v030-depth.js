@@ -146,7 +146,15 @@ function delegatedChoiceEvent(e){
 }
 function maybeChoice(){
  if(document.querySelector('[data-testid="v030-choice"]'))return;
- const s=state();for(const level of [4,6,8,9])if(s.bastionLevel>=level&&!s.developmentChoices?.[level]){if(QA&&new URLSearchParams(location.search).get('v030Manual')!=='1'){const def=choices[level],opt=def.options[2]||def.options[0],dc=Object.assign({},s.developmentChoices||{}, {[level]:{id:opt.id,at:Date.now(),qa:true}}),patch={developmentChoices:dc};for(const [k,v] of Object.entries(opt.grant))patch[k]=(Number(s[k])||0)+v;update(patch)}else openChoice(level);break}
+ const s=state(),eligible=[4,6,8,9].filter(level=>s.bastionLevel>=level&&!s.developmentChoices?.[level]);
+ if(!eligible.length)return;
+ if(QA&&new URLSearchParams(location.search).get('v030Manual')!=='1'){
+   const dc=Object.assign({},s.developmentChoices||{}),patch={};let resourceDelta={wood:0,stone:0,food:0,power:0};
+   for(const level of eligible){const def=choices[level],opt=def.options[2]||def.options[0];dc[level]={id:opt.id,at:Date.now(),qa:true};for(const [k,v] of Object.entries(opt.grant))resourceDelta[k]=(resourceDelta[k]||0)+v}
+   patch.developmentChoices=dc;for(const [k,v] of Object.entries(resourceDelta))if(v)patch[k]=(Number(s[k])||0)+v;
+   update(patch);return;
+ }
+ openChoice(eligible[0]);
 }
 
 /* ---------- progressive autonomy in chapter UI ---------- */
