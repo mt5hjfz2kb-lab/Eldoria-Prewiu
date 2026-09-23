@@ -106,3 +106,11 @@ Canonical mobile emulation remains 390×844, `isMobile:true`, `hasTouch:true`.
 `.github/workflows/pages.yml` runs on pushes to `main`. It remains final clean-environment certification/deployment and guards the frozen tester snapshot. Important/release candidates still run the integral gate before being called stable. Do not use Actions as the normal iteration debugger when local targeted QA is sufficient.
 
 A build is only called published after Pages deployment succeeds and only called verified after the published Chromium check succeeds.
+
+
+## Military system focused acceptance
+For changes touching Barracks, troop tiers, Hero Hall, hero affinities, march composition or expedition Power:
+- use `?qa=1&preset=hero-army-base` for owner/manual focused review;
+- run `qa/e2e-v027-hero-army.js` and `qa/e2e-v027-military-circuit.js`;
+- retain `qa/e2e-v027-barracks-recruitment.js` for recruitment/tier visibility;
+- escalate to full `validate:local` for any change affecting progression, combat calculations or global Power.
