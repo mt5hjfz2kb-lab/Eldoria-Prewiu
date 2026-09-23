@@ -20,7 +20,7 @@ function progress(s,m,h={}){normalizeState(s);let cur=0;
  else if(m.type==='infra2')cur=['sawmill','barracks','granary'].filter(x=>Number((s.buildingLevels||{})[x]||0)>=2).length;
  else if(m.type==='expedition')cur=Number(h.marchPower?.()||0);
  else if(m.type==='totalPower')cur=Number(h.totalPower?.()||0);
- else if(m.type==='equipment')cur=(s.inventory||[]).some(x=>x&&x.slot)?1:0;
+ else if(m.type==='equipment')cur=E.heroArmy?.ownedEquipment?E.heroArmy.ownedEquipment(s)?1:0:[...(s.inventory||[]),...Object.values(s.equipped||{}).flatMap(x=>Object.values(x||{}))].some(x=>x&&x.slot)?1:0;
  else if(m.type==='equipped')cur=Object.values(s.equipped||{}).some(g=>g&&Object.values(g).some(Boolean))?1:0;
  else if(m.type==='relics')cur=(s.codex||[]).length+(s.cardsConsumed||[]).length;
  return{current:Math.min(cur,m.value),raw:cur,target:m.value,done:cur>=m.value};
