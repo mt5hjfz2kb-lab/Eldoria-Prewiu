@@ -6,14 +6,14 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.30**.
+- Active development version: **v0.30.1**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
 
-## Current v0.30 product state
+## Current v0.30.1 product state
 - Chapter mission system and universal accelerators are active.
 - Arcón includes utility tabs, including Aceleradores.
 - Chapter II Engendro is reachable/visible in its intended sequence.
@@ -68,6 +68,19 @@ This is permanent cross-session behavior, not a one-session preference.
 - Códice/Relicario v0.29 architecture is preserved. PvP remains locked/future. No new Breach mechanics, alliances, heroes or building proliferation were added.
 - Focused regression: `qa/e2e-v030-depth.js`.
 - Certification: final certified runtime candidate `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5`, GitHub Actions run 1231. Full local-equivalent gate, uninterrupted fresh-save Arc I/Bastion I–X, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed; the final fresh-save includes the Bastion II render stabilization.
+
+## Latest v0.30.1 correction block
+- Military UX responsibilities are now explicit and separated: Barracks → recruit/upgrade; Troops → owned army; Heroes → characters; March → expedition composition.
+- Hero Hall is hero-only. March is a dedicated screen with Heroes / Troops / Composition / March Power / Confirm hierarchy.
+- Contextual first-use explanations cover Barracks, Troops, Hero Hall and March.
+- Mission drawer discoverability and mobile touch targets were improved without increasing HUD footprint.
+- Speedups now teach themselves on first acquisition and expose an explicit ACCELERATE picker for compatible timed tasks.
+- Building labels are normalized to name + Level only.
+- Manuscript acquisition now triggers a short narrative ceremony and consequence; important rewards use proportional ceremony.
+- Contrast/legibility and English coverage were audited across the modified surfaces.
+- Permanent QA policy now requires **Discoverability → Comprehension → Interaction → Feedback → Next step** in addition to technical correctness.
+- Focused regression: `qa/e2e-v0301-ux-clarity.js`.
+- Pre-promotion certification: runtime candidate `e7d42197`, GitHub Actions run 1266, integral fresh-save Bastion I–X + mobile UX + tester guard + Pages + published Chromium all green.
 
 ## Next task
 Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
