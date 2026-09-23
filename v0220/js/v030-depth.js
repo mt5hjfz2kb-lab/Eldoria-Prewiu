@@ -42,8 +42,8 @@ function ensureHudTools(){
 function updateClock(){
  const el=ROOT()?.querySelector('[data-testid="world-clock"]');if(!el)return;
  const d=new Date(),hh=String(d.getUTCHours()).padStart(2,'0'),mm=String(d.getUTCMinutes()).padStart(2,'0');
- el.textContent=tr('SERVIDOR ','SERVER ')+hh+':'+mm+' UTC';
- el.title=tr('Hora del mundo de Eldoria, preparada para futuros eventos','Eldoria world time, ready for future events');
+ const text=tr('SERVIDOR ','SERVER ')+hh+':'+mm+' UTC',title=tr('Hora del mundo de Eldoria, preparada para futuros eventos','Eldoria world time, ready for future events');
+ if(el.textContent!==text)el.textContent=text;if(el.title!==title)el.title=title;
 }
 function openSettings(){
  tone(520,.06);const old=document.querySelector('[data-testid="v030-settings-dialog"]');if(old)old.remove();
