@@ -24,7 +24,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  for(const h of [a,l]){
    if(h.skills.pve.length!==2||h.skills.pvp.length!==2)throw Error('hero skill slot count wrong');
    for(const slot of [...h.skills.pve,...h.skills.pvp])if(slot.maxRank!==5)throw Error('hero skill max rank wrong');
-   if(!h.talents.tiers.length||h.talents.tiers.some(t=>t.exclusive!==true))throw Error('exclusive talent decision seam missing');
+   if(h.talents.mode!=='exclusive-choice'||!Array.isArray(h.talents.choices))throw Error('exclusive talent decision seam missing');
  }
  if(!result.troops.archer.profile||result.troops.archer.playerFacing!==true)throw Error('archer own stats/profile missing');
  if(result.troops.paladin.status!=='reserved'||result.troops.paladin.playerFacing!==false||result.troops.paladin.profile!==null)throw Error('paladin must stay reserved until balanced');
