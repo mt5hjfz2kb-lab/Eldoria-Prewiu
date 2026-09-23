@@ -50,6 +50,19 @@ A segment starts before the first system in the block and leaves the relevant la
 
 The preset catalog is `v0220/js/qa-fixtures.js`. It is UMD so the same fixture source can be reused by browser QA and Node/Playwright tooling. Presets must be deterministic, coherent with actual progression, and must not expose future player-facing systems early.
 
+## Owner delivery contract
+Every implementation delivery must expose the smallest useful manual verification path to the owner after automated QA has passed.
+
+- **🎯 Probar esta mejora**: focused deep link into the development build and the preset/state that exercises the delivered change. Required whenever isolated testing is reasonable.
+- **🧩 Probar tramo**: segment deep link when the change crosses related systems or progression phases. Omit only when a segment adds no meaningful coverage beyond the focused case.
+- **🎮 Jugar completo**: always provide the normal development build URL for ordinary play/fresh-save review.
+
+The agent selects the preset from the affected system automatically. If the feature is new and no suitable focused preset exists, add/adapt a deterministic preset or equivalent development-only deep-link as part of the implementation when reasonable. Presets must remain coherent with real progression, isolated from normal saves and unavailable from the frozen tester build.
+
+Owner links are not evidence of correctness by themselves. The automated tier selected by risk still has to pass before delivery. Full fresh-save validation remains mandatory internally for milestones, progression/economy/sequencing work and release candidates even though the owner may use a focused link for convenience.
+
+Never send owner-review links to `tester-v0265/`; use only the current development `playtest/` build.
+
 ## Automated QA tiers
 ### Fast focused iteration
 Use the smallest test that proves the change. For launcher/fixture integrity:
