@@ -74,6 +74,7 @@ const exact=new Map(Object.entries({
 'PREFERENCIAS':'PREFERENCES','Idioma':'Language','Música ambiental':'Ambient music','Efectos de sonido':'Sound effects'
 }));
 const phrases=[
+[/JEFE DEL MUNDO/g,'WORLD BOSS'],
 [/Bastión (\d+)/g,'Bastion $1'],[/Nv\.\s*(\d+)/g,'Lv. $1'],[/Ronda (\d+) · infliges (\d+) · recibes (\d+)/g,'Round $1 · dealt $2 · received $3'],
 [/Vida estimada de la marcha:/g,'Estimated march health:'],[/arqueros/g,'archers'],[/Poder de expedición/g,'Expedition Power'],[/Poder total/g,'Total Power'],
 [/PODER TOTAL/g,'TOTAL POWER'],[/CAPÍTULO (\d+)/g,'CHAPTER $1'],[/Misiones/g,'Missions'],[/Capítulo completado/g,'Chapter complete'],
