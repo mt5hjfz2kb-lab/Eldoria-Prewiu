@@ -52,7 +52,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  let txt=(await p.locator('[data-testid="hero-profile-aldric"]').innerText()).replace(/\s+/g,' ');
  for(const needle of ['SIR ALDRIC','PODER','TANQUE','PALADINES','HABILIDADES','TALENTOS'])if(!txt.toUpperCase().includes(needle))throw Error('Aldric profile missing '+needle);
  await p.locator('[data-hero-tab="talents"]').tap({force:true});
- if(!(await p.locator('.heroTabBody027').innerText()).toUpperCase().includes('EXCLUYENTE'))throw Error('talent choice structure not visible');
+ {const talentText=(await p.locator('.heroTabBody027').innerText()).toUpperCase();if(!talentText.includes('SENDAS DE ESPECIALIZACIÓN')||/DESARROLLO EXCLUYENTE|BALANCE CANÓNICO|ITERACIÓN|POR DEFINIR/.test(talentText))throw Error('talent player-facing structure not visible or leaks development language: '+talentText)}
  await p.locator('[data-hero-back]').evaluate(el=>el.click());
  await p.waitForFunction(()=>window.ELDORIA_V023.state().heroDetailOpen===false);
  await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
