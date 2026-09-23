@@ -4,7 +4,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await p.goto(URL,{waitUntil:'domcontentloaded'});
- await p.waitForFunction(()=>window.ELDORIA_V023?.state().view==='heroes');
+ await p.waitForFunction(()=>sessionStorage.getItem('eldoria-qa-active-preset')==='hero-army-base'&&window.ELDORIA_V023?.state().view==='heroes'&&!window.ELDORIA_V023.state().heroDetailOpen);
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
  // March composition must be tier-aware and use one source of truth.
  const before=await p.locator('[data-testid="march-summary"]').innerText();
