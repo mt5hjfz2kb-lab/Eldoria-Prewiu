@@ -31,7 +31,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
 
  // Speedup modifies authoritative timestamp, resolves eligible task, persists one leftover.
  const now=Date.now();s.chapterProgress.current=4;s.chapterProgress.counters.speedupsUsed=0;
- await set({...s,view:'kingdom',bastionLevel:4,bastion:2,bastion3:true,sawmill:true,barracks:true,granary:true,buildingLevels:{sawmill:1,barracks:1,granary:1,stoneworks:0,forge:0},speedups:{m1:2,m5:0,m15:0},tasks:[{key:'upgrade-building-sawmill-2',title:'MEJORANDO ASERRADERO',target:'sawmill',start:now,end:now+30000,costPaid:true,cost:{wood:120,stone:78}}]});
+ await set({...s,view:'kingdom',bastionLevel:4,bastion:2,bastion3:true,developmentChoices:{4:{id:'balanced',at:now,qa:true}},sawmill:true,barracks:true,granary:true,buildingLevels:{sawmill:1,barracks:1,granary:1,stoneworks:0,forge:0},speedups:{m1:2,m5:0,m15:0},tasks:[{key:'upgrade-building-sawmill-2',title:'MEJORANDO ASERRADERO',target:'sawmill',start:now,end:now+30000,costPaid:true,cost:{wood:120,stone:78}}]});
  await p.locator('[data-queue]').tap({force:true});const acc=p.locator('[data-speedup-task="upgrade-building-sawmill-2"][data-speedup-unit="m1"]');await acc.waitFor({state:'visible'});await acc.tap({force:true});await p.waitForTimeout(100);
  s=await state();if(s.speedups.m1!==1)throw Error('first speedup did not leave one spare');if(s.chapterProgress.counters.speedupsUsed!==1)throw Error('speedup usage not counted');if((s.buildingLevels||{}).sawmill!==2)throw Error('speedup did not resolve timestamp task');if(!(s.sessionLog||[]).some(x=>x.type==='speedup_used'))throw Error('speedup_used analytics missing');
 
@@ -39,7 +39,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const gnow=Date.now();await set({...s,tasks:[{key:'gather-forest',title:'RECOLECTANDO MADERA',target:'forest',start:gnow,end:gnow+30000}]});await p.locator('[data-queue]').tap({force:true});if(await p.locator('[data-speedup-task="gather-forest"]').count())throw Error('gathering incorrectly accepts speedups');
 
  // Codex chapter is main progression, and real gameplay discoveries count.
- s=await state();await set({...s,tasks:[],view:'codex',bastionLevel:7,codexUnlocked:true,codex:[
+ s=await state();await set({...s,tasks:[],view:'codex',bastionLevel:7,developmentChoices:{...(s.developmentChoices||{}),4:{id:'balanced',at:Date.now(),qa:true},6:{id:'reserve',at:Date.now(),qa:true}},codexUnlocked:true,codex:[
  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2}},
  {id:'rift-shard',name:'Fragmento de Fisura',rarity:'Común',values:{N:2,E:3,S:2,O:1}},
  {id:'ash-veil',name:'Velo de Ceniza',rarity:'Épica',values:{N:4,E:2,S:5,O:3}}
