@@ -102,6 +102,19 @@ The runtime still exposes `window.ELDORIA_V023` / compatibility alias `ELDORIA_V
 
 Canonical mobile emulation remains 390×844, `isMobile:true`, `hasTouch:true`.
 
+## Discoverability / comprehension pass
+Every player-facing focused, segment or integral regression must evaluate more than technical success. For new or modified systems, explicitly check:
+
+1. **Discoverability** — does the player notice that the control/system exists?
+2. **Comprehension** — is its purpose understandable without external explanation?
+3. **Interaction** — is the expected action obvious and reachable, especially on mobile?
+4. **Feedback** — does the UI communicate what happened in readable, proportional feedback?
+5. **Next step** — does the player understand what to do next?
+
+Also audit responsibility boundaries: Barracks, troops, heroes, march preparation, Codex, Reliquary, Chest and mission systems must not mix unrelated management information. Contrast, text size, truncation, hidden affordances and tutorial timing are release blockers when they prevent understanding.
+
+A green functional test does not override a failed novice-player UX pass. The build remains unverified until both are green.
+
 ## Deployment
 `.github/workflows/pages.yml` runs on pushes to `main`. It remains final clean-environment certification/deployment and guards the frozen tester snapshot. Important/release candidates still run the integral gate before being called stable. Do not use Actions as the normal iteration debugger when local targeted QA is sufficient.
 
