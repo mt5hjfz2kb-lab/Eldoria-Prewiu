@@ -89,6 +89,8 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Simulated leaderboards now expose three categories: Total Power, Corrupts defeated and Reliquia collection. The player and immediate rival are always visible; profiles are explicitly simulated.
 - Battle reports now have exactly two reading levels: a clear summary and expandable full detail, while keeping hero intervention feedback visible.
 - Spanish/English localization is selectable from visible settings, persists locally, and v0.30 UI/system text is audited to avoid mixed-language presentation in the new layer.
+- The English audit also covers dynamic Arc I surfaces such as the World Boss heading; no mixed ES/EN labels remain in the certified path.
+- Bastion II/III background completion now returns coherently to the kingdom view, keeping newly unlocked structures such as the Barracks visible after offline/task-recovery completion.
 - HUD includes a compact UTC server/world clock prepared for future events without expanding the central play area.
 - First audio layer uses lightweight ambient music and action feedback with persistent music/SFX toggles in settings.
 - Ceremonies were reduced to real milestones; routine chapter completions use compact feedback.
