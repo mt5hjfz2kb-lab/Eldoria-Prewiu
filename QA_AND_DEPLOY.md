@@ -31,7 +31,7 @@ Loads one deterministic preset exactly at the system under test. Current presets
 - Bastión II — Engendro de la Fisura
 - Bastión III — Fisura / Lyra
 - Bastión VI — Forja / Devorador
-- Bastión VII — Códice / Reliquias / Duelo
+- Bastión VII — Códice / Relicario
 - Bastión VIII — Maelis
 - Bastión IX — preparación de marcha / ataque
 - Jefe del mundo semiautomático
