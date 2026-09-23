@@ -46,7 +46,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  s=await state();await set({...s,view:'kingdom',missionPanelOpen:false,missionPanelHintSeen:false,speedups:{m1:2,m5:1,m15:1},tasks:[]});
  const compact=p.locator('[data-testid="chapter-compact"]');await compact.waitFor({state:'visible'});txt=(await compact.innerText()).toUpperCase();
  if(!txt.includes('ABRIR')||!txt.includes('▼'))throw Error('Mission panel is not discoverable '+txt);
- await compact.tap({force:true});await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});
+ await compact.evaluate(el=>el.click());await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});
 
  // Accelerator picker on a compatible task.
  s=await state();const now=Date.now();await set({...s,view:'kingdom',tasks:[{key:'upgrade-building-sawmill-3',title:'MEJORANDO ASERRADERO',target:'sawmill',start:now,end:now+180000,costPaid:true,cost:{wood:240,stone:156}}],speedups:{m1:2,m5:1,m15:1}});
