@@ -4,7 +4,7 @@ Updated: 2026-09-23
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.29**.
+- Runtime/API milestone: **v0.30**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -82,6 +82,19 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Chapter 7/9 relic objectives now route to the Relicario while the Códice objective remains knowledge-oriented.
 - Focused QA preset: `relicario-v029`. Permanent regression: `qa/e2e-v029-codex-relicario.js`, plus updated legacy Codex/Chest and guided-practice coverage.
 
+## v0.30 — depth, autonomy and systemic feedback
+- Bastion I–X economy now includes four explicit development-priority decisions at Bastion IV, VI, VIII and IX. Each offers multiple viable routes, grants immediate strategic resources/Power and never blocks content or relies on artificial waiting.
+- Guidance is reduced progressively from Bastion VI, lighter by VIII, and Bastion IX replaces step-by-step routing with general objectives so the player chooses order and approach.
+- Total Power keeps the existing central model, adds a concise first-use explanation, visible gain feedback and restrained milestone ceremonies.
+- Simulated leaderboards now expose three categories: Total Power, Corrupts defeated and Reliquia collection. The player and immediate rival are always visible; profiles are explicitly simulated.
+- Battle reports now have exactly two reading levels: a clear summary and expandable full detail, while keeping hero intervention feedback visible.
+- Spanish/English localization is selectable from visible settings, persists locally, and v0.30 UI/system text is audited to avoid mixed-language presentation in the new layer.
+- HUD includes a compact UTC server/world clock prepared for future events without expanding the central play area.
+- First audio layer uses lightweight ambient music and action feedback with persistent music/SFX toggles in settings.
+- Ceremonies were reduced to real milestones; routine chapter completions use compact feedback.
+- Códice/Relicario separation remains intact; PvP remains future/locked; no new Breach mechanics, heroes, buildings or alliance systems were added.
+- Permanent focused regression: `qa/e2e-v030-depth.js`. Full release certification passed including fresh Arc I, mobile interaction, frozen tester guard, Pages deploy and published Chromium verification.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
 - Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
@@ -98,7 +111,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.29.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.30.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
