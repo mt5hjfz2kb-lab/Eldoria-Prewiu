@@ -47,6 +47,17 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - The existing Breach Manuscript flow is unchanged and its future purpose remains unrevealed.
 - Permanent mobile interaction QA: `qa/e2e-v0266-pve-combat.js`.
 
+## v0.27 — base system for heroes, troops and marches
+- A dedicated domain model now defines heroes, roles, affinities, base combat statistics, troop families and march composition independently from the final Hero Hall presentation.
+- **Sir Aldric** is defined as **Tank** with **Paladines** affinity: +3% Defense applies only to Paladines present in the march. The affinity grants a bonus but never restricts what troops or heroes may be combined.
+- **Lyra** is defined as **DPS** with **Arqueros** affinity: +3% Attack applies only to Arqueros present in the march and does not modify other troop families.
+- Aldric/Lyra base combat statistics are inherited from the already-active v0.26.6 combat model; this iteration does not introduce new balance numbers for them.
+- Arqueros keep their existing v0.26.6 troop stat profile. Paladines are structurally registered for affinity/march logic but remain hidden/reserved with combat stats deliberately unbalanced/unset until their own design pass, avoiding invented values.
+- March state now has explicit hero and troop-composition structures while retaining legacy compatibility fields used by the current slice. The domain model accepts mixed troop composition and applies per-family affinities before combat resolution.
+- Each integrated hero has two PvE skill slots and two PvP skill slots prepared with rank bounds I–V. Existing PvE abilities occupy the first PvE slot; future ranks/effects are not fabricated. Talent progression exposes an exclusive-choice structure without inventing the number or contents of talent tiers.
+- Maelis remains outside this new hero-domain integration for a later pass; her existing slice behavior is preserved.
+- Permanent focused QA: `qa/e2e-v027-hero-army.js`. Focused development preset: `hero-army-base`.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
 - Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
