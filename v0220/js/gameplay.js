@@ -26,7 +26,7 @@ const CHAPTERS=[
 {id:'c4-sawmill2',title:'Aserradero a nivel 2',type:'building',path:'sawmill',value:2,target:{kind:'poi',id:'sawmill'},reward:{wood:180}},
 {id:'c4-granary2',title:'Granero a nivel 2',type:'building',path:'granary',value:2,target:{kind:'poi',id:'granary'},reward:{food:220}},
 {id:'c4-barracks2',title:'Cuartel a nivel 2',type:'building',path:'barracks',value:2,target:{kind:'poi',id:'barracks'},reward:{stone:180}},
-{id:'c4-speedup',title:'Utiliza 1 acelerador universal',type:'counter',counter:'speedupsUsed',value:1,reward:{power:80}},
+{id:'c4-priority',title:'Elige una prioridad para Valoria',type:'flag',path:'developmentChoices.4',value:1,reward:{power:80}},
 {id:'c4-bastion',title:'Eleva el Bastión a nivel 5',type:'state',path:'bastionLevel',value:5,target:{kind:'poi',id:'keep'},reward:{power:220}}],chapterReward:{wood:360,stone:300,food:280,speedup5:1,power:260}},
 {id:5,title:'PIEDRA PARA UN REINO',context:'La economía se diversifica. Piedra, tropas y amenazas compiten por la misma atención.',missions:[
 {id:'c5-stoneworks',title:'Construye la Cantera de Valoria',type:'flag',path:'graniteQuarry',value:1,target:{kind:'poi',id:'stoneworks'},reward:{wood:220,food:180}},
