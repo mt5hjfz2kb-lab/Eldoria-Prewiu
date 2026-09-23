@@ -187,10 +187,16 @@ function monitorPower(){
 function showPowerMilestone(n){
  tone(740,.18,.04,'triangle');const o=document.createElement('div');o.className='powerMilestone030';o.innerHTML='<small>'+tr('HITO DE PODER','POWER MILESTONE')+'</small><b>⚔ '+fmt(n)+'</b><span>'+tr('Valoria alcanza una nueva escala de desarrollo.','Valoria reaches a new scale of development.')+'</span>';document.body.appendChild(o);setTimeout(()=>o.classList.add('show'),20);setTimeout(()=>o.remove(),2800)
 }
+let powerIntroPending=false;
 function interceptPower(e){
- const b=e.target.closest?.('[data-power]');if(!b)return;if(localStorage.getItem(K.powerIntro))return;
- e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();localStorage.setItem(K.powerIntro,'1');tone(560,.08);
- const o=document.createElement('div');o.className='e22-overlay v030Overlay';o.innerHTML='<div class="e22-dialog powerIntro030" data-testid="power-intro"><small>'+tr('PRIMERA LECTURA','FIRST READING')+'</small><h1>'+tr('PODER TOTAL','TOTAL POWER')+'</h1><p>'+tr('Resume el crecimiento permanente de tu reino, ejército, héroes, equipo y colección. Sirve para medir progreso global.','It summarizes the permanent growth of your kingdom, army, heroes, gear and collection. It measures overall progression.')+'</p><p><b>'+tr('No decide por sí solo un combate.','It does not decide a battle by itself.')+'</b> '+tr('La composición y el Poder de Marcha siguen importando.','Composition and March Power still matter.')+'</p><button class="btn">'+tr('ENTENDIDO','GOT IT')+'</button></div>';document.body.appendChild(o);o.querySelector('button').onclick=()=>o.remove()
+ const b=e.target.closest?.('[data-power]');if(!b||localStorage.getItem(K.powerIntro))return;
+ localStorage.setItem(K.powerIntro,'1');powerIntroPending=true;tone(560,.08);
+}
+function enhancePowerCard(){
+ const card=document.querySelector('.e22-dialog.powerCard');if(!card||!powerIntroPending||card.querySelector('[data-testid="power-intro"]'))return;
+ const primer=document.createElement('section');primer.className='powerIntro030';primer.dataset.testid='power-intro';
+ primer.innerHTML='<small>'+tr('PODER TOTAL','TOTAL POWER')+'</small><b>'+tr('Tu progreso global en una cifra.','Your overall progression in one number.')+'</b><span>'+tr('Resume reino, ejército, héroes, equipo y colección. No decide por sí solo un combate: la composición y el Poder de Marcha siguen importando.','It summarizes kingdom, army, heroes, gear and collection. It does not decide a battle by itself: composition and March Power still matter.')+'</span>';
+ const h=card.querySelector('h1');if(h)h.after(primer);else card.prepend(primer);powerIntroPending=false;
 }
 
 /* ---------- rankings: three simulated ladders, player + immediate rival always visible ---------- */
@@ -236,6 +242,7 @@ function style(){
 .settingRow030{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #ffffff14}.settingRow030 b,.settingRow030 small{display:block}.settingRow030 small{margin-top:3px;color:#9ca7aa;font:9px Arial}.settingRow030 input{width:22px;height:22px}.seg030{display:flex}.seg030 button{min-width:46px;padding:8px;border:1px solid #ffffff22;background:#10161b;color:#aaa}.seg030 button.active{border-color:#d5b869;background:#332815;color:#f4d98c}
 .choiceGrid030{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.choiceGrid030 button{min-height:150px;padding:14px 9px;border:1px solid #ffffff22;border-radius:9px;background:#10171c;color:#e9e4d9;text-align:center}.choiceGrid030 button:hover,.choiceGrid030 button:focus{border-color:#d5b869;background:#201b10}.choiceGrid030 span,.choiceGrid030 b,.choiceGrid030 small{display:block}.choiceGrid030 span{font-size:30px}.choiceGrid030 b{margin:8px 0;color:#f0d58c}.choiceGrid030 small{font:9px/1.4 Arial;color:#afb8bb}.choiceFoot030{font-size:10px!important;color:#9ea7aa!important}
 .rankingTabs030{display:flex;gap:5px;overflow-x:auto;margin:12px 0}.rankingTabs030 button{flex:0 0 auto;padding:8px;border:1px solid #ffffff22;background:#10161a;color:#aeb5b6;font:8px Arial}.rankingTabs030 button.active{border-color:#d5b869;background:#2c2313;color:#f4d98b}.rivalStrip030{padding:9px;border-left:3px solid #b67bd6;background:#15111a}.rivalStrip030 small,.rivalStrip030 b{display:block}.rivalStrip030 small{font:6px Arial;color:#bda2cb}.rivalStrip030 b{margin-top:3px;font:10px Arial}.ranking030 [data-immediate-rival]{outline:1px dashed #b67bd677}.simNote030{font-size:9px!important;color:#8f999d!important}
+.powerIntro030{margin:10px 0;padding:10px;border:1px solid #d5b86955;background:#15130d;text-align:left}.powerIntro030 small,.powerIntro030 b,.powerIntro030 span{display:block}.powerIntro030 small{font:7px Arial;color:#d5b869}.powerIntro030 b{margin:4px 0;font:12px Arial;color:#f0dc9e}.powerIntro030 span{font:9px/1.45 Arial;color:#c2c9c8}
 .battleSummary030{margin:12px 0;padding:12px;border:1px solid #d5b86955;background:#15130d}.battleSummary030 small,.battleSummary030 b,.battleSummary030 span{display:block}.battleSummary030 small{font:7px Arial;color:#d5b869}.battleSummary030 b{margin:4px 0;font:15px Georgia}.battleSummary030 span{font:9px/1.45 Arial;color:#c5cbca}.battleDetails030{margin:10px 0;border:1px solid #ffffff19;background:#0c1115}.battleDetails030>summary{padding:11px;color:#e7cb87;font:800 8px Arial;cursor:pointer}.battleDetails030>div{padding:0 10px 10px}
 .generalObjectives030{padding:10px;border:1px solid #d5b86955;background:#12150f}.generalObjectives030 small{color:#d5b869;font:700 7px Arial}.generalObjectives030 p{margin:8px 0!important;font:9px/1.35 Arial!important}.generalObjectives030 em{display:block;margin-top:10px;color:#9fa8a9;font:italic 8px/1.35 Arial}
 #eldoria-core-loop[data-guidance="reduced"] .chapterCompact0267{opacity:.92}#eldoria-core-loop[data-guidance="light"] .chapterCompact0267{width:min(230px,60vw);opacity:.84}#eldoria-core-loop[data-guidance="autonomous"] .chapterCompact0267{width:min(215px,58vw);opacity:.78}
@@ -256,7 +263,7 @@ window.ELDORIA_V030={
 };
 
 function cycle(){
- ensureHudTools();tuneGuidance();enhanceBattleReport();monitorPower();localizePage();maybeChoice()
+ ensureHudTools();tuneGuidance();enhancePowerCard();enhanceBattleReport();monitorPower();localizePage();maybeChoice()
 }
 style();bindSfx();document.documentElement.lang=cfg.locale;
 document.addEventListener('pointerdown',()=>{if(cfg.audio.music)startAmbient()},{once:true});
