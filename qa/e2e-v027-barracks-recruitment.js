@@ -22,8 +22,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.locator('[data-recruit-close]').tap({force:true});
  // Tier progression is driven by Barracks level and never replaces older troops.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({introSeen:true,view:'kingdom',bastion:4,bastionLevel:4,barracks:true,buildingLevels:{sawmill:2,barracks:4,granary:2,stoneworks:0,forge:0},wood:9999,stone:9999,food:9999,tasks:[],selectedAction:null,recruitQty:5,recruitTier:2,troops:200,troopRoster:{archer:{1:140,2:60,3:0},paladin:{},warlock:{}}}));
- await p.locator('[data-testid="building-barracks"]').tap({force:true});
- await p.locator('[data-testid="building-action-barracks"]').tap({force:true});
+ await p.locator('[data-testid="building-barracks"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="building-context-barracks"]').waitFor({state:'visible'});
+ await p.locator('[data-testid="building-action-barracks"]').evaluate(el=>el.click());
  await p.locator('[data-testid="recruit-dialog"]').waitFor({state:'visible'});
  const tiers=(await p.locator('[data-testid="recruit-tier-picker"]').innerText()).replace(/\s+/g,' ');
  if(!tiers.includes('T1')||!tiers.includes('T2')||tiers.includes('T3 Cuartel 10+'))throw Error('Barracks 4 tier picker wrong: '+tiers);
