@@ -79,19 +79,14 @@ const HERO_COMBAT={
   maelis:{name:'Maelis',attack:72,defense:92,health:390,break:48,role:{id:'support',name:'Soporte'},affinity:null,skill:{id:'ward',name:'Velo de Nareth',copy:'Recupera vida de la marcha y reduce daño del siguiente golpe.'}}
 };
 const TROOP_FAMILIES=HA.TROOPS;
-const troopProfile=(bastionLevel=1,type='archer',heroIds=[])=>{const family=TROOP_FAMILIES[type];if(!family)throw new Error('Unknown troop family '+type);const composition={[type]:1},profile=HA.resolveTroopProfile(type,bastionLevel,heroIds,composition);if(!profile)throw new Error('Troop family '+type+' has no balanced stats yet');return{type:family.id,name:family.name,...profile}};
-const playerStats=({troops=1,troopComposition=null,bastionLevel=1,hero='aldric',heroes=null,gearPower=0}={})=>{
-  const heroIds=HA.normalizeHeroes(heroes||[hero]),activeHero=heroIds[0]||'aldric',composition=HA.normalizeComposition(troopComposition??troops),activeFamilies=Object.entries(composition).filter(([,count])=>count>0);
-  if(activeFamilies.length!==1)throw new Error('Layered combat currently resolves one balanced troop family at a time; mixed march data is preserved for pre-combat systems.');
-  const [type,nRaw]=activeFamilies[0],n=Math.max(1,nRaw),tpBase=HA.resolveTroopProfile(type,bastionLevel,heroIds,composition);
-  if(!tpBase)throw new Error('Troop family '+type+' has no balanced stats yet');
-  const family=TROOP_FAMILIES[type],tp={type,name:family.name,...tpBase},h=HERO_COMBAT[activeHero]||HERO_COMBAT.aldric,scale=Math.sqrt(n);
-  const attack=Math.round(tp.attack*scale+h.attack+gearPower*.16);
-  const defense=Math.round(tp.defense*scale+h.defense+gearPower*.12);
-  const health=Math.round(tp.health*scale+h.health+gearPower*.25);
-  const brk=Math.round(tp.break*scale+h.break+gearPower*.08);
-  const power=Math.round(n*tp.power+h.attack*4+h.defense*3+h.health+brk*4+gearPower);
-  return{attack,defense,health,break:brk,power,troopType:type,troopName:family.name,hero:activeHero,heroes:heroIds,troopComposition:composition,affinities:HA.affinityBonuses(heroIds,composition)};
+const troopProfile=(tier=1,type='archer',heroIds=[])=>{const family=TROOP_FAMILIES[type];if(!family)throw new Error('Unknown troop family '+type);const composition={archer:{1:0,2:0,3:0}};if(type==='archer')composition.archer[tier]=1;const stats=HA.tierStats(type,tier,heroIds,composition);if(!stats)throw new Error('Troop family '+type+' tier '+tier+' has no balanced stats yet');return{type:family.id,name:family.name,tier,...stats}};
+const playerStats=({troops=1,troopComposition=null,bastionLevel=1,hero='aldric',heroes=null,gearPower=0,gearPowerByHero=null}={})=>{
+  const heroIds=HA.normalizeHeroes(heroes||[hero]),activeHero=heroIds[0]||'aldric';
+  const composition=troopComposition?HA.normalizeRoster(troopComposition):HA.normalizeRoster(null,Math.max(1,Math.floor(Number(troops)||1)));
+  const gearMap=gearPowerByHero||{[activeHero]:gearPower};
+  const march=HA.buildMarch({heroIds,troops:composition,gearPowerByHero:gearMap});
+  if(!march.valid)throw new Error('Invalid march composition');
+  return{...march.stats,troopType:'archer',troopName:'Arqueros',hero:activeHero,heroes:heroIds,troopComposition:march.troops,affinities:march.affinities,troopBreakdown:march.troopStats.details,heroBreakdown:march.heroStats};
 };
 const effectiveHit=(attack,defense,brk,mult=1)=>Math.max(12,Math.round((attack*(1+Math.min(.6,brk/500))-(defense*.48))*mult));
 const simulate=({enemyId,player,useSkill=false}={})=>{
