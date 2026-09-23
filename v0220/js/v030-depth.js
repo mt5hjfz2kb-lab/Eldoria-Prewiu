@@ -264,7 +264,7 @@ body:has(.qaLaunchBtn) #eldoria-core-loop .settings030{margin-right:44px}
 
 /* ---------- public QA seam ---------- */
 window.ELDORIA_V030={
- version:'candidate',
+ version:'0.30',
  openChoice,openRankings,setLocale,
  metrics:()=>metrics(state()),
  settings:()=>JSON.parse(JSON.stringify(cfg)),
