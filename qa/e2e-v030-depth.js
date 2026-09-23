@@ -23,7 +23,7 @@ const URL=(process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1')+(pro
  const choice=p.locator('[data-testid="v030-choice"]');await choice.waitFor({state:'visible'});
  const opts=choice.locator('[data-choice]');if(await opts.count()!==3)throw Error('development choice must expose 3 viable options');
  await choice.locator('[data-choice="army"]').tap({force:true});await p.waitForTimeout(100);
- s=await state();if(s.developmentChoices?.[4]?.id!=='army'||s.power<1920)throw Error('development choice did not persist/apply');
+ s=await state();if(s.developmentChoices?.[4]?.id!=='army'||s.power<1920)throw Error('development choice did not persist/apply '+JSON.stringify({choice:s.developmentChoices?.[4],power:s.power,wood:s.wood,stone:s.stone,food:s.food}));
 
  console.log('V030 CHECKPOINT autonomy');
  // Progressive autonomy: Bastion IX contains general objectives, no step-by-step jump button.
