@@ -62,10 +62,12 @@ This is permanent cross-session behavior, not a one-session preference.
 - Simulated rankings now cover Total Power, Corrupts defeated and Reliquia collection, always showing the player and immediate rival.
 - Battle reports expose summary + full detail only.
 - Persistent ES/EN selector, server UTC clock and first ambient/SFX audio layer are active in Settings.
+- English-mode audit includes dynamic Arc I text (including World Boss labels) and is clean on the certified path.
+- Bastion II/III background/offline completion is aligned with the normal flow and returns to Kingdom so newly unlocked structures remain visible; fresh-save regression covers this explicitly.
 - Ceremonies are reserved for real milestones.
 - Códice/Relicario v0.29 architecture is preserved. PvP remains locked/future. No new Breach mechanics, alliances, heroes or building proliferation were added.
 - Focused regression: `qa/e2e-v030-depth.js`.
-- Certification: full local-equivalent gate, uninterrupted Arc I, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed on the v0.30 candidate.
+- Certification: full local-equivalent gate, uninterrupted Arc I, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed on the certified v0.30 build; the final fresh-save also includes the Bastion II render stabilization.
 
 ## Next task
 Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
