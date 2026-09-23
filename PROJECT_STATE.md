@@ -58,6 +58,19 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Maelis remains outside this new hero-domain integration for a later pass; her existing slice behavior is preserved.
 - Permanent focused QA: `qa/e2e-v027-hero-army.js`. Focused development preset: `hero-army-base`.
 
+## v0.27 — integrated military progression layer
+- The military loop is now treated as one progression layer: **Barracks → troop inventory/tiers → Hero Hall → individual hero profile → march preparation → expedition stats/combat**.
+- Barracks progression is independent from Bastion progression. Bastion only gates how far the Barracks may develop; upgrading the Barracks never grants troops automatically.
+- Archer tiers are persistent and coexist: T1 unlocks at Barracks 1, T2 at Barracks 4 and T3 at Barracks 10. Older tiers remain in the roster after higher tiers unlock.
+- The canonical roster is tiered (family → tier → count). Legacy saves migrate existing generic Archers into T1 without deleting troops. A pure promotion operation exists so future troop promotion can move chosen quantities upward explicitly; no automatic conversion exists.
+- Archer T1/T2/T3 combat profiles reuse values already present in the canonical v0.26.6 troop progression at the corresponding historical progression points (1/4/10). No new arbitrary combat numbers were introduced. Recruitment cost/time remains the existing generic Archer recruitment contract until tier-specific balance is formally defined.
+- Only **Arqueros** remain player-facing/recruitable. Paladines and Brujos stay hidden/reserved in player UI.
+- The Hero Hall is now a dedicated visual collection. Selecting a hero opens an individual character screen with the hero as the visual focus, visible level/power/role/affinity, equipment slots around the figure and separate Habilidades/Talentos tabs.
+- Aldric and Lyra retain the canonical role/affinity model. Affinity is a bonus only, never a composition restriction. Maelis remains visually available where progression already unlocks her, but her definitive hero-system data remains deferred.
+- March preparation supports up to three heroes structurally and tier-specific Archer quantities. Expedition ATQ/DEF/VIDA/RUP/Poder are calculated from the saved composition through the shared military domain model.
+- The central global Power model remains unchanged; hero power, troop/march power and global account Power are presented as distinct concepts and are not added twice to the global total.
+- Focused QA: `qa/e2e-v027-hero-army.js`, `qa/e2e-v027-military-circuit.js`, and the expanded Barracks recruitment regression.
+
 ## Known functional gaps / debt
 - Bastion VI–X still need human pacing validation beyond automated reachability.
 - Hero Hall still needs the eventual full hero skill/talent system; v0.26.6 only establishes a minimal combat-ability seam for world-boss intervention.
