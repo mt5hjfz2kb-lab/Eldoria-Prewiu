@@ -44,7 +44,7 @@ const URL=(process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1')+(pro
  console.log('V030 CHECKPOINT power');
  // First Power explanation is brief and separates Total Power from battle/march strength.
  await p.evaluate(()=>localStorage.removeItem('eldoria-v030-power-intro'));
- await p.locator('[data-testid="power-total"]').tap({force:true});const pi=p.locator('[data-testid="power-intro"]');await pi.waitFor({state:'visible'});let pit=(await pi.innerText()).toLowerCase();if(!pit.includes('poder total')||!pit.includes('combate'))throw Error('Power intro incomplete '+pit);await pi.locator('button').tap({force:true});
+ await p.locator('[data-testid="power-total"]').tap({force:true});const powerCard=p.locator('.e22-dialog.powerCard');await powerCard.waitFor({state:'visible'});const pi=powerCard.locator('[data-testid="power-intro"]');await pi.waitFor({state:'visible'});let pit=(await pi.innerText()).toLowerCase();if(!pit.includes('poder total')||!pit.includes('combate'))throw Error('Power intro incomplete '+pit);await powerCard.evaluate(el=>el.closest('.e22-overlay')?.remove());
 
  console.log('V030 CHECKPOINT settings');
  // Settings + persistent English selector.
