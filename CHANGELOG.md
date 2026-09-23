@@ -2,6 +2,18 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.30 — 2026-09-23
+
+- Added four meaningful development-priority choices across Bastion IV, VI, VIII and IX, replacing forced-wait style progression pressure with immediate strategic trade-offs.
+- Reduced tutorial guidance progressively from Bastion VI–VIII and converted Bastion IX to general objectives rather than step-by-step routing.
+- Kept the existing Total Power model and added a concise first-use lesson, visible gain feedback and restrained milestone moments.
+- Expanded simulated rankings to Total Power, Corrupts defeated and Reliquia collection, always showing the player and immediate rival.
+- Reworked combat reports into exactly two reading levels: clear summary and full details.
+- Added persistent Spanish/English settings for the new/systemic layer, a compact UTC server clock and first lightweight ambient/SFX audio controls.
+- Audited ceremonies so routine progress uses compact feedback and major presentation remains reserved for meaningful milestones.
+- Preserved Códice/Relicario v0.29 behavior, locked/future PvP and the existing Breach system; added no alliances, new heroes, building proliferation or Breach expansion.
+- Added `qa/e2e-v030-depth.js`, updated legacy QA compatibility, and certified the complete release gate including Arc I, mobile interaction, frozen tester guard, Pages deployment and published Chromium verification.
+
 ## v0.29 — 2026-09-23
 
 - Split the former mixed card/Codex surface into two distinct systems: **Códice de Eldoria** for world knowledge and **Relicario** for Reliquia/card management.
