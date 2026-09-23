@@ -33,11 +33,11 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await tapBuilding('barracks');await p.waitForTimeout(120);await p.locator('[data-testid="building-action-barracks"]').tap({force:true});await p.locator('[data-testid="recruit-dialog"]').waitFor({state:'visible'});
  const rt=await p.locator('[data-testid="recruit-dialog"]').innerText();for(const t of ['CANTIDAD','COSTE','TIEMPO'])if(!rt.includes(t))throw Error('recruit UI missing '+t);
  await p.locator('[data-recruit-qty="10"]').tap({force:true});await p.locator('[data-testid="recruit-start"]').tap({force:true});
- let st=await state(),task=st.tasks.find(t=>/^recruit-guards-/.test(t.key));if(!task||task.qty!==10||st.troops!==36)throw Error('recruit timer/task semantics wrong '+JSON.stringify({task,troops:st.troops}));
+ let st=await state(),task=st.tasks.find(t=>/^recruit-(?:guards|archer-t[123])-/.test(t.key));if(!task||task.qty!==10||st.troops!==36)throw Error('recruit timer/task semantics wrong '+JSON.stringify({task,troops:st.troops}));
  await p.locator('[data-testid="nav-world"]').tap({force:true});
- await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^recruit-guards-/.test(t.key)?{...t,start:now-1000,end:now+450}:t)})});
+ await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^recruit-(?:guards|archer-t[123])-/.test(t.key)?{...t,start:now-1000,end:now+450}:t)})});
  await p.goto('about:blank');await p.waitForTimeout(700);await p.goto(URL,{waitUntil:'domcontentloaded'});
- st=await state();if(st.troops!==46||st.tasks.some(t=>/^recruit-guards-/.test(t.key)))throw Error('offline recruitment did not resolve '+JSON.stringify({troops:st.troops,tasks:st.tasks}));
+ st=await state();if(st.troops!==46||st.tasks.some(t=>/^recruit-(?:guards|archer-t[123])-/.test(t.key)))throw Error('offline recruitment did not resolve '+JSON.stringify({troops:st.troops,tasks:st.tasks}));
  // 4. Barracks upgrade is distinct from recruitment.
  await set({...st,view:'kingdom',bastionLevel:3,bastion3:true,boss:true,lyra:true,barracks:true,buildingLevels:{...(st.buildingLevels||{}),barracks:1},wood:9999,stone:9999,tasks:[]});
  await tapBuilding('barracks');await p.waitForTimeout(120);const barracksCtx=p.locator('[data-testid="building-context-barracks"]');const barracksText=await barracksCtx.innerText();if(!/MEJORA EL CUARTEL A NIVEL 2/i.test(barracksText))throw Error('barracks objective still reads like troop recruitment: '+barracksText);const up=p.locator('[data-testid="building-upgrade-barracks"]');await up.waitFor({state:'visible'});const recruit=p.locator('[data-testid="building-action-barracks"]');const upBox=await up.boundingBox(),recruitBox=await recruit.boundingBox();if(!upBox||!recruitBox||upBox.y>=recruitBox.y)throw Error('barracks upgrade objective is not presented before recruitment');await up.tap({force:true});
