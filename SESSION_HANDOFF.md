@@ -17,7 +17,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Chapter mission system and universal accelerators are active.
 - Arcón includes utility tabs, including Aceleradores.
 - Chapter II Engendro is reachable/visible in its intended sequence.
-- Layered PvE remains active; only Arqueros are player-facing/recruitable; PvP remains unimplemented.
+- Layered PvE remains active; only Arqueros are player-facing/recruitable. Relicario shows Duelo PvP only as a locked future tab; no PvP functionality is active.
 - Hero/troop/march base domain is now active for Aldric + Lyra: roles, affinities, inherited base stats, skill-slot/rank schema, exclusive-talent seam, troop roster and explicit march composition. Paladines are reserved structurally but still hidden/unbalanced; Maelis remains for a later integration pass.
 
 ## Versioning rule now in force
