@@ -18,7 +18,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  // Barracks upgrade must unlock T2 without generating or converting troops.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'kingdom',bastionLevel:4,bastion3:true,barracks:true,wood:9999,stone:9999,food:9999,troops:20,troopRoster:{archer:{1:20,2:0,3:0},paladin:{},warlock:{}},buildingLevels:{sawmill:2,barracks:3,granary:2,stoneworks:0,forge:0},tasks:[],selectedAction:null}));
  await p.locator('[data-testid="building-barracks"]').tap({force:true});
- await p.locator('[data-testid="building-upgrade-barracks"]').tap({force:true});
+ await p.locator('[data-testid="building-upgrade-barracks"]').evaluate(el=>el.click());
  await p.waitForFunction(()=>window.ELDORIA_V023.state().tasks.some(t=>/^upgrade-barracks-4/.test(t.key)));
  await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^upgrade-barracks-4/.test(t.key)?{...t,end:now-1}:t)})});
  await p.waitForFunction(()=>window.ELDORIA_V023.state().buildingLevels.barracks===4,{timeout:4000});
