@@ -12,7 +12,7 @@ const CHAPTERS=[
 {id:2,title:'ALGO QUE DEFENDER',context:'Las murallas necesitan soldados y las primeras amenazas deben empezar a tener explicación.',missions:[
 {id:'c2-barracks',title:'Construye el Cuartel',type:'flag',path:'barracks',value:1,target:{kind:'poi',id:'barracks'},reward:{wood:140,stone:90}},
 {id:'c2-train',title:'Entrena 20 arqueros',type:'counter',counter:'trained',value:20,target:{kind:'poi',id:'barracks'},reward:{wood:220,stone:150}},
-{id:'c2-power',title:'Alcanza 2.250 de Poder de expedición',type:'expedition',value:2250,target:{kind:'nav',id:'heroes'},reward:{power:100}},
+{id:'c2-power',title:'Alcanza 2.250 de Poder de expedición',type:'expedition',value:2250,target:{kind:'nav',id:'march'},reward:{power:100}},
 {id:'c2-spawnling',title:'Derrota un Engendro de la Fisura',type:'counter',counter:'wins.spawnling',value:1,target:{kind:'node',id:'spawnling'},reward:{wood:120,stone:120}},
 {id:'c2-bastion',title:'Eleva el Bastión a nivel 3',type:'state',path:'bastionLevel',value:3,target:{kind:'poi',id:'keep'},reward:{food:180}}],chapterReward:{wood:240,stone:200,food:220,speedup1:1,power:180}},
 {id:3,title:'MÁS ALLÁ DE LAS MURALLAS',context:'Valoria aprende a alimentarse, cazar y sostener una frontera más amplia.',missions:[
@@ -38,7 +38,7 @@ const CHAPTERS=[
 {id:'c6-forge',title:'Reconstruye la Forja',type:'flag',path:'forge',value:1,target:{kind:'poi',id:'forge'},reward:{wood:240,stone:180}},
 {id:'c6-devourer',title:'Derrota al Devorador de Éter',type:'flag',path:'devourerDefeated',value:1,target:{kind:'node',id:'devourer'},reward:{power:180}},
 {id:'c6-gear',title:'Forja tu primer equipo',type:'equipment',value:1,target:{kind:'poi',id:'forge'},reward:{food:260}},
-{id:'c6-expedition',title:'Alcanza 2.800 de Poder de expedición',type:'expedition',value:2800,target:{kind:'nav',id:'heroes'},reward:{power:180}},
+{id:'c6-expedition',title:'Alcanza 2.800 de Poder de expedición',type:'expedition',value:2800,target:{kind:'nav',id:'march'},reward:{power:180}},
 {id:'c6-bastion',title:'Eleva el Bastión a nivel 7',type:'state',path:'bastionLevel',value:7,target:{kind:'poi',id:'keep'},reward:{power:300}}],chapterReward:{wood:480,stone:420,food:360,speedup5:1,power:340}},
 {id:7,title:'CÓDICE Y RELICARIO',context:'El Códice registra lo que Eldoria aprende. El Relicario reúne las cartas y decisiones que nacen de esos descubrimientos.',missions:[
 {id:'c7-codex',title:'Consulta el Códice de Eldoria',type:'flag',path:'codexUnlocked',value:1,target:{kind:'nav',id:'codex'},reward:{power:160}},
@@ -50,10 +50,10 @@ const CHAPTERS=[
 {id:'c8-nareth',title:'Investiga las ruinas de Nareth',type:'flag',path:'narethRescued',value:1,target:{kind:'node',id:'nareth'},reward:{food:300}},
 {id:'c8-maelis',title:'Incorpora a Maelis',type:'flag',path:'maelis',value:1,target:{kind:'nav',id:'heroes'},reward:{power:220}},
 {id:'c8-equip',title:'Equipa a un héroe',type:'equipped',value:1,target:{kind:'nav',id:'heroes'},reward:{stone:260}},
-{id:'c8-expedition',title:'Alcanza 3.200 de Poder de expedición',type:'expedition',value:3200,target:{kind:'nav',id:'heroes'},reward:{power:180}},
+{id:'c8-expedition',title:'Alcanza 3.200 de Poder de expedición',type:'expedition',value:3200,target:{kind:'nav',id:'march'},reward:{power:180}},
 {id:'c8-bastion',title:'Eleva el Bastión a nivel 9',type:'state',path:'bastionLevel',value:9,target:{kind:'poi',id:'keep'},reward:{power:360}}],chapterReward:{wood:600,stone:520,food:460,speedup5:1,power:460}},
 {id:9,title:'PREPARATIVOS DE GUERRA',context:'Reino, ejército, héroes, equipo, Códice y Relicario deben empezar a funcionar como un único sistema.',missions:[
-{id:'c9-march',title:'Prepara una expedición completa',type:'flag',path:'marchConfigured',value:1,target:{kind:'nav',id:'heroes'},reward:{food:320}},
+{id:'c9-march',title:'Prepara una expedición completa',type:'flag',path:'marchConfigured',value:1,target:{kind:'nav',id:'march'},reward:{food:320}},
 {id:'c9-power',title:'Alcanza 14.000 de Poder total',type:'totalPower',value:14000,reward:{power:200}},
 {id:'c9-collection',title:'Mantén 3 Reliquias descubiertas',type:'relics',value:3,target:{kind:'nav',id:'relicario'},reward:{speedup5:1}},
 {id:'c9-trial',title:'Supera la Prueba de Marcha',type:'flag',path:'trialWon',value:1,target:{kind:'node',id:'trial'},reward:{power:260}},
@@ -70,6 +70,7 @@ const ENEMIES={
   boar:{id:'boar',name:'Jabalí de roca',level:1,kind:'hunt',stats:{attack:64,defense:58,health:470,break:12,power:2050}},
   spawnling:{id:'spawnling',name:'Engendro de la Fisura',level:1,kind:'common',stats:{attack:76,defense:64,health:620,break:28,power:2250}},
   ashStalker:{id:'ashStalker',name:'Acechador de Ceniza',level:3,kind:'uncommon',trait:{id:'ambush',name:'Emboscada',copy:'Golpea con fuerza al inicio, pero expone su defensa después del primer choque.'},stats:{attack:132,defense:68,health:920,break:54,power:3600}},
+  devourer:{id:'devourer',name:'Devorador de Éter',level:4,kind:'elite',trait:{id:'aetherShell',name:'Caparazón de Éter',copy:'Refuerza su Defensa durante el primer intercambio; después la coraza pierde estabilidad.'},stats:{attack:142,defense:92,health:1050,break:52,power:3900}},
   herald:{id:'herald',name:'Heraldo de la Fisura',level:5,kind:'worldboss',trait:{id:'riftPulse',name:'Pulso de la Brecha',copy:'Sus pulsos castigan marchas mal preparadas. Una intervención de héroe puede cambiar el intercambio.'},stats:{attack:188,defense:122,health:2250,break:78,power:6200}}
 };
 const HA=E.heroArmy;
@@ -99,7 +100,7 @@ const simulate=({enemyId,player,useSkill=false}={})=>{
     else if(p.hero==='maelis'){const heal=Math.round(p.health*.18);pHp=Math.min(p.health,pHp+heal);skillImpact=-heal;nextMitigation=.25;}
   }
   for(let r=1;r<=6&&pHp>0&&eHp>0;r++){
-    const enemyDefense=Math.round(e.defense*(1-defDebuff));
+    const enemyDefense=Math.round(e.defense*(1-defDebuff)*(enemy.trait?.id==='aetherShell'&&r===1?1.18:1));
     const pd=effectiveHit(p.attack,enemyDefense,p.break,1+(r===1&&enemy.trait?.id==='ambush'?.08:0));
     eHp-=pd;
     if(eHp<=0){rounds.push({round:r,playerDamage:pd,enemyDamage:0});break}
@@ -116,6 +117,7 @@ const simulate=({enemyId,player,useSkill=false}={})=>{
     if(p.defense>=e.attack*.75)reasons.push('Tu Defensa absorbió una parte importante del daño.');
     else reasons.push('La presión enemiga superó tu Defensa.');
     if(enemy.trait?.id==='ambush')reasons.push(opening>0?'Emboscada aplicó '+opening+' de daño inicial; después el Acechador quedó con menos Defensa.':'Emboscada no llegó a activarse.');
+    if(enemy.trait?.id==='aetherShell')reasons.push('Caparazón de Éter reforzó su Defensa solo durante el primer intercambio; después perdió estabilidad.');
     if(useSkill&&enemy.kind==='worldboss')reasons.push(skillImpact>=0?'La habilidad del héroe alteró el intercambio a tu favor.':'La habilidad recuperó vida de la marcha.');
   }
   return{enemyId,win,playerStart:p.health,playerEnd:Math.max(0,pHp),enemyStart:e.health,enemyEnd:Math.max(0,eHp),openingDamage:opening,skillImpact,rounds,reasons,player:p,enemy:e};
