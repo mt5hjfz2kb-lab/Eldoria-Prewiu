@@ -19,6 +19,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  for(const expected of ['20 arqueros','400 madera','240 piedra','20s'])if(!st.includes(expected))throw Error('Recruit summary missing '+expected+': '+st);
  const style=await p.locator('[data-testid="recruit-choice-20"] .recruitChoiceMeta0265 strong').first().evaluate(el=>({color:getComputedStyle(el).color,display:getComputedStyle(el).display,rect:el.getBoundingClientRect().toJSON()}));
  if(!style.rect.width||!style.rect.height||style.color==='rgba(0, 0, 0, 0)')throw Error('Recruit detail is not visibly rendered '+JSON.stringify(style));
+ await p.locator('[data-recruit-close]').tap({force:true});
  // Tier progression is driven by Barracks level and never replaces older troops.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({introSeen:true,view:'kingdom',bastion:4,bastionLevel:4,barracks:true,buildingLevels:{sawmill:2,barracks:4,granary:2,stoneworks:0,forge:0},wood:9999,stone:9999,food:9999,tasks:[],selectedAction:'barracks',recruitQty:5,recruitTier:2,troops:200,troopRoster:{archer:{1:140,2:60,3:0},paladin:{},warlock:{}}}));
  await p.locator('[data-testid="building-action-barracks"]').tap({force:true});
