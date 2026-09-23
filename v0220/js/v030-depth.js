@@ -136,7 +136,7 @@ function applyChoice(level,id,o){
  update(patch);tone(660,.12,.035,'triangle');o?.remove();showToast(tr('DECISIÓN APLICADA','CHOICE APPLIED'),opt.name[cfg.locale==='en'?1:0]);
 }
 function maybeChoice(){
- if(QA)return;const s=state();for(const level of [4,6,8,9])if(s.bastionLevel>=level&&!s.developmentChoices?.[level]){openChoice(level);break}
+ const s=state();for(const level of [4,6,8,9])if(s.bastionLevel>=level&&!s.developmentChoices?.[level]){if(QA&&new URLSearchParams(location.search).get('v030Manual')!=='1'){const def=choices[level],opt=def.options[2]||def.options[0],dc=Object.assign({},s.developmentChoices||{}, {[level]:{id:opt.id,at:Date.now(),qa:true}}),patch={developmentChoices:dc};for(const [k,v] of Object.entries(opt.grant))patch[k]=(Number(s[k])||0)+v;update(patch)}else openChoice(level);break}
 }
 
 /* ---------- progressive autonomy in chapter UI ---------- */
