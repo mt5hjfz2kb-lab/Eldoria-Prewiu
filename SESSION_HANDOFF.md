@@ -6,14 +6,14 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.29**.
+- Active development version: **v0.30**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
 
-## Current v0.29 product state
+## Current v0.30 product state
 - Chapter mission system and universal accelerators are active.
 - Arcón includes utility tabs, including Aceleradores.
 - Chapter II Engendro is reachable/visible in its intended sequence.
@@ -55,13 +55,17 @@ This is permanent cross-session behavior, not a one-session preference.
 - Frozen research output only; never use as source and never inject the QA Launcher into it.
 
 ## Latest development block
-- v0.29 separates **Códice de Eldoria** (world knowledge) from **Relicario** (cards/relics).
-- Códice sections: La Brecha, Bestiario, Mundo, Personajes. No use/conserve controls or card-board rules live there.
-- Relicario tabs: Colección, Práctica, Duelo PvP. PvP is visible but locked/future.
-- First-relic onboarding teaches rarity/effect/use-vs-conserve only. Side values and board rules remain hidden until five discoveries.
-- At the five-relic threshold Maestre Orin reveals side values and guides the player through Practice; practice never mutates the permanent collection.
-- Existing normal/Indestructible consumption, cooldown and discovery semantics remain protected.
-- Focused preset: `relicario-v029`. Regression: `qa/e2e-v029-codex-relicario.js` plus updated legacy relic tests.
+- v0.30 deepens existing systems without expanding La Brecha.
+- Four real development-priority choices are active at Bastion IV, VI, VIII and IX; they are immediate strategic trade-offs, not wait gates.
+- Guidance tapers from VI–VIII and Bastion IX uses general objectives rather than step-by-step instructions.
+- Existing Total Power remains canonical; v0.30 adds first-use explanation, gain feedback and restrained milestone feedback.
+- Simulated rankings now cover Total Power, Corrupts defeated and Reliquia collection, always showing the player and immediate rival.
+- Battle reports expose summary + full detail only.
+- Persistent ES/EN selector, server UTC clock and first ambient/SFX audio layer are active in Settings.
+- Ceremonies are reserved for real milestones.
+- Códice/Relicario v0.29 architecture is preserved. PvP remains locked/future. No new Breach mechanics, alliances, heroes or building proliferation were added.
+- Focused regression: `qa/e2e-v030-depth.js`.
+- Certification: full local-equivalent gate, uninterrupted Arc I, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed on the v0.30 candidate.
 
 ## Next task
-Continue normal v0.29 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
+Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
