@@ -8,6 +8,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
  // March composition must be tier-aware and use one source of truth.
  const globalPowerBefore=await p.evaluate(()=>window.ELDORIA_V023.state().power);
+ await p.locator('[data-testid="hero-aldric"]').tap({force:true});await p.locator('[data-testid="hero-profile-aldric"]').waitFor({state:'visible'});await p.locator('[data-open-march]').tap({force:true});await p.locator('[data-testid="march-screen"]').waitFor({state:'visible'});
  const before=await p.locator('[data-testid="march-summary"]').innerText();
  const expectedBefore=await p.evaluate(()=>{const s=window.ELDORIA_V023.state(),H=window.ELDORIA.heroArmy,m=H.buildMarch({heroIds:s.marchSetup.heroIds,troops:s.marchSetup.troops,gearPowerByHero:Object.fromEntries(s.marchSetup.heroIds.map(id=>[id,Object.values((s.equipped||{})[id]||{}).filter(Boolean).reduce((n,g)=>n+(g.power||0),0)]))});return m.stats});
  if(!before.includes(String(expectedBefore.power)))throw Error('rendered march power diverges from domain source');
