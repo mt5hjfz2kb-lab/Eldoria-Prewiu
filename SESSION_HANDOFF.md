@@ -49,11 +49,12 @@ This is permanent cross-session behavior, not a one-session preference.
 - Frozen research output only; never use as source and never inject the QA Launcher into it.
 
 ## Latest development block
-- Base Héroe + Rol + Afinidad + Estadísticas + Tropas + Marcha implemented for Aldric and Lyra without redesigning the final Hero Hall UI.
-- Aldric: Tank, Paladines affinity, +3% Defense to Paladines in the march only.
-- Lyra: DPS, Arqueros affinity, +3% Attack to Arqueros in the march only.
-- Existing balanced values were reused; no new Paladin combat values were invented. Maelis is intentionally deferred.
-- Focused preset: `hero-army-base`. Permanent regression: `qa/e2e-v027-hero-army.js`.
+- Integrated military layer implemented: Barracks → tiered Archer roster → Hero Hall → individual hero profile → tier-aware march preparation.
+- Archer progression: Barracks 1 = T1, Barracks 4 = T2, Barracks 10 = T3. Tiers coexist and Barracks upgrades do not create or convert troops.
+- Hero Hall now opens as a visual collection; Aldric/Lyra profiles expose identity, hero Power, role, affinity, equipment slots and Habilidades/Talentos tabs. Maelis definitive system remains deferred.
+- March state accepts up to 3 heroes structurally and explicit T1/T2/T3 quantities. Shared hero-army logic is the source of expedition ATQ/DEF/VIDA/RUP/Poder and affinity application.
+- Focused preset remains `hero-army-base`, now populated with T1 140 / T2 60 / T3 0 for rapid owner review.
+- Permanent regressions: `qa/e2e-v027-hero-army.js`, `qa/e2e-v027-military-circuit.js`, plus expanded Barracks tier coverage.
 
 ## Next task
 Continue normal v0.27 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
