@@ -89,6 +89,22 @@ A delivery is incomplete if a reasonable focused owner test exists but the final
 ## Owner-feedback block protocol
 When the owner sends corrections/improvements: reproduce and group the coherent block, implement it without piecemeal handoffs, run the smallest valuable QA while iterating, escalate to segment/integral based on risk, correct regressions found, push a coherent green result, verify the published development build, then return the build. Avoid bug-by-bug status messages.
 
+## Permanent UX acceptance rule
+Technical correctness is necessary but not sufficient. Every new or modified player-facing system must also pass a novice-player UX review:
+
+**DISCOVERABILITY → COMPREHENSION → INTERACTION → FEEDBACK → NEXT STEP**
+
+For each system, verify that a player with no prior Eldoria design knowledge:
+- discovers that the system or control exists;
+- understands what it is and what it is for;
+- understands how to interact with it;
+- receives clear, legible feedback about the consequence;
+- understands the next useful step;
+- can distinguish interactive elements from decoration;
+- sees the system in the correct responsibility area without unrelated information being mixed in.
+
+If a feature technically works but requires external developer explanation to understand, it is not done and must be treated as a UX defect before release. Integral regressions must include a specific discoverability/comprehension pass in addition to functional reachability.
+
 ## Definition of done
 - Documentation/process-only: consistency checked + commit/push.
 - Small gameplay/UI correction: focused real interaction green; add segment if cross-system risk exists.
