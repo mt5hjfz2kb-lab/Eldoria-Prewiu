@@ -2,6 +2,18 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.29 — 2026-09-23
+
+- Split the former mixed card/Codex surface into two distinct systems: **Códice de Eldoria** for world knowledge and **Relicario** for Reliquia/card management.
+- Added Códice sections for La Brecha, Bestiario, Mundo and Personajes, populated from actual progression flags.
+- Added Relicario tabs for Colección, Práctica and visibly locked/future Duelo PvP.
+- Reworked relic onboarding into two phases: first relic teaches rarity/effect/use-vs-conserve only; five discoveries unlock side values and Maestre Orin's board teaching.
+- Preserved normal-card consumption and Indestructible cooldown/non-consumption semantics.
+- Converted the existing 3×3 board into lossless Practice against Orin; temporary teaching cards never enter or mutate the permanent collection.
+- Routed chapter relic decisions/training toward Relicario while preserving Códice as the knowledge destination.
+- Added focused `relicario-v029` QA and permanent `qa/e2e-v029-codex-relicario.js` coverage, then certified regression, mobile fresh-save, frozen tester guard and published Chromium verification.
+
+
 ## v0.28 — 2026-09-23
 
 - Consolidated the military progression layer as one playable system: Barracks → persistent Archer tiers → army inventory → Hero Hall → individual hero profile → tier-aware march preparation → expedition stats/Power → combat.
