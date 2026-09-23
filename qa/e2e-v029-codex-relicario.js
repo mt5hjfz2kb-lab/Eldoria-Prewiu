@@ -22,10 +22,10 @@ const {chromium}=require('playwright');
  await p.locator('[data-testid="relicario-collection"]').waitFor({state:'visible'});
  const oneText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
  for(const term of ['RARA','EFECTO','USAR','CONSERVAR','INDESTRUCTIBLE'])if(!oneText.includes(term))throw Error('First relic surface missing '+term);
- if(/\bN\s*3\b|\bE\s*4\b|\bS\s*1\b|\bO\s*2\b|TABLERO|ECO 1\/1\/1\/1/.test(oneText))throw Error('Board language revealed before five relics');
+ if(/\bN\s*3\b|\bE\s*4\b|\bS\s*1\b|\bO\s*2\b|TABLERO|ECO 1\/1\/1\/1/.test(oneText))throw Error('Board language revealed before three relics');
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  const locked=(await p.locator('[data-testid="relicario-practice"]').innerText()).toUpperCase();
- if(!locked.includes('1/5')||!locked.includes('AÚN NO ES EL MOMENTO'))throw Error('Practice not gated before threshold');
+ if(!locked.includes('1/3')||!locked.includes('AÚN NO ES EL MOMENTO'))throw Error('Practice not gated before threshold');
 
  // Indestructible use: effect applies, card remains, cooldown starts.
  await p.locator('[data-relic-tab="collection"]').evaluate(el=>el.click());
@@ -44,15 +44,15 @@ const {chromium}=require('playwright');
  const consumed=await state();
  if(consumed.codex.some(x=>x.id==='normal-qa')||!consumed.cardsConsumed.includes('normal-qa'))throw Error('Normal relic consumption contract broken');
 
- // Phase 2: at five discoveries values appear and Practice opens.
+ // Phase 2: at three discoveries values appear and Practice opens.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[
  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'QA'},
  {id:'r2',name:'R2',rarity:'Común',values:{N:2,E:3,S:2,O:1},copy:'QA'},
  {id:'r3',name:'R3',rarity:'Épica',values:{N:4,E:2,S:5,O:3},copy:'QA'}],
- cardsConsumed:['r4','r5'],cardChoices:{},cardCooldowns:{},relicSidesRevealed:true,relicTutorialSeen:true,duelTutorialComplete:false}));
+ cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicSidesRevealed:true,relicTutorialSeen:true,duelTutorialComplete:false}));
  await p.locator('[data-testid="relicario-collection"]').waitFor({state:'visible'});
- const fiveText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
- if(!fiveText.includes('N 3')||!fiveText.includes('E 4'))throw Error('Side values not revealed at threshold');
+ const thresholdText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
+ if(!thresholdText.includes('N 3')||!thresholdText.includes('E 4'))throw Error('Side values not revealed at threshold');
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  await p.locator('[data-testid="open-relic-training"]').waitFor({state:'visible'});
  const beforePractice=await state();const beforeIds=beforePractice.codex.map(x=>x.id).sort().join('|');
