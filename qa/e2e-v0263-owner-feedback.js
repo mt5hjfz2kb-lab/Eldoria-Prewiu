@@ -20,10 +20,10 @@ const {chromium}=require('playwright');
  await p.locator('.heroArchiveScene').waitFor({state:'visible',timeout:3000});
  if(await p.locator('.e22-overlay:visible').count())throw Error('Hero Hall regressed to overlay');
  const hall=await p.locator('.heroArchiveScene').innerText();
- for(const term of ['ATQ','DEF','APO','FORMA LA EXPEDICIÓN','Aldric lidera'])if(!hall.includes(term))throw Error('Hero Hall explanation missing '+term);
- await p.locator('[data-testid="march-maelis"]').tap({force:true});
+ for(const term of ['ARQUEROS','T1','T2','T3','PREPARACIÓN DE MARCHA','ATQ','DEF','VIDA','RUP'])if(!hall.toUpperCase().includes(term))throw Error('Hero Hall military contract missing '+term);
+ await p.locator('[data-march-hero="maelis"]').tap({force:true});
  const march=await state();
- if(!march.marchConfigured||march.marchSlots[1]!=='maelis')throw Error('March configuration did not persist from full-screen Hall');
+ if(!march.marchSetup?.heroIds?.includes('maelis'))throw Error('March hero selection did not persist from full-screen Hall');
 
  // 3) IX must expose a robust attack action on 390x844 mobile after march configuration.
  await set({view:'world',bastionLevel:9,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false,troops:41,selectedAction:null});
