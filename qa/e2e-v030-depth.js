@@ -22,7 +22,9 @@ const URL=(process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1')+(pro
  await p.evaluate(()=>window.ELDORIA_V030.openChoice(4));
  const choice=p.locator('[data-testid="v030-choice"]');await choice.waitFor({state:'visible'});
  const opts=choice.locator('[data-choice]');if(await opts.count()!==3)throw Error('development choice must expose 3 viable options');
- await choice.locator('[data-choice="army"]').tap({force:true});await p.waitForTimeout(100);
+ const army=choice.locator('[data-choice="army"]');
+ console.log('V030 CHOICE HIT',await army.evaluate(el=>{const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,h=document.elementFromPoint(x,y);return{rect:{x:r.x,y:r.y,w:r.width,h:r.height},hit:h?{tag:h.tagName,cls:h.className,id:h.id,testid:h.getAttribute?.('data-testid'),choice:h.getAttribute?.('data-choice')} : null,stack:document.elementsFromPoint(x,y).slice(0,6).map(n=>({tag:n.tagName,cls:n.className,id:n.id,choice:n.getAttribute?.('data-choice')}))}}));
+ await army.tap({force:true});await p.waitForTimeout(100);
  s=await state();if(s.developmentChoices?.[4]?.id!=='army'||s.power<1920)throw Error('development choice did not persist/apply '+JSON.stringify({choice:s.developmentChoices?.[4],power:s.power,wood:s.wood,stone:s.stone,food:s.food}));
 
  console.log('V030 CHECKPOINT autonomy');
