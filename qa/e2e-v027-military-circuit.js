@@ -40,7 +40,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  s=await state();
  if(s.troopRoster.archer[1]!==20||s.troopRoster.archer[2]!==5||s.troops!==25)throw Error('tier recruitment destroyed prior tier '+JSON.stringify(s.troopRoster));
  // Hero Hall opens/closes cleanly through navigation after military actions.
- await p.locator('[data-view="heroes"]').tap({force:true});await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
+ await p.locator('[data-testid="nav-heroes"]').tap({force:true});await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
  await p.locator('[data-testid="hero-aldric"]').tap({force:true});await p.locator('[data-testid="hero-profile-aldric"]').waitFor({state:'visible'});
  await p.locator('[data-hero-back]').tap({force:true});await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
  await b.close();console.log('v0.27 INTEGRATED MILITARY CIRCUIT PASS');
