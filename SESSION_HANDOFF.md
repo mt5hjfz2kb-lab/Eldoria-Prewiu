@@ -67,7 +67,7 @@ This is permanent cross-session behavior, not a one-session preference.
 - Ceremonies are reserved for real milestones.
 - Códice/Relicario v0.29 architecture is preserved. PvP remains locked/future. No new Breach mechanics, alliances, heroes or building proliferation were added.
 - Focused regression: `qa/e2e-v030-depth.js`.
-- Certification: full local-equivalent gate, uninterrupted Arc I, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed on the certified v0.30 build; the final fresh-save also includes the Bastion II render stabilization.
+- Certification: final certified runtime candidate `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5`, GitHub Actions run 1231. Full local-equivalent gate, uninterrupted fresh-save Arc I/Bastion I–X, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed; the final fresh-save includes the Bastion II render stabilization.
 
 ## Next task
 Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
