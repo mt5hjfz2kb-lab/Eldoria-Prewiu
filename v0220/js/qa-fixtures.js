@@ -1,4 +1,4 @@
-/* Eldoria v0.28 development-only deterministic QA presets. UMD: browser + Node. */
+/* Eldoria v0.29 development-only deterministic QA presets. UMD: browser + Node. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.ELDORIA_QA_FIXTURES=api;})(typeof window!=='undefined'?window:null,function(){
 'use strict';
 const missionIds={1:['c1-sawmill','c1-wood','c1-stone','c1-route','c1-bastion'],2:['c2-barracks','c2-train','c2-power','c2-spawnling','c2-bastion'],3:['c3-granary','c3-food','c3-hunt','c3-fissure','c3-infra','c3-bastion'],4:['c4-sawmill2','c4-granary2','c4-barracks2','c4-speedup','c4-bastion'],5:['c5-stoneworks','c5-stone','c5-army','c5-rare','c5-bastion'],6:['c6-forge','c6-devourer','c6-gear','c6-expedition','c6-bastion'],7:['c7-codex','c7-relics','c7-decision','c7-duel','c7-bastion'],8:['c8-nareth','c8-maelis','c8-equip','c8-expedition','c8-bastion'],9:['c9-march','c9-power','c9-collection','c9-trial','c9-bastion'],10:['c10-herald','c10-skill','c10-final']};
