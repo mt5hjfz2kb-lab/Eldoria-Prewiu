@@ -167,15 +167,19 @@ function maybeChoice(){
 
 /* ---------- progressive autonomy in chapter UI ---------- */
 function tuneGuidance(){
- const s=state(),ch=Number(s.chapterProgress?.current||s.bastionLevel||1),root=ROOT();if(!root)return;
+ const s=state(),ch=Math.max(Number(s.bastionLevel||1),Number(s.chapterProgress?.current||1)),root=ROOT();if(!root)return;
  root.dataset.guidance=ch>=9?'autonomous':ch>=8?'light':ch>=6?'reduced':'guided';
  if(ch>=6)root.querySelectorAll('.tutorialHand,.missionFocus027').forEach(el=>{el.classList.remove('missionFocus027');if(el.classList.contains('tutorialHand'))el.style.display='none'});
  if(ch>=8)root.querySelectorAll('[data-mission-go]').forEach(el=>el.remove());
  if(ch>=9){
    root.querySelectorAll('.guideHint0265').forEach(el=>el.remove());
    const drawer=root.querySelector('[data-testid="chapter-drawer"]');if(drawer&&!drawer.dataset.autonomy030){
-     drawer.dataset.autonomy030='1';const list=drawer.querySelector('.missionList0267');if(list){
-       const title=tr('OBJETIVOS GENERALES','GENERAL OBJECTIVES'),items=ch===9?
+     drawer.dataset.autonomy030='1';
+     const title=tr('OBJETIVOS GENERALES','GENERAL OBJECTIVES');
+     const compact=root.querySelector('[data-testid="chapter-compact"]');if(compact){const small=compact.querySelector('small'),em=compact.querySelector('em'),prog=compact.querySelector('i');if(small)small.textContent=tr('BASTIÓN ','BASTION ')+ch+' · '+tr('AUTONOMÍA','AUTONOMY');if(em)em.textContent=title;prog?.remove()}
+     const kicker=drawer.querySelector(':scope > small'),heading=drawer.querySelector(':scope > h2'),copy=drawer.querySelector(':scope > p');if(kicker)kicker.textContent=tr('BASTIÓN ','BASTION ')+ch;if(heading)heading.textContent=title;if(copy)copy.textContent=tr('Valoria ya no necesita una ruta paso a paso. Decide el orden y prepara el reino según tu situación.','Valoria no longer needs a step-by-step route. Choose the order and prepare the kingdom for your situation.');
+     const list=drawer.querySelector('.missionList0267');if(list){
+       const items=ch===9?
        [tr('Preparar una expedición completa','Prepare a complete expedition'),tr('Consolidar al menos 14.000 de Poder Total','Consolidate at least 14,000 Total Power'),tr('Superar la Prueba de Marcha','Pass the March Trial'),tr('Elevar el Bastión a nivel 10','Raise the Bastion to level 10')]:
        [tr('Derrotar al Heraldo','Defeat the Herald'),tr('Usar una intervención de héroe cuando aporte valor','Use a hero intervention when it adds value'),tr('Completar el asalto final','Complete the final assault')];
        list.innerHTML='<section class="generalObjectives030"><small>'+title+'</small>'+items.map(x=>'<p>◇ '+x+'</p>').join('')+'<em>'+tr('El juego ya no marca una ruta paso a paso. Tú decides el orden.','The game no longer marks a step-by-step route. You choose the order.')+'</em></section>';
