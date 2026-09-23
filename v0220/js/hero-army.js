@@ -8,7 +8,6 @@ const skillTrack=(first=null)=>[
   first?{slot:1,rank:1,maxRank:5,status:'active',...first}:emptySkill(1),
   emptySkill(2)
 ];
-const emptyTalentTier=(tier)=>({tier,exclusive:true,selected:null,options:[]});
 
 const HEROES={
   aldric:{
@@ -16,24 +15,26 @@ const HEROES={
     name:'Sir Aldric',
     role:{id:'tank',name:'Tanque'},
     affinity:{troopType:'paladin',label:'Paladines',stat:'defense',modifier:0.03},
+    statsSource:'existing-v0266-combat',
     baseStats:{attack:78,defense:112,health:420,break:34},
     skills:{
       pve:skillTrack({id:'bulwark',name:'Baluarte',effectId:'next_hit_mitigation'}),
       pvp:skillTrack()
     },
-    talents:{tiers:[emptyTalentTier(1)]}
+    talents:{mode:'exclusive-choice',choices:[]}
   },
   lyra:{
     id:'lyra',
     name:'Lyra',
     role:{id:'dps',name:'DPS'},
     affinity:{troopType:'archer',label:'Arqueros',stat:'attack',modifier:0.03},
+    statsSource:'existing-v0266-combat',
     baseStats:{attack:116,defense:62,health:300,break:82},
     skills:{
       pve:skillTrack({id:'piercingShot',name:'Disparo de Ruptura',effectId:'direct_damage_defense_break'}),
       pvp:skillTrack()
     },
-    talents:{tiers:[emptyTalentTier(1)]}
+    talents:{mode:'exclusive-choice',choices:[]}
   }
 };
 
@@ -105,13 +106,14 @@ function buildMarch({heroIds=[],troops={},bastionLevel=1,profileOverrides={}}={}
     const family=TROOPS[type];if(!family)throw new Error('Unknown troop family '+type);
     families[type]={id:type,name:family.name,count,stats:resolveTroopProfile(type,bastionLevel,heroes,composition,profileOverrides),status:family.status};
   }
+  const errors=Object.values(families).filter(x=>!x.stats).map(x=>'Stats pending for '+x.name);
   return{
     heroes,
     troops:composition,
     families,
     affinities:affinityBonuses(heroes,composition),
-    valid:true,
-    errors:Object.values(families).filter(x=>!x.stats).map(x=>'Stats pending for '+x.name)
+    valid:errors.length===0,
+    errors
   };
 }
 function hero(id){return HEROES[id]||null}
