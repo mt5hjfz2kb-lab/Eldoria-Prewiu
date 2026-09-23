@@ -5,6 +5,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await p.goto(URL,{waitUntil:'domcontentloaded'});
  await p.waitForFunction(()=>sessionStorage.getItem('eldoria-qa-active-preset')==='hero-army-base'&&window.ELDORIA_V023?.state().view==='heroes'&&!window.ELDORIA_V023.state().heroDetailOpen);
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'march',uxCoachSeen:{march:true}}));
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
  // March composition must be tier-aware and use one source of truth.
  const globalPowerBefore=await p.evaluate(()=>window.ELDORIA_V023.state().power);
@@ -40,8 +41,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  await p.waitForFunction(()=>window.ELDORIA_V023.state().troopRoster.archer[2]===5,{timeout:4000});
  s=await state();
  if(s.troopRoster.archer[1]!==20||s.troopRoster.archer[2]!==5||s.troops!==25)throw Error('tier recruitment destroyed prior tier '+JSON.stringify(s.troopRoster));
- // Hero Hall opens/closes cleanly through navigation after military actions.
- await p.locator('[data-testid="nav-heroes"]').tap({force:true});await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
+ // Hero Hall opens/closes cleanly through navigation after military actions and remains hero-only.
+ await p.locator('[data-testid="nav-heroes"]').tap({force:true});await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});if(await p.locator('[data-testid="army-inventory"],[data-testid="march-builder"]').count())throw Error('Hero Hall mixed troops/march back in');
  await p.locator('[data-testid="hero-aldric"]').tap({force:true});await p.locator('[data-testid="hero-profile-aldric"]').waitFor({state:'visible'});
  await p.locator('[data-hero-back]').evaluate(el=>el.click());await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
  await b.close();console.log('v0.27 INTEGRATED MILITARY CIRCUIT PASS');
