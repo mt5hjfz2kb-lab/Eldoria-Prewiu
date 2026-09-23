@@ -2,6 +2,17 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.28 — 2026-09-23
+
+- Consolidated the military progression layer as one playable system: Barracks → persistent Archer tiers → army inventory → Hero Hall → individual hero profile → tier-aware march preparation → expedition stats/Power → combat.
+- Barracks progression now independently unlocks Archer T1/T2/T3 at levels 1/4/10; older tiers persist and Barracks upgrades never generate or auto-convert troops.
+- Added canonical tier-aware troop roster and explicit promotion seam without inventing promotion costs or future troop-family balance.
+- Reworked Hero Hall into a visual collection with individual Aldric/Lyra character profiles, visible hero Power/role/affinity, equipment slots and Habilidades/Talentos surfaces.
+- March composition now supports explicit tier quantities and up to three heroes structurally, with shared affinity and expedition-stat calculation as the single source of truth.
+- Preserved hidden/unbalanced future troop families and deferred Maelis' definitive hero-system data.
+- Certified focused military QA, regression, mobile fresh-save Arc I, frozen tester guard, deployment and published Chromium verification before promoting the milestone from v0.27 to v0.28.
+
+
 ## v0.27 — 2026-09-22
 
 - Replaced the persistent guided-step overlay with a compact chapter mission system and mobile-safe mission drawer.
