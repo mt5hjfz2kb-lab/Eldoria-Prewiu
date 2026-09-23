@@ -59,6 +59,16 @@ function aggregateTroops(composition,heroIds=[]){
  return{...tot,details};
 }
 function heroPower(id,gearPower=0){const h=HEROES[id];if(!h)return 0;if(Number.isFinite(h.compatibilityPower))return Math.round(h.compatibilityPower+gearPower);return Math.round(h.baseStats.attack*4+h.baseStats.defense*3+h.baseStats.health+h.baseStats.break*4+gearPower)}
+function ownedEquipment(s,slot=null){
+ const items=[...(Array.isArray(s?.inventory)?s.inventory:[]),...Object.values(s?.equipped||{}).flatMap(x=>Object.values(x||{}))].filter(Boolean);
+ return items.some(x=>x?.slot&&(!slot||x.slot===slot));
+}
+function affinityLabel(b,locale='es'){
+ const troop=TROOPS[b?.troopType],family=troop?.name||b?.troopType||'tropas',stat=b?.stat;
+ if(locale==='en')return (b?.heroName||'Hero')+' grants +'+Math.round((Number(b?.modifier)||0)*100)+'% '+(stat==='attack'?'Attack':stat==='defense'?'Defense':stat==='health'?'Health':stat==='break'?'Break':'bonus')+' to '+family+'.';
+ const statName=stat==='attack'?'Ataque':stat==='defense'?'Defensa':stat==='health'?'Vida':stat==='break'?'Ruptura':'bonificación';
+ return (b?.heroName||'Héroe')+' potencia el '+statName+' de '+family+' en +'+Math.round((Number(b?.modifier)||0)*100)+' %.';
+}
 function buildMarch({heroIds=[],troops={},gearPowerByHero={}}={}){
  const heroes=normalizeHeroes(heroIds),roster=normalizeRoster(troops),troopStats=aggregateTroops(roster,heroes);
  let heroStats={attack:0,defense:0,health:0,break:0,power:0};
@@ -67,5 +77,5 @@ function buildMarch({heroIds=[],troops={},gearPowerByHero={}}={}){
  const stats={attack:Math.round(troopStats.attack+heroStats.attack),defense:Math.round(troopStats.defense+heroStats.defense),health:Math.round(troopStats.health+heroStats.health),break:Math.round(troopStats.break+heroStats.break),power:Math.round(troopStats.power+heroStats.power)};
  return{heroes,troops:roster,troopStats,heroStats,stats,affinities:affinityBonuses(heroes,roster),valid:troopStats.count>0&&heroes.length>0&&heroes.length<=3,errors:[]};
 }
-return{SKILL_RANKS,HEROES,TROOPS,ARCHER_TIERS,emptyRoster,normalizeRoster,totalFamily,totalTroops,unlockedTiers,highestUnlockedTier,addTroops,promoteTroops,normalizeHeroes,normalizeComposition,affinityBonuses,tierStats,aggregateTroops,heroPower,buildMarch,hero:id=>HEROES[id]||null,troop:id=>TROOPS[id]||null};
+return{SKILL_RANKS,HEROES,TROOPS,ARCHER_TIERS,emptyRoster,normalizeRoster,totalFamily,totalTroops,unlockedTiers,highestUnlockedTier,addTroops,promoteTroops,normalizeHeroes,normalizeComposition,affinityBonuses,tierStats,aggregateTroops,heroPower,buildMarch,ownedEquipment,affinityLabel,hero:id=>HEROES[id]||null,troop:id=>TROOPS[id]||null};
 });
