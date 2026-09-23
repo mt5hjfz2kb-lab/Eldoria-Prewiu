@@ -50,7 +50,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   {const ids=await p.locator('#eldoria-core-loop [data-node]').evaluateAll(ns=>ns.map(n=>n.dataset.node));if(!ids.includes('forestExtra')||!ids.includes('quarryExtra'))throw Error('Extra early resource nodes missing: '+ids.join(','));const hand=p.locator('.nodeWrap .tutorialHand.worldAnchored');if(await p.locator('.tutorialHand').count()&&await hand.count()===0)throw Error('World tutorial label is not anchored to its node');}
   await node('camp');await p.waitForTimeout(2800);await closeAll();if(!(await state()).camp)throw Error('Corrupt camp did not resolve');if(!(await state()).corruptResidue)throw Error('Bastion II anomaly residue was not recorded');
 
-  await view('kingdom');await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===2,14000);await closeAll();
+  await view('kingdom');await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===2,14000);await closeAll();await view('kingdom');await p.locator('#eldoria-core-loop [data-testid="building-barracks"]').waitFor({state:'attached',timeout:5000});
   await building('barracks');await waitState(()=>window.ELDORIA_V023.state().barracks===true,11000);await building('barracks');await p.locator('[data-testid="recruit-dialog"]').waitFor({state:'visible',timeout:4000});await p.locator('[data-testid="recruit-start"]').tap({force:true});await waitState(()=>window.ELDORIA_V023.state().troops>=41,15000);if((await state()).troops<41)throw Error('Timed troop recruitment did not apply');
 
 
