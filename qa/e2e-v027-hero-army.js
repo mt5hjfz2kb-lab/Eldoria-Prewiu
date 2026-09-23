@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=hero-army-base';
 (async()=>{
  const b=await chromium.launch({headless:true});
- const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const pageErrors=[];p.on('pageerror',e=>pageErrors.push(String(e&&e.stack||e)));
  await p.goto(URL,{waitUntil:'domcontentloaded'});
  await p.waitForFunction(()=>window.ELDORIA?.heroArmy&&sessionStorage.getItem('eldoria-qa-active-preset')==='hero-army-base'&&window.ELDORIA_V023?.state().view==='heroes'&&!window.ELDORIA_V023.state().heroDetailOpen);
  const data=await p.evaluate(()=>{
@@ -43,7 +43,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  if(!data.promoted.ok||data.promoted.roster.archer[1]!==120||data.promoted.roster.archer[2]!==80)throw Error('manual troop promotion seam wrong');
  if(data.roster.archer[1]!==140||data.roster.archer[2]!==60||data.roster.archer[3]!==0)throw Error('tiered roster fixture wrong');
  if(data.mixed.heroes.length!==2||data.mixed.stats.power<=0)throw Error('mixed march model invalid');
- await p.locator('[data-testid="hero-hall"]').waitFor({state:'visible'});
+ const hall=p.locator('[data-testid="hero-hall"]');try{await hall.waitFor({state:'visible',timeout:5000})}catch(e){const diag=await p.evaluate(()=>({state:window.ELDORIA_V023?.state(),root:document.querySelector('#eldoria-core-loop')?.innerText?.slice(0,1800),html:document.querySelector('#eldoria-core-loop')?.innerHTML?.slice(0,1800)}));throw Error('Hero Hall did not render '+JSON.stringify({diag,pageErrors}))}
  await p.locator('[data-testid="army-inventory"]').waitFor({state:'visible'});
  for(const id of ['army-archer-t1','army-archer-t2','army-archer-t3'])await p.locator('[data-testid="'+id+'"]').waitFor({state:'visible'});
  await p.locator('[data-testid="hero-aldric"]').tap({force:true});
