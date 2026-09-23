@@ -61,6 +61,22 @@ Decision rule:
 - Development injection is performed by `tools/build-preview.mjs`; do not add QA launcher UI to the normal canonical runtime or tester snapshot.
 - Adding a preset should mean adding one coherent fixture entry, a stable target interaction, and automated coverage when useful.
 
+## Permanent owner-delivery links
+After any correction, improvement or new feature with a reasonable isolated QA path, the final delivery to the owner must automatically include the relevant development-build links. The owner must not need to ask for them.
+
+Required delivery surfaces:
+- **🎯 Probar esta mejora** — always include when a focused QA state is reasonable. It must point to the development build opened directly in the relevant QA preset/state for the change just delivered.
+- **🧩 Probar tramo** — include when the change spans multiple related systems, phases or a progression block. It must point directly to the coherent segment preset/state that starts before the affected block.
+- **🎮 Jugar completo** — always include the general development-build URL so the owner can play normally or begin a fresh save when desired.
+
+The agent chooses the preset automatically from the work performed. Examples: Códice → Códice preset; boss → boss preset; Cuartel/recruitment → Cuartel/recruitment-ready preset; Bastion VI–VIII progression → focused target plus VI–VIII segment when applicable. Cross-cutting work may require more than one focused/segment link.
+
+If a new feature has no suitable preset but can reasonably be isolated, creating or adapting a coherent preset/deep-link is part of implementing that feature. Do not force the owner to replay the whole game merely because a focused fixture was missing.
+
+These links are an owner-review convenience and never replace internal QA. Run the appropriate focused, segment or integral validation first. Links must always target the current development build, never the frozen tester build or a historical snapshot. Preserve the normal/fresh-save path and keep using integral QA internally whenever the risk/release protocol requires it.
+
+A delivery is incomplete if a reasonable focused owner test exists but the final response omits **🎯 Probar esta mejora**, or if it omits **🎮 Jugar completo**. **🧩 Probar tramo** is conditional on scope.
+
 ## Owner-feedback block protocol
 When the owner sends corrections/improvements: reproduce and group the coherent block, implement it without piecemeal handoffs, run the smallest valuable QA while iterating, escalate to segment/integral based on risk, correct regressions found, push a coherent green result, verify the published development build, then return the build. Avoid bug-by-bug status messages.
 
