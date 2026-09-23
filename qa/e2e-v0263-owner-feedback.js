@@ -16,7 +16,7 @@ const {chromium}=require('playwright');
  if(!started.tasks.some(t=>t.key==='build-sawmill'&&t.costPaid))throw Error('Construction task did not persist immediate-spend marker');
 
  // 2) Hero Hall is a dedicated full-screen view, with understandable march builder.
- await set({view:'heroes',bastionLevel:9,lyra:true,maelis:true,troops:41,marchSlots:['aldric'],marchConfigured:false,inventory:[],heroSelected:'aldric'});
+ await set({view:'heroes',bastionLevel:9,lyra:true,maelis:true,troops:41,troopRoster:{archer:{1:41,2:0,3:0},paladin:{},warlock:{}},marchSetup:{heroIds:['aldric'],troops:{archer:{1:41,2:0,3:0}}},marchSlots:['aldric'],marchConfigured:false,inventory:[],heroSelected:'aldric',heroDetailOpen:false});
  await p.locator('.heroArchiveScene').waitFor({state:'visible',timeout:3000});
  if(await p.locator('.e22-overlay:visible').count())throw Error('Hero Hall regressed to overlay');
  const hall=await p.locator('.heroArchiveScene').innerText();
