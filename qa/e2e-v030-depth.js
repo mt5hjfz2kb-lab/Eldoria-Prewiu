@@ -28,9 +28,9 @@ const URL=(process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1')+(pro
 
  console.log('V030 CHECKPOINT autonomy');
  // Progressive autonomy: Bastion IX contains general objectives, no step-by-step jump button.
- s=await state();await set({...s,bastionLevel:9,developmentChoices:{4:{id:'army'},6:{id:'reserve'},8:{id:'balanced'},9:{id:'adapt'}},chapterProgress:{...(s.chapterProgress||{}),current:9,completedMissions:{},claimedChapters:{},missionRewards:{},chapterStarted:{9:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:0,hunts:0,wins:{spawnling:1,ashStalker:1,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},missionPanelOpen:false});
+ s=await state();await set({...s,bastionLevel:9,developmentChoices:{4:{id:'army'},6:{id:'reserve'},8:{id:'balanced'},9:{id:'adapt'}},chapterProgress:{...(s.chapterProgress||{}),current:2,completedMissions:{},claimedChapters:{},missionRewards:{},chapterStarted:{2:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:0,hunts:0,wins:{spawnling:1,ashStalker:1,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},missionPanelOpen:false});
  await p.locator('[data-testid="chapter-compact"]').tap({force:true});await p.locator('[data-testid="chapter-drawer"]').waitFor({state:'visible'});await p.waitForTimeout(80);
- const drawer=p.locator('[data-testid="chapter-drawer"]');const dt=await drawer.innerText();if(!/OBJETIVOS GENERALES|GENERAL OBJECTIVES/.test(dt))throw Error('Bastion IX autonomy summary missing '+dt);if(await drawer.locator('[data-mission-go]').count())throw Error('Bastion IX still exposes step-by-step target jump');
+ const drawer=p.locator('[data-testid="chapter-drawer"]'),compactAutonomy=p.locator('[data-testid="chapter-compact"]');const dt=await drawer.innerText(),ct=await compactAutonomy.innerText();if(!/OBJETIVOS GENERALES|GENERAL OBJECTIVES/.test(dt))throw Error('Bastion IX autonomy summary missing with lagging chapter '+dt);if(!/BASTIÓN 9|BASTION 9/.test(ct))throw Error('Bastion IX compact autonomy still exposes lagging chapter '+ct);if(await drawer.locator('[data-mission-go]').count())throw Error('Bastion IX still exposes step-by-step target jump');
 
  console.log('V030 CHECKPOINT rankings');
  // Rankings: all three categories, player and immediate rival are always visible.
