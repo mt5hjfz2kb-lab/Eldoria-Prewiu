@@ -25,7 +25,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  // Bastion III: decorative Bestias label cannot steal the boar hitbox.
  await goto('b3-lyra');s=await state();await set({...s,view:'world',boss:false,boars:0,boarRespawnAt:0,selectedAction:null});
  const boar=p.locator('[data-testid="world-node-boar"]');await boar.waitFor({state:'visible'});
- const box=await boar.boundingBox();if(!box)throw Error('Boar has no hitbox');
+ await p.evaluate(()=>{const wp=document.querySelector('[data-worldpan]'),b=document.querySelector('[data-testid="world-node-boar"]');if(!wp||!b)return;wp.style.transform='translate3d(0px,0px,0px)';const r=b.getBoundingClientRect(),dx=Math.round(innerWidth*.5-(r.left+r.width/2)),dy=Math.round(innerHeight*.48-(r.top+r.height/2));wp.style.transform='translate3d('+dx+'px,'+dy+'px,0px)'});
+ await p.waitForTimeout(80);const box=await boar.boundingBox();if(!box)throw Error('Boar has no hitbox');
+ const ghostAudit=await p.evaluate(()=>[...document.querySelectorAll('.ghost')].map(g=>({text:(g.textContent||'').trim(),pointer:getComputedStyle(g).pointerEvents})));if(ghostAudit.some(g=>g.pointer!=='none'))throw Error('Decorative world label can intercept taps: '+JSON.stringify(ghostAudit));
  const topAtCenter=await p.evaluate(({x,y})=>{const el=document.elementFromPoint(x,y);return el&&({node:el.closest('[data-node]')?.dataset.node||null,cls:el.className||'',text:(el.textContent||'').trim().slice(0,80)})},{x:box.x+box.width/2,y:box.y+box.height/2});
  if(topAtCenter?.node!=='boar')throw Error('Boar center is intercepted: '+JSON.stringify(topAtCenter));
  await boar.tap({position:{x:box.width/2,y:box.height/2}});await p.locator('[data-testid="world-action-boar"]').waitFor({state:'visible'});
