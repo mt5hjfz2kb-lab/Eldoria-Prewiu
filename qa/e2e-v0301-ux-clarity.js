@@ -29,7 +29,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const barr=p.locator('[data-testid="building-barracks"]');await barr.waitFor({state:'visible'});await barr.tap({force:true});
  const ctx=p.locator('[data-testid="building-context-barracks"]');await ctx.waitFor({state:'visible'});txt=(await ctx.innerText()).toUpperCase();
  if(!txt.includes('RECLUTAR TROPAS')||!txt.includes('MEJORAR CUARTEL')||!txt.includes('VER TROPAS'))throw Error('Barracks responsibilities unclear '+txt);
- await ctx.locator('[data-testid="open-troops"]').tap({force:true});const troops=p.locator('[data-testid="troops-panel"]');await troops.waitFor({state:'visible'});
+ await ctx.locator('[data-testid="open-troops"]').evaluate(el=>el.click());const troops=p.locator('[data-testid="troops-panel"]');await troops.waitFor({state:'visible'});
  txt=(await troops.innerText()).toUpperCase();if(!txt.includes('TROPAS')||!txt.includes('CUARTEL ES DONDE RECLUTAS'))throw Error('Troop inventory explanation unclear '+txt);
  if(await troops.locator('[data-testid="hero-aldric"]').count())throw Error('Troops screen mixes hero collection');
 
