@@ -1,7 +1,7 @@
 {
   "name": "eldoria-preview",
   "private": true,
-  "version": "0.30.0",
+  "version": "0.30.1",
   "scripts": {
     "qa:setup": "playwright install chromium",
     "build": "node tools/build-preview.mjs",
