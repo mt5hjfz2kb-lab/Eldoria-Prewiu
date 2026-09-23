@@ -220,7 +220,7 @@ function enhanceBattleReport(){
  const h=r.querySelector('h1'),why=r.querySelector('.battleWhy0266'),compare=r.querySelector('.battleCompare0266'),rounds=r.querySelector('details');
  const summary=document.createElement('section');summary.className='battleSummary030';summary.dataset.testid='battle-report-summary';summary.innerHTML='<small>'+tr('RESUMEN','SUMMARY')+'</small><b>'+htmlEscape(h?.textContent||tr('Resultado resuelto','Resolved result'))+'</b><span>'+htmlEscape(why?.querySelector('p')?.textContent?.replace(/^•\s*/,'')||tr('Consulta los detalles para ver estadísticas e intercambios.','Open details to view stats and exchanges.'))+'</span>';
  h?.after(summary);
- if(compare||why||rounds){const d=document.createElement('details');d.className='battleDetails030';d.dataset.testid='battle-report-details';d.innerHTML='<summary>'+tr('VER DETALLES COMPLETOS','VIEW FULL DETAILS')+'</summary><div></div>';const box=d.querySelector('div');[compare,why,rounds].filter(Boolean).forEach(x=>box.appendChild(x));summary.after(d)}
+ if(compare||why||rounds){const d=document.createElement('details');d.className='battleDetails030';d.dataset.testid='battle-report-details';d.innerHTML='<summary>'+tr('VER DETALLES COMPLETOS','VIEW FULL DETAILS')+'</summary><div></div>';const box=d.querySelector('div');[compare,why].filter(Boolean).forEach(x=>box.appendChild(x));if(rounds){const log=rounds.querySelector('.roundLog0266');if(log){const wrap=document.createElement('section');wrap.className='roundsFull030';wrap.innerHTML='<b>'+tr('INTERCAMBIOS','EXCHANGES')+'</b>';wrap.appendChild(log);box.appendChild(wrap)}rounds.remove()}summary.after(d)}
 }
 
 /* ---------- ceremonies audit: module only creates milestone ceremony, routine feedback stays compact ---------- */
