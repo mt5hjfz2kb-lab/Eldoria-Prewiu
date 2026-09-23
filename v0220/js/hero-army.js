@@ -6,7 +6,8 @@ const emptySkill=(slot)=>({slot,id:null,name:null,rank:1,maxRank:5,status:'reser
 const skillTrack=(first=null)=>[first?{slot:1,rank:1,maxRank:5,status:'active',effects:[],requirements:[],costs:[],...first}:emptySkill(1),emptySkill(2)];
 const HEROES={
  aldric:{id:'aldric',name:'Sir Aldric',role:{id:'tank',name:'Tanque'},affinity:{troopType:'paladin',label:'Paladines',stat:'defense',modifier:0.03,activeWhen:'paladin'},statsSource:'existing-v0266-combat',baseStats:{attack:78,defense:112,health:420,break:34},skills:{pve:skillTrack({id:'bulwark',name:'Baluarte',effectId:'next_hit_mitigation'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}},
- lyra:{id:'lyra',name:'Lyra',role:{id:'dps',name:'DPS'},affinity:{troopType:'archer',label:'Arqueros',stat:'attack',modifier:0.03,activeWhen:'archer'},statsSource:'existing-v0266-combat',baseStats:{attack:116,defense:62,health:300,break:82},skills:{pve:skillTrack({id:'piercingShot',name:'Disparo de Ruptura',effectId:'direct_damage_defense_break'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}}
+ lyra:{id:'lyra',name:'Lyra',role:{id:'dps',name:'DPS'},affinity:{troopType:'archer',label:'Arqueros',stat:'attack',modifier:0.03,activeWhen:'archer'},statsSource:'existing-v0266-combat',baseStats:{attack:116,defense:62,health:300,break:82},skills:{pve:skillTrack({id:'piercingShot',name:'Disparo de Ruptura',effectId:'direct_damage_defense_break'}),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}},
+ maelis:{id:'maelis',name:'Maelis',status:'deferred',role:{id:'support',name:'Soporte'},affinity:null,statsSource:'existing-v0266-compatibility',baseStats:{attack:72,defense:92,health:390,break:48},compatibilityPower:620,skills:{pve:skillTrack(),pvp:skillTrack()},talents:{mode:'exclusive-choice',choices:[]},equipment:{slots:['weapon','armor','head','accessory']}}
 };
 const legacyProfile=t=>({attack:18+t*2,defense:11+t,health:34+t*3,break:9+t*2,power:24+t*3});
 const ARCHER_TIERS={
@@ -35,7 +36,7 @@ const unlockedTiers=(barracksLevel=1,type='archer')=>Object.values(TROOPS[type]?
 const highestUnlockedTier=(barracksLevel=1,type='archer')=>Math.max(...unlockedTiers(barracksLevel,type),1);
 function addTroops(roster,type,tier,qty){const out=normalizeRoster(roster);out[type]=out[type]||{};out[type][tier]=n(out[type][tier])+n(qty);return out}
 function promoteTroops(roster,type,fromTier,toTier,qty){const out=normalizeRoster(roster);qty=n(qty);if(toTier<=fromTier||n(out[type]?.[fromTier])<qty)return{ok:false,roster:out};out[type][fromTier]-=qty;out[type][toTier]=n(out[type][toTier])+qty;return{ok:true,roster:out}}
-function normalizeHeroes(ids){const arr=Array.isArray(ids)?ids:[ids].filter(Boolean);return [...new Set(arr.filter(id=>HEROES[id]||id==='maelis'))].slice(0,3)}
+function normalizeHeroes(ids){const arr=Array.isArray(ids)?ids:[ids].filter(Boolean);return [...new Set(arr.filter(id=>HEROES[id]))].slice(0,3)}
 function normalizeComposition(input,legacyArchers=0){
  const roster=normalizeRoster(input,legacyArchers),out={archer:{}};
  for(const t of [1,2,3])out.archer[t]=n(roster.archer[t]);
@@ -57,7 +58,7 @@ function aggregateTroops(composition,heroIds=[]){
  for(const k of ['attack','defense','health','break','power'])tot[k]=Math.round(tot[k]);
  return{...tot,details};
 }
-function heroPower(id,gearPower=0){const h=HEROES[id];if(!h)return 0;return Math.round(h.baseStats.attack*4+h.baseStats.defense*3+h.baseStats.health+h.baseStats.break*4+gearPower)}
+function heroPower(id,gearPower=0){const h=HEROES[id];if(!h)return 0;if(Number.isFinite(h.compatibilityPower))return Math.round(h.compatibilityPower+gearPower);return Math.round(h.baseStats.attack*4+h.baseStats.defense*3+h.baseStats.health+h.baseStats.break*4+gearPower)}
 function buildMarch({heroIds=[],troops={},gearPowerByHero={}}={}){
  const heroes=normalizeHeroes(heroIds),roster=normalizeRoster(troops),troopStats=aggregateTroops(roster,heroes);
  let heroStats={attack:0,defense:0,health:0,break:0,power:0};
