@@ -72,21 +72,26 @@ const ENEMIES={
   ashStalker:{id:'ashStalker',name:'Acechador de Ceniza',level:3,kind:'uncommon',trait:{id:'ambush',name:'Emboscada',copy:'Golpea con fuerza al inicio, pero expone su defensa después del primer choque.'},stats:{attack:132,defense:68,health:920,break:54,power:3600}},
   herald:{id:'herald',name:'Heraldo de la Fisura',level:5,kind:'worldboss',trait:{id:'riftPulse',name:'Pulso de la Brecha',copy:'Sus pulsos castigan marchas mal preparadas. Una intervención de héroe puede cambiar el intercambio.'},stats:{attack:188,defense:122,health:2250,break:78,power:6200}}
 };
+const HA=E.heroArmy;
 const HERO_COMBAT={
-  aldric:{name:'Sir Aldric',attack:78,defense:112,health:420,break:34,skill:{id:'bulwark',name:'Baluarte',copy:'Reduce el siguiente golpe enemigo un 45%.'}},
-  lyra:{name:'Lyra',attack:116,defense:62,health:300,break:82,skill:{id:'piercingShot',name:'Disparo de Ruptura',copy:'Inflige daño inmediato y debilita la defensa enemiga.'}},
-  maelis:{name:'Maelis',attack:72,defense:92,health:390,break:48,skill:{id:'ward',name:'Velo de Nareth',copy:'Recupera vida de la marcha y reduce daño del siguiente golpe.'}}
+  aldric:{name:'Sir Aldric',...HA.HEROES.aldric.baseStats,role:HA.HEROES.aldric.role,affinity:HA.HEROES.aldric.affinity,skill:{id:'bulwark',name:'Baluarte',copy:'Reduce el siguiente golpe enemigo un 45%.'}},
+  lyra:{name:'Lyra',...HA.HEROES.lyra.baseStats,role:HA.HEROES.lyra.role,affinity:HA.HEROES.lyra.affinity,skill:{id:'piercingShot',name:'Disparo de Ruptura',copy:'Inflige daño inmediato y debilita la defensa enemiga.'}},
+  maelis:{name:'Maelis',attack:72,defense:92,health:390,break:48,role:{id:'support',name:'Soporte'},affinity:null,skill:{id:'ward',name:'Velo de Nareth',copy:'Recupera vida de la marcha y reduce daño del siguiente golpe.'}}
 };
-const TROOP_FAMILIES={archer:{id:'archer',name:'Arqueros',profile:t=>({attack:18+t*2,defense:11+t,health:34+t*3,break:9+t*2,power:24+t*3})}};
-const troopProfile=(bastionLevel=1,type='archer')=>{const t=Math.max(1,Math.min(10,Number(bastionLevel)||1)),family=TROOP_FAMILIES[type]||TROOP_FAMILIES.archer;return{type:family.id,name:family.name,...family.profile(t)}};
-const playerStats=({troops=1,bastionLevel=1,hero='aldric',gearPower=0}={})=>{
-  const n=Math.max(1,Math.floor(Number(troops)||1)),tp=troopProfile(bastionLevel),h=HERO_COMBAT[hero]||HERO_COMBAT.aldric,scale=Math.sqrt(n);
+const TROOP_FAMILIES=HA.TROOPS;
+const troopProfile=(bastionLevel=1,type='archer',heroIds=[])=>{const family=TROOP_FAMILIES[type];if(!family)throw new Error('Unknown troop family '+type);const composition={[type]:1},profile=HA.resolveTroopProfile(type,bastionLevel,heroIds,composition);if(!profile)throw new Error('Troop family '+type+' has no balanced stats yet');return{type:family.id,name:family.name,...profile}};
+const playerStats=({troops=1,troopComposition=null,bastionLevel=1,hero='aldric',heroes=null,gearPower=0}={})=>{
+  const heroIds=HA.normalizeHeroes(heroes||[hero]),activeHero=heroIds[0]||'aldric',composition=HA.normalizeComposition(troopComposition??troops),activeFamilies=Object.entries(composition).filter(([,count])=>count>0);
+  if(activeFamilies.length!==1)throw new Error('Layered combat currently resolves one balanced troop family at a time; mixed march data is preserved for pre-combat systems.');
+  const [type,nRaw]=activeFamilies[0],n=Math.max(1,nRaw),tpBase=HA.resolveTroopProfile(type,bastionLevel,heroIds,composition);
+  if(!tpBase)throw new Error('Troop family '+type+' has no balanced stats yet');
+  const family=TROOP_FAMILIES[type],tp={type,name:family.name,...tpBase},h=HERO_COMBAT[activeHero]||HERO_COMBAT.aldric,scale=Math.sqrt(n);
   const attack=Math.round(tp.attack*scale+h.attack+gearPower*.16);
   const defense=Math.round(tp.defense*scale+h.defense+gearPower*.12);
   const health=Math.round(tp.health*scale+h.health+gearPower*.25);
   const brk=Math.round(tp.break*scale+h.break+gearPower*.08);
   const power=Math.round(n*tp.power+h.attack*4+h.defense*3+h.health+brk*4+gearPower);
-  return{attack,defense,health,break:brk,power,troopType:'archer',troopName:'Arqueros',hero};
+  return{attack,defense,health,break:brk,power,troopType:type,troopName:family.name,hero:activeHero,heroes:heroIds,troopComposition:composition,affinities:HA.affinityBonuses(heroIds,composition)};
 };
 const effectiveHit=(attack,defense,brk,mult=1)=>Math.max(12,Math.round((attack*(1+Math.min(.6,brk/500))-(defense*.48))*mult));
 const simulate=({enemyId,player,useSkill=false}={})=>{
