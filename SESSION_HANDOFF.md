@@ -31,6 +31,16 @@ The development-only QA Launcher is injected during `playtest/` generation and a
 
 Current focal presets: Engendro, Fisura/Lyra, Forja/Devorador, Códice/Reliquias/Duelo, Maelis, marcha/ataque, Heraldo semiautomático, capítulos v0.27, aceleradores and final Bastión X. Segment presets: VI→VIII and IX→X.
 
+## Permanent owner delivery rule
+Every future implementation delivery inherits the repository-level owner link contract from `AGENTS.md` / `QA_AND_DEPLOY.md`:
+- include **🎯 Probar esta mejora** with the appropriate focused development QA state whenever reasonable;
+- include **🧩 Probar tramo** when the change spans a meaningful progression/system block;
+- always include **🎮 Jugar completo** with the normal development build URL;
+- if a reasonable focused preset does not yet exist for a new feature, creating/adapting one is part of that feature's implementation;
+- these links never replace automated QA and must never point at the frozen tester snapshot.
+
+This is permanent cross-session behavior, not a one-session preference.
+
 ## Frozen tester isolation
 - **Eldoria Closed Playtest T1 / 0.26.5-test.2**.
 - Frozen integration commit: `df618e86be9da399bb827d5e6cebc3f13e55ff97` (current re-frozen snapshot after the final-survey contrast hotfix).
