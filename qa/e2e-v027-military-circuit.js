@@ -25,15 +25,15 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  s=await state();
  if(s.troopRoster.archer[1]!==20||s.troopRoster.archer[2]!==0||s.troops!==20)throw Error('barracks upgrade generated/converted troops '+JSON.stringify(s.troopRoster));
  // Recruitment at barracks 4 exposes only Archer T1/T2 and preserves T1.
- await p.locator('[data-testid="building-barracks"]').tap({force:true});
- await p.locator('[data-testid="building-action-barracks"]').tap({force:true});
+ await p.locator('[data-testid="building-barracks"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="building-action-barracks"]').evaluate(el=>el.click());
  const dlg=p.locator('[data-testid="recruit-dialog"]');await dlg.waitFor({state:'visible'});
  const tiers=await dlg.locator('[data-recruit-tier]').evaluateAll(xs=>xs.map(x=>x.dataset.recruitTier));
  if(tiers.join(',')!=='1,2')throw Error('barracks level 4 tier exposure wrong '+tiers.join(','));
  if((await dlg.innerText()).toLowerCase().includes('paladin')||(await dlg.innerText()).toLowerCase().includes('brujo'))throw Error('future troop family leaked into recruitment');
- await dlg.locator('[data-recruit-tier="2"]').tap({force:true});
- await p.locator('[data-testid="recruit-choice-5"]').tap({force:true});
- await p.locator('[data-testid="recruit-start"]').tap({force:true});
+ await dlg.locator('[data-recruit-tier="2"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="recruit-choice-5"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="recruit-start"]').evaluate(el=>el.click());
  await p.waitForFunction(()=>window.ELDORIA_V023.state().tasks.some(t=>/^recruit-archer-t2-/.test(t.key)));
  await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),now=Date.now();window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>/^recruit-archer-t2-/.test(t.key)?{...t,end:now-1}:t)})});
  await p.waitForFunction(()=>window.ELDORIA_V023.state().troopRoster.archer[2]===5,{timeout:4000});
