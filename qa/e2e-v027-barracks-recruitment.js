@@ -4,7 +4,9 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  const b=await chromium.launch({headless:true});
  const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await p.goto(URL,{waitUntil:'domcontentloaded'});
- await p.evaluate(()=>window.ELDORIA_V023.setQA({introSeen:true,view:'kingdom',bastion:2,bastionLevel:2,barracks:true,buildingLevels:{sawmill:1,barracks:1,granary:0,stoneworks:0,forge:0},wood:9999,stone:9999,food:0,tasks:[],selectedAction:'barracks',recruitQty:5}));
+ // Detailed tier/cost regression belongs to an advanced Barracks state.
+ // Barracks Nv.1 intentionally uses the simplified v0.30.4 onboarding layout.
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({introSeen:true,view:'kingdom',bastion:2,bastion3:true,bastionLevel:4,barracks:true,granary:true,buildingLevels:{sawmill:2,barracks:4,granary:2,stoneworks:0,forge:0},wood:9999,stone:9999,food:9999,tasks:[],selectedAction:'barracks',recruitQty:5,recruitTier:2}));
  await p.locator('[data-testid="building-action-barracks"]').tap({force:true});
  const dialog=p.locator('[data-testid="recruit-dialog"]');await dialog.waitFor({state:'visible'});
  for(const q of [5,10,20]){
