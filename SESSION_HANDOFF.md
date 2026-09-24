@@ -24,17 +24,17 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Final certification/published verification must be taken from the v0.32.0 promotion HEAD before claiming the build certified.
 
 ## Current v0.31.1 product state
-- **v0.31.1 is the active development patch over the certified v0.31.0 Relicario milestone.**
+- **v0.31.1 is the previous Relicario Practice visual patch over the certified v0.31.0 milestone.**
 - Práctica uses portrait 5:7-style Relicario cards in hand and on the board, with N/S/E/O fixed to the four card edges.
 - Common/Rare/Epic/Legendary presentation is gray/blue/purple/orange with restrained medieval-dark framing and improved name/value legibility.
 - Selection, placement and capture feedback are clearer in touch and desktop layouts without changing Practice mechanics or consuming cards.
 - Both guided Practice and repeatable free Practice use real card faces rather than provisional mini/text blocks.
 - Focused preset: `relicario-practice-v031`. Dedicated Relicario regression validates mobile + desktop Practice geometry, four rarities and N/S/E/O alignment.
 - Pre-promotion candidate certification: GitHub Actions run **1433**, commit `d73cf809353864dfe05e5bfd4052383bcf191d2d`, including full local-equivalent gate, uninterrupted fresh-save Arc I, frozen tester guard, Pages deploy and published Chromium verification.
-- Final v0.31.1 release claim requires the same certification on this version-promotion commit.
+- Historical note: v0.31.1 required release certification on its promotion commit; current release work has moved to v0.32.0.
 
 ## Current v0.31.0 product state
-- **v0.31.0 is the certified Relicario milestone underlying the active v0.31.1 visual patch.**
+- **v0.31.0 is the certified Relicario milestone underlying the later v0.31.1 visual patch.**
 - Relicario now owns a structured first collection of 15 Eldoria-native cards with Common/Rare/Epic/Legendary rarity, N/S/E/O values, exact 4X effects, optional per-card Duel abilities and Indestructible as an independent property.
 - Ordinary enemy drops are intentionally exceptional: one rarity roll per eligible world-enemy victory, 0.10% Common / 0.05% Rare / 99.85% none. Hunting is always 0%. Epics and Legendaries never enter ordinary drop.
 - Pool eligibility follows real discovery/progression. The first Bastion VII card is deterministic onboarding, but later Arc I progression does not require random Relicario drops.
@@ -44,7 +44,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Use/conserve, timed effects, cooldowns, discovery/pool state and tutorial state persist. Temporary effects use timestamps and survive reload/offline time.
 - Códice remains knowledge-only and Relicario remains independent. Arcón does not contain Reliquias.
 - Dedicated v0.31 Relicario QA and the uninterrupted fresh-save Arc I route are part of the integral gate. The pre-promotion candidate passed GitHub Actions run **1418** on `665690a17e20397725e51354693eecea56ae893e`, including Pages deploy and published Chromium verification.
-- Final release certification must run again on the version-promotion commit before v0.31.0 is claimed certified.
+- Historical note: v0.31.0 release certification belonged to its own promotion cycle; current release work has moved to v0.32.0.
 
 ## Current v0.30.4 product state
 - **v0.30.4 is the active development patch. v0.30.3 remains the previous certified baseline, not the active development version.**
