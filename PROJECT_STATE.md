@@ -4,7 +4,7 @@ Updated: 2026-09-24
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.31.0**.
+- Runtime/API milestone: **v0.31.1**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,15 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.31.1 — Relicario Practice visual polish
+- Práctica now preserves a real portrait-card silhouette in both hand and board instead of flattening placed cards into square or text-block representations.
+- N/S/E/O are anchored consistently to the top, bottom, right and left card edges, including mobile layouts.
+- Practice reuses the current Relicario rarity language: Common gray, Rare blue, Epic purple and Legendary orange, with restrained medieval-dark framing rather than neon treatment.
+- Hand selection, board placement and capture states have clearer feedback while preserving the underlying Practice rules and collection state.
+- The historical v0.21 card direction was used only as a visual reference for proportion, framed presence and perimeter values; current v0.31 Relicario data, rarity and reveal semantics remain canonical.
+- Dedicated mobile and desktop Practice coverage validates portrait geometry, four-rarity legibility and N/S/E/O alignment. The pre-promotion candidate passed full local-equivalent certification, uninterrupted fresh-save Arc I, frozen tester guard, Pages deployment and published Chromium verification in GitHub Actions run **1433** at `d73cf809353864dfe05e5bfd4052383bcf191d2d`.
+- This patch changes presentation/UX only; card catalog, acquisition probabilities, effects, economy, progression and frozen tester output are unchanged.
 
 ## v0.31.0 — Relicario collection, rarity, acquisition and card-use system
 - Relicario is a first-class system fully separate from Códice. Códice remains knowledge/discovery only; Relicario owns Reliquia collection, use/conserve decisions, reveal ceremony, Practice and future Duel behavior.
@@ -183,7 +192,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.30.1.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.31.1.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.

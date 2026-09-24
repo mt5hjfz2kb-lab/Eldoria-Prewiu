@@ -2,6 +2,17 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.31.1 — 2026-09-24
+
+- Rebuilt Relicario Practice card presentation around a real portrait-card silhouette in both hand and board.
+- Adapted the strongest v0.21 visual principles—proportion, framed presence and perimeter values—to the current v0.31 Relicario system without restoring obsolete mechanics or data.
+- Fixed N/S/E/O alignment so North is centered above, South below, East right and West left across mobile and desktop Practice.
+- Added restrained rarity identity: Common gray, Rare blue, Epic purple and Legendary orange.
+- Improved typography, contrast, spacing, selected-card feedback, placement and capture feedback, and the distinction between hand and board scale.
+- Removed provisional text-block rendering from guided Practice and kept repeatable/free Practice visually consistent with Collection and reveal ceremony.
+- Added a focused QA preset plus mobile/desktop geometry regression for portrait ratio, four rarities and N/S/E/O placement.
+- Pre-promotion candidate passed GitHub Actions run 1433 with full local-equivalent certification, uninterrupted fresh-save Arc I, frozen tester guard, Pages deployment and published Chromium verification.
+
 ## v0.31.0 — 2026-09-24
 
 - Consolidated Relicario as an independent first-class system with an initial 15-card Eldoria collection.
