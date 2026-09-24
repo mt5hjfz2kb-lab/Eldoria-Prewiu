@@ -10,7 +10,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const rarities=[...new Set(catalog.map(x=>x.rarity))].sort().join(',');
  if(rarities!=='common,epic,legendary,rare')throw Error('Rarity model incomplete: '+rarities);
  if(catalog.filter(x=>x.rarity==='legendary').some(x=>!['corona-valoria','heraldo-fisura'].includes(x.id)))throw Error('Unexpected legendary');
- let s=await mobile.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'relicario',relicarioUnlocked:true,codexUnlocked:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,marchConfigured:true,camp:1,chapterProgress:{...window.ELDORIA_V023.state().chapterProgress,counters:{...window.ELDORIA_V023.state().chapterProgress.counters,wins:{spawnling:1,ashStalker:1,herald:0}}}}));
+ let s=await mobile.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'relicario',relicarioUnlocked:true,codexUnlocked:true,bastionLevel:9,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,marchConfigured:true,camp:1,chapterProgress:{...window.ELDORIA_V023.state().chapterProgress,counters:{...window.ELDORIA_V023.state().chapterProgress.counters,wins:{spawnling:1,ashStalker:1,herald:0}}}}));
  let commonPool=await mobile.evaluate(()=>window.ELDORIA_V023.relicario.pool('common')),rarePool=await mobile.evaluate(()=>window.ELDORIA_V023.relicario.pool('rare'));
  if(commonPool.length<6)throw Error('Common pool missing known cards '+commonPool);
  if(!rarePool.includes('acechador-ceniza')||!rarePool.includes('forja-valoria')||!rarePool.includes('estandarte-valoria'))throw Error('Rare pool gating wrong '+rarePool);
