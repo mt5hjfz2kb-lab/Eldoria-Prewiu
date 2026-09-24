@@ -1,6 +1,6 @@
 # Eldoria — SESSION HANDOFF
 
-Updated: 2026-09-23
+Updated: 2026-09-24
 
 Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA: `QA_AND_DEPLOY.md`. History: `CHANGELOG.md` only.
 
@@ -16,6 +16,10 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 ## Current v0.30.3 product state
 - Códice and Relicario are now independent peer destinations in the main navigation. Códice is knowledge-only; Relicario owns Reliquia collection/use/practice. Their onboarding is separate and old cross-navigation portals were removed.
 - Current stabilization block is dedicated to making the existing Arc I completable end-to-end from a clean save; no large new system was added.
+- Códice and Relicario are separate first-level systems: Códice = knowledge/discovery; Relicario = transversal Reliquia collection/use/practice. No nesting or parent/back relationship remains.
+- Primary navigation exposes independent CÓDICE and RELICARIO buttons once unlocked; legacy saves with Códice unlocked migrate to Relicario unlocked automatically.
+- Each system has independent first-use teaching. Códice explains world knowledge; Relicario explains rarity/effect/state, use/conserve, Practice and future PvP.
+- Fresh-save Arc I certification with this architecture passed GitHub Actions run 1331; final metadata/docs promotion is v0.30.3.
 - VI→VII equipment ownership, Devorador modeled combat, Bastion II single-hero March, Lyra affinity consistency, world/building hitboxes and player-facing development text are hardened in v0.30.2.
 - qa/e2e-v0302-arc1-stability.js covers the reported blockers and the canonical fresh-save test equips the Hoja de Éter before attempting Bastion VII.
 
@@ -74,7 +78,7 @@ This is permanent cross-session behavior, not a one-session preference.
 - Focused regression: `qa/e2e-v030-depth.js`.
 - Certification: final certified runtime candidate `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5`, GitHub Actions run 1231. Full local-equivalent gate, uninterrupted fresh-save Arc I/Bastion I–X, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed; the final fresh-save includes the Bastion II render stabilization.
 
-## Latest v0.30.2 correction block
+## Latest v0.30.3 correction block
 - Military UX responsibilities are now explicit and separated: Barracks → recruit/upgrade; Troops → owned army; Heroes → characters; March → expedition composition.
 - Hero Hall is hero-only. March is a dedicated screen with Heroes / Troops / Composition / March Power / Confirm hierarchy.
 - Contextual first-use explanations cover Barracks, Troops, Hero Hall and March.
