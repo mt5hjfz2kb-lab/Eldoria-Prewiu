@@ -71,11 +71,11 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.locator('[data-testid="power-total"]').tap({force:true});const power=p.locator('.e22-dialog.powerCard');await power.waitFor({state:'visible'});const pcss=await power.evaluate(el=>({o:getComputedStyle(el).overflowY,t:getComputedStyle(el).touchAction}));if(!/auto|scroll/.test(pcss.o)||!pcss.t.includes('pan-y'))throw Error('Power dialog scroll contract missing '+JSON.stringify(pcss));await clear();
  // 9. Codex knowledge + Relicario Practice with five temporary loan cards.
  const realCodex=[
-  {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'Una reliquia real del jugador.'},
-  {id:'r2',name:'R2',rarity:'Común',values:{N:2,E:3,S:2,O:1},copy:'QA'},
-  {id:'r3',name:'R3',rarity:'Épica',values:{N:4,E:2,S:5,O:3},copy:'QA'}
+  {id:'bosque-valoria',name:'Bosque de Valoria',rarity:'common',values:{N:6,S:3,E:4,O:2},effect:'20 minutos de producción actual de madera.'},
+  {id:'engendro-fisura',name:'Engendro de la Fisura',rarity:'common',values:{N:2,S:7,E:3,O:2},effect:'Próxima victoria contra Brecha +10% recompensas.'},
+  {id:'acechador-ceniza',name:'Acechador de Ceniza',rarity:'rare',values:{N:8,S:3,E:5,O:3},effect:'Próxima victoria poco común +25% recompensas.'}
  ];
- await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,relicarioUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,cardsConsumed:['r4','r5'],duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:true,relicarioTab:'collection'});
+ await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,relicarioUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,relicDiscovered:['bosque-valoria','engendro-fisura','acechador-ceniza'],cardsConsumed:[],relicTutorial:{started:true,firstReveal:true,rarities:true,decision:true,indestructible:false,sides:true,completed:true},relicTutorialComplete:true,duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:true,relicarioTab:'collection'});
  const codexText=await p.locator('[data-testid="codex-scroll"]').innerText();for(const t of ['CÓDICE DE ELDORIA','LA BRECHA','BESTIARIO','MUNDO','PERSONAJES'])if(!codexText.toUpperCase().includes(t))throw Error('Codex UX missing '+t);
  if(await p.locator('[data-testid="open-relicario"],.relicarioPortal027').count())throw Error('Relicario still nested inside Codex');
  await p.locator('[data-testid="nav-relicario"]').evaluate(el=>el.click());
