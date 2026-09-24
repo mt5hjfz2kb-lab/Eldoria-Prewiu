@@ -5,6 +5,7 @@ Updated: 2026-09-24
 Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA: `QA_AND_DEPLOY.md`. History: `CHANGELOG.md` only.
 
 ## Current working state
+- Unity migration **audit and executable plan** are at `UNITY_MIGRATION_PLAN.md` (with four linked supporting documents). This is planning only: no Unity project, no version promotion and no claim that v0.32.0 has obtained final Pages certification. Follow `Next task` below for the web release gate; verify live `main` HEAD before beginning physical Unity work.
 - Branch: `main`, only active development line.
 - Active development version: **v0.32.0**.
 - Verify the real live HEAD at session start; never infer it from chat/history.

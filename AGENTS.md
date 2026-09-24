@@ -10,6 +10,8 @@ The repository is the source of truth. Chat history is disposable.
 
 If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; never reconstruct active code from history.
 
+Unity migration planning (audit only; no Unity project yet): start at `UNITY_MIGRATION_PLAN.md`, then follow its links to readiness, architecture, first visual slice and asset audit. It does not replace the current web source, certification or frozen tester rules.
+
 ## Fast start
 1. Read this file.
 2. Read `SESSION_HANDOFF.md`.

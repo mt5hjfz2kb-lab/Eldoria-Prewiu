@@ -2,6 +2,8 @@
 
 Start with **`AGENTS.md`**. It defines the repository hierarchy and permanent workflow.
 
+Unity migration audit and proposed first visual slice: [`UNITY_MIGRATION_PLAN.md`](UNITY_MIGRATION_PLAN.md). This is a planning deliverable, not a Unity build; the editable web game remains canonical.
+
 - Active development: `main`.
 - Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
 - Active development version: **v0.32.0**.
