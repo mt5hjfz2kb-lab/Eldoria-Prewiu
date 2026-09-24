@@ -73,3 +73,18 @@ A partir de este cierre, las nuevas decisiones macro deben responder a una neces
 El siguiente bloque de trabajo es **traducir el Mapa Maestro V1 a un plan de diseño y migración ejecutable para Unity**.
 
 Ese trabajo debe definir alcance, fases, dependencias, contratos de datos y criterios de validación antes de iniciar una implementación amplia en Unity. El prototipo web continúa siendo la especificación funcional jugable hasta que su núcleo quede certificado conforme a las reglas vigentes del proyecto.
+
+## 7. Concreción posterior al cierre — núcleo militar v0.32.0
+
+Esta sección **no reabre el Mapa Maestro V1**. Registra una concreción del núcleo militar detectada durante la consolidación jugable y compatible con la dirección ya cerrada para Unity/multijugador.
+
+- En **PvE**, el desgaste de tropas se expresa mediante tropas disponibles y tropas heridas. Las bajas permanentes de tropas son siempre 0.
+- En **PvP futuro**, el modelo podrá separar disponibles, heridos y bajas permanentes. Los porcentajes y el balance de bajas PvP siguen aplazados y no se simulan en el prototipo web.
+- El **Hospital de Valoria** recupera tropas heridas mediante un proceso temporizado persistente. Nunca recupera bajas permanentes.
+- La primera enseñanza jugable del Hospital se integra en Bastión X, después del enfrentamiento contra el Heraldo, como consecuencia natural del combate y sin requisito de recursos que pueda bloquear el cierre del prólogo.
+- Una **Marcha** debe conservar identidad propia de propietario, héroes y tropas y puede, arquitectónicamente, pertenecer en el futuro a una operación superior.
+- Las futuras **Concentraciones de Alianza** podrán coordinar múltiples contribuciones independientes y preservar para cada participante sus fuerzas, heridos, futuras bajas y recompensas.
+- El prototipo web no simula aliados, jugadores remotos ni interfaces falsas de unirse a Concentraciones. La implementación actual solo protege el contrato de datos necesario para no acoplar el núcleo a una resolución exclusivamente individual.
+
+Esta concreción refuerza la regla de la sección 4: el núcleo de la Etapa 1 debe seguir siendo trasladable a una futura autoridad multijugador sin fingir que esa capa ya existe.
+
