@@ -9,7 +9,7 @@ const {chromium}=require('playwright');
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
  const chapter=(current,completed={})=>({version:27,current,completedMissions:completed,claimedChapters:{},missionRewards:{},chapterStarted:{[current]:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:20,hunts:0,wins:{spawnling:0,ashStalker:0,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}});
 
- await set({introSeen:true,view:'kingdom',sawmill:true,barracks:true,chestUnlocked:true,bastion:2,bastionLevel:2,wood:10000,stone:1250000,food:1000000000,troops:56,chapterProgress:chapter(2,{'c2-barracks':Date.now(),'c2-train':Date.now()}),missionPanelOpen:false});
+ await set({introSeen:true,view:'kingdom',sawmill:true,barracks:true,chestUnlocked:true,bastion:2,bastionLevel:2,bastion3:true,wood:10000,stone:1250000,food:1000000000,troops:56,chapterProgress:chapter(2,{'c2-barracks':Date.now(),'c2-train':Date.now()}),missionPanelOpen:false});
  const hud=(await p.locator('[data-testid="resource-bar"]').innerText()).replace(/\s+/g,' ');
  if(!hud.includes('10K')||!hud.includes('1,25M')||!hud.includes('1B'))throw Error('Compact K/M/B HUD formatting missing: '+hud);
  const realm=await p.locator('.realm').innerText(),build=await p.locator('meta[name="eldoria-build"]').getAttribute('content');
