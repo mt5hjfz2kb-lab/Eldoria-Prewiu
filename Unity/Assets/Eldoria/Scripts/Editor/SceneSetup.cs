@@ -11,6 +11,7 @@ namespace Eldoria.EditorTools
     public static class SceneSetup
     {
         const string Root="Assets/Eldoria/Scenes/";
+        const string RuntimeMaterialPath="Assets/Eldoria/Content/Resources/EldoriaRuntimeBase.mat";
         [MenuItem("Eldoria/Regenerate slice scenes and build settings")]
         public static void Regenerate()
         {
@@ -51,7 +52,24 @@ namespace Eldoria.EditorTools
             }
             GraphicsSettings.defaultRenderPipeline=pipeline;
             QualitySettings.renderPipeline=pipeline;
+            EnsureRuntimeMaterial();
             EditorUtility.SetDirty(pipeline);
+            AssetDatabase.SaveAssets();
+        }
+        static void EnsureRuntimeMaterial()
+        {
+            Directory.CreateDirectory("Assets/Eldoria/Content/Resources");
+            if(AssetDatabase.LoadAssetAtPath<Material>(RuntimeMaterialPath)!=null) return;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null) shader=Shader.Find("Universal Render Pipeline/Unlit");
+            if(shader==null)
+            {
+                Debug.LogError("Eldoria runtime URP shader was not found; cannot create the player-safe base material.");
+                return;
+            }
+            var material=new Material(shader){name="Eldoria Runtime Base"};
+            AssetDatabase.CreateAsset(material,RuntimeMaterialPath);
+            AssetDatabase.ImportAsset(RuntimeMaterialPath,ImportAssetOptions.ForceUpdate);
         }
         [MenuItem("Eldoria/Build Windows slice")]
         public static void BuildWindows()
