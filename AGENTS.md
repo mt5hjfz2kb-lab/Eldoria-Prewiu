@@ -21,7 +21,7 @@ If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; ne
 - Development branch: `main` only.
 - Canonical editable runtime: `v0220/index.html` + `v0220/js/`.
 - `v0220` is a compatibility directory name, not the product version.
-- Active development version: **v0.30.1**.
+- Active development version: **v0.30.3**.
 - Generated development build: `playtest/`; never edit it as source.
 - Frozen external tester snapshot: **Eldoria Closed Playtest T1 / 0.26.5-test.2** at `/tester-v0265/`; never use it as a development baseline.
 - Protected recovery baselines remain `baseline/v0.24-certified` and `stable/visual-good-f139968c`.
