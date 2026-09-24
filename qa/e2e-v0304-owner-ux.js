@@ -49,6 +49,8 @@ const {chromium}=require('playwright');
  await set({...s,view:'forge',bastionLevel:6,forge:true,forgeLvl:1,aetherEmber:true,inventory:[{id:'aether-ember',name:'Ascua de Éter',type:'material'}]});
  await p.locator('[data-testid="forge-view"]').waitFor({state:'visible'});
  if(!await p.locator('[data-testid="forge-close"]').count())throw Error('Forge close control missing');
+ const forgePurpose=(await p.locator('[data-testid="forge-purpose"]').innerText()).toUpperCase();
+ for(const term of ['BASTIÓN VI','ASCUA DE ÉTER','DEVORADOR DE ÉTER','HOJA DE ÉTER','ARCÓN','HÉROES'])if(!forgePurpose.includes(term))throw Error('Forge purpose missing '+term);
  await p.locator('[data-testid="forge-craft-aether"]').tap({force:true});
  let forged=await state();if(!forged.firstForgeCeremonySeen||!forged.inventory.some(x=>x&&x.name==='Hoja de Éter'))throw Error('First forge milestone state missing');
 
