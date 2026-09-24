@@ -23,6 +23,6 @@ const {chromium}=require('playwright');
  await p.locator('[data-testid="card-use-estandarte-valoria"]').evaluate(el=>el.click());
  await p.locator('.e22-overlay .btn').evaluate(el=>el.click()).catch(()=>{});
  const after=await state();
- if(!after.codex.some(x=>x.id==='estandarte-valoria')||!(after.cardCooldowns['estandarte-valoria']>Date.now())||!(after.relicEffects?.marchSpeedPct?.end>Date.now()))throw Error('Indestructible relic contract failed');
+ if(!after.codex.some(x=>x.id==='estandarte-valoria')||(after.cardCooldowns?.['estandarte-valoria']>Date.now())||!(after.relicEffects?.marchSpeedPct?.end>Date.now()))throw Error('Indestructible relic contract failed');
  await b.close();console.log('CODEX KNOWLEDGE + RELICARIO + CHEST PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
