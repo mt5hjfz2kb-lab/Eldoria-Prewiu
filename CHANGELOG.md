@@ -2,6 +2,16 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.30.3 — 2026-09-24
+
+- Promoted Códice and Relicario to fully independent peer systems in primary navigation instead of exposing Relicario from inside Códice.
+- Removed the Códice → Relicario portal and the Relicario → Códice parent/back affordance.
+- Added explicit in-screen purpose explanations: Códice is world knowledge/discovery; Relicario is the transversal Reliquia collection/use/practice system.
+- Added separate first-use onboarding for Códice and Relicario while preserving existing saves and the current three-Reliquia Practice threshold.
+- Added backward-compatible `relicarioUnlocked` state so existing Bastion VII+ saves gain the independent destination without reset.
+- Updated mobile navigation and all affected QA to enforce the new separation, including uninterrupted fresh-save Arc I progression through Chapter VII.
+- Corrected stale canonical documentation that still described cards/relics as belonging to Códice.
+
 ## v0.30.2 — 2026-09-23
 
 - Fixed the Bastion VI → VII softlock by making forged equipment remain canonically owned when equipped; mission, counter and gate now agree.
