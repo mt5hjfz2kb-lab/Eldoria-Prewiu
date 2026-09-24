@@ -4,7 +4,7 @@ Updated: 2026-09-24
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.30.3**.
+- Runtime/API milestone: **v0.30.4**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,20 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.30.4 — mobile UX clarity, continuity and system comprehension
+- The owner mobile-feedback block is integrated without expanding Arc I scope: the focus is clarity, navigation, feedback and continuity of actions.
+- A discreet in-game build label exposes the exact version without consuming meaningful HUD space.
+- Large resource values use readable K / M / B abbreviations while internal resource arithmetic remains unchanged.
+- Poder de expedición is explained as a separate concept from Poder Total, with contextual guidance toward troops, heroes, March composition and equipment.
+- March is a first-class discoverable destination with an explicit exit/back path. World actions that send an expedition now communicate travel with a short visible march animation before resolution.
+- Cuartel remains exclusively responsible for recruiting/upgrading troops. Its early-game presentation is simplified and mobile stacking/hitboxes were corrected so neighboring buildings cannot intercept recruitment actions.
+- Arcón keeps objects/materials/equipment distinct from Códice knowledge and Relicario Reliquias, with clearer grouping and contextual accelerator teaching.
+- Forge now explains its purpose, locked state, required anomalous material, output and relationship to hero equipment without adding unrelated systems.
+- Ambient audio was reduced/reworked so it reads as restrained dark-fantasy ambience rather than continuous noise.
+- Códice and Relicario remain fully independent peer systems; no v0.30.4 correction re-nests one inside the other.
+- Dedicated owner UX coverage is qa/e2e-v0304-owner-ux.js. The uninterrupted Arc I fresh-save and late-progression suites were synchronized with the new march-animation and full-node gathering semantics rather than bypassing them.
+- Pre-promotion functional certification passed GitHub Actions run **1386** on commit `7c7289c08b12c7cd610a6971e199aa8c6c783332`, including the full local-equivalent gate, frozen tester guard, Pages deploy and published Chromium verification. The version-promotion commit must pass the same workflow before final release claim.
 
 ## v0.30.3 Códice / Relicario independence hardening
 - Códice and Relicario are now peer destinations in primary navigation, not parent/child surfaces.

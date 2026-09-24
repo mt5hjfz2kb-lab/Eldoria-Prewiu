@@ -2,6 +2,20 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.30.4 — 2026-09-24
+
+- Completed the owner mobile UX clarity block without expanding Arc I content scope.
+- Added a discreet exact build label and K/M/B formatting for large resources.
+- Clarified Poder de expedición versus Poder Total and made March a discoverable first-class destination with a clear exit path.
+- Added short visible world-march travel feedback before expedition actions resolve.
+- Simplified the early Cuartel experience and fixed mobile stacking/hitbox conflicts that could block recruitment.
+- Reorganized Arcón presentation while preserving strict boundaries with Códice knowledge and Relicario Reliquias.
+- Improved contextual accelerator teaching and Forge locked/ready/material/output/equipment explanations.
+- Reworked ambient audio toward restrained dark-fantasy ambience.
+- Preserved the independent Códice / Relicario architecture introduced in v0.30.3.
+- Added/extended v0.30.4 owner UX, mobile and interaction regression coverage.
+- Synchronized uninterrupted fresh-save QA with the real march-animation and full-node gathering semantics; pre-promotion full certification passed GitHub Actions run 1386.
+
 ## v0.30.3 — 2026-09-24
 
 - Promoted Códice and Relicario to fully independent peer systems in primary navigation instead of exposing Relicario from inside Códice.

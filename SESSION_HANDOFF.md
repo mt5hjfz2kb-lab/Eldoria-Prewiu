@@ -6,12 +6,20 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.30.3**.
+- Active development version: **v0.30.4**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
+
+## Current v0.30.4 product state
+- **v0.30.4 is the active development patch. v0.30.3 remains the previous certified baseline, not the active development version.**
+- This patch closes the owner's mobile UX clarity block: exact version visibility, K/M/B resources, expedition-power teaching, first-class March access/exit, short world-march travel feedback, early Barracks simplification, Arcón organization, contextual speedup teaching, Forge clarity and restrained ambient audio.
+- Permanent responsibility boundaries remain unchanged: Códice = knowledge; Relicario = Reliquias; Arcón = objects/materials/equipment; Cuartel = recruit/upgrade troops; Héroes = characters; Marcha = expedition composition; Poder Total ≠ Poder de expedición.
+- The v0.30.4 owner UX suite passes. The full Arc I fresh-save was updated only where the player's real semantics changed (world-march animation and full-node gathering) and the pre-promotion candidate passed GitHub Actions run **1386** at `7c7289c08b12c7cd610a6971e199aa8c6c783332`.
+- Final certification for the promoted version is the normal Pages workflow on the version-promotion commit; do not claim v0.30.4 certified from run 1386 alone.
+- Continue to edit only `v0220/index.html` + `v0220/js/`; `playtest/` is generated and `tester-v0265/` remains frozen.
 
 ## Current v0.30.3 product state
 - Códice and Relicario are now independent peer destinations in the main navigation. Códice is knowledge-only; Relicario owns Reliquia collection/use/practice. Their onboarding is separate and old cross-navigation portals were removed.
