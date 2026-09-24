@@ -1723,8 +1723,8 @@ window.dialogue = function(name, copy, done) {
 #eldoria-core-loop .nodeWrap{z-index:12!important}#eldoria-core-loop .nodeWrap:has(.objectAction){z-index:620!important}
 #eldoria-core-loop .buildingWrap:has(.buildingAction){z-index:760!important}
 #eldoria-core-loop .buildingWrap>.buildingAction{z-index:780!important;pointer-events:auto!important}
-#eldoria-core-loop .buildingWrap.activeBuilding0304{z-index:5000!important;pointer-events:auto!important}
-#eldoria-core-loop .buildingWrap.activeBuilding0304>.buildingAction{z-index:5010!important;pointer-events:auto!important}
+#eldoria-core-loop .buildingWrap.activeBuilding0304:has(>.buildingAction){z-index:9000!important;pointer-events:auto!important}
+#eldoria-core-loop .buildingWrap.activeBuilding0304.activeBuilding0304>.buildingAction{z-index:9010!important;pointer-events:auto!important}
 #eldoria-core-loop .buildingWrap>.buildingAction *{pointer-events:auto!important}
 .combatForecast0266 em,.combatForecast0266 i,.combatParticipants0302 small,.combatParticipants0302 b,.combatParticipants0302 span{display:block}
 .combatForecast0266 em{margin-top:6px;font:8px/1.4 Arial;color:#d9dfdf}.combatForecast0266 i{margin-top:5px;font:italic 7px/1.4 Arial;color:#aeb8bb}
