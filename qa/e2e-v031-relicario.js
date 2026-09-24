@@ -38,29 +38,29 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  await mobile.evaluate(()=>window.ELDORIA_V023.relicario.reveal('estandarte-valoria',true));reveal=mobile.locator('[data-testid="relic-reveal"]');await mobile.waitForTimeout(1500);if(!await reveal.locator('text=INDESTRUCTIBLE').count())throw Error('Indestructible second phase missing');await reveal.locator('[data-relic-reveal-done]').click();
  await mobile.locator('[data-testid="relicario-purpose"]').waitFor({state:'visible'});if(await mobile.locator('[data-testid="codex-scroll"]').count())throw Error('Codex nested in Relicario');
 
- // Practice visual regression: guided Practice uses full portrait cards and anchors N/S/E/O to the four edges.
+ // Practice visual regression: actual free-practice board uses portrait Relicario cards and anchored N/S/E/O.
  const practice=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  await practice.goto((process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1').replace(/\?.*$/,'')+'?qa=1&preset=relicario-practice-v031',{waitUntil:'domcontentloaded'});
  await practice.waitForSelector('[data-testid="relicario-practice"]');
  await practice.locator('[data-testid="open-relic-training"]').click();
- await practice.waitForSelector('[data-testid="duel-training"]');
- const rarityClasses=await practice.locator('.duelHand026 .relicCard026').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-rarity')));
- for(const rarity of ['common','rare','epic','legendary'])if(!rarityClasses.includes(rarity))throw Error('Practice hand missing rarity '+rarity+': '+rarityClasses.join(','));
+ await practice.waitForSelector('.duelFormal026');
+ const rarityValues=await practice.locator('.duelHand026 .relicCard026').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-rarity')));
+ for(const rarity of ['common','rare','epic','legendary'])if(!rarityValues.includes(rarity))throw Error('Practice hand missing rarity '+rarity+': '+rarityValues.join(','));
  const handGeom=await practice.locator('.duelHand026 .relicCard026').first().evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});
  if(!(handGeom.h/handGeom.w>1.32&&handGeom.h/handGeom.w<1.5))throw Error('Practice hand card lost portrait proportion '+JSON.stringify(handGeom));
- await practice.locator('[data-testid="training-card-0"]').click();
- await practice.locator('[data-testid="training-cell-4"]').click();
- await practice.waitForTimeout(350);
- const played=practice.locator('[data-practice-board-card] .relicCard026').first();await played.waitFor({state:'visible'});
+ await practice.locator('.duelHand026').first().click();
+ await practice.locator('.duelCell026:not(:disabled)').first().click();
+ await practice.waitForSelector('.duelCell026.player .relicCard026');
+ await practice.waitForTimeout(120);
+ const played=practice.locator('.duelCell026.player .relicCard026').first();
  const geo=await played.evaluate(card=>{const c=card.getBoundingClientRect(),get=sel=>card.querySelector(sel).getBoundingClientRect();const n=get('.side.n'),s=get('.side.s'),e=get('.side.e'),w=get('.side.w');return{card:{x:c.x,y:c.y,w:c.width,h:c.height},n:{x:n.x+n.width/2,y:n.y+n.height/2},s:{x:s.x+s.width/2,y:s.y+s.height/2},e:{x:e.x+e.width/2,y:e.y+e.height/2},w:{x:w.x+w.width/2,y:w.y+w.height/2}}});
- const cx=geo.card.x+geo.card.w/2,cy=geo.card.y+geo.card.h/2,tol=Math.max(4,geo.card.w*.14);
+ const cx=geo.card.x+geo.card.w/2,cy=geo.card.y+geo.card.h/2,tol=Math.max(4,geo.card.w*.12);
  if(Math.abs(geo.n.x-cx)>tol||geo.n.y>=cy)throw Error('North value misaligned '+JSON.stringify(geo));
  if(Math.abs(geo.s.x-cx)>tol||geo.s.y<=cy)throw Error('South value misaligned '+JSON.stringify(geo));
  if(Math.abs(geo.e.y-cy)>tol||geo.e.x<=cx)throw Error('East value misaligned '+JSON.stringify(geo));
  if(Math.abs(geo.w.y-cy)>tol||geo.w.x>=cx)throw Error('West value misaligned '+JSON.stringify(geo));
  const boardGeom=await played.evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});
  if(!(boardGeom.h/boardGeom.w>1.32&&boardGeom.h/boardGeom.w<1.5))throw Error('Board card lost portrait proportion '+JSON.stringify(boardGeom));
- if(!await practice.locator('[data-testid="training-cell-5"] [data-practice-board-card]').count())throw Error('Orin response did not render as a full card');
  await practice.close();
  const desk=await b.newPage({viewport:{width:1280,height:800}});await desk.goto(URL,{waitUntil:'domcontentloaded'});await desk.waitForSelector('[data-testid="relicario"]');if(!await desk.locator('[data-testid="relicario-guide"]').count())throw Error('Desktop Relicario guide missing');
  await b.close();console.log('v0.31 RELICARIO SYSTEM PASS');
