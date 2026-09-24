@@ -25,8 +25,8 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  s=await state();s.chapterProgress.counters.gathered.wood=600;s.chapterProgress.counters.gathered.stone=500;
  await set({...s,sawmill:true,camp:1,bastion:2,bastionLevel:2});await p.waitForTimeout(100);
  s=await state();if(!s.chapterProgress.claimedChapters['1'])throw Error('chapter I did not complete');
- if((s.speedups.m1||0)!==2)throw Error('chapter I must grant exactly two 1m speedups');
- let events=(s.sessionLog||[]).map(x=>x.type);for(const e of ['chapter_started','mission_completed','chapter_completed','chapter_reward_claimed','speedup_received'])if(!events.includes(e))throw Error('analytics missing '+e);
+ if((s.speedups.m1||0)!==0)throw Error('chapter I must not stockpile speedups before they are usable');
+ let events=(s.sessionLog||[]).map(x=>x.type);for(const e of ['chapter_started','mission_completed','chapter_completed','chapter_reward_claimed'])if(!events.includes(e))throw Error('analytics missing '+e);
  const rewardSnapshot={m1:s.speedups.m1,claim:s.chapterProgress.claimedChapters['1'],rewardEvents:(s.sessionLog||[]).filter(x=>x.type==='chapter_reward_claimed'&&x.data?.chapter===1).length};await set({...s});await p.waitForTimeout(80);s=await state();if(s.speedups.m1!==rewardSnapshot.m1||s.chapterProgress.claimedChapters['1']!==rewardSnapshot.claim||(s.sessionLog||[]).filter(x=>x.type==='chapter_reward_claimed'&&x.data?.chapter===1).length!==rewardSnapshot.rewardEvents)throw Error('chapter reward duplicated');
 
  // Speedup modifies authoritative timestamp, resolves eligible task, persists one leftover.
