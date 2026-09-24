@@ -22,6 +22,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  let after=await mobile.evaluate(()=>window.ELDORIA_V023.state().relicDropStats);if(after.rarityRolls-before.rarityRolls!==2)throw Error('Expected exactly one rarity roll per enemy victory');
  let epics=await mobile.evaluate(()=>window.ELDORIA_V023.relicario.pool('epic')),legendDrop=await mobile.evaluate(()=>window.ELDORIA_V023.relicario.pool('legendary'));
  if(epics.length||legendDrop.length)throw Error('Epic/legendary leaked into ordinary drop pool');
+ const abilities=await mobile.evaluate(()=>window.ELDORIA_V023.relicario.duelAbilityProbe());if(abilities.guard!==7)throw Error('Aldric Guardia did not add +2 to left/O side: '+JSON.stringify(abilities));if(abilities.corruptedEast!==2)throw Error('Heraldo Corrupción did not swap rival E/O for confrontation: '+JSON.stringify(abilities));if(abilities.distortedNorth!==3)throw Error('Primera Brecha Distorsión did not reduce a rival side by 1: '+JSON.stringify(abilities));
  await mobile.evaluate(()=>{window.ELDORIA_V023.relicario.grant('bosque-valoria',false);window.ELDORIA_V023.relicario.grant('bosque-valoria',false)});
  s=await mobile.evaluate(()=>window.ELDORIA_V023.state());if(s.codex.filter(x=>x.id==='bosque-valoria'&&!x.quality).length<2)throw Error('Normal duplicates not supported');
  await mobile.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),sawmill:true,buildingLevels:{...window.ELDORIA_V023.state().buildingLevels,sawmill:2}}));
