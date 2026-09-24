@@ -37,13 +37,15 @@ El prólogo Bastión I–X debe enseñar este bucle. El producto a largo plazo d
 - Tras el prólogo, Valoria evoluciona de asentamiento reconstruido a comunidad civil: llegan habitantes y las viviendas pasan a formar parte visible del crecimiento del reino.
 - El Consejo de Valoria nace como consecuencia narrativa de esa madurez social y, a la vez, funciona como sistema diegético de investigación/progresión PvE.
 - Los consejeros principales son personajes canónicos que se incorporan progresivamente; las tres ramas fundacionales son Recursos, Construcción y Militar.
+- El Gobierno del Mundo tendrá autoridad real pero limitada: ninguna decisión unilateral del gobernante debe poder arruinar el progreso o la experiencia de un servidor.
+- Las decisiones globales de mayor impacto requerirán un contrapeso colectivo ligado principalmente a las Alianzas más fuertes del servidor.
 
 ### DEFINIR ANTES DE UNITY
 - Reglas macro definitivas de PvP, guerra y protección del jugador.
 - Reglas exactas de conquista, pérdida y recuperación territorial.
 - Ciclo detallado de La Brecha y sus estados de madurez.
 - Balance y reglas concretas del Oráculo.
-- Gobierno del Mundo: legitimidad, acceso, duración, poderes y destitución.
+- Gobierno del Mundo: acceso/legitimidad, duración, poderes concretos, composición/votación del Consejo de Alianzas y destitución.
 
 ### DISEÑO MACRO, IMPLEMENTACIÓN POSTERIOR
 - Puerto/Muelle, barcos y expediciones.
@@ -206,14 +208,29 @@ Estado: **DIRECCIÓN MACRO CERRADA; PERSONAJES, ORDEN EXACTO, ÁRBOLES Y BALANCE
 ### 5.2 Gobierno del Mundo — autoridad política del servidor
 El servidor tendrá una **autoridad política real ejercida por un jugador**. Nombre provisional: **Soberano del Mundo**.
 
-Principios:
-- no debe ser simplemente el jugador número 1 de un ranking;
-- debe poseer poderes y responsabilidades reales;
-- puede existir una corte/consejo con cargos ocupados por otros jugadores;
-- puede afectar políticas/beneficios del servidor y asumir responsabilidades relacionadas con La Brecha;
-- el acceso al cargo puede combinar poder militar, territorio y legitimidad política.
+#### Principios de autoridad
+- No debe ser simplemente el jugador número 1 de un ranking.
+- El cargo debe poseer poderes y responsabilidades reales para que alcanzarlo tenga valor político y jugable.
+- Su autoridad es **limitada por diseño**: ningún poder unilateral debe permitir arruinar el servidor, bloquear de forma grave el progreso ajeno, destruir arbitrariamente territorio, confiscar progreso o provocar pérdidas irreversibles significativas a jugadores o Alianzas.
+- El gobernante puede ejercer decisiones ordinarias dentro de sus competencias sin convertir cada acción en una votación.
+- Puede afectar políticas/beneficios del servidor, asumir responsabilidades relacionadas con La Brecha y, en el futuro, nombrar cargos de una corte u otras funciones institucionales.
 
-Estado: **DIRECCIÓN CERRADA; MECÁNICA POLÍTICA ABIERTA**.
+#### Contrapeso de Alianzas
+Las decisiones globales de mayor impacto no dependerán únicamente del Soberano. Existirá un **contrapeso colectivo ligado principalmente a las Alianzas más fuertes del servidor**.
+
+Dirección conceptual:
+- los líderes de un grupo limitado de Alianzas relevantes participan en la aprobación de decisiones de gran alcance;
+- la pertenencia a ese grupo estará vinculada principalmente a la posición/peso de las Alianzas en el servidor;
+- el número exacto de Alianzas representadas queda abierto —por ejemplo, tres o cinco son referencias de diseño, no decisiones cerradas—;
+- tampoco se fijan todavía umbrales, mayorías, derecho de veto ni qué decisiones concretas exigen votación;
+- el sistema debe generar negociación y política entre rivales sin permitir que una única persona controle unilateralmente el destino del servidor.
+
+Principio: **Gobernante con autoridad ejecutiva real + contrapeso de las Alianzas principales para decisiones de alto impacto**.
+
+#### Acceso y legitimidad
+El acceso al cargo puede combinar poder militar, territorio y legitimidad política. La fórmula exacta todavía no está definida y no debe reducirse automáticamente al ranking de Poder Total.
+
+Estado: **MARCO POLÍTICO MACRO PARCIALMENTE CERRADO; ACCESO, DURACIÓN, PODERES CONCRETOS, COMPOSICIÓN/VOTACIÓN Y DESTITUCIÓN POR DEFINIR**.
 
 ## 6. Bloque estructural 04 — PvP, guerra y protección
 
@@ -296,12 +313,14 @@ Estado: **DIRECCIÓN MACRO CERRADA; FORMATOS, CALENDARIO, MATCHMAKING, PUNTUACI�
 
 **Consejo de Valoria** condiciona → progresión/investigación PvE interna y futuras ramas de desarrollo del reino.
 
+**Gobierno del Mundo** condiciona → política global del servidor, relación entre Alianzas principales, decisiones compartidas de alto impacto y futuras responsabilidades frente a La Brecha.
+
 **Puerto** condiciona → expediciones avanzadas y, solo en una fase posterior, navegación/PvP marítimo.
 
 ## 10. Decisiones abiertas prioritarias
 
 ### Macro todavía por consolidar
-1. **Gobierno del Mundo:** acceso/legitimidad, poderes, duración, corte/consejo y destitución.
+1. **Gobierno del Mundo:** acceso/legitimidad, duración, poderes concretos, composición y reglas de votación del contrapeso de Alianzas, corte/cargos y destitución.
 2. **Protección PvP:** principios macro para jugadores nuevos, diferencias extremas de poder y recuperación.
 3. **Territorio de Alianza:** consecuencias macro de pérdida, desconexión y caída del Cuartel General.
 4. **Brecha:** ciclo global, consecuencias, recuperación y relación exacta con Madurez del Mundo.
@@ -338,6 +357,8 @@ Estado: **DIRECCIÓN MACRO CERRADA; FORMATOS, CALENDARIO, MATCHMAKING, PUNTUACI�
 - estado global de La Brecha;
 - territorio continuo y estructuras de Alianza;
 - estados de PvP/guerra;
+- autoridad política de servidor separada de la identidad del jugador, con permisos limitados y decisiones sujetas a aprobación colectiva cuando corresponda;
+- representación de Alianzas apta para un futuro consejo/contrapeso político;
 - extensibilidad para eventos, Gobierno y sistemas avanzados.
 
 ### Futuro
