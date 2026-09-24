@@ -2,6 +2,10 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root){root.ELDORIA=root.ELDORIA||{};root.ELDORIA.militaryMedical=api;}})(typeof window!=='undefined'?window:null,function(){
 'use strict';
 const n=v=>Math.max(0,Math.floor(Number(v)||0));
+const COMBAT_POLICY=Object.freeze({
+ pve:Object.freeze({canWound:true,canKill:false}),
+ pvp:Object.freeze({canWound:true,canKill:true,implemented:false})
+});
 const emptyRoster=()=>({archer:{1:0,2:0,3:0},paladin:{},warlock:{}});
 function normalizeRoster(input){
  const out=emptyRoster(),src=input&&typeof input==='object'?input:{};
@@ -55,5 +59,5 @@ function healWoundedRoster(available,wounded,qty=Infinity){
  return{available:a,wounded:w,moved};
 }
 function healingSeconds(qty){return Math.max(8,Math.min(30,n(qty)*2))}
-return{emptyRoster,normalizeRoster,addRoster,total,clampComposition,normalizeState,operationContribution,pveOutcome,woundAvailableRoster,healWoundedRoster,healingSeconds};
+return{COMBAT_POLICY,emptyRoster,normalizeRoster,addRoster,total,clampComposition,normalizeState,operationContribution,pveOutcome,woundAvailableRoster,healWoundedRoster,healingSeconds};
 });
