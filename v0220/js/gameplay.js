@@ -61,6 +61,7 @@ const CHAPTERS=[
 {id:10,title:'LA PRIMERA BRECHA',context:'Ya no se trata de recolectar. Se trata de demostrar que Valoria sabe prepararse y luchar.',missions:[
 {id:'c10-herald',title:'Derrota al Heraldo de la Fisura',type:'counter',counter:'wins.herald',value:1,target:{kind:'node',id:'herald'},reward:{power:300}},
 {id:'c10-skill',title:'Intervén con una habilidad de héroe',type:'counter',counter:'heroInterventions',value:1,target:{kind:'node',id:'herald'},reward:{speedup5:1}},
+{id:'c10-hospital',title:'Recupera a los heridos en el Hospital',type:'flag',path:'hospitalFirstTreatmentComplete',value:1,target:{kind:'poi',id:'hospital'},reward:{power:180}},
 {id:'c10-final',title:'Completa el asalto final del Arco I',type:'flag',path:'finalWon',value:1,target:{kind:'node',id:'final'},reward:{power:500}}],chapterReward:{wood:900,stone:800,food:700,speedup15:2,power:900}}
 ];
 
