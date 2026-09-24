@@ -4,7 +4,7 @@ Updated: 2026-09-24
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.31.1**.
+- Runtime/API milestone: **v0.32.0**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,17 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.32.0 — Hospital, wounded troops and March reconciliation
+- Bastion X now introduces a real Hospital loop after the Herald battle: PvE can create wounded troops, while permanent PvE deaths remain explicitly **0**.
+- Wounded troops remain owned by Valoria but are removed from the available military roster until treatment completes; Troops and March explain this distinction directly.
+- Hospital treatment is a canonical timed task, persists across reload/offline time, and restores recovered troops to the available roster when complete.
+- March composition is reconciled against the actually available roster only when military state changes, preventing wounded troops from leaking back into expeditions without destabilizing unrelated UI renders.
+- The Hospital is first revealed through the Bastion X Herald flow and the chapter/finale path requires recovery before the final assault.
+- Future multiplayer semantics stay separated from the current slice: solo March exposes an operation-contribution contract, PvP casualty policy is reserved, and no fake rally/join UI is introduced.
+- Old saves migrate medical state safely without altering existing resources, progression or owned troops.
+- Dedicated regression: `qa/e2e-v032-hospital.js`, included in targeted/regression certification; the uninterrupted Arc I sweep now covers Herald wounds → Hospital treatment → recovered expedition readiness.
+- Frozen tester output remains unchanged.
 
 ## v0.31.1 — Relicario Practice visual polish
 - Práctica now preserves a real portrait-card silhouette in both hand and board instead of flattening placed cards into square or text-block representations.
@@ -192,7 +203,7 @@ Change this file only when implemented functionality, product scope, verified st
 
 
 ## Historical implementation notes retained for context
-These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.31.1.
+These headings record when features entered the product. They are **not** active-version markers; the active development version is v0.32.0.
 
 ### v0.26.1 — coherence pass
 - World nodes respawn by timer and relocate instead of reappearing at a fixed coordinate.
