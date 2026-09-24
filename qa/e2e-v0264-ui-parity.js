@@ -6,18 +6,18 @@ const {chromium}=require('playwright');
  await p.goto(URL,{waitUntil:'domcontentloaded'});
  const set=x=>p.evaluate(v=>window.ELDORIA_V023.setQA(v),x),state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
  // Locked progression parity.
- await set({view:'kingdom',sawmill:false,lyra:false,chestUnlocked:false,codexUnlocked:false,rankUnlocked:false});
+ await set({view:'kingdom',sawmill:false,lyra:false,chestUnlocked:false,codexUnlocked:false,relicarioUnlocked:false,rankUnlocked:false});
  if(!await p.locator('[data-testid="nav-world"]:disabled').count())throw Error('World lock parity lost');
- if(await p.locator('[data-testid="nav-heroes"],[data-testid="valoria-chest"],[data-testid="nav-codex"]').count())throw Error('Locked primary destinations exposed early');
+ if(await p.locator('[data-testid="nav-heroes"],[data-testid="valoria-chest"],[data-testid="nav-codex"],[data-testid="nav-relicario"]').count())throw Error('Locked primary destinations exposed early');
  // Fully unlocked navigation, exact primary order, ranking preserved outside main nav.
- await set({view:'kingdom',sawmill:true,lyra:true,maelis:true,chestUnlocked:true,codexUnlocked:true,rankUnlocked:true,bastion3:true,bastionLevel:9,inventory:[{id:'iron-brace',name:'Abrazadera de hierro antiguo',type:'material',use:'Mejora Aserradero'},{id:'qa-blade',name:'Hoja QA',slot:'weapon',power:10}],codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'QA'}],narethRescued:true,troops:41,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false});
+ await set({view:'kingdom',sawmill:true,lyra:true,maelis:true,chestUnlocked:true,codexUnlocked:true,relicarioUnlocked:true,rankUnlocked:true,bastion3:true,bastionLevel:9,inventory:[{id:'iron-brace',name:'Abrazadera de hierro antiguo',type:'material',use:'Mejora Aserradero'},{id:'qa-blade',name:'Hoja QA',slot:'weapon',power:10}],codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'QA'}],narethRescued:true,troops:41,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false});
  const navText=(await p.locator('[data-testid="primary-nav"] button').allInnerTexts()).map(x=>x.trim());
- const expected=['⌂\nCIUDAD','◎\nMUNDO','♞\nHÉROES','▣\nARCÓN','✦\nCÓDICE'];
+ const expected=['⌂\nCIUDAD','◎\nMUNDO','♞\nHÉROES','▣\nARCÓN','⌘\nCÓDICE','✦\nRELICARIO'];
  if(JSON.stringify(navText)!==JSON.stringify(expected))throw Error('Primary navigation parity/order mismatch: '+JSON.stringify(navText));
  if(await p.locator('[data-testid="primary-nav"] [data-testid="nav-ranking"]').count())throw Error('Ranking remained in primary nav');
  if(!await p.locator('[data-testid="nav-ranking"]').count())throw Error('Ranking access disappeared');
  // Full-screen destinations.
- for(const [tid,view,selector] of [['nav-heroes','heroes','.heroArchiveScene'],['valoria-chest','chest','.chestScene'],['nav-codex','codex','.codexScene']]){
+ for(const [tid,view,selector] of [['nav-heroes','heroes','.heroArchiveScene'],['valoria-chest','chest','.chestScene'],['nav-codex','codex','.codexScene'],['nav-relicario','relicario','[data-testid="relicario"]']]){
    await p.locator('[data-testid="'+tid+'"]').tap({force:true});await p.locator(selector).waitFor({state:'visible'});
    if((await state()).view!==view)throw Error(view+' navigation failed');
    if(await p.locator('.e22-overlay:visible').count())throw Error(view+' regressed to overlay');
