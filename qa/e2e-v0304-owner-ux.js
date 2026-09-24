@@ -31,10 +31,12 @@ const {chromium}=require('playwright');
  let s=await state();
  await set({...s,view:'kingdom',selectedAction:null,buildingLevels:{...(s.buildingLevels||{}),barracks:1}});
  await p.locator('[data-testid="building-barracks"]').tap({force:true});
- const barracksContext=p.locator('[data-testid="building-context-barracks"]');await barracksContext.waitFor({state:'visible'});
+ let barracksContext=p.locator('[data-testid="building-context-barracks"]');await barracksContext.waitFor({state:'visible'});
  if((await state()).selectedAction!=='barracks')throw Error('Real Barracks tap did not select the building');
+ const coachClose=barracksContext.locator('[data-ux-coach-dismiss="barracks"]');
+ if(await coachClose.count()){await coachClose.tap({force:true});barracksContext=p.locator('[data-testid="building-context-barracks"]');await barracksContext.waitFor({state:'visible'});}
  await p.waitForTimeout(120);
- const recruitAction=barracksContext.locator('[data-testid="building-action-barracks"]');await recruitAction.waitFor({state:'visible'});await recruitAction.tap({force:true});
+ const recruitAction=barracksContext.locator('[data-testid="building-action-barracks"]');await recruitAction.waitFor({state:'visible'});await recruitAction.tap();
  const recruit=p.locator('[data-testid="recruit-dialog"]');await recruit.waitFor({state:'visible',timeout:4000});
  if(!await recruit.evaluate(el=>el.classList.contains('early0304')))throw Error('Early Barracks did not enter simplified layout');
  for(const sel of ['.tierPicker027','.recruitChoiceMeta0265','.recruitSummary0265'])if(await recruit.locator(sel).count()&&await recruit.locator(sel).first().isVisible())throw Error('Early Barracks still exposes advanced clutter '+sel);
