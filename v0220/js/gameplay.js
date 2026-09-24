@@ -55,7 +55,7 @@ const CHAPTERS=[
 {id:9,title:'PREPARATIVOS DE GUERRA',context:'Reino, ejército, héroes, equipo, Códice y Relicario deben empezar a funcionar como un único sistema.',missions:[
 {id:'c9-march',title:'Prepara una expedición completa',type:'flag',path:'marchConfigured',value:1,target:{kind:'nav',id:'march'},reward:{food:320}},
 {id:'c9-power',title:'Alcanza 14.000 de Poder total',type:'totalPower',value:14000,reward:{power:200}},
-{id:'c9-collection',title:'Mantén 3 Reliquias descubiertas',type:'relics',value:3,target:{kind:'nav',id:'relicario'},reward:{speedup5:1}},
+{id:'c9-collection',title:'Mantén una Reliquia descubierta',type:'relics',value:1,target:{kind:'nav',id:'relicario'},reward:{speedup5:1}},
 {id:'c9-trial',title:'Supera la Prueba de Marcha',type:'flag',path:'trialWon',value:1,target:{kind:'node',id:'trial'},reward:{power:260}},
 {id:'c9-bastion',title:'Eleva el Bastión a nivel 10',type:'state',path:'bastionLevel',value:10,target:{kind:'poi',id:'keep'},reward:{power:420}}],chapterReward:{wood:680,stone:600,food:520,speedup15:1,power:520}},
 {id:10,title:'LA PRIMERA BRECHA',context:'Ya no se trata de recolectar. Se trata de demostrar que Valoria sabe prepararse y luchar.',missions:[
