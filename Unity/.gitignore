@@ -9,3 +9,9 @@ MemoryCaptures/
 *.csproj
 *.sln
 *.unitypackage
+
+# Unity Test Runner generated runtime files
+Assets/Resources/PerformanceTestRunInfo.json
+Assets/Resources/PerformanceTestRunSettings.json
+Assets/Resources/PerformanceTestRunInfo.json.meta
+Assets/Resources/PerformanceTestRunSettings.json.meta
