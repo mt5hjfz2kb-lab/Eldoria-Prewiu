@@ -31,6 +31,7 @@ function normalizeState(s){
  s.relicIndestructibles=s.relicIndestructibles&&typeof s.relicIndestructibles==='object'?s.relicIndestructibles:{};
  s.relicEffects=s.relicEffects&&typeof s.relicEffects==='object'?s.relicEffects:{};
  s.relicPermanentEffects=s.relicPermanentEffects&&typeof s.relicPermanentEffects==='object'?s.relicPermanentEffects:{};
+ s.relicPoolUnlocked=Array.isArray(s.relicPoolUnlocked)?s.relicPoolUnlocked:[];
  s.relicTutorial=s.relicTutorial&&typeof s.relicTutorial==='object'?s.relicTutorial:{started:false,firstReveal:false,rarities:false,decision:false,indestructible:false,sides:false,completed:false};
  s.relicDropStats=s.relicDropStats&&typeof s.relicDropStats==='object'?s.relicDropStats:{enemyWins:0,rarityRolls:0,drops:0,huntRolls:0};
  s.codex=s.codex.map((old,i)=>{let id=legacy(old?.id);let spec=BY[id];if(!spec)return old;let q=(old?.quality||'').toLowerCase()==='indestructible';if(q)s.relicIndestructibles[id]=true;return{...clone(spec),quality:q?'Indestructible':undefined,instanceId:old?.instanceId||('legacy-'+id+'-'+i+'-'+Date.now())}});
@@ -38,25 +39,27 @@ function normalizeState(s){
  for(const x of s.codex){if(x?.id&&!s.relicDiscovered.includes(x.id))s.relicDiscovered.push(x.id)}
  for(const id of s.cardsConsumed){if(!s.relicDiscovered.includes(id))s.relicDiscovered.push(id)}
  s.relicDiscovered=s.relicDiscovered.map(legacy).filter((id,i,a)=>BY[id]&&a.indexOf(id)===i);
+ for(const card of C){if(known(s,card)&&!s.relicPoolUnlocked.includes(card.id))s.relicPoolUnlocked.push(card.id)}
+ s.relicPoolUnlocked=s.relicPoolUnlocked.filter((id,i,a)=>BY[id]&&a.indexOf(id)===i);
  for(const [k,v] of Object.entries(s.relicEffects)){if(v&&v.end&&Date.now()>=v.end)delete s.relicEffects[k]}
  return s;
 }
 function spec(id){return BY[legacy(id)]||null}
 function known(s,card){try{return !!card.known(s)}catch(_){return false}}
-function pool(s,rarity){normalizeState(s);return C.filter(c=>c.rarity===rarity&&known(s,c))}
+function pool(s,rarity){normalizeState(s);return C.filter(c=>c.rarity===rarity&&s.relicPoolUnlocked.includes(c.id))}
 function dropPool(s,rarity){if(!['common','rare'].includes(rarity))return[];return pool(s,rarity)}
 function instance(card,indestructible=false,source='unknown'){return{...clone(card),quality:indestructible?'Indestructible':undefined,instanceId:'rel-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),source}}
 function grant(s,id,{indestructible=false,source='unknown'}={}){normalizeState(s);let card=spec(id);if(!card)return null;if(indestructible&&s.relicIndestructibles[card.id])indestructible=false;let x=instance(card,indestructible,source);s.codex.push(x);if(!s.relicDiscovered.includes(card.id))s.relicDiscovered.push(card.id);if(indestructible)s.relicIndestructibles[card.id]=true;return x}
 function rollWorldDrop(s,{enemyId,enemyKind,rng=Math.random}={}){normalizeState(s);if(enemyKind==='hunt'){s.relicDropStats.huntRolls=(s.relicDropStats.huntRolls||0)+1;return null}if(!s.relicarioUnlocked)return null;s.relicDropStats.enemyWins=(s.relicDropStats.enemyWins||0)+1;s.relicDropStats.rarityRolls=(s.relicDropStats.rarityRolls||0)+1;let r=Number(rng());let rarity=r<0.0005?'rare':r<0.0015?'common':null;if(!rarity)return null;let eligible=dropPool(s,rarity);if(!eligible.length)return null;let choose=list=>list[Math.min(list.length-1,Math.max(0,Math.floor(Number(rng())*list.length)))],card=choose(eligible);let indestructible=Number(rng())<INDESTRUCTIBLE_CHANCE[rarity];if(indestructible&&s.relicIndestructibles[card.id]){let alt=eligible.filter(x=>!s.relicIndestructibles[x.id]);if(alt.length)card=choose(alt);else indestructible=false}s.relicDropStats.drops=(s.relicDropStats.drops||0)+1;return{card,rarity,indestructible,source:'enemy:'+enemyId,rarityRolls:1}}
 function epicReward(s,{rng=Math.random,source='future-epic-reward'}={}){let eligible=pool(s,'epic');if(!eligible.length)return null;let card=eligible[Math.min(eligible.length-1,Math.floor(Number(rng())*eligible.length))];let indestructible=Number(rng())<INDESTRUCTIBLE_CHANCE.epic;if(indestructible&&s.relicIndestructibles[card.id]){let alt=eligible.filter(x=>!s.relicIndestructibles[x.id]);if(alt.length)card=alt[Math.min(alt.length-1,Math.floor(Number(rng())*alt.length))];else indestructible=false}return grant(s,card.id,{indestructible,source})}
 function discoveredCount(s){normalizeState(s);return s.relicDiscovered.length}
-function collection(s){normalizeState(s);return C.map(card=>{let owned=s.codex.filter(x=>x.id===card.id),normal=owned.filter(x=>(x.quality||'').toLowerCase()!=='indestructible').length,indestructible=owned.some(x=>(x.quality||'').toLowerCase()==='indestructible');return{card,normal,indestructible,discovered:s.relicDiscovered.includes(card.id),known:known(s,card)}})}
+function collection(s){normalizeState(s);return C.map(card=>{let owned=s.codex.filter(x=>x.id===card.id),normal=owned.filter(x=>(x.quality||'').toLowerCase()!=='indestructible').length,indestructible=owned.some(x=>(x.quality||'').toLowerCase()==='indestructible');return{card,normal,indestructible,discovered:s.relicDiscovered.includes(card.id),known:s.relicPoolUnlocked.includes(card.id)}})}
 function active(s,key,now=Date.now()){normalizeState(s);let x=s.relicEffects[key];return !!(x&&(!x.end||x.end>now))}
 function pct(s,key,now=Date.now()){return active(s,key,now)?Number(s.relicEffects[key].pct||0):0}
 function timed(s,key,pctValue,hours,now=Date.now()){s.relicEffects[key]={pct:pctValue,start:now,end:now+hours*3600000};return s.relicEffects[key]}
 function consumeOne(s,id){normalizeState(s);let i=s.codex.findIndex(x=>x.id===id&&(x.quality||'').toLowerCase()!=='indestructible');if(i<0)i=s.codex.findIndex(x=>x.id===id);if(i<0)return null;let [x]=s.codex.splice(i,1);if((x.quality||'').toLowerCase()!=='indestructible')s.cardsConsumed.push(id);return x}
 function use(s,id,ctx={}){
- normalizeState(s);let card=spec(id),owned=s.codex.filter(x=>x.id===id);if(!card||!owned.length)return{ok:false,reason:'No posees esta Reliquia.'};let now=ctx.now||Date.now(),ind=owned.every(x=>(x.quality||'').toLowerCase()==='indestructible')||(!owned.some(x=>(x.quality||'').toLowerCase()!=='indestructible')&&!!s.relicIndestructibles[id]);if((s.cardCooldowns?.[id]||0)>now)return{ok:false,reason:'Esta Reliquia sigue en tiempo de espera.'};let amount=0,task=null;
+ normalizeState(s);let card=spec(id),owned=s.codex.filter(x=>x.id===id);if(!card||!owned.length)return{ok:false,reason:'No posees esta Reliquia.'};let now=ctx.now||Date.now(),ind=owned.every(x=>(x.quality||'').toLowerCase()==='indestructible')||(!owned.some(x=>(x.quality||'').toLowerCase()!=='indestructible')&&!!s.relicIndestructibles[id]);let amount=0,task=null;
  if(card.effectKey==='wood20m'){let r=ctx.passiveRates?.()||{wood:0};amount=Math.floor((r.wood||0)*1200);s.wood+=amount}
  else if(card.effectKey==='stone20m'){let r=ctx.passiveRates?.()||{stone:0};amount=Math.floor((r.stone||0)*1200);s.stone+=amount}
  else if(card.effectKey==='food20m'){let r=ctx.passiveRates?.()||{food:0};amount=Math.floor((r.food||0)*1200);s.food+=amount}
@@ -72,7 +75,7 @@ function use(s,id,ctx={}){
  else if(card.effectKey==='breach35'){timed(s,'breachRewardPct',35,4,now)}
  else if(card.effectKey==='construction50'){timed(s,'constructionSpeedPct',50,4,now)}
  else if(card.effectKey==='heraldBuff'){timed(s,'breachRewardPct',50,4,now);timed(s,'capacityPct',25,4,now)}
- let consumed=null;if(!ind)consumed=consumeOne(s,id);else{s.cardCooldowns=s.cardCooldowns||{};let ends=Object.values(s.relicEffects).filter(x=>x&&x.end&&x.end>now).map(x=>x.end);s.cardCooldowns[id]=ends.length?Math.max(now+60000,...ends):now+60000}
+ let consumed=null;if(!ind)consumed=consumeOne(s,id);
  return{ok:true,card,indestructible:ind,consumed:!!consumed,amount,task}
 }
 function rewardMultiplier(s,{kind,isBreach=false,consume=true}={}){normalizeState(s);let p=0;if(isBreach)p+=pct(s,'breachRewardPct');if(isBreach&&s.relicEffects.nextBreachRewardPct){p+=Number(s.relicEffects.nextBreachRewardPct.pct||0);if(consume)delete s.relicEffects.nextBreachRewardPct}if(kind==='uncommon'&&s.relicEffects.nextUncommonRewardPct){p+=Number(s.relicEffects.nextUncommonRewardPct.pct||0);if(consume)delete s.relicEffects.nextUncommonRewardPct}return 1+p/100}
