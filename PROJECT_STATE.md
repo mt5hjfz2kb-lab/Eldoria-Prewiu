@@ -4,6 +4,7 @@ Updated: 2026-09-24
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
+- A **separate Unity source slice** is staged in `Unity/` (Editor 6000.3.23f1): Valoria → frontera → bosque/optional corrupt scout → return → sawmill; core state, scenes, procedure-built visual study and tests/build entry points. This is not a certified Unity build; Editor/PlayMode/mobile validation and actual compiled player remain pending. `UNITY_CORE_CONTRACT.md` records the deliberate Power/March decisions. Web v0.32.0 continues as the playable canonical product.
 - Runtime/API milestone: **v0.32.0**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.

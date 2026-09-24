@@ -5,7 +5,8 @@ Updated: 2026-09-24
 Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA: `QA_AND_DEPLOY.md`. History: `CHANGELOG.md` only.
 
 ## Current working state
-- Unity migration **audit and executable plan** are at `UNITY_MIGRATION_PLAN.md` (with four linked supporting documents). This is planning only: no Unity project, no version promotion and no claim that v0.32.0 has obtained final Pages certification. Follow `Next task` below for the web release gate; verify live `main` HEAD before beginning physical Unity work.
+- **Unity execution block (2026-09-24):** `Unity/` now has a versioned 6000.3.23f1 source project, Bootstrap/Valoria/Frontier scene files, Domain/Application/Infrastructure/Presentation, source-level 3D art study, local gateway/save, economy/march/combat rules, EditMode and PlayMode test source and a guarded Editor CI/build path. `UNITY_CORE_CONTRACT.md` resolves Poder Total and Marcha divergence for this cut. **Unity was not installed in Work**: no import/compile, test result, rendered screenshot or player build has yet been produced or certified. Next agent: read `Unity/README.md`, open in exact Editor, repair actual import errors, run EditMode+PlayMode, build Linux, play complete route and record real screenshots/UX; commit generated packages-lock after successful resolution. No Unity download/link exists yet. Preserve web/taster snapshots.
+- Unity migration audit and approved plan are at `UNITY_MIGRATION_PLAN.md`; the execution source is at `Unity/` and its unresolved Editor validation is described above. No Unity version promotion and no claim that v0.32.0 has obtained final Pages certification. The web release gate below remains separately open. Verify live `main` HEAD before further Unity work.
 - Branch: `main`, only active development line.
 - Active development version: **v0.32.0**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
@@ -134,7 +135,7 @@ This is permanent cross-session behavior, not a one-session preference.
 - Final certified v0.30.2 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Integral fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification all green.
 
 ## Next task
-Verify the normal Pages workflow and published Chromium interaction for the latest v0.32.0 release-candidate HEAD. If green, record the certified HEAD/run and deliver the focused Hospital preset, IX→X segment and full-game links. If red, fix only the observed blocker and re-run the normal gate.
+**Unity:** Run `Unity/README.md` on exact Editor 6000.3.23f1 with an active license: import packages, correct compile/setup errors, execute EditMode + PlayMode tests, build Linux, play the route without presets, review mobile/desktop screenshots and certify the first executable only after these pass. **Web (separate):** verify the normal Pages workflow and published Chromium interaction for latest v0.32.0 release-candidate HEAD; record certified SHA/run only if green. Neither the Unity source preflight nor the web Pages URL proves a Unity build.
 
 
 ## 2026-09-24 — Relicario · mejora visual de Práctica

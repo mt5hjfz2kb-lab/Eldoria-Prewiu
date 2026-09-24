@@ -10,7 +10,7 @@ The repository is the source of truth. Chat history is disposable.
 
 If documents disagree, this hierarchy wins. Reconcile stale lower-level docs; never reconstruct active code from history.
 
-Unity migration planning (audit only; no Unity project yet): start at `UNITY_MIGRATION_PLAN.md`, then follow its links to readiness, architecture, first visual slice and asset audit. It does not replace the current web source, certification or frozen tester rules.
+Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_CONTRACT.md`, `UNITY_ARCHITECTURE.md`, `UNITY_VERTICAL_SLICE.md` and `Unity/README.md`. A separate Unity source project exists at `Unity/`, fixed to Editor 6000.3.23f1; its first executable/player build has **not** been validated until a Unity Editor and license run tests and build. It does not replace the current web source, certification or frozen tester rules. Do not call source preflight a Unity test or claim screenshots/build without opening it.
 
 ## Fast start
 1. Read this file.

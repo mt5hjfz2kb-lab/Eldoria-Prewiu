@@ -1,0 +1,59 @@
+name: Unity slice source and editor gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Unity/**'
+      - 'scripts/check_unity_slice.py'
+      - '.github/workflows/unity-slice.yml'
+  workflow_dispatch:
+
+jobs:
+  source-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify tracked Unity source
+        run: python3 scripts/check_unity_slice.py
+
+  editor-tests-and-player:
+    needs: source-preflight
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, linux, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify installed Editor
+        run: |
+          test -x "$UNITY_EDITOR_PATH"
+          "$UNITY_EDITOR_PATH" -version | grep -F '6000.3.23f1'
+      - name: EditMode
+        run: >-
+          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
+          -projectPath "$GITHUB_WORKSPACE/Unity"
+          -runTests -testPlatform EditMode
+          -testResults "$RUNNER_TEMP/Eldoria-EditMode.xml"
+          -logFile "$RUNNER_TEMP/Eldoria-EditMode.log"
+      - name: PlayMode
+        run: >-
+          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
+          -projectPath "$GITHUB_WORKSPACE/Unity"
+          -runTests -testPlatform PlayMode
+          -testResults "$RUNNER_TEMP/Eldoria-PlayMode.xml"
+          -logFile "$RUNNER_TEMP/Eldoria-PlayMode.log"
+      - name: Linux desktop build
+        run: >-
+          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
+          -projectPath "$GITHUB_WORKSPACE/Unity"
+          -executeMethod Eldoria.EditorTools.SceneSetup.BuildLinux
+          -logFile "$RUNNER_TEMP/Eldoria-Build.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-unity-checks-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/Eldoria-*.xml
+            ${{ runner.temp }}/Eldoria-*.log
+            Unity/Builds/Linux/
+          if-no-files-found: warn
