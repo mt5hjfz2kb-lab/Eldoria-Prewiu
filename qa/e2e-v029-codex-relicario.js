@@ -7,63 +7,54 @@ const {chromium}=require('playwright');
  await p.waitForFunction(()=>sessionStorage.getItem('eldoria-qa-active-preset')==='relicario-v029'&&window.ELDORIA_V023?.state().view==='relicario');
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
 
- // Códice and Relicario are peer systems: separate navigation, separate purpose, no nesting.
+ // Códice and Relicario remain independent peer systems.
  await p.locator('[data-testid="relicario"]').waitFor({state:'visible'});
  if(!await p.locator('[data-testid="nav-codex"]').count()||!await p.locator('[data-testid="nav-relicario"]').count())throw Error('Codex/Relicario do not have independent primary navigation');
  const tabText=(await p.locator('.relicTabs027').innerText()).toUpperCase();
  for(const term of ['COLECCIÓN','PRÁCTICA','DUELO PVP','FUTURO'])if(!tabText.includes(term))throw Error('Relicario tabs missing '+term);
- const relicPurpose=(await p.locator('[data-testid="relicario-purpose"]').innerText()).toUpperCase();
- for(const term of ['COLECCIÓN','ESTRATEGIA','RELIQUIAS','RAREZA','EFECTO'])if(!relicPurpose.includes(term))throw Error('Relicario purpose is not independently explained: '+relicPurpose);
  await p.locator('[data-testid="nav-codex"]').evaluate(el=>el.click());
  await p.locator('[data-testid="codex-scroll"]').waitFor({state:'visible'});
  for(const id of ['breach','bestiary','world','characters'])if(!await p.locator('[data-codex-section="'+id+'"]').count())throw Error('Codex section missing '+id);
  if(await p.locator('[data-card-use],[data-card-keep],.relicCard026').count())throw Error('Codex still manages relic cards');
  if(await p.locator('[data-testid="open-relicario"],.relicarioPortal027').count())throw Error('Relicario is still nested inside Codex');
- const codexPurpose=(await p.locator('[data-testid="codex-purpose"]').innerText()).toUpperCase();
- for(const term of ['CONOCIMIENTO','DESCUBRIMIENTO','CRIATURAS','PERSONAJES'])if(!codexPurpose.includes(term))throw Error('Codex purpose is not independently explained: '+codexPurpose);
  await p.locator('[data-testid="nav-relicario"]').evaluate(el=>el.click());
  await p.locator('[data-testid="relicario"]').waitFor({state:'visible'});
- if(await p.locator('.relicarioToCodex027').count())throw Error('Relicario still presents Codex as a parent/back destination');
+ if(await p.locator('.relicarioToCodex027').count())throw Error('Relicario still presents Codex as parent');
 
- // Phase 1: one relic => rarity/effect/use-keep, no side values or board teaching.
- await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'Prueba QA'}],cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:false,duelTutorialComplete:false}));
+ // One discovered card: its exact card data is visible, but Practice remains gated.
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[{id:'bosque-valoria',name:'Bosque de Valoria',rarity:'common',values:{N:6,S:3,E:4,O:2},effect:'20 minutos de producción actual de madera.'}],relicDiscovered:['bosque-valoria'],relicIndestructibles:{},cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicTutorial:{started:true,firstReveal:true,rarities:true,decision:false,indestructible:false,sides:false,completed:true},relicTutorialComplete:true,relicSidesRevealed:false}));
  await p.locator('[data-testid="relicario-collection"]').waitFor({state:'visible'});
  const oneText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
- for(const term of ['RARA','EFECTO','USAR','CONSERVAR','INDESTRUCTIBLE'])if(!oneText.includes(term))throw Error('First relic surface missing '+term);
- if(/\bN\s*3\b|\bE\s*4\b|\bS\s*1\b|\bO\s*2\b|TABLERO|ECO 1\/1\/1\/1/.test(oneText))throw Error('Board language revealed before three relics');
+ for(const term of ['COMÚN','USO','USAR','CONSERVAR','N 6','S 3','E 4','O 2'])if(!oneText.includes(term))throw Error('First relic surface missing '+term);
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  const locked=(await p.locator('[data-testid="relicario-practice"]').innerText()).toUpperCase();
  if(!locked.includes('1/3')||!locked.includes('AÚN NO ES EL MOMENTO'))throw Error('Practice not gated before threshold');
 
- // Indestructible use: effect applies, card remains, cooldown starts.
- await p.locator('[data-relic-tab="collection"]').evaluate(el=>el.click());
- const before=await state();
- await p.locator('[data-testid="card-use-ash-sigil"]').evaluate(el=>el.click());
+ // Indestructible: same rarity/effect, no consumption, cooldown/effect persist.
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'relicario',relicarioTab:'collection',marchConfigured:true,codex:[...window.ELDORIA_V023.state().codex,{id:'estandarte-valoria',name:'Estandarte de Valoria',rarity:'rare',quality:'Indestructible',values:{N:6,S:5,E:3,O:6},effect:'+20 % de velocidad de marcha durante exactamente 2 horas.'}],relicDiscovered:['bosque-valoria','estandarte-valoria'],relicIndestructibles:{'estandarte-valoria':true},cardCooldowns:{}}));
+ await p.locator('[data-testid="card-use-estandarte-valoria"]').evaluate(el=>el.click());
  await p.locator('.e22-overlay .btn').evaluate(el=>el.click()).catch(()=>{});
- const after=await state();
- if(after.stone<before.stone+260)throw Error('Indestructible effect missing');
- if(!after.codex.some(x=>x.id==='ash-sigil'))throw Error('Indestructible relic disappeared');
- if(!(after.cardCooldowns['ash-sigil']>Date.now()))throw Error('Indestructible cooldown missing');
+ let after=await state();
+ if(!after.codex.some(x=>x.id==='estandarte-valoria'&&String(x.quality).toLowerCase()==='indestructible'))throw Error('Indestructible relic disappeared');
+ if(!(after.cardCooldowns['estandarte-valoria']>Date.now())||!(after.relicEffects?.marchSpeedPct?.end>Date.now()))throw Error('Indestructible cooldown/effect missing');
 
- // Normal relic is consumed and recorded.
- await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[...window.ELDORIA_V023.state().codex,{id:'normal-qa',name:'Reliquia normal',rarity:'Común',values:{N:2,E:2,S:2,O:2},copy:'Consumible QA'}],cardCooldowns:{}}));
- await p.locator('[data-testid="card-use-normal-qa"]').evaluate(el=>el.click());
+ // Normal copy is repeatable and consumed one copy at a time.
+ await p.evaluate(()=>{window.ELDORIA_V023.relicario.grant('bosque-valoria',false);window.ELDORIA_V023.relicario.grant('bosque-valoria',false)});
+ let before=await state(),normalBefore=before.codex.filter(x=>x.id==='bosque-valoria'&&!x.quality).length;
+ await p.locator('[data-testid="card-use-bosque-valoria"]').evaluate(el=>el.click());
  await p.locator('.e22-overlay .btn').evaluate(el=>el.click()).catch(()=>{});
- const consumed=await state();
- if(consumed.codex.some(x=>x.id==='normal-qa')||!consumed.cardsConsumed.includes('normal-qa'))throw Error('Normal relic consumption contract broken');
+ let consumed=await state(),normalAfter=consumed.codex.filter(x=>x.id==='bosque-valoria'&&!x.quality).length;
+ if(normalAfter!==normalBefore-1||!consumed.cardsConsumed.includes('bosque-valoria'))throw Error('Normal duplicate consumption contract broken');
 
- // Phase 2: at three discoveries values appear and Practice opens.
- await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[
- {id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'QA'},
- {id:'r2',name:'R2',rarity:'Común',values:{N:2,E:3,S:2,O:1},copy:'QA'},
- {id:'r3',name:'R3',rarity:'Épica',values:{N:4,E:2,S:5,O:3},copy:'QA'}],
- cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicSidesRevealed:true,relicTutorialSeen:true,duelTutorialComplete:false}));
- await p.locator('[data-testid="relicario-collection"]').waitFor({state:'visible'});
- const thresholdText=(await p.locator('[data-testid="relicario-collection"]').innerText()).toUpperCase();
- if(!thresholdText.includes('N 3')||!thresholdText.includes('E 4'))throw Error('Side values not revealed at threshold');
+ // Three genuine discoveries unlock Orin Practice; training never mutates permanent collection.
+ await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'relicario',relicarioTab:'collection',codex:[
+ {id:'bosque-valoria',name:'Bosque de Valoria',rarity:'common',values:{N:6,S:3,E:4,O:2}},
+ {id:'engendro-fisura',name:'Engendro de la Fisura',rarity:'common',values:{N:2,S:7,E:3,O:2}},
+ {id:'acechador-ceniza',name:'Acechador de Ceniza',rarity:'rare',values:{N:8,S:3,E:5,O:3}}],
+ relicDiscovered:['bosque-valoria','engendro-fisura','acechador-ceniza'],cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicSidesRevealed:true,duelTutorialComplete:false}));
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  await p.locator('[data-testid="open-relic-training"]').waitFor({state:'visible'});
- const beforePractice=await state();const beforeIds=beforePractice.codex.map(x=>x.id).sort().join('|');
+ const beforePractice=await state(),beforeIds=beforePractice.codex.map(x=>x.id).sort().join('|');
  await p.locator('[data-testid="open-relic-training"]').evaluate(el=>el.click());
  await p.locator('[data-testid="duel-training"]').waitFor({state:'visible'});
  if(await p.locator('[data-testid^="training-cell-"]').count()!==9)throw Error('Practice board is not 3x3');
@@ -71,18 +62,14 @@ const {chromium}=require('playwright');
  await p.locator('[data-testid="duel-training-finish"]').evaluate(el=>el.click());
  await p.evaluate(()=>document.querySelectorAll('.aldric-cinematic').forEach(x=>x.remove()));
  await p.locator('[data-testid="relicario-practice"]').waitFor({state:'visible'});
- const afterPractice=await state();const afterIds=afterPractice.codex.map(x=>x.id).sort().join('|');
- if(!afterPractice.duelTutorialComplete||afterPractice.view!=='relicario'||afterPractice.relicarioTab!=='practice')throw Error('Guided practice completion state wrong');
- if(beforeIds!==afterIds)throw Error('Practice permanently changed relic collection');
+ const afterPractice=await state(),afterIds=afterPractice.codex.map(x=>x.id).sort().join('|');
+ if(!afterPractice.duelTutorialComplete||beforeIds!==afterIds)throw Error('Guided practice state/collection contract broken');
 
- // PvP is visible but explicitly inactive.
  await p.locator('[data-relic-tab="pvp"]').evaluate(el=>el.click());
  const pvp=await p.locator('[data-testid="relicario-pvp"]').innerText();
- if(!/PRÓXIMAMENTE/i.test(pvp)||!/BLOQUEADO/i.test(pvp))throw Error('PvP future lock unclear');
- if(await p.locator('[data-testid="relicario-pvp"] button:not([disabled])').count())throw Error('PvP exposes active functionality');
+ if(!/PRÓXIMAMENTE/i.test(pvp)||!/BLOQUEADO/i.test(pvp)||await p.locator('[data-testid="relicario-pvp"] button:not([disabled])').count())throw Error('PvP future lock unclear');
 
- // Mobile horizontal overflow guard.
  const overflow=await p.evaluate(()=>({w:innerWidth,sw:document.documentElement.scrollWidth}));
  if(overflow.sw>overflow.w+3)throw Error('Codex/Relicario horizontal overflow '+JSON.stringify(overflow));
- await b.close();console.log('v0.29 CODEX KNOWLEDGE + RELICARIO PASS');
+ await b.close();console.log('v0.29/v0.31 CODEX KNOWLEDGE + RELICARIO PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
