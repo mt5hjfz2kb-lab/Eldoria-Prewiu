@@ -4,7 +4,7 @@ Updated: 2026-09-24
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.30.4**.
+- Runtime/API milestone: **v0.31.0**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,20 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.31.0 — Relicario collection, rarity, acquisition and card-use system
+- Relicario is a first-class system fully separate from Códice. Códice remains knowledge/discovery only; Relicario owns Reliquia collection, use/conserve decisions, reveal ceremony, Practice and future Duel behavior.
+- The initial collection contains 15 Eldoria-native cards: 6 Common, 4 Rare, 3 Epic and 2 Legendary, each with fixed N/S/E/O values, exact 4X use effects and optional card-specific Duel abilities.
+- Ordinary world-enemy victories perform exactly one Relicario rarity roll: Common 0.10%, Rare 0.05%, no card 99.85%. Hunting is explicitly 0%. Epic and Legendary cards are excluded from ordinary drop.
+- Card pools unlock only after the represented content has actually been discovered. Arc I progression no longer depends on rare random drops.
+- Epic random-reward support exists structurally for a future special reward source; no current ordinary source grants Epics. Legendary cards exist in data/design but have no active acquisition source.
+- Indestructible is an additional property, not a rarity. Its rarity-specific chance is evaluated after card selection; a player can own at most one Indestructible copy of a concrete card, while normal duplicates remain repeatable. Duplicate Indestructible outcomes reroute to another eligible card of the same rarity when possible.
+- Every obtained card uses a dedicated reveal ceremony with rarity-colored treatment, N/S/E/O, exact 4X effect, Duel ability when present and a second-stage INDESTRUCTIBLE reveal when applicable.
+- Normal cards consume one copy when used; Indestructible cards keep the card and apply cooldown/effect state. Temporary effects persist with timestamps and continue correctly across reload/offline time.
+- The first Relicario experience is integrated into the real Bastion VII flow: first card, reveal, progressive explanation of rarity/use/conserve/Indestructible and later N/S/E/O + Practice teaching. QA mode does not overwrite tutorial state.
+- Duel support now preserves card-specific abilities used by this collection, including Guardia, Distorsión and Corrupción, without making abilities automatic by rarity.
+- Dedicated Relicario coverage validates catalog/rarities, ordinary-drop probabilities, hunt exclusion, one-roll semantics, discovery gating, normal duplicates, Indestructible uniqueness/rerouting, use persistence, reveal UI, mobile/desktop surfaces and Códice separation.
+- The pre-promotion functional candidate passed the full local-equivalent certification, uninterrupted fresh-save Arc I, frozen tester guard, Pages deploy and published Chromium verification in GitHub Actions run **1418** at `665690a17e20397725e51354693eecea56ae893e`.
 
 ## v0.30.4 — mobile UX clarity, continuity and system comprehension
 - The owner mobile-feedback block is integrated without expanding Arc I scope: the focus is clarity, navigation, feedback and continuity of actions.

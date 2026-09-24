@@ -6,12 +6,25 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.30.4**.
+- Active development version: **v0.31.0**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
+
+## Current v0.31.0 product state
+- **v0.31.0 is the active development milestone. v0.30.4 remains the previous certified milestone.**
+- Relicario now owns a structured first collection of 15 Eldoria-native cards with Common/Rare/Epic/Legendary rarity, N/S/E/O values, exact 4X effects, optional per-card Duel abilities and Indestructible as an independent property.
+- Ordinary enemy drops are intentionally exceptional: one rarity roll per eligible world-enemy victory, 0.10% Common / 0.05% Rare / 99.85% none. Hunting is always 0%. Epics and Legendaries never enter ordinary drop.
+- Pool eligibility follows real discovery/progression. The first Bastion VII card is deterministic onboarding, but later Arc I progression does not require random Relicario drops.
+- Epic random-reward plumbing exists for a future special reward source; current gameplay does not grant Epics through ordinary drops. Legendary cards are data/design only and have no current acquisition source.
+- Indestructible copies are unique per concrete card/player; normal copies remain repeatable. A duplicate Indestructible outcome reroutes within the same rarity when another eligible card exists.
+- Reveal ceremony is a dedicated screen, not mixed loot. It communicates rarity, N/S/E/O, exact use effect, Duel ability and a second Indestructible phase when relevant.
+- Use/conserve, timed effects, cooldowns, discovery/pool state and tutorial state persist. Temporary effects use timestamps and survive reload/offline time.
+- Códice remains knowledge-only and Relicario remains independent. Arcón does not contain Reliquias.
+- Dedicated v0.31 Relicario QA and the uninterrupted fresh-save Arc I route are part of the integral gate. The pre-promotion candidate passed GitHub Actions run **1418** on `665690a17e20397725e51354693eecea56ae893e`, including Pages deploy and published Chromium verification.
+- Final release certification must run again on the version-promotion commit before v0.31.0 is claimed certified.
 
 ## Current v0.30.4 product state
 - **v0.30.4 is the active development patch. v0.30.3 remains the previous certified baseline, not the active development version.**

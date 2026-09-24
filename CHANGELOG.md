@@ -2,6 +2,21 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.31.0 — 2026-09-24
+
+- Consolidated Relicario as an independent first-class system with an initial 15-card Eldoria collection.
+- Added Common, Rare, Epic and Legendary rarity data, fixed N/S/E/O card values, exact 4X use effects and optional per-card Duel abilities.
+- Implemented a single ordinary-drop roll per real world-enemy victory: 0.10% Common, 0.05% Rare and 99.85% no card; hunting remains 0%.
+- Added discovery-gated pools so cards cannot appear before their represented content is known.
+- Kept Epics out of ordinary drop while providing a future random-Epic reward mechanism; kept Legendaries fully unavailable from current gameplay.
+- Implemented Indestructible as a non-rarity property with rarity-specific chances, one Indestructible copy per concrete card/player and same-rarity rerouting for duplicate Indestructible outcomes.
+- Added a dedicated rarity-aware reveal ceremony with N/S/E/O, effect, Duel ability and a second-stage INDESTRUCTIBLE reveal.
+- Integrated normal consumption, Indestructible retention/cooldown, timed effects, reload/offline persistence and future permanent-effect storage.
+- Reworked Bastion VII Relicario onboarding so the first card/reveal/tutorial are deterministic while later Arc I progression never depends on rare RNG drops.
+- Preserved strict Códice / Relicario separation and extended Duel support for Guardia, Distorsión and Corrupción.
+- Added focused desktop/mobile Relicario QA plus full fresh-save regression coverage for acquisition, gating, duplicates, Indestructible, effects, ceremony, persistence and Arc I non-regression.
+- Pre-promotion candidate passed GitHub Actions run 1418 including integral gate, fresh-save Arc I, frozen tester guard, Pages deploy and published Chromium verification.
+
 ## v0.30.4 — 2026-09-24
 
 - Completed the owner mobile UX clarity block without expanding Arc I content scope.
