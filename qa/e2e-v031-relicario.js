@@ -62,5 +62,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  if(!(boardGeom.h/boardGeom.w>1.32&&boardGeom.h/boardGeom.w<1.5))throw Error('Board card lost portrait proportion '+JSON.stringify(boardGeom));
  await practice.close();
  const desk=await b.newPage({viewport:{width:1280,height:800}});await desk.goto(URL,{waitUntil:'domcontentloaded'});await desk.waitForSelector('[data-testid="relicario"]');if(!await desk.locator('[data-testid="relicario-guide"]').count())throw Error('Desktop Relicario guide missing');
+ await desk.goto((process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1').replace(/\?.*$/,'')+'?qa=1&preset=relicario-practice-v031',{waitUntil:'domcontentloaded'});
+ await desk.waitForSelector('[data-testid="relicario-practice"]');await desk.locator('[data-testid="open-relic-training"]').click();await desk.waitForSelector('.duelFormal026:not(.duelTraining0265)');
+ const desktopHand=desk.locator('.duelFormal026:not(.duelTraining0265) .duelHand026 .relicCard026');if(await desktopHand.count()<4)throw Error('Desktop Practice hand incomplete');
+ const desktopGeom=await desktopHand.first().evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});if(!(desktopGeom.h/desktopGeom.w>1.32&&desktopGeom.h/desktopGeom.w<1.5))throw Error('Desktop Practice card lost portrait proportion '+JSON.stringify(desktopGeom));
+ const desktopBoard=desk.locator('.duelFormal026:not(.duelTraining0265) .duelGrid026');const db=await desktopBoard.boundingBox();if(!db||db.width<280||db.height<280)throw Error('Desktop Practice board too small '+JSON.stringify(db));
  await b.close();console.log('v0.31 RELICARIO SYSTEM PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
