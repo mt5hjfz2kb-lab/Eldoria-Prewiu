@@ -61,7 +61,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const boardGeom=await played.evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});
  if(!(boardGeom.h/boardGeom.w>1.32&&boardGeom.h/boardGeom.w<1.5))throw Error('Board card lost portrait proportion '+JSON.stringify(boardGeom));
  const numericOnly=await practice.locator('.duelFormal026:not(.duelTraining0265) .relicCard026 .side').evaluateAll(nodes=>nodes.map(n=>n.textContent.trim()));
- if(numericOnly.some(x=>!/^\\d+$/.test(x)))throw Error('Practice card sides contain labels instead of numbers: '+JSON.stringify(numericOnly));
+ if(numericOnly.some(x=>!/^\d+$/.test(x)))throw Error('Practice card sides contain labels instead of numbers: '+JSON.stringify(numericOnly));
  const mobileFit=await practice.locator('.duelFormal026:not(.duelTraining0265) .duelGrid026').evaluate(n=>{const r=n.getBoundingClientRect();return{left:r.left,right:r.right,width:r.width,viewport:document.documentElement.clientWidth}});
  if(mobileFit.left<0||mobileFit.right>mobileFit.viewport+0.5)throw Error('Practice board clipped on mobile viewport '+JSON.stringify(mobileFit));
  if(Math.abs((mobileFit.left+mobileFit.right)/2-mobileFit.viewport/2)>3)throw Error('Practice board not centered on mobile '+JSON.stringify(mobileFit));
