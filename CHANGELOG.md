@@ -2,6 +2,19 @@
 
 > History only. Current operational state is defined by `SESSION_HANDOFF.md`; current functional state is defined by `PROJECT_STATE.md`.
 
+## v0.32.0 — 2026-09-24
+
+- Added the Hospital of Valoria as a real Bastion X military recovery system.
+- Added persistent wounded troop state: PvE can wound troops, but permanent PvE deaths are fixed at 0.
+- Removed wounded troops from available expedition composition until treatment completes, while preserving ownership and total military continuity.
+- Added Hospital healing as a canonical timed task with reload/offline recovery.
+- Integrated wounded availability into Troops, March, battle reports, late-game guidance and the Bastion X finale path.
+- Scoped March reconciliation to military state changes so unrelated renders do not rewrite player composition.
+- Added a future-operation contribution contract for March while keeping multiplayer/PvP UI and permanent-loss rules outside the current slice.
+- Added safe old-save migration for medical state.
+- Added `qa/e2e-v032-hospital.js`, certification-gate coverage and fresh Arc I coverage through Herald wounds, Hospital treatment and restored March power.
+- Frozen tester build remains untouched.
+
 ## v0.31.1 — 2026-09-24
 
 - Rebuilt Relicario Practice card presentation around a real portrait-card silhouette in both hand and board.
