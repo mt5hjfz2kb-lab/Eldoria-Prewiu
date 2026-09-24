@@ -34,6 +34,9 @@ El prólogo Bastión I–X debe enseñar este bucle. El producto a largo plazo d
 - Eldoria no tiene un final definitivo: el mundo continúa expandiéndose mediante nuevas capas, regiones, amenazas y sistemas.
 - El Puerto/Muelle será un sistema avanzado posterior al prólogo: inicialmente PvE/económico mediante expediciones abstractas y progresión de flota.
 - Eldoria tendrá un sistema modular y ampliable de eventos temporales PvE/PvP, individuales y colectivos.
+- Tras el prólogo, Valoria evoluciona de asentamiento reconstruido a comunidad civil: llegan habitantes y las viviendas pasan a formar parte visible del crecimiento del reino.
+- El Consejo de Valoria nace como consecuencia narrativa de esa madurez social y, a la vez, funciona como sistema diegético de investigación/progresión PvE.
+- Los consejeros principales son personajes canónicos que se incorporan progresivamente; las tres ramas fundacionales son Recursos, Construcción y Militar.
 
 ### DEFINIR ANTES DE UNITY
 - Reglas macro definitivas de PvP, guerra y protección del jugador.
@@ -41,7 +44,6 @@ El prólogo Bastión I–X debe enseñar este bucle. El producto a largo plazo d
 - Ciclo detallado de La Brecha y sus estados de madurez.
 - Balance y reglas concretas del Oráculo.
 - Gobierno del Mundo: legitimidad, acceso, duración, poderes y destitución.
-- Consejo de Valoria: estructura de ministros/ramas como progresión PvE interna.
 
 ### DISEÑO MACRO, IMPLEMENTACIÓN POSTERIOR
 - Puerto/Muelle, barcos y expediciones.
@@ -167,13 +169,39 @@ Estado: **CONCEPTO CERRADO; NÚMEROS, CALENDARIO, PARTICIPACIÓN, JEFE Y RECOMPE
 Eldoria contempla dos sistemas distintos que no deben confundirse.
 
 ### 5.1 Consejo de Valoria — Gobierno interno PvE
-Sistema interno del reino del jugador. El concepto original es un consejo con ministros/asesores que funcionan diegéticamente como ramas de investigación o tecnología.
 
-Posibles ámbitos: economía/producción, militar/defensa, conocimiento/exploración/Brecha y otras ramas futuras.
+El Consejo de Valoria nace de la propia reconstrucción del reino. Tras Bastión IX–X comienza a hacerse visible una nueva etapa: Valoria deja de ser únicamente un núcleo militar y de supervivientes, empiezan a llegar habitantes y la construcción de viviendas introduce una población civil estable.
 
-Nombre **Consejo de Valoria** provisional.
+La referencia provisional para el nacimiento formal del Consejo es **Bastión XIV–XV**, cuando esa población ya se ha asentado y la comunidad reclama representación en la toma de decisiones. El número exacto de Bastión no queda bloqueado todavía; importa la secuencia narrativa: **reconstrucción → llegada de habitantes → viviendas/comunidad → representación → Consejo**.
 
-Estado: **CONCEPTO REGISTRADO; DISEÑO MACRO ABIERTO. SIGUIENTE BLOQUE RECOMENDADO DE PREPRODUCCIÓN**.
+El Consejo cumple dos funciones inseparables:
+- **Narrativa/simbólica:** representa que Valoria vuelve a ser una sociedad y no solo un asentamiento en reconstrucción.
+- **Mecánica:** sustituye el árbol tecnológico abstracto por una progresión PvE diegética basada en consejeros y sus ramas de investigación.
+
+#### Consejeros
+- Los consejeros principales son **personajes canónicos**, no cargos elegibles entre múltiples candidatos.
+- Cada consejero tiene identidad, historia y un ámbito propio de responsabilidad.
+- No son héroes de combate ni forman parte de la colección de héroes; pertenecen a la vida civil e institucional de Valoria.
+- Se incorporan **progresivamente**, con poca separación entre las primeras incorporaciones, para que cada llegada tenga peso narrativo y enseñe su rama sin presentar todo el sistema de golpe.
+- La necesidad narrativa del reino debe justificar la llegada de nuevas ramas futuras.
+
+#### Ramas fundacionales
+Las tres áreas imprescindibles identificadas para el primer Consejo son:
+1. **Recursos:** producción, recolección, almacenamiento y eficiencia económica.
+2. **Construcción:** desarrollo urbano, capacidad de crecimiento y evolución física de Valoria.
+3. **Militar:** entrenamiento, ejército y desarrollo de capacidades militares.
+
+No se fija todavía cuál de las tres aparece primero. Tampoco se añaden ramas por completar artificialmente el sistema: comercio, conocimiento/Brecha, exploración u otras podrán incorporarse cuando la evolución del juego las justifique.
+
+#### Modelo de progresión
+- Dirección inicial: **lineal y acumulativa**. El jugador puede avanzar sin miedo a una elección irreversible temprana.
+- La arquitectura debe permitir introducir en el futuro bifurcaciones o especializaciones si el sistema demuestra necesitarlas.
+- Talentos concretos, costes, tiempos, requisitos y balance quedan deliberadamente fuera de esta fase de preproducción.
+
+#### Alcance político inicial
+En el primer corte, el Consejo **no es un simulador político interno**. Los consejeros no necesitan todavía discrepar, competir por influencia ni plantear decisiones políticas sistémicas. Esa posibilidad queda abierta para una evolución futura, pero no condiciona el diseño inicial.
+
+Estado: **DIRECCIÓN MACRO CERRADA; PERSONAJES, ORDEN EXACTO, ÁRBOLES Y BALANCE POR DISEÑAR MÁS ADELANTE**.
 
 ### 5.2 Gobierno del Mundo — autoridad política del servidor
 El servidor tendrá una **autoridad política real ejercida por un jugador**. Nombre provisional: **Soberano del Mundo**.
@@ -264,24 +292,29 @@ Estado: **DIRECCIÓN MACRO CERRADA; FORMATOS, CALENDARIO, MATCHMAKING, PUNTUACI�
 
 **Madurez del Mundo** condiciona → severidad de La Brecha, complejidad política, diplomacia, eventos y presión de largo plazo.
 
+**Población civil de Valoria** condiciona → viviendas, crecimiento urbano y aparición narrativa del Consejo de Valoria.
+
+**Consejo de Valoria** condiciona → progresión/investigación PvE interna y futuras ramas de desarrollo del reino.
+
 **Puerto** condiciona → expediciones avanzadas y, solo en una fase posterior, navegación/PvP marítimo.
 
 ## 10. Decisiones abiertas prioritarias
 
 ### Macro todavía por consolidar
-1. **Consejo de Valoria:** identidad, ministros/asesores, ramas y relación con la progresión del reino.
+1. **Gobierno del Mundo:** acceso/legitimidad, poderes, duración, corte/consejo y destitución.
+2. **Protección PvP:** principios macro para jugadores nuevos, diferencias extremas de poder y recuperación.
+3. **Territorio de Alianza:** consecuencias macro de pérdida, desconexión y caída del Cuartel General.
+4. **Brecha:** ciclo global, consecuencias, recuperación y relación exacta con Madurez del Mundo.
 
 ### Detalle deliberadamente aplazado
-2. **Guerra territorial:** conquista, defensa y pérdida exacta de puestos.
-3. **Cuartel General:** consecuencias máximas de su caída.
-4. **Territorio partido:** comportamiento de zonas desconectadas.
-5. **Brecha:** fases globales, consecuencias, recuperación, recompensas y relación exacta con Madurez.
-6. **Gobierno del Mundo:** acceso, poderes, duración, corte/consejo y destitución.
-7. **Protección PvP:** escudos, nuevos jugadores, diferencias extremas de poder y recuperación.
-8. **Oráculos:** número, distribución, ventanas, control, bonificaciones, ofrendas, jefe y recompensas.
-9. **Diplomacia formal:** reglas cuando se incorpore como capa madura.
-10. **Puerto:** desbloqueo, barcos, expediciones, costes, tiempos y recompensas.
-11. **Eventos:** formatos concretos, calendario, matchmaking, puntuación y recompensas.
+5. **Consejo de Valoria:** identidad/nombres de consejeros, orden exacto de incorporación, árboles, costes, tiempos y posibles especializaciones futuras.
+6. **Guerra territorial:** conquista, defensa y pérdida exacta de puestos.
+7. **Cuartel General:** consecuencias máximas de su caída.
+8. **Territorio partido:** comportamiento exacto de zonas desconectadas.
+9. **Oráculos:** número, distribución, ventanas, control, bonificaciones, ofrendas, jefe y recompensas.
+10. **Diplomacia formal:** reglas cuando se incorpore como capa madura.
+11. **Puerto:** desbloqueo, barcos, expediciones, costes, tiempos y recompensas.
+12. **Eventos:** formatos concretos, calendario, matchmaking, puntuación y recompensas.
 
 ## 11. Corte provisional de Unity
 
@@ -296,6 +329,8 @@ Estado: **DIRECCIÓN MACRO CERRADA; FORMATOS, CALENDARIO, MATCHMAKING, PUNTUACI�
 
 ### Arquitectura preparada, no implementación inicial
 - identidad de jugador/reino;
+- progresión física de Valoria preparada para población, viviendas y crecimiento urbano posterior;
+- modelo extensible de progresión/investigación capaz de alojar el Consejo de Valoria y sus consejeros canónicos;
 - regiones/mapa persistente;
 - edad/cronología del servidor y Madurez del Mundo;
 - entidades/eventos mundiales;
@@ -307,8 +342,8 @@ Estado: **DIRECCIÓN MACRO CERRADA; FORMATOS, CALENDARIO, MATCHMAKING, PUNTUACI�
 
 ### Futuro
 - Oráculo completo;
-- Gobierno completo;
-- Consejo de Valoria completo;
+- Gobierno del Mundo completo;
+- Consejo de Valoria y población civil desarrollados;
 - PvP territorial avanzado;
 - diplomacia formal;
 - Puerto/barcos;
