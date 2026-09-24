@@ -61,9 +61,9 @@ const {chromium}=require('playwright');
  const chest=(await p.locator('[data-testid="chest-purpose"]').innerText()).toUpperCase();
  for(const term of ['QUÉ HAY EN EL ARCÓN','PARA QUÉ SIRVE','ACELERADORES','MATERIALES','EQUIPO'])if(!chest.includes(term))throw Error('Chest teaching missing '+term);
 
- await set({...await state(),view:'kingdom',bastionLevel:7,codexUnlocked:true,relicarioUnlocked:true,codex:[{id:'bosque-valoria',name:'Bosque de Valoria',rarity:'common',values:{N:6,S:3,E:4,O:2}}],relicDiscovered:['bosque-valoria'],cardsConsumed:[],enemyRespawns:{spawnling:0,ashStalker:0},chapterProgress:chapter(7,{'c7-codex':Date.now()}),missionPanelOpen:true});
+ await set({...await state(),view:'kingdom',bastionLevel:7,codexUnlocked:true,relicarioUnlocked:true,codex:[],relicDiscovered:[],cardsConsumed:[],enemyRespawns:{spawnling:0,ashStalker:0},chapterProgress:chapter(7,{'c7-codex':Date.now()}),missionPanelOpen:true});
  const c7=(await p.locator('[data-testid="chapter-drawer"]').innerText()).toUpperCase();
- for(const term of ['PRIMERA RELIQUIA','UNA SOLA TIRADA','COMÚN 0,10','RARA 0,05','CAZA NUNCA'])if(!c7.includes(term))throw Error('Relic-source guidance missing '+term+': '+c7);
+ for(const term of ['DÓNDE SE CONSIGUEN','ENGENDRO DE LA FISURA','ACECHADOR DE CENIZA','COMÚN 0,10','RARA 0,05','CAZA NUNCA'])if(!c7.includes(term))throw Error('Relic-source guidance missing '+term+': '+c7);
  await p.locator('[data-mission-go]').tap({force:true});
  let routed=await state();if(routed.view!=='relicario')throw Error('Relic mission did not route to independent Relicario: '+JSON.stringify({view:routed.view,selected:routed.selectedAction}));
 
