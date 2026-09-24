@@ -1,4 +1,4 @@
 /* Eldoria v0.24 UI boundary. Keeps DOM concerns out of state/economy/task primitives. */
 (()=>{'use strict';const E=window.ELDORIA=window.ELDORIA||{};
-E.ui={format:n=>Math.floor(Number(n)||0).toLocaleString('es-ES'),clearOverlays:()=>document.querySelectorAll('.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove())};
+const compact=n=>{n=Math.floor(Number(n)||0);const trim=(v,s)=>{let x=v>=100?Math.round(v):v>=10?Math.round(v*10)/10:Math.round(v*100)/100;return String(x).replace('.',',')+s};if(Math.abs(n)>=1e9)return trim(n/1e9,'B');if(Math.abs(n)>=1e6)return trim(n/1e6,'M');if(Math.abs(n)>=1e4)return trim(n/1e3,'K');return n.toLocaleString('es-ES')};E.ui={format:compact,clearOverlays:()=>document.querySelectorAll('.e22-overlay,.aldric-cinematic,.tutorialDialogue,.tutorialAldric').forEach(x=>x.remove())};
 })();
