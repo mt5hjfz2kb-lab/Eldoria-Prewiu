@@ -74,9 +74,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   {id:'r2',name:'R2',rarity:'Común',values:{N:2,E:3,S:2,O:1},copy:'QA'},
   {id:'r3',name:'R3',rarity:'Épica',values:{N:4,E:2,S:5,O:3},copy:'QA'}
  ];
- await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,cardsConsumed:['r4','r5'],duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:true,relicarioTab:'collection'});
+ await set({view:'codex',sawmill:true,lyra:true,chestUnlocked:true,codexUnlocked:true,relicarioUnlocked:true,bastionLevel:7,bastion3:true,codex:realCodex,cardsConsumed:['r4','r5'],duelTutorialComplete:false,duelSeen:false,cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:true,relicarioTab:'collection'});
  const codexText=await p.locator('[data-testid="codex-scroll"]').innerText();for(const t of ['CÓDICE DE ELDORIA','LA BRECHA','BESTIARIO','MUNDO','PERSONAJES'])if(!codexText.toUpperCase().includes(t))throw Error('Codex UX missing '+t);
- await p.locator('[data-testid="open-relicario"]').evaluate(el=>el.click());
+ if(await p.locator('[data-testid="open-relicario"],.relicarioPortal027').count())throw Error('Relicario still nested inside Codex');
+ await p.locator('[data-testid="nav-relicario"]').evaluate(el=>el.click());
  await p.locator('[data-relic-tab="practice"]').evaluate(el=>el.click());
  await p.locator('[data-testid="open-relic-training"]').evaluate(el=>el.click());const training=p.locator('[data-testid="duel-training"]');await training.waitFor({state:'visible'});
  if(await p.locator('[data-testid^="training-cell-"]').count()!==9)throw Error('training board is not 3x3');
