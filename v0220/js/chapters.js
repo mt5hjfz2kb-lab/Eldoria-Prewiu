@@ -30,7 +30,7 @@ function currentMission(s,h){let ch=currentChapter(s);return ch?.missions.find(m
 function missionHelp(s,m,h={}){
  if(!m)return'';
  if(m.id==='c2-power')return '<div class="missionExplain0304"><b>¿CÓMO SUBE EL PODER DE EXPEDICIÓN?</b><p>Se calcula con la marcha que preparas: <strong>héroes + tropas + tier + equipo + afinidades</strong>. Ahora mismo, la forma más directa es reclutar Arqueros en el Cuartel, abrir <b>MARCHA</b>, añadirlos y confirmar la composición.</p><button data-mission-route="march">ABRIR MARCHA</button></div>';
- if(m.id==='c7-relics')return '<div class="missionExplain0304"><b>PRIMERA RELIQUIA</b><p>El desbloqueo del Relicario incluye una primera carta garantizada para enseñarte el sistema. Después, los enemigos reales del Mundo hacen <strong>una sola tirada</strong> por victoria: Común 0,10 % · Rara 0,05 %. La caza nunca entrega cartas.</p></div>'
+ if(m.id==='c7-relics')return '<div class="missionExplain0304"><b>DÓNDE SE CONSIGUEN</b><p>El desbloqueo del Relicario incluye una primera carta garantizada para enseñarte el sistema. Después, solo los <strong>enemigos reales del Mundo</strong> hacen una única tirada por victoria: Común 0,10 % · Rara 0,05 %. Ejemplos: <strong>Engendro de la Fisura</strong> y <strong>Acechador de Ceniza</strong>. La caza nunca entrega cartas.</p></div>'
  return'';
 }
 function rewardText(r){let a=[];if(!r)return'';if(r.wood)a.push('🌲 '+r.wood);if(r.stone)a.push('🪨 '+r.stone);if(r.food)a.push('🍖 '+r.food);if(r.power)a.push('⚔ '+r.power);if(r.speedup1)a.push('⏱ '+r.speedup1+'×1m');if(r.speedup5)a.push('⏱ '+r.speedup5+'×5m');if(r.speedup15)a.push('⏱ '+r.speedup15+'×15m');if(r.specialRelic)a.push('✦ Reliquia especial');return a.join(' · ')}
