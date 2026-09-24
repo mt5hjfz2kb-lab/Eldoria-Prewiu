@@ -8,20 +8,20 @@ const CHAPTERS=[
 {id:'c1-wood',title:'Recupera 600 madera',type:'counter',counter:'gathered.wood',value:600,target:{kind:'node',id:'forest'},reward:{stone:80}},
 {id:'c1-stone',title:'Recupera 500 piedra',type:'counter',counter:'gathered.stone',value:500,target:{kind:'node',id:'quarry'},reward:{wood:120}},
 {id:'c1-route',title:'Despeja la ruta de Corruptos',type:'flag',path:'camp',value:1,target:{kind:'node',id:'camp'},reward:{wood:90,stone:55}},
-{id:'c1-bastion',title:'Eleva el Bastión a nivel 2',type:'state',path:'bastionLevel',value:2,target:{kind:'poi',id:'keep'},reward:{power:80}}],chapterReward:{wood:180,stone:140,speedup1:2,power:120}},
+{id:'c1-bastion',title:'Eleva el Bastión a nivel 2',type:'state',path:'bastionLevel',value:2,target:{kind:'poi',id:'keep'},reward:{power:80}}],chapterReward:{wood:180,stone:140,power:120}},
 {id:2,title:'ALGO QUE DEFENDER',context:'Las murallas necesitan soldados y las primeras amenazas deben empezar a tener explicación.',missions:[
 {id:'c2-barracks',title:'Construye el Cuartel',type:'flag',path:'barracks',value:1,target:{kind:'poi',id:'barracks'},reward:{wood:140,stone:90}},
 {id:'c2-train',title:'Entrena 20 arqueros',type:'counter',counter:'trained',value:20,target:{kind:'poi',id:'barracks'},reward:{wood:220,stone:150}},
 {id:'c2-power',title:'Alcanza 2.250 de Poder de expedición',type:'expedition',value:2250,target:{kind:'nav',id:'march'},reward:{power:100}},
 {id:'c2-spawnling',title:'Derrota un Engendro de la Fisura',type:'counter',counter:'wins.spawnling',value:1,target:{kind:'node',id:'spawnling'},reward:{wood:120,stone:120}},
-{id:'c2-bastion',title:'Eleva el Bastión a nivel 3',type:'state',path:'bastionLevel',value:3,target:{kind:'poi',id:'keep'},reward:{food:180}}],chapterReward:{wood:240,stone:200,food:220,speedup1:1,power:180}},
+{id:'c2-bastion',title:'Eleva el Bastión a nivel 3',type:'state',path:'bastionLevel',value:3,target:{kind:'poi',id:'keep'},reward:{food:180}}],chapterReward:{wood:240,stone:200,food:220,power:180}},
 {id:3,title:'MÁS ALLÁ DE LAS MURALLAS',context:'Valoria aprende a alimentarse, cazar y sostener una frontera más amplia.',missions:[
 {id:'c3-granary',title:'Construye el Granero',type:'flag',path:'granary',value:1,target:{kind:'poi',id:'granary'},reward:{wood:160,stone:110}},
 {id:'c3-food',title:'Reúne 500 comida',type:'resource',path:'food',value:500,target:{kind:'node',id:'meat'},reward:{wood:120}},
 {id:'c3-hunt',title:'Completa 2 cacerías',type:'counter',counter:'hunts',value:2,target:{kind:'node',id:'wolf'},reward:{food:220}},
 {id:'c3-fissure',title:'Somete la Fisura',type:'flag',path:'boss',value:1,target:{kind:'node',id:'boss'},reward:{stone:260,power:100}},
 {id:'c3-infra',title:'Prepara la infraestructura de Valoria',type:'infra2',value:3,target:{kind:'poi',id:'sawmill'},reward:{wood:220,stone:180}},
-{id:'c3-bastion',title:'Eleva el Bastión a nivel 4',type:'state',path:'bastionLevel',value:4,target:{kind:'poi',id:'keep'},reward:{food:180}}],chapterReward:{wood:280,stone:240,food:260,speedup1:2,power:220}},
+{id:'c3-bastion',title:'Eleva el Bastión a nivel 4',type:'state',path:'bastionLevel',value:4,target:{kind:'poi',id:'keep'},reward:{food:180}}],chapterReward:{wood:280,stone:240,food:260,power:220}},
 {id:4,title:'EL PRECIO DEL CRECIMIENTO',context:'Crecer ya no consiste en acumular: consiste en sostener varios sistemas a la vez.',missions:[
 {id:'c4-sawmill2',title:'Aserradero a nivel 2',type:'building',path:'sawmill',value:2,target:{kind:'poi',id:'sawmill'},reward:{wood:180}},
 {id:'c4-granary2',title:'Granero a nivel 2',type:'building',path:'granary',value:2,target:{kind:'poi',id:'granary'},reward:{food:220}},
