@@ -44,7 +44,7 @@ const root=BASE.replace(/\?.*$/,'');
  const woundedAfter=medical.total(state.woundedRoster),availableAfter=state.troops;
  if(availableAfter+woundedAfter<90)throw Error('Wounded troops stopped belonging to player');
  await p.locator('[data-battle-close]').click();
- const dialog=p.locator('.aldric-cinematic');if(await dialog.count()){const btn=dialog.locator('.aldric-continue');await btn.click();await btn.click();}
+ const dialog=p.locator('.aldric-cinematic');if(await dialog.count()){const btn=dialog.locator('.aldric-continue');await btn.waitFor({state:'visible'});await p.waitForFunction(()=>document.querySelector('.aldric-cinematic .aldric-dialogue')?.classList.contains('done'),null,{timeout:7000});await btn.click();}
  await p.waitForSelector('[data-testid="building-hospital"]');
  const op=await p.evaluate(()=>window.ELDORIA_V023.medical.operationContract());
  if(op.ownerId!=='player'||op.marchId!=='main'||op.operationId!==null)throw Error('Solo march is not an independent future-operation contribution '+JSON.stringify(op));
