@@ -11,7 +11,7 @@ const {chromium}=require('playwright');
 
  await set({introSeen:true,view:'kingdom',sawmill:true,barracks:true,chestUnlocked:true,bastion:2,bastionLevel:2,wood:10000,stone:1250000,food:1000000000,troops:56,chapterProgress:chapter(2,{'c2-barracks':Date.now(),'c2-train':Date.now()}),missionPanelOpen:false});
  const hud=(await p.locator('[data-testid="resource-bar"]').innerText()).replace(/\s+/g,' ');
- if(!hud.includes('10K')||!hud.includes('1,25M'))throw Error('Compact K/M HUD formatting missing: '+hud);
+ if(!hud.includes('10K')||!hud.includes('1,25M')||!hud.includes('1B'))throw Error('Compact K/M/B HUD formatting missing: '+hud);
  const realm=await p.locator('.realm').innerText(),build=await p.locator('meta[name="eldoria-build"]').getAttribute('content');
  if(!realm.includes('v'+build))throw Error('Visible build version missing from HUD: '+realm);
  if(!await p.locator('[data-testid="hud-march"]').count())throw Error('Persistent March HUD access missing');
