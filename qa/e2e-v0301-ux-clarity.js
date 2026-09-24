@@ -30,7 +30,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  const ctx=p.locator('[data-testid="building-context-barracks"]');await ctx.waitFor({state:'visible'});txt=(await ctx.innerText()).toUpperCase();
  if(!txt.includes('RECLUTAR TROPAS')||!txt.includes('MEJORAR CUARTEL')||!txt.includes('VER TROPAS'))throw Error('Barracks responsibilities unclear '+txt);
  await ctx.locator('[data-testid="open-troops"]').evaluate(el=>el.click());const troops=p.locator('[data-testid="troops-panel"]');await troops.waitFor({state:'visible'});
- txt=(await troops.innerText()).toUpperCase();if(!txt.includes('TROPAS')||!txt.includes('CUARTEL RECLUTA')||!txt.includes('HOSPITAL RECUPERA HERIDOS')||!txt.includes('HERIDAS SIGUEN SIENDO TUYAS')||!txt.includes('NO ESTÁN DISPONIBLES'))throw Error('Troop inventory explanation unclear '+txt);
+ txt=(await troops.innerText()).replace(/\s+/g,' ').trim().toUpperCase();const troopCopyChecks=[/TROPAS/,/CUARTEL\s+RECLUTA/,/HOSPITAL\s+RECUPERA\s+HERIDOS/,/HERIDAS\s+SIGUEN\s+SIENDO\s+TUYAS/,/NO\s+ESTÁN\s+DISPONIBLES/];if(troopCopyChecks.some(rx=>!rx.test(txt)))throw Error('Troop inventory explanation unclear '+txt);
  if(await troops.locator('[data-testid="hero-aldric"]').count())throw Error('Troops screen mixes hero collection');
 
  // Uniform building labels.
