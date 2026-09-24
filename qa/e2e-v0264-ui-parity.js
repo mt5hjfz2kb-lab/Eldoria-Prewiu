@@ -62,7 +62,7 @@ const {chromium}=require('playwright');
  for(const tid of always){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('Functional parity element missing '+tid)}
  await set({view:'kingdom',bastionLevel:9,bastion:2,bastion3:true,sawmill:true,barracks:true,granary:true,graniteQuarry:true,forge:true,lyra:true,chestUnlocked:true,codexUnlocked:true});
  for(const tid of ['building-keep','building-sawmill','building-barracks','building-granary','building-stoneworks','building-forge','building-hall']){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('City parity element missing '+tid)}
- await set({view:'world',bastionLevel:9,bastion3:true,sawmill:true,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],trialWon:false,forestRemain:900,quarryRemain:900});
+ await set({view:'world',bastionLevel:9,bastion3:true,sawmill:true,lyra:true,maelis:true,narethRescued:true,marchConfigured:true,marchSlots:['aldric','maelis'],troopRoster:{archer:{1:90,2:0,3:0},paladin:{},warlock:{}},marchSetup:{heroIds:['aldric','maelis'],troops:{archer:{1:60,2:0,3:0},paladin:{},warlock:{}}},trialWon:false,forestRemain:900,quarryRemain:900});
  for(const tid of ['world-node-forest','world-node-quarry','world-node-trial','trial-objective-dock']){if(!await p.locator('[data-testid="'+tid+'"]').count())throw Error('World parity element missing '+tid)}
  await b.close();console.log('v0.26.4 UI PARITY + MOBILE UX PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
