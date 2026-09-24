@@ -888,6 +888,64 @@ html,body{background:#070b0f}.game-shell{background:#0b1116}.scene{inset:var(--u
 @media(max-width:620px){#eldoria-core-loop .hudTools{gap:3px}#eldoria-core-loop .hudTool{min-width:36px;width:36px}#eldoria-core-loop .hudTool small{font-size:5.5px!important}#eldoria-core-loop .realm{min-width:68px!important}#eldoria-core-loop .realm small{font-size:6.5px!important}}
 .recruitDialog0265.early0304>p,.recruitDialog0265.early0304 .tierPicker027,.recruitDialog0265.early0304 .recruitChoiceMeta0265,.recruitDialog0265.early0304 .recruitSummary0265,.recruitDialog0265.early0304 .balanceNote027{display:none!important}.recruitDialog0265.early0304 .recruitChoices0265{grid-template-columns:repeat(3,1fr)!important;gap:6px!important}.recruitDialog0265.early0304 .recruitChoiceCard0265{min-height:64px!important;padding:8px!important}.recruitDialog0265.early0304 .recruitChoiceHead0265{display:grid!important;gap:3px!important}#eldoria-core-loop .buildingWrap:has(>.buildingAction){z-index:410!important}#eldoria-core-loop .worldMarchFx0304{position:fixed;z-index:115;pointer-events:none;display:grid;place-items:center;width:54px;height:54px;border-radius:50%;border:1px solid #e6c87699;background:#121a20ee;box-shadow:0 0 24px #d5b86966;color:#f4d986}#eldoria-core-loop .worldMarchFx0304 span{font-size:24px}.worldMarchFx0304 b{position:absolute;top:54px;padding:2px 5px;border-radius:4px;background:#0a1016;color:#ead79b;font:700 7px Arial;letter-spacing:.12em}@media(max-width:620px){.recruitDialog0265.early0304 .recruitChoices0265{grid-template-columns:1fr!important}.recruitDialog0265.early0304 .recruitChoiceCard0265{min-height:48px!important}}
 </style>
+
+<style id="v0311-relicario-practice-visual">
+/* v0.31.1 — Relicario Practice visual fidelity.
+   Restores the portrait-card proportion and perimeter value hierarchy from the historical v0.21 direction,
+   adapted to the current v0.31 rarity/reveal language. */
+.modal:has(#duel-root){background:
+  radial-gradient(circle at 50% 0,rgba(98,47,116,.16),transparent 32%),
+  linear-gradient(180deg,#10151a 0%,#090d11 100%);border-color:#7f6988;box-shadow:0 24px 70px #000d,inset 0 0 70px #0007}
+.duel-board{gap:7px;padding:10px;border:1px solid #8e7699;background:
+  radial-gradient(circle at 50% 50%,rgba(130,52,151,.18),transparent 42%),
+  linear-gradient(145deg,#171d22,#090d11 74%);box-shadow:inset 0 0 0 1px #ffffff0a,inset 0 0 48px #000b,0 18px 42px #0009}
+.duel-cell{display:grid;place-items:center;overflow:hidden;padding:7px;border:1px solid #665f69;background:
+  linear-gradient(145deg,rgba(37,43,47,.96),rgba(9,13,16,.98));box-shadow:inset 0 0 18px #0008;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease}
+.duel-cell:not(:disabled):hover,.duel-cell:not(:disabled):focus-visible{border-color:#c997d8;background:linear-gradient(145deg,#312638,#11141a);box-shadow:inset 0 0 22px #9f52b02b,0 0 0 1px #c997d833}
+.duel-cell.player{border-color:#b99a58}.duel-cell.cpu{border-color:#85519a}
+.duel-cell .relic-card{width:min(74%,92px);height:auto;aspect-ratio:5/7;padding:17% 8% 8%;margin:auto;border-width:1.5px;border-radius:4px;box-shadow:0 8px 18px #000b,inset 0 0 24px #000a;transform:none}
+.duel-cell .relic-card:before{inset:4px}.duel-cell .relic-card:after{opacity:.34}
+.duel-cell .card-rarity{top:4px;font-size:5.5px;letter-spacing:.12em}
+.duel-cell .card-illustration{width:66%;height:54%;margin:5% auto 0;border-width:1px}
+.duel-cell .card-illustration strong{font-size:clamp(20px,3.2vw,34px)}
+.duel-cell .relic-card h3{margin:4px 13px 0;font-size:clamp(6px,.72vw,8px);line-height:1.12;text-wrap:balance}
+.duel-cell .relic-card>small{display:none}
+.duel-cell .side{width:20px;height:20px;border-width:1px;background:#070a0deF;font-size:9px;line-height:1;box-shadow:0 2px 7px #000d,0 0 0 1px #ffffff0a}
+.duel-cell .side:before{position:absolute;color:#bfc2c3;font:700 5px Arial;letter-spacing:.02em;text-shadow:0 1px 2px #000}
+.duel-cell .side.north{top:7px;left:50%;right:auto;bottom:auto;transform:translateX(-50%)}.duel-cell .side.north:before{content:"N";top:-7px;left:50%;transform:translateX(-50%)}
+.duel-cell .side.south{bottom:7px;left:50%;right:auto;top:auto;transform:translateX(-50%)}.duel-cell .side.south:before{content:"S";bottom:-7px;left:50%;transform:translateX(-50%)}
+.duel-cell .side.east{right:5px;top:50%;left:auto;bottom:auto;transform:translateY(-50%)}.duel-cell .side.east:before{content:"E";right:-7px;top:50%;transform:translateY(-50%)}
+.duel-cell .side.west{left:5px;top:50%;right:auto;bottom:auto;transform:translateY(-50%)}.duel-cell .side.west:before{content:"O";left:-7px;top:50%;transform:translateY(-50%)}
+.duel-hand{padding:10px 10px 8px;border:1px solid #ffffff12;background:#080c10a8}
+.duel-hand>small{margin-bottom:10px;color:#cdbb88;font-size:8px}
+.duel-hand>div{gap:10px}
+.duel-hand-card{border-radius:6px;outline:1px solid transparent;transition:transform .16s ease,filter .16s ease}
+.duel-hand-card .relic-card{border-radius:5px;box-shadow:0 10px 24px #000b,inset 0 0 26px #000}
+.duel-hand-card:hover .relic-card,.duel-hand-card:focus-visible .relic-card{transform:translateY(-4px);filter:brightness(1.09)}
+.duel-hand-card.selected{transform:translateY(-4px)}.duel-hand-card.selected .relic-card{box-shadow:0 0 0 2px #f0d991,0 0 26px color-mix(in srgb,var(--rarity) 58%,transparent),0 12px 24px #000c}
+.duel-cell.just-played .relic-card{animation:practiceCardLand .34s cubic-bezier(.2,.9,.3,1.25)}
+.duel-cell.captured .relic-card{filter:brightness(1.18);box-shadow:0 0 0 1px #fff3,0 0 28px var(--rarity),0 10px 22px #000c}
+.relic-card.common{--rarity:#8e999f;background:linear-gradient(155deg,#24292d,#090c0f 72%)}
+.relic-card.rare{--rarity:#4c91d7;background:radial-gradient(circle at 50% 34%,#244566 0,transparent 48%),linear-gradient(155deg,#172d45,#070a0e 74%)}
+.relic-card.epic{--rarity:#a85bd1;background:radial-gradient(circle at 50% 34%,#4b245f 0,transparent 48%),linear-gradient(155deg,#321942,#09060d 74%)}
+.relic-card.legendary{--rarity:#e28b32;background:radial-gradient(circle at 50% 32%,#75471e 0,transparent 50%),linear-gradient(155deg,#3f2714,#100a06 76%)}
+@keyframes practiceCardLand{0%{opacity:.35;transform:translateY(-10px) scale(.92)}70%{transform:translateY(2px) scale(1.035)}100%{opacity:1;transform:none}}
+@media(max-width:720px){
+  .duel-board{width:min(100%,44dvh);max-height:44dvh;padding:7px;gap:4px}
+  .duel-cell{padding:4px}.duel-cell .relic-card{width:min(78%,78px)}
+  .duel-cell .side{width:18px;height:18px;font-size:8px}.duel-cell .side.north{top:5px}.duel-cell .side.south{bottom:5px}.duel-cell .side.east{right:3px}.duel-cell .side.west{left:3px}
+  .duel-hand{padding:7px 6px 4px}.duel-hand>div{gap:7px}
+  .duel-hand-card{flex-basis:86px}.duel-hand-card .relic-card{width:86px;height:auto;aspect-ratio:5/7}
+}
+@media(max-width:430px){
+  .duel-board{width:min(100%,42dvh);max-height:42dvh}
+  .duel-cell .relic-card{width:min(78%,70px)}
+  .duel-cell .card-rarity{font-size:4.8px}.duel-cell .relic-card h3{font-size:5.8px}
+  .duel-cell .side{width:17px;height:17px;font-size:7.5px}
+  .duel-hand-card{flex-basis:80px}.duel-hand-card .relic-card{width:80px}
+}
+</style>
+
 </head>
 <body>
   <main id="game" class="game-shell" aria-live="polite">
