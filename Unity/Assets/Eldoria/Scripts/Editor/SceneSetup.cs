@@ -53,13 +53,22 @@ namespace Eldoria.EditorTools
             QualitySettings.renderPipeline=pipeline;
             EditorUtility.SetDirty(pipeline);
         }
+        [MenuItem("Eldoria/Build Windows slice")]
+        public static void BuildWindows()
+        {
+            Build("Builds/Windows/Eldoria.exe",BuildTarget.StandaloneWindows64);
+        }
         public static void BuildLinux()
         {
+            Build("Builds/Linux/Eldoria.x86_64",BuildTarget.StandaloneLinux64);
+        }
+        private static void Build(string outputPath,BuildTarget target)
+        {
             Regenerate();
-            Directory.CreateDirectory("Builds/Linux");
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
             var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
                 scenes=new[] {Root+"Bootstrap.unity",Root+"Valoria.unity",Root+"Frontier.unity"},
-                locationPathName="Builds/Linux/Eldoria.x86_64",target=BuildTarget.StandaloneLinux64,
+                locationPathName=outputPath,target=target,
                 options=BuildOptions.None});
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 throw new System.Exception("Unity build failed: "+report.summary.result);

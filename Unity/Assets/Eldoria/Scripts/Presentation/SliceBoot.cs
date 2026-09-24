@@ -14,7 +14,7 @@ namespace Eldoria.Presentation
             var obj = new GameObject("Eldoria composition root");
             Object.DontDestroyOnLoad(obj);
             var ui = obj.AddComponent<SlicePresenter>();
-            var save = new FileStateStore(System.IO.Path.Combine(Application.persistentDataPath, "eldoria-unity-slice-v1.json"));
+            var save = new FileStateStore(System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "eldoria-unity-slice-v1.json"));
             try { ui.Initialize(new LocalGateway(new SystemClock(), save)); }
             catch (System.Exception error)
             {

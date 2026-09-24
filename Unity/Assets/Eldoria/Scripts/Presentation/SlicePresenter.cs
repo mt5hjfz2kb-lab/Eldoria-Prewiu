@@ -131,7 +131,8 @@ namespace Eldoria.Presentation
             objective=Label("Objective",top,14,new Color(.90f,.84f,.73f),48);
             var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.94f),270,false);
             description=Label("Story and world",bottom,14,new Color(.85f,.88f,.89f),108);
-            var row1=Row("Actions",bottom),row2=Row("Travel",bottom);
+            var row1=Row("Actions",bottom);
+            var row2=Row("Travel",bottom);
             if(city)
             {
                 Button(row1,"IR AL MUNDO",()=>SceneManager.LoadScene("Frontier"));

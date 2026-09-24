@@ -4,11 +4,11 @@
 
 ## Abrir y jugar
 
-1. Instala Unity Hub, Unity Editor **6000.3.23f1** y el módulo Linux Build Support si vas a generar el player Linux. Activa una licencia que permita ejecutarlo. No se necesitan assets de pago.
+1. Abre con Unity Hub y Unity Editor **6000.3.23f1** y una licencia activada. Para el player en tu PC se utiliza el módulo Windows Build Support (IL2CPP). Linux Build Support solo hace falta si vas a producir el player Linux localmente.
 2. Desde Hub abre la carpeta `Unity/` del repositorio. Espera a que Package Manager importe URP, Input System, uGUI y Test Framework; revisa Console y confirma que no hay errores de compilación. Conserva el `Packages/packages-lock.json` que produzca una importación correcta en un commit posterior.
 3. Ejecuta **Eldoria → Regenerate slice scenes and build settings**. Este comando configura URP y escribe las tres escenas versionadas. Abre `Assets/Eldoria/Scenes/Bootstrap.unity` y pulsa **Play**. En caso de URP sin renderer válido, crea un `Universal Renderer` y un `URP Pipeline Asset` desde el menú Assets y asígnalos a Graphics y Quality; registra el cambio porque el editor no ha validado la automatización de la configuración URP.
 4. En Valoria, Aldric explica que faltan 80 de madera y tienes 30. Usa la puerta o **IR AL MUNDO**, toca el bosque o **BOSQUE · RECOLECTAR**, espera el regreso de la marcha (9 s), vuelve a Valoria y mejora el Aserradero (6 s). El explorador corrupto ofrece un encuentro PvE opcional; su resultado no adelanta Bastión II. Verifica que la estructura reparada y el Poder pasan de **2452 → 2622**. El texto de fin declara el cierre de esta slice; no es el final de Arco I.
-5. El guardado local está en `Application.persistentDataPath/eldoria-unity-slice-v1.json`. Para iniciar una partida completamente nueva **cierra el player/Play y elimina solo ese archivo de save de esta slice**. Guarda una copia si quieres preservarlo. Un save web no se importa automáticamente.
+5. Para generar el ejecutable de Windows, usa **Eldoria → Build Windows slice**. La salida es `Unity/Builds/Windows/Eldoria.exe` y su carpeta de datos; ambos son necesarios para jugar. El guardado local está en `Application.persistentDataPath/eldoria-unity-slice-v1.json`. Para iniciar una partida completamente nueva **cierra el player/Play y elimina solo ese archivo de save de esta slice**. Guarda una copia si quieres preservarlo. Un save web no se importa automáticamente.
 
 ## Pruebas y build
 
