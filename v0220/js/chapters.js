@@ -22,7 +22,7 @@ function progress(s,m,h={}){normalizeState(s);let cur=0;
  else if(m.type==='totalPower')cur=Number(h.totalPower?.()||0);
  else if(m.type==='equipment')cur=E.heroArmy?.ownedEquipment?E.heroArmy.ownedEquipment(s)?1:0:[...(s.inventory||[]),...Object.values(s.equipped||{}).flatMap(x=>Object.values(x||{}))].some(x=>x&&x.slot)?1:0;
  else if(m.type==='equipped')cur=Object.values(s.equipped||{}).some(g=>g&&Object.values(g).some(Boolean))?1:0;
- else if(m.type==='relics')cur=(s.codex||[]).length+(s.cardsConsumed||[]).length;
+ else if(m.type==='relics')cur=Array.isArray(s.relicDiscovered)?s.relicDiscovered.length:(s.codex||[]).length+(s.cardsConsumed||[]).length;
  return{current:Math.min(cur,m.value),raw:cur,target:m.value,done:cur>=m.value};
 }
 function currentChapter(s){normalizeState(s);let id=Math.max(1,Math.min(10,s.chapterProgress.current||s.bastionLevel||1));return defs().find(x=>x.id===id)||defs()[0]}
@@ -30,7 +30,7 @@ function currentMission(s,h){let ch=currentChapter(s);return ch?.missions.find(m
 function missionHelp(s,m,h={}){
  if(!m)return'';
  if(m.id==='c2-power')return '<div class="missionExplain0304"><b>¿CÓMO SUBE EL PODER DE EXPEDICIÓN?</b><p>Se calcula con la marcha que preparas: <strong>héroes + tropas + tier + equipo + afinidades</strong>. Ahora mismo, la forma más directa es reclutar Arqueros en el Cuartel, abrir <b>MARCHA</b>, añadirlos y confirmar la composición.</p><button data-mission-route="march">ABRIR MARCHA</button></div>';
- if(m.id==='c7-relics'){let ids=new Set([...(s.codex||[]).map(x=>x?.id),...(s.cardsConsumed||[])]),next=!ids.has('rift-shard')?'Engendro de la Fisura':!ids.has('ash-veil')?'Acechador de Ceniza':'Relicario';return '<div class="missionExplain0304"><b>¿DÓNDE SE CONSIGUEN?</b><p>La primera Reliquia ya llegó con el desbloqueo. Las siguientes aparecen al derrotar amenazas concretas: <strong>Engendro de la Fisura → Fragmento de Fisura</strong> y <strong>Acechador de Ceniza → Velo de Ceniza</strong>.</p><span>Siguiente pista: '+next+'</span></div>'}
+ if(m.id==='c7-relics')return '<div class="missionExplain0304"><b>PRIMERA RELIQUIA</b><p>El desbloqueo del Relicario incluye una primera carta garantizada para enseñarte el sistema. Después, los enemigos reales del Mundo hacen <strong>una sola tirada</strong> por victoria: Común 0,10 % · Rara 0,05 %. La caza nunca entrega cartas.</p></div>'
  return'';
 }
 function rewardText(r){let a=[];if(!r)return'';if(r.wood)a.push('🌲 '+r.wood);if(r.stone)a.push('🪨 '+r.stone);if(r.food)a.push('🍖 '+r.food);if(r.power)a.push('⚔ '+r.power);if(r.speedup1)a.push('⏱ '+r.speedup1+'×1m');if(r.speedup5)a.push('⏱ '+r.speedup5+'×5m');if(r.speedup15)a.push('⏱ '+r.speedup15+'×15m');if(r.specialRelic)a.push('✦ Reliquia especial');return a.join(' · ')}
@@ -38,8 +38,7 @@ function grant(s,reward,source,api={}){if(!reward)return;normalizeState(s);
  for(const [k,v] of Object.entries(reward)){if(['wood','stone','food'].includes(k))s[k]=(s[k]||0)+v;else if(k==='power')s.power=(s.power||0)+v;
  else if(k==='speedup1'){s.speedups.m1+=v;api.record?.('speedup_received',{unit:'1m',qty:v,source})}
  else if(k==='speedup5'){s.speedups.m5+=v;api.record?.('speedup_received',{unit:'5m',qty:v,source})}
- else if(k==='speedup15'){s.speedups.m15+=v;api.record?.('speedup_received',{unit:'15m',qty:v,source})}
- else if(k==='specialRelic'&&v){let id='valoria-dawn';s.codex=s.codex||[];if(!s.codex.some(x=>x.id===id)){s.codex.push({id:id,name:'Alba de Valoria',rarity:'Legendaria',quality:'Indestructible',values:{N:6,E:5,S:6,O:5},copy:'Reliquia del primer arco. Conserva la memoria del reino que sobrevivió a la Brecha.'});api.record?.('relic_obtained',{id,source})}}}
+ else if(k==='speedup15'){s.speedups.m15+=v;api.record?.('speedup_received',{unit:'15m',qty:v,source})}}
  if((reward.speedup1||reward.speedup5||reward.speedup15)&&!s.speedupAwardIntroSeen){s.speedupAwardIntroSeen=true;api.toast?.('NUEVO · ACELERADORES','Se guardan en Arcón > Aceleradores. Reducen el tiempo restante de construcciones, mejoras y entrenamientos compatibles.');}
 }
 function sync(s,h={},api={},ceremony=false){normalizeState(s);let changed=false,ch=defs().find(x=>x.id===s.chapterProgress.current)||defs()[0];if(!ch)return false;if(!s.speedupFirstGranted0304&&ch.id>=4&&(s.tasks||[]).some(t=>t&&!/^gather-/.test(t.key))){s.speedups.m1+=1;s.speedupFirstGranted0304=true;s.speedupAwardIntroSeen=true;api.record?.('speedup_received',{unit:'1m',qty:1,source:'first-compatible-task'});if(!api.isQA?.())api.toast?.('NUEVO · ACELERADOR','Acabas de recibir 1 acelerador de 1 minuto porque ya tienes una tarea compatible en curso. Abre la cola y pulsa ACELERAR para usarlo. No funciona sobre recolección.');changed=true}

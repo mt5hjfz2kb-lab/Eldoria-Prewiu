@@ -42,9 +42,9 @@ const CHAPTERS=[
 {id:'c6-bastion',title:'Eleva el Bastión a nivel 7',type:'state',path:'bastionLevel',value:7,target:{kind:'poi',id:'keep'},reward:{power:300}}],chapterReward:{wood:480,stone:420,food:360,speedup5:1,power:340}},
 {id:7,title:'CÓDICE Y RELICARIO',context:'El Códice registra lo que Eldoria aprende. El Relicario reúne las cartas y decisiones que nacen de esos descubrimientos.',missions:[
 {id:'c7-codex',title:'Consulta el Códice de Eldoria',type:'flag',path:'codexUnlocked',value:1,target:{kind:'nav',id:'codex'},reward:{power:160}},
-{id:'c7-relics',title:'Descubre 3 Reliquias',type:'relics',value:3,target:{kind:'nav',id:'relicario'},reward:{stone:260}},
+{id:'c7-relics',title:'Descubre tu primera Reliquia',type:'relics',value:1,target:{kind:'nav',id:'relicario'},reward:{stone:260}},
 {id:'c7-decision',title:'Decide el destino de una Reliquia',type:'counter',counter:'relicDecisions',value:1,target:{kind:'nav',id:'relicario'},reward:{speedup1:2}},
-{id:'c7-duel',title:'Completa la Práctica guiada',type:'flag',path:'duelTutorialComplete',value:1,target:{kind:'nav',id:'relicario'},reward:{power:220}},
+{id:'c7-duel',title:'Comprende el Relicario',type:'flag',path:'relicTutorialComplete',value:1,target:{kind:'nav',id:'relicario'},reward:{power:220}},
 {id:'c7-bastion',title:'Eleva el Bastión a nivel 8',type:'state',path:'bastionLevel',value:8,target:{kind:'poi',id:'keep'},reward:{power:320}}],chapterReward:{wood:520,stone:460,food:400,speedup15:1,power:420}},
 {id:8,title:'VOCES DE NARETH',context:'La composición empieza a importar más que la suma bruta de Poder.',missions:[
 {id:'c8-nareth',title:'Investiga las ruinas de Nareth',type:'flag',path:'narethRescued',value:1,target:{kind:'node',id:'nareth'},reward:{food:300}},
@@ -61,7 +61,7 @@ const CHAPTERS=[
 {id:10,title:'LA PRIMERA BRECHA',context:'Ya no se trata de recolectar. Se trata de demostrar que Valoria sabe prepararse y luchar.',missions:[
 {id:'c10-herald',title:'Derrota al Heraldo de la Fisura',type:'counter',counter:'wins.herald',value:1,target:{kind:'node',id:'herald'},reward:{power:300}},
 {id:'c10-skill',title:'Intervén con una habilidad de héroe',type:'counter',counter:'heroInterventions',value:1,target:{kind:'node',id:'herald'},reward:{speedup5:1}},
-{id:'c10-final',title:'Completa el asalto final del Arco I',type:'flag',path:'finalWon',value:1,target:{kind:'node',id:'final'},reward:{power:500}}],chapterReward:{wood:900,stone:800,food:700,speedup15:2,power:900,specialRelic:true}}
+{id:'c10-final',title:'Completa el asalto final del Arco I',type:'flag',path:'finalWon',value:1,target:{kind:'node',id:'final'},reward:{power:500}}],chapterReward:{wood:900,stone:800,food:700,speedup15:2,power:900}}
 ];
 
 
