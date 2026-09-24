@@ -18,13 +18,13 @@ const {chromium}=require('playwright');
  if(!await p.locator('[data-testid="nav-ranking"]').count())throw Error('Ranking access disappeared');
  // Full-screen destinations.
  for(const [tid,view,selector] of [['nav-heroes','heroes','.heroArchiveScene'],['valoria-chest','chest','.chestScene'],['nav-codex','codex','.codexScene'],['nav-relicario','relicario','[data-testid="relicario"]']]){
-   await p.locator('[data-testid="'+tid+'"]').evaluate(el=>el.click());await p.locator(selector).waitFor({state:'visible'});
+   await set({...await state(),view:'kingdom'});await p.locator('[data-testid="'+tid+'"]').waitFor({state:'visible'});await p.locator('[data-testid="'+tid+'"]').evaluate(el=>el.click());await p.locator(selector).waitFor({state:'visible'});
    if((await state()).view!==view)throw Error(view+' navigation failed');
    if(await p.locator('.e22-overlay:visible').count())throw Error(view+' regressed to overlay');
  }
  // Chest card -> in-screen detail; no lost item information.
- await p.locator('[data-testid="valoria-chest"]').evaluate(el=>el.click());
- await p.locator('[data-testid="chest-item-iron-brace"]').tap({force:true});
+ await set({...await state(),view:'kingdom'});await p.locator('[data-testid="valoria-chest"]').waitFor({state:'visible'});await p.locator('[data-testid="valoria-chest"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="chest-item-iron-brace"]').waitFor({state:'visible'});await p.locator('[data-testid="chest-item-iron-brace"]').evaluate(el=>el.click());
  const detail=await p.locator('[data-testid="chest-item-detail"]').innerText();
  for(const term of ['Abrazadera','MATERIAL','CANTIDAD','UTILIDAD','PROCEDENCIA'])if(!detail.includes(term))throw Error('Chest detail missing '+term);
  // Forge is a full screen and keeps craft functionality.
