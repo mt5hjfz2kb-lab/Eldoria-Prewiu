@@ -7,15 +7,23 @@ const {chromium}=require('playwright');
  await p.waitForFunction(()=>sessionStorage.getItem('eldoria-qa-active-preset')==='relicario-v029'&&window.ELDORIA_V023?.state().view==='relicario');
  const state=()=>p.evaluate(()=>window.ELDORIA_V023.state());
 
- // Relicario has the three required tabs and Codex is no longer the card manager.
+ // Códice and Relicario are peer systems: separate navigation, separate purpose, no nesting.
  await p.locator('[data-testid="relicario"]').waitFor({state:'visible'});
+ if(!await p.locator('[data-testid="nav-codex"]').count()||!await p.locator('[data-testid="nav-relicario"]').count())throw Error('Codex/Relicario do not have independent primary navigation');
  const tabText=(await p.locator('.relicTabs027').innerText()).toUpperCase();
  for(const term of ['COLECCIÓN','PRÁCTICA','DUELO PVP','FUTURO'])if(!tabText.includes(term))throw Error('Relicario tabs missing '+term);
- await p.locator('[data-view="codex"]').first().evaluate(el=>el.click());
+ const relicPurpose=(await p.locator('[data-testid="relicario-purpose"]').innerText()).toUpperCase();
+ for(const term of ['SISTEMA','COLECCIÓN','ESTRATEGIA','RELIQUIAS'])if(!relicPurpose.includes(term))throw Error('Relicario purpose is not independently explained: '+relicPurpose);
+ await p.locator('[data-testid="nav-codex"]').evaluate(el=>el.click());
  await p.locator('[data-testid="codex-scroll"]').waitFor({state:'visible'});
  for(const id of ['breach','bestiary','world','characters'])if(!await p.locator('[data-codex-section="'+id+'"]').count())throw Error('Codex section missing '+id);
  if(await p.locator('[data-card-use],[data-card-keep],.relicCard026').count())throw Error('Codex still manages relic cards');
- if(!await p.locator('[data-testid="open-relicario"]').count())throw Error('Codex lacks Relicario entry point');
+ if(await p.locator('[data-testid="open-relicario"],.relicarioPortal027').count())throw Error('Relicario is still nested inside Codex');
+ const codexPurpose=(await p.locator('[data-testid="codex-purpose"]').innerText()).toUpperCase();
+ for(const term of ['CONOCIMIENTO','DESCUBRIMIENTO','CRIATURAS','PERSONAJES'])if(!codexPurpose.includes(term))throw Error('Codex purpose is not independently explained: '+codexPurpose);
+ await p.locator('[data-testid="nav-relicario"]').evaluate(el=>el.click());
+ await p.locator('[data-testid="relicario"]').waitFor({state:'visible'});
+ if(await p.locator('.relicarioToCodex027').count())throw Error('Relicario still presents Codex as a parent/back destination');
 
  // Phase 1: one relic => rarity/effect/use-keep, no side values or board teaching.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({view:'relicario',relicarioTab:'collection',codex:[{id:'ash-sigil',name:'Sello de Ceniza',rarity:'Rara',quality:'Indestructible',values:{N:3,E:4,S:1,O:2},copy:'Prueba QA'}],cardsConsumed:[],cardChoices:{},cardCooldowns:{},relicTutorialSeen:true,relicSidesRevealed:false,duelTutorialComplete:false}));
