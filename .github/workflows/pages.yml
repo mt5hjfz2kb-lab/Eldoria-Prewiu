@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: eldoria-pages-main
   # Each coherent green push certifies and publishes the exact candidate.
   # Only the newest main candidate matters during an active development block.
   # Superseded runs are cancelled so stale candidates cannot block final certification.
