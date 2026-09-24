@@ -1,6 +1,6 @@
 # Eldoria en Unity — primera slice de Valoria
 
-**Estado: proyecto fuente preparado, aún no compilado ni jugado en Unity.** Es una línea Unity separada del producto web v0.32.0; esta carpeta no cambia la versión ni la URL del web. La versión del Editor está fijada en `ProjectSettings/ProjectVersion.txt`: **6000.3.23f1 (Unity 6.3 LTS)**.
+**Estado: primera slice compilada y jugada correctamente en Unity 6.3 LTS sobre Windows.** Es una línea Unity separada del producto web v0.32.0; esta carpeta no cambia la versión ni la URL del web. La versión del Editor está fijada en `ProjectSettings/ProjectVersion.txt`: **6000.3.23f1 (Unity 6.3 LTS)**.
 
 ## Abrir y jugar
 
@@ -27,6 +27,14 @@ La última orden escribe `Unity/Builds/Linux/Eldoria.x86_64` y su carpeta de dat
 
 | Funcional | Provisional | Pendiente de validar en Editor/dispositivo |
 | --- | --- | --- |
-| Comandos versionados/idempotentes; estado de recursos, construcción y marcha; Poder derivado; pronóstico/encuentro PvE; regreso y premio; guardado versionado; escenas/controles fuente. | Geometría modular por primitivas, Aldric/arquero silueta, bosque, Brecha pulsante, UI uGUI española, estadísticas de amenaza y economía del corte. | Importación/compilación real de paquetes, tests EditMode/PlayMode, pipeline URP efectivo, build Linux, screenshots, sensibilidad y safe area móvil, arte/audio/animación y playtest humano. |
+| Comandos versionados/idempotentes; estado de recursos, construcción y marcha; Poder derivado; pronóstico/encuentro PvE; regreso y premio; guardado versionado; escenas/controles fuente. | Geometría modular por primitivas, Aldric/arquero silueta, bosque, Brecha pulsante, UI uGUI española, estadísticas de amenaza y economía del corte. | Tests EditMode/PlayMode automatizados, build Linux, sensibilidad/safe area móvil, arte/audio/animación y playtest humano ampliado. |
 
 El cliente local es autoridad **solo de esta slice**; `ICommandGateway` centraliza órdenes, el estado tiene IDs y revisiones, y economía y combate se calculan fuera de MonoBehaviour. Ninguna garantía de antifraude u online es implícita. El contrato para Poder y Marcha está en [`../UNITY_CORE_CONTRACT.md`](../UNITY_CORE_CONTRACT.md). La ruta funcional/visual objetivo está en [`../UNITY_VERTICAL_SLICE.md`](../UNITY_VERTICAL_SLICE.md). Los assets actuales son originales de código y **bloqueo**, no candidatos de producción; consultar [`../UNITY_ASSET_AUDIT.md`](../UNITY_ASSET_AUDIT.md).
+
+## Validación Windows real
+
+El 2026-09-25 el propietario abrió el proyecto con Unity 6.3.23f1 en Windows, salió de Safe Mode tras corregir los cuatro errores iniciales, regeneró las escenas y completó la slice Valoria → Frontera → recolección → regreso → Aserradero. El Poder pasó de 2452 a 2622 y el guardado persistió entre Editor y player.
+
+La primera build Windows en `Unity/Builds/Windows/` compiló y arrancó. Un fallo magenta del player se corrigió asegurando un material URP base incluido en Resources; la build posterior renderizó correctamente y la interacción de mundo/recolección funcionó fuera del Editor.
+
+El PC Windows del propietario será el nodo Unity de Eldoria: GitHub → PC → Unity → compilación/tests/build → logs/resultados. La automatización se implantará progresivamente cuando compilación, tests y builds sean reproducibles, con el objetivo de dirigir el desarrollo principalmente desde móvil y minimizar intervención física.
