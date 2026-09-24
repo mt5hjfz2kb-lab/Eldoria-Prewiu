@@ -116,3 +116,14 @@
 - Final visual target is documented in `docs/MVP_ART_DIRECTION.md`.
 - The web slice validates gameplay and compatibility with the target; it should not waste time recreating final Unity production art.
 - Future Unity production must preserve the direction while adapting camera, asset density, VFX and performance for real gameplay.
+
+## Military casualties, Hospital and future operation seam — v0.32.0
+- **PvE may wound troops but never creates permanent troop deaths.** A PvE resolution may return available troops plus wounded troops; its permanent-death count is always 0.
+- **Future PvP may distinguish available troops, wounded troops and permanent casualties.** The data/domain boundary reserves that distinction, but PvP casualty percentages and balance are deliberately not implemented in the web slice.
+- Wounded troops remain owned by the player/reino, are excluded from available March composition while wounded, and still belong to the player's military continuity.
+- **Hospital de Valoria recovers wounded troops only.** It never restores permanent casualties. Healing uses the canonical timestamp-task model so it survives screen changes, reload and offline time.
+- The Hospital's first playable introduction belongs to **Bastion X after the Herald encounter**. The first treatment is intentionally recoverable without a resource requirement, preventing a finale softlock while teaching combat wear.
+- Total military ownership and Expedition Power are distinct: wounded troops remain owned, but only currently available/deployed troops may contribute to a March.
+- A March is modeled as an independent contribution with owner identity, march identity, heroes, troops and optional higher-level operation identity. Today the player's normal March has no operation assigned.
+- Future **Alliance Concentrations / joint operations** may aggregate several independent contributions while preserving participant-specific troops, heroes, wounds, future casualties and rewards. No allied players, rally participants or join UI may be fabricated before real multiplayer exists.
+
