@@ -30,13 +30,13 @@ const {chromium}=require('playwright');
  const locked=(await p.locator('[data-testid="relicario-practice"]').innerText()).toUpperCase();
  if(!locked.includes('1/3')||!locked.includes('AÚN NO ES EL MOMENTO'))throw Error('Practice not gated before threshold');
 
- // Indestructible: same rarity/effect, no consumption, cooldown/effect persist.
+ // Indestructible: same rarity/effect, no consumption and no extra cooldown.
  await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'relicario',relicarioTab:'collection',marchConfigured:true,codex:[...window.ELDORIA_V023.state().codex,{id:'estandarte-valoria',name:'Estandarte de Valoria',rarity:'rare',quality:'Indestructible',values:{N:6,S:5,E:3,O:6},effect:'+20 % de velocidad de marcha durante exactamente 2 horas.'}],relicDiscovered:['bosque-valoria','estandarte-valoria'],relicIndestructibles:{'estandarte-valoria':true},cardCooldowns:{}}));
  await p.locator('[data-testid="card-use-estandarte-valoria"]').evaluate(el=>el.click());
  await p.locator('.e22-overlay .btn').evaluate(el=>el.click()).catch(()=>{});
  let after=await state();
  if(!after.codex.some(x=>x.id==='estandarte-valoria'&&String(x.quality).toLowerCase()==='indestructible'))throw Error('Indestructible relic disappeared');
- if(!(after.cardCooldowns['estandarte-valoria']>Date.now())||!(after.relicEffects?.marchSpeedPct?.end>Date.now()))throw Error('Indestructible cooldown/effect missing');
+ if((after.cardCooldowns?.['estandarte-valoria']||0)>Date.now()||!(after.relicEffects?.marchSpeedPct?.end>Date.now()))throw Error('Indestructible gained extra cooldown or lost its effect');
 
  // Normal copy is repeatable and consumed one copy at a time.
  await p.evaluate(()=>{window.ELDORIA_V023.relicario.grant('bosque-valoria',false);window.ELDORIA_V023.relicario.grant('bosque-valoria',false)});
