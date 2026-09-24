@@ -8,6 +8,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Branch: `main`, only active development line.
 - Active development version: **v0.32.0**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
+- Current v0.32.0 release candidate HEAD: `1206b89243175bb2c357d69d464810d2effb3126`; re-verify live HEAD before acting because later pushes may supersede it.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -21,7 +22,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Solo March exposes a future-operation contribution contract while multiplayer/PvP remains unimplemented and visibly absent from the current slice.
 - Dedicated regression: `qa/e2e-v032-hospital.js`; `qa:targeted` and `qa:regression` include it, and the fresh Arc I route covers Herald → wounds → Hospital → recovery.
 - Focused owner preset: `b10-hospital-v032`. Related late-game segment remains IX→X.
-- Final certification/published verification must be taken from the v0.32.0 promotion HEAD before claiming the build certified.
+- Final certification/published verification must be taken from the latest v0.32.0 release-candidate HEAD before claiming the build certified. Current candidate: `1206b89243175bb2c357d69d464810d2effb3126`; certification is not yet claimed in this document.
 
 ## Current v0.31.1 product state
 - **v0.31.1 is the previous Relicario Practice visual patch over the certified v0.31.0 milestone.**
@@ -133,7 +134,7 @@ This is permanent cross-session behavior, not a one-session preference.
 - Final certified v0.30.2 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Integral fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification all green.
 
 ## Next task
-Complete v0.32.0 certification/publication, then continue normal owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
+Verify the normal Pages workflow and published Chromium interaction for the latest v0.32.0 release-candidate HEAD. If green, record the certified HEAD/run and deliver the focused Hospital preset, IX→X segment and full-game links. If red, fix only the observed blocker and re-run the normal gate.
 
 
 ## 2026-09-24 — Relicario · mejora visual de Práctica
