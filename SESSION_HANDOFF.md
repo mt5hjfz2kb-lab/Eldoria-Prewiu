@@ -6,14 +6,15 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 
 ## Current working state
 - Branch: `main`, only active development line.
-- Active development version: **v0.30.2**.
+- Active development version: **v0.30.3**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
 - QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
 
-## Current v0.30.2 product state
+## Current v0.30.3 product state
+- Códice and Relicario are now independent peer destinations in the main navigation. Códice is knowledge-only; Relicario owns Reliquia collection/use/practice. Their onboarding is separate and old cross-navigation portals were removed.
 - Current stabilization block is dedicated to making the existing Arc I completable end-to-end from a clean save; no large new system was added.
 - VI→VII equipment ownership, Devorador modeled combat, Bastion II single-hero March, Lyra affinity consistency, world/building hitboxes and player-facing development text are hardened in v0.30.2.
 - qa/e2e-v0302-arc1-stability.js covers the reported blockers and the canonical fresh-save test equips the Hoja de Éter before attempting Bastion VII.
