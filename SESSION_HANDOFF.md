@@ -8,7 +8,6 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Branch: `main`, only active development line.
 - Active development version: **v0.32.0**.
 - Verify the real live HEAD at session start; never infer it from chat/history.
-- Current v0.32.0 release candidate HEAD: `1206b89243175bb2c357d69d464810d2effb3126`; re-verify live HEAD before acting because later pushes may supersede it.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
 - Generated development output: `playtest/`; never edit it directly.
 - Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
@@ -22,7 +21,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Solo March exposes a future-operation contribution contract while multiplayer/PvP remains unimplemented and visibly absent from the current slice.
 - Dedicated regression: `qa/e2e-v032-hospital.js`; `qa:targeted` and `qa:regression` include it, and the fresh Arc I route covers Herald → wounds → Hospital → recovery.
 - Focused owner preset: `b10-hospital-v032`. Related late-game segment remains IX→X.
-- Final certification/published verification must be taken from the latest v0.32.0 release-candidate HEAD before claiming the build certified. Current candidate: `1206b89243175bb2c357d69d464810d2effb3126`; certification is not yet claimed in this document.
+- Final certification/published verification must be taken from the latest v0.32.0 release-candidate HEAD before claiming the build certified. The candidate is always the latest coherent `main` HEAD; certification is not yet claimed in this document.
 
 ## Current v0.31.1 product state
 - **v0.31.1 is the previous Relicario Practice visual patch over the certified v0.31.0 milestone.**
