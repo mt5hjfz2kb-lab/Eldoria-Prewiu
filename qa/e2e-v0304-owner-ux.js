@@ -37,6 +37,11 @@ const {chromium}=require('playwright');
  const rt=(await recruit.innerText()).toUpperCase();for(const term of ['CUARTEL = CREAR TROPAS','ABRE MARCHA','PODER DE EXPEDICIÓN'])if(!rt.includes(term))throw Error('Early Barracks explanation missing '+term);
  await recruit.locator('[data-recruit-close]').tap({force:true});
 
+ // First accelerator appears only when the player has a compatible timed task.
+ s=await state();const speedNow=Date.now();
+ await set({...s,view:'kingdom',bastionLevel:4,bastion3:true,speedups:{m1:0,m5:0,m15:0},speedupFirstGranted0304:false,speedupAwardIntroSeen:false,tasks:[{key:'upgrade-building-sawmill-2',title:'MEJORANDO ASERRADERO',target:'sawmill',start:speedNow,end:speedNow+30000,costPaid:true,cost:{wood:120,stone:78}}],chapterProgress:chapter(4,{})});
+ await p.waitForTimeout(120);s=await state();if((s.speedups?.m1||0)!==1||!s.speedupFirstGranted0304)throw Error('Contextual first accelerator was not granted with first compatible task');
+
  s=await state();
  await set({...s,view:'forge',bastionLevel:6,forge:true,forgeLvl:1,aetherEmber:true,inventory:[{id:'aether-ember',name:'Ascua de Éter',type:'material'}]});
  await p.locator('[data-testid="forge-view"]').waitFor({state:'visible'});
