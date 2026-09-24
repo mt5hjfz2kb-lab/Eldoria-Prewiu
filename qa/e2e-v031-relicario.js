@@ -37,6 +37,31 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  await mobile.evaluate(()=>window.ELDORIA_V023.relicario.reveal('lyra',false));let reveal=mobile.locator('[data-testid="relic-reveal"]');await reveal.waitFor({state:'visible'});if(!await reveal.locator('text=ÉPICA').count())throw Error('Epic reveal rarity missing');if(!await reveal.locator('text=N 5').count()||!await reveal.locator('text=E 9').count())throw Error('N/S/E/O missing in reveal');await mobile.waitForTimeout(1150);await reveal.locator('[data-relic-reveal-done]').click();
  await mobile.evaluate(()=>window.ELDORIA_V023.relicario.reveal('estandarte-valoria',true));reveal=mobile.locator('[data-testid="relic-reveal"]');await mobile.waitForTimeout(1500);if(!await reveal.locator('text=INDESTRUCTIBLE').count())throw Error('Indestructible second phase missing');await reveal.locator('[data-relic-reveal-done]').click();
  await mobile.locator('[data-testid="relicario-purpose"]').waitFor({state:'visible'});if(await mobile.locator('[data-testid="codex-scroll"]').count())throw Error('Codex nested in Relicario');
+
+ // Practice visual regression: preserve portrait cards and anchor N/S/E/O on all four edges.
+ const practice=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ await practice.goto((process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1').replace(/\?.*$/,'')+'?qa=1&preset=relicario-practice-v031',{waitUntil:'domcontentloaded'});
+ await practice.waitForSelector('[data-testid="relicario-practice"]');
+ await practice.locator('[data-testid="open-relic-training"]').click();
+ await practice.waitForSelector('#duel-root');
+ const rarityClasses=await practice.locator('.duel-hand-card .relic-card').evaluateAll(nodes=>nodes.map(n=>n.className));
+ for(const rarity of ['common','rare','epic','legendary'])if(!rarityClasses.some(x=>String(x).split(/\s+/).includes(rarity)))throw Error('Practice hand missing rarity '+rarity+': '+rarityClasses.join(' | '));
+ const handGeom=await practice.locator('.duel-hand-card .relic-card').first().evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});
+ if(!(handGeom.h/handGeom.w>1.32&&handGeom.h/handGeom.w<1.5))throw Error('Practice hand card lost portrait proportion '+JSON.stringify(handGeom));
+ await practice.locator('.duel-hand-card').first().click();
+ const empty=practice.locator('.duel-cell:not(.player):not(.cpu)').filter({hasNot:practice.locator('.relic-card')}).first();
+ await empty.click();
+ await practice.waitForTimeout(450);
+ const played=practice.locator('.duel-cell .relic-card').first();await played.waitFor({state:'visible'});
+ const geo=await played.evaluate(card=>{const c=card.getBoundingClientRect(),get=sel=>card.querySelector(sel).getBoundingClientRect();const n=get('.side.north'),s=get('.side.south'),e=get('.side.east'),w=get('.side.west');return{card:{x:c.x,y:c.y,w:c.width,h:c.height},n:{x:n.x+n.width/2,y:n.y+n.height/2},s:{x:s.x+s.width/2,y:s.y+s.height/2},e:{x:e.x+e.width/2,y:e.y+e.height/2},w:{x:w.x+w.width/2,y:w.y+w.height/2}}});
+ const cx=geo.card.x+geo.card.w/2,cy=geo.card.y+geo.card.h/2,tol=Math.max(4,geo.card.w*.12);
+ if(Math.abs(geo.n.x-cx)>tol||geo.n.y>=cy)throw Error('North value misaligned '+JSON.stringify(geo));
+ if(Math.abs(geo.s.x-cx)>tol||geo.s.y<=cy)throw Error('South value misaligned '+JSON.stringify(geo));
+ if(Math.abs(geo.e.y-cy)>tol||geo.e.x<=cx)throw Error('East value misaligned '+JSON.stringify(geo));
+ if(Math.abs(geo.w.y-cy)>tol||geo.w.x>=cx)throw Error('West value misaligned '+JSON.stringify(geo));
+ const boardGeom=await played.evaluate(n=>{const r=n.getBoundingClientRect();return{w:r.width,h:r.height}});
+ if(!(boardGeom.h/boardGeom.w>1.32&&boardGeom.h/boardGeom.w<1.5))throw Error('Board card lost portrait proportion '+JSON.stringify(boardGeom));
+ await practice.close();
  const desk=await b.newPage({viewport:{width:1280,height:800}});await desk.goto(URL,{waitUntil:'domcontentloaded'});await desk.waitForSelector('[data-testid="relicario"]');if(!await desk.locator('[data-testid="relicario-guide"]').count())throw Error('Desktop Relicario guide missing');
  await b.close();console.log('v0.31 RELICARIO SYSTEM PASS');
 })().catch(e=>{console.error(e);process.exit(1)});
