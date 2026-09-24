@@ -1,5 +1,5 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-23
+Updated: 2026-09-24
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
@@ -22,6 +22,15 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Relicario remains the transversal Reliquia system for Colección, Práctica and the visibly locked future Duelo PvP.
 - Both systems now explain their purpose independently on first use and in-screen, while preserving current saves and Chapter VII progression.
 - Mobile QA and uninterrupted fresh-save Arc I regression enforce that no Relicario portal remains inside Códice and no Códice back-link remains inside Relicario.
+
+## v0.30.3 — independent Códice / Relicario correction
+- **Códice and Relicario are now completely independent peer destinations in primary navigation.** Neither contains a portal/back-link that presents the other as a child or parent.
+- Códice is knowledge-only: La Brecha, Bestiario, Mundo and Personajes, with a first-open explanation focused on discovery and world understanding.
+- Relicario is the transversal Reliquia system: Colección, Práctica and future/locked Duelo PvP, with a separate first-open explanation of rarity, effect, state and use/conserve decisions.
+- Existing saves are migration-safe: players who had Códice unlocked automatically receive the independent Relicario destination.
+- Mobile navigation now supports the additional first-level Relicario destination and its touch/overflow contract is covered by QA.
+- Chapter VII and the uninterrupted fresh-save Arc I route use the independent Relicario entry point; no gameplay/reward semantics were removed.
+- Integral certification passed on GitHub Actions run 1331 before metadata/documentation promotion.
 
 ## v0.30.2 Arc I completion hardening
 - Bastion VI → VII now uses one canonical equipment-ownership rule across mission progress, equipped gear and the Bastion gate; equipping the forged Aether Blade cannot revert the mission counter.
@@ -48,7 +57,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 - Hero Hall and expedition configuration expose readable attack/defense/support roles and explain that Power is a development summary rather than a single combat verdict.
 - Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics are managed strictly in the independent Relicario; Códice is knowledge-only.
 - World activity now yields named upgrade materials (ancient iron brace, ash hide, stone tusk) used by production-building upgrades, connecting exploration to city progression.
-- Bastion VII introduces the first relic through Orus, opens Códice and a guided Duelo de Reliquias. Indestructible remains a quality, never a rarity.
+- Bastion VII unlocks Códice and Relicario as separate peer systems. The first Reliquia is managed in Relicario; the Códice remains knowledge-only. Indestructible remains a quality, never a rarity.
 - Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
 - Macro systems (server Breach, deep talents, resonances, oracle and full PvP) remain documented future scope, not implemented.
 
@@ -89,10 +98,10 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 
 ## v0.29 — Códice de Eldoria + Relicario
 - **Códice de Eldoria** is now a knowledge/discovery archive rather than a card manager. Its current sections are **La Brecha, Bestiario, Mundo and Personajes**, populated progressively from real state/discoveries.
-- **Relicario** is the dedicated card/Reliquia system and is entered from the Códice. It has three mobile-first tabs: **Colección**, **Práctica** and **Duelo PvP**.
+- **Relicario** is the dedicated card/Reliquia system and is a first-level destination independent from the Códice. It has three mobile-first tabs: **Colección**, **Práctica** and **Duelo PvP**.
 - Colección shows rarity, effect and state. Use/conserve remains intact: a normal Reliquia is consumed when used; an Indestructible remains in collection, enters cooldown and remains valid for practice/duel systems.
 - Tutorial phase 1 deliberately hides board language: the first Reliquia teaches only what it is, rarity/effect and the use-vs-conserve decision.
-- At five discovered Reliquias, **Maestre Orin** reveals side values and directs the player into Práctica by playing rather than through a rules wall.
+- At three discovered Reliquias, **Maestre Orin** reveals side values and directs the player into Práctica by playing rather than through a rules wall.
 - Práctica uses the existing 3×3 capture mechanics with temporary cards and no permanent collection loss. After the guided pass, practice remains repeatable against Orin.
 - **Duelo PvP** is visible but explicitly locked/future; no matchmaking, rewards or fake PvP functionality are active.
 - Chapter 7/9 relic objectives now route to the Relicario while the Códice objective remains knowledge-oriented.
