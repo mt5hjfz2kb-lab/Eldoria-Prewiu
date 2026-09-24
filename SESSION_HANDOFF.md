@@ -114,3 +114,17 @@ This is permanent cross-session behavior, not a one-session preference.
 
 ## Next task
 Continue normal v0.30 owner testing/development using the smallest QA tier that gives meaningful evidence; preserve full fresh-save certification for important candidates.
+
+
+## 2026-09-24 — Relicario · mejora visual de Práctica
+
+- Versión activa mantenida: **v0.31.0**. Esta iteración es una mejora visual/UX dentro del milestone actual; no cambia catálogo, economía ni reglas del Relicario.
+- Fuente modificada: `v0220/index.html` y fixture canónico de QA `v0220/js/qa-fixtures.js`. `playtest/` sigue siendo salida generada.
+- Se recuperó de la línea histórica v0.21 el principio visual de **carta vertical con marco y valores anclados al perímetro**, adaptado al lenguaje actual del Relicario.
+- Práctica usa ahora caras de carta reales también dentro del tablero, en lugar de fichas de texto provisionales.
+- N/S/E/O quedan anclados respectivamente arriba/abajo/derecha/izquierda; se reforzaron proporción 5:7, contraste, jerarquía, selección, colocación/captura y lectura móvil.
+- Rarezas en Práctica: Común gris, Rara azul, Épica morada y Legendaria naranja, con tratamiento contenido.
+- Corrección UX asociada: una vez completado el tutorial, `PRACTICAR CONTRA ORIN` abre la práctica libre con la colección real; el primer aprendizaje sigue usando cartas prestadas.
+- Preset focal: `?qa=1&preset=relicario-practice-v031`.
+- Regresión específica añadida a `qa/e2e-v031-relicario.js`: comprueba cuatro rarezas, proporción vertical en mano/tablero y geometría N/S/E/O en móvil.
+- Commits del bloque: `8d09d5a`, `61a3a1b`, `c1263cb`, `9a5ad56`, `2072206`.
