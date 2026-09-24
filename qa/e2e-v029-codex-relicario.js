@@ -13,7 +13,7 @@ const {chromium}=require('playwright');
  const tabText=(await p.locator('.relicTabs027').innerText()).toUpperCase();
  for(const term of ['COLECCIÓN','PRÁCTICA','DUELO PVP','FUTURO'])if(!tabText.includes(term))throw Error('Relicario tabs missing '+term);
  const relicPurpose=(await p.locator('[data-testid="relicario-purpose"]').innerText()).toUpperCase();
- for(const term of ['SISTEMA','COLECCIÓN','ESTRATEGIA','RELIQUIAS'])if(!relicPurpose.includes(term))throw Error('Relicario purpose is not independently explained: '+relicPurpose);
+ for(const term of ['COLECCIÓN','ESTRATEGIA','RELIQUIAS','RAREZA','EFECTO'])if(!relicPurpose.includes(term))throw Error('Relicario purpose is not independently explained: '+relicPurpose);
  await p.locator('[data-testid="nav-codex"]').evaluate(el=>el.click());
  await p.locator('[data-testid="codex-scroll"]').waitFor({state:'visible'});
  for(const id of ['breach','bestiary','world','characters'])if(!await p.locator('[data-codex-section="'+id+'"]').count())throw Error('Codex section missing '+id);
