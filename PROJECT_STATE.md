@@ -4,7 +4,7 @@ Updated: 2026-09-23
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- Runtime/API milestone: **v0.30.2**.
+- Runtime/API milestone: **v0.30.3**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
 - `v0220` and save/API aliases containing v022/v023 are compatibility identifiers, not competing active versions.
@@ -15,6 +15,13 @@ This file describes **functional project state only**. Operational HEAD/current 
 - Exact operational HEAD must be verified live from `main`; it is not derived from CHANGELOG or historical baselines.
 - Protected visual recovery: `f139968ccbfdeb3e1d37f58568187374faf6d1f2` / `stable/visual-good-f139968c`.
 - Older `v019*`, `v020*`, `v0210`, old r7 material and superseded version folders are historical/reference only.
+
+## v0.30.3 Códice / Relicario independence hardening
+- Códice and Relicario are now peer destinations in primary navigation, not parent/child surfaces.
+- Códice contains only world knowledge and discovery: La Brecha, Bestiario, Mundo and Personajes.
+- Relicario remains the transversal Reliquia system for Colección, Práctica and the visibly locked future Duelo PvP.
+- Both systems now explain their purpose independently on first use and in-screen, while preserving current saves and Chapter VII progression.
+- Mobile QA and uninterrupted fresh-save Arc I regression enforce that no Relicario portal remains inside Códice and no Códice back-link remains inside Relicario.
 
 ## v0.30.2 Arc I completion hardening
 - Bastion VI → VII now uses one canonical equipment-ownership rule across mission progress, equipped gear and the Bastion gate; equipping the forged Aether Blade cannot revert the mission counter.
@@ -39,7 +46,7 @@ Before scope expansion/Unity migration, the slice still needs to prove: a genuin
 ## Implemented baseline inherited from v0.26 (historical label; active in v0.27)
 - Combat language now separates hunting PvE from threat PvE; PvP is explicitly reserved architecturally and not exposed as a fake live system.
 - Hero Hall and expedition configuration expose readable attack/defense/support roles and explain that Power is a development summary rather than a single combat verdict.
-- Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics remain strictly in Códice.
+- Arcón is a bottom-navigation inventory for objects/materials/equipment; cards and relics are managed strictly in the independent Relicario; Códice is knowledge-only.
 - World activity now yields named upgrade materials (ancient iron brace, ash hide, stone tusk) used by production-building upgrades, connecting exploration to city progression.
 - Bastion VII introduces the first relic through Orus, opens Códice and a guided Duelo de Reliquias. Indestructible remains a quality, never a rarity.
 - Mobile world-map rendering has a dedicated v0.26 performance pass using transform containment/backface/will-change rules and removes transition work during touch panning.
