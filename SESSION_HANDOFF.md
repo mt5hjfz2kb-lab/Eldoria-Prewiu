@@ -47,7 +47,7 @@ Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA:
 - Historical note: v0.31.0 release certification belonged to its own promotion cycle; current release work has moved to v0.32.0.
 
 ## Current v0.30.4 product state
-- **v0.30.4 is the active development patch. v0.30.3 remains the previous certified baseline, not the active development version.**
+- **v0.30.4 is a historical mobile-UX patch. v0.30.3 was its preceding certified baseline; neither is the active development version.**
 - This patch closes the owner's mobile UX clarity block: exact version visibility, K/M/B resources, expedition-power teaching, first-class March access/exit, short world-march travel feedback, early Barracks simplification, Arcón organization, contextual speedup teaching, Forge clarity and restrained ambient audio.
 - Permanent responsibility boundaries remain unchanged: Códice = knowledge; Relicario = Reliquias; Arcón = objects/materials/equipment; Cuartel = recruit/upgrade troops; Héroes = characters; Marcha = expedition composition; Poder Total ≠ Poder de expedición.
 - The v0.30.4 owner UX suite passes. The full Arc I fresh-save was updated only where the player's real semantics changed (world-march animation and full-node gathering) and the pre-promotion candidate passed GitHub Actions run **1386** at `7c7289c08b12c7cd610a6971e199aa8c6c783332`.
