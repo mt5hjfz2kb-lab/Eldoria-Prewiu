@@ -42,6 +42,8 @@ namespace Eldoria.Tests
             Assert.That(assets.SlavicStoneFence,Is.Not.Null);
             Assert.That(assets.SlavicRockGate,Is.Not.Null);
             Assert.That(assets.SlavicBoulder,Is.Not.Null);
+            Assert.That(assets.MegaTower,Is.Not.Null);
+            Assert.That(assets.MegaHalfGate,Is.Not.Null);
             SceneManager.LoadScene("Valoria");
             yield return null;
             Assert.That(GameObject.Find("Aserradero · carpentry shed"),Is.Null,
@@ -54,7 +56,10 @@ namespace Eldoria.Tests
                 "Loose ruin fragments must not return to the benchmark composition");
             Assert.That(GameObject.Find("Bastion · masonry gate"),Is.Null,
                 "Detached modular masonry must not return until a coherent castle set is selected");
-            Assert.That(GameObject.Find("Bastion · front curtain · wall"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · front curtain backing · wall"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · connected gate"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · connected wall"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · connected tower"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · dead palace arch · left pier"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · lower stone gate"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cobble route"),Is.Not.Null);
