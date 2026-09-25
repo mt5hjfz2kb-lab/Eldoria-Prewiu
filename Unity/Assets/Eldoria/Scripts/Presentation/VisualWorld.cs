@@ -16,11 +16,11 @@ namespace Eldoria.Presentation
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.88f,.84f,.78f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(.50f,.51f,.50f); RenderSettings.fogStartDistance=48; RenderSettings.fogEndDistance=140;
+            RenderSettings.fogColor = new Color(.46f,.46f,.44f); RenderSettings.fogStartDistance=48; RenderSettings.fogEndDistance=140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 12.4f : 14;
-            camera.backgroundColor = new Color(.53f,.55f,.56f); camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(.50f,.51f,.50f); camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
             cameraGo.transform.position = city ? new Vector3(20.5f,22.5f,-24f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,2.8f) : new Vector3(0,0,1));
@@ -64,6 +64,16 @@ namespace Eldoria.Presentation
             ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.02f,-3.4f),new Vector3(19,.48f,7.0f),ValoriaKit.Earth);
             for(int i=0;i<7;i++)
                 ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.85f,-6.2f),new Vector3(3.35f,2.45f,2.35f),ValoriaKit.OldStone*.67f);
+
+            // Real modular masonry begins to replace the procedural city perimeter.
+            ValoriaKit.CastleWall("Valoria outer wall west",new Vector3(-8.1f,.30f,4.0f),
+                new Vector3(.78f,.78f,.78f),Quaternion.Euler(0,90,0));
+            ValoriaKit.CastleWall("Valoria outer wall east",new Vector3(8.1f,.30f,4.0f),
+                new Vector3(.78f,.78f,.78f),Quaternion.Euler(0,90,0));
+            ValoriaKit.CastleWall("Valoria lower wall west",new Vector3(-5.4f,.18f,-5.6f),
+                new Vector3(.72f,.70f,.72f),Quaternion.identity);
+            ValoriaKit.CastleWall("Valoria lower wall east",new Vector3(5.4f,.18f,-5.6f),
+                new Vector3(.72f,.70f,.72f),Quaternion.identity);
 
             // The signature ruin frames the left side rather than covering the Bastion.
             ValoriaKit.BrokenArch("Cyclopean arch",new Vector3(-7.15f,.2f,4.55f),4.6f,2.0f,ValoriaKit.OldStone*.82f);
@@ -117,6 +127,9 @@ namespace Eldoria.Presentation
             Glow("Gate torch L",new Vector3(-2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Gate torch R",new Vector3(2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Bastion inhabited warmth",new Vector3(0,3.65f,3.2f),Amber,1.35f,6.5f);
+            ValoriaKit.SmokePlume("Valoria smoke · sawmill",new Vector3(-6.0f,2.55f,-1.15f),1.05f,8f);
+            ValoriaKit.SmokePlume("Valoria smoke · lower hearth",new Vector3(4.65f,2.25f,-3.75f),.78f,5f);
+            ValoriaKit.SmokePlume("Valoria smoke · bastion",new Vector3(.9f,6.65f,5.55f),.9f,4f);
         }
         static void Frontier(PlayerState state)
         {
