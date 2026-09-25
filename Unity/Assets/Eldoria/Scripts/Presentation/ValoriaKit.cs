@@ -10,15 +10,9 @@ namespace Eldoria.Presentation
     public static class ValoriaKit
     {
         static readonly Dictionary<Color32,Material> Materials=new();
-        static ValoriaExternalAssetLibrary externalAssets;
-
-        static ValoriaExternalAssetLibrary ExternalAssets
+        static GameObject LoadExternal(string resourceName)
         {
-            get
-            {
-                if(externalAssets==null) externalAssets=ValoriaExternalAssetLibrary.Load();
-                return externalAssets;
-            }
+            return Resources.Load<GameObject>("Valoria/"+resourceName);
         }
 
         public static GameObject ExternalPrefab(string name,GameObject prefab,Vector3 position,Vector3 scale,Quaternion rotation)
@@ -252,30 +246,32 @@ namespace Eldoria.Presentation
         {
             // Hybrid production pass: authored modular castle meshes carry the readable architecture,
             // while bespoke procedural masses preserve Eldoria's unique fortress-inside-a-dead-palace silhouette.
-            var lib=ExternalAssets;
+            var stoneTower=LoadExternal("Stone_Tower");
+            var stoneWall=LoadExternal("Stone_Wall");
+            var stoneGate=LoadExternal("Stone_Gate");
 
             Block(name+" · rock plinth",origin+new Vector3(0,.68f,0),
                 new Vector3(10.7f,1.55f,7.6f),OldStone*.82f);
             Block(name+" · palace remnant",origin+new Vector3(-.45f,5.35f,.9f),
                 new Vector3(4.35f,1.65f,3.25f),OldStone*.90f);
 
-            if(lib!=null && lib.StoneWall!=null && lib.StoneTower!=null && lib.StoneGate!=null)
+            if(stoneWall!=null && stoneTower!=null && stoneGate!=null)
             {
                 // Real modular front curtain: three wall sections around a central gate.
-                ExternalPrefab(name+" · authored gate",lib.StoneGate,
+                ExternalPrefab(name+" · authored gate",stoneGate,
                     origin+new Vector3(0,.06f,-3.0f),Vector3.one*.86f,Quaternion.identity);
-                ExternalPrefab(name+" · authored wall west",lib.StoneWall,
+                ExternalPrefab(name+" · authored wall west",stoneWall,
                     origin+new Vector3(-3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
-                ExternalPrefab(name+" · authored wall east",lib.StoneWall,
+                ExternalPrefab(name+" · authored wall east",stoneWall,
                     origin+new Vector3(3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
 
-                ExternalPrefab(name+" · authored tower west",lib.StoneTower,
+                ExternalPrefab(name+" · authored tower west",stoneTower,
                     origin+new Vector3(-5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
-                ExternalPrefab(name+" · authored tower east",lib.StoneTower,
+                ExternalPrefab(name+" · authored tower east",stoneTower,
                     origin+new Vector3(5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
-                ExternalPrefab(name+" · authored rear west",lib.StoneTower,
+                ExternalPrefab(name+" · authored rear west",stoneTower,
                     origin+new Vector3(-4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
-                ExternalPrefab(name+" · authored rear east",lib.StoneTower,
+                ExternalPrefab(name+" · authored rear east",stoneTower,
                     origin+new Vector3(4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
             }
             else
