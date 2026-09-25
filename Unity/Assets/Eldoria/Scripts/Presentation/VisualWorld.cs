@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
             sun.intensity=city?1.95f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.27f,.29f,.26f):Earth);
+                city?new Color(.255f,.205f,.165f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
