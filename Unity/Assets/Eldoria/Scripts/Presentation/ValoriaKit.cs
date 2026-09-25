@@ -462,8 +462,7 @@ namespace Eldoria.Presentation
 
             Block(name+" · rock plinth",origin+new Vector3(0,.58f,.20f),
                 new Vector3(9.7f,1.30f,6.9f),OldStone*.70f);
-            Block(name+" · palace remnant",origin+new Vector3(-.55f,5.00f,1.70f),
-                new Vector3(3.15f,.92f,2.35f),OldStone*.56f);
+            // Capture-reviewed: no procedural palace slab above the authored skyline.
 
             // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
             // gaps, so individual modules never read as floating props.
