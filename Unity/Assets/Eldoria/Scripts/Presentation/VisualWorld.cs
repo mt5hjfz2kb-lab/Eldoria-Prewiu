@@ -14,23 +14,23 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.52f,.54f,.54f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.72f,.70f,.66f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.35f,.38f,.40f):new Color(.46f,.46f,.44f);
-            RenderSettings.fogStartDistance=city?30:48; RenderSettings.fogEndDistance=city?94:140;
+            RenderSettings.fogColor = city?new Color(.48f,.47f,.44f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
-            camera.orthographicSize = city ? 10.8f : 14;
+            camera.orthographicSize = city ? 9.7f : 14;
             camera.backgroundColor = RenderSettings.fogColor; camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
-            cameraGo.transform.position = city ? new Vector3(18.5f,18.0f,-25.0f) : new Vector3(20,24,-21);
-            cameraGo.transform.LookAt(city ? new Vector3(0,2.0f,3.1f) : new Vector3(0,0,1));
+            cameraGo.transform.position = city ? new Vector3(16.6f,16.8f,-23.2f) : new Vector3(20,24,-21);
+            cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,3.7f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.80f,.62f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?1.32f:1.9f;
-            sun.transform.rotation=Quaternion.Euler(37,-48,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.78f:.55f;
+            sun.intensity=city?2.05f:1.9f;
+            sun.transform.rotation=Quaternion.Euler(46,-38,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.58f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.26f,.25f,.22f):Earth);
+                city?new Color(.34f,.32f,.28f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -57,14 +57,6 @@ namespace Eldoria.Presentation
                     new Vector3(-15.0f,-2.0f,18.0f),new Vector3(.18f,.18f,.18f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
                     new Vector3(13.8f,-2.2f,19.0f),new Vector3(.15f,.15f,.15f),Quaternion.Euler(0,-23,0));
-                // The horizon uses the same masonry family instead of black test pillars.
-                var library=ValoriaExternalAssetLibrary.Load();
-                for(int i=0;i<4;i++)
-                {
-                    float x=-13f+i*8.1f;
-                    ValoriaKit.BenchmarkPiece("Distant imperial ruin "+i,library!=null?library.RuinedTower:null,
-                        new Vector3(x,.08f,14.0f+(i%2)*1.7f),2.3f,4.5f,Quaternion.Euler(0,i*47f,0));
-                }
                 City(state);
             }
             else Frontier(state);
@@ -78,43 +70,29 @@ namespace Eldoria.Presentation
             // so authored prefabs can later replace them without changing gameplay coordinates.
 
             // Clifftop city terraces.
-            ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.05f,4.0f),new Vector3(17,.48f,11),ValoriaKit.OldStone*.81f);
-            ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),ValoriaKit.Earth*.94f);
+            ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.05f,4.0f),new Vector3(17,.48f,11),ValoriaKit.OldStone*.98f);
+            ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),ValoriaKit.Earth*1.12f);
             for(int i=0;i<7;i++)
-                ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.85f,-6.2f),new Vector3(3.35f,2.45f,2.35f),ValoriaKit.OldStone*.67f);
+                ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.85f,-6.2f),new Vector3(3.35f,2.45f,2.35f),ValoriaKit.OldStone*.82f);
             ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
             ValoriaKit.RockCluster("Valoria cliff rocks centre",new Vector3(-.6f,-.18f,-6.15f),1.30f,8);
             ValoriaKit.RockCluster("Valoria cliff rocks east",new Vector3(8.2f,-.12f,-5.8f),1.40f,7);
             ValoriaKit.RockCluster("Valoria upper outcrop west",new Vector3(-9.0f,.02f,7.3f),1.05f,5);
             ValoriaKit.RockCluster("Valoria upper outcrop east",new Vector3(8.8f,.02f,7.9f),1.00f,5);
 
-            // Real modular masonry begins to replace the procedural city perimeter.
-            foreach(float x in new[]{-8.1f,8.1f})
-                ValoriaKit.BenchmarkPiece("Valoria outer masonry",art!=null?art.MasonryWall:null,
-                    new Vector3(x,.15f,4.0f),4.0f,2.8f,Quaternion.Euler(0,90,0));
-            foreach(float x in new[]{-5.4f,5.4f})
-                ValoriaKit.BenchmarkPiece("Valoria lower masonry",art!=null?art.MasonryWall:null,
-                    new Vector3(x,.17f,-5.6f),3.4f,2.5f,Quaternion.identity);
-
-            // The signature ruin frames the left side rather than covering the Bastion.
-            foreach(var p in new[]{new Vector3(-9.4f,.15f,2.2f),new Vector3(8.9f,.15f,3.3f),new Vector3(-7.5f,.1f,-4.4f)})
-            {
-                ValoriaKit.BenchmarkPiece("Valoria · ruined imperial tower",art!=null?art.RuinedTower:null,
-                    p,2.6f,3.8f,Quaternion.Euler(0,p.x<0?33:-25,0));
-                ValoriaKit.Rubble("Ruined masonry",p,.9f,9);
-            }
-            ValoriaKit.BenchmarkPiece("Valoria · damaged outer tower",art!=null?art.RuinedTower:null,
-                new Vector3(9.15f,.30f,7.9f),2.6f,4.8f,Quaternion.Euler(0,-18,0));
+            // Keep the perimeter visually continuous. Loose wall/tower prefabs were removed after capture review.
+            ValoriaKit.Wall("Valoria west retaining wall",new Vector3(-8.2f,1.05f,3.7f),new Vector3(1.0f,2.0f,6.8f),ValoriaKit.OldStone*.92f,false);
+            ValoriaKit.Wall("Valoria east retaining wall",new Vector3(8.2f,1.05f,3.7f),new Vector3(1.0f,2.0f,6.8f),ValoriaKit.OldStone*.92f,false);
+            ValoriaKit.RockCluster("Old palace rubble west",new Vector3(-8.4f,.15f,6.2f),1.15f,10);
+            ValoriaKit.RockCluster("Old palace rubble east",new Vector3(8.1f,.15f,6.6f),1.05f,9);
 
             // Signature Bastion: fortress built inside a dead palace.
             ValoriaKit.BastionCore("Bastion",new Vector3(0,.05f,5.0f),Glow);
 
             // Main central route from foreground to fortress.
-            ValoriaKit.BenchmarkPiece("Valoria · lower entrance",art!=null?art.MasonryGate:null,
-                new Vector3(0,.18f,-4.65f),3.2f,3.4f,Quaternion.identity);
-            var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,.8f,-4.75f),new Vector3(2.6f,2.5f,.35f),ValoriaKit.Timber);
+            ValoriaKit.Wall("Valoria · lower entrance",new Vector3(0,1.25f,-4.65f),new Vector3(5.4f,2.35f,.75f),ValoriaKit.WarmStone*.88f,false);
+            var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-4.82f),new Vector3(2.25f,2.0f,.34f),ValoriaKit.Timber);
             gate.AddComponent<WorldHotspot>().Id="gate";
-            if(art!=null&&art.MasonryGate!=null)gate.GetComponent<Renderer>().enabled=false;
             for(int i=0;i<12;i++)
             {
                 var p=new Vector3(Mathf.Sin(i*.27f)*.31f,.27f,-11.1f+i*1.12f);
@@ -127,14 +105,11 @@ namespace Eldoria.Presentation
 
             // Left: work district / Sawmill.
             ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.28f,4.3f),ValoriaKit.Earth*.90f);
-            var sawmillArt=ValoriaKit.BenchmarkPiece("Aserradero · carpentry shed",art!=null?art.SlavicShed:null,
-                new Vector3(-6.4f,.35f,-1.45f),3.35f,2.55f,Quaternion.identity);
-            if(sawmillArt==null)
-                ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
+            ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
             var mill=ValoriaKit.Block("Aserradero · interacción",new Vector3(-6.4f,1.18f,-1.45f),
                 new Vector3(3.05f,1.45f,2.35f),state.SawmillLevel>0?new Color(.34f,.25f,.17f):new Color(.18f,.18f,.17f));
             mill.AddComponent<WorldHotspot>().Id="sawmill";
-            if(sawmillArt!=null)mill.GetComponent<Renderer>().enabled=false;
+            mill.GetComponent<Renderer>().enabled=false;
             ValoriaKit.BenchmarkPiece("Aserradero · leña",art!=null?art.Firewood:null,
                 new Vector3(-8.2f,.31f,-2.7f),1.25f,.9f,Quaternion.Euler(0,18,0));
             ValoriaKit.Scaffold("Sawmill scaffold",new Vector3(-8.1f,1.6f,.05f),new Vector3(1.5f,2.8f,1.2f));
@@ -147,14 +122,11 @@ namespace Eldoria.Presentation
             }
 
             // Right: military district grows into a readable Bastion II objective.
-            var barracksArt=ValoriaKit.BenchmarkPiece("Cuartel · casa de guardia",art!=null?art.SlavicHouse:null,
-                new Vector3(6.0f,.35f,-1.55f),3.25f,3.1f,Quaternion.identity);
-            if(barracksArt==null)
-                ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),state.BarracksLevel>0,Glow);
+            ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),state.BarracksLevel>0,Glow);
             var barracks=ValoriaKit.Block("Cuartel · interacción",new Vector3(6.0f,1.18f,-1.55f),
                 new Vector3(3.0f,1.40f,2.35f),state.BarracksLevel>0?new Color(.36f,.34f,.30f):new Color(.20f,.20f,.19f));
             barracks.AddComponent<WorldHotspot>().Id="barracks";
-            if(barracksArt!=null)barracks.GetComponent<Renderer>().enabled=false;
+            barracks.GetComponent<Renderer>().enabled=false;
             if(state.BastionLevel>=2 && state.BarracksLevel==0)
                 ValoriaKit.Scaffold("Cuartel scaffold",new Vector3(7.75f,1.55f,-.55f),new Vector3(1.35f,2.7f,1.1f));
             if(state.BarracksLevel>0)
@@ -162,16 +134,12 @@ namespace Eldoria.Presentation
                 Glow("Barracks forge light",new Vector3(6.8f,1.4f,-2.15f),Amber,1.05f,3.4f);
                 ValoriaKit.Banner("Barracks banner",new Vector3(5.15f,2.0f,-2.75f),new Vector3(.55f,1.65f,.08f),new Color(.31f,.10f,.08f));
             }
-            if(ValoriaKit.BenchmarkPiece("Granary · stone store",art!=null?art.SlavicShed:null,
-                new Vector3(4.55f,.24f,-4.0f),2.5f,2.25f,Quaternion.Euler(0,90,0))==null)
-                ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
+            ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
             ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.18f,2.5f),ValoriaKit.Earth*.85f);
 
             // Sparse population: Bastion I must have room to grow.
             foreach(var shelter in new[]{new Vector3(-3.45f,.30f,-3.35f),new Vector3(2.7f,.30f,-2.75f)})
-                if(ValoriaKit.BenchmarkPiece("Valoria · rebuilder shelter",art!=null?art.SlavicShed:null,
-                    shelter,1.85f,1.9f,Quaternion.Euler(0,shelter.x<0?18:-12,0))==null)
-                    ValoriaKit.House("Rebuilder shelter",shelter,new Vector3(1.9f,1.1f,1.65f),true,Glow);
+                ValoriaKit.House("Rebuilder shelter",shelter,new Vector3(1.9f,1.1f,1.65f),true,Glow);
             // Forested slopes surround the inhabited terraces; maintain a clear gate approach.
             for(int i=0;i<28;i++)
             {
@@ -346,8 +314,7 @@ namespace Eldoria.Presentation
                 fissure.transform.rotation=Quaternion.Euler(0,18+i*13,0);
             }
             var library=ValoriaExternalAssetLibrary.Load();
-            ValoriaKit.BenchmarkPiece("Brecha · damaged watchtower",library!=null?library.RuinedTower:null,
-                p+new Vector3(2.6f,.05f,1.5f),2.0f,3.1f,Quaternion.Euler(0,35,0));
+            ValoriaKit.RockCluster("Brecha · collapsed watchtower",p+new Vector3(2.25f,.02f,1.25f),1.15f,14);
             ValoriaKit.RockCluster("Brecha · displaced rock",p+new Vector3(-2.1f,0,.9f),1.0f,12);
             Glow("Brecha · restrained violet glow",p+new Vector3(.1f,.55f,0),new Color(.48f,.26f,.56f),.65f,3.6f);
         }
