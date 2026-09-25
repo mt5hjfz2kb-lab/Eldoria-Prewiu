@@ -10,6 +10,7 @@ namespace Eldoria.Presentation
     public static class ValoriaKit
     {
         static readonly Dictionary<Color32,Material> Materials=new();
+        static readonly Dictionary<Material,Material> AdaptedMaterials=new();
         static GameObject LoadExternal(string resourceName)
         {
             return Resources.Load<GameObject>("Valoria/"+resourceName);
@@ -22,6 +23,58 @@ namespace Eldoria.Presentation
             go.name=name;
             go.transform.localScale=scale;
             return go;
+        }
+
+        // Visual-only wrapper: the existing interaction volumes remain the authority for taps.
+        // The source prefab is not modified, and missing assets leave the procedural fallback.
+        public static GameObject BenchmarkPiece(string name,GameObject prefab,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation)
+        {
+            if(prefab==null)return null;
+            var go=Object.Instantiate(prefab);
+            go.name=name;
+            go.transform.SetPositionAndRotation(ground,rotation);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var behaviour in go.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+            var renderers=go.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0){Object.Destroy(go);return null;}
+            // Legacy Standard materials from the props pack cannot render in URP. Convert
+            // instance references to shared URP materials while retaining their textures.
+            foreach(var renderer in renderers)
+            {
+                var source=renderer.sharedMaterials;
+                for(int i=0;i<source.Length;i++)source[i]=AdaptForUrp(source[i]);
+                renderer.sharedMaterials=source;
+            }
+            var bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            if(bounds.size.x<.001f||bounds.size.y<.001f||bounds.size.z<.001f)
+            {Object.Destroy(go);return null;}
+            float factor=Mathf.Min(footprint/Mathf.Max(bounds.size.x,bounds.size.z),maxHeight/bounds.size.y);
+            go.transform.localScale*=factor;
+            // The imported prefab may have an offset pivot: recompute after scaling.
+            bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            go.transform.position+=ground-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            return go;
+        }
+
+        static Material AdaptForUrp(Material source)
+        {
+            if(source==null||source.shader==null||source.shader.name.StartsWith("Universal Render Pipeline/"))return source;
+            if(AdaptedMaterials.TryGetValue(source,out var adapted)&&adapted!=null)return adapted;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null)return source;
+            adapted=new Material(shader){name="Valoria URP · "+source.name};
+            var texture=source.HasProperty("_BaseMap")?source.GetTexture("_BaseMap"):
+                source.HasProperty("_MainTex")?source.GetTexture("_MainTex"):null;
+            if(texture!=null)adapted.SetTexture("_BaseMap",texture);
+            var color=source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):
+                source.HasProperty("_Color")?source.GetColor("_Color"):Color.white;
+            adapted.SetColor("_BaseColor",color);
+            adapted.SetFloat("_Smoothness",.10f);
+            AdaptedMaterials[source]=adapted;
+            return adapted;
         }
 
         public static readonly Color Stone=new Color(.43f,.43f,.40f);

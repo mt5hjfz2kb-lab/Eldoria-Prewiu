@@ -75,6 +75,7 @@ namespace Eldoria.Presentation
         }
         static void City(PlayerState state)
         {
+            var art=ValoriaExternalAssetLibrary.Load();
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
             // so authored prefabs can later replace them without changing gameplay coordinates.
 
@@ -110,6 +111,8 @@ namespace Eldoria.Presentation
                 new Vector3(.58f,.64f,.66f),-62f,6f);
             ValoriaKit.RuinFragment("Imperial ruin lower fragment",new Vector3(-7.55f,.12f,-4.4f),
                 new Vector3(.54f,.56f,.62f),16f,-4f);
+            ValoriaKit.BenchmarkPiece("Valoria · damaged outer tower",art!=null?art.RuinedTower:null,
+                new Vector3(9.15f,.30f,7.9f),2.6f,4.8f,Quaternion.Euler(0,-18,0));
 
             // Signature Bastion: fortress built inside a dead palace.
             ValoriaKit.BastionCore("Bastion",new Vector3(0,.05f,5.0f),Glow);
@@ -126,10 +129,16 @@ namespace Eldoria.Presentation
 
             // Left: work district / Sawmill.
             ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.28f,4.3f),ValoriaKit.Earth*.90f);
-            ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
+            var sawmillArt=ValoriaKit.BenchmarkPiece("Aserradero · carpentry shed",art!=null?art.SlavicShed:null,
+                new Vector3(-6.4f,.35f,-1.45f),3.35f,2.55f,Quaternion.identity);
+            if(sawmillArt==null)
+                ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
             var mill=ValoriaKit.Block("Aserradero · interacción",new Vector3(-6.4f,1.18f,-1.45f),
                 new Vector3(3.05f,1.45f,2.35f),state.SawmillLevel>0?new Color(.34f,.25f,.17f):new Color(.18f,.18f,.17f));
             mill.AddComponent<WorldHotspot>().Id="sawmill";
+            if(sawmillArt!=null)mill.GetComponent<Renderer>().enabled=false;
+            ValoriaKit.BenchmarkPiece("Aserradero · leña",art!=null?art.Firewood:null,
+                new Vector3(-8.2f,.31f,-2.7f),1.25f,.9f,Quaternion.Euler(0,18,0));
             ValoriaKit.Scaffold("Sawmill scaffold",new Vector3(-8.1f,1.6f,.05f),new Vector3(1.5f,2.8f,1.2f));
             if(state.SawmillLevel>0)
             {
@@ -140,10 +149,14 @@ namespace Eldoria.Presentation
             }
 
             // Right: military district grows into a readable Bastion II objective.
-            ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),state.BarracksLevel>0,Glow);
+            var barracksArt=ValoriaKit.BenchmarkPiece("Cuartel · casa de guardia",art!=null?art.SlavicHouse:null,
+                new Vector3(6.0f,.35f,-1.55f),3.25f,3.1f,Quaternion.identity);
+            if(barracksArt==null)
+                ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),state.BarracksLevel>0,Glow);
             var barracks=ValoriaKit.Block("Cuartel · interacción",new Vector3(6.0f,1.18f,-1.55f),
                 new Vector3(3.0f,1.40f,2.35f),state.BarracksLevel>0?new Color(.36f,.34f,.30f):new Color(.20f,.20f,.19f));
             barracks.AddComponent<WorldHotspot>().Id="barracks";
+            if(barracksArt!=null)barracks.GetComponent<Renderer>().enabled=false;
             if(state.BastionLevel>=2 && state.BarracksLevel==0)
                 ValoriaKit.Scaffold("Cuartel scaffold",new Vector3(7.75f,1.55f,-.55f),new Vector3(1.35f,2.7f,1.1f));
             if(state.BarracksLevel>0)
@@ -160,7 +173,10 @@ namespace Eldoria.Presentation
             foreach(var p in new[]{
                 new Vector3(-9.2f,0,-.7f),new Vector3(-8.8f,0,5.4f),new Vector3(-4.4f,0,8.2f),
                 new Vector3(6.7f,0,8.1f),new Vector3(8.9f,0,3.8f),new Vector3(8.8f,0,-.7f)})
-                ValoriaKit.PineTree("Valoria pine",p,1f);
+                if((p.x<-8f||p.x>8f) && ValoriaKit.BenchmarkPiece("Valoria · woodland silhouette",
+                    art!=null?art.SlavicTree:null,p,2.2f,4.5f,Quaternion.identity)==null)
+                    ValoriaKit.PineTree("Valoria pine",p,1f);
+                else if(p.x>=-8f&&p.x<=8f)ValoriaKit.PineTree("Valoria pine",p,1f);
             ValoriaKit.RockCluster("Valoria roadside rocks",new Vector3(-3.7f,.05f,-1.35f),.58f,4);
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
 

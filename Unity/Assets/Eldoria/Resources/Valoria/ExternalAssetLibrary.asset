@@ -16,3 +16,8 @@ MonoBehaviour:
   StoneWall: {fileID: 100100000, guid: 08a1c14a984751b4e992a4afa3974807, type: 3}
   StoneGate: {fileID: 100100000, guid: e7e3ba30f5356444ea4aea90785bb480, type: 3}
   LumberMill: {fileID: 100100000, guid: ee5e6083f97bd7f409ef0e9d1133d919, type: 3}
+  SlavicShed: {fileID: 1844134078099234, guid: 7ee8d320528490b4c95b7e1173450eea, type: 3}
+  SlavicHouse: {fileID: 4637899505770374537, guid: 7c41964487b21dc4997089d9294c86f1, type: 3}
+  SlavicTree: {fileID: 2975732799178527481, guid: f1b66556485f0e542b87652d7fbe5423, type: 3}
+  RuinedTower: {fileID: 150784, guid: e27db1f37a07b834dba6152ddc5b7858, type: 3}
+  Firewood: {fileID: 177444, guid: dd95ee52b2d3a914baa7f842b3cf7592, type: 3}
