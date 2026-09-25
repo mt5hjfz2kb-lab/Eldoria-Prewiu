@@ -71,30 +71,8 @@ namespace Eldoria.Presentation
                 new Vector3(5.1f,1.25f,1.85f),ValoriaKit.OldStone*.70f);
             fallen.transform.rotation=Quaternion.Euler(0,20,-15);
 
-            // Bastion: one clean dominant silhouette, deliberately fortress-heavy.
-            ValoriaKit.Block("Bastion · plinth",new Vector3(0,.85f,5.0f),new Vector3(9.2f,2.15f,6.8f),ValoriaKit.WarmStone*.88f);
-            ValoriaKit.Wall("Bastion · front wall",new Vector3(0,2.25f,2.15f),new Vector3(8.6f,2.7f,1.25f),ValoriaKit.Stone*.93f,true);
-            ValoriaKit.Block("Bastion · hall",new Vector3(0,3.7f,5.15f),new Vector3(5.9f,2.5f,4.25f),ValoriaKit.Stone*.90f);
-            ValoriaKit.Block("Bastion · old palace core",new Vector3(-.55f,5.55f,5.45f),new Vector3(3.5f,1.9f,2.8f),ValoriaKit.OldStone*.90f);
-            ValoriaKit.Tower("Bastion west tower",new Vector3(-5.0f,.35f,2.35f),1.35f,5.8f,ValoriaKit.Stone*.88f);
-            ValoriaKit.Tower("Bastion east tower",new Vector3(5.0f,.35f,2.35f),1.35f,5.8f,ValoriaKit.Stone*.88f);
-            ValoriaKit.Tower("Bastion rear west tower",new Vector3(-4.45f,.35f,7.45f),1.15f,5.25f,ValoriaKit.OldStone*.84f);
-            ValoriaKit.Tower("Bastion rear east tower",new Vector3(4.45f,.35f,7.45f),1.15f,5.25f,ValoriaKit.OldStone*.84f);
-            ValoriaKit.Scaffold("Bastion repair scaffold",new Vector3(3.65f,3.15f,5.2f),new Vector3(2.5f,4.8f,2.25f));
-
-            // Broken palace ribs keep the silhouette ancient and incomplete.
-            for(int i=0;i<4;i++)
-                ValoriaKit.Block("Palace rib",new Vector3(-2.35f+i*1.35f,6.65f,5.65f),new Vector3(.28f,2.2f,.48f),ValoriaKit.OldStone*.82f);
-
-            // Readable fortress details: dark openings, warm windows and restrained banners.
-            foreach(float x in new[]{-2.0f,0f,2.0f})
-            {
-                ValoriaKit.WindowSlit("Bastion window",new Vector3(x,3.95f,2.98f),new Vector3(.32f,.72f,.12f),x==0);
-                ValoriaKit.WindowSlit("Bastion high slit",new Vector3(x*.65f,5.65f,3.96f),new Vector3(.24f,.58f,.10f),false);
-            }
-            ValoriaKit.Banner("Valoria banner west",new Vector3(-3.25f,3.65f,1.48f),new Vector3(.62f,2.4f,.08f),new Color(.34f,.08f,.07f));
-            ValoriaKit.Banner("Valoria banner east",new Vector3(3.25f,3.65f,1.48f),new Vector3(.62f,2.4f,.08f),new Color(.34f,.08f,.07f));
-            ValoriaKit.Rubble("Old palace rubble",new Vector3(-3.6f,.25f,7.25f),1.4f,8);
+            // Signature Bastion: fortress built inside a dead palace.
+            ValoriaKit.BastionCore("Bastion",new Vector3(0,.05f,5.0f),Glow);
 
             // Main central route from foreground to fortress.
             ValoriaKit.Block("Gate pier L",new Vector3(-2.2f,1.35f,-4.65f),new Vector3(1.15f,3.25f,1.15f),ValoriaKit.WarmStone*.85f);
