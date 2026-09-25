@@ -47,15 +47,15 @@ namespace Eldoria.Presentation
             {
                 // Keep nearby terrain controlled, but give the valley a real distant horizon.
                 // Preserve the authored mountain atlas and mute it into the fog instead of flattening it to clay.
-                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain west",
-                    new Vector3(-15.0f,-1.8f,23.5f),12.0f,7.5f,Quaternion.Euler(0,18f,0),
-                    new Color(.58f,.61f,.60f,1f));
-                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain centre",
-                    new Vector3(-1.0f,-2.1f,25.5f),13.5f,8.0f,Quaternion.Euler(0,-7f,0),
-                    new Color(.54f,.58f,.58f,1f));
-                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain east",
-                    new Vector3(14.0f,-1.9f,23.8f),11.5f,7.0f,Quaternion.Euler(0,-24f,0),
-                    new Color(.57f,.60f,.59f,1f));
+                ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria · distant mountain west",
+                    new Vector3(-15.5f,-2.2f,26.5f),9.4f,5.8f,Quaternion.Euler(0,18f,0),
+                    new Color(.31f,.34f,.34f,1f));
+                ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria · distant mountain centre",
+                    new Vector3(-1.0f,-2.5f,28.0f),10.2f,6.2f,Quaternion.Euler(0,-7f,0),
+                    new Color(.29f,.32f,.33f,1f));
+                ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria · distant mountain east",
+                    new Vector3(15.0f,-2.3f,26.8f),9.0f,5.6f,Quaternion.Euler(0,-24f,0),
+                    new Color(.31f,.33f,.33f,1f));
                 ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-8.1f,-.12f,17.5f),.82f,7);
                 // A restrained rear ridge breaks the valley edge while preserving a clear Bastion silhouette.
                 for(int i=0;i<16;i++)
@@ -83,9 +83,9 @@ namespace Eldoria.Presentation
                 float angle=(i*137f+18f)*Mathf.Deg2Rad;
                 float radius=13.2f+(i%4)*2.25f;
                 var p=new Vector3(Mathf.Cos(angle)*radius,.012f,1.0f+Mathf.Sin(angle)*radius*.78f);
-                ValoriaKit.BenchmarkPieceModulated("Valoria · outer flat rock",art!=null?art.SlavicFlatRock:null,
+                ValoriaKit.BenchmarkPieceTinted("Valoria · outer flat rock",art!=null?art.SlavicFlatRock:null,
                     p,1.85f+(i%3)*.28f,.48f+(i%2)*.08f,
-                    Quaternion.Euler(0,i*41%360,0),new Color(.52f,.53f,.49f,1f));
+                    Quaternion.Euler(0,i*41%360,0),new Color(.28f,.29f,.27f,1f));
                 if(i%2==0)ValoriaKit.PineTree("Valoria · outer pine",p+new Vector3((i%3-1)*1.8f,0,1.8f),.72f+(i%3)*.10f);
             }
 
@@ -96,9 +96,9 @@ namespace Eldoria.Presentation
                 float x=-15.5f+i*3.85f;
                 float z=18.2f+(i%3)*1.15f;
                 var p=new Vector3(x,-.06f,z);
-                if(ValoriaKit.BenchmarkPieceModulated("Valoria · rear ridge stone",art!=null?art.SlavicFlatRock:null,
+                if(ValoriaKit.BenchmarkPieceTinted("Valoria · rear ridge stone",art!=null?art.SlavicFlatRock:null,
                     p,2.80f+(i%2)*.35f,.62f+(i%3)*.08f,Quaternion.Euler(0,17+i*33,0),
-                    new Color(.46f,.49f,.47f,1f))==null)
+                    new Color(.26f,.28f,.27f,1f))==null)
                     ValoriaKit.RockCluster("Valoria · rear ridge fallback",p,.85f,5);
                 if(i%2==0)
                     ValoriaKit.PineTree("Valoria · ridge pine",p+new Vector3((i%3-1)*1.15f,0,-1.15f),.68f+(i%3)*.07f);
@@ -126,23 +126,23 @@ namespace Eldoria.Presentation
             foreach(var q in new[]{
                 new Vector3(-8.8f,.05f,-.4f),new Vector3(-9.0f,.06f,3.2f),new Vector3(-8.2f,.05f,6.9f),
                 new Vector3(8.7f,.05f,-.6f),new Vector3(9.0f,.06f,3.0f),new Vector3(8.3f,.05f,6.8f)})
-                ValoriaKit.BenchmarkPieceModulated("Valoria · terrace edge flat rock",art!=null?art.SlavicFlatRock:null,
-                    q,2.65f,.58f,Quaternion.Euler(0,(q.x>0?31:-27),0),new Color(.50f,.51f,.47f,1f));
+                ValoriaKit.BenchmarkPieceTinted("Valoria · terrace edge flat rock",art!=null?art.SlavicFlatRock:null,
+                    q,2.65f,.58f,Quaternion.Euler(0,(q.x>0?31:-27),0),new Color(.31f,.31f,.28f,1f));
             for(int i=0;i<7;i++)
             {
                 var p=new Vector3(-9+i*3f,-.62f,-6.0f+(i%2)*.22f);
-                if(ValoriaKit.BenchmarkPieceModulated("Valoria · lower cliff stone",art!=null?art.SlavicFlatRock:null,
+                if(ValoriaKit.BenchmarkPieceTinted("Valoria · lower cliff stone",art!=null?art.SlavicFlatRock:null,
                     p,2.9f+(i%3)*.22f,.66f+(i%2)*.08f,Quaternion.Euler(0,17+i*29,0),
-                    new Color(.55f,.54f,.49f,1f))==null)
+                    new Color(.33f,.32f,.28f,1f))==null)
                     ValoriaKit.RockCluster("Valoria · lower cliff fallback",p,.90f,5);
             }
             for(int i=0;i<6;i++)
             {
                 float x=-8.1f+i*3.25f;
                 var p=new Vector3(x,-.28f,9.45f+(i%2)*.22f);
-                if(ValoriaKit.BenchmarkPieceModulated("Upper retaining rock",art!=null?art.SlavicFlatRock:null,
+                if(ValoriaKit.BenchmarkPieceTinted("Upper retaining rock",art!=null?art.SlavicFlatRock:null,
                     p,2.75f+(i%2)*.22f,.60f,Quaternion.Euler(0,21+i*31,0),
-                    new Color(.49f,.51f,.48f,1f))==null)
+                    new Color(.29f,.30f,.28f,1f))==null)
                     ValoriaKit.RockCluster("Upper retaining rock fallback",p,.85f,5);
             }
             ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
