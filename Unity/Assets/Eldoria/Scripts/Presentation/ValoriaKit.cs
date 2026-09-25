@@ -209,9 +209,15 @@ namespace Eldoria.Presentation
                 float v=1f;
                 if(kind=="stone")
                 {
-                    float mortar=(x%16<=1||y%12<=1)?-.20f:0f;
-                    float chip=((x*7+y*13)%37==0)?-.12f:0f;
-                    v=1.00f+n*.16f+mortar*.65f+chip*.65f;
+                    // Staggered masonry courses avoid the square voxel/grid read of the old texture.
+                    int course=y/11;
+                    bool horizontal=y%11<=1;
+                    int joint=(x+(course%2)*8)%18;
+                    bool vertical=joint<=1 && !horizontal;
+                    float mortar=(horizontal||vertical)?-.13f:0f;
+                    float weather=.035f*Mathf.Sin(x*.21f+y*.09f)+.025f*Mathf.Sin(y*.37f);
+                    float chip=((x*7+y*13)%43==0)?-.08f:0f;
+                    v=.98f+n*.12f+weather+mortar+chip;
                 }
                 else if(kind=="wood")
                 {
@@ -424,9 +430,12 @@ namespace Eldoria.Presentation
             Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
 
-            // The surviving cyclopean arch is the dead-palace signature behind the rebuilt fortress.
-            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.15f,.30f,2.95f),3.45f,1.05f,OldStone*.82f);
+            // The surviving cyclopean arch rises above the rebuilt keep: this must read from the
+            // establishing camera as the dead-palace signature, not disappear behind the fortress.
+            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.55f,2.05f,3.05f),4.15f,1.15f,OldStone*.80f);
             BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.05f,.95f),OldStone*.90f);
+            Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,2.8f),1.55f,12);
+            Rubble(name+" · palace collapse east",origin+new Vector3(4.8f,.18f,3.0f),1.35f,10);
             Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
                 new Vector3(2.35f,4.6f,2.1f));
             Rubble(name+" · crown rubble",origin+new Vector3(-3.15f,.22f,2.05f),1.35f,8);
