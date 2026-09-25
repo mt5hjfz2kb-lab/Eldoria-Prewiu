@@ -42,6 +42,18 @@ namespace Eldoria.Presentation
             }
             if(city)
             {
+                // Imported terrain shell: real cliff and hill meshes now frame the playable plateau.
+                // Scales are intentionally conservative for this first integration pass.
+                ValoriaKit.TerrainPiece("SM_Cliffs_01","Valoria imported cliff west",
+                    new Vector3(-11.2f,-1.0f,-4.2f),new Vector3(.34f,.20f,.34f),Quaternion.Euler(0,22,0));
+                ValoriaKit.TerrainPiece("SM_Cliffs_03","Valoria imported cliff east",
+                    new Vector3(10.7f,-1.05f,-3.5f),new Vector3(.34f,.20f,.34f),Quaternion.Euler(0,-28,0));
+                ValoriaKit.TerrainPiece("SM_Hills_01","Valoria imported hill rear",
+                    new Vector3(-2.0f,-1.2f,10.6f),new Vector3(.30f,.22f,.30f),Quaternion.Euler(0,11,0));
+                ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop west",
+                    new Vector3(-15.0f,-2.0f,18.0f),new Vector3(.18f,.18f,.18f),Quaternion.Euler(0,18,0));
+                ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
+                    new Vector3(13.8f,-2.2f,19.0f),new Vector3(.15f,.15f,.15f),Quaternion.Euler(0,-23,0));
                 // Layered ruin skyline: authored masonry in front, monumental ancient remnants behind.
                 for(int i=0;i<4;i++)
                 {
