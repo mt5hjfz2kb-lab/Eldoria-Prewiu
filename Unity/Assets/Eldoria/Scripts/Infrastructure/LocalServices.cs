@@ -18,7 +18,9 @@ namespace Eldoria.Infrastructure
         public string DisplayName(string id)
         {
             switch (id) { case "forest-valoria": return "Bosque de Valoria";
-                case "sawmill": return "Aserradero"; case "corrupt-scout": return "Explorador corrupto";
+                case "sawmill": return "Aserradero"; case "barracks": return "Cuartel";
+                case "archer:t1": return "Arqueros T1"; case "corrupt-scout": return "Explorador corrupto";
+                case "engendro-valoria": return "Engendro"; case "bastion": return "Bastión";
                 default: return id; }
         }
     }
