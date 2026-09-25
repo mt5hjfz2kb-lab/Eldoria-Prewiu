@@ -10,6 +10,10 @@ on:
       - '.github/workflows/unity-slice.yml'
   workflow_dispatch:
 
+concurrency:
+  group: eldoria-unity-main
+  cancel-in-progress: true
+
 jobs:
   source-preflight:
     runs-on: ubuntu-latest
