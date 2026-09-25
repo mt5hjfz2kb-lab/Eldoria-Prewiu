@@ -14,19 +14,19 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(.74f,.72f,.68f);
+            RenderSettings.ambientLight = new Color(.88f,.84f,.78f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(.40f,.42f,.43f); RenderSettings.fogStartDistance=42; RenderSettings.fogEndDistance=125;
+            RenderSettings.fogColor = new Color(.50f,.51f,.50f); RenderSettings.fogStartDistance=48; RenderSettings.fogEndDistance=140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 12.4f : 14;
-            camera.backgroundColor = new Color(.45f,.48f,.50f); camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(.53f,.55f,.56f); camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
             cameraGo.transform.position = city ? new Vector3(20.5f,22.5f,-24f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,2.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Cold dawn").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=new Color(1.0f,.91f,.78f); sun.intensity=1.65f;
-            sun.transform.rotation=Quaternion.Euler(42,-35,0); sun.shadows=LightShadows.Soft;
+            sun.type=LightType.Directional; sun.color=new Color(1.0f,.93f,.82f); sun.intensity=1.9f;
+            sun.transform.rotation=Quaternion.Euler(42,-35,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=.55f;
             Box("World ground",new Vector3(0,-.7f,0),new Vector3(34,1.2f,30),Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<11;i++)
