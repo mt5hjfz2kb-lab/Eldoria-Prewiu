@@ -34,30 +34,41 @@ jobs:
       - name: EditMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          Remove-Item "$env:RUNNER_TEMP/Eldoria-EditMode.xml","$env:RUNNER_TEMP/Eldoria-EditMode.log" -Force -ErrorAction SilentlyContinue
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
-          if ($LASTEXITCODE -ne 0) { Get-Content "$env:RUNNER_TEMP/Eldoria-EditMode.log" -Tail 120; exit $LASTEXITCODE }
-          if (-not (Test-Path "$env:RUNNER_TEMP/Eldoria-EditMode.xml")) { Get-Content "$env:RUNNER_TEMP/Eldoria-EditMode.log" -Tail 120; throw "EditMode results were not produced." }
-          [xml]$results = Get-Content "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
+          $xml = "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
+          $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults $xml -logFile - 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) { throw "Unity EditMode process failed with exit code $code." }
+          if (-not (Test-Path $xml)) { throw "EditMode results were not produced." }
+          [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
       - name: PlayMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          Remove-Item "$env:RUNNER_TEMP/Eldoria-PlayMode.xml","$env:RUNNER_TEMP/Eldoria-PlayMode.log" -Force -ErrorAction SilentlyContinue
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
-          if ($LASTEXITCODE -ne 0) { Get-Content "$env:RUNNER_TEMP/Eldoria-PlayMode.log" -Tail 120; exit $LASTEXITCODE }
-          if (-not (Test-Path "$env:RUNNER_TEMP/Eldoria-PlayMode.xml")) { Get-Content "$env:RUNNER_TEMP/Eldoria-PlayMode.log" -Tail 120; throw "PlayMode results were not produced." }
-          [xml]$results = Get-Content "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
+          $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
+          $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults $xml -logFile - 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) { throw "Unity PlayMode process failed with exit code $code." }
+          if (-not (Test-Path $xml)) { throw "PlayMode results were not produced." }
+          [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
       - name: Windows desktop build
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          Remove-Item "$env:RUNNER_TEMP/Eldoria-Build.log" -Force -ErrorAction SilentlyContinue
+          $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
           Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
-          if ($LASTEXITCODE -ne 0) { Get-Content "$env:RUNNER_TEMP/Eldoria-Build.log" -Tail 150; exit $LASTEXITCODE }
+          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile - 2>&1
+          $code = $LASTEXITCODE
+          $output | Tee-Object -FilePath $log
+          if ($code -ne 0) { throw "Unity Windows build process failed with exit code $code." }
           $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
-          if (-not (Test-Path $player)) { Get-Content "$env:RUNNER_TEMP/Eldoria-Build.log" -Tail 150; throw "Windows player was not produced." }
+          if (-not (Test-Path $player)) { throw "Windows player was not produced." }
           if ((Get-Item $player).Length -lt 1MB) { throw "Windows player is unexpectedly small." }
       - uses: actions/upload-artifact@v4
         if: always()
