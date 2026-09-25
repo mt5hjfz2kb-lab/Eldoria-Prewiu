@@ -43,33 +43,32 @@ namespace Eldoria.Presentation
 
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
-            // Keep the first smoke implementation deliberately conservative so it is stable
-            // across Unity 6 particle API differences. More advanced turbulence/materials come later.
-            var go=new GameObject(name);
-            go.transform.position=position;
-            var ps=go.AddComponent<ParticleSystem>();
+            // Package-free smoke approximation so the Unity slice does not depend on the optional
+            // Particle System module. Each wisp is a lightweight animated primitive.
+            for(int i=0;i<5;i++)
+            {
+                var wisp=GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                wisp.name=name+" · wisp "+i;
+                wisp.transform.position=position+new Vector3(
+                    ((i%2==0)?-.08f:.08f)*size,
+                    i*.34f*size,
+                    ((i%3)-1)*.05f*size);
+                wisp.transform.localScale=Vector3.one*(.34f+i*.07f)*size;
 
-            var main=ps.main;
-            main.loop=true;
-            main.startLifetime=new ParticleSystem.MinMaxCurve(3.2f,4.8f);
-            main.startSpeed=new ParticleSystem.MinMaxCurve(.28f,.52f);
-            main.startSize=new ParticleSystem.MinMaxCurve(.38f*size,.72f*size);
-            main.startColor=new ParticleSystem.MinMaxGradient(
-                new Color(.38f,.37f,.35f,.32f),
-                new Color(.58f,.56f,.52f,.18f));
-            main.simulationSpace=ParticleSystemSimulationSpace.World;
-            main.maxParticles=64;
+                var collider=wisp.GetComponent<Collider>();
+                if(collider!=null)Object.Destroy(collider);
 
-            var emission=ps.emission;
-            emission.rateOverTime=new ParticleSystem.MinMaxCurve(rate);
+                var renderer=wisp.GetComponent<Renderer>();
+                renderer.sharedMaterial=Material(new Color(
+                    .46f-i*.025f,.45f-i*.025f,.43f-i*.02f,1f));
 
-            var shape=ps.shape;
-            shape.shapeType=ParticleSystemShapeType.Cone;
-            shape.angle=7f;
-            shape.radius=.14f*size;
-
-            var renderer=go.GetComponent<ParticleSystemRenderer>();
-            renderer.renderMode=ParticleSystemRenderMode.Billboard;
+                var drift=wisp.AddComponent<SmokeWisp>();
+                drift.BasePosition=wisp.transform.position;
+                drift.Phase=i*.83f;
+                drift.Height=1.35f*size;
+                drift.Speed=.22f+i*.018f;
+                drift.BaseScale=wisp.transform.localScale;
+            }
         }
 
         static readonly Dictionary<string,Texture2D> Textures=new();
@@ -391,5 +390,23 @@ namespace Eldoria.Presentation
                     Pine*(.88f+i*.05f),Quaternion.identity);
             }
         }
+    }    public sealed class SmokeWisp:MonoBehaviour
+    {
+        public Vector3 BasePosition;
+        public Vector3 BaseScale;
+        public float Phase;
+        public float Height=1f;
+        public float Speed=.2f;
+
+        void Update()
+        {
+            float t=Mathf.Repeat(Time.time*Speed+Phase,1f);
+            float sway=Mathf.Sin((Time.time+Phase)*1.7f)*.12f;
+            transform.position=BasePosition+new Vector3(sway,t*Height,sway*.45f);
+            float scale=1f+t*.75f;
+            transform.localScale=BaseScale*scale;
+        }
     }
+
+
 }
