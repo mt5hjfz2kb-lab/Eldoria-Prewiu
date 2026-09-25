@@ -60,6 +60,40 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(220));
             Assert.That(g.Snapshot().Wounded.Total,Is.Zero);
         }
+
+        [Test] public void BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"forest-b2","Gather","forest-valoria")).Ok,Is.True);
+            clock.Add(9);g.Advance();
+            Assert.That(g.Execute(Cmd(g,"sawmill-b2","Build","sawmill")).Ok,Is.True);
+            clock.Add(6);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.True);
+
+            var ascend=Cmd(g,"ascend-b2","AdvanceBastion","bastion");
+            Assert.That(g.Execute(ascend).Ok,Is.True);
+            Assert.That(g.Execute(ascend).Ok,Is.True);
+            Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
+
+            Assert.That(g.Execute(Cmd(g,"barracks-b2","Build","barracks")).Ok,Is.True);
+            clock.Add(8);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().BarracksLevel,Is.EqualTo(1));
+
+            var recruit=Cmd(g,"recruit-b2","Recruit","archer:t1");
+            Assert.That(g.Execute(recruit).Ok,Is.True);
+            Assert.That(g.Execute(recruit).Ok,Is.True);
+            clock.Add(7);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3628));
+
+            Assert.That(g.Execute(Cmd(g,"engendro-b2","Fight","engendro-valoria")).Ok,Is.True);
+            clock.Add(4);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().EngendroDefeated,Is.True);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(240));
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(160));
+        }
+
         [Test] public void SnapshotCannotEditAuthoritativeState()
         {
             var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
