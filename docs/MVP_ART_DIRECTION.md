@@ -174,6 +174,10 @@ The objective is to feel more solemn, mature and premium than bright/casual refe
 
 **Rule:** never increase realism or decorative detail if it reduces readability, performance, interaction clarity or progression feedback.
 
+## Canonical production detail
+
+The concrete Valoria/Unity production rules are maintained in [`docs/VISUAL_BIBLE.md`](VISUAL_BIBLE.md). That document owns the approved Bastion I composition, broken cyclopean arch landmark, camera target, materials, lighting and Bastion I–X visual progression. This file remains the higher-level MVP art-direction statement.
+
 ## Unity handoff rule
 
 When the project migrates to Unity, this document becomes a visual production target, not a demand for literal 1:1 reproduction.
