@@ -24,6 +24,11 @@ namespace Eldoria.Presentation
         public GameObject CobbleRoad;
         public GameObject SlavicTreeTall;
         public GameObject SlavicBush;
+        // Coherent Slavic environment subset promoted after visual review.
+        public GameObject SlavicCobbleRoad;
+        public GameObject SlavicStoneFence;
+        public GameObject SlavicRockGate;
+        public GameObject SlavicBoulder;
 
         public static ValoriaExternalAssetLibrary Load()
             => Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
