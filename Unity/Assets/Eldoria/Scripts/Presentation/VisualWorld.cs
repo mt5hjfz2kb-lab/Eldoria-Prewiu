@@ -11,18 +11,18 @@ namespace Eldoria.Presentation
         static readonly Color Amber = new Color(.96f,.53f,.22f), Violet = new Color(.57f,.19f,.91f);
         public static void Create(bool city, PlayerState state)
         {
-            RenderSettings.ambientLight = new Color(.40f,.43f,.55f);
+            RenderSettings.ambientLight = new Color(.46f,.48f,.54f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(.085f,.11f,.16f); RenderSettings.fogStartDistance=24; RenderSettings.fogEndDistance=75;
+            RenderSettings.fogColor = new Color(.18f,.20f,.23f); RenderSettings.fogStartDistance=28; RenderSettings.fogEndDistance=86;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
-            camera.orthographicSize = city ? 13 : 14;
-            camera.backgroundColor = new Color(.07f,.1f,.15f); camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.orthographicSize = city ? 10.8f : 14;
+            camera.backgroundColor = new Color(.18f,.20f,.24f); camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
-            cameraGo.transform.position = city ? new Vector3(21,25,-23) : new Vector3(20,24,-21);
-            cameraGo.transform.LookAt(new Vector3(0,0,1));
+            cameraGo.transform.position = city ? new Vector3(18,19,-19) : new Vector3(20,24,-21);
+            cameraGo.transform.LookAt(city ? new Vector3(0,1.8f,2.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Cold dawn").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=new Color(.65f,.74f,1f); sun.intensity=1.15f;
+            sun.type=LightType.Directional; sun.color=new Color(.82f,.80f,.72f); sun.intensity=1.18f;
             sun.transform.rotation=Quaternion.Euler(42,-35,0); sun.shadows=LightShadows.Soft;
             Box("Fractured ground",new Vector3(0,-.55f,0),new Vector3(33,1,29),Deep);
             for(int i=0;i<17;i++)
@@ -40,30 +40,66 @@ namespace Eldoria.Presentation
         }
         static void City(PlayerState state)
         {
-            Box("Bastion · foundation",new Vector3(0,.7f,4),new Vector3(6,2.2f,5),Stone);
-            Box("Bastion · upper hall",new Vector3(0,2.5f,4),new Vector3(4,1.7f,3.8f),Stone*.82f);
-            for(int i=0;i<4;i++) Tower(new Vector3(i%2==0?-4:4,0,i<2?1:7),4.7f);
-            for(int i=0;i<8;i++) Box("Battlement",new Vector3(-3.1f+i*.9f,4,1.5f),new Vector3(.48f,.7f,.65f),Stone*.88f);
-            Box("Gate arch left",new Vector3(-2,1,-5.5f),new Vector3(1.1f,3,1),Stone);
-            Box("Gate arch right",new Vector3(2,1,-5.5f),new Vector3(1.1f,3,1),Stone);
-            Box("Gate lintel",new Vector3(0,2.7f,-5.5f),new Vector3(5.1f,.85f,1.3f),Stone*.85f);
-            var gate=Box("Puerta · ir al mundo",new Vector3(0,.7f,-5.5f),new Vector3(2.6f,2.6f,.37f),new Color(.30f,.18f,.12f));
+            // Visual Bible pass 01: readable mobile city composition, Bastion first.
+            // The geometry remains deliberately primitive/procedural; this establishes framing and hierarchy before real assets.
+
+            // Broad rebuilt terrace keeps the playable city legible as one coherent place.
+            Box("Upper terrace",new Vector3(0,.15f,3.8f),new Vector3(15,.55f,10),Stone*.72f);
+            Box("Lower terrace",new Vector3(0,-.02f,-3.4f),new Vector3(18,.35f,6.5f),Stone*.58f);
+
+            // Signature ancient landmark: a broken cyclopean arch reused by the living city.
+            Box("Cyclopean arch · left pier",new Vector3(-8,3.2f,3.5f),new Vector3(2.15f,7.4f,2.4f),Stone*.64f);
+            var archRight=Box("Cyclopean arch · broken right pier",new Vector3(7.6f,2.3f,4.5f),new Vector3(1.9f,5.2f,2.2f),Stone*.60f);
+            archRight.transform.rotation=Quaternion.Euler(0,0,-8);
+            var archSpan=Box("Cyclopean arch · fractured span",new Vector3(-1.4f,6.25f,3.8f),new Vector3(11.8f,1.35f,2.25f),Stone*.62f);
+            archSpan.transform.rotation=Quaternion.Euler(0,0,-5);
+            var fallen=Box("Cyclopean arch · fallen segment",new Vector3(6.2f,.55f,-1.1f),new Vector3(5.8f,1.3f,1.9f),Stone*.55f);
+            fallen.transform.rotation=Quaternion.Euler(0,18,-14);
+
+            // Bastion: larger, closer and visually dominant.
+            Box("Bastion · foundation",new Vector3(0,1.0f,4.7f),new Vector3(8.4f,2.8f,6.4f),Stone);
+            Box("Bastion · upper hall",new Vector3(0,3.35f,4.9f),new Vector3(5.7f,2.2f,4.4f),Stone*.84f);
+            Box("Bastion · crown",new Vector3(0,5.05f,5.0f),new Vector3(3.1f,1.6f,2.7f),Stone*.72f);
+            for(int i=0;i<4;i++) Tower(new Vector3(i%2==0?-5.2f:5.2f,0,i<2?1.9f:7.5f),5.5f);
+            for(int i=0;i<9;i++) Box("Battlement",new Vector3(-3.6f+i*.9f,5.25f,1.45f),new Vector3(.48f,.72f,.65f),Stone*.9f);
+
+            // Main gate and route to the world stay centered and obvious.
+            Box("Gate arch left",new Vector3(-2.2f,1.1f,-4.9f),new Vector3(1.15f,3.2f,1),Stone);
+            Box("Gate arch right",new Vector3(2.2f,1.1f,-4.9f),new Vector3(1.15f,3.2f,1),Stone);
+            Box("Gate lintel",new Vector3(0,2.95f,-4.9f),new Vector3(5.6f,.9f,1.3f),Stone*.86f);
+            var gate=Box("Puerta · ir al mundo",new Vector3(0,.8f,-4.9f),new Vector3(2.8f,2.75f,.4f),new Color(.30f,.18f,.12f));
             gate.AddComponent<WorldHotspot>().Id="gate";
-            Box("Sawmill base",new Vector3(-7,.3f,-.6f),new Vector3(3.3f,.8f,3),Stone*.8f);
-            var mill=Box("Aserradero · interacción",new Vector3(-7,1.3f,-.6f),new Vector3(2.4f,1.5f,2.2f),
+
+            // Simple roads/steps visually lead the eye from foreground to the Bastion.
+            for(int i=0;i<6;i++)
+                Box("Bastion approach",new Vector3(0,.15f,-2.8f+i*1.15f),new Vector3(2.5f,.12f,.8f),Stone*.78f);
+
+            // Left work district: Sawmill.
+            Box("Sawmill yard",new Vector3(-6.4f,.15f,-1.6f),new Vector3(5.2f,.35f,4.4f),Stone*.54f);
+            Box("Sawmill base",new Vector3(-6.5f,.6f,-1.5f),new Vector3(3.7f,1.0f,3.2f),Stone*.8f);
+            var mill=Box("Aserradero · interacción",new Vector3(-6.5f,1.7f,-1.5f),new Vector3(2.7f,1.6f,2.4f),
                 state.SawmillLevel>0?new Color(.46f,.32f,.2f):new Color(.19f,.20f,.20f));
             mill.AddComponent<WorldHotspot>().Id="sawmill";
             if(state.SawmillLevel>0)
             {
-                Box("Restored roof",new Vector3(-7,2.3f,-.6f),new Vector3(2.9f,.35f,2.6f),new Color(.39f,.22f,.16f));
-                Glow("Sawmill fire",new Vector3(-6.25f,1.9f,-1),Amber,2.2f,5);
-                for(int i=0;i<3;i++) Cylinder("Logs",new Vector3(-9+i*.4f,.35f,-2),new Vector3(.35f,2.4f,.35f),new Color(.33f,.23f,.18f),Quaternion.Euler(90,0,0));
+                Box("Restored roof",new Vector3(-6.5f,2.7f,-1.5f),new Vector3(3.2f,.35f,2.9f),new Color(.39f,.22f,.16f));
+                Glow("Sawmill fire",new Vector3(-5.7f,2.1f,-1.8f),Amber,2.2f,5);
+                for(int i=0;i<4;i++) Cylinder("Logs",new Vector3(-8.8f+i*.45f,.35f,-2.7f),new Vector3(.35f,2.4f,.35f),new Color(.33f,.23f,.18f),Quaternion.Euler(90,0,0));
             }
-            else for(int i=0;i<4;i++) Box("Charred timber",new Vector3(-8+i*.45f,1.9f,-.4f),new Vector3(.2f,1.3f,.3f),new Color(.13f,.14f,.15f)).transform.rotation=Quaternion.Euler(0,0,17+i*8);
-            Hero(new Vector3(-1.9f,0,-2.3f),1.0f);
-            for(int i=0;i<5;i++) Archer(new Vector3(1.5f+i*.75f,0,-3.4f+(i%2)*.85f));
-            Glow("Torch left",new Vector3(-2.8f,2,-5.2f),Amber,1.5f,3);
-            Glow("Torch right",new Vector3(2.8f,2,-5.2f),Amber,1.5f,3);
+            else for(int i=0;i<4;i++) Box("Charred timber",new Vector3(-7.7f+i*.5f,2.0f,-1.4f),new Vector3(.2f,1.4f,.3f),new Color(.13f,.14f,.15f)).transform.rotation=Quaternion.Euler(0,0,17+i*8);
+
+            // Right side: intentionally modest early defenses / supply structures.
+            Box("Early barracks",new Vector3(6.1f,.65f,-1.7f),new Vector3(3.6f,1.35f,2.8f),Stone*.73f);
+            Box("Barracks roof",new Vector3(6.1f,1.55f,-1.7f),new Vector3(3.9f,.35f,3.0f),new Color(.31f,.21f,.17f));
+            Box("Granary",new Vector3(4.7f,.7f,-4.2f),new Vector3(2.8f,1.45f,2.1f),new Color(.36f,.29f,.20f));
+            Box("Granary roof",new Vector3(4.7f,1.7f,-4.2f),new Vector3(3.1f,.3f,2.4f),new Color(.29f,.20f,.15f));
+
+            // A few restrained life markers: enough to feel inhabited, not crowded.
+            Hero(new Vector3(-1.8f,0,-2.0f),1.0f);
+            for(int i=0;i<5;i++) Archer(new Vector3(2.0f+i*.68f,0,-2.9f+(i%2)*.7f));
+            Glow("Torch left",new Vector3(-2.9f,2.1f,-4.55f),Amber,1.5f,3);
+            Glow("Torch right",new Vector3(2.9f,2.1f,-4.55f),Amber,1.5f,3);
+            Glow("Bastion warmth",new Vector3(0,3.6f,3.2f),Amber,1.6f,7);
         }
         static void Frontier(PlayerState state)
         {
