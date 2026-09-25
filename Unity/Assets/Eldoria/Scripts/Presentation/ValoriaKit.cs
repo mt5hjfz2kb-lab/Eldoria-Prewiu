@@ -306,13 +306,27 @@ namespace Eldoria.Presentation
 
         public static void House(string name,Vector3 p,Vector3 size,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
-            Block(name+" · masonry",p+Vector3.up*(size.y*.48f),size,WarmStone*.75f);
+            // Valoria houses should read as rebuilt medieval structures, not box + roof placeholders.
+            Block(name+" · stone footing",p+new Vector3(0,.16f,0),new Vector3(size.x*1.08f,.30f,size.z*1.08f),OldStone*.88f);
+            Block(name+" · masonry",p+Vector3.up*(size.y*.48f),size,WarmStone*.78f);
             GableRoof(name+" · roof",p+new Vector3(0,size.y+.12f,0),
-                new Vector3(size.x*1.14f,.75f,size.z*1.18f),Slate);
+                new Vector3(size.x*1.18f,.82f,size.z*1.22f),Slate);
             Block(name+" · timber door",p+new Vector3(0,.66f,-size.z*.515f),
                 new Vector3(.46f,1.15f,.12f),Timber);
-            Block(name+" · beam",p+new Vector3(0,size.y*.72f,-size.z*.52f),
-                new Vector3(size.x*.82f,.12f,.13f),Timber*.9f);
+            Block(name+" · lintel",p+new Vector3(0,1.30f,-size.z*.525f),
+                new Vector3(.82f,.12f,.14f),Timber*.92f);
+            foreach(float x in new[]{-size.x*.36f,size.x*.36f})
+                Block(name+" · facade post",p+new Vector3(x,size.y*.53f,-size.z*.523f),
+                    new Vector3(.11f,size.y*.88f,.12f),Timber*.86f);
+            Block(name+" · cross beam",p+new Vector3(0,size.y*.72f,-size.z*.526f),
+                new Vector3(size.x*.82f,.11f,.12f),Timber*.88f);
+            Block(name+" · chimney",p+new Vector3(size.x*.28f,size.y+1.02f,size.z*.10f),
+                new Vector3(.34f,1.35f,.34f),OldStone*.76f);
+            Block(name+" · side lean-to",p+new Vector3(size.x*.58f,.58f,.05f),
+                new Vector3(size.x*.30f,.95f,size.z*.72f),Timber*.72f);
+            var leanRoof=Block(name+" · lean-to roof",p+new Vector3(size.x*.58f,1.12f,.05f),
+                new Vector3(size.x*.36f,.12f,size.z*.82f),Slate*.92f);
+            leanRoof.transform.rotation=Quaternion.Euler(0,0,-12f);
             if(lit&&glow!=null)glow(name+" · hearth",p+new Vector3(.42f,.95f,-size.z*.59f),new Color(.96f,.53f,.22f),.75f,2.5f);
         }
 
@@ -410,6 +424,8 @@ namespace Eldoria.Presentation
             Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
 
+            // The surviving cyclopean arch is the dead-palace signature behind the rebuilt fortress.
+            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.15f,.30f,2.95f),3.45f,1.05f,OldStone*.82f);
             BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.05f,.95f),OldStone*.90f);
             Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
                 new Vector3(2.35f,4.6f,2.1f));
