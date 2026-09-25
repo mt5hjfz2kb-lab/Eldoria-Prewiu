@@ -31,25 +31,20 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
       - name: EditMode
-        run: >-
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
-          -projectPath "$env:GITHUB_WORKSPACE/Unity"
-          -runTests -testPlatform EditMode
-          -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
-          -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
+        shell: powershell
+        run: |
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: PlayMode
-        run: >-
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
-          -projectPath "$env:GITHUB_WORKSPACE/Unity"
-          -runTests -testPlatform PlayMode
-          -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
-          -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
+        shell: powershell
+        run: |
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Windows desktop build
-        run: >-
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
-          -projectPath "$env:GITHUB_WORKSPACE/Unity"
-          -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows
-          -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
+        shell: powershell
+        run: |
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
