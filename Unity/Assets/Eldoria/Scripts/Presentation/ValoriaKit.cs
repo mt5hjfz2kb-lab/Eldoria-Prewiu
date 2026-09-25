@@ -513,12 +513,25 @@ namespace Eldoria.Presentation
             Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
 
-            // The surviving cyclopean arch rises above the rebuilt keep: this must read from the
-            // establishing camera as the dead-palace signature, not disappear behind the fortress.
-            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.85f,1.55f,3.85f),3.20f,.95f,OldStone*.62f);
-            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,5.40f,1.75f),OldStone*.68f);
-            Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,2.8f),1.55f,12);
-            Rubble(name+" · palace collapse east",origin+new Vector3(4.8f,.18f,3.0f),1.35f,10);
+            // Dead-palace signature: use authored masonry fragments rather than a giant procedural arch.
+            // The ruin should frame the keep and imply scale without becoming a black wall behind it.
+            if(BenchmarkPieceModulated(name+" · dead palace wall west",stoneWall,
+                origin+new Vector3(-4.15f,.10f,3.75f),4.20f,3.15f,Quaternion.Euler(0,16f,0),
+                new Color(.47f,.49f,.48f,1f))==null)
+                Wall(name+" · dead palace wall west fallback",origin+new Vector3(-4.15f,1.55f,3.75f),
+                    new Vector3(3.8f,2.75f,.58f),OldStone*.58f,true);
+            if(BenchmarkPieceModulated(name+" · dead palace wall east",stoneWall,
+                origin+new Vector3(3.75f,.10f,4.20f),3.65f,2.85f,Quaternion.Euler(0,-18f,0),
+                new Color(.44f,.46f,.45f,1f))==null)
+                Wall(name+" · dead palace wall east fallback",origin+new Vector3(3.75f,1.35f,4.20f),
+                    new Vector3(3.2f,2.35f,.54f),OldStone*.54f,true);
+            if(BenchmarkPieceModulated(name+" · dead palace tower remnant",megaTower,
+                origin+new Vector3(-1.10f,.05f,4.85f),2.35f,4.35f,Quaternion.Euler(0,8f,0),
+                new Color(.43f,.45f,.44f,1f))==null)
+                Tower(name+" · dead palace tower remnant fallback",origin+new Vector3(-1.10f,.05f,4.85f),
+                    1.0f,4.10f,OldStone*.56f);
+            Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,3.0f),1.45f,10);
+            Rubble(name+" · palace collapse east",origin+new Vector3(4.6f,.18f,3.3f),1.25f,9);
             Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
                 new Vector3(2.35f,4.6f,2.1f));
             Rubble(name+" · crown rubble",origin+new Vector3(-3.15f,.22f,2.05f),1.35f,8);
