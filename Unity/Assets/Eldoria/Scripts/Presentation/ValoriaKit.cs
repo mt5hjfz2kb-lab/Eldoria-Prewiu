@@ -205,6 +205,82 @@ namespace Eldoria.Presentation
             }
         }
 
+        public static void Buttress(string name,Vector3 foot,float height,float depth,Color color)
+        {
+            var lower=Block(name+" · lower",foot+new Vector3(0,height*.24f,0),
+                new Vector3(.78f,height*.48f,depth),color);
+            lower.transform.rotation=Quaternion.Euler(-4f,0,0);
+            var upper=Block(name+" · upper",foot+new Vector3(0,height*.66f,depth*.14f),
+                new Vector3(.58f,height*.42f,depth*.72f),color*.94f);
+            upper.transform.rotation=Quaternion.Euler(-7f,0,0);
+        }
+
+        public static void BrokenCrown(string name,Vector3 center,Color color)
+        {
+            float[] xs={-1.9f,-1.15f,-.4f,.35f,1.1f};
+            float[] hs={1.8f,2.6f,2.15f,3.0f,1.55f};
+            for(int i=0;i<xs.Length;i++)
+            {
+                var rib=Block(name+" · rib "+i,center+new Vector3(xs[i],hs[i]*.5f,0),
+                    new Vector3(.42f,hs[i],1.0f),color*(.86f+(i%2)*.05f));
+                rib.transform.rotation=Quaternion.Euler(0,(i-2)*3f,(i%2==0?-2f:2f));
+            }
+            Block(name+" · broken gallery",center+new Vector3(-.35f,1.15f,-.45f),
+                new Vector3(4.7f,.42f,1.15f),color*.82f).transform.rotation=Quaternion.Euler(0,0,-3f);
+        }
+
+        public static void BastionCore(string name,Vector3 origin,System.Action<string,Vector3,Color,float,float> glow)
+        {
+            // Fortress within a dead palace: broad military base, narrower inhabited keep,
+            // irregular ancient crown. All dimensions are tuned for the current mobile camera.
+            Block(name+" · rock plinth",origin+new Vector3(0,.70f,0),
+                new Vector3(10.4f,1.6f,7.4f),OldStone*.82f);
+
+            Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
+                new Vector3(9.2f,2.7f,1.15f),Stone*.94f,true);
+            Block(name+" · inner keep",origin+new Vector3(0,3.65f,.55f),
+                new Vector3(6.4f,3.0f,4.7f),Stone*.91f);
+            Block(name+" · palace remnant",origin+new Vector3(-.55f,5.55f,.85f),
+                new Vector3(4.2f,1.8f,3.15f),OldStone*.92f);
+
+            Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
+            Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
+            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+
+            // Front buttresses make the keep read as architecture rather than stacked boxes.
+            Buttress(name+" · buttress west",origin+new Vector3(-3.35f,.08f,-3.15f),3.7f,1.35f,WarmStone*.82f);
+            Buttress(name+" · buttress east",origin+new Vector3(3.35f,.08f,-3.15f),3.7f,1.35f,WarmStone*.82f);
+
+            // Recessed central entrance.
+            Block(name+" · gate recess",origin+new Vector3(0,1.55f,-3.28f),
+                new Vector3(2.15f,2.65f,.22f),new Color(.07f,.065f,.06f));
+            Block(name+" · gate",origin+new Vector3(0,1.15f,-3.42f),
+                new Vector3(1.7f,2.05f,.18f),Timber*.78f);
+
+            // Strong readable windows with limited warm life.
+            foreach(float x in new[]{-1.85f,0f,1.85f})
+                WindowSlit(name+" · keep slit",origin+new Vector3(x,4.05f,-1.84f),
+                    new Vector3(.28f,.72f,.12f),x==0f);
+            WindowSlit(name+" · palace slit L",origin+new Vector3(-1.1f,5.75f,-.76f),
+                new Vector3(.24f,.6f,.10f),false);
+            WindowSlit(name+" · palace slit R",origin+new Vector3(.4f,5.75f,-.76f),
+                new Vector3(.24f,.6f,.10f),true);
+
+            Banner(name+" · banner west",origin+new Vector3(-3.45f,3.55f,-3.28f),
+                new Vector3(.62f,2.35f,.08f),new Color(.34f,.08f,.07f));
+            Banner(name+" · banner east",origin+new Vector3(3.45f,3.55f,-3.28f),
+                new Vector3(.62f,2.35f,.08f),new Color(.34f,.08f,.07f));
+
+            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.2f,.95f),OldStone*.90f);
+            Scaffold(name+" · repair scaffold",origin+new Vector3(3.75f,3.2f,.65f),
+                new Vector3(2.5f,4.8f,2.25f));
+
+            Rubble(name+" · crown rubble",origin+new Vector3(-3.25f,.22f,2.1f),1.4f,8);
+            if(glow!=null)glow(name+" · inhabited warmth",origin+new Vector3(0,3.6f,-1.25f),
+                new Color(.96f,.53f,.22f),1.25f,6.0f);
+        }
+
         public static void Banner(string name,Vector3 p,Vector3 size,Color color)
         {
             var cloth=Block(name,p,size,color);
