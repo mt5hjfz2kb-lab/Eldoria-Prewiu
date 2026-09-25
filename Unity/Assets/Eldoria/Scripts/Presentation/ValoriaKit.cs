@@ -351,6 +351,37 @@ namespace Eldoria.Presentation
             Block(name+" · platform",p+new Vector3(0,size.y*.05f,0),new Vector3(size.x,.12f,size.z),Timber*.86f);
         }
 
+        public static void CyclopeanCauseway(string name,Vector3 center,float length,float height,float depth,
+            Quaternion rotation,Color color)
+        {
+            // Monumental broken imperial infrastructure used as landscape, not as a gameplay building.
+            // Large gaps and surviving piers make it read as a dead empire crossing the valley.
+            int segments=9;
+            float step=length/(segments-1);
+            for(int i=0;i<segments;i++)
+            {
+                if(i==3 || i==4)continue;
+                float x=-length*.5f+i*step;
+                var local=new Vector3(x,height,0);
+                var slab=Block(name+" · deck "+i,center+rotation*local,
+                    new Vector3(step*1.10f,.70f,depth),color*(.84f+(i%3)*.035f));
+                slab.transform.rotation=rotation*Quaternion.Euler(0,0,(i%2==0?1.5f:-1.2f));
+            }
+            foreach(float x in new[]{-length*.42f,-length*.16f,length*.18f,length*.43f})
+            {
+                float h=height-(Mathf.Abs(x)<length*.25f?1.1f:.35f);
+                var pier=Block(name+" · pier",center+rotation*new Vector3(x,h*.5f,0),
+                    new Vector3(1.35f,h,depth*.82f),color*.78f);
+                pier.transform.rotation=rotation;
+                Buttress(name+" · pier buttress",center+rotation*new Vector3(x,h*.05f,-depth*.45f),
+                    Mathf.Max(2.8f,h*.62f),depth*.40f,color*.72f);
+            }
+            var fallen=Block(name+" · fallen span",center+rotation*new Vector3(-length*.02f,1.05f,depth*.35f),
+                new Vector3(step*2.3f,.72f,depth*.86f),color*.70f);
+            fallen.transform.rotation=rotation*Quaternion.Euler(0,0,-17f);
+            Rubble(name+" · collapse",center+rotation*new Vector3(0,.1f,depth*.35f),1.35f,12);
+        }
+
         public static void BrokenArch(string name,Vector3 center,float radius,float depth,Color color)
         {
             // One tall intact side and an intentionally broken crown: signature ruin, not a perfect bridge.
@@ -426,7 +457,7 @@ namespace Eldoria.Presentation
                     new Vector3(.28f,.72f,.12f),x==0f);
 
             Banner(name+" · banner west",origin+new Vector3(-2.65f,3.55f,-1.82f),
-                new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
+                new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
             Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
 
