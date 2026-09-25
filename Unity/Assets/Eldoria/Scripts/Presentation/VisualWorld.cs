@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.80f,.82f,.81f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.86f,.86f,.83f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.56f,.58f,.58f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.60f,.61f,.60f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -27,7 +27,7 @@ namespace Eldoria.Presentation
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,3.7f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.80f,.62f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?2.55f:1.9f;
+            sun.intensity=city?2.75f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.27f,.29f,.26f):Earth);
@@ -51,9 +51,9 @@ namespace Eldoria.Presentation
                     new Vector3(-18.0f,-2.4f,20.5f),new Vector3(.13f,.13f,.13f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
                     new Vector3(16.5f,-2.6f,21.0f),new Vector3(.12f,.12f,.12f),Quaternion.Euler(0,-23,0));
-                ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-7.4f,.25f,15.4f),
-                    5.15f,1.55f,ValoriaKit.OldStone*.74f);
-                ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-3.2f,.04f,14.7f),1.45f,14);
+                ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-8.6f,-.35f,14.7f),
+                    3.85f,1.35f,ValoriaKit.OldStone*.76f);
+                ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-5.0f,.02f,14.1f),1.25f,12);
                 City(state);
             }
             else Frontier(state);
