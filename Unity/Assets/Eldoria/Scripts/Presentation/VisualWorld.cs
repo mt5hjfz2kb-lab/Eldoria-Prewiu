@@ -47,10 +47,8 @@ namespace Eldoria.Presentation
             {
                 // Capture review: nearby imported terrain read as oversized clay blobs.
                 // Keep only distant silhouettes; the playable city uses controlled terraces and rock edges.
-                ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop west",
-                    new Vector3(-18.5f,-.65f,23.5f),new Vector3(.17f,.17f,.17f),Quaternion.Euler(0,18,0));
-                ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
-                    new Vector3(17.2f,-.85f,24.5f),new Vector3(.16f,.16f,.16f),Quaternion.Euler(0,-23,0));
+                // Imported mountains failed capture review as a flat grey wall.
+                // Keep the horizon atmospheric until a production mountain silhouette is selected.
                 ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-10.8f,-1.15f,18.2f),
                     2.75f,1.05f,ValoriaKit.OldStone*.62f);
                 ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-8.1f,-.12f,17.5f),.95f,9);
