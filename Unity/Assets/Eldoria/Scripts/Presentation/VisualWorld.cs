@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.72f,.70f,.66f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.84f,.82f,.77f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.48f,.47f,.44f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.58f,.57f,.53f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -27,10 +27,10 @@ namespace Eldoria.Presentation
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,3.7f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.80f,.62f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?2.05f:1.9f;
+            sun.intensity=city?2.25f:1.9f;
             sun.transform.rotation=Quaternion.Euler(46,-38,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.58f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.34f,.32f,.28f):Earth);
+                city?new Color(.31f,.32f,.28f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -45,18 +45,12 @@ namespace Eldoria.Presentation
             }
             if(city)
             {
-                // Imported terrain shell: real cliff and hill meshes now frame the playable plateau.
-                // Scales are intentionally conservative for this first integration pass.
-                ValoriaKit.TerrainPiece("SM_Cliffs_01","Valoria imported cliff west",
-                    new Vector3(-13.0f,-1.35f,-1.8f),new Vector3(.23f,.16f,.23f),Quaternion.Euler(0,22,0));
-                ValoriaKit.TerrainPiece("SM_Cliffs_03","Valoria imported cliff east",
-                    new Vector3(12.8f,-1.35f,-1.2f),new Vector3(.23f,.16f,.23f),Quaternion.Euler(0,-28,0));
-                ValoriaKit.TerrainPiece("SM_Hills_01","Valoria imported hill rear",
-                    new Vector3(-2.0f,-1.45f,12.2f),new Vector3(.24f,.17f,.24f),Quaternion.Euler(0,11,0));
+                // Capture review: nearby imported terrain read as oversized clay blobs.
+                // Keep only distant silhouettes; the playable city uses controlled terraces and rock edges.
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop west",
-                    new Vector3(-15.0f,-2.0f,18.0f),new Vector3(.18f,.18f,.18f),Quaternion.Euler(0,18,0));
+                    new Vector3(-18.0f,-2.4f,20.5f),new Vector3(.13f,.13f,.13f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
-                    new Vector3(13.8f,-2.2f,19.0f),new Vector3(.15f,.15f,.15f),Quaternion.Euler(0,-23,0));
+                    new Vector3(16.5f,-2.6f,21.0f),new Vector3(.12f,.12f,.12f),Quaternion.Euler(0,-23,0));
                 City(state);
             }
             else Frontier(state);
@@ -70,10 +64,15 @@ namespace Eldoria.Presentation
             // so authored prefabs can later replace them without changing gameplay coordinates.
 
             // Clifftop city terraces.
-            ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.05f,4.0f),new Vector3(17,.48f,11),ValoriaKit.OldStone*.98f);
-            ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),ValoriaKit.Earth*1.12f);
+            ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.05f,4.0f),new Vector3(17,.48f,11),new Color(.31f,.30f,.26f));
+            ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),new Color(.29f,.27f,.22f));
             for(int i=0;i<7;i++)
-                ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.85f,-6.2f),new Vector3(3.35f,2.45f,2.35f),ValoriaKit.OldStone*.82f);
+                ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.70f,-6.0f),new Vector3(3.15f,1.85f,1.55f),ValoriaKit.OldStone*.88f);
+            for(int i=0;i<6;i++)
+            {
+                float x=-8.1f+i*3.25f;
+                ValoriaKit.Block("Upper retaining rock",new Vector3(x,-.32f,9.3f+(i%2)*.25f),new Vector3(3.5f,1.1f,1.35f),ValoriaKit.OldStone*.80f);
+            }
             ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
             ValoriaKit.RockCluster("Valoria cliff rocks centre",new Vector3(-.6f,-.18f,-6.15f),1.30f,8);
             ValoriaKit.RockCluster("Valoria cliff rocks east",new Vector3(8.2f,-.12f,-5.8f),1.40f,7);
@@ -95,16 +94,15 @@ namespace Eldoria.Presentation
             gate.AddComponent<WorldHotspot>().Id="gate";
             for(int i=0;i<12;i++)
             {
-                var p=new Vector3(Mathf.Sin(i*.27f)*.31f,.27f,-11.1f+i*1.12f);
-                if(ValoriaKit.BenchmarkPiece("Valoria · worn cobble route",art!=null?art.CobbleRoad:null,
-                    p,2.4f,.18f,Quaternion.Euler(0,(i%3-1)*8,0))==null)
-                    ValoriaKit.Block("Central road",p,new Vector3(2.45f,.07f,.95f),ValoriaKit.WarmStone*.68f);
+                var p=new Vector3(Mathf.Sin(i*.27f)*.26f,.22f,-11.1f+i*1.12f);
+                var road=ValoriaKit.Block("Valoria · worn stone route",p,new Vector3(2.35f,.08f,.92f),ValoriaKit.WarmStone*.78f);
+                road.transform.rotation=Quaternion.Euler(0,(i%3-1)*5,0);
             }
             ValoriaKit.Stair("Bastion stair",new Vector3(0,.28f,.55f),7,2.9f,.16f,.42f,ValoriaKit.WarmStone*.74f);
             ValoriaKit.Rubble("Gate rubble",new Vector3(-3.4f,.22f,-3.8f),1.0f,6);
 
             // Left: work district / Sawmill.
-            ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.28f,4.3f),ValoriaKit.Earth*.90f);
+            ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.22f,4.3f),ValoriaKit.Earth*.98f);
             ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
             var mill=ValoriaKit.Block("Aserradero · interacción",new Vector3(-6.4f,1.18f,-1.45f),
                 new Vector3(3.05f,1.45f,2.35f),state.SawmillLevel>0?new Color(.34f,.25f,.17f):new Color(.18f,.18f,.17f));
@@ -135,7 +133,7 @@ namespace Eldoria.Presentation
                 ValoriaKit.Banner("Barracks banner",new Vector3(5.15f,2.0f,-2.75f),new Vector3(.55f,1.65f,.08f),new Color(.31f,.10f,.08f));
             }
             ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
-            ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.18f,2.5f),ValoriaKit.Earth*.85f);
+            ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.16f,2.5f),ValoriaKit.Earth*.94f);
 
             // Sparse but readable settlement around the Bastion. Keep all structures in one authored kit.
             foreach(var shelter in new[]{new Vector3(-3.45f,.30f,-3.35f),new Vector3(2.7f,.30f,-2.75f),
