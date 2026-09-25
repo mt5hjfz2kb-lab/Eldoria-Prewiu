@@ -36,3 +36,5 @@ MonoBehaviour:
   SlavicMoss: {fileID: 1187177085624486, guid: b83a0d2a5484d404fab50f0563a57c1c, type: 3}
   MegaTower: {fileID: 177852, guid: 9be926fe84d3b7d45bbeca79dd5786f1, type: 3}
   MegaHalfGate: {fileID: 164862, guid: 57abdd11cedcad8478c764228178c11f, type: 3}
+  MegaDestroyedTower: {fileID: 150784, guid: e27db1f37a07b834dba6152ddc5b7858, type: 3}
+  MegaWallPassage: {fileID: 147068, guid: a86023c77625aff479fc6a85bfefa482, type: 3}
