@@ -13,18 +13,18 @@ namespace Eldoria.Presentation
         static readonly Color Amber = new Color(.96f,.53f,.22f), Violet = new Color(.57f,.19f,.91f);
         public static void Create(bool city, PlayerState state)
         {
-            RenderSettings.ambientLight = new Color(.46f,.48f,.54f);
+            RenderSettings.ambientLight = new Color(.58f,.58f,.60f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(.20f,.22f,.24f); RenderSettings.fogStartDistance=32; RenderSettings.fogEndDistance=96;
+            RenderSettings.fogColor = new Color(.30f,.32f,.34f); RenderSettings.fogStartDistance=36; RenderSettings.fogEndDistance=110;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 12.4f : 14;
-            camera.backgroundColor = new Color(.23f,.27f,.31f); camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(.34f,.37f,.40f); camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
             cameraGo.transform.position = city ? new Vector3(20.5f,22.5f,-24f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,2.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Cold dawn").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=new Color(.78f,.76f,.70f); sun.intensity=1.02f;
+            sun.type=LightType.Directional; sun.color=new Color(.92f,.86f,.76f); sun.intensity=1.28f;
             sun.transform.rotation=Quaternion.Euler(42,-35,0); sun.shadows=LightShadows.Soft;
             Box("World ground",new Vector3(0,-.7f,0),new Vector3(34,1.2f,30),Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
