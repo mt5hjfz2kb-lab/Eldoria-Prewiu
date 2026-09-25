@@ -66,6 +66,21 @@ namespace Eldoria.Presentation
             return go;
         }
 
+        public static GameObject BenchmarkPieceTinted(string name,GameObject prefab,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation,Color tint)
+        {
+            var go=BenchmarkPiece(name,prefab,ground,footprint,maxHeight,rotation);
+            if(go==null)return null;
+            var material=Material(tint);
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=material;
+                renderer.sharedMaterials=mats;
+            }
+            return go;
+        }
+
         static Material AdaptForUrp(Material source)
         {
             if(source==null||source.shader==null||source.shader.name.StartsWith("Universal Render Pipeline/"))return source;
