@@ -459,7 +459,7 @@ namespace Eldoria.Presentation
             Banner(name+" · banner west",origin+new Vector3(-2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
             Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
-                new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
+                new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
 
             // The surviving cyclopean arch rises above the rebuilt keep: this must read from the
             // establishing camera as the dead-palace signature, not disappear behind the fortress.
