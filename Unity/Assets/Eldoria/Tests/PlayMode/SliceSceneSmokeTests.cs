@@ -59,8 +59,10 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Bastion · front curtain backing · wall"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · connected gate"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · connected wall"),Is.Not.Null);
-            Assert.That(GameObject.Find("Bastion · connected tower"),Is.Not.Null);
-            Assert.That(GameObject.Find("Bastion · rear connected tower"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · connected tower west"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · connected tower east"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · rear connected tower west"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · rear connected tower east"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · keep detailed facing"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · dead palace wall west"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · dead palace wall east"),Is.Not.Null);
