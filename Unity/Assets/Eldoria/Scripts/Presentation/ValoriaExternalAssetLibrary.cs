@@ -29,6 +29,9 @@ namespace Eldoria.Presentation
         public GameObject SlavicStoneFence;
         public GameObject SlavicRockGate;
         public GameObject SlavicBoulder;
+        public GameObject SlavicFlatRock;
+        public GameObject SlavicMudFlat;
+        public GameObject SlavicMoss;
         public GameObject MegaTower;
         public GameObject MegaHalfGate;
 
