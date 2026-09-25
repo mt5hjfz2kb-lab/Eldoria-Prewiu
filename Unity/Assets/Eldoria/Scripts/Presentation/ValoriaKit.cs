@@ -491,16 +491,27 @@ namespace Eldoria.Presentation
                     2.35f,5.05f,Quaternion.identity,new Color(.50f,.52f,.51f,1f))==null)
                     Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
-            // The keep retains an Eldoria-specific mass, but authored masonry now carries its visible facade.
-            Block(name+" · inner keep",origin+new Vector3(0,3.25f,1.00f),
-                new Vector3(5.15f,1.95f,3.55f),Stone*.54f);
+            // Keep: a small hidden backing volume surrounded by authored masonry on every visible side.
+            Block(name+" · inner keep backing",origin+new Vector3(0,3.05f,1.15f),
+                new Vector3(4.45f,1.45f,2.85f),Stone*.40f);
             foreach(float x in new[]{-1.55f,1.55f})
                 if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
-                    origin+new Vector3(x,2.30f,-1.38f),3.0f,2.35f,Quaternion.identity,new Color(.52f,.53f,.51f,1f))==null)
-                    Wall(name+" · keep facing fallback",origin+new Vector3(x,3.15f,-1.36f),
-                        new Vector3(2.85f,2.05f,.46f),OldStone*.66f,true);
-            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.38f,1.00f),
-                new Vector3(5.55f,.92f,3.90f),Slate*.72f);
+                    origin+new Vector3(x,2.25f,-1.28f),3.0f,2.30f,Quaternion.identity,new Color(.54f,.55f,.53f,1f))==null)
+                    Wall(name+" · keep facing fallback",origin+new Vector3(x,3.10f,-1.26f),
+                        new Vector3(2.85f,2.0f,.44f),OldStone*.64f,true);
+            foreach(float x in new[]{-2.25f,2.25f})
+                if(BenchmarkPieceModulated(name+" · keep side facing",stoneWall,
+                    origin+new Vector3(x,2.15f,1.05f),2.75f,2.20f,Quaternion.Euler(0,90f,0),
+                    new Color(.48f,.50f,.49f,1f))==null)
+                    Wall(name+" · keep side fallback",origin+new Vector3(x,3.00f,1.05f),
+                        new Vector3(.44f,1.95f,2.65f),OldStone*.60f,true);
+            if(BenchmarkPieceModulated(name+" · keep rear facing",stoneWall,
+                origin+new Vector3(0,2.10f,2.52f),4.35f,2.10f,Quaternion.Euler(0,180f,0),
+                new Color(.45f,.47f,.46f,1f))==null)
+                Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
+                    new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
+            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.03f,1.10f),
+                new Vector3(5.05f,.72f,3.38f),Slate*.88f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
