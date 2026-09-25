@@ -7,7 +7,9 @@ namespace Eldoria.Presentation
     // Original procedural study: provisional geometry/materials, no inherited web art or unlicensed assets.
     public static class VisualWorld
     {
-        static readonly Color Stone = new Color(.23f,.27f,.31f), Deep = new Color(.08f,.12f,.16f);
+        static readonly Color Stone = new Color(.34f,.36f,.37f), Deep = new Color(.10f,.12f,.13f);
+        static readonly Color WarmStone = new Color(.46f,.43f,.37f), Timber = new Color(.24f,.16f,.11f);
+        static readonly Color Earth = new Color(.22f,.19f,.15f), Pine = new Color(.10f,.18f,.14f);
         static readonly Color Amber = new Color(.96f,.53f,.22f), Violet = new Color(.57f,.19f,.91f);
         public static void Create(bool city, PlayerState state)
         {
@@ -24,82 +26,101 @@ namespace Eldoria.Presentation
             var sun = new GameObject("Cold dawn").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=new Color(.82f,.80f,.72f); sun.intensity=1.18f;
             sun.transform.rotation=Quaternion.Euler(42,-35,0); sun.shadows=LightShadows.Soft;
-            Box("Fractured ground",new Vector3(0,-.55f,0),new Vector3(33,1,29),Deep);
-            for(int i=0;i<17;i++)
+            Box("World ground",new Vector3(0,-.7f,0),new Vector3(34,1.2f,30),Earth);
+            // Layered rock masses create a believable playable plateau instead of a flat board.
+            for(int i=0;i<11;i++)
             {
-                float x=-15+i*1.85f, z=11+(i%3)*.9f;
-                Box("Ridge",new Vector3(x,.2f,z),new Vector3(1.8f,1.4f+(i%4)*.65f,2),Stone*.65f);
+                float x=-15+i*3.05f;
+                float h=1.4f+(i%4)*.55f;
+                Box("Cliff rim",new Vector3(x,-.05f,12.2f-(i%2)*.55f),new Vector3(3.3f,h,3.1f),Stone*.68f);
             }
-            for(int i=0;i<7;i++)
+            for(int i=0;i<8;i++)
             {
-                var rock=Box("Ruined road",new Vector3(-2+i*.65f,-.01f,-12+i*3.6f),new Vector3(2.1f,.12f,1.5f),Stone*.72f);
-                rock.transform.rotation=Quaternion.Euler(0,(i%2==0?13:-17),0);
+                var rock=Box("Old imperial road",new Vector3(-1.2f+(i%2)*.28f,-.02f,-12+i*3.15f),new Vector3(2.7f,.16f,1.7f),WarmStone*.78f);
+                rock.transform.rotation=Quaternion.Euler(0,(i%2==0?7:-8),0);
             }
             if(city) City(state); else Frontier(state);
             Rift(city?new Vector3(11,1,10):new Vector3(9,1,8));
         }
         static void City(PlayerState state)
         {
-            // Visual Bible pass 01: readable mobile city composition, Bastion first.
-            // The geometry remains deliberately primitive/procedural; this establishes framing and hierarchy before real assets.
+            // Visual Bible art pass 01: still procedural, but now built from reusable game-like modules.
+            // Goal: prove silhouette, hierarchy, material language and mobile readability before external asset production.
 
-            // Broad rebuilt terrace keeps the playable city legible as one coherent place.
-            Box("Upper terrace",new Vector3(0,.15f,3.8f),new Vector3(15,.55f,10),Stone*.72f);
-            Box("Lower terrace",new Vector3(0,-.02f,-3.4f),new Vector3(18,.35f,6.5f),Stone*.58f);
+            // Terrain terraces / cliff shelves.
+            Box("Upper rocky shelf",new Vector3(0,.18f,4.2f),new Vector3(16,.65f,10.5f),Stone*.64f);
+            Box("Lower inhabited shelf",new Vector3(0,.02f,-3.6f),new Vector3(19,.45f,6.6f),Earth*.92f);
+            for(int i=0;i<7;i++)
+            {
+                float x=-9+i*3f;
+                Box("Terrace cliff",new Vector3(x,-.65f,-6.4f),new Vector3(3.2f,2.2f,2.1f),Stone*.58f);
+            }
 
-            // Signature ancient landmark: a broken cyclopean arch reused by the living city.
-            Box("Cyclopean arch · left pier",new Vector3(-8,3.2f,3.5f),new Vector3(2.15f,7.4f,2.4f),Stone*.64f);
-            var archRight=Box("Cyclopean arch · broken right pier",new Vector3(7.6f,2.3f,4.5f),new Vector3(1.9f,5.2f,2.2f),Stone*.60f);
-            archRight.transform.rotation=Quaternion.Euler(0,0,-8);
-            var archSpan=Box("Cyclopean arch · fractured span",new Vector3(-1.4f,6.25f,3.8f),new Vector3(11.8f,1.35f,2.25f),Stone*.62f);
-            archSpan.transform.rotation=Quaternion.Euler(0,0,-5);
-            var fallen=Box("Cyclopean arch · fallen segment",new Vector3(6.2f,.55f,-1.1f),new Vector3(5.8f,1.3f,1.9f),Stone*.55f);
-            fallen.transform.rotation=Quaternion.Euler(0,18,-14);
+            // Signature cyclopean arch: radial stone voussoirs rather than a simple lintel.
+            Arch("Cyclopean arch",new Vector3(-6.8f,.25f,4.8f),4.5f,2.0f,11,Stone*.62f);
+            var fallen=Box("Cyclopean arch · fallen segment",new Vector3(6.5f,.55f,1.3f),new Vector3(5.4f,1.35f,2.0f),Stone*.55f);
+            fallen.transform.rotation=Quaternion.Euler(0,20,-17);
 
-            // Bastion: larger, closer and visually dominant.
-            Box("Bastion · foundation",new Vector3(0,1.0f,4.7f),new Vector3(8.4f,2.8f,6.4f),Stone);
-            Box("Bastion · upper hall",new Vector3(0,3.35f,4.9f),new Vector3(5.7f,2.2f,4.4f),Stone*.84f);
-            Box("Bastion · crown",new Vector3(0,5.05f,5.0f),new Vector3(3.1f,1.6f,2.7f),Stone*.72f);
-            for(int i=0;i<4;i++) Tower(new Vector3(i%2==0?-5.2f:5.2f,0,i<2?1.9f:7.5f),5.5f);
-            for(int i=0;i<9;i++) Box("Battlement",new Vector3(-3.6f+i*.9f,5.25f,1.45f),new Vector3(.48f,.72f,.65f),Stone*.9f);
+            // Bastion mass: fortress first, dead-palace bones second.
+            Box("Bastion · lower keep",new Vector3(0,1.15f,5.0f),new Vector3(8.6f,3.0f,6.5f),WarmStone*.80f);
+            Box("Bastion · upper keep",new Vector3(0,3.6f,5.15f),new Vector3(5.8f,2.2f,4.5f),Stone*.86f);
+            Box("Bastion · broken crown",new Vector3(-.45f,5.35f,5.25f),new Vector3(3.8f,1.5f,3.1f),Stone*.74f);
+            for(int i=0;i<4;i++) Tower(new Vector3(i%2==0?-5.25f:5.25f,0,i<2?2.0f:7.6f),5.7f);
+            for(int i=0;i<10;i++)
+                Box("Bastion battlement",new Vector3(-4.05f+i*.9f,5.15f,1.6f),new Vector3(.48f,.72f,.7f),Stone*.92f);
 
-            // Main gate and route to the world stay centered and obvious.
-            Box("Gate arch left",new Vector3(-2.2f,1.1f,-4.9f),new Vector3(1.15f,3.2f,1),Stone);
-            Box("Gate arch right",new Vector3(2.2f,1.1f,-4.9f),new Vector3(1.15f,3.2f,1),Stone);
-            Box("Gate lintel",new Vector3(0,2.95f,-4.9f),new Vector3(5.6f,.9f,1.3f),Stone*.86f);
-            var gate=Box("Puerta · ir al mundo",new Vector3(0,.8f,-4.9f),new Vector3(2.8f,2.75f,.4f),new Color(.30f,.18f,.12f));
+            // Palace-remnant ribs / repaired scaffold around the crown.
+            for(int i=0;i<5;i++)
+            {
+                float x=-2.6f+i*1.3f;
+                Box("Ancient rib",new Vector3(x,6.35f,5.6f),new Vector3(.32f,2.6f,.55f),Stone*.70f);
+            }
+            Scaffold(new Vector3(3.7f,3.0f,5.0f),new Vector3(2.4f,4.6f,2.5f));
+
+            // Main gate and readable central approach.
+            Box("Gate pier L",new Vector3(-2.25f,1.25f,-4.75f),new Vector3(1.2f,3.4f,1.1f),WarmStone*.78f);
+            Box("Gate pier R",new Vector3(2.25f,1.25f,-4.75f),new Vector3(1.2f,3.4f,1.1f),WarmStone*.78f);
+            Arch("Gate arch",new Vector3(0,.75f,-4.8f),2.35f,.62f,7,Stone*.86f);
+            var gate=Box("Puerta · ir al mundo",new Vector3(0,.7f,-4.86f),new Vector3(2.5f,2.45f,.36f),Timber);
             gate.AddComponent<WorldHotspot>().Id="gate";
-
-            // Simple roads/steps visually lead the eye from foreground to the Bastion.
             for(int i=0;i<6;i++)
-                Box("Bastion approach",new Vector3(0,.15f,-2.8f+i*1.15f),new Vector3(2.5f,.12f,.8f),Stone*.78f);
+                Box("Main approach",new Vector3(0,.18f,-3.2f+i*1.18f),new Vector3(2.7f,.13f,.82f),WarmStone*.68f);
 
-            // Left work district: Sawmill.
-            Box("Sawmill yard",new Vector3(-6.4f,.15f,-1.6f),new Vector3(5.2f,.35f,4.4f),Stone*.54f);
-            Box("Sawmill base",new Vector3(-6.5f,.6f,-1.5f),new Vector3(3.7f,1.0f,3.2f),Stone*.8f);
-            var mill=Box("Aserradero · interacción",new Vector3(-6.5f,1.7f,-1.5f),new Vector3(2.7f,1.6f,2.4f),
-                state.SawmillLevel>0?new Color(.46f,.32f,.2f):new Color(.19f,.20f,.20f));
+            // Left work district — Sawmill.
+            Box("Sawmill yard",new Vector3(-6.6f,.16f,-1.75f),new Vector3(5.1f,.35f,4.4f),Earth*.82f);
+            House("Sawmill house",new Vector3(-6.55f,.4f,-1.45f),new Vector3(3.4f,1.65f,2.7f),state.SawmillLevel>0);
+            var mill=Box("Aserradero · interacción",new Vector3(-6.55f,1.1f,-1.45f),new Vector3(3.1f,1.55f,2.45f),
+                state.SawmillLevel>0?new Color(.43f,.32f,.22f):new Color(.20f,.20f,.19f));
             mill.AddComponent<WorldHotspot>().Id="sawmill";
             if(state.SawmillLevel>0)
             {
-                Box("Restored roof",new Vector3(-6.5f,2.7f,-1.5f),new Vector3(3.2f,.35f,2.9f),new Color(.39f,.22f,.16f));
-                Glow("Sawmill fire",new Vector3(-5.7f,2.1f,-1.8f),Amber,2.2f,5);
-                for(int i=0;i<4;i++) Cylinder("Logs",new Vector3(-8.8f+i*.45f,.35f,-2.7f),new Vector3(.35f,2.4f,.35f),new Color(.33f,.23f,.18f),Quaternion.Euler(90,0,0));
+                Glow("Sawmill fire",new Vector3(-5.45f,1.7f,-1.95f),Amber,2.0f,4.5f);
+                for(int i=0;i<5;i++)
+                    Cylinder("Timber stack",new Vector3(-8.8f+i*.42f,.38f,-2.85f),new Vector3(.30f,2.2f,.30f),new Color(.30f,.20f,.13f),Quaternion.Euler(90,0,0));
             }
-            else for(int i=0;i<4;i++) Box("Charred timber",new Vector3(-7.7f+i*.5f,2.0f,-1.4f),new Vector3(.2f,1.4f,.3f),new Color(.13f,.14f,.15f)).transform.rotation=Quaternion.Euler(0,0,17+i*8);
+            Scaffold(new Vector3(-8.0f,1.55f,.15f),new Vector3(1.6f,2.7f,1.3f));
 
-            // Right side: intentionally modest early defenses / supply structures.
-            Box("Early barracks",new Vector3(6.1f,.65f,-1.7f),new Vector3(3.6f,1.35f,2.8f),Stone*.73f);
-            Box("Barracks roof",new Vector3(6.1f,1.55f,-1.7f),new Vector3(3.9f,.35f,3.0f),new Color(.31f,.21f,.17f));
-            Box("Granary",new Vector3(4.7f,.7f,-4.2f),new Vector3(2.8f,1.45f,2.1f),new Color(.36f,.29f,.20f));
-            Box("Granary roof",new Vector3(4.7f,1.7f,-4.2f),new Vector3(3.1f,.3f,2.4f),new Color(.29f,.20f,.15f));
+            // Right side — modest early barracks and granary, clearly secondary to Bastion.
+            House("Early barracks",new Vector3(6.25f,.42f,-1.65f),new Vector3(3.6f,1.75f,2.8f),true);
+            House("Granary",new Vector3(4.75f,.40f,-4.15f),new Vector3(2.8f,1.55f,2.15f),true);
+            Box("Training yard",new Vector3(7.0f,.17f,-4.1f),new Vector3(3.6f,.22f,2.6f),Earth*.72f);
 
-            // A few restrained life markers: enough to feel inhabited, not crowded.
+            // Small rebuilt homes and shelters, intentionally sparse at Bastion I.
+            House("Rebuilder home A",new Vector3(-3.6f,.36f,-3.5f),new Vector3(2.1f,1.25f,1.8f),true);
+            House("Rebuilder home B",new Vector3(2.8f,.36f,-2.85f),new Vector3(2.0f,1.2f,1.7f),true);
+
+            // Vegetation breaks the hard geometry without turning the city lush.
+            foreach(var p in new[] {
+                new Vector3(-9.2f,0,-.8f),new Vector3(-8.7f,0,5.0f),new Vector3(-4.4f,0,8.2f),
+                new Vector3(6.6f,0,8.1f),new Vector3(8.8f,0,3.9f),new Vector3(8.9f,0,-.8f)})
+                PineTree(p,1.0f);
+
+            // Life markers.
             Hero(new Vector3(-1.8f,0,-2.0f),1.0f);
             for(int i=0;i<5;i++) Archer(new Vector3(2.0f+i*.68f,0,-2.9f+(i%2)*.7f));
-            Glow("Torch left",new Vector3(-2.9f,2.1f,-4.55f),Amber,1.5f,3);
-            Glow("Torch right",new Vector3(2.9f,2.1f,-4.55f),Amber,1.5f,3);
-            Glow("Bastion warmth",new Vector3(0,3.6f,3.2f),Amber,1.6f,7);
+            Glow("Gate torch L",new Vector3(-2.9f,2.05f,-4.45f),Amber,1.45f,3.2f);
+            Glow("Gate torch R",new Vector3(2.9f,2.05f,-4.45f),Amber,1.45f,3.2f);
+            Glow("Bastion warmth",new Vector3(0,3.6f,3.25f),Amber,1.75f,7.5f);
         }
         static void Frontier(PlayerState state)
         {
@@ -123,6 +144,71 @@ namespace Eldoria.Presentation
             {
                 var marker=Sphere("March signal",new Vector3(0,.55f,-2),new Vector3(.9f,.25f,.9f),Amber);
                 marker.AddComponent<BreachPulse>().Speed=1.5f;
+            }
+        }
+        static void House(string name,Vector3 p,Vector3 size,bool lit)
+        {
+            Box(name+" · stone base",p+new Vector3(0,size.y*.45f,0),size,WarmStone*.72f);
+            GableRoof(name+" · roof",p+new Vector3(0,size.y+0.35f,0),new Vector3(size.x*1.12f,.8f,size.z*1.16f),Timber);
+            Box(name+" · door",p+new Vector3(0,.75f,-size.z*.52f),new Vector3(.48f,1.25f,.16f),Timber*.82f);
+            if(lit) Glow(name+" · hearth",p+new Vector3(.45f,1.0f,-size.z*.58f),Amber,.85f,2.7f);
+        }
+        static GameObject GableRoof(string name,Vector3 p,Vector3 s,Color c)
+        {
+            var go=new GameObject(name);
+            go.transform.position=p;
+            var mf=go.AddComponent<MeshFilter>();
+            var mr=go.AddComponent<MeshRenderer>();
+            float x=s.x*.5f,z=s.z*.5f,h=s.y;
+            var mesh=new Mesh();
+            mesh.vertices=new[]{
+                new Vector3(-x,0,-z),new Vector3(x,0,-z),new Vector3(0,h,-z),
+                new Vector3(-x,0,z),new Vector3(0,h,z),new Vector3(x,0,z)
+            };
+            mesh.triangles=new[]{
+                0,1,2, 3,4,5,
+                0,2,4, 0,4,3,
+                1,5,4, 1,4,2
+            };
+            mesh.RecalculateNormals();
+            mf.sharedMesh=mesh; mr.sharedMaterial=Mat(c);
+            return go;
+        }
+        static void Arch(string name,Vector3 center,float radius,float thickness,int blocks,Color color)
+        {
+            // Upper semicircle plus two massive piers.
+            for(int i=0;i<blocks;i++)
+            {
+                float t=i/(float)(blocks-1);
+                float a=Mathf.Lerp(20f,160f,t)*Mathf.Deg2Rad;
+                var p=center+new Vector3(Mathf.Cos(a)*radius,Mathf.Sin(a)*radius,0);
+                var b=Box(name+" · voussoir",p,new Vector3(thickness,1.05f,1.65f),color);
+                b.transform.rotation=Quaternion.Euler(0,0,90f-Mathf.Rad2Deg*a);
+            }
+            Box(name+" · left pier",center+new Vector3(-radius+.45f,1.9f,0),new Vector3(thickness*1.25f,4.2f,1.9f),color*.95f);
+            Box(name+" · right pier",center+new Vector3(radius-.45f,1.9f,0),new Vector3(thickness*1.25f,4.2f,1.9f),color*.95f);
+        }
+        static void Scaffold(Vector3 p,Vector3 s)
+        {
+            Color wood=new Color(.27f,.18f,.11f);
+            float hx=s.x*.5f,hz=s.z*.5f;
+            foreach(float x in new[]{-hx,hx})
+                foreach(float z in new[]{-hz,hz})
+                    Box("Scaffold post",p+new Vector3(x,0,z),new Vector3(.12f,s.y,.12f),wood);
+            for(int level=0;level<3;level++)
+            {
+                float y=-s.y*.45f+level*s.y*.45f;
+                Box("Scaffold rail",p+new Vector3(0,y,-hz),new Vector3(s.x,.10f,.10f),wood);
+                Box("Scaffold rail",p+new Vector3(0,y,hz),new Vector3(s.x,.10f,.10f),wood);
+            }
+        }
+        static void PineTree(Vector3 p,float scale)
+        {
+            Cylinder("Pine trunk",p+Vector3.up*1.25f*scale,new Vector3(.16f,1.3f,.16f)*scale,new Color(.22f,.15f,.10f),Quaternion.identity);
+            for(int i=0;i<3;i++)
+            {
+                float y=(1.4f+i*.65f)*scale;
+                Cylinder("Pine crown",p+Vector3.up*y,new Vector3((1.15f-i*.18f)*scale,.65f*scale,(1.15f-i*.18f)*scale),Pine*(.9f+i*.05f),Quaternion.identity);
             }
         }
         static void Tower(Vector3 p,float height)
