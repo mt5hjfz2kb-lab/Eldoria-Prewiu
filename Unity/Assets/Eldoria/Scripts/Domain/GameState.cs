@@ -35,15 +35,20 @@ namespace Eldoria.Domain
         public ResourceWallet Resources = new ResourceWallet { Wood = 30, Stone = 150, Food = 0 };
         public int BastionLevel = 1;
         public int SawmillLevel;
+        public int BarracksLevel;
         public bool CorruptionDiscovered;
         public bool ScoutDefeated;
         public bool JourneyComplete;
+        public bool EngendroDefeated;
         public ArmyRoster Available = new ArmyRoster { ArcherT1 = 36 };
         public ArmyRoster Wounded = new ArmyRoster();
         public MarchState March = new MarchState();
         public int ForestRemaining = 1250;
         public long BuildingCompletesUtcTicks;
         public string BuildingTaskId = "";
+        public long RecruitmentCompletesUtcTicks;
+        public string RecruitmentTaskId = "";
+        public int PendingRecruitArchers;
         public string LastBattleReason = "";
         public List<string> CompletedCommandIds = new List<string>();
         public List<string> CompletedTaskIds = new List<string>();
@@ -73,12 +78,18 @@ namespace Eldoria.Domain
     public static class SliceRules
     {
         public const int SawmillWoodCost = 80;
+        public const int BarracksWoodCost = 140;
+        public const int BarracksStoneCost = 90;
+        public const int RecruitWoodCost = 50;
+        public const int RecruitArchers = 12;
+        public const int BarracksBuildSeconds = 8;
+        public const int RecruitSeconds = 7;
         public const int ForestLoad = 360;
         public const int SawmillBuildSeconds = 6;
         public const int TravelSeconds = 2;
         public const int GatherSeconds = 5;
         public static PowerParts TotalPower(PlayerState s)
-            => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel,
+            => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel,
                 18 * (s.Available.Total + s.Wounded.Total + (s.March.Phase == "idle" ? 0 : s.March.Troops.Total)), 1204, 0, 0);
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
@@ -102,19 +113,30 @@ namespace Eldoria.Domain
                 (int)Math.Round(hp, MidpointRounding.AwayFromZero),
                 (int)Math.Round(brk, MidpointRounding.AwayFromZero), pow);
         }
-        public static CombatReport Fight(CombatStats player)
+        public static CombatReport Fight(CombatStats player) => Fight(player, "corrupt-scout");
+        public static CombatReport Fight(CombatStats player, string enemyId)
         {
-            // Optional corrupt scout in the visual slice: reference Engendro stats, no Bastion II unlock.
-            int enemyHp = 620, playerHp = player.Health, rounds = 0;
+            int enemyHp, enemyDefense, enemyAttack, enemyBreak;
+            if (enemyId == "engendro-valoria")
+            {
+                enemyHp = 760; enemyDefense = 72; enemyAttack = 84; enemyBreak = 32;
+            }
+            else
+            {
+                enemyHp = 620; enemyDefense = 64; enemyAttack = 76; enemyBreak = 28;
+            }
+            int playerHp = player.Health, rounds = 0;
             while (rounds < 6 && enemyHp > 0 && playerHp > 0)
             {
                 rounds++;
-                enemyHp -= Hit(player.Attack, 64, player.Break);
-                if (enemyHp > 0) playerHp -= Hit(76, player.Defense, 28);
+                enemyHp -= Hit(player.Attack, enemyDefense, player.Break);
+                if (enemyHp > 0) playerHp -= Hit(enemyAttack, player.Defense, enemyBreak);
             }
             bool win = enemyHp <= 0 && playerHp > 0;
             string reason = win
-                ? "Tus arqueros y Aldric abrieron la defensa corrupta. Ataque y Ruptura superaron su resistencia."
+                ? (enemyId == "engendro-valoria"
+                    ? "La nueva línea de arqueros sostuvo el frente y Aldric rompió la defensa del Engendro."
+                    : "Tus arqueros y Aldric abrieron la defensa corrupta. Ataque y Ruptura superaron su resistencia.")
                 : "El enemigo resistió seis intercambios o agotó la Vida de la marcha. Refuerza las tropas.";
             return new CombatReport(win, Math.Max(0, playerHp), rounds, reason);
         }
