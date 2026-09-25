@@ -84,13 +84,13 @@ namespace Eldoria.Presentation
             return adapted;
         }
 
-        public static readonly Color Stone=new Color(.35f,.36f,.35f);
-        public static readonly Color OldStone=new Color(.30f,.31f,.30f);
-        public static readonly Color WarmStone=new Color(.42f,.38f,.32f);
-        public static readonly Color Timber=new Color(.29f,.18f,.10f);
-        public static readonly Color Slate=new Color(.18f,.20f,.21f);
-        public static readonly Color Earth=new Color(.25f,.23f,.20f);
-        public static readonly Color Pine=new Color(.13f,.21f,.17f);
+        public static readonly Color Stone=new Color(.41f,.42f,.40f);
+        public static readonly Color OldStone=new Color(.35f,.36f,.34f);
+        public static readonly Color WarmStone=new Color(.48f,.43f,.35f);
+        public static readonly Color Timber=new Color(.31f,.20f,.12f);
+        public static readonly Color Slate=new Color(.27f,.28f,.27f);
+        public static readonly Color Earth=new Color(.30f,.27f,.23f);
+        public static readonly Color Pine=new Color(.11f,.23f,.16f);
 
         public static GameObject CastleWall(string name,Vector3 position,Vector3 scale,Quaternion rotation)
             => ExternalPrefab(name,LoadExternal("Stone_Wall"),position,scale,rotation);
@@ -463,17 +463,37 @@ namespace Eldoria.Presentation
                 Block(name+" · step",start+new Vector3(0,i*rise,i*run),new Vector3(width,.16f,run+.05f),color);
         }
 
+        static GameObject Cone(string name,Vector3 center,float radius,float height,Color color)
+        {
+            const int sides=12;
+            var vertices=new Vector3[sides+2];
+            var triangles=new int[sides*6];
+            vertices[0]=new Vector3(0,height*.5f,0);
+            vertices[1]=new Vector3(0,-height*.5f,0);
+            for(int i=0;i<sides;i++)
+            {
+                float a=i*Mathf.PI*2f/sides;
+                vertices[i+2]=new Vector3(Mathf.Cos(a)*radius,-height*.5f,Mathf.Sin(a)*radius);
+                int n=(i+1)%sides;
+                int t=i*6;
+                triangles[t]=0;triangles[t+1]=i+2;triangles[t+2]=n+2;
+                triangles[t+3]=1;triangles[t+4]=n+2;triangles[t+5]=i+2;
+            }
+            var go=new GameObject(name);go.transform.position=center;
+            var mesh=new Mesh{name=name+" mesh",vertices=vertices,triangles=triangles};
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);
+            return go;
+        }
+
         public static void PineTree(string name,Vector3 p,float scale)
         {
-            Cylinder(name+" · trunk",p+Vector3.up*1.1f*scale,new Vector3(.13f,1.1f,.13f)*scale,
-                new Color(.20f,.13f,.08f),Quaternion.identity);
-            for(int i=0;i<3;i++)
-            {
-                float y=(1.35f+i*.58f)*scale;
-                // Cylinders are intentionally stylized silhouettes for this first kit.
-                Cylinder(name+" · crown",p+Vector3.up*y,new Vector3((.9f-i*.14f)*scale,.42f*scale,(.9f-i*.14f)*scale),
-                    Pine*(.88f+i*.05f),Quaternion.identity);
-            }
+            Cylinder(name+" · trunk",p+Vector3.up*.9f*scale,new Vector3(.12f,.9f,.12f)*scale,
+                new Color(.22f,.14f,.08f),Quaternion.identity);
+            Cone(name+" · lower crown",p+Vector3.up*1.45f*scale,1.0f*scale,1.55f*scale,Pine*.88f);
+            Cone(name+" · middle crown",p+Vector3.up*2.05f*scale,.78f*scale,1.35f*scale,Pine*.96f);
+            Cone(name+" · upper crown",p+Vector3.up*2.55f*scale,.54f*scale,1.05f*scale,Pine*1.04f);
         }
     }    public sealed class SmokeWisp:MonoBehaviour
     {
