@@ -40,21 +40,17 @@ namespace Eldoria.Tests
             Assert.That(assets.SlavicBush,Is.Not.Null);
             SceneManager.LoadScene("Valoria");
             yield return null;
-            var art=GameObject.Find("Aserradero · carpentry shed");
-            Assert.That(art,Is.Not.Null,"Visual fallback was used despite imported assets");
-            Assert.That(art.GetComponentsInChildren<Renderer>().Length,Is.GreaterThan(0));
-            foreach(var collider in art.GetComponentsInChildren<Collider>())
-                Assert.That(collider.enabled,Is.False,"Visual prefab must not intercept taps");
-            foreach(var renderer in art.GetComponentsInChildren<Renderer>())
-                foreach(var material in renderer.sharedMaterials)
-                    Assert.That(material!=null&&material.shader!=null&&material.shader.isSupported,Is.True,
-                        "Benchmark material has an unsupported shader");
-            var ruinedTower=GameObject.Find("Valoria · damaged outer tower");
-            Assert.That(ruinedTower,Is.Not.Null);
-            foreach(var renderer in ruinedTower.GetComponentsInChildren<Renderer>())
-                foreach(var material in renderer.sharedMaterials)
-                    Assert.That(material.shader.name,Does.StartWith("Universal Render Pipeline/"));
-            Assert.That(GameObject.Find("Bastion · masonry gate"),Is.Not.Null);
+            Assert.That(GameObject.Find("Aserradero · carpentry shed"),Is.Null,
+                "The detached imported shed failed the visual capture review and must stay out");
+            Assert.That(GameObject.Find("Sawmill · masonry"),Is.Not.Null);
+            Assert.That(GameObject.Find("Cuartel · casa de guardia"),Is.Null,
+                "The detached imported guardhouse failed the visual capture review and must stay out");
+            Assert.That(GameObject.Find("Early barracks · masonry"),Is.Not.Null);
+            Assert.That(GameObject.Find("Valoria · damaged outer tower"),Is.Null,
+                "Loose ruin fragments must not return to the benchmark composition");
+            Assert.That(GameObject.Find("Bastion · masonry gate"),Is.Null,
+                "Detached modular masonry must not return until a coherent castle set is selected");
+            Assert.That(GameObject.Find("Bastion · front curtain · wall"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · authored gate"),Is.Null,
                 "The blue blockout castle should not be part of the art benchmark");
             Assert.That(GameObject.Find("Brecha · burned earth"),Is.Not.Null);
