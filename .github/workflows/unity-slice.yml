@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: eldoria-unity-main
+  group: eldoria-unity-main-v2
   cancel-in-progress: true
 
 jobs:
