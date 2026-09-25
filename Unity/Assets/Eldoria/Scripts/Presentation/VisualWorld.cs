@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.84f,.82f,.77f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.88f,.86f,.81f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.58f,.57f,.53f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.62f,.61f,.57f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -27,10 +27,10 @@ namespace Eldoria.Presentation
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,3.7f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.80f,.62f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?2.25f:1.9f;
-            sun.transform.rotation=Quaternion.Euler(46,-38,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.58f:.55f;
+            sun.intensity=city?2.55f:1.9f;
+            sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.31f,.32f,.28f):Earth);
+                city?new Color(.36f,.35f,.30f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -95,8 +95,14 @@ namespace Eldoria.Presentation
             for(int i=0;i<12;i++)
             {
                 var p=new Vector3(Mathf.Sin(i*.27f)*.26f,.22f,-11.1f+i*1.12f);
-                var road=ValoriaKit.Block("Valoria · worn stone route",p,new Vector3(2.35f,.08f,.92f),ValoriaKit.WarmStone*.78f);
+                var road=ValoriaKit.Block("Valoria · worn stone route",p,new Vector3(2.35f,.08f,.92f),ValoriaKit.WarmStone*.84f);
                 road.transform.rotation=Quaternion.Euler(0,(i%3-1)*5,0);
+                for(int c=-1;c<=1;c++)
+                {
+                    var cobble=ValoriaKit.Block("Valoria · road cobble",p+new Vector3(c*.62f,.055f,(i%2==0?.16f:-.14f)),
+                        new Vector3(.38f,.035f,.30f),ValoriaKit.OldStone*1.02f);
+                    cobble.transform.rotation=Quaternion.Euler(0,(i*17+c*9)%18-9,0);
+                }
             }
             ValoriaKit.Stair("Bastion stair",new Vector3(0,.28f,.55f),7,2.9f,.16f,.42f,ValoriaKit.WarmStone*.74f);
             ValoriaKit.Rubble("Gate rubble",new Vector3(-3.4f,.22f,-3.8f),1.0f,6);
