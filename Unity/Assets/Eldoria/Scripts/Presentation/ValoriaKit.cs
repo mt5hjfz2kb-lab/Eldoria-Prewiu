@@ -501,34 +501,34 @@ namespace Eldoria.Presentation
                         new Vector3(3.4f,2.7f,.62f),WarmStone*.72f,true);
             foreach(float x in new[]{-5.0f,5.0f})
                 if(BenchmarkPieceModulated(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
-                    2.75f,5.85f,Quaternion.identity,new Color(.55f,.56f,.55f,1f))==null)
+                    2.82f,6.35f,Quaternion.identity,new Color(.55f,.56f,.55f,1f))==null)
                     Tower(name+" · connected tower fallback",origin+new Vector3(x,.05f,-2.35f),1.25f,5.35f,WarmStone*.74f);
             foreach(float x in new[]{-4.45f,4.45f})
-                if(BenchmarkPieceModulated(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.45f),
-                    2.35f,5.05f,Quaternion.identity,new Color(.50f,.52f,.51f,1f))==null)
+                if(BenchmarkPieceModulated(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.65f),
+                    2.42f,5.85f,Quaternion.identity,new Color(.50f,.52f,.51f,1f))==null)
                     Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
             // Keep: a small hidden backing volume surrounded by authored masonry on every visible side.
-            Block(name+" · inner keep backing",origin+new Vector3(0,2.58f,1.15f),
-                new Vector3(4.15f,.72f,2.55f),Stone*.34f);
+            Block(name+" · inner keep backing",origin+new Vector3(0,2.78f,1.15f),
+                new Vector3(4.05f,.66f,2.45f),Stone*.36f);
             foreach(float x in new[]{-1.55f,1.55f})
                 if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
-                    origin+new Vector3(x,2.25f,-1.28f),3.0f,2.30f,Quaternion.identity,new Color(.54f,.55f,.53f,1f))==null)
+                    origin+new Vector3(x,2.42f,-1.28f),3.0f,2.62f,Quaternion.identity,new Color(.54f,.55f,.53f,1f))==null)
                     Wall(name+" · keep facing fallback",origin+new Vector3(x,3.10f,-1.26f),
                         new Vector3(2.85f,2.0f,.44f),OldStone*.64f,true);
             foreach(float x in new[]{-2.25f,2.25f})
                 if(BenchmarkPieceModulated(name+" · keep side facing",stoneWall,
-                    origin+new Vector3(x,2.15f,1.05f),2.75f,2.20f,Quaternion.Euler(0,90f,0),
+                    origin+new Vector3(x,2.32f,1.05f),2.75f,2.48f,Quaternion.Euler(0,90f,0),
                     new Color(.48f,.50f,.49f,1f))==null)
                     Wall(name+" · keep side fallback",origin+new Vector3(x,3.00f,1.05f),
                         new Vector3(.44f,1.95f,2.65f),OldStone*.60f,true);
             if(BenchmarkPieceModulated(name+" · keep rear facing",stoneWall,
-                origin+new Vector3(0,2.10f,2.52f),4.35f,2.10f,Quaternion.Euler(0,180f,0),
+                origin+new Vector3(0,2.28f,2.52f),4.35f,2.42f,Quaternion.Euler(0,180f,0),
                 new Color(.45f,.47f,.46f,1f))==null)
                 Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
                     new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
-            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.12f,1.10f),
-                new Vector3(5.05f,1.28f,3.38f),Slate*.96f);
+            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.62f,1.10f),
+                new Vector3(5.05f,1.42f,3.38f),Slate*.96f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
@@ -560,8 +560,8 @@ namespace Eldoria.Presentation
                     .90f,3.55f,OldStone*.64f);
             Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,3.0f),1.45f,10);
             Rubble(name+" · palace collapse east",origin+new Vector3(4.6f,.18f,3.3f),1.25f,9);
-            Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
-                new Vector3(2.35f,4.6f,2.1f));
+            Scaffold(name+" · repair scaffold",origin+new Vector3(3.95f,2.35f,1.05f),
+                new Vector3(1.55f,3.05f,1.35f));
             Rubble(name+" · crown rubble",origin+new Vector3(-3.15f,.22f,2.05f),1.35f,8);
 
             if(glow!=null)glow(name+" · inhabited warmth",origin+new Vector3(0,3.55f,-1.15f),
