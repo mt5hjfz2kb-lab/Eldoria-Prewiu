@@ -193,14 +193,11 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
 
             Hero(new Vector3(-1.7f,0,-1.9f),1.0f);
-            int visibleArchers=state.BastionLevel>=2?7:5;
+            int visibleArchers=state.BastionLevel>=2?4:3;
             for(int i=0;i<visibleArchers;i++)Archer(new Vector3(2.0f+(i%4)*.67f,0,-2.8f+(i/4)*.68f));
             Glow("Gate torch L",new Vector3(-2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Gate torch R",new Vector3(2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Bastion inhabited warmth",new Vector3(0,3.65f,3.2f),Amber,1.35f,6.5f);
-            ValoriaKit.SmokePlume("Valoria smoke · sawmill",new Vector3(-6.0f,2.55f,-1.15f),1.05f,8f);
-            ValoriaKit.SmokePlume("Valoria smoke · lower hearth",new Vector3(4.65f,2.25f,-3.75f),.78f,5f);
-            ValoriaKit.SmokePlume("Valoria smoke · bastion",new Vector3(.9f,6.65f,5.55f),.9f,4f);
         }
         static void Frontier(PlayerState state)
         {
@@ -352,7 +349,6 @@ namespace Eldoria.Presentation
             ValoriaKit.BenchmarkPiece("Brecha · damaged watchtower",library!=null?library.RuinedTower:null,
                 p+new Vector3(2.6f,.05f,1.5f),2.0f,3.1f,Quaternion.Euler(0,35,0));
             ValoriaKit.RockCluster("Brecha · displaced rock",p+new Vector3(-2.1f,0,.9f),1.0f,12);
-            ValoriaKit.SmokePlume("Brecha · lingering ash",p+new Vector3(.45f,.12f,.2f),.68f,2.5f);
             Glow("Brecha · restrained violet glow",p+new Vector3(.1f,.55f,0),new Color(.48f,.26f,.56f),.65f,3.6f);
         }
         static void IrregularGround(string name,Vector3 center,float width,float depth,Color color)

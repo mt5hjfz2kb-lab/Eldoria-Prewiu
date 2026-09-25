@@ -59,6 +59,8 @@ namespace Eldoria.Tests
                 "The blue blockout castle should not be part of the art benchmark");
             Assert.That(GameObject.Find("Brecha · burned earth"),Is.Not.Null);
             Assert.That(GameObject.Find("Fractured Breach shard"),Is.Null);
+            Assert.That(GameObject.Find("Valoria smoke · sawmill · wisp 0"),Is.Null,
+                "Sphere smoke is placeholder art and should not be in the benchmark");
             var hotspot=GameObject.Find("Aserradero · interacción");
             Assert.That(hotspot.GetComponent<Collider>().enabled,Is.True);
             Assert.That(hotspot.GetComponent<WorldHotspot>().Id,Is.EqualTo("sawmill"));
