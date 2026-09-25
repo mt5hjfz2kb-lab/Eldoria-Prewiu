@@ -121,16 +121,16 @@ namespace Eldoria.Presentation
             var canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=100;
             var scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution=new Vector2(390,844);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight=.5f;
+            scaler.matchWidthOrHeight=1f;
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
-            var top=Panel("Top stone",safe,new Color(.055f,.075f,.10f,.90f),104,true);
-            heading=Label("Heading",top,17,new Color(.91f,.78f,.53f),26);
-            resources=Label("Resources",top,13,Color.white,22);
-            power=Label("Power",top,12,new Color(.83f,.77f,.62f),22);
-            objective=Label("Objective",top,12,new Color(.90f,.84f,.73f),26);
-            var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.90f),154,false);
-            description=Label("Story and world",bottom,12,new Color(.85f,.88f,.89f),48);
+            var top=Panel("Top stone",safe,new Color(.055f,.075f,.10f,.82f),78,true);
+            heading=Label("Heading",top,14,new Color(.91f,.78f,.53f),18);
+            resources=Label("Resources",top,11,Color.white,16);
+            power=Label("Power",top,10,new Color(.83f,.77f,.62f),16);
+            objective=Label("Objective",top,10,new Color(.90f,.84f,.73f),18);
+            var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.82f),104,false);
+            description=Label("Story and world",bottom,10,new Color(.85f,.88f,.89f),24);
             var row1=Row("Actions",bottom);
             var row2=Row("Travel",bottom);
             if(city)
@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
                 if(city) Zoom(-1); else SceneManager.LoadScene("Valoria");
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
-            message=Label("Feedback",bottom,11,new Color(.88f,.72f,.51f),30);
+            message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
         }
         void Zoom(float amount){if(Camera.main!=null)Camera.main.orthographicSize=Mathf.Clamp(Camera.main.orthographicSize+amount,9,19);}
         void UpdateSafeArea()
@@ -165,8 +165,8 @@ namespace Eldoria.Presentation
             t.SetParent(parent,false);t.anchorMin=new Vector2(0,top?1:0);t.anchorMax=new Vector2(1,top?1:0);
             t.pivot=new Vector2(.5f,top?1:0);t.sizeDelta=new Vector2(0,height);t.anchoredPosition=Vector2.zero;
             t.GetComponent<Image>().color=color;
-            var group=t.GetComponent<VerticalLayoutGroup>();group.padding=new RectOffset(13,13,6,6);
-            group.spacing=2;group.childForceExpandHeight=false;group.childControlHeight=true;
+            var group=t.GetComponent<VerticalLayoutGroup>();group.padding=new RectOffset(10,10,4,4);
+            group.spacing=1;group.childForceExpandHeight=false;group.childControlHeight=true;
             return t;
         }
         static Font Font()
@@ -186,7 +186,7 @@ namespace Eldoria.Presentation
         static RectTransform Row(string name,Transform parent)
         {
             var t=new GameObject(name,typeof(RectTransform),typeof(HorizontalLayoutGroup),typeof(LayoutElement)).GetComponent<RectTransform>();
-            t.SetParent(parent,false);t.GetComponent<LayoutElement>().preferredHeight=34;
+            t.SetParent(parent,false);t.GetComponent<LayoutElement>().preferredHeight=26;
             var layout=t.GetComponent<HorizontalLayoutGroup>();layout.spacing=7;layout.childForceExpandWidth=true;
             layout.childControlWidth=true;return t;
         }
@@ -195,9 +195,9 @@ namespace Eldoria.Presentation
             var go=new GameObject(label,typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             go.transform.SetParent(parent,false);
             go.GetComponent<Image>().color=new Color(.25f,.22f,.17f,.98f);
-            go.GetComponent<LayoutElement>().minHeight=32;
+            go.GetComponent<LayoutElement>().minHeight=24;
             go.GetComponent<Button>().onClick.AddListener(()=>onClick());
-            var text=Label("Text",go.transform,11,new Color(.98f,.86f,.64f),32);
+            var text=Label("Text",go.transform,9,new Color(.98f,.86f,.64f),24);
             text.text=label;text.alignment=TextAnchor.MiddleCenter;
             var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
             rect.offsetMin=rect.offsetMax=Vector2.zero;
