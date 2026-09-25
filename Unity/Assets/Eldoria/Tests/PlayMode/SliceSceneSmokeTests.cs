@@ -62,7 +62,11 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Bastion · connected tower"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · rear connected tower"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · keep detailed facing"),Is.Not.Null);
-            Assert.That(GameObject.Find("Bastion · dead palace arch · left pier"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · dead palace wall west"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · dead palace wall east"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · dead palace tower remnant"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · dead palace arch · left pier"),Is.Null,
+                "The oversized procedural palace arch failed capture review and must stay out");
             Assert.That(GameObject.Find("Valoria · lower stone gate"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cobble route"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cliff boulder"),Is.Not.Null);
