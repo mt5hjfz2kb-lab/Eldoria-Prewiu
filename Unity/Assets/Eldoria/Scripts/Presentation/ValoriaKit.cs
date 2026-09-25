@@ -272,18 +272,21 @@ namespace Eldoria.Presentation
 
         public static GameObject GableRoof(string name,Vector3 p,Vector3 size,Color color)
         {
-            var go=new GameObject(name);go.transform.position=p;
-            var mf=go.AddComponent<MeshFilter>();var mr=go.AddComponent<MeshRenderer>();
-            float x=size.x*.5f,z=size.z*.5f,h=size.y;
-            var mesh=new Mesh{name=name+" mesh"};
-            mesh.vertices=new[]{
-                new Vector3(-x,0,-z),new Vector3(x,0,-z),new Vector3(0,h,-z),
-                new Vector3(-x,0,z),new Vector3(0,h,z),new Vector3(x,0,z)
-            };
-            mesh.triangles=new[]{0,1,2,3,4,5,0,2,4,0,4,3,1,5,4,1,4,2};
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-            mf.sharedMesh=mesh;mr.sharedMaterial=Material(color);
-            return go;
+            // Two solid roof slabs avoid the single-sided black triangles produced by the old custom mesh.
+            var root=new GameObject(name);root.transform.position=p;
+            float halfWidth=size.x*.52f;
+            float rise=Mathf.Max(.35f,size.y);
+            float angle=Mathf.Atan2(rise,halfWidth)*Mathf.Rad2Deg;
+            float slope=Mathf.Sqrt(halfWidth*halfWidth+rise*rise);
+            var left=Block(name+" · west slope",p+new Vector3(-size.x*.235f,rise*.48f,0),
+                new Vector3(slope,.16f,size.z),color);
+            left.transform.rotation=Quaternion.Euler(0,0,-angle);
+            left.transform.SetParent(root.transform,true);
+            var right=Block(name+" · east slope",p+new Vector3(size.x*.235f,rise*.48f,0),
+                new Vector3(slope,.16f,size.z),color);
+            right.transform.rotation=Quaternion.Euler(0,0,angle);
+            right.transform.SetParent(root.transform,true);
+            return root;
         }
 
         public static void House(string name,Vector3 p,Vector3 size,bool lit,System.Action<string,Vector3,Color,float,float> glow)
