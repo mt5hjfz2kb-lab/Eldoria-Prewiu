@@ -124,13 +124,13 @@ namespace Eldoria.Presentation
             scaler.matchWidthOrHeight=.5f;
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
-            var top=Panel("Top stone",safe,new Color(.055f,.075f,.10f,.93f),172,true);
-            heading=Label("Heading",top,19,new Color(.91f,.78f,.53f),35);
-            resources=Label("Resources",top,15,Color.white,29);
-            power=Label("Power",top,14,new Color(.83f,.77f,.62f),29);
-            objective=Label("Objective",top,14,new Color(.90f,.84f,.73f),48);
-            var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.94f),270,false);
-            description=Label("Story and world",bottom,14,new Color(.85f,.88f,.89f),108);
+            var top=Panel("Top stone",safe,new Color(.055f,.075f,.10f,.90f),104,true);
+            heading=Label("Heading",top,17,new Color(.91f,.78f,.53f),26);
+            resources=Label("Resources",top,13,Color.white,22);
+            power=Label("Power",top,12,new Color(.83f,.77f,.62f),22);
+            objective=Label("Objective",top,12,new Color(.90f,.84f,.73f),26);
+            var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.90f),154,false);
+            description=Label("Story and world",bottom,12,new Color(.85f,.88f,.89f),48);
             var row1=Row("Actions",bottom);
             var row2=Row("Travel",bottom);
             if(city)
@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
                 if(city) Zoom(-1); else SceneManager.LoadScene("Valoria");
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
-            message=Label("Feedback",bottom,13,new Color(.88f,.72f,.51f),54);
+            message=Label("Feedback",bottom,11,new Color(.88f,.72f,.51f),30);
         }
         void Zoom(float amount){if(Camera.main!=null)Camera.main.orthographicSize=Mathf.Clamp(Camera.main.orthographicSize+amount,9,19);}
         void UpdateSafeArea()
@@ -186,7 +186,7 @@ namespace Eldoria.Presentation
         static RectTransform Row(string name,Transform parent)
         {
             var t=new GameObject(name,typeof(RectTransform),typeof(HorizontalLayoutGroup),typeof(LayoutElement)).GetComponent<RectTransform>();
-            t.SetParent(parent,false);t.GetComponent<LayoutElement>().preferredHeight=43;
+            t.SetParent(parent,false);t.GetComponent<LayoutElement>().preferredHeight=34;
             var layout=t.GetComponent<HorizontalLayoutGroup>();layout.spacing=7;layout.childForceExpandWidth=true;
             layout.childControlWidth=true;return t;
         }
@@ -195,9 +195,9 @@ namespace Eldoria.Presentation
             var go=new GameObject(label,typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             go.transform.SetParent(parent,false);
             go.GetComponent<Image>().color=new Color(.25f,.22f,.17f,.98f);
-            go.GetComponent<LayoutElement>().minHeight=42;
+            go.GetComponent<LayoutElement>().minHeight=32;
             go.GetComponent<Button>().onClick.AddListener(()=>onClick());
-            var text=Label("Text",go.transform,12,new Color(.98f,.86f,.64f),42);
+            var text=Label("Text",go.transform,11,new Color(.98f,.86f,.64f),32);
             text.text=label;text.alignment=TextAnchor.MiddleCenter;
             var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
             rect.offsetMin=rect.offsetMax=Vector2.zero;
