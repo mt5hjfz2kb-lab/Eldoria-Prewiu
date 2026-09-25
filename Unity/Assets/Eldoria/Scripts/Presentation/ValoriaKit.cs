@@ -491,8 +491,8 @@ namespace Eldoria.Presentation
                     Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
             // Keep: a small hidden backing volume surrounded by authored masonry on every visible side.
-            Block(name+" · inner keep backing",origin+new Vector3(0,3.05f,1.15f),
-                new Vector3(4.45f,1.45f,2.85f),Stone*.40f);
+            Block(name+" · inner keep backing",origin+new Vector3(0,2.58f,1.15f),
+                new Vector3(4.15f,.72f,2.55f),Stone*.34f);
             foreach(float x in new[]{-1.55f,1.55f})
                 if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
                     origin+new Vector3(x,2.25f,-1.28f),3.0f,2.30f,Quaternion.identity,new Color(.54f,.55f,.53f,1f))==null)
