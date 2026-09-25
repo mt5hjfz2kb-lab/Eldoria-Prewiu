@@ -1,0 +1,49 @@
+param(
+    [string]$RunnerRoot = "C:\actions-runner-eldoria",
+    [string]$TaskName = "EldoriaUnityRunner"
+)
+
+$ErrorActionPreference = "Stop"
+
+function Assert-Administrator {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+    if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        throw "Open Windows PowerShell with Run as administrator and run this script again."
+    }
+}
+
+Assert-Administrator
+
+if (-not (Test-Path (Join-Path $RunnerRoot "run.cmd"))) {
+    throw "Runner not found at $RunnerRoot"
+}
+
+$serviceFile = Join-Path $RunnerRoot ".service"
+if (Test-Path $serviceFile) {
+    $serviceName = (Get-Content $serviceFile -Raw).Trim()
+    $svc = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+    if ($svc) {
+        if ($svc.Status -ne "Stopped") { Stop-Service -Name $serviceName -Force }
+        & sc.exe delete $serviceName | Out-Null
+        Start-Sleep -Seconds 2
+    }
+}
+
+$userId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+$action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c `"$RunnerRoot\run.cmd`"" -WorkingDirectory $RunnerRoot
+$trigger = New-ScheduledTaskTrigger -AtLogOn -User $userId
+$principal = New-ScheduledTaskPrincipal -UserId $userId -LogonType Interactive -RunLevel Highest
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
+Start-ScheduledTask -TaskName $TaskName
+Start-Sleep -Seconds 3
+
+$task = Get-ScheduledTask -TaskName $TaskName
+Write-Host ""
+Write-Host "Eldoria runner switched to the logged-in Windows user." -ForegroundColor Green
+Write-Host "User: $userId"
+Write-Host "Task: $TaskName"
+Write-Host "State: $($task.State)"
+Write-Host ""
+Write-Host "Unity batch jobs will now use the same Windows profile/license as the interactive Unity Editor."
