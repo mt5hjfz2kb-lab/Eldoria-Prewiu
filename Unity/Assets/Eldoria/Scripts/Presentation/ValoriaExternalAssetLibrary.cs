@@ -29,6 +29,8 @@ namespace Eldoria.Presentation
         public GameObject SlavicStoneFence;
         public GameObject SlavicRockGate;
         public GameObject SlavicBoulder;
+        public GameObject MegaTower;
+        public GameObject MegaHalfGate;
 
         public static ValoriaExternalAssetLibrary Load()
             => Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
