@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b34f51f1a14e4f2bb7a3d0eac8b70111, type: 3}
+  m_Name: ExternalAssetLibrary
+  m_EditorClassIdentifier:
+  StoneTower: {fileID: 100100000, guid: d9e1370265c013c42b87d8023a922480, type: 3}
+  StoneWall: {fileID: 100100000, guid: 08a1c14a984751b4e992a4afa3974807, type: 3}
+  StoneGate: {fileID: 100100000, guid: e7e3ba30f5356444ea4aea90785bb480, type: 3}
+  LumberMill: {fileID: 100100000, guid: ee5e6083f97bd7f409ef0e9d1133d919, type: 3}
