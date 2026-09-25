@@ -19,15 +19,16 @@ namespace Eldoria.Presentation
         float refreshAt;
         int lastWidth,lastHeight;
         bool city;
-        int renderedSawmill;
-        bool renderedScout, renderedIdle;
+        int renderedSawmill, renderedBarracks, renderedBastion;
+        bool renderedScout, renderedEngendro, renderedIdle;
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
         {
             if(scene.name=="Bootstrap")return;
             city=scene.name!="Frontier";
             var state=gateway.Snapshot();
-            renderedSawmill=state.SawmillLevel;renderedScout=state.ScoutDefeated;
+            renderedSawmill=state.SawmillLevel;renderedBarracks=state.BarracksLevel;renderedBastion=state.BastionLevel;
+            renderedScout=state.ScoutDefeated;renderedEngendro=state.EngendroDefeated;
             renderedIdle=state.March.Phase=="idle";
             VisualWorld.Create(city,state);
             CreateHud();Refresh();
@@ -62,7 +63,9 @@ namespace Eldoria.Presentation
             if(id=="gate")SceneManager.LoadScene("Frontier");
             else if(id=="sawmill")Send("Build","sawmill");
             else if(id=="forest-valoria")Send("Gather",id);
-            else if(id=="corrupt-scout")Send("Fight",id);
+            else if(id=="corrupt-scout"||id=="engendro-valoria")Send("Fight",id);
+            else if(id=="barracks")Send("Build","barracks");
+            else if(id=="bastion")Send("AdvanceBastion","bastion");
         }
         void Send(string kind,string target)
         {
@@ -75,31 +78,44 @@ namespace Eldoria.Presentation
         {
             if(heading==null)return;
             var s=gateway.Snapshot();
-            if(s.SawmillLevel!=renderedSawmill||s.ScoutDefeated!=renderedScout||
+            if(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
+                s.ScoutDefeated!=renderedScout||s.EngendroDefeated!=renderedEngendro||
                 (s.March.Phase=="idle")!=renderedIdle)
             { feedback="";SceneManager.LoadScene(SceneManager.GetActiveScene().name);return; }
             var parts=SliceRules.TotalPower(s);
-            heading.text=city?"VALORIA · LAS CENIZAS":"FRONTERA DE VALORIA";
+            heading.text=city?"VALORIA · BASTIÓN "+s.BastionLevel:"FRONTERA DE VALORIA";
             resources.text="MADERA  "+s.Resources.Wood+"    PIEDRA  "+s.Resources.Stone;
             power.text="⚔ PODER  "+parts.Total+"    MARCHA  "+SliceRules.Expedition(
                 s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric").Power;
-            objective.text=s.JourneyComplete?"VALORIA HA VUELTO A CRECER":
-                s.SawmillLevel==0 ? "Necesidad: reparar el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
-                 : "El Aserradero produce. Observa la marca de La Brecha.";
+            objective.text=s.BastionLevel==1
+                ? (s.JourneyComplete ? "CAPÍTULO I COMPLETO · asciende el Bastión"
+                    : s.SawmillLevel==0 ? "Necesidad: reparar el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
+                    : "El Aserradero produce. Observa la marca de La Brecha.")
+                : (s.BarracksLevel==0 ? "BASTIÓN II · levanta el Cuartel"
+                    : s.Available.Total<48 && s.March.Phase=="idle" ? "BASTIÓN II · recluta 12 arqueros"
+                    : !s.EngendroDefeated ? "BASTIÓN II · derrota al Engendro de la ruta"
+                    : "CAPÍTULO II COMPLETO · Valoria puede defenderse");
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
             var expedition=SliceRules.Expedition(s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric");
             description.text=city
-                ? (s.SawmillLevel>0 ? "El fuego vuelve a la madera. La corrupción aún se ve en la frontera."
-                    : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»")
+                ? (s.BastionLevel>=2
+                    ? (s.BarracksLevel>0
+                        ? "El Cuartel vuelve a formar soldados. Refuerza la marcha antes de afrontar al Engendro."
+                        : "Aldric: «Ya tenemos madera. Ahora necesitamos una guarnición que pueda mantener abierta la ruta.»")
+                    : (s.SawmillLevel>0 ? "El fuego vuelve a la madera. La corrupción aún se ve en la frontera."
+                        : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»"))
                 : (s.ForestRemaining>0 ? "Bosque: "+s.ForestRemaining+" madera. ":"Bosque agotado. ")
-                    +(s.ScoutDefeated?"La ruta corrupta está despejada. ":"Explorador: VIDA 620, DEF 64. ")+march+
-                    "\nTu marcha: ATQ "+expedition.Attack+" · DEF "+expedition.Defense+" · VIDA "+expedition.Health+
+                    +(s.BastionLevel>=2
+                        ? (s.EngendroDefeated?"El Engendro ha caído. ":"Engendro: VIDA 760, DEF 72. ")
+                        : (s.ScoutDefeated?"La ruta corrupta está despejada. ":"Explorador: VIDA 620, DEF 64. "))
+                    +march+"\nTu marcha: ATQ "+expedition.Attack+" · DEF "+expedition.Defense+" · VIDA "+expedition.Health+
                     (string.IsNullOrEmpty(s.LastBattleReason)?"":"\nInforme: "+s.LastBattleReason);
             message.text=string.IsNullOrEmpty(feedback)?
-                (s.JourneyComplete?"Fin de esta primera slice. La Brecha no se ha cerrado.":
-                 city?"Toca la puerta para salir; vuelve con madera para construir.":
-                 "Toca el bosque o usa los botones para enviar la Marcha."):feedback;
+                (s.EngendroDefeated?"Bastión II asegurado. La Brecha sigue siendo una amenaza.":
+                 s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
+                 city?"Toca la puerta para salir; vuelve con recursos para construir.":
+                 "Toca un objetivo o usa los botones para enviar la Marcha."):feedback;
             RefreshClock();
         }
         void RefreshClock()
@@ -110,6 +126,8 @@ namespace Eldoria.Presentation
                 message.text="Marcha: "+s.March.Phase+" · destino "+s.March.TargetId+" · regreso y recompensa automáticos";
             else if(s.BuildingCompletesUtcTicks>0)
                 message.text="Reconstrucción: "+Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
+            else if(s.RecruitmentCompletesUtcTicks>0)
+                message.text="Entrenamiento: "+Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
         }
         void CreateHud()
         {
@@ -133,15 +151,25 @@ namespace Eldoria.Presentation
             description=Label("Story and world",bottom,10,new Color(.85f,.88f,.89f),24);
             var row1=Row("Actions",bottom);
             var row2=Row("Travel",bottom);
+            var state=gateway.Snapshot();
             if(city)
             {
                 Button(row1,"IR AL MUNDO",()=>SceneManager.LoadScene("Frontier"));
-                Button(row1,"ASERRADERO · 80",()=>Send("Build","sawmill"));
+                if(state.BastionLevel==1)
+                {
+                    if(state.SawmillLevel==0) Button(row1,"ASERRADERO · 80",()=>Send("Build","sawmill"));
+                    else if(state.JourneyComplete) Button(row1,"ASCENDER A BASTIÓN II",()=>Send("AdvanceBastion","bastion"));
+                }
+                else if(state.BarracksLevel==0)
+                    Button(row1,"CUARTEL · 140 M / 90 P",()=>Send("Build","barracks"));
+                else
+                    Button(row1,"RECLUTAR +12 · 50 M",()=>Send("Recruit","archer:t1"));
             }
             else
             {
                 Button(row1,"BOSQUE · RECOLECTAR",()=>Send("Gather","forest-valoria"));
-                Button(row1,"AMENAZA · PvE",()=>Send("Fight","corrupt-scout"));
+                Button(row1,state.BastionLevel>=2?"ENGENDRO · PvE":"AMENAZA · PvE",
+                    ()=>Send("Fight",state.BastionLevel>=2?"engendro-valoria":"corrupt-scout"));
             }
             Button(row2,city?"+ CÁMARA":"VOLVER A VALORIA",()=>{
                 if(city) Zoom(-1); else SceneManager.LoadScene("Valoria");
