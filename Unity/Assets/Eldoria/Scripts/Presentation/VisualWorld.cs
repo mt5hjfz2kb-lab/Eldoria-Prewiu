@@ -60,6 +60,23 @@ namespace Eldoria.Presentation
         static void City(PlayerState state)
         {
             var art=ValoriaExternalAssetLibrary.Load();
+
+            // Break the giant repeating ground plane into irregular earth/moss fields.
+            // These stay outside the central civic route so gameplay readability remains intact.
+            for(int i=0;i<18;i++)
+            {
+                float angle=(i*137f+18f)*Mathf.Deg2Rad;
+                float radius=12.2f+(i%4)*2.15f;
+                var p=new Vector3(Mathf.Cos(angle)*radius,.012f,1.0f+Mathf.Sin(angle)*radius*.78f);
+                var c=i%3==0?new Color(.19f,.23f,.17f):
+                    i%3==1?new Color(.29f,.265f,.215f):new Color(.245f,.255f,.205f);
+                IrregularGround("Valoria · outer terrain patch",p,5.4f+(i%3)*1.1f,4.0f+(i%4)*.75f,c);
+                if(i%3==0)
+                    ValoriaKit.BenchmarkPieceTinted("Valoria · outer boulder",art!=null?art.SlavicBoulder:null,
+                        p+new Vector3((i%2==0?1.2f:-1.1f),.03f,.6f),1.7f+(i%2)*.45f,1.15f,
+                        Quaternion.Euler(0,i*41%360,0),ValoriaKit.OldStone*.78f);
+            }
+
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
             // so authored prefabs can later replace them without changing gameplay coordinates.
 
