@@ -360,6 +360,38 @@ namespace Eldoria.Presentation
             Block(name,p,size,warm?new Color(.48f,.25f,.08f):new Color(.045f,.05f,.055f));
         }
 
+        public static void RockCluster(string name,Vector3 center,float scale,int count=5)
+        {
+            for(int i=0;i<count;i++)
+            {
+                float x=((i*41)%13-6)*.28f*scale;
+                float z=((i*29)%11-5)*.24f*scale;
+                float y=.16f+((i%3)*.05f)*scale;
+                var rock=GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                rock.name=name+" · rock "+i;
+                rock.transform.position=center+new Vector3(x,y,z);
+                rock.transform.localScale=new Vector3(
+                    (.72f+(i%3)*.18f)*scale,
+                    (.38f+(i%2)*.14f)*scale,
+                    (.58f+((i+1)%3)*.16f)*scale);
+                rock.transform.rotation=Quaternion.Euler((i*11)%23,(i*37)%180,(i*7)%17);
+                var col=rock.GetComponent<Collider>();
+                if(col!=null)Object.Destroy(col);
+                rock.GetComponent<Renderer>().sharedMaterial=Material(OldStone*(.78f+(i%3)*.06f));
+            }
+        }
+
+        public static void RuinFragment(string name,Vector3 position,Vector3 scale,float yaw,float lean=0f)
+        {
+            var wall=CastleWall(name,position,scale,Quaternion.Euler(0,yaw,lean));
+            if(wall==null)
+            {
+                wall=Block(name,position+Vector3.up*.7f,new Vector3(2.4f,1.8f,.65f),OldStone*.78f);
+                wall.transform.rotation=Quaternion.Euler(0,yaw,lean);
+            }
+            Rubble(name+" rubble",position+new Vector3(0,.1f,0),Mathf.Max(.65f,scale.x),5);
+        }
+
         public static void Rubble(string name,Vector3 p,float scale,int count=6)
         {
             for(int i=0;i<count;i++)
