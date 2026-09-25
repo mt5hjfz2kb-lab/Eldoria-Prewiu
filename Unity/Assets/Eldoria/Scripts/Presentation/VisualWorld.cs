@@ -51,6 +51,8 @@ namespace Eldoria.Presentation
                     new Vector3(-18.0f,-2.4f,20.5f),new Vector3(.13f,.13f,.13f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
                     new Vector3(16.5f,-2.6f,21.0f),new Vector3(.12f,.12f,.12f),Quaternion.Euler(0,-23,0));
+                ValoriaKit.CyclopeanCauseway("Ruined imperial causeway",new Vector3(-2.8f,-.10f,16.1f),
+                    20.5f,5.7f,1.45f,Quaternion.Euler(0,7f,0),ValoriaKit.OldStone*.72f);
                 City(state);
             }
             else Frontier(state);
