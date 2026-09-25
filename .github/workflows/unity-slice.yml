@@ -20,34 +20,36 @@ jobs:
   editor-tests-and-player:
     needs: source-preflight
     if: vars.UNITY_RUNNER_READY == 'true'
-    runs-on: [self-hosted, linux, unity-6000-3-23f1]
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
       - name: Verify installed Editor
+        shell: powershell
         run: |
-          test -x "$UNITY_EDITOR_PATH"
-          "$UNITY_EDITOR_PATH" -version | grep -F '6000.3.23f1'
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
       - name: EditMode
         run: >-
-          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
-          -projectPath "$GITHUB_WORKSPACE/Unity"
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
+          -projectPath "$env:GITHUB_WORKSPACE/Unity"
           -runTests -testPlatform EditMode
-          -testResults "$RUNNER_TEMP/Eldoria-EditMode.xml"
-          -logFile "$RUNNER_TEMP/Eldoria-EditMode.log"
+          -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
+          -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
       - name: PlayMode
         run: >-
-          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
-          -projectPath "$GITHUB_WORKSPACE/Unity"
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
+          -projectPath "$env:GITHUB_WORKSPACE/Unity"
           -runTests -testPlatform PlayMode
-          -testResults "$RUNNER_TEMP/Eldoria-PlayMode.xml"
-          -logFile "$RUNNER_TEMP/Eldoria-PlayMode.log"
-      - name: Linux desktop build
+          -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
+          -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
+      - name: Windows desktop build
         run: >-
-          "$UNITY_EDITOR_PATH" -batchmode -nographics -quit
-          -projectPath "$GITHUB_WORKSPACE/Unity"
-          -executeMethod Eldoria.EditorTools.SceneSetup.BuildLinux
-          -logFile "$RUNNER_TEMP/Eldoria-Build.log"
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit
+          -projectPath "$env:GITHUB_WORKSPACE/Unity"
+          -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows
+          -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -55,5 +57,5 @@ jobs:
           path: |
             ${{ runner.temp }}/Eldoria-*.xml
             ${{ runner.temp }}/Eldoria-*.log
-            Unity/Builds/Linux/
+            Unity/Builds/Windows/
           if-no-files-found: warn
