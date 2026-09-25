@@ -42,12 +42,19 @@ namespace Eldoria.Presentation
             }
             if(city)
             {
-                // Distant ruin silhouettes establish depth while keeping the playable plateau readable.
-                for(int i=0;i<6;i++)
+                // Layered ruin skyline: authored masonry in front, monumental ancient remnants behind.
+                for(int i=0;i<4;i++)
                 {
-                    float x=-14+i*5.4f;
-                    ValoriaKit.Block("Distant imperial spine",new Vector3(x,2.0f,13.5f+(i%2)*1.1f),
-                        new Vector3(1.2f,4.5f+(i%3)*1.4f,1.3f),ValoriaKit.OldStone*.48f);
+                    float x=-11.5f+i*7.2f;
+                    ValoriaKit.RuinFragment("Distant imperial ruin "+i,
+                        new Vector3(x,.35f,12.2f+(i%2)*1.35f),
+                        new Vector3(.52f,.62f,.60f),i%2==0?18f:-22f,i%2==0?-5f:4f);
+                }
+                for(int i=0;i<5;i++)
+                {
+                    float x=-13+i*6.1f;
+                    ValoriaKit.Block("Distant cyclopean remnant",new Vector3(x,2.1f,15.2f+(i%2)*1.0f),
+                        new Vector3(1.05f,4.2f+(i%3)*1.2f,1.15f),ValoriaKit.OldStone*.42f);
                 }
                 City(state);
             }
@@ -64,6 +71,11 @@ namespace Eldoria.Presentation
             ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.02f,-3.4f),new Vector3(19,.48f,7.0f),ValoriaKit.Earth);
             for(int i=0;i<7;i++)
                 ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.85f,-6.2f),new Vector3(3.35f,2.45f,2.35f),ValoriaKit.OldStone*.67f);
+            ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
+            ValoriaKit.RockCluster("Valoria cliff rocks centre",new Vector3(-.6f,-.18f,-6.15f),1.30f,8);
+            ValoriaKit.RockCluster("Valoria cliff rocks east",new Vector3(8.2f,-.12f,-5.8f),1.40f,7);
+            ValoriaKit.RockCluster("Valoria upper outcrop west",new Vector3(-9.0f,.02f,7.3f),1.05f,5);
+            ValoriaKit.RockCluster("Valoria upper outcrop east",new Vector3(8.8f,.02f,7.9f),1.00f,5);
 
             // Real modular masonry begins to replace the procedural city perimeter.
             ValoriaKit.CastleWall("Valoria outer wall west",new Vector3(-8.1f,.30f,4.0f),
@@ -80,6 +92,12 @@ namespace Eldoria.Presentation
             var fallen=ValoriaKit.Block("Cyclopean arch · fallen crown",new Vector3(6.5f,.6f,1.25f),
                 new Vector3(5.1f,1.25f,1.85f),ValoriaKit.OldStone*.70f);
             fallen.transform.rotation=Quaternion.Euler(0,20,-15);
+            ValoriaKit.RuinFragment("Imperial ruin west fragment",new Vector3(-9.45f,.18f,2.25f),
+                new Vector3(.66f,.72f,.72f),72f,-7f);
+            ValoriaKit.RuinFragment("Imperial ruin east fragment",new Vector3(8.65f,.18f,3.15f),
+                new Vector3(.58f,.64f,.66f),-62f,6f);
+            ValoriaKit.RuinFragment("Imperial ruin lower fragment",new Vector3(-7.55f,.12f,-4.4f),
+                new Vector3(.54f,.56f,.62f),16f,-4f);
 
             // Signature Bastion: fortress built inside a dead palace.
             ValoriaKit.BastionCore("Bastion",new Vector3(0,.05f,5.0f),Glow);
@@ -121,6 +139,8 @@ namespace Eldoria.Presentation
                 new Vector3(-9.2f,0,-.7f),new Vector3(-8.8f,0,5.4f),new Vector3(-4.4f,0,8.2f),
                 new Vector3(6.7f,0,8.1f),new Vector3(8.9f,0,3.8f),new Vector3(8.8f,0,-.7f)})
                 ValoriaKit.PineTree("Valoria pine",p,1f);
+            ValoriaKit.RockCluster("Valoria roadside rocks",new Vector3(-3.7f,.05f,-1.35f),.58f,4);
+            ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
 
             Hero(new Vector3(-1.7f,0,-1.9f),1.0f);
             for(int i=0;i<5;i++)Archer(new Vector3(2.0f+i*.67f,0,-2.8f+(i%2)*.68f));
