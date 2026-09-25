@@ -21,7 +21,7 @@ UNITY_EDITOR_PATH=/ruta/absoluta/al/Editor/Unity
 "$UNITY_EDITOR_PATH" -batchmode -nographics -quit -projectPath "$PWD/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildLinux -logFile "$PWD/build.log"
 ```
 
-La última orden escribe `Unity/Builds/Linux/Eldoria.x86_64` y su carpeta de datos, fuera de git. Inspecciona XML, logs y el ejecutable, y realiza el recorrido manual de principio a fin. Para activar el job remoto `editor-tests-and-player`, configura un runner Linux con etiqueta `unity-6000-3-23f1`, variable `UNITY_EDITOR_PATH` y Editor/licencia activados, y establece la variable del repositorio `UNITY_RUNNER_READY=true`. Sin ello el workflow solo ejecuta el preflight y **no genera build**. El runner no debe publicar una build como estable sin revisión.
+La última orden escribe `Unity/Builds/Linux/Eldoria.x86_64` y su carpeta de datos, fuera de git. Inspecciona XML, logs y el ejecutable, y realiza el recorrido manual de principio a fin. Para activar el job remoto `editor-tests-and-player`, el PC Windows del propietario debe registrarse una sola vez como **self-hosted GitHub Actions runner** con la etiqueta `unity-6000-3-23f1`, tener `UNITY_EDITOR_PATH` apuntando al Unity 6000.3.23f1 instalado y una licencia activada, y el repositorio debe definir `UNITY_RUNNER_READY=true`. Desde ese momento, cada push relevante a `main` puede ejecutar automáticamente EditMode, PlayMode y una build Windows y subir logs/build como artefacto. Hasta completar ese registro único, el workflow solo ejecuta el preflight y no genera build.
 
 ## Qué contiene el corte
 
