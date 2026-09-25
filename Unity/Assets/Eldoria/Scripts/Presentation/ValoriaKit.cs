@@ -107,8 +107,8 @@ namespace Eldoria.Presentation
             if(piece==null)return null;
             // PolyOne's bright atlas read as white/yellow snow under the Valoria camera.
             // Retain its useful relief mesh, but give it Eldoria's shared earth/rock palette.
-            var color=resourceName.Contains("Mountain")?OldStone*.67f:
-                resourceName.Contains("Hill")?Earth*.91f:OldStone*.76f;
+            var color=resourceName.Contains("Mountain")?new Color(.33f,.34f,.33f):
+                resourceName.Contains("Hill")?new Color(.31f,.29f,.25f):new Color(.36f,.36f,.33f);
             foreach(var renderer in piece.GetComponentsInChildren<Renderer>(true))
                 renderer.sharedMaterial=Material(color);
             return piece;
@@ -368,27 +368,14 @@ namespace Eldoria.Presentation
             Block(name+" · palace remnant",origin+new Vector3(-.45f,5.35f,.9f),
                 new Vector3(4.35f,1.65f,3.25f),OldStone*.90f);
 
-            if(stoneWall!=null && stoneTower!=null && stoneGate!=null)
-            {
-                // One stone family for the stronghold; the old blue low-poly castle stays out.
-                BenchmarkPiece(name+" · masonry gate",stoneGate,origin+new Vector3(0,.1f,-3.0f),2.65f,3.45f,Quaternion.identity);
-                foreach(float x in new[]{-3.2f,3.2f})
-                    BenchmarkPiece(name+" · masonry curtain",stoneWall,origin+new Vector3(x,.1f,-2.85f),3.2f,3.3f,Quaternion.identity);
-                foreach(float x in new[]{-5.0f,5.0f})
-                    BenchmarkPiece(name+" · front masonry tower",stoneTower,origin+new Vector3(x,.08f,-2.15f),2.4f,5.5f,Quaternion.identity);
-                foreach(float x in new[]{-4.25f,4.25f})
-                    BenchmarkPiece(name+" · rear masonry tower",stoneTower,origin+new Vector3(x,.08f,2.45f),2.0f,4.8f,Quaternion.identity);
-            }
-            else
-            {
-                // Safe fallback keeps the slice functional if the external pack is unavailable.
-                Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
-                    new Vector3(9.2f,2.7f,1.15f),Stone*.94f,true);
-                Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
-                Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
-                Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
-                Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
-            }
+            // Capture review showed the imported modular pieces reading as detached wall/roof fragments.
+            // Keep one continuous authored silhouette until a coherent castle set is selected.
+            Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
+                new Vector3(9.2f,2.7f,1.15f),Stone*1.03f,true);
+            Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.98f);
+            Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.98f);
+            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.96f);
+            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.96f);
 
             // Bespoke keep avoids becoming a generic asset-pack castle.
             Block(name+" · inner keep",origin+new Vector3(0,3.65f,.55f),
