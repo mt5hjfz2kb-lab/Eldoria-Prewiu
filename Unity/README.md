@@ -10,6 +10,12 @@
 4. En Valoria, Aldric explica que faltan 80 de madera y tienes 30. Usa la puerta o **IR AL MUNDO**, toca el bosque o **BOSQUE · RECOLECTAR**, espera el regreso de la marcha (9 s), vuelve a Valoria y mejora el Aserradero (6 s). El explorador corrupto ofrece un encuentro PvE opcional; su resultado no adelanta Bastión II. Verifica que la estructura reparada y el Poder pasan de **2452 → 2622**. El texto de fin declara el cierre de esta slice; no es el final de Arco I.
 5. Para generar el ejecutable de Windows, usa **Eldoria → Build Windows slice**. La salida es `Unity/Builds/Windows/Eldoria.exe` y su carpeta de datos; ambos son necesarios para jugar. El guardado local está en `Application.persistentDataPath/eldoria-unity-slice-v1.json`. Para iniciar una partida completamente nueva **cierra el player/Play y elimina solo ese archivo de save de esta slice**. Guarda una copia si quieres preservarlo. Un save web no se importa automáticamente.
 
+## Nodo Unity automático en Windows
+
+La instalación del nodo remoto se automatiza con `scripts/setup-unity-runner-windows.ps1`. Debe ejecutarse **una sola vez desde Windows PowerShell como administrador**. El script reutiliza el ZIP del runner ya descargado, crea una instalación limpia en `C:\\actions-runner-eldoria`, detecta Unity 6000.3.23f1, configura `UNITY_EDITOR_PATH` a nivel de máquina y registra el runner como servicio de Windows con la etiqueta `unity-6000-3-23f1`. El único dato manual que solicita es un token de registro nuevo generado por GitHub; no lo guarda.
+
+Después de que el runner aparezca Online, define la variable de Actions `UNITY_RUNNER_READY=true`. A partir de ahí los cambios relevantes en `Unity/**` pueden activar automáticamente tests EditMode/PlayMode, build Windows y subida de logs/player como artifact.
+
 ## Pruebas y build
 
 Desde raíz del repositorio, `python3 scripts/check_unity_slice.py` solo comprueba la estructura de archivos. Para validación **real**, ejecuta en un equipo con Editor y licencia:
