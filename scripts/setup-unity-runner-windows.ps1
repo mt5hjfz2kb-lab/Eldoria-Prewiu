@@ -16,6 +16,8 @@ function Assert-Administrator {
 
 Assert-Administrator
 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force
+
 $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe"
 if (-not (Test-Path $unity)) {
     throw "Unity 6000.3.23f1 was not found at: $unity"
