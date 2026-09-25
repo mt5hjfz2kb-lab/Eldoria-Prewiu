@@ -1,4 +1,5 @@
 name: Unity slice source and editor gate
+# runner-session validation checkpoint
 
 on:
   push:
