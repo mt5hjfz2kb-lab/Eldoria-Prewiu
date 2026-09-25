@@ -33,6 +33,11 @@ namespace Eldoria.Tests
             Assert.That(assets.SlavicTree,Is.Not.Null);
             Assert.That(assets.RuinedTower,Is.Not.Null);
             Assert.That(assets.Firewood,Is.Not.Null);
+            Assert.That(assets.MasonryWall,Is.Not.Null);
+            Assert.That(assets.MasonryTower,Is.Not.Null);
+            Assert.That(assets.MasonryGate,Is.Not.Null);
+            Assert.That(assets.CobbleRoad,Is.Not.Null);
+            Assert.That(assets.SlavicBush,Is.Not.Null);
             SceneManager.LoadScene("Valoria");
             yield return null;
             var art=GameObject.Find("Aserradero · carpentry shed");
@@ -49,6 +54,11 @@ namespace Eldoria.Tests
             foreach(var renderer in ruinedTower.GetComponentsInChildren<Renderer>())
                 foreach(var material in renderer.sharedMaterials)
                     Assert.That(material.shader.name,Does.StartWith("Universal Render Pipeline/"));
+            Assert.That(GameObject.Find("Bastion · masonry gate"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · authored gate"),Is.Null,
+                "The blue blockout castle should not be part of the art benchmark");
+            Assert.That(GameObject.Find("Brecha · burned earth"),Is.Not.Null);
+            Assert.That(GameObject.Find("Fractured Breach shard"),Is.Null);
             var hotspot=GameObject.Find("Aserradero · interacción");
             Assert.That(hotspot.GetComponent<Collider>().enabled,Is.True);
             Assert.That(hotspot.GetComponent<WorldHotspot>().Id,Is.EqualTo("sawmill"));

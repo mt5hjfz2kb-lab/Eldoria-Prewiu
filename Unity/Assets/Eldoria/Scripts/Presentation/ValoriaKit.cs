@@ -22,6 +22,13 @@ namespace Eldoria.Presentation
             var go=Object.Instantiate(prefab,position,rotation);
             go.name=name;
             go.transform.localScale=scale;
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var materials=renderer.sharedMaterials;
+                for(int i=0;i<materials.Length;i++)materials[i]=AdaptForUrp(materials[i]);
+                renderer.sharedMaterials=materials;
+            }
             return go;
         }
 
@@ -77,13 +84,13 @@ namespace Eldoria.Presentation
             return adapted;
         }
 
-        public static readonly Color Stone=new Color(.43f,.43f,.40f);
-        public static readonly Color OldStone=new Color(.36f,.36f,.34f);
-        public static readonly Color WarmStone=new Color(.52f,.47f,.38f);
+        public static readonly Color Stone=new Color(.35f,.36f,.35f);
+        public static readonly Color OldStone=new Color(.30f,.31f,.30f);
+        public static readonly Color WarmStone=new Color(.42f,.38f,.32f);
         public static readonly Color Timber=new Color(.29f,.18f,.10f);
         public static readonly Color Slate=new Color(.18f,.20f,.21f);
-        public static readonly Color Earth=new Color(.28f,.23f,.17f);
-        public static readonly Color Pine=new Color(.12f,.23f,.16f);
+        public static readonly Color Earth=new Color(.25f,.23f,.20f);
+        public static readonly Color Pine=new Color(.13f,.21f,.17f);
 
         public static GameObject CastleWall(string name,Vector3 position,Vector3 scale,Quaternion rotation)
             => ExternalPrefab(name,LoadExternal("Stone_Wall"),position,scale,rotation);
@@ -95,7 +102,17 @@ namespace Eldoria.Presentation
             => ExternalPrefab(name,LoadExternal("Stone_Gate"),position,scale,rotation);
 
         public static GameObject TerrainPiece(string resourceName,string name,Vector3 position,Vector3 scale,Quaternion rotation)
-            => ExternalPrefab(name,LoadExternal(resourceName),position,scale,rotation);
+        {
+            var piece=ExternalPrefab(name,LoadExternal(resourceName),position,scale,rotation);
+            if(piece==null)return null;
+            // PolyOne's bright atlas read as white/yellow snow under the Valoria camera.
+            // Retain its useful relief mesh, but give it Eldoria's shared earth/rock palette.
+            var color=resourceName.Contains("Mountain")?OldStone*.67f:
+                resourceName.Contains("Hill")?Earth*.91f:OldStone*.76f;
+            foreach(var renderer in piece.GetComponentsInChildren<Renderer>(true))
+                renderer.sharedMaterial=Material(color);
+            return piece;
+        }
 
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
@@ -341,9 +358,10 @@ namespace Eldoria.Presentation
         {
             // Hybrid production pass: authored modular castle meshes carry the readable architecture,
             // while bespoke procedural masses preserve Eldoria's unique fortress-inside-a-dead-palace silhouette.
-            var stoneTower=LoadExternal("Stone_Tower");
-            var stoneWall=LoadExternal("Stone_Wall");
-            var stoneGate=LoadExternal("Stone_Gate");
+            var art=ValoriaExternalAssetLibrary.Load();
+            var stoneTower=art!=null?art.MasonryTower:null;
+            var stoneWall=art!=null?art.MasonryWall:null;
+            var stoneGate=art!=null?art.MasonryGate:null;
 
             Block(name+" · rock plinth",origin+new Vector3(0,.68f,0),
                 new Vector3(10.7f,1.55f,7.6f),OldStone*.82f);
@@ -352,22 +370,14 @@ namespace Eldoria.Presentation
 
             if(stoneWall!=null && stoneTower!=null && stoneGate!=null)
             {
-                // Real modular front curtain: three wall sections around a central gate.
-                ExternalPrefab(name+" · authored gate",stoneGate,
-                    origin+new Vector3(0,.06f,-3.0f),Vector3.one*.86f,Quaternion.identity);
-                ExternalPrefab(name+" · authored wall west",stoneWall,
-                    origin+new Vector3(-3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
-                ExternalPrefab(name+" · authored wall east",stoneWall,
-                    origin+new Vector3(3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
-
-                ExternalPrefab(name+" · authored tower west",stoneTower,
-                    origin+new Vector3(-5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
-                ExternalPrefab(name+" · authored tower east",stoneTower,
-                    origin+new Vector3(5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
-                ExternalPrefab(name+" · authored rear west",stoneTower,
-                    origin+new Vector3(-4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
-                ExternalPrefab(name+" · authored rear east",stoneTower,
-                    origin+new Vector3(4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
+                // One stone family for the stronghold; the old blue low-poly castle stays out.
+                BenchmarkPiece(name+" · masonry gate",stoneGate,origin+new Vector3(0,.1f,-3.0f),2.65f,3.45f,Quaternion.identity);
+                foreach(float x in new[]{-3.2f,3.2f})
+                    BenchmarkPiece(name+" · masonry curtain",stoneWall,origin+new Vector3(x,.1f,-2.85f),3.2f,3.3f,Quaternion.identity);
+                foreach(float x in new[]{-5.0f,5.0f})
+                    BenchmarkPiece(name+" · front masonry tower",stoneTower,origin+new Vector3(x,.08f,-2.15f),2.4f,5.5f,Quaternion.identity);
+                foreach(float x in new[]{-4.25f,4.25f})
+                    BenchmarkPiece(name+" · rear masonry tower",stoneTower,origin+new Vector3(x,.08f,2.45f),2.0f,4.8f,Quaternion.identity);
             }
             else
             {

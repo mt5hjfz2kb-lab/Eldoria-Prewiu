@@ -18,6 +18,12 @@ namespace Eldoria.Presentation
         public GameObject SlavicTree;
         public GameObject RuinedTower;
         public GameObject Firewood;
+        public GameObject MasonryWall;
+        public GameObject MasonryGate;
+        public GameObject MasonryTower;
+        public GameObject CobbleRoad;
+        public GameObject SlavicTreeTall;
+        public GameObject SlavicBush;
 
         public static ValoriaExternalAssetLibrary Load()
             => Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");

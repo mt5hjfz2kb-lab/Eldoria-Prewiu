@@ -21,3 +21,9 @@ MonoBehaviour:
   SlavicTree: {fileID: 2975732799178527481, guid: f1b66556485f0e542b87652d7fbe5423, type: 3}
   RuinedTower: {fileID: 150784, guid: e27db1f37a07b834dba6152ddc5b7858, type: 3}
   Firewood: {fileID: 177444, guid: dd95ee52b2d3a914baa7f842b3cf7592, type: 3}
+  MasonryWall: {fileID: 187976, guid: 564e49f56923de148b581d811733f251, type: 3}
+  MasonryGate: {fileID: 185686, guid: 83e4f5eb8ab2d3f4f94fa4608bd75bef, type: 3}
+  MasonryTower: {fileID: 185392, guid: d8014ef3ca7293a429b63863c6c81d9a, type: 3}
+  CobbleRoad: {fileID: 1807949595683360, guid: 2db5cf884e24ae74ba5afa31151e2453, type: 3}
+  SlavicTreeTall: {fileID: 1191365904497370, guid: 66b2ba6f28a15344e8faa85458712b9d, type: 3}
+  SlavicBush: {fileID: 957204323108823746, guid: 18085d3fce37a864a89d6a5db7b67d3b, type: 3}
