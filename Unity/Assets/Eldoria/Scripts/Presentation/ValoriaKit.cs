@@ -43,53 +43,33 @@ namespace Eldoria.Presentation
 
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
+            // Keep the first smoke implementation deliberately conservative so it is stable
+            // across Unity 6 particle API differences. More advanced turbulence/materials come later.
             var go=new GameObject(name);
             go.transform.position=position;
             var ps=go.AddComponent<ParticleSystem>();
+
             var main=ps.main;
             main.loop=true;
-            main.startLifetime=new ParticleSystem.MinMaxCurve(3.4f,5.2f);
-            main.startSpeed=new ParticleSystem.MinMaxCurve(.22f,.48f);
-            main.startSize=new ParticleSystem.MinMaxCurve(.42f*size,.82f*size);
+            main.startLifetime=new ParticleSystem.MinMaxCurve(3.2f,4.8f);
+            main.startSpeed=new ParticleSystem.MinMaxCurve(.28f,.52f);
+            main.startSize=new ParticleSystem.MinMaxCurve(.38f*size,.72f*size);
             main.startColor=new ParticleSystem.MinMaxGradient(
-                new Color(.34f,.33f,.31f,.34f),new Color(.55f,.53f,.49f,.18f));
+                new Color(.38f,.37f,.35f,.32f),
+                new Color(.58f,.56f,.52f,.18f));
             main.simulationSpace=ParticleSystemSimulationSpace.World;
-            main.maxParticles=80;
+            main.maxParticles=64;
 
             var emission=ps.emission;
-            emission.rateOverTime=rate;
+            emission.rateOverTime=new ParticleSystem.MinMaxCurve(rate);
 
             var shape=ps.shape;
             shape.shapeType=ParticleSystemShapeType.Cone;
-            shape.angle=8f;
-            shape.radius=.16f*size;
-
-            var velocity=ps.velocityOverLifetime;
-            velocity.enabled=true;
-            velocity.y=new ParticleSystem.MinMaxCurve(.16f,.34f);
-            velocity.x=new ParticleSystem.MinMaxCurve(-.05f,.05f);
-            velocity.z=new ParticleSystem.MinMaxCurve(-.04f,.04f);
-
-            var noise=ps.noise;
-            noise.enabled=true;
-            noise.strength=.28f*size;
-            noise.frequency=.35f;
-            noise.scrollSpeed=.12f;
-
-            var col=ps.colorOverLifetime;
-            col.enabled=true;
-            var grad=new Gradient();
-            grad.SetKeys(
-                new[]{new GradientColorKey(new Color(.52f,.50f,.46f),0f),
-                      new GradientColorKey(new Color(.31f,.31f,.30f),1f)},
-                new[]{new GradientAlphaKey(0f,0f),new GradientAlphaKey(.30f,.18f),
-                      new GradientAlphaKey(.16f,.72f),new GradientAlphaKey(0f,1f)});
-            col.color=grad;
+            shape.angle=7f;
+            shape.radius=.14f*size;
 
             var renderer=go.GetComponent<ParticleSystemRenderer>();
             renderer.renderMode=ParticleSystemRenderMode.Billboard;
-            renderer.material=Material(new Color(.48f,.47f,.44f,.45f));
-            renderer.sortingFudge=-1f;
         }
 
         static readonly Dictionary<string,Texture2D> Textures=new();
