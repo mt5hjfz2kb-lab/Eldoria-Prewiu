@@ -70,7 +70,10 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Valoria · lower stone gate"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cobble route"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cliff boulder"),Is.Not.Null);
-            Assert.That(GameObject.Find("Ruined imperial arch · left pier"),Is.Not.Null);
+            Assert.That(GameObject.Find("Ruined imperial arch · left pier"),Is.Null,
+                "The failed procedural imperial arch must stay out of the benchmark skyline");
+            Assert.That(GameObject.Find("Valoria · rear pine"),Is.Not.Null,
+                "The quieter rear silhouette should retain depth without the rejected arch wall");
             Assert.That(GameObject.Find("Ruined imperial causeway · deck 0"),Is.Null,
                 "The oversized causeway failed capture review and must stay out of the city silhouette");
             Assert.That(GameObject.Find("Bastion · authored gate"),Is.Null,
