@@ -113,6 +113,31 @@ jobs:
           $dataDir = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria_Data"
           if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
           if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
+      - name: Render Valoria art benchmark
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/BenchmarkCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-BenchmarkCapture.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Valoria capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Valoria capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("valoria-establishing.png","valoria-gate.png","valoria-districts.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Benchmark image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-valoria-captures-${{ github.sha }}
+          path: Unity/BenchmarkCaptures/*.png
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
