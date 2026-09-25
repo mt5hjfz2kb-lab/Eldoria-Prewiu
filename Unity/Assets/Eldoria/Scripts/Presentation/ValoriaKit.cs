@@ -434,29 +434,38 @@ namespace Eldoria.Presentation
 
             Block(name+" · rock plinth",origin+new Vector3(0,.68f,0),
                 new Vector3(10.7f,1.55f,7.6f),OldStone*.82f);
-            Block(name+" · palace remnant",origin+new Vector3(-.45f,5.35f,.9f),
-                new Vector3(4.35f,1.65f,3.25f),OldStone*.90f);
+            Block(name+" · palace remnant",origin+new Vector3(-.45f,5.20f,1.35f),
+                new Vector3(3.65f,1.25f,2.75f),OldStone*.66f);
 
             // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
             // gaps, so individual modules never read as floating props.
-            Wall(name+" · front curtain backing",origin+new Vector3(0,2.0f,-2.68f),
-                new Vector3(9.4f,2.55f,.72f),OldStone*.72f,false);
+            Wall(name+" · front curtain backing",origin+new Vector3(0,1.85f,-2.70f),
+                new Vector3(8.8f,2.15f,.52f),OldStone*.58f,false);
             var megaGate=art!=null?art.MegaHalfGate:null;
             var megaTower=art!=null?art.MegaTower:null;
-            BenchmarkPieceTinted(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
-                2.65f,3.25f,Quaternion.identity,WarmStone*.82f);
+            // Preserve the authored stone materials here. Flattening these to a single tint erased
+            // the masonry detail and made the connected facade read as one brown slab.
+            if(BenchmarkPiece(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
+                2.65f,3.25f,Quaternion.identity)==null)
+                BenchmarkPieceTinted(name+" · connected gate fallback",megaGate,origin+new Vector3(0,.12f,-3.08f),
+                    2.65f,3.25f,Quaternion.identity,WarmStone*.82f);
             foreach(float x in new[]{-2.9f,2.9f})
-                BenchmarkPieceTinted(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
-                    3.55f,3.10f,Quaternion.identity,WarmStone*.80f);
+                if(BenchmarkPiece(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
+                    3.55f,3.10f,Quaternion.identity)==null)
+                    Wall(name+" · connected wall fallback",origin+new Vector3(x,1.60f,-3.02f),
+                        new Vector3(3.4f,2.7f,.62f),WarmStone*.72f,true);
             foreach(float x in new[]{-5.0f,5.0f})
-                BenchmarkPieceTinted(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
-                    2.75f,5.85f,Quaternion.identity,WarmStone*.78f);
+                if(BenchmarkPiece(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
+                    2.75f,5.85f,Quaternion.identity)==null)
+                    Tower(name+" · connected tower fallback",origin+new Vector3(x,.05f,-2.35f),1.25f,5.35f,WarmStone*.74f);
             Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
             Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
 
             // Bespoke keep avoids becoming a generic asset-pack castle.
-            Block(name+" · inner keep",origin+new Vector3(0,3.65f,.55f),
-                new Vector3(6.25f,2.75f,4.55f),Stone*.90f);
+            Block(name+" · inner keep",origin+new Vector3(0,3.45f,.75f),
+                new Vector3(5.55f,2.35f,3.95f),Stone*.72f);
+            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.78f,.75f),
+                new Vector3(5.95f,1.05f,4.30f),Slate*.88f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
