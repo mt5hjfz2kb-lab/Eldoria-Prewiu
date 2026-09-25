@@ -1,5 +1,5 @@
 name: Unity slice source and editor gate
-# runner-session validation checkpoint
+# runner-session validation checkpoint · Bastion II
 
 on:
   push:
