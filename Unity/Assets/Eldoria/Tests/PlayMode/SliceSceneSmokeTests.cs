@@ -38,6 +38,10 @@ namespace Eldoria.Tests
             Assert.That(assets.MasonryGate,Is.Not.Null);
             Assert.That(assets.CobbleRoad,Is.Not.Null);
             Assert.That(assets.SlavicBush,Is.Not.Null);
+            Assert.That(assets.SlavicCobbleRoad,Is.Not.Null);
+            Assert.That(assets.SlavicStoneFence,Is.Not.Null);
+            Assert.That(assets.SlavicRockGate,Is.Not.Null);
+            Assert.That(assets.SlavicBoulder,Is.Not.Null);
             SceneManager.LoadScene("Valoria");
             yield return null;
             Assert.That(GameObject.Find("Aserradero · carpentry shed"),Is.Null,
@@ -51,6 +55,10 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Bastion · masonry gate"),Is.Null,
                 "Detached modular masonry must not return until a coherent castle set is selected");
             Assert.That(GameObject.Find("Bastion · front curtain · wall"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bastion · dead palace arch · left pier"),Is.Not.Null);
+            Assert.That(GameObject.Find("Valoria · lower stone gate"),Is.Not.Null);
+            Assert.That(GameObject.Find("Valoria · authored cobble route"),Is.Not.Null);
+            Assert.That(GameObject.Find("Valoria · authored cliff boulder"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · authored gate"),Is.Null,
                 "The blue blockout castle should not be part of the art benchmark");
             Assert.That(GameObject.Find("Brecha · burned earth"),Is.Not.Null);
