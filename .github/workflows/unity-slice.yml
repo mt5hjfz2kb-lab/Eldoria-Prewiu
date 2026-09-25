@@ -38,7 +38,12 @@ jobs:
           $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
           $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity EditMode timed out after 10 minutes."
+          }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity EditMode process failed with exit code $($process.ExitCode)." }
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
           [xml]$results = Get-Content $xml
@@ -50,7 +55,12 @@ jobs:
           $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
           $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity PlayMode timed out after 10 minutes."
+          }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity PlayMode process failed with exit code $($process.ExitCode)." }
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
           [xml]$results = Get-Content $xml
@@ -62,7 +72,12 @@ jobs:
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
           $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity Windows desktop build timed out after 10 minutes."
+          }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
           $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
           if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
