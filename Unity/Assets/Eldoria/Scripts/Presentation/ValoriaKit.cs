@@ -437,14 +437,22 @@ namespace Eldoria.Presentation
             Block(name+" · palace remnant",origin+new Vector3(-.45f,5.35f,.9f),
                 new Vector3(4.35f,1.65f,3.25f),OldStone*.90f);
 
-            // Capture review showed the imported modular pieces reading as detached wall/roof fragments.
-            // Keep one continuous authored silhouette until a coherent castle set is selected.
-            Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
-                new Vector3(9.2f,2.7f,1.15f),Stone*1.03f,true);
-            Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.98f);
-            Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.98f);
-            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.96f);
-            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.96f);
+            // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
+            // gaps, so individual modules never read as floating props.
+            Wall(name+" · front curtain backing",origin+new Vector3(0,2.0f,-2.68f),
+                new Vector3(9.4f,2.55f,.72f),OldStone*.72f,false);
+            var megaGate=art!=null?art.MegaHalfGate:null;
+            var megaTower=art!=null?art.MegaTower:null;
+            BenchmarkPieceTinted(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
+                2.65f,3.25f,Quaternion.identity,WarmStone*.82f);
+            foreach(float x in new[]{-2.9f,2.9f})
+                BenchmarkPieceTinted(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
+                    3.55f,3.10f,Quaternion.identity,WarmStone*.80f);
+            foreach(float x in new[]{-5.0f,5.0f})
+                BenchmarkPieceTinted(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
+                    2.75f,5.85f,Quaternion.identity,WarmStone*.78f);
+            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
 
             // Bespoke keep avoids becoming a generic asset-pack castle.
             Block(name+" · inner keep",origin+new Vector3(0,3.65f,.55f),
