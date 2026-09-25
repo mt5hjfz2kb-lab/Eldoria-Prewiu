@@ -131,7 +131,7 @@ namespace Eldoria.Presentation
         public static readonly Color OldStone=new Color(.35f,.36f,.34f);
         public static readonly Color WarmStone=new Color(.48f,.43f,.35f);
         public static readonly Color Timber=new Color(.31f,.20f,.12f);
-        public static readonly Color Slate=new Color(.33f,.38f,.43f);
+        public static readonly Color Slate=new Color(.25f,.29f,.33f);
         public static readonly Color Earth=new Color(.30f,.27f,.23f);
         public static readonly Color Pine=new Color(.11f,.23f,.16f);
 
@@ -343,8 +343,8 @@ namespace Eldoria.Presentation
             // Valoria houses should read as rebuilt medieval structures, not box + roof placeholders.
             Block(name+" · stone footing",p+new Vector3(0,.16f,0),new Vector3(size.x*1.08f,.30f,size.z*1.08f),OldStone*.88f);
             Block(name+" · masonry",p+Vector3.up*(size.y*.48f),size,WarmStone*.78f);
-            GableRoof(name+" · roof",p+new Vector3(0,size.y+.18f,0),
-                new Vector3(size.x*1.18f,1.02f,size.z*1.22f),Slate);
+            GableRoof(name+" · roof",p+new Vector3(0,size.y+.16f,0),
+                new Vector3(size.x*1.10f,.92f,size.z*1.14f),Slate);
             Block(name+" · timber door",p+new Vector3(0,.66f,-size.z*.515f),
                 new Vector3(.46f,1.15f,.12f),Timber);
             Block(name+" · lintel",p+new Vector3(0,1.30f,-size.z*.525f),
@@ -536,10 +536,10 @@ namespace Eldoria.Presentation
                 Wall(name+" · dead palace wall east fallback",origin+new Vector3(3.75f,1.35f,4.20f),
                     new Vector3(3.2f,2.35f,.54f),OldStone*.54f,true);
             if(BenchmarkPieceModulated(name+" · dead palace tower remnant",megaTower,
-                origin+new Vector3(-1.10f,.05f,4.85f),2.35f,4.35f,Quaternion.Euler(0,8f,0),
-                new Color(.43f,.45f,.44f,1f))==null)
-                Tower(name+" · dead palace tower remnant fallback",origin+new Vector3(-1.10f,.05f,4.85f),
-                    1.0f,4.10f,OldStone*.56f);
+                origin+new Vector3(-2.10f,-.18f,5.35f),2.05f,3.65f,Quaternion.Euler(0,12f,0),
+                new Color(.56f,.57f,.55f,1f))==null)
+                Tower(name+" · dead palace tower remnant fallback",origin+new Vector3(-2.10f,-.18f,5.35f),
+                    .90f,3.55f,OldStone*.64f);
             Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,3.0f),1.45f,10);
             Rubble(name+" · palace collapse east",origin+new Vector3(4.6f,.18f,3.3f),1.25f,9);
             Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
