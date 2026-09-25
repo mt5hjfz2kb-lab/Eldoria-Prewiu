@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
             sun.intensity=city?1.95f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.255f,.205f,.165f):Earth);
+                city?new Color(.235f,.225f,.185f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -100,11 +100,27 @@ namespace Eldoria.Presentation
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
             // so authored prefabs can later replace them without changing gameplay coordinates.
 
-            // Clifftop city terraces.
-            ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.68f,4.15f),new Vector3(17,1.18f,11.2f),new Color(.31f,.30f,.27f));
-            ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),new Color(.29f,.27f,.22f));
+            // Clifftop city terraces. Overlapping low rock shelves replace the old rectangular slabs:
+            // gameplay elevations stay identical, but the visible perimeter no longer reads like a board.
+            ValoriaKit.Cylinder("Valoria · upper terrace core",new Vector3(-.4f,.67f,4.25f),
+                new Vector3(7.6f,.57f,5.05f),new Color(.30f,.29f,.25f),Quaternion.identity);
+            ValoriaKit.Cylinder("Valoria · upper terrace west",new Vector3(-5.25f,.58f,4.55f),
+                new Vector3(3.55f,.49f,4.10f),new Color(.28f,.28f,.24f),Quaternion.identity);
+            ValoriaKit.Cylinder("Valoria · upper terrace east",new Vector3(5.25f,.60f,4.20f),
+                new Vector3(3.60f,.50f,4.00f),new Color(.29f,.28f,.24f),Quaternion.identity);
+            ValoriaKit.Cylinder("Valoria · lower terrace core",new Vector3(0,-.18f,-3.25f),
+                new Vector3(8.75f,.32f,3.25f),new Color(.28f,.25f,.20f),Quaternion.identity);
+            ValoriaKit.Cylinder("Valoria · lower terrace west",new Vector3(-5.55f,-.20f,-2.85f),
+                new Vector3(3.85f,.30f,2.85f),new Color(.27f,.24f,.20f),Quaternion.identity);
+            ValoriaKit.Cylinder("Valoria · lower terrace east",new Vector3(5.35f,-.20f,-3.05f),
+                new Vector3(3.95f,.30f,2.90f),new Color(.27f,.24f,.20f),Quaternion.identity);
             ValoriaKit.RockCluster("Valoria plateau edge west",new Vector3(-10.0f,-.25f,1.8f),1.25f,10);
             ValoriaKit.RockCluster("Valoria plateau edge east",new Vector3(10.0f,-.25f,2.5f),1.20f,10);
+            foreach(var q in new[]{
+                new Vector3(-8.8f,.05f,-.4f),new Vector3(-9.0f,.06f,3.2f),new Vector3(-8.2f,.05f,6.9f),
+                new Vector3(8.7f,.05f,-.6f),new Vector3(9.0f,.06f,3.0f),new Vector3(8.3f,.05f,6.8f)})
+                ValoriaKit.BenchmarkPieceTinted("Valoria · terrace edge boulder",art!=null?art.SlavicBoulder:null,
+                    q,2.2f,1.35f,Quaternion.Euler(0,(q.x>0?31:-27),0),ValoriaKit.OldStone*.76f);
             for(int i=0;i<7;i++)
             {
                 var p=new Vector3(-9+i*3f,-.62f,-6.0f+(i%2)*.22f);
