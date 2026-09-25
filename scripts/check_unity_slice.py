@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1] / "Unity"
-version = (root / "ProjectSettings/ProjectVersion.txt").read_text().strip()
-assert version == "m_EditorVersion: 6000.3.23f1", version
+version_lines = (root / "ProjectSettings/ProjectVersion.txt").read_text().splitlines()
+assert version_lines and version_lines[0].strip() == "m_EditorVersion: 6000.3.23f1", version_lines
 manifest = json.loads((root / "Packages/manifest.json").read_text())
 assert "com.unity.render-pipelines.universal" in manifest["dependencies"]
 assert "com.unity.inputsystem" in manifest["dependencies"]
