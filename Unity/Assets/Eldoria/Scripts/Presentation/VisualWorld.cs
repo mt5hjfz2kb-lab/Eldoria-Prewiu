@@ -45,17 +45,23 @@ namespace Eldoria.Presentation
             }
             if(city)
             {
-                // Capture review: nearby imported terrain read as oversized clay blobs.
-                // Keep only distant silhouettes; the playable city uses controlled terraces and rock edges.
-                // Imported mountains and the procedural imperial arch both failed capture review:
-                // they read as flat grey/black walls behind the city. Keep the horizon quiet until
-                // production-quality ruin and mountain silhouettes are selected.
+                // Keep nearby terrain controlled, but give the valley a real distant horizon.
+                // Preserve the authored mountain atlas and mute it into the fog instead of flattening it to clay.
+                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain west",
+                    new Vector3(-15.0f,-1.8f,23.5f),12.0f,7.5f,Quaternion.Euler(0,18f,0),
+                    new Color(.58f,.61f,.60f,1f));
+                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain centre",
+                    new Vector3(-1.0f,-2.1f,25.5f),13.5f,8.0f,Quaternion.Euler(0,-7f,0),
+                    new Color(.54f,.58f,.58f,1f));
+                ValoriaKit.TerrainPieceModulated("SM_Mountains_11","Valoria · distant mountain east",
+                    new Vector3(14.0f,-1.9f,23.8f),11.5f,7.0f,Quaternion.Euler(0,-24f,0),
+                    new Color(.57f,.60f,.59f,1f));
                 ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-8.1f,-.12f,17.5f),.82f,7);
-                // A restrained rear ridge closes the valley without returning to the failed mountain wall.
+                // A restrained rear ridge breaks the valley edge while preserving a clear Bastion silhouette.
                 for(int i=0;i<16;i++)
                 {
                     float x=-17.0f+i*2.25f;
-                    if(Mathf.Abs(x)<4.2f)continue; // keep the Bastion silhouette readable
+                    if(Mathf.Abs(x)<4.2f)continue;
                     float z=15.0f+(i%3)*1.25f;
                     ValoriaKit.PineTree("Valoria · rear pine",new Vector3(x,0,z),.58f+(i%4)*.07f);
                     if(i%3==0)ValoriaKit.RockCluster("Valoria · rear ridge rock",new Vector3(x+.7f,-.10f,z+.6f),.72f,5);
