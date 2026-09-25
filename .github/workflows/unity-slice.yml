@@ -25,23 +25,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify installed Editor
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
       - name: EditMode
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: PlayMode
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Windows desktop build
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
