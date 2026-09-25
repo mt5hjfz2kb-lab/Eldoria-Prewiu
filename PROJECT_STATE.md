@@ -1,10 +1,10 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-24
+Updated: 2026-09-25
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
 ## Active product
-- A **separate Unity source slice** is staged in `Unity/` (Editor 6000.3.23f1): Valoria → frontera → bosque/optional corrupt scout → return → sawmill; core state, scenes, procedure-built visual study and tests/build entry points. On 2026-09-25 the Windows Editor and standalone player were compiled and played successfully through the first slice, including persistence and the 2452→2622 Power transition. The initial standalone magenta-render issue was corrected with a player-safe URP runtime material. Automated EditMode/PlayMode certification, mobile validation and the remote Unity-node workflow remain pending. `UNITY_CORE_CONTRACT.md` records the deliberate Power/March decisions. Web v0.32.0 continues as the playable canonical product.
+- A **separate Unity source line** is active in `Unity/` (Editor 6000.3.23f1). The first Valoria → frontera → bosque/scout → retorno → Aserradero slice is compiled, played and automated on Windows, including persistence and the 2452→2622 Power transition. The self-hosted runner `DESKTOP-R10PE55` now certifies EditMode, PlayMode and a Windows player build from GitHub. The Unity line has also begun Bastion II: ascent from Bastion I, timed Cuartel construction, +12 Archer T1 recruitment, a 48-archer Engendro gate, persistent/idempotent rewards and corresponding HUD/world presentation. Canonical certification for this block is green on commit `85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf`, with artifact `eldoria-unity-checks-85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf` (~37 MB). Mobile/device validation and full Bastion I–X parity are still pending. `UNITY_CORE_CONTRACT.md` records the deliberate Power/March decisions. Web v0.32.0 remains the playable canonical reference until Unity replacement is explicitly approved.
 - Runtime/API milestone: **v0.32.0**.
 - Development branch: `main`, the only active development line.
 - Canonical editable source: `v0220/index.html` + `v0220/js/`.
