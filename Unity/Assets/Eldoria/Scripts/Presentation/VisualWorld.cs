@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.72f,.76f,.78f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.80f,.82f,.81f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.50f,.54f,.56f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.56f,.58f,.58f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -51,8 +51,9 @@ namespace Eldoria.Presentation
                     new Vector3(-18.0f,-2.4f,20.5f),new Vector3(.13f,.13f,.13f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
                     new Vector3(16.5f,-2.6f,21.0f),new Vector3(.12f,.12f,.12f),Quaternion.Euler(0,-23,0));
-                ValoriaKit.CyclopeanCauseway("Ruined imperial causeway",new Vector3(-2.8f,-.10f,16.1f),
-                    20.5f,5.7f,1.45f,Quaternion.Euler(0,7f,0),ValoriaKit.OldStone*.72f);
+                ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-7.4f,.25f,15.4f),
+                    5.15f,1.55f,ValoriaKit.OldStone*.74f);
+                ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-3.2f,.04f,14.7f),1.45f,14);
                 City(state);
             }
             else Frontier(state);
@@ -85,9 +86,8 @@ namespace Eldoria.Presentation
             // Clifftop city terraces.
             ValoriaKit.Block("Valoria · upper terrace",new Vector3(0,.38f,4.0f),new Vector3(17,.78f,11),new Color(.31f,.30f,.27f));
             ValoriaKit.Block("Valoria · lower terrace",new Vector3(0,-.03f,-3.4f),new Vector3(19,.34f,7.0f),new Color(.29f,.27f,.22f));
-            IrregularGround("Valoria · plateau silhouette",new Vector3(0,-.10f,2.7f),27.5f,24.0f,new Color(.25f,.27f,.24f));
-            IrregularGround("Valoria · lower valley west",new Vector3(-13.0f,-.42f,5.5f),15.0f,18.0f,new Color(.20f,.23f,.22f));
-            IrregularGround("Valoria · lower valley east",new Vector3(13.3f,-.46f,7.0f),14.0f,17.0f,new Color(.21f,.23f,.22f));
+            ValoriaKit.RockCluster("Valoria plateau edge west",new Vector3(-10.0f,-.25f,1.8f),1.25f,10);
+            ValoriaKit.RockCluster("Valoria plateau edge east",new Vector3(10.0f,-.25f,2.5f),1.20f,10);
             for(int i=0;i<7;i++)
                 ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.70f,-6.0f),new Vector3(3.15f,1.85f,1.55f),ValoriaKit.OldStone*.88f);
             for(int i=0;i<6;i++)
@@ -111,11 +111,9 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Old palace rubble west",new Vector3(-8.4f,.15f,6.2f),1.15f,10);
             ValoriaKit.RockCluster("Old palace rubble east",new Vector3(8.1f,.15f,6.6f),1.05f,9);
 
-            // The dead empire must shape the landscape, not appear as decoration on top of it.
-            ValoriaKit.CyclopeanCauseway("Valoria · broken imperial causeway",new Vector3(-.8f,-.15f,11.6f),
-                23.5f,5.4f,2.15f,Quaternion.Euler(0,-14f,0),ValoriaKit.OldStone*.78f);
-            ValoriaKit.RockCluster("Imperial collapse west",new Vector3(-6.8f,.05f,10.2f),1.35f,12);
-            ValoriaKit.RockCluster("Imperial collapse east",new Vector3(6.4f,.02f,12.4f),1.25f,10);
+            // Dead-imperial rubble remains at the rear without eclipsing the living Bastion.
+            ValoriaKit.RockCluster("Imperial collapse west",new Vector3(-7.4f,.02f,10.2f),1.25f,10);
+            ValoriaKit.RockCluster("Imperial collapse east",new Vector3(7.0f,.02f,11.0f),1.15f,9);
 
             // Signature Bastion: fortress built inside a dead palace.
             ValoriaKit.BastionCore("Bastion",new Vector3(0,.78f,5.0f),Glow);
