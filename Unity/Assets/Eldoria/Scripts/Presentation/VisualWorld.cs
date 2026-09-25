@@ -48,11 +48,11 @@ namespace Eldoria.Presentation
                 // Imported terrain shell: real cliff and hill meshes now frame the playable plateau.
                 // Scales are intentionally conservative for this first integration pass.
                 ValoriaKit.TerrainPiece("SM_Cliffs_01","Valoria imported cliff west",
-                    new Vector3(-11.2f,-1.0f,-4.2f),new Vector3(.34f,.20f,.34f),Quaternion.Euler(0,22,0));
+                    new Vector3(-13.0f,-1.35f,-1.8f),new Vector3(.23f,.16f,.23f),Quaternion.Euler(0,22,0));
                 ValoriaKit.TerrainPiece("SM_Cliffs_03","Valoria imported cliff east",
-                    new Vector3(10.7f,-1.05f,-3.5f),new Vector3(.34f,.20f,.34f),Quaternion.Euler(0,-28,0));
+                    new Vector3(12.8f,-1.35f,-1.2f),new Vector3(.23f,.16f,.23f),Quaternion.Euler(0,-28,0));
                 ValoriaKit.TerrainPiece("SM_Hills_01","Valoria imported hill rear",
-                    new Vector3(-2.0f,-1.2f,10.6f),new Vector3(.30f,.22f,.30f),Quaternion.Euler(0,11,0));
+                    new Vector3(-2.0f,-1.45f,12.2f),new Vector3(.24f,.17f,.24f),Quaternion.Euler(0,11,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop west",
                     new Vector3(-15.0f,-2.0f,18.0f),new Vector3(.18f,.18f,.18f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
@@ -137,25 +137,26 @@ namespace Eldoria.Presentation
             ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
             ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.18f,2.5f),ValoriaKit.Earth*.85f);
 
-            // Sparse population: Bastion I must have room to grow.
-            foreach(var shelter in new[]{new Vector3(-3.45f,.30f,-3.35f),new Vector3(2.7f,.30f,-2.75f)})
+            // Sparse but readable settlement around the Bastion. Keep all structures in one authored kit.
+            foreach(var shelter in new[]{new Vector3(-3.45f,.30f,-3.35f),new Vector3(2.7f,.30f,-2.75f),
+                new Vector3(-4.1f,.30f,.05f),new Vector3(3.85f,.30f,.20f)})
                 ValoriaKit.House("Rebuilder shelter",shelter,new Vector3(1.9f,1.1f,1.65f),true,Glow);
-            // Forested slopes surround the inhabited terraces; maintain a clear gate approach.
-            for(int i=0;i<28;i++)
+            ValoriaKit.House("Valoria cottage west",new Vector3(-6.0f,.30f,2.0f),new Vector3(2.2f,1.25f,1.85f),true,Glow);
+            ValoriaKit.House("Valoria cottage east",new Vector3(6.0f,.30f,2.15f),new Vector3(2.2f,1.25f,1.85f),true,Glow);
+
+            // The imported Slavic vegetation was visually incompatible in URP (white/yellow blow-out).
+            // Use one restrained dark-pine family until a production vegetation set is selected.
+            for(int i=0;i<34;i++)
             {
-                float z=-12f+(i*23%29)*1.05f;
-                float x=(i%2==0?-1f:1f)*(10.7f+(i*5%7)*.68f);
-                var tree=art!=null?(i%3==0?art.SlavicTreeTall:art.SlavicTree):null;
-                if(ValoriaKit.BenchmarkPiece("Valoria · forest edge",tree,
-                    new Vector3(x,0,z),2.0f+(i%3)*.35f,4.0f+(i%4)*.35f,Quaternion.Euler(0,i*73%360,0))==null)
-                    ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.8f);
+                float z=-11f+(i*19%31)*.92f;
+                float x=(i%2==0?-1f:1f)*(9.6f+(i*7%8)*.62f);
+                ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.72f+(i%4)*.08f);
             }
-            for(int i=0;i<20;i++)
+            for(int i=0;i<12;i++)
             {
-                float z=-8.0f+(i*13%23)*.9f;
-                float x=(i%2==0?-1f:1f)*(8.5f+(i*11%7)*.55f);
-                ValoriaKit.BenchmarkPiece("Valoria · undergrowth",art!=null?art.SlavicBush:null,
-                    new Vector3(x,.08f,z),.65f+(i%3)*.18f,.8f,Quaternion.Euler(0,i*37%360,0));
+                float z=-7.5f+(i*11%19)*.82f;
+                float x=(i%2==0?-1f:1f)*(7.9f+(i*5%5)*.42f);
+                ValoriaKit.PineTree("Valoria inner pine",new Vector3(x,0,z),.58f+(i%3)*.07f);
             }
             ValoriaKit.RockCluster("Valoria roadside rocks",new Vector3(-3.7f,.05f,-1.35f),.58f,4);
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
