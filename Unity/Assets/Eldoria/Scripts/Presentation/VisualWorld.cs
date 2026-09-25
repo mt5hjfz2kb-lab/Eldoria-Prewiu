@@ -139,8 +139,18 @@ namespace Eldoria.Presentation
                         new Color(.27f,.17f,.10f),Quaternion.Euler(90,0,0));
             }
 
-            // Right: modest military/food district, visibly subordinate to Bastion.
-            ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),true,Glow);
+            // Right: military district grows into a readable Bastion II objective.
+            ValoriaKit.House("Early barracks",new Vector3(6.0f,.42f,-1.55f),new Vector3(3.4f,1.7f,2.75f),state.BarracksLevel>0,Glow);
+            var barracks=ValoriaKit.Block("Cuartel · interacción",new Vector3(6.0f,1.18f,-1.55f),
+                new Vector3(3.0f,1.40f,2.35f),state.BarracksLevel>0?new Color(.36f,.34f,.30f):new Color(.20f,.20f,.19f));
+            barracks.AddComponent<WorldHotspot>().Id="barracks";
+            if(state.BastionLevel>=2 && state.BarracksLevel==0)
+                ValoriaKit.Scaffold("Cuartel scaffold",new Vector3(7.75f,1.55f,-.55f),new Vector3(1.35f,2.7f,1.1f));
+            if(state.BarracksLevel>0)
+            {
+                Glow("Barracks forge light",new Vector3(6.8f,1.4f,-2.15f),Amber,1.05f,3.4f);
+                ValoriaKit.Banner("Barracks banner",new Vector3(5.15f,2.0f,-2.75f),new Vector3(.55f,1.65f,.08f),new Color(.31f,.10f,.08f));
+            }
             ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
             ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.18f,2.5f),ValoriaKit.Earth*.85f);
 
@@ -155,7 +165,8 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
 
             Hero(new Vector3(-1.7f,0,-1.9f),1.0f);
-            for(int i=0;i<5;i++)Archer(new Vector3(2.0f+i*.67f,0,-2.8f+(i%2)*.68f));
+            int visibleArchers=state.BastionLevel>=2?7:5;
+            for(int i=0;i<visibleArchers;i++)Archer(new Vector3(2.0f+(i%4)*.67f,0,-2.8f+(i/4)*.68f));
             Glow("Gate torch L",new Vector3(-2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Gate torch R",new Vector3(2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Bastion inhabited warmth",new Vector3(0,3.65f,3.2f),Amber,1.35f,6.5f);
@@ -175,9 +186,17 @@ namespace Eldoria.Presentation
             var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6,1.4f,1),new Vector3(2,2.8f,2),new Color(.20f,.28f,.23f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
             for(int i=0;i<5;i++) Tree(new Vector3(-8+(i%3)*1.4f,0,-.1f+(i/3)*2),true);
-            var enemy=Sphere("Explorador corrupto",new Vector3(5,1,3),new Vector3(1.35f,2.1f,1.35f),
-                state.ScoutDefeated?Stone*.5f:Violet*.52f);
-            enemy.AddComponent<WorldHotspot>().Id="corrupt-scout";
+            string enemyId=state.BastionLevel>=2?"engendro-valoria":"corrupt-scout";
+            bool defeated=state.BastionLevel>=2?state.EngendroDefeated:state.ScoutDefeated;
+            var enemy=Sphere(state.BastionLevel>=2?"Engendro de la Brecha":"Explorador corrupto",
+                new Vector3(5,1,3),state.BastionLevel>=2?new Vector3(1.75f,2.55f,1.75f):new Vector3(1.35f,2.1f,1.35f),
+                defeated?Stone*.5f:Violet*(state.BastionLevel>=2?.66f:.52f));
+            enemy.AddComponent<WorldHotspot>().Id=enemyId;
+            if(state.BastionLevel>=2 && !defeated)
+            {
+                Box("Engendro carapace",new Vector3(5,1.35f,3),new Vector3(2.1f,.55f,1.55f),Deep*.75f);
+                Glow("Engendro corruption core",new Vector3(5,1.45f,2.55f),Violet,1.5f,4.2f);
+            }
             Box("Broken watchpost",new Vector3(5,.8f,4.6f),new Vector3(2.5f,1.7f,1.3f),Stone*.65f);
             Hero(new Vector3(0,0,-6),.9f);
             for(int i=0;i<4;i++) Archer(new Vector3(-1.3f+i*.75f,0,-7));
