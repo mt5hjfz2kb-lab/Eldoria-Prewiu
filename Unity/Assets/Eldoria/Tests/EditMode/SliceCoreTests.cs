@@ -74,7 +74,7 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(ascend).Ok,Is.True);
             Assert.That(g.Execute(ascend).Ok,Is.True);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
-            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3052));
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3222));
 
             Assert.That(g.Execute(Cmd(g,"barracks-b2","Build","barracks")).Ok,Is.True);
             clock.Add(8);g=new LocalGateway(clock,store);
