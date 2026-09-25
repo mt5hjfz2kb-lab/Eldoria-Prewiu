@@ -81,7 +81,10 @@ jobs:
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
           $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
           if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
-          if ((Get-Item $player).Length -lt 1MB) { throw "Windows player is unexpectedly small." }
+          $playerDll = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/UnityPlayer.dll"
+          $dataDir = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria_Data"
+          if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
+          if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
