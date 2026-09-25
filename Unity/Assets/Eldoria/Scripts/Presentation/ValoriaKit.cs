@@ -165,6 +165,14 @@ namespace Eldoria.Presentation
             return BenchmarkPieceModulated(name,LoadExternal(resourceName),ground,footprint,maxHeight,rotation,tint);
         }
 
+        public static GameObject TerrainPieceTinted(string resourceName,string name,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation,Color tint)
+        {
+            // Some legacy terrain atlases still resolve to white in URP even after conversion.
+            // In those cases keep the authored silhouette/mesh but enforce the Eldoria palette.
+            return BenchmarkPieceTinted(name,LoadExternal(resourceName),ground,footprint,maxHeight,rotation,tint);
+        }
+
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
             // Package-free smoke approximation so the Unity slice does not depend on the optional
