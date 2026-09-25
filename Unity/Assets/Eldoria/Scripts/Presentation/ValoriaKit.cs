@@ -11,13 +11,13 @@ namespace Eldoria.Presentation
     {
         static readonly Dictionary<Color32,Material> Materials=new();
 
-        public static readonly Color Stone=new Color(.30f,.31f,.30f);
-        public static readonly Color OldStone=new Color(.25f,.26f,.25f);
-        public static readonly Color WarmStone=new Color(.40f,.37f,.31f);
-        public static readonly Color Timber=new Color(.20f,.12f,.075f);
-        public static readonly Color Slate=new Color(.11f,.13f,.14f);
-        public static readonly Color Earth=new Color(.19f,.16f,.12f);
-        public static readonly Color Pine=new Color(.075f,.15f,.105f);
+        public static readonly Color Stone=new Color(.43f,.43f,.40f);
+        public static readonly Color OldStone=new Color(.36f,.36f,.34f);
+        public static readonly Color WarmStone=new Color(.52f,.47f,.38f);
+        public static readonly Color Timber=new Color(.29f,.18f,.10f);
+        public static readonly Color Slate=new Color(.18f,.20f,.21f);
+        public static readonly Color Earth=new Color(.28f,.23f,.17f);
+        public static readonly Color Pine=new Color(.12f,.23f,.16f);
 
         static readonly Dictionary<string,Texture2D> Textures=new();
 
@@ -71,27 +71,27 @@ namespace Eldoria.Presentation
                 {
                     float mortar=(x%16<=1||y%12<=1)?-.20f:0f;
                     float chip=((x*7+y*13)%37==0)?-.12f:0f;
-                    v=.88f+n*.18f+mortar+chip;
+                    v=1.00f+n*.16f+mortar*.65f+chip*.65f;
                 }
                 else if(kind=="wood")
                 {
                     float grain=.07f*Mathf.Sin((x+y*.18f)*.78f)+.04f*Mathf.Sin(x*.19f);
                     float seam=(x%18<=1)?-.18f:0f;
-                    v=.88f+n*.10f+grain+seam;
+                    v=.98f+n*.10f+grain*.7f+seam*.65f;
                 }
                 else if(kind=="slate")
                 {
                     float seam=(y%10<=1)?-.16f:0f;
-                    v=.82f+n*.16f+seam;
+                    v=.96f+n*.14f+seam*.65f;
                 }
                 else if(kind=="pine")
                 {
-                    v=.78f+n*.24f+((x+y)%9==0?-.08f:0f);
+                    v=.94f+n*.20f+((x+y)%9==0?-.05f:0f);
                 }
                 else
                 {
                     float pebble=((x*5+y*11)%29==0)?.10f:0f;
-                    v=.82f+n*.20f+pebble;
+                    v=.96f+n*.18f+pebble*.7f;
                 }
                 pixels[y*size+x]=new Color(Mathf.Clamp01(baseColor.r*v),Mathf.Clamp01(baseColor.g*v),Mathf.Clamp01(baseColor.b*v),1);
             }
