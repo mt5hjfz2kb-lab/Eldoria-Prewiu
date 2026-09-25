@@ -66,6 +66,34 @@ namespace Eldoria.Presentation
             return go;
         }
 
+        public static GameObject BenchmarkPieceModulated(string name,GameObject prefab,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation,Color tint)
+        {
+            var go=BenchmarkPiece(name,prefab,ground,footprint,maxHeight,rotation);
+            if(go==null)return null;
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var source=mats[i];
+                    if(source==null)continue;
+                    var material=new Material(source){name="Valoria modulated · "+source.name};
+                    var baseColor=material.HasProperty("_BaseColor")?material.GetColor("_BaseColor"):
+                        material.HasProperty("_Color")?material.GetColor("_Color"):Color.white;
+                    var modulated=new Color(baseColor.r*tint.r,baseColor.g*tint.g,baseColor.b*tint.b,
+                        baseColor.a*tint.a);
+                    if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",modulated);
+                    if(material.HasProperty("_Color"))material.SetColor("_Color",modulated);
+                    if(material.HasProperty("_EmissionColor"))material.SetColor("_EmissionColor",Color.black);
+                    if(material.HasProperty("_EmissionStrength"))material.SetFloat("_EmissionStrength",0f);
+                    mats[i]=material;
+                }
+                renderer.sharedMaterials=mats;
+            }
+            return go;
+        }
+
         public static GameObject BenchmarkPieceTinted(string name,GameObject prefab,Vector3 ground,
             float footprint,float maxHeight,Quaternion rotation,Color tint)
         {
@@ -445,30 +473,30 @@ namespace Eldoria.Presentation
             var megaTower=art!=null?art.MegaTower:null;
             // Preserve the authored stone materials here. Flattening these to a single tint erased
             // the masonry detail and made the connected facade read as one brown slab.
-            if(BenchmarkPiece(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
-                2.65f,3.25f,Quaternion.identity)==null)
+            if(BenchmarkPieceModulated(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
+                2.65f,3.25f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
                 BenchmarkPieceTinted(name+" · connected gate fallback",megaGate,origin+new Vector3(0,.12f,-3.08f),
                     2.65f,3.25f,Quaternion.identity,WarmStone*.82f);
             foreach(float x in new[]{-2.9f,2.9f})
-                if(BenchmarkPiece(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
-                    3.55f,3.10f,Quaternion.identity)==null)
+                if(BenchmarkPieceModulated(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
+                    3.55f,3.10f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
                     Wall(name+" · connected wall fallback",origin+new Vector3(x,1.60f,-3.02f),
                         new Vector3(3.4f,2.7f,.62f),WarmStone*.72f,true);
             foreach(float x in new[]{-5.0f,5.0f})
-                if(BenchmarkPiece(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
-                    2.75f,5.85f,Quaternion.identity)==null)
+                if(BenchmarkPieceModulated(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
+                    2.75f,5.85f,Quaternion.identity,new Color(.55f,.56f,.55f,1f))==null)
                     Tower(name+" · connected tower fallback",origin+new Vector3(x,.05f,-2.35f),1.25f,5.35f,WarmStone*.74f);
             foreach(float x in new[]{-4.45f,4.45f})
-                if(BenchmarkPiece(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.45f),
-                    2.35f,5.05f,Quaternion.identity)==null)
+                if(BenchmarkPieceModulated(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.45f),
+                    2.35f,5.05f,Quaternion.identity,new Color(.50f,.52f,.51f,1f))==null)
                     Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
             // The keep retains an Eldoria-specific mass, but authored masonry now carries its visible facade.
             Block(name+" · inner keep",origin+new Vector3(0,3.45f,.75f),
                 new Vector3(5.55f,2.35f,3.95f),Stone*.62f);
             foreach(float x in new[]{-1.55f,1.55f})
-                if(BenchmarkPiece(name+" · keep detailed facing",stoneWall,
-                    origin+new Vector3(x,2.30f,-1.38f),3.0f,2.35f,Quaternion.identity)==null)
+                if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
+                    origin+new Vector3(x,2.30f,-1.38f),3.0f,2.35f,Quaternion.identity,new Color(.52f,.53f,.51f,1f))==null)
                     Wall(name+" · keep facing fallback",origin+new Vector3(x,3.15f,-1.36f),
                         new Vector3(2.85f,2.05f,.46f),OldStone*.66f,true);
             GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.78f,.75f),
