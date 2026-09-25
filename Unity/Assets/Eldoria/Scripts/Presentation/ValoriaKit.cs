@@ -131,7 +131,7 @@ namespace Eldoria.Presentation
         public static readonly Color OldStone=new Color(.35f,.36f,.34f);
         public static readonly Color WarmStone=new Color(.48f,.43f,.35f);
         public static readonly Color Timber=new Color(.31f,.20f,.12f);
-        public static readonly Color Slate=new Color(.27f,.28f,.27f);
+        public static readonly Color Slate=new Color(.33f,.38f,.43f);
         public static readonly Color Earth=new Color(.30f,.27f,.23f);
         public static readonly Color Pine=new Color(.11f,.23f,.16f);
 
@@ -217,7 +217,7 @@ namespace Eldoria.Presentation
         {
             if(c.g>c.r*1.25f && c.g>c.b*1.15f)return "pine";
             if(c.r>c.g*1.22f && c.g>c.b*1.15f)return c.r<.28f?"wood":"earth";
-            if(c.r<.17f&&c.g<.19f&&c.b<.21f)return "slate";
+            if((c.b>c.r*1.15f&&c.b>c.g*1.06f)||(c.r<.17f&&c.g<.19f&&c.b<.21f))return "slate";
             return "stone";
         }
 
@@ -343,8 +343,8 @@ namespace Eldoria.Presentation
             // Valoria houses should read as rebuilt medieval structures, not box + roof placeholders.
             Block(name+" · stone footing",p+new Vector3(0,.16f,0),new Vector3(size.x*1.08f,.30f,size.z*1.08f),OldStone*.88f);
             Block(name+" · masonry",p+Vector3.up*(size.y*.48f),size,WarmStone*.78f);
-            GableRoof(name+" · roof",p+new Vector3(0,size.y+.12f,0),
-                new Vector3(size.x*1.18f,.82f,size.z*1.22f),Slate);
+            GableRoof(name+" · roof",p+new Vector3(0,size.y+.18f,0),
+                new Vector3(size.x*1.18f,1.02f,size.z*1.22f),Slate);
             Block(name+" · timber door",p+new Vector3(0,.66f,-size.z*.515f),
                 new Vector3(.46f,1.15f,.12f),Timber);
             Block(name+" · lintel",p+new Vector3(0,1.30f,-size.z*.525f),
@@ -510,8 +510,8 @@ namespace Eldoria.Presentation
                 new Color(.45f,.47f,.46f,1f))==null)
                 Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
                     new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
-            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.03f,1.10f),
-                new Vector3(5.05f,.72f,3.38f),Slate*.88f);
+            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.12f,1.10f),
+                new Vector3(5.05f,1.28f,3.38f),Slate*.96f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
