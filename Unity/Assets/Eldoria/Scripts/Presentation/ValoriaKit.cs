@@ -499,14 +499,18 @@ namespace Eldoria.Presentation
                     3.55f,3.10f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
                     Wall(name+" · connected wall fallback",origin+new Vector3(x,1.60f,-3.02f),
                         new Vector3(3.4f,2.7f,.62f),WarmStone*.72f,true);
-            foreach(float x in new[]{-5.0f,5.0f})
-                if(BenchmarkPieceModulated(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
-                    2.82f,6.35f,Quaternion.identity,new Color(.55f,.56f,.55f,1f))==null)
-                    Tower(name+" · connected tower fallback",origin+new Vector3(x,.05f,-2.35f),1.25f,5.35f,WarmStone*.74f);
-            foreach(float x in new[]{-4.45f,4.45f})
-                if(BenchmarkPieceModulated(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.65f),
-                    2.42f,5.85f,Quaternion.identity,new Color(.50f,.52f,.51f,1f))==null)
-                    Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
+            if(BenchmarkPieceModulated(name+" · connected tower west",megaTower,origin+new Vector3(-5.05f,.08f,-2.62f),
+                2.95f,6.85f,Quaternion.Euler(0,-3f,0),new Color(.55f,.56f,.55f,1f))==null)
+                Tower(name+" · connected tower west fallback",origin+new Vector3(-5.05f,.05f,-2.35f),1.30f,6.15f,WarmStone*.74f);
+            if(BenchmarkPieceModulated(name+" · connected tower east",megaTower,origin+new Vector3(5.0f,.08f,-2.62f),
+                2.55f,5.55f,Quaternion.Euler(0,4f,0),new Color(.52f,.54f,.53f,1f))==null)
+                Tower(name+" · connected tower east fallback",origin+new Vector3(5.0f,.05f,-2.35f),1.15f,5.05f,WarmStone*.70f);
+            if(BenchmarkPieceModulated(name+" · rear connected tower west",megaTower,origin+new Vector3(-4.65f,.08f,2.80f),
+                2.48f,6.20f,Quaternion.Euler(0,8f,0),new Color(.49f,.51f,.50f,1f))==null)
+                Tower(name+" · rear connected tower west fallback",origin+new Vector3(-4.65f,.05f,2.80f),1.12f,5.65f,OldStone*.72f);
+            if(BenchmarkPieceModulated(name+" · rear connected tower east",megaTower,origin+new Vector3(4.20f,.08f,2.35f),
+                2.08f,4.65f,Quaternion.Euler(0,-11f,0),new Color(.46f,.48f,.47f,1f))==null)
+                Tower(name+" · rear connected tower east fallback",origin+new Vector3(4.20f,.05f,2.35f),.96f,4.35f,OldStone*.68f);
 
             // Keep: a small hidden backing volume surrounded by authored masonry on every visible side.
             Block(name+" · inner keep backing",origin+new Vector3(0,2.78f,1.15f),
@@ -527,8 +531,11 @@ namespace Eldoria.Presentation
                 new Color(.45f,.47f,.46f,1f))==null)
                 Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
                     new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
-            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.62f,1.10f),
-                new Vector3(5.05f,1.42f,3.38f),Slate*.96f);
+            GableRoof(name+" · inner keep west roof",origin+new Vector3(-1.15f,4.72f,1.02f),
+                new Vector3(3.15f,1.36f,3.15f),Slate*.94f);
+            GableRoof(name+" · inner keep east roof",origin+new Vector3(1.55f,4.24f,1.24f),
+                new Vector3(2.30f,.92f,2.70f),Slate*.84f);
+            Rubble(name+" · collapsed keep roof",origin+new Vector3(1.85f,3.70f,.10f),.58f,6);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
