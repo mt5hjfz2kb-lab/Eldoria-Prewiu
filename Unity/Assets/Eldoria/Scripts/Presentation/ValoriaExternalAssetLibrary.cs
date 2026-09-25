@@ -34,6 +34,8 @@ namespace Eldoria.Presentation
         public GameObject SlavicMoss;
         public GameObject MegaTower;
         public GameObject MegaHalfGate;
+        public GameObject MegaDestroyedTower;
+        public GameObject MegaWallPassage;
 
         public static ValoriaExternalAssetLibrary Load()
             => Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
