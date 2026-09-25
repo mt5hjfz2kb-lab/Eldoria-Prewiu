@@ -109,9 +109,19 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Valoria upper outcrop west",new Vector3(-9.0f,.02f,7.3f),1.05f,5);
             ValoriaKit.RockCluster("Valoria upper outcrop east",new Vector3(8.8f,.02f,7.9f),1.00f,5);
 
-            // Keep the perimeter visually continuous. Loose wall/tower prefabs were removed after capture review.
-            ValoriaKit.Wall("Valoria west retaining wall",new Vector3(-8.2f,1.05f,3.7f),new Vector3(1.0f,2.0f,6.8f),ValoriaKit.OldStone*.92f,false);
-            ValoriaKit.Wall("Valoria east retaining wall",new Vector3(8.2f,1.05f,3.7f),new Vector3(1.0f,2.0f,6.8f),ValoriaKit.OldStone*.92f,false);
+            // Capture review: long procedural retaining slabs read as dark blockout from side angles.
+            // Build the terrace edges from authored masonry modules instead, keeping short fallbacks only for safety.
+            foreach(float side in new[]{-1f,1f})
+            {
+                for(int i=0;i<2;i++)
+                {
+                    var p=new Vector3(side*8.15f,.16f,1.9f+i*3.45f);
+                    if(ValoriaKit.BenchmarkPieceModulated("Valoria · authored retaining wall",art!=null?art.MasonryWall:null,
+                        p,3.65f,2.15f,Quaternion.Euler(0,90f,0),new Color(.52f,.53f,.51f,1f))==null)
+                        ValoriaKit.Wall("Valoria retaining fallback",p+new Vector3(0,.90f,0),
+                            new Vector3(.72f,1.65f,3.25f),ValoriaKit.OldStone*.72f,false);
+                }
+            }
             ValoriaKit.RockCluster("Old palace rubble west",new Vector3(-8.4f,.15f,6.2f),1.15f,10);
             ValoriaKit.RockCluster("Old palace rubble east",new Vector3(8.1f,.15f,6.6f),1.05f,9);
 
