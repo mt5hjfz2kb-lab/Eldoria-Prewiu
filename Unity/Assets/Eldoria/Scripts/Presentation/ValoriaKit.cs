@@ -10,6 +10,25 @@ namespace Eldoria.Presentation
     public static class ValoriaKit
     {
         static readonly Dictionary<Color32,Material> Materials=new();
+        static ValoriaExternalAssetLibrary externalAssets;
+
+        static ValoriaExternalAssetLibrary ExternalAssets
+        {
+            get
+            {
+                if(externalAssets==null) externalAssets=ValoriaExternalAssetLibrary.Load();
+                return externalAssets;
+            }
+        }
+
+        public static GameObject ExternalPrefab(string name,GameObject prefab,Vector3 position,Vector3 scale,Quaternion rotation)
+        {
+            if(prefab==null)return null;
+            var go=Object.Instantiate(prefab,position,rotation);
+            go.name=name;
+            go.transform.localScale=scale;
+            return go;
+        }
 
         public static readonly Color Stone=new Color(.43f,.43f,.40f);
         public static readonly Color OldStone=new Color(.36f,.36f,.34f);
@@ -231,53 +250,66 @@ namespace Eldoria.Presentation
 
         public static void BastionCore(string name,Vector3 origin,System.Action<string,Vector3,Color,float,float> glow)
         {
-            // Fortress within a dead palace: broad military base, narrower inhabited keep,
-            // irregular ancient crown. All dimensions are tuned for the current mobile camera.
-            Block(name+" · rock plinth",origin+new Vector3(0,.70f,0),
-                new Vector3(10.4f,1.6f,7.4f),OldStone*.82f);
+            // Hybrid production pass: authored modular castle meshes carry the readable architecture,
+            // while bespoke procedural masses preserve Eldoria's unique fortress-inside-a-dead-palace silhouette.
+            var lib=ExternalAssets;
 
-            Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
-                new Vector3(9.2f,2.7f,1.15f),Stone*.94f,true);
+            Block(name+" · rock plinth",origin+new Vector3(0,.68f,0),
+                new Vector3(10.7f,1.55f,7.6f),OldStone*.82f);
+            Block(name+" · palace remnant",origin+new Vector3(-.45f,5.35f,.9f),
+                new Vector3(4.35f,1.65f,3.25f),OldStone*.90f);
+
+            if(lib!=null && lib.StoneWall!=null && lib.StoneTower!=null && lib.StoneGate!=null)
+            {
+                // Real modular front curtain: three wall sections around a central gate.
+                ExternalPrefab(name+" · authored gate",lib.StoneGate,
+                    origin+new Vector3(0,.06f,-3.0f),Vector3.one*.86f,Quaternion.identity);
+                ExternalPrefab(name+" · authored wall west",lib.StoneWall,
+                    origin+new Vector3(-3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
+                ExternalPrefab(name+" · authored wall east",lib.StoneWall,
+                    origin+new Vector3(3.25f,.06f,-2.82f),new Vector3(.78f,.88f,.82f),Quaternion.identity);
+
+                ExternalPrefab(name+" · authored tower west",lib.StoneTower,
+                    origin+new Vector3(-5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
+                ExternalPrefab(name+" · authored tower east",lib.StoneTower,
+                    origin+new Vector3(5.0f,.04f,-2.1f),Vector3.one*.95f,Quaternion.identity);
+                ExternalPrefab(name+" · authored rear west",lib.StoneTower,
+                    origin+new Vector3(-4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
+                ExternalPrefab(name+" · authored rear east",lib.StoneTower,
+                    origin+new Vector3(4.35f,.04f,2.45f),Vector3.one*.82f,Quaternion.identity);
+            }
+            else
+            {
+                // Safe fallback keeps the slice functional if the external pack is unavailable.
+                Wall(name+" · front curtain",origin+new Vector3(0,2.15f,-2.65f),
+                    new Vector3(9.2f,2.7f,1.15f),Stone*.94f,true);
+                Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
+                Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
+                Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+                Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+            }
+
+            // Bespoke keep avoids becoming a generic asset-pack castle.
             Block(name+" · inner keep",origin+new Vector3(0,3.65f,.55f),
-                new Vector3(6.4f,3.0f,4.7f),Stone*.91f);
-            Block(name+" · palace remnant",origin+new Vector3(-.55f,5.55f,.85f),
-                new Vector3(4.2f,1.8f,3.15f),OldStone*.92f);
+                new Vector3(6.25f,2.75f,4.55f),Stone*.90f);
+            Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
+            Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
-            Tower(name+" · west tower",origin+new Vector3(-5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
-            Tower(name+" · east tower",origin+new Vector3(5.0f,.05f,-2.15f),1.38f,5.7f,Stone*.90f);
-            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
-            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
-
-            // Front buttresses make the keep read as architecture rather than stacked boxes.
-            Buttress(name+" · buttress west",origin+new Vector3(-3.35f,.08f,-3.15f),3.7f,1.35f,WarmStone*.82f);
-            Buttress(name+" · buttress east",origin+new Vector3(3.35f,.08f,-3.15f),3.7f,1.35f,WarmStone*.82f);
-
-            // Recessed central entrance.
-            Block(name+" · gate recess",origin+new Vector3(0,1.55f,-3.28f),
-                new Vector3(2.15f,2.65f,.22f),new Color(.07f,.065f,.06f));
-            Block(name+" · gate",origin+new Vector3(0,1.15f,-3.42f),
-                new Vector3(1.7f,2.05f,.18f),Timber*.78f);
-
-            // Strong readable windows with limited warm life.
             foreach(float x in new[]{-1.85f,0f,1.85f})
-                WindowSlit(name+" · keep slit",origin+new Vector3(x,4.05f,-1.84f),
+                WindowSlit(name+" · keep slit",origin+new Vector3(x,4.0f,-1.78f),
                     new Vector3(.28f,.72f,.12f),x==0f);
-            WindowSlit(name+" · palace slit L",origin+new Vector3(-1.1f,5.75f,-.76f),
-                new Vector3(.24f,.6f,.10f),false);
-            WindowSlit(name+" · palace slit R",origin+new Vector3(.4f,5.75f,-.76f),
-                new Vector3(.24f,.6f,.10f),true);
 
-            Banner(name+" · banner west",origin+new Vector3(-3.45f,3.55f,-3.28f),
-                new Vector3(.62f,2.35f,.08f),new Color(.34f,.08f,.07f));
-            Banner(name+" · banner east",origin+new Vector3(3.45f,3.55f,-3.28f),
-                new Vector3(.62f,2.35f,.08f),new Color(.34f,.08f,.07f));
+            Banner(name+" · banner west",origin+new Vector3(-2.65f,3.55f,-1.82f),
+                new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
+            Banner(name+" · banner east",origin+new Vector3(2.65f,3.55f,-1.82f),
+                new Vector3(.62f,2.25f,.08f),new Color(.34f,.08f,.07f));
 
-            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.2f,.95f),OldStone*.90f);
-            Scaffold(name+" · repair scaffold",origin+new Vector3(3.75f,3.2f,.65f),
-                new Vector3(2.5f,4.8f,2.25f));
+            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.05f,.95f),OldStone*.90f);
+            Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
+                new Vector3(2.35f,4.6f,2.1f));
+            Rubble(name+" · crown rubble",origin+new Vector3(-3.15f,.22f,2.05f),1.35f,8);
 
-            Rubble(name+" · crown rubble",origin+new Vector3(-3.25f,.22f,2.1f),1.4f,8);
-            if(glow!=null)glow(name+" · inhabited warmth",origin+new Vector3(0,3.6f,-1.25f),
+            if(glow!=null)glow(name+" · inhabited warmth",origin+new Vector3(0,3.55f,-1.15f),
                 new Color(.96f,.53f,.22f),1.25f,6.0f);
         }
 
