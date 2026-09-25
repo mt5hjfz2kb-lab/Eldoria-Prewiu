@@ -47,15 +47,18 @@ namespace Eldoria.Application
                 SchemaVersion=s.SchemaVersion, RulesVersion=s.RulesVersion, Revision=s.Revision,
                 PlayerId=s.PlayerId, RealmId=s.RealmId, WorldId=s.WorldId,
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
-                BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel,
+                BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
-                JourneyComplete=s.JourneyComplete, Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
+                JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
+                Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
                 ForestRemaining=s.ForestRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
-                BuildingTaskId=s.BuildingTaskId, LastBattleReason=s.LastBattleReason,
+                BuildingTaskId=s.BuildingTaskId, RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
+                RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
+                LastBattleReason=s.LastBattleReason,
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
             };
@@ -76,17 +79,55 @@ namespace Eldoria.Application
                     if (!CanDepart()) return Fail("Marcha no disponible");
                     Depart(command.TargetId); state.CorruptionDiscovered = true; break;
                 case "Fight":
-                    if (command.TargetId != "corrupt-scout") return Fail("Amenaza desconocida");
-                    if (state.ScoutDefeated) return Fail("La ruta ya está despejada");
+                    if (command.TargetId == "corrupt-scout")
+                    {
+                        if (state.ScoutDefeated) return Fail("La ruta ya está despejada");
+                    }
+                    else if (command.TargetId == "engendro-valoria")
+                    {
+                        if (state.BastionLevel < 2 || state.BarracksLevel < 1) return Fail("Refuerza primero el Cuartel");
+                        if (state.EngendroDefeated) return Fail("El Engendro ya ha sido derrotado");
+                        if (state.Available.Total < 48) return Fail("Necesitas 48 arqueros: recluta refuerzos");
+                    }
+                    else return Fail("Amenaza desconocida");
                     if (!CanDepart()) return Fail("Marcha no disponible");
                     Depart(command.TargetId); break;
+                case "AdvanceBastion":
+                    if (command.TargetId != "bastion" || !state.JourneyComplete || state.BastionLevel != 1)
+                        return Fail("El Bastión todavía no puede ascender");
+                    state.BastionLevel = 2;
+                    break;
                 case "Build":
-                    if (command.TargetId != "sawmill" || state.SawmillLevel != 0 || state.BuildingCompletesUtcTicks > 0)
-                        return Fail("Obra no disponible");
-                    if (state.Resources.Wood < SliceRules.SawmillWoodCost) return Fail("Falta madera: visita el bosque");
-                    state.Resources.Wood -= SliceRules.SawmillWoodCost;
-                    state.BuildingTaskId = "build:" + command.Id;
-                    state.BuildingCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.SawmillBuildSeconds).Ticks;
+                    if (state.BuildingCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
+                    if (command.TargetId == "sawmill")
+                    {
+                        if (state.SawmillLevel != 0) return Fail("Obra no disponible");
+                        if (state.Resources.Wood < SliceRules.SawmillWoodCost) return Fail("Falta madera: visita el bosque");
+                        state.Resources.Wood -= SliceRules.SawmillWoodCost;
+                        state.BuildingTaskId = "sawmill:" + command.Id;
+                        state.BuildingCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.SawmillBuildSeconds).Ticks;
+                    }
+                    else if (command.TargetId == "barracks")
+                    {
+                        if (state.BastionLevel < 2 || state.BarracksLevel != 0) return Fail("Cuartel no disponible");
+                        if (state.Resources.Wood < SliceRules.BarracksWoodCost || state.Resources.Stone < SliceRules.BarracksStoneCost)
+                            return Fail("Faltan recursos para el Cuartel");
+                        state.Resources.Wood -= SliceRules.BarracksWoodCost;
+                        state.Resources.Stone -= SliceRules.BarracksStoneCost;
+                        state.BuildingTaskId = "barracks:" + command.Id;
+                        state.BuildingCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.BarracksBuildSeconds).Ticks;
+                    }
+                    else return Fail("Obra no disponible");
+                    break;
+                case "Recruit":
+                    if (command.TargetId != "archer:t1" || state.BastionLevel < 2 || state.BarracksLevel < 1)
+                        return Fail("Reclutamiento no disponible");
+                    if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
+                    if (state.Resources.Wood < SliceRules.RecruitWoodCost) return Fail("Falta madera para equipar reclutas");
+                    state.Resources.Wood -= SliceRules.RecruitWoodCost;
+                    state.PendingRecruitArchers = SliceRules.RecruitArchers;
+                    state.RecruitmentTaskId = "recruit:" + command.Id;
+                    state.RecruitmentCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.RecruitSeconds).Ticks;
                     break;
                 default: return Fail("Acción desconocida");
             }
@@ -112,9 +153,22 @@ namespace Eldoria.Application
                 if (!state.CompletedTaskIds.Contains(state.BuildingTaskId))
                 {
                     state.CompletedTaskIds.Add(state.BuildingTaskId);
-                    state.SawmillLevel = 1;
+                    if (state.BuildingTaskId.StartsWith("barracks:")) state.BarracksLevel = 1;
+                    else state.SawmillLevel = 1;
                 }
                 state.BuildingCompletesUtcTicks = 0; state.BuildingTaskId = ""; changed = true;
+            }
+            if (state.RecruitmentCompletesUtcTicks > 0 && state.RecruitmentCompletesUtcTicks <= clock.UtcTicks)
+            {
+                if (!state.CompletedTaskIds.Contains(state.RecruitmentTaskId))
+                {
+                    state.CompletedTaskIds.Add(state.RecruitmentTaskId);
+                    state.Available.ArcherT1 += state.PendingRecruitArchers;
+                }
+                state.RecruitmentCompletesUtcTicks = 0;
+                state.RecruitmentTaskId = "";
+                state.PendingRecruitArchers = 0;
+                changed = true;
             }
             // Drive multiple phases in one call after a long offline interval using the ORIGINAL due time.
             for (int guard=0; guard<3 && state.March.Phase != "idle" &&
@@ -128,9 +182,19 @@ namespace Eldoria.Application
                     { m.Phase = "gathering"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.GatherSeconds).Ticks; }
                     else
                     {
-                        var report = SliceRules.Fight(SliceRules.Expedition(m.Troops, m.HeroId));
+                        var report = SliceRules.Fight(SliceRules.Expedition(m.Troops, m.HeroId), m.TargetId);
                         state.LastBattleReason = report.Reason;
-                        if (report.Won) { m.PendingWood = 80; m.PendingStone = 70; state.ScoutDefeated = true; }
+                        if (report.Won)
+                        {
+                            if (m.TargetId == "engendro-valoria")
+                            {
+                                m.PendingWood = 120; m.PendingStone = 100; state.EngendroDefeated = true;
+                            }
+                            else
+                            {
+                                m.PendingWood = 80; m.PendingStone = 70; state.ScoutDefeated = true;
+                            }
+                        }
                         m.Phase = "returning"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                     }
                 }
