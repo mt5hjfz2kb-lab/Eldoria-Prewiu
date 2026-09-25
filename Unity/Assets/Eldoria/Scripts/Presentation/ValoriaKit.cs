@@ -460,10 +460,10 @@ namespace Eldoria.Presentation
             var stoneWall=art!=null?art.MasonryWall:null;
             var stoneGate=art!=null?art.MasonryGate:null;
 
-            Block(name+" · rock plinth",origin+new Vector3(0,.68f,0),
-                new Vector3(10.7f,1.55f,7.6f),OldStone*.82f);
-            Block(name+" · palace remnant",origin+new Vector3(-.45f,5.20f,1.35f),
-                new Vector3(3.65f,1.25f,2.75f),OldStone*.66f);
+            Block(name+" · rock plinth",origin+new Vector3(0,.58f,.20f),
+                new Vector3(9.7f,1.30f,6.9f),OldStone*.70f);
+            Block(name+" · palace remnant",origin+new Vector3(-.55f,5.00f,1.70f),
+                new Vector3(3.15f,.92f,2.35f),OldStone*.56f);
 
             // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
             // gaps, so individual modules never read as floating props.
@@ -492,15 +492,15 @@ namespace Eldoria.Presentation
                     Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
             // The keep retains an Eldoria-specific mass, but authored masonry now carries its visible facade.
-            Block(name+" · inner keep",origin+new Vector3(0,3.45f,.75f),
-                new Vector3(5.55f,2.35f,3.95f),Stone*.62f);
+            Block(name+" · inner keep",origin+new Vector3(0,3.25f,1.00f),
+                new Vector3(5.15f,1.95f,3.55f),Stone*.54f);
             foreach(float x in new[]{-1.55f,1.55f})
                 if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
                     origin+new Vector3(x,2.30f,-1.38f),3.0f,2.35f,Quaternion.identity,new Color(.52f,.53f,.51f,1f))==null)
                     Wall(name+" · keep facing fallback",origin+new Vector3(x,3.15f,-1.36f),
                         new Vector3(2.85f,2.05f,.46f),OldStone*.66f,true);
-            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.78f,.75f),
-                new Vector3(5.95f,1.05f,4.30f),Slate*.78f);
+            GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.38f,1.00f),
+                new Vector3(5.55f,.92f,3.90f),Slate*.72f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
@@ -515,8 +515,8 @@ namespace Eldoria.Presentation
 
             // The surviving cyclopean arch rises above the rebuilt keep: this must read from the
             // establishing camera as the dead-palace signature, not disappear behind the fortress.
-            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.55f,2.05f,3.05f),4.15f,1.15f,OldStone*.80f);
-            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,6.05f,.95f),OldStone*.90f);
+            BrokenArch(name+" · dead palace arch",origin+new Vector3(-.85f,1.55f,3.85f),3.20f,.95f,OldStone*.62f);
+            BrokenCrown(name+" · broken crown",origin+new Vector3(-.3f,5.40f,1.75f),OldStone*.68f);
             Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,2.8f),1.55f,12);
             Rubble(name+" · palace collapse east",origin+new Vector3(4.8f,.18f,3.0f),1.35f,10);
             Scaffold(name+" · repair scaffold",origin+new Vector3(3.7f,3.15f,.75f),
