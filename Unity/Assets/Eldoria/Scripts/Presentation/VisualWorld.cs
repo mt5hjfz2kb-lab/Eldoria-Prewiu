@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.86f,.86f,.83f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.76f,.78f,.77f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.60f,.61f,.60f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.50f,.52f,.52f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -26,8 +26,8 @@ namespace Eldoria.Presentation
             cameraGo.transform.position = city ? new Vector3(16.6f,16.8f,-23.2f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,3.7f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.80f,.62f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?2.75f:1.9f;
+            sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.88f,.74f):new Color(1.0f,.93f,.82f);
+            sun.intensity=city?1.95f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.27f,.29f,.26f):Earth);
@@ -51,9 +51,9 @@ namespace Eldoria.Presentation
                     new Vector3(-18.0f,-2.4f,20.5f),new Vector3(.13f,.13f,.13f),Quaternion.Euler(0,18,0));
                 ValoriaKit.TerrainPiece("SM_Mountains_11","Valoria mountain backdrop east",
                     new Vector3(16.5f,-2.6f,21.0f),new Vector3(.12f,.12f,.12f),Quaternion.Euler(0,-23,0));
-                ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-8.6f,-.35f,14.7f),
-                    3.85f,1.35f,ValoriaKit.OldStone*.76f);
-                ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-5.0f,.02f,14.1f),1.25f,12);
+                ValoriaKit.BrokenArch("Ruined imperial arch",new Vector3(-10.8f,-1.15f,18.2f),
+                    2.75f,1.05f,ValoriaKit.OldStone*.62f);
+                ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-8.1f,-.12f,17.5f),.95f,9);
                 City(state);
             }
             else Frontier(state);
@@ -95,7 +95,10 @@ namespace Eldoria.Presentation
             for(int i=0;i<6;i++)
             {
                 float x=-8.1f+i*3.25f;
-                ValoriaKit.Block("Upper retaining rock",new Vector3(x,-.32f,9.3f+(i%2)*.25f),new Vector3(3.5f,1.1f,1.35f),ValoriaKit.OldStone*.80f);
+                var p=new Vector3(x,-.28f,9.45f+(i%2)*.22f);
+                if(ValoriaKit.BenchmarkPieceTinted("Upper retaining rock",art!=null?art.SlavicBoulder:null,
+                    p,2.55f+(i%2)*.25f,1.25f,Quaternion.Euler(0,21+i*31,0),ValoriaKit.OldStone*.72f)==null)
+                    ValoriaKit.RockCluster("Upper retaining rock fallback",p,1.20f,7);
             }
             ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
             ValoriaKit.RockCluster("Valoria cliff rocks centre",new Vector3(-.6f,-.18f,-6.15f),1.30f,8);
