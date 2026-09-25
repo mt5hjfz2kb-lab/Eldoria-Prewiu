@@ -76,6 +76,10 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Valoria cliff rocks west",new Vector3(-8.6f,-.15f,-5.75f),1.45f,7);
             ValoriaKit.RockCluster("Valoria cliff rocks centre",new Vector3(-.6f,-.18f,-6.15f),1.30f,8);
             ValoriaKit.RockCluster("Valoria cliff rocks east",new Vector3(8.2f,-.12f,-5.8f),1.40f,7);
+            foreach(var q in new[]{new Vector3(-8.8f,-.42f,-5.55f),new Vector3(-4.8f,-.48f,-6.0f),
+                new Vector3(4.7f,-.45f,-5.95f),new Vector3(8.7f,-.40f,-5.45f)})
+                ValoriaKit.BenchmarkPieceTinted("Valoria · authored cliff boulder",art!=null?art.SlavicBoulder:null,
+                    q,2.35f,1.55f,Quaternion.Euler(0,(q.x>0?28:-24),0),ValoriaKit.OldStone*.82f);
             ValoriaKit.RockCluster("Valoria upper outcrop west",new Vector3(-9.0f,.02f,7.3f),1.05f,5);
             ValoriaKit.RockCluster("Valoria upper outcrop east",new Vector3(8.8f,.02f,7.9f),1.00f,5);
 
@@ -88,20 +92,23 @@ namespace Eldoria.Presentation
             // Signature Bastion: fortress built inside a dead palace.
             ValoriaKit.BastionCore("Bastion",new Vector3(0,.05f,5.0f),Glow);
 
-            // Main central route from foreground to fortress.
-            ValoriaKit.Wall("Valoria · lower entrance",new Vector3(0,1.25f,-4.65f),new Vector3(5.4f,2.35f,.75f),ValoriaKit.WarmStone*.88f,false);
+            // Main central route from foreground to fortress. Use one coherent Slavic stone family
+            // for the civic approach, palette-normalised to Eldoria instead of raw package colours.
+            var lowerGateArt=ValoriaKit.BenchmarkPieceTinted("Valoria · lower stone gate",art!=null?art.SlavicRockGate:null,
+                new Vector3(0,.12f,-4.65f),5.0f,3.3f,Quaternion.identity,ValoriaKit.WarmStone*.90f);
+            if(lowerGateArt==null)
+                ValoriaKit.Wall("Valoria · lower entrance",new Vector3(0,1.25f,-4.65f),new Vector3(5.4f,2.35f,.75f),ValoriaKit.WarmStone*.88f,false);
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-4.82f),new Vector3(2.25f,2.0f,.34f),ValoriaKit.Timber);
             gate.AddComponent<WorldHotspot>().Id="gate";
-            for(int i=0;i<12;i++)
+            gate.GetComponent<Renderer>().enabled=false;
+            for(int i=0;i<10;i++)
             {
-                var p=new Vector3(Mathf.Sin(i*.27f)*.26f,.22f,-11.1f+i*1.12f);
-                var road=ValoriaKit.Block("Valoria · worn stone route",p,new Vector3(2.35f,.08f,.92f),ValoriaKit.WarmStone*.84f);
-                road.transform.rotation=Quaternion.Euler(0,(i%3-1)*5,0);
-                for(int c=-1;c<=1;c++)
+                var p=new Vector3(Mathf.Sin(i*.31f)*.22f,.20f,-10.5f+i*1.22f);
+                if(ValoriaKit.BenchmarkPieceTinted("Valoria · authored cobble route",art!=null?art.SlavicCobbleRoad:null,
+                    p,2.55f,.22f,Quaternion.Euler(0,(i%3-1)*5,0),ValoriaKit.WarmStone*.82f)==null)
                 {
-                    var cobble=ValoriaKit.Block("Valoria · road cobble",p+new Vector3(c*.62f,.055f,(i%2==0?.16f:-.14f)),
-                        new Vector3(.38f,.035f,.30f),ValoriaKit.OldStone*1.02f);
-                    cobble.transform.rotation=Quaternion.Euler(0,(i*17+c*9)%18-9,0);
+                    var road=ValoriaKit.Block("Valoria · worn stone route",p,new Vector3(2.35f,.08f,.92f),ValoriaKit.WarmStone*.84f);
+                    road.transform.rotation=Quaternion.Euler(0,(i%3-1)*5,0);
                 }
             }
             ValoriaKit.Stair("Bastion stair",new Vector3(0,.28f,.55f),7,2.9f,.16f,.42f,ValoriaKit.WarmStone*.74f);
@@ -109,6 +116,9 @@ namespace Eldoria.Presentation
 
             // Left: work district / Sawmill.
             ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.22f,4.3f),ValoriaKit.Earth*.98f);
+            for(int i=0;i<2;i++)
+                ValoriaKit.BenchmarkPieceTinted("Sawmill · stone yard edge",art!=null?art.SlavicStoneFence:null,
+                    new Vector3(-8.55f+i*4.35f,.16f,-3.45f),2.15f,1.15f,Quaternion.identity,ValoriaKit.OldStone*.90f);
             ValoriaKit.House("Sawmill",new Vector3(-6.4f,.42f,-1.45f),new Vector3(3.5f,1.65f,2.65f),state.SawmillLevel>0,Glow);
             var mill=ValoriaKit.Block("Aserradero · interacción",new Vector3(-6.4f,1.18f,-1.45f),
                 new Vector3(3.05f,1.45f,2.35f),state.SawmillLevel>0?new Color(.34f,.25f,.17f):new Color(.18f,.18f,.17f));
@@ -140,6 +150,9 @@ namespace Eldoria.Presentation
             }
             ValoriaKit.House("Granary",new Vector3(4.55f,.40f,-4.0f),new Vector3(2.75f,1.5f,2.15f),true,Glow);
             ValoriaKit.Block("Training yard",new Vector3(7.05f,.17f,-4.0f),new Vector3(3.4f,.16f,2.5f),ValoriaKit.Earth*.94f);
+            for(int i=0;i<2;i++)
+                ValoriaKit.BenchmarkPieceTinted("Training yard · stone edge",art!=null?art.SlavicStoneFence:null,
+                    new Vector3(5.65f+i*2.8f,.14f,-5.15f),1.55f,.95f,Quaternion.identity,ValoriaKit.OldStone*.88f);
 
             // Sparse but readable settlement around the Bastion. Keep all structures in one authored kit.
             foreach(var shelter in new[]{new Vector3(-3.45f,.30f,-3.35f),new Vector3(2.7f,.30f,-2.75f),
