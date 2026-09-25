@@ -37,11 +37,10 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults $xml -logFile - 2>&1
-          $code = $LASTEXITCODE
-          $output | Tee-Object -FilePath $log
-          if ($code -ne 0) { throw "Unity EditMode process failed with exit code $code." }
-          if (-not (Test-Path $xml)) { throw "EditMode results were not produced." }
+          $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity EditMode process failed with exit code $($process.ExitCode)." }
+          if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
       - name: PlayMode
@@ -50,11 +49,10 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults $xml -logFile - 2>&1
-          $code = $LASTEXITCODE
-          $output | Tee-Object -FilePath $log
-          if ($code -ne 0) { throw "Unity PlayMode process failed with exit code $code." }
-          if (-not (Test-Path $xml)) { throw "PlayMode results were not produced." }
+          $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity PlayMode process failed with exit code $($process.ExitCode)." }
+          if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
       - name: Windows desktop build
@@ -63,12 +61,11 @@ jobs:
           $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
-          $output = & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile - 2>&1
-          $code = $LASTEXITCODE
-          $output | Tee-Object -FilePath $log
-          if ($code -ne 0) { throw "Unity Windows build process failed with exit code $code." }
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
           $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
-          if (-not (Test-Path $player)) { throw "Windows player was not produced." }
+          if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
           if ((Get-Item $player).Length -lt 1MB) { throw "Windows player is unexpectedly small." }
       - uses: actions/upload-artifact@v4
         if: always()
