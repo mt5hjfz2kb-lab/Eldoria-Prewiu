@@ -59,6 +59,7 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Valoria · lower stone gate"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cobble route"),Is.Not.Null);
             Assert.That(GameObject.Find("Valoria · authored cliff boulder"),Is.Not.Null);
+            Assert.That(GameObject.Find("Ruined imperial causeway · deck 0"),Is.Not.Null);
             Assert.That(GameObject.Find("Bastion · authored gate"),Is.Null,
                 "The blue blockout castle should not be part of the art benchmark");
             Assert.That(GameObject.Find("Brecha · burned earth"),Is.Not.Null);
