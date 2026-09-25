@@ -41,6 +41,9 @@ namespace Eldoria.Presentation
         public static GameObject CastleGate(string name,Vector3 position,Vector3 scale,Quaternion rotation)
             => ExternalPrefab(name,LoadExternal("Stone_Gate"),position,scale,rotation);
 
+        public static GameObject TerrainPiece(string resourceName,string name,Vector3 position,Vector3 scale,Quaternion rotation)
+            => ExternalPrefab(name,LoadExternal(resourceName),position,scale,rotation);
+
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
             // Package-free smoke approximation so the Unity slice does not depend on the optional
