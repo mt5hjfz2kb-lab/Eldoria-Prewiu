@@ -31,3 +31,5 @@ MonoBehaviour:
   SlavicStoneFence: {fileID: 1185029752378428, guid: 3db120a6c4288974c99d5e60c01fff6a, type: 3}
   SlavicRockGate: {fileID: 1163180236395570, guid: e784bd578603723449792fd7a2e8a9e3, type: 3}
   SlavicBoulder: {fileID: 178873758778006785, guid: 0d3784e80d2c3074bb909d9cdd536402, type: 3}
+  MegaTower: {fileID: 177852, guid: 9be926fe84d3b7d45bbeca79dd5786f1, type: 3}
+  MegaHalfGate: {fileID: 164862, guid: 57abdd11cedcad8478c764228178c11f, type: 3}
