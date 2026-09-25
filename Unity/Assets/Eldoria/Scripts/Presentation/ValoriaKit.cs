@@ -157,6 +157,14 @@ namespace Eldoria.Presentation
             return piece;
         }
 
+        public static GameObject TerrainPieceModulated(string resourceName,string name,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation,Color tint)
+        {
+            // Background-only terrain: preserve the authored atlas and geometry, then mute it into
+            // Valoria's atmospheric palette instead of flattening it to the old clay-like solid colour.
+            return BenchmarkPieceModulated(name,LoadExternal(resourceName),ground,footprint,maxHeight,rotation,tint);
+        }
+
         public static void SmokePlume(string name,Vector3 position,float size=1f,float rate=7f)
         {
             // Package-free smoke approximation so the Unity slice does not depend on the optional
@@ -460,8 +468,10 @@ namespace Eldoria.Presentation
             var stoneWall=art!=null?art.MasonryWall:null;
             var stoneGate=art!=null?art.MasonryGate:null;
 
-            Block(name+" · rock plinth",origin+new Vector3(0,.58f,.20f),
-                new Vector3(9.7f,1.30f,6.9f),OldStone*.70f);
+            // The plinth is deliberately rounded and mostly buried. A rectangular top plane
+            // was still visible from the district camera and read as a black blockout slab.
+            Cylinder(name+" · rock plinth",origin+new Vector3(0,.20f,.30f),
+                new Vector3(4.75f,.42f,3.20f),OldStone*.74f,Quaternion.identity);
             // Capture-reviewed: no procedural palace slab above the authored skyline.
 
             // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
