@@ -15,11 +15,11 @@ namespace Eldoria.Presentation
         {
             RenderSettings.ambientLight = new Color(.46f,.48f,.54f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(.18f,.20f,.23f); RenderSettings.fogStartDistance=28; RenderSettings.fogEndDistance=86;
+            RenderSettings.fogColor = new Color(.20f,.22f,.24f); RenderSettings.fogStartDistance=32; RenderSettings.fogEndDistance=96;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 12.4f : 14;
-            camera.backgroundColor = new Color(.18f,.20f,.24f); camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(.23f,.27f,.31f); camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
             cameraGo.transform.position = city ? new Vector3(20.5f,22.5f,-24f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,2.25f,2.8f) : new Vector3(0,0,1));
@@ -39,7 +39,18 @@ namespace Eldoria.Presentation
                 var rock=Box("Old imperial road",new Vector3(-1.2f+(i%2)*.28f,-.02f,-12+i*3.15f),new Vector3(2.7f,.16f,1.7f),WarmStone*.78f);
                 rock.transform.rotation=Quaternion.Euler(0,(i%2==0?7:-8),0);
             }
-            if(city) City(state); else Frontier(state);
+            if(city)
+            {
+                // Distant ruin silhouettes establish depth while keeping the playable plateau readable.
+                for(int i=0;i<6;i++)
+                {
+                    float x=-14+i*5.4f;
+                    ValoriaKit.Block("Distant imperial spine",new Vector3(x,2.0f,13.5f+(i%2)*1.1f),
+                        new Vector3(1.2f,4.5f+(i%3)*1.4f,1.3f),ValoriaKit.OldStone*.48f);
+                }
+                City(state);
+            }
+            else Frontier(state);
             Rift(city?new Vector3(11,1,10):new Vector3(9,1,8));
         }
         static void City(PlayerState state)
@@ -74,6 +85,16 @@ namespace Eldoria.Presentation
             for(int i=0;i<4;i++)
                 ValoriaKit.Block("Palace rib",new Vector3(-2.35f+i*1.35f,6.65f,5.65f),new Vector3(.28f,2.2f,.48f),ValoriaKit.OldStone*.82f);
 
+            // Readable fortress details: dark openings, warm windows and restrained banners.
+            foreach(float x in new[]{-2.0f,0f,2.0f})
+            {
+                ValoriaKit.WindowSlit("Bastion window",new Vector3(x,3.95f,2.98f),new Vector3(.32f,.72f,.12f),x==0);
+                ValoriaKit.WindowSlit("Bastion high slit",new Vector3(x*.65f,5.65f,3.96f),new Vector3(.24f,.58f,.10f),false);
+            }
+            ValoriaKit.Banner("Valoria banner west",new Vector3(-3.25f,3.65f,1.48f),new Vector3(.62f,2.4f,.08f),new Color(.34f,.08f,.07f));
+            ValoriaKit.Banner("Valoria banner east",new Vector3(3.25f,3.65f,1.48f),new Vector3(.62f,2.4f,.08f),new Color(.34f,.08f,.07f));
+            ValoriaKit.Rubble("Old palace rubble",new Vector3(-3.6f,.25f,7.25f),1.4f,8);
+
             // Main central route from foreground to fortress.
             ValoriaKit.Block("Gate pier L",new Vector3(-2.2f,1.35f,-4.65f),new Vector3(1.15f,3.25f,1.15f),ValoriaKit.WarmStone*.85f);
             ValoriaKit.Block("Gate pier R",new Vector3(2.2f,1.35f,-4.65f),new Vector3(1.15f,3.25f,1.15f),ValoriaKit.WarmStone*.85f);
@@ -81,6 +102,8 @@ namespace Eldoria.Presentation
             gate.AddComponent<WorldHotspot>().Id="gate";
             for(int i=0;i<7;i++)
                 ValoriaKit.Block("Central road",new Vector3(0,.20f,-3.4f+i*1.13f),new Vector3(2.8f,.12f,.82f),ValoriaKit.WarmStone*.72f);
+            ValoriaKit.Stair("Bastion stair",new Vector3(0,.28f,.55f),7,2.9f,.16f,.42f,ValoriaKit.WarmStone*.74f);
+            ValoriaKit.Rubble("Gate rubble",new Vector3(-3.4f,.22f,-3.8f),1.0f,6);
 
             // Left: work district / Sawmill.
             ValoriaKit.Block("Sawmill yard",new Vector3(-6.35f,.18f,-1.7f),new Vector3(5.0f,.28f,4.3f),ValoriaKit.Earth*.90f);
