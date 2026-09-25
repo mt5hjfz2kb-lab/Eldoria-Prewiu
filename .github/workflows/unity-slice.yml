@@ -35,16 +35,19 @@ jobs:
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform EditMode -testResults "$env:RUNNER_TEMP/Eldoria-EditMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path "$env:RUNNER_TEMP/Eldoria-EditMode.xml")) { Get-Content "$env:RUNNER_TEMP/Eldoria-EditMode.log" -Tail 80; throw "EditMode results were not produced." }
       - name: PlayMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -runTests -testPlatform PlayMode -testResults "$env:RUNNER_TEMP/Eldoria-PlayMode.xml" -logFile "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path "$env:RUNNER_TEMP/Eldoria-PlayMode.xml")) { Get-Content "$env:RUNNER_TEMP/Eldoria-PlayMode.log" -Tail 80; throw "PlayMode results were not produced." }
       - name: Windows desktop build
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE/Unity" -executeMethod Eldoria.EditorTools.SceneSetup.BuildWindows -logFile "$env:RUNNER_TEMP/Eldoria-Build.log"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe")) { Get-Content "$env:RUNNER_TEMP/Eldoria-Build.log" -Tail 100; throw "Windows player was not produced." }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
