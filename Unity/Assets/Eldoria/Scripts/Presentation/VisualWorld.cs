@@ -64,20 +64,17 @@ namespace Eldoria.Presentation
         {
             var art=ValoriaExternalAssetLibrary.Load();
 
-            // Break the giant repeating ground plane into irregular earth/moss fields.
-            // These stay outside the central civic route so gameplay readability remains intact.
-            for(int i=0;i<18;i++)
+            // Keep the outer valley quiet. Flat colour islands made the city read like a board-game map;
+            // use only sparse authored rock silhouettes and tree groups around the playable plateau.
+            for(int i=0;i<12;i++)
             {
                 float angle=(i*137f+18f)*Mathf.Deg2Rad;
-                float radius=12.2f+(i%4)*2.15f;
+                float radius=13.2f+(i%4)*2.25f;
                 var p=new Vector3(Mathf.Cos(angle)*radius,.012f,1.0f+Mathf.Sin(angle)*radius*.78f);
-                var c=i%3==0?new Color(.19f,.23f,.17f):
-                    i%3==1?new Color(.29f,.265f,.215f):new Color(.245f,.255f,.205f);
-                IrregularGround("Valoria · outer terrain patch",p,5.4f+(i%3)*1.1f,4.0f+(i%4)*.75f,c);
-                if(i%3==0)
-                    ValoriaKit.BenchmarkPieceTinted("Valoria · outer boulder",art!=null?art.SlavicBoulder:null,
-                        p+new Vector3((i%2==0?1.2f:-1.1f),.03f,.6f),1.7f+(i%2)*.45f,1.15f,
-                        Quaternion.Euler(0,i*41%360,0),ValoriaKit.OldStone*.78f);
+                ValoriaKit.BenchmarkPieceTinted("Valoria · outer boulder",art!=null?art.SlavicBoulder:null,
+                    p,1.55f+(i%3)*.35f,1.05f+(i%2)*.20f,
+                    Quaternion.Euler(0,i*41%360,0),ValoriaKit.OldStone*.76f);
+                if(i%2==0)ValoriaKit.PineTree("Valoria · outer pine",p+new Vector3((i%3-1)*1.8f,0,1.8f),.72f+(i%3)*.10f);
             }
 
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
@@ -89,7 +86,12 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Valoria plateau edge west",new Vector3(-10.0f,-.25f,1.8f),1.25f,10);
             ValoriaKit.RockCluster("Valoria plateau edge east",new Vector3(10.0f,-.25f,2.5f),1.20f,10);
             for(int i=0;i<7;i++)
-                ValoriaKit.Block("Cliff face",new Vector3(-9+i*3f,-.70f,-6.0f),new Vector3(3.15f,1.85f,1.55f),ValoriaKit.OldStone*.88f);
+            {
+                var p=new Vector3(-9+i*3f,-.62f,-6.0f+(i%2)*.22f);
+                if(ValoriaKit.BenchmarkPieceTinted("Valoria · lower cliff stone",art!=null?art.SlavicBoulder:null,
+                    p,2.7f+(i%3)*.25f,1.45f+(i%2)*.18f,Quaternion.Euler(0,17+i*29,0),ValoriaKit.OldStone*.82f)==null)
+                    ValoriaKit.RockCluster("Valoria · lower cliff fallback",p,1.35f,8);
+            }
             for(int i=0;i<6;i++)
             {
                 float x=-8.1f+i*3.25f;
