@@ -17,7 +17,7 @@ namespace Eldoria.Presentation
             RenderSettings.ambientLight = city?new Color(.84f,.86f,.84f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = city?new Color(.56f,.59f,.60f):new Color(.46f,.46f,.44f);
-            RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?108:140;
+            RenderSettings.fogStartDistance=city?28:48; RenderSettings.fogEndDistance=city?62:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 10.2f : 14;
@@ -74,6 +74,20 @@ namespace Eldoria.Presentation
                     p,1.55f+(i%3)*.35f,1.05f+(i%2)*.20f,
                     Quaternion.Euler(0,i*41%360,0),ValoriaKit.OldStone*.76f);
                 if(i%2==0)ValoriaKit.PineTree("Valoria · outer pine",p+new Vector3((i%3-1)*1.8f,0,1.8f),.72f+(i%3)*.10f);
+            }
+
+            // Close the rear horizon with restrained authored rock/tree silhouettes.
+            // This gives Valoria a valley wall without returning to the oversized imported mountain blobs.
+            for(int i=0;i<9;i++)
+            {
+                float x=-15.5f+i*3.85f;
+                float z=18.2f+(i%3)*1.15f;
+                var p=new Vector3(x,-.06f,z);
+                if(ValoriaKit.BenchmarkPieceTinted("Valoria · rear ridge stone",art!=null?art.SlavicBoulder:null,
+                    p,2.65f+(i%2)*.45f,1.75f+(i%3)*.22f,Quaternion.Euler(0,17+i*33,0),ValoriaKit.OldStone*.68f)==null)
+                    ValoriaKit.RockCluster("Valoria · rear ridge fallback",p,1.35f,8);
+                if(i%2==0)
+                    ValoriaKit.PineTree("Valoria · ridge pine",p+new Vector3((i%3-1)*1.15f,0,-1.15f),.68f+(i%3)*.07f);
             }
 
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
