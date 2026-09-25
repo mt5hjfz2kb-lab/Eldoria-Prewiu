@@ -29,6 +29,29 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $candidates = @(
+              "${env:ProgramFiles}\Git\cmd\git.exe",
+              "${env:ProgramFiles}\Git\bin\git.exe",
+              "${env:LOCALAPPDATA}\Programs\Git\cmd\git.exe"
+            )
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            if (Test-Path $desktop) {
+              $candidates += Get-ChildItem $desktop -Directory -Filter 'app-*' |
+                Sort-Object Name -Descending |
+                ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' }
+            }
+            $gitPath = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $gitPath) { throw 'Git not found. Install Git for Windows or GitHub Desktop for the runner user.' }
+            $gitDirectory = Split-Path $gitPath
+            Add-Content -Path $env:GITHUB_PATH -Value $gitDirectory
+            $env:PATH = "$gitDirectory;$env:PATH"
+          }
+          git --version
       - uses: actions/checkout@v4
       - name: Verify installed Editor
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
