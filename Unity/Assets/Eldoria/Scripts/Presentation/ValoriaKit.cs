@@ -458,14 +458,21 @@ namespace Eldoria.Presentation
                 if(BenchmarkPiece(name+" · connected tower",megaTower,origin+new Vector3(x,.08f,-2.62f),
                     2.75f,5.85f,Quaternion.identity)==null)
                     Tower(name+" · connected tower fallback",origin+new Vector3(x,.05f,-2.35f),1.25f,5.35f,WarmStone*.74f);
-            Tower(name+" · rear west",origin+new Vector3(-4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
-            Tower(name+" · rear east",origin+new Vector3(4.45f,.05f,2.5f),1.12f,5.0f,OldStone*.86f);
+            foreach(float x in new[]{-4.45f,4.45f})
+                if(BenchmarkPiece(name+" · rear connected tower",megaTower,origin+new Vector3(x,.08f,2.45f),
+                    2.35f,5.05f,Quaternion.identity)==null)
+                    Tower(name+" · rear connected tower fallback",origin+new Vector3(x,.05f,2.45f),1.08f,4.85f,OldStone*.72f);
 
-            // Bespoke keep avoids becoming a generic asset-pack castle.
+            // The keep retains an Eldoria-specific mass, but authored masonry now carries its visible facade.
             Block(name+" · inner keep",origin+new Vector3(0,3.45f,.75f),
-                new Vector3(5.55f,2.35f,3.95f),Stone*.72f);
+                new Vector3(5.55f,2.35f,3.95f),Stone*.62f);
+            foreach(float x in new[]{-1.55f,1.55f})
+                if(BenchmarkPiece(name+" · keep detailed facing",stoneWall,
+                    origin+new Vector3(x,2.30f,-1.38f),3.0f,2.35f,Quaternion.identity)==null)
+                    Wall(name+" · keep facing fallback",origin+new Vector3(x,3.15f,-1.36f),
+                        new Vector3(2.85f,2.05f,.46f),OldStone*.66f,true);
             GableRoof(name+" · inner keep slate roof",origin+new Vector3(0,4.78f,.75f),
-                new Vector3(5.95f,1.05f,4.30f),Slate*.88f);
+                new Vector3(5.95f,1.05f,4.30f),Slate*.78f);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
 
