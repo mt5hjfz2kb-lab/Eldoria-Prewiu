@@ -31,10 +31,27 @@ if (Test-Path $serviceFile) {
 }
 
 $userId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-$action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c `"$RunnerRoot\run.cmd`"" -WorkingDirectory $RunnerRoot
+$watchdogPath = Join-Path $RunnerRoot "eldoria-runner-watchdog.ps1"
+$watchdog = @'
+$ErrorActionPreference = "Continue"
+$runnerRoot = "C:\actions-runner-eldoria"
+while ($true) {
+    Push-Location $runnerRoot
+    try {
+        & (Join-Path $runnerRoot "run.cmd")
+    }
+    finally {
+        Pop-Location
+    }
+    Start-Sleep -Seconds 5
+}
+'@
+Set-Content -Path $watchdogPath -Value $watchdog -Encoding UTF8
+
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$watchdogPath`"" -WorkingDirectory $RunnerRoot
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $userId
 $principal = New-ScheduledTaskPrincipal -UserId $userId -LogonType Interactive -RunLevel Highest
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1)
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
 Start-ScheduledTask -TaskName $TaskName
 Start-Sleep -Seconds 3
@@ -47,3 +64,4 @@ Write-Host "Task: $TaskName"
 Write-Host "State: $($task.State)"
 Write-Host ""
 Write-Host "Unity batch jobs will now use the same Windows profile/license as the interactive Unity Editor."
+Write-Host "A watchdog will restart the runner automatically if run.cmd exits unexpectedly."
