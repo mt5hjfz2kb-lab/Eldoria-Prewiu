@@ -51,8 +51,15 @@ namespace Eldoria.Presentation
                 // they read as flat grey/black walls behind the city. Keep the horizon quiet until
                 // production-quality ruin and mountain silhouettes are selected.
                 ValoriaKit.RockCluster("Ruined imperial arch fall",new Vector3(-8.1f,-.12f,17.5f),.82f,7);
-                for(int i=0;i<5;i++)
-                    ValoriaKit.PineTree("Valoria · rear pine",new Vector3(-12.4f+i*2.0f,0,16.2f+(i%2)*1.15f),.62f+(i%2)*.08f);
+                // A restrained rear ridge closes the valley without returning to the failed mountain wall.
+                for(int i=0;i<16;i++)
+                {
+                    float x=-17.0f+i*2.25f;
+                    if(Mathf.Abs(x)<4.2f)continue; // keep the Bastion silhouette readable
+                    float z=15.0f+(i%3)*1.25f;
+                    ValoriaKit.PineTree("Valoria · rear pine",new Vector3(x,0,z),.58f+(i%4)*.07f);
+                    if(i%3==0)ValoriaKit.RockCluster("Valoria · rear ridge rock",new Vector3(x+.7f,-.10f,z+.6f),.72f,5);
+                }
                 City(state);
             }
             else Frontier(state);
