@@ -14,7 +14,7 @@ El proyecto declara [Unity glTFast 6.14.1](https://docs.unity3d.com/Packages/com
 
 La cámara guarda `strategic.png`, `city.png`, `detail.png` y `oblique.png`: ortográfica 19/12/9 y oblicua 12, siempre 1280×720. El capturador mide vértices, triángulos, renderers, materiales, texturas y memoria estimada por el Profiler del Editor, además del tiempo CPU de capturar cada fotograma (**no equivale a FPS móvil**). Exige normales/UV y una prueba positiva y negativa con `MeshCollider` estático + `Physics.Raycast`. Un componente aislado acepta clic de ratón en Play Mode y registra selección; no toca `VisualWorld`.
 
-El workflow `unity-slice.yml` ejecutará esa puerta y publicará escena/capturas/`metrics.json` **solo cuando el GLB exista en el checkout**. El binario de 12,8 MB todavía no está en `main` y no cabe en la conexión textual de publicación disponible sin fragmentarlo, operación expresamente descartada por el propietario. Por tanto, **no se afirma importación Unity, capturas, raycast ni rendimiento medidos** en este estado. Los datos del GLB son inspección externa al Editor.
+El workflow `unity-slice.yml` ejecutará esa puerta y publicará escena/capturas/`metrics.json` **solo cuando el GLB exista en el checkout o cuando el runner Windows encuentre el ZIP exacto en `Downloads` y verifique el SHA-256 antes de extraer únicamente el optimizado**. El binario de 12,8 MB todavía no está en `main` y no cabe en la conexión textual de publicación disponible sin fragmentarlo, operación expresamente descartada por el propietario. Hasta revisar el runner, **no se afirma importación Unity, capturas, raycast ni rendimiento medidos**. Los datos del GLB son inspección externa al Editor.
 
 ## Reentrada sin nueva investigación
 

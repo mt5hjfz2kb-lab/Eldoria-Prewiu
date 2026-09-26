@@ -53,6 +53,33 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
+      - name: Stage owner-supplied optimized Bastion from runner Downloads if present
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb"
+          $expected = '1ba4ef4daa352265116e672dfb84d5bbe26a0bd22262a2955d94cd4682862521'
+          if (Test-Path $target) {
+            if ((Get-FileHash $target -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw "Committed Bastion GLB SHA-256 mismatch." }
+            Write-Host 'Optimized Bastion is in the checkout.'
+          } else {
+            $downloads = Join-Path $env:USERPROFILE 'Downloads'
+            $names = @('Bastion_Unity_Import_Package(1).zip','Bastion_Unity_Import_Package.zip')
+            foreach ($name in $names) {
+              $candidate = Join-Path $downloads $name
+              if (-not (Test-Path $candidate)) { continue }
+              $temp = Join-Path $env:RUNNER_TEMP 'Eldoria-BastionOptimized'
+              Expand-Archive -LiteralPath $candidate -DestinationPath $temp -Force
+              $inside = Join-Path $temp 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb'
+              if (-not (Test-Path $inside)) { throw "Supplied ZIP has no optimized GLB at the documented path." }
+              if ((Get-FileHash $inside -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw "Supplied optimized GLB SHA-256 mismatch." }
+              New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+              Copy-Item $inside $target
+              Write-Host 'Verified optimized Bastion staged from Downloads; source GLB was not used.'
+              break
+            }
+          }
+          if (Test-Path $target) { 'BASTION_GLB_PRESENT=true' | Out-File -FilePath $env:GITHUB_ENV -Append }
+          else { Write-Host 'Optimized GLB not present on runner; Unity image-to-3D review will be skipped.' }
       - name: Fetch official CC0 asset gate models
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -230,7 +257,7 @@ jobs:
           path: Unity/LayeredValoriaCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated optimized Bastion GLB review
-        if: ${{ hashFiles('Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb') != '' }}
+        if: env.BASTION_GLB_PRESENT == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
