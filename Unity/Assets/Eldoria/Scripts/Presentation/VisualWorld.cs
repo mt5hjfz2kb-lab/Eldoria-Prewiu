@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
         public static void Create(bool city, PlayerState state)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.84f,.86f,.84f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.92f,.91f,.87f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.56f,.59f,.60f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogColor = city?new Color(.64f,.66f,.65f):new Color(.46f,.46f,.44f);
             RenderSettings.fogStartDistance=city?28:48; RenderSettings.fogEndDistance=city?62:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
             sun.intensity=city?1.95f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
             Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
-                city?new Color(.235f,.225f,.185f):Earth);
+                city?new Color(.285f,.265f,.215f):Earth);
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -284,17 +284,17 @@ namespace Eldoria.Presentation
 
             // The imported Slavic vegetation was visually incompatible in URP (white/yellow blow-out).
             // Use one restrained dark-pine family until a production vegetation set is selected.
-            for(int i=0;i<34;i++)
+            for(int i=0;i<26;i++)
             {
-                float z=-11f+(i*19%31)*.92f;
-                float x=(i%2==0?-1f:1f)*(9.6f+(i*7%8)*.62f);
-                ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.72f+(i%4)*.08f);
+                float z=-10.5f+(i*19%31)*.92f;
+                float x=(i%2==0?-1f:1f)*(10.35f+(i*7%7)*.58f);
+                ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.66f+(i%4)*.07f);
             }
-            for(int i=0;i<12;i++)
+            for(int i=0;i<8;i++)
             {
-                float z=-7.5f+(i*11%19)*.82f;
-                float x=(i%2==0?-1f:1f)*(7.9f+(i*5%5)*.42f);
-                ValoriaKit.PineTree("Valoria inner pine",new Vector3(x,0,z),.58f+(i%3)*.07f);
+                float z=-5.8f+(i*11%17)*.82f;
+                float x=(i%2==0?-1f:1f)*(8.75f+(i*5%4)*.38f);
+                ValoriaKit.PineTree("Valoria inner pine",new Vector3(x,0,z),.54f+(i%3)*.06f);
             }
             ValoriaKit.RockCluster("Valoria roadside rocks",new Vector3(-3.7f,.05f,-1.35f),.58f,4);
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
@@ -302,6 +302,10 @@ namespace Eldoria.Presentation
             Hero(new Vector3(-1.7f,0,-1.9f),1.0f);
             int visibleArchers=state.BastionLevel>=2?4:3;
             for(int i=0;i<visibleArchers;i++)Archer(new Vector3(2.0f+(i%4)*.67f,0,-2.8f+(i/4)*.68f));
+            ValoriaKit.Banner("Lower town banner west",new Vector3(-2.15f,2.0f,-4.58f),
+                new Vector3(.42f,1.35f,.06f),new Color(.18f,.32f,.48f));
+            ValoriaKit.Banner("Lower town banner east",new Vector3(2.15f,2.0f,-4.58f),
+                new Vector3(.42f,1.35f,.06f),new Color(.18f,.32f,.48f));
             Glow("Gate torch L",new Vector3(-2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Gate torch R",new Vector3(2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Bastion inhabited warmth",new Vector3(0,4.15f,3.45f),Amber,1.45f,7.2f);
