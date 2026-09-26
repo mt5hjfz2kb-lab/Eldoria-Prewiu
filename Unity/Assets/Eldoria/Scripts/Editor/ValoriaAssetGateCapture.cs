@@ -17,6 +17,9 @@ namespace Eldoria.EditorTools
         [MenuItem("Eldoria/Art gate/Capture isolated asset study")]
         public static void Capture()
         {
+            // Downloaded test media is intentionally untracked; import it synchronously
+            // on this Editor invocation instead of relying on a previous batch run.
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var stone = MaterialFor("Stone (Poly Haven CC0)", "Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_wall_diff_1k.jpg", "Assets/Eldoria/ArtTests/PolyHavenFort/modular_fort_01_wall_nor_gl_1k.jpg");

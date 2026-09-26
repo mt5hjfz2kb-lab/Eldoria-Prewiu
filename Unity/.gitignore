@@ -7,6 +7,9 @@ BenchmarkCaptures/
 AssetGateCaptures/
 Assets/Eldoria/ArtTests/**/*.fbx
 Assets/Eldoria/ArtTests/**/*.jpg
+Assets/Eldoria/ArtTests/**/*.meta
+Assets/Eldoria/ArtTests.meta
+Assets/Eldoria/ArtTests/*.meta
 Logs/
 UserSettings/
 MemoryCaptures/
