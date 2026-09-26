@@ -259,6 +259,29 @@ namespace Eldoria.Presentation
             ValoriaKit.House("Valoria cottage west",new Vector3(-6.0f,.30f,2.0f),new Vector3(2.2f,1.25f,1.85f),true,Glow);
             ValoriaKit.House("Valoria cottage east",new Vector3(6.0f,.30f,2.15f),new Vector3(2.2f,1.25f,1.85f),true,Glow);
 
+            // Inhabited lower-town layer. Keep the central approach readable, but remove the empty-diorama
+            // read by overlapping small rebuilt homes, work courts and authored props into both flanks.
+            foreach(var home in new[]{
+                new Vector3(-8.35f,.26f,-4.25f),new Vector3(-8.05f,.28f,4.25f),
+                new Vector3(8.15f,.27f,-4.35f),new Vector3(7.85f,.28f,4.45f)})
+                ValoriaKit.House("Valoria lower-town home",home,new Vector3(1.75f,1.05f,1.48f),true,Glow);
+            foreach(var yard in new[]{
+                new Vector3(-4.75f,.17f,-4.95f),new Vector3(4.95f,.17f,-5.05f)})
+            {
+                ValoriaKit.Block("Valoria work court",yard,new Vector3(2.35f,.10f,1.55f),ValoriaKit.Earth*.92f);
+                ValoriaKit.BenchmarkPiece("Valoria work court · firewood",art!=null?art.Firewood:null,
+                    yard+new Vector3(-.72f,.12f,.08f),.90f,.62f,Quaternion.Euler(0,24f,0));
+                ValoriaKit.BenchmarkPieceTinted("Valoria work court · fence",art!=null?art.SlavicStoneFence:null,
+                    yard+new Vector3(.75f,.05f,.52f),1.40f,.72f,Quaternion.Euler(0,8f,0),ValoriaKit.OldStone*.88f);
+            }
+            foreach(var bush in new[]{
+                new Vector3(-9.15f,.02f,-2.0f),new Vector3(-7.35f,.02f,6.0f),
+                new Vector3(9.1f,.02f,-2.15f),new Vector3(7.15f,.02f,6.15f),
+                new Vector3(-4.6f,.72f,5.25f),new Vector3(4.75f,.72f,5.35f)})
+                ValoriaKit.BenchmarkPieceModulated("Valoria · authored undergrowth",art!=null?art.SlavicBush:null,
+                    bush,1.10f,.72f,Quaternion.Euler(0,(int)(bush.x*29f)%360,0),
+                    new Color(.42f,.58f,.43f,1f));
+
             // The imported Slavic vegetation was visually incompatible in URP (white/yellow blow-out).
             // Use one restrained dark-pine family until a production vegetation set is selected.
             for(int i=0;i<34;i++)
