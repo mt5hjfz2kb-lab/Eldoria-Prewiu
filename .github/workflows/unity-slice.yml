@@ -53,6 +53,10 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
+      - name: Fetch official CC0 asset gate models
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          & "$env:GITHUB_WORKSPACE/scripts/fetch-valoria-art-gate.ps1"
       - name: Verify installed Editor
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -137,6 +141,30 @@ jobs:
         with:
           name: eldoria-valoria-captures-${{ github.sha }}
           path: Unity/BenchmarkCaptures/*.png
+          if-no-files-found: warn
+      - name: Render isolated asset gate
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/AssetGateCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-AssetGate.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Asset gate capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Asset gate capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("asset-gate-establishing.png","asset-gate-oblique.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Asset gate image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-asset-gate-${{ github.sha }}
+          path: Unity/AssetGateCaptures/*.png
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()

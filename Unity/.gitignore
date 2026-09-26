@@ -4,6 +4,9 @@ Obj/
 Build/
 Builds/
 BenchmarkCaptures/
+AssetGateCaptures/
+Assets/Eldoria/ArtTests/**/*.fbx
+Assets/Eldoria/ArtTests/**/*.jpg
 Logs/
 UserSettings/
 MemoryCaptures/
