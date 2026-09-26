@@ -63,6 +63,19 @@ jobs:
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
+      - name: Audit original-art tools on Windows runner
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          foreach ($name in @('blender.exe','python.exe','openscad.exe')) {
+            $found = Get-Command $name -ErrorAction SilentlyContinue
+            if ($found) { Write-Host "ART_TOOL $name $($found.Source)" }
+            else { Write-Host "ART_TOOL $name NOT_IN_PATH" }
+          }
+          $root = Join-Path ${env:ProgramFiles} 'Blender Foundation'
+          if (Test-Path $root) {
+            Get-ChildItem $root -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue |
+              Select-Object -ExpandProperty FullName | ForEach-Object { Write-Host "ART_TOOL blender_installed $_" }
+          }
       - name: EditMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
