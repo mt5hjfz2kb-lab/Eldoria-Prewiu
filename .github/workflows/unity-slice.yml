@@ -229,6 +229,33 @@ jobs:
           name: eldoria-layered-valoria-captures-${{ github.sha }}
           path: Unity/LayeredValoriaCaptures/*.png
           if-no-files-found: warn
+      - name: Render isolated optimized Bastion GLB review
+        if: ${{ hashFiles('Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb') != '' }}
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-ImageTo3DReview.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 180 }
+            throw "Image-to-3D review timed out after 5 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 180 }; throw "Image-to-3D review failed: $($process.ExitCode)." }
+          foreach ($name in @("strategic.png","city.png","detail.png","oblique.png","metrics.json")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing ImageTo3D evidence: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-image-to-3d-${{ github.sha }}
+          path: |
+            Unity/ImageTo3DReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionImageTo3DReview.unity
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
