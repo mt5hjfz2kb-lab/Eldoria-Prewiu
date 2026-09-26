@@ -203,6 +203,32 @@ jobs:
           name: eldoria-original-hero-${{ github.sha }}
           path: Unity/OriginalHeroCaptures/*.png
           if-no-files-found: warn
+      - name: Render isolated layered Valoria feasibility test
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/LayeredValoriaCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-LayeredValoria.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(240000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 160 }
+            throw "Layered Valoria capture timed out."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Layered Valoria capture failed with exit code $($process.ExitCode)." }
+          foreach ($stage in @(1,2)) {
+            foreach ($zoom in @("strategic","city","detail")) {
+              $file = Join-Path $folder "stage-$stage-$zoom.png"
+              if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Layered test image missing or empty: $file" }
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-layered-valoria-captures-${{ github.sha }}
+          path: Unity/LayeredValoriaCaptures/*.png
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
