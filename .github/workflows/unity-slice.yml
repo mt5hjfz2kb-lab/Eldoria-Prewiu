@@ -83,11 +83,11 @@ jobs:
       - name: Stage owner-supplied Tripo small module from runner Downloads if present
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_H25.glb"
-          $expected = '583a07cfec109d02b29d33c3aa2f01895bdbe02d0c8f0d559dc0461954fcabc6'
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K.glb"
+          $expected = '18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a'
           if (-not (Test-Path $target)) {
             $downloads = Join-Path $env:USERPROFILE 'Downloads'
-            foreach ($name in @('Eldoria_Module_TowerWallRock_H25.glb','Eldoria_Model_Tower.glb')) {
+            foreach ($name in @('Eldoria_Module_TowerWallRock_50K.glb')) {
               $candidate = Join-Path $downloads $name
               if (-not (Test-Path $candidate)) { continue }
               if ((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { continue }
