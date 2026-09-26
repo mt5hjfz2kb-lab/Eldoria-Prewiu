@@ -83,11 +83,16 @@ class Mesh:
         # Arbitrary X/Z silhouette extruded in depth, used for gabled masonry.
         front=[(x,y0,z) for x,z in points]
         back=[(x,y1,z) for x,z in points]
-        self.face(list(reversed(front)),[(x*.29+phase,z*.29+phase) for x,_,z in reversed(front)])
-        self.face(back,[(x*.29+phase,z*.29+phase) for x,_,z in back])
+        area=sum(points[i][0]*points[(i+1)%len(points)][1] -
+                 points[(i+1)%len(points)][0]*points[i][1] for i in range(len(points)))
+        front_out=front if area>0 else list(reversed(front))
+        back_out=list(reversed(back)) if area>0 else back
+        self.face(front_out,[(x*.29+phase,z*.29+phase) for x,_,z in front_out])
+        self.face(back_out,[(x*.29+phase,z*.29+phase) for x,_,z in back_out])
         for i in range(len(points)):
             k=(i+1)%len(points)
             q=[front[i],front[k],back[k],back[i]]
+            if area>0:q.reverse()
             self.face(q,[(0,0),(math.dist(points[i],points[k])*.3,0),
                          (math.dist(points[i],points[k])*.3,(y1-y0)*.3),(0,(y1-y0)*.3)])
 
@@ -193,6 +198,7 @@ def pitched_roof(x,y,eave,w,d,rise,key="roof",ridge_axis="y"):
             upper=(x,y,eave+rise)
             verts=[(x-w/2,lower[1],lower[2]),(x+w/2,lower[1],lower[2]),
                    (x+w/2,upper[1],upper[2]),(x-w/2,upper[1],upper[2])]
+            if sign>0: verts.reverse()
             B[key].face(verts,[(0,0),(w*.48,0),(w*.48,rise*.48),(0,rise*.48)])
         box("timber",x,y,eave+rise+.03,w+.33,.22,.26)
     else:
@@ -200,6 +206,7 @@ def pitched_roof(x,y,eave,w,d,rise,key="roof",ridge_axis="y"):
             lo=x+sign*w/2
             verts=[(lo,y-d/2,eave),(lo,y+d/2,eave),
                    (x,y+d/2,eave+rise),(x,y-d/2,eave+rise)]
+            if sign<0: verts.reverse()
             B[key].face(verts,[(0,0),(d*.45,0),(d*.45,rise*.5),(0,rise*.5)])
         box("timber",x,y,eave+rise+.02,.22,d+.33,.22)
     # Raised courses supply actual shadow and break a single triangular roof silhouette.

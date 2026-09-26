@@ -88,9 +88,10 @@ namespace Eldoria.EditorTools
             camera.nearClipPlane = .1f;
             camera.farClipPlane = 300f;
             Directory.CreateDirectory("OriginalHeroCaptures");
-            Save(camera, "OriginalHeroCaptures/hero-establishing.png", new Vector3(49, 40, -61), new Vector3(-1, 14, 0));
-            Save(camera, "OriginalHeroCaptures/hero-approach.png", new Vector3(18, 31, -55), new Vector3(0, 13, 0));
-            Save(camera, "OriginalHeroCaptures/hero-oblique.png", new Vector3(-53, 38, -43), new Vector3(-1, 13, 1));
+            // Blender's negative-Y front maps to positive-Z in the exported FBX.
+            Save(camera, "OriginalHeroCaptures/hero-establishing.png", new Vector3(49, 40, 61), new Vector3(-1, 14, 0));
+            Save(camera, "OriginalHeroCaptures/hero-approach.png", new Vector3(18, 31, 55), new Vector3(0, 13, 0));
+            Save(camera, "OriginalHeroCaptures/hero-oblique.png", new Vector3(-53, 38, 43), new Vector3(-1, 13, -1));
             Debug.Log("Original hero test rendered: " + count + " renderers; no game scene modified.");
         }
 
