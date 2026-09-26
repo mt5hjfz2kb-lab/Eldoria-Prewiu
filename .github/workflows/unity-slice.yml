@@ -179,6 +179,30 @@ jobs:
           name: eldoria-asset-gate-${{ github.sha }}
           path: Unity/AssetGateCaptures/*.png
           if-no-files-found: warn
+      - name: Render isolated original hero candidate
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/OriginalHeroCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-OriginalHero.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Original hero capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Original hero capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("hero-establishing.png","hero-approach.png","hero-oblique.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Original hero image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-original-hero-${{ github.sha }}
+          path: Unity/OriginalHeroCaptures/*.png
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:

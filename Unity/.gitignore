@@ -5,7 +5,9 @@ Build/
 Builds/
 BenchmarkCaptures/
 AssetGateCaptures/
+OriginalHeroCaptures/
 Assets/Eldoria/ArtTests/**/*.fbx
+!Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx
 Assets/Eldoria/ArtTests/**/*.jpg
 Assets/Eldoria/ArtTests/**/*.meta
 Assets/Eldoria/ArtTests.meta
