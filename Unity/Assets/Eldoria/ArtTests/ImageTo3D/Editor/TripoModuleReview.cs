@@ -13,7 +13,7 @@ namespace Eldoria.EditorTools
     public static class TripoModuleReview
     {
         const string Root = "Assets/Eldoria/ArtTests/ImageTo3D/";
-        const string Source = Root + "Source/Eldoria_Module_TowerWallRock_H25.glb";
+        const string Source = Root + "Source/Eldoria_Module_TowerWallRock_50K.glb";
         const string Scene = Root + "TripoModuleReview.unity";
         const string Output = "TripoModuleReviewCaptures";
 
@@ -72,7 +72,7 @@ namespace Eldoria.EditorTools
 
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var module = UnityEngine.Object.Instantiate(prefab);
-            module.name = "Eldoria Tower Wall Rock H25 - Tripo raw module";
+            module.name = "Eldoria Tower Wall Rock 50K - externally optimized module";
             var b = BoundsOf(module);
             var span = Mathf.Max(b.size.x, b.size.z);
             if (span <= .001f) throw new Exception("Imported module has no usable bounds.");
@@ -151,7 +151,7 @@ namespace Eldoria.EditorTools
                 }
             }
             report.materials = mats.Count; report.textures = texs.Count; report.textureSizes = sizes.ToArray();
-            if (report.triangles == 0 || !report.normalsPresent || report.materials == 0) throw new Exception("GLB import lost required geometry/normals/material.");
+            if (report.triangles == 0 || !report.uvPresent || !report.normalsPresent || report.materials == 0) throw new Exception("GLB import lost required geometry/UV0/normals/material.");
             return report;
         }
 
