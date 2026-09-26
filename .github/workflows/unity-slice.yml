@@ -80,6 +80,27 @@ jobs:
           }
           if (Test-Path $target) { 'BASTION_GLB_PRESENT=true' | Out-File -FilePath $env:GITHUB_ENV -Append }
           else { Write-Host 'Optimized GLB not present on runner; Unity image-to-3D review will be skipped.' }
+      - name: Stage owner-supplied Tripo small module from runner Downloads if present
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_H25.glb"
+          $expected = '583a07cfec109d02b29d33c3aa2f01895bdbe02d0c8f0d559dc0461954fcabc6'
+          if (-not (Test-Path $target)) {
+            $downloads = Join-Path $env:USERPROFILE 'Downloads'
+            foreach ($name in @('Eldoria_Module_TowerWallRock_H25.glb','Eldoria_Model_Tower.glb')) {
+              $candidate = Join-Path $downloads $name
+              if (-not (Test-Path $candidate)) { continue }
+              if ((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { continue }
+              New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+              Copy-Item $candidate $target
+              Write-Host "Verified Tripo module staged from Downloads: $name"
+              break
+            }
+          }
+          if (Test-Path $target) {
+            if ((Get-FileHash $target -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Tripo module SHA-256 mismatch.' }
+            'TRIPO_MODULE_PRESENT=true' | Out-File -FilePath $env:GITHUB_ENV -Append
+          } else { Write-Host 'Tripo module not present on runner; isolated small-module review will be skipped.' }
       - name: Fetch official CC0 asset gate models
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -275,6 +296,33 @@ jobs:
             $file = Join-Path $folder $name
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing ImageTo3D evidence: $name" }
           }
+      - name: Render isolated Tripo small-module review
+        if: env.TRIPO_MODULE_PRESENT == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoModuleReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-TripoModuleReview.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 180 }
+            throw "Tripo small-module review timed out after 5 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 180 }; throw "Tripo small-module review failed: $($process.ExitCode)." }
+          foreach ($name in @("strategic.png","city.png","detail.png","oblique.png","metrics.json")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing Tripo module evidence: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-module-${{ github.sha }}
+          path: |
+            Unity/TripoModuleReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoModuleReview.unity
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
