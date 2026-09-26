@@ -488,8 +488,6 @@ namespace Eldoria.Presentation
                 new Vector3(8.8f,2.15f,.52f),OldStone*.58f,false);
             var megaGate=art!=null?art.MegaHalfGate:null;
             var megaTower=art!=null?art.MegaTower:null;
-            var megaDestroyedTower=art!=null?art.MegaDestroyedTower:null;
-            var megaWallPassage=art!=null?art.MegaWallPassage:null;
             // Preserve the authored stone materials here. Flattening these to a single tint erased
             // the masonry detail and made the connected facade read as one brown slab.
             if(BenchmarkPieceModulated(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
@@ -552,7 +550,7 @@ namespace Eldoria.Presentation
 
             // Dead-palace signature: use authored masonry fragments rather than a giant procedural arch.
             // The ruin should frame the keep and imply scale without becoming a black wall behind it.
-            if(BenchmarkPieceModulated(name+" · dead palace wall west",megaWallPassage,
+            if(BenchmarkPieceModulated(name+" · dead palace wall west",stoneWall,
                 origin+new Vector3(-4.15f,.10f,3.75f),4.20f,3.15f,Quaternion.Euler(0,16f,0),
                 new Color(.47f,.49f,.48f,1f))==null)
                 Wall(name+" · dead palace wall west fallback",origin+new Vector3(-4.15f,1.55f,3.75f),
@@ -562,9 +560,9 @@ namespace Eldoria.Presentation
                 new Color(.44f,.46f,.45f,1f))==null)
                 Wall(name+" · dead palace wall east fallback",origin+new Vector3(3.75f,1.35f,4.20f),
                     new Vector3(3.2f,2.35f,.54f),OldStone*.54f,true);
-            if(BenchmarkPieceModulated(name+" · dead palace tower remnant",megaDestroyedTower,
-                origin+new Vector3(-2.25f,-.18f,5.15f),2.35f,4.15f,Quaternion.Euler(0,12f,0),
-                new Color(.54f,.55f,.53f,1f))==null)
+            if(BenchmarkPieceModulated(name+" · dead palace tower remnant",megaTower,
+                origin+new Vector3(-2.10f,-.18f,5.35f),2.05f,3.65f,Quaternion.Euler(0,12f,0),
+                new Color(.56f,.57f,.55f,1f))==null)
                 Tower(name+" · dead palace tower remnant fallback",origin+new Vector3(-2.10f,-.18f,5.35f),
                     .90f,3.55f,OldStone*.64f);
             Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,3.0f),1.45f,10);
