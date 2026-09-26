@@ -351,83 +351,7 @@ namespace Eldoria.Presentation
                 new Vector3(slope,.16f,size.z),color);
             right.transform.rotation=Quaternion.Euler(0,0,angle);
             right.transform.SetParent(root.transform,true);
-            // The front and back gables close the empty black wedges beneath the slate.
-            // They also tie each pair of roof slopes to the masonry immediately below.
-            for(int side=-1;side<=1;side+=2)
-            {
-                var gable=new GameObject(name+" · stone gable");
-                gable.transform.position=p+new Vector3(0,0,side*size.z*.48f);
-                var mesh=new Mesh{name=name+" · gable mesh"};
-                mesh.vertices=new[]{new Vector3(-halfWidth,0,0),new Vector3(halfWidth,0,0),
-                    new Vector3(0,rise,0)};
-                mesh.triangles=side<0?new[]{0,2,1}:new[]{0,1,2};
-                mesh.RecalculateNormals();
-                gable.AddComponent<MeshFilter>().sharedMesh=mesh;
-                gable.AddComponent<MeshRenderer>().sharedMaterial=Material(WarmStone*.72f);
-                gable.transform.SetParent(root.transform,true);
-            }
             return root;
-        }
-
-        // A continuous visual landscape rolls into the city. No mesh collider is installed:
-        // the existing interaction volumes and gameplay plane remain authoritative.
-        public static void ValleySurface()
-        {
-            const int nx=64,nz=52;
-            var vertices=new Vector3[(nx+1)*(nz+1)];
-            var uv=new Vector2[vertices.Length];
-            var triangles=new int[nx*nz*6];
-            for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++)
-            {
-                float wx=-33f+x*66f/nx,wz=-18f+z*54f/nz;
-                float lateral=Mathf.SmoothStep(0,1,Mathf.Clamp01((Mathf.Abs(wx)-9f)/15f));
-                float rear=Mathf.SmoothStep(0,1,Mathf.Clamp01((wz-11f)/18f));
-                float roll=Mathf.Sin(wx*.34f+wz*.12f)*.44f+
-                    Mathf.Sin(wx*.16f-wz*.31f)*.36f+
-                    Mathf.Sin(wx*.77f+wz*.38f)*.11f;
-                // Shallow valley floor, rising wooded slopes and a low rear foothill.
-                float height=-.065f+lateral*(.35f+roll*1.65f)+rear*(.40f+roll*.45f);
-                int n=z*(nx+1)+x;
-                vertices[n]=new Vector3(wx,height,wz);
-                uv[n]=new Vector2(wx*.12f,wz*.12f);
-                if(x==nx||z==nz)continue;
-                int t=(z*nx+x)*6;
-                triangles[t]=n;triangles[t+1]=n+nx+1;triangles[t+2]=n+1;
-                triangles[t+3]=n+1;triangles[t+4]=n+nx+1;triangles[t+5]=n+nx+2;
-            }
-            var mesh=new Mesh{name="Valoria valley sculpted surface",vertices=vertices,uv=uv,triangles=triangles};
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject("Valoria · continuous valley floor");
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=Material(new Color(.34f,.35f,.28f));
-        }
-
-        public static void HorizonRidge(string name,float left,float right,float depth,float height,Color color,int seed)
-        {
-            const int segments=24;
-            var vertices=new Vector3[(segments+1)*2];
-            var triangles=new int[segments*6];
-            for(int i=0;i<=segments;i++)
-            {
-                float u=(float)i/segments;
-                float x=Mathf.Lerp(left,right,u);
-                float silhouette=.34f+.35f*Mathf.Sin(u*Mathf.PI)+
-                    .18f*Mathf.Sin(u*14f+seed*.17f)+.12f*Mathf.Sin(u*37f+seed*.53f);
-                float cap=Mathf.Min(1f,Mathf.Min(u,1f-u)*7f);
-                vertices[i*2]=new Vector3(x,-.55f,depth);
-                vertices[i*2+1]=new Vector3(x,height*Mathf.Max(.10f,silhouette)*cap,depth);
-                if(i==segments)continue;
-                int t=i*6,n=i*2;
-                triangles[t]=n;triangles[t+1]=n+1;triangles[t+2]=n+2;
-                triangles[t+3]=n+1;triangles[t+4]=n+3;triangles[t+5]=n+2;
-            }
-            var go=new GameObject(name);
-            var mesh=new Mesh{name=name+" mesh",vertices=vertices,triangles=triangles};
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            var mat=new Material(Material(color)){name=name+" atmosphere",doubleSidedGI=true};
-            mat.SetFloat("_Cull",0f);
-            go.AddComponent<MeshRenderer>().sharedMaterial=mat;
         }
 
         public static void House(string name,Vector3 p,Vector3 size,bool lit,System.Action<string,Vector3,Color,float,float> glow)
@@ -744,22 +668,6 @@ namespace Eldoria.Presentation
             Cone(name+" · lower crown",p+Vector3.up*1.45f*scale,1.0f*scale,1.55f*scale,Pine*.88f);
             Cone(name+" · middle crown",p+Vector3.up*2.05f*scale,.78f*scale,1.35f*scale,Pine*.96f);
             Cone(name+" · upper crown",p+Vector3.up*2.55f*scale,.54f*scale,1.05f*scale,Pine*1.04f);
-        }
-        public static void BroadleafTree(string name,Vector3 p,float scale)
-        {
-            Cylinder(name+" · trunk",p+Vector3.up*1.15f*scale,
-                new Vector3(.22f,1.45f,.20f)*scale,Timber*.79f,Quaternion.Euler(0,23,7));
-            var green=new Color(.22f,.31f,.19f);
-            foreach(var crown in new[]{new Vector3(-.52f,2.18f,0),new Vector3(.45f,2.30f,.13f),
-                new Vector3(0,2.93f,-.10f)})
-            {
-                var foliage=GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                foliage.name=name+" · leafy canopy";
-                foliage.transform.position=p+crown*scale;
-                foliage.transform.localScale=new Vector3(1.55f,1.2f,1.38f)*scale;
-                Object.Destroy(foliage.GetComponent<Collider>());
-                foliage.GetComponent<Renderer>().sharedMaterial=Material(green*(.86f+crown.y*.055f));
-            }
         }
     }    public sealed class SmokeWisp:MonoBehaviour
     {

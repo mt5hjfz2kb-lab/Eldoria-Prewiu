@@ -16,8 +16,8 @@ namespace Eldoria.Presentation
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = city?new Color(.92f,.91f,.87f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.66f,.72f,.73f):new Color(.46f,.46f,.44f);
-            RenderSettings.fogStartDistance=city?36:48; RenderSettings.fogEndDistance=city?105:140;
+            RenderSettings.fogColor = city?new Color(.64f,.66f,.65f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogStartDistance=city?28:48; RenderSettings.fogEndDistance=city?62:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 10.2f : 14;
@@ -45,16 +45,6 @@ namespace Eldoria.Presentation
             }
             if(city)
             {
-                // Only the visual surface is sculpted: gameplay and hotspot coordinates stay put.
-                ValoriaKit.ValleySurface();
-                ValoriaKit.HorizonRidge("Valoria · far western highlands",-29f,4f,34f,9f,
-                    new Color(.43f,.51f,.52f),17);
-                ValoriaKit.HorizonRidge("Valoria · far eastern highlands",3f,32f,36f,11f,
-                    new Color(.39f,.48f,.50f),41);
-                ValoriaKit.HorizonRidge("Valoria · near valley wall west",-32f,-7f,24f,5.8f,
-                    new Color(.33f,.39f,.37f),31);
-                ValoriaKit.HorizonRidge("Valoria · near valley wall east",8f,33f,25f,6.6f,
-                    new Color(.31f,.39f,.39f),73);
                 // Keep nearby terrain controlled, but give the valley a real distant horizon.
                 // Preserve the authored mountain atlas and mute it into the fog instead of flattening it to clay.
                 ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria · distant mountain west",
@@ -73,8 +63,7 @@ namespace Eldoria.Presentation
                     float x=-17.0f+i*2.25f;
                     if(Mathf.Abs(x)<4.2f)continue;
                     float z=15.0f+(i%3)*1.25f;
-                    if(i%3==0)ValoriaKit.PineTree("Valoria · rear pine",new Vector3(x,0,z),.78f+(i%4)*.16f);
-                    else if(i%3==1)ValoriaKit.BroadleafTree("Valoria · rear oak",new Vector3(x,0,z),.82f+(i%4)*.14f);
+                    ValoriaKit.PineTree("Valoria · rear pine",new Vector3(x,0,z),.58f+(i%4)*.07f);
                     if(i%3==0)ValoriaKit.RockCluster("Valoria · rear ridge rock",new Vector3(x+.7f,-.10f,z+.6f),.72f,5);
                 }
                 City(state);
@@ -97,7 +86,7 @@ namespace Eldoria.Presentation
                 ValoriaKit.BenchmarkPieceTinted("Valoria · outer flat rock",art!=null?art.SlavicFlatRock:null,
                     p,1.85f+(i%3)*.28f,.48f+(i%2)*.08f,
                     Quaternion.Euler(0,i*41%360,0),new Color(.28f,.29f,.27f,1f));
-                if(i%3==0)ValoriaKit.BroadleafTree("Valoria · outer broadleaf",p+new Vector3((i%3-1)*1.8f,0,1.8f),.80f+(i%4)*.15f);
+                if(i%2==0)ValoriaKit.PineTree("Valoria · outer pine",p+new Vector3((i%3-1)*1.8f,0,1.8f),.72f+(i%3)*.10f);
             }
 
             // Close the rear horizon with restrained authored rock/tree silhouettes.
@@ -111,8 +100,8 @@ namespace Eldoria.Presentation
                     p,2.80f+(i%2)*.35f,.62f+(i%3)*.08f,Quaternion.Euler(0,17+i*33,0),
                     new Color(.26f,.28f,.27f,1f))==null)
                     ValoriaKit.RockCluster("Valoria · rear ridge fallback",p,.85f,5);
-                if(i%3==0)
-                    ValoriaKit.BroadleafTree("Valoria · ridge broadleaf",p+new Vector3((i%3-1)*1.15f,0,-1.15f),.80f+(i%3)*.12f);
+                if(i%2==0)
+                    ValoriaKit.PineTree("Valoria · ridge pine",p+new Vector3((i%3-1)*1.15f,0,-1.15f),.68f+(i%3)*.07f);
             }
 
             // Visual Bible production pass 02. Layout is now expressed through reusable modules
@@ -293,19 +282,19 @@ namespace Eldoria.Presentation
                     bush,1.10f,.72f,Quaternion.Euler(0,(int)(bush.x*29f)%360,0),
                     new Color(.42f,.58f,.43f,1f));
 
-            // Uneven mixed groves frame the city; clear breaks reveal walls and the valley route.
-            for(int i=0;i<20;i++)
+            // The imported Slavic vegetation was visually incompatible in URP (white/yellow blow-out).
+            // Use one restrained dark-pine family until a production vegetation set is selected.
+            for(int i=0;i<26;i++)
             {
-                float z=-10.5f+(i*13%29)*.91f;
-                float x=(i%2==0?-1f:1f)*(11.15f+(i*7%5)*.58f);
-                if(i%4==0)ValoriaKit.BroadleafTree("Valoria broadleaf",new Vector3(x,0,z),.78f+(i%3)*.17f);
-                else if(i%4!=1)ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.68f+(i%5)*.14f);
+                float z=-10.5f+(i*19%31)*.92f;
+                float x=(i%2==0?-1f:1f)*(10.35f+(i*7%7)*.58f);
+                ValoriaKit.PineTree("Valoria pine",new Vector3(x,0,z),.66f+(i%4)*.07f);
             }
-            for(int i=0;i<6;i++)
+            for(int i=0;i<8;i++)
             {
                 float z=-5.8f+(i*11%17)*.82f;
                 float x=(i%2==0?-1f:1f)*(8.75f+(i*5%4)*.38f);
-                if(i%2==0)ValoriaKit.BroadleafTree("Valoria inner tree",new Vector3(x,0,z),.52f+(i%3)*.13f);
+                ValoriaKit.PineTree("Valoria inner pine",new Vector3(x,0,z),.54f+(i%3)*.06f);
             }
             ValoriaKit.RockCluster("Valoria roadside rocks",new Vector3(-3.7f,.05f,-1.35f),.58f,4);
             ValoriaKit.RockCluster("Valoria barracks rocks",new Vector3(7.5f,.05f,-1.15f),.52f,4);
