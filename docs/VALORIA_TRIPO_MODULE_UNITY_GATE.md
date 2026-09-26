@@ -48,3 +48,39 @@ Produce this version outside Work; do not use aggressive Tripo retopo as the aut
 ## Verdict
 
 **B — viable with external optimization.** Small-module generation remains the more promising direction than the full-Bastion generation, but this exact raw GLB is not production-ready. Its geometry can be used as the high-detail source for external retopo/bake/semantic separation; the next acceptance gate is the optimized 20k–35k / 2-material / 3–5-mesh GLB in the same isolated scene.
+
+
+## 50K optimized module — Unity gate result
+
+Validated 2026-09-26 on exact file `Eldoria_Module_TowerWallRock_50K.glb`, SHA-256 `18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a`. Dedicated isolated workflow: [run 36276719125](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36276719125), commit `4b2da85b0338f72bdda30c08aac876a005ebba6e`, artifact **10917661356**. The job verified the exact SHA from the Windows runner Downloads, Unity **6000.3.23f1**, then executed only `TripoModuleReview.Capture`. It completed successfully.
+
+### Unity metrics
+
+| Measure | 50K result |
+| --- | ---: |
+| File size | 2,053,520 bytes |
+| Meshes / renderers / materials | 1 / 1 / 1 |
+| Vertices / triangles | 54,760 / **50,000** |
+| UV0 / normals | present / present |
+| Textures | 0 — deliberately not evaluated in this geometry-only gate |
+| Mesh runtime bytes reported by Editor | 4,706,200 |
+| Collider | 1 MeshCollider |
+| Raycast | positive hit **true**, empty-space miss **true** |
+| Unity review bounds | 14.00 × 15.19 × 12.14 |
+| Capture CPU wall time 19 / 12 / 9 / oblique | 1191 / 53 / 32 / 34 ms |
+
+The four real 1280×720 captures were inspected. At **19**, the complete tower/wall/rock silhouette remains readable as a distinct architectural piece. At **12**, the main tower, secondary turret, wall span and rock base remain clearly separable by shape. At **9**, pointed roofs, openings, buttress-like verticals, wall profile and rock edge still read; no collapse comparable to the previous full-Bastion trial is visible. The oblique view confirms genuine rear/side volume and a coherent tower-to-wall-to-rock relationship. The neutral white material is intentionally ignored here because final texturing is outside this gate.
+
+### Fidelity versus the raw high-poly
+
+Raw source: 501,432 triangles / 250,572 vertices / 12,032,088 bytes. The 50K version reduces triangle count by **90.03%**, vertices by **78.15%** and file size by **82.93%** while preserving the source bounding dimensions within approximately **0.08% on every axis** (X +0.036%, Y -0.028%, Z +0.077%).
+
+A geometry-only nearest-vertex comparison between the two supplied GLBs gives a low→high RMS distance of approximately **0.108% of total source height**; 99% of 50K vertices are within approximately **0.240% of source height** of a high-poly vertex. This is not a watertight Hausdorff/surface proof, but together with the fixed-scale Unity captures it is strong evidence that the external reduction preserved the global form very well.
+
+### Comparison with the previous optimized full Bastion
+
+The previous Bastion review used 81,506 triangles / 39,251 vertices but its captures showed architecture visually fused into a noisy, melted-looking mass and failed legibility at the official zooms. The 50K small module uses fewer triangles overall and presents a much clearer architectural hierarchy in the same 19/12/9 review concept: tall primary tower, secondary turret, wall and rock base remain recognisable from strategic through detail views. Its mesh runtime report is also lower (4.71 MB versus 5.73 MB in the prior Bastion Editor measurement), though these Editor figures are not a device-performance benchmark.
+
+### Scope decision
+
+**Geometry gate: PASS.** The externally optimized 50K small module is viable as the geometric basis for the next pipeline phase. This result does **not** approve final textures, materials, semantic mesh separation, pivots/kit snapping, LODs or city-scale performance; those remain deliberately deferred. Overall image-to-3D production status therefore remains **B — viable with external optimization**, now with the central geometry-fidelity step positively demonstrated.
