@@ -1,6 +1,20 @@
 # Valoria — art test ilustrado 2.5D aislado
 
-Fecha: 2026-09-26. Estado: **prueba experimental pendiente de aceptar visualmente en capturas reales de Unity**. Se preserva `VisualWorld.Create`, `Valoria.unity`, el gameplay y la decisión C de `VALORIA_FINAL_ASSET_DECISION.md`. Este experimento investiga una alternativa de coste de licencias 0 € para la cámara elevada fija de Eldoria, sin afirmar que sustituya el arte 3D final.
+Fecha: 2026-09-26. Estado: **prueba técnica ejecutada; rechazada como pipeline de ciudad 4X, útil como concept art/fondo de cámara fija**. Se preserva `VisualWorld.Create`, `Valoria.unity`, el gameplay y la decisión C de `VALORIA_FINAL_ASSET_DECISION.md`. Este experimento investiga una alternativa de coste de licencias 0 € para la cámara elevada fija de Eldoria.
+
+## Resultado real y decisión de producción
+
+Commit de la prueba `c2e1652f6cfd1cd3587a6e8a1cdfead97e16f5f7`; Unity Actions run **36250258935**: source preflight, EditMode, PlayMode, Windows build y render del experimento **verdes**. Artefacto `eldoria-layered-valoria-captures-c2e1652f6cfd1cd3587a6e8a1cdfead97e16f5f7` (ID **10908514472**) contiene las seis capturas `stage-{1,2}-{strategic,city,detail}.png` a 1280×720. Se revisaron visualmente las seis. El artefacto separado de las tres capturas de Valoria confirma que el workflow siguió capturando la escena de producción; el diff del commit no incluye la escena, `VisualWorld` ni gameplay.
+
+| Pregunta | Resultado |
+| --- | --- |
+| Representación | Dos PNG RGBA de 1536×1024 para el Bastión se alternan como material de un mismo Quad URP Unlit, delante de un PNG RGB sobre otro Quad orientado hacia la cámara. No hay malla 3D del edificio, proyección sobre geometría ni profundidad interna. El Quad del Bastión tiene collider rectangular. |
+| Tres zooms | Los tamaños ortográficos 19, 12 y 9 **renderizan sin error**. El estratégico muestra una composición legible pero el Bastión ocupa una parte pequeña de la pantalla; ciudad prioriza la fachada; detalle recorta la base/edificios bajos. La prueba usa una cámara fija semejante a la de ciudad, pero estos tres tamaños no son una validación de todos los desplazamientos/cámaras de gameplay ni una medición de dispositivo móvil. |
+| Progresión | Las dos etapas retienen el cuerpo central, torre principal, acueducto y roca; la segunda añade ala y torre a la derecha. Otros detalles cambian ligeramente al regenerar la imagen completa (andamios, huecos, vegetación, iluminación). La identidad general se reconoce en las capturas, pero el cambio de estado no está demostrado como transición limpia y solo hay dos estados de los cuatro exigidos. |
+| Ciudad 4X | **No es un pipeline de producción validado.** El test valida una composición ilustrada aislada. No hay edificios independientes, conexiones caminables, selección precisa, orden dinámico de oclusión, cámara desplazable/rotatoria, animación integrada ni variantes de ciudad. La profundidad es pintada y la roca del Bastión se percibe superpuesta al suelo sin unión física ni acceso coherente al camino. |
+| Rendimiento | La prueba carga tres imágenes y dibuja dos planos; esto no extrapola a una ciudad poblada. Cada RGBA 1536×1024 ocupa unos 6 MiB sin comprimir; con dos etapas y el fondo RGB son unos 16,5 MiB en RGB/RGBA base antes de mipmaps y formatos de plataforma. Cuatro etapas y múltiples edificios implican más texturas, transparencia/overdraw, atlas y pruebas de memoria y FPS móvil. No se midieron en esta prueba. |
+
+La interacción del test solo alterna la etapa si el raycast toca el **rectángulo** del Quad, incluidas zonas visualmente transparentes; el job verde y las capturas estáticas no prueban clics precisos ni entrada táctil. Los tamaños de zoom muestran composición; no prueban el flujo jugable. **Veredicto: esta vía no resuelve el bloqueo artístico principal de Valoria como ciudad 4X interactiva.** Conservar las imágenes como dirección de arte, matte painting o fondo controlado es razonable; promocionar los planos a la escena principal no lo es.
 
 ## Material original
 
