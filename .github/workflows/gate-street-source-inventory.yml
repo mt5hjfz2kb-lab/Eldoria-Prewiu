@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/gate-street-source-inventory.yml'
+  workflow_dispatch:
 
 jobs:
   inventory:
@@ -16,7 +17,7 @@ jobs:
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $downloads = Join-Path $env:USERPROFILE 'Downloads'
-          $cutoff = (Get-Date).AddHours(-4)
+          $cutoff = (Get-Date).AddHours(-12)
           $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' |
             Where-Object { $_.LastWriteTime -ge $cutoff } |
             Sort-Object LastWriteTime -Descending)
@@ -25,4 +26,4 @@ jobs:
             $sha = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
             Write-Host ("{0} | {1} bytes | {2:o} | sha256 {3}" -f $file.Name, $file.Length, $file.LastWriteTime, $sha)
           }
-          if ($recent.Count -eq 0) { throw 'No GLB in the last four hours of Downloads.' }
+          if ($recent.Count -eq 0) { throw 'No GLB in the last twelve hours of Downloads.' }
