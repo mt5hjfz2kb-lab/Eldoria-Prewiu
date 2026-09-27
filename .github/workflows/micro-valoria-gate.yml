@@ -67,10 +67,11 @@ jobs:
           $gates = @(Get-ChildItem $downloads -File -Filter '*.glb' |
             Where-Object { $_.Name -match '(?i)(gate|puerta)' -and $_.Name -match '(?i)(wall|muralla)' -and $_.Name -match '(?i)(rock|roca)' -and $_.Name -match '(?i)(50K|optim)' })
           if ($gates.Count -ne 1) {
-            Write-Host 'Gate candidates (names only):'
+            Write-Host 'Recent GLB inventory in runner Downloads (newest first):'
             Get-ChildItem $downloads -File -Filter '*.glb' |
-              Where-Object { $_.Name -match '(?i)(gate|puerta)' } |
-              ForEach-Object { Write-Host $_.Name }
+              Sort-Object LastWriteTime -Descending |
+              Select-Object -First 40 |
+              ForEach-Object { Write-Host ("{0} | {1} bytes | {2:o}" -f $_.Name, $_.Length, $_.LastWriteTime) }
             throw "Need exactly one identifiable optimized gate+wall+rock GLB in Downloads; found $($gates.Count)."
           }
           $gateSha = (Get-FileHash $gates[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
