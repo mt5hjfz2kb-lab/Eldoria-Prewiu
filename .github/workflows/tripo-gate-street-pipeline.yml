@@ -1,12 +1,6 @@
-name: Tripo GateStreetRiseRock module pipeline
+name: "[LEGACY] Tripo GateStreetRiseRock module pipeline"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-gate-street-pipeline.yml'
-      - 'tools/tripo_gate_street_blender.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGateStreetModuleReview.cs'
   workflow_dispatch:
 
 concurrency:
