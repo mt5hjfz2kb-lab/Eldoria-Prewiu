@@ -3,5 +3,5 @@
   "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Read-only probe. Must not click Generate or spend credits.",
-  "probe_nonce": "2026-09-28T00:remote-check-1"
+  "probe_nonce": "2026-09-28T00:remote-check-2"
 }
