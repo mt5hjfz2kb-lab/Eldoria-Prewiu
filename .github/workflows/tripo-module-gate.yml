@@ -1,11 +1,6 @@
-name: Tripo 50K small-module gate
+name: "[LEGACY] Tripo 50K small-module gate"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-module-gate.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoModuleReview.cs'
   workflow_dispatch:
 
 concurrency:
