@@ -78,9 +78,11 @@ namespace Eldoria.EditorTools
             road.transform.localScale = new Vector3(3.4f, .12f, 14);
             Colorize(road, new Color(.29f, .28f, .25f));
             var light = new GameObject("District light").AddComponent<Light>();
-            light.type = LightType.Directional; light.intensity = .85f;
+            light.type = LightType.Directional; light.intensity = .68f; light.shadows = LightShadows.Soft;
             light.transform.rotation = Quaternion.Euler(48, -42, 0);
-            RenderSettings.ambientLight = new Color(.43f, .46f, .49f);
+            RenderSettings.ambientLight = new Color(.28f, .30f, .32f);
+
+            ApplyDistrictClay(root);
 
             var district = BoundsOf(root);
             report.districtBounds = district.size;
@@ -176,6 +178,18 @@ namespace Eldoria.EditorTools
             var b = renderers[0].bounds;
             foreach (var r in renderers) b.Encapsulate(r.bounds);
             return b;
+        }
+
+        static void ApplyDistrictClay(GameObject root)
+        {
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            mat.color = new Color(.50f, .49f, .46f);
+            mat.SetFloat("_Smoothness", .18f);
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>()) {
+                var slots = renderer.sharedMaterials;
+                for (int i = 0; i < slots.Length; i++) slots[i] = mat;
+                renderer.sharedMaterials = slots;
+            }
         }
 
         static void Colorize(GameObject go, Color color)
