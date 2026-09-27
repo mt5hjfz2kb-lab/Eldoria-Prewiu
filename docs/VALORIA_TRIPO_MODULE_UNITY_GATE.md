@@ -142,3 +142,48 @@ To determine whether V4 caused the Unity rendering defect, exact V3 (SHA-256 `17
 Reason: the V4 semantic surface classification is materially better than V3, but the actual Unity gate is not rendering the supplied 1024×1024 BaseColor textures correctly, so the requested final appearance is not present in-engine. Surface classification itself is **localized/near-ready but not final**: Rock is now appropriately constrained and the major Roof leaks are removed, while the remaining true small roof surfaces need explicit semantic selection rather than another heuristic round.
 
 Next re-entry must address only the Unity material/texture import path first (why embedded 1024 images become 4×4 material textures in glTFast/URP). Once that is fixed, rerun the unchanged V4 geometry/material partition and then explicitly correct only the identified small-roof semantic pieces if they still read as Stone. Do not alter the certified 50K geometry.
+
+
+## V4 Texture Import Debug — root cause resolved
+
+Validated 2026-09-27 using the exact certified V4 GLB (SHA-256 `46b26023c65eb60cc59e8d29495d6b100e0a6f14ae42463905497aaecbaffaa2`). Geometry and Stone/Roof/Rock classification were not changed.
+
+### Evidence chain
+
+1. The three embedded V4 BaseColor PNG byte ranges were extracted directly from the GLB BIN chunk **without re-encoding**.
+2. Unity's normal `TextureImporter` imported those exact PNGs at **1024×1024** each, with `maxTextureSize=2048`, sRGB enabled and active quality profile **Ultra / globalTextureMipmapLimit=0**.
+3. Replacing only the glTFast material's `baseColorTexture` with those external PNG assets produced correct, stable rendering at 19 / 12 / 9 + oblique.
+4. A second route using persistent native URP/Lit `.mat` assets and the same external PNGs also rendered correctly. This rules out the PNG bytes, UV0, mesh, URP and ordinary Unity TextureImporter settings.
+5. The project was using `com.unity.cloud.gltfast 6.14.1` without the optional built-in packages `com.unity.modules.imageconversion` and `com.unity.modules.unitywebrequesttexture` (and their UnityWebRequest dependency). glTFast documentation explicitly requires those modules for PNG/JPEG support.
+6. In an isolated temporary-workspace test, enabling those modules and reimporting the **unchanged embedded V4 GLB** changed the glTFast material textures from **4×4** to **1024×1024** and restored the correct appearance.
+7. The dependency fix was then committed to the real project package manifest/lock. The normal V4 appearance workflow was strengthened to reject any BaseColor that is not 1024×1024, and run **36284841372** at commit `7e73419376c04330024693fa168aac32a39b864f` passed with all three embedded textures at **1024×1024**. Artifact: **10919589881**.
+
+### Debug run metrics
+
+Texture-debug workflow **36283678679**, artifact **10919359428**:
+
+- direct external PNGs: 1024×1024 / 1024×1024 / 1024×1024;
+- pre-fix embedded glTFast bindings: 4×4 / 4×4 / 4×4;
+- shader on imported materials: `Shader Graphs/glTF-pbrMetallicRoughness`;
+- cloned glTFast materials + external PNGs: correct 1024 bindings;
+- persistent URP/Lit materials + external PNGs: correct 1024 bindings;
+- raycast positive and empty-space miss remain valid;
+- certified geometry remains 50,000 triangles.
+
+Temporary module-verification workflow **36284460057** then proved that enabling Image Conversion + UnityWebRequestTexture fixes the embedded path itself. Permanent package configuration now includes:
+
+- `com.unity.modules.imageconversion: 1.0.0`
+- `com.unity.modules.unitywebrequest: 1.0.0`
+- `com.unity.modules.unitywebrequesttexture: 1.0.0`
+
+### Root-cause diagnosis
+
+**TEXTURES VALID — GLB EMBEDDING/GLTFAST FAILURE**, with a precise project-level cause: glTFast's PNG/JPEG soft dependencies were absent. This was not a bad PNG, UV problem, mipmap/quality limit, URP binding failure or V4 material-classification defect.
+
+### Recommended production route
+
+Primary route: keep the compact **GLB with embedded PNG BaseColor textures**, but keep the three required Unity built-in modules locked in the project and retain the 1024-resolution assertion in the isolated import gate. This route is now proven in the real project.
+
+Fallback/authoring route: external PNGs + native Unity materials are also proven valid and can be used when material authoring needs to happen in Unity. They are not required as a workaround anymore.
+
+The remaining V4 issue is separate from texture import: the surface cleanup is intentionally conservative and at least one small true roof surface still needs explicit semantic selection. Do not return to percentage heuristics. No geometry change is required.
