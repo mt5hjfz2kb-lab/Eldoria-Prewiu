@@ -58,12 +58,12 @@ namespace Eldoria.EditorTools
             // Two towers frame an open approach; there is deliberately no invented
             // gate. Terraces climb behind this threshold, enclosed by reused walls.
             // Bounds normalization compensates for Tripo's arbitrary metre scale.
-            Place(prefabs[0], report.modules[0], root.transform, "01 West threshold tower", new Vector3(-8.5f, 0, -9), -30, 13);
-            Place(prefabs[0], report.modules[0], root.transform, "02 East threshold tower", new Vector3(8.5f, 0, -9), 150, 13);
-            Place(prefabs[1], report.modules[1], root.transform, "03 Central ascending terrace", new Vector3(0, 0, 3.0f), 0, 18);
-            Place(prefabs[1], report.modules[1], root.transform, "04 Upper terrace / east step", new Vector3(7.5f, 1.0f, 12.0f), 85, 14);
-            Place(prefabs[0], report.modules[0], root.transform, "05 Western high tower", new Vector3(-10.5f, 1.2f, 10.5f), 55, 13);
-            Place(prefabs[0], report.modules[0], root.transform, "06 Rear wall and tower", new Vector3(8.5f, 2.0f, 18), 205, 10);
+            Place(prefabs[0], report.modules[0], root.transform, "01 West threshold tower", new Vector3(-5.8f, 0, -6.5f), -25, 11.5f);
+            Place(prefabs[0], report.modules[0], root.transform, "02 East threshold tower", new Vector3(5.8f, 0, -6.5f), 155, 11.5f);
+            Place(prefabs[1], report.modules[1], root.transform, "03 Central ascending terrace", new Vector3(0, 0, 2.0f), 0, 17);
+            Place(prefabs[1], report.modules[1], root.transform, "04 Upper terrace / east step", new Vector3(3.2f, .6f, 9.0f), 55, 14);
+            Place(prefabs[0], report.modules[0], root.transform, "05 Western high tower", new Vector3(-7.2f, .8f, 7.5f), 55, 12);
+            Place(prefabs[0], report.modules[0], root.transform, "06 Rear wall and tower", new Vector3(6.2f, 1.2f, 13.5f), 205, 10);
 
             var terrain = GameObject.CreatePrimitive(PrimitiveType.Plane);
             terrain.name = "Neutral ground | context only";
@@ -72,13 +72,13 @@ namespace Eldoria.EditorTools
             Colorize(terrain, new Color(.37f, .36f, .32f));
             var road = GameObject.CreatePrimitive(PrimitiveType.Cube);
             road.name = "Southern approach | context only";
-            road.transform.position = new Vector3(0, -.07f, -22);
-            road.transform.localScale = new Vector3(3.4f, .12f, 16);
+            road.transform.position = new Vector3(0, -.07f, -16);
+            road.transform.localScale = new Vector3(3.4f, .12f, 14);
             Colorize(road, new Color(.29f, .28f, .25f));
             var light = new GameObject("District light").AddComponent<Light>();
-            light.type = LightType.Directional; light.intensity = 1.15f;
+            light.type = LightType.Directional; light.intensity = .85f;
             light.transform.rotation = Quaternion.Euler(48, -42, 0);
-            RenderSettings.ambientLight = new Color(.59f, .61f, .64f);
+            RenderSettings.ambientLight = new Color(.43f, .46f, .49f);
 
             var district = BoundsOf(root);
             report.districtBounds = district.size;
@@ -88,12 +88,17 @@ namespace Eldoria.EditorTools
             cam.backgroundColor = new Color(.65f, .72f, .79f);
             Directory.CreateDirectory(Output);
             Physics.SyncTransforms();
-            float[] sizes = { 19, 12, 9, 12 };
+            float[] sizes = { 19, 12, 9, 16 };
             string[] names = { "strategic", "city", "detail", "oblique" };
             for (int i = 0; i < 4; i++) {
                 cam.orthographicSize = sizes[i];
-                cam.transform.position = district.center + (i == 3 ? new Vector3(-25, 22, -26) : new Vector3(20, 29, -32));
-                cam.transform.LookAt(district.center + Vector3.up * 1.1f);
+                var target = i == 0 ? district.center + Vector3.up :
+                    i == 1 ? new Vector3(0, district.center.y, -1) :
+                    i == 2 ? new Vector3(0, district.center.y - .8f, -4) :
+                    district.center + Vector3.up;
+                cam.transform.position = target + (i == 3 ? new Vector3(-25, 20, -26) :
+                    i == 0 ? new Vector3(19, 27, -30) : new Vector3(17, 25, -27));
+                cam.transform.LookAt(target);
                 var result = Save(cam, Output + "/" + names[i] + ".png");
                 report.captureMilliseconds[i] = result.Item1;
                 report.captureNonEmpty[i] = result.Item2;
