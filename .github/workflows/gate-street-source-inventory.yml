@@ -1,4 +1,5 @@
 name: GateStreetRiseRock source inventory
+# MV1 inventory trigger 2026-09-27
 
 on:
   push:
