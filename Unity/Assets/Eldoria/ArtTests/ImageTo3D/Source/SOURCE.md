@@ -1,20 +1,34 @@
-# Bastion_Optimized_v1 — source receipt
+# ImageTo3D Source staging
 
-Date: 2026-09-26
+This folder is an **ephemeral staging area** for isolated Eldoria art gates.
 
-- Derived from owner-supplied `fantasy castle 3d model(1).glb`.
-- Optimized candidate: `Bastion_Optimized_v1.glb`.
-- Verified geometry: 1 mesh, 39,251 vertices, 81,506 triangles.
-- File size: 12,794,888 bytes (~12.2 MiB).
-- Original inspection: ~501k triangles, one mesh, three 4K textures.
-- Optimization target for this pass: ~80k triangles and 2K textures.
-- Purpose: isolated Unity art/technical validation only; not production-final.
-- Do not replace or edit `Valoria.unity`, `VisualWorld`, or gameplay.
+Do not treat files here as canonical production assets. Certified identities, hashes and verdicts live in:
+- `docs/VALORIA_MODULE_KIT.md`
+- `docs/TRIPO_MODULE_PIPELINE.md`
+- the relevant gate document for each family.
 
-Required Unity validation:
-1. Import GLB in isolated ImageTo3D test scene.
-2. Verify materials, UVs, normals, scale and orientation.
-3. Capture orthographic zooms 19 / 12 / 9 at 1280x720.
-4. Capture one oblique/orbit view to prove real volume.
-5. Test collider/raycast only in the isolated scene.
-6. Compare visual loss versus source/reference and record runtime cost.
+## Runner behavior
+
+The canonical GitHub Actions pipeline copies or generates temporary GLB files here during a run. Those binaries are intentionally not committed.
+
+## Owner local review
+
+Inside Unity use:
+
+`Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review`
+
+The helper:
+1. reads the certified owner exports from the local Downloads folder;
+2. verifies their SHA-256 identities;
+3. uses the canonical Blender processor for raw Terrace/Gate sources;
+4. stages local review GLBs in this folder;
+5. rebuilds and opens the isolated Micro-Valoria scene.
+
+Generated GLBs and the review scene are ignored by Git so local inspection does not pollute the repository.
+
+Certification still comes from the GitHub Actions gates; the Unity menu is an owner-inspection convenience.
+
+Protected surfaces remain untouched:
+- `Valoria.unity`
+- `VisualWorld`
+- gameplay.
