@@ -84,3 +84,61 @@ The previous Bastion review used 81,506 triangles / 39,251 vertices but its capt
 ### Scope decision
 
 **Geometry gate: PASS.** The externally optimized 50K small module is viable as the geometric basis for the next pipeline phase. This result does **not** approve final textures, materials, semantic mesh separation, pivots/kit snapping, LODs or city-scale performance; those remain deliberately deferred. Overall image-to-3D production status therefore remains **B — viable with external optimization**, now with the central geometry-fidelity step positively demonstrated.
+
+
+## SurfaceCleanup V4 — Appearance Gate
+
+Validated 2026-09-27 against exact owner file `Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb`, SHA-256 `46b26023c65eb60cc59e8d29495d6b100e0a6f14ae42463905497aaecbaffaa2`, 2,100,016 bytes.
+
+### Source-side verification
+
+The GLB remains **50,000 triangles** and its geometry is exactly the certified 50K surface: all 50,000 canonical triangles are shared and the bidirectional nearest-vertex delta against `Eldoria_Module_TowerWallRock_50K.glb` is **0.0**. Material partitioning duplicates boundary vertices, so the imported vertex count changes without changing the geometric surface.
+
+V4 contains one logical mesh with three material partitions and three embedded BaseColor images that decode outside Unity at **1024×1024**:
+
+- `Eldoria_Stone`: **41,441 faces**
+- `Eldoria_SlateRoof`: **1,006 faces**
+- `Eldoria_RockBase`: **7,553 faces**
+
+The Roof partition contains exactly **5 connected regions**. Relative to V3, the triangle classification changes are: 14,371 Rock→Stone, 2,566 Roof→Stone, 126 Stone→Rock, while 24,504 Stone, 7,427 Rock and 1,006 Roof faces retain their prior label.
+
+A fixed-camera, no-edit external render using the same 19/12/9 + oblique framing shows the intended classification effect clearly: the large Rock invasion from V3 is greatly reduced and is now concentrated in the natural foundation band; the large blue leaks on pinnacles/ornaments/protrusions are removed; Stone correctly dominates the architectural bodies. However, V4 is **too aggressive on Roof** in at least the secondary left turret cap/roof, which is now classified Stone. This remaining semantic problem is localized enough that another global/percentage heuristic is not justified; it requires explicit semantic selection of the true small roof pieces.
+
+### Real Unity V4 run
+
+Dedicated isolated workflow **run 36282060847**, commit `d4c805a2f095ea8f3361f72d8cbff465dd2414bc`, artifact **10919755084**, completed successfully on Unity **6000.3.23f1**. It staged only the exact V4 SHA from runner Downloads and executed the isolated `TripoAppearanceV4Review` scene. Production `Valoria.unity`, `VisualWorld` and gameplay were not touched.
+
+Unity reports:
+
+| Measure | V4 |
+| --- | ---: |
+| Meshes / renderers | 1 / 1 |
+| Vertices / triangles | 55,637 / **50,000** |
+| Materials / textures | **3 / 3** |
+| UV0 / normals | present / present |
+| MeshCollider | 1 |
+| Raycast hit / empty-space miss | **true / true** |
+| Bounds | 14.00 × 15.1893 × 12.1444 |
+| Mesh runtime bytes | 4,762,528 |
+| Texture runtime bytes | 16,172 |
+| Capture wall time 19 / 12 / 9 / oblique | 1239 / 57 / 41 / 36 ms |
+
+Critical appearance blocker: although the GLB images decode externally as **1024×1024**, the Unity/glTFast imported material instances expose the named BaseColor textures as **4×4**:
+
+- `eldoria_stone_basecolor: 4x4`
+- `eldoria_roof_basecolor: 4x4`
+- `eldoria_rock_basecolor: 4x4`
+
+The real Unity captures do not show the intended stone/slate/rock BaseColor appearance. They render as a pale mauve/fallback-looking surface with cyan/magenta edge artifacts. Therefore the appearance cannot be accepted from the Unity evidence.
+
+### Apples-to-apples V3 control
+
+To determine whether V4 caused the Unity rendering defect, exact V3 (SHA-256 `17a11388dba3e2f37741dc6b8c442d9757695c169c5d1a5c9d56a74ea2d6edf3`) was staged through the **identical** review code in workflow **run 36282874873**, artifact **10919990479**. V3 also imports as 3 materials / 3 textures and also exposes all three named BaseColor textures as **4×4**. Its Unity captures exhibit essentially the same fallback-looking material output. Therefore the 4×4/material-rendering defect is **not introduced by SurfaceCleanup V4**; it is a common GLB→glTFast/Unity appearance-import problem that must be solved before final visual acceptance.
+
+### Appearance verdict
+
+**APPEARANCE GATE — FAIL.**
+
+Reason: the V4 semantic surface classification is materially better than V3, but the actual Unity gate is not rendering the supplied 1024×1024 BaseColor textures correctly, so the requested final appearance is not present in-engine. Surface classification itself is **localized/near-ready but not final**: Rock is now appropriately constrained and the major Roof leaks are removed, while the remaining true small roof surfaces need explicit semantic selection rather than another heuristic round.
+
+Next re-entry must address only the Unity material/texture import path first (why embedded 1024 images become 4×4 material textures in glTFast/URP). Once that is fixed, rerun the unchanged V4 geometry/material partition and then explicitly correct only the identified small-roof semantic pieces if they still read as Stone. Do not alter the certified 50K geometry.
