@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "mode": "probe",
+  "cdp_endpoint": "http://127.0.0.1:9222",
+  "notes": "Read-only probe. Must not click Generate or spend credits."
+}
