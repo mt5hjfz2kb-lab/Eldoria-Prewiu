@@ -37,11 +37,15 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Historical headings/test filenames may retain the version in which a subsystem was introduced; do not rename them merely because the active version advanced.
 - Version promotion is release metadata, not a gameplay change. It must not alter balance, progression or frozen tester output.
 
-## Canonical Tripo module pipeline
-- For every new Valoria Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
+## Canonical Valoria modular-art pipeline
+- Start Valoria art work at `docs/ELDORIA_ART_PIPELINE_INDEX.md` and `docs/VALORIA_MODULE_KIT.md`; these distinguish active production tooling, support infrastructure, historical experiments and real certified families.
+- For every new Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
 - The owner performs Tripo manually and exports the GLB to runner Downloads. After that, the agent owns source identification, Blender optimization, Unity gate, evidence review and documentation through the canonical request/workflow path.
 - Do **not** ask the owner to upload a GLB manually when repo write access and the Windows self-hosted runner are available. Manual upload is fallback only after a demonstrated runner/workflow failure.
 - New module gates must use `pipeline/tripo-module-request.json` + `.github/workflows/tripo-module-pipeline.yml` unless a documented technical exception requires otherwise. Old module-specific workflows are historical, not the default.
+- Do not create another per-module Blender script, Unity capturer or workflow merely for a new asset. Extend the generic pipeline only when a demonstrated requirement cannot be represented by the current request/configuration.
+- A new family exists only when it fills a distinct functional role and has source identity + technical evidence + visual acceptance. Version suffixes of one family never count as new families.
+- Owner local inspection of the certified three-family composition is available in Unity at `Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review`; this convenience view never replaces CI certification.
 
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
