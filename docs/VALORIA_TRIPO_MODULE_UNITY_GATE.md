@@ -187,3 +187,16 @@ Primary route: keep the compact **GLB with embedded PNG BaseColor textures**, bu
 Fallback/authoring route: external PNGs + native Unity materials are also proven valid and can be used when material authoring needs to happen in Unity. They are not required as a workaround anymore.
 
 The remaining V4 issue is separate from texture import: the surface cleanup is intentionally conservative and at least one small true roof surface still needs explicit semantic selection. Do not return to percentage heuristics. No geometry change is required.
+
+
+## Module 3 — terrace + stair + rock
+
+Validated 2026-09-27 from owner export `Eldoria_Module_TerraceStairRock.glb`, SHA-256 `75e9a955e0c3f7596fbb4a70ef76eccceff7a379a0437ea859c587d2a2653685`.
+
+Raw source measured **332,528 triangles / 166,206 vertices / 1 mesh / 1 material**, normals present, no UV0, 7,980,452 bytes. Blender 5.2.2 LTS automatic cleanup/reduction generated `Eldoria_Module_TerraceStairRock_50K.glb` at **49,800 triangles / 24,842 source-side vertices**, UV0 present, normals present, one material, 2,062,012 bytes. This is inside the corrected isolated acceptance interval **49,500–50,000**.
+
+Real Unity 6000.3.23f1 gate run **36334704739** at commit `500a031407bc1a554dbeb3f9fd561e865ccdc973` passed; artifact **10936719852**. Unity measured **49,800 triangles / 55,063 imported vertices / 1 mesh / 1 renderer / 1 material / 0 textures / UV0+normals / 1 MeshCollider / 4,720,800 mesh runtime bytes**. Positive raycast and empty-space miss both passed. All 1280×720 captures at orthographic **19 / 12 / 9** plus oblique were validated non-empty.
+
+Capture review: the reduced geometry still reads as a distinct multi-level terrace/fortified platform integrated into a broad rock base, with stepped vertical massing retained across the official zooms and genuine side/rear volume in the oblique view. The current gate uses a neutral untextured material, so this is not a material/appearance approval. It is also still one fused mesh; semantic separation, final stone/roof/rock materials and kit snapping remain later production work.
+
+**Module 3 technical gate: PASS.** Together with the first two validated module families, this is enough technical evidence to proceed to the next major experiment: **Micro-Valoria**, composing multiple modules together in an isolated Unity scene before any production change to Valoria. `Valoria.unity`, `VisualWorld` and gameplay were not changed.
