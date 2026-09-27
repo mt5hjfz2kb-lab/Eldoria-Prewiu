@@ -7,12 +7,17 @@ on:
       - '.github/workflows/gate-street-source-inventory.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   inventory:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 3
     steps:
+      - uses: actions/checkout@v4
+
       - name: Identify recent GLB without processing it
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -21,9 +26,31 @@ jobs:
           $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' |
             Where-Object { $_.LastWriteTime -ge $cutoff } |
             Sort-Object LastWriteTime -Descending)
-          Write-Host 'Recent GLB files (newest first):'
+          if ($recent.Count -eq 0) { throw 'No GLB in the last twelve hours of Downloads.' }
+
+          $lines = @(
+            '# GateStreetRiseRock V2 source inventory',
+            '',
+            ('Generated UTC: ' + (Get-Date).ToUniversalTime().ToString('o')),
+            '',
+            '| File | Bytes | LastWriteTime | SHA-256 |',
+            '| --- | ---: | --- | --- |'
+          )
           foreach ($file in $recent) {
             $sha = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-            Write-Host ("{0} | {1} bytes | {2:o} | sha256 {3}" -f $file.Name, $file.Length, $file.LastWriteTime, $sha)
+            $lines += ('| `' + $file.Name + '` | ' + $file.Length + ' | ' + $file.LastWriteTime.ToString('o') + ' | `' + $sha + '` |')
           }
-          if ($recent.Count -eq 0) { throw 'No GLB in the last twelve hours of Downloads.' }
+          $path = Join-Path $env:GITHUB_WORKSPACE 'docs\GATE_STREET_V2_SOURCE_INVENTORY.md'
+          $lines | Set-Content -Encoding UTF8 $path
+          Get-Content $path
+
+      - name: Commit inventory report
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/GATE_STREET_V2_SOURCE_INVENTORY.md
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "ci: record GateStreetRiseRock V2 Downloads inventory"
+            git push origin HEAD:main
+          }
