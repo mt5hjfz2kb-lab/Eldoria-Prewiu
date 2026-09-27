@@ -227,3 +227,15 @@ This is permanent cross-session behavior, not a one-session preference.
 - This is now the **fifth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1 and ResidentialTerraceRock.
 - Dedicated evidence: `docs/VALORIA_STREET_LANDING_TRANSITION_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
 - StreetLandingTransition is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
+
+
+## 2026-09-28 — RockTerrainSeamFiller certified
+
+- Canonical runner source: `Eldoria_Module_RockTerrainSeamFiller.glb`, 8,087,520 bytes, SHA-256 `2a9ba145883737a431c7744d3acc6288ef515d4212085b48cb2a9a5d5826a6ca`.
+- Prior StreetLandingTransition, ResidentialTerraceRock, GateStreetRiseRock variants/MV1 and TerraceStairRock hashes were explicitly excluded before selection.
+- Blender raw: **336,991 tris** / 168,436 verts; optimized: **49,800 tris** / 24,840 verts, UV0 generated/present, normals present, 1 material. Optimized SHA-256: `2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d`.
+- Canonical Unity 6000.3.23f1 gate: run **36356423039**, artifact **10943977319**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
+- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as terrain/rock seam filler with a broad overlap surface and a short stepped height relation. It remains non-architectural/non-focal and can be partially buried or overlapped to merge larger rocky bases. One corner has a stronger rock rise, so that area should usually be buried/subordinated rather than exposed as a landmark.
+- This is now the **sixth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1, ResidentialTerraceRock and StreetLandingTransition.
+- Dedicated evidence: `docs/VALORIA_ROCK_TERRAIN_SEAM_FILLER_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
+- RockTerrainSeamFiller is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
