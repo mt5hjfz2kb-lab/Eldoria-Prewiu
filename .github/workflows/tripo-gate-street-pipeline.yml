@@ -38,11 +38,14 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Identify and stage GateStreetRiseRock V2 source from Downloads
+      - name: Identify and stage GateStreetRiseRock V3 source from Downloads
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $downloads = Join-Path $env:USERPROFILE 'Downloads'
-          $oldSha = '345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458'
+          $excludedGateShas = @(
+            '345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458',
+            'd1cfd520d07e2e311016d52fe40d11e3b0abc6e16ebc83a044e320f25ecba692'
+          )
           $cutoff = (Get-Date).AddHours(-12)
           $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' |
             Where-Object { $_.LastWriteTime -ge $cutoff } |
@@ -58,7 +61,7 @@ jobs:
               Bytes = $file.Length
               NamedGate = ($file.Name -match 'GateStreetRiseRock')
               ExcludedFamily = ($file.Name -match 'TowerWallRock|TerraceStairRock|Bastion|Castle')
-              OldGate = ($sha -eq $oldSha)
+              OldGate = ($excludedGateShas -contains $sha)
             }
             Write-Host ("candidate {0} | {1} bytes | {2:o} | sha256 {3}" -f $file.Name, $file.Length, $file.LastWriteTime, $sha)
           }
@@ -69,7 +72,7 @@ jobs:
           } else {
             $fallback = @($inventory | Where-Object { -not $_.ExcludedFamily -and -not $_.OldGate })
             if ($fallback.Count -ne 1) {
-              throw "Cannot identify V2 safely: no named GateStreetRiseRock candidate and $($fallback.Count) non-excluded fallback candidates."
+              throw "Cannot identify V3 safely: no named GateStreetRiseRock candidate and $($fallback.Count) non-excluded fallback candidates."
             }
             $selected = $fallback[0]
           }
@@ -86,7 +89,7 @@ jobs:
             "source_bytes=$($selected.Bytes)",
             "source_last_write=$($selected.File.LastWriteTime.ToString('o'))"
           ) | Set-Content "$env:RUNNER_TEMP\gate-street-source.txt"
-          Write-Host "SELECTED_V2: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
+          Write-Host "SELECTED_V3: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
       - name: Locate Blender
         id: blender
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
