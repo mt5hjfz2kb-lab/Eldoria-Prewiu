@@ -61,6 +61,22 @@ namespace Eldoria.EditorTools
             var front = Save(camera, Output + "/front-diagnostic.png");
             if (!front.Item2) throw new Exception("GateStreetRiseRock frontal diagnostic is empty.");
 
+            // MV1 orientation audit: Tripo multiview may export a different canonical front.
+            // These extra diagnostics do not change the asset or acceptance cameras; they only
+            // verify whether a readable lower entrance exists on another cardinal face.
+            camera.orthographicSize = 9f;
+            camera.transform.position = bounds.center + new Vector3(0f, 5f, 24f);
+            camera.transform.LookAt(bounds.center + Vector3.up * (bounds.extents.y * .08f));
+            var rear = Save(camera, Output + "/rear-diagnostic.png");
+            camera.transform.position = bounds.center + new Vector3(-24f, 5f, 0f);
+            camera.transform.LookAt(bounds.center + Vector3.up * (bounds.extents.y * .08f));
+            var left = Save(camera, Output + "/left-diagnostic.png");
+            camera.transform.position = bounds.center + new Vector3(24f, 5f, 0f);
+            camera.transform.LookAt(bounds.center + Vector3.up * (bounds.extents.y * .08f));
+            var right = Save(camera, Output + "/right-diagnostic.png");
+            if (!rear.Item2 || !left.Item2 || !right.Item2)
+                throw new Exception("GateStreetRiseRock cardinal orientation diagnostic is empty.");
+
             Physics.SyncTransforms();
             bounds = BoundsOf(module);
             var ray = new Ray(camera.transform.position, (bounds.center - camera.transform.position).normalized);
