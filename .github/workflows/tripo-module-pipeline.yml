@@ -252,11 +252,11 @@ jobs:
           $result = [ordered]@{
             request_id = [string]$request.request_id
             module_label = [string]$request.module_label
-            github_run_id = [string]"\${{ github.run_id }}"
-            github_run_number = [string]"\${{ github.run_number }}"
-            github_sha = [string]"\${{ github.sha }}"
-            artifact_id = [string]"\${{ steps.artifact.outputs.artifact-id }}"
-            artifact_name = "eldoria-tripo-module-\${{ steps.request.outputs.request_id }}-\${{ github.sha }}"
+            github_run_id = [string]"${{ github.run_id }}"
+            github_run_number = [string]"${{ github.run_number }}"
+            github_sha = [string]"${{ github.sha }}"
+            artifact_id = [string]"${{ steps.artifact.outputs.artifact-id }}"
+            artifact_name = "eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}"
             source_name = [string]$source["source_name"]
             source_sha256 = [string]$source["source_sha256"]
             source_bytes = [string]$source["source_bytes"]
