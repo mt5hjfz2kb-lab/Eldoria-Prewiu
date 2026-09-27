@@ -1,14 +1,14 @@
 {
-  "enabled": false,
-  "request_id": "template",
-  "module_label": "replace-with-module-name",
+  "enabled": true,
+  "request_id": "residential-terrace-rock-v1",
+  "module_label": "ResidentialTerraceRock",
   "unity_yaw_degrees": 0,
   "source": {
-    "exact_name": "",
+    "exact_name": "Eldoria_Module_ResidentialTerraceRock.glb",
     "exact_sha256": "",
-    "name_regex": ".*\\.glb$",
-    "max_age_hours": 12,
+    "name_regex": "^Eldoria_Module_ResidentialTerraceRock(?:[-_ ].*)?\\.glb$",
+    "max_age_hours": 6,
     "exclude_sha256": []
   },
-  "visual_acceptance": "Describe the module-specific visual/function criterion here."
+  "visual_acceptance": "Must read as inhabited residential/civic architecture rather than fortress; add residential/civic urban mass; preserve at least one readable access/street/passage/terrace; must not become a dominant tower, keep, gatehouse or military enclosure; should remain legible at strategic/city/detail official cameras and fit beside existing certified families without creating a fortress-only silhouette."
 }
