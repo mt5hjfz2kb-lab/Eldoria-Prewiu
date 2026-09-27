@@ -9,5 +9,6 @@
     "max_age_hours": 12,
     "exclude_sha256": []
   },
-  "visual_acceptance": "Describe the module-specific visual/function criterion here."
+  "visual_acceptance": "Describe the module-specific visual/function criterion here.",
+  "unity_yaw_degrees": 180
 }
