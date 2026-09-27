@@ -1,12 +1,6 @@
-name: Tripo Module 3 terrace-stair-rock pipeline
+name: "[LEGACY] Tripo Module 3 terrace-stair-rock pipeline"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-module3-pipeline.yml'
-      - 'tools/tripo_module3_blender.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTerraceModuleReview.cs'
   workflow_dispatch:
 
 concurrency:
