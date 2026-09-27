@@ -84,23 +84,26 @@ namespace Eldoria.EditorTools
             UnityEngine.Object.DestroyImmediate(probeModule);
 
             // Route A: keep glTFast material/shader, replace only the BaseColor texture with the exact external PNG.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var clone = UnityEngine.Object.Instantiate(prefab);
             clone.name = "V4 glTFast materials + external PNGs";
             Normalize(clone);
+            AddColliders(clone);
             report.cloneBindingNotes = BindExternalTexturesToClonedImportedMaterials(clone);
-            var cloneSetup = BuildReview(clone, "Clone-imported-material route");
-            report.cloneCaptureMs = CaptureSet(cloneSetup.Item1, "clone");
-            ValidateRaycast(cloneSetup.Item1, clone, report);
-            UnityEngine.Object.DestroyImmediate(cloneSetup.Item2);
+            var cloneCamera = BuildReviewContext(clone, "Clone-imported-material route");
+            report.cloneCaptureMs = CaptureSet(cloneCamera, "clone");
+            ValidateRaycast(cloneCamera, clone, report);
 
             // Route B: same GLB geometry/submesh order, but persistent Unity URP materials + external PNG assets.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var unityRoute = UnityEngine.Object.Instantiate(prefab);
             unityRoute.name = "V4 external Unity material route";
             Normalize(unityRoute);
+            AddColliders(unityRoute);
             report.unityMaterialBindingNotes = BindPersistentUrpMaterials(unityRoute);
-            var unitySetup = BuildReview(unityRoute, "Persistent Unity material route");
-            report.unityMaterialCaptureMs = CaptureSet(unitySetup.Item1, "unity_material");
-            ValidateRaycast(unitySetup.Item1, unityRoute, report);
+            var unityCamera = BuildReviewContext(unityRoute, "Persistent Unity material route");
+            report.unityMaterialCaptureMs = CaptureSet(unityCamera, "unity_material");
+            ValidateRaycast(unityCamera, unityRoute, report);
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), ScenePath);
 
             File.WriteAllText(Output + "/texture-import-debug.json", JsonUtility.ToJson(report, true));
@@ -253,17 +256,19 @@ namespace Eldoria.EditorTools
             var b=BoundsOf(module); var span=Mathf.Max(b.size.x,b.size.z); var scale=14f/span; module.transform.localScale*=scale;
             b=BoundsOf(module); module.transform.position += new Vector3(-b.center.x,-b.min.y,-b.center.z);
         }
-        static Tuple<Camera,GameObject> BuildReview(GameObject module, string label) {
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-            // Re-parent survives scene replacement only if module is moved into new scene after creation; instantiate a duplicate here.
-            var prefabCopy = UnityEngine.Object.Instantiate(module); UnityEngine.Object.DestroyImmediate(module); module=prefabCopy;
+        static void AddColliders(GameObject module) {
+            foreach (var f in module.GetComponentsInChildren<MeshFilter>()) if (f.sharedMesh != null && f.GetComponent<Collider>() == null) {
+                var c=f.gameObject.AddComponent<MeshCollider>(); c.sharedMesh=f.sharedMesh;
+            }
+        }
+        static Camera BuildReviewContext(GameObject module, string label) {
             module.name = label;
             var terrain=GameObject.CreatePrimitive(PrimitiveType.Plane); terrain.name="Review terrain only"; terrain.transform.localScale=new Vector3(4,1,4); terrain.transform.position=new Vector3(0,-.08f,0); ApplyColor(terrain,new Color(.38f,.36f,.29f));
             var road=GameObject.CreatePrimitive(PrimitiveType.Cube); road.name="Review road only"; road.transform.position=new Vector3(0,.015f,-10); road.transform.localScale=new Vector3(3.2f,.08f,12); ApplyColor(road,new Color(.28f,.27f,.24f));
             var sun=new GameObject("Review light").AddComponent<Light>(); sun.type=LightType.Directional; sun.intensity=1.35f; sun.transform.rotation=Quaternion.Euler(42,-38,0); RenderSettings.ambientLight=new Color(.58f,.61f,.64f);
             var cam=new GameObject("Official zoom review camera").AddComponent<Camera>(); cam.tag="MainCamera"; cam.orthographic=true; cam.orthographicSize=12; cam.clearFlags=CameraClearFlags.SolidColor; cam.backgroundColor=new Color(.64f,.72f,.8f); cam.transform.position=new Vector3(16,13,-22); cam.transform.LookAt(new Vector3(0,6,0));
             var probe=cam.gameObject.AddComponent<BastionSelectionProbe>(); probe.ReviewCamera=cam; probe.BastionRoot=module.transform;
-            return Tuple.Create(cam,module);
+            return cam;
         }
         static long[] CaptureSet(Camera camera,string prefix) {
             var values=new long[4]; var sizes=new[]{19f,12f,9f}; var names=new[]{"strategic","city","detail"};
