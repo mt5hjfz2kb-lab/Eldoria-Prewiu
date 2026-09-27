@@ -18,6 +18,14 @@ namespace Eldoria.EditorTools
         const string Output = "TripoGenericModuleReviewCaptures";
         const long MinTriangles = 49500;
         const long MaxTriangles = 50000;
+        const string ConfigPath = "TripoModuleReviewConfig.json";
+
+        [Serializable] class ReviewConfig
+        {
+            public string module_label;
+            public float unity_yaw_degrees;
+            public string visual_acceptance;
+        }
 
         [Serializable] class Report
         {
@@ -112,6 +120,9 @@ namespace Eldoria.EditorTools
             var module = UnityEngine.Object.Instantiate(prefab);
             module.name = "Eldoria Tripo Module Under Review 50K";
 
+            var config = LoadConfig();
+            module.transform.rotation = Quaternion.Euler(0f, config.unity_yaw_degrees, 0f);
+
             var b = BoundsOf(module);
             var span = Mathf.Max(b.size.x, b.size.z);
             if (span <= .001f) throw new Exception("Imported module has no usable bounds.");
@@ -164,6 +175,15 @@ namespace Eldoria.EditorTools
 
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             return Tuple.Create(camera, module, report);
+        }
+
+        static ReviewConfig LoadConfig()
+        {
+            if (!File.Exists(ConfigPath))
+                return new ReviewConfig { module_label = "unknown", unity_yaw_degrees = 0f, visual_acceptance = "" };
+            var json = File.ReadAllText(ConfigPath);
+            var config = JsonUtility.FromJson<ReviewConfig>(json);
+            return config ?? new ReviewConfig { module_label = "unknown", unity_yaw_degrees = 0f, visual_acceptance = "" };
         }
 
         static void ApplyColor(GameObject go, Color color)
