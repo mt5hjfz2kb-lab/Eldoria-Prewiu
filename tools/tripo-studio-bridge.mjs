@@ -49,7 +49,7 @@ try {
         'button inventory'
       );
       buttons = buttons.map(x => x.trim()).filter(Boolean);
-      generateVisible = buttons.some(x => /^Generar$/i.test(x));
+      generateVisible = buttons.some(x => /^Generar\b/i.test(x));
     } catch (error) {
       inspected.push({
         url: page.url(),
