@@ -1,0 +1,61 @@
+name: Tripo Studio local bridge probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/tripo-studio-request.json'
+  workflow_dispatch:
+
+concurrency:
+  group: eldoria-tripo-studio-bridge
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Install Node dependencies
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: npm ci
+
+      - name: Probe already-open Tripo Studio session
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-studio-request.json" -Raw | ConvertFrom-Json
+          if (-not [bool]$request.enabled) {
+            Write-Host "Bridge request disabled."
+            exit 0
+          }
+          if ([string]$request.mode -ne 'probe') {
+            throw "Only read-only probe mode is enabled at this stage."
+          }
+          node tools/tripo-studio-bridge.mjs pipeline/tripo-studio-request.json "$env:RUNNER_TEMP\tripo-studio-probe.json"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-studio-bridge-${{ github.run_id }}
+          path: ${{ runner.temp }}/tripo-studio-probe.json
+          if-no-files-found: warn
