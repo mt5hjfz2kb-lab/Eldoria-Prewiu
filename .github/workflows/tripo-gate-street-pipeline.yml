@@ -9,6 +9,9 @@ on:
       - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGateStreetModuleReview.cs'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: eldoria-tripo-gate-street
   cancel-in-progress: true
@@ -38,25 +41,55 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Stage exact owner GateStreetRiseRock source from Downloads
+      - name: Identify and stage GateStreetRiseRock V2 source from Downloads
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $downloads = Join-Path $env:USERPROFILE 'Downloads'
-          $download = Join-Path $downloads 'Eldoria_Module_GateStreetRiseRock.glb'
-          if (-not (Test-Path $download)) { throw "Identified GateStreetRiseRock file missing: $download" }
-          $actual = (Get-FileHash $download -Algorithm SHA256).Hash.ToLowerInvariant()
-          $expected = '345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458'
-          if ($actual -ne $expected) { throw "GateStreetRiseRock source SHA mismatch: $actual" }
+          $oldSha = '345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458'
+          $cutoff = (Get-Date).AddHours(-12)
+          $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' |
+            Where-Object { $_.LastWriteTime -ge $cutoff } |
+            Sort-Object LastWriteTime -Descending)
+          if ($recent.Count -eq 0) { throw 'No recent GLB candidates found in Downloads.' }
+
+          $inventory = @()
+          foreach ($file in $recent) {
+            $sha = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            $inventory += [pscustomobject]@{
+              File = $file
+              Sha = $sha
+              Bytes = $file.Length
+              NamedGate = ($file.Name -match 'GateStreetRiseRock')
+              ExcludedFamily = ($file.Name -match 'TowerWallRock|TerraceStairRock|Bastion|Castle')
+              OldGate = ($sha -eq $oldSha)
+            }
+            Write-Host ("candidate {0} | {1} bytes | {2:o} | sha256 {3}" -f $file.Name, $file.Length, $file.LastWriteTime, $sha)
+          }
+
+          $named = @($inventory | Where-Object { $_.NamedGate -and -not $_.ExcludedFamily -and -not $_.OldGate })
+          if ($named.Count -gt 0) {
+            $selected = $named | Sort-Object { $_.File.LastWriteTime } -Descending | Select-Object -First 1
+          } else {
+            $fallback = @($inventory | Where-Object { -not $_.ExcludedFamily -and -not $_.OldGate })
+            if ($fallback.Count -ne 1) {
+              throw "Cannot identify V2 safely: no named GateStreetRiseRock candidate and $($fallback.Count) non-excluded fallback candidates."
+            }
+            $selected = $fallback[0]
+          }
+
+          $download = $selected.File.FullName
           $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
           New-Item -ItemType Directory -Force $sourceDir | Out-Null
           $staged = Join-Path $sourceDir 'Eldoria_Module_GateStreetRiseRock_HQ.glb'
           Copy-Item $download $staged -Force
-          $sha = (Get-FileHash $download -Algorithm SHA256).Hash.ToLowerInvariant()
-          $bytes = (Get-Item $download).Length
-          "source_sha256=$sha" | Set-Content "$env:RUNNER_TEMP\gate-street-source.txt"
-          "source_bytes=$bytes" | Add-Content "$env:RUNNER_TEMP\gate-street-source.txt"
-          Write-Host "GateStreetRiseRock staged: $bytes bytes, sha256=$sha"
-
+          @(
+            "source_name=$($selected.File.Name)",
+            "source_path=$download",
+            "source_sha256=$($selected.Sha)",
+            "source_bytes=$($selected.Bytes)",
+            "source_last_write=$($selected.File.LastWriteTime.ToString('o'))"
+          ) | Set-Content "$env:RUNNER_TEMP\gate-street-source.txt"
+          Write-Host "SELECTED_V2: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
       - name: Locate Blender
         id: blender
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -128,6 +161,43 @@ jobs:
           if (-not (Test-Path $metrics) -or (Get-Item $metrics).Length -lt 100) { throw 'Missing/empty GateStreetRiseRock metrics.json' }
           Get-Content $metrics
 
+      - name: Persist V2 validation evidence in repo
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $dest = "$env:GITHUB_WORKSPACE\docs\validation\GateStreetRiseRockV2"
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\strategic.png" "$dest\19.png" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\city.png" "$dest\12.png" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\detail.png" "$dest\9.png" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\oblique.png" "$dest\oblique.png" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\front-diagnostic.png" "$dest\front-diagnostic.png" -Force
+          Copy-Item "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\metrics.json" "$dest\unity-metrics.json" -Force
+          Copy-Item "$env:RUNNER_TEMP\gate-street-blender-report.json" "$dest\blender-report.json" -Force
+          Copy-Item "$env:RUNNER_TEMP\gate-street-source.txt" "$dest\source.txt" -Force
+          $source = Get-Content "$env:RUNNER_TEMP\gate-street-source.txt"
+          $blender = Get-Content "$env:RUNNER_TEMP\gate-street-blender-report.json" -Raw
+          $unity = Get-Content "$env:GITHUB_WORKSPACE\Unity\TripoGateStreetModuleReviewCaptures\metrics.json" -Raw
+          @(
+            '# GateStreetRiseRock V2 machine validation',
+            '',
+            'This report is generated by the isolated V2 gate. Visual acceptance is intentionally not automated.',
+            '',
+            '## Source',
+            $source,
+            '',
+            '## Blender JSON',
+            $blender,
+            '',
+            '## Unity JSON',
+            $unity
+          ) | Set-Content -Encoding UTF8 "$dest\REPORT.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/validation/GateStreetRiseRockV2
+          if (-not (git diff --cached --quiet)) {
+            git commit -m "test: record GateStreetRiseRock V2 isolated gate evidence"
+            git push origin HEAD:main
+          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
