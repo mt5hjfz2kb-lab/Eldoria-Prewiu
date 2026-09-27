@@ -1,11 +1,8 @@
-name: GateStreetRiseRock source inventory
+name: "[LEGACY] GateStreetRiseRock source inventory"
 # MV1 inventory trigger 2026-09-27
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/gate-street-source-inventory.yml'
+  workflow_dispatch:
 
 jobs:
   inventory:
