@@ -239,3 +239,16 @@ This is permanent cross-session behavior, not a one-session preference.
 - This is now the **sixth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1, ResidentialTerraceRock and StreetLandingTransition.
 - Dedicated evidence: `docs/VALORIA_ROCK_TERRAIN_SEAM_FILLER_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
 - RockTerrainSeamFiller is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
+
+
+## 2026-09-28 — Tripo Studio local Edge bridge proven remotely
+
+- A read-only Tripo Studio bridge now exists at `tools/tripo-studio-bridge.mjs`, driven by `pipeline/tripo-studio-request.json` and `.github/workflows/tripo-studio-bridge.yml`.
+- The bridge attaches through CDP to the owner's already-open Microsoft Edge session at `http://127.0.0.1:9222`; it does not launch a fresh automated browser and therefore avoids the Cloudflare loop seen with remote/automation-created sessions.
+- The runner installs Node automatically, probes with timeouts, inventories all open Tripo Studio tabs, records title/button evidence, and exits explicitly without closing the owner's Edge.
+- Verified remote run: **36358704041** on commit `d53001d5db558fac5252e81a2cbdf5309ccbfabe` — **SUCCESS**.
+- Evidence from the runner: one Tripo Studio page at `/es/workspace/generate`, correct generation-page title, and the real Studio control `Generar 55` detected successfully.
+- No click on Generate was performed, no model was created, no Studio credits were spent, and no export was attempted.
+- This proves `GitHub Actions → self-hosted Windows runner → owner's live Edge session → authenticated Tripo Studio page` as a viable control path.
+- Next safe step: add a guarded interaction mode that can select/upload a declared input and stop immediately before the credit-spending Generate action; only after that read/write staging gate passes should generation/export automation be enabled.
+- Operational dependency: Windows must stay logged in, the PC must not sleep/hibernate, Edge must remain open under remote-debugging port 9222, and the Tripo session must remain authenticated. The display may turn off.
