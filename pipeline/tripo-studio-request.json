@@ -3,5 +3,7 @@
   "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Read-only probe. Must not click Generate or spend credits.",
-  "probe_nonce": "2026-09-28T00:remote-check-3"
+  "probe_nonce": "2026-09-28T00:remote-check-4",
+  "connect_timeout_ms": 10000,
+  "page_probe_timeout_ms": 12000
 }
