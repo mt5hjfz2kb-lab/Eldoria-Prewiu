@@ -216,3 +216,14 @@ This is permanent cross-session behavior, not a one-session preference.
 - `tools/tripo_module_blender.py` now accepts an already-canonical 49,500–50,000-triangle Tripo output instead of incorrectly rejecting it for being below 50,000; higher-poly sources still reduce to the canonical range.
 - The owner can therefore continue art work from chat/mobile without operating the desktop, provided the PC/runner is online and the Tripo CLI/API account has enough API credits. The current CLI account was observed at 0 API credits during setup, so real remote Tripo generation remains externally blocked until that balance is available; dry-run planning itself is free.
 - Existing manual Tripo → Downloads flow remains supported and unchanged as the fallback route.
+
+
+## 2026-09-28 — StreetLandingTransition certified
+
+- Owner expected `Eldoria_Module_StreetLandingTransition.glb`, but the runner inventory showed the actual new export as `ancient ruin platform 3d model.glb`, 7,954,612 bytes, SHA-256 `3c6ef8f92879f5c8acee827b8cd8d2e4f33bb94fde0b6ad20a228cc04bd44b27`. The mismatch was resolved before Blender/Unity; prior ResidentialTerraceRock, GateStreetRiseRock and TerraceStairRock hashes were explicitly excluded.
+- Blender raw: **331,460 tris** / 165,663 verts; optimized: **49,800 tris** / 24,832 verts, UV0 generated/present, normals present, 1 material. Optimized SHA-256: `ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01`.
+- Canonical Unity 6000.3.23f1 gate: run **36355160385**, artifact **10944255594**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
+- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as a compact street/landing connector with a short level change and usable attachment ends. It does not become a monumental gate, tower, keep or enclosed military structure. Its parapets lean slightly fortified, so it must stay subordinate and should not be repeated as a defensive motif.
+- This is now the **fifth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1 and ResidentialTerraceRock.
+- Dedicated evidence: `docs/VALORIA_STREET_LANDING_TRANSITION_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
+- StreetLandingTransition is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
