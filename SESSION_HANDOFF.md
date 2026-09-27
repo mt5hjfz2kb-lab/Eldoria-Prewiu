@@ -206,3 +206,13 @@ This is permanent cross-session behavior, not a one-session preference.
 - This is now the **fourth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock and GateStreetRiseRock MV1.
 - Dedicated evidence: `docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
 - Next art composition milestone: **Micro-Valoria 2 — inhabited district**, using ResidentialTerraceRock to reduce fortress-only repetition while keeping `Valoria.unity`, `VisualWorld` and gameplay untouched.
+
+
+## 2026-09-28 — Remote Tripo CLI route added to canonical module pipeline
+
+- The existing Valoria module pipeline remains canonical; no parallel pipeline was created.
+- `.github/workflows/tripo-module-pipeline.yml` now supports source modes `downloads_glb` (existing behavior), `tripo_text`, `tripo_single_image` and `tripo_multiview`.
+- Remote Tripo generation runs on the existing Windows self-hosted runner, records task id / credits / generated source SHA, then continues through the same Blender and isolated Unity gate.
+- `tools/tripo_module_blender.py` now accepts an already-canonical 49,500–50,000-triangle Tripo output instead of incorrectly rejecting it for being below 50,000; higher-poly sources still reduce to the canonical range.
+- The owner can therefore continue art work from chat/mobile without operating the desktop, provided the PC/runner is online and the Tripo CLI/API account has enough API credits. The current CLI account was observed at 0 API credits during setup, so real remote Tripo generation remains externally blocked until that balance is available; dry-run planning itself is free.
+- Existing manual Tripo → Downloads flow remains supported and unchanged as the fallback route.
