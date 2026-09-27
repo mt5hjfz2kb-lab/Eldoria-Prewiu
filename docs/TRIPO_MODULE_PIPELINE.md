@@ -112,6 +112,12 @@ The owner should only need to:
 2. export the GLB into Downloads;
 3. tell the chat that export is done.
 
+For direct visual inspection of the currently certified three-family composition, the owner can open Unity and use:
+
+`Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review`
+
+That command verifies the known owner source files in Downloads, prepares local 50K review copies with the same canonical Blender processor when needed, rebuilds the isolated Micro-Valoria review scene and opens it in the Unity Editor. Local staging is ignored by Git. This is a convenience view only; GitHub Actions remains the certification source.
+
 The chat/agent owns everything after that.
 
 Do **not** ask the owner to:
