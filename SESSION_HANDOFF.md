@@ -194,3 +194,15 @@ This is permanent cross-session behavior, not a one-session preference.
 - Regresión específica añadida a `qa/e2e-v031-relicario.js`: comprueba cuatro rarezas, proporción vertical en mano/tablero y geometría N/S/E/O en móvil.
 - Commits del bloque: `8d09d5a`, `61a3a1b`, `c1263cb`, `9a5ad56`, `2072206`.
 - Valoria visual iteration certified (2026-09-26): commit `962ec7d709346c113b4a98780ab6b05fcc8e3e52` is green in Unity Actions run `36203343858` (source preflight, EditMode, PlayMode, Windows build and three deterministic Valoria benchmark captures). This pass keeps the capture-reviewed terrain transitions, removes blown-out terrain materials, strengthens the Bastion vertically, subordinates the repair scaffold, breaks the fortress symmetry with staggered tower heights and a split/collapsed roofline, and explicitly rejects a mismatched yellow destroyed-castle asset experiment after capture review. Visual review: clearer irregular/ruinous silhouette, no white terrain blowouts and no mismatched yellow ruin regression; remaining gap is production-quality environmental depth, terrain richness, architecture detail and atmosphere rather than technical stability.
+
+
+## 2026-09-27 — ResidentialTerraceRock certified
+
+- Canonical source selected from runner Downloads after resolving the actual export name: `Eldoria_Module_ResidentialTerracerRock.glb` (note `Terracer` typo in filename), 8,212,532 bytes, SHA-256 `210dc8e787113a82b96551fc7f55c932dcfde60d48ce9ba273012e589480b8eb`.
+- Recent prior GateStreetRiseRock and TerraceStairRock hashes were explicitly excluded in the canonical request.
+- Blender raw: **342,176 tris** / 171,052 verts; optimized: **49,800 tris**, UV0 present, normals present, 1 material. Optimized SHA-256: `2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458`.
+- Canonical Unity 6000.3.23f1 gate: run **36353236508**, artifact **10943072790**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
+- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as inhabited residential/civic architecture, preserves a readable side stair/access + terrace, and does not become a dominant tower/keep/gatehouse. The rock pedestal is larger than ideal and should be buried/overlapped in composition rather than repeated as an island.
+- This is now the **fourth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock and GateStreetRiseRock MV1.
+- Dedicated evidence: `docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
+- Next art composition milestone: **Micro-Valoria 2 — inhabited district**, using ResidentialTerraceRock to reduce fortress-only repetition while keeping `Valoria.unity`, `VisualWorld` and gameplay untouched.
