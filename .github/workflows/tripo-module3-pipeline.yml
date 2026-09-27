@@ -41,8 +41,21 @@ jobs:
       - name: Stage exact owner Module 3 source from Downloads
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $download = Join-Path (Join-Path $env:USERPROFILE 'Downloads') 'Eldoria_Module_TerraceStairRock_HQ.glb'
-          if (-not (Test-Path $download)) { throw "Module 3 source not found: $download" }
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          $download = Join-Path $downloads 'Eldoria_Module_TerraceStairRock_HQ.glb'
+          if (-not (Test-Path $download)) {
+            $cutoff = (Get-Date).AddHours(-4)
+            $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' -ErrorAction SilentlyContinue |
+              Where-Object { $_.LastWriteTime -ge $cutoff } |
+              Sort-Object LastWriteTime -Descending)
+            Write-Host "Recent GLB candidates in Downloads:"
+            $recent | ForEach-Object { Write-Host ("  {0} | {1} bytes | {2:o}" -f $_.Name,$_.Length,$_.LastWriteTime) }
+            if ($recent.Count -ne 1) {
+              throw "Exact Module 3 name missing and recent GLB candidate count is $($recent.Count); refusing ambiguous automatic selection."
+            }
+            $download = $recent[0].FullName
+            Write-Host "Using sole recent GLB candidate as Module 3: $download"
+          }
           $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
           New-Item -ItemType Directory -Force $sourceDir | Out-Null
           $staged = Join-Path $sourceDir 'Eldoria_Module_TerraceStairRock_HQ.glb'
