@@ -43,7 +43,9 @@ jobs:
           $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.imageconversion' -NotePropertyValue '1.0.0' -Force
           $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.unitywebrequest' -NotePropertyValue '1.0.0' -Force
           $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.unitywebrequesttexture' -NotePropertyValue '1.0.0' -Force
-          $json | ConvertTo-Json -Depth 20 | Set-Content $manifest -Encoding UTF8
+          $jsonText = $json | ConvertTo-Json -Depth 20
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [System.IO.File]::WriteAllText($manifest, $jsonText, $utf8NoBom)
           Write-Host 'Temporary manifest now contains Image Conversion + UnityWebRequest + UnityWebRequestTexture.'
           Get-Content $manifest
 
