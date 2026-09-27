@@ -16,7 +16,9 @@ The purpose of this file is to prevent experimental code from being mistaken for
 - Unity gate: `Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs`
 
 Purpose:
-`Tripo export in Downloads → safe source selection → Blender ~50K → Unity isolated gate → evidence → PASS/FAIL`.
+`Tripo source (manual Downloads export OR remote CLI generation) → canonical staging → Blender ~50K/verification → Unity isolated gate → evidence → PASS/FAIL`.
+
+Remote CLI source modes are handled inside the same canonical workflow; do not create a second parallel art pipeline.
 
 ### Micro-Valoria composition
 - Workflow: `.github/workflows/micro-valoria-gate.yml`
