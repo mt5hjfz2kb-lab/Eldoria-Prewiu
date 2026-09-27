@@ -96,7 +96,7 @@ namespace Eldoria.EditorTools
                 throw new DirectoryNotFoundException("Downloads folder not found: " + downloads);
 
             var sourceDir = Path.Combine(
-                Application.dataPath,
+                UnityEngine.Application.dataPath,
                 "Eldoria", "ArtTests", "ImageTo3D", "Source");
             Directory.CreateDirectory(sourceDir);
 
@@ -231,7 +231,7 @@ namespace Eldoria.EditorTools
 
         static string UnityProjectRoot()
         {
-            return Directory.GetParent(Application.dataPath).FullName;
+            return Directory.GetParent(UnityEngine.Application.dataPath).FullName;
         }
 
         static string Q(string value)
