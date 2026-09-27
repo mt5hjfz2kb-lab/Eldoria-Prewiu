@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/micro-valoria-gate.yml'
       - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaOwnerReview.cs'
   workflow_dispatch:
 
 concurrency:
