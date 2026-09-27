@@ -45,13 +45,16 @@ jobs:
           if (-not (Test-Path $path)) { throw 'Canonical Tripo request file is missing.' }
           $request = Get-Content $path -Raw | ConvertFrom-Json
           $enabled = [bool]$request.enabled
+          $sourceMode = [string]$request.source.mode
+          if ([string]::IsNullOrWhiteSpace($sourceMode)) { $sourceMode = 'downloads_glb' }
           "enabled=$($enabled.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           "request_id=$($request.request_id)" >> $env:GITHUB_OUTPUT
           "module_label=$($request.module_label)" >> $env:GITHUB_OUTPUT
-          Write-Host "Request: id=$($request.request_id), module=$($request.module_label), enabled=$enabled"
+          "source_mode=$sourceMode" >> $env:GITHUB_OUTPUT
+          Write-Host "Request: id=$($request.request_id), module=$($request.module_label), enabled=$enabled, source_mode=$sourceMode"
 
       - name: Identify and stage requested GLB from Downloads
-        if: steps.request.outputs.enabled == 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.source_mode == 'downloads_glb'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
@@ -130,6 +133,112 @@ jobs:
 
           Write-Host "SELECTED_SOURCE: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
           Write-Host "UNITY_YAW_DEGREES: $($request.unity_yaw_degrees)"
+
+      - name: Generate and stage requested GLB with Tripo CLI
+        if: steps.request.outputs.enabled == 'true' && startsWith(steps.request.outputs.source_mode, 'tripo_')
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $mode = [string]$request.source.mode
+
+          $tripo = Get-Command tripo.exe -ErrorAction SilentlyContinue
+          if (-not $tripo) { $tripo = Get-Command tripo -ErrorAction SilentlyContinue }
+          if (-not $tripo) {
+            $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
+            if (-not $npm) { $npm = Get-Command npm -ErrorAction SilentlyContinue }
+            if (-not $npm) { throw 'Tripo CLI is not installed and npm is not available on the runner.' }
+            & $npm.Source install -g tripo-cli
+            if ($LASTEXITCODE -ne 0) { throw "tripo-cli install failed with exit code $LASTEXITCODE" }
+            $tripo = Get-Command tripo.cmd -ErrorAction SilentlyContinue
+            if (-not $tripo) { $tripo = Get-Command tripo -ErrorAction SilentlyContinue }
+          }
+          if (-not $tripo) { throw 'Tripo CLI executable was not found after installation.' }
+
+          function Resolve-TripoInput([string]$value) {
+            if ([string]::IsNullOrWhiteSpace($value)) { return $null }
+            if ([System.IO.Path]::IsPathRooted($value)) { return $value }
+            return (Join-Path $env:GITHUB_WORKSPACE $value)
+          }
+
+          $inputArgs = @()
+          if ($mode -eq 'tripo_text') {
+            $prompt = [string]$request.source.prompt
+            if ([string]::IsNullOrWhiteSpace($prompt)) { throw 'tripo_text requires source.prompt.' }
+            $inputArgs += $prompt
+          } elseif ($mode -eq 'tripo_single_image') {
+            $path = Resolve-TripoInput ([string]$request.source.input_path)
+            if (-not $path -or -not (Test-Path $path)) { throw "Tripo source image not found: $path" }
+            $inputArgs += $path
+          } elseif ($mode -eq 'tripo_multiview') {
+            $paths = @($request.source.input_paths)
+            if ($paths.Count -lt 2 -or $paths.Count -gt 4) { throw 'tripo_multiview requires 2 to 4 source.input_paths.' }
+            foreach ($raw in $paths) {
+              $path = Resolve-TripoInput ([string]$raw)
+              if (-not $path -or -not (Test-Path $path)) { throw "Tripo multiview source not found: $path" }
+              $inputArgs += $path
+            }
+          } else {
+            throw "Unsupported Tripo source mode: $mode"
+          }
+
+          $model = [string]$request.source.tripo_model
+          if ([string]::IsNullOrWhiteSpace($model)) { $model = 'tripo-p2' }
+          $faceLimit = [int]$request.source.face_limit
+          if ($faceLimit -le 0) { $faceLimit = 50000 }
+
+          $outDir = "$env:RUNNER_TEMP\eldoria-tripo-cli-$($request.request_id)"
+          Remove-Item $outDir -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $outDir | Out-Null
+
+          $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
+          Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
+            $s = [string]$_
+            if ($s -match '\s') { '"' + $s.Replace('"','\"') + '"' } else { $s }
+          }) -join ' '))
+
+          $json = & $tripo.Source @args
+          if ($LASTEXITCODE -ne 0) { throw "Tripo CLI generation failed with exit code $LASTEXITCODE" }
+          $jsonText = ($json | Out-String).Trim()
+          if ([string]::IsNullOrWhiteSpace($jsonText)) { throw 'Tripo CLI returned no JSON result.' }
+          $jsonText | Set-Content "$env:RUNNER_TEMP\tripo-cli-result.json"
+          $result = $jsonText | ConvertFrom-Json
+
+          $modelFile = [string]$result.model_file
+          if ([string]::IsNullOrWhiteSpace($modelFile) -or -not (Test-Path $modelFile) -or [IO.Path]::GetExtension($modelFile).ToLowerInvariant() -ne '.glb') {
+            $glbs = @(Get-ChildItem $outDir -Recurse -File -Filter '*.glb' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+            if ($glbs.Count -ne 1) { throw "Expected exactly one generated GLB, found $($glbs.Count)." }
+            $modelFile = $glbs[0].FullName
+          }
+
+          $sha = (Get-FileHash $modelFile -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes = (Get-Item $modelFile).Length
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $modelFile $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_mode=$mode",
+            "tripo_model=$model",
+            "face_limit=$faceLimit",
+            "tripo_task_id=$($result.task_id)",
+            "credits_consumed=$($result.credits_consumed)",
+            "source_path=$modelFile",
+            "source_sha256=$sha",
+            "source_bytes=$bytes",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          Write-Host "GENERATED_SOURCE: $modelFile | $bytes bytes | sha256 $sha | task $($result.task_id) | credits $($result.credits_consumed)"
 
       - name: Locate Blender
         if: steps.request.outputs.enabled == 'true'
@@ -223,6 +332,7 @@ jobs:
             pipeline/tripo-module-request.json
             Unity/TripoModuleReviewConfig.json
             ${{ runner.temp }}/tripo-module-source.txt
+            ${{ runner.temp }}/tripo-cli-result.json
             ${{ runner.temp }}/tripo-module-blender-report.json
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
