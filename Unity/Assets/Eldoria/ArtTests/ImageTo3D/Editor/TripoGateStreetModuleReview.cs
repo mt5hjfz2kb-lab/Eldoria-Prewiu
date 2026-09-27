@@ -101,6 +101,9 @@ namespace Eldoria.EditorTools
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var module = UnityEngine.Object.Instantiate(prefab);
             module.name = "Eldoria GateStreetRiseRock 50K";
+            // MV1 multiview exports its functional entrance toward +Z; align that
+            // entrance with the established review road/cameras without changing asset bytes.
+            module.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             var b = BoundsOf(module);
             var span = Mathf.Max(b.size.x, b.size.z);
             if (span <= .001f) throw new Exception("Imported module has no usable bounds.");
