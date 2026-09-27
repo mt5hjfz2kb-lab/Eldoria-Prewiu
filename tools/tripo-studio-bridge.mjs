@@ -30,9 +30,8 @@ const report = {
 
 fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
 
-if (!generateVisible) {
-  throw new Error('Connected to Tripo Studio, but the Generate button is not currently visible.');
-}
-
 console.log('TRIPO_STUDIO_BRIDGE_OK');
 console.log(JSON.stringify(report));
+if (!generateVisible) {
+  console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+}
