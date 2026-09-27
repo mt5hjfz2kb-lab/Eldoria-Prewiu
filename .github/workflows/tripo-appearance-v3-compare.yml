@@ -1,0 +1,87 @@
+name: Tripo V3 appearance comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tripo-appearance-v3-compare.yml'
+
+concurrency:
+  group: eldoria-tripo-appearance-v3-compare
+  cancel-in-progress: true
+
+jobs:
+  appearance-v3:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+      - name: Stage exact V3 into comparison source slot
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $expected = '17a11388dba3e2f37741dc6b8c442d9757695c169c5d1a5c9d56a74ea2d6edf3'
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          $candidates = @(
+            (Join-Path $downloads 'Eldoria_Module_TowerWallRock_50K_AppearanceV3.glb'),
+            (Join-Path $downloads 'Eldoria_Module_TowerWallRock_50K_AppearanceV3(1).glb')
+          )
+          $candidate = $candidates | Where-Object { Test-Path $_ } | Where-Object { (Get-FileHash $_ -Algorithm SHA256).Hash.ToLowerInvariant() -eq $expected } | Select-Object -First 1
+          if (-not $candidate) { throw 'Exact V3 module not found in runner Downloads.' }
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb"
+          New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+          Copy-Item $candidate $target -Force
+          Write-Host "Verified exact V3 staged for apples-to-apples comparison."
+      - name: Verify Unity 6.3.23f1
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+      - name: Execute identical appearance gate on V3
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoAppearanceV4ReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-TripoAppearanceV3Compare.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.TripoAppearanceV4Review.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(420000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 220 }
+            throw 'Tripo V3 comparison gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Tripo V3 comparison gate failed: $($process.ExitCode)"
+          }
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','metrics.json')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing V3 comparison evidence: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-appearance-v3-compare-${{ github.sha }}
+          path: |
+            Unity/TripoAppearanceV4ReviewCaptures/*
+            ${{ runner.temp }}/Eldoria-TripoAppearanceV3Compare.log
+          if-no-files-found: warn
