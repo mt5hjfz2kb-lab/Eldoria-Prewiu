@@ -1,14 +1,18 @@
 {
-  "enabled": false,
-  "request_id": "template",
-  "module_label": "replace-with-module-name",
+  "enabled": true,
+  "request_id": "gate-street-mv1-yaw180-final",
+  "module_label": "GateStreetRiseRock MV1 multiview",
+  "unity_yaw_degrees": 180,
   "source": {
-    "exact_name": "",
-    "exact_sha256": "",
-    "name_regex": ".*\\.glb$",
+    "exact_name": "Eldoria_Module_GateStreetRiseRock_MV1.glb",
+    "exact_sha256": "4d1c19978302643003600b0da5ed2f0ef14f7256c85da03077d36fa9f13e294e",
+    "name_regex": "GateStreetRiseRock.*MV1.*\\.glb$",
     "max_age_hours": 12,
-    "exclude_sha256": []
+    "exclude_sha256": [
+      "345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458",
+      "d1cfd520d07e2e311016d52fe40d11e3b0abc6e16ebc83a044e320f25ecba692",
+      "32fa4360d87f0bc325ebbe792fa03c2428d5efdd4d90f26f52562029c746bd73"
+    ]
   },
-  "visual_acceptance": "Describe the module-specific visual/function criterion here.",
-  "unity_yaw_degrees": 180
+  "visual_acceptance": "GateStreetRiseRock must read at official views as lower entry -> open arch -> visible ascent -> upper landing; hidden/internal-only continuity is FAIL."
 }
