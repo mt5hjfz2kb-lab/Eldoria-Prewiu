@@ -121,7 +121,15 @@ jobs:
             "visual_acceptance=$($request.visual_acceptance)"
           ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
 
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
           Write-Host "SELECTED_SOURCE: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
+          Write-Host "UNITY_YAW_DEGREES: $($request.unity_yaw_degrees)"
 
       - name: Locate Blender
         if: steps.request.outputs.enabled == 'true'
@@ -213,6 +221,7 @@ jobs:
             Unity/TripoGenericModuleReviewCaptures/*
             Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_UnderReview_50K.glb
             pipeline/tripo-module-request.json
+            Unity/TripoModuleReviewConfig.json
             ${{ runner.temp }}/tripo-module-source.txt
             ${{ runner.temp }}/tripo-module-blender-report.json
             ${{ runner.temp }}/tripo-module-blender.log
