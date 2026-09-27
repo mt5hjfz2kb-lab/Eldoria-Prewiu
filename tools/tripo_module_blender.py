@@ -95,15 +95,19 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=a.input)
     raw = metrics("raw_import")
-    if raw["triangles"] < MAX_TRIS:
-        raise RuntimeError(f"Raw source unexpectedly below gate ceiling: {raw['triangles']} tris")
+    if raw["triangles"] < MIN_TRIS:
+        raise RuntimeError(
+            f"Raw source is below the canonical gate floor: {raw['triangles']} tris; "
+            f"expected at least {MIN_TRIS}"
+        )
     ensure_materials_and_uvs()
-    for _ in range(3):
-        now = apply_decimation_once(TARGET)
-        if MIN_TRIS <= now <= MAX_TRIS:
-            break
-        if now < MIN_TRIS:
-            raise RuntimeError(f"Decimation undershot tolerance: {now} tris")
+    if raw["triangles"] > MAX_TRIS:
+        for _ in range(3):
+            now = apply_decimation_once(TARGET)
+            if MIN_TRIS <= now <= MAX_TRIS:
+                break
+            if now < MIN_TRIS:
+                raise RuntimeError(f"Decimation undershot tolerance: {now} tris")
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
     optimized = metrics("optimized")
