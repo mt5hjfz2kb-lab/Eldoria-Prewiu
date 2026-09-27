@@ -147,6 +147,8 @@ namespace Eldoria.EditorTools
                     foreach (var prop in m.GetTexturePropertyNames()) {
                         var t = m.GetTexture(prop); if (t == null || !texs.Add(t)) continue;
                         sizes.Add($"{t.name}: {t.width}x{t.height}");
+                        if (t.name.ToLowerInvariant().Contains("basecolor") && (t.width != 1024 || t.height != 1024))
+                            throw new Exception($"V4 BaseColor texture import regression: {t.name} is {t.width}x{t.height}, expected 1024x1024.");
                         report.textureRuntimeBytes += Profiler.GetRuntimeMemorySizeLong(t);
                     }
                 }
