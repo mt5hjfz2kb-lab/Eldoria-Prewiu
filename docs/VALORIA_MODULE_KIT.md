@@ -16,6 +16,7 @@ Do not count iterations of the same family as new production modules.
 | **GateStreetRiseRock MV1** | lower entry, open arch, visible ascent, upper landing | `Eldoria_Module_GateStreetRiseRock_MV1.glb` | 49,799 tris | ✅ CERTIFIED |
 | **ResidentialTerraceRock** | inhabited residential/civic middle-district mass with readable access/terrace | `Eldoria_Module_ResidentialTerracerRock.glb` | 49,800 tris | ✅ CERTIFIED |
 | **StreetLandingTransition** | small street/landing connector with short level change and usable attachment ends | `ancient ruin platform 3d model.glb` | 49,800 tris | ✅ CERTIFIED |
+| **RockTerrainSeamFiller** | terrain/rock seam integration, gentle height transition, overlap/burial support | `Eldoria_Module_RockTerrainSeamFiller.glb` | 49,800 tris | ✅ CERTIFIED |
 
 ### Family identities
 
@@ -84,6 +85,21 @@ Do not use it as:
 Certified source SHA-256: `3c6ef8f92879f5c8acee827b8cd8d2e4f33bb94fde0b6ad20a228cc04bd44b27`.  
 Canonical optimized SHA-256: `ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01`.
 
+#### RockTerrainSeamFiller
+Use for:
+- hiding hard joins between rocky module bases;
+- softening short terrain/height transitions;
+- partially buried or overlapping terrain integration;
+- supporting larger modules without becoming a focal piece.
+
+Do not use it as:
+- a standalone landmark/platform;
+- a building, plaza, gate or defensive structure;
+- a repeated exposed geological monument. Its stronger corner rise should usually be partially buried/overlapped.
+
+Certified source SHA-256: `2a9ba145883737a431c7744d3acc6288ef515d4212085b48cb2a9a5d5826a6ca`.  
+Canonical optimized SHA-256: `2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d`.
+
 ## Current composition proof
 
 **Micro-Valoria three-family** is the current composition proof.
@@ -109,7 +125,7 @@ These are gaps, not approved names for final assets.
 | --- | --- | --- |
 | P1 | **Residential / civic small mass** | Current kit reads too fortress-heavy; Valoria needs inhabited architecture. |
 | P1 | **Street / landing transition** | ✅ Covered by StreetLandingTransition; use sparingly because its parapets lean fortified. |
-| P1 | **Rock seam / terrain filler** | Hide pedestal joins and integrate modules into one terrain language. |
+| P1 | **Rock seam / terrain filler** | ✅ Covered by RockTerrainSeamFiller; use primarily buried/overlapped. |
 | P2 | **Plaza / courtyard edge** | Create breathing space and non-linear urban organization. |
 | P2 | **Short wall / parapet / corner** | Flexible small-scale composition without adding another tower. |
 | P2 | **Bridge / overhang connector** | Reinforce vertical city identity and cross-level circulation. |
@@ -165,7 +181,8 @@ Entry conditions:
 - ResidentialTerraceRock is now certified and becomes the fourth distinct family;
 - add enough small complementary families to reduce fortress repetition;
 - StreetLandingTransition now covers the street/landing connector gap;
-- prioritize rock seam / terrain filler and other small complementary families next.
+- RockTerrainSeamFiller now covers the rock-seam / terrain-integration gap;
+- next complementary priorities can move to plaza/courtyard edge, short parapet/corner or bridge/overhang connector depending on Micro-Valoria 2 composition needs.
 
 Target:
 - roughly 6–7 distinct functional families;
