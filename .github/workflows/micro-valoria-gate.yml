@@ -45,7 +45,7 @@ jobs:
           github-token: ${{ github.token }}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
           path: ${{ runner.temp }}/certified-module3
-      - name: Stage all three source GLBs
+      - name: Stage the two certified GLB families
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
@@ -61,24 +61,12 @@ jobs:
           $module3 = @(Get-ChildItem "$env:RUNNER_TEMP\certified-module3" -Recurse -File -Filter 'Eldoria_Module_TerraceStairRock_50K.glb')
           if ($module3.Count -ne 1) { throw "Certified Module 3 artifact contains $($module3.Count) matching GLBs." }
           $terraceSha = (Get-FileHash $module3[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-          Copy-Item $module3[0].FullName (Join-Path $sourceDir 'Eldoria_Module_TerraceStairRock_50K.glb')
-          # Module 2 has no SHA/name documented on main. Never pick an arbitrary GLB.
-          # The sole clearly named gate+wall+rock optimized source must be present.
-          $gates = @(Get-ChildItem $downloads -File -Filter '*.glb' |
-            Where-Object { $_.Name -match '(?i)(gate|puerta)' -and $_.Name -match '(?i)(wall|muralla)' -and $_.Name -match '(?i)(rock|roca)' -and $_.Name -match '(?i)(50K|optim)' })
-          if ($gates.Count -ne 1) {
-            Write-Host 'Recent GLB inventory in runner Downloads (newest first):'
-            Get-ChildItem $downloads -File -Filter '*.glb' |
-              Sort-Object LastWriteTime -Descending |
-              Select-Object -First 40 |
-              ForEach-Object { Write-Host ("{0} | {1} bytes | {2:o}" -f $_.Name, $_.Length, $_.LastWriteTime) }
-            throw "Need exactly one identifiable optimized gate+wall+rock GLB in Downloads; found $($gates.Count)."
+          if ($terraceSha -ne '83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e') {
+            throw "Certified terrace artifact SHA mismatch: $terraceSha"
           }
-          $gateSha = (Get-FileHash $gates[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-          Copy-Item $gates[0].FullName (Join-Path $sourceDir 'Eldoria_Module_GateWallRock_50K.glb')
+          Copy-Item $module3[0].FullName (Join-Path $sourceDir 'Eldoria_Module_TerraceStairRock_50K.glb')
           @{
             tower = @{ name = (Split-Path $tower -Leaf); sha256 = $towerSha }
-            gate = @{ name = $gates[0].Name; sha256 = $gateSha; bytes = $gates[0].Length }
             terrace = @{ name = $module3[0].Name; sha256 = $terraceSha }
           } | ConvertTo-Json -Depth 4 | Set-Content "$env:RUNNER_TEMP\micro-valoria-sources.json"
           Get-Content "$env:RUNNER_TEMP\micro-valoria-sources.json"

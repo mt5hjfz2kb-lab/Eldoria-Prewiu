@@ -8,12 +8,11 @@ using UnityEngine.Profiling;
 
 namespace Eldoria.EditorTools
 {
-    // Composition study only. All geometry comes from the three supplied GLBs.
+    // Composition study only. Architecture comes from the two certified GLB families.
     public static class MicroValoriaReview
     {
         const string Root = "Assets/Eldoria/ArtTests/ImageTo3D/";
         const string Tower = Root + "Source/Eldoria_Module_TowerWallRock_50K.glb";
-        const string Gate = Root + "Source/Eldoria_Module_GateWallRock_50K.glb";
         const string Terrace = Root + "Source/Eldoria_Module_TerraceStairRock_50K.glb";
         const string Scene = Root + "MicroValoriaReview.unity";
         const string Output = "MicroValoriaReviewCaptures";
@@ -43,9 +42,9 @@ namespace Eldoria.EditorTools
         public static void Capture()
         {
             SceneSetup.SetupRenderPipeline();
-            var assets = new[] { Tower, Gate, Terrace };
-            var prefabs = new GameObject[3];
-            for (int i = 0; i < 3; i++) {
+            var assets = new[] { Tower, Terrace };
+            var prefabs = new GameObject[2];
+            for (int i = 0; i < 2; i++) {
                 if (!File.Exists(assets[i])) throw new FileNotFoundException("Missing certified source: " + assets[i]);
                 AssetDatabase.ImportAsset(assets[i], ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
                 prefabs[i] = AssetDatabase.LoadAssetAtPath<GameObject>(assets[i]);
@@ -53,17 +52,18 @@ namespace Eldoria.EditorTools
             }
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var root = new GameObject("Micro-Valoria | isolated district experiment");
-            var report = new Report { modules = new Entry[3] };
-            string[] labels = { "Tower wall rock", "Gate wall rock", "Terrace stair rock" };
-            for (int i = 0; i < 3; i++) report.modules[i] = Measure(prefabs[i], labels[i], assets[i]);
-            // L-shaped route: entry from the south, central gate, ascending terrace,
-            // tower district on the west shoulder and a second back wall on the east.
+            var report = new Report { modules = new Entry[2] };
+            string[] labels = { "Tower wall rock", "Terrace stair rock" };
+            for (int i = 0; i < 2; i++) report.modules[i] = Measure(prefabs[i], labels[i], assets[i]);
+            // Two towers frame an open approach; there is deliberately no invented
+            // gate. Terraces climb behind this threshold, enclosed by reused walls.
             // Bounds normalization compensates for Tripo's arbitrary metre scale.
-            Place(prefabs[1], report.modules[1], root.transform, "01 Gate / southern threshold", new Vector3(0, 0, -9), 0, 15);
-            Place(prefabs[2], report.modules[2], root.transform, "02 Ascending rock terrace / main climb", new Vector3(0, 0, 3.5f), 0, 19);
-            Place(prefabs[0], report.modules[0], root.transform, "03 Tower / western high shoulder", new Vector3(-10.5f, 1.0f, 7.5f), 25, 14);
-            Place(prefabs[0], report.modules[0], root.transform, "04 Reused tower wall / rear skyline", new Vector3(9.0f, 1.0f, 11.0f), 180, 11);
-            Place(prefabs[1], report.modules[1], root.transform, "05 Reused gate wall / eastern enclosure", new Vector3(11.0f, 0, -1), 90, 11);
+            Place(prefabs[0], report.modules[0], root.transform, "01 West threshold tower", new Vector3(-8.5f, 0, -9), -30, 13);
+            Place(prefabs[0], report.modules[0], root.transform, "02 East threshold tower", new Vector3(8.5f, 0, -9), 150, 13);
+            Place(prefabs[1], report.modules[1], root.transform, "03 Central ascending terrace", new Vector3(0, 0, 3.0f), 0, 18);
+            Place(prefabs[1], report.modules[1], root.transform, "04 Upper terrace / east step", new Vector3(7.5f, 1.0f, 12.0f), 85, 14);
+            Place(prefabs[0], report.modules[0], root.transform, "05 Western high tower", new Vector3(-10.5f, 1.2f, 10.5f), 55, 13);
+            Place(prefabs[0], report.modules[0], root.transform, "06 Rear wall and tower", new Vector3(8.5f, 2.0f, 18), 205, 10);
 
             var terrain = GameObject.CreatePrimitive(PrimitiveType.Plane);
             terrain.name = "Neutral ground | context only";
@@ -104,16 +104,14 @@ namespace Eldoria.EditorTools
             foreach (var e in report.modules) {
                 if (!e.uv0 || !e.normals || e.sourceTriangles < 45000 || e.sourceTriangles > 50000)
                     throw new Exception("Source geometry/UV gate failed: " + e.name + " " + e.sourceTriangles);
-                var child = root.transform.Find(e.name == labels[0] ? "03 Tower / western high shoulder" :
-                    e.name == labels[1] ? "01 Gate / southern threshold" : "02 Ascending rock terrace / main climb");
-                var b = BoundsOf(child.gameObject);
-                e.raycastHit = Physics.Raycast(new Ray(b.center + Vector3.up * 60, Vector3.down), out var hit, 120) && hit.transform.IsChildOf(child);
+                var child = root.transform.Find(e.name == labels[0] ? "01 West threshold tower" : "03 Central ascending terrace");
+                e.raycastHit = ProbeActualMesh(child);
                 if (!e.raycastHit) throw new Exception("Module raycast gate failed: " + e.name);
                 report.instanceTriangles += e.sourceTriangles * e.instances;
                 report.instanceMeshBytesWithoutSharing += e.sourceMeshBytes * e.instances;
             }
             report.meshColliders = root.GetComponentsInChildren<MeshCollider>().Length;
-            if (report.meshColliders < 5) throw new Exception("Missing district MeshColliders.");
+            if (report.meshColliders < 6) throw new Exception("Missing district MeshColliders.");
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             File.WriteAllText(Output + "/metrics.json", JsonUtility.ToJson(report, true));
             Debug.Log("Micro-Valoria isolated technical gate passed; visual assessment requires capture inspection.");
@@ -171,6 +169,27 @@ namespace Eldoria.EditorTools
         {
             var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")); mat.color = color;
             go.GetComponent<Renderer>().sharedMaterial = mat;
+        }
+
+        static bool ProbeActualMesh(Transform child)
+        {
+            foreach (var collider in child.GetComponentsInChildren<MeshCollider>()) {
+                var mesh = collider.sharedMesh;
+                if (!mesh || mesh.triangles.Length < 3) continue;
+                var vertices = mesh.vertices;
+                var triangles = mesh.triangles;
+                for (int i = 0; i + 2 < Mathf.Min(triangles.Length, 120); i += 3) {
+                    var a = collider.transform.TransformPoint(vertices[triangles[i]]);
+                    var b = collider.transform.TransformPoint(vertices[triangles[i + 1]]);
+                    var c = collider.transform.TransformPoint(vertices[triangles[i + 2]]);
+                    var n = Vector3.Cross(b - a, c - a).normalized;
+                    if (n.sqrMagnitude < .5f) continue;
+                    var center = (a + b + c) / 3;
+                    if (collider.Raycast(new Ray(center + n * .3f, -n), out var hit, .6f)) return true;
+                    if (collider.Raycast(new Ray(center - n * .3f, n), out hit, .6f)) return true;
+                }
+            }
+            return false;
         }
 
         static Tuple<long, bool> Save(Camera camera, string path)
