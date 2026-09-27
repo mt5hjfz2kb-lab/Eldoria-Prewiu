@@ -45,7 +45,16 @@ jobs:
           github-token: ${{ github.token }}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
           path: ${{ runner.temp }}/certified-module3
-      - name: Stage the two certified GLB families
+      - name: Retrieve certified GateStreetRiseRock MV1 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-tripo-gate-street-3230d85d94949d4084941c234d59d73b2cdaa553
+          run-id: 36346961014
+          github-token: ${{ github.token }}
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          path: ${{ runner.temp }}/certified-gate-mv1
+
+      - name: Stage the three certified GLB families
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
@@ -65,9 +74,19 @@ jobs:
             throw "Certified terrace artifact SHA mismatch: $terraceSha"
           }
           Copy-Item $module3[0].FullName (Join-Path $sourceDir 'Eldoria_Module_TerraceStairRock_50K.glb')
+
+          $gate = @(Get-ChildItem "$env:RUNNER_TEMP\certified-gate-mv1" -Recurse -File -Filter 'Eldoria_Module_GateStreetRiseRock_50K.glb')
+          if ($gate.Count -ne 1) { throw "Certified MV1 artifact contains $($gate.Count) matching GLBs." }
+          $gateSha = (Get-FileHash $gate[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($gateSha -ne '9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302') {
+            throw "GateStreetRiseRock MV1 optimized SHA mismatch: $gateSha"
+          }
+          Copy-Item $gate[0].FullName (Join-Path $sourceDir 'Eldoria_Module_GateStreetRiseRock_50K.glb')
+
           @{
             tower = @{ name = (Split-Path $tower -Leaf); sha256 = $towerSha }
             terrace = @{ name = $module3[0].Name; sha256 = $terraceSha }
+            gate = @{ name = $gate[0].Name; sha256 = $gateSha; source_sha256 = '4d1c19978302643003600b0da5ed2f0ef14f7256c85da03077d36fa9f13e294e' }
           } | ConvertTo-Json -Depth 4 | Set-Content "$env:RUNNER_TEMP\micro-valoria-sources.json"
           Get-Content "$env:RUNNER_TEMP\micro-valoria-sources.json"
       - name: Execute isolated Unity gate
