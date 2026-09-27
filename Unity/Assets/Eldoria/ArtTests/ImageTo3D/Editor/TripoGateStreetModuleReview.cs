@@ -36,6 +36,7 @@ namespace Eldoria.EditorTools
         {
             var tuple = CreateScene();
             var camera = tuple.Item1; var module = tuple.Item2; var report = tuple.Item3;
+            ApplyDiagnosticClay(module);
             Directory.CreateDirectory(Output);
             var sizes = new[] { 19f, 12f, 9f };
             var names = new[] { "strategic", "city", "detail" };
@@ -54,6 +55,11 @@ namespace Eldoria.EditorTools
             var oblique = Save(camera, Output + "/oblique.png");
             report.captureCpuMilliseconds[3] = oblique.Item1;
             report.captureNonEmpty[3] = oblique.Item2;
+            camera.orthographicSize = 9f;
+            camera.transform.position = bounds.center + new Vector3(0f, 5f, -24f);
+            camera.transform.LookAt(bounds.center + Vector3.up * (bounds.extents.y * .08f));
+            var front = Save(camera, Output + "/front-diagnostic.png");
+            if (!front.Item2) throw new Exception("GateStreetRiseRock frontal diagnostic is empty.");
 
             Physics.SyncTransforms();
             bounds = BoundsOf(module);
@@ -106,7 +112,7 @@ namespace Eldoria.EditorTools
             ApplyColor(road, new Color(.28f, .27f, .24f));
 
             var sun = new GameObject("Review light").AddComponent<Light>();
-            sun.type = LightType.Directional; sun.intensity = 1.35f;
+            sun.type = LightType.Directional; sun.intensity = 1.05f; sun.shadows = LightShadows.Soft;
             sun.transform.rotation = Quaternion.Euler(42, -38, 0);
             RenderSettings.ambientLight = new Color(.58f, .61f, .64f);
 
@@ -127,6 +133,17 @@ namespace Eldoria.EditorTools
         static void ApplyColor(GameObject go, Color color) {
             var m = new Material(Shader.Find("Universal Render Pipeline/Lit")); m.color = color;
             go.GetComponent<Renderer>().sharedMaterial = m;
+        }
+
+        // Review-only neutral clay exposes arch depth; source GLB/materials remain unchanged.
+        static void ApplyDiagnosticClay(GameObject go) {
+            var material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            material.color = new Color(.48f, .47f, .43f);
+            foreach (var renderer in go.GetComponentsInChildren<Renderer>()) {
+                var slots = renderer.sharedMaterials;
+                for (int i = 0; i < slots.Length; i++) slots[i] = material;
+                renderer.sharedMaterials = slots;
+            }
         }
 
         static Bounds BoundsOf(GameObject go) {

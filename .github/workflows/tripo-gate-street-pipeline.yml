@@ -120,7 +120,7 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 260 }
             throw "GateStreetRiseRock Unity gate failed: $($process.ExitCode)"
           }
-          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png')) {
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','front-diagnostic.png')) {
             $file = Join-Path $folder $name
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Missing/empty GateStreetRiseRock image evidence: $name" }
           }
