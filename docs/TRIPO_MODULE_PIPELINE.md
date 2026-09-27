@@ -60,6 +60,7 @@ Supported request fields:
 - `name_regex`: fallback discovery filter.
 - `max_age_hours`: bounds discovery to recent owner exports.
 - `exclude_sha256`: rejects old/failed variants even if names are similar.
+- `unity_yaw_degrees`: rotates the imported module for the official review cameras without altering source geometry. Default 0. If Tripo exports a different canonical front, use the cardinal diagnostics to choose the correct yaw and rerun before declaring a visual FAIL.
 
 If selection produces zero or multiple candidates, the workflow must fail safely. It must never silently choose an ambiguous file.
 
