@@ -38,13 +38,16 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Identify and stage GateStreetRiseRock V3 source from Downloads
+      - name: Identify and stage GateStreetRiseRock MV1 source from Downloads
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          $expectedName = 'Eldoria_Module_GateStreetRiseRock_MV1.glb'
+          $expectedSha = '4d1c19978302643003600b0da5ed2f0ef14f7256c85da03077d36fa9f13e294e'
           $excludedGateShas = @(
             '345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458',
-            'd1cfd520d07e2e311016d52fe40d11e3b0abc6e16ebc83a044e320f25ecba692'
+            'd1cfd520d07e2e311016d52fe40d11e3b0abc6e16ebc83a044e320f25ecba692',
+            '32fa4360d87f0bc325ebbe792fa03c2428d5efdd4d90f26f52562029c746bd73'
           )
           $cutoff = (Get-Date).AddHours(-12)
           $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' |
@@ -66,16 +69,16 @@ jobs:
             Write-Host ("candidate {0} | {1} bytes | {2:o} | sha256 {3}" -f $file.Name, $file.Length, $file.LastWriteTime, $sha)
           }
 
-          $named = @($inventory | Where-Object { $_.NamedGate -and -not $_.ExcludedFamily -and -not $_.OldGate })
-          if ($named.Count -gt 0) {
-            $selected = $named | Sort-Object { $_.File.LastWriteTime } -Descending | Select-Object -First 1
-          } else {
-            $fallback = @($inventory | Where-Object { -not $_.ExcludedFamily -and -not $_.OldGate })
-            if ($fallback.Count -ne 1) {
-              throw "Cannot identify V3 safely: no named GateStreetRiseRock candidate and $($fallback.Count) non-excluded fallback candidates."
-            }
-            $selected = $fallback[0]
+          $matches = @($inventory | Where-Object {
+            $_.File.Name -eq $expectedName -and
+            $_.Sha -eq $expectedSha -and
+            -not $_.ExcludedFamily -and
+            -not $_.OldGate
+          })
+          if ($matches.Count -ne 1) {
+            throw "Cannot identify MV1 safely: expected exactly one $expectedName with SHA $expectedSha, found $($matches.Count)."
           }
+          $selected = $matches[0]
 
           $download = $selected.File.FullName
           $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
@@ -89,7 +92,7 @@ jobs:
             "source_bytes=$($selected.Bytes)",
             "source_last_write=$($selected.File.LastWriteTime.ToString('o'))"
           ) | Set-Content "$env:RUNNER_TEMP\gate-street-source.txt"
-          Write-Host "SELECTED_V3: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
+          Write-Host "SELECTED_MV1: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
       - name: Locate Blender
         id: blender
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
