@@ -4,15 +4,21 @@ This document is the canonical operational contract for validating any new Tripo
 
 ## Core rule
 
-The owner performs Tripo manually. Everything after export is automated through the Windows self-hosted Unity runner.
+There is one canonical Valoria module pipeline and two supported source-entry routes.
 
-**Owner flow:**
+**Route A — manual Tripo source (compatible fallback/current owner choice):**
 
 `concept image → Tripo manual generation → export GLB to C:\Users\crist\Downloads`
 
-**Automated flow:**
+**Route B — remote Tripo CLI source:**
 
-`request file in repo → GitHub Actions self-hosted runner → safe GLB selection → SHA/size inventory → Blender → ~50K tris → UV0/material sanity → Unity isolated gate → colliders/raycast → 19/12/9/oblique/cardinal captures → artifact → technical + visual verdict`
+`canonical request → Windows self-hosted runner → Tripo CLI from text / one image / 2–4 multiview images → generated GLB`
+
+**Common automated flow after either route:**
+
+`canonical staging → source SHA/size trace → Blender verification/reduction to ~50K → UV0/material sanity → Unity isolated gate → colliders/raycast → 19/12/9/oblique/cardinal captures → artifact → technical + visual verdict`
+
+Remote CLI generation is an extension of the existing canonical workflow, not a second pipeline.
 
 A chat must **not** ask the owner to upload the GLB manually if it has repository write access and the self-hosted runner is available. Manual upload is fallback only after a demonstrated runner/workflow failure.
 
@@ -30,8 +36,10 @@ Older module-specific workflows remain historical evidence and compatibility ref
 ## How any chat starts a new module gate
 
 1. Read `AGENTS.md`, `SESSION_HANDOFF.md`, this file, and live `main` HEAD.
-2. Confirm the owner has exported the new GLB into runner Downloads.
-3. Determine the candidate safely:
+2. Choose the source route:
+   - manual export: confirm the owner has exported the new GLB into runner Downloads;
+   - remote CLI: declare `source.mode` plus the text/image/multiview input in the canonical request.
+3. For manual Downloads sources, determine the candidate safely:
    - use exact filename + SHA-256 when already known;
    - otherwise use a narrow `name_regex` and recent time window;
    - include hashes of known previous/invalid variants in `exclude_sha256`.
@@ -39,7 +47,7 @@ Older module-specific workflows remain historical evidence and compatibility ref
    - `enabled: true`
    - unique `request_id`
    - human-readable `module_label`
-   - source selection fields
+   - `source.mode` and the fields for that mode;
    - module-specific `visual_acceptance`.
 5. Commit that request to `main`. The commit itself triggers the canonical workflow automatically.
 6. Follow the resulting GitHub Actions run to completion.
@@ -48,6 +56,28 @@ Older module-specific workflows remain historical evidence and compatibility ref
 9. Never infer a new family from a filename/version alone. A family exists only when source + gate + evidence demonstrate a distinct functional asset.
 
 ## Safe source selection contract
+
+Supported source modes:
+
+- `downloads_glb` (default when `source.mode` is omitted): existing safe Downloads selection by exact name/SHA/regex.
+- `tripo_text`: generate remotely from `source.prompt`.
+- `tripo_single_image`: generate remotely from `source.input_path`.
+- `tripo_multiview`: generate remotely from `source.input_paths` containing 2–4 images.
+
+For remote Tripo modes, paths may be absolute paths already present on the Windows runner or repository-relative paths checked out by Actions. Recommended defaults are `source.tripo_model = "tripo-p2"` and `source.face_limit = 50000` for the current modular gate experiment. P2 is still a Preview model, so visual evidence remains mandatory and the Blender/Unity gates are not bypassed.
+
+Example remote request source:
+
+```json
+"source": {
+  "mode": "tripo_single_image",
+  "input_path": "pipeline/art-inputs/example/front.png",
+  "tripo_model": "tripo-p2",
+  "face_limit": 50000
+}
+```
+
+The Tripo CLI result, task id, credits consumed, generated source SHA and source bytes are recorded in the workflow artifact.
 
 The runner searches `C:\Users\crist\Downloads` and inventories recent `.glb` files.
 
@@ -107,10 +137,14 @@ If a functional relation is hidden, ambiguous, internal-only, or visible only fr
 
 ## Owner interaction rule
 
-The owner should only need to:
-1. create/generate the asset in Tripo manually;
+The owner should not need to sit at the PC for canonical processing.
+
+For the manual source route, the owner only needs to:
+1. create/generate the asset in Tripo;
 2. export the GLB into Downloads;
 3. tell the chat that export is done.
+
+For the remote CLI route, the owner may simply provide/approve the artistic goal and input source. The agent can update the canonical request from chat/mobile and let the Windows self-hosted runner execute Tripo → Blender → Unity without the owner operating the desktop, provided the PC and runner are online and the Tripo API account has sufficient CLI/API credits.
 
 For direct visual inspection of the currently certified three-family composition, the owner can open Unity and use:
 
@@ -124,7 +158,7 @@ Do **not** ask the owner to:
 - rename/move/process the GLB manually unless ambiguity cannot be resolved safely;
 - run Blender;
 - import the asset into Unity;
-- execute local commands;
+- execute local commands when the canonical runner can do the same work;
 - upload the GLB to chat merely because the chat itself cannot browse Downloads.
 
 A genuine owner blocker exists only when:
