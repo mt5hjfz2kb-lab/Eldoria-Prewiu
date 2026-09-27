@@ -96,6 +96,34 @@ Before generating:
 3. define the official-camera acceptance test;
 4. generate the smallest asset that proves that function.
 
+## Active next module — ResidentialTerraceRock (working name)
+
+**Production role:** inhabited residential/civic mass for the middle district.
+
+This is the next P1 family to generate and validate.
+
+Required visual/function brief:
+- 2–4 connected residential/civic volumes, not a castle;
+- integrated into a modest rock/terrace base;
+- one readable small street or passage through/beside the buildings;
+- one small landing/terrace that can overlap with TerraceStairRock or GateStreetRiseRock;
+- asymmetrical roofline and lived-in silhouette;
+- no dominant tower, gatehouse or keep;
+- no huge isolated rock pedestal;
+- open left/right composition edges so it can sit beside other modules;
+- enough vertical variation to read at zoom 12/9 without becoming monumental.
+
+Acceptance at official cameras:
+- instantly reads as **inhabited architecture**, not defense;
+- remains legible at 19/12/9;
+- does not visually block its own street/passage;
+- can be placed between existing modules without creating a new fortress silhouette.
+
+Tripo generation strategy:
+- start from one isolated 3/4 concept image on a neutral background;
+- if spatial passage/terrace becomes ambiguous, escalate directly to dedicated multiview rather than iterating several single-view versions;
+- geometry/function clarity is more important than decorative density.
+
 ## Next art milestone
 
 The next milestone is **Micro-Valoria 2 — inhabited district**.
