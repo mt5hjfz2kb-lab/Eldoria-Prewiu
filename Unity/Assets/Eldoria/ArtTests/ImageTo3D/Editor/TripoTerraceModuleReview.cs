@@ -189,3 +189,4 @@ namespace Eldoria.EditorTools
             sw.Stop(); return Tuple.Create(sw.ElapsedMilliseconds, nonEmpty);
         }
     }
+}
