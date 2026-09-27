@@ -40,7 +40,7 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 ## Canonical Valoria modular-art pipeline
 - Start Valoria art work at `docs/ELDORIA_ART_PIPELINE_INDEX.md` and `docs/VALORIA_MODULE_KIT.md`; these distinguish active production tooling, support infrastructure, historical experiments and real certified families.
 - For every new Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
-- The owner performs Tripo manually and exports the GLB to runner Downloads. After that, the agent owns source identification, Blender optimization, Unity gate, evidence review and documentation through the canonical request/workflow path.
+- The canonical pipeline supports two Tripo entry routes: (1) owner manual generation/export to runner Downloads, and (2) remote Tripo CLI generation on the Windows self-hosted runner from text, one image, or 2–4 multiview images declared in the canonical request. After source creation/selection, the agent owns Blender normalization, Unity gate, evidence review and documentation through the same canonical request/workflow path.
 - Do **not** ask the owner to upload a GLB manually when repo write access and the Windows self-hosted runner are available. Manual upload is fallback only after a demonstrated runner/workflow failure.
 - New module gates must use `pipeline/tripo-module-request.json` + `.github/workflows/tripo-module-pipeline.yml` unless a documented technical exception requires otherwise. Old module-specific workflows are historical, not the default.
 - Do not create another per-module Blender script, Unity capturer or workflow merely for a new asset. Extend the generic pipeline only when a demonstrated requirement cannot be represented by the current request/configuration.
