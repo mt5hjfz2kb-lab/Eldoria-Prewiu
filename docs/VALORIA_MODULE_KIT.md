@@ -14,6 +14,7 @@ Do not count iterations of the same family as new production modules.
 | **TowerWallRock** | defense, skyline, wall/rock mass | `Eldoria_Module_TowerWallRock_50K.glb` | 50,000 tris | ✅ CERTIFIED |
 | **TerraceStairRock** | elevation, terrace, stair, vertical urbanism | raw `Eldoria_Module_TerraceStairRock.glb` → canonical 50K output | 49,800 tris | ✅ CERTIFIED |
 | **GateStreetRiseRock MV1** | lower entry, open arch, visible ascent, upper landing | `Eldoria_Module_GateStreetRiseRock_MV1.glb` | 49,799 tris | ✅ CERTIFIED |
+| **ResidentialTerraceRock** | inhabited residential/civic middle-district mass with readable access/terrace | `Eldoria_Module_ResidentialTerracerRock.glb` | 49,800 tris | ✅ CERTIFIED |
 
 ### Family identities
 
@@ -51,6 +52,21 @@ Canonical Unity orientation: **180° yaw** relative to the original Tripo export
 
 Functional acceptance:
 `lower entry → open arch → visible ascent → upper landing`.
+
+#### ResidentialTerraceRock
+Use for:
+- inhabited residential/civic mass;
+- middle-district building variety;
+- a readable local access/terrace transition;
+- breaking the fortress-only identity of the current kit.
+
+Do not use it as:
+- a defensive anchor;
+- a dominant tower/keep/gatehouse;
+- a repeatedly isolated rock island. Partially overlap/bury its comparatively large rock base in composition.
+
+Certified source SHA-256: `210dc8e787113a82b96551fc7f55c932dcfde60d48ce9ba273012e589480b8eb`.  
+Canonical optimized SHA-256: `2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458`.
 
 ## Current composition proof
 
@@ -96,11 +112,11 @@ Before generating:
 3. define the official-camera acceptance test;
 4. generate the smallest asset that proves that function.
 
-## Active next module — ResidentialTerraceRock (working name)
+## Certified P1 addition — ResidentialTerraceRock
 
 **Production role:** inhabited residential/civic mass for the middle district.
 
-This is the next P1 family to generate and validate.
+Status: **CERTIFIED** through the canonical isolated Tripo → Blender → Unity gate on run **36353236508**; reference `docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md`.
 
 Required visual/function brief:
 - 2–4 connected residential/civic volumes, not a castle;
@@ -130,8 +146,9 @@ The next milestone is **Micro-Valoria 2 — inhabited district**.
 
 Entry conditions:
 - current three-family proof stays intact;
+- ResidentialTerraceRock is now certified and becomes the fourth distinct family;
 - add enough small complementary families to reduce fortress repetition;
-- prioritize residential/civic mass + street/landing transition + seam fillers.
+- prioritize street/landing transition + seam fillers after the residential/civic gap.
 
 Target:
 - roughly 6–7 distinct functional families;
