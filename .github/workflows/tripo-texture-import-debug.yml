@@ -1,0 +1,129 @@
+name: Tripo V4 texture import debug
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tripo-texture-import-debug.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTextureImportDebug.cs'
+  workflow_dispatch:
+
+concurrency:
+  group: eldoria-tripo-texture-import-debug
+  cancel-in-progress: true
+
+jobs:
+  texture-debug:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Stage exact V4 and extract embedded BaseColor PNGs
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $expected = '46b26023c65eb60cc59e8d29495d6b100e0a6f14ae42463905497aaecbaffaa2'
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          $candidate = Join-Path $downloads 'Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb'
+          if (-not (Test-Path $candidate)) { throw "Exact V4 not found in runner Downloads: $candidate" }
+          $actual = (Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "V4 SHA mismatch: $actual" }
+
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb"
+          New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+          Copy-Item $candidate $target -Force
+
+          $bytes = [System.IO.File]::ReadAllBytes($candidate)
+          $magic = [BitConverter]::ToUInt32($bytes,0)
+          $version = [BitConverter]::ToUInt32($bytes,4)
+          if ($magic -ne 0x46546C67 -or $version -ne 2) { throw 'Not a GLB 2.0 file.' }
+          $jsonLen = [BitConverter]::ToUInt32($bytes,12)
+          $jsonType = [BitConverter]::ToUInt32($bytes,16)
+          if ($jsonType -ne 0x4E4F534A) { throw 'GLB JSON chunk missing.' }
+          $json = [Text.Encoding]::UTF8.GetString($bytes,20,$jsonLen).Trim([char]0,[char]32) | ConvertFrom-Json
+          $binHeader = 20 + $jsonLen
+          $binLen = [BitConverter]::ToUInt32($bytes,$binHeader)
+          $binType = [BitConverter]::ToUInt32($bytes,$binHeader+4)
+          if ($binType -ne 0x004E4942) { throw 'GLB BIN chunk missing.' }
+          $binStart = $binHeader + 8
+
+          $out = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/TextureImportDebug/External"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          foreach ($img in $json.images) {
+            if ($img.mimeType -ne 'image/png') { throw "Unexpected image type: $($img.mimeType)" }
+            $view = $json.bufferViews[$img.bufferView]
+            $byteOffset = 0
+            if ($null -ne $view.byteOffset) { $byteOffset = [int]$view.byteOffset }
+            $count = [int]$view.byteLength
+            $segment = New-Object byte[] $count
+            [Array]::Copy($bytes, $binStart + $byteOffset, $segment, 0, $count)
+            $path = Join-Path $out ($img.name + '.png')
+            [System.IO.File]::WriteAllBytes($path,$segment)
+            $sig = [BitConverter]::ToString($segment[0..7])
+            Write-Host "Extracted $($img.name): $count bytes, PNG signature $sig"
+          }
+          Write-Host "Exact V4 staged and embedded PNG bytes extracted without re-encoding."
+
+      - name: Verify Unity 6.3.23f1
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Execute texture import debug
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoTextureImportDebugCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-TripoTextureImportDebug.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.TripoTextureImportDebug.Run","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw 'Texture import debug timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 320 }
+            throw "Texture import debug failed: $($process.ExitCode)"
+          }
+          foreach ($name in @(
+            'clone_strategic.png','clone_city.png','clone_detail.png','clone_oblique.png',
+            'unity_material_strategic.png','unity_material_city.png','unity_material_detail.png','unity_material_oblique.png',
+            'texture-import-debug.json'
+          )) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing texture debug evidence: $name" }
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-texture-debug-${{ github.sha }}
+          path: |
+            Unity/TripoTextureImportDebugCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TextureImportDebug/External/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TextureImportDebug/Materials/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoTextureImportDebug.unity
+            ${{ runner.temp }}/Eldoria-TripoTextureImportDebug.log
+          if-no-files-found: warn
