@@ -214,7 +214,6 @@ jobs:
           Get-Content $metrics
 
       - uses: actions/upload-artifact@v4
-        id: artifact
         if: always() && steps.request.outputs.enabled == 'true'
         with:
           name: eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}
@@ -228,52 +227,3 @@ jobs:
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
           if-no-files-found: warn
-
-      - name: Publish canonical result manifest
-        if: always() && steps.request.outputs.enabled == 'true'
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
-          $sourcePath = "$env:RUNNER_TEMP\tripo-module-source.txt"
-          $source = @{}
-          if (Test-Path $sourcePath) {
-            foreach ($line in Get-Content $sourcePath) {
-              $parts = $line -split '=', 2
-              if ($parts.Count -eq 2) { $source[$parts[0]] = $parts[1] }
-            }
-          }
-          $reportPath = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
-          $metricsPath = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures\metrics.json"
-          $optimizedPath = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
-          $report = if (Test-Path $reportPath) { Get-Content $reportPath -Raw | ConvertFrom-Json } else { $null }
-          $metrics = if (Test-Path $metricsPath) { Get-Content $metricsPath -Raw | ConvertFrom-Json } else { $null }
-          $optimizedSha = if (Test-Path $optimizedPath) { (Get-FileHash $optimizedPath -Algorithm SHA256).Hash.ToLowerInvariant() } else { "" }
-          $optimizedBytes = if (Test-Path $optimizedPath) { (Get-Item $optimizedPath).Length } else { 0 }
-          $result = [ordered]@{
-            request_id = [string]$request.request_id
-            module_label = [string]$request.module_label
-            github_run_id = [string]"${{ github.run_id }}"
-            github_run_number = [string]"${{ github.run_number }}"
-            github_sha = [string]"${{ github.sha }}"
-            artifact_id = [string]"${{ steps.artifact.outputs.artifact-id }}"
-            artifact_name = "eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}"
-            source_name = [string]$source["source_name"]
-            source_sha256 = [string]$source["source_sha256"]
-            source_bytes = [string]$source["source_bytes"]
-            optimized_sha256 = $optimizedSha
-            optimized_bytes = $optimizedBytes
-            blender = $report
-            unity = $metrics
-            visual_acceptance = [string]$request.visual_acceptance
-          }
-          $resultPath = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-result.json"
-          $result | ConvertTo-Json -Depth 20 | Set-Content $resultPath
-          Get-Content $resultPath
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pipeline/tripo-module-result.json
-          git diff --cached --quiet
-          if ($LASTEXITCODE -ne 0) {
-            git commit -m "art: record canonical Tripo module result $($request.request_id)"
-            git push origin HEAD:main
-          }
