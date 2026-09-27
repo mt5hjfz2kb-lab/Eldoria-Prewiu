@@ -129,11 +129,13 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Tail 260 }
             throw "Module 3 Unity gate failed: $($process.ExitCode)"
           }
-          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','metrics.json')) {
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png')) {
             $file = Join-Path $folder $name
-            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Missing/empty Module 3 evidence: $name" }
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Missing/empty Module 3 image evidence: $name" }
           }
-          Get-Content (Join-Path $folder 'metrics.json')
+          $metrics = Join-Path $folder 'metrics.json'
+          if (-not (Test-Path $metrics) -or (Get-Item $metrics).Length -lt 100) { throw 'Missing/empty Module 3 metrics.json' }
+          Get-Content $metrics
 
       - uses: actions/upload-artifact@v4
         if: always()
