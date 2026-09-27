@@ -8,12 +8,13 @@ using UnityEngine.Profiling;
 
 namespace Eldoria.EditorTools
 {
-    // Composition study only. Architecture comes from the two certified GLB families.
+    // Composition study only. Architecture comes from the three certified GLB families.
     public static class MicroValoriaReview
     {
         const string Root = "Assets/Eldoria/ArtTests/ImageTo3D/";
         const string Tower = Root + "Source/Eldoria_Module_TowerWallRock_50K.glb";
         const string Terrace = Root + "Source/Eldoria_Module_TerraceStairRock_50K.glb";
+        const string Gate = Root + "Source/Eldoria_Module_GateStreetRiseRock_50K.glb";
         const string Scene = Root + "MicroValoriaReview.unity";
         const string Output = "MicroValoriaReviewCaptures";
 
@@ -42,9 +43,9 @@ namespace Eldoria.EditorTools
         public static void Capture()
         {
             SceneSetup.SetupRenderPipeline();
-            var assets = new[] { Tower, Terrace };
-            var prefabs = new GameObject[2];
-            for (int i = 0; i < 2; i++) {
+            var assets = new[] { Tower, Terrace, Gate };
+            var prefabs = new GameObject[3];
+            for (int i = 0; i < 3; i++) {
                 if (!File.Exists(assets[i])) throw new FileNotFoundException("Missing certified source: " + assets[i]);
                 AssetDatabase.ImportAsset(assets[i], ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
                 prefabs[i] = AssetDatabase.LoadAssetAtPath<GameObject>(assets[i]);
@@ -52,18 +53,19 @@ namespace Eldoria.EditorTools
             }
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var root = new GameObject("Micro-Valoria | isolated district experiment");
-            var report = new Report { modules = new Entry[2] };
-            string[] labels = { "Tower wall rock", "Terrace stair rock" };
-            for (int i = 0; i < 2; i++) report.modules[i] = Measure(prefabs[i], labels[i], assets[i]);
-            // Two towers frame an open approach; there is deliberately no invented
-            // gate. Terraces climb behind this threshold, enclosed by reused walls.
-            // Bounds normalization compensates for Tripo's arbitrary metre scale.
-            Place(prefabs[0], report.modules[0], root.transform, "01 West threshold tower", new Vector3(-5.8f, 0, -6.5f), -25, 11.5f);
-            Place(prefabs[0], report.modules[0], root.transform, "02 East threshold tower", new Vector3(5.8f, 0, -6.5f), 155, 11.5f);
-            Place(prefabs[1], report.modules[1], root.transform, "03 Central ascending terrace", new Vector3(0, 0, 2.0f), 0, 17);
-            Place(prefabs[1], report.modules[1], root.transform, "04 Upper terrace / east step", new Vector3(3.2f, .6f, 9.0f), 55, 14);
-            Place(prefabs[0], report.modules[0], root.transform, "05 Western high tower", new Vector3(-7.2f, .8f, 7.5f), 55, 12);
-            Place(prefabs[0], report.modules[0], root.transform, "06 Rear wall and tower", new Vector3(6.2f, 1.2f, 13.5f), 205, 10);
+            var report = new Report { modules = new Entry[3] };
+            string[] labels = { "Tower wall rock", "Terrace stair rock", "Gate street rise rock MV1" };
+            for (int i = 0; i < 3; i++) report.modules[i] = Measure(prefabs[i], labels[i], assets[i]);
+
+            // MV1 is the actual southern access/circulation spine. Its Tripo multiview
+            // export faces +Z, so yaw 180 aligns the open gate and stair with the road.
+            // Two terraces continue that ascent into a compact upper district; only
+            // two tower modules remain, reducing the former repeated-tower rhythm.
+            Place(prefabs[2], report.modules[2], root.transform, "01 Southern gate and rising street", new Vector3(0, 0, -7.0f), 180, 16.0f);
+            Place(prefabs[1], report.modules[1], root.transform, "02 Central ascending terrace", new Vector3(-.8f, .25f, 5.0f), 8, 16.5f);
+            Place(prefabs[1], report.modules[1], root.transform, "03 Upper eastern terrace", new Vector3(4.0f, .65f, 12.0f), 42, 13.5f);
+            Place(prefabs[0], report.modules[0], root.transform, "04 Western district tower", new Vector3(-6.2f, .35f, 5.5f), 58, 10.5f);
+            Place(prefabs[0], report.modules[0], root.transform, "05 Upper rear tower", new Vector3(6.0f, .85f, 13.0f), 210, 10.0f);
 
             var terrain = GameObject.CreatePrimitive(PrimitiveType.Plane);
             terrain.name = "Neutral ground | context only";
@@ -106,17 +108,23 @@ namespace Eldoria.EditorTools
                 report.backgroundMiss[i] = !Physics.Raycast(empty, out var hit, 150) || !hit.transform.IsChildOf(root.transform);
                 if (!result.Item2 || !report.backgroundMiss[i]) throw new Exception("Capture or empty-space selection gate failed: " + names[i]);
             }
-            foreach (var e in report.modules) {
+            string[] probeNames = {
+                "04 Western district tower",
+                "02 Central ascending terrace",
+                "01 Southern gate and rising street"
+            };
+            for (int i = 0; i < report.modules.Length; i++) {
+                var e = report.modules[i];
                 if (!e.uv0 || !e.normals || e.sourceTriangles < 45000 || e.sourceTriangles > 50000)
                     throw new Exception("Source geometry/UV gate failed: " + e.name + " " + e.sourceTriangles);
-                var child = root.transform.Find(e.name == labels[0] ? "01 West threshold tower" : "03 Central ascending terrace");
+                var child = root.transform.Find(probeNames[i]);
                 e.raycastHit = ProbeActualMesh(child);
                 if (!e.raycastHit) throw new Exception("Module raycast gate failed: " + e.name);
                 report.instanceTriangles += e.sourceTriangles * e.instances;
                 report.instanceMeshBytesWithoutSharing += e.sourceMeshBytes * e.instances;
             }
             report.meshColliders = root.GetComponentsInChildren<MeshCollider>().Length;
-            if (report.meshColliders < 6) throw new Exception("Missing district MeshColliders.");
+            if (report.meshColliders < 5) throw new Exception("Missing district MeshColliders.");
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             File.WriteAllText(Output + "/metrics.json", JsonUtility.ToJson(report, true));
             Debug.Log("Micro-Valoria isolated technical gate passed; visual assessment requires capture inspection.");
