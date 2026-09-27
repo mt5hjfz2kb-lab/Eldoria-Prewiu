@@ -40,7 +40,7 @@ These may be reused by active gates but do not define the production flow by the
 
 ## HISTORICAL / DIAGNOSTIC — do not start new work here
 
-The following workflows/scripts remain for evidence and reproducibility of prior experiments. They are **not** the default route for new modules:
+The following workflows/scripts remain for evidence and reproducibility of prior experiments. They are **not** the default route for new modules. The four superseded module/source workflows are now **manual-only** and prefixed `[LEGACY]` in GitHub Actions so they cannot be mistaken for the active route:
 
 - `.github/workflows/tripo-module-gate.yml`
 - `.github/workflows/tripo-module3-pipeline.yml`
