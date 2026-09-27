@@ -1,0 +1,220 @@
+name: Canonical Tripo module pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/tripo-module-request.json'
+  workflow_dispatch:
+
+concurrency:
+  group: eldoria-tripo-module-canonical
+  cancel-in-progress: true
+
+jobs:
+  module-gate:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Read canonical request
+        id: request
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $path = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json"
+          if (-not (Test-Path $path)) { throw 'Canonical Tripo request file is missing.' }
+          $request = Get-Content $path -Raw | ConvertFrom-Json
+          $enabled = [bool]$request.enabled
+          "enabled=$($enabled.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "request_id=$($request.request_id)" >> $env:GITHUB_OUTPUT
+          "module_label=$($request.module_label)" >> $env:GITHUB_OUTPUT
+          Write-Host "Request: id=$($request.request_id), module=$($request.module_label), enabled=$enabled"
+
+      - name: Identify and stage requested GLB from Downloads
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          if (-not (Test-Path $downloads)) { throw "Runner Downloads folder not found: $downloads" }
+
+          $exactName = [string]$request.source.exact_name
+          $exactSha = ([string]$request.source.exact_sha256).ToLowerInvariant()
+          $regex = [string]$request.source.name_regex
+          if ([string]::IsNullOrWhiteSpace($regex)) { $regex = '.*\.glb$' }
+          $hours = [double]$request.source.max_age_hours
+          if ($hours -le 0) { $hours = 12 }
+          $cutoff = (Get-Date).AddHours(-$hours)
+          $excluded = @()
+          if ($null -ne $request.source.exclude_sha256) {
+            $excluded = @($request.source.exclude_sha256 | ForEach-Object { ([string]$_).ToLowerInvariant() })
+          }
+
+          $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' -ErrorAction SilentlyContinue |
+            Where-Object { $_.LastWriteTime -ge $cutoff } |
+            Sort-Object LastWriteTime -Descending)
+          if ($recent.Count -eq 0) { throw "No GLB files modified in the last $hours hours in Downloads." }
+
+          $inventory = @()
+          foreach ($file in $recent) {
+            $sha = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            $excludedBySha = $excluded -contains $sha
+            $nameMatches = $file.Name -match $regex
+            $inventory += [pscustomobject]@{
+              File = $file
+              Sha = $sha
+              Bytes = $file.Length
+              NameMatches = $nameMatches
+              Excluded = $excludedBySha
+            }
+            Write-Host ("candidate {0} | {1} bytes | {2:o} | sha256 {3} | regex={4} | excluded={5}" -f $file.Name,$file.Length,$file.LastWriteTime,$sha,$nameMatches,$excludedBySha)
+          }
+
+          if (-not [string]::IsNullOrWhiteSpace($exactName)) {
+            $matches = @($inventory | Where-Object {
+              $_.File.Name -eq $exactName -and
+              -not $_.Excluded -and
+              ([string]::IsNullOrWhiteSpace($exactSha) -or $_.Sha -eq $exactSha)
+            })
+          } else {
+            $matches = @($inventory | Where-Object { $_.NameMatches -and -not $_.Excluded })
+          }
+
+          if ($matches.Count -ne 1) {
+            throw "Canonical source selection is ambiguous: expected exactly one candidate, found $($matches.Count). Refine exact_name/exact_sha256/name_regex instead of choosing manually."
+          }
+
+          $selected = $matches[0]
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $selected.File.FullName $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_name=$($selected.File.Name)",
+            "source_path=$($selected.File.FullName)",
+            "source_sha256=$($selected.Sha)",
+            "source_bytes=$($selected.Bytes)",
+            "source_last_write=$($selected.File.LastWriteTime.ToString('o'))",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          Write-Host "SELECTED_SOURCE: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
+
+      - name: Locate Blender
+        if: steps.request.outputs.enabled == 'true'
+        id: blender
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @(
+              'C:\Program Files\Blender Foundation',
+              "$env:LOCALAPPDATA\Programs\Blender Foundation",
+              "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+            )
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found on Unity runner.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Blender canonical reduction and UV preparation
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $input = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_HQ.glb"
+          $output = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          $report = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
+          $log = "$env:RUNNER_TEMP\tripo-module-blender.log"
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py" -- --input $input --output $output --report $report *> $log
+          if ($LASTEXITCODE -ne 0) {
+            Get-Content $log -Tail 240
+            throw "Canonical Blender module pipeline failed with exit code $LASTEXITCODE"
+          }
+          if (-not (Test-Path $output)) { throw 'Canonical optimized GLB missing after Blender.' }
+          Get-Content $report
+
+      - name: Verify Unity 6.3.23f1
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Execute canonical isolated Unity gate
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
+          $log = "$env:RUNNER_TEMP\Eldoria-TripoGenericModule.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+
+          if (-not $process.WaitForExit(540000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw 'Canonical Tripo Unity gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw "Canonical Tripo Unity gate failed: $($process.ExitCode)"
+          }
+
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','front-diagnostic.png','rear-diagnostic.png','left-diagnostic.png','right-diagnostic.png')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) {
+              throw "Missing/empty canonical module image evidence: $name"
+            }
+          }
+          $metrics = Join-Path $folder 'metrics.json'
+          if (-not (Test-Path $metrics) -or (Get-Item $metrics).Length -lt 100) {
+            throw 'Missing/empty canonical module metrics.json'
+          }
+          Get-Content $metrics
+
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.request.outputs.enabled == 'true'
+        with:
+          name: eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}
+          path: |
+            Unity/TripoGenericModuleReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_UnderReview_50K.glb
+            pipeline/tripo-module-request.json
+            ${{ runner.temp }}/tripo-module-source.txt
+            ${{ runner.temp }}/tripo-module-blender-report.json
+            ${{ runner.temp }}/tripo-module-blender.log
+            ${{ runner.temp }}/Eldoria-TripoGenericModule.log
+          if-no-files-found: warn
