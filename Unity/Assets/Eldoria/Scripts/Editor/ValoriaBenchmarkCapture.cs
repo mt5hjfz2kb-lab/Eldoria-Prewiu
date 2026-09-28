@@ -26,6 +26,16 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-establishing.png",officialPosition,officialTarget,19f,1280,720);
             Save(camera,folder+"/valoria-gate.png",officialPosition,officialTarget,12f,1280,720);
             Save(camera,folder+"/valoria-districts.png",officialPosition,officialTarget,9f,1280,720);
+
+            // Master-envelope proof: preserve the official orientation and translate camera+target
+            // together to inspect the multi-viewport city edges.
+            var leftShift=new Vector3(-12f,0,0);
+            var rightShift=new Vector3(12f,0,0);
+            var futureShift=new Vector3(0,0,11f);
+            Save(camera,folder+"/valoria-master-west.png",officialPosition+leftShift,officialTarget+leftShift,12f,1280,720);
+            Save(camera,folder+"/valoria-master-east.png",officialPosition+rightShift,officialTarget+rightShift,12f,1280,720);
+            Save(camera,folder+"/valoria-master-future.png",officialPosition+futureShift,officialTarget+futureShift,12f,1280,720);
+            Save(camera,folder+"/valoria-mobile.png",officialPosition,officialTarget,12f,390,844);
             Debug.Log("Valoria benchmark captures saved to "+Path.GetFullPath(folder));
         }
 
