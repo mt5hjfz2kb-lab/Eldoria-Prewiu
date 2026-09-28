@@ -11,9 +11,20 @@
       "source_pbr_run_id": 36493273686,
       "integration_correction": "IMPLEMENTED_PRESERVE_AUTHORED_PBR",
       "integration_rule": "preserve authored PBR via BenchmarkPiece",
-      "official_camera_visual_recheck": "PENDING_RUNNER",
-      "verdict": "PARTIAL",
-      "visual_baseline_diagnosis": "SURFACE_FAIL_CONFIRMED_FROM_OFFICIAL_CAPTURES"
+      "official_camera_visual_recheck": "BASELINE_CAPTURED_OVERBRIGHT_LOOKDEV_PENDING",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PENDING",
+      "visual_baseline_diagnosis": "SURFACE_FAIL_CONFIRMED_FROM_OFFICIAL_CAPTURES",
+      "unity_pbr_evidence": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Aserradero_AP2_v1_basecolor",
+          "Valoria_Aserradero_AP2_v1_normal",
+          "Valoria_Aserradero_AP2_v1_rm"
+        ],
+        "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      }
     },
     "B_cuartel": {
       "goal": "prove the same surface/lookdev logic transfers to a second dedicated building",
@@ -21,9 +32,20 @@
       "unity_full_gate_run_id": 36493002127,
       "unity_full_gate": "PASS",
       "pbr_preservation": "IMPLEMENTED",
-      "formula_scene_recheck": "PENDING_RUNNER",
-      "verdict": "PARTIAL",
-      "visual_baseline_diagnosis": "OVERBRIGHT_BASELINE_CONFIRMED_FROM_OFFICIAL_CAPTURES"
+      "formula_scene_recheck": "BASELINE_CAPTURED_OVERBRIGHT_LOOKDEV_PENDING",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PENDING",
+      "visual_baseline_diagnosis": "OVERBRIGHT_BASELINE_CONFIRMED_FROM_OFFICIAL_CAPTURES",
+      "unity_pbr_evidence": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Cuartel_AP2_v1_basecolor",
+          "Valoria_Cuartel_AP2_v1_normal",
+          "Valoria_Cuartel_AP2_v1_rm"
+        ],
+        "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      }
     },
     "C_hero_fragment": {
       "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
@@ -80,8 +102,8 @@
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
       "workflow": ".github/workflows/valoria-visual-formula.yml",
       "material_evidence": "IMPLEMENTED",
-      "captures": "PENDING_RUNNER",
-      "verdict": "PARTIAL",
+      "captures": "PASS_GENERATED_OFFICIAL_19_12_9_AND_MOBILE",
+      "verdict": "TECH_PASS_VISUAL_LOOKDEV_PENDING",
       "lookdev": {
         "status": "FIVE_PROFILE_COMPARISON_IMPLEMENTED_PENDING_RUNNER",
         "candidate": "valoria-v1-candidate",
@@ -96,7 +118,17 @@
           "clipped_high_pct",
           "clipped_low_pct"
         ]
-      }
+      },
+      "run_id": 36498200151,
+      "artifact_id": 11004024446,
+      "tech_gate": "PASS",
+      "scene_metrics": {
+        "active_renderers": 521,
+        "unique_materials": 67,
+        "scene_triangles": 261180,
+        "lights": 8
+      },
+      "baseline_visual_verdict": "FAIL_OVERBRIGHT_DEDICATED_BUILDINGS_AND_WASHED_VALUE_SEPARATION"
     }
   },
   "formula_can_be_marked_validated_when": [
