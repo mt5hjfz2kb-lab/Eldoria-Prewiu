@@ -54,6 +54,7 @@ jobs:
           git --version
       - uses: actions/checkout@v4
       - name: Stage owner-supplied optimized Bastion from runner Downloads if present
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb"
@@ -81,6 +82,7 @@ jobs:
           if (Test-Path $target) { 'BASTION_GLB_PRESENT=true' | Out-File -FilePath $env:GITHUB_ENV -Append }
           else { Write-Host 'Optimized GLB not present on runner; Unity image-to-3D review will be skipped.' }
       - name: Stage owner-supplied Tripo small module from runner Downloads if present
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K.glb"
@@ -102,6 +104,7 @@ jobs:
             'TRIPO_MODULE_PRESENT=true' | Out-File -FilePath $env:GITHUB_ENV -Append
           } else { Write-Host 'Tripo module not present on runner; isolated small-module review will be skipped.' }
       - name: Fetch official CC0 asset gate models
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           & "$env:GITHUB_WORKSPACE/scripts/fetch-valoria-art-gate.ps1"
@@ -112,6 +115,7 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
       - name: Audit original-art tools on Windows runner
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           foreach ($name in @('blender.exe','python.exe','openscad.exe')) {
@@ -204,6 +208,7 @@ jobs:
           path: Unity/BenchmarkCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated asset gate
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/AssetGateCaptures"
@@ -222,12 +227,13 @@ jobs:
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Asset gate image missing or empty: $name" }
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-asset-gate-${{ github.sha }}
           path: Unity/AssetGateCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated original hero candidate
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/OriginalHeroCaptures"
@@ -246,12 +252,13 @@ jobs:
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Original hero image missing or empty: $name" }
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-original-hero-${{ github.sha }}
           path: Unity/OriginalHeroCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated layered Valoria feasibility test
+        if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/LayeredValoriaCaptures"
@@ -272,13 +279,13 @@ jobs:
             }
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-layered-valoria-captures-${{ github.sha }}
           path: Unity/LayeredValoriaCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated optimized Bastion GLB review
-        if: env.BASTION_GLB_PRESENT == 'true'
+        if: github.event_name == 'workflow_dispatch' && env.BASTION_GLB_PRESENT == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
@@ -297,7 +304,7 @@ jobs:
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing ImageTo3D evidence: $name" }
           }
       - name: Render isolated Tripo small-module review
-        if: env.TRIPO_MODULE_PRESENT == 'true'
+        if: github.event_name == 'workflow_dispatch' && env.TRIPO_MODULE_PRESENT == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE/Unity/TripoModuleReviewCaptures"
@@ -316,7 +323,7 @@ jobs:
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing Tripo module evidence: $name" }
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-tripo-module-${{ github.sha }}
           path: |
@@ -324,7 +331,7 @@ jobs:
             Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoModuleReview.unity
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-image-to-3d-${{ github.sha }}
           path: |
