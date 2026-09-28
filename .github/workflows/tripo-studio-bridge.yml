@@ -180,19 +180,33 @@ jobs:
               $resolved = [string]$request.upload_path
             }
 
-            if (-not $resolved -or -not (Test-Path $resolved)) {
-              throw "Exact Tripo input image not found on runner. No upload or credit-spend action was attempted."
+            $renderSvg = [string]$request.render_svg_path
+            if (-not [string]::IsNullOrWhiteSpace($renderSvg)) {
+              $svgResolved = if ([IO.Path]::IsPathRooted($renderSvg)) { $renderSvg } else { Join-Path $env:GITHUB_WORKSPACE $renderSvg }
+              if (-not (Test-Path $svgResolved)) { throw "SVG render source not found: $svgResolved" }
+              $svgSha = (Get-FileHash $svgResolved -Algorithm SHA256).Hash.ToLowerInvariant()
+              $expectedSvg = ([string]$request.render_svg_sha256).ToLowerInvariant()
+              if (-not [string]::IsNullOrWhiteSpace($expectedSvg) -and $svgSha -ne $expectedSvg) {
+                throw "SVG render source SHA mismatch. expected=$expectedSvg actual=$svgSha"
+              }
+              $request | Add-Member -NotePropertyName render_svg_path -NotePropertyValue $svgResolved -Force
+              $request | Add-Member -NotePropertyName upload_path -NotePropertyValue "" -Force
+              Write-Host "TRIPO_RENDER_SVG_OK: $svgResolved | sha256 $svgSha"
+            } else {
+              if (-not $resolved -or -not (Test-Path $resolved)) {
+                throw "Exact Tripo input image not found on runner. No upload or credit-spend action was attempted."
+              }
+              $actual = (Get-FileHash $resolved -Algorithm SHA256).Hash.ToLowerInvariant()
+              if ([string]::IsNullOrWhiteSpace($expected) -or $actual -ne $expected) {
+                throw "Exact Tripo input SHA mismatch. expected=$expected actual=$actual"
+              }
+              $size = (Get-Item $resolved).Length
+              if ([int64]$request.upload_size_bytes -ne $size) {
+                throw "Exact Tripo input size mismatch. expected=$($request.upload_size_bytes) actual=$size"
+              }
+              $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $resolved -Force
+              Write-Host "EXACT_TRIPO_INPUT_OK: $resolved | $size bytes | sha256 $actual"
             }
-            $actual = (Get-FileHash $resolved -Algorithm SHA256).Hash.ToLowerInvariant()
-            if ([string]::IsNullOrWhiteSpace($expected) -or $actual -ne $expected) {
-              throw "Exact Tripo input SHA mismatch. expected=$expected actual=$actual"
-            }
-            $size = (Get-Item $resolved).Length
-            if ([int64]$request.upload_size_bytes -ne $size) {
-              throw "Exact Tripo input size mismatch. expected=$($request.upload_size_bytes) actual=$size"
-            }
-            $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $resolved -Force
-            Write-Host "EXACT_TRIPO_INPUT_OK: $resolved | $size bytes | sha256 $actual"
           }
 
           $request | ConvertTo-Json -Depth 10 | Set-Content $runtimeRequestPath
@@ -205,6 +219,7 @@ jobs:
           path: |
             ${{ runner.temp }}/tripo-studio-probe.json
             ${{ runner.temp }}/tripo-studio-after-upload.png
+            ${{ runner.temp }}/tripo-rendered-input.png
             ${{ runner.temp }}/tripo-studio-after-generate.png
             ${{ runner.temp }}/tripo-studio-probe.png
             ${{ runner.temp }}/tripo-studio-after-watch.png
