@@ -59,6 +59,7 @@ namespace Eldoria.Tests
                     System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
                 Assert.That(resolve,Is.Not.Null);
                 bool clearClick=false;
+                string resolvedIds="";
                 foreach(var candidate in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
                 {
                     if(candidate.Id!=pair.Item2)continue;
@@ -75,11 +76,12 @@ namespace Eldoria.Tests
                         var screenPoint=camera.WorldToScreenPoint(aim);
                         if(screenPoint.z<=0)continue;
                         var resolved=resolve.Invoke(presenter,new object[]{new Vector2(screenPoint.x,screenPoint.y)}) as WorldHotspot;
+                        resolvedIds+=candidate.gameObject.name+"@"+Mathf.RoundToInt(screenPoint.x)+","+Mathf.RoundToInt(screenPoint.y)+"=>"+(resolved==null?"null":resolved.Id+"("+resolved.gameObject.name+")")+"; ";
                         if(resolved!=null&&resolved.Id==pair.Item2){clearClick=true;break;}
                     }
                     if(clearClick)break;
                 }
-                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera");
+                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera. Resolved: "+resolvedIds);
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
