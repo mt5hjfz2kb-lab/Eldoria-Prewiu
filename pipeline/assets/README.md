@@ -20,3 +20,13 @@ Required conceptual fields:
 Do not automatically infer a paid authorization from a previous asset. Authorization is asset + exact-input + exact-cost specific.
 
 A future orchestrator may update these manifests automatically. Until then, creating a manifest is recommended for new paid production assets once the schema is stabilized.
+Surface evidence is first-class and should record:
+- material family/profile;
+- authoring tool/version;
+- source texture identities and inferred roles;
+- optional bake configuration/results;
+- Unity material/import profile;
+- LookDev profile;
+- SURFACE verdict.
+
+The generated workflow artifact `eldoria-asset-manifest.json` is the machine evidence for a gate run. It complements, but does not automatically replace, a curated persistent manifest under this directory.
