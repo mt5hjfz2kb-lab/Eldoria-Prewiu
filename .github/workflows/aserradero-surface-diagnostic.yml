@@ -1,0 +1,73 @@
+name: Aserradero surface diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aserradero-surface-diagnostic.yml'
+      - 'tools/tripo_module_blender.py'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-aserradero-surface-diagnostic
+  cancel-in-progress: true
+
+jobs:
+  surface-diagnostic:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $root='C:\Program Files\Blender Foundation'
+            if(Test-Path $root){
+              $candidate=Get-ChildItem $root -Recurse -Filter blender.exe -File -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+            }
+          }
+          if(-not $candidate -or -not (Test-Path $candidate)){ throw 'Blender not found' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Diagnose certified Aserradero surface without mutation
+        shell: powershell
+        run: |
+          $input="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\Valoria_Aserradero_AP2_v1.glb"
+          $report="$env:RUNNER_TEMP\aserradero-surface-diagnostic.json"
+          $stdout="$env:RUNNER_TEMP\aserradero-surface-diagnostic.log"
+          $stderr="$env:RUNNER_TEMP\aserradero-surface-diagnostic-error.log"
+          $dummy="$env:RUNNER_TEMP\unused.glb"
+          if(-not (Test-Path $input)){ throw 'Certified Aserradero GLB missing' }
+          $sha=(Get-FileHash $input -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes=(Get-Item $input).Length
+          Write-Host "ASERRADERO_SOURCE: sha256=$sha bytes=$bytes"
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--','--input',$input,'--output',$dummy,'--report',$report,'--diagnostic-only')
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          if($p.ExitCode -ne 0){
+            if(Test-Path $stdout){Get-Content $stdout -Tail 200}
+            if(Test-Path $stderr){Get-Content $stderr -Tail 200}
+            throw "Aserradero surface diagnostic failed: $($p.ExitCode)"
+          }
+          if(-not (Test-Path $report) -or (Get-Item $report).Length -lt 100){ throw 'Surface diagnostic report missing/empty' }
+          Get-Content $report
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aserradero-surface-diagnostic-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/aserradero-surface-diagnostic.json
+            ${{ runner.temp }}/aserradero-surface-diagnostic.log
+            ${{ runner.temp }}/aserradero-surface-diagnostic-error.log
+          if-no-files-found: warn
+          retention-days: 14
