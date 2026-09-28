@@ -59,74 +59,38 @@ namespace Eldoria.Presentation
         }
         WorldHotspot ResolveHotspot(Vector2 point)
         {
-            if(OfficialCamera==null)return null;
-
-            // Valoria uses a fixed orthographic camera. Resolve the building whose projected
-            // interaction footprint contains the tap before consulting depth, so stacked
-            // decorative/city colliders cannot steal a building selection.
-            if(city)
-            {
-                var projected=ResolveProjectedHotspot(point);
-                if(projected!=null)return projected;
-            }
-
-            var ray=OfficialCamera.ScreenPointToRay(point);
+            var camera=OfficialCamera;
+            if(camera==null)return null;
+            var ray=camera.ScreenPointToRay(point);
             var hits=Physics.RaycastAll(ray,100f);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+
+            if(city)
+            {
+                // Fixed-camera 4X selection: if a tap ray intersects more than one canonical
+                // building target, select the target whose centreline is closest to the ray.
+                // This keeps clicks deterministic even when silhouettes overlap in projection.
+                WorldHotspot bestTarget=null;
+                float bestLineDistance=float.MaxValue;
+                foreach(var hit in hits)
+                {
+                    var spot=hit.collider.GetComponent<WorldHotspot>();
+                    if(spot==null||!spot.gameObject.name.EndsWith("· target",System.StringComparison.Ordinal))continue;
+                    var centre=hit.collider.bounds.center;
+                    float along=Mathf.Max(0f,Vector3.Dot(centre-ray.origin,ray.direction));
+                    var closest=ray.origin+ray.direction*along;
+                    float d=(centre-closest).sqrMagnitude;
+                    if(d<bestLineDistance){bestLineDistance=d;bestTarget=spot;}
+                }
+                if(bestTarget!=null)return bestTarget;
+            }
+
             foreach(var hit in hits)
             {
                 var spot=hit.collider.GetComponent<WorldHotspot>();
                 if(spot!=null)return spot;
             }
-
-            return city?ResolveProjectedHotspot(point):null;
-        }
-
-        WorldHotspot ResolveProjectedHotspot(Vector2 point)
-        {
-            var explicitTarget=ResolveProjectedHotspotSet(point,true);
-            return explicitTarget!=null?explicitTarget:ResolveProjectedHotspotSet(point,false);
-        }
-
-        WorldHotspot ResolveProjectedHotspotSet(Vector2 point,bool explicitOnly)
-        {
-            WorldHotspot best=null;
-            float bestDistance=float.MaxValue;
-            float bestArea=float.MaxValue;
-            foreach(var candidate in FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
-            {
-                bool isExplicit=candidate.gameObject.name.EndsWith("· target",System.StringComparison.Ordinal);
-                if(explicitOnly!=isExplicit && explicitOnly)continue;
-                if(!explicitOnly&&isExplicit)continue;
-                var collider=candidate.GetComponent<Collider>();
-                if(collider==null||!collider.enabled)continue;
-                var b=collider.bounds;
-                var corners=new[]{
-                    new Vector3(b.min.x,b.min.y,b.min.z),new Vector3(b.max.x,b.min.y,b.min.z),
-                    new Vector3(b.min.x,b.max.y,b.min.z),new Vector3(b.max.x,b.max.y,b.min.z),
-                    new Vector3(b.min.x,b.min.y,b.max.z),new Vector3(b.max.x,b.min.y,b.max.z),
-                    new Vector3(b.min.x,b.max.y,b.max.z),new Vector3(b.max.x,b.max.y,b.max.z)
-                };
-                float minX=float.MaxValue,minY=float.MaxValue,maxX=float.MinValue,maxY=float.MinValue;
-                bool inFront=false;
-                foreach(var corner in corners)
-                {
-                    var sp=OfficialCamera.WorldToScreenPoint(corner);
-                    if(sp.z<=0)continue;
-                    inFront=true;
-                    minX=Mathf.Min(minX,sp.x);minY=Mathf.Min(minY,sp.y);
-                    maxX=Mathf.Max(maxX,sp.x);maxY=Mathf.Max(maxY,sp.y);
-                }
-                if(!inFront||point.x<minX||point.x>maxX||point.y<minY||point.y>maxY)continue;
-                var centre=OfficialCamera.WorldToScreenPoint(b.center);
-                float d=(new Vector2(centre.x,centre.y)-point).sqrMagnitude;
-                float area=Mathf.Max(1f,(maxX-minX)*(maxY-minY));
-                if(d<bestDistance*.92f || (Mathf.Abs(d-bestDistance)<64f && area<bestArea))
-                {
-                    bestDistance=d;bestArea=area;best=candidate;
-                }
-            }
-            return best;
+            return null;
         }
 
         void Select(string id)
