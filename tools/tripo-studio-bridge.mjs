@@ -223,6 +223,39 @@ try {
       await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
       fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
     }
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved Aserradero task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() === 1) await exportButtons.click();
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() !== 2 || !(await selectedPage.getByRole('button', { name: 'GLB', exact: true }).count())) {
+      throw new Error('The expected GLB export dialog is not available.');
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    await nameInput.fill('Valoria_Aserradero_AP2_v1');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', 'Valoria_Aserradero_AP2_v1.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
   } else if (mode === 'export_probe') {
     if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
       throw new Error('The approved Aserradero task is not active.');

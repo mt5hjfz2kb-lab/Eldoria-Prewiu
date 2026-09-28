@@ -54,7 +54,7 @@ jobs:
             exit 0
           }
           $mode = [string]$request.mode
-          if ($mode -notin @('probe','stage_upload','generate','watch','export_probe')) {
+          if ($mode -notin @('probe','stage_upload','generate','watch','export_probe','export_glb')) {
             throw "Unsupported bridge mode: $mode"
           }
           if ($mode -eq 'stage_upload' -and [bool]$request.allow_credit_spend) {
@@ -209,6 +209,7 @@ jobs:
             ${{ runner.temp }}/tripo-studio-probe.png
             ${{ runner.temp }}/tripo-studio-after-watch.png
             ${{ runner.temp }}/tripo-studio-export-options.png
+            ${{ runner.temp }}/tripo-studio-after-export.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
           if-no-files-found: warn
