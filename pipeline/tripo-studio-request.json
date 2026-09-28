@@ -23,6 +23,6 @@
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28:exact-chat-attachment-stage",
+  "probe_nonce": "2026-09-28:exact-chat-attachment-upload-completion",
   "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg"
 }
