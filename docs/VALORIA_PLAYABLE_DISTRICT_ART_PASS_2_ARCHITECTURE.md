@@ -1,6 +1,6 @@
 # VALORIA PLAYABLE DISTRICT v1 — ART PASS 2: ARCHITECTURE
 
-Status: **ATTEMPT 1 — TECH PASS / INTERACTION PASS / VISUAL FAIL**
+Status: **ATTEMPT 1 — TECH PASS / INTERACTION PASS / VISUAL FAIL**; dedicated Aserradero v1 is now **TECH PASS / INTERACTION PASS / ARCHITECTURE PASS / MATERIAL-INTEGRATION FAIL**.
 
 ## Evidence
 
@@ -234,9 +234,15 @@ Do **not** regenerate the Aserradero yet. Preserve this geometry and solve its U
 
 ## Next action
 
-Prepare only **Valoria_Aserradero_AP2_v1** first. Generate an isolated 3/4 south/front reference on a neutral background, then use the existing safe Tripo Studio bridge in `stage_upload` mode to reach the pre-spend state. The bridge must keep `allow_credit_spend=false` and must not click Generate. Stop at the credit boundary for explicit owner authorization.
+Do **not** repeat Aserradero generation/export/optimization. Its geometry is accepted. In the next larger execution block:
+1. solve Aserradero material/lighting integration with a bounded Unity-only pass;
+2. audit the six certified Valoria families for selective fragment reuse without letting them dictate topology;
+3. move directly into dedicated Cuartel and Bastion production/integration in the same Art Pass 2 block where practical;
+4. close with official zoom 19/12/9 captures and real click/panel regression.
 
-## Aserradero Tripo pre-spend stage (2026-09-28)
+The owner explicitly wants fewer micro-passes: a block should create an obvious city-level visual jump, not only infrastructure or one minor polish step.
+
+## Historical Aserradero Tripo pre-spend stage (2026-09-28)
 
 - Exact owner-provided JPEG: `pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg`, 699467 bytes, 1254 × 1254, SHA-256 `4c00ab8b91c57c1872066a40448a1aba5a152fc940ae6bad494302e55f2aa0be`. Its bytes match the chat attachment.
 - Safe bridge run `36459555616` at `9346f7c38d97118825729a734ecaf350189b5363`: runner SHA/size verified; Tripo Studio accepted the image and displayed its completed thumbnail. Artifact `10986504233` contains the post-upload screenshot and JSON report.
