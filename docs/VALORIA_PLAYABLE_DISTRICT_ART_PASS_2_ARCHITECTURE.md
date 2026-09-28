@@ -196,6 +196,20 @@ Generate one isolated 3/4 south/front hero-asset reference on a neutral light-gr
 - Credits spent by probe: **0**. It did not stage an image and did not click Generate.
 - Important: the visible 55-credit value belongs to the currently open prior workspace state. For Cuartel/Bastion approval the exact new input must still be staged first and the cost re-read from that exact staged image before any spend.
 
+## Cuartel Tripo pre-spend stage — 2026-09-28
+
+- Deterministic source: `pipeline/art-inputs/Valoria_Cuartel_AP2_v1.svg`.
+- Source SVG SHA-256: `00d014aff2abaf615fa7d5fdfb7914886061672aa6b20bf7b4702c2a1daa1423`.
+- Runner-rendered exact PNG: `Valoria_Cuartel_AP2_v1.png`, 1024×1024, **126,906 bytes**.
+- Exact PNG SHA-256: `ed5c93e2daae617be5399a3be5821160fccaf2b887a5336229a77a04bae6f266`.
+- Safe stage run: **36479894543**.
+- Stage artifact: **10996421149**.
+- Tripo accepted the exact PNG; H3.1 - Máx. calidad is selected.
+- Visible staged Generate button: **Generar 55**.
+- `generate_clicked=false`; credits spent by this stage: **0**.
+- The exact staged image is the isolated compact stone/timber/slate guardhouse reference with a subordinate raised guard bay, recessed defended entrance, small east service annex and restrained blue heraldry. No city, route, terrain or diorama is fused into the input.
+- **Hard stop:** require explicit owner authorization for **55 Tripo credits tied to exact PNG SHA `ed5c93e2…f266`** before switching the bridge to `generate`.
+
 ## Dedicated Aserradero execution — 2026-09-28
 
 **Integrated checkpoint:** `d633a5482a321a75cc4cf11a4a0e548e6cf8f1bd`
