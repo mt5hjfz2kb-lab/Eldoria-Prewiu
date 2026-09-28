@@ -23,7 +23,7 @@ namespace Eldoria.Presentation
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
         bool renderedScout, renderedEngendro, renderedIdle;
-        Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? OfficialCamera;
+        Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
         {
