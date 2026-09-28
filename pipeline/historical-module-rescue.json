@@ -21,6 +21,16 @@
       "recovery_source": {
         "run_id": 36353236508,
         "artifact_id": 10943072790
+      },
+      "surface_evidence": {
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     },
     {
@@ -40,6 +50,16 @@
       "recovery_source": {
         "run_id": 36356423039,
         "artifact_id": 10943977319
+      },
+      "surface_evidence": {
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     },
     {
@@ -59,6 +79,16 @@
       "recovery_source": {
         "run_id": 36334704739,
         "artifact_id": 10936719852
+      },
+      "surface_evidence": {
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     },
     {
@@ -77,6 +107,9 @@
       "recovery_source": {
         "run_id": null,
         "artifact_id": null
+      },
+      "surface_evidence": {
+        "status": "PENDING_DIAGNOSTIC"
       }
     },
     {
@@ -95,6 +128,16 @@
       "recovery_source": {
         "run_id": 36355160385,
         "artifact_id": 10944255594
+      },
+      "surface_evidence": {
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     },
     {
@@ -114,9 +157,20 @@
       "recovery_source": {
         "run_id": 36346961014,
         "artifact_id": 10941357361
+      },
+      "surface_evidence": {
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     }
   ],
   "no_regeneration_rule": "No paid regeneration unless a required production function remains missing after attempting reuse with independent topology/collision and Surface v1.",
-  "recovery_rule": "Prefer exact SHA in runner Downloads; if absent, retrieve the certified historical GitHub Actions artifact by artifact_id and accept only a GLB whose SHA matches optimized_sha256."
+  "recovery_rule": "Prefer exact SHA in runner Downloads; if absent, retrieve the certified historical GitHub Actions artifact by artifact_id and accept only a GLB whose SHA matches optimized_sha256.",
+  "surface_rescue_rule": "Dedicated production GLBs with valid PBR preserve authored maps. Historical certified geometry with flat/no-texture material enters a separate author-new-surface lane; never treat the old flat material as final art."
 }
