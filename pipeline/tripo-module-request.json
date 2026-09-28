@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "request_id": "valoria-cuartel-ap2-v1-promote-production",
+  "request_id": "valoria-cuartel-ap2-v1-promote-production-r2",
   "module_label": "Valoria_Cuartel_AP2_v1",
   "unity_yaw_degrees": 180,
   "source": {
@@ -15,7 +15,7 @@
     "enabled": false
   },
   "visual_acceptance": "Dedicated compact Valoria barracks / guardhouse. Preserve a robust stone lower body, asymmetric timber/slate upper mass, recessed guarded south/front entrance, subordinate watch/guard cue and restrained military/heraldic identity. Isolated gate must show one coherent building, not a fortress/diorama. Review cardinal diagnostics to confirm intended south/front orientation. Production integration target after isolated PASS: visual footprint 3.5–3.8 x 2.9–3.2, height 3.4–4.0, west/central-street flank kept clear, and functional hotspot/click collider remaining separate from the visual mesh.",
-  "notes": "Zero-credit rerun of the already certified exact Cuartel GLB solely to reproduce the canonical 50K output and promote it to production Resources after the isolated gate passes. No Tripo generation is permitted.",
+  "notes": "Zero-credit rerun of the already certified exact Cuartel GLB solely to reproduce the canonical 50K output and promote it to production Resources after the isolated gate passes. No Tripo generation is permitted. Retry r2 only fixes the promotion-step parser guard; source GLB and geometry remain unchanged.",
   "promotion": {
     "enabled": true,
     "destination": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
