@@ -1,9 +1,15 @@
 # Valoria — Master Plan & Long-Term Progression Requirements
 
-Status: **DIRECTION REQUIREMENT — ACTIVE**  
+Status: **ACTIVE REQUIREMENT — V1 PLANS PUBLISHED**  
 Date: 2026-09-28
 
-This document records structural requirements that must be considered before Valoria's city layout is treated as production-ready. It is intentionally documentation-only and must not interrupt or overwrite the current isolated Unity construction/test block.
+This document records structural requirements that must be considered before Valoria's city layout is treated as production-ready. The previously pending planning milestone is now concretized by three active v1 documents:
+
+- `docs/VALORIA_MASTER_PLAN_V1.md`
+- `docs/VALORIA_PROGRESSION_MAP_V1.md`
+- `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`
+
+The certified `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md` is the kernel these plans extend; it is not the full long-term city.
 
 ## 1. Long-term progression scope
 
@@ -117,11 +123,11 @@ This requirement is compatible with the current bottom-up Valoria direction:
 
 The current layered/skeleton work can become the durable master framework **only if** it preserves enough area, camera travel and reserved topology for long-term progression.
 
-The next design milestone after the current execution block should therefore include:
+The design milestone is now published as:
 
-**Valoria Master Plan + Progression Map + Camera & Expansion Plan**
+**Valoria Master Plan v1 + Progression Map v1 + Camera & Expansion Plan v1.**
 
-before treating building dressing or final urban density as locked production work.
+The next execution gate is a **full-envelope graybox + bounded-panning prototype** around the certified kernel before broad building dressing or final urban density is locked.
 
 ## 10. Non-goals of this document
 
