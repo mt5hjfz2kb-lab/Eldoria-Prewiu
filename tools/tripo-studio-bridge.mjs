@@ -228,11 +228,12 @@ try {
       throw new Error('The approved Aserradero task is not active.');
     }
     let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
-    if (await exportButtons.count() === 1) await exportButtons.click();
-    await selectedPage.getByRole('button', { name: 'GLB', exact: true }).waitFor({ state: 'visible', timeout: 12000 });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
     exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
-    if (await exportButtons.count() !== 2 || !(await selectedPage.getByRole('button', { name: 'GLB', exact: true }).count())) {
-      throw new Error('The expected GLB export dialog is not available.');
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
     }
     const nameInput = selectedPage.locator('input:not([type="file"])').last();
     await nameInput.fill('Valoria_Aserradero_AP2_v1');
@@ -313,6 +314,10 @@ try {
   // Never close the owner's real Edge session.
   process.exit(0);
 } catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
   const report = {
     ok: false,
     mode,

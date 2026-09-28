@@ -25,7 +25,7 @@
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28:export-glb-wait-for-dialog",
+  "probe_nonce": "2026-09-28:export-glb-dialog-state",
   "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg",
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/a34672b9-0a50-496f-9fdb-4570deea16b3"
 }

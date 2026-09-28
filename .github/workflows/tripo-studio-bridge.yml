@@ -210,6 +210,7 @@ jobs:
             ${{ runner.temp }}/tripo-studio-after-watch.png
             ${{ runner.temp }}/tripo-studio-export-options.png
             ${{ runner.temp }}/tripo-studio-after-export.png
+            ${{ runner.temp }}/tripo-studio-error.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
           if-no-files-found: warn
