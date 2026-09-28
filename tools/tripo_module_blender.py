@@ -12,6 +12,7 @@ def parse_args():
     p.add_argument("--input", required=True)
     p.add_argument("--output", required=True)
     p.add_argument("--report", required=True)
+    p.add_argument("--refine-config", default="")
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -68,6 +69,102 @@ def ensure_materials_and_uvs():
             bpy.ops.object.mode_set(mode="OBJECT")
             o.select_set(False)
 
+def load_refine_config(path):
+    if not path:
+        return {}
+    if not os.path.isfile(path):
+        raise FileNotFoundError(path)
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def connected_component_report():
+    report = []
+    for o in mesh_objects():
+        mesh = o.data
+        adjacency = [set() for _ in mesh.vertices]
+        for e in mesh.edges:
+            a, b = e.vertices
+            adjacency[a].add(b)
+            adjacency[b].add(a)
+        unseen = set(range(len(mesh.vertices)))
+        components = []
+        while unseen:
+            seed = unseen.pop()
+            stack = [seed]
+            count = 0
+            while stack:
+                v = stack.pop()
+                count += 1
+                for n in adjacency[v]:
+                    if n in unseen:
+                        unseen.remove(n)
+                        stack.append(n)
+            components.append(count)
+        components.sort(reverse=True)
+        report.append({
+            "object": o.name,
+            "component_count": len(components),
+            "largest_vertex_counts": components[:20],
+        })
+    return report
+
+def apply_visual_refinement(cfg):
+    if not cfg or not cfg.get("enabled", False):
+        return {"enabled": False}
+    result = {
+        "enabled": True,
+        "mode": cfg.get("mode", "diagnostic_material_cleanup"),
+        "components_before": connected_component_report(),
+        "material_changes": [],
+        "mesh_cleanup": [],
+    }
+    merge_distance = float(cfg.get("merge_distance", 0.00005))
+    recalc_normals = bool(cfg.get("recalculate_normals", True))
+    for o in mesh_objects():
+        bpy.context.view_layer.objects.active = o
+        o.select_set(True)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        before = len(o.data.vertices)
+        if merge_distance > 0:
+            bpy.ops.mesh.remove_doubles(threshold=merge_distance)
+        if recalc_normals:
+            bpy.ops.mesh.normals_make_consistent(inside=False)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        after = len(o.data.vertices)
+        o.select_set(False)
+        result["mesh_cleanup"].append({
+            "object": o.name,
+            "vertices_before": before,
+            "vertices_after": after,
+            "merged_vertices": max(0, before-after),
+        })
+    roughness_floor = float(cfg.get("roughness_floor", 0.72))
+    metallic_ceiling = float(cfg.get("metallic_ceiling", 0.08))
+    specular_ior_level = float(cfg.get("specular_ior_level", 0.28))
+    for mat in bpy.data.materials:
+        if not mat or not mat.use_nodes or not mat.node_tree:
+            continue
+        for node in mat.node_tree.nodes:
+            if node.type != "BSDF_PRINCIPLED":
+                continue
+            change = {"material": mat.name}
+            if "Roughness" in node.inputs:
+                old = float(node.inputs["Roughness"].default_value)
+                node.inputs["Roughness"].default_value = max(old, roughness_floor)
+                change["roughness"] = [old, float(node.inputs["Roughness"].default_value)]
+            if "Metallic" in node.inputs:
+                old = float(node.inputs["Metallic"].default_value)
+                node.inputs["Metallic"].default_value = min(old, metallic_ceiling)
+                change["metallic"] = [old, float(node.inputs["Metallic"].default_value)]
+            if "Specular IOR Level" in node.inputs:
+                old = float(node.inputs["Specular IOR Level"].default_value)
+                node.inputs["Specular IOR Level"].default_value = min(old, specular_ior_level)
+                change["specular_ior_level"] = [old, float(node.inputs["Specular IOR Level"].default_value)]
+            result["material_changes"].append(change)
+    result["components_after"] = connected_component_report()
+    return result
+
 def optimize_images():
     resized = []
     for image in bpy.data.images:
@@ -115,6 +212,8 @@ def main():
             f"expected at least {MIN_TRIS}"
         )
     ensure_materials_and_uvs()
+    refine_cfg = load_refine_config(a.refine_config)
+    refinement = apply_visual_refinement(refine_cfg)
     if raw["triangles"] > MAX_TRIS:
         for _ in range(3):
             now = apply_decimation_once(TARGET)
@@ -144,6 +243,7 @@ def main():
         "raw": raw,
         "optimized": optimized,
         "resized_images": resized_images,
+        "refinement": refinement,
         "input_bytes": os.path.getsize(a.input),
         "output_bytes": os.path.getsize(a.output),
     }
