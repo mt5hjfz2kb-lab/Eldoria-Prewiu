@@ -223,6 +223,25 @@ try {
       await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
       fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
     }
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
   } else if (mode === 'probe') {
     report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
     await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
