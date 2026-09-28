@@ -65,7 +65,7 @@ jobs:
             'formula-sawmill-12.png','formula-sawmill-9.png',
             'formula-barracks-12.png','formula-barracks-9.png',
             'formula-bastion-12.png','formula-bastion-9.png',
-            'formula-metrics.json'
+            'formula-metrics.json','formula-materials.json'
           )
           foreach($name in $expected){
             $p=Join-Path $folder $name
