@@ -22,6 +22,24 @@ Remote CLI generation is an extension of the existing canonical workflow, not a 
 
 A chat must **not** ask the owner to upload the GLB manually if it has repository write access and the self-hosted runner is available. Manual upload is fallback only after a demonstrated runner/workflow failure.
 
+## Canonical exact-input staging from ChatGPT
+
+For an owner-approved image attached in ChatGPT, the preferred pre-spend route is now:
+
+`ChatGPT approved image → exact original bytes → repository base64 exact-input parts → Windows runner reconstruction → SHA-256 + byte-size verification → Tripo Studio stage_upload → staged screenshot + visible credit cost → explicit owner approval → generate`
+
+Contract:
+
+- The chat-side agent must verify the attachment's real format, dimensions, byte count and SHA-256 before publication. Do not re-export, recompress, redraw or transcode it.
+- Serialize the unchanged bytes to base64. Store one or more lexically ordered parts under `pipeline/exact-inputs/<asset_name>/part_###.b64`.
+- `pipeline/tripo-studio-request.json` points to those parts with `upload_base64_glob`, plus the approved `upload_sha256`, `upload_size_bytes`, `upload_file_name` and `asset_name`.
+- The bridge reconstructs repository exact-input parts before considering Downloads/Desktop fallback. It fails before Tripo if base64 decode, SHA-256 or byte size differs.
+- `stage_upload` is a zero-spend boundary: `allow_credit_spend=false`, `authorized_credit_cost=0`, no Generate click. The artifact must retain `tripo-studio-after-upload.png`, `tripo-studio-probe.json` and `tripo-exact-input-identity.txt`.
+- Generation is a separate explicitly authorized step tied to the exact staged source SHA and the exact visible credit cost.
+- Runner Downloads remains a compatible manual/fallback source route. It is not required when a valid repository exact-input exists.
+
+This route reuses the existing Tripo Studio bridge and `upload_base64_glob`; it is not a parallel pipeline.
+
 ## Source of truth
 
 Canonical entry points:
