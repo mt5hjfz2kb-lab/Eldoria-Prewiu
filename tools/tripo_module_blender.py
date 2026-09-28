@@ -17,6 +17,7 @@ def parse_args():
     p.add_argument("--min-tris", type=int, default=DEFAULT_MIN_TRIS)
     p.add_argument("--max-tris", type=int, default=DEFAULT_MAX_TRIS)
     p.add_argument("--diagnostic-only", action="store_true")
+    p.add_argument("--surface-rescue-profile", choices=["", "rock"], default="")
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -72,6 +73,100 @@ def ensure_materials_and_uvs():
             bpy.ops.uv.smart_project(angle_limit=1.15192, island_margin=0.02)
             bpy.ops.object.mode_set(mode="OBJECT")
             o.select_set(False)
+
+def apply_surface_rescue(profile):
+    if not profile:
+        return {"enabled": False}
+    if profile != "rock":
+        raise RuntimeError(f"Unsupported surface rescue profile: {profile}")
+
+    # Deterministic, texture-backed PBR rescue for rock/terrain-only support assets.
+    # This does not segment or alter geometry. Complex mixed architecture must use
+    # a later semantic-material pass rather than pretending one rock material fits all.
+    import numpy as np
+    size = 512
+    y, x = np.mgrid[0:size, 0:size].astype(np.float32)
+    u = x / float(size - 1)
+    v = y / float(size - 1)
+
+    height = (
+        0.50
+        + 0.18 * np.sin(u * 13.0 + v * 7.0)
+        + 0.11 * np.sin(u * 31.0 - v * 19.0)
+        + 0.07 * np.cos(u * 67.0 + v * 43.0)
+    )
+    height = np.clip(height, 0.0, 1.0)
+
+    base_dark = np.array([0.22, 0.235, 0.225], dtype=np.float32)
+    base_light = np.array([0.36, 0.355, 0.325], dtype=np.float32)
+    mix = height[..., None]
+    rgb = base_dark + (base_light - base_dark) * mix
+    rgb *= (0.94 + 0.06 * np.sin((u + v) * 18.0))[..., None]
+    rgb = np.clip(rgb, 0.0, 1.0)
+
+    rough = np.clip(0.72 + (1.0 - height) * 0.20, 0.72, 0.94)
+
+    gy, gx = np.gradient(height)
+    strength = 3.2
+    nx = -gx * strength
+    ny = -gy * strength
+    nz = np.ones_like(height)
+    length = np.sqrt(nx * nx + ny * ny + nz * nz)
+    nx, ny, nz = nx / length, ny / length, nz / length
+    normal = np.stack((nx * 0.5 + 0.5, ny * 0.5 + 0.5, nz * 0.5 + 0.5), axis=-1)
+
+    def make_image(name, data, colorspace):
+        image = bpy.data.images.new(name, width=size, height=size, alpha=True)
+        alpha = np.ones((size, size, 1), dtype=np.float32)
+        rgba = np.concatenate((data, alpha), axis=-1) if data.ndim == 3 else np.concatenate((np.repeat(data[...,None], 3, axis=2), alpha), axis=-1)
+        image.pixels.foreach_set(rgba.astype(np.float32).ravel())
+        image.colorspace_settings.name = colorspace
+        image.pack()
+        return image
+
+    base_img = make_image("Eldoria_Rock_SurfaceV1_BaseColor", rgb, "sRGB")
+    rough_img = make_image("Eldoria_Rock_SurfaceV1_Roughness", rough, "Non-Color")
+    normal_img = make_image("Eldoria_Rock_SurfaceV1_Normal", normal, "Non-Color")
+
+    mat = bpy.data.materials.new("Eldoria Rock · Surface v1 Rescue")
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    nodes.clear()
+
+    out = nodes.new("ShaderNodeOutputMaterial")
+    bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+    base_node = nodes.new("ShaderNodeTexImage")
+    base_node.image = base_img
+    rough_node = nodes.new("ShaderNodeTexImage")
+    rough_node.image = rough_img
+    normal_tex = nodes.new("ShaderNodeTexImage")
+    normal_tex.image = normal_img
+    normal_map = nodes.new("ShaderNodeNormalMap")
+    normal_map.inputs["Strength"].default_value = 0.45
+
+    links.new(base_node.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(rough_node.outputs["Color"], bsdf.inputs["Roughness"])
+    links.new(normal_tex.outputs["Color"], normal_map.inputs["Color"])
+    links.new(normal_map.outputs["Normal"], bsdf.inputs["Normal"])
+    links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    if "Metallic" in bsdf.inputs:
+        bsdf.inputs["Metallic"].default_value = 0.0
+    if "Specular IOR Level" in bsdf.inputs:
+        bsdf.inputs["Specular IOR Level"].default_value = 0.24
+
+    for o in mesh_objects():
+        o.data.materials.clear()
+        o.data.materials.append(mat)
+
+    return {
+        "enabled": True,
+        "profile": profile,
+        "texture_size": size,
+        "material": mat.name,
+        "textures": [base_img.name, rough_img.name, normal_img.name],
+        "geometry_modified": False,
+    }
 
 def load_refine_config(path):
     if not path:
@@ -318,6 +413,7 @@ def main():
             f"expected at least {min_tris}"
         )
     ensure_materials_and_uvs()
+    surface_rescue = apply_surface_rescue(a.surface_rescue_profile)
     refine_cfg = load_refine_config(a.refine_config)
     refinement = apply_visual_refinement(refine_cfg)
     if raw["triangles"] > max_tris:
@@ -351,6 +447,7 @@ def main():
         "resized_images": resized_images,
         "surface_diagnostics": surface_diagnostics(),
         "refinement": refinement,
+        "surface_rescue": surface_rescue,
         "input_bytes": os.path.getsize(a.input),
         "output_bytes": os.path.getsize(a.output),
     }
