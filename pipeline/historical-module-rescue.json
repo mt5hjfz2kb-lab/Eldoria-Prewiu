@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "active_rescue_inventory",
+  "updated": "2026-09-29",
+  "principle": "Re-evaluate certified historical modules through Surface v1 and official-camera gates before any regeneration. Geometry/function failures are not repaired by surface treatment.",
+  "families": [
+    {
+      "family": "ResidentialTerraceRock",
+      "certified_status": "FUNCTION_CERTIFIED",
+      "optimized_sha256": "2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458",
+      "rescue_priority": "HIGH",
+      "target_profile": "PRIMARY",
+      "best_current_role": "inhabited/civic support mass inside already-approved production topology",
+      "expected_gain": [
+        "material coherence",
+        "better rock/architecture integration",
+        "stronger civil identity"
+      ],
+      "hard_limit": "not a certified through-street module; do not force topology to fit it",
+      "next_gate": "surface diagnostic + official-camera isolated/integrated review when physical GLB is staged"
+    },
+    {
+      "family": "RockTerrainSeamFiller",
+      "certified_status": "FUNCTION_CERTIFIED",
+      "optimized_sha256": "2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d",
+      "rescue_priority": "HIGH",
+      "target_profile": "SUPPORT",
+      "best_current_role": "terrain seam burial/overlap around production buildings and terraces",
+      "expected_gain": [
+        "reduce prefab pedestal read",
+        "unify mountain base",
+        "hide hard joins"
+      ],
+      "hard_limit": "not a standalone landmark or path",
+      "next_gate": "Surface v1 recolor/material-family match + buried integration test"
+    },
+    {
+      "family": "TerraceStairRock",
+      "certified_status": "FUNCTION_CERTIFIED",
+      "optimized_sha256": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "rescue_priority": "MEDIUM_HIGH",
+      "target_profile": "PRIMARY",
+      "best_current_role": "visual vertical transition/terrace fragment where gameplay route already exists independently",
+      "expected_gain": [
+        "strong vertical city read",
+        "reuse stair/terrace silhouette",
+        "material-family coherence"
+      ],
+      "hard_limit": "interface not certified; do not use mesh to define traversal",
+      "next_gate": "surface diagnostic + official-camera placement over independent collision route"
+    },
+    {
+      "family": "TowerWallRock",
+      "certified_status": "FUNCTION_CERTIFIED",
+      "optimized_sha256": "18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a",
+      "rescue_priority": "MEDIUM",
+      "target_profile": "SUPPORT",
+      "best_current_role": "defensive skyline accent / wall-rock anchor",
+      "expected_gain": [
+        "better material integration",
+        "stronger distant silhouette"
+      ],
+      "hard_limit": "overuse makes Valoria fortress-only; no circulation role",
+      "next_gate": "Surface v1 + sparse skyline placement test"
+    },
+    {
+      "family": "StreetLandingTransition",
+      "certified_status": "FUNCTION_CERTIFIED",
+      "optimized_sha256": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "rescue_priority": "MEDIUM",
+      "target_profile": "SUPPORT",
+      "best_current_role": "visual street/landing dressing over an independent gameplay route",
+      "expected_gain": [
+        "route readability",
+        "shared stone language"
+      ],
+      "hard_limit": "heavy parapets and no interface certification; never trust as sole traversable connector",
+      "next_gate": "surface + occlusion test at zoom 9/12"
+    },
+    {
+      "family": "GateStreetRiseRock MV1",
+      "certified_status": "FUNCTION_CERTIFIED_INTERFACE_FAIL",
+      "optimized_sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "rescue_priority": "LOW_AS_ROUTE_MEDIUM_AS_LANDMARK",
+      "target_profile": "HERO",
+      "best_current_role": "monumental entrance/landmark fragment only where route is provided separately",
+      "expected_gain": [
+        "hero silhouette",
+        "entrance identity",
+        "material coherence"
+      ],
+      "hard_limit": "documented physical stop/ambiguous upper exit; surface filters cannot repair that geometry",
+      "next_gate": "hero surface/lookdev only; no route certification claim"
+    }
+  ],
+  "no_regeneration_rule": "No paid regeneration unless a required production function remains missing after attempting reuse with independent topology/collision and Surface v1."
+}
