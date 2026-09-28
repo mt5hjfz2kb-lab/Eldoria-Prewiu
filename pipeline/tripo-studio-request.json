@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "stage_upload",
+  "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Stage exact approved Cuartel AP2 ChatGPT reference via repository exact-input reconstruction only. Zero credit spend. Stop before Generate.",
-  "request_id": "valoria-cuartel-ap2-v1-approved-chat-exact-input-stage",
+  "notes": "Owner explicitly authorized exactly 55 credits for the already-staged exact Cuartel AP2 JPEG. Do not restage or change input. Click Generate once, then stop this bridge run after recording the resulting task URL/evidence.",
+  "request_id": "valoria-cuartel-ap2-v1-generate-staged-55-authorized",
   "asset_name": "Valoria_Cuartel_AP2_v1",
   "function": "Dedicated compact medieval barracks / guardhouse",
   "parcel": {
@@ -21,10 +21,12 @@
   "upload_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "upload_size_bytes": 580151,
   "search_downloads_for_sha": false,
-  "allow_credit_spend": false,
-  "authorized_credit_cost": 0,
-  "approved_input_sha256": "",
+  "allow_credit_spend": true,
+  "authorized_credit_cost": 55,
+  "approved_input_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-28:cuartel-ap2-chat-exact-input-stage"
+  "probe_nonce": "2026-09-28:cuartel-ap2-generate-staged-55-authorized",
+  "prior_stage_run_id": 36484408137,
+  "prior_stage_artifact_id": 10998685373
 }
