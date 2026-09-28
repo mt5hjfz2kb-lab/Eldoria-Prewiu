@@ -42,14 +42,26 @@ try {
     let generateVisible = false;
 
     try {
-      title = await withTimeout(page.title(), pageProbeTimeoutMs, 'page title read');
-      buttons = await withTimeout(
-        page.locator('button').allTextContents(),
-        pageProbeTimeoutMs,
-        'button inventory'
-      );
-      buttons = buttons.map(x => x.trim()).filter(Boolean);
-      generateVisible = buttons.some(x => /^Generar\b/i.test(x));
+      let lastError = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          await page.waitForLoadState('domcontentloaded', { timeout: Math.min(pageProbeTimeoutMs, 8000) }).catch(() => {});
+          title = await withTimeout(page.title(), pageProbeTimeoutMs, 'page title read');
+          buttons = await withTimeout(
+            page.locator('button').allTextContents(),
+            pageProbeTimeoutMs,
+            'button inventory'
+          );
+          buttons = buttons.map(x => x.trim()).filter(Boolean);
+          generateVisible = buttons.some(x => /^Generar\b/i.test(x));
+          lastError = null;
+          break;
+        } catch (error) {
+          lastError = error;
+          await new Promise(resolve => setTimeout(resolve, 1200));
+        }
+      }
+      if (lastError) throw lastError;
     } catch (error) {
       inspected.push({
         url: page.url(),
