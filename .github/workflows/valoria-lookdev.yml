@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/valoria-lookdev.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
 
 permissions:
   contents: read
