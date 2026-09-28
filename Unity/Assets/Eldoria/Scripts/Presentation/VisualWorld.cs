@@ -77,6 +77,11 @@ namespace Eldoria.Presentation
             else Frontier(state);
             if(city)ValoriaScar(new Vector3(14.8f,.05f,15.6f));
             else Rift(new Vector3(9,1,8));
+
+            // Procedural primitives are created at the origin and then positioned/scaled.
+            // Force the physics world to ingest those transforms before any same-frame
+            // world click or PlayMode gate queries Collider.bounds / raycasts.
+            Physics.SyncTransforms();
         }
         static void PlayableDistrictSkeleton(PlayerState state)
         {
