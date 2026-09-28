@@ -15,7 +15,8 @@
     "recalculate_normals": true,
     "roughness_floor": 0.78,
     "metallic_ceiling": 0.02,
-    "specular_ior_level": 0.18
+    "specular_ior_level": 0.18,
+    "run_nonce": "2026-09-28T21:06Z"
   },
   "visual_acceptance": "Zero-credit Blender art-refine experiment using the already accepted Aserradero geometry. Preserve silhouette, scale, production identity, UVs and textures. Prove whether Blender can add a useful post-Tripo stage by reporting connected components, safe mesh cleanup and more controlled PBR response without regenerating geometry. Isolated review only; do not replace the production Aserradero automatically."
 }
