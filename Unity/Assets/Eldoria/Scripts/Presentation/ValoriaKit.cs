@@ -465,7 +465,7 @@ namespace Eldoria.Presentation
             var ground=p+new Vector3(.20f,.02f,.08f);
             var dedicated=BenchmarkPieceIntegrated(name+" · dedicated barracks",
                 LoadExternal("Valoria_Cuartel_AP2_v1"),ground,
-                3.72f,4.00f,Quaternion.Euler(0,180f,0),new Color(.42f,.40f,.37f,1f));
+                3.72f,4.00f,Quaternion.Euler(0,180f,0),Color.white);
             if(dedicated!=null)
             {
                 // The Tripo source is proportionally wider/lower than the certified parcel
