@@ -35,8 +35,16 @@ namespace Eldoria.Presentation
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.88f,.74f):new Color(1.0f,.93f,.82f);
             sun.intensity=city?1.95f:1.9f;
             sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
-            Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
+            var worldGround=Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.285f,.265f,.215f):Earth);
+            if(city)
+            {
+                // Art Pass 1: preserve the full collision/support envelope but remove the visible
+                // board-like slab edge from the authored camera. The visible valley floor is a
+                // shallow irregular sheet, so zoom 19 no longer exposes a giant rectangular plinth.
+                worldGround.GetComponent<Renderer>().enabled=false;
+                IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),64f,60f,new Color(.285f,.265f,.215f));
+            }
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
             {
@@ -85,22 +93,50 @@ namespace Eldoria.Presentation
         }
         static void PlayableDistrictSkeleton(PlayerState state)
         {
-            // Valoria Playable District Skeleton v1.
-            // Bottom-up topology first: continuous terrain -> L0 -> street -> vertical link -> L1 -> plots -> buildings.
+            // VALORIA PLAYABLE DISTRICT v1 — ART PASS 1
+            // Frozen topology: continuous terrain -> L0 -> street -> vertical link -> L1 -> plots -> buildings.
+            // Visual treatment may overlap/bury supports, but it must never redefine circulation or hotspot footprints.
             var ground=ValoriaKit.Block("VPD · continuous terrain",new Vector3(0,-.18f,1.0f),
                 new Vector3(22f,.50f,25f),new Color(.29f,.27f,.22f));
+            ground.GetComponent<Renderer>().enabled=false;
 
-            // Planta 0: broad lower court and a single legible northbound main street.
-            ValoriaKit.Block("VPD · L0 civic floor",new Vector3(0,.12f,-3.2f),
+            // Organic core mountain/ground skin over the frozen collision base.
+            IrregularGround("VPD · inhabited mountain floor",new Vector3(0,.075f,.5f),23.8f,26.4f,new Color(.30f,.285f,.245f));
+            IrregularGround("VPD · lower terrace earth",new Vector3(0,.105f,-3.5f),18.4f,11.8f,new Color(.355f,.325f,.265f));
+            IrregularGround("VPD · upper terrace earth",new Vector3(0,2.405f,7.35f),13.9f,8.5f,new Color(.345f,.325f,.285f));
+
+            // Planta 0 collision/interaction floor remains exact, but its rectangular renderers are hidden.
+            var l0=ValoriaKit.Block("VPD · L0 civic floor",new Vector3(0,.12f,-3.2f),
                 new Vector3(17.5f,.28f,10.5f),new Color(.37f,.34f,.28f));
-            ValoriaKit.Block("VPD · L0 main street",new Vector3(0,.30f,-3.0f),
+            l0.GetComponent<Renderer>().enabled=false;
+            var street=ValoriaKit.Block("VPD · L0 main street",new Vector3(0,.30f,-3.0f),
                 new Vector3(3.4f,.16f,10.8f),new Color(.50f,.47f,.40f));
-            ValoriaKit.Block("VPD · L0 west plot",new Vector3(-7.0f,.31f,-2.8f),
+            street.GetComponent<Renderer>().enabled=false;
+            var westPlot=ValoriaKit.Block("VPD · L0 west plot",new Vector3(-7.0f,.31f,-2.8f),
                 new Vector3(5.1f,.18f,5.2f),new Color(.33f,.30f,.24f));
-            ValoriaKit.Block("VPD · L0 east plot",new Vector3(7.0f,.31f,-4.0f),
+            westPlot.GetComponent<Renderer>().enabled=false;
+            var eastPlot=ValoriaKit.Block("VPD · L0 east plot",new Vector3(7.0f,.31f,-4.0f),
                 new Vector3(5.1f,.18f,5.2f),new Color(.33f,.30f,.24f));
-            ValoriaKit.Block("VPD · lower entry apron",new Vector3(0,.30f,-8.35f),
+            eastPlot.GetComponent<Renderer>().enabled=false;
+            var apron=ValoriaKit.Block("VPD · lower entry apron",new Vector3(0,.30f,-8.35f),
                 new Vector3(6.6f,.14f,2.0f),new Color(.43f,.40f,.34f));
+            apron.GetComponent<Renderer>().enabled=false;
+
+            // Authored worn-stone route: same corridor, visually assembled from overlapping slabs.
+            for(int i=0;i<10;i++)
+            {
+                float z=-7.7f+i*1.03f;
+                float yaw=(i%4==0?-3.5f:(i%4==2?3.0f:0f));
+                float width=3.12f-(i%3)*.08f;
+                var slab=ValoriaKit.Block("VPD · worn street slab "+(i+1),new Vector3((i%2==0?-.05f:.05f),.345f,z),
+                    new Vector3(width,.09f,1.16f),new Color(.47f,.445f,.385f));
+                slab.transform.rotation=Quaternion.Euler(0,yaw,0);
+            }
+            IrregularGround("VPD · entry stone fan",new Vector3(0,.355f,-8.45f),7.0f,2.55f,new Color(.405f,.385f,.335f));
+
+            // Broken plot edges: the usable plots remain exact, but visible shoulders are irregular.
+            IrregularGround("VPD · west workshop terrace",new Vector3(-7.0f,.365f,-2.8f),5.65f,5.8f,new Color(.325f,.295f,.24f));
+            IrregularGround("VPD · east military terrace",new Vector3(7.0f,.365f,-4.0f),5.7f,5.75f,new Color(.325f,.30f,.25f));
 
             // Real continuous 0 -> 1 connection: twelve visible treads, no fused architectural dependency.
             const int steps=12;
@@ -110,32 +146,73 @@ namespace Eldoria.Presentation
             {
                 float y=.39f+i*rise;
                 float z=.15f+i*depth;
-                ValoriaKit.Block("VPD · vertical stair "+(i+1),new Vector3(0,y,z),
-                    new Vector3(3.35f,.18f,depth+.05f),new Color(.49f,.46f,.39f));
+                float w=3.32f-(i%4==0?.10f:0f);
+                var tread=ValoriaKit.Block("VPD · vertical stair "+(i+1),new Vector3((i%3==0?.025f:0f),y,z),
+                    new Vector3(w,.18f,depth+.07f),new Color(.47f,.44f,.37f));
+                if(i%4==1)tread.transform.rotation=Quaternion.Euler(0,.7f,0);
             }
+
+            // Stair cheeks are deliberately low and intermittent: they integrate the route into rock
+            // without hiding the twelve-tread read from any official zoom.
+            for(int i=0;i<6;i++)
+            {
+                float z=.55f+i*1.0f;
+                float y=.34f+i*.34f;
+                float side=(i%2==0?-1f:1f);
+                ValoriaKit.RockCluster("VPD · stair shoulder rock",new Vector3(side*2.12f,y-.16f,z),.52f,4);
+            }
+
             float l1=2.55f;
-            ValoriaKit.Block("VPD · L1 landing",new Vector3(0,l1,6.7f),
+            var landing=ValoriaKit.Block("VPD · L1 landing",new Vector3(0,l1,6.7f),
                 new Vector3(7.0f,.30f,4.2f),new Color(.42f,.39f,.33f));
-            ValoriaKit.Block("VPD · L1 west plot",new Vector3(-5.2f,l1,7.1f),
+            landing.GetComponent<Renderer>().enabled=false;
+            var l1West=ValoriaKit.Block("VPD · L1 west plot",new Vector3(-5.2f,l1,7.1f),
                 new Vector3(4.2f,.28f,4.8f),new Color(.34f,.31f,.27f));
-            ValoriaKit.Block("VPD · L1 east plot",new Vector3(5.2f,l1,7.1f),
+            l1West.GetComponent<Renderer>().enabled=false;
+            var l1East=ValoriaKit.Block("VPD · L1 east plot",new Vector3(5.2f,l1,7.1f),
                 new Vector3(4.2f,.28f,4.8f),new Color(.34f,.31f,.27f));
+            l1East.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · L1 landing skin",new Vector3(0,l1+.17f,6.65f),7.55f,4.9f,new Color(.405f,.38f,.325f));
+            IrregularGround("VPD · L1 west terrace skin",new Vector3(-5.2f,l1+.16f,7.1f),4.75f,5.25f,new Color(.335f,.315f,.275f));
+            IrregularGround("VPD · L1 east terrace skin",new Vector3(5.2f,l1+.16f,7.1f),4.75f,5.25f,new Color(.335f,.315f,.275f));
 
-            // Retaining/support layer lives below the usable floor and never substitutes for circulation.
-            ValoriaKit.Block("VPD · L1 support west",new Vector3(-5.2f,1.20f,7.2f),
+            // Frozen support volumes stay as invisible structural/collision mass. Visible containment
+            // is rebuilt as rock + masonry fragments so Planta 1 belongs to the same inhabited mountain.
+            var supportWest=ValoriaKit.Block("VPD · L1 support west",new Vector3(-5.2f,1.20f,7.2f),
                 new Vector3(4.3f,2.35f,4.9f),new Color(.25f,.25f,.23f));
-            ValoriaKit.Block("VPD · L1 support centre",new Vector3(0,1.20f,7.0f),
+            var supportCentre=ValoriaKit.Block("VPD · L1 support centre",new Vector3(0,1.20f,7.0f),
                 new Vector3(7.2f,2.35f,4.4f),new Color(.26f,.26f,.24f));
-            ValoriaKit.Block("VPD · L1 support east",new Vector3(5.2f,1.20f,7.2f),
+            var supportEast=ValoriaKit.Block("VPD · L1 support east",new Vector3(5.2f,1.20f,7.2f),
                 new Vector3(4.3f,2.35f,4.9f),new Color(.25f,.25f,.23f));
+            supportWest.GetComponent<Renderer>().enabled=false;
+            supportCentre.GetComponent<Renderer>().enabled=false;
+            supportEast.GetComponent<Renderer>().enabled=false;
 
-            // Buildings occupy plots after circulation is solved.
+            foreach(var p in new[]{
+                new Vector3(-7.0f,.36f,5.2f),new Vector3(-5.5f,.62f,4.9f),new Vector3(-3.8f,.45f,5.0f),
+                new Vector3(3.8f,.45f,5.0f),new Vector3(5.5f,.62f,4.9f),new Vector3(7.0f,.36f,5.2f),
+                new Vector3(-7.2f,.45f,8.8f),new Vector3(-4.9f,.58f,9.2f),
+                new Vector3(4.9f,.58f,9.2f),new Vector3(7.2f,.45f,8.8f)})
+                ValoriaKit.RockCluster("VPD · inhabited retaining rock",p,.78f,5);
+            for(int i=0;i<5;i++)
+            {
+                float x=-4.4f+i*2.2f;
+                var wall=ValoriaKit.Block("VPD · retaining masonry fragment",new Vector3(x,1.22f,4.93f+(i%2)*.08f),
+                    new Vector3(1.72f,1.75f,.42f),new Color(.31f,.305f,.285f));
+                wall.transform.rotation=Quaternion.Euler(0,(i%2==0?2f:-2f),0);
+            }
+
+            // Buildings occupy the same frozen plots after circulation is solved.
             ValoriaKit.House("Aserradero",new Vector3(-7.0f,.52f,-2.8f),
                 new Vector3(3.4f,1.75f,2.8f),state.SawmillLevel>0,Glow);
             TagVisibleHotspots("Aserradero","sawmill");
             var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-6.55f,1.68f,-3.75f),
                 new Vector3(3.75f,2.25f,1.15f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
+            for(int i=0;i<4;i++)
+                ValoriaKit.Cylinder("Aserradero · timber stack",new Vector3(-8.45f+i*.36f,.55f,-4.15f),
+                    new Vector3(.16f,1.15f,.16f),new Color(.27f,.17f,.10f),Quaternion.Euler(90,0,0));
+            ValoriaKit.Scaffold("Aserradero · crane frame",new Vector3(-8.35f,1.15f,-1.65f),new Vector3(1.25f,2.0f,1.05f));
 
             ValoriaKit.House("Cuartel",new Vector3(7.0f,.52f,-4.0f),
                 new Vector3(3.5f,1.80f,2.9f),state.BarracksLevel>0,Glow);
@@ -143,6 +220,10 @@ namespace Eldoria.Presentation
             var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(7.55f,1.68f,-5.05f),
                 new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
             barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
+            ValoriaKit.Banner("Cuartel · standard",new Vector3(8.45f,1.65f,-4.25f),new Vector3(.45f,1.45f,.06f),new Color(.18f,.30f,.44f));
+            for(int i=0;i<3;i++)
+                ValoriaKit.Block("Cuartel · training marker",new Vector3(5.55f+i*.48f,.58f,-5.15f),
+                    new Vector3(.12f,.95f,.12f),Timber*.92f);
 
             ValoriaKit.BastionCore("Bastion",new Vector3(0,l1+.45f,7.25f),Glow);
             TagVisibleHotspots("Bastion","bastion");
@@ -156,23 +237,24 @@ namespace Eldoria.Presentation
             ValoriaKit.House("VPD · upper dwelling",new Vector3(5.15f,l1+.34f,7.15f),
                 new Vector3(2.55f,1.30f,2.25f),true,Glow);
 
-            // Long-term Valoria master-envelope graybox. These are reserved spatial districts,
-            // not final buildings/art. They prove that the certified kernel can grow into a
-            // multi-viewport city without moving the original circulation hierarchy.
+            // Long-term master envelope remains intact and continues to define the panning future footprint.
             MasterEnvelopeGraybox(l1);
 
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-9.25f),
                 new Vector3(3.0f,2.1f,.50f),ValoriaKit.Timber);
             gate.AddComponent<WorldHotspot>().Id="gate"; gate.GetComponent<Renderer>().enabled=false;
 
-            // Sparse reference art only after topology: trees/rocks frame rather than define streets.
-            ValoriaKit.RockCluster("VPD · west terrain seam",new Vector3(-9.0f,-.10f,5.2f),.80f,5);
-            ValoriaKit.RockCluster("VPD · east terrain seam",new Vector3(9.0f,-.10f,5.6f),.82f,5);
-            for(int i=0;i<6;i++)
+            // Mountain seams frame, rather than define, circulation.
+            foreach(var p in new[]{
+                new Vector3(-9.0f,-.10f,5.2f),new Vector3(9.0f,-.10f,5.6f),
+                new Vector3(-9.3f,-.08f,-6.3f),new Vector3(9.4f,-.08f,-6.1f),
+                new Vector3(-8.7f,-.05f,9.6f),new Vector3(8.8f,-.05f,9.4f)})
+                ValoriaKit.RockCluster("VPD · terrain seam",p,.80f,5);
+            for(int i=0;i<8;i++)
             {
                 float x=(i%2==0?-1f:1f)*(9.2f+(i%3)*.55f);
-                float z=-5.5f+i*2.7f;
-                ValoriaKit.PineTree("VPD · edge pine",new Vector3(x,.02f,z),.62f+(i%2)*.08f);
+                float z=-6.6f+i*2.35f;
+                ValoriaKit.PineTree("VPD · edge pine",new Vector3(x,.02f,z),.58f+(i%3)*.06f);
             }
             Hero(new Vector3(-1.4f,.34f,-5.0f),1.0f);
             int visibleArchers=state.BastionLevel>=2?4:3;
