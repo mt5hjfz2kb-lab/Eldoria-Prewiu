@@ -66,7 +66,12 @@ jobs:
           $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Cold.log"
           $sw=[Diagnostics.Stopwatch]::StartNew()
           $args=@('-batchmode','-nographics','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','EditMode','-testResults',$xml,'-logFile',$log)
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw 'Cold EditMode cache probe timed out after 10 minutes.'
+          }
           $code=$process.ExitCode
           $sw.Stop()
           $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
@@ -102,7 +107,12 @@ jobs:
           $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Warm.log"
           $sw=[Diagnostics.Stopwatch]::StartNew()
           $args=@('-batchmode','-nographics','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','EditMode','-testResults',$xml,'-logFile',$log)
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw 'Warm EditMode cache probe timed out after 10 minutes.'
+          }
           $code=$process.ExitCode
           $sw.Stop()
           $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
