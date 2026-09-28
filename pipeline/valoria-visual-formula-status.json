@@ -27,15 +27,14 @@
       "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
       "asset": "GateStreetRiseRock MV1",
       "source_sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
-      "recovery_run_id": 36346961014,
       "recovery_artifact_id": 10941357361,
-      "selection_reason": "certified detailed architecture+rock geometry is sufficient for a bounded hero surface/identity test without new paid generation",
-      "scope_limit": "surface/identity only; documented route/interface failure remains FAIL and is not reopened",
-      "geometry": "FUNCTION_CERTIFIED_FOR_ENTRANCE_LANDMARK_ONLY",
-      "source_surface": "FLAT_MATERIAL_NO_TEXTURES",
-      "surface": "PENDING_AUTHOR_NEW_SURFACE",
+      "role": "HERO_VISUAL_LANDMARK_ONLY",
+      "geometry": "FUNCTION_CERTIFIED",
+      "traversal": "DOCUMENTED_INTERFACE_FAIL_NOT_REOPENED",
+      "surface": "PENDING_SEMANTIC_SURFACE_RESCUE",
       "official_camera_visual": "PENDING",
-      "verdict": "CANDIDATE_SELECTED"
+      "verdict": "CANDIDATE_SELECTED",
+      "rule": "Hero visual validation may reuse this architecture+rock mass, but no result may claim the historical lower-entry-to-upper-exit route is repaired."
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
@@ -48,7 +47,7 @@
   "formula_can_be_marked_validated_when": [
     "Aserradero integrated official-camera result is accepted",
     "Cuartel remains coherent under the same environment/material-family rules",
-    "One bounded hero fragment passes",
+    "GateStreetRiseRock MV1 passes as a bounded hero VISUAL fragment under the same material-family/lookdev language; traversal remains out of scope and failed",
     "Integrated formula scene passes composition/surface/identity review"
   ]
 }
