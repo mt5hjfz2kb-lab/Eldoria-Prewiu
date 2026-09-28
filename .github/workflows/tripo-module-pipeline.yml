@@ -346,7 +346,16 @@ jobs:
             '{"enabled":false}' | Set-Content $refineConfig
           }
           $errLog = "$env:RUNNER_TEMP\tripo-module-blender-error.log"
-          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig)
+          $targetTris = 49800
+          $minTris = 49500
+          $maxTris = 50000
+          if ($null -ne $request.optimization) {
+            if ([int]$request.optimization.target_triangles -gt 0) { $targetTris = [int]$request.optimization.target_triangles }
+            if ([int]$request.optimization.min_triangles -gt 0) { $minTris = [int]$request.optimization.min_triangles }
+            if ([int]$request.optimization.max_triangles -gt 0) { $maxTris = [int]$request.optimization.max_triangles }
+          }
+          Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
+          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
           $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
           if ($process.ExitCode -ne 0) {
             if (Test-Path $log) { Get-Content $log -Tail 240 }
