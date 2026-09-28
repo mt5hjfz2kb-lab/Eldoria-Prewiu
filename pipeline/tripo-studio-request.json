@@ -2,7 +2,7 @@
   "enabled": true,
   "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Continuation of the same owner-authorized single 55-credit generation. Prior run 36485176380 failed at JS parse time before browser connection, before any Generate click, and spent 0 credits. Do not restage or change input. Click Generate once only.",
+  "notes": "Same single owner-authorized 55-credit Cuartel generation. Runs 36485176380 and 36485297881 both failed at JS parse time before browser connection, so Generate has still been clicked zero times and credits spent remain zero. Do not restage. Click Generate once only.",
   "request_id": "valoria-cuartel-ap2-v1-generate-staged-55-authorized",
   "asset_name": "Valoria_Cuartel_AP2_v1",
   "function": "Dedicated compact medieval barracks / guardhouse",
@@ -26,7 +26,7 @@
   "approved_input_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-28:cuartel-ap2-generate-staged-55-authorized-after-syntax-fix",
+  "probe_nonce": "2026-09-28:cuartel-ap2-generate-staged-55-authorized-clean-bridge",
   "prior_stage_run_id": 36484408137,
   "prior_stage_artifact_id": 10998685373
 }
