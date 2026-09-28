@@ -25,11 +25,17 @@
     },
     "C_hero_fragment": {
       "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
-      "asset": "NOT_YET_SELECTED",
-      "geometry": "PENDING",
-      "surface": "PENDING",
+      "asset": "GateStreetRiseRock MV1",
+      "source_sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "recovery_run_id": 36346961014,
+      "recovery_artifact_id": 10941357361,
+      "selection_reason": "certified detailed architecture+rock geometry is sufficient for a bounded hero surface/identity test without new paid generation",
+      "scope_limit": "surface/identity only; documented route/interface failure remains FAIL and is not reopened",
+      "geometry": "FUNCTION_CERTIFIED_FOR_ENTRANCE_LANDMARK_ONLY",
+      "source_surface": "FLAT_MATERIAL_NO_TEXTURES",
+      "surface": "PENDING_AUTHOR_NEW_SURFACE",
       "official_camera_visual": "PENDING",
-      "verdict": "NOT_STARTED"
+      "verdict": "CANDIDATE_SELECTED"
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
