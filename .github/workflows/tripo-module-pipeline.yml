@@ -406,7 +406,7 @@ jobs:
 
           $relative = ([string]$request.promotion.destination).Replace('/','\')
           if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
-          if ($relative -notmatch '^Unity\\Assets\\Eldoria\\Resources\\Valoria\\[A-Za-z0-9_.-]+\.glb) {
+          if ($relative -notmatch '^Unity\\Assets\\Eldoria\\Resources\\Valoria\\[A-Za-z0-9_.-]+\.glb
             throw "Unsafe promotion destination: $relative"
           }
 
