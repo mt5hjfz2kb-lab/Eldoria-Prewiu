@@ -7,6 +7,9 @@ on:
       - 'pipeline/tripo-module-request.json'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: eldoria-tripo-module-canonical
   cancel-in-progress: true
@@ -390,3 +393,46 @@ jobs:
             ${{ runner.temp }}/tripo-module-blender-error.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
           if-no-files-found: warn
+
+      - name: Promote certified module to production Resources
+        if: success() && steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -eq $request.promotion -or -not [bool]$request.promotion.enabled) {
+            Write-Host 'PROMOTION_DISABLED'
+            exit 0
+          }
+
+          $relative = ([string]$request.promotion.destination).Replace('/','\')
+          if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
+          if ($relative -notmatch '^Unity\\Assets\\Eldoria\\Resources\\Valoria\\[A-Za-z0-9_.-]+\.glb) {
+            throw "Unsafe promotion destination: $relative"
+          }
+
+          $source = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          if (-not (Test-Path $source)) { throw 'Certified optimized GLB missing.' }
+          $dest = Join-Path $env:GITHUB_WORKSPACE $relative
+          if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
+            throw "Promotion destination already exists and overwrite=false: $relative"
+          }
+          New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+          Copy-Item $source $dest -Force
+
+          $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes = (Get-Item $dest).Length
+          Write-Host "PROMOTION_FILE: $relative | $bytes bytes | sha256 $sha"
+
+          git config user.name "Eldoria Actions"
+          git config user.email "actions@eldoria.local"
+          git add -- "$relative"
+          if (-not (git status --porcelain -- "$relative")) {
+            throw "Promotion produced no tracked change: $relative"
+          }
+          $message = [string]$request.promotion.commit_message
+          if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
+          git commit -m "$message"
+          if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
+          git push origin HEAD:main
+          if ($LASTEXITCODE -ne 0) { throw "git push failed with exit code $LASTEXITCODE" }
+          Write-Host "PROMOTION_PUSHED: $relative | sha256 $sha"
