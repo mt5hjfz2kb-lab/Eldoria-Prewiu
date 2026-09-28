@@ -71,11 +71,11 @@ namespace Eldoria.EditorTools
             var rise = PlaceAtSocket(prefabs[1], report.modules[1], root.transform, "04 Eastern rising terrace", "Street_In", streetOut.position + new Vector3(0, 0, .20f), 180, 11.3f);
             PlaceAtSocket(prefabs[3], report.modules[3], root.transform, "03 Western dwellings", "Frontage_L1", new Vector3(-3.7f, streetOut.position.y - .2f, 2.6f), 180, 11.5f);
             PlaceAtSocket(prefabs[3], report.modules[3], root.transform, "05 Upper eastern dwellings", "Frontage_L1", new Vector3(3.7f, Socket(rise.transform, "Terrace_L2").position.y - .2f, 9.2f), 180, 10.8f);
-            PlaceAtSocket(prefabs[1], report.modules[1], root.transform, "06 Northwestern terrace", "Street_In", new Vector3(-2.8f, streetOut.position.y, 8.4f), 180, 10.5f);
-            Place(prefabs[0], report.modules[0], root.transform, "07 Rear skyline tower", new Vector3(-4.4f, 4.5f, 14.5f), 55, 7.2f);
-            Place(prefabs[5], report.modules[5], root.transform, "08 Central supporting rock", new Vector3(0, .05f, .9f), 180, 11.8f);
-            Place(prefabs[5], report.modules[5], root.transform, "09 West supporting rock", new Vector3(-4.1f, 1.4f, 5.5f), 75, 11.2f);
-            Place(prefabs[5], report.modules[5], root.transform, "10 Rear supporting rock", new Vector3(1.6f, 3.0f, 10.2f), 190, 10.5f);
+            Place(prefabs[0], report.modules[0], root.transform, "07 Rear skyline tower", new Vector3(-3.8f, 3.7f, 13.1f), 55, 7.2f);
+            Place(prefabs[5], report.modules[5], root.transform, "08 Central supporting rock", new Vector3(0, -.1f, .8f), 180, 11.8f);
+            Place(prefabs[5], report.modules[5], root.transform, "09 West supporting rock", new Vector3(-3.7f, .2f, 4.0f), 75, 11.8f);
+            Place(prefabs[5], report.modules[5], root.transform, "10 East supporting rock", new Vector3(3.4f, 1.1f, 9.0f), 190, 12.2f);
+            Place(prefabs[5], report.modules[5], root.transform, "11 Rear supporting rock", new Vector3(-2.0f, 1.9f, 12.4f), 30, 10.7f);
             report.gateToStreetError = Vector3.Distance(gateOut.position + new Vector3(0, 0, .25f), Socket(street.transform, "Street_In").position);
             report.streetToTerraceError = Vector3.Distance(streetOut.position + new Vector3(0, 0, .20f), Socket(rise.transform, "Street_In").position);
             if (report.gateToStreetError > .01f || report.streetToTerraceError > .01f)
@@ -126,7 +126,7 @@ namespace Eldoria.EditorTools
             }
             string[] probeNames = {
                 "07 Rear skyline tower", "04 Eastern rising terrace", "01 Southern gate",
-                "03 Western dwellings", "02 Street landing", "08 West buried seam"
+                "03 Western dwellings", "02 Street landing", "08 Central supporting rock"
             };
             for (int i = 0; i < report.modules.Length; i++) {
                 var e = report.modules[i];
