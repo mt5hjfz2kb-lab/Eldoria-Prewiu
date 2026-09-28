@@ -142,6 +142,25 @@ namespace Eldoria.EditorTools
             if (report.meshColliders < 10) throw new Exception("Missing district MeshColliders.");
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             File.WriteAllText(Output + "/metrics.json", JsonUtility.ToJson(report, true));
+            // A real post-export before/after silhouette check for every family.
+            // The main district is saved before the other instances are hidden.
+            string[] slugs = { "tower", "terrace", "gate", "residential", "street", "rock" };
+            for (int f = 0; f < slugs.Length; f++) {
+                var chosen = root.transform.Find(probeNames[f]);
+                foreach (Transform child in root.transform) child.gameObject.SetActive(child == chosen);
+                var box = BoundsOf(chosen.gameObject);
+                var folder = Output + "/families/" + slugs[f];
+                Directory.CreateDirectory(folder);
+                for (int view = 0; view < 4; view++) {
+                    cam.orthographicSize = sizes[view];
+                    var focus = box.center;
+                    cam.transform.position = focus + (view == 3 ? new Vector3(-25, 20, -26) : new Vector3(17, 25, -27));
+                    cam.transform.LookAt(focus);
+                    var capture = Save(cam, folder + "/" + names[view] + ".png");
+                    if (!capture.Item2) throw new Exception("Empty family review: " + slugs[f] + " " + names[view]);
+                }
+            }
+            foreach (Transform child in root.transform) child.gameObject.SetActive(true);
             Debug.Log("Interface v1 isolated technical gate passed; visual assessment requires capture inspection.");
         }
 
