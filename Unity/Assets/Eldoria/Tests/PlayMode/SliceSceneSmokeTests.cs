@@ -55,6 +55,9 @@ namespace Eldoria.Tests
                 var hotspot=target.GetComponent<WorldHotspot>();
                 Assert.That(hotspot,Is.Not.Null);
                 Assert.That(hotspot.Id,Is.EqualTo(pair.Item2));
+                var resolve=typeof(SlicePresenter).GetMethod("ResolveHotspot",
+                    System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+                Assert.That(resolve,Is.Not.Null);
                 bool clearClick=false;
                 foreach(var candidate in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
                 {
@@ -71,21 +74,12 @@ namespace Eldoria.Tests
                     {
                         var screenPoint=camera.WorldToScreenPoint(aim);
                         if(screenPoint.z<=0)continue;
-                        var ray=camera.ScreenPointToRay(screenPoint);
-                        var hits=Physics.RaycastAll(ray,100f);
-                        System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
-                        foreach(var hit in hits)
-                        {
-                            var resolved=hit.collider.GetComponent<WorldHotspot>();
-                            if(resolved==null)continue;
-                            if(resolved.Id==pair.Item2)clearClick=true;
-                            break;
-                        }
-                        if(clearClick)break;
+                        var resolved=resolve.Invoke(presenter,new object[]{new Vector2(screenPoint.x,screenPoint.y)}) as WorldHotspot;
+                        if(resolved!=null&&resolved.Id==pair.Item2){clearClick=true;break;}
                     }
                     if(clearClick)break;
                 }
-                Assert.That(clearClick,Is.True,pair.Item1+" has no unobstructed player click point from the official camera");
+                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera");
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
