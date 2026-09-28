@@ -57,7 +57,7 @@ jobs:
           }
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 200}; throw "LookDev capture failed: $($process.ExitCode)" }
           $images=@(Get-ChildItem $folder -Filter '*.png' -File)
-          if($images.Count -ne 8){ throw "Expected 8 LookDev PNGs, found $($images.Count)" }
+          if($images.Count -ne 15){ throw "Expected 15 LookDev PNGs, found $($images.Count)" }
           foreach($image in $images){ if($image.Length -lt 10000){ throw "Empty LookDev capture: $($image.Name)" } }
 
       - name: Build LookDev contact sheet
@@ -65,16 +65,16 @@ jobs:
         run: |
           Add-Type -AssemblyName System.Drawing
           $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
-          $profiles=@('baseline','neutral-pbr','ruins-contrast','neutral-overcast')
+          $profiles=@('baseline','neutral-pbr','ruins-contrast','neutral-overcast','valoria-v1-candidate')
           $cellW=640; $cellH=360
-          $canvas=New-Object System.Drawing.Bitmap ($cellW*2),($cellH*4)
+          $canvas=New-Object System.Drawing.Bitmap ($cellW*3),($cellH*5)
           $g=[System.Drawing.Graphics]::FromImage($canvas)
           $g.Clear([System.Drawing.Color]::Black)
           try {
             for($row=0;$row -lt $profiles.Count;$row++){
               $id=$profiles[$row]
-              $paths=@("$folder\$id-overview.png","$folder\$id-sawmill.png")
-              for($col=0;$col -lt 2;$col++){
+              $paths=@("$folder\$id-overview.png","$folder\$id-sawmill.png","$folder\$id-barracks.png")
+              for($col=0;$col -lt 3;$col++){
                 $img=[System.Drawing.Image]::FromFile($paths[$col])
                 try { $g.DrawImage($img,$col*$cellW,$row*$cellH,$cellW,$cellH) } finally { $img.Dispose() }
               }
