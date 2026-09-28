@@ -1,4 +1,4 @@
-name: Tripo Studio local bridge probe
+name: Tripo Studio local bridge
 
 on:
   push:
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  probe:
+  bridge:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 5
@@ -53,8 +53,12 @@ jobs:
             Write-Host "Bridge request disabled."
             exit 0
           }
-          if ([string]$request.mode -ne 'probe') {
-            throw "Only read-only probe mode is enabled at this stage."
+          $mode = [string]$request.mode
+          if ($mode -notin @('probe','stage_upload')) {
+            throw "Unsupported safe bridge mode: $mode"
+          }
+          if ($mode -eq 'stage_upload' -and [bool]$request.allow_credit_spend) {
+            throw "stage_upload cannot run with allow_credit_spend=true."
           }
           node tools/tripo-studio-bridge.mjs pipeline/tripo-studio-request.json "$env:RUNNER_TEMP\tripo-studio-probe.json"
 
