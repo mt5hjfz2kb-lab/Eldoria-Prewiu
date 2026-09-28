@@ -180,32 +180,16 @@ try {
       credits_spent: false
     };
     report.post_upload_page = await inspectPage(uploadPage);
-
-    // Do not click Generate. If the original input survives, clear it; otherwise
-    // the SPA has already replaced the control after accepting the file.
-    const clearCandidate = uploadPage.locator('input[type="file"][accept*="image"]').first();
-    if (await clearCandidate.count()) {
-      try {
-        await withTimeout(clearCandidate.setInputFiles([]), 5000, 'image upload clear');
-        report.upload.cleared = true;
-      } catch {
-        report.upload.cleared = false;
-      }
-    } else {
-      report.upload.cleared = false;
-      report.upload.control_replaced_after_upload = true;
-      try {
-        await uploadPage.reload({ waitUntil: 'domcontentloaded', timeout: 15000 });
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        const restored = uploadPage.locator('input[type="file"][accept*="image"]').first();
-        report.upload.cleanup_reload = true;
-        report.upload.image_input_restored_after_reload = (await restored.count()) > 0;
-        report.upload.cleared = report.upload.image_input_restored_after_reload;
-      } catch (error) {
-        report.upload.cleanup_reload = false;
-        report.upload.cleanup_error = String(error?.message || error);
-      }
-    }
+    report.upload.visible_images = await uploadPage.locator('img').evaluateAll(images => images.map(img => ({
+      alt: img.alt,
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      src_kind: img.currentSrc.startsWith('blob:') ? 'blob' : img.currentSrc.startsWith('data:') ? 'data' : 'url'
+    })).filter(img => img.width && img.height));
+    const screenshotPath = path.join(path.dirname(outPath), 'tripo-studio-after-upload.png');
+    await uploadPage.screenshot({ path: screenshotPath, fullPage: false });
+    report.upload.screenshot_path = screenshotPath;
+    report.upload.left_staged_for_owner_approval = true;
   } else if (mode !== 'probe') {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
@@ -218,7 +202,7 @@ try {
   else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
 
   if (mode === 'stage_upload') {
-    console.log(report.upload?.cleared ? 'TRIPO_STUDIO_UPLOAD_STAGED_AND_CLEANED' : 'TRIPO_STUDIO_UPLOAD_STAGED_CLEANUP_UNCONFIRMED');
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
   }
 
   // Never close the owner's real Edge session.

@@ -187,8 +187,11 @@ jobs:
             if ([string]::IsNullOrWhiteSpace($expected) -or $actual -ne $expected) {
               throw "Exact Tripo input SHA mismatch. expected=$expected actual=$actual"
             }
-            $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $resolved -Force
             $size = (Get-Item $resolved).Length
+            if ([int64]$request.upload_size_bytes -ne $size) {
+              throw "Exact Tripo input size mismatch. expected=$($request.upload_size_bytes) actual=$size"
+            }
+            $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $resolved -Force
             Write-Host "EXACT_TRIPO_INPUT_OK: $resolved | $size bytes | sha256 $actual"
           }
 
@@ -201,6 +204,7 @@ jobs:
           name: eldoria-tripo-studio-bridge-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/tripo-studio-probe.json
+            ${{ runner.temp }}/tripo-studio-after-upload.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
           if-no-files-found: warn

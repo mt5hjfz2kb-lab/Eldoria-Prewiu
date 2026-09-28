@@ -16,15 +16,13 @@
     "principal_face": "south/front",
     "street_side": "keep clear"
   },
-  "upload_file_name": "658ABAC7-03DC-490C-BEF8-79F906DAB3D0.jpeg",
+  "upload_file_name": "Valoria_Aserradero_AP2_v1.jpeg",
   "upload_sha256": "4c00ab8b91c57c1872066a40448a1aba5a152fc940ae6bad494302e55f2aa0be",
-  "search_downloads_for_sha": true,
+  "search_downloads_for_sha": false,
   "allow_credit_spend": false,
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28T17:20:visual-match-review",
-  "visual_sample_dhash": "a8e8d8ecacd6f04d",
-  "visual_width": 1254,
-  "visual_height": 1254
+  "probe_nonce": "2026-09-28:exact-chat-attachment-stage",
+  "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg"
 }
