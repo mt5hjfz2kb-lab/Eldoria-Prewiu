@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "formula": "VALORIA_VISUAL_FORMULA_v1",
+  "status": "ACTIVE_VALIDATION",
+  "updated": "2026-09-29",
+  "gates": {
+    "A_aserradero": {
+      "goal": "prove reusable Surface v1 on accepted production geometry",
+      "geometry": "PASS",
+      "source_pbr_diagnostic": "PASS",
+      "source_pbr_run_id": 36493273686,
+      "integration_correction": "IMPLEMENTED",
+      "integration_rule": "preserve authored PBR via BenchmarkPiece",
+      "official_camera_visual_recheck": "PENDING_RUNNER",
+      "verdict": "PARTIAL"
+    },
+    "B_cuartel": {
+      "goal": "prove the same surface/lookdev logic transfers to a second dedicated building",
+      "dedicated_asset": "PASS",
+      "unity_full_gate_run_id": 36493002127,
+      "unity_full_gate": "PASS",
+      "pbr_preservation": "IMPLEMENTED",
+      "formula_scene_recheck": "PENDING_RUNNER",
+      "verdict": "PARTIAL"
+    },
+    "C_hero_fragment": {
+      "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
+      "asset": "NOT_YET_SELECTED",
+      "geometry": "PENDING",
+      "surface": "PENDING",
+      "official_camera_visual": "PENDING",
+      "verdict": "NOT_STARTED"
+    },
+    "D_integrated_formula_scene": {
+      "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
+      "workflow": ".github/workflows/valoria-visual-formula.yml",
+      "material_evidence": "IMPLEMENTED",
+      "captures": "PENDING_RUNNER",
+      "verdict": "PARTIAL"
+    }
+  },
+  "formula_can_be_marked_validated_when": [
+    "Aserradero integrated official-camera result is accepted",
+    "Cuartel remains coherent under the same environment/material-family rules",
+    "One bounded hero fragment passes",
+    "Integrated formula scene passes composition/surface/identity review"
+  ]
+}
