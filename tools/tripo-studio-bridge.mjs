@@ -60,11 +60,30 @@ try {
       continue;
     }
 
+    const controls = await page.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input')).map((el, i) => ({
+        index: i,
+        type: el.getAttribute('type') || '',
+        accept: el.getAttribute('accept') || '',
+        name: el.getAttribute('name') || '',
+        placeholder: el.getAttribute('placeholder') || '',
+        ariaLabel: el.getAttribute('aria-label') || '',
+        hidden: !!(el.hidden || getComputedStyle(el).display === 'none' || getComputedStyle(el).visibility === 'hidden')
+      }));
+      const textareas = Array.from(document.querySelectorAll('textarea')).map((el, i) => ({
+        index: i,
+        placeholder: el.getAttribute('placeholder') || '',
+        ariaLabel: el.getAttribute('aria-label') || ''
+      }));
+      return { inputs, textareas };
+    });
+
     const item = {
       url: page.url(),
       title,
       generate_button_visible: generateVisible,
-      visible_button_sample: buttons.slice(0, 40)
+      visible_button_sample: buttons.slice(0, 40),
+      controls
     };
     inspected.push(item);
 
