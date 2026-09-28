@@ -58,8 +58,10 @@ namespace Eldoria.Tests
                 var aim=target.GetComponent<Collider>().bounds.center;
                 var ray=new Ray(camera.transform.position,(aim-camera.transform.position).normalized);
                 Assert.That(Physics.Raycast(ray,out var hit,100f),Is.True,pair.Item1+" is not raycastable");
-                Assert.That(hit.collider.GetComponent<WorldHotspot>(),Is.SameAs(hotspot),
-                    pair.Item1+" click target is occluded from the official camera");
+                var resolved=hit.collider.GetComponent<WorldHotspot>();
+                Assert.That(resolved,Is.Not.Null,pair.Item1+" click path hit non-interactive visible geometry");
+                Assert.That(resolved.Id,Is.EqualTo(pair.Item2),
+                    pair.Item1+" click path resolved the wrong building");
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
