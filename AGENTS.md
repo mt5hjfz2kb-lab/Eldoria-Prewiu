@@ -48,13 +48,15 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Owner local inspection of the certified three-family composition is available in Unity at `Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review`; this convenience view never replaces CI certification.
 
 ## Permanent Valoria camera-first composition rule
-- Valoria is authored for a **fixed gameplay camera angle/position with defined zoom levels**, not for free 360° exploration. The official gameplay cameras/zooms are the visual source of truth for composition.
+- Valoria is authored for a **fixed gameplay camera orientation with defined zoom levels, an approved home pose and bounded translation across the city**, not for free 360° exploration. The official orientation/zoom family and approved camera envelope are the visual source of truth for composition.
 - Before approving, adapting or requesting any Valoria asset/system, validate it against three constraints first: **official camera**, **player interaction/clickability**, and **spatial progression/circulation**.
-- Prioritize silhouette, route readability, occlusion, click targets and hierarchy from the official zooms. Do not spend production effort making unseen rear/side surfaces universally beautiful unless they affect gameplay, shadows, collisions or future explicitly approved camera states.
+- Prioritize silhouette, route readability, occlusion, click targets and hierarchy from the official zooms **across the approved pan envelope**, not only from the home pose. Do not spend production effort making surfaces outside every reachable player camera universally beautiful unless they affect gameplay, shadows, collisions or future explicitly approved camera states.
 - It is acceptable to use controlled overlap, burial and hidden joins outside the player-visible camera envelope when they preserve clean geometry, collisions and visual quality from official views. Do not use camera constraints to justify visibly broken geometry or interaction defects.
 - City construction should be planned **bottom-up by spatial layers** before proliferating more complete diorama modules: terrain/base → ground-level circulation → vertical connections → upper levels/plots → buildings → props/detail.
 - New Valoria assets must justify where they live in that layered plan, what gameplay/urban function they serve, and what interfaces they connect to before generation. If those answers are missing, do not generate the asset.
 - A technically valid isolated asset is not sufficient evidence for city readiness. Final acceptance must come from integrated review in the official camera/zoom set.
+- Long-term Valoria planning must use `docs/VALORIA_MASTER_PLAN_V1.md`, `docs/VALORIA_PROGRESSION_MAP_V1.md` and `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`. Bastion I–X is the prologue/first arc, not the structural city ceiling; hard-to-reverse terrain, road, district, plot or camera-bound decisions must preserve headroom for the current long-range planning target of roughly Bastion 25–35.
+- The certified Playable District Skeleton is the city **kernel**, not the whole production footprint. Before broad final-art dressing, validate a larger-than-one-mobile-viewport master-envelope graybox with bounded panning, reserved expansion districts and progression-aware camera bounds.
 
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
