@@ -134,9 +134,12 @@ Blender:
 - measures raw objects / vertices / triangles / materials / UV / normals / bounds;
 - preserves or creates at least one material;
 - creates UV0 when absent;
-- reduces to target 49,800 triangles;
-- accepted range: **49,500–50,000**;
+- uses a request-configurable triangle profile;
+- legacy/default validation remains target **49,800**, accepted **49,500–50,000** when no profile is supplied;
+- production assets may declare `optimization.target_triangles`, `min_triangles` and `max_triangles` according to asset role and measured mobile needs;
 - exports GLB and report.
+
+The old ~50K value is a reproducible validation default, not a universal final-art budget. Do not invent lower budgets solely for tidiness: establish them with official-camera visual comparison and device profiling, then use LOD where it produces a measurable benefit.
 
 Unity 6000.3.23f1:
 - imports the canonical optimized GLB in an isolated review scene;
