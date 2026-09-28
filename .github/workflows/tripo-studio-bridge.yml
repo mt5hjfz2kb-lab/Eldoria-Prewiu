@@ -66,7 +66,25 @@ jobs:
             $expected = ([string]$request.upload_sha256).ToLowerInvariant()
             $resolved = $null
 
-            if ([bool]$request.search_downloads_for_sha -and -not [string]::IsNullOrWhiteSpace($expected)) {
+            # Canonical exact-input route for ChatGPT-approved references: reconstruct repository base64 parts first.
+            if (-not [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob)) {
+              $glob = Join-Path $env:GITHUB_WORKSPACE ([string]$request.upload_base64_glob)
+              $parts = @(Get-ChildItem $glob -File -ErrorAction SilentlyContinue | Sort-Object Name)
+              if ($parts.Count -eq 0) { throw "No exact-input base64 parts found for: $glob" }
+              $chunks = foreach ($part in $parts) { (Get-Content $part.FullName -Raw).Trim() }
+              $b64 = $chunks -join ''
+              try { $bytes = [Convert]::FromBase64String($b64) }
+              catch { throw "Exact-input base64 decode failed before Tripo: $($_.Exception.Message)" }
+              $fileName = [string]$request.upload_file_name
+              if ([string]::IsNullOrWhiteSpace($fileName)) { $fileName = 'tripo-exact-input.jpeg' }
+              $dest = Join-Path $env:RUNNER_TEMP $fileName
+              [IO.File]::WriteAllBytes($dest,$bytes)
+              $resolved = $dest
+              Write-Host "EXACT_TRIPO_INPUT_RECONSTRUCTED: parts=$($parts.Count) | path=$dest"
+            }
+
+            # Downloads/Desktop discovery is fallback only when no repository exact-input resolved.
+            if (-not $resolved -and [bool]$request.search_downloads_for_sha -and -not [string]::IsNullOrWhiteSpace($expected)) {
               $expectedBytes = [int64]$request.upload_size_bytes
               $roots = @(
                 (Join-Path $env:USERPROFILE 'Downloads'),
@@ -162,19 +180,6 @@ jobs:
               }
             }
 
-            if (-not $resolved -and -not [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob)) {
-              $glob = Join-Path $env:GITHUB_WORKSPACE ([string]$request.upload_base64_glob)
-              $parts = @(Get-ChildItem $glob -File -ErrorAction SilentlyContinue | Sort-Object Name)
-              if ($parts.Count -eq 0) { throw "No exact-input base64 parts found for: $glob" }
-              $chunks = foreach ($part in $parts) { (Get-Content $part.FullName -Raw).Trim() }
-              $b64 = $chunks -join ''
-              $bytes = [Convert]::FromBase64String($b64)
-              $fileName = [string]$request.upload_file_name
-              if ([string]::IsNullOrWhiteSpace($fileName)) { $fileName = 'tripo-exact-input.jpeg' }
-              $dest = Join-Path $env:RUNNER_TEMP $fileName
-              [IO.File]::WriteAllBytes($dest,$bytes)
-              $resolved = $dest
-            }
 
             if (-not $resolved -and -not [string]::IsNullOrWhiteSpace([string]$request.upload_path)) {
               $resolved = [string]$request.upload_path
@@ -205,6 +210,14 @@ jobs:
                 throw "Exact Tripo input size mismatch. expected=$($request.upload_size_bytes) actual=$size"
               }
               $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $resolved -Force
+              @(
+                "asset_name=$([string]$request.asset_name)",
+                "file_name=$([IO.Path]::GetFileName($resolved))",
+                "bytes=$size",
+                "sha256=$actual",
+                "mode=$mode",
+                "allow_credit_spend=$([bool]$request.allow_credit_spend)"
+              ) | Set-Content "$env:RUNNER_TEMP\tripo-exact-input-identity.txt"
               Write-Host "EXACT_TRIPO_INPUT_OK: $resolved | $size bytes | sha256 $actual"
             }
           }
@@ -228,4 +241,5 @@ jobs:
             ${{ runner.temp }}/tripo-studio-error.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
+            ${{ runner.temp }}/tripo-exact-input-identity.txt
           if-no-files-found: warn
