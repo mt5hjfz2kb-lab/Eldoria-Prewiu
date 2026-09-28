@@ -82,7 +82,17 @@ namespace Eldoria.Tests
                     }
                     if(clearClick)break;
                 }
-                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera. TargetWorld="+target.transform.position+" TargetScreen="+camera.WorldToScreenPoint(target.GetComponent<Collider>().bounds.center)+" CameraPos="+camera.transform.position+" CameraFwd="+camera.transform.forward+" Ortho="+camera.orthographicSize+" Aspect="+camera.aspect+" PixelRect="+camera.pixelRect+" Rect="+camera.rect+" Screen="+Screen.width+"x"+Screen.height+" Resolved: "+resolvedIds);
+                var targetScreen=camera.WorldToScreenPoint(target.GetComponent<Collider>().bounds.center);
+                var targetRay=camera.ScreenPointToRay(new Vector2(targetScreen.x,targetScreen.y));
+                var targetHits=Physics.RaycastAll(targetRay,100f);
+                System.Array.Sort(targetHits,(a,b)=>a.distance.CompareTo(b.distance));
+                string hitDump="";
+                foreach(var h in targetHits)
+                {
+                    var hs=h.collider.GetComponent<WorldHotspot>();
+                    hitDump+=h.collider.gameObject.name+"#"+h.distance.ToString("F2")+"@"+h.collider.bounds.center+"=>"+(hs==null?"none":hs.Id)+"; ";
+                }
+                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera. TargetWorld="+target.transform.position+" TargetScreen="+targetScreen+" CameraPos="+camera.transform.position+" CameraFwd="+camera.transform.forward+" Ortho="+camera.orthographicSize+" Aspect="+camera.aspect+" PixelRect="+camera.pixelRect+" Rect="+camera.rect+" Screen="+Screen.width+"x"+Screen.height+" Hits="+hitDump+" Resolved: "+resolvedIds);
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
