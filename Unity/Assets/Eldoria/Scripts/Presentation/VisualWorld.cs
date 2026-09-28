@@ -13,6 +13,12 @@ namespace Eldoria.Presentation
         static readonly Color Amber = new Color(.96f,.53f,.22f), Violet = new Color(.57f,.19f,.91f);
         public static void Create(bool city, PlayerState state)
         {
+            // Keep the fixed gameplay camera singular even if PlayMode/test scene transitions
+            // invoke world creation more than once during the same session.
+            foreach(var oldCamera in UnityEngine.Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
+                if(oldCamera.gameObject.name=="Isometric camera")
+                    UnityEngine.Object.DestroyImmediate(oldCamera.gameObject);
+
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = city?new Color(.92f,.91f,.87f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
