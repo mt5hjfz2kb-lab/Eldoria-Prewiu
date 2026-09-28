@@ -83,11 +83,20 @@ namespace Eldoria.Presentation
 
         WorldHotspot ResolveProjectedHotspot(Vector2 point)
         {
+            var explicitTarget=ResolveProjectedHotspotSet(point,true);
+            return explicitTarget!=null?explicitTarget:ResolveProjectedHotspotSet(point,false);
+        }
+
+        WorldHotspot ResolveProjectedHotspotSet(Vector2 point,bool explicitOnly)
+        {
             WorldHotspot best=null;
             float bestDistance=float.MaxValue;
             float bestArea=float.MaxValue;
             foreach(var candidate in FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
             {
+                bool isExplicit=candidate.gameObject.name.EndsWith("· target",System.StringComparison.Ordinal);
+                if(explicitOnly!=isExplicit && explicitOnly)continue;
+                if(!explicitOnly&&isExplicit)continue;
                 var collider=candidate.GetComponent<Collider>();
                 if(collider==null||!collider.enabled)continue;
                 var b=collider.bounds;
