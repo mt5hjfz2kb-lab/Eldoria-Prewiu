@@ -23,5 +23,8 @@
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28T17:16:exact-profile-search"
+  "probe_nonce": "2026-09-28T17:20:visual-match-review",
+  "visual_sample_dhash": "a8e8d8ecacd6f04d",
+  "visual_width": 1254,
+  "visual_height": 1254
 }
