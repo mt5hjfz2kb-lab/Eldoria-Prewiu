@@ -1,6 +1,6 @@
 {
-  "enabled": true,
-  "request_id": "aserradero-blender-art-refine-exp1",
+  "enabled": false,
+  "request_id": "idle-after-aserradero-blender-refine-proof",
   "module_label": "Valoria_Aserradero_AP2_v1_RefineExp1",
   "unity_yaw_degrees": 180,
   "source": {
@@ -18,5 +18,6 @@
     "specular_ior_level": 0.18,
     "run_nonce": "2026-09-28T21:06Z"
   },
-  "visual_acceptance": "Zero-credit Blender art-refine experiment using the already accepted Aserradero geometry. Preserve silhouette, scale, production identity, UVs and textures. Prove whether Blender can add a useful post-Tripo stage by reporting connected components, safe mesh cleanup and more controlled PBR response without regenerating geometry. Isolated review only; do not replace the production Aserradero automatically."
+  "visual_acceptance": "Zero-credit Blender art-refine experiment using the already accepted Aserradero geometry. Preserve silhouette, scale, production identity, UVs and textures. Prove whether Blender can add a useful post-Tripo stage by reporting connected components, safe mesh cleanup and more controlled PBR response without regenerating geometry. Isolated review only; do not replace the production Aserradero automatically.",
+  "notes": "Refine experiment completed successfully; canonical request parked disabled until next real module gate."
 }
