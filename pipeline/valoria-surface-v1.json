@@ -48,8 +48,22 @@
     }
   },
   "validation_remaining": [
-    "Unity material evidence for sawmill and barracks",
-    "LookDev profile comparison",
-    "Integrated visual formula scene comparison"
+    "Unity material evidence after glTFast shader preservation",
+    "Current LookDev profile comparison",
+    "Integrated visual formula scene comparison",
+    "Hero fragment Surface/Identity review"
+  ],
+  "integration_fixes": [
+    {
+      "id": "preserve-authored-pbr-path",
+      "status": "IMPLEMENTED",
+      "detail": "Dedicated production GLBs use BenchmarkPiece instead of basecolor-only BenchmarkPieceIntegrated."
+    },
+    {
+      "id": "preserve-gltfast-pbr-shaders",
+      "status": "IMPLEMENTED",
+      "commit": "3113d762aada298a93bfbb45457b5b5531823516",
+      "detail": "AdaptForUrp now preserves Shader Graphs/glTF-* and glTF/* shaders instead of rebuilding them as URP/Lit, retaining metallic-roughness, normal, AO and emission semantics."
+    }
   ]
 }
