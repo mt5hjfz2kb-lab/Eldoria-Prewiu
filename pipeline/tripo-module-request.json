@@ -1,23 +1,19 @@
 {
-  "enabled": false,
-  "request_id": "idle-after-aserradero-blender-refine-proof",
-  "module_label": "Valoria_Aserradero_AP2_v1_RefineExp1",
+  "enabled": true,
+  "request_id": "valoria-cuartel-ap2-v1-canonical-gate",
+  "module_label": "Valoria_Cuartel_AP2_v1",
   "unity_yaw_degrees": 180,
   "source": {
-    "mode": "repository_glb",
-    "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
-    "exact_sha256": ""
+    "mode": "downloads_glb",
+    "exact_name": "Valoria_Cuartel_AP2_v1.glb",
+    "exact_sha256": "d9ebd70a2993db449314f1025ca2f589741bc1771fa69a4cee899385b30045f4",
+    "name_regex": "^Valoria_Cuartel_AP2_v1\\.glb$",
+    "max_age_hours": 4,
+    "exclude_sha256": []
   },
   "refinement": {
-    "enabled": true,
-    "mode": "diagnostic_material_cleanup",
-    "merge_distance": 0.00005,
-    "recalculate_normals": true,
-    "roughness_floor": 0.78,
-    "metallic_ceiling": 0.02,
-    "specular_ior_level": 0.18,
-    "run_nonce": "2026-09-28T21:06Z"
+    "enabled": false
   },
-  "visual_acceptance": "Zero-credit Blender art-refine experiment using the already accepted Aserradero geometry. Preserve silhouette, scale, production identity, UVs and textures. Prove whether Blender can add a useful post-Tripo stage by reporting connected components, safe mesh cleanup and more controlled PBR response without regenerating geometry. Isolated review only; do not replace the production Aserradero automatically.",
-  "notes": "Refine experiment completed successfully; canonical request parked disabled until next real module gate."
+  "visual_acceptance": "Dedicated compact Valoria barracks / guardhouse. Preserve a robust stone lower body, asymmetric timber/slate upper mass, recessed guarded south/front entrance, subordinate watch/guard cue and restrained military/heraldic identity. Isolated gate must show one coherent building, not a fortress/diorama. Review cardinal diagnostics to confirm intended south/front orientation. Production integration target after isolated PASS: visual footprint 3.5–3.8 x 2.9–3.2, height 3.4–4.0, west/central-street flank kept clear, and functional hotspot/click collider remaining separate from the visual mesh.",
+  "notes": "Exact GLB exported automatically from the single owner-authorized Tripo Studio task 6d102e13-3f8d-403c-936a-f4dba2eb81c0. No further Tripo generation or credit spend is authorized."
 }
