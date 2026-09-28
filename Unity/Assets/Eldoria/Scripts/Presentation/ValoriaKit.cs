@@ -94,6 +94,42 @@ namespace Eldoria.Presentation
             return go;
         }
 
+        public static GameObject BenchmarkPieceIntegrated(string name,GameObject prefab,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation,Color tint)
+        {
+            var go=BenchmarkPiece(name,prefab,ground,footprint,maxHeight,rotation);
+            if(go==null)return null;
+            var lit=Shader.Find("Universal Render Pipeline/Lit");
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var source=mats[i];
+                    if(source==null)continue;
+                    var baseMap=source.HasProperty("_BaseMap")?source.GetTexture("_BaseMap"):
+                        source.HasProperty("_MainTex")?source.GetTexture("_MainTex"):null;
+                    var material=lit!=null?new Material(lit):new Material(source);
+                    material.name="Valoria integrated · "+source.name;
+                    if(baseMap!=null)
+                    {
+                        if(material.HasProperty("_BaseMap"))material.SetTexture("_BaseMap",baseMap);
+                        else if(material.HasProperty("_MainTex"))material.SetTexture("_MainTex",baseMap);
+                    }
+                    if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",tint);
+                    if(material.HasProperty("_Color"))material.SetColor("_Color",tint);
+                    if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",.025f);
+                    if(material.HasProperty("_Metallic"))material.SetFloat("_Metallic",0f);
+                    if(material.HasProperty("_SpecularHighlights"))material.SetFloat("_SpecularHighlights",0f);
+                    if(material.HasProperty("_EnvironmentReflections"))material.SetFloat("_EnvironmentReflections",0f);
+                    if(material.HasProperty("_EmissionColor"))material.SetColor("_EmissionColor",Color.black);
+                    mats[i]=material;
+                }
+                renderer.sharedMaterials=mats;
+            }
+            return go;
+        }
+
         public static GameObject BenchmarkPieceTinted(string name,GameObject prefab,Vector3 ground,
             float footprint,float maxHeight,Quaternion rotation,Color tint)
         {
@@ -383,9 +419,9 @@ namespace Eldoria.Presentation
         public static void SawmillArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
             // Keep the certified plot/click geometry independent from this visual asset.
-            var dedicated=BenchmarkPieceModulated(name+" · dedicated sawmill",
+            var dedicated=BenchmarkPieceIntegrated(name+" · dedicated sawmill",
                 LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
-                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.22f,.20f,.18f,1f));
+                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.42f,.31f,.22f,1f));
             if(dedicated!=null)
             {
                 if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
