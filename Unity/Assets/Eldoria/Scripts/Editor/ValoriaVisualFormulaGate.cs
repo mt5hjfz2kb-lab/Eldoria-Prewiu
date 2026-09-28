@@ -48,7 +48,67 @@ namespace Eldoria.EditorTools
             Save(camera, folder + "/formula-bastion-9.png", officialPosition + bastionShift, officialTarget + bastionShift, 9f, 1280, 720);
 
             WriteMetrics(folder + "/formula-metrics.json");
+            WriteMaterialEvidence(folder + "/formula-materials.json");
             Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
+        }
+
+        static string TextureName(Material material, string property)
+        {
+            if (material == null || !material.HasProperty(property)) return "";
+            var texture = material.GetTexture(property);
+            return texture != null ? texture.name : "";
+        }
+
+        static string FloatValue(Material material, string property)
+        {
+            if (material == null || !material.HasProperty(property)) return "null";
+            return material.GetFloat(property).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        static string Escape(string value)
+        {
+            return (value ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        static void WriteMaterialEvidence(string path)
+        {
+            var rows = new List<string>();
+            foreach (var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (!renderer.gameObject.activeInHierarchy) continue;
+                var lower = renderer.gameObject.name.ToLowerInvariant();
+                string target = lower.Contains("aserradero") ? "sawmill" :
+                                lower.Contains("cuartel") ? "barracks" :
+                                lower.Contains("bastion") ? "bastion" : "";
+                if (string.IsNullOrEmpty(target)) continue;
+
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    if (material == null) continue;
+                    var baseMap = TextureName(material, "_BaseMap");
+                    if (string.IsNullOrEmpty(baseMap)) baseMap = TextureName(material, "_MainTex");
+                    var normalMap = TextureName(material, "_BumpMap");
+                    var metallicMap = TextureName(material, "_MetallicGlossMap");
+                    var occlusionMap = TextureName(material, "_OcclusionMap");
+                    rows.Add(
+                        "    {\"target\":\"" + target +
+                        "\",\"renderer\":\"" + Escape(renderer.gameObject.name) +
+                        "\",\"material\":\"" + Escape(material.name) +
+                        "\",\"shader\":\"" + Escape(material.shader != null ? material.shader.name : "") +
+                        "\",\"base_map\":\"" + Escape(baseMap) +
+                        "\",\"normal_map\":\"" + Escape(normalMap) +
+                        "\",\"metallic_gloss_map\":\"" + Escape(metallicMap) +
+                        "\",\"occlusion_map\":\"" + Escape(occlusionMap) +
+                        "\",\"metallic\":" + FloatValue(material, "_Metallic") +
+                        ",\"smoothness\":" + FloatValue(material, "_Smoothness") + "}"
+                    );
+                }
+            }
+
+            File.WriteAllText(path,
+                "{\n  \"schema_version\": 1,\n  \"materials\": [\n" +
+                string.Join(",\n", rows) +
+                "\n  ]\n}\n");
         }
 
         static void WriteMetrics(string path)
