@@ -15,7 +15,7 @@ jobs:
   bridge:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     steps:
       - name: Expose Git installed with GitHub Desktop
@@ -54,15 +54,15 @@ jobs:
             exit 0
           }
           $mode = [string]$request.mode
-          if ($mode -notin @('probe','stage_upload')) {
-            throw "Unsupported safe bridge mode: $mode"
+          if ($mode -notin @('probe','stage_upload','generate')) {
+            throw "Unsupported bridge mode: $mode"
           }
           if ($mode -eq 'stage_upload' -and [bool]$request.allow_credit_spend) {
             throw "stage_upload cannot run with allow_credit_spend=true."
           }
 
           $runtimeRequestPath = "$env:RUNNER_TEMP\tripo-studio-request-runtime.json"
-          if ($mode -eq 'stage_upload') {
+          if ($mode -in @('stage_upload','generate')) {
             $expected = ([string]$request.upload_sha256).ToLowerInvariant()
             $resolved = $null
 
@@ -205,6 +205,7 @@ jobs:
           path: |
             ${{ runner.temp }}/tripo-studio-probe.json
             ${{ runner.temp }}/tripo-studio-after-upload.png
+            ${{ runner.temp }}/tripo-studio-after-generate.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
           if-no-files-found: warn

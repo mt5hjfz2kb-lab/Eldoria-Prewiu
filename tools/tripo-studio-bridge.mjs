@@ -1,6 +1,7 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 const requestPath = process.argv[2] || 'pipeline/tripo-studio-request.json';
 const outPath = process.argv[3] || 'tripo-studio-probe.json';
@@ -128,14 +129,18 @@ try {
     inspected_pages: inspected
   };
 
-  if (mode === 'stage_upload') {
-    if (request.allow_credit_spend === true) {
+  if (mode === 'stage_upload' || mode === 'generate') {
+    if (mode === 'stage_upload' && request.allow_credit_spend === true) {
       throw new Error('stage_upload refuses any request that allows credit spend.');
     }
 
     const uploadPath = path.resolve(String(request.upload_path || ''));
     if (!uploadPath || !fs.existsSync(uploadPath)) {
       throw new Error(`Upload source not found: ${uploadPath}`);
+    }
+    const sourceSha = crypto.createHash('sha256').update(fs.readFileSync(uploadPath)).digest('hex');
+    if (sourceSha !== request.upload_sha256 || fs.statSync(uploadPath).size !== Number(request.upload_size_bytes)) {
+      throw new Error('Tripo upload identity does not match the approved SHA/size.');
     }
 
     let uploadPage = null;
@@ -172,6 +177,7 @@ try {
 
     report.upload = {
       source_path: uploadPath,
+      source_sha256: sourceSha,
       source_bytes: fs.statSync(uploadPath).size,
       file_name: path.basename(uploadPath),
       set_input_files_succeeded: true,
@@ -181,7 +187,7 @@ try {
       credits_spent: false
     };
     report.post_upload_page = await inspectPage(uploadPage);
-    report.upload.visible_generate_button = report.post_upload_page.visible_button_sample.find(x => /^Generar\b/i.test(x)) || null;
+    report.upload.visible_generate_button = report.post_upload_page.visible_button_sample.find(x => /^Generar\s+\d+$/i.test(x)) || null;
     report.upload.visible_images = await uploadPage.locator('img').evaluateAll(images => images.map(img => ({
       alt: img.alt,
       width: img.naturalWidth,
@@ -191,7 +197,32 @@ try {
     const screenshotPath = path.join(path.dirname(outPath), 'tripo-studio-after-upload.png');
     await uploadPage.screenshot({ path: screenshotPath, fullPage: false });
     report.upload.screenshot_path = screenshotPath;
-    report.upload.left_staged_for_owner_approval = true;
+    report.upload.left_staged_for_owner_approval = mode === 'stage_upload';
+    if (mode === 'generate') {
+      const approvedCost = Number(request.authorized_credit_cost);
+      if (request.allow_credit_spend !== true || approvedCost !== 55 ||
+          request.approved_input_sha256 !== sourceSha) {
+        throw new Error('The generation approval does not match this image and 55-credit cost.');
+      }
+      const button = uploadPage.getByRole('button', { name: /^Generar\s+55$/i });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error('The approved 55-credit Generate button is not uniquely available.');
+      }
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', '.Valoria_Aserradero_AP2_v1_generate_attempt.json');
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
   } else if (mode !== 'probe') {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
@@ -205,6 +236,8 @@ try {
 
   if (mode === 'stage_upload') {
     console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
   }
 
   // Never close the owner's real Edge session.
