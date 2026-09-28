@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "request_id": "valoria-aserradero-ap2-v1-20260928",
+  "request_id": "valoria-aserradero-ap2-v1-yaw180-textured",
   "module_label": "Valoria_Aserradero_AP2_v1",
-  "unity_yaw_degrees": 0,
+  "unity_yaw_degrees": 180,
   "source": {
     "mode": "downloads_glb",
     "exact_name": "Valoria_Aserradero_AP2_v1.glb",

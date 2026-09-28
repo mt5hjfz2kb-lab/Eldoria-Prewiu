@@ -310,7 +310,7 @@ jobs:
             throw "Canonical Tripo Unity gate failed: $($process.ExitCode)"
           }
 
-          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','front-diagnostic.png','rear-diagnostic.png','left-diagnostic.png','right-diagnostic.png')) {
+          foreach ($name in @('strategic.png','city.png','detail.png','strategic-textured.png','city-textured.png','detail-textured.png','oblique.png','front-diagnostic.png','rear-diagnostic.png','left-diagnostic.png','right-diagnostic.png')) {
             $file = Join-Path $folder $name
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) {
               throw "Missing/empty canonical module image evidence: $name"

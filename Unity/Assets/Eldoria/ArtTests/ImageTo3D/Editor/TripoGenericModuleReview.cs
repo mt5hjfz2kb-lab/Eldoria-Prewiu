@@ -47,11 +47,15 @@ namespace Eldoria.EditorTools
             var camera = tuple.Item1;
             var module = tuple.Item2;
             var report = tuple.Item3;
-            ApplyDiagnosticClay(module);
             Directory.CreateDirectory(Output);
 
             var sizes = new[] { 19f, 12f, 9f };
             var names = new[] { "strategic", "city", "detail" };
+            for (int i = 0; i < sizes.Length; i++) {
+                camera.orthographicSize = sizes[i];
+                Save(camera, Output + "/" + names[i] + "-textured.png");
+            }
+            ApplyDiagnosticClay(module);
             report.captureCpuMilliseconds = new long[8];
             report.captureNonEmpty = new bool[8];
 
