@@ -9,10 +9,11 @@
       "geometry": "PASS",
       "source_pbr_diagnostic": "PASS",
       "source_pbr_run_id": 36493273686,
-      "integration_correction": "IMPLEMENTED",
+      "integration_correction": "IMPLEMENTED_PRESERVE_AUTHORED_PBR",
       "integration_rule": "preserve authored PBR via BenchmarkPiece",
       "official_camera_visual_recheck": "PENDING_RUNNER",
-      "verdict": "PARTIAL"
+      "verdict": "PARTIAL",
+      "visual_baseline_diagnosis": "SURFACE_FAIL_CONFIRMED_FROM_OFFICIAL_CAPTURES"
     },
     "B_cuartel": {
       "goal": "prove the same surface/lookdev logic transfers to a second dedicated building",
@@ -21,7 +22,8 @@
       "unity_full_gate": "PASS",
       "pbr_preservation": "IMPLEMENTED",
       "formula_scene_recheck": "PENDING_RUNNER",
-      "verdict": "PARTIAL"
+      "verdict": "PARTIAL",
+      "visual_baseline_diagnosis": "OVERBRIGHT_BASELINE_CONFIRMED_FROM_OFFICIAL_CAPTURES"
     },
     "C_hero_fragment": {
       "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
@@ -31,17 +33,37 @@
       "role": "HERO_VISUAL_LANDMARK_ONLY",
       "geometry": "FUNCTION_CERTIFIED",
       "traversal": "DOCUMENTED_INTERFACE_FAIL_NOT_REOPENED",
-      "surface": "PENDING_SEMANTIC_SURFACE_RESCUE",
+      "surface": "PBR_STONE_ROCK_PROTOTYPE_IMPLEMENTED_PENDING_RUNNER",
       "official_camera_visual": "PENDING",
       "verdict": "CANDIDATE_SELECTED",
-      "rule": "Hero visual validation may reuse this architecture+rock mass, but no result may claim the historical lower-entry-to-upper-exit route is repaired."
+      "rule": "Hero visual validation may reuse this architecture+rock mass, but no result may claim the historical lower-entry-to-upper-exit route is repaired.",
+      "prototype_script": "tools/valoria_hero_surface_prototype.py",
+      "material_families": [
+        "Eldoria Stone",
+        "Eldoria Rock"
+      ]
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
       "workflow": ".github/workflows/valoria-visual-formula.yml",
       "material_evidence": "IMPLEMENTED",
       "captures": "PENDING_RUNNER",
-      "verdict": "PARTIAL"
+      "verdict": "PARTIAL",
+      "lookdev": {
+        "status": "FIVE_PROFILE_COMPARISON_IMPLEMENTED_PENDING_RUNNER",
+        "candidate": "valoria-v1-candidate",
+        "views": [
+          "overview",
+          "sawmill",
+          "barracks"
+        ],
+        "objective_metrics": [
+          "mean_luminance",
+          "luminance_stddev",
+          "clipped_high_pct",
+          "clipped_low_pct"
+        ]
+      }
     }
   },
   "formula_can_be_marked_validated_when": [
@@ -49,5 +71,18 @@
     "Cuartel remains coherent under the same environment/material-family rules",
     "GateStreetRiseRock MV1 passes as a bounded hero VISUAL fragment under the same material-family/lookdev language; traversal remains out of scope and failed",
     "Integrated formula scene passes composition/surface/identity review"
-  ]
+  ],
+  "historical_rescue": {
+    "registry": "pipeline/historical-module-rescue.json",
+    "inventory_run_id": 36495456630,
+    "inventory": "PASS",
+    "runner_downloads_exact_sha_found": [
+      "TowerWallRock"
+    ],
+    "artifact_recovery": "IMPLEMENTED_FOR_CERTIFIED_HISTORICAL_FAMILIES",
+    "dedicated_surface_rescue": [
+      "RockTerrainSeamFiller"
+    ],
+    "rule": "reuse certified geometry before any paid regeneration"
+  }
 }
