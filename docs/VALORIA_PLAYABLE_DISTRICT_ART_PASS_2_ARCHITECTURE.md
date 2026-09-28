@@ -278,7 +278,23 @@ Status after first capture attempt:
 - capture artifact: **10994156195**;
 - visual review: **REJECTED** — the dedicated mesh shifted from pale/washed-out to an over-warm peach response, especially at zoom 9. Technical green did not satisfy the material gate.
 
-Bounded correction 2 is checkpoint `e0ef0d79241b6c167bb11e34694ef5ad57e8d509`: geometry/placement remain identical; material tint is returned toward neutral stone/timber and the broad workshop point light is reduced to a small local accent. New official captures are required before acceptance.
+Bounded correction 2 at `e0ef0d79241b6c167bb11e34694ef5ad57e8d509` removed the over-warm peach cast but capture review still found the mesh too pale. It was not accepted.
+
+Final bounded material checkpoint: `518465fce3d5f15d5773e590189449f3daedce52`.
+- run: **36477431927**;
+- EditMode: **PASS**;
+- PlayMode: **PASS**;
+- Windows build: **PASS**;
+- official Valoria 19/12/9 benchmark render: **PASS**;
+- official capture artifact: **10994851057**;
+- geometry/scale/position: unchanged from the certified dedicated Aserradero;
+- gameplay hotspot/collider/panel: unchanged and reconfirmed by PlayMode;
+- final material treatment: preserved imported texture, low-specular URP/Lit response, neutral darker integration tint, workshop light reduced to a tightly local accent;
+- human capture review: the building no longer reads as white/washed-out or globally peach-lit; timber/stone mass has materially better contrast while the wood-production silhouette remains readable at 19/12/9.
+
+**Aserradero final AP2 status: TECH PASS / INTERACTION PASS / MATERIAL-INTEGRATED VISUAL PASS.**
+
+This closes the Aserradero correction line. Do not regenerate or reopen its geometry/material unless a later whole-frame lighting pass creates a new demonstrated regression.
 
 ## Next action
 
