@@ -53,16 +53,52 @@ namespace Eldoria.Presentation
             if(EventSystem.current!=null&&EventSystem.current.IsPointerOverGameObject())return;
             Vector2 point=touch!=null&&touch.primaryTouch.press.isPressed
                 ?touch.primaryTouch.position.ReadValue():(mouse!=null?mouse.position.ReadValue():Vector2.zero);
+            var spot=ResolveHotspot(point);
+            if(spot!=null)Select(spot.Id);
+        }
+        WorldHotspot ResolveHotspot(Vector2 point)
+        {
+            if(Camera.main==null)return null;
             var ray=Camera.main.ScreenPointToRay(point);
             var hits=Physics.RaycastAll(ray,100f);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
             foreach(var hit in hits)
             {
                 var spot=hit.collider.GetComponent<WorldHotspot>();
-                if(spot==null)continue;
-                Select(spot.Id);
-                break;
+                if(spot!=null)return spot;
             }
+
+            // Fixed orthographic city camera: use the projected interaction footprint when
+            // decorative geometry occludes all physical hotspot colliders at the tap ray.
+            WorldHotspot best=null;
+            float bestDistance=float.MaxValue;
+            foreach(var candidate in FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
+            {
+                var collider=candidate.GetComponent<Collider>();
+                if(collider==null||!collider.enabled)continue;
+                var b=collider.bounds;
+                var corners=new[]{
+                    new Vector3(b.min.x,b.min.y,b.min.z),new Vector3(b.max.x,b.min.y,b.min.z),
+                    new Vector3(b.min.x,b.max.y,b.min.z),new Vector3(b.max.x,b.max.y,b.min.z),
+                    new Vector3(b.min.x,b.min.y,b.max.z),new Vector3(b.max.x,b.min.y,b.max.z),
+                    new Vector3(b.min.x,b.max.y,b.max.z),new Vector3(b.max.x,b.max.y,b.max.z)
+                };
+                float minX=float.MaxValue,minY=float.MaxValue,maxX=float.MinValue,maxY=float.MinValue;
+                bool inFront=false;
+                foreach(var corner in corners)
+                {
+                    var sp=Camera.main.WorldToScreenPoint(corner);
+                    if(sp.z<=0)continue;
+                    inFront=true;
+                    minX=Mathf.Min(minX,sp.x);minY=Mathf.Min(minY,sp.y);
+                    maxX=Mathf.Max(maxX,sp.x);maxY=Mathf.Max(maxY,sp.y);
+                }
+                if(!inFront||point.x<minX||point.x>maxX||point.y<minY||point.y>maxY)continue;
+                var centre=Camera.main.WorldToScreenPoint(b.center);
+                float d=(new Vector2(centre.x,centre.y)-point).sqrMagnitude;
+                if(d<bestDistance){bestDistance=d;best=candidate;}
+            }
+            return best;
         }
         void Select(string id)
         {
