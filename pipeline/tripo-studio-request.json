@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "mode": "watch",
+  "mode": "export_probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Read-only watch of the already paid Aserradero generation; no additional spend.",
   "request_id": "valoria-aserradero-ap2-v1-pre-spend",
@@ -25,7 +25,7 @@
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28:watch-approved-generation",
+  "probe_nonce": "2026-09-28:inspect-export-options",
   "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg",
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/a34672b9-0a50-496f-9fdb-4570deea16b3"
 }

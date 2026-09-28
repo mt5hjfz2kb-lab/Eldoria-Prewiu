@@ -223,6 +223,19 @@ try {
       await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
       fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
     }
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved Aserradero task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
   } else if (mode === 'watch') {
     const expectedTaskUrl = String(request.generated_task_url || '');
     if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
