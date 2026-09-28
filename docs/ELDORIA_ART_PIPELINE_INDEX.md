@@ -7,6 +7,13 @@ The purpose of this file is to prevent experimental code from being mistaken for
 
 ## ACTIVE — use by default
 
+### Visual convergence before production spend
+- Contract: `docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md`
+
+Purpose:
+prove composition, look-dev and hero-fragment language at the cheapest useful fidelity before paid generation or broad city dressing; classify whether a failure is composition, surface or identity so downstream defects do not trigger unnecessary regeneration.
+
+
 ### Tripo module production
 - Contract: `docs/TRIPO_MODULE_PIPELINE.md`
 - Kit inventory: `docs/VALORIA_MODULE_KIT.md`
