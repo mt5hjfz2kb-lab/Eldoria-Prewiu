@@ -64,10 +64,15 @@ Current genuine design gaps:
 4. **Bastion X finale feel** — graduation/ceremony pacing so it opens desire for the larger game.
 5. **XI+ progression** — separate post-prologue structure; do not repeat tutorial beats.
 
-## Aserradero AP2 Tripo checkpoint (pre-spend)
-- Exact chat JPEG is committed as `pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg` (699467 bytes; SHA-256 `4c00ab8b91c57c1872066a40448a1aba5a152fc940ae6bad494302e55f2aa0be`).
-- Safe `stage_upload` run **36459555616**, artifact **10986504233**: completed Tripo thumbnail and visible **Generar 55**. Generate not clicked; credits spent 0.
-- Await explicit owner approval for **55 credits** before generation. Then continue only Aserradero export -> canonical Blender/Unity gate -> integrated parcel/click/official zoom review. `docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_2_ARCHITECTURE.md` holds the detailed record.
+## Aserradero AP2 dedicated asset checkpoint
+- Owner authorized **55 Tripo credits** for the exact approved image; generation/export completed successfully.
+- Source GLB SHA-256: `874e3344d7c09da153fcfeaf012d3d542fdf4d55ca8eb198078646660c4ad37b`.
+- Canonical Tripo->Blender->Unity pipeline run **36461987549**, artifact **10987829034**: raw **1,796,171 tris** -> optimized **49,800 tris**, UV/normals/material present.
+- Dedicated GLB is integrated in real Valoria at `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb`; parcel/click/street-clear regression is covered by PlayMode.
+- Latest integrated checkpoint: `d633a5482a321a75cc4cf11a4a0e548e6cf8f1bd`.
+- Final Unity run **36472860786**: TECH PASS / INTERACTION PASS; full checks artifact **10992473730**, official captures **10991679902**.
+- Visual verdict: dedicated architecture/function read **PASS**, but integrated material remains too pale/washed out, so final visual **FAIL**. Do not regenerate geometry or spend more Tripo credits yet; fix Unity material/lighting integration first.
+- Detailed record: `docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_2_ARCHITECTURE.md`.
 
 ## Immediate production priority
 The next **Unity/art execution** remains Art Pass 2 inside the certified/frozen envelopes:
