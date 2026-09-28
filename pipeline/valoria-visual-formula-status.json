@@ -57,7 +57,24 @@
         "texture_size": 1024,
         "source": "tools/valoria_hero_surface_prototype.py"
       },
-      "promotion_guard": "Hero prototype remains isolated until official-camera visual review passes."
+      "promotion_guard": "Hero prototype remains isolated until official-camera visual review passes.",
+      "prototype_build": {
+        "source": "GateStreetRiseRock MV1 certified geometry",
+        "run_id": 36497039155,
+        "blender": "PASS",
+        "triangles": 49799,
+        "vertices": 56282,
+        "geometry_modified": false,
+        "uv0": true,
+        "materials": [
+          "Eldoria Stone",
+          "Eldoria Rock"
+        ],
+        "texture_sets": "BaseColor + Roughness + Normal, 1024 each",
+        "stone_faces": 25991,
+        "rock_faces": 23808,
+        "unity_visual_capture": "PENDING_RERUN"
+      }
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
@@ -99,7 +116,20 @@
     "dedicated_surface_rescue": [
       "RockTerrainSeamFiller"
     ],
-    "rule": "reuse certified geometry before any paid regeneration"
+    "rule": "reuse certified geometry before any paid regeneration",
+    "towerwall_surface_diagnostic": {
+      "run_id": 36496907687,
+      "verdict": "FLAT_SURFACE_CONFIRMED_RESCUE_CANDIDATE",
+      "triangles": 50000,
+      "vertices": 54760,
+      "uv0": true,
+      "normals": true,
+      "materials": 1,
+      "images": 0,
+      "textures": 0,
+      "metallic": 0,
+      "roughness": 0.5
+    }
   },
   "historical_reuse": {
     "seam_filler_rule": "RockTerrainSeamFiller rescue is isolated support-only and cannot alter production topology.",
