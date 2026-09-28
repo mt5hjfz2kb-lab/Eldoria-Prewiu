@@ -65,8 +65,9 @@ jobs:
           $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-Cold.xml"
           $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Cold.log"
           $sw=[Diagnostics.Stopwatch]::StartNew()
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -runTests -testPlatform EditMode -testResults $xml -logFile $log
-          $code=$LASTEXITCODE
+          $args=@('-batchmode','-nographics','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','EditMode','-testResults',$xml,'-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $code=$process.ExitCode
           $sw.Stop()
           $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
           "COLD_SECONDS=$seconds" | Out-File $env:GITHUB_ENV -Append
@@ -100,8 +101,9 @@ jobs:
           $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-Warm.xml"
           $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Warm.log"
           $sw=[Diagnostics.Stopwatch]::StartNew()
-          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -runTests -testPlatform EditMode -testResults $xml -logFile $log
-          $code=$LASTEXITCODE
+          $args=@('-batchmode','-nographics','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','EditMode','-testResults',$xml,'-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $code=$process.ExitCode
           $sw.Stop()
           $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
           "WARM_SECONDS=$seconds" | Out-File $env:GITHUB_ENV -Append
