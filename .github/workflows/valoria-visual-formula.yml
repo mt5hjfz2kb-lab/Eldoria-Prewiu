@@ -43,6 +43,8 @@ jobs:
           git --version
 
       - uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Verify Unity
         shell: powershell
