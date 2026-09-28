@@ -54,10 +54,14 @@ namespace Eldoria.Presentation
             Vector2 point=touch!=null&&touch.primaryTouch.press.isPressed
                 ?touch.primaryTouch.position.ReadValue():(mouse!=null?mouse.position.ReadValue():Vector2.zero);
             var ray=Camera.main.ScreenPointToRay(point);
-            if(Physics.Raycast(ray,out var hit,100))
+            var hits=Physics.RaycastAll(ray,100f);
+            System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+            foreach(var hit in hits)
             {
                 var spot=hit.collider.GetComponent<WorldHotspot>();
-                if(spot!=null)Select(spot.Id);
+                if(spot==null)continue;
+                Select(spot.Id);
+                break;
             }
         }
         void Select(string id)
