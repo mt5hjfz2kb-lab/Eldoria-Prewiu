@@ -8,7 +8,48 @@
       "saturation": "low",
       "roughness_direction": "high",
       "metallic_direction": "zero_or_near_zero",
-      "authoring_rule": "macro breakup first; avoid noisy microdetail that vanishes at gameplay camera"
+      "authoring_rule": "macro breakup first; avoid noisy microdetail that vanishes at gameplay camera",
+      "candidate_pbr": {
+        "status": "SURFACE_RESCUE_AND_HERO_PROTOTYPE_PENDING_VISUAL_VALIDATION",
+        "hero_texture_size": 1024,
+        "support_texture_size": 512,
+        "hero_basecolor_dark": [
+          0.18,
+          0.2,
+          0.195
+        ],
+        "hero_basecolor_light": [
+          0.33,
+          0.325,
+          0.295
+        ],
+        "hero_roughness_range": [
+          0.78,
+          0.95
+        ],
+        "support_basecolor_dark": [
+          0.22,
+          0.235,
+          0.225
+        ],
+        "support_basecolor_light": [
+          0.36,
+          0.355,
+          0.325
+        ],
+        "support_roughness_range": [
+          0.72,
+          0.94
+        ],
+        "metallic": 0,
+        "specular_ior_level": 0.24,
+        "hero_normal_map_strength": 0.56,
+        "support_normal_map_strength": 0.45,
+        "sources": [
+          "tools/valoria_hero_surface_prototype.py",
+          "tools/tripo_module_blender.py --surface-rescue-profile rock"
+        ]
+      }
     },
     "Eldoria Stone": {
       "role": "walls, stairs, structural masonry, bastion architecture",
@@ -16,7 +57,29 @@
       "saturation": "low neutral-to-warm",
       "roughness_direction": "medium_high",
       "metallic_direction": "zero",
-      "authoring_rule": "read joints/AO and form at zoom 12/9; do not rely on high-frequency texture"
+      "authoring_rule": "read joints/AO and form at zoom 12/9; do not rely on high-frequency texture",
+      "candidate_pbr": {
+        "status": "HERO_PROTOTYPE_PENDING_VISUAL_VALIDATION",
+        "texture_size": 1024,
+        "basecolor_dark": [
+          0.25,
+          0.245,
+          0.225
+        ],
+        "basecolor_light": [
+          0.43,
+          0.4,
+          0.355
+        ],
+        "roughness_range": [
+          0.7,
+          0.92
+        ],
+        "metallic": 0,
+        "specular_ior_level": 0.24,
+        "normal_map_strength": 0.48,
+        "source": "tools/valoria_hero_surface_prototype.py"
+      }
     },
     "Eldoria Timber": {
       "role": "beams, frames, doors, balconies, production/residential structure",
@@ -43,5 +106,5 @@
       "authoring_rule": "support circulation without becoming focal"
     }
   },
-  "rule": "Asset-specific materials may vary via masks, wear and accents, but should inherit these families rather than introduce unrelated shading responses."
+  "rule": "Asset-specific materials may vary via masks, wear and accents, but should inherit these families rather than introduce unrelated shading responses. Numeric candidate_pbr values are provisional until official-camera visual gates pass."
 }
