@@ -134,3 +134,13 @@ Never regenerate paid geometry to fix a confirmed SURFACE-only defect.
 - `.github/workflows/valoria-lookdev.yml`
 - `.github/workflows/aserradero-surface-diagnostic.yml`
 - `tools/tripo_module_blender.py`
+
+## Machine-readable production companions
+
+The visual formula is consumed together with:
+- `pipeline/visual-quality-profiles.json` — SUPPORT / PRIMARY / HERO asset roles;
+- `pipeline/valoria-material-families.json` — canonical Rock / Stone / Timber / Roof / Ground families;
+- `pipeline/mobile-visual-performance-gate.json` — mobile evidence required before performance-driven visual compromises;
+- `.github/workflows/valoria-visual-formula.yml` — canonical scene-pattern capture gate using real runtime Valoria.
+
+These files prevent future chats/tools from re-inventing quality levels, material logic or validation criteria.
