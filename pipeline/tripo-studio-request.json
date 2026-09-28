@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "generate_staged",
+  "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Same single owner-authorized 55-credit Cuartel generation. Runs 36485176380 and 36485297881 both failed at JS parse time before browser connection, so Generate has still been clicked zero times and credits spent remain zero. Do not restage. Click Generate once only.",
-  "request_id": "valoria-cuartel-ap2-v1-generate-staged-55-authorized",
+  "notes": "Watch only the single already-clicked owner-authorized Cuartel generation. No credit spend and no regeneration.",
+  "request_id": "valoria-cuartel-ap2-v1-watch-generated-task",
   "asset_name": "Valoria_Cuartel_AP2_v1",
   "function": "Dedicated compact medieval barracks / guardhouse",
   "parcel": {
@@ -21,12 +21,13 @@
   "upload_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "upload_size_bytes": 580151,
   "search_downloads_for_sha": false,
-  "allow_credit_spend": true,
-  "authorized_credit_cost": 55,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0,
   "approved_input_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-28:cuartel-ap2-generate-staged-55-authorized-clean-bridge",
+  "probe_nonce": "2026-09-28:cuartel-ap2-watch-single-generated-task",
   "prior_stage_run_id": 36484408137,
-  "prior_stage_artifact_id": 10998685373
+  "prior_stage_artifact_id": 10998685373,
+  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/6d102e13-3f8d-403c-936a-f4dba2eb81c0"
 }
