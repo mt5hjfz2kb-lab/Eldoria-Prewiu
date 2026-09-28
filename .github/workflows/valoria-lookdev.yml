@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: eldoria-valoria-lookdev
+  cancel-in-progress: true
+
 jobs:
   lookdev:
     if: vars.UNITY_RUNNER_READY == 'true'
