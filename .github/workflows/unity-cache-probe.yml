@@ -16,7 +16,9 @@ concurrency:
 
 jobs:
   cache-probe:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    # Experimental only: do not consume the single production runner on ordinary pushes.
+    # Run manually after the current Valoria visual-formula work is closed.
+    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'workflow_dispatch'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 35
     steps:
