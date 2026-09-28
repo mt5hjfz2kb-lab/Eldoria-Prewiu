@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "mode": "export_glb",
+  "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Read-only watch of the already paid Aserradero generation; no additional spend.",
-  "request_id": "valoria-aserradero-ap2-v1-pre-spend",
-  "asset_name": "Valoria_Aserradero_AP2_v1",
+  "notes": "No-spend safety probe after generalizing the Tripo Studio bridge; do not upload or generate.",
+  "request_id": "tripo-studio-bridge-generic-safety-probe-2026-09-28",
+  "asset_name": "TripoBridgeSafetyProbe",
   "function": "Dedicated medieval wood-production sawmill",
   "parcel": {
     "width": 5.1,
@@ -25,7 +25,6 @@
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "upload_size_bytes": 699467,
-  "probe_nonce": "2026-09-28:export-glb-dialog-state",
-  "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg",
-  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/a34672b9-0a50-496f-9fdb-4570deea16b3"
+  "probe_nonce": "2026-09-28:generic-bridge-no-spend-probe",
+  "upload_path": "pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg"
 }
