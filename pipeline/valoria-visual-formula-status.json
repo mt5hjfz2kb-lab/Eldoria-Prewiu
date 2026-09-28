@@ -24,6 +24,20 @@
           "Valoria_Aserradero_AP2_v1_rm"
         ],
         "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      },
+      "formula_gate": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "technical": "PASS",
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Aserradero_AP2_v1_basecolor",
+          "Valoria_Aserradero_AP2_v1_normal",
+          "Valoria_Aserradero_AP2_v1_rm"
+        ],
+        "pbr_preserved_in_unity": true,
+        "official_camera_visual": "FAIL_UNDER_BASELINE_LOOKDEV_TOO_BRIGHT",
+        "next": "LOOKDEV_ONLY_NO_GEOMETRY_REGENERATION"
       }
     },
     "B_cuartel": {
@@ -45,6 +59,20 @@
           "Valoria_Cuartel_AP2_v1_rm"
         ],
         "verdict": "PASS_PBR_PRESERVED_IN_UNITY"
+      },
+      "formula_gate": {
+        "run_id": 36498200151,
+        "artifact_id": 11004024446,
+        "technical": "PASS",
+        "shader": "Shader Graphs/glTF-pbrMetallicRoughness",
+        "textures": [
+          "Valoria_Cuartel_AP2_v1_basecolor",
+          "Valoria_Cuartel_AP2_v1_normal",
+          "Valoria_Cuartel_AP2_v1_rm"
+        ],
+        "pbr_preserved_in_unity": true,
+        "official_camera_visual": "FAIL_UNDER_BASELINE_LOOKDEV_TOO_BRIGHT",
+        "next": "LOOKDEV_ONLY_NO_GEOMETRY_REGENERATION"
       }
     },
     "C_hero_fragment": {
@@ -104,21 +132,7 @@
       "material_evidence": "IMPLEMENTED",
       "captures": "PASS_GENERATED_OFFICIAL_19_12_9_AND_MOBILE",
       "verdict": "TECH_PASS_VISUAL_LOOKDEV_PENDING",
-      "lookdev": {
-        "status": "FIVE_PROFILE_COMPARISON_IMPLEMENTED_PENDING_RUNNER",
-        "candidate": "valoria-v1-candidate",
-        "views": [
-          "overview",
-          "sawmill",
-          "barracks"
-        ],
-        "objective_metrics": [
-          "mean_luminance",
-          "luminance_stddev",
-          "clipped_high_pct",
-          "clipped_low_pct"
-        ]
-      },
+      "lookdev": "PENDING_VALID_5_PROFILE_RUN",
       "run_id": 36498200151,
       "artifact_id": 11004024446,
       "tech_gate": "PASS",
@@ -128,7 +142,14 @@
         "scene_triangles": 261180,
         "lights": 8
       },
-      "baseline_visual_verdict": "FAIL_OVERBRIGHT_DEDICATED_BUILDINGS_AND_WASHED_VALUE_SEPARATION"
+      "baseline_visual_verdict": "FAIL_OVERBRIGHT_DEDICATED_BUILDINGS_AND_WASHED_VALUE_SEPARATION",
+      "technical": "PASS",
+      "active_renderers": 521,
+      "unique_materials": 67,
+      "scene_triangles": 261180,
+      "lights": 8,
+      "pbr_evidence": "PASS_ASERRADERO_AND_CUARTEL",
+      "visual_baseline": "FAIL_TOO_WASHED_BRIGHT_DEDICATED_ASSETS"
     }
   },
   "formula_can_be_marked_validated_when": [
