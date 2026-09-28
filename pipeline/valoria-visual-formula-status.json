@@ -41,7 +41,23 @@
       "material_families": [
         "Eldoria Stone",
         "Eldoria Rock"
-      ]
+      ],
+      "surface_prototype_policy": {
+        "geometry_mutation": false,
+        "route_recertification": false,
+        "materials": [
+          "Eldoria Stone",
+          "Eldoria Rock"
+        ],
+        "pbr_maps": [
+          "basecolor",
+          "roughness",
+          "normal"
+        ],
+        "texture_size": 1024,
+        "source": "tools/valoria_hero_surface_prototype.py"
+      },
+      "promotion_guard": "Hero prototype remains isolated until official-camera visual review passes."
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
@@ -84,5 +100,10 @@
       "RockTerrainSeamFiller"
     ],
     "rule": "reuse certified geometry before any paid regeneration"
+  },
+  "historical_reuse": {
+    "seam_filler_rule": "RockTerrainSeamFiller rescue is isolated support-only and cannot alter production topology.",
+    "towerwall_rule": "TowerWallRock rescue may improve skyline/support identity but cannot define circulation.",
+    "no_paid_regeneration_before_reuse": true
   }
 }
