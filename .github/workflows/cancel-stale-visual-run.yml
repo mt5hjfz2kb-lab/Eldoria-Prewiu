@@ -1,10 +1,7 @@
 name: Cancel stale Eldoria visual run
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/cancel-stale-visual-run.yml'
+  workflow_dispatch:
 
 permissions:
   actions: write
