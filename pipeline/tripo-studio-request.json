@@ -2,8 +2,8 @@
   "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Stage deterministic isolated Cuartel AP2 reference only. Zero credit spend. Stop before Generate.",
-  "request_id": "valoria-cuartel-ap2-v1-pre-spend",
+  "notes": "Stage exact approved Cuartel AP2 reference only. Zero credit spend. Stop before Generate.",
+  "request_id": "valoria-cuartel-ap2-v1-approved-reference-pre-spend",
   "asset_name": "Valoria_Cuartel_AP2_v1",
   "function": "Dedicated compact medieval barracks / guardhouse",
   "parcel": {
@@ -16,15 +16,14 @@
     "principal_face": "south/front",
     "west_street_flank": "keep clear"
   },
-  "render_svg_path": "pipeline/art-inputs/Valoria_Cuartel_AP2_v1.svg",
-  "upload_file_name": "Valoria_Cuartel_AP2_v1.png",
-  "upload_sha256": "",
-  "upload_size_bytes": 0,
-  "search_downloads_for_sha": false,
+  "upload_file_name": "Valoria_Cuartel_AP2_v1.jpeg",
+  "upload_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
+  "upload_size_bytes": 580151,
+  "search_downloads_for_sha": true,
   "allow_credit_spend": false,
   "authorized_credit_cost": 0,
   "approved_input_sha256": "",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-28:cuartel-ap2-deterministic-stage"
+  "probe_nonce": "2026-09-28:cuartel-ap2-approved-exact-reference-stage"
 }
