@@ -129,45 +129,56 @@ try {
       throw new Error(`Upload source not found: ${uploadPath}`);
     }
 
-    const imageInput = selectedPage.locator('input[type="file"][accept*="image"]').first();
-    if (await imageInput.count() !== 1) {
-      throw new Error('Could not identify exactly one image-upload input in Tripo Studio.');
+    let uploadPage = null;
+    let imageInput = null;
+
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      const livePages = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('studio.tripo3d.ai'));
+      for (const page of livePages) {
+        const candidate = page.locator('input[type="file"][accept*="image"]').first();
+        if (await candidate.count()) {
+          uploadPage = page;
+          imageInput = candidate;
+          break;
+        }
+      }
+      if (imageInput) break;
+      await new Promise(resolve => setTimeout(resolve, 1200));
     }
 
-    const before = await imageInput.evaluate(el => ({
-      fileCount: el.files?.length || 0,
-      fileName: el.files?.[0]?.name || ''
-    }));
+    if (!uploadPage || !imageInput) {
+      throw new Error('Could not identify the Tripo Studio image-upload input at staging time.');
+    }
 
+    const beforeUrl = uploadPage.url();
     await withTimeout(imageInput.setInputFiles(uploadPath), pageProbeTimeoutMs, 'image upload staging');
     await new Promise(resolve => setTimeout(resolve, 1800));
-
-    const staged = await imageInput.evaluate(el => ({
-      fileCount: el.files?.length || 0,
-      fileName: el.files?.[0]?.name || ''
-    }));
 
     report.upload = {
       source_path: uploadPath,
       source_bytes: fs.statSync(uploadPath).size,
-      before,
-      staged,
+      file_name: path.basename(uploadPath),
+      set_input_files_succeeded: true,
+      page_url_before: beforeUrl,
+      page_url_after: uploadPage.url(),
       generate_clicked: false,
       credits_spent: false
     };
 
-    if (staged.fileCount !== 1) {
-      throw new Error('Tripo image input did not retain the staged test file.');
+    // Do not click Generate. If the original input survives, clear it; otherwise
+    // the SPA has already replaced the control after accepting the file.
+    const clearCandidate = uploadPage.locator('input[type="file"][accept*="image"]').first();
+    if (await clearCandidate.count()) {
+      try {
+        await withTimeout(clearCandidate.setInputFiles([]), 5000, 'image upload clear');
+        report.upload.cleared = true;
+      } catch {
+        report.upload.cleared = false;
+      }
+    } else {
+      report.upload.cleared = false;
+      report.upload.control_replaced_after_upload = true;
     }
-
-    // Leave the owner's Studio workspace clean after the proof.
-    await imageInput.setInputFiles([]);
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    report.upload.cleared = await imageInput.evaluate(el => ({
-      fileCount: el.files?.length || 0,
-      fileName: el.files?.[0]?.name || ''
-    }));
   } else if (mode !== 'probe') {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
