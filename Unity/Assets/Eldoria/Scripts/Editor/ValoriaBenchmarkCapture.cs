@@ -34,6 +34,12 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-sawmill-12.png",officialPosition+sawmillShift,officialTarget+sawmillShift,12f,1280,720);
             Save(camera,folder+"/valoria-sawmill-9.png",officialPosition+sawmillShift,officialTarget+sawmillShift,9f,1280,720);
 
+            // Same official isometric orientation, panned to the certified east Cuartel plot.
+            var barracksShift=new Vector3(7f,-1.55f,-9.8f);
+            Save(camera,folder+"/valoria-barracks-19.png",officialPosition+barracksShift,officialTarget+barracksShift,19f,1280,720);
+            Save(camera,folder+"/valoria-barracks-12.png",officialPosition+barracksShift,officialTarget+barracksShift,12f,1280,720);
+            Save(camera,folder+"/valoria-barracks-9.png",officialPosition+barracksShift,officialTarget+barracksShift,9f,1280,720);
+
             // Master-envelope proof: preserve the official orientation and translate camera+target
             // together to inspect the multi-viewport city edges.
             var leftShift=new Vector3(-12f,0,0);
