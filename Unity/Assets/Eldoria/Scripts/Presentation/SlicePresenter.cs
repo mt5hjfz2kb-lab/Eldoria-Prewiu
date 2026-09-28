@@ -23,6 +23,7 @@ namespace Eldoria.Presentation
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
         bool renderedScout, renderedEngendro, renderedIdle;
+        Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? OfficialCamera;
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
         {
@@ -49,7 +50,7 @@ namespace Eldoria.Presentation
             var touch=Touchscreen.current;
             bool tapped=mouse!=null&&mouse.leftButton.wasPressedThisFrame;
             if(touch!=null&&touch.primaryTouch.press.wasPressedThisFrame)tapped=true;
-            if(!tapped||Camera.main==null)return;
+            if(!tapped||OfficialCamera==null)return;
             if(EventSystem.current!=null&&EventSystem.current.IsPointerOverGameObject())return;
             Vector2 point=touch!=null&&touch.primaryTouch.press.isPressed
                 ?touch.primaryTouch.position.ReadValue():(mouse!=null?mouse.position.ReadValue():Vector2.zero);
@@ -58,7 +59,7 @@ namespace Eldoria.Presentation
         }
         WorldHotspot ResolveHotspot(Vector2 point)
         {
-            if(Camera.main==null)return null;
+            if(OfficialCamera==null)return null;
 
             // Valoria uses a fixed orthographic camera. Resolve the building whose projected
             // interaction footprint contains the tap before consulting depth, so stacked
@@ -69,7 +70,7 @@ namespace Eldoria.Presentation
                 if(projected!=null)return projected;
             }
 
-            var ray=Camera.main.ScreenPointToRay(point);
+            var ray=OfficialCamera.ScreenPointToRay(point);
             var hits=Physics.RaycastAll(ray,100f);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
             foreach(var hit in hits)
@@ -110,14 +111,14 @@ namespace Eldoria.Presentation
                 bool inFront=false;
                 foreach(var corner in corners)
                 {
-                    var sp=Camera.main.WorldToScreenPoint(corner);
+                    var sp=OfficialCamera.WorldToScreenPoint(corner);
                     if(sp.z<=0)continue;
                     inFront=true;
                     minX=Mathf.Min(minX,sp.x);minY=Mathf.Min(minY,sp.y);
                     maxX=Mathf.Max(maxX,sp.x);maxY=Mathf.Max(maxY,sp.y);
                 }
                 if(!inFront||point.x<minX||point.x>maxX||point.y<minY||point.y>maxY)continue;
-                var centre=Camera.main.WorldToScreenPoint(b.center);
+                var centre=OfficialCamera.WorldToScreenPoint(b.center);
                 float d=(new Vector2(centre.x,centre.y)-point).sqrMagnitude;
                 float area=Mathf.Max(1f,(maxX-minX)*(maxY-minY));
                 if(d<bestDistance*.92f || (Mathf.Abs(d-bestDistance)<64f && area<bestArea))
@@ -308,7 +309,7 @@ namespace Eldoria.Presentation
             var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
             buildingPanel.SetActive(false);
         }
-        void Zoom(float amount){if(Camera.main!=null)Camera.main.orthographicSize=Mathf.Clamp(Camera.main.orthographicSize+amount,9,19);}
+        void Zoom(float amount){if(OfficialCamera!=null)OfficialCamera.orthographicSize=Mathf.Clamp(OfficialCamera.orthographicSize+amount,9,19);}
         void UpdateSafeArea()
         {
             lastWidth=Screen.width;lastHeight=Screen.height;
