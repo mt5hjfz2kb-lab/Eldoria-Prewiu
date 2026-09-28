@@ -1,5 +1,17 @@
 # Eldoria — SESSION HANDOFF
 
+## 2026-09-28 — Valoria Master Envelope + Camera Gate v1 CERTIFIED
+
+- Certification HEAD: `c8135a8c162e7849d852472d67e2492cd8a88af4`.
+- Unity Actions run **36432979557**: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, Valoria benchmark capture PASS.
+- Capture artifact **10974741738** contains home 19/12/9 plus west/east/future pan views and a 390×844 mobile view; manual structural review completed.
+- The certified Playable District Skeleton remains the kernel. New graybox reservations prove west growth, east growth, upper civic/government space, late-game/future-system space and finished terrain aprons without moving the core.
+- Runtime city camera is now fixed authored isometric orientation + zoom 9..19 + bounded panning + progression-aware bounds + recenter.
+- Tap vs drag is separated; real Aserradero/Cuartel/Bastion hotspot selection remains valid after camera translation.
+- Verdicts: **TECH PASS / CAMERA-INTERACTION PASS (prototype) / MASTER ENVELOPE PASS (structural) / VISUAL PASS for graybox readability only**.
+- Final art quality, exact final dimensions, final Bastion cap and late-game building list are not certified here.
+- Broad production-art dressing may proceed now, but it must preserve the kernel, expansion reservations and multi-viewport camera model. See `docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md`.
+
 ## 2026-09-28 — Valoria long-term master planning v1 CLOSED
 
 - The certified **Valoria Playable District Skeleton v1** is now explicitly the **kernel** of the long-term city, not the full city footprint.
