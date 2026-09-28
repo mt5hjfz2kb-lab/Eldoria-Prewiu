@@ -1,0 +1,22 @@
+name: Cancel stale Eldoria visual run
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cancel-stale-visual-run.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel-stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel superseded LookDev run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Cancelling superseded run 36496074137 if still active"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/36496074137/cancel" || true
