@@ -82,18 +82,34 @@ Supported source modes:
 - `tripo_single_image`: generate remotely from `source.input_path`.
 - `tripo_multiview`: generate remotely from `source.input_paths` containing 2–4 images.
 
-For remote Tripo modes, paths may be absolute paths already present on the Windows runner or repository-relative paths checked out by Actions. Recommended defaults are `source.tripo_model = "tripo-p2"` and `source.face_limit = 50000` for the current modular gate experiment. P2 is still a Preview model, so visual evidence remains mandatory and the Blender/Unity gates are not bypassed.
+For remote Tripo modes, paths may be absolute paths already present on the Windows runner or repository-relative paths checked out by Actions.
+
+Remote paid generation has **no implicit model default**. The request must explicitly declare:
+- `source.tripo_model` — chosen for the asset role, never inferred by the workflow;
+- `credit_authorization.approved = true`;
+- `credit_authorization.authorized_credit_cost` — the exact owner-authorized spend for this request;
+- for `tripo_single_image`, `source.input_sha256`;
+- for `tripo_multiview`, one SHA-256 in `source.input_sha256` for every input path.
+
+H3.1 and P-series are not interchangeable defaults: H3.1 is the current flagship fidelity route; P2 is a low-poly Preview route up to the game-oriented face range. Choose intentionally and retain the same Blender/Unity evidence gates.
 
 Example remote request source:
 
 ```json
+"credit_authorization": {
+  "approved": true,
+  "authorized_credit_cost": 40
+},
 "source": {
   "mode": "tripo_single_image",
   "input_path": "pipeline/art-inputs/example/front.png",
-  "tripo_model": "tripo-p2",
+  "input_sha256": "<exact-approved-image-sha256>",
+  "tripo_model": "tripo-v3.1",
   "face_limit": 50000
 }
 ```
+
+The numeric example is illustrative only; it is not standing authorization for any generation. The request must be tied to the owner's current explicit approval.
 
 The Tripo CLI result, task id, credits consumed, generated source SHA and source bytes are recorded in the workflow artifact.
 
