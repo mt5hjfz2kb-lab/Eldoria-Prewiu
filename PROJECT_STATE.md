@@ -3,6 +3,13 @@ Updated: 2026-09-28
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
+## Valoria master envelope / mobile pan implementation — 2026-09-28
+- The long-term master-envelope graybox is implemented around the certified Playable District Skeleton kernel with west/east growth reservations, upper civic/government reservation, future-system space and authored terrain aprons.
+- Valoria camera interaction now supports fixed-orientation bounded pan, progression-aware bounds and recenter while keeping orthographic zoom 9..19.
+- Runtime tap-vs-drag separation prevents a pan release from triggering a building; Aserradero, Cuartel and Bastion remain real hotspots after camera translation.
+- Unity run **36432979557** on `c8135a8c162e7849d852472d67e2492cd8a88af4` passed preflight, EditMode, PlayMode, Windows build and expansion/mobile captures. Artifact: **10974741738**.
+- Structural/camera gate is green; final-art quality remains pending production dressing. See `docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md`.
+
 ## Valoria long-term city scope — 2026-09-28
 - The certified **Valoria Playable District Skeleton v1** is the structural kernel of the city, not the full production footprint.
 - Valoria is now planned as one persistent city that expands beyond the current Bastion I–X prologue toward the present long-range planning target of roughly **Bastion 25–35** without rebuilding the original terrain/circulation core.
