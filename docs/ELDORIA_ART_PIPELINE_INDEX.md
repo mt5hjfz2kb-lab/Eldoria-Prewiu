@@ -1,7 +1,7 @@
 # Eldoria — Art Production Pipeline Index
 
 Status: active organizational map.  
-Updated: 2026-09-27.
+Updated: 2026-09-28.
 
 The purpose of this file is to prevent experimental code from being mistaken for the current production route.
 
@@ -29,7 +29,20 @@ Remote CLI source modes are handled inside the same canonical workflow; do not c
 - Isolated six-family review: `.github/workflows/micro-valoria-2-gate.yml` + `MicroValoria2Review.cs`
 
 Purpose:
-prove that certified families compose into a coherent district before production Valoria is touched.
+historical/diagnostic composition evidence for certified families. After the 2026-09-28 direction change, Micro-Valoria no longer defines production city topology; use it only to judge whether a specific reusable art fragment composes cleanly.
+
+
+### Valoria playable district integration
+- Current reference: `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`
+- Production topology: `Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs`
+- Interaction/UI integration: `Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs`
+- PlayMode gate: `Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs`
+- Unity workflow: `.github/workflows/unity-slice.yml`
+
+Purpose:
+build Valoria bottom-up from functional layers (terrain -> L0 -> circulation -> vertical transition -> L1 -> plots/supports -> buildings -> art) and validate it from the fixed official camera with real gameplay clicks.
+
+This is now the **production-direction reference for city topology**. The six certified Tripo families remain reusable art/reference material; they must not be treated as a required topology graph.
 
 ## SUPPORT — valid infrastructure, not the primary entry point
 
