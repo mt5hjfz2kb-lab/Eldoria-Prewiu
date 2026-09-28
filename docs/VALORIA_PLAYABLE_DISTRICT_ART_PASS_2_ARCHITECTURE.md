@@ -183,3 +183,11 @@ Zoom 19 must gain landmark silhouette; 12 must show tower/roof hierarchy and mon
 ## Next action
 
 Prepare only **Valoria_Aserradero_AP2_v1** first. Generate an isolated 3/4 south/front reference on a neutral background, then use the existing safe Tripo Studio bridge in `stage_upload` mode to reach the pre-spend state. The bridge must keep `allow_credit_spend=false` and must not click Generate. Stop at the credit boundary for explicit owner authorization.
+
+## Aserradero Tripo pre-spend stage (2026-09-28)
+
+- Exact owner-provided JPEG: `pipeline/art-inputs/Valoria_Aserradero_AP2_v1.jpeg`, 699467 bytes, 1254 × 1254, SHA-256 `4c00ab8b91c57c1872066a40448a1aba5a152fc940ae6bad494302e55f2aa0be`. Its bytes match the chat attachment.
+- Safe bridge run `36459555616` at `9346f7c38d97118825729a734ecaf350189b5363`: runner SHA/size verified; Tripo Studio accepted the image and displayed its completed thumbnail. Artifact `10986504233` contains the post-upload screenshot and JSON report.
+- Selected Studio setting: **Modelo HD / H3.1 - Máx. calidad** with **Generar en Partes off**, **Textura 8K off**, **Solo para compartir**. Visible button: **Generar 55** (55 credits).
+- `Generate` was not clicked; this run spent **0 credits**. Input remains staged in the owner's browser for approval. Generation/export and Blender/Unity evaluation are pending explicit owner authorization for credit spend.
+- A staged image proves the safe UI bridge, not the generation/export or complete Tripo-to-Unity pipeline. Do not infer art acceptance from this checkpoint.
