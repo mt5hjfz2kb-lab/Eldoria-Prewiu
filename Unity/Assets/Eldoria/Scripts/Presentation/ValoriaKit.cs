@@ -383,32 +383,11 @@ namespace Eldoria.Presentation
         public static void SawmillArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
             // Keep the certified plot/click geometry independent from this visual asset.
-            var dedicated=BenchmarkPiece(name+" · dedicated sawmill",
+            var dedicated=BenchmarkPieceModulated(name+" · dedicated sawmill",
                 LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
-                3.50f,3.80f,Quaternion.Euler(0,180f,0));
+                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.22f,.20f,.18f,1f));
             if(dedicated!=null)
             {
-                // The Tripo albedo already contains baked work-surface shading. Valoria's
-                // strong dusk lights otherwise clip that texture to pale white.
-                var unlit=Shader.Find("Universal Render Pipeline/Unlit");
-                if(unlit!=null)
-                    foreach(var renderer in dedicated.GetComponentsInChildren<Renderer>())
-                    {
-                        var slots=renderer.sharedMaterials;
-                        for(int i=0;i<slots.Length;i++)
-                        {
-                            var source=slots[i];
-                            if(source==null)continue;
-                            var baseMap=source.HasProperty("_BaseMap")?source.GetTexture("_BaseMap"):
-                                source.HasProperty("_MainTex")?source.GetTexture("_MainTex"):null;
-                            if(baseMap==null)continue;
-                            var material=new Material(unlit){name="Valoria sawmill baked albedo · "+source.name};
-                            material.SetTexture("_BaseMap",baseMap);
-                            material.SetColor("_BaseColor",new Color(.82f,.82f,.82f,1f));
-                            slots[i]=material;
-                        }
-                        renderer.sharedMaterials=slots;
-                    }
                 if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
                     new Color(.96f,.53f,.22f),.88f,2.8f);
                 return;
