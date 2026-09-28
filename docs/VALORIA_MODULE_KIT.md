@@ -195,3 +195,9 @@ Target:
 - still isolated from production `Valoria.unity`.
 
 Only after that composition passes should the project move into final material language, texture consolidation, LOD/instancing and mobile budget work.
+
+## Interface review v1 — 2026-09-28 supersedes the stale milestone above
+
+All six existing families remain **FUNCTION CERTIFIED** on their dedicated gates. The isolated, reproducible `VALORIA MODULE INTERFACE STANDARD v1` study added named socket candidates and oriented Gate/Street/Terrace consistently without altering any mesh surface. A ten-instance Unity review passed mesh/UV/normals/material/collider/raycast/nonempty-capture checks but failed the **INTERFACE** and **VISUAL / URBAN** gates. **Zero families are INTERFACE CERTIFIED.** A socket center can match to less than 0.001 unit while the floor width, clearance and adjacent rock join remain invalid.
+
+The current art milestone is **physical interface validation of the six existing families**, not addition of a seventh family or expansion of the existing diorama. Measure and clear the Gate→Street→Terrace continuous walking envelope, verify the residential frontage landing, and trim/overlap the sacrificial rock shoulders so the housing and seam filler belong to one hillside. Preserve the original fused architecture and its textures. `docs/VALORIA_MODULE_INTERFACE_STANDARD_v1.md` states the proposed thresholds; `docs/VALORIA_MODULE_INTERFACE_V1_GATE.md` records the six-family audit, before/after, official captures, and failure. The original dedicated family gates remain the only function certification; `_InterfaceV1.glb` files are review candidates, not approved production prefabs.
