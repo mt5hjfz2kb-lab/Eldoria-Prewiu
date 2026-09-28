@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "request_id": "valoria-aserradero-ap2-v1-yaw180-textured",
+  "request_id": "valoria-aserradero-ap2-v1-mobile-textures",
   "module_label": "Valoria_Aserradero_AP2_v1",
   "unity_yaw_degrees": 180,
   "source": {

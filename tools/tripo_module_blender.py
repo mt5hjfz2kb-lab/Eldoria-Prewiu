@@ -68,6 +68,20 @@ def ensure_materials_and_uvs():
             bpy.ops.object.mode_set(mode="OBJECT")
             o.select_set(False)
 
+def optimize_images():
+    resized = []
+    for image in bpy.data.images:
+        if image.source != "FILE" or image.size[0] <= 0 or image.size[1] <= 0:
+            continue
+        limit = 2048 if "basecolor" in image.name.lower() else 1024
+        before = tuple(image.size)
+        factor = min(1.0, limit / max(before))
+        if factor < 1.0:
+            image.scale(max(1, round(before[0] * factor)), max(1, round(before[1] * factor)))
+            image.pack()
+        resized.append({"name": image.name, "before": before, "after": tuple(image.size)})
+    return resized
+
 def apply_decimation_once(target):
     objs = mesh_objects()
     current = sum(tri_count(o) for o in objs)
@@ -115,6 +129,7 @@ def main():
         raise RuntimeError(f"Optimized triangle gate failed: {optimized['triangles']} not in {MIN_TRIS}-{MAX_TRIS}")
     if not optimized["uv_present_all_meshes"]:
         raise RuntimeError("Optimized GLB is missing UV0 on at least one mesh")
+    resized_images = optimize_images()
     os.makedirs(os.path.dirname(a.output), exist_ok=True)
     bpy.ops.export_scene.gltf(
         filepath=a.output,
@@ -128,6 +143,7 @@ def main():
         "accepted_range": [MIN_TRIS, MAX_TRIS],
         "raw": raw,
         "optimized": optimized,
+        "resized_images": resized_images,
         "input_bytes": os.path.getsize(a.input),
         "output_bytes": os.path.getsize(a.output),
     }
