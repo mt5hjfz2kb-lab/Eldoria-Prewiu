@@ -207,3 +207,12 @@ The current art milestone is **physical interface validation of the six existing
 The focused Gate→Street→Terrace Unity control [run 36395383244](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36395383244) (artifact 10957743662) confirmed a physical stop at Gate's upper outlet. The candidate upward surface is ~1.65 world units at the socket (not verified obstacle-free) and narrows/disappears against raised architecture; Unity sees 1.113 m then 3.566 m of vertical discrepancy a short distance beyond. Real zoom-9 and oblique images do not show a traversable connection or common rock base. **TECH PASS for the no-cut isolated control; INTERFACE FAIL; VISUAL FAIL.** No IF1 geometry variants were issued, because a 1.6-wide cut here would remove substantial upper architecture or require an added support floor; presenting an unchanged copy as a repaired asset would be misleading. Residential was not attempted. All six retain only `FUNCTION CERTIFIED` status. Exact measurements and the before/after table: `docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md`.
 
 The next production-design rule is to author a genuinely open high-plaza exit with separated editable floor, parapet, building and sacrificial rock regions **in the existing Gate functional role**. Do not claim the present generation is a modular urban kit or resume Micro-Valoria 2 until the first short-chain corridor passes width, height, physical floor and visual support checks. No new family is authorized by this result.
+
+## 2026-09-28 production topology rule
+
+The six certified families in this kit remain valid **art/reference families**, but they no longer define Valoria's production topology.
+
+Production city construction now follows the bottom-up playable district path documented in `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`:
+terrain/base -> Planta 0 -> circulation -> vertical transition -> Planta 1 -> plots/supports -> buildings -> props/detail.
+
+Use these certified families only when an existing fragment fits that already-approved topology. Do not force the city route, floors or parcel layout to match a family mesh, and do not resume whole-diorama fusion as the default strategy.
