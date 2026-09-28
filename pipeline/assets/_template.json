@@ -45,5 +45,20 @@
     "source_commit": "",
     "workflow_run_id": 0,
     "artifact_id": 0
+  },
+  "surface": {
+    "status": "PENDING",
+    "material_family": "",
+    "authoring_tool": "blender",
+    "authoring_tool_version": "",
+    "source_textures": [],
+    "inferred_texture_roles": [],
+    "bake": {
+      "enabled": false,
+      "maps": []
+    },
+    "unity_material_profile": "",
+    "lookdev_profile": "",
+    "verdict": "PENDING"
   }
 }
