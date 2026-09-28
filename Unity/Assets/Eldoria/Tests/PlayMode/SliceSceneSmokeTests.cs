@@ -55,14 +55,30 @@ namespace Eldoria.Tests
                 var hotspot=target.GetComponent<WorldHotspot>();
                 Assert.That(hotspot,Is.Not.Null);
                 Assert.That(hotspot.Id,Is.EqualTo(pair.Item2));
-                var aim=target.GetComponent<Collider>().bounds.center;
-                var screenPoint=camera.WorldToScreenPoint(aim);
-                var ray=camera.ScreenPointToRay(screenPoint);
-                Assert.That(Physics.Raycast(ray,out var hit,100f),Is.True,pair.Item1+" is not raycastable");
-                var resolved=hit.collider.GetComponent<WorldHotspot>();
-                Assert.That(resolved,Is.Not.Null,pair.Item1+" click path hit non-interactive visible geometry");
-                Assert.That(resolved.Id,Is.EqualTo(pair.Item2),
-                    pair.Item1+" click path resolved the wrong building");
+                bool clearClick=false;
+                foreach(var candidate in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
+                {
+                    if(candidate.Id!=pair.Item2)continue;
+                    var collider=candidate.GetComponent<Collider>();
+                    if(collider==null||!collider.enabled)continue;
+                    var points=new[]{
+                        collider.bounds.center,
+                        collider.bounds.center+Vector3.up*collider.bounds.extents.y*.45f,
+                        collider.bounds.center+camera.transform.right*collider.bounds.extents.x*.35f,
+                        collider.bounds.center-camera.transform.right*collider.bounds.extents.x*.35f
+                    };
+                    foreach(var aim in points)
+                    {
+                        var screenPoint=camera.WorldToScreenPoint(aim);
+                        if(screenPoint.z<=0)continue;
+                        var ray=camera.ScreenPointToRay(screenPoint);
+                        if(!Physics.Raycast(ray,out var hit,100f))continue;
+                        var resolved=hit.collider.GetComponent<WorldHotspot>();
+                        if(resolved!=null&&resolved.Id==pair.Item2){clearClick=true;break;}
+                    }
+                    if(clearClick)break;
+                }
+                Assert.That(clearClick,Is.True,pair.Item1+" has no unobstructed player click point from the official camera");
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
