@@ -2,15 +2,23 @@ name: Unity persistent import-cache probe
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unity-cache-probe.yml'
 
 permissions:
   contents: read
+
+concurrency:
+  group: eldoria-unity-cache-probe
+  cancel-in-progress: true
 
 jobs:
   cache-probe:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -22,67 +30,89 @@ jobs:
             "$env:GITHUB_WORKSPACE\Unity\Packages\manifest.json",
             "$env:GITHUB_WORKSPACE\Unity\Packages\packages-lock.json"
           )
-          $sha = [System.Security.Cryptography.SHA256]::Create()
-          $bytes = New-Object System.Collections.Generic.List[byte]
+          $joined = ''
           foreach ($path in $inputs) {
-            if (Test-Path $path) { $bytes.AddRange([IO.File]::ReadAllBytes($path)) }
+            if (Test-Path $path) { $joined += ((Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()) + '|' }
           }
-          $hash = ([BitConverter]::ToString($sha.ComputeHash($bytes.ToArray()))).Replace('-','').ToLowerInvariant()
+          $bytes = [Text.Encoding]::UTF8.GetBytes($joined)
+          $sha = [System.Security.Cryptography.SHA256]::Create()
+          $hash = ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()
           "ELDORIA_CACHE_KEY=$hash" | Out-File $env:GITHUB_ENV -Append
           Write-Host "CACHE_KEY=$hash"
 
-      - name: Restore persistent Library snapshot
-        shell: powershell
-        run: |
-          $root = Join-Path $env:USERPROFILE ".eldoria-unity-library-cache"
-          $cache = Join-Path $root $env:ELDORIA_CACHE_KEY
-          $projectLibrary = "$env:GITHUB_WORKSPACE\Unity\Library"
-          New-Item -ItemType Directory -Force $root | Out-Null
-          if (Test-Path $cache) {
-            Write-Host "WARM_CACHE=true"
-            if (Test-Path $projectLibrary) { Remove-Item $projectLibrary -Recurse -Force }
-            Copy-Item $cache $projectLibrary -Recurse -Force
-          } else { Write-Host "WARM_CACHE=false" }
-
-      - name: Timed EditMode probe
+      - name: Cold EditMode baseline
         shell: powershell
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
-          $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-EditMode.xml"
-          $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-EditMode.log"
+          $library="$env:GITHUB_WORKSPACE\Unity\Library"
+          Remove-Item $library -Recurse -Force -ErrorAction SilentlyContinue
+          $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-Cold.xml"
+          $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Cold.log"
           $sw=[Diagnostics.Stopwatch]::StartNew()
           & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -runTests -testPlatform EditMode -testResults $xml -logFile $log
           $code=$LASTEXITCODE
           $sw.Stop()
-          "EDITMODE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,2))" | Out-File $env:GITHUB_ENV -Append
-          Write-Host "EDITMODE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,2))"
-          if ($code -ne 0) { if(Test-Path $log){Get-Content $log -Tail 160}; throw "EditMode failed: $code" }
+          $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
+          "COLD_SECONDS=$seconds" | Out-File $env:GITHUB_ENV -Append
+          Write-Host "COLD_EDITMODE_SECONDS=$seconds"
+          if ($code -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Cold EditMode failed: $code" }
 
-      - name: Save persistent Library snapshot
-        if: success()
+      - name: Snapshot cold-created Library
         shell: powershell
         run: |
-          $root = Join-Path $env:USERPROFILE ".eldoria-unity-library-cache"
-          $cache = Join-Path $root $env:ELDORIA_CACHE_KEY
-          $projectLibrary = "$env:GITHUB_WORKSPACE\Unity\Library"
-          if (-not (Test-Path $projectLibrary)) { throw "Unity Library missing after probe" }
+          $root=Join-Path $env:USERPROFILE '.eldoria-unity-library-cache'
+          $cache=Join-Path $root $env:ELDORIA_CACHE_KEY
+          $library="$env:GITHUB_WORKSPACE\Unity\Library"
+          New-Item -ItemType Directory -Force $root | Out-Null
+          if (-not (Test-Path $library)) { throw 'Unity Library missing after cold run' }
           $tmp="$cache.tmp"
           Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item $projectLibrary $tmp -Recurse -Force
+          Copy-Item $library $tmp -Recurse -Force
           Remove-Item $cache -Recurse -Force -ErrorAction SilentlyContinue
           Move-Item $tmp $cache
           Write-Host "CACHE_SAVED=$cache"
 
-      - name: Write timing summary
+      - name: Warm EditMode from isolated persistent cache
+        shell: powershell
+        run: |
+          $root=Join-Path $env:USERPROFILE '.eldoria-unity-library-cache'
+          $cache=Join-Path $root $env:ELDORIA_CACHE_KEY
+          $library="$env:GITHUB_WORKSPACE\Unity\Library"
+          if (-not (Test-Path $cache)) { throw 'Persistent cache snapshot missing' }
+          Remove-Item $library -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item $cache $library -Recurse -Force
+          $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-Warm.xml"
+          $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-Warm.log"
+          $sw=[Diagnostics.Stopwatch]::StartNew()
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -runTests -testPlatform EditMode -testResults $xml -logFile $log
+          $code=$LASTEXITCODE
+          $sw.Stop()
+          $seconds=[math]::Round($sw.Elapsed.TotalSeconds,2)
+          "WARM_SECONDS=$seconds" | Out-File $env:GITHUB_ENV -Append
+          Write-Host "WARM_EDITMODE_SECONDS=$seconds"
+          if ($code -ne 0) { if(Test-Path $log){Get-Content $log -Tail 180}; throw "Warm EditMode failed: $code" }
+
+      - name: Summarize cache result
         if: always()
         shell: powershell
         run: |
+          $cold=[double]$env:COLD_SECONDS
+          $warm=[double]$env:WARM_SECONDS
+          $saved=0
+          $pct=0
+          if ($cold -gt 0 -and $warm -gt 0) {
+            $saved=[math]::Round($cold-$warm,2)
+            $pct=[math]::Round((($cold-$warm)/$cold)*100,1)
+          }
           @"
-          ## Unity import-cache probe
-          - Key: `$env:ELDORIA_CACHE_KEY`
-          - EditMode elapsed: **$env:EDITMODE_SECONDS s**
-          - Runner: `$env:RUNNER_NAME`
+          ## Unity persistent Library probe
+          - Cache key: `$env:ELDORIA_CACHE_KEY`
+          - Cold EditMode: **$env:COLD_SECONDS s**
+          - Warm EditMode: **$env:WARM_SECONDS s**
+          - Saved: **$saved s ($pct%)**
           - Commit: `${{ github.sha }}`
+          
+          This probe does not alter canonical Unity CI. Promote caching only after deterministic cold/warm evidence is reviewed.
           "@ | Add-Content $env:GITHUB_STEP_SUMMARY
 
       - uses: actions/upload-artifact@v4
@@ -90,7 +120,9 @@ jobs:
         with:
           name: unity-cache-probe-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/Eldoria-CacheProbe-EditMode.xml
-            ${{ runner.temp }}/Eldoria-CacheProbe-EditMode.log
+            ${{ runner.temp }}/Eldoria-CacheProbe-Cold.xml
+            ${{ runner.temp }}/Eldoria-CacheProbe-Cold.log
+            ${{ runner.temp }}/Eldoria-CacheProbe-Warm.xml
+            ${{ runner.temp }}/Eldoria-CacheProbe-Warm.log
           if-no-files-found: warn
           retention-days: 7
