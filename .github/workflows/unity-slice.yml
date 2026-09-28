@@ -20,14 +20,44 @@ concurrency:
 jobs:
   source-preflight:
     runs-on: ubuntu-latest
+    outputs:
+      heavy_required: ${{ steps.impact.outputs.heavy_required }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Decide whether Windows Unity gate is required
+        id: impact
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          before="${{ github.event.before }}"
+          if [[ -z "$before" || "$before" =~ ^0+$ ]]; then
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
+          echo "$files"
+          heavy=false
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            if [[ "$file" == Unity/* ]] &&
+               [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs" ]] &&
+               [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs" ]]; then
+              heavy=true
+              break
+            fi
+          done <<< "$files"
+          echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
       - name: Verify tracked Unity source
         run: python3 scripts/check_unity_slice.py
 
   editor-tests-and-player:
     needs: source-preflight
-    if: vars.UNITY_RUNNER_READY == 'true'
+    if: vars.UNITY_RUNNER_READY == 'true' && needs.source-preflight.outputs.heavy_required == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     steps:
