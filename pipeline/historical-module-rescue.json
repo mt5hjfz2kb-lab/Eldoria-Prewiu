@@ -125,13 +125,31 @@
         "stronger distant silhouette"
       ],
       "hard_limit": "overuse makes Valoria fortress-only; no circulation role",
-      "next_gate": "Surface v1 + sparse skyline placement test",
+      "next_gate": "Surface v1 support prototype + sparse skyline placement test",
       "recovery_source": {
         "run_id": null,
         "artifact_id": null
       },
       "surface_evidence": {
-        "status": "PENDING_DIAGNOSTIC"
+        "status": "FLAT_MATERIAL_NO_TEXTURES",
+        "diagnostic_run_id": 36496907687,
+        "artifact_id": 11003948935,
+        "vertices": 54760,
+        "triangles": 50000,
+        "materials": 1,
+        "embedded_images": 0,
+        "textures": 0,
+        "base_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "metallic_factor": 0,
+        "roughness_factor": 0.5,
+        "uv_preserved": true,
+        "normals_preserved": true,
+        "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
       }
     },
     {
