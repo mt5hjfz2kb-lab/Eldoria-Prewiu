@@ -1,129 +1,123 @@
-# Eldoria — Decisions that must survive chat changes
+# Eldoria — Canonical design decisions
 
-## MVP course correction — 2026-09-20
-- Stop expanding breadth after the current Arc I technical blockers are closed. Bastion X is a scaffold/ceiling, not a reason to add Bastion XI or more systems.
-- MVP success is not system count. It must prove a compact desire loop that makes the player want to continue.
-- Canonical validation loop: **Valoria → need/meaningful choice → world → gather/fight/discover → valuable reward → return → reward changes kingdom/hero → new ambition**.
-- Before MVP closure the active flow must demonstrate four protected promises: **La Brecha changes gameplay**, **economy creates a real trade-off**, **a relic/card has real utility and reaches Codex**, **the player sees evidence of a larger shared 4X world**.
-- Cards/Codex return as a small meaningful layer, not a large early tutorial. First relic should create a clear use-now vs conserve-for-later choice. Orin owns this explanation.
-- World 4X must be a truthful prototype: other realms/territorial conflict may be simulated and explicitly labelled; never imply real multiplayer.
-- At least one progression choice must be mutually exclusive or opportunity-cost based. Following a single highlighted next button to Bastion X is not sufficient proof of strategy.
-- Do not migrate to Unity until this compact MVP loop is playable, fresh-save certified and human-playtested.
+Updated: 2026-09-28
 
-## Tutorial/prologue contract — 2026-09-21
-- **Bastion I–X is the complete playable prologue/tutorial.** By Bastion X a first-time player must understand Eldoria's core loop without external instructions: rebuild/upgrade → produce → explore → gather/fight/discover → obtain a meaningful reward → return → strengthen Valoria/heroes → pursue the next ambition.
-- I–III = survival and discovery; IV–VI = expansion and preparation; VII–VIII = mystery/collection/hero consequences; IX = independent mastery check; X = graduation/finale that resolves the immediate threat while opening the larger Breach mystery.
-- The tutorial must create curiosity, not merely explain controls. Early events should seed unanswered questions about the Breach, disappearances, anomalous materials/relics and the larger world without explaining the full truth.
-- Hero recruitment is a narrative event, never a routine reward. Every major hero first appears in-context, exchanges dialogue with Aldric/other relevant characters, states a believable motive, and receives a ceremony before joining.
-- **Lyra recruitment is two-phase:** investigate the Fissure perimeter → meet Lyra while she is searching for traces of the disappeared → establish her motive and alliance through Aldric↔Lyra dialogue → then assault the Fissure together.
-- The Fissure assault with Lyra awards an **unknown manuscript**. It is deliberately unusable during the current prologue; it seeds a later Barracks troop unlock and must be stored as a future-purpose discovery, not explained away.
-- Character/narrator story beats use the canonical typed dialogue surface. Sir Aldric dialogue always uses his canonical portrait; do not create a parallel dialogue system.
-- The world should feel populated. Resource nodes and beasts/enemies are distinct categories: beasts primarily return food; Breach/corrupted enemies return combat/rare progression rewards. Higher node levels can be visible as locked/aspirational content before unlock.
-- Preserve the current working loop and certified visual baseline. This is a reorganization/reinforcement of the MVP, not a rewrite.
+This file contains **current design decisions that must survive chat changes**. Historical discussion belongs in git history/CHANGELOG, not here. Repository state wins over chat. If an older statement conflicts with `AGENTS.md`, `SESSION_HANDOFF.md`, `PROJECT_STATE.md` or a later explicit decision here, the newer/higher-level source wins.
 
-## Canonical Bastion I–X chronology — 2026-09-21
-- **Bastion I — Las Cenizas:** Aldric carries the opening with more narrative weight. Rebuild, first world trip, gather, return and improve. The first expedition exposes an unexplained corruption mark that Aldric recognizes but refuses to explain fully. Core question planted: what really happened to Valoria?
-- **Bastion II — Troops and first threat:** Barracks, real troops and first Corrupt combat. Victory leaves an anomalous residue rather than a routine reward-only beat, reinforcing that the Breach is changing the world.
-- **Bastion III — The world opens:** Granary, Food, hunting and a denser frontier. Higher-level resources/beasts/enemies are visible before they are reachable to create aspiration. The Fissure and Lyra are the first major epic beat; Lyra's alliance is contextual and the Fissure assault follows as phase two.
-- **Bastion IV — Early autonomy:** richer map and wider decisions while explicit tutorial guidance recedes. The player should begin choosing what to improve and where to go rather than following a single hand.
-- **Bastion V — Quarry and extraction:** unlock the productive Quarry and seed the idea that extraction can reveal anomalous objects/materials. Do not over-explain or lock final RNG design yet.
-- **Bastion VI — Forge and closed progression loop:** Breach elite → special material → Forge → first equipment ceremony. This is the first complete kingdom → exploration → combat → material → equipment → hero strength → Power loop.
-- **Bastion VII — Codex mystery:** first card/relic arrives as a special discovery, unlocks the Codex and enables future relic drops. Explain collection, not ultimate purpose. Protected question: what are these relics really for?
-- **Bastion VIII — Maelis:** a bespoke world situation, dialogue, motive, consequence and hero ceremony. Maelis never joins as a generic mission-complete reward.
-- **Bastion IX — Independent mastery:** stop teaching. Present a multi-system preparation problem with no step-by-step guidance; the player must apply economy, heroes, equipment, troops and march knowledge independently.
-- **Bastion X — Prologue finale:** a meaningful expedition uses the learned loop, resolves the immediate frontier danger and reveals that the Breach is part of something much larger. End with **CAPÍTULO I COMPLETADO** while preserving the larger mystery.
-- Narrative escalation across the prologue: **I something is wrong → II it was not an accident → III Lyra proves it extends beyond Valoria → V–VI corruption produces strange matter → VII relics introduce a second unknown → VIII Nareth proves other realms are affected → IX the player can survive independently → X the local threat is only one expression of the Breach.**
+## Decision-preservation rule
+- A system, chronology or product rule already validated in the web vertical slice remains valid when moving to Unity **unless a later explicit decision supersedes it**.
+- Unity migration is an implementation/adaptation effort, not permission to redesign validated product decisions by default.
+- When Unity needs a different presentation, controls, camera, performance solution or visual embodiment, preserve the validated gameplay/narrative intent unless the owner explicitly changes it.
+- Never reopen a closed decision merely because a newer implementation layer does not yet contain it.
 
-## Product / loop
-- Mobile-first dark medieval fantasy city-builder/4X/RPG vertical slice.
-- Core loop: **Valoria → need/decision → world → gather/fight → reward → return → visible growth → new ambition**.
-- The web build is a low-cost design laboratory. Long-term direction may be Unity, but do not migrate/rebuild until the validated slice is stable.
-- Budget remains 0 € unless explicitly changed by the owner.
+## Product and platform direction
+- Eldoria is a **mobile-first** dark-fantasy city-builder / 4X / RPG.
+- Phone is the primary validation target; **tablet is supported from the start** with responsive use of the additional space.
+- **PC is a future viable expansion, not a committed launch platform.** Architecture, camera and UI decisions should avoid unnecessary mobile-only lock-in so PC can later adapt presentation and controls without rebuilding the core game.
+- Current active production uses Unity 6000.3.23f1. The web v0.32.0 slice remains the canonical playable design/reference until Unity replacement is explicitly approved.
+- Budget remains 0 € unless the owner explicitly changes it. Do not spend Tripo credits or other paid resources without authorization.
 
-## UX
-- Player must know what to do, why, and where to touch.
-- Routine building/upgrade/gather/attack interaction is object-local: tap object → compact cost/requirement + action directly below → active timer above. Avoid routine confirmation popups.
-- One new mechanic = one brief contextual explanation at the moment it matters.
-- Mobile/iPhone is primary. Avoid overlays/buttons outside safe viewport.
-- World remains pannable; essential actions must still work with normal tap/click and be automatable.
+## Core loop
+Canonical desire loop:
+**Valoria → need/meaningful choice → world → gather/fight/discover → valuable reward → return → visible growth/stronger heroes → new ambition.**
 
-## Narrative
-- Arc I: **Las Cenizas de Valoria**. Valoria is damaged; La Brecha is the persistent threat.
-- Opening order: Narrator, then short Aldric, then play.
-- Canonical opening idea: “La Brecha apareció sobre Valoria antes del amanecer…”; Aldric follows briefly: “Valoria sobrevivió a la noche…”.
-- Never restore the obsolete long Aldric intro beginning “Mi señor… esto es Valoria. O lo que queda de ella…”.
-- Aldric is host/narrative guide, not a constant tutorial commentator.
-- Lyra should be desired because the Fissure creates a gameplay need; the current intended event is first Fissure attack → discover/recruit Lyra → return to Fissure empowered.
-- Orin is reserved as diegetic guide for Codex/cards/Breach/Duel when those systems return to the active flow.
+Progression quality is not measured by system count. Every major addition should strengthen this loop or the long-term 4X promise.
+
+## Bastion I–X contract
+- **Bastion I–X is the complete playable prologue/tutorial**, not the whole game.
+- I–III = survival/discovery; IV–VI = expansion/preparation; VII–VIII = mystery/collection/hero consequences; IX = independent mastery; X = graduation/finale and opening of the larger game.
+- Bastion X must feel like **graduation**, not credits/end-of-game.
+- After X, the game must stop stretching tutorial logic. Long-term Valoria planning currently preserves structural headroom toward roughly Bastion 25–35; the exact ultimate cap remains provisional.
+- Canonical per-level detail and current gaps live in `docs/BASTION_I_X_MASTER_TABLE.md`.
+
+### Per-Bastion presentation rule
+Every Bastion ascent should communicate three things clearly:
+1. **What changed / what was learned** — one short, legible message.
+2. **What changed physically in Valoria** — visible growth, occupation, repair, district/building evolution or atmosphere.
+3. **What the player can now do** — one concrete new capability or meaningful expansion of an existing one.
+
+A Bastion level should not read as merely “two more menus unlocked”. From VII onward explicit hand-holding must reduce; IX is the mastery check and X the graduation.
+
+## Canonical Bastion chronology
+- **I — Las Cenizas:** reconstruction, first world trip, gather → return → improve; Valoria/Breach mystery is planted.
+- **II — Troops and first threat:** Cuartel, real troops, March and first Corrupt combat.
+- **III — The world opens:** Granero/Food, hunting, denser frontier, Fissure and two-phase Lyra recruitment/assault.
+- **IV — Early autonomy:** explicit tutorial recedes and the player starts making wider choices. Its unique mechanical/visual identity still needs final definition.
+- **V — Cantera and stone economy:** Cantera is the stone-production building, analogous to Aserradero = wood and Granero = food. Extraction can seed anomalous materials/discoveries without over-explaining them.
+- **VI — Forge and closed progression loop:** Breach elite / Devorador → special material → Forja → Hoja de Éter / first equipment ceremony → stronger hero/power loop.
+- **VII — Knowledge + Relicario onboarding:** Códice and Relicario unlock as **independent peer systems**. First deterministic Reliquia/card reaches Relicario. Teaching is progressive rather than dumping the full system at once.
+- **VIII — Wider-world consequence / Maelis:** bespoke world situation, Nareth/wider-realm consequence where applicable, dialogue, motive and Maelis recruitment ceremony. Hero recruitment is never a generic mission-complete reward.
+- **IX — Independent mastery:** no step-by-step teaching. Player solves a multi-system preparation problem and uses the two-hero March requirement/trial as an autonomy check.
+- **X — Prologue finale / graduation:** learned loop is applied in a meaningful expedition; Herald/Hospital loop teaches combat wear/recovery; immediate frontier danger resolves while the larger Breach mystery opens. End state communicates **CAPÍTULO I COMPLETADO**, not game completion.
+
+## Resource/building responsibility
+- **Aserradero = wood production.**
+- **Granero = food economy.**
+- **Cantera de Valoria = stone production.**
+- **Cuartel = recruit/upgrade troops.**
+- **Forja = materials → equipment progression.**
+- **Salón de Héroes = hero/equipment management.**
+- **Hospital = wounded-troop recovery; it never restores permanent casualties.**
+- Routine building interaction remains object-local where practical: tap object → requirement/cost + action → timer/feedback.
+
+## Códice, Relicario, Arcón
+These responsibilities are permanent unless explicitly redesigned:
+- **Códice = world knowledge/discovery only:** La Brecha, Bestiario, Mundo, Personajes and related lore/discoveries.
+- **Relicario = Reliquia/card system:** collection, reveal ceremony, rarity, use/conserve, N/S/E/O, Practice and future Duel behavior.
+- **Arcón = objects/materials/equipment.** No Reliquias/cards live there.
+- Códice and Relicario are independent first-level peer destinations; neither is parent/child of the other.
+- Bastion VII introduces both, but **Relicario teaching is deliberately staged**: first card/reveal and basic use/conserve first; rarity/Indestructible/N-S-E-O/Practice deepen progressively through VII–IX and can continue after X. Do not overwhelm the player with the entire card ruleset at first contact.
+- Indestructible is a property/quality, never a rarity.
+- Ordinary eligible world-enemy victories may roll Common/Rare cards at very low rates; hunting grants none; Epic/Legendary acquisition stays special rather than ordinary-drop progression.
+
+## Narrative and heroes
+- Arc I is **Las Cenizas de Valoria**; La Brecha is the persistent threat and mystery.
+- Opening order: Narrator → brief Aldric → play. Aldric is host/narrative guide, not a constant tutorial commentator.
+- Hero recruitment is a narrative event. Major heroes appear in context, exchange dialogue, have a believable motive and receive a ceremony before joining.
+- Lyra is two-phase: Fissure investigation/contact → motive/alliance dialogue → Fissure assault together.
+- The Manuscrito de la Fisura remains a future-purpose discovery and must not reveal its later troop-family function early.
+- Maelis joins through a bespoke narrative/world situation, not a generic reward.
+- Curiosity escalation matters: I something is wrong → II not an accident → III extends beyond Valoria → V–VI corruption creates strange matter → VII Reliquias create a second unknown → VIII other realms/people are affected → IX player survives independently → X local threat is one expression of something larger.
+
+## Economy, world and Power
+- Resource nodes have finite reserves and per-trip loads smaller than total reserves; depleted nodes leave the active map and later return/respawn according to current implementation/balance.
+- Enemy victories grant loot/XP/items, not magical Power.
+- **Poder Total** describes development/possessions; **Poder de expedición / March Power** describes the deployed force. They are not interchangeable.
+- At least one meaningful opportunity-cost/trade-off must exist; progression cannot collapse into following one highlighted next button.
+- The world should feel populated and aspirational: visible locked higher-level nodes/threats may foreshadow growth without exposing future troop families prematurely.
+
+## Combat and troop progression
+- Combat complexity layers progressively: **Caza → Poder**, **enemy common → stats + composition**, **uncommon → trait/counter-play**, **world boss → semiautomatic + minimal hero intervention**.
+- Current combat stats are ATQ / DEF / VIDA / RUPTURA / PODER and must affect resolution.
+- Routine combat should remain light/automatic enough for mobile; special encounters carry the richer layer.
+- Current player-facing recruitable troop family is Arqueros. Future families follow **discover → understand → unlock** and must not be previewed before narrative discovery.
+- PvP is not implemented. Never fabricate opponents, rankings, alliances, rally participants, rewards or ownership.
+
+## Wounded troops / Hospital / future operations
+- PvE may wound troops but creates **0 permanent troop deaths**.
+- Wounded troops remain owned but unavailable for March composition until treatment completes.
+- Hospital restores wounded troops through persistent timed treatment and never restores permanent casualties.
+- Future PvP may later distinguish available / wounded / permanently lost units, but those percentages/rules are not implemented now.
+- March data may reserve future joint-operation identity, but no fake multiplayer UI is allowed before real multiplayer exists.
+
+## Visual and Valoria direction
+- Art target: **stylized semi-realistic dark fantasy 4X**, not photorealism and not bright/cartoon fantasy.
+- Valoria is a persistent vertical bastion/city rebuilding inside monumental imperial ruins, not a generic field of detached buildings.
+- Progression should visibly repair, occupy, densify and elevate Valoria. Major eras carry strong transformations; individual Bastion levels still need lighter visible feedback.
+- Camera is authored isometric with zoom 9..19 and bounded panning/progression-aware bounds; free 360° orbit is out of scope.
+- The certified Playable District Skeleton is the kernel, not the final city footprint. Preserve Master Envelope expansion reservations and future districts.
+- Final acceptance of city art is from official camera/zoom/pan views with interaction/circulation preserved, not from isolated asset beauty alone.
+
+## UX and teaching
+- Player must understand **what to do, why, where to touch, what happened and what to do next**.
+- One new mechanic = one brief contextual explanation when it first matters; deeper rules arrive when they become actionable.
+- Mobile/iPhone is primary. Essential controls stay inside safe viewport and world context remains visible where practical.
 - Large unlocks deserve ceremony; routine actions do not.
+- From Bastion VII onward guidance tapers. Bastion IX should require independent application rather than instructions.
 
-## World, economy and power
-- Resource nodes have finite reserves and per-trip loads smaller than total reserves. Depleted nodes leave the active map and later respawn/reappear; exact current tuning belongs to code, not this design document.
-- Enemy victories give loot/XP/items, not magical Power.
-- Total Power represents development/possessions (buildings, troops, heroes, relevant equipment/collection). March Power represents the deployed force.
-- Construction/recollection use visible compressed timers in the slice. Future production can use longer queues, but waiting must represent real activity.
-- Resource buildings have independent persistent levels capped by Bastion; upgrades improve their production.
-
-## Buildings / progression
-- Bastion is the main progression spine, currently scaffolded to level X.
-- Aserradero restores wood production; Cuartel recruits real troops; Granero unlocks food economy; Cantera de Valoria provides stone production; Forja introduces equipment/material progression; Salón de Héroes is the hero/equipment management destination.
-- Higher Bastion levels must be gated by meaningful preceding content, not resources alone. Some VI–X gates remain to implement.
-
-## Combat
-- Normal world combat should be light/automatic but visible on the map: march → brief impact → result.
-- Semiautomatic combat remains the intended richer layer for special encounters; current later fights are placeholders/scaffolding, not final combat design.
-- Do not make routine combat a heavy minigame.
-
-## Heroes / equipment
-- Heroes are introduced because the player needs them. Aldric leads; Lyra specializes in Breach/rupture/damage; Maelis is support/survival.
-- Hero Hall should allow switching heroes and show level/XP, stats, skills and individual equipment.
-- Equipment/materials live in Chest/inventory. Replacing equipment must return old equipment to inventory.
-
-## Cards / Codex / Duel
-- Cards/relics go directly to the **Codex**, never Chest/inventory.
-- Intended concepts preserved from earlier builds: rarity including Legendary, Indestructible as a quality, use/conserve decisions, effects outside Duel, Relic Duel values N/S/E/W.
-- Do not force full Cards/Duel back into the early active loop until core Valoria/world progression is solid. Earlier v0.21 is the system bank/reference.
-
-## Engineering / production
-- One canonical development line; versions only for real milestones/hotfixes.
-- Protected visual recovery commit: `f139968ccbfdeb3e1d37f58568187374faf6d1f2`.
-- Preserve stable IDs and move logic gradually toward data-driven state/costs/unlocks/rewards/actions/serializable tasks/narrative events so later Unity migration is feasible.
-- Do not fake multiplayer, ownership, rewards or state.
-- Repository is the source of truth; update state/changelog with important work.
-
-
-## Layered PvE combat and troop progression — v0.26.6
-- Combat complexity is introduced in layers, not all at once: **Caza → Poder**, **enemigo común → estadísticas + composición**, **poco común → rasgo + contra-juego**, **jefe del mundo → semiautomático + una intervención mínima del héroe**.
-- Current combat statistics are **ATQ / DEF / VIDA / RUPTURA / PODER**. These values must affect resolution; they are not decorative UI.
-- Hunting stays intentionally simple and resolves from Power without a march-composition screen.
-- Common threats introduce PREPARAR MARCHA with real archer count and hero selection, followed by a report that explains the result.
-- Uncommon threats must have a real mechanical trait. Acechador de Ceniza establishes the pattern with **Emboscada**: stronger opening pressure followed by exposed defense. A different march composition must be capable of changing the outcome.
-- World bosses use automatic troops/basic exchanges. The player gets at most one small role-consistent hero intervention in this scaffold; this is an architecture seam, not the final hero-skill system.
-- **PvP is not implemented yet** and must not be implied by fake opponents, rankings or combat language.
-- The only recruitable troop family in the current player-facing build is **Arqueros**.
-- Troop progression follows **encontrar → comprender → desbloquear**. Do not preview future troop families in UI, locked cards, silhouettes or tooltips before their narrative discovery.
-- Internally, the troop-family seam may reserve future families. **Paladines** are intended around Bastión 11 with narrative justification; **Brujos** are later and tied to La Brecha. Neither is currently recruitable or visible to players.
-- The existing **Manuscrito de la Fisura** remains on its current acquisition/storage flow. Do not duplicate it, rename its purpose, or reveal its troop-unlock connection early.
-- Mobile combat UX must preserve the world as context: compact selection, march preparation, report, timer/combat, and return flow; no oversized permanent panels.
-
-
-## MVP visual direction — 2026-09-22
-- Canonical art target: **stylized semi-realistic dark fantasy 4X**, not photorealism and not bright/cartoon fantasy.
-- Valoria is a compact vertical bastion rebuilt inside monumental imperial ruins; progression should visually recover/repopulate damaged space rather than become a generic field of small buildings.
-- The world is a strategic fractured continent. Settlements, routes, marches, resources, fauna, corrupted threats, fissures and regional geography must read as gameplay, not as decoration.
-- La Brecha is a dimensional wound with violet/magenta/black-violet corruption that can affect terrain, atmosphere and creatures. It must be distinctive without visually erasing the normal world.
-- UI is dark/elegant/compact and mobile-first. The playfield remains dominant; readability and interaction clarity beat decorative density.
-- Final visual target is documented in `docs/MVP_ART_DIRECTION.md`.
-- The web slice validates gameplay and compatibility with the target; it should not waste time recreating final Unity production art.
-- Future Unity production must preserve the direction while adapting camera, asset density, VFX and performance for real gameplay.
-
-## Military casualties, Hospital and future operation seam — v0.32.0
-- **PvE may wound troops but never creates permanent troop deaths.** A PvE resolution may return available troops plus wounded troops; its permanent-death count is always 0.
-- **Future PvP may distinguish available troops, wounded troops and permanent casualties.** The data/domain boundary reserves that distinction, but PvP casualty percentages and balance are deliberately not implemented in the web slice.
-- Wounded troops remain owned by the player/reino, are excluded from available March composition while wounded, and still belong to the player's military continuity.
-- **Hospital de Valoria recovers wounded troops only.** It never restores permanent casualties. Healing uses the canonical timestamp-task model so it survives screen changes, reload and offline time.
-- The Hospital's first playable introduction belongs to **Bastion X after the Herald encounter**. The first treatment is intentionally recoverable without a resource requirement, preventing a finale softlock while teaching combat wear.
-- Total military ownership and Expedition Power are distinct: wounded troops remain owned, but only currently available/deployed troops may contribute to a March.
-- A March is modeled as an independent contribution with owner identity, march identity, heroes, troops and optional higher-level operation identity. Today the player's normal March has no operation assigned.
-- Future **Alliance Concentrations / joint operations** may aggregate several independent contributions while preserving participant-specific troops, heroes, wounds, future casualties and rewards. No allied players, rally participants or join UI may be fabricated before real multiplayer exists.
-
+## Engineering / source-of-truth
+- `main` is the only active development line; verify live HEAD before execution.
+- Unity is an active source line, not a hypothetical future migration. Preserve approved web behavior/design as reference until Unity parity/replacement is explicitly approved.
+- Make surgical changes; preserve stable IDs and validated gameplay contracts.
+- Do not fake certification: changed ≠ verified; tests green ≠ published; deployed ≠ published interaction verified.
+- Important new product decisions belong here or in the linked canonical specialist document; operational runs/HEAD belong in `SESSION_HANDOFF.md`; current functional implementation belongs in `PROJECT_STATE.md`.
