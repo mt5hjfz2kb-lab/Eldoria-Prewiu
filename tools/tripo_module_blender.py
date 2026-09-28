@@ -165,6 +165,62 @@ def apply_visual_refinement(cfg):
     result["components_after"] = connected_component_report()
     return result
 
+def surface_diagnostics():
+    images = []
+    for image in bpy.data.images:
+        if image.size[0] <= 0 or image.size[1] <= 0:
+            continue
+        images.append({
+            "name": image.name,
+            "source": image.source,
+            "width": int(image.size[0]),
+            "height": int(image.size[1]),
+            "colorspace": getattr(getattr(image, "colorspace_settings", None), "name", ""),
+            "packed": bool(image.packed_file),
+            "filepath": image.filepath or "",
+        })
+
+    materials = []
+    for mat in bpy.data.materials:
+        if not mat:
+            continue
+        entry = {
+            "name": mat.name,
+            "use_nodes": bool(mat.use_nodes),
+            "principled": [],
+            "image_textures": [],
+        }
+        if mat.use_nodes and mat.node_tree:
+            for node in mat.node_tree.nodes:
+                if node.type == "BSDF_PRINCIPLED":
+                    values = {}
+                    for key in ("Base Color", "Metallic", "Roughness", "Specular IOR Level", "Alpha"):
+                        if key in node.inputs and not node.inputs[key].is_linked:
+                            value = node.inputs[key].default_value
+                            if hasattr(value, "__len__"):
+                                value = [float(v) for v in value]
+                            else:
+                                value = float(value)
+                            values[key] = value
+                    entry["principled"].append(values)
+                elif node.type == "TEX_IMAGE" and getattr(node, "image", None):
+                    targets = []
+                    for output in node.outputs:
+                        for link in output.links:
+                            targets.append({
+                                "from_socket": output.name,
+                                "to_node": link.to_node.name,
+                                "to_socket": link.to_socket.name,
+                            })
+                    entry["image_textures"].append({
+                        "node": node.name,
+                        "image": node.image.name,
+                        "colorspace": node.image.colorspace_settings.name,
+                        "targets": targets,
+                    })
+        materials.append(entry)
+    return {"images": images, "materials": materials}
+
 def optimize_images():
     resized = []
     for image in bpy.data.images:
@@ -243,6 +299,7 @@ def main():
         "raw": raw,
         "optimized": optimized,
         "resized_images": resized_images,
+        "surface_diagnostics": surface_diagnostics(),
         "refinement": refinement,
         "input_bytes": os.path.getsize(a.input),
         "output_bytes": os.path.getsize(a.output),
