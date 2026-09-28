@@ -104,6 +104,40 @@ namespace Eldoria.Tests
             }
         }
         [UnityTest]
+        public IEnumerator ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            var camera=GameObject.Find("Isometric camera")?.GetComponent<Camera>();
+            var presenter=Object.FindFirstObjectByType<SlicePresenter>();
+            Assert.That(camera,Is.Not.Null);
+            Assert.That(presenter,Is.Not.Null);
+
+            var zoom=typeof(SlicePresenter).GetMethod("Zoom",
+                System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            var select=typeof(SlicePresenter).GetMethod("Select",
+                System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Assert.That(zoom,Is.Not.Null);
+            Assert.That(select,Is.Not.Null);
+
+            camera.orthographicSize=12f;
+            zoom.Invoke(presenter,new object[]{-100f});
+            Assert.That(camera.orthographicSize,Is.EqualTo(9f).Within(.001f));
+            zoom.Invoke(presenter,new object[]{100f});
+            Assert.That(camera.orthographicSize,Is.EqualTo(19f).Within(.001f));
+            camera.orthographicSize=12f;
+            Assert.That(camera.orthographicSize,Is.EqualTo(12f).Within(.001f));
+
+            var gate=GameObject.Find("Puerta · ir al mundo");
+            Assert.That(gate,Is.Not.Null);
+            Assert.That(gate.GetComponent<WorldHotspot>(),Is.Not.Null);
+            Assert.That(gate.GetComponent<WorldHotspot>().Id,Is.EqualTo("gate"));
+            select.Invoke(presenter,new object[]{"gate"});
+            yield return null;
+            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("Frontier"));
+        }
+
+        [UnityTest]
         public IEnumerator ValoriaMasterEnvelopeAndCameraPanAreProductionReady()
         {
             SceneManager.LoadScene("Valoria");
