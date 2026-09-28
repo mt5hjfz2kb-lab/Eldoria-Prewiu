@@ -3,7 +3,7 @@
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Read-only probe. Must not click Generate or spend credits.",
-  "probe_nonce": "2026-09-28T11:02:safe-stage-upload",
+  "probe_nonce": "2026-09-28T11:06:safe-stage-upload-retry",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
   "allow_credit_spend": false,
