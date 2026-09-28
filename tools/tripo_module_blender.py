@@ -16,6 +16,7 @@ def parse_args():
     p.add_argument("--target-tris", type=int, default=DEFAULT_TARGET)
     p.add_argument("--min-tris", type=int, default=DEFAULT_MIN_TRIS)
     p.add_argument("--max-tris", type=int, default=DEFAULT_MAX_TRIS)
+    p.add_argument("--diagnostic-only", action="store_true")
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -293,6 +294,19 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=a.input)
     raw = metrics("raw_import")
+    if a.diagnostic_only:
+        report = {
+            "mode": "diagnostic_only",
+            "raw": raw,
+            "surface_diagnostics": surface_diagnostics(),
+            "input_bytes": os.path.getsize(a.input),
+        }
+        os.makedirs(os.path.dirname(a.report), exist_ok=True)
+        with open(a.report, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+        print("ELDORIA_SURFACE_DIAGNOSTIC=" + json.dumps(report))
+        return
+
     target = int(a.target_tris)
     min_tris = int(a.min_tris)
     max_tris = int(a.max_tris)
