@@ -132,9 +132,10 @@ try {
     let uploadPage = null;
     let imageInput = null;
 
-    for (let attempt = 1; attempt <= 4; attempt++) {
+    for (let attempt = 1; attempt <= 8; attempt++) {
       const livePages = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('studio.tripo3d.ai'));
       for (const page of livePages) {
+        await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
         const candidate = page.locator('input[type="file"][accept*="image"]').first();
         if (await candidate.count()) {
           uploadPage = page;
@@ -143,7 +144,12 @@ try {
         }
       }
       if (imageInput) break;
-      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      if (attempt === 4 && livePages.length) {
+        await livePages[0].reload({ waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1600));
     }
 
     if (!uploadPage || !imageInput) {
