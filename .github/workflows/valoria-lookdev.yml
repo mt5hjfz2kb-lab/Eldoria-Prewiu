@@ -64,6 +64,43 @@ jobs:
           if($images.Count -ne 15){ throw "Expected 15 LookDev PNGs, found $($images.Count)" }
           foreach($image in $images){ if($image.Length -lt 10000){ throw "Empty LookDev capture: $($image.Name)" } }
 
+      - name: Measure LookDev luminance and contrast
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $rows=@()
+          foreach($file in Get-ChildItem $folder -Filter '*.png' -File | Where-Object { $_.Name -ne 'lookdev-contact-sheet.png' }){
+            $img=[System.Drawing.Bitmap]::FromFile($file.FullName)
+            try {
+              $vals=New-Object System.Collections.Generic.List[double]
+              $high=0; $low=0; $count=0
+              for($y=0;$y -lt $img.Height;$y+=16){
+                for($x=0;$x -lt $img.Width;$x+=16){
+                  $c=$img.GetPixel($x,$y)
+                  $l=(0.2126*$c.R + 0.7152*$c.G + 0.0722*$c.B)/255.0
+                  $vals.Add($l); $count++
+                  if($l -ge 0.92){$high++}
+                  if($l -le 0.05){$low++}
+                }
+              }
+              $mean=($vals | Measure-Object -Average).Average
+              $sumSq=0.0
+              foreach($v in $vals){$d=$v-$mean;$sumSq += $d*$d}
+              $std=[math]::Sqrt($sumSq/[math]::Max(1,$vals.Count))
+              $rows += [pscustomobject]@{
+                file=$file.Name
+                mean_luminance=[math]::Round($mean,4)
+                luminance_stddev=[math]::Round($std,4)
+                clipped_high_pct=[math]::Round(($high/[math]::Max(1,$count))*100,2)
+                clipped_low_pct=[math]::Round(($low/[math]::Max(1,$count))*100,2)
+              }
+            } finally { $img.Dispose() }
+          }
+          $out=[pscustomobject]@{schema_version=1;sample_stride=16;images=$rows}
+          $out | ConvertTo-Json -Depth 6 | Set-Content "$folder\lookdev-metrics.json"
+          Get-Content "$folder\lookdev-metrics.json"
+
       - name: Build LookDev contact sheet
         shell: powershell
         run: |
