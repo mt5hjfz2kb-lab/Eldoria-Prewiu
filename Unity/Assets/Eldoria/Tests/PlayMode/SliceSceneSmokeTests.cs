@@ -81,7 +81,7 @@ namespace Eldoria.Tests
                     }
                     if(clearClick)break;
                 }
-                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera. TargetWorld="+target.transform.position+" TargetScreen="+camera.WorldToScreenPoint(target.GetComponent<Collider>().bounds.center)+" CameraPos="+camera.transform.position+" CameraFwd="+camera.transform.forward+" Ortho="+camera.orthographicSize+" Screen="+Screen.width+"x"+Screen.height+" Resolved: "+resolvedIds);
+                Assert.That(clearClick,Is.True,pair.Item1+" has no reliable player click point from the official camera. TargetWorld="+target.transform.position+" TargetScreen="+camera.WorldToScreenPoint(target.GetComponent<Collider>().bounds.center)+" CameraPos="+camera.transform.position+" CameraFwd="+camera.transform.forward+" Ortho="+camera.orthographicSize+" Aspect="+camera.aspect+" PixelRect="+camera.pixelRect+" Rect="+camera.rect+" Screen="+Screen.width+"x"+Screen.height+" Resolved: "+resolvedIds);
                 select.Invoke(presenter,new object[]{pair.Item2});
                 yield return null;
                 var panel=GameObject.Find("Building interaction panel");
