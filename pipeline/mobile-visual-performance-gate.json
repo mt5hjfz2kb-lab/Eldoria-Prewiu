@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "baseline_before_target_device_profile",
+  "purpose": "Prevent visual formula decisions from being promoted without mobile evidence once device profiling starts.",
+  "required_evidence": [
+    "device_model_and_os",
+    "build_commit",
+    "scene_or_scenario",
+    "resolution",
+    "quality_profile",
+    "average_fps",
+    "frame_time_ms",
+    "peak_memory_mb",
+    "texture_memory_mb_when_available",
+    "draw_calls_or_batches_when_available",
+    "scene_triangles",
+    "notes_on_thermal_or_sustained_run"
+  ],
+  "scenarios": [
+    "Valoria formula overview at official zoom 12",
+    "Valoria dense district pan",
+    "Aserradero + Cuartel visible together",
+    "Bastion/hero view once available"
+  ],
+  "promotion_rules": [
+    "Do not lower visual quality pre-emptively without measured mobile evidence.",
+    "Do not raise texture or geometry budgets solely because desktop performance is acceptable.",
+    "Compare the same scenario and camera before/after any optimization.",
+    "Prefer fixing the measured bottleneck rather than applying broad optimizations blindly."
+  ],
+  "thresholds": {
+    "status": "TBD_FROM_TARGET_DEVICE_PROFILE",
+    "note": "No FPS, memory or triangle limit is canonical until measured on representative target hardware."
+  }
+}
