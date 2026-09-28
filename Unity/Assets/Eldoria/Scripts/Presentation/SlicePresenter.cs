@@ -23,6 +23,11 @@ namespace Eldoria.Presentation
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
         bool renderedScout, renderedEngendro, renderedIdle;
+        Vector2 pointerStart,pointerLast;
+        bool pointerActive,pointerDragged,pointerStartedOverUi;
+        Vector3 cameraHome;
+        float panHalfX=5f,panHalfZ=4f;
+        const float PanGestureThreshold=12f;
         Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
@@ -34,6 +39,11 @@ namespace Eldoria.Presentation
             renderedScout=state.ScoutDefeated;renderedEngendro=state.EngendroDefeated;
             renderedIdle=state.March.Phase=="idle";
             VisualWorld.Create(city,state);
+            if(city&&OfficialCamera!=null)
+            {
+                cameraHome=OfficialCamera.transform.position;
+                ConfigureCityPanBounds(state.BastionLevel);
+            }
             CreateHud();Refresh();
         }
         void Update()
@@ -46,17 +56,93 @@ namespace Eldoria.Presentation
                 else RefreshClock();
             }
             if(lastWidth!=Screen.width||lastHeight!=Screen.height) UpdateSafeArea();
+            HandlePointerInput();
+        }
+        void HandlePointerInput()
+        {
+            var camera=OfficialCamera;
+            if(camera==null)return;
             var mouse=Mouse.current;
             var touch=Touchscreen.current;
-            bool tapped=mouse!=null&&mouse.leftButton.wasPressedThisFrame;
-            if(touch!=null&&touch.primaryTouch.press.wasPressedThisFrame)tapped=true;
-            if(!tapped||OfficialCamera==null)return;
-            if(EventSystem.current!=null&&EventSystem.current.IsPointerOverGameObject())return;
-            Vector2 point=touch!=null&&touch.primaryTouch.press.isPressed
-                ?touch.primaryTouch.position.ReadValue():(mouse!=null?mouse.position.ReadValue():Vector2.zero);
-            var spot=ResolveHotspot(point);
-            if(spot!=null)Select(spot.Id);
+
+            bool touchPressed=touch!=null&&touch.primaryTouch.press.wasPressedThisFrame;
+            bool touchHeld=touch!=null&&touch.primaryTouch.press.isPressed;
+            bool touchReleased=touch!=null&&touch.primaryTouch.press.wasReleasedThisFrame;
+            bool mousePressed=mouse!=null&&mouse.leftButton.wasPressedThisFrame;
+            bool mouseHeld=mouse!=null&&mouse.leftButton.isPressed;
+            bool mouseReleased=mouse!=null&&mouse.leftButton.wasReleasedThisFrame;
+
+            bool usingTouch=touchHeld||touchPressed||touchReleased;
+            Vector2 point=usingTouch&&touch!=null
+                ?touch.primaryTouch.position.ReadValue()
+                :(mouse!=null?mouse.position.ReadValue():Vector2.zero);
+            bool pressed=usingTouch?touchPressed:mousePressed;
+            bool held=usingTouch?touchHeld:mouseHeld;
+            bool released=usingTouch?touchReleased:mouseReleased;
+
+            if(pressed)
+            {
+                pointerActive=true;
+                pointerDragged=false;
+                pointerStart=pointerLast=point;
+                pointerStartedOverUi=EventSystem.current!=null&&EventSystem.current.IsPointerOverGameObject();
+            }
+
+            if(pointerActive&&held)
+            {
+                if(IsPanGesture(pointerStart,point))pointerDragged=true;
+                if(city&&pointerDragged&&!pointerStartedOverUi)
+                    PanCameraByScreenDelta(point-pointerLast);
+                pointerLast=point;
+            }
+
+            if(pointerActive&&released)
+            {
+                bool shouldSelect=!pointerStartedOverUi&&!pointerDragged;
+                pointerActive=false;
+                if(shouldSelect)
+                {
+                    var spot=ResolveHotspot(point);
+                    if(spot!=null)Select(spot.Id);
+                }
+            }
         }
+
+        static bool IsPanGesture(Vector2 start,Vector2 current)
+            => (current-start).sqrMagnitude>=PanGestureThreshold*PanGestureThreshold;
+
+        void ConfigureCityPanBounds(int bastionLevel)
+        {
+            // Progression-aware soft bounds: the same master city exists from the start,
+            // but early Valoria does not expose a huge empty late-game envelope.
+            if(bastionLevel<=10){panHalfX=5f;panHalfZ=4f;}
+            else if(bastionLevel<=15){panHalfX=10f;panHalfZ=7f;}
+            else if(bastionLevel<=20){panHalfX=15f;panHalfZ=10f;}
+            else if(bastionLevel<=25){panHalfX=18f;panHalfZ=12f;}
+            else {panHalfX=22f;panHalfZ=15f;}
+        }
+
+        void PanCameraByScreenDelta(Vector2 screenDelta)
+        {
+            var camera=OfficialCamera;
+            if(!city||camera==null)return;
+            float worldPerPixel=(camera.orthographicSize*2f)/Mathf.Max(1f,camera.pixelHeight);
+            var right=Vector3.ProjectOnPlane(camera.transform.right,Vector3.up).normalized;
+            var up=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
+            if(up.sqrMagnitude<.001f)up=Vector3.forward;
+            var desired=camera.transform.position+(-right*screenDelta.x-up*screenDelta.y)*worldPerPixel;
+            var offset=desired-cameraHome;
+            offset.x=Mathf.Clamp(offset.x,-panHalfX,panHalfX);
+            offset.z=Mathf.Clamp(offset.z,-panHalfZ,panHalfZ);
+            camera.transform.position=new Vector3(cameraHome.x+offset.x,cameraHome.y,cameraHome.z+offset.z);
+        }
+
+        void RecenterCamera()
+        {
+            if(!city||OfficialCamera==null)return;
+            OfficialCamera.transform.position=cameraHome;
+        }
+
         WorldHotspot ResolveHotspot(Vector2 point)
         {
             var camera=OfficialCamera;
@@ -243,6 +329,7 @@ namespace Eldoria.Presentation
                 if(city) Zoom(-1); else SceneManager.LoadScene("Valoria");
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
+            if(city)Button(row2,"CENTRAR",RecenterCamera);
             message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
             CreateBuildingPanel(canvasGo.transform);
         }
