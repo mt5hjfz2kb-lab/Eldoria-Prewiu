@@ -43,7 +43,7 @@ namespace Eldoria.Presentation
                 // board-like slab edge from the authored camera. The visible valley floor is a
                 // shallow irregular sheet, so zoom 19 no longer exposes a giant rectangular plinth.
                 worldGround.GetComponent<Renderer>().enabled=false;
-                IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),86f,80f,new Color(.285f,.265f,.215f));
+                IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),200f,180f,new Color(.305f,.295f,.265f));
             }
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
@@ -197,8 +197,8 @@ namespace Eldoria.Presentation
             for(int i=0;i<5;i++)
             {
                 float x=-4.4f+i*2.2f;
-                var wall=ValoriaKit.Block("VPD · retaining masonry fragment",new Vector3(x,1.22f,4.93f+(i%2)*.08f),
-                    new Vector3(1.72f,1.75f,.42f),new Color(.31f,.305f,.285f));
+                var wall=ValoriaKit.Block("VPD · retaining masonry fragment",new Vector3(x,.62f,4.93f+(i%2)*.08f),
+                    new Vector3(1.72f,.68f,.42f),new Color(.31f,.305f,.285f));
                 wall.transform.rotation=Quaternion.Euler(0,(i%2==0?2f:-2f),0);
             }
 
@@ -274,7 +274,7 @@ namespace Eldoria.Presentation
             var west=ValoriaKit.Block("VPD · master west district",new Vector3(-16.0f,.10f,1.4f),
                 new Vector3(10.0f,.22f,15.0f),reserve);
             west.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master west district skin",new Vector3(-16.0f,.225f,1.4f),10.8f,15.8f,reserve);
+            IrregularGround("VPD · master west district skin",new Vector3(-16.0f,.225f,1.4f),10.8f,15.8f,new Color(.305f,.295f,.265f));
 
             var westRoute=ValoriaKit.Block("VPD · master west route",new Vector3(-11.1f,.27f,-1.2f),
                 new Vector3(7.0f,.14f,2.4f),route);
@@ -284,7 +284,7 @@ namespace Eldoria.Presentation
             var east=ValoriaKit.Block("VPD · master east district",new Vector3(16.0f,.10f,1.8f),
                 new Vector3(10.0f,.22f,15.0f),reserve);
             east.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master east district skin",new Vector3(16.0f,.225f,1.8f),10.8f,15.8f,reserve);
+            IrregularGround("VPD · master east district skin",new Vector3(16.0f,.225f,1.8f),10.8f,15.8f,new Color(.305f,.295f,.265f));
 
             var eastRoute=ValoriaKit.Block("VPD · master east route",new Vector3(11.1f,.27f,-1.0f),
                 new Vector3(7.0f,.14f,2.4f),route);
@@ -294,7 +294,7 @@ namespace Eldoria.Presentation
             var civic=ValoriaKit.Block("VPD · master upper civic reserve",new Vector3(0,l1-.08f,15.4f),
                 new Vector3(13.5f,.22f,7.0f),upper);
             civic.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master upper civic reserve skin",new Vector3(0,l1+.045f,15.4f),14.4f,7.7f,upper);
+            IrregularGround("VPD · master upper civic reserve skin",new Vector3(0,l1+.045f,15.4f),14.4f,7.7f,new Color(.325f,.315f,.285f));
 
             var civicLink=ValoriaKit.Block("VPD · master upper civic link",new Vector3(0,l1+.02f,11.2f),
                 new Vector3(4.0f,.14f,4.0f),route);
@@ -304,17 +304,17 @@ namespace Eldoria.Presentation
             var future=ValoriaKit.Block("VPD · master future reserve",new Vector3(0,.08f,24.0f),
                 new Vector3(19.0f,.20f,7.0f),reserve*.92f);
             future.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master future reserve skin",new Vector3(0,.195f,24.0f),20.0f,7.8f,reserve*.92f);
+            IrregularGround("VPD · master future reserve skin",new Vector3(0,.195f,24.0f),20.0f,7.8f,new Color(.305f,.295f,.265f));
 
             var westApron=ValoriaKit.Block("VPD · master west terrain apron",new Vector3(-24.0f,-.15f,4.0f),
                 new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
             westApron.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master west terrain apron skin",new Vector3(-24.0f,.06f,4.0f),7.9f,26.0f,new Color(.27f,.255f,.22f));
+            IrregularGround("VPD · master west terrain apron skin",new Vector3(-24.0f,.06f,4.0f),7.9f,26.0f,new Color(.305f,.295f,.265f));
 
             var eastApron=ValoriaKit.Block("VPD · master east terrain apron",new Vector3(24.0f,-.15f,4.0f),
                 new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
             eastApron.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · master east terrain apron skin",new Vector3(24.0f,.06f,4.0f),7.9f,26.0f,new Color(.27f,.255f,.22f));
+            IrregularGround("VPD · master east terrain apron skin",new Vector3(24.0f,.06f,4.0f),7.9f,26.0f,new Color(.305f,.295f,.265f));
         }
 
         static void TagVisibleHotspots(string prefix,string id)
