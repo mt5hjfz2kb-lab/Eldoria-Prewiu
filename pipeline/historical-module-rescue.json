@@ -31,6 +31,17 @@
         "roughness_factor": 0.5,
         "uv_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
+      },
+      "direct_artifact_verification": {
+        "verified": true,
+        "artifact_id": 10943072790,
+        "sha256": "2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458",
+        "glb_bytes": 2077628,
+        "gltf_materials": 1,
+        "gltf_textures": 0,
+        "gltf_images": 0,
+        "visual_read": "Strong inhabited residential/terrace silhouette; current value is suppressed mainly by flat grey surface.",
+        "rescue_decision": "HIGH_VALUE_SURFACE_RESCUE"
       }
     },
     {
@@ -60,6 +71,17 @@
         "roughness_factor": 0.5,
         "uv_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
+      },
+      "direct_artifact_verification": {
+        "verified": true,
+        "artifact_id": 10943977319,
+        "sha256": "2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d",
+        "glb_bytes": 2074844,
+        "gltf_materials": 1,
+        "gltf_textures": 0,
+        "gltf_images": 0,
+        "visual_read": "Low standalone visual appeal but useful rock mass for burying seams and grounding authored buildings.",
+        "rescue_decision": "HIGH_VALUE_SUPPORT_RESCUE"
       }
     },
     {
