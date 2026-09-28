@@ -38,6 +38,29 @@ jobs:
           if($images.Count -ne 8){ throw "Expected 8 LookDev PNGs, found $($images.Count)" }
           foreach($image in $images){ if($image.Length -lt 10000){ throw "Empty LookDev capture: $($image.Name)" } }
 
+      - name: Build LookDev contact sheet
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $profiles=@('baseline','neutral-pbr','ruins-contrast','neutral-overcast')
+          $cellW=640; $cellH=360
+          $canvas=New-Object System.Drawing.Bitmap ($cellW*2),($cellH*4)
+          $g=[System.Drawing.Graphics]::FromImage($canvas)
+          $g.Clear([System.Drawing.Color]::Black)
+          try {
+            for($row=0;$row -lt $profiles.Count;$row++){
+              $id=$profiles[$row]
+              $paths=@("$folder\$id-overview.png","$folder\$id-sawmill.png")
+              for($col=0;$col -lt 2;$col++){
+                $img=[System.Drawing.Image]::FromFile($paths[$col])
+                try { $g.DrawImage($img,$col*$cellW,$row*$cellH,$cellW,$cellH) } finally { $img.Dispose() }
+              }
+            }
+            $out="$folder\lookdev-contact-sheet.png"
+            $canvas.Save($out,[System.Drawing.Imaging.ImageFormat]::Png)
+            if((Get-Item $out).Length -lt 20000){ throw 'LookDev contact sheet is unexpectedly small' }
+          } finally { $g.Dispose(); $canvas.Dispose() }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
