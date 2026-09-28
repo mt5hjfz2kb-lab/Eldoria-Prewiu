@@ -93,6 +93,7 @@ namespace Eldoria.Presentation
         }
         static void PlayableDistrictSkeleton(PlayerState state)
         {
+            var art=ValoriaExternalAssetLibrary.Load();
             // VALORIA PLAYABLE DISTRICT v1 — ART PASS 1
             // Frozen topology: continuous terrain -> L0 -> street -> vertical link -> L1 -> plots -> buildings.
             // Visual treatment may overlap/bury supports, but it must never redefine circulation or hotspot footprints.
@@ -131,6 +132,10 @@ namespace Eldoria.Presentation
                 var slab=ValoriaKit.Block("VPD · worn street slab "+(i+1),new Vector3((i%2==0?-.05f:.05f),.345f,z),
                     new Vector3(width,.09f,1.16f),new Color(.47f,.445f,.385f));
                 slab.transform.rotation=Quaternion.Euler(0,yaw,0);
+                ValoriaKit.BenchmarkPieceTinted("VPD · authored cobble "+(i+1),
+                    art!=null?art.SlavicCobbleRoad:null,
+                    new Vector3((i%2==0?-.05f:.05f),.405f,z),width,.16f,
+                    Quaternion.Euler(0,yaw,0),ValoriaKit.WarmStone*.82f);
             }
             IrregularGround("VPD · entry stone fan",new Vector3(0,.355f,-8.45f),7.0f,2.55f,new Color(.405f,.385f,.335f));
 
@@ -193,13 +198,23 @@ namespace Eldoria.Presentation
                 new Vector3(3.8f,.45f,5.0f),new Vector3(5.5f,.62f,4.9f),new Vector3(7.0f,.36f,5.2f),
                 new Vector3(-7.2f,.45f,8.8f),new Vector3(-4.9f,.58f,9.2f),
                 new Vector3(4.9f,.58f,9.2f),new Vector3(7.2f,.45f,8.8f)})
-                ValoriaKit.RockCluster("VPD · inhabited retaining rock",p,.78f,5);
+            {
+                var authored=ValoriaKit.BenchmarkPieceTinted("VPD · authored retaining rock",
+                    art!=null?art.SlavicFlatRock:null,p,2.25f,1.20f,
+                    Quaternion.Euler(0,(p.x>0?27f:-29f)+(p.z>7f?18f:0f),0),
+                    new Color(.30f,.305f,.285f,1f));
+                if(authored==null)ValoriaKit.RockCluster("VPD · inhabited retaining rock",p,.78f,5);
+            }
             for(int i=0;i<5;i++)
             {
                 float x=-4.4f+i*2.2f;
                 var wall=ValoriaKit.Block("VPD · retaining masonry fragment",new Vector3(x,.62f,4.93f+(i%2)*.08f),
                     new Vector3(1.72f,.68f,.42f),new Color(.31f,.305f,.285f));
                 wall.transform.rotation=Quaternion.Euler(0,(i%2==0?2f:-2f),0);
+                ValoriaKit.BenchmarkPieceTinted("VPD · retaining stone face",
+                    art!=null?art.SlavicStoneFence:null,
+                    new Vector3(x,1.58f,4.67f+(i%2)*.08f),1.82f,1.30f,
+                    Quaternion.Euler(0,(i%2==0?2f:-2f),0),ValoriaKit.OldStone*.90f);
             }
 
             // Buildings occupy the same frozen plots after circulation is solved.
@@ -243,6 +258,21 @@ namespace Eldoria.Presentation
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-9.25f),
                 new Vector3(3.0f,2.1f,.50f),ValoriaKit.Timber);
             gate.AddComponent<WorldHotspot>().Id="gate"; gate.GetComponent<Renderer>().enabled=false;
+
+            // Authored rock band turns the near camera-facing earth cut into a mountain edge.
+            for(int i=0;i<8;i++)
+            {
+                float x=-10.2f+i*2.9f;
+                var p=new Vector3(x,-.18f,-9.1f+(i%2)*.32f);
+                var authored=ValoriaKit.BenchmarkPieceTinted("VPD · lower cliff authored rock",
+                    art!=null?art.SlavicFlatRock:null,p,2.85f,1.45f,
+                    Quaternion.Euler(0,12f+i*31f,0),new Color(.295f,.29f,.265f,1f));
+                if(authored==null)ValoriaKit.RockCluster("VPD · lower cliff fallback",p,.88f,5);
+            }
+            foreach(var p in new[]{new Vector3(-10.4f,-.10f,-7.5f),new Vector3(10.1f,-.08f,-7.25f)})
+                ValoriaKit.BenchmarkPieceTinted("VPD · lower cliff boulder",
+                    art!=null?art.SlavicBoulder:null,p,2.45f,1.65f,
+                    Quaternion.Euler(0,p.x>0?28f:-24f,0),ValoriaKit.OldStone*.84f);
 
             // Mountain seams frame, rather than define, circulation.
             foreach(var p in new[]{
