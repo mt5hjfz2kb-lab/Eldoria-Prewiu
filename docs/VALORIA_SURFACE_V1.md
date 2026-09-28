@@ -98,3 +98,18 @@ The first zero-credit Lane B proof is RockTerrainSeamFiller with the determinist
 ## Hero proof reuse
 
 GateStreetRiseRock MV1 is selected as the bounded HERO visual proof for the formula because it contains architecture + rock and already has a certified silhouette. Its historical circulation/interface failure remains authoritative and is explicitly out of scope: surface improvement must never be presented as a repaired route.
+
+## Unity/glTFast preservation rule
+
+The project uses `com.unity.cloud.gltfast 6.14.1` with URP. glTFast can import glTF metallic-roughness PBR, normal, occlusion and emission directly and may use its own shaders such as `Shader Graphs/glTF-pbrMetallicRoughness`.
+
+Therefore Valoria's URP adaptation layer must treat the following as already-compatible and preserve them unchanged:
+- `Universal Render Pipeline/*`
+- `Shader Graphs/glTF-*`
+- `glTF/*`
+
+Only genuinely legacy/non-URP materials should pass through the fallback `AdaptForUrp` reconstruction path.
+
+This closes a second PBR-loss route beyond the old `BenchmarkPieceIntegrated` path: converting a valid glTFast material merely because its shader name did not begin with `Universal Render Pipeline/`.
+
+Production fix: `ValoriaKit.AdaptForUrp` now preserves glTFast shaders before any fallback conversion.
