@@ -122,21 +122,21 @@ namespace Eldoria.Presentation
             ValoriaKit.House("Aserradero",new Vector3(-5.4f,.52f,-2.0f),
                 new Vector3(3.4f,1.75f,2.8f),state.SawmillLevel>0,Glow);
             TagVisibleHotspots("Aserradero","sawmill");
-            var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-5.4f,1.30f,-2.0f),
-                new Vector3(3.35f,1.80f,2.85f),new Color(.2f,.2f,.2f));
+            var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-4.80f,1.68f,-3.05f),
+                new Vector3(3.75f,2.25f,1.15f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
 
             ValoriaKit.House("Cuartel",new Vector3(5.4f,.52f,-2.0f),
                 new Vector3(3.5f,1.80f,2.9f),state.BarracksLevel>0,Glow);
             TagVisibleHotspots("Cuartel","barracks");
-            var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(5.4f,1.30f,-2.0f),
-                new Vector3(3.45f,1.85f,2.95f),new Color(.2f,.2f,.2f));
+            var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(6.00f,1.68f,-3.05f),
+                new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
             barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
 
             ValoriaKit.BastionCore("Bastion",new Vector3(0,l1+.45f,7.25f),Glow);
             TagVisibleHotspots("Bastion","bastion");
-            var bastion=ValoriaKit.Block("Bastion · target",new Vector3(0,l1+2.0f,7.25f),
-                new Vector3(4.8f,4.0f,4.4f),new Color(.2f,.2f,.2f));
+            var bastion=ValoriaKit.Block("Bastion · target",new Vector3(.75f,l1+2.45f,5.95f),
+                new Vector3(5.4f,4.7f,1.35f),new Color(.2f,.2f,.2f));
             bastion.AddComponent<WorldHotspot>().Id="bastion"; bastion.GetComponent<Renderer>().enabled=false;
 
             // Civil/economic upper plot reserved without filling every parcel.
