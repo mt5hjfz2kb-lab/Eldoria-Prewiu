@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "provisional_visual_formula_v1",
+  "families": {
+    "Eldoria Rock": {
+      "role": "mountain, retaining masses, architecture-to-terrain transition",
+      "value_relation": "darker than Eldoria Stone",
+      "saturation": "low",
+      "roughness_direction": "high",
+      "metallic_direction": "zero_or_near_zero",
+      "authoring_rule": "macro breakup first; avoid noisy microdetail that vanishes at gameplay camera"
+    },
+    "Eldoria Stone": {
+      "role": "walls, stairs, structural masonry, bastion architecture",
+      "value_relation": "medium; lighter/readable against Rock",
+      "saturation": "low neutral-to-warm",
+      "roughness_direction": "medium_high",
+      "metallic_direction": "zero",
+      "authoring_rule": "read joints/AO and form at zoom 12/9; do not rely on high-frequency texture"
+    },
+    "Eldoria Timber": {
+      "role": "beams, frames, doors, balconies, production/residential structure",
+      "value_relation": "medium_dark warm accent",
+      "saturation": "restrained",
+      "roughness_direction": "medium_high",
+      "metallic_direction": "zero",
+      "authoring_rule": "warmth is controlled; avoid orange/cartoon timber"
+    },
+    "Eldoria Roof": {
+      "role": "roof silhouette and upper-mass separation",
+      "value_relation": "one of the darkest architectural families",
+      "saturation": "very low",
+      "roughness_direction": "high",
+      "metallic_direction": "zero",
+      "authoring_rule": "silhouette and value separation matter more than microdetail"
+    },
+    "Eldoria Ground": {
+      "role": "street, terrace, mud/stone transitions and circulation readability",
+      "value_relation": "medium muted",
+      "saturation": "low",
+      "roughness_direction": "high",
+      "metallic_direction": "zero",
+      "authoring_rule": "support circulation without becoming focal"
+    }
+  },
+  "rule": "Asset-specific materials may vary via masks, wear and accents, but should inherit these families rather than introduce unrelated shading responses."
+}
