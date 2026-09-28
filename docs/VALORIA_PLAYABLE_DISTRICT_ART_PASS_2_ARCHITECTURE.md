@@ -137,6 +137,9 @@ Robust compact military mass: stone lower body, asymmetric timber/slate upper si
 **Official-camera acceptance**  
 At 19 it must be distinct from the Aserradero; at 12 it must read immediately as military; at 9 military cues must remain subordinate to the architecture rather than looking like props pasted onto a house.
 
+**Exact single-image Tripo reference brief**  
+Generate one isolated 3/4 south/front asset reference, not a moodboard and not a diorama. Neutral light-grey studio background, full building visible, no people, no labels, no road, no stairs, no terrain/mountain and no surrounding city. Compact mountain-city barracks/guardhouse with a robust stone lower storey, recessed guarded south entrance, asymmetric timber-and-stone upper mass, dark connected slate roof hierarchy, one clearly subordinate raised guard bay/watch cue, restrained blue heraldic banner/shield details integrated into the facade, and a small military service annex. The west flank must visually terminate cleanly/openly so the central street can remain clear. It must look unmistakably military but smaller and less monumental than the Bastion; no cottage read, no standalone keep/tower, no oversized curtain wall, no pasted-on weapon clutter.
+
 ## 3. Valoria_Bastion_AP2_v1
 
 **Function**  
