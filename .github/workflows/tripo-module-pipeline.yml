@@ -437,6 +437,16 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
           git -C "$env:GITHUB_WORKSPACE" commit -m "$message"
           if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
-          git -C "$env:GITHUB_WORKSPACE" push origin HEAD:main
-          if ($LASTEXITCODE -ne 0) { throw "git push failed with exit code $LASTEXITCODE" }
+          $pushed = $false
+          foreach ($attempt in 1..4) {
+            git -C "$env:GITHUB_WORKSPACE" fetch origin main
+            if ($LASTEXITCODE -ne 0) { throw "git fetch failed with exit code $LASTEXITCODE" }
+            git -C "$env:GITHUB_WORKSPACE" rebase origin/main
+            if ($LASTEXITCODE -ne 0) { throw "git rebase failed with exit code $LASTEXITCODE" }
+            git -C "$env:GITHUB_WORKSPACE" push origin HEAD:main
+            if ($LASTEXITCODE -eq 0) { $pushed = $true; break }
+            Write-Host "PROMOTION_PUSH_RETRY: attempt=$attempt"
+            Start-Sleep -Seconds 2
+          }
+          if (-not $pushed) { throw 'git push failed after concurrent-main retries' }
           Write-Host "PROMOTION_PUSHED: $relative | sha256 $sha"
