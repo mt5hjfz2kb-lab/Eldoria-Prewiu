@@ -28,7 +28,8 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Valoria");
             yield return null;
-            var camera=Camera.main;
+            var cameraGo=GameObject.Find("Isometric camera");
+            var camera=cameraGo!=null?cameraGo.GetComponent<Camera>():null;
             var presenter=Object.FindFirstObjectByType<SlicePresenter>();
             Assert.That(camera,Is.Not.Null);
             Assert.That(presenter,Is.Not.Null);
