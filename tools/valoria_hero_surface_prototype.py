@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import bpy
+import numpy as np
 
 
 def parse_args():
@@ -20,14 +21,100 @@ def clear_scene():
     bpy.ops.object.delete(use_global=False)
 
 
-def make_material(name, color, roughness):
-    m = bpy.data.materials.new(name)
-    m.use_nodes = True
-    bsdf = m.node_tree.nodes.get("Principled BSDF")
-    bsdf.inputs["Base Color"].default_value = (*color, 1.0)
-    bsdf.inputs["Metallic"].default_value = 0.0
-    bsdf.inputs["Roughness"].default_value = roughness
-    return m
+def _make_image(name, rgb, colorspace):
+    h, w = rgb.shape[:2]
+    image = bpy.data.images.new(name, width=w, height=h, alpha=True)
+    alpha = np.ones((h, w, 1), dtype=np.float32)
+    if rgb.ndim == 2:
+        rgb = np.repeat(rgb[..., None], 3, axis=2)
+    rgba = np.concatenate((np.clip(rgb, 0.0, 1.0), alpha), axis=-1)
+    image.pixels.foreach_set(rgba.astype(np.float32).ravel())
+    image.colorspace_settings.name = colorspace
+    image.pack()
+    return image
+
+
+def _normal_from_height(name, height, strength):
+    gy, gx = np.gradient(height)
+    nx = -gx * strength
+    ny = -gy * strength
+    nz = np.ones_like(height)
+    length = np.sqrt(nx * nx + ny * ny + nz * nz)
+    normal = np.stack(
+        (nx / length * 0.5 + 0.5, ny / length * 0.5 + 0.5, nz / length * 0.5 + 0.5),
+        axis=-1,
+    )
+    return _make_image(name, normal, "Non-Color")
+
+
+def make_pbr_material(name, family, size=1024):
+    y, x = np.mgrid[0:size, 0:size].astype(np.float32)
+    u = x / float(size - 1)
+    v = y / float(size - 1)
+
+    if family == "stone":
+        # Large readable masonry variation first, micro-noise second.
+        coarse = 0.5 + 0.18 * np.sin(u * 17.0 + v * 7.0) + 0.08 * np.cos(u * 39.0 - v * 23.0)
+        joints_h = np.exp(-((np.mod(v * 8.0, 1.0) - 0.5) / 0.055) ** 2)
+        row = np.floor(v * 8.0)
+        stagger = np.mod(u * 7.0 + 0.5 * np.mod(row, 2.0), 1.0)
+        joints_v = np.exp(-((stagger - 0.5) / 0.055) ** 2)
+        joints = np.clip(np.maximum(joints_h, joints_v), 0.0, 1.0)
+        height = np.clip(coarse * (1.0 - 0.25 * joints), 0.0, 1.0)
+        dark = np.array([0.25, 0.245, 0.225], dtype=np.float32)
+        light = np.array([0.43, 0.40, 0.355], dtype=np.float32)
+        base = dark + (light - dark) * height[..., None]
+        base *= (1.0 - 0.15 * joints[..., None])
+        rough = np.clip(0.72 + 0.14 * joints + 0.06 * (1.0 - height), 0.70, 0.92)
+        normal_strength = 2.0
+    elif family == "rock":
+        coarse = (
+            0.50
+            + 0.20 * np.sin(u * 11.0 + v * 9.0)
+            + 0.12 * np.sin(u * 29.0 - v * 17.0)
+            + 0.08 * np.cos(u * 61.0 + v * 47.0)
+        )
+        height = np.clip(coarse, 0.0, 1.0)
+        dark = np.array([0.18, 0.20, 0.195], dtype=np.float32)
+        light = np.array([0.33, 0.325, 0.295], dtype=np.float32)
+        base = dark + (light - dark) * height[..., None]
+        rough = np.clip(0.79 + 0.13 * (1.0 - height), 0.78, 0.95)
+        normal_strength = 3.2
+    else:
+        raise RuntimeError("Unknown PBR family: " + family)
+
+    base_img = _make_image(name + "_BaseColor", base, "sRGB")
+    rough_img = _make_image(name + "_Roughness", rough, "Non-Color")
+    normal_img = _normal_from_height(name + "_Normal", height, normal_strength)
+
+    material = bpy.data.materials.new(name)
+    material.use_nodes = True
+    nodes = material.node_tree.nodes
+    links = material.node_tree.links
+    nodes.clear()
+
+    out = nodes.new("ShaderNodeOutputMaterial")
+    bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+    base_node = nodes.new("ShaderNodeTexImage")
+    base_node.image = base_img
+    rough_node = nodes.new("ShaderNodeTexImage")
+    rough_node.image = rough_img
+    normal_tex = nodes.new("ShaderNodeTexImage")
+    normal_tex.image = normal_img
+    normal_map = nodes.new("ShaderNodeNormalMap")
+    normal_map.inputs["Strength"].default_value = 0.48 if family == "stone" else 0.56
+
+    links.new(base_node.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(rough_node.outputs["Color"], bsdf.inputs["Roughness"])
+    links.new(normal_tex.outputs["Color"], normal_map.inputs["Color"])
+    links.new(normal_map.outputs["Normal"], bsdf.inputs["Normal"])
+    links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    if "Metallic" in bsdf.inputs:
+        bsdf.inputs["Metallic"].default_value = 0.0
+    if "Specular IOR Level" in bsdf.inputs:
+        bsdf.inputs["Specular IOR Level"].default_value = 0.24
+
+    return material, [base_img.name, rough_img.name, normal_img.name]
 
 
 def classify_mesh(obj, stone, rock):
@@ -47,8 +134,8 @@ def classify_mesh(obj, stone, rock):
         axis = max(abs(n.x), abs(n.y), abs(n.z))
         z01 = (poly.center.z - zmin) / span
 
-        # Diagnostic segmentation only: deliberate planar masonry tends to be
-        # axis-aligned; irregular lower geometry tends to be rock.
+        # Diagnostic semantic split only. Architecture tends to be planar and/or
+        # occupy the upper built mass; irregular lower geometry is treated as rock.
         architecture = axis >= 0.93 or (z01 >= 0.42 and axis >= 0.84)
         poly.material_index = 0 if architecture else 1
         if architecture:
@@ -64,8 +151,8 @@ def main():
     clear_scene()
     bpy.ops.import_scene.gltf(filepath=a.input)
 
-    stone = make_material("Eldoria Stone Prototype", (0.34, 0.32, 0.29), 0.78)
-    rock = make_material("Eldoria Rock Prototype", (0.20, 0.22, 0.21), 0.92)
+    stone, stone_textures = make_pbr_material("Eldoria Stone · Hero Prototype", "stone")
+    rock, rock_textures = make_pbr_material("Eldoria Rock · Hero Prototype", "rock")
 
     total_stone = 0
     total_rock = 0
@@ -89,6 +176,8 @@ def main():
         raise RuntimeError("No mesh objects imported")
     if not uv_all:
         raise RuntimeError("Hero surface prototype requires UV0 on every mesh")
+    if total_stone == 0 or total_rock == 0:
+        raise RuntimeError("Hero surface prototype did not produce both Stone and Rock regions")
 
     Path(a.output).parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.export_scene.gltf(
@@ -100,21 +189,34 @@ def main():
     )
 
     report = {
-        "schema_version": 1,
-        "mode": "hero_surface_segmentation_prototype",
+        "schema_version": 2,
+        "mode": "hero_surface_segmentation_pbr_prototype",
         "meshes": mesh_count,
         "vertices": vertices,
         "triangles": triangles,
         "uv_present_all_meshes": uv_all,
+        "geometry_modified": False,
         "materials": [
-            {"name": stone.name, "roughness": 0.78, "role": "Eldoria Stone"},
-            {"name": rock.name, "roughness": 0.92, "role": "Eldoria Rock"},
+            {
+                "name": stone.name,
+                "role": "Eldoria Stone",
+                "textures": stone_textures,
+                "texture_size": 1024,
+                "metallic": 0.0,
+            },
+            {
+                "name": rock.name,
+                "role": "Eldoria Rock",
+                "textures": rock_textures,
+                "texture_size": 1024,
+                "metallic": 0.0,
+            },
         ],
         "face_classification": {
             "stone_faces": total_stone,
             "rock_faces": total_rock,
         },
-        "scope_limit": "visual surface diagnostic only; does not repair or certify traversal/interface geometry",
+        "scope_limit": "visual surface/identity diagnostic only; does not repair or certify traversal/interface geometry",
     }
     Path(a.report).write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
