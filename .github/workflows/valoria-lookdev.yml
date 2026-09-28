@@ -49,7 +49,12 @@ jobs:
           $log="$env:RUNNER_TEMP\Eldoria-LookDev.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaLookDevCapture.Capture','-logFile',$log)
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw 'LookDev capture timed out after 5 minutes.'
+          }
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 200}; throw "LookDev capture failed: $($process.ExitCode)" }
           $images=@(Get-ChildItem $folder -Filter '*.png' -File)
           if($images.Count -ne 8){ throw "Expected 8 LookDev PNGs, found $($images.Count)" }
