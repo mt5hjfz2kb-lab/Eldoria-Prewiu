@@ -167,7 +167,8 @@ try {
 
     const beforeUrl = uploadPage.url();
     await withTimeout(imageInput.setInputFiles(uploadPath), pageProbeTimeoutMs, 'image upload staging');
-    await new Promise(resolve => setTimeout(resolve, 1800));
+    await uploadPage.getByText('Subiendo...', { exact: false }).waitFor({ state: 'hidden', timeout: 60000 });
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     report.upload = {
       source_path: uploadPath,
@@ -180,6 +181,7 @@ try {
       credits_spent: false
     };
     report.post_upload_page = await inspectPage(uploadPage);
+    report.upload.visible_generate_button = report.post_upload_page.visible_button_sample.find(x => /^Generar\b/i.test(x)) || null;
     report.upload.visible_images = await uploadPage.locator('img').evaluateAll(images => images.map(img => ({
       alt: img.alt,
       width: img.naturalWidth,
