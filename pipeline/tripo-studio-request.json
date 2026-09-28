@@ -1,11 +1,10 @@
 {
   "enabled": true,
-  "mode": "stage_upload",
+  "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Read-only probe. Must not click Generate or spend credits.",
-  "probe_nonce": "2026-09-28T11:13:final-safe-stage-cleanup",
+  "probe_nonce": "2026-09-28T11:14:reset-safe-probe",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "allow_credit_spend": false,
-  "upload_path": "Unity/Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-1.png"
+  "allow_credit_spend": false
 }
