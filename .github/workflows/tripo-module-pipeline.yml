@@ -408,6 +408,66 @@ jobs:
           }
           Get-Content $metrics
 
+      - name: Build canonical asset manifest evidence
+        if: always() && steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $requestPath = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json"
+          $request = Get-Content $requestPath -Raw | ConvertFrom-Json
+          $sourceInfo = @{}
+          $sourcePath = "$env:RUNNER_TEMP\tripo-module-source.txt"
+          if (Test-Path $sourcePath) {
+            foreach ($line in Get-Content $sourcePath) {
+              $parts = $line -split '=',2
+              if ($parts.Count -eq 2) { $sourceInfo[$parts[0]] = $parts[1] }
+            }
+          }
+          $blender = $null
+          $blenderPath = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
+          if (Test-Path $blenderPath) { $blender = Get-Content $blenderPath -Raw | ConvertFrom-Json }
+          $unity = $null
+          $unityPath = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures\metrics.json"
+          if (Test-Path $unityPath) { $unity = Get-Content $unityPath -Raw | ConvertFrom-Json }
+          $optimizedPath = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          $optimizedSha = $null
+          $optimizedBytes = 0
+          if (Test-Path $optimizedPath) {
+            $optimizedSha = (Get-FileHash $optimizedPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            $optimizedBytes = (Get-Item $optimizedPath).Length
+          }
+          $manifest = [ordered]@{
+            schema_version = 1
+            asset_id = [string]$request.module_label
+            request_id = [string]$request.request_id
+            source_commit = "${{ github.sha }}"
+            workflow_run_id = [long]"${{ github.run_id }}"
+            source = [ordered]@{
+              mode = [string]$request.source.mode
+              name = $sourceInfo["source_name"]
+              sha256 = $sourceInfo["source_sha256"]
+              bytes = $sourceInfo["source_bytes"]
+              tripo_model = $sourceInfo["tripo_model"]
+              tripo_task_id = $sourceInfo["tripo_task_id"]
+              credits_consumed = $sourceInfo["credits_consumed"]
+            }
+            optimization = [ordered]@{
+              target_triangles = $blender.target_triangles
+              accepted_range = $blender.accepted_range
+              raw = $blender.raw
+              optimized = $blender.optimized
+              optimized_sha256 = $optimizedSha
+              optimized_bytes = $optimizedBytes
+              surface_diagnostics = $blender.surface_diagnostics
+              refinement = $blender.refinement
+            }
+            unity = $unity
+            visual_acceptance = [string]$request.visual_acceptance
+            promotion = $request.promotion
+          }
+          $manifestPath = "$env:RUNNER_TEMP\eldoria-asset-manifest.json"
+          $manifest | ConvertTo-Json -Depth 20 | Set-Content $manifestPath
+          Write-Host "ASSET_MANIFEST=$manifestPath"
+          Get-Content $manifestPath
       - uses: actions/upload-artifact@v4
         if: always() && steps.request.outputs.enabled == 'true'
         with:
@@ -424,6 +484,7 @@ jobs:
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/tripo-module-blender-error.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
+            ${{ runner.temp }}/eldoria-asset-manifest.json
           if-no-files-found: warn
 
       - name: Promote certified module to production Resources
