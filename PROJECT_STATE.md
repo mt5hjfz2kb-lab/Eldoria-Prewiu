@@ -1,7 +1,16 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-25
+Updated: 2026-09-28
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
+
+## Valoria long-term city scope — 2026-09-28
+- The certified **Valoria Playable District Skeleton v1** is the structural kernel of the city, not the full production footprint.
+- Valoria is now planned as one persistent city that expands beyond the current Bastion I–X prologue toward the present long-range planning target of roughly **Bastion 25–35** without rebuilding the original terrain/circulation core.
+- Long-term growth uses major visual eras plus lighter per-level feedback: ruins/repair, district occupation, building tiers, walls, roads, civic density, life/props and Bastion silhouette progression.
+- The city is intentionally larger than one normal mobile viewport. The camera direction is fixed authored isometric orientation + controlled zoom + **bounded panning**, with progression-aware bounds as districts unlock; free 360° orbit remains out of scope.
+- Production art must reserve maximum building envelopes and future districts before final dressing. Certified Tripo families remain reusable art/reference inventory but do not dictate topology.
+- Canonical planning sources: `docs/VALORIA_MASTER_PLAN_V1.md`, `docs/VALORIA_PROGRESSION_MAP_V1.md`, `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`.
+- Next implementation proof is a larger-than-one-viewport Unity graybox around the certified kernel with reserved west/east/upper/future districts, bounded mobile pan, tap-vs-drag validation, real hotspot selection after pan, zoom 9/12/19 and mobile-aspect edge captures. Broad final-art dressing waits for this gate.
 
 ## Active product
 - A **separate Unity source line** is active in `Unity/` (Editor 6000.3.23f1). The first Valoria → frontera → bosque/scout → retorno → Aserradero slice is compiled, played and automated on Windows, including persistence and the 2452→2622 Power transition. The self-hosted runner `DESKTOP-R10PE55` now certifies EditMode, PlayMode and a Windows player build from GitHub. The Unity line has also begun Bastion II: ascent from Bastion I, timed Cuartel construction, +12 Archer T1 recruitment, a 48-archer Engendro gate, persistent/idempotent rewards and corresponding HUD/world presentation. Canonical certification for this block is green on commit `85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf`, with artifact `eldoria-unity-checks-85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf` (~37 MB). Mobile/device validation and full Bastion I–X parity are still pending. `UNITY_CORE_CONTRACT.md` records the deliberate Power/March decisions. Web v0.32.0 remains the playable canonical reference until Unity replacement is explicitly approved.
