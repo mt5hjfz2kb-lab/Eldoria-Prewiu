@@ -184,6 +184,17 @@ try {
     } else {
       report.upload.cleared = false;
       report.upload.control_replaced_after_upload = true;
+      try {
+        await uploadPage.reload({ waitUntil: 'domcontentloaded', timeout: 15000 });
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        const restored = uploadPage.locator('input[type="file"][accept*="image"]').first();
+        report.upload.cleanup_reload = true;
+        report.upload.image_input_restored_after_reload = (await restored.count()) > 0;
+        report.upload.cleared = report.upload.image_input_restored_after_reload;
+      } catch (error) {
+        report.upload.cleanup_reload = false;
+        report.upload.cleanup_error = String(error?.message || error);
+      }
     }
   } else if (mode !== 'probe') {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
@@ -196,7 +207,9 @@ try {
   if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
   else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
 
-  if (mode === 'stage_upload') console.log('TRIPO_STUDIO_UPLOAD_STAGED_AND_CLEARED');
+  if (mode === 'stage_upload') {
+    console.log(report.upload?.cleared ? 'TRIPO_STUDIO_UPLOAD_STAGED_AND_CLEANED' : 'TRIPO_STUDIO_UPLOAD_STAGED_CLEANUP_UNCONFIRMED');
+  }
 
   // Never close the owner's real Edge session.
   process.exit(0);
