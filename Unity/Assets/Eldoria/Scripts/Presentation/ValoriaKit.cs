@@ -421,13 +421,13 @@ namespace Eldoria.Presentation
             // Keep the certified plot/click geometry independent from this visual asset.
             var dedicated=BenchmarkPieceIntegrated(name+" · dedicated sawmill",
                 LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
-                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.24f,.22f,.20f,1f));
+                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.16f,.14f,.12f,1f));
             if(dedicated!=null)
             {
-                // Keep warmth as a window/workbench accent only; the previous broad local light
-                // washed the full Tripo mesh into peach under the official dusk camera.
+                // Final bounded integration: preserve a warm work-window cue without lighting
+                // the full mesh; the imported texture otherwise reads too pale at official zooms.
                 if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
-                    new Color(.96f,.53f,.22f),.22f,1.15f);
+                    new Color(.96f,.53f,.22f),.12f,.78f);
                 return;
             }
             // Fallback for missing imports; this reused composition failed the Art Pass 2 visual gate.
