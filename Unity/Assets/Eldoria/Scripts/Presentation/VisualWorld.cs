@@ -217,28 +217,19 @@ namespace Eldoria.Presentation
                     Quaternion.Euler(0,(i%2==0?2f:-2f),0),ValoriaKit.OldStone*.90f);
             }
 
-            // Buildings occupy the same frozen plots after circulation is solved.
-            ValoriaKit.House("Aserradero",new Vector3(-7.0f,.52f,-2.8f),
-                new Vector3(3.4f,1.75f,2.8f),state.SawmillLevel>0,Glow);
+            // ART PASS 2 — dedicated architecture inside the frozen plot envelopes.
+            // Visual architecture stays separate from the certified interaction volumes below.
+            ValoriaKit.SawmillArchitecture("Aserradero",new Vector3(-7.0f,.40f,-2.8f),state.SawmillLevel>0,Glow);
             TagVisibleHotspots("Aserradero","sawmill");
             var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-6.55f,1.68f,-3.75f),
                 new Vector3(3.75f,2.25f,1.15f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
-            for(int i=0;i<4;i++)
-                ValoriaKit.Cylinder("Aserradero · timber stack",new Vector3(-8.45f+i*.36f,.55f,-4.15f),
-                    new Vector3(.16f,1.15f,.16f),new Color(.27f,.17f,.10f),Quaternion.Euler(90,0,0));
-            ValoriaKit.Scaffold("Aserradero · crane frame",new Vector3(-8.35f,1.15f,-1.65f),new Vector3(1.25f,2.0f,1.05f));
 
-            ValoriaKit.House("Cuartel",new Vector3(7.0f,.52f,-4.0f),
-                new Vector3(3.5f,1.80f,2.9f),state.BarracksLevel>0,Glow);
+            ValoriaKit.BarracksArchitecture("Cuartel",new Vector3(7.0f,.40f,-4.0f),state.BarracksLevel>0,Glow);
             TagVisibleHotspots("Cuartel","barracks");
             var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(7.55f,1.68f,-5.05f),
                 new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
             barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
-            ValoriaKit.Banner("Cuartel · standard",new Vector3(8.45f,1.65f,-4.25f),new Vector3(.45f,1.45f,.06f),new Color(.18f,.30f,.44f));
-            for(int i=0;i<3;i++)
-                ValoriaKit.Block("Cuartel · training marker",new Vector3(5.55f+i*.48f,.58f,-5.15f),
-                    new Vector3(.12f,.95f,.12f),Timber*.92f);
 
             ValoriaKit.BastionCore("Bastion",new Vector3(0,l1+.45f,7.25f),Glow);
             TagVisibleHotspots("Bastion","bastion");

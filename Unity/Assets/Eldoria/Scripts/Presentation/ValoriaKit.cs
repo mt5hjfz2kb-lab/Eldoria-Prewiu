@@ -380,6 +380,68 @@ namespace Eldoria.Presentation
             if(lit&&glow!=null)glow(name+" · hearth",p+new Vector3(.42f,.95f,-size.z*.59f),new Color(.96f,.53f,.22f),.75f,2.5f);
         }
 
+        public static void SawmillArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
+        {
+            // Parcel-specific Art Pass 2 architecture: production building first, decoration second.
+            var art=ValoriaExternalAssetLibrary.Load();
+            var authored=BenchmarkPieceModulated(name+" · authored lumber mill",art!=null?art.LumberMill:null,
+                p+new Vector3(.05f,.02f,.18f),3.45f,3.55f,Quaternion.Euler(0,180f,0),
+                new Color(.78f,.74f,.66f,1f));
+            if(authored==null)
+                House(name+" · fallback workshop",p+new Vector3(.10f,.10f,.25f),new Vector3(3.25f,1.95f,2.65f),lit,glow);
+
+            // South/front work face remains open to the camera while the street-side edge stays clear.
+            Block(name+" · timber canopy beam",p+new Vector3(-.75f,2.38f,-1.16f),new Vector3(2.20f,.14f,.14f),Timber*.92f);
+            foreach(float x in new[]{-1.56f,-.05f})
+                Block(name+" · canopy post",p+new Vector3(x,1.30f,-1.16f),new Vector3(.14f,2.10f,.14f),Timber*.88f);
+            var canopy=Block(name+" · work canopy roof",p+new Vector3(-.78f,2.48f,-.74f),new Vector3(2.25f,.14f,1.25f),Slate*.90f);
+            canopy.transform.rotation=Quaternion.Euler(7f,0,0);
+
+            for(int i=0;i<5;i++)
+                Cylinder(name+" · log "+(i+1),p+new Vector3(-1.63f+i*.34f,.24f,-1.68f+(i%2)*.18f),
+                    new Vector3(.13f,.82f,.13f),new Color(.29f,.18f,.10f),Quaternion.Euler(90,0,90));
+            BenchmarkPiece(name+" · firewood",art!=null?art.Firewood:null,p+new Vector3(-1.52f,.02f,.92f),
+                1.05f,1.05f,Quaternion.Euler(0,-28f,0));
+            Scaffold(name+" · compact hoist",p+new Vector3(-1.30f,1.05f,.96f),new Vector3(.92f,1.70f,.82f));
+            Cylinder(name+" · hoist drum",p+new Vector3(-1.30f,1.68f,.90f),
+                new Vector3(.18f,.42f,.18f),Timber*.72f,Quaternion.Euler(90,0,0));
+            Block(name+" · plank rack",p+new Vector3(-1.45f,.58f,-.20f),new Vector3(.34f,1.05f,1.40f),Timber*.66f);
+            if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
+                new Color(.96f,.53f,.22f),.88f,2.8f);
+        }
+
+        public static void BarracksArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
+        {
+            // Compact military house: robust authored mass + one subordinate watch element.
+            var art=ValoriaExternalAssetLibrary.Load();
+            var core=BenchmarkPieceModulated(name+" · authored guardhouse",art!=null?art.SlavicHouse:null,
+                p+new Vector3(.18f,.02f,.08f),3.20f,3.35f,Quaternion.Euler(0,180f,0),
+                new Color(.70f,.70f,.67f,1f));
+            if(core==null)
+                House(name+" · fallback guardhouse",p+new Vector3(.12f,.10f,.05f),new Vector3(3.25f,1.95f,2.72f),lit,glow);
+
+            // Rear/east watch mass preserves the west street flank and stays below Bastion hierarchy.
+            var watch=BenchmarkPieceModulated(name+" · watch element",art!=null?art.StoneTower:null,
+                p+new Vector3(1.45f,.02f,.82f),1.42f,3.72f,Quaternion.Euler(0,5f,0),
+                new Color(.64f,.65f,.63f,1f));
+            if(watch==null)
+                Tower(name+" · watch fallback",p+new Vector3(1.45f,.02f,.82f),.62f,3.35f,OldStone*.78f);
+
+            Wall(name+" · rear guard wall",p+new Vector3(.42f,.68f,1.30f),
+                new Vector3(2.75f,1.05f,.32f),OldStone*.70f,true);
+            Banner(name+" · command standard",p+new Vector3(.95f,2.35f,-1.30f),
+                new Vector3(.48f,1.55f,.07f),new Color(.14f,.24f,.38f));
+            foreach(float x in new[]{-.92f,-.48f,-.04f})
+            {
+                Block(name+" · weapon rack post",p+new Vector3(x,.72f,-1.46f),new Vector3(.10f,.92f,.10f),Timber*.86f);
+                Cylinder(name+" · spear",p+new Vector3(x+.08f,1.18f,-1.48f),
+                    new Vector3(.035f,.82f,.035f),new Color(.48f,.42f,.31f),Quaternion.Euler(0,0,-7f));
+            }
+            Block(name+" · training beam",p+new Vector3(-1.12f,.46f,.98f),new Vector3(.18f,.78f,.18f),Timber*.82f);
+            if(lit&&glow!=null)glow(name+" · guardhouse warmth",p+new Vector3(.40f,1.02f,-1.30f),
+                new Color(.96f,.53f,.22f),.80f,2.6f);
+        }
+
         public static void Scaffold(string name,Vector3 p,Vector3 size)
         {
             float hx=size.x*.5f,hz=size.z*.5f;
@@ -485,36 +547,36 @@ namespace Eldoria.Presentation
             // Use the Mega castle pieces only as one connected facade. A dark backing mass prevents
             // gaps, so individual modules never read as floating props.
             Wall(name+" · front curtain backing",origin+new Vector3(0,1.85f,-2.70f),
-                new Vector3(8.8f,2.15f,.52f),OldStone*.58f,false);
+                new Vector3(6.55f,2.35f,.54f),OldStone*.58f,false);
             var megaGate=art!=null?art.MegaHalfGate:null;
             var megaTower=art!=null?art.MegaTower:null;
             // Preserve the authored stone materials here. Flattening these to a single tint erased
             // the masonry detail and made the connected facade read as one brown slab.
             if(BenchmarkPieceModulated(name+" · connected gate",megaGate,origin+new Vector3(0,.12f,-3.08f),
-                2.65f,3.25f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
+                2.35f,3.15f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
                 BenchmarkPieceTinted(name+" · connected gate fallback",megaGate,origin+new Vector3(0,.12f,-3.08f),
                     2.65f,3.25f,Quaternion.identity,WarmStone*.82f);
-            foreach(float x in new[]{-2.9f,2.9f})
+            foreach(float x in new[]{-2.15f,2.15f})
                 if(BenchmarkPieceModulated(name+" · connected wall",stoneWall,origin+new Vector3(x,.12f,-3.02f),
-                    3.55f,3.10f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
+                    2.55f,3.05f,Quaternion.identity,new Color(.58f,.58f,.56f,1f))==null)
                     Wall(name+" · connected wall fallback",origin+new Vector3(x,1.60f,-3.02f),
                         new Vector3(3.4f,2.7f,.62f),WarmStone*.72f,true);
-            if(BenchmarkPieceModulated(name+" · connected tower west",megaTower,origin+new Vector3(-5.05f,.08f,-2.62f),
-                2.95f,6.85f,Quaternion.Euler(0,-3f,0),new Color(.55f,.56f,.55f,1f))==null)
+            if(BenchmarkPieceModulated(name+" · connected tower west",megaTower,origin+new Vector3(-3.28f,.08f,-2.48f),
+                2.05f,5.85f,Quaternion.Euler(0,-4f,0),new Color(.55f,.56f,.55f,1f))==null)
                 Tower(name+" · connected tower west fallback",origin+new Vector3(-5.05f,.05f,-2.35f),1.30f,6.15f,WarmStone*.74f);
-            if(BenchmarkPieceModulated(name+" · connected tower east",megaTower,origin+new Vector3(5.0f,.08f,-2.62f),
-                2.55f,5.55f,Quaternion.Euler(0,4f,0),new Color(.52f,.54f,.53f,1f))==null)
+            if(BenchmarkPieceModulated(name+" · connected tower east",megaTower,origin+new Vector3(3.18f,.08f,-2.45f),
+                1.82f,4.95f,Quaternion.Euler(0,6f,0),new Color(.52f,.54f,.53f,1f))==null)
                 Tower(name+" · connected tower east fallback",origin+new Vector3(5.0f,.05f,-2.35f),1.15f,5.05f,WarmStone*.70f);
-            if(BenchmarkPieceModulated(name+" · rear connected tower west",megaTower,origin+new Vector3(-4.65f,.08f,2.80f),
-                2.48f,6.20f,Quaternion.Euler(0,8f,0),new Color(.49f,.51f,.50f,1f))==null)
+            if(BenchmarkPieceModulated(name+" · rear connected tower west",megaTower,origin+new Vector3(-2.55f,.08f,2.25f),
+                1.85f,6.75f,Quaternion.Euler(0,9f,0),new Color(.49f,.51f,.50f,1f))==null)
                 Tower(name+" · rear connected tower west fallback",origin+new Vector3(-4.65f,.05f,2.80f),1.12f,5.65f,OldStone*.72f);
-            if(BenchmarkPieceModulated(name+" · rear connected tower east",megaTower,origin+new Vector3(4.20f,.08f,2.35f),
-                2.08f,4.65f,Quaternion.Euler(0,-11f,0),new Color(.46f,.48f,.47f,1f))==null)
+            if(BenchmarkPieceModulated(name+" · rear connected tower east",megaTower,origin+new Vector3(2.45f,.08f,1.95f),
+                1.65f,5.45f,Quaternion.Euler(0,-11f,0),new Color(.46f,.48f,.47f,1f))==null)
                 Tower(name+" · rear connected tower east fallback",origin+new Vector3(4.20f,.05f,2.35f),.96f,4.35f,OldStone*.68f);
 
             // Keep: a small hidden backing volume surrounded by authored masonry on every visible side.
-            Block(name+" · inner keep backing",origin+new Vector3(0,2.78f,1.15f),
-                new Vector3(4.05f,.66f,2.45f),Stone*.36f);
+            Block(name+" · inner keep backing",origin+new Vector3(-.15f,3.05f,.95f),
+                new Vector3(4.15f,1.15f,2.55f),Stone*.36f);
             foreach(float x in new[]{-1.55f,1.55f})
                 if(BenchmarkPieceModulated(name+" · keep detailed facing",stoneWall,
                     origin+new Vector3(x,2.42f,-1.28f),3.0f,2.62f,Quaternion.identity,new Color(.54f,.55f,.53f,1f))==null)
@@ -531,10 +593,10 @@ namespace Eldoria.Presentation
                 new Color(.45f,.47f,.46f,1f))==null)
                 Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
                     new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
-            GableRoof(name+" · inner keep west roof",origin+new Vector3(-1.15f,4.72f,1.02f),
-                new Vector3(3.15f,1.36f,3.15f),Slate*.94f);
-            GableRoof(name+" · inner keep east roof",origin+new Vector3(1.55f,4.24f,1.24f),
-                new Vector3(2.30f,.92f,2.70f),Slate*.84f);
+            GableRoof(name+" · inner keep west roof",origin+new Vector3(-.92f,5.52f,.90f),
+                new Vector3(3.45f,1.62f,3.25f),Slate*.94f);
+            GableRoof(name+" · inner keep east roof",origin+new Vector3(1.55f,4.78f,1.32f),
+                new Vector3(2.42f,1.08f,2.72f),Slate*.84f);
             Rubble(name+" · collapsed keep roof",origin+new Vector3(1.85f,3.70f,.10f),.58f,6);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
@@ -542,6 +604,19 @@ namespace Eldoria.Presentation
             foreach(float x in new[]{-1.85f,0f,1.85f})
                 WindowSlit(name+" · keep slit",origin+new Vector3(x,4.0f,-1.78f),
                     new Vector3(.28f,.72f,.12f),x==0f);
+
+            // Art Pass 2 skyline: one dominant rear lantern and a lower counter-mass,
+            // both inside the reserved Bastion envelope so the stair mouth stays open.
+            var lantern=BenchmarkPieceModulated(name+" · high lantern tower",megaTower,
+                origin+new Vector3(-.62f,.18f,2.28f),1.62f,6.95f,Quaternion.Euler(0,4f,0),
+                new Color(.54f,.55f,.53f,1f));
+            if(lantern==null)Tower(name+" · high lantern fallback",origin+new Vector3(-.62f,.08f,2.28f),.72f,6.45f,OldStone*.78f);
+            GableRoof(name+" · lantern crown",origin+new Vector3(-.62f,6.55f,2.28f),
+                new Vector3(1.95f,1.20f,2.05f),Slate*.96f);
+            GableRoof(name+" · east counter roof",origin+new Vector3(2.08f,5.18f,.85f),
+                new Vector3(2.25f,.96f,2.35f),Slate*.88f);
+            Block(name+" · central roof ridge",origin+new Vector3(-.18f,5.60f,.82f),
+                new Vector3(3.65f,.16f,.16f),Slate*.78f);
 
             Banner(name+" · banner west",origin+new Vector3(-2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
@@ -567,8 +642,8 @@ namespace Eldoria.Presentation
                     .90f,3.55f,OldStone*.64f);
             Rubble(name+" · palace collapse west",origin+new Vector3(-5.0f,.18f,3.0f),1.45f,10);
             Rubble(name+" · palace collapse east",origin+new Vector3(4.6f,.18f,3.3f),1.25f,9);
-            Scaffold(name+" · repair scaffold",origin+new Vector3(3.95f,2.35f,1.05f),
-                new Vector3(1.55f,3.05f,1.35f));
+            Scaffold(name+" · repair scaffold",origin+new Vector3(2.85f,2.25f,1.05f),
+                new Vector3(1.35f,2.75f,1.20f));
             Rubble(name+" · crown rubble",origin+new Vector3(-3.15f,.22f,2.05f),1.35f,8);
 
             if(glow!=null)glow(name+" · inhabited warmth",origin+new Vector3(0,3.55f,-1.15f),
