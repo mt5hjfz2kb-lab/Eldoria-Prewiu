@@ -58,7 +58,12 @@ jobs:
           $log="$env:RUNNER_TEMP\Eldoria-VisualFormula.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw 'Visual Formula capture timed out after 5 minutes.'
+          }
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
           $expected=@(
             'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
