@@ -336,3 +336,30 @@ This closes the Aserradero-specific blocker. It does not make Art Pass 2 complet
 - Selected Studio setting: **Modelo HD / H3.1 - Máx. calidad** with **Generar en Partes off**, **Textura 8K off**, **Solo para compartir**. Visible button: **Generar 55** (55 credits).
 - `Generate` was not clicked; this run spent **0 credits**. Input remains staged in the owner's browser for approval. Generation/export and Blender/Unity evaluation are pending explicit owner authorization for credit spend.
 - A staged image proves the safe UI bridge, not the generation/export or complete Tripo-to-Unity pipeline. Do not infer art acceptance from this checkpoint.
+
+
+## Blender art-refine experiment on accepted Aserradero — 2026-09-28
+
+Goal: test whether Blender can become a real post-Tripo refinement stage without spending credits or regenerating geometry.
+
+Implementation:
+- Extended the existing canonical Blender script; no per-asset script/workflow was created.
+- Added safe `repository_glb` staging so already-accepted production geometry can be reviewed/refined without touching Tripo.
+- Added optional refinement configuration for connected-component diagnostics, conservative merge-by-distance cleanup, normal recalculation and controlled PBR roughness/specular response.
+- Production Aserradero was **not replaced**; the refined GLB exists only in CI evidence.
+
+Evidence:
+- Successful canonical run: **36483088548**.
+- Artifact: **10997686762**.
+- Input production GLB: **11,134,796 bytes**, SHA-256 `1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e`.
+- Geometry remained **49,800 tris**.
+- Vertices: **55,752 -> 50,447** through conservative duplicate/near-duplicate cleanup.
+- UV0, normals, 1 material and all 3 textures remained present.
+- Connected-component diagnostic: **5,100 -> 2,636** components after safe cleanup; this confirms the Tripo mesh contains a very fragmented internal structure even though it renders as one coherent asset.
+- Material pass raised base roughness to **0.78** and reduced Specular IOR Level to **0.18**; metallic remained 0.
+- Unity isolated review: PASS; raycast/collider/captures remain valid.
+
+Decision:
+- **Pipeline proof: PASS.** Blender can add measurable value after Tripo without another credit spend.
+- **Automatic art-finish proof: NOT YET.** This first pass is deliberately conservative: cleanup + material control + diagnostics. It does not prove autonomous high-quality sculpt/model redesign.
+- For future hero assets, use Blender as a post-Tripo stage for material control, cleanup, part diagnostics and targeted rule-based edits. Do not automatically replace accepted production assets until integrated official-camera review shows a visible improvement.
