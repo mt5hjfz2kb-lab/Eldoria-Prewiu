@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "watch",
+  "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Watch only the single already-clicked owner-authorized Cuartel generation. No credit spend and no regeneration.",
-  "request_id": "valoria-cuartel-ap2-v1-watch-generated-task",
+  "notes": "Export the completed single authorized Cuartel generation only. No credit spend, no retry, exact generated task URL.",
+  "request_id": "valoria-cuartel-ap2-v1-export-completed-task",
   "asset_name": "Valoria_Cuartel_AP2_v1",
   "function": "Dedicated compact medieval barracks / guardhouse",
   "parcel": {
@@ -26,7 +26,7 @@
   "approved_input_sha256": "24e88ca7a615769fcb72bcda9726e28d733d6b79ea9cc6d894f7686f19c2c5f9",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-28:cuartel-ap2-watch-single-generated-task",
+  "probe_nonce": "2026-09-28:cuartel-ap2-export-completed-task",
   "prior_stage_run_id": 36484408137,
   "prior_stage_artifact_id": 10998685373,
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/6d102e13-3f8d-403c-936a-f4dba2eb81c0"
