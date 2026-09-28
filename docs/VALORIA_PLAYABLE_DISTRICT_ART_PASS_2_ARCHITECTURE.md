@@ -243,6 +243,8 @@ The six certified families remain reference/art donors only; none is authorized 
 - **StreetLandingTransition** — eligible for small parapet/landing-edge visual fragments only; avoid repetition because its fortification read becomes dominant.
 - **RockTerrainSeamFiller** — eligible as buried/overlapped rock integration around supports and building bases; never as a focal exposed platform.
 
+Repository audit: none of these six certified family GLBs is currently tracked under production `Unity/Assets/Eldoria/Resources/Valoria/`; their certification sources remain in prior gate evidence/runner sources. Therefore this audit authorizes selective staging when a concrete production placement needs it, but does **not** falsely record any family as already reused in production Valoria.
+
 Decision: the current dedicated Cuartel requirement and Bastion landmark requirement are not solved by whole-family reuse. Certified-family reuse is therefore subordinate dressing/integration, not a substitute for dedicated architecture.
 
 ## Aserradero material-integration pass 2 — 2026-09-28
