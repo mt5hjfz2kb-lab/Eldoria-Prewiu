@@ -382,7 +382,17 @@ namespace Eldoria.Presentation
 
         public static void SawmillArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
-            // Parcel-specific Art Pass 2 architecture: production building first, decoration second.
+            // Keep the certified plot/click geometry independent from this visual asset.
+            var dedicated=BenchmarkPiece(name+" · dedicated sawmill",
+                LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
+                3.50f,3.80f,Quaternion.Euler(0,180f,0));
+            if(dedicated!=null)
+            {
+                if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
+                    new Color(.96f,.53f,.22f),.88f,2.8f);
+                return;
+            }
+            // Fallback for missing imports; this reused composition failed the Art Pass 2 visual gate.
             var art=ValoriaExternalAssetLibrary.Load();
             var authored=BenchmarkPieceModulated(name+" · authored lumber mill",art!=null?art.SlavicShed:null,
                 p+new Vector3(.05f,.02f,.18f),3.45f,3.55f,Quaternion.Euler(0,180f,0),

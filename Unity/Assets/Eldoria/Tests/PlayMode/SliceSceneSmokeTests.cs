@@ -42,6 +42,16 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("VPD · L1 landing"),Is.Not.Null);
             Assert.That(GameObject.Find("VPD · L1 west plot"),Is.Not.Null);
             Assert.That(GameObject.Find("VPD · L1 east plot"),Is.Not.Null);
+            var sawmillArt=GameObject.Find("Aserradero · dedicated sawmill");
+            Assert.That(sawmillArt,Is.Not.Null,"The Art Pass 2 sawmill must load in real Valoria.");
+            var sawmillRenderers=sawmillArt.GetComponentsInChildren<Renderer>();
+            Assert.That(sawmillRenderers.Length,Is.GreaterThan(0));
+            var sawmillBounds=sawmillRenderers[0].bounds;
+            foreach(var renderer in sawmillRenderers)sawmillBounds.Encapsulate(renderer.bounds);
+            Assert.That(sawmillBounds.size.x,Is.LessThanOrEqualTo(4.0f));
+            Assert.That(sawmillBounds.size.z,Is.LessThanOrEqualTo(3.4f));
+            Assert.That(sawmillBounds.max.y-.31f,Is.LessThanOrEqualTo(3.8f));
+            Assert.That(sawmillBounds.max.x,Is.LessThan(-4.45f),"The central-street side must stay clear.");
 
             var select=typeof(SlicePresenter).GetMethod("Select",
                 System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
