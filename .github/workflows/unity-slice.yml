@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: eldoria-unity-main-v2
+  group: eldoria-unity-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
