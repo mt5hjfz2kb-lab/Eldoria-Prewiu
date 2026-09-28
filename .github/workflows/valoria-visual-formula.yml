@@ -57,8 +57,9 @@ jobs:
           $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
           $log="$env:RUNNER_TEMP\Eldoria-VisualFormula.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -executeMethod "Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture" -logFile $log
-          if ($LASTEXITCODE -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $LASTEXITCODE" }
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
           $expected=@(
             'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
             'formula-sawmill-12.png','formula-sawmill-9.png',
