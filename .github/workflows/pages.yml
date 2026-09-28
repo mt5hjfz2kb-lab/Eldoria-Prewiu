@@ -7,8 +7,10 @@ on:
     paths:
       - 'v0220/**'
       - 'qa/**'
-      - 'tools/**'
-      - 'scripts/**'
+      - 'tools/build-preview.mjs'
+      - 'tools/check-preview.mjs'
+      - 'tools/validate-local.mjs'
+      - 'tools/run-qa-mode.mjs'
       - 'package.json'
       - 'package-lock.json'
       - 'playtest/**'
