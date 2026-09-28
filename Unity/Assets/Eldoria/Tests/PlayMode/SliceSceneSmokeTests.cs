@@ -53,6 +53,19 @@ namespace Eldoria.Tests
             Assert.That(sawmillBounds.max.y-.31f,Is.LessThanOrEqualTo(3.8f));
             Assert.That(sawmillBounds.max.x,Is.LessThan(-4.45f),"The central-street side must stay clear.");
 
+            var barracksArt=GameObject.Find("Cuartel · dedicated barracks");
+            Assert.That(barracksArt,Is.Not.Null,"The Art Pass 2 Cuartel must load in real Valoria.");
+            var barracksRenderers=barracksArt.GetComponentsInChildren<Renderer>();
+            Assert.That(barracksRenderers.Length,Is.GreaterThan(0));
+            var barracksBounds=barracksRenderers[0].bounds;
+            foreach(var renderer in barracksRenderers)barracksBounds.Encapsulate(renderer.bounds);
+            Assert.That(barracksBounds.size.x,Is.InRange(3.5f,3.8f));
+            Assert.That(barracksBounds.size.z,Is.InRange(2.9f,3.2f));
+            Assert.That(barracksBounds.max.y-.31f,Is.InRange(3.4f,4.0f));
+            Assert.That(barracksBounds.min.x,Is.GreaterThan(4.45f),"The west / central-street flank must stay clear.");
+            foreach(var collider in barracksArt.GetComponentsInChildren<Collider>(true))
+                Assert.That(collider.enabled,Is.False,"Cuartel visual mesh must not own gameplay click geometry.");
+
             var select=typeof(SlicePresenter).GetMethod("Select",
                 System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
             Assert.That(select,Is.Not.Null);
