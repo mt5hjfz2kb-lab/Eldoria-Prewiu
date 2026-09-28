@@ -28,7 +28,8 @@ namespace Eldoria.EditorTools
             public string scene = ScenePath;
             public string[] sources;
             public int[] sourceTriangles, sourceVertices;
-            public bool[] uv0, normals, meshHit;
+            public bool[] uv0, normals, sourceMaterial, meshHit;
+            public Vector3[] sourceBounds;
             public int colliders;
             public float gateStreetSocketError, streetTerraceSocketError;
             public Vector3 bounds;
@@ -48,7 +49,8 @@ namespace Eldoria.EditorTools
             GameObject[] prefabs = new GameObject[3];
             var r = new Metrics {
                 sources = sources, sourceTriangles = new int[3], sourceVertices = new int[3],
-                uv0 = new bool[3], normals = new bool[3], meshHit = new bool[3]
+                uv0 = new bool[3], normals = new bool[3], sourceMaterial = new bool[3],
+                sourceBounds = new Vector3[3], meshHit = new bool[3]
             };
             for (int i = 0; i < 3; i++) {
                 if (!File.Exists(sources[i])) throw new Exception("Missing exact certified source " + sources[i]);
@@ -62,7 +64,11 @@ namespace Eldoria.EditorTools
                 r.sourceVertices[i] = m.vertexCount;
                 r.uv0[i] = m.uv.Length == m.vertexCount;
                 r.normals[i] = m.normals.Length == m.vertexCount;
-                if (r.sourceTriangles[i] < 49500 || r.sourceTriangles[i] > 50000 || !r.uv0[i] || !r.normals[i])
+                r.sourceBounds[i] = Bounds(prefabs[i]).size;
+                r.sourceMaterial[i] = prefabs[i].GetComponentsInChildren<Renderer>()
+                    .Any(renderer => renderer.sharedMaterials.Any(material => material != null));
+                if (r.sourceTriangles[i] < 49500 || r.sourceTriangles[i] > 50000 ||
+                    !r.uv0[i] || !r.normals[i] || !r.sourceMaterial[i])
                     throw new Exception("Source attribute gate failed " + sources[i]);
             }
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
