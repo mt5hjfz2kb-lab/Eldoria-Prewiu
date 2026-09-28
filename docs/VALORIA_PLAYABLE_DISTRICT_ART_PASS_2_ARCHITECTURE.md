@@ -183,6 +183,9 @@ Monumental asymmetric keep: one dominant vertical rear/central mass, secondary u
 **Official-camera acceptance**  
 Zoom 19 must gain landmark silhouette; 12 must show tower/roof hierarchy and monumental facade; 9 must show coherent connected architecture, not stacked primitives/modules.
 
+**Exact single-image Tripo reference brief**  
+Generate one isolated 3/4 south/front hero-asset reference on a neutral light-grey studio background, full structure visible, no text, no people, no road, no stair, no surrounding city and no fused mountain/terrain. Monumental ancient Valoria keep rebuilt into rock: one dominant rear/central vertical keep mass, two unequal secondary towers, asymmetrical stepped volumes, physically connected dark slate roofs with coherent pitches, a strong recessed front gate/facade aligned to the south approach, restrained blue heraldic accents, visible buttresses and masonry depth, and a controlled natural-rock plinth that belongs to the building footprint rather than becoming terrain. The silhouette must read as a single authored landmark from strategic distance. Avoid symmetry, detached/floating roofs, generic square castle kit language, giant front curtain wall, excessive tiny turrets, or a full-city diorama. Tallest mass must stay rear/central and the front/stair mouth must remain visually open.
+
 ## Dedicated Aserradero execution — 2026-09-28
 
 **Integrated checkpoint:** `d633a5482a321a75cc4cf11a4a0e548e6cf8f1bd`
