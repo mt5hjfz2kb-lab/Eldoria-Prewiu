@@ -68,6 +68,7 @@ namespace Eldoria.EditorTools
             json.AppendLine("  ]\n}");
             File.WriteAllText(folder+"/lookdev-profiles.json",json.ToString());
             Debug.Log("Valoria LookDev captures saved to "+Path.GetFullPath(folder));
+            UnityEditor.EditorApplication.Exit(0);
         }
 
         static void Apply(Profile p,Light sun)
