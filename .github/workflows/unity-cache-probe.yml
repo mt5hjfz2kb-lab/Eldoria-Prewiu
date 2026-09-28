@@ -1,0 +1,96 @@
+name: Unity persistent import-cache probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cache-probe:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute isolated cache key
+        shell: powershell
+        run: |
+          $inputs = @(
+            "$env:GITHUB_WORKSPACE\Unity\ProjectSettings\ProjectVersion.txt",
+            "$env:GITHUB_WORKSPACE\Unity\Packages\manifest.json",
+            "$env:GITHUB_WORKSPACE\Unity\Packages\packages-lock.json"
+          )
+          $sha = [System.Security.Cryptography.SHA256]::Create()
+          $bytes = New-Object System.Collections.Generic.List[byte]
+          foreach ($path in $inputs) {
+            if (Test-Path $path) { $bytes.AddRange([IO.File]::ReadAllBytes($path)) }
+          }
+          $hash = ([BitConverter]::ToString($sha.ComputeHash($bytes.ToArray()))).Replace('-','').ToLowerInvariant()
+          "ELDORIA_CACHE_KEY=$hash" | Out-File $env:GITHUB_ENV -Append
+          Write-Host "CACHE_KEY=$hash"
+
+      - name: Restore persistent Library snapshot
+        shell: powershell
+        run: |
+          $root = Join-Path $env:USERPROFILE ".eldoria-unity-library-cache"
+          $cache = Join-Path $root $env:ELDORIA_CACHE_KEY
+          $projectLibrary = "$env:GITHUB_WORKSPACE\Unity\Library"
+          New-Item -ItemType Directory -Force $root | Out-Null
+          if (Test-Path $cache) {
+            Write-Host "WARM_CACHE=true"
+            if (Test-Path $projectLibrary) { Remove-Item $projectLibrary -Recurse -Force }
+            Copy-Item $cache $projectLibrary -Recurse -Force
+          } else { Write-Host "WARM_CACHE=false" }
+
+      - name: Timed EditMode probe
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $xml="$env:RUNNER_TEMP\Eldoria-CacheProbe-EditMode.xml"
+          $log="$env:RUNNER_TEMP\Eldoria-CacheProbe-EditMode.log"
+          $sw=[Diagnostics.Stopwatch]::StartNew()
+          & $env:UNITY_EDITOR_PATH -batchmode -nographics -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -runTests -testPlatform EditMode -testResults $xml -logFile $log
+          $code=$LASTEXITCODE
+          $sw.Stop()
+          "EDITMODE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,2))" | Out-File $env:GITHUB_ENV -Append
+          Write-Host "EDITMODE_SECONDS=$([math]::Round($sw.Elapsed.TotalSeconds,2))"
+          if ($code -ne 0) { if(Test-Path $log){Get-Content $log -Tail 160}; throw "EditMode failed: $code" }
+
+      - name: Save persistent Library snapshot
+        if: success()
+        shell: powershell
+        run: |
+          $root = Join-Path $env:USERPROFILE ".eldoria-unity-library-cache"
+          $cache = Join-Path $root $env:ELDORIA_CACHE_KEY
+          $projectLibrary = "$env:GITHUB_WORKSPACE\Unity\Library"
+          if (-not (Test-Path $projectLibrary)) { throw "Unity Library missing after probe" }
+          $tmp="$cache.tmp"
+          Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item $projectLibrary $tmp -Recurse -Force
+          Remove-Item $cache -Recurse -Force -ErrorAction SilentlyContinue
+          Move-Item $tmp $cache
+          Write-Host "CACHE_SAVED=$cache"
+
+      - name: Write timing summary
+        if: always()
+        shell: powershell
+        run: |
+          @"
+          ## Unity import-cache probe
+          - Key: `$env:ELDORIA_CACHE_KEY`
+          - EditMode elapsed: **$env:EDITMODE_SECONDS s**
+          - Runner: `$env:RUNNER_NAME`
+          - Commit: `${{ github.sha }}`
+          "@ | Add-Content $env:GITHUB_STEP_SUMMARY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unity-cache-probe-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/Eldoria-CacheProbe-EditMode.xml
+            ${{ runner.temp }}/Eldoria-CacheProbe-EditMode.log
+          if-no-files-found: warn
+          retention-days: 7
