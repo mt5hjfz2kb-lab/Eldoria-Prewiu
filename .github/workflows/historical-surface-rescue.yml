@@ -41,6 +41,8 @@ jobs:
           git --version
 
       - uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Fetch exact certified SeamFiller artifact
         shell: powershell
