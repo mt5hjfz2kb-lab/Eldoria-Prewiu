@@ -134,6 +134,46 @@ jobs:
           Write-Host "SELECTED_SOURCE: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
           Write-Host "UNITY_YAW_DEGREES: $($request.unity_yaw_degrees)"
 
+      - name: Stage requested GLB from repository
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.source_mode == 'repository_glb'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $relative = [string]$request.source.path
+          if ([string]::IsNullOrWhiteSpace($relative)) { throw 'repository_glb requires source.path.' }
+          $source = Join-Path $env:GITHUB_WORKSPACE $relative
+          if (-not (Test-Path $source)) { throw "Repository GLB not found: $source" }
+          if ([IO.Path]::GetExtension($source).ToLowerInvariant() -ne '.glb') { throw "Repository source is not GLB: $source" }
+          $sha = (Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          $expected = ([string]$request.source.exact_sha256).ToLowerInvariant()
+          if (-not [string]::IsNullOrWhiteSpace($expected) -and $sha -ne $expected) {
+            throw "Repository GLB SHA mismatch. expected=$expected actual=$sha"
+          }
+          $bytes = (Get-Item $source).Length
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $source $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_mode=repository_glb",
+            "source_path=$source",
+            "source_sha256=$sha",
+            "source_bytes=$bytes",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          Write-Host "REPOSITORY_SOURCE: $relative | $bytes bytes | sha256 $sha"
+
       - name: Generate and stage requested GLB with Tripo CLI
         if: steps.request.outputs.enabled == 'true' && startsWith(steps.request.outputs.source_mode, 'tripo_')
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -272,7 +312,14 @@ jobs:
           $output = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
           $report = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
           $log = "$env:RUNNER_TEMP\tripo-module-blender.log"
-          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py" -- --input $input --output $output --report $report *> $log
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $refineConfig = "$env:RUNNER_TEMP\tripo-module-refine-config.json"
+          if ($null -ne $request.refinement) {
+            $request.refinement | ConvertTo-Json -Depth 8 | Set-Content $refineConfig
+          } else {
+            '{"enabled":false}' | Set-Content $refineConfig
+          }
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py" -- --input $input --output $output --report $report --refine-config $refineConfig *> $log
           if ($LASTEXITCODE -ne 0) {
             Get-Content $log -Tail 240
             throw "Canonical Blender module pipeline failed with exit code $LASTEXITCODE"
@@ -334,6 +381,7 @@ jobs:
             ${{ runner.temp }}/tripo-module-source.txt
             ${{ runner.temp }}/tripo-cli-result.json
             ${{ runner.temp }}/tripo-module-blender-report.json
+            ${{ runner.temp }}/tripo-module-refine-config.json
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
           if-no-files-found: warn
