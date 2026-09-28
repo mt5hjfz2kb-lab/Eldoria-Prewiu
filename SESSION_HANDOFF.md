@@ -66,12 +66,13 @@ Current genuine design gaps:
 
 ## Immediate production priority
 The next **Unity/art execution** remains Art Pass 2 inside the certified/frozen envelopes:
-1. dedicated **Aserradero architecture**;
-2. dedicated **Cuartel architecture**;
-3. stronger **Bastion silhouette / roof hierarchy**;
-4. increased inhabited density while preserving interaction, circulation and camera readability.
+1. first audit the six certified Valoria families for **selective fragment reuse** (facades, rock, parapets, terraces, skyline pieces); they may support the art layer but must not dictate topology;
+2. dedicated **Aserradero architecture** only where existing/reusable art cannot reach the target quality;
+3. dedicated **Cuartel architecture**;
+4. stronger **Bastion silhouette / roof hierarchy**;
+5. increased inhabited density while preserving interaction, circulation and camera readability.
 
-Do **not** move gameplay coordinates, the certified 12-step route, camera family or Master Envelope reservations merely to fit art.
+Do **not** move gameplay coordinates, the certified 12-step route, camera family or Master Envelope reservations merely to fit art. Keep execution prompts concise and task-focused; permanent rules belong in canonical docs rather than being repeated in every handoff.
 
 ## Product-direction work that can proceed in parallel
 - Close Bastion IV’s exact autonomy beat.
