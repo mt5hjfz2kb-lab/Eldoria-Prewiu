@@ -48,7 +48,13 @@
   },
   "surface": {
     "status": "PENDING",
-    "material_family": "",
+    "material_family": [
+      "Eldoria Rock",
+      "Eldoria Stone",
+      "Eldoria Timber",
+      "Eldoria Roof",
+      "Eldoria Ground"
+    ],
     "authoring_tool": "blender",
     "authoring_tool_version": "",
     "source_textures": [],
@@ -59,6 +65,8 @@
     },
     "unity_material_profile": "",
     "lookdev_profile": "",
-    "verdict": "PENDING"
-  }
+    "verdict": "PENDING",
+    "profile": "valoria-surface-v1"
+  },
+  "quality_profile": "PRIMARY"
 }
