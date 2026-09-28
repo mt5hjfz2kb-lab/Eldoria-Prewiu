@@ -460,30 +460,41 @@ namespace Eldoria.Presentation
 
         public static void BarracksArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
-            // Compact military house: robust authored mass + one subordinate watch element.
+            // Dedicated AP2 visual. Gameplay/click geometry remains on the certified
+            // Cuartel target object; all colliders on this imported visual are disabled.
+            var ground=p+new Vector3(.20f,.02f,.08f);
+            var dedicated=BenchmarkPieceIntegrated(name+" · dedicated barracks",
+                LoadExternal("Valoria_Cuartel_AP2_v1"),ground,
+                3.72f,4.00f,Quaternion.Euler(0,180f,0),new Color(.42f,.40f,.37f,1f));
+            if(dedicated!=null)
+            {
+                // The Tripo source is proportionally wider/lower than the certified parcel
+                // envelope. Apply a bounded presentation-only fit so the authored silhouette
+                // occupies the requested 3.5–3.8 x 2.9–3.2 footprint and 3.4–4.0 height.
+                var renderers=dedicated.GetComponentsInChildren<Renderer>(true);
+                var bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                var scale=dedicated.transform.localScale;
+                dedicated.transform.localScale=new Vector3(
+                    scale.x*(3.72f/bounds.size.x),
+                    scale.y*(3.62f/bounds.size.y),
+                    scale.z*(3.08f/bounds.size.z));
+                bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                dedicated.transform.position+=ground-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+
+                if(lit&&glow!=null)glow(name+" · guardhouse warmth",p+new Vector3(.42f,1.05f,-1.28f),
+                    new Color(.96f,.53f,.22f),.14f,.82f);
+                return;
+            }
+
+            // Runtime-safe fallback only if the production GLB cannot be loaded.
             var art=ValoriaExternalAssetLibrary.Load();
-            var core=BenchmarkPieceModulated(name+" · authored guardhouse",art!=null?art.SlavicHouse:null,
+            var core=BenchmarkPieceModulated(name+" · fallback guardhouse",art!=null?art.SlavicHouse:null,
                 p+new Vector3(.18f,.02f,.08f),3.20f,3.35f,Quaternion.Euler(0,180f,0),
                 new Color(.70f,.70f,.67f,1f));
             if(core==null)
                 House(name+" · fallback guardhouse",p+new Vector3(.12f,.10f,.05f),new Vector3(3.25f,1.95f,2.72f),lit,glow);
-
-            // Rear/east watch mass preserves the west street flank and stays below Bastion hierarchy.
-            // The legacy StoneTower Resources reference is not runtime-safe in the current bridge.
-            // Keep this visual-only watch element in the self-contained Valoria kit until that source is reimported.
-            Tower(name+" · watch element",p+new Vector3(1.45f,.02f,.82f),.62f,3.35f,OldStone*.78f);
-
-            Wall(name+" · rear guard wall",p+new Vector3(.42f,.68f,1.30f),
-                new Vector3(2.75f,1.05f,.32f),OldStone*.70f,true);
-            Banner(name+" · command standard",p+new Vector3(.95f,2.35f,-1.30f),
-                new Vector3(.48f,1.55f,.07f),new Color(.14f,.24f,.38f));
-            foreach(float x in new[]{-.92f,-.48f,-.04f})
-            {
-                Block(name+" · weapon rack post",p+new Vector3(x,.72f,-1.46f),new Vector3(.10f,.92f,.10f),Timber*.86f);
-                Cylinder(name+" · spear",p+new Vector3(x+.08f,1.18f,-1.48f),
-                    new Vector3(.035f,.82f,.035f),new Color(.48f,.42f,.31f),Quaternion.Euler(0,0,-7f));
-            }
-            Block(name+" · training beam",p+new Vector3(-1.12f,.46f,.98f),new Vector3(.18f,.78f,.18f),Timber*.82f);
             if(lit&&glow!=null)glow(name+" · guardhouse warmth",p+new Vector3(.40f,1.02f,-1.30f),
                 new Color(.96f,.53f,.22f),.80f,2.6f);
         }
