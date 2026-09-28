@@ -287,3 +287,24 @@ These headings record when features entered the product. They are **not** active
 - Arcón classifies stored content by utility with dedicated tabs for Aceleradores, Materiales, Equipo and Especiales.
 - Universal accelerators awarded by chapters/missions are visible in Arcón as counted consumables; applying them still requires a compatible active timed task.
 - The correction is protected by mobile Playwright regression in `qa/e2e-v027-owner-feedback.js`.
+
+
+## 2026-09-28 — Valoria Playable District Skeleton v1
+
+Valoria's Unity production direction has moved from fused-diorama composition to bottom-up functional city construction.
+
+Current production skeleton:
+- continuous terrain/base;
+- Planta 0 civic floor and main street;
+- separated lower building plots;
+- independent 12-step physical connection from Planta 0 to Planta 1;
+- upper landing/plots/support layer;
+- Bastion, Barracks and Sawmill integrated as real clickable world buildings.
+
+The fixed orthographic Valoria camera is now the source of truth for composition and interaction; benchmark evidence is captured at zoom 19 / 12 / 9 with the same camera transform.
+
+Unity run **36423010456** on `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f` passed EditMode, PlayMode, Windows build and Valoria capture. Interaction tests verify Aserradero, Cuartel and Bastion open their real panels and retain existing game commands. A procedural-collider timing bug was fixed with `Physics.SyncTransforms()` after world construction.
+
+Verdicts: **TECH PASS / INTERACTION PASS / VISUAL-URBAN PASS for skeleton scope**. This does not certify final art quality.
+
+The six certified Tripo families remain valid reusable art/reference assets, but are no longer the topology contract for the city. See `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`.
