@@ -102,6 +102,9 @@ Canonical optimized SHA-256: `2676e11fbfde6781996117b191a8a88b534b36ad6901409283
 
 ## Current composition proof
 
+**Micro-Valoria 2 inhabited district** has now been tested with all six certified families, 10 instances and 498,199 instanced tris. Technical PASS / visual urban FAIL after two isolated Unity runs and actual 19/12/9/oblique image reviews. Residential mass improves the inhabited silhouette, but the street/landing and upper terrace join are visually occluded, the rock foundations remain segmented and the parapet/tower language stays strong. This does not authorize production Valoria scaling. See `docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md` for source checks, evidence and the missing shared interface rule.
+
+
 **Micro-Valoria three-family** is the current composition proof.
 
 Certified composition:
