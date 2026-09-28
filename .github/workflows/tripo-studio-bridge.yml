@@ -67,15 +67,28 @@ jobs:
             $resolved = $null
 
             if ([bool]$request.search_downloads_for_sha -and -not [string]::IsNullOrWhiteSpace($expected)) {
-              $downloads = Join-Path $env:USERPROFILE 'Downloads'
-              if (Test-Path $downloads) {
-                $candidates = @(Get-ChildItem $downloads -File -ErrorAction SilentlyContinue |
-                  Where-Object { $_.Extension.ToLowerInvariant() -in @('.jpg','.jpeg','.png','.webp') })
+              $expectedBytes = [int64]$request.upload_size_bytes
+              $roots = @(
+                (Join-Path $env:USERPROFILE 'Downloads'),
+                (Join-Path $env:USERPROFILE 'Desktop'),
+                (Join-Path $env:USERPROFILE 'Pictures'),
+                (Join-Path $env:USERPROFILE 'OneDrive'),
+                (Join-Path $env:USERPROFILE 'iCloudPhotos'),
+                (Join-Path $env:USERPROFILE 'iCloudDrive')
+              ) | Select-Object -Unique
+              foreach ($root in $roots) {
+                if ($resolved) { break }
+                if (-not (Test-Path $root)) { continue }
+                $candidates = @(Get-ChildItem $root -Recurse -File -ErrorAction SilentlyContinue |
+                  Where-Object {
+                    $_.Extension.ToLowerInvariant() -in @('.jpg','.jpeg','.png','.webp') -and
+                    ($expectedBytes -le 0 -or $_.Length -eq $expectedBytes)
+                  })
                 foreach ($candidate in $candidates) {
                   $sha = (Get-FileHash $candidate.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
                   if ($sha -eq $expected) {
                     $resolved = $candidate.FullName
-                    Write-Host "EXACT_TRIPO_INPUT_FOUND_IN_DOWNLOADS: $($candidate.Name) | $($candidate.Length) bytes | sha256 $sha"
+                    Write-Host "EXACT_TRIPO_INPUT_FOUND: $($candidate.FullName) | $($candidate.Length) bytes | sha256 $sha"
                     break
                   }
                 }
