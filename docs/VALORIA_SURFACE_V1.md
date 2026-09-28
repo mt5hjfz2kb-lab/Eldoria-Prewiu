@@ -61,3 +61,40 @@ Surface v1 becomes reusable baseline when:
 3. neither requires unrelated per-building lighting or shading logic.
 
 If those conditions hold, this document becomes the first reusable surface layer of Valoria Visual Formula v1.
+
+## Two production surface lanes
+
+### Lane A — authored PBR preservation
+
+Use for dedicated production GLBs such as Aserradero/Cuartel when diagnostics prove that useful PBR maps already exist.
+
+Rule:
+- preserve source basecolor / normal / metallic-roughness information;
+- do not replace it with a flat tint or basecolor-only material;
+- diagnose Unity import/adaptation before changing the source asset.
+
+### Lane B — certified geometry surface rescue
+
+Use for historical certified GLBs whose geometry, UV0 and normals remain useful but whose optimized artifact contains only a flat/no-texture material.
+
+Current evidence shows this for:
+- TerraceStairRock;
+- GateStreetRiseRock MV1;
+- ResidentialTerraceRock;
+- StreetLandingTransition;
+- RockTerrainSeamFiller.
+
+TowerWallRock has an exact certified GLB on the runner and is undergoing the same non-mutating diagnostic.
+
+Rules:
+- preserve certified geometry and SHA evidence;
+- add a new Valoria material layer without reopening paid generation;
+- start with semantically simple SUPPORT assets (rock/terrain);
+- do not assign one rock material to mixed architecture simply because it is easy;
+- mixed assets require semantic material segmentation before they can become final art.
+
+The first zero-credit Lane B proof is RockTerrainSeamFiller with the deterministic `rock` Surface v1 rescue profile.
+
+## Hero proof reuse
+
+GateStreetRiseRock MV1 is selected as the bounded HERO visual proof for the formula because it contains architecture + rock and already has a certified silhouette. Its historical circulation/interface failure remains authoritative and is explicitly out of scope: surface improvement must never be presented as a repaired route.
