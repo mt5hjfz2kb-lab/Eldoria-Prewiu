@@ -101,6 +101,42 @@ jobs:
           $out | ConvertTo-Json -Depth 6 | Set-Content "$folder\lookdev-metrics.json"
           Get-Content "$folder\lookdev-metrics.json"
 
+      - name: Compare Valoria v1 candidate against baseline
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
+          $metrics=Get-Content "$folder\lookdev-metrics.json" -Raw | ConvertFrom-Json
+          $views=@('overview','sawmill','barracks')
+          $rows=@()
+          foreach($view in $views){
+            $base=$metrics.images | Where-Object { $_.file -eq "baseline-$view.png" } | Select-Object -First 1
+            $cand=$metrics.images | Where-Object { $_.file -eq "valoria-v1-candidate-$view.png" } | Select-Object -First 1
+            if($null -eq $base -or $null -eq $cand){throw "Missing baseline/candidate metrics for $view"}
+            $rows += [pscustomobject]@{
+              view=$view
+              baseline_mean=[double]$base.mean_luminance
+              candidate_mean=[double]$cand.mean_luminance
+              delta_mean=[math]::Round(([double]$cand.mean_luminance-[double]$base.mean_luminance),4)
+              baseline_contrast=[double]$base.luminance_stddev
+              candidate_contrast=[double]$cand.luminance_stddev
+              delta_contrast=[math]::Round(([double]$cand.luminance_stddev-[double]$base.luminance_stddev),4)
+              baseline_high_clip=[double]$base.clipped_high_pct
+              candidate_high_clip=[double]$cand.clipped_high_pct
+              delta_high_clip=[math]::Round(([double]$cand.clipped_high_pct-[double]$base.clipped_high_pct),2)
+              baseline_low_clip=[double]$base.clipped_low_pct
+              candidate_low_clip=[double]$cand.clipped_low_pct
+              delta_low_clip=[math]::Round(([double]$cand.clipped_low_pct-[double]$base.clipped_low_pct),2)
+            }
+          }
+          [pscustomobject]@{
+            schema_version=1
+            candidate='valoria-v1-candidate'
+            baseline='baseline'
+            rule='Metrics inform review; they do not auto-select the visual winner.'
+            views=$rows
+          } | ConvertTo-Json -Depth 6 | Set-Content "$folder\lookdev-candidate-comparison.json"
+          Get-Content "$folder\lookdev-candidate-comparison.json"
+
       - name: Build LookDev contact sheet
         shell: powershell
         run: |
