@@ -59,6 +59,16 @@ namespace Eldoria.Presentation
         WorldHotspot ResolveHotspot(Vector2 point)
         {
             if(Camera.main==null)return null;
+
+            // Valoria uses a fixed orthographic camera. Resolve the building whose projected
+            // interaction footprint contains the tap before consulting depth, so stacked
+            // decorative/city colliders cannot steal a building selection.
+            if(city)
+            {
+                var projected=ResolveProjectedHotspot(point);
+                if(projected!=null)return projected;
+            }
+
             var ray=Camera.main.ScreenPointToRay(point);
             var hits=Physics.RaycastAll(ray,100f);
             System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
@@ -68,10 +78,14 @@ namespace Eldoria.Presentation
                 if(spot!=null)return spot;
             }
 
-            // Fixed orthographic city camera: use the projected interaction footprint when
-            // decorative geometry occludes all physical hotspot colliders at the tap ray.
+            return city?ResolveProjectedHotspot(point):null;
+        }
+
+        WorldHotspot ResolveProjectedHotspot(Vector2 point)
+        {
             WorldHotspot best=null;
             float bestDistance=float.MaxValue;
+            float bestArea=float.MaxValue;
             foreach(var candidate in FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
             {
                 var collider=candidate.GetComponent<Collider>();
@@ -96,10 +110,15 @@ namespace Eldoria.Presentation
                 if(!inFront||point.x<minX||point.x>maxX||point.y<minY||point.y>maxY)continue;
                 var centre=Camera.main.WorldToScreenPoint(b.center);
                 float d=(new Vector2(centre.x,centre.y)-point).sqrMagnitude;
-                if(d<bestDistance){bestDistance=d;best=candidate;}
+                float area=Mathf.Max(1f,(maxX-minX)*(maxY-minY));
+                if(d<bestDistance*.92f || (Mathf.Abs(d-bestDistance)<64f && area<bestArea))
+                {
+                    bestDistance=d;bestArea=area;best=candidate;
+                }
             }
             return best;
         }
+
         void Select(string id)
         {
             if(id=="gate")SceneManager.LoadScene("Frontier");
