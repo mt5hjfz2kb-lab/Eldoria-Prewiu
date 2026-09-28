@@ -50,6 +50,7 @@ namespace Eldoria.EditorTools
             WriteMetrics(folder + "/formula-metrics.json");
             WriteMaterialEvidence(folder + "/formula-materials.json");
             Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
+            UnityEditor.EditorApplication.Exit(0);
         }
 
         static string TextureName(Material material, string property)
