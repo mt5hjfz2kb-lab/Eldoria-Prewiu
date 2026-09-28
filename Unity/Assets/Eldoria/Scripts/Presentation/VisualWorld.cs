@@ -84,9 +84,9 @@ namespace Eldoria.Presentation
                 new Vector3(17.5f,.28f,10.5f),new Color(.37f,.34f,.28f));
             ValoriaKit.Block("VPD · L0 main street",new Vector3(0,.30f,-3.0f),
                 new Vector3(3.4f,.16f,10.8f),new Color(.50f,.47f,.40f));
-            ValoriaKit.Block("VPD · L0 west plot",new Vector3(-5.4f,.31f,-2.1f),
+            ValoriaKit.Block("VPD · L0 west plot",new Vector3(-7.0f,.31f,-2.8f),
                 new Vector3(5.1f,.18f,5.2f),new Color(.33f,.30f,.24f));
-            ValoriaKit.Block("VPD · L0 east plot",new Vector3(5.4f,.31f,-2.1f),
+            ValoriaKit.Block("VPD · L0 east plot",new Vector3(7.0f,.31f,-4.0f),
                 new Vector3(5.1f,.18f,5.2f),new Color(.33f,.30f,.24f));
             ValoriaKit.Block("VPD · lower entry apron",new Vector3(0,.30f,-8.35f),
                 new Vector3(6.6f,.14f,2.0f),new Color(.43f,.40f,.34f));
@@ -119,17 +119,17 @@ namespace Eldoria.Presentation
                 new Vector3(4.3f,2.35f,4.9f),new Color(.25f,.25f,.23f));
 
             // Buildings occupy plots after circulation is solved.
-            ValoriaKit.House("Aserradero",new Vector3(-5.4f,.52f,-2.0f),
+            ValoriaKit.House("Aserradero",new Vector3(-7.0f,.52f,-2.8f),
                 new Vector3(3.4f,1.75f,2.8f),state.SawmillLevel>0,Glow);
             TagVisibleHotspots("Aserradero","sawmill");
-            var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-4.80f,1.68f,-3.05f),
+            var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-6.55f,1.68f,-3.75f),
                 new Vector3(3.75f,2.25f,1.15f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
 
-            ValoriaKit.House("Cuartel",new Vector3(5.4f,.52f,-2.0f),
+            ValoriaKit.House("Cuartel",new Vector3(7.0f,.52f,-4.0f),
                 new Vector3(3.5f,1.80f,2.9f),state.BarracksLevel>0,Glow);
             TagVisibleHotspots("Cuartel","barracks");
-            var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(6.00f,1.68f,-3.05f),
+            var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(7.55f,1.68f,-5.05f),
                 new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
             barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
 
