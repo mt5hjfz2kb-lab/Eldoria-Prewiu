@@ -2,6 +2,10 @@ name: Cancel stale Eldoria visual run
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cancel-stale-visual-run.yml'
 
 permissions:
   actions: write
@@ -18,3 +22,4 @@ jobs:
           echo "Cancelling superseded visual/inventory runs if still active"
           gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/36496074137/cancel" || true
           gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/36496417213/cancel" || true
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/36496132939/cancel" || true
