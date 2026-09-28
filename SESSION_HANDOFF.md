@@ -276,3 +276,16 @@ This is permanent cross-session behavior, not a one-session preference.
 - This proves the zero-credit half of the desired remote flow: **GitHub/chat-triggered request → Windows runner → live Edge/Tripo Studio → upload approved image → stop safely before generation → clean workspace**.
 - The request file was reset afterward to safe read-only `probe` mode with `allow_credit_spend=false`.
 - The next unverified boundary is the first actual Studio generation. That requires explicit owner authorization because the visible action currently shows a credit cost. Only after generation exists should export/download automation be verified and then connected into the existing canonical Blender → Unity module gate.
+
+
+## 2026-09-28 — Valoria Playable District Skeleton v1 certified
+
+- Direction change implemented in production Unity: Valoria topology is now built bottom-up instead of by fusing certified Tripo dioramas. The six certified families remain preserved as visual references/reusable art/possible hero fragments, but they no longer dictate city topology.
+- New playable topology in `VisualWorld.PlayableDistrictSkeleton`: continuous terrain -> Planta 0 civic floor -> central main street -> lower west/east plots -> dedicated 12-tread physical staircase -> Planta 1 landing -> upper west/east plots -> retaining/support volumes -> buildings.
+- Official camera remains fixed orthographic at position `(18.2,14.6,-25.8)`, looking at `(0,3.15,5.8)`, zoom range 9..19. Benchmark captures now use the same transform and only change orthographic size to 19 / 12 / 9.
+- Real click integration: Aserradero, Cuartel and Bastión open the real building interaction panel; existing Build/AdvanceBastion commands are reused. The lower gate still loads Frontier. No fake capture-only buttons or new gameplay loop were added.
+- Important interaction bug found and fixed: procedural primitive colliders were queried before Unity physics had ingested their post-creation transforms, so diagnostics showed multiple `Collider.bounds.center=(0,0,0)`. `Physics.SyncTransforms()` now runs after world construction. This was the root cause of wrong building selection in PlayMode.
+- Canonical Unity gate run **36423010456** on HEAD `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f`: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, Valoria benchmark capture PASS. Capture artifact **10971070486**.
+- Human review of zoom 19 / 12 / 9: **TECH PASS / INTERACTION PASS / VISUAL-URBAN PASS for skeleton scope only**. The route reads entry -> street -> staircase -> upper platform -> Bastion; L0/L1 remain distinct and the scene no longer reads as a collage of fused dioramas.
+- This is not final visual art. Remaining work is production terrain/retaining rock, authored street/plaza surface, production stair treatment, non-blockout parcel/support edges, production building art, Bastion silhouette refinement, selective reuse of certified family fragments, then materials/props/vegetation/lighting and later mobile LOD/performance.
+- Dedicated evidence: `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`.
