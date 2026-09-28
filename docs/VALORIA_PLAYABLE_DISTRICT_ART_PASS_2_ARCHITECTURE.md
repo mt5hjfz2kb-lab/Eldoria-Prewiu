@@ -232,6 +232,31 @@ However, the final official-camera captures still show the Aserradero **too pale
 ### Production decision
 Do **not** regenerate the Aserradero yet. Preserve this geometry and solve its Unity material/lighting integration first. Continue the larger Art Pass 2 only after recording this as the current baseline; do not lose time re-running already proven Tripo/export/optimization steps.
 
+## Selective certified-kit audit — 2026-09-28
+
+The six certified families remain reference/art donors only; none is authorized to redefine the production topology, certified 12-step route or gameplay parcels.
+
+- **TowerWallRock** — eligible only for isolated defensive skyline, short parapet/wall language and architecture-rock junction references around Bastion; never as circulation or repeated filler.
+- **TerraceStairRock** — eligible for terrace edge, short stair/elevation language and stepped urban silhouette where the already-approved topology calls for it; not a primary gate or dominant skyline.
+- **GateStreetRiseRock MV1** — eligible only for arch/facade, masonry depth and fortified-entry language. Its fused route geometry is explicitly not reusable as Valoria circulation.
+- **ResidentialTerraceRock** — strongest donor for inhabited facade/roof language and secondary residential density after primary buildings read clearly. Its large rock base must not become a new island/topology.
+- **StreetLandingTransition** — eligible for small parapet/landing-edge visual fragments only; avoid repetition because its fortification read becomes dominant.
+- **RockTerrainSeamFiller** — eligible as buried/overlapped rock integration around supports and building bases; never as a focal exposed platform.
+
+Decision: the current dedicated Cuartel requirement and Bastion landmark requirement are not solved by whole-family reuse. Certified-family reuse is therefore subordinate dressing/integration, not a substitute for dedicated architecture.
+
+## Aserradero material-integration pass 2 — 2026-09-28
+
+Unity-only checkpoint: `4327d5778f1056fef04b0b31684298027b6eb459`.
+
+The dedicated Aserradero geometry, scale, position, click volume and parcel remain unchanged. The previous uniform material modulation was replaced by a dedicated URP/Lit integration path that preserves the imported base texture while forcing low smoothness, zero metallic/specular/environment reflections and zero emission, with a controlled warm timber/stone tint. This deliberately avoids the previously rejected Unlit regression while addressing the washed-out Lit response.
+
+Status before new official captures:
+- geometry: unchanged / accepted;
+- gameplay coordinates and colliders: unchanged;
+- TECH / INTERACTION: require the next Unity gate to reconfirm;
+- MATERIAL / VISUAL: pending capture review.
+
 ## Next action
 
 Do **not** repeat Aserradero generation/export/optimization. Its geometry is accepted. In the next larger execution block:
