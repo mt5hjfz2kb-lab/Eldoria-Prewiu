@@ -43,7 +43,7 @@ namespace Eldoria.Presentation
                 // board-like slab edge from the authored camera. The visible valley floor is a
                 // shallow irregular sheet, so zoom 19 no longer exposes a giant rectangular plinth.
                 worldGround.GetComponent<Renderer>().enabled=false;
-                IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),64f,60f,new Color(.285f,.265f,.215f));
+                IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),86f,80f,new Color(.285f,.265f,.215f));
             }
             // Layered rock masses create a believable playable plateau instead of a flat board.
             for(int i=0;i<(city?0:11);i++)
@@ -268,35 +268,53 @@ namespace Eldoria.Presentation
             var route=new Color(.39f,.37f,.32f);
             var upper=new Color(.30f,.29f,.27f);
 
-            // West: future residential / workshop growth.
-            ValoriaKit.Block("VPD · master west district",new Vector3(-16.0f,.10f,1.4f),
+            // Keep every certified reservation/collider exactly where it was, but remove the
+            // visible rectangular graybox slabs from normal gameplay views. Irregular skins
+            // still make each future district legible during pan-gate inspection.
+            var west=ValoriaKit.Block("VPD · master west district",new Vector3(-16.0f,.10f,1.4f),
                 new Vector3(10.0f,.22f,15.0f),reserve);
-            ValoriaKit.Block("VPD · master west route",new Vector3(-11.1f,.27f,-1.2f),
-                new Vector3(7.0f,.14f,2.4f),route);
+            west.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master west district skin",new Vector3(-16.0f,.225f,1.4f),10.8f,15.8f,reserve);
 
-            // East: future military / production growth.
-            ValoriaKit.Block("VPD · master east district",new Vector3(16.0f,.10f,1.8f),
+            var westRoute=ValoriaKit.Block("VPD · master west route",new Vector3(-11.1f,.27f,-1.2f),
+                new Vector3(7.0f,.14f,2.4f),route);
+            westRoute.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master west route skin",new Vector3(-11.1f,.35f,-1.2f),7.4f,2.75f,route);
+
+            var east=ValoriaKit.Block("VPD · master east district",new Vector3(16.0f,.10f,1.8f),
                 new Vector3(10.0f,.22f,15.0f),reserve);
-            ValoriaKit.Block("VPD · master east route",new Vector3(11.1f,.27f,-1.0f),
-                new Vector3(7.0f,.14f,2.4f),route);
+            east.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master east district skin",new Vector3(16.0f,.225f,1.8f),10.8f,15.8f,reserve);
 
-            // Upper civic/government reservation. It stays behind the current Bastion kernel
-            // and may later become terraces rather than one monolithic platform.
-            ValoriaKit.Block("VPD · master upper civic reserve",new Vector3(0,l1-.08f,15.4f),
+            var eastRoute=ValoriaKit.Block("VPD · master east route",new Vector3(11.1f,.27f,-1.0f),
+                new Vector3(7.0f,.14f,2.4f),route);
+            eastRoute.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master east route skin",new Vector3(11.1f,.35f,-1.0f),7.4f,2.75f,route);
+
+            var civic=ValoriaKit.Block("VPD · master upper civic reserve",new Vector3(0,l1-.08f,15.4f),
                 new Vector3(13.5f,.22f,7.0f),upper);
-            ValoriaKit.Block("VPD · master upper civic link",new Vector3(0,l1+.02f,11.2f),
+            civic.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master upper civic reserve skin",new Vector3(0,l1+.045f,15.4f),14.4f,7.7f,upper);
+
+            var civicLink=ValoriaKit.Block("VPD · master upper civic link",new Vector3(0,l1+.02f,11.2f),
                 new Vector3(4.0f,.14f,4.0f),route);
+            civicLink.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master upper civic link skin",new Vector3(0,l1+.10f,11.2f),4.5f,4.45f,route);
 
-            // Late-game/future-system edge. Kept deliberately generic until the associated
-            // gameplay system (for example port/naval or another large civic system) is locked.
-            ValoriaKit.Block("VPD · master future reserve",new Vector3(0,.08f,24.0f),
+            var future=ValoriaKit.Block("VPD · master future reserve",new Vector3(0,.08f,24.0f),
                 new Vector3(19.0f,.20f,7.0f),reserve*.92f);
+            future.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master future reserve skin",new Vector3(0,.195f,24.0f),20.0f,7.8f,reserve*.92f);
 
-            // Finished terrain aprons keep future pan extremes inside authored ground.
-            ValoriaKit.Block("VPD · master west terrain apron",new Vector3(-24.0f,-.15f,4.0f),
+            var westApron=ValoriaKit.Block("VPD · master west terrain apron",new Vector3(-24.0f,-.15f,4.0f),
                 new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
-            ValoriaKit.Block("VPD · master east terrain apron",new Vector3(24.0f,-.15f,4.0f),
+            westApron.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master west terrain apron skin",new Vector3(-24.0f,.06f,4.0f),7.9f,26.0f,new Color(.27f,.255f,.22f));
+
+            var eastApron=ValoriaKit.Block("VPD · master east terrain apron",new Vector3(24.0f,-.15f,4.0f),
                 new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
+            eastApron.GetComponent<Renderer>().enabled=false;
+            IrregularGround("VPD · master east terrain apron skin",new Vector3(24.0f,.06f,4.0f),7.9f,26.0f,new Color(.27f,.255f,.22f));
         }
 
         static void TagVisibleHotspots(string prefix,string id)
