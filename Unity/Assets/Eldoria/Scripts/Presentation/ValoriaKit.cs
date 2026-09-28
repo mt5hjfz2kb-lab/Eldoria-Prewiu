@@ -419,9 +419,12 @@ namespace Eldoria.Presentation
         public static void SawmillArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
         {
             // Keep the certified plot/click geometry independent from this visual asset.
-            var dedicated=BenchmarkPieceIntegrated(name+" · dedicated sawmill",
+            // Preserve the production GLB's authored PBR material (basecolor + normal + RM).
+            // Previous integration rebuilt a simplified basecolor-only material, which removed
+            // normal/roughness information and contributed to the flat/washed-out city read.
+            var dedicated=BenchmarkPiece(name+" · dedicated sawmill",
                 LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
-                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.16f,.14f,.12f,1f));
+                3.50f,3.80f,Quaternion.Euler(0,180f,0));
             if(dedicated!=null)
             {
                 // Final bounded integration: preserve a warm work-window cue without lighting
