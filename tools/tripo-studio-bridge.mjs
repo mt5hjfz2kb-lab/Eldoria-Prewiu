@@ -271,7 +271,35 @@ try {
     if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
       throw new Error('generate_staged requires prior staged run and artifact evidence.');
     }
-    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '
+    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
     if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
       throw new Error('The approved generated task is not active.');
     }
