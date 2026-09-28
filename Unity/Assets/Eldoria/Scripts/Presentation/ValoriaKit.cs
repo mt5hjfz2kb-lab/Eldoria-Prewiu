@@ -384,7 +384,7 @@ namespace Eldoria.Presentation
         {
             // Parcel-specific Art Pass 2 architecture: production building first, decoration second.
             var art=ValoriaExternalAssetLibrary.Load();
-            var authored=BenchmarkPieceModulated(name+" · authored lumber mill",art!=null?art.LumberMill:null,
+            var authored=BenchmarkPieceModulated(name+" · authored lumber mill",art!=null?art.SlavicShed:null,
                 p+new Vector3(.05f,.02f,.18f),3.45f,3.55f,Quaternion.Euler(0,180f,0),
                 new Color(.78f,.74f,.66f,1f));
             if(authored==null)
