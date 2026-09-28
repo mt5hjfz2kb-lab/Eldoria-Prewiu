@@ -58,11 +58,20 @@ async function inspectPage(page) {
     return { inputs, textareas };
   });
 
+  const bodyText = await withTimeout(page.locator('body').innerText(), pageProbeTimeoutMs, 'page text read').catch(() => '');
+  const creditCostText = String(bodyText || '')
+    .split(/\r?\n/)
+    .map(x => x.trim())
+    .filter(Boolean)
+    .filter(x => /(credit|credits|cr[eé]dit|cr[eé]ditos|cost|coste|generate)/i.test(x))
+    .slice(0, 60);
+
   return {
     url: page.url(),
     title,
     generate_button_visible: generateVisible,
     visible_button_sample: buttons.slice(0, 40),
+    credit_cost_text_sample: creditCostText,
     controls
   };
 }
@@ -170,6 +179,7 @@ try {
       generate_clicked: false,
       credits_spent: false
     };
+    report.post_upload_page = await inspectPage(uploadPage);
 
     // Do not click Generate. If the original input survives, clear it; otherwise
     // the SPA has already replaced the control after accepting the file.
