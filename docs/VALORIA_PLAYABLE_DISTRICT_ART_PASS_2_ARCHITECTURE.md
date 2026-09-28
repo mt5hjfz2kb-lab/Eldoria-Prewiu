@@ -1,6 +1,6 @@
 # VALORIA PLAYABLE DISTRICT v1 — ART PASS 2: ARCHITECTURE
 
-Status: **ATTEMPT 1 — TECH PASS / INTERACTION PASS / VISUAL FAIL**; dedicated Aserradero v1 is now **TECH PASS / INTERACTION PASS / ARCHITECTURE PASS / MATERIAL-INTEGRATION FAIL**.
+Status: **ART PASS 2 IN PROGRESS** — Aserradero **TECH / INTERACTION / ARCHITECTURE / MATERIAL-INTEGRATION PASS**; Cuartel staged at explicit pre-spend boundary; Bastion unresolved.
 
 ## Evidence
 
@@ -139,6 +139,25 @@ At 19 it must be distinct from the Aserradero; at 12 it must read immediately as
 
 **Exact single-image Tripo reference brief**  
 Generate one isolated 3/4 south/front asset reference, not a moodboard and not a diorama. Neutral light-grey studio background, full building visible, no people, no labels, no road, no stairs, no terrain/mountain and no surrounding city. Compact mountain-city barracks/guardhouse with a robust stone lower storey, recessed guarded south entrance, asymmetric timber-and-stone upper mass, dark connected slate roof hierarchy, one clearly subordinate raised guard bay/watch cue, restrained blue heraldic banner/shield details integrated into the facade, and a small military service annex. The west flank must visually terminate cleanly/openly so the central street can remain clear. It must look unmistakably military but smaller and less monumental than the Bastion; no cottage read, no standalone keep/tower, no oversized curtain wall, no pasted-on weapon clutter.
+
+### Cuartel exact pre-spend stage — 2026-09-28
+
+The generated-image route repeatedly produced invalid city/collage boards and those outputs were explicitly rejected; none was submitted to Tripo. To preserve exact-input control, the final Cuartel reference is deterministic and isolated.
+
+- Canonical vector source: `pipeline/art-inputs/Valoria_Cuartel_AP2_v1.svg`.
+- Safe SVG→PNG staging support: bridge checkpoint `c0ea294494b016923603048c8f85d7ede035bee7` + workflow checkpoint `17ecaa5aa331841cbe4baea55849b4ecda4a7be4`.
+- Stage request checkpoint: `1820fa6e76c02f346ea06ab633168114a2d295fb`.
+- Tripo Studio staging run: **36479894543**.
+- Artifact: **10996421149**.
+- Exact staged PNG: `Valoria_Cuartel_AP2_v1.png`, **126,906 bytes**, SHA-256 `ed5c93e2daae617be5399a3be5821160fccaf2b887a5336229a77a04bae6f266`.
+- Exact vector source SHA-256 measured on runner: `00d014aff2abaf615fa7d5fdfb7914886061672aa6b20bf7b4702c2a1daa1423`.
+- Tripo accepted the exact **1024×1024** image and left it staged in the live owner session.
+- Selected model remains **H3.1 — Máx. calidad**.
+- Visible button after this exact upload: **Generar 55**.
+- Credits spent by this stage: **0**.
+- `Generate` clicked: **false**.
+
+**Current boundary:** stop here until the owner explicitly authorizes **55 credits for this exact staged Cuartel image**. Do not infer authorization from the prior Aserradero spend.
 
 ## 3. Valoria_Bastion_AP2_v1
 
@@ -305,13 +324,10 @@ This closes the Aserradero-specific blocker. It does not make Art Pass 2 complet
 
 ## Next action
 
-Do **not** repeat Aserradero generation/export/optimization. Its geometry is accepted. In the next larger execution block:
-1. solve Aserradero material/lighting integration with a bounded Unity-only pass;
-2. audit the six certified Valoria families for selective fragment reuse without letting them dictate topology;
-3. move directly into dedicated Cuartel and Bastion production/integration in the same Art Pass 2 block where practical;
-4. close with official zoom 19/12/9 captures and real click/panel regression.
-
-The owner explicitly wants fewer micro-passes: a block should create an obvious city-level visual jump, not only infrastructure or one minor polish step.
+1. Await explicit owner authorization for **55 Tripo credits** against exact Cuartel PNG SHA-256 `ed5c93e2daae617be5399a3be5821160fccaf2b887a5336229a77a04bae6f266`.
+2. After authorization only: switch bridge to guarded `generate`, verify the exact SHA + 55-credit button, click Generate once, watch completion, export `Valoria_Cuartel_AP2_v1.glb`, then run the canonical Blender/Unity module gate and integrate into the real Cuartel parcel with separate hotspot/collider.
+3. Only after Cuartel capture review: prepare/stage Bastion exact input and repeat the same explicit pre-spend boundary.
+4. Density remains blocked until Aserradero/Cuartel/Bastion all read strongly in official 19/12/9 captures.
 
 ## Historical Aserradero Tripo pre-spend stage (2026-09-28)
 
