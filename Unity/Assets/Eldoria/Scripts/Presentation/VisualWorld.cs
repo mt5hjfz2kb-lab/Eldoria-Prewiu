@@ -156,6 +156,11 @@ namespace Eldoria.Presentation
             ValoriaKit.House("VPD · upper dwelling",new Vector3(5.15f,l1+.34f,7.15f),
                 new Vector3(2.55f,1.30f,2.25f),true,Glow);
 
+            // Long-term Valoria master-envelope graybox. These are reserved spatial districts,
+            // not final buildings/art. They prove that the certified kernel can grow into a
+            // multi-viewport city without moving the original circulation hierarchy.
+            MasterEnvelopeGraybox(l1);
+
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-9.25f),
                 new Vector3(3.0f,2.1f,.50f),ValoriaKit.Timber);
             gate.AddComponent<WorldHotspot>().Id="gate"; gate.GetComponent<Renderer>().enabled=false;
@@ -173,6 +178,43 @@ namespace Eldoria.Presentation
             int visibleArchers=state.BastionLevel>=2?4:3;
             for(int i=0;i<visibleArchers;i++) Archer(new Vector3(2.0f+(i%2)*.62f,.34f,-4.5f+(i/2)*.62f));
             Glow("VPD · Bastion warmth",new Vector3(0,l1+3.4f,6.2f),Amber,1.35f,6.0f);
+        }
+
+        static void MasterEnvelopeGraybox(float l1)
+        {
+            var reserve=new Color(.255f,.245f,.215f);
+            var route=new Color(.39f,.37f,.32f);
+            var upper=new Color(.30f,.29f,.27f);
+
+            // West: future residential / workshop growth.
+            ValoriaKit.Block("VPD · master west district",new Vector3(-16.0f,.10f,1.4f),
+                new Vector3(10.0f,.22f,15.0f),reserve);
+            ValoriaKit.Block("VPD · master west route",new Vector3(-11.1f,.27f,-1.2f),
+                new Vector3(7.0f,.14f,2.4f),route);
+
+            // East: future military / production growth.
+            ValoriaKit.Block("VPD · master east district",new Vector3(16.0f,.10f,1.8f),
+                new Vector3(10.0f,.22f,15.0f),reserve);
+            ValoriaKit.Block("VPD · master east route",new Vector3(11.1f,.27f,-1.0f),
+                new Vector3(7.0f,.14f,2.4f),route);
+
+            // Upper civic/government reservation. It stays behind the current Bastion kernel
+            // and may later become terraces rather than one monolithic platform.
+            ValoriaKit.Block("VPD · master upper civic reserve",new Vector3(0,l1-.08f,15.4f),
+                new Vector3(13.5f,.22f,7.0f),upper);
+            ValoriaKit.Block("VPD · master upper civic link",new Vector3(0,l1+.02f,11.2f),
+                new Vector3(4.0f,.14f,4.0f),route);
+
+            // Late-game/future-system edge. Kept deliberately generic until the associated
+            // gameplay system (for example port/naval or another large civic system) is locked.
+            ValoriaKit.Block("VPD · master future reserve",new Vector3(0,.08f,24.0f),
+                new Vector3(19.0f,.20f,7.0f),reserve*.92f);
+
+            // Finished terrain aprons keep future pan extremes inside authored ground.
+            ValoriaKit.Block("VPD · master west terrain apron",new Vector3(-24.0f,-.15f,4.0f),
+                new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
+            ValoriaKit.Block("VPD · master east terrain apron",new Vector3(24.0f,-.15f,4.0f),
+                new Vector3(7.0f,.38f,25.0f),new Color(.27f,.255f,.22f));
         }
 
         static void TagVisibleHotspots(string prefix,string id)
