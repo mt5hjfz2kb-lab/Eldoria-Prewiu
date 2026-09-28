@@ -37,6 +37,12 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Historical headings/test filenames may retain the version in which a subsystem was introduced; do not rename them merely because the active version advanced.
 - Version promotion is release metadata, not a gameplay change. It must not alter balance, progression or frozen tester output.
 
+## Development speed / migration / visual convergence
+- Development workflow optimization and CI profiles: `docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md`.
+- Unity capability migration execution: `docs/UNITY_MIGRATION_ACCELERATION_PLAN.md` in addition to `UNITY_MIGRATION_PLAN.md`.
+- Valoria art decisions must follow `docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md`: prove composition/look-dev cheaply before paid/final geometry, classify defects before regenerating, and judge final quality integrated at official cameras.
+- `.github/workflows/unity-cache-probe.yml` is an isolated measurement workflow only. Do not promote persistent Library reuse into canonical CI until cold/warm results are deterministic and source contamination is excluded.
+
 ## Canonical Valoria modular-art pipeline
 - Start Valoria art work at `docs/ELDORIA_ART_PIPELINE_INDEX.md` and `docs/VALORIA_MODULE_KIT.md`; these distinguish active production tooling, support infrastructure, historical experiments and real certified families.
 - For every new Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
