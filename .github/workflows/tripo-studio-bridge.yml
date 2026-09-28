@@ -60,7 +60,30 @@ jobs:
           if ($mode -eq 'stage_upload' -and [bool]$request.allow_credit_spend) {
             throw "stage_upload cannot run with allow_credit_spend=true."
           }
-          node tools/tripo-studio-bridge.mjs pipeline/tripo-studio-request.json "$env:RUNNER_TEMP\tripo-studio-probe.json"
+
+          $runtimeRequestPath = "$env:RUNNER_TEMP\tripo-studio-request-runtime.json"
+          if ($mode -eq 'stage_upload' -and -not [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob)) {
+            $glob = Join-Path $env:GITHUB_WORKSPACE ([string]$request.upload_base64_glob)
+            $parts = @(Get-ChildItem $glob -File -ErrorAction SilentlyContinue | Sort-Object Name)
+            if ($parts.Count -eq 0) { throw "No exact-input base64 parts found for: $glob" }
+            $chunks = foreach ($part in $parts) { (Get-Content $part.FullName -Raw).Trim() }
+            $b64 = $chunks -join ''
+            $bytes = [Convert]::FromBase64String($b64)
+            $fileName = [string]$request.upload_file_name
+            if ([string]::IsNullOrWhiteSpace($fileName)) { $fileName = 'tripo-exact-input.jpeg' }
+            $dest = Join-Path $env:RUNNER_TEMP $fileName
+            [IO.File]::WriteAllBytes($dest,$bytes)
+            $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+            $expected = ([string]$request.upload_sha256).ToLowerInvariant()
+            if ([string]::IsNullOrWhiteSpace($expected) -or $sha -ne $expected) {
+              throw "Exact Tripo input SHA mismatch. expected=$expected actual=$sha"
+            }
+            $request | Add-Member -NotePropertyName upload_path -NotePropertyValue $dest -Force
+            Write-Host "EXACT_TRIPO_INPUT_OK: $fileName | $($bytes.Length) bytes | sha256 $sha"
+          }
+
+          $request | ConvertTo-Json -Depth 10 | Set-Content $runtimeRequestPath
+          node tools/tripo-studio-bridge.mjs $runtimeRequestPath "$env:RUNNER_TEMP\tripo-studio-probe.json"
 
       - uses: actions/upload-artifact@v4
         if: always()
