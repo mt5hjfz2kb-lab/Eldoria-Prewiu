@@ -1,10 +1,25 @@
 {
   "enabled": true,
-  "mode": "probe",
+  "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Read-only probe. Must not click Generate or spend credits.",
-  "probe_nonce": "2026-09-28T11:14:reset-safe-probe",
+  "notes": "Valoria Art Pass 2 Aserradero. Exact owner-provided image only. Stage upload and read visible cost; never click Generate or spend credits.",
+  "request_id": "valoria-aserradero-ap2-v1-pre-spend",
+  "asset_name": "Valoria_Aserradero_AP2_v1",
+  "function": "Dedicated medieval wood-production sawmill",
+  "parcel": {
+    "width": 5.1,
+    "depth": 5.2,
+    "footprint_width": 3.4,
+    "footprint_depth": 2.8,
+    "height_min": 3.2,
+    "height_max": 3.8,
+    "principal_face": "south/front",
+    "street_side": "keep clear"
+  },
+  "upload_file_name": "658ABAC7-03DC-490C-BEF8-79F906DAB3D0.jpeg",
+  "upload_sha256": "4c00ab8b91c57c1872066a40448a1aba5a152fc940ae6bad494302e55f2aa0be",
+  "search_downloads_for_sha": true,
+  "allow_credit_spend": false,
   "connect_timeout_ms": 10000,
-  "page_probe_timeout_ms": 12000,
-  "allow_credit_spend": false
+  "page_probe_timeout_ms": 12000
 }
