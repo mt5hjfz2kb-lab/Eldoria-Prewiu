@@ -48,8 +48,9 @@ jobs:
           $folder="$env:GITHUB_WORKSPACE\Unity\LookDevCaptures"
           $log="$env:RUNNER_TEMP\Eldoria-LookDev.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath "$env:GITHUB_WORKSPACE\Unity" -executeMethod "Eldoria.EditorTools.ValoriaLookDevCapture.Capture" -logFile $log
-          if ($LASTEXITCODE -ne 0) { if(Test-Path $log){Get-Content $log -Tail 200}; throw "LookDev capture failed: $LASTEXITCODE" }
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaLookDevCapture.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 200}; throw "LookDev capture failed: $($process.ExitCode)" }
           $images=@(Get-ChildItem $folder -Filter '*.png' -File)
           if($images.Count -ne 8){ throw "Expected 8 LookDev PNGs, found $($images.Count)" }
           foreach($image in $images){ if($image.Length -lt 10000){ throw "Empty LookDev capture: $($image.Name)" } }
