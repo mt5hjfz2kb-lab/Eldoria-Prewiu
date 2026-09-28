@@ -1,23 +1,15 @@
 {
   "enabled": true,
-  "request_id": "rock-terrain-seam-filler-v1",
-  "module_label": "RockTerrainSeamFiller",
+  "request_id": "valoria-aserradero-ap2-v1-20260928",
+  "module_label": "Valoria_Aserradero_AP2_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Eldoria_Module_RockTerrainSeamFiller.glb",
-    "exact_sha256": "",
-    "name_regex": "^Eldoria_Module_RockTerrainSeamFiller(?:[-_ ].*)?\\.glb$",
+    "exact_name": "Valoria_Aserradero_AP2_v1.glb",
+    "exact_sha256": "874e3344d7c09da153fcfeaf012d3d542fdf4d55ca8eb198078646660c4ad37b",
+    "name_regex": "^Valoria_Aserradero_AP2_v1\\.glb$",
     "max_age_hours": 6,
-    "exclude_sha256": [
-      "3c6ef8f92879f5c8acee827b8cd8d2e4f33bb94fde0b6ad20a228cc04bd44b27",
-      "210dc8e787113a82b96551fc7f55c932dcfde60d48ce9ba273012e589480b8eb",
-      "4d1c19978302643003600b0da5ed2f0ef14f7256c85da03077d36fa9f13e294e",
-      "32fa4360d87f0bc325ebbe792fa03c2428d5efdd4d90f26f52562029c746bd73",
-      "d1cfd520d07e2e311016d52fe40d11e3b0abc6e16ebc83a044e320f25ecba692",
-      "345e483c961a35738eb34fdeeca217cb79ffc7324d8989e05015322cfac8e458",
-      "75e9a955e0c3f7596fbb4a70ef76eccceff7a379a0437ea859c587d2a2653685"
-    ]
+    "exclude_sha256": []
   },
-  "visual_acceptance": "Must read as terrain/rock seam filler rather than a protagonist asset; must help merge rocky bases between larger modules; must provide a gentle or stepped height transition; must tolerate partial overlap/burial without losing utility; must not become a building, tower, gate, main plaza or focal landmark; must remain legible enough at strategic/city/detail official cameras to prove its filler function."
+  "visual_acceptance": "Dedicated medieval sawmill, not a generic house with attached props. Official south/front camera at zoom 19/12/9 must preserve wood-production silhouette, timber/stone structure, coherent roof, visibly integrated saw machinery, logs/planks, hoist/pulley and chimney. Preserve open street-side edge. Isolated technical pass alone is not integrated Art Pass 2 acceptance; test actual Aserradero parcel 5.1 x 5.2, approximate footprint 3.4 x 2.8 and height 3.2-3.8, click target and real panel."
 }
