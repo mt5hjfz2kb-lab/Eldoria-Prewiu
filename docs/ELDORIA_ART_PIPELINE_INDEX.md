@@ -51,6 +51,14 @@ build Valoria bottom-up from functional layers (terrain -> L0 -> circulation -> 
 
 This is now the **production-direction reference for city topology**. The six certified Tripo families remain reusable art/reference material; they must not be treated as a required topology graph.
 
+## HISTORICAL ASSET RESCUE — reuse before regeneration
+
+- Registry: `pipeline/historical-module-rescue.json`
+- Inventory workflow: `.github/workflows/historical-module-rescue-inventory.yml`
+- Surface profile: `pipeline/valoria-surface-v1.json`
+
+Certified historical families may be re-evaluated under the current Surface v1 / official-camera formula without spending credits. Rescue does **not** erase documented geometry/interface failures: a surface pass may improve coherence, materials and integration, but it cannot certify traversal or topology that previously failed physically. Prefer reuse in an already-approved gameplay topology before requesting a new paid generation.
+
 ## SUPPORT — valid infrastructure, not the primary entry point
 
 - `Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionSelectionProbe.cs`
