@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "status": "validation_candidates",
+  "source": "Valoria Visual Formula v1",
+  "profiles": {
+    "baseline": {
+      "ambient": [
+        0.92,
+        0.91,
+        0.87
+      ],
+      "fog": [
+        0.64,
+        0.66,
+        0.65
+      ],
+      "fog_start": 28,
+      "fog_end": 62,
+      "sun": [
+        1,
+        0.88,
+        0.74
+      ],
+      "sun_intensity": 1.95,
+      "shadow_strength": 0.48,
+      "sun_euler": [
+        50,
+        -32,
+        0
+      ],
+      "role": "historical baseline",
+      "eligibility": "DISFAVORED_PENDING_COMPARISON"
+    },
+    "neutral-pbr": {
+      "ambient": [
+        0.6,
+        0.62,
+        0.64
+      ],
+      "fog": [
+        0.52,
+        0.55,
+        0.58
+      ],
+      "fog_start": 30,
+      "fog_end": 66,
+      "sun": [
+        0.98,
+        0.96,
+        0.92
+      ],
+      "sun_intensity": 1.35,
+      "shadow_strength": 0.65,
+      "sun_euler": [
+        48,
+        -28,
+        0
+      ],
+      "role": "neutral PBR diagnostic"
+    },
+    "ruins-contrast": {
+      "ambient": [
+        0.47,
+        0.5,
+        0.52
+      ],
+      "fog": [
+        0.42,
+        0.46,
+        0.49
+      ],
+      "fog_start": 31,
+      "fog_end": 68,
+      "sun": [
+        1,
+        0.78,
+        0.58
+      ],
+      "sun_intensity": 1.55,
+      "shadow_strength": 0.7,
+      "sun_euler": [
+        54,
+        -38,
+        0
+      ],
+      "role": "high-contrast dark-fantasy diagnostic"
+    },
+    "neutral-overcast": {
+      "ambient": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "fog": [
+        0.63,
+        0.63,
+        0.63
+      ],
+      "fog_start": 28,
+      "fog_end": 62,
+      "sun": [
+        1,
+        1,
+        1
+      ],
+      "sun_intensity": 0.9,
+      "shadow_strength": 0.55,
+      "sun_euler": [
+        55,
+        -25,
+        0
+      ],
+      "role": "flat-light diagnostic"
+    },
+    "valoria-v1-candidate": {
+      "ambient": [
+        0.54,
+        0.56,
+        0.57
+      ],
+      "fog": [
+        0.46,
+        0.49,
+        0.51
+      ],
+      "fog_start": 31,
+      "fog_end": 68,
+      "sun": [
+        1,
+        0.84,
+        0.68
+      ],
+      "sun_intensity": 1.45,
+      "shadow_strength": 0.68,
+      "sun_euler": [
+        52,
+        -34,
+        0
+      ],
+      "role": "balanced candidate derived from baseline wash diagnosis",
+      "eligibility": "CANDIDATE_NOT_PROMOTED"
+    }
+  },
+  "selection_rule": "Select by official-camera visual evidence plus luminance/contrast/clipping metrics across overview, Aserradero and Cuartel. Do not promote from numeric preference alone."
+}
