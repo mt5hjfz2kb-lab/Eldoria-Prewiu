@@ -1,333 +1,98 @@
 # Eldoria — SESSION HANDOFF
 
-## 2026-09-28 — Valoria Playable District v1 ART PASS 1 CERTIFIED
+Updated: 2026-09-28
 
-- Final playable/art checkpoint: `26cec966b2495c0dc1d0f925ffd5aa6e7793f9a3`.
-- Final Unity Actions run **36441851841**: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, official Valoria captures PASS.
-- Full Unity checks artifact **10978669163**.
-- Official Valoria capture artifact **10979357857**, digest `sha256:2211d652dbd3e76b0afc565c39028a4f9650a232f9300e33f4a43b34614c7721`.
-- Baseline comparison remains Skeleton code `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f`, capture artifact **10971070486**.
-- Frozen kernel topology, camera orientation, zoom 9/12/19, bounded pan, Master Envelope reservations and all gameplay coordinates remain intact.
-- Art Pass 1 removes the dominant rectangular world-board/plinth read; hides structural proof slabs behind organic visual skins; keeps the twelve-step route open; integrates Planta 0/Planta 1 with earth, retaining masonry and rock; differentiates Aserradero/Cuartel; and adds authored **SlavicCobbleRoad / SlavicFlatRock / SlavicBoulder / SlavicStoneFence** dressing with visual-only colliders disabled.
-- No Tripo credits spent; no new external asset generated.
-- Interaction proof in PlayMode remains green: Aserradero panel, Cuartel panel, Bastion panel, gate → Frontier, official zoom clamps, Master Envelope pan and Bastion selection after pan.
-- Verdict: **TECH PASS / INTERACTION PASS / VISUAL PASS — ART PASS 1**.
-- This is a terrain/support/circulation visual certification, not final architecture. Next production priority is Art Pass 2: Aserradero + Cuartel dedicated architecture, then Bastion silhouette/roof hierarchy and increased inhabited density inside the frozen envelopes.
-- Full record: `docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md`.
+This file is intentionally **operational and short**. Historical execution detail belongs in git history, specialist docs and `CHANGELOG.md`. Permanent working rules live in `AGENTS.md`; current functional product state lives in `PROJECT_STATE.md`; durable design decisions live in `DESIGN_DECISIONS.md`.
 
-## 2026-09-28 — Valoria Master Envelope + Camera Gate v1 CERTIFIED
+## Live development line
+- Repository: `mt5hjfz2kb-lab/Eldoria-Prewiu`.
+- Active branch: **`main` only**.
+- Verify real `main` HEAD at the start of every execution block; do not infer it from chat.
+- Active web milestone/reference: **v0.32.0**.
+- Active Unity source: `Unity/`, Editor **6000.3.23f1**.
+- Web remains the canonical playable design/reference until Unity replacement/parity is explicitly approved.
 
-- Certification HEAD: `c8135a8c162e7849d852472d67e2492cd8a88af4`.
-- Unity Actions run **36432979557**: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, Valoria benchmark capture PASS.
-- Capture artifact **10974741738** contains home 19/12/9 plus west/east/future pan views and a 390×844 mobile view; manual structural review completed.
-- The certified Playable District Skeleton remains the kernel. New graybox reservations prove west growth, east growth, upper civic/government space, late-game/future-system space and finished terrain aprons without moving the core.
-- Runtime city camera is now fixed authored isometric orientation + zoom 9..19 + bounded panning + progression-aware bounds + recenter.
-- Tap vs drag is separated; real Aserradero/Cuartel/Bastion hotspot selection remains valid after camera translation.
-- Verdicts: **TECH PASS / CAMERA-INTERACTION PASS (prototype) / MASTER ENVELOPE PASS (structural) / VISUAL PASS for graybox readability only**.
-- Final art quality, exact final dimensions, final Bastion cap and late-game building list are not certified here.
-- Broad production-art dressing may proceed now, but it must preserve the kernel, expansion reservations and multi-viewport camera model. See `docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md`.
+## Latest certified Valoria state
+### Playable District v1 — ART PASS 1 CERTIFIED
+- Certified playable/art checkpoint: `26cec966b2495c0dc1d0f925ffd5aa6e7793f9a3`.
+- Unity Actions run: **36441851841**.
+- Full Unity checks artifact: **10978669163**.
+- Official Valoria captures artifact: **10979357857**.
+- Result: **TECH PASS / INTERACTION PASS / VISUAL PASS — ART PASS 1**.
+- Frozen kernel topology, gameplay coordinates, 12-step route, official isometric orientation, zoom 9/12/19, bounded pan and Master Envelope reservations remain protected.
+- Art Pass 1 removes the dominant rectangular board/plinth read and integrates terrain/support/circulation visually; it is **not final architecture**.
+- Record: `docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md`.
 
-## 2026-09-28 — Valoria long-term master planning v1 CLOSED
+### Master Envelope + Camera Gate v1 CERTIFIED
+- Certification checkpoint: `c8135a8c162e7849d852472d67e2492cd8a88af4`.
+- Unity Actions run: **36432979557**.
+- Capture artifact: **10974741738**.
+- Camera: fixed authored isometric orientation, zoom 9..19, bounded panning, progression-aware bounds and recenter.
+- Tap-vs-drag and real Aserradero/Cuartel/Bastion hotspot selection after pan are validated.
+- The Playable District Skeleton is the **kernel**, not the whole city. Long-range planning preserves headroom toward roughly Bastion 25–35.
+- Record: `docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md` plus the three master-plan documents.
 
-- The certified **Valoria Playable District Skeleton v1** is now explicitly the **kernel** of the long-term city, not the full city footprint.
-- Published planning baseline:
-  - `docs/VALORIA_MASTER_PLAN_V1.md`
-  - `docs/VALORIA_PROGRESSION_MAP_V1.md`
-  - `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`
-  - requirements/index: `docs/VALORIA_MASTER_PLAN_AND_PROGRESSION_REQUIREMENTS.md`
-- Bastion I–X remains the prologue/first playable arc; the city framework must preserve expansion headroom for the current planning range of roughly **Bastion 25–35** without rebuilding the original kernel.
-- Progression model: one persistent Valoria, major visual tiers plus lighter per-level feedback, physical district growth, ruin→recovery→capital transformation, and building maximum envelopes reserved before final art.
-- Camera direction is now **fixed authored isometric orientation + zoom 9..19 + bounded pan**, not a permanently fixed world position. The current certified pose remains the home/anchor pose. Long-term Valoria must exceed one normal mobile viewport and expand mainly left/right with controlled secondary depth/elevation.
-- Certified Tripo families remain reusable library/reference material and do not dictate roads, districts or elevation.
-- **Next execution gate:** preserve the certified kernel; build a full long-term city-envelope graybox around it; reserve west/east/upper/future districts and maximum building plots; prototype bounded mobile panning + progression-aware bounds; validate tap-vs-drag, real hotspot selection after pan, zoom 9/12/19, mobile aspect framing and home/edge captures. Do not begin broad production-art dressing until this gate passes.
-- Exact final city dimensions and the ultimate Bastion cap remain intentionally provisional until that graybox/camera gate is measured.
+## Latest published preview status
+- `Publish Eldoria Preview` run **36443320468** completed successfully on commit `13a3a39069fdb47fb2d65b88d5446834c1e135ca`.
+- Full local-equivalent certification gate: PASS.
+- GitHub Pages deploy: PASS.
+- Published Chromium verification: PASS.
+- Frozen tester URL guard: PASS.
 
-## Active Valoria art state
-- **IF1 short-chain physical decision CLOSED (2026-09-28):** starting `main` was `2e084f35767cdcb58c8637e8cf9e05e28ce918b1`. The exact three certified GLBs GateStreetRiseRock MV1 → StreetLandingTransition → TerraceStairRock were measured through real surface/ray intersections, then rendered in an isolated three-piece Unity control. Final run **36395383244**, artifact **10957743662**: Unity technical import/collider/raycast/UV0/normals/material/four-capture checks PASS; physical INTERFACE FAIL; four-view VISUAL FAIL. Gate's upper outlet has ~1.65 m of *candidate* upward surface at the nominal socket (not yet obstacle-free); after another 0.46 m, the center encounters an obstruction/height error of 1.113 m and only ~.58 m of side candidate strip; after 0.77 m there is a 3.566 m height error. Zoom 9/oblique show an enclosed plaza and a separate rock-supported connector. Opening a 1.6 m through-route here requires cutting substantial upper architecture or adding a new support floor, beyond a safe localized IF1 edit. Under the owner's no-identity-damage rule **no IF1 mesh was fabricated or mislabelled**; originals retain FUNCTION CERTIFIED, zero INTERFACE CERTIFIED. Residential phase and full Micro-Valoria rebuild were correctly skipped. See `docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md`. Next decision is an authored semantic road/architecture/rock exit design for the existing Gate role, not further socket nudging or Tripo generation in this block. Protected surfaces intact.
-- **Micro-Valoria 2 inhabited district CLOSED (2026-09-28):** six certified families, 10 instances, 498,199 instanced tris; final isolated Unity run **36388243909**, artifact **10955426116**, composition commit `bca4db9ec17f787df51cb6908a87b8c8f60a6e48`. Technical PASS; visual/urban FAIL after two real 19/12/9/oblique reviews. Two residential groups improve inhabited silhouette, but the middle street/landing is occluded by fused parapet/rock shapes, eastern rock pedestal and rear tower remain distinguishable, and the continuous mountain/route are not proven. See `docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md`. Do not scale this assembly to production Valoria; next resolve shared join elevations, traversable edges and rock-base interface using existing six families, without assuming a seventh family. Protected surfaces unchanged.
-- **Six families are currently certified:** TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1, ResidentialTerraceRock, StreetLandingTransition and RockTerrainSeamFiller. The older three-family inventory/next-milestone language below is historical as of this update; `docs/VALORIA_MODULE_KIT.md` lists current identities.
-- **Art pipeline organization/consolidation complete (2026-09-27):** `docs/ELDORIA_ART_PIPELINE_INDEX.md` now separates ACTIVE / SUPPORT / HISTORICAL tooling; `docs/VALORIA_MODULE_KIT.md` is the canonical family/gap inventory; four superseded per-module/source workflows are `[LEGACY]` and manual-only; ImageTo3D `Source/` is explicitly ephemeral staging; local generated GLBs/scenes are Git-ignored. Owner Unity helper `MicroValoriaOwnerReview.cs` compiles inside the green Micro-Valoria run **36350388011** and exposes `Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review`. First compile attempt exposed the known `Eldoria.Application` namespace collision; it was corrected by fully qualifying `UnityEngine.Application` before green validation.
-- **Modular route validated:** three distinct certified families now exist: **TowerWallRock** (defense/skyline), **TerraceStairRock** (elevation/terrace/stair) and **GateStreetRiseRock MV1** (entry/circulation). Canonical inventory: `docs/VALORIA_MODULE_KIT.md`.
-- **Micro-Valoria three-family proof PASSED (2026-09-27):** final isolated review commit `4c5ee31b781bd0966794bb1cd1f46bb96e4a060c`, Unity run **36348823965**, artifact **10940749116**. Composition: 2× TowerWallRock + 2× TerraceStairRock + 1× GateStreetRiseRock MV1, **249,399 instanced tris**, 5 MeshColliders, UV0+normals, raycasts/background misses and 19/12/9/oblique green. Real review shows a coherent lower entrance → elevated middle → upper fortified sequence. **Technical PASS / connected small-district PASS.** This is not final-art/full-city approval. Full record: `docs/VALORIA_MICRO_CITY_THREE_FAMILY_GATE.md`.
-- **GateStreetRiseRock MV1 certified third family:** owner source `Eldoria_Module_GateStreetRiseRock_MV1.glb`, SHA-256 `4d1c19978302643003600b0da5ed2f0ef14f7256c85da03077d36fa9f13e294e`; canonical output 49,799 tris. Final orientation-corrected run **36348029333**, artifact **10941805252**. Required chain `lower entry → open arch → visible ascent → upper landing` is readable. Earlier MV1 FAIL was an orientation false negative and is superseded. Full record: `docs/VALORIA_GATE_STREET_MV1_GATE.md`.
-- **Canonical Tripo module pipeline is the only default path:** `docs/TRIPO_MODULE_PIPELINE.md` + `pipeline/tripo-module-request.json` + `.github/workflows/tripo-module-pipeline.yml` + `tools/tripo_module_blender.py` + `TripoGenericModuleReview.cs`. Proven Downloads → runner → Blender → Unity → artifact without manual GLB upload. Legacy per-module workflows are historical/manual-only. Organizational map: `docs/ELDORIA_ART_PIPELINE_INDEX.md`.
-- **Owner Unity inspection path:** `Eldoria > Art Gate > Micro-Valoria > Rebuild and Open Certified Review` prepares local certified-source review copies from Downloads, rebuilds the isolated scene and opens it for free camera inspection. Local generated GLBs/scenes are ignored by Git; CI remains the certification source.
-- **Next art milestone:** **Micro-Valoria 2 — inhabited district**. Do not generate more versions of the same tower/gate. Fill functional gaps first: P1 residential/civic small mass, P1 street/landing transition, P1 rock/terrain seam filler; then plaza/courtyard, short walls and bridge/overhang. Target roughly 6–7 distinct functional families and 8–12 placed pieces before final materials/textures and mobile LOD/instancing work.
-- Protected surfaces remain untouched: `Valoria.unity`, `VisualWorld`, gameplay and canonical web runtime.
+## 2026-09-28 canonical documentation cleanup
+- `DESIGN_DECISIONS.md` was rewritten as a concise **current canonical decision set**, removing historical contradictions.
+- Added `docs/BASTION_I_X_MASTER_TABLE.md` as the canonical Bastion I–X audit/table.
+- Permanent preservation rule is explicit: **validated vertical-slice decisions remain valid in Unity unless a later explicit decision supersedes them**.
+- Códice / Relicario / Arcón responsibilities are reconciled to current product state:
+  - Códice = world knowledge/discovery;
+  - Relicario = Reliquia/card collection/use/Practice/future Duel;
+  - Arcón = objects/materials/equipment.
+- Códice and Relicario are independent peer systems.
+- Cantera role is closed: **stone production**.
+- Relicario teaching is staged from Bastion VII onward instead of dumping the whole card system at first contact.
+- Platform decision is explicit: **mobile-first, tablet-supported, PC-ready as a future option but not committed**.
+- Bastion ascent contract is explicit: every level communicates **what changed/was learned + visible Valoria growth + new action/capability**.
+- Bastion IX = independent mastery; Bastion X = tutorial/prologue graduation, not game completion.
 
-Updated: 2026-09-27
+## Canonical Bastion I–X status
+Read `docs/BASTION_I_X_MASTER_TABLE.md` before changing Arc I progression.
 
-Permanent rules: `AGENTS.md`. Functional state: `PROJECT_STATE.md`. Detailed QA: `QA_AND_DEPLOY.md`. History: `CHANGELOG.md` only.
+Current genuine design gaps:
+1. **Bastion IV identity** — exact autonomy challenge + visible Valoria consequence.
+2. **Bastion V tuning** — which upgrades begin requiring stone and ratios; Cantera’s fundamental purpose is already closed.
+3. **Bastion VII teaching cadence** — stage Relicario onboarding across VII–IX/post-X.
+4. **Bastion X finale feel** — graduation/ceremony pacing so it opens desire for the larger game.
+5. **XI+ progression** — separate post-prologue structure; do not repeat tutorial beats.
 
-## Current working state
-- **V4 TEXTURE IMPORT DEBUG ROOT CAUSE RESOLVED (2026-09-27):** exact V4 geometry/classification unchanged. The three BaseColor PNG byte ranges extracted directly from the GLB (no re-encode) import through normal Unity TextureImporter at **1024²** each; assigning them to cloned glTFast materials and to persistent URP/Lit materials renders correctly at 19/12/9 + oblique. Pre-fix embedded glTFast bindings were **4×4** despite the same source bytes. Project quality is Ultra with `globalTextureMipmapLimit=0`, so mip/quality settings are not the cause. Root cause: `com.unity.cloud.gltfast 6.14.1` PNG/JPEG soft dependencies were absent from the project. Temporary run **36284460057** proved that enabling Image Conversion + UnityWebRequestTexture (+ UnityWebRequest) makes the unchanged embedded V4 import as **1024²**. The dependencies are now permanently in `Packages/manifest.json` / `packages-lock.json`; normal V4 gate run **36284841372** at `7e734193…` passes an enforced 1024² assertion, artifact **10919589881**. Diagnosis: **TEXTURES VALID — GLB EMBEDDING/GLTFAST FAILURE**, specifically missing optional PNG/JPEG support modules, not bad textures/UV/URP. Production route: embedded GLB is now valid with modules locked; external PNG + native Unity materials remains a proven fallback. No Valoria.unity, VisualWorld, gameplay, V4 geometry or Stone/Roof/Rock classification changed. Full record: `docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md`.
-- **SurfaceCleanup V4 APPEARANCE GATE FAILS in Unity despite better semantic classification (2026-09-27):** exact `Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb`, SHA-256 `46b26023c65eb60cc59e8d29495d6b100e0a6f14ae42463905497aaecbaffaa2`. Geometry remains exactly the certified 50K surface (50,000 shared canonical triangles; bidirectional vertex-set delta 0). V4 classification: Stone 41,441 / Roof 1,006 / Rock 7,553 faces; Roof forms 5 connected regions. Versus V3, 14,371 Rock→Stone and 2,566 Roof→Stone: rock invasion and major blue leaks are clearly reduced, Stone now dominates architecture, but at least the secondary left turret roof is over-cleaned to Stone and should be selected explicitly rather than by another heuristic. Real Unity 6000.3.23f1 run **36282060847**, artifact **10919755084**, is technically green: 1 mesh, 3 materials, 3 textures, UV/normals, one MeshCollider, raycast hit + empty-space miss. **Critical blocker:** the GLB's embedded BaseColor images decode externally at 1024², but Unity/glTFast exposes all three as named **4×4** textures and the real captures render fallback-like mauve surfaces with cyan/magenta artifacts. Exact V3 control run **36282874873**, artifact **10919990479**, shows the same 4×4/material-render defect, proving it is not caused by V4 cleanup. Final result: **APPEARANCE GATE — FAIL** until the Unity material/texture import path is fixed; after that, re-run unchanged V4 and explicitly select only remaining true small-roof surfaces. Valoria.unity, VisualWorld and gameplay remain untouched. Full evidence: `docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md`.
-- **Tripo 50K small-module geometry gate PASSED (2026-09-26):** exact owner file `Eldoria_Module_TowerWallRock_50K.glb`, SHA-256 `18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a`, validated in isolated Unity 6000.3.23f1 workflow run **36276719125** at commit `4b2da85b0338f72bdda30c08aac876a005ebba6e`; artifact **10917661356**. Unity measured **50,000 tris / 54,760 verts / 1 mesh / UV0+normals present / 1 material / 0 textures**, 4,706,200 mesh runtime bytes, one MeshCollider, positive raycast and correct empty-space miss. Real 1280×720 captures at orthographic **19 / 12 / 9** plus oblique were inspected: primary tower, secondary turret, wall and rock base remain legible at all three zooms and retain coherent side/rear volume. Against the raw 501,432-triangle source, file size falls ~82.9% and triangles ~90.0% while bounds remain within ~0.08% per axis; low→high nearest-vertex RMS is ~0.108% of source height. This is substantially cleaner geometrically than the previous optimized full-Bastion capture, which failed architectural legibility. **Geometry-only gate PASS; do not infer texture/material/modular-separation approval.** Overall pipeline remains **B — viable with external optimization** pending those later phases. Valoria.unity, VisualWorld and gameplay unchanged. Full record: `docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md`.
-- **Tripo small-module H25 gate measured and isolated Unity review prepared (2026-09-26):** owner supplied `Eldoria_Model_Tower.glb` (production review name `Eldoria_Module_TowerWallRock_H25.glb`, SHA-256 `583a07cfec109d02b29d33c3aa2f01895bdbe02d0c8f0d559dc0461954fcabc6`). Raw GLB inspection: **501,432 triangles / 250,572 vertices / 1 mesh / 1 primitive / 1 material / normals present / no UV0 / 0 textures**, 12,032,088 bytes. This is a coherent small-form high-detail source but not a production module. `TripoModuleReview` now provides an isolated glTFast scene, fixed orthographic 19/12/9 + oblique captures, neutral terrain + short review road, MeshCollider/raycast and metrics without touching Valoria/VisualWorld/gameplay. Windows CI stages only the exact SHA from runner Downloads if present. External re-entry target: **20k–35k tris (50k hard ceiling), 3–5 semantic meshes, 2 materials target / 3 max, UV0, 2K max texture sets, GLB 2.0 with useful pivots**. Current decision: **B — viable with external optimization**; do not repeat aggressive Tripo retopo. Full details/checklist: `docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md`.
-- **Tripo modular small-piece route accepted provisionally; production gate OPEN (2026-09-26):** owner observed real 3D geometry, greater coherence for small pieces than full Bastion, and Generate in Parts/segmentation producing separate parts. A requested 5,000-polygon retopo yielded approximately 743 faces / 691 vertices in the observed result; internal polygon targeting is unreliable in this trial. Final texture workflow on segmented parts and export as a truly separated GLB are not yet verified. **Stop internal Tripo retopo, full castles and aggressive reductions.** New path: concept art → small module in Tripo → parts/segmentation → GLB with separate parts → external cleanup/retopo/materials → Unity. Await one externally cleaned small modular GLB; check hierarchy and topology first, then three zooms, collider and terrain in isolated `Unity/Assets/Eldoria/ArtTests/ImageTo3D/`. Decision/checklist: `docs/VALORIA_TRIPO_MODULAR_GATE.md`. The previous one-mesh optimized Bastion Unity trial remains closed **C** for that specific end-to-end asset/import, with screenshots/metrics in `docs/VALORIA_IMAGE_TO_3D_UNITY_GATE.md`. No new model or Unity run was made in this block; Valoria/VisualWorld/gameplay unchanged.
-- **Layered illustration test closed (2026-09-26):** isolated test commit `c2e1652f6cfd1cd3587a6e8a1cdfead97e16f5f7`, Unity Actions run **36250258935** green (preflight, EditMode, PlayMode, Windows build, six isolated captures). All six captures in artifact **10908514472** were inspected. The two Bastion illustrations keep a recognizable core and render at three fixed zooms, but detail crops the base, the rock/road join reads as a pasted cutout, the background is a flat illustration, clicks use the full rectangular Quad, and no city/multiple buildings/four stages/mobile budget are proved. **Do not promote this to Valoria.** The production blocker remains; use these images for visual direction or controlled backgrounds only. Technical decision and exact limits: `docs/VALORIA_LAYERED_ART_TEST.md`. The test commit and this handoff change do not alter `Valoria.unity`, `VisualWorld` or gameplay.
-- **Valoria final asset decision, free-first / no purchase (2026-09-26):** `docs/VALORIA_FINAL_ASSET_DECISION.md` is the current decision for the owner's updated three-zoom 4X, four Bastion stages, mobile and whole-city budget requirements, researched from `main` at `f7f7b09e3551afda6af13fac4a4073277243c8a0`. **Decision C: no audited free combination reaches the demonstrated architectural benchmark; no commercial purchase is sufficiently de-risked yet.** The Skyreach $74.50 USD sale remains the strongest **research lead** for a coherent castle/town/cliff/foliage family, but real-game overhead views, four progression configurations and representative mobile-city budgets are missing. Astrofish Castle's current price is $153.99 USD; Castle + matching Village starts at $283.98 USD before tax and lacks landscape. Synty provides modularity/mobile precedent but the POLYGON look conflicts with the benchmark; Unity's free demo is non-commercial. The earlier conditional Skyreach purchase-review recommendation below is historical and **superseded by this decision**: no buy-to-try/refund step is approved. No assets purchased, imported or used to change Valoria; no new build/capture claimed. The gate can reopen only on lawful pre-purchase evidence of three zooms, four visual stages, complete contents and mobile density, or a new sufficiently good free family.
-- **Valoria purchase audit complete — no purchase made (2026-09-26):** `docs/VALORIA_PURCHASE_AUDIT.md` audits Skyreach Castle/KINGDOM, Synty POLYGON Fantasy Kingdom plus Unity's non-commercial Unity 6 demo, FANTASTIC Highlands Castle, Hivemind Modular Medieval Castle/Gothic Cathedral/Town and Astrofish DETAILED Medieval Castle against the official visual benchmark and total-cost gate. Current conclusion is **A: Skyreach/KINGDOM is the only candidate worth moving to owner authorization review**, specifically because at the observed 50% sale price ($74.50 before checkout tax) it uniquely combines a broad castle/cathedral/city family with mountains/cliffs, foliage, water, LODs and explicit Unity 6 + URP support, reducing multi-pack style/cost risk. This is not an authorization or an art approval: budget remains 0 €, nothing was bought/imported, no Valoria scene was changed, and no free executable Skyreach sample was found. Synty's premium Unity 6 demo must not be treated as box-product quality: Unity documents added SpeedTree 10 foliage, APV lighting, Shader Graph, VFX Graph and Unity 6 rendering/optimization, and the demo is non-commercial. If the owner later authorizes Skyreach, the next step is an **isolated** Unity 6000.3.23f1 three-camera test before any production adoption; reject/refund where policy permits if it still reads as a prefab showcase.
-- **Manual hero fragment scope fixed (2026-09-26):** no further full-fortress study is authorized. The next valid art proof is one small manually authored tower/facade fragment with a hand-resolved roof junction, deep opening, asymmetric buttress/cornice rhythm, projecting element, localized ruin, architecture-rock transition and human scale. Direct mesh editing/extrude/inset/bevel/controlled booleans/sculpt are explicitly preferred; batch Python, generated geometry, Unity primitives and ProBuilder final art are prohibited. Current tool inventory and plugin discovery expose no interactive Blender/desktop control in this session, so geometry creation is blocked rather than simulated. Production brief: `docs/VALORIA_MANUAL_HERO_FRAGMENT_BRIEF.md`. Next realistic route: an environment with interactive control of the owner's Blender workstation, a human artist producing the `.blend`/FBX from the brief, or a legitimately licensed high-quality source mesh manually adapted in Blender.
-- **Manual 3D production gate / hard stop (2026-09-26):** owner accepted the visual diagnosis at `9f1d3212064d19696de837e6832251fe653d208b` and explicitly prohibited further final architecture made from primitives, simple procedural composition or code-generated geometry. Audit result: Blender is the preferred zero-cost DCC; official Blender 4.5.14 LTS already proved FBX compatibility in the Linux authoring study, but the Windows Unity runner audit found no `blender.exe` (and no OpenSCAD) installed. The previous hero was generated through Blender batch Python, which is now explicitly disallowed for final art. The current agent/session can drive GitHub/CI/Unity validation but does not expose an interactive Blender/DCC viewport for genuine manual vertex/edge/face modeling, sculpting or retopology. Therefore **do not create another scripted hero asset and do not modify Valoria**. `docs/VALORIA_MANUAL_3D_PIPELINE_GATE.md` defines the accepted pipeline and visual-first gate. Resume only when interactive/manual Blender (or equivalent DCC) authoring is available to the production agent, or when a legitimately supplied manually authored hero asset is available for isolated Unity testing.
-- **Valoria art asset gate trial rejected (2026-09-26):** HEAD `8c7ffab38e43174e9f053f0b61916aca9ce7ded3`, Actions run `36229310720` succeeded in source preflight, EditMode, PlayMode, Windows build, unchanged Valoria captures and two new isolated test captures. `docs/VALORIA_ZERO_EURO_ASSET_GATE.md` records source/license audit, ten checksum-pinned CC0 files reproducibly downloaded from Poly Haven, the actual screenshot links, and visual decision. In the real capture the candidate fort is squat/modular, the two imported houses and URP trees clash, and the trial terrain has dark striping. **The new artistic base is rejected. No Valoria runtime scene change was made and the user benchmark is not met.** Free castle alternatives investigated either lack the necessary vertical castle+village family, retain simple PSX/low-poly presentation, are paid, or require Fab account and license handling while their public example still falls short. Next substantial task is a coherent original/legitimately supplied medieval architectural family with palace/keep, towers/roofs, ruins and compatible town, then new isolated camera test. Do not claim a visual leap from this technically green run.
-- **Valoria asset gate / rejected experiment (2026-09-26):** the new owner's reference image establishes a substantially higher target: monumental multi-level citadel integrated into high rock terraces, a dense lived-in valley and a visible distant Breach. The prior sculpted-valley/ridge procedural experiment `d201ea6e407197a8906d9d4e82e1d705577a3efd` passed EditMode, PlayMode and Windows build in run `36225291624`, but its three reviewed screenshots regressed into a tiled floor, oversized polygon silhouettes and sphere foliage. `main` was restored to the full previously certified scene tree in `8ec709eec432168430d77f731a8adf44a45e0dcc` (no gameplay changes). `docs/VALORIA_ART_ASSET_GATE.md` records the actual asset inventory and hard visual gate. **Do not resume incremental procedural art edits.** The next substantial task is replacing the Bastion core and immediate terrain with a coherent high-quality zero-cost architectural/landscape family, then visually comparing three captures and certifying Windows. No new screenshot/build is claimed for the restored HEAD; the known-green art source remains `0442f880`.
-- **Valoria inhabited foreground / brighter kingdom pass certified (2026-09-26):** visual source commit `0442f88000d1028af771a45ea9b6bb60f70745c0` is green in Unity Actions run `36224356226` (source preflight, EditMode, PlayMode, Windows build and three deterministic captures). The pass keeps the denser lower-town layer introduced in `949368455cdb39fa5c158f8f3c3cc4e31adaee7a`, brightens city ambient/fog/earth, moves and thins the foreground pine curtain so architecture reads through it, and extends restrained blue Valoria banners into the lower approach. Capture review confirms a clearer gate→Bastion hierarchy, more inhabited depth and less black foreground mass without reintroducing the rejected yellow destroyed-castle assets. This is the current certified visual checkpoint, still not final production art; the dominant remaining gap is production-quality roofs/architecture, organic vegetation/terrain and richer atmospheric depth.
-- **Valoria visual benchmark iteration certified (2026-09-26):** commit `3c5a2268d017526b2b5a10b69272826820e7b1c0` is green in Unity Actions run `36200630294` (source preflight, EditMode, PlayMode, Windows build, three deterministic captures). This iteration replaces the most visible blockout masses with authored masonry, hides the keep backing beneath the roofline, converts side retaining slabs to authored wall modules, subordinates the dead-palace rear tower, ages/slopes slate roofs, moves the valley to a warmer earth base, closes the horizon with restrained rock/tree silhouettes plus nearer fog, and replaces rectangular city terraces with overlapping rounded rock shelves and authored boulders. It is the current validated visual benchmark, not final production art; the next quality ceiling is better production-grade architecture/terrain/vegetation assets rather than more primitive blockout refinement.
-- **Official visual direction benchmark recorded (2026-09-25):** `docs/ELDORIA_VISUAL_BENCHMARK.md` is now the repository-level art-direction contract for the Unity migration until a later Visual Bible replaces it. It codifies the owner-approved reference: bright epic fantasy, monumental inhabited Valoria, strong layered depth, organic vertical terrain, dense environmental storytelling, blue Valoria identity, violet corruption reserved for the Breach, strategic/isometric readability, and world-first HUD. Imported assets are raw material only; a visually green build is not accepted if the full frame still reads as a Unity blockout or prefab collage. The original reference image remains an external owner-supplied visual reference; future art passes must use the repository document plus the image when available.
-- **Valoria visual benchmark pass certified (2026-09-25):** commit `7697b1fb17414540fa99924a118d62151197771d` is green in Unity Actions run `36190127228` (source preflight, EditMode, PlayMode, Windows build, three deterministic art captures). The pass removes the blown-out imported vegetation and oversized nearby terrain blobs, keeps imported mountains only as distant silhouettes, rebuilds the city terrain as controlled terraces/retaining edges, replaces the bright imported road with an Eldoria stone route, brightens the palette/lighting, introduces conical pine silhouettes, strengthens settlement density and tightens benchmark cameras around Valoria/Bastion. Artifacts: `eldoria-unity-checks-7697b1f...` and `eldoria-valoria-captures-7697b1f...`. This is the current validated Valoria vertical-slice benchmark; remaining art gap is authored production-quality architecture/terrain detail, not technical validation.
-- **Valoria visual benchmark work in progress (2026-09-25):** owner rejected the technically green asset trial as visually crude. Focus is now one Valoria/Bastion scene only. Commit `3e1445d` added a deterministic, HUD-free Unity capture method with three angles and separate screenshot artifact; `f099cdf` began the visual overhaul: replaces blue Bublik castle pieces with Mega masonry, unifies PolyOne terrain color to darker Eldoria earth/rock, enlarges the terrain backdrop, deepens forest/undergrowth using Slavic prefabs, replaces toy-like road blocks with cobbles and removes the tall magenta city Rift in favor of a subdued ground scar. The current art-pass source is **not visually certified**; the Windows runner job is queued without a runner assignment, so there is no screenshot or Windows build for this iteration yet. The owner's before photos (IMG_4689.jpeg/IMG_4690.jpeg) show white/yellow terrain, exposed board edges, blue blockout castle, sparse trees and purple bars. Next: run queued Unity tests/build/captures when `EldoriaUnityRunner` is online, inspect all three PNGs, iterate until the scene is visibly improved, then record green SHA and deliver build, before/after, selected assets and remaining gaps. Do not pivot back to systems/infrastructure.
-- **Unity imported-asset benchmark trial certified technically (2026-09-25):** `docs/UNITY_IMPORTED_ASSET_AUDIT.md` inventories the three imported packs. Five source prefab references (Slavic shed/house/tree and Mega ruined tower/firewood) feed the Valoria presentation bridge. Existing sawmill/barracks interaction colliders stay intact, procedural fallback stays available, and Mega Standard materials are adapted on instances to URP Lit. NatureStarterKit2's old texture importer API was repaired for Unity 6. Commit `774d0dc819adabf9917cbe7981b92093cbf4022c` passed source preflight, Unity EditMode, PlayMode (including prefab/material/hotspot checks) and Windows player build/upload in Actions run `36181313966`. Artifact `eldoria-unity-checks-774d0dc819adabf9917cbe7981b92093cbf4022c` (~49 MB). The Windows runner uses GitHub Desktop's bundled Git to avoid checkout's broken PowerShell archive fallback. This is a technically validated **art trial**, not a visually approved Valoria Art Benchmark: no screenshot/mobile-resolution review or full manual playthrough of this build has happened. Next: capture and inspect Valoria on the PC/player at target mobile resolution; adjust scale, palette, building silhouettes and density before extending art to remaining benchmark elements. NatureStarterKit2 vegetation remains unpromoted pending visual/shader review.
-- **Unity Bastion II implementation/certification (2026-09-25):** current Unity source now continues beyond the original vertical slice with Bastion I completion → Bastion II ascent, Cuartel construction (140 wood / 90 stone), +12 Archer T1 recruitment (50 wood), 48-archer Engendro gate, deterministic PvE/rewards, persistent timed tasks and matching Valoria/Frontier presentation. Canonical GitHub→PC→Unity certification is green at `85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf`: source preflight, EditMode, PlayMode, Windows desktop build and artifact upload all succeeded. Artifact: `eldoria-unity-checks-85cdfca18bbe7d374cf96fd18f76abdbd40eb9bf` (~37 MB). The runner watchdog is installed for the logged-in user session; PC must remain powered, awake and logged in.
-- **Automated Unity node validated end-to-end (2026-09-25):** self-hosted Windows runner `DESKTOP-R10PE55` now executes under the logged-in Windows user session, and commit `95ebcdb601bc57f2c0d0f4a4bf39e3ad225c3783` completed `source-preflight`, EditMode, PlayMode, Windows desktop build, and artifact upload successfully. The workflow now uses execution-policy bypass, stage watchdogs, fresh-result validation, and checks for `Eldoria.exe`, `UnityPlayer.dll`, and `Eldoria_Data` instead of a brittle executable-size threshold. This confirms the intended mobile/GitHub -> home PC -> Unity tests/build -> GitHub artifacts loop is operational while the PC is on, logged in, and the scheduled runner task is running.
-- **Automated Unity node validated (2026-09-25):** self-hosted runner `DESKTOP-R10PE55` now runs from the logged-in Windows user session, picks GitHub jobs automatically, executes Unity 6.3.23f1 EditMode + PlayMode tests, builds the Windows player, and uploads artifacts successfully. Workflow `.github/workflows/unity-slice.yml` is green end-to-end on main. This establishes the intended mobile/chat -> GitHub -> home PC -> Unity tests/build -> GitHub artifact loop.
-- **Unity automation validated end-to-end (2026-09-25):** self-hosted Windows runner `DESKTOP-R10PE55` completed source preflight, Unity 6000.3.23f1 verification, EditMode tests, PlayMode tests, Windows desktop build, and artifact upload successfully from GitHub Actions. Artifact `eldoria-unity-checks-95ebcdb601bc57f2c0d0f4a4bf39e3ad225c3783` (~37 MB) was produced. This proves the GitHub→owner PC→Unity→tests/build→artifact path. Runner currently uses the logged-in Windows user session to access the existing Unity license.
-- **Runner first live pickup (2026-09-25):** the Windows self-hosted runner successfully picked up the Unity job automatically, proving GitHub→PC dispatch works. The first editor job failed before launching Unity because the machine PowerShell execution policy blocked GitHub's generated temporary `.ps1`. Workflow shells now explicitly use ExecutionPolicy Bypass and the setup script applies RemoteSigned for future reinstalls. Next push should exercise actual Unity version/test/build steps.
-- **One-command Windows runner setup (2026-09-25):** added `scripts/setup-unity-runner-windows.ps1` to turn the owner's PC into the Unity validation node with one elevated PowerShell command plus one fresh GitHub registration token. The script creates a clean `C:\actions-runner-eldoria`, sets machine-level `UNITY_EDITOR_PATH`, registers the runner with `unity-6000-3-23f1`, installs it as a Windows service, and starts it. Workflow commands were hardened for PowerShell execution. Remaining manual setup after script success: set repository Actions variable `UNITY_RUNNER_READY=true`.
-- **Remote Unity node preparation (2026-09-25):** `.github/workflows/unity-slice.yml` now targets the owner's Windows self-hosted runner (Unity 6000.3.23f1) instead of the earlier placeholder Linux runner. Once the PC is registered and `UNITY_RUNNER_READY=true`, pushes to `main` can automatically run EditMode, PlayMode, build the Windows player, and upload XML/logs/player artifacts. One-time runner registration on the owner's PC remains the blocker to true mobile→GitHub→PC→Unity unattended validation.
-- **Real terrain integration (2026-09-25):** imported PolyOne Free Modular Terrain is now bridged into runtime Resources and used around Valoria as actual cliff, hill and mountain meshes. This is the first terrain pass that materially replaces procedural primitive scenery rather than merely decorating it; scales/placement remain a first checkpoint pending owner visual validation.
-- **Valoria terrain/ruin depth pass (2026-09-25):** added organic rock clusters to break the rectangular plateau silhouette, authored broken masonry around the cyclopean landmark, layered distant ruins for depth, and restrained roadside terrain detail. The goal is to move the view away from a flat modular board while keeping Bastion I readable and sparse.
-- **World-first HUD pass (2026-09-25):** Unity HUD footprint reduced again after owner validation showed text/buttons obscuring more than half the game view. Canvas now scales by screen height, top/bottom rails are substantially shorter and typography/action rows are more compact. Goal: world remains the protagonist while keeping all current slice actions reachable.
-- **Valoria atmosphere pass (2026-09-25):** added real modular stone perimeter pieces around the playable terraces plus runtime smoke plumes for the Sawmill, lower settlement and Bastion. Atmosphere is warmer/greyer while preserving the brighter mobile-readable exposure. This is still an iterative bridge toward the Visual Bible, not final art.
-- **External modular art integration (2026-09-25):** the free Simple Modular Castle Assets pack is now present in the Unity project and referenced through `ValoriaExternalAssetLibrary` so runtime/player builds can instantiate the original URP prefabs without editor-only APIs. The Bastion hybrid pass now replaces the procedural front curtain/towers/gate with real Stone Wall / Stone Tower / Stone Gate meshes while retaining Eldoria-specific keep, broken palace crown, banners, scaffolding and ruin composition. Procedural geometry remains a fallback if the asset library is unavailable.
-- **Valoria Bastion signature pass (2026-09-25):** the Unity city now uses a dedicated reusable Bastion module rather than manually stacked blockout masses. The new silhouette is fortress-first with a recessed central gate, front buttresses, four defensive towers, a narrower inhabited keep, banners/windows, repair scaffold and an irregular broken palace crown. This is the first explicit implementation of the Visual Bible rule “a fortress built inside a dead palace”; it remains procedural placeholder art pending authored assets.
-- **Valoria visual production pass (2026-09-25):** the validated Unity blockout now uses a reusable `ValoriaKit` with cached procedural stone/wood/slate/earth textures, fortress details, banners, windows, rubble, stairs, modular towers/walls/houses/scaffolds and a corrected mobile-readable camera. This is still self-contained placeholder production art, but it replaces flat-color primitive-only presentation and is deliberately structured so authored prefabs/materials can replace modules without changing gameplay coordinates.\n- **Unity Windows slice validated (2026-09-25):** owner compiled and played the first Windows player on Unity 6000.3.23f1. Bootstrap → Valoria → Frontier → forest collection → return → Sawmill completed; Power 2452→2622 and save persistence were observed. Initial magenta player rendering was fixed by forcing a runtime URP base material into Resources. Windows player now renders and responds outside the Editor. Local Unity import created versionable scenes/.meta/ProjectSettings/packages-lock plus Test Runner noise; exact PerformanceTestRunInfo/Settings resources are now ignored. Next infrastructure goal remains: reproducible tests/builds, then this Windows PC becomes the GitHub-connected Unity node for remote/mobile-directed development.
-- **Unity Safe Mode correction (2026-09-24):** four first-import C# errors reported by owner were repaired in `SliceBoot`, `VisualWorld` and `SlicePresenter`; an Editor menu now builds Windows player using the installed Windows module. Source preflight succeeds, but this Work environment still has no Unity Editor, so actual compilation, EditMode/PlayMode results and player startup are **not verified here**. The owner's Windows Editor must reimport after GitHub Desktop fetch/pull, execute the Editor tests and run Bootstrap. If further Console errors appear, report full text before certification. No Domain/Application gameplay contract or web/tester source was changed.
-- **Unity execution block (2026-09-24):** `Unity/` now has a versioned 6000.3.23f1 source project, Bootstrap/Valoria/Frontier scene files, Domain/Application/Infrastructure/Presentation, source-level 3D art study, local gateway/save, economy/march/combat rules, EditMode and PlayMode test source and a guarded Editor CI/build path. `UNITY_CORE_CONTRACT.md` resolves Poder Total and Marcha divergence for this cut. **Unity was not installed in Work**: no import/compile, test result, rendered screenshot or player build has yet been produced or certified. Next agent: read `Unity/README.md`, open in exact Editor, repair actual import errors, run EditMode+PlayMode, build Linux, play complete route and record real screenshots/UX; commit generated packages-lock after successful resolution. No Unity download/link exists yet. Preserve web/taster snapshots.
-- Unity migration audit and approved plan are at `UNITY_MIGRATION_PLAN.md`; the execution source is at `Unity/` and its unresolved Editor validation is described above. No Unity version promotion and no claim that v0.32.0 has obtained final Pages certification. The web release gate below remains separately open. Verify live `main` HEAD before further Unity work.
-- Branch: `main`, only active development line.
-- Active development version: **v0.32.0**.
-- Verify the real live HEAD at session start; never infer it from chat/history.
-- Canonical editable source: `v0220/index.html` + `v0220/js/`; `v0220` is a compatibility directory name.
-- Generated development output: `playtest/`; never edit it directly.
-- Normal development URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
-- QA Launcher URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/?qa=1&launcher=1
+## Immediate production priority
+The next **Unity/art execution** remains Art Pass 2 inside the certified/frozen envelopes:
+1. dedicated **Aserradero architecture**;
+2. dedicated **Cuartel architecture**;
+3. stronger **Bastion silhouette / roof hierarchy**;
+4. increased inhabited density while preserving interaction, circulation and camera readability.
 
-## Current v0.32.0 product state
-- **v0.32.0 is the active development milestone.** It consolidates the Hospital / wounded-troop loop and its interaction with Troops and March.
-- PvE may create wounded troops but never permanent deaths. Wounded units remain owned, are excluded from available composition, and are restored by Hospital treatment.
-- The Hospital is introduced after the Bastion X Herald encounter; healing is a persistent canonical timed task and recovery is part of the Arc I finale path.
-- March reconciliation is scoped to military state mutations rather than every render, avoiding unrelated composition churn.
-- Solo March exposes a future-operation contribution contract while multiplayer/PvP remains unimplemented and visibly absent from the current slice.
-- Dedicated regression: `qa/e2e-v032-hospital.js`; `qa:targeted` and `qa:regression` include it, and the fresh Arc I route covers Herald → wounds → Hospital → recovery.
-- Focused owner preset: `b10-hospital-v032`. Related late-game segment remains IX→X.
-- Final certification/published verification must be taken from the latest v0.32.0 release-candidate HEAD before claiming the build certified. The candidate is always the latest coherent `main` HEAD; certification is not yet claimed in this document.
+Do **not** move gameplay coordinates, the certified 12-step route, camera family or Master Envelope reservations merely to fit art.
 
-## Current v0.31.1 product state
-- **v0.31.1 is the previous Relicario Practice visual patch over the certified v0.31.0 milestone.**
-- Práctica uses portrait 5:7-style Relicario cards in hand and on the board, with N/S/E/O fixed to the four card edges.
-- Common/Rare/Epic/Legendary presentation is gray/blue/purple/orange with restrained medieval-dark framing and improved name/value legibility.
-- Selection, placement and capture feedback are clearer in touch and desktop layouts without changing Practice mechanics or consuming cards.
-- Both guided Practice and repeatable free Practice use real card faces rather than provisional mini/text blocks.
-- Focused preset: `relicario-practice-v031`. Dedicated Relicario regression validates mobile + desktop Practice geometry, four rarities and N/S/E/O alignment.
-- Pre-promotion candidate certification: GitHub Actions run **1433**, commit `d73cf809353864dfe05e5bfd4052383bcf191d2d`, including full local-equivalent gate, uninterrupted fresh-save Arc I, frozen tester guard, Pages deploy and published Chromium verification.
-- Historical note: v0.31.1 required release certification on its promotion commit; current release work has moved to v0.32.0.
+## Product-direction work that can proceed in parallel
+- Close Bastion IV’s exact autonomy beat.
+- Tune the first stone requirements at Bastion V.
+- Convert the staged Relicario teaching cadence into exact mission/tutorial beats.
+- Later map the Bastion-by-Bastion visible Valoria changes onto the certified long-term city plan.
 
-## Current v0.31.0 product state
-- **v0.31.0 is the certified Relicario milestone underlying the later v0.31.1 visual patch.**
-- Relicario now owns a structured first collection of 15 Eldoria-native cards with Common/Rare/Epic/Legendary rarity, N/S/E/O values, exact 4X effects, optional per-card Duel abilities and Indestructible as an independent property.
-- Ordinary enemy drops are intentionally exceptional: one rarity roll per eligible world-enemy victory, 0.10% Common / 0.05% Rare / 99.85% none. Hunting is always 0%. Epics and Legendaries never enter ordinary drop.
-- Pool eligibility follows real discovery/progression. The first Bastion VII card is deterministic onboarding, but later Arc I progression does not require random Relicario drops.
-- Epic random-reward plumbing exists for a future special reward source; current gameplay does not grant Epics through ordinary drops. Legendary cards are data/design only and have no current acquisition source.
-- Indestructible copies are unique per concrete card/player; normal copies remain repeatable. A duplicate Indestructible outcome reroutes within the same rarity when another eligible card exists.
-- Reveal ceremony is a dedicated screen, not mixed loot. It communicates rarity, N/S/E/O, exact use effect, Duel ability and a second Indestructible phase when relevant.
-- Use/conserve, timed effects, cooldowns, discovery/pool state and tutorial state persist. Temporary effects use timestamps and survive reload/offline time.
-- Códice remains knowledge-only and Relicario remains independent. Arcón does not contain Reliquias.
-- Dedicated v0.31 Relicario QA and the uninterrupted fresh-save Arc I route are part of the integral gate. The pre-promotion candidate passed GitHub Actions run **1418** on `665690a17e20397725e51354693eecea56ae893e`, including Pages deploy and published Chromium verification.
-- Historical note: v0.31.0 release certification belonged to its own promotion cycle; current release work has moved to v0.32.0.
+## Platform / delivery direction
+- Primary product validation: phone/mobile.
+- Tablet is supported from the beginning with responsive layout/use of extra space.
+- PC remains a viable future expansion; preserve architecture/controls/UI seams that avoid unnecessary mobile-only lock-in.
+- Continue the short owner-review loop used in the web slice: **build a small coherent change → certify it → let the owner see/play it → adjust before stacking more work**.
+- Unity delivery can use Windows builds now; mobile build/distribution infrastructure remains to be prepared for regular owner device testing.
 
-## Current v0.30.4 product state
-- **v0.30.4 is a historical mobile-UX patch. v0.30.3 was its preceding certified baseline; neither is the active development version.**
-- This patch closes the owner's mobile UX clarity block: exact version visibility, K/M/B resources, expedition-power teaching, first-class March access/exit, short world-march travel feedback, early Barracks simplification, Arcón organization, contextual speedup teaching, Forge clarity and restrained ambient audio.
-- Permanent responsibility boundaries remain unchanged: Códice = knowledge; Relicario = Reliquias; Arcón = objects/materials/equipment; Cuartel = recruit/upgrade troops; Héroes = characters; Marcha = expedition composition; Poder Total ≠ Poder de expedición.
-- The v0.30.4 owner UX suite passes. The full Arc I fresh-save was updated only where the player's real semantics changed (world-march animation and full-node gathering) and the pre-promotion candidate passed GitHub Actions run **1386** at `7c7289c08b12c7cd610a6971e199aa8c6c783332`.
-- Final certification for the promoted version is the normal Pages workflow on the version-promotion commit; do not claim v0.30.4 certified from run 1386 alone.
-- Continue to edit only `v0220/index.html` + `v0220/js/`; `playtest/` is generated and `tester-v0265/` remains frozen.
+## Permanent safety/source rules
+- Repo + canonical docs beat chat memory.
+- Never spend Tripo credits or paid resources without explicit authorization.
+- Do not fabricate multiplayer, PvP, alliance/rally participants, rewards or state.
+- Do not call a change certified without the relevant gate/evidence.
+- Frozen tester snapshot remains immutable research output.
+- For new Valoria art work, start at `docs/ELDORIA_ART_PIPELINE_INDEX.md`, `docs/VALORIA_MODULE_KIT.md` and the master-plan/camera documents.
 
-## Current v0.30.3 product state
-- Códice and Relicario are now independent peer destinations in the main navigation. Códice is knowledge-only; Relicario owns Reliquia collection/use/practice. Their onboarding is separate and old cross-navigation portals were removed.
-- Current stabilization block is dedicated to making the existing Arc I completable end-to-end from a clean save; no large new system was added.
-- Códice and Relicario are separate first-level systems: Códice = knowledge/discovery; Relicario = transversal Reliquia collection/use/practice. No nesting or parent/back relationship remains.
-- Primary navigation exposes independent CÓDICE and RELICARIO buttons once unlocked; legacy saves with Códice unlocked migrate to Relicario unlocked automatically.
-- Each system has independent first-use teaching. Códice explains world knowledge; Relicario explains rarity/effect/state, use/conserve, Practice and future PvP.
-- Fresh-save Arc I certification with this architecture passed GitHub Actions run 1331; final metadata/docs promotion is v0.30.3.
-- VI→VII equipment ownership, Devorador modeled combat, Bastion II single-hero March, Lyra affinity consistency, world/building hitboxes and player-facing development text are hardened in v0.30.2.
-- qa/e2e-v0302-arc1-stability.js covers the reported blockers and the canonical fresh-save test equips the Hoja de Éter before attempting Bastion VII.
-
-- Chapter mission system and universal accelerators are active.
-- Arcón includes utility tabs, including Aceleradores.
-- Chapter II Engendro is reachable/visible in its intended sequence.
-- Layered PvE remains active; only Arqueros are player-facing/recruitable. Relicario shows Duelo PvP only as a locked future tab; no PvP functionality is active.
-- Hero/troop/march base domain is now active for Aldric + Lyra: roles, affinities, inherited base stats, skill-slot/rank schema, exclusive-talent seam, troop roster and explicit march composition. Paladines are reserved structurally but still hidden/unbalanced; Maelis remains for a later integration pass.
-
-## Versioning rule now in force
-- Minor `v0.X` advances only for a consolidated, validated functional/playable milestone.
-- Corrections, bugs, visual polish and balance inside that milestone use `v0.X.Y`.
-- Agents choose the target version when a substantial block starts and promote only after integration + validation; the owner does not need to request the bump.
-- The integrated military layer promoted development to v0.28. The subsequently consolidated Códice/Relicario separation is the **v0.29** milestone.
-
-## QA workflow now in force
-Three separate levels exist:
-1. **Focused** — exact system preset / dedicated test for small changes.
-2. **Segment** — coherent progression block preset for medium changes.
-3. **Integral** — `npm run validate:local` + uninterrupted fresh save for milestones, progression/economy/sequencing changes and release candidates.
-
-Do not automatically replay all of Arc I for every small correction. Escalate QA according to risk, while keeping the integral gate mandatory before important stable releases.
-
-The development-only QA Launcher is injected during `playtest/` generation and appears only with `?qa=1`. Its storage layer isolates the canonical save key to a QA-only save, so presets/fresh QA do not alter normal saves. Shared fixture definitions live in `v0220/js/qa-fixtures.js` and should be reused by Playwright where practical.
-
-Current focal presets: Héroes + Tropas + Marcha, Engendro, Fisura/Lyra, Forja/Devorador, Códice/Relicario, Relicario v0.29, Maelis, marcha/ataque, Heraldo semiautomático, capítulos v0.27, aceleradores and final Bastión X. Segment presets: VI→VIII and IX→X.
-
-## Permanent owner delivery rule
-Every future implementation delivery inherits the repository-level owner link contract from `AGENTS.md` / `QA_AND_DEPLOY.md`:
-- include **🎯 Probar esta mejora** with the appropriate focused development QA state whenever reasonable;
-- include **🧩 Probar tramo** when the change spans a meaningful progression/system block;
-- always include **🎮 Jugar completo** with the normal development build URL;
-- if a reasonable focused preset does not yet exist for a new feature, creating/adapting one is part of that feature's implementation;
-- these links never replace automated QA and must never point at the frozen tester snapshot.
-
-This is permanent cross-session behavior, not a one-session preference.
-
-## Frozen tester isolation
-- **Eldoria Closed Playtest T1 / 0.26.5-test.2**.
-- Frozen integration commit: `df618e86be9da399bb827d5e6cebc3f13e55ff97` (current re-frozen snapshot after the final-survey contrast hotfix).
-- URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/tester-v0265/
-- Frozen research output only; never use as source and never inject the QA Launcher into it.
-
-## Latest development block
-- v0.30 deepens existing systems without expanding La Brecha.
-- Four real development-priority choices are active at Bastion IV, VI, VIII and IX; they are immediate strategic trade-offs, not wait gates.
-- Guidance tapers from VI–VIII and Bastion IX uses general objectives rather than step-by-step instructions.
-- Existing Total Power remains canonical; v0.30 adds first-use explanation, gain feedback and restrained milestone feedback.
-- Simulated rankings now cover Total Power, Corrupts defeated and Reliquia collection, always showing the player and immediate rival.
-- Battle reports expose summary + full detail only.
-- Persistent ES/EN selector, server UTC clock and first ambient/SFX audio layer are active in Settings.
-- English-mode audit includes dynamic Arc I text (including World Boss labels) and is clean on the certified path.
-- Bastion II/III background/offline completion is aligned with the normal flow and returns to Kingdom so newly unlocked structures remain visible; fresh-save regression covers this explicitly.
-- Ceremonies are reserved for real milestones.
-- Códice/Relicario v0.29 architecture is preserved. PvP remains locked/future. No new Breach mechanics, alliances, heroes or building proliferation were added.
-- Focused regression: `qa/e2e-v030-depth.js`.
-- Certification: final certified runtime candidate `dd2641a3d20751465c6f4e4c20fd350b6f33bbb5`, GitHub Actions run 1231. Full local-equivalent gate, uninterrupted fresh-save Arc I/Bastion I–X, mobile UX, frozen tester snapshot guard, GitHub Pages deployment, published Chromium verification and frozen tester URL verification all passed; the final fresh-save includes the Bastion II render stabilization.
-
-## Latest v0.30.3 correction block
-- Military UX responsibilities are now explicit and separated: Barracks → recruit/upgrade; Troops → owned army; Heroes → characters; March → expedition composition.
-- Hero Hall is hero-only. March is a dedicated screen with Heroes / Troops / Composition / March Power / Confirm hierarchy.
-- Contextual first-use explanations cover Barracks, Troops, Hero Hall and March.
-- Mission drawer discoverability and mobile touch targets were improved without increasing HUD footprint.
-- Speedups now teach themselves on first acquisition and expose an explicit ACCELERATE picker for compatible timed tasks.
-- Building labels are normalized to name + Level only.
-- Manuscript acquisition now triggers a short narrative ceremony and consequence; important rewards use proportional ceremony.
-- Contrast/legibility and English coverage were audited across the modified surfaces.
-- Permanent QA policy now requires **Discoverability → Comprehension → Interaction → Feedback → Next step** in addition to technical correctness.
-- Focused regression: `qa/e2e-v0301-ux-clarity.js`.
-- Final certified v0.30.2 release candidate: `24855ee2a862676f36f9185be5ede8fc42dfa860`, GitHub Actions run 1275. Integral fresh-save Bastion I–X, novice-player/mobile UX, frozen tester guard, Pages deployment, published Chromium verification and frozen tester URL verification all green.
-
-## Next task
-**Unity:** Run `Unity/README.md` on exact Editor 6000.3.23f1 with an active license: import packages, correct compile/setup errors, execute EditMode + PlayMode tests, build Linux, play the route without presets, review mobile/desktop screenshots and certify the first executable only after these pass. **Web (separate):** verify the normal Pages workflow and published Chromium interaction for latest v0.32.0 release-candidate HEAD; record certified SHA/run only if green. Neither the Unity source preflight nor the web Pages URL proves a Unity build.
-
-
-## 2026-09-24 — Relicario · mejora visual de Práctica
-
-- Versión objetivo promovida: **v0.31.1**. Esta iteración es una mejora visual/UX del milestone v0.31; no cambia catálogo, economía ni reglas del Relicario.
-- Fuente modificada: `v0220/index.html` y fixture canónico de QA `v0220/js/qa-fixtures.js`. `playtest/` sigue siendo salida generada.
-- Se recuperó de la línea histórica v0.21 el principio visual de **carta vertical con marco y valores anclados al perímetro**, adaptado al lenguaje actual del Relicario.
-- Práctica usa ahora caras de carta reales también dentro del tablero, en lugar de fichas de texto provisionales.
-- N/S/E/O quedan anclados respectivamente arriba/abajo/derecha/izquierda; se reforzaron proporción 5:7, contraste, jerarquía, selección, colocación/captura y lectura móvil.
-- Rarezas en Práctica: Común gris, Rara azul, Épica morada y Legendaria naranja, con tratamiento contenido.
-- Corrección UX asociada: una vez completado el tutorial, `PRACTICAR CONTRA ORIN` abre la práctica libre con la colección real; el primer aprendizaje sigue usando cartas prestadas.
-- Preset focal: `?qa=1&preset=relicario-practice-v031`.
-- Regresión específica añadida a `qa/e2e-v031-relicario.js`: comprueba cuatro rarezas, proporción vertical en mano/tablero y geometría N/S/E/O en móvil.
-- Commits del bloque: `8d09d5a`, `61a3a1b`, `c1263cb`, `9a5ad56`, `2072206`.
-- Valoria visual iteration certified (2026-09-26): commit `962ec7d709346c113b4a98780ab6b05fcc8e3e52` is green in Unity Actions run `36203343858` (source preflight, EditMode, PlayMode, Windows build and three deterministic Valoria benchmark captures). This pass keeps the capture-reviewed terrain transitions, removes blown-out terrain materials, strengthens the Bastion vertically, subordinates the repair scaffold, breaks the fortress symmetry with staggered tower heights and a split/collapsed roofline, and explicitly rejects a mismatched yellow destroyed-castle asset experiment after capture review. Visual review: clearer irregular/ruinous silhouette, no white terrain blowouts and no mismatched yellow ruin regression; remaining gap is production-quality environmental depth, terrain richness, architecture detail and atmosphere rather than technical stability.
-
-
-## 2026-09-27 — ResidentialTerraceRock certified
-
-- Canonical source selected from runner Downloads after resolving the actual export name: `Eldoria_Module_ResidentialTerracerRock.glb` (note `Terracer` typo in filename), 8,212,532 bytes, SHA-256 `210dc8e787113a82b96551fc7f55c932dcfde60d48ce9ba273012e589480b8eb`.
-- Recent prior GateStreetRiseRock and TerraceStairRock hashes were explicitly excluded in the canonical request.
-- Blender raw: **342,176 tris** / 171,052 verts; optimized: **49,800 tris**, UV0 present, normals present, 1 material. Optimized SHA-256: `2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458`.
-- Canonical Unity 6000.3.23f1 gate: run **36353236508**, artifact **10943072790**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
-- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as inhabited residential/civic architecture, preserves a readable side stair/access + terrace, and does not become a dominant tower/keep/gatehouse. The rock pedestal is larger than ideal and should be buried/overlapped in composition rather than repeated as an island.
-- This is now the **fourth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock and GateStreetRiseRock MV1.
-- Dedicated evidence: `docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
-- Next art composition milestone: **Micro-Valoria 2 — inhabited district**, using ResidentialTerraceRock to reduce fortress-only repetition while keeping `Valoria.unity`, `VisualWorld` and gameplay untouched.
-
-
-## 2026-09-28 — Remote Tripo CLI route added to canonical module pipeline
-
-- The existing Valoria module pipeline remains canonical; no parallel pipeline was created.
-- `.github/workflows/tripo-module-pipeline.yml` now supports source modes `downloads_glb` (existing behavior), `tripo_text`, `tripo_single_image` and `tripo_multiview`.
-- Remote Tripo generation runs on the existing Windows self-hosted runner, records task id / credits / generated source SHA, then continues through the same Blender and isolated Unity gate.
-- `tools/tripo_module_blender.py` now accepts an already-canonical 49,500–50,000-triangle Tripo output instead of incorrectly rejecting it for being below 50,000; higher-poly sources still reduce to the canonical range.
-- The owner can therefore continue art work from chat/mobile without operating the desktop, provided the PC/runner is online and the Tripo CLI/API account has enough API credits. The current CLI account was observed at 0 API credits during setup, so real remote Tripo generation remains externally blocked until that balance is available; dry-run planning itself is free.
-- Existing manual Tripo → Downloads flow remains supported and unchanged as the fallback route.
-
-
-## 2026-09-28 — StreetLandingTransition certified
-
-- Owner expected `Eldoria_Module_StreetLandingTransition.glb`, but the runner inventory showed the actual new export as `ancient ruin platform 3d model.glb`, 7,954,612 bytes, SHA-256 `3c6ef8f92879f5c8acee827b8cd8d2e4f33bb94fde0b6ad20a228cc04bd44b27`. The mismatch was resolved before Blender/Unity; prior ResidentialTerraceRock, GateStreetRiseRock and TerraceStairRock hashes were explicitly excluded.
-- Blender raw: **331,460 tris** / 165,663 verts; optimized: **49,800 tris** / 24,832 verts, UV0 generated/present, normals present, 1 material. Optimized SHA-256: `ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01`.
-- Canonical Unity 6000.3.23f1 gate: run **36355160385**, artifact **10944255594**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
-- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as a compact street/landing connector with a short level change and usable attachment ends. It does not become a monumental gate, tower, keep or enclosed military structure. Its parapets lean slightly fortified, so it must stay subordinate and should not be repeated as a defensive motif.
-- This is now the **fifth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1 and ResidentialTerraceRock.
-- Dedicated evidence: `docs/VALORIA_STREET_LANDING_TRANSITION_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
-- StreetLandingTransition is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
-
-
-## 2026-09-28 — RockTerrainSeamFiller certified
-
-- Canonical runner source: `Eldoria_Module_RockTerrainSeamFiller.glb`, 8,087,520 bytes, SHA-256 `2a9ba145883737a431c7744d3acc6288ef515d4212085b48cb2a9a5d5826a6ca`.
-- Prior StreetLandingTransition, ResidentialTerraceRock, GateStreetRiseRock variants/MV1 and TerraceStairRock hashes were explicitly excluded before selection.
-- Blender raw: **336,991 tris** / 168,436 verts; optimized: **49,800 tris** / 24,840 verts, UV0 generated/present, normals present, 1 material. Optimized SHA-256: `2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d`.
-- Canonical Unity 6000.3.23f1 gate: run **36356423039**, artifact **10943977319**, all eight captures non-empty, MeshCollider/raycast/miss checks green.
-- Human capture review: **TECH PASS / VISUAL-FUNCTIONAL PASS**. It reads as terrain/rock seam filler with a broad overlap surface and a short stepped height relation. It remains non-architectural/non-focal and can be partially buried or overlapped to merge larger rocky bases. One corner has a stronger rock rise, so that area should usually be buried/subordinated rather than exposed as a landmark.
-- This is now the **sixth distinct certified Valoria module family** after TowerWallRock, TerraceStairRock, GateStreetRiseRock MV1, ResidentialTerraceRock and StreetLandingTransition.
-- Dedicated evidence: `docs/VALORIA_ROCK_TERRAIN_SEAM_FILLER_GATE.md`. Inventory updated in `docs/VALORIA_MODULE_KIT.md`.
-- RockTerrainSeamFiller is eligible for **Micro-Valoria 2 — inhabited district**. Production `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
-
-
-## 2026-09-28 — Tripo Studio local Edge bridge proven remotely
-
-- A read-only Tripo Studio bridge now exists at `tools/tripo-studio-bridge.mjs`, driven by `pipeline/tripo-studio-request.json` and `.github/workflows/tripo-studio-bridge.yml`.
-- The bridge attaches through CDP to the owner's already-open Microsoft Edge session at `http://127.0.0.1:9222`; it does not launch a fresh automated browser and therefore avoids the Cloudflare loop seen with remote/automation-created sessions.
-- The runner installs Node automatically, probes with timeouts, inventories all open Tripo Studio tabs, records title/button evidence, and exits explicitly without closing the owner's Edge.
-- Verified remote run: **36358704041** on commit `d53001d5db558fac5252e81a2cbdf5309ccbfabe` — **SUCCESS**.
-- Evidence from the runner: one Tripo Studio page at `/es/workspace/generate`, correct generation-page title, and the real Studio control `Generar 55` detected successfully.
-- No click on Generate was performed, no model was created, no Studio credits were spent, and no export was attempted.
-- This proves `GitHub Actions → self-hosted Windows runner → owner's live Edge session → authenticated Tripo Studio page` as a viable control path.
-- Next safe step: add a guarded interaction mode that can select/upload a declared input and stop immediately before the credit-spending Generate action; only after that read/write staging gate passes should generation/export automation be enabled.
-- Operational dependency: Windows must stay logged in, the PC must not sleep/hibernate, Edge must remain open under remote-debugging port 9222, and the Tripo session must remain authenticated. The display may turn off.
-
-## 2026-09-28 — Valoria Module Interface Standard v1 review
-
-- Audited the exact six function-certified optimized GLBs; baseline `main` was `008318cc8d1564ce593cc022c19e6822cbc253d4`. The measurable proposed street, landing, elevation, rock overlap and orientation contract is `docs/VALORIA_MODULE_INTERFACE_STANDARD_v1.md`; six-family before/after audit and image decision are `docs/VALORIA_MODULE_INTERFACE_V1_GATE.md`.
-- Blender adds named candidate GLB socket nodes without changing the source triangles, world bounds or vertex positions. The six original functional certifications remain valid. **No family received physical INTERFACE CERTIFIED status:** the proposed socket targets alone do not open a walkable corridor or trim a pedestal.
-- Isolated Micro-Valoria interface review has 10 instances / 498,199 instanced triangles. Unity run **36391469935**, artifact **10956364621**: source hash, UV0, normals, materials, mesh colliders, raycasts, four nonempty 19/12/9/oblique captures and empty selection checks passed. A follow-up run adds four focused screenshots per family; see the gate document for its final run/artifact.
-- Actual capture review: **TECH PASS for the isolated scene checks; INTERFACE FAIL; VISUAL / URBAN FAIL.** The residence still floats as a separate rock pedestal and a seam filler remains exposed as a slab. The route is obscured at zoom 9. Numeric socket center agreement did not establish width, headroom or continuous geological support; the new urban picture is not a pass relative to the older Micro-Valoria 2.
-- Next art task: measure a continuous floor and clearance corridor through the three existing circulation meshes, plus a residential side landing; identify sacrificial rock undersides and trim only exposed plate edges while preserving detail. Re-run collision sweeps and visual gate **before** granting interface status. No seventh family, Tripo generation or production Valoria scene change is justified by this review.
-
-
-## 2026-09-28 — Zero-credit Tripo Studio image staging proven
-
-- The local Edge/CDP bridge now supports two safe modes: `probe` and `stage_upload`.
-- `stage_upload` hard-refuses `allow_credit_spend=true`; it never clicks Generate.
-- Remote run **36401833983** completed **SUCCESS** on the Windows self-hosted runner.
-- The runner attached to the owner's authenticated Tripo Studio page, staged the tracked test image `Unity/Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-1.png` through the real image file input, and confirmed `setInputFiles` succeeded.
-- Tripo switched its SPA state after accepting the image; the bridge then reloaded the generation page and confirmed the image input was restored, leaving the workspace clean.
-- Evidence during the proof still showed the real `Generar 55` control. The bridge did **not** click it. Report fields: `generate_clicked=false`, `credits_spent=false`, `cleared=true`.
-- This proves the zero-credit half of the desired remote flow: **GitHub/chat-triggered request → Windows runner → live Edge/Tripo Studio → upload approved image → stop safely before generation → clean workspace**.
-- The request file was reset afterward to safe read-only `probe` mode with `allow_credit_spend=false`.
-- The next unverified boundary is the first actual Studio generation. That requires explicit owner authorization because the visible action currently shows a credit cost. Only after generation exists should export/download automation be verified and then connected into the existing canonical Blender → Unity module gate.
-
-
-## 2026-09-28 — Valoria Playable District Skeleton v1 certified
-
-- Direction change implemented in production Unity: Valoria topology is now built bottom-up instead of by fusing certified Tripo dioramas. The six certified families remain preserved as visual references/reusable art/possible hero fragments, but they no longer dictate city topology.
-- New playable topology in `VisualWorld.PlayableDistrictSkeleton`: continuous terrain -> Planta 0 civic floor -> central main street -> lower west/east plots -> dedicated 12-tread physical staircase -> Planta 1 landing -> upper west/east plots -> retaining/support volumes -> buildings.
-- Official camera remains fixed orthographic at position `(18.2,14.6,-25.8)`, looking at `(0,3.15,5.8)`, zoom range 9..19. Benchmark captures now use the same transform and only change orthographic size to 19 / 12 / 9.
-- Real click integration: Aserradero, Cuartel and Bastión open the real building interaction panel; existing Build/AdvanceBastion commands are reused. The lower gate still loads Frontier. No fake capture-only buttons or new gameplay loop were added.
-- Important interaction bug found and fixed: procedural primitive colliders were queried before Unity physics had ingested their post-creation transforms, so diagnostics showed multiple `Collider.bounds.center=(0,0,0)`. `Physics.SyncTransforms()` now runs after world construction. This was the root cause of wrong building selection in PlayMode.
-- Canonical Unity gate run **36423010456** on HEAD `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f`: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, Valoria benchmark capture PASS. Capture artifact **10971070486**.
-- Human review of zoom 19 / 12 / 9: **TECH PASS / INTERACTION PASS / VISUAL-URBAN PASS for skeleton scope only**. The route reads entry -> street -> staircase -> upper platform -> Bastion; L0/L1 remain distinct and the scene no longer reads as a collage of fused dioramas.
-- This is not final visual art. Remaining work is production terrain/retaining rock, authored street/plaza surface, production stair treatment, non-blockout parcel/support edges, production building art, Bastion silhouette refinement, selective reuse of certified family fragments, then materials/props/vegetation/lighting and later mobile LOD/performance.
-- Dedicated evidence: `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`.
+## Next handoff instruction
+Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECISIONS.md`, `docs/BASTION_I_X_MASTER_TABLE.md` when Arc I is relevant, and the specific Valoria specialist docs for art work; then verify live `main` HEAD and current workflow state.
