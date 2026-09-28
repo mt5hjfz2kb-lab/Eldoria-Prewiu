@@ -421,11 +421,9 @@ namespace Eldoria.Presentation
                 House(name+" · fallback guardhouse",p+new Vector3(.12f,.10f,.05f),new Vector3(3.25f,1.95f,2.72f),lit,glow);
 
             // Rear/east watch mass preserves the west street flank and stays below Bastion hierarchy.
-            var watch=BenchmarkPieceModulated(name+" · watch element",art!=null?art.StoneTower:null,
-                p+new Vector3(1.45f,.02f,.82f),1.42f,3.72f,Quaternion.Euler(0,5f,0),
-                new Color(.64f,.65f,.63f,1f));
-            if(watch==null)
-                Tower(name+" · watch fallback",p+new Vector3(1.45f,.02f,.82f),.62f,3.35f,OldStone*.78f);
+            // The legacy StoneTower Resources reference is not runtime-safe in the current bridge.
+            // Keep this visual-only watch element in the self-contained Valoria kit until that source is reimported.
+            Tower(name+" · watch element",p+new Vector3(1.45f,.02f,.82f),.62f,3.35f,OldStone*.78f);
 
             Wall(name+" · rear guard wall",p+new Vector3(.42f,.68f,1.30f),
                 new Vector3(2.75f,1.05f,.32f),OldStone*.70f,true);
