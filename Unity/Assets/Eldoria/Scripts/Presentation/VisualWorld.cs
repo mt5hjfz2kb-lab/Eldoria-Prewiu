@@ -121,17 +121,20 @@ namespace Eldoria.Presentation
             // Buildings occupy plots after circulation is solved.
             ValoriaKit.House("Aserradero",new Vector3(-5.4f,.52f,-2.0f),
                 new Vector3(3.4f,1.75f,2.8f),state.SawmillLevel>0,Glow);
+            TagVisibleHotspots("Aserradero","sawmill");
             var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-5.4f,1.30f,-2.0f),
                 new Vector3(3.35f,1.80f,2.85f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
 
             ValoriaKit.House("Cuartel",new Vector3(5.4f,.52f,-2.0f),
                 new Vector3(3.5f,1.80f,2.9f),state.BarracksLevel>0,Glow);
+            TagVisibleHotspots("Cuartel","barracks");
             var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(5.4f,1.30f,-2.0f),
                 new Vector3(3.45f,1.85f,2.95f),new Color(.2f,.2f,.2f));
             barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
 
             ValoriaKit.BastionCore("Bastion",new Vector3(0,l1+.45f,7.25f),Glow);
+            TagVisibleHotspots("Bastion","bastion");
             var bastion=ValoriaKit.Block("Bastion · target",new Vector3(0,l1+2.0f,7.25f),
                 new Vector3(4.8f,4.0f,4.4f),new Color(.2f,.2f,.2f));
             bastion.AddComponent<WorldHotspot>().Id="bastion"; bastion.GetComponent<Renderer>().enabled=false;
@@ -159,6 +162,17 @@ namespace Eldoria.Presentation
             int visibleArchers=state.BastionLevel>=2?4:3;
             for(int i=0;i<visibleArchers;i++) Archer(new Vector3(2.0f+(i%2)*.62f,.34f,-4.5f+(i/2)*.62f));
             Glow("VPD · Bastion warmth",new Vector3(0,l1+3.4f,6.2f),Amber,1.35f,6.0f);
+        }
+
+        static void TagVisibleHotspots(string prefix,string id)
+        {
+            foreach(var collider in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+            {
+                if(!collider.gameObject.name.StartsWith(prefix,System.StringComparison.Ordinal))continue;
+                var hotspot=collider.GetComponent<WorldHotspot>();
+                if(hotspot==null)hotspot=collider.gameObject.AddComponent<WorldHotspot>();
+                hotspot.Id=id;
+            }
         }
 
         static void City(PlayerState state)
