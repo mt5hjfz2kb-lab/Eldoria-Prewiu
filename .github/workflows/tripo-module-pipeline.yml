@@ -183,6 +183,11 @@ jobs:
         run: |
           $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
           $mode = [string]$request.source.mode
+          if ($null -eq $request.credit_authorization -or -not [bool]$request.credit_authorization.approved) {
+            throw 'Remote Tripo generation requires explicit credit_authorization.approved=true tied to this request.'
+          }
+          $authorizedCredits = [int]$request.credit_authorization.authorized_credit_cost
+          if ($authorizedCredits -le 0) { throw 'Remote Tripo generation requires a positive authorized_credit_cost.' }
 
           $tripo = Get-Command tripo.exe -ErrorAction SilentlyContinue
           if (-not $tripo) { $tripo = Get-Command tripo -ErrorAction SilentlyContinue }
@@ -211,13 +216,24 @@ jobs:
           } elseif ($mode -eq 'tripo_single_image') {
             $path = Resolve-TripoInput ([string]$request.source.input_path)
             if (-not $path -or -not (Test-Path $path)) { throw "Tripo source image not found: $path" }
+            $expectedInputSha = ([string]$request.source.input_sha256).ToLowerInvariant()
+            if ([string]::IsNullOrWhiteSpace($expectedInputSha)) { throw 'tripo_single_image requires source.input_sha256.' }
+            $actualInputSha = (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($actualInputSha -ne $expectedInputSha) { throw "Tripo source image SHA mismatch. expected=$expectedInputSha actual=$actualInputSha" }
             $inputArgs += $path
           } elseif ($mode -eq 'tripo_multiview') {
             $paths = @($request.source.input_paths)
+            $expectedShas = @($request.source.input_sha256)
             if ($paths.Count -lt 2 -or $paths.Count -gt 4) { throw 'tripo_multiview requires 2 to 4 source.input_paths.' }
-            foreach ($raw in $paths) {
-              $path = Resolve-TripoInput ([string]$raw)
+            if ($expectedShas.Count -ne $paths.Count) { throw 'tripo_multiview requires one source.input_sha256 per input image.' }
+            for ($i=0; $i -lt $paths.Count; $i++) {
+              $path = Resolve-TripoInput ([string]$paths[$i])
               if (-not $path -or -not (Test-Path $path)) { throw "Tripo multiview source not found: $path" }
+              $expectedInputSha = ([string]$expectedShas[$i]).ToLowerInvariant()
+              $actualInputSha = (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+              if ([string]::IsNullOrWhiteSpace($expectedInputSha) -or $actualInputSha -ne $expectedInputSha) {
+                throw "Tripo multiview SHA mismatch at index $i. expected=$expectedInputSha actual=$actualInputSha"
+              }
               $inputArgs += $path
             }
           } else {
@@ -225,7 +241,10 @@ jobs:
           }
 
           $model = [string]$request.source.tripo_model
-          if ([string]::IsNullOrWhiteSpace($model)) { $model = 'tripo-p2' }
+          if ([string]::IsNullOrWhiteSpace($model)) {
+            throw 'Remote Tripo generation requires an explicit source.tripo_model; no implicit P2/H3 selection is allowed.'
+          }
+          Write-Host "CREDIT_AUTHORIZATION: approved=true | authorized_credit_cost=$authorizedCredits | model=$model"
           $faceLimit = [int]$request.source.face_limit
           if ($faceLimit -le 0) { $faceLimit = 50000 }
 
@@ -281,7 +300,11 @@ jobs:
           } | ConvertTo-Json -Depth 4
           $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
 
-          Write-Host "GENERATED_SOURCE: $modelFile | $bytes bytes | sha256 $sha | task $($result.task_id) | credits $($result.credits_consumed)"
+          $consumed = [int]$result.credits_consumed
+          if ($consumed -gt $authorizedCredits) {
+            throw "Tripo consumed more credits than authorized. authorized=$authorizedCredits consumed=$consumed. Stop pipeline and investigate; do not retry."
+          }
+          Write-Host "GENERATED_SOURCE: $modelFile | $bytes bytes | sha256 $sha | task $($result.task_id) | credits $consumed / authorized $authorizedCredits"
 
       - name: Locate Blender
         if: steps.request.outputs.enabled == 'true'
