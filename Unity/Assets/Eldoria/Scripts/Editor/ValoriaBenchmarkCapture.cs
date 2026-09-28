@@ -21,9 +21,11 @@ namespace Eldoria.EditorTools
             if(camera==null)throw new System.Exception("Valoria camera was not created");
             const string folder="BenchmarkCaptures";
             Directory.CreateDirectory(folder);
-            Save(camera,folder+"/valoria-establishing.png",new Vector3(18.4f,15.6f,-25.2f),new Vector3(0,3.15f,5.4f),10.35f,1280,720);
-            Save(camera,folder+"/valoria-gate.png",new Vector3(8.3f,11.6f,-19.2f),new Vector3(0,3.05f,4.7f),8.35f,1280,720);
-            Save(camera,folder+"/valoria-districts.png",new Vector3(-15.4f,13.8f,-12.1f),new Vector3(0,2.65f,4.2f),9.05f,1280,720);
+            var officialPosition=new Vector3(18.2f,14.6f,-25.8f);
+            var officialTarget=new Vector3(0,3.15f,5.8f);
+            Save(camera,folder+"/valoria-establishing.png",officialPosition,officialTarget,19f,1280,720);
+            Save(camera,folder+"/valoria-gate.png",officialPosition,officialTarget,12f,1280,720);
+            Save(camera,folder+"/valoria-districts.png",officialPosition,officialTarget,9f,1280,720);
             Debug.Log("Valoria benchmark captures saved to "+Path.GetFullPath(folder));
         }
 
