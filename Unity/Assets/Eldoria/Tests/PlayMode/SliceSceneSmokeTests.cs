@@ -56,7 +56,8 @@ namespace Eldoria.Tests
                 Assert.That(hotspot,Is.Not.Null);
                 Assert.That(hotspot.Id,Is.EqualTo(pair.Item2));
                 var aim=target.GetComponent<Collider>().bounds.center;
-                var ray=new Ray(camera.transform.position,(aim-camera.transform.position).normalized);
+                var screenPoint=camera.WorldToScreenPoint(aim);
+                var ray=camera.ScreenPointToRay(screenPoint);
                 Assert.That(Physics.Raycast(ray,out var hit,100f),Is.True,pair.Item1+" is not raycastable");
                 var resolved=hit.collider.GetComponent<WorldHotspot>();
                 Assert.That(resolved,Is.Not.Null,pair.Item1+" click path hit non-interactive visible geometry");
