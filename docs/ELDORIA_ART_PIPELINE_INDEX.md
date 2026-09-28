@@ -24,7 +24,9 @@ Remote CLI source modes are handled inside the same canonical workflow; do not c
 - Workflow: `.github/workflows/micro-valoria-gate.yml`
 - Unity composition: `Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs`
 - Owner access: `Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaOwnerReview.cs`
-- Current verdict: `docs/VALORIA_MICRO_CITY_THREE_FAMILY_GATE.md`
+- Three-family precedent: `docs/VALORIA_MICRO_CITY_THREE_FAMILY_GATE.md`
+- Six-family inhabited-district gate: `docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md` (technical PASS / visual FAIL)
+- Isolated six-family review: `.github/workflows/micro-valoria-2-gate.yml` + `MicroValoria2Review.cs`
 
 Purpose:
 prove that certified families compose into a coherent district before production Valoria is touched.
