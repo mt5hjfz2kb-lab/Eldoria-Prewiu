@@ -469,6 +469,10 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
           git -C "$env:GITHUB_WORKSPACE" commit -m "$message"
           if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
+          # Unity/import review can leave generated or modified evidence files in the checkout.
+          # The production GLB is already committed above; stash only residual workspace changes
+          # so concurrent-main rebases cannot be blocked by unrelated gate output.
+          git -C "$env:GITHUB_WORKSPACE" stash push --include-untracked -m "eldoria-promotion-residuals"
           $pushed = $false
           foreach ($attempt in 1..4) {
             git -C "$env:GITHUB_WORKSPACE" fetch origin main
