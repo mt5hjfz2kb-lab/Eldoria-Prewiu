@@ -180,6 +180,58 @@ Monumental asymmetric keep: one dominant vertical rear/central mass, secondary u
 **Official-camera acceptance**  
 Zoom 19 must gain landmark silhouette; 12 must show tower/roof hierarchy and monumental facade; 9 must show coherent connected architecture, not stacked primitives/modules.
 
+## Dedicated Aserradero execution — 2026-09-28
+
+**Integrated checkpoint:** `d633a5482a321a75cc4cf11a4a0e548e6cf8f1bd`
+
+The owner-approved isolated Aserradero reference completed the real automated path:
+Tripo Studio -> GLB export -> runner Downloads -> canonical Blender optimization -> Unity import -> real parcel integration -> official zoom captures.
+
+### Tripo / canonical module evidence
+- Credits spent: **55**, explicitly owner-authorized.
+- Tripo source file: `Valoria_Aserradero_AP2_v1.glb`.
+- Source SHA-256: `874e3344d7c09da153fcfeaf012d3d542fdf4d55ca8eb198078646660c4ad37b`.
+- Source bytes: **66,112,576**.
+- Canonical pipeline run: **36461987549**.
+- Pipeline artifact: **10987829034**.
+- Raw geometry: **1,796,171 tris / 1,004,637 verts**.
+- Optimized geometry: **49,800 tris / 53,609 verts** in Blender report; Unity imported the reviewed mesh successfully.
+- Optimized GLB bytes: **14,492,836**.
+- UV0: **present**.
+- Normals: **present**.
+- Materials: **1**.
+- Embedded images/textures reported by Blender: **3**.
+- Canonical technical gate: **PASS**.
+
+### Real Valoria integration evidence
+- Dedicated asset is tracked at `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb`.
+- The certified functional click volume remains separate from the visual mesh.
+- PlayMode now asserts the dedicated Aserradero exists in real Valoria, stays inside the parcel envelope and keeps the central-street side clear.
+- Final Unity run: **36472860786**.
+- Full Unity checks artifact: **10992473730**.
+- Official Valoria captures artifact: **10991679902**.
+- Capture artifact digest: `sha256:3932f0cca11050a4a28596686a3fbafa8e10e968d2f46bbf0b4b4d611accd8cc`.
+- Source preflight: PASS.
+- EditMode: PASS.
+- PlayMode: PASS.
+- Windows build: PASS.
+- Real Aserradero interaction/parcelling: PASS.
+
+### Visual review
+The dedicated geometry is a real improvement over the reused shed: the silhouette, timber-frame/workshop structure and production identity are materially stronger and justify keeping this generated asset.
+
+However, the final official-camera captures still show the Aserradero **too pale / washed out relative to the district**. Several material experiments were attempted; the Unlit route regressed the result and was reverted. The remaining issue is now primarily **material/lighting integration**, not a reason to regenerate the geometry or spend more Tripo credits.
+
+**Aserradero AP2 v1 verdict**
+- TECH: **PASS**
+- INTERACTION / PARCEL: **PASS**
+- DEDICATED ARCHITECTURE / FUNCTION READ: **PASS**
+- INTEGRATED MATERIAL / FINAL VISUAL: **FAIL**
+- ART PASS 2 overall: **still VISUAL FAIL**
+
+### Production decision
+Do **not** regenerate the Aserradero yet. Preserve this geometry and solve its Unity material/lighting integration first. Continue the larger Art Pass 2 only after recording this as the current baseline; do not lose time re-running already proven Tripo/export/optimization steps.
+
 ## Next action
 
 Prepare only **Valoria_Aserradero_AP2_v1** first. Generate an isolated 3/4 south/front reference on a neutral background, then use the existing safe Tripo Studio bridge in `stage_upload` mode to reach the pre-spend state. The bridge must keep `allow_credit_spend=false` and must not click Generate. Stop at the credit boundary for explicit owner authorization.
