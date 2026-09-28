@@ -76,13 +76,13 @@ Current genuine design gaps:
 
 ## Immediate production priority
 The next **Unity/art execution** remains Art Pass 2 inside the certified/frozen envelopes:
-1. first audit the six certified Valoria families for **selective fragment reuse** (facades, rock, parapets, terraces, skyline pieces); they may support the art layer but must not dictate topology;
-2. dedicated **Aserradero architecture** only where existing/reusable art cannot reach the target quality;
-3. dedicated **Cuartel architecture**;
-4. stronger **Bastion silhouette / roof hierarchy**;
-5. increased inhabited density while preserving interaction, circulation and camera readability.
+1. keep the dedicated Aserradero geometry; fix only its pale/washed-out Unity material integration with a bounded pass;
+2. audit the six certified Valoria families for **selective fragment reuse** (facades, rock, parapets, terraces, skyline pieces); they may support the art layer but must not dictate topology;
+3. proceed directly to dedicated **Cuartel** and stronger **Bastion** architecture in the same larger execution block where practical;
+4. increase inhabited density only after the three primary architecture reads are materially stronger;
+5. close the block with official zoom 19/12/9 captures plus real click/panel regressions.
 
-Do **not** move gameplay coordinates, the certified 12-step route, camera family or Master Envelope reservations merely to fit art. Keep execution prompts concise and task-focused; permanent rules belong in canonical docs rather than being repeated in every handoff.
+Avoid another chain of micro-passes. The next art block must create an obvious city-level visual jump. Do **not** move gameplay coordinates, the certified 12-step route, camera family or Master Envelope reservations merely to fit art. Keep execution prompts concise and task-focused; permanent rules belong in canonical docs rather than being repeated in every handoff.
 
 ## Product-direction work that can proceed in parallel
 - Close Bastion IV’s exact autonomy beat.
