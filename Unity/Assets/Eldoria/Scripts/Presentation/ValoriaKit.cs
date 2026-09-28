@@ -463,9 +463,11 @@ namespace Eldoria.Presentation
             // Dedicated AP2 visual. Gameplay/click geometry remains on the certified
             // Cuartel target object; all colliders on this imported visual are disabled.
             var ground=p+new Vector3(.20f,.02f,.08f);
-            var dedicated=BenchmarkPieceIntegrated(name+" · dedicated barracks",
+            // Preserve the production GLB's imported PBR material. BenchmarkPiece disables
+            // visual colliders and fits geometry without replacing its base/normal/RM textures.
+            var dedicated=BenchmarkPiece(name+" · dedicated barracks",
                 LoadExternal("Valoria_Cuartel_AP2_v1"),ground,
-                3.72f,4.00f,Quaternion.Euler(0,180f,0),Color.white);
+                3.72f,4.00f,Quaternion.Euler(0,180f,0));
             if(dedicated!=null)
             {
                 // The Tripo source is proportionally wider/lower than the certified parcel
