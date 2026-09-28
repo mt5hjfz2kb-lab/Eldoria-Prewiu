@@ -404,9 +404,12 @@ jobs:
             exit 0
           }
 
-          $relative = ([string]$request.promotion.destination).Replace('/','\')
+          $relative = ([string]$request.promotion.destination).Replace('/','\\')
           if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
-          if ($relative -notmatch '^Unity\\Assets\\Eldoria\\Resources\\Valoria\\[A-Za-z0-9_.-]+\.glb
+          $prefix = 'Unity\\Assets\\Eldoria\\Resources\\Valoria\\'
+          if (-not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
+              -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
+              $relative.Contains('..')) {
             throw "Unsafe promotion destination: $relative"
           }
 
