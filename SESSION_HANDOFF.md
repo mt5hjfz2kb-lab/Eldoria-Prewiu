@@ -263,3 +263,16 @@ This is permanent cross-session behavior, not a one-session preference.
 - Isolated Micro-Valoria interface review has 10 instances / 498,199 instanced triangles. Unity run **36391469935**, artifact **10956364621**: source hash, UV0, normals, materials, mesh colliders, raycasts, four nonempty 19/12/9/oblique captures and empty selection checks passed. A follow-up run adds four focused screenshots per family; see the gate document for its final run/artifact.
 - Actual capture review: **TECH PASS for the isolated scene checks; INTERFACE FAIL; VISUAL / URBAN FAIL.** The residence still floats as a separate rock pedestal and a seam filler remains exposed as a slab. The route is obscured at zoom 9. Numeric socket center agreement did not establish width, headroom or continuous geological support; the new urban picture is not a pass relative to the older Micro-Valoria 2.
 - Next art task: measure a continuous floor and clearance corridor through the three existing circulation meshes, plus a residential side landing; identify sacrificial rock undersides and trim only exposed plate edges while preserving detail. Re-run collision sweeps and visual gate **before** granting interface status. No seventh family, Tripo generation or production Valoria scene change is justified by this review.
+
+
+## 2026-09-28 — Zero-credit Tripo Studio image staging proven
+
+- The local Edge/CDP bridge now supports two safe modes: `probe` and `stage_upload`.
+- `stage_upload` hard-refuses `allow_credit_spend=true`; it never clicks Generate.
+- Remote run **36401833983** completed **SUCCESS** on the Windows self-hosted runner.
+- The runner attached to the owner's authenticated Tripo Studio page, staged the tracked test image `Unity/Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-1.png` through the real image file input, and confirmed `setInputFiles` succeeded.
+- Tripo switched its SPA state after accepting the image; the bridge then reloaded the generation page and confirmed the image input was restored, leaving the workspace clean.
+- Evidence during the proof still showed the real `Generar 55` control. The bridge did **not** click it. Report fields: `generate_clicked=false`, `credits_spent=false`, `cleared=true`.
+- This proves the zero-credit half of the desired remote flow: **GitHub/chat-triggered request → Windows runner → live Edge/Tripo Studio → upload approved image → stop safely before generation → clean workspace**.
+- The request file was reset afterward to safe read-only `probe` mode with `allow_credit_spend=false`.
+- The next unverified boundary is the first actual Studio generation. That requires explicit owner authorization because the visible action currently shows a credit cost. Only after generation exists should export/download automation be verified and then connected into the existing canonical Blender → Unity module gate.
