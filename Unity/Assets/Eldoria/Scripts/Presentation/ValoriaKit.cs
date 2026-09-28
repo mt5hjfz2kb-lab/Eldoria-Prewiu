@@ -385,7 +385,7 @@ namespace Eldoria.Presentation
             // Keep the certified plot/click geometry independent from this visual asset.
             var dedicated=BenchmarkPieceModulated(name+" · dedicated sawmill",
                 LoadExternal("Valoria_Aserradero_AP2_v1"),p+new Vector3(-.20f,.02f,.10f),
-                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.38f,.34f,.30f,1f));
+                3.50f,3.80f,Quaternion.Euler(0,180f,0),new Color(.14f,.13f,.12f,1f));
             if(dedicated!=null)
             {
                 if(lit&&glow!=null)glow(name+" · workshop warmth",p+new Vector3(.62f,1.08f,-1.22f),
