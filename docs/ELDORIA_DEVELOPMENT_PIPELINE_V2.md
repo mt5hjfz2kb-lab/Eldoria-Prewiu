@@ -127,3 +127,16 @@ Do not add Addressables solely as a speed optimization. Adopt it when content sc
 ## Promotion criteria for an optimization
 
 An optimization becomes canonical only if it reduces measured elapsed time or manual intervention, does not weaken a gate, does not make source identity ambiguous, survives at least one clean/cold run and one warm/repeated run, and has a simple rollback.
+
+## Visual diagnostic warm-workspace rule
+
+The single Windows Unity runner now preserves `Unity/Library` for the lightweight visual diagnostic lanes:
+- `valoria-lookdev.yml`;
+- `valoria-visual-formula.yml`;
+- `historical-surface-rescue.yml`.
+
+Those workflows use `actions/checkout` with `clean: false`, while each tool deletes/recreates only its own capture/output folders. This is intentional: repeated LookDev/material iterations must not pay a full Unity asset reimport on every commit.
+
+The canonical production/release Unity gate remains clean and authoritative. Do not copy the warm-workspace rule into release validation merely for speed.
+
+If a warm visual diagnostic behaves suspiciously, force a one-off clean diagnostic rather than reverting all fast visual loops to cold imports.
