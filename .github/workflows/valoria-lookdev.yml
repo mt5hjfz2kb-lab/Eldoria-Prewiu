@@ -2,6 +2,11 @@ name: Valoria LookDev diagnostic
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-lookdev.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
 
 permissions:
   contents: read
