@@ -1,9 +1,9 @@
 import argparse, json, os, sys
 import bpy
 
-TARGET = 49800
-MIN_TRIS = 49500
-MAX_TRIS = 50000
+DEFAULT_TARGET = 49800
+DEFAULT_MIN_TRIS = 49500
+DEFAULT_MAX_TRIS = 50000
 
 def parse_args():
     argv = sys.argv
@@ -13,6 +13,9 @@ def parse_args():
     p.add_argument("--output", required=True)
     p.add_argument("--report", required=True)
     p.add_argument("--refine-config", default="")
+    p.add_argument("--target-tris", type=int, default=DEFAULT_TARGET)
+    p.add_argument("--min-tris", type=int, default=DEFAULT_MIN_TRIS)
+    p.add_argument("--max-tris", type=int, default=DEFAULT_MAX_TRIS)
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -262,26 +265,31 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=a.input)
     raw = metrics("raw_import")
-    if raw["triangles"] < MIN_TRIS:
+    target = int(a.target_tris)
+    min_tris = int(a.min_tris)
+    max_tris = int(a.max_tris)
+    if target <= 0 or min_tris <= 0 or max_tris <= 0 or not (min_tris <= target <= max_tris):
+        raise RuntimeError(f"Invalid triangle profile: min={min_tris} target={target} max={max_tris}")
+    if raw["triangles"] < min_tris:
         raise RuntimeError(
-            f"Raw source is below the canonical gate floor: {raw['triangles']} tris; "
-            f"expected at least {MIN_TRIS}"
+            f"Raw source is below the configured gate floor: {raw['triangles']} tris; "
+            f"expected at least {min_tris}"
         )
     ensure_materials_and_uvs()
     refine_cfg = load_refine_config(a.refine_config)
     refinement = apply_visual_refinement(refine_cfg)
-    if raw["triangles"] > MAX_TRIS:
+    if raw["triangles"] > max_tris:
         for _ in range(3):
-            now = apply_decimation_once(TARGET)
-            if MIN_TRIS <= now <= MAX_TRIS:
+            now = apply_decimation_once(target)
+            if min_tris <= now <= max_tris:
                 break
-            if now < MIN_TRIS:
+            if now < min_tris:
                 raise RuntimeError(f"Decimation undershot tolerance: {now} tris")
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
     optimized = metrics("optimized")
-    if not (MIN_TRIS <= optimized["triangles"] <= MAX_TRIS):
-        raise RuntimeError(f"Optimized triangle gate failed: {optimized['triangles']} not in {MIN_TRIS}-{MAX_TRIS}")
+    if not (min_tris <= optimized["triangles"] <= max_tris):
+        raise RuntimeError(f"Optimized triangle gate failed: {optimized['triangles']} not in {min_tris}-{max_tris}")
     if not optimized["uv_present_all_meshes"]:
         raise RuntimeError("Optimized GLB is missing UV0 on at least one mesh")
     resized_images = optimize_images()
@@ -294,8 +302,8 @@ def main():
         export_yup=True,
     )
     report = {
-        "target_triangles": TARGET,
-        "accepted_range": [MIN_TRIS, MAX_TRIS],
+        "target_triangles": target,
+        "accepted_range": [min_tris, max_tris],
         "raw": raw,
         "optimized": optimized,
         "resized_images": resized_images,
