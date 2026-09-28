@@ -27,6 +27,13 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-gate.png",officialPosition,officialTarget,12f,1280,720);
             Save(camera,folder+"/valoria-districts.png",officialPosition,officialTarget,9f,1280,720);
 
+            // Same official isometric orientation, panned to the certified west plot.
+            // Review the sawmill's production details at each supported zoom in the real city.
+            var sawmillShift=new Vector3(-7f,-1.55f,-8.6f);
+            Save(camera,folder+"/valoria-sawmill-19.png",officialPosition+sawmillShift,officialTarget+sawmillShift,19f,1280,720);
+            Save(camera,folder+"/valoria-sawmill-12.png",officialPosition+sawmillShift,officialTarget+sawmillShift,12f,1280,720);
+            Save(camera,folder+"/valoria-sawmill-9.png",officialPosition+sawmillShift,officialTarget+sawmillShift,9f,1280,720);
+
             // Master-envelope proof: preserve the official orientation and translate camera+target
             // together to inspect the multi-viewport city edges.
             var leftShift=new Vector3(-12f,0,0);
