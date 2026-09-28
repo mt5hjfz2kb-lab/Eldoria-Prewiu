@@ -223,7 +223,11 @@ try {
       await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
       fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
     }
-  } else if (mode !== 'probe') {
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
 

@@ -206,6 +206,7 @@ jobs:
             ${{ runner.temp }}/tripo-studio-probe.json
             ${{ runner.temp }}/tripo-studio-after-upload.png
             ${{ runner.temp }}/tripo-studio-after-generate.png
+            ${{ runner.temp }}/tripo-studio-probe.png
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
           if-no-files-found: warn
