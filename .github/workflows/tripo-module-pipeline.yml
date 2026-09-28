@@ -319,11 +319,15 @@ jobs:
           } else {
             '{"enabled":false}' | Set-Content $refineConfig
           }
-          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py" -- --input $input --output $output --report $report --refine-config $refineConfig *> $log
-          if ($LASTEXITCODE -ne 0) {
-            Get-Content $log -Tail 240
-            throw "Canonical Blender module pipeline failed with exit code $LASTEXITCODE"
+          $errLog = "$env:RUNNER_TEMP\tripo-module-blender-error.log"
+          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig)
+          $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            if (Test-Path $errLog) { Get-Content $errLog -Tail 240 }
+            throw "Canonical Blender module pipeline failed with exit code $($process.ExitCode)"
           }
+          if (Test-Path $errLog) { Get-Content $errLog -Tail 40 }
           if (-not (Test-Path $output)) { throw 'Canonical optimized GLB missing after Blender.' }
           Get-Content $report
 
@@ -383,5 +387,6 @@ jobs:
             ${{ runner.temp }}/tripo-module-blender-report.json
             ${{ runner.temp }}/tripo-module-refine-config.json
             ${{ runner.temp }}/tripo-module-blender.log
+            ${{ runner.temp }}/tripo-module-blender-error.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
           if-no-files-found: warn
