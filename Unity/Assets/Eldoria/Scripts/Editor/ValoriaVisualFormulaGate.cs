@@ -4,6 +4,7 @@ using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Eldoria.EditorTools
 {
@@ -66,6 +67,24 @@ namespace Eldoria.EditorTools
             return material.GetFloat(property).ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        static string TexturePropertiesJson(Material material)
+        {
+            if (material == null || material.shader == null) return "[]";
+            var shader = material.shader;
+            var rows = new List<string>();
+            for (int i = 0; i < shader.GetPropertyCount(); i++)
+            {
+                if (shader.GetPropertyType(i) != ShaderPropertyType.Texture) continue;
+                var property = shader.GetPropertyName(i);
+                if (!material.HasProperty(property)) continue;
+                var texture = material.GetTexture(property);
+                if (texture == null) continue;
+                rows.Add("{\"property\":\"" + Escape(property) +
+                         "\",\"texture\":\"" + Escape(texture.name) + "\"}");
+            }
+            return "[" + string.Join(",", rows) + "]";
+        }
+
         static string Escape(string value)
         {
             return (value ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"");
@@ -100,7 +119,8 @@ namespace Eldoria.EditorTools
                         "\",\"normal_map\":\"" + Escape(normalMap) +
                         "\",\"metallic_gloss_map\":\"" + Escape(metallicMap) +
                         "\",\"occlusion_map\":\"" + Escape(occlusionMap) +
-                        "\",\"metallic\":" + FloatValue(material, "_Metallic") +
+                        "\",\"texture_properties\":" + TexturePropertiesJson(material) +
+                        ",\"metallic\":" + FloatValue(material, "_Metallic") +
                         ",\"smoothness\":" + FloatValue(material, "_Smoothness") + "}"
                     );
                 }
