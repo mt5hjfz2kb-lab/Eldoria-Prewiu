@@ -134,14 +134,47 @@ try {
       throw new Error('stage_upload refuses any request that allows credit spend.');
     }
 
-    const uploadPath = path.resolve(String(request.upload_path || ''));
+    let uploadPath = path.resolve(String(request.upload_path || ''));
+    let renderedInput = null;
+    if (request.render_svg_path) {
+      const svgPath = path.resolve(String(request.render_svg_path));
+      if (!fs.existsSync(svgPath)) throw new Error(`SVG source not found: ${svgPath}`);
+      const svgBytes = fs.readFileSync(svgPath);
+      const svgSha = crypto.createHash('sha256').update(svgBytes).digest('hex');
+      if (request.render_svg_sha256 && svgSha !== String(request.render_svg_sha256).toLowerCase()) {
+        throw new Error('SVG source identity does not match render_svg_sha256.');
+      }
+      const fileName = String(request.upload_file_name || 'tripo-rendered-input.png');
+      if (!fileName.toLowerCase().endsWith('.png')) throw new Error('Rendered SVG input must use a .png upload_file_name.');
+      const evidencePath = path.join(path.dirname(outPath), 'tripo-rendered-input.png');
+      const downloadsPath = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', fileName);
+      const renderPage = await contexts[0].newPage();
+      await renderPage.setViewportSize({ width: 1024, height: 1024 });
+      await renderPage.setContent('<!doctype html><html><head><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#dedede}svg{display:block;width:1024px;height:1024px}</style></head><body>'+svgBytes.toString('utf8')+'</body></html>', { waitUntil: 'load' });
+      await renderPage.screenshot({ path: evidencePath, type: 'png' });
+      await renderPage.close();
+      fs.copyFileSync(evidencePath, downloadsPath);
+      uploadPath = downloadsPath;
+      const renderedBytes = fs.readFileSync(uploadPath);
+      renderedInput = {
+        svg_path: svgPath,
+        svg_sha256: svgSha,
+        png_path: uploadPath,
+        png_sha256: crypto.createHash('sha256').update(renderedBytes).digest('hex'),
+        png_bytes: renderedBytes.length,
+        evidence_path: evidencePath
+      };
+    }
     if (!uploadPath || !fs.existsSync(uploadPath)) {
       throw new Error(`Upload source not found: ${uploadPath}`);
     }
     const sourceSha = crypto.createHash('sha256').update(fs.readFileSync(uploadPath)).digest('hex');
-    if (sourceSha !== request.upload_sha256 || fs.statSync(uploadPath).size !== Number(request.upload_size_bytes)) {
+    const sourceBytes = fs.statSync(uploadPath).size;
+    const exactIdentityRequired = !(mode === 'stage_upload' && renderedInput && !request.upload_sha256);
+    if (exactIdentityRequired && (sourceSha !== request.upload_sha256 || sourceBytes !== Number(request.upload_size_bytes))) {
       throw new Error('Tripo upload identity does not match the approved SHA/size.');
     }
+    if (renderedInput) report.rendered_input = renderedInput;
 
     let uploadPage = null;
     let imageInput = null;
