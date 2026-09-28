@@ -1,5 +1,20 @@
 # Eldoria — SESSION HANDOFF
 
+## 2026-09-28 — Valoria Playable District v1 ART PASS 1 CERTIFIED
+
+- Final playable/art checkpoint: `26cec966b2495c0dc1d0f925ffd5aa6e7793f9a3`.
+- Final Unity Actions run **36441851841**: source preflight PASS, EditMode PASS, PlayMode PASS, Windows build PASS, official Valoria captures PASS.
+- Full Unity checks artifact **10978669163**.
+- Official Valoria capture artifact **10979357857**, digest `sha256:2211d652dbd3e76b0afc565c39028a4f9650a232f9300e33f4a43b34614c7721`.
+- Baseline comparison remains Skeleton code `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f`, capture artifact **10971070486**.
+- Frozen kernel topology, camera orientation, zoom 9/12/19, bounded pan, Master Envelope reservations and all gameplay coordinates remain intact.
+- Art Pass 1 removes the dominant rectangular world-board/plinth read; hides structural proof slabs behind organic visual skins; keeps the twelve-step route open; integrates Planta 0/Planta 1 with earth, retaining masonry and rock; differentiates Aserradero/Cuartel; and adds authored **SlavicCobbleRoad / SlavicFlatRock / SlavicBoulder / SlavicStoneFence** dressing with visual-only colliders disabled.
+- No Tripo credits spent; no new external asset generated.
+- Interaction proof in PlayMode remains green: Aserradero panel, Cuartel panel, Bastion panel, gate → Frontier, official zoom clamps, Master Envelope pan and Bastion selection after pan.
+- Verdict: **TECH PASS / INTERACTION PASS / VISUAL PASS — ART PASS 1**.
+- This is a terrain/support/circulation visual certification, not final architecture. Next production priority is Art Pass 2: Aserradero + Cuartel dedicated architecture, then Bastion silhouette/roof hierarchy and increased inhabited density inside the frozen envelopes.
+- Full record: `docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md`.
+
 ## 2026-09-28 — Valoria Master Envelope + Camera Gate v1 CERTIFIED
 
 - Certification HEAD: `c8135a8c162e7849d852472d67e2492cd8a88af4`.
