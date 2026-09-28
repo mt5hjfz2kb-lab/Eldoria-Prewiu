@@ -147,7 +147,15 @@ namespace Eldoria.Presentation
 
         static Material AdaptForUrp(Material source)
         {
-            if(source==null||source.shader==null||source.shader.name.StartsWith("Universal Render Pipeline/"))return source;
+            if(source==null||source.shader==null)return source;
+            var shaderName=source.shader.name;
+            // glTFast imports PBR materials with its own URP-compatible shader graphs.
+            // They already preserve glTF metallic-roughness, normal, AO and emission semantics;
+            // rebuilding them as URP/Lit would discard valid maps/channels.
+            if(shaderName.StartsWith("Universal Render Pipeline/")||
+               shaderName.StartsWith("Shader Graphs/glTF-")||
+               shaderName.StartsWith("glTF/"))
+                return source;
             if(AdaptedMaterials.TryGetValue(source,out var adapted)&&adapted!=null)return adapted;
             var shader=Shader.Find("Universal Render Pipeline/Lit");
             if(shader==null)return source;
