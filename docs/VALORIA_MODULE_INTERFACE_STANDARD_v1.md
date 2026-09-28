@@ -41,3 +41,7 @@ The logical pivot for traversable modules is `Street_In` at the lower walk cente
 ## Audit and certification rule
 
 For each family record before/after source SHA, triangle count, vertex/bounds change, exact named sockets and world-transformed entry/exit position. Verify normals, UV0, material, collider and selection hit/miss. A `FUNCTION CERTIFIED` family retains its prior isolated function. `INTERFACE CERTIFIED` additionally requires measurable landing/clearance at its claimed sockets and visual before/after evidence at the actual official cameras. Families with no through-route must not be falsely certified for circulation; they may pass only a rock/defensive-edge interface. If automatic surgery cannot preserve form and demonstrate the join, keep the original functional asset and report INTERFACE FAIL.
+
+## v1 review outcome
+
+The six GLBs gained explicit candidate socket nodes without changing geometry. Matching socket centers in Unity is necessary but insufficient: the district retained exposed pedestal edges, unsupported residence and ambiguous through-circulation. No family is yet `INTERFACE CERTIFIED`. The numeric values in this document remain proposed acceptance thresholds, not measurements of a successfully cleared corridor. In particular L1/L2 are provisional composition tiers and the gate upper exit is **not** an established walkable landing. See [VALORIA_MODULE_INTERFACE_V1_GATE.md](VALORIA_MODULE_INTERFACE_V1_GATE.md) for the audit and actual image review.
