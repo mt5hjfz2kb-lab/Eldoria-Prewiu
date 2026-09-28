@@ -106,6 +106,28 @@ Risks: second vendor/API/credit pool, inconsistent art identity, more source for
 
 Decision: no integration or spend yet. If tested, use one exact approved non-hero reference and compare geometry cleanliness, part segmentation, texture quality, elapsed time, credits and integrated Unity appearance.
 
+### Sloyd / Hyper3D Rodin — WATCHLIST, NOT INTEGRATED
+
+Both expose production-oriented APIs and configurable topology/face counts. Sloyd also supports quads, target face counts and commercial paid plans; Rodin exposes high-detail PBR generation.
+
+Decision: no integration now. They would create a third/fourth generator lane before Tripo H3.1 vs P2 has even been characterized on Eldoria. Revisit only if a concrete asset class fails both Tripo routes, then run an exact-input A/B rather than adopting by demo quality.
+
+### RizomUV — DEFER
+
+Excellent specialist UV tooling, but our current failure is not demonstrated to be UV packing throughput. Blender already creates/validates UV0. Revisit if texel-density/packing becomes a measured bottleneck for hero assets.
+
+### Marmoset Toolbag — DEFER
+
+Excellent fast GPU baking and visual inspection, with Python scripting, but overlaps Blender baking and a future Painter/ArmorPaint surface lane. Its value is strongest if Blender baking iteration becomes artist-time constrained; not required for the automated baseline.
+
+### Simplygon / InstaLOD — REJECT AT CURRENT SCALE
+
+Technically strong automatic reduction/remeshing/material baking. Current commercial pricing is disproportionate to Eldoria, and Simplygon adds another Unity/USD integration dependency. Our Blender pipeline now supports role-specific triangle profiles; prove that insufficient before revisiting enterprise optimization middleware.
+
+### Houdini / Houdini Engine — DEFER TO CITY-SCALE PROCEDURAL NEED
+
+Houdini could become useful for repeatable district/terrain/prop variation once the visual grammar is stable. Introducing a procedural-authoring platform before material/style convergence would create more systems to maintain without solving today's bottleneck.
+
 ### SpeedTree — DEFER
 
 Valuable later for vegetation variation/LOD/wind, but vegetation is not the current visual bottleneck. Adding it now would optimize the wrong layer.
@@ -134,6 +156,13 @@ Do not add local generative-3D infrastructure merely to avoid credits. Current c
 | Hero surface polish | Blender baseline | ArmorPaint pilot -> Substance if justified |
 | Vegetation | existing kit | SpeedTree only when density/LOD becomes bottleneck |
 
+## Runtime visual-efficiency implications
+
+- The historical ~49.8K module target is now a default validation profile, not a universal production budget.
+- Use asset-role triangle targets and later LODs after official-camera/mobile profiling.
+- Mipmap streaming is a candidate once texture memory becomes measurable; it should be budget-driven, not enabled blindly.
+- ASTC is the preferred modern mobile texture-compression direction where target-device support permits; platform import settings belong in the mobile profiling phase.
+- Built-in occlusion culling is not a first-line optimization while major Valoria geometry is runtime-generated; revisit if the city becomes substantially static/baked.
 ## No-tool rule
 
 A tool is not added because it is popular or produces impressive demos. It is added only when it closes a measured Eldoria bottleneck and has an explicit input/output position in the pipeline.
