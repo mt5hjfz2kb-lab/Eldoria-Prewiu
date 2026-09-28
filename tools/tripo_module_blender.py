@@ -181,6 +181,7 @@ def surface_diagnostics():
             "colorspace": getattr(getattr(image, "colorspace_settings", None), "name", ""),
             "packed": bool(image.packed_file),
             "filepath": image.filepath or "",
+            "inferred_role": infer_image_role(image),
         })
 
     materials = []
@@ -224,18 +225,45 @@ def surface_diagnostics():
         materials.append(entry)
     return {"images": images, "materials": materials}
 
+def infer_image_role(image):
+    name = image.name.lower()
+    path = (image.filepath or "").lower()
+    text = name + " " + path
+    if any(k in text for k in ("basecolor", "base_color", "albedo", "diffuse", "color")):
+        return "basecolor"
+    if any(k in text for k in ("normal", "nrm")):
+        return "normal"
+    if any(k in text for k in ("rough", "smooth")):
+        return "roughness"
+    if any(k in text for k in ("metal", "metallic")):
+        return "metallic"
+    if any(k in text for k in ("occlusion", "ambientocclusion", "_ao", " ao")):
+        return "occlusion"
+    if any(k in text for k in ("mask", "orm", "rma", "mra")):
+        return "mask"
+    return "unknown"
+
 def optimize_images():
     resized = []
     for image in bpy.data.images:
         if image.source != "FILE" or image.size[0] <= 0 or image.size[1] <= 0:
             continue
-        limit = 2048 if "basecolor" in image.name.lower() else 1024
+        role = infer_image_role(image)
+        # Preserve form-defining color/normal detail longer; scalar/mask maps can usually
+        # tolerate a lower authoring cap for the fixed isometric/mobile camera.
+        limit = 2048 if role in ("basecolor", "normal") else 1024
         before = tuple(image.size)
         factor = min(1.0, limit / max(before))
         if factor < 1.0:
             image.scale(max(1, round(before[0] * factor)), max(1, round(before[1] * factor)))
             image.pack()
-        resized.append({"name": image.name, "before": before, "after": tuple(image.size)})
+        resized.append({
+            "name": image.name,
+            "role": role,
+            "limit": limit,
+            "before": before,
+            "after": tuple(image.size)
+        })
     return resized
 
 def apply_decimation_once(target):
