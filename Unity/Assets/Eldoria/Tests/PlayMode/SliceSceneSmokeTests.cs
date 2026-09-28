@@ -72,9 +72,16 @@ namespace Eldoria.Tests
                         var screenPoint=camera.WorldToScreenPoint(aim);
                         if(screenPoint.z<=0)continue;
                         var ray=camera.ScreenPointToRay(screenPoint);
-                        if(!Physics.Raycast(ray,out var hit,100f))continue;
-                        var resolved=hit.collider.GetComponent<WorldHotspot>();
-                        if(resolved!=null&&resolved.Id==pair.Item2){clearClick=true;break;}
+                        var hits=Physics.RaycastAll(ray,100f);
+                        System.Array.Sort(hits,(a,b)=>a.distance.CompareTo(b.distance));
+                        foreach(var hit in hits)
+                        {
+                            var resolved=hit.collider.GetComponent<WorldHotspot>();
+                            if(resolved==null)continue;
+                            if(resolved.Id==pair.Item2)clearClick=true;
+                            break;
+                        }
+                        if(clearClick)break;
                     }
                     if(clearClick)break;
                 }
