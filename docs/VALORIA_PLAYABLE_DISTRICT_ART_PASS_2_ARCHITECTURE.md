@@ -265,36 +265,29 @@ Decision: the current dedicated Cuartel requirement and Bastion landmark require
 
 ## Aserradero material-integration pass 2 — 2026-09-28
 
-Unity-only checkpoint: `4327d5778f1056fef04b0b31684298027b6eb459`.
+Final bounded Unity-only checkpoint: `518465fce3d5f15d5773e590189449f3daedce52`.
 
-The dedicated Aserradero geometry, scale, position, click volume and parcel remain unchanged. The previous uniform material modulation was replaced by a dedicated URP/Lit integration path that preserves the imported base texture while forcing low smoothness, zero metallic/specular/environment reflections and zero emission, with a controlled warm timber/stone tint. This deliberately avoids the previously rejected Unlit regression while addressing the washed-out Lit response.
+The dedicated Aserradero geometry, scale, position, click volume and parcel remain unchanged. The final material path preserves the imported base texture under URP/Lit with very low specular/environment response, a neutral-dark timber/stone tint and only a small local warm work-window cue.
 
-Status after first capture attempt:
-- run: **36475119103** (checkpoint `4327d5778f1056fef04b0b31684298027b6eb459`);
-- EditMode: PASS;
-- PlayMode: PASS;
-- Windows build: PASS;
-- official Valoria capture render: PASS;
-- capture artifact: **10994156195**;
-- visual review: **REJECTED** — the dedicated mesh shifted from pale/washed-out to an over-warm peach response, especially at zoom 9. Technical green did not satisfy the material gate.
+### Final evidence
+- Unity run: **36477431927**.
+- Official Valoria captures artifact: **10994851057**.
+- Source preflight: **PASS**.
+- EditMode: **PASS**.
+- PlayMode: **PASS** — certified Aserradero/Cuartel/Bastion real hotspot-panel regression remains green.
+- Windows build: **PASS**.
+- Official Valoria render: **PASS**.
+- Human capture review at zoom **19/12/9**: **PASS for material integration**. The dedicated sawmill no longer reads washed-out white and no longer carries the rejected peach cast; it sits in a darker neutral stone/timber range while retaining the accepted wood-production silhouette.
 
-Bounded correction 2 at `e0ef0d79241b6c167bb11e34694ef5ad57e8d509` removed the over-warm peach cast but capture review still found the mesh too pale. It was not accepted.
+**Aserradero AP2 final bounded verdict**
+- TECH: **PASS**
+- INTERACTION / PARCEL: **PASS**
+- DEDICATED ARCHITECTURE / FUNCTION READ: **PASS**
+- MATERIAL / INTEGRATED VISUAL: **PASS**
+- Geometry regeneration: **not required**
+- Additional Tripo credits: **0**
 
-Final bounded material checkpoint: `518465fce3d5f15d5773e590189449f3daedce52`.
-- run: **36477431927**;
-- EditMode: **PASS**;
-- PlayMode: **PASS**;
-- Windows build: **PASS**;
-- official Valoria 19/12/9 benchmark render: **PASS**;
-- official capture artifact: **10994851057**;
-- geometry/scale/position: unchanged from the certified dedicated Aserradero;
-- gameplay hotspot/collider/panel: unchanged and reconfirmed by PlayMode;
-- final material treatment: preserved imported texture, low-specular URP/Lit response, neutral darker integration tint, workshop light reduced to a tightly local accent;
-- human capture review: the building no longer reads as white/washed-out or globally peach-lit; timber/stone mass has materially better contrast while the wood-production silhouette remains readable at 19/12/9.
-
-**Aserradero final AP2 status: TECH PASS / INTERACTION PASS / MATERIAL-INTEGRATED VISUAL PASS.**
-
-This closes the Aserradero correction line. Do not regenerate or reopen its geometry/material unless a later whole-frame lighting pass creates a new demonstrated regression.
+This closes the Aserradero-specific blocker. It does not make Art Pass 2 complete; Cuartel and Bastion remain the dominant architecture gaps.
 
 ## Next action
 
