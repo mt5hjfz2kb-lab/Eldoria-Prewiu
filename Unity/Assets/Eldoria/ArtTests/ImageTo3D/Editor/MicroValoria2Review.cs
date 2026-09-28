@@ -64,15 +64,15 @@ namespace Eldoria.EditorTools
             // landing, with residential mass on both sides of the stepped spine.
             // Terrain pieces are buried beneath neighboring rocky foundations.
             Place(prefabs[2], report.modules[2], root.transform, "01 Southern gate", new Vector3(0, 0, -8.0f), 180, 15.0f);
-            Place(prefabs[4], report.modules[4], root.transform, "02 Street landing", new Vector3(-.3f, .30f, .5f), 180, 9.0f);
-            Place(prefabs[3], report.modules[3], root.transform, "03 Western dwellings", new Vector3(-5.7f, .25f, 6.2f), 28, 12.5f);
-            Place(prefabs[1], report.modules[1], root.transform, "04 Eastern rising terrace", new Vector3(3.5f, .5f, 6.7f), -17, 12.0f);
-            Place(prefabs[3], report.modules[3], root.transform, "05 Upper eastern dwellings", new Vector3(5.1f, 1.05f, 13.1f), -42, 12.0f);
-            Place(prefabs[1], report.modules[1], root.transform, "06 Northwestern terrace", new Vector3(-3.0f, 1.1f, 14.5f), 21, 12.0f);
-            Place(prefabs[0], report.modules[0], root.transform, "07 Rear skyline tower", new Vector3(-6.5f, 1.7f, 20.3f), 55, 8.0f);
-            Place(prefabs[5], report.modules[5], root.transform, "08 West buried seam", new Vector3(-5.0f, -.9f, 1.9f), 95, 8.5f);
-            Place(prefabs[5], report.modules[5], root.transform, "09 East buried seam", new Vector3(5.2f, -.9f, 9.8f), 200, 8.5f);
-            Place(prefabs[5], report.modules[5], root.transform, "10 Rear buried seam", new Vector3(.5f, -.6f, 17.3f), 20, 8.0f);
+            Place(prefabs[4], report.modules[4], root.transform, "02 Street landing", new Vector3(0, .16f, 1.1f), 180, 8.2f);
+            Place(prefabs[3], report.modules[3], root.transform, "03 Western dwellings", new Vector3(-4.2f, .22f, 5.6f), 14, 11.8f);
+            Place(prefabs[1], report.modules[1], root.transform, "04 Eastern rising terrace", new Vector3(2.6f, .38f, 6.4f), -12, 11.7f);
+            Place(prefabs[3], report.modules[3], root.transform, "05 Upper eastern dwellings", new Vector3(3.1f, .72f, 11.2f), -28, 11.2f);
+            Place(prefabs[1], report.modules[1], root.transform, "06 Northwestern terrace", new Vector3(-1.6f, .75f, 11.8f), 12, 10.8f);
+            Place(prefabs[0], report.modules[0], root.transform, "07 Rear skyline tower", new Vector3(-4.3f, 1.05f, 16.8f), 55, 7.2f);
+            Place(prefabs[5], report.modules[5], root.transform, "08 West buried seam", new Vector3(-4.0f, -1.9f, 2.3f), 95, 8.8f);
+            Place(prefabs[5], report.modules[5], root.transform, "09 East buried seam", new Vector3(4.0f, -2.0f, 7.7f), 200, 8.8f);
+            Place(prefabs[5], report.modules[5], root.transform, "10 Rear buried seam", new Vector3(0, -1.7f, 13.8f), 20, 8.5f);
 
             var terrain = GameObject.CreatePrimitive(PrimitiveType.Plane);
             terrain.name = "Neutral ground | context only";
@@ -104,8 +104,8 @@ namespace Eldoria.EditorTools
             for (int i = 0; i < 4; i++) {
                 cam.orthographicSize = sizes[i];
                 var target = i == 0 ? district.center + Vector3.up :
-                    i == 1 ? new Vector3(0, district.center.y, 2) :
-                    i == 2 ? new Vector3(0, district.center.y - .8f, -1) :
+                    i == 1 ? district.center :
+                    i == 2 ? new Vector3(0, district.center.y - .8f, 2) :
                     district.center + Vector3.up;
                 cam.transform.position = target + (i == 3 ? new Vector3(-25, 20, -26) :
                     i == 0 ? new Vector3(19, 27, -30) : new Vector3(17, 25, -27));
