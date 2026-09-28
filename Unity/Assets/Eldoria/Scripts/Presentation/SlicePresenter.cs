@@ -14,7 +14,9 @@ namespace Eldoria.Presentation
     {
         ICommandGateway gateway;
         RectTransform safe;
-        Text heading, resources, power, objective, description, message;
+        Text heading, resources, power, objective, description, message, buildingTitle, buildingBody;
+        GameObject buildingPanel;
+        Button buildingAction;
         string feedback="";
         float refreshAt;
         int lastWidth,lastHeight;
@@ -61,11 +63,44 @@ namespace Eldoria.Presentation
         void Select(string id)
         {
             if(id=="gate")SceneManager.LoadScene("Frontier");
-            else if(id=="sawmill")Send("Build","sawmill");
             else if(id=="forest-valoria")Send("Gather",id);
             else if(id=="corrupt-scout"||id=="engendro-valoria")Send("Fight",id);
-            else if(id=="barracks")Send("Build","barracks");
-            else if(id=="bastion")Send("AdvanceBastion","bastion");
+            else if(id=="sawmill"||id=="barracks"||id=="bastion")OpenBuildingPanel(id);
+        }
+        void OpenBuildingPanel(string id)
+        {
+            if(buildingPanel==null)return;
+            var s=gateway.Snapshot();
+            buildingPanel.SetActive(true);
+            buildingAction.onClick.RemoveAllListeners();
+            if(id=="sawmill")
+            {
+                buildingTitle.text="ASERRADERO";
+                buildingBody.text=s.SawmillLevel>0
+                    ?"Edificio económico activo · produce y sostiene la reconstrucción de Valoria."
+                    :"Parcela económica dañada · requiere "+SliceRules.SawmillWoodCost+" madera para reconstruirse.";
+                buildingAction.GetComponentInChildren<Text>().text=s.SawmillLevel>0?"ASERRADERO ACTIVO":"RECONSTRUIR";
+                buildingAction.interactable=s.SawmillLevel==0;
+                if(s.SawmillLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","sawmill");});
+            }
+            else if(id=="barracks")
+            {
+                buildingTitle.text="CUARTEL";
+                buildingBody.text=s.BarracksLevel>0
+                    ?"Guarnición activa · desde aquí se entrenan los arqueros de la marcha."
+                    :"Parcela militar preparada para levantar el Cuartel.";
+                buildingAction.GetComponentInChildren<Text>().text=s.BarracksLevel>0?"CUARTEL ACTIVO":"CONSTRUIR CUARTEL";
+                buildingAction.interactable=s.BarracksLevel==0;
+                if(s.BarracksLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
+            }
+            else
+            {
+                buildingTitle.text="BASTIÓN";
+                buildingBody.text="Núcleo de Valoria · nivel "+s.BastionLevel+". Su ascenso gobierna la progresión de la ciudad.";
+                buildingAction.GetComponentInChildren<Text>().text="ASCENDER BASTIÓN";
+                buildingAction.interactable=s.JourneyComplete&&s.BastionLevel==1;
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
+            }
         }
         void Send(string kind,string target)
         {
@@ -176,6 +211,34 @@ namespace Eldoria.Presentation
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
             message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
+            CreateBuildingPanel(canvasGo.transform);
+        }
+        void CreateBuildingPanel(Transform parent)
+        {
+            buildingPanel=new GameObject("Building interaction panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
+            var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
+            rt.anchorMin=new Vector2(.08f,.30f);rt.anchorMax=new Vector2(.92f,.70f);rt.offsetMin=rt.offsetMax=Vector2.zero;
+            buildingPanel.GetComponent<Image>().color=new Color(.055f,.075f,.10f,.96f);
+            var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(18,18,16,16);
+            layout.spacing=8;layout.childControlHeight=true;layout.childForceExpandHeight=false;
+            buildingTitle=Label("Building title",buildingPanel.transform,18,new Color(.98f,.86f,.64f),34);
+            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.90f,.91f,.90f),72);
+            var actionGo=new GameObject("Building action",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
+            actionGo.transform.SetParent(buildingPanel.transform,false);
+            actionGo.GetComponent<Image>().color=new Color(.25f,.22f,.17f,.98f);
+            actionGo.GetComponent<LayoutElement>().preferredHeight=34;
+            buildingAction=actionGo.GetComponent<Button>();
+            var actionText=Label("Text",actionGo.transform,11,new Color(.98f,.86f,.64f),34);
+            actionText.text="ACCIÓN";actionText.alignment=TextAnchor.MiddleCenter;
+            var ar=actionText.rectTransform;ar.anchorMin=Vector2.zero;ar.anchorMax=Vector2.one;ar.offsetMin=ar.offsetMax=Vector2.zero;
+            var closeGo=new GameObject("Cerrar",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
+            closeGo.transform.SetParent(buildingPanel.transform,false);
+            closeGo.GetComponent<Image>().color=new Color(.15f,.16f,.16f,.98f);
+            closeGo.GetComponent<LayoutElement>().preferredHeight=30;
+            closeGo.GetComponent<Button>().onClick.AddListener(()=>buildingPanel.SetActive(false));
+            var closeText=Label("Text",closeGo.transform,10,Color.white,30);closeText.text="CERRAR";closeText.alignment=TextAnchor.MiddleCenter;
+            var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
+            buildingPanel.SetActive(false);
         }
         void Zoom(float amount){if(Camera.main!=null)Camera.main.orthographicSize=Mathf.Clamp(Camera.main.orthographicSize+amount,9,19);}
         void UpdateSafeArea()
