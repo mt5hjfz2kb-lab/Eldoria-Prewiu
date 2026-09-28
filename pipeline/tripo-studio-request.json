@@ -21,5 +21,7 @@
   "search_downloads_for_sha": true,
   "allow_credit_spend": false,
   "connect_timeout_ms": 10000,
-  "page_probe_timeout_ms": 12000
+  "page_probe_timeout_ms": 12000,
+  "upload_size_bytes": 699467,
+  "probe_nonce": "2026-09-28T17:16:exact-profile-search"
 }
