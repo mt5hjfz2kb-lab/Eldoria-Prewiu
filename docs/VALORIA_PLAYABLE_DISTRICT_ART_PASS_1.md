@@ -4,11 +4,11 @@ Status: **CERTIFIED**
 
 ## Certified production checkpoint
 
-- Playable/art code checkpoint: `95d961b48719f060731a44d13530043519e5cf32`
-- Unity gate run: `36438952426`
-- Full Unity checks artifact: `10977471466`
-- Official Valoria capture artifact: `10977356586`
-- Official capture digest: `sha256:132acb12424eafea0b9797f1f2dee3eef46ab942083078bc04c8f3c794709ce4`
+- Playable/art code checkpoint: `26cec966b2495c0dc1d0f925ffd5aa6e7793f9a3`
+- Unity gate run: `36441851841`
+- Full Unity checks artifact: `10978669163`
+- Official Valoria capture artifact: `10979357857`
+- Official capture digest: `sha256:2211d652dbd3e76b0afc565c39028a4f9650a232f9300e33f4a43b34614c7721`
 - Baseline skeleton code: `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f`
 - Baseline skeleton capture artifact: `10971070486`
 
@@ -39,7 +39,7 @@ The certified Playable District Skeleton topology, gameplay coordinates, officia
 - Cuartel gains military cues: standard/banner and training markers.
 - Bastion remains the Planta 1 landmark and retains its certified functional position/hotspot.
 
-No Tripo credits were spent. No new external asset was generated. This pass reuses the existing ValoriaKit language, existing certified/loaded art, procedural terrain skins, rocks, pines, masonry, timber, banners and scaffold elements.
+No Tripo credits were spent. No new external asset was generated. The final certified polish explicitly reuses existing project assets **SlavicCobbleRoad**, **SlavicFlatRock**, **SlavicBoulder** and **SlavicStoneFence** as visual-only dressing over the frozen functional surfaces. Their colliders are disabled; the certified gameplay floor/hotspot volumes remain authoritative. Procedural ValoriaKit terrain skins, pines, masonry, timber, banners and scaffold elements remain in use where appropriate.
 
 ## Plot envelopes recorded for the next architectural pass
 
@@ -76,7 +76,7 @@ No Tripo credits were spent. No new external asset was generated. This pass reus
 
 ## Interaction and technical gate
 
-Run `36438952426` completed successfully.
+Run `36441851841` completed successfully.
 
 - Source preflight: PASS
 - EditMode: PASS
@@ -94,19 +94,19 @@ Run `36438952426` completed successfully.
 
 ### Zoom 19 / establishing
 
-Skeleton v1 exposed the edge and thickness of a very large rectangular ground board. The Art Pass 1 capture removes that board-edge read from the official frame. Future district reserves no longer appear as large rectangular graybox plates. The playable kernel now sits in a continuous valley/terrain field rather than on a tabletop slab.
+Skeleton v1 exposed the edge and thickness of a very large rectangular ground board. The final Art Pass 1 capture removes the giant rectangular-board read and suppresses the Master Envelope proof slabs as visible plates while preserving their exact reserved objects underneath. The kernel now reads as an inhabited shelf within a wider valley/mountain field. The outer terrain is intentionally low-detail at this pass; it is no longer a topology-defining board.
 
 The city remains intentionally sparse outside the kernel; this pass does not pretend the future Master Envelope is already built.
 
 ### Zoom 12 / gate
 
-Skeleton v1 showed Planta 1 as a dark rectangular block supporting the Bastion. Art Pass 1 removes that dominant zócalo read. Rock, earth and low retaining fragments now carry the elevation transition. The main street and twelve-step stair remain the strongest circulation line.
+Skeleton v1 showed Planta 1 as a dark rectangular block supporting the Bastion. Art Pass 1 removes that dominant zócalo read. Rock, earth, low retaining fragments and authored Slavic rock pieces now carry the elevation transition. The foreground edge gains a broken rock band instead of one clean platform edge. The main street and twelve-step stair remain the strongest circulation line, with authored cobble overlays adding surface variation without changing the corridor.
 
 Aserradero and Cuartel are more distinguishable by function without growing into the street.
 
 ### Zoom 9 / districts
 
-At close gameplay distance, the greatest improvement is the support transition under the Bastion: the former continuous dark wall/plinth is gone and the upper level reads as a rock/earth terrace. Plot borders are less like clean rectangles and the street is less synthetic while remaining fully legible.
+At close gameplay distance, the greatest improvement is the support transition under the Bastion: the former continuous dark wall/plinth is gone and the upper level reads as a rock/earth terrace with authored rock/stone-face dressing. Plot borders are less like clean rectangles; the road gets real cobble dressing; and the stair stays unobscured. Aserradero and Cuartel retain distinct functional silhouettes without consuming the route.
 
 The architecture itself is **not final production art**. The Bastion roof silhouette and both lower buildings still need a dedicated architecture pass; Art Pass 1 certifies terrain/support/circulation integration, not final building art.
 
@@ -127,7 +127,7 @@ Priority for Art Pass 2:
 1. dedicated architecture/silhouette pass for Aserradero and Cuartel inside the recorded plot envelopes;
 2. Bastion silhouette pass: roof scale/logic, asymmetry, tower hierarchy, stronger rock/architecture junction;
 3. increase inhabited urban density with small structures/retaining details that respect the frozen routes;
-4. improve mountain depth using controlled vertical rock masses rather than flat ground decals/sheets;
+4. improve mountain depth with stronger controlled vertical rock masses and cliff faces; Art Pass 1 deliberately stops before turning the broad low-detail valley skins into final geology;
 5. only after those forms work: materials, secondary vegetation, decals, VFX, lighting polish and optimization.
 
 If a dedicated new asset is needed, use the parcel brief above, prepare the source image and dimensions first, and take the Tripo automation only to the pre-spend point until the owner explicitly authorizes credit use.
