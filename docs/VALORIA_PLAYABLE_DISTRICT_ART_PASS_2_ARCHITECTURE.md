@@ -253,11 +253,16 @@ Unity-only checkpoint: `4327d5778f1056fef04b0b31684298027b6eb459`.
 
 The dedicated Aserradero geometry, scale, position, click volume and parcel remain unchanged. The previous uniform material modulation was replaced by a dedicated URP/Lit integration path that preserves the imported base texture while forcing low smoothness, zero metallic/specular/environment reflections and zero emission, with a controlled warm timber/stone tint. This deliberately avoids the previously rejected Unlit regression while addressing the washed-out Lit response.
 
-Status before new official captures:
-- geometry: unchanged / accepted;
-- gameplay coordinates and colliders: unchanged;
-- TECH / INTERACTION: require the next Unity gate to reconfirm;
-- MATERIAL / VISUAL: pending capture review.
+Status after first capture attempt:
+- run: **36475119103** (checkpoint `4327d5778f1056fef04b0b31684298027b6eb459`);
+- EditMode: PASS;
+- PlayMode: PASS;
+- Windows build: PASS;
+- official Valoria capture render: PASS;
+- capture artifact: **10994156195**;
+- visual review: **REJECTED** — the dedicated mesh shifted from pale/washed-out to an over-warm peach response, especially at zoom 9. Technical green did not satisfy the material gate.
+
+Bounded correction 2 is checkpoint `e0ef0d79241b6c167bb11e34694ef5ad57e8d509`: geometry/placement remain identical; material tint is returned toward neutral stone/timber and the broad workshop point light is reduced to a small local accent. New official captures are required before acceptance.
 
 ## Next action
 
