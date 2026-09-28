@@ -186,6 +186,16 @@ Zoom 19 must gain landmark silhouette; 12 must show tower/roof hierarchy and mon
 **Exact single-image Tripo reference brief**  
 Generate one isolated 3/4 south/front hero-asset reference on a neutral light-grey studio background, full structure visible, no text, no people, no road, no stair, no surrounding city and no fused mountain/terrain. Monumental ancient Valoria keep rebuilt into rock: one dominant rear/central vertical keep mass, two unequal secondary towers, asymmetrical stepped volumes, physically connected dark slate roofs with coherent pitches, a strong recessed front gate/facade aligned to the south approach, restrained blue heraldic accents, visible buttresses and masonry depth, and a controlled natural-rock plinth that belongs to the building footprint rather than becoming terrain. The silhouette must read as a single authored landmark from strategic distance. Avoid symmetry, detached/floating roofs, generic square castle kit language, giant front curtain wall, excessive tiny turrets, or a full-city diorama. Tallest mass must stay rear/central and the front/stair mouth must remain visually open.
 
+## Tripo Studio bridge generalization safety gate — 2026-09-28
+
+- Generic bridge repair checkpoint: `12cb5ab3ee6f28ba85e59de8a74e6a28ff8d0edb`.
+- No-spend probe request checkpoint: `9a8ffb0709f6b515f44551ffd5d44bd961273402`.
+- Probe run: **36476381649**.
+- Probe artifact: **10994570186**.
+- Result: **PASS**. The real owner Tripo Studio tab was reached, H3.1 controls were readable and the current page displayed **Generar 55**.
+- Credits spent by probe: **0**. It did not stage an image and did not click Generate.
+- Important: the visible 55-credit value belongs to the currently open prior workspace state. For Cuartel/Bastion approval the exact new input must still be staged first and the cost re-read from that exact staged image before any spend.
+
 ## Dedicated Aserradero execution — 2026-09-28
 
 **Integrated checkpoint:** `d633a5482a321a75cc4cf11a4a0e548e6cf8f1bd`
