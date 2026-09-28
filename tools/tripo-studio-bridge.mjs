@@ -229,6 +229,7 @@ try {
     }
     let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
     if (await exportButtons.count() === 1) await exportButtons.click();
+    await selectedPage.getByRole('button', { name: 'GLB', exact: true }).waitFor({ state: 'visible', timeout: 12000 });
     exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
     if (await exportButtons.count() !== 2 || !(await selectedPage.getByRole('button', { name: 'GLB', exact: true }).count())) {
       throw new Error('The expected GLB export dialog is not available.');
