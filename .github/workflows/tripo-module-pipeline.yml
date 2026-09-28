@@ -426,16 +426,17 @@ jobs:
           $bytes = (Get-Item $dest).Length
           Write-Host "PROMOTION_FILE: $relative | $bytes bytes | sha256 $sha"
 
-          git config user.name "Eldoria Actions"
-          git config user.email "actions@eldoria.local"
-          git add -- "$relative"
-          if (-not (git status --porcelain -- "$relative")) {
+          git config --global --add safe.directory "$env:GITHUB_WORKSPACE"
+          git -C "$env:GITHUB_WORKSPACE" config user.name "Eldoria Actions"
+          git -C "$env:GITHUB_WORKSPACE" config user.email "actions@eldoria.local"
+          git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
+          if (-not (git -C "$env:GITHUB_WORKSPACE" status --porcelain -- "$relative")) {
             throw "Promotion produced no tracked change: $relative"
           }
           $message = [string]$request.promotion.commit_message
           if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
-          git commit -m "$message"
+          git -C "$env:GITHUB_WORKSPACE" commit -m "$message"
           if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
-          git push origin HEAD:main
+          git -C "$env:GITHUB_WORKSPACE" push origin HEAD:main
           if ($LASTEXITCODE -ne 0) { throw "git push failed with exit code $LASTEXITCODE" }
           Write-Host "PROMOTION_PUSHED: $relative | sha256 $sha"
