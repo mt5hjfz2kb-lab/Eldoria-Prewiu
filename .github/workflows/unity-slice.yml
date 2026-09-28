@@ -197,7 +197,7 @@ jobs:
             throw "Valoria capture timed out after 3 minutes."
           }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Valoria capture failed with exit code $($process.ExitCode)." }
-          foreach ($name in @("valoria-establishing.png","valoria-gate.png","valoria-districts.png","valoria-sawmill-19.png","valoria-sawmill-12.png","valoria-sawmill-9.png","valoria-master-west.png","valoria-master-east.png","valoria-master-future.png","valoria-mobile.png")) {
+          foreach ($name in @("valoria-establishing.png","valoria-gate.png","valoria-districts.png","valoria-sawmill-19.png","valoria-sawmill-12.png","valoria-sawmill-9.png","valoria-barracks-19.png","valoria-barracks-12.png","valoria-barracks-9.png","valoria-master-west.png","valoria-master-east.png","valoria-master-future.png","valoria-mobile.png")) {
             $file = Join-Path $folder $name
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Benchmark image missing or empty: $name" }
           }
