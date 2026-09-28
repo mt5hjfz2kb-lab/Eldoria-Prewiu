@@ -41,6 +41,8 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Development workflow optimization and CI profiles: `docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md`.
 - Unity capability migration execution: `docs/UNITY_MIGRATION_ACCELERATION_PLAN.md` in addition to `UNITY_MIGRATION_PLAN.md`.
 - Valoria art decisions must follow `docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md`: prove composition/look-dev cheaply before paid/final geometry, classify defects before regenerating, and judge final quality integrated at official cameras.
+- Graphics-tool decisions and adoption/defer/reject rationale live in `docs/ELDORIA_GRAPHICS_TOOLCHAIN_AUDIT_2026.md`; do not add a tool merely because it is capable or fashionable.
+- Accepted geometry enters `docs/ELDORIA_SURFACE_PIPELINE.md` before any regeneration caused by a visual defect. Diagnose SURFACE separately from COMPOSITION and IDENTITY.
 - `.github/workflows/unity-cache-probe.yml` is an isolated measurement workflow only. Do not promote persistent Library reuse into canonical CI until cold/warm results are deterministic and source contamination is excluded.
 
 ## Canonical Valoria modular-art pipeline
