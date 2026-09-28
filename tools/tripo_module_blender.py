@@ -240,7 +240,7 @@ def infer_image_role(image):
         return "metallic"
     if any(k in text for k in ("occlusion", "ambientocclusion", "_ao", " ao")):
         return "occlusion"
-    if any(k in text for k in ("mask", "orm", "rma", "mra")):
+    if any(k in text for k in ("mask", "orm", "rma", "mra", "_rm", " rm", "roughmetal", "roughnessmetallic")):
         return "mask"
     return "unknown"
 
