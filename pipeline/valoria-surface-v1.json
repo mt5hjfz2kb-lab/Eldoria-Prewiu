@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "active_validation",
+  "status": "VALIDATED_V1",
   "formula": "VALORIA_VISUAL_FORMULA_v1",
   "source_evidence": {
     "asset": "Valoria_Aserradero_AP2_v1",
@@ -47,12 +47,7 @@
       "status": "integration_preserve_pbr_full_unity_gate_success"
     }
   },
-  "validation_remaining": [
-    "Unity material evidence after glTFast shader preservation",
-    "Current LookDev profile comparison",
-    "Integrated visual formula scene comparison",
-    "Hero fragment Surface/Identity review"
-  ],
+  "validation_remaining": [],
   "integration_fixes": [
     {
       "id": "preserve-authored-pbr-path",
@@ -65,5 +60,12 @@
       "commit": "3113d762aada298a93bfbb45457b5b5531823516",
       "detail": "AdaptForUrp now preserves Shader Graphs/glTF-* and glTF/* shaders instead of rebuilding them as URP/Lit, retaining metallic-roughness, normal, AO and emission semantics."
     }
-  ]
+  ],
+  "validation_evidence": {
+    "pbr_preservation_run_id": 36498200151,
+    "lookdev_run_id": 36529204672,
+    "production_formula_run_id": 36529730848,
+    "hero_visual_run_id": 36534386365
+  },
+  "production_rule": "Surface v1 is reusable. Preserve dedicated authored PBR; rescue flat historical certified geometry with canonical material families; never regenerate geometry for a surface-only defect."
 }
