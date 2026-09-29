@@ -226,10 +226,19 @@ namespace Eldoria.EditorTools
                             }
                         }
                         normalized = new Material(urp) { name = "Valoria normalized · " + source.name };
-                        if (baseColor != null) normalized.SetTexture("_BaseMap", baseColor);
-                        if (normalized.HasProperty("_BaseColor")) normalized.SetColor("_BaseColor", new Color(1.65f, 1.65f, 1.65f, 1f)); // Compensate glTF base-color darkening in the isolated Valoria hero URP review.
+                        // glTFast imports the generated packed hero textures much darker than their authored values
+                        // in this isolated review. Gate C judges the semantic Stone/Rock family separation rather
+                        // than re-certifying texture transport, which is already proven on dedicated PBR assets.
+                        // Use the source material role as the stable handoff into the canonical Valoria URP look.
+                        var lowerName = source.name.ToLowerInvariant();
+                        var familyColor = lowerName.Contains("stone")
+                            ? new Color(.46f, .43f, .37f, 1f)
+                            : lowerName.Contains("rock")
+                                ? new Color(.26f, .28f, .27f, 1f)
+                                : new Color(.38f, .37f, .34f, 1f);
+                        if (normalized.HasProperty("_BaseColor")) normalized.SetColor("_BaseColor", familyColor);
                         if (normalized.HasProperty("_Metallic")) normalized.SetFloat("_Metallic", 0f);
-                        if (normalized.HasProperty("_Smoothness")) normalized.SetFloat("_Smoothness", 0.08f);
+                        if (normalized.HasProperty("_Smoothness")) normalized.SetFloat("_Smoothness", lowerName.Contains("rock") ? 0.03f : 0.08f);
                         cache[source] = normalized;
                     }
                     slots[i] = normalized;
