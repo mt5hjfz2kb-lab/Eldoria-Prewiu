@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "probe",
+  "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Zero-credit diagnostics only. Inspect open Edge tabs; no upload and no Generate.",
-  "request_id": "tripo-open-pages-probe-20260929-r2",
+  "notes": "Zero-credit hardened upload/reception proof for exact approved Granero input. Stage only; stop before Generate.",
+  "request_id": "valoria-granero-biii-v1-stage-upload-hardening-proof",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
@@ -32,5 +32,5 @@
   "approved_input_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-29:open-pages-probe-r2"
+  "probe_nonce": "2026-09-29:granero-biii-stage-upload-hardening-proof-2"
 }
