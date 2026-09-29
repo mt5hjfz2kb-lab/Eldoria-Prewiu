@@ -123,12 +123,13 @@ For the I–II owner build, Unity needs a small authoritative chapter state rath
 - Frontier battle summary with participants / Power / rounds / remaining health / rewards / reason;
 - domain-owned objective-stage keys consumed by the HUD;
 - QA fresh-save reset control;
-- full domain fresh-save progression now exercises wood → stone → route → Bastion II → Cuartel → recruitment → March → Engendro.
+- full domain fresh-save progression now exercises wood → stone → route → Bastion II → Cuartel → recruitment → March → Engendro;
+- `OWNER_I_II_CANDIDATE` is staged in `SliceContentProfiles` from the web contract, but remains deliberately inactive until human pacing validation.
 
 ### Still required before OWNER PLAYTEST candidate
 - latest full Unity gate must be green after concurrent changes settle;
 - inspect/accept current Bastion Hero Pass and Frontier benchmark visually at representative mobile framing;
-- create/select `OWNER_I_II` pacing values from web contract (do not simply promote QA_FAST);
+- switch from staged `OWNER_I_II_CANDIDATE` to an owner-facing runtime only after the integrated CI/build is green; do not simply promote QA_FAST;
 - run uninterrupted human fresh-save I→II without developer knowledge;
 - perform at least one physical-device mobile profile once Android/target build prerequisites are available;
 - fix only the issues discovered by that integrated owner run before expanding into Bastion III.
