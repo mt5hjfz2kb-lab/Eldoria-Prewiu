@@ -720,6 +720,44 @@ try {
         };
       }).filter(x => x.visible).slice(0, 200)
     );
+    const selectedAssetCard = selectedPage.locator('a.border-purple-1').first();
+    if (await selectedAssetCard.count()) {
+      await selectedAssetCard.hover();
+      await selectedPage.waitForTimeout(400);
+      const parent = selectedAssetCard.locator('xpath=..');
+      report.probe_selected_asset = {
+        card_html: (await selectedAssetCard.evaluate(el => el.outerHTML)).slice(0, 12000),
+        parent_html: (await parent.evaluate(el => el.outerHTML)).slice(0, 24000),
+        href: await selectedAssetCard.getAttribute('href'),
+        action_tooltips: []
+      };
+      const actionButtons = parent.locator('button');
+      const actionCount = await actionButtons.count();
+      for (let i = 0; i < Math.min(actionCount, 8); i++) {
+        const action = actionButtons.nth(i);
+        const box = await action.boundingBox();
+        if (!box) continue;
+        await action.hover({ force: true });
+        await selectedPage.waitForTimeout(450);
+        const tooltips = await selectedPage.locator('[role="tooltip"], [data-radix-popper-content-wrapper]').evaluateAll(nodes =>
+          nodes.filter(el => {
+            const r = el.getBoundingClientRect();
+            const s = getComputedStyle(el);
+            return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none';
+          }).map(el => (el.innerText || el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 300))
+        );
+        report.probe_selected_asset.action_tooltips.push({
+          index: i,
+          className: await action.getAttribute('class'),
+          aria: await action.getAttribute('aria-label'),
+          title: await action.getAttribute('title'),
+          html: (await action.evaluate(el => el.outerHTML)).slice(0, 5000),
+          tooltips
+        });
+      }
+      report.probe_selected_asset.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-selected-asset-actions.png');
+      await selectedPage.screenshot({ path: report.probe_selected_asset.screenshot_path, fullPage: false });
+    }
   } else {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
