@@ -1,4 +1,5 @@
 name: Valoria hero surface prototype
+# Gate C rerun anchor: matte Stone/Rock under canonical neutral-overcast LookDev.
 
 on:
   workflow_dispatch:
