@@ -8,6 +8,8 @@ on:
       - '.github/workflows/valoria-visual-formula.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Resources/WorldInventory/**'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs'
       - 'Unity/Assets/Eldoria/Resources/Valoria/**'

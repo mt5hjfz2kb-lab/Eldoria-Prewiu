@@ -19,7 +19,7 @@ namespace Eldoria.Presentation
         {
             root = new GameObject("Frontier · integrated 4X visual layer").transform;
             UnifyLandscape(false);
-            Suppress("Aldric ","Archer ");
+            Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
             // Replace the primitive foliage read with two mapped, authored tree variants.
             Suppress("Frontier · forest pine", "Frontier · tall evergreen", "Frontier · ridge pine",
                 "Frontier · undergrowth", "Frontier · forest moss");
@@ -83,7 +83,7 @@ namespace Eldoria.Presentation
         {
             root = new GameObject("Valoria · integrated construction visual layer").transform;
             UnifyLandscape(true);
-            Suppress("Aldric ","Archer ");
+            Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
             // Subordinate inhabited silhouettes replace oversized provisional staging primitives.
             foreach(var p in new[]{new Vector3(-10.5f,.47f,-1.1f),new Vector3(-14.4f,.49f,-.7f),
                 new Vector3(-11.3f,.46f,3.45f),new Vector3(-7.6f,.44f,-4.35f),new Vector3(6.4f,.44f,-5.8f),
@@ -94,13 +94,13 @@ namespace Eldoria.Presentation
             // Fit real support architecture into the already-authored residential footprints.
             if(art!=null&&art.SlavicHouse!=null)
             {
-                Suppress("VPD · west rebuilders home", "VPD · west rebuilders upper dwelling");
+                Suppress("VPD · west rebuilders home · roof", "VPD · west rebuilders upper dwelling · roof");
                 var homes=new[]{new Vector3(-12,.34f,-3.25f),new Vector3(-15.25f,.36f,-3.05f),
                     new Vector3(-13.25f,.36f,2.45f),new Vector3(-17.35f,.38f,2.15f),
                     new Vector3(-15.8f,1.28f,5.55f),new Vector3(-18.05f,1.18f,6.05f)};
                 for(int i=0;i<homes.Length;i++)
-                    Piece("Valoria · reused civil house "+i,i==2&&art.SlavicShed!=null?art.SlavicShed:art.SlavicHouse,
-                        homes[i],i>=4?2.35f:2.20f,i>=4?2.65f:2.42f,i%2==0?-12:9,new Color(.78f,.74f,.65f));
+                    Piece("Valoria · reused civil house "+i,art.SlavicHouse,
+                        homes[i]+Vector3.up*(i==5?1.12f:i>=4?1.28f:1.18f),i>=4?2.35f:2.20f,.94f,0,new Color(.62f,.57f,.48f));
             }
             // StoneKit surface and border functions. Y-normalized skins never become floors.
             for(int i=0;i<7;i++)
@@ -143,10 +143,30 @@ namespace Eldoria.Presentation
                 Piece("Valoria · civil store barrel",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),p+new Vector3(.45f,0,.17f),.38f,.6f,i*31,new Color(.70f,.61f,.48f));
                 if(state.BastionLevel>=3)Piece("Valoria · food sack",Resources.Load<GameObject>("Valoria/UrbanProps/Sack"),p+new Vector3(.1f,0,.49f),.55f,.38f,0,new Color(.8f,.72f,.57f));
             }
-            // Buried authored geology strengthens terrain/architecture contact, without podium islands.
-            foreach(var p in new[]{new Vector3(-11,.09f,-4.6f),new Vector3(-19,.14f,3.7f),new Vector3(9.4f,.12f,-4.8f),new Vector3(6.3f,.18f,8.8f)})
-                Imported("Valoria · integrated rock shoulder","Rock01",p,2.9f,1.35f,p.x*17,new Color(.41f,.40f,.35f),false);
+            DressBastion();
             Finish();
+        }
+
+        static void DressBastion()
+        {
+            // Legacy prefab FBX file IDs lose mesh bindings under the current importer.
+            // Exact source FBX aliases restore authored masonry over the same visual envelope.
+            Suppress("Bastion · connected", "Bastion · rear connected", "Bastion · high lantern",
+                "Bastion · keep facing fallback", "Bastion · keep side fallback", "Bastion · keep rear fallback",
+                "Bastion · dead palace wall", "Bastion · dead palace tower");
+            var p=new Vector3(0,3.15f,7.25f);
+            foreach(var q in new[]{new Vector4(-3.28f,-2.48f,2.05f,5.85f),new Vector4(3.18f,-2.45f,1.82f,4.95f),
+                new Vector4(-2.55f,2.25f,1.85f,6.75f),new Vector4(2.45f,1.95f,1.65f,5.45f),new Vector4(-.62f,2.28f,1.62f,6.95f)})
+                Imported("Valoria · restored masonry tower","MegaTower",p+new Vector3(q.x,.08f,q.y),q.z,q.w,0,new Color(.52f,.51f,.45f),false);
+            Imported("Valoria · restored entry arch","MegaGate",p+new Vector3(0,.12f,-3.08f),2.35f,3.15f,0,new Color(.52f,.51f,.45f),false);
+            foreach(float x in new[]{-2.15f,2.15f})
+                Imported("Valoria · restored curtain masonry","MegaWall",p+new Vector3(x,.12f,-3.02f),2.55f,3.05f,0,new Color(.52f,.51f,.45f),false);
+            foreach(float x in new[]{-1.55f,1.55f})
+                Imported("Valoria · keep masonry facing","MegaWall",p+new Vector3(x,2.42f,-1.28f),3f,2.62f,0,new Color(.48f,.47f,.41f),false);
+            foreach(float x in new[]{-2.25f,2.25f})
+                Imported("Valoria · keep side masonry","MegaWall",p+new Vector3(x,2.32f,1.05f),2.75f,2.48f,90,new Color(.48f,.47f,.41f),false);
+            Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(-4.15f,.10f,3.75f),4.2f,3.15f,16,new Color(.42f,.43f,.39f),false);
+            Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(3.75f,.10f,4.20f),3.65f,2.85f,-18,new Color(.42f,.43f,.39f),false);
         }
 
         static void UnifyLandscape(bool city)
@@ -250,7 +270,7 @@ namespace Eldoria.Presentation
                     // Share the first material across instances rather than duplicating GPU textures.
                     if(sharedStone!=null){materials[i]=sharedStone;continue;}
                     var m=new Material(materials[i]);
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.75f,.72f,.66f));
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.48f,.46f,.40f));
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.02f);
                     sharedStone=m;materials[i]=m;
                 }
@@ -274,9 +294,9 @@ namespace Eldoria.Presentation
         }
         static void CityOrigin(Vector3 p,ValoriaExternalAssetLibrary art)
         {
-            Piece("4X · player city keep · placeholder",art!=null?art.StoneTower:null,p+new Vector3(0,0,.55f),1.75f,2.8f,0,new Color(.64f,.61f,.54f));
-            Piece("4X · player city gate · placeholder",art!=null?art.StoneGate:null,p+new Vector3(0,0,-.5f),2.1f,1.55f,0,new Color(.66f,.61f,.51f));
-            Piece("4X · player city civil roof",art!=null?art.SlavicHouse:null,p+new Vector3(-1.1f,0,.1f),1.2f,1.35f,18,new Color(.71f,.65f,.54f));
+            Piece("4X · player city keep · placeholder",Resources.Load<GameObject>("WorldInventory/MegaTower"),p+new Vector3(0,0,.55f),1.75f,2.8f,0,new Color(.64f,.61f,.54f));
+            Piece("4X · player city gate · placeholder",Resources.Load<GameObject>("WorldInventory/MegaGate"),p+new Vector3(0,0,-.5f),2.1f,1.55f,0,new Color(.66f,.61f,.51f));
+            Piece("4X · player city civil roof",art!=null?art.SlavicShed:null,p+new Vector3(-1.1f,0,.1f),1.2f,1.35f,18,new Color(.71f,.65f,.54f));
             Flag("4X · Valoria standard",p+new Vector3(.9f,.15f,.5f),Blue,1.4f);
         }
         static void March(Vector3 p)
