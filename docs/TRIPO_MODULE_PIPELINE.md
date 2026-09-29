@@ -57,6 +57,15 @@ The bridge now treats **file transport** and **Tripo receipt** as separate gates
 
 A successful `setInputFiles` call alone is **not** a staging PASS.
 
+### Exact-input preflight before Tripo
+
+Before enabling a repo-backed `stage_upload`, run:
+
+`node tools/validate-tripo-exact-input.mjs pipeline/exact-inputs/<asset>/manifest.json`
+
+The validator must PASS the expected SHA-256 and byte count before Tripo is touched. If the repo payload is incomplete, keep the request disabled and do not fall back to Downloads for a ChatGPT-approved exact input.
+
+
 ## Source of truth
 
 Canonical entry points:
