@@ -362,8 +362,10 @@ jobs:
             New-Item -ItemType Directory -Force $splitDir | Out-Null
             $splitMin = [int]$request.multipiece.min_component_triangles
             if ($splitMin -le 0) { $splitMin = 250 }
-            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin)
-            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | dir=$splitDir"
+            $clusterCount = [int]$request.multipiece.expected_piece_count
+            if ($clusterCount -lt 0) { $clusterCount = 0 }
+            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount)
+            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | dir=$splitDir"
           }
           $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
           if ($process.ExitCode -ne 0) {
