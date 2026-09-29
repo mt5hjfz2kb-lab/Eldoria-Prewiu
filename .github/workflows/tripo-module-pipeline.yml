@@ -356,6 +356,15 @@ jobs:
           }
           Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
           $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
+          if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
+            $splitDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
+            Remove-Item $splitDir -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Force $splitDir | Out-Null
+            $splitMin = [int]$request.multipiece.min_component_triangles
+            if ($splitMin -le 0) { $splitMin = 250 }
+            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin)
+            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | dir=$splitDir"
+          }
           $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
           if ($process.ExitCode -ne 0) {
             if (Test-Path $log) { Get-Content $log -Tail 240 }
@@ -407,6 +416,38 @@ jobs:
             throw 'Missing/empty canonical module metrics.json'
           }
           Get-Content $metrics
+
+      - name: Execute isolated Unity multipiece gate
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -eq $request.multipiece -or -not [bool]$request.multipiece.enabled) {
+            Write-Host 'MULTIPIECE_REVIEW_DISABLED'
+            exit 0
+          }
+          $folder = "$env:GITHUB_WORKSPACE\Unity\TripoMultipieceReviewCaptures"
+          $log = "$env:RUNNER_TEMP\Eldoria-TripoMultipiece.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoMultipieceReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(540000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw 'Multipiece Unity gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw "Multipiece Unity gate failed: $($process.ExitCode)"
+          }
+          foreach ($name in @('overview-textured.png','front-diagnostic.png','close-oblique.png','metrics.json')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) {
+              throw "Missing/empty multipiece evidence: $name"
+            }
+          }
+          Get-Content (Join-Path $folder 'metrics.json')
 
       - name: Build canonical asset manifest evidence
         if: always() && steps.request.outputs.enabled == 'true'
@@ -474,7 +515,9 @@ jobs:
           name: eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}
           path: |
             Unity/TripoGenericModuleReviewCaptures/*
+            Unity/TripoMultipieceReviewCaptures/*
             Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_UnderReview_50K.glb
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/MultiPiece/*.glb
             pipeline/tripo-module-request.json
             Unity/TripoModuleReviewConfig.json
             ${{ runner.temp }}/tripo-module-source.txt
@@ -484,6 +527,7 @@ jobs:
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/tripo-module-blender-error.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
+            ${{ runner.temp }}/Eldoria-TripoMultipiece.log
             ${{ runner.temp }}/eldoria-asset-manifest.json
           if-no-files-found: warn
 
