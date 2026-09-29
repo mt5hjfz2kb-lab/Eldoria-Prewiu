@@ -304,12 +304,7 @@ namespace Eldoria.Presentation
                         : "Aldric: «Ya tenemos madera. Ahora necesitamos una guarnición que pueda mantener abierta la ruta.»")
                     : (s.SawmillLevel>0 ? "El fuego vuelve a la madera. La corrupción aún se ve en la frontera."
                         : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»"))
-                : (s.ForestRemaining>0 ? "Bosque: "+s.ForestRemaining+" madera. ":"Bosque agotado. ")
-                    +(s.BastionLevel>=2
-                        ? (s.EngendroDefeated?"El Engendro ha caído. ":"Engendro: VIDA 760, DEF 72. ")
-                        : (s.ScoutDefeated?"La ruta corrupta está despejada. ":"Explorador: VIDA 620, DEF 64. "))
-                    +march+"\nTu marcha: ATQ "+expedition.Attack+" · DEF "+expedition.Defense+" · VIDA "+expedition.Health+
-                    (string.IsNullOrEmpty(s.LastBattleReason)?"":"\nInforme: "+s.LastBattleReason);
+                : FrontierDescription(s,march,expedition);
             message.text=string.IsNullOrEmpty(feedback)?
                 (s.EngendroDefeated?"Bastión II asegurado. La Brecha sigue siendo una amenaza.":
                  s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
@@ -317,6 +312,27 @@ namespace Eldoria.Presentation
                  "Toca un objetivo o usa los botones para enviar la Marcha."):feedback;
             RefreshClock();
         }
+        string FrontierDescription(PlayerState s,string march,CombatStats expedition)
+        {
+            string text=(s.ForestRemaining>0 ? "Bosque: "+s.ForestRemaining+" madera. ":"Bosque agotado. ")
+                +(s.BastionLevel>=2
+                    ? (s.EngendroDefeated?"El Engendro ha caído. ":"Engendro: VIDA 760, DEF 72. ")
+                    : (s.ScoutDefeated?"La ruta corrupta está despejada. ":"Explorador: VIDA 620, DEF 64. "))
+                +march+"\nTu marcha: ATQ "+expedition.Attack+" · DEF "+expedition.Defense+" · VIDA "+expedition.Health;
+            var r=s.LastBattleReport;
+            if(r!=null&&!string.IsNullOrEmpty(r.TargetId))
+            {
+                string target=r.TargetId=="engendro-valoria"?"Engendro":"Explorador corrupto";
+                string reward=r.Won&&(r.RewardWood>0||r.RewardStone>0)
+                    ?" · Recompensa "+r.RewardWood+" M / "+r.RewardStone+" P":"";
+                text+="\nÚLTIMO COMBATE · "+target+" · "+(r.Won?"VICTORIA":"DERROTA")+
+                    "\nAldric + "+r.Troops+" arqueros · Poder "+r.PlayerPower+
+                    " · "+r.Rounds+" rondas · Vida restante "+r.RemainingHealth+reward+
+                    (string.IsNullOrEmpty(r.Reason)?"":"\n"+r.Reason);
+            }
+            return text;
+        }
+
         void RefreshClock()
         {
             if(message==null)return;
