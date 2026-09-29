@@ -75,6 +75,7 @@ jobs:
           $process.Refresh()
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
           $expected=@(
+            'valoria-before-19.png','valoria-before-12.png','valoria-before-9.png','valoria-before-mobile.png','valoria-west-before-12.png','valoria-west-before-mobile.png','valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','valoria-west-after-12.png','valoria-west-after-mobile.png','valoria-wedge-evidence.json','valoria-wedge-metrics.json',
             'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
             'formula-sawmill-12.png','formula-sawmill-9.png',
             'formula-barracks-12.png','formula-barracks-9.png',

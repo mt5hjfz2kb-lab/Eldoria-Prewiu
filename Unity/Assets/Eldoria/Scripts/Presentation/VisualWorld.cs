@@ -7,6 +7,7 @@ namespace Eldoria.Presentation
     // Original procedural study: provisional geometry/materials, no inherited web art or unlicensed assets.
     public static class VisualWorld
     {
+        public static bool VisualIntegrationEnabled = true;
         static readonly Color Stone = new Color(.34f,.36f,.37f), Deep = new Color(.10f,.12f,.13f);
         static readonly Color WarmStone = new Color(.46f,.43f,.37f), Timber = new Color(.24f,.16f,.11f);
         static readonly Color Earth = new Color(.22f,.19f,.15f), Pine = new Color(.10f,.18f,.14f);
@@ -85,6 +86,11 @@ namespace Eldoria.Presentation
             // Procedural primitives are created at the origin and then positioned/scaled.
             // Force the physics world to ingest those transforms before any same-frame
             // world click or PlayMode gate queries Collider.bounds / raycasts.
+            if(VisualIntegrationEnabled)
+            {
+                if(city)ProductionVisualIntegration.City(state);
+                else ProductionVisualIntegration.World(state);
+            }
             Physics.SyncTransforms();
         }
         static void PlayableDistrictSkeleton(PlayerState state)

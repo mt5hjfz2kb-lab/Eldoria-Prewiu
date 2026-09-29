@@ -77,6 +77,7 @@ jobs:
           $process.Refresh()
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "World Map Visual Formula gate failed: $($process.ExitCode)" }
           $expected=@(
+            'world-before-18.png','world-before-14.png','world-before-10.png','world-before-7.png','world-before-mobile.png','world-threat-before-mobile.png','world-after-18.png','world-after-14.png','world-after-10.png','world-after-7.png','world-after-mobile.png','world-threat-after-mobile.png','world-wedge-evidence.json',
             'frontier-overview-18.png','frontier-overview-14.png','frontier-overview-10.png','frontier-overview-7.png','frontier-overview-mobile.png',
             'quarry-kit-10.png','quarry-kit-7.png','quarry-kit-mobile.png',
             'route-kit-10.png','route-kit-7.png','route-kit-mobile.png',

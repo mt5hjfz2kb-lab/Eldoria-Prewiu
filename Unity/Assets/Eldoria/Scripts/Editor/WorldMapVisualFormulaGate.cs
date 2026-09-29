@@ -11,6 +11,7 @@ namespace Eldoria.EditorTools
     {
         public static void Capture()
         {
+            CaptureMatchedWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var state=new PlayerState
@@ -151,6 +152,37 @@ namespace Eldoria.EditorTools
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
             UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static void CaptureMatchedWedge()
+        {
+            const string folder="WorldMapVisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            string baseline=null;
+            foreach(bool enabled in new[]{false,true})
+            {
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                SceneSetup.SetupRenderPipeline();
+                VisualWorld.VisualIntegrationEnabled=enabled;
+                VisualWorld.Create(false,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true,March=new MarchState{Phase="outbound",TargetId="forest-valoria",Troops=new ArmyRoster{ArcherT1=8}}});
+                var signature=ValoriaVisualFormulaGate.CollisionSignature();
+                if(!enabled)baseline=signature;
+                else if(signature!=baseline)throw new System.Exception("4X visual integration altered authoritative colliders/hotspots.");
+                var camera=Camera.main;string label=enabled?"after":"before";
+                foreach(float zoom in new[]{18f,14f,10f,7f})
+                    Save(camera,folder+"/world-"+label+"-"+zoom+".png",new Vector3(20,24,-21),new Vector3(0,0,1),zoom,1280,720);
+                Save(camera,folder+"/world-"+label+"-mobile.png",new Vector3(20,24,-21),new Vector3(0,0,1),14,390,844);
+                var shift=new Vector3(6,0,5);
+                Save(camera,folder+"/world-threat-"+label+"-mobile.png",new Vector3(20,24,-21)+shift,new Vector3(0,0,1)+shift,14,390,844);
+                var root=GameObject.Find("Frontier · integrated 4X visual layer");
+                if(enabled)
+                {
+                    if(root==null)throw new System.Exception("4X visual layer missing.");
+                    foreach(var c in root.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("4X visual collider enabled.");
+                    File.WriteAllText(folder+"/world-wedge-evidence.json","{\"camera_matched\":true,\"state_bastion\":3,\"collider_hotspot_signature_equal\":true,\"placeholder_families\":[\"Player City Kit v1\",\"Beast Kit v1\",\"March Representation Kit v1\"],\"tripo_credits\":0}");
+                }
+            }
+            VisualWorld.VisualIntegrationEnabled=true;
         }
 
         static void CaptureNatureStarterCandidates(string folder)

@@ -14,6 +14,7 @@ namespace Eldoria.EditorTools
     {
         public static void Capture()
         {
+            CaptureMatchedWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -73,6 +74,50 @@ namespace Eldoria.EditorTools
             WriteMaterialEvidence(folder + "/formula-materials.json");
             Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
             UnityEditor.EditorApplication.Exit(0);
+        }
+
+        public static string CollisionSignature()
+        {
+            Physics.SyncTransforms();
+            var values=new List<string>();
+            foreach(var c in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+            {
+                if(!c.enabled||!c.gameObject.activeInHierarchy)continue;
+                var h=c.GetComponent<WorldHotspot>();
+                values.Add(c.gameObject.name+"|"+c.GetType().Name+"|"+c.transform.position.ToString("F4")+"|"+c.bounds.center.ToString("F4")+"|"+c.bounds.size.ToString("F4")+"|"+(h!=null?h.Id:""));
+            }
+            values.Sort(System.StringComparer.Ordinal);
+            return string.Join("\n",values);
+        }
+        static void CaptureMatchedWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);string baseline=null;
+            foreach(bool enabled in new[]{false,true})
+            {
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                SceneSetup.SetupRenderPipeline();VisualWorld.VisualIntegrationEnabled=enabled;
+                VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+                var signature=CollisionSignature();
+                if(!enabled)baseline=signature;
+                else if(signature!=baseline)throw new System.Exception("Valoria visual integration altered certified colliders/hotspots.");
+                var camera=Camera.main;string label=enabled?"after":"before";
+                var position=new Vector3(18.2f,14.6f,-25.8f);var target=new Vector3(0,3.15f,5.8f);
+                foreach(float zoom in new[]{19f,12f,9f})Save(camera,folder+"/valoria-"+label+"-"+zoom+".png",position,target,zoom,1280,720);
+                Save(camera,folder+"/valoria-"+label+"-mobile.png",position,target,12,390,844);
+                var west=new Vector3(-13,-1.25f,-4.4f);
+                Save(camera,folder+"/valoria-west-"+label+"-12.png",position+west,target+west,12,1280,720);
+                Save(camera,folder+"/valoria-west-"+label+"-mobile.png",position+west,target+west,12,390,844);
+                if(enabled)
+                {
+                    var root=GameObject.Find("Valoria · integrated construction visual layer");
+                    if(root==null)throw new System.Exception("Valoria construction layer missing.");
+                    foreach(var c in root.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Valoria visual collider enabled.");
+                    File.WriteAllText(folder+"/valoria-wedge-evidence.json","{\"camera_matched\":true,\"state_bastion\":3,\"collider_hotspot_signature_equal\":true,\"stonekit_piece_count\":6,\"tripo_credits\":0}");
+                    WriteMetrics(folder+"/valoria-wedge-metrics.json");
+                }
+            }
+            VisualWorld.VisualIntegrationEnabled=true;
         }
 
         public static void CaptureRescueDistrict()

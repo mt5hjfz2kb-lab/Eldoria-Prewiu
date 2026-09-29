@@ -2,16 +2,9 @@ name: World Pack 4X Comparison
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/world-pack-4x-comparison.yml'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/WorldPack4XComparisonGate.cs'
-      - 'docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md'
 
 permissions:
-  contents: write
-  actions: read
+  contents: read
 
 concurrency:
   group: eldoria-world-pack-4x-comparison
@@ -72,12 +65,6 @@ jobs:
         run: |
           $root=Join-Path $env:RUNNER_TEMP 'EldoriaWorldPack4X'
           $project=Join-Path $root 'Unity'
-          $manifest=Join-Path $project 'WorldPack4XComparisonCaptures\reusable-inventory-files.txt'
-          if(Test-Path $manifest){
-            "WORLD_COMPARE_PROJECT=$project" | Out-File $env:GITHUB_ENV -Append
-            "WORLD_COMPARE_REUSE=true" | Out-File $env:GITHUB_ENV -Append
-            exit 0
-          }
           Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $root | Out-Null
           & robocopy.exe "$env:GITHUB_WORKSPACE\Unity" $project /E /NFL /NDL /NJH /NJS /NP /XD Library Temp Obj Logs Build Builds WebGLBuild
@@ -102,7 +89,6 @@ jobs:
           "HOLOTNA_URP_PACKAGE=$nested" | Out-File $env:GITHUB_ENV -Append
 
       - name: Expand Unity packages into isolated project
-        if: env.WORLD_COMPARE_REUSE != 'true'
         shell: powershell
         run: |
           function Expand-UnityPackage([string]$package,[string]$label){
@@ -154,7 +140,6 @@ jobs:
           Expand-UnityPackage $env:HOLOTNA_URP_PACKAGE 'Holotna'
 
       - name: Capture fixed-camera 4X comparison
-        if: env.WORLD_COMPARE_REUSE != 'true'
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack4XComparison.log'
@@ -214,47 +199,6 @@ jobs:
             $p=Join-Path $env:RUNNER_TEMP $name
             if(Test-Path $p){Copy-Item $p $dest -Force}
           }
-
-      - uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ github.token }}
-          run-id: 36633120644
-          artifact-ids: 11063878628
-          path: ${{ runner.temp }}/sk
-          merge-multiple: true
-
-      - name: Preserve selected reusable source inventory
-        shell: powershell
-        run: |
-          $list=Join-Path $env:WORLD_COMPARE_PROJECT 'WorldPack4XComparisonCaptures\reusable-inventory-files.txt'
-          if(-not (Test-Path $list)){throw 'Missing selected inventory manifest'}
-          foreach($relative in Get-Content $list){
-            $source=Join-Path $env:WORLD_COMPARE_PROJECT $relative
-            $dest=Join-Path "$env:GITHUB_WORKSPACE\Unity" $relative
-            New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
-            Copy-Item $source $dest -Force
-            if(Test-Path ($source+'.meta')){Copy-Item ($source+'.meta') ($dest+'.meta') -Force}
-          }
-          $stone=Join-Path $env:RUNNER_TEMP 'sk'
-          $pieces=@(Get-ChildItem $stone -Recurse -Filter 'piece_*.glb' | Sort-Object Name)
-          if($pieces.Count -ne 6){throw "Expected 6 certified StoneKit pieces, got $($pieces.Count)"}
-          $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity\Assets\Eldoria\Resources\Valoria\StoneKit'
-          New-Item -ItemType Directory -Path $dest -Force | Out-Null
-          foreach($piece in $pieces){Copy-Item $piece.FullName (Join-Path $dest $piece.Name) -Force}
-          $paths=@('Unity/Assets/Eldoria/Resources/Valoria/StoneKit','Unity/Assets/Eldoria/Resources/WorldInventory' ,'Unity/Assets/Holotna','Unity/Assets/WorldPackCompare/Quaternius')
-          git add -- $paths
-          git diff --cached --quiet
-          if($LASTEXITCODE -ne 0){
-            git config user.name 'Eldoria asset pipeline'
-            git config user.email 'actions@users.noreply.github.com'
-            git commit -m 'art: preserve selected zero-cost world inventory with source GUIDs'
-            git fetch origin main
-            git rebase origin/main
-            if($LASTEXITCODE -ne 0){throw 'Inventory rebase requires review'}
-            git push origin HEAD:main
-            if($LASTEXITCODE -ne 0){throw 'Inventory push failed'}
-          }
-          $global:LASTEXITCODE=0
 
       - uses: actions/upload-artifact@v4
         if: always()
