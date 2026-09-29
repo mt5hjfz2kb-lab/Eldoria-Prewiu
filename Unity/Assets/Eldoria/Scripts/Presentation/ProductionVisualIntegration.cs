@@ -169,8 +169,7 @@ namespace Eldoria.Presentation
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
-            Piece("Valoria · rescued hero west anchor",tower,new Vector3(-3.3f,2.55f,8.5f),3.5f,7.2f,18,new Color(.72f,.74f,.70f));
-            Piece("Valoria · rescued hero rear anchor",tower,new Vector3(1.9f,2.55f,10.2f),3.1f,6.1f,196,new Color(.66f,.69f,.66f));
+            Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,2.55f,5.8f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             Finish();
         }
 
@@ -203,14 +202,14 @@ namespace Eldoria.Presentation
             var p=new Vector3(0,3.0f,7.25f);
             foreach(var q in new[]{new Vector4(-3.28f,-2.48f,2.05f,5.85f),new Vector4(3.18f,-2.45f,1.82f,4.95f),
                 new Vector4(-2.55f,2.25f,1.85f,6.75f),new Vector4(2.45f,1.95f,1.65f,5.45f),new Vector4(-.62f,2.28f,1.62f,6.95f)})
-                Imported("Valoria · restored masonry tower","MegaTower",p+new Vector3(q.x,.08f,q.y),q.z,q.w,0,new Color(.52f,.51f,.45f),false);
-            Imported("Valoria · restored entry arch","MegaGate",p+new Vector3(0,.12f,-3.08f),2.35f,3.15f,0,new Color(.52f,.51f,.45f),false);
+                Imported("Valoria · restored masonry tower","MegaTower",p+new Vector3(q.x,.08f,q.y),q.z,q.w,0,new Color(.30f,.29f,.25f),false);
+            Imported("Valoria · restored entry arch","MegaGate",p+new Vector3(0,.12f,-3.08f),2.35f,3.15f,0,new Color(.30f,.29f,.25f),false);
             foreach(float x in new[]{-2.15f,2.15f})
-                Imported("Valoria · restored curtain masonry","MegaWall",p+new Vector3(x,.12f,-3.02f),2.55f,3.05f,0,new Color(.52f,.51f,.45f),false);
+                Imported("Valoria · restored curtain masonry","MegaWall",p+new Vector3(x,.12f,-3.02f),2.55f,3.05f,0,new Color(.30f,.29f,.25f),false);
             foreach(float x in new[]{-1.55f,1.55f})
-                Imported("Valoria · keep masonry facing","MegaWall",p+new Vector3(x,2.42f,-1.28f),3f,2.62f,0,new Color(.48f,.47f,.41f),false);
+                Imported("Valoria · keep masonry facing","MegaWall",p+new Vector3(x,2.42f,-1.28f),3f,2.62f,0,new Color(.29f,.28f,.24f),false);
             foreach(float x in new[]{-2.25f,2.25f})
-                Imported("Valoria · keep side masonry","MegaWall",p+new Vector3(x,2.32f,1.05f),2.75f,2.48f,90,new Color(.48f,.47f,.41f),false);
+                Imported("Valoria · keep side masonry","MegaWall",p+new Vector3(x,2.32f,1.05f),2.75f,2.48f,90,new Color(.29f,.28f,.24f),false);
             Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(-4.15f,.10f,3.75f),4.2f,3.15f,16,new Color(.42f,.43f,.39f),false);
             Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(3.75f,.10f,4.20f),3.65f,2.85f,-18,new Color(.42f,.43f,.39f),false);
         }
@@ -273,6 +272,7 @@ namespace Eldoria.Presentation
             if(source==null)return;
             var go=ValoriaKit.BenchmarkPieceModulated(name,source,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
             if(go!=null)go.transform.SetParent(root,true);
+            else if(name.Contains("rescued hero"))throw new InvalidOperationException("Recovered hero geometry has empty renderer bounds");
         }
         static void Normalize(GameObject go,Color tint,bool foliage,string resource)
         {
@@ -299,6 +299,10 @@ namespace Eldoria.Presentation
                         if(m.HasProperty("_Primary_Color"))m.SetColor("_Primary_Color",primary.linear);
                         if(m.HasProperty("_Secondary_Color"))m.SetColor("_Secondary_Color",(foliage?new Color(.24f,.20f,.12f):tint*.72f).linear);
                         if(m.HasProperty("_Tertiary_Color"))m.SetColor("_Tertiary_Color",(tint*.48f).linear);
+                        if(foliage)
+                        {
+                            foreach(string wind in new[]{"_Bend_Strength","_Bend_Distortion","_Wiggle_Strength"})if(m.HasProperty(wind))m.SetFloat(wind,0);
+                        }
                         adapted[key]=m;mats[i]=m;continue;
                     }
                     else
@@ -380,9 +384,9 @@ namespace Eldoria.Presentation
         }
         static void Ruin(Vector3 p)
         {
-            Imported("4X · neutral ruin arch","Arch_Gothic",p,2.2f,2.8f,-12,new Color(.58f,.56f,.47f),false);
-            Imported("4X · neutral ruin wall","Wall_Broken",p+new Vector3(1.1f,0,.6f),1.85f,1.2f,78,new Color(.52f,.52f,.45f),false);
-            Imported("4X · neutral ruin column","Column_Round",p+new Vector3(-1.1f,0,.3f),.5f,1.35f,0,new Color(.57f,.56f,.48f),false);
+            Imported("4X · neutral ruin arch","Arch_Gothic",p,2.2f,2.8f,-12,new Color(.36f,.35f,.29f),false);
+            Imported("4X · neutral ruin wall","Wall_Broken",p+new Vector3(1.1f,0,.6f),1.85f,1.2f,78,new Color(.32f,.32f,.27f),false);
+            Imported("4X · neutral ruin column","Column_Round",p+new Vector3(-1.1f,0,.3f),.5f,1.35f,0,new Color(.35f,.34f,.29f),false);
         }
         static void Beast(string name,Vector3 p,bool boar)
         {
