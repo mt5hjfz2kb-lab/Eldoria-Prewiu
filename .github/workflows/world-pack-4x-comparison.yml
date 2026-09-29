@@ -133,7 +133,7 @@ jobs:
                   New-Item -ItemType Directory -Path $dest -Force -ErrorAction Stop | Out-Null
                 }
                 if(Test-Path $meta){ Copy-Item $meta ($dest+'.meta') -Force -ErrorAction Stop }
-                $script:copied++
+                $copied++
               } catch {
                 Write-Warning "UNITYPACKAGE_SKIP_COPY_ERROR|$label|$relative|$($_.Exception.Message)"
               }
