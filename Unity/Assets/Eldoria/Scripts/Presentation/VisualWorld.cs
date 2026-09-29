@@ -20,10 +20,10 @@ namespace Eldoria.Presentation
                     UnityEngine.Object.DestroyImmediate(oldCamera.gameObject);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.92f,.91f,.87f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.54f,.56f,.57f):new Color(.76f,.75f,.72f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.64f,.66f,.65f):new Color(.46f,.46f,.44f);
-            RenderSettings.fogStartDistance=city?28:48; RenderSettings.fogEndDistance=city?62:140;
+            RenderSettings.fogColor = city?new Color(.46f,.49f,.51f):new Color(.46f,.46f,.44f);
+            RenderSettings.fogStartDistance=city?31:48; RenderSettings.fogEndDistance=city?68:140;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 10.2f : 14;
@@ -32,9 +32,9 @@ namespace Eldoria.Presentation
             cameraGo.transform.position = city ? new Vector3(18.2f,14.6f,-25.8f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,3.15f,5.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.88f,.74f):new Color(1.0f,.93f,.82f);
-            sun.intensity=city?1.95f:1.9f;
-            sun.transform.rotation=Quaternion.Euler(50,-32,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.48f:.55f;
+            sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.84f,.68f):new Color(1.0f,.93f,.82f);
+            sun.intensity=city?1.45f:1.9f;
+            sun.transform.rotation=Quaternion.Euler(city?52f:50f,city?-34f:-32f,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.68f:.55f;
             var worldGround=Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.285f,.265f,.215f):Earth);
             if(city)
