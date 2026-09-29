@@ -45,18 +45,9 @@ namespace Eldoria.Presentation
                 worldGround.GetComponent<Renderer>().enabled=false;
                 IrregularGround("Valoria · valley floor",new Vector3(0,-.08f,4.0f),200f,180f,new Color(.305f,.295f,.265f));
             }
-            // Layered rock masses create a believable playable plateau instead of a flat board.
-            for(int i=0;i<(city?0:11);i++)
-            {
-                float x=-15+i*3.05f;
-                float h=1.4f+(i%4)*.55f;
-                Box("Cliff rim",new Vector3(x,-.05f,12.2f-(i%2)*.55f),new Vector3(3.3f,h,3.1f),Stone*.68f);
-            }
-            for(int i=0;i<(city?0:8);i++)
-            {
-                var rock=Box("Old imperial road",new Vector3(-1.2f+(i%2)*.28f,-.02f,-12+i*3.15f),new Vector3(2.7f,.16f,1.7f),WarmStone*.78f);
-                rock.transform.rotation=Quaternion.Euler(0,(i%2==0?7:-8),0);
-            }
+            // Frontier composition is authored inside Frontier(). Do not surround it with
+            // box-cliff or box-road primitives: the official owner captures showed those
+            // debug-like masses dominating the world wedge.
             if(city)
             {
                 // Keep nearby terrain controlled, but give the valley a real distant horizon.
@@ -84,7 +75,8 @@ namespace Eldoria.Presentation
             }
             else Frontier(state);
             if(city)ValoriaScar(new Vector3(14.8f,.05f,15.6f));
-            else Rift(new Vector3(9,1,8));
+            // Frontier() owns its restrained Breach scar. Do not stack the old neon shard portal
+            // over it; that read as a prototype prop in the official I-II captures.
 
             // Procedural primitives are created at the origin and then positioned/scaled.
             // Force the physics world to ingest those transforms before any same-frame
@@ -711,17 +703,22 @@ namespace Eldoria.Presentation
             IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.285f,.275f,.235f));
 
             // A worn march road gives immediate depth and a readable Valoria -> threat axis.
-            for(int i=0;i<11;i++)
+            // Keep it as overlapping authored earth/cobble, never a chain of rectangular box slabs.
+            for(int i=0;i<10;i++)
             {
-                float z=-6.7f+i*1.12f;
-                float x=(i%3==0?-.16f:(i%3==1?.10f:0f));
-                var slab=Box("Frontier · worn route "+(i+1),new Vector3(x,.10f,z),
-                    new Vector3(2.65f-(i%4)*.10f,.07f,1.22f),new Color(.31f,.305f,.275f));
-                slab.transform.rotation=Quaternion.Euler(0,(i%2==0?-3f:2f),0);
-                var slabCol=slab.GetComponent<Collider>();if(slabCol!=null)Object.Destroy(slabCol);
-                ValoriaKit.BenchmarkPieceTinted("Frontier · authored cobble "+(i+1),
-                    art!=null?art.SlavicCobbleRoad:null,new Vector3(x,.15f,z),
-                    2.55f,.13f,Quaternion.Euler(0,(i%2==0?-3f:2f),0),ValoriaKit.WarmStone*.70f);
+                float z=-6.5f+i*1.22f;
+                float x=(i%3==0?-.20f:(i%3==1?.12f:.02f));
+                float yaw=i%2==0?-5f:4f;
+                ValoriaKit.BenchmarkPieceModulated("Frontier · worn earth "+(i+1),
+                    art!=null?art.SlavicMudFlat:null,new Vector3(x,.085f,z),
+                    3.05f,.20f,Quaternion.Euler(0,yaw,0),new Color(.72f,.67f,.56f,1f));
+                ValoriaKit.BenchmarkPieceModulated("Frontier · authored cobble "+(i+1),
+                    art!=null?art.SlavicCobbleRoad:null,new Vector3(x,.105f,z),
+                    2.20f,.16f,Quaternion.Euler(0,yaw,0),new Color(.72f,.69f,.61f,1f));
+                if(i%2==1)
+                    ValoriaKit.BenchmarkPieceModulated("Frontier · verge stone "+(i+1),
+                        art!=null?art.SlavicFlatRock:null,new Vector3(x+(i%4==1?-1.18f:1.15f),.07f,z+.15f),
+                        .82f,.22f,Quaternion.Euler(0,31f+i*17f,0),new Color(.62f,.63f,.59f,1f));
             }
 
             // Forest resource pocket. The invisible hotspot remains the only gameplay target.
@@ -743,6 +740,14 @@ namespace Eldoria.Presentation
                     p,1.0f,.68f,Quaternion.Euler(0,(int)(p.x*31f)%360,0),new Color(.35f,.49f,.36f,1f));
             ValoriaKit.BenchmarkPiece("Frontier · stacked timber",art!=null?art.Firewood:null,
                 new Vector3(-4.25f,.12f,.45f),1.25f,.78f,Quaternion.Euler(0,-18f,0));
+            foreach(var p in new[]{
+                new Vector3(-8.65f,.03f,1.95f),new Vector3(-6.1f,.03f,3.35f),
+                new Vector3(-4.65f,.03f,1.65f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · tall forest pine",art!=null?art.SlavicTreeTall:null,
+                    p,1.55f,4.25f,Quaternion.Euler(0,(int)(p.z*47f)%360,0),new Color(.64f,.76f,.64f,1f));
+            foreach(var p in new[]{new Vector3(-7.8f,.05f,1.2f),new Vector3(-5.6f,.05f,2.5f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · forest moss",art!=null?art.SlavicMoss:null,
+                    p,1.7f,.28f,Quaternion.Euler(0,(int)(p.x*29f)%360,0),new Color(.62f,.72f,.58f,1f));
 
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
@@ -751,6 +756,10 @@ namespace Eldoria.Presentation
             ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
             ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
                 new Vector3(5.0f,.16f,-3.95f),2.15f,1.00f,Quaternion.Euler(0,8f,0),ValoriaKit.OldStone*.78f);
+            ValoriaKit.BenchmarkPieceModulated("Frontier · quarry boulder",art!=null?art.SlavicBoulder:null,
+                new Vector3(7.65f,.05f,-3.25f),1.65f,1.45f,Quaternion.Euler(0,23f,0),new Color(.74f,.73f,.68f,1f));
+            ValoriaKit.BenchmarkPieceModulated("Frontier · quarry ledge",art!=null?art.SlavicFlatRock:null,
+                new Vector3(5.55f,.06f,-1.05f),2.15f,.58f,Quaternion.Euler(0,-19f,0),new Color(.72f,.71f,.66f,1f));
             var quarryMarker=Box("Cantera de Valoria · visual reserve",new Vector3(6.5f,.28f,-2.1f),
                 new Vector3(3.7f,.18f,3.4f),new Color(.20f,.20f,.19f));
             quarryMarker.GetComponent<Renderer>().enabled=false;
@@ -782,17 +791,19 @@ namespace Eldoria.Presentation
                 var torso=Sphere("Engendro · corrupted torso",new Vector3(5.0f,1.18f,3.15f),
                     new Vector3(1.45f,1.10f,1.28f),defeated?Stone*.38f:new Color(.18f,.16f,.20f));
                 var tc=torso.GetComponent<Collider>();if(tc!=null)Object.Destroy(tc);
-                var carapace=Box("Engendro · stone carapace",new Vector3(5.0f,1.62f,3.08f),
-                    new Vector3(2.05f,.52f,1.52f),defeated?Stone*.34f:Deep*.72f);
-                carapace.transform.rotation=Quaternion.Euler(-8f,0,0);
-                var cc=carapace.GetComponent<Collider>();if(cc!=null)Object.Destroy(cc);
                 foreach(float x in new[]{-1f,1f})
                 {
-                    var limb=Cylinder("Engendro · forelimb",new Vector3(5.0f+x*.93f,.70f,2.90f),
-                        new Vector3(.22f,.90f,.22f),defeated?Stone*.32f:new Color(.13f,.14f,.15f),Quaternion.Euler(18f,0,x*18f));
+                    var shoulder=Sphere("Engendro · stone shoulder",new Vector3(5.0f+x*.68f,1.48f,3.02f),
+                        new Vector3(.88f,.76f,.82f),defeated?Stone*.34f:new Color(.16f,.17f,.19f));
+                    var shc=shoulder.GetComponent<Collider>();if(shc!=null)Object.Destroy(shc);
+                    var limb=Cylinder("Engendro · forelimb",new Vector3(5.0f+x*.83f,.68f,2.78f),
+                        new Vector3(.20f,.98f,.20f),defeated?Stone*.32f:new Color(.13f,.14f,.15f),Quaternion.Euler(22f,0,x*24f));
                     var lc=limb.GetComponent<Collider>();if(lc!=null)Object.Destroy(lc);
                 }
-                if(!defeated) Glow("Engendro · corruption core",new Vector3(5.0f,1.42f,2.48f),Violet,1.18f,3.5f);
+                var spine=Sphere("Engendro · fractured spine",new Vector3(5.0f,1.72f,3.18f),
+                    new Vector3(.86f,.62f,1.08f),defeated?Stone*.35f:new Color(.12f,.13f,.15f));
+                var spc=spine.GetComponent<Collider>();if(spc!=null)Object.Destroy(spc);
+                if(!defeated) Glow("Engendro · corruption core",new Vector3(5.0f,1.28f,2.50f),new Color(.48f,.22f,.62f),.72f,2.8f);
             }
             else
             {
