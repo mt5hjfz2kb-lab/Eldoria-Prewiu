@@ -94,6 +94,8 @@ namespace Eldoria.Presentation
         static void PlayableDistrictSkeleton(PlayerState state)
         {
             var art=ValoriaExternalAssetLibrary.Load();
+            var rescuedResidential=Resources.Load<GameObject>("Valoria/Rescued/ResidentialTerraceRock");
+            var rescuedSeam=Resources.Load<GameObject>("Valoria/Rescued/RockTerrainSeamFiller");
             // VALORIA PLAYABLE DISTRICT v1 — ART PASS 1
             // Frozen topology: continuous terrain -> L0 -> street -> vertical link -> L1 -> plots -> buildings.
             // Visual treatment may overlap/bury supports, but it must never redefine circulation or hotspot footprints.
@@ -220,12 +222,18 @@ namespace Eldoria.Presentation
             // ART PASS 2 — dedicated architecture inside the frozen plot envelopes.
             // Visual architecture stays separate from the certified interaction volumes below.
             ValoriaKit.SawmillArchitecture("Aserradero",new Vector3(-7.0f,.40f,-2.8f),state.SawmillLevel>0,Glow);
+            ValoriaKit.BenchmarkPieceTinted("VPD · rescued seam west",rescuedSeam,
+                new Vector3(-6.15f,.20f,-2.55f),3.10f,1.65f,Quaternion.Euler(0,28f,0),
+                new Color(.18f,.19f,.18f,1f));
             TagVisibleHotspots("Aserradero","sawmill");
             var mill=ValoriaKit.Block("Aserradero · target",new Vector3(-6.55f,1.68f,-3.75f),
                 new Vector3(3.75f,2.25f,1.15f),new Color(.2f,.2f,.2f));
             mill.AddComponent<WorldHotspot>().Id="sawmill"; mill.GetComponent<Renderer>().enabled=false;
 
             ValoriaKit.BarracksArchitecture("Cuartel",new Vector3(7.0f,.40f,-4.0f),state.BarracksLevel>0,Glow);
+            ValoriaKit.BenchmarkPieceTinted("VPD · rescued seam east",rescuedSeam,
+                new Vector3(5.85f,.20f,-3.75f),2.95f,1.55f,Quaternion.Euler(0,205f,0),
+                new Color(.18f,.19f,.18f,1f));
             TagVisibleHotspots("Cuartel","barracks");
             var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(7.55f,1.68f,-5.05f),
                 new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
@@ -237,8 +245,15 @@ namespace Eldoria.Presentation
                 new Vector3(5.4f,4.7f,1.35f),new Color(.2f,.2f,.2f));
             bastion.AddComponent<WorldHotspot>().Id="bastion"; bastion.GetComponent<Renderer>().enabled=false;
 
-            // Civil/economic upper plot reserved without filling every parcel.
-            ValoriaKit.House("VPD · upper civil house",new Vector3(-5.15f,l1+.34f,7.15f),
+            // Civil/economic upper plot: promote rescued certified geometry as visual-only art.
+            // Gameplay topology remains the invisible certified plot and independent route/hotspots.
+            ValoriaKit.BenchmarkPieceTinted("VPD · rescued seam residential",rescuedSeam,
+                new Vector3(-5.15f,l1+.15f,7.15f),3.55f,1.75f,Quaternion.Euler(0,112f,0),
+                new Color(.18f,.19f,.18f,1f));
+            var rescuedCivil=ValoriaKit.BenchmarkPiece("VPD · rescued upper civil residence",rescuedResidential,
+                new Vector3(-5.15f,l1+.34f,7.15f),4.35f,4.60f,Quaternion.identity);
+            if(rescuedCivil!=null)StyleRescuedResidential(rescuedCivil);
+            else ValoriaKit.House("VPD · upper civil house fallback",new Vector3(-5.15f,l1+.34f,7.15f),
                 new Vector3(2.7f,1.35f,2.4f),true,Glow);
             ValoriaKit.House("VPD · upper dwelling",new Vector3(5.15f,l1+.34f,7.15f),
                 new Vector3(2.55f,1.30f,2.25f),true,Glow);
@@ -598,6 +613,32 @@ namespace Eldoria.Presentation
             Glow("Gate torch R",new Vector3(2.85f,2.0f,-4.4f),Amber,1.25f,3.0f);
             Glow("Bastion inhabited warmth",new Vector3(0,4.15f,3.45f),Amber,1.45f,7.2f);
         }
+        static void StyleRescuedResidential(GameObject root)
+        {
+            if(root==null)return;
+            foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var source=mats[i];
+                    var lower=(source!=null?source.name:"").ToLowerInvariant();
+                    Color color;
+                    if(lower.Contains("stone")||(!lower.Contains("rock")&&!lower.Contains("roof")&&!lower.Contains("timber")&&i==0))
+                        color=new Color(.43f,.36f,.27f,1f);
+                    else if(lower.Contains("rock")||i==1)
+                        color=new Color(.15f,.16f,.15f,1f);
+                    else if(lower.Contains("roof")||i==2)
+                        color=new Color(.085f,.095f,.105f,1f);
+                    else if(lower.Contains("timber")||i==3)
+                        color=new Color(.34f,.18f,.075f,1f);
+                    else color=new Color(.25f,.24f,.21f,1f);
+                    mats[i]=ValoriaKit.Material(color);
+                }
+                renderer.sharedMaterials=mats;
+            }
+        }
+
         static void Frontier(PlayerState state)
         {
             for(int i=0;i<15;i++)
