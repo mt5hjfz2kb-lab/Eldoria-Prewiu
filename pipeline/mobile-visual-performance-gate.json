@@ -30,7 +30,7 @@
   ],
   "thresholds": {
     "status": "TBD_FROM_TARGET_DEVICE_PROFILE",
-    "note": "No FPS, memory or triangle limit is canonical until measured on representative target hardware."
+    "note": "No FPS, memory or triangle limit is canonical until measured on representative target hardware. Current physical profiling is blocked because Unity Android Build Support is not installed on the Windows runner."
   },
   "updated": "2026-09-29",
   "desktop_editor_baseline": {
@@ -84,5 +84,24 @@
       "lights": 8,
       "note": "This is a real Unity editor/capture scene-complexity baseline, not a target-device performance result. It must be used as the before-state for mobile profiling, not as an FPS or memory threshold."
     }
-  ]
+  ],
+  "mobile_runner_readiness": {
+    "status": "BLOCKED_ANDROID_BUILD_SUPPORT_NOT_INSTALLED",
+    "audited": "2026-09-29",
+    "workflow_run_id": 36549512711,
+    "job_id": 109344102250,
+    "runner": "DESKTOP-R10PE55",
+    "unity_editor": "6000.3.23f1",
+    "android_build_support": false,
+    "adb_path": null,
+    "physical_device_connected": false,
+    "evidence": "Audit mobile readiness step completed SUCCESS; log reports android_build_support=false and warns that Unity Android Build Support is not installed.",
+    "blocker": "Install Unity Android Build Support for 6000.3.23f1 on the Windows runner before Android build/device profiling can start.",
+    "after_install": [
+      "Re-run the existing Unity slice workflow; do not create a separate mobile pipeline just for prerequisite detection.",
+      "Confirm bundled SDK/NDK/JDK and adb are present.",
+      "Connect and authorize a representative Android phone via ADB.",
+      "Only then collect FPS/frame time, memory, batches/draw calls, resolution and sustained thermal notes for the canonical scenarios."
+    ]
+  }
 }
