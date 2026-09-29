@@ -41,7 +41,10 @@ namespace Eldoria.EditorTools
             var officialPosition=new Vector3(20f,24f,-21f);
             var officialTarget=new Vector3(0f,0f,1f);
 
+            Save(camera,folder+"/frontier-overview-18.png",officialPosition,officialTarget,18f,1280,720);
             Save(camera,folder+"/frontier-overview-14.png",officialPosition,officialTarget,14f,1280,720);
+            Save(camera,folder+"/frontier-overview-10.png",officialPosition,officialTarget,10f,1280,720);
+            Save(camera,folder+"/frontier-overview-7.png",officialPosition,officialTarget,7f,1280,720);
             Save(camera,folder+"/frontier-overview-mobile.png",officialPosition,officialTarget,14f,390,844);
 
             var quarryShift=new Vector3(6.2f,-1.1f,-3.0f);
