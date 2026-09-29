@@ -374,9 +374,8 @@ namespace Eldoria.Presentation
         void CreateHud()
         {
             if(EventSystem.current==null)
-            {
-                var ev=new GameObject("UI events",typeof(EventSystem),typeof(InputSystemUIInputModule));
-            }
+                new GameObject("UI events",typeof(EventSystem),typeof(InputSystemUIInputModule));
+
             var canvasGo=new GameObject("Eldoria HUD",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
             var canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=100;
             var scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -385,38 +384,61 @@ namespace Eldoria.Presentation
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
 
-            // Owner-facing HUD: one compact fantasy frame around the world, not a QA control wall.
-            var top=Panel("Kingdom header",safe,new Color(.035f,.050f,.070f,.90f),104,true);
-            heading=Label("Heading",top,15,new Color(.96f,.82f,.55f),20);
-            resources=Label("Resources",top,11,new Color(.96f,.96f,.92f),16);
-            power=Label("Power",top,10,new Color(.72f,.82f,.90f),16);
-            objective=Label("Objective",top,11,new Color(.98f,.88f,.66f),38);
+            // Port the canonical v0.26.4 reference grammar into Unity:
+            // compact kingdom header, separate quest card, floating objective dock, fixed bottom navigation.
+            var top=HorizontalPanel("Reference topbar",safe,new Color(.04f,.065f,.085f,.96f),68,true);
+            heading=Label("Heading",top,11,new Color(.95f,.82f,.56f),44);
+            heading.GetComponent<LayoutElement>().preferredWidth=92;
+            resources=ChipLabel("Resources",top,10,new Color(.95f,.94f,.90f),new Color(.025f,.04f,.055f,.92f),146);
+            power=ChipLabel("Power",top,10,new Color(.95f,.94f,.90f),new Color(.085f,.075f,.045f,.96f),94);
 
-            var bottom=Panel("Decision rail",safe,new Color(.035f,.050f,.070f,.91f),126,false);
-            description=Label("Story and world",bottom,10,new Color(.91f,.92f,.90f),32);
-            var row1=Row("Primary objective action",bottom);
+            var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
+            var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
+            qrt.anchorMin=qrt.anchorMax=new Vector2(0,1);qrt.pivot=new Vector2(0,1);
+            qrt.sizeDelta=new Vector2(300,66);qrt.anchoredPosition=new Vector2(10,-78);
+            quest.GetComponent<Image>().color=new Color(.035f,.055f,.075f,.90f);
+            var qLayout=quest.GetComponent<VerticalLayoutGroup>();qLayout.padding=new RectOffset(11,11,7,7);
+            qLayout.spacing=1;qLayout.childControlHeight=true;qLayout.childForceExpandHeight=false;
+            var kicker=Label("Quest kicker",quest.transform,7,new Color(.78f,.68f,.45f),12);
+            kicker.text="OBJETIVO ACTUAL";kicker.alignment=TextAnchor.MiddleLeft;
+            objective=Label("Objective",quest.transform,10,new Color(.88f,.90f,.90f),40);
+
+            var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),68,false);
+            var cityNav=Button(nav,"CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
+            var worldNav=Button(nav,"MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
+            var heroesNav=Button(nav,"HÉROES",()=>{});
+            var chestNav=Button(nav,"ARCÓN",()=>{});
+            var codexNav=Button(nav,"CÓDICE",()=>{});
+            heroesNav.interactable=false;chestNav.interactable=false;codexNav.interactable=false;
+            StyleNavButton(cityNav,city);StyleNavButton(worldNav,!city);
+            StyleNavButton(heroesNav,false);StyleNavButton(chestNav,false);StyleNavButton(codexNav,false);
+
+            var dock=new GameObject("World objective dock",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
+            var drt=dock.GetComponent<RectTransform>();drt.SetParent(safe,false);
+            drt.anchorMin=drt.anchorMax=new Vector2(.5f,0);drt.pivot=new Vector2(.5f,0);
+            drt.sizeDelta=new Vector2(360,112);drt.anchoredPosition=new Vector2(0,78);
+            dock.GetComponent<Image>().color=new Color(.035f,.055f,.075f,.95f);
+            var dLayout=dock.GetComponent<VerticalLayoutGroup>();dLayout.padding=new RectOffset(10,10,8,8);
+            dLayout.spacing=4;dLayout.childControlHeight=true;dLayout.childForceExpandHeight=false;
+            description=Label("Story and world",dock.transform,9,new Color(.86f,.88f,.88f),32);
+            var row1=Row("Primary objective action",dock.transform);
+            row1.GetComponent<LayoutElement>().preferredHeight=42;
             primaryAction=Button(row1,"CONTINUAR",InvokePrimaryObjective);
+            primaryAction.GetComponent<LayoutElement>().minHeight=42;
             primaryActionText=primaryAction.GetComponentInChildren<Text>();
+            message=Label("Feedback",dock.transform,8,new Color(.91f,.73f,.48f),18);
 
-            var row2=Row("Navigation",bottom);
-            if(city)
-            {
-                Button(row2,"MUNDO",()=>SceneManager.LoadScene("Frontier"));
-                Button(row2,"−",()=>Zoom(1));
-                Button(row2,"+",()=>Zoom(-1));
-                Button(row2,"CENTRAR",RecenterCamera);
-                if(SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.QaFastId)
-                    Button(row2,"RESET QA",ResetQaFreshSave);
-            }
-            else
-            {
-                Button(row2,"VALORIA",()=>SceneManager.LoadScene("Valoria"));
-                Button(row2,"−",()=>Zoom(1));
-                Button(row2,"+",()=>Zoom(-1));
-            }
-            message=Label("Feedback",bottom,9,new Color(.91f,.73f,.48f),22);
             ConfigurePrimaryAction(gateway.Snapshot());
             CreateBuildingPanel(canvasGo.transform);
+        }
+
+        static void StyleNavButton(Button button,bool active)
+        {
+            if(button==null)return;
+            var image=button.GetComponent<Image>();
+            var text=button.GetComponentInChildren<Text>();
+            image.color=active?new Color(.085f,.11f,.14f,.98f):new Color(.035f,.055f,.075f,.01f);
+            if(text!=null)text.color=active?new Color(.95f,.82f,.56f):new Color(.52f,.57f,.60f);
         }
 
         void ConfigurePrimaryAction(PlayerState s)
@@ -575,6 +597,30 @@ namespace Eldoria.Presentation
             safe.anchorMax=new Vector2(r.xMax/lastWidth,r.yMax/lastHeight);
             safe.offsetMin=safe.offsetMax=Vector2.zero;
         }
+        static RectTransform HorizontalPanel(string name,Transform parent,Color color,float height,bool top)
+        {
+            var t=new GameObject(name,typeof(RectTransform),typeof(Image),typeof(HorizontalLayoutGroup)).GetComponent<RectTransform>();
+            t.SetParent(parent,false);t.anchorMin=new Vector2(0,top?1:0);t.anchorMax=new Vector2(1,top?1:0);
+            t.pivot=new Vector2(.5f,top?1:0);t.sizeDelta=new Vector2(0,height);t.anchoredPosition=Vector2.zero;
+            t.GetComponent<Image>().color=color;
+            var group=t.GetComponent<HorizontalLayoutGroup>();group.padding=new RectOffset(8,8,8,8);
+            group.spacing=6;group.childForceExpandHeight=true;group.childForceExpandWidth=true;
+            group.childControlHeight=true;group.childControlWidth=true;
+            return t;
+        }
+
+        static Text ChipLabel(string name,Transform parent,int size,Color textColor,Color background,float width)
+        {
+            var go=new GameObject(name+" chip",typeof(RectTransform),typeof(Image),typeof(LayoutElement));
+            go.transform.SetParent(parent,false);
+            go.GetComponent<Image>().color=background;
+            var le=go.GetComponent<LayoutElement>();le.preferredWidth=width;le.preferredHeight=44;
+            var text=Label(name,go.transform,size,textColor,44);
+            text.alignment=TextAnchor.MiddleCenter;
+            var rt=text.rectTransform;rt.anchorMin=Vector2.zero;rt.anchorMax=Vector2.one;rt.offsetMin=new Vector2(5,2);rt.offsetMax=new Vector2(-5,-2);
+            return text;
+        }
+
         static RectTransform Panel(string name,Transform parent,Color color,float height,bool top)
         {
             var t=new GameObject(name,typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup)).GetComponent<RectTransform>();
