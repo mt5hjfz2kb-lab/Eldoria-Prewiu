@@ -20,12 +20,12 @@ function withTimeout(promise, ms, label) {
 }
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const normalizeUiText = value => String(value ?? '').replace(/\\s+/g, ' ').trim();
+const normalizeUiText = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
 function parseGenerateButton(buttons) {
   for (const raw of buttons || []) {
     const text = normalizeUiText(raw);
-    const match = text.match(/^(?:Generar|Generate)\\s+(\\d+)$/i);
+    const match = text.match(/^(?:Generar|Generate)\s+(\d+)$/i);
     if (match) return { text, cost: Number(match[1]) };
   }
   return null;
@@ -54,8 +54,8 @@ async function waitForStableUpload(page, beforeImages, expectedWidth, expectedHe
     const buttons = (await page.locator('button').allTextContents()).map(normalizeUiText).filter(Boolean);
     const generate = parseGenerateButton(buttons);
     const bodyText = await page.locator('body').innerText().catch(() => '');
-    const uploading = /(?:Subiendo|Uploading)\\.*/i.test(bodyText);
-    const generating = /(?:Generando|Generating)\\.*/i.test(bodyText);
+    const uploading = /(?:Subiendo|Uploading)\.*/i.test(bodyText);
+    const generating = /(?:Generando|Generating)\.*/i.test(bodyText);
     const images = await imageSnapshot(page);
 
     const beforeCounts = new Map();
@@ -163,8 +163,8 @@ async function inspectPage(page) {
     visible_generate_button: generateButton,
     visible_button_sample: buttons.slice(0, 40),
     credit_cost_text_sample: creditCostText,
-    generating_visible: /(?:Generando|Generating)\\.*/i.test(bodyText),
-    upload_in_progress_visible: /(?:Subiendo|Uploading)\\.*/i.test(bodyText),
+    generating_visible: /(?:Generando|Generating)\.*/i.test(bodyText),
+    upload_in_progress_visible: /(?:Subiendo|Uploading)\.*/i.test(bodyText),
     dialog_count: dialogCount,
     controls
   };
@@ -301,11 +301,11 @@ try {
     }
 
     const beforeUrl = uploadPage.url();
-    if (!/studio\\.tripo3d\\.ai\\/(?:[a-z]{2}\\/)?workspace\\/generate/i.test(beforeUrl)) {
+    if (!/studio\.tripo3d\.ai\/(?:[a-z]{2}\/)?workspace\/generate/i.test(beforeUrl)) {
       throw new Error(`Tripo preflight refused unexpected workspace URL: ${beforeUrl}`);
     }
     const beforeText = await uploadPage.locator('body').innerText().catch(() => '');
-    if (/(?:Generando|Generating)\\.*/i.test(beforeText)) {
+    if (/(?:Generando|Generating)\.*/i.test(beforeText)) {
       throw new Error('Tripo preflight found a generation already in progress; staging is unsafe.');
     }
     const beforeImages = await imageSnapshot(uploadPage);
@@ -398,8 +398,7 @@ try {
           request.approved_input_sha256 !== sourceSha || !assetName) {
         throw new Error('The generation approval does not match this exact image, visible credit cost and asset identity.');
       }
-      const costPattern = new RegExp('^(?:Generar|Generate)\\\\s+' + approvedCost + '
-      const button = uploadPage.getByRole('button', { name: costPattern });
+      const costPattern = new RegExp('^(?:Generar|Generate)\\s+' + approvedCost + '      const button = uploadPage.getByRole('button', { name: costPattern });
       if (await button.count() !== 1 || !(await button.isEnabled())) {
         throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
       }
@@ -432,6 +431,1282 @@ try {
       throw new Error('generate_staged requires prior staged run and artifact evidence.');
     }
     const costPattern = new RegExp('^(?:Generar|Generate)\\\\s+' + approvedCost + '
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+      const button = uploadPage.getByRole('button', { name: costPattern });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
+      }
+      const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
+  } else if (mode === 'generate_staged') {
+    const approvedCost = Number(request.authorized_credit_cost);
+    const approvedSha = String(request.approved_input_sha256 || '').toLowerCase();
+    const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+    const assetName = String(request.asset_name || '').trim();
+    if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
+        !assetName || !approvedSha || approvedSha !== expectedSha) {
+      throw new Error('The staged generation approval does not match the exact approved input identity.');
+    }
+    if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
+      throw new Error('generate_staged requires prior staged run and artifact evidence.');
+    }
+    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+      const button = uploadPage.getByRole('button', { name: costPattern });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
+      }
+      const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
+  } else if (mode === 'generate_staged') {
+    const approvedCost = Number(request.authorized_credit_cost);
+    const approvedSha = String(request.approved_input_sha256 || '').toLowerCase();
+    const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+    const assetName = String(request.asset_name || '').trim();
+    if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
+        !assetName || !approvedSha || approvedSha !== expectedSha) {
+      throw new Error('The staged generation approval does not match the exact approved input identity.');
+    }
+    if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
+      throw new Error('generate_staged requires prior staged run and artifact evidence.');
+    }
+    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+      const button = uploadPage.getByRole('button', { name: costPattern });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
+      }
+      const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
+  } else if (mode === 'generate_staged') {
+    const approvedCost = Number(request.authorized_credit_cost);
+    const approvedSha = String(request.approved_input_sha256 || '').toLowerCase();
+    const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+    const assetName = String(request.asset_name || '').trim();
+    if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
+        !assetName || !approvedSha || approvedSha !== expectedSha) {
+      throw new Error('The staged generation approval does not match the exact approved input identity.');
+    }
+    if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
+      throw new Error('generate_staged requires prior staged run and artifact evidence.');
+    }
+    const costPattern = new RegExp('^(?:Generar|Generate)\\s+' + approvedCost + '    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+      const button = uploadPage.getByRole('button', { name: costPattern });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
+      }
+      const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
+  } else if (mode === 'generate_staged') {
+    const approvedCost = Number(request.authorized_credit_cost);
+    const approvedSha = String(request.approved_input_sha256 || '').toLowerCase();
+    const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+    const assetName = String(request.asset_name || '').trim();
+    if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
+        !assetName || !approvedSha || approvedSha !== expectedSha) {
+      throw new Error('The staged generation approval does not match the exact approved input identity.');
+    }
+    if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
+      throw new Error('generate_staged requires prior staged run and artifact evidence.');
+    }
+    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
+      const button = uploadPage.getByRole('button', { name: costPattern });
+      if (await button.count() !== 1 || !(await button.isEnabled())) {
+        throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available.`);
+      }
+      const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const guard = path.join(process.env.USERPROFILE || path.dirname(uploadPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+      if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString() }));
+      report.generation = { guard, approved_cost: approvedCost, click_attempted: true };
+      fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+      await button.click();
+      report.upload.generate_clicked = true;
+      report.upload.credits_spent = null;
+      report.generation.clicked_at = new Date().toISOString();
+      await new Promise(resolve => setTimeout(resolve, 8000));
+      report.generation.post_click_page = await inspectPage(uploadPage);
+      report.generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+      await uploadPage.screenshot({ path: report.generation.screenshot_path, fullPage: false });
+      fs.writeFileSync(guard, JSON.stringify({ sourceSha, approvedCost, requestId: request.request_id, clickedAt: report.generation.clicked_at }));
+    }
+  } else if (mode === 'generate_staged') {
+    const approvedCost = Number(request.authorized_credit_cost);
+    const approvedSha = String(request.approved_input_sha256 || '').toLowerCase();
+    const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+    const assetName = String(request.asset_name || '').trim();
+    if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
+        !assetName || !approvedSha || approvedSha !== expectedSha) {
+      throw new Error('The staged generation approval does not match the exact approved input identity.');
+    }
+    if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
+      throw new Error('generate_staged requires prior staged run and artifact evidence.');
+    }
+    const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
+    const button = selectedPage.getByRole('button', { name: costPattern });
+    if (await button.count() !== 1 || !(await button.isEnabled())) {
+      throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
+    }
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const guard = path.join(process.env.USERPROFILE || path.dirname(outPath), 'Downloads', `.${safeAssetName}_generate_attempt.json`);
+    if (fs.existsSync(guard)) throw new Error(`Generation attempt already recorded: ${guard}`);
+    report.staged_generation = {
+      approved_input_sha256: approvedSha,
+      approved_cost: approvedCost,
+      prior_stage_run_id: request.prior_stage_run_id,
+      prior_stage_artifact_id: request.prior_stage_artifact_id,
+      no_restaging: true,
+      click_attempted: true,
+      guard
+    };
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, begun: new Date().toISOString(), noRestaging: true }));
+    fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+    await button.click();
+    report.staged_generation.generate_clicked = true;
+    report.staged_generation.clicked_at = new Date().toISOString();
+    await new Promise(resolve => setTimeout(resolve, 8000));
+    report.staged_generation.post_click_page = await inspectPage(selectedPage);
+    report.staged_generation.task_url = selectedPage.url();
+    report.staged_generation.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-after-generate.png');
+    await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
+    fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
+  } else if (mode === 'export_glb') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
+    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
+    exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButtons.count() < 2) {
+      throw new Error(`The GLB export dialog lacks its action button. Visible buttons: ${(await selectedPage.locator('button').allTextContents()).join(' | ')}`);
+    }
+    const nameInput = selectedPage.locator('input:not([type="file"])').last();
+    const assetName = String(request.asset_name || '').trim();
+    if (!assetName) throw new Error('asset_name is required for GLB export.');
+    await nameInput.fill(assetName);
+    const safeAssetName = assetName.replace(/[^A-Za-z0-9_.-]/g, '_');
+    const downloadPath = path.join(process.env.USERPROFILE || '', 'Downloads', safeAssetName + '.glb');
+    if (fs.existsSync(downloadPath)) throw new Error(`Existing export must be identified first: ${downloadPath}`);
+    const [download] = await Promise.all([
+      selectedPage.waitForEvent('download', { timeout: 300000 }),
+      exportButtons.last().click()
+    ]);
+    if (!download.suggestedFilename().toLowerCase().endsWith('.glb')) {
+      throw new Error(`Unexpected Tripo download: ${download.suggestedFilename()}`);
+    }
+    await download.saveAs(downloadPath);
+    const bytes = fs.readFileSync(downloadPath);
+    if (bytes.toString('ascii', 0, 4) !== 'glTF') throw new Error('Export does not have a GLB header.');
+    report.export = {
+      path: downloadPath,
+      suggested_filename: download.suggestedFilename(),
+      bytes: bytes.length,
+      sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+      task_url: selectedPage.url(),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-export.png')
+    };
+    await selectedPage.screenshot({ path: report.export.screenshot_path, fullPage: false });
+  } else if (mode === 'export_probe') {
+    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+      throw new Error('The approved generated task is not active.');
+    }
+    const exportButton = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+    if (await exportButton.count() !== 1) throw new Error('Expected one Exportar button.');
+    await exportButton.click();
+    report.export_probe = {
+      page: await inspectPage(selectedPage),
+      page_text: (await selectedPage.locator('body').innerText()).slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-export-options.png')
+    };
+    await selectedPage.screenshot({ path: report.export_probe.screenshot_path, fullPage: false });
+  } else if (mode === 'watch') {
+    const expectedTaskUrl = String(request.generated_task_url || '');
+    if (!expectedTaskUrl || !selectedPage.url().startsWith(expectedTaskUrl)) {
+      throw new Error(`Expected generated task page is not active: ${expectedTaskUrl}`);
+    }
+    const deadline = Date.now() + 11 * 60 * 1000;
+    let bodyText = '';
+    do {
+      bodyText = await selectedPage.locator('body').innerText();
+      if (!bodyText.includes('Generando...')) break;
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } while (Date.now() < deadline);
+    report.watch = {
+      generation_still_running: bodyText.includes('Generando...'),
+      page: await inspectPage(selectedPage),
+      page_text: bodyText.slice(0, 8000),
+      screenshot_path: path.join(path.dirname(outPath), 'tripo-studio-after-watch.png')
+    };
+    await selectedPage.screenshot({ path: report.watch.screenshot_path, fullPage: false });
+  } else if (mode === 'probe') {
+    report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
+    await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
+    report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+  } else {
+    throw new Error(`Unsupported safe bridge mode: ${mode}`);
+  }
+
+  fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
+  console.log('TRIPO_STUDIO_BRIDGE_OK');
+  console.log(JSON.stringify(report));
+
+  if (report.generate_button_visible_anywhere) console.log('TRIPO_STUDIO_GENERATE_VISIBLE');
+  else console.log('TRIPO_STUDIO_GENERATE_NOT_VISIBLE');
+
+  if (mode === 'stage_upload') {
+    console.log('TRIPO_STUDIO_UPLOAD_STAGED_NO_GENERATE');
+  } else if (mode === 'generate' || mode === 'generate_staged') {
+    console.log('TRIPO_STUDIO_GENERATE_CLICKED_ONCE');
+  }
+
+  // Never close the owner's real Edge session.
+  process.exit(0);
+} catch (error) {
+  try {
+    const page = browser?.contexts().flatMap(c => c.pages()).find(p => p.url().includes('studio.tripo3d.ai'));
+    if (page) await page.screenshot({ path: path.join(path.dirname(outPath), 'tripo-studio-error.png'), fullPage: false });
+  } catch {}
+  const report = {
+    ok: false,
+    mode,
+    endpoint,
+    error: String(error?.message || error),
+    generate_clicked: false,
+    credits_spent: false
+  };
+  try { fs.writeFileSync(outPath, JSON.stringify(report, null, 2)); } catch {}
+  console.error('TRIPO_STUDIO_BRIDGE_FAIL');
+  console.error(report.error);
+  process.exit(1);
+}
+, 'i');
     const button = selectedPage.getByRole('button', { name: costPattern });
     if (await button.count() !== 1 || !(await button.isEnabled())) {
       throw new Error(`The approved ${approvedCost}-credit Generate button is not uniquely available on the staged page.`);
