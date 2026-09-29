@@ -87,12 +87,45 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3628));
 
+            Assert.That(g.Execute(Cmd(g,"engendro-too-early","Fight","engendro-valoria")).Ok,Is.False,
+                "Bastion II must teach explicit March preparation before the Engendro.");
+            var configure=Cmd(g,"march-b2","ConfigureMarch","march-main");
+            Assert.That(g.Execute(configure).Ok,Is.True);
+            Assert.That(g.Execute(configure).Ok,Is.True);
+            Assert.That(g.Snapshot().MarchConfigured,Is.True);
+            Assert.That(g.Snapshot().PreparedHeroId,Is.EqualTo("aldric"));
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
+            Assert.That(SliceRules.Expedition(g.Snapshot().PreparedTroops,g.Snapshot().PreparedHeroId).Power,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.WebContract.Chapter2ExpeditionPower));
+
             Assert.That(g.Execute(Cmd(g,"engendro-b2","Fight","engendro-valoria")).Ok,Is.True);
+            Assert.That(g.Snapshot().March.Troops.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.Zero);
             clock.Add(4);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().EngendroDefeated,Is.True);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(240));
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(160));
+        }
+
+        [Test] public void PreparedMarchIsSnapshotSafeAndPersists()
+        {
+            var clock=new Clock();var store=new Memory();
+            store.Value=new PlayerState {
+                BastionLevel=2, BarracksLevel=1,
+                Resources=new ResourceWallet{Wood=500,Stone=500,Food=0},
+                Available=new ArmyRoster{ArcherT1=48}
+            };
+            var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"prepare","ConfigureMarch","march-main")).Ok,Is.True);
+            var outside=g.Snapshot();
+            outside.PreparedTroops.ArcherT1=1;
+            outside.PreparedHeroId="fake";
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().PreparedHeroId,Is.EqualTo("aldric"));
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().MarchConfigured,Is.True);
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
         }
 
         [Test] public void SnapshotCannotEditAuthoritativeState()
