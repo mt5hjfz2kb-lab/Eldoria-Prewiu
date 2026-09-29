@@ -148,8 +148,11 @@ namespace Eldoria.Application
                         if (state.BastionLevel < 2 || state.BarracksLevel < 1) return Fail("Refuerza primero el Cuartel");
                         if (state.EngendroDefeated) return Fail("El Engendro ya ha sido derrotado");
                         if (!state.MarchConfigured) return Fail("Prepara y confirma la Marcha en Valoria antes de atacar");
-                        if (state.PreparedTroops.Total < SliceContentProfiles.QaFast.EngendroRequiredArchers)
-                            return Fail("La Marcha preparada necesita " + SliceContentProfiles.QaFast.EngendroRequiredArchers + " arqueros: actualiza la composición");
+                        if ((state.ChapterProgress?.TrainedArchers ?? 0) < SliceContentProfiles.Active.Chapter2TrainArchers)
+                            return Fail("Completa primero el entrenamiento de arqueros del Bastión II");
+                        var preparedPower = SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
+                        if (preparedPower < SliceContentProfiles.Active.Chapter2ExpeditionPower)
+                            return Fail("La Marcha preparada no alcanza el Poder de expedición requerido");
                         if (state.PreparedTroops.ArcherT1 > state.Available.ArcherT1 ||
                             state.PreparedTroops.ArcherT2 > state.Available.ArcherT2 ||
                             state.PreparedTroops.ArcherT3 > state.Available.ArcherT3)
@@ -161,6 +164,10 @@ namespace Eldoria.Application
                 case "AdvanceBastion":
                     if (command.TargetId != "bastion" || !state.JourneyComplete || state.BastionLevel != 1)
                         return Fail("El Bastión todavía no puede ascender");
+                    if (state.Resources.Wood < SliceRules.Bastion2WoodCost || state.Resources.Stone < SliceRules.Bastion2StoneCost)
+                        return Fail("Faltan recursos para ascender el Bastión");
+                    state.Resources.Wood -= SliceRules.Bastion2WoodCost;
+                    state.Resources.Stone -= SliceRules.Bastion2StoneCost;
                     state.BastionLevel = 2;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.BastionTwoReached = true;
@@ -191,8 +198,10 @@ namespace Eldoria.Application
                     if (command.TargetId != "archer:t1" || state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
                     if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
-                    if (state.Resources.Wood < SliceRules.RecruitWoodCost) return Fail("Falta madera para equipar reclutas");
+                    if (state.Resources.Wood < SliceRules.RecruitWoodCost || state.Resources.Stone < SliceRules.RecruitStoneCost)
+                        return Fail("Faltan recursos para equipar reclutas");
                     state.Resources.Wood -= SliceRules.RecruitWoodCost;
+                    state.Resources.Stone -= SliceRules.RecruitStoneCost;
                     state.PendingRecruitArchers = SliceRules.RecruitArchers;
                     state.RecruitmentTaskId = "recruit:" + command.Id;
                     state.RecruitmentCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.RecruitSeconds).Ticks;
@@ -340,8 +349,8 @@ namespace Eldoria.Application
                 if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                 bool chapterOneReady =
                     state.SawmillLevel > 0 &&
-                    state.ChapterProgress.GatheredWood >= SliceContentProfiles.QaFast.Chapter1GatherWood &&
-                    state.ChapterProgress.GatheredStone >= SliceContentProfiles.QaFast.Chapter1GatherStone &&
+                    state.ChapterProgress.GatheredWood >= SliceContentProfiles.Active.Chapter1GatherWood &&
+                    state.ChapterProgress.GatheredStone >= SliceContentProfiles.Active.Chapter1GatherStone &&
                     state.ChapterProgress.RouteCleared;
                 if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
             }
