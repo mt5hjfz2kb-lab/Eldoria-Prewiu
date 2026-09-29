@@ -9,7 +9,25 @@ namespace Eldoria.Domain
     {
         public const string QaFastId = "QA_FAST";
         public const string OwnerIiiId = "OWNER_I_II";
-        public const string ActiveRuntimeProfile = QaFastId;
+        // QA_FAST remains the normal/default launch. OWNER_I_II is opt-in for the first
+        // human pacing pass and never silently replaces QA.
+        public static string ActiveRuntimeProfile => SelectRuntimeProfile(System.Environment.GetCommandLineArgs());
+
+        public static string SelectRuntimeProfile(string[] args)
+        {
+            if (args != null)
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    var arg = args[i] ?? "";
+                    if (arg == "--eldoria-owner-i-ii" || arg == "--eldoria-profile=" + OwnerIiiId)
+                        return OwnerIiiId;
+                    if (arg == "--eldoria-profile" && i + 1 < args.Length && args[i + 1] == OwnerIiiId)
+                        return OwnerIiiId;
+                }
+            }
+            return QaFastId;
+        }
 
         public static class QaFast
         {
