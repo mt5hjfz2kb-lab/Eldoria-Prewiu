@@ -61,6 +61,19 @@ namespace Eldoria.Application
                 BuildingTaskId=s.BuildingTaskId, RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
                 LastBattleReason=s.LastBattleReason,
+                LastBattleReport=new BattleReportState {
+                    TargetId=s.LastBattleReport?.TargetId??"",
+                    HeroId=s.LastBattleReport?.HeroId??"aldric",
+                    Troops=s.LastBattleReport?.Troops??0,
+                    PlayerPower=s.LastBattleReport?.PlayerPower??0,
+                    EnemyPower=s.LastBattleReport?.EnemyPower??0,
+                    Won=s.LastBattleReport?.Won??false,
+                    Rounds=s.LastBattleReport?.Rounds??0,
+                    RemainingHealth=s.LastBattleReport?.RemainingHealth??0,
+                    RewardWood=s.LastBattleReport?.RewardWood??0,
+                    RewardStone=s.LastBattleReport?.RewardStone??0,
+                    Reason=s.LastBattleReport?.Reason??""
+                },
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
             };
@@ -203,19 +216,36 @@ namespace Eldoria.Application
                     { m.Phase = "gathering"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.GatherSeconds).Ticks; }
                     else
                     {
-                        var report = SliceRules.Fight(SliceRules.Expedition(m.Troops, m.HeroId), m.TargetId);
+                        var expedition = SliceRules.Expedition(m.Troops, m.HeroId);
+                        var report = SliceRules.Fight(expedition, m.TargetId);
                         state.LastBattleReason = report.Reason;
+                        int rewardWood = 0, rewardStone = 0;
                         if (report.Won)
                         {
                             if (m.TargetId == "engendro-valoria")
                             {
-                                m.PendingWood = 120; m.PendingStone = 100; state.EngendroDefeated = true;
+                                rewardWood = 120; rewardStone = 100;
+                                m.PendingWood = rewardWood; m.PendingStone = rewardStone; state.EngendroDefeated = true;
                             }
                             else
                             {
-                                m.PendingWood = 80; m.PendingStone = 70; state.ScoutDefeated = true;
+                                rewardWood = 80; rewardStone = 70;
+                                m.PendingWood = rewardWood; m.PendingStone = rewardStone; state.ScoutDefeated = true;
                             }
                         }
+                        state.LastBattleReport = new BattleReportState {
+                            TargetId = m.TargetId,
+                            HeroId = m.HeroId,
+                            Troops = m.Troops.Total,
+                            PlayerPower = expedition.Power,
+                            EnemyPower = m.TargetId == "engendro-valoria" ? 2500 : 2100,
+                            Won = report.Won,
+                            Rounds = report.Rounds,
+                            RemainingHealth = report.RemainingHealth,
+                            RewardWood = rewardWood,
+                            RewardStone = rewardStone,
+                            Reason = report.Reason
+                        };
                         m.Phase = "returning"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                     }
                 }
