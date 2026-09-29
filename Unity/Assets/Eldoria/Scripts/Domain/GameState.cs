@@ -76,6 +76,7 @@ namespace Eldoria.Domain
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
         public int ForestRemaining = 1250;
+        public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;
         public string BuildingTaskId = "";
         public long RecruitmentCompletesUtcTicks;
@@ -119,6 +120,7 @@ namespace Eldoria.Domain
         public const int BarracksBuildSeconds = SliceContentProfiles.QaFast.BarracksBuildSeconds;
         public const int RecruitSeconds = SliceContentProfiles.QaFast.RecruitSeconds;
         public const int ForestLoad = SliceContentProfiles.QaFast.ForestLoad;
+        public const int QuarryLoad = SliceContentProfiles.QaFast.QuarryLoad;
         public const int SawmillBuildSeconds = SliceContentProfiles.QaFast.SawmillBuildSeconds;
         public const int TravelSeconds = SliceContentProfiles.QaFast.TravelSeconds;
         public const int GatherSeconds = SliceContentProfiles.QaFast.GatherSeconds;
