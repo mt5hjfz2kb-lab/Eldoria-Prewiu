@@ -75,6 +75,15 @@ first production expansion into the reserved west Master Envelope. It demonstrat
 
 Measured expanded production baseline: **567,460 triangles / 644 renderers / 80 materials / 15 lights**. These are scene-complexity measurements, not mobile budgets. Physical-device profiling remains required before any visual-quality reduction.
 
+
+### Reusable Valoria construction library v1
+- Plan: `docs/VALORIA_LIBRARY_PRODUCTION_PLAN_V1.md`
+- Immediate next family: **Ground Kit v1** (StreetStraight, StreetBlend/Widening, TerraceFloor, RetainingEdge, GroundSeam)
+- Next dedicated building after Ground Kit: **Granero** (Bastion III)
+
+Purpose:
+make new districts an assembly problem rather than a one-off art problem. Ground/Support modules are visual skins over approved topology; they never dictate circulation or gameplay floors.
+
 ## HISTORICAL ASSET RESCUE — reuse before regeneration
 
 - Registry: `pipeline/historical-module-rescue.json`
