@@ -265,11 +265,8 @@ jobs:
           # Keep QA_FAST as the default executable. OWNER_I_II is an explicit opt-in launch
           # using the same binary and its own profile-scoped save.
           $ownerLauncher = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/PLAY_OWNER_I_II_CANDIDATE.bat"
-          @'
-@echo off
-cd /d "%~dp0"
-Eldoria.exe --eldoria-profile=OWNER_I_II
-'@ | Set-Content -Path $ownerLauncher -Encoding ASCII
+          $ownerLauncherText = "@echo off`r`ncd /d `"%~dp0`"`r`nEldoria.exe --eldoria-profile=OWNER_I_II`r`n"
+          Set-Content -Path $ownerLauncher -Value $ownerLauncherText -Encoding ASCII
           if (-not (Test-Path $ownerLauncher)) { throw "Owner I-II launcher was not produced." }
       - name: Render Valoria art benchmark
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
