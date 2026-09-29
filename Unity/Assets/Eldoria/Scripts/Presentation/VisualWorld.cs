@@ -713,6 +713,17 @@ namespace Eldoria.Presentation
             var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6,1.4f,1),new Vector3(2,2.8f,2),new Color(.20f,.28f,.23f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
             for(int i=0;i<5;i++) Tree(new Vector3(-8+(i%3)*1.4f,0,-.1f+(i/3)*2),true);
+
+            Box("Quarry shelf",new Vector3(6,.05f,-4.2f),new Vector3(5.0f,.30f,3.8f),Stone*.62f);
+            var quarryNode=Cylinder("Cantera de Valoria · recolectar",new Vector3(6,.72f,-4.2f),
+                new Vector3(2.15f,1.25f,1.75f),state.QuarryRemaining>0?WarmStone*.86f:Stone*.42f,Quaternion.identity);
+            quarryNode.AddComponent<WorldHotspot>().Id="quarry-valoria";
+            for(int i=0;i<6;i++)
+            {
+                float x=4.3f+(i%3)*1.45f,z=-5.45f+(i/3)*1.5f;
+                Sphere("Quarry stone pile",new Vector3(x,.45f,z),
+                    new Vector3(.75f,.55f,.65f)*(i%2==0?1.0f:.78f),Stone*(.72f+(i%3)*.06f));
+            }
             string enemyId=state.BastionLevel>=2?"engendro-valoria":"corrupt-scout";
             bool defeated=state.BastionLevel>=2?state.EngendroDefeated:state.ScoutDefeated;
             var enemy=Sphere(state.BastionLevel>=2?"Engendro de la Brecha":"Explorador corrupto",
