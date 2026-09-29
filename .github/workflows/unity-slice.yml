@@ -44,7 +44,8 @@ jobs:
           heavy=false
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
-            if [[ "$file" == Unity/* ]] &&
+            if { [[ "$file" == Unity/* ]] ||
+                 [[ "$file" == ".github/workflows/unity-slice.yml" ]]; } &&
                [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs" ]] &&
                [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs" ]]; then
               heavy=true
