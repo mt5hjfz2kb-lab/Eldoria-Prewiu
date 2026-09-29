@@ -1,13 +1,13 @@
 {
   "enabled": true,
-  "request_id": "valoria-granero-biii-v1-production-promotion",
-  "module_label": "Valoria_Granero_BIII_v1",
-  "unity_yaw_degrees": 180,
+  "request_id": "eldoria-multipiece-stonekit-v1-full-e2e",
+  "module_label": "Eldoria_MultiPiece_StoneKit_v1",
+  "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Valoria_Granero_BIII_v1.glb",
-    "exact_sha256": "b14cfbf85d608aac4a3b551a3804df57f8dc866264c786565e496cfac7fe647b",
-    "name_regex": "^Valoria_Granero_BIII_v1\\.glb$",
+    "exact_name": "Eldoria_MultiPiece_StoneKit_v1.glb",
+    "exact_sha256": "6375b0148fce43e120693584f0db1bb08c14685afab1a828e11eaba316c3a7bb",
+    "name_regex": "^Eldoria_MultiPiece_StoneKit_v1\\.glb$",
     "max_age_hours": 6,
     "exclude_sha256": []
   },
@@ -19,12 +19,13 @@
     "min_triangles": 49500,
     "max_triangles": 50000
   },
-  "visual_acceptance": "Dedicated Bastion III granary / food storehouse for Valoria. Preserve the approved identity: complex stone-and-timber agricultural building, tall silo/tower mass clearly subordinate on the left, broad central pitched roof, readable open south/front storage facade, sacks/carts/storage cues and restrained grain heraldry. It must read as a granary rather than a smithy, barracks, fortress or generic house. Isolated gate must show one coherent building with believable ground contact and no catastrophic holes, floating fragments or collapsed roof/forms. Cardinal diagnostics must establish the intended south/front orientation. Target production envelope after isolated PASS: footprint 4.1–4.5 x 3.4–3.8, height 3.7–4.4, functional hotspot/click collider remaining separate from visual mesh.",
-  "notes": "TECH PASS and VISUAL PASS confirmed on oriented gate run 36572780639. Promote the exact certified optimized GLB only; no Tripo generation or credits.",
-  "promotion": {
+  "multipiece": {
     "enabled": true,
-    "destination": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
-    "overwrite": false,
-    "commit_message": "Art: promote certified Granero BIII module"
+    "min_component_triangles": 250
+  },
+  "visual_acceptance": "Viability test only. The generated sheet is intended to yield multiple independent reusable aged-stone modular pieces from one Tripo generation: straight slab, irregular slab, street edge, street corner, step and stone block. PASS requires real separability, clean geometry, usable textures and side/rear surfaces, sensible pivots/orientation, and practical reuse at Valoria camera distance and potentially on the world map. Do not mark PASS merely because one combined GLB exists.",
+  "notes": "One authorized Tripo generation already completed and exported. Process exact GLB through Blender, split by connected components, normalize pivots, import pieces into isolated Unity review, render official evidence, and report the actual useful-piece count. No production promotion.",
+  "promotion": {
+    "enabled": false
   }
 }
