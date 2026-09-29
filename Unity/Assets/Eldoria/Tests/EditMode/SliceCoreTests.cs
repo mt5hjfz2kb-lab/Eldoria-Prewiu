@@ -59,6 +59,19 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(110));
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(220));
             Assert.That(g.Snapshot().Wounded.Total,Is.Zero);
+            var report=g.Snapshot().LastBattleReport;
+            Assert.That(report.TargetId,Is.EqualTo("corrupt-scout"));
+            Assert.That(report.HeroId,Is.EqualTo("aldric"));
+            Assert.That(report.Troops,Is.EqualTo(36));
+            Assert.That(report.PlayerPower,Is.EqualTo(2176));
+            Assert.That(report.Won,Is.True);
+            Assert.That(report.Rounds,Is.GreaterThan(0));
+            Assert.That(report.RemainingHealth,Is.GreaterThan(0));
+            Assert.That(report.RewardWood,Is.EqualTo(80));
+            Assert.That(report.RewardStone,Is.EqualTo(70));
+            Assert.That(report.Reason,Is.Not.Empty);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("corrupt-scout"));
         }
 
         [Test] public void BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent()
