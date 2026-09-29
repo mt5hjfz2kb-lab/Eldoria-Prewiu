@@ -21,11 +21,23 @@ Implemented in Unity:
 Latest known integrated gameplay gate before profile plumbing: run **36551685275 SUCCESS** (EditMode + PlayMode + Windows build + benchmark capture).
 The newer profile-isolation/Frontier/Ground-Kit integration is awaiting its own full superseding Unity gate; do not call that newer HEAD green until the run finishes.
 
+Current owner-candidate certification:
+- integrated Unity gate **36559605933 SUCCESS** on gameplay/profile SHA **447d6e934a6fd72760cf88c97f9c889ca749f693**;
+- EditMode PASS;
+- PlayMode PASS;
+- Windows desktop build PASS;
+- official Valoria/Frontier benchmark capture PASS;
+- `QA_FAST` remains the default runtime;
+- `OWNER_I_II` is now explicit opt-in only through `--eldoria-profile=OWNER_I_II`;
+- Windows package includes `PLAY_OWNER_I_II_CANDIDATE.bat`;
+- QA and OWNER saves remain isolated;
+- OWNER values remain the staged web-contract candidate and are not production-frozen.
+
 Still required before owner-playtest GREEN:
-- latest full Unity gate on the current integrated HEAD must pass;
-- inspect the new official Frontier I–II captures after the prototype-read cleanup;
-- run uninterrupted human fresh-save I→II without developer knowledge;
-- activate OWNER_I_II only after that integrated baseline is green and immediately perform owner pacing validation;
+- perform the uninterrupted human fresh-save I→II run using `PLAY_OWNER_I_II_CANDIDATE.bat`;
+- record pacing/clarity issues, especially the Bastion-II resource recovery beat before recruiting 20 Archers;
+- accept or revise the current Frontier I–II visual wedge from the owner playthrough; the stronger 0a07dfad experiment was intentionally reverted after visual regression;
+- only after that human run, decide whether OWNER_I_II values should be promoted/frozen;
 - representative physical-mobile performance remains a later readiness gate, not a blocker for the first desktop owner pass.
 
 ## Objective
