@@ -184,39 +184,16 @@ namespace Eldoria.EditorTools
                     string key = semantic + "|" + source.name;
                     if (!cache.TryGetValue(key, out var normalized))
                     {
-                        Texture baseColorTexture = null;
-                        foreach (var prop in source.GetTexturePropertyNames())
-                        {
-                            var lowerProp = prop.ToLowerInvariant();
-                            if (lowerProp.Contains("basecolor") || lowerProp == "_basemap" || lowerProp == "_maintex")
-                            {
-                                baseColorTexture = source.GetTexture(prop);
-                                if (baseColorTexture != null) break;
-                            }
-                        }
-
-                        var color = baseColorTexture != null
-                            ? (semantic.Contains("stone")
-                                ? new Color(1.15f, 1.08f, .96f, 1f)
-                                : semantic.Contains("rock")
-                                    ? new Color(.78f, .82f, .78f, 1f)
-                                    : semantic.Contains("timber")
-                                        ? new Color(1.18f, 1.02f, .84f, 1f)
-                                        : semantic.Contains("roof")
-                                            ? new Color(.72f, .78f, .82f, 1f)
-                                            : Color.white)
-                            : (semantic.Contains("stone")
-                                ? new Color(.43f, .36f, .27f, 1f)
-                                : semantic.Contains("rock")
-                                    ? new Color(.15f, .16f, .15f, 1f)
-                                    : semantic.Contains("timber")
-                                        ? new Color(.34f, .18f, .075f, 1f)
-                                        : semantic.Contains("roof")
-                                            ? new Color(.085f, .095f, .105f, 1f)
-                                            : new Color(.25f, .24f, .21f, 1f));
-
+                        var color = semantic.Contains("stone")
+                            ? new Color(.43f, .36f, .27f, 1f)
+                            : semantic.Contains("rock")
+                                ? new Color(.15f, .16f, .15f, 1f)
+                                : semantic.Contains("timber")
+                                    ? new Color(.34f, .18f, .075f, 1f)
+                                    : semantic.Contains("roof")
+                                        ? new Color(.085f, .095f, .105f, 1f)
+                                        : new Color(.25f, .24f, .21f, 1f);
                         normalized = new Material(shader) { name = "Valoria v1 · " + semantic + " · " + source.name };
-                        if (baseColorTexture != null) normalized.SetTexture("_BaseMap", baseColorTexture);
                         normalized.SetColor("_BaseColor", color);
                         normalized.SetFloat("_Metallic", 0f);
                         normalized.SetFloat("_Smoothness", semantic.Contains("rock") ? .03f : .08f);
