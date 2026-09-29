@@ -250,10 +250,11 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Valoria");
             yield return null;
-            Assert.That(GameObject.Find("Kingdom header"),Is.Not.Null);
-            Assert.That(GameObject.Find("Objective banner"),Is.Not.Null);
+            Assert.That(GameObject.Find("Reference topbar"),Is.Not.Null);
+            Assert.That(GameObject.Find("Quest panel"),Is.Not.Null);
+            Assert.That(GameObject.Find("World objective dock"),Is.Not.Null);
             Assert.That(GameObject.Find("Primary objective action"),Is.Not.Null);
-            Assert.That(GameObject.Find("Primary navigation"),Is.Not.Null);
+            Assert.That(GameObject.Find("Bottom navigation"),Is.Not.Null);
             Assert.That(GameObject.Find("CIUDAD"),Is.Not.Null);
             Assert.That(GameObject.Find("MUNDO"),Is.Not.Null);
             Assert.That(GameObject.Find("HÉROES"),Is.Not.Null);
@@ -264,7 +265,6 @@ namespace Eldoria.Tests
             Assert.That(sun,Is.Not.Null);
             Assert.That(sun.intensity,Is.GreaterThanOrEqualTo(1.20f));
         }
-
 
     }
 }
