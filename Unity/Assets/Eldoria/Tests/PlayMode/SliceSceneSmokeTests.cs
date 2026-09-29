@@ -81,12 +81,20 @@ namespace Eldoria.Tests
             foreach(var collider in barracksArt.GetComponentsInChildren<Collider>(true))
                 Assert.That(collider.enabled,Is.False,"Cuartel visual mesh must not own gameplay click geometry.");
 
+            var barracksTarget=GameObject.Find("Cuartel · target");
+            Assert.That(barracksTarget,Is.Not.Null,"Bastion I may reserve the Cuartel target, but it must not be interactive yet.");
+            var barracksHotspot=barracksTarget.GetComponent<WorldHotspot>();
+            Assert.That(barracksHotspot,Is.Not.Null);
+            Assert.That(barracksHotspot.Id,Is.EqualTo("barracks"));
+            var barracksTargetCollider=barracksTarget.GetComponent<Collider>();
+            Assert.That(barracksTargetCollider,Is.Not.Null);
+            Assert.That(barracksTargetCollider.enabled,Is.False,"Cuartel must not be clickable in Bastion I before the Bastion II build step.");
+
             var select=typeof(SlicePresenter).GetMethod("Select",
                 System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
             Assert.That(select,Is.Not.Null);
 
             foreach(var pair in new[]{("Aserradero · target","sawmill","ASERRADERO"),
-                                      ("Cuartel · target","barracks","CUARTEL"),
                                       ("Bastion · target","bastion","BASTIÓN")})
             {
                 var target=GameObject.Find(pair.Item1);
@@ -141,6 +149,7 @@ namespace Eldoria.Tests
                 panel.SetActive(false);
             }
         }
+
         [UnityTest]
         public IEnumerator ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope()
         {
@@ -216,8 +225,6 @@ namespace Eldoria.Tests
             var home=camera.transform.position;
             var rotation=camera.transform.rotation;
 
-            // Early game already contains the populated West Rebuilders quarter. Mobile portrait
-            // must be able to travel far enough to inspect it instead of trapping it off-screen.
             configure.Invoke(presenter,new object[]{2});
             pan.Invoke(presenter,new object[]{new Vector2(5000,0)});
             var earlyA=camera.transform.position;
@@ -229,8 +236,6 @@ namespace Eldoria.Tests
             Assert.That(Mathf.Abs(earlyB.x-home.x),Is.LessThanOrEqualTo(16.1f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
 
-            // Regression for the owner mobile report: the populated West Rebuilders quarter
-            // must be reachable on-screen at Bastion I-II, not merely exist outside the pan clamp.
             var westDistrict=GameObject.Find("VPD · master west district");
             Assert.That(westDistrict,Is.Not.Null);
             bool WestVisible()
@@ -252,7 +257,6 @@ namespace Eldoria.Tests
             Assert.That(westReachable,Is.True,
                 "Bastion I-II panning must be able to bring the West Rebuilders quarter into the mobile viewport.");
 
-            // Late-game bounds open substantially farther without changing orientation.
             recenter.Invoke(presenter,null);
             configure.Invoke(presenter,new object[]{35});
             pan.Invoke(presenter,new object[]{new Vector2(1400,0)});
@@ -260,7 +264,6 @@ namespace Eldoria.Tests
             Assert.That(Vector3.Distance(late,home),Is.GreaterThan(5.1f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
 
-            // Canonical hotspots remain resolvable after camera translation.
             var target=GameObject.Find("Bastion · target");
             Assert.That(target,Is.Not.Null);
             var screen=camera.WorldToScreenPoint(target.GetComponent<Collider>().bounds.center);
@@ -268,7 +271,6 @@ namespace Eldoria.Tests
             Assert.That(spot,Is.Not.Null);
             Assert.That(spot.Id,Is.EqualTo("bastion"));
 
-            // Recenter always returns exactly to the certified home position.
             recenter.Invoke(presenter,null);
             Assert.That(Vector3.Distance(camera.transform.position,home),Is.LessThan(.001f));
         }
@@ -293,6 +295,7 @@ namespace Eldoria.Tests
             Assert.That(sun,Is.Not.Null);
             Assert.That(sun.intensity,Is.GreaterThanOrEqualTo(1.20f));
         }
+
         [UnityTest]
         public IEnumerator ValoriaGroundKitUsesReadableTiledSurfaceMaterials()
         {
@@ -312,7 +315,6 @@ namespace Eldoria.Tests
             Assert.That(scale.x,Is.GreaterThanOrEqualTo(3f));
             Assert.That(scale.y,Is.GreaterThanOrEqualTo(3f));
         }
-
 
         [UnityTest]
         public IEnumerator CityObjectiveFocusPreservesCameraAndBringsTargetIntoView()
@@ -339,7 +341,6 @@ namespace Eldoria.Tests
             Assert.That(point.y,Is.InRange(.08f,.92f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
         }
-
 
         [UnityTest]
         public IEnumerator IrregularTerrainCarriesReadableUvsAndTiling()
@@ -372,7 +373,6 @@ namespace Eldoria.Tests
                 Is.EqualTo(frontier.GetComponent<MeshFilter>().sharedMesh.vertexCount));
         }
 
-
         [UnityTest]
         public IEnumerator FrontierUsesSemanticGroundAndContinuousMarchTrail()
         {
@@ -400,7 +400,6 @@ namespace Eldoria.Tests
                 Does.Contain("surface slate"));
         }
 
-
         [UnityTest]
         public IEnumerator FrontierTrailUsesDarkerEarthThanValley()
         {
@@ -415,8 +414,6 @@ namespace Eldoria.Tests
             Assert.That(trail.sharedMaterial.name,Does.Contain("surface trail"));
             Assert.That(valley.sharedMaterial.name,Does.Contain("surface earth"));
 
-            // The route is a dedicated worn-earth variant, not a painted strip. Its generated
-            // texture must remain darker on average than the surrounding valley soil.
             Texture2D TextureOf(Material material)
             {
                 var texture=material.HasProperty("_BaseMap")?material.GetTexture("_BaseMap"):
@@ -441,7 +438,6 @@ namespace Eldoria.Tests
             Assert.That(trailTexture,Is.Not.SameAs(valleyTexture));
             Assert.That(MeanLuma(trailTexture),Is.LessThan(MeanLuma(valleyTexture)-.025f));
         }
-
 
         [UnityTest]
         public IEnumerator OwnerHudMatchesReferenceMobileBudgets()
@@ -484,7 +480,6 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("CÓDICE")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("⌘"));
         }
 
-
         [UnityTest]
         public IEnumerator FrontierForestUsesEvergreenTallMass()
         {
@@ -501,7 +496,6 @@ namespace Eldoria.Tests
             Assert.That(rejected,Is.EqualTo(0),
                 "Capture-rejected bare imported tall-tree silhouettes must not return to Frontier.");
         }
-
 
         [UnityTest]
         public IEnumerator FrontierWorldRouteKitIsVisualOnlyAndReusable()
@@ -522,8 +516,5 @@ namespace Eldoria.Tests
                 Assert.That(collider.enabled,Is.False,
                     "World Route Kit is visual-only; gameplay topology must stay authoritative elsewhere.");
         }
-
-
-
     }
 }
