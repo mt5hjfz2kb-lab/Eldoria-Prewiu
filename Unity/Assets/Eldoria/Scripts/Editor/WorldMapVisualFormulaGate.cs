@@ -36,6 +36,11 @@ namespace Eldoria.EditorTools
             foreach(var c in route.GetComponentsInChildren<Collider>(true))
                 if(c.enabled)throw new System.Exception("Route visual kit must not own gameplay collision.");
 
+            int quarryRenderers=0;
+            foreach(var r in quarry.GetComponentsInChildren<Renderer>(true))if(r.enabled)quarryRenderers++;
+            int routeRenderers=0;
+            foreach(var r in route.GetComponentsInChildren<Renderer>(true))if(r.enabled)routeRenderers++;
+
             const string folder="WorldMapVisualFormulaCaptures";
             Directory.CreateDirectory(folder);
             var officialPosition=new Vector3(20f,24f,-21f);
@@ -110,6 +115,8 @@ namespace Eldoria.EditorTools
                 tree.name="NatureStarter candidate tree "+(i+1);
                 tree.transform.position=positions[i];
                 tree.transform.rotation=Quaternion.Euler(0,i*41f,0);
+                NormalizeNatureCandidate(tree,true);
+                FitCandidate(tree,4.8f+(i%3)*.35f);
                 foreach(var c in tree.GetComponentsInChildren<Collider>(true))c.enabled=false;
             }
             for(int i=0;i<6;i++)
@@ -120,6 +127,8 @@ namespace Eldoria.EditorTools
                 bush.name="NatureStarter candidate bush "+(i+1);
                 bush.transform.position=new Vector3(-3.2f+i*1.25f,0f,-2.1f+(i%2)*.45f);
                 bush.transform.rotation=Quaternion.Euler(0,i*53f,0);
+                NormalizeNatureCandidate(bush,false);
+                FitCandidate(bush,1.75f+(i%2)*.25f);
                 foreach(var c in bush.GetComponentsInChildren<Collider>(true))c.enabled=false;
             }
             Save(compareCamera,folder+"/naturestarter-overview-18.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),18f,1280,720);
@@ -127,10 +136,6 @@ namespace Eldoria.EditorTools
             Save(compareCamera,folder+"/naturestarter-overview-10.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),10f,1280,720);
             Save(compareCamera,folder+"/naturestarter-overview-mobile.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),14f,390,844);
 
-            int quarryRenderers=0;
-            foreach(var r in quarry.GetComponentsInChildren<Renderer>(true))if(r.enabled)quarryRenderers++;
-            int routeRenderers=0;
-            foreach(var r in route.GetComponentsInChildren<Renderer>(true))if(r.enabled)routeRenderers++;
             CaptureNatureStarterCandidates(folder);
 
             File.WriteAllText(folder+"/world-map-metrics.json",
