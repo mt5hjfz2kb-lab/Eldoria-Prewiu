@@ -158,9 +158,12 @@ jobs:
           $jdk = Join-Path $androidRoot 'OpenJDK'
           $adbBundled = Join-Path $sdk 'platform-tools\adb.exe'
           $adbCommand = Get-Command adb.exe -ErrorAction SilentlyContinue
-          $adb = if(Test-Path $adbBundled){$adbBundled}elseif($adbCommand){$adbCommand.Source}else{$null}
+          if (Test-Path $adbBundled) { $adb = $adbBundled }
+          elseif ($adbCommand) { $adb = $adbCommand.Source }
+          else { $adb = $null }
+
           $devices = @()
-          if($adb){
+          if ($adb) {
             try {
               $devices = & $adb devices 2>$null |
                 Select-Object -Skip 1 |
@@ -168,6 +171,7 @@ jobs:
                 ForEach-Object { $_.Trim() }
             } catch {}
           }
+          $connected = @($devices | Where-Object { $_ -match 'device$' }).Count -gt 0
           $audit = [ordered]@{
             unity_editor = $editor
             android_build_support = (Test-Path $androidRoot)
@@ -177,7 +181,21 @@ jobs:
             jdk_present = (Test-Path $jdk)
             adb_path = $adb
             adb_devices = @($devices)
-            physical_device_connected = (@($devices | Where-Object { $_ -match '\tdevice        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+            physical_device_connected = $connected
+          }
+          $json = $audit | ConvertTo-Json -Depth 4
+          $json
+          $json | Set-Content "$env:RUNNER_TEMP/Eldoria-MobilePrerequisites.json" -Encoding UTF8
+          if (-not $audit.android_build_support) {
+            Write-Warning 'Unity Android Build Support is not installed on this runner; physical-phone profiling cannot start from CI yet.'
+          } elseif (-not $audit.physical_device_connected) {
+            Write-Warning 'Android Build Support is present, but no authorized physical ADB device is connected.'
+          } else {
+            Write-Host 'MOBILE_PROFILE_READY=true'
+          }
+      - name: Audit original-art tools on Windows runner
+        if: github.event_name == 'workflow_dispatch'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           foreach ($name in @('blender.exe','python.exe','openscad.exe')) {
             $found = Get-Command $name -ErrorAction SilentlyContinue
