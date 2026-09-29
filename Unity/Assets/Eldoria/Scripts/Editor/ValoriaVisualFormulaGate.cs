@@ -177,13 +177,13 @@ namespace Eldoria.EditorTools
                     {
                         var lower = (source.name ?? "").ToLowerInvariant();
                         var color = lower.Contains("stone")
-                            ? new Color(.34f, .31f, .26f, 1f)
+                            ? new Color(.40f, .35f, .28f, 1f)
                             : lower.Contains("rock")
-                                ? new Color(.17f, .18f, .17f, 1f)
+                                ? new Color(.16f, .17f, .16f, 1f)
                                 : lower.Contains("timber")
-                                    ? new Color(.22f, .14f, .10f, 1f)
+                                    ? new Color(.30f, .17f, .09f, 1f)
                                     : lower.Contains("roof")
-                                        ? new Color(.12f, .13f, .14f, 1f)
+                                        ? new Color(.10f, .11f, .12f, 1f)
                                         : new Color(.25f, .24f, .21f, 1f);
                         normalized = new Material(shader) { name = "Valoria v1 · " + source.name };
                         normalized.SetColor("_BaseColor", color);
