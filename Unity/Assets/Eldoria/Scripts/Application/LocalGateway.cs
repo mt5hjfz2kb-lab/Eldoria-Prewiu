@@ -238,7 +238,7 @@ namespace Eldoria.Application
                             HeroId = m.HeroId,
                             Troops = m.Troops.Total,
                             PlayerPower = expedition.Power,
-                            EnemyPower = m.TargetId == "engendro-valoria" ? 2500 : 2100,
+                            EnemyPower = 0,
                             Won = report.Won,
                             Rounds = report.Rounds,
                             RemainingHealth = report.RemainingHealth,
