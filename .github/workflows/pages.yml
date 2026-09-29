@@ -59,13 +59,25 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
-      - name: Verify WebGL Build Support
+      - name: Ensure WebGL Build Support
         shell: powershell
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
           $editorDir = Split-Path $env:UNITY_EDITOR_PATH
           $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
-          if (-not (Test-Path $webgl)) { throw "Unity WebGL Build Support is not installed on the runner." }
+          if (Test-Path $webgl) { Write-Host 'WebGL Build Support already installed.'; exit 0 }
+          $hubCandidates = @(
+            "${env:ProgramFiles}\Unity Hub\Unity Hub.exe",
+            "${env:ProgramFiles(x86)}\Unity Hub\Unity Hub.exe",
+            "${env:LOCALAPPDATA}\Programs\Unity Hub\Unity Hub.exe"
+          )
+          $hub = $hubCandidates | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+          if (-not $hub) { throw 'Unity Hub not found; cannot install WebGL Build Support automatically.' }
+          Write-Host "Installing WebGL Build Support with Unity Hub: $hub"
+          & $hub -- --headless install-modules --version 6000.3.23f1 --module webgl --errors
+          if ($LASTEXITCODE -ne 0) { throw "Unity Hub WebGL module install failed with exit code $LASTEXITCODE." }
+          if (-not (Test-Path $webgl)) { throw 'WebGL Build Support install command completed but module path is still missing.' }
+          Write-Host 'WebGL Build Support installed successfully.'
       - name: Build Unity WebGL OWNER I-II
         shell: powershell
         run: |
