@@ -71,12 +71,30 @@ jobs:
               throw "Unsupported input_transport: $transport"
             }
 
-            # Prefer/infer canonical repo exact-input by asset_name so callers cannot accidentally
-            # fall back to Downloads just because upload_base64_glob was omitted.
+            # Infer the canonical repo exact-input from asset_name when the request omits the glob.
+            # This prevents accidental fallback to Downloads for chat-approved assets.
             $base64Glob = ([string]$request.upload_base64_glob).Trim()
             $assetName = ([string]$request.asset_name).Trim()
             if ([string]::IsNullOrWhiteSpace($base64Glob) -and -not [string]::IsNullOrWhiteSpace($assetName)) {
-              if ($assetName -notmatch '^[A-Za-z0-9_.-]+
+              if ($assetName -notmatch '^[A-Za-z0-9_.-]+$') {
+                throw "Unsafe asset_name for exact-input inference: $assetName"
+              }
+              $candidateRel = "pipeline/exact-inputs/$assetName/part_*.b64"
+              $candidateAbs = Join-Path $env:GITHUB_WORKSPACE $candidateRel
+              $candidateParts = @(Get-ChildItem $candidateAbs -File -ErrorAction SilentlyContinue)
+              if ($candidateParts.Count -gt 0) {
+                $base64Glob = $candidateRel
+                $request | Add-Member -NotePropertyName upload_base64_glob -NotePropertyValue $base64Glob -Force
+                Write-Host "EXACT_TRIPO_INPUT_GLOB_INFERRED: $base64Glob | parts=$($candidateParts.Count)"
+              }
+            }
+            if ($transport -eq 'repo_exact_input' -and [string]::IsNullOrWhiteSpace($base64Glob)) {
+              throw "repo_exact_input requires repository exact-input parts. Refusing runner search/manual fallback."
+            }
+
+            # Canonical exact-input route for ChatGPT-approved references: reconstruct repository base64 parts first.
+            if (-not [string]::IsNullOrWhiteSpace($base64Glob)) {
+              $glob = Join-Path $env:GITHUB_WORKSPACE $base64Glob
               $parts = @(Get-ChildItem $glob -File -ErrorAction SilentlyContinue | Sort-Object Name)
               if ($parts.Count -eq 0) { throw "No exact-input base64 parts found for: $glob" }
               $chunks = foreach ($part in $parts) { (Get-Content $part.FullName -Raw).Trim() }
@@ -94,7 +112,6 @@ jobs:
             if ($transport -eq 'repo_exact_input' -and -not $resolved) {
               throw "Repository exact-input did not reconstruct. Refusing Downloads/Desktop fallback."
             }
-
             # Downloads/Desktop discovery is fallback only when no repository exact-input resolved.
             if (-not $resolved -and $transport -ne 'repo_exact_input' -and [bool]$request.search_downloads_for_sha -and -not [string]::IsNullOrWhiteSpace($expected)) {
               $expectedBytes = [int64]$request.upload_size_bytes
