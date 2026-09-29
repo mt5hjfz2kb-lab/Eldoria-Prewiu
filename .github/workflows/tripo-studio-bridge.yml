@@ -231,7 +231,10 @@ jobs:
           name: eldoria-tripo-studio-bridge-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/tripo-studio-probe.json
+            ${{ runner.temp }}/tripo-studio-before-upload.png
             ${{ runner.temp }}/tripo-studio-after-upload.png
+            ${{ runner.temp }}/tripo-upload-verification.json
+            ${{ runner.temp }}/tripo-flow-state.json
             ${{ runner.temp }}/tripo-rendered-input.png
             ${{ runner.temp }}/tripo-studio-after-generate.png
             ${{ runner.temp }}/tripo-studio-probe.png
