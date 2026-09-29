@@ -66,7 +66,7 @@ def make_pbr_material(name, family, size=1024):
         base = dark + (light - dark) * height[..., None]
         base *= (1.0 - 0.15 * joints[..., None])
         rough = np.clip(0.72 + 0.14 * joints + 0.06 * (1.0 - height), 0.70, 0.92)
-        normal_strength = 2.0
+        normal_strength = 0.45
     elif family == "rock":
         coarse = (
             0.50
@@ -79,7 +79,7 @@ def make_pbr_material(name, family, size=1024):
         light = np.array([0.33, 0.325, 0.295], dtype=np.float32)
         base = dark + (light - dark) * height[..., None]
         rough = np.clip(0.79 + 0.13 * (1.0 - height), 0.78, 0.95)
-        normal_strength = 3.2
+        normal_strength = 0.65
     else:
         raise RuntimeError("Unknown PBR family: " + family)
 
@@ -102,7 +102,7 @@ def make_pbr_material(name, family, size=1024):
     normal_tex = nodes.new("ShaderNodeTexImage")
     normal_tex.image = normal_img
     normal_map = nodes.new("ShaderNodeNormalMap")
-    normal_map.inputs["Strength"].default_value = 0.48 if family == "stone" else 0.56
+    normal_map.inputs["Strength"].default_value = 0.22 if family == "stone" else 0.28
 
     links.new(base_node.outputs["Color"], bsdf.inputs["Base Color"])
     links.new(rough_node.outputs["Color"], bsdf.inputs["Roughness"])
@@ -112,7 +112,7 @@ def make_pbr_material(name, family, size=1024):
     if "Metallic" in bsdf.inputs:
         bsdf.inputs["Metallic"].default_value = 0.0
     if "Specular IOR Level" in bsdf.inputs:
-        bsdf.inputs["Specular IOR Level"].default_value = 0.24
+        bsdf.inputs["Specular IOR Level"].default_value = 0.12
 
     return material, [base_img.name, rough_img.name, normal_img.name]
 
