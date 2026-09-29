@@ -54,6 +54,130 @@ namespace Eldoria.EditorTools
             UnityEditor.EditorApplication.Exit(0);
         }
 
+        public static void CaptureRescueDistrict()
+        {
+            SceneSetup.SetupRenderPipeline();
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var state = new PlayerState
+            {
+                BastionLevel = 2,
+                SawmillLevel = 1,
+                BarracksLevel = 1,
+                CorruptionDiscovered = true
+            };
+            VisualWorld.Create(true, state);
+
+            var residential = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
+                "Production rescue · ResidentialTerraceRock",
+                new Vector3(-5.4f, 2.52f, 6.35f), 182f, 5.4f);
+            var seam = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
+                "Production rescue · RockTerrainSeamFiller",
+                new Vector3(-5.4f, .30f, -1.65f), 24f, 5.2f);
+            var stair = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/TerraceStairRock.glb",
+                "Production rescue · TerraceStairRock",
+                new Vector3(-2.75f, .31f, 1.55f), 3f, 4.7f);
+
+            if (residential == null || seam == null || stair == null)
+                throw new System.Exception("Valoria rescue district did not stage all required historical modules.");
+
+            var camera = Camera.main;
+            if (camera == null) throw new System.Exception("Valoria camera was not created");
+
+            const string folder = "VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var officialPosition = new Vector3(18.2f, 14.6f, -25.8f);
+            var officialTarget = new Vector3(0, 3.15f, 5.8f);
+            Save(camera, folder + "/production-district-19.png", officialPosition, officialTarget, 19f, 1280, 720);
+            Save(camera, folder + "/production-district-12.png", officialPosition, officialTarget, 12f, 1280, 720);
+            Save(camera, folder + "/production-district-9.png", officialPosition, officialTarget, 9f, 1280, 720);
+            Save(camera, folder + "/production-district-mobile.png", officialPosition, officialTarget, 12f, 390, 844);
+            WriteMetrics(folder + "/production-district-metrics.json");
+            File.WriteAllText(folder + "/production-district-evidence.json",
+                "{\n" +
+                "  \"schema_version\": 1,\n" +
+                "  \"topology\": \"REAL_VISUALWORLD_ISOLATED_EDITOR_SCENE\",\n" +
+                "  \"gameplay_mesh_dependency\": false,\n" +
+                "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
+                "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
+                "  \"official_zooms\": [19,12,9],\n" +
+                "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
+                "  \"promotion\": \"EVIDENCE_ONLY_DO_NOT_MUTATE_VISUALWORLD\"\n" +
+                "}\n");
+            Debug.Log("Valoria production rescue district evidence saved to " + Path.GetFullPath(folder));
+            UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static GameObject InstallRescueModule(string assetPath, string label, Vector3 groundAnchor, float yaw, float targetSpan)
+        {
+            if (!File.Exists(assetPath))
+                throw new FileNotFoundException("Rescue district asset missing", assetPath);
+
+            UnityEditor.AssetDatabase.ImportAsset(assetPath, UnityEditor.ImportAssetOptions.ForceSynchronousImport | UnityEditor.ImportAssetOptions.ForceUpdate);
+            var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (prefab == null) throw new System.Exception("glTFast failed to import rescue asset " + assetPath);
+
+            var root = Object.Instantiate(prefab);
+            root.name = label;
+            root.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+            var bounds = BoundsOf(root);
+            var span = Mathf.Max(bounds.size.x, bounds.size.z);
+            if (span <= .001f) throw new System.Exception("Rescue asset has unusable bounds: " + assetPath);
+            root.transform.localScale *= targetSpan / span;
+            bounds = BoundsOf(root);
+            root.transform.position += groundAnchor - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
+            NormalizeRescueMaterials(root);
+            return root;
+        }
+
+        static Bounds BoundsOf(GameObject root)
+        {
+            var renderers = root.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) throw new System.Exception("Rescue asset contains no renderers: " + root.name);
+            var bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            return bounds;
+        }
+
+        static void NormalizeRescueMaterials(GameObject root)
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null) throw new System.Exception("URP/Lit unavailable for rescue district.");
+
+            var cache = new Dictionary<Material, Material>();
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>())
+            {
+                var slots = renderer.sharedMaterials;
+                for (int i = 0; i < slots.Length; i++)
+                {
+                    var source = slots[i];
+                    if (source == null) continue;
+                    if (!cache.TryGetValue(source, out var normalized))
+                    {
+                        var lower = (source.name ?? "").ToLowerInvariant();
+                        var color = lower.Contains("stone")
+                            ? new Color(.46f, .43f, .37f, 1f)
+                            : lower.Contains("rock")
+                                ? new Color(.26f, .28f, .27f, 1f)
+                                : lower.Contains("timber")
+                                    ? new Color(.29f, .20f, .14f, 1f)
+                                    : lower.Contains("roof")
+                                        ? new Color(.17f, .18f, .19f, 1f)
+                                        : new Color(.36f, .34f, .30f, 1f);
+                        normalized = new Material(shader) { name = "Valoria v1 · " + source.name };
+                        normalized.SetColor("_BaseColor", color);
+                        normalized.SetFloat("_Metallic", 0f);
+                        normalized.SetFloat("_Smoothness", lower.Contains("rock") ? .03f : .08f);
+                        cache[source] = normalized;
+                    }
+                    slots[i] = normalized;
+                }
+                renderer.sharedMaterials = slots;
+            }
+        }
+
         static string TextureName(Material material, string property)
         {
             if (material == null || !material.HasProperty(property)) return "";
