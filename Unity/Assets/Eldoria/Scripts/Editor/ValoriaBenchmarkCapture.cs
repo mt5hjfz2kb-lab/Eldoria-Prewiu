@@ -51,6 +51,7 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-mobile.png",officialPosition,officialTarget,12f,390,844);
 
             // I-II owner-playtest visual wedge: capture the real Frontier runtime with the same
+            // This tracked Editor change also intentionally forces the full Unity certification gate.
             // deterministic HUD-free reviewer instead of creating a parallel art pipeline.
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var frontierState=new PlayerState {
