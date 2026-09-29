@@ -257,4 +257,5 @@ jobs:
             ${{ runner.temp }}/tripo-visual-match-candidate.*
             ${{ runner.temp }}/tripo-visual-match-report.txt
             ${{ runner.temp }}/tripo-exact-input-identity.txt
+            ${{ runner.temp }}/chatgpt-exact-input.*
           if-no-files-found: warn
