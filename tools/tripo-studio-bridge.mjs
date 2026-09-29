@@ -48,6 +48,41 @@ async function imageSnapshot(page) {
   }).filter(img => img.width && img.height));
 }
 
+async function inlineImageHashes(page, expectedWidth, expectedHeight) {
+  if (!(Number(expectedWidth) > 0 && Number(expectedHeight) > 0)) return [];
+  return page.evaluate(async ({ width, height }) => {
+    const out = [];
+    const toHex = bytes => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    for (const [index, img] of Array.from(document.querySelectorAll('img')).entries()) {
+      if (img.naturalWidth !== width || img.naturalHeight !== height) continue;
+      const src = img.currentSrc || img.src || '';
+      if (!(src.startsWith('blob:') || src.startsWith('data:'))) continue;
+      try {
+        const response = await fetch(src);
+        const buffer = await response.arrayBuffer();
+        const digest = await crypto.subtle.digest('SHA-256', buffer);
+        out.push({
+          index,
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          src_kind: src.startsWith('blob:') ? 'blob' : 'data',
+          bytes: buffer.byteLength,
+          sha256: toHex(new Uint8Array(digest))
+        });
+      } catch (error) {
+        out.push({
+          index,
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          src_kind: src.startsWith('blob:') ? 'blob' : 'data',
+          error: String(error?.message || error)
+        });
+      }
+    }
+    return out;
+  }, { width: Number(expectedWidth), height: Number(expectedHeight) });
+}
+
 async function waitForStableUpload(page, beforeImages, expectedWidth, expectedHeight, timeoutMs = 60000) {
   const deadline = Date.now() + timeoutMs;
   let last = null;
@@ -175,6 +210,9 @@ let browser;
 try {
   if (request.allow_credit_spend === true && !['generate','generate_staged'].includes(mode)) {
     throw new Error('Credit-spend flag is forbidden outside an explicit generate mode.');
+  }
+  if (mode === 'stage_upload' && Number(request.authorized_credit_cost || 0) !== 0) {
+    throw new Error('stage_upload requires authorized_credit_cost=0.');
   }
 
   browser = await withTimeout(chromium.connectOverCDP(endpoint), connectTimeoutMs, 'CDP connection');
@@ -330,6 +368,8 @@ try {
     const expectedWidth = Number(request.upload_width || request.visual_width || 0);
     const expectedHeight = Number(request.upload_height || request.visual_height || 0);
     const stagedState = await waitForStableUpload(uploadPage, beforeImages, expectedWidth, expectedHeight, 60000);
+    const previewHashes = await inlineImageHashes(uploadPage, expectedWidth, expectedHeight);
+    const previewHashMatch = previewHashes.some(item => item.sha256 === sourceSha && item.bytes === sourceBytes);
 
     report.upload = {
       source_path: uploadPath,
@@ -351,6 +391,8 @@ try {
     report.upload.visible_images = stagedState.images;
     report.upload.new_images = stagedState.new_images;
     report.upload.exact_dimension_images = stagedState.exact_dimension_images;
+    report.upload.preview_hashes = previewHashes;
+    report.upload.preview_hash_matches_source = previewHashMatch;
     report.upload.upload_reflected_in_ui = stagedState.upload_reflected_in_ui;
     report.upload.upload_stable = stagedState.upload_stable;
     report.upload.no_generation_in_progress = stagedState.generating === false;
@@ -373,6 +415,8 @@ try {
       exact_identity_verified: sourceSha === String(request.upload_sha256 || '').toLowerCase() &&
         sourceBytes === Number(request.upload_size_bytes),
       upload_reflected_in_ui: stagedState.upload_reflected_in_ui,
+      preview_hashes: previewHashes,
+      preview_hash_matches_source: previewHashMatch,
       upload_stable: stagedState.upload_stable,
       visible_generate_button: stagedState.generate?.text || null,
       visible_credit_cost: stagedState.generate?.cost ?? null,
@@ -382,6 +426,19 @@ try {
       credits_spent: false
     };
     fs.writeFileSync(path.join(path.dirname(outPath), 'tripo-upload-verification.json'), JSON.stringify(verification, null, 2));
+    const flowState = {
+      request_id: String(request.request_id || ''),
+      asset_name: String(request.asset_name || ''),
+      state: 'stage_upload_verified',
+      source_sha256: sourceSha,
+      source_bytes: sourceBytes,
+      visible_credit_cost: verification.visible_credit_cost,
+      preview_hash_matches_source: previewHashMatch,
+      generate_clicked: false,
+      credits_spent: false,
+      verified_at: new Date().toISOString()
+    };
+    fs.writeFileSync(path.join(path.dirname(outPath), 'tripo-flow-state.json'), JSON.stringify(flowState, null, 2));
 
     if (!verification.exact_identity_verified || !verification.upload_reflected_in_ui || !verification.upload_stable ||
         !Number.isFinite(verification.visible_credit_cost) || verification.visible_credit_cost <= 0 ||
