@@ -216,5 +216,63 @@
     "final_hero_artifact_id": 11017959075,
     "final_hero_commit": "4331a060e534fab14a9e8897f5bda006e8a2b6c9",
     "zero_credit_validation": true
+  },
+  "production_district_v1": {
+    "status": "PRODUCTION_INTEGRATED_VISUAL_PASS",
+    "updated": "2026-09-29",
+    "production_commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
+    "current_main_documentation_commit": "ff5c9390c2b276c04dfe9b7b6431b4da1e84500f",
+    "formula_gate": {
+      "run_id": 36541695034,
+      "artifact_id": 11021096851,
+      "verdict": "SUCCESS",
+      "scene_metrics": {
+        "active_renderers": 513,
+        "unique_materials": 72,
+        "scene_triangles": 460236,
+        "lights": 8
+      }
+    },
+    "district_gate": {
+      "run_id": 36543056731,
+      "artifact_id": 11021850361,
+      "verdict": "SUCCESS",
+      "topology": "REAL_VISUALWORLD_PRODUCTION_DISTRICT",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "district_metrics": {
+        "active_renderers": 428,
+        "unique_materials": 55,
+        "scene_triangles": 460236,
+        "lights": 8
+      }
+    },
+    "runtime_gate": {
+      "run_id": 36541695042,
+      "verdict": "SUCCESS_EDITMODE_PLAYMODE_WINDOWS_BUILD_CAPTURE"
+    },
+    "lookdev_recheck": {
+      "run_id": 36541695060,
+      "verdict": "SUCCESS"
+    },
+    "production_assets": [
+      "Valoria_Aserradero_AP2_v1",
+      "Valoria_Cuartel_AP2_v1",
+      "ResidentialTerraceRock",
+      "RockTerrainSeamFiller x3"
+    ],
+    "deferred": [
+      "TerraceStairRock: rescued and Surface-v1-ready; omitted from this district because the certified 12-step route already owns the vertical transition and the module was visually redundant/occluded."
+    ],
+    "rules": [
+      "Gameplay, colliders and hotspots remain independent from rescued visual meshes.",
+      "Valoria Visual Formula v1 stays frozen; this district consumes it rather than reopening look-dev.",
+      "No Tripo credits were spent for historical rescue or district integration.",
+      "Do not reduce visual quality until representative target-device profiling identifies a measured bottleneck."
+    ],
+    "mobile_baseline": "pipeline/mobile-visual-performance-gate.json"
   }
 }
