@@ -112,17 +112,28 @@ jobs:
               if(-not (Test-Path $pathname)){ return }
               $relative=(Get-Content $pathname -Raw).Trim() -replace '/','\'
               if(-not $relative.StartsWith('Assets\')){ return }
-              $dest=Join-Path $env:WORLD_COMPARE_PROJECT $relative
+              if([string]::IsNullOrWhiteSpace($relative)){ return }
+              try {
+                $dest=Join-Path $env:WORLD_COMPARE_PROJECT $relative -ErrorAction Stop
+                [void][System.IO.Path]::GetFullPath($dest)
+              } catch {
+                Write-Warning "UNITYPACKAGE_SKIP_INVALID_PATH|$label|$relative"
+                return
+              }
               $asset=Join-Path $_.FullName 'asset'
               $meta=Join-Path $_.FullName 'asset.meta'
-              if(Test-Path $asset){
-                New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
-                Copy-Item $asset $dest -Force
-              } else {
-                New-Item -ItemType Directory -Path $dest -Force | Out-Null
+              try {
+                if(Test-Path $asset){
+                  New-Item -ItemType Directory -Path (Split-Path $dest) -Force -ErrorAction Stop | Out-Null
+                  Copy-Item $asset $dest -Force -ErrorAction Stop
+                } else {
+                  New-Item -ItemType Directory -Path $dest -Force -ErrorAction Stop | Out-Null
+                }
+                if(Test-Path $meta){ Copy-Item $meta ($dest+'.meta') -Force -ErrorAction Stop }
+                $script:copied++
+              } catch {
+                Write-Warning "UNITYPACKAGE_SKIP_COPY_ERROR|$label|$relative|$($_.Exception.Message)"
               }
-              if(Test-Path $meta){ Copy-Item $meta ($dest+'.meta') -Force }
-              $script:copied++
             }
             Write-Host "UNITYPACKAGE_EXPANDED|$label|entries=$copied"
             if($copied -lt 1){ throw "$label unitypackage produced no Assets entries." }
