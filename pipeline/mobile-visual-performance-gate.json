@@ -35,29 +35,54 @@
   "updated": "2026-09-29",
   "desktop_editor_baseline": {
     "status": "MEASURED_CURRENT_PRODUCTION_SCENE",
-    "commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
-    "workflow_run_id": 36541695034,
-    "artifact_id": 11021096851,
-    "scenario": "Valoria canonical production overview",
+    "commit": "d84b31811fe044dbc3901f3ecd6edde13a635cc6",
+    "workflow_run_id": 36546445386,
+    "artifact_id": 11022647974,
+    "scenario": "Valoria production overview with west rebuilders quarter + grounded Bastion crowns",
     "official_zooms": [
       19,
       12,
       9
     ],
-    "active_renderers": 513,
-    "unique_materials": 72,
-    "scene_triangles": 460236,
-    "lights": 8,
-    "note": "This is a real Unity editor/capture scene-complexity baseline, not a target-device performance result. It must be used as the before-state for mobile profiling, not as an FPS or memory threshold."
+    "active_renderers": 644,
+    "unique_materials": 80,
+    "scene_triangles": 567460,
+    "lights": 15,
+    "delta_from_first_production_district": {
+      "scene_triangles": 107224,
+      "active_renderers": 131,
+      "unique_materials": 8,
+      "lights": 7
+    },
+    "note": "Current real Unity editor/capture scene-complexity baseline. This is not a mobile FPS/memory threshold. Compare target-device profiling against this exact scenario before any quality reduction."
   },
   "next_device_measurement": {
     "status": "REQUIRED_BEFORE_ANY_QUALITY_REDUCTION",
     "sequence": [
-      "Build the same commit/scenario for the representative mobile target.",
-      "Measure zoom 12 overview first, then dense district pan, Aserradero+Cuartel together, and Bastion/hero view.",
+      "Build the same current production scenario for a representative target phone.",
+      "Measure official zoom 12 overview, west rebuilders district pan, Aserradero+Cuartel together, and Bastion/hero view.",
       "Record FPS/frame time, peak memory, texture memory when available, batches/draw calls when available, resolution, quality profile and thermal/sustained-run notes.",
-      "Set SUPPORT / PRIMARY / HERO budgets only after the measured bottleneck is identified.",
-      "If the device result is healthy, preserve current visual quality and scale cautiously; if not, optimize the measured bottleneck only."
+      "Derive SUPPORT / PRIMARY / HERO budgets from the measured bottleneck and compare against the first-district 460,236-triangle baseline.",
+      "If the device result is healthy, preserve current visual quality and scale cautiously; if not, optimize only the measured bottleneck."
     ]
-  }
+  },
+  "desktop_editor_baseline_history": [
+    {
+      "status": "MEASURED_CURRENT_PRODUCTION_SCENE",
+      "commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
+      "workflow_run_id": 36541695034,
+      "artifact_id": 11021096851,
+      "scenario": "Valoria canonical production overview",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "active_renderers": 513,
+      "unique_materials": 72,
+      "scene_triangles": 460236,
+      "lights": 8,
+      "note": "This is a real Unity editor/capture scene-complexity baseline, not a target-device performance result. It must be used as the before-state for mobile profiling, not as an FPS or memory threshold."
+    }
+  ]
 }
