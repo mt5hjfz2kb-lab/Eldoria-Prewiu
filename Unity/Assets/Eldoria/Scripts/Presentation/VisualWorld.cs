@@ -703,45 +703,135 @@ namespace Eldoria.Presentation
 
         static void Frontier(PlayerState state)
         {
-            for(int i=0;i<15;i++)
-            {
-                float x=-15+(i*37%29),z=-11+(i*13%25);
-                if(x>-3 && x<3) continue;
-                Tree(new Vector3(x,0,z),i%3==0);
-            }
-            Box("Forest reserve",new Vector3(-6,.1f,1),new Vector3(4.6f,.32f,4),new Color(.15f,.22f,.19f));
-            var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6,1.4f,1),new Vector3(2,2.8f,2),new Color(.20f,.28f,.23f),Quaternion.identity);
-            grove.AddComponent<WorldHotspot>().Id="forest-valoria";
-            for(int i=0;i<5;i++) Tree(new Vector3(-8+(i%3)*1.4f,0,-.1f+(i/3)*2),true);
+            var art=ValoriaExternalAssetLibrary.Load();
 
-            Box("Quarry shelf",new Vector3(6,.05f,-4.2f),new Vector3(5.0f,.30f,3.8f),Stone*.62f);
-            var quarryNode=Cylinder("Cantera de Valoria · recolectar",new Vector3(6,.72f,-4.2f),
-                new Vector3(2.15f,1.25f,1.75f),state.QuarryRemaining>0?WarmStone*.86f:Stone*.42f,Quaternion.identity);
-            quarryNode.AddComponent<WorldHotspot>().Id="quarry-valoria";
-            for(int i=0;i<6;i++)
+            // I-II production corridor: one authored route from Valoria into resources and corruption.
+            // Keep gameplay hotspots independent from the visual dressing so art never owns rules.
+            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.19f,.205f,.185f));
+            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.285f,.275f,.235f));
+
+            // A worn march road gives immediate depth and a readable Valoria -> threat axis.
+            for(int i=0;i<11;i++)
             {
-                float x=4.3f+(i%3)*1.45f,z=-5.45f+(i/3)*1.5f;
-                Sphere("Quarry stone pile",new Vector3(x,.45f,z),
-                    new Vector3(.75f,.55f,.65f)*(i%2==0?1.0f:.78f),Stone*(.72f+(i%3)*.06f));
+                float z=-6.7f+i*1.12f;
+                float x=(i%3==0?-.16f:(i%3==1?.10f:0f));
+                var slab=Box("Frontier · worn route "+(i+1),new Vector3(x,.10f,z),
+                    new Vector3(2.65f-(i%4)*.10f,.07f,1.22f),new Color(.31f,.305f,.275f));
+                slab.transform.rotation=Quaternion.Euler(0,(i%2==0?-3f:2f),0);
+                var slabCol=slab.GetComponent<Collider>();if(slabCol!=null)Object.Destroy(slabCol);
+                ValoriaKit.BenchmarkPieceTinted("Frontier · authored cobble "+(i+1),
+                    art!=null?art.SlavicCobbleRoad:null,new Vector3(x,.15f,z),
+                    2.55f,.13f,Quaternion.Euler(0,(i%2==0?-3f:2f),0),ValoriaKit.WarmStone*.70f);
             }
+
+            // Forest resource pocket. The invisible hotspot remains the only gameplay target.
+            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.145f,.185f,.15f));
+            var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6.2f,1.35f,1.0f),
+                new Vector3(2.35f,2.7f,2.35f),new Color(.18f,.22f,.18f),Quaternion.identity);
+            grove.AddComponent<WorldHotspot>().Id="forest-valoria";
+            grove.GetComponent<Renderer>().enabled=false;
+            for(int i=0;i<10;i++)
+            {
+                float x=-8.5f+(i*17%9)*.62f;
+                float z=-1.15f+(i*23%8)*.68f;
+                ValoriaKit.PineTree("Frontier · forest pine",new Vector3(x,.02f,z),.58f+(i%4)*.08f);
+            }
+            foreach(var p in new[]{
+                new Vector3(-8.4f,.04f,2.8f),new Vector3(-6.9f,.04f,3.55f),
+                new Vector3(-4.7f,.04f,2.65f),new Vector3(-7.6f,.04f,-.55f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · undergrowth",art!=null?art.SlavicBush:null,
+                    p,1.0f,.68f,Quaternion.Euler(0,(int)(p.x*31f)%360,0),new Color(.35f,.49f,.36f,1f));
+            ValoriaKit.BenchmarkPiece("Frontier · stacked timber",art!=null?art.Firewood:null,
+                new Vector3(-4.25f,.12f,.45f),1.25f,.78f,Quaternion.Euler(0,-18f,0));
+
+            // Quarry identity is staged visually now so the incoming authoritative gather mechanic
+            // can attach without another art pass. No hotspot is added here until gameplay owns it.
+            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.23f,.225f,.205f));
+            ValoriaKit.RockCluster("Frontier · quarry cut",new Vector3(6.4f,.02f,-2.1f),1.28f,12);
+            ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
+            ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
+                new Vector3(5.0f,.16f,-3.95f),2.15f,1.00f,Quaternion.Euler(0,8f,0),ValoriaKit.OldStone*.78f);
+            var quarryMarker=Box("Cantera de Valoria · visual reserve",new Vector3(6.5f,.28f,-2.1f),
+                new Vector3(3.7f,.18f,3.4f),new Color(.20f,.20f,.19f));
+            quarryMarker.GetComponent<Renderer>().enabled=false;
+            var qCol=quarryMarker.GetComponent<Collider>();if(qCol!=null)Object.Destroy(qCol);
+
+            // Forest/road framing without random prototype scatter.
+            foreach(var p in new[]{
+                new Vector3(-11.2f,.02f,-4.5f),new Vector3(-10.8f,.02f,5.6f),
+                new Vector3(10.8f,.02f,-4.7f),new Vector3(10.5f,.02f,4.5f),
+                new Vector3(-9.7f,.02f,8.3f),new Vector3(8.9f,.02f,8.0f)})
+                ValoriaKit.PineTree("Frontier · ridge pine",p,.64f);
+            foreach(var p in new[]{
+                new Vector3(-10.5f,.04f,1.8f),new Vector3(10.2f,.04f,1.2f),
+                new Vector3(-3.7f,.04f,7.2f),new Vector3(3.6f,.04f,7.0f)})
+                ValoriaKit.RockCluster("Frontier · route geology",p,.68f,5);
+
+            // Enemy target stays an invisible gameplay volume; visible threat is built as authored
+            // dark-fantasy silhouette around it rather than exposing a primitive sphere.
             string enemyId=state.BastionLevel>=2?"engendro-valoria":"corrupt-scout";
             bool defeated=state.BastionLevel>=2?state.EngendroDefeated:state.ScoutDefeated;
-            var enemy=Sphere(state.BastionLevel>=2?"Engendro de la Brecha":"Explorador corrupto",
-                new Vector3(5,1,3),state.BastionLevel>=2?new Vector3(1.75f,2.55f,1.75f):new Vector3(1.35f,2.1f,1.35f),
-                defeated?Stone*.5f:Violet*(state.BastionLevel>=2?.66f:.52f));
+            var enemy=Sphere(state.BastionLevel>=2?"Engendro de la Brecha · target":"Explorador corrupto · target",
+                new Vector3(5.0f,1.0f,3.15f),state.BastionLevel>=2?new Vector3(1.90f,2.70f,1.90f):new Vector3(1.45f,2.2f,1.45f),
+                Color.clear);
             enemy.AddComponent<WorldHotspot>().Id=enemyId;
-            if(state.BastionLevel>=2 && !defeated)
+            enemy.GetComponent<Renderer>().enabled=false;
+
+            if(state.BastionLevel>=2)
             {
-                Box("Engendro carapace",new Vector3(5,1.35f,3),new Vector3(2.1f,.55f,1.55f),Deep*.75f);
-                Glow("Engendro corruption core",new Vector3(5,1.45f,2.55f),Violet,1.5f,4.2f);
+                var torso=Sphere("Engendro · corrupted torso",new Vector3(5.0f,1.18f,3.15f),
+                    new Vector3(1.45f,1.10f,1.28f),defeated?Stone*.38f:new Color(.18f,.16f,.20f));
+                var tc=torso.GetComponent<Collider>();if(tc!=null)Object.Destroy(tc);
+                var carapace=Box("Engendro · stone carapace",new Vector3(5.0f,1.62f,3.08f),
+                    new Vector3(2.05f,.52f,1.52f),defeated?Stone*.34f:Deep*.72f);
+                carapace.transform.rotation=Quaternion.Euler(-8f,0,0);
+                var cc=carapace.GetComponent<Collider>();if(cc!=null)Object.Destroy(cc);
+                foreach(float x in new[]{-1f,1f})
+                {
+                    var limb=Cylinder("Engendro · forelimb",new Vector3(5.0f+x*.93f,.70f,2.90f),
+                        new Vector3(.22f,.90f,.22f),defeated?Stone*.32f:new Color(.13f,.14f,.15f),Quaternion.Euler(18f,0,x*18f));
+                    var lc=limb.GetComponent<Collider>();if(lc!=null)Object.Destroy(lc);
+                }
+                if(!defeated) Glow("Engendro · corruption core",new Vector3(5.0f,1.42f,2.48f),Violet,1.18f,3.5f);
             }
-            Box("Broken watchpost",new Vector3(5,.8f,4.6f),new Vector3(2.5f,1.7f,1.3f),Stone*.65f);
-            Hero(new Vector3(0,0,-6),.9f);
-            for(int i=0;i<4;i++) Archer(new Vector3(-1.3f+i*.75f,0,-7));
+            else
+            {
+                var body=Cylinder("Explorador corrupto · body",new Vector3(5.0f,1.0f,3.15f),
+                    new Vector3(.48f,1.45f,.44f),defeated?Stone*.36f:new Color(.17f,.18f,.19f),Quaternion.identity);
+                var bc=body.GetComponent<Collider>();if(bc!=null)Object.Destroy(bc);
+                var hood=Sphere("Explorador corrupto · hood",new Vector3(5.0f,2.02f,3.15f),
+                    new Vector3(.56f,.52f,.54f),defeated?Stone*.34f:new Color(.12f,.13f,.16f));
+                var hc=hood.GetComponent<Collider>();if(hc!=null)Object.Destroy(hc);
+                var spear=Box("Explorador corrupto · spear",new Vector3(5.55f,1.25f,3.05f),
+                    new Vector3(.10f,2.60f,.10f),new Color(.25f,.20f,.16f));
+                spear.transform.rotation=Quaternion.Euler(0,0,-8f);
+                var sc=spear.GetComponent<Collider>();if(sc!=null)Object.Destroy(sc);
+                if(!defeated)Glow("Explorador corrupto · violet mark",new Vector3(5.0f,1.25f,2.72f),Violet,.62f,2.1f);
+            }
+
+            // Ruined imperial watchpost and distant Breach scar frame the threat direction.
+            if(ValoriaKit.BenchmarkPieceModulated("Frontier · broken imperial watchpost",art!=null?art.RuinedTower:null,
+                new Vector3(7.1f,.08f,5.25f),2.65f,3.65f,Quaternion.Euler(0,-14f,0),new Color(.46f,.47f,.45f,1f))==null)
+            {
+                var tower=Box("Frontier · broken watchpost fallback",new Vector3(7.1f,1.05f,5.25f),
+                    new Vector3(2.15f,2.10f,1.65f),Stone*.52f);
+                var wc=tower.GetComponent<Collider>();if(wc!=null)Object.Destroy(wc);
+            }
+            ValoriaScar(new Vector3(10.0f,.01f,8.0f));
+
+            // Party staging stays readable at the road mouth.
+            Hero(new Vector3(-1.35f,.02f,-6.0f),.90f);
+            for(int i=0;i<4;i++) Archer(new Vector3(-.65f+i*.55f,.02f,-7.0f));
             if(state.March.Phase!="idle")
             {
-                var marker=Sphere("March signal",new Vector3(0,.55f,-2),new Vector3(.9f,.25f,.9f),Amber);
-                marker.AddComponent<BreachPulse>().Speed=1.5f;
+                for(int i=0;i<4;i++)
+                {
+                    float t=(i+1)/5f;
+                    var marker=Sphere("March trail "+i,new Vector3(Mathf.Lerp(0f,4.1f,t),.20f,Mathf.Lerp(-4.8f,2.2f,t)),
+                        new Vector3(.22f,.06f,.22f),Amber*.72f);
+                    var mc=marker.GetComponent<Collider>();if(mc!=null)Object.Destroy(mc);
+                    marker.AddComponent<BreachPulse>().Speed=1.1f+i*.12f;
+                }
             }
         }
         static void House(string name,Vector3 p,Vector3 size,bool lit)
