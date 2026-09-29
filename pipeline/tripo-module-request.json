@@ -27,5 +27,6 @@
   "notes": "One authorized Tripo generation already completed and exported. Process exact GLB through Blender, split by connected components, normalize pivots, import pieces into isolated Unity review, render official evidence, and report the actual useful-piece count. No production promotion.",
   "promotion": {
     "enabled": false
-  }
+  },
+  "run_nonce": "2026-09-29T20:39Z-multipiece-e2e"
 }
