@@ -1,6 +1,6 @@
 # VALORIA VISUAL FORMULA v1
 
-Status: PROVISIONAL / ACTIVE VALIDATION
+Status: VALIDATED v1 / FROZEN PRODUCTION BASELINE
 Owner intent: canonical visual-direction formula for Valoria until superseded by a validated revision.
 Updated: 2026-09-29.
 
@@ -60,7 +60,7 @@ Use the LookDev rig rather than per-building custom lighting.
 - moderate fog for depth, never enough to wash materials;
 - light angle must reveal form at the official isometric camera.
 
-Candidate profiles are tested through `ValoriaLookDevCapture`; no profile becomes canonical solely from isolated beauty. It must improve integrated readability at official cameras.
+`neutral-overcast` is the canonical production LookDev for v1, matching the real `VisualWorld` environment: ambient 0.70 neutral, fog 0.63 from 28–62, white directional sun 0.90, shadow strength 0.55, rotation 55/-25. Historical candidates remain evidence only and are not active production alternatives.
 
 ## Detail hierarchy
 
@@ -110,7 +110,7 @@ Apply the same families at higher hero quality to one bounded architecture+rock 
 ### Gate D — Integrated district
 Verify Aserradero + Cuartel + surrounding stone/rock/ground under the same environment. Judge COMPOSITION, SURFACE and IDENTITY separately.
 
-Only after A+B+C are green may this document be promoted from PROVISIONAL to VALIDATED v1.
+All four gates are green. Gate C uses GateStreetRiseRock MV1 only as a bounded HERO visual fragment; its historical traversal/interface failure remains failed and was not reopened. This document is therefore **VALIDATED v1** and frozen as the production baseline.
 
 ## Defect routing
 
@@ -123,9 +123,20 @@ Only after A+B+C are green may this document be promoted from PROVISIONAL to VAL
 
 Never regenerate paid geometry to fix a confirmed SURFACE-only defect.
 
-## Current first target
+## Validation evidence
 
-`Valoria_Aserradero_AP2_v1` is the first Surface v1 laboratory because its geometry is already accepted while integrated appearance is not. The next reusable proof is Cuartel.
+- Aserradero/Cuartel authored PBR preserved in Unity: run `36498200151`, artifact `11004024446`.
+- Canonical LookDev evidence: run `36529204672`; production formula evidence: run `36529730848`, artifact `11015563918`.
+- Hero fragment final visual gate: run `36534386365`, artifact `11017959075`, commit `4331a060e534fab14a9e8897f5bda006e8a2b6c9`; 49,799 triangles, geometry unchanged, zero Tripo credits.
+- Production environment source of truth: `Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs`.
+
+## Freeze rule
+
+Do not reopen broad tool/look-dev investigation after v1 validation. Revisions require new integrated official-camera evidence of a concrete composition/surface/identity failure or measured target-device constraint. Surface-only defects never justify paid geometry regeneration.
+
+## Current production target
+
+Use this formula to build the first visually finished Valoria district from the real playable topology, reusing certified historical geometry before requesting new paid assets.
 
 ## Automation references
 
