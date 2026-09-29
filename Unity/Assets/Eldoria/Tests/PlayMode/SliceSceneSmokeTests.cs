@@ -245,6 +245,26 @@ namespace Eldoria.Tests
             Assert.That(Vector3.Distance(camera.transform.position,home),Is.LessThan(.001f));
         }
 
+        [UnityTest]
+        public IEnumerator OwnerHudExposesGuidedReferenceFrameAndReadableLighting()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            Assert.That(GameObject.Find("Kingdom header"),Is.Not.Null);
+            Assert.That(GameObject.Find("Objective banner"),Is.Not.Null);
+            Assert.That(GameObject.Find("Primary objective action"),Is.Not.Null);
+            Assert.That(GameObject.Find("Primary navigation"),Is.Not.Null);
+            Assert.That(GameObject.Find("CIUDAD"),Is.Not.Null);
+            Assert.That(GameObject.Find("MUNDO"),Is.Not.Null);
+            Assert.That(GameObject.Find("HÉROES"),Is.Not.Null);
+            Assert.That(GameObject.Find("ARCÓN"),Is.Not.Null);
+            Assert.That(GameObject.Find("CÓDICE"),Is.Not.Null);
+            Assert.That(RenderSettings.ambientLight.grayscale,Is.GreaterThan(.78f));
+            var sun=GameObject.Find("Valoria · amber dusk")?.GetComponent<Light>();
+            Assert.That(sun,Is.Not.Null);
+            Assert.That(sun.intensity,Is.GreaterThanOrEqualTo(1.20f));
+        }
+
 
     }
 }
