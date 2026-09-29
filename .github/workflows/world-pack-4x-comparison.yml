@@ -76,6 +76,7 @@ jobs:
           & robocopy.exe "$env:GITHUB_WORKSPACE\Unity" $project /E /NFL /NDL /NJH /NJS /NP /XD Library Temp Obj Logs Build Builds WebGLBuild
           $code=$LASTEXITCODE
           if($code -gt 7){ throw "Robocopy failed with code $code" }
+          $global:LASTEXITCODE=0
 
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $nested=Join-Path $root 'Holotna-Mountain-URP.unitypackage'
