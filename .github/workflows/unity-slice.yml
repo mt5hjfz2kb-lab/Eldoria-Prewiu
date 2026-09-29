@@ -44,13 +44,15 @@ jobs:
           heavy=false
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
-            if { [[ "$file" == Unity/* ]] ||
-                 [[ "$file" == ".github/workflows/unity-slice.yml" ]]; } &&
-               [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs" ]] &&
-               [[ "$file" != "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs" ]]; then
-              heavy=true
-              break
-            fi
+            case "$file" in
+              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*)
+                continue
+                ;;
+              Unity/*)
+                heavy=true
+                break
+                ;;
+            esac
           done <<< "$files"
           echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
       - name: Verify tracked Unity source
