@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "formula": "VALORIA_VISUAL_FORMULA_v1",
-  "status": "ACTIVE_VALIDATION",
+  "status": "VALIDATED_V1",
   "updated": "2026-09-29",
   "gates": {
     "A_aserradero": {
@@ -87,9 +87,9 @@
       "role": "HERO_VISUAL_LANDMARK_ONLY",
       "geometry": "FUNCTION_CERTIFIED",
       "traversal": "DOCUMENTED_INTERFACE_FAIL_NOT_REOPENED",
-      "surface": "PBR_STONE_ROCK_PROTOTYPE_IMPLEMENTED_PENDING_RUNNER",
-      "official_camera_visual": "PENDING",
-      "verdict": "CANDIDATE_SELECTED",
+      "surface": "SEMANTIC_STONE_ROCK_VALORIA_V1",
+      "official_camera_visual": "PASS_19_12_9",
+      "verdict": "TECH_PASS_VISUAL_PASS_HERO_FRAGMENT",
       "rule": "Hero visual validation may reuse this architecture+rock mass, but no result may claim the historical lower-entry-to-upper-exit route is repaired.",
       "prototype_script": "tools/valoria_hero_surface_prototype.py",
       "material_families": [
@@ -128,7 +128,13 @@
         "stone_faces": 25991,
         "rock_faces": 23808,
         "unity_visual_capture": "PENDING_RERUN"
-      }
+      },
+      "final_run_id": 36534386365,
+      "final_artifact_id": 11017959075,
+      "final_commit": "4331a060e534fab14a9e8897f5bda006e8a2b6c9",
+      "geometry_modified": false,
+      "tripo_credits_spent": 0,
+      "visual_evidence": "Stone architecture remains lighter/readable against darker Rock at strategic/city/detail official zooms; monumental silhouette survives. Historical traversal/interface failure remains explicitly out of scope."
     },
     "D_integrated_formula_scene": {
       "goal": "Aserradero + Cuartel + Bastion/terrain under one environment and official cameras",
@@ -158,16 +164,17 @@
       "production_formula_run_id": 36529730848,
       "production_formula_artifact_id": 11015563918,
       "unity_slice_run_id": 36529204570,
-      "selected_profile": "valoria-v1-candidate",
+      "selected_profile": "neutral-overcast",
       "geometry_regenerated": false,
-      "tripo_credits_spent": 0
+      "tripo_credits_spent": 0,
+      "production_profile_source": "VisualWorld.cs"
     }
   },
   "formula_can_be_marked_validated_when": [
-    "Aserradero integrated official-camera result is accepted",
-    "Cuartel remains coherent under the same environment/material-family rules",
-    "GateStreetRiseRock MV1 passes as a bounded hero VISUAL fragment under the same material-family/lookdev language; traversal remains out of scope and failed",
-    "Integrated formula scene passes composition/surface/identity review"
+    "Aserradero integrated official-camera result is accepted [SATISFIED]",
+    "Cuartel remains coherent under the same environment/material-family rules [SATISFIED]",
+    "GateStreetRiseRock MV1 passes as a bounded hero VISUAL fragment under the same material-family/lookdev language; traversal remains out of scope and failed [SATISFIED]",
+    "Integrated formula scene passes composition/surface/identity review [SATISFIED]"
   ],
   "historical_rescue": {
     "registry": "pipeline/historical-module-rescue.json",
@@ -199,5 +206,15 @@
     "seam_filler_rule": "RockTerrainSeamFiller rescue is isolated support-only and cannot alter production topology.",
     "towerwall_rule": "TowerWallRock rescue may improve skyline/support identity but cannot define circulation.",
     "no_paid_regeneration_before_reuse": true
+  },
+  "validated_v1": {
+    "frozen": true,
+    "rule": "Valoria Visual Formula v1 is the production visual baseline. Reopen only with new integrated official-camera evidence that demonstrates a concrete defect or measured target-device constraint.",
+    "production_lookdev": "neutral-overcast",
+    "production_lookdev_source": "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+    "final_hero_run_id": 36534386365,
+    "final_hero_artifact_id": 11017959075,
+    "final_hero_commit": "4331a060e534fab14a9e8897f5bda006e8a2b6c9",
+    "zero_credit_validation": true
   }
 }
