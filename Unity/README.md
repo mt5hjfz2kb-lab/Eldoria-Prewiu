@@ -16,6 +16,8 @@ La instalación del nodo remoto se automatiza con `scripts/setup-unity-runner-wi
 
 Después de que el runner aparezca Online, define la variable de Actions `UNITY_RUNNER_READY=true`. A partir de ahí los cambios relevantes en `Unity/**` pueden activar automáticamente tests EditMode/PlayMode, build Windows y subida de logs/player como artifact.
 
+El mismo workflow audita ahora, de forma no bloqueante, si el nodo tiene instalado **Unity Android Build Support**, si existe el `adb` incluido con el SDK y si hay algún dispositivo Android visible/autorizado. Este audit no certifica rendimiento móvil: solo determina si el runner está preparado para iniciar el perfilado físico definido en `../pipeline/mobile-visual-performance-gate.json`.
+
 ## Pruebas y build
 
 Desde raíz del repositorio, `python3 scripts/check_unity_slice.py` solo comprueba la estructura de archivos. Para validación **real**, ejecuta en un equipo con Editor y licencia:
