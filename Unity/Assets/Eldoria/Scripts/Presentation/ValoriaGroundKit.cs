@@ -20,6 +20,7 @@ namespace Eldoria.Presentation
             var root = Root(name, center, yawDegrees);
             int segments = Mathf.Max(3, Mathf.CeilToInt(length / 1.25f));
             float segmentLength = length / segments;
+            var art = ValoriaExternalAssetLibrary.Load();
             for (int i = 0; i < segments; i++)
             {
                 float z = -length * .5f + segmentLength * (.5f + i);
@@ -27,8 +28,19 @@ namespace Eldoria.Presentation
                 float skew = (i % 4 == 0 ? -.035f : (i % 4 == 2 ? .03f : 0f));
                 var patch = Patch(name + " · street " + (i + 1),
                     new Vector3(skew, .002f + (i % 2) * .002f, z),
-                    w, segmentLength * 1.12f, StreetStone * (.96f + (i % 3) * .018f), i);
+                    w, segmentLength * 1.12f, StreetStone * (1.02f + (i % 3) * .018f), i);
                 patch.transform.SetParent(root.transform, false);
+
+                if (art != null && art.SlavicCobbleRoad != null)
+                {
+                    var authored = ValoriaKit.BenchmarkPieceModulated(name + " · authored cobble " + (i + 1),
+                        art.SlavicCobbleRoad,
+                        root.transform.TransformPoint(new Vector3(skew, .015f, z)),
+                        w * .96f, .14f,
+                        root.transform.rotation * Quaternion.Euler(0, i % 2 == 0 ? -2.5f : 2f, 0),
+                        new Color(.90f,.88f,.82f,1f));
+                    if (authored != null) authored.transform.SetParent(root.transform, true);
+                }
             }
             return root;
         }
@@ -39,8 +51,17 @@ namespace Eldoria.Presentation
             var basePatch = Patch(name + " · widening base", Vector3.zero, width, depth, StreetStone * .96f, 17);
             basePatch.transform.SetParent(root.transform, false);
             var inner = Patch(name + " · worn centre", new Vector3(width * .04f, .004f, -depth * .03f),
-                width * .74f, depth * .83f, StreetStone * 1.035f, 31);
+                width * .74f, depth * .83f, StreetStone * 1.08f, 31);
             inner.transform.SetParent(root.transform, false);
+            var art = ValoriaExternalAssetLibrary.Load();
+            if (art != null && art.SlavicCobbleRoad != null)
+            {
+                var authored = ValoriaKit.BenchmarkPieceModulated(name + " · authored widening cobble",
+                    art.SlavicCobbleRoad, center + Vector3.up * .018f,
+                    Mathf.Min(width, depth) * .92f, .14f, Quaternion.Euler(0, yawDegrees, 0),
+                    new Color(.90f,.88f,.82f,1f));
+                if (authored != null) authored.transform.SetParent(root.transform, true);
+            }
             return root;
         }
 
@@ -50,8 +71,17 @@ namespace Eldoria.Presentation
             var patch = Patch(name + " · terrace", Vector3.zero, width, depth, TerraceStone, 43);
             patch.transform.SetParent(root.transform, false);
             var earth = Patch(name + " · earth wear", new Vector3(width * .09f, .003f, depth * .07f),
-                width * .57f, depth * .42f, EarthBlend, 59);
+                width * .57f, depth * .42f, EarthBlend * 1.06f, 59);
             earth.transform.SetParent(root.transform, false);
+            var art = ValoriaExternalAssetLibrary.Load();
+            if (art != null && art.SlavicMudFlat != null)
+            {
+                var authored = ValoriaKit.BenchmarkPieceModulated(name + " · authored terrace wear",
+                    art.SlavicMudFlat, center + Vector3.up * .014f,
+                    Mathf.Min(width, depth) * .86f, .10f, Quaternion.Euler(0, yawDegrees, 0),
+                    new Color(.92f,.88f,.78f,1f));
+                if (authored != null) authored.transform.SetParent(root.transform, true);
+            }
             return root;
         }
 
@@ -60,6 +90,7 @@ namespace Eldoria.Presentation
             var root = Root(name, center, yawDegrees);
             int blocks = Mathf.Max(3, Mathf.CeilToInt(length / .9f));
             float step = length / blocks;
+            var art = ValoriaExternalAssetLibrary.Load();
             for (int i = 0; i < blocks; i++)
             {
                 float x = -length * .5f + step * (.5f + i);
@@ -67,9 +98,18 @@ namespace Eldoria.Presentation
                 var block = ValoriaKit.Block(name + " · masonry " + (i + 1),
                     new Vector3(x, h * .5f, (i % 2 == 0 ? -.015f : .015f)),
                     new Vector3(step * 1.04f, h, .32f),
-                    RetainingStone * (.94f + (i % 3) * .025f));
+                    RetainingStone * (.98f + (i % 3) * .025f));
                 StripCollider(block);
                 block.transform.SetParent(root.transform, false);
+
+                if (art != null && art.SlavicStoneFence != null && i % 2 == 0)
+                {
+                    var world = root.transform.TransformPoint(new Vector3(x, .03f, -.10f));
+                    var authored = ValoriaKit.BenchmarkPieceModulated(name + " · authored retaining face " + (i + 1),
+                        art.SlavicStoneFence, world, step * 1.65f, h * 1.12f,
+                        root.transform.rotation, new Color(.82f,.84f,.82f,1f));
+                    if (authored != null) authored.transform.SetParent(root.transform, true);
+                }
             }
             return root;
         }
