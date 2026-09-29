@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 
 namespace Eldoria.EditorTools
 {
@@ -25,6 +26,7 @@ namespace Eldoria.EditorTools
             public string module_label;
             public float unity_yaw_degrees;
             public string visual_acceptance;
+            public string lookdev_profile;
         }
 
         [Serializable] class Report
@@ -157,10 +159,29 @@ namespace Eldoria.EditorTools
 
             var sun = new GameObject("Review light").AddComponent<Light>();
             sun.type = LightType.Directional;
-            sun.intensity = 1.05f;
             sun.shadows = LightShadows.Soft;
-            sun.transform.rotation = Quaternion.Euler(42, -38, 0);
-            RenderSettings.ambientLight = new Color(.58f, .61f, .64f);
+
+            bool valoriaLookDev = string.Equals(config.lookdev_profile, "valoria-neutral-overcast-v1", StringComparison.OrdinalIgnoreCase);
+            if (valoriaLookDev) {
+                RenderSettings.ambientMode = AmbientMode.Flat;
+                RenderSettings.ambientLight = new Color(.70f, .70f, .70f);
+                RenderSettings.fog = true;
+                RenderSettings.fogMode = FogMode.Linear;
+                RenderSettings.fogColor = new Color(.63f, .63f, .63f);
+                RenderSettings.fogStartDistance = 28f;
+                RenderSettings.fogEndDistance = 62f;
+                sun.color = Color.white;
+                sun.intensity = .90f;
+                sun.shadowStrength = .55f;
+                sun.transform.rotation = Quaternion.Euler(55f, -25f, 0f);
+            } else {
+                sun.intensity = 1.05f;
+                sun.shadowStrength = .55f;
+                sun.transform.rotation = Quaternion.Euler(42, -38, 0);
+                RenderSettings.ambientMode = AmbientMode.Flat;
+                RenderSettings.ambientLight = new Color(.58f, .61f, .64f);
+                RenderSettings.fog = false;
+            }
 
             var bounds = BoundsOf(module);
             var camera = new GameObject("Official zoom review camera").AddComponent<Camera>();
@@ -168,8 +189,8 @@ namespace Eldoria.EditorTools
             camera.orthographic = true;
             camera.orthographicSize = 12f;
             camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(.64f, .72f, .8f);
-            camera.transform.position = bounds.center + new Vector3(18f, 14f, -25f);
+            camera.backgroundColor = valoriaLookDev ? RenderSettings.fogColor : new Color(.64f, .72f, .8f);
+            camera.transform.position = bounds.center + (valoriaLookDev ? new Vector3(18.2f, 14.6f, -25.8f) : new Vector3(18f, 14f, -25f));
             camera.transform.LookAt(bounds.center + Vector3.up * (bounds.extents.y * .10f));
 
             var report = Measure(module, scale);
