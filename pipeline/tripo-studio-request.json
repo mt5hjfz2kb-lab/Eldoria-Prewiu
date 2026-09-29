@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "generate_staged",
+  "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Owner explicitly authorized exactly 55 credits for the already-staged exact multipiece stone sheet. Click Generate once, no restaging, no second generation.",
-  "request_id": "eldoria-multipiece-stonekit-v1-generate-authorized-55",
+  "notes": "Watch the single authorized multipiece generation to completion. No further credit spend. Do not regenerate.",
+  "request_id": "eldoria-multipiece-stonekit-v1-watch-generated",
   "asset_name": "Eldoria_MultiPiece_StoneKit_v1",
   "function": "Single-sheet Tripo viability test for six separable reusable aged-stone modular families: straight slab, irregular slab, street edge, street corner, step, stone block.",
   "upload_file_name": "conjunto_de_piezas_de_piedra_envejecida.jpeg",
@@ -11,8 +11,8 @@
   "upload_size_bytes": 376149,
   "visual_width": 1254,
   "visual_height": 1254,
-  "allow_credit_spend": true,
-  "authorized_credit_cost": 55,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0,
   "approved_input_sha256": "210d4d629df6c34eb1b59195a0d9ac3a177a8ed61f5b7fd96bb64201c2d4c0e8",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -25,11 +25,12 @@
     "escalon",
     "bloque de piedra"
   ],
-  "probe_nonce": "2026-09-29-generate-authorized-55",
+  "probe_nonce": "2026-09-29-watch-generated-r1",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "probe_chatgpt_session": false,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_MultiPiece_StoneKit_v1/part_*.b64",
   "prior_stage_run_id": 36621596645,
-  "prior_stage_artifact_id": 11059060687
+  "prior_stage_artifact_id": 11059060687,
+  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-stone-and-timber-smithy-building-with-wooden-doors-banners-1d99984e-3e32-4948-b07a-45be6b2e68a7"
 }
