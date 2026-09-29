@@ -124,6 +124,27 @@ namespace Eldoria.Domain
         public const int SawmillBuildSeconds = SliceContentProfiles.QaFast.SawmillBuildSeconds;
         public const int TravelSeconds = SliceContentProfiles.QaFast.TravelSeconds;
         public const int GatherSeconds = SliceContentProfiles.QaFast.GatherSeconds;
+        public static string CurrentObjectiveKey(PlayerState s)
+        {
+            if (s == null) return "invalid";
+            var p = s.ChapterProgress ?? new ChapterProgressState();
+            if (s.BastionLevel <= 1)
+            {
+                if (s.JourneyComplete) return "b1.ascend";
+                if (s.SawmillLevel == 0) return "b1.build-sawmill";
+                if (p.GatheredWood < SliceContentProfiles.QaFast.Chapter1GatherWood) return "b1.gather-wood";
+                if (p.GatheredStone < SliceContentProfiles.QaFast.Chapter1GatherStone) return "b1.gather-stone";
+                if (!p.RouteCleared) return "b1.clear-route";
+                return "b1.return";
+            }
+            if (s.EngendroDefeated || p.EngendroDefeated) return "b2.complete";
+            if (s.BarracksLevel == 0) return "b2.build-barracks";
+            if (p.TrainedArchers < SliceContentProfiles.QaFast.Chapter2TrainArchers) return "b2.train-archers";
+            if (!p.MarchConfirmed || !s.MarchConfigured) return "b2.prepare-march";
+            if (p.ConfirmedExpeditionPower < SliceContentProfiles.QaFast.Chapter2ExpeditionPower) return "b2.raise-expedition-power";
+            return "b2.defeat-engendro";
+        }
+
         public static PowerParts TotalPower(PlayerState s)
             => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel,
                 18 * (s.Available.Total + s.Wounded.Total + (s.March.Phase == "idle" ? 0 : s.March.Troops.Total)), 1204, 0, 0);
