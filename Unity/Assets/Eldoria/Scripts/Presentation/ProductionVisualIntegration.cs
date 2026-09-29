@@ -87,6 +87,9 @@ namespace Eldoria.Presentation
                 Node("Ruinas",new Vector3(-1.9f,.15f,9.4f),new Color(.64f,.58f,.39f),1.35f);
                 Node("Alimento",new Vector3(-8.8f,.15f,-4.7f),new Color(.65f,.48f,.22f),1f);
             }
+            if(state.BastionLevel>=3)
+            for(int i=0;i<3;i++)Primitive("4X · food provision bundle · placeholder",PrimitiveType.Sphere,
+                new Vector3(-8.8f+(i-1)*.28f,.35f,-4.7f),new Vector3(.30f,.48f,.44f),new Color(.47f,.37f,.20f));
             // Existing territorial scar gains an installation silhouette, without neon crystals.
             Imported("4X · breach broken arch","Arch_Gothic",new Vector3(9.4f,.02f,8.4f),2.5f,3.25f,-22,new Color(.23f,.22f,.26f),false);
             Imported("4X · breach ruin flank","Wall_Broken",new Vector3(11.3f,.03f,8.0f),1.6f,1.6f,53,new Color(.27f,.25f,.28f),false);
@@ -97,6 +100,7 @@ namespace Eldoria.Presentation
         {
             root = new GameObject("Valoria · integrated construction visual layer").transform;
             UnifyLandscape(true);
+            ReplaceCityTrees();
             Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
             // Subordinate inhabited silhouettes replace oversized provisional staging primitives.
             foreach(var p in new[]{new Vector3(-10.5f,.47f,-1.1f),new Vector3(-14.4f,.49f,-.7f),
@@ -137,7 +141,11 @@ namespace Eldoria.Presentation
             }
             StonePiece(4,"Valoria · workshop court corner",new Vector3(-9.1f,.37f,-5.2f),new Vector3(1.02f,.28f,1.2f),180);
             StonePiece(4,"Valoria · training court corner",new Vector3(9.5f,.37f,-6.0f),new Vector3(1.1f,.26f,1.2f),90);
-            // The certified twelve physical treads are untouched; only a tiny cheek accent is added.
+            // Thin construction skins follow each certified tread's exact pose; physics stays original.
+            for(int i=0;i<12;i++)
+                StonePiece(5,"Valoria · worn tread skin",new Vector3(i%3==0?.025f:0f,.466f+i*.18f,.15f+i*.52f),
+                    new Vector3(3.06f,.025f,.49f),i%4==1?.7f:0);
+            // The certified twelve physical treads are untouched; cheek accents are visual only.
             StonePiece(5,"Valoria · stair cheek stone",new Vector3(-2.2f,.5f,1.1f),new Vector3(.75f,.26f,.48f),0);
             StonePiece(5,"Valoria · upper landing cheek",new Vector3(2.5f,2.70f,6.5f),new Vector3(.8f,.24f,.46f),90);
             StonePiece(6,"Valoria · workshop foundation stone",new Vector3(-9.8f,.22f,-2.25f),new Vector3(.65f,.6f,.72f),24);
@@ -159,9 +167,29 @@ namespace Eldoria.Presentation
             }
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero west anchor",tower,new Vector3(-3.3f,2.55f,8.5f),3.5f,7.2f,18,new Color(.72f,.74f,.70f));
             Piece("Valoria · rescued hero rear anchor",tower,new Vector3(1.9f,2.55f,10.2f),3.1f,6.1f,196,new Color(.66f,.69f,.66f));
             Finish();
+        }
+
+        static void ReplaceCityTrees()
+        {
+            var trunks=new List<MeshRenderer>();
+            foreach(var r in Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+            {
+                var n=r.gameObject.name;
+                if(n.EndsWith(" · trunk")&&(n.StartsWith("Valoria ·")||n.StartsWith("VPD ·"))&&n.Contains("pine"))trunks.Add(r);
+            }
+            int i=0;
+            foreach(var r in trunks)
+            {
+                float scale=r.transform.localScale.y/.9f;
+                var p=r.transform.position-Vector3.up*(.9f*scale);
+                string prefix=r.gameObject.name.Substring(0,r.gameObject.name.Length-" · trunk".Length);
+                Suppress(prefix);
+                Imported("Valoria · authored evergreen",i++%2==0?"Tree01A":"Tree01B",p,2.0f*scale,3.1f*scale,i*43,new Color(.30f,.43f,.23f),true);
+            }
         }
 
         static void DressBastion()
@@ -255,7 +283,7 @@ namespace Eldoria.Presentation
                 for(int i=0;i<count;i++)
                 {
                     var source=i<originals.Length?originals[i]:null;
-                    bool leaves=foliage&&i>0;
+                    bool leaves=foliage&&i==0;
                     string key=resource+"/"+i+"/"+ColorUtility.ToHtmlStringRGB(tint);
                     if(adapted.TryGetValue(key,out var cached)&&cached!=null){mats[i]=cached;continue;}
                     var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria adapted · "+resource+" "+i};
@@ -265,18 +293,18 @@ namespace Eldoria.Presentation
                         string family=leaves?"Leaf01":"Trunk01";
                         texture=Resources.Load<Texture2D>("WorldInventory/"+family+"_ALB");
                         normal=Resources.Load<Texture2D>("WorldInventory/"+family+"_NRM");
-                        m.SetColor("_BaseColor",leaves?new Color(.30f,.43f,.23f):new Color(.39f,.30f,.20f));
+                        m.SetColor("_BaseColor",(leaves?new Color(.30f,.43f,.23f):new Color(.39f,.30f,.20f)).linear);
                     }
                     else if(resource.StartsWith("Rock")||resource=="Mountain01")
                     {
                         texture=Resources.Load<Texture2D>("WorldInventory/Rock01_ALB");
-                        normal=Resources.Load<Texture2D>("WorldInventory/Rock01_NRM");m.SetColor("_BaseColor",tint);
+                        normal=Resources.Load<Texture2D>("WorldInventory/Rock01_NRM");m.SetColor("_BaseColor",tint.linear);
                     }
                     else
                     {
                         foreach(string property in new[]{"_BaseMap","_MainTex","_Albedo"})
                             if(source!=null&&source.HasProperty(property)&&source.GetTexture(property)!=null){texture=source.GetTexture(property);break;}
-                        if(texture!=null)m.SetColor("_BaseColor",tint);
+                        if(texture!=null)m.SetColor("_BaseColor",tint.linear);
                         else m=ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3,3));
                     }
                     if(texture!=null)m.SetTexture("_BaseMap",texture);
@@ -332,8 +360,8 @@ namespace Eldoria.Presentation
         }
         static void CityOrigin(Vector3 p,ValoriaExternalAssetLibrary art)
         {
-            Piece("4X · player city keep · placeholder",Resources.Load<GameObject>("WorldInventory/MegaTower"),p+new Vector3(0,0,.55f),1.75f,2.8f,0,new Color(.64f,.61f,.54f));
-            Piece("4X · player city gate · placeholder",Resources.Load<GameObject>("WorldInventory/MegaGate"),p+new Vector3(0,0,-.5f),2.1f,1.55f,0,new Color(.66f,.61f,.51f));
+            Imported("4X · player city keep · placeholder","MegaTower",p+new Vector3(0,0,.55f),1.75f,2.8f,0,new Color(.44f,.43f,.37f),false);
+            Imported("4X · player city gate · placeholder","MegaGate",p+new Vector3(0,0,-.5f),2.1f,1.55f,0,new Color(.46f,.43f,.36f),false);
             Piece("4X · player city civil roof",art!=null?art.SlavicShed:null,p+new Vector3(-1.1f,0,.1f),1.2f,1.35f,18,new Color(.71f,.65f,.54f));
             Flag("4X · Valoria standard",p+new Vector3(.9f,.15f,.5f),Blue,1.4f);
         }

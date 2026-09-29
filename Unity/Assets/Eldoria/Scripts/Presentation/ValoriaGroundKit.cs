@@ -203,8 +203,8 @@ namespace Eldoria.Presentation
             {
                 int t = i * 3;
                 triangles[t] = 8;
-                triangles[t + 1] = i;
-                triangles[t + 2] = (i + 1) % 8;
+                triangles[t + 1] = (i + 1) % 8;
+                triangles[t + 2] = i;
             }
             var uv = new Vector2[v.Length];
             for (int i = 0; i < v.Length; i++)
