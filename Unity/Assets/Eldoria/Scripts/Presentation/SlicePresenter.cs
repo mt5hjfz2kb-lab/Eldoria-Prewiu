@@ -309,7 +309,10 @@ namespace Eldoria.Presentation
         {
             switch(SliceRules.CurrentObjectiveKey(s))
             {
-                case "b1.build-sawmill": return "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera";
+                case "b1.build-sawmill":
+                    return s.Resources.Wood<SliceRules.SawmillWoodCost
+                        ? "BASTIÓN I · consigue madera para reparar el Aserradero · "+s.Resources.Wood+"/"+SliceRules.SawmillWoodCost
+                        : "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera";
                 case "b1.gather-wood": return "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.QaFast.Chapter1GatherWood;
                 case "b1.gather-stone": return "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.QaFast.Chapter1GatherStone;
                 case "b1.clear-route": return "BASTIÓN I · despeja la ruta corrupta";
