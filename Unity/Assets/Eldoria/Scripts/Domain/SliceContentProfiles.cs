@@ -38,6 +38,37 @@ namespace Eldoria.Domain
         }
 
         /// <summary>
+        /// Candidate values for the first owner-facing Bastion I-II playtest.
+        /// This profile is intentionally NOT active yet. It starts from the validated web contract
+        /// so the player is never asked to perform an impossible first objective, then must be
+        /// human-paced before any value is promoted to production/default.
+        /// </summary>
+        public static class OwnerIiiCandidate
+        {
+            public const int InitialWood = 230;
+            public const int InitialStone = 150;
+            public const int InitialFood = 0;
+            public const int InitialArcherT1 = 36;
+
+            public const int SawmillWoodCost = 80;
+            public const int SawmillBuildSeconds = 6;
+            public const int Chapter1GatherWood = 600;
+            public const int Chapter1GatherStone = 500;
+            public const int Bastion2WoodCost = 450;
+            public const int Bastion2StoneCost = 300;
+
+            public const int BarracksWoodCost = 180;
+            public const int BarracksStoneCost = 120;
+            public const int BarracksBuildSeconds = 8;
+            public const int Chapter2TrainArchers = 20;
+            public const int Chapter2ExpeditionPower = 2250;
+            public const int RecruitWoodPerArcher = 20;
+            public const int RecruitStonePerArcher = 12;
+
+            // Do not freeze owner-facing travel/gather/recruit timing until the first human pacing pass.
+        }
+
+        /// <summary>
         /// Product-contract values extracted from the canonical web vertical slice.
         /// These are reference requirements, not yet the active Unity runtime balance profile.
         /// Human pacing validation is required before OWNER_I_II becomes production/default.
