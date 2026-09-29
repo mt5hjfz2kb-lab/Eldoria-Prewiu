@@ -233,7 +233,13 @@ namespace Eldoria.Presentation
             TagVisibleHotspots("Cuartel","barracks");
             var barracks=ValoriaKit.Block("Cuartel · target",new Vector3(7.55f,1.68f,-5.05f),
                 new Vector3(3.85f,2.30f,1.15f),new Color(.2f,.2f,.2f));
-            barracks.AddComponent<WorldHotspot>().Id="barracks"; barracks.GetComponent<Renderer>().enabled=false;
+            barracks.AddComponent<WorldHotspot>().Id="barracks";
+            barracks.GetComponent<Renderer>().enabled=false;
+            // Canonical progression contract: the Cuartel interaction is a Bastion II unlock.
+            // Create the target already in its authoritative state so no frame can leak a clickable
+            // future building before ValoriaProgressionVisualGuard performs its periodic refresh.
+            var barracksTargetCollider=barracks.GetComponent<Collider>();
+            if(barracksTargetCollider!=null)barracksTargetCollider.enabled=state.BastionLevel>=2;
 
             ValoriaKit.BastionCore("Bastion",new Vector3(0,l1+.45f,7.25f),Glow);
             TagVisibleHotspots("Bastion","bastion");
