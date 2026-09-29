@@ -51,6 +51,8 @@ namespace Eldoria.Application
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
+                MarchConfigured=s.MarchConfigured, PreparedHeroId=s.PreparedHeroId,
+                PreparedTroops=s.PreparedTroops.Copy(),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
@@ -78,6 +80,15 @@ namespace Eldoria.Application
                     if (state.ForestRemaining <= 0) return Fail("El bosque está agotado");
                     if (!CanDepart()) return Fail("Marcha no disponible");
                     Depart(command.TargetId); state.CorruptionDiscovered = true; break;
+                case "ConfigureMarch":
+                    if (command.TargetId != "march-main" || state.BastionLevel < 2 || state.BarracksLevel < 1)
+                        return Fail("Marcha no disponible");
+                    if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
+                    if (state.Available.Total < 1) return Fail("No hay tropas disponibles");
+                    state.PreparedHeroId = "aldric";
+                    state.PreparedTroops = state.Available.Copy();
+                    state.MarchConfigured = true;
+                    break;
                 case "Fight":
                     if (command.TargetId == "corrupt-scout")
                     {
@@ -87,8 +98,13 @@ namespace Eldoria.Application
                     {
                         if (state.BastionLevel < 2 || state.BarracksLevel < 1) return Fail("Refuerza primero el Cuartel");
                         if (state.EngendroDefeated) return Fail("El Engendro ya ha sido derrotado");
-                        if (state.Available.Total < SliceContentProfiles.QaFast.EngendroRequiredArchers)
-                            return Fail("Necesitas " + SliceContentProfiles.QaFast.EngendroRequiredArchers + " arqueros: recluta refuerzos");
+                        if (!state.MarchConfigured) return Fail("Prepara y confirma la Marcha en Valoria antes de atacar");
+                        if (state.PreparedTroops.Total < SliceContentProfiles.QaFast.EngendroRequiredArchers)
+                            return Fail("La Marcha preparada necesita " + SliceContentProfiles.QaFast.EngendroRequiredArchers + " arqueros: actualiza la composición");
+                        if (state.PreparedTroops.ArcherT1 > state.Available.ArcherT1 ||
+                            state.PreparedTroops.ArcherT2 > state.Available.ArcherT2 ||
+                            state.PreparedTroops.ArcherT3 > state.Available.ArcherT3)
+                            return Fail("La composición preparada ya no está disponible; vuelve a confirmar la Marcha");
                     }
                     else return Fail("Amenaza desconocida");
                     if (!CanDepart()) return Fail("Marcha no disponible");
@@ -140,9 +156,13 @@ namespace Eldoria.Application
         private void Depart(string targetId)
         {
             var m = state.March;
-            m.Troops = state.Available.Copy();
-            state.Available.ArcherT1 = state.Available.ArcherT2 = state.Available.ArcherT3 = 0;
-            m.TargetId = targetId; m.HeroId = "aldric"; m.Phase = "outbound";
+            bool usePrepared = targetId == "engendro-valoria" && state.MarchConfigured;
+            m.Troops = usePrepared ? state.PreparedTroops.Copy() : state.Available.Copy();
+            m.HeroId = usePrepared ? state.PreparedHeroId : "aldric";
+            state.Available.ArcherT1 -= m.Troops.ArcherT1;
+            state.Available.ArcherT2 -= m.Troops.ArcherT2;
+            state.Available.ArcherT3 -= m.Troops.ArcherT3;
+            m.TargetId = targetId; m.Phase = "outbound";
             m.PendingWood = m.PendingStone = 0;
             m.PhaseEndsUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
         }
