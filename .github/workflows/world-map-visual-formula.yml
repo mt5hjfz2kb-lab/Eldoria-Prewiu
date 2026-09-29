@@ -8,6 +8,7 @@ on:
       - '.github/workflows/world-map-visual-formula.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/WorldMapVisualFormulaGate.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs'
@@ -77,6 +78,7 @@ jobs:
           $expected=@(
             'frontier-overview-14.png','frontier-overview-mobile.png',
             'quarry-kit-10.png','quarry-kit-7.png','quarry-kit-mobile.png',
+            'route-kit-10.png','route-kit-7.png','route-kit-mobile.png',
             'world-map-metrics.json'
           )
           foreach($name in $expected){

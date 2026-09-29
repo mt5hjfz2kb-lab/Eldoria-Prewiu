@@ -30,6 +30,10 @@ namespace Eldoria.EditorTools
             if(quarry==null)throw new System.Exception("Quarry Resource Kit v1 missing.");
             foreach(var c in quarry.GetComponentsInChildren<Collider>(true))
                 if(c.enabled)throw new System.Exception("Quarry visual kit must not own gameplay collision.");
+            var route=GameObject.Find("Frontier · march route kit");
+            if(route==null)throw new System.Exception("World Route Kit v1 missing.");
+            foreach(var c in route.GetComponentsInChildren<Collider>(true))
+                if(c.enabled)throw new System.Exception("Route visual kit must not own gameplay collision.");
 
             const string folder="WorldMapVisualFormulaCaptures";
             Directory.CreateDirectory(folder);
@@ -44,16 +48,25 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/quarry-kit-7.png",officialPosition+quarryShift,officialTarget+quarryShift,7f,1280,720);
             Save(camera,folder+"/quarry-kit-mobile.png",officialPosition+quarryShift,officialTarget+quarryShift,10f,390,844);
 
-            int renderers=0;
-            foreach(var r in quarry.GetComponentsInChildren<Renderer>(true))if(r.enabled)renderers++;
+            var routeShift=new Vector3(0f,-.35f,-2.2f);
+            Save(camera,folder+"/route-kit-10.png",officialPosition+routeShift,officialTarget+routeShift,10f,1280,720);
+            Save(camera,folder+"/route-kit-7.png",officialPosition+routeShift,officialTarget+routeShift,7f,1280,720);
+            Save(camera,folder+"/route-kit-mobile.png",officialPosition+routeShift,officialTarget+routeShift,10f,390,844);
+
+            int quarryRenderers=0;
+            foreach(var r in quarry.GetComponentsInChildren<Renderer>(true))if(r.enabled)quarryRenderers++;
+            int routeRenderers=0;
+            foreach(var r in route.GetComponentsInChildren<Renderer>(true))if(r.enabled)routeRenderers++;
             File.WriteAllText(folder+"/world-map-metrics.json",
                 "{\n"+
-                "  \"schema_version\": 1,\n"+
+                "  \"schema_version\": 2,\n"+
                 "  \"quarry_kit\": \"WorldResourceKit.QuarryResourcePocket\",\n"+
-                "  \"quarry_active_renderers\": "+renderers+",\n"+
+                "  \"quarry_active_renderers\": "+quarryRenderers+",\n"+
+                "  \"route_kit\": \"WorldRouteKit.MarchRoute\",\n"+
+                "  \"route_active_renderers\": "+routeRenderers+",\n"+
                 "  \"visual_owns_gameplay_collision\": false,\n"+
                 "  \"forest_hotspot_preserved\": true,\n"+
-                "  \"source_family\": \"Slavic hard-surface subset + Eldoria procedural geology\",\n"+
+                "  \"source_family\": \"Slavic hard-surface subset + Eldoria procedural terrain\",\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
             UnityEditor.EditorApplication.Exit(0);

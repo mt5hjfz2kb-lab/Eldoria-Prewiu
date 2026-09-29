@@ -729,17 +729,9 @@ namespace Eldoria.Presentation
             ValoriaKit.TerrainPieceTinted("SM_Terrain_03","Frontier · south terrain transition",
                 new Vector3(0f,-.58f,-15.0f),12.0f,2.4f,Quaternion.Euler(0,8f,0),new Color(.32f,.30f,.25f,1f));
 
-            // A worn march trail gives a continuous Valoria -> threat axis without reading as
-            // a chain of oversized tan props. Sparse stones remain as edge detail only.
-            ValoriaGroundKit.TrailStraight("Frontier · march trail",new Vector3(0,.13f,-1.0f),12.4f,2.60f,0f);
-            for(int i=0;i<6;i++)
-            {
-                float z=-5.8f+i*2.1f;
-                float side=i%2==0?-1f:1f;
-                ValoriaKit.BenchmarkPieceModulated("Frontier · verge stone "+(i+1),
-                    art!=null?art.SlavicFlatRock:null,new Vector3(side*1.72f,.07f,z),
-                    .78f,.20f,Quaternion.Euler(0,31f+i*17f,0),new Color(.62f,.63f,.59f,1f));
-            }
+            // World Route Kit v1: one continuous, mobile-readable corridor from Valoria
+            // toward the threat. Visual-only dressing never owns march topology or rules.
+            WorldRouteKit.MarchRoute("Frontier · march route kit",new Vector3(0,.13f,-1.0f),12.4f,2.60f,0f);
 
             // Forest resource pocket. The invisible hotspot remains the only gameplay target.
             IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),5.7f,5.25f,new Color(.145f,.175f,.125f),"earth");

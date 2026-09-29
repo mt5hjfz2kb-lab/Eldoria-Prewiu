@@ -470,6 +470,27 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator FrontierWorldRouteKitIsVisualOnlyAndReusable()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+
+            var route=GameObject.Find("Frontier · march route kit");
+            var trail=GameObject.Find("Frontier · march trail");
+            Assert.That(route,Is.Not.Null);
+            Assert.That(trail,Is.Not.Null);
+            int renderers=0;
+            foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
+                if(renderer.enabled)renderers++;
+            Assert.That(renderers,Is.GreaterThanOrEqualTo(10),
+                "World Route Kit needs enough visual rhythm to remain readable at pulled-back mobile camera.");
+            foreach(var collider in route.GetComponentsInChildren<Collider>(true))
+                Assert.That(collider.enabled,Is.False,
+                    "World Route Kit is visual-only; gameplay topology must stay authoritative elsewhere.");
+        }
+
+
 
     }
 }
