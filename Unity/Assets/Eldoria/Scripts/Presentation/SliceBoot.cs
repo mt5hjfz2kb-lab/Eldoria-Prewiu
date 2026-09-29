@@ -23,6 +23,9 @@ namespace Eldoria.Presentation
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(Eldoria.Domain.SliceContentProfiles.OwnerIiiId);
+#endif
             if (Object.FindFirstObjectByType<SlicePresenter>() != null) return;
             var obj = new GameObject("Eldoria composition root");
             Object.DontDestroyOnLoad(obj);

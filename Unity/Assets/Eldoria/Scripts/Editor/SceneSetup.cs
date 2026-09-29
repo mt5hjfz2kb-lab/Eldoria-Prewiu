@@ -80,6 +80,12 @@ namespace Eldoria.EditorTools
         {
             Build("Builds/Linux/Eldoria.x86_64",BuildTarget.StandaloneLinux64);
         }
+        [MenuItem("Eldoria/Build WebGL owner slice")]
+        public static void BuildWebGL()
+        {
+            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Disabled;
+            Build("Builds/WebGL",BuildTarget.WebGL);
+        }
         private static void Build(string outputPath,BuildTarget target)
         {
             Regenerate();

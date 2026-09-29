@@ -12,7 +12,15 @@ namespace Eldoria.Domain
         // QA_FAST remains the normal/default launch. OWNER_I_II is opt-in for the first
         // human pacing pass and never silently replaces QA.
         // Owner launcher/CLI: --eldoria-profile=OWNER_I_II
-        public static string ActiveRuntimeProfile => SelectRuntimeProfile(System.Environment.GetCommandLineArgs());
+        static string runtimeProfileOverride;
+        public static string ActiveRuntimeProfile => string.IsNullOrEmpty(runtimeProfileOverride)
+            ? SelectRuntimeProfile(System.Environment.GetCommandLineArgs())
+            : runtimeProfileOverride;
+
+        public static void SetRuntimeProfileOverride(string profileId)
+        {
+            runtimeProfileOverride = profileId == OwnerIiiId ? OwnerIiiId : null;
+        }
 
         public static string SelectRuntimeProfile(string[] args)
         {

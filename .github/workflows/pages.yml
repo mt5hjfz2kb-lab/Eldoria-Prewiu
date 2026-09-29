@@ -15,6 +15,7 @@ on:
       - 'package-lock.json'
       - 'playtest/**'
       - 'tester-v0265/**'
+      - 'Unity/**'
       - '.github/workflows/pages.yml'
 
 permissions:
@@ -30,7 +31,43 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  unity-webgl:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify WebGL Build Support
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $editorDir = Split-Path $env:UNITY_EDITOR_PATH
+          $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
+          if (-not (Test-Path $webgl)) { throw "Unity WebGL Build Support is not installed on the runner." }
+      - name: Build Unity WebGL OWNER I-II
+        shell: powershell
+        run: |
+          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
+          $log = "$env:RUNNER_TEMP/Eldoria-WebGL.log"
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWebGL","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(1200000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 200 }
+            throw "Unity WebGL build timed out."
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity WebGL build failed with exit code $($process.ExitCode)."
+          }
+          if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: Unity/Builds/WebGL/
+          retention-days: 7
+
   deploy:
+    needs: unity-webgl
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -40,6 +77,11 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/configure-pages@v5
+      - name: Download Unity WebGL build
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: unity-owner
 
       - name: Install Playwright QA browser
         run: |
@@ -103,3 +145,8 @@ jobs:
         run: |
           TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?cb=${{ github.run_id }}'
           curl -fsSL -H "Cache-Control: no-cache" "$TESTER_URL" | grep -q "Eldoria — Closed Playtest T1"
+
+      - name: Verify Unity OWNER WebGL URL
+        run: |
+          UNITY_URL='${{ steps.deployment.outputs.page_url }}unity-owner/?cb=${{ github.run_id }}'
+          curl -fsSL -H "Cache-Control: no-cache" "$UNITY_URL" | grep -qi "<canvas\\|unity"
