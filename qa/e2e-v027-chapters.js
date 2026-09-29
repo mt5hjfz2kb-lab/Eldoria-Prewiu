@@ -35,6 +35,12 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await p.locator('[data-queue]').tap({force:true});await p.locator('[data-testid="speedup-open"]').evaluate(el=>{const d=el.closest('details');if(d)d.open=true});const acc=p.locator('[data-speedup-task="upgrade-building-sawmill-2"][data-speedup-unit="m1"]');await acc.waitFor({state:'visible'});await acc.tap({force:true});await p.waitForTimeout(100);
  s=await state();if(s.speedups.m1!==1)throw Error('first speedup did not leave one spare');if(s.chapterProgress.counters.speedupsUsed!==1)throw Error('speedup usage not counted');if((s.buildingLevels||{}).sawmill!==2)throw Error('speedup did not resolve timestamp task');if(!(s.sessionLog||[]).some(x=>x.type==='speedup_used'))throw Error('speedup_used analytics missing');
 
+ // Construction queue is intentionally limited to one simultaneous building construction/upgrade.
+ const qnow=Date.now();s=await state();await set({...s,view:'kingdom',bastionLevel:4,bastion3:true,developmentChoices:{4:{id:'defense',at:qnow,qa:true}},sawmill:true,barracks:true,granary:true,wood:5000,stone:5000,food:5000,buildingLevels:{sawmill:1,barracks:1,granary:1,stoneworks:0,forge:0},tasks:[{key:'upgrade-building-granary-2',title:'MEJORANDO GRANERO',target:'granary',start:qnow,end:qnow+30000,costPaid:true,cost:{wood:120,stone:78}}]});
+ await p.locator('[data-testid="building-sawmill"]').tap({force:true});await p.locator('[data-testid="building-action-sawmill"]').waitFor({state:'visible'});await p.locator('[data-testid="building-action-sawmill"]').tap({force:true});await p.waitForTimeout(120);
+ s=await state();if((s.tasks||[]).filter(t=>/^(build-|upgrade-building-|upgrade-barracks-|upgrade-bastion-)/.test(t.key||'')).length!==1)throw Error('construction queue allowed more than one active construction');if(!(await p.locator('.e22-dialog').filter({hasText:'COLA DE CONSTRUCCIÓN OCUPADA'}).count()))throw Error('construction queue limit did not explain the block');
+ await p.locator('.e22-dialog button').last().click().catch(()=>{});await p.waitForTimeout(40);
+
  // Gathering tasks must never expose accelerator controls.
  const gnow=Date.now();await set({...s,tasks:[{key:'gather-forest',title:'RECOLECTANDO MADERA',target:'forest',start:gnow,end:gnow+30000}]});await p.locator('[data-queue]').tap({force:true});if(await p.locator('[data-speedup-task="gather-forest"]').count())throw Error('gathering incorrectly accepts speedups');
 
