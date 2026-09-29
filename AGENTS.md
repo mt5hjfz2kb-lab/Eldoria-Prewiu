@@ -72,6 +72,8 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
+- **Progression-visibility contract:** the canonical vertical slice defines when player-facing content exists. Buildings, units, districts, world nodes, narrative props and UI entry points may be authored/certified early, but completed art and gameplay interaction must remain hidden/disabled until their canonical unlock. Unity must reconstruct the correct visible/interactable state from PlayerState before the first rendered frame and after scene/state refresh. See `docs/PROGRESSION_VISUAL_CONTRACT.md`.
+- **Approved UI reference is binding:** the owner-approved mobile HUD reference is an implementation contract, not optional inspiration. Preserve its player-facing visual grammar, mobile budgets, one-clear-next-action hierarchy and progression correctness. See `docs/UI_REFERENCE_CONTRACT.md`.
 - Preserve approved art unless the owner requests visual redesign.
 - `runtime-hotfix.js` is migration/compatibility-only; no new gameplay/UI/dialogue belongs there.
 - Stable interactions need `data-testid` and real Playwright tap/click coverage.
