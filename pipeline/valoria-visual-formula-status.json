@@ -274,5 +274,59 @@
     ],
     "mobile_baseline": "pipeline/mobile-visual-performance-gate.json",
     "documentation": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md"
+  },
+  "production_west_rebuilders_quarter_v1": {
+    "status": "PRODUCTION_INTEGRATED_VISUAL_PASS",
+    "updated": "2026-09-29",
+    "production_art_commit": "d84b31811fe044dbc3901f3ecd6edde13a635cc6",
+    "documentation": "docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md",
+    "visual_formula_gate": {
+      "run_id": 36546445386,
+      "artifact_id": 11022647974,
+      "verdict": "SUCCESS",
+      "official_zooms": [
+        19,
+        12,
+        9
+      ],
+      "scene_metrics": {
+        "active_renderers": 644,
+        "unique_materials": 80,
+        "scene_triangles": 567460,
+        "lights": 15
+      }
+    },
+    "lookdev_recheck": {
+      "run_id": 36546445341,
+      "verdict": "SUCCESS"
+    },
+    "runtime_evidence": {
+      "run_id": 36546445337,
+      "overall_workflow": "CANCELLED_BY_CONCURRENCY_AFTER_SUBSTANTIVE_STEPS",
+      "first_attempt_steps": {
+        "editmode": "SUCCESS",
+        "playmode": "SUCCESS",
+        "windows_desktop_build": "SUCCESS",
+        "valoria_art_benchmark": "SUCCESS",
+        "artifact_upload": "SUCCESS"
+      },
+      "rule": "Do not interpret the global cancelled conclusion as a failing product gate; the run was superseded by newer concurrent main work after all substantive first-attempt steps completed successfully."
+    },
+    "content": [
+      "west rebuilders terrace",
+      "west rebuilders upper shelf",
+      "west rebuilders route x6",
+      "west rebuilders homes x5",
+      "work courts x2",
+      "upper dwellings x2",
+      "RockTerrainSeamFiller x2 visual-only geology"
+    ],
+    "bastion_hero_pass": {
+      "result": "PASS_NO_DETACHED_CROWN_AT_OFFICIAL_CAMERA",
+      "change": "replace detached roof masses with grounded fortress crowns and remove final floating lantern cap",
+      "gameplay_changed": false
+    },
+    "performance_baseline": "pipeline/mobile-visual-performance-gate.json",
+    "tripo_credits_spent": 0
   }
 }
