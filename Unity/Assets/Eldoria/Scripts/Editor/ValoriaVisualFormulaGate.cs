@@ -66,11 +66,12 @@ namespace Eldoria.EditorTools
                 CorruptionDiscovered = true
             };
             VisualWorld.Create(true, state);
+            HideVisualFamilyForDistrictEvidence("Bastion");
 
             var residential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
                 "Production rescue · ResidentialTerraceRock",
-                new Vector3(-4.55f, .42f, -.15f), 198f, 4.35f);
+                new Vector3(-1.75f, .40f, 1.10f), 198f, 5.25f);
             var seamWest = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam west",
@@ -78,7 +79,7 @@ namespace Eldoria.EditorTools
             var seamResidential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam residential",
-                new Vector3(-4.25f, .20f, -.35f), 112f, 3.65f);
+                new Vector3(-1.70f, .18f, .95f), 112f, 4.20f);
             var seamEast = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam east",
@@ -92,7 +93,7 @@ namespace Eldoria.EditorTools
 
             const string folder = "VisualFormulaCaptures";
             Directory.CreateDirectory(folder);
-            var districtShift = new Vector3(0f, -1.55f, -5.15f);
+            var districtShift = new Vector3(0f, -1.75f, -5.75f);
             var officialPosition = new Vector3(18.2f, 14.6f, -25.8f) + districtShift;
             var officialTarget = new Vector3(0, 3.15f, 5.8f) + districtShift;
             Save(camera, folder + "/production-district-19.png", officialPosition, officialTarget, 19f, 1280, 720);
@@ -111,10 +112,21 @@ namespace Eldoria.EditorTools
                 "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
                 "  \"official_zooms\": [19,12,9],\n" +
                 "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
+                "  \"district_focus_visual_suppression\": \"Bastion renderers and Bastion-named lights hidden only in this isolated evidence scene so the lower production district can be judged; canonical VisualWorld/runtime is unchanged\",\n" +
                 "  \"promotion\": \"EVIDENCE_ONLY_DO_NOT_MUTATE_VISUALWORLD\"\n" +
                 "}\n");
             Debug.Log("Valoria production rescue district evidence saved to " + Path.GetFullPath(folder));
             UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static void HideVisualFamilyForDistrictEvidence(string token)
+        {
+            foreach (var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                if (renderer.gameObject.name.IndexOf(token, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    renderer.enabled = false;
+            foreach (var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if (light.gameObject.name.IndexOf(token, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    light.enabled = false;
         }
 
         static GameObject InstallRescueModule(string assetPath, string label, Vector3 groundAnchor, float yaw, float targetSpan)
@@ -165,7 +177,7 @@ namespace Eldoria.EditorTools
                     {
                         var lower = (source.name ?? "").ToLowerInvariant();
                         var color = lower.Contains("stone")
-                            ? new Color(.30f, .28f, .24f, 1f)
+                            ? new Color(.34f, .31f, .26f, 1f)
                             : lower.Contains("rock")
                                 ? new Color(.17f, .18f, .17f, 1f)
                                 : lower.Contains("timber")
