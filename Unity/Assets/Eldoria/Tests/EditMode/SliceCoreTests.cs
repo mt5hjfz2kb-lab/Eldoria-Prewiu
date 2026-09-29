@@ -83,12 +83,22 @@ namespace Eldoria.Tests
             clock.Add(9);g.Advance();
             Assert.That(g.Execute(Cmd(g,"sawmill-b2","Build","sawmill")).Ok,Is.True);
             clock.Add(6);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+            Assert.That(g.Execute(Cmd(g,"quarry-b2","Gather","quarry-valoria")).Ok,Is.True);
+            clock.Add(9);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+            Assert.That(g.Execute(Cmd(g,"scout-b2","Fight","corrupt-scout")).Ok,Is.True);
+            clock.Add(4);g.Advance();
             Assert.That(g.Snapshot().JourneyComplete,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.RouteCleared,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter1GatherStone));
 
             var ascend=Cmd(g,"ascend-b2","AdvanceBastion","bastion");
             Assert.That(g.Execute(ascend).Ok,Is.True);
             Assert.That(g.Execute(ascend).Ok,Is.True);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
+            Assert.That(g.Snapshot().ChapterProgress.BastionTwoReached,Is.True);
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3222));
 
             Assert.That(g.Execute(Cmd(g,"barracks-b2","Build","barracks")).Ok,Is.True);
@@ -100,9 +110,11 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(recruit).Ok,Is.True);
             clock.Add(7);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
-            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,Is.EqualTo(SliceRules.RecruitArchers));
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
+                Is.EqualTo(SliceContentProfiles.QaFast.Chapter2TrainArchers));
             g.Advance();
-            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,Is.EqualTo(SliceRules.RecruitArchers));
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
+                Is.EqualTo(SliceContentProfiles.QaFast.Chapter2TrainArchers));
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3628));
 
             Assert.That(g.Execute(Cmd(g,"engendro-too-early","Fight","engendro-valoria")).Ok,Is.False,
@@ -111,6 +123,9 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(configure).Ok,Is.True);
             Assert.That(g.Execute(configure).Ok,Is.True);
             Assert.That(g.Snapshot().MarchConfigured,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.MarchConfirmed,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.ConfirmedExpeditionPower,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter2ExpeditionPower));
             Assert.That(g.Snapshot().PreparedHeroId,Is.EqualTo("aldric"));
             Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
             Assert.That(SliceRules.Expedition(g.Snapshot().PreparedTroops,g.Snapshot().PreparedHeroId).Power,
@@ -121,9 +136,10 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Available.ArcherT1,Is.Zero);
             clock.Add(4);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().EngendroDefeated,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.EngendroDefeated,Is.True);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
-            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(240));
-            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(160));
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(320));
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(930));
         }
 
         [Test] public void PreparedMarchIsSnapshotSafeAndPersists()
@@ -163,6 +179,25 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().ChapterProgress.GatheredStone,Is.EqualTo(SliceRules.QuarryLoad));
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone+SliceRules.QuarryLoad));
+        }
+
+        [Test] public void ExistingFlagsNormalizeIntoMissionProgress()
+        {
+            var clock=new Clock();var store=new Memory {
+                Value=new PlayerState {
+                    BastionLevel=2, SawmillLevel=1, BarracksLevel=1,
+                    ScoutDefeated=true, MarchConfigured=true, EngendroDefeated=true,
+                    PreparedHeroId="aldric", PreparedTroops=new ArmyRoster{ArcherT1=48},
+                    Available=new ArmyRoster{ArcherT1=48}
+                }
+            };
+            var g=new LocalGateway(clock,store);
+            var p=g.Snapshot().ChapterProgress;
+            Assert.That(p.RouteCleared,Is.True);
+            Assert.That(p.BastionTwoReached,Is.True);
+            Assert.That(p.MarchConfirmed,Is.True);
+            Assert.That(p.ConfirmedExpeditionPower,Is.GreaterThan(0));
+            Assert.That(p.EngendroDefeated,Is.True);
         }
 
         [Test] public void SnapshotCannotEditAuthoritativeState()
