@@ -74,6 +74,11 @@ namespace Eldoria.Application
                     RewardStone=s.LastBattleReport?.RewardStone??0,
                     Reason=s.LastBattleReport?.Reason??""
                 },
+                ChapterProgress=new ChapterProgressState {
+                    GatheredWood=s.ChapterProgress?.GatheredWood??0,
+                    GatheredStone=s.ChapterProgress?.GatheredStone??0,
+                    TrainedArchers=s.ChapterProgress?.TrainedArchers??0
+                },
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
             };
@@ -198,6 +203,8 @@ namespace Eldoria.Application
                 {
                     state.CompletedTaskIds.Add(state.RecruitmentTaskId);
                     state.Available.ArcherT1 += state.PendingRecruitArchers;
+                    if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                    state.ChapterProgress.TrainedArchers += state.PendingRecruitArchers;
                 }
                 state.RecruitmentCompletesUtcTicks = 0;
                 state.RecruitmentTaskId = "";
@@ -264,6 +271,11 @@ namespace Eldoria.Application
                         state.CompletedTaskIds.Add(id);
                         state.Resources.Wood += m.PendingWood;
                         state.Resources.Stone += m.PendingStone;
+                        if (m.TargetId == "forest-valoria" && m.PendingWood > 0)
+                        {
+                            if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                            state.ChapterProgress.GatheredWood += m.PendingWood;
+                        }
                         state.Available.ArcherT1 += m.Troops.ArcherT1;
                         state.Available.ArcherT2 += m.Troops.ArcherT2;
                         state.Available.ArcherT3 += m.Troops.ArcherT3;
