@@ -182,7 +182,7 @@ namespace Eldoria.Presentation
         void Select(string id)
         {
             if(id=="gate")SceneManager.LoadScene("Frontier");
-            else if(id=="forest-valoria")Send("Gather",id);
+            else if(id=="forest-valoria"||id=="quarry-valoria")Send("Gather",id);
             else if(id=="corrupt-scout"||id=="engendro-valoria")Send("Fight",id);
             else if(id=="sawmill"||id=="barracks"||id=="bastion")OpenBuildingPanel(id);
         }
@@ -323,6 +323,7 @@ namespace Eldoria.Presentation
         string FrontierDescription(PlayerState s,string march,CombatStats expedition)
         {
             string text=(s.ForestRemaining>0 ? "Bosque: "+s.ForestRemaining+" madera. ":"Bosque agotado. ")
+                +(s.QuarryRemaining>0 ? "Cantera: "+s.QuarryRemaining+" piedra. ":"Cantera agotada. ")
                 +(s.BastionLevel>=2
                     ? (s.EngendroDefeated?"El Engendro ha caído. ":"Engendro: VIDA 760, DEF 72. ")
                     : (s.ScoutDefeated?"La ruta corrupta está despejada. ":"Explorador: VIDA 620, DEF 64. "))
@@ -394,7 +395,8 @@ namespace Eldoria.Presentation
             }
             else
             {
-                Button(row1,"BOSQUE · RECOLECTAR",()=>Send("Gather","forest-valoria"));
+                Button(row1,"BOSQUE · MADERA",()=>Send("Gather","forest-valoria"));
+                Button(row1,"CANTERA · PIEDRA",()=>Send("Gather","quarry-valoria"));
                 Button(row1,state.BastionLevel>=2?"ENGENDRO · PvE":"AMENAZA · PvE",
                     ()=>Send("Fight",state.BastionLevel>=2?"engendro-valoria":"corrupt-scout"));
             }
