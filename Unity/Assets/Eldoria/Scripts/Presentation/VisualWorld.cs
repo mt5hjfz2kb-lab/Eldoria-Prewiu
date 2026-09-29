@@ -117,6 +117,7 @@ namespace Eldoria.Presentation
                 new Vector3(6.6f,.14f,2.0f),new Color(.43f,.40f,.34f));
             apron.GetComponent<Renderer>().enabled=false;
 
+            // Ground Kit v1 current-main validation checkpoint.
             // Ground Kit v1: visual-only reusable skins over the frozen certified circulation.
             // Gameplay floors/hotspots underneath remain authoritative.
             ValoriaGroundKit.StreetStraight("VPD · GroundKit main street",
