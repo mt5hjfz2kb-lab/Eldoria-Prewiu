@@ -154,7 +154,7 @@ def classify_mesh(obj, stone, rock, roof=None, timber=None, profile="hero"):
     timber_faces = 0
     residential_small_face_cutoff = None
     if profile == "residential" and len(mesh.polygons) > 0:
-        residential_small_face_cutoff = float(np.percentile([p.area for p in mesh.polygons], 42.0))
+        residential_small_face_cutoff = float(np.percentile([p.area for p in mesh.polygons], 68.0))
     for poly in mesh.polygons:
         n = poly.normal.normalized()
         axis = max(abs(n.x), abs(n.y), abs(n.z))
@@ -181,8 +181,8 @@ def classify_mesh(obj, stone, rock, roof=None, timber=None, profile="hero"):
             profile == "residential"
             and timber is not None
             and residential_small_face_cutoff is not None
-            and z01 >= 0.28
-            and abs(n.z) <= 0.22
+            and z01 >= 0.24
+            and abs(n.z) <= 0.26
             and max(abs(n.x), abs(n.y)) >= 0.93
             and poly.area <= residential_small_face_cutoff
         )
