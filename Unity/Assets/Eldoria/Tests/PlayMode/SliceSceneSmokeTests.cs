@@ -432,7 +432,9 @@ namespace Eldoria.Tests
             var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
-            var panel=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            RectTransform panel=null;
+            foreach(var candidate in Resources.FindObjectsOfTypeAll<RectTransform>())
+                if(candidate.name=="Building interaction panel"){panel=candidate;break;}
             Assert.That(top,Is.Not.Null);
             Assert.That(nav,Is.Not.Null);
             Assert.That(quest,Is.Not.Null);
