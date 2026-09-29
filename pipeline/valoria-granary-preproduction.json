@@ -58,7 +58,13 @@
     "visual": "PASS",
     "unity_yaw_degrees": 180,
     "integrated_visual_formula_run_id": 36581806788,
-    "integrated_visual_formula_artifact_id": 11040631044
+    "integrated_visual_formula_artifact_id": 11040631044,
+    "production_optimized_sha256": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+    "production_optimized_bytes": 12951524,
+    "unity_slice_run_id": 36581806847,
+    "unity_slice_result": "PASS_EDITMODE_PLAYMODE_WINDOWS_BUILD_VALORIA_BENCHMARK",
+    "unity_checks_artifact_id": 11040582911,
+    "unity_valoria_captures_artifact_id": 11041280293
   },
   "production_resource": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
   "integration": {
