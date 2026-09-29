@@ -217,6 +217,10 @@ try {
     mode,
     endpoint,
     tripo_page_count: tripoPages.length,
+    all_open_pages: await Promise.all(pages.map(async p => ({
+      url: p.url(),
+      title: await p.title().catch(() => '')
+    }))),
     selected_page: selectedInfo,
     generate_button_visible_anywhere: inspected.some(x => x.generate_button_visible),
     inspected_pages: inspected
