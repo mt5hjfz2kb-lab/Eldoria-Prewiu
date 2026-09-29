@@ -338,6 +338,26 @@ namespace Eldoria.Presentation
                 {
                     v=.94f+n*.20f+((x+y)%9==0?-.05f:0f);
                 }
+                else if(kind=="earth")
+                {
+                    // Coarse soil: low-frequency mottling and darker clods. Mean stays below 1
+                    // so strategic lighting keeps the terrain earthy instead of washing it beige.
+                    float broad=.10f*Mathf.Sin(x*.13f+y*.07f)+.07f*Mathf.Sin(y*.21f-x*.05f);
+                    float clod=((x*7+y*19)%37==0)?-.14f:0f;
+                    float dry=((x*3+y*5)%41==0)?.05f:0f;
+                    v=.78f+n*.13f+broad+clod+dry;
+                }
+                else if(kind=="trail")
+                {
+                    // 4X-readable march road: two worn wheel ruts, raised centre strip and longitudinal wear.
+                    float nx=(x/(float)(size-1))*2f-1f;
+                    float rutA=Mathf.Exp(-Mathf.Pow((nx-.38f)/.14f,2f));
+                    float rutB=Mathf.Exp(-Mathf.Pow((nx+.38f)/.14f,2f));
+                    float centre=Mathf.Exp(-Mathf.Pow(nx/.24f,2f));
+                    float longitudinal=.035f*Mathf.Sin(y*.52f)+.025f*Mathf.Sin(y*.17f+x*.11f);
+                    float pebble=((x*11+y*7)%43==0)?-.10f:0f;
+                    v=.72f+n*.10f-(rutA+rutB)*.18f+centre*.07f+longitudinal+pebble;
+                }
                 else
                 {
                     float pebble=((x*5+y*11)%29==0)?.10f:0f;

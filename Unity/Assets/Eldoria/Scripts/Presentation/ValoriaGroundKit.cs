@@ -61,8 +61,8 @@ namespace Eldoria.Presentation
                 var renderer=patch.GetComponent<Renderer>();
                 if(renderer!=null)
                     renderer.sharedMaterial=ValoriaKit.SurfaceMaterial(
-                        TrailEarth*(.94f+(i%3)*.025f),"earth",
-                        new Vector2(Mathf.Max(2.5f,w/1.0f),Mathf.Max(2.5f,segmentLength/.55f)));
+                        TrailEarth*(.90f+(i%3)*.02f),"trail",
+                        new Vector2(Mathf.Max(1.35f,w/.90f),Mathf.Max(2.8f,segmentLength/.50f)));
                 patch.transform.SetParent(root.transform,false);
             }
             var art=ValoriaExternalAssetLibrary.Load();

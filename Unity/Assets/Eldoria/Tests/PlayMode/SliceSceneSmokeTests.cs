@@ -387,8 +387,8 @@ namespace Eldoria.Tests
                 "The Frontier route should read as a continuous worn trail, not isolated debug slabs.");
             var trailRenderer=trail.GetComponentInChildren<Renderer>();
             Assert.That(trailRenderer,Is.Not.Null);
-            Assert.That(trailRenderer.sharedMaterial.name,Does.Contain("surface earth"),
-                "The march trail must use an earth surface instead of the generic stone fallback.");
+            Assert.That(trailRenderer.sharedMaterial.name,Does.Contain("surface trail"),
+                "The march trail must use its dedicated worn-road texture instead of generic ground.");
 
             var material=valley.GetComponent<Renderer>()?.sharedMaterial;
             Assert.That(material,Is.Not.Null);
