@@ -8,6 +8,6 @@
   "expected_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "parts_dir": "pipeline/exact-inputs/Valoria_Granero_BIII_v1",
   "parts_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64",
-  "status": "awaiting_complete_exact_bytes",
-  "rule": "Do not enable Tripo stage_upload until validator passes."
+  "status": "certified_exact_bytes",
+  "rule": "Zero-spend staging only unless separately authorized."
 }
