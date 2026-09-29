@@ -32,7 +32,7 @@ namespace Eldoria.Domain
 
             public const int EngendroRequiredArchers = 48;
             public const int Chapter1GatherWood = 360;
-            public const int Chapter1GatherStone = 0; // no early quarry in QA_FAST yet
+            public const int Chapter1GatherStone = 500; // one QA quarry trip clears the canonical early-stone lesson
             public const int Chapter2TrainArchers = 12;
             public const int Chapter2ExpeditionPower = 2500;
         }
