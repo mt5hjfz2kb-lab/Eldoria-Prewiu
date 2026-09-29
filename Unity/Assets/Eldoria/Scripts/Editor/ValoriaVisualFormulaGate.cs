@@ -48,6 +48,27 @@ namespace Eldoria.EditorTools
             Save(camera, folder + "/formula-bastion-12.png", officialPosition + bastionShift, officialTarget + bastionShift, 12f, 1280, 720);
             Save(camera, folder + "/formula-bastion-9.png", officialPosition + bastionShift, officialTarget + bastionShift, 9f, 1280, 720);
 
+            // Bastion III-specific production evidence for the dedicated Granero.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var bastionThree = new PlayerState
+            {
+                BastionLevel = 3,
+                SawmillLevel = 1,
+                BarracksLevel = 1,
+                CorruptionDiscovered = true
+            };
+            VisualWorld.Create(true, bastionThree);
+            camera = Camera.main;
+            if (camera == null) throw new System.Exception("Valoria Bastion III camera was not created");
+            var granaryShift = new Vector3(-17.2f, -1.75f, -8.8f);
+            Save(camera, folder + "/formula-granero-biii-12.png", officialPosition + granaryShift, officialTarget + granaryShift, 12f, 1280, 720);
+            Save(camera, folder + "/formula-granero-biii-9.png", officialPosition + granaryShift, officialTarget + granaryShift, 9f, 1280, 720);
+            Save(camera, folder + "/formula-granero-biii-mobile.png", officialPosition + granaryShift, officialTarget + granaryShift, 12f, 390, 844);
+            var granary = GameObject.Find("Granero · dedicated granary");
+            if (granary == null) throw new System.Exception("Bastion III Granero production visual was not instantiated.");
+            foreach (var collider in granary.GetComponentsInChildren<Collider>(true))
+                if (collider.enabled) throw new System.Exception("Granero visual mesh must not own gameplay collision.");
+
             WriteMetrics(folder + "/formula-metrics.json");
             WriteMaterialEvidence(folder + "/formula-materials.json");
             Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
