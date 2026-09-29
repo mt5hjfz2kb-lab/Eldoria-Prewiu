@@ -14,6 +14,7 @@ namespace Eldoria.Presentation
         static readonly Color TerraceStone = new Color(.355f,.325f,.275f);
         static readonly Color RetainingStone = new Color(.315f,.305f,.285f);
         static readonly Color EarthBlend = new Color(.31f,.285f,.24f);
+        static readonly Color TrailEarth = new Color(.215f,.188f,.150f);
 
         public static GameObject StreetStraight(string name, Vector3 center, float length, float width, float yawDegrees)
         {
@@ -56,11 +57,11 @@ namespace Eldoria.Presentation
                 float x=(i%3==0?-.08f:(i%3==1?.06f:.01f));
                 float w=width*(.90f+(i%4)*.025f);
                 var patch=Patch(name+" · trail "+(i+1),new Vector3(x,.002f,z),
-                    w,segmentLength*1.22f,EarthBlend*(.84f+(i%3)*.018f),80+i);
+                    w,segmentLength*1.22f,TrailEarth*(.95f+(i%3)*.025f),80+i);
                 var renderer=patch.GetComponent<Renderer>();
                 if(renderer!=null)
                     renderer.sharedMaterial=ValoriaKit.SurfaceMaterial(
-                        EarthBlend*(.82f+(i%3)*.02f),"earth",
+                        TrailEarth*(.94f+(i%3)*.025f),"earth",
                         new Vector2(Mathf.Max(2.5f,w/1.0f),Mathf.Max(2.5f,segmentLength/.55f)));
                 patch.transform.SetParent(root.transform,false);
             }
@@ -73,7 +74,7 @@ namespace Eldoria.Presentation
                     var authored=ValoriaKit.BenchmarkPieceModulated(name+" · authored wear "+(i+1),
                         art.SlavicMudFlat,root.transform.TransformPoint(new Vector3((i-1)*.12f,.014f,z)),
                         width*.88f,.10f,root.transform.rotation*Quaternion.Euler(0,(i-1)*3f,0),
-                        new Color(.84f,.78f,.66f,1f));
+                        new Color(.56f,.49f,.38f,1f));
                     if(authored!=null)authored.transform.SetParent(root.transform,true);
                 }
             }

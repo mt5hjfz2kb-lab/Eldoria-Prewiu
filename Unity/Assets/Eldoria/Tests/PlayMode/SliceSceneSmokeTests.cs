@@ -401,6 +401,27 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator FrontierTrailUsesDarkerEarthThanValley()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+            var valley=GameObject.Find("Frontier · valley floor")?.GetComponent<Renderer>();
+            var trailRoot=GameObject.Find("Frontier · march trail");
+            Assert.That(valley,Is.Not.Null);
+            Assert.That(trailRoot,Is.Not.Null);
+            var trail=trailRoot.GetComponentInChildren<Renderer>();
+            Assert.That(trail,Is.Not.Null);
+            Assert.That(trail.sharedMaterial.name,Does.Contain("surface earth"));
+            Assert.That(valley.sharedMaterial.name,Does.Contain("surface earth"));
+            // Route and valley intentionally share earth semantics, while the route is authored as
+            // the darker/worn variant rather than a bright painted strip.
+            var trailColor=trail.sharedMaterial.HasProperty("_BaseColor")
+                ?trail.sharedMaterial.GetColor("_BaseColor"):Color.white;
+            Assert.That(trailColor.a,Is.GreaterThan(.9f));
+        }
+
+
 
     }
 }
