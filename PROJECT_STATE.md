@@ -1,7 +1,16 @@
 # Eldoria — PROJECT STATE
-Updated: 2026-09-28
+Updated: 2026-09-29
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
+
+
+## Valoria AP2 dedicated architecture + production LookDev — 2026-09-29
+- Dedicated Aserradero and Cuartel geometry are integrated in the certified Playable District without moving frozen gameplay topology or hotspots.
+- Cuartel production asset passed exact-input Tripo generation, canonical Blender reduction to 49,800 tris, isolated Unity gate and production promotion; its visual mesh remains separate from the functional hotspot/collider contract.
+- Authored glTF PBR is preserved in Unity for both Aserradero and Cuartel.
+- The former washed/overbright baseline is superseded by the zero-credit `valoria-v1-candidate` environment profile; no geometry regeneration and no additional Tripo credits were used.
+- Validation is green: LookDev run **36529204672**, full Unity slice **36529204570**, Visual Formula production gate **36529730848**; Visual Formula artifact **11015563918**.
+- This closes the Aserradero/Cuartel material-lighting LookDev issue. It does **not** certify the entire Eldoria visual benchmark or the remaining hero-fragment gate of `VALORIA_VISUAL_FORMULA_v1`.
 
 ## Valoria master envelope / mobile pan implementation — 2026-09-28
 - The long-term master-envelope graybox is implemented around the certified Playable District Skeleton kernel with west/east growth reservations, upper civic/government reservation, future-system space and authored terrain aprons.
