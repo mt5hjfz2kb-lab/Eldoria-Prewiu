@@ -292,9 +292,13 @@ namespace Eldoria.Presentation
             description.text=city
                 ? (s.BastionLevel>=2
                     ? (s.BarracksLevel>0
-                        ? (s.MarchConfigured
-                            ? "La Marcha está preparada. Sal a la frontera y enfrenta al Engendro."
-                            : "El Cuartel vuelve a formar soldados. Confirma la Marcha antes de afrontar al Engendro.")
+                        ? ((cp.TrainedArchers<SliceContentProfiles.Active.Chapter2TrainArchers)
+                            ? ((s.Resources.Wood<SliceRules.RecruitWoodCost||s.Resources.Stone<SliceRules.RecruitStoneCost)
+                                ? "El Cuartel necesita recursos para equipar a los nuevos arqueros. Vuelve al Mundo, reúne lo que falta y regresa."
+                                : "El Cuartel está listo. Entrena a los arqueros que necesita la primera Marcha de Bastión II.")
+                            : (s.MarchConfigured
+                                ? "La Marcha está preparada. Sal a la frontera y enfrenta al Engendro."
+                                : "Los arqueros están listos. Prepara y confirma la Marcha antes de afrontar al Engendro."))
                         : "Aldric: «Ya tenemos madera. Ahora necesitamos una guarnición que pueda mantener abierta la ruta.»")
                     : (s.SawmillLevel>0 ? "El fuego vuelve a la madera. La corrupción aún se ve en la frontera."
                         : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»"))
@@ -320,7 +324,11 @@ namespace Eldoria.Presentation
                 case "b1.return": return "BASTIÓN I · regresa a Valoria";
                 case "b1.ascend": return "CAPÍTULO I COMPLETO · asciende el Bastión";
                 case "b2.build-barracks": return "BASTIÓN II · levanta el Cuartel";
-                case "b2.train-archers": return "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.Active.Chapter2TrainArchers;
+                case "b2.train-archers":
+                    return (s.Resources.Wood<SliceRules.RecruitWoodCost||s.Resources.Stone<SliceRules.RecruitStoneCost)
+                        ? "BASTIÓN II · reúne recursos para equipar arqueros · M "+s.Resources.Wood+"/"+SliceRules.RecruitWoodCost+
+                          " · P "+s.Resources.Stone+"/"+SliceRules.RecruitStoneCost
+                        : "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.Active.Chapter2TrainArchers;
                 case "b2.prepare-march": return "BASTIÓN II · prepara y confirma la Marcha";
                 case "b2.raise-expedition-power": return "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.Active.Chapter2ExpeditionPower;
                 case "b2.defeat-engendro": return "BASTIÓN II · derrota al Engendro de la ruta";
