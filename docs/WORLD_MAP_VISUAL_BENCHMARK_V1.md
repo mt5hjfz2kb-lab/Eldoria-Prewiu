@@ -91,4 +91,15 @@ These carry Eldoria identity and may justify bespoke/Tripo geometry.
 
 Quaternius ruins may be tested later for Tier C secondary POIs; its nature packs are not the first-choice world-language candidate because their Ghibli/low-poly stylization may remain too visible at Eldoria's target look.
 
+
+## Verified local comparison inputs
+
+The Windows runner has verified the exact downloaded comparison sources before import:
+
+- Holotna `Mountain (Unity 2022.3.16f1).zip` — SHA-256 `dba93205a7941de855918ea58c009af84be66a617f25afde708b6ba666e8ac9b`.
+- Jermesa `Hill Rock Mountain Terrain.unitypackage` — SHA-256 `033b2f9d2f6f55cd54ed9d50be0a64b3f9dae9c1a3b5072386382ec1986fee88`.
+- Quaternius ruins FBX ZIP `FBX-20260929T184234Z-1-001.zip` — SHA-256 `94d7531ef3e1ba599e6828e60bb38dd17a83ffb2f5a417c20b121a2eceb01c45`.
+
+These inputs are evaluated only in an isolated temporary Unity copy. Do not import them into production until the 4X comparison gate is visually reviewed.
+
 No paid asset purchase is authorized by this benchmark.
