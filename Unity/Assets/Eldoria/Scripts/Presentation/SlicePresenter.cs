@@ -19,6 +19,7 @@ namespace Eldoria.Presentation
         Button buildingAction;
         string feedback="";
         float refreshAt;
+        float resetQaArmedUntil;
         int lastWidth,lastHeight;
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
@@ -405,6 +406,8 @@ namespace Eldoria.Presentation
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
             if(city)Button(row2,"CENTRAR",RecenterCamera);
+            if(city&&SliceContentProfiles.ActiveRuntimeProfile=="QA_FAST")
+                Button(row2,"NUEVA PARTIDA QA",ResetQaFreshSave);
             message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
             CreateBuildingPanel(canvasGo.transform);
         }
@@ -435,6 +438,19 @@ namespace Eldoria.Presentation
             var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
             buildingPanel.SetActive(false);
         }
+        void ResetQaFreshSave()
+        {
+            if(Time.unscaledTime>resetQaArmedUntil)
+            {
+                resetQaArmedUntil=Time.unscaledTime+6f;
+                feedback="Pulsa NUEVA PARTIDA QA otra vez en 6 s para borrar solo el save local de Eldoria.";
+                Refresh();
+                return;
+            }
+            resetQaArmedUntil=0f;
+            SliceBoot.ResetLocalSaveAndRestart();
+        }
+
         void Zoom(float amount){if(OfficialCamera!=null)OfficialCamera.orthographicSize=Mathf.Clamp(OfficialCamera.orthographicSize+amount,9,19);}
         void UpdateSafeArea()
         {
