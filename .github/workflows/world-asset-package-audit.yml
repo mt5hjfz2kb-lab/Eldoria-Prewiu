@@ -1,0 +1,91 @@
+name: World Asset Package Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/world-asset-package-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Audit downloaded world packs
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $downloads=Join-Path $env:USERPROFILE 'Downloads'
+          $holotna=Join-Path $downloads 'Mountain (Unity 2022.3.16f1).zip'
+          $quaternius=Join-Path $downloads 'FBX-20260929T184234Z-1-001.zip'
+          $jermesa=Join-Path $env:APPDATA 'Unity\Asset Store-5.x\Jermesa Studio\3D ModelsEnvironmentsLandscapes\Hill Rock Mountain Terrain.unitypackage'
+          $out=Join-Path $env:RUNNER_TEMP 'world-asset-package-audit.txt'
+          Remove-Item $out -Force -ErrorAction SilentlyContinue
+
+          function Header($name,$path){
+            "===== $name =====" | Add-Content $out
+            if(-not (Test-Path $path)){ "MISSING|$path" | Add-Content $out; return $false }
+            $item=Get-Item $path
+            $sha=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            "FILE|$path|$($item.Length)|$sha" | Add-Content $out
+            return $true
+          }
+
+          if(Header 'HOLOTNA' $holotna){
+            $zip=[System.IO.Compression.ZipFile]::OpenRead($holotna)
+            try{
+              "COUNTS" | Add-Content $out
+              $zip.Entries | Where-Object { $_.Name } | Group-Object { [IO.Path]::GetExtension($_.Name).ToLowerInvariant() } |
+                Sort-Object Count -Descending | ForEach-Object { "$($_.Name)|$($_.Count)" } | Add-Content $out
+              "RELEVANT_ENTRIES" | Add-Content $out
+              $zip.Entries | Where-Object {
+                $_.FullName -match '(?i)(mountain|cliff|rock|tree|bush|grass|bridge|terrain|river|water|prefab|\.fbx$|\.obj$|\.mat$)' -and $_.Name
+              } | Select-Object -First 260 | ForEach-Object {
+                "$($_.FullName)|$($_.Length)"
+              } | Add-Content $out
+            } finally { $zip.Dispose() }
+          }
+
+          if(Header 'QUATERNIUS' $quaternius){
+            $zip=[System.IO.Compression.ZipFile]::OpenRead($quaternius)
+            try{
+              "COUNTS" | Add-Content $out
+              $zip.Entries | Where-Object { $_.Name } | Group-Object { [IO.Path]::GetExtension($_.Name).ToLowerInvariant() } |
+                Sort-Object Count -Descending | ForEach-Object { "$($_.Name)|$($_.Count)" } | Add-Content $out
+              "RELEVANT_ENTRIES" | Add-Content $out
+              $zip.Entries | Where-Object {
+                $_.FullName -match '(?i)(ruin|tower|wall|arch|bridge|pillar|gate|stairs|column|debris|rock|\.fbx$)' -and $_.Name
+              } | Select-Object -First 320 | ForEach-Object {
+                "$($_.FullName)|$($_.Length)"
+              } | Add-Content $out
+            } finally { $zip.Dispose() }
+          }
+
+          if(Header 'JERMESA' $jermesa){
+            $tmp=Join-Path $env:RUNNER_TEMP 'jermesa-package-audit'
+            Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Path $tmp | Out-Null
+            & tar.exe -xf $jermesa -C $tmp
+            if($LASTEXITCODE -ne 0){ throw 'Failed to extract Jermesa unitypackage' }
+            "PACKAGE_PATHNAMES" | Add-Content $out
+            Get-ChildItem $tmp -Recurse -File -Filter pathname |
+              ForEach-Object { (Get-Content $_.FullName -Raw).Trim() } |
+              Where-Object { $_ -match '(?i)(mountain|hill|rock|tree|terrain|material|texture|prefab|demo)' } |
+              Sort-Object -Unique |
+              Select-Object -First 320 |
+              Add-Content $out
+          }
+
+          Get-Content $out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: world-asset-package-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/world-asset-package-audit.txt
+          if-no-files-found: error
+          retention-days: 7
