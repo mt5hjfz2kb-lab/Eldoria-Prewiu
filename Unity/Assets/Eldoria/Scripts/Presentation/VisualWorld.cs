@@ -248,10 +248,10 @@ namespace Eldoria.Presentation
             // Civil/economic upper plot: promote rescued certified geometry as visual-only art.
             // Gameplay topology remains the invisible certified plot and independent route/hotspots.
             ValoriaKit.BenchmarkPieceTinted("VPD · rescued seam residential",rescuedSeam,
-                new Vector3(-5.15f,l1+.15f,7.15f),3.55f,1.75f,Quaternion.Euler(0,112f,0),
+                new Vector3(-6.05f,l1+.15f,7.15f),3.55f,1.75f,Quaternion.Euler(0,102f,0),
                 new Color(.18f,.19f,.18f,1f));
             var rescuedCivil=ValoriaKit.BenchmarkPiece("VPD · rescued upper civil residence",rescuedResidential,
-                new Vector3(-5.15f,l1+.34f,7.15f),4.35f,4.60f,Quaternion.identity);
+                new Vector3(-6.05f,l1+.34f,7.15f),4.20f,4.45f,Quaternion.Euler(0,-12f,0));
             if(rescuedCivil!=null)StyleRescuedResidential(rescuedCivil);
             else ValoriaKit.House("VPD · upper civil house fallback",new Vector3(-5.15f,l1+.34f,7.15f),
                 new Vector3(2.7f,1.35f,2.4f),true,Glow);
