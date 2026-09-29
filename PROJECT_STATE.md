@@ -3,6 +3,16 @@ Updated: 2026-09-29
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
+## Valoria west rebuilders quarter v1 — 2026-09-29
+- The west Master Envelope reserve now contains a bounded real production extension: staggered rebuilders housing, work courts, a connected stone/cobble route, upper-shelf dwellings and visual-only RockTerrainSeamFiller geology.
+- The expansion is integrated directly in `VisualWorld` and does not move certified gameplay topology, hotspots, the 12-step route, camera family or Master Envelope reservations.
+- Bastion Hero Pass removed the remaining detached/floating crown read; the skyline now uses grounded fortress crowns and the authored rear lantern tower.
+- Visual Formula run **36546445386** and LookDev run **36546445341** are green on art commit `d84b31811fe044dbc3901f3ecd6edde13a635cc6`.
+- Measured production complexity is now **567,460 triangles / 644 active renderers / 80 unique materials / 15 lights**. This is an editor production baseline, not a mobile limit.
+- Unity slice run **36546445337** completed EditMode, PlayMode, Windows build and Valoria benchmark successfully in its first attempt before the workflow was later superseded/cancelled by concurrent newer `main` work; no product test failure caused the cancellation.
+- Mobile quality must not be reduced before a representative physical-device profile identifies a measured bottleneck.
+- Record: `docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md`.
+
 ## Valoria first production district v1 — 2026-09-29
 - `VALORIA_VISUAL_FORMULA_v1` is validated and frozen as the production visual baseline.
 - Real `VisualWorld` now uses dedicated Aserradero + Cuartel together with promoted rescued `ResidentialTerraceRock` and `RockTerrainSeamFiller` visual assets under the certified playable topology.
