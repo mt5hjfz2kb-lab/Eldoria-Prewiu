@@ -213,9 +213,10 @@ namespace Eldoria.Presentation
                     buildingAction.interactable=true;
                     buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
                 }
-                else if(s.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers)
+                else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
                 {
-                    buildingBody.text="Guarnición activa · "+s.Available.Total+" arqueros disponibles. "+
+                    buildingBody.text="Guarnición activa · "+s.Available.Total+" arqueros disponibles · "+
+                        (s.ChapterProgress?.TrainedArchers??0)+"/"+SliceContentProfiles.Active.Chapter2TrainArchers+" entrenados en este capítulo. "+
                         "Entrena refuerzos antes de preparar la Marcha contra el Engendro.";
                     buildingAction.GetComponentInChildren<Text>().text="RECLUTAR +"+SliceRules.RecruitArchers;
                     buildingAction.interactable=s.RecruitmentCompletesUtcTicks==0;
