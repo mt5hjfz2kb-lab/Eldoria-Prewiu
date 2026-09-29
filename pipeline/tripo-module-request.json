@@ -28,5 +28,5 @@
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-29T20:39Z-multipiece-e2e"
+  "run_nonce": "2026-09-29T20:48Z-multipiece-e2e-rerun-after-compile-fix"
 }
