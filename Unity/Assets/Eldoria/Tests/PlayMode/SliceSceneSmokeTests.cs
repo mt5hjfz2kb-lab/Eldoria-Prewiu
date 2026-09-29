@@ -422,6 +422,34 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator OwnerHudMatchesReferenceMobileBudgets()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+
+            var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
+            var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();
+            var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
+            var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
+            var panel=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            Assert.That(top,Is.Not.Null);
+            Assert.That(nav,Is.Not.Null);
+            Assert.That(quest,Is.Not.Null);
+            Assert.That(dock,Is.Not.Null);
+            Assert.That(panel,Is.Not.Null);
+            Assert.That(top.rect.height,Is.InRange(67f,69f));
+            Assert.That(nav.rect.height,Is.InRange(67f,69f));
+            Assert.That(quest.rect.height,Is.LessThanOrEqualTo(66.5f));
+            Assert.That(dock.rect.height,Is.LessThanOrEqualTo(96f));
+            Assert.That(panel.rect.height,Is.LessThanOrEqualTo(210f));
+            Assert.That(panel.anchoredPosition.y,Is.InRange(77f,79f));
+            var primary=GameObject.Find("CONTINUAR")?.GetComponent<RectTransform>();
+            Assert.That(primary,Is.Not.Null);
+            Assert.That(primary.rect.height,Is.GreaterThanOrEqualTo(44f));
+        }
+
+
 
     }
 }
