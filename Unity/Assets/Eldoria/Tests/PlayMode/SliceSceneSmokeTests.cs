@@ -151,6 +151,36 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ValoriaProgressionContractGatesCuartelVisualAndInteraction()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+
+            var barracksArt=GameObject.Find("Cuartel · dedicated barracks");
+            var barracksTarget=GameObject.Find("Cuartel · target");
+            Assert.That(barracksArt,Is.Not.Null);
+            Assert.That(barracksTarget,Is.Not.Null);
+
+            var early=new Eldoria.Domain.PlayerState { BastionLevel=1, BarracksLevel=0, SawmillLevel=0 };
+            ValoriaProgressionVisualGuard.Apply(early);
+            foreach(var renderer in barracksArt.GetComponentsInChildren<Renderer>(true))
+                Assert.That(renderer.enabled,Is.False,
+                    "Completed Cuartel art must remain hidden throughout Bastion I.");
+            Assert.That(barracksTarget.GetComponent<Collider>().enabled,Is.False,
+                "Cuartel target must remain non-interactive throughout Bastion I.");
+
+            var built=new Eldoria.Domain.PlayerState { BastionLevel=2, BarracksLevel=1, SawmillLevel=1 };
+            ValoriaProgressionVisualGuard.Apply(built);
+            bool anyVisible=false;
+            foreach(var renderer in barracksArt.GetComponentsInChildren<Renderer>(true))
+                anyVisible|=renderer.enabled;
+            Assert.That(anyVisible,Is.True,
+                "Completed Cuartel art must become visible once its Bastion II construction is complete.");
+            Assert.That(barracksTarget.GetComponent<Collider>().enabled,Is.True,
+                "Cuartel target must become interactive from Bastion II.");
+        }
+
+        [UnityTest]
         public IEnumerator ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope()
         {
             SceneManager.LoadScene("Valoria");
