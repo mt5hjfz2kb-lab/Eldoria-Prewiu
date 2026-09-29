@@ -79,6 +79,7 @@ jobs:
             'frontier-overview-18.png','frontier-overview-14.png','frontier-overview-10.png','frontier-overview-7.png','frontier-overview-mobile.png',
             'quarry-kit-10.png','quarry-kit-7.png','quarry-kit-mobile.png',
             'route-kit-10.png','route-kit-7.png','route-kit-mobile.png',
+            'naturestarter-overview-18.png','naturestarter-overview-14.png','naturestarter-overview-10.png','naturestarter-overview-mobile.png',
             'world-map-metrics.json'
           )
           foreach($name in $expected){
