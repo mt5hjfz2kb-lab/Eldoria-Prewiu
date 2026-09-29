@@ -45,6 +45,36 @@ namespace Eldoria.Presentation
             return root;
         }
 
+        public static GameObject TrailStraight(string name,Vector3 center,float length,float width,float yawDegrees)
+        {
+            var root=Root(name,center,yawDegrees);
+            int segments=Mathf.Max(5,Mathf.CeilToInt(length/1.15f));
+            float segmentLength=length/segments;
+            for(int i=0;i<segments;i++)
+            {
+                float z=-length*.5f+segmentLength*(i+.5f);
+                float x=(i%3==0?-.08f:(i%3==1?.06f:.01f));
+                float w=width*(.90f+(i%4)*.025f);
+                var patch=Patch(name+" · trail "+(i+1),new Vector3(x,.002f,z),
+                    w,segmentLength*1.22f,EarthBlend*(.98f+(i%3)*.018f),80+i);
+                patch.transform.SetParent(root.transform,false);
+            }
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art!=null&&art.SlavicMudFlat!=null)
+            {
+                for(int i=0;i<3;i++)
+                {
+                    float z=Mathf.Lerp(-length*.34f,length*.34f,i/2f);
+                    var authored=ValoriaKit.BenchmarkPieceModulated(name+" · authored wear "+(i+1),
+                        art.SlavicMudFlat,root.transform.TransformPoint(new Vector3((i-1)*.12f,.014f,z)),
+                        width*.88f,.10f,root.transform.rotation*Quaternion.Euler(0,(i-1)*3f,0),
+                        new Color(.84f,.78f,.66f,1f));
+                    if(authored!=null)authored.transform.SetParent(root.transform,true);
+                }
+            }
+            return root;
+        }
+
         public static GameObject StreetBlendWidening(string name, Vector3 center, float width, float depth, float yawDegrees)
         {
             var root = Root(name, center, yawDegrees);

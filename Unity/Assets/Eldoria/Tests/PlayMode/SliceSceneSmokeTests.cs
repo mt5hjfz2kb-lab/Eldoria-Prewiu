@@ -373,6 +373,30 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator FrontierUsesSemanticGroundAndContinuousMarchTrail()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+
+            var valley=GameObject.Find("Frontier · valley floor");
+            var trail=GameObject.Find("Frontier · march trail");
+            Assert.That(valley,Is.Not.Null);
+            Assert.That(trail,Is.Not.Null);
+            Assert.That(trail.transform.childCount,Is.GreaterThanOrEqualTo(5),
+                "The Frontier route should read as a continuous worn trail, not isolated debug slabs.");
+
+            var material=valley.GetComponent<Renderer>()?.sharedMaterial;
+            Assert.That(material,Is.Not.Null);
+            Assert.That(material.name,Does.Contain("surface earth"),
+                "The general Frontier floor must use earth semantics instead of the stone-grid fallback.");
+            Assert.That(GameObject.Find("Frontier · quarry shelf")?.GetComponent<Renderer>()?.sharedMaterial.name,
+                Does.Contain("surface stone"));
+            Assert.That(GameObject.Find("Frontier · corrupted shelf")?.GetComponent<Renderer>()?.sharedMaterial.name,
+                Does.Contain("surface slate"));
+        }
+
+
 
     }
 }

@@ -710,30 +710,23 @@ namespace Eldoria.Presentation
 
             // I-II production corridor: one authored route from Valoria into resources and corruption.
             // Keep gameplay hotspots independent from the visual dressing so art never owns rules.
-            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.285f,.305f,.255f));
-            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.39f,.36f,.29f));
+            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.285f,.305f,.255f),"earth");
+            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.39f,.36f,.29f),"earth");
 
-            // A worn march road gives immediate depth and a readable Valoria -> threat axis.
-            // Keep it as overlapping authored earth/cobble, never a chain of rectangular box slabs.
-            for(int i=0;i<10;i++)
+            // A worn march trail gives a continuous Valoria -> threat axis without reading as
+            // a chain of oversized tan props. Sparse stones remain as edge detail only.
+            ValoriaGroundKit.TrailStraight("Frontier · march trail",new Vector3(0,.095f,-1.0f),12.4f,2.75f,0f);
+            for(int i=0;i<6;i++)
             {
-                float z=-6.5f+i*1.22f;
-                float x=(i%3==0?-.20f:(i%3==1?.12f:.02f));
-                float yaw=i%2==0?-5f:4f;
-                ValoriaKit.BenchmarkPieceModulated("Frontier · worn earth "+(i+1),
-                    art!=null?art.SlavicMudFlat:null,new Vector3(x,.085f,z),
-                    3.05f,.20f,Quaternion.Euler(0,yaw,0),new Color(.72f,.67f,.56f,1f));
-                ValoriaKit.BenchmarkPieceModulated("Frontier · authored cobble "+(i+1),
-                    art!=null?art.SlavicCobbleRoad:null,new Vector3(x,.105f,z),
-                    2.20f,.16f,Quaternion.Euler(0,yaw,0),new Color(.72f,.69f,.61f,1f));
-                if(i%2==1)
-                    ValoriaKit.BenchmarkPieceModulated("Frontier · verge stone "+(i+1),
-                        art!=null?art.SlavicFlatRock:null,new Vector3(x+(i%4==1?-1.18f:1.15f),.07f,z+.15f),
-                        .82f,.22f,Quaternion.Euler(0,31f+i*17f,0),new Color(.62f,.63f,.59f,1f));
+                float z=-5.8f+i*2.1f;
+                float side=i%2==0?-1f:1f;
+                ValoriaKit.BenchmarkPieceModulated("Frontier · verge stone "+(i+1),
+                    art!=null?art.SlavicFlatRock:null,new Vector3(side*1.72f,.07f,z),
+                    .78f,.20f,Quaternion.Euler(0,31f+i*17f,0),new Color(.62f,.63f,.59f,1f));
             }
 
             // Forest resource pocket. The invisible hotspot remains the only gameplay target.
-            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.22f,.285f,.205f));
+            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.22f,.285f,.205f),"earth");
             var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6.2f,1.35f,1.0f),
                 new Vector3(2.35f,2.7f,2.35f),new Color(.18f,.22f,.18f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
@@ -763,7 +756,7 @@ namespace Eldoria.Presentation
 
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
-            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.35f,.34f,.31f));
+            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.35f,.34f,.31f),"stone");
             ValoriaKit.RockCluster("Frontier · quarry cut",new Vector3(6.4f,.02f,-2.1f),1.28f,12);
             ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
             ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
@@ -790,7 +783,7 @@ namespace Eldoria.Presentation
 
             // The route becomes visibly colder/corrupted before the encounter, so the threat reads
             // as territory rather than an isolated dark model.
-            IrregularGround("Frontier · corrupted shelf",new Vector3(6.0f,.045f,4.1f),7.2f,6.4f,new Color(.245f,.205f,.255f));
+            IrregularGround("Frontier · corrupted shelf",new Vector3(6.0f,.045f,4.1f),7.2f,6.4f,new Color(.245f,.205f,.255f),"slate");
             Glow("Frontier · road lantern west",new Vector3(-1.55f,1.05f,-4.9f),Amber,.72f,2.8f);
             Glow("Frontier · road lantern east",new Vector3(1.45f,1.00f,-3.4f),Amber,.64f,2.5f);
 
@@ -983,6 +976,9 @@ namespace Eldoria.Presentation
             Glow("Brecha · restrained violet glow",p+new Vector3(.1f,.55f,0),new Color(.48f,.26f,.56f),.65f,3.6f);
         }
         static void IrregularGround(string name,Vector3 center,float width,float depth,Color color)
+            => IrregularGround(name,center,width,depth,color,null);
+
+        static void IrregularGround(string name,Vector3 center,float width,float depth,Color color,string surfaceKind)
         {
             const int sides=11;
             var vertices=new Vector3[sides+1];var triangles=new int[sides*3];var uv=new Vector2[sides+1];
@@ -1004,13 +1000,18 @@ namespace Eldoria.Presentation
             // Large terrain sheets previously had no UVs, so the generated ground texture could
             // not read at all. Keep the texture's own colour, neutralise the second material tint,
             // and tile by world size so earth/stone breakup remains visible from the mobile camera.
-            var material=new Material(Mat(color)){name="Eldoria ground · "+ColorUtility.ToHtmlStringRGB(color)};
-            if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",Color.white);
-            if(material.HasProperty("_Color"))material.SetColor("_Color",Color.white);
             var tiling=new Vector2(Mathf.Max(4f,width/2.0f),Mathf.Max(4f,depth/2.0f));
-            if(material.HasProperty("_BaseMap"))material.SetTextureScale("_BaseMap",tiling);
-            else if(material.HasProperty("_MainTex"))material.SetTextureScale("_MainTex",tiling);
-            if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",.03f);
+            var material=string.IsNullOrEmpty(surfaceKind)
+                ? new Material(Mat(color)){name="Eldoria ground · "+ColorUtility.ToHtmlStringRGB(color)}
+                : ValoriaKit.SurfaceMaterial(color,surfaceKind,tiling);
+            if(string.IsNullOrEmpty(surfaceKind))
+            {
+                if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",Color.white);
+                if(material.HasProperty("_Color"))material.SetColor("_Color",Color.white);
+                if(material.HasProperty("_BaseMap"))material.SetTextureScale("_BaseMap",tiling);
+                else if(material.HasProperty("_MainTex"))material.SetTextureScale("_MainTex",tiling);
+                if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",.03f);
+            }
             go.AddComponent<MeshRenderer>().sharedMaterial=material;
         }
         static void Glow(string name,Vector3 p,Color color,float intensity,float range)

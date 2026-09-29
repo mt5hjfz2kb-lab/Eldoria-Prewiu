@@ -273,6 +273,22 @@ namespace Eldoria.Presentation
             return mat;
         }
 
+        public static Material SurfaceMaterial(Color color,string pattern,Vector2 tiling)
+        {
+            bool urp=GraphicsSettings.defaultRenderPipeline!=null;
+            var shader=Shader.Find(urp?"Universal Render Pipeline/Lit":"Standard");
+            if(shader==null)shader=Shader.Find("Unlit/Color");
+            var mat=new Material(shader){name="Valoria surface "+pattern+" "+ColorUtility.ToHtmlStringRGB(color)};
+            if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",Color.white);
+            if(mat.HasProperty("_Color"))mat.SetColor("_Color",Color.white);
+            var tex=PatternTexture(pattern,color);
+            if(mat.HasProperty("_BaseMap")){mat.SetTexture("_BaseMap",tex);mat.SetTextureScale("_BaseMap",tiling);}
+            else if(mat.HasProperty("_MainTex")){mat.SetTexture("_MainTex",tex);mat.SetTextureScale("_MainTex",tiling);}
+            if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",.035f);
+            if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",0f);
+            return mat;
+        }
+
         static string PatternFor(Color c)
         {
             if(c.g>c.r*1.25f && c.g>c.b*1.15f)return "pine";
