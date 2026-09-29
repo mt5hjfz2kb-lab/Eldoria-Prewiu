@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "stage_upload",
+  "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Canonical zero-credit Granero exact-input stage: reconstruct repo bytes, verify SHA/size, stage in Tripo, capture staged preview + visible cost, STOP before Generate.",
-  "request_id": "valoria-granero-biii-v1-exact-stage-final",
+  "notes": "Owner-authorized single Generate for Valoria_Granero_BIII_v1 from the already-validated staged exact input. Verify active preview SHA/size and visible cost before clicking exactly once; spend exactly 55 credits; then continue via canonical export/module pipeline.",
+  "request_id": "valoria-granero-biii-v1-generate-authorized-55",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
@@ -26,12 +26,12 @@
   "search_downloads_for_sha": false,
   "visual_width": 1254,
   "visual_height": 1254,
-  "allow_credit_spend": false,
-  "authorized_credit_cost": 0,
+  "allow_credit_spend": true,
+  "authorized_credit_cost": 55,
   "approved_input_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-29:granero-biii-exact-stage-final",
+  "probe_nonce": "2026-09-29:granero-biii-generate-authorized-55",
   "input_transport": "repo_exact_input",
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64"
 }
