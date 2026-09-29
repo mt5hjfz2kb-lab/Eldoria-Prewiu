@@ -618,6 +618,7 @@ namespace Eldoria.Presentation
             text.text=label;text.alignment=TextAnchor.MiddleCenter;
             var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
             rect.offsetMin=rect.offsetMax=Vector2.zero;
+            return button;
         }
     }
 }
