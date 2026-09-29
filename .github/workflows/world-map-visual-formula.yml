@@ -13,6 +13,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs'
       - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md'
 
 permissions:
   contents: read
@@ -80,7 +81,7 @@ jobs:
             'quarry-kit-10.png','quarry-kit-7.png','quarry-kit-mobile.png',
             'route-kit-10.png','route-kit-7.png','route-kit-mobile.png',
             'naturestarter-overview-18.png','naturestarter-overview-14.png','naturestarter-overview-10.png','naturestarter-overview-mobile.png',
-            'world-map-metrics.json'
+            'naturestarter-candidates.png','world-map-metrics.json'
           )
           foreach($name in $expected){
             $p=Join-Path $folder $name
