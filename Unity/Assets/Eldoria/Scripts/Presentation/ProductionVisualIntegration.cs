@@ -171,7 +171,7 @@ namespace Eldoria.Presentation
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
-            Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,2.55f,5.8f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
+            Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             Finish();
         }
 
