@@ -71,7 +71,7 @@ namespace Eldoria.EditorTools
             var residential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
                 "Production rescue · ResidentialTerraceRock",
-                new Vector3(-1.75f, .40f, 1.10f), 198f, 5.25f);
+                new Vector3(-1.75f, .40f, 1.10f), 0f, 5.45f);
             var seamWest = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam west",
