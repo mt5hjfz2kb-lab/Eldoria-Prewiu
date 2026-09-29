@@ -141,3 +141,14 @@ Avoid returning to isolated-module experimentation unless a specific production 
 
 ## Next handoff instruction
 Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECISIONS.md`, `docs/BASTION_I_X_MASTER_TABLE.md` when Arc I is relevant, and the specific Valoria specialist docs for art work; then verify live `main` HEAD and current workflow state.
+
+## 2026-09-29 Bastion I-II OWNER candidate checkpoint
+- Gameplay/profile certification run **36559605933**: SUCCESS.
+- Certified gameplay/profile SHA: **447d6e934a6fd72760cf88c97f9c889ca749f693**.
+- EditMode, PlayMode, Windows build and official benchmark capture all passed.
+- `QA_FAST` remains the normal/default runtime.
+- `OWNER_I_II` is explicit opt-in with `--eldoria-profile=OWNER_I_II`; it does not silently replace QA.
+- Windows artifact now includes `PLAY_OWNER_I_II_CANDIDATE.bat` and OWNER uses a profile-scoped save.
+- Bastion-II UX now tells the player to return to the world for missing recruitment resources rather than leaving an unexplained blocked recruit state.
+- Current Frontier baseline is the `4a282d32...` readability pass. The later stronger production experiment `0a07dfad...` was deliberately reverted by `c962f0f...` after visual regression; do not resurrect it blindly.
+- Next product gate is no longer another automated reachability pass: run the owner candidate from fresh save end-to-end without developer knowledge and capture pacing/clarity/visual feedback before promoting OWNER values or expanding to Bastion III.
