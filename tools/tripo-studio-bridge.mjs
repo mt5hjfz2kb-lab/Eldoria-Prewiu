@@ -666,6 +666,7 @@ try {
     report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
     await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
     report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+    report.probe_resources = await selectedPage.evaluate(() => performance.getEntriesByType('resource').map(e => e.name).filter(u => /a50f42b8|\\.glb(?:$|\\?)|tripo-data|api/i.test(u)).slice(-300));
     report.probe_controls = await selectedPage.locator('button, [role="button"], a').evaluateAll(nodes => nodes.slice(0, 250).map((el, index) => ({
       index,
       tag: el.tagName,
