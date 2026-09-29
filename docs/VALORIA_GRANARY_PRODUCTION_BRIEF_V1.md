@@ -1,7 +1,20 @@
 # Valoria — Granary Production Brief v1
 
-Status: PRE-PRODUCTION LOCKED / NO CREDIT SPEND AUTHORIZED  
+Status: PRODUCTION CERTIFIED / INTEGRATED  
 Updated: 2026-09-29
+
+## Certified production outcome
+
+- Exact approved input: 1254×1254 JPEG, 602,970 bytes, SHA-256 `2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a`.
+- One owner-authorized Tripo Generate was executed at the visible 55-credit cost; generated task: `a50f42b8-1e96-4298-ba36-089334d934f6`.
+- Raw export: 69,308,356 bytes, SHA-256 `b14cfbf85d608aac4a3b551a3804df57f8dc866264c786565e496cfac7fe647b`.
+- Canonical Blender result: 1,826,722 → 49,800 triangles; production GLB: 12,951,524 bytes, SHA-256 `d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67`.
+- Isolated oriented gate: run **36572780639**, artifact **11036129405**, **TECH PASS / VISUAL PASS**, yaw 180.
+- Production promotion: run **36575066762** to `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb`.
+- Integrated Visual Formula: run **36581806788**, artifact **11040631044**, dedicated zoom 12 / 9 / mobile evidence.
+- Full Unity slice on the current integrated lineage: run **36581806847**, EditMode + PlayMode + Windows build + Valoria benchmark **PASS**.
+- Integration is visual-only on the locked west-growth Bastion III plot; imported colliders are disabled and `Valoria.unity` is untouched.
+- Do **not** regenerate or spend more Tripo credits for this Granero unless a later explicit redesign decision supersedes this certification.
 
 ## Gameplay role
 
