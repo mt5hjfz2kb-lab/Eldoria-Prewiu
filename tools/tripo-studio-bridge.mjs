@@ -653,6 +653,49 @@ try {
     report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
     await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
     report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+    report.probe_clickables = await selectedPage.locator('button, a, [role="button"], [tabindex]').evaluateAll(nodes =>
+      nodes.map((el, index) => {
+        const r = el.getBoundingClientRect();
+        const s = getComputedStyle(el);
+        return {
+          index,
+          tag: el.tagName,
+          role: el.getAttribute('role') || '',
+          text: (el.innerText || el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 180),
+          aria: el.getAttribute('aria-label') || '',
+          title: el.getAttribute('title') || '',
+          className: String(el.className || '').slice(0, 240),
+          visible: r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none',
+          x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height)
+        };
+      }).filter(x => x.visible).slice(0, 300)
+    );
+    report.probe_images = await selectedPage.locator('img').evaluateAll(nodes =>
+      nodes.map((el, index) => {
+        const r = el.getBoundingClientRect();
+        const s = getComputedStyle(el);
+        let p = el.parentElement;
+        let depth = 0;
+        while (p && depth < 5 && !p.matches('button, a, [role="button"], [tabindex]')) { p = p.parentElement; depth++; }
+        return {
+          index,
+          alt: el.getAttribute('alt') || '',
+          src: (el.getAttribute('src') || '').slice(0, 180),
+          naturalWidth: el.naturalWidth || 0,
+          naturalHeight: el.naturalHeight || 0,
+          visible: r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none',
+          x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height),
+          clickableAncestor: p ? {
+            tag: p.tagName,
+            role: p.getAttribute('role') || '',
+            text: (p.innerText || p.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 180),
+            aria: p.getAttribute('aria-label') || '',
+            title: p.getAttribute('title') || '',
+            className: String(p.className || '').slice(0, 240)
+          } : null
+        };
+      }).filter(x => x.visible).slice(0, 200)
+    );
   } else {
     throw new Error(`Unsupported safe bridge mode: ${mode}`);
   }
