@@ -2,8 +2,8 @@
   "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Eldoria multipiece modular stone-sheet viability test. Ingest exact ChatGPT-approved bytes, persist canonical exact-input, stage in Tripo Studio, show visible cost, STOP before Generate. No credit spend.",
-  "request_id": "eldoria-multipiece-stonekit-v1-stage-runner-discovery-r3",
+  "notes": "Exact approved multipiece stone-sheet viability test. Reconstruct exact repository input, verify SHA/bytes, stage in Tripo Studio, capture staged preview and visible cost, STOP before Generate. Zero credit spend.",
+  "request_id": "eldoria-multipiece-stonekit-v1-stage-repo-exact-r4",
   "asset_name": "Eldoria_MultiPiece_StoneKit_v1",
   "function": "Single-sheet Tripo viability test for six separable reusable aged-stone modular families: straight slab, irregular slab, street edge, street corner, step, stone block.",
   "upload_file_name": "conjunto_de_piezas_de_piedra_envejecida.jpeg",
@@ -16,7 +16,7 @@
   "approved_input_sha256": "210d4d629df6c34eb1b59195a0d9ac3a177a8ed61f5b7fd96bb64201c2d4c0e8",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "input_transport": "runner_fallback",
+  "input_transport": "repo_exact_input",
   "expected_families": [
     "losa recta",
     "losa irregular",
@@ -25,8 +25,9 @@
     "escalon",
     "bloque de piedra"
   ],
-  "probe_nonce": "2026-09-29-r3-runner-discovery",
-  "search_downloads_for_sha": true,
+  "probe_nonce": "2026-09-29-r4-repo-exact",
+  "search_downloads_for_sha": false,
   "persist_exact_input": true,
-  "probe_chatgpt_session": false
+  "probe_chatgpt_session": false,
+  "upload_base64_glob": "pipeline/exact-inputs/Eldoria_MultiPiece_StoneKit_v1/part_*.b64"
 }
