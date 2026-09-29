@@ -66,17 +66,22 @@ jobs:
           $editorDir = Split-Path $env:UNITY_EDITOR_PATH
           $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
           if (Test-Path $webgl) { Write-Host 'WebGL Build Support already installed.'; exit 0 }
-          $hubCandidates = @(
-            "${env:ProgramFiles}\Unity Hub\Unity Hub.exe",
-            "${env:ProgramFiles(x86)}\Unity Hub\Unity Hub.exe",
-            "${env:LOCALAPPDATA}\Programs\Unity Hub\Unity Hub.exe"
-          )
-          $hub = $hubCandidates | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
-          if (-not $hub) { throw 'Unity Hub not found; cannot install WebGL Build Support automatically.' }
-          Write-Host "Installing WebGL Build Support with Unity Hub: $hub"
-          & $hub -- --headless install-modules --version 6000.3.23f1 --module webgl --errors
-          if ($LASTEXITCODE -ne 0) { throw "Unity Hub WebGL module install failed with exit code $LASTEXITCODE." }
-          if (-not (Test-Path $webgl)) { throw 'WebGL Build Support install command completed but module path is still missing.' }
+          $unityCli = Get-Command unity.exe -ErrorAction SilentlyContinue
+          if (-not $unityCli) {
+            $candidates = @(
+              "${env:LOCALAPPDATA}\Programs\Unity\bin\unity.exe",
+              "${env:LOCALAPPDATA}\Unity\bin\unity.exe",
+              "${env:USERPROFILE}\.unity\bin\unity.exe"
+            )
+            $unityCliPath = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if ($unityCliPath) { $unityCli = Get-Item $unityCliPath }
+          }
+          if (-not $unityCli) { throw 'Unity CLI is not installed or not discoverable on the runner.' }
+          Write-Host "Installing WebGL Build Support with Unity CLI: $($unityCli.Source)"
+          & $unityCli.Source install-modules -e 6000.3.23f1 -m webgl --format human
+          $code = $LASTEXITCODE
+          if ($code -ne 0) { throw "Unity CLI WebGL module install failed with exit code $code." }
+          if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
           Write-Host 'WebGL Build Support installed successfully.'
       - name: Build Unity WebGL OWNER I-II
         shell: powershell
