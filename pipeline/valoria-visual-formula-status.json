@@ -221,7 +221,6 @@
     "status": "PRODUCTION_INTEGRATED_VISUAL_PASS",
     "updated": "2026-09-29",
     "production_commit": "05141fff6ac88d6646e1b72e7188dcd5d5fc5731",
-    "current_main_documentation_commit": "ff5c9390c2b276c04dfe9b7b6431b4da1e84500f",
     "formula_gate": {
       "run_id": 36541695034,
       "artifact_id": 11021096851,
@@ -273,6 +272,7 @@
       "No Tripo credits were spent for historical rescue or district integration.",
       "Do not reduce visual quality until representative target-device profiling identifies a measured bottleneck."
     ],
-    "mobile_baseline": "pipeline/mobile-visual-performance-gate.json"
+    "mobile_baseline": "pipeline/mobile-visual-performance-gate.json",
+    "documentation": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md"
   }
 }
