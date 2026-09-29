@@ -176,3 +176,26 @@ The construction library is working when a new district can be assembled mainly 
 - progression dressing;
 
 without rebuilding materials, terrain language or generic architecture from scratch.
+
+## 7. Ground Kit v1 implementation status — 2026-09-29
+
+Implemented in `Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs` and assembled into the real Valoria kernel in `VisualWorld.cs`.
+
+Current reusable functions:
+- StreetStraight;
+- StreetBlendWidening;
+- TerraceFloor;
+- RetainingEdge;
+- GroundSeam.
+
+Rules preserved:
+- visual-only;
+- certified gameplay floors/routes/hotspots remain authoritative underneath;
+- no Tripo generation and no paid credit spend;
+- validation must be integrated at official cameras before marking production PASS.
+
+Implementation commits:
+- `49e8548e92b8383d456b34b193d3cdea4834dbcc` — reusable Ground Kit class;
+- `ff34e38c20a920d55cf1e78cc7c9969fd9fee335` — integrated into the real Valoria kernel.
+
+The first Unity slice run for the integration was superseded/cancelled after concurrent `main` work changed only `SliceBoot.cs`; that cancellation is not evidence of a Ground Kit defect. Visual Formula / LookDev evidence for the art commit must decide visual acceptance.
