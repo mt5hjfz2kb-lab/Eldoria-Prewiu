@@ -6,19 +6,26 @@ Updated: 2026-09-29
 ## Current execution status — 2026-09-29
 
 Implemented in Unity:
-- explicit QA_FAST vs WebContract content profiles;
-- authoritative Bastion I–II mission counters/flags;
-- early forest + quarry resource lessons;
-- Bastion-I route-clear requirement;
-- explicit Bastion-II March confirmation with Expedition Power;
+- authoritative Bastion I–II mission counters/flags and domain-owned objective stages;
+- forest + quarry resource lessons and explicit route-clear requirement;
+- explicit Bastion-II March confirmation with persisted composition and Expedition Power;
 - structured persistent battle report;
+- full QA fresh-save I→II domain regression with offline/reload coverage;
 - QA fresh-save reset control;
+- atomic profile facade: runtime consumes exactly one content profile;
+- QA_FAST remains active; OWNER_I_II is staged from the web contract and inactive;
+- profile-scoped saves prevent QA/OWNER contamination while preserving the existing QA save path;
+- OWNER_I_II values are regression-locked against the web contract;
 - owner-playtest acceptance checklist: `docs/BASTION_I_II_OWNER_PLAYTEST_CHECKLIST.md`.
 
+Latest known integrated gameplay gate before profile plumbing: run **36551685275 SUCCESS** (EditMode + PlayMode + Windows build + benchmark capture).
+The newer profile-isolation/Frontier/Ground-Kit integration is awaiting its own full superseding Unity gate; do not call that newer HEAD green until the run finishes.
+
 Still required before owner-playtest GREEN:
-- latest Unity CI on the integrated I–II flow must pass;
-- fresh-save I→II regression must be executed against the integrated build;
-- visual Frontier I–II corridor / Bastion Hero work must finish its current validation;
+- latest full Unity gate on the current integrated HEAD must pass;
+- inspect the new official Frontier I–II captures after the prototype-read cleanup;
+- run uninterrupted human fresh-save I→II without developer knowledge;
+- activate OWNER_I_II only after that integrated baseline is green and immediately perform owner pacing validation;
 - representative physical-mobile performance remains a later readiness gate, not a blocker for the first desktop owner pass.
 
 ## Objective
@@ -64,8 +71,8 @@ Already real / green:
 - Power transition and resource return;
 - Bastion I → II ascent;
 - Cuartel construction;
-- +12 Archer T1 recruitment;
-- 48-Archer Engendro gate;
+- profile-owned Archer recruitment (QA_FAST currently +12; OWNER_I_II candidate +20);
+- Engendro readiness gated by trained-this-chapter + confirmed Expedition Power + prepared March;
 - Engendro combat/reward;
 - idempotent commands/tasks;
 - dedicated Aserradero and Cuartel production art;
