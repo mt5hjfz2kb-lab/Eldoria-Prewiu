@@ -683,8 +683,6 @@ namespace Eldoria.Presentation
                 origin+new Vector3(-.62f,.18f,2.28f),1.62f,6.95f,Quaternion.Euler(0,4f,0),
                 new Color(.54f,.55f,.53f,1f));
             if(lantern==null)Tower(name+" · high lantern fallback",origin+new Vector3(-.62f,.08f,2.28f),.72f,6.45f,OldStone*.78f);
-            Block(name+" · lantern crown",origin+new Vector3(-.62f,5.76f,2.28f),
-                new Vector3(1.66f,.24f,1.82f),Slate*.82f);
             Block(name+" · east counter crown",origin+new Vector3(2.02f,4.58f,.85f),
                 new Vector3(1.98f,.22f,2.08f),Slate*.76f);
             Block(name+" · central crown ridge",origin+new Vector3(-.18f,4.82f,.82f),
