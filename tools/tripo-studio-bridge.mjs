@@ -279,6 +279,49 @@ try {
           (await probePage.locator('[contenteditable="true"]').count().catch(() => 0)) > 0,
         body_sample: String(body).slice(0, 1200)
       };
+
+      const chatgptFileId = String(request.probe_chatgpt_file_id || '').trim();
+      if (chatgptFileId) {
+        if (!/^file_[A-Za-z0-9_-]+$/.test(chatgptFileId)) throw new Error('Unsafe ChatGPT file id.');
+        const expectedSha = String(request.upload_sha256 || '').toLowerCase();
+        const expectedBytes = Number(request.upload_size_bytes || 0);
+        const candidates = [
+          `https://chatgpt.com/backend-api/files/${chatgptFileId}/download`,
+          `https://chatgpt.com/backend-api/files/${chatgptFileId}/download?download=1`,
+          `https://chatgpt.com/backend-api/files/${chatgptFileId}/content`,
+          `https://chatgpt.com/backend-api/files/${chatgptFileId}`
+        ];
+        const attempts = [];
+        for (const url of candidates) {
+          try {
+            const response = await contexts[0].request.get(url, { timeout: 30000, failOnStatusCode: false });
+            const bytes = await response.body();
+            const sha256 = crypto.createHash('sha256').update(bytes).digest('hex');
+            attempts.push({ url, status: response.status(), content_type: response.headers()['content-type'] || '', bytes: bytes.length, sha256 });
+            if (response.ok() && bytes.length === expectedBytes && sha256 === expectedSha) {
+              const ext = String(request.upload_file_name || '').toLowerCase().endsWith('.jpeg') ? '.jpeg' : '.bin';
+              const exactPath = path.join(path.dirname(outPath), 'chatgpt-exact-input' + ext);
+              fs.writeFileSync(exactPath, bytes);
+              report.chatgpt_exact_input_probe = {
+                ok: true,
+                file_id: chatgptFileId,
+                path: exactPath,
+                bytes: bytes.length,
+                sha256,
+                source_url: url
+              };
+              break;
+            }
+          } catch (error) {
+            attempts.push({ url, error: String(error?.message || error) });
+          }
+        }
+        if (!report.chatgpt_exact_input_probe) {
+          report.chatgpt_exact_input_probe = { ok: false, file_id: chatgptFileId, attempts };
+        } else {
+          report.chatgpt_exact_input_probe.attempts = attempts;
+        }
+      }
     } finally {
       await probePage.close().catch(() => {});
     }
