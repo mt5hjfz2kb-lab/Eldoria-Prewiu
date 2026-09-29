@@ -284,23 +284,7 @@ namespace Eldoria.Presentation
             power.text="⚔ PODER  "+parts.Total+"    MARCHA  "+SliceRules.Expedition(
                 marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
             var cp=s.ChapterProgress??new ChapterProgressState();
-            objective.text=s.BastionLevel==1
-                ? (s.JourneyComplete ? "CAPÍTULO I COMPLETO · asciende el Bastión"
-                    : s.SawmillLevel==0 ? "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
-                    : cp.GatheredWood<SliceContentProfiles.QaFast.Chapter1GatherWood
-                        ? "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.QaFast.Chapter1GatherWood
-                    : cp.GatheredStone<SliceContentProfiles.QaFast.Chapter1GatherStone
-                        ? "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.QaFast.Chapter1GatherStone
-                    : !cp.RouteCleared ? "BASTIÓN I · despeja la ruta corrupta"
-                    : "BASTIÓN I · regresa a Valoria")
-                : (s.BarracksLevel==0 ? "BASTIÓN II · levanta el Cuartel"
-                    : cp.TrainedArchers<SliceContentProfiles.QaFast.Chapter2TrainArchers
-                        ? "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.QaFast.Chapter2TrainArchers
-                    : !cp.MarchConfirmed ? "BASTIÓN II · prepara y confirma la Marcha"
-                    : cp.ConfirmedExpeditionPower<SliceContentProfiles.QaFast.Chapter2ExpeditionPower
-                        ? "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.QaFast.Chapter2ExpeditionPower
-                    : !cp.EngendroDefeated ? "BASTIÓN II · derrota al Engendro de la ruta"
-                    : "CAPÍTULO II COMPLETO · Valoria puede defenderse");
+            objective.text=ObjectiveText(s,cp);
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
             var expedition=SliceRules.Expedition(s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric");
@@ -321,6 +305,26 @@ namespace Eldoria.Presentation
                  "Toca un objetivo o usa los botones para enviar la Marcha."):feedback;
             RefreshClock();
         }
+        string ObjectiveText(PlayerState s,ChapterProgressState cp)
+        {
+            switch(SliceRules.CurrentObjectiveKey(s))
+            {
+                case "b1.build-sawmill": return "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera";
+                case "b1.gather-wood": return "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.QaFast.Chapter1GatherWood;
+                case "b1.gather-stone": return "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.QaFast.Chapter1GatherStone;
+                case "b1.clear-route": return "BASTIÓN I · despeja la ruta corrupta";
+                case "b1.return": return "BASTIÓN I · regresa a Valoria";
+                case "b1.ascend": return "CAPÍTULO I COMPLETO · asciende el Bastión";
+                case "b2.build-barracks": return "BASTIÓN II · levanta el Cuartel";
+                case "b2.train-archers": return "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.QaFast.Chapter2TrainArchers;
+                case "b2.prepare-march": return "BASTIÓN II · prepara y confirma la Marcha";
+                case "b2.raise-expedition-power": return "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.QaFast.Chapter2ExpeditionPower;
+                case "b2.defeat-engendro": return "BASTIÓN II · derrota al Engendro de la ruta";
+                case "b2.complete": return "CAPÍTULO II COMPLETO · Valoria puede defenderse";
+                default: return "ELDORIA · objetivo no disponible";
+            }
+        }
+
         string FrontierDescription(PlayerState s,string march,CombatStats expedition)
         {
             string text=(s.ForestRemaining>0 ? "Bosque: "+s.ForestRemaining+" madera. ":"Bosque agotado. ")
