@@ -205,12 +205,34 @@ namespace Eldoria.Presentation
             else if(id=="barracks")
             {
                 buildingTitle.text="CUARTEL";
-                buildingBody.text=s.BarracksLevel>0
-                    ?"Guarnición activa · desde aquí se entrenan los arqueros de la marcha."
-                    :"Parcela militar preparada para levantar el Cuartel.";
-                buildingAction.GetComponentInChildren<Text>().text=s.BarracksLevel>0?"CUARTEL ACTIVO":"CONSTRUIR CUARTEL";
-                buildingAction.interactable=s.BarracksLevel==0;
-                if(s.BarracksLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
+                if(s.BarracksLevel==0)
+                {
+                    buildingBody.text="Parcela militar preparada para levantar el Cuartel.";
+                    buildingAction.GetComponentInChildren<Text>().text="CONSTRUIR CUARTEL";
+                    buildingAction.interactable=true;
+                    buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
+                }
+                else if(s.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers)
+                {
+                    buildingBody.text="Guarnición activa · "+s.Available.Total+" arqueros disponibles. "+
+                        "Entrena refuerzos antes de preparar la Marcha contra el Engendro.";
+                    buildingAction.GetComponentInChildren<Text>().text="RECLUTAR +"+SliceRules.RecruitArchers;
+                    buildingAction.interactable=s.RecruitmentCompletesUtcTicks==0;
+                    if(buildingAction.interactable)
+                        buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Recruit","archer:t1");});
+                }
+                else
+                {
+                    var preview=SliceRules.Expedition(s.Available,"aldric");
+                    buildingBody.text=(s.MarchConfigured
+                        ?"Marcha confirmada · Sir Aldric + "+s.PreparedTroops.Total+" arqueros."
+                        :"Tropas suficientes. Prepara la expedición antes de atacar.")+
+                        "\nPoder disponible "+preview.Power+".";
+                    buildingAction.GetComponentInChildren<Text>().text=s.MarchConfigured?"REVISAR MARCHA":"PREPARAR MARCHA";
+                    buildingAction.interactable=s.March.Phase=="idle";
+                    if(buildingAction.interactable)
+                        buildingAction.onClick.AddListener(OpenMarchPanel);
+                }
             }
             else
             {
@@ -220,6 +242,23 @@ namespace Eldoria.Presentation
                 buildingAction.interactable=s.JourneyComplete&&s.BastionLevel==1;
                 if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
             }
+        }
+        void OpenMarchPanel()
+        {
+            if(buildingPanel==null)return;
+            var s=gateway.Snapshot();
+            var prepared=SliceRules.Expedition(s.Available,"aldric");
+            buildingPanel.SetActive(true);
+            buildingAction.onClick.RemoveAllListeners();
+            buildingTitle.text="PREPARAR MARCHA";
+            buildingBody.text="Sir Aldric · "+s.Available.Total+" Arqueros disponibles\n"+
+                "ATQ "+prepared.Attack+" · DEF "+prepared.Defense+" · VIDA "+prepared.Health+
+                " · RUP "+prepared.Break+"\nPoder de expedición "+prepared.Power+
+                "\nConfirma esta composición antes de atacar al Engendro.";
+            buildingAction.GetComponentInChildren<Text>().text="CONFIRMAR MARCHA";
+            buildingAction.interactable=s.March.Phase=="idle"&&s.Available.Total>0;
+            if(buildingAction.interactable)
+                buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("ConfigureMarch","march-main");});
         }
         void Send(string kind,string target)
         {
@@ -239,14 +278,18 @@ namespace Eldoria.Presentation
             var parts=SliceRules.TotalPower(s);
             heading.text=city?"VALORIA · BASTIÓN "+s.BastionLevel:"FRONTERA DE VALORIA";
             resources.text="MADERA  "+s.Resources.Wood+"    PIEDRA  "+s.Resources.Stone;
+            var marchPreview=s.March.Phase!="idle"?s.March.Troops:
+                (s.MarchConfigured?s.PreparedTroops:s.Available);
             power.text="⚔ PODER  "+parts.Total+"    MARCHA  "+SliceRules.Expedition(
-                s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric").Power;
+                marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
             objective.text=s.BastionLevel==1
                 ? (s.JourneyComplete ? "CAPÍTULO I COMPLETO · asciende el Bastión"
                     : s.SawmillLevel==0 ? "Necesidad: reparar el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
                     : "El Aserradero produce. Observa la marca de La Brecha.")
                 : (s.BarracksLevel==0 ? "BASTIÓN II · levanta el Cuartel"
-                    : s.Available.Total<48 && s.March.Phase=="idle" ? "BASTIÓN II · recluta 12 arqueros"
+                    : s.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers && s.March.Phase=="idle"
+                        ? "BASTIÓN II · recluta "+SliceRules.RecruitArchers+" arqueros"
+                    : !s.MarchConfigured ? "BASTIÓN II · prepara y confirma la Marcha"
                     : !s.EngendroDefeated ? "BASTIÓN II · derrota al Engendro de la ruta"
                     : "CAPÍTULO II COMPLETO · Valoria puede defenderse");
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
@@ -255,7 +298,9 @@ namespace Eldoria.Presentation
             description.text=city
                 ? (s.BastionLevel>=2
                     ? (s.BarracksLevel>0
-                        ? "El Cuartel vuelve a formar soldados. Refuerza la marcha antes de afrontar al Engendro."
+                        ? (s.MarchConfigured
+                            ? "La Marcha está preparada. Sal a la frontera y enfrenta al Engendro."
+                            : "El Cuartel vuelve a formar soldados. Confirma la Marcha antes de afrontar al Engendro.")
                         : "Aldric: «Ya tenemos madera. Ahora necesitamos una guarnición que pueda mantener abierta la ruta.»")
                     : (s.SawmillLevel>0 ? "El fuego vuelve a la madera. La corrupción aún se ve en la frontera."
                         : "Aldric: «La Brecha dejó Valoria en ruinas. Trae madera del bosque; volveremos a levantar el Aserradero.»"))
@@ -315,9 +360,13 @@ namespace Eldoria.Presentation
                     else if(state.JourneyComplete) Button(row1,"ASCENDER A BASTIÓN II",()=>Send("AdvanceBastion","bastion"));
                 }
                 else if(state.BarracksLevel==0)
-                    Button(row1,"CUARTEL · 140 M / 90 P",()=>Send("Build","barracks"));
+                    Button(row1,"CUARTEL · "+SliceRules.BarracksWoodCost+" M / "+SliceRules.BarracksStoneCost+" P",
+                        ()=>Send("Build","barracks"));
+                else if(state.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers)
+                    Button(row1,"RECLUTAR +"+SliceRules.RecruitArchers+" · "+SliceRules.RecruitWoodCost+" M",
+                        ()=>Send("Recruit","archer:t1"));
                 else
-                    Button(row1,"RECLUTAR +12 · 50 M",()=>Send("Recruit","archer:t1"));
+                    Button(row1,state.MarchConfigured?"REVISAR MARCHA":"PREPARAR MARCHA",OpenMarchPanel);
             }
             else
             {
