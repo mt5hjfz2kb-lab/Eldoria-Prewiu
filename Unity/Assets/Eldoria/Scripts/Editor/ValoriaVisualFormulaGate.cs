@@ -67,11 +67,12 @@ namespace Eldoria.EditorTools
             };
             VisualWorld.Create(true, state);
             HideVisualFamilyForDistrictEvidence("Bastion");
+            HideVisualFamilyForDistrictEvidence("VPD · upper civil house");
 
             var residential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
                 "Production rescue · ResidentialTerraceRock",
-                new Vector3(-1.75f, .40f, 1.10f), 0f, 5.45f);
+                new Vector3(-5.15f, 2.89f, 7.15f), 0f, 4.35f);
             var seamWest = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam west",
@@ -79,17 +80,12 @@ namespace Eldoria.EditorTools
             var seamResidential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam residential",
-                new Vector3(-1.70f, .18f, .95f), 112f, 4.20f);
+                new Vector3(-5.15f, 2.70f, 7.15f), 112f, 3.55f);
             var seamEast = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam east",
                 new Vector3(5.85f, .20f, -3.75f), 205f, 2.95f);
-            var terraceStair = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/TerraceStairRock.glb",
-                "Production rescue · TerraceStairRock visual transition",
-                new Vector3(-3.55f, .24f, 2.10f), 180f, 4.10f);
-
-            if (residential == null || seamWest == null || seamResidential == null || seamEast == null || terraceStair == null)
+            if (residential == null || seamWest == null || seamResidential == null || seamEast == null)
                 throw new System.Exception("Valoria rescue district did not stage all required composed modules.");
 
             var camera = Camera.main;
@@ -111,12 +107,12 @@ namespace Eldoria.EditorTools
                 "  \"topology\": \"REAL_VISUALWORLD_ISOLATED_EDITOR_SCENE\",\n" +
                 "  \"gameplay_mesh_dependency\": false,\n" +
                 "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
-                "  \"composed_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller x3\",\"TerraceStairRock visual-only transition\"],\n" +
-                "  \"deferred_after_fit_test\": [],\n" +
+                "  \"composed_assets\": [\"ResidentialTerraceRock on certified upper civil plot\",\"RockTerrainSeamFiller x3\"],\n" +
+                "  \"deferred_after_fit_test\": [\"TerraceStairRock: rescued and Surface-v1-ready, but omitted after composition test because it was occluded/redundant with the certified 12-step route\"],\n" +
                 "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
                 "  \"official_zooms\": [19,12,9],\n" +
                 "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
-                "  \"district_focus_visual_suppression\": \"Bastion renderers and Bastion-named lights hidden only in this isolated evidence scene so the lower production district can be judged; canonical VisualWorld/runtime is unchanged\",\n" +
+                "  \"district_focus_visual_suppression\": \"Bastion renderers/lights hidden for district focus; the placeholder upper civil house renderer is hidden and replaced visually by rescued ResidentialTerraceRock on the same certified plot. Canonical VisualWorld/runtime is unchanged\",\n" +
                 "  \"promotion\": \"EVIDENCE_ONLY_DO_NOT_MUTATE_VISUALWORLD\"\n" +
                 "}\n");
             Debug.Log("Valoria production rescue district evidence saved to " + Path.GetFullPath(folder));
