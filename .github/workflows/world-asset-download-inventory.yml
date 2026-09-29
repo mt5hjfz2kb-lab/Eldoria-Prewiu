@@ -35,6 +35,27 @@ jobs:
             Select-Object -First 40 |
             ForEach-Object { "$($_.FullName)|DIR|$($_.LastWriteTime.ToString('o'))" } |
             Add-Content $out
+
+          "ASSET STORE CACHE MATCHES" | Add-Content $out
+          $assetStore=Join-Path $env:APPDATA 'Unity\Asset Store-5.x'
+          if(Test-Path $assetStore){
+            Get-ChildItem $assetStore -Recurse -File -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match 'jermesa|hill.?rock|mountain.?terrain|quaternius|ruin|holotna' } |
+              Select-Object -First 200 |
+              ForEach-Object { "$($_.FullName)|$($_.Length)|$($_.LastWriteTime.ToString('o'))" } |
+              Add-Content $out
+          }
+
+          "PROJECT ASSET MATCHES" | Add-Content $out
+          $assets=Join-Path $env:GITHUB_WORKSPACE 'Unity\Assets'
+          if(Test-Path $assets){
+            Get-ChildItem $assets -Recurse -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match 'jermesa|hill.?rock|mountain.?terrain|quaternius|ultimate.?modular.?ruin|holotna' } |
+              Select-Object -First 300 |
+              ForEach-Object { "$($_.FullName)|$($_.Length)|$($_.LastWriteTime.ToString('o'))" } |
+              Add-Content $out
+          }
+
           Get-Content $out
       - uses: actions/upload-artifact@v4
         with:
