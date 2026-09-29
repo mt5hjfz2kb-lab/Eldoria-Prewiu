@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "request_id": "valoria-granero-biii-v1-isolated-gate",
+  "request_id": "valoria-granero-biii-v1-isolated-gate-yaw90",
   "module_label": "Valoria_Granero_BIII_v1",
-  "unity_yaw_degrees": 0,
+  "unity_yaw_degrees": 90,
   "source": {
     "mode": "downloads_glb",
     "exact_name": "Valoria_Granero_BIII_v1.glb",
@@ -20,7 +20,7 @@
     "max_triangles": 50000
   },
   "visual_acceptance": "Dedicated Bastion III granary / food storehouse for Valoria. Preserve the approved identity: complex stone-and-timber agricultural building, tall silo/tower mass clearly subordinate on the left, broad central pitched roof, readable open south/front storage facade, sacks/carts/storage cues and restrained grain heraldry. It must read as a granary rather than a smithy, barracks, fortress or generic house. Isolated gate must show one coherent building with believable ground contact and no catastrophic holes, floating fragments or collapsed roof/forms. Cardinal diagnostics must establish the intended south/front orientation. Target production envelope after isolated PASS: footprint 4.1–4.5 x 3.4–3.8, height 3.7–4.4, functional hotspot/click collider remaining separate from visual mesh.",
-  "notes": "Zero-credit isolated gate for the exact GLB exported from authorized Tripo task a50f42b8-1e96-4298-ba36-089334d934f6. Do not promote until TECH and visual evidence are reviewed.",
+  "notes": "Zero-credit orientation rerun of the exact certified-tech Granero GLB. Cardinal evidence from yaw 0 showed the intended open storage facade and subordinate silo on right-diagnostic; rotate +90 degrees so that side becomes official south/front. No Tripo generation or credit spend. Promotion remains disabled until final visual review.",
   "promotion": {
     "enabled": false
   }
