@@ -20,10 +20,10 @@ namespace Eldoria.Presentation
                     UnityEngine.Object.DestroyImmediate(oldCamera.gameObject);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.70f,.70f,.70f):new Color(.76f,.75f,.72f);
+            RenderSettings.ambientLight = city?new Color(.70f,.70f,.70f):new Color(.88f,.86f,.80f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.63f,.63f,.63f):new Color(.46f,.46f,.44f);
-            RenderSettings.fogStartDistance=city?28:48; RenderSettings.fogEndDistance=city?62:140;
+            RenderSettings.fogColor = city?new Color(.63f,.63f,.63f):new Color(.60f,.60f,.56f);
+            RenderSettings.fogStartDistance=city?28:34; RenderSettings.fogEndDistance=city?62:105;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 10.2f : 14;
@@ -33,10 +33,11 @@ namespace Eldoria.Presentation
             cameraGo.transform.LookAt(city ? new Vector3(0,3.15f,5.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?Color.white:new Color(1.0f,.93f,.82f);
-            sun.intensity=city?.90f:1.9f;
+            sun.intensity=city?.90f:2.15f;
             sun.transform.rotation=Quaternion.Euler(city?55f:50f,city?-25f:-32f,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.55f:.55f;
             var worldGround=Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.285f,.265f,.215f):Earth);
+            if(!city) worldGround.GetComponent<Renderer>().enabled=false;
             if(city)
             {
                 // Art Pass 1: preserve the full collision/support envelope but remove the visible
@@ -699,8 +700,8 @@ namespace Eldoria.Presentation
 
             // I-II production corridor: one authored route from Valoria into resources and corruption.
             // Keep gameplay hotspots independent from the visual dressing so art never owns rules.
-            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.19f,.205f,.185f));
-            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.285f,.275f,.235f));
+            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.285f,.305f,.255f));
+            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.39f,.36f,.29f));
 
             // A worn march road gives immediate depth and a readable Valoria -> threat axis.
             // Keep it as overlapping authored earth/cobble, never a chain of rectangular box slabs.
@@ -722,7 +723,7 @@ namespace Eldoria.Presentation
             }
 
             // Forest resource pocket. The invisible hotspot remains the only gameplay target.
-            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.145f,.185f,.15f));
+            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.22f,.285f,.205f));
             var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6.2f,1.35f,1.0f),
                 new Vector3(2.35f,2.7f,2.35f),new Color(.18f,.22f,.18f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
@@ -740,6 +741,7 @@ namespace Eldoria.Presentation
                     p,1.0f,.68f,Quaternion.Euler(0,(int)(p.x*31f)%360,0),new Color(.35f,.49f,.36f,1f));
             ValoriaKit.BenchmarkPiece("Frontier · stacked timber",art!=null?art.Firewood:null,
                 new Vector3(-4.25f,.12f,.45f),1.25f,.78f,Quaternion.Euler(0,-18f,0));
+            Glow("Frontier · lumber warmth",new Vector3(-4.35f,.72f,.35f),Amber,.68f,2.6f);
             foreach(var p in new[]{
                 new Vector3(-8.65f,.03f,1.95f),new Vector3(-6.1f,.03f,3.35f),
                 new Vector3(-4.65f,.03f,1.65f)})
@@ -751,7 +753,7 @@ namespace Eldoria.Presentation
 
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
-            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.23f,.225f,.205f));
+            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.35f,.34f,.31f));
             ValoriaKit.RockCluster("Frontier · quarry cut",new Vector3(6.4f,.02f,-2.1f),1.28f,12);
             ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
             ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
@@ -775,6 +777,12 @@ namespace Eldoria.Presentation
                 new Vector3(-10.5f,.04f,1.8f),new Vector3(10.2f,.04f,1.2f),
                 new Vector3(-3.7f,.04f,7.2f),new Vector3(3.6f,.04f,7.0f)})
                 ValoriaKit.RockCluster("Frontier · route geology",p,.68f,5);
+
+            // The route becomes visibly colder/corrupted before the encounter, so the threat reads
+            // as territory rather than an isolated dark model.
+            IrregularGround("Frontier · corrupted shelf",new Vector3(6.0f,.045f,4.1f),7.2f,6.4f,new Color(.245f,.205f,.255f));
+            Glow("Frontier · road lantern west",new Vector3(-1.55f,1.05f,-4.9f),Amber,.72f,2.8f);
+            Glow("Frontier · road lantern east",new Vector3(1.45f,1.00f,-3.4f),Amber,.64f,2.5f);
 
             // Enemy target stays an invisible gameplay volume; visible threat is built as authored
             // dark-fantasy silhouette around it rather than exposing a primitive sphere.
