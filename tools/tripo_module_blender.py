@@ -409,9 +409,9 @@ def split_components_to_glbs(output_dir, min_triangles=250):
     bpy.ops.mesh.separate(type="LOOSE")
     bpy.ops.object.mode_set(mode="OBJECT")
 
-    candidates = [o for o in bpy.context.selected_objects if o.type == "MESH" and o.data]
-    if not candidates:
-        candidates = mesh_objects()
+    # Blender's selection state after Separate can vary by version; the scene contains only
+    # the imported asset meshes here, so enumerate all mesh objects deterministically.
+    candidates = mesh_objects()
 
     piece_rows = []
     useful = []
