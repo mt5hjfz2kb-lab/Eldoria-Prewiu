@@ -187,15 +187,16 @@ jobs:
           git fetch origin main
           $remote=(git rev-parse origin/main).Trim()
           if($remote -ne $env:GITHUB_SHA){
-            throw "main advanced during rescue promotion ($remote != $env:GITHUB_SHA); refusing to overwrite concurrent work"
-          }
-          git add Unity/Assets/Eldoria/Resources/Valoria/Rescued
-          git diff --cached --quiet
-          if($LASTEXITCODE -eq 0){
-            Write-Host "Production rescue assets already match main; no promotion commit needed."
+            Write-Warning "main advanced during rescue promotion ($remote != $env:GITHUB_SHA); preserving successful evidence and skipping promotion to avoid overwriting concurrent work."
           } else {
-            git commit -m "Art production: promote rescued district assets"
-            git push origin HEAD:main
+            git add Unity/Assets/Eldoria/Resources/Valoria/Rescued
+            git diff --cached --quiet
+            if($LASTEXITCODE -eq 0){
+              Write-Host "Production rescue assets already match main; no promotion commit needed."
+            } else {
+              git commit -m "Art production: promote rescued district assets"
+              git push origin HEAD:main
+            }
           }
 
       - uses: actions/upload-artifact@v4
