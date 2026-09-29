@@ -84,8 +84,12 @@ namespace Eldoria.EditorTools
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
                 "Production rescue · Seam east",
                 new Vector3(5.85f, .20f, -3.75f), 205f, 2.95f);
+            var terraceStair = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/TerraceStairRock.glb",
+                "Production rescue · TerraceStairRock visual transition",
+                new Vector3(-3.55f, .24f, 2.10f), 180f, 4.10f);
 
-            if (residential == null || seamWest == null || seamResidential == null || seamEast == null)
+            if (residential == null || seamWest == null || seamResidential == null || seamEast == null || terraceStair == null)
                 throw new System.Exception("Valoria rescue district did not stage all required composed modules.");
 
             var camera = Camera.main;
@@ -107,8 +111,8 @@ namespace Eldoria.EditorTools
                 "  \"topology\": \"REAL_VISUALWORLD_ISOLATED_EDITOR_SCENE\",\n" +
                 "  \"gameplay_mesh_dependency\": false,\n" +
                 "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
-                "  \"composed_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller x3\"],\n" +
-                "  \"deferred_after_fit_test\": [\"TerraceStairRock: rescued and Surface-v1-ready, but omitted from this district because its large terrace mass duplicates the local vertical transition and overcrowds the parcel\"],\n" +
+                "  \"composed_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller x3\",\"TerraceStairRock visual-only transition\"],\n" +
+                "  \"deferred_after_fit_test\": [],\n" +
                 "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
                 "  \"official_zooms\": [19,12,9],\n" +
                 "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
