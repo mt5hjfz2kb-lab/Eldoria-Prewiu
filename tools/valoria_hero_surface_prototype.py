@@ -13,6 +13,7 @@ def parse_args():
     p.add_argument("--input", required=True)
     p.add_argument("--output", required=True)
     p.add_argument("--report", required=True)
+    p.add_argument("--profile", choices=["hero", "residential"], default="hero")
     return p.parse_args(args)
 
 
@@ -80,6 +81,14 @@ def make_pbr_material(name, family, size=1024):
         base = dark + (light - dark) * height[..., None]
         rough = np.full_like(height, 0.99, dtype=np.float32)
         normal_strength = 0.0
+    elif family == "roof":
+        coarse = 0.5 + 0.08 * np.sin(u * 23.0 + v * 7.0) + 0.05 * np.cos(u * 41.0 - v * 13.0)
+        height = np.clip(coarse, 0.0, 1.0)
+        dark = np.array([0.11, 0.13, 0.14], dtype=np.float32)
+        light = np.array([0.23, 0.25, 0.25], dtype=np.float32)
+        base = dark + (light - dark) * height[..., None]
+        rough = np.full_like(height, 0.97, dtype=np.float32)
+        normal_strength = 0.0
     else:
         raise RuntimeError("Unknown PBR family: " + family)
 
@@ -117,11 +126,13 @@ def make_pbr_material(name, family, size=1024):
     return material, [base_img.name, rough_img.name, normal_img.name]
 
 
-def classify_mesh(obj, stone, rock):
+def classify_mesh(obj, stone, rock, roof=None, profile="hero"):
     mesh = obj.data
     mesh.materials.clear()
     mesh.materials.append(stone)
     mesh.materials.append(rock)
+    if roof is not None:
+        mesh.materials.append(roof)
 
     zs = [v.co.z for v in mesh.vertices]
     zmin, zmax = min(zs), max(zs)
@@ -129,10 +140,25 @@ def classify_mesh(obj, stone, rock):
 
     stone_faces = 0
     rock_faces = 0
+    roof_faces = 0
     for poly in mesh.polygons:
         n = poly.normal.normalized()
         axis = max(abs(n.x), abs(n.y), abs(n.z))
         z01 = (poly.center.z - zmin) / span
+
+        # Residential Surface v1 adds a dark roof family only to high, sloped,
+        # upward-facing faces. This changes material assignment only, never geometry.
+        is_roof = (
+            profile == "residential"
+            and roof is not None
+            and z01 >= 0.50
+            and 0.28 <= n.z <= 0.90
+            and max(abs(n.x), abs(n.y)) >= 0.30
+        )
+        if is_roof:
+            poly.material_index = 2
+            roof_faces += 1
+            continue
 
         # Diagnostic semantic split only. Architecture tends to be planar and/or
         # occupy the upper built mass; irregular lower geometry is treated as rock.
@@ -143,7 +169,7 @@ def classify_mesh(obj, stone, rock):
         else:
             rock_faces += 1
 
-    return stone_faces, rock_faces
+    return stone_faces, rock_faces, roof_faces
 
 
 def main():
@@ -153,9 +179,14 @@ def main():
 
     stone, stone_textures = make_pbr_material("Eldoria Stone · Hero Prototype", "stone")
     rock, rock_textures = make_pbr_material("Eldoria Rock · Hero Prototype", "rock")
+    roof = None
+    roof_textures = []
+    if a.profile == "residential":
+        roof, roof_textures = make_pbr_material("Eldoria Roof · Residential Surface v1", "roof")
 
     total_stone = 0
     total_rock = 0
+    total_roof = 0
     triangles = 0
     vertices = 0
     mesh_count = 0
@@ -168,16 +199,19 @@ def main():
         vertices += len(obj.data.vertices)
         triangles += sum(len(p.vertices) - 2 for p in obj.data.polygons)
         uv_all = uv_all and len(obj.data.uv_layers) > 0
-        s, r = classify_mesh(obj, stone, rock)
+        s, r, rf = classify_mesh(obj, stone, rock, roof, a.profile)
         total_stone += s
         total_rock += r
+        total_roof += rf
 
     if mesh_count == 0:
         raise RuntimeError("No mesh objects imported")
     if not uv_all:
         raise RuntimeError("Hero surface prototype requires UV0 on every mesh")
     if total_stone == 0 or total_rock == 0:
-        raise RuntimeError("Hero surface prototype did not produce both Stone and Rock regions")
+        raise RuntimeError("Surface prototype did not produce both Stone and Rock regions")
+    if a.profile == "residential" and total_roof == 0:
+        raise RuntimeError("Residential Surface v1 did not produce a Roof region")
 
     Path(a.output).parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.export_scene.gltf(
@@ -190,7 +224,8 @@ def main():
 
     report = {
         "schema_version": 2,
-        "mode": "hero_surface_segmentation_pbr_prototype",
+        "mode": "hero_surface_segmentation_pbr_prototype" if a.profile == "hero" else "residential_surface_v1_semantic_materials",
+        "profile": a.profile,
         "meshes": mesh_count,
         "vertices": vertices,
         "triangles": triangles,
@@ -211,10 +246,19 @@ def main():
                 "texture_size": 1024,
                 "metallic": 0.0,
             },
-        ],
+        ] + ([
+            {
+                "name": roof.name,
+                "role": "Eldoria Roof",
+                "textures": roof_textures,
+                "texture_size": 1024,
+                "metallic": 0.0,
+            }
+        ] if roof is not None else []),
         "face_classification": {
             "stone_faces": total_stone,
             "rock_faces": total_rock,
+            "roof_faces": total_roof,
         },
         "scope_limit": "visual surface/identity diagnostic only; does not repair or certify traversal/interface geometry",
     }
