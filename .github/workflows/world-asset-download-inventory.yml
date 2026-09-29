@@ -1,0 +1,41 @@
+name: World Asset Download Inventory
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/world-asset-download-inventory.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Inventory candidate downloads
+        shell: powershell
+        run: |
+          $downloads=Join-Path $env:USERPROFILE 'Downloads'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'world-asset-download-inventory.txt'
+          $patterns='holotna|mountain|jermesa|hill|rock|terrain|quaternius|ruins'
+          Get-ChildItem $downloads -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -match $patterns } |
+            Sort-Object LastWriteTime -Descending |
+            ForEach-Object {
+              $sha=(Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+              "$($_.FullName)|$($_.Length)|$($_.LastWriteTime.ToString('o'))|$sha"
+            } | Set-Content $out
+          Get-Content $out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: world-asset-download-inventory-${{ github.run_id }}
+          path: world-asset-download-inventory.txt
+          if-no-files-found: error
+          retention-days: 7
