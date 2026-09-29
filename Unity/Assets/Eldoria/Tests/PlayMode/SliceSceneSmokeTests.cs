@@ -470,6 +470,18 @@ namespace Eldoria.Tests
             var primary=GameObject.Find("CONTINUAR")?.GetComponent<RectTransform>();
             Assert.That(primary,Is.Not.Null);
             Assert.That(primary.rect.height,Is.GreaterThanOrEqualTo(44f));
+
+            var crest=GameObject.Find("Realm crest");
+            var wood=GameObject.Find("Wood resource");
+            var stone=GameObject.Find("Stone resource");
+            Assert.That(crest,Is.Not.Null);
+            Assert.That(wood,Is.Not.Null);
+            Assert.That(stone,Is.Not.Null);
+            Assert.That(GameObject.Find("CIUDAD")?.GetComponentInChildren<Text>()?.text,Does.Contain("⌂"));
+            Assert.That(GameObject.Find("MUNDO")?.GetComponentInChildren<Text>()?.text,Does.Contain("◎"));
+            Assert.That(GameObject.Find("HÉROES")?.GetComponentInChildren<Text>()?.text,Does.Contain("♞"));
+            Assert.That(GameObject.Find("ARCÓN")?.GetComponentInChildren<Text>()?.text,Does.Contain("▣"));
+            Assert.That(GameObject.Find("CÓDICE")?.GetComponentInChildren<Text>()?.text,Does.Contain("⌘"));
         }
 
 

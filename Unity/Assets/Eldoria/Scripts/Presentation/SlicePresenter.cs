@@ -14,7 +14,7 @@ namespace Eldoria.Presentation
     {
         ICommandGateway gateway;
         RectTransform safe;
-        Text heading, resources, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
+        Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
         GameObject buildingPanel;
         Button buildingAction, primaryAction;
         string feedback="";
@@ -303,11 +303,13 @@ namespace Eldoria.Presentation
                 (s.March.Phase=="idle")!=renderedIdle)
             { feedback="";SceneManager.LoadScene(SceneManager.GetActiveScene().name);return; }
             var parts=SliceRules.TotalPower(s);
-            heading.text=city?"VALORIA · BASTIÓN "+s.BastionLevel:"FRONTERA DE VALORIA";
-            resources.text="MADERA  "+s.Resources.Wood+"    PIEDRA  "+s.Resources.Stone;
+            heading.text="VALORIA\nBastión "+s.BastionLevel;
+            resources.text="♣  MADERA\n"+s.Resources.Wood;
+            if(stoneResource!=null)stoneResource.text="◆  PIEDRA\n"+s.Resources.Stone;
             var marchPreview=s.March.Phase!="idle"?s.March.Troops:
                 (s.MarchConfigured?s.PreparedTroops:s.Available);
-            power.text="⚔ PODER  "+parts.Total+"    MARCHA  "+SliceRules.Expedition(
+            power.text="⚔  PODER\n"+parts.Total;
+            var marchPower=SliceRules.Expedition(
                 marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
             var cp=s.ChapterProgress??new ChapterProgressState();
             objective.text=ObjectiveText(s,cp);
@@ -315,6 +317,7 @@ namespace Eldoria.Presentation
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
             var expedition=SliceRules.Expedition(s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric");
+            if(expedition.Power!=marchPower) marchPower=expedition.Power;
             description.text=city
                 ? (s.BastionLevel>=2
                     ? (s.BarracksLevel>0
@@ -412,10 +415,19 @@ namespace Eldoria.Presentation
             // Port the canonical v0.26.4 reference grammar into Unity:
             // compact kingdom header, separate quest card, floating objective dock, fixed bottom navigation.
             var top=HorizontalPanel("Reference topbar",safe,new Color(.04f,.065f,.085f,.96f),68,true);
-            heading=Label("Heading",top,11,new Color(.95f,.82f,.56f),44);
-            heading.GetComponent<LayoutElement>().preferredWidth=92;
-            resources=ChipLabel("Resources",top,10,new Color(.95f,.94f,.90f),new Color(.025f,.04f,.055f,.92f),146);
-            power=ChipLabel("Power",top,10,new Color(.95f,.94f,.90f),new Color(.085f,.075f,.045f,.96f),94);
+            var topLayout=top.GetComponent<HorizontalLayoutGroup>();
+            topLayout.childForceExpandWidth=false;topLayout.childAlignment=TextAnchor.MiddleLeft;
+
+            var crest=ChipLabel("Realm crest",top,20,new Color(.78f,.68f,.45f),
+                new Color(.025f,.04f,.055f,.96f),42);
+            crest.text="♙";crest.alignment=TextAnchor.MiddleCenter;
+            heading=Label("Heading",top,10,new Color(.95f,.94f,.90f),44);
+            heading.GetComponent<LayoutElement>().preferredWidth=70;
+            heading.alignment=TextAnchor.MiddleLeft;
+
+            resources=ResourceChip("Wood resource",top,"♣","MADERA",62);
+            stoneResource=ResourceChip("Stone resource",top,"◆","PIEDRA",62);
+            power=ResourceChip("Power",top,"⚔","PODER",72,new Color(.085f,.075f,.045f,.96f));
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
@@ -429,11 +441,11 @@ namespace Eldoria.Presentation
             objective=Label("Objective",quest.transform,10,new Color(.88f,.90f,.90f),40);
 
             var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),68,false);
-            var cityNav=Button(nav,"CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
-            var worldNav=Button(nav,"MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
-            var heroesNav=Button(nav,"HÉROES",()=>{});
-            var chestNav=Button(nav,"ARCÓN",()=>{});
-            var codexNav=Button(nav,"CÓDICE",()=>{});
+            var cityNav=NavButton(nav,"⌂","CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
+            var worldNav=NavButton(nav,"◎","MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
+            var heroesNav=NavButton(nav,"♞","HÉROES",()=>{});
+            var chestNav=NavButton(nav,"▣","ARCÓN",()=>{});
+            var codexNav=NavButton(nav,"⌘","CÓDICE",()=>{});
             heroesNav.interactable=false;chestNav.interactable=false;codexNav.interactable=false;
             StyleNavButton(cityNav,city);StyleNavButton(worldNav,!city);
             StyleNavButton(heroesNav,false);StyleNavButton(chestNav,false);StyleNavButton(codexNav,false);
@@ -658,6 +670,31 @@ namespace Eldoria.Presentation
             text.alignment=TextAnchor.MiddleCenter;
             var rt=text.rectTransform;rt.anchorMin=Vector2.zero;rt.anchorMax=Vector2.one;rt.offsetMin=new Vector2(5,2);rt.offsetMax=new Vector2(-5,-2);
             return text;
+        }
+
+        static Text ResourceChip(string name,Transform parent,string icon,string label,float width,
+            Color? background=null)
+        {
+            var text=ChipLabel(name,parent,8,new Color(.95f,.94f,.90f),
+                background??new Color(.025f,.04f,.055f,.92f),width);
+            text.text=icon+"  "+label;
+            text.alignment=TextAnchor.MiddleCenter;
+            text.lineSpacing=.84f;
+            return text;
+        }
+
+        static Button NavButton(Transform parent,string icon,string label,Action onClick)
+        {
+            var button=Button(parent,label,onClick);
+            var element=button.GetComponent<LayoutElement>();
+            element.minHeight=56;element.preferredHeight=56;
+            var text=button.GetComponentInChildren<Text>();
+            if(text!=null)
+            {
+                text.text=icon+"\n"+label;
+                text.fontSize=8;text.lineSpacing=.78f;text.alignment=TextAnchor.MiddleCenter;
+            }
+            return button;
         }
 
         static RectTransform Panel(string name,Transform parent,Color color,float height,bool top)
