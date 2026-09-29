@@ -108,5 +108,17 @@ Avoid another chain of micro-passes. The next art block must create an obvious c
 - Frozen tester snapshot remains immutable research output.
 - For new Valoria art work, start at `docs/ELDORIA_ART_PIPELINE_INDEX.md`, `docs/VALORIA_MODULE_KIT.md` and the master-plan/camera documents.
 
+## Recommended urgent security hardening — OPEN / non-blocking
+- **Priority class:** recommended urgent, but **not the current production priority** and not a blocker for the active Valoria art block.
+- As verified on **2026-09-29**, the canonical GitHub repository is currently **public**; unauthorised users cannot write to it, but public contents can be viewed/copied.
+- Before external testers, broader public exposure, store/marketing preparation or any similar project-value milestone, perform the hardening in conservative stages:
+  1. change the repository to **private**;
+  2. immediately verify GitHub Actions, the self-hosted runner and required integrations still work;
+  3. add appropriate protection/rules for `main` without blocking the canonical CI workflow;
+  4. audit repository history/current tree for secrets, API keys, credentials and unnecessary sensitive material; rotate anything exposed where appropriate;
+  5. verify a recoverable backup/recovery path before considering the hardening closed.
+- **Reminder triggers:** explicitly surface this OPEN action again when preparing the first owner Unity playtest, before external testers, and before any deliberate public/store/marketing exposure.
+- Do not perform a large one-shot security migration. Apply and validate each step separately so development continuity is preserved.
+
 ## Next handoff instruction
 Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECISIONS.md`, `docs/BASTION_I_X_MASTER_TABLE.md` when Arc I is relevant, and the specific Valoria specialist docs for art work; then verify live `main` HEAD and current workflow state.
