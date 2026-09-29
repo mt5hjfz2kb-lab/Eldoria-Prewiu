@@ -208,6 +208,33 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
             Assert.That(g.Snapshot().CompletedCommandIds,Is.Empty);
         }
+        [Test] public void QaFreshSaveDeletesOnlySliceStateFiles()
+        {
+            var path=Path.Combine(Path.GetTempPath(),"eldoria-reset-"+Guid.NewGuid().ToString("N")+".json");
+            var unrelated=path+".keep";
+            try
+            {
+                var store=new FileStateStore(path);
+                store.Save(new PlayerState());
+                store.Save(new PlayerState{BastionLevel=2});
+                File.WriteAllText(path+".tmp","temp");
+                File.WriteAllText(unrelated,"keep");
+                Assert.That(File.Exists(path),Is.True);
+                Assert.That(File.Exists(path+".bak"),Is.True);
+                Assert.That(File.Exists(path+".tmp"),Is.True);
+                store.DeleteLocalState();
+                Assert.That(File.Exists(path),Is.False);
+                Assert.That(File.Exists(path+".bak"),Is.False);
+                Assert.That(File.Exists(path+".tmp"),Is.False);
+                Assert.That(File.Exists(unrelated),Is.True);
+            }
+            finally
+            {
+                foreach(var candidate in new[]{path,path+".bak",path+".tmp",unrelated})
+                    if(File.Exists(candidate))File.Delete(candidate);
+            }
+        }
+
         [Test] public void DiskSaveReloadDoesNotDuplicateDelayedReward()
         {
             var path=Path.Combine(Path.GetTempPath(),"eldoria-test-"+Guid.NewGuid().ToString("N")+".json");
