@@ -425,6 +425,7 @@ jobs:
           } else {
             Write-Host 'MOBILE_PROFILE_READY=true'
           }
+
       - name: Audit original-art tools on Windows runner
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
