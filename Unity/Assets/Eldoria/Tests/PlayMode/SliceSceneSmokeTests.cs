@@ -318,6 +318,38 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator IrregularTerrainCarriesReadableUvsAndTiling()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            var ground=GameObject.Find("Valoria · valley floor");
+            Assert.That(ground,Is.Not.Null);
+            var mesh=ground.GetComponent<MeshFilter>()?.sharedMesh;
+            Assert.That(mesh,Is.Not.Null);
+            Assert.That(mesh.uv,Is.Not.Null);
+            Assert.That(mesh.uv.Length,Is.EqualTo(mesh.vertexCount),
+                "Large terrain sheets need UVs or their surface texture cannot render.");
+
+            var material=ground.GetComponent<Renderer>()?.sharedMaterial;
+            Assert.That(material,Is.Not.Null);
+            var texture=material.HasProperty("_BaseMap")?material.GetTexture("_BaseMap"):
+                material.HasProperty("_MainTex")?material.GetTexture("_MainTex"):null;
+            Assert.That(texture,Is.Not.Null);
+            var scale=material.HasProperty("_BaseMap")?material.GetTextureScale("_BaseMap"):
+                material.GetTextureScale("_MainTex");
+            Assert.That(scale.x,Is.GreaterThanOrEqualTo(4f));
+            Assert.That(scale.y,Is.GreaterThanOrEqualTo(4f));
+
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+            var frontier=GameObject.Find("Frontier · valley floor");
+            Assert.That(frontier,Is.Not.Null);
+            Assert.That(frontier.GetComponent<MeshFilter>().sharedMesh.uv.Length,
+                Is.EqualTo(frontier.GetComponent<MeshFilter>().sharedMesh.vertexCount));
+        }
+
+
 
     }
 }

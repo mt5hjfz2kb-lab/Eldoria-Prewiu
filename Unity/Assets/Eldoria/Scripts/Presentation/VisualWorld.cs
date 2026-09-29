@@ -985,20 +985,33 @@ namespace Eldoria.Presentation
         static void IrregularGround(string name,Vector3 center,float width,float depth,Color color)
         {
             const int sides=11;
-            var vertices=new Vector3[sides+1];var triangles=new int[sides*3];
-            vertices[0]=Vector3.zero;
+            var vertices=new Vector3[sides+1];var triangles=new int[sides*3];var uv=new Vector2[sides+1];
+            vertices[0]=Vector3.zero;uv[0]=new Vector2(.5f,.5f);
             for(int i=0;i<sides;i++)
             {
                 float a=i*Mathf.PI*2/sides;
                 float wobble=.82f+(i*19%7)*.055f;
                 vertices[i+1]=new Vector3(Mathf.Cos(a)*width*.5f*wobble,0,Mathf.Sin(a)*depth*.5f*wobble);
+                uv[i+1]=new Vector2(vertices[i+1].x/Mathf.Max(.01f,width)+.5f,
+                    vertices[i+1].z/Mathf.Max(.01f,depth)+.5f);
                 triangles[i*3]=0;triangles[i*3+1]=(i+1)%sides+1;triangles[i*3+2]=i+1;
             }
             var go=new GameObject(name);go.transform.position=center;
-            var mesh=new Mesh { name=name+" mesh",vertices=vertices,triangles=triangles };
+            var mesh=new Mesh { name=name+" mesh",vertices=vertices,triangles=triangles,uv=uv };
             mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=Mat(color);
+
+            // Large terrain sheets previously had no UVs, so the generated ground texture could
+            // not read at all. Keep the texture's own colour, neutralise the second material tint,
+            // and tile by world size so earth/stone breakup remains visible from the mobile camera.
+            var material=new Material(Mat(color)){name="Eldoria ground · "+ColorUtility.ToHtmlStringRGB(color)};
+            if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",Color.white);
+            if(material.HasProperty("_Color"))material.SetColor("_Color",Color.white);
+            var tiling=new Vector2(Mathf.Max(4f,width/2.0f),Mathf.Max(4f,depth/2.0f));
+            if(material.HasProperty("_BaseMap"))material.SetTextureScale("_BaseMap",tiling);
+            else if(material.HasProperty("_MainTex"))material.SetTextureScale("_MainTex",tiling);
+            if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",.03f);
+            go.AddComponent<MeshRenderer>().sharedMaterial=material;
         }
         static void Glow(string name,Vector3 p,Color color,float intensity,float range)
         {
