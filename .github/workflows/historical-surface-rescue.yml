@@ -1,13 +1,15 @@
 name: Historical Surface Rescue
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - '.github/workflows/historical-surface-rescue.yml'
+      - 'pipeline/historical-module-rescue.json'
       - 'tools/tripo_module_blender.py'
-      - 'pipeline/historical-surface-rescue.json'
-  workflow_dispatch:
+      - 'tools/valoria_hero_surface_prototype.py'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
 
 permissions:
   contents: read
@@ -18,10 +20,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  seam-filler-rock:
+  production-district:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 20
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Expose Git installed with GitHub Desktop
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -44,30 +48,38 @@ jobs:
         with:
           clean: false
 
-      - name: Fetch exact certified SeamFiller artifact
+      - name: Recover exact certified district modules
         shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          $artifactId='10943977319'
-          $expected='2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d'
-          $zip="$env:RUNNER_TEMP\seam-filler-certified.zip"
-          $out="$env:RUNNER_TEMP\seam-filler-certified"
-          Remove-Item $zip -Force -ErrorAction SilentlyContinue
-          Remove-Item $out -Recurse -Force -ErrorAction SilentlyContinue
           $headers=@{ Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28' }
-          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$artifactId/zip" -OutFile $zip -MaximumRedirection 5
-          Expand-Archive -LiteralPath $zip -DestinationPath $out -Force
-          $matches=@()
-          foreach($f in Get-ChildItem $out -Recurse -File -Filter '*.glb'){
-            $sha=(Get-FileHash $f.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-            Write-Host "GLB $($f.FullName) sha256=$sha bytes=$($f.Length)"
-            if($sha -eq $expected){$matches += $f}
+          $root="$env:RUNNER_TEMP\valoria-production-rescue-source"
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $root | Out-Null
+
+          function Recover-Certified([string]$name,[int64]$artifactId,[string]$expected) {
+            $zip=Join-Path $root "$name.zip"
+            $out=Join-Path $root $name
+            Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -OutFile $zip -MaximumRedirection 10
+            Expand-Archive -LiteralPath $zip -DestinationPath $out -Force
+            $matches=@()
+            foreach($file in Get-ChildItem $out -Recurse -File -Filter '*.glb'){
+              $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($sha -eq $expected.ToLowerInvariant()){$matches += $file}
+            }
+            if($matches.Count -ne 1){ throw "$name expected exactly one certified SHA match; found $($matches.Count)" }
+            $target=Join-Path $root "$name-certified.glb"
+            Copy-Item $matches[0].FullName $target -Force
+            Write-Host "RESCUE_SOURCE $name | artifact=$artifactId | sha256=$expected | bytes=$((Get-Item $target).Length)"
+            return $target
           }
-          if($matches.Count -ne 1){ throw "Expected exactly one certified SeamFiller GLB, found $($matches.Count)" }
-          $src="$env:RUNNER_TEMP\RockTerrainSeamFiller-certified.glb"
-          Copy-Item $matches[0].FullName $src -Force
-          "RESCUE_INPUT=$src" | Out-File $env:GITHUB_ENV -Append
+
+          $res=Recover-Certified 'ResidentialTerraceRock' 10943072790 '2ca694f547b54989305328045b60d28b53da45da94cffbd63a27b9fc698dc458'
+          $seam=Recover-Certified 'RockTerrainSeamFiller' 10943977319 '2676e11fbfde6781996117b191a8a88b534b36ad6901409283bfdea22a51af6d'
+          $stair=Recover-Certified 'TerraceStairRock' 10936719852 '83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e'
+
+          "RES_INPUT=$res" | Out-File $env:GITHUB_ENV -Append
+          "SEAM_INPUT=$seam" | Out-File $env:GITHUB_ENV -Append
+          "STAIR_INPUT=$stair" | Out-File $env:GITHUB_ENV -Append
 
       - name: Locate Blender
         id: blender
@@ -81,69 +93,86 @@ jobs:
           "path=$candidate" >> $env:GITHUB_OUTPUT
           & $candidate --version | Select-Object -First 2
 
-      - name: Apply zero-credit rock Surface v1 rescue
+      - name: Apply zero-credit Surface v1 rescue
         shell: powershell
         run: |
-          $output="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
-          $report="$env:RUNNER_TEMP\seam-filler-surface-rescue.json"
-          $stdout="$env:RUNNER_TEMP\seam-filler-surface-rescue.log"
-          $stderr="$env:RUNNER_TEMP\seam-filler-surface-rescue-error.log"
-          New-Item -ItemType Directory -Force (Split-Path $output) | Out-Null
-          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--','--input',$env:RESCUE_INPUT,'--output',$output,'--report',$report,'--target-tris','49800','--min-tris','49800','--max-tris','49800','--surface-rescue-profile','rock')
-          $p=Start-Process -FilePath '${{ steps.blender.outputs.path }}' -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
-          if($p.ExitCode -ne 0){
-            if(Test-Path $stdout){Get-Content $stdout -Tail 220}
-            if(Test-Path $stderr){Get-Content $stderr -Tail 220}
-            throw "Surface rescue failed: $($p.ExitCode)"
-          }
-          $sha=(Get-FileHash $output -Algorithm SHA256).Hash.ToLowerInvariant()
-          Write-Host "RESCUED_OUTPUT sha256=$sha bytes=$((Get-Item $output).Length)"
-          Get-Content $report
+          $target="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\ValoriaRescueDistrict"
+          New-Item -ItemType Directory -Force $target | Out-Null
 
-      - name: Configure isolated material-preserving review
-        shell: powershell
-        run: |
-          @{
-            module_label='RockTerrainSeamFiller Surface v1 rescue'
-            unity_yaw_degrees=0
-            visual_acceptance='Support-only rock/terrain seam. Judge textured captures for coherent Eldoria rock value/roughness and preservation of the certified silhouette. No traversal or production promotion claim.'
-          } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+          function Run-HeroSurface([string]$input,[string]$name) {
+            $output=Join-Path $target "$name.glb"
+            $report=Join-Path $env:RUNNER_TEMP "$name-surface-report.json"
+            $stdout=Join-Path $env:RUNNER_TEMP "$name-surface.log"
+            $stderr=Join-Path $env:RUNNER_TEMP "$name-surface-error.log"
+            $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\valoria_hero_surface_prototype.py",'--','--input',$input,'--output',$output,'--report',$report)
+            $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+            if($p.ExitCode -ne 0){
+              if(Test-Path $stdout){Get-Content $stdout -Tail 180}
+              if(Test-Path $stderr){Get-Content $stderr -Tail 180}
+              throw "$name semantic Surface v1 rescue failed: $($p.ExitCode)"
+            }
+            Get-Content $report
+          }
+
+          Run-HeroSurface $env:RES_INPUT 'ResidentialTerraceRock'
+          Run-HeroSurface $env:STAIR_INPUT 'TerraceStairRock'
+
+          $seamOut=Join-Path $target 'RockTerrainSeamFiller.glb'
+          $seamReport=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface-report.json'
+          $seamStdout=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface.log'
+          $seamStderr=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface-error.log'
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--','--input',$env:SEAM_INPUT,'--output',$seamOut,'--report',$seamReport,'--target-tris','49800','--min-tris','49800','--max-tris','49800','--surface-rescue-profile','rock')
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $seamStdout -RedirectStandardError $seamStderr
+          if($p.ExitCode -ne 0){
+            if(Test-Path $seamStdout){Get-Content $seamStdout -Tail 180}
+            if(Test-Path $seamStderr){Get-Content $seamStderr -Tail 180}
+            throw "RockTerrainSeamFiller Surface v1 rescue failed: $($p.ExitCode)"
+          }
+          Get-Content $seamReport
 
       - name: Verify Unity
         shell: powershell
         run: |
           if(-not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_PATH not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $version"}
 
-      - name: Render isolated rescue review
+      - name: Capture first production rescue district
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
-          $log="$env:RUNNER_TEMP\seam-filler-unity-review.log"
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-ProductionRescueDistrict.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.TripoGenericModuleReview.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.CaptureRescueDistrict','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(360000)){
+          $deadline=(Get-Date).AddMinutes(18)
+          while(-not $p.HasExited -and (Get-Date) -lt $deadline){Start-Sleep -Seconds 2;$p.Refresh()}
+          if(-not $p.HasExited){
             & taskkill.exe /PID $p.Id /T /F | Out-Null
-            if(Test-Path $log){Get-Content $log -Tail 220}
-            throw 'Unity rescue review timed out'
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw 'Production rescue district capture timed out'
           }
-          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 220}; throw "Unity rescue review failed: $($p.ExitCode)"}
-          $textured=@('strategic-textured.png','city-textured.png','detail-textured.png')
-          foreach($name in $textured){
-            $p2=Join-Path $folder $name
-            if(-not (Test-Path $p2) -or (Get-Item $p2).Length -lt 10000){throw "Missing/empty textured rescue capture: $name"}
+          $p.Refresh()
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 260};throw "Production rescue district capture failed: $($p.ExitCode)"}
+          $expected=@('production-district-19.png','production-district-12.png','production-district-9.png','production-district-mobile.png','production-district-metrics.json','production-district-evidence.json')
+          foreach($name in $expected){
+            $file=Join-Path $folder $name
+            if(-not(Test-Path $file)){throw "Missing production district evidence: $name"}
+            if($name.EndsWith('.png') -and (Get-Item $file).Length -lt 10000){throw "Empty production district capture: $name"}
           }
+          Get-Content (Join-Path $folder 'production-district-metrics.json')
+          Get-Content (Join-Path $folder 'production-district-evidence.json')
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: seam-filler-surface-v1-rescue-${{ github.run_id }}
+          name: valoria-production-rescue-district-${{ github.run_id }}
           path: |
-            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_UnderReview_50K.glb
-            Unity/TripoGenericModuleReviewCaptures/*
-            ${{ runner.temp }}/seam-filler-surface-rescue.json
-            ${{ runner.temp }}/seam-filler-surface-rescue.log
-            ${{ runner.temp }}/seam-filler-surface-rescue-error.log
-            ${{ runner.temp }}/seam-filler-unity-review.log
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/*
+            Unity/VisualFormulaCaptures/*
+            ${{ runner.temp }}/*-surface-report.json
+            ${{ runner.temp }}/*-surface.log
+            ${{ runner.temp }}/*-surface-error.log
+            ${{ runner.temp }}/Eldoria-ProductionRescueDistrict.log
           if-no-files-found: warn
           retention-days: 30
