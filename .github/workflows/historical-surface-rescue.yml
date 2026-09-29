@@ -12,7 +12,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 concurrency:
@@ -162,6 +162,37 @@ jobs:
           }
           Get-Content (Join-Path $folder 'production-district-metrics.json')
           Get-Content (Join-Path $folder 'production-district-evidence.json')
+
+      - name: Promote validated rescue assets to production resources
+        shell: powershell
+        run: |
+          $source="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\ValoriaRescueDistrict"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\Rescued"
+          New-Item -ItemType Directory -Force $dest | Out-Null
+
+          foreach($name in @('ResidentialTerraceRock','RockTerrainSeamFiller')){
+            $glb=Join-Path $source "$name.glb"
+            if(-not(Test-Path $glb)){throw "Validated rescue source missing: $glb"}
+            Copy-Item $glb (Join-Path $dest "$name.glb") -Force
+            $meta="$glb.meta"
+            if(Test-Path $meta){Copy-Item $meta (Join-Path $dest "$name.glb.meta") -Force}
+          }
+
+          git config user.name "eldoria-art-runner"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin main
+          $remote=(git rev-parse origin/main).Trim()
+          if($remote -ne $env:GITHUB_SHA){
+            throw "main advanced during rescue promotion ($remote != $env:GITHUB_SHA); refusing to overwrite concurrent work"
+          }
+          git add Unity/Assets/Eldoria/Resources/Valoria/Rescued
+          git diff --cached --quiet
+          if($LASTEXITCODE -eq 0){
+            Write-Host "Production rescue assets already match main; no promotion commit needed."
+          } else {
+            git commit -m "Art production: promote rescued district assets"
+            git push origin HEAD:main
+          }
 
       - uses: actions/upload-artifact@v4
         if: always()
