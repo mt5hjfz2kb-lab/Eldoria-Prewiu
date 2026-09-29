@@ -404,6 +404,7 @@ def _cluster_loose_parts(candidates, cluster_count):
         center = _world_centroid(o)
         rows.append({
             "object": o,
+            "name": o.name,
             "triangles": tris,
             "center": center,
             "usable": tris >= noise_floor,
@@ -557,7 +558,7 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0):
             "pieces": exported,
             "groups": group_rows,
             "all_islands": [{
-                "name": row["object"].name,
+                "name": row["name"],
                 "triangles": row["triangles"],
                 "usable_for_clustering": row["usable"],
                 "center_xy": [round(row["center"].x,6), round(row["center"].y,6)]
