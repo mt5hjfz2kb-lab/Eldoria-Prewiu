@@ -38,6 +38,12 @@ namespace Eldoria.Domain
         public int RewardStone;
         public string Reason = "";
     }
+    [Serializable] public sealed class ChapterProgressState
+    {
+        public int GatheredWood;
+        public int GatheredStone;
+        public int TrainedArchers;
+    }
     [Serializable] public sealed class PlayerState
     {
         public int SchemaVersion = 1;
@@ -72,6 +78,7 @@ namespace Eldoria.Domain
         public int PendingRecruitArchers;
         public string LastBattleReason = "";
         public BattleReportState LastBattleReport = new BattleReportState();
+        public ChapterProgressState ChapterProgress = new ChapterProgressState();
         public List<string> CompletedCommandIds = new List<string>();
         public List<string> CompletedTaskIds = new List<string>();
     }
