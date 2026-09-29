@@ -98,15 +98,17 @@ jobs:
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack-JermesaImport.log'
-          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath $env:WORLD_COMPARE_PROJECT -importPackage $env:JERMESA_PACKAGE -logFile $log
-          if($LASTEXITCODE -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Jermesa import failed: $LASTEXITCODE" }
+          $args=@('-batchmode','-quit','-projectPath',$env:WORLD_COMPARE_PROJECT,'-importPackage',$env:JERMESA_PACKAGE,'-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($process.ExitCode -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Jermesa import failed: $($process.ExitCode)" }
 
       - name: Import Holotna URP in isolated project
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack-HolotnaImport.log'
-          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath $env:WORLD_COMPARE_PROJECT -importPackage $env:HOLOTNA_URP_PACKAGE -logFile $log
-          if($LASTEXITCODE -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Holotna import failed: $LASTEXITCODE" }
+          $args=@('-batchmode','-quit','-projectPath',$env:WORLD_COMPARE_PROJECT,'-importPackage',$env:HOLOTNA_URP_PACKAGE,'-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($process.ExitCode -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Holotna import failed: $($process.ExitCode)" }
 
       - name: Capture fixed-camera 4X comparison
         shell: powershell
