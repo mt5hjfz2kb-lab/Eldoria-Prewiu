@@ -259,7 +259,7 @@ namespace Eldoria.Presentation
                 new Vector3(2.55f,1.30f,2.25f),true,Glow);
 
             // Long-term master envelope remains intact and continues to define the panning future footprint.
-            MasterEnvelopeGraybox(l1,art,rescuedSeam);
+            MasterEnvelopeGraybox(l1,art,rescuedSeam,state.BastionLevel>=3);
 
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-9.25f),
                 new Vector3(3.0f,2.1f,.50f),ValoriaKit.Timber);
@@ -298,7 +298,7 @@ namespace Eldoria.Presentation
             Glow("VPD · Bastion warmth",new Vector3(0,l1+3.4f,6.2f),Amber,1.35f,6.0f);
         }
 
-        static void MasterEnvelopeGraybox(float l1,ValoriaExternalAssetLibrary art,GameObject rescuedSeam)
+        static void MasterEnvelopeGraybox(float l1,ValoriaExternalAssetLibrary art,GameObject rescuedSeam,bool showGranary)
         {
             var reserve=new Color(.255f,.245f,.215f);
             var route=new Color(.39f,.37f,.32f);
@@ -378,9 +378,16 @@ namespace Eldoria.Presentation
             // Lower inhabited/work frontage. Small footprints and staggered placement preserve route readability.
             foreach(var home in new[]{
                 new Vector3(-12.0f,.34f,-3.25f),new Vector3(-15.25f,.36f,-3.05f),
-                new Vector3(-18.05f,.35f,-2.15f),new Vector3(-13.25f,.36f,2.45f),
-                new Vector3(-17.35f,.38f,2.15f)})
+                new Vector3(-13.25f,.36f,2.45f),new Vector3(-17.35f,.38f,2.15f)})
                 ValoriaKit.House("VPD · west rebuilders home",home,new Vector3(2.05f,1.18f,1.78f),true,Glow);
+
+            // Bastion III food-economy growth: replace only the non-authoritative placeholder
+            // house on the reserved west plot. The imported visual owns no gameplay collider/hotspot.
+            if(showGranary)
+                ValoriaKit.GranaryArchitecture("Granero",new Vector3(-17.2f,.34f,-3.0f),true,Glow);
+            else
+                ValoriaKit.House("VPD · west rebuilders granary placeholder",new Vector3(-18.05f,.35f,-2.15f),
+                    new Vector3(2.05f,1.18f,1.78f),true,Glow);
 
             foreach(var yard in new[]{
                 new Vector3(-11.55f,.24f,3.95f),new Vector3(-18.15f,.24f,4.45f)})
