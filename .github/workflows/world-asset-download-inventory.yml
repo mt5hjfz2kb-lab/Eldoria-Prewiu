@@ -16,14 +16,11 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
       - name: Inventory candidate downloads
         shell: powershell
         run: |
           $downloads=Join-Path $env:USERPROFILE 'Downloads'
-          $out=Join-Path $env:GITHUB_WORKSPACE 'world-asset-download-inventory.txt'
+          $out=Join-Path $env:RUNNER_TEMP 'world-asset-download-inventory.txt'
           $patterns='holotna|mountain|jermesa|hill|rock|terrain|quaternius|ruins'
           Get-ChildItem $downloads -File -ErrorAction SilentlyContinue |
             Where-Object { $_.Name -match $patterns } |
@@ -36,6 +33,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: world-asset-download-inventory-${{ github.run_id }}
-          path: world-asset-download-inventory.txt
+          path: ${{ runner.temp }}/world-asset-download-inventory.txt
           if-no-files-found: error
           retention-days: 7
