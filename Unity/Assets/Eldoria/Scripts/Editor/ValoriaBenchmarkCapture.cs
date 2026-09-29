@@ -49,7 +49,25 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-master-east.png",officialPosition+rightShift,officialTarget+rightShift,12f,1280,720);
             Save(camera,folder+"/valoria-master-future.png",officialPosition+futureShift,officialTarget+futureShift,12f,1280,720);
             Save(camera,folder+"/valoria-mobile.png",officialPosition,officialTarget,12f,390,844);
-            Debug.Log("Valoria benchmark captures saved to "+Path.GetFullPath(folder));
+
+            // I-II owner-playtest visual wedge: capture the real Frontier runtime with the same
+            // deterministic HUD-free reviewer instead of creating a parallel art pipeline.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var frontierState=new PlayerState {
+                BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+                CorruptionDiscovered=true,ScoutDefeated=false,EngendroDefeated=false
+            };
+            VisualWorld.Create(false,frontierState);
+            camera=Camera.main;
+            if(camera==null)throw new System.Exception("Frontier camera was not created");
+            var frontierPosition=new Vector3(20f,24f,-21f);
+            var frontierTarget=new Vector3(0f,.8f,1.5f);
+            Save(camera,folder+"/frontier-i-ii-19.png",frontierPosition,frontierTarget,19f,1280,720);
+            Save(camera,folder+"/frontier-i-ii-12.png",frontierPosition,frontierTarget,12f,1280,720);
+            Save(camera,folder+"/frontier-i-ii-9.png",frontierPosition,frontierTarget,9f,1280,720);
+            Save(camera,folder+"/frontier-i-ii-mobile.png",frontierPosition,frontierTarget,12f,390,844);
+
+            Debug.Log("Valoria + Frontier benchmark captures saved to "+Path.GetFullPath(folder));
         }
 
         static void Save(Camera camera,string path,Vector3 position,Vector3 target,float size,int width,int height)
