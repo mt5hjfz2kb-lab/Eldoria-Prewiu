@@ -77,7 +77,12 @@ namespace Eldoria.Application
                 ChapterProgress=new ChapterProgressState {
                     GatheredWood=s.ChapterProgress?.GatheredWood??0,
                     GatheredStone=s.ChapterProgress?.GatheredStone??0,
-                    TrainedArchers=s.ChapterProgress?.TrainedArchers??0
+                    TrainedArchers=s.ChapterProgress?.TrainedArchers??0,
+                    ConfirmedExpeditionPower=s.ChapterProgress?.ConfirmedExpeditionPower??0,
+                    RouteCleared=s.ChapterProgress?.RouteCleared??false,
+                    BastionTwoReached=s.ChapterProgress?.BastionTwoReached??false,
+                    MarchConfirmed=s.ChapterProgress?.MarchConfirmed??false,
+                    EngendroDefeated=s.ChapterProgress?.EngendroDefeated??false
                 },
                 CompletedCommandIds=new System.Collections.Generic.List<string>(s.CompletedCommandIds),
                 CompletedTaskIds=new System.Collections.Generic.List<string>(s.CompletedTaskIds)
@@ -106,6 +111,10 @@ namespace Eldoria.Application
                     state.PreparedHeroId = "aldric";
                     state.PreparedTroops = state.Available.Copy();
                     state.MarchConfigured = true;
+                    if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                    state.ChapterProgress.MarchConfirmed = true;
+                    state.ChapterProgress.ConfirmedExpeditionPower =
+                        SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
                     break;
                 case "Fight":
                     if (command.TargetId == "corrupt-scout")
@@ -131,6 +140,8 @@ namespace Eldoria.Application
                     if (command.TargetId != "bastion" || !state.JourneyComplete || state.BastionLevel != 1)
                         return Fail("El Bastión todavía no puede ascender");
                     state.BastionLevel = 2;
+                    if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                    state.ChapterProgress.BastionTwoReached = true;
                     break;
                 case "Build":
                     if (state.BuildingCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
@@ -233,11 +244,15 @@ namespace Eldoria.Application
                             {
                                 rewardWood = 120; rewardStone = 100;
                                 m.PendingWood = rewardWood; m.PendingStone = rewardStone; state.EngendroDefeated = true;
+                                if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                                state.ChapterProgress.EngendroDefeated = true;
                             }
                             else
                             {
                                 rewardWood = 80; rewardStone = 70;
                                 m.PendingWood = rewardWood; m.PendingStone = rewardStone; state.ScoutDefeated = true;
+                                if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                                state.ChapterProgress.RouteCleared = true;
                             }
                         }
                         state.LastBattleReport = new BattleReportState {
@@ -285,8 +300,16 @@ namespace Eldoria.Application
                 }
                 changed = true;
             }
-            if (state.SawmillLevel > 0 && state.CorruptionDiscovered && !state.JourneyComplete && state.March.Phase == "idle")
-            { state.JourneyComplete = true; changed = true; }
+            if (!state.JourneyComplete && state.March.Phase == "idle")
+            {
+                if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                bool chapterOneReady =
+                    state.SawmillLevel > 0 &&
+                    state.ChapterProgress.GatheredWood >= SliceContentProfiles.QaFast.Chapter1GatherWood &&
+                    state.ChapterProgress.GatheredStone >= SliceContentProfiles.QaFast.Chapter1GatherStone &&
+                    state.ChapterProgress.RouteCleared;
+                if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
+            }
             if (changed) Commit();
             return changed;
         }
