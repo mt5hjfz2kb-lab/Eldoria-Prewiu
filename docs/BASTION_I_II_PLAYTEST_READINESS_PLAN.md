@@ -33,6 +33,13 @@ Current owner-candidate certification:
 - QA and OWNER saves remain isolated;
 - OWNER values remain the staged web-contract candidate and are not production-frozen.
 
+First human owner-pass findings — 2026-09-29:
+- real executable successfully opened and could be interacted with;
+- immediate visual finding: runtime presentation reads too dark in play despite prior capture/gate acceptance;
+- immediate UX finding: controls work, but the experience does not yet communicate a strong next-step flow;
+- UI direction decision: owner/player UI follows the approved external reference image, not the development/QA rail;
+- corrective implementation: brighter player-facing lighting plus a single objective-driven primary CTA while preserving secondary navigation.
+
 Still required before owner-playtest GREEN:
 - perform the uninterrupted human fresh-save I→II run using `PLAY_OWNER_I_II_CANDIDATE.bat`;
 - record pacing/clarity issues, especially the Bastion-II resource recovery beat before recruiting 20 Archers;
