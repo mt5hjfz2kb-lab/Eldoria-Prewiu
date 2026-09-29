@@ -114,13 +114,17 @@ namespace Eldoria.Presentation
 
         void ConfigureCityPanBounds(int bastionLevel)
         {
-            // Progression-aware soft bounds: the same master city exists from the start,
-            // but early Valoria does not expose a huge empty late-game envelope.
-            if(bastionLevel<=10){panHalfX=5f;panHalfZ=4f;}
-            else if(bastionLevel<=15){panHalfX=10f;panHalfZ=7f;}
-            else if(bastionLevel<=20){panHalfX=15f;panHalfZ=10f;}
-            else if(bastionLevel<=25){panHalfX=18f;panHalfZ=12f;}
-            else {panHalfX=22f;panHalfZ=15f;}
+            // The West Rebuilders quarter is already authored/inhabited in the I-II city,
+            // so early-game bounds must let a portrait mobile viewport actually reach it.
+            // Portrait gets a little extra horizontal travel because its visible world width is smaller.
+            var camera=OfficialCamera;
+            float aspect=camera!=null&&camera.aspect>0f?camera.aspect:(Screen.height>0?Screen.width/(float)Screen.height:.5625f);
+            float portraitExtra=Mathf.Clamp((.80f-aspect)*8f,0f,2.5f);
+            if(bastionLevel<=10){panHalfX=13.5f+portraitExtra;panHalfZ=7f;}
+            else if(bastionLevel<=15){panHalfX=15f+portraitExtra;panHalfZ=9f;}
+            else if(bastionLevel<=20){panHalfX=17.5f+portraitExtra;panHalfZ=11f;}
+            else if(bastionLevel<=25){panHalfX=20f+portraitExtra;panHalfZ=13f;}
+            else {panHalfX=23f+portraitExtra;panHalfZ=16f;}
         }
 
         void PanCameraByScreenDelta(Vector2 screenDelta)

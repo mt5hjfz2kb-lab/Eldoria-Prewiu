@@ -216,12 +216,17 @@ namespace Eldoria.Tests
             var home=camera.transform.position;
             var rotation=camera.transform.rotation;
 
-            // Early-game bounds stay compact.
+            // Early game already contains the populated West Rebuilders quarter. Mobile portrait
+            // must be able to travel far enough to inspect it instead of trapping it off-screen.
             configure.Invoke(presenter,new object[]{2});
-            pan.Invoke(presenter,new object[]{new Vector2(5000,5000)});
-            var early=camera.transform.position;
-            Assert.That(Mathf.Abs(early.x-home.x),Is.LessThanOrEqualTo(5.01f));
-            Assert.That(Mathf.Abs(early.z-home.z),Is.LessThanOrEqualTo(4.01f));
+            pan.Invoke(presenter,new object[]{new Vector2(5000,0)});
+            var earlyA=camera.transform.position;
+            recenter.Invoke(presenter,null);
+            pan.Invoke(presenter,new object[]{new Vector2(-5000,0)});
+            var earlyB=camera.transform.position;
+            Assert.That(Mathf.Max(Vector3.Distance(earlyA,home),Vector3.Distance(earlyB,home)),Is.GreaterThan(10f));
+            Assert.That(Mathf.Abs(earlyA.x-home.x),Is.LessThanOrEqualTo(16.1f));
+            Assert.That(Mathf.Abs(earlyB.x-home.x),Is.LessThanOrEqualTo(16.1f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
 
             // Late-game bounds open substantially farther without changing orientation.
@@ -265,6 +270,27 @@ namespace Eldoria.Tests
             Assert.That(sun,Is.Not.Null);
             Assert.That(sun.intensity,Is.GreaterThanOrEqualTo(1.20f));
         }
+        [UnityTest]
+        public IEnumerator ValoriaGroundKitUsesReadableTiledSurfaceMaterials()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            var ground=GameObject.Find("VPD · GroundKit west workshop terrace · terrace");
+            Assert.That(ground,Is.Not.Null,"Ground Kit terrace must be present in real Valoria.");
+            var renderer=ground.GetComponent<Renderer>();
+            Assert.That(renderer,Is.Not.Null);
+            var material=renderer.sharedMaterial;
+            Assert.That(material,Is.Not.Null);
+            var texture=material.HasProperty("_BaseMap")?material.GetTexture("_BaseMap"):
+                material.HasProperty("_MainTex")?material.GetTexture("_MainTex"):null;
+            Assert.That(texture,Is.Not.Null,"Ground surfaces must expose a visible repeated texture, not a flat colour.");
+            var scale=material.HasProperty("_BaseMap")?material.GetTextureScale("_BaseMap"):
+                material.GetTextureScale("_MainTex");
+            Assert.That(scale.x,Is.GreaterThanOrEqualTo(3f));
+            Assert.That(scale.y,Is.GreaterThanOrEqualTo(3f));
+        }
+
+
 
     }
 }

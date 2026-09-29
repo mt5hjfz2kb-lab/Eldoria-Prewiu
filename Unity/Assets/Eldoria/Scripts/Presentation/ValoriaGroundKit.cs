@@ -178,8 +178,23 @@ namespace Eldoria.Presentation
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial = ValoriaKit.Material(color);
+            go.AddComponent<MeshRenderer>().sharedMaterial = GroundSurfaceMaterial(color,width,depth);
             return go;
+        }
+
+        static Material GroundSurfaceMaterial(Color color,float width,float depth)
+        {
+            var source=ValoriaKit.Material(color);
+            var material=new Material(source){name="Valoria Ground · "+ColorUtility.ToHtmlStringRGB(color)};
+            // ValoriaKit's generated base map already contains the target colour. Ground patches
+            // use a neutral material tint so the texture is not multiplied/darkened a second time.
+            if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",Color.white);
+            if(material.HasProperty("_Color"))material.SetColor("_Color",Color.white);
+            var tiling=new Vector2(Mathf.Max(3f,width/1.15f),Mathf.Max(3f,depth/1.15f));
+            if(material.HasProperty("_BaseMap"))material.SetTextureScale("_BaseMap",tiling);
+            else if(material.HasProperty("_MainTex"))material.SetTextureScale("_MainTex",tiling);
+            if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",.035f);
+            return material;
         }
 
         static float Jitter(int seed, float magnitude)
