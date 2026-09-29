@@ -47,6 +47,9 @@ namespace Eldoria.Domain
         public ArmyRoster Available = new ArmyRoster { ArcherT1 = SliceContentProfiles.QaFast.InitialArcherT1 };
         public ArmyRoster Wounded = new ArmyRoster();
         public MarchState March = new MarchState();
+        public bool MarchConfigured;
+        public string PreparedHeroId = "aldric";
+        public ArmyRoster PreparedTroops = new ArmyRoster();
         public int ForestRemaining = 1250;
         public long BuildingCompletesUtcTicks;
         public string BuildingTaskId = "";
