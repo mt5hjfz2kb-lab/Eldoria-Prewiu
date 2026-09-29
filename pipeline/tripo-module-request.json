@@ -21,12 +21,13 @@
   },
   "multipiece": {
     "enabled": true,
-    "min_component_triangles": 250
+    "min_component_triangles": 250,
+    "expected_piece_count": 6
   },
   "visual_acceptance": "Viability test only. The generated sheet is intended to yield multiple independent reusable aged-stone modular pieces from one Tripo generation: straight slab, irregular slab, street edge, street corner, step and stone block. PASS requires real separability, clean geometry, usable textures and side/rear surfaces, sensible pivots/orientation, and practical reuse at Valoria camera distance and potentially on the world map. Do not mark PASS merely because one combined GLB exists.",
-  "notes": "One authorized Tripo generation already completed and exported. Process exact GLB through Blender, split by connected components, normalize pivots, import pieces into isolated Unity review, render official evidence, and report the actual useful-piece count. No production promotion.",
+  "notes": "One authorized Tripo generation already completed and exported. Process the exact GLB through Blender, reconstruct the six intended sheet modules by spatial clustering of loose geometric islands, normalize pivots, import the six grouped pieces into isolated Unity review, render official evidence, and report actual grouped-piece quality. No production promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-29T20:49Z-multipiece-e2e-rerun-after-worldpack-fix"
+  "run_nonce": "2026-09-29T20:57Z-multipiece-spatial-six-group-rerun"
 }
