@@ -1,4 +1,12 @@
 # Eldoria — PROJECT STATE
+## Valoria Granero BIII dedicated production asset — 2026-09-29
+- Bastion III now has a dedicated visual Granero in the west food/survival growth plot.
+- The certified production asset is `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb`; runtime presentation uses the dedicated GLB only from Bastion III onward.
+- The visual mesh owns no gameplay collider/hotspot and replaces only a non-authoritative placeholder house, preserving the certified route/camera topology.
+- Canonical optimized geometry is **49,800 triangles** with UVs, normals and authored PBR texture channels preserved.
+- Isolated gate: run **36572780639 SUCCESS**, artifact **11036129405**, TECH PASS / VISUAL PASS.
+- Integrated Valoria evidence: Visual Formula run **36581806788 SUCCESS**, artifact **11040631044**, with dedicated Granero zoom 12 / 9 / mobile captures.
+
 Updated: 2026-09-29
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
