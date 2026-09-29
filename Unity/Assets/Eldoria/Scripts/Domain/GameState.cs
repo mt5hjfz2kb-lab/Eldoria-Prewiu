@@ -32,7 +32,11 @@ namespace Eldoria.Domain
         public string PlayerId = "player-local";
         public string RealmId = "valoria-local";
         public string WorldId = "world-local";
-        public ResourceWallet Resources = new ResourceWallet { Wood = 30, Stone = 150, Food = 0 };
+        public ResourceWallet Resources = new ResourceWallet {
+            Wood = SliceContentProfiles.QaFast.InitialWood,
+            Stone = SliceContentProfiles.QaFast.InitialStone,
+            Food = SliceContentProfiles.QaFast.InitialFood
+        };
         public int BastionLevel = 1;
         public int SawmillLevel;
         public int BarracksLevel;
@@ -40,7 +44,7 @@ namespace Eldoria.Domain
         public bool ScoutDefeated;
         public bool JourneyComplete;
         public bool EngendroDefeated;
-        public ArmyRoster Available = new ArmyRoster { ArcherT1 = 36 };
+        public ArmyRoster Available = new ArmyRoster { ArcherT1 = SliceContentProfiles.QaFast.InitialArcherT1 };
         public ArmyRoster Wounded = new ArmyRoster();
         public MarchState March = new MarchState();
         public int ForestRemaining = 1250;
@@ -77,17 +81,17 @@ namespace Eldoria.Domain
     }
     public static class SliceRules
     {
-        public const int SawmillWoodCost = 80;
-        public const int BarracksWoodCost = 140;
-        public const int BarracksStoneCost = 90;
-        public const int RecruitWoodCost = 50;
-        public const int RecruitArchers = 12;
-        public const int BarracksBuildSeconds = 8;
-        public const int RecruitSeconds = 7;
-        public const int ForestLoad = 360;
-        public const int SawmillBuildSeconds = 6;
-        public const int TravelSeconds = 2;
-        public const int GatherSeconds = 5;
+        public const int SawmillWoodCost = SliceContentProfiles.QaFast.SawmillWoodCost;
+        public const int BarracksWoodCost = SliceContentProfiles.QaFast.BarracksWoodCost;
+        public const int BarracksStoneCost = SliceContentProfiles.QaFast.BarracksStoneCost;
+        public const int RecruitWoodCost = SliceContentProfiles.QaFast.RecruitWoodCost;
+        public const int RecruitArchers = SliceContentProfiles.QaFast.RecruitArchers;
+        public const int BarracksBuildSeconds = SliceContentProfiles.QaFast.BarracksBuildSeconds;
+        public const int RecruitSeconds = SliceContentProfiles.QaFast.RecruitSeconds;
+        public const int ForestLoad = SliceContentProfiles.QaFast.ForestLoad;
+        public const int SawmillBuildSeconds = SliceContentProfiles.QaFast.SawmillBuildSeconds;
+        public const int TravelSeconds = SliceContentProfiles.QaFast.TravelSeconds;
+        public const int GatherSeconds = SliceContentProfiles.QaFast.GatherSeconds;
         public static PowerParts TotalPower(PlayerState s)
             => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel,
                 18 * (s.Available.Total + s.Wounded.Total + (s.March.Phase == "idle" ? 0 : s.March.Troops.Total)), 1204, 0, 0);
