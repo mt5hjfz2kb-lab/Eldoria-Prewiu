@@ -688,6 +688,8 @@ try {
           text: (el.innerText || el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 180),
           aria: el.getAttribute('aria-label') || '',
           title: el.getAttribute('title') || '',
+          href: el.getAttribute('href') || '',
+          html: el.outerHTML.slice(0, 900),
           className: String(el.className || '').slice(0, 240),
           visible: r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none',
           x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height)
