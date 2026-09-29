@@ -653,6 +653,17 @@ try {
     report.probe_screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-probe.png');
     await selectedPage.screenshot({ path: report.probe_screenshot_path, fullPage: false });
     report.probe_page_text = (await selectedPage.locator('body').innerText()).slice(0, 7000);
+    report.probe_controls = await selectedPage.locator('button, [role="button"], a').evaluateAll(nodes => nodes.slice(0, 250).map((el, index) => ({
+      index,
+      tag: el.tagName,
+      text: (el.innerText || el.textContent || '').trim().slice(0, 160),
+      ariaLabel: el.getAttribute('aria-label'),
+      title: el.getAttribute('title'),
+      dataTestId: el.getAttribute('data-testid'),
+      className: typeof el.className === 'string' ? el.className.slice(0, 240) : '',
+      disabled: !!el.disabled,
+      visible: !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+    })));
     report.probe_clickables = await selectedPage.locator('button, a, [role="button"], [tabindex]').evaluateAll(nodes =>
       nodes.map((el, index) => {
         const r = el.getBoundingClientRect();
