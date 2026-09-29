@@ -38,7 +38,9 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(390));
             Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
             Assert.That(g.Snapshot().ForestRemaining,Is.EqualTo(890));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredWood,Is.EqualTo(360));
             g.Advance();Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(390));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredWood,Is.EqualTo(360));
             Assert.That(g.Execute(Cmd(g,"sawmill-1","Build","sawmill")).Ok,Is.True);
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(310));
             clock.Add(6);g=new LocalGateway(clock,store);
@@ -98,6 +100,9 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(recruit).Ok,Is.True);
             clock.Add(7);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,Is.EqualTo(SliceRules.RecruitArchers));
+            g.Advance();
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,Is.EqualTo(SliceRules.RecruitArchers));
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3628));
 
             Assert.That(g.Execute(Cmd(g,"engendro-too-early","Fight","engendro-valoria")).Ok,Is.False,
