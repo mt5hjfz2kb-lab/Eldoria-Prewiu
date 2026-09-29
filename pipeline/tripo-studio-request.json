@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "export_glb",
+  "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Export GLB from the completed authorized Granero task only. No generation and no credit spend.",
-  "request_id": "valoria-granero-biii-v1-export-glb",
+  "notes": "Zero-credit UI probe of the completed Granero task to adapt export selector. No upload, generation or mutation.",
+  "request_id": "valoria-granero-biii-v1-export-ui-probe",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
