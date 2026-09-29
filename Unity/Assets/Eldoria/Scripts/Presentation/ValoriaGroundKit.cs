@@ -56,7 +56,12 @@ namespace Eldoria.Presentation
                 float x=(i%3==0?-.08f:(i%3==1?.06f:.01f));
                 float w=width*(.90f+(i%4)*.025f);
                 var patch=Patch(name+" · trail "+(i+1),new Vector3(x,.002f,z),
-                    w,segmentLength*1.22f,EarthBlend*(.98f+(i%3)*.018f),80+i);
+                    w,segmentLength*1.22f,EarthBlend*(.84f+(i%3)*.018f),80+i);
+                var renderer=patch.GetComponent<Renderer>();
+                if(renderer!=null)
+                    renderer.sharedMaterial=ValoriaKit.SurfaceMaterial(
+                        EarthBlend*(.82f+(i%3)*.02f),"earth",
+                        new Vector2(Mathf.Max(2.5f,w/1.0f),Mathf.Max(2.5f,segmentLength/.55f)));
                 patch.transform.SetParent(root.transform,false);
             }
             var art=ValoriaExternalAssetLibrary.Load();
