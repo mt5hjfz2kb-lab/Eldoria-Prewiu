@@ -199,3 +199,41 @@ Implementation commits:
 - `ff34e38c20a920d55cf1e78cc7c9969fd9fee335` — integrated into the real Valoria kernel.
 
 The first Unity slice run for the integration was superseded/cancelled after concurrent `main` work changed only `SliceBoot.cs`; that cancellation is not evidence of a Ground Kit defect. Visual Formula / LookDev evidence for the art commit must decide visual acceptance.
+
+
+## 8. Ground Kit v1 certification — 2026-09-29
+
+Status: **PRODUCTION CERTIFIED / REUSABLE BASE**
+
+Implementation:
+- `ValoriaGroundKit.cs`
+- integrated into the real Valoria kernel in `VisualWorld.cs`
+- visual-only; gameplay floors, routes, stair topology and hotspots remain authoritative underneath.
+
+Reusable families:
+- StreetStraight
+- StreetBlendWidening
+- TerraceFloor
+- RetainingEdge
+- GroundSeam
+
+Integrated validation:
+- Visual Formula run `36554941017` — **SUCCESS**
+- Visual Formula artifact `11027775838`
+- LookDev run `36554945846` — **SUCCESS**
+- Unity slice run `36554920243`:
+  - source preflight SUCCESS
+  - EditMode SUCCESS
+  - PlayMode SUCCESS
+  - Windows desktop build SUCCESS
+  - art benchmark continued after the functional/build gates were already green.
+
+Important review note:
+- the first Ground Kit pass was technically valid but visually too flat/prototype-like;
+- v2 added authored cobble/mud/retaining-surface relief and preserved the reusable visual-only contract;
+- remaining scene-quality gaps belong mainly to support architecture / residential dressing and later Bastion refinement, not to the Ground Kit topology contract.
+
+No Tripo credits were used.
+
+Next production step:
+**Valoria_Granero_BIII_v1 exact Tripo input → exact-input staging → visible cost → STOP before Generate.**
