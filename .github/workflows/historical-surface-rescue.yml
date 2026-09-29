@@ -104,8 +104,8 @@ jobs:
             $report=Join-Path $env:RUNNER_TEMP "$name-surface-report.json"
             $stdout=Join-Path $env:RUNNER_TEMP "$name-surface.log"
             $stderr=Join-Path $env:RUNNER_TEMP "$name-surface-error.log"
-            $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\valoria_hero_surface_prototype.py",'--','--input',$input,'--output',$output,'--report',$report)
-            $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+            $blenderArgs=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\valoria_hero_surface_prototype.py",'--','--input',$input,'--output',$output,'--report',$report)
+            $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $blenderArgs -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $stderr
             if($p.ExitCode -ne 0){
               if(Test-Path $stdout){Get-Content $stdout -Tail 180}
               if(Test-Path $stderr){Get-Content $stderr -Tail 180}
@@ -121,8 +121,8 @@ jobs:
           $seamReport=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface-report.json'
           $seamStdout=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface.log'
           $seamStderr=Join-Path $env:RUNNER_TEMP 'RockTerrainSeamFiller-surface-error.log'
-          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--','--input',$env:SEAM_INPUT,'--output',$seamOut,'--report',$seamReport,'--target-tris','49800','--min-tris','49800','--max-tris','49800','--surface-rescue-profile','rock')
-          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $seamStdout -RedirectStandardError $seamStderr
+          $seamArgs=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--','--input',$env:SEAM_INPUT,'--output',$seamOut,'--report',$seamReport,'--target-tris','49800','--min-tris','49800','--max-tris','49800','--surface-rescue-profile','rock')
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $seamArgs -PassThru -Wait -RedirectStandardOutput $seamStdout -RedirectStandardError $seamStderr
           if($p.ExitCode -ne 0){
             if(Test-Path $seamStdout){Get-Content $seamStdout -Tail 180}
             if(Test-Path $seamStderr){Get-Content $seamStderr -Tail 180}
