@@ -146,6 +146,25 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
         }
 
+        [Test] public void QuarryGatherPersistsAndCountsStoneOnce()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone));
+            Assert.That(g.Execute(Cmd(g,"quarry-1","Gather","quarry-valoria")).Ok,Is.True);
+            Assert.That(g.Snapshot().Available.Total,Is.Zero);
+            clock.Add(SliceRules.TravelSeconds+SliceRules.GatherSeconds+SliceRules.TravelSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone+SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().QuarryRemaining,Is.EqualTo(5200-SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,Is.EqualTo(SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(SliceContentProfiles.QaFast.InitialArcherT1));
+            Assert.That(g.Snapshot().CorruptionDiscovered,Is.False);
+            g.Advance();
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,Is.EqualTo(SliceRules.QuarryLoad));
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone+SliceRules.QuarryLoad));
+        }
+
         [Test] public void SnapshotCannotEditAuthoritativeState()
         {
             var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
