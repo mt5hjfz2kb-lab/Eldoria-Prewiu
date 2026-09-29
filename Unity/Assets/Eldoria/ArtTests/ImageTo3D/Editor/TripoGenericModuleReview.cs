@@ -129,6 +129,9 @@ namespace Eldoria.EditorTools
             var config = LoadConfig();
             module.transform.rotation = Quaternion.Euler(0f, config.unity_yaw_degrees, 0f);
 
+            bool valoriaLookDev = string.Equals(config.lookdev_profile, "valoria-neutral-overcast-v1", StringComparison.OrdinalIgnoreCase);
+            if (valoriaLookDev) NormalizeValoriaHeroSurface(module);
+
             var b = BoundsOf(module);
             var span = Mathf.Max(b.size.x, b.size.z);
             if (span <= .001f) throw new Exception("Imported module has no usable bounds.");
@@ -161,7 +164,6 @@ namespace Eldoria.EditorTools
             sun.type = LightType.Directional;
             sun.shadows = LightShadows.Soft;
 
-            bool valoriaLookDev = string.Equals(config.lookdev_profile, "valoria-neutral-overcast-v1", StringComparison.OrdinalIgnoreCase);
             if (valoriaLookDev) {
                 RenderSettings.ambientMode = AmbientMode.Flat;
                 RenderSettings.ambientLight = new Color(.70f, .70f, .70f);
@@ -200,6 +202,40 @@ namespace Eldoria.EditorTools
 
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             return Tuple.Create(camera, module, report);
+        }
+
+        static void NormalizeValoriaHeroSurface(GameObject module)
+        {
+            var urp = Shader.Find("Universal Render Pipeline/Lit");
+            if (urp == null) throw new Exception("URP/Lit shader unavailable for Valoria hero surface normalization.");
+
+            var cache = new Dictionary<Material, Material>();
+            foreach (var renderer in module.GetComponentsInChildren<Renderer>()) {
+                var slots = renderer.sharedMaterials;
+                for (int i = 0; i < slots.Length; i++) {
+                    var source = slots[i];
+                    if (source == null || source.shader == null || source.shader.name.IndexOf("glTF", StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
+
+                    if (!cache.TryGetValue(source, out var normalized)) {
+                        Texture baseColor = null;
+                        foreach (var prop in source.GetTexturePropertyNames()) {
+                            if (string.Equals(prop, "baseColorTexture", StringComparison.OrdinalIgnoreCase)) {
+                                baseColor = source.GetTexture(prop);
+                                break;
+                            }
+                        }
+                        normalized = new Material(urp) { name = "Valoria normalized · " + source.name };
+                        if (baseColor != null) normalized.SetTexture("_BaseMap", baseColor);
+                        if (normalized.HasProperty("_BaseColor")) normalized.SetColor("_BaseColor", Color.white);
+                        if (normalized.HasProperty("_Metallic")) normalized.SetFloat("_Metallic", 0f);
+                        if (normalized.HasProperty("_Smoothness")) normalized.SetFloat("_Smoothness", 0.08f);
+                        cache[source] = normalized;
+                    }
+                    slots[i] = normalized;
+                }
+                renderer.sharedMaterials = slots;
+            }
         }
 
         static ReviewConfig LoadConfig()
