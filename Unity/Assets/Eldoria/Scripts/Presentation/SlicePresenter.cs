@@ -313,15 +313,15 @@ namespace Eldoria.Presentation
                     return s.Resources.Wood<SliceRules.SawmillWoodCost
                         ? "BASTIÓN I · consigue madera para reparar el Aserradero · "+s.Resources.Wood+"/"+SliceRules.SawmillWoodCost
                         : "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera";
-                case "b1.gather-wood": return "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.QaFast.Chapter1GatherWood;
-                case "b1.gather-stone": return "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.QaFast.Chapter1GatherStone;
+                case "b1.gather-wood": return "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.Active.Chapter1GatherWood;
+                case "b1.gather-stone": return "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.Active.Chapter1GatherStone;
                 case "b1.clear-route": return "BASTIÓN I · despeja la ruta corrupta";
                 case "b1.return": return "BASTIÓN I · regresa a Valoria";
                 case "b1.ascend": return "CAPÍTULO I COMPLETO · asciende el Bastión";
                 case "b2.build-barracks": return "BASTIÓN II · levanta el Cuartel";
-                case "b2.train-archers": return "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.QaFast.Chapter2TrainArchers;
+                case "b2.train-archers": return "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.Active.Chapter2TrainArchers;
                 case "b2.prepare-march": return "BASTIÓN II · prepara y confirma la Marcha";
-                case "b2.raise-expedition-power": return "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.QaFast.Chapter2ExpeditionPower;
+                case "b2.raise-expedition-power": return "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.Active.Chapter2ExpeditionPower;
                 case "b2.defeat-engendro": return "BASTIÓN II · derrota al Engendro de la ruta";
                 case "b2.complete": return "CAPÍTULO II COMPLETO · Valoria puede defenderse";
                 default: return "ELDORIA · objetivo no disponible";
@@ -395,8 +395,9 @@ namespace Eldoria.Presentation
                 else if(state.BarracksLevel==0)
                     Button(row1,"CUARTEL · "+SliceRules.BarracksWoodCost+" M / "+SliceRules.BarracksStoneCost+" P",
                         ()=>Send("Build","barracks"));
-                else if(state.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers)
-                    Button(row1,"RECLUTAR +"+SliceRules.RecruitArchers+" · "+SliceRules.RecruitWoodCost+" M",
+                else if((state.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
+                    Button(row1,"RECLUTAR +"+SliceRules.RecruitArchers+" · "+SliceRules.RecruitWoodCost+" M"+
+                        (SliceRules.RecruitStoneCost>0?" / "+SliceRules.RecruitStoneCost+" P":""),
                         ()=>Send("Recruit","archer:t1"));
                 else
                     Button(row1,state.MarchConfigured?"REVISAR MARCHA":"PREPARAR MARCHA",OpenMarchPanel);
@@ -413,7 +414,7 @@ namespace Eldoria.Presentation
             });
             Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
             if(city)Button(row2,"CENTRAR",RecenterCamera);
-            if(city&&SliceContentProfiles.ActiveRuntimeProfile=="QA_FAST")
+            if(city&&SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.QaFastId)
                 Button(row2,"NUEVA PARTIDA QA",ResetQaFreshSave);
             message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
             CreateBuildingPanel(canvasGo.transform);
