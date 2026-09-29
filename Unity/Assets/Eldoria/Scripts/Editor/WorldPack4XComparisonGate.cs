@@ -43,8 +43,45 @@ namespace Eldoria.EditorTools
                 "  \"production_modified\": false,\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
+            ExportReusableInventory();
             AssetDatabase.SaveAssets();
             EditorApplication.Exit(0);
+        }
+
+        // Export only selected source dependencies, preserving GUIDs and source materials.
+        // These remain inventory; production promotion is decided by integrated camera review.
+        static void ExportReusableInventory()
+        {
+            const string folder="Assets/Eldoria/Resources/WorldInventory";
+            Directory.CreateDirectory(folder);
+            AssetDatabase.Refresh();
+            var sources=new[]{
+                "Assets/Holotna/Mountain/Prefabs/Mountain01.prefab",
+                "Assets/Holotna/Mountain/Prefabs/Rock01.prefab",
+                "Assets/Holotna/Mountain/Prefabs/Rock02.prefab",
+                "Assets/Holotna/Mountain/Prefabs/Tree01A.prefab",
+                "Assets/Holotna/Mountain/Prefabs/Tree01B.prefab",
+                "Assets/Holotna/Mountain/Prefabs/Bush01.prefab",
+                "Assets/WorldPackCompare/Quaternius/FBX/Arch_Gothic.fbx",
+                "Assets/WorldPackCompare/Quaternius/FBX/Wall_Broken.fbx",
+                "Assets/WorldPackCompare/Quaternius/FBX/Column_Round.fbx"
+            };
+            var exports=new List<string>();
+            foreach(var path in sources)
+            {
+                var source=AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if(source==null)throw new Exception("Inventory source missing: "+path);
+                var go=UnityEngine.Object.Instantiate(source);
+                foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
+                string target=folder+"/"+Path.GetFileNameWithoutExtension(path)+".prefab";
+                PrefabUtility.SaveAsPrefabAsset(go,target);
+                UnityEngine.Object.DestroyImmediate(go);
+                exports.Add(target);
+            }
+            AssetDatabase.SaveAssets();
+            var deps=AssetDatabase.GetDependencies(exports.ToArray(),true)
+                .Where(p=>p.StartsWith("Assets/")&&File.Exists(p)).Distinct().OrderBy(p=>p).ToArray();
+            File.WriteAllLines(Path.Combine(Folder,"reusable-inventory-files.txt"),deps);
         }
 
         static void CaptureCurrentFrontier()
