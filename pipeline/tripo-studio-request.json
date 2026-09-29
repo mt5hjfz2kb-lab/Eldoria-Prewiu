@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "mode": "generate_staged",
+  "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Owner-authorized single Generate for Valoria_Granero_BIII_v1 from staging run 36563809603 / artifact 11031251106. Verify exact approved SHA and visible 55-credit cost, click Generate exactly once, no restaging.",
-  "request_id": "valoria-granero-biii-v1-generate-authorized-55",
+  "notes": "Watch only the already-generated Granero task until generation completes. No upload, no Generate, no credit spend.",
+  "request_id": "valoria-granero-biii-v1-watch-generated-task",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
@@ -26,8 +26,8 @@
   "search_downloads_for_sha": false,
   "visual_width": 1254,
   "visual_height": 1254,
-  "allow_credit_spend": true,
-  "authorized_credit_cost": 55,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0,
   "approved_input_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -35,5 +35,6 @@
   "input_transport": "repo_exact_input",
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64",
   "prior_stage_run_id": 36563809603,
-  "prior_stage_artifact_id": 11031251106
+  "prior_stage_artifact_id": 11031251106,
+  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/a50f42b8-1e96-4298-ba36-089334d934f6"
 }
