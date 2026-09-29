@@ -111,6 +111,9 @@ jobs:
               $pathname=Join-Path $_.FullName 'pathname'
               if(-not (Test-Path $pathname)){ return }
               $relative=(Get-Content $pathname -Raw).Trim() -replace '/','\'
+              # Some UnityPackage pathname entries contain embedded NUL/control bytes.
+              # They are invisible in logs but make otherwise normal Windows paths invalid.
+              $relative=($relative -replace '[\x00-\x1F]','').Trim()
               if(-not $relative.StartsWith('Assets\')){ return }
               if([string]::IsNullOrWhiteSpace($relative)){ return }
               try {
