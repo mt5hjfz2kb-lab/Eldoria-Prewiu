@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_exact_input_image",
+  "asset_name": "Valoria_Granero_BIII_v1",
+  "class": "DEDICATED_FUNCTIONAL",
+  "gameplay_unlock": "Bastion III",
+  "district": "West Growth / food-survival edge",
+  "integration_anchor": {
+    "x": -17.2,
+    "y": 0.34,
+    "z": -3
+  },
+  "principal_face": "south/front",
+  "target_footprint": {
+    "width_min": 4.1,
+    "width_max": 4.5,
+    "depth_min": 3.4,
+    "depth_max": 3.8,
+    "height_min": 3.7,
+    "height_max": 4.4
+  },
+  "reserved_upgrade_envelope": {
+    "width": 5.4,
+    "depth": 4.8,
+    "height_max": 5.8
+  },
+  "exact_input_requirements": {
+    "single_image": true,
+    "view": "slightly elevated 3/4 south-front + east side",
+    "background": "neutral light grey",
+    "full_building_visible": true,
+    "no_city": true,
+    "no_people": true,
+    "no_text": true,
+    "no_contact_sheet": true,
+    "tripo_ready": true
+  },
+  "credit_spend_authorized": false,
+  "next_safe_action": "Create exact isolated input image, store exact identity, stage_upload only, capture visible Tripo cost, STOP before Generate."
+}
