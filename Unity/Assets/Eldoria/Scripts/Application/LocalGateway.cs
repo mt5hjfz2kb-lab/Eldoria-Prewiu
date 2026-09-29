@@ -57,7 +57,7 @@ namespace Eldoria.Application
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
-                ForestRemaining=s.ForestRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
+                ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
                 BuildingTaskId=s.BuildingTaskId, RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
                 LastBattleReason=s.LastBattleReason,
@@ -99,10 +99,16 @@ namespace Eldoria.Application
             switch (command.Kind)
             {
                 case "Gather":
-                    if (command.TargetId != "forest-valoria") return Fail("Nodo desconocido");
-                    if (state.ForestRemaining <= 0) return Fail("El bosque está agotado");
+                    if (command.TargetId!="forest-valoria" && command.TargetId!="quarry-valoria")
+                        return Fail("Nodo desconocido");
+                    if (command.TargetId=="forest-valoria" && state.ForestRemaining<=0)
+                        return Fail("El bosque está agotado");
+                    if (command.TargetId=="quarry-valoria" && state.QuarryRemaining<=0)
+                        return Fail("La cantera está agotada");
                     if (!CanDepart()) return Fail("Marcha no disponible");
-                    Depart(command.TargetId); state.CorruptionDiscovered = true; break;
+                    Depart(command.TargetId);
+                    if(command.TargetId=="forest-valoria") state.CorruptionDiscovered=true;
+                    break;
                 case "ConfigureMarch":
                     if (command.TargetId != "march-main" || state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Marcha no disponible");
@@ -273,8 +279,16 @@ namespace Eldoria.Application
                 }
                 else if (m.Phase == "gathering")
                 {
-                    m.PendingWood = Math.Min(SliceRules.ForestLoad, state.ForestRemaining);
-                    state.ForestRemaining -= m.PendingWood;
+                    if(m.TargetId=="quarry-valoria")
+                    {
+                        m.PendingStone = Math.Min(SliceRules.QuarryLoad,state.QuarryRemaining);
+                        state.QuarryRemaining -= m.PendingStone;
+                    }
+                    else
+                    {
+                        m.PendingWood = Math.Min(SliceRules.ForestLoad, state.ForestRemaining);
+                        state.ForestRemaining -= m.PendingWood;
+                    }
                     m.Phase = "returning";
                     m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                 }
@@ -290,6 +304,11 @@ namespace Eldoria.Application
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredWood += m.PendingWood;
+                        }
+                        if (m.TargetId == "quarry-valoria" && m.PendingStone > 0)
+                        {
+                            if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+                            state.ChapterProgress.GatheredStone += m.PendingStone;
                         }
                         state.Available.ArcherT1 += m.Troops.ArcherT1;
                         state.Available.ArcherT2 += m.Troops.ArcherT2;
