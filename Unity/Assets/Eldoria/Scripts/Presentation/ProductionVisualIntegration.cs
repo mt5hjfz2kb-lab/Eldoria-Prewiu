@@ -432,11 +432,17 @@ namespace Eldoria.Presentation
         {
             // Compact silhouette placeholders explicitly tracked against World P0 Beast Kit.
             var c=boar?new Color(.31f,.25f,.18f):new Color(.39f,.41f,.40f);
-            Primitive(name+" body",PrimitiveType.Sphere,p+new Vector3(0,.45f,0),new Vector3(boar?.95f:.73f,.54f,1.35f),c);
+            Primitive(name+" body",PrimitiveType.Sphere,p+new Vector3(0,.45f,0),new Vector3(boar?.95f:.53f,boar?.54f:.43f,1.35f),c);
             Primitive(name+" head",PrimitiveType.Sphere,p+new Vector3(0,.56f,-.6f),new Vector3(.48f,.45f,.52f),c*.9f);
             for(int i=0;i<4;i++)Primitive(name+" leg",PrimitiveType.Capsule,p+new Vector3(i%2==0?-.25f:.25f,.23f,i<2?-.35f:.38f),new Vector3(.15f,.26f,.16f),c*.8f);
             if(boar)for(int i=0;i<2;i++)Primitive(name+" tusk",PrimitiveType.Capsule,p+new Vector3(i==0?-.20f:.20f,.49f,-.82f),new Vector3(.08f,.18f,.08f),new Color(.78f,.73f,.59f));
-            else for(int i=0;i<2;i++)Primitive(name+" ear",PrimitiveType.Cube,p+new Vector3(i==0?-.17f:.17f,.89f,-.53f),new Vector3(.13f,.23f,.13f),c*.75f);
+            else
+            {
+                for(int i=0;i<2;i++)Primitive(name+" ear",PrimitiveType.Cube,p+new Vector3(i==0?-.17f:.17f,.89f,-.53f),new Vector3(.13f,.23f,.13f),c*.75f);
+                Primitive(name+" muzzle",PrimitiveType.Sphere,p+new Vector3(0,.53f,-.91f),new Vector3(.21f,.22f,.41f),c*.8f);
+                Primitive(name+" tail",PrimitiveType.Capsule,p+new Vector3(0,.47f,.92f),new Vector3(.13f,.32f,.13f),c*.8f);
+                root.GetChild(root.childCount-1).rotation=Quaternion.Euler(58,0,0);
+            }
         }
         static void Civilian(Vector3 p)
         {

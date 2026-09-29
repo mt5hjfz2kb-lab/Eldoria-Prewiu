@@ -11,6 +11,8 @@ namespace Eldoria.EditorTools
     {
         public static void Capture()
         {
+            // First far-zoom frame must not capture Unity's temporary blue compiling shader.
+            UnityEditor.ShaderUtil.allowAsyncCompilation=false;
             CaptureMatchedWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
