@@ -263,7 +263,7 @@ namespace Eldoria.Presentation
                 new Vector3(2.55f,1.30f,2.25f),true,Glow);
 
             // Long-term master envelope remains intact and continues to define the panning future footprint.
-            MasterEnvelopeGraybox(l1);
+            MasterEnvelopeGraybox(l1,art,rescuedSeam);
 
             var gate=ValoriaKit.Block("Puerta · ir al mundo",new Vector3(0,1.05f,-9.25f),
                 new Vector3(3.0f,2.1f,.50f),ValoriaKit.Timber);
@@ -302,7 +302,7 @@ namespace Eldoria.Presentation
             Glow("VPD · Bastion warmth",new Vector3(0,l1+3.4f,6.2f),Amber,1.35f,6.0f);
         }
 
-        static void MasterEnvelopeGraybox(float l1)
+        static void MasterEnvelopeGraybox(float l1,ValoriaExternalAssetLibrary art,GameObject rescuedSeam)
         {
             var reserve=new Color(.255f,.245f,.215f);
             var route=new Color(.39f,.37f,.32f);
@@ -359,6 +359,64 @@ namespace Eldoria.Presentation
                     new Vector3(3.65f,.075f,1.18f),new Color(.39f,.37f,.32f));
                 piece.transform.rotation=Quaternion.Euler(0,(i%2==0?1.5f:-1.5f),0);
             }
+
+            // FIRST EXPANSION PRODUCTION SLICE — west rebuilders quarter.
+            // This is visual city growth inside the already-reserved Master Envelope. It does not
+            // create new gameplay requirements or move the certified district/camera topology.
+            IrregularGround("VPD · west rebuilders terrace",new Vector3(-14.7f,.34f,1.25f),8.7f,12.2f,new Color(.315f,.292f,.245f));
+            IrregularGround("VPD · west rebuilders upper shelf",new Vector3(-15.9f,1.18f,5.55f),6.1f,4.7f,new Color(.325f,.305f,.265f));
+
+            // Stone path fragments visually continue the Aserradero/work-district language into the reserve.
+            for(int i=0;i<6;i++)
+            {
+                float x=-9.7f-i*1.36f;
+                float z=-1.0f+(i%2==0?-.10f:.10f);
+                var slab=ValoriaKit.Block("VPD · west rebuilders route "+(i+1),new Vector3(x,.355f,z),
+                    new Vector3(1.62f,.08f,1.92f),new Color(.40f,.375f,.32f));
+                slab.transform.rotation=Quaternion.Euler(0,(i%2==0?-4f:3f),0);
+                ValoriaKit.BenchmarkPieceTinted("VPD · west rebuilders cobble "+(i+1),
+                    art!=null?art.SlavicCobbleRoad:null,new Vector3(x,.405f,z),1.58f,.14f,
+                    Quaternion.Euler(0,(i%2==0?-4f:3f),0),ValoriaKit.WarmStone*.80f);
+            }
+
+            // Lower inhabited/work frontage. Small footprints and staggered placement preserve route readability.
+            foreach(var home in new[]{
+                new Vector3(-12.0f,.34f,-3.25f),new Vector3(-15.25f,.36f,-3.05f),
+                new Vector3(-18.05f,.35f,-2.15f),new Vector3(-13.25f,.36f,2.45f),
+                new Vector3(-17.35f,.38f,2.15f)})
+                ValoriaKit.House("VPD · west rebuilders home",home,new Vector3(2.05f,1.18f,1.78f),true,Glow);
+
+            foreach(var yard in new[]{
+                new Vector3(-11.55f,.24f,3.95f),new Vector3(-18.15f,.24f,4.45f)})
+            {
+                IrregularGround("VPD · west rebuilders work court",yard,3.35f,2.55f,new Color(.285f,.255f,.205f));
+                ValoriaKit.BenchmarkPiece("VPD · west rebuilders firewood",art!=null?art.Firewood:null,
+                    yard+new Vector3(-.65f,.13f,.08f),1.05f,.72f,Quaternion.Euler(0,22f,0));
+                ValoriaKit.BenchmarkPieceTinted("VPD · west rebuilders fence",art!=null?art.SlavicStoneFence:null,
+                    yard+new Vector3(.72f,.08f,.60f),1.55f,.78f,Quaternion.Euler(0,-8f,0),ValoriaKit.OldStone*.86f);
+            }
+
+            // Upper shelf makes the extension read vertically instead of as a flat suburb.
+            ValoriaKit.House("VPD · west rebuilders upper dwelling",new Vector3(-15.8f,1.28f,5.55f),
+                new Vector3(2.35f,1.28f,2.0f),true,Glow);
+            ValoriaKit.House("VPD · west rebuilders upper dwelling",new Vector3(-18.05f,1.18f,6.05f),
+                new Vector3(1.95f,1.12f,1.70f),true,Glow);
+
+            // Reuse the certified seam family only as visual geology/burial. No collider or route depends on it.
+            ValoriaKit.BenchmarkPieceTinted("VPD · west rebuilders rescued seam A",rescuedSeam,
+                new Vector3(-11.05f,.18f,1.15f),2.65f,1.42f,Quaternion.Euler(0,74f,0),
+                new Color(.18f,.19f,.18f,1f));
+            ValoriaKit.BenchmarkPieceTinted("VPD · west rebuilders rescued seam B",rescuedSeam,
+                new Vector3(-17.95f,.28f,5.05f),2.90f,1.50f,Quaternion.Euler(0,148f,0),
+                new Color(.18f,.19f,.18f,1f));
+
+            // Sparse skyline markers and vegetation tie the new quarter back into the same mountain-city silhouette.
+            ValoriaKit.Banner("VPD · west rebuilders banner",new Vector3(-14.55f,2.25f,-.55f),
+                new Vector3(.42f,1.45f,.07f),new Color(.18f,.30f,.43f));
+            foreach(var p in new[]{
+                new Vector3(-20.0f,.02f,-.3f),new Vector3(-19.5f,.02f,3.3f),
+                new Vector3(-12.2f,.02f,6.6f)})
+                ValoriaKit.PineTree("VPD · west rebuilders pine",p,.56f);
 
             // Edge geology establishes depth without consuming future building plots.
             foreach(var p in new[]{
