@@ -11,6 +11,7 @@ namespace Eldoria.Presentation
     {
         static Material landscape;
         static Material sharedStone;
+        static readonly Dictionary<string,Material> adapted = new();
         static readonly Color Blue = new Color(.13f,.24f,.38f);
         static readonly Color Rock = new Color(.42f,.43f,.39f);
         static Transform root;
@@ -72,6 +73,19 @@ namespace Eldoria.Presentation
                     new Vector3(-8.8f,.08f,-4.7f),1.45f,1.15f,-14,new Color(.56f,.51f,.42f));
                 Piece("4X · food sacks · placeholder",Resources.Load<GameObject>("Valoria/UrbanProps/Sack"),new Vector3(-8.25f,.08f,-5.2f),.8f,.6f,0,new Color(.8f,.73f,.57f));
                 Piece("4X · food barrel · placeholder",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),new Vector3(-9.3f,.08f,-5.25f),.55f,.75f,0,new Color(.72f,.63f,.48f));
+            }
+            Node("Valoria",new Vector3(-1.4f,.15f,-5.8f),Blue,1.6f);
+            Node("Madera",new Vector3(-5.3f,.15f,-.15f),new Color(.65f,.48f,.22f),1.1f);
+            Node("Piedra",new Vector3(6.35f,.15f,-2.15f),new Color(.65f,.63f,.53f),1.35f);
+            Node("Engendro",new Vector3(5f,.15f,3.15f),new Color(.43f,.22f,.39f),1.25f);
+            Node("Brecha",new Vector3(10f,.15f,8f),new Color(.48f,.23f,.43f),1.55f);
+            if(state.March.Phase!="idle")Node("Marcha",new Vector3(1.2f,.15f,-3.8f),Blue,.85f);
+            if(state.BastionLevel>=3)
+            {
+                Node("Lobo",new Vector3(-2.7f,.15f,3.4f),new Color(.63f,.39f,.25f),.85f);
+                Node("Jabalí",new Vector3(6.7f,.15f,-6f),new Color(.63f,.39f,.25f),.85f);
+                Node("Ruinas",new Vector3(-1.9f,.15f,9.4f),new Color(.64f,.58f,.39f),1.35f);
+                Node("Alimento",new Vector3(-8.8f,.15f,-4.7f),new Color(.65f,.48f,.22f),1f);
             }
             // Existing territorial scar gains an installation silhouette, without neon crystals.
             Imported("4X · breach broken arch","Arch_Gothic",new Vector3(9.4f,.02f,8.4f),2.5f,3.25f,-22,new Color(.23f,.22f,.26f),false);
@@ -144,6 +158,9 @@ namespace Eldoria.Presentation
                 if(state.BastionLevel>=3)Piece("Valoria · food sack",Resources.Load<GameObject>("Valoria/UrbanProps/Sack"),p+new Vector3(.1f,0,.49f),.55f,.38f,0,new Color(.8f,.72f,.57f));
             }
             DressBastion();
+            var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            Piece("Valoria · rescued hero west anchor",tower,new Vector3(-3.3f,2.55f,8.5f),3.5f,7.2f,18,new Color(.72f,.74f,.70f));
+            Piece("Valoria · rescued hero rear anchor",tower,new Vector3(1.9f,2.55f,10.2f),3.1f,6.1f,196,new Color(.66f,.69f,.66f));
             Finish();
         }
 
@@ -154,7 +171,7 @@ namespace Eldoria.Presentation
             Suppress("Bastion · connected", "Bastion · rear connected", "Bastion · high lantern",
                 "Bastion · keep facing fallback", "Bastion · keep side fallback", "Bastion · keep rear fallback",
                 "Bastion · dead palace wall", "Bastion · dead palace tower");
-            var p=new Vector3(0,3.15f,7.25f);
+            var p=new Vector3(0,3.0f,7.25f);
             foreach(var q in new[]{new Vector4(-3.28f,-2.48f,2.05f,5.85f),new Vector4(3.18f,-2.45f,1.82f,4.95f),
                 new Vector4(-2.55f,2.25f,1.85f,6.75f),new Vector4(2.45f,1.95f,1.65f,5.45f),new Vector4(-.62f,2.28f,1.62f,6.95f)})
                 Imported("Valoria · restored masonry tower","MegaTower",p+new Vector3(q.x,.08f,q.y),q.z,q.w,0,new Color(.52f,.51f,.45f),false);
@@ -220,7 +237,7 @@ namespace Eldoria.Presentation
             var go=ValoriaKit.BenchmarkPiece(name,source,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Empty recovered inventory: "+resource);
             go.transform.SetParent(root,true);
-            Normalize(go,tint,foliage);
+            Normalize(go,tint,foliage,resource);
         }
         static void Piece(string name,GameObject source,Vector3 p,float footprint,float height,float yaw,Color tint)
         {
@@ -228,24 +245,45 @@ namespace Eldoria.Presentation
             var go=ValoriaKit.BenchmarkPieceModulated(name,source,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
             if(go!=null)go.transform.SetParent(root,true);
         }
-        static void Normalize(GameObject go,Color tint,bool foliage)
+        static void Normalize(GameObject go,Color tint,bool foliage,string resource)
         {
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
-                var mats=r.sharedMaterials;
-                for(int i=0;i<mats.Length;i++)
+                var mf=r.GetComponent<MeshFilter>();
+                int count=mf!=null&&mf.sharedMesh!=null?mf.sharedMesh.subMeshCount:Mathf.Max(1,r.sharedMaterials.Length);
+                var originals=r.sharedMaterials;var mats=new Material[count];
+                for(int i=0;i<count;i++)
                 {
-                    var source=mats[i];if(source==null)continue;
-                    var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria adapted · "+source.name};
-                    var texture=source.HasProperty("_BaseMap")?source.GetTexture("_BaseMap"):source.HasProperty("_MainTex")?source.GetTexture("_MainTex"):null;
+                    var source=i<originals.Length?originals[i]:null;
+                    bool leaves=foliage&&i>0;
+                    string key=resource+"/"+i+"/"+ColorUtility.ToHtmlStringRGB(tint);
+                    if(adapted.TryGetValue(key,out var cached)&&cached!=null){mats[i]=cached;continue;}
+                    var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria adapted · "+resource+" "+i};
+                    Texture texture=null,normal=null;
+                    if(foliage)
+                    {
+                        string family=leaves?"Leaf01":"Trunk01";
+                        texture=Resources.Load<Texture2D>("WorldInventory/"+family+"_ALB");
+                        normal=Resources.Load<Texture2D>("WorldInventory/"+family+"_NRM");
+                        m.SetColor("_BaseColor",leaves?new Color(.30f,.43f,.23f):new Color(.39f,.30f,.20f));
+                    }
+                    else if(resource.StartsWith("Rock")||resource=="Mountain01")
+                    {
+                        texture=Resources.Load<Texture2D>("WorldInventory/Rock01_ALB");
+                        normal=Resources.Load<Texture2D>("WorldInventory/Rock01_NRM");m.SetColor("_BaseColor",tint);
+                    }
+                    else
+                    {
+                        foreach(string property in new[]{"_BaseMap","_MainTex","_Albedo"})
+                            if(source!=null&&source.HasProperty(property)&&source.GetTexture(property)!=null){texture=source.GetTexture(property);break;}
+                        if(texture!=null)m.SetColor("_BaseColor",tint);
+                        else m=ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3,3));
+                    }
                     if(texture!=null)m.SetTexture("_BaseMap",texture);
-                    else if(!foliage)m=ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3,3));
-                    m.SetColor("_BaseColor",texture!=null?tint:Color.white);
-                    if(source.HasProperty("_BumpMap")&&source.GetTexture("_BumpMap")!=null){m.SetTexture("_BumpMap",source.GetTexture("_BumpMap"));m.EnableKeyword("_NORMALMAP");}
+                    if(normal!=null){m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");}
                     m.SetFloat("_Smoothness",.025f);m.SetFloat("_Metallic",0);
-                    if(foliage&&source.name.ToLowerInvariant().Contains("leaf"))
-                    {m.SetFloat("_AlphaClip",1);m.SetFloat("_Cutoff",.35f);m.EnableKeyword("_ALPHATEST_ON");m.SetFloat("_Cull",0);}
-                    mats[i]=m;
+                    if(leaves){m.SetFloat("_AlphaClip",1);m.SetFloat("_Cutoff",.35f);m.EnableKeyword("_ALPHATEST_ON");m.SetFloat("_Cull",0);}
+                    adapted[key]=m;mats[i]=m;
                 }
                 r.sharedMaterials=mats;
             }
@@ -334,6 +372,18 @@ namespace Eldoria.Presentation
         {
             Primitive(name+" pole",PrimitiveType.Cylinder,p+Vector3.up*height*.5f,new Vector3(.035f,height*.5f,.035f),new Color(.25f,.20f,.13f));
             Primitive(name+" cloth",PrimitiveType.Cube,p+new Vector3(.23f,height*.77f,0),new Vector3(.45f,height*.30f,.035f),color);
+        }
+        static void Node(string label,Vector3 p,Color color,float radius)
+        {
+            var ring=new GameObject("4X · "+label+" strategic footprint").AddComponent<LineRenderer>();
+            ring.transform.SetParent(root,true);ring.loop=true;ring.useWorldSpace=true;ring.positionCount=32;
+            ring.startWidth=ring.endWidth=.065f;ring.sharedMaterial=ValoriaKit.Material(color);
+            for(int i=0;i<32;i++){float a=i*Mathf.PI*2/32;ring.SetPosition(i,p+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius));}
+            var text=new GameObject("4X · "+label+" semantic label").AddComponent<TextMesh>();
+            text.transform.SetParent(root,true);text.transform.position=p+new Vector3(0,.38f,-radius-.22f);
+            text.transform.rotation=Quaternion.LookRotation(new Vector3(-20,-24,22));
+            text.text=label;text.fontSize=48;text.characterSize=.075f;text.anchor=TextAnchor.MiddleCenter;
+            text.color=new Color(.87f,.81f,.66f);
         }
         static void Primitive(string name,PrimitiveType type,Vector3 p,Vector3 size,Color color)
         {

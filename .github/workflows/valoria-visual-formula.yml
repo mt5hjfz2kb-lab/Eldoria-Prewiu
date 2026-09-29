@@ -16,7 +16,8 @@ on:
       - 'docs/VALORIA_VISUAL_FORMULA_v1.md'
 
 permissions:
-  contents: read
+  contents: write
+  actions: read
 
 concurrency:
   group: eldoria-valoria-visual-formula
@@ -55,6 +56,33 @@ jobs:
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Recover owned TowerWallRock through canonical Surface v1
+        shell: powershell
+        run: |
+          $target="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\Rescued\TowerWallRock.glb"
+          if(Test-Path $target){Write-Host 'Rescued owned tower already persisted'; exit 0}
+          $expected='18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a'
+          $source=Get-ChildItem "$env:USERPROFILE\Downloads" -Recurse -File -Filter '*TowerWallRock*.glb' | Where-Object { (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() -eq $expected } | Select-Object -First 1
+          if(-not $source){throw 'Certified TowerWallRock exact SHA not found in existing runner inventory'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Canonical Blender unavailable'}
+          $report="$env:RUNNER_TEMP\TowerWallRock-surface-report.json"
+          & $blender --background --python "$env:GITHUB_WORKSPACE\tools\valoria_hero_surface_prototype.py" -- --input $source.FullName --output $target --report $report --profile hero
+          if($LASTEXITCODE -ne 0){throw 'Owned TowerWallRock Surface v1 rescue failed'}
+          if(-not (Test-Path $target)){throw 'Tower rescue output missing'}
+          Set-Content -Path "$target.meta" -Value "fileFormatVersion: 2`nguid: 62b3d69b8eb64c71a5ae7d3482d70902`nScriptedImporter:`n  internalIDToNameTable: []`n  externalObjects: {}`n  serializedVersion: 2`n  userData: `n  assetBundleName: `n  assetBundleVariant: `n  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}" -Encoding UTF8
+          Get-Content $report
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- 'Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb' 'Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb.meta'
+          git commit -m 'art: rescue owned TowerWallRock surface without generation or topology changes'
+          git fetch origin main
+          git rebase origin/main
+          if($LASTEXITCODE -ne 0){throw 'Concurrent main rescue rebase failed'}
+          git push origin HEAD:main
+          if($LASTEXITCODE -ne 0){throw 'Tower persistence failed'}
 
       - name: Capture canonical visual formula scene
         shell: powershell
