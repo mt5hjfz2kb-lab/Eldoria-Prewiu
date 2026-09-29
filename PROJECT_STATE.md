@@ -3,6 +3,16 @@ Updated: 2026-09-29
 
 This file describes **functional project state only**. Operational HEAD/current task belongs in `SESSION_HANDOFF.md`; permanent process belongs in `AGENTS.md`.
 
+## Valoria first production district v1 — 2026-09-29
+- `VALORIA_VISUAL_FORMULA_v1` is validated and frozen as the production visual baseline.
+- Real `VisualWorld` now uses dedicated Aserradero + Cuartel together with promoted rescued `ResidentialTerraceRock` and `RockTerrainSeamFiller` visual assets under the certified playable topology.
+- Rescued visual meshes do not own gameplay circulation, colliders or hotspots; the independent 12-step route remains authoritative.
+- `TerraceStairRock` is recovered/Surface-v1-ready but intentionally not used in this district after a real composition test showed it was redundant/occluded with the certified vertical route.
+- Production validation is green: Visual Formula run **36541695034**, district evidence run **36543056731**, full Unity slice **36541695042**, LookDev recheck **36541695060**.
+- District official evidence exists at zoom **19 / 12 / 9**. Measured scene complexity is **460,236 triangles**; device performance thresholds remain unset until representative mobile profiling.
+- Historical rescue and district integration used **0 additional Tripo credits**.
+- Record: `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md`.
+
 
 ## Valoria AP2 dedicated architecture + production LookDev — 2026-09-29
 - Dedicated Aserradero and Cuartel geometry are integrated in the certified Playable District without moving frozen gameplay topology or hotspots.
