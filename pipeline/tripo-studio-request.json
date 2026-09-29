@@ -2,8 +2,8 @@
   "enabled": true,
   "mode": "probe",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Zero-credit probe of selected Granero asset card actions/tooltips. No click, upload, generation or credit spend.",
-  "request_id": "valoria-granero-biii-v1-asset-action-probe",
+  "notes": "Zero-credit probe of selected Granero asset action controls. No upload, generation, export or credit spend.",
+  "request_id": "valoria-granero-biii-v1-asset-actions-probe",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
