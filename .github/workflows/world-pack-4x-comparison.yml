@@ -72,6 +72,12 @@ jobs:
         run: |
           $root=Join-Path $env:RUNNER_TEMP 'EldoriaWorldPack4X'
           $project=Join-Path $root 'Unity'
+          $manifest=Join-Path $project 'WorldPack4XComparisonCaptures\reusable-inventory-files.txt'
+          if(Test-Path $manifest){
+            "WORLD_COMPARE_PROJECT=$project" | Out-File $env:GITHUB_ENV -Append
+            "WORLD_COMPARE_REUSE=true" | Out-File $env:GITHUB_ENV -Append
+            exit 0
+          }
           Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path $root | Out-Null
           & robocopy.exe "$env:GITHUB_WORKSPACE\Unity" $project /E /NFL /NDL /NJH /NJS /NP /XD Library Temp Obj Logs Build Builds WebGLBuild
@@ -96,6 +102,7 @@ jobs:
           "HOLOTNA_URP_PACKAGE=$nested" | Out-File $env:GITHUB_ENV -Append
 
       - name: Expand Unity packages into isolated project
+        if: env.WORLD_COMPARE_REUSE != 'true'
         shell: powershell
         run: |
           function Expand-UnityPackage([string]$package,[string]$label){
@@ -147,6 +154,7 @@ jobs:
           Expand-UnityPackage $env:HOLOTNA_URP_PACKAGE 'Holotna'
 
       - name: Capture fixed-camera 4X comparison
+        if: env.WORLD_COMPARE_REUSE != 'true'
         shell: powershell
         run: |
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack4XComparison.log'
@@ -212,7 +220,8 @@ jobs:
           github-token: ${{ github.token }}
           run-id: 36633120644
           artifact-ids: 11063878628
-          path: ${{ runner.temp }}/EldoriaCertifiedStoneKit
+          path: ${{ runner.temp }}/sk
+          merge-multiple: true
 
       - name: Preserve selected reusable source inventory
         shell: powershell
@@ -226,7 +235,7 @@ jobs:
             Copy-Item $source $dest -Force
             if(Test-Path ($source+'.meta')){Copy-Item ($source+'.meta') ($dest+'.meta') -Force}
           }
-          $stone=Join-Path $env:RUNNER_TEMP 'EldoriaCertifiedStoneKit'
+          $stone=Join-Path $env:RUNNER_TEMP 'sk'
           $pieces=@(Get-ChildItem $stone -Recurse -Filter 'piece_*.glb' | Sort-Object Name)
           if($pieces.Count -ne 6){throw "Expected 6 certified StoneKit pieces, got $($pieces.Count)"}
           $dest=Join-Path $env:GITHUB_WORKSPACE 'Unity\Assets\Eldoria\Resources\Valoria\StoneKit'
