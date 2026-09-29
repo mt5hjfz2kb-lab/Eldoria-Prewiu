@@ -63,6 +63,18 @@ the first production-scale proof that certified historical geometry can be rescu
 
 Measured production scene baseline: **460,236 triangles**, with device FPS/memory thresholds still intentionally TBD until representative mobile profiling.
 
+
+### West rebuilders quarter v1
+- Record: `docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md`
+- Visual Formula gate: run **36546445386**, artifact **11022647974**
+- LookDev recheck: run **36546445341**
+- Art commit: `d84b31811fe044dbc3901f3ecd6edde13a635cc6`
+
+Purpose:
+first production expansion into the reserved west Master Envelope. It demonstrates that Valoria can grow beyond the original kernel as a connected inhabited city while keeping gameplay topology independent. The same block closes the bounded Bastion floating-crown Hero Pass.
+
+Measured expanded production baseline: **567,460 triangles / 644 renderers / 80 materials / 15 lights**. These are scene-complexity measurements, not mobile budgets. Physical-device profiling remains required before any visual-quality reduction.
+
 ## HISTORICAL ASSET RESCUE — reuse before regeneration
 
 - Registry: `pipeline/historical-module-rescue.json`
