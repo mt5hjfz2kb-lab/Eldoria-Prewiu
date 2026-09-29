@@ -14,9 +14,9 @@ namespace Eldoria.Presentation
     {
         ICommandGateway gateway;
         RectTransform safe;
-        Text heading, resources, power, objective, description, message, buildingTitle, buildingBody;
+        Text heading, resources, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
         GameObject buildingPanel;
-        Button buildingAction;
+        Button buildingAction, primaryAction;
         string feedback="";
         float refreshAt;
         float resetQaArmedUntil;
@@ -286,6 +286,7 @@ namespace Eldoria.Presentation
                 marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
             var cp=s.ChapterProgress??new ChapterProgressState();
             objective.text=ObjectiveText(s,cp);
+            ConfigurePrimaryAction(s);
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
             var expedition=SliceRules.Expedition(s.March.Phase=="idle"?s.Available:s.March.Troops,"aldric");
@@ -383,50 +384,146 @@ namespace Eldoria.Presentation
             scaler.matchWidthOrHeight=1f;
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
-            var top=Panel("Top stone",safe,new Color(.055f,.075f,.10f,.82f),78,true);
-            heading=Label("Heading",top,14,new Color(.91f,.78f,.53f),18);
-            resources=Label("Resources",top,11,Color.white,16);
-            power=Label("Power",top,10,new Color(.83f,.77f,.62f),16);
-            objective=Label("Objective",top,10,new Color(.90f,.84f,.73f),18);
-            var bottom=Panel("Decision rail",safe,new Color(.055f,.075f,.10f,.82f),104,false);
-            description=Label("Story and world",bottom,10,new Color(.85f,.88f,.89f),24);
-            var row1=Row("Actions",bottom);
-            var row2=Row("Travel",bottom);
-            var state=gateway.Snapshot();
+
+            // Owner-facing HUD: one compact fantasy frame around the world, not a QA control wall.
+            var top=Panel("Kingdom header",safe,new Color(.035f,.050f,.070f,.90f),104,true);
+            heading=Label("Heading",top,15,new Color(.96f,.82f,.55f),20);
+            resources=Label("Resources",top,11,new Color(.96f,.96f,.92f),16);
+            power=Label("Power",top,10,new Color(.72f,.82f,.90f),16);
+            objective=Label("Objective",top,11,new Color(.98f,.88f,.66f),38);
+
+            var bottom=Panel("Decision rail",safe,new Color(.035f,.050f,.070f,.91f),126,false);
+            description=Label("Story and world",bottom,10,new Color(.91f,.92f,.90f),32);
+            var row1=Row("Primary objective action",bottom);
+            primaryAction=Button(row1,"CONTINUAR",InvokePrimaryObjective);
+            primaryActionText=primaryAction.GetComponentInChildren<Text>();
+
+            var row2=Row("Navigation",bottom);
             if(city)
             {
-                Button(row1,"IR AL MUNDO",()=>SceneManager.LoadScene("Frontier"));
-                if(state.BastionLevel==1)
-                {
-                    if(state.SawmillLevel==0) Button(row1,"ASERRADERO · 80",()=>Send("Build","sawmill"));
-                    else if(state.JourneyComplete) Button(row1,"ASCENDER A BASTIÓN II",()=>Send("AdvanceBastion","bastion"));
-                }
-                else if(state.BarracksLevel==0)
-                    Button(row1,"CUARTEL · "+SliceRules.BarracksWoodCost+" M / "+SliceRules.BarracksStoneCost+" P",
-                        ()=>Send("Build","barracks"));
-                else if((state.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
-                    Button(row1,"RECLUTAR +"+SliceRules.RecruitArchers+" · "+SliceRules.RecruitWoodCost+" M"+
-                        (SliceRules.RecruitStoneCost>0?" / "+SliceRules.RecruitStoneCost+" P":""),
-                        ()=>Send("Recruit","archer:t1"));
-                else
-                    Button(row1,state.MarchConfigured?"REVISAR MARCHA":"PREPARAR MARCHA",OpenMarchPanel);
+                Button(row2,"MUNDO",()=>SceneManager.LoadScene("Frontier"));
+                Button(row2,"−",()=>Zoom(1));
+                Button(row2,"+",()=>Zoom(-1));
+                Button(row2,"CENTRAR",RecenterCamera);
+                if(SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.QaFastId)
+                    Button(row2,"RESET QA",ResetQaFreshSave);
             }
             else
             {
-                Button(row1,"BOSQUE · MADERA",()=>Send("Gather","forest-valoria"));
-                Button(row1,"CANTERA · PIEDRA",()=>Send("Gather","quarry-valoria"));
-                Button(row1,state.BastionLevel>=2?"ENGENDRO · PvE":"AMENAZA · PvE",
-                    ()=>Send("Fight",state.BastionLevel>=2?"engendro-valoria":"corrupt-scout"));
+                Button(row2,"VALORIA",()=>SceneManager.LoadScene("Valoria"));
+                Button(row2,"−",()=>Zoom(1));
+                Button(row2,"+",()=>Zoom(-1));
             }
-            Button(row2,city?"+ CÁMARA":"VOLVER A VALORIA",()=>{
-                if(city) Zoom(-1); else SceneManager.LoadScene("Valoria");
-            });
-            Button(row2,city?"− CÁMARA":"ACERCAR CÁMARA",()=>Zoom(city?1:-1));
-            if(city)Button(row2,"CENTRAR",RecenterCamera);
-            if(city&&SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.QaFastId)
-                Button(row2,"NUEVA PARTIDA QA",ResetQaFreshSave);
-            message=Label("Feedback",bottom,9,new Color(.88f,.72f,.51f),18);
+            message=Label("Feedback",bottom,9,new Color(.91f,.73f,.48f),22);
+            ConfigurePrimaryAction(gateway.Snapshot());
             CreateBuildingPanel(canvasGo.transform);
+        }
+
+        void ConfigurePrimaryAction(PlayerState s)
+        {
+            if(primaryAction==null||primaryActionText==null||s==null)return;
+            primaryAction.interactable=true;
+            if(s.BuildingCompletesUtcTicks>0)
+            {
+                primaryActionText.text="RECONSTRUCCIÓN EN CURSO";
+                primaryAction.interactable=false;
+                return;
+            }
+            if(s.RecruitmentCompletesUtcTicks>0)
+            {
+                primaryActionText.text="ENTRENAMIENTO EN CURSO";
+                primaryAction.interactable=false;
+                return;
+            }
+            if(s.March.Phase!="idle")
+            {
+                primaryActionText.text="MARCHA EN CURSO";
+                primaryAction.interactable=false;
+                return;
+            }
+
+            switch(SliceRules.CurrentObjectiveKey(s))
+            {
+                case "b1.build-sawmill":
+                    primaryActionText.text=city
+                        ?(s.Resources.Wood>=SliceRules.SawmillWoodCost?"RECONSTRUIR ASERRADERO":"BUSCAR MADERA")
+                        :"VOLVER A VALORIA";
+                    break;
+                case "b1.gather-wood":
+                    primaryActionText.text=city?"SALIR AL BOSQUE":"RECOLECTAR MADERA";
+                    break;
+                case "b1.gather-stone":
+                    primaryActionText.text=city?"SALIR A LA CANTERA":"RECOLECTAR PIEDRA";
+                    break;
+                case "b1.clear-route":
+                    primaryActionText.text=city?"IR A LA FRONTERA":"DESPEJAR LA RUTA";
+                    break;
+                case "b1.return":
+                    primaryActionText.text=city?"RUTA ASEGURADA":"REGRESAR A VALORIA";
+                    primaryAction.interactable=!city;
+                    break;
+                case "b1.ascend":
+                    primaryActionText.text=city?"ASCENDER A BASTIÓN II":"REGRESAR A VALORIA";
+                    break;
+                case "b2.build-barracks":
+                    primaryActionText.text=city?"CONSTRUIR CUARTEL":"REGRESAR A VALORIA";
+                    break;
+                case "b2.train-archers":
+                    if(s.Resources.Wood<SliceRules.RecruitWoodCost)
+                        primaryActionText.text=city?"BUSCAR MADERA":"RECOLECTAR MADERA";
+                    else if(s.Resources.Stone<SliceRules.RecruitStoneCost)
+                        primaryActionText.text=city?"BUSCAR PIEDRA":"RECOLECTAR PIEDRA";
+                    else
+                        primaryActionText.text=city?"ENTRENAR ARQUEROS":"REGRESAR A VALORIA";
+                    break;
+                case "b2.prepare-march":
+                case "b2.raise-expedition-power":
+                    primaryActionText.text=city?"PREPARAR MARCHA":"REGRESAR A VALORIA";
+                    break;
+                case "b2.defeat-engendro":
+                    primaryActionText.text=city?"IR CONTRA EL ENGENDRO":"ATACAR AL ENGENDRO";
+                    break;
+                case "b2.complete":
+                    primaryActionText.text=city?"BASTIÓN II ASEGURADO":"REGRESAR A VALORIA";
+                    primaryAction.interactable=!city;
+                    break;
+                default:
+                    primaryActionText.text="CONTINUAR";
+                    break;
+            }
+        }
+
+        void InvokePrimaryObjective()
+        {
+            var s=gateway.Snapshot();
+            string key=SliceRules.CurrentObjectiveKey(s);
+            if(city)
+            {
+                if(key=="b1.build-sawmill")
+                {
+                    if(s.Resources.Wood>=SliceRules.SawmillWoodCost)Send("Build","sawmill");
+                    else SceneManager.LoadScene("Frontier");
+                }
+                else if(key=="b1.ascend")Send("AdvanceBastion","bastion");
+                else if(key=="b2.build-barracks")Send("Build","barracks");
+                else if(key=="b2.train-archers"&&s.Resources.Wood>=SliceRules.RecruitWoodCost&&s.Resources.Stone>=SliceRules.RecruitStoneCost)
+                    Send("Recruit","archer:t1");
+                else if(key=="b2.prepare-march"||key=="b2.raise-expedition-power")OpenMarchPanel();
+                else SceneManager.LoadScene("Frontier");
+                return;
+            }
+
+            if(key=="b1.gather-wood")Send("Gather","forest-valoria");
+            else if(key=="b1.gather-stone")Send("Gather","quarry-valoria");
+            else if(key=="b1.clear-route")Send("Fight","corrupt-scout");
+            else if(key=="b2.train-archers")
+            {
+                if(s.Resources.Wood<SliceRules.RecruitWoodCost)Send("Gather","forest-valoria");
+                else if(s.Resources.Stone<SliceRules.RecruitStoneCost)Send("Gather","quarry-valoria");
+                else SceneManager.LoadScene("Valoria");
+            }
+            else if(key=="b2.defeat-engendro")Send("Fight","engendro-valoria");
+            else SceneManager.LoadScene("Valoria");
         }
         void CreateBuildingPanel(Transform parent)
         {
@@ -509,14 +606,15 @@ namespace Eldoria.Presentation
             var layout=t.GetComponent<HorizontalLayoutGroup>();layout.spacing=7;layout.childForceExpandWidth=true;
             layout.childControlWidth=true;return t;
         }
-        static void Button(Transform parent,string label,Action onClick)
+        static Button Button(Transform parent,string label,Action onClick)
         {
             var go=new GameObject(label,typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             go.transform.SetParent(parent,false);
-            go.GetComponent<Image>().color=new Color(.25f,.22f,.17f,.98f);
-            go.GetComponent<LayoutElement>().minHeight=24;
-            go.GetComponent<Button>().onClick.AddListener(()=>onClick());
-            var text=Label("Text",go.transform,9,new Color(.98f,.86f,.64f),24);
+            go.GetComponent<Image>().color=new Color(.19f,.16f,.12f,.98f);
+            go.GetComponent<LayoutElement>().minHeight=28;
+            var button=go.GetComponent<Button>();
+            button.onClick.AddListener(()=>onClick());
+            var text=Label("Text",go.transform,10,new Color(.98f,.86f,.64f),28);
             text.text=label;text.alignment=TextAnchor.MiddleCenter;
             var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
             rect.offsetMin=rect.offsetMax=Vector2.zero;
