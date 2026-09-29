@@ -3,6 +3,24 @@
 Status: ACTIVE EXECUTION PRIORITY  
 Updated: 2026-09-29
 
+## Current execution status — 2026-09-29
+
+Implemented in Unity:
+- explicit QA_FAST vs WebContract content profiles;
+- authoritative Bastion I–II mission counters/flags;
+- early forest + quarry resource lessons;
+- Bastion-I route-clear requirement;
+- explicit Bastion-II March confirmation with Expedition Power;
+- structured persistent battle report;
+- QA fresh-save reset control;
+- owner-playtest acceptance checklist: `docs/BASTION_I_II_OWNER_PLAYTEST_CHECKLIST.md`.
+
+Still required before owner-playtest GREEN:
+- latest Unity CI on the integrated I–II flow must pass;
+- fresh-save I→II regression must be executed against the integrated build;
+- visual Frontier I–II corridor / Bastion Hero work must finish its current validation;
+- representative physical-mobile performance remains a later readiness gate, not a blocker for the first desktop owner pass.
+
 ## Objective
 
 Produce the first owner-playable Unity build that proves the real Eldoria promise through **Bastion I and II**:
