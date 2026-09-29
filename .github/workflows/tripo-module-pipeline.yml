@@ -389,6 +389,11 @@ jobs:
         if: steps.request.outputs.enabled == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
+            Write-Host "Skipping generic combined visual gate: multipiece mode has its own isolated Unity review."
+            exit 0
+          }
           $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
           $log = "$env:RUNNER_TEMP\Eldoria-TripoGenericModule.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
