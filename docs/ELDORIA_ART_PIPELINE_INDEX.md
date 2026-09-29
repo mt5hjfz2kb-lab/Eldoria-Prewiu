@@ -1,7 +1,7 @@
 # Eldoria — Art Production Pipeline Index
 
 Status: active organizational map.  
-Updated: 2026-09-28.
+Updated: 2026-09-29.
 
 The purpose of this file is to prevent experimental code from being mistaken for the current production route.
 
@@ -50,6 +50,18 @@ Purpose:
 build Valoria bottom-up from functional layers (terrain -> L0 -> circulation -> vertical transition -> L1 -> plots/supports -> buildings -> art) and validate it from the fixed official camera with real gameplay clicks.
 
 This is now the **production-direction reference for city topology**. The six certified Tripo families remain reusable art/reference material; they must not be treated as a required topology graph.
+
+### First production district v1
+- Record: `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md`
+- Visual Formula gate: run **36541695034**, artifact **11021096851**
+- District gate: run **36543056731**, artifact **11021850361**
+- Full Unity slice: run **36541695042**
+- Production Resources: `Unity/Assets/Eldoria/Resources/Valoria/Rescued/`
+
+Purpose:
+the first production-scale proof that certified historical geometry can be rescued into real `VisualWorld` without becoming topology. Dedicated Aserradero/Cuartel remain primary buildings; `ResidentialTerraceRock` and `RockTerrainSeamFiller` are real production visual instances; gameplay/colliders/hotspots remain independent. `TerraceStairRock` is deliberately deferred from this district after a real fit test.
+
+Measured production scene baseline: **460,236 triangles**, with device FPS/memory thresholds still intentionally TBD until representative mobile profiling.
 
 ## HISTORICAL ASSET RESCUE — reuse before regeneration
 
