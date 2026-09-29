@@ -28,6 +28,7 @@ Related source-of-truth documents:
 5. **The city dictates assets.** Certified Tripo families are reusable art inventory, not topology.
 6. **Growth must be physically visible.** Higher progression occupies more plots, restores ruins, increases density and opens additional districts.
 7. **Do not overbuild early Valoria.** Empty, ruined or closed future zones are intentional progression space, not unfinished composition.
+8. **A system does not imply a building.** UI/meta systems such as Códice and Relicario consume no physical plot by default. Reserve a building plot only when the gameplay contract actually requires a world-space structure or a later explicit decision adds one.
 
 ## 2. Durable spatial hierarchy
 
