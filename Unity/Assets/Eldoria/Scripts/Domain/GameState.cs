@@ -24,6 +24,20 @@ namespace Eldoria.Domain
         public int PendingWood;
         public int PendingStone;
     }
+    [Serializable] public sealed class BattleReportState
+    {
+        public string TargetId = "";
+        public string HeroId = "aldric";
+        public int Troops;
+        public int PlayerPower;
+        public int EnemyPower;
+        public bool Won;
+        public int Rounds;
+        public int RemainingHealth;
+        public int RewardWood;
+        public int RewardStone;
+        public string Reason = "";
+    }
     [Serializable] public sealed class PlayerState
     {
         public int SchemaVersion = 1;
@@ -57,6 +71,7 @@ namespace Eldoria.Domain
         public string RecruitmentTaskId = "";
         public int PendingRecruitArchers;
         public string LastBattleReason = "";
+        public BattleReportState LastBattleReport = new BattleReportState();
         public List<string> CompletedCommandIds = new List<string>();
         public List<string> CompletedTaskIds = new List<string>();
     }
