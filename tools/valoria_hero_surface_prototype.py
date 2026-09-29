@@ -89,6 +89,14 @@ def make_pbr_material(name, family, size=1024):
         base = dark + (light - dark) * height[..., None]
         rough = np.full_like(height, 0.97, dtype=np.float32)
         normal_strength = 0.0
+    elif family == "timber":
+        grain = 0.5 + 0.14 * np.sin(u * 55.0 + 0.7 * np.sin(v * 9.0)) + 0.05 * np.cos(v * 17.0)
+        height = np.clip(grain, 0.0, 1.0)
+        dark = np.array([0.20, 0.11, 0.065], dtype=np.float32)
+        light = np.array([0.36, 0.20, 0.105], dtype=np.float32)
+        base = dark + (light - dark) * height[..., None]
+        rough = np.full_like(height, 0.93, dtype=np.float32)
+        normal_strength = 0.0
     else:
         raise RuntimeError("Unknown PBR family: " + family)
 
@@ -126,13 +134,15 @@ def make_pbr_material(name, family, size=1024):
     return material, [base_img.name, rough_img.name, normal_img.name]
 
 
-def classify_mesh(obj, stone, rock, roof=None, profile="hero"):
+def classify_mesh(obj, stone, rock, roof=None, timber=None, profile="hero"):
     mesh = obj.data
     mesh.materials.clear()
     mesh.materials.append(stone)
     mesh.materials.append(rock)
     if roof is not None:
         mesh.materials.append(roof)
+    if timber is not None:
+        mesh.materials.append(timber)
 
     zs = [v.co.z for v in mesh.vertices]
     zmin, zmax = min(zs), max(zs)
@@ -141,6 +151,10 @@ def classify_mesh(obj, stone, rock, roof=None, profile="hero"):
     stone_faces = 0
     rock_faces = 0
     roof_faces = 0
+    timber_faces = 0
+    residential_small_face_cutoff = None
+    if profile == "residential" and len(mesh.polygons) > 0:
+        residential_small_face_cutoff = float(np.percentile([p.area for p in mesh.polygons], 42.0))
     for poly in mesh.polygons:
         n = poly.normal.normalized()
         axis = max(abs(n.x), abs(n.y), abs(n.z))
@@ -160,6 +174,23 @@ def classify_mesh(obj, stone, rock, roof=None, profile="hero"):
             roof_faces += 1
             continue
 
+        # A restrained Timber family is assigned only to smaller, vertical, planar
+        # residential faces. This favors beams/frames/details while leaving large
+        # wall planes as Stone. Material assignment only; geometry stays untouched.
+        is_timber = (
+            profile == "residential"
+            and timber is not None
+            and residential_small_face_cutoff is not None
+            and z01 >= 0.28
+            and abs(n.z) <= 0.22
+            and max(abs(n.x), abs(n.y)) >= 0.93
+            and poly.area <= residential_small_face_cutoff
+        )
+        if is_timber:
+            poly.material_index = 3
+            timber_faces += 1
+            continue
+
         # Diagnostic semantic split only. Architecture tends to be planar and/or
         # occupy the upper built mass; irregular lower geometry is treated as rock.
         architecture = axis >= 0.93 or (z01 >= 0.42 and axis >= 0.84)
@@ -169,7 +200,7 @@ def classify_mesh(obj, stone, rock, roof=None, profile="hero"):
         else:
             rock_faces += 1
 
-    return stone_faces, rock_faces, roof_faces
+    return stone_faces, rock_faces, roof_faces, timber_faces
 
 
 def main():
@@ -181,12 +212,16 @@ def main():
     rock, rock_textures = make_pbr_material("Eldoria Rock · Hero Prototype", "rock")
     roof = None
     roof_textures = []
+    timber = None
+    timber_textures = []
     if a.profile == "residential":
         roof, roof_textures = make_pbr_material("Eldoria Roof · Residential Surface v1", "roof")
+        timber, timber_textures = make_pbr_material("Eldoria Timber · Residential Surface v1", "timber")
 
     total_stone = 0
     total_rock = 0
     total_roof = 0
+    total_timber = 0
     triangles = 0
     vertices = 0
     mesh_count = 0
@@ -199,10 +234,11 @@ def main():
         vertices += len(obj.data.vertices)
         triangles += sum(len(p.vertices) - 2 for p in obj.data.polygons)
         uv_all = uv_all and len(obj.data.uv_layers) > 0
-        s, r, rf = classify_mesh(obj, stone, rock, roof, a.profile)
+        s, r, rf, tf = classify_mesh(obj, stone, rock, roof, timber, a.profile)
         total_stone += s
         total_rock += r
         total_roof += rf
+        total_timber += tf
 
     if mesh_count == 0:
         raise RuntimeError("No mesh objects imported")
@@ -212,6 +248,8 @@ def main():
         raise RuntimeError("Surface prototype did not produce both Stone and Rock regions")
     if a.profile == "residential" and total_roof == 0:
         raise RuntimeError("Residential Surface v1 did not produce a Roof region")
+    if a.profile == "residential" and total_timber == 0:
+        raise RuntimeError("Residential Surface v1 did not produce a Timber region")
 
     Path(a.output).parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.export_scene.gltf(
@@ -254,11 +292,20 @@ def main():
                 "texture_size": 1024,
                 "metallic": 0.0,
             }
-        ] if roof is not None else []),
+        ] if roof is not None else []) + ([
+            {
+                "name": timber.name,
+                "role": "Eldoria Timber",
+                "textures": timber_textures,
+                "texture_size": 1024,
+                "metallic": 0.0,
+            }
+        ] if timber is not None else []),
         "face_classification": {
             "stone_faces": total_stone,
             "rock_faces": total_rock,
             "roof_faces": total_roof,
+            "timber_faces": total_timber,
         },
         "scope_limit": "visual surface/identity diagnostic only; does not repair or certify traversal/interface geometry",
     }
