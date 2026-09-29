@@ -39,6 +39,7 @@ namespace Eldoria.Presentation
                 var tree=ValoriaKit.BenchmarkPieceModulated(name+" · pine "+(i+1),prefab,p,
                     radius*(.34f+t.z*.10f),radius*(1.05f+t.z*.34f),Quaternion.Euler(0,t.w,0),PineTint*(.92f+(i%3)*.035f));
                 StripColliders(tree);
+                if(tree!=null)tree.transform.SetParent(root.transform,true);
             }
 
             var shrubs=new[]{
@@ -53,6 +54,7 @@ namespace Eldoria.Presentation
                     art!=null?art.SlavicBush:null,p,radius*.32f,radius*.23f,
                     Quaternion.Euler(0,37f+i*61f,0),BushTint*(.94f+(i%2)*.05f));
                 StripColliders(bush);
+                if(bush!=null)bush.transform.SetParent(root.transform,true);
             }
 
             for(int i=0;i<3;i++)
@@ -63,16 +65,19 @@ namespace Eldoria.Presentation
                     art!=null?art.SlavicMoss:null,p,radius*.42f,radius*.075f,
                     Quaternion.Euler(0,i*74f,0),MossTint);
                 StripColliders(moss);
+                if(moss!=null)moss.transform.SetParent(root.transform,true);
             }
 
             var log=ValoriaKit.BenchmarkPiece(name+" · harvest timber",art!=null?art.Firewood:null,
                 center+new Vector3(radius*.55f,.08f,-radius*.08f),radius*.48f,radius*.26f,Quaternion.Euler(0,-24f,0));
             StripColliders(log);
+            if(log!=null)log.transform.SetParent(root.transform,true);
 
             var rock=ValoriaKit.BenchmarkPieceModulated(name+" · buried rock",art!=null?art.SlavicFlatRock:null,
                 center+new Vector3(-radius*.62f,.01f,-radius*.50f),radius*.40f,radius*.16f,
                 Quaternion.Euler(0,21f,0),RockTint);
             StripColliders(rock);
+            if(rock!=null)rock.transform.SetParent(root.transform,true);
             return root;
         }
 
@@ -91,6 +96,7 @@ namespace Eldoria.Presentation
                     world,span*.22f,span*(.64f+(i%3)*.09f),
                     root.transform.rotation*Quaternion.Euler(0,i*49f,0),PineTint);
                 StripColliders(tree);
+                if(tree!=null)tree.transform.SetParent(root.transform,true);
             }
             return root;
         }
