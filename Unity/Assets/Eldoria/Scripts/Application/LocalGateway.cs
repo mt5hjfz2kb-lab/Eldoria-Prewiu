@@ -87,7 +87,8 @@ namespace Eldoria.Application
                     {
                         if (state.BastionLevel < 2 || state.BarracksLevel < 1) return Fail("Refuerza primero el Cuartel");
                         if (state.EngendroDefeated) return Fail("El Engendro ya ha sido derrotado");
-                        if (state.Available.Total < 48) return Fail("Necesitas 48 arqueros: recluta refuerzos");
+                        if (state.Available.Total < SliceContentProfiles.QaFast.EngendroRequiredArchers)
+                            return Fail("Necesitas " + SliceContentProfiles.QaFast.EngendroRequiredArchers + " arqueros: recluta refuerzos");
                     }
                     else return Fail("Amenaza desconocida");
                     if (!CanDepart()) return Fail("Marcha no disponible");
