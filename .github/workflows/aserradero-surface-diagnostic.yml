@@ -6,7 +6,6 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/aserradero-surface-diagnostic.yml'
-      - 'tools/tripo_module_blender.py'
       - 'Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb'
 
 permissions:
@@ -17,7 +16,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  source-preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      heavy_required: ${{ steps.impact.outputs.heavy_required }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Decide whether heavy diagnostic is required
+        id: impact
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          before="${{ github.event.before }}"
+          files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
+          heavy=false
+          while IFS= read -r file; do
+            case "$file" in
+              Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb) heavy=true; break ;;
+            esac
+          done <<< "$files"
+          echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
+
   surface-diagnostic:
+    needs: source-preflight
+    if: vars.UNITY_RUNNER_READY == 'true' && needs.source-preflight.outputs.heavy_required == 'true'
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 15
