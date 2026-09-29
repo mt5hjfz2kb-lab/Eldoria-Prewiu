@@ -153,7 +153,7 @@ namespace Eldoria.Presentation
             // They already preserve glTF metallic-roughness, normal, AO and emission semantics;
             // rebuilding them as URP/Lit would discard valid maps/channels.
             if(shaderName.StartsWith("Universal Render Pipeline/")||
-               shaderName.StartsWith("Shader Graphs/glTF-")||
+               shaderName.StartsWith("Shader Graphs/")||
                shaderName.StartsWith("glTF/"))
                 return source;
             if(AdaptedMaterials.TryGetValue(source,out var adapted)&&adapted!=null)return adapted;

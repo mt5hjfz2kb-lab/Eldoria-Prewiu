@@ -23,7 +23,8 @@ namespace Eldoria.Presentation
             Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
             // Replace the primitive foliage read with two mapped, authored tree variants.
             Suppress("Frontier · forest pine", "Frontier · tall evergreen", "Frontier · ridge pine",
-                "Frontier · undergrowth", "Frontier · forest moss");
+                "Frontier · undergrowth", "Frontier · forest moss", "Frontier · west ridge", "Frontier · east ridge",
+                "Frontier · north cliff", "Frontier · south terrain transition");
             var clusters = new[] {
                 new Vector3(-7,0,1.5f), new Vector3(-13,0,7),
                 new Vector3(13,0,2), new Vector3(-10,0,-9), new Vector3(1,0,13)
@@ -288,22 +289,23 @@ namespace Eldoria.Presentation
                     if(adapted.TryGetValue(key,out var cached)&&cached!=null){mats[i]=cached;continue;}
                     var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria adapted · "+resource+" "+i};
                     Texture texture=null,normal=null;
-                    if(foliage)
+                    if(source!=null&&source.HasProperty("_Albedo"))
                     {
-                        string family=leaves?"Leaf01":"Trunk01";
-                        texture=Resources.Load<Texture2D>("WorldInventory/"+family+"_ALB");
-                        normal=Resources.Load<Texture2D>("WorldInventory/"+family+"_NRM");
-                        m.SetColor("_BaseColor",(leaves?new Color(.30f,.43f,.23f):new Color(.39f,.30f,.20f)).linear);
-                    }
-                    else if(resource.StartsWith("Rock")||resource=="Mountain01")
-                    {
-                        texture=Resources.Load<Texture2D>("WorldInventory/Rock01_ALB");
-                        normal=Resources.Load<Texture2D>("WorldInventory/Rock01_NRM");m.SetColor("_BaseColor",tint.linear);
+                        // Holotna RGB images are channel masks, not ordinary albedo maps.
+                        // Keep their certified URP graph and recolor its palette inputs.
+                        Object.Destroy(m);m=new Material(source){name="Eldoria adapted · "+resource+" "+i};
+                        Color primary=foliage?(leaves?new Color(.19f,.29f,.13f):new Color(.24f,.17f,.10f)):tint;
+                        if(m.HasProperty("_Color"))m.SetColor("_Color",primary.linear);
+                        if(m.HasProperty("_Primary_Color"))m.SetColor("_Primary_Color",primary.linear);
+                        if(m.HasProperty("_Secondary_Color"))m.SetColor("_Secondary_Color",(foliage?new Color(.24f,.20f,.12f):tint*.72f).linear);
+                        if(m.HasProperty("_Tertiary_Color"))m.SetColor("_Tertiary_Color",(tint*.48f).linear);
+                        adapted[key]=m;mats[i]=m;continue;
                     }
                     else
                     {
                         foreach(string property in new[]{"_BaseMap","_MainTex","_Albedo"})
                             if(source!=null&&source.HasProperty(property)&&source.GetTexture(property)!=null){texture=source.GetTexture(property);break;}
+                        if(texture!=null&&texture.name.ToLowerInvariant().Contains("white"))texture=null;
                         if(texture!=null)m.SetColor("_BaseColor",tint.linear);
                         else m=ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3,3));
                     }
@@ -351,7 +353,8 @@ namespace Eldoria.Presentation
         static void Suppress(params string[] prefixes)
         {
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-            foreach(var prefix in prefixes)if(r.gameObject.name.StartsWith(prefix))r.enabled=false;
+            foreach(var prefix in prefixes)
+            for(var t=r.transform;t!=null;t=t.parent)if(t.name.StartsWith(prefix)){r.enabled=false;break;}
         }
         static void Finish()
         {
