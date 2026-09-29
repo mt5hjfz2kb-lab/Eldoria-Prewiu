@@ -113,10 +113,10 @@ function localizePage(){
 
 /* ---------- meaningful economic choices ---------- */
 const choices={
- 4:{title:['PRIORIDAD DE RECONSTRUCCIÓN','REBUILDING PRIORITY'],copy:['Valoria ya sostiene varios frentes. Decide qué recibe primero los recursos recuperados.','Valoria now sustains several fronts. Decide where recovered resources go first.'],options:[
-  {id:'works',icon:'🏗️',name:['Obras del reino','Kingdom works'],copy:['+320 madera · +220 piedra','+320 wood · +220 stone'],grant:{wood:320,stone:220}},
-  {id:'supply',icon:'🌾',name:['Reservas y abastecimiento','Stores and supplies'],copy:['+220 madera · +320 comida','+220 wood · +320 food'],grant:{wood:220,food:320}},
-  {id:'army',icon:'🏹',name:['Preparación militar','Military readiness'],copy:['+160 piedra · +160 comida · +120 Poder','+160 stone · +160 food · +120 Power'],grant:{stone:160,food:160,power:120}}
+ 4:{title:['PRIORIDAD DE VALORIA','VALORIA PRIORITY'],copy:['Aldric deja de marcar una única ruta: Valoria no puede reconstruirlo todo a la vez. Decide qué necesidad recibe atención primero.','Aldric stops prescribing a single route: Valoria cannot rebuild everything at once. Decide which need receives attention first.'],options:[
+  {id:'production',icon:'🏗️',name:['Producción y obras','Production and works'],copy:['Talleres, carros y reservas · +260 madera · +180 piedra','Workshops, carts and stores · +260 wood · +180 stone'],grant:{wood:260,stone:180}},
+  {id:'defense',icon:'🛡️',name:['Defensa de Valoria','Valoria defense'],copy:['Guardia, barricadas y entrada · +220 piedra · +100 Poder','Guards, barricades and gate · +220 stone · +100 Power'],grant:{stone:220,power:100}},
+  {id:'civil',icon:'🔥',name:['Refugio y población','Shelter and people'],copy:['Hogares, fuegos y vida · +180 madera · +280 comida','Homes, fires and life · +180 wood · +280 food'],grant:{wood:180,food:280}}
  ]},
  6:{title:['RUTA DE INVERSIÓN','INVESTMENT PATH'],copy:['La Forja abre nuevas demandas. No puedes priorizarlo todo a la vez.','The Forge creates new demands. You cannot prioritize everything at once.'],options:[
   {id:'industry',icon:'⚒️',name:['Industria','Industry'],copy:['+420 madera · +360 piedra','+420 wood · +360 stone'],grant:{wood:420,stone:360}},
@@ -167,6 +167,22 @@ function maybeChoice(){
    update(patch);return;
  }
  openChoice(eligible[0]);
+}
+
+/* ---------- Bastion IV visible priority consequence ---------- */
+function renderBastion4PriorityCue(){
+ const root=ROOT(),scene=root?.querySelector('.scene.kingdom');if(!scene)return;
+ scene.querySelector('[data-testid="bastion4-priority-visual"]')?.remove();
+ const s=state(),raw=s.developmentChoices?.[4]?.id;if(!raw||Number(s.bastionLevel||0)<4)return;
+ const alias={works:'production',supply:'civil',army:'defense',balanced:'civil'},id=alias[raw]||raw;
+ const defs={
+  production:{label:tr('OBRAS ACTIVAS','ACTIVE WORKS'),props:['🛒','🪵','⚒️']},
+  defense:{label:tr('ENTRADA REFORZADA','FORTIFIED ENTRY'),props:['🛡️','⚑','🧱']},
+  civil:{label:tr('BARRIO HABITADO','INHABITED QUARTER'),props:['🔥','⌂','👥']}
+ },d=defs[id];if(!d)return;
+ const el=document.createElement('div');el.className='priorityWorld030 priority-'+id;el.dataset.testid='bastion4-priority-visual';
+ el.innerHTML='<small>'+d.label+'</small><div>'+d.props.map(x=>'<span>'+x+'</span>').join('')+'</div>';
+ scene.appendChild(el);
 }
 
 /* ---------- progressive autonomy in chapter UI ---------- */
@@ -266,6 +282,7 @@ function style(){
 #eldoria-core-loop .settings030{min-width:44px}.v030Overlay{z-index:3200!important;pointer-events:auto!important}.v030Overlay .e22-dialog,.v030Overlay button,.v030Overlay input{pointer-events:auto!important}.settingsCard030,.choice030,.ranking030,.powerIntro030{max-width:560px!important}
 .settingRow030{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #ffffff14}.settingRow030 b,.settingRow030 small{display:block}.settingRow030 small{margin-top:3px;color:#9ca7aa;font:9px Arial}.settingRow030 input{width:22px;height:22px}.seg030{display:flex}.seg030 button{min-width:46px;padding:8px;border:1px solid #ffffff22;background:#10161b;color:#aaa}.seg030 button.active{border-color:#d5b869;background:#332815;color:#f4d98c}
 .choiceGrid030{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.choiceGrid030 button{min-height:150px;padding:14px 9px;border:1px solid #ffffff22;border-radius:9px;background:#10171c;color:#e9e4d9;text-align:center}.choiceGrid030 button:hover,.choiceGrid030 button:focus{border-color:#d5b869;background:#201b10}.choiceGrid030 span,.choiceGrid030 b,.choiceGrid030 small{display:block}.choiceGrid030 span{font-size:30px}.choiceGrid030 b{margin:8px 0;color:#f0d58c}.choiceGrid030 small{font:9px/1.4 Arial;color:#afb8bb}.choiceFoot030{font-size:10px!important;color:#9ea7aa!important}
+.priorityWorld030{position:absolute;z-index:5;left:7%;bottom:19%;pointer-events:none;display:grid;gap:3px;filter:drop-shadow(0 5px 4px #000b)}.priorityWorld030 small{padding:3px 6px;border:1px solid #d5b86955;border-radius:7px;background:#0b1115d9;color:#e6d397;font:700 6px Arial;letter-spacing:.06em}.priorityWorld030 div{display:flex;gap:7px;align-items:end}.priorityWorld030 span{font-size:20px}.priorityWorld030.priority-defense{left:auto;right:8%;bottom:23%}.priorityWorld030.priority-civil{left:10%;bottom:28%}
 .rankingTabs030{display:flex;gap:5px;overflow-x:auto;margin:12px 0}.rankingTabs030 button{flex:0 0 auto;padding:8px;border:1px solid #ffffff22;background:#10161a;color:#aeb5b6;font:8px Arial}.rankingTabs030 button.active{border-color:#d5b869;background:#2c2313;color:#f4d98b}.rivalStrip030{padding:9px;border-left:3px solid #b67bd6;background:#15111a}.rivalStrip030 small,.rivalStrip030 b{display:block}.rivalStrip030 small{font:6px Arial;color:#bda2cb}.rivalStrip030 b{margin-top:3px;font:10px Arial}.ranking030 [data-immediate-rival]{outline:1px dashed #b67bd677}.simNote030{font-size:9px!important;color:#8f999d!important}
 .powerIntro030{margin:10px 0;padding:10px;border:1px solid #d5b86955;background:#15130d;text-align:left}.powerIntro030 small,.powerIntro030 b,.powerIntro030 span{display:block}.powerIntro030 small{font:7px Arial;color:#d5b869}.powerIntro030 b{margin:4px 0;font:12px Arial;color:#f0dc9e}.powerIntro030 span{font:9px/1.45 Arial;color:#c2c9c8}
 .battleSummary030{margin:12px 0;padding:12px;border:1px solid #d5b86955;background:#15130d}.battleSummary030 small,.battleSummary030 b,.battleSummary030 span{display:block}.battleSummary030 small{font:7px Arial;color:#d5b869}.battleSummary030 b{margin:4px 0;font:15px Georgia}.battleSummary030 span{font:9px/1.45 Arial;color:#c5cbca}.battleDetails030{margin:10px 0;border:1px solid #ffffff19;background:#0c1115}.battleDetails030>summary{padding:11px;color:#e7cb87;font:800 8px Arial;cursor:pointer}.battleDetails030>div{padding:0 10px 10px}
@@ -288,7 +305,7 @@ window.ELDORIA_V030={
 };
 
 function cycle(){
- ensureHudTools();tuneGuidance();enhancePowerCard();enhanceBattleReport();monitorPower();localizePage();maybeChoice()
+ ensureHudTools();tuneGuidance();enhancePowerCard();enhanceBattleReport();monitorPower();localizePage();maybeChoice();renderBastion4PriorityCue()
 }
 style();bindSfx();document.documentElement.lang=cfg.locale;
 document.addEventListener('pointerdown',()=>{if(cfg.audio.music)startAmbient()},{once:true});
