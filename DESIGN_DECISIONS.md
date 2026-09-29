@@ -59,6 +59,7 @@ A Bastion level should not read as merely “two more menus unlocked”. From VI
 - **Salón de Héroes = hero/equipment management.**
 - **Hospital = wounded-troop recovery; it never restores permanent casualties.**
 - Routine building interaction remains object-local where practical: tap object → requirement/cost + action → timer/feedback.
+- **Construction queue:** for the current vertical slice, Valoria permits **one active construction/building upgrade at a time**. Gathering, troop training and medical treatment are separate task families and do not consume this construction slot. This is a deliberate current rule, not a permanent monetization/queue commitment.
 
 ## Códice, Relicario, Arcón
 These responsibilities are permanent unless explicitly redesigned:
