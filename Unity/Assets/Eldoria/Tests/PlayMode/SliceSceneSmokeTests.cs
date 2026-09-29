@@ -412,13 +412,34 @@ namespace Eldoria.Tests
             Assert.That(trailRoot,Is.Not.Null);
             var trail=trailRoot.GetComponentInChildren<Renderer>();
             Assert.That(trail,Is.Not.Null);
-            Assert.That(trail.sharedMaterial.name,Does.Contain("surface earth"));
+            Assert.That(trail.sharedMaterial.name,Does.Contain("surface trail"));
             Assert.That(valley.sharedMaterial.name,Does.Contain("surface earth"));
-            // Route and valley intentionally share earth semantics, while the route is authored as
-            // the darker/worn variant rather than a bright painted strip.
-            var trailColor=trail.sharedMaterial.HasProperty("_BaseColor")
-                ?trail.sharedMaterial.GetColor("_BaseColor"):Color.white;
-            Assert.That(trailColor.a,Is.GreaterThan(.9f));
+
+            // The route is a dedicated worn-earth variant, not a painted strip. Its generated
+            // texture must remain darker on average than the surrounding valley soil.
+            Texture2D TextureOf(Material material)
+            {
+                var texture=material.HasProperty("_BaseMap")?material.GetTexture("_BaseMap"):
+                    material.HasProperty("_MainTex")?material.GetTexture("_MainTex"):null;
+                return texture as Texture2D;
+            }
+            float MeanLuma(Texture2D texture)
+            {
+                Assert.That(texture,Is.Not.Null);
+                float sum=0f;int count=0;
+                for(int y=4;y<texture.height;y+=8)
+                for(int x=4;x<texture.width;x+=8)
+                {
+                    var c=texture.GetPixel(x,y);
+                    sum+=.2126f*c.r+.7152f*c.g+.0722f*c.b;
+                    count++;
+                }
+                return sum/Mathf.Max(1,count);
+            }
+            var trailTexture=TextureOf(trail.sharedMaterial);
+            var valleyTexture=TextureOf(valley.sharedMaterial);
+            Assert.That(trailTexture,Is.Not.SameAs(valleyTexture));
+            Assert.That(MeanLuma(trailTexture),Is.LessThan(MeanLuma(valleyTexture)-.025f));
         }
 
 
