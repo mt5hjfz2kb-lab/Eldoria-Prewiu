@@ -67,26 +67,14 @@ namespace Eldoria.EditorTools
             };
             VisualWorld.Create(true, state);
             HideVisualFamilyForDistrictEvidence("Bastion");
-            HideVisualFamilyForDistrictEvidence("VPD · upper civil house");
 
-            var residential = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
-                "Production rescue · ResidentialTerraceRock",
-                new Vector3(-6.05f, 2.89f, 7.15f), -12f, 4.20f);
-            var seamWest = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
-                "Production rescue · Seam west",
-                new Vector3(-6.15f, .20f, -2.55f), 28f, 3.10f);
-            var seamResidential = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
-                "Production rescue · Seam residential",
-                new Vector3(-6.05f, 2.70f, 7.15f), 102f, 3.55f);
-            var seamEast = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
-                "Production rescue · Seam east",
-                new Vector3(5.85f, .20f, -3.75f), 205f, 2.95f);
-            if (residential == null || seamWest == null || seamResidential == null || seamEast == null)
-                throw new System.Exception("Valoria rescue district did not stage all required composed modules.");
+            // Rescued district assets are now production Resources instantiated by VisualWorld.
+            // Require those real instances instead of staging duplicate review copies.
+            if (GameObject.Find("VPD · rescued upper civil residence") == null ||
+                GameObject.Find("VPD · rescued seam west") == null ||
+                GameObject.Find("VPD · rescued seam residential") == null ||
+                GameObject.Find("VPD · rescued seam east") == null)
+                throw new System.Exception("Production VisualWorld is missing one or more promoted rescue assets.");
 
             var camera = Camera.main;
             if (camera == null) throw new System.Exception("Valoria camera was not created");
@@ -104,7 +92,7 @@ namespace Eldoria.EditorTools
             File.WriteAllText(folder + "/production-district-evidence.json",
                 "{\n" +
                 "  \"schema_version\": 1,\n" +
-                "  \"topology\": \"REAL_VISUALWORLD_ISOLATED_EDITOR_SCENE\",\n" +
+                "  \"topology\": \"REAL_VISUALWORLD_PRODUCTION_DISTRICT\",\n" +
                 "  \"gameplay_mesh_dependency\": false,\n" +
                 "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
                 "  \"composed_assets\": [\"ResidentialTerraceRock on certified upper civil plot\",\"RockTerrainSeamFiller x3\"],\n" +
@@ -112,8 +100,8 @@ namespace Eldoria.EditorTools
                 "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
                 "  \"official_zooms\": [19,12,9],\n" +
                 "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
-                "  \"district_focus_visual_suppression\": \"Bastion renderers/lights hidden for district focus; the placeholder upper civil house renderer is hidden and replaced visually by rescued ResidentialTerraceRock on the same certified plot. Canonical VisualWorld/runtime is unchanged\",\n" +
-                "  \"promotion\": \"EVIDENCE_ONLY_DO_NOT_MUTATE_VISUALWORLD\"\n" +
+                "  \"district_focus_visual_suppression\": \"Only Bastion renderers/lights are hidden for district-focused evidence; all rescued assets are the real production instances created by VisualWorld\",\n" +
+                "  \"promotion\": \"PRODUCTION_RESOURCES_ACTIVE_IN_VISUALWORLD\"\n" +
                 "}\n");
             Debug.Log("Valoria production rescue district evidence saved to " + Path.GetFullPath(folder));
             UnityEditor.EditorApplication.Exit(0);

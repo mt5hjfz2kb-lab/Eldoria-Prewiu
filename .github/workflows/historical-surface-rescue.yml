@@ -173,9 +173,13 @@ jobs:
           foreach($name in @('ResidentialTerraceRock','RockTerrainSeamFiller')){
             $glb=Join-Path $source "$name.glb"
             if(-not(Test-Path $glb)){throw "Validated rescue source missing: $glb"}
-            Copy-Item $glb (Join-Path $dest "$name.glb") -Force
+            $destGlb=Join-Path $dest "$name.glb"
+            $destMeta=Join-Path $dest "$name.glb.meta"
+            Copy-Item $glb $destGlb -Force
             $meta="$glb.meta"
-            if(Test-Path $meta){Copy-Item $meta (Join-Path $dest "$name.glb.meta") -Force}
+            if((-not (Test-Path $destMeta)) -and (Test-Path $meta)){
+              Copy-Item $meta $destMeta -Force
+            }
           }
 
           git config user.name "eldoria-art-runner"

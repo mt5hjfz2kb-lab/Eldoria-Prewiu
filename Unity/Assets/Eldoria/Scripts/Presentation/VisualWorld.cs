@@ -252,7 +252,11 @@ namespace Eldoria.Presentation
                 new Color(.18f,.19f,.18f,1f));
             var rescuedCivil=ValoriaKit.BenchmarkPiece("VPD · rescued upper civil residence",rescuedResidential,
                 new Vector3(-6.05f,l1+.34f,7.15f),4.20f,4.45f,Quaternion.Euler(0,-12f,0));
-            if(rescuedCivil!=null)StyleRescuedResidential(rescuedCivil);
+            if(rescuedCivil!=null)
+            {
+                StyleRescuedResidential(rescuedCivil);
+                Glow("VPD · rescued residence hearth",new Vector3(-6.15f,l1+1.55f,6.15f),Amber,.78f,2.6f);
+            }
             else ValoriaKit.House("VPD · upper civil house fallback",new Vector3(-5.15f,l1+.34f,7.15f),
                 new Vector3(2.7f,1.35f,2.4f),true,Glow);
             ValoriaKit.House("VPD · upper dwelling",new Vector3(5.15f,l1+.34f,7.15f),
