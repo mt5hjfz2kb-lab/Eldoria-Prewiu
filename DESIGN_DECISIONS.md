@@ -68,6 +68,7 @@ These responsibilities are permanent unless explicitly redesigned:
 - **Relicario = Reliquia/card system:** collection, reveal ceremony, rarity, use/conserve, N/S/E/O, Practice and future Duel behavior.
 - **Arcón = objects/materials/equipment.** No Reliquias/cards live there.
 - Códice and Relicario are independent first-level peer destinations; neither is parent/child of the other.
+- **Códice and Relicario do not require dedicated physical buildings in Valoria.** They are first-class interface/systems destinations. Bastion VII may add environmental/civic/mystic dressing that signals cultural recovery, but no plot or production building is reserved for either system unless a later explicit design decision changes this.
 - Bastion VII introduces both, but **Relicario teaching is deliberately staged**: first card/reveal and basic use/conserve first; rarity/Indestructible/N-S-E-O/Practice deepen progressively through VII–IX and can continue after X. Do not overwhelm the player with the entire card ruleset at first contact.
 - Indestructible is a property/quality, never a rarity.
 - Ordinary eligible world-enemy victories may roll Common/Rare cards at very low rates; hunting grants none; Epic/Legendary acquisition stays special rather than ordinary-drop progression.
