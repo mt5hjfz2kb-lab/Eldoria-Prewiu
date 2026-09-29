@@ -5,6 +5,8 @@
 
 - **Blender post-Tripo refine proof (2026-09-28):** zero-credit Aserradero experiment completed on run **36483088548**, artifact **10997686762**. Existing canonical Blender pipeline now supports safe repository GLB staging plus optional refinement diagnostics/material cleanup. Aserradero stayed at **49,800 tris**; conservative cleanup reduced vertices **55,752 -> 50,447** and connected components **5,100 -> 2,636**, while UV/normals/3 textures remained present. Isolated Unity review PASS. This proves Blender can add useful cleanup/material control after Tripo, but does **not** yet prove autonomous high-quality sculpt/model redesign. Production Aserradero was not replaced. Use this stage selectively on future hero assets after Tripo.
 
+- **BASTION IV + construction queue CLOSED (2026-09-29):** web vertical slice now makes Bastion IV the first explicit governance choice: Production/Works vs Defense vs Shelter/Population, with a visible Valoria consequence and no permanent content lock. Canonical mission copy/target is updated and the decision is required before Bastion V. Current construction rule is also locked to **one simultaneous building construction/upgrade**; gathering, troop training and Hospital treatment remain separate task families. Preserve both decisions when the corresponding flow migrates to Unity.
+
 Updated: 2026-09-29
 
 This file is intentionally **operational and short**. Historical execution detail belongs in git history, specialist docs and `CHANGELOG.md`. Permanent working rules live in `AGENTS.md`; current functional product state lives in `PROJECT_STATE.md`; durable design decisions live in `DESIGN_DECISIONS.md`.
