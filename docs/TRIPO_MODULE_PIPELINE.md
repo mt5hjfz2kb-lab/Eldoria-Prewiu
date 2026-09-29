@@ -33,12 +33,29 @@ Contract:
 - The chat-side agent must verify the attachment's real format, dimensions, byte count and SHA-256 before publication. Do not re-export, recompress, redraw or transcode it.
 - Serialize the unchanged bytes to base64. Store one or more lexically ordered parts under `pipeline/exact-inputs/<asset_name>/part_###.b64`.
 - `pipeline/tripo-studio-request.json` points to those parts with `upload_base64_glob`, plus the approved `upload_sha256`, `upload_size_bytes`, `upload_file_name` and `asset_name`.
-- The bridge reconstructs repository exact-input parts before considering Downloads/Desktop fallback. It fails before Tripo if base64 decode, SHA-256 or byte size differs.
-- `stage_upload` is a zero-spend boundary: `allow_credit_spend=false`, `authorized_credit_cost=0`, no Generate click. The artifact must retain `tripo-studio-after-upload.png`, `tripo-studio-probe.json` and `tripo-exact-input-identity.txt`.
+- For chat-approved bytes, set `input_transport: "repo_exact_input"`. This is fail-fast: missing/invalid repository parts stop before Tripo and **must not** silently search Downloads, visual-match candidates or another upload path.
+- The bridge reconstructs repository exact-input parts before considering any manual fallback. It fails before Tripo if base64 decode, SHA-256 or byte size differs.
+- `stage_upload` is a zero-spend boundary: `allow_credit_spend=false`, `authorized_credit_cost=0`, no Generate click.
+- Staging is only accepted after the UI reaches a stable state: upload reflected in Tripo, expected image dimensions observed, Generate cost visible, no upload/generation in progress. When the staged preview exposes local blob/data bytes, their SHA/size are compared with the source as additional evidence.
+- The artifact must retain `tripo-studio-before-upload.png`, `tripo-studio-after-upload.png`, `tripo-studio-probe.json`, `tripo-upload-verification.json`, `tripo-flow-state.json` and `tripo-exact-input-identity.txt` when available.
 - Generation is a separate explicitly authorized step tied to the exact staged source SHA and the exact visible credit cost.
 - Runner Downloads remains a compatible manual/fallback source route. It is not required when a valid repository exact-input exists.
 
 This route reuses the existing Tripo Studio bridge and `upload_base64_glob`; it is not a parallel pipeline.
+
+
+### Upload/reception hardening rule
+
+The bridge now treats **file transport** and **Tripo receipt** as separate gates:
+
+1. exact bytes verified on the runner;
+2. file input set with bounded retries;
+3. Tripo UI must reflect the expected image and settle;
+4. visible Generate cost must be readable;
+5. `stage_upload` must still report zero spend / no Generate;
+6. a resumable `tripo-flow-state.json` records the verified boundary.
+
+A successful `setInputFiles` call alone is **not** a staging PASS.
 
 ## Source of truth
 
