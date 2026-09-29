@@ -57,7 +57,7 @@ namespace Eldoria.EditorTools
             var camera=Camera.main;
             if(camera==null)throw new Exception("Frontier camera missing.");
             CaptureZoomLadder(camera,"current-frontier");
-            WriteMetrics("current-frontier",GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None));
+            WriteMetrics("current-frontier",UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None));
         }
 
         static void CaptureNatureStarter()
@@ -90,7 +90,7 @@ namespace Eldoria.EditorTools
             }
             AddNeutralGeography();
             CaptureZoomLadder(camera,"naturestarter");
-            WriteMetrics("naturestarter",GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
+            WriteMetrics("naturestarter",UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
         }
 
         static void CaptureJermesa()
@@ -115,7 +115,7 @@ namespace Eldoria.EditorTools
             }
             AddRoute();
             CaptureZoomLadder(camera,"jermesa");
-            WriteMetrics("jermesa",GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
+            WriteMetrics("jermesa",UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
         }
 
         static void CaptureHolotna()
@@ -150,7 +150,7 @@ namespace Eldoria.EditorTools
             if(bridge!=null&&SpawnNormalized(bridge,"Holotna bridge",new Vector3(0,.02f,-2.2f),1.8f,0f,null))assets.Add(bridge);
             AddRoute();
             CaptureZoomLadder(camera,"holotna");
-            WriteMetrics("holotna",GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
+            WriteMetrics("holotna",UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
             File.WriteAllLines(Path.Combine(Folder,"holotna-discovered-assets.txt"),all);
         }
 
@@ -178,7 +178,7 @@ namespace Eldoria.EditorTools
                     assets.Add(choices[i]);
             AddRoute();
             CaptureZoomLadder(camera,"quaternius-ruins");
-            WriteMetrics("quaternius-ruins",GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
+            WriteMetrics("quaternius-ruins",UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None),assets);
         }
 
         static void PrepareCandidateScene(out Camera camera)
