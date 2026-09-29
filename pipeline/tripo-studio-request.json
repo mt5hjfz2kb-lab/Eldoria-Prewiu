@@ -31,7 +31,7 @@
   "approved_input_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-29:granero-biii-generate-authorized-55",
+  "probe_nonce": "2026-09-29:granero-export-ui-probe-deep",
   "input_transport": "repo_exact_input",
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64",
   "prior_stage_run_id": 36563809603,
