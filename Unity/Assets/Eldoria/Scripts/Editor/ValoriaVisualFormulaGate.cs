@@ -165,7 +165,8 @@ namespace Eldoria.EditorTools
             var shader = Shader.Find("Universal Render Pipeline/Lit");
             if (shader == null) throw new System.Exception("URP/Lit unavailable for rescue district.");
 
-            var cache = new Dictionary<Material, Material>();
+            var cache = new Dictionary<string, Material>();
+            bool residential = root.name.IndexOf("ResidentialTerraceRock", System.StringComparison.OrdinalIgnoreCase) >= 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>())
             {
                 var slots = renderer.sharedMaterials;
@@ -173,23 +174,30 @@ namespace Eldoria.EditorTools
                 {
                     var source = slots[i];
                     if (source == null) continue;
-                    if (!cache.TryGetValue(source, out var normalized))
+
+                    // ResidentialTerraceRock is authored by the rescue step with stable semantic
+                    // material slot order: 0 Stone, 1 Rock, 2 Roof, 3 Timber. glTF import may
+                    // rename material assets, so production evidence must not depend on names.
+                    string semantic = residential
+                        ? (i == 0 ? "stone" : i == 1 ? "rock" : i == 2 ? "roof" : i == 3 ? "timber" : "neutral")
+                        : (source.name ?? "").ToLowerInvariant();
+                    string key = semantic + "|" + source.name;
+                    if (!cache.TryGetValue(key, out var normalized))
                     {
-                        var lower = (source.name ?? "").ToLowerInvariant();
-                        var color = lower.Contains("stone")
-                            ? new Color(.40f, .35f, .28f, 1f)
-                            : lower.Contains("rock")
-                                ? new Color(.16f, .17f, .16f, 1f)
-                                : lower.Contains("timber")
-                                    ? new Color(.30f, .17f, .09f, 1f)
-                                    : lower.Contains("roof")
-                                        ? new Color(.10f, .11f, .12f, 1f)
+                        var color = semantic.Contains("stone")
+                            ? new Color(.43f, .36f, .27f, 1f)
+                            : semantic.Contains("rock")
+                                ? new Color(.15f, .16f, .15f, 1f)
+                                : semantic.Contains("timber")
+                                    ? new Color(.34f, .18f, .075f, 1f)
+                                    : semantic.Contains("roof")
+                                        ? new Color(.085f, .095f, .105f, 1f)
                                         : new Color(.25f, .24f, .21f, 1f);
-                        normalized = new Material(shader) { name = "Valoria v1 · " + source.name };
+                        normalized = new Material(shader) { name = "Valoria v1 · " + semantic + " · " + source.name };
                         normalized.SetColor("_BaseColor", color);
                         normalized.SetFloat("_Metallic", 0f);
-                        normalized.SetFloat("_Smoothness", lower.Contains("rock") ? .03f : .08f);
-                        cache[source] = normalized;
+                        normalized.SetFloat("_Smoothness", semantic.Contains("rock") ? .03f : .08f);
+                        cache[key] = normalized;
                     }
                     slots[i] = normalized;
                 }
