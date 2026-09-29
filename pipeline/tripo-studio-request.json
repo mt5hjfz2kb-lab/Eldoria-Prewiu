@@ -2,7 +2,7 @@
   "enabled": true,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Export the already-completed authorized multipiece result exactly once as GLB to Downloads. No regeneration and no credit spend.",
+  "notes": "Export the completed single authorized multipiece generation as GLB. No further generation or credit spend.",
   "request_id": "eldoria-multipiece-stonekit-v1-export-glb",
   "asset_name": "Eldoria_MultiPiece_StoneKit_v1",
   "function": "Single-sheet Tripo viability test for six separable reusable aged-stone modular families: straight slab, irregular slab, street edge, street corner, step, stone block.",
@@ -25,7 +25,7 @@
     "escalon",
     "bloque de piedra"
   ],
-  "probe_nonce": "2026-09-29-export-glb-r1",
+  "probe_nonce": "2026-09-29-export-multipiece",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "probe_chatgpt_session": false,
