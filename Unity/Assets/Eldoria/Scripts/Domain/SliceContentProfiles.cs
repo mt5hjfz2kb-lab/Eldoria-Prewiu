@@ -28,6 +28,7 @@ namespace Eldoria.Domain
             public const int TravelSeconds = 2;
             public const int GatherSeconds = 5;
             public const int ForestLoad = 360;
+            public const int QuarryLoad = 700;
 
             public const int EngendroRequiredArchers = 48;
             public const int Chapter1GatherWood = 360;
