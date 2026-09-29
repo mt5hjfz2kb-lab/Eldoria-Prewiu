@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "validation_candidates",
+  "status": "VALIDATED_V1",
   "source": "Valoria Visual Formula v1",
   "profiles": {
     "baseline": {
@@ -29,7 +29,7 @@
         0
       ],
       "role": "historical baseline",
-      "eligibility": "DISFAVORED_PENDING_COMPARISON"
+      "eligibility": "HISTORICAL_DIAGNOSTIC_ONLY"
     },
     "neutral-pbr": {
       "ambient": [
@@ -56,7 +56,8 @@
         -28,
         0
       ],
-      "role": "neutral PBR diagnostic"
+      "role": "neutral PBR diagnostic",
+      "eligibility": "HISTORICAL_DIAGNOSTIC_ONLY"
     },
     "ruins-contrast": {
       "ambient": [
@@ -83,7 +84,8 @@
         -38,
         0
       ],
-      "role": "high-contrast dark-fantasy diagnostic"
+      "role": "high-contrast dark-fantasy diagnostic",
+      "eligibility": "HISTORICAL_DIAGNOSTIC_ONLY"
     },
     "neutral-overcast": {
       "ambient": [
@@ -110,7 +112,8 @@
         -25,
         0
       ],
-      "role": "flat-light diagnostic"
+      "role": "flat-light diagnostic",
+      "eligibility": "CANONICAL_PRODUCTION_V1"
     },
     "valoria-v1-candidate": {
       "ambient": [
@@ -138,8 +141,15 @@
         0
       ],
       "role": "balanced candidate derived from baseline wash diagnosis",
-      "eligibility": "CANDIDATE_NOT_PROMOTED"
+      "eligibility": "HISTORICAL_DIAGNOSTIC_ONLY"
     }
   },
-  "selection_rule": "Select by official-camera visual evidence plus luminance/contrast/clipping metrics across overview, Aserradero and Cuartel. Do not promote from numeric preference alone."
+  "selection_rule": "Frozen for Valoria Visual Formula v1: neutral-overcast is canonical because it matches the validated real VisualWorld environment and official-camera evidence. Historical profiles remain diagnostic records only; reopen selection only with new integrated evidence.",
+  "production_profile": "neutral-overcast",
+  "production_source": "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+  "production_evidence": {
+    "lookdev_run_id": 36529204672,
+    "formula_run_id": 36529730848,
+    "hero_run_id": 36534386365
+  }
 }
