@@ -262,6 +262,46 @@ jobs:
               $resolved = [string]$request.upload_path
             }
 
+            if ($resolved -and [bool]$request.persist_exact_input -and $transport -ne 'chatgpt_exact_input') {
+              $persistSha = (Get-FileHash $resolved -Algorithm SHA256).Hash.ToLowerInvariant()
+              $persistSize = (Get-Item $resolved).Length
+              if ($persistSha -ne $expected -or $persistSize -ne [int64]$request.upload_size_bytes) {
+                throw "Resolved fallback bytes failed persistence identity gate. expected=$expected/$($request.upload_size_bytes) actual=$persistSha/$persistSize"
+              }
+              $assetName = ([string]$request.asset_name).Trim()
+              if ($assetName -notmatch '^[A-Za-z0-9._-]+$') { throw "Unsafe asset_name for exact-input persistence: $assetName" }
+              $exactDir = Join-Path $env:GITHUB_WORKSPACE ("pipeline\exact-inputs\" + $assetName)
+              New-Item -ItemType Directory -Force $exactDir | Out-Null
+              Get-ChildItem $exactDir -Filter 'part_*.b64' -File -ErrorAction SilentlyContinue | Remove-Item -Force
+              $persistB64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($resolved))
+              $chunkChars = 120000
+              $part = 0
+              for ($offset = 0; $offset -lt $persistB64.Length; $offset += $chunkChars) {
+                $len = [Math]::Min($chunkChars, $persistB64.Length - $offset)
+                [IO.File]::WriteAllText((Join-Path $exactDir ("part_{0:D3}.b64" -f $part)), $persistB64.Substring($offset, $len))
+                $part++
+              }
+              [ordered]@{
+                asset_name = $assetName
+                file_name = [string]$request.upload_file_name
+                sha256 = $persistSha
+                size_bytes = $persistSize
+                width = [int]$request.visual_width
+                height = [int]$request.visual_height
+                parts = $part
+                source = 'runner_exact_sha'
+              } | ConvertTo-Json -Depth 4 | Set-Content (Join-Path $exactDir 'manifest.json')
+              git config user.name 'github-actions[bot]'
+              git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+              git add -- ("pipeline/exact-inputs/" + $assetName)
+              git diff --cached --quiet
+              if ($LASTEXITCODE -ne 0) {
+                git commit -m ("art: persist exact Tripo input " + $assetName)
+                git push origin HEAD:main
+              }
+              Write-Host "RUNNER_EXACT_INPUT_PERSISTED: asset=$assetName parts=$part bytes=$persistSize sha256=$persistSha"
+            }
+
             $renderSvg = [string]$request.render_svg_path
             if (-not [string]::IsNullOrWhiteSpace($renderSvg)) {
               $svgResolved = if ([IO.Path]::IsPathRooted($renderSvg)) { $renderSvg } else { Join-Path $env:GITHUB_WORKSPACE $renderSvg }
