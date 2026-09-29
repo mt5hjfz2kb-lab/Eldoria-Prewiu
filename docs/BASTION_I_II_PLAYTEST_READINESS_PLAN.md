@@ -60,6 +60,34 @@ These facts mean the project is no longer blocked on core feasibility.
 
 ---
 
+## Mission-state implementation contract
+
+For the I–II owner build, Unity needs a small authoritative chapter state rather than more presenter-only conditionals.
+
+### Bastion I counters / flags
+- Aserradero rebuilt;
+- wood gathered this chapter;
+- stone gathered this chapter;
+- corrupt route cleared;
+- Bastion raised to II.
+
+### Bastion II counters / flags
+- Cuartel built;
+- Archers trained this chapter;
+- prepared March confirmed;
+- current Expedition Power;
+- Engendro defeated;
+- Bastion raised to III (future boundary; do not implement Bastion III content yet).
+
+### Rules
+- counters are authoritative domain/save state, not inferred from current wallet/roster after the fact;
+- rewards are granted once and idempotently;
+- objective presentation consumes this state but does not own it;
+- QA_FAST may use compressed thresholds, but field meaning must match the web contract;
+- OWNER_I_II thresholds come from the web contract and require owner pacing validation before becoming production defaults;
+- Bastion I route-clear must become explicit rather than JourneyComplete being satisfied by corruption discovery alone.
+
+
 ## Product gaps before a meaningful human I–II test
 
 ### P0 — Explicit March preparation
