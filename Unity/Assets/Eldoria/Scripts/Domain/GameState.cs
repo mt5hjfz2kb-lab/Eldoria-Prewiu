@@ -58,9 +58,9 @@ namespace Eldoria.Domain
         public string RealmId = "valoria-local";
         public string WorldId = "world-local";
         public ResourceWallet Resources = new ResourceWallet {
-            Wood = SliceContentProfiles.QaFast.InitialWood,
-            Stone = SliceContentProfiles.QaFast.InitialStone,
-            Food = SliceContentProfiles.QaFast.InitialFood
+            Wood = SliceContentProfiles.Active.InitialWood,
+            Stone = SliceContentProfiles.Active.InitialStone,
+            Food = SliceContentProfiles.Active.InitialFood
         };
         public int BastionLevel = 1;
         public int SawmillLevel;
@@ -69,7 +69,7 @@ namespace Eldoria.Domain
         public bool ScoutDefeated;
         public bool JourneyComplete;
         public bool EngendroDefeated;
-        public ArmyRoster Available = new ArmyRoster { ArcherT1 = SliceContentProfiles.QaFast.InitialArcherT1 };
+        public ArmyRoster Available = new ArmyRoster { ArcherT1 = SliceContentProfiles.Active.InitialArcherT1 };
         public ArmyRoster Wounded = new ArmyRoster();
         public MarchState March = new MarchState();
         public bool MarchConfigured;
@@ -112,18 +112,21 @@ namespace Eldoria.Domain
     }
     public static class SliceRules
     {
-        public const int SawmillWoodCost = SliceContentProfiles.QaFast.SawmillWoodCost;
-        public const int BarracksWoodCost = SliceContentProfiles.QaFast.BarracksWoodCost;
-        public const int BarracksStoneCost = SliceContentProfiles.QaFast.BarracksStoneCost;
-        public const int RecruitWoodCost = SliceContentProfiles.QaFast.RecruitWoodCost;
-        public const int RecruitArchers = SliceContentProfiles.QaFast.RecruitArchers;
-        public const int BarracksBuildSeconds = SliceContentProfiles.QaFast.BarracksBuildSeconds;
-        public const int RecruitSeconds = SliceContentProfiles.QaFast.RecruitSeconds;
-        public const int ForestLoad = SliceContentProfiles.QaFast.ForestLoad;
-        public const int QuarryLoad = SliceContentProfiles.QaFast.QuarryLoad;
-        public const int SawmillBuildSeconds = SliceContentProfiles.QaFast.SawmillBuildSeconds;
-        public const int TravelSeconds = SliceContentProfiles.QaFast.TravelSeconds;
-        public const int GatherSeconds = SliceContentProfiles.QaFast.GatherSeconds;
+        public static int SawmillWoodCost => SliceContentProfiles.Active.SawmillWoodCost;
+        public static int Bastion2WoodCost => SliceContentProfiles.Active.Bastion2WoodCost;
+        public static int Bastion2StoneCost => SliceContentProfiles.Active.Bastion2StoneCost;
+        public static int BarracksWoodCost => SliceContentProfiles.Active.BarracksWoodCost;
+        public static int BarracksStoneCost => SliceContentProfiles.Active.BarracksStoneCost;
+        public static int RecruitWoodCost => SliceContentProfiles.Active.RecruitWoodCost;
+        public static int RecruitStoneCost => SliceContentProfiles.Active.RecruitStoneCost;
+        public static int RecruitArchers => SliceContentProfiles.Active.RecruitArchers;
+        public static int BarracksBuildSeconds => SliceContentProfiles.Active.BarracksBuildSeconds;
+        public static int RecruitSeconds => SliceContentProfiles.Active.RecruitSeconds;
+        public static int ForestLoad => SliceContentProfiles.Active.ForestLoad;
+        public static int QuarryLoad => SliceContentProfiles.Active.QuarryLoad;
+        public static int SawmillBuildSeconds => SliceContentProfiles.Active.SawmillBuildSeconds;
+        public static int TravelSeconds => SliceContentProfiles.Active.TravelSeconds;
+        public static int GatherSeconds => SliceContentProfiles.Active.GatherSeconds;
         public static string CurrentObjectiveKey(PlayerState s)
         {
             if (s == null) return "invalid";
@@ -132,16 +135,16 @@ namespace Eldoria.Domain
             {
                 if (s.JourneyComplete) return "b1.ascend";
                 if (s.SawmillLevel == 0) return "b1.build-sawmill";
-                if (p.GatheredWood < SliceContentProfiles.QaFast.Chapter1GatherWood) return "b1.gather-wood";
-                if (p.GatheredStone < SliceContentProfiles.QaFast.Chapter1GatherStone) return "b1.gather-stone";
+                if (p.GatheredWood < SliceContentProfiles.Active.Chapter1GatherWood) return "b1.gather-wood";
+                if (p.GatheredStone < SliceContentProfiles.Active.Chapter1GatherStone) return "b1.gather-stone";
                 if (!p.RouteCleared) return "b1.clear-route";
                 return "b1.return";
             }
             if (s.EngendroDefeated || p.EngendroDefeated) return "b2.complete";
             if (s.BarracksLevel == 0) return "b2.build-barracks";
-            if (p.TrainedArchers < SliceContentProfiles.QaFast.Chapter2TrainArchers) return "b2.train-archers";
+            if (p.TrainedArchers < SliceContentProfiles.Active.Chapter2TrainArchers) return "b2.train-archers";
             if (!p.MarchConfirmed || !s.MarchConfigured) return "b2.prepare-march";
-            if (p.ConfirmedExpeditionPower < SliceContentProfiles.QaFast.Chapter2ExpeditionPower) return "b2.raise-expedition-power";
+            if (p.ConfirmedExpeditionPower < SliceContentProfiles.Active.Chapter2ExpeditionPower) return "b2.raise-expedition-power";
             return "b2.defeat-engendro";
         }
 
