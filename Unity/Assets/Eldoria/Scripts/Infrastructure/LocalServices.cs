@@ -47,5 +47,10 @@ namespace Eldoria.Infrastructure
             if (File.Exists(PathName)) File.Replace(temp, PathName, PathName + ".bak");
             else File.Move(temp, PathName);
         }
+        public void DeleteLocalState()
+        {
+            foreach (var candidate in new[] { PathName, PathName + ".bak", PathName + ".tmp" })
+                if (File.Exists(candidate)) File.Delete(candidate);
+        }
     }
 }
