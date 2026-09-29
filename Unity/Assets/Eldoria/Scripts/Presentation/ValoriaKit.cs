@@ -663,10 +663,12 @@ namespace Eldoria.Presentation
                 new Color(.45f,.47f,.46f,1f))==null)
                 Wall(name+" · keep rear fallback",origin+new Vector3(0,2.95f,2.50f),
                     new Vector3(4.15f,1.90f,.42f),OldStone*.58f,true);
-            GableRoof(name+" · inner keep west roof",origin+new Vector3(-.92f,5.52f,.90f),
-                new Vector3(3.45f,1.62f,3.25f),Slate*.94f);
-            GableRoof(name+" · inner keep east roof",origin+new Vector3(1.55f,4.78f,1.32f),
-                new Vector3(2.42f,1.08f,2.72f),Slate*.84f);
+            // Ground the roof masses directly onto the keep volumes. Earlier offsets left dark
+            // slabs visibly floating above the masonry from the official isometric camera.
+            GableRoof(name+" · inner keep west roof",origin+new Vector3(-.92f,4.74f,.90f),
+                new Vector3(3.18f,1.18f,3.05f),Slate*.94f);
+            GableRoof(name+" · inner keep east roof",origin+new Vector3(1.48f,4.30f,1.24f),
+                new Vector3(2.18f,.84f,2.55f),Slate*.84f);
             Rubble(name+" · collapsed keep roof",origin+new Vector3(1.85f,3.70f,.10f),.58f,6);
             Buttress(name+" · buttress west",origin+new Vector3(-3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
             Buttress(name+" · buttress east",origin+new Vector3(3.25f,.08f,-2.75f),3.45f,1.25f,WarmStone*.82f);
@@ -681,12 +683,12 @@ namespace Eldoria.Presentation
                 origin+new Vector3(-.62f,.18f,2.28f),1.62f,6.95f,Quaternion.Euler(0,4f,0),
                 new Color(.54f,.55f,.53f,1f));
             if(lantern==null)Tower(name+" · high lantern fallback",origin+new Vector3(-.62f,.08f,2.28f),.72f,6.45f,OldStone*.78f);
-            GableRoof(name+" · lantern crown",origin+new Vector3(-.62f,6.55f,2.28f),
-                new Vector3(1.95f,1.20f,2.05f),Slate*.96f);
-            GableRoof(name+" · east counter roof",origin+new Vector3(2.08f,5.18f,.85f),
-                new Vector3(2.25f,.96f,2.35f),Slate*.88f);
-            Block(name+" · central roof ridge",origin+new Vector3(-.18f,5.60f,.82f),
-                new Vector3(3.65f,.16f,.16f),Slate*.78f);
+            GableRoof(name+" · lantern crown",origin+new Vector3(-.62f,5.82f,2.28f),
+                new Vector3(1.72f,.86f,1.88f),Slate*.96f);
+            GableRoof(name+" · east counter roof",origin+new Vector3(2.02f,4.64f,.85f),
+                new Vector3(2.05f,.72f,2.18f),Slate*.88f);
+            Block(name+" · central roof ridge",origin+new Vector3(-.18f,4.92f,.82f),
+                new Vector3(3.20f,.14f,.14f),Slate*.78f);
 
             Banner(name+" · banner west",origin+new Vector3(-2.65f,3.55f,-1.82f),
                 new Vector3(.62f,2.25f,.08f),new Color(.16f,.25f,.34f));
