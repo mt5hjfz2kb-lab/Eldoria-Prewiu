@@ -1,5 +1,6 @@
 import argparse, json, os, sys
 import bpy
+import mathutils
 
 DEFAULT_TARGET = 49800
 DEFAULT_MIN_TRIS = 49500
@@ -18,6 +19,8 @@ def parse_args():
     p.add_argument("--max-tris", type=int, default=DEFAULT_MAX_TRIS)
     p.add_argument("--diagnostic-only", action="store_true")
     p.add_argument("--surface-rescue-profile", choices=["", "rock"], default="")
+    p.add_argument("--split-components-dir", default="")
+    p.add_argument("--split-min-triangles", type=int, default=250)
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -382,6 +385,102 @@ def apply_decimation_once(target):
         o.select_set(False)
     return sum(tri_count(o) for o in mesh_objects())
 
+def split_components_to_glbs(output_dir, min_triangles=250):
+    if not output_dir:
+        return {"enabled": False, "pieces": []}
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Join imported meshes first so "Separate by Loose Parts" reflects true geometric islands,
+    # not arbitrary glTF object boundaries.
+    objs = mesh_objects()
+    if not objs:
+        raise RuntimeError("No mesh objects available for multipiece separation")
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in objs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+    if len(objs) > 1:
+        bpy.ops.object.join()
+    joined = bpy.context.view_layer.objects.active
+    joined.name = "Eldoria_MultiPiece_Source"
+
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.separate(type="LOOSE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+    candidates = [o for o in bpy.context.selected_objects if o.type == "MESH" and o.data]
+    if not candidates:
+        candidates = mesh_objects()
+
+    piece_rows = []
+    useful = []
+    for o in candidates:
+        tris = tri_count(o)
+        if tris < int(min_triangles):
+            piece_rows.append({
+                "name": o.name,
+                "triangles": tris,
+                "useful": False,
+                "reason": "below_split_min_triangles"
+            })
+            continue
+
+        # Normalize each reusable piece around a bottom-center pivot without changing its shape.
+        world = [o.matrix_world @ v.co for v in o.data.vertices]
+        minx = min(v.x for v in world); maxx = max(v.x for v in world)
+        miny = min(v.y for v in world); maxy = max(v.y for v in world)
+        minz = min(v.z for v in world); maxz = max(v.z for v in world)
+        center = ((minx + maxx) * 0.5, (miny + maxy) * 0.5, minz)
+
+        # Move object geometry so origin/pivot becomes bottom-center.
+        inv = o.matrix_world.inverted()
+        local_center = inv @ mathutils.Vector(center)
+        for v in o.data.vertices:
+            v.co -= local_center
+        o.location += o.matrix_world.to_3x3() @ local_center
+
+        useful.append((o, tris))
+        piece_rows.append({
+            "name": o.name,
+            "triangles": tris,
+            "useful": True,
+            "bounds": [round(maxx-minx,6), round(maxy-miny,6), round(maxz-minz,6)]
+        })
+
+    useful.sort(key=lambda item: item[1], reverse=True)
+    exported = []
+    for index, (o, tris) in enumerate(useful, start=1):
+        bpy.ops.object.select_all(action="DESELECT")
+        o.select_set(True)
+        bpy.context.view_layer.objects.active = o
+        safe = f"piece_{index:02d}_{tris}tris.glb"
+        path_out = os.path.join(output_dir, safe)
+        bpy.ops.export_scene.gltf(
+            filepath=path_out,
+            export_format="GLB",
+            export_apply=True,
+            export_materials="EXPORT",
+            export_yup=True,
+            use_selection=True,
+        )
+        exported.append({
+            "index": index,
+            "source_object": o.name,
+            "file": safe,
+            "triangles": tris,
+            "bytes": os.path.getsize(path_out)
+        })
+
+    return {
+        "enabled": True,
+        "min_triangles": int(min_triangles),
+        "candidate_islands": len(candidates),
+        "useful_piece_count": len(exported),
+        "pieces": exported,
+        "all_islands": piece_rows,
+    }
+
 def main():
     a = parse_args()
     if not os.path.isfile(a.input):
@@ -431,6 +530,7 @@ def main():
     if not optimized["uv_present_all_meshes"]:
         raise RuntimeError("Optimized GLB is missing UV0 on at least one mesh")
     resized_images = optimize_images()
+    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles)
     os.makedirs(os.path.dirname(a.output), exist_ok=True)
     bpy.ops.export_scene.gltf(
         filepath=a.output,
@@ -450,6 +550,7 @@ def main():
         "surface_rescue": surface_rescue,
         "input_bytes": os.path.getsize(a.input),
         "output_bytes": os.path.getsize(a.output),
+        "multipiece": multipiece,
     }
     os.makedirs(os.path.dirname(a.report), exist_ok=True)
     with open(a.report, "w", encoding="utf-8") as f:
