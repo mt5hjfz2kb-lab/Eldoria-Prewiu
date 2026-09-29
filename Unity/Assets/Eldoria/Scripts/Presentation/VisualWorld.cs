@@ -117,25 +117,22 @@ namespace Eldoria.Presentation
                 new Vector3(6.6f,.14f,2.0f),new Color(.43f,.40f,.34f));
             apron.GetComponent<Renderer>().enabled=false;
 
-            // Authored worn-stone route: same corridor, visually assembled from overlapping slabs.
-            for(int i=0;i<10;i++)
-            {
-                float z=-7.7f+i*1.03f;
-                float yaw=(i%4==0?-3.5f:(i%4==2?3.0f:0f));
-                float width=3.12f-(i%3)*.08f;
-                var slab=ValoriaKit.Block("VPD · worn street slab "+(i+1),new Vector3((i%2==0?-.05f:.05f),.345f,z),
-                    new Vector3(width,.09f,1.16f),new Color(.47f,.445f,.385f));
-                slab.transform.rotation=Quaternion.Euler(0,yaw,0);
-                ValoriaKit.BenchmarkPieceTinted("VPD · authored cobble "+(i+1),
-                    art!=null?art.SlavicCobbleRoad:null,
-                    new Vector3((i%2==0?-.05f:.05f),.405f,z),width,.16f,
-                    Quaternion.Euler(0,yaw,0),ValoriaKit.WarmStone*.82f);
-            }
-            IrregularGround("VPD · entry stone fan",new Vector3(0,.355f,-8.45f),7.0f,2.55f,new Color(.405f,.385f,.335f));
+            // Ground Kit v1: visual-only reusable skins over the frozen certified circulation.
+            // Gameplay floors/hotspots underneath remain authoritative.
+            ValoriaGroundKit.StreetStraight("VPD · GroundKit main street",
+                new Vector3(0,.405f,-3.05f),10.55f,3.18f,0f);
+            ValoriaGroundKit.StreetBlendWidening("VPD · GroundKit entry widening",
+                new Vector3(0,.407f,-8.25f),6.65f,2.35f,0f);
 
-            // Broken plot edges: the usable plots remain exact, but visible shoulders are irregular.
-            IrregularGround("VPD · west workshop terrace",new Vector3(-7.0f,.365f,-2.8f),5.65f,5.8f,new Color(.325f,.295f,.24f));
-            IrregularGround("VPD · east military terrace",new Vector3(7.0f,.365f,-4.0f),5.7f,5.75f,new Color(.325f,.30f,.25f));
+            // Standard functional-plot terrace skins use the same reusable ground language.
+            ValoriaGroundKit.TerraceFloor("VPD · GroundKit west workshop terrace",
+                new Vector3(-7.0f,.367f,-2.8f),5.65f,5.8f,-1.2f);
+            ValoriaGroundKit.TerraceFloor("VPD · GroundKit east military terrace",
+                new Vector3(7.0f,.367f,-4.0f),5.7f,5.75f,1.0f);
+            ValoriaGroundKit.GroundSeam("VPD · GroundKit west plot seam",
+                new Vector3(-4.45f,.355f,-2.15f),1.65f,4.4f,5f);
+            ValoriaGroundKit.GroundSeam("VPD · GroundKit east plot seam",
+                new Vector3(4.45f,.355f,-3.35f),1.65f,4.4f,-6f);
 
             // Real continuous 0 -> 1 connection: twelve visible treads, no fused architectural dependency.
             const int steps=12;
@@ -171,9 +168,12 @@ namespace Eldoria.Presentation
             var l1East=ValoriaKit.Block("VPD · L1 east plot",new Vector3(5.2f,l1,7.1f),
                 new Vector3(4.2f,.28f,4.8f),new Color(.34f,.31f,.27f));
             l1East.GetComponent<Renderer>().enabled=false;
-            IrregularGround("VPD · L1 landing skin",new Vector3(0,l1+.17f,6.65f),7.55f,4.9f,new Color(.405f,.38f,.325f));
-            IrregularGround("VPD · L1 west terrace skin",new Vector3(-5.2f,l1+.16f,7.1f),4.75f,5.25f,new Color(.335f,.315f,.275f));
-            IrregularGround("VPD · L1 east terrace skin",new Vector3(5.2f,l1+.16f,7.1f),4.75f,5.25f,new Color(.335f,.315f,.275f));
+            ValoriaGroundKit.StreetBlendWidening("VPD · GroundKit L1 landing",
+                new Vector3(0,l1+.17f,6.65f),7.55f,4.9f,0f);
+            ValoriaGroundKit.TerraceFloor("VPD · GroundKit L1 west terrace",
+                new Vector3(-5.2f,l1+.16f,7.1f),4.75f,5.25f,-1.5f);
+            ValoriaGroundKit.TerraceFloor("VPD · GroundKit L1 east terrace",
+                new Vector3(5.2f,l1+.16f,7.1f),4.75f,5.25f,1.5f);
 
             // Frozen support volumes stay as invisible structural/collision mass. Visible containment
             // is rebuilt as rock + masonry fragments so Planta 1 belongs to the same inhabited mountain.
@@ -199,12 +199,11 @@ namespace Eldoria.Presentation
                     new Color(.30f,.305f,.285f,1f));
                 if(authored==null)ValoriaKit.RockCluster("VPD · inhabited retaining rock",p,.78f,5);
             }
+            ValoriaGroundKit.RetainingEdge("VPD · GroundKit L1 retaining edge",
+                new Vector3(0,.44f,4.88f),10.6f,.78f,0f);
             for(int i=0;i<5;i++)
             {
                 float x=-4.4f+i*2.2f;
-                var wall=ValoriaKit.Block("VPD · retaining masonry fragment",new Vector3(x,.62f,4.93f+(i%2)*.08f),
-                    new Vector3(1.72f,.68f,.42f),new Color(.31f,.305f,.285f));
-                wall.transform.rotation=Quaternion.Euler(0,(i%2==0?2f:-2f),0);
                 ValoriaKit.BenchmarkPieceTinted("VPD · retaining stone face",
                     art!=null?art.SlavicStoneFence:null,
                     new Vector3(x,1.58f,4.67f+(i%2)*.08f),1.82f,1.30f,
