@@ -7,6 +7,16 @@ namespace Eldoria.Presentation
 {
     public static class SliceBoot
     {
+        public static string SavePath => System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "eldoria-unity-slice-v1.json");
+
+        public static void ResetLocalSaveAndRestart()
+        {
+            var save = new FileStateStore(SavePath);
+            save.DeleteLocalState();
+            var ui = Object.FindFirstObjectByType<SlicePresenter>();
+            if (ui != null) ui.Initialize(new LocalGateway(new SystemClock(), new FileStateStore(SavePath)));
+            SceneManager.LoadScene("Valoria");
+        }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
@@ -14,7 +24,7 @@ namespace Eldoria.Presentation
             var obj = new GameObject("Eldoria composition root");
             Object.DontDestroyOnLoad(obj);
             var ui = obj.AddComponent<SlicePresenter>();
-            var save = new FileStateStore(System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "eldoria-unity-slice-v1.json"));
+            var save = new FileStateStore(SavePath);
             try { ui.Initialize(new LocalGateway(new SystemClock(), save)); }
             catch (System.Exception error)
             {
