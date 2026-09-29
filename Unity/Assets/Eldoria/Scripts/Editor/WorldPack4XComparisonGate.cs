@@ -24,7 +24,7 @@ namespace Eldoria.EditorTools
         public static void Capture()
         {
             SceneSetup.SetupRenderPipeline();
-            Folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","WorldPack4XComparisonCaptures"));
+            Folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","WorldPack4XComparisonCaptures"));
             if(Directory.Exists(Folder))Directory.Delete(Folder,true);
             Directory.CreateDirectory(Folder);
 
