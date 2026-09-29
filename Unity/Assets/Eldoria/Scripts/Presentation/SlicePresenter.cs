@@ -282,15 +282,23 @@ namespace Eldoria.Presentation
                 (s.MarchConfigured?s.PreparedTroops:s.Available);
             power.text="⚔ PODER  "+parts.Total+"    MARCHA  "+SliceRules.Expedition(
                 marchPreview,s.March.Phase!="idle"?s.March.HeroId:(s.MarchConfigured?s.PreparedHeroId:"aldric")).Power;
+            var cp=s.ChapterProgress??new ChapterProgressState();
             objective.text=s.BastionLevel==1
                 ? (s.JourneyComplete ? "CAPÍTULO I COMPLETO · asciende el Bastión"
-                    : s.SawmillLevel==0 ? "Necesidad: reparar el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
-                    : "El Aserradero produce. Observa la marca de La Brecha.")
+                    : s.SawmillLevel==0 ? "BASTIÓN I · repara el Aserradero · "+SliceRules.SawmillWoodCost+" madera"
+                    : cp.GatheredWood<SliceContentProfiles.QaFast.Chapter1GatherWood
+                        ? "BASTIÓN I · recupera madera · "+cp.GatheredWood+"/"+SliceContentProfiles.QaFast.Chapter1GatherWood
+                    : cp.GatheredStone<SliceContentProfiles.QaFast.Chapter1GatherStone
+                        ? "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.QaFast.Chapter1GatherStone
+                    : !cp.RouteCleared ? "BASTIÓN I · despeja la ruta corrupta"
+                    : "BASTIÓN I · regresa a Valoria")
                 : (s.BarracksLevel==0 ? "BASTIÓN II · levanta el Cuartel"
-                    : s.Available.Total<SliceContentProfiles.QaFast.EngendroRequiredArchers && s.March.Phase=="idle"
-                        ? "BASTIÓN II · recluta "+SliceRules.RecruitArchers+" arqueros"
-                    : !s.MarchConfigured ? "BASTIÓN II · prepara y confirma la Marcha"
-                    : !s.EngendroDefeated ? "BASTIÓN II · derrota al Engendro de la ruta"
+                    : cp.TrainedArchers<SliceContentProfiles.QaFast.Chapter2TrainArchers
+                        ? "BASTIÓN II · entrena arqueros · "+cp.TrainedArchers+"/"+SliceContentProfiles.QaFast.Chapter2TrainArchers
+                    : !cp.MarchConfirmed ? "BASTIÓN II · prepara y confirma la Marcha"
+                    : cp.ConfirmedExpeditionPower<SliceContentProfiles.QaFast.Chapter2ExpeditionPower
+                        ? "BASTIÓN II · Poder de expedición · "+cp.ConfirmedExpeditionPower+"/"+SliceContentProfiles.QaFast.Chapter2ExpeditionPower
+                    : !cp.EngendroDefeated ? "BASTIÓN II · derrota al Engendro de la ruta"
                     : "CAPÍTULO II COMPLETO · Valoria puede defenderse");
             string march=s.March.Phase=="idle"?"Aldric + "+s.Available.Total+" arqueros listos":
                 "Aldric + "+s.March.Troops.Total+" arqueros · "+s.March.Phase;
