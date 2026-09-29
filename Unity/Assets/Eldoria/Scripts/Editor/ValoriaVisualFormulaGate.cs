@@ -70,26 +70,31 @@ namespace Eldoria.EditorTools
             var residential = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/ResidentialTerraceRock.glb",
                 "Production rescue · ResidentialTerraceRock",
-                new Vector3(-5.4f, 2.52f, 6.35f), 182f, 5.4f);
-            var seam = InstallRescueModule(
+                new Vector3(-4.55f, .42f, -.15f), 198f, 4.35f);
+            var seamWest = InstallRescueModule(
                 "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
-                "Production rescue · RockTerrainSeamFiller",
-                new Vector3(-5.4f, .30f, -1.65f), 24f, 5.2f);
-            var stair = InstallRescueModule(
-                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/TerraceStairRock.glb",
-                "Production rescue · TerraceStairRock",
-                new Vector3(-2.75f, .31f, 1.55f), 3f, 4.7f);
+                "Production rescue · Seam west",
+                new Vector3(-6.15f, .20f, -2.55f), 28f, 3.10f);
+            var seamResidential = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
+                "Production rescue · Seam residential",
+                new Vector3(-4.25f, .20f, -.35f), 112f, 3.65f);
+            var seamEast = InstallRescueModule(
+                "Assets/Eldoria/ArtTests/ImageTo3D/Source/ValoriaRescueDistrict/RockTerrainSeamFiller.glb",
+                "Production rescue · Seam east",
+                new Vector3(5.85f, .20f, -3.75f), 205f, 2.95f);
 
-            if (residential == null || seam == null || stair == null)
-                throw new System.Exception("Valoria rescue district did not stage all required historical modules.");
+            if (residential == null || seamWest == null || seamResidential == null || seamEast == null)
+                throw new System.Exception("Valoria rescue district did not stage all required composed modules.");
 
             var camera = Camera.main;
             if (camera == null) throw new System.Exception("Valoria camera was not created");
 
             const string folder = "VisualFormulaCaptures";
             Directory.CreateDirectory(folder);
-            var officialPosition = new Vector3(18.2f, 14.6f, -25.8f);
-            var officialTarget = new Vector3(0, 3.15f, 5.8f);
+            var districtShift = new Vector3(0f, -1.55f, -5.15f);
+            var officialPosition = new Vector3(18.2f, 14.6f, -25.8f) + districtShift;
+            var officialTarget = new Vector3(0, 3.15f, 5.8f) + districtShift;
             Save(camera, folder + "/production-district-19.png", officialPosition, officialTarget, 19f, 1280, 720);
             Save(camera, folder + "/production-district-12.png", officialPosition, officialTarget, 12f, 1280, 720);
             Save(camera, folder + "/production-district-9.png", officialPosition, officialTarget, 9f, 1280, 720);
@@ -101,6 +106,8 @@ namespace Eldoria.EditorTools
                 "  \"topology\": \"REAL_VISUALWORLD_ISOLATED_EDITOR_SCENE\",\n" +
                 "  \"gameplay_mesh_dependency\": false,\n" +
                 "  \"rescued_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller\",\"TerraceStairRock\"],\n" +
+                "  \"composed_assets\": [\"ResidentialTerraceRock\",\"RockTerrainSeamFiller x3\"],\n" +
+                "  \"deferred_after_fit_test\": [\"TerraceStairRock: rescued and Surface-v1-ready, but omitted from this district because its large terrace mass duplicates the local vertical transition and overcrowds the parcel\"],\n" +
                 "  \"canonical_assets\": [\"Aserradero\",\"Cuartel\",\"Bastion\"],\n" +
                 "  \"official_zooms\": [19,12,9],\n" +
                 "  \"surface_policy\": \"VALORIA_VISUAL_FORMULA_v1\",\n" +
@@ -158,14 +165,14 @@ namespace Eldoria.EditorTools
                     {
                         var lower = (source.name ?? "").ToLowerInvariant();
                         var color = lower.Contains("stone")
-                            ? new Color(.46f, .43f, .37f, 1f)
+                            ? new Color(.30f, .28f, .24f, 1f)
                             : lower.Contains("rock")
-                                ? new Color(.26f, .28f, .27f, 1f)
+                                ? new Color(.17f, .18f, .17f, 1f)
                                 : lower.Contains("timber")
-                                    ? new Color(.29f, .20f, .14f, 1f)
+                                    ? new Color(.22f, .14f, .10f, 1f)
                                     : lower.Contains("roof")
-                                        ? new Color(.17f, .18f, .19f, 1f)
-                                        : new Color(.36f, .34f, .30f, 1f);
+                                        ? new Color(.12f, .13f, .14f, 1f)
+                                        : new Color(.25f, .24f, .21f, 1f);
                         normalized = new Material(shader) { name = "Valoria v1 · " + source.name };
                         normalized.SetColor("_BaseColor", color);
                         normalized.SetFloat("_Metallic", 0f);
