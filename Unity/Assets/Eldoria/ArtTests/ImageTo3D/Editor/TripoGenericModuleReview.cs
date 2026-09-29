@@ -227,7 +227,7 @@ namespace Eldoria.EditorTools
                         }
                         normalized = new Material(urp) { name = "Valoria normalized · " + source.name };
                         if (baseColor != null) normalized.SetTexture("_BaseMap", baseColor);
-                        if (normalized.HasProperty("_BaseColor")) normalized.SetColor("_BaseColor", Color.white);
+                        if (normalized.HasProperty("_BaseColor")) normalized.SetColor("_BaseColor", new Color(1.65f, 1.65f, 1.65f, 1f)); // Compensate glTF base-color darkening in the isolated Valoria hero URP review.
                         if (normalized.HasProperty("_Metallic")) normalized.SetFloat("_Metallic", 0f);
                         if (normalized.HasProperty("_Smoothness")) normalized.SetFloat("_Smoothness", 0.08f);
                         cache[source] = normalized;
