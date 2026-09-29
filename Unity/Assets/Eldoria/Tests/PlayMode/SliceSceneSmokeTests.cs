@@ -291,6 +291,33 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator CityObjectiveFocusPreservesCameraAndBringsTargetIntoView()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            var camera=GameObject.Find("Isometric camera")?.GetComponent<Camera>();
+            var presenter=Object.FindFirstObjectByType<SlicePresenter>();
+            var target=GameObject.Find("Aserradero · target");
+            Assert.That(camera,Is.Not.Null);
+            Assert.That(presenter,Is.Not.Null);
+            Assert.That(target,Is.Not.Null);
+
+            var rotation=camera.transform.rotation;
+            var focus=typeof(SlicePresenter).GetMethod("FocusCityHotspot",
+                System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Assert.That(focus,Is.Not.Null);
+            focus.Invoke(presenter,new object[]{"Aserradero · target"});
+            yield return null;
+
+            var point=camera.WorldToViewportPoint(target.GetComponent<Collider>().bounds.center);
+            Assert.That(point.z,Is.GreaterThan(0f));
+            Assert.That(point.x,Is.InRange(.08f,.92f));
+            Assert.That(point.y,Is.InRange(.08f,.92f));
+            Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
+        }
+
+
 
     }
 }

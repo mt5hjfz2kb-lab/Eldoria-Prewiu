@@ -148,6 +148,27 @@ namespace Eldoria.Presentation
             OfficialCamera.transform.position=cameraHome;
         }
 
+        void FocusCityHotspot(string objectName)
+        {
+            var camera=OfficialCamera;
+            var target=GameObject.Find(objectName);
+            if(!city||camera==null||target==null)return;
+            var collider=target.GetComponent<Collider>();
+            var focus=collider!=null?collider.bounds.center:target.transform.position;
+
+            // Translate the fixed-orientation camera so the target becomes the visual centre.
+            // Rotation/zoom stay untouched, preserving the authored 4X camera language.
+            var ray=camera.ViewportPointToRay(new Vector3(.5f,.5f,0f));
+            var plane=new Plane(Vector3.up,new Vector3(0,focus.y,0));
+            if(!plane.Raycast(ray,out var distance))return;
+            var centre=ray.GetPoint(distance);
+            var desired=camera.transform.position+(focus-centre);
+            var offset=desired-cameraHome;
+            offset.x=Mathf.Clamp(offset.x,-panHalfX,panHalfX);
+            offset.z=Mathf.Clamp(offset.z,-panHalfZ,panHalfZ);
+            camera.transform.position=new Vector3(cameraHome.x+offset.x,cameraHome.y,cameraHome.z+offset.z);
+        }
+
         WorldHotspot ResolveHotspot(Vector2 point)
         {
             var camera=OfficialCamera;
@@ -525,16 +546,27 @@ namespace Eldoria.Presentation
             string key=SliceRules.CurrentObjectiveKey(s);
             if(city)
             {
-                if(key=="b1.build-sawmill")
+                if(key=="b1.build-sawmill"&&s.Resources.Wood>=SliceRules.SawmillWoodCost)
                 {
-                    if(s.Resources.Wood>=SliceRules.SawmillWoodCost)Send("Build","sawmill");
-                    else SceneManager.LoadScene("Frontier");
+                    FocusCityHotspot("Aserradero · target");
+                    OpenBuildingPanel("sawmill");
                 }
-                else if(key=="b1.ascend")Send("AdvanceBastion","bastion");
-                else if(key=="b2.build-barracks")Send("Build","barracks");
-                else if(key=="b2.train-archers"&&s.Resources.Wood>=SliceRules.RecruitWoodCost&&s.Resources.Stone>=SliceRules.RecruitStoneCost)
-                    Send("Recruit","archer:t1");
-                else if(key=="b2.prepare-march"||key=="b2.raise-expedition-power")OpenMarchPanel();
+                else if(key=="b1.ascend")
+                {
+                    FocusCityHotspot("Bastion · target");
+                    OpenBuildingPanel("bastion");
+                }
+                else if(key=="b2.build-barracks"||
+                        (key=="b2.train-archers"&&s.Resources.Wood>=SliceRules.RecruitWoodCost&&s.Resources.Stone>=SliceRules.RecruitStoneCost))
+                {
+                    FocusCityHotspot("Cuartel · target");
+                    OpenBuildingPanel("barracks");
+                }
+                else if(key=="b2.prepare-march"||key=="b2.raise-expedition-power")
+                {
+                    FocusCityHotspot("Cuartel · target");
+                    OpenMarchPanel();
+                }
                 else SceneManager.LoadScene("Frontier");
                 return;
             }
