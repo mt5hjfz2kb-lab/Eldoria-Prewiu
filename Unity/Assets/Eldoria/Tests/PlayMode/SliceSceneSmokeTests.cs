@@ -477,11 +477,11 @@ namespace Eldoria.Tests
             Assert.That(crest,Is.Not.Null);
             Assert.That(wood,Is.Not.Null);
             Assert.That(stone,Is.Not.Null);
-            Assert.That(GameObject.Find("CIUDAD")?.GetComponentInChildren<Text>()?.text,Does.Contain("⌂"));
-            Assert.That(GameObject.Find("MUNDO")?.GetComponentInChildren<Text>()?.text,Does.Contain("◎"));
-            Assert.That(GameObject.Find("HÉROES")?.GetComponentInChildren<Text>()?.text,Does.Contain("♞"));
-            Assert.That(GameObject.Find("ARCÓN")?.GetComponentInChildren<Text>()?.text,Does.Contain("▣"));
-            Assert.That(GameObject.Find("CÓDICE")?.GetComponentInChildren<Text>()?.text,Does.Contain("⌘"));
+            Assert.That(GameObject.Find("CIUDAD")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("⌂"));
+            Assert.That(GameObject.Find("MUNDO")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("◎"));
+            Assert.That(GameObject.Find("HÉROES")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("♞"));
+            Assert.That(GameObject.Find("ARCÓN")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("▣"));
+            Assert.That(GameObject.Find("CÓDICE")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("⌘"));
         }
 
 
