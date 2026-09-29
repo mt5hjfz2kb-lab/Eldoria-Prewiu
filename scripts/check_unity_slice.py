@@ -1,3 +1,4 @@
+# world-pack compare runner release checkpoint 2 2026-09-29
 # world-pack 4x comparison concurrency handoff 2026-09-29
 # world-pack audit concurrency handoff 2026-09-29
 #!/usr/bin/env python3
