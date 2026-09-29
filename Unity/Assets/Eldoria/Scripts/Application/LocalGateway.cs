@@ -38,8 +38,24 @@ namespace Eldoria.Application
             this.clock = clock; this.store = store;
             state = store.Load() ?? new PlayerState();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
+            NormalizeMissionProgress();
             Advance();
         }
+        private void NormalizeMissionProgress()
+        {
+            if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
+            if (state.ScoutDefeated) state.ChapterProgress.RouteCleared = true;
+            if (state.BastionLevel >= 2) state.ChapterProgress.BastionTwoReached = true;
+            if (state.MarchConfigured)
+            {
+                state.ChapterProgress.MarchConfirmed = true;
+                if (state.ChapterProgress.ConfirmedExpeditionPower <= 0)
+                    state.ChapterProgress.ConfirmedExpeditionPower =
+                        SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
+            }
+            if (state.EngendroDefeated) state.ChapterProgress.EngendroDefeated = true;
+        }
+
         public PlayerState Snapshot()
         {
             var s = state;
