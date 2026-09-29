@@ -580,7 +580,9 @@ try {
     await selectedPage.screenshot({ path: report.staged_generation.screenshot_path, fullPage: false });
     fs.writeFileSync(guard, JSON.stringify({ sourceSha: approvedSha, approvedCost, requestId: request.request_id, clickedAt: report.staged_generation.clicked_at, taskUrl: report.staged_generation.task_url, noRestaging: true }));
   } else if (mode === 'export_glb') {
-    if (!selectedPage.url().startsWith(String(request.generated_task_url || 'missing'))) {
+    const approvedTaskUrl = String(request.generated_task_url || '');
+    const approvedTaskId = approvedTaskUrl.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)?.[0] || '';
+    if (!approvedTaskId || !selectedPage.url().includes(approvedTaskId)) {
       throw new Error('The approved generated task is not active.');
     }
     let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
@@ -595,7 +597,15 @@ try {
           await selectedPage.waitForTimeout(5000);
         }
         exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
-        await exportButtons.first().waitFor({ state: 'visible', timeout: 60000 });
+        try {
+          await exportButtons.first().waitFor({ state: 'visible', timeout: 20000 });
+        } catch {
+          await selectedPage.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+          await selectedPage.waitForTimeout(10000);
+          if (!selectedPage.url().includes(approvedTaskId)) throw new Error('Reload left the approved generated task.');
+          exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+          await exportButtons.first().waitFor({ state: 'visible', timeout: 60000 });
+        }
       }
       await exportButtons.first().click();
     }
