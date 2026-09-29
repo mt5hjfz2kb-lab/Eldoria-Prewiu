@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Stage ONLY exact owner-approved Granero BIII image. Search runner synced/local folders by exact SHA+bytes. Zero spend. STOP before Generate.",
-  "request_id": "valoria-granero-biii-v1-stage-exact-approved-final",
+  "notes": "Granero exact-input transport is locked to repository bytes. Do not probe/search Downloads. Enable only after tools/validate-tripo-exact-input.mjs passes the manifest.",
+  "request_id": "valoria-granero-biii-v1-awaiting-complete-repo-exact-input",
   "asset_name": "Valoria_Granero_BIII_v1",
   "function": "Dedicated Bastion III granary / food storehouse",
   "parcel": {
@@ -23,7 +23,7 @@
   "upload_file_name": "Valoria_Granero_BIII_v1.jpeg",
   "upload_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "upload_size_bytes": 602970,
-  "search_downloads_for_sha": true,
+  "search_downloads_for_sha": false,
   "visual_width": 1254,
   "visual_height": 1254,
   "allow_credit_spend": false,
@@ -31,5 +31,7 @@
   "approved_input_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-29:granero-biii-exact-approved-final"
+  "probe_nonce": "2026-09-29:granero-awaiting-complete-exact-input",
+  "input_transport": "repo_exact_input",
+  "upload_base64_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64"
 }
