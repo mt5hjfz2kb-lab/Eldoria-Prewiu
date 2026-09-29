@@ -85,11 +85,12 @@ Current Unity:
 - explicit mission target is therefore functionally “recruit 12” rather than web “train 20”;
 - Engendro requires Bastion II + Cuartel + 48 available Archers;
 - Aldric + **all available troops are auto-selected** when departing;
-- no explicit March configuration confirmation exists;
-- Expedition Power is displayed but is not a Bastion-II mission gate;
-- battle reason exists as a string, but there is no product-grade two-level report surface.
+- explicit March configuration/confirmation now exists and persists;
+- Expedition Power is an authoritative Bastion-II mission gate;
+- structured battle report state now persists target, hero, troops, March Power, result, rounds, remaining health, rewards and reason;
+- objective-stage selection is domain-owned and consumed by the HUD.
 
-Verdict: **LOGIC / PERSISTENCE PASS / TEACHING + PARITY NOT YET PASS**.
+Verdict: **I-II STRUCTURAL PARITY PASS / OWNER PACING + HUMAN UX ACCEPTANCE PENDING**.
 
 ---
 
@@ -117,10 +118,11 @@ These values have stronger authority than Unity QA constants, but the owner play
 ### Unity QA_FAST values — do not promote silently
 - initial wood 30;
 - Cuartel 140/90;
-- recruit +12 for 50 wood;
-- 48-Archer Engendro gate as a shortcut to prove recruitment/combat;
+- recruit +12 for 50 wood / 0 stone;
 - 2 s travel / 5 s gather;
-- JourneyComplete without explicit route-clear requirement.
+- chapter thresholds remain compressed for technical iteration;
+- Engendro readiness now uses the same structural gates as OWNER_I_II: trained-this-chapter + confirmed Expedition Power, rather than a separate hard-coded QA-only Archer threshold;
+- route-clear is explicit and required before Bastion I completion.
 
 ---
 
@@ -145,32 +147,40 @@ This protects development speed without letting test shortcuts redefine the game
 
 ---
 
-## Immediate P0 parity backlog
+## Immediate P0 parity backlog — current state
 
-1. **Bastion-I mission state**
-   - gather wood counter;
-   - gather stone counter / quarry path;
-   - route-clear flag required;
-   - Bastion-II ascent cost and mission gate.
+1. **Bastion-I mission state — STRUCTURALLY COMPLETE**
+   - wood/stone counters authoritative;
+   - quarry path real;
+   - route-clear required;
+   - ascent cost fields are profile-owned; QA_FAST keeps them at 0 while OWNER_I_II carries the web 450/300 candidate.
 
-2. **Bastion-II recruitment parity**
-   - quantity-select or a bounded I–II equivalent that can satisfy 20 trained;
-   - resource cost model that can later match web;
-   - trained counter separate from total owned troops.
+2. **Bastion-II recruitment parity — STRUCTURALLY COMPLETE / PACING PENDING**
+   - trained-this-chapter is authoritative;
+   - profile owns batch size and wood/stone cost;
+   - OWNER_I_II candidate trains 20 and derives 400 wood / 240 stone from the web per-unit contract;
+   - quantity-selection UI is intentionally deferred unless human testing proves the bounded batch insufficient.
 
-3. **Explicit March preparation**
+3. **Explicit March preparation — COMPLETE FOR I-II**
    - Aldric;
-   - Archer quantity;
-   - Expedition Power / key stats;
-   - confirm/send.
+   - prepared Archer roster;
+   - combat stats + Expedition Power;
+   - explicit confirmation;
+   - prepared composition persists and is used by Engendro combat.
 
-4. **Engendro report**
+4. **Engendro report — COMPLETE FOR I-II**
    - participants;
-   - key stats;
+   - player March Power;
    - result/reason;
-   - reward/consequence.
+   - rounds / remaining health;
+   - reward;
+   - no fabricated enemy Power.
 
-5. **OWNER_I_II profile**
-   - values proposed from web;
-   - clearly separate from QA_FAST;
-   - human pacing acceptance before production freeze.
+5. **OWNER_I_II profile — STAGED / INACTIVE**
+   - runtime consumption is routed through one atomic active-profile facade;
+   - QA_FAST remains the active constant;
+   - OWNER_I_II values are isolated and locked against the web contract by EditMode regression;
+   - QA and OWNER saves use separate paths while the legacy QA save path remains preserved;
+   - activation remains blocked on integrated CI + human pacing acceptance.
+
+Current CI status for this profile-plumbing block is intentionally tracked in SESSION_HANDOFF.md; do not infer green from this document alone.
