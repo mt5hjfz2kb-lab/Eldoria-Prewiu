@@ -18,5 +18,5 @@
   "approved_input_sha256": "",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "probe_nonce": "2026-09-29:tripo-hardening-regression-cuartel-1"
+  "probe_nonce": "2026-09-29:tripo-hardening-regression-cuartel-2"
 }
