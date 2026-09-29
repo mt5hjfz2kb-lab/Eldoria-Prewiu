@@ -14,7 +14,7 @@ namespace Eldoria.Presentation
         static readonly Color TerraceStone = new Color(.355f,.325f,.275f);
         static readonly Color RetainingStone = new Color(.315f,.305f,.285f);
         static readonly Color EarthBlend = new Color(.31f,.285f,.24f);
-        static readonly Color TrailEarth = new Color(.215f,.188f,.150f);
+        static readonly Color TrailEarth = new Color(.125f,.092f,.060f);
 
         public static GameObject StreetStraight(string name, Vector3 center, float length, float width, float yawDegrees)
         {

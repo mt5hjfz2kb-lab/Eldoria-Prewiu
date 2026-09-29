@@ -710,8 +710,8 @@ namespace Eldoria.Presentation
 
             // I-II production corridor: one authored route from Valoria into resources and corruption.
             // Keep gameplay hotspots independent from the visual dressing so art never owns rules.
-            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.235f,.225f,.190f),"earth");
-            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.255f,.235f,.195f),"earth");
+            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.165f,.155f,.125f),"earth");
+            IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.205f,.180f,.135f),"earth");
 
             // A worn march trail gives a continuous Valoria -> threat axis without reading as
             // a chain of oversized tan props. Sparse stones remain as edge detail only.
@@ -726,7 +726,7 @@ namespace Eldoria.Presentation
             }
 
             // Forest resource pocket. The invisible hotspot remains the only gameplay target.
-            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),6.8f,6.2f,new Color(.225f,.235f,.195f),"earth");
+            IrregularGround("Frontier · forest earth",new Vector3(-6.3f,.04f,1.1f),5.7f,5.25f,new Color(.145f,.175f,.125f),"earth");
             var grove=Cylinder("Bosque de Valoria · recolectar",new Vector3(-6.2f,1.35f,1.0f),
                 new Vector3(2.35f,2.7f,2.35f),new Color(.18f,.22f,.18f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
@@ -745,18 +745,23 @@ namespace Eldoria.Presentation
             ValoriaKit.BenchmarkPiece("Frontier · stacked timber",art!=null?art.Firewood:null,
                 new Vector3(-4.25f,.12f,.45f),1.25f,.78f,Quaternion.Euler(0,-18f,0));
             Glow("Frontier · lumber warmth",new Vector3(-4.35f,.72f,.35f),Amber,.68f,2.6f);
+            // Capture review rejected the imported tall-tree silhouettes: they read bare/corrupted.
+            // Keep Frontier's forest language evergreen and reserve Slavic for undergrowth/moss/ground props.
             foreach(var p in new[]{
                 new Vector3(-8.65f,.03f,1.95f),new Vector3(-6.1f,.03f,3.35f),
-                new Vector3(-4.65f,.03f,1.65f)})
-                ValoriaKit.BenchmarkPieceModulated("Frontier · tall forest pine",art!=null?art.SlavicTreeTall:null,
-                    p,1.55f,4.25f,Quaternion.Euler(0,(int)(p.z*47f)%360,0),new Color(.64f,.76f,.64f,1f));
+                new Vector3(-4.65f,.03f,1.65f),new Vector3(-5.55f,.03f,-.25f),
+                new Vector3(-7.55f,.03f,3.0f)})
+                ValoriaKit.PineTree("Frontier · tall evergreen",p,.78f);
             foreach(var p in new[]{new Vector3(-7.8f,.05f,1.2f),new Vector3(-5.6f,.05f,2.5f)})
                 ValoriaKit.BenchmarkPieceModulated("Frontier · forest moss",art!=null?art.SlavicMoss:null,
-                    p,1.7f,.28f,Quaternion.Euler(0,(int)(p.x*29f)%360,0),new Color(.62f,.72f,.58f,1f));
+                    p,1.7f,.28f,Quaternion.Euler(0,(int)(p.x*29f)%360,0),new Color(.52f,.62f,.48f,1f));
+            foreach(var p in new[]{new Vector3(-6.9f,.025f,.55f),new Vector3(-5.15f,.025f,1.35f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · forest floor mud",art!=null?art.SlavicMudFlat:null,
+                    p,2.35f,.12f,Quaternion.Euler(0,(int)(p.z*53f)%360,0),new Color(.48f,.42f,.32f,1f));
 
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
-            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),6.7f,5.8f,new Color(.245f,.238f,.220f),"stone");
+            IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),5.7f,4.9f,new Color(.205f,.198f,.180f),"stone");
             ValoriaKit.RockCluster("Frontier · quarry cut",new Vector3(6.4f,.02f,-2.1f),1.28f,12);
             ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
             ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
@@ -783,7 +788,7 @@ namespace Eldoria.Presentation
 
             // The route becomes visibly colder/corrupted before the encounter, so the threat reads
             // as territory rather than an isolated dark model.
-            IrregularGround("Frontier · corrupted shelf",new Vector3(6.0f,.045f,4.1f),7.2f,6.4f,new Color(.225f,.215f,.225f),"slate");
+            IrregularGround("Frontier · corrupted shelf",new Vector3(6.0f,.045f,4.1f),5.8f,5.2f,new Color(.165f,.155f,.175f),"slate");
             Glow("Frontier · road lantern west",new Vector3(-1.55f,1.05f,-4.9f),Amber,.72f,2.8f);
             Glow("Frontier · road lantern east",new Vector3(1.45f,1.00f,-3.4f),Amber,.64f,2.5f);
 

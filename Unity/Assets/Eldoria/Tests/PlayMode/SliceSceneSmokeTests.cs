@@ -452,6 +452,24 @@ namespace Eldoria.Tests
         }
 
 
+        [UnityTest]
+        public IEnumerator FrontierForestUsesEvergreenTallMass()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+            int evergreen=0;
+            int rejected=0;
+            foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+            {
+                if(tr.name.Contains("Frontier · tall evergreen"))evergreen++;
+                if(tr.name.Contains("Frontier · tall forest pine"))rejected++;
+            }
+            Assert.That(evergreen,Is.GreaterThanOrEqualTo(5));
+            Assert.That(rejected,Is.EqualTo(0),
+                "Capture-rejected bare imported tall-tree silhouettes must not return to Frontier.");
+        }
+
+
 
     }
 }
