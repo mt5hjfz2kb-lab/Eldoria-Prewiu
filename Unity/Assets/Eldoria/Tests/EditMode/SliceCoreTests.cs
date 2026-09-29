@@ -309,6 +309,11 @@ namespace Eldoria.Tests
         [Test] public void OwnerCandidateIsIsolatedAndMatchesWebContract()
         {
             Assert.That(SliceContentProfiles.ActiveRuntimeProfile,Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(System.Array.Empty<string>()),Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-owner-i-ii"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile=OWNER_I_II"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile","OWNER_I_II"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile=UNKNOWN"}),Is.EqualTo(SliceContentProfiles.QaFastId));
             Assert.That(SliceContentProfiles.Active.InitialWood,Is.EqualTo(SliceContentProfiles.QaFast.InitialWood));
             Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialWood,Is.EqualTo(SliceContentProfiles.WebContract.InitialWood));
             Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialStone,Is.EqualTo(SliceContentProfiles.WebContract.InitialStone));
