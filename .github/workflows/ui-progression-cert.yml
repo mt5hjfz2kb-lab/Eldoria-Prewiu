@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/ui-progression-cert.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/**'
   workflow_dispatch:
 
 permissions:
