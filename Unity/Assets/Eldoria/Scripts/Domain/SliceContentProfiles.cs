@@ -30,6 +30,10 @@ namespace Eldoria.Domain
             public const int ForestLoad = 360;
 
             public const int EngendroRequiredArchers = 48;
+            public const int Chapter1GatherWood = 360;
+            public const int Chapter1GatherStone = 0; // no early quarry in QA_FAST yet
+            public const int Chapter2TrainArchers = 12;
+            public const int Chapter2ExpeditionPower = 2500;
         }
 
         /// <summary>
