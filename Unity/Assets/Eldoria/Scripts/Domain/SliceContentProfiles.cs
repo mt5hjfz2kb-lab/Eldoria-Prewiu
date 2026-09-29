@@ -97,8 +97,9 @@ namespace Eldoria.Domain
         }
 
         /// <summary>
-        /// Single runtime facade. Changing ActiveRuntimeProfile is the only supported profile switch.
-        /// Save files are profile-scoped by SliceBoot so an OWNER_I_II test cannot reuse QA_FAST state.
+        /// Single runtime facade. Runtime profile selection is explicit through SelectRuntimeProfile/CLI;
+        /// QA_FAST remains the default and OWNER_I_II is opt-in. Save files are profile-scoped by SliceBoot
+        /// so an OWNER_I_II test cannot reuse QA_FAST state.
         /// </summary>
         public static class Active
         {
