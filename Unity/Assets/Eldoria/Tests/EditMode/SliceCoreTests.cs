@@ -200,6 +200,49 @@ namespace Eldoria.Tests
             Assert.That(p.EngendroDefeated,Is.True);
         }
 
+        [Test] public void BastionOneTwoObjectiveKeysFollowCanonicalTeachingOrder()
+        {
+            var state=new PlayerState();
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.build-sawmill"));
+
+            state.SawmillLevel=1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.gather-wood"));
+
+            state.ChapterProgress.GatheredWood=SliceContentProfiles.QaFast.Chapter1GatherWood;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.gather-stone"));
+
+            state.ChapterProgress.GatheredStone=SliceContentProfiles.QaFast.Chapter1GatherStone;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.clear-route"));
+
+            state.ChapterProgress.RouteCleared=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.return"));
+
+            state.JourneyComplete=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.ascend"));
+
+            state.BastionLevel=2;
+            state.JourneyComplete=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.build-barracks"));
+
+            state.BarracksLevel=1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.train-archers"));
+
+            state.ChapterProgress.TrainedArchers=SliceContentProfiles.QaFast.Chapter2TrainArchers;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.prepare-march"));
+
+            state.MarchConfigured=true;
+            state.ChapterProgress.MarchConfirmed=true;
+            state.ChapterProgress.ConfirmedExpeditionPower=SliceContentProfiles.QaFast.Chapter2ExpeditionPower-1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.raise-expedition-power"));
+
+            state.ChapterProgress.ConfirmedExpeditionPower=SliceContentProfiles.QaFast.Chapter2ExpeditionPower;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.defeat-engendro"));
+
+            state.EngendroDefeated=true;
+            state.ChapterProgress.EngendroDefeated=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.complete"));
+        }
+
         [Test] public void SnapshotCannotEditAuthoritativeState()
         {
             var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
