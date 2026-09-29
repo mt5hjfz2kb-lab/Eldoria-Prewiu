@@ -146,17 +146,286 @@ jobs:
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
-      - name: Audit mobile readiness
+      - name: Audit mobile build prerequisites
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $editorDir = Split-Path $env:UNITY_EDITOR_PATH
-          $androidRoot = Join-Path (Join-Path $editorDir 'Data') 'PlaybackEngines\AndroidPlayer'
-          Write-Host "MOBILE_ANDROID_BUILD_SUPPORT=$(Test-Path $androidRoot)"
-          $adb = Join-Path $androidRoot 'SDK\platform-tools\adb.exe'
-          Write-Host "MOBILE_ADB_PRESENT=$(Test-Path $adb)"
-          if (Test-Path $adb) {
-            & $adb devices
+          $editor = $env:UNITY_EDITOR_PATH
+          $editorDir = Split-Path $editor
+          $dataDir = Join-Path $editorDir 'Data'
+          $androidRoot = Join-Path $dataDir 'PlaybackEngines\AndroidPlayer'
+          $sdk = Join-Path $androidRoot 'SDK'
+          $ndk = Join-Path $androidRoot 'NDK'
+          $jdk = Join-Path $androidRoot 'OpenJDK'
+          $adbBundled = Join-Path $sdk 'platform-tools\adb.exe'
+          $adbCommand = Get-Command adb.exe -ErrorAction SilentlyContinue
+          if (Test-Path $adbBundled) { $adb = $adbBundled }
+          elseif ($adbCommand) { $adb = $adbCommand.Source }
+          else { $adb = $null }
+
+          $devices = @()
+          if ($adb) {
+            try {
+              $devices = & $adb devices 2>$null |
+                Select-Object -Skip 1 |
+                Where-Object { $_ -match '\S' } |
+                ForEach-Object { $_.Trim() }
+            } catch {}
           }
+          $connected = @($devices | Where-Object { $_ -match 'device        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          foreach ($name in @('blender.exe','python.exe','openscad.exe')) {
+            $found = Get-Command $name -ErrorAction SilentlyContinue
+            if ($found) { Write-Host "ART_TOOL $name $($found.Source)" }
+            else { Write-Host "ART_TOOL $name NOT_IN_PATH" }
+          }
+          $root = Join-Path ${env:ProgramFiles} 'Blender Foundation'
+          if (Test-Path $root) {
+            Get-ChildItem $root -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue |
+              Select-Object -ExpandProperty FullName | ForEach-Object { Write-Host "ART_TOOL blender_installed $_" }
+          }
+      - name: EditMode
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $xml = "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
+          $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity EditMode timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity EditMode process failed with exit code $($process.ExitCode)." }
+          if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
+          [xml]$results = Get-Content $xml
+          if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
+      - name: PlayMode
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
+          $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-nographics","-projectPath","$env:GITHUB_WORKSPACE/Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity PlayMode timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity PlayMode process failed with exit code $($process.ExitCode)." }
+          if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
+          [xml]$results = Get-Content $xml
+          if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+      - name: Windows desktop build
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity Windows desktop build timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
+          $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
+          if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
+          $playerDll = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/UnityPlayer.dll"
+          $dataDir = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria_Data"
+          if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
+          if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
+      - name: Render Valoria art benchmark
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/BenchmarkCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-BenchmarkCapture.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Valoria capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Valoria capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("valoria-establishing.png","valoria-gate.png","valoria-districts.png","valoria-sawmill-19.png","valoria-sawmill-12.png","valoria-sawmill-9.png","valoria-barracks-19.png","valoria-barracks-12.png","valoria-barracks-9.png","valoria-master-west.png","valoria-master-east.png","valoria-master-future.png","valoria-mobile.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Benchmark image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-valoria-captures-${{ github.sha }}
+          path: Unity/BenchmarkCaptures/*.png
+          if-no-files-found: warn
+      - name: Render isolated asset gate
+        if: github.event_name == 'workflow_dispatch'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/AssetGateCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-AssetGate.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Asset gate capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Asset gate capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("asset-gate-establishing.png","asset-gate-oblique.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Asset gate image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        with:
+          name: eldoria-asset-gate-${{ github.sha }}
+          path: Unity/AssetGateCaptures/*.png
+          if-no-files-found: warn
+      - name: Render isolated original hero candidate
+        if: github.event_name == 'workflow_dispatch'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/OriginalHeroCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-OriginalHero.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(180000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Original hero capture timed out after 3 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 120 }; throw "Original hero capture failed with exit code $($process.ExitCode)." }
+          foreach ($name in @("hero-establishing.png","hero-approach.png","hero-oblique.png")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Original hero image missing or empty: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        with:
+          name: eldoria-original-hero-${{ github.sha }}
+          path: Unity/OriginalHeroCaptures/*.png
+          if-no-files-found: warn
+      - name: Render isolated layered Valoria feasibility test
+        if: github.event_name == 'workflow_dispatch'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/LayeredValoriaCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-LayeredValoria.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(240000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 160 }
+            throw "Layered Valoria capture timed out."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Layered Valoria capture failed with exit code $($process.ExitCode)." }
+          foreach ($stage in @(1,2)) {
+            foreach ($zoom in @("strategic","city","detail")) {
+              $file = Join-Path $folder "stage-$stage-$zoom.png"
+              if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Layered test image missing or empty: $file" }
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        with:
+          name: eldoria-layered-valoria-captures-${{ github.sha }}
+          path: Unity/LayeredValoriaCaptures/*.png
+          if-no-files-found: warn
+      - name: Render isolated optimized Bastion GLB review
+        if: github.event_name == 'workflow_dispatch' && env.BASTION_GLB_PRESENT == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-ImageTo3DReview.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 180 }
+            throw "Image-to-3D review timed out after 5 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 180 }; throw "Image-to-3D review failed: $($process.ExitCode)." }
+          foreach ($name in @("strategic.png","city.png","detail.png","oblique.png","metrics.json")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing ImageTo3D evidence: $name" }
+          }
+      - name: Render isolated Tripo small-module review
+        if: github.event_name == 'workflow_dispatch' && env.TRIPO_MODULE_PRESENT == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoModuleReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-TripoModuleReview.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 180 }
+            throw "Tripo small-module review timed out after 5 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 180 }; throw "Tripo small-module review failed: $($process.ExitCode)." }
+          foreach ($name in @("strategic.png","city.png","detail.png","oblique.png","metrics.json")) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing Tripo module evidence: $name" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        with:
+          name: eldoria-tripo-module-${{ github.sha }}
+          path: |
+            Unity/TripoModuleReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoModuleReview.unity
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        with:
+          name: eldoria-image-to-3d-${{ github.sha }}
+          path: |
+            Unity/ImageTo3DReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionImageTo3DReview.unity
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-unity-checks-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/Eldoria-*.xml
+            ${{ runner.temp }}/Eldoria-*.log
+            ${{ runner.temp }}/Eldoria-*.json
+            ${{ github.workspace }}/Unity/Builds/Windows/
+          if-no-files-found: warn
+ }).Count -gt 0
+          $audit = [ordered]@{
+            unity_editor = $editor
+            android_build_support = (Test-Path $androidRoot)
+            android_player_path = $androidRoot
+            sdk_present = (Test-Path $sdk)
+            ndk_present = (Test-Path $ndk)
+            jdk_present = (Test-Path $jdk)
+            adb_path = $adb
+            adb_devices = @($devices)
+            physical_device_connected = $connected
+          }
+          $json = $audit | ConvertTo-Json -Depth 4
+          $json
+          $json | Set-Content "$env:RUNNER_TEMP/Eldoria-MobilePrerequisites.json" -Encoding UTF8
+          if (-not $audit.android_build_support) {
+            Write-Warning 'Unity Android Build Support is not installed on this runner; physical-phone profiling cannot start from CI yet.'
+          } elseif (-not $audit.physical_device_connected) {
+            Write-Warning 'Android Build Support is present, but no authorized physical ADB device is connected.'
+          } else {
+            Write-Host 'MOBILE_PROFILE_READY=true'
+          }
+
       - name: Audit original-art tools on Windows runner
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
