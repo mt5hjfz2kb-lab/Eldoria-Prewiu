@@ -252,7 +252,7 @@ namespace Eldoria.Application
                 long due = m.PhaseEndsUtcTicks;
                 if (m.Phase == "outbound")
                 {
-                    if (m.TargetId == "forest-valoria")
+                    if (m.TargetId=="forest-valoria" || m.TargetId=="quarry-valoria")
                     { m.Phase = "gathering"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.GatherSeconds).Ticks; }
                     else
                     {
