@@ -43,6 +43,7 @@ namespace Eldoria.Domain
         public int GatheredWood;
         public int GatheredStone;
         public int TrainedArchers;
+        public int ConfirmedExpeditionPower;
         public bool RouteCleared;
         public bool BastionTwoReached;
         public bool MarchConfirmed;
