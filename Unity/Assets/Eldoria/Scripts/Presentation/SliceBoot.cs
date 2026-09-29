@@ -8,7 +8,9 @@ namespace Eldoria.Presentation
     public static class SliceBoot
     {
         public static string SavePath => System.IO.Path.Combine(UnityEngine.Application.persistentDataPath,
-            "eldoria-unity-slice-"+Eldoria.Domain.SliceContentProfiles.ActiveRuntimeProfile.ToLowerInvariant().Replace("_","-")+"-v1.json");
+            Eldoria.Domain.SliceContentProfiles.ActiveRuntimeProfile==Eldoria.Domain.SliceContentProfiles.QaFastId
+                ? "eldoria-unity-slice-v1.json"
+                : "eldoria-unity-slice-owner-i-ii-v1.json");
 
         public static void ResetLocalSaveAndRestart()
         {
