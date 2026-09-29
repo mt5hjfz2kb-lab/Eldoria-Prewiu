@@ -433,12 +433,13 @@ def split_components_to_glbs(output_dir, min_triangles=250):
         minz = min(v.z for v in world); maxz = max(v.z for v in world)
         center = ((minx + maxx) * 0.5, (miny + maxy) * 0.5, minz)
 
-        # Move object geometry so origin/pivot becomes bottom-center.
+        # Move geometry so each exported reusable piece has a bottom-center pivot at (0,0,0).
+        # This split happens only after the canonical combined GLB has already been exported.
         inv = o.matrix_world.inverted()
         local_center = inv @ mathutils.Vector(center)
         for v in o.data.vertices:
             v.co -= local_center
-        o.location += o.matrix_world.to_3x3() @ local_center
+        o.location = (0.0, 0.0, 0.0)
 
         useful.append((o, tris))
         piece_rows.append({
@@ -530,7 +531,6 @@ def main():
     if not optimized["uv_present_all_meshes"]:
         raise RuntimeError("Optimized GLB is missing UV0 on at least one mesh")
     resized_images = optimize_images()
-    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles)
     os.makedirs(os.path.dirname(a.output), exist_ok=True)
     bpy.ops.export_scene.gltf(
         filepath=a.output,
@@ -539,6 +539,9 @@ def main():
         export_materials="EXPORT",
         export_yup=True,
     )
+    # Optional reusable multipiece extraction runs after the canonical combined export so
+    # per-piece pivot normalization cannot alter the certified combined geometry.
+    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles)
     report = {
         "target_triangles": target,
         "accepted_range": [min_tris, max_tris],
