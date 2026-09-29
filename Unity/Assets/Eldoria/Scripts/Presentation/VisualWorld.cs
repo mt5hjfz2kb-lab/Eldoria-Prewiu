@@ -762,14 +762,7 @@ namespace Eldoria.Presentation
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
             IrregularGround("Frontier · quarry shelf",new Vector3(6.3f,.05f,-2.2f),5.7f,4.9f,new Color(.205f,.198f,.180f),"stone");
-            ValoriaKit.RockCluster("Frontier · quarry cut",new Vector3(6.4f,.02f,-2.1f),1.28f,12);
-            ValoriaKit.RockCluster("Frontier · quarry spoil",new Vector3(8.15f,.02f,-.55f),.82f,7);
-            ValoriaKit.BenchmarkPieceTinted("Frontier · quarry retaining stone",art!=null?art.SlavicStoneFence:null,
-                new Vector3(5.0f,.16f,-3.95f),2.15f,1.00f,Quaternion.Euler(0,8f,0),ValoriaKit.OldStone*.78f);
-            ValoriaKit.BenchmarkPieceModulated("Frontier · quarry boulder",art!=null?art.SlavicBoulder:null,
-                new Vector3(7.65f,.05f,-3.25f),1.65f,1.45f,Quaternion.Euler(0,23f,0),new Color(.74f,.73f,.68f,1f));
-            ValoriaKit.BenchmarkPieceModulated("Frontier · quarry ledge",art!=null?art.SlavicFlatRock:null,
-                new Vector3(5.55f,.06f,-1.05f),2.15f,.58f,Quaternion.Euler(0,-19f,0),new Color(.72f,.71f,.66f,1f));
+            WorldResourceKit.QuarryResourcePocket("Frontier · quarry resource kit",new Vector3(6.35f,.02f,-2.15f),2.65f);
             var quarryMarker=Box("Cantera de Valoria · visual reserve",new Vector3(6.5f,.28f,-2.1f),
                 new Vector3(3.7f,.18f,3.4f),new Color(.20f,.20f,.19f));
             quarryMarker.GetComponent<Renderer>().enabled=false;
