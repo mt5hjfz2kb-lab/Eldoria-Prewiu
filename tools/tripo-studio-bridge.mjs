@@ -757,6 +757,39 @@ try {
           tooltips
         });
       }
+      const selectedActionButtons = selectedAssetCard.locator('button');
+      if (await selectedActionButtons.count()) {
+        const moreButton = selectedActionButtons.filter({ has: selectedPage.locator('div.i-tripo\\:more-horizontal') }).first();
+        const menuTrigger = await moreButton.count() ? moreButton : selectedActionButtons.first();
+        await menuTrigger.click({ force: true });
+        await selectedPage.waitForTimeout(500);
+        report.probe_selected_asset.more_menu = {
+          body_text_tail: (await selectedPage.locator('body').innerText()).slice(-5000),
+          visible_surfaces: await selectedPage.locator('[role="menu"], [role="dialog"], [data-radix-popper-content-wrapper], [data-reka-popper-content-wrapper]').evaluateAll(nodes =>
+            nodes.filter(el => {
+              const r = el.getBoundingClientRect();
+              const s = getComputedStyle(el);
+              return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none';
+            }).map(el => ({
+              role: el.getAttribute('role') || '',
+              text: (el.innerText || el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 2000),
+              html: el.outerHTML.slice(0, 10000)
+            }))
+          ),
+          visible_buttons: await selectedPage.locator('button').evaluateAll(nodes =>
+            nodes.filter(el => {
+              const r = el.getBoundingClientRect();
+              const s = getComputedStyle(el);
+              return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none';
+            }).map(el => ({
+              text: (el.innerText || el.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 300),
+              aria: el.getAttribute('aria-label') || '',
+              title: el.getAttribute('title') || '',
+              className: String(el.className || '').slice(0, 300)
+            })).filter(x => /export|download|descarg|exportar|eliminar|delete|duplic|rename|renombr|share|compart/i.test(x.text + ' ' + x.aria + ' ' + x.title))
+          )
+        };
+      }
       report.probe_selected_asset.screenshot_path = path.join(path.dirname(outPath), 'tripo-studio-selected-asset-actions.png');
       await selectedPage.screenshot({ path: report.probe_selected_asset.screenshot_path, fullPage: false });
     }
