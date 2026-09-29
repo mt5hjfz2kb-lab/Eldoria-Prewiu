@@ -60,7 +60,7 @@ Use the LookDev rig rather than per-building custom lighting.
 - moderate fog for depth, never enough to wash materials;
 - light angle must reveal form at the official isometric camera.
 
-`neutral-overcast` is the canonical production LookDev for v1, matching the real `VisualWorld` environment: ambient 0.70 neutral, fog 0.63 from 28–62, white directional sun 0.90, shadow strength 0.55, rotation 55/-25. Historical candidates remain evidence only and are not active production alternatives.
+`neutral-overcast` remains the canonical production LookDev family for v1. The first real OWNER I–II human pass showed the runtime presentation was materially too dark, so the player-facing baseline is now lifted while preserving the same value hierarchy: city ambient ~0.82 neutral/warm, fog ~0.69 from 30–68, warm-neutral directional sun ~1.22, shadow strength ~0.43 and a similar 52/-25 key direction. Frontier receives the corresponding readability lift. Historical darker values remain evidence only and are not active production targets.
 
 ## Detail hierarchy
 
