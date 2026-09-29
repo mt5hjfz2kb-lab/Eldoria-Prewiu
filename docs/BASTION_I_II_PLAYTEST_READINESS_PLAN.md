@@ -106,6 +106,35 @@ For the I–II owner build, Unity needs a small authoritative chapter state rath
 - Bastion I route-clear must become explicit rather than JourneyComplete being satisfied by corruption discovery alone.
 
 
+## Implementation status — 2026-09-29
+
+### Implemented / structurally green pending latest CI consolidation
+- explicit `QA_FAST` vs web-contract content profiles;
+- persistent authoritative chapter progress for Bastion I–II;
+- early wood and stone gathering counters;
+- explicit corrupt-route-clear requirement before Bastion II;
+- early quarry node in Frontier;
+- persistent Cuartel / recruitment state;
+- explicit Bastion-II March confirmation;
+- persisted prepared hero/troop composition;
+- persisted confirmed Expedition Power;
+- Engendro blocked until March is prepared;
+- structured persisted battle report;
+- Frontier battle summary with participants / Power / rounds / remaining health / rewards / reason;
+- domain-owned objective-stage keys consumed by the HUD;
+- QA fresh-save reset control;
+- full domain fresh-save progression now exercises wood → stone → route → Bastion II → Cuartel → recruitment → March → Engendro.
+
+### Still required before OWNER PLAYTEST candidate
+- latest full Unity gate must be green after concurrent changes settle;
+- inspect/accept current Bastion Hero Pass and Frontier benchmark visually at representative mobile framing;
+- create/select `OWNER_I_II` pacing values from web contract (do not simply promote QA_FAST);
+- run uninterrupted human fresh-save I→II without developer knowledge;
+- perform at least one physical-device mobile profile once Android/target build prerequisites are available;
+- fix only the issues discovered by that integrated owner run before expanding into Bastion III.
+
+---
+
 ## Product gaps before a meaningful human I–II test
 
 ### P0 — Explicit March preparation
