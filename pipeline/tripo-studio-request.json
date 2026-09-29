@@ -3,7 +3,7 @@
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "notes": "Eldoria multipiece modular stone-sheet viability test. Ingest exact ChatGPT-approved bytes, persist canonical exact-input, stage in Tripo Studio, show visible cost, STOP before Generate. No credit spend.",
-  "request_id": "eldoria-multipiece-stonekit-v1-stage-runner-exact-search",
+  "request_id": "eldoria-multipiece-stonekit-v1-stage-runner-discovery-r3",
   "asset_name": "Eldoria_MultiPiece_StoneKit_v1",
   "function": "Single-sheet Tripo viability test for six separable reusable aged-stone modular families: straight slab, irregular slab, street edge, street corner, step, stone block.",
   "upload_file_name": "conjunto_de_piezas_de_piedra_envejecida.jpeg",
@@ -25,7 +25,8 @@
     "escalon",
     "bloque de piedra"
   ],
-  "probe_nonce": "2026-09-29T21:runner-exact-search",
+  "probe_nonce": "2026-09-29-r3-runner-discovery",
   "search_downloads_for_sha": true,
-  "persist_exact_input": true
+  "persist_exact_input": true,
+  "probe_chatgpt_session": false
 }
