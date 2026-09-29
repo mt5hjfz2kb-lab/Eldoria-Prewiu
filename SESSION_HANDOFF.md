@@ -65,11 +65,12 @@ This file is intentionally **operational and short**. Historical execution detai
 Read `docs/BASTION_I_X_MASTER_TABLE.md` before changing Arc I progression.
 
 Current genuine design gaps:
-1. **Bastion IV identity** — exact autonomy challenge + visible Valoria consequence.
-2. **Bastion V tuning** — which upgrades begin requiring stone and ratios; Cantera’s fundamental purpose is already closed.
-3. **Bastion VII teaching cadence** — stage Relicario onboarding across VII–IX/post-X.
-4. **Bastion X finale feel** — graduation/ceremony pacing so it opens desire for the larger game.
-5. **XI+ progression** — separate post-prologue structure; do not repeat tutorial beats.
+1. **Bastion V tuning** — which upgrades begin requiring stone and ratios; Cantera’s fundamental purpose is already closed.
+2. **Bastion VII teaching cadence** — stage Relicario onboarding across VII–IX/post-X.
+3. **Bastion X finale feel** — graduation/ceremony pacing so it opens desire for the larger game.
+4. **XI+ progression** — separate post-prologue structure; do not repeat tutorial beats.
+
+**Bastion IV is now CLOSED in the web vertical slice:** the player must choose Production/Works, Defense, or Shelter/Population; the choice has an immediate resource emphasis plus a visible Valoria cue and is required before Bastion V. Preserve this contract when the corresponding Unity progression is migrated. Web construction queue v1 also allows only **one active building/Bastion construction or upgrade at a time**; gathering, recruitment and Hospital treatment remain separate queues.
 
 ## Aserradero AP2 dedicated asset checkpoint
 - Owner authorized **55 Tripo credits** for the exact approved image; generation/export completed successfully.
@@ -93,7 +94,6 @@ Valoria has moved from visual-formula validation into production scaling.
 Avoid returning to isolated-module experimentation unless a specific production defect requires it. The next visual block should extend a real district, not rebuild the factory.
 
 ## Product-direction work that can proceed in parallel
-- Close Bastion IV’s exact autonomy beat.
 - Tune the first stone requirements at Bastion V.
 - Convert the staged Relicario teaching cadence into exact mission/tutorial beats.
 - Later map the Bastion-by-Bastion visible Valoria changes onto the certified long-term city plan.
