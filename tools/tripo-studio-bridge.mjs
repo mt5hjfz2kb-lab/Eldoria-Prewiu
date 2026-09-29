@@ -722,6 +722,14 @@ try {
         };
       }).filter(x => x.visible).slice(0, 200)
     );
+    report.probe_network_resources = await selectedPage.evaluate(() => performance.getEntriesByType('resource')
+      .map(e => String(e.name || ''))
+      .filter(u => /a50f42b8|a91b5c26|glb|gltf|mesh|model|project|task|export|download|api/i.test(u))
+      .slice(-500));
+    report.probe_document_links = await selectedPage.locator('a').evaluateAll(nodes => nodes.map(a => ({
+      text: (a.innerText || a.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 200),
+      href: a.href || ''
+    })).filter(x => /a50f42b8|a91b5c26|glb|gltf|mesh|model|project|task|export|download|api/i.test(x.href + ' ' + x.text)).slice(0, 300));
     const selectedAssetCard = selectedPage.locator('a.border-purple-1').first();
     if (await selectedAssetCard.count()) {
       await selectedAssetCard.hover();
