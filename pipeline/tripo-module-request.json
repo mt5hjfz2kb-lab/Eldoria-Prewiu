@@ -1,25 +1,25 @@
 {
   "enabled": true,
-  "request_id": "valoria-cuartel-ap2-v1-promote-production-r6",
-  "module_label": "Valoria_Cuartel_AP2_v1",
-  "unity_yaw_degrees": 180,
+  "request_id": "valoria-granero-biii-v1-isolated-gate-r1",
+  "module_label": "Valoria_Granero_BIII_v1",
+  "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Valoria_Cuartel_AP2_v1.glb",
-    "exact_sha256": "d9ebd70a2993db449314f1025ca2f589741bc1771fa69a4cee899385b30045f4",
-    "name_regex": "^Valoria_Cuartel_AP2_v1\\.glb$",
+    "exact_name": "Valoria_Granero_BIII_v1.glb",
+    "exact_sha256": "b14cfbf85d608aac4a3b551a3804df57f8dc866264c786565e496cfac7fe647b",
+    "name_regex": "^Valoria_Granero_BIII_v1\\.glb$",
     "max_age_hours": 4,
     "exclude_sha256": []
   },
   "refinement": {
     "enabled": false
   },
-  "visual_acceptance": "Dedicated compact Valoria barracks / guardhouse. Preserve a robust stone lower body, asymmetric timber/slate upper mass, recessed guarded south/front entrance, subordinate watch/guard cue and restrained military/heraldic identity. Isolated gate must show one coherent building, not a fortress/diorama. Review cardinal diagnostics to confirm intended south/front orientation. Production integration target after isolated PASS: visual footprint 3.5–3.8 x 2.9–3.2, height 3.4–4.0, west/central-street flank kept clear, and functional hotspot/click collider remaining separate from the visual mesh.",
-  "notes": "Zero-credit production promotion retry r6 for the same certified Cuartel GLB. No Tripo generation is permitted. Retry only stashes Unity gate residual workspace changes before fetch/rebase/push.",
+  "visual_acceptance": "Dedicated Bastion III granary / food storehouse. Preserve a coherent stone-and-timber granary identity with a tall left-side silo/tower, dominant central roof mass, readable open south/front facade, sacks/carts/agricultural storage cues and wheat/banner identity. It must read as one granary building, not a fortress or barracks. Inspect official and cardinal captures to confirm intended south/front orientation and parcel-compatible proportions. Integration target: footprint 4.1–4.5 x 3.4–3.8, height 3.7–4.4. Functional hotspot/click collider remains separate from the visual mesh.",
+  "notes": "Zero-credit isolated validation of the exact GLB exported from approved Tripo task a50f42b8-1e96-4298-ba36-089334d934f6. Source bytes 69308356; SHA-256 b14cfbf85d608aac4a3b551a3804df57f8dc866264c786565e496cfac7fe647b. No Tripo generation or credit spend is permitted. Promotion remains disabled until TECH and VISUAL PASS.",
   "promotion": {
-    "enabled": true,
-    "destination": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+    "enabled": false,
+    "destination": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
     "overwrite": false,
-    "commit_message": "Art: promote certified Cuartel AP2 module"
+    "commit_message": "Art: promote certified Granero BIII module"
   }
 }
