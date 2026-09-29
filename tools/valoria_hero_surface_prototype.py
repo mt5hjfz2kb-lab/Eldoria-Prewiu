@@ -65,8 +65,8 @@ def make_pbr_material(name, family, size=1024):
         light = np.array([0.43, 0.40, 0.355], dtype=np.float32)
         base = dark + (light - dark) * height[..., None]
         base *= (1.0 - 0.15 * joints[..., None])
-        rough = np.clip(0.72 + 0.14 * joints + 0.06 * (1.0 - height), 0.70, 0.92)
-        normal_strength = 0.45
+        rough = np.full_like(height, 0.985, dtype=np.float32)
+        normal_strength = 0.0
     elif family == "rock":
         coarse = (
             0.50
@@ -78,8 +78,8 @@ def make_pbr_material(name, family, size=1024):
         dark = np.array([0.18, 0.20, 0.195], dtype=np.float32)
         light = np.array([0.33, 0.325, 0.295], dtype=np.float32)
         base = dark + (light - dark) * height[..., None]
-        rough = np.clip(0.79 + 0.13 * (1.0 - height), 0.78, 0.95)
-        normal_strength = 0.65
+        rough = np.full_like(height, 0.99, dtype=np.float32)
+        normal_strength = 0.0
     else:
         raise RuntimeError("Unknown PBR family: " + family)
 
@@ -102,7 +102,7 @@ def make_pbr_material(name, family, size=1024):
     normal_tex = nodes.new("ShaderNodeTexImage")
     normal_tex.image = normal_img
     normal_map = nodes.new("ShaderNodeNormalMap")
-    normal_map.inputs["Strength"].default_value = 0.22 if family == "stone" else 0.28
+    normal_map.inputs["Strength"].default_value = 0.0
 
     links.new(base_node.outputs["Color"], bsdf.inputs["Base Color"])
     links.new(rough_node.outputs["Color"], bsdf.inputs["Roughness"])
