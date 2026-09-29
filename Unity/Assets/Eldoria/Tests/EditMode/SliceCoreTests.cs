@@ -306,6 +306,28 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().LastBattleReport.Won,Is.True);
         }
 
+        [Test] public void OwnerCandidateIsIsolatedAndMatchesWebContract()
+        {
+            Assert.That(SliceContentProfiles.ActiveRuntimeProfile,Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.Active.InitialWood,Is.EqualTo(SliceContentProfiles.QaFast.InitialWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialWood,Is.EqualTo(SliceContentProfiles.WebContract.InitialWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialStone,Is.EqualTo(SliceContentProfiles.WebContract.InitialStone));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialArcherT1,Is.EqualTo(SliceContentProfiles.WebContract.InitialArcherT1));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.SawmillWoodCost,Is.EqualTo(SliceContentProfiles.WebContract.SawmillWoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherWood,Is.EqualTo(SliceContentProfiles.WebContract.Chapter1GatherWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherStone,Is.EqualTo(SliceContentProfiles.WebContract.Chapter1GatherStone));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost,Is.EqualTo(SliceContentProfiles.WebContract.Bastion2WoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Bastion2StoneCost,Is.EqualTo(SliceContentProfiles.WebContract.Bastion2StoneCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.BarracksWoodCost,Is.EqualTo(SliceContentProfiles.WebContract.BarracksWoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.BarracksStoneCost,Is.EqualTo(SliceContentProfiles.WebContract.BarracksStoneCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter2TrainArchers,Is.EqualTo(SliceContentProfiles.WebContract.Chapter2TrainArchers));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter2ExpeditionPower,Is.EqualTo(SliceContentProfiles.WebContract.Chapter2ExpeditionPower));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.RecruitWoodCost,
+                Is.EqualTo(SliceContentProfiles.WebContract.RecruitWoodPerArcher*SliceContentProfiles.OwnerIiiCandidate.RecruitArchers));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.RecruitStoneCost,
+                Is.EqualTo(SliceContentProfiles.WebContract.RecruitStonePerArcher*SliceContentProfiles.OwnerIiiCandidate.RecruitArchers));
+        }
+
         [Test] public void SnapshotCannotEditAuthoritativeState()
         {
             var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
