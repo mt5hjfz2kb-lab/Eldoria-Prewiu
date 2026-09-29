@@ -61,10 +61,10 @@ def make_pbr_material(name, family, size=1024):
         joints_v = np.exp(-((stagger - 0.5) / 0.055) ** 2)
         joints = np.clip(np.maximum(joints_h, joints_v), 0.0, 1.0)
         height = np.clip(coarse * (1.0 - 0.25 * joints), 0.0, 1.0)
-        dark = np.array([0.25, 0.245, 0.225], dtype=np.float32)
-        light = np.array([0.43, 0.40, 0.355], dtype=np.float32)
+        dark = np.array([0.50, 0.47, 0.41], dtype=np.float32)
+        light = np.array([0.74, 0.68, 0.58], dtype=np.float32)
         base = dark + (light - dark) * height[..., None]
-        base *= (1.0 - 0.15 * joints[..., None])
+        base *= (1.0 - 0.10 * joints[..., None])
         rough = np.full_like(height, 0.985, dtype=np.float32)
         normal_strength = 0.0
     elif family == "rock":
@@ -75,8 +75,8 @@ def make_pbr_material(name, family, size=1024):
             + 0.08 * np.cos(u * 61.0 + v * 47.0)
         )
         height = np.clip(coarse, 0.0, 1.0)
-        dark = np.array([0.18, 0.20, 0.195], dtype=np.float32)
-        light = np.array([0.33, 0.325, 0.295], dtype=np.float32)
+        dark = np.array([0.32, 0.34, 0.33], dtype=np.float32)
+        light = np.array([0.50, 0.50, 0.45], dtype=np.float32)
         base = dark + (light - dark) * height[..., None]
         rough = np.full_like(height, 0.99, dtype=np.float32)
         normal_strength = 0.0
