@@ -265,6 +265,25 @@ try {
     inspected_pages: inspected
   };
 
+  if (mode === 'probe' && request.probe_chatgpt_session === true) {
+    const probePage = await contexts[0].newPage();
+    try {
+      await probePage.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      const body = await probePage.locator('body').innerText().catch(() => '');
+      report.chatgpt_session_probe = {
+        url: probePage.url(),
+        title: await probePage.title().catch(() => ''),
+        login_or_signup_visible: /log in|sign up|iniciar sesi[oó]n|registr/i.test(body),
+        composer_visible: (await probePage.locator('textarea').count().catch(() => 0)) > 0 ||
+          (await probePage.locator('[contenteditable="true"]').count().catch(() => 0)) > 0,
+        body_sample: String(body).slice(0, 1200)
+      };
+    } finally {
+      await probePage.close().catch(() => {});
+    }
+  }
+
   if (mode === 'stage_upload' || mode === 'generate') {
     if (mode === 'stage_upload' && request.allow_credit_spend === true) {
       throw new Error('stage_upload refuses any request that allows credit spend.');
