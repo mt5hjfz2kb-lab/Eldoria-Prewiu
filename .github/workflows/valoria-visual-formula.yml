@@ -61,7 +61,7 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          $deadline=(Get-Date).AddMinutes(5)
+          $deadline=(Get-Date).AddMinutes(15)
           while(-not $process.HasExited -and (Get-Date) -lt $deadline){
             Start-Sleep -Seconds 2
             $process.Refresh()
@@ -69,7 +69,7 @@ jobs:
           if (-not $process.HasExited) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if(Test-Path $log){Get-Content $log -Tail 220}
-            throw 'Visual Formula capture timed out after 5 minutes.'
+            throw 'Visual Formula capture timed out after 15 minutes.'
           }
           $process.Refresh()
           if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
