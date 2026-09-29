@@ -50,7 +50,7 @@ namespace Eldoria.Tests
         }
         [Test] public void CombatUsesReservedMarchAndRejectsStaleRevision()
         {
-            var clock=new Clock();var g=new LocalGateway(clock,new Memory());
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
             var fight=Cmd(g,"scout-1","Fight","corrupt-scout");
             Assert.That(g.Execute(fight).Ok,Is.True);
             Assert.That(g.Execute(new GameCommand("stale","player-local","Build","sawmill",0)).Ok,Is.False);
