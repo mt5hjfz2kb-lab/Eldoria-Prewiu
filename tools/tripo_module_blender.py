@@ -21,6 +21,7 @@ def parse_args():
     p.add_argument("--surface-rescue-profile", choices=["", "rock"], default="")
     p.add_argument("--split-components-dir", default="")
     p.add_argument("--split-min-triangles", type=int, default=250)
+    p.add_argument("--split-cluster-count", type=int, default=0)
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -385,13 +386,113 @@ def apply_decimation_once(target):
         o.select_set(False)
     return sum(tri_count(o) for o in mesh_objects())
 
-def split_components_to_glbs(output_dir, min_triangles=250):
+def _world_centroid(obj):
+    verts = [obj.matrix_world @ v.co for v in obj.data.vertices]
+    if not verts:
+        return mathutils.Vector((0.0, 0.0, 0.0))
+    acc = mathutils.Vector((0.0, 0.0, 0.0))
+    for v in verts:
+        acc += v
+    return acc / len(verts)
+
+def _cluster_loose_parts(candidates, cluster_count):
+    rows = []
+    noise_floor = 5
+    usable = []
+    for o in candidates:
+        tris = tri_count(o)
+        center = _world_centroid(o)
+        rows.append({
+            "object": o,
+            "triangles": tris,
+            "center": center,
+            "usable": tris >= noise_floor,
+        })
+        if tris >= noise_floor:
+            usable.append(rows[-1])
+
+    if len(usable) < cluster_count:
+        raise RuntimeError(f"Multipiece spatial clustering needs at least {cluster_count} usable islands; found {len(usable)}")
+
+    # The approved sheet is laid out in image space. glTF import preserves that as X/Y,
+    # while Z is piece depth. Use deterministic weighted farthest-point seeding so
+    # disconnected stones belonging to one visual piece are grouped back together.
+    first = max(usable, key=lambda r: r["triangles"])
+    centers = [mathutils.Vector((first["center"].x, first["center"].y))]
+    while len(centers) < cluster_count:
+        def seed_score(row):
+            p = mathutils.Vector((row["center"].x, row["center"].y))
+            d2 = min((p-c).length_squared for c in centers)
+            return d2 * max(1.0, row["triangles"] ** 0.5)
+        nxt = max(usable, key=seed_score)
+        centers.append(mathutils.Vector((nxt["center"].x, nxt["center"].y)))
+
+    assignments = [0] * len(usable)
+    for _ in range(16):
+        for i, row in enumerate(usable):
+            p = mathutils.Vector((row["center"].x, row["center"].y))
+            assignments[i] = min(range(cluster_count), key=lambda k: (p-centers[k]).length_squared)
+
+        new_centers = []
+        for k in range(cluster_count):
+            members = [usable[i] for i, a in enumerate(assignments) if a == k]
+            if not members:
+                # Re-seed an empty cluster with the point farthest from every current center.
+                row = max(usable, key=lambda r: min(
+                    (mathutils.Vector((r["center"].x, r["center"].y))-c).length_squared for c in centers))
+                new_centers.append(mathutils.Vector((row["center"].x, row["center"].y)))
+                continue
+            total = sum(max(1, m["triangles"]) for m in members)
+            x = sum(m["center"].x * max(1, m["triangles"]) for m in members) / total
+            y = sum(m["center"].y * max(1, m["triangles"]) for m in members) / total
+            new_centers.append(mathutils.Vector((x, y)))
+        if all((new_centers[k]-centers[k]).length < 1e-7 for k in range(cluster_count)):
+            centers = new_centers
+            break
+        centers = new_centers
+
+    groups = []
+    for k in range(cluster_count):
+        members = [usable[i] for i, a in enumerate(assignments) if a == k]
+        groups.append({
+            "center": centers[k],
+            "members": members,
+            "triangles": sum(m["triangles"] for m in members),
+        })
+    # Stable sheet order: top-to-bottom, left-to-right.
+    groups.sort(key=lambda g: (-g["center"].y, g["center"].x))
+    return rows, groups
+
+def _join_group(members, name):
+    bpy.ops.object.select_all(action="DESELECT")
+    for row in members:
+        row["object"].select_set(True)
+    active = max(members, key=lambda r: r["triangles"])["object"]
+    bpy.context.view_layer.objects.active = active
+    if len(members) > 1:
+        bpy.ops.object.join()
+    active = bpy.context.view_layer.objects.active
+    active.name = name
+    return active
+
+def _normalize_bottom_center(obj):
+    world = [obj.matrix_world @ v.co for v in obj.data.vertices]
+    minx = min(v.x for v in world); maxx = max(v.x for v in world)
+    miny = min(v.y for v in world); maxy = max(v.y for v in world)
+    minz = min(v.z for v in world); maxz = max(v.z for v in world)
+    center = ((minx + maxx) * 0.5, (miny + maxy) * 0.5, minz)
+    inv = obj.matrix_world.inverted()
+    local_center = inv @ mathutils.Vector(center)
+    for v in obj.data.vertices:
+        v.co -= local_center
+    obj.location = (0.0, 0.0, 0.0)
+    return [round(maxx-minx,6), round(maxy-miny,6), round(maxz-minz,6)]
+
+def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0):
     if not output_dir:
         return {"enabled": False, "pieces": []}
     os.makedirs(output_dir, exist_ok=True)
 
-    # Join imported meshes first so "Separate by Loose Parts" reflects true geometric islands,
-    # not arbitrary glTF object boundaries.
     objs = mesh_objects()
     if not objs:
         raise RuntimeError("No mesh objects available for multipiece separation")
@@ -408,10 +509,60 @@ def split_components_to_glbs(output_dir, min_triangles=250):
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.mesh.separate(type="LOOSE")
     bpy.ops.object.mode_set(mode="OBJECT")
-
-    # Blender's selection state after Separate can vary by version; the scene contains only
-    # the imported asset meshes here, so enumerate all mesh objects deterministically.
     candidates = mesh_objects()
+
+    if int(cluster_count) > 0:
+        island_rows, groups = _cluster_loose_parts(candidates, int(cluster_count))
+        exported = []
+        group_rows = []
+        for index, group in enumerate(groups, start=1):
+            obj = _join_group(group["members"], f"Eldoria_MultiPiece_Group_{index:02d}")
+            tris = tri_count(obj)
+            bounds = _normalize_bottom_center(obj)
+            safe = f"piece_{index:02d}_{tris}tris.glb"
+            path_out = os.path.join(output_dir, safe)
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(True)
+            bpy.context.view_layer.objects.active = obj
+            bpy.ops.export_scene.gltf(
+                filepath=path_out,
+                export_format="GLB",
+                export_apply=True,
+                export_materials="EXPORT",
+                export_yup=True,
+                use_selection=True,
+            )
+            exported.append({
+                "index": index,
+                "source_object": obj.name,
+                "file": safe,
+                "triangles": tris,
+                "bytes": os.path.getsize(path_out),
+            })
+            group_rows.append({
+                "index": index,
+                "island_count": len(group["members"]),
+                "triangles": tris,
+                "bounds": bounds,
+                "sheet_center_xy": [round(group["center"].x,6), round(group["center"].y,6)],
+            })
+
+        return {
+            "enabled": True,
+            "mode": "spatial_clusters",
+            "expected_piece_count": int(cluster_count),
+            "candidate_islands": len(candidates),
+            "clustered_islands": sum(len(g["members"]) for g in groups),
+            "useful_piece_count": len(exported),
+            "pieces": exported,
+            "groups": group_rows,
+            "all_islands": [{
+                "name": row["object"].name,
+                "triangles": row["triangles"],
+                "usable_for_clustering": row["usable"],
+                "center_xy": [round(row["center"].x,6), round(row["center"].y,6)]
+            } for row in island_rows],
+        }
 
     piece_rows = []
     useful = []
@@ -425,28 +576,13 @@ def split_components_to_glbs(output_dir, min_triangles=250):
                 "reason": "below_split_min_triangles"
             })
             continue
-
-        # Normalize each reusable piece around a bottom-center pivot without changing its shape.
-        world = [o.matrix_world @ v.co for v in o.data.vertices]
-        minx = min(v.x for v in world); maxx = max(v.x for v in world)
-        miny = min(v.y for v in world); maxy = max(v.y for v in world)
-        minz = min(v.z for v in world); maxz = max(v.z for v in world)
-        center = ((minx + maxx) * 0.5, (miny + maxy) * 0.5, minz)
-
-        # Move geometry so each exported reusable piece has a bottom-center pivot at (0,0,0).
-        # This split happens only after the canonical combined GLB has already been exported.
-        inv = o.matrix_world.inverted()
-        local_center = inv @ mathutils.Vector(center)
-        for v in o.data.vertices:
-            v.co -= local_center
-        o.location = (0.0, 0.0, 0.0)
-
+        bounds = _normalize_bottom_center(o)
         useful.append((o, tris))
         piece_rows.append({
             "name": o.name,
             "triangles": tris,
             "useful": True,
-            "bounds": [round(maxx-minx,6), round(maxy-miny,6), round(maxz-minz,6)]
+            "bounds": bounds
         })
 
     useful.sort(key=lambda item: item[1], reverse=True)
@@ -475,6 +611,7 @@ def split_components_to_glbs(output_dir, min_triangles=250):
 
     return {
         "enabled": True,
+        "mode": "connected_components",
         "min_triangles": int(min_triangles),
         "candidate_islands": len(candidates),
         "useful_piece_count": len(exported),
@@ -541,7 +678,7 @@ def main():
     )
     # Optional reusable multipiece extraction runs after the canonical combined export so
     # per-piece pivot normalization cannot alter the certified combined geometry.
-    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles)
+    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles, a.split_cluster_count)
     report = {
         "target_triangles": target,
         "accepted_range": [min_tris, max_tris],
