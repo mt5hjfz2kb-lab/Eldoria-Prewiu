@@ -46,7 +46,7 @@ namespace Eldoria.Tests
             clock.Add(6);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().SawmillLevel,Is.EqualTo(1));
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(2622));
-            Assert.That(g.Snapshot().JourneyComplete,Is.True);
+            Assert.That(g.Snapshot().JourneyComplete,Is.False); // stone + corrupt route are now authoritative Bastion-I requirements
         }
         [Test] public void CombatUsesReservedMarchAndRejectsStaleRevision()
         {
