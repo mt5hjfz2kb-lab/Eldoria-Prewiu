@@ -21,14 +21,20 @@ jobs:
         run: |
           $downloads=Join-Path $env:USERPROFILE 'Downloads'
           $out=Join-Path $env:RUNNER_TEMP 'world-asset-download-inventory.txt'
-          $patterns='holotna|mountain|jermesa|hill|rock|terrain|quaternius|ruins'
+          "RECENT FILES" | Set-Content $out
           Get-ChildItem $downloads -File -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -match $patterns } |
             Sort-Object LastWriteTime -Descending |
+            Select-Object -First 80 |
             ForEach-Object {
               $sha=(Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
               "$($_.FullName)|$($_.Length)|$($_.LastWriteTime.ToString('o'))|$sha"
-            } | Set-Content $out
+            } | Add-Content $out
+          "RECENT DIRECTORIES" | Add-Content $out
+          Get-ChildItem $downloads -Directory -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 40 |
+            ForEach-Object { "$($_.FullName)|DIR|$($_.LastWriteTime.ToString('o'))" } |
+            Add-Content $out
           Get-Content $out
       - uses: actions/upload-artifact@v4
         with:
