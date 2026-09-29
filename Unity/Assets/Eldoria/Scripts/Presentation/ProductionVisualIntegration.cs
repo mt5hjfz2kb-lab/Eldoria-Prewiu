@@ -20,11 +20,12 @@ namespace Eldoria.Presentation
         {
             root = new GameObject("Frontier · integrated 4X visual layer").transform;
             UnifyLandscape(false);
+            BlendStrategicGround();
             Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
             // Replace the primitive foliage read with two mapped, authored tree variants.
             Suppress("Frontier · forest pine", "Frontier · tall evergreen", "Frontier · ridge pine",
                 "Frontier · undergrowth", "Frontier · forest moss", "Frontier · west ridge", "Frontier · east ridge",
-                "Frontier · north cliff", "Frontier · south terrain transition");
+                "Frontier · north cliff", "Frontier · south terrain transition", "Frontier · stacked timber");
             var clusters = new[] {
                 new Vector3(-7,0,1.5f), new Vector3(-13,0,7),
                 new Vector3(13,0,2), new Vector3(-10,0,-9), new Vector3(1,0,13)
@@ -51,10 +52,11 @@ namespace Eldoria.Presentation
             {
                 var route=ValoriaGroundKit.TrailStraight("4X · resource access route",new Vector3(spec.x,.15f,spec.y),spec.z,.85f,spec.w);
                 route.transform.SetParent(root,true);
+                SkinRoute(route);
             }
             var art=ValoriaExternalAssetLibrary.Load();
             // Wood identity: stocked timber frontage distinct from background forest.
-            Piece("4X · wood stock",art!=null?art.Firewood:null,new Vector3(-5.3f,.12f,-.15f),1.7f,.85f,-16,Color.white);
+            Piece("4X · wood stock",art!=null?art.Firewood:null,new Vector3(-5.3f,.12f,-.15f),1.7f,.85f,-16,new Color(.62f,.55f,.43f));
             // Existing quarry kit remains independent from the authoritative target.
             foreach(var p in new[]{new Vector3(6.35f,.03f,-2.15f),new Vector3(-4,.03f,7.4f)})
             {
@@ -171,6 +173,44 @@ namespace Eldoria.Presentation
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,2.55f,5.8f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             Finish();
+        }
+
+        static readonly Dictionary<string,Material> groundSkins=new();
+        static void BlendStrategicGround()
+        {
+            var route=GameObject.Find("Frontier · march trail");if(route!=null)SkinRoute(route);
+            foreach(var spec in new[]{new[]{"Frontier · quarry shelf","stone"},new[]{"Frontier · corrupted shelf","slate"}})
+            {
+                var go=GameObject.Find(spec[0]);var renderer=go!=null?go.GetComponent<MeshRenderer>():null;
+                if(renderer!=null)renderer.sharedMaterial=BlendedGround(spec[1]);
+            }
+        }
+        static void SkinRoute(GameObject route)
+        {
+            foreach(var renderer in route.GetComponentsInChildren<MeshRenderer>(true))
+                if(renderer.gameObject.name.Contains(" · trail "))renderer.sharedMaterial=BlendedGround("trail");
+        }
+        static Material BlendedGround(string family)
+        {
+            if(groundSkins.TryGetValue(family,out var cached)&&cached!=null)return cached;
+            const int size=256;var texture=new Texture2D(size,size,TextureFormat.RGBA32,true){name="Eldoria blended "+family,wrapMode=TextureWrapMode.Clamp};
+            var pixels=new Color[size*size];
+            var color=family=="trail"?new Color(.19f,.15f,.10f):family=="stone"?new Color(.25f,.25f,.21f):new Color(.17f,.15f,.19f);
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++)
+            {
+                float u=x/(float)(size-1)*2-1,v=y/(float)(size-1)*2-1;
+                float grain=Mathf.PerlinNoise(x*.16f+7,y*.16f+13),broad=Mathf.PerlinNoise(x*.037f+4,y*.037f+9);
+                float edge=family=="trail"?Mathf.Abs(u):Mathf.Sqrt(u*u+v*v);
+                float alpha=1-Mathf.SmoothStep(0,1,(edge+(broad-.5f)*.18f-.54f)/.43f);
+                float rut=family=="trail"?Mathf.Exp(-Mathf.Pow((u-.38f)/.12f,2))+Mathf.Exp(-Mathf.Pow((u+.38f)/.12f,2)):0;
+                var c=color*(.87f+grain*.16f+broad*.08f-rut*.08f);c.a=alpha;pixels[y*size+x]=c;
+            }
+            texture.SetPixels(pixels);texture.Apply(true,false);
+            var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria surface "+family+" · blended terrain",renderQueue=3000};
+            m.SetTexture("_BaseMap",texture);m.SetColor("_BaseColor",Color.white);m.SetFloat("_Surface",1);m.SetFloat("_Blend",0);
+            m.SetFloat("_SrcBlend",(float)UnityEngine.Rendering.BlendMode.SrcAlpha);m.SetFloat("_DstBlend",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            m.SetFloat("_ZWrite",0);m.SetFloat("_Smoothness",.015f);m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");m.SetOverrideTag("RenderType","Transparent");
+            groundSkins[family]=m;return m;
         }
 
         static void ReplaceCityTrees()
