@@ -7,6 +7,13 @@ The purpose of this file is to prevent experimental code from being mistaken for
 
 ## ACTIVE — use by default
 
+### Master asset-library roadmap
+- Canonical inventory: `docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md`
+
+Purpose:
+separate what Eldoria already owns from the exact functional families still missing across the World Map 4X and Valoria. This is the default search/generation queue. Integrate current material into visible production wedges before broad new acquisition.
+
+
 ### World Map 4X functional production
 - Canonical functional library / acquisition roadmap: `docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md`
 - Visual acceptance gate: `docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md`
