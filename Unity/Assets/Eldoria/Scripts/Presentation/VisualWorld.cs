@@ -302,6 +302,11 @@ namespace Eldoria.Presentation
             int visibleArchers=state.BastionLevel>=2?4:3;
             for(int i=0;i<visibleArchers;i++) Archer(new Vector3(2.0f+(i%2)*.62f,.34f,-4.5f+(i/2)*.62f));
             Glow("VPD · Bastion warmth",new Vector3(0,l1+3.4f,6.2f),Amber,1.35f,6.0f);
+
+            // Apply the canonical visual/interaction progression before the first rendered frame.
+            // The persistent guard will keep it synchronized afterwards, but initial creation must
+            // already be correct so future buildings never flash or accept clicks early.
+            ValoriaProgressionVisualGuard.Apply(state);
         }
 
         static void MasterEnvelopeGraybox(float l1,ValoriaExternalAssetLibrary art,GameObject rescuedSeam,bool showGranary)
