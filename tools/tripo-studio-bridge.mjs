@@ -585,7 +585,20 @@ try {
     }
     let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
     const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
-    if (!(await dialogLabel.isVisible())) await exportButtons.first().click();
+    if (!(await dialogLabel.isVisible())) {
+      try {
+        await exportButtons.first().waitFor({ state: 'visible', timeout: 15000 });
+      } catch {
+        const selectedAsset = selectedPage.locator('[role="tabpanel"] a.border-purple-1').first();
+        if (await selectedAsset.count()) {
+          await selectedAsset.click();
+          await selectedPage.waitForTimeout(5000);
+        }
+        exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
+        await exportButtons.first().waitFor({ state: 'visible', timeout: 60000 });
+      }
+      await exportButtons.first().click();
+    }
     await dialogLabel.waitFor({ state: 'visible', timeout: 12000 });
     exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
     if (await exportButtons.count() < 2) {
