@@ -171,31 +171,7 @@ jobs:
                 ForEach-Object { $_.Trim() }
             } catch {}
           }
-          $connected = @($devices | Where-Object { $_ -match 'device$' }).Count -gt 0
-          $audit = [ordered]@{
-            unity_editor = $editor
-            android_build_support = (Test-Path $androidRoot)
-            android_player_path = $androidRoot
-            sdk_present = (Test-Path $sdk)
-            ndk_present = (Test-Path $ndk)
-            jdk_present = (Test-Path $jdk)
-            adb_path = $adb
-            adb_devices = @($devices)
-            physical_device_connected = $connected
-          }
-          $json = $audit | ConvertTo-Json -Depth 4
-          $json
-          $json | Set-Content "$env:RUNNER_TEMP/Eldoria-MobilePrerequisites.json" -Encoding UTF8
-          if (-not $audit.android_build_support) {
-            Write-Warning 'Unity Android Build Support is not installed on this runner; physical-phone profiling cannot start from CI yet.'
-          } elseif (-not $audit.physical_device_connected) {
-            Write-Warning 'Android Build Support is present, but no authorized physical ADB device is connected.'
-          } else {
-            Write-Host 'MOBILE_PROFILE_READY=true'
-          }
-      - name: Audit original-art tools on Windows runner
-        if: github.event_name == 'workflow_dispatch'
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+          $connected = @($devices | Where-Object { $_ -match 'device        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           foreach ($name in @('blender.exe','python.exe','openscad.exe')) {
             $found = Get-Command $name -ErrorAction SilentlyContinue
@@ -427,14 +403,24 @@ jobs:
             ${{ runner.temp }}/Eldoria-*.json
             ${{ github.workspace }}/Unity/Builds/Windows/
           if-no-files-found: warn
- }).Count -gt 0)
+ }).Count -gt 0
+          $audit = [ordered]@{
+            unity_editor = $editor
+            android_build_support = (Test-Path $androidRoot)
+            android_player_path = $androidRoot
+            sdk_present = (Test-Path $sdk)
+            ndk_present = (Test-Path $ndk)
+            jdk_present = (Test-Path $jdk)
+            adb_path = $adb
+            adb_devices = @($devices)
+            physical_device_connected = $connected
           }
           $json = $audit | ConvertTo-Json -Depth 4
           $json
           $json | Set-Content "$env:RUNNER_TEMP/Eldoria-MobilePrerequisites.json" -Encoding UTF8
-          if(-not $audit.android_build_support){
+          if (-not $audit.android_build_support) {
             Write-Warning 'Unity Android Build Support is not installed on this runner; physical-phone profiling cannot start from CI yet.'
-          } elseif(-not $audit.physical_device_connected){
+          } elseif (-not $audit.physical_device_connected) {
             Write-Warning 'Android Build Support is present, but no authorized physical ADB device is connected.'
           } else {
             Write-Host 'MOBILE_PROFILE_READY=true'
