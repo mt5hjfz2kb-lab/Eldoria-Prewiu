@@ -11,8 +11,8 @@
       "source_pbr_run_id": 36493273686,
       "integration_correction": "IMPLEMENTED_PRESERVE_AUTHORED_PBR",
       "integration_rule": "preserve authored PBR via BenchmarkPiece",
-      "official_camera_visual_recheck": "BASELINE_CAPTURED_OVERBRIGHT_LOOKDEV_PENDING",
-      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PENDING",
+      "official_camera_visual_recheck": "PASS_VALORIA_V1_LOOKDEV",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PASS",
       "visual_baseline_diagnosis": "SURFACE_FAIL_CONFIRMED_FROM_OFFICIAL_CAPTURES",
       "unity_pbr_evidence": {
         "run_id": 36498200151,
@@ -36,9 +36,11 @@
           "Valoria_Aserradero_AP2_v1_rm"
         ],
         "pbr_preserved_in_unity": true,
-        "official_camera_visual": "FAIL_UNDER_BASELINE_LOOKDEV_TOO_BRIGHT",
-        "next": "LOOKDEV_ONLY_NO_GEOMETRY_REGENERATION"
-      }
+        "official_camera_visual": "PASS_VALORIA_V1_LOOKDEV",
+        "next": "CLOSED_NO_GEOMETRY_REGENERATION"
+      },
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848
     },
     "B_cuartel": {
       "goal": "prove the same surface/lookdev logic transfers to a second dedicated building",
@@ -46,8 +48,8 @@
       "unity_full_gate_run_id": 36493002127,
       "unity_full_gate": "PASS",
       "pbr_preservation": "IMPLEMENTED",
-      "formula_scene_recheck": "BASELINE_CAPTURED_OVERBRIGHT_LOOKDEV_PENDING",
-      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PENDING",
+      "formula_scene_recheck": "PASS_VALORIA_V1_LOOKDEV",
+      "verdict": "TECH_SURFACE_PASS_VISUAL_LOOKDEV_PASS",
       "visual_baseline_diagnosis": "OVERBRIGHT_BASELINE_CONFIRMED_FROM_OFFICIAL_CAPTURES",
       "unity_pbr_evidence": {
         "run_id": 36498200151,
@@ -71,9 +73,11 @@
           "Valoria_Cuartel_AP2_v1_rm"
         ],
         "pbr_preserved_in_unity": true,
-        "official_camera_visual": "FAIL_UNDER_BASELINE_LOOKDEV_TOO_BRIGHT",
-        "next": "LOOKDEV_ONLY_NO_GEOMETRY_REGENERATION"
-      }
+        "official_camera_visual": "PASS_VALORIA_V1_LOOKDEV",
+        "next": "CLOSED_NO_GEOMETRY_REGENERATION"
+      },
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848
     },
     "C_hero_fragment": {
       "goal": "prove the same material families scale to bounded hero-quality architecture+rock",
@@ -131,8 +135,8 @@
       "workflow": ".github/workflows/valoria-visual-formula.yml",
       "material_evidence": "IMPLEMENTED",
       "captures": "PASS_GENERATED_OFFICIAL_19_12_9_AND_MOBILE",
-      "verdict": "TECH_PASS_VISUAL_LOOKDEV_PENDING",
-      "lookdev": "PENDING_VALID_5_PROFILE_RUN",
+      "verdict": "TECH_PASS_VISUAL_LOOKDEV_PASS",
+      "lookdev": "PASS_VALID_5_PROFILE_RUN",
       "run_id": 36498200151,
       "artifact_id": 11004024446,
       "tech_gate": "PASS",
@@ -149,7 +153,14 @@
       "scene_triangles": 261180,
       "lights": 8,
       "pbr_evidence": "PASS_ASERRADERO_AND_CUARTEL",
-      "visual_baseline": "FAIL_TOO_WASHED_BRIGHT_DEDICATED_ASSETS"
+      "visual_baseline": "SUPERSEDED_BY_VALORIA_V1_LOOKDEV_PASS",
+      "lookdev_run_id": 36529204672,
+      "production_formula_run_id": 36529730848,
+      "production_formula_artifact_id": 11015563918,
+      "unity_slice_run_id": 36529204570,
+      "selected_profile": "valoria-v1-candidate",
+      "geometry_regenerated": false,
+      "tripo_credits_spent": 0
     }
   },
   "formula_can_be_marked_validated_when": [
