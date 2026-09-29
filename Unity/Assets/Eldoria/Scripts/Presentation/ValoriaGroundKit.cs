@@ -9,6 +9,7 @@ namespace Eldoria.Presentation
     /// </summary>
     public static class ValoriaGroundKit
     {
+        // Validation trigger: Ground Kit v1 integrated review on current main.
         static readonly Color StreetStone = new Color(.43f,.405f,.35f);
         static readonly Color TerraceStone = new Color(.355f,.325f,.275f);
         static readonly Color RetainingStone = new Color(.315f,.305f,.285f);
