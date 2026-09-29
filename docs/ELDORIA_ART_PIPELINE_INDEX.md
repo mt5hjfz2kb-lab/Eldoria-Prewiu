@@ -7,6 +7,15 @@ The purpose of this file is to prevent experimental code from being mistaken for
 
 ## ACTIVE — use by default
 
+### World Map 4X functional production
+- Canonical functional library / acquisition roadmap: `docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md`
+- Visual acceptance gate: `docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md`
+- Functional gameplay seed: canonical web vertical slice under `v0220/`
+
+Purpose:
+keep world-map production centered on a persistent mobile 4X board. Geography is only Tier A background. Production must visibly support resource nodes, beasts/PvE, neutral/hostile installations and POIs, player cities, marches/armies and later alliance/territorial structures. Search/generation work must target missing functional families rather than generic scenery packs. Immediate P0 queue: Player City Kit v1, Resource Node Kit v1, Beast Kit v1, Installation/POI Kit v1 and March Representation Kit v1.
+
+
 ### Visual convergence before production spend
 - Contract: `docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md`
 
