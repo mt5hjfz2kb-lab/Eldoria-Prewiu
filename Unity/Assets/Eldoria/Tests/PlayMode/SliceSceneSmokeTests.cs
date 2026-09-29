@@ -229,6 +229,29 @@ namespace Eldoria.Tests
             Assert.That(Mathf.Abs(earlyB.x-home.x),Is.LessThanOrEqualTo(16.1f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
 
+            // Regression for the owner mobile report: the populated West Rebuilders quarter
+            // must be reachable on-screen at Bastion I-II, not merely exist outside the pan clamp.
+            var westDistrict=GameObject.Find("VPD · master west district");
+            Assert.That(westDistrict,Is.Not.Null);
+            bool WestVisible()
+            {
+                var vp=camera.WorldToViewportPoint(westDistrict.transform.position);
+                return vp.z>0f&&vp.x>=.04f&&vp.x<=.96f&&vp.y>=.04f&&vp.y<=.96f;
+            }
+            bool westReachable=WestVisible();
+            if(!westReachable)
+            {
+                camera.transform.position=earlyA;
+                westReachable=WestVisible();
+            }
+            if(!westReachable)
+            {
+                camera.transform.position=earlyB;
+                westReachable=WestVisible();
+            }
+            Assert.That(westReachable,Is.True,
+                "Bastion I-II panning must be able to bring the West Rebuilders quarter into the mobile viewport.");
+
             // Late-game bounds open substantially farther without changing orientation.
             recenter.Invoke(presenter,null);
             configure.Invoke(presenter,new object[]{35});
