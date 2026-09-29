@@ -24,6 +24,21 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall()
+        {
+            SceneManager.LoadScene("Valoria");
+            yield return null;
+            var primary=GameObject.Find("Primary objective action");
+            Assert.That(primary,Is.Not.Null);
+            var buttons=primary.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+            Assert.That(buttons.Length,Is.EqualTo(1),"Owner-facing HUD must present one dominant next action.");
+            var label=buttons[0].GetComponentInChildren<UnityEngine.UI.Text>();
+            Assert.That(label,Is.Not.Null);
+            Assert.That(label.text,Is.Not.Empty);
+            Assert.That(GameObject.Find("Actions"),Is.Null,"The old QA action wall must not return to owner/player builds.");
+        }
+
+        [UnityTest]
         public IEnumerator ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels()
         {
             SceneManager.LoadScene("Valoria");
