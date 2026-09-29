@@ -1,0 +1,177 @@
+name: World Pack 4X Comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/world-pack-4x-comparison.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/WorldPack4XComparisonGate.cs'
+      - 'docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-world-pack-4x-comparison
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify exact downloaded packs
+        shell: powershell
+        run: |
+          $downloads=Join-Path $env:USERPROFILE 'Downloads'
+          $holotna=Join-Path $downloads 'Mountain (Unity 2022.3.16f1).zip'
+          $quaternius=Join-Path $downloads 'FBX-20260929T184234Z-1-001.zip'
+          $jermesa=Join-Path $env:APPDATA 'Unity\Asset Store-5.x\Jermesa Studio\3D ModelsEnvironmentsLandscapes\Hill Rock Mountain Terrain.unitypackage'
+
+          $items=@(
+            @($holotna,'dba93205a7941de855918ea58c009af84be66a617f25afde708b6ba666e8ac9b'),
+            @($quaternius,'94d7531ef3e1ba599e6828e60bb38dd17a83ffb2f5a417c20b121a2eceb01c45'),
+            @($jermesa,'033b2f9d2f6f55cd54ed9d50be0a64b3f9dae9c1a3b5072386382ec1986fee88')
+          )
+          foreach($pair in $items){
+            $path=$pair[0]; $expected=$pair[1]
+            if(-not (Test-Path $path)){ throw "Missing world pack: $path" }
+            $actual=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($actual -ne $expected){ throw "World pack SHA mismatch: $path => $actual" }
+            Write-Host "PACK_OK|$path|$actual"
+          }
+          "HOLOTNA_ZIP=$holotna" | Out-File $env:GITHUB_ENV -Append
+          "QUATERNIUS_ZIP=$quaternius" | Out-File $env:GITHUB_ENV -Append
+          "JERMESA_PACKAGE=$jermesa" | Out-File $env:GITHUB_ENV -Append
+
+      - name: Build isolated temporary Unity project
+        shell: powershell
+        run: |
+          $root=Join-Path $env:RUNNER_TEMP 'EldoriaWorldPack4X'
+          $project=Join-Path $root 'Unity'
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $root | Out-Null
+          & robocopy.exe "$env:GITHUB_WORKSPACE\Unity" $project /E /NFL /NDL /NJH /NJS /NP /XD Library Temp Obj Logs Build Builds WebGLBuild
+          $code=$LASTEXITCODE
+          if($code -gt 7){ throw "Robocopy failed with code $code" }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $nested=Join-Path $root 'Holotna-Mountain-URP.unitypackage'
+          $zip=[System.IO.Compression.ZipFile]::OpenRead($env:HOLOTNA_ZIP)
+          try{
+            $entry=$zip.Entries | Where-Object { $_.FullName -match '(?i)^Mountain - URP .*\.unitypackage$' } | Select-Object -First 1
+            if(-not $entry){ throw 'Holotna URP package not found in downloaded ZIP.' }
+            [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry,$nested,$true)
+          } finally { $zip.Dispose() }
+
+          $qdest=Join-Path $project 'Assets\WorldPackCompare\Quaternius'
+          New-Item -ItemType Directory -Path $qdest -Force | Out-Null
+          Expand-Archive -LiteralPath $env:QUATERNIUS_ZIP -DestinationPath $qdest -Force
+
+          "WORLD_COMPARE_PROJECT=$project" | Out-File $env:GITHUB_ENV -Append
+          "HOLOTNA_URP_PACKAGE=$nested" | Out-File $env:GITHUB_ENV -Append
+
+      - name: Import Jermesa in isolated project
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack-JermesaImport.log'
+          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath $env:WORLD_COMPARE_PROJECT -importPackage $env:JERMESA_PACKAGE -logFile $log
+          if($LASTEXITCODE -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Jermesa import failed: $LASTEXITCODE" }
+
+      - name: Import Holotna URP in isolated project
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack-HolotnaImport.log'
+          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath $env:WORLD_COMPARE_PROJECT -importPackage $env:HOLOTNA_URP_PACKAGE -logFile $log
+          if($LASTEXITCODE -ne 0){ if(Test-Path $log){Get-Content $log -Tail 220}; throw "Holotna import failed: $LASTEXITCODE" }
+
+      - name: Capture fixed-camera 4X comparison
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-WorldPack4XComparison.log'
+          $args=@(
+            '-batchmode','-quit',
+            '-projectPath',$env:WORLD_COMPARE_PROJECT,
+            '-executeMethod','Eldoria.EditorTools.WorldPack4XComparisonGate.Capture',
+            '-logFile',$log
+          )
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(18)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if(-not $process.HasExited){
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw 'World pack 4X comparison timed out.'
+          }
+          $process.Refresh()
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw "World pack 4X comparison failed: $($process.ExitCode)"
+          }
+
+          $folder=Join-Path $env:WORLD_COMPARE_PROJECT 'WorldPack4XComparisonCaptures'
+          $expected=@(
+            'current-frontier-18.png','current-frontier-14.png','current-frontier-10.png','current-frontier-7.png','current-frontier-mobile.png',
+            'naturestarter-18.png','naturestarter-14.png','naturestarter-10.png','naturestarter-7.png','naturestarter-mobile.png',
+            'jermesa-18.png','jermesa-14.png','jermesa-10.png','jermesa-7.png','jermesa-mobile.png',
+            'holotna-18.png','holotna-14.png','holotna-10.png','holotna-7.png','holotna-mobile.png',
+            'quaternius-ruins-18.png','quaternius-ruins-14.png','quaternius-ruins-10.png','quaternius-ruins-7.png','quaternius-ruins-mobile.png',
+            'current-frontier-metrics.json','naturestarter-metrics.json','jermesa-metrics.json','holotna-metrics.json','quaternius-ruins-metrics.json',
+            'comparison-summary.json','holotna-discovered-assets.txt'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing comparison evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty comparison capture: $name" }
+          }
+
+      - name: Collect comparison evidence
+        if: always()
+        shell: powershell
+        run: |
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'WorldPack4XComparisonEvidence'
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $dest | Out-Null
+          $folder=Join-Path $env:WORLD_COMPARE_PROJECT 'WorldPack4XComparisonCaptures'
+          if(Test-Path $folder){Copy-Item "$folder\*" $dest -Recurse -Force}
+          foreach($name in @(
+            'Eldoria-WorldPack-JermesaImport.log',
+            'Eldoria-WorldPack-HolotnaImport.log',
+            'Eldoria-WorldPack4XComparison.log'
+          )){
+            $p=Join-Path $env:RUNNER_TEMP $name
+            if(Test-Path $p){Copy-Item $p $dest -Force}
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: world-pack-4x-comparison-${{ github.run_id }}
+          path: WorldPack4XComparisonEvidence/*
+          if-no-files-found: warn
+          retention-days: 14
