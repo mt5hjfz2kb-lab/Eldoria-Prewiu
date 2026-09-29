@@ -57,6 +57,76 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/route-kit-7.png",officialPosition+routeShift,officialTarget+routeShift,7f,1280,720);
             Save(camera,folder+"/route-kit-mobile.png",officialPosition+routeShift,officialTarget+routeShift,10f,390,844);
 
+            // Isolated comparison candidate already present in repo: NatureStarterKit2.
+            // This never mutates production Frontier; it only asks whether this older vegetation
+            // family survives Eldoria's fixed 4X camera better than the rejected Slavic foliage.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight=new Color(.94f,.92f,.86f);
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.68f,.68f,.63f);
+            RenderSettings.fogStartDistance=36f;
+            RenderSettings.fogEndDistance=110f;
+            var compareSun=new GameObject("World compare sun").AddComponent<Light>();
+            compareSun.type=LightType.Directional;
+            compareSun.color=new Color(1f,.95f,.86f);
+            compareSun.intensity=2.30f;
+            compareSun.transform.rotation=Quaternion.Euler(48f,-32f,0);
+            compareSun.shadows=LightShadows.Soft;
+            compareSun.shadowStrength=.46f;
+
+            var compareCamera=new GameObject("World compare camera").AddComponent<Camera>();
+            compareCamera.orthographic=true;
+            compareCamera.clearFlags=CameraClearFlags.SolidColor;
+            compareCamera.backgroundColor=RenderSettings.fogColor;
+
+            var treePaths=new[]{
+                "Assets/NatureStarterKit2/Nature/tree01.prefab",
+                "Assets/NatureStarterKit2/Nature/tree02.prefab",
+                "Assets/NatureStarterKit2/Nature/tree03.prefab",
+                "Assets/NatureStarterKit2/Nature/tree04.prefab"
+            };
+            var bushPaths=new[]{
+                "Assets/NatureStarterKit2/Nature/bush01.prefab",
+                "Assets/NatureStarterKit2/Nature/bush02.prefab",
+                "Assets/NatureStarterKit2/Nature/bush03.prefab",
+                "Assets/NatureStarterKit2/Nature/bush04.prefab",
+                "Assets/NatureStarterKit2/Nature/bush05.prefab",
+                "Assets/NatureStarterKit2/Nature/bush06.prefab"
+            };
+            var positions=new[]{
+                new Vector3(-3.0f,0f,1.2f),new Vector3(-1.4f,0f,2.2f),
+                new Vector3(.2f,0f,1.1f),new Vector3(1.7f,0f,2.0f),
+                new Vector3(3.0f,0f,1.0f),new Vector3(-2.2f,0f,-.8f),
+                new Vector3(.9f,0f,-.9f),new Vector3(2.4f,0f,-.5f)
+            };
+            for(int i=0;i<positions.Length;i++)
+            {
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(treePaths[i%treePaths.Length]);
+                if(prefab==null)throw new System.Exception("NatureStarter tree missing: "+treePaths[i%treePaths.Length]);
+                var tree=Object.Instantiate(prefab);
+                tree.name="NatureStarter candidate tree "+(i+1);
+                tree.transform.position=positions[i];
+                tree.transform.rotation=Quaternion.Euler(0,i*41f,0);
+                foreach(var c in tree.GetComponentsInChildren<Collider>(true))c.enabled=false;
+            }
+            for(int i=0;i<6;i++)
+            {
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(bushPaths[i]);
+                if(prefab==null)continue;
+                var bush=Object.Instantiate(prefab);
+                bush.name="NatureStarter candidate bush "+(i+1);
+                bush.transform.position=new Vector3(-3.2f+i*1.25f,0f,-2.1f+(i%2)*.45f);
+                bush.transform.rotation=Quaternion.Euler(0,i*53f,0);
+                foreach(var c in bush.GetComponentsInChildren<Collider>(true))c.enabled=false;
+            }
+            Save(compareCamera,folder+"/naturestarter-overview-18.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),18f,1280,720);
+            Save(compareCamera,folder+"/naturestarter-overview-14.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),14f,1280,720);
+            Save(compareCamera,folder+"/naturestarter-overview-10.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),10f,1280,720);
+            Save(compareCamera,folder+"/naturestarter-overview-mobile.png",new Vector3(20f,24f,-21f),new Vector3(0,0,0),14f,390,844);
+
             int quarryRenderers=0;
             foreach(var r in quarry.GetComponentsInChildren<Renderer>(true))if(r.enabled)quarryRenderers++;
             int routeRenderers=0;
