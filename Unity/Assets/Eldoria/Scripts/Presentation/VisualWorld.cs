@@ -20,10 +20,13 @@ namespace Eldoria.Presentation
                     UnityEngine.Object.DestroyImmediate(oldCamera.gameObject);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = city?new Color(.70f,.70f,.70f):new Color(.88f,.86f,.80f);
+            // First OWNER I-II human pass showed that the certified neutral-overcast rig
+            // reads materially too dark in motion. Lift ambient/fog values without
+            // flattening the stone/timber hierarchy or removing the corruption contrast.
+            RenderSettings.ambientLight = city?new Color(.82f,.82f,.80f):new Color(.94f,.92f,.86f);
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = city?new Color(.63f,.63f,.63f):new Color(.60f,.60f,.56f);
-            RenderSettings.fogStartDistance=city?28:34; RenderSettings.fogEndDistance=city?62:105;
+            RenderSettings.fogColor = city?new Color(.69f,.69f,.67f):new Color(.68f,.68f,.63f);
+            RenderSettings.fogStartDistance=city?30:36; RenderSettings.fogEndDistance=city?68:110;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
             camera.orthographicSize = city ? 10.2f : 14;
@@ -32,9 +35,9 @@ namespace Eldoria.Presentation
             cameraGo.transform.position = city ? new Vector3(18.2f,14.6f,-25.8f) : new Vector3(20,24,-21);
             cameraGo.transform.LookAt(city ? new Vector3(0,3.15f,5.8f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
-            sun.type=LightType.Directional; sun.color=city?Color.white:new Color(1.0f,.93f,.82f);
-            sun.intensity=city?.90f:2.15f;
-            sun.transform.rotation=Quaternion.Euler(city?55f:50f,city?-25f:-32f,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.55f:.55f;
+            sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.97f,.90f):new Color(1.0f,.95f,.86f);
+            sun.intensity=city?1.22f:2.30f;
+            sun.transform.rotation=Quaternion.Euler(city?52f:48f,city?-25f:-32f,0); sun.shadows=LightShadows.Soft; sun.shadowStrength=city?.43f:.46f;
             var worldGround=Box("World ground",new Vector3(0,-.7f,city?4:0),city?new Vector3(66,1.2f,62):new Vector3(34,1.2f,30),
                 city?new Color(.285f,.265f,.215f):Earth);
             if(!city) worldGround.GetComponent<Renderer>().enabled=false;
