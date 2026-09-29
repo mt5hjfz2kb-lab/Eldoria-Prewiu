@@ -731,11 +731,28 @@ namespace Eldoria.Presentation
                 new Vector3(2.35f,2.7f,2.35f),new Color(.18f,.22f,.18f),Quaternion.identity);
             grove.AddComponent<WorldHotspot>().Id="forest-valoria";
             grove.GetComponent<Renderer>().enabled=false;
-            // World Nature Kit v1: authored reusable composition instead of repeated
-            // primitive/tree scatter. Gameplay remains owned by the invisible grove hotspot.
-            WorldNatureKit.ForestResourcePocket("Frontier · forest resource kit",new Vector3(-6.35f,.02f,1.05f),3.05f);
-            WorldNatureKit.ForestEdgeCluster("Frontier · forest edge north",new Vector3(-7.0f,.02f,3.55f),3.35f,-8f);
+            for(int i=0;i<10;i++)
+            {
+                float x=-8.5f+(i*17%9)*.62f;
+                float z=-1.15f+(i*23%8)*.68f;
+                ValoriaKit.PineTree("Frontier · forest pine",new Vector3(x,.02f,z),.58f+(i%4)*.08f);
+            }
+            foreach(var p in new[]{
+                new Vector3(-8.4f,.04f,2.8f),new Vector3(-6.9f,.04f,3.55f),
+                new Vector3(-4.7f,.04f,2.65f),new Vector3(-7.6f,.04f,-.55f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · undergrowth",art!=null?art.SlavicBush:null,
+                    p,1.0f,.68f,Quaternion.Euler(0,(int)(p.x*31f)%360,0),new Color(.35f,.49f,.36f,1f));
+            ValoriaKit.BenchmarkPiece("Frontier · stacked timber",art!=null?art.Firewood:null,
+                new Vector3(-4.25f,.12f,.45f),1.25f,.78f,Quaternion.Euler(0,-18f,0));
             Glow("Frontier · lumber warmth",new Vector3(-4.35f,.72f,.35f),Amber,.68f,2.6f);
+            foreach(var p in new[]{
+                new Vector3(-8.65f,.03f,1.95f),new Vector3(-6.1f,.03f,3.35f),
+                new Vector3(-4.65f,.03f,1.65f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · tall forest pine",art!=null?art.SlavicTreeTall:null,
+                    p,1.55f,4.25f,Quaternion.Euler(0,(int)(p.z*47f)%360,0),new Color(.64f,.76f,.64f,1f));
+            foreach(var p in new[]{new Vector3(-7.8f,.05f,1.2f),new Vector3(-5.6f,.05f,2.5f)})
+                ValoriaKit.BenchmarkPieceModulated("Frontier · forest moss",art!=null?art.SlavicMoss:null,
+                    p,1.7f,.28f,Quaternion.Euler(0,(int)(p.x*29f)%360,0),new Color(.62f,.72f,.58f,1f));
 
             // Quarry identity is staged visually now so the incoming authoritative gather mechanic
             // can attach without another art pass. No hotspot is added here until gameplay owns it.
