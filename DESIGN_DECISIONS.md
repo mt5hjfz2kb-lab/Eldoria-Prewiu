@@ -42,7 +42,7 @@ A Bastion level should not read as merely “two more menus unlocked”. From VI
 - **I — Las Cenizas:** reconstruction, first world trip, gather → return → improve; Valoria/Breach mystery is planted.
 - **II — Troops and first threat:** Cuartel, real troops, March and first Corrupt combat.
 - **III — The world opens:** Granero/Food, hunting, denser frontier, Fissure and two-phase Lyra recruitment/assault.
-- **IV — Early autonomy:** explicit tutorial recedes and the player starts making wider choices. Its unique mechanical/visual identity still needs final definition.
+- **IV — Early autonomy:** **CLOSED.** Aldric states that Valoria cannot rebuild everything at once and the player chooses the first kingdom priority: **Production/Works, Defense, or Shelter/Population**. The choice changes immediate resource emphasis and produces a visible Valoria consequence (work activity, reinforced entry/guard presence, or inhabited hearth/home cues) without permanently locking content. This behavior is implemented in the canonical web vertical slice and is a preserved migration requirement for Unity.
 - **V — Cantera and stone economy:** Cantera is the stone-production building, analogous to Aserradero = wood and Granero = food. Extraction can seed anomalous materials/discoveries without over-explaining them.
 - **VI — Forge and closed progression loop:** Breach elite / Devorador → special material → Forja → Hoja de Éter / first equipment ceremony → stronger hero/power loop.
 - **VII — Knowledge + Relicario onboarding:** Códice and Relicario unlock as **independent peer systems**. First deterministic Reliquia/card reaches Relicario. Teaching is progressive rather than dumping the full system at once.
@@ -59,6 +59,7 @@ A Bastion level should not read as merely “two more menus unlocked”. From VI
 - **Salón de Héroes = hero/equipment management.**
 - **Hospital = wounded-troop recovery; it never restores permanent casualties.**
 - Routine building interaction remains object-local where practical: tap object → requirement/cost + action → timer/feedback.
+- **Construction queue v1:** for now Valoria allows **one active building construction or building/Bastion upgrade at a time**. Gathering, troop recruitment and Hospital treatment are separate task categories and do not consume the building-construction slot. This limit is part of the gameplay contract to preserve in Unity unless explicitly redesigned later.
 - **Construction queue:** for the current vertical slice, Valoria permits **one active construction/building upgrade at a time**. Gathering, troop training and medical treatment are separate task families and do not consume this construction slot. This is a deliberate current rule, not a permanent monetization/queue commitment.
 
 ## Códice, Relicario, Arcón
