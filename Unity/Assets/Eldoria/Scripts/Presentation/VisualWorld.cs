@@ -710,8 +710,24 @@ namespace Eldoria.Presentation
 
             // I-II production corridor: one authored route from Valoria into resources and corruption.
             // Keep gameplay hotspots independent from the visual dressing so art never owns rules.
-            IrregularGround("Frontier · valley floor",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.165f,.155f,.125f),"earth");
+            // World-map visual base extends well beyond the interactive corridor so the official
+            // camera never exposes a tabletop edge. Gameplay topology remains unchanged.
+            IrregularGround("Frontier · valley floor",new Vector3(0,-.04f,1.0f),52.0f,44.0f,new Color(.155f,.145f,.118f),"earth");
+            IrregularGround("Frontier · playable earth",new Vector3(0,.02f,1.0f),27.0f,22.0f,new Color(.175f,.165f,.135f),"earth");
             IrregularGround("Frontier · Valoria approach",new Vector3(0,.07f,-7.0f),8.2f,5.2f,new Color(.205f,.180f,.135f),"earth");
+
+            // Low relief around the playable wedge gives Frontier a world horizon instead of a
+            // floating board. These are visual-only terrain silhouettes with no gameplay collision.
+            ValoriaKit.TerrainPieceTinted("SM_Hills_01","Frontier · west ridge",
+                new Vector3(-17.0f,-.45f,3.5f),9.5f,3.4f,Quaternion.Euler(0,24f,0),new Color(.30f,.31f,.27f,1f));
+            ValoriaKit.TerrainPieceTinted("SM_Hills_01","Frontier · east ridge",
+                new Vector3(17.2f,-.50f,4.2f),9.8f,3.5f,Quaternion.Euler(0,-31f,0),new Color(.29f,.30f,.27f,1f));
+            ValoriaKit.TerrainPieceTinted("SM_Cliffs_01","Frontier · north cliff west",
+                new Vector3(-9.5f,-.65f,15.0f),8.8f,4.4f,Quaternion.Euler(0,17f,0),new Color(.31f,.31f,.29f,1f));
+            ValoriaKit.TerrainPieceTinted("SM_Cliffs_03","Frontier · north cliff east",
+                new Vector3(9.4f,-.70f,15.3f),9.0f,4.6f,Quaternion.Euler(0,-21f,0),new Color(.30f,.30f,.29f,1f));
+            ValoriaKit.TerrainPieceTinted("SM_Terrain_03","Frontier · south terrain transition",
+                new Vector3(0f,-.58f,-15.0f),12.0f,2.4f,Quaternion.Euler(0,8f,0),new Color(.32f,.30f,.25f,1f));
 
             // A worn march trail gives a continuous Valoria -> threat axis without reading as
             // a chain of oversized tan props. Sparse stones remain as edge detail only.
