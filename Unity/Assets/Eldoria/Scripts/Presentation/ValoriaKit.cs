@@ -512,6 +512,40 @@ namespace Eldoria.Presentation
                 new Color(.96f,.53f,.22f),.80f,2.6f);
         }
 
+        public static void GranaryArchitecture(string name,Vector3 p,bool lit,System.Action<string,Vector3,Color,float,float> glow)
+        {
+            // Bastion III dedicated visual. Gameplay/click geometry must remain independent.
+            // The isolated gate certified the south/front orientation at yaw 180.
+            var ground=p+new Vector3(0f,.02f,0f);
+            var dedicated=BenchmarkPiece(name+" · dedicated granary",
+                LoadExternal("Valoria_Granero_BIII_v1"),ground,
+                4.30f,4.40f,Quaternion.Euler(0,180f,0));
+            if(dedicated!=null)
+            {
+                // Fit the certified asset to the locked west-growth target envelope:
+                // width 4.1–4.5, depth 3.4–3.8, height 3.7–4.4.
+                var renderers=dedicated.GetComponentsInChildren<Renderer>(true);
+                var bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                var scale=dedicated.transform.localScale;
+                dedicated.transform.localScale=new Vector3(
+                    scale.x*(4.30f/bounds.size.x),
+                    scale.y*(4.15f/bounds.size.y),
+                    scale.z*(3.60f/bounds.size.z));
+                bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                dedicated.transform.position+=ground-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+
+                if(lit&&glow!=null)glow(name+" · storage warmth",p+new Vector3(.15f,1.25f,-1.58f),
+                    new Color(.96f,.56f,.24f),.13f,.82f);
+                return;
+            }
+
+            // Missing-resource fallback keeps the reserved plot occupied without changing gameplay.
+            House(name+" · fallback storehouse",p+new Vector3(0f,.10f,0f),
+                new Vector3(4.10f,2.10f,3.45f),lit,glow);
+        }
+
         public static void Scaffold(string name,Vector3 p,Vector3 size)
         {
             float hx=size.x*.5f,hz=size.z*.5f;
