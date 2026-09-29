@@ -1,0 +1,13 @@
+{
+  "asset_name": "Valoria_Granero_BIII_v1",
+  "source": "ChatGPT approved exact image",
+  "expected_format": "jpeg",
+  "expected_width": 1254,
+  "expected_height": 1254,
+  "expected_size_bytes": 602970,
+  "expected_sha256": "2d58bfe83064601223ad0027963c2977acbde10b84fdefe528db4549215c7c7a",
+  "parts_dir": "pipeline/exact-inputs/Valoria_Granero_BIII_v1",
+  "parts_glob": "pipeline/exact-inputs/Valoria_Granero_BIII_v1/part_*.b64",
+  "status": "awaiting_complete_exact_bytes",
+  "rule": "Do not enable Tripo stage_upload until validator passes."
+}
