@@ -34,6 +34,11 @@ namespace Eldoria.Tests
             Assert.That(primary.GetComponent<Button>(),Is.Not.Null);
             Assert.That(primary.transform.Find("ReferenceButtonFrame"),Is.Not.Null);
             Assert.That(primary.GetComponent<Outline>(),Is.Not.Null);
+
+            // Production HUD must not depend on screenshot chunks/atlas fragments.
+            Assert.That(Resources.Load<TextAsset>("UI/eldoria_ui_reference_atlas_0"),Is.Null);
+            Assert.That(Resources.Load<TextAsset>("UI/eldoria_ui_reference_atlas_v2_0"),Is.Null);
+            Assert.That(Resources.Load<Texture2D>("UI/aldric_reference_portrait"),Is.Not.Null);
         }
 
         sealed class FlowClock : Eldoria.Application.IClock
