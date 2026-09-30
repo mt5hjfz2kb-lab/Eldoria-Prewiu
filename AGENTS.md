@@ -77,6 +77,14 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - After a Work resume/restart/context change, test the existing GitHub connector with one read call before asking the owner for access again. If that call succeeds, reuse the existing connection and continue without another authorization prompt.
 - Repeated GitHub approval prompts are an operational defect to avoid, not a normal step of the Eldoria workflow.
 
+## Workflow governance rule
+- Automatic CI is reserved for canonical production/certification paths. Historical, diagnostic, comparison, inventory, rescue and cache-probe workflows must be `workflow_dispatch` only unless they are explicitly promoted back to production.
+- `[LEGACY]` workflows are evidence/repro tools and must never have `push`, `pull_request`, `schedule` or `workflow_run` triggers.
+- Do not keep one-off dispatch/cancellation workflows after the incident they solved. Hard-coded workflow-run IDs are forbidden.
+- Prefer one canonical generic workflow with request/configuration over per-asset/per-experiment workflows.
+- On the single Windows runner, avoid overlapping automatic diagnostic gates when an authoritative production gate already covers the same change. LookDev is opt-in; Visual Formula / Unity slice remain the production evidence paths.
+- Any workflow-governance change must pass `tools/check-workflow-governance.mjs`; the lightweight `workflow-governance.yml` enforces this without waking the Windows runner.
+
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
 - **Progression-visibility contract:** the canonical vertical slice defines when player-facing content exists. Buildings, units, districts, world nodes, narrative props and UI entry points may be authored/certified early, but completed art and gameplay interaction must remain hidden/disabled until their canonical unlock. Unity must reconstruct the correct visible/interactable state from PlayerState before the first rendered frame and after scene/state refresh. See `docs/PROGRESSION_VISUAL_CONTRACT.md`.
