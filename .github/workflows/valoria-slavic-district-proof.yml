@@ -1,0 +1,119 @@
+name: Valoria Slavic District proof
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-slavic-district-proof.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-valoria-slavic-district-proof
+  cancel-in-progress: true
+
+jobs:
+  slavic-district-proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Stage existing Slavic World prefabs
+        shell: powershell
+        run: |
+          $root="$env:GITHUB_WORKSPACE\Unity\Assets\EmaceArt\Slavic World Free\Prefabs"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SlavicCoherentProof"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $items=@(
+            @{src='Town\Building\EA03_Town_House_Comp_01a_PRE.prefab'; dst='house-a.prefab'},
+            @{src='Town\Building\EA03_Town_House_Comp_02a_PRE.prefab'; dst='house-b.prefab'},
+            @{src='Town\Administrative\EA03_Town_Building_Administrative _01a_PRE.prefab'; dst='administrative.prefab'},
+            @{src='Village\Building\Shed\EA03_Village_OutBuilding_Shed_03b_PRE.prefab'; dst='shed.prefab'},
+            @{src='Environment\Road\EA03_Environment_Road_Cobble_01a_PRE.prefab'; dst='cobble.prefab'},
+            @{src='Environment\Rock\EA03_Environment_Rock_Flat_04c_PRE.prefab'; dst='rock.prefab'},
+            @{src='Nature\Tree\EA03_Nature_Tree_02b_PRE.prefab'; dst='tree.prefab'}
+          )
+          foreach($item in $items) {
+            $source=Join-Path $root $item.src
+            if(-not (Test-Path $source)){ throw "Missing Slavic source prefab: $source" }
+            Copy-Item $source (Join-Path $dest $item.dst) -Force
+          }
+          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Gate-only copies of the already imported EmaceArt Slavic World Free prefabs. No new external download.' -Encoding UTF8
+
+      - name: Capture Slavic district before-after
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-SlavicDistrictProof.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw 'Slavic District proof timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 280}
+            throw "Slavic District proof failed: $($process.ExitCode)"
+          }
+          $expected=@(
+            'slavic-district-before-12.png','slavic-district-before-9.png','slavic-district-before-mobile.png',
+            'slavic-district-after-12.png','slavic-district-after-9.png','slavic-district-after-mobile.png',
+            'slavic-district-evidence.json'
+          )
+          foreach($name in $expected) {
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing Slavic District evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty Slavic District capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'slavic-district-evidence.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-slavic-district-proof-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/slavic-district-*
+            ${{ runner.temp }}/Eldoria-SlavicDistrictProof.log
+          if-no-files-found: warn
+          retention-days: 14
