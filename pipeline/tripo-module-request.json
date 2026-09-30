@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "eldoria-stone-architecture-kit-v1-gate",
   "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -31,15 +31,24 @@
         5
       ],
       "min_component_ratio": 0.08,
-      "min_component_triangles": 120
+      "min_component_triangles": 120,
+      "post_join_cleanup": {
+        "1": {
+          "min_triangles": 50
+        },
+        "5": {
+          "min_triangles": 50,
+          "drop_if_min_y_above_ratio": 0.7
+        }
+      }
     }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "CLOSED 2026-09-30 after canonical zero-credit salvage validation run 36710463132 / artifact 11094888075. Pipeline TECH PASS, Unity isolated PASS, multipiece PASS. Visual review: piece 02 remains the only production-safe module; salvage on 01 and 05 removed disconnected residue but also exposed/retained broken incomplete silhouettes, so 01/05 are NOT production-safe. Piece 06 still requires a different connected-protrusion cleanup strategy. No Tripo generation and no promotion in the salvage run.",
+  "notes": "FINAL ZERO-CREDIT RECOVERY. Reuse exact existing Stone Architecture source. Piece 01: remove post-join tiny detached residuals and reclassify only if final captures support a ruined-corner/ruined-arch role. Piece 05: remove tiny residuals plus detached upper islands above 70% of piece height and reclassify only if final captures support a ruined-straight-wall role. No Tripo generation. No automatic promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "closed-2026-09-30-stone-architecture-salvage",
+  "run_nonce": "2026-09-30-final-zero-credit-ruin-recovery-01-05",
   "visual_verdicts": {
     "reviewed_artifact_id": 11094888075,
     "reviewed_run_id": 36710463132,
