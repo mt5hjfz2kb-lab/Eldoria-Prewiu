@@ -232,7 +232,7 @@ namespace Eldoria.EditorTools
                 "Valoria · TerrainTerrace · workshop edge support","Valoria · TerrainTerrace · east training edge support",
                 "Valoria · TerrainTerrace · east upper retaining shelf"};
             foreach(var name in names){var go=GameObject.Find(name);if(go==null)throw new System.Exception("Terrain Terrace citywide instance missing: "+name);foreach(var c in go.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Terrain Terrace collider enabled: "+name);}
-            File.WriteAllText(folder+"/terrain-citywide-evidence.json","{\\n  \\"camera_matched\\": true,\\n  \\"same_scene_before_after\\": true,\\n  \\"collider_hotspot_signature_equal\\": true,\\n  \\"instances\\": 7,\\n  \\"placement_rule\\": \\"top-aligned-buried-support\\",\\n  \\"gameplay_topology_changed\\": false,\\n  \\"tripo_credits_additional\\": 0\\n}\\n");
+            File.WriteAllText(folder+"/terrain-citywide-evidence.json","{\n  \"camera_matched\": true,\n  \"same_scene_before_after\": true,\n  \"collider_hotspot_signature_equal\": true,\n  \"instances\": 7,\n  \"placement_rule\": \"top-aligned-buried-support\",\n  \"gameplay_topology_changed\": false,\n  \"tripo_credits_additional\": 0\n}\n");
             ProductionVisualIntegration.TerrainTerraceEnabled=true;
         }
 
