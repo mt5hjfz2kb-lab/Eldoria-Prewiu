@@ -132,7 +132,7 @@ namespace Eldoria.EditorTools
             var position=new Vector3(18.2f,14.6f,-25.8f);
             var target=new Vector3(0,3.15f,5.8f);
             var cornerShift=new Vector3(-13.4f,-2.15f,-2.0f);
-            var wallShift=new Vector3(8.2f,-2.35f,-8.5f);
+            var wallShift=new Vector3(-15.2f,-2.25f,-5.1f);
             var seamShift=new Vector3(-6.2f,-2.55f,-8.0f);
 
             VisualWorld.VisualIntegrationEnabled=true;
@@ -163,10 +163,8 @@ namespace Eldoria.EditorTools
                         "Valoria · StoneArch · corner · west work court",
                         "Valoria · StoneArch · corner · west lower court",
                         "Valoria · StoneArch · high wall · west terrace back",
-                        "Valoria · StoneArch · high wall · military outer edge",
                         "Valoria · StoneArch · rock wall seam · sawmill",
-                        "Valoria · StoneArch · rock wall seam · barracks",
-                        "Valoria · StoneArch · rock wall seam · upper civil"
+                        "Valoria · StoneArch · rock wall seam · barracks"
                     };
                     foreach(var name in expected)
                     {
@@ -179,7 +177,7 @@ namespace Eldoria.EditorTools
                         "{\n"+
                         "  \"camera_matched\": true,\n"+
                         "  \"collider_hotspot_signature_equal\": true,\n"+
-                        "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 2, \"RockToWallTransition\": 3},\n"+
+                        "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 1, \"RockToWallTransition\": 2},\n"+
                         "  \"gameplay_topology_changed\": false,\n"+
                         "  \"tripo_credits\": 0\n"+
                         "}\n");
