@@ -106,29 +106,49 @@ jobs:
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
           $payload=Invoke-RestMethod -Headers $headers -Uri "https://api.polyhaven.com/files/modular_fort_01"
-          $json=$payload | ConvertTo-Json -Depth 100
-          $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
-          $gltfUrls=$urls | Where-Object {
-            $_ -match '(?i)gltf' -and $_ -match '(?i)1k' -and $_ -match '(?i)\.(gltf|bin|png|jpg|jpeg)(\?|$)'
-          }
-          if(-not $gltfUrls){
-            $gltfUrls=$urls | Where-Object {
-              $_ -match '(?i)gltf' -and $_ -match '(?i)\.(gltf|bin|png|jpg|jpeg)(\?|$)'
+
+          $node=$null
+          if($payload.gltf.'1k' -and $payload.gltf.'1k'.gltf){ $node=$payload.gltf.'1k'.gltf }
+          elseif($payload.gltf){
+            foreach($resProp in $payload.gltf.PSObject.Properties){
+              if($resProp.Value.gltf){ $node=$resProp.Value.gltf; break }
             }
           }
-          $gltfUrls | Set-Content (Join-Path $dest 'SOURCE_URLS.txt') -Encoding UTF8
-          foreach($url in $gltfUrls){
-            $name=[IO.Path]::GetFileName(([uri]$url).AbsolutePath)
-            if([string]::IsNullOrWhiteSpace($name)){continue}
-            Invoke-WebRequest -Headers $headers -Uri $url -OutFile (Join-Path $dest $name)
+          if(-not $node -or -not $node.url){ throw "Poly Haven modular_fort_01 glTF node not found." }
+
+          $mainUri=[uri]$node.url
+          $mainName=[IO.Path]::GetFileName($mainUri.AbsolutePath)
+          if([string]::IsNullOrWhiteSpace($mainName)){ $mainName='modular_fort_01.gltf' }
+          Invoke-WebRequest -Headers $headers -Uri $node.url -OutFile (Join-Path $dest $mainName)
+
+          $downloaded=@($node.url)
+          if($node.include){
+            foreach($prop in $node.include.PSObject.Properties){
+              $relative=$prop.Name
+              $fileInfo=$prop.Value
+              if(-not $fileInfo.url){ continue }
+              $out=Join-Path $dest $relative
+              $parent=Split-Path $out -Parent
+              if($parent -and -not (Test-Path $parent)){ New-Item -ItemType Directory -Force -Path $parent | Out-Null }
+              Invoke-WebRequest -Headers $headers -Uri $fileInfo.url -OutFile $out
+              if((Get-Item $out).Length -lt 128){ throw "Downloaded include too small: $relative" }
+              $downloaded += $fileInfo.url
+            }
           }
+
+          $downloaded | Set-Content (Join-Path $dest 'SOURCE_URLS.txt') -Encoding UTF8
           $gltf=Get-ChildItem $dest -Filter '*.gltf' -ErrorAction SilentlyContinue | Select-Object -First 1
-          if(-not $gltf){ throw "Poly Haven modular_fort_01 did not expose a glTF file." }
+          if(-not $gltf){ throw "Poly Haven modular_fort_01 glTF file missing after staging." }
+          if((Get-ChildItem $dest -Recurse -File | Measure-Object).Count -lt 2){
+            throw "Hero fort staging has no dependent files."
+          }
+
           @'
           Golden Cell hero architecture proof
           Asset: modular_fort_01
           Source: Poly Haven
           License: CC0
+          glTF + API-declared include dependencies staged preserving relative paths.
           Experimental branch only
           '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
 
