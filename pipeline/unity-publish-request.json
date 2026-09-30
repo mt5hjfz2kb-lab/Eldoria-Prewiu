@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Final visual publication for owner-approved HUD reference integration after Unity slice certification 36696557377.",
-  "source_sha": "7a2ee202bdbbf86c5808d5d9219fc93ec06cfe0d",
+  "reason": "Publish certified approved-reference HUD after green Unity slice 36697252245.",
+  "source_sha": "82008d1ed5e532ea8fd999458ef09e4fd07815ea",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
