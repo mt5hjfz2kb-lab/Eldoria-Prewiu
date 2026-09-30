@@ -301,6 +301,16 @@ namespace Eldoria.EditorTools
             try
             {
                 camera.targetTexture=rt;
+                // Compile the actual scene material variants synchronously before readback.
+                // A first render may otherwise expose the editor's blue compiling shader.
+                UnityEditor.ShaderUtil.allowAsyncCompilation=false;
+                var warmed=new System.Collections.Generic.HashSet<Material>();
+                foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                    if(renderer.enabled)foreach(var material in renderer.sharedMaterials)
+                        if(material!=null&&warmed.Add(material))
+                            for(int pass=0;pass<material.passCount;pass++)
+                                UnityEditor.ShaderUtil.CompilePass(material,pass,true);
+                camera.Render();
                 camera.Render();
                 RenderTexture.active=rt;
                 var image=new Texture2D(width,height,TextureFormat.RGB24,false);

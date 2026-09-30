@@ -346,6 +346,13 @@ namespace Eldoria.Presentation
                 for(int i=0;i<count;i++)
                 {
                     var source=i<originals.Length?originals[i]:null;
+                    // Untextured legacy FBX materials carry a white importer fallback.
+                    // These neutral masonry families share Valoria's aged-stone surface.
+                    if(resource.StartsWith("Mega")||resource=="Arch_Gothic"||resource=="Wall_Broken"||resource=="Column_Round")
+                    {
+                        mats[i]=ValoriaKit.SurfaceMaterial(tint.linear,"stone",new Vector2(3,3));
+                        continue;
+                    }
                     bool leaves=foliage&&i==0;
                     string key=resource+"/"+i+"/"+ColorUtility.ToHtmlStringRGB(tint);
                     if(adapted.TryGetValue(key,out var cached)&&cached!=null){mats[i]=cached;continue;}
