@@ -5,7 +5,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/valoria-slavic-district-proof.yml'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
 
