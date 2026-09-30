@@ -25,15 +25,40 @@
     "expected_piece_count": 7,
     "cluster_axes": "xy",
     "salvage": {
-      "enabled": false,
+      "enabled": true,
       "mode": "disconnected_residue_only",
-      "piece_indices": []
+      "piece_indices": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "min_component_ratio": 0,
+      "min_component_triangles": 5,
+      "post_join_cleanup": {
+        "1": {
+          "min_triangles": 20,
+          "spatial_neighbor_ratio": 0.025
+        },
+        "2": {
+          "min_triangles": 20,
+          "spatial_neighbor_ratio": 0.025
+        },
+        "3": {
+          "min_triangles": 20,
+          "spatial_neighbor_ratio": 0.025
+        },
+        "7": {
+          "min_triangles": 20,
+          "spatial_neighbor_ratio": 0.025
+        }
+      }
     }
   },
   "visual_acceptance": "Strict individual-module review: seven approved-sheet terrain/terrace source shapes. Accept only coherent reusable rock+masonry supports, intact terrace tops and usable rock-to-street/building joins at official 19/12/9 and oblique/multi-angle captures. No fused remote fragments, chaotic masses, torn silhouettes or floating components. Modules must adapt visually to certified West Rebuilders Quarter without owning or moving gameplay topology. Technical clustering never implies visual PASS.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "terrain-terrace-v1-xy-repair-1",
-  "notes": "Zero-credit repair from exact exported GLB. Measured Blender sheet spans X=.981/Y=.958/Z=.309, so the correct sheet plane is XY, unlike prior PlayerCity. First XZ grouping mixed fragments from distinct modules and is visual FAIL. Recluster on measured XY plane; retain strict individual review and no promotion."
+  "run_nonce": "terrain-terrace-v1-spatial-residue-repair-1",
+  "notes": "Zero-credit bounded cleanup after XY review run36736179242/artifact11107497320. 01 stepped-support,02 corner-terrace,03 straight-support,07 broad-platform are candidates with remote residues. Use established disconnected/spatial cleanup only; no connected clipping/regeneration.04/05/06 currently reject: torn/mixed masses. No promotion until final multi-angle review."
 }
