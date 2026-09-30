@@ -1,10 +1,6 @@
-name: TowerWallRock surface diagnostic
+name: "[LEGACY] TowerWallRock surface diagnostic"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/towerwall-surface-diagnostic.yml'
   workflow_dispatch:
 
 permissions:
