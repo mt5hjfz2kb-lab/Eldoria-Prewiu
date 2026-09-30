@@ -91,3 +91,31 @@ Answer:
 5. What objective evidence will distinguish success from another iteration?
 
 If those answers are missing, do not generate.
+
+
+## Production-cell rule — validated 2026-09-30
+
+Valoria production now uses a **small-cell proof before citywide dressing**.
+
+Canonical order for a candidate area:
+1. **COMPOSITION / circulation** — footprint, route, elevation, silhouette and camera read.
+2. **SURFACE baseline** — shared stone/rock/timber/roof/ground families, value separation, roughness, texture response and local lighting.
+3. **Only after SURFACE reads correctly:** props, inhabitants, banners, smoke, vegetation and other density/life cues.
+4. Matched BEFORE/AFTER captures at official zooms plus mobile framing.
+5. Collider/hotspot signature must remain identical for a visual-only pass.
+6. Scale the recipe citywide only when the improvement is clearly visible at gameplay distance.
+
+### 2026-09-30 density-cell experiment
+
+The first lower-civic Production Cell deliberately tested the old temptation: add ground detail, reused props, worker silhouettes, banners, smoke and local warmth without generating new geometry.
+
+Result:
+- technical gate: PASS;
+- world regression: PASS;
+- gameplay topology/collider/hotspot safety: PASS;
+- Tripo spend: 0;
+- **visual step-change: FAIL / insufficient**.
+
+The AFTER frame is somewhat more occupied, but the difference is small and introduces extra small-scale noise while the dominant quality gap remains the underlying **surface/material/ground/lighting coherence**. Therefore this density cell is retained as diagnostic evidence only and is disabled in production by default.
+
+Permanent conclusion: **do not use set dressing to compensate for unresolved SURFACE.** The next production-quality proof must solve the surface/look-dev layer first on a bounded cell using existing geometry; only then add life/detail.
