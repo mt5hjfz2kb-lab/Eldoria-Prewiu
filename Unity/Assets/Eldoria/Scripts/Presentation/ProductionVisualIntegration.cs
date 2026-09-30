@@ -26,7 +26,7 @@ namespace Eldoria.Presentation
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
         public static bool ProductionCellEnabled = false;
-        // Surface Cell v1: bounded look-dev proof. Disabled in production until matched-camera review passes.
+        // Surface Cell v4: bounded URP look-dev proof. Disabled in production until matched-camera review passes.
         public static bool SurfaceCellEnabled = false;
 
         public static void ResetVisualCachesForGate()
