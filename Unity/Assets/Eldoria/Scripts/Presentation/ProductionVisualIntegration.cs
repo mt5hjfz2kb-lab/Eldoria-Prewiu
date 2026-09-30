@@ -26,6 +26,8 @@ namespace Eldoria.Presentation
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
         public static bool ProductionCellEnabled = false;
+        // Surface Cell v1: bounded look-dev proof. Disabled in production until matched-camera review passes.
+        public static bool SurfaceCellEnabled = false;
 
         public static void ResetVisualCachesForGate()
         {
@@ -200,8 +202,87 @@ namespace Eldoria.Presentation
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
+            if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(ProductionCellEnabled)IntegrateProductionCell(state,art);
             Finish();
+        }
+
+        public static void AddSurfaceCellForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateSurfaceCell();
+            Finish();
+        }
+
+        static void IntegrateSurfaceCell()
+        {
+            // Surface Cell v1 deliberately changes no geometry or gameplay. It upgrades the existing lower civic
+            // slice only: streets/steps/retaining stone plus the dedicated Aserradero/Cuartel material response.
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
+                var centre=renderer.bounds.center;
+                if(centre.x < -10.5f || centre.x > 10.5f || centre.z < -9.2f || centre.z > 1.4f)continue;
+
+                string n=renderer.gameObject.name;
+                if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
+
+                if(n.Contains("GroundKit")||n.Contains("vertical stair")||n.Contains("street slab")||
+                   n.Contains("worn tread")||n.Contains("court")||n.Contains("apron"))
+                {
+                    bool earth=n.Contains("earth")||n.Contains("wear")||n.Contains("seam");
+                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                        earth?new Color(.31f,.265f,.205f):new Color(.48f,.43f,.34f),
+                        earth?"earth":"stone",earth?new Vector2(4.5f,5.5f):new Vector2(4.2f,4.2f),earth?.55f:.85f);
+                    continue;
+                }
+
+                if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
+                {
+                    PolishImportedSurface(renderer,n.StartsWith("Aserradero")?new Color(.93f,.86f,.73f):new Color(.88f,.86f,.79f));
+                    continue;
+                }
+
+                if(n.Contains("rescued seam")||n.Contains("lower cliff")||n.Contains("rock wall seam")||
+                   n.Contains("TerrainTerrace")||n.Contains("retaining stone face"))
+                {
+                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                        new Color(.345f,.325f,.285f),"stone",new Vector2(3.8f,3.8f),.95f);
+                }
+            }
+
+            // Small lighting correction over the proof cell: enough to read material relief, not a cinematic relight.
+            WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.7f,2.1f,-5.0f),
+                new Color(1.0f,.76f,.50f),.24f,4.2f);
+            WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.6f,2.0f,-5.35f),
+                new Color(1.0f,.79f,.56f),.21f,3.9f);
+        }
+
+        static void PolishImportedSurface(Renderer renderer,Color tint)
+        {
+            var mats=renderer.sharedMaterials;
+            for(int i=0;i<mats.Length;i++)
+            {
+                var source=mats[i];
+                if(source==null)continue;
+                var copy=new Material(source){name="Valoria SurfaceCell · "+source.name};
+                if(copy.HasProperty("_BaseColor"))
+                {
+                    var baseColor=copy.GetColor("_BaseColor");
+                    copy.SetColor("_BaseColor",new Color(baseColor.r*tint.r,baseColor.g*tint.g,baseColor.b*tint.b,baseColor.a));
+                }
+                else if(copy.HasProperty("_Color"))
+                {
+                    var baseColor=copy.GetColor("_Color");
+                    copy.SetColor("_Color",new Color(baseColor.r*tint.r,baseColor.g*tint.g,baseColor.b*tint.b,baseColor.a));
+                }
+                if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.032f);
+                if(copy.HasProperty("_BumpScale"))copy.SetFloat("_BumpScale",1.15f);
+                if(copy.HasProperty("_OcclusionStrength"))copy.SetFloat("_OcclusionStrength",1.0f);
+                if(copy.HasProperty("_Metallic"))copy.SetFloat("_Metallic",0f);
+                mats[i]=copy;
+            }
+            renderer.sharedMaterials=mats;
         }
 
         public static void AddProductionCellForGate(PlayerState state)
