@@ -61,6 +61,7 @@ namespace Eldoria.EditorTools
         public static void CaptureFinal()
         {
             UnityEditor.ShaderUtil.allowAsyncCompilation=false;
+            PrepareGoldenCellTextures();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             ProductionVisualIntegration.ResetVisualCachesForGate();
@@ -95,6 +96,36 @@ namespace Eldoria.EditorTools
                 "  \"paid_assets\": 0\n"+
                 "}\n");
             EditorApplication.Exit(0);
+        }
+
+        static void PrepareGoldenCellTextures()
+        {
+            const string folder="Assets/Resources/Valoria/GoldenCellExternal";
+            if(!Directory.Exists(folder))return;
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
+            {
+                var path=AssetDatabase.GUIDToAssetPath(guid);
+                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+                if(importer==null)continue;
+                string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+                importer.wrapMode=TextureWrapMode.Repeat;
+                importer.filterMode=FilterMode.Trilinear;
+                importer.mipmapEnabled=true;
+                importer.maxTextureSize=1024;
+                if(lower.EndsWith("_normal"))
+                {
+                    importer.textureType=TextureImporterType.NormalMap;
+                    importer.sRGBTexture=false;
+                }
+                else
+                {
+                    importer.textureType=TextureImporterType.Default;
+                    importer.sRGBTexture=!lower.EndsWith("_ao");
+                }
+                importer.SaveAndReimport();
+            }
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         static void Save(Camera camera,string path,float zoom,int width,int height)
@@ -219,270 +250,390 @@ namespace Eldoria.EditorTools
     static class GoldenCellFinished
     {
         static Transform Root;
-        static Material Limestone,DeepStone,Oak,Slate,Rock,Ground,Blue,Plaster;
+        static Material Stone,Plaster,Wood,Roof,Ground,Rock,Metal,Moss,Blue,Gold,Corruption;
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished new artistic base").transform;
+            Root=new GameObject("GOLDEN CELL · new artistic base v1").transform;
             BuildMaterials();
-            SuppressOldCellVisuals();
-
-            // TERRAIN / TERRACE — layered geology first, architecture seated into it.
-            RockMass("GC FINAL · west rock foundation",new Vector3(-6.3f,1.45f,7.0f),new Vector3(5.8f,3.5f,7.4f),-11f);
-            RockMass("GC FINAL · east rock foundation",new Vector3(6.2f,1.35f,7.1f),new Vector3(5.6f,3.3f,7.2f),12f);
-            RockMass("GC FINAL · lower west seam",new Vector3(-5.1f,.52f,1.2f),new Vector3(4.7f,1.5f,4.2f),-7f);
-            RockMass("GC FINAL · lower east seam",new Vector3(5.0f,.48f,1.0f),new Vector3(4.4f,1.4f,4.0f),9f);
-
-            Block("GC FINAL · upper terrace",new Vector3(0f,2.62f,6.35f),new Vector3(12.8f,.46f,7.1f),Limestone);
-            Block("GC FINAL · plaza",new Vector3(0f,2.84f,2.65f),new Vector3(8.25f,.12f,4.05f),Ground);
-            Block("GC FINAL · retaining west",new Vector3(-5.35f,3.18f,4.75f),new Vector3(.72f,2.10f,5.0f),DeepStone);
-            Block("GC FINAL · retaining east",new Vector3(5.35f,3.18f,4.75f),new Vector3(.72f,2.10f,5.0f),DeepStone);
-
-            // MAIN ACCESS — keep the approved blockout hierarchy, replace block masses with a layered fortress facade.
-            Tower("GC FINAL · west gate tower",new Vector3(-3.15f,2.88f,6.80f),2.58f,5.55f,3.10f);
-            Tower("GC FINAL · east gate tower",new Vector3(3.15f,2.88f,6.80f),2.58f,5.25f,3.10f);
-            Keep("GC FINAL · high keep",new Vector3(.15f,2.90f,8.55f),4.35f,6.20f,3.65f);
-
-            // Recessed gatehouse: readable opening, deep jambs, timber gate and warm interior.
-            Block("GC FINAL · gatehouse lintel",new Vector3(0f,6.55f,6.15f),new Vector3(3.55f,1.00f,2.25f),Limestone);
-            Block("GC FINAL · gate jamb west",new Vector3(-1.55f,4.56f,6.15f),new Vector3(.80f,3.95f,2.25f),DeepStone);
-            Block("GC FINAL · gate jamb east",new Vector3(1.55f,4.56f,6.15f),new Vector3(.80f,3.95f,2.25f),DeepStone);
-            Block("GC FINAL · gate recess",new Vector3(0f,4.45f,6.32f),new Vector3(2.35f,3.35f,.34f),Rock);
-            var gate=Block("GC FINAL · timber portcullis",new Vector3(0f,4.20f,6.10f),new Vector3(2.02f,2.85f,.16f),Oak);
-            AddGateSlats(gate.transform.position,new Vector3(2.02f,2.85f,.20f));
-
-            // Curtain walls close the fortress volume without flattening the skyline.
-            Block("GC FINAL · west curtain",new Vector3(-4.52f,4.12f,7.15f),new Vector3(1.85f,2.55f,3.15f),Limestone);
-            Block("GC FINAL · east curtain",new Vector3(4.52f,4.05f,7.15f),new Vector3(1.85f,2.40f,3.15f),Limestone);
-            Battlements("GC FINAL · west curtain crown",new Vector3(-4.52f,5.48f,6.35f),3.0f,0f);
-            Battlements("GC FINAL · east curtain crown",new Vector3(4.52f,5.36f,6.35f),3.0f,0f);
-
-            // PROCESSIONAL ROUTE — worn stone stair, broader bottom and tighter upper landing.
-            for(int i=0;i<10;i++)
-            {
-                float t=i/9f;
-                float z=-.55f+i*.49f;
-                float y=.70f+i*.235f;
-                float w=Mathf.Lerp(4.85f,3.75f,t);
-                var step=Block("GC FINAL · processional stair "+i,new Vector3(0f,y,z),
-                    new Vector3(w,.22f,.55f),Ground);
-                step.transform.rotation=Quaternion.Euler(0f,(i%3-1)*.55f,0f);
-            }
-            Block("GC FINAL · stair west cheek",new Vector3(-2.42f,1.68f,1.58f),new Vector3(.42f,2.25f,4.4f),DeepStone);
-            Block("GC FINAL · stair east cheek",new Vector3(2.42f,1.68f,1.58f),new Vector3(.42f,2.25f,4.4f),DeepStone);
-
-            // SUPPORT BUILDINGS — detailed authored family, normalized into the Golden Cell palette.
-            var houseA=AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab");
-            var shed=AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/EA03_Village_OutBuilding_Shed_03b_PRE.prefab");
-            var admin=AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab");
-            PlaceAuthored("GC FINAL · residence",houseA,new Vector3(-7.55f,2.93f,2.35f),3.25f,3.55f,166f,
-                new Color(.57f,.52f,.45f,1f));
-            PlaceAuthored("GC FINAL · productive shed",shed,new Vector3(7.35f,2.92f,2.15f),3.45f,3.40f,194f,
-                new Color(.54f,.48f,.39f,1f));
-            PlaceAuthored("GC FINAL · civic annex",admin,new Vector3(-8.0f,2.96f,7.65f),2.65f,3.15f,120f,
-                new Color(.55f,.52f,.47f,1f));
-
-            // ROCK ↔ ARCHITECTURE TRANSITIONS — buttresses disappear into geology instead of ending on flat boards.
-            Buttress(new Vector3(-5.28f,2.95f,5.05f),-8f);
-            Buttress(new Vector3(5.28f,2.95f,5.05f),8f);
-            Rubble(new Vector3(-4.95f,2.82f,3.20f),8,.42f);
-            Rubble(new Vector3(4.95f,2.82f,3.15f),8,.42f);
-
-            // SPARSE VEGETATION — grouped framing, no uniform scatter.
-            var tree=AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/EmaceArt/Slavic World Free/Prefabs/Nature/Tree/EA03_Nature_Tree_02b_PRE.prefab");
-            foreach(var spec in new[]{
-                new Vector4(-9.1f,1.0f,15f,1.0f),new Vector4(-8.7f,5.1f,-18f,.86f),
-                new Vector4(9.2f,.7f,-13f,.94f),new Vector4(8.9f,5.0f,19f,.82f)})
-                PlaceAuthored("GC FINAL · edge tree",tree,new Vector3(spec.x,.18f,spec.y),
-                    1.45f*spec.w,3.45f*spec.w,spec.z,new Color(.48f,.58f,.43f,1f));
-
-            // HERALDRY + LIGHT — cool slate/blue against warm gate and windows.
-            Banner(new Vector3(-2.05f,6.78f,5.00f));
-            Banner(new Vector3(2.05f,6.78f,5.00f));
-            WarmPoint("GC FINAL · gate warmth",new Vector3(0f,4.15f,5.65f),new Color(1f,.53f,.23f),2.2f,5.0f);
-            WarmPoint("GC FINAL · residence warmth",new Vector3(-7.2f,4.1f,1.15f),new Color(1f,.58f,.28f),.85f,3.1f);
-            WarmPoint("GC FINAL · workshop warmth",new Vector3(7.0f,4.0f,.95f),new Color(1f,.58f,.25f),.75f,3.0f);
-
-            // Directional balance local to the experiment only.
-            var fillGo=new GameObject("GC FINAL · cool rim");
-            fillGo.transform.SetParent(Root,true);
-            fillGo.transform.rotation=Quaternion.Euler(38f,145f,0f);
-            var fill=fillGo.AddComponent<Light>();
-            fill.type=LightType.Directional;fill.shadows=LightShadows.None;
-            fill.color=new Color(.58f,.68f,.82f);fill.intensity=.16f;
+            ConfigureLight();
+            BuildTerraceAndRoute();
+            BuildHeroAccess();
+            BuildRockArchitectureTransition();
+            BuildSupportArchitecture();
+            BuildLife();
+            BuildCorruptionHint();
         }
 
         static void BuildMaterials()
         {
-            Limestone=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png",new Color(.72f,.69f,.61f),.03f,2.5f);
-            DeepStone=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/oldstone.png",new Color(.48f,.47f,.43f),.025f,2.8f);
-            Oak=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/oak.png",new Color(.50f,.34f,.21f),.035f,3.0f);
-            Slate=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/slate.png",new Color(.24f,.29f,.34f),.04f,3.0f);
-            Rock=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png",new Color(.39f,.40f,.38f),.02f,2.7f);
-            Ground=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/oldstone.png",new Color(.52f,.47f,.38f),.025f,4.3f);
-            Plaster=TexMat("Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png",new Color(.64f,.58f,.49f),.02f,3.2f);
-            Blue=Flat(new Color(.10f,.24f,.40f),.03f);
-        }
-
-        static Material TexMat(string assetPath,Color tint,float smooth,float tiling)
-        {
-            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            var m=new Material(shader){name="GoldenCell · "+Path.GetFileNameWithoutExtension(assetPath)};
-            var tex=AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
-            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint); else m.color=tint;
-            if(tex!=null)
+            Stone=Pbr("stone",new Color(.93f,.88f,.76f,1f),new Vector2(2.6f,2.6f),.07f,1.05f,0f);
+            Plaster=Pbr("plaster",new Color(.91f,.84f,.70f,1f),new Vector2(2.2f,2.2f),.05f,.82f,0f);
+            Wood=Pbr("wood",new Color(.62f,.39f,.20f,1f),new Vector2(2.8f,2.8f),.10f,.92f,0f);
+            Roof=Pbr("roof",new Color(.26f,.34f,.39f,1f),new Vector2(2.7f,2.7f),.08f,1.00f,0f);
+            Ground=Pbr("ground",new Color(.76f,.68f,.54f,1f),new Vector2(3.4f,3.4f),.06f,1.10f,0f);
+            Rock=Pbr("mossrock",new Color(.58f,.58f,.49f,1f),new Vector2(2.1f,2.1f),.04f,1.12f,0f);
+            Metal=Pbr("metal",new Color(.34f,.37f,.38f,1f),new Vector2(2.0f,2.0f),.22f,.65f,.62f);
+            Moss=Pbr("mossrock",new Color(.50f,.68f,.43f,1f),new Vector2(3.0f,3.0f),.03f,.90f,0f);
+            Blue=Solid(new Color(.055f,.19f,.38f,1f),.16f,.05f);
+            Gold=Solid(new Color(.76f,.52f,.17f,1f),.28f,.48f);
+            Corruption=Solid(new Color(.43f,.09f,.57f,1f),.18f,.06f);
+            if(Corruption.HasProperty("_EmissionColor"))
             {
-                if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",tex);m.SetTextureScale("_BaseMap",Vector2.one*tiling);}
-                else if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",tex);m.SetTextureScale("_MainTex",Vector2.one*tiling);}
-            }
-            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);
-            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-            return m;
-        }
-
-        static Material Flat(Color c,float smooth)
-        {
-            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            var m=new Material(shader);if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",c);else m.color=c;
-            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);return m;
-        }
-
-        static void SuppressOldCellVisuals()
-        {
-            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-            {
-                var p=r.bounds.center;
-                if(Mathf.Abs(p.x)>10.8f||p.z<-1.8f||p.z>11.5f)continue;
-                string n=r.gameObject.name;
-                if(n.Contains("Hero")||n.Contains("Archer")||n.Contains("target")||n.Contains("worker"))continue;
-                // Keep the route below the new stair authoritative but hide the competing old visual shell.
-                if(n.StartsWith("Bastion")||n.StartsWith("Valoria · Bastion")||
-                   n.StartsWith("VPD · upper")||n.StartsWith("VPD · L1")||
-                   n.StartsWith("Valoria · rescued hero")||n.StartsWith("Valoria · stone street")||
-                   n.StartsWith("VPD · GroundKit L1"))
-                    r.enabled=false;
+                Corruption.EnableKeyword("_EMISSION");
+                Corruption.SetColor("_EmissionColor",new Color(.72f,.12f,1.0f)*1.65f);
             }
         }
 
-        static void Tower(string name,Vector3 ground,float width,float height,float depth)
+        static void ConfigureLight()
         {
-            Block(name+" · shaft",ground+new Vector3(0,height*.46f,0),new Vector3(width,height*.92f,depth),Limestone);
-            Block(name+" · base",ground+new Vector3(0,.35f,0),new Vector3(width*1.12f,.70f,depth*1.10f),DeepStone);
-            Battlements(name+" · crown",ground+new Vector3(0,height,0),width,0f);
-            // vertical stone ribs
-            foreach(float x in new[]{-width*.40f,width*.40f})
-                Block(name+" · rib",ground+new Vector3(x,height*.47f,-depth*.51f),new Vector3(.22f,height*.76f,.16f),DeepStone);
-            // arrow slit
-            Block(name+" · slit",ground+new Vector3(0,height*.57f,-depth*.515f),new Vector3(.16f,.72f,.08f),Rock);
+            RenderSettings.ambientMode=AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor=new Color(.73f,.80f,.84f);
+            RenderSettings.ambientEquatorColor=new Color(.54f,.52f,.46f);
+            RenderSettings.ambientGroundColor=new Color(.25f,.23f,.20f);
+            RenderSettings.ambientIntensity=.95f;
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.57f,.65f,.69f);
+            RenderSettings.fogStartDistance=48f;
+            RenderSettings.fogEndDistance=118f;
+
+            foreach(var l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(l.type!=LightType.Directional)continue;
+                l.color=new Color(1f,.90f,.76f);
+                l.intensity=1.15f;
+                l.shadowStrength=.70f;
+                l.shadows=LightShadows.Soft;
+                l.transform.rotation=Quaternion.Euler(46f,-36f,0f);
+            }
+            var fill=new GameObject("GC · cool valley fill").AddComponent<Light>();
+            fill.transform.SetParent(Root);fill.type=LightType.Directional;fill.intensity=.24f;
+            fill.color=new Color(.59f,.72f,1f);fill.transform.rotation=Quaternion.Euler(34f,145f,0f);fill.shadows=LightShadows.None;
         }
 
-        static void Keep(string name,Vector3 ground,float width,float height,float depth)
+        static void BuildTerraceAndRoute()
         {
-            Block(name+" · body",ground+new Vector3(0,height*.48f,0),new Vector3(width,height*.96f,depth),Limestone);
-            Block(name+" · lower course",ground+new Vector3(0,.48f,0),new Vector3(width*1.08f,.96f,depth*1.07f),DeepStone);
-            Battlements(name+" · crown",ground+new Vector3(0,height,0),width,0f);
-            for(int i=-1;i<=1;i++)
-                Block(name+" · slit "+i,ground+new Vector3(i*1.05f,height*.60f,-depth*.51f),
-                    new Vector3(.13f,.72f,.08f),Rock);
-            var roof=Block(name+" · inner slate cap",ground+new Vector3(0,height+.38f,0),
-                new Vector3(width*.66f,.62f,depth*.70f),Slate);
-            roof.transform.rotation=Quaternion.Euler(0f,0f,2f);
-        }
+            // Thin authored surfaces sit over the certified topology; no gameplay collider is introduced.
+            ChamferBox("GC · upper limestone terrace",new Vector3(0f,2.50f,4.72f),new Vector3(12.3f,.30f,5.55f),.18f,Stone);
+            ChamferBox("GC · lower cobble plaza",new Vector3(0f,.63f,-.55f),new Vector3(8.4f,.13f,4.8f),.15f,Ground);
 
-        static void Battlements(string name,Vector3 p,float span,float yaw)
-        {
+            for(int i=0;i<9;i++)
+            {
+                float z=.15f+i*.53f;
+                float y=.79f+i*.204f;
+                ChamferBox("GC · processional stair "+i,new Vector3(0f,y,z),new Vector3(4.08f,.20f,.56f),.06f,Ground);
+            }
+
+            // Gold inlay defines the processional axis without neon/UI language.
             for(int i=0;i<5;i++)
+                ThinStrip("GC · gold road inlay "+i,new Vector3(0f,.715f,-1.65f+i*.62f),new Vector3(.055f,.025f,.46f),Gold);
+        }
+
+        static void BuildHeroAccess()
+        {
+            // A single new hero fragment: civic arch + flanking gatehouses. It is intentionally
+            // subordinate to the existing Bastion towers but transforms the access silhouette.
+            var centre=new Vector3(0f,3.65f,3.72f);
+            ArchRing("GC · monumental arch",centre,1.48f,.42f,.62f,18,Stone);
+            ChamferBox("GC · arch west pier",new Vector3(-1.70f,3.30f,3.72f),new Vector3(.70f,2.75f,.82f),.08f,Stone);
+            ChamferBox("GC · arch east pier",new Vector3(1.70f,3.30f,3.72f),new Vector3(.70f,2.75f,.82f),.08f,Stone);
+
+            GateHouse("GC · west gatehouse",new Vector3(-4.75f,2.72f,4.15f),false);
+            GateHouse("GC · east gatehouse",new Vector3(4.75f,2.72f,4.15f),true);
+
+            // Blue/gold heraldry concentrated at the monumental threshold.
+            Banner(new Vector3(-2.32f,4.45f,3.05f),false);
+            Banner(new Vector3(2.32f,4.45f,3.05f),true);
+
+            var warm=new GameObject("GC · arch firelight").AddComponent<Light>();
+            warm.transform.SetParent(Root);warm.type=LightType.Point;warm.range=8.5f;warm.intensity=3.1f;
+            warm.color=new Color(1f,.55f,.24f);warm.transform.position=new Vector3(0f,3.25f,2.95f);warm.shadows=LightShadows.None;
+        }
+
+        static void GateHouse(string name,Vector3 p,bool mirror)
+        {
+            float s=mirror?-1f:1f;
+            ChamferBox(name+" · stone base",p+new Vector3(0,.60f,0),new Vector3(2.45f,2.65f,3.05f),.12f,Stone);
+            GableRoof(name+" · slate roof",p+new Vector3(0,2.15f,.05f),2.75f,3.45f,.92f,Roof);
+            ChamferBox(name+" · corner buttress",p+new Vector3(s*1.38f,.35f,-.28f),new Vector3(.52f,2.50f,.92f),.07f,Stone);
+            ChamferBox(name+" · timber door",p+new Vector3(-s*.42f,.40f,-1.56f),new Vector3(.62f,1.32f,.10f),.03f,Wood);
+            ChamferBox(name+" · gold lintel",p+new Vector3(-s*.42f,1.20f,-1.61f),new Vector3(.86f,.10f,.08f),.02f,Gold);
+            ThinStrip(name+" · blue fascia",p+new Vector3(0,1.45f,-1.60f),new Vector3(1.28f,.08f,.06f),Blue);
+        }
+
+        static void BuildRockArchitectureTransition()
+        {
+            // Stepped masonry progressively gives way to irregular rock, then moss.
+            for(int i=0;i<3;i++)
             {
-                float x=Mathf.Lerp(-span*.46f,span*.46f,i/4f);
-                var merlon=Block(name+" · merlon "+i,p+new Vector3(x,.32f,0f),
-                    new Vector3(span*.13f,.64f,.62f),DeepStone);
-                merlon.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+                float off=6.0f+i*.72f;
+                float y=1.50f-i*.20f;
+                float z=3.72f+i*.73f;
+                var west=ChamferBox("GC · west retaining "+i,new Vector3(-off,y,z),new Vector3(1.15f,2.35f-i*.25f,2.60f),.12f,Stone);
+                west.transform.rotation=Quaternion.Euler(0,12f+i*7f,0);
+                var east=ChamferBox("GC · east retaining "+i,new Vector3(off,y,z),new Vector3(1.15f,2.35f-i*.25f,2.60f),.12f,Stone);
+                east.transform.rotation=Quaternion.Euler(0,-12f-i*7f,0);
+            }
+
+            RockMass("GC · west mountain shoulder",new Vector3(-8.5f,.42f,5.85f),new Vector3(5.3f,3.3f,6.1f),Rock,17);
+            RockMass("GC · east mountain shoulder",new Vector3(8.5f,.42f,5.85f),new Vector3(5.3f,3.3f,6.1f),Rock,29);
+
+            // Moss sits at the actual seam, not randomly over every surface.
+            for(int i=0;i<8;i++)
+            {
+                float side=i<4?-1f:1f;
+                float j=i%4;
+                var moss=Primitive(PrimitiveType.Sphere,"GC · seam moss "+i,
+                    new Vector3(side*(6.35f+j*.65f),.78f+j*.11f,4.35f+j*.55f),
+                    new Vector3(.62f,.10f,.48f),Moss);
+                moss.transform.rotation=Quaternion.Euler(0,j*31f,0);
             }
         }
 
-        static void AddGateSlats(Vector3 center,Vector3 size)
+        static void BuildSupportArchitecture()
         {
-            for(int i=0;i<7;i++)
+            TimberHouse("GC · west residence",new Vector3(-7.75f,.56f,-1.02f),new Vector3(2.80f,2.05f,2.75f),-8f,false);
+            TimberHouse("GC · east workshop",new Vector3(7.70f,.56f,-1.15f),new Vector3(3.12f,2.00f,2.95f),8f,true);
+
+            Arcade("GC · west civic arcade",new Vector3(-4.55f,.73f,-.62f),-3f);
+            Arcade("GC · east civic arcade",new Vector3(4.55f,.73f,-.62f),3f);
+        }
+
+        static void TimberHouse(string name,Vector3 p,Vector3 size,float yaw,bool workshop)
+        {
+            var q=Quaternion.Euler(0,yaw,0);
+            var footing=ChamferBox(name+" · footing",p+new Vector3(0,.17f,0),new Vector3(size.x*1.06f,.30f,size.z*1.05f),.06f,Stone);footing.transform.rotation=q;
+            var body=ChamferBox(name+" · plaster body",p+new Vector3(0,size.y*.52f,0),size,.08f,Plaster);body.transform.rotation=q;
+            GableRoof(name+" · slate roof",p+new Vector3(0,size.y+.12f,0),size.x*1.13f,size.z*1.15f,.78f,Roof,yaw);
+
+            foreach(float x in new[]{-.38f,.38f})
             {
-                float x=Mathf.Lerp(-size.x*.45f,size.x*.45f,i/6f);
-                Block("GC FINAL · gate vertical "+i,center+new Vector3(x,0,-.12f),
-                    new Vector3(.075f,size.y,.08f),DeepStone);
+                var post=ChamferBox(name+" · timber post",p+q*new Vector3(x*size.x,size.y*.53f,-size.z*.515f),
+                    new Vector3(.11f,size.y*.88f,.12f),.02f,Wood);post.transform.rotation=q;
             }
+            var beam=ChamferBox(name+" · timber beam",p+q*new Vector3(0,size.y*.76f,-size.z*.52f),
+                new Vector3(size.x*.82f,.12f,.13f),.02f,Wood);beam.transform.rotation=q;
+            var door=ChamferBox(name+" · door",p+q*new Vector3(0,.62f,-size.z*.525f),
+                new Vector3(.52f,1.12f,.11f),.02f,Wood);door.transform.rotation=q;
+
+            if(workshop)
+            {
+                var awning=ChamferBox(name+" · work awning",p+q*new Vector3(-size.x*.55f,.90f,-.15f),
+                    new Vector3(size.x*.42f,.10f,size.z*.70f),.02f,Wood);awning.transform.rotation=q*Quaternion.Euler(0,0,-8f);
+                for(int i=0;i<3;i++)
+                    ChamferBox(name+" · crate "+i,p+q*new Vector3(-1.4f+i*.58f,.28f,-1.75f),new Vector3(.48f,.48f,.48f),.03f,Wood).transform.rotation=q;
+            }
+        }
+
+        static void Arcade(string name,Vector3 p,float yaw)
+        {
+            var q=Quaternion.Euler(0,yaw,0);
+            for(int i=-1;i<=1;i++)
+            {
+                var pier=ChamferBox(name+" · pier "+i,p+q*new Vector3(i*1.22f,.68f,0),new Vector3(.30f,1.36f,.46f),.05f,Stone);pier.transform.rotation=q;
+                var beam=ChamferBox(name+" · beam "+i,p+q*new Vector3(i*1.22f,1.42f,0),new Vector3(1.30f,.24f,.49f),.04f,Stone);beam.transform.rotation=q;
+            }
+        }
+
+        static void BuildLife()
+        {
+            // Lamps, work props and restrained vegetation make the cell inhabited without hiding circulation.
+            foreach(var p in new[]{new Vector3(-2.75f,.72f,-1.55f),new Vector3(2.75f,.72f,-1.55f)})
+                Lamp(p);
+
             for(int i=0;i<4;i++)
             {
-                float y=Mathf.Lerp(-size.y*.40f,size.y*.40f,i/3f);
-                Block("GC FINAL · gate horizontal "+i,center+new Vector3(0,y,-.13f),
-                    new Vector3(size.x,.075f,.08f),DeepStone);
+                float side=i<2?-1f:1f;
+                float j=i%2;
+                var shrub=Primitive(PrimitiveType.Sphere,"GC · terrace shrub "+i,
+                    new Vector3(side*(6.0f+j*1.25f),1.00f,-.15f+j*.95f),
+                    new Vector3(.68f,.82f,.68f),Moss);
+                shrub.transform.rotation=Quaternion.Euler(0,i*33f,0);
             }
-        }
 
-        static void Buttress(Vector3 foot,float yaw)
-        {
-            var lower=Block("GC FINAL · buttress lower",foot+new Vector3(0,.75f,0),
-                new Vector3(.90f,1.55f,1.15f),DeepStone);
-            lower.transform.rotation=Quaternion.Euler(-5f,yaw,0f);
-            var upper=Block("GC FINAL · buttress upper",foot+new Vector3(0,1.75f,.12f),
-                new Vector3(.62f,1.15f,.88f),Limestone);
-            upper.transform.rotation=Quaternion.Euler(-3f,yaw,0f);
-        }
-
-        static void RockMass(string name,Vector3 p,Vector3 scale,float zRot)
-        {
-            var a=Block(name+" · A",p,scale,Rock);a.transform.rotation=Quaternion.Euler(0f,-9f,zRot);
-            var b=Block(name+" · B",p+new Vector3(scale.x*.30f,.30f,scale.z*.18f),
-                scale*.67f,DeepStone);b.transform.rotation=Quaternion.Euler(7f,17f,-zRot*.6f);
-        }
-
-        static void Rubble(Vector3 p,int count,float scale)
-        {
-            for(int i=0;i<count;i++)
+            // Light smoke over productive side only.
+            for(int i=0;i<4;i++)
             {
-                float a=i*2.39996f;
-                float r=.25f+.13f*i;
-                var s=scale*(.65f+(i%3)*.16f);
-                var go=GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                go.name="GC FINAL · rubble";go.transform.SetParent(Root,true);
-                go.transform.position=p+new Vector3(Mathf.Cos(a)*r,s*.42f,Mathf.Sin(a)*r);
-                go.transform.localScale=new Vector3(s*1.3f,s*.65f,s);
-                go.transform.rotation=Quaternion.Euler(i*11f,i*37f,i*7f);
-                var col=go.GetComponent<Collider>();if(col!=null)UnityEngine.Object.DestroyImmediate(col);
-                go.GetComponent<Renderer>().sharedMaterial=i%2==0?Rock:DeepStone;
+                var smoke=Primitive(PrimitiveType.Sphere,"GC · workshop smoke "+i,
+                    new Vector3(8.35f+i*.06f,3.25f+i*.50f,-.45f),
+                    Vector3.one*(.28f+i*.07f),Solid(new Color(.45f,.45f,.43f,1f),.02f,0f));
             }
         }
 
-        static GameObject PlaceAuthored(string name,GameObject prefab,Vector3 ground,float footprint,float height,float yaw,Color tint)
+        static void Lamp(Vector3 p)
         {
-            if(prefab==null)return null;
-            var go=ValoriaKit.BenchmarkPieceModulated(name,prefab,ground,footprint,height,Quaternion.Euler(0f,yaw,0f),tint);
-            if(go==null)return null;
-            go.transform.SetParent(Root,true);
-            foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            Primitive(PrimitiveType.Cylinder,"GC · lamp post",p+Vector3.up*.78f,new Vector3(.07f,.80f,.07f),Metal);
+            ChamferBox("GC · lamp cage",p+Vector3.up*1.62f,new Vector3(.34f,.42f,.34f),.04f,Metal);
+            var glow=new GameObject("GC · lamp glow").AddComponent<Light>();
+            glow.transform.SetParent(Root);glow.type=LightType.Point;glow.range=3.8f;glow.intensity=1.7f;
+            glow.color=new Color(1f,.55f,.25f);glow.transform.position=p+Vector3.up*1.65f;glow.shadows=LightShadows.None;
+        }
+
+        static void BuildCorruptionHint()
+        {
+            // Secondary distant read: thin ground scars, never crystals/cylinders.
+            for(int i=0;i<5;i++)
+            {
+                var strip=ThinStrip("GC · distant corruption scar "+i,
+                    new Vector3(10.4f+i*.38f,.38f,10.4f+i*.58f),
+                    new Vector3(.055f,.022f,.75f+i*.18f),Corruption);
+                strip.transform.rotation=Quaternion.Euler(0,22f+i*11f,0);
+            }
+            var glow=new GameObject("GC · corruption haze").AddComponent<Light>();
+            glow.transform.SetParent(Root);glow.type=LightType.Point;glow.range=9f;glow.intensity=1.25f;
+            glow.color=new Color(.54f,.12f,.75f);glow.transform.position=new Vector3(11.2f,1.15f,11.4f);glow.shadows=LightShadows.None;
+        }
+
+        static void Banner(Vector3 p,bool mirror)
+        {
+            Primitive(PrimitiveType.Cylinder,"GC · banner pole",p+new Vector3(mirror?.42f:-.42f,.10f,0),
+                new Vector3(.035f,.90f,.035f),Metal);
+            ChamferBox("GC · blue banner",p,new Vector3(.62f,1.28f,.045f),.015f,Blue);
+            ThinStrip("GC · gold banner trim",p+new Vector3(0,-.56f,-.028f),new Vector3(.62f,.055f,.025f),Gold);
+        }
+
+        static void GableRoof(string name,Vector3 p,float width,float depth,float rise,Material mat,float yaw=0f)
+        {
+            var root=new GameObject(name);root.transform.SetParent(Root);root.transform.position=p;root.transform.rotation=Quaternion.Euler(0,yaw,0);
+            float half=width*.5f;
+            float slope=Mathf.Sqrt(half*half+rise*rise);
+            float ang=Mathf.Atan2(rise,half)*Mathf.Rad2Deg;
+            var left=ChamferBox(name+" · left",p+Quaternion.Euler(0,yaw,0)*new Vector3(-width*.235f,rise*.48f,0),
+                new Vector3(slope,.14f,depth),.025f,mat);
+            left.transform.rotation=Quaternion.Euler(0,yaw,-ang);
+            var right=ChamferBox(name+" · right",p+Quaternion.Euler(0,yaw,0)*new Vector3(width*.235f,rise*.48f,0),
+                new Vector3(slope,.14f,depth),.025f,mat);
+            right.transform.rotation=Quaternion.Euler(0,yaw,ang);
+        }
+
+        static void ArchRing(string name,Vector3 center,float inner,float thickness,float depth,int segments,Material mat)
+        {
+            float outer=inner+thickness;
+            var verts=new List<Vector3>();var tris=new List<int>();var uvs=new List<Vector2>();
+            for(int i=0;i<=segments;i++)
+            {
+                float t=Mathf.PI*i/segments;
+                float co=Mathf.Cos(t),si=Mathf.Sin(t);
+                foreach(float z in new[]{-depth*.5f,depth*.5f})
+                {
+                    verts.Add(center+new Vector3(co*outer,si*outer,z));
+                    verts.Add(center+new Vector3(co*inner,si*inner,z));
+                    uvs.Add(new Vector2(i/(float)segments,1));uvs.Add(new Vector2(i/(float)segments,0));
+                }
+            }
+            for(int i=0;i<segments;i++)
+            {
+                int a=i*4,b=a+1,c=a+2,d=a+3;
+                int na=a+4,nb=b+4,nc=c+4,nd=d+4;
+                AddQuad(tris,a,na,nb,b);      // back face band
+                AddQuad(tris,c,d,nd,nc);      // front face band
+                AddQuad(tris,a,c,nc,na);      // outer curve
+                AddQuad(tris,b,nb,nd,d);      // inner curve
+            }
+            var mesh=new Mesh{name=name+" mesh"};mesh.SetVertices(verts);mesh.SetTriangles(tris,0);mesh.SetUVs(0,uvs);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(name);go.transform.SetParent(Root);go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=mat;
+        }
+
+        static void RockMass(string name,Vector3 p,Vector3 scale,Material mat,int seed)
+        {
+            // Low-poly authored rock prism; deterministic and visually irregular rather than a stretched cube.
+            var verts=new List<Vector3>();
+            int ring=8;
+            for(int level=0;level<3;level++)
+            {
+                float y=level==0?0f:level==1?.48f:1f;
+                float radius=level==0?1f:level==1?.90f:.48f;
+                for(int i=0;i<ring;i++)
+                {
+                    float a=Mathf.PI*2f*i/ring;
+                    float wobble=.86f+.10f*Mathf.Sin(seed*.7f+i*2.31f+level);
+                    verts.Add(new Vector3(Mathf.Cos(a)*radius*wobble,y,Mathf.Sin(a)*radius*(1.04f+.08f*Mathf.Cos(seed+i))));
+                }
+            }
+            var tris=new List<int>();
+            for(int l=0;l<2;l++)for(int i=0;i<ring;i++)
+            {
+                int n=(i+1)%ring;int a=l*ring+i,b=l*ring+n,c=(l+1)*ring+i,d=(l+1)*ring+n;
+                AddQuad(tris,a,c,d,b);
+            }
+            for(int i=1;i<ring-1;i++){tris.Add(16);tris.Add(16+i);tris.Add(16+i+1);}
+            var mesh=new Mesh{name=name+" mesh"};mesh.SetVertices(verts);mesh.SetTriangles(tris,0);
+            var uvs=new List<Vector2>();foreach(var v in verts)uvs.Add(new Vector2(v.x*.5f+.5f,v.z*.5f+.5f));mesh.SetUVs(0,uvs);
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(name);go.transform.SetParent(Root);go.transform.position=p;go.transform.localScale=scale;
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=mat;
+        }
+
+        static GameObject ChamferBox(string name,Vector3 p,Vector3 scale,float bevel,Material mat)
+        {
+            // Small bevel via nested masonry skin: keeps silhouettes clean at mobile zoom without ProBuilder.
+            var go=Primitive(PrimitiveType.Cube,name,p,scale,mat);
+            if(bevel>.001f)
+            {
+                // Corner highlight strips produce readable bevel response from the fixed camera.
+                var q=go.transform.rotation;
+                float bx=Mathf.Max(.03f,bevel),by=Mathf.Max(.03f,bevel);
+                foreach(float sx in new[]{-1f,1f})foreach(float sy in new[]{-1f,1f})
+                {
+                    var strip=Primitive(PrimitiveType.Cube,name+" · edge",p+new Vector3(sx*(scale.x*.5f-bx*.5f),sy*(scale.y*.5f-by*.5f),-scale.z*.502f),
+                        new Vector3(bx,by,scale.z*.02f),mat);
+                    strip.transform.rotation=q;
+                }
+            }
             return go;
         }
 
-        static void Banner(Vector3 p)
-        {
-            Block("GC FINAL · banner",p,new Vector3(.68f,1.70f,.06f),Blue);
-            Block("GC FINAL · banner pole",p+new Vector3(-.42f,.25f,0f),new Vector3(.055f,2.25f,.055f),Oak);
-        }
+        static GameObject ThinStrip(string name,Vector3 p,Vector3 scale,Material mat)
+            =>ChamferBox(name,p,scale,.01f,mat);
 
-        static void WarmPoint(string name,Vector3 p,Color c,float intensity,float range)
+        static GameObject Primitive(PrimitiveType type,string name,Vector3 p,Vector3 scale,Material mat)
         {
-            var go=new GameObject(name);go.transform.SetParent(Root,true);go.transform.position=p;
-            var l=go.AddComponent<Light>();l.type=LightType.Point;l.color=c;l.intensity=intensity;l.range=range;
-            l.shadows=LightShadows.Soft;
-        }
-
-        static GameObject Block(string name,Vector3 p,Vector3 scale,Material m)
-        {
-            var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name=name;go.transform.SetParent(Root,true);
-            go.transform.position=p;go.transform.localScale=scale;
+            var go=GameObject.CreatePrimitive(type);go.name=name;go.transform.SetParent(Root);go.transform.position=p;go.transform.localScale=scale;
             var c=go.GetComponent<Collider>();if(c!=null)UnityEngine.Object.DestroyImmediate(c);
-            go.GetComponent<Renderer>().sharedMaterial=m;return go;
+            go.GetComponent<Renderer>().sharedMaterial=mat;return go;
+        }
+
+        static void AddQuad(List<int> tris,int a,int b,int c,int d)
+        { tris.Add(a);tris.Add(b);tris.Add(c);tris.Add(a);tris.Add(c);tris.Add(d); }
+
+        static Material Pbr(string prefix,Color tint,Vector2 tiling,float smooth,float bump,float metallic)
+        {
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            var m=new Material(shader){name="GC PBR · "+prefix};
+            var diff=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_diff");
+            var normal=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_normal");
+            var ao=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_ao");
+            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+            if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+            if(diff!=null)
+            {
+                if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",diff);m.SetTextureScale("_BaseMap",tiling);}
+                else if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",diff);m.SetTextureScale("_MainTex",tiling);}
+            }
+            if(normal!=null&&m.HasProperty("_BumpMap"))
+            {
+                m.SetTexture("_BumpMap",normal);m.SetTextureScale("_BumpMap",tiling);m.SetFloat("_BumpScale",bump);m.EnableKeyword("_NORMALMAP");
+            }
+            if(ao!=null&&m.HasProperty("_OcclusionMap"))
+            {
+                m.SetTexture("_OcclusionMap",ao);m.SetTextureScale("_OcclusionMap",tiling);m.SetFloat("_OcclusionStrength",1f);
+            }
+            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);
+            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",metallic);
+            return m;
+        }
+
+        static Material Solid(Color color,float smooth,float metallic)
+        {
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            var m=new Material(shader);
+            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",color);
+            if(m.HasProperty("_Color"))m.SetColor("_Color",color);
+            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);
+            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",metallic);
+            return m;
         }
     }
+
 }
