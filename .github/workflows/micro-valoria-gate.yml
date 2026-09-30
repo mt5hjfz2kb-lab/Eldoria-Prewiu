@@ -1,12 +1,6 @@
-name: Micro-Valoria isolated composition gate
+name: "[LEGACY] Micro-Valoria isolated composition gate"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/micro-valoria-gate.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaOwnerReview.cs'
   workflow_dispatch:
 
 concurrency:
