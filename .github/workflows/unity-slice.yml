@@ -45,7 +45,8 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*)
+              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*|Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs|Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs|Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs)
+                # Dedicated UI Progression Certification owns these UI-only changes.
                 continue
                 ;;
               Unity/*)
