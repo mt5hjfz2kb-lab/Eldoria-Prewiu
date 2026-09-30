@@ -1,3 +1,10 @@
+## Stone Architecture Kit v1 selective production result — 2026-09-30
+- The generated eight-piece sheet remains an overall **VISUAL KIT FAIL** despite technical PASS; it is not an eight-family production kit.
+- Exactly one strict visual PASS was promoted: **RockToWallTransition** at `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`.
+- Certified promoted identity: **12,414,676 bytes / SHA-256 116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0**. Selective promotion run **36707553542 SUCCESS**, artifact **11092856576**; source per-piece gate **36705459251 SUCCESS**, artifact **11091584269**.
+- Promotion commit `f5b9f9ecdd426a17166d7051500f3c8b6e43193a` adds only the GLB. Valoria.unity, VisualWorld, gameplay, hotspots and certified circulation/topology are unchanged.
+- Pieces 01/05/06 require cleanup before any promotion; pieces 03/04/07/08 remain rejected. Total Tripo spend for the generation is **55 credits once**.
+
 # Eldoria — PROJECT STATE
 ## Stone Architecture Kit v1 final gate — 2026-09-30
 - Exact approved PNG was generated once in Tripo at the owner-authorized **55-credit** cost; exported GLB identity: **74,616,872 bytes / SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422**.
