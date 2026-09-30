@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Stone Architecture generation completed from the owner-authorized 55-credit task. Export the exact completed task once as GLB, verify GLB header, SHA-256 and byte size, capture post-export state. No further credit spend.",
+  "notes": "CLOSED. Stone Architecture v1 generation/export completed and exact GLB is preserved. No further Tripo action is authorized by this request. Keep disabled.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
