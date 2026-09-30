@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "request_id": "eldoria-player-city-v1-universal-promotion",
+  "decision": "One universal strategic city mesh represents all player cities on the shared 4X world map in v1. Player identity/state remains UI/gameplay-owned. Future skins/tiers may vary appearance without changing this contract.",
+  "source_generation": {
+    "original_sheet": "Eldoria_PlayerCity_ProgressionSheet_v1",
+    "source_glb_sha256": "206b7586933fa16e1367b9bdd68147f7525fe7741c25795437693b5688100d8a",
+    "recovery_run_id": 36732048587,
+    "recovery_artifact_id": 11105793297,
+    "additional_tripo_credits": 0
+  },
+  "certified_artifact": {
+    "run_id": 36732048587,
+    "id": 11105793297
+  },
+  "piece_file": "piece_05_22797tris.glb",
+  "expected_sha256": "e97319398ef1294348d8f59fb747628c6f077ce16dfe6f1cfd5189e108ba0ada",
+  "expected_bytes": 11177448,
+  "destination": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+  "semantic_name": "PlayerCity_v1",
+  "visual_verdict": "SELECTED_BEST_COHERENT_CITY_FOR_UNIVERSAL_V1_ICON",
+  "no_gameplay_change": true,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0
+}
