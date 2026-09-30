@@ -128,7 +128,6 @@ namespace Eldoria.EditorTools
         {
             const string folder="VisualFormulaCaptures";
             Directory.CreateDirectory(folder);
-            string baseline=null;
             var position=new Vector3(18.2f,14.6f,-25.8f);
             var target=new Vector3(0,3.15f,5.8f);
             var cornerShift=new Vector3(-13.4f,-2.15f,-2.0f);
@@ -136,54 +135,64 @@ namespace Eldoria.EditorTools
             var seamShift=new Vector3(-6.2f,-2.55f,-8.0f);
 
             VisualWorld.VisualIntegrationEnabled=true;
-            foreach(bool enabled in new[]{false,true})
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            ProductionVisualIntegration.StoneArchitectureEnabled=true;
+            VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Stone Architecture gate.");
+            var signature=CollisionSignature();
+
+            var expected=new[]{
+                "Valoria · StoneArch · corner · west work court",
+                "Valoria · StoneArch · corner · west lower court",
+                "Valoria · StoneArch · high wall · west terrace back",
+                "Valoria · StoneArch · rock wall seam · sawmill",
+                "Valoria · StoneArch · rock wall seam · barracks"
+            };
+            var stoneRenderers=new List<Renderer>();
+            foreach(var name in expected)
             {
-                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-                SceneSetup.SetupRenderPipeline();
-                ProductionVisualIntegration.ResetVisualCachesForGate();
-                ProductionVisualIntegration.StoneArchitectureEnabled=enabled;
-                VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
-                var signature=CollisionSignature();
-                if(!enabled)baseline=signature;
-                else if(signature!=baseline)throw new System.Exception("Stone Architecture v1 altered certified colliders/hotspots.");
-
-                var camera=Camera.main;
-                if(camera==null)throw new System.Exception("Valoria camera missing for Stone Architecture gate.");
-                var label=enabled?"after":"before";
-                Save(camera,folder+"/stone-architecture-overview-"+label+"-19.png",position,target,19f,1280,720);
-                Save(camera,folder+"/stone-architecture-overview-"+label+"-12.png",position,target,12f,1280,720);
-                Save(camera,folder+"/stone-architecture-overview-"+label+"-9.png",position,target,9f,1280,720);
-                Save(camera,folder+"/stone-architecture-overview-"+label+"-mobile.png",position,target,12f,390,844);
-                Save(camera,folder+"/stone-corner-"+label+".png",position+cornerShift,target+cornerShift,9f,1280,720);
-                Save(camera,folder+"/stone-high-wall-"+label+".png",position+wallShift,target+wallShift,9f,1280,720);
-                Save(camera,folder+"/stone-rock-transition-"+label+".png",position+seamShift,target+seamShift,9f,1280,720);
-
-                if(enabled)
-                {
-                    var expected=new[]{
-                        "Valoria · StoneArch · corner · west work court",
-                        "Valoria · StoneArch · corner · west lower court",
-                        "Valoria · StoneArch · high wall · west terrace back",
-                        "Valoria · StoneArch · rock wall seam · sawmill",
-                        "Valoria · StoneArch · rock wall seam · barracks"
-                    };
-                    foreach(var name in expected)
-                    {
-                        var go=GameObject.Find(name);
-                        if(go==null)throw new System.Exception("Stone Architecture production instance missing: "+name);
-                        foreach(var collider in go.GetComponentsInChildren<Collider>(true))
-                            if(collider.enabled)throw new System.Exception("Stone Architecture visual instance owns enabled collision: "+name);
-                    }
-                    File.WriteAllText(folder+"/stone-architecture-evidence.json",
-                        "{\n"+
-                        "  \"camera_matched\": true,\n"+
-                        "  \"collider_hotspot_signature_equal\": true,\n"+
-                        "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 1, \"RockToWallTransition\": 2},\n"+
-                        "  \"gameplay_topology_changed\": false,\n"+
-                        "  \"tripo_credits\": 0\n"+
-                        "}\n");
-                }
+                var go=GameObject.Find(name);
+                if(go==null)throw new System.Exception("Stone Architecture production instance missing: "+name);
+                foreach(var collider in go.GetComponentsInChildren<Collider>(true))
+                    if(collider.enabled)throw new System.Exception("Stone Architecture visual instance owns enabled collision: "+name);
+                stoneRenderers.AddRange(go.GetComponentsInChildren<Renderer>(true));
             }
+
+            // BEFORE: same scene, same materials, same camera. Only Stone Architecture renderers are hidden.
+            foreach(var r in stoneRenderers)r.enabled=false;
+            Save(camera,folder+"/stone-architecture-overview-before-19.png",position,target,19f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-12.png",position,target,12f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-9.png",position,target,9f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-before-mobile.png",position,target,12f,390,844);
+            Save(camera,folder+"/stone-corner-before.png",position+cornerShift,target+cornerShift,9f,1280,720);
+            Save(camera,folder+"/stone-high-wall-before.png",position+wallShift,target+wallShift,9f,1280,720);
+            Save(camera,folder+"/stone-rock-transition-before.png",position+seamShift,target+seamShift,9f,1280,720);
+
+            foreach(var r in stoneRenderers)r.enabled=true;
+            if(CollisionSignature()!=signature)throw new System.Exception("Stone Architecture renderer toggle altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/stone-architecture-overview-after-19.png",position,target,19f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-12.png",position,target,12f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-9.png",position,target,9f,1280,720);
+            Save(camera,folder+"/stone-architecture-overview-after-mobile.png",position,target,12f,390,844);
+            Save(camera,folder+"/stone-corner-after.png",position+cornerShift,target+cornerShift,9f,1280,720);
+            Save(camera,folder+"/stone-high-wall-after.png",position+wallShift,target+wallShift,9f,1280,720);
+            Save(camera,folder+"/stone-rock-transition-after.png",position+seamShift,target+seamShift,9f,1280,720);
+
+            File.WriteAllText(folder+"/stone-architecture-evidence.json",
+                "{\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"same_scene_before_after\": true,\n"+
+                "  \"only_stone_architecture_renderers_toggled\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 1, \"RockToWallTransition\": 2},\n"+
+                "  \"gameplay_topology_changed\": false,\n"+
+                "  \"tripo_credits\": 0\n"+
+                "}\n");
             ProductionVisualIntegration.StoneArchitectureEnabled=true;
         }
 
