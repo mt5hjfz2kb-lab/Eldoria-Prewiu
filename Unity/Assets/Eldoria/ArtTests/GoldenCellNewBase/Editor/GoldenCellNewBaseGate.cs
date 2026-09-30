@@ -322,12 +322,25 @@ namespace Eldoria.EditorTools
                 new Color(.96f,.91f,.82f,1f));
             if(hero==null)return false;
             hero.transform.SetParent(Root,true);
+
+            // The source study is intentionally vertical. For gameplay camera use, widen the fortress footprint
+            // and compress height, then recenter its rendered bounds back onto the certified terrace.
+            hero.transform.localScale=Vector3.Scale(hero.transform.localScale,new Vector3(1.28f,.82f,1.14f));
+            var renderers=hero.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length>0)
+            {
+                var bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                var ground=new Vector3(0f,2.48f,5.35f);
+                hero.transform.position+=ground-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            }
+
             foreach(var col in hero.GetComponentsInChildren<Collider>(true))col.enabled=false;
             foreach(var hotspot in hero.GetComponentsInChildren<WorldHotspot>(true))
                 UnityEngine.Object.DestroyImmediate(hotspot);
 
-            // Warm focal light is much lower than previous versions: reveal depth, do not blow out the gate.
-            WarmLight("GC · authored hero gate warmth",new Vector3(0f,3.65f,3.95f),5.4f,1.10f);
+            // Reveal the gate depth without turning it into a glowing portal.
+            WarmLight("GC · authored hero gate warmth",new Vector3(0f,3.42f,4.05f),4.8f,.62f);
             return true;
         }
 
