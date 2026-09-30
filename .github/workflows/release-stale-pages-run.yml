@@ -1,6 +1,6 @@
 name: Release stale Pages runner occupancy
 # bootstrap-priority-refresh-static
-# bootstrap-priority-refresh-2
+# bootstrap-priority-refresh-3
 
 on:
   push:
