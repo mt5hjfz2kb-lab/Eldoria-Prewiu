@@ -1,3 +1,11 @@
+## Terrain & Terrace Kit v1 citywide production reuse — 2026-09-30
+- Only certified source modules 01 SteppedRockTerrace and 07 BroadRockPlatform are used; groups 02–06 remain rejected.
+- Production Valoria uses **7 visual-only, top-aligned buried-support instances** distributed across suitable existing terrace/court edges; the original two-instance West Rebuilders pilot remains rejected.
+- The modules own no gameplay collision, routes, stairs, floors or hotspots. Same-scene gate reports unchanged collider/hotspot signature and no gameplay-topology change.
+- Final production code: **22ce25789322cef749c1f53e4e67cb1d2149e6f2**.
+- Validation: Valoria Visual Formula **36749796853 SUCCESS**, World Map **36749796941 SUCCESS**, Unity slice **36749796925 SUCCESS** (EditMode, PlayMode, Windows build, benchmark).
+- No additional Tripo credits were spent for this reuse pass. Canonical evidence: docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md.
+
 ## Stone Architecture Kit v1 selective production result — 2026-09-30
 - The generated eight-piece sheet remains an overall **VISUAL KIT FAIL** despite technical PASS; it is not an eight-family production kit.
 - Exactly one strict visual PASS was promoted: **RockToWallTransition** at `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`.
