@@ -174,7 +174,7 @@ namespace Eldoria.Presentation
         void CreateExtraNav()
         {
             var root=new GameObject("Reference extra nav",typeof(RectTransform));root.transform.SetParent(safe,false);
-            var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(1,0);rt.sizeDelta=new Vector2(160,76);
+            var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(1,0);rt.sizeDelta=new Vector2(320,76);
             NavMedallion(root.transform,"Ejército","⚔",0);
             NavMedallion(root.transform,"Alianza","🔒",1);
         }
@@ -262,7 +262,7 @@ namespace Eldoria.Presentation
 
             LayoutBottomNavigation(w);
             var extra=safe.Find("Reference extra nav") as RectTransform;
-            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-190,7);}
+            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-530,7);}
         }
 
         void ApplyPortrait()
@@ -405,7 +405,7 @@ namespace Eldoria.Presentation
         static void NavMedallion(Transform parent,string label,string glyph,int index)
         {
             var go=PanelObject(label,parent,new Vector2(72,72));var rt=go.GetComponent<RectTransform>();
-            rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(index*80,0);
+            rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(index==0?0:240,0);
             var t=MakeText("Text",go.transform,9,index==1?new Color(.47f,.48f,.48f):GoldSoft,TextAnchor.MiddleCenter);
             t.text=glyph+"\n"+label;Stretch(t.rectTransform,2);
             var o=go.AddComponent<Outline>();o.effectColor=index==1?new Color(.26f,.26f,.26f):Bronze;o.effectDistance=new Vector2(2,-2);
