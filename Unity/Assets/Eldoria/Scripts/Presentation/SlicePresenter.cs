@@ -233,7 +233,7 @@ namespace Eldoria.Presentation
                 buildingTitle.text="CUARTEL";
                 if(s.BarracksLevel==0)
                 {
-                    buildingBody.text="Parcela militar preparada para levantar el Cuartel.";
+                    buildingBody.text="Construir Cuartel · "+SliceRules.BarracksWoodCost+" madera / "+SliceRules.BarracksStoneCost+" piedra.";
                     buildingAction.GetComponentInChildren<Text>().text="CONSTRUIR CUARTEL";
                     buildingAction.interactable=true;
                     buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
@@ -242,7 +242,7 @@ namespace Eldoria.Presentation
                 {
                     buildingBody.text="Guarnición activa · "+s.Available.Total+" arqueros disponibles · "+
                         (s.ChapterProgress?.TrainedArchers??0)+"/"+SliceContentProfiles.Active.Chapter2TrainArchers+" entrenados en este capítulo. "+
-                        "Entrena refuerzos antes de preparar la Marcha contra el Engendro.";
+                        "Entrenar "+SliceRules.RecruitArchers+" arqueros cuesta "+SliceRules.RecruitWoodCost+" madera / "+SliceRules.RecruitStoneCost+" piedra.";
                     buildingAction.GetComponentInChildren<Text>().text="RECLUTAR +"+SliceRules.RecruitArchers;
                     buildingAction.interactable=s.RecruitmentCompletesUtcTicks==0;
                     if(buildingAction.interactable)
@@ -264,7 +264,7 @@ namespace Eldoria.Presentation
             else
             {
                 buildingTitle.text="BASTIÓN";
-                buildingBody.text="Núcleo de Valoria · nivel "+s.BastionLevel+". Su ascenso gobierna la progresión de la ciudad.";
+                buildingBody.text="Núcleo de Valoria · nivel "+s.BastionLevel+". Ascender a II cuesta "+SliceRules.Bastion2WoodCost+" madera / "+SliceRules.Bastion2StoneCost+" piedra.";
                 buildingAction.GetComponentInChildren<Text>().text="ASCENDER BASTIÓN";
                 buildingAction.interactable=s.JourneyComplete&&s.BastionLevel==1;
                 if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
@@ -351,8 +351,12 @@ namespace Eldoria.Presentation
                 case "b1.gather-stone": return "BASTIÓN I · recupera piedra · "+cp.GatheredStone+"/"+SliceContentProfiles.Active.Chapter1GatherStone;
                 case "b1.clear-route": return "BASTIÓN I · despeja la ruta corrupta";
                 case "b1.return": return "BASTIÓN I · regresa a Valoria";
-                case "b1.ascend": return "CAPÍTULO I COMPLETO · asciende el Bastión";
-                case "b2.build-barracks": return "BASTIÓN II · levanta el Cuartel";
+                case "b1.ascend": return ResourceNeed(s,SliceRules.Bastion2WoodCost,SliceRules.Bastion2StoneCost)!=null
+                    ? "CAPÍTULO I · reúne recursos para ascender · M "+s.Resources.Wood+"/"+SliceRules.Bastion2WoodCost+" · P "+s.Resources.Stone+"/"+SliceRules.Bastion2StoneCost
+                    : "CAPÍTULO I COMPLETO · asciende el Bastión";
+                case "b2.build-barracks": return ResourceNeed(s,SliceRules.BarracksWoodCost,SliceRules.BarracksStoneCost)!=null
+                    ? "BASTIÓN II · reúne recursos para el Cuartel · M "+s.Resources.Wood+"/"+SliceRules.BarracksWoodCost+" · P "+s.Resources.Stone+"/"+SliceRules.BarracksStoneCost
+                    : "BASTIÓN II · levanta el Cuartel";
                 case "b2.train-archers":
                     return (s.Resources.Wood<SliceRules.RecruitWoodCost||s.Resources.Stone<SliceRules.RecruitStoneCost)
                         ? "BASTIÓN II · reúne recursos para equipar arqueros · M "+s.Resources.Wood+"/"+SliceRules.RecruitWoodCost+
@@ -468,7 +472,7 @@ namespace Eldoria.Presentation
             message=Label("Feedback",dock.transform,7,new Color(.91f,.73f,.48f),12);
 
             ConfigurePrimaryAction(gateway.Snapshot());
-            CreateBuildingPanel(canvasGo.transform);
+            CreateBuildingPanel(safe);
         }
 
         static void StyleNavButton(Button button,bool active)
@@ -478,6 +482,24 @@ namespace Eldoria.Presentation
             var text=button.GetComponentInChildren<Text>();
             image.color=active?new Color(.085f,.11f,.14f,.98f):new Color(.035f,.055f,.075f,.01f);
             if(text!=null)text.color=active?new Color(.95f,.82f,.56f):new Color(.52f,.57f,.60f);
+        }
+
+        static string ResourceNeed(PlayerState s,int wood,int stone)
+        {
+            if(s.Resources.Wood<wood)return "forest-valoria";
+            if(s.Resources.Stone<stone)return "quarry-valoria";
+            return null;
+        }
+        static string ObjectiveResourceNeed(PlayerState s)
+        {
+            switch(SliceRules.CurrentObjectiveKey(s))
+            {
+                case "b1.build-sawmill": return ResourceNeed(s,SliceRules.SawmillWoodCost,0);
+                case "b1.ascend": return ResourceNeed(s,SliceRules.Bastion2WoodCost,SliceRules.Bastion2StoneCost);
+                case "b2.build-barracks": return ResourceNeed(s,SliceRules.BarracksWoodCost,SliceRules.BarracksStoneCost);
+                case "b2.train-archers": return ResourceNeed(s,SliceRules.RecruitWoodCost,SliceRules.RecruitStoneCost);
+                default: return null;
+            }
         }
 
         void ConfigurePrimaryAction(PlayerState s)
@@ -500,6 +522,14 @@ namespace Eldoria.Presentation
             {
                 primaryActionText.text="MARCHA EN CURSO";
                 primaryAction.interactable=false;
+                return;
+            }
+
+            var needed=ObjectiveResourceNeed(s);
+            if(needed!=null)
+            {
+                bool wood=needed=="forest-valoria";
+                primaryActionText.text=city?(wood?"BUSCAR MADERA":"BUSCAR PIEDRA"):(wood?"RECOLECTAR MADERA":"RECOLECTAR PIEDRA");
                 return;
             }
 
@@ -558,6 +588,13 @@ namespace Eldoria.Presentation
         {
             var s=gateway.Snapshot();
             string key=SliceRules.CurrentObjectiveKey(s);
+            var needed=ObjectiveResourceNeed(s);
+            if(needed!=null)
+            {
+                if(city)SceneManager.LoadScene("Frontier");
+                else Send("Gather",needed);
+                return;
+            }
             if(city)
             {
                 if(key=="b1.build-sawmill"&&s.Resources.Wood>=SliceRules.SawmillWoodCost)

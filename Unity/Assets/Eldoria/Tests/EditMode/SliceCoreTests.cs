@@ -243,19 +243,26 @@ namespace Eldoria.Tests
             Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.complete"));
         }
 
-        [Test] public void FreshSaveCompletesBastionOneAndTwoEndToEnd()
+        [TestCase(SliceContentProfiles.QaFastId)]
+        [TestCase(SliceContentProfiles.OwnerIiiId)]
+        public void FreshSaveCompletesBastionOneAndTwoEndToEnd(string profile)
         {
+            SliceContentProfiles.SetRuntimeProfileOverride(profile);
+            try
+            {
             var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
 
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(1));
             Assert.That(g.Snapshot().JourneyComplete,Is.False);
 
-            // QA_FAST begins resource-starved, so gather enough wood before rebuilding the Aserradero.
-            Assert.That(g.Execute(Cmd(g,"e2e-forest","Gather","forest-valoria")).Ok,Is.True);
-            clock.Add(SliceRules.TravelSeconds+SliceRules.GatherSeconds+SliceRules.TravelSeconds);
-            g=new LocalGateway(clock,store);
-            Assert.That(g.Snapshot().ChapterProgress.GatheredWood,
-                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter1GatherWood));
+            // Exercise both profiles from a fresh save, gathering the full chapter target.
+            for(int i=0;g.Snapshot().ChapterProgress.GatheredWood<SliceContentProfiles.Active.Chapter1GatherWood;i++)
+            {
+                Assert.That(i,Is.LessThan(5),"Fresh-save wood objective must remain reachable.");
+                Assert.That(g.Execute(Cmd(g,"e2e-forest-"+i,"Gather","forest-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
 
             Assert.That(g.Execute(Cmd(g,"e2e-sawmill","Build","sawmill")).Ok,Is.True);
             clock.Add(SliceRules.SawmillBuildSeconds);
@@ -266,7 +273,7 @@ namespace Eldoria.Tests
             clock.Add(SliceRules.TravelSeconds+SliceRules.GatherSeconds+SliceRules.TravelSeconds);
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().ChapterProgress.GatheredStone,
-                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter1GatherStone));
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter1GatherStone));
             Assert.That(g.Snapshot().JourneyComplete,Is.False);
 
             Assert.That(g.Execute(Cmd(g,"e2e-scout","Fight","corrupt-scout")).Ok,Is.True);
@@ -284,16 +291,28 @@ namespace Eldoria.Tests
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().BarracksLevel,Is.EqualTo(1));
 
+            if(g.Snapshot().Resources.Wood<SliceRules.RecruitWoodCost)
+            {
+                Assert.That(g.Execute(Cmd(g,"e2e-recruit-wood","Gather","forest-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
+            if(g.Snapshot().Resources.Stone<SliceRules.RecruitStoneCost)
+            {
+                Assert.That(g.Execute(Cmd(g,"e2e-recruit-stone","Gather","quarry-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
             Assert.That(g.Execute(Cmd(g,"e2e-recruit","Recruit","archer:t1")).Ok,Is.True);
             clock.Add(SliceRules.RecruitSeconds);
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
-                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter2TrainArchers));
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter2TrainArchers));
 
             Assert.That(g.Execute(Cmd(g,"e2e-prepare","ConfigureMarch","march-main")).Ok,Is.True);
             Assert.That(g.Snapshot().ChapterProgress.MarchConfirmed,Is.True);
             Assert.That(g.Snapshot().ChapterProgress.ConfirmedExpeditionPower,
-                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter2ExpeditionPower));
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter2ExpeditionPower));
 
             Assert.That(g.Execute(Cmd(g,"e2e-engendro","Fight","engendro-valoria")).Ok,Is.True);
             clock.Add(SliceRules.TravelSeconds*2);
@@ -304,6 +323,8 @@ namespace Eldoria.Tests
             Assert.That(SliceRules.CurrentObjectiveKey(g.Snapshot()),Is.EqualTo("b2.complete"));
             Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("engendro-valoria"));
             Assert.That(g.Snapshot().LastBattleReport.Won,Is.True);
+            }
+            finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
         }
 
         [Test] public void OwnerCandidateIsIsolatedAndMatchesWebContract()
