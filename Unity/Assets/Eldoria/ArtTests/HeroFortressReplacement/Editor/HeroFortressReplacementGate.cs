@@ -452,9 +452,9 @@ namespace Eldoria.EditorTools
 
             HeroAsset(rootPath+"Tower/tower.007.prefab","HF · central keep",
                 new Vector3(0f,2.60f,7.55f),4.75f,7.15f,0f);
-            HeroAsset(rootPath+"Tower/tower_small_window.003.prefab","HF · west tower",
+            HeroAsset(rootPath+"Tower/Windows/tower_small_window.003.prefab","HF · west tower",
                 new Vector3(-3.65f,2.58f,6.85f),2.85f,5.65f,7f);
-            HeroAsset(rootPath+"Tower/tower_small_window.004.prefab","HF · east tower",
+            HeroAsset(rootPath+"Tower/Windows/tower_small_window.004.prefab","HF · east tower",
                 new Vector3(3.55f,2.58f,7.00f),2.72f,5.20f,-8f);
 
             HeroAsset(rootPath+"stone_wall_detailed.prefab","HF · west hero wall",
