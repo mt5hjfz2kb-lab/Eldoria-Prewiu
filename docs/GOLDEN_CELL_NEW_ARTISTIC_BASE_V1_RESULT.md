@@ -99,3 +99,29 @@ Do not rebuild all Valoria, do not propagate this cell, and do not spend Tripo c
 - `main` remains untouched;
 - no production promotion;
 - result: **VISUAL FAIL** under the requested “new category, not Eldoria improved” standard.
+
+
+## Final strict proof
+
+The decisive final comparison deliberately hides **only the legacy Bastion renderers** inside the isolated experiment while leaving the Bastion gameplay hotspot/collider and all authoritative topology unchanged. The Golden Cell hero fort then becomes the visual focal point.
+
+This is the important diagnostic result: the previous Bastion visual representation itself was part of the artistic ceiling. Surrounding a lower-category hero asset with better surfaces was not enough; replacing the hero visual language together with the material system was.
+
+Final successful Unity evidence:
+- run: **36783595411 — SUCCESS**
+- artifact: **11129220413**
+- visual code: **3b5764ea786af415fb918e98da83dd7f893d715e**
+- official captures: **19 / 12 / 9 / mobile**
+- same-scene gameplay signature: **unchanged**
+- Tripo credits: **0**
+- paid assets: **0**
+
+### Pipeline consequence
+
+The following assumptions are invalidated for a higher-category Valoria rebuild:
+
+1. preserving the existing Bastion visual shell as an untouchable hero asset;
+2. expecting procedural primitive-heavy architecture plus synthetic pattern materials to carry final-quality hero structures;
+3. solving the quality ceiling through dressing, density or lighting before replacing the visual language of the focal architecture.
+
+The reusable part of the current pipeline is the **camera-first validation, independent gameplay topology, same-scene collider/hotspot gate and cell-by-cell promotion discipline**. The artistic base itself must be allowed to change.
