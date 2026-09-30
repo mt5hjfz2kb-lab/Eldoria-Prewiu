@@ -2,7 +2,7 @@
   "enabled": true,
   "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Watch the authorized Eldoria_StoneArchitectureKit_v1 generation to completion on the exact generated task. No credit-spend action. Capture final generated state for export.",
+  "notes": "Generation was owner-authorized and clicked exactly once at 55 credits. Watch the exact generated task until completion. No further spend. Preserve task identity for export.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
@@ -27,7 +27,7 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-watch-generated-task",
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-watch",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
