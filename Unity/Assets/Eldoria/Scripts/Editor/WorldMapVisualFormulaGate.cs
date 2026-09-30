@@ -180,8 +180,9 @@ namespace Eldoria.EditorTools
                 if(enabled)
                 {
                     if(root==null)throw new System.Exception("4X visual layer missing.");
+                    if(GameObject.Find("4X · player city · production v1")==null)throw new System.Exception("Universal Player City v1 production mesh missing from integrated world.");
                     foreach(var c in root.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("4X visual collider enabled.");
-                    File.WriteAllText(folder+"/world-wedge-evidence.json","{\"camera_matched\":true,\"state_bastion\":3,\"collider_hotspot_signature_equal\":true,\"placeholder_families\":[\"Player City Kit v1\",\"Beast Kit v1\",\"March Representation Kit v1\"],\"tripo_credits\":0}");
+                    File.WriteAllText(folder+"/world-wedge-evidence.json","{\"camera_matched\":true,\"state_bastion\":3,\"collider_hotspot_signature_equal\":true,\"placeholder_families\":[\"Beast Kit v1\",\"March Representation Kit v1\"],\"player_city\":\"WorldPlayerCity/PlayerCity_v1\",\"player_city_universal_v1\":true,\"tripo_credits\":0}");
                 }
             }
             VisualWorld.VisualIntegrationEnabled=true;
