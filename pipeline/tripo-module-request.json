@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-stone-architecture-kit-v1-gate",
   "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -35,36 +35,38 @@
     }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "CANONICAL ZERO-CREDIT SALVAGE VALIDATION RERUN ON CURRENT MAIN. Reuse exact existing Stone Architecture source; canonical Blender performs safe disconnected-residue salvage inline for pieces 01 and 05 before the same Unity multipiece gate. Previous run 36708696080 used pre-fix row/object handling and failed before Unity. No Tripo generation and no promotion.",
+  "notes": "CLOSED 2026-09-30 after canonical zero-credit salvage validation run 36710463132 / artifact 11094888075. Pipeline TECH PASS, Unity isolated PASS, multipiece PASS. Visual review: piece 02 remains the only production-safe module; salvage on 01 and 05 removed disconnected residue but also exposed/retained broken incomplete silhouettes, so 01/05 are NOT production-safe. Piece 06 still requires a different connected-protrusion cleanup strategy. No Tripo generation and no promotion in the salvage run.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-canonical-inline-salvage-01-05-rerun-fixed-row-members",
+  "run_nonce": "closed-2026-09-30-stone-architecture-salvage",
   "visual_verdicts": {
-    "reviewed_artifact_id": 11091584269,
-    "reviewed_run_id": 36705459251,
+    "reviewed_artifact_id": 11094888075,
+    "reviewed_run_id": 36710463132,
     "individual_visual_pass": [
       {
         "index": 2,
         "family": "rock-to-wall transition",
-        "reason": "clean coherent module in front/side/rear/oblique evidence; no detached residual geometry visible"
+        "reason": "production-safe as previously certified and promoted"
       }
     ],
-    "cleanup_candidates": [
+    "cleanup_failed": [
       {
         "index": 1,
         "family": "corner wall L variant",
-        "reason": "main form strong but detached residual fragment is visible in the piece's own front evidence"
+        "reason": "zero-credit disconnected-residue salvage technically succeeded but final captures still show broken/incomplete silhouette and floating residual geometry"
       },
       {
         "index": 5,
         "family": "high straight wall",
-        "reason": "main form strong but detached residual fragment is visible below the wall"
-      },
+        "reason": "zero-credit disconnected-residue salvage technically succeeded but final captures still show incomplete upper/right structure and residual fragments"
+      }
+    ],
+    "cleanup_candidates": [
       {
         "index": 6,
         "family": "low straight wall",
-        "reason": "main form strong but long thin protruding geometry extends from the wall"
+        "reason": "requires a different connected-protrusion cleanup strategy; current safe disconnected-residue policy does not address it"
       }
     ],
     "fail": [
@@ -82,10 +84,10 @@
       },
       {
         "index": 8,
-        "reason": "arch is incomplete with detached/protruding upper-side geometry"
+        "reason": "arch incomplete with detached/protruding upper-side geometry"
       }
     ],
-    "kit_verdict": "VISUAL_FAIL",
-    "production_promotion": "NONE"
+    "kit_verdict": "TECH_PASS_MULTIPIECE_PASS_VISUAL_FAIL",
+    "production_promotion": "PIECE_02_ONLY"
   }
 }
