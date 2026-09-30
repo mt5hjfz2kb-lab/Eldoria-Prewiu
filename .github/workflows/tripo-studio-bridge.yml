@@ -125,8 +125,9 @@ jobs:
           if ($mode -in @('stage_upload','generate')) {
             $transportCheck = ([string]$request.input_transport).Trim().ToLowerInvariant()
             $temporaryIngress = ($transportCheck -eq 'chatgpt_exact_input' -and [bool]$request.temporary_ingress_exception)
-            if ($transportCheck -ne 'repo_exact_input' -and -not $temporaryIngress) {
-              throw "Production Tripo staging requires repo_exact_input unless a documented temporary exact-byte ingress exception is enabled."
+            $runnerFallbackAllowed = ($transportCheck -eq 'runner_fallback' -and [bool]$request.search_downloads_for_sha -and -not [string]::IsNullOrWhiteSpace([string]$request.upload_sha256))
+            if ($transportCheck -ne 'repo_exact_input' -and -not $temporaryIngress -and -not $runnerFallbackAllowed) {
+              throw "Production Tripo staging requires repo_exact_input, temporary exact-byte ingress, or SHA-locked runner fallback."
             }
           }
           if ($mode -in @('stage_upload','generate')) {
