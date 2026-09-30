@@ -216,84 +216,103 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v2 — no new architecture. The proof now attacks the dominant frame:
-            // coherent material families + stronger daylight hierarchy + less flattening fog.
-            RenderSettings.ambientIntensity=.72f;
-            RenderSettings.fogColor=new Color(.57f,.59f,.58f);
-            RenderSettings.fogStartDistance=37f;
-            RenderSettings.fogEndDistance=92f;
+            // Surface Cell v3 — preserve authored PBR. Upgrade only shared ground plus the frame's
+            // lighting/tonemapping hierarchy; do not repaint buildings or geology with synthetic materials.
+            RenderSettings.ambientIntensity=.88f;
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.60f,.625f,.63f);
+            RenderSettings.fogStartDistance=42f;
+            RenderSettings.fogEndDistance=108f;
             var camera=Camera.main;
             if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;}
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(light.name!="Valoria · amber dusk")continue;
-                light.color=new Color(1.0f,.88f,.72f);
-                light.intensity=1.78f;
-                light.shadowStrength=.72f;
-                light.transform.rotation=Quaternion.Euler(47f,-38f,0f);
+                light.color=new Color(1.0f,.82f,.66f);
+                light.intensity=1.38f;
+                light.shadowStrength=.76f;
+                light.shadows=LightShadows.Soft;
+                light.transform.rotation=Quaternion.Euler(44f,-32f,0f);
             }
+
             var fillGo=new GameObject("Valoria · SurfaceCell · cool sky fill");
             fillGo.transform.SetParent(root,true);
-            fillGo.transform.rotation=Quaternion.Euler(58f,142f,0f);
+            fillGo.transform.rotation=Quaternion.Euler(55f,145f,0f);
             var fill=fillGo.AddComponent<Light>();
             fill.type=LightType.Directional;
-            fill.color=new Color(.60f,.70f,.82f);
-            fill.intensity=.24f;
+            fill.color=new Color(.63f,.72f,.84f);
+            fill.intensity=.12f;
             fill.shadows=LightShadows.None;
+
+            // URP post stack: restrained, gameplay-safe finishing rather than a cinematic filter.
+            var volumeGo=new GameObject("Valoria · SurfaceCell · finishing volume");
+            volumeGo.transform.SetParent(root,true);
+            var volume=volumeGo.AddComponent<UnityEngine.Rendering.Volume>();
+            volume.isGlobal=true;
+            volume.priority=40f;
+            var profile=ScriptableObject.CreateInstance<UnityEngine.Rendering.VolumeProfile>();
+            profile.name="Valoria Surface Cell v3 runtime profile";
+            volume.profile=profile;
+
+            var tone=profile.Add<UnityEngine.Rendering.Universal.Tonemapping>(true);
+            tone.mode.Override(UnityEngine.Rendering.Universal.TonemappingMode.ACES);
+
+            var color=profile.Add<UnityEngine.Rendering.Universal.ColorAdjustments>(true);
+            color.postExposure.Override(-.08f);
+            color.contrast.Override(16f);
+            color.saturation.Override(5f);
+            color.colorFilter.Override(new Color(1.0f,.965f,.91f,1f));
+
+            var wb=profile.Add<UnityEngine.Rendering.Universal.WhiteBalance>(true);
+            wb.temperature.Override(6f);
+            wb.tint.Override(-2f);
+
+            var bloom=profile.Add<UnityEngine.Rendering.Universal.Bloom>(true);
+            bloom.intensity.Override(.16f);
+            bloom.threshold.Override(1.05f);
+            bloom.scatter.Override(.48f);
+
+            var vignette=profile.Add<UnityEngine.Rendering.Universal.Vignette>(true);
+            vignette.intensity.Override(.075f);
+            vignette.smoothness.Override(.28f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
                 var centre=renderer.bounds.center;
-                if(centre.x < -20.5f || centre.x > 20.5f || centre.z < -10.2f || centre.z > 13.0f)continue;
+                if(centre.x < -12f || centre.x > 12f || centre.z < -9.5f || centre.z > 2.0f)continue;
 
                 string n=renderer.gameObject.name;
-                if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker")||
-                   n.Contains("pine")||n.Contains("banner")||n.Contains("cloth"))continue;
+                if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
 
-                // Preserve authored texture identity on the dedicated buildings, but give their imported
-                // PBR maps a shared Valoria response and controlled value hierarchy.
                 if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
                 {
-                    PolishImportedSurface(renderer,n.StartsWith("Aserradero")
-                        ?new Color(.86f,.76f,.62f):new Color(.82f,.80f,.73f));
+                    // Keep every authored map; only normalize the lit response.
+                    PolishImportedSurface(renderer,new Color(.98f,.96f,.91f));
                     continue;
                 }
 
                 string lower=n.ToLowerInvariant();
-                bool roof=lower.Contains("roof")||lower.Contains("crown")||lower.Contains("slate");
-                bool wood=lower.Contains("timber")||lower.Contains("beam")||lower.Contains("post")||
-                          lower.Contains("door")||lower.Contains("log ")||lower.Contains("scaffold")||
-                          lower.Contains("plank")||lower.Contains("firewood");
                 bool earth=lower.Contains("groundkit")&&
                           (lower.Contains("earth")||lower.Contains("wear")||lower.Contains("seam"));
-                bool stone=lower.Contains("groundkit")||lower.Contains("vertical stair")||
-                           lower.Contains("street slab")||lower.Contains("worn tread")||
-                           lower.Contains("stone")||lower.Contains("masonry")||lower.Contains("retaining")||
-                           lower.Contains("rock")||lower.Contains("wall")||lower.Contains("plinth");
-
-                if(roof)
+                bool paving=lower.Contains("groundkit")||lower.Contains("vertical stair")||
+                            lower.Contains("street slab")||lower.Contains("worn tread")||
+                            lower.Contains("apron")||lower.Contains("court");
+                if(earth)
                     renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.19f,.205f,.215f),"slate",new Vector2(5.0f,5.0f),.72f);
-                else if(wood)
+                        new Color(.285f,.245f,.19f),"earth",new Vector2(5.5f,6.5f),.42f);
+                else if(paving)
                     renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.31f,.185f,.095f),"wood",new Vector2(4.6f,4.6f),.72f);
-                else if(earth)
-                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.29f,.245f,.185f),"earth",new Vector2(5.2f,6.2f),.55f);
-                else if(stone)
-                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.46f,.405f,.325f),"stone",new Vector2(4.4f,4.4f),1.0f);
+                        new Color(.41f,.37f,.305f),"stone",new Vector2(4.8f,4.8f),.78f);
             }
 
-            // Restrained warm pools reveal the new surface response while preserving daylight gameplay readability.
-            WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.7f,2.05f,-5.0f),
-                new Color(1.0f,.72f,.43f),.34f,4.4f);
-            WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.6f,2.0f,-5.35f),
-                new Color(1.0f,.76f,.48f),.30f,4.1f);
-            WarmLight("Valoria · SurfaceCell · stair focal warmth",new Vector3(0f,2.25f,-.25f),
-                new Color(1.0f,.80f,.58f),.22f,4.8f);
+            // Minimal practical pools: existing occupations gain depth, without new decorative clutter.
+            WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.6f,1.95f,-4.85f),
+                new Color(1.0f,.63f,.33f),.19f,3.9f);
+            WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.55f,1.95f,-5.20f),
+                new Color(1.0f,.67f,.38f),.17f,3.7f);
         }
 
         static void PolishImportedSurface(Renderer renderer,Color tint)
@@ -314,8 +333,8 @@ namespace Eldoria.Presentation
                     var baseColor=copy.GetColor("_Color");
                     copy.SetColor("_Color",new Color(baseColor.r*tint.r,baseColor.g*tint.g,baseColor.b*tint.b,baseColor.a));
                 }
-                if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.032f);
-                if(copy.HasProperty("_BumpScale"))copy.SetFloat("_BumpScale",1.15f);
+                if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.055f);
+                if(copy.HasProperty("_BumpScale"))copy.SetFloat("_BumpScale",1.08f);
                 if(copy.HasProperty("_OcclusionStrength"))copy.SetFloat("_OcclusionStrength",1.0f);
                 if(copy.HasProperty("_Metallic"))copy.SetFloat("_Metallic",0f);
                 mats[i]=copy;
