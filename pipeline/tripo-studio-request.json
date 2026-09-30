@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Export the completed Player City progression-sheet generation as GLB. No credit spend. Preserve exact generated task identity.",
+  "notes": "CLOSED after successful export and downstream gate. The exact generated Player City progression-sheet GLB was exported and validated technically, but downstream strict visual review failed because the six extracted groups mix fragments from multiple city stages. Do not regenerate or export again from this request.",
   "request_id": "eldoria-player-city-progression-sheet-v1-stage",
   "asset_name": "Eldoria_PlayerCity_ProgressionSheet_v1",
   "function": "Single-sheet multipiece source containing six isolated player-city progression stages, from camp to advanced fortified capital. Experimental multipiece source; do not modify Valoria gameplay.",
