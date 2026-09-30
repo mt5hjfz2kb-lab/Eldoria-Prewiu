@@ -108,3 +108,14 @@ jobs:
           Write-Host "TRIPO_RUNNER_BOOTSTRAP=PASS"
           Write-Host "TRIPO_RUNNER_NAME=$runnerName"
           Write-Host "TRIPO_RUNNER_LABEL=tripo-local"
+
+  verify:
+    needs: bootstrap
+    runs-on: [self-hosted, windows, tripo-local]
+    timeout-minutes: 5
+    steps:
+      - name: Verify dedicated runner accepts work
+        shell: powershell
+        run: |
+          Write-Host "TRIPO_DEDICATED_RUNNER=ONLINE"
+          Write-Host "RUNNER_NAME=$env:RUNNER_NAME"
