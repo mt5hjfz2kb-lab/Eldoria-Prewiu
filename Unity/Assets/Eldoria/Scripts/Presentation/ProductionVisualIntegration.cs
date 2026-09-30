@@ -11,6 +11,7 @@ namespace Eldoria.Presentation
     {
         static Material landscape;
         static Material sharedStone;
+        static Material terrainTerraceStone;
         static readonly Dictionary<string,Material> adapted = new();
         static readonly Color Blue = new Color(.13f,.24f,.38f);
         static readonly Color Rock = new Color(.42f,.43f,.39f);
@@ -27,6 +28,7 @@ namespace Eldoria.Presentation
             // Deterministic visual QA only: scene reloads must not inherit runtime-created material caches.
             landscape=null;
             sharedStone=null;
+            terrainTerraceStone=null;
             adapted.Clear();
             groundSkins.Clear();
             root=null;
@@ -266,11 +268,17 @@ namespace Eldoria.Presentation
 
         static void NormalizeTerrainTerrace(GameObject go)
         {
+            if(terrainTerraceStone==null)
+            {
+                terrainTerraceStone=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Terrain Terrace · buried support stone"};
+                terrainTerraceStone.SetColor("_BaseColor",new Color(.285f,.275f,.245f,1f));
+                terrainTerraceStone.SetFloat("_Smoothness",.025f);
+                terrainTerraceStone.SetFloat("_Metallic",0f);
+            }
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var mats=renderer.sharedMaterials;
-                for(int i=0;i<mats.Length;i++)
-                    mats[i]=sharedStone!=null?sharedStone:ValoriaKit.SurfaceMaterial(new Color(.40f,.39f,.35f),"stone",new Vector2(3,3));
+                for(int i=0;i<mats.Length;i++)mats[i]=terrainTerraceStone;
                 renderer.sharedMaterials=mats;
             }
         }
