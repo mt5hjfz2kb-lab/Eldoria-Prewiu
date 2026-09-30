@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "mode": "watch",
+  "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Watch the exact Player City generation task to completion. No further credit spend is authorized in this step.",
+  "notes": "Export the completed Player City progression-sheet generation as GLB. No credit spend. Preserve exact generated task identity.",
   "request_id": "eldoria-player-city-progression-sheet-v1-stage",
   "asset_name": "Eldoria_PlayerCity_ProgressionSheet_v1",
   "function": "Single-sheet multipiece source containing six isolated player-city progression stages, from camp to advanced fortified capital. Experimental multipiece source; do not modify Valoria gameplay.",
@@ -20,7 +20,7 @@
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_PlayerCity_ProgressionSheet_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "2026-09-30-player-city-progression-sheet-watch-1",
+  "run_nonce": "2026-09-30-player-city-progression-sheet-export-1",
   "prior_stage_run_id": 36728688494,
   "prior_stage_artifact_id": 11103833454,
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-stone-and-timber-smithy-building-with-wooden-doors-banners-2f215806-fb6d-4acd-aefc-8a22b3cceb27"
