@@ -58,5 +58,10 @@
   "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
   "credit_spend_total": 55,
-  "run_nonce": "2026-09-30-promote-only-strict-pass-stone-architecture-v1"
+  "run_nonce": "2026-09-30-promote-strict-pass-piece02-from-certified-artifact",
+  "certified_artifact": {
+    "run_id": 36705459251,
+    "id": 11091584269,
+    "sha256_digest": "6a09d0cfd5b240fc671a2e3d2d34406fc6c1b6e0c874bdc6e9585fadff0694ae"
+  }
 }
