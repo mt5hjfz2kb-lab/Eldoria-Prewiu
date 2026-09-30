@@ -1,12 +1,6 @@
-name: Valoria interface v1 six-family review
+name: "[LEGACY] Valoria interface v1 six-family review"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/valoria-module-interface-gate.yml'
-      - 'tools/valoria_interface_blender.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaInterfaceReview.cs'
   workflow_dispatch:
 
 concurrency:
