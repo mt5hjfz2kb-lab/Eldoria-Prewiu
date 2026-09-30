@@ -1,12 +1,7 @@
-name: Historical Valoria surface rescue diagnostic
+name: "[LEGACY] Historical Valoria surface rescue diagnostic"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/historical-module-surface-rescue.yml'
-      - 'pipeline/historical-module-rescue.json'
 
 permissions:
   contents: read
