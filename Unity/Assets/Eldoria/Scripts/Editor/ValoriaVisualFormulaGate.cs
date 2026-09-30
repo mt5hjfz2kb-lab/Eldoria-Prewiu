@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -17,6 +18,7 @@ namespace Eldoria.EditorTools
         {
             // First far-zoom frame must not capture Unity's temporary blue compiling shader.
             UnityEditor.ShaderUtil.allowAsyncCompilation=false;
+            PrepareExternalSurfaceCellTextures();
             CaptureMatchedWedge();
             CaptureStoneArchitectureWedge();
             CaptureTerrainTerraceCitywideWedge();
@@ -81,6 +83,36 @@ namespace Eldoria.EditorTools
             WriteMaterialEvidence(folder + "/formula-materials.json");
             Debug.Log("Valoria Visual Formula gate saved to " + Path.GetFullPath(folder));
             UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static void PrepareExternalSurfaceCellTextures()
+        {
+            const string folder="Assets/Resources/Valoria/SurfaceCellExternal";
+            if(!Directory.Exists(folder))return;
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
+            {
+                var path=AssetDatabase.GUIDToAssetPath(guid);
+                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+                if(importer==null)continue;
+                string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+                importer.wrapMode=TextureWrapMode.Repeat;
+                importer.filterMode=FilterMode.Trilinear;
+                importer.mipmapEnabled=true;
+                importer.maxTextureSize=1024;
+                if(lower.EndsWith("_normal"))
+                {
+                    importer.textureType=TextureImporterType.NormalMap;
+                    importer.sRGBTexture=false;
+                }
+                else
+                {
+                    importer.textureType=TextureImporterType.Default;
+                    importer.sRGBTexture=!lower.EndsWith("_ao");
+                }
+                importer.SaveAndReimport();
+            }
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         public static string CollisionSignature()
