@@ -1,12 +1,7 @@
-name: Historical Valoria module rescue inventory
+name: "[LEGACY] Historical Valoria module rescue inventory"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/historical-module-rescue-inventory.yml'
-      - 'pipeline/historical-module-rescue.json'
 
 permissions:
   contents: read
