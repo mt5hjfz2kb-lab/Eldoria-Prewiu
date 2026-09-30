@@ -100,6 +100,7 @@ namespace Eldoria.Presentation
             if (safe.Find("Reference left actions") == null) CreateLeftActions();
             if (safe.Find("Reference chat") == null) CreateChat();
             if (safe.Find("Reference top menu") == null) CreateTopMenu();
+            if (safe.Find("Reference top plus") == null) CreateTopPlus();
             if (safe.Find("Reference future resources") == null) CreateFutureResources();
             if (safe.Find("Reference extra nav") == null) CreateExtraNav();
             EnsureWorldLabel("Bastion · target","Bastión","⬡");
@@ -123,6 +124,8 @@ namespace Eldoria.Presentation
             ring.sprite=portraitSprite??CircleSprite();ring.color=Color.white;ring.preserveAspect=true;ring.raycastTarget=false;
             go.GetComponent<Mask>().showMaskGraphic=true;
             var outline=go.AddComponent<Outline>();outline.effectColor=BronzeDark;outline.effectDistance=new Vector2(2,-2);
+            Badge(go.transform,"12",new Vector2(.18f,.08f),new Vector2(21,21),new Vector2(0,0),new Color(.035f,.13f,.22f,.98f));
+            Badge(go.transform,"12",new Vector2(.48f,.08f),new Vector2(21,21),new Vector2(0,0),new Color(.17f,.105f,.035f,.98f));
         }
 
         void CreateVip()
@@ -185,6 +188,15 @@ namespace Eldoria.Presentation
             MenuChip(root.transform,"Menú","menu",2);
         }
 
+        void CreateTopPlus()
+        {
+            var go=PanelObject("Reference top plus",safe,new Vector2(38,38));
+            var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);
+            go.GetComponent<Image>().color=new Color(.16f,.12f,.055f,.97f);
+            var text=MakeText("Plus",go.transform,22,GoldSoft,TextAnchor.MiddleCenter);text.text="+";text.fontStyle=FontStyle.Bold;Stretch(text.rectTransform,1f);
+            var o=go.AddComponent<Outline>();o.effectColor=Bronze;o.effectDistance=new Vector2(2,-2);
+        }
+
         void CreateExtraNav()
         {
             var root=new GameObject("Reference extra nav",typeof(RectTransform));root.transform.SetParent(safe,false);
@@ -214,6 +226,8 @@ namespace Eldoria.Presentation
                 top.anchorMin=new Vector2(0,1);top.anchorMax=new Vector2(1,1);top.pivot=new Vector2(.5f,1);
                 top.sizeDelta=new Vector2(0,h*.075f);top.anchoredPosition=Vector2.zero;
                 var g=top.GetComponent<HorizontalLayoutGroup>();if(g!=null)g.enabled=false;
+                var topImage=top.GetComponent<Image>();if(topImage!=null)topImage.color=new Color(0,0,0,0);
+                var topFrame=top.Find("ReferenceArtFrame");if(topFrame!=null)topFrame.gameObject.SetActive(false);
 
                 var crest=top.Find("Realm crest chip") as RectTransform;
                 if(crest!=null)crest.gameObject.SetActive(false);
@@ -242,6 +256,7 @@ namespace Eldoria.Presentation
             {
                 quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
                 quest.anchoredPosition=new Vector2(w*.012f,-h*.126f);quest.sizeDelta=new Vector2(w*.238f,h*.245f);
+                var questImage=quest.GetComponent<Image>();if(questImage!=null)questImage.color=new Color(.015f,.020f,.024f,.84f);
                 var v=quest.GetComponent<VerticalLayoutGroup>();if(v!=null)v.enabled=false;
                 var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
                 if(kicker!=null)
@@ -272,10 +287,23 @@ namespace Eldoria.Presentation
                 SetFont(chat,"Chat copy",13);
             }
 
-            var menu=safe.Find("Reference top menu") as RectTransform;
-            if(menu!=null){menu.anchoredPosition=new Vector2(-w*.008f,-h*.006f);menu.localScale=Vector3.one;}
             var future=safe.Find("Reference future resources") as RectTransform;
-            if(future!=null){future.gameObject.SetActive(true);future.anchoredPosition=new Vector2(-w*.155f,-h*.006f);future.localScale=Vector3.one;}
+            if(future!=null)
+            {
+                future.gameObject.SetActive(true);future.anchorMin=future.anchorMax=new Vector2(0,1);future.pivot=new Vector2(0,1);
+                future.anchoredPosition=new Vector2(w*.60f,-h*.006f);future.sizeDelta=new Vector2(w*.235f,h*.060f);future.localScale=Vector3.one;
+                float slot=w*.078f;
+                for(int i=0;i<future.childCount;i++){var child=future.GetChild(i) as RectTransform;if(child!=null){child.anchoredPosition=new Vector2(i*slot,0);child.sizeDelta=new Vector2(slot-3,h*.056f);}}
+            }
+            var plus=safe.Find("Reference top plus") as RectTransform;
+            if(plus!=null){plus.gameObject.SetActive(true);plus.anchorMin=plus.anchorMax=new Vector2(0,1);plus.pivot=new Vector2(0,1);plus.anchoredPosition=new Vector2(w*.837f,-h*.008f);plus.sizeDelta=new Vector2(h*.058f,h*.058f);}
+            var menu=safe.Find("Reference top menu") as RectTransform;
+            if(menu!=null)
+            {
+                menu.anchorMin=menu.anchorMax=new Vector2(0,1);menu.pivot=new Vector2(0,1);menu.anchoredPosition=new Vector2(w*.875f,-h*.006f);menu.sizeDelta=new Vector2(w*.12f,h*.060f);menu.localScale=Vector3.one;
+                float menuSlot=w*.04f;
+                for(int i=0;i<menu.childCount;i++){var child=menu.GetChild(i) as RectTransform;if(child!=null){child.anchoredPosition=new Vector2(i*menuSlot,0);child.sizeDelta=new Vector2(menuSlot-3,h*.056f);}}
+            }
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
             if(dock!=null)
@@ -312,7 +340,13 @@ namespace Eldoria.Presentation
 
             LayoutBottomNavigation(w,h);
             var extra=safe.Find("Reference extra nav") as RectTransform;
-            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-w*.355f,h*.010f);extra.localScale=Vector3.one;}
+            if(extra!=null)
+            {
+                extra.gameObject.SetActive(true);extra.anchorMin=extra.anchorMax=new Vector2(0,0);extra.pivot=new Vector2(0,0);
+                extra.anchoredPosition=new Vector2(w*.605f,h*.010f);extra.sizeDelta=new Vector2(w*.30f,h*.13f);extra.localScale=Vector3.one;
+                var army=extra.Find("Ejército") as RectTransform;if(army!=null){army.anchoredPosition=Vector2.zero;army.sizeDelta=new Vector2(h*.125f,h*.125f);}
+                var alliance=extra.Find("Alianza") as RectTransform;if(alliance!=null){alliance.anchoredPosition=new Vector2(w*.225f,0);alliance.sizeDelta=new Vector2(h*.125f,h*.125f);}
+            }
         }
 
         void ApplyPortrait()
@@ -344,6 +378,7 @@ namespace Eldoria.Presentation
             var chat=safe.Find("Reference chat") as RectTransform;if(chat!=null){chat.anchoredPosition=new Vector2(8,82);chat.sizeDelta=new Vector2(Mathf.Min(270,safe.rect.width-16),68);}
             var menu=safe.Find("Reference top menu") as RectTransform;if(menu!=null)menu.anchoredPosition=new Vector2(-5,-72);
             var future=safe.Find("Reference future resources");if(future!=null)future.gameObject.SetActive(false);
+            var plus=safe.Find("Reference top plus");if(plus!=null)plus.gameObject.SetActive(false);
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
             if(dock!=null)
@@ -382,12 +417,12 @@ namespace Eldoria.Presentation
             var chest=nav.Find("ARCÓN")?.GetComponent<RectTransform>();
             var codex=nav.Find("CÓDICE")?.GetComponent<RectTransform>();
             if(world!=null)PlaceBottom(world,width*.018f,height*.010f,height*.135f,height*.135f,"world");
-            if(heroes!=null)PlaceBottom(heroes,width*.535f,height*.010f,height*.125f,height*.125f,"heroes");
-            if(codex!=null)PlaceBottom(codex,width*.655f,height*.010f,height*.125f,height*.125f,"missions");
-            if(chest!=null)PlaceBottom(chest,width*.745f,height*.010f,height*.125f,height*.125f,"inventory");
+            if(heroes!=null)PlaceBottom(heroes,width*.53f,height*.010f,height*.125f,height*.125f,"heroes");
+            if(codex!=null)PlaceBottom(codex,width*.68f,height*.010f,height*.125f,height*.125f,"missions");
+            if(chest!=null)PlaceBottom(chest,width*.755f,height*.010f,height*.125f,height*.125f,"inventory");
             if(city!=null)
             {
-                PlaceBottom(city,width-height*.16f,height*.004f,height*.15f,height*.15f,"bastion");
+                PlaceBottom(city,width-height*.17f,height*.004f,height*.16f,height*.16f,"bastion");
                 var im=city.GetComponent<Image>();if(im!=null)im.color=new Color(.025f,.055f,.075f,.98f);
             }
         }
@@ -424,7 +459,7 @@ namespace Eldoria.Presentation
                 go.GetComponent<RectTransform>().anchorMin=go.GetComponent<RectTransform>().anchorMax=new Vector2(.5f,.5f);
                 go.GetComponent<RectTransform>().pivot=new Vector2(.5f,0);
                 var text=MakeText("Label",go.transform,12,Color.white,TextAnchor.MiddleCenter);
-                text.text=icon+"   "+title+"   ▲\nNv. 1";
+                text.text=icon+"   "+title+"   <color=#6FCE50>▲</color>\nNv. 1";
                 Stretch(text.rectTransform,3f);
                 Frame(go,true,1.5f);
             }
