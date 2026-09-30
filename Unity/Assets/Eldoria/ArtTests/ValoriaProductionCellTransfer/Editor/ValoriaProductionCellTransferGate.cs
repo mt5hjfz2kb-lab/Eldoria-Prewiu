@@ -28,6 +28,7 @@ namespace Eldoria.EditorTools
             if(camera==null)throw new Exception("Valoria camera missing.");
             Directory.CreateDirectory(Folder);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
+            var beforeMetrics=MetricsJson();
 
             Save(camera,Folder+"/before-19.png",19f,1280,720);
             Save(camera,Folder+"/before-12.png",12f,1280,720);
@@ -78,6 +79,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-mobile.png",12f,390,844);
 
             ValoriaProductionCellFinished.Build();
+            var afterMetrics=MetricsJson();
 
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Valoria Production Cell finished art altered gameplay collider/hotspot signature.");
@@ -93,7 +95,9 @@ namespace Eldoria.EditorTools
                 "  \"same_scene_before_after\": true,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0,\n"+
-                "  \"paid_assets\": 0\n"+
+                "  \"paid_assets\": 0,\n"+
+                "  \"before_metrics\": "+beforeMetrics+",\n"+
+                "  \"after_metrics\": "+afterMetrics+"\n"+
                 "}\n");
             EditorApplication.Exit(0);
         }
@@ -130,6 +134,26 @@ namespace Eldoria.EditorTools
                 }
             }
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        }
+
+        static string MetricsJson()
+        {
+            long triangles=0;
+            int renderers=0,lights=0;
+            var materials=new HashSet<int>();
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                renderers++;
+                foreach(var m in r.sharedMaterials)if(m!=null)materials.Add(m.GetInstanceID());
+                var mf=r.GetComponent<MeshFilter>();
+                if(mf!=null&&mf.sharedMesh!=null)triangles+=mf.sharedMesh.triangles.LongLength/3;
+                var sk=r as SkinnedMeshRenderer;
+                if(sk!=null&&sk.sharedMesh!=null)triangles+=sk.sharedMesh.triangles.LongLength/3;
+            }
+            foreach(var l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if(l!=null&&l.enabled&&l.gameObject.activeInHierarchy)lights++;
+            return "{\"triangles\":"+triangles+",\"renderers\":"+renderers+",\"materials\":"+materials.Count+",\"lights\":"+lights+"}";
         }
 
         static void Save(Camera camera,string path,float zoom,int width,int height)
