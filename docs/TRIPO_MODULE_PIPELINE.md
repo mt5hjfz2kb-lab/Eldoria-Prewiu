@@ -170,6 +170,24 @@ Supported request fields:
 
 If selection produces zero or multiple candidates, the workflow must fail safely. It must never silently choose an ambiguous file.
 
+## Inline recovery and no-stop contract
+
+The canonical pipeline owns safe post-generation recovery. Do not create a second salvage workflow for ordinary multipiece cleanup.
+
+For multipiece requests, optional `multipiece.salvage` runs **inside the same Blender invocation before the same Unity multipiece gate**. Current certified-safe policy:
+- `mode: disconnected_residue_only`;
+- selected piece indices only;
+- remove only disconnected components below the configured absolute/relative triangle threshold;
+- never delete the dominant component and never attempt connected spike/protrusion surgery under this policy;
+- record the salvage decision in the Blender multipiece report.
+
+This means the normal chain is:
+`source → Blender optimize/refine/split → safe inline salvage when configured → Unity gate → artifact → visual verdict → selective promotion`.
+
+A technical substep, commit, queued run, completed run, artifact upload or chat/context boundary is **not** an owner handoff. The executing agent continues through evidence review and every zero-credit/reversible recovery step available. Legitimate stops are limited to explicit credit spend/irreversible authorization, missing owner-only input/access, a genuine external blocker after recovery attempts, or completed verified scope.
+
+Runner-throughput rule: workflow-file maintenance must not itself wake heavy Windows publication/gates. Heavy owner WebGL publication remains request-batched via `pipeline/unity-publish-request.json`; diagnostic/legacy flows remain manual-only. Prefer extending this canonical pipeline over adding another Windows workflow.
+
 ## Canonical technical gate
 
 Blender:
