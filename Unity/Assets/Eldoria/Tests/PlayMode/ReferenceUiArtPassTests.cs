@@ -127,7 +127,7 @@ namespace Eldoria.Tests
                 yield return null;
                 Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("Frontier"));
                 var primary=GameObject.Find("CONTINUAR").GetComponent<Button>();
-                Assert.That(primary.GetComponentInChildren<Text>().text,Is.EqualTo("RECOLECTAR MADERA"));
+                Assert.That(primary.GetComponentInChildren<UnityEngine.UI.Text>().text,Is.EqualTo("RECOLECTAR MADERA"));
                 primary.onClick.Invoke();
                 Assert.That(gateway.Snapshot().March.TargetId,Is.EqualTo("forest-valoria"));
                 Assert.That(gateway.Snapshot().March.Phase,Is.EqualTo("outbound"));
