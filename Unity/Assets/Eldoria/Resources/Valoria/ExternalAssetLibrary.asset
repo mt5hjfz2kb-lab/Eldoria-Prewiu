@@ -38,3 +38,6 @@ MonoBehaviour:
   MegaHalfGate: {fileID: 164862, guid: 57abdd11cedcad8478c764228178c11f, type: 3}
   MegaDestroyedTower: {fileID: 150784, guid: e27db1f37a07b834dba6152ddc5b7858, type: 3}
   MegaWallPassage: {fileID: 147068, guid: a86023c77625aff479fc6a85bfefa482, type: 3}
+  ValoriaCobbleSurface: {fileID: 2100000, guid: f08005055adb6774b8d7cd4b19858a9e, type: 2}
+  ValoriaDirtSurface: {fileID: 2100000, guid: da2d7a7a842064e4cb761293c37a9035, type: 2}
+  ValoriaStoneSurface: {fileID: 2100000, guid: e1489ba25dfb7ab4585967216604488d, type: 2}
