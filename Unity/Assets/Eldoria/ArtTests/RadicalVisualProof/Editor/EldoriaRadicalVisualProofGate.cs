@@ -156,7 +156,8 @@ namespace Eldoria.EditorTools
                     else if(n.Contains("rock")||n.Contains("cliff")||n.Contains("mountain"))tint=Rock;
                     else if(n.Contains("ground")||n.Contains("earth")||n.Contains("street"))tint=Earth;
                     else if(n.Contains("banner"))tint=Blue;
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",Color.Lerp(src.HasProperty("_BaseColor")?src.GetColor("_BaseColor"):Color.white,tint,.44f));
+                    float blend=(n.StartsWith("aserradero")||n.StartsWith("cuartel"))?.18f:(n.Contains("bastion")?.64f:.56f);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",Color.Lerp(src.HasProperty("_BaseColor")?src.GetColor("_BaseColor"):Color.white,tint,blend));
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",n.Contains("roof")?.18f:.10f);
                     if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
                     slots[i]=m;
@@ -167,16 +168,16 @@ namespace Eldoria.EditorTools
 
         static void BuildMountainFrame()
         {
-            // Large continuous sculpted skins: center kept open for gameplay buildings/clicks.
-            HeightPatch("RADICAL · lower mountain apron",new Vector3(0f,-.18f,-11.0f),34f,15f,15,8,-.4f,1.5f,Earth,0.44f);
-            HeightPatch("RADICAL · west mountain",new Vector3(-15f,-.2f,2.5f),16f,30f,9,15,0f,5.2f,Rock,0.76f);
-            HeightPatch("RADICAL · east mountain",new Vector3(15f,-.2f,3f),16f,30f,9,15,0f,5.8f,Rock,0.71f);
-            HeightPatch("RADICAL · upper mountain",new Vector3(0f,-.1f,18f),34f,16f,15,9,1.0f,7.0f,Rock,0.68f);
+            // V2: the first proof failed because foreground heightfields swallowed the city.
+            // Keep all new terrain behind the readable city silhouette: landscape must frame, never occlude.
+            HeightPatch("RADICAL · distant valley ridge",new Vector3(0f,-3.8f,32f),70f,22f,25,9,0f,6.2f,Rock,.20f);
+            HeightPatch("RADICAL · west distant shoulder",new Vector3(-25f,-3.2f,24f),24f,18f,11,8,0f,4.2f,Rock,.18f);
+            HeightPatch("RADICAL · east distant shoulder",new Vector3(25f,-3.2f,24f),24f,18f,11,8,0f,4.6f,Rock,.18f);
 
-            // Authorial terrace shelves at three readable levels.
-            TerraceShelf("RADICAL · west civic terrace",new Vector3(-9.6f,.32f,-2.4f),new Vector3(7.8f,.35f,8.2f),-4f);
-            TerraceShelf("RADICAL · east military terrace",new Vector3(9.2f,.32f,-3.4f),new Vector3(7.4f,.35f,8.0f),5f);
-            TerraceShelf("RADICAL · upper bastion terrace",new Vector3(0f,2.62f,7.5f),new Vector3(14.5f,.40f,8.6f),0f);
+            // Readable built terraces remain thin architectural edges around the certified plots.
+            TerraceShelf("RADICAL · west civic terrace",new Vector3(-8.9f,.20f,-2.6f),new Vector3(7.2f,.20f,7.2f),-3f);
+            TerraceShelf("RADICAL · east military terrace",new Vector3(8.8f,.20f,-3.8f),new Vector3(7.0f,.20f,7.0f),4f);
+            TerraceShelf("RADICAL · upper bastion terrace",new Vector3(0f,2.50f,7.2f),new Vector3(13.2f,.22f,7.2f),0f);
         }
 
         static void BuildCirculation()
@@ -198,31 +199,30 @@ namespace Eldoria.EditorTools
 
         static void BuildRuinsAndSkyline()
         {
-            // Monumental ruins frame rather than compete with Bastion.
-            RuinArch("RADICAL · imperial ruin west",new Vector3(-11.8f,.3f,12.5f),4.2f,6.6f,18f);
-            RuinArch("RADICAL · imperial ruin east",new Vector3(12.0f,.4f,14.0f),3.8f,5.8f,-18f);
+            // V2: ruins are distant vertical remnants, not giant primitive arches crossing the frame.
+            RuinRemnant("RADICAL · imperial ruin west",new Vector3(-13.5f,.15f,16.8f),-12f);
+            RuinRemnant("RADICAL · imperial ruin east",new Vector3(13.4f,.18f,17.6f),14f);
 
-            // Distant corruption: one restrained secondary read.
-            var glow=Primitive(PrimitiveType.Cylinder,"RADICAL · distant breach glow",new Vector3(19f,4.8f,29f),new Vector3(2.8f,8f,2.8f),Violet);
-            glow.transform.rotation=Quaternion.Euler(0,0,7f);
-            var light=new GameObject("RADICAL · distant breach light").AddComponent<Light>();
-            light.transform.SetParent(Root);light.type=LightType.Point;light.range=28f;light.intensity=4.5f;light.color=new Color(.62f,.22f,.88f);light.transform.position=new Vector3(19f,6f,28f);
+            // The canonical scene already owns the distant violet scar. Do not duplicate it with debug geometry.
+            // Reinforce it only with a faint atmospheric light kept behind the city.
+            var light=new GameObject("RADICAL · distant breach ambience").AddComponent<Light>();
+            light.transform.SetParent(Root);light.type=LightType.Point;light.range=20f;light.intensity=1.25f;
+            light.color=new Color(.52f,.20f,.72f);light.transform.position=new Vector3(15.5f,4.5f,18.5f);light.shadows=LightShadows.None;
         }
 
         static void BuildLifeAndVegetation()
         {
-            var pts=new[]{
-                new Vector3(-11f,.3f,-7f),new Vector3(-12.5f,.5f,-2f),new Vector3(-11.2f,1.0f,4f),
-                new Vector3(11f,.3f,-7f),new Vector3(12.2f,.7f,-1f),new Vector3(11.5f,1.1f,5f),
-                new Vector3(-8.5f,2.9f,10.5f),new Vector3(8.6f,2.9f,10.8f),new Vector3(-6.5f,1.0f,14f),new Vector3(7f,1.2f,15f)};
-            for(int i=0;i<pts.Length;i++)Tree(pts[i],.75f+(i%3)*.12f);
-
-            // Warm settlement pools.
+            // Settlement rhythm is carried by light and heraldry; base scene already has authored pines.
             foreach(var p in new[]{new Vector3(-6.8f,2.5f,-2.8f),new Vector3(6.9f,2.4f,-4f),new Vector3(0f,5.3f,6.1f)})
             {
                 var l=new GameObject("RADICAL · inhabited warm light").AddComponent<Light>();
-                l.transform.SetParent(Root);l.type=LightType.Point;l.range=7f;l.intensity=2.6f;l.color=new Color(1f,.55f,.25f);l.transform.position=p;
+                l.transform.SetParent(Root);l.type=LightType.Point;l.range=7f;l.intensity=2.35f;
+                l.color=new Color(1f,.55f,.25f);l.transform.position=p;l.shadows=LightShadows.None;
             }
+            Flag(new Vector3(-4.6f,2.72f,4.7f),Blue,.46f,1.8f);
+            Flag(new Vector3(4.6f,2.72f,4.7f),Gold,.46f,1.8f);
+            Flag(new Vector3(-2.7f,2.72f,5.3f),Gold,.40f,1.6f);
+            Flag(new Vector3(2.7f,2.72f,5.3f),Blue,.40f,1.6f);
         }
 
         static void HeightPatch(string name,Vector3 center,float width,float depth,int xCount,int zCount,float baseY,float amplitude,Color color,float edgeBias)
@@ -269,6 +269,22 @@ namespace Eldoria.EditorTools
             }
             var mesh=new Mesh{name=name+" mesh"};mesh.SetVertices(verts);mesh.SetTriangles(tris,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject(name);go.transform.SetParent(Root);go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Mat(new Color(.49f,.45f,.37f),.16f);
+        }
+
+        static void RuinRemnant(string name,Vector3 p,float yaw)
+        {
+            var q=Quaternion.Euler(0,yaw,0);
+            float[] heights={5.8f,3.7f,6.6f};
+            float[] xs={-1.8f,0f,1.6f};
+            for(int i=0;i<3;i++)
+            {
+                var col=Primitive(PrimitiveType.Cube,name+" · remnant "+i,
+                    p+q*new Vector3(xs[i],heights[i]*.5f,0),new Vector3(.72f,heights[i],1.05f),Limestone*.92f);
+                col.transform.rotation=q*Quaternion.Euler(0,0,i==1?-4f:(i==2?3f:0f));
+            }
+            var lintel=Primitive(PrimitiveType.Cube,name+" · broken lintel",
+                p+q*new Vector3(-.25f,4.25f,0),new Vector3(3.8f,.55f,1.0f),LimestoneLight*.90f);
+            lintel.transform.rotation=q*Quaternion.Euler(0,0,-7f);
         }
 
         static void RuinArch(string name,Vector3 p,float halfWidth,float height,float yaw)
