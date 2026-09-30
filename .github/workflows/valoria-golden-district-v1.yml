@@ -140,7 +140,7 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $phase="${{ github.event.inputs.phase }}"
           if([string]::IsNullOrWhiteSpace($phase)){ $phase='final' }
-          $method=if($phase -eq 'final'){'Eldoria.EditorTools.GoldenDistrictV1Gate.CaptureFinal'}else{'Eldoria.EditorTools.GoldenDistrictV1Gate.CaptureBlockout'}
+          $method=if($phase -eq 'final'){'Eldoria.EditorTools.GoldenDistrictNewBaseGate.CaptureFinal'}else{'Eldoria.EditorTools.GoldenDistrictNewBaseGate.CaptureBlockout'}
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod',$method,'-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(15)
