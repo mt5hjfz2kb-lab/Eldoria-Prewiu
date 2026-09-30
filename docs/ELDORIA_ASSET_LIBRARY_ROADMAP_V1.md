@@ -397,7 +397,7 @@ Record and exact images: `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md`; source `6
 Visible gaps remain exact: **A2.1** compact city/tier silhouette; **A2.2** food/common node variations and depleted states; **A2.3** wolf/boar/Engendro primitive art; **A2.4** final installation identity/states; **A2.5** capsule/banner march; **B2.1** provisional Bastion/retaining masonry; **B2.2–3** civil bodies/repeated roofs; **B2.4** partial inhabited dressing and symbolic workers. Cantera/Forja/Hospital stay future **B2.5–7** gaps.
 
 The three-family priority remains the governing sequence, but the first generation block is now closed:
-1. **Stone Architecture Kit v1 — CLOSED AS GENERATED: TECH PASS / VISUAL PRODUCTION FAIL.** No production promotion; existing GLB may only enter a separate zero-credit cleanup/salvage gate.
+1. **Stone Architecture Kit v1 — CLOSED AS GENERATED: TECH PASS / overall VISUAL KIT FAIL.** Strict per-piece review selectively promoted only **RockToWallTransition**; the remaining seven generated groups stay cleanup/reject inventory and do not constitute a production kit.
 2. **Player City Kit v1 — NEXT NEW ACQUISITION PRIORITY** once Stone Architecture closeout is accepted.
 3. **Beast Kit v1 — NEXT AFTER PLAYER CITY**; visible PvE silhouettes remain provisional.
 
