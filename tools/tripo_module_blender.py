@@ -22,6 +22,7 @@ def parse_args():
     p.add_argument("--split-components-dir", default="")
     p.add_argument("--split-min-triangles", type=int, default=250)
     p.add_argument("--split-cluster-count", type=int, default=0)
+    p.add_argument("--split-cluster-axes", choices=["xy","xz","yz"], default="xy")
     p.add_argument("--split-salvage-config", default="")
     return p.parse_args(argv)
 
@@ -396,7 +397,13 @@ def _world_centroid(obj):
         acc += v
     return acc / len(verts)
 
-def _cluster_loose_parts(candidates, cluster_count):
+def _cluster_loose_parts(candidates, cluster_count, axes="xy"):
+    axis_map = {"x":0,"y":1,"z":2}
+    if axes not in ("xy","xz","yz"):
+        raise RuntimeError(f"Unsupported cluster axes: {axes}")
+    a0, a1 = axis_map[axes[0]], axis_map[axes[1]]
+    def plane_point(center):
+        return mathutils.Vector((center[a0], center[a1]))
     rows = []
     noise_floor = 5
     usable = []
@@ -416,14 +423,14 @@ def _cluster_loose_parts(candidates, cluster_count):
     if len(usable) < cluster_count:
         raise RuntimeError(f"Multipiece spatial clustering needs at least {cluster_count} usable islands; found {len(usable)}")
 
-    # The approved sheet is laid out in image space. glTF import preserves that as X/Y,
-    # while Z is piece depth. Use deterministic weighted farthest-point seeding so
-    # disconnected stones belonging to one visual piece are grouped back together.
+    # Cluster disconnected islands on an explicit sheet plane. Different image-to-3D
+    # exports may map the source sheet to XY or XZ; keep this configurable instead of
+    # assuming Y is always image-space vertical.
     first = max(usable, key=lambda r: r["triangles"])
-    centers = [mathutils.Vector((first["center"].x, first["center"].y))]
+    centers = [plane_point(first["center"])]
     while len(centers) < cluster_count:
         def seed_score(row):
-            p = mathutils.Vector((row["center"].x, row["center"].y))
+            p = plane_point(row["center"])
             d2 = min((p-c).length_squared for c in centers)
             return d2 * max(1.0, row["triangles"] ** 0.5)
         nxt = max(usable, key=seed_score)
@@ -432,7 +439,7 @@ def _cluster_loose_parts(candidates, cluster_count):
     assignments = [0] * len(usable)
     for _ in range(16):
         for i, row in enumerate(usable):
-            p = mathutils.Vector((row["center"].x, row["center"].y))
+            p = plane_point(row["center"])
             assignments[i] = min(range(cluster_count), key=lambda k: (p-centers[k]).length_squared)
 
         new_centers = []
@@ -441,13 +448,13 @@ def _cluster_loose_parts(candidates, cluster_count):
             if not members:
                 # Re-seed an empty cluster with the point farthest from every current center.
                 row = max(usable, key=lambda r: min(
-                    (mathutils.Vector((r["center"].x, r["center"].y))-c).length_squared for c in centers))
+                    (plane_point(r["center"])-c).length_squared for c in centers))
                 new_centers.append(mathutils.Vector((row["center"].x, row["center"].y)))
                 continue
             total = sum(max(1, m["triangles"]) for m in members)
-            x = sum(m["center"].x * max(1, m["triangles"]) for m in members) / total
-            y = sum(m["center"].y * max(1, m["triangles"]) for m in members) / total
-            new_centers.append(mathutils.Vector((x, y)))
+            u = sum(plane_point(m["center"]).x * max(1, m["triangles"]) for m in members) / total
+            v = sum(plane_point(m["center"]).y * max(1, m["triangles"]) for m in members) / total
+            new_centers.append(mathutils.Vector((u, v)))
         if all((new_centers[k]-centers[k]).length < 1e-7 for k in range(cluster_count)):
             centers = new_centers
             break
@@ -461,7 +468,7 @@ def _cluster_loose_parts(candidates, cluster_count):
             "members": members,
             "triangles": sum(m["triangles"] for m in members),
         })
-    # Stable sheet order: top-to-bottom, left-to-right.
+    # Stable sheet order on the selected sheet plane: top-to-bottom, left-to-right.
     groups.sort(key=lambda g: (-g["center"].y, g["center"].x))
     return rows, groups
 
@@ -721,7 +728,7 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, sal
     candidates = mesh_objects()
 
     if int(cluster_count) > 0:
-        island_rows, groups = _cluster_loose_parts(candidates, int(cluster_count))
+        island_rows, groups = _cluster_loose_parts(candidates, int(cluster_count), cluster_axes)
         exported = []
         group_rows = []
         for index, group in enumerate(groups, start=1):
@@ -765,6 +772,7 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, sal
             "enabled": True,
             "mode": "spatial_clusters",
             "expected_piece_count": int(cluster_count),
+            "cluster_axes": cluster_axes,
             "candidate_islands": len(candidates),
             "clustered_islands": sum(len(g["members"]) for g in groups),
             "useful_piece_count": len(exported),
