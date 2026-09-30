@@ -48,8 +48,24 @@ jobs:
                     elseif ($git.PSObject.Properties.Name -contains 'FullName') { $git.FullName }
                     else { [string]$git }
           if (-not (Test-Path $gitExe)) { throw "Resolved git executable not found: $gitExe" }
-          $credentialText = ("protocol=https`nhost=github.com`n`n" | & $gitExe credential fill 2>$null) -join "`n"
-          $passwordLine = $credentialText -split "`n" | Where-Object { $_ -like 'password=*' } | Select-Object -First 1
+          $proc = New-Object System.Diagnostics.Process
+          $proc.StartInfo.FileName = $gitExe
+          $proc.StartInfo.Arguments = 'credential fill'
+          $proc.StartInfo.UseShellExecute = $false
+          $proc.StartInfo.CreateNoWindow = $true
+          $proc.StartInfo.RedirectStandardInput = $true
+          $proc.StartInfo.RedirectStandardOutput = $true
+          $proc.StartInfo.RedirectStandardError = $true
+          [void]$proc.Start()
+          $proc.StandardInput.WriteLine('protocol=https')
+          $proc.StandardInput.WriteLine('host=github.com')
+          $proc.StandardInput.WriteLine('')
+          $proc.StandardInput.Close()
+          $credentialText = $proc.StandardOutput.ReadToEnd()
+          $credentialError = $proc.StandardError.ReadToEnd()
+          $proc.WaitForExit()
+          if ($proc.ExitCode -ne 0) { throw 'Git credential fill failed without exposing credential output.' }
+          $passwordLine = $credentialText -split "`r?`n" | Where-Object { $_ -like 'password=*' } | Select-Object -First 1
           if (-not $passwordLine) { throw 'GitHub Desktop credential was not available to this runner user.' }
           $githubToken = $passwordLine.Substring('password='.Length)
           if ([string]::IsNullOrWhiteSpace($githubToken)) { throw 'GitHub credential returned an empty token.' }
