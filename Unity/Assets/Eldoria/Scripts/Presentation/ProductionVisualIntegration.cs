@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using Object = UnityEngine.Object;
 
 namespace Eldoria.Presentation
@@ -235,8 +237,7 @@ namespace Eldoria.Presentation
                 camera.clearFlags=CameraClearFlags.SolidColor;
                 camera.backgroundColor=new Color(.50f,.59f,.64f);
                 camera.allowHDR=true;
-                var cameraData=camera.GetComponent<UniversalAdditionalCameraData>();
-                if(cameraData!=null)cameraData.renderPostProcessing=true;
+                // Post-processing is enabled by the gate camera setup; avoid a hard runtime camera-component dependency here.
             }
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
