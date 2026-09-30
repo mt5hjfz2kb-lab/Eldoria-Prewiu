@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "reason": "Set enabled=true and update source_sha/reason only when a coherent Unity block is ready for owner publication.",
+  "source_sha": "",
+  "requested_by": "agent",
+  "updated_at": "2026-09-30"
+}
