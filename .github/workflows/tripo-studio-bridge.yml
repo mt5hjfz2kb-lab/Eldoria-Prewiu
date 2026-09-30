@@ -86,10 +86,21 @@ jobs:
               $ingestPath = "$env:RUNNER_TEMP\tripo-chatgpt-ingest-request.json"
               $ingestOut = "$env:RUNNER_TEMP\tripo-chatgpt-ingest-probe.json"
               $ingestRequest | ConvertTo-Json -Depth 10 | Set-Content $ingestPath
-              node tools/tripo-studio-bridge.mjs $ingestPath $ingestOut
-              $probe = Get-Content $ingestOut -Raw | ConvertFrom-Json
+              $waitSeconds = 0
+              if ($request.PSObject.Properties.Name -contains 'wait_for_chatgpt_login_seconds') {
+                $waitSeconds = [Math]::Max(0, [int]$request.wait_for_chatgpt_login_seconds)
+              }
+              $deadline = (Get-Date).AddSeconds($waitSeconds)
+              do {
+                node tools/tripo-studio-bridge.mjs $ingestPath $ingestOut
+                $probe = Get-Content $ingestOut -Raw | ConvertFrom-Json
+                if ([bool]$probe.chatgpt_exact_input_probe.ok) { break }
+                if ((Get-Date) -ge $deadline) { break }
+                Write-Host "CHATGPT_AUTH_REQUIRED_WAITING: exact-input file=$fileId; sign in to the runner browser ChatGPT tab. Retrying in 15s."
+                Start-Sleep -Seconds 15
+              } while ($true)
               if (-not [bool]$probe.chatgpt_exact_input_probe.ok) {
-                throw 'Authenticated ChatGPT exact-input retrieval failed; refusing fallback.'
+                throw 'Authenticated ChatGPT exact-input retrieval failed after bounded login wait; refusing fallback.'
               }
               $resolved = [string]$probe.chatgpt_exact_input_probe.path
               if (-not (Test-Path $resolved)) { throw "Retrieved ChatGPT exact input missing: $resolved" }
