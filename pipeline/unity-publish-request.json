@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Final owner-approved HUD reference publication after runner-governance fixes; build and capture this coherent main candidate.",
-  "source_sha": "136df92fd043d2c4e9d50777b6035a628e36a67c",
+  "reason": "Final visual publication for owner-approved HUD reference integration after Unity slice certification 36696557377.",
+  "source_sha": "7a2ee202bdbbf86c5808d5d9219fc93ec06cfe0d",
   "requested_by": "agent",
-  "updated_at": "2026-09-30T09:22Z"
+  "updated_at": "2026-09-30"
 }
