@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 
 namespace Eldoria.EditorTools
 {
+    // Stone Architecture v1 integration evidence is captured here with identical cameras and topology signatures.
     // Canonical zero-credit visual formula gate. It renders the real runtime Valoria,
     // never a replacement mockup, and records lightweight scene-complexity evidence.
     public static class ValoriaVisualFormulaGate
