@@ -285,12 +285,20 @@ namespace Eldoria.Presentation
             vignette.smoothness.Override(.27f);
 
             var art=ValoriaExternalAssetLibrary.Load();
-            var cobble=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
-                new Color(.86f,.83f,.75f),new Vector2(3.35f,3.35f),.085f,1.0f);
-            var dirt=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
-                new Color(.69f,.59f,.45f),new Vector2(4.1f,4.1f),.035f,.88f);
-            var stone=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
-                new Color(.76f,.75f,.71f),new Vector2(2.8f,2.8f),.060f,.95f);
+            // Prefer the gate-staged CC0 Poly Haven maps when present; production still falls back to
+            // the already-promoted project PBR materials, so this proof never creates a runtime dependency.
+            var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",
+                new Color(.92f,.90f,.86f),new Vector2(3.15f,3.15f),.070f,1.08f)
+                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
+                    new Color(.86f,.83f,.75f),new Vector2(3.35f,3.35f),.085f,1.0f);
+            var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
+                new Color(.88f,.82f,.72f),new Vector2(3.85f,3.85f),.025f,.92f)
+                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
+                    new Color(.69f,.59f,.45f),new Vector2(4.1f,4.1f),.035f,.88f);
+            var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",
+                new Color(.91f,.90f,.86f),new Vector2(2.45f,2.45f),.050f,1.08f)
+                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
+                    new Color(.76f,.75f,.71f),new Vector2(2.8f,2.8f),.060f,.95f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
