@@ -99,7 +99,6 @@ namespace Eldoria.EditorTools
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0,\n"+
                 "  \"paid_assets\": 0,\n"+
-                "  \"suppressed_legacy_renderers\": "+SuppressedLegacyRenderers+",\n"+
                 "  \"before_metrics\": "+BeforeMetrics+",\n"+
                 "  \"after_metrics\": "+AfterMetrics+"\n"+
                 "}\n");
