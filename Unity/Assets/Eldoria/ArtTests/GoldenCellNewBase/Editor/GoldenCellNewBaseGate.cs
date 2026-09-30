@@ -258,11 +258,13 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v2 hero replacement proof").transform;
+            Root=new GameObject("GOLDEN CELL · finished v3 environment proof").transform;
             PrepareHybridBastionVisuals();
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
+            BuildEnvironmentEnvelope();
+            CleanPeripheralPlaceholders();
 
             // Replace only the cell's visual read. Gameplay/colliders remain untouched.
             BuildTerraceAndPlaza();
@@ -383,19 +385,25 @@ namespace Eldoria.EditorTools
             RenderSettings.ambientSkyColor=new Color(.70f,.76f,.81f);
             RenderSettings.ambientEquatorColor=new Color(.52f,.50f,.43f);
             RenderSettings.ambientGroundColor=new Color(.24f,.22f,.18f);
-            RenderSettings.ambientIntensity=1.02f;
+            RenderSettings.ambientIntensity=.86f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.61f,.68f,.72f);
-            RenderSettings.fogStartDistance=40f;
-            RenderSettings.fogEndDistance=105f;
+            RenderSettings.fogColor=new Color(.48f,.57f,.62f);
+            RenderSettings.fogStartDistance=30f;
+            RenderSettings.fogEndDistance=82f;
+            var cam=Camera.main;
+            if(cam!=null)
+            {
+                cam.clearFlags=CameraClearFlags.SolidColor;
+                cam.backgroundColor=new Color(.39f,.50f,.58f);
+            }
 
             foreach(var l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(l.type!=LightType.Directional)continue;
-                l.intensity=.92f;
+                l.intensity=1.04f;
                 l.color=new Color(1f,.91f,.78f);
-                l.shadowStrength=.62f;
+                l.shadowStrength=.74f;
                 l.shadows=LightShadows.Soft;
                 l.transform.rotation=Quaternion.Euler(47f,-35f,0f);
             }
@@ -403,6 +411,90 @@ namespace Eldoria.EditorTools
             WarmLight("GC · gate fire",new Vector3(0f,3.2f,4.7f),6.0f,1.55f);
             WarmLight("GC · residence hearth",new Vector3(-7.4f,2.2f,-.9f),4.5f,1.9f);
             WarmLight("GC · workshop hearth",new Vector3(7.5f,2.1f,-1.0f),4.7f,2.0f);
+        }
+
+        static void BuildEnvironmentEnvelope()
+        {
+            // Continuous valley floor: remove the grey test-board read at all official cameras.
+            BeveledBlock("GC ENV · valley floor",new Vector3(0f,-.18f,8.0f),
+                new Vector3(64f,.24f,52f),Dirt,.02f);
+
+            // Broad green shoulders around the inhabited shelf.
+            var grass=Procedural("moss",new Color(.24f,.31f,.20f),.018f);
+            BeveledBlock("GC ENV · west green shoulder",new Vector3(-17.5f,.04f,7.0f),
+                new Vector3(16f,.18f,31f),grass,.01f);
+            BeveledBlock("GC ENV · east green shoulder",new Vector3(17.5f,.04f,7.0f),
+                new Vector3(16f,.18f,31f),grass,.01f);
+
+            // Rear ridge hides the exposed board horizon and gives the Bastion a valley context.
+            for(int i=0;i<7;i++)
+            {
+                float x=-22f+i*7.2f;
+                float z=18.5f+(i%2)*2.3f;
+                var rock=IrregularRock("GC ENV · rear ridge "+i,new Vector3(x,2.0f+(i%3)*.45f,z),
+                    new Vector3(7.0f+(i%2)*1.4f,5.2f+(i%3)*.8f,6.2f));
+                rock.transform.rotation=Quaternion.Euler(-5f,i*19f,3f*(i%2==0?1:-1));
+            }
+
+            var art=ValoriaExternalAssetLibrary.Load();
+            var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
+            if(tree!=null)
+            {
+                var specs=new[]{
+                    new Vector4(-20f,13f,0f,1.35f),new Vector4(-16f,17f,13f,1.10f),
+                    new Vector4(-12f,14f,-18f,1.25f),new Vector4(-8f,19f,9f,.98f),
+                    new Vector4(-4f,16f,-7f,1.15f),new Vector4(4f,17f,8f,1.12f),
+                    new Vector4(8f,20f,-10f,1.02f),new Vector4(12f,15f,17f,1.22f),
+                    new Vector4(16f,18f,-15f,1.10f),new Vector4(20f,13f,12f,1.30f),
+                    new Vector4(-13f,7f,7f,.92f),new Vector4(13f,7f,-9f,.92f)
+                };
+                foreach(var s in specs)
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · pine",tree,
+                        new Vector3(s.x,.10f,s.y),1.55f*s.w,4.1f*s.w,
+                        Quaternion.Euler(0f,s.z,0f),new Color(.44f,.55f,.40f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(Root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                }
+            }
+
+            // Small foreground rock groups integrate the civic paving into the landscape.
+            RockCluster("GC ENV · foreground west rocks",new Vector3(-10.8f,.35f,-4.2f),false);
+            RockCluster("GC ENV · foreground east rocks",new Vector3(10.8f,.35f,-4.0f),true);
+        }
+
+        static void CleanPeripheralPlaceholders()
+        {
+            // Hide only known provisional civil shells inside the Golden Cell view.
+            string[] markers={
+                "reused civil house","upper civil house fallback","west rebuilders home",
+                "west rebuilders upper dwelling","upper dwelling"
+            };
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                string n=r.gameObject.name.ToLowerInvariant();
+                bool hit=false;
+                foreach(var marker in markers)if(n.Contains(marker)){hit=true;break;}
+                if(hit)r.enabled=false;
+            }
+
+            // Replace the most visible civil placeholders with two authored houses from the coherent library.
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null||art.SlavicHouse==null)return;
+            foreach(var spec in new[]{
+                new Vector4(-12.4f,-2.4f,170f,1.0f),
+                new Vector4(-15.6f,2.0f,194f,.92f),
+                new Vector4(12.8f,-1.8f,188f,.96f)
+            })
+            {
+                var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · coherent civil house",art.SlavicHouse,
+                    new Vector3(spec.x,.32f,spec.y),2.7f*spec.w,3.15f*spec.w,
+                    Quaternion.Euler(0f,spec.z,0f),new Color(.58f,.52f,.44f,1f));
+                if(go==null)continue;
+                go.transform.SetParent(Root,true);
+                foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            }
         }
 
         static void BuildTerraceAndPlaza()
@@ -443,58 +535,11 @@ namespace Eldoria.EditorTools
 
         static void BuildGateWings()
         {
-            GameObject hero=null;
-            const string heroFolder="Assets/Resources/Valoria/GoldenCellHero";
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-
-            // glTFast is registered as the editor ScriptedImporter for .gltf/.glb.
-            // Load the imported root GameObject directly from the AssetDatabase.
-            foreach(var guid in AssetDatabase.FindAssets("",new[]{heroFolder}))
-            {
-                var assetPath=AssetDatabase.GUIDToAssetPath(guid);
-                if(!assetPath.EndsWith(".gltf",StringComparison.OrdinalIgnoreCase)&&
-                   !assetPath.EndsWith(".glb",StringComparison.OrdinalIgnoreCase))continue;
-                var candidate=AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                if(candidate==null)continue;
-                hero=ValoriaKit.BenchmarkPieceModulated(
-                    "GC · CC0 modular fort access",
-                    candidate,
-                    new Vector3(0f,2.42f,6.20f),
-                    12.8f,
-                    7.4f,
-                    Quaternion.Euler(0f,180f,0f),
-                    new Color(.86f,.82f,.74f,1f));
-                if(hero!=null)break;
-            }
-
-            if(hero!=null)
-            {
-                hero.transform.SetParent(Root,true);
-                foreach(var col in hero.GetComponentsInChildren<Collider>(true))col.enabled=false;
-                foreach(var hotspot in hero.GetComponentsInChildren<WorldHotspot>(true))
-                    UnityEngine.Object.DestroyImmediate(hotspot);
-
-                // Replace only the old Bastion render shell; authoritative gameplay remains in place.
-                foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-                {
-                    if(r.transform.IsChildOf(hero.transform))continue;
-                    bool bastion=false;
-                    for(var t=r.transform;t!=null;t=t.parent)
-                    {
-                        if(t.name.StartsWith("Bastion ·",StringComparison.Ordinal)||
-                           t.name.StartsWith("Valoria · Bastion hero",StringComparison.Ordinal))
-                        { bastion=true;break; }
-                    }
-                    if(bastion)r.enabled=false;
-                }
-            }
-            else
-            {
-                GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
-                GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
-                BuildArch("GC · civic arch",new Vector3(0f,3.15f,4.12f),2.55f,2.55f,.52f,Stone);
-            }
-
+            // Keep the certified Bastion silhouette. The external fort proof was technically valid
+            // but visually weaker, so the Golden Cell now uses its own lower framing wings only.
+            GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
+            GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
+            BuildArch("GC · civic arch",new Vector3(0f,3.15f,4.12f),2.55f,2.55f,.52f,Stone);
             BeveledBlock("GC · gate threshold",new Vector3(0f,2.63f,4.30f),new Vector3(5.0f,.14f,1.20f),Cobble,.04f);
         }
 
