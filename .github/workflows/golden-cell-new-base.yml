@@ -98,6 +98,42 @@ jobs:
           Experimental branch only; not promoted to production.
           '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
 
+      - name: Stage Golden Cell CC0 hero fort
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenCellHero"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
+          $payload=Invoke-RestMethod -Headers $headers -Uri "https://api.polyhaven.com/files/modular_fort_01"
+          $json=$payload | ConvertTo-Json -Depth 100
+          $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+          $gltfUrls=$urls | Where-Object {
+            $_ -match '(?i)gltf' -and $_ -match '(?i)1k' -and $_ -match '(?i)\.(gltf|bin|png|jpg|jpeg)(\?|$)'
+          }
+          if(-not $gltfUrls){
+            $gltfUrls=$urls | Where-Object {
+              $_ -match '(?i)gltf' -and $_ -match '(?i)\.(gltf|bin|png|jpg|jpeg)(\?|$)'
+            }
+          }
+          $gltfUrls | Set-Content (Join-Path $dest 'SOURCE_URLS.txt') -Encoding UTF8
+          foreach($url in $gltfUrls){
+            $name=[IO.Path]::GetFileName(([uri]$url).AbsolutePath)
+            if([string]::IsNullOrWhiteSpace($name)){continue}
+            Invoke-WebRequest -Headers $headers -Uri $url -OutFile (Join-Path $dest $name)
+          }
+          $gltf=Get-ChildItem $dest -Filter '*.gltf' -ErrorAction SilentlyContinue | Select-Object -First 1
+          if(-not $gltf){
+            throw "Poly Haven modular_fort_01 did not expose a downloadable glTF file."
+          }
+          @'
+          Golden Cell hero architecture proof.
+          Asset: modular_fort_01
+          Source: Poly Haven
+          License: CC0
+          Experimental branch only; not production-promoted.
+          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
+
       - name: Capture Golden Cell
         shell: powershell
         run: |
