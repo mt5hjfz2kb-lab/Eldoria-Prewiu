@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,7 +24,6 @@ namespace Eldoria.Presentation
         static readonly Color Disabled = new Color(.17f,.18f,.19f,.94f);
         static Sprite portraitSprite;
         static Sprite circleSprite;
-        static Texture2D referenceAtlas;
         static readonly Dictionary<string,Sprite> ReferenceSprites=new Dictionary<string,Sprite>();
 
         readonly Dictionary<string, GameObject> labels = new Dictionary<string, GameObject>();
@@ -117,7 +114,13 @@ namespace Eldoria.Presentation
             go.transform.SetParent(safe,false);
             var rt=go.GetComponent<RectTransform>();
             rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.sizeDelta=new Vector2(78,78);
-            var ring=go.GetComponent<Image>();ring.sprite=ReferenceSprite("portrait_face");ring.color=Color.white;ring.preserveAspect=true;ring.raycastTarget=false;
+            var ring=go.GetComponent<Image>();
+            if(portraitSprite==null)
+            {
+                var tex=Resources.Load<Texture2D>("UI/aldric_reference_portrait");
+                if(tex!=null)portraitSprite=Sprite.Create(tex,new Rect(0,0,tex.width,tex.height),new Vector2(.5f,.5f),100f);
+            }
+            ring.sprite=portraitSprite??CircleSprite();ring.color=Color.white;ring.preserveAspect=true;ring.raycastTarget=false;
             go.GetComponent<Mask>().showMaskGraphic=true;
             var outline=go.AddComponent<Outline>();outline.effectColor=BronzeDark;outline.effectDistance=new Vector2(2,-2);
         }
@@ -448,208 +451,75 @@ namespace Eldoria.Presentation
         static Sprite ReferenceSprite(string name)
         {
             if(ReferenceSprites.TryGetValue(name,out var cached)&&cached!=null)return cached;
-
-            if(referenceAtlas==null)
-            {
-                string encoded="";
-                string[] prefixes={"UI/eldoria_ui_reference_atlas_v2_","UI/eldoria_ui_reference_atlas_"};
-                foreach(var prefix in prefixes)
-                {
-                    encoded="";
-                    bool complete=true;
-                    for(int i=0;i<4;i++)
-                    {
-                        var chunk=Resources.Load<TextAsset>(prefix+i);
-                        if(chunk==null){complete=false;break;}
-                        encoded+=chunk.text.Trim();
-                    }
-                    if(complete&&!string.IsNullOrEmpty(encoded))break;
-                }
-
-                if(!string.IsNullOrEmpty(encoded))
-                {
-                    try
-                    {
-                        var bytes=System.Convert.FromBase64String(encoded);
-                        var candidate=new Texture2D(2,2,TextureFormat.RGBA32,false)
-                        {
-                            name="Approved Eldoria HUD atlas",
-                            wrapMode=TextureWrapMode.Clamp,
-                            filterMode=FilterMode.Bilinear
-                        };
-                        bool loaded=candidate.LoadImage(bytes,false);
-                        if(loaded&&candidate.width>=128&&candidate.height>=128)
-                        {
-                            referenceAtlas=candidate;
-                        }
-                        else
-                        {
-                            Object.Destroy(candidate);
-                            referenceAtlas=DecodeIndexedPng(bytes);
-                            if(referenceAtlas!=null)
-                            {
-                                referenceAtlas.name="Approved Eldoria HUD atlas";
-                                referenceAtlas.wrapMode=TextureWrapMode.Clamp;
-                                referenceAtlas.filterMode=FilterMode.Bilinear;
-                            }
-                        }
-                    }
-                    catch(System.Exception ex)
-                    {
-                        Debug.LogWarning("Reference HUD atlas decode failed: "+ex.Message);
-                        referenceAtlas=null;
-                    }
-                }
-            }
-
-            if(referenceAtlas==null)return CircleSprite();
-            Rect r=AtlasRect(name);
-            if(r.xMin<0||r.yMin<0||r.xMax>referenceAtlas.width||r.yMax>referenceAtlas.height)return CircleSprite();
-            var sprite=Sprite.Create(referenceAtlas,r,new Vector2(.5f,.5f),100f);
+            const int n=64;
+            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false){name="Eldoria UI icon "+name,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
+            var px=new Color32[n*n];
+            for(int i=0;i<px.Length;i++)px[i]=new Color32(0,0,0,0);
+            var gold=new Color32(224,190,112,255);
+            var pale=new Color32(238,232,210,255);
+            var blue=new Color32(78,139,194,255);
+            var red=new Color32(196,54,47,255);
+            var grey=new Color32(171,179,184,255);
+            DrawIcon(px,n,name,gold,pale,blue,red,grey);
+            tex.SetPixels32(px);tex.Apply(false,true);
+            var sprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
             ReferenceSprites[name]=sprite;
             return sprite;
         }
 
-        static Rect AtlasRect(string name)
+        static void DrawIcon(Color32[] p,int n,string name,Color32 gold,Color32 pale,Color32 blue,Color32 red,Color32 grey)
         {
-            // Source crop atlas is 128×128. Coordinates below are Unity bottom-left.
+            void Dot(int x,int y,int r,Color32 col){for(int yy=y-r;yy<=y+r;yy++)for(int xx=x-r;xx<=x+r;xx++){if(xx<0||yy<0||xx>=n||yy>=n)continue;int dx=xx-x,dy=yy-y;if(dx*dx+dy*dy<=r*r)p[yy*n+xx]=col;}}
+            void Line(int x0,int y0,int x1,int y1,int w,Color32 col){int dx=Mathf.Abs(x1-x0),sx=x0<x1?1:-1,dy=-Mathf.Abs(y1-y0),sy=y0<y1?1:-1,err=dx+dy;while(true){Dot(x0,y0,w,col);if(x0==x1&&y0==y1)break;int e2=2*err;if(e2>=dy){err+=dy;x0+=sx;}if(e2<=dx){err+=dx;y0+=sy;}}}
+            void RectFill(int x,int y,int w,int h,Color32 col){for(int yy=y;yy<y+h;yy++)for(int xx=x;xx<x+w;xx++)if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}
+            void Diamond(int cx,int cy,int r,Color32 col){for(int y=-r;y<=r;y++){int span=r-Mathf.Abs(y);for(int x=-span;x<=span;x++){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
+            void Ring(int cx,int cy,int r,int thick,Color32 col){for(int y=-r;y<=r;y++)for(int x=-r;x<=r;x++){int d=x*x+y*y;if(d<=r*r&&d>=(r-thick)*(r-thick)){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
+
             switch(name)
             {
-                case "portrait_face": return AtlasTop(1,1,24,24);
-                case "vip": return AtlasTop(26.25f,8.75f,24,7.75f);
-                case "power": return AtlasTop(56.25f,5.75f,14.75f,13.75f);
-                case "wood": return AtlasTop(81.25f,5.75f,15.75f,13.75f);
-                case "stone": return AtlasTop(106.25f,5.75f,16.75f,13.75f);
-                case "wheat": return AtlasTop(4.5f,31.25f,16.25f,13.75f);
-                case "iron": return AtlasTop(29.25f,31.25f,18,13.75f);
-                case "gem": return AtlasTop(55.25f,31.25f,16.75f,13.75f);
-                case "chapter": return AtlasTop(80.75f,30.5f,17,15.25f);
-                case "left_build": return AtlasTop(105.75f,29.25f,18,18);
-                case "left_research": return AtlasTop(3.75f,54.75f,18,18);
-                case "left_people": return AtlasTop(29.25f,54.75f,18,18);
-                case "world": return AtlasTop(51.75f,51.75f,24,24);
-                case "heroes": return AtlasTop(78.75f,53.25f,21,21);
-                case "army": return AtlasTop(104.25f,53.25f,21,21);
-                case "missions": return AtlasTop(2.25f,78.75f,21,21);
-                case "inventory": return AtlasTop(27.75f,78.75f,21,21);
-                case "alliance": return AtlasTop(53.25f,78.75f,21,21);
-                case "bastion": return AtlasTop(77.25f,78.75f,24,21);
-                case "social": return AtlasTop(107.25f,82.5f,15,13.5f);
-                case "mail": return AtlasTop(5.25f,108,15,13.5f);
-                case "menu": return AtlasTop(29.25f,108,17.75f,13.5f);
-                default: return new Rect(0,0,1,1);
+                case "power":
+                case "army":
+                    Line(18,16,46,48,3,pale);Line(46,16,18,48,3,pale);Line(14,13,22,21,4,gold);Line(50,13,42,21,4,gold);break;
+                case "wood":
+                    RectFill(14,23,36,18,new Color32(126,78,38,255));Line(18,23,18,41,2,gold);Line(46,23,46,41,2,gold);break;
+                case "stone":
+                    Diamond(32,32,20,grey);Line(20,32,32,44,1,pale);break;
+                case "wheat":
+                    Line(32,10,32,52,2,gold);for(int i=0;i<5;i++){Line(32,19+i*7,22,24+i*7,2,gold);Line(32,22+i*7,42,27+i*7,2,gold);}break;
+                case "iron":
+                    RectFill(15,24,34,15,grey);Line(18,39,45,39,2,pale);break;
+                case "gem":
+                    Diamond(32,31,20,red);Line(32,12,32,50,1,pale);Line(12,31,52,31,1,pale);break;
+                case "chapter":
+                case "missions":
+                    RectFill(16,14,32,38,new Color32(226,204,151,255));Line(21,42,43,42,1,new Color32(99,72,42,255));Line(21,35,41,35,1,new Color32(99,72,42,255));Line(21,28,39,28,1,new Color32(99,72,42,255));break;
+                case "left_build":
+                    Line(18,17,45,44,4,gold);RectFill(38,39,15,8,pale);break;
+                case "left_research":
+                    RectFill(27,36,10,14,pale);Line(25,36,18,17,2,pale);Line(39,36,46,17,2,pale);Line(18,17,46,17,2,gold);break;
+                case "left_people":
+                case "social":
+                    Dot(24,39,7,pale);Dot(41,37,6,pale);Dot(31,22,11,gold);break;
+                case "world":
+                    Ring(32,32,22,3,gold);Line(10,32,54,32,1,pale);Line(32,10,32,54,1,pale);Ring(32,32,11,1,pale);break;
+                case "heroes":
+                    Ring(32,33,20,3,gold);RectFill(23,20,18,24,grey);Line(23,44,32,53,3,pale);Line(41,44,32,53,3,pale);break;
+                case "inventory":
+                    RectFill(17,20,30,30,new Color32(112,70,38,255));Ring(32,46,11,3,gold);break;
+                case "alliance":
+                    RectFill(23,17,18,28,blue);Line(23,45,41,45,3,gold);Line(32,17,32,54,2,gold);break;
+                case "bastion":
+                    RectFill(14,16,36,24,blue);RectFill(18,40,8,12,pale);RectFill(38,40,8,12,pale);RectFill(28,32,8,20,pale);break;
+                case "mail":
+                    RectFill(12,20,40,28,new Color32(226,204,151,255));Line(12,48,32,31,2,new Color32(99,72,42,255));Line(52,48,32,31,2,new Color32(99,72,42,255));break;
+                case "menu":
+                    Line(14,43,50,43,3,pale);Line(14,32,50,32,3,pale);Line(14,21,50,21,3,pale);break;
+                case "vip":
+                    RectFill(7,19,50,26,new Color32(88,58,25,255));Line(7,45,57,45,2,gold);Line(7,19,57,19,2,gold);break;
+                default:
+                    Ring(32,32,22,3,gold);Dot(32,32,7,pale);break;
             }
         }
-
-        static Rect AtlasTop(float x,float y,float w,float h)=>new Rect(x,128f-y-h,w,h);
-
-        static Texture2D DecodeIndexedPng(byte[] png)
-        {
-            // Unity's runtime decoder can collapse this compact indexed PNG on some runner/player
-            // paths. Decode the exact 8-bit indexed atlas deterministically so reference crops
-            // remain 128x128 and pixel-identical to the approved source.
-            try
-            {
-                if(png==null || png.Length<33) return null;
-                int width=ReadBe32(png,16),height=ReadBe32(png,20);
-                int bitDepth=png[24],colorType=png[25];
-                if(width<=0||height<=0||bitDepth!=8||colorType!=3) return null;
-
-                byte[] palette=null,alpha=null;
-                using(var idat=new MemoryStream())
-                {
-                    int p=8;
-                    while(p+12<=png.Length)
-                    {
-                        int len=ReadBe32(png,p); if(len<0||p+12+len>png.Length) break;
-                        string type=System.Text.Encoding.ASCII.GetString(png,p+4,4);
-                        int data=p+8;
-                        if(type=="PLTE")
-                        {
-                            palette=new byte[len];
-                            System.Buffer.BlockCopy(png,data,palette,0,len);
-                        }
-                        else if(type=="tRNS")
-                        {
-                            alpha=new byte[len];
-                            System.Buffer.BlockCopy(png,data,alpha,0,len);
-                        }
-                        else if(type=="IDAT") idat.Write(png,data,len);
-                        else if(type=="IEND") break;
-                        p+=12+len;
-                    }
-                    if(palette==null||palette.Length<3||idat.Length<7) return null;
-
-                    byte[] z=idat.ToArray();
-                    using(var packed=new MemoryStream(z,2,z.Length-6,false))
-                    using(var deflate=new DeflateStream(packed,CompressionMode.Decompress))
-                    using(var raw=new MemoryStream())
-                    {
-                        deflate.CopyTo(raw);
-                        byte[] scan=raw.ToArray();
-                        int stride=width;
-                        int expected=height*(stride+1);
-                        if(scan.Length<expected) return null;
-                        byte[] prior=new byte[stride];
-                        byte[] row=new byte[stride];
-                        var pixels=new Color32[width*height];
-                        int src=0;
-                        for(int y=0;y<height;y++)
-                        {
-                            int filter=scan[src++];
-                            for(int x=0;x<stride;x++)
-                            {
-                                int v=scan[src++];
-                                int left=x>0?row[x-1]:0;
-                                int up=prior[x];
-                                int upperLeft=x>0?prior[x-1]:0;
-                                switch(filter)
-                                {
-                                    case 0: break;
-                                    case 1: v=(v+left)&255; break;
-                                    case 2: v=(v+up)&255; break;
-                                    case 3: v=(v+((left+up)>>1))&255; break;
-                                    case 4: v=(v+Paeth(left,up,upperLeft))&255; break;
-                                    default: return null;
-                                }
-                                row[x]=(byte)v;
-                            }
-                            int dstY=height-1-y;
-                            for(int x=0;x<width;x++)
-                            {
-                                int index=row[x],pi=index*3;
-                                byte r=pi+2<palette.Length?palette[pi]:(byte)255;
-                                byte g=pi+2<palette.Length?palette[pi+1]:(byte)255;
-                                byte b=pi+2<palette.Length?palette[pi+2]:(byte)255;
-                                byte a=alpha!=null&&index<alpha.Length?alpha[index]:(byte)255;
-                                pixels[dstY*width+x]=new Color32(r,g,b,a);
-                            }
-                            var swap=prior;prior=row;row=swap;
-                        }
-                        var tex=new Texture2D(width,height,TextureFormat.RGBA32,false);
-                        tex.SetPixels32(pixels);tex.Apply(false,true);
-                        return tex;
-                    }
-                }
-            }
-            catch(System.Exception e)
-            {
-                Debug.LogWarning("Reference indexed PNG decode failed: "+e.Message);
-                return null;
-            }
-        }
-
-        static int ReadBe32(byte[] data,int offset)
-        {
-            return (data[offset]<<24)|(data[offset+1]<<16)|(data[offset+2]<<8)|data[offset+3];
-        }
-
-        static int Paeth(int a,int b,int c)
-        {
-            int p=a+b-c,pa=Mathf.Abs(p-a),pb=Mathf.Abs(p-b),pc=Mathf.Abs(p-c);
-            return pa<=pb&&pa<=pc?a:(pb<=pc?b:c);
-        }
-
 
         static void SetFont(Transform parent,string childName,int size)
         {
