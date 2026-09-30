@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "mode": "stage_upload",
+  "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Exact approved Stone Architecture image is now persisted and independently validated in the canonical repository. Reconstruct from repo_exact_input only, verify SHA-256 + byte size, stage in Tripo, capture staged UI and visible Generate cost, and STOP before Generate. No credit spend.",
+  "notes": "OWNER AUTHORIZED 55 credits after verified exact-input staging. Click Generate exactly once on the already-staged Eldoria_StoneArchitectureKit_v1 input. Do not restage. Preserve exact approved SHA identity and record generated task URL for watch/export.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
@@ -11,8 +11,8 @@
   "upload_size_bytes": 2139894,
   "visual_width": 1254,
   "visual_height": 1254,
-  "allow_credit_spend": false,
-  "authorized_credit_cost": 0,
+  "allow_credit_spend": true,
+  "authorized_credit_cost": 55,
   "approved_input_sha256": "5a7a5353e7a8b1a914cb968d856a738868ac548311aee0be4df69b4eeac76258",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -27,10 +27,12 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-repo-exact-manifest-fixed",
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-generate-authorized-55",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
-  "probe_chatgpt_session": false
+  "probe_chatgpt_session": false,
+  "prior_stage_run_id": 36700928003,
+  "prior_stage_artifact_id": 11090430818
 }
