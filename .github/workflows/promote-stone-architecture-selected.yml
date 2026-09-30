@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: eldoria-stone-architecture-selected-promotion
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   promote:
