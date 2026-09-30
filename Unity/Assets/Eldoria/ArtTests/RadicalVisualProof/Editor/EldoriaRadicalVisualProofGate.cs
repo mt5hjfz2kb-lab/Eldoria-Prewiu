@@ -112,59 +112,69 @@ namespace Eldoria.EditorTools
         static void ConfigureAtmosphere()
         {
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.68f,.73f,.76f);
-            RenderSettings.ambientEquatorColor=new Color(.45f,.45f,.40f);
-            RenderSettings.ambientGroundColor=new Color(.23f,.21f,.18f);
+            RenderSettings.ambientSkyColor=new Color(.80f,.84f,.86f);
+            RenderSettings.ambientEquatorColor=new Color(.55f,.54f,.49f);
+            RenderSettings.ambientGroundColor=new Color(.28f,.25f,.21f);
+            RenderSettings.ambientIntensity=1.05f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.62f,.69f,.73f);
-            RenderSettings.fogStartDistance=32f;
-            RenderSettings.fogEndDistance=95f;
+            RenderSettings.fogColor=new Color(.55f,.64f,.69f);
+            RenderSettings.fogStartDistance=46f;
+            RenderSettings.fogEndDistance=126f;
 
             var cam=Camera.main;
             if(cam!=null)
             {
                 cam.clearFlags=CameraClearFlags.SolidColor;
-                cam.backgroundColor=new Color(.58f,.67f,.73f);
+                cam.backgroundColor=new Color(.48f,.61f,.70f);
+                cam.allowHDR=true;
             }
 
             foreach(var l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if(l.type==LightType.Directional){l.intensity=.78f;l.color=new Color(1f,.88f,.70f);l.shadowStrength=.58f;}
-            var fill=new GameObject("RADICAL · cool sky fill").AddComponent<Light>();
-            fill.transform.SetParent(Root);fill.type=LightType.Directional;fill.intensity=.38f;
-            fill.color=new Color(.58f,.70f,1f);fill.transform.rotation=Quaternion.Euler(36f,145f,0f);fill.shadows=LightShadows.None;
-            var rim=new GameObject("RADICAL · warm bastion rim").AddComponent<Light>();
-            rim.transform.SetParent(Root);rim.type=LightType.Point;rim.range=18f;rim.intensity=6f;
-            rim.color=new Color(1f,.60f,.28f);rim.transform.position=new Vector3(-3f,9f,12f);rim.shadows=LightShadows.None;
+                if(l.type==LightType.Directional)
+                {
+                    l.intensity=1.05f;
+                    l.color=new Color(1f,.90f,.76f);
+                    l.shadowStrength=.62f;
+                    l.shadows=LightShadows.Soft;
+                    l.transform.rotation=Quaternion.Euler(48f,-34f,0f);
+                }
+
+            var fill=new GameObject("RADICAL v3 · cool sky fill").AddComponent<Light>();
+            fill.transform.SetParent(Root);fill.type=LightType.Directional;fill.intensity=.22f;
+            fill.color=new Color(.62f,.74f,1f);fill.transform.rotation=Quaternion.Euler(34f,150f,0f);fill.shadows=LightShadows.None;
+
+            var rim=new GameObject("RADICAL v3 · bastion sunset rim").AddComponent<Light>();
+            rim.transform.SetParent(Root);rim.type=LightType.Point;rim.range=15f;rim.intensity=3.4f;
+            rim.color=new Color(1f,.58f,.27f);rim.transform.position=new Vector3(-2.5f,9f,11.5f);rim.shadows=LightShadows.None;
         }
 
         static void RegradeScene()
         {
-            // v2: preserve authored PBR textures. Only pull the fortress/civic stone toward
-            // Eldoria's clear limestone family; never replace entire imported materials.
+            // Preserve authored maps; selectively lift masonry value hierarchy.
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||r.transform.IsChildOf(Root))continue;
                 string n=r.gameObject.name.ToLowerInvariant();
                 bool hero=n.Contains("bastion")||n.Contains("masonry")||n.Contains("stonearch")||
-                          n.Contains("retaining")||n.Contains("wall");
+                          n.Contains("retaining")||n.Contains("wall")||n.Contains("terrace");
                 if(!hero)continue;
                 var slots=r.sharedMaterials;
                 for(int i=0;i<slots.Length;i++)
                 {
                     var src=slots[i];if(src==null)continue;
-                    var m=new Material(src){name="RADICAL v2 · "+src.name};
+                    var m=new Material(src){name="RADICAL v3 · "+src.name};
                     if(m.HasProperty("_BaseColor"))
                     {
                         var b=m.GetColor("_BaseColor");
-                        m.SetColor("_BaseColor",Color.Lerp(b,LimestoneLight,.16f));
+                        m.SetColor("_BaseColor",Color.Lerp(b,new Color(.76f,.72f,.64f,1f),.25f));
                     }
                     if(m.HasProperty("_Color"))
                     {
                         var b=m.GetColor("_Color");
-                        m.SetColor("_Color",Color.Lerp(b,LimestoneLight,.12f));
+                        m.SetColor("_Color",Color.Lerp(b,new Color(.74f,.70f,.62f,1f),.18f));
                     }
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",Mathf.Min(.16f,m.GetFloat("_Smoothness")));
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.11f);
                     slots[i]=m;
                 }
                 r.sharedMaterials=slots;
@@ -173,25 +183,18 @@ namespace Eldoria.EditorTools
 
         static void BuildMountainFrame()
         {
-            // v2: authored terrain only. The v1 procedural mountain sheets were visually rejected.
-            // Side/rear masses frame the city but never cross the central gameplay/readability cone.
-            ValoriaKit.TerrainPieceModulated("SM_Mountains_11","RADICAL v2 · west mountain frame",
-                new Vector3(-23f,-2.1f,12f),15f,9f,Quaternion.Euler(0,28f,0),new Color(.82f,.86f,.84f,1f));
-            ValoriaKit.TerrainPieceModulated("SM_Mountains_11","RADICAL v2 · east mountain frame",
-                new Vector3(23f,-2.0f,13f),15f,9f,Quaternion.Euler(0,-30f,0),new Color(.82f,.85f,.84f,1f));
-            ValoriaKit.TerrainPieceModulated("SM_Mountains_11","RADICAL v2 · high valley rear",
-                new Vector3(0f,-3.2f,36f),20f,11f,Quaternion.Euler(0,-8f,0),new Color(.76f,.81f,.83f,1f));
-
+            // v3: no extra mountain silhouettes. Keep the canonical valley horizon and only
+            // stitch visible side seams with authored rock so the city remains the dominant read.
             var art=ValoriaExternalAssetLibrary.Load();
             if(art==null)return;
-            var rockTint=new Color(.76f,.78f,.74f,1f);
+            var rockTint=new Color(.86f,.86f,.80f,1f);
             var rocks=new[]{
-                new Vector3(-12.5f,-.05f,-7.8f),new Vector3(-13.5f,.15f,-2.0f),new Vector3(-12.2f,.35f,4.5f),
-                new Vector3(12.5f,-.05f,-7.6f),new Vector3(13.5f,.15f,-1.5f),new Vector3(12.4f,.35f,5.0f)
+                new Vector3(-12.2f,-.05f,-7.6f),new Vector3(-13.0f,.12f,-1.5f),new Vector3(-11.8f,.30f,5.2f),
+                new Vector3(12.2f,-.05f,-7.5f),new Vector3(13.0f,.12f,-1.2f),new Vector3(11.8f,.30f,5.4f)
             };
             for(int i=0;i<rocks.Length;i++)
-                ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · mountain seam "+i,art.SlavicFlatRock,
-                    rocks[i],4.3f,2.2f,Quaternion.Euler(0,i*47f,0),rockTint);
+                ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · valley rock seam "+i,art.SlavicFlatRock,
+                    rocks[i],3.6f,1.8f,Quaternion.Euler(0,i*43f,0),rockTint);
         }
 
         static void BuildCirculation()
@@ -217,21 +220,34 @@ namespace Eldoria.EditorTools
             var art=ValoriaExternalAssetLibrary.Load();
             if(art==null)return;
 
-            // Monumental authored remnants frame, rather than eclipse, the Bastion.
-            ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · imperial ruin west",art.MegaDestroyedTower,
-                new Vector3(-10.8f,.15f,13.5f),5.0f,6.8f,Quaternion.Euler(0,20f,0),new Color(.88f,.86f,.79f,1f));
-            ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · imperial ruin east",art.MegaWallPassage,
-                new Vector3(10.2f,.12f,14.4f),6.2f,5.5f,Quaternion.Euler(0,-18f,0),new Color(.86f,.85f,.79f,1f));
-            ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · rear imperial sentinel",art.RuinedTower,
-                new Vector3(-5.8f,.05f,19.5f),4.4f,7.4f,Quaternion.Euler(0,10f,0),new Color(.82f,.83f,.79f,1f));
+            // Turn the existing Bastion into a real fortress compound using the coherent Mega/Masonry subset.
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · bastion rear wall",art.MegaWallPassage,
+                new Vector3(0f,2.72f,10.3f),7.6f,4.4f,Quaternion.Euler(0,180f,0),new Color(.95f,.91f,.82f,1f));
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · bastion crown tower",art.MegaTower,
+                new Vector3(-.5f,2.74f,11.1f),3.4f,8.2f,Quaternion.Euler(0,4f,0),new Color(.96f,.92f,.84f,1f));
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · bastion rear tower west",art.MasonryTower,
+                new Vector3(-4.7f,2.70f,10.0f),2.9f,6.4f,Quaternion.Euler(0,8f,0),new Color(.92f,.89f,.82f,1f));
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · bastion rear tower east",art.MasonryTower,
+                new Vector3(4.5f,2.70f,10.2f),2.8f,5.8f,Quaternion.Euler(0,-9f,0),new Color(.90f,.88f,.81f,1f));
 
-            // One distant, secondary purple threat. Small enough to remain background narrative.
-            var glow=Primitive(PrimitiveType.Cylinder,"RADICAL v2 · distant breach",new Vector3(20.5f,3.7f,31f),
-                new Vector3(1.15f,5.8f,1.15f),Violet);
-            glow.transform.rotation=Quaternion.Euler(0,0,7f);
-            var light=new GameObject("RADICAL v2 · breach haze").AddComponent<Light>();
-            light.transform.SetParent(Root);light.type=LightType.Point;light.range=20f;light.intensity=2.8f;
-            light.color=new Color(.58f,.22f,.82f);light.transform.position=new Vector3(20.5f,5.2f,30f);
+            // Monumental ruin fragments frame the city at the edges.
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · imperial ruin west",art.MegaDestroyedTower,
+                new Vector3(-11.0f,.18f,13.4f),4.4f,6.0f,Quaternion.Euler(0,22f,0),new Color(.89f,.87f,.80f,1f));
+            ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · imperial ruin east",art.MegaWallPassage,
+                new Vector3(11.0f,.16f,14.0f),5.1f,4.7f,Quaternion.Euler(0,-20f,0),new Color(.87f,.86f,.80f,1f));
+
+            // Environmental corruption: low fractured glow cluster, not a beacon/cylinder.
+            for(int i=0;i<7;i++)
+            {
+                float x=17.2f+(i%3)*1.0f;
+                float z=24.5f+(i/3)*1.15f;
+                var shard=Primitive(PrimitiveType.Sphere,"RADICAL v3 · breach scar "+i,
+                    new Vector3(x,.30f+(i%2)*.22f,z),new Vector3(.45f+(i%3)*.18f,.30f,.70f),Violet*(.72f+(i%2)*.12f));
+                shard.transform.rotation=Quaternion.Euler(i*9f,i*31f,i*7f);
+            }
+            var light=new GameObject("RADICAL v3 · breach atmospheric glow").AddComponent<Light>();
+            light.transform.SetParent(Root);light.type=LightType.Point;light.range=16f;light.intensity=2.1f;
+            light.color=new Color(.56f,.20f,.78f);light.transform.position=new Vector3(18.2f,2.0f,25.2f);
         }
 
         static void BuildLifeAndVegetation()
@@ -239,33 +255,31 @@ namespace Eldoria.EditorTools
             var art=ValoriaExternalAssetLibrary.Load();
             if(art==null)return;
 
-            // Medium-density inhabited terraces built from the existing coherent Slavic set.
+            // Keep medium density and coherent scale. Four small authored residences are enough.
             var houses=new[]{
-                new Vector3(-10.1f,.35f,-4.5f),new Vector3(-10.4f,.48f,1.4f),new Vector3(-8.8f,2.78f,9.2f),
-                new Vector3(10.0f,.34f,-5.0f),new Vector3(10.6f,.48f,1.3f),new Vector3(8.8f,2.78f,9.4f)
+                new Vector3(-10.0f,.34f,-4.2f),new Vector3(-9.6f,.42f,1.7f),
+                new Vector3(9.8f,.34f,-4.6f),new Vector3(9.7f,.42f,1.8f)
             };
             for(int i=0;i<houses.Length;i++)
-            {
-                var prefab=i%3==1?art.SlavicShed:art.SlavicHouse;
-                ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · inhabited terrace "+i,prefab,houses[i],
-                    i%3==1?2.7f:3.4f,i%3==1?2.5f:3.6f,
-                    Quaternion.Euler(0,i<3?18f+i*11f:192f-i*9f,0),new Color(.98f,.94f,.86f,1f));
-            }
+                ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · edge residence "+i,art.SlavicHouse,houses[i],
+                    2.35f,2.75f,Quaternion.Euler(0,i<2?22f+i*13f:195f-i*12f,0),
+                    new Color(.91f,.86f,.76f,1f));
 
-            var trees=new[]{
-                new Vector3(-13f,.1f,-5.5f),new Vector3(-13.8f,.2f,2.5f),new Vector3(-11.8f,.6f,7.5f),
-                new Vector3(13f,.1f,-5.2f),new Vector3(13.8f,.2f,2.8f),new Vector3(11.9f,.6f,7.8f),
-                new Vector3(-8.2f,.3f,15.8f),new Vector3(8.0f,.3f,16.3f)
-            };
-            for(int i=0;i<trees.Length;i++)
-                ValoriaKit.BenchmarkPieceModulated("RADICAL v2 · authored tree "+i,
-                    i%3==0?art.SlavicTreeTall:art.SlavicTree,trees[i],2.4f,4.8f,
-                    Quaternion.Euler(0,i*31f,0),new Color(.72f,.86f,.70f,1f));
+            // Low retaining/fence fragments create urban edges without adding more whole buildings.
+            foreach(var p in new[]{new Vector3(-8.6f,.38f,-6.2f),new Vector3(-8.8f,.40f,3.7f),
+                                   new Vector3(8.6f,.38f,-6.3f),new Vector3(8.8f,.40f,3.8f)})
+                ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · terrace edge",art.SlavicStoneFence,p,
+                    3.0f,1.1f,Quaternion.Euler(0,p.x<0?10f:190f,0),new Color(.92f,.90f,.84f,1f));
 
-            foreach(var p in new[]{new Vector3(-6.8f,2.5f,-2.8f),new Vector3(6.9f,2.4f,-4f),new Vector3(0f,5.3f,6.1f)})
+            // Functional props: work/material story where it belongs.
+            foreach(var p in new[]{new Vector3(-8.5f,.42f,-3.1f),new Vector3(-7.8f,.42f,-1.8f)})
+                ValoriaKit.BenchmarkPieceModulated("RADICAL v3 · sawmill firewood",art.Firewood,p,
+                    1.25f,.85f,Quaternion.Euler(0,p.z*17f,0),new Color(.94f,.82f,.66f,1f));
+
+            foreach(var p in new[]{new Vector3(-6.8f,2.5f,-2.8f),new Vector3(6.9f,2.4f,-4f),new Vector3(0f,6.0f,7.3f)})
             {
-                var l=new GameObject("RADICAL v2 · inhabited warm light").AddComponent<Light>();
-                l.transform.SetParent(Root);l.type=LightType.Point;l.range=6.5f;l.intensity=2.1f;
+                var l=new GameObject("RADICAL v3 · inhabited warm light").AddComponent<Light>();
+                l.transform.SetParent(Root);l.type=LightType.Point;l.range=6.4f;l.intensity=2.0f;
                 l.color=new Color(1f,.58f,.30f);l.transform.position=p;
             }
         }
