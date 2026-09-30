@@ -1,0 +1,21 @@
+name: Stone Architecture exact-input validation (temp)
+
+on:
+  push:
+    branches:
+      - work/stone-architecture-exact-input
+    paths:
+      - 'pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/**'
+      - '.github/workflows/stone-exact-input-validate-temp.yml'
+      - 'tools/validate-tripo-exact-input.mjs'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate exact input bytes
+        run: node tools/validate-tripo-exact-input.mjs pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/manifest.json
