@@ -1,11 +1,6 @@
-name: Micro-Valoria 2 inhabited district gate
+name: "[LEGACY] Micro-Valoria 2 inhabited district gate"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/micro-valoria-2-gate.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoria2Review.cs'
   workflow_dispatch:
 
 concurrency:
