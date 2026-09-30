@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: eldoria-tripo-runner-bootstrap
@@ -23,6 +24,7 @@ jobs:
         shell: powershell
         env:
           ELDORIA_REPO: ${{ github.repository }}
+          WORKFLOW_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
           $root = 'C:\eldoria-actions-tripo'
@@ -32,52 +34,24 @@ jobs:
 
           Write-Host "TRIPO_RUNNER_BOOTSTRAP=START"
 
-          # Reuse GitHub Desktop's authenticated credential without ever printing it.
-          $git = Get-Command git.exe -ErrorAction SilentlyContinue
-          if (-not $git) {
-            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
-            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
-              Sort-Object Name -Descending |
-              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
-              Where-Object { Test-Path $_ } | Select-Object -First 1
-            if (-not $candidate) { throw 'Git/GitHub Desktop credential path unavailable.' }
-            $git = Get-Item $candidate
-          }
-
-          $gitExe = if ($git -is [System.Management.Automation.CommandInfo] -and $git.Path) { $git.Path }
-                    elseif ($git.PSObject.Properties.Name -contains 'FullName') { $git.FullName }
-                    else { [string]$git }
-          if (-not (Test-Path $gitExe)) { throw "Resolved git executable not found: $gitExe" }
-          $proc = New-Object System.Diagnostics.Process
-          $proc.StartInfo.FileName = $gitExe
-          $proc.StartInfo.Arguments = 'credential fill'
-          $proc.StartInfo.UseShellExecute = $false
-          $proc.StartInfo.CreateNoWindow = $true
-          $proc.StartInfo.RedirectStandardInput = $true
-          $proc.StartInfo.RedirectStandardOutput = $true
-          $proc.StartInfo.RedirectStandardError = $true
-          [void]$proc.Start()
-          $proc.StandardInput.WriteLine('protocol=https')
-          $proc.StandardInput.WriteLine('host=github.com')
-          $proc.StandardInput.WriteLine('')
-          $proc.StandardInput.Close()
-          $credentialText = $proc.StandardOutput.ReadToEnd()
-          $credentialError = $proc.StandardError.ReadToEnd()
-          $proc.WaitForExit()
-          if ($proc.ExitCode -ne 0) { throw 'Git credential fill failed without exposing credential output.' }
-          $passwordLine = $credentialText -split "`r?`n" | Where-Object { $_ -like 'password=*' } | Select-Object -First 1
-          if (-not $passwordLine) { throw 'GitHub Desktop credential was not available to this runner user.' }
-          $githubToken = $passwordLine.Substring('password='.Length)
-          if ([string]::IsNullOrWhiteSpace($githubToken)) { throw 'GitHub credential returned an empty token.' }
-
+          # Prefer the workflow token. If GitHub permits self-hosted runner administration
+          # through Actions write for this repository, no owner interaction is required.
+          $registration = $null
           $headers = @{
-            Authorization = "Bearer $githubToken"
+            Authorization = "Bearer $env:WORKFLOW_TOKEN"
             Accept = 'application/vnd.github+json'
             'X-GitHub-Api-Version' = '2022-11-28'
             'User-Agent' = 'Eldoria-Tripo-Runner-Bootstrap'
           }
-          $registration = Invoke-RestMethod -Method Post -Headers $headers -Uri "https://api.github.com/repos/$env:ELDORIA_REPO/actions/runners/registration-token"
-          $githubToken = $null
+          try {
+            $registration = Invoke-RestMethod -Method Post -Headers $headers -Uri "https://api.github.com/repos/$env:ELDORIA_REPO/actions/runners/registration-token"
+            Write-Host 'RUNNER_REGISTRATION_AUTH=WORKFLOW_TOKEN'
+          } catch {
+            $status = $null
+            if ($_.Exception.Response) { $status = [int]$_.Exception.Response.StatusCode }
+            Write-Host "RUNNER_REGISTRATION_WORKFLOW_TOKEN_REJECTED=$status"
+            throw 'GitHub refused runner registration with the workflow token; repository administration authorization is required.'
+          }
           if (-not $registration.token) { throw 'GitHub did not return a runner registration token.' }
 
           if (-not (Test-Path $root)) {
