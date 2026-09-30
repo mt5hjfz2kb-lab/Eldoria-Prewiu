@@ -191,6 +191,13 @@ namespace Eldoria.Presentation
             Finish();
         }
 
+        public static void AddStoneArchitectureForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateStoneArchitecture();
+            Finish();
+        }
+
         static void IntegrateStoneArchitecture()
         {
             // 01 CornerWallL — close real civilian/work courts and articulate terrace corners without forming a defensive maze.
