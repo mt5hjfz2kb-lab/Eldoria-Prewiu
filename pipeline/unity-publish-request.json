@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Publish final native dynamic HUD implementation after screenshot-atlas removal; visual review required.",
-  "source_sha": "2adcd7a63e89486f6d41f92856cc1b71099ddfd2",
+  "reason": "Final HUD visual certification after restoring native reference icon helpers.",
+  "source_sha": "f1eaec6198db65e18944654e383747de859f9725",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
