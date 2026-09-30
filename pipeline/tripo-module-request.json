@@ -1,13 +1,13 @@
 {
   "enabled": true,
-  "request_id": "eldoria-player-city-progression-sheet-v1-gate",
-  "module_label": "Eldoria_PlayerCity_ProgressionSheet_v1",
+  "request_id": "terrain-terrace-kit-v1-isolated-gate",
+  "module_label": "TerrainTerraceKit_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Eldoria_PlayerCity_ProgressionSheet_v1.glb",
-    "exact_sha256": "206b7586933fa16e1367b9bdd68147f7525fe7741c25795437693b5688100d8a",
-    "name_regex": "^Eldoria_PlayerCity_ProgressionSheet_v1\\.glb$",
+    "exact_name": "TerrainTerraceKit_v1.glb",
+    "exact_sha256": "63d74d19455a92b0e134ada49bde41a3b050bdb8bfe19102eac632bf1d15264e",
+    "name_regex": "^TerrainTerraceKit_v1\\.glb$",
     "max_age_hours": 24,
     "exclude_sha256": []
   },
@@ -15,32 +15,25 @@
     "enabled": false
   },
   "optimization": {
-    "target_triangles": 149400,
-    "min_triangles": 148500,
-    "max_triangles": 150000
+    "target_triangles": 49800,
+    "min_triangles": 49500,
+    "max_triangles": 50000
   },
   "multipiece": {
     "enabled": true,
     "min_component_triangles": 100,
-    "expected_piece_count": 6,
+    "expected_piece_count": 7,
+    "cluster_axes": "xz",
     "salvage": {
       "enabled": false,
       "mode": "disconnected_residue_only",
       "piece_indices": []
-    },
-    "cluster_axes": "xz"
+    }
   },
-  "visual_acceptance": "Player City Progression Sheet v1 must resolve into exactly six coherent spatially separated city-stage pieces in stable top-to-bottom, left-to-right sheet order: early camp, timber settlement, fortified timber town, early stone city, mature stone castle-city, and advanced capital. PASS requires each extracted piece to read as one coherent standalone settlement at official review cameras, preserve its progression identity and major silhouette, retain usable materials/UV/normals/collider, and show no cross-stage fused geometry, remote floating fragments, catastrophic missing walls/buildings, or unusable side/rear geometry. Technical separation alone is insufficient.",
-  "notes": "ZERO-CREDIT REPAIR ATTEMPT after strict visual fail of run 36730306902. Root cause identified in the extractor: the generated city sheet is laid out on the ground plane X/Z in Unity, but spatial clustering assumed X/Y and therefore mixed vertical slices from multiple city stages. Re-run the exact same exported GLB with configurable cluster_axes=xz. No Tripo generation, no credit spend, no production promotion. PASS still requires six coherent standalone progression cities in multi-angle evidence.",
+  "visual_acceptance": "Strict individual-module review: seven approved-sheet terrain/terrace source shapes. Accept only coherent reusable rock+masonry supports, intact terrace tops and usable rock-to-street/building joins at official 19/12/9 and oblique/multi-angle captures. No fused remote fragments, chaotic masses, torn silhouettes or floating components. Modules must adapt visually to certified West Rebuilders Quarter without owning or moving gameplay topology. Technical clustering never implies visual PASS.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-player-city-xz-cluster-repair-1",
-  "visual_verdicts": {
-    "previous_run_id": 36730306902,
-    "previous_artifact_id": 11104198135,
-    "previous_visual": "FAIL",
-    "repair_hypothesis": "wrong clustering plane XY mixed height with sheet layout; retry exact GLB on XZ ground plane",
-    "production_promotion": "NONE_PENDING_REVIEW"
-  }
+  "run_nonce": "terrain-terrace-v1-isolated-1",
+  "notes": "Single owner-approved exact input hash 47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71; one 55-credit generation only; exact GLB exported by run 36734554068, 77291792 bytes. Blender/Unity zero-credit validation. Evaluate strict per-piece evidence before any integration. XZ clustering follows recently corrected sheet-plane contract; verify actual grouping against captures."
 }
