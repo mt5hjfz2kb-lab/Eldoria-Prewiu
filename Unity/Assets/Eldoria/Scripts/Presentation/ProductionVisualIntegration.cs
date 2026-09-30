@@ -629,6 +629,87 @@ namespace Eldoria.Presentation
             return go;
         }
 
+        public static void AddSlavicDistrictProofForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateSlavicDistrictProof();
+            Finish();
+        }
+
+        static void IntegrateSlavicDistrictProof()
+        {
+            // Civil-language proof only. Keep the dedicated Aserradero/Cuartel/Granero PBR visuals,
+            // the current Bastion, and every gameplay target/collider exactly as authored.
+            Suppress("Valoria · reused civil house",
+                "VPD · west rebuilders home","VPD · west rebuilders upper dwelling",
+                "VPD · upper dwelling","VPD · upper civil house fallback");
+
+            var houseA=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/house-a");
+            var houseB=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/house-b");
+            var road=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/cobble");
+            var rock=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/rock");
+            var tree=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/tree");
+            if(houseA==null||houseB==null||road==null)
+                throw new InvalidOperationException("Slavic District proof resources were not staged/imported.");
+
+            // Replace only the visibly provisional residential language with two authored variants
+            // from one family. Placement follows the already-reserved residential footprints.
+            var homes=new[]{
+                new Vector4(-12.00f,-3.25f,168f,0f),
+                new Vector4(-15.25f,-3.05f,192f,0f),
+                new Vector4(-13.25f, 2.45f,174f,0f),
+                new Vector4(-17.35f, 2.15f,198f,0f),
+                new Vector4(-15.80f, 5.55f,166f,1f),
+                new Vector4(-18.05f, 6.05f,194f,1f)
+            };
+            for(int i=0;i<homes.Length;i++)
+            {
+                var h=homes[i];
+                float y=h.w>.5f?(i==5?1.18f:1.28f):.38f;
+                var source=i%2==0?houseA:houseB;
+                SlavicProofPiece("Valoria · SlavicProof · civil house "+i,source,
+                    new Vector3(h.x,y,h.y),i>=4?2.70f:2.55f,i>=4?3.25f:3.05f,h.z);
+            }
+
+            // Upper east dwelling belongs to the same language instead of the procedural House().
+            SlavicProofPiece("Valoria · SlavicProof · upper east dwelling",houseB,
+                new Vector3(5.15f,2.89f,7.15f),2.70f,3.10f,188f);
+
+            // Keep the certified road underneath; a small authored cobble skin improves material continuity.
+            for(int i=0;i<6;i++)
+                SlavicProofPiece("Valoria · SlavicProof · cobble "+i,road,
+                    new Vector3((i%2==0?-.10f:.12f),.425f,-6.0f+i*1.05f),
+                    2.75f,.16f,i%2==0?0f:180f);
+
+            // Natural edge dressing is sparse and grouped, not citywide clutter.
+            if(rock!=null)
+            {
+                SlavicProofPiece("Valoria · SlavicProof · rock west",rock,
+                    new Vector3(-9.4f,.10f,-5.9f),2.35f,1.10f,38f);
+                SlavicProofPiece("Valoria · SlavicProof · rock east",rock,
+                    new Vector3(9.4f,.10f,-6.1f),2.25f,1.05f,218f);
+            }
+            if(tree!=null)
+            {
+                foreach(var spec in new[]{
+                    new Vector4(-10.1f,-1.1f,12f,1.0f),new Vector4(-10.7f,3.2f,-18f,.92f),
+                    new Vector4(10.1f,-1.4f,-18f,.96f),new Vector4(10.8f,3.4f,17f,.90f)})
+                    SlavicProofPiece("Valoria · SlavicProof · edge tree",tree,
+                        new Vector3(spec.x,.15f,spec.y),1.55f*spec.w,3.35f*spec.w,spec.z);
+            }
+        }
+
+        static GameObject SlavicProofPiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw)
+        {
+            if(source==null)return null;
+            var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,height,Quaternion.Euler(0f,yaw,0f));
+            if(go==null)return null;
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var hotspot in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(hotspot);
+            return go;
+        }
+
         public static void AddProductionCellForGate(PlayerState state)
         {
             if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
