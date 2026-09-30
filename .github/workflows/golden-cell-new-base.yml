@@ -56,6 +56,48 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
 
+      - name: Stage Golden Cell CC0 PBR materials
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenCellExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
+          $assets=@(
+            @{ id='castle_wall_slates'; prefix='stone' },
+            @{ id='wood_planks'; prefix='wood' },
+            @{ id='roof_slates_03'; prefix='roof' },
+            @{ id='cobblestone_floor_001'; prefix='ground' },
+            @{ id='mossy_rock'; prefix='mossrock' },
+            @{ id='rusty_metal_sheet'; prefix='metal' },
+            @{ id='medieval_wall_01'; prefix='plaster' }
+          )
+          foreach($asset in $assets){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            $patterns=@(
+              @{ key='diff'; rx='_diff_1k\.(jpg|png)(\?|$)' },
+              @{ key='normal'; rx='_nor_gl_1k\.(jpg|png)(\?|$)' },
+              @{ key='ao'; rx='_ao_1k\.(jpg|png)(\?|$)' }
+            )
+            foreach($map in $patterns){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){ if($map.key -eq 'ao'){ continue }; throw "Missing $($map.key) map for $($asset.id)" }
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){ throw "Downloaded map too small: $out" }
+            }
+          }
+          @'
+          Eldoria Golden Cell experimental PBR set.
+          Source: Poly Haven.
+          License: CC0.
+          Assets: castle_wall_slates, wood_planks, roof_slates_03, cobblestone_floor_001, mossy_rock, rusty_metal_sheet, medieval_wall_01.
+          Experimental branch only; not promoted to production.
+          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
+
       - name: Capture Golden Cell
         shell: powershell
         run: |
@@ -63,7 +105,7 @@ jobs:
           $log="$env:RUNNER_TEMP\Eldoria-GoldenCell.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $phase="${{ github.event.inputs.phase }}"
-          if([string]::IsNullOrWhiteSpace($phase)){ $phase='blockout' }
+          if([string]::IsNullOrWhiteSpace($phase)){ $phase='final' }
           $method=if($phase -eq 'final'){'Eldoria.EditorTools.GoldenCellNewBaseGate.CaptureFinal'}else{'Eldoria.EditorTools.GoldenCellNewBaseGate.CaptureBlockout'}
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod',$method,'-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
