@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using GLTFast;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor;
@@ -58,7 +60,7 @@ namespace Eldoria.EditorTools
             EditorApplication.Exit(0);
         }
 
-        public static void CaptureFinal()
+        public static async void CaptureFinal()
         {
             UnityEditor.ShaderUtil.allowAsyncCompilation=false;
             PrepareGoldenCellTextures();
@@ -77,7 +79,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-9.png",9f,1280,720);
             Save(camera,Folder+"/before-mobile.png",12f,390,844);
 
-            GoldenCellFinished.Build();
+            await GoldenCellFinished.BuildAsync();
 
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Golden Cell finished art altered gameplay collider/hotspot signature.");
@@ -267,7 +269,7 @@ namespace Eldoria.EditorTools
             // Replace only the cell's visual read. Gameplay/colliders remain untouched.
             BuildTerraceAndPlaza();
             BuildProcessionalAccess();
-            BuildGateWings();
+            await BuildGateWingsAsync();
             BuildRockArchitectureTransition();
             BuildResidence();
             BuildWorkshop();
@@ -401,53 +403,93 @@ namespace Eldoria.EditorTools
             }
         }
 
-        static void BuildGateWings()
+        static async Task BuildGateWingsAsync()
         {
-            GameObject hero=null;
-            const string heroFolder="Assets/Resources/Valoria/GoldenCellHero";
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-
-            // Prefer the editor importer directly: staged glTF assets are not guaranteed to appear in Resources.LoadAll.
-            foreach(var guid in AssetDatabase.FindAssets("t:GameObject",new[]{heroFolder}))
-            {
-                var path=AssetDatabase.GUIDToAssetPath(guid);
-                var candidate=AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if(candidate==null)continue;
-                hero=ValoriaKit.BenchmarkPieceModulated(
-                    "GC · CC0 hero fort access",candidate,new Vector3(0f,2.42f,6.35f),
-                    13.2f,8.2f,Quaternion.Euler(0,180f,0),new Color(.86f,.82f,.74f,1f));
-                if(hero!=null)break;
-            }
-
-            if(hero!=null)
-            {
-                hero.transform.SetParent(Root,true);
-                foreach(var col in hero.GetComponentsInChildren<Collider>(true))col.enabled=false;
-                foreach(var hotspot in hero.GetComponentsInChildren<WorldHotspot>(true))
-                    UnityEngine.Object.DestroyImmediate(hotspot);
-
-                // Replace only the legacy Bastion render shell; authoritative gameplay stays untouched.
-                foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-                {
-                    if(r.transform.IsChildOf(hero.transform))continue;
-                    bool bastion=false;
-                    for(var t=r.transform;t!=null;t=t.parent)
-                    {
-                        if(t.name.StartsWith("Bastion ·",StringComparison.Ordinal)||
-                           t.name.StartsWith("Valoria · Bastion hero",StringComparison.Ordinal))
-                        { bastion=true;break; }
-                    }
-                    if(bastion)r.enabled=false;
-                }
-            }
-            else
+            bool heroLoaded=await TryLoadHeroFortAsync();
+            if(!heroLoaded)
             {
                 GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
                 GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
                 BuildArch("GC · civic arch",new Vector3(0f,3.15f,4.12f),2.55f,2.55f,.52f,Stone);
             }
-
             BeveledBlock("GC · gate threshold",new Vector3(0f,2.63f,4.30f),new Vector3(5.0f,.14f,1.20f),Cobble,.04f);
+        }
+
+        static async Task<bool> TryLoadHeroFortAsync()
+        {
+            string folder=Path.Combine(Application.dataPath,"Resources","Valoria","GoldenCellHero");
+            if(!Directory.Exists(folder))return false;
+            var files=Directory.GetFiles(folder,"*.gltf",SearchOption.TopDirectoryOnly);
+            if(files.Length==0)return false;
+
+            string path=files[0];
+            var holder=new GameObject("GC · CC0 hero fort access · glTFast");
+            holder.transform.SetParent(Root,true);
+            holder.transform.rotation=Quaternion.Euler(0f,180f,0f);
+
+            var gltf=new GltfImport();
+            var settings=new ImportSettings
+            {
+                GenerateMipMaps=true,
+                AnisotropicFilterLevel=3,
+                NodeNameMethod=NameImportMethod.OriginalUnique
+            };
+            bool loaded=await gltf.Load(new Uri(path).AbsoluteUri,settings);
+            if(!loaded)
+            {
+                UnityEngine.Object.DestroyImmediate(holder);
+                return false;
+            }
+            bool instantiated=await gltf.InstantiateMainSceneAsync(holder.transform);
+            if(!instantiated)
+            {
+                UnityEngine.Object.DestroyImmediate(holder);
+                return false;
+            }
+
+            foreach(var col in holder.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            foreach(var hotspot in holder.GetComponentsInChildren<WorldHotspot>(true))
+                UnityEngine.Object.DestroyImmediate(hotspot);
+
+            var renderers=holder.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0)
+            {
+                UnityEngine.Object.DestroyImmediate(holder);
+                return false;
+            }
+
+            Bounds b=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
+            float sx=10.6f/Mathf.Max(.01f,b.size.x);
+            float sy=5.6f/Mathf.Max(.01f,b.size.y);
+            float sz=5.9f/Mathf.Max(.01f,b.size.z);
+            float scale=Mathf.Min(sx,sy,sz);
+            holder.transform.localScale*=scale;
+
+            renderers=holder.GetComponentsInChildren<Renderer>(true);
+            b=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
+            var desiredCenter=new Vector3(0f,b.center.y,4.55f);
+            holder.transform.position+=new Vector3(desiredCenter.x-b.center.x,2.50f-b.min.y,desiredCenter.z-b.center.z);
+
+            foreach(var r in renderers)
+            {
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    if(mats[i]==null)continue;
+                    var copy=new Material(mats[i]){name="GC hero · "+mats[i].name};
+                    if(copy.HasProperty("_BaseColor"))
+                    {
+                        var bc=copy.GetColor("_BaseColor");
+                        copy.SetColor("_BaseColor",new Color(bc.r*.92f,bc.g*.90f,bc.b*.84f,bc.a));
+                    }
+                    if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",Mathf.Min(.14f,copy.GetFloat("_Smoothness")));
+                    mats[i]=copy;
+                }
+                r.sharedMaterials=mats;
+            }
+            return true;
         }
 
         static void GateWing(string name,Vector3 p,bool mirror)
