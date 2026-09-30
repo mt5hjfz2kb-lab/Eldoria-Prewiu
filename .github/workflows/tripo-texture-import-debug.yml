@@ -1,11 +1,6 @@
-name: Tripo V4 texture import debug
+name: "[LEGACY] Tripo V4 texture import debug"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-texture-import-debug.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTextureImportDebug.cs'
   workflow_dispatch:
 
 concurrency:
