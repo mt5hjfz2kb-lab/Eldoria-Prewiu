@@ -1,10 +1,6 @@
-name: Valoria interface source audit
+name: "[LEGACY] Valoria interface source audit"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/valoria-interface-source-audit.yml'
   workflow_dispatch:
 
 jobs:
