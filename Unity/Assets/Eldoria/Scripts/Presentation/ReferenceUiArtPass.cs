@@ -74,6 +74,7 @@ namespace Eldoria.Presentation
 
             Frame(GameObject.Find("Reference topbar"), false, 2f);
             Frame(GameObject.Find("Quest panel"), true, 2f);
+            Frame(GameObject.Find("World objective dock"), true, 2f);
             Frame(GameObject.Find("Bottom navigation"), false, 2f);
             Frame(GameObject.Find("Building interaction panel"), true, 3f);
 
