@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-terrain-terrace-kit-v1-selected-promotion",
   "source": {
     "exact_name": "TerrainTerraceKit_v1.glb",
@@ -18,22 +18,6 @@
       "expected_bytes": 13767544,
       "semantic_name": "SteppedRockTerrace",
       "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
-      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
-    },
-    {
-      "piece_file": "piece_02_7671tris.glb",
-      "expected_sha256": "2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38",
-      "expected_bytes": 13797856,
-      "semantic_name": "CornerRetainingTerrace",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/CornerRetainingTerrace.glb",
-      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
-    },
-    {
-      "piece_file": "piece_03_4419tris.glb",
-      "expected_sha256": "1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96",
-      "expected_bytes": 13698148,
-      "semantic_name": "RockStreetTransition",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/RockStreetTransition.glb",
       "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     },
     {
@@ -57,9 +41,35 @@
     {
       "piece_file": "piece_06_5005tris.glb",
       "reason": "thin connector candidate has unstable incomplete profile"
+    },
+    {
+      "piece_file": "piece_02_7671tris.glb",
+      "reason": "strict multi-angle review: remote disconnected fragment remains"
+    },
+    {
+      "piece_file": "piece_03_4419tris.glb",
+      "reason": "strict multi-angle review: torn projecting deck lip remains"
     }
   ],
   "no_gameplay_changes": true,
   "promotion_commit_message": "art: promote strict-pass Terrain Terrace Kit v1 modules",
-  "run_nonce": "terrain-terrace-2026-09-30-salvage-01-02-03-07"
+  "run_nonce": "closed-2026-09-30-strict-01-07",
+  "promotion_result": {
+    "run_id": 36741557542,
+    "conclusion": "SUCCESS",
+    "promoted_by_run": [
+      "SteppedRockTerrace",
+      "CornerRetainingTerrace",
+      "RockStreetTransition",
+      "BroadRockPlatform"
+    ],
+    "subsequently_removed": [
+      "CornerRetainingTerrace",
+      "RockStreetTransition"
+    ],
+    "retained": [
+      "SteppedRockTerrace",
+      "BroadRockPlatform"
+    ]
+  }
 }
