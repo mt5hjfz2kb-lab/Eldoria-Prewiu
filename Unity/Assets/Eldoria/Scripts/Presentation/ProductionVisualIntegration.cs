@@ -40,7 +40,6 @@ namespace Eldoria.Presentation
             UnifyLandscape(false);
             BlendStrategicGround();
             Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
-            var art=ValoriaExternalAssetLibrary.Load();
             // Replace the primitive foliage read with two mapped, authored tree variants.
             Suppress("Frontier · forest pine", "Frontier · tall evergreen", "Frontier · ridge pine",
                 "Frontier · undergrowth", "Frontier · forest moss", "Frontier · west ridge", "Frontier · east ridge",
@@ -58,18 +57,6 @@ namespace Eldoria.Presentation
                 Imported("4X · forest canopy", "Tree01"+(i%2==0?"A":"B"),p,
                     1.6f+(i%3)*.24f,2.35f+(i%4)*.23f,i*47+c*29,new Color(.54f,.61f,.48f),true);
             }
-            // Existing low vegetation fills only the forest footprint; it stays below strategic labels/routes.
-            if(art!=null&&art.SlavicBush!=null)
-            for(int cluster=0;cluster<clusters.Length;cluster++)
-            for(int i=0;i<4;i++)
-            {
-                float a=i*1.5708f+cluster*.53f+.35f;
-                float radius=2.05f+(i%2)*.65f;
-                var p=clusters[cluster]+new Vector3(Mathf.Cos(a)*radius,.035f,Mathf.Sin(a)*radius);
-                Piece("4X · forest understory",art.SlavicBush,p,.72f+(i%2)*.12f,.48f+(i%3)*.08f,i*53+cluster*19,
-                    new Color(.43f,.49f,.34f));
-            }
-
             // Mountain barriers live behind the nodes; low rock skirts merge into continuous ground.
             foreach(var p in new[]{new Vector3(-17,-.25f,12),new Vector3(14,-.25f,13),new Vector3(-3,-.35f,21)})
             {
@@ -85,6 +72,7 @@ namespace Eldoria.Presentation
                 route.transform.SetParent(root,true);
                 SkinRoute(route);
             }
+            var art=ValoriaExternalAssetLibrary.Load();
             // Wood identity: stocked timber frontage distinct from background forest.
             Piece("4X · wood stock",art!=null?art.Firewood:null,new Vector3(-5.3f,.12f,-.15f),1.7f,.85f,-16,new Color(.62f,.55f,.43f));
             // Existing quarry kit remains independent from the authoritative target.
