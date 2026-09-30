@@ -499,7 +499,8 @@ namespace Eldoria.Presentation
             // Pull the current flat owner-review rig toward a brighter cinematic dusk without returning
             // to the previously rejected dark neutral-overcast candidate.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight=new Color(.68f,.70f,.70f);
+            // Keep the hero frame cinematic, but stay above the certified gameplay readability floor.
+            RenderSettings.ambientLight=new Color(.80f,.81f,.80f);
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.61f,.64f,.66f);
