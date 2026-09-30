@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-stone-architecture-kit-v1-selected-promotion",
   "source": {
     "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
@@ -58,9 +58,21 @@
   "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
   "credit_spend_total": 55,
-  "run_nonce": "2026-09-30-promote-spatial-repaired-01-05",
+  "run_nonce": "closed-2026-09-30-promoted-01-05",
   "certified_artifact": {
     "run_id": 36715424694,
     "id": 11096157750
+  },
+  "closeout": {
+    "promotion_run_id": 36717246333,
+    "promoted": [
+      "CornerWallL",
+      "HighStraightWall"
+    ],
+    "previously_promoted": [
+      "RockToWallTransition"
+    ],
+    "rejected_piece_06_run_id": 36717083816,
+    "rejected_piece_06_artifact_id": 11096319220
   }
 }
