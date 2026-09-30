@@ -258,8 +258,7 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v3 environment proof").transform;
-            PrepareHybridBastionVisuals();
+            Root=new GameObject("GOLDEN CELL · finished v4 valley proof").transform;
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -409,53 +408,75 @@ namespace Eldoria.EditorTools
 
         static void BuildEnvironmentEnvelope()
         {
-            // Continuous valley floor: remove the grey test-board read at all official cameras.
-            BeveledBlock("GC ENV · valley floor",new Vector3(0f,-.18f,8.0f),
-                new Vector3(64f,.24f,52f),Dirt,.02f);
-
-            // Broad green shoulders around the inhabited shelf.
-            var grass=Procedural("moss",new Color(.24f,.31f,.20f),.018f);
-            BeveledBlock("GC ENV · west green shoulder",new Vector3(-17.5f,.04f,7.0f),
-                new Vector3(16f,.18f,31f),grass,.01f);
-            BeveledBlock("GC ENV · east green shoulder",new Vector3(17.5f,.04f,7.0f),
-                new Vector3(16f,.18f,31f),grass,.01f);
-
-            // Rear ridge hides the exposed board horizon and gives the Bastion a valley context.
-            for(int i=0;i<7;i++)
-            {
-                float x=-22f+i*7.2f;
-                float z=18.5f+(i%2)*2.3f;
-                var rock=IrregularRock("GC ENV · rear ridge "+i,new Vector3(x,2.0f+(i%3)*.45f,z),
-                    new Vector3(7.0f+(i%2)*1.4f,5.2f+(i%3)*.8f,6.2f));
-                rock.transform.rotation=Quaternion.Euler(-5f,i*19f,3f*(i%2==0?1:-1));
-            }
+            // Continuous natural floor below the whole visible frame.
+            var grass=Procedural("moss",new Color(.245f,.31f,.205f),.018f);
+            BeveledBlock("GC ENV · continuous valley floor",new Vector3(0f,-.16f,8.0f),
+                new Vector3(68f,.22f,54f),grass,.01f);
 
             var art=ValoriaExternalAssetLibrary.Load();
             var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
+            var boulder=art!=null?(art.SlavicBoulder!=null?art.SlavicBoulder:art.SlavicFlatRock):null;
+
+            // Distant forest is the main horizon, not giant procedural geometry.
             if(tree!=null)
             {
                 var specs=new[]{
-                    new Vector4(-20f,13f,0f,1.35f),new Vector4(-16f,17f,13f,1.10f),
-                    new Vector4(-12f,14f,-18f,1.25f),new Vector4(-8f,19f,9f,.98f),
-                    new Vector4(-4f,16f,-7f,1.15f),new Vector4(4f,17f,8f,1.12f),
-                    new Vector4(8f,20f,-10f,1.02f),new Vector4(12f,15f,17f,1.22f),
-                    new Vector4(16f,18f,-15f,1.10f),new Vector4(20f,13f,12f,1.30f),
-                    new Vector4(-13f,7f,7f,.92f),new Vector4(13f,7f,-9f,.92f)
+                    new Vector4(-24f,18f,-11f,1.30f),new Vector4(-21f,21f,14f,1.16f),
+                    new Vector4(-18f,17f,-22f,1.38f),new Vector4(-15f,20f,7f,1.12f),
+                    new Vector4(-12f,18f,18f,1.28f),new Vector4(-9f,22f,-14f,1.05f),
+                    new Vector4(-6f,19f,5f,1.18f),new Vector4(-3f,22f,-5f,1.02f),
+                    new Vector4(3f,22f,8f,1.05f),new Vector4(6f,19f,-13f,1.18f),
+                    new Vector4(9f,22f,14f,1.04f),new Vector4(12f,18f,-17f,1.28f),
+                    new Vector4(15f,20f,9f,1.12f),new Vector4(18f,17f,-8f,1.36f),
+                    new Vector4(21f,21f,18f,1.15f),new Vector4(24f,18f,-15f,1.30f),
+                    new Vector4(-15f,10f,3f,.94f),new Vector4(15f,10f,-5f,.94f)
                 };
                 foreach(var s in specs)
                 {
-                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · pine",tree,
-                        new Vector3(s.x,.10f,s.y),1.55f*s.w,4.1f*s.w,
-                        Quaternion.Euler(0f,s.z,0f),new Color(.44f,.55f,.40f,1f));
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · forest pine",tree,
+                        new Vector3(s.x,.08f,s.y),1.50f*s.w,4.35f*s.w,
+                        Quaternion.Euler(0f,s.z,0f),new Color(.40f,.51f,.37f,1f));
                     if(go==null)continue;
                     go.transform.SetParent(Root,true);
                     foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
                 }
             }
 
-            // Small foreground rock groups integrate the civic paving into the landscape.
-            RockCluster("GC ENV · foreground west rocks",new Vector3(-10.8f,.35f,-4.2f),false);
-            RockCluster("GC ENV · foreground east rocks",new Vector3(10.8f,.35f,-4.0f),true);
+            // Real authored boulders create a low, irregular ridge that stays subordinate to the Bastion.
+            if(boulder!=null)
+            {
+                var rocks=new[]{
+                    new Vector4(-21f,20.5f,-8f,2.4f),new Vector4(-15f,21.8f,18f,2.0f),
+                    new Vector4(-9f,20.4f,-22f,2.3f),new Vector4(9f,20.6f,17f,2.2f),
+                    new Vector4(15f,21.7f,-12f,2.0f),new Vector4(21f,20.3f,21f,2.4f)
+                };
+                foreach(var s in rocks)
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · distant boulder",boulder,
+                        new Vector3(s.x,.10f,s.y),3.8f*s.w,2.2f*s.w,
+                        Quaternion.Euler(0f,s.z,0f),new Color(.54f,.55f,.51f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(Root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                }
+            }
+
+            // Near seams: low real rocks only.
+            var nearRock=art!=null?(art.SlavicFlatRock!=null?art.SlavicFlatRock:art.SlavicBoulder):null;
+            if(nearRock!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-11.2f,-4.0f,22f,1.0f),new Vector4(-10.5f,4.6f,-17f,.85f),
+                    new Vector4(11.2f,-3.8f,-20f,1.0f),new Vector4(10.4f,4.8f,14f,.88f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · seam rock",nearRock,
+                        new Vector3(s.x,.08f,s.y),2.7f*s.w,.85f*s.w,
+                        Quaternion.Euler(0f,s.z,0f),new Color(.62f,.61f,.56f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(Root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                }
+            }
         }
 
         static void CleanPeripheralPlaceholders()
