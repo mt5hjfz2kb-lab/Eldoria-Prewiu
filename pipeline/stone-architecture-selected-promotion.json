@@ -58,7 +58,7 @@
   "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
   "credit_spend_total": 55,
-  "run_nonce": "closed-2026-09-30-promoted-01-05",
+  "run_nonce": "closed-2026-09-30-spatial-repaired-01-05",
   "certified_artifact": {
     "run_id": 36715424694,
     "id": 11096157750
@@ -74,5 +74,19 @@
     ],
     "rejected_piece_06_run_id": 36717083816,
     "rejected_piece_06_artifact_id": 11096319220
+  },
+  "promotion_result": {
+    "run_id": 36717246333,
+    "conclusion": "SUCCESS",
+    "promoted": [
+      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb"
+    ],
+    "already_promoted": [
+      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+    ],
+    "final_piece06_verdict": "REJECT_AFTER_SECOND_AXIS_CLIP",
+    "final_piece06_run_id": 36717083816,
+    "final_piece06_artifact_id": 11096319220
   }
 }
