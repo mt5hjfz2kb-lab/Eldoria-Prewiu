@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-stone-architecture-kit-v1-gate",
   "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -25,7 +25,7 @@
     "expected_piece_count": 8
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "Stone Architecture visual gate reviewed from official per-piece front/oblique/rear/side captures. Promote only visually accepted reusable pieces; no further Tripo spend. Accepted: piece 01 corner-wall variant, piece 02 rock-to-wall transition, piece 05 high straight wall, piece 06 low straight wall. Rejected: pieces 03/04/07/08 due detached/floating or incomplete geometry.",
+  "notes": "FINAL GATE CLOSED. Runs 36704168246 and 36705459251 passed technically, but production visual acceptance FAILED due incorrect grouping and residual/floating/spike geometry. Do not rerun automatically. Existing GLB SHA da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422 may be used only in a separate cleanup/salvage task. No promotion.",
   "promotion": {
     "enabled": true,
     "mode": "multipiece_selected",
@@ -54,7 +54,7 @@
       }
     ]
   },
-  "run_nonce": "2026-09-30-stone-architecture-kit-v1-promote-visual-pass-only",
+  "run_nonce": "2026-09-30-stone-architecture-kit-v1-closed",
   "visual_verdicts": {
     "reviewed_artifact_id": 11091584269,
     "reviewed_run_id": 36705459251,
