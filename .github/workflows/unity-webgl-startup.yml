@@ -11,7 +11,7 @@ permissions:
 jobs:
   startup:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - run: npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
@@ -22,8 +22,18 @@ jobs:
           const { chromium } = require(process.cwd() + '/node_modules/playwright');
           const fs = require('fs');
           (async () => {
+            const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
+            let compressed=false;
+            for(let attempt=0;attempt<20;attempt++){
+              const response=await fetch(target+'?compression-check='+Date.now());
+              const html=await response.text();
+              if(html.includes('.unityweb')){compressed=true;break;}
+              console.log('Waiting for compressed publication',attempt+1);
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            if(!compressed) throw new Error('Compressed publication was not observed');
             const browser = await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
-            const page = await browser.newPage({viewport:{width:1280,height:720}});
+            const page = await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'});
             const logs=[], requests=[];
             page.on('console', m=>logs.push({type:m.type(),text:m.text()}));
             page.on('pageerror', e=>logs.push({type:'pageerror',text:String(e)}));
@@ -43,7 +53,7 @@ jobs:
               await page.goto('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/?startup-probe=' + Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
               await page.waitForTimeout(15000);
-              await page.screenshot({path:'webgl-startup-evidence/desktop.png'});
+              await page.screenshot({path:'webgl-startup-evidence/mobile-landscape.png'});
               await page.setViewportSize({width:390,height:844});
               await page.waitForTimeout(3000);
               await page.screenshot({path:'webgl-startup-evidence/portrait.png'});
@@ -52,7 +62,7 @@ jobs:
               failure=String(e);
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
             }
-            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify({failure,logs,requests,scope:'Published engine startup + manual screenshot review; Chromium software WebGL, not physical iPhone certification'},null,2));
+            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify({failure,logs,requests,scope:'Compressed published engine startup with mobile UA/layout + manual screenshot review; Chromium software WebGL, not physical iPhone certification'},null,2));
             await browser.close();
             if(failure) throw new Error(failure);
           })().catch(e=>{console.error(e);process.exit(1);});
