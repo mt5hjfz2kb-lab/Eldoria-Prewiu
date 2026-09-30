@@ -27,7 +27,7 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-repo-exact-ready",
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-repo-exact-manifest-fixed",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
