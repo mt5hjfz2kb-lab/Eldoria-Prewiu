@@ -26,13 +26,14 @@ Final certification of the owner-approved Stone Architecture multipiece generati
 - UNITY IMPORT / COLLIDER / UV / NORMALS: PASS
 - MULTIPIECE COUNT: PASS (8 groups)
 - VISUAL / MODULAR PRODUCTION ACCEPTANCE: **FAIL**
-- PRODUCTION PROMOTION: **NO**
+- FULL-KIT PRODUCTION PROMOTION: **NO**
+- SELECTIVE PROMOTION: **YES — piece 02 only (`RockToWallTransition`)**
 
 The visual failure is not caused by camera framing. The dedicated per-piece views demonstrate incorrect grouping and residual geometry. Therefore the kit must not be promoted as eight production-ready Valoria module families.
 
 ## Piece-by-piece visual review
 1. **Piece 01 — corner wall:** strong architectural result, but its own front evidence shows a detached residual fragment. Cleanup candidate, not certified as-is.
-2. **Piece 02 — rock-to-wall transition:** **individual visual PASS**. Front/side/rear/oblique evidence is coherent and free of detached residual geometry. It is the only piece accepted visually as-is; it is still not promoted in this closed kit gate.
+2. **Piece 02 — rock-to-wall transition:** **individual visual PASS**. Front/side/rear/oblique evidence is coherent and free of detached residual geometry. It is the only piece accepted visually as-is and was promoted separately to `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`.
 3. **Piece 03:** visually contains two spatially separate architectural masses in one exported group. Fails one-family/one-module separability.
 4. **Piece 04:** contains disconnected masonry masses plus curved/thin residual geometry. Fails clean reusable module requirement.
 5. **Piece 05 — high wall candidate:** main wall is strong, but a detached vertical fragment remains. Candidate for cleanup, not certified as-is.
@@ -43,8 +44,18 @@ The visual failure is not caused by camera framing. The dedicated per-piece view
 ## What this proves
 The single-sheet Tripo approach can generate useful visual source material and the automated spatial clustering can recover eight numerical groups, but **numerical group count is not equivalent to eight production modules**. The exact source remains valuable for a zero-credit cleanup/salvage pass using the already exported GLB; no second Tripo generation is justified by this gate alone. Piece 02 is individually clean, while pieces 01/05/06 are the strongest cleanup candidates.
 
+## Selective promotion result
+A dedicated strict-pass promotion was executed after the visual gate:
+- workflow run `36707553542` — SUCCESS;
+- source artifact: run `36705459251`, artifact `11091584269`;
+- promoted file: `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`;
+- promoted piece identity: `piece_02_7270tris.glb`, 12,414,676 bytes, SHA-256 `116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0`;
+- the workflow verified exact byte size + SHA before copying.
+
+The promotion was moved to GitHub-hosted Ubuntu and consumes no Windows runner time. It downloads the certified gate artifact instead of regenerating or re-splitting on the owner PC.
+
 ## Protected surfaces
-No production promotion was performed. Valoria.unity, VisualWorld and gameplay remain untouched.
+Only the single certified Resource GLB above was added. `Valoria.unity`, `VisualWorld` and gameplay remain untouched.
 
 ## Closure
-This Stone Architecture v1 generation/certification block is closed. Any future work must start as a separate cleanup/salvage task from the existing GLB or as a newly authorized generation; it must not be described as already production-certified.
+This Stone Architecture v1 generation/certification block is closed. The 8-family kit itself is not production-certified; only `RockToWallTransition` is individually certified/promoted. Any future work on pieces 01/05/06 is a separate zero-credit cleanup/salvage task, while 03/04/07/08 require reconstruction or a newly authorized generation.
