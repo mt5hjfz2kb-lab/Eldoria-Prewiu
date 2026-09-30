@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Publish the exact owner-reference HUD crop integration after functional UI certification.",
-  "source_sha": "ab8a390379911fe849dca6c94851ad664a9b4e76",
+  "reason": "Publish exact owner-reference HUD after deterministic indexed-atlas decoder repair.",
+  "source_sha": "0eb9538ffc830cff597f4a1c7242b63b8c22bd86",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
