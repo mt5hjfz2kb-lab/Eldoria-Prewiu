@@ -3,11 +3,6 @@ name: "[EXPERIMENT] Eldoria radical visual proof"
 on:
   push:
     branches: ['visual-proof/eldoria-radical-v1']
-  pull_request:
-    branches: [main]
-    paths:
-      - 'Unity/Assets/Eldoria/ArtTests/RadicalVisualProof/**'
-      - '.github/workflows/eldoria-radical-visual-proof.yml'
   workflow_dispatch:
 
 permissions:
