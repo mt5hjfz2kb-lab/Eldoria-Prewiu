@@ -216,16 +216,17 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v6 — keep authored architecture, use real PBR ground, restrained URP finish,
-            // tri-light ambient hierarchy and selective treatment only for procedural Bastion backing masses.
+            // Surface Cell v6 — the material-only passes proved that the dominant limitation is the
+            // hero silhouette itself. Keep the certified Bastion target/route/stair underneath, but
+            // replace ONLY its presentation shell with the richer authored Mega/Masonry families.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.78f,.82f,.85f);
-            RenderSettings.ambientEquatorColor=new Color(.52f,.51f,.47f);
-            RenderSettings.ambientGroundColor=new Color(.27f,.245f,.21f);
-            RenderSettings.ambientIntensity=.93f;
+            RenderSettings.ambientSkyColor=new Color(.76f,.81f,.85f);
+            RenderSettings.ambientEquatorColor=new Color(.50f,.49f,.45f);
+            RenderSettings.ambientGroundColor=new Color(.255f,.235f,.205f);
+            RenderSettings.ambientIntensity=.90f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.56f,.61f,.64f);
+            RenderSettings.fogColor=new Color(.55f,.60f,.63f);
             RenderSettings.fogStartDistance=48f;
             RenderSettings.fogEndDistance=122f;
 
@@ -233,19 +234,19 @@ namespace Eldoria.Presentation
             if(camera!=null)
             {
                 camera.clearFlags=CameraClearFlags.SolidColor;
-                camera.backgroundColor=new Color(.50f,.59f,.64f);
+                camera.backgroundColor=new Color(.49f,.58f,.63f);
                 camera.allowHDR=true;
-                // Post-processing is enabled by the gate camera setup; avoid a hard runtime camera-component dependency here.
+                TrySetComponentProperty(camera.gameObject,"UniversalAdditionalCameraData","renderPostProcessing",true);
             }
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(light.name!="Valoria · amber dusk")continue;
-                light.color=new Color(1.0f,.88f,.74f);
-                light.intensity=1.28f;
-                light.shadowStrength=.70f;
+                light.color=new Color(1.0f,.87f,.72f);
+                light.intensity=1.30f;
+                light.shadowStrength=.76f;
                 light.shadows=LightShadows.Soft;
-                light.transform.rotation=Quaternion.Euler(48f,-34f,0f);
+                light.transform.rotation=Quaternion.Euler(47f,-34f,0f);
             }
 
             var fillGo=new GameObject("Valoria · SurfaceCell · cool sky fill");
@@ -253,59 +254,38 @@ namespace Eldoria.Presentation
             fillGo.transform.rotation=Quaternion.Euler(34f,150f,0f);
             var fill=fillGo.AddComponent<Light>();
             fill.type=LightType.Directional;
-            fill.color=new Color(.62f,.74f,1.0f);
-            fill.intensity=.16f;
+            fill.color=new Color(.61f,.72f,.93f);
+            fill.intensity=.12f;
             fill.shadows=LightShadows.None;
 
             InstallUrpFinishV5();
 
             var art=ValoriaExternalAssetLibrary.Load();
-            // Prefer the gate-staged CC0 Poly Haven maps when present; production still falls back to
-            // the already-promoted project PBR materials, so this proof never creates a runtime dependency.
             var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",
                 new Color(.92f,.90f,.86f),new Vector2(3.15f,3.15f),.070f,1.08f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
-                    new Color(.86f,.83f,.75f),new Vector2(3.35f,3.35f),.085f,1.0f);
+                    new Color(.84f,.81f,.73f),new Vector2(3.35f,3.35f),.080f,1.0f);
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
                 new Color(.88f,.82f,.72f),new Vector2(3.85f,3.85f),.025f,.92f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
-                    new Color(.69f,.59f,.45f),new Vector2(4.1f,4.1f),.035f,.88f);
-            var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",
-                new Color(.91f,.90f,.86f),new Vector2(2.45f,2.45f),.050f,1.08f)
-                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
-                    new Color(.76f,.75f,.71f),new Vector2(2.8f,2.8f),.060f,.95f);
+                    new Color(.66f,.56f,.43f),new Vector2(4.1f,4.1f),.030f,.88f);
+
+            // The old Hero Frame shell stays in the BEFORE capture. AFTER hides only those renderers.
+            // The certified invisible Bastion target lives outside these prefixes and remains untouched.
+            Suppress("Valoria · Bastion hero","Valoria · rescued hero flank");
+            BuildSurfaceCellTargetBastion(art);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
                 string n=renderer.gameObject.name;
                 string lower=n.ToLowerInvariant();
-
                 if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
 
-                // Dedicated buildings keep their authored PBR maps; only normalize response slightly.
+                // Preserve the authored PBR identity of the AP2 buildings.
                 if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
                 {
                     PolishImportedSurface(renderer,new Color(.99f,.98f,.96f));
-                    continue;
-                }
-
-                // Imported Mega/Masonry modules keep their authored textures. Procedural Bastion masses,
-                // however, receive one coherent PBR family so the hero building stops reading as grey blockout.
-                if(n.StartsWith("Valoria · Bastion hero"))
-                {
-                    bool authored=lower.Contains("mega")||lower.Contains("masonry")||lower.Contains("imported");
-                    if(!authored)
-                    {
-                        if(lower.Contains("roof")||lower.Contains("crown")||lower.Contains("cap"))
-                            renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                                new Color(.18f,.20f,.22f),"slate",new Vector2(4.6f,4.6f),.65f);
-                        else if(lower.Contains("door")||lower.Contains("gate leaf")||lower.Contains("timber"))
-                            renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                                new Color(.28f,.16f,.08f),"wood",new Vector2(4.2f,4.2f),.68f);
-                        else
-                            renderer.sharedMaterial=stone;
-                    }
                     continue;
                 }
 
@@ -315,100 +295,69 @@ namespace Eldoria.Presentation
                             lower.Contains("street slab")||lower.Contains("worn tread")||
                             lower.Contains("apron")||lower.Contains("court")||
                             lower.Contains("landing cheek")||lower.Contains("stair cheek");
-
                 if(earth)renderer.sharedMaterial=dirt;
                 else if(paving)renderer.sharedMaterial=cobble;
             }
 
-            // Terrain/terrace integration: use already-certified natural assets to break the flat-island read.
-            if(art!=null)
-            {
-                if(art.SlavicMudFlat!=null)
-                {
-                    foreach(var p in new[]{
-                        new Vector3(-8.6f,.10f,-5.8f),new Vector3(-8.9f,.12f,1.2f),
-                        new Vector3(8.6f,.10f,-5.8f),new Vector3(8.9f,.12f,1.2f)})
-                        Piece("Valoria · SurfaceCell · packed earth verge",art.SlavicMudFlat,p,3.15f,.38f,p.x*9f,
-                            new Color(.78f,.70f,.56f));
-                }
-                if(art.SlavicMoss!=null)
-                {
-                    foreach(var p in new[]{
-                        new Vector3(-10.2f,.18f,-2.4f),new Vector3(-9.4f,.18f,3.4f),
-                        new Vector3(10.2f,.18f,-2.4f),new Vector3(9.4f,.18f,3.4f)})
-                        Piece("Valoria · SurfaceCell · terrace moss seam",art.SlavicMoss,p,1.45f,.38f,p.x*13f,
-                            new Color(.72f,.82f,.66f));
-                }
-                if(art.SlavicBush!=null)
-                {
-                    foreach(var p in new[]{
-                        new Vector3(-9.7f,.28f,-6.1f),new Vector3(-10.0f,.28f,.4f),
-                        new Vector3(9.7f,.28f,-6.0f),new Vector3(10.0f,.28f,.6f)})
-                        Piece("Valoria · SurfaceCell · low vegetation cluster",art.SlavicBush,p,1.05f,1.0f,p.x*7f,
-                            new Color(.78f,.90f,.72f));
-                }
-                if(art.SlavicTree!=null)
-                {
-                    foreach(var p in new[]{
-                        new Vector3(-11.1f,.24f,-4.1f),new Vector3(-10.7f,.24f,2.6f),
-                        new Vector3(11.1f,.24f,-4.1f),new Vector3(10.7f,.24f,2.8f)})
-                        Piece("Valoria · SurfaceCell · valley tree cluster",art.SlavicTree,p,1.35f,2.8f,p.x*5f,
-                            new Color(.88f,.94f,.86f));
-                }
-            }
-
-            // Small authored rock seams at the cell edges: terrain integration only, no new buildings/clutter.
+            // One small geology seam on each side visually seats the new fortress in the same terrace.
             if(art!=null&&art.SlavicFlatRock!=null)
             {
-                foreach(var p in new[]{
-                    new Vector3(-11.4f,.02f,-7.2f),new Vector3(-11.7f,.16f,-1.5f),
-                    new Vector3(11.4f,.02f,-7.2f),new Vector3(11.7f,.16f,-1.3f)})
-                    Piece("Valoria · SurfaceCell · buried valley rock",art.SlavicFlatRock,p,2.45f,1.10f,p.x*17f,
-                        new Color(.84f,.84f,.79f));
+                TargetFramePiece("Valoria · TargetFrame · bastion rock west",art.SlavicFlatRock,
+                    new Vector3(-4.55f,2.75f,6.20f),2.50f,1.20f,36f,new Color(.78f,.77f,.72f));
+                TargetFramePiece("Valoria · TargetFrame · bastion rock east",art.SlavicFlatRock,
+                    new Vector3(4.55f,2.75f,6.35f),2.45f,1.18f,214f,new Color(.78f,.77f,.72f));
             }
 
-            // Surface Cell v6: skyline proof. Reuse only already-promoted fortress assets behind the
-            // existing Bastion, keeping the front gameplay silhouette/entrance untouched.
-            if(art!=null)
-            {
-                GameObject go;
-                if(art.MegaWallPassage!=null)
-                {
-                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear wall",art.MegaWallPassage,
-                        new Vector3(0f,2.70f,10.25f),7.25f,4.10f,Quaternion.Euler(0,180f,0),new Color(.90f,.87f,.80f,1f));
-                    if(go!=null)go.transform.SetParent(root,true);
-                }
-                if(art.MegaTower!=null)
-                {
-                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion crown tower",art.MegaTower,
-                        new Vector3(-.45f,2.72f,11.05f),3.20f,7.65f,Quaternion.Euler(0,4f,0),new Color(.92f,.89f,.82f,1f));
-                    if(go!=null)go.transform.SetParent(root,true);
-                }
-                if(art.MasonryTower!=null)
-                {
-                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear tower west",art.MasonryTower,
-                        new Vector3(-4.45f,2.70f,9.95f),2.70f,5.85f,Quaternion.Euler(0,8f,0),new Color(.88f,.86f,.80f,1f));
-                    if(go!=null)go.transform.SetParent(root,true);
-                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear tower east",art.MasonryTower,
-                        new Vector3(4.30f,2.70f,10.10f),2.65f,5.45f,Quaternion.Euler(0,-9f,0),new Color(.87f,.85f,.79f,1f));
-                    if(go!=null)go.transform.SetParent(root,true);
-                }
-            }
-
-            var rimGo=new GameObject("Valoria · SurfaceCell · bastion rim");
-            rimGo.transform.SetParent(root,true);
-            var rim=rimGo.AddComponent<Light>();
-            rim.type=LightType.Point;
-            rim.range=13f;
-            rim.intensity=1.15f;
-            rim.color=new Color(1f,.58f,.28f);
-            rim.shadows=LightShadows.None;
-            rim.transform.position=new Vector3(-2.0f,8.3f,10.8f);
-
+            WarmLight("Valoria · SurfaceCell · target gate warmth",new Vector3(0f,4.05f,4.05f),
+                new Color(1.0f,.57f,.26f),.32f,4.9f);
             WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.6f,1.95f,-4.85f),
-                new Color(1.0f,.62f,.31f),.15f,3.7f);
+                new Color(1.0f,.62f,.31f),.13f,3.7f);
             WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.55f,1.95f,-5.20f),
-                new Color(1.0f,.66f,.36f),.14f,3.5f);
+                new Color(1.0f,.66f,.36f),.12f,3.5f);
+        }
+
+        static void BuildSurfaceCellTargetBastion(ValoriaExternalAssetLibrary art)
+        {
+            if(art==null)return;
+            var p=new Vector3(0f,3.02f,7.25f);
+
+            // Recessed gate and connected front wall. All pieces are presentation-only children of root.
+            TargetFramePiece("Valoria · TargetFrame · gate",art.MegaHalfGate,
+                p+new Vector3(0f,0f,-2.85f),3.05f,4.20f,0f,new Color(.96f,.91f,.82f));
+            TargetFramePiece("Valoria · TargetFrame · front wall west",art.MasonryWall,
+                p+new Vector3(-2.85f,0f,-2.22f),3.45f,3.15f,2f,new Color(.92f,.89f,.82f));
+            TargetFramePiece("Valoria · TargetFrame · front wall east",art.MasonryWall,
+                p+new Vector3(2.85f,0f,-2.22f),3.45f,3.15f,178f,new Color(.92f,.89f,.82f));
+
+            // Strong asymmetric skyline: one central/rear keep and two smaller flank towers.
+            TargetFramePiece("Valoria · TargetFrame · high keep",art.MegaTower,
+                p+new Vector3(-.45f,.04f,1.10f),3.30f,7.25f,-2f,new Color(.94f,.91f,.84f));
+            TargetFramePiece("Valoria · TargetFrame · west tower",art.MegaTower,
+                p+new Vector3(-3.35f,.02f,.05f),2.38f,5.35f,5f,new Color(.90f,.87f,.80f));
+            TargetFramePiece("Valoria · TargetFrame · east tower",art.MegaTower,
+                p+new Vector3(3.20f,.02f,.42f),2.18f,4.78f,-7f,new Color(.89f,.86f,.79f));
+
+            // Rear masonry makes it a fortress volume rather than three disconnected towers.
+            TargetFramePiece("Valoria · TargetFrame · rear wall west",art.MasonryWall,
+                p+new Vector3(-2.15f,.02f,2.15f),3.05f,2.78f,180f,new Color(.86f,.84f,.78f));
+            TargetFramePiece("Valoria · TargetFrame · rear wall east",art.MasonryWall,
+                p+new Vector3(2.10f,.02f,2.18f),3.00f,2.75f,180f,new Color(.86f,.84f,.78f));
+
+            // Readable heraldry at gameplay zoom; no additional clutter.
+            Flag("Valoria · TargetFrame · standard west",p+new Vector3(-2.10f,.04f,-3.10f),Blue,2.10f);
+            Flag("Valoria · TargetFrame · standard east",p+new Vector3(2.10f,.04f,-3.10f),Blue,2.10f);
+        }
+
+        static GameObject TargetFramePiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw,Color tint)
+        {
+            if(source==null)return null;
+            var go=ValoriaKit.BenchmarkPieceModulated(name,source,ground,footprint,height,
+                Quaternion.Euler(0f,yaw,0f),tint);
+            if(go==null)return null;
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var hotspot in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(hotspot);
+            return go;
         }
 
         static Type FindRuntimeType(string fullName)
