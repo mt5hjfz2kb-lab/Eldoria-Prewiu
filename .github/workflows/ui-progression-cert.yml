@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/ui-progression-cert.yml'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
