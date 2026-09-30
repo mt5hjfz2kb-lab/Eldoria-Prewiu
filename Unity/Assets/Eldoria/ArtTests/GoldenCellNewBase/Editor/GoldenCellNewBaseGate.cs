@@ -254,7 +254,7 @@ namespace Eldoria.EditorTools
     static class GoldenCellFinished
     {
         static Transform Root;
-        static Material Stone,StoneDark,Cobble,Dirt,Wood,Roof,Metal,Moss,Blue,Gold,Corrupt;
+        static Material Stone,StoneDark,Cobble,Dirt,Wood,Roof,Metal,Moss,Plaster,Blue,Gold,Corrupt;
 
         public static void Build()
         {
@@ -276,14 +276,15 @@ namespace Eldoria.EditorTools
 
         static void SetupMaterials()
         {
-            Stone=Pbr("stone",new Color(.92f,.88f,.79f,1f),new Vector2(3.2f,3.2f),.09f,1.0f);
-            StoneDark=Pbr("stone",new Color(.55f,.56f,.54f,1f),new Vector2(3.6f,3.6f),.07f,1.05f);
-            Cobble=Pbr("cobble",new Color(.78f,.74f,.66f,1f),new Vector2(5.5f,5.5f),.08f,1.15f);
-            Dirt=Pbr("dirt",new Color(.66f,.56f,.42f,1f),new Vector2(4.0f,4.0f),.025f,.7f);
-            Wood=Procedural("wood",new Color(.34f,.18f,.075f,1f),.055f);
-            Roof=Procedural("slate",new Color(.105f,.145f,.18f,1f),.12f);
-            Metal=Simple(new Color(.16f,.17f,.18f,1f),.42f,.55f);
-            Moss=Procedural("moss",new Color(.22f,.34f,.18f,1f),.025f);
+            Stone=Pbr("stone",new Color(.94f,.90f,.82f,1f),new Vector2(3.0f,3.0f),.09f,1.05f);
+            StoneDark=Pbr("stone",new Color(.60f,.60f,.56f,1f),new Vector2(3.5f,3.5f),.07f,1.10f);
+            Cobble=Pbr("ground",new Color(.86f,.80f,.69f,1f),new Vector2(5.4f,5.4f),.08f,1.15f);
+            Dirt=Pbr("ground",new Color(.58f,.48f,.36f,1f),new Vector2(4.4f,4.4f),.025f,.55f);
+            Wood=Pbr("wood",new Color(.62f,.40f,.22f,1f),new Vector2(3.8f,3.8f),.06f,1.0f);
+            Roof=Pbr("roof",new Color(.30f,.37f,.43f,1f),new Vector2(4.8f,4.8f),.14f,1.0f);
+            Metal=Pbr("metal",new Color(.34f,.35f,.36f,1f),new Vector2(4.0f,4.0f),.34f,.65f);
+            Moss=Pbr("mossrock",new Color(.52f,.69f,.43f,1f),new Vector2(3.6f,3.6f),.035f,.95f);
+            Plaster=Pbr("plaster",new Color(.86f,.78f,.65f,1f),new Vector2(3.0f,3.0f),.055f,.7f);
             Blue=Simple(new Color(.045f,.19f,.36f,1f),.18f,.05f);
             Gold=Simple(new Color(.68f,.45f,.12f,1f),.34f,.62f);
             Corrupt=Simple(new Color(.28f,.055f,.37f,1f),.22f,.05f);
@@ -410,7 +411,7 @@ namespace Eldoria.EditorTools
         static void BuildResidence()
         {
             var p=new Vector3(-7.55f,.58f,-1.02f);
-            BeveledBlock("GC · residence masonry",p+new Vector3(0,1.0f,0),new Vector3(2.85f,2.05f,2.72f),Stone,.09f);
+            BeveledBlock("GC · residence masonry",p+new Vector3(0,1.0f,0),new Vector3(2.85f,2.05f,2.72f),Plaster,.09f);
             TimberFrame("GC · residence",p,new Vector3(2.85f,2.05f,2.72f));
             GableRoof("GC · residence roof",p+new Vector3(0,2.20f,0),3.25f,3.12f,.95f,-8f);
             BeveledBlock("GC · residence chimney",p+new Vector3(.72f,2.78f,.15f),new Vector3(.34f,1.18f,.34f),StoneDark,.04f);
@@ -419,7 +420,7 @@ namespace Eldoria.EditorTools
         static void BuildWorkshop()
         {
             var p=new Vector3(7.55f,.58f,-1.12f);
-            BeveledBlock("GC · workshop masonry",p+new Vector3(0,.92f,0),new Vector3(3.15f,1.92f,2.92f),Stone,.09f);
+            BeveledBlock("GC · workshop masonry",p+new Vector3(0,.92f,0),new Vector3(3.15f,1.92f,2.92f),Plaster,.09f);
             TimberFrame("GC · workshop",p,new Vector3(3.15f,1.92f,2.92f));
             GableRoof("GC · workshop roof",p+new Vector3(0,2.05f,0),3.58f,3.30f,.90f,8f);
 
@@ -602,7 +603,7 @@ namespace Eldoria.EditorTools
 
         static Material Pbr(string prefix,Color tint,Vector2 tiling,float smooth,float bump)
         {
-            var diff=Resources.Load<Texture2D>("Valoria/GoldenCellPBR/"+prefix+"_diff");
+            var diff=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_diff");
             if(diff==null)return Procedural(prefix=="stone"?"stone":"ground",tint,smooth);
             var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
             var m=new Material(shader){name="Golden Cell PBR · "+prefix};
@@ -610,13 +611,13 @@ namespace Eldoria.EditorTools
             if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
             if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",diff);m.SetTextureScale("_BaseMap",tiling);}
             else if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",diff);m.SetTextureScale("_MainTex",tiling);}
-            var normal=Resources.Load<Texture2D>("Valoria/GoldenCellPBR/"+prefix+"_normal");
+            var normal=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_normal");
             if(normal!=null&&m.HasProperty("_BumpMap"))
             {
                 m.SetTexture("_BumpMap",normal);m.SetTextureScale("_BumpMap",tiling);
                 if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",bump);m.EnableKeyword("_NORMALMAP");
             }
-            var ao=Resources.Load<Texture2D>("Valoria/GoldenCellPBR/"+prefix+"_ao");
+            var ao=Resources.Load<Texture2D>("Valoria/GoldenCellExternal/"+prefix+"_ao");
             if(ao!=null&&m.HasProperty("_OcclusionMap"))
             {
                 m.SetTexture("_OcclusionMap",ao);m.SetTextureScale("_OcclusionMap",tiling);
