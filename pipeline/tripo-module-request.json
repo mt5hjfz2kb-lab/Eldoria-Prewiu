@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-stone-architecture-kit-v1-gate",
   "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -47,48 +47,49 @@
     }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "ZERO-CREDIT STONE ARCHITECTURE REPAIR v3. Piece 01/05 spatial cleanup already visually successful in run 36715424694. Keep those exact rules. Piece 06 first axis test clipped the architectural pillar side because local X orientation is opposite the screen read; rerun with max-side X clip to target only the long connected protrusion. No Tripo generation. No promotion until final visual review.",
+  "notes": "CLOSED 2026-09-30 after zero-credit spatial repair. Run 36715424694/artifact 11096157750 certified repaired piece 01 CornerWallL and piece 05 HighStraightWall visually clean; piece 02 RockToWallTransition was already certified/promoted. Final piece 06 opposite-side clip run 36717083816/artifact 11096319220 remained visually incomplete/irregular and is rejected for this generation. No Tripo generation or extra credits. No further automatic rerun.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-stone-architecture-repair-v3-piece06-opposite-axis",
+  "run_nonce": "closed-2026-09-30-stone-architecture-final",
   "visual_verdicts": {
-    "reviewed_artifact_id": 11094888075,
-    "reviewed_run_id": 36710463132,
+    "reviewed_runs": [
+      36715424694,
+      36717083816
+    ],
+    "reviewed_artifacts": [
+      11096157750,
+      11096319220
+    ],
     "individual_visual_pass": [
+      {
+        "index": 1,
+        "family": "corner wall L",
+        "reason": "spatial repair preserves a coherent L-shaped architectural shell across front/side/rear/oblique views"
+      },
       {
         "index": 2,
         "family": "rock-to-wall transition",
-        "reason": "production-safe as previously certified and promoted"
-      }
-    ],
-    "cleanup_failed": [
-      {
-        "index": 1,
-        "family": "corner wall L variant",
-        "reason": "zero-credit disconnected-residue salvage technically succeeded but final captures still show broken/incomplete silhouette and floating residual geometry"
+        "reason": "previously certified and promoted"
       },
       {
         "index": 5,
         "family": "high straight wall",
-        "reason": "zero-credit disconnected-residue salvage technically succeeded but final captures still show incomplete upper/right structure and residual fragments"
+        "reason": "spatial repair preserves a clean straight wall with coherent depth and rear profile"
       }
     ],
-    "cleanup_candidates": [
-      {
-        "index": 6,
-        "family": "low straight wall",
-        "reason": "requires a different connected-protrusion cleanup strategy; current safe disconnected-residue policy does not address it"
-      }
-    ],
-    "fail": [
+    "rejected": [
       {
         "index": 3,
         "reason": "multiple detached architectural masses grouped as one module"
       },
       {
         "index": 4,
-        "reason": "disconnected masonry masses plus thin/curved residual geometry"
+        "reason": "disconnected masonry masses plus residual geometry"
+      },
+      {
+        "index": 6,
+        "reason": "opposite-side connected-protrusion clip still leaves an incomplete/irregular low-wall silhouette; reject this generation"
       },
       {
         "index": 7,
@@ -99,7 +100,7 @@
         "reason": "arch incomplete with detached/protruding upper-side geometry"
       }
     ],
-    "kit_verdict": "TECH_PASS_MULTIPIECE_PASS_VISUAL_FAIL",
-    "production_promotion": "PIECE_02_ONLY"
+    "kit_verdict": "TECH_PASS_MULTIPIECE_PASS_SELECTIVE_VISUAL_PASS_3_OF_8",
+    "production_promotion": "PIECES_01_02_05_ONLY"
   }
 }
