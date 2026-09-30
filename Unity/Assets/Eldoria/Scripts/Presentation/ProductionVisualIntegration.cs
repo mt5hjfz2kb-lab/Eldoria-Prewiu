@@ -290,14 +290,22 @@ namespace Eldoria.Presentation
                     continue;
                 }
 
-                // IMPORTANT: imported Mega/Masonry towers/walls stay untouched.
-                // Only procedural flat backing masses receive the shared stone PBR.
-                bool bastionProcedural=n.StartsWith("Valoria · Bastion hero") &&
-                    (lower.Contains("backing")||lower.Contains("plinth")||lower.Contains("fallback")||
-                     lower.Contains("buttress")||lower.Contains("rubble"));
-                if(bastionProcedural)
+                // Imported Mega/Masonry modules keep their authored textures. Procedural Bastion masses,
+                // however, receive one coherent PBR family so the hero building stops reading as grey blockout.
+                if(n.StartsWith("Valoria · Bastion hero"))
                 {
-                    renderer.sharedMaterial=stone;
+                    bool authored=lower.Contains("mega")||lower.Contains("masonry")||lower.Contains("imported");
+                    if(!authored)
+                    {
+                        if(lower.Contains("roof")||lower.Contains("crown")||lower.Contains("cap"))
+                            renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                                new Color(.18f,.20f,.22f),"slate",new Vector2(4.6f,4.6f),.65f);
+                        else if(lower.Contains("door")||lower.Contains("gate leaf")||lower.Contains("timber"))
+                            renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                                new Color(.28f,.16f,.08f),"wood",new Vector2(4.2f,4.2f),.68f);
+                        else
+                            renderer.sharedMaterial=stone;
+                    }
                     continue;
                 }
 
@@ -310,6 +318,43 @@ namespace Eldoria.Presentation
 
                 if(earth)renderer.sharedMaterial=dirt;
                 else if(paving)renderer.sharedMaterial=cobble;
+            }
+
+            // Terrain/terrace integration: use already-certified natural assets to break the flat-island read.
+            if(art!=null)
+            {
+                if(art.SlavicMudFlat!=null)
+                {
+                    foreach(var p in new[]{
+                        new Vector3(-8.6f,.10f,-5.8f),new Vector3(-8.9f,.12f,1.2f),
+                        new Vector3(8.6f,.10f,-5.8f),new Vector3(8.9f,.12f,1.2f)})
+                        Piece("Valoria · SurfaceCell · packed earth verge",art.SlavicMudFlat,p,3.15f,.38f,p.x*9f,
+                            new Color(.78f,.70f,.56f));
+                }
+                if(art.SlavicMoss!=null)
+                {
+                    foreach(var p in new[]{
+                        new Vector3(-10.2f,.18f,-2.4f),new Vector3(-9.4f,.18f,3.4f),
+                        new Vector3(10.2f,.18f,-2.4f),new Vector3(9.4f,.18f,3.4f)})
+                        Piece("Valoria · SurfaceCell · terrace moss seam",art.SlavicMoss,p,1.45f,.38f,p.x*13f,
+                            new Color(.72f,.82f,.66f));
+                }
+                if(art.SlavicBush!=null)
+                {
+                    foreach(var p in new[]{
+                        new Vector3(-9.7f,.28f,-6.1f),new Vector3(-10.0f,.28f,.4f),
+                        new Vector3(9.7f,.28f,-6.0f),new Vector3(10.0f,.28f,.6f)})
+                        Piece("Valoria · SurfaceCell · low vegetation cluster",art.SlavicBush,p,1.05f,1.0f,p.x*7f,
+                            new Color(.78f,.90f,.72f));
+                }
+                if(art.SlavicTree!=null)
+                {
+                    foreach(var p in new[]{
+                        new Vector3(-11.1f,.24f,-4.1f),new Vector3(-10.7f,.24f,2.6f),
+                        new Vector3(11.1f,.24f,-4.1f),new Vector3(10.7f,.24f,2.8f)})
+                        Piece("Valoria · SurfaceCell · valley tree cluster",art.SlavicTree,p,1.35f,2.8f,p.x*5f,
+                            new Color(.88f,.94f,.86f));
+                }
             }
 
             // Small authored rock seams at the cell edges: terrain integration only, no new buildings/clutter.
