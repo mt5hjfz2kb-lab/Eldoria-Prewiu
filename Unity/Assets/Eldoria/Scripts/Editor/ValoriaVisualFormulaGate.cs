@@ -140,6 +140,7 @@ namespace Eldoria.EditorTools
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
                 SceneSetup.SetupRenderPipeline();
+                ProductionVisualIntegration.ResetVisualCachesForGate();
                 ProductionVisualIntegration.StoneArchitectureEnabled=enabled;
                 VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
                 var signature=CollisionSignature();
