@@ -106,6 +106,14 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - On the single Windows runner, avoid overlapping automatic diagnostic gates when an authoritative production gate already covers the same change. LookDev is opt-in; Visual Formula / Unity slice remain the production evidence paths.
 - Any workflow-governance change must pass `tools/check-workflow-governance.mjs`; the lightweight `workflow-governance.yml` enforces this without waking the Windows runner.
 
+## Permanent no-stop execution rule
+- A work block must continue automatically through every routine reversible technical step available: edits, commits, CI transitions, polling, artifact retrieval, evidence inspection, zero-credit repair/retry, documentation and safe promotion already authorized by the gate.
+- A queued/in-progress workflow, completed commit, uploaded artifact, chat/context boundary or obvious next technical step is **not** a stopping point and must not be handed back to the owner as unfinished work.
+- Stop only for: explicit new credit spend/purchase or irreversible authorization; a genuine product/design decision with materially different outcomes; missing owner-only input/access; an external blocker after reasonable recovery attempts; or fully completed and verified scope.
+- On resume/restart, reconstruct from live `main` + active workflow state and immediately continue the unfinished block. Never require the owner to type “continúa” to advance routine pipeline work.
+- Prefer one canonical chained workflow over multiple sequential Windows workflows. Safe repair/salvage belongs inside the canonical Blender/Unity gate when representable by configuration.
+- Runner throughput is part of correctness: workflow-maintenance commits must not wake heavy Windows jobs, publications remain explicitly batched, and redundant diagnostic gates must not compete with the authoritative production gate.
+
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
 - **Progression-visibility contract:** the canonical vertical slice defines when player-facing content exists. Buildings, units, districts, world nodes, narrative props and UI entry points may be authored/certified early, but completed art and gameplay interaction must remain hidden/disabled until their canonical unlock. Unity must reconstruct the correct visible/interactable state from PlayerState before the first rendered frame and after scene/state refresh. See `docs/PROGRESSION_VISUAL_CONTRACT.md`.
