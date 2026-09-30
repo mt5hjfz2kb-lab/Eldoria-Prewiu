@@ -406,30 +406,35 @@ namespace Eldoria.Presentation
             Suppress("Bastion · connected", "Bastion · rear connected", "Bastion · high lantern",
                 "Bastion · keep facing fallback", "Bastion · keep side fallback", "Bastion · keep rear fallback",
                 "Bastion · dead palace wall", "Bastion · dead palace tower");
-            var art=ValoriaExternalAssetLibrary.Load();
-            if(art==null||art.StoneTower==null||art.StoneWall==null||art.StoneGate==null)
-                throw new InvalidOperationException("Hero-frame Bastion requires StoneTower/StoneWall/StoneGate in ExternalAssetLibrary.");
+            // Load the concrete Resources prefabs directly. The legacy ScriptableObject references for
+            // this very old pack can deserialize as prefab-asset handles that cannot be Instantiate<GameObject>
+            // in editor batchmode, even though the Resources prefabs themselves are valid GameObjects.
+            var stoneTower=Resources.Load<GameObject>("Valoria/Stone_Tower");
+            var stoneWall=Resources.Load<GameObject>("Valoria/Stone_Wall");
+            var stoneGate=Resources.Load<GameObject>("Valoria/Stone_Gate");
+            if(stoneTower==null||stoneWall==null||stoneGate==null)
+                throw new InvalidOperationException("Hero-frame Bastion requires Valoria/Stone_Tower, Stone_Wall and Stone_Gate resources.");
 
             var p=new Vector3(0,3.0f,7.25f);
 
             // Strong recessed front gate aligned to the certified stair mouth.
-            Piece("Valoria · Bastion hero gate",art.StoneGate,p+new Vector3(0,.08f,-3.00f),
+            Piece("Valoria · Bastion hero gate",stoneGate,p+new Vector3(0,.08f,-3.00f),
                 5.15f,4.25f,0,new Color(.82f,.80f,.74f));
 
             // Connected front/side masonry keeps the entrance legible while giving the keep a real base.
-            Piece("Valoria · Bastion hero wall west",art.StoneWall,p+new Vector3(-3.05f,.08f,-2.20f),
+            Piece("Valoria · Bastion hero wall west",stoneWall,p+new Vector3(-3.05f,.08f,-2.20f),
                 4.15f,3.55f,3,new Color(.80f,.78f,.72f));
-            Piece("Valoria · Bastion hero wall east",art.StoneWall,p+new Vector3(3.05f,.08f,-2.12f),
+            Piece("Valoria · Bastion hero wall east",stoneWall,p+new Vector3(3.05f,.08f,-2.12f),
                 4.05f,3.45f,-4,new Color(.80f,.78f,.72f));
-            Piece("Valoria · Bastion hero wall rear",art.StoneWall,p+new Vector3(.15f,.18f,2.25f),
+            Piece("Valoria · Bastion hero wall rear",stoneWall,p+new Vector3(.15f,.18f,2.25f),
                 5.10f,3.70f,180,new Color(.76f,.75f,.70f));
 
             // Asymmetric tower hierarchy: one dominant rear keep, two unequal supporting masses.
-            Piece("Valoria · Bastion hero tower crown",art.StoneTower,p+new Vector3(-.55f,.20f,1.10f),
+            Piece("Valoria · Bastion hero tower crown",stoneTower,p+new Vector3(-.55f,.20f,1.10f),
                 4.55f,7.20f,-2,new Color(.84f,.82f,.76f));
-            Piece("Valoria · Bastion hero tower west",art.StoneTower,p+new Vector3(-3.25f,.12f,.25f),
+            Piece("Valoria · Bastion hero tower west",stoneTower,p+new Vector3(-3.25f,.12f,.25f),
                 3.10f,5.55f,5,new Color(.80f,.78f,.72f));
-            Piece("Valoria · Bastion hero tower east",art.StoneTower,p+new Vector3(3.05f,.10f,.65f),
+            Piece("Valoria · Bastion hero tower east",stoneTower,p+new Vector3(3.05f,.10f,.65f),
                 2.85f,4.75f,-7,new Color(.78f,.77f,.71f));
 
             // Rock-to-architecture seams break the pedestal read without creating any route/floor.
