@@ -259,7 +259,7 @@ namespace Eldoria.EditorTools
         public static void Build()
         {
             Root=new GameObject("GOLDEN CELL · finished v2 hero replacement proof").transform;
-            HideOldBastionVisuals();
+            PrepareHybridBastionVisuals();
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -276,16 +276,55 @@ namespace Eldoria.EditorTools
             BuildCorruptionHint();
         }
 
-        static void HideOldBastionVisuals()
+        static void PrepareHybridBastionVisuals()
         {
-            // Final strict proof: retain all gameplay colliders/hotspots, hide only the previous
-            // Bastion renderer family so it cannot set the visual quality ceiling.
+            // Hybrid proof: the CC0 fort owns the lower/front defensive read.
+            // Keep only the current Bastion's high/rear masses so the city retains a dominant skyline.
+            // Gameplay colliders/hotspots are never touched.
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled)continue;
-                var n=r.gameObject.name;
-                if(n.StartsWith("Bastion",StringComparison.OrdinalIgnoreCase))
-                    r.enabled=false;
+
+                bool bastion=false;
+                string hierarchy="";
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    hierarchy+=" "+t.name.ToLowerInvariant();
+                    if(t.name.StartsWith("Bastion",StringComparison.OrdinalIgnoreCase)||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.OrdinalIgnoreCase))
+                        bastion=true;
+                }
+                if(!bastion)continue;
+
+                bool front =
+                    hierarchy.Contains("connected gate")||
+                    hierarchy.Contains("front curtain")||
+                    hierarchy.Contains("connected wall")||
+                    hierarchy.Contains("connected tower west")||
+                    hierarchy.Contains("connected tower east")||
+                    hierarchy.Contains("buttress west")||
+                    hierarchy.Contains("buttress east")||
+                    hierarchy.Contains("banner west")||
+                    hierarchy.Contains("banner east")||
+                    hierarchy.Contains("rock plinth");
+
+                bool upper =
+                    hierarchy.Contains("rear connected tower")||
+                    hierarchy.Contains("inner keep")||
+                    hierarchy.Contains("keep detailed")||
+                    hierarchy.Contains("keep side")||
+                    hierarchy.Contains("keep rear")||
+                    hierarchy.Contains("high lantern")||
+                    hierarchy.Contains("counter crown")||
+                    hierarchy.Contains("central crown")||
+                    hierarchy.Contains("dead palace")||
+                    hierarchy.Contains("palace collapse")||
+                    hierarchy.Contains("repair scaffold")||
+                    hierarchy.Contains("crown rubble")||
+                    hierarchy.Contains("keep slit");
+
+                if(front) r.enabled=false;
+                else if(!upper) r.enabled=false;
             }
         }
 
@@ -308,10 +347,11 @@ namespace Eldoria.EditorTools
 
         static void UnifyExistingBastionSurface()
         {
-            // Final Golden Cell pass: keep the certified Bastion silhouette and interaction untouched,
-            // but bring its visible shell into the same material family as the new civic base.
+            // Only retained upper/rear Bastion renderers are still enabled at this point.
+            // Bring those masses into the same Golden Cell stone family as the CC0 lower fort.
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
+                if(r==null||!r.enabled)continue;
                 bool bastion=false;
                 for(var t=r.transform;t!=null;t=t.parent)
                 {
@@ -324,9 +364,9 @@ namespace Eldoria.EditorTools
                 string n=r.gameObject.name.ToLowerInvariant();
                 Material material;
                 if(n.Contains("banner")||n.Contains("flag"))material=Blue;
-                else if(n.Contains("door")||n.Contains("timber")||n.Contains("gate leaf")||n.Contains("portcullis"))material=Wood;
+                else if(n.Contains("scaffold")||n.Contains("timber"))material=Wood;
                 else if(n.Contains("slit")||n.Contains("metal"))material=Metal;
-                else if(n.Contains("plinth")||n.Contains("backing")||n.Contains("rubble")||n.Contains("foundation"))
+                else if(n.Contains("backing")||n.Contains("rubble")||n.Contains("collapse")||n.Contains("foundation"))
                     material=StoneDark;
                 else material=BastionStone;
 
