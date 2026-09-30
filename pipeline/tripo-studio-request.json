@@ -2,7 +2,7 @@
   "enabled": false,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "CLOSED. Stone Architecture v1 generation/export completed and exact GLB is preserved. No further Tripo action is authorized by this request. Keep disabled.",
+  "notes": "FINAL 2026-09-30: Stone Architecture v1 Tripo task completed, exported and gated. Exact exported GLB: 74,616,872 bytes; SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422. No further Tripo action authorized or required for this v1 block. Request disabled to prevent accidental export/generation.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
@@ -27,7 +27,7 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-export-glb",
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
