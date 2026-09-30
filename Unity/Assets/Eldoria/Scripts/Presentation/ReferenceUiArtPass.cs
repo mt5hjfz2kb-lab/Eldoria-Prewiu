@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Eldoria.Presentation
 {
     /// <summary>
-    /// Runtime implementation of the owner-approved Eldoria HUD reference (final reference-convergence gate).
+    /// Runtime implementation of the owner-approved Eldoria HUD reference (final reference-convergence gate; certified with Presentation-aware EditMode tests).
     /// Functional controls remain owned by SlicePresenter; this component reshapes and
     /// decorates them into the reference composition and adds visual-only reference chrome.
     /// Owner reference composition lock: landscape HUD uses the approved screenshot hierarchy.
