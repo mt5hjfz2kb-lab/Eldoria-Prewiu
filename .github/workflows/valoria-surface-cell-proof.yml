@@ -1,0 +1,101 @@
+name: Valoria Surface Cell proof
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-surface-cell-proof.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaExternalAssetLibrary.cs'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-valoria-surface-cell-proof
+  cancel-in-progress: true
+
+jobs:
+  surface-cell-proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Capture Surface Cell before-after
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-SurfaceCellProof.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 240}
+            throw 'Surface Cell proof timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw "Surface Cell proof failed: $($process.ExitCode)"
+          }
+          $expected=@(
+            'surface-cell-before-19.png','surface-cell-before-12.png','surface-cell-before-9.png',
+            'surface-cell-focus-before-12.png','surface-cell-focus-before-9.png','surface-cell-before-mobile.png',
+            'surface-cell-after-19.png','surface-cell-after-12.png','surface-cell-after-9.png',
+            'surface-cell-focus-after-12.png','surface-cell-focus-after-9.png','surface-cell-after-mobile.png',
+            'surface-cell-evidence.json','surface-cell-metrics.json'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing Surface Cell evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty Surface Cell capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'surface-cell-evidence.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-surface-cell-proof-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/surface-cell-*
+            ${{ runner.temp }}/Eldoria-SurfaceCellProof.log
+          if-no-files-found: warn
+          retention-days: 14
