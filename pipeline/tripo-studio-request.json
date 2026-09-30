@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "terrain-terrace-kit-v1-stage",
@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/TerrainTerraceKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "terrain-terrace-v1-export-1",
-  "notes": "Export the single 55-credit generated TerrainTerraceKit task only. No generation or further spending. Task title inherited from previous workspace, identity tracked by new UUID and exact staged hash.",
+  "run_nonce": "terrain-terrace-studio-closed",
+  "notes": "TerrainTerraceKit v1 exact stage/generation/export complete. Input JPEG 597320 bytes 1448x1086 SHA47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71. Stage36733759312/artifact11105714637. Single generation36734206526/artifact11106786039 spent55 credits. Export36734554068/artifact11106142634:77291792 bytes SHA63d74d19455a92b0e134ada49bde41a3b050bdb8bfe19102eac632bf1d15264e. Request disabled to avoid repeat export/generation; downstream zero-credit gates continue.",
   "prior_stage_run_id": 36733759312,
   "prior_stage_artifact_id": 11105714637,
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-village-with-stone-walls-timber-houses-blue-banners-and-su-9a34385e-db18-485e-b6ac-9b58ac953bc6"
