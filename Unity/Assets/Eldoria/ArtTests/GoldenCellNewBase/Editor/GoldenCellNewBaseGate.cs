@@ -258,7 +258,7 @@ namespace Eldoria.EditorTools
         static Transform Root;
         static Material Stone,StoneDark,BastionStone,Cobble,Dirt,Wood,Roof,Metal,Moss,Plaster,Blue,Gold,Corrupt;
 
-        public static void Build()
+        public static async Task BuildAsync()
         {
             Root=new GameObject("GOLDEN CELL · finished v2 hero replacement proof").transform;
             HideOldBastionVisuals();
