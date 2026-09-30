@@ -2,7 +2,7 @@
 
 ## Decision
 
-**Technical kit: partial pass. West Rebuilders Quarter visual pilot: FAIL. No Terrain & Terrace instances remain in production Valoria.** The exact approved JPEG produced two salvageable isolated modules, but two sparse pilot placements did not deliver a credible mountain-built city at zoom 12/9. The first placement was largely occluded; the second made a detached-looking pedestal in front of housing. Keeping that placement would lower the quality bar. Do not represent CI success as visual acceptance.
+**Technical kit: partial pass. Original West Rebuilders sparse pilot: FAIL. Citywide top-aligned reuse pass: PASS.** The exact approved JPEG produced two salvageable isolated modules. The first two-instance pilot was rejected, but a later citywide composition solved the detachment problem by aligning each module by its TOP surface to existing certified terrace/court elevations and burying the support beneath the authored city. Production Valoria now uses 7 visual-only instances across west housing, upper civic, workshop, east training and east upper-retaining areas.
 
 ## Exact source and paid generation
 
@@ -39,3 +39,22 @@ First same-scene before/after gate `36741899930` SUCCESS, artifact `11109889097`
 The revision also passed full Unity slice `36742519517` (EditMode, PlayMode, desktop build, benchmark) and World Map Visual Formula `36742519509`; both SUCCESS. The post-rejection cleanup removes the runtime integration and pilot capture code, preserving the independently tested source modules for a future composition only. It touches no Valoria scene, `VisualWorld`, roads, stairs, routes, lots, interactive buildings, hotspots or gameplay. The original certified topology remains authoritative. Do not reintroduce these two trial placements as a shortcut.
 
 **Verdict for the requested visual block: FAIL.** No claim of a mountain-city leap is supported by the zoom-12/9 evidence. The isolated two-piece asset inventory is retained for possible future use, but this pilot is closed without production instances.
+
+
+## Citywide reuse pass — accepted
+
+The rejected two-instance pilot was not restored. A new composition was built from the same two certified GLBs with a different placement rule: **top-aligned buried support**. Each module is scaled, then positioned so its highest point matches the existing authored terrace/court elevation; it never owns roads, stairs, floors, hotspots or gameplay collision.
+
+Production count: **7 instances**:
+- BroadRockPlatform: west lower housing shelf, west upper housing shelf, workshop edge support, east upper retaining shelf.
+- SteppedRockTerrace: west middle housing rise, upper civil support, east training edge support.
+
+The first citywide render exposed an over-bright repeated rock read. That material pass was rejected and corrected without new Tripo spend by remapping the modules to a restrained URP/Lit buried-support stone material. Final production code commit: **22ce25789322cef749c1f53e4e67cb1d2149e6f2**.
+
+Final evidence:
+- Valoria Visual Formula **36749796853 SUCCESS**, artifact **11114336890**. Same-scene BEFORE/AFTER captures include overview zoom 19/12/9, west 12/9, east 12, upper 12 and mobile; terrain-citywide-evidence.json records 7 instances, equal collider/hotspot signature and gameplay_topology_changed=false.
+- World Map Visual Formula **36749796941 SUCCESS**.
+- Full Unity slice **36749796925 SUCCESS**: EditMode, PlayMode, Windows desktop build and Valoria benchmark all passed. Artifacts: **11114193496** captures and **11113993981** checks/player.
+- Additional Tripo credits for the citywide reuse: **0**.
+
+**Final v1 production verdict:** PASS for restrained citywide terrain/terrace support reuse. This is a compositional improvement, not a claim that Terrain & Terrace v1 alone completes the mountain-city benchmark. The two certified source GLBs remain the only accepted modules from the original sheet; groups 02–06 remain rejected.
