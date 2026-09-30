@@ -25,11 +25,11 @@
     "expected_piece_count": 8
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "FINAL GATE CLOSED. Runs 36704168246 and 36705459251 passed technically, but production visual acceptance FAILED due incorrect grouping plus residual/floating/spike geometry. No piece is production-certified as-is. Cleanup candidates: piece 02 strongest, then 01 and 05; piece 06 still has long protrusions. Pieces 03/04/07/08 fail separability/geometry. Do not rerun automatically. Existing GLB SHA da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422 may be used only in a separate zero-credit cleanup/salvage task. No promotion.",
+  "notes": "FINAL 2026-09-30: Stone Architecture Kit v1 = TECH PASS + MULTIPIECE PASS + VISUAL FAIL. Canonical per-piece gate run 36705459251 SUCCESS; artifact 11091584269. Eight useful spatial groups exist and all have UV/normals/material/collider evidence, but strict visual review of 32 per-piece captures rejects production promotion: piece 01 and 02 are strongest salvage candidates; 05 and 06 require cleanup; 03, 04, 07 and 08 contain fragmentation/floating or broken geometry and must not ship. Request disabled to prevent accidental reruns. No production promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed-consistent",
+  "run_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed",
   "visual_verdicts": {
     "reviewed_artifact_id": 11091584269,
     "reviewed_run_id": 36705459251,
