@@ -22,6 +22,7 @@ namespace Eldoria.Presentation
         static readonly Color Ink = new Color(.055f,.050f,.038f,1f);
         static readonly Color Disabled = new Color(.17f,.18f,.19f,.94f);
         static Sprite portraitSprite;
+        static Sprite circleSprite;
 
         readonly Dictionary<string, GameObject> labels = new Dictionary<string, GameObject>();
         RectTransform safe;
@@ -106,18 +107,22 @@ namespace Eldoria.Presentation
 
         void CreatePortrait()
         {
-            var go = new GameObject("Reference portrait", typeof(RectTransform), typeof(Image));
+            var go = new GameObject("Reference portrait", typeof(RectTransform), typeof(Image), typeof(Mask));
             go.transform.SetParent(safe,false);
             var rt=go.GetComponent<RectTransform>();
             rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.sizeDelta=new Vector2(78,78);
-            var img=go.GetComponent<Image>();img.color=Color.white;img.raycastTarget=false;
+            var ring=go.GetComponent<Image>();ring.sprite=CircleSprite();ring.color=Gold;ring.raycastTarget=false;
+            go.GetComponent<Mask>().showMaskGraphic=true;
             if (portraitSprite == null)
             {
                 var tex=Resources.Load<Texture2D>("UI/aldric_reference_portrait");
                 if(tex!=null)portraitSprite=Sprite.Create(tex,new Rect(0,0,tex.width,tex.height),new Vector2(.5f,.5f),100f);
             }
-            img.sprite=portraitSprite;
-            var outline=go.AddComponent<Outline>();outline.effectColor=Gold;outline.effectDistance=new Vector2(2,-2);
+            var face=new GameObject("Aldric portrait",typeof(RectTransform),typeof(Image));
+            face.transform.SetParent(go.transform,false);
+            var fr=face.GetComponent<RectTransform>();Stretch(fr,4f);
+            var fi=face.GetComponent<Image>();fi.sprite=portraitSprite;fi.color=Color.white;fi.preserveAspect=true;fi.raycastTarget=false;
+            var outline=go.AddComponent<Outline>();outline.effectColor=BronzeDark;outline.effectDistance=new Vector2(2,-2);
             Badge(go.transform,"12",new Vector2(.05f,.05f),new Vector2(19,19),new Vector2(8,7),new Color(.04f,.14f,.24f,.98f));
             Badge(go.transform,"12",new Vector2(.32f,.05f),new Vector2(19,19),new Vector2(7,7),new Color(.17f,.11f,.035f,.98f));
         }
@@ -177,7 +182,7 @@ namespace Eldoria.Presentation
             var root=new GameObject("Reference extra nav",typeof(RectTransform));root.transform.SetParent(safe,false);
             var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(1,0);rt.sizeDelta=new Vector2(320,76);
             NavMedallion(root.transform,"Ejército","⚔",0);
-            NavMedallion(root.transform,"Alianza","🔒",1);
+            NavMedallion(root.transform,"Alianza","▣",1);
         }
 
         void ApplyReferenceLayout()
@@ -193,54 +198,71 @@ namespace Eldoria.Presentation
         void ApplyLandscape()
         {
             float w=safe.rect.width;
+            float h=safe.rect.height;
 
             var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
             if(top!=null)
             {
                 top.anchorMin=new Vector2(0,1);top.anchorMax=new Vector2(1,1);top.pivot=new Vector2(.5f,1);
-                top.sizeDelta=new Vector2(0,52);top.anchoredPosition=Vector2.zero;
+                top.sizeDelta=new Vector2(0,h*.065f);top.anchoredPosition=Vector2.zero;
                 var g=top.GetComponent<HorizontalLayoutGroup>();if(g!=null)g.enabled=false;
-                Place(top,"Realm crest chip",new Vector2(88,-7),new Vector2(28,38),new Vector2(0,1));
-                Place(top,"Heading",new Vector2(0,0),new Vector2(1,1),new Vector2(0,1));
-                Place(top,"Power chip",new Vector2(118,-5),new Vector2(154,42),new Vector2(0,1));
-                Place(top,"Wood resource chip",new Vector2(w-610,-5),new Vector2(145,42),new Vector2(0,1));
-                Place(top,"Stone resource chip",new Vector2(w-458,-5),new Vector2(145,42),new Vector2(0,1));
+
+                var crest=top.Find("Realm crest chip") as RectTransform;
+                if(crest!=null)crest.gameObject.SetActive(false);
+                var headingRt=top.Find("Heading") as RectTransform;
+                if(headingRt!=null)headingRt.gameObject.SetActive(false);
+
+                Place(top,"Power chip",new Vector2(w*.105f,-h*.008f),new Vector2(w*.15f,h*.052f),new Vector2(0,1));
+                Place(top,"Wood resource chip",new Vector2(w*.49f,-h*.008f),new Vector2(w*.14f,h*.052f),new Vector2(0,1));
+                Place(top,"Stone resource chip",new Vector2(w*.635f,-h*.008f),new Vector2(w*.14f,h*.052f),new Vector2(0,1));
+                SetFont(top,"Power chip",14);
+                SetFont(top,"Wood resource chip",13);
+                SetFont(top,"Stone resource chip",13);
             }
 
+            float portraitSize=h*.098f;
             var portrait=safe.Find("Reference portrait") as RectTransform;
-            if(portrait!=null){portrait.anchoredPosition=new Vector2(8,-5);portrait.sizeDelta=new Vector2(80,80);}
+            if(portrait!=null){portrait.anchoredPosition=new Vector2(w*.009f,-h*.008f);portrait.sizeDelta=new Vector2(portraitSize,portraitSize);}
             var vip=safe.Find("Reference VIP") as RectTransform;
-            if(vip!=null){vip.anchoredPosition=new Vector2(98,-54);vip.sizeDelta=new Vector2(92,26);}
+            if(vip!=null){vip.anchoredPosition=new Vector2(w*.074f,-h*.068f);vip.sizeDelta=new Vector2(w*.076f,h*.034f);SetFont(vip,"VIP text",12);}
 
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
             if(quest!=null)
             {
                 quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
-                quest.anchoredPosition=new Vector2(14,-98);quest.sizeDelta=new Vector2(306,164);
+                quest.anchoredPosition=new Vector2(w*.014f,-h*.105f);quest.sizeDelta=new Vector2(w*.225f,h*.215f);
                 var v=quest.GetComponent<VerticalLayoutGroup>();if(v!=null)v.enabled=false;
                 var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
                 if(kicker!=null)
                 {
-                    kicker.text="❓   Capítulo I                                  3/5   ›";
-                    kicker.fontSize=11;kicker.alignment=TextAnchor.MiddleLeft;
-                    var rt=kicker.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(10,-8);rt.sizeDelta=new Vector2(286,28);
+                    kicker.text="❓   Capítulo I                         3/5   ›";
+                    kicker.fontSize=14;kicker.alignment=TextAnchor.MiddleLeft;
+                    var rt=kicker.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(10,-8);rt.sizeDelta=new Vector2(quest.sizeDelta.x-20,h*.038f);
                 }
+                var subtitle=quest.transform.Find("Reference quest subtitle")?.GetComponent<Text>();
+                if(subtitle!=null){subtitle.fontSize=13;var rt=subtitle.rectTransform;rt.anchoredPosition=new Vector2(13,-h*.055f);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.036f);}
+                var checks=quest.transform.Find("Reference quest checks")?.GetComponent<Text>();
+                if(checks!=null){checks.fontSize=11;var rt=checks.rectTransform;rt.anchoredPosition=new Vector2(13,-h*.093f);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.09f);}
                 var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
                 if(obj!=null)
                 {
-                    obj.fontSize=8;obj.color=new Color(.82f,.84f,.84f,1);obj.alignment=TextAnchor.LowerLeft;
-                    var rt=obj.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(13,7);rt.sizeDelta=new Vector2(274,30);
+                    obj.fontSize=9;obj.color=new Color(.82f,.84f,.84f,1);obj.alignment=TextAnchor.LowerLeft;
+                    var rt=obj.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(13,7);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.038f);
                 }
             }
 
             var left=safe.Find("Reference left actions") as RectTransform;
-            if(left!=null)left.anchoredPosition=new Vector2(16,-292);
+            if(left!=null){left.anchoredPosition=new Vector2(w*.015f,-h*.335f);left.localScale=Vector3.one*1.18f;}
 
             var chat=safe.Find("Reference chat") as RectTransform;
-            if(chat!=null){chat.anchoredPosition=new Vector2(120,9);chat.sizeDelta=new Vector2(Mathf.Min(380,w*.31f),72);}
+            if(chat!=null)
+            {
+                chat.anchoredPosition=new Vector2(w*.075f,h*.012f);chat.sizeDelta=new Vector2(w*.30f,h*.105f);
+                SetFont(chat,"Chat copy",11);
+            }
 
             var menu=safe.Find("Reference top menu") as RectTransform;
-            if(menu!=null)menu.anchoredPosition=new Vector2(-8,-5);
+            if(menu!=null){menu.anchoredPosition=new Vector2(-w*.008f,-h*.008f);menu.localScale=Vector3.one*1.12f;}
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
             if(dock!=null)
@@ -248,7 +270,7 @@ namespace Eldoria.Presentation
                 dock.GetComponent<Image>().color=new Color(0,0,0,0);
                 var frame=dock.Find("ReferenceArtFrame");if(frame!=null)frame.gameObject.SetActive(false);
                 dock.anchorMin=dock.anchorMax=new Vector2(0,1);dock.pivot=new Vector2(0,1);
-                dock.anchoredPosition=new Vector2(277,-101);dock.sizeDelta=new Vector2(38,28);
+                dock.anchoredPosition=new Vector2(w*.205f,-h*.108f);dock.sizeDelta=new Vector2(w*.032f,h*.036f);
                 var vg=dock.GetComponent<VerticalLayoutGroup>();if(vg!=null)vg.enabled=false;
                 foreach(Transform child in dock)child.gameObject.SetActive(false);
                 var actionRow=dock.Find("Primary objective action") as RectTransform;
@@ -261,15 +283,15 @@ namespace Eldoria.Presentation
                     {
                         primary.SetActive(true);
                         var pr=primary.GetComponent<RectTransform>();pr.anchorMin=Vector2.zero;pr.anchorMax=Vector2.one;pr.offsetMin=pr.offsetMax=Vector2.zero;
-                        primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.10f);
-                        var t=primary.GetComponentInChildren<Text>();if(t!=null){t.text="›";t.fontSize=18;t.color=GoldSoft;}
+                        primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.12f);
+                        var t=primary.GetComponentInChildren<Text>();if(t!=null){t.text="›";t.fontSize=20;t.color=GoldSoft;}
                     }
                 }
             }
 
-            LayoutBottomNavigation(w);
+            LayoutBottomNavigation(w,h);
             var extra=safe.Find("Reference extra nav") as RectTransform;
-            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-530,7);}
+            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-w*.34f,h*.012f);extra.localScale=Vector3.one*1.08f;}
         }
 
         void ApplyPortrait()
@@ -306,10 +328,10 @@ namespace Eldoria.Presentation
             var extra=safe.Find("Reference extra nav");if(extra!=null)extra.gameObject.SetActive(false);
         }
 
-        void LayoutBottomNavigation(float width)
+        void LayoutBottomNavigation(float width,float height)
         {
             var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();if(nav==null)return;
-            nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);nav.sizeDelta=new Vector2(0,86);nav.anchoredPosition=Vector2.zero;
+            nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);nav.sizeDelta=new Vector2(0,height*.115f);nav.anchoredPosition=Vector2.zero;
             var hg=nav.GetComponent<HorizontalLayoutGroup>();if(hg!=null)hg.enabled=false;
             nav.GetComponent<Image>().color=new Color(.01f,.015f,.018f,.72f);
 
@@ -318,13 +340,13 @@ namespace Eldoria.Presentation
             var heroes=nav.Find("HÉROES")?.GetComponent<RectTransform>();
             var chest=nav.Find("ARCÓN")?.GetComponent<RectTransform>();
             var codex=nav.Find("CÓDICE")?.GetComponent<RectTransform>();
-            if(world!=null)PlaceBottom(world,24,8,76,74,"⌖\nMundo");
-            if(heroes!=null)PlaceBottom(heroes,width-610,8,74,74,"♞\nHéroes");
-            if(codex!=null)PlaceBottom(codex,width-450,8,74,74,"▤\nMisiones");
-            if(chest!=null)PlaceBottom(chest,width-370,8,74,74,"▣\nInventario");
+            if(world!=null)PlaceBottom(world,width*.018f,height*.012f,height*.105f,height*.105f,"⌖\nMundo");
+            if(heroes!=null)PlaceBottom(heroes,width*.55f,height*.012f,height*.098f,height*.098f,"♞\nHéroes");
+            if(codex!=null)PlaceBottom(codex,width*.66f,height*.012f,height*.098f,height*.098f,"▤\nMisiones");
+            if(chest!=null)PlaceBottom(chest,width*.75f,height*.012f,height*.098f,height*.098f,"▣\nInventario");
             if(city!=null)
             {
-                PlaceBottom(city,width-112,4,104,80,"♜\nBastión");
+                PlaceBottom(city,width-height*.125f,height*.006f,height*.115f,height*.115f,"♜\nBastión");
                 var im=city.GetComponent<Image>();if(im!=null)im.color=new Color(.025f,.055f,.075f,.98f);
             }
         }
@@ -372,7 +394,33 @@ namespace Eldoria.Presentation
         {
             rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(x,y);rt.sizeDelta=new Vector2(w,h);
             var t=rt.GetComponentInChildren<Text>();if(t!=null){t.text=text;t.fontSize=9;t.lineSpacing=.82f;t.alignment=TextAnchor.MiddleCenter;}
-            var img=rt.GetComponent<Image>();if(img!=null){img.color=new Color(.025f,.033f,.038f,.97f);var o=img.GetComponent<Outline>()??img.gameObject.AddComponent<Outline>();o.effectColor=Bronze;o.effectDistance=new Vector2(2,-2);}
+            var img=rt.GetComponent<Image>();if(img!=null){img.sprite=CircleSprite();img.color=new Color(.025f,.033f,.038f,.97f);var o=img.GetComponent<Outline>()??img.gameObject.AddComponent<Outline>();o.effectColor=Bronze;o.effectDistance=new Vector2(2,-2);}
+        }
+
+        static void SetFont(Transform parent,string childName,int size)
+        {
+            var child=parent.Find(childName);if(child==null)return;
+            var text=child.GetComponentInChildren<Text>();if(text!=null)text.fontSize=size;
+        }
+
+        static Sprite CircleSprite()
+        {
+            if(circleSprite!=null)return circleSprite;
+            const int n=64;
+            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false);
+            tex.name="Reference UI circle";
+            tex.wrapMode=TextureWrapMode.Clamp;
+            var pixels=new Color32[n*n];
+            float c=(n-1)*.5f,r=n*.49f;
+            for(int y=0;y<n;y++)for(int x=0;x<n;x++)
+            {
+                float dx=x-c,dy=y-c;
+                byte a=(byte)((dx*dx+dy*dy)<=r*r?255:0);
+                pixels[y*n+x]=new Color32(255,255,255,a);
+            }
+            tex.SetPixels32(pixels);tex.Apply(false,true);
+            circleSprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
+            return circleSprite;
         }
 
         static void Place(RectTransform parent,string childName,Vector2 pos,Vector2 size,Vector2 anchor)
@@ -396,7 +444,7 @@ namespace Eldoria.Presentation
 
         static void ActionMedallion(Transform parent,string name,string icon,string count,int index)
         {
-            var go=PanelObject(name,parent,new Vector2(54,54));var rt=go.GetComponent<RectTransform>();
+            var go=PanelObject(name,parent,new Vector2(54,54));go.GetComponent<Image>().sprite=CircleSprite();var rt=go.GetComponent<RectTransform>();
             rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(0,-index*68f);
             var t=MakeText("Icon",go.transform,18,GoldSoft,TextAnchor.MiddleCenter);t.text=icon+"\n<size=8>"+count+"</size>";Stretch(t.rectTransform,2);
             var o=go.AddComponent<Outline>();o.effectColor=Bronze;o.effectDistance=new Vector2(2,-2);
@@ -411,7 +459,7 @@ namespace Eldoria.Presentation
 
         static void NavMedallion(Transform parent,string label,string glyph,int index)
         {
-            var go=PanelObject(label,parent,new Vector2(72,72));var rt=go.GetComponent<RectTransform>();
+            var go=PanelObject(label,parent,new Vector2(72,72));go.GetComponent<Image>().sprite=CircleSprite();var rt=go.GetComponent<RectTransform>();
             rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(index==0?0:240,0);
             var t=MakeText("Text",go.transform,9,index==1?new Color(.47f,.48f,.48f):GoldSoft,TextAnchor.MiddleCenter);
             t.text=glyph+"\n"+label;Stretch(t.rectTransform,2);
