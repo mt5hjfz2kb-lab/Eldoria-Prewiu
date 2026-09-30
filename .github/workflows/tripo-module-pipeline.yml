@@ -345,6 +345,12 @@ jobs:
           } else {
             '{"enabled":false}' | Set-Content $refineConfig
           }
+          $salvageConfig = "$env:RUNNER_TEMP\tripo-module-salvage-config.json"
+          if ($null -ne $request.multipiece -and $null -ne $request.multipiece.salvage) {
+            $request.multipiece.salvage | ConvertTo-Json -Depth 8 | Set-Content $salvageConfig
+          } else {
+            '{"enabled":false}' | Set-Content $salvageConfig
+          }
           $errLog = "$env:RUNNER_TEMP\tripo-module-blender-error.log"
           $targetTris = 49800
           $minTris = 49500
@@ -364,8 +370,8 @@ jobs:
             if ($splitMin -le 0) { $splitMin = 250 }
             $clusterCount = [int]$request.multipiece.expected_piece_count
             if ($clusterCount -lt 0) { $clusterCount = 0 }
-            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount)
-            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | dir=$splitDir"
+            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount,"--split-salvage-config",$salvageConfig)
+            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | salvage=$([bool]$request.multipiece.salvage.enabled) | dir=$splitDir"
           }
           $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
           if ($process.ExitCode -ne 0) {
@@ -531,6 +537,7 @@ jobs:
             ${{ runner.temp }}/tripo-cli-result.json
             ${{ runner.temp }}/tripo-module-blender-report.json
             ${{ runner.temp }}/tripo-module-refine-config.json
+            ${{ runner.temp }}/tripo-module-salvage-config.json
             ${{ runner.temp }}/tripo-module-blender.log
             ${{ runner.temp }}/tripo-module-blender-error.log
             ${{ runner.temp }}/Eldoria-TripoGenericModule.log
