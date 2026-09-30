@@ -17,7 +17,6 @@ on:
       - 'playtest/**'
       - 'tester-v0265/**'
       - 'pipeline/unity-publish-request.json'
-      - '.github/workflows/pages.yml'
 
 permissions:
   contents: read
