@@ -404,16 +404,43 @@ namespace Eldoria.EditorTools
         static void BuildGateWings()
         {
             GameObject hero=null;
-            foreach(var candidate in Resources.LoadAll<GameObject>("Valoria/GoldenCellHero"))
+            const string heroFolder="Assets/Resources/Valoria/GoldenCellHero";
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+
+            // Prefer the editor importer directly: staged glTF assets are not guaranteed to appear in Resources.LoadAll.
+            foreach(var guid in AssetDatabase.FindAssets("t:GameObject",new[]{heroFolder}))
             {
+                var path=AssetDatabase.GUIDToAssetPath(guid);
+                var candidate=AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 if(candidate==null)continue;
                 hero=ValoriaKit.BenchmarkPieceModulated(
                     "GC · CC0 hero fort access",candidate,new Vector3(0f,2.42f,6.35f),
-                    13.2f,8.6f,Quaternion.Euler(0,180f,0),new Color(.98f,.95f,.88f,1f));
+                    13.2f,8.2f,Quaternion.Euler(0,180f,0),new Color(.86f,.82f,.74f,1f));
                 if(hero!=null)break;
             }
 
-            if(hero==null)
+            if(hero!=null)
+            {
+                hero.transform.SetParent(Root,true);
+                foreach(var col in hero.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                foreach(var hotspot in hero.GetComponentsInChildren<WorldHotspot>(true))
+                    UnityEngine.Object.DestroyImmediate(hotspot);
+
+                // Replace only the legacy Bastion render shell; authoritative gameplay stays untouched.
+                foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                {
+                    if(r.transform.IsChildOf(hero.transform))continue;
+                    bool bastion=false;
+                    for(var t=r.transform;t!=null;t=t.parent)
+                    {
+                        if(t.name.StartsWith("Bastion ·",StringComparison.Ordinal)||
+                           t.name.StartsWith("Valoria · Bastion hero",StringComparison.Ordinal))
+                        { bastion=true;break; }
+                    }
+                    if(bastion)r.enabled=false;
+                }
+            }
+            else
             {
                 GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
                 GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
