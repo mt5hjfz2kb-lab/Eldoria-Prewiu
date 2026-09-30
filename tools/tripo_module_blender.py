@@ -496,7 +496,7 @@ def _salvage_group_members(members, cfg, group_index):
     selected = set(int(x) for x in cfg.get("piece_indices", []))
     if selected and int(group_index) not in selected:
         return members, {"enabled": False, "reason": "piece_not_selected"}
-    rows = sorted([(o, tri_count(o)) for o in members], key=lambda x: x[1], reverse=True)
+    rows = sorted([(row, int(row["triangles"])) for row in members], key=lambda x: x[1], reverse=True)
     if not rows:
         return members, {"enabled": True, "removed": [], "kept": []}
     largest = rows[0][1]
@@ -504,15 +504,15 @@ def _salvage_group_members(members, cfg, group_index):
     floor = int(cfg.get("min_component_triangles", 120))
     threshold = max(floor, int(round(largest * ratio)))
     kept=[]; removed=[]
-    for o,t in rows:
-        if t >= threshold: kept.append(o)
-        else: removed.append((o,t))
+    for row,t in rows:
+        if t >= threshold: kept.append(row)
+        else: removed.append((row,t))
     # Never erase a whole clustered piece.
     if not kept:
         kept=[rows[0][0]]
         removed=rows[1:]
-    for o,t in removed:
-        bpy.data.objects.remove(o, do_unlink=True)
+    for row,t in removed:
+        bpy.data.objects.remove(row["object"], do_unlink=True)
     return kept, {
         "enabled": True,
         "policy": "disconnected_residue_only",
