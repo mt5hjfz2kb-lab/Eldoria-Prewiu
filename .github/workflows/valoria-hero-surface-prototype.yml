@@ -1,14 +1,8 @@
-name: Valoria hero surface prototype
+name: "[LEGACY] Valoria hero surface prototype"
 # Gate C rerun anchor: matte Stone/Rock under canonical neutral-overcast LookDev.
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/valoria-hero-surface-prototype.yml'
-      - 'tools/valoria_hero_surface_prototype.py'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs'
 
 permissions:
   contents: read
