@@ -289,6 +289,110 @@ namespace Eldoria.Presentation
             return mat;
         }
 
+        public static Material DetailedSurfaceMaterial(Color color,string pattern,Vector2 tiling,float relief=1f)
+        {
+            bool urp=GraphicsSettings.defaultRenderPipeline!=null;
+            var shader=Shader.Find(urp?"Universal Render Pipeline/Lit":"Standard");
+            if(shader==null)shader=Shader.Find("Unlit/Color");
+            var mat=new Material(shader){name="Valoria detailed "+pattern+" "+ColorUtility.ToHtmlStringRGB(color)};
+            var maps=DetailedPatternMaps(pattern,color);
+            if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",Color.white);
+            if(mat.HasProperty("_Color"))mat.SetColor("_Color",Color.white);
+            if(mat.HasProperty("_BaseMap")){mat.SetTexture("_BaseMap",maps[0]);mat.SetTextureScale("_BaseMap",tiling);}
+            else if(mat.HasProperty("_MainTex")){mat.SetTexture("_MainTex",maps[0]);mat.SetTextureScale("_MainTex",tiling);}
+            if(mat.HasProperty("_BumpMap"))
+            {
+                mat.SetTexture("_BumpMap",maps[1]);
+                mat.SetTextureScale("_BumpMap",tiling);
+                if(mat.HasProperty("_BumpScale"))mat.SetFloat("_BumpScale",Mathf.Clamp(relief,.2f,1.5f));
+                mat.EnableKeyword("_NORMALMAP");
+            }
+            float smooth=pattern=="slate"?.10f:pattern=="wood"?.055f:pattern=="stone"?.025f:.012f;
+            if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",smooth);
+            if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",0f);
+            if(mat.HasProperty("_SpecularHighlights"))mat.SetFloat("_SpecularHighlights",1f);
+            return mat;
+        }
+
+        static Texture2D[] DetailedPatternMaps(string kind,Color baseColor)
+        {
+            string key="detailed-"+kind+"-"+ColorUtility.ToHtmlStringRGB(baseColor);
+            if(Textures.TryGetValue(key+"-albedo",out var cachedAlbedo)&&cachedAlbedo!=null &&
+               Textures.TryGetValue(key+"-normal",out var cachedNormal)&&cachedNormal!=null)
+                return new[]{cachedAlbedo,cachedNormal};
+
+            const int size=128;
+            var heights=new float[size*size];
+            var pixels=new Color[size*size];
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                float n=Mathf.PerlinNoise(x*.071f+11.7f,y*.071f+5.3f);
+                float broad=Mathf.PerlinNoise(x*.021f+3.1f,y*.021f+17.9f);
+                float h=.52f+n*.16f+broad*.10f;
+                float shade=.88f+n*.18f+broad*.08f;
+                if(kind=="stone")
+                {
+                    int course=y/18;
+                    bool horizontal=y%18<=2;
+                    int joint=(x+(course%2)*14)%30;
+                    bool vertical=joint<=2&&!horizontal;
+                    if(horizontal||vertical){h-=.34f;shade-=.24f;}
+                    else
+                    {
+                        float edge=Mathf.Min(y%18,17-y%18);
+                        if(edge<4)shade-=.025f*(4-edge);
+                        if(((x*17+y*31)%113)==0){h-=.12f;shade-=.10f;}
+                    }
+                    shade+=.035f*Mathf.Sin(x*.19f+y*.07f);
+                }
+                else if(kind=="wood")
+                {
+                    float grain=.10f*Mathf.Sin((x+y*.16f)*.48f)+.045f*Mathf.Sin(x*.13f);
+                    bool seam=x%24<=2;
+                    h+=grain*(seam?.25f:1f);shade+=grain;
+                    if(seam){h-=.24f;shade-=.16f;}
+                }
+                else if(kind=="slate")
+                {
+                    bool row=y%16<=2;
+                    bool joint=(x+(y/16%2)*11)%22<=2;
+                    if(row||joint){h-=.22f;shade-=.15f;}
+                    shade+=.045f*Mathf.Sin(x*.11f+y*.23f);
+                }
+                else
+                {
+                    float pebble=((x*19+y*37)%97==0)?.15f:0f;
+                    float rut=.05f*Mathf.Sin(x*.15f+y*.04f);
+                    h+=pebble+rut;shade=.72f+n*.14f+broad*.12f+pebble*.45f;
+                }
+                heights[y*size+x]=Mathf.Clamp01(h);
+                pixels[y*size+x]=new Color(
+                    Mathf.Clamp01(baseColor.r*shade),
+                    Mathf.Clamp01(baseColor.g*shade),
+                    Mathf.Clamp01(baseColor.b*shade),1f);
+            }
+            var albedo=new Texture2D(size,size,TextureFormat.RGBA32,true)
+                {name="Valoria detailed "+kind+" albedo",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Trilinear};
+            albedo.SetPixels(pixels);albedo.Apply(true,false);
+
+            var normals=new Color[size*size];
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                int xl=(x-1+size)%size,xr=(x+1)%size,yd=(y-1+size)%size,yu=(y+1)%size;
+                float dx=heights[y*size+xr]-heights[y*size+xl];
+                float dy=heights[yu*size+x]-heights[yd*size+x];
+                var normal=new Vector3(-dx*4.2f,-dy*4.2f,1f).normalized;
+                normals[y*size+x]=new Color(normal.x*.5f+.5f,normal.y*.5f+.5f,normal.z*.5f+.5f,1f);
+            }
+            var normalTex=new Texture2D(size,size,TextureFormat.RGBA32,true)
+                {name="Valoria detailed "+kind+" normal",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Trilinear};
+            normalTex.SetPixels(normals);normalTex.Apply(true,false);
+            Textures[key+"-albedo"]=albedo;Textures[key+"-normal"]=normalTex;
+            return new[]{albedo,normalTex};
+        }
+
         static string PatternFor(Color c)
         {
             if(c.g>c.r*1.25f && c.g>c.b*1.15f)return "pine";
