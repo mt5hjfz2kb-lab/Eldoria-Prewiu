@@ -8,6 +8,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
+      - 'tools/castle_kit_uv_rewrap.py'
 
 permissions:
   contents: read
@@ -72,6 +73,44 @@ jobs:
           }
           Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Kenney Castle Kit via Hidencod/tge-assets mirror. CC0-1.0. Gate-only visual proof; not promoted.' -Encoding UTF8
 
+      - name: Locate Blender
+        id: blender
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @(
+              'C:\Program Files\Blender Foundation',
+              "$env:LOCALAPPDATA\Programs\Blender Foundation",
+              "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+            )
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found on Unity runner.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Reproject Castle Kit UVs for tileable PBR
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\CoherentKitProof"
+          $log="$env:RUNNER_TEMP\Eldoria-CoherentCastle-UV.log"
+          $err="$env:RUNNER_TEMP\Eldoria-CoherentCastle-UV-error.log"
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\castle_kit_uv_rewrap.py",'--','--input-dir',$dest)
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if ($p.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            if(Test-Path $err){Get-Content $err -Tail 200}
+            throw "Castle Kit UV rewrap failed: $($p.ExitCode)"
+          }
+          Get-Content $log -Tail 80
+
       - name: Capture coherent Castle Kit before-after
         shell: powershell
         run: |
@@ -114,5 +153,7 @@ jobs:
           path: |
             Unity/VisualFormulaCaptures/coherent-castle-*
             ${{ runner.temp }}/Eldoria-CoherentCastleProof.log
+            ${{ runner.temp }}/Eldoria-CoherentCastle-UV.log
+            ${{ runner.temp }}/Eldoria-CoherentCastle-UV-error.log
           if-no-files-found: warn
           retention-days: 14
