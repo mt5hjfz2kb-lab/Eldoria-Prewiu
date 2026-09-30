@@ -58,9 +58,13 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs|.github/workflows/pages.yml)
+              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
                 heavy=true
                 break
+                ;;
+              .github/workflows/pages.yml)
+                # Workflow maintenance must not consume the Windows Unity runner.
+                continue
                 ;;
               Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*)
                 continue
