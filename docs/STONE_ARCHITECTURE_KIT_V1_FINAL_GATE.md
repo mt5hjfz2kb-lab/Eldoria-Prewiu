@@ -89,3 +89,35 @@ A later zero-credit Blender/Unity repair pass supersedes the earlier cleanup-can
 - Final production-safe yield from the one 55-credit Stone Architecture sheet: **3 of 8 pieces — 01, 02 and 05**.
 - No additional Tripo credits were spent during any repair or promotion pass.
 - No `Valoria.unity`, gameplay, hotspot or topology change occurred in this repair closeout.
+
+## Zero-credit architecture repair closeout — 2026-09-30
+
+A second recovery strategy was validated after the initial disconnected-residue salvage proved too destructive for architecture. The revised strategy preserves the strongest architectural shell and removes only spatially remote outliers; piece 06 was tested separately with bounded connected-protrusion clipping.
+
+### Final successful repair gate
+- Run: `36715424694` — SUCCESS
+- Artifact: `11096157750`
+- Result: Blender PASS / isolated Unity PASS / multipiece Unity PASS.
+- Piece 01 `CornerWallL`: **VISUAL PASS AFTER SPATIAL REPAIR**.
+- Piece 05 `HighStraightWall`: **VISUAL PASS AFTER SPATIAL REPAIR**.
+- Selective promotion run: `36717246333` — SUCCESS.
+- Production files now present:
+  - `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb`
+  - `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb`
+  - existing `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`
+
+### Piece 06 final attempt
+- Run: `36717083816` — SUCCESS technically.
+- Artifact: `11096319220`.
+- The opposite-side X clip corrected the first mistaken clip direction, but dedicated front/rear/oblique evidence still shows artificial planar protrusions and clipped geometry.
+- Final verdict: **VISUAL REJECT**. Do not promote v1 piece 06 and do not continue automatic clipping passes on it.
+
+### Final v1 production verdict
+- Production-safe/promoted: **01, 02, 05**.
+- Rejected for v1: **03, 04, 06, 07, 08**.
+- Effective production yield from the one authorized 55-credit sheet: **3 reusable Stone Architecture modules**.
+- Additional Tripo spend for all repair work: **0 credits**.
+- `Valoria.unity`, gameplay, hotspots and production topology were not changed by this repair/promotion block.
+
+### Lesson for future multipiece sheets
+The earlier six-piece Ground/Stone-style sheet succeeded more uniformly because its objects were lower, compact and visually isolated. This architecture sheet contained taller walls, corners, arches and pillars with closer silhouettes and more opportunities for Tripo to bridge or fuse neighboring masses. Future architecture sheets should use fewer pieces per sheet, larger empty spacing, minimal silhouette overlap, and self-contained compact modules.
