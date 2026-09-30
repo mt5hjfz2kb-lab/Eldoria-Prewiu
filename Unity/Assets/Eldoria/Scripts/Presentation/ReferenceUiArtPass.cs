@@ -250,13 +250,19 @@ namespace Eldoria.Presentation
                 dock.anchoredPosition=new Vector2(277,-101);dock.sizeDelta=new Vector2(38,28);
                 var vg=dock.GetComponent<VerticalLayoutGroup>();if(vg!=null)vg.enabled=false;
                 foreach(Transform child in dock)child.gameObject.SetActive(false);
-                var primary=GameObject.Find("CONTINUAR");
-                if(primary!=null)
+                var actionRow=dock.Find("Primary objective action") as RectTransform;
+                if(actionRow!=null)
                 {
-                    primary.SetActive(true);
-                    var pr=primary.GetComponent<RectTransform>();pr.anchorMin=Vector2.zero;pr.anchorMax=Vector2.one;pr.offsetMin=pr.offsetMax=Vector2.zero;
-                    primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.10f);
-                    var t=primary.GetComponentInChildren<Text>();if(t!=null){t.text="›";t.fontSize=18;t.color=GoldSoft;}
+                    actionRow.gameObject.SetActive(true);
+                    actionRow.anchorMin=Vector2.zero;actionRow.anchorMax=Vector2.one;actionRow.offsetMin=actionRow.offsetMax=Vector2.zero;
+                    var primary=actionRow.Find("CONTINUAR")?.gameObject;
+                    if(primary!=null)
+                    {
+                        primary.SetActive(true);
+                        var pr=primary.GetComponent<RectTransform>();pr.anchorMin=Vector2.zero;pr.anchorMax=Vector2.one;pr.offsetMin=pr.offsetMax=Vector2.zero;
+                        primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.10f);
+                        var t=primary.GetComponentInChildren<Text>();if(t!=null){t.text="›";t.fontSize=18;t.color=GoldSoft;}
+                    }
                 }
             }
 
