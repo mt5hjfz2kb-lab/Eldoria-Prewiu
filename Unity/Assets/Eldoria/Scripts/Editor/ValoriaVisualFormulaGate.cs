@@ -134,36 +134,19 @@ namespace Eldoria.EditorTools
             var wallShift=new Vector3(-15.2f,-2.25f,-5.1f);
             var seamShift=new Vector3(-6.2f,-2.55f,-8.0f);
 
-            VisualWorld.VisualIntegrationEnabled=true;
+            // Build the city exactly once. BEFORE and AFTER therefore share the same camera,
+            // lighting, materials and every non-Stone-Architecture GameObject.
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             SceneSetup.SetupRenderPipeline();
             ProductionVisualIntegration.ResetVisualCachesForGate();
-            ProductionVisualIntegration.StoneArchitectureEnabled=true;
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.StoneArchitectureEnabled=false;
             VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
 
             var camera=Camera.main;
             if(camera==null)throw new System.Exception("Valoria camera missing for Stone Architecture gate.");
-            var signature=CollisionSignature();
+            var baseline=CollisionSignature();
 
-            var expected=new[]{
-                "Valoria · StoneArch · corner · west work court",
-                "Valoria · StoneArch · corner · west lower court",
-                "Valoria · StoneArch · high wall · west terrace back",
-                "Valoria · StoneArch · rock wall seam · sawmill",
-                "Valoria · StoneArch · rock wall seam · barracks"
-            };
-            var stoneRenderers=new List<Renderer>();
-            foreach(var name in expected)
-            {
-                var go=GameObject.Find(name);
-                if(go==null)throw new System.Exception("Stone Architecture production instance missing: "+name);
-                foreach(var collider in go.GetComponentsInChildren<Collider>(true))
-                    if(collider.enabled)throw new System.Exception("Stone Architecture visual instance owns enabled collision: "+name);
-                stoneRenderers.AddRange(go.GetComponentsInChildren<Renderer>(true));
-            }
-
-            // BEFORE: same scene, same materials, same camera. Only Stone Architecture renderers are hidden.
-            foreach(var r in stoneRenderers)r.enabled=false;
             Save(camera,folder+"/stone-architecture-overview-before-19.png",position,target,19f,1280,720);
             Save(camera,folder+"/stone-architecture-overview-before-12.png",position,target,12f,1280,720);
             Save(camera,folder+"/stone-architecture-overview-before-9.png",position,target,9f,1280,720);
@@ -172,8 +155,9 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/stone-high-wall-before.png",position+wallShift,target+wallShift,9f,1280,720);
             Save(camera,folder+"/stone-rock-transition-before.png",position+seamShift,target+seamShift,9f,1280,720);
 
-            foreach(var r in stoneRenderers)r.enabled=true;
-            if(CollisionSignature()!=signature)throw new System.Exception("Stone Architecture renderer toggle altered certified colliders/hotspots.");
+            ProductionVisualIntegration.AddStoneArchitectureForGate();
+            var after=CollisionSignature();
+            if(after!=baseline)throw new System.Exception("Stone Architecture v1 altered certified colliders/hotspots.");
 
             Save(camera,folder+"/stone-architecture-overview-after-19.png",position,target,19f,1280,720);
             Save(camera,folder+"/stone-architecture-overview-after-12.png",position,target,12f,1280,720);
@@ -183,16 +167,30 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/stone-high-wall-after.png",position+wallShift,target+wallShift,9f,1280,720);
             Save(camera,folder+"/stone-rock-transition-after.png",position+seamShift,target+seamShift,9f,1280,720);
 
+            var expected=new[]{
+                "Valoria · StoneArch · corner · west work court",
+                "Valoria · StoneArch · corner · west lower court",
+                "Valoria · StoneArch · high wall · west terrace back",
+                "Valoria · StoneArch · rock wall seam · sawmill",
+                "Valoria · StoneArch · rock wall seam · barracks"
+            };
+            foreach(var name in expected)
+            {
+                var go=GameObject.Find(name);
+                if(go==null)throw new System.Exception("Stone Architecture production instance missing: "+name);
+                foreach(var collider in go.GetComponentsInChildren<Collider>(true))
+                    if(collider.enabled)throw new System.Exception("Stone Architecture visual instance owns enabled collision: "+name);
+            }
             File.WriteAllText(folder+"/stone-architecture-evidence.json",
                 "{\n"+
                 "  \"camera_matched\": true,\n"+
                 "  \"same_scene_before_after\": true,\n"+
-                "  \"only_stone_architecture_renderers_toggled\": true,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"instances\": {\"CornerWallL\": 2, \"HighStraightWall\": 1, \"RockToWallTransition\": 2},\n"+
                 "  \"gameplay_topology_changed\": false,\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
+
             ProductionVisualIntegration.StoneArchitectureEnabled=true;
         }
 
