@@ -509,7 +509,19 @@ namespace Eldoria.Presentation
             if(camera!=null)
             {
                 camera.backgroundColor=RenderSettings.fogColor;
-                camera.clearFlags=CameraClearFlags.SolidColor;
+                var skyShader=Shader.Find("Skybox/Procedural");
+                if(skyShader!=null)
+                {
+                    var sky=new Material(skyShader){name="Valoria Hero Frame · procedural dusk sky"};
+                    if(sky.HasProperty("_SunSize"))sky.SetFloat("_SunSize",.035f);
+                    if(sky.HasProperty("_AtmosphereThickness"))sky.SetFloat("_AtmosphereThickness",.82f);
+                    if(sky.HasProperty("_SkyTint"))sky.SetColor("_SkyTint",new Color(.48f,.57f,.67f));
+                    if(sky.HasProperty("_GroundColor"))sky.SetColor("_GroundColor",new Color(.34f,.32f,.29f));
+                    if(sky.HasProperty("_Exposure"))sky.SetFloat("_Exposure",.92f);
+                    RenderSettings.skybox=sky;
+                    camera.clearFlags=CameraClearFlags.Skybox;
+                }
+                else camera.clearFlags=CameraClearFlags.SolidColor;
             }
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
@@ -521,25 +533,14 @@ namespace Eldoria.Presentation
             }
 
             // Mid-distance geology creates a second depth plane between the inhabited city and the far
-            // VisualWorld mountains. Use the authored Valoria terrain prefabs already shipped with the project,
-            // keeping the central Bastion silhouette open and hiding the remaining flat valley edges.
-            var cliffA=Resources.Load<GameObject>("Valoria/SM_Cliffs_01");
-            var cliffB=Resources.Load<GameObject>("Valoria/SM_Cliffs_03");
-            var hill=Resources.Load<GameObject>("Valoria/SM_Hills_01");
-            if(cliffA!=null)
+            // VisualWorld mountains. Keep this layer on the already-proven neutral rock inventory:
+            // the terrain-pack cliff materials were too saturated in the real capture and are deliberately rejected.
+            foreach(var p in new[]{
+                new Vector3(-15.8f,-.20f,13.4f),new Vector3(14.8f,-.18f,13.8f),
+                new Vector3(-19.0f,-.22f,7.4f),new Vector3(18.6f,-.22f,8.2f)})
             {
-                Piece("Valoria · hero frame cliff west",cliffA,new Vector3(-18.2f,-.55f,13.2f),11.8f,6.4f,18f,new Color(.65f,.66f,.62f));
-                Piece("Valoria · hero frame cliff east",cliffA,new Vector3(17.9f,-.60f,14.0f),11.2f,5.9f,-24f,new Color(.63f,.65f,.62f));
-            }
-            if(cliffB!=null)
-            {
-                Piece("Valoria · hero frame cliff west near",cliffB,new Vector3(-20.0f,-.62f,6.4f),8.8f,4.8f,36f,new Color(.61f,.62f,.58f));
-                Piece("Valoria · hero frame cliff east near",cliffB,new Vector3(20.2f,-.62f,7.6f),8.6f,4.6f,-32f,new Color(.61f,.62f,.58f));
-            }
-            if(hill!=null)
-            {
-                Piece("Valoria · hero frame hill rear west",hill,new Vector3(-10.8f,-.72f,18.4f),13.5f,4.0f,9f,new Color(.55f,.58f,.52f));
-                Piece("Valoria · hero frame hill rear east",hill,new Vector3(10.5f,-.74f,19.0f),13.2f,3.9f,-11f,new Color(.55f,.58f,.52f));
+                Imported("Valoria · hero frame buried ridge","Rock02",p,
+                    p.z>10?5.4f:4.3f,p.z>10?2.25f:1.85f,p.x*9f,new Color(.36f,.36f,.33f),false);
             }
 
             // Inhabited middle-distance: roofs behind roofs, but never across the certified central route.
@@ -630,9 +631,21 @@ namespace Eldoria.Presentation
                     for(int i=0;i<mats.Length;i++)
                     {
                         if(mats[i]==null)continue;
+                        // Hero Bastion preserves the authored stone textures but shifts the importer palette
+                        // away from blue-grey so it belongs to Valoria's warm natural masonry family.
+                        if(name.Contains("Bastion hero"))
+                        {
+                            var copy=new Material(mats[i]);
+                            var warm=new Color(.62f,.58f,.50f,1f);
+                            if(copy.HasProperty("_BaseColor"))copy.SetColor("_BaseColor",warm);
+                            if(copy.HasProperty("_Color"))copy.SetColor("_Color",warm);
+                            if(copy.HasProperty("_BaseColorFactor"))copy.SetColor("_BaseColorFactor",warm);
+                            if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.035f);
+                            mats[i]=copy;
+                        }
                         // This recovered prototype's baked atlas has unmapped black UV regions.
                         // Keep its certified geometry, use the existing city surface vocabulary.
-                        if(name.Contains("rescued hero"))
+                        else if(name.Contains("rescued hero"))
                             mats[i]=ValoriaKit.SurfaceMaterial(mats[i].name.Contains("Rock")?new Color(.25f,.26f,.24f):new Color(.34f,.32f,.27f),
                                 mats[i].name.Contains("Rock")?"earth":"stone",new Vector2(3,3));
                         else if(mats[i].HasProperty("_BaseColorFactor"))
