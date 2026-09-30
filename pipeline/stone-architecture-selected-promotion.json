@@ -1,0 +1,65 @@
+{
+  "enabled": false,
+  "request_id": "eldoria-stone-architecture-kit-v1-selected-promotion",
+  "source": {
+    "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
+    "exact_sha256": "da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422",
+    "bytes": 74616872
+  },
+  "optimization": {
+    "target_triangles": 49800,
+    "min_triangles": 49500,
+    "max_triangles": 50000
+  },
+  "split": {
+    "expected_piece_count": 8,
+    "min_component_triangles": 250
+  },
+  "approved": [
+    {
+      "piece_file": "piece_01_7360tris.glb",
+      "expected_sha256": "512e496cdf6cbf9e1b5b7587d5ef7eb3bc6c5d5d06afc5a0d1eb051bfb721310",
+      "expected_bytes": 12437068,
+      "semantic_name": "ExteriorCornerWall",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/ExteriorCornerWall.glb",
+      "verdict": "VISUAL_PASS"
+    },
+    {
+      "piece_file": "piece_02_7270tris.glb",
+      "expected_sha256": "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
+      "expected_bytes": 12414676,
+      "semantic_name": "RockToWallTransition",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "verdict": "VISUAL_PASS"
+    }
+  ],
+  "rejected": [
+    {
+      "piece_file": "piece_03_8774tris.glb",
+      "reason": "cluster contains disconnected corner/wall fragments; not reusable as one module"
+    },
+    {
+      "piece_file": "piece_04_3304tris.glb",
+      "reason": "parapet/merlon candidate has floating/torn geometry and incomplete side profile"
+    },
+    {
+      "piece_file": "piece_05_6712tris.glb",
+      "reason": "high-wall candidate has detached stray geometry; strict visual gate failed"
+    },
+    {
+      "piece_file": "piece_06_2810tris.glb",
+      "reason": "low-wall candidate has long stretched protrusions/tears"
+    },
+    {
+      "piece_file": "piece_07_7448tris.glb",
+      "reason": "pillar/arch geometry fused into two disconnected structures"
+    },
+    {
+      "piece_file": "piece_08_6114tris.glb",
+      "reason": "arch candidate is split with detached/floating upper fragments"
+    }
+  ],
+  "no_valoria_scene_changes": true,
+  "no_gameplay_changes": true,
+  "credit_spend_total": 55
+}
