@@ -1,13 +1,13 @@
 {
-  "enabled": true,
-  "request_id": "eldoria-multipiece-stonekit-v1-full-e2e",
-  "module_label": "Eldoria_MultiPiece_StoneKit_v1",
+  "enabled": false,
+  "request_id": "eldoria-stone-architecture-kit-v1-gate",
+  "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Eldoria_MultiPiece_StoneKit_v1.glb",
-    "exact_sha256": "6375b0148fce43e120693584f0db1bb08c14685afab1a828e11eaba316c3a7bb",
-    "name_regex": "^Eldoria_MultiPiece_StoneKit_v1\\.glb$",
+    "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
+    "exact_sha256": "",
+    "name_regex": "^Eldoria_StoneArchitectureKit_v1\\.glb$",
     "max_age_hours": 6,
     "exclude_sha256": []
   },
@@ -22,12 +22,12 @@
   "multipiece": {
     "enabled": true,
     "min_component_triangles": 250,
-    "expected_piece_count": 6
+    "expected_piece_count": 8
   },
-  "visual_acceptance": "Viability test only. The generated sheet is intended to yield multiple independent reusable aged-stone modular pieces from one Tripo generation: straight slab, irregular slab, street edge, street corner, step and stone block. PASS requires real separability, clean geometry, usable textures and side/rear surfaces, sensible pivots/orientation, and practical reuse at Valoria camera distance and potentially on the world map. Do not mark PASS merely because one combined GLB exists.",
-  "notes": "One authorized Tripo generation already completed and exported. Process the exact GLB through Blender, reconstruct the six intended sheet modules by spatial clustering of loose geometric islands, normalize pivots, import the six grouped pieces into isolated Unity review, render official evidence, and report actual grouped-piece quality. No production promotion.",
+  "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
+  "notes": "Prepared while Tripo generation is still completing. Keep disabled until the exact exported GLB is available and its SHA-256 is recorded. Then enable and run the canonical Blender -> isolated Unity gate. No production promotion in this request.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-29T21:22Z-multipiece-direct-specific-gate"
+  "run_nonce": "2026-09-30-stone-architecture-kit-v1-prepared"
 }
