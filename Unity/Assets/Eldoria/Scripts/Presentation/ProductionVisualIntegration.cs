@@ -32,7 +32,7 @@ namespace Eldoria.Presentation
         // Never enabled in production automatically.
         public static bool CoherentCastleProofEnabled = false;
         // Gate-only proof using one higher-detail family already shipped in the project.
-        public static bool SlavicDistrictProofEnabled = false; // validation retrigger after governance repair
+        public static bool SlavicDistrictProofEnabled = false; // v2 material-integration proof
 
         public static void ResetVisualCachesForGate()
         {
@@ -702,7 +702,16 @@ namespace Eldoria.Presentation
         static GameObject SlavicProofPiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw)
         {
             if(source==null)return null;
-            var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,height,Quaternion.Euler(0f,yaw,0f));
+            // Slavic source materials are authored much brighter than the current Valoria exposure.
+            // Preserve texture identity but modulate the response by role so the family belongs to the same world.
+            Color tint;
+            var lower=name.ToLowerInvariant();
+            if(lower.Contains("tree"))tint=new Color(.48f,.58f,.44f,1f);
+            else if(lower.Contains("rock"))tint=new Color(.62f,.61f,.56f,1f);
+            else if(lower.Contains("cobble"))tint=new Color(.68f,.65f,.59f,1f);
+            else tint=new Color(.62f,.57f,.49f,1f);
+            var go=ValoriaKit.BenchmarkPieceModulated(name,source,ground,footprint,height,
+                Quaternion.Euler(0f,yaw,0f),tint);
             if(go==null)return null;
             go.transform.SetParent(root,true);
             foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
