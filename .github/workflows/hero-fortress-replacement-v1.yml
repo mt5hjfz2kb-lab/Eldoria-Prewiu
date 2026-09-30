@@ -98,6 +98,27 @@ jobs:
           Experimental branch only; not promoted to production.
           '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
 
+      - name: Stage CC0 complete fortress candidate
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\HeroFortressExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $url="https://cdn.3dassets.dev/assets/23508/v1/model.glb"
+          $out=Join-Path $dest "BlueBannerCastleCourtyard.glb"
+          Invoke-WebRequest -Uri $url -OutFile $out
+          if((Get-Item $out).Length -lt 100000){ throw "CC0 fortress GLB download too small." }
+          @'
+          Hero Fortress Replacement v1 — Candidate B
+          Asset: Blue Banner Castle Courtyard
+          Source: 3DAssets.dev / Medieval Castle Construction
+          Source URL: https://3dassets.dev/assets/medieval-castle-construction-castle-cour-480ed575-starter-scene
+          Model URL: https://cdn.3dassets.dev/assets/23508/v1/model.glb
+          License: CC0 1.0 Universal
+          Cost: 0
+          Experimental branch only; not promoted to production.
+          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
+
       - name: Capture Hero Fortress
         shell: powershell
         run: |
