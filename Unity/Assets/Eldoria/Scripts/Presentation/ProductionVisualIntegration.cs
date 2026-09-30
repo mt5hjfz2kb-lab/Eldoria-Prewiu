@@ -263,8 +263,12 @@ namespace Eldoria.Presentation
                 new Vector3(-3.85f,.43f,-5.85f),new Vector3(-2.95f,.43f,-6.65f),
                 new Vector3(3.55f,.43f,-6.20f),new Vector3(4.15f,.43f,-5.25f)})
                 Civilian(p);
-            ValoriaKit.SmokePlume("Valoria · ProductionCell · sawmill chimney smoke",
-                new Vector3(-7.05f,3.30f,-2.55f),.72f,5f);
+            for(int i=0;i<4;i++)
+            {
+                var smokePos=new Vector3(-7.05f+(i%2==0?-.08f:.09f),3.30f+i*.32f,-2.55f+(i%3-1)*.05f);
+                Primitive("Valoria · ProductionCell · sawmill smoke",PrimitiveType.Sphere,smokePos,
+                    Vector3.one*(.26f+i*.055f),new Color(.43f-i*.018f,.42f-i*.018f,.40f-i*.015f));
+            }
 
             // 5) Focal hierarchy: restrained heraldry and warm pools identify the working/military fronts.
             Flag("Valoria · ProductionCell · civic blue standard",new Vector3(-1.72f,.44f,-7.15f),Blue,1.65f);
