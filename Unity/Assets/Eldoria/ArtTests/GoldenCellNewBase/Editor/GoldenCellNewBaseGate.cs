@@ -311,18 +311,12 @@ namespace Eldoria.EditorTools
                     hierarchy.Contains("rock plinth");
 
                 bool upper =
-                    hierarchy.Contains("rear connected tower")||
                     hierarchy.Contains("inner keep")||
                     hierarchy.Contains("keep detailed")||
                     hierarchy.Contains("keep side")||
                     hierarchy.Contains("keep rear")||
                     hierarchy.Contains("high lantern")||
-                    hierarchy.Contains("counter crown")||
                     hierarchy.Contains("central crown")||
-                    hierarchy.Contains("dead palace")||
-                    hierarchy.Contains("palace collapse")||
-                    hierarchy.Contains("repair scaffold")||
-                    hierarchy.Contains("crown rubble")||
                     hierarchy.Contains("keep slit");
 
                 if(front) r.enabled=false;
@@ -334,7 +328,7 @@ namespace Eldoria.EditorTools
         {
             Stone=Pbr("stone",new Color(.94f,.90f,.82f,1f),new Vector2(3.0f,3.0f),.09f,1.05f);
             StoneDark=Pbr("stone",new Color(.60f,.60f,.56f,1f),new Vector2(3.5f,3.5f),.07f,1.10f);
-            BastionStone=Pbr("stone",new Color(.63f,.61f,.56f,1f),new Vector2(3.25f,3.25f),.055f,1.08f);
+            BastionStone=Pbr("stone",new Color(.57f,.56f,.53f,1f),new Vector2(3.25f,3.25f),.050f,1.08f);
             Cobble=Pbr("ground",new Color(.86f,.80f,.69f,1f),new Vector2(5.4f,5.4f),.08f,1.15f);
             Dirt=Pbr("ground",new Color(.58f,.48f,.36f,1f),new Vector2(4.4f,4.4f),.025f,.55f);
             Wood=Pbr("wood",new Color(.62f,.40f,.22f,1f),new Vector2(3.8f,3.8f),.06f,1.0f);
