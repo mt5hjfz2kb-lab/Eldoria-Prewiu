@@ -200,8 +200,8 @@ namespace Eldoria.Presentation
                 top.sizeDelta=new Vector2(0,52);top.anchoredPosition=Vector2.zero;
                 var g=top.GetComponent<HorizontalLayoutGroup>();if(g!=null)g.enabled=false;
                 Place(top,"Realm crest chip",new Vector2(88,-7),new Vector2(28,38),new Vector2(0,1));
-                Place(top,"Heading",new Vector2(120,-5),new Vector2(150,42),new Vector2(0,1));
-                Place(top,"Power chip",new Vector2(132,-5),new Vector2(150,42),new Vector2(0,1));
+                Place(top,"Heading",new Vector2(0,0),new Vector2(1,1),new Vector2(0,1));
+                Place(top,"Power chip",new Vector2(118,-5),new Vector2(154,42),new Vector2(0,1));
                 Place(top,"Wood resource chip",new Vector2(w-610,-5),new Vector2(145,42),new Vector2(0,1));
                 Place(top,"Stone resource chip",new Vector2(w-458,-5),new Vector2(145,42),new Vector2(0,1));
             }
@@ -262,7 +262,7 @@ namespace Eldoria.Presentation
 
             LayoutBottomNavigation(w);
             var extra=safe.Find("Reference extra nav") as RectTransform;
-            if(extra!=null)extra.anchoredPosition=new Vector2(-190,7);
+            if(extra!=null){extra.gameObject.SetActive(true);extra.anchoredPosition=new Vector2(-190,7);}
         }
 
         void ApplyPortrait()
