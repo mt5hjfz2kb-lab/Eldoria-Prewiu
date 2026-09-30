@@ -427,7 +427,7 @@ namespace Eldoria.EditorTools
             holder.transform.SetParent(Root,true);
             holder.transform.rotation=Quaternion.Euler(0f,180f,0f);
 
-            var gltf=new GltfImport();
+            var gltf=new GltfImport(null,new UninterruptedDeferAgent());
             var settings=new ImportSettings
             {
                 GenerateMipMaps=true,
