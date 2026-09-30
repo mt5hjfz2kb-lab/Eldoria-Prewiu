@@ -687,19 +687,19 @@ namespace Eldoria.Presentation
                         // away from blue-grey so it belongs to Valoria's warm natural masonry family.
                         if(name.Contains("Bastion hero"))
                         {
-                            var source=mats[i];
+                            var sourceMat=mats[i];
                             Texture baseMap=null,normal=null;
                             foreach(string property in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture"})
-                                if(source.HasProperty(property)&&source.GetTexture(property)!=null){baseMap=source.GetTexture(property);break;}
+                                if(sourceMat.HasProperty(property)&&sourceMat.GetTexture(property)!=null){baseMap=sourceMat.GetTexture(property);break;}
                             foreach(string property in new[]{"_BumpMap","_NormalMap","normalTexture"})
-                                if(source.HasProperty(property)&&source.GetTexture(property)!=null){normal=source.GetTexture(property);break;}
+                                if(sourceMat.HasProperty(property)&&sourceMat.GetTexture(property)!=null){normal=sourceMat.GetTexture(property);break;}
                             var lit=Shader.Find("Universal Render Pipeline/Lit");
-                            var copy=new Material(lit){name="Valoria Hero Bastion · "+source.name};
+                            var copy=new Material(lit){name="Valoria Hero Bastion · "+sourceMat.name};
                             if(baseMap!=null)copy.SetTexture("_BaseMap",baseMap);
                             if(normal!=null){copy.SetTexture("_BumpMap",normal);copy.EnableKeyword("_NORMALMAP");}
                             // Warm limestone/aged granite: brighter than the rejected blue-black Toon response,
                             // but still clearly heavier than the civilian plaster around it.
-                            copy.SetColor("_BaseColor",source.name.Contains("Color")
+                            copy.SetColor("_BaseColor",sourceMat.name.Contains("Color")
                                 ?new Color(.72f,.64f,.52f,1f)
                                 :new Color(.58f,.55f,.48f,1f));
                             copy.SetFloat("_Metallic",0f);
