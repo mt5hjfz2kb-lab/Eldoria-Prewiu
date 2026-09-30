@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Publish the owner-approved HUD reference integration for final WebGL visual review and startup evidence.",
-  "source_sha": "3a7fdf39840dcb26c43252fe3df6530cabd98d15",
+  "reason": "Final owner-approved HUD reference publication after runner-governance fixes; build and capture this coherent main candidate.",
+  "source_sha": "136df92fd043d2c4e9d50777b6035a628e36a67c",
   "requested_by": "agent",
-  "updated_at": "2026-09-30"
+  "updated_at": "2026-09-30T09:22Z"
 }
