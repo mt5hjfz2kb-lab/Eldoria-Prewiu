@@ -1,0 +1,14 @@
+{
+  "asset_name": "TerrainTerraceKit_v1",
+  "file_name": "A3251BB2-F5F4-4245-B395-911AFDBBD139(1).jpeg",
+  "sha256": "47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71",
+  "size_bytes": 597320,
+  "parts": 7,
+  "source": "chat_exact_input_persisted_before_tripo",
+  "width": 1448,
+  "height": 1086,
+  "format": "JPEG",
+  "parts_dir": "pipeline/exact-inputs/TerrainTerraceKit_v1",
+  "expected_sha256": "47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71",
+  "expected_size_bytes": 597320
+}
