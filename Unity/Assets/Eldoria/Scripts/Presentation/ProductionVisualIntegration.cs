@@ -403,9 +403,9 @@ namespace Eldoria.Presentation
             // Hero-frame Bastion: retain the certified functional Bastion/hotspot underneath,
             // but replace the old generic Mega* envelope with the project's authored stone family.
             // No visual piece below owns collision or interaction; Finish() strips both.
-            Suppress("Bastion · connected", "Bastion · rear connected", "Bastion · high lantern",
-                "Bastion · keep facing fallback", "Bastion · keep side fallback", "Bastion · keep rear fallback",
-                "Bastion · dead palace wall", "Bastion · dead palace tower");
+            // Suppress the entire previous visual shell, not just selected legacy pieces.
+            // The gameplay target/hotspot is an invisible object and remains authoritative.
+            Suppress("Bastion ·");
             // Load the concrete Resources prefabs directly. The legacy ScriptableObject references for
             // this very old pack can deserialize as prefab-asset handles that cannot be Instantiate<GameObject>
             // in editor batchmode, even though the Resources prefabs themselves are valid GameObjects.
@@ -419,23 +419,23 @@ namespace Eldoria.Presentation
 
             // Strong recessed front gate aligned to the certified stair mouth.
             Piece("Valoria · Bastion hero gate",stoneGate,p+new Vector3(0,.08f,-3.00f),
-                5.15f,4.25f,0,new Color(.82f,.80f,.74f));
+                4.85f,4.05f,0,new Color(.82f,.80f,.74f));
 
             // Connected front/side masonry keeps the entrance legible while giving the keep a real base.
             Piece("Valoria · Bastion hero wall west",stoneWall,p+new Vector3(-3.05f,.08f,-2.20f),
-                4.15f,3.55f,3,new Color(.80f,.78f,.72f));
+                3.85f,3.35f,3,new Color(.80f,.78f,.72f));
             Piece("Valoria · Bastion hero wall east",stoneWall,p+new Vector3(3.05f,.08f,-2.12f),
-                4.05f,3.45f,-4,new Color(.80f,.78f,.72f));
+                3.75f,3.30f,-4,new Color(.80f,.78f,.72f));
             Piece("Valoria · Bastion hero wall rear",stoneWall,p+new Vector3(.15f,.18f,2.25f),
-                5.10f,3.70f,180,new Color(.76f,.75f,.70f));
+                4.70f,3.45f,180,new Color(.76f,.75f,.70f));
 
             // Asymmetric tower hierarchy: one dominant rear keep, two unequal supporting masses.
             Piece("Valoria · Bastion hero tower crown",stoneTower,p+new Vector3(-.55f,.20f,1.10f),
-                4.55f,7.20f,-2,new Color(.84f,.82f,.76f));
+                4.10f,6.20f,-2,new Color(.84f,.82f,.76f));
             Piece("Valoria · Bastion hero tower west",stoneTower,p+new Vector3(-3.25f,.12f,.25f),
-                3.10f,5.55f,5,new Color(.80f,.78f,.72f));
+                2.85f,5.05f,5,new Color(.80f,.78f,.72f));
             Piece("Valoria · Bastion hero tower east",stoneTower,p+new Vector3(3.05f,.10f,.65f),
-                2.85f,4.75f,-7,new Color(.78f,.77f,.71f));
+                2.65f,4.45f,-7,new Color(.78f,.77f,.71f));
 
             // Rock-to-architecture seams break the pedestal read without creating any route/floor.
             StoneArchitecturePiece("RockToWallTransition","Valoria · Bastion hero rock seam west",
@@ -687,12 +687,23 @@ namespace Eldoria.Presentation
                         // away from blue-grey so it belongs to Valoria's warm natural masonry family.
                         if(name.Contains("Bastion hero"))
                         {
-                            var copy=new Material(mats[i]);
-                            var warm=new Color(.62f,.58f,.50f,1f);
-                            if(copy.HasProperty("_BaseColor"))copy.SetColor("_BaseColor",warm);
-                            if(copy.HasProperty("_Color"))copy.SetColor("_Color",warm);
-                            if(copy.HasProperty("_BaseColorFactor"))copy.SetColor("_BaseColorFactor",warm);
-                            if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.035f);
+                            var source=mats[i];
+                            Texture baseMap=null,normal=null;
+                            foreach(string property in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture"})
+                                if(source.HasProperty(property)&&source.GetTexture(property)!=null){baseMap=source.GetTexture(property);break;}
+                            foreach(string property in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                                if(source.HasProperty(property)&&source.GetTexture(property)!=null){normal=source.GetTexture(property);break;}
+                            var lit=Shader.Find("Universal Render Pipeline/Lit");
+                            var copy=new Material(lit){name="Valoria Hero Bastion · "+source.name};
+                            if(baseMap!=null)copy.SetTexture("_BaseMap",baseMap);
+                            if(normal!=null){copy.SetTexture("_BumpMap",normal);copy.EnableKeyword("_NORMALMAP");}
+                            // Warm limestone/aged granite: brighter than the rejected blue-black Toon response,
+                            // but still clearly heavier than the civilian plaster around it.
+                            copy.SetColor("_BaseColor",source.name.Contains("Color")
+                                ?new Color(.72f,.64f,.52f,1f)
+                                :new Color(.58f,.55f,.48f,1f));
+                            copy.SetFloat("_Metallic",0f);
+                            copy.SetFloat("_Smoothness",.035f);
                             mats[i]=copy;
                         }
                         // This recovered prototype's baked atlas has unmapped black UV regions.
