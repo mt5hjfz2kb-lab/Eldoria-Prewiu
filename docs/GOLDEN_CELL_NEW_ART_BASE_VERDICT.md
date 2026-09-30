@@ -57,3 +57,14 @@ Invalidate:
 The next experiment must introduce **one genuinely higher-grade authored Bastion/access architecture family** inside the same bounded Golden Cell, then re-use the validated material stack around it.
 
 Until that exists, this branch remains diagnostic only and must not be merged into `main`.
+
+
+## Addendum — hero-geometry candidate test
+
+The internal `valoria_hero_fragment.fbx` was subsequently tested in the same bounded Golden Cell with both native and widened/lowered gameplay proportions.
+
+**Result: REJECTED AS BASTION.**
+
+It increases mesh detail but reads as civic/manor architecture rather than a defensive fortress. Geometry quality alone is therefore not enough; the next candidate must also have the correct **fortress silhouette and military hierarchy**.
+
+The branch is intentionally restored to the best material-unified Golden Cell configuration and remains diagnostic only.
