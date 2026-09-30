@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
         public static bool SurfaceCellEnabled = false;
         // Gate-only coherent asset-language proof using a single CC0 Kenney Castle Kit family.
         // Never enabled in production automatically.
-        public static bool CoherentCastleProofEnabled = false;
+        public static bool CoherentCastleProofEnabled = false; // validation retrigger after governance repair
 
         public static void ResetVisualCachesForGate()
         {
