@@ -24,7 +24,7 @@ jobs:
             });
             const stale = runs.filter(r =>
               (r.path === '.github/workflows/pages.yml' && r.status === 'in_progress' && r.head_sha !== context.sha) ||
-              (r.path === '.github/workflows/ui-progression-cert.yml' && r.status === 'queued')
+              (r.path === '.github/workflows/ui-progression-cert.yml' && (r.status === 'queued' || r.status === 'in_progress'))
             );
             core.info(`Found ${stale.length} stale/blocking run(s).`);
             for (const run of stale) {
