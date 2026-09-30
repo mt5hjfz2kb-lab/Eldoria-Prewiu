@@ -125,3 +125,38 @@ The following assumptions are invalidated for a higher-category Valoria rebuild:
 3. solving the quality ceiling through dressing, density or lighting before replacing the visual language of the focal architecture.
 
 The reusable part of the current pipeline is the **camera-first validation, independent gameplay topology, same-scene collider/hotspot gate and cell-by-cell promotion discipline**. The artistic base itself must be allowed to change.
+
+
+## Final exploratory closure — OriginalHero rejected
+
+After the material-unified Golden Cell checkpoint, the existing internal asset
+`Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx` was tested as the next higher-detail hero architecture candidate.
+
+Two isolated variants were rendered:
+
+- original proportions;
+- widened / vertically compressed gameplay proportions.
+
+Both variants preserved gameplay authority and passed the isolated capture workflow, but both were rejected visually.
+
+Reason:
+
+- the fragment has more geometric detail than the current Bastion;
+- however, its dominant silhouette reads as civic manor / tower-house rather than a fortified Bastion;
+- scaling cannot change that architectural language;
+- the result weakens military hierarchy even when material integration is acceptable.
+
+Therefore `OriginalHero` is **not** a valid Bastion replacement.
+
+### Best-known Golden Cell checkpoint
+
+The branch has been restored to the best-known visual configuration:
+
+- code checkpoint restored from: `3b5764ea786af415fb918e98da83dd7f893d715e`;
+- restoration commit: `977d3cf94e6563fbd6c08cdab563d0e25328dfd7`;
+- successful evidence run for the best checkpoint: `36783595411`;
+- artifact: `11129220413`.
+
+This checkpoint remains the **best current experimental reference**, but still does not satisfy the owner's category-jump threshold and is not approved for production propagation.
+
+The next credible route is no longer material tuning or reshaping existing hero studies. It requires a genuinely fortress-specific, higher-grade authored Bastion/access family.
