@@ -254,13 +254,14 @@ namespace Eldoria.EditorTools
     static class GoldenCellFinished
     {
         static Transform Root;
-        static Material Stone,StoneDark,Cobble,Dirt,Wood,Roof,Metal,Moss,Plaster,Blue,Gold,Corrupt;
+        static Material Stone,StoneDark,BastionStone,Cobble,Dirt,Wood,Roof,Metal,Moss,Plaster,Blue,Gold,Corrupt;
 
         public static void Build()
         {
             Root=new GameObject("GOLDEN CELL · finished v1").transform;
             SetupMaterials();
             SetupLighting();
+            UnifyExistingBastionSurface();
 
             // Replace only the cell's visual read. Gameplay/colliders remain untouched.
             BuildTerraceAndPlaza();
@@ -278,6 +279,7 @@ namespace Eldoria.EditorTools
         {
             Stone=Pbr("stone",new Color(.94f,.90f,.82f,1f),new Vector2(3.0f,3.0f),.09f,1.05f);
             StoneDark=Pbr("stone",new Color(.60f,.60f,.56f,1f),new Vector2(3.5f,3.5f),.07f,1.10f);
+            BastionStone=Pbr("stone",new Color(.68f,.65f,.58f,1f),new Vector2(3.25f,3.25f),.065f,1.08f);
             Cobble=Pbr("ground",new Color(.86f,.80f,.69f,1f),new Vector2(5.4f,5.4f),.08f,1.15f);
             Dirt=Pbr("ground",new Color(.58f,.48f,.36f,1f),new Vector2(4.4f,4.4f),.025f,.55f);
             Wood=Pbr("wood",new Color(.62f,.40f,.22f,1f),new Vector2(3.8f,3.8f),.06f,1.0f);
@@ -288,6 +290,37 @@ namespace Eldoria.EditorTools
             Blue=Simple(new Color(.045f,.19f,.36f,1f),.18f,.05f);
             Gold=Simple(new Color(.68f,.45f,.12f,1f),.34f,.62f);
             Corrupt=Simple(new Color(.28f,.055f,.37f,1f),.22f,.05f);
+        }
+
+        static void UnifyExistingBastionSurface()
+        {
+            // Final Golden Cell pass: keep the certified Bastion silhouette and interaction untouched,
+            // but bring its visible shell into the same material family as the new civic base.
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                bool bastion=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    if(t.name.StartsWith("Bastion ·",StringComparison.Ordinal)||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.Ordinal))
+                    { bastion=true; break; }
+                }
+                if(!bastion)continue;
+
+                string n=r.gameObject.name.ToLowerInvariant();
+                Material material;
+                if(n.Contains("banner")||n.Contains("flag"))material=Blue;
+                else if(n.Contains("door")||n.Contains("gate")||n.Contains("timber"))material=Wood;
+                else if(n.Contains("slit")||n.Contains("metal"))material=Metal;
+                else if(n.Contains("plinth")||n.Contains("backing")||n.Contains("rubble")||n.Contains("foundation"))
+                    material=StoneDark;
+                else material=BastionStone;
+
+                int count=Mathf.Max(1,r.sharedMaterials.Length);
+                var mats=new Material[count];
+                for(int i=0;i<count;i++)mats[i]=material;
+                r.sharedMaterials=mats;
+            }
         }
 
         static void SetupLighting()
