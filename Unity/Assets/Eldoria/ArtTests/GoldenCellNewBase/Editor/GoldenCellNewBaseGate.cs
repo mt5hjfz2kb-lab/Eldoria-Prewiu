@@ -258,7 +258,8 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v1").transform;
+            Root=new GameObject("GOLDEN CELL · finished v2 hero replacement proof").transform;
+            HideOldBastionVisuals();
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -273,6 +274,19 @@ namespace Eldoria.EditorTools
             BuildHeraldry();
             BuildVegetationAndLife();
             BuildCorruptionHint();
+        }
+
+        static void HideOldBastionVisuals()
+        {
+            // Final strict proof: retain all gameplay colliders/hotspots, hide only the previous
+            // Bastion renderer family so it cannot set the visual quality ceiling.
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled)continue;
+                var n=r.gameObject.name;
+                if(n.StartsWith("Bastion",StringComparison.OrdinalIgnoreCase))
+                    r.enabled=false;
+            }
         }
 
         static void SetupMaterials()
@@ -394,8 +408,8 @@ namespace Eldoria.EditorTools
             {
                 if(candidate==null)continue;
                 hero=ValoriaKit.BenchmarkPieceModulated(
-                    "GC · CC0 hero fort access",candidate,new Vector3(0f,2.50f,4.55f),
-                    10.6f,5.6f,Quaternion.Euler(0,180f,0),new Color(.98f,.95f,.88f,1f));
+                    "GC · CC0 hero fort access",candidate,new Vector3(0f,2.42f,6.35f),
+                    13.2f,8.6f,Quaternion.Euler(0,180f,0),new Color(.98f,.95f,.88f,1f));
                 if(hero!=null)break;
             }
 
