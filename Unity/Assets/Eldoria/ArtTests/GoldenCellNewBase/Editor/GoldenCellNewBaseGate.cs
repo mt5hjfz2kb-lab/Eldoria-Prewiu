@@ -356,11 +356,23 @@ namespace Eldoria.EditorTools
 
         static void BuildGateWings()
         {
-            GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
-            GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
+            GameObject hero=null;
+            foreach(var candidate in Resources.LoadAll<GameObject>("Valoria/GoldenCellHero"))
+            {
+                if(candidate==null)continue;
+                hero=ValoriaKit.BenchmarkPieceModulated(
+                    "GC · CC0 hero fort access",candidate,new Vector3(0f,2.50f,4.55f),
+                    10.6f,5.6f,Quaternion.Euler(0,180f,0),new Color(.98f,.95f,.88f,1f));
+                if(hero!=null)break;
+            }
 
-            // Low ceremonial arch in front of the Bastion — frames the existing hero instead of replacing it.
-            BuildArch("GC · civic arch",new Vector3(0f,3.15f,4.12f),2.55f,2.55f,.52f,Stone);
+            if(hero==null)
+            {
+                GateWing("GC · west wing",new Vector3(-5.0f,2.86f,4.30f),false);
+                GateWing("GC · east wing",new Vector3(5.0f,2.86f,4.30f),true);
+                BuildArch("GC · civic arch",new Vector3(0f,3.15f,4.12f),2.55f,2.55f,.52f,Stone);
+            }
+
             BeveledBlock("GC · gate threshold",new Vector3(0f,2.63f,4.30f),new Vector3(5.0f,.14f,1.20f),Cobble,.04f);
         }
 
