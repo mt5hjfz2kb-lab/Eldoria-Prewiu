@@ -9,5 +9,9 @@
   "parts_dir": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1",
   "parts_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
   "status": "certified_exact_bytes",
-  "rule": "Zero-spend staging only unless separately authorized."
+  "rule": "Zero-spend staging only unless separately authorized.",
+  "sha256": "5a7a5353e7a8b1a914cb968d856a738868ac548311aee0be4df69b4eeac76258",
+  "size_bytes": 2139894,
+  "width": 1254,
+  "height": 1254
 }
