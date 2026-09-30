@@ -1,7 +1,7 @@
 # Eldoria — Development Pipeline v2
 
 Status: active optimization plan.  
-Updated: 2026-09-28.
+Updated: 2026-09-30.
 
 ## Objective
 
@@ -69,6 +69,23 @@ A change should trigger only the systems it can affect.
 
 Web Pages must not run for Unity-only, Tripo-only, Blender-only or documentation-only commits.
 
+## 2026-09-30 workflow consolidation
+
+The repository had accumulated many experiment-specific GitHub Actions while art production accelerated. The operational rule is now stricter:
+
+- canonical production/certification workflows may remain automatic;
+- historical/diagnostic/comparison/inventory/rescue workflows are manual-only;
+- `valoria-lookdev.yml` is opt-in diagnostic evidence; `valoria-visual-formula.yml` is the default automatic Valoria visual gate;
+- temporary cancel/dispatch workflows must be removed after use;
+- no workflow may hard-code old run IDs for cancellation;
+- `tools/check-workflow-governance.mjs` + `workflow-governance.yml` enforce legacy/manual separation on Ubuntu and never consume the Windows Unity runner.
+
+This cleanup deliberately preserves historical YAML where it still helps reproduce old evidence, but prevents that evidence from competing with production work for the runner.
+
+### Commit / dispatch discipline
+
+Work should accumulate a coherent bounded change before triggering expensive certification. Avoid a sequence of tiny commits whose only effect is to wake the same heavy gate repeatedly. During iteration, use the FAST path and manual diagnostics; run authoritative production/release gates when the block is coherent.
+
 ## Persistent Unity import-cache experiment
 
 Do not use `actions/checkout clean:false` as the first optimization because the self-hosted runner also receives generated/untracked test assets. Preserving the entire workspace could contaminate certification.
@@ -130,12 +147,7 @@ An optimization becomes canonical only if it reduces measured elapsed time or ma
 
 ## Visual diagnostic warm-workspace rule
 
-The single Windows Unity runner now preserves `Unity/Library` for the lightweight visual diagnostic lanes:
-- `valoria-lookdev.yml`;
-- `valoria-visual-formula.yml`;
-- `historical-surface-rescue.yml`.
-
-Those workflows use `actions/checkout` with `clean: false`, while each tool deletes/recreates only its own capture/output folders. This is intentional: repeated LookDev/material iterations must not pay a full Unity asset reimport on every commit.
+The single Windows Unity runner may preserve `Unity/Library` in selected lightweight visual diagnostic lanes. Of the former warm lanes, only the authoritative/active lane should run automatically; `valoria-lookdev.yml` and historical rescue diagnostics are now opt-in/manual. Warm workspaces remain a speed technique, not a reason to wake multiple diagnostics for one production edit.
 
 The canonical production/release Unity gate remains clean and authoritative. Do not copy the warm-workspace rule into release validation merely for speed.
 
