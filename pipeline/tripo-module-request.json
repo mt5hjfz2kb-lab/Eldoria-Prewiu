@@ -35,11 +35,11 @@
     }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "CANONICAL ZERO-CREDIT SALVAGE VALIDATION. Reuse exact existing Stone Architecture source; canonical Blender now performs safe disconnected-residue salvage inline for pieces 01 and 05 before the same Unity multipiece gate. Piece 06 remains diagnostic-only until a safe connected-protrusion rule exists. No Tripo generation and no promotion.",
+  "notes": "CANONICAL ZERO-CREDIT SALVAGE VALIDATION RETRY after clustered-member record fix. Reuse exact Stone source; inline disconnected-residue salvage only for pieces 01 and 05; no Tripo generation, no promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-canonical-inline-salvage-01-05",
+  "run_nonce": "2026-09-30-canonical-inline-salvage-01-05-retry-cluster-record-fix",
   "visual_verdicts": {
     "reviewed_artifact_id": 11091584269,
     "reviewed_run_id": 36705459251,
