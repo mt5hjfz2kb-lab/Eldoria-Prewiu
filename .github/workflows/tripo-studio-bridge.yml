@@ -57,7 +57,9 @@ jobs:
   bridge:
     needs: input-preflight
     if: vars.UNITY_RUNNER_READY == 'true' && needs.input-preflight.outputs.ready == 'true'
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    # Default to the existing Unity/Windows runner, but allow a dedicated Tripo runner
+    # to be selected later without editing this workflow again.
+    runs-on: ${{ vars.TRIPO_RUNNER_LABEL || 'unity-6000-3-23f1' }}
     timeout-minutes: 15
 
     steps:
