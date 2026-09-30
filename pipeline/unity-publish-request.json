@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Final HUD visual certification after restoring native reference icon helpers.",
-  "source_sha": "f1eaec6198db65e18944654e383747de859f9725",
+  "reason": "Final publication of native dynamic HUD after screenshot-atlas removal and green UI certification 36707541697.",
+  "source_sha": "05a03a2a02d7c1a8d404a66bc9d33be1b2c72c70",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
