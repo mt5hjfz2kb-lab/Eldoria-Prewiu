@@ -55,6 +55,189 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
 
+      - name: Stage CC0 Poly Haven Surface Cell PBR
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-SurfaceCell/1.0'}
+          function Get-Urls($node) {
+            if ($null -eq $node) { return }
+            if ($node -is [string]) { if ($node.StartsWith('https://')) { $node }; return }
+            if ($node -is [System.Collections.IDictionary]) { foreach($v in $node.Values) { Get-Urls $v }; return }
+            if ($node.PSObject -and $node.PSObject.Properties) { foreach($p in $node.PSObject.Properties) { Get-Urls $p.Value } }
+          }
+          $assets=@(
+            [pscustomobject]@{Id='stone_block_wall';Prefix='stone'},
+            [pscustomobject]@{Id='cobblestone_floor_001';Prefix='cobble'},
+            [pscustomobject]@{Id='dirt';Prefix='dirt'}
+          )
+          foreach($asset in $assets) {
+            $files=Invoke-RestMethod -Headers $headers -Uri ('https://api.polyhaven.com/files/'+$asset.Id)
+            $urls=@(Get-Urls $files | Select-Object -Unique)
+            $specs=@(
+              [pscustomobject]@{Key='diff';Pattern='_diff_1k\.(jpg|png)        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-VisualFormula.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw 'Visual Formula capture timed out after 15 minutes.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
+          $expected=@(
+            'valoria-before-19.png','valoria-before-12.png','valoria-before-9.png','valoria-before-mobile.png','valoria-west-before-12.png','valoria-west-before-mobile.png','valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','valoria-west-after-12.png','valoria-west-after-mobile.png','valoria-wedge-evidence.json','valoria-wedge-metrics.json',
+            'terrain-citywide-overview-before-19.png','terrain-citywide-overview-before-12.png','terrain-citywide-overview-before-9.png','terrain-citywide-west-before-12.png','terrain-citywide-west-before-9.png','terrain-citywide-east-before-12.png','terrain-citywide-upper-before-12.png','terrain-citywide-mobile-before.png',
+            'terrain-citywide-overview-after-19.png','terrain-citywide-overview-after-12.png','terrain-citywide-overview-after-9.png','terrain-citywide-west-after-12.png','terrain-citywide-west-after-9.png','terrain-citywide-east-after-12.png','terrain-citywide-upper-after-12.png','terrain-citywide-mobile-after.png','terrain-citywide-evidence.json',
+            'surface-cell-before-19.png','surface-cell-before-12.png','surface-cell-before-9.png','surface-cell-before-mobile.png','surface-cell-focus-before-12.png','surface-cell-focus-before-9.png',
+            'surface-cell-after-19.png','surface-cell-after-12.png','surface-cell-after-9.png','surface-cell-after-mobile.png','surface-cell-focus-after-12.png','surface-cell-focus-after-9.png','surface-cell-evidence.json','surface-cell-metrics.json',
+            'production-cell-before-19.png','production-cell-before-12.png','production-cell-before-9.png','production-cell-before-mobile.png','production-cell-focus-before-12.png','production-cell-focus-before-9.png',
+            'production-cell-after-19.png','production-cell-after-12.png','production-cell-after-9.png','production-cell-after-mobile.png','production-cell-focus-after-12.png','production-cell-focus-after-9.png','production-cell-evidence.json','production-cell-metrics.json',
+            'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
+            'formula-sawmill-12.png','formula-sawmill-9.png',
+            'formula-barracks-12.png','formula-barracks-9.png',
+            'formula-bastion-12.png','formula-bastion-9.png',
+            'formula-metrics.json','formula-materials.json'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing Visual Formula evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty Visual Formula capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'formula-metrics.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-visual-formula-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/*
+            ${{ runner.temp }}/Eldoria-VisualFormula.log
+          if-no-files-found: warn
+          retention-days: 14
+;Required=$true},
+              [pscustomobject]@{Key='normal';Pattern='_nor_gl_1k\.(jpg|png)        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-VisualFormula.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw 'Visual Formula capture timed out after 15 minutes.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
+          $expected=@(
+            'valoria-before-19.png','valoria-before-12.png','valoria-before-9.png','valoria-before-mobile.png','valoria-west-before-12.png','valoria-west-before-mobile.png','valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','valoria-west-after-12.png','valoria-west-after-mobile.png','valoria-wedge-evidence.json','valoria-wedge-metrics.json',
+            'terrain-citywide-overview-before-19.png','terrain-citywide-overview-before-12.png','terrain-citywide-overview-before-9.png','terrain-citywide-west-before-12.png','terrain-citywide-west-before-9.png','terrain-citywide-east-before-12.png','terrain-citywide-upper-before-12.png','terrain-citywide-mobile-before.png',
+            'terrain-citywide-overview-after-19.png','terrain-citywide-overview-after-12.png','terrain-citywide-overview-after-9.png','terrain-citywide-west-after-12.png','terrain-citywide-west-after-9.png','terrain-citywide-east-after-12.png','terrain-citywide-upper-after-12.png','terrain-citywide-mobile-after.png','terrain-citywide-evidence.json',
+            'surface-cell-before-19.png','surface-cell-before-12.png','surface-cell-before-9.png','surface-cell-before-mobile.png','surface-cell-focus-before-12.png','surface-cell-focus-before-9.png',
+            'surface-cell-after-19.png','surface-cell-after-12.png','surface-cell-after-9.png','surface-cell-after-mobile.png','surface-cell-focus-after-12.png','surface-cell-focus-after-9.png','surface-cell-evidence.json','surface-cell-metrics.json',
+            'production-cell-before-19.png','production-cell-before-12.png','production-cell-before-9.png','production-cell-before-mobile.png','production-cell-focus-before-12.png','production-cell-focus-before-9.png',
+            'production-cell-after-19.png','production-cell-after-12.png','production-cell-after-9.png','production-cell-after-mobile.png','production-cell-focus-after-12.png','production-cell-focus-after-9.png','production-cell-evidence.json','production-cell-metrics.json',
+            'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
+            'formula-sawmill-12.png','formula-sawmill-9.png',
+            'formula-barracks-12.png','formula-barracks-9.png',
+            'formula-bastion-12.png','formula-bastion-9.png',
+            'formula-metrics.json','formula-materials.json'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing Visual Formula evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty Visual Formula capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'formula-metrics.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-visual-formula-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/*
+            ${{ runner.temp }}/Eldoria-VisualFormula.log
+          if-no-files-found: warn
+          retention-days: 14
+;Required=$true},
+              [pscustomobject]@{Key='ao';Pattern='_ao_1k\.(jpg|png)        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-VisualFormula.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw 'Visual Formula capture timed out after 15 minutes.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "Visual Formula gate failed: $($process.ExitCode)" }
+          $expected=@(
+            'valoria-before-19.png','valoria-before-12.png','valoria-before-9.png','valoria-before-mobile.png','valoria-west-before-12.png','valoria-west-before-mobile.png','valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','valoria-west-after-12.png','valoria-west-after-mobile.png','valoria-wedge-evidence.json','valoria-wedge-metrics.json',
+            'terrain-citywide-overview-before-19.png','terrain-citywide-overview-before-12.png','terrain-citywide-overview-before-9.png','terrain-citywide-west-before-12.png','terrain-citywide-west-before-9.png','terrain-citywide-east-before-12.png','terrain-citywide-upper-before-12.png','terrain-citywide-mobile-before.png',
+            'terrain-citywide-overview-after-19.png','terrain-citywide-overview-after-12.png','terrain-citywide-overview-after-9.png','terrain-citywide-west-after-12.png','terrain-citywide-west-after-9.png','terrain-citywide-east-after-12.png','terrain-citywide-upper-after-12.png','terrain-citywide-mobile-after.png','terrain-citywide-evidence.json',
+            'surface-cell-before-19.png','surface-cell-before-12.png','surface-cell-before-9.png','surface-cell-before-mobile.png','surface-cell-focus-before-12.png','surface-cell-focus-before-9.png',
+            'surface-cell-after-19.png','surface-cell-after-12.png','surface-cell-after-9.png','surface-cell-after-mobile.png','surface-cell-focus-after-12.png','surface-cell-focus-after-9.png','surface-cell-evidence.json','surface-cell-metrics.json',
+            'production-cell-before-19.png','production-cell-before-12.png','production-cell-before-9.png','production-cell-before-mobile.png','production-cell-focus-before-12.png','production-cell-focus-before-9.png',
+            'production-cell-after-19.png','production-cell-after-12.png','production-cell-after-9.png','production-cell-after-mobile.png','production-cell-focus-after-12.png','production-cell-focus-after-9.png','production-cell-evidence.json','production-cell-metrics.json',
+            'formula-overview-19.png','formula-overview-12.png','formula-overview-mobile.png',
+            'formula-sawmill-12.png','formula-sawmill-9.png',
+            'formula-barracks-12.png','formula-barracks-9.png',
+            'formula-bastion-12.png','formula-bastion-9.png',
+            'formula-metrics.json','formula-materials.json'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing Visual Formula evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty Visual Formula capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'formula-metrics.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-visual-formula-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/*
+            ${{ runner.temp }}/Eldoria-VisualFormula.log
+          if-no-files-found: warn
+          retention-days: 14
+;Required=$false}
+            )
+            foreach($spec in $specs) {
+              $url=$urls | Where-Object { $_ -match $spec.Pattern } | Select-Object -First 1
+              if (-not $url) { if ($spec.Required) { throw ('Missing '+$spec.Key+' 1K map for '+$asset.Id) } else { continue } }
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.Prefix+'_'+$spec.Key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if ((Get-Item $out).Length -lt 10000) { throw ('Downloaded PBR map too small: '+$out) }
+            }
+          }
+          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Poly Haven CC0 proof assets: stone_block_wall, cobblestone_floor_001, dirt. Source: https://polyhaven.com. Gate-only; not promoted.' -Encoding UTF8
       - name: Capture canonical visual formula scene
         shell: powershell
         run: |
