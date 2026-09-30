@@ -548,42 +548,83 @@ jobs:
             exit 0
           }
 
-          $relative = ([string]$request.promotion.destination).Replace('/','\\')
-          if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
-          $prefix = 'Unity\\Assets\\Eldoria\\Resources\\Valoria\\'
-          if (-not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
-              -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
-              $relative.Contains('..')) {
-            throw "Unsafe promotion destination: $relative"
-          }
-
-          $source = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
-          if (-not (Test-Path $source)) { throw 'Certified optimized GLB missing.' }
-          $dest = Join-Path $env:GITHUB_WORKSPACE $relative
-          if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
-            throw "Promotion destination already exists and overwrite=false: $relative"
-          }
-          New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
-          Copy-Item $source $dest -Force
-
-          $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
-          $bytes = (Get-Item $dest).Length
-          Write-Host "PROMOTION_FILE: $relative | $bytes bytes | sha256 $sha"
-
           git config --global --add safe.directory "$env:GITHUB_WORKSPACE"
           git -C "$env:GITHUB_WORKSPACE" config user.name "Eldoria Actions"
           git -C "$env:GITHUB_WORKSPACE" config user.email "actions@eldoria.local"
-          git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
-          if (-not (git -C "$env:GITHUB_WORKSPACE" status --porcelain -- "$relative")) {
-            throw "Promotion produced no tracked change: $relative"
+
+          $promotionMode = ([string]$request.promotion.mode).Trim().ToLowerInvariant()
+          if ([string]::IsNullOrWhiteSpace($promotionMode)) { $promotionMode = 'combined' }
+          $tracked = @()
+
+          if ($promotionMode -eq 'multipiece_selected') {
+            if ($null -eq $request.multipiece -or -not [bool]$request.multipiece.enabled) {
+              throw 'multipiece_selected promotion requires multipiece.enabled=true.'
+            }
+            $items = @($request.promotion.pieces)
+            if ($items.Count -eq 0) { throw 'multipiece_selected promotion requires at least one approved piece.' }
+            $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
+            foreach ($item in $items) {
+              $index = [int]$item.index
+              if ($index -lt 1 -or $index -gt 99) { throw "Unsafe multipiece index: $index" }
+              $pattern = ("piece_{0:D2}_*tris.glb" -f $index)
+              $matches = @(Get-ChildItem $sourceDir -Filter $pattern -File -ErrorAction SilentlyContinue)
+              if ($matches.Count -ne 1) { throw "Expected exactly one source for approved piece $index; found $($matches.Count)." }
+              $relative = ([string]$item.destination).Replace('/','\')
+              $prefix = 'Unity\Assets\Eldoria\Resources\Valoria\'
+              if ([string]::IsNullOrWhiteSpace($relative) -or
+                  -not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
+                  -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
+                  $relative.Contains('..')) {
+                throw "Unsafe multipiece promotion destination: $relative"
+              }
+              $dest = Join-Path $env:GITHUB_WORKSPACE $relative
+              if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
+                throw "Promotion destination already exists and overwrite=false: $relative"
+              }
+              New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+              Copy-Item $matches[0].FullName $dest -Force
+              $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+              $bytes = (Get-Item $dest).Length
+              $family = [string]$item.family
+              Write-Host "PROMOTION_PIECE: index=$index family=$family destination=$relative bytes=$bytes sha256=$sha"
+              git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
+              $tracked += $relative
+            }
           }
+          elseif ($promotionMode -eq 'combined') {
+            $relative = ([string]$request.promotion.destination).Replace('/','\')
+            if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
+            $prefix = 'Unity\Assets\Eldoria\Resources\Valoria\'
+            if (-not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
+                -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
+                $relative.Contains('..')) {
+              throw "Unsafe promotion destination: $relative"
+            }
+            $source = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+            if (-not (Test-Path $source)) { throw 'Certified optimized GLB missing.' }
+            $dest = Join-Path $env:GITHUB_WORKSPACE $relative
+            if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
+              throw "Promotion destination already exists and overwrite=false: $relative"
+            }
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            Copy-Item $source $dest -Force
+            $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+            $bytes = (Get-Item $dest).Length
+            Write-Host "PROMOTION_FILE: $relative | $bytes bytes | sha256 $sha"
+            git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
+            $tracked += $relative
+          }
+          else {
+            throw "Unsupported promotion.mode: $promotionMode"
+          }
+
+          $changes = git -C "$env:GITHUB_WORKSPACE" status --porcelain -- $tracked
+          if (-not $changes) { throw "Promotion produced no tracked changes." }
           $message = [string]$request.promotion.commit_message
           if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
           git -C "$env:GITHUB_WORKSPACE" commit -m "$message"
           if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
-          # Unity/import review can leave generated or modified evidence files in the checkout.
-          # The production GLB is already committed above; stash only residual workspace changes
-          # so concurrent-main rebases cannot be blocked by unrelated gate output.
+
           git -C "$env:GITHUB_WORKSPACE" stash push --include-untracked -m "eldoria-promotion-residuals"
           $pushed = $false
           foreach ($attempt in 1..4) {
@@ -597,4 +638,5 @@ jobs:
             Start-Sleep -Seconds 2
           }
           if (-not $pushed) { throw 'git push failed after concurrent-main retries' }
-          Write-Host "PROMOTION_PUSHED: $relative | sha256 $sha"
+          Write-Host "PROMOTION_PUSHED: mode=$promotionMode count=$($tracked.Count)"
+
