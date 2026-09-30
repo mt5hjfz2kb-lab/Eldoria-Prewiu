@@ -16,7 +16,7 @@ namespace Eldoria.Presentation
         static readonly Color Rock = new Color(.42f,.43f,.39f);
         static Transform root;
         // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
-        // Production placement set: 2 CornerWallL / 2 HighStraightWall / 3 RockToWallTransition.
+        // Production placement set after camera review: 2 CornerWallL / 1 HighStraightWall / 2 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
 
         public static void World(PlayerState state)
@@ -185,23 +185,19 @@ namespace Eldoria.Presentation
         {
             // 01 CornerWallL — close real civilian/work courts and articulate terrace corners without forming a defensive maze.
             StoneArchitecturePiece("CornerWallL","Valoria · StoneArch · corner · west work court",
-                new Vector3(-11.55f,.34f,4.05f),2.45f,112f);
+                new Vector3(-11.55f,.30f,4.05f),1.85f,112f);
             StoneArchitecturePiece("CornerWallL","Valoria · StoneArch · corner · west lower court",
-                new Vector3(-15.35f,.36f,-4.25f),2.25f,18f);
+                new Vector3(-15.35f,.31f,-4.25f),1.70f,18f);
 
-            // 05 HighStraightWall — sparse parcel/terrace limits. These sit on outer edges, behind the readable routes.
+            // 05 HighStraightWall — one restrained rear terrace limit. Keep military frontage open/readable.
             StoneArchitecturePiece("HighStraightWall","Valoria · StoneArch · high wall · west terrace back",
-                new Vector3(-17.55f,.34f,.55f),3.55f,88f);
-            StoneArchitecturePiece("HighStraightWall","Valoria · StoneArch · high wall · military outer edge",
-                new Vector3(9.65f,.38f,-3.05f),3.25f,8f);
+                new Vector3(-17.55f,.28f,.55f),2.65f,88f);
 
-            // 02 RockToWallTransition — bury the most visible architecture/terrain seams around dedicated buildings/upper terrace.
+            // 02 RockToWallTransition — only the two dedicated-building seams that improved the frame.
             StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · sawmill",
-                new Vector3(-6.15f,.18f,-2.55f),2.70f,28f);
+                new Vector3(-6.15f,.10f,-2.55f),1.95f,28f);
             StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · barracks",
-                new Vector3(5.85f,.18f,-3.75f),2.55f,205f);
-            StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · upper civil",
-                new Vector3(-6.05f,2.66f,7.15f),2.85f,102f);
+                new Vector3(5.85f,.10f,-3.75f),1.85f,205f);
         }
 
         static void StoneArchitecturePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
@@ -226,23 +222,11 @@ namespace Eldoria.Presentation
                 var mats=renderer.sharedMaterials;
                 for(int i=0;i<mats.Length;i++)
                 {
-                    var source=mats[i];
-                    if(source==null)continue;
-                    var copy=new Material(source){name="Valoria Stone Architecture v1 · "+resource};
-                    var tint=new Color(.47f,.45f,.39f);
-                    if(copy.HasProperty("_BaseColor"))
-                    {
-                        var c=copy.GetColor("_BaseColor");
-                        copy.SetColor("_BaseColor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
-                    }
-                    if(copy.HasProperty("_BaseColorFactor"))
-                    {
-                        var c=copy.GetColor("_BaseColorFactor");
-                        copy.SetColor("_BaseColorFactor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
-                    }
-                    if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.02f);
-                    if(copy.HasProperty("_Metallic"))copy.SetFloat("_Metallic",0f);
-                    mats[i]=copy;
+                    // Reuse the already-certified StoneKit material when available. Geometry keeps
+                    // Stone Architecture identity while surface response joins Valoria's existing masonry.
+                    mats[i]=sharedStone!=null
+                        ? sharedStone
+                        : ValoriaKit.SurfaceMaterial(new Color(.42f,.40f,.35f),"stone",new Vector2(3,3));
                 }
                 renderer.sharedMaterials=mats;
             }
