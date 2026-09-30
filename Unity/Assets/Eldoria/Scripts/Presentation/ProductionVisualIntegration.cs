@@ -18,6 +18,8 @@ namespace Eldoria.Presentation
         // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
         // Production placement set after camera review: 2 CornerWallL / 1 HighStraightWall / 2 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
+        // Gate switch for the citywide Terrain & Terrace v1 composition. Visual-only; topology/collision remain authoritative below.
+        public static bool TerrainTerraceEnabled = true;
 
         public static void ResetVisualCachesForGate()
         {
@@ -184,6 +186,7 @@ namespace Eldoria.Presentation
             // Certified Stone Architecture v1 is visual dressing only. It adapts to the approved city topology;
             // it never owns circulation, floors, hotspots or gameplay collision.
             if(StoneArchitectureEnabled)IntegrateStoneArchitecture();
+            if(TerrainTerraceEnabled)IntegrateTerrainTerraceCitywide();
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
@@ -215,6 +218,60 @@ namespace Eldoria.Presentation
                 new Vector3(-6.15f,.10f,-2.55f),1.95f,28f);
             StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · barracks",
                 new Vector3(5.85f,.10f,-3.75f),1.85f,205f);
+        }
+
+        public static void AddTerrainTerraceCitywideForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateTerrainTerraceCitywide();
+            Finish();
+        }
+
+        static void IntegrateTerrainTerraceCitywide()
+        {
+            // Citywide composition: each module is tucked under an existing certified parcel/court.
+            // We align the module TOP to the authored terrace elevation so it reads as buried support,
+            // never as a detached foreground pedestal. Roads, stairs, floors, hotspots and colliders remain untouched.
+            TerrainTerraceTop("BroadRockPlatform","Valoria · TerrainTerrace · west lower housing shelf",
+                new Vector3(-14.2f,0,-3.45f),.40f,4.15f,8f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · TerrainTerrace · west middle housing rise",
+                new Vector3(-15.25f,0,2.85f),.42f,4.05f,96f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · TerrainTerrace · west upper housing shelf",
+                new Vector3(-16.75f,0,5.78f),1.24f,4.10f,5f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · TerrainTerrace · upper civil support",
+                new Vector3(-5.25f,0,5.92f),2.72f,3.55f,92f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · TerrainTerrace · workshop edge support",
+                new Vector3(-8.95f,0,-4.72f),.42f,3.35f,14f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · TerrainTerrace · east training edge support",
+                new Vector3(8.55f,0,-5.92f),.42f,3.25f,270f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · TerrainTerrace · east upper retaining shelf",
+                new Vector3(4.35f,0,4.85f),1.55f,3.40f,182f);
+        }
+
+        static void TerrainTerraceTop(string resource,string name,Vector3 xzAnchor,float topY,float targetSpan,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/"+resource);
+            if(source==null)throw new InvalidOperationException("Missing certified Terrain Terrace v1 resource: "+resource);
+            var go=Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var bounds=Bounds(go);float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new InvalidOperationException("Terrain Terrace v1 resource has empty bounds: "+resource);
+            go.transform.localScale*=targetSpan/span;
+            bounds=Bounds(go);
+            go.transform.position+=new Vector3(xzAnchor.x-bounds.center.x,topY-bounds.max.y,xzAnchor.z-bounds.center.z);
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            NormalizeTerrainTerrace(go);
+        }
+
+        static void NormalizeTerrainTerrace(GameObject go)
+        {
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                    mats[i]=sharedStone!=null?sharedStone:ValoriaKit.SurfaceMaterial(new Color(.40f,.39f,.35f),"stone",new Vector2(3,3));
+                renderer.sharedMaterials=mats;
+            }
         }
 
         static void StoneArchitecturePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
