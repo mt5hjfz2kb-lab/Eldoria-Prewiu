@@ -77,6 +77,12 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - After a Work resume/restart/context change, test the existing GitHub connector with one read call before asking the owner for access again. If that call succeeds, reuse the existing connection and continue without another authorization prompt.
 - Repeated GitHub approval prompts are an operational defect to avoid, not a normal step of the Eldoria workflow.
 
+## Unity publication batching rule
+- Unity/UI iteration must not publish WebGL on every source commit. Dedicated Unity/UI gates certify iteration; owner publication is a separate coherent-block step.
+- The canonical trigger for a Unity WebGL publication is `pipeline/unity-publish-request.json`. Update it only after the current Unity/UI block is coherent and ready for owner review.
+- Do not use unrelated Unity source edits to wake Pages. This keeps the single Windows runner available for short Tripo bridge/module work and other active production lanes.
+- During parallel chats, prefer short runner-critical jobs (for example Tripo staging) to clear between heavy Unity certification/publication jobs; do not create redundant heavy gates for the same source change.
+
 ## Workflow governance rule
 - Automatic CI is reserved for canonical production/certification paths. Historical, diagnostic, comparison, inventory, rescue and cache-probe workflows must be `workflow_dispatch` only unless they are explicitly promoted back to production.
 - `[LEGACY]` workflows are evidence/repro tools and must never have `push`, `pull_request`, `schedule` or `workflow_run` triggers.
