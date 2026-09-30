@@ -25,7 +25,7 @@ namespace Eldoria.Presentation
         // Production Cell v1: small finished slice used to prove the new environment-art process
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
-        public static bool ProductionCellEnabled = true;
+        public static bool ProductionCellEnabled = false;
 
         public static void ResetVisualCachesForGate()
         {
