@@ -532,27 +532,33 @@ namespace Eldoria.Presentation
 
         static void NormalizePlayerCity(GameObject go)
         {
-            // Tripo's baked city atlas reads correctly in isolation but is too hot under the
-            // bright strategic-world lighting. Preserve its textures; only normalize material
-            // response so stone/roofs remain legible instead of clipping toward white.
+            // Force a stable URP/Lit response for the world map. The glTF shader used by the
+            // source asset overexposes under VisualWorld lighting; keep its texture maps but
+            // move them onto Eldoria's standard lit material response.
+            var lit=Shader.Find("Universal Render Pipeline/Lit");
+            if(lit==null)throw new InvalidOperationException("URP Lit shader unavailable for Player City v1.");
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var mats=renderer.sharedMaterials;
                 for(int i=0;i<mats.Length;i++)
                 {
-                    if(mats[i]==null)continue;
-                    var m=new Material(mats[i]){name="Eldoria · Player City v1 · "+mats[i].name};
-                    foreach(string property in new[]{"_BaseColorFactor","_BaseColor","_Color"})
+                    var source=mats[i];
+                    if(source==null)continue;
+                    Texture baseMap=null,normal=null;
+                    foreach(string property in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture"})
+                        if(source.HasProperty(property)&&source.GetTexture(property)!=null){baseMap=source.GetTexture(property);break;}
+                    foreach(string property in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(source.HasProperty(property)&&source.GetTexture(property)!=null){normal=source.GetTexture(property);break;}
+                    var m=new Material(lit){name="Eldoria · Player City v1 · "+source.name};
+                    if(baseMap!=null)m.SetTexture("_BaseMap",baseMap);
+                    if(normal!=null)
                     {
-                        if(!m.HasProperty(property))continue;
-                        var c=m.GetColor(property);
-                        m.SetColor(property,new Color(c.r*.58f,c.g*.57f,c.b*.54f,c.a));
+                        m.SetTexture("_BumpMap",normal);
+                        m.EnableKeyword("_NORMALMAP");
                     }
-                    foreach(string property in new[]{"_EmissiveFactor","_EmissiveColor","_EmissionColor"})
-                        if(m.HasProperty(property))m.SetColor(property,Color.black);
-                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.04f);
-                    m.DisableKeyword("_EMISSION");
+                    m.SetColor("_BaseColor",new Color(.58f,.55f,.49f,1f));
+                    m.SetFloat("_Metallic",0f);
+                    m.SetFloat("_Smoothness",.035f);
                     mats[i]=m;
                 }
                 renderer.sharedMaterials=mats;
