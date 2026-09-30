@@ -335,6 +335,38 @@ namespace Eldoria.Presentation
             return mat;
         }
 
+        public static Material ExternalPbrSurfaceMaterial(string resourcePrefix,Color tint,Vector2 tiling,float smoothness=.06f,float bumpScale=1f)
+        {
+            var diffuse=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+resourcePrefix+"_diff");
+            if(diffuse==null)return null;
+            bool urp=GraphicsSettings.defaultRenderPipeline!=null;
+            var shader=Shader.Find(urp?"Universal Render Pipeline/Lit":"Standard");
+            if(shader==null)return null;
+            var mat=new Material(shader){name="Valoria external PBR · "+resourcePrefix};
+            if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",tint);
+            if(mat.HasProperty("_Color"))mat.SetColor("_Color",tint);
+            if(mat.HasProperty("_BaseMap")){mat.SetTexture("_BaseMap",diffuse);mat.SetTextureScale("_BaseMap",tiling);}
+            else if(mat.HasProperty("_MainTex")){mat.SetTexture("_MainTex",diffuse);mat.SetTextureScale("_MainTex",tiling);}
+            var normal=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+resourcePrefix+"_normal");
+            if(normal!=null&&mat.HasProperty("_BumpMap"))
+            {
+                mat.SetTexture("_BumpMap",normal);mat.SetTextureScale("_BumpMap",tiling);
+                if(mat.HasProperty("_BumpScale"))mat.SetFloat("_BumpScale",bumpScale);
+                mat.EnableKeyword("_NORMALMAP");
+            }
+            var ao=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+resourcePrefix+"_ao");
+            if(ao!=null&&mat.HasProperty("_OcclusionMap"))
+            {
+                mat.SetTexture("_OcclusionMap",ao);mat.SetTextureScale("_OcclusionMap",tiling);
+                if(mat.HasProperty("_OcclusionStrength"))mat.SetFloat("_OcclusionStrength",1f);
+            }
+            if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",0f);
+            if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",smoothness);
+            if(mat.HasProperty("_SpecularHighlights"))mat.SetFloat("_SpecularHighlights",1f);
+            if(mat.HasProperty("_EnvironmentReflections"))mat.SetFloat("_EnvironmentReflections",1f);
+            return mat;
+        }
+
         public static Material DetailedSurfaceMaterial(Color color,string pattern,Vector2 tiling,float relief=1f)
         {
             bool urp=GraphicsSettings.defaultRenderPipeline!=null;
