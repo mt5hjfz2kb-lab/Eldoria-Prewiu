@@ -78,6 +78,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-mobile.png",12f,390,844);
 
             GoldenCellFinished.Build();
+            WriteEnvironmentRendererReport();
 
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Golden Cell finished art altered gameplay collider/hotspot signature.");
@@ -130,6 +131,32 @@ namespace Eldoria.EditorTools
                 }
             }
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        }
+
+        static void WriteEnvironmentRendererReport()
+        {
+            var lines=new List<string>();
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled)continue;
+                var b=r.bounds;
+                // Large or rear renderers most likely to create the visible horizon board.
+                if((b.size.x<8f && b.size.z<8f) || b.center.z<8f)continue;
+                string mats="";
+                foreach(var m in r.sharedMaterials)
+                    mats+=(m==null?"<null>":m.name)+";";
+                string hierarchy="";
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    hierarchy=t.name+" / "+hierarchy;
+                    if(hierarchy.Length>420)break;
+                }
+                lines.Add($"{b.size.x:F2}\t{b.size.y:F2}\t{b.size.z:F2}\t"+
+                    $"CENTER({b.center.x:F2},{b.center.y:F2},{b.center.z:F2})\t"+
+                    $"{hierarchy}\tMATS:{mats}");
+            }
+            lines.Sort(StringComparer.Ordinal);
+            File.WriteAllLines(Folder+"/environment-renderers.txt",lines);
         }
 
         static void Save(Camera camera,string path,float zoom,int width,int height)
