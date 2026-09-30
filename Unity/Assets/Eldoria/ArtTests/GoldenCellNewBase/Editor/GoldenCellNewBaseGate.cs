@@ -492,7 +492,10 @@ namespace Eldoria.EditorTools
             // Hide only known provisional civil shells inside the Golden Cell view.
             string[] markers={
                 "reused civil house","upper civil house fallback","west rebuilders home",
-                "west rebuilders upper dwelling","upper dwelling"
+                "west rebuilders upper dwelling","upper dwelling",
+                // The old SM_Mountains_11 silhouettes are the giant grey polygons visible behind
+                // the new forest valley. Golden Cell owns its own forest/fog horizon, so hide them here only.
+                "valoria · distant mountain"
             };
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
