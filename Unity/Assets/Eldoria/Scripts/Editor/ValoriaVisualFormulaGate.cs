@@ -24,6 +24,7 @@ namespace Eldoria.EditorTools
             CaptureStoneArchitectureWedge();
             CaptureTerrainTerraceCitywideWedge();
             CaptureSurfaceCellWedge();
+            CaptureCoherentCastleProofWedge();
             CaptureProductionCellWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -320,6 +321,58 @@ namespace Eldoria.EditorTools
                 "}\n");
             WriteMetrics(folder+"/surface-cell-metrics.json");
             ProductionVisualIntegration.SurfaceCellEnabled=false;
+        }
+
+        static void CaptureCoherentCastleProofWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var bastionShift=new Vector3(0f,1.15f,2.7f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Coherent Castle proof.");
+            var baseline=CollisionSignature();
+            Save(camera,folder+"/coherent-castle-before-12.png",position+bastionShift,target+bastionShift,12f,1280,720);
+            Save(camera,folder+"/coherent-castle-before-9.png",position+bastionShift,target+bastionShift,9f,1280,720);
+            Save(camera,folder+"/coherent-castle-before-mobile.png",position+bastionShift,target+bastionShift,12f,390,844);
+
+            ProductionVisualIntegration.AddCoherentCastleProofForGate();
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Coherent Castle proof altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/coherent-castle-after-12.png",position+bastionShift,target+bastionShift,12f,1280,720);
+            Save(camera,folder+"/coherent-castle-after-9.png",position+bastionShift,target+bastionShift,9f,1280,720);
+            Save(camera,folder+"/coherent-castle-after-mobile.png",position+bastionShift,target+bastionShift,12f,390,844);
+
+            var proof=GameObject.Find("Valoria · CoherentProof · gate");
+            if(proof==null)throw new System.Exception("Coherent Castle proof was not instantiated.");
+            foreach(var collider in proof.GetComponentsInChildren<Collider>(true))
+                if(collider.enabled)throw new System.Exception("Coherent Castle proof owns enabled visual collision.");
+
+            File.WriteAllText(folder+"/coherent-castle-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"kit\": \"Kenney Castle Kit\",\n"+
+                "  \"license\": \"CC0-1.0\",\n"+
+                "  \"single_asset_language\": true,\n"+
+                "  \"production_enabled\": false,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
         }
 
         static void CaptureProductionCellWedge()
