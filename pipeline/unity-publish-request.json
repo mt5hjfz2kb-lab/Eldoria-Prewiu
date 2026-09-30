@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Publish exact owner-reference HUD after deterministic indexed-atlas decoder repair.",
-  "source_sha": "0eb9538ffc830cff597f4a1c7242b63b8c22bd86",
+  "reason": "Final owner-reference HUD visual certification on current canonical main.",
+  "source_sha": "ca1c11cc5cfc3cf5d942e1ed24a99c9e57aab042",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
