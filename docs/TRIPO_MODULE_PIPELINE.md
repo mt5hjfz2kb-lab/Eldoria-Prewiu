@@ -22,6 +22,22 @@ Remote CLI generation is an extension of the existing canonical workflow, not a 
 
 A chat must **not** ask the owner to upload the GLB manually if it has repository write access and the self-hosted runner is available. Manual upload is fallback only after a demonstrated runner/workflow failure.
 
+## Exact-input transport invariant (2026-09-30)
+
+Production staging must **not** depend on a logged-in ChatGPT browser session on the Windows runner.
+
+Canonical sequence:
+
+`approved image in chat → persist exact bytes immediately in repo → validate repo payload → stage from repo_exact_input → visible Tripo cost → stop before Generate`
+
+Rules:
+- `chatgpt_exact_input` is deprecated for production `stage_upload` and must fail immediately rather than waiting for browser login.
+- The approving chat owns persistence of the exact bytes during the same work block. Do not defer byte recovery to a later chat.
+- If exact bytes are not present in `pipeline/exact-inputs/<asset>/`, the request stays disabled and no Windows runner time is consumed.
+- Never replace a missing approved image with a visually similar export, screenshot, recompression, regenerated variant, Downloads candidate, or browser-session reconstruction.
+- A valid `repo_exact_input` request must provide `upload_base64_glob`, expected SHA-256, expected byte size and filename.
+- Run the exact-input validator before enabling staging. Missing or mismatched bytes fail before Tripo in seconds, not after a login wait.
+
 ## Canonical exact-input staging from ChatGPT
 
 For an owner-approved image attached in ChatGPT, the preferred pre-spend route is now:
