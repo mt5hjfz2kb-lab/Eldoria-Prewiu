@@ -53,6 +53,8 @@ namespace Eldoria.EditorTools
                 throw new Exception("Production Module Kit altered gameplay collider/hotspot signature.");
             if(after.renderers-before.renderers>20)
                 throw new Exception("Production Module Kit renderer budget exceeded: +"+(after.renderers-before.renderers));
+            if(after.triangles-before.triangles>60000)
+                throw new Exception("Production Module Kit triangle budget exceeded: +"+(after.triangles-before.triangles));
 
             Save(camera,Folder+"/after-19.png",19f,1280,720);
             Save(camera,Folder+"/after-12.png",12f,1280,720);
@@ -66,6 +68,7 @@ namespace Eldoria.EditorTools
                 "  \"same_scene_before_after\": true,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"renderer_budget_delta_max\": 20,\n"+
+                "  \"triangle_budget_delta_max\": 60000,\n"+
                 "  \"before\": "+before.Json()+",\n"+
                 "  \"after\": "+after.Json()+",\n"+
                 "  \"delta_renderers\": "+(after.renderers-before.renderers)+",\n"+
@@ -347,8 +350,105 @@ namespace Eldoria.EditorTools
 
         static void BuildSupportModules()
         {
-            Support("VPMK · residence",new Vector3(-7.55f,.58f,-1.02f),false);
-            Support("VPMK · workshop",new Vector3(7.55f,.58f,-1.12f),true);
+            var house=AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab");
+            var shed=AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/EA03_Village_OutBuilding_Shed_03b_PRE.prefab");
+
+            bool houseOk=CollapsePrefab("VPMK · authored residence",house,
+                new Vector3(-7.55f,.58f,-1.02f),3.05f,3.35f,166f,new Color(.66f,.61f,.53f));
+            bool shedOk=CollapsePrefab("VPMK · authored workshop",shed,
+                new Vector3(7.55f,.58f,-1.12f),3.30f,3.20f,194f,new Color(.64f,.58f,.49f));
+
+            if(!houseOk)Support("VPMK · residence fallback",new Vector3(-7.55f,.58f,-1.02f),false);
+            if(!shedOk)Support("VPMK · workshop fallback",new Vector3(7.55f,.58f,-1.12f),true);
+        }
+
+        static bool CollapsePrefab(string name,GameObject prefab,Vector3 ground,float footprint,float targetHeight,float yaw,Color tint)
+        {
+            if(prefab==null)return false;
+            var temp=UnityEngine.Object.Instantiate(prefab);
+            temp.name=name+" · temp";
+            temp.transform.position=Vector3.zero;
+            temp.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+
+            var sourceRenderers=temp.GetComponentsInChildren<MeshRenderer>(true);
+            if(sourceRenderers.Length==0){UnityEngine.Object.DestroyImmediate(temp);return false;}
+
+            bool hasBounds=false;
+            Bounds bounds=default;
+            foreach(var r in sourceRenderers)
+            {
+                if(!r.enabled)continue;
+                if(!hasBounds){bounds=r.bounds;hasBounds=true;}else bounds.Encapsulate(r.bounds);
+            }
+            if(!hasBounds){UnityEngine.Object.DestroyImmediate(temp);return false;}
+
+            float sourceFoot=Mathf.Max(.001f,Mathf.Max(bounds.size.x,bounds.size.z));
+            float sourceHeight=Mathf.Max(.001f,bounds.size.y);
+            float scale=Mathf.Min(footprint/sourceFoot,targetHeight/sourceHeight);
+            temp.transform.localScale=Vector3.one*scale;
+
+            hasBounds=false;
+            foreach(var r in sourceRenderers)
+            {
+                if(!r.enabled)continue;
+                if(!hasBounds){bounds=r.bounds;hasBounds=true;}else bounds.Encapsulate(r.bounds);
+            }
+            temp.transform.position+=new Vector3(ground.x-bounds.center.x,ground.y-bounds.min.y,ground.z-bounds.center.z);
+
+            var combines=new List<CombineInstance>();
+            var materials=new List<Material>();
+            var tinted=new Dictionary<int,Material>();
+            foreach(var mf in temp.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if(mf.sharedMesh==null)continue;
+                var renderer=mf.GetComponent<MeshRenderer>();
+                if(renderer==null||!renderer.enabled)continue;
+                int subCount=mf.sharedMesh.subMeshCount;
+                for(int s=0;s<subCount;s++)
+                {
+                    combines.Add(new CombineInstance
+                    {
+                        mesh=mf.sharedMesh,
+                        subMeshIndex=s,
+                        transform=mf.transform.localToWorldMatrix
+                    });
+                    var src=(renderer.sharedMaterials!=null&&renderer.sharedMaterials.Length>0)
+                        ?renderer.sharedMaterials[Mathf.Min(s,renderer.sharedMaterials.Length-1)]:null;
+                    if(src==null){materials.Add(Plaster);continue;}
+                    int key=src.GetInstanceID();
+                    if(!tinted.TryGetValue(key,out var mat))
+                    {
+                        mat=new Material(src){name="VPMK · "+src.name};
+                        if(mat.HasProperty("_BaseColor"))
+                        {
+                            var b=mat.GetColor("_BaseColor");
+                            mat.SetColor("_BaseColor",new Color(b.r*tint.r,b.g*tint.g,b.b*tint.b,b.a));
+                        }
+                        else if(mat.HasProperty("_Color"))
+                        {
+                            var b=mat.GetColor("_Color");
+                            mat.SetColor("_Color",new Color(b.r*tint.r,b.g*tint.g,b.b*tint.b,b.a));
+                        }
+                        if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",Mathf.Min(.08f,mat.GetFloat("_Smoothness")));
+                        tinted[key]=mat;
+                    }
+                    materials.Add(mat);
+                }
+            }
+            if(combines.Count==0){UnityEngine.Object.DestroyImmediate(temp);return false;}
+
+            var mesh=new Mesh{name=name+" combined mesh",indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
+            mesh.CombineMeshes(combines.ToArray(),false,true,false);
+            mesh.RecalculateBounds();
+
+            var go=new GameObject(name);
+            go.transform.SetParent(Root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterials=materials.ToArray();
+            UnityEngine.Object.DestroyImmediate(temp);
+            return true;
         }
 
         static void Support(string name,Vector3 p,bool workshop)
