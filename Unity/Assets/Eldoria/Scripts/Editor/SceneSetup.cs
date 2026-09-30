@@ -83,7 +83,10 @@ namespace Eldoria.EditorTools
         [MenuItem("Eldoria/Build WebGL owner slice")]
         public static void BuildWebGL()
         {
-            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Disabled;
+            // GitHub Pages does not provide configurable Content-Encoding headers.
+            // Use Unity's built-in decompressor so compressed downloads work there.
+            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
+            PlayerSettings.WebGL.decompressionFallback=true;
             Build("Builds/WebGL",BuildTarget.WebGL);
         }
         private static void Build(string outputPath,BuildTarget target)
