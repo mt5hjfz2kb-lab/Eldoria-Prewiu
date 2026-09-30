@@ -274,7 +274,7 @@ namespace Eldoria.Presentation
                     mesh.vertices=v;mesh.RecalculateBounds();
                 }
                 for(int i=0;i<v.Length;i++)
-                {var w=filter.transform.TransformPoint(v[i]);uv[i]=new Vector2(w.x/180f+.5f,w.z/180f+.5f);}
+                {var w=filter.transform.TransformPoint(v[i]);uv[i]=new Vector2((w.x/180f+.5f)/4f,(w.z/180f+.5f)/4f);}
                 mesh.uv=uv;filter.sharedMesh=mesh;r.sharedMaterial=landscape;
             }
         }
@@ -294,7 +294,8 @@ namespace Eldoria.Presentation
             }
             texture.SetPixels(pixels);texture.Apply(true,false);
             var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Eldoria surface earth · continuous terrain"};
-            mat.SetTexture("_BaseMap",texture);mat.SetColor("_BaseColor",Color.white);mat.SetFloat("_Smoothness",.02f);
+            mat.SetTexture("_BaseMap",texture);mat.SetTextureScale("_BaseMap",new Vector2(4,4));
+            mat.SetColor("_BaseColor",Color.white);mat.SetFloat("_Smoothness",.02f);
             return mat;
         }
 
