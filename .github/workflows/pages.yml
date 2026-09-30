@@ -15,7 +15,7 @@ on:
       - 'package-lock.json'
       - 'playtest/**'
       - 'tester-v0265/**'
-      - 'Unity/**'
+      - 'pipeline/unity-publish-request.json'
       - '.github/workflows/pages.yml'
 
 permissions:
@@ -58,7 +58,7 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs|.github/workflows/pages.yml)
+              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs|.github/workflows/pages.yml)
                 heavy=true
                 break
                 ;;
@@ -66,8 +66,9 @@ jobs:
                 continue
                 ;;
               Unity/*)
-                heavy=true
-                break
+                # Unity source is certified by its dedicated gates. WebGL publication is
+                # requested explicitly through pipeline/unity-publish-request.json.
+                continue
                 ;;
             esac
           done <<< "$files"
