@@ -14,34 +14,34 @@
   "approved": [
     {
       "piece_file": "piece_01_6379tris.glb",
-      "expected_sha256": "SteppedRockTerrace",
+      "expected_sha256": "b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe",
       "expected_bytes": 13767544,
-      "semantic_name": "b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe.glb",
+      "semantic_name": "SteppedRockTerrace",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
       "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     },
     {
       "piece_file": "piece_02_7671tris.glb",
-      "expected_sha256": "CornerRetainingTerrace",
+      "expected_sha256": "2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38",
       "expected_bytes": 13797856,
-      "semantic_name": "2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38.glb",
+      "semantic_name": "CornerRetainingTerrace",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/CornerRetainingTerrace.glb",
       "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     },
     {
       "piece_file": "piece_03_4419tris.glb",
-      "expected_sha256": "RockStreetTransition",
+      "expected_sha256": "1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96",
       "expected_bytes": 13698148,
-      "semantic_name": "1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96.glb",
+      "semantic_name": "RockStreetTransition",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/RockStreetTransition.glb",
       "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     },
     {
       "piece_file": "piece_07_8650tris.glb",
-      "expected_sha256": "BroadRockPlatform",
+      "expected_sha256": "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
       "expected_bytes": 13852688,
-      "semantic_name": "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520.glb",
+      "semantic_name": "BroadRockPlatform",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
       "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     }
   ],
