@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "eldoria-stone-architecture-kit-v1-selected-promotion",
   "source": {
     "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
@@ -17,19 +17,23 @@
   },
   "approved": [
     {
-      "piece_file": "piece_02_7270tris.glb",
-      "expected_sha256": "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
-      "expected_bytes": 12414676,
-      "semantic_name": "RockToWallTransition",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
-      "verdict": "VISUAL_PASS"
+      "piece_file": "piece_01_7335tris.glb",
+      "expected_sha256": "af94cac37d0d4037d2349d632a408ec05793d21eec608255726e38bf6cb4b245",
+      "expected_bytes": 12436120,
+      "semantic_name": "CornerWallL",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "verdict": "VISUAL_PASS_AFTER_SPATIAL_REPAIR"
+    },
+    {
+      "piece_file": "piece_05_6440tris.glb",
+      "expected_sha256": "03acb79b41301c5c23cb7ded042e827aa6bca15027e008304c13a2e01d5791b7",
+      "expected_bytes": 12405180,
+      "semantic_name": "HighStraightWall",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+      "verdict": "VISUAL_PASS_AFTER_SPATIAL_REPAIR"
     }
   ],
   "rejected": [
-    {
-      "piece_file": "piece_01_7360tris.glb",
-      "reason": "corner form is strong but strict per-piece review shows a detached residual fragment; retain as cleanup candidate, do not promote as-is"
-    },
     {
       "piece_file": "piece_03_8774tris.glb",
       "reason": "cluster contains disconnected corner/wall fragments; not reusable as one module"
@@ -39,12 +43,8 @@
       "reason": "parapet/merlon candidate has floating/torn geometry and incomplete side profile"
     },
     {
-      "piece_file": "piece_05_6712tris.glb",
-      "reason": "high-wall candidate has detached stray geometry; strict visual gate failed"
-    },
-    {
-      "piece_file": "piece_06_2810tris.glb",
-      "reason": "low-wall candidate has long stretched protrusions/tears"
+      "piece_file": "piece_06_2296tris.glb",
+      "reason": "bounded connected-protrusion trim still leaves mutilated/incomplete silhouette and stretched residual strips; reject this version"
     },
     {
       "piece_file": "piece_07_7448tris.glb",
@@ -58,10 +58,9 @@
   "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
   "credit_spend_total": 55,
-  "run_nonce": "2026-09-30-stone-architecture-v1-selected-promotion-final-closed",
+  "run_nonce": "2026-09-30-promote-spatial-repaired-01-05",
   "certified_artifact": {
-    "run_id": 36705459251,
-    "id": 11091584269,
-    "sha256_digest": "6a09d0cfd5b240fc671a2e3d2d34406fc6c1b6e0c874bdc6e9585fadff0694ae"
+    "run_id": 36715424694,
+    "id": 11096157750
   }
 }
