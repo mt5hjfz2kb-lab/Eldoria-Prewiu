@@ -294,7 +294,7 @@ namespace Eldoria.EditorTools
                 "  \"gameplay_topology_changed\": false\n"+
                 "}\n");
             WriteMetrics(folder+"/production-cell-metrics.json");
-            ProductionVisualIntegration.ProductionCellEnabled=true;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
         }
 
         public static void CaptureRescueDistrict()
