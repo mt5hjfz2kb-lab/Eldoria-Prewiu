@@ -285,7 +285,7 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v6 clean-valley proof").transform;
+            Root=new GameObject("GOLDEN CELL · finished v7 clean-horizon proof").transform;
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -527,7 +527,9 @@ namespace Eldoria.EditorTools
                 // Golden Cell owns its own ground/horizon inside the experiment.
                 "valoria · distant mountain",
                 "valoria · hero frame valley terrain",
-                "valoria · hero frame buried ridge"
+                "valoria · hero frame buried ridge",
+                "vpd · upper civic mountain shelf",
+                "vpd · future valley shelf"
             };
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
