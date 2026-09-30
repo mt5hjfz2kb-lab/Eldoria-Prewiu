@@ -72,6 +72,7 @@ namespace Eldoria.EditorTools
             if(camera==null)throw new Exception("Valoria camera missing.");
             Directory.CreateDirectory(Folder);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
+            var beforeMetrics=MetricsJson();
 
             Save(camera,Folder+"/before-19.png",19f,1280,720);
             Save(camera,Folder+"/before-12.png",12f,1280,720);
