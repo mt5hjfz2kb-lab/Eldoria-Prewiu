@@ -417,7 +417,7 @@ namespace Eldoria.EditorTools
 
         static async Task<bool> TryLoadHeroFortAsync()
         {
-            string folder=Path.Combine(Application.dataPath,"Resources","Valoria","GoldenCellHero");
+            string folder=Path.Combine(UnityEngine.Application.dataPath,"Resources","Valoria","GoldenCellHero");
             if(!Directory.Exists(folder))return false;
             var files=Directory.GetFiles(folder,"*.gltf",SearchOption.TopDirectoryOnly);
             if(files.Length==0)return false;
