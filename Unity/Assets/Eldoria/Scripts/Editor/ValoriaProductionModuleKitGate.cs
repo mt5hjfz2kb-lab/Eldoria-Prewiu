@@ -14,7 +14,7 @@ namespace Eldoria.EditorTools
     /// Production-oriented transfer of the Golden Cell visual language.
     /// Goal: reproduce the useful visual read with reusable combined-mesh modules
     /// instead of hundreds of primitive helper renderers.
-    /// Experimental branch only.
+    /// Experimental branch only. Validation trigger v1.
     /// </summary>
     public static class ValoriaProductionModuleKitGate
     {
