@@ -58,6 +58,10 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
+              Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs|.github/workflows/pages.yml)
+                heavy=true
+                break
+                ;;
               Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*)
                 continue
                 ;;
