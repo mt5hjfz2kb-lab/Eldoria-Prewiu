@@ -26,7 +26,7 @@ namespace Eldoria.Presentation
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
         public static bool ProductionCellEnabled = false;
-        // Surface Cell v5: bounded URP/PBR + CC0 look-dev proof. Disabled in production until matched-camera review passes. Validation trigger after governance repair.
+        // Surface Cell v6: bounded URP/PBR + CC0 + skyline look-dev proof. Disabled in production until matched-camera review passes. Validation trigger after governance repair.
         public static bool SurfaceCellEnabled = false;
 
         public static void ResetVisualCachesForGate()
@@ -216,7 +216,7 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v5 — keep authored architecture, use real PBR ground, restrained URP finish,
+            // Surface Cell v6 — keep authored architecture, use real PBR ground, restrained URP finish,
             // tri-light ambient hierarchy and selective treatment only for procedural Bastion backing masses.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
             RenderSettings.ambientSkyColor=new Color(.78f,.82f,.85f);
@@ -321,6 +321,44 @@ namespace Eldoria.Presentation
                     Piece("Valoria · SurfaceCell · buried valley rock",art.SlavicFlatRock,p,2.45f,1.10f,p.x*17f,
                         new Color(.84f,.84f,.79f));
             }
+
+            // Surface Cell v6: skyline proof. Reuse only already-promoted fortress assets behind the
+            // existing Bastion, keeping the front gameplay silhouette/entrance untouched.
+            if(art!=null)
+            {
+                GameObject go;
+                if(art.MegaWallPassage!=null)
+                {
+                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear wall",art.MegaWallPassage,
+                        new Vector3(0f,2.70f,10.25f),7.25f,4.10f,Quaternion.Euler(0,180f,0),new Color(.90f,.87f,.80f,1f));
+                    if(go!=null)go.transform.SetParent(root,true);
+                }
+                if(art.MegaTower!=null)
+                {
+                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion crown tower",art.MegaTower,
+                        new Vector3(-.45f,2.72f,11.05f),3.20f,7.65f,Quaternion.Euler(0,4f,0),new Color(.92f,.89f,.82f,1f));
+                    if(go!=null)go.transform.SetParent(root,true);
+                }
+                if(art.MasonryTower!=null)
+                {
+                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear tower west",art.MasonryTower,
+                        new Vector3(-4.45f,2.70f,9.95f),2.70f,5.85f,Quaternion.Euler(0,8f,0),new Color(.88f,.86f,.80f,1f));
+                    if(go!=null)go.transform.SetParent(root,true);
+                    go=ValoriaKit.BenchmarkPieceModulated("Valoria · SurfaceCell · bastion rear tower east",art.MasonryTower,
+                        new Vector3(4.30f,2.70f,10.10f),2.65f,5.45f,Quaternion.Euler(0,-9f,0),new Color(.87f,.85f,.79f,1f));
+                    if(go!=null)go.transform.SetParent(root,true);
+                }
+            }
+
+            var rimGo=new GameObject("Valoria · SurfaceCell · bastion rim");
+            rimGo.transform.SetParent(root,true);
+            var rim=rimGo.AddComponent<Light>();
+            rim.type=LightType.Point;
+            rim.range=13f;
+            rim.intensity=1.15f;
+            rim.color=new Color(1f,.58f,.28f);
+            rim.shadows=LightShadows.None;
+            rim.transform.position=new Vector3(-2.0f,8.3f,10.8f);
 
             WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.6f,1.95f,-4.85f),
                 new Color(1.0f,.62f,.31f),.15f,3.7f);
