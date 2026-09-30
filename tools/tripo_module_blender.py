@@ -523,6 +523,97 @@ def _salvage_group_members(members, cfg, group_index):
         "removed_triangles": sum(t for _,t in removed),
     }
 
+
+def _post_join_cleanup(obj, cfg, group_index):
+    post = ((cfg or {}).get("post_join_cleanup", {}) or {}).get(str(int(group_index)))
+    if not post:
+        return obj, {"enabled": False}
+    min_triangles = int(post.get("min_triangles", 0) or 0)
+    drop_ratio = post.get("drop_if_min_y_above_ratio", None)
+
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.separate(type="LOOSE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    parts = [o for o in bpy.context.selected_objects if o.type == "MESH" and o.data is not None]
+    if not parts:
+        parts = [obj]
+
+    def world_bounds(part):
+        verts = [part.matrix_world @ v.co for v in part.data.vertices]
+        mins = [min(v[a] for v in verts) for a in range(3)]
+        maxs = [max(v[a] for v in verts) for a in range(3)]
+        return mins, maxs
+
+    rows = []
+    for part in parts:
+        mins, maxs = world_bounds(part)
+        rows.append({
+            "object": part,
+            "triangles": tri_count(part),
+            "mins": mins,
+            "maxs": maxs,
+        })
+    y_min = min(r["mins"][1] for r in rows)
+    y_max = max(r["maxs"][1] for r in rows)
+    y_cut = None
+    if drop_ratio is not None:
+        ratio = float(drop_ratio)
+        if ratio <= 0.0 or ratio >= 1.0:
+            raise RuntimeError(f"Invalid drop_if_min_y_above_ratio for piece {group_index}: {ratio}")
+        y_cut = y_min + (y_max - y_min) * ratio
+
+    kept = []
+    removed = []
+    for row in rows:
+        reason = None
+        if row["triangles"] < min_triangles:
+            reason = "below_post_join_min_triangles"
+        elif y_cut is not None and row["mins"][1] > y_cut:
+            reason = "detached_upper_island"
+        if reason:
+            removed.append((row, reason))
+        else:
+            kept.append(row)
+
+    if not kept:
+        strongest = max(rows, key=lambda r: r["triangles"])
+        kept = [strongest]
+        removed = [(r, "fallback_removed") for r in rows if r is not strongest]
+
+    for row, _ in removed:
+        bpy.data.objects.remove(row["object"], do_unlink=True)
+
+    bpy.ops.object.select_all(action="DESELECT")
+    for row in kept:
+        row["object"].select_set(True)
+    active = max(kept, key=lambda r: r["triangles"])["object"]
+    bpy.context.view_layer.objects.active = active
+    if len(kept) > 1:
+        bpy.ops.object.join()
+    active = bpy.context.view_layer.objects.active
+    active.name = f"Eldoria_MultiPiece_Group_{int(group_index):02d}"
+
+    return active, {
+        "enabled": True,
+        "policy": "post_join_loose_cleanup",
+        "min_triangles": min_triangles,
+        "drop_if_min_y_above_ratio": drop_ratio,
+        "y_cut": round(float(y_cut), 6) if y_cut is not None else None,
+        "kept_components": len(kept),
+        "removed_components": len(removed),
+        "removed_triangles": sum(r["triangles"] for r, _ in removed),
+        "removed": [{
+            "triangles": r["triangles"],
+            "reason": reason,
+            "min_y": round(float(r["mins"][1]), 6),
+            "max_y": round(float(r["maxs"][1]), 6),
+        } for r, reason in removed],
+    }
+
 def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, salvage_cfg=None):
     if not output_dir:
         return {"enabled": False, "pieces": []}
@@ -553,6 +644,9 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, sal
         for index, group in enumerate(groups, start=1):
             members, salvage = _salvage_group_members(group["members"], salvage_cfg, index)
             obj = _join_group(members, f"Eldoria_MultiPiece_Group_{index:02d}")
+            obj, post_join_cleanup = _post_join_cleanup(obj, salvage_cfg, index)
+            if isinstance(salvage, dict):
+                salvage["post_join_cleanup"] = post_join_cleanup
             tris = tri_count(obj)
             bounds = _normalize_bottom_center(obj)
             safe = f"piece_{index:02d}_{tris}tris.glb"
