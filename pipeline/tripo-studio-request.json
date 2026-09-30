@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "mode": "generate_staged",
+  "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Owner explicitly requested generating the pieces from the exact staged Player City progression sheet. Stage evidence run 36728688494 / artifact 11103833454 verified exact source SHA, stable preview, H3.1 and visible Generate cost 55. This request authorizes exactly one 55-credit generation from that staged exact input, with no restaging.",
+  "notes": "Watch the exact Player City generation task to completion. No further credit spend is authorized in this step.",
   "request_id": "eldoria-player-city-progression-sheet-v1-stage",
   "asset_name": "Eldoria_PlayerCity_ProgressionSheet_v1",
   "function": "Single-sheet multipiece source containing six isolated player-city progression stages, from camp to advanced fortified capital. Experimental multipiece source; do not modify Valoria gameplay.",
@@ -11,8 +11,8 @@
   "upload_size_bytes": 721227,
   "visual_width": 1254,
   "visual_height": 1254,
-  "allow_credit_spend": true,
-  "authorized_credit_cost": 55,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0,
   "approved_input_sha256": "c405e02a118c8440b8917d05544a96c15439cac009f95d166435b305b9b74805",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -20,7 +20,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_PlayerCity_ProgressionSheet_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "2026-09-30-player-city-progression-sheet-generate-1",
+  "run_nonce": "2026-09-30-player-city-progression-sheet-watch-1",
   "prior_stage_run_id": 36728688494,
-  "prior_stage_artifact_id": 11103833454
+  "prior_stage_artifact_id": 11103833454,
+  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-stone-and-timber-smithy-building-with-wooden-doors-banners-2f215806-fb6d-4acd-aefc-8a22b3cceb27"
 }
