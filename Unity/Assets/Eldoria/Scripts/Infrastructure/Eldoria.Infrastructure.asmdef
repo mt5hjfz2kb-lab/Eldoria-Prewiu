@@ -1,1 +1,0 @@
-{"name":"Eldoria.Infrastructure","rootNamespace":"Eldoria.Infrastructure","references":["Eldoria.Application","Eldoria.Domain"],"autoReferenced":true}

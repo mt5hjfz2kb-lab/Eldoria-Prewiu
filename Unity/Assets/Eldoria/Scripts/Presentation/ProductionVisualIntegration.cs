@@ -15,6 +15,8 @@ namespace Eldoria.Presentation
         static readonly Color Blue = new Color(.13f,.24f,.38f);
         static readonly Color Rock = new Color(.42f,.43f,.39f);
         static Transform root;
+        // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
+        public static bool StoneArchitectureEnabled = true;
 
         public static void World(PlayerState state)
         {
@@ -168,11 +170,81 @@ namespace Eldoria.Presentation
                 Piece("Valoria · civil store barrel",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),p+new Vector3(.45f,0,.17f),.38f,.6f,i*31,new Color(.70f,.61f,.48f));
                 if(state.BastionLevel>=3)Piece("Valoria · food sack",Resources.Load<GameObject>("Valoria/UrbanProps/Sack"),p+new Vector3(.1f,0,.49f),.55f,.38f,0,new Color(.8f,.72f,.57f));
             }
+            // Certified Stone Architecture v1 is visual dressing only. It adapts to the approved city topology;
+            // it never owns circulation, floors, hotspots or gameplay collision.
+            if(StoneArchitectureEnabled)IntegrateStoneArchitecture();
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             Finish();
+        }
+
+        static void IntegrateStoneArchitecture()
+        {
+            // 01 CornerWallL — close real civilian/work courts and articulate terrace corners without forming a defensive maze.
+            StoneArchitecturePiece("CornerWallL","Valoria · StoneArch · corner · west work court",
+                new Vector3(-11.55f,.34f,4.05f),2.45f,112f);
+            StoneArchitecturePiece("CornerWallL","Valoria · StoneArch · corner · west lower court",
+                new Vector3(-15.35f,.36f,-4.25f),2.25f,18f);
+
+            // 05 HighStraightWall — sparse parcel/terrace limits. These sit on outer edges, behind the readable routes.
+            StoneArchitecturePiece("HighStraightWall","Valoria · StoneArch · high wall · west terrace back",
+                new Vector3(-17.55f,.34f,.55f),3.55f,88f);
+            StoneArchitecturePiece("HighStraightWall","Valoria · StoneArch · high wall · military outer edge",
+                new Vector3(9.65f,.38f,-3.05f),3.25f,8f);
+
+            // 02 RockToWallTransition — bury the most visible architecture/terrain seams around dedicated buildings/upper terrace.
+            StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · sawmill",
+                new Vector3(-6.15f,.18f,-2.55f),2.70f,28f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · barracks",
+                new Vector3(5.85f,.18f,-3.75f),2.55f,205f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · StoneArch · rock wall seam · upper civil",
+                new Vector3(-6.05f,2.66f,7.15f),2.85f,102f);
+        }
+
+        static void StoneArchitecturePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/"+resource);
+            if(source==null)throw new InvalidOperationException("Missing production Stone Architecture v1 resource: "+resource);
+            var go=Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var bounds=Bounds(go);
+            float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new InvalidOperationException("Stone Architecture v1 resource has empty bounds: "+resource);
+            go.transform.localScale*=targetSpan/span;
+            bounds=Bounds(go);
+            go.transform.position+=groundAnchor-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            go.transform.SetParent(root,true);
+            NormalizeStoneArchitecture(go,resource);
+        }
+
+        static void NormalizeStoneArchitecture(GameObject go,string resource)
+        {
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var source=mats[i];
+                    if(source==null)continue;
+                    var copy=new Material(source){name="Valoria Stone Architecture v1 · "+resource};
+                    var tint=new Color(.47f,.45f,.39f);
+                    if(copy.HasProperty("_BaseColor"))
+                    {
+                        var c=copy.GetColor("_BaseColor");
+                        copy.SetColor("_BaseColor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
+                    }
+                    if(copy.HasProperty("_BaseColorFactor"))
+                    {
+                        var c=copy.GetColor("_BaseColorFactor");
+                        copy.SetColor("_BaseColorFactor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
+                    }
+                    if(copy.HasProperty("_Smoothness"))copy.SetFloat("_Smoothness",.02f);
+                    if(copy.HasProperty("_Metallic"))copy.SetFloat("_Metallic",0f);
+                    mats[i]=copy;
+                }
+                renderer.sharedMaterials=mats;
+            }
         }
 
         static readonly Dictionary<string,Material> groundSkins=new();

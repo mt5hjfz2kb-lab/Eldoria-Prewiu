@@ -1,1 +1,0 @@
-{"name":"Eldoria.Tests.EditMode","rootNamespace":"Eldoria.Tests","references":["Eldoria.Domain","Eldoria.Application","Eldoria.Infrastructure","Eldoria.Presentation"],"optionalUnityReferences":["TestAssemblies"],"includePlatforms":["Editor"],"autoReferenced":false}
