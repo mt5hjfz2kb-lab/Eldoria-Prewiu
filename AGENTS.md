@@ -83,6 +83,13 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Do not use unrelated Unity source edits to wake Pages. This keeps the single Windows runner available for short Tripo bridge/module work and other active production lanes.
 - During parallel chats, prefer short runner-critical jobs (for example Tripo staging) to clear between heavy Unity certification/publication jobs; do not create redundant heavy gates for the same source change.
 
+## Tripo approved-image persistence rule
+- When an image is approved for Tripo in ChatGPT, persist its exact original bytes into `pipeline/exact-inputs/<asset_name>/` during the same work block before triggering any Tripo staging workflow.
+- Production staging uses `input_transport: repo_exact_input`. Do not depend on a logged-in ChatGPT browser session on the Windows runner.
+- `chatgpt_exact_input` is deprecated for production staging and must fail fast; never wait minutes for ChatGPT login as part of normal Tripo transport.
+- If exact approved bytes cannot be obtained, keep the request disabled and report the missing bytes as the real blocker. Never substitute regenerated, recompressed, screenshot, Downloads, or visually similar bytes.
+- Validate SHA-256 and byte count before enabling `stage_upload`; staging remains zero-spend and stops before Generate.
+
 ## Workflow governance rule
 - Automatic CI is reserved for canonical production/certification paths. Historical, diagnostic, comparison, inventory, rescue and cache-probe workflows must be `workflow_dispatch` only unless they are explicitly promoted back to production.
 - `[LEGACY]` workflows are evidence/repro tools and must never have `push`, `pull_request`, `schedule` or `workflow_run` triggers.
