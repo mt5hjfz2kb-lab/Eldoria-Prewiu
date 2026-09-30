@@ -2,14 +2,15 @@ name: Unity WebGL published startup probe
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/unity-webgl-startup.yml']
+  workflow_run:
+    workflows: ['Publish Eldoria Preview']
+    types: [completed]
 
 permissions:
   contents: read
 jobs:
   startup:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
