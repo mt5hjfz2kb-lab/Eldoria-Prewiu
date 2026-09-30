@@ -26,9 +26,14 @@ namespace Eldoria.Presentation
         bool renderedScout, renderedEngendro, renderedIdle;
         Vector2 pointerStart,pointerLast;
         bool pointerActive,pointerDragged,pointerStartedOverUi;
+        bool pinchActive;
+        float lastPinchDistance;
         Vector3 cameraHome;
         float panHalfX=5f,panHalfZ=4f;
         const float PanGestureThreshold=12f;
+        public const float MinOrthographicZoom=9f;
+        public const float MaxOrthographicZoom=19f;
+        const float PinchZoomSensitivity=1f;
         Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
@@ -65,6 +70,8 @@ namespace Eldoria.Presentation
             if(camera==null)return;
             var mouse=Mouse.current;
             var touch=Touchscreen.current;
+
+            if(city&&HandlePinchZoom(touch,camera))return;
 
             bool touchPressed=touch!=null&&touch.primaryTouch.press.wasPressedThisFrame;
             bool touchHeld=touch!=null&&touch.primaryTouch.press.isPressed;
@@ -107,6 +114,58 @@ namespace Eldoria.Presentation
                     if(spot!=null)Select(spot.Id);
                 }
             }
+        }
+
+        bool HandlePinchZoom(Touchscreen touch,Camera camera)
+        {
+            if(touch==null)return EndPinchIfNeeded();
+            var first=touch.touches[0];
+            var second=touch.touches[1];
+            bool twoTouches=first.press.isPressed&&second.press.isPressed;
+            if(!twoTouches)return EndPinchIfNeeded();
+
+            var firstPosition=first.position.ReadValue();
+            var secondPosition=second.position.ReadValue();
+            float distance=Vector2.Distance(firstPosition,secondPosition);
+            if(distance<=0f)return true;
+
+            // A two-finger gesture exclusively owns this frame: it may never fall through
+            // to one-finger pan/tap selection.
+            pointerActive=false;
+            pointerDragged=true;
+
+            if(!pinchActive)
+            {
+                pinchActive=true;
+                lastPinchDistance=distance;
+                return true;
+            }
+
+            camera.orthographicSize=CalculatePinchZoom(
+                camera.orthographicSize,lastPinchDistance,distance,Mathf.Max(1f,camera.pixelHeight));
+            lastPinchDistance=distance;
+            return true;
+        }
+
+        bool EndPinchIfNeeded()
+        {
+            if(!pinchActive)return false;
+            pinchActive=false;
+            lastPinchDistance=0f;
+            // Consume the first frame after the second finger leaves so lifting a pinch
+            // cannot become a building tap or start a one-finger pan accidentally.
+            pointerActive=false;
+            pointerDragged=true;
+            return true;
+        }
+
+        public static float CalculatePinchZoom(float currentSize,float previousDistance,float currentDistance,float pixelHeight)
+        {
+            if(previousDistance<=0f||currentDistance<=0f||pixelHeight<=0f)
+                return Mathf.Clamp(currentSize,MinOrthographicZoom,MaxOrthographicZoom);
+            float normalizedDelta=(currentDistance-previousDistance)/pixelHeight;
+            float next=currentSize-normalizedDelta*MaxOrthographicZoom*PinchZoomSensitivity;
+            return Mathf.Clamp(next,MinOrthographicZoom,MaxOrthographicZoom);
         }
 
         static bool IsPanGesture(Vector2 start,Vector2 current)
