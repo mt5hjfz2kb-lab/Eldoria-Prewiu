@@ -10,9 +10,15 @@ The two wedges are integrated into the real runtime `VisualWorld` through `Produ
 
 **The owner reference benchmark remains OPEN.** Valoria's Bastion and several civil bodies still retain provisional box-based architecture; the new masonry dressing does not certify final architectural identity. World beasts, the compact player city and the march are deliberate placeholders. Do not report this block as a final photoreal city or complete 4X asset library.
 
+## Published runtime
+
+Existing Publish Eldoria Preview run [36675166069](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36675166069) completed SUCCESS on production source `616d5f8e1e969e917f885c970562135e45fc2191`: WebGL build, Pages deployment, frozen tester URL guard and Unity OWNER URL verification. Published runtime: [Unity OWNER I–II](https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/?cb=616d5f8e). This is the existing functional I–II profile; the representative B3 art fixture in the matched screenshots does not add B3 gameplay. Published HTML was also fetched successfully and contains the Unity canvas and WebGL loader references. Interactive published Chromium was skipped by the existing Unity-only workflow; do not claim an additional browser interaction gate.
+
 ## Exact visual evidence
 
-Final runs/artifacts: | Gate | Run | Artifact | Result |
+Final runs/artifacts:
+
+| Gate | Run | Artifact | Result |
 | --- | --- | --- | --- |
 | World visual formula | [36675166099](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36675166099) | [11080505091](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36675166099/artifacts/11080505091) | SUCCESS |
 | Valoria visual formula | [36675166037](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36675166037) | [11079389658](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/36675166037/artifacts/11079389658) | SUCCESS |
