@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "eldoria-stone-architecture-kit-v1-selected-promotion",
   "source": {
     "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
@@ -61,5 +61,6 @@
   ],
   "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
-  "credit_spend_total": 55
+  "credit_spend_total": 55,
+  "run_nonce": "2026-09-30-promote-approved-stone-architecture-v1"
 }
