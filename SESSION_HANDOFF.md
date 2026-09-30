@@ -182,11 +182,14 @@ Avoid returning to isolated-module experimentation unless a specific production 
 ## Next handoff instruction
 Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECISIONS.md`, `docs/BASTION_I_X_MASTER_TABLE.md` when Arc I is relevant, and the specific Valoria specialist docs for art work; then verify live `main` HEAD and current workflow state.
 
-## Terrain & Terrace Kit v1 closed visual pilot — 2026-09-30
-- Exact approved JPEG and single 55-credit Tripo generation are recorded in `docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md`.
-- Blender/isolated Unity technical gate retained only modules 01 `SteppedRockTerrace` and 07 `BroadRockPlatform`; groups 02–06 are rejected. The two production GLBs are inventory, not active city placements.
-- West Rebuilders Quarter same-camera before/after run `36742519478` passed technical checks but **failed the visual decision** at 12/9: one support looked detached, the other was not legible. Trial placements were removed; final instance count is zero.
-- Full Unity slice `36742519517` and World Map `36742519509` passed on the revised trial commit. A final cleanup gate must confirm the no-integration HEAD. Gameplay and certified topology were never edited.
+## Terrain & Terrace Kit v1 citywide reuse — PASS — 2026-09-30
+- Exact approved JPEG and one authorized 55-credit Tripo generation remain the only paid source; only 01 SteppedRockTerrace and 07 BroadRockPlatform are certified source modules. Groups 02–06 remain rejected.
+- The original two-instance West Rebuilders pilot remains a documented visual FAIL and must not be resurrected.
+- A new **top-aligned buried-support** composition now uses **7 production instances** across west housing, upper civic, workshop, east training and east upper-retaining areas. This fixes the detached-pedestal failure mode by matching each support's top surface to the existing authored terrace/court elevation.
+- First citywide material attempt was visually too bright/repetitive and was rejected; final commit **22ce25789322cef749c1f53e4e67cb1d2149e6f2** uses a restrained URP/Lit support-stone material.
+- Final gates: Valoria Visual Formula **36749796853 SUCCESS / artifact 11114336890**; World Map **36749796941 SUCCESS**; full Unity slice **36749796925 SUCCESS**, captures **11114193496**, checks/player **11113993981**.
+- Collider/hotspot signature is unchanged, all Terrain/Terrace instance colliders are disabled, gameplay topology changed=false, additional Tripo credits=0.
+- Canonical record: docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md.
 
 ## 2026-09-29 Bastion I-II OWNER candidate checkpoint
 - Gameplay/profile certification run **36559605933**: SUCCESS.
