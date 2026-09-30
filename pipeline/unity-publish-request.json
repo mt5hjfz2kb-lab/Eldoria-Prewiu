@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Final publication of native dynamic HUD after screenshot-atlas removal and green UI certification 36707541697.",
-  "source_sha": "05a03a2a02d7c1a8d404a66bc9d33be1b2c72c70",
+  "reason": "Final owner-reference HUD visual certification after reference-spacing refinement.",
+  "source_sha": "9280a13a9a969ff2006e18592642294244099c2a",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
