@@ -530,6 +530,8 @@ def _post_join_cleanup(obj, cfg, group_index):
         return obj, {"enabled": False}
     min_triangles = int(post.get("min_triangles", 0) or 0)
     drop_ratio = post.get("drop_if_min_y_above_ratio", None)
+    spatial_neighbor_ratio = post.get("spatial_neighbor_ratio", None)
+    axis_clip = post.get("axis_clip", None)
 
     bpy.ops.object.select_all(action="DESELECT")
     obj.select_set(True)
@@ -548,6 +550,18 @@ def _post_join_cleanup(obj, cfg, group_index):
         maxs = [max(v[a] for v in verts) for a in range(3)]
         return mins, maxs
 
+    def bbox_gap(a, b):
+        sq = 0.0
+        for axis in range(3):
+            if a["maxs"][axis] < b["mins"][axis]:
+                d = b["mins"][axis] - a["maxs"][axis]
+            elif b["maxs"][axis] < a["mins"][axis]:
+                d = a["mins"][axis] - b["maxs"][axis]
+            else:
+                d = 0.0
+            sq += d * d
+        return sq ** 0.5
+
     rows = []
     for part in parts:
         mins, maxs = world_bounds(part)
@@ -557,6 +571,7 @@ def _post_join_cleanup(obj, cfg, group_index):
             "mins": mins,
             "maxs": maxs,
         })
+
     y_min = min(r["mins"][1] for r in rows)
     y_max = max(r["maxs"][1] for r in rows)
     y_cut = None
@@ -566,6 +581,28 @@ def _post_join_cleanup(obj, cfg, group_index):
             raise RuntimeError(f"Invalid drop_if_min_y_above_ratio for piece {group_index}: {ratio}")
         y_cut = y_min + (y_max - y_min) * ratio
 
+    spatial_keep = None
+    spatial_threshold = None
+    if spatial_neighbor_ratio is not None:
+        ratio = float(spatial_neighbor_ratio)
+        if ratio <= 0.0 or ratio >= 1.0:
+            raise RuntimeError(f"Invalid spatial_neighbor_ratio for piece {group_index}: {ratio}")
+        mins_all = [min(r["mins"][a] for r in rows) for a in range(3)]
+        maxs_all = [max(r["maxs"][a] for r in rows) for a in range(3)]
+        span = max(maxs_all[a] - mins_all[a] for a in range(3))
+        spatial_threshold = max(1e-6, span * ratio)
+        strongest = max(rows, key=lambda r: r["triangles"])
+        spatial_keep = {id(strongest)}
+        frontier = [strongest]
+        while frontier:
+            current = frontier.pop()
+            for other in rows:
+                if id(other) in spatial_keep:
+                    continue
+                if bbox_gap(current, other) <= spatial_threshold:
+                    spatial_keep.add(id(other))
+                    frontier.append(other)
+
     kept = []
     removed = []
     for row in rows:
@@ -574,6 +611,8 @@ def _post_join_cleanup(obj, cfg, group_index):
             reason = "below_post_join_min_triangles"
         elif y_cut is not None and row["mins"][1] > y_cut:
             reason = "detached_upper_island"
+        elif spatial_keep is not None and id(row) not in spatial_keep:
+            reason = "spatial_outlier"
         if reason:
             removed.append((row, reason))
         else:
@@ -597,11 +636,55 @@ def _post_join_cleanup(obj, cfg, group_index):
     active = bpy.context.view_layer.objects.active
     active.name = f"Eldoria_MultiPiece_Group_{int(group_index):02d}"
 
+    clip_report = {"enabled": False}
+    if axis_clip:
+        axis_name = str(axis_clip.get("axis", "x")).lower()
+        axis_index = {"x": 0, "y": 1, "z": 2}.get(axis_name)
+        if axis_index is None:
+            raise RuntimeError(f"Invalid axis_clip.axis for piece {group_index}: {axis_name}")
+        side = str(axis_clip.get("side", "min")).lower()
+        fraction = float(axis_clip.get("fraction", 0.0))
+        if side not in ("min", "max") or fraction <= 0.0 or fraction >= 0.45:
+            raise RuntimeError(f"Invalid axis_clip for piece {group_index}: side={side} fraction={fraction}")
+        verts = [active.matrix_world @ v.co for v in active.data.vertices]
+        lo = min(v[axis_index] for v in verts)
+        hi = max(v[axis_index] for v in verts)
+        cut = lo + (hi - lo) * fraction if side == "min" else hi - (hi - lo) * fraction
+
+        bpy.ops.object.select_all(action="DESELECT")
+        active.select_set(True)
+        bpy.context.view_layer.objects.active = active
+        bpy.ops.object.mode_set(mode="OBJECT")
+        selected = 0
+        for v in active.data.vertices:
+            world = active.matrix_world @ v.co
+            remove = world[axis_index] < cut if side == "min" else world[axis_index] > cut
+            v.select = bool(remove)
+            if remove:
+                selected += 1
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_mode(type="VERT")
+        bpy.ops.mesh.delete(type="VERT")
+        bpy.ops.object.mode_set(mode="OBJECT")
+        if len(active.data.polygons) == 0:
+            raise RuntimeError(f"axis_clip erased piece {group_index}")
+        clip_report = {
+            "enabled": True,
+            "axis": axis_name,
+            "side": side,
+            "fraction": fraction,
+            "cut": round(float(cut), 6),
+            "selected_vertices": selected,
+        }
+
     return active, {
         "enabled": True,
-        "policy": "post_join_loose_cleanup",
+        "policy": "post_join_architecture_cleanup",
         "min_triangles": min_triangles,
         "drop_if_min_y_above_ratio": drop_ratio,
+        "spatial_neighbor_ratio": spatial_neighbor_ratio,
+        "spatial_threshold": round(float(spatial_threshold), 6) if spatial_threshold is not None else None,
+        "axis_clip": clip_report,
         "y_cut": round(float(y_cut), 6) if y_cut is not None else None,
         "kept_components": len(kept),
         "removed_components": len(removed),
@@ -609,8 +692,8 @@ def _post_join_cleanup(obj, cfg, group_index):
         "removed": [{
             "triangles": r["triangles"],
             "reason": reason,
-            "min_y": round(float(r["mins"][1]), 6),
-            "max_y": round(float(r["maxs"][1]), 6),
+            "mins": [round(float(v), 6) for v in r["mins"]],
+            "maxs": [round(float(v), 6) for v in r["maxs"]],
         } for r, reason in removed],
     }
 
