@@ -44,7 +44,11 @@ jobs:
             $git = Get-Item $candidate
           }
 
-          $credentialText = ("protocol=https`nhost=github.com`n`n" | & $git.Source credential fill 2>$null) -join "`n"
+          $gitExe = if ($git -is [System.Management.Automation.CommandInfo] -and $git.Path) { $git.Path }
+                    elseif ($git.PSObject.Properties.Name -contains 'FullName') { $git.FullName }
+                    else { [string]$git }
+          if (-not (Test-Path $gitExe)) { throw "Resolved git executable not found: $gitExe" }
+          $credentialText = ("protocol=https`nhost=github.com`n`n" | & $gitExe credential fill 2>$null) -join "`n"
           $passwordLine = $credentialText -split "`n" | Where-Object { $_ -like 'password=*' } | Select-Object -First 1
           if (-not $passwordLine) { throw 'GitHub Desktop credential was not available to this runner user.' }
           $githubToken = $passwordLine.Substring('password='.Length)
