@@ -3,22 +3,6 @@ name: Publish Eldoria Preview
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'v0220/**'
-      - 'qa/**'
-      - 'tools/build-preview.mjs'
-      - 'tools/check-preview.mjs'
-      - 'tools/validate-local.mjs'
-      - 'tools/run-qa-mode.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'playtest/**'
-      - 'tester-v0265/**'
-      - 'pipeline/unity-publish-request.json'
-      - '.github/workflows/pages.yml'
-
 permissions:
   contents: read
   pages: write
