@@ -25,6 +25,7 @@ namespace Eldoria.EditorTools
             CaptureTerrainTerraceCitywideWedge();
             CaptureSurfaceCellWedge();
             CaptureCoherentCastleProofWedge();
+            CaptureSlavicDistrictProofWedge();
             CaptureProductionCellWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -373,6 +374,55 @@ namespace Eldoria.EditorTools
                 "  \"gameplay_topology_changed\": false\n"+
                 "}\n");
             ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+        }
+
+        static void CaptureSlavicDistrictProofWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var focusShift=new Vector3(0f,-1.55f,-7.0f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+            ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Slavic District proof.");
+            var baseline=CollisionSignature();
+
+            Save(camera,folder+"/slavic-district-before-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/slavic-district-before-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/slavic-district-before-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            ProductionVisualIntegration.AddSlavicDistrictProofForGate();
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Slavic District proof altered certified colliders/hotspots.");
+
+            Save(camera,folder+"/slavic-district-after-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/slavic-district-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
+            Save(camera,folder+"/slavic-district-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+
+            if(GameObject.Find("Valoria · SlavicProof · sawmill")==null)
+                throw new System.Exception("Slavic District proof did not instantiate.");
+
+            File.WriteAllText(folder+"/slavic-district-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"single_asset_family\": \"EmaceArt Slavic World Free\",\n"+
+                "  \"production_enabled\": false,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
         }
 
         static void CaptureProductionCellWedge()
