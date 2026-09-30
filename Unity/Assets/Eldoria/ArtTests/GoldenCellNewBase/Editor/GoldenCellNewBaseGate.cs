@@ -258,7 +258,7 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v4 valley proof").transform;
+            Root=new GameObject("GOLDEN CELL · finished v5 forest-horizon proof").transform;
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -382,13 +382,13 @@ namespace Eldoria.EditorTools
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.48f,.57f,.62f);
-            RenderSettings.fogStartDistance=30f;
-            RenderSettings.fogEndDistance=82f;
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=68f;
             var cam=Camera.main;
             if(cam!=null)
             {
                 cam.clearFlags=CameraClearFlags.SolidColor;
-                cam.backgroundColor=new Color(.39f,.50f,.58f);
+                cam.backgroundColor=new Color(.43f,.55f,.63f);
             }
 
             foreach(var l in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
@@ -414,8 +414,12 @@ namespace Eldoria.EditorTools
                 new Vector3(68f,.22f,54f),grass,.01f);
 
             var art=ValoriaExternalAssetLibrary.Load();
-            var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
+            var tree=art!=null?(art.SlavicTree!=null?art.SlavicTree:art.SlavicTreeTall):null;
             var boulder=art!=null?(art.SlavicBoulder!=null?art.SlavicBoulder:art.SlavicFlatRock):null;
+
+            // A shallow rear carpet sits just above the old debug/world plane so the horizon remains natural.
+            BeveledBlock("GC ENV · rear valley carpet",new Vector3(0f,.035f,25f),
+                new Vector3(82f,.06f,34f),grass,.0f);
 
             // Distant forest is the main horizon, not giant procedural geometry.
             if(tree!=null)
@@ -442,19 +446,23 @@ namespace Eldoria.EditorTools
                 }
             }
 
-            // Real authored boulders create a low, irregular ridge that stays subordinate to the Bastion.
-            if(boulder!=null)
+            // No distant boulder wall: the horizon is carried by layered forest + fog.
+            if(tree!=null)
             {
-                var rocks=new[]{
-                    new Vector4(-21f,20.5f,-8f,2.4f),new Vector4(-15f,21.8f,18f,2.0f),
-                    new Vector4(-9f,20.4f,-22f,2.3f),new Vector4(9f,20.6f,17f,2.2f),
-                    new Vector4(15f,21.7f,-12f,2.0f),new Vector4(21f,20.3f,21f,2.4f)
+                var backSpecs=new[]{
+                    new Vector4(-27f,25f,-8f,1.00f),new Vector4(-23f,27f,18f,.94f),
+                    new Vector4(-19f,24f,-15f,1.08f),new Vector4(-15f,27f,9f,.90f),
+                    new Vector4(-11f,25f,22f,1.00f),new Vector4(-7f,28f,-5f,.88f),
+                    new Vector4(-3f,25f,12f,.96f),new Vector4(3f,25f,-10f,.96f),
+                    new Vector4(7f,28f,16f,.88f),new Vector4(11f,25f,-18f,1.00f),
+                    new Vector4(15f,27f,6f,.90f),new Vector4(19f,24f,20f,1.08f),
+                    new Vector4(23f,27f,-12f,.94f),new Vector4(27f,25f,14f,1.00f)
                 };
-                foreach(var s in rocks)
+                foreach(var s in backSpecs)
                 {
-                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · distant boulder",boulder,
-                        new Vector3(s.x,.10f,s.y),3.8f*s.w,2.2f*s.w,
-                        Quaternion.Euler(0f,s.z,0f),new Color(.54f,.55f,.51f,1f));
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · back forest pine",tree,
+                        new Vector3(s.x,.06f,s.y),1.40f*s.w,4.65f*s.w,
+                        Quaternion.Euler(0f,s.z,0f),new Color(.31f,.41f,.30f,1f));
                     if(go==null)continue;
                     go.transform.SetParent(Root,true);
                     foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
