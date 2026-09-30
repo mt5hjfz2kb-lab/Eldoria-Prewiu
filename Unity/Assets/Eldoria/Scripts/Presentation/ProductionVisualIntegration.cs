@@ -19,6 +19,16 @@ namespace Eldoria.Presentation
         // Production placement set after camera review: 2 CornerWallL / 1 HighStraightWall / 2 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
 
+        public static void ResetVisualCachesForGate()
+        {
+            // Deterministic visual QA only: scene reloads must not inherit runtime-created material caches.
+            landscape=null;
+            sharedStone=null;
+            adapted.Clear();
+            groundSkins.Clear();
+            root=null;
+        }
+
         public static void World(PlayerState state)
         {
             root = new GameObject("Frontier · integrated 4X visual layer").transform;
