@@ -263,9 +263,9 @@ namespace Eldoria.Presentation
             // Sparse supports at certified West Rebuilders Quarter parcels. The original roads,
             // stairs, lots and building anchors retain all gameplay and collision ownership.
             TerrainTerracePiece("SteppedRockTerrace","Valoria · TerrainTerrace · stepped upper homes",
-                new Vector3(-18.0f,.20f,4.05f),3.35f,94f);
+                new Vector3(-18.0f,.22f,2.0f),4.30f,94f);
             TerrainTerracePiece("BroadRockPlatform","Valoria · TerrainTerrace · lower homes platform",
-                new Vector3(-18.1f,.13f,-3.05f),3.15f,100f);
+                new Vector3(-16.4f,.12f,-4.5f),5.00f,100f);
         }
 
         static void TerrainTerracePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
