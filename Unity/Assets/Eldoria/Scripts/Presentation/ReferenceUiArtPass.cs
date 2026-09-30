@@ -103,7 +103,6 @@ namespace Eldoria.Presentation
             if (safe.Find("Reference top menu") == null) CreateTopMenu();
             if (safe.Find("Reference future resources") == null) CreateFutureResources();
             if (safe.Find("Reference extra nav") == null) CreateExtraNav();
-            if (safe.Find("Reference resource extras") == null) CreateResourceExtras();
             EnsureWorldLabel("Bastion · target","Bastión","⬡");
             EnsureWorldLabel("Aserradero · target","Aserradero","⚒");
             EnsureWorldLabel("Cuartel · target","Cuartel","⚔");
@@ -186,15 +185,6 @@ namespace Eldoria.Presentation
             var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(1,0);rt.sizeDelta=new Vector2(420,104);
             NavMedallion(root.transform,"Ejército","army",0);
             NavMedallion(root.transform,"Alianza","alliance",1);
-        }
-
-        void CreateResourceExtras()
-        {
-            var root=new GameObject("Reference resource extras",typeof(RectTransform));root.transform.SetParent(safe,false);
-            var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.sizeDelta=new Vector2(420,52);
-            ResourceExtra(root.transform,"Trigo","wheat","—",0);
-            ResourceExtra(root.transform,"Hierro","iron","—",1);
-            ResourceExtra(root.transform,"Gemas","gem","—",2);
         }
 
         void ApplyReferenceLayout()
@@ -347,7 +337,6 @@ namespace Eldoria.Presentation
             var left=safe.Find("Reference left actions") as RectTransform;if(left!=null)left.anchoredPosition=new Vector2(8,-310);
             var chat=safe.Find("Reference chat") as RectTransform;if(chat!=null){chat.anchoredPosition=new Vector2(8,82);chat.sizeDelta=new Vector2(Mathf.Min(270,safe.rect.width-16),68);}
             var menu=safe.Find("Reference top menu") as RectTransform;if(menu!=null)menu.anchoredPosition=new Vector2(-5,-72);
-            var extras=safe.Find("Reference resource extras");if(extras!=null)extras.gameObject.SetActive(false);
             var future=safe.Find("Reference future resources");if(future!=null)future.gameObject.SetActive(false);
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
@@ -445,46 +434,6 @@ namespace Eldoria.Presentation
             {
                 img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;
                 var o=img.GetComponent<Outline>();if(o!=null)o.enabled=false;
-            }
-        }
-
-        static void StyleLiveResource(Transform parent,string childName,string spriteName,int fontSize)
-        {
-            var child=parent.Find(childName);if(child==null)return;
-            var bg=child.GetComponent<Image>();if(bg!=null)bg.color=new Color(.015f,.020f,.024f,.82f);
-            var text=child.GetComponentInChildren<Text>();
-            if(text!=null)
-            {
-                var raw=text.text??"";
-                var parts=raw.Split('\n');
-                text.text=parts.Length>0?parts[parts.Length-1]:raw;
-                text.fontSize=fontSize;text.alignment=TextAnchor.MiddleRight;
-                var tr=text.rectTransform;tr.anchorMin=Vector2.zero;tr.anchorMax=Vector2.one;tr.offsetMin=new Vector2(34,1);tr.offsetMax=new Vector2(-5,-1);
-            }
-            var icon=child.Find("Reference resource icon")?.GetComponent<Image>();
-            if(icon==null)
-            {
-                var go=CreateReferenceImage("Reference resource icon",child,spriteName);icon=go.GetComponent<Image>();
-            }
-            icon.sprite=ReferenceSprite(spriteName);
-            var ir=icon.rectTransform;ir.anchorMin=ir.anchorMax=new Vector2(0,.5f);ir.pivot=new Vector2(0,.5f);ir.anchoredPosition=new Vector2(2,0);ir.sizeDelta=new Vector2(31,29);
-        }
-
-        static void ResourceExtra(Transform parent,string name,string spriteName,string value,int index)
-        {
-            var go=PanelObject(name,parent,new Vector2(120,44));go.GetComponent<Image>().color=new Color(.015f,.020f,.024f,.82f);
-            var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);
-            var icon=CreateReferenceImage("Icon",go.transform,spriteName);var ir=icon.GetComponent<RectTransform>();ir.anchorMin=ir.anchorMax=new Vector2(0,.5f);ir.pivot=new Vector2(0,.5f);ir.anchoredPosition=new Vector2(2,0);ir.sizeDelta=new Vector2(31,29);
-            var text=MakeText("Value",go.transform,13,new Color(.95f,.95f,.91f),TextAnchor.MiddleRight);text.text=value;Stretch(text.rectTransform,4);text.rectTransform.offsetMin=new Vector2(34,1);
-        }
-
-        static void LayoutResourceExtras(RectTransform root,float width,float height)
-        {
-            int count=3;float slot=width/count;
-            for(int i=0;i<count;i++)
-            {
-                var child=root.GetChild(i) as RectTransform;if(child==null)continue;
-                child.anchorMin=child.anchorMax=new Vector2(0,1);child.pivot=new Vector2(0,1);child.anchoredPosition=new Vector2(i*slot,0);child.sizeDelta=new Vector2(slot-4,height);
             }
         }
 
