@@ -2,10 +2,6 @@ name: Unity persistent import-cache probe
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/unity-cache-probe.yml'
 
 permissions:
   contents: read
