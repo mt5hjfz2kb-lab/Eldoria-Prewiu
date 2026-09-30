@@ -40,6 +40,7 @@ namespace Eldoria.Presentation
             UnifyLandscape(false);
             BlendStrategicGround();
             Suppress("Sir Aldric ","Aldric ","Archer ","Bow");
+            var art=ValoriaExternalAssetLibrary.Load();
             // Replace the primitive foliage read with two mapped, authored tree variants.
             Suppress("Frontier · forest pine", "Frontier · tall evergreen", "Frontier · ridge pine",
                 "Frontier · undergrowth", "Frontier · forest moss", "Frontier · west ridge", "Frontier · east ridge",
@@ -57,6 +58,18 @@ namespace Eldoria.Presentation
                 Imported("4X · forest canopy", "Tree01"+(i%2==0?"A":"B"),p,
                     1.6f+(i%3)*.24f,2.35f+(i%4)*.23f,i*47+c*29,new Color(.54f,.61f,.48f),true);
             }
+            // Existing low vegetation fills only the forest footprint; it stays below strategic labels/routes.
+            if(art!=null&&art.SlavicBush!=null)
+            for(int cluster=0;cluster<clusters.Length;cluster++)
+            for(int i=0;i<4;i++)
+            {
+                float a=i*1.5708f+cluster*.53f+.35f;
+                float radius=2.05f+(i%2)*.65f;
+                var p=clusters[cluster]+new Vector3(Mathf.Cos(a)*radius,.035f,Mathf.Sin(a)*radius);
+                Piece("4X · forest understory",art.SlavicBush,p,.72f+(i%2)*.12f,.48f+(i%3)*.08f,i*53+cluster*19,
+                    new Color(.43f,.49f,.34f));
+            }
+
             // Mountain barriers live behind the nodes; low rock skirts merge into continuous ground.
             foreach(var p in new[]{new Vector3(-17,-.25f,12),new Vector3(14,-.25f,13),new Vector3(-3,-.35f,21)})
             {
@@ -72,7 +85,6 @@ namespace Eldoria.Presentation
                 route.transform.SetParent(root,true);
                 SkinRoute(route);
             }
-            var art=ValoriaExternalAssetLibrary.Load();
             // Wood identity: stocked timber frontage distinct from background forest.
             Piece("4X · wood stock",art!=null?art.Firewood:null,new Vector3(-5.3f,.12f,-.15f),1.7f,.85f,-16,new Color(.62f,.55f,.43f));
             // Existing quarry kit remains independent from the authoritative target.
@@ -190,6 +202,7 @@ namespace Eldoria.Presentation
             // it never owns circulation, floors, hotspots or gameplay collision.
             if(StoneArchitectureEnabled)IntegrateStoneArchitecture();
             if(TerrainTerraceEnabled)IntegrateTerrainTerraceCitywide();
+            IntegrateRescuedTerrainSeams();
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
@@ -281,6 +294,30 @@ namespace Eldoria.Presentation
                 for(int i=0;i<mats.Length;i++)mats[i]=terrainTerraceStone;
                 renderer.sharedMaterials=mats;
             }
+        }
+
+        static void IntegrateRescuedTerrainSeams()
+        {
+            // Certified seam filler used only as partially buried visual support for the existing Bastion shelf.
+            // It does not define a route, floor, landing or collision surface.
+            RescuedTerrainSeam("Valoria · rescued seam · bastion west shelf",new Vector3(-4.55f,0,4.85f),2.63f,2.55f,72f);
+            RescuedTerrainSeam("Valoria · rescued seam · bastion east shelf",new Vector3(4.65f,0,4.95f),2.60f,2.45f,288f);
+        }
+
+        static void RescuedTerrainSeam(string name,Vector3 xzAnchor,float topY,float targetSpan,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/Rescued/RockTerrainSeamFiller");
+            if(source==null)throw new InvalidOperationException("Missing certified RockTerrainSeamFiller resource.");
+            var go=Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var bounds=Bounds(go);float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new InvalidOperationException("RockTerrainSeamFiller has empty renderer bounds.");
+            go.transform.localScale*=targetSpan/span;
+            bounds=Bounds(go);
+            // Top-align, then bury a small extra slice so the rectangular source termination never reads as a pedestal.
+            go.transform.position+=new Vector3(xzAnchor.x-bounds.center.x,topY-bounds.max.y-.12f,xzAnchor.z-bounds.center.z);
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            NormalizeTerrainTerrace(go);
         }
 
         static void StoneArchitecturePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
