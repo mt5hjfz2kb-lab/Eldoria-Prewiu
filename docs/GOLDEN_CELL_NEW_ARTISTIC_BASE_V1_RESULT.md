@@ -2,31 +2,27 @@
 
 ## Status
 
-**VISUAL PASS — artistic-direction proof.**
+**VISUAL FAIL — useful material/system proof, but below the requested category-jump threshold.**
 
 This is **not** a production promotion and does **not** modify `main`.
 The experiment remains isolated on:
 
 - branch: `visual-proof/golden-cell-new-base-v1`
-- certified visual code HEAD: `792cf6c90c4160605db66c3fd27f443907ee4ccb`
-- workflow run: `36783544450`
-- artifact: `11128543203`
+- final visual code checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`
+- final successful workflow run: `36783595411`
+- artifact: `11129220413`
 
 ## What the proof establishes
 
-The Golden Cell demonstrates a materially stronger visual base than the current Valoria presentation while preserving gameplay authority.
+The Golden Cell demonstrates that Valoria can gain a materially more coherent surface base while preserving gameplay authority:
 
-The successful final capture proves, in one coherent cell:
-
-- a dominant fortified access / hero architecture;
-- a readable processional stair and plaza;
-- a raised civic terrace;
+- readable processional stair and plaza;
+- raised civic terrace;
 - explicit rock ↔ architecture transitions;
 - support residential / productive architecture at human scale;
-- a coherent stone / ground / wood / roof material family;
+- a coherent stone / ground / wood / roof / metal / moss material family;
 - CC0 PBR staging for the experimental surface base;
-- a CC0 hero-fort presentation layer;
-- warmer local lighting and stronger depth separation;
+- warmer local lighting and stronger material separation;
 - readable hierarchy at orthographic 19 / 12 / 9 and mobile framing.
 
 ## Gameplay safety
@@ -41,44 +37,65 @@ The final evidence records:
 
 Only visual renderers / visual-only experimental geometry are affected inside the isolated proof.
 
-## Visual verdict
+## Strict visual verdict
 
-The important improvement is not a single asset. It is the combination of:
+The experiment **does not pass** the owner's requested Golden Cell success criterion.
 
-1. coherent architecture hierarchy;
-2. materially consistent surfaces;
-3. built terrain / retaining logic instead of flat islands;
-4. deliberate rock-to-wall seams;
-5. human-scale support buildings and props;
-6. controlled warm/cool lighting;
-7. a strong primary access silhouette that survives the mobile crop.
+The AFTER is clearly better than the BEFORE in the cell itself, especially in:
 
-The previous Valoria frame reads as mixed proof assets around a grey Bastion.
-The Golden Cell reads as a designed fortified district with a clear visual hierarchy.
+1. surface coherence;
+2. light-stone identity;
+3. road / stair / terrace legibility;
+4. warm/cool separation;
+5. residential / productive human scale.
 
-## What is NOT certified
+However, it still reads as **the existing Eldoria generation with improved materials and dressing**, not as a cell from a visibly higher category of mobile fantasy city-builder.
 
-This does **not** certify:
+The remaining ceiling is structural:
 
-- replacing all of Valoria in one operation;
-- automatic promotion of the Golden Cell branch to `main`;
-- every surrounding legacy district / building;
-- final optimisation / LOD / draw-call budget for a full city;
-- final Bastion I–X production progression using this exact hero mesh.
+- the Bastion and support architecture still use visibly blocky / low-detail silhouette language;
+- the hero entrance is assembled from coarse masses rather than a genuinely higher-grade authored hero asset;
+- roof, wall-edge, arch and retaining geometry still read as prototype-scale construction at zoom 9;
+- the surrounding legacy city immediately exposes the generation mismatch;
+- material quality alone cannot hide the geometry / silhouette ceiling.
 
-The surrounding legacy city still exposes the quality gap when seen outside the Golden Cell.
+Therefore the Golden Cell must **not** be propagated to production as the new artistic base.
 
-## Production implication
+## What was decisive
 
-The experiment answers the original question: **a better artistic base is achievable without changing gameplay and without paid assets**.
+### Useful / validated
 
-Any production rollout should now copy the **system**, not blindly copy the whole experimental scene:
+- CC0 PBR material staging is a real improvement over synthetic flat materials.
+- The bounded-cell workflow is correct.
+- Blockout → frame validation before final art prevented wasting effort on the rejected v1 massing.
+- Gameplay-safe visual replacement with matched BEFORE / AFTER evidence works.
+- Re-surfacing an existing district can improve coherence without changing topology.
 
-- keep certified gameplay topology;
-- rebuild visual districts in bounded cells;
-- use one coherent architecture/material family per district;
-- seat buildings into authored terrain / retaining structures;
-- validate every rollout at 19 / 12 / 9 + mobile;
-- promote only cells that improve the matched-camera frame.
+### Insufficient
 
-No production promotion is performed by this certification.
+- procedural / primitive-based hero architecture;
+- merely re-materialing the existing Bastion silhouette;
+- using material quality to compensate for low-detail structural geometry;
+- trying to reach the premium benchmark without at least one genuinely higher-quality authored hero architecture family.
+
+## Pipeline implication
+
+The experiment invalidates the assumption that a new material stack plus improved composition is enough to create the requested generational jump.
+
+For the next proof, the order should remain:
+
+1. bounded Golden Cell;
+2. blockout and camera proof;
+3. coherent PBR surface system;
+4. **one genuinely higher-grade authored hero architecture set** for the Bastion/access;
+5. only then supporting modular architecture and life;
+6. performance after the visual bar is proven.
+
+Do not rebuild all Valoria, do not propagate this cell, and do not spend Tripo credits automatically.
+
+## Final disposition
+
+- branch remains experimental;
+- `main` remains untouched;
+- no production promotion;
+- result: **VISUAL FAIL** under the requested “new category, not Eldoria improved” standard.
