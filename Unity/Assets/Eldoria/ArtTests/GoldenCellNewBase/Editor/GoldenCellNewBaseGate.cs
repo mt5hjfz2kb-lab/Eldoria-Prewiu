@@ -293,7 +293,7 @@ namespace Eldoria.EditorTools
         {
             Stone=Pbr("stone",new Color(.94f,.90f,.82f,1f),new Vector2(3.0f,3.0f),.09f,1.05f);
             StoneDark=Pbr("stone",new Color(.60f,.60f,.56f,1f),new Vector2(3.5f,3.5f),.07f,1.10f);
-            BastionStone=Pbr("stone",new Color(.68f,.65f,.58f,1f),new Vector2(3.25f,3.25f),.065f,1.08f);
+            BastionStone=Pbr("stone",new Color(.63f,.61f,.56f,1f),new Vector2(3.25f,3.25f),.055f,1.08f);
             Cobble=Pbr("ground",new Color(.86f,.80f,.69f,1f),new Vector2(5.4f,5.4f),.08f,1.15f);
             Dirt=Pbr("ground",new Color(.58f,.48f,.36f,1f),new Vector2(4.4f,4.4f),.025f,.55f);
             Wood=Pbr("wood",new Color(.62f,.40f,.22f,1f),new Vector2(3.8f,3.8f),.06f,1.0f);
@@ -324,7 +324,7 @@ namespace Eldoria.EditorTools
                 string n=r.gameObject.name.ToLowerInvariant();
                 Material material;
                 if(n.Contains("banner")||n.Contains("flag"))material=Blue;
-                else if(n.Contains("door")||n.Contains("gate")||n.Contains("timber"))material=Wood;
+                else if(n.Contains("door")||n.Contains("timber")||n.Contains("gate leaf")||n.Contains("portcullis"))material=Wood;
                 else if(n.Contains("slit")||n.Contains("metal"))material=Metal;
                 else if(n.Contains("plinth")||n.Contains("backing")||n.Contains("rubble")||n.Contains("foundation"))
                     material=StoneDark;
@@ -360,7 +360,7 @@ namespace Eldoria.EditorTools
                 l.transform.rotation=Quaternion.Euler(47f,-35f,0f);
             }
 
-            WarmLight("GC · gate fire",new Vector3(0f,3.2f,4.7f),7.5f,3.0f);
+            WarmLight("GC · gate fire",new Vector3(0f,3.2f,4.7f),6.0f,1.55f);
             WarmLight("GC · residence hearth",new Vector3(-7.4f,2.2f,-.9f),4.5f,1.9f);
             WarmLight("GC · workshop hearth",new Vector3(7.5f,2.1f,-1.0f),4.7f,2.0f);
         }
