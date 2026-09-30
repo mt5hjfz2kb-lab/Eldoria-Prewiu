@@ -129,8 +129,9 @@ namespace Eldoria.Presentation
         {
             var go=PanelObject("Reference VIP",safe,new Vector2(92,26));
             var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);
-            var img=go.GetComponent<Image>();img.sprite=ReferenceSprite("vip");img.color=Color.white;img.preserveAspect=true;
-            var text=MakeText("VIP text",go.transform,11,Color.clear,TextAnchor.MiddleCenter);text.text="VIP 2";Stretch(text.rectTransform,5f);
+            var img=go.GetComponent<Image>();img.sprite=null;img.color=new Color(.10f,.075f,.035f,.96f);
+            var text=MakeText("VIP text",go.transform,11,GoldSoft,TextAnchor.MiddleCenter);text.text="♜  VIP 2   ▲";text.fontStyle=FontStyle.Bold;Stretch(text.rectTransform,5f);
+            Frame(go,false,1.5f);
         }
 
         void CreateQuestSubtitle()
@@ -433,91 +434,37 @@ namespace Eldoria.Presentation
         static void PlaceBottom(RectTransform rt,float x,float y,float w,float h,string spriteName)
         {
             rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(x,y);rt.sizeDelta=new Vector2(w,h);
-            var t=rt.GetComponentInChildren<Text>();if(t!=null)t.color=Color.clear;
             var img=rt.GetComponent<Image>();
             if(img!=null)
             {
-                img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;
-                var o=img.GetComponent<Outline>();if(o!=null)o.enabled=false;
+                img.sprite=CircleSprite();
+                img.color=new Color(.018f,.026f,.032f,.96f);
+                var o=img.GetComponent<Outline>()??img.gameObject.AddComponent<Outline>();o.effectColor=Bronze;o.effectDistance=new Vector2(2,-2);
+            }
+            var icon=rt.Find("Reference native icon")?.GetComponent<Image>();
+            if(icon==null)icon=CreateReferenceImage("Reference native icon",rt, spriteName).GetComponent<Image>();
+            icon.sprite=ReferenceSprite(spriteName);
+            var ir=icon.rectTransform;ir.anchorMin=new Vector2(.16f,.34f);ir.anchorMax=new Vector2(.84f,.96f);ir.offsetMin=ir.offsetMax=Vector2.zero;
+            var t=rt.GetComponentInChildren<Text>();
+            if(t!=null)
+            {
+                t.text=NavLabel(spriteName);t.color=new Color(.96f,.94f,.88f,1f);t.fontStyle=FontStyle.Bold;t.fontSize=10;t.alignment=TextAnchor.LowerCenter;
+                var tr=t.rectTransform;tr.anchorMin=Vector2.zero;tr.anchorMax=new Vector2(1,.35f);tr.offsetMin=new Vector2(1,1);tr.offsetMax=new Vector2(-1,-1);
             }
         }
 
-        static GameObject CreateReferenceImage(string name,Transform parent,string spriteName)
+        static string NavLabel(string spriteName)
         {
-            var go=new GameObject(name,typeof(RectTransform),typeof(Image));go.transform.SetParent(parent,false);
-            var img=go.GetComponent<Image>();img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;img.raycastTarget=false;return go;
-        }
-
-        static Sprite ReferenceSprite(string name)
-        {
-            if(ReferenceSprites.TryGetValue(name,out var cached)&&cached!=null)return cached;
-            const int n=64;
-            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false){name="Eldoria UI icon "+name,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
-            var px=new Color32[n*n];
-            for(int i=0;i<px.Length;i++)px[i]=new Color32(0,0,0,0);
-            var gold=new Color32(224,190,112,255);
-            var pale=new Color32(238,232,210,255);
-            var blue=new Color32(78,139,194,255);
-            var red=new Color32(196,54,47,255);
-            var grey=new Color32(171,179,184,255);
-            DrawIcon(px,n,name,gold,pale,blue,red,grey);
-            tex.SetPixels32(px);tex.Apply(false,true);
-            var sprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
-            ReferenceSprites[name]=sprite;
-            return sprite;
-        }
-
-        static void DrawIcon(Color32[] p,int n,string name,Color32 gold,Color32 pale,Color32 blue,Color32 red,Color32 grey)
-        {
-            void Dot(int x,int y,int r,Color32 col){for(int yy=y-r;yy<=y+r;yy++)for(int xx=x-r;xx<=x+r;xx++){if(xx<0||yy<0||xx>=n||yy>=n)continue;int dx=xx-x,dy=yy-y;if(dx*dx+dy*dy<=r*r)p[yy*n+xx]=col;}}
-            void Line(int x0,int y0,int x1,int y1,int w,Color32 col){int dx=Mathf.Abs(x1-x0),sx=x0<x1?1:-1,dy=-Mathf.Abs(y1-y0),sy=y0<y1?1:-1,err=dx+dy;while(true){Dot(x0,y0,w,col);if(x0==x1&&y0==y1)break;int e2=2*err;if(e2>=dy){err+=dy;x0+=sx;}if(e2<=dx){err+=dx;y0+=sy;}}}
-            void RectFill(int x,int y,int w,int h,Color32 col){for(int yy=y;yy<y+h;yy++)for(int xx=x;xx<x+w;xx++)if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}
-            void Diamond(int cx,int cy,int r,Color32 col){for(int y=-r;y<=r;y++){int span=r-Mathf.Abs(y);for(int x=-span;x<=span;x++){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
-            void Ring(int cx,int cy,int r,int thick,Color32 col){for(int y=-r;y<=r;y++)for(int x=-r;x<=r;x++){int d=x*x+y*y;if(d<=r*r&&d>=(r-thick)*(r-thick)){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
-
-            switch(name)
+            switch(spriteName)
             {
-                case "power":
-                case "army":
-                    Line(18,16,46,48,3,pale);Line(46,16,18,48,3,pale);Line(14,13,22,21,4,gold);Line(50,13,42,21,4,gold);break;
-                case "wood":
-                    RectFill(14,23,36,18,new Color32(126,78,38,255));Line(18,23,18,41,2,gold);Line(46,23,46,41,2,gold);break;
-                case "stone":
-                    Diamond(32,32,20,grey);Line(20,32,32,44,1,pale);break;
-                case "wheat":
-                    Line(32,10,32,52,2,gold);for(int i=0;i<5;i++){Line(32,19+i*7,22,24+i*7,2,gold);Line(32,22+i*7,42,27+i*7,2,gold);}break;
-                case "iron":
-                    RectFill(15,24,34,15,grey);Line(18,39,45,39,2,pale);break;
-                case "gem":
-                    Diamond(32,31,20,red);Line(32,12,32,50,1,pale);Line(12,31,52,31,1,pale);break;
-                case "chapter":
-                case "missions":
-                    RectFill(16,14,32,38,new Color32(226,204,151,255));Line(21,42,43,42,1,new Color32(99,72,42,255));Line(21,35,41,35,1,new Color32(99,72,42,255));Line(21,28,39,28,1,new Color32(99,72,42,255));break;
-                case "left_build":
-                    Line(18,17,45,44,4,gold);RectFill(38,39,15,8,pale);break;
-                case "left_research":
-                    RectFill(27,36,10,14,pale);Line(25,36,18,17,2,pale);Line(39,36,46,17,2,pale);Line(18,17,46,17,2,gold);break;
-                case "left_people":
-                case "social":
-                    Dot(24,39,7,pale);Dot(41,37,6,pale);Dot(31,22,11,gold);break;
-                case "world":
-                    Ring(32,32,22,3,gold);Line(10,32,54,32,1,pale);Line(32,10,32,54,1,pale);Ring(32,32,11,1,pale);break;
-                case "heroes":
-                    Ring(32,33,20,3,gold);RectFill(23,20,18,24,grey);Line(23,44,32,53,3,pale);Line(41,44,32,53,3,pale);break;
-                case "inventory":
-                    RectFill(17,20,30,30,new Color32(112,70,38,255));Ring(32,46,11,3,gold);break;
-                case "alliance":
-                    RectFill(23,17,18,28,blue);Line(23,45,41,45,3,gold);Line(32,17,32,54,2,gold);break;
-                case "bastion":
-                    RectFill(14,16,36,24,blue);RectFill(18,40,8,12,pale);RectFill(38,40,8,12,pale);RectFill(28,32,8,20,pale);break;
-                case "mail":
-                    RectFill(12,20,40,28,new Color32(226,204,151,255));Line(12,48,32,31,2,new Color32(99,72,42,255));Line(52,48,32,31,2,new Color32(99,72,42,255));break;
-                case "menu":
-                    Line(14,43,50,43,3,pale);Line(14,32,50,32,3,pale);Line(14,21,50,21,3,pale);break;
-                case "vip":
-                    RectFill(7,19,50,26,new Color32(88,58,25,255));Line(7,45,57,45,2,gold);Line(7,19,57,19,2,gold);break;
-                default:
-                    Ring(32,32,22,3,gold);Dot(32,32,7,pale);break;
+                case "world": return "Mundo";
+                case "heroes": return "Héroes";
+                case "army": return "Ejército";
+                case "missions": return "Misiones";
+                case "inventory": return "Inventario";
+                case "alliance": return "Alianza";
+                case "bastion": return "Bastión";
+                default: return spriteName;
             }
         }
 
@@ -607,8 +554,12 @@ namespace Eldoria.Presentation
 
         static void NavMedallion(Transform parent,string label,string spriteName,int index)
         {
-            var go=PanelObject(label,parent,new Vector2(72,72));var img=go.GetComponent<Image>();img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;
+            var go=PanelObject(label,parent,new Vector2(72,72));var img=go.GetComponent<Image>();img.sprite=CircleSprite();img.color=index==1?new Color(.10f,.11f,.12f,.94f):new Color(.018f,.026f,.032f,.96f);
             var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(index==0?0:240,0);
+            var icon=CreateReferenceImage("Reference native icon",go.transform,spriteName);var ir=icon.GetComponent<RectTransform>();ir.anchorMin=new Vector2(.18f,.36f);ir.anchorMax=new Vector2(.82f,.94f);ir.offsetMin=ir.offsetMax=Vector2.zero;
+            var t=MakeText("Text",go.transform,9,index==1?new Color(.52f,.53f,.53f):new Color(.96f,.94f,.88f),TextAnchor.LowerCenter);t.text=label;t.fontStyle=FontStyle.Bold;
+            t.rectTransform.anchorMin=Vector2.zero;t.rectTransform.anchorMax=new Vector2(1,.35f);t.rectTransform.offsetMin=t.rectTransform.offsetMax=Vector2.zero;
+            var o=go.AddComponent<Outline>();o.effectColor=index==1?new Color(.26f,.26f,.26f):Bronze;o.effectDistance=new Vector2(2,-2);
         }
 
         static void Badge(Transform parent,string value,Vector2 anchor,Vector2 size,Vector2 pos,Color bg)
