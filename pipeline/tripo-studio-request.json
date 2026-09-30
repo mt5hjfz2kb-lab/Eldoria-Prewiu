@@ -1,8 +1,8 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "BLOCKED ONLY ON MISSING EXACT APPROVED IMAGE BYTES. Canonical route is repo_exact_input. Persist the approved image unchanged under pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1, validate SHA-256 + byte size, then enable stage_upload. Never retrieve through a ChatGPT browser session and never fall back to different bytes.",
+  "notes": "Exact approved Stone Architecture image is now persisted and independently validated in the canonical repository. Reconstruct from repo_exact_input only, verify SHA-256 + byte size, stage in Tripo, capture staged UI and visible Generate cost, and STOP before Generate. No credit spend.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
@@ -27,9 +27,10 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-chatgpt-auth-wait",
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-repo-exact-ready",
   "search_downloads_for_sha": false,
   "persist_exact_input": true,
   "upload_base64_glob": "pipeline/exact-inputs/Eldoria_StoneArchitectureKit_v1/part_*.b64",
-  "wait_for_chatgpt_login_seconds": 0
+  "wait_for_chatgpt_login_seconds": 0,
+  "probe_chatgpt_session": false
 }
