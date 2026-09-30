@@ -1,0 +1,119 @@
+name: Valoria Coherent Castle proof
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-coherent-castle-proof.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-valoria-coherent-castle-proof
+  cancel-in-progress: true
+
+jobs:
+  coherent-castle-proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Stage Kenney Castle Kit CC0
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\CoherentKitProof"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $base='https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/castle-kit'
+          $files=@(
+            'gate.glb',
+            'wall.glb',
+            'tower-square.glb',
+            'tower-square-top-roof-high-windows.glb',
+            'ground-hills.glb',
+            'rocks-large.glb'
+          )
+          foreach($name in $files) {
+            $out=Join-Path $dest $name
+            Invoke-WebRequest -Headers @{'User-Agent'='Eldoria-CoherentProof/1.0'} -Uri ($base+'/'+$name) -OutFile $out
+            if ((Get-Item $out).Length -lt 8000) { throw "Downloaded Castle Kit model too small: $name" }
+          }
+          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Kenney Castle Kit via Hidencod/tge-assets mirror. CC0-1.0. Gate-only visual proof; not promoted.' -Encoding UTF8
+
+      - name: Capture coherent Castle Kit before-after
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-CoherentCastleProof.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw 'Coherent Castle proof timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 280}
+            throw "Coherent Castle proof failed: $($process.ExitCode)"
+          }
+          $expected=@(
+            'coherent-castle-before-12.png','coherent-castle-before-9.png','coherent-castle-before-mobile.png',
+            'coherent-castle-after-12.png','coherent-castle-after-9.png','coherent-castle-after-mobile.png',
+            'coherent-castle-evidence.json'
+          )
+          foreach($name in $expected) {
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing coherent Castle proof evidence: $name" }
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty coherent Castle capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'coherent-castle-evidence.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-coherent-castle-proof-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/coherent-castle-*
+            ${{ runner.temp }}/Eldoria-CoherentCastleProof.log
+          if-no-files-found: warn
+          retention-days: 14
