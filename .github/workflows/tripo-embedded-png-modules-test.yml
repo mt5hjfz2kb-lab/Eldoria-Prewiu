@@ -1,10 +1,6 @@
-name: Tripo embedded PNG module verification
+name: "[LEGACY] Tripo embedded PNG module verification"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-embedded-png-modules-test.yml'
   workflow_dispatch:
 
 concurrency:
