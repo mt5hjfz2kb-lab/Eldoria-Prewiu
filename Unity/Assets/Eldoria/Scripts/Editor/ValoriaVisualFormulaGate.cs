@@ -20,6 +20,7 @@ namespace Eldoria.EditorTools
             CaptureMatchedWedge();
             CaptureStoneArchitectureWedge();
             CaptureTerrainTerraceCitywideWedge();
+            CaptureProductionCellWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -234,6 +235,66 @@ namespace Eldoria.EditorTools
             foreach(var name in names){var go=GameObject.Find(name);if(go==null)throw new System.Exception("Terrain Terrace citywide instance missing: "+name);foreach(var c in go.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Terrain Terrace collider enabled: "+name);}
             File.WriteAllText(folder+"/terrain-citywide-evidence.json","{\n  \"camera_matched\": true,\n  \"same_scene_before_after\": true,\n  \"collider_hotspot_signature_equal\": true,\n  \"instances\": 7,\n  \"placement_rule\": \"top-aligned-buried-support\",\n  \"gameplay_topology_changed\": false,\n  \"tripo_credits_additional\": 0\n}\n");
             ProductionVisualIntegration.TerrainTerraceEnabled=true;
+        }
+
+        static void CaptureProductionCellWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var focusShift=new Vector3(0f,-1.55f,-7.0f);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            // Same-scene comparison: all existing city geometry/material/light state is held constant.
+            // Only Production Cell v1 is added between BEFORE and AFTER.
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            if(camera==null)throw new System.Exception("Valoria camera missing for Production Cell gate.");
+            var baseline=CollisionSignature();
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/production-cell-before-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/production-cell-before-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+            Save(camera,folder+"/production-cell-focus-before-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/production-cell-focus-before-9.png",position+focusShift,target+focusShift,9f,1280,720);
+
+            ProductionVisualIntegration.AddProductionCellForGate(state);
+            if(CollisionSignature()!=baseline)
+                throw new System.Exception("Production Cell v1 altered certified colliders/hotspots.");
+
+            foreach(var zoom in new[]{19f,12f,9f})
+                Save(camera,folder+"/production-cell-after-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/production-cell-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
+            Save(camera,folder+"/production-cell-focus-after-12.png",position+focusShift,target+focusShift,12f,1280,720);
+            Save(camera,folder+"/production-cell-focus-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
+
+            var productionCell=GameObject.Find("Valoria · ProductionCell · lower civic apron");
+            if(productionCell==null)throw new System.Exception("Production Cell v1 ground layer was not instantiated.");
+            var visualRoot=GameObject.Find("Valoria · integrated construction visual layer");
+            if(visualRoot==null)throw new System.Exception("Valoria visual root missing during Production Cell gate.");
+            foreach(var collider in visualRoot.GetComponentsInChildren<Collider>(true))
+                if(collider.enabled)throw new System.Exception("Production Cell v1 left an enabled visual collider.");
+
+            File.WriteAllText(folder+"/production-cell-evidence.json",
+                "{\n"+
+                "  \"schema_version\": 1,\n"+
+                "  \"camera_matched\": true,\n"+
+                "  \"same_scene_before_after\": true,\n"+
+                "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"scope\": \"lower-civic-production-cell\",\n"+
+                "  \"layers\": [\"ground/circulation\",\"shared-stone\",\"set-dressing\",\"life/motion\",\"focal-light/heraldry\"],\n"+
+                "  \"new_generated_geometry\": false,\n"+
+                "  \"tripo_credits\": 0,\n"+
+                "  \"gameplay_topology_changed\": false\n"+
+                "}\n");
+            WriteMetrics(folder+"/production-cell-metrics.json");
+            ProductionVisualIntegration.ProductionCellEnabled=true;
         }
 
         public static void CaptureRescueDistrict()
