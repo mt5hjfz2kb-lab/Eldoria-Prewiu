@@ -62,32 +62,40 @@ jobs:
           Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-SurfaceCell/1.0'}
-          function Get-Urls($node) {
-            if ($null -eq $node) { return }
-            if ($node -is [string]) { if ($node.StartsWith('https://')) { $node }; return }
-            if ($node -is [System.Collections.IDictionary]) { foreach($v in $node.Values) { Get-Urls $v }; return }
-            if ($node.PSObject -and $node.PSObject.Properties) { foreach($p in $node.PSObject.Properties) { Get-Urls $p.Value } }
-          }
-          function Save-Asset($assetId,$prefix) {
-            $files=Invoke-RestMethod -Headers $headers -Uri ('https://api.polyhaven.com/files/'+$assetId)
-            $urls=@(Get-Urls $files | Select-Object -Unique)
-            $diff=$urls | Where-Object { $_ -like '*_diff_1k.jpg' -or $_ -like '*_diff_1k.png' } | Select-Object -First 1
-            $normal=$urls | Where-Object { $_ -like '*_nor_gl_1k.jpg' -or $_ -like '*_nor_gl_1k.png' } | Select-Object -First 1
-            $ao=$urls | Where-Object { $_ -like '*_ao_1k.jpg' -or $_ -like '*_ao_1k.png' } | Select-Object -First 1
-            if (-not $diff) { throw ('Missing diffuse 1K map for '+$assetId) }
-            if (-not $normal) { throw ('Missing normal 1K map for '+$assetId) }
-            foreach($pair in @(@('diff',$diff),@('normal',$normal),@('ao',$ao))) {
-              if (-not $pair[1]) { continue }
-              $ext=[IO.Path]::GetExtension(([uri]$pair[1]).AbsolutePath)
-              $out=Join-Path $dest ($prefix+'_'+$pair[0]+$ext)
-              Invoke-WebRequest -Headers $headers -Uri $pair[1] -OutFile $out
-              if ((Get-Item $out).Length -lt 10000) { throw ('Downloaded map too small: '+$out) }
+          $assets=@(
+            @{ id='stone_block_wall'; prefix='stone' },
+            @{ id='cobblestone_floor_001'; prefix='cobble' },
+            @{ id='dirt'; prefix='dirt' }
+          )
+          foreach($asset in $assets){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            $patterns=@(
+              @{ key='diff'; rx='_diff_1k\.(jpg|png)(\?|$)' },
+              @{ key='normal'; rx='_nor_gl_1k\.(jpg|png)(\?|$)' },
+              @{ key='ao'; rx='_ao_1k\.(jpg|png)(\?|$)' }
+            )
+            foreach($map in $patterns){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){
+                if($map.key -eq 'ao'){ continue }
+                throw "Missing Poly Haven $($map.key) 1K map for $($asset.id)"
+              }
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){ throw "Downloaded PBR map is unexpectedly small: $out" }
             }
           }
-          Save-Asset 'stone_block_wall' 'stone'
-          Save-Asset 'cobblestone_floor_001' 'cobble'
-          Save-Asset 'dirt' 'dirt'
-          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Poly Haven CC0 proof: stone_block_wall, cobblestone_floor_001, dirt. https://polyhaven.com. Gate-only.' -Encoding UTF8
+          @'
+          Poly Haven Surface Cell proof
+          Assets: stone_block_wall, cobblestone_floor_001, dirt
+          License: CC0
+          Source: https://polyhaven.com
+          Retrieved only for automated visual validation; not yet promoted to production.
+          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
+
       - name: Capture canonical visual formula scene
         shell: powershell
         run: |
