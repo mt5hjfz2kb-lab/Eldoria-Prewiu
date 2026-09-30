@@ -509,19 +509,7 @@ namespace Eldoria.Presentation
             if(camera!=null)
             {
                 camera.backgroundColor=RenderSettings.fogColor;
-                var skyShader=Shader.Find("Skybox/Procedural");
-                if(skyShader!=null)
-                {
-                    var sky=new Material(skyShader){name="Valoria Hero Frame · procedural dusk sky"};
-                    if(sky.HasProperty("_SunSize"))sky.SetFloat("_SunSize",.035f);
-                    if(sky.HasProperty("_AtmosphereThickness"))sky.SetFloat("_AtmosphereThickness",.82f);
-                    if(sky.HasProperty("_SkyTint"))sky.SetColor("_SkyTint",new Color(.48f,.57f,.67f));
-                    if(sky.HasProperty("_GroundColor"))sky.SetColor("_GroundColor",new Color(.34f,.32f,.29f));
-                    if(sky.HasProperty("_Exposure"))sky.SetFloat("_Exposure",.92f);
-                    RenderSettings.skybox=sky;
-                    camera.clearFlags=CameraClearFlags.Skybox;
-                }
-                else camera.clearFlags=CameraClearFlags.SolidColor;
+                camera.clearFlags=CameraClearFlags.SolidColor;
             }
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
@@ -531,6 +519,8 @@ namespace Eldoria.Presentation
                 light.shadowStrength=.61f;
                 light.transform.rotation=Quaternion.Euler(50f,-31f,0);
             }
+
+            HeroValleyTerrain();
 
             // Mid-distance geology creates a second depth plane between the inhabited city and the far
             // VisualWorld mountains. Keep this layer on the already-proven neutral rock inventory:
@@ -553,7 +543,11 @@ namespace Eldoria.Presentation
                     new Vector4(10.9f,10.4f,1.96f,21f),
                     new Vector4(14.0f,8.5f,1.82f,-9f),
                     new Vector4(-18.2f,5.2f,1.72f,16f),
-                    new Vector4(17.4f,5.6f,1.70f,-17f)};
+                    new Vector4(17.4f,5.6f,1.70f,-17f),
+                    new Vector4(-12.6f,4.6f,1.78f,-31f),
+                    new Vector4(12.8f,4.8f,1.76f,33f),
+                    new Vector4(-9.8f,14.1f,1.70f,11f),
+                    new Vector4(9.6f,14.4f,1.72f,-13f)};
                 for(int i=0;i<homes.Length;i++)
                 {
                     var h=homes[i];
@@ -571,6 +565,18 @@ namespace Eldoria.Presentation
             {
                 Imported("Valoria · hero frame pine",spec.w>.5f?"Tree01B":"Tree01A",
                     new Vector3(spec.x,.03f,spec.y),spec.z,2.65f,spec.x*13f,new Color(.31f,.42f,.28f),true);
+            }
+
+            // Secondary ridge vegetation creates parallax and hides the remaining board-like horizon.
+            for(int i=0;i<18;i++)
+            {
+                float side=i<9?-1f:1f;
+                int k=i%9;
+                float x=side*(17.0f+k*.95f);
+                float z=2.0f+(k%5)*3.35f;
+                Imported("Valoria · hero frame valley pine",k%2==0?"Tree01A":"Tree01B",
+                    new Vector3(x,.12f,z),1.05f+(k%3)*.14f,2.55f,side*(12f+k*17f),
+                    new Color(.28f,.38f,.25f),true);
             }
 
             // Bastion becomes the visual thesis: restrained heraldry and warm occupation cues draw the eye
@@ -594,6 +600,52 @@ namespace Eldoria.Presentation
             }
             if(state.BastionLevel>=3)
                 WarmLight("Valoria · granary activity glow",new Vector3(-17.2f,1.25f,-4.65f),new Color(1.0f,.58f,.28f),.72f,2.5f);
+        }
+
+        static void HeroValleyTerrain()
+        {
+            // Purely visual heightfield. The certified floors/routes/colliders remain authoritative above it.
+            // The centre stays below the playable shelves; elevation appears only toward the outer valley.
+            const int nx=41,nz=35;
+            const float minX=-36f,maxX=36f,minZ=-20f,maxZ=40f;
+            var vertices=new Vector3[nx*nz];
+            var uv=new Vector2[vertices.Length];
+            var triangles=new int[(nx-1)*(nz-1)*6];
+            for(int z=0;z<nz;z++)
+            {
+                float tz=z/(float)(nz-1);
+                float wz=Mathf.Lerp(minZ,maxZ,tz);
+                for(int x=0;x<nx;x++)
+                {
+                    float tx=x/(float)(nx-1);
+                    float wx=Mathf.Lerp(minX,maxX,tx);
+                    float side=Mathf.Clamp01((Mathf.Abs(wx)-17f)/17f);
+                    float rear=Mathf.Clamp01((wz-15f)/23f);
+                    float front=Mathf.Clamp01((-wz-10f)/10f);
+                    float rise=side*side*4.8f+rear*rear*5.2f+front*front*1.4f;
+                    float noise=(Mathf.Sin(wx*.23f)+Mathf.Sin(wz*.29f)+Mathf.Sin((wx+wz)*.13f))*.16f;
+                    float centreMask=Mathf.Clamp01((Mathf.Abs(wx)-11f)/10f);
+                    float y=-.16f+rise+noise*Mathf.Lerp(.18f,1f,centreMask);
+                    vertices[z*nx+x]=new Vector3(wx,y,wz);
+                    uv[z*nx+x]=new Vector2(tx*18f,tz*15f);
+                }
+            }
+            int ti=0;
+            for(int z=0;z<nz-1;z++)
+                for(int x=0;x<nx-1;x++)
+                {
+                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,cc=d+1;
+                    triangles[ti++]=a;triangles[ti++]=d;triangles[ti++]=b;
+                    triangles[ti++]=b;triangles[ti++]=d;triangles[ti++]=cc;
+                }
+            var mesh=new Mesh{name="Valoria Hero Frame · valley heightfield"};
+            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Hero Frame valley terrain");
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=
+                ValoriaKit.SurfaceMaterial(new Color(.32f,.30f,.25f,1f),"earth",new Vector2(18f,15f));
         }
 
         static void WarmLight(string name,Vector3 p,Color color,float intensity,float range)
