@@ -73,3 +73,19 @@ After the kit-level closeout, the strict per-piece evidence was used for a separ
 - Files changed by that commit: **only the production GLB above**.
 
 The overall eight-family kit verdict remains **VISUAL FAIL**. Piece 01, 05 and 06 are cleanup candidates; pieces 03, 04, 07 and 08 remain rejected. This selective promotion did not alter Valoria.unity, VisualWorld, gameplay, hotspots or topology and consumed **0 additional Tripo credits** beyond the already-authorized 55-credit generation.
+
+## Final zero-credit spatial repair closeout — 2026-09-30
+
+A later zero-credit Blender/Unity repair pass supersedes the earlier cleanup-candidate status for pieces 01/05/06.
+
+- Spatial repair run **36715424694 SUCCESS**, artifact **11096157750**.
+- **Piece 01 / CornerWallL: VISUAL PASS** after spatial-neighborhood cleanup. Front/side/rear/oblique views show a coherent L-shaped corner wall with no disqualifying detached residue.
+- **Piece 05 / HighStraightWall: VISUAL PASS** after the same spatial cleanup. Clean straight-wall silhouette and coherent side/rear depth.
+- Promotion workflow **36717246333 SUCCESS** promoted only those two repaired pieces from the certified artifact with exact SHA/byte verification.
+- Production files added: `CornerWallL.glb` and `HighStraightWall.glb` under `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/`.
+- **Piece 02 / RockToWallTransition** remains previously certified and promoted.
+- Final piece 06 opposite-side clip run **36717083816 SUCCESS**, artifact **11096319220**, was technically valid but visually rejected: the wall remains incomplete/irregular and is not production-safe.
+- Pieces 03/04/07/08 remain rejected.
+- Final production-safe yield from the one 55-credit Stone Architecture sheet: **3 of 8 pieces — 01, 02 and 05**.
+- No additional Tripo credits were spent during any repair or promotion pass.
+- No `Valoria.unity`, gameplay, hotspot or topology change occurred in this repair closeout.
