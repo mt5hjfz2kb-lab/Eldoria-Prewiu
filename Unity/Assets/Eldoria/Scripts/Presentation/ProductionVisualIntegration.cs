@@ -77,7 +77,7 @@ namespace Eldoria.Presentation
                 Piece("4X · quarry edge",art!=null?art.SlavicStoneFence:null,p+new Vector3(-.5f,.02f,-.65f),1.45f,.45f,0,new Color(.61f,.57f,.49f));
             }
             // Origin city and deployed party are map representations, not extra gameplay buildings.
-            CityOrigin(new Vector3(-1.4f,.12f,-5.8f),art);
+            CityOrigin(new Vector3(-1.4f,.12f,-5.8f));
             if(state.March.Phase!="idle")March(new Vector3(1.2f,.08f,-3.8f));
             // The future chapter-III strategic layer is visible only in its proper progression state.
             if(state.BastionLevel>=3)
@@ -510,11 +510,22 @@ namespace Eldoria.Presentation
             foreach(var c in root.GetComponentsInChildren<Collider>(true))c.enabled=false;
             foreach(var h in root.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
-        static void CityOrigin(Vector3 p,ValoriaExternalAssetLibrary art)
+        static void CityOrigin(Vector3 p)
         {
-            Imported("4X · player city keep · placeholder","MegaTower",p+new Vector3(0,0,.55f),1.75f,2.8f,0,new Color(.44f,.43f,.37f),false);
-            Imported("4X · player city gate · placeholder","MegaGate",p+new Vector3(0,0,-.5f),2.1f,1.55f,0,new Color(.46f,.43f,.36f),false);
-            Piece("4X · player city civil roof",art!=null?art.SlavicShed:null,p+new Vector3(-1.1f,0,.1f),1.2f,1.35f,18,new Color(.71f,.65f,.54f));
+            // Player City v1 deliberately uses one universal strategic city mesh for every player.
+            // Player/ally/enemy identity, name, alliance and future skins remain UI/state concerns.
+            var source=Resources.Load<GameObject>("WorldPlayerCity/PlayerCity_v1");
+            if(source==null)throw new InvalidOperationException("Missing production universal Player City v1 resource.");
+            var go=Object.Instantiate(source);
+            go.name="4X · player city · production v1";
+            go.transform.rotation=Quaternion.identity;
+            var bounds=Bounds(go);
+            float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new InvalidOperationException("Player City v1 has empty renderer bounds.");
+            go.transform.localScale*=3.2f/span;
+            bounds=Bounds(go);
+            go.transform.position+=p-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            go.transform.SetParent(root,true);
             Flag("4X · Valoria standard",p+new Vector3(.9f,.15f,.5f),Blue,1.4f);
         }
         static void March(Vector3 p)
