@@ -19,6 +19,7 @@ namespace Eldoria.EditorTools
             UnityEditor.ShaderUtil.allowAsyncCompilation=false;
             CaptureMatchedWedge();
             CaptureStoneArchitectureWedge();
+            CaptureTerrainTerraceCitywideWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -192,6 +193,47 @@ namespace Eldoria.EditorTools
                 "}\n");
 
             ProductionVisualIntegration.StoneArchitectureEnabled=true;
+        }
+
+        static void CaptureTerrainTerraceCitywideWedge()
+        {
+            const string folder="VisualFormulaCaptures";
+            Directory.CreateDirectory(folder);
+            var position=new Vector3(18.2f,14.6f,-25.8f);
+            var target=new Vector3(0,3.15f,5.8f);
+            var westShift=new Vector3(-12.8f,-1.7f,-3.2f);
+            var eastShift=new Vector3(9.2f,-1.6f,-3.8f);
+            var upperShift=new Vector3(-5.2f,1.0f,5.0f);
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            SceneSetup.SetupRenderPipeline();
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            VisualWorld.VisualIntegrationEnabled=true;
+            ProductionVisualIntegration.TerrainTerraceEnabled=false;
+            VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
+            var camera=Camera.main;if(camera==null)throw new System.Exception("Valoria camera missing for Terrain Terrace citywide gate.");
+            var baseline=CollisionSignature();
+            foreach(var zoom in new[]{19f,12f,9f})Save(camera,folder+"/terrain-citywide-overview-before-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-before-12.png",position+westShift,target+westShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-before-9.png",position+westShift,target+westShift,9f,1280,720);
+            Save(camera,folder+"/terrain-citywide-east-before-12.png",position+eastShift,target+eastShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-upper-before-12.png",position+upperShift,target+upperShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-mobile-before.png",position,target,12f,390,844);
+            ProductionVisualIntegration.AddTerrainTerraceCitywideForGate();
+            if(CollisionSignature()!=baseline)throw new System.Exception("Terrain Terrace citywide composition altered certified colliders/hotspots.");
+            foreach(var zoom in new[]{19f,12f,9f})Save(camera,folder+"/terrain-citywide-overview-after-"+zoom+".png",position,target,zoom,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-after-12.png",position+westShift,target+westShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-west-after-9.png",position+westShift,target+westShift,9f,1280,720);
+            Save(camera,folder+"/terrain-citywide-east-after-12.png",position+eastShift,target+eastShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-upper-after-12.png",position+upperShift,target+upperShift,12f,1280,720);
+            Save(camera,folder+"/terrain-citywide-mobile-after.png",position,target,12f,390,844);
+            var names=new[]{
+                "Valoria · TerrainTerrace · west lower housing shelf","Valoria · TerrainTerrace · west middle housing rise",
+                "Valoria · TerrainTerrace · west upper housing shelf","Valoria · TerrainTerrace · upper civil support",
+                "Valoria · TerrainTerrace · workshop edge support","Valoria · TerrainTerrace · east training edge support",
+                "Valoria · TerrainTerrace · east upper retaining shelf"};
+            foreach(var name in names){var go=GameObject.Find(name);if(go==null)throw new System.Exception("Terrain Terrace citywide instance missing: "+name);foreach(var c in go.GetComponentsInChildren<Collider>(true))if(c.enabled)throw new System.Exception("Terrain Terrace collider enabled: "+name);}
+            File.WriteAllText(folder+"/terrain-citywide-evidence.json","{\\n  \\"camera_matched\\": true,\\n  \\"same_scene_before_after\\": true,\\n  \\"collider_hotspot_signature_equal\\": true,\\n  \\"instances\\": 7,\\n  \\"placement_rule\\": \\"top-aligned-buried-support\\",\\n  \\"gameplay_topology_changed\\": false,\\n  \\"tripo_credits_additional\\": 0\\n}\\n");
+            ProductionVisualIntegration.TerrainTerraceEnabled=true;
         }
 
         public static void CaptureRescueDistrict()
