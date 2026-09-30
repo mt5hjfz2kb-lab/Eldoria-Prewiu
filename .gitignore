@@ -1,0 +1,14 @@
+node_modules/
+playtest/
+qa-player-experience.json
+qa-player-experience.md
+qa/screenshots/
+*.log
+# Eldoria local art-gate staging/output (runner or owner-review generated)
+Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/*.glb
+Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/*.glb.meta
+Unity/Assets/Eldoria/ArtTests/ImageTo3D/MicroValoriaReview.unity
+Unity/Assets/Eldoria/ArtTests/ImageTo3D/MicroValoriaReview.unity.meta
+Unity/MicroValoriaReviewCaptures/
+Unity/TripoGenericModuleReviewCaptures/
+Unity/TripoModuleReviewConfig.json

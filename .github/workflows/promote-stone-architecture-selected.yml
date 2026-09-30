@@ -1,0 +1,123 @@
+name: Promote selected Stone Architecture pieces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/stone-architecture-selected-promotion.json'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eldoria-stone-architecture-selected-promotion
+  cancel-in-progress: true
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read request
+        id: request
+        shell: bash
+        run: |
+          enabled=$(jq -r '.enabled // false' pipeline/stone-architecture-selected-promotion.json)
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+          if [ "$enabled" != "true" ]; then
+            echo "PROMOTION_REQUEST_DISABLED"
+            exit 0
+          fi
+          artifact_id=$(jq -r '.certified_artifact.id' pipeline/stone-architecture-selected-promotion.json)
+          if ! [[ "$artifact_id" =~ ^[0-9]+$ ]]; then
+            echo "Invalid certified artifact id: $artifact_id" >&2
+            exit 1
+          fi
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+
+      - name: Download certified gate artifact
+        if: steps.request.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.request.outputs.artifact_id }}
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/stone-certified"
+          gh api             -H "Accept: application/vnd.github+json"             "/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip"             > "$RUNNER_TEMP/stone-certified/artifact.zip"
+          unzip -q "$RUNNER_TEMP/stone-certified/artifact.zip" -d "$RUNNER_TEMP/stone-certified/unpacked"
+          find "$RUNNER_TEMP/stone-certified/unpacked" -type f | sort
+
+      - name: Verify and promote only strict visual PASS pieces
+        if: steps.request.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          req="pipeline/stone-architecture-selected-promotion.json"
+          root="$RUNNER_TEMP/stone-certified/unpacked"
+          count=$(jq '.approved | length' "$req")
+          if [ "$count" -lt 1 ]; then
+            echo "No approved pieces." >&2
+            exit 1
+          fi
+          for i in $(seq 0 $((count-1))); do
+            piece=$(jq -r ".approved[$i].piece_file" "$req")
+            expected_sha=$(jq -r ".approved[$i].expected_sha256" "$req")
+            expected_bytes=$(jq -r ".approved[$i].expected_bytes" "$req")
+            semantic=$(jq -r ".approved[$i].semantic_name" "$req")
+            dest=$(jq -r ".approved[$i].destination" "$req")
+
+            mapfile -t matches < <(find "$root" -type f -name "$piece")
+            if [ "${#matches[@]}" -ne 1 ]; then
+              echo "Expected exactly one certified artifact match for $piece, got ${#matches[@]}" >&2
+              exit 1
+            fi
+            src="${matches[0]}"
+            actual_sha=$(sha256sum "$src" | awk '{print $1}')
+            actual_bytes=$(stat -c%s "$src")
+            if [ "$actual_sha" != "$expected_sha" ] || [ "$actual_bytes" != "$expected_bytes" ]; then
+              echo "Certified piece identity mismatch for $semantic: $actual_sha/$actual_bytes" >&2
+              exit 1
+            fi
+            case "$dest" in
+              Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/*) ;;
+              *) echo "Unsafe destination: $dest" >&2; exit 1 ;;
+            esac
+            mkdir -p "$(dirname "$dest")"
+            cp "$src" "$dest"
+            echo "APPROVED_PROMOTION: $semantic -> $dest | $actual_bytes bytes | sha256 $actual_sha"
+          done
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1
+          if git diff --cached --quiet; then
+            echo "Selected promotion already present with identical bytes."
+            exit 0
+          fi
+          git commit -m 'art: promote strict-pass Stone Architecture module'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Promotion push failed after retries." >&2
+          exit 1
+
+      - name: Evidence
+        if: always()
+        shell: bash
+        run: |
+          cp pipeline/stone-architecture-selected-promotion.json "$RUNNER_TEMP/stone-architecture-selected-promotion.json"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stone-architecture-selected-promotion-${{ github.run_id }}
+          path: ${{ runner.temp }}/stone-architecture-selected-promotion.json
+          if-no-files-found: warn

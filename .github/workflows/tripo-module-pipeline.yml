@@ -1,0 +1,650 @@
+name: Canonical Tripo module pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/tripo-module-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: eldoria-tripo-module-canonical
+  cancel-in-progress: true
+
+jobs:
+  module-gate:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Read canonical request
+        id: request
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $path = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json"
+          if (-not (Test-Path $path)) { throw 'Canonical Tripo request file is missing.' }
+          $request = Get-Content $path -Raw | ConvertFrom-Json
+          $enabled = [bool]$request.enabled
+          $sourceMode = [string]$request.source.mode
+          if ([string]::IsNullOrWhiteSpace($sourceMode)) { $sourceMode = 'downloads_glb' }
+          "enabled=$($enabled.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "request_id=$($request.request_id)" >> $env:GITHUB_OUTPUT
+          "module_label=$($request.module_label)" >> $env:GITHUB_OUTPUT
+          "source_mode=$sourceMode" >> $env:GITHUB_OUTPUT
+          Write-Host "Request: id=$($request.request_id), module=$($request.module_label), enabled=$enabled, source_mode=$sourceMode"
+
+      - name: Identify and stage requested GLB from Downloads
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.source_mode == 'downloads_glb'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $downloads = Join-Path $env:USERPROFILE 'Downloads'
+          if (-not (Test-Path $downloads)) { throw "Runner Downloads folder not found: $downloads" }
+
+          $exactName = [string]$request.source.exact_name
+          $exactSha = ([string]$request.source.exact_sha256).ToLowerInvariant()
+          $regex = [string]$request.source.name_regex
+          if ([string]::IsNullOrWhiteSpace($regex)) { $regex = '.*\.glb$' }
+          $hours = [double]$request.source.max_age_hours
+          if ($hours -le 0) { $hours = 12 }
+          $cutoff = (Get-Date).AddHours(-$hours)
+          $excluded = @()
+          if ($null -ne $request.source.exclude_sha256) {
+            $excluded = @($request.source.exclude_sha256 | ForEach-Object { ([string]$_).ToLowerInvariant() })
+          }
+
+          $recent = @(Get-ChildItem $downloads -File -Filter '*.glb' -ErrorAction SilentlyContinue |
+            Where-Object { $_.LastWriteTime -ge $cutoff } |
+            Sort-Object LastWriteTime -Descending)
+          if ($recent.Count -eq 0) { throw "No GLB files modified in the last $hours hours in Downloads." }
+
+          $inventory = @()
+          foreach ($file in $recent) {
+            $sha = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            $excludedBySha = $excluded -contains $sha
+            $nameMatches = $file.Name -match $regex
+            $inventory += [pscustomobject]@{
+              File = $file
+              Sha = $sha
+              Bytes = $file.Length
+              NameMatches = $nameMatches
+              Excluded = $excludedBySha
+            }
+            Write-Host ("candidate {0} | {1} bytes | {2:o} | sha256 {3} | regex={4} | excluded={5}" -f $file.Name,$file.Length,$file.LastWriteTime,$sha,$nameMatches,$excludedBySha)
+          }
+
+          if (-not [string]::IsNullOrWhiteSpace($exactName)) {
+            $matches = @($inventory | Where-Object {
+              $_.File.Name -eq $exactName -and
+              -not $_.Excluded -and
+              ([string]::IsNullOrWhiteSpace($exactSha) -or $_.Sha -eq $exactSha)
+            })
+          } else {
+            $matches = @($inventory | Where-Object { $_.NameMatches -and -not $_.Excluded })
+          }
+
+          if ($matches.Count -ne 1) {
+            throw "Canonical source selection is ambiguous: expected exactly one candidate, found $($matches.Count). Refine exact_name/exact_sha256/name_regex instead of choosing manually."
+          }
+
+          $selected = $matches[0]
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $selected.File.FullName $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_name=$($selected.File.Name)",
+            "source_path=$($selected.File.FullName)",
+            "source_sha256=$($selected.Sha)",
+            "source_bytes=$($selected.Bytes)",
+            "source_last_write=$($selected.File.LastWriteTime.ToString('o'))",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          Write-Host "SELECTED_SOURCE: $($selected.File.Name) | $($selected.Bytes) bytes | sha256 $($selected.Sha)"
+          Write-Host "UNITY_YAW_DEGREES: $($request.unity_yaw_degrees)"
+
+      - name: Stage requested GLB from repository
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.source_mode == 'repository_glb'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $relative = [string]$request.source.path
+          if ([string]::IsNullOrWhiteSpace($relative)) { throw 'repository_glb requires source.path.' }
+          $source = Join-Path $env:GITHUB_WORKSPACE $relative
+          if (-not (Test-Path $source)) { throw "Repository GLB not found: $source" }
+          if ([IO.Path]::GetExtension($source).ToLowerInvariant() -ne '.glb') { throw "Repository source is not GLB: $source" }
+          $sha = (Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+          $expected = ([string]$request.source.exact_sha256).ToLowerInvariant()
+          if (-not [string]::IsNullOrWhiteSpace($expected) -and $sha -ne $expected) {
+            throw "Repository GLB SHA mismatch. expected=$expected actual=$sha"
+          }
+          $bytes = (Get-Item $source).Length
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $source $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_mode=repository_glb",
+            "source_path=$source",
+            "source_sha256=$sha",
+            "source_bytes=$bytes",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          Write-Host "REPOSITORY_SOURCE: $relative | $bytes bytes | sha256 $sha"
+
+      - name: Generate and stage requested GLB with Tripo CLI
+        if: steps.request.outputs.enabled == 'true' && startsWith(steps.request.outputs.source_mode, 'tripo_')
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $mode = [string]$request.source.mode
+          if ($null -eq $request.credit_authorization -or -not [bool]$request.credit_authorization.approved) {
+            throw 'Remote Tripo generation requires explicit credit_authorization.approved=true tied to this request.'
+          }
+          $authorizedCredits = [int]$request.credit_authorization.authorized_credit_cost
+          if ($authorizedCredits -le 0) { throw 'Remote Tripo generation requires a positive authorized_credit_cost.' }
+
+          $tripo = Get-Command tripo.exe -ErrorAction SilentlyContinue
+          if (-not $tripo) { $tripo = Get-Command tripo -ErrorAction SilentlyContinue }
+          if (-not $tripo) {
+            $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
+            if (-not $npm) { $npm = Get-Command npm -ErrorAction SilentlyContinue }
+            if (-not $npm) { throw 'Tripo CLI is not installed and npm is not available on the runner.' }
+            & $npm.Source install -g tripo-cli
+            if ($LASTEXITCODE -ne 0) { throw "tripo-cli install failed with exit code $LASTEXITCODE" }
+            $tripo = Get-Command tripo.cmd -ErrorAction SilentlyContinue
+            if (-not $tripo) { $tripo = Get-Command tripo -ErrorAction SilentlyContinue }
+          }
+          if (-not $tripo) { throw 'Tripo CLI executable was not found after installation.' }
+
+          function Resolve-TripoInput([string]$value) {
+            if ([string]::IsNullOrWhiteSpace($value)) { return $null }
+            if ([System.IO.Path]::IsPathRooted($value)) { return $value }
+            return (Join-Path $env:GITHUB_WORKSPACE $value)
+          }
+
+          $inputArgs = @()
+          if ($mode -eq 'tripo_text') {
+            $prompt = [string]$request.source.prompt
+            if ([string]::IsNullOrWhiteSpace($prompt)) { throw 'tripo_text requires source.prompt.' }
+            $inputArgs += $prompt
+          } elseif ($mode -eq 'tripo_single_image') {
+            $path = Resolve-TripoInput ([string]$request.source.input_path)
+            if (-not $path -or -not (Test-Path $path)) { throw "Tripo source image not found: $path" }
+            $expectedInputSha = ([string]$request.source.input_sha256).ToLowerInvariant()
+            if ([string]::IsNullOrWhiteSpace($expectedInputSha)) { throw 'tripo_single_image requires source.input_sha256.' }
+            $actualInputSha = (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($actualInputSha -ne $expectedInputSha) { throw "Tripo source image SHA mismatch. expected=$expectedInputSha actual=$actualInputSha" }
+            $inputArgs += $path
+          } elseif ($mode -eq 'tripo_multiview') {
+            $paths = @($request.source.input_paths)
+            $expectedShas = @($request.source.input_sha256)
+            if ($paths.Count -lt 2 -or $paths.Count -gt 4) { throw 'tripo_multiview requires 2 to 4 source.input_paths.' }
+            if ($expectedShas.Count -ne $paths.Count) { throw 'tripo_multiview requires one source.input_sha256 per input image.' }
+            for ($i=0; $i -lt $paths.Count; $i++) {
+              $path = Resolve-TripoInput ([string]$paths[$i])
+              if (-not $path -or -not (Test-Path $path)) { throw "Tripo multiview source not found: $path" }
+              $expectedInputSha = ([string]$expectedShas[$i]).ToLowerInvariant()
+              $actualInputSha = (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+              if ([string]::IsNullOrWhiteSpace($expectedInputSha) -or $actualInputSha -ne $expectedInputSha) {
+                throw "Tripo multiview SHA mismatch at index $i. expected=$expectedInputSha actual=$actualInputSha"
+              }
+              $inputArgs += $path
+            }
+          } else {
+            throw "Unsupported Tripo source mode: $mode"
+          }
+
+          $model = [string]$request.source.tripo_model
+          if ([string]::IsNullOrWhiteSpace($model)) {
+            throw 'Remote Tripo generation requires an explicit source.tripo_model; no implicit P2/H3 selection is allowed.'
+          }
+          Write-Host "CREDIT_AUTHORIZATION: approved=true | authorized_credit_cost=$authorizedCredits | model=$model"
+          $faceLimit = [int]$request.source.face_limit
+          if ($faceLimit -le 0) { $faceLimit = 50000 }
+
+          $outDir = "$env:RUNNER_TEMP\eldoria-tripo-cli-$($request.request_id)"
+          Remove-Item $outDir -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $outDir | Out-Null
+
+          $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
+          Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
+            $s = [string]$_
+            if ($s -match '\s') { '"' + $s.Replace('"','\"') + '"' } else { $s }
+          }) -join ' '))
+
+          $json = & $tripo.Source @args
+          if ($LASTEXITCODE -ne 0) { throw "Tripo CLI generation failed with exit code $LASTEXITCODE" }
+          $jsonText = ($json | Out-String).Trim()
+          if ([string]::IsNullOrWhiteSpace($jsonText)) { throw 'Tripo CLI returned no JSON result.' }
+          $jsonText | Set-Content "$env:RUNNER_TEMP\tripo-cli-result.json"
+          $result = $jsonText | ConvertFrom-Json
+
+          $modelFile = [string]$result.model_file
+          if ([string]::IsNullOrWhiteSpace($modelFile) -or -not (Test-Path $modelFile) -or [IO.Path]::GetExtension($modelFile).ToLowerInvariant() -ne '.glb') {
+            $glbs = @(Get-ChildItem $outDir -Recurse -File -Filter '*.glb' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+            if ($glbs.Count -ne 1) { throw "Expected exactly one generated GLB, found $($glbs.Count)." }
+            $modelFile = $glbs[0].FullName
+          }
+
+          $sha = (Get-FileHash $modelFile -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes = (Get-Item $modelFile).Length
+          $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $sourceDir | Out-Null
+          $staged = Join-Path $sourceDir 'Eldoria_Module_UnderReview_HQ.glb'
+          Copy-Item $modelFile $staged -Force
+
+          @(
+            "request_id=$($request.request_id)",
+            "module_label=$($request.module_label)",
+            "source_mode=$mode",
+            "tripo_model=$model",
+            "face_limit=$faceLimit",
+            "tripo_task_id=$($result.task_id)",
+            "credits_consumed=$($result.credits_consumed)",
+            "source_path=$modelFile",
+            "source_sha256=$sha",
+            "source_bytes=$bytes",
+            "visual_acceptance=$($request.visual_acceptance)"
+          ) | Set-Content "$env:RUNNER_TEMP\tripo-module-source.txt"
+
+          $reviewConfig = @{
+            module_label = [string]$request.module_label
+            unity_yaw_degrees = [double]$request.unity_yaw_degrees
+            visual_acceptance = [string]$request.visual_acceptance
+          } | ConvertTo-Json -Depth 4
+          $reviewConfig | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          $consumed = [int]$result.credits_consumed
+          if ($consumed -gt $authorizedCredits) {
+            throw "Tripo consumed more credits than authorized. authorized=$authorizedCredits consumed=$consumed. Stop pipeline and investigate; do not retry."
+          }
+          Write-Host "GENERATED_SOURCE: $modelFile | $bytes bytes | sha256 $sha | task $($result.task_id) | credits $consumed / authorized $authorizedCredits"
+
+      - name: Locate Blender
+        if: steps.request.outputs.enabled == 'true'
+        id: blender
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @(
+              'C:\Program Files\Blender Foundation',
+              "$env:LOCALAPPDATA\Programs\Blender Foundation",
+              "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+            )
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found on Unity runner.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Blender canonical reduction and UV preparation
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $input = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_HQ.glb"
+          $output = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          $report = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
+          $log = "$env:RUNNER_TEMP\tripo-module-blender.log"
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          $refineConfig = "$env:RUNNER_TEMP\tripo-module-refine-config.json"
+          if ($null -ne $request.refinement) {
+            $request.refinement | ConvertTo-Json -Depth 8 | Set-Content $refineConfig
+          } else {
+            '{"enabled":false}' | Set-Content $refineConfig
+          }
+          $salvageConfig = "$env:RUNNER_TEMP\tripo-module-salvage-config.json"
+          if ($null -ne $request.multipiece -and $null -ne $request.multipiece.salvage) {
+            $request.multipiece.salvage | ConvertTo-Json -Depth 8 | Set-Content $salvageConfig
+          } else {
+            '{"enabled":false}' | Set-Content $salvageConfig
+          }
+          $errLog = "$env:RUNNER_TEMP\tripo-module-blender-error.log"
+          $targetTris = 49800
+          $minTris = 49500
+          $maxTris = 50000
+          if ($null -ne $request.optimization) {
+            if ([int]$request.optimization.target_triangles -gt 0) { $targetTris = [int]$request.optimization.target_triangles }
+            if ([int]$request.optimization.min_triangles -gt 0) { $minTris = [int]$request.optimization.min_triangles }
+            if ([int]$request.optimization.max_triangles -gt 0) { $maxTris = [int]$request.optimization.max_triangles }
+          }
+          Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
+          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
+          if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
+            $splitDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
+            Remove-Item $splitDir -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Force $splitDir | Out-Null
+            $splitMin = [int]$request.multipiece.min_component_triangles
+            if ($splitMin -le 0) { $splitMin = 250 }
+            $clusterCount = [int]$request.multipiece.expected_piece_count
+            if ($clusterCount -lt 0) { $clusterCount = 0 }
+            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount,"--split-salvage-config",$salvageConfig)
+            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | salvage=$([bool]$request.multipiece.salvage.enabled) | dir=$splitDir"
+          }
+          $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            if (Test-Path $errLog) { Get-Content $errLog -Tail 240 }
+            throw "Canonical Blender module pipeline failed with exit code $($process.ExitCode)"
+          }
+          if (Test-Path $errLog) { Get-Content $errLog -Tail 40 }
+          if (-not (Test-Path $output)) { throw 'Canonical optimized GLB missing after Blender.' }
+          Get-Content $report
+
+      - name: Verify Unity 6.3.23f1
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Execute canonical isolated Unity gate
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
+            Write-Host "Skipping generic combined visual gate: multipiece mode has its own isolated Unity review."
+            exit 0
+          }
+          $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
+          $log = "$env:RUNNER_TEMP\Eldoria-TripoGenericModule.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+
+          if (-not $process.WaitForExit(540000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw 'Canonical Tripo Unity gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw "Canonical Tripo Unity gate failed: $($process.ExitCode)"
+          }
+
+          foreach ($name in @('strategic.png','city.png','detail.png','strategic-textured.png','city-textured.png','detail-textured.png','oblique.png','front-diagnostic.png','rear-diagnostic.png','left-diagnostic.png','right-diagnostic.png')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) {
+              throw "Missing/empty canonical module image evidence: $name"
+            }
+          }
+          $metrics = Join-Path $folder 'metrics.json'
+          if (-not (Test-Path $metrics) -or (Get-Item $metrics).Length -lt 100) {
+            throw 'Missing/empty canonical module metrics.json'
+          }
+          Get-Content $metrics
+
+      - name: Execute isolated Unity multipiece gate
+        if: steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -eq $request.multipiece -or -not [bool]$request.multipiece.enabled) {
+            Write-Host 'MULTIPIECE_REVIEW_DISABLED'
+            exit 0
+          }
+          $folder = "$env:GITHUB_WORKSPACE\Unity\TripoMultipieceReviewCaptures"
+          $log = "$env:RUNNER_TEMP\Eldoria-TripoMultipiece.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoMultipieceReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(540000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw 'Multipiece Unity gate timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw "Multipiece Unity gate failed: $($process.ExitCode)"
+          }
+          foreach ($name in @('overview-textured.png','front-diagnostic.png','close-oblique.png','metrics.json')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) {
+              throw "Missing/empty multipiece evidence: $name"
+            }
+          }
+          Get-Content (Join-Path $folder 'metrics.json')
+
+      - name: Build canonical asset manifest evidence
+        if: always() && steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $requestPath = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json"
+          $request = Get-Content $requestPath -Raw | ConvertFrom-Json
+          $sourceInfo = @{}
+          $sourcePath = "$env:RUNNER_TEMP\tripo-module-source.txt"
+          if (Test-Path $sourcePath) {
+            foreach ($line in Get-Content $sourcePath) {
+              $parts = $line -split '=',2
+              if ($parts.Count -eq 2) { $sourceInfo[$parts[0]] = $parts[1] }
+            }
+          }
+          $blender = $null
+          $blenderPath = "$env:RUNNER_TEMP\tripo-module-blender-report.json"
+          if (Test-Path $blenderPath) { $blender = Get-Content $blenderPath -Raw | ConvertFrom-Json }
+          $unity = $null
+          $unityPath = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures\metrics.json"
+          if (Test-Path $unityPath) { $unity = Get-Content $unityPath -Raw | ConvertFrom-Json }
+          $optimizedPath = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          $optimizedSha = $null
+          $optimizedBytes = 0
+          if (Test-Path $optimizedPath) {
+            $optimizedSha = (Get-FileHash $optimizedPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            $optimizedBytes = (Get-Item $optimizedPath).Length
+          }
+          $manifest = [ordered]@{
+            schema_version = 1
+            asset_id = [string]$request.module_label
+            request_id = [string]$request.request_id
+            source_commit = "${{ github.sha }}"
+            workflow_run_id = [long]"${{ github.run_id }}"
+            source = [ordered]@{
+              mode = [string]$request.source.mode
+              name = $sourceInfo["source_name"]
+              sha256 = $sourceInfo["source_sha256"]
+              bytes = $sourceInfo["source_bytes"]
+              tripo_model = $sourceInfo["tripo_model"]
+              tripo_task_id = $sourceInfo["tripo_task_id"]
+              credits_consumed = $sourceInfo["credits_consumed"]
+            }
+            optimization = [ordered]@{
+              target_triangles = $blender.target_triangles
+              accepted_range = $blender.accepted_range
+              raw = $blender.raw
+              optimized = $blender.optimized
+              optimized_sha256 = $optimizedSha
+              optimized_bytes = $optimizedBytes
+              surface_diagnostics = $blender.surface_diagnostics
+              refinement = $blender.refinement
+            }
+            unity = $unity
+            visual_acceptance = [string]$request.visual_acceptance
+            promotion = $request.promotion
+          }
+          $manifestPath = "$env:RUNNER_TEMP\eldoria-asset-manifest.json"
+          $manifest | ConvertTo-Json -Depth 20 | Set-Content $manifestPath
+          Write-Host "ASSET_MANIFEST=$manifestPath"
+          Get-Content $manifestPath
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.request.outputs.enabled == 'true'
+        with:
+          name: eldoria-tripo-module-${{ steps.request.outputs.request_id }}-${{ github.sha }}
+          path: |
+            Unity/TripoGenericModuleReviewCaptures/*
+            Unity/TripoMultipieceReviewCaptures/*
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_UnderReview_50K.glb
+            Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/MultiPiece/*.glb
+            pipeline/tripo-module-request.json
+            Unity/TripoModuleReviewConfig.json
+            ${{ runner.temp }}/tripo-module-source.txt
+            ${{ runner.temp }}/tripo-cli-result.json
+            ${{ runner.temp }}/tripo-module-blender-report.json
+            ${{ runner.temp }}/tripo-module-refine-config.json
+            ${{ runner.temp }}/tripo-module-salvage-config.json
+            ${{ runner.temp }}/tripo-module-blender.log
+            ${{ runner.temp }}/tripo-module-blender-error.log
+            ${{ runner.temp }}/Eldoria-TripoGenericModule.log
+            ${{ runner.temp }}/Eldoria-TripoMultipiece.log
+            ${{ runner.temp }}/eldoria-asset-manifest.json
+          if-no-files-found: warn
+
+      - name: Promote certified module to production Resources
+        if: success() && steps.request.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ($null -eq $request.promotion -or -not [bool]$request.promotion.enabled) {
+            Write-Host 'PROMOTION_DISABLED'
+            exit 0
+          }
+
+          git config --global --add safe.directory "$env:GITHUB_WORKSPACE"
+          git -C "$env:GITHUB_WORKSPACE" config user.name "Eldoria Actions"
+          git -C "$env:GITHUB_WORKSPACE" config user.email "actions@eldoria.local"
+
+          $promotionMode = ([string]$request.promotion.mode).Trim().ToLowerInvariant()
+          if ([string]::IsNullOrWhiteSpace($promotionMode)) { $promotionMode = 'combined' }
+          $tracked = @()
+
+          if ($promotionMode -eq 'multipiece_selected') {
+            if ($null -eq $request.multipiece -or -not [bool]$request.multipiece.enabled) {
+              throw 'multipiece_selected promotion requires multipiece.enabled=true.'
+            }
+            $items = @($request.promotion.pieces)
+            if ($items.Count -eq 0) { throw 'multipiece_selected promotion requires at least one approved piece.' }
+            $sourceDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
+            foreach ($item in $items) {
+              $index = [int]$item.index
+              if ($index -lt 1 -or $index -gt 99) { throw "Unsafe multipiece index: $index" }
+              $pattern = ("piece_{0:D2}_*tris.glb" -f $index)
+              $matches = @(Get-ChildItem $sourceDir -Filter $pattern -File -ErrorAction SilentlyContinue)
+              if ($matches.Count -ne 1) { throw "Expected exactly one source for approved piece $index; found $($matches.Count)." }
+              $relative = ([string]$item.destination).Replace('/','\')
+              $prefix = 'Unity\Assets\Eldoria\Resources\Valoria\'
+              if ([string]::IsNullOrWhiteSpace($relative) -or
+                  -not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
+                  -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
+                  $relative.Contains('..')) {
+                throw "Unsafe multipiece promotion destination: $relative"
+              }
+              $dest = Join-Path $env:GITHUB_WORKSPACE $relative
+              if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
+                throw "Promotion destination already exists and overwrite=false: $relative"
+              }
+              New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+              Copy-Item $matches[0].FullName $dest -Force
+              $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+              $bytes = (Get-Item $dest).Length
+              $family = [string]$item.family
+              Write-Host "PROMOTION_PIECE: index=$index family=$family destination=$relative bytes=$bytes sha256=$sha"
+              git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
+              $tracked += $relative
+            }
+          }
+          elseif ($promotionMode -eq 'combined') {
+            $relative = ([string]$request.promotion.destination).Replace('/','\')
+            if ([string]::IsNullOrWhiteSpace($relative)) { throw 'promotion.destination is required.' }
+            $prefix = 'Unity\Assets\Eldoria\Resources\Valoria\'
+            if (-not $relative.StartsWith($prefix,[System.StringComparison]::OrdinalIgnoreCase) -or
+                -not $relative.EndsWith('.glb',[System.StringComparison]::OrdinalIgnoreCase) -or
+                $relative.Contains('..')) {
+              throw "Unsafe promotion destination: $relative"
+            }
+            $source = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+            if (-not (Test-Path $source)) { throw 'Certified optimized GLB missing.' }
+            $dest = Join-Path $env:GITHUB_WORKSPACE $relative
+            if ((Test-Path $dest) -and -not [bool]$request.promotion.overwrite) {
+              throw "Promotion destination already exists and overwrite=false: $relative"
+            }
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            Copy-Item $source $dest -Force
+            $sha = (Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
+            $bytes = (Get-Item $dest).Length
+            Write-Host "PROMOTION_FILE: $relative | $bytes bytes | sha256 $sha"
+            git -C "$env:GITHUB_WORKSPACE" add -- "$relative"
+            $tracked += $relative
+          }
+          else {
+            throw "Unsupported promotion.mode: $promotionMode"
+          }
+
+          $changes = git -C "$env:GITHUB_WORKSPACE" status --porcelain -- $tracked
+          if (-not $changes) { throw "Promotion produced no tracked changes." }
+          $message = [string]$request.promotion.commit_message
+          if ([string]::IsNullOrWhiteSpace($message)) { $message = "art: promote certified Tripo module" }
+          git -C "$env:GITHUB_WORKSPACE" commit -m "$message"
+          if ($LASTEXITCODE -ne 0) { throw "git commit failed with exit code $LASTEXITCODE" }
+
+          git -C "$env:GITHUB_WORKSPACE" stash push --include-untracked -m "eldoria-promotion-residuals"
+          $pushed = $false
+          foreach ($attempt in 1..4) {
+            git -C "$env:GITHUB_WORKSPACE" fetch origin main
+            if ($LASTEXITCODE -ne 0) { throw "git fetch failed with exit code $LASTEXITCODE" }
+            git -C "$env:GITHUB_WORKSPACE" rebase origin/main
+            if ($LASTEXITCODE -ne 0) { throw "git rebase failed with exit code $LASTEXITCODE" }
+            git -C "$env:GITHUB_WORKSPACE" push origin HEAD:main
+            if ($LASTEXITCODE -eq 0) { $pushed = $true; break }
+            Write-Host "PROMOTION_PUSH_RETRY: attempt=$attempt"
+            Start-Sleep -Seconds 2
+          }
+          if (-not $pushed) { throw 'git push failed after concurrent-main retries' }
+          Write-Host "PROMOTION_PUSHED: mode=$promotionMode count=$($tracked.Count)"
+

@@ -1,0 +1,77 @@
+name: Unity WebGL published startup probe
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Publish Eldoria Preview']
+    types: [completed]
+
+permissions:
+  contents: read
+jobs:
+  startup:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+      - name: Probe actual published Unity startup
+        run: |
+          mkdir -p webgl-startup-evidence
+          cat > /tmp/eldoria-startup.cjs <<'JS'
+          const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          const fs = require('fs');
+          (async () => {
+            const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
+            let compressed=false;
+            for(let attempt=0;attempt<20;attempt++){
+              const response=await fetch(target+'?compression-check='+Date.now());
+              const html=await response.text();
+              if(html.includes('.unityweb')){compressed=true;break;}
+              console.log('Waiting for compressed publication',attempt+1);
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            if(!compressed) throw new Error('Compressed publication was not observed');
+            const browser = await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+            const page = await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'});
+            const logs=[], requests=[];
+            page.on('console', m=>logs.push({type:m.type(),text:m.text()}));
+            page.on('pageerror', e=>logs.push({type:'pageerror',text:String(e)}));
+            page.on('response', r=>{ if(r.url().includes('/unity-owner/')) requests.push({url:r.url(),status:r.status()}); });
+            page.on('requestfailed', r=>requests.push({url:r.url(),failure:r.failure()}));
+            page.on('dialog', async d=>{logs.push({type:'dialog',text:d.message()}); await d.dismiss();});
+            // Instrument only Unity's standard promise callback; downloaded player bytes stay unchanged.
+            await page.route(/^https:\/\/mt5hjfz2kb-lab\.github\.io\/Eldoria-Prewiu\/unity-owner\/(?:\?.*)?$/, async route=>{
+              const response=await route.fetch();
+              const html=await response.text();
+              const token='.then((unityInstance) => {';
+              if(!html.includes(token)) throw new Error('Published Unity loader callback changed');
+              await route.fulfill({response,body:html.replace(token,token+" document.body.dataset.eldoriaEngineReady='true';")});
+            });
+            let failure=null;
+            try {
+              await page.goto('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/?startup-probe=' + Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
+              await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+              await page.waitForTimeout(15000);
+              await page.screenshot({path:'webgl-startup-evidence/mobile-landscape.png'});
+              await page.setViewportSize({width:390,height:844});
+              await page.waitForTimeout(3000);
+              await page.screenshot({path:'webgl-startup-evidence/portrait.png'});
+              if(logs.some(x=>x.type==='pageerror'||x.type==='dialog')) throw new Error('Runtime raised JavaScript error or dialog');
+            } catch(e) {
+              failure=String(e);
+              await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
+            }
+            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify({failure,logs,requests,scope:'Compressed published engine startup with mobile UA/layout + manual screenshot review; Chromium software WebGL, not physical iPhone certification'},null,2));
+            await browser.close();
+            if(failure) throw new Error(failure);
+          })().catch(e=>{console.error(e);process.exit(1);});
+          JS
+          node /tmp/eldoria-startup.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-webgl-startup-evidence
+          path: webgl-startup-evidence/
+          retention-days: 7

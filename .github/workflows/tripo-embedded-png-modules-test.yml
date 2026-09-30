@@ -1,0 +1,99 @@
+name: "[LEGACY] Tripo embedded PNG module verification"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: eldoria-tripo-embedded-png-modules
+  cancel-in-progress: true
+
+jobs:
+  verify-embedded-png:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+
+      - name: Enable glTFast PNG/JPEG soft dependencies in temporary workspace
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $manifest = "$env:GITHUB_WORKSPACE/Unity/Packages/manifest.json"
+          $json = Get-Content $manifest -Raw | ConvertFrom-Json
+          $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.imageconversion' -NotePropertyValue '1.0.0' -Force
+          $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.unitywebrequest' -NotePropertyValue '1.0.0' -Force
+          $json.dependencies | Add-Member -NotePropertyName 'com.unity.modules.unitywebrequesttexture' -NotePropertyValue '1.0.0' -Force
+          $jsonText = $json | ConvertTo-Json -Depth 20
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [System.IO.File]::WriteAllText($manifest, $jsonText, $utf8NoBom)
+          Write-Host 'Temporary manifest now contains Image Conversion + UnityWebRequest + UnityWebRequestTexture.'
+          Get-Content $manifest
+
+      - name: Stage exact V4
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $expected = '46b26023c65eb60cc59e8d29495d6b100e0a6f14ae42463905497aaecbaffaa2'
+          $candidate = Join-Path (Join-Path $env:USERPROFILE 'Downloads') 'Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb'
+          if (-not (Test-Path $candidate)) { throw "Exact V4 not found: $candidate" }
+          $actual = (Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "V4 SHA mismatch: $actual" }
+          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K_SurfaceCleanupV4.glb"
+          New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+          Copy-Item $candidate $target -Force
+
+      - name: Verify Unity and resolve packages
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Re-run untouched embedded V4 appearance gate
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoAppearanceV4ReviewCaptures"
+          $log = "$env:RUNNER_TEMP/Eldoria-EmbeddedPngModulesTest.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.TripoAppearanceV4Review.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            throw 'Embedded PNG module verification timed out.'
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 320 }
+            throw "Embedded PNG module verification failed: $($process.ExitCode)"
+          }
+          foreach ($name in @('strategic.png','city.png','detail.png','oblique.png','metrics.json')) {
+            $file = Join-Path $folder $name
+            if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 100) { throw "Missing embedded verification evidence: $name" }
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-tripo-embedded-png-modules-${{ github.sha }}
+          path: |
+            Unity/TripoAppearanceV4ReviewCaptures/*
+            Unity/Packages/manifest.json
+            Unity/Packages/packages-lock.json
+            ${{ runner.temp }}/Eldoria-EmbeddedPngModulesTest.log
+          if-no-files-found: warn

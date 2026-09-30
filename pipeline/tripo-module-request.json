@@ -1,0 +1,116 @@
+{
+  "enabled": false,
+  "request_id": "eldoria-stone-architecture-kit-v1-gate",
+  "module_label": "Eldoria_StoneArchitectureKit_v1",
+  "unity_yaw_degrees": 0,
+  "source": {
+    "mode": "downloads_glb",
+    "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
+    "exact_sha256": "da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422",
+    "name_regex": "^Eldoria_StoneArchitectureKit_v1\\.glb$",
+    "max_age_hours": 168,
+    "exclude_sha256": []
+  },
+  "refinement": {
+    "enabled": false
+  },
+  "optimization": {
+    "target_triangles": 49800,
+    "min_triangles": 49500,
+    "max_triangles": 50000
+  },
+  "multipiece": {
+    "enabled": true,
+    "min_component_triangles": 250,
+    "expected_piece_count": 8,
+    "salvage": {
+      "enabled": false,
+      "mode": "architecture_spatial_cleanup_v2",
+      "post_join_cleanup": {
+        "1": {
+          "min_triangles": 0,
+          "spatial_neighbor_ratio": 0.075
+        },
+        "5": {
+          "min_triangles": 0,
+          "spatial_neighbor_ratio": 0.075
+        },
+        "6": {
+          "min_triangles": 0,
+          "axis_clip": {
+            "axis": "x",
+            "side": "max",
+            "fraction": 0.14
+          }
+        }
+      }
+    }
+  },
+  "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
+  "notes": "CLOSED 2026-09-30. Zero-credit architecture-specific repair completed. Run 36715424694 / artifact 11096157750 recovered piece 01 CornerWallL and piece 05 HighStraightWall; both passed strict visual review and were selectively promoted by run 36717246333. Piece 02 RockToWallTransition remains previously certified/promoted. Piece 06 was retried with the opposite bounded X-side clip in run 36717083816 / artifact 11096319220; technical gates passed but front/rear/oblique evidence still shows artificial planar protrusions/cut geometry, so piece 06 is FINAL VISUAL REJECT for v1. Pieces 03/04/07/08 remain rejected. No Tripo generation or additional credits were used.",
+  "promotion": {
+    "enabled": false
+  },
+  "run_nonce": "closed-2026-09-30-stone-architecture-v1-final-repair",
+  "visual_verdicts": {
+    "reviewed_runs": [
+      {
+        "run_id": 36715424694,
+        "artifact_id": 11096157750,
+        "purpose": "spatial repair 01/05 plus first 06 axis test"
+      },
+      {
+        "run_id": 36717083816,
+        "artifact_id": 11096319220,
+        "purpose": "final opposite-axis 06 test"
+      }
+    ],
+    "individual_visual_pass": [
+      {
+        "index": 1,
+        "family": "corner wall L",
+        "production_name": "CornerWallL",
+        "status": "PROMOTED",
+        "reason": "architecture-specific spatial cleanup preserved coherent shell and removed remote outliers; clean enough in dedicated multi-angle review"
+      },
+      {
+        "index": 2,
+        "family": "rock-to-wall transition",
+        "production_name": "RockToWallTransition",
+        "status": "PROMOTED",
+        "reason": "previous strict visual PASS"
+      },
+      {
+        "index": 5,
+        "family": "high straight wall",
+        "production_name": "HighStraightWall",
+        "status": "PROMOTED",
+        "reason": "architecture-specific spatial cleanup preserved coherent wall and removed remote outliers; clean enough in dedicated multi-angle review"
+      }
+    ],
+    "final_reject": [
+      {
+        "index": 3,
+        "reason": "multiple detached architectural masses grouped as one module"
+      },
+      {
+        "index": 4,
+        "reason": "disconnected masonry masses plus thin/curved residual geometry"
+      },
+      {
+        "index": 6,
+        "reason": "two bounded connected-protrusion clip directions were tested; final evidence still contains artificial planar protrusions/cut geometry, so further automatic clipping is not justified"
+      },
+      {
+        "index": 7,
+        "reason": "multiple separate pillar-like masses and damaged/protruding geometry"
+      },
+      {
+        "index": 8,
+        "reason": "arch incomplete with detached/protruding upper-side geometry"
+      }
+    ],
+    "kit_verdict": "PARTIAL_PRODUCTION_PASS_3_OF_8",
+    "production_promotion": "PIECES_01_02_05"
+  }
+}

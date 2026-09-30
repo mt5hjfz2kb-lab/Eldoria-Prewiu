@@ -1,0 +1,414 @@
+using System;
+using Eldoria.Domain;
+using Eldoria.Application;
+using Eldoria.Infrastructure;
+using NUnit.Framework;
+using System.IO;
+
+namespace Eldoria.Tests
+{
+    public sealed class SliceCoreTests
+    {
+        sealed class Clock:IClock { public long UtcTicks {get;set;}=new DateTime(2026,9,24,0,0,0,DateTimeKind.Utc).Ticks;
+            public void Add(int seconds){UtcTicks+=TimeSpan.FromSeconds(seconds).Ticks;} }
+        sealed class Memory:IStateStore { public PlayerState Value;
+            public PlayerState Load()=>Value; public void Save(PlayerState state){Value=state;} }
+        static GameCommand Cmd(LocalGateway g,string id,string kind,string target)
+        {var s=g.Snapshot();return new GameCommand(id,s.PlayerId,kind,target,s.Revision);}
+        [Test] public void ReferenceNumbersDeriveFromOwnershipAndSingleMarch()
+        {
+            var s=new PlayerState();var p=SliceRules.TotalPower(s);
+            Assert.That(p.Kingdom,Is.EqualTo(600));Assert.That(p.Army,Is.EqualTo(648));
+            Assert.That(p.Heroes,Is.EqualTo(1204));Assert.That(p.Total,Is.EqualTo(2452));
+            var e=SliceRules.Expedition(s.Available,"aldric");
+            Assert.That(new[]{e.Attack,e.Defense,e.Health,e.Break,e.Power},Is.EqualTo(new[]{198,184,642,100,2176}));
+            Assert.That(SliceRules.Fight(e).Won,Is.True);
+        }
+        [Test] public void FullJourneySpendsOnceSurvivesOfflineAndChangesCity()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"build-early","Build","sawmill")).Ok,Is.False);
+            var gather=Cmd(g,"forest-1","Gather","forest-valoria");
+            Assert.That(g.Execute(gather).Ok,Is.True);
+            Assert.That(g.Snapshot().Available.Total,Is.Zero);
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(2452));
+            Assert.That(g.Execute(gather).Ok,Is.True); // idempotent retry
+            clock.Add(9);
+            g=new LocalGateway(clock,store); // offline completion in constructor
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(390));
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
+            Assert.That(g.Snapshot().ForestRemaining,Is.EqualTo(890));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredWood,Is.EqualTo(360));
+            g.Advance();Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(390));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredWood,Is.EqualTo(360));
+            Assert.That(g.Execute(Cmd(g,"sawmill-1","Build","sawmill")).Ok,Is.True);
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(310));
+            clock.Add(6);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().SawmillLevel,Is.EqualTo(1));
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(2622));
+            Assert.That(g.Snapshot().JourneyComplete,Is.False); // stone + corrupt route are now authoritative Bastion-I requirements
+        }
+        [Test] public void CombatUsesReservedMarchAndRejectsStaleRevision()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            var fight=Cmd(g,"scout-1","Fight","corrupt-scout");
+            Assert.That(g.Execute(fight).Ok,Is.True);
+            Assert.That(g.Execute(new GameCommand("stale","player-local","Build","sawmill",0)).Ok,Is.False);
+            Assert.That(g.Snapshot().March.Troops.ArcherT1,Is.EqualTo(36));
+            clock.Add(4);g.Advance();
+            Assert.That(g.Snapshot().ScoutDefeated,Is.True);
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(110));
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(220));
+            Assert.That(g.Snapshot().Wounded.Total,Is.Zero);
+            var report=g.Snapshot().LastBattleReport;
+            Assert.That(report.TargetId,Is.EqualTo("corrupt-scout"));
+            Assert.That(report.HeroId,Is.EqualTo("aldric"));
+            Assert.That(report.Troops,Is.EqualTo(36));
+            Assert.That(report.PlayerPower,Is.EqualTo(2176));
+            Assert.That(report.Won,Is.True);
+            Assert.That(report.Rounds,Is.GreaterThan(0));
+            Assert.That(report.RemainingHealth,Is.GreaterThan(0));
+            Assert.That(report.RewardWood,Is.EqualTo(80));
+            Assert.That(report.RewardStone,Is.EqualTo(70));
+            Assert.That(report.Reason,Is.Not.Empty);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("corrupt-scout"));
+        }
+
+        [Test] public void BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"forest-b2","Gather","forest-valoria")).Ok,Is.True);
+            clock.Add(9);g.Advance();
+            Assert.That(g.Execute(Cmd(g,"sawmill-b2","Build","sawmill")).Ok,Is.True);
+            clock.Add(6);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+            Assert.That(g.Execute(Cmd(g,"quarry-b2","Gather","quarry-valoria")).Ok,Is.True);
+            clock.Add(9);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+            Assert.That(g.Execute(Cmd(g,"scout-b2","Fight","corrupt-scout")).Ok,Is.True);
+            clock.Add(4);g.Advance();
+            Assert.That(g.Snapshot().JourneyComplete,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.RouteCleared,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter1GatherStone));
+
+            var ascend=Cmd(g,"ascend-b2","AdvanceBastion","bastion");
+            Assert.That(g.Execute(ascend).Ok,Is.True);
+            Assert.That(g.Execute(ascend).Ok,Is.True);
+            Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
+            Assert.That(g.Snapshot().ChapterProgress.BastionTwoReached,Is.True);
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3222));
+
+            Assert.That(g.Execute(Cmd(g,"barracks-b2","Build","barracks")).Ok,Is.True);
+            clock.Add(8);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().BarracksLevel,Is.EqualTo(1));
+
+            var recruit=Cmd(g,"recruit-b2","Recruit","archer:t1");
+            Assert.That(g.Execute(recruit).Ok,Is.True);
+            Assert.That(g.Execute(recruit).Ok,Is.True);
+            clock.Add(7);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
+                Is.EqualTo(SliceContentProfiles.QaFast.Chapter2TrainArchers));
+            g.Advance();
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
+                Is.EqualTo(SliceContentProfiles.QaFast.Chapter2TrainArchers));
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3628));
+
+            Assert.That(g.Execute(Cmd(g,"engendro-too-early","Fight","engendro-valoria")).Ok,Is.False,
+                "Bastion II must teach explicit March preparation before the Engendro.");
+            var configure=Cmd(g,"march-b2","ConfigureMarch","march-main");
+            Assert.That(g.Execute(configure).Ok,Is.True);
+            Assert.That(g.Execute(configure).Ok,Is.True);
+            Assert.That(g.Snapshot().MarchConfigured,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.MarchConfirmed,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.ConfirmedExpeditionPower,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.QaFast.Chapter2ExpeditionPower));
+            Assert.That(g.Snapshot().PreparedHeroId,Is.EqualTo("aldric"));
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
+            Assert.That(SliceRules.Expedition(g.Snapshot().PreparedTroops,g.Snapshot().PreparedHeroId).Power,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.WebContract.Chapter2ExpeditionPower));
+
+            Assert.That(g.Execute(Cmd(g,"engendro-b2","Fight","engendro-valoria")).Ok,Is.True);
+            Assert.That(g.Snapshot().March.Troops.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.Zero);
+            clock.Add(4);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().EngendroDefeated,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.EngendroDefeated,Is.True);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(320));
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(930));
+        }
+
+        [Test] public void PreparedMarchIsSnapshotSafeAndPersists()
+        {
+            var clock=new Clock();var store=new Memory();
+            store.Value=new PlayerState {
+                BastionLevel=2, BarracksLevel=1,
+                Resources=new ResourceWallet{Wood=500,Stone=500,Food=0},
+                Available=new ArmyRoster{ArcherT1=48}
+            };
+            var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"prepare","ConfigureMarch","march-main")).Ok,Is.True);
+            var outside=g.Snapshot();
+            outside.PreparedTroops.ArcherT1=1;
+            outside.PreparedHeroId="fake";
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
+            Assert.That(g.Snapshot().PreparedHeroId,Is.EqualTo("aldric"));
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().MarchConfigured,Is.True);
+            Assert.That(g.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(48));
+        }
+
+        [Test] public void QuarryGatherPersistsAndCountsStoneOnce()
+        {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone));
+            Assert.That(g.Execute(Cmd(g,"quarry-1","Gather","quarry-valoria")).Ok,Is.True);
+            Assert.That(g.Snapshot().Available.Total,Is.Zero);
+            clock.Add(SliceRules.TravelSeconds+SliceRules.GatherSeconds+SliceRules.TravelSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone+SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().QuarryRemaining,Is.EqualTo(5200-SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,Is.EqualTo(SliceRules.QuarryLoad));
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(SliceContentProfiles.QaFast.InitialArcherT1));
+            Assert.That(g.Snapshot().CorruptionDiscovered,Is.False);
+            g.Advance();
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,Is.EqualTo(SliceRules.QuarryLoad));
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(SliceContentProfiles.QaFast.InitialStone+SliceRules.QuarryLoad));
+        }
+
+        [Test] public void ExistingFlagsNormalizeIntoMissionProgress()
+        {
+            var clock=new Clock();var store=new Memory {
+                Value=new PlayerState {
+                    BastionLevel=2, SawmillLevel=1, BarracksLevel=1,
+                    ScoutDefeated=true, MarchConfigured=true, EngendroDefeated=true,
+                    PreparedHeroId="aldric", PreparedTroops=new ArmyRoster{ArcherT1=48},
+                    Available=new ArmyRoster{ArcherT1=48}
+                }
+            };
+            var g=new LocalGateway(clock,store);
+            var p=g.Snapshot().ChapterProgress;
+            Assert.That(p.RouteCleared,Is.True);
+            Assert.That(p.BastionTwoReached,Is.True);
+            Assert.That(p.MarchConfirmed,Is.True);
+            Assert.That(p.ConfirmedExpeditionPower,Is.GreaterThan(0));
+            Assert.That(p.EngendroDefeated,Is.True);
+        }
+
+        [Test] public void BastionOneTwoObjectiveKeysFollowCanonicalTeachingOrder()
+        {
+            var state=new PlayerState();
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.build-sawmill"));
+
+            state.SawmillLevel=1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.gather-wood"));
+
+            state.ChapterProgress.GatheredWood=SliceContentProfiles.QaFast.Chapter1GatherWood;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.gather-stone"));
+
+            state.ChapterProgress.GatheredStone=SliceContentProfiles.QaFast.Chapter1GatherStone;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.clear-route"));
+
+            state.ChapterProgress.RouteCleared=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.return"));
+
+            state.JourneyComplete=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b1.ascend"));
+
+            state.BastionLevel=2;
+            state.JourneyComplete=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.build-barracks"));
+
+            state.BarracksLevel=1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.train-archers"));
+
+            state.ChapterProgress.TrainedArchers=SliceContentProfiles.QaFast.Chapter2TrainArchers;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.prepare-march"));
+
+            state.MarchConfigured=true;
+            state.ChapterProgress.MarchConfirmed=true;
+            state.ChapterProgress.ConfirmedExpeditionPower=SliceContentProfiles.QaFast.Chapter2ExpeditionPower-1;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.raise-expedition-power"));
+
+            state.ChapterProgress.ConfirmedExpeditionPower=SliceContentProfiles.QaFast.Chapter2ExpeditionPower;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.defeat-engendro"));
+
+            state.EngendroDefeated=true;
+            state.ChapterProgress.EngendroDefeated=true;
+            Assert.That(SliceRules.CurrentObjectiveKey(state),Is.EqualTo("b2.complete"));
+        }
+
+        [TestCase(SliceContentProfiles.QaFastId)]
+        [TestCase(SliceContentProfiles.OwnerIiiId)]
+        public void FreshSaveCompletesBastionOneAndTwoEndToEnd(string profile)
+        {
+            SliceContentProfiles.SetRuntimeProfileOverride(profile);
+            try
+            {
+            var clock=new Clock();var store=new Memory();var g=new LocalGateway(clock,store);
+
+            Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(1));
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+
+            // Exercise both profiles from a fresh save, gathering the full chapter target.
+            for(int i=0;g.Snapshot().ChapterProgress.GatheredWood<SliceContentProfiles.Active.Chapter1GatherWood;i++)
+            {
+                Assert.That(i,Is.LessThan(5),"Fresh-save wood objective must remain reachable.");
+                Assert.That(g.Execute(Cmd(g,"e2e-forest-"+i,"Gather","forest-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
+
+            Assert.That(g.Execute(Cmd(g,"e2e-sawmill","Build","sawmill")).Ok,Is.True);
+            clock.Add(SliceRules.SawmillBuildSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().SawmillLevel,Is.EqualTo(1));
+
+            Assert.That(g.Execute(Cmd(g,"e2e-quarry","Gather","quarry-valoria")).Ok,Is.True);
+            clock.Add(SliceRules.TravelSeconds+SliceRules.GatherSeconds+SliceRules.TravelSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().ChapterProgress.GatheredStone,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter1GatherStone));
+            Assert.That(g.Snapshot().JourneyComplete,Is.False);
+
+            Assert.That(g.Execute(Cmd(g,"e2e-scout","Fight","corrupt-scout")).Ok,Is.True);
+            clock.Add(SliceRules.TravelSeconds*2);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().ChapterProgress.RouteCleared,Is.True);
+            Assert.That(g.Snapshot().JourneyComplete,Is.True);
+
+            Assert.That(g.Execute(Cmd(g,"e2e-bastion2","AdvanceBastion","bastion")).Ok,Is.True);
+            Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
+            Assert.That(g.Snapshot().ChapterProgress.BastionTwoReached,Is.True);
+
+            Assert.That(g.Execute(Cmd(g,"e2e-barracks","Build","barracks")).Ok,Is.True);
+            clock.Add(SliceRules.BarracksBuildSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().BarracksLevel,Is.EqualTo(1));
+
+            if(g.Snapshot().Resources.Wood<SliceRules.RecruitWoodCost)
+            {
+                Assert.That(g.Execute(Cmd(g,"e2e-recruit-wood","Gather","forest-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
+            if(g.Snapshot().Resources.Stone<SliceRules.RecruitStoneCost)
+            {
+                Assert.That(g.Execute(Cmd(g,"e2e-recruit-stone","Gather","quarry-valoria")).Ok,Is.True);
+                clock.Add(SliceRules.TravelSeconds*2+SliceRules.GatherSeconds);
+                g=new LocalGateway(clock,store);
+            }
+            Assert.That(g.Execute(Cmd(g,"e2e-recruit","Recruit","archer:t1")).Ok,Is.True);
+            clock.Add(SliceRules.RecruitSeconds);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter2TrainArchers));
+
+            Assert.That(g.Execute(Cmd(g,"e2e-prepare","ConfigureMarch","march-main")).Ok,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.MarchConfirmed,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.ConfirmedExpeditionPower,
+                Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter2ExpeditionPower));
+
+            Assert.That(g.Execute(Cmd(g,"e2e-engendro","Fight","engendro-valoria")).Ok,Is.True);
+            clock.Add(SliceRules.TravelSeconds*2);
+            g=new LocalGateway(clock,store);
+
+            Assert.That(g.Snapshot().EngendroDefeated,Is.True);
+            Assert.That(g.Snapshot().ChapterProgress.EngendroDefeated,Is.True);
+            Assert.That(SliceRules.CurrentObjectiveKey(g.Snapshot()),Is.EqualTo("b2.complete"));
+            Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("engendro-valoria"));
+            Assert.That(g.Snapshot().LastBattleReport.Won,Is.True);
+            }
+            finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
+        }
+
+        [Test] public void OwnerCandidateIsIsolatedAndMatchesWebContract()
+        {
+            Assert.That(SliceContentProfiles.ActiveRuntimeProfile,Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(System.Array.Empty<string>()),Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-owner-i-ii"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile=OWNER_I_II"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile","OWNER_I_II"}),Is.EqualTo(SliceContentProfiles.OwnerIiiId));
+            Assert.That(SliceContentProfiles.SelectRuntimeProfile(new[]{"--eldoria-profile=UNKNOWN"}),Is.EqualTo(SliceContentProfiles.QaFastId));
+            Assert.That(SliceContentProfiles.Active.InitialWood,Is.EqualTo(SliceContentProfiles.QaFast.InitialWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialWood,Is.EqualTo(SliceContentProfiles.WebContract.InitialWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialStone,Is.EqualTo(SliceContentProfiles.WebContract.InitialStone));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.InitialArcherT1,Is.EqualTo(SliceContentProfiles.WebContract.InitialArcherT1));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.SawmillWoodCost,Is.EqualTo(SliceContentProfiles.WebContract.SawmillWoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherWood,Is.EqualTo(SliceContentProfiles.WebContract.Chapter1GatherWood));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter1GatherStone,Is.EqualTo(SliceContentProfiles.WebContract.Chapter1GatherStone));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost,Is.EqualTo(SliceContentProfiles.WebContract.Bastion2WoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Bastion2StoneCost,Is.EqualTo(SliceContentProfiles.WebContract.Bastion2StoneCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.BarracksWoodCost,Is.EqualTo(SliceContentProfiles.WebContract.BarracksWoodCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.BarracksStoneCost,Is.EqualTo(SliceContentProfiles.WebContract.BarracksStoneCost));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter2TrainArchers,Is.EqualTo(SliceContentProfiles.WebContract.Chapter2TrainArchers));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.Chapter2ExpeditionPower,Is.EqualTo(SliceContentProfiles.WebContract.Chapter2ExpeditionPower));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.RecruitWoodCost,
+                Is.EqualTo(SliceContentProfiles.WebContract.RecruitWoodPerArcher*SliceContentProfiles.OwnerIiiCandidate.RecruitArchers));
+            Assert.That(SliceContentProfiles.OwnerIiiCandidate.RecruitStoneCost,
+                Is.EqualTo(SliceContentProfiles.WebContract.RecruitStonePerArcher*SliceContentProfiles.OwnerIiiCandidate.RecruitArchers));
+        }
+
+        [Test] public void SnapshotCannotEditAuthoritativeState()
+        {
+            var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
+            outside.Resources.Wood=999;outside.Available.ArcherT1=999;outside.CompletedCommandIds.Add("fake");
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(30));
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
+            Assert.That(g.Snapshot().CompletedCommandIds,Is.Empty);
+        }
+        [Test] public void QaFreshSaveDeletesOnlySliceStateFiles()
+        {
+            var path=Path.Combine(Path.GetTempPath(),"eldoria-reset-"+Guid.NewGuid().ToString("N")+".json");
+            var unrelated=path+".keep";
+            try
+            {
+                var store=new FileStateStore(path);
+                store.Save(new PlayerState());
+                store.Save(new PlayerState{BastionLevel=2});
+                File.WriteAllText(path+".tmp","temp");
+                File.WriteAllText(unrelated,"keep");
+                Assert.That(File.Exists(path),Is.True);
+                Assert.That(File.Exists(path+".bak"),Is.True);
+                Assert.That(File.Exists(path+".tmp"),Is.True);
+                store.DeleteLocalState();
+                Assert.That(File.Exists(path),Is.False);
+                Assert.That(File.Exists(path+".bak"),Is.False);
+                Assert.That(File.Exists(path+".tmp"),Is.False);
+                Assert.That(File.Exists(unrelated),Is.True);
+            }
+            finally
+            {
+                foreach(var candidate in new[]{path,path+".bak",path+".tmp",unrelated})
+                    if(File.Exists(candidate))File.Delete(candidate);
+            }
+        }
+
+        [Test] public void DiskSaveReloadDoesNotDuplicateDelayedReward()
+        {
+            var path=Path.Combine(Path.GetTempPath(),"eldoria-test-"+Guid.NewGuid().ToString("N")+".json");
+            try
+            {
+                var clock=new Clock();var store=new FileStateStore(path);
+                var first=new LocalGateway(clock,store);
+                Assert.That(first.Execute(Cmd(first,"gather-disk","Gather","forest-valoria")).Ok,Is.True);
+                clock.Add(9);
+                var second=new LocalGateway(clock,store);
+                Assert.That(second.Snapshot().Resources.Wood,Is.EqualTo(390));
+                var third=new LocalGateway(clock,store);
+                Assert.That(third.Snapshot().Resources.Wood,Is.EqualTo(390));
+                Assert.That(third.Snapshot().Available.Total,Is.EqualTo(36));
+                Assert.That(third.Snapshot().CompletedTaskIds.Count,Is.EqualTo(1));
+            }
+            finally
+            {
+                foreach(var candidate in new[]{path,path+".bak",path+".tmp"})if(File.Exists(candidate))File.Delete(candidate);
+            }
+        }
+    }
+}

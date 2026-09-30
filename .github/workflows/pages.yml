@@ -1,0 +1,266 @@
+name: Publish Eldoria Preview
+# Runner-throughput maintenance trigger: workflow-only changes stay off the Windows Unity lane.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'v0220/**'
+      - 'qa/**'
+      - 'tools/build-preview.mjs'
+      - 'tools/check-preview.mjs'
+      - 'tools/validate-local.mjs'
+      - 'tools/run-qa-mode.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'playtest/**'
+      - 'tester-v0265/**'
+      - 'pipeline/unity-publish-request.json'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: eldoria-pages-main
+  # Each coherent green push certifies and publishes the exact candidate.
+  # Only the newest main candidate matters during an active development block.
+  # Superseded runs are cancelled so stale candidates cannot block final certification.
+  cancel-in-progress: true
+
+jobs:
+  source-preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      heavy_required: ${{ steps.impact.outputs.heavy_required }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Decide whether Unity WebGL build is required
+        id: impact
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          before="${{ github.event.before }}"
+          if [[ -z "$before" || "$before" =~ ^0+$ ]]; then
+            echo "heavy_required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
+          echo "$files"
+          heavy=false
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            case "$file" in
+              pipeline/unity-publish-request.json|Unity/Assets/Eldoria/Scripts/Editor/SceneSetup.cs)
+                heavy=true
+                break
+                ;;
+              .github/workflows/pages.yml)
+                # Workflow maintenance must not consume the Windows Unity runner.
+                continue
+                ;;
+              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*)
+                continue
+                ;;
+              Unity/*)
+                # Unity source is certified by its dedicated gates. WebGL publication is
+                # requested explicitly through pipeline/unity-publish-request.json.
+                continue
+                ;;
+            esac
+          done <<< "$files"
+          echo "heavy_required=$heavy" >> "$GITHUB_OUTPUT"
+
+  unity-webgl:
+    needs: source-preflight
+    if: needs.source-preflight.outputs.heavy_required == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $candidates = @(
+              "${env:ProgramFiles}\Git\cmd\git.exe",
+              "${env:ProgramFiles}\Git\bin\git.exe",
+              "${env:LOCALAPPDATA}\Programs\Git\cmd\git.exe"
+            )
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            if (Test-Path $desktop) {
+              $candidates += Get-ChildItem $desktop -Directory -Filter 'app-*' |
+                Sort-Object Name -Descending |
+                ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' }
+            }
+            $gitPath = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $gitPath) { throw 'Git not found on Windows runner.' }
+            $gitDirectory = Split-Path $gitPath
+            Add-Content -Path $env:GITHUB_PATH -Value $gitDirectory
+            $env:PATH = "$gitDirectory;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+      - name: Ensure WebGL Build Support
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $editorDir = Split-Path $env:UNITY_EDITOR_PATH
+          $webgl = Join-Path $editorDir 'Data\PlaybackEngines\WebGLSupport'
+          if (Test-Path $webgl) { Write-Host 'WebGL Build Support already installed.'; exit 0 }
+          $unityCli = Get-Command unity.exe -ErrorAction SilentlyContinue
+          if (-not $unityCli) {
+            $candidates = @(
+              "${env:LOCALAPPDATA}\Programs\Unity\bin\unity.exe",
+              "${env:LOCALAPPDATA}\Unity\bin\unity.exe",
+              "${env:USERPROFILE}\.unity\bin\unity.exe"
+            )
+            $unityCliPath = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if ($unityCliPath) { $unityCli = Get-Item $unityCliPath }
+          }
+          if (-not $unityCli) { throw 'Unity CLI is not installed or not discoverable on the runner.' }
+          Write-Host "Installing WebGL Build Support with Unity CLI: $($unityCli.Source)"
+          & $unityCli.Source install-modules -e 6000.3.23f1 -m webgl --format human
+          $code = $LASTEXITCODE
+          if ($code -ne 0) { throw "Unity CLI WebGL module install failed with exit code $code." }
+          if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
+          Write-Host 'WebGL Build Support installed successfully.'
+      - name: Build Unity WebGL OWNER I-II
+        shell: powershell
+        run: |
+          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
+          $log = "$env:RUNNER_TEMP/Eldoria-WebGL.log"
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWebGL","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(1200000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 200 }
+            throw "Unity WebGL build timed out."
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity WebGL build failed with exit code $($process.ExitCode)."
+          }
+          if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: Unity/Builds/WebGL/
+          retention-days: 7
+
+  deploy:
+    needs: unity-webgl
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/configure-pages@v5
+      - name: Decide whether legacy web certification is required
+        id: web-impact
+        shell: bash
+        run: |
+          before="${{ github.event.before }}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || -z "$before" || "$before" =~ ^0+$ ]]; then
+            echo "required=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files="$(git diff --name-only "$before" "${{ github.sha }}" || true)"
+          echo "$files"
+          required=false
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            case "$file" in
+              v0220/*|qa/*|tools/build-preview.mjs|tools/check-preview.mjs|tools/validate-local.mjs|tools/run-qa-mode.mjs|package.json|package-lock.json|playtest/*|tester-v0265/*)
+                required=true
+                break
+                ;;
+            esac
+          done <<< "$files"
+          echo "required=$required" >> "$GITHUB_OUTPUT"
+      - name: Download Unity WebGL build
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-webgl-${{ github.sha }}
+          path: unity-owner
+
+      - name: Install Playwright QA browser
+        if: steps.web-impact.outputs.required == 'true'
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Full local-equivalent certification gate
+        if: steps.web-impact.outputs.required == 'true'
+        run: npm run validate:local
+
+      - name: Guard frozen tester snapshot
+        run: |
+          git diff --exit-code df618e86be9da399bb827d5e6cebc3f13e55ff97 -- tester-v0265/
+
+      - name: Upload local QA source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-local-qa-source
+          path: |
+            v0220/
+            qa/
+          retention-days: 1
+
+      - name: Upload player-experience report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: player-experience-${{ github.run_number }}
+          path: |
+            qa-player-experience.json
+            qa-player-experience.md
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload Arc I diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arc1-sweep-diagnostics-${{ github.run_number }}
+          path: |
+            qa-failure-*.png
+          if-no-files-found: ignore
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify published build with Chromium
+        if: steps.web-impact.outputs.required == 'true'
+        run: |
+          sleep 30
+          URL='${{ steps.deployment.outputs.page_url }}playtest/?qa=1&published=${{ github.sha }}&cb=${{ github.run_id }}'
+          for attempt in 1 2 3 4; do
+            echo "Published verification attempt $attempt"
+            curl -fsSL -H "Cache-Control: no-cache" "$URL" | grep -q "eldoria-version" || { sleep 10; continue; }
+            if ELDORIA_URL="$URL" E2E_PHASE=complete node qa/e2e-smoke.js && \
+               ELDORIA_URL="$URL" node qa/e2e-behavior-regression.js; then
+              exit 0
+            fi
+            [ "$attempt" -lt 4 ] && sleep 30
+          done
+          exit 1
+      - name: Verify frozen tester URL remains available
+        run: |
+          TESTER_URL='${{ steps.deployment.outputs.page_url }}tester-v0265/?cb=${{ github.run_id }}'
+          curl -fsSL -H "Cache-Control: no-cache" "$TESTER_URL" | grep -q "Eldoria — Closed Playtest T1"
+
+      - name: Verify Unity OWNER WebGL URL
+        run: |
+          UNITY_URL='${{ steps.deployment.outputs.page_url }}unity-owner/?cb=${{ github.run_id }}'
+          curl -fsSL -H "Cache-Control: no-cache" "$UNITY_URL" | grep -qi "<canvas\\|unity"

@@ -1,0 +1,13 @@
+{
+  "asset_name": "Eldoria_MultiPiece_StoneKit_v1",
+  "source": "ChatGPT approved exact image",
+  "expected_format": "jpeg",
+  "expected_width": 1254,
+  "expected_height": 1254,
+  "expected_size_bytes": 376149,
+  "expected_sha256": "210d4d629df6c34eb1b59195a0d9ac3a177a8ed61f5b7fd96bb64201c2d4c0e8",
+  "parts_dir": "pipeline/exact-inputs/Eldoria_MultiPiece_StoneKit_v1",
+  "parts_glob": "pipeline/exact-inputs/Eldoria_MultiPiece_StoneKit_v1/part_*.b64",
+  "status": "certified_exact_bytes",
+  "rule": "Zero-spend staging only unless separately authorized."
+}

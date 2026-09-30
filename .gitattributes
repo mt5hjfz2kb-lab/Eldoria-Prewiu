@@ -1,0 +1,8 @@
+# Keep repository text line endings deterministic across Windows and GitHub.
+* text=auto
+*.cs text eol=lf
+*.asmdef text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

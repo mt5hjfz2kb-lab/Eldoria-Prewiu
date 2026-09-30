@@ -1,0 +1,105 @@
+name: World Map Visual Formula gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Editor/WorldMapVisualFormulaGate.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Resources/WorldInventory/**'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
+      - 'docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-world-map-visual-formula
+  cancel-in-progress: true
+
+jobs:
+  world-map-formula:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Capture world map visual formula
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\WorldMapVisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-WorldMapVisualFormula.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.WorldMapVisualFormulaGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw 'World Map Visual Formula capture timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) { if(Test-Path $log){Get-Content $log -Tail 220}; throw "World Map Visual Formula gate failed: $($process.ExitCode)" }
+          $expected=@(
+            'world-before-18.png','world-before-14.png','world-before-10.png','world-before-7.png','world-before-mobile.png','world-threat-before-mobile.png','world-after-18.png','world-after-14.png','world-after-10.png','world-after-7.png','world-after-mobile.png','world-threat-after-mobile.png','world-wedge-evidence.json',
+            'frontier-overview-18.png','frontier-overview-14.png','frontier-overview-10.png','frontier-overview-7.png','frontier-overview-mobile.png',
+            'quarry-kit-10.png','quarry-kit-7.png','quarry-kit-mobile.png',
+            'route-kit-10.png','route-kit-7.png','route-kit-mobile.png',
+            'naturestarter-overview-18.png','naturestarter-overview-14.png','naturestarter-overview-10.png','naturestarter-overview-mobile.png',
+            'naturestarter-candidates.png','world-map-metrics.json'
+          )
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){ throw "Missing world-map evidence: $name" }
+            # Optional NatureStarter diagnostic can compress below 10KB; it is not production art.
+            $minimum=if($name.StartsWith('naturestarter-')){500}else{10000}
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt $minimum){ throw "Empty capture: $name" }
+          }
+          Get-Content (Join-Path $folder 'world-map-metrics.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: world-map-visual-formula-${{ github.run_id }}
+          path: |
+            Unity/WorldMapVisualFormulaCaptures/*
+            ${{ runner.temp }}/Eldoria-WorldMapVisualFormula.log
+          if-no-files-found: warn
+          retention-days: 14
