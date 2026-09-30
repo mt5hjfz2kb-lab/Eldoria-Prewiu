@@ -448,28 +448,43 @@ namespace Eldoria.Presentation
         static Sprite ReferenceSprite(string name)
         {
             if(ReferenceSprites.TryGetValue(name,out var cached)&&cached!=null)return cached;
+
             if(referenceAtlas==null)
             {
                 string encoded="";
-                for(int i=0;i<4;i++)
+                string[] prefixes={"UI/eldoria_ui_reference_atlas_v2_","UI/eldoria_ui_reference_atlas_"};
+                foreach(var prefix in prefixes)
                 {
-                    var chunk=Resources.Load<TextAsset>("UI/eldoria_ui_reference_atlas_v2_"+i);
-                    if(chunk!=null)encoded+=chunk.text.Trim();
+                    encoded="";
+                    bool complete=true;
+                    for(int i=0;i<4;i++)
+                    {
+                        var chunk=Resources.Load<TextAsset>(prefix+i);
+                        if(chunk==null){complete=false;break;}
+                        encoded+=chunk.text.Trim();
+                    }
+                    if(complete&&!string.IsNullOrEmpty(encoded))break;
                 }
+
                 if(!string.IsNullOrEmpty(encoded))
                 {
                     try
                     {
                         var bytes=System.Convert.FromBase64String(encoded);
-                        referenceAtlas=new Texture2D(2,2,TextureFormat.RGBA32,false){name="Approved Eldoria HUD atlas",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
-                        bool loaded=if(!referenceAtlas.LoadImage(bytes,false) || referenceAtlas.width<128 || referenceAtlas.height<128)
+                        var candidate=new Texture2D(2,2,TextureFormat.RGBA32,false)
                         {
-                            Debug.LogWarning("Reference HUD atlas did not decode at expected 128x128; using safe fallback for this frame.");
-                            Object.Destroy(referenceAtlas);referenceAtlas=null;
+                            name="Approved Eldoria HUD atlas",
+                            wrapMode=TextureWrapMode.Clamp,
+                            filterMode=FilterMode.Bilinear
+                        };
+                        bool loaded=candidate.LoadImage(bytes,false);
+                        if(loaded&&candidate.width>=128&&candidate.height>=128)
+                        {
+                            referenceAtlas=candidate;
                         }
-                        if(!loaded || referenceAtlas.width<128 || referenceAtlas.height<128)
+                        else
                         {
-                            Object.Destroy(referenceAtlas);
+                            Object.Destroy(candidate);
                             referenceAtlas=DecodeIndexedPng(bytes);
                             if(referenceAtlas!=null)
                             {
@@ -479,14 +494,20 @@ namespace Eldoria.Presentation
                             }
                         }
                     }
-                    catch(System.Exception e){Debug.LogWarning("Reference HUD atlas decode failed: "+e.Message);}
+                    catch(System.Exception ex)
+                    {
+                        Debug.LogWarning("Reference HUD atlas decode failed: "+ex.Message);
+                        referenceAtlas=null;
+                    }
                 }
             }
+
             if(referenceAtlas==null)return CircleSprite();
             Rect r=AtlasRect(name);
             if(r.xMin<0||r.yMin<0||r.xMax>referenceAtlas.width||r.yMax>referenceAtlas.height)return CircleSprite();
             var sprite=Sprite.Create(referenceAtlas,r,new Vector2(.5f,.5f),100f);
-            ReferenceSprites[name]=sprite;return sprite;
+            ReferenceSprites[name]=sprite;
+            return sprite;
         }
 
         static Rect AtlasRect(string name)
