@@ -434,7 +434,7 @@ def _cluster_loose_parts(candidates, cluster_count, axes="xy"):
             d2 = min((p-c).length_squared for c in centers)
             return d2 * max(1.0, row["triangles"] ** 0.5)
         nxt = max(usable, key=seed_score)
-        centers.append(mathutils.Vector((nxt["center"].x, nxt["center"].y)))
+        centers.append(plane_point(nxt["center"]))
 
     assignments = [0] * len(usable)
     for _ in range(16):
@@ -449,7 +449,7 @@ def _cluster_loose_parts(candidates, cluster_count, axes="xy"):
                 # Re-seed an empty cluster with the point farthest from every current center.
                 row = max(usable, key=lambda r: min(
                     (plane_point(r["center"])-c).length_squared for c in centers))
-                new_centers.append(mathutils.Vector((row["center"].x, row["center"].y)))
+                new_centers.append(plane_point(row["center"]))
                 continue
             total = sum(max(1, m["triangles"]) for m in members)
             u = sum(plane_point(m["center"]).x * max(1, m["triangles"]) for m in members) / total
