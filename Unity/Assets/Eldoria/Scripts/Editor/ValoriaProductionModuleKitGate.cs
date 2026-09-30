@@ -181,8 +181,8 @@ namespace Eldoria.EditorTools
 
         static void BuildMaterials()
         {
-            Stone=External("stone",new Color(.76f,.72f,.64f),new Vector2(3.1f,3.1f),.06f,1.05f,"stone");
-            StoneDark=External("stone",new Color(.48f,.47f,.43f),new Vector2(3.5f,3.5f),.045f,1.10f,"stone");
+            Stone=External("stone",new Color(.82f,.78f,.70f),new Vector2(3.1f,3.1f),.055f,1.05f,"stone");
+            StoneDark=External("stone",new Color(.53f,.51f,.46f),new Vector2(3.5f,3.5f),.04f,1.10f,"stone");
             Cobble=External("ground",new Color(.82f,.77f,.68f),new Vector2(5.1f,5.1f),.055f,1.0f,"ground");
             Dirt=External("ground",new Color(.53f,.44f,.34f),new Vector2(4.0f,4.0f),.02f,.55f,"ground");
             Wood=External("wood",new Color(.50f,.32f,.18f),new Vector2(3.5f,3.5f),.045f,.9f,"wood");
@@ -268,26 +268,26 @@ namespace Eldoria.EditorTools
                 float y=.78f+i*.205f;
                 b.Box(new Vector3(0f,y,z),new Vector3(4.18f,.22f,.56f),0);
             }
-            b.Box(new Vector3(-2.28f,1.65f,2.30f),new Vector3(.32f,2.10f,4.8f),1);
-            b.Box(new Vector3(2.28f,1.65f,2.30f),new Vector3(.32f,2.10f,4.8f),1);
+            b.Box(new Vector3(-2.20f,1.48f,2.30f),new Vector3(.24f,1.72f,4.55f),1);
+            b.Box(new Vector3(2.20f,1.48f,2.30f),new Vector3(.24f,1.72f,4.55f),1);
             b.Commit(Root);
         }
 
         static void BuildGateModules()
         {
-            GateWing("VPMK · west gate wing",new Vector3(-5.0f,2.86f,4.30f),false);
-            GateWing("VPMK · east gate wing",new Vector3(5.0f,2.86f,4.30f),true);
+            GateWing("VPMK · west gate wing",new Vector3(-4.62f,2.82f,4.30f),false);
+            GateWing("VPMK · east gate wing",new Vector3(4.62f,2.82f,4.30f),true);
 
             var arch=new ModuleMeshBuilder("VPMK · gate arch",new[]{Stone,StoneDark,Wood,Blue});
-            arch.Box(new Vector3(-2.55f,3.55f,4.12f),new Vector3(.72f,3.1f,.72f),0);
-            arch.Box(new Vector3(2.55f,3.55f,4.12f),new Vector3(.72f,3.1f,.72f),0);
+            arch.Box(new Vector3(-2.30f,3.48f,4.12f),new Vector3(.58f,2.82f,.68f),0);
+            arch.Box(new Vector3(2.30f,3.48f,4.12f),new Vector3(.58f,2.82f,.68f),0);
             // stepped voussoir ring: authored-looking arch without extra renderers
             for(int i=0;i<9;i++)
             {
                 float t=i/8f;
                 float a=Mathf.Lerp(22f,158f,t)*Mathf.Deg2Rad;
-                float x=Mathf.Cos(a)*2.48f;
-                float y=4.10f+Mathf.Sin(a)*1.46f;
+                float x=Mathf.Cos(a)*2.24f;
+                float y=4.02f+Mathf.Sin(a)*1.30f;
                 arch.BoxRotated(new Vector3(x,y,4.12f),new Vector3(.62f,.48f,.82f),i%2==0?0:1,
                     Quaternion.Euler(0f,0f,-Mathf.Rad2Deg*a+90f));
             }
@@ -295,11 +295,11 @@ namespace Eldoria.EditorTools
             for(int i=0;i<7;i++)
             {
                 float x=Mathf.Lerp(-.90f,.90f,i/6f);
-                arch.Box(new Vector3(x,3.78f,4.03f),new Vector3(.075f,2.20f,.10f),2);
+                arch.Box(new Vector3(x,3.64f,4.03f),new Vector3(.068f,1.92f,.10f),2);
             }
             for(int i=0;i<4;i++)
             {
-                float y=Mathf.Lerp(2.90f,4.62f,i/3f);
+                float y=Mathf.Lerp(2.88f,4.38f,i/3f);
                 arch.Box(new Vector3(0f,y,4.02f),new Vector3(1.95f,.075f,.10f),2);
             }
             arch.Box(new Vector3(-2.05f,4.35f,3.70f),new Vector3(.52f,1.35f,.05f),3);
@@ -311,14 +311,14 @@ namespace Eldoria.EditorTools
         {
             float side=mirror?1f:-1f;
             var b=new ModuleMeshBuilder(name,new[]{Stone,StoneDark,Roof,Wood,Metal,Blue});
-            b.Box(p,new Vector3(2.28f,2.35f,3.05f),0);
-            b.Box(p+new Vector3(0,-1.24f,0),new Vector3(2.62f,.30f,3.36f),1);
-            b.Box(p+new Vector3(side*1.32f,-.28f,-.18f),new Vector3(.62f,2.85f,1.04f),1);
-            b.BoxRotated(p+new Vector3(-.62f,1.48f,.08f),new Vector3(1.55f,.22f,3.40f),2,
+            b.Box(p,new Vector3(1.92f,2.15f,2.85f),0);
+            b.Box(p+new Vector3(0,-1.14f,0),new Vector3(2.18f,.26f,3.10f),1);
+            b.Box(p+new Vector3(side*1.04f,-.28f,-.18f),new Vector3(.46f,2.48f,.88f),1);
+            b.BoxRotated(p+new Vector3(-.50f,1.34f,.08f),new Vector3(1.30f,.20f,3.12f),2,
                 Quaternion.Euler(0f,0f,11f));
-            b.BoxRotated(p+new Vector3(.62f,1.48f,.08f),new Vector3(1.55f,.22f,3.40f),2,
+            b.BoxRotated(p+new Vector3(.50f,1.34f,.08f),new Vector3(1.30f,.20f,3.12f),2,
                 Quaternion.Euler(0f,0f,-11f));
-            b.Box(p+new Vector3(0,1.25f,-1.58f),new Vector3(2.55f,.13f,.18f),3);
+            b.Box(p+new Vector3(0,1.14f,-1.48f),new Vector3(2.18f,.12f,.16f),3);
             b.Box(p+new Vector3(-side*.32f,-.35f,-1.62f),new Vector3(.62f,1.12f,.08f),3);
             b.Box(p+new Vector3(-side*.82f,.18f,-1.67f),new Vector3(.14f,1.52f,.14f),4);
             b.Box(p+new Vector3(side*.82f,.18f,-1.67f),new Vector3(.14f,1.52f,.14f),4);
