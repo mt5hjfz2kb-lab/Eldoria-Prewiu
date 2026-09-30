@@ -311,7 +311,29 @@ namespace Eldoria.Presentation
         {
             if(source==null)return;
             var go=ValoriaKit.BenchmarkPieceModulated(name,source,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
-            if(go!=null)go.transform.SetParent(root,true);
+            if(go!=null)
+            {
+                go.transform.SetParent(root,true);
+                foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+                {
+                    var mats=renderer.sharedMaterials;
+                    for(int i=0;i<mats.Length;i++)
+                    {
+                        if(mats[i]==null)continue;
+                        // This recovered prototype's baked atlas has unmapped black UV regions.
+                        // Keep its certified geometry, use the existing city surface vocabulary.
+                        if(name.Contains("rescued hero"))
+                            mats[i]=ValoriaKit.SurfaceMaterial(mats[i].name.Contains("Rock")?new Color(.25f,.26f,.24f):new Color(.34f,.32f,.27f),
+                                mats[i].name.Contains("Rock")?"earth":"stone",new Vector2(3,3));
+                        else if(mats[i].HasProperty("_BaseColorFactor"))
+                        {
+                            var copy=new Material(mats[i]);var c=copy.GetColor("_BaseColorFactor");
+                            copy.SetColor("_BaseColorFactor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));mats[i]=copy;
+                        }
+                    }
+                    renderer.sharedMaterials=mats;
+                }
+            }
             else if(name.Contains("rescued hero"))throw new InvalidOperationException("Recovered hero geometry has empty renderer bounds");
         }
         static void Normalize(GameObject go,Color tint,bool foliage,string resource)
@@ -383,6 +405,7 @@ namespace Eldoria.Presentation
                     if(sharedStone!=null){materials[i]=sharedStone;continue;}
                     var m=new Material(materials[i]);
                     if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.48f,.46f,.40f));
+                    if(m.HasProperty("_BaseColorFactor"))m.SetColor("_BaseColorFactor",new Color(.48f,.46f,.40f));
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.02f);
                     sharedStone=m;materials[i]=m;
                 }

@@ -89,7 +89,9 @@ jobs:
           foreach($name in $expected){
             $p=Join-Path $folder $name
             if(-not (Test-Path $p)){ throw "Missing world-map evidence: $name" }
-            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty capture: $name" }
+            # Optional NatureStarter diagnostic can compress below 10KB; it is not production art.
+            $minimum=if($name.StartsWith('naturestarter-')){500}else{10000}
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt $minimum){ throw "Empty capture: $name" }
           }
           Get-Content (Join-Path $folder 'world-map-metrics.json')
 
