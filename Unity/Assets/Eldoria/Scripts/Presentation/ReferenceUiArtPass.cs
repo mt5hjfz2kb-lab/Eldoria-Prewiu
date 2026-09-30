@@ -165,9 +165,9 @@ namespace Eldoria.Presentation
         {
             var root=new GameObject("Reference future resources",typeof(RectTransform));root.transform.SetParent(safe,false);
             var rt=root.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(1,1);rt.pivot=new Vector2(1,1);rt.sizeDelta=new Vector2(430,54);
-            FutureResource(root.transform,"Wheat","✦","298.4K",0,new Color(.72f,.52f,.13f,1f));
-            FutureResource(root.transform,"Iron","◆","125.6K",1,new Color(.55f,.62f,.70f,1f));
-            FutureResource(root.transform,"Gems","♦","2.480",2,new Color(.82f,.16f,.18f,1f));
+            FutureResource(root.transform,"Wheat","wheat",0);
+            FutureResource(root.transform,"Iron","iron",1);
+            FutureResource(root.transform,"Gems","gem",2);
         }
 
         void CreateTopMenu()
@@ -220,6 +220,9 @@ namespace Eldoria.Presentation
                 SetFont(top,"Power chip",16);
                 SetFont(top,"Wood resource chip",15);
                 SetFont(top,"Stone resource chip",15);
+                ApplyReferenceChip(top,"Power chip","power");
+                ApplyReferenceChip(top,"Wood resource chip","wood");
+                ApplyReferenceChip(top,"Stone resource chip","stone");
             }
 
             float portraitSize=h*.132f;
@@ -372,13 +375,13 @@ namespace Eldoria.Presentation
             var heroes=nav.Find("HÉROES")?.GetComponent<RectTransform>();
             var chest=nav.Find("ARCÓN")?.GetComponent<RectTransform>();
             var codex=nav.Find("CÓDICE")?.GetComponent<RectTransform>();
-            if(world!=null)PlaceBottom(world,width*.018f,height*.010f,height*.135f,height*.135f,"⌖\nMundo");
-            if(heroes!=null)PlaceBottom(heroes,width*.535f,height*.010f,height*.125f,height*.125f,"♞\nHéroes");
-            if(codex!=null)PlaceBottom(codex,width*.655f,height*.010f,height*.125f,height*.125f,"▤\nMisiones");
-            if(chest!=null)PlaceBottom(chest,width*.745f,height*.010f,height*.125f,height*.125f,"▣\nInventario");
+            if(world!=null)PlaceBottom(world,width*.018f,height*.010f,height*.135f,height*.135f,"world");
+            if(heroes!=null)PlaceBottom(heroes,width*.535f,height*.010f,height*.125f,height*.125f,"heroes");
+            if(codex!=null)PlaceBottom(codex,width*.655f,height*.010f,height*.125f,height*.125f,"missions");
+            if(chest!=null)PlaceBottom(chest,width*.745f,height*.010f,height*.125f,height*.125f,"inventory");
             if(city!=null)
             {
-                PlaceBottom(city,width-height*.16f,height*.004f,height*.15f,height*.15f,"♜\nBastión");
+                PlaceBottom(city,width-height*.16f,height*.004f,height*.15f,height*.15f,"bastion");
                 var im=city.GetComponent<Image>();if(im!=null)im.color=new Color(.025f,.055f,.075f,.98f);
             }
         }
@@ -544,6 +547,20 @@ namespace Eldoria.Presentation
             var t=new GameObject(name,typeof(RectTransform),typeof(Text)).GetComponent<Text>();
             t.transform.SetParent(parent,false);t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");t.fontSize=size;t.color=color;t.alignment=align;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;t.raycastTarget=false;return t;
+        }
+
+        static void ApplyReferenceChip(Transform parent,string childName,string spriteName)
+        {
+            var child=parent.Find(childName);if(child==null)return;
+            var image=child.GetComponent<Image>();if(image!=null){image.sprite=ReferenceSprite(spriteName);image.color=Color.white;image.preserveAspect=true;}
+            var text=child.GetComponentInChildren<Text>();if(text!=null)text.color=Color.clear;
+        }
+
+        static void FutureResource(Transform parent,string name,string spriteName,int index)
+        {
+            var go=PanelObject(name,parent,new Vector2(126,48));var img=go.GetComponent<Image>();
+            img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;
+            var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(index*136f,0);
         }
 
         static void ActionMedallion(Transform parent,string name,string spriteName,string count,int index)
