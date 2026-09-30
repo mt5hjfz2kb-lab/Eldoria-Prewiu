@@ -704,7 +704,7 @@ def _post_join_cleanup(obj, cfg, group_index):
         } for r, reason in removed],
     }
 
-def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, salvage_cfg=None):
+def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, cluster_axes="xy", salvage_cfg=None):
     if not output_dir:
         return {"enabled": False, "pieces": []}
     os.makedirs(output_dir, exist_ok=True)
@@ -901,7 +901,7 @@ def main():
     # Optional reusable multipiece extraction runs after the canonical combined export so
     # per-piece pivot normalization cannot alter the certified combined geometry.
     salvage_cfg = load_refine_config(a.split_salvage_config)
-    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles, a.split_cluster_count, salvage_cfg)
+    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles, a.split_cluster_count, a.split_cluster_axes, salvage_cfg)
     report = {
         "target_triangles": target,
         "accepted_range": [min_tris, max_tris],
