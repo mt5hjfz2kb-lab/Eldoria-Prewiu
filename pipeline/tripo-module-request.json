@@ -25,9 +25,78 @@
     "expected_piece_count": 8
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "Exact owner-authorized Tripo export. Re-run canonical Blender + isolated Unity multipiece gate only to add per-piece oblique/front/rear/side evidence for visual acceptance. Source GLB locked at 74,616,872 bytes / SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422. No additional Tripo spend. No production promotion yet.",
+  "notes": "Stone Architecture visual gate reviewed from official per-piece front/oblique/rear/side captures. Promote only visually accepted reusable pieces; no further Tripo spend. Accepted: piece 01 corner-wall variant, piece 02 rock-to-wall transition, piece 05 high straight wall, piece 06 low straight wall. Rejected: pieces 03/04/07/08 due detached/floating or incomplete geometry.",
   "promotion": {
-    "enabled": false
+    "enabled": true,
+    "mode": "multipiece_selected",
+    "overwrite": true,
+    "commit_message": "art: promote approved Stone Architecture v1 modules",
+    "pieces": [
+      {
+        "index": 1,
+        "family": "CornerWall_L_v1",
+        "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWall_L_v1.glb"
+      },
+      {
+        "index": 2,
+        "family": "RockToWallTransition_v1",
+        "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition_v1.glb"
+      },
+      {
+        "index": 5,
+        "family": "HighStraightWall_v1",
+        "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall_v1.glb"
+      },
+      {
+        "index": 6,
+        "family": "LowStraightWall_v1",
+        "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/LowStraightWall_v1.glb"
+      }
+    ]
   },
-  "run_nonce": "2026-09-30-stone-architecture-kit-v1-piece-captures"
+  "run_nonce": "2026-09-30-stone-architecture-kit-v1-promote-visual-pass-only",
+  "visual_verdicts": {
+    "reviewed_artifact_id": 11091584269,
+    "reviewed_run_id": 36705459251,
+    "pass": [
+      {
+        "index": 1,
+        "family": "corner wall L variant",
+        "reason": "coherent L-shaped masonry corner; clean front/rear/side silhouette; no detached blocking fragments"
+      },
+      {
+        "index": 2,
+        "family": "rock-to-wall transition",
+        "reason": "coherent masonry-to-rock transition; readable and reusable from all diagnostic views"
+      },
+      {
+        "index": 5,
+        "family": "high straight wall",
+        "reason": "coherent tall straight wall; intact side/rear geometry and reusable silhouette"
+      },
+      {
+        "index": 6,
+        "family": "low straight wall",
+        "reason": "coherent low straight wall; intact reusable silhouette; minor end projection does not break modular use"
+      }
+    ],
+    "fail": [
+      {
+        "index": 3,
+        "reason": "multiple detached wall chunks in one piece; not a clean modular family"
+      },
+      {
+        "index": 4,
+        "reason": "parapet/merlon candidate contains floating or protruding disconnected geometry"
+      },
+      {
+        "index": 7,
+        "reason": "pillar/arch candidate is split into separate incomplete structures; not a clean single module"
+      },
+      {
+        "index": 8,
+        "reason": "arch candidate is incomplete with detached upper fragment; not production-safe"
+      }
+    ]
+  }
 }
