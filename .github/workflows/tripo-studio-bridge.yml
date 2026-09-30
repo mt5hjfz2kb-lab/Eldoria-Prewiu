@@ -15,8 +15,48 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  input-preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Tripo request and exact input before Windows
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs'), path=require('path'), crypto=require('crypto');
+          const req=JSON.parse(fs.readFileSync('pipeline/tripo-studio-request.json','utf8'));
+          const out=process.env.GITHUB_OUTPUT;
+          const emit=v=>fs.appendFileSync(out,`ready=${v}\n`);
+          if(!req.enabled){ console.log('TRIPO_PREFLIGHT=DISABLED'); emit('false'); process.exit(0); }
+          if(['stage_upload','generate'].includes(req.mode)){
+            if(req.input_transport!=='repo_exact_input') throw new Error('Production Tripo input must use repo_exact_input.');
+            if(!req.upload_base64_glob) throw new Error('repo_exact_input requires upload_base64_glob.');
+            const dir=path.dirname(req.upload_base64_glob);
+            const files=fs.readdirSync(dir).filter(n=>/^part_\d+\.b64$/.test(n)).sort();
+            if(files.length===0) throw new Error('Exact-input chunks are missing; refusing Windows runner.');
+            const b64=files.map(n=>fs.readFileSync(path.join(dir,n),'utf8').trim()).join('');
+            const bytes=Buffer.from(b64,'base64');
+            const sha=crypto.createHash('sha256').update(bytes).digest('hex');
+            if(sha!==String(req.upload_sha256||'').toLowerCase()) throw new Error(`Exact-input SHA mismatch expected=${req.upload_sha256} actual=${sha}`);
+            if(bytes.length!==Number(req.upload_size_bytes)) throw new Error(`Exact-input size mismatch expected=${req.upload_size_bytes} actual=${bytes.length}`);
+            const manifestPath=path.join(dir,'manifest.json');
+            if(!fs.existsSync(manifestPath)) throw new Error('Exact-input manifest is missing.');
+            const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+            if(String(manifest.sha256).toLowerCase()!==sha || Number(manifest.size_bytes)!==bytes.length) throw new Error('Manifest identity mismatch.');
+            console.log(`TRIPO_PREFLIGHT=PASS bytes=${bytes.length} sha256=${sha} parts=${files.length}`);
+          } else {
+            console.log(`TRIPO_PREFLIGHT=PASS mode=${req.mode}`);
+          }
+          emit('true');
+          NODE
+
   bridge:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    needs: input-preflight
+    if: vars.UNITY_RUNNER_READY == 'true' && needs.input-preflight.outputs.ready == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 15
 
@@ -65,6 +105,9 @@ jobs:
           }
 
           $runtimeRequestPath = "$env:RUNNER_TEMP\tripo-studio-request-runtime.json"
+          if ($mode -in @('stage_upload','generate') -and ([string]$request.input_transport).Trim().ToLowerInvariant() -ne 'repo_exact_input') {
+            throw "chatgpt_exact_input is retired for production. Persist exact bytes in repo before Tripo staging."
+          }
           if ($mode -in @('stage_upload','generate')) {
             $expected = ([string]$request.upload_sha256).ToLowerInvariant()
             $resolved = $null
