@@ -1,13 +1,7 @@
-name: Historical Surface Rescue
+name: "[LEGACY] Historical Surface Rescue"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/historical-surface-rescue.yml'
-      - 'pipeline/historical-module-rescue.json'
-      - 'tools/valoria_hero_surface_prototype.py'
 
 permissions:
   contents: write
