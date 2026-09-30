@@ -222,10 +222,10 @@ namespace Eldoria.Presentation
             var plaza=ValoriaGroundKit.StreetBlendWidening("Valoria · ProductionCell · lower civic apron",
                 new Vector3(0,.432f,-6.55f),5.55f,2.75f,0f);
             plaza.transform.SetParent(root,true);
-            var westWear=ValoriaGroundKit.GroundSeam("Valoria · ProductionCell · sawmill yard wear",
+            var westWear=ValoriaGroundKit.TerraceFloor("Valoria · ProductionCell · sawmill yard wear",
                 new Vector3(-5.05f,.415f,-4.85f),2.15f,2.55f,7f);
             westWear.transform.SetParent(root,true);
-            var eastWear=ValoriaGroundKit.GroundSeam("Valoria · ProductionCell · barracks yard wear",
+            var eastWear=ValoriaGroundKit.TerraceFloor("Valoria · ProductionCell · barracks yard wear",
                 new Vector3(5.10f,.415f,-5.35f),2.05f,2.35f,-8f);
             eastWear.transform.SetParent(root,true);
 
