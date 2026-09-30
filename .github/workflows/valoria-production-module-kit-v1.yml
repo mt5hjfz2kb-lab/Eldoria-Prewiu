@@ -1,0 +1,128 @@
+name: "[EXPERIMENT] Valoria production module kit v1"
+
+on:
+  push:
+    branches: ['visual-proof/valoria-production-module-kit-v1']
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaProductionModuleKitGate.cs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-production-module-kit-v1
+  cancel-in-progress: true
+
+jobs:
+  module-kit:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Stage CC0 PBR material family
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-ProductionModuleKit/1.0'}
+          $assets=@(
+            @{ id='castle_wall_slates'; prefix='stone' },
+            @{ id='wood_planks'; prefix='wood' },
+            @{ id='roof_slates_03'; prefix='roof' },
+            @{ id='cobblestone_floor_001'; prefix='ground' },
+            @{ id='rusty_metal_sheet'; prefix='metal' },
+            @{ id='medieval_wall_01'; prefix='plaster' }
+          )
+          foreach($asset in $assets){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            $patterns=@(
+              @{ key='diff'; rx='_diff_1k\.(jpg|png)(\?|$)' },
+              @{ key='normal'; rx='_nor_gl_1k\.(jpg|png)(\?|$)' },
+              @{ key='ao'; rx='_ao_1k\.(jpg|png)(\?|$)' }
+            )
+            foreach($map in $patterns){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){ if($map.key -eq 'ao'){ continue }; throw "Missing $($map.key) for $($asset.id)" }
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){ throw "Downloaded map too small: $out" }
+            }
+          }
+          @'
+          Eldoria Production Module Kit v1 experimental PBR set.
+          Source: Poly Haven
+          License: CC0
+          Experimental branch only; not production-promoted.
+          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
+
+      - name: Capture module kit
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaProductionModuleKitCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-ProductionModuleKit.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+                  '-executeMethod','Eldoria.EditorTools.ValoriaProductionModuleKitGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){ Start-Sleep -Seconds 2; $process.Refresh() }
+          if(-not $process.HasExited){
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 250}
+            throw 'Production Module Kit timed out.'
+          }
+          $process.Refresh()
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 300}
+            throw "Production Module Kit failed: $($process.ExitCode)"
+          }
+          $expected=@('before-19.png','before-12.png','before-9.png','before-mobile.png',
+                      'after-19.png','after-12.png','after-9.png','after-mobile.png','evidence.json')
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){throw "Missing output: $name"}
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){throw "Empty capture: $name"}
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-production-module-kit-${{ github.run_id }}
+          path: |
+            Unity/ValoriaProductionModuleKitCaptures/*
+            ${{ runner.temp }}/Eldoria-ProductionModuleKit.log
+          if-no-files-found: warn
+          retention-days: 14
