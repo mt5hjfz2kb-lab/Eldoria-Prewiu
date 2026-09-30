@@ -10,6 +10,7 @@ namespace Eldoria.Presentation
     /// Runtime implementation of the owner-approved Eldoria HUD reference.
     /// Functional controls remain owned by SlicePresenter; this component reshapes and
     /// decorates them into the reference composition and adds visual-only reference chrome.
+    /// Owner reference composition lock: landscape HUD uses the approved screenshot hierarchy.
     /// </summary>
     public sealed class ReferenceUiArtPass : MonoBehaviour
     {
