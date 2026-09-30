@@ -31,8 +31,8 @@ Final certification of the owner-approved Stone Architecture multipiece generati
 The visual failure is not caused by camera framing. The dedicated per-piece views demonstrate incorrect grouping and residual geometry. Therefore the kit must not be promoted as eight production-ready Valoria module families.
 
 ## Piece-by-piece visual review
-1. **Piece 01 — corner wall:** strongest architectural result. Main form is coherent and readable, but a small detached residual fragment remains. Candidate for cleanup, not certified as-is.
-2. **Piece 02 — rock-to-wall transition:** coherent silhouette and the strongest clean source candidate. Suitable for a cleanup/pivot pass, but not automatically promoted in this gate.
+1. **Piece 01 — corner wall:** strong architectural result, but its own front evidence shows a detached residual fragment. Cleanup candidate, not certified as-is.
+2. **Piece 02 — rock-to-wall transition:** **individual visual PASS**. Front/side/rear/oblique evidence is coherent and free of detached residual geometry. It is the only piece accepted visually as-is; it is still not promoted in this closed kit gate.
 3. **Piece 03:** visually contains two spatially separate architectural masses in one exported group. Fails one-family/one-module separability.
 4. **Piece 04:** contains disconnected masonry masses plus curved/thin residual geometry. Fails clean reusable module requirement.
 5. **Piece 05 — high wall candidate:** main wall is strong, but a detached vertical fragment remains. Candidate for cleanup, not certified as-is.
@@ -41,7 +41,7 @@ The visual failure is not caused by camera framing. The dedicated per-piece view
 8. **Piece 08 — arch candidate:** recognizable arch, but includes a detached upper/side mass and protruding residual geometry. Fails clean opening/module requirement.
 
 ## What this proves
-The single-sheet Tripo approach can generate useful visual source material and the automated spatial clustering can recover eight numerical groups, but **numerical group count is not equivalent to eight production modules**. The exact source remains valuable for a zero-credit cleanup/salvage pass using the already exported GLB; no second Tripo generation is justified by this gate alone.
+The single-sheet Tripo approach can generate useful visual source material and the automated spatial clustering can recover eight numerical groups, but **numerical group count is not equivalent to eight production modules**. The exact source remains valuable for a zero-credit cleanup/salvage pass using the already exported GLB; no second Tripo generation is justified by this gate alone. Piece 02 is individually clean, while pieces 01/05/06 are the strongest cleanup candidates.
 
 ## Protected surfaces
 No production promotion was performed. Valoria.unity, VisualWorld and gameplay remain untouched.
