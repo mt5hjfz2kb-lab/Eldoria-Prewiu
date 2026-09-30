@@ -26,7 +26,7 @@ namespace Eldoria.Presentation
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
         public static bool ProductionCellEnabled = false;
-        // Surface Cell v6: bounded URP/PBR + CC0 + skyline look-dev proof. Disabled in production until matched-camera review passes. Validation trigger after governance repair.
+        // Surface Cell v7: existing-silhouette PBR look-dev proof. Disabled in production until matched-camera review passes. Validation trigger after governance repair.
         public static bool SurfaceCellEnabled = false;
         // Gate-only coherent asset-language proof using a single CC0 Kenney Castle Kit family.
         // Never enabled in production automatically.
@@ -223,14 +223,13 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v6 — the material-only passes proved that the dominant limitation is the
-            // hero silhouette itself. Keep the certified Bastion target/route/stair underneath, but
-            // replace ONLY its presentation shell with the richer authored Mega/Masonry families.
+            // Surface Cell v7 — preserve the current Bastion silhouette and replace only its surface language.
+            // No new architecture, no route/collider/hotspot ownership, no citywide repaint.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.76f,.81f,.85f);
-            RenderSettings.ambientEquatorColor=new Color(.50f,.49f,.45f);
-            RenderSettings.ambientGroundColor=new Color(.255f,.235f,.205f);
-            RenderSettings.ambientIntensity=.90f;
+            RenderSettings.ambientSkyColor=new Color(.75f,.80f,.84f);
+            RenderSettings.ambientEquatorColor=new Color(.49f,.48f,.44f);
+            RenderSettings.ambientGroundColor=new Color(.25f,.23f,.20f);
+            RenderSettings.ambientIntensity=.88f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.55f,.60f,.63f);
@@ -250,7 +249,7 @@ namespace Eldoria.Presentation
             {
                 if(light.name!="Valoria · amber dusk")continue;
                 light.color=new Color(1.0f,.87f,.72f);
-                light.intensity=1.30f;
+                light.intensity=1.28f;
                 light.shadowStrength=.76f;
                 light.shadows=LightShadows.Soft;
                 light.transform.rotation=Quaternion.Euler(47f,-34f,0f);
@@ -262,25 +261,28 @@ namespace Eldoria.Presentation
             var fill=fillGo.AddComponent<Light>();
             fill.type=LightType.Directional;
             fill.color=new Color(.61f,.72f,.93f);
-            fill.intensity=.12f;
+            fill.intensity=.11f;
             fill.shadows=LightShadows.None;
 
             InstallUrpFinishV5();
 
             var art=ValoriaExternalAssetLibrary.Load();
             var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",
-                new Color(.92f,.90f,.86f),new Vector2(3.15f,3.15f),.070f,1.08f)
+                new Color(.91f,.89f,.84f),new Vector2(3.15f,3.15f),.065f,1.08f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
-                    new Color(.84f,.81f,.73f),new Vector2(3.35f,3.35f),.080f,1.0f);
+                    new Color(.83f,.80f,.72f),new Vector2(3.35f,3.35f),.075f,1.0f);
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
-                new Color(.88f,.82f,.72f),new Vector2(3.85f,3.85f),.025f,.92f)
+                new Color(.86f,.80f,.69f),new Vector2(3.85f,3.85f),.022f,.92f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
-                    new Color(.66f,.56f,.43f),new Vector2(4.1f,4.1f),.030f,.88f);
-
-            // The old Hero Frame shell stays in the BEFORE capture. AFTER hides only those renderers.
-            // The certified invisible Bastion target lives outside these prefixes and remains untouched.
-            Suppress("Valoria · Bastion hero","Valoria · rescued hero flank");
-            BuildSurfaceCellTargetBastion(art);
+                    new Color(.64f,.54f,.41f),new Vector2(4.1f,4.1f),.028f,.88f);
+            var bastionStone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",
+                new Color(.74f,.70f,.62f),new Vector2(2.15f,2.15f),.035f,1.12f)
+                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
+                    new Color(.70f,.67f,.60f),new Vector2(2.40f,2.40f),.045f,1.05f);
+            var bastionDeep=ValoriaKit.ExternalPbrSurfaceMaterial("stone",
+                new Color(.53f,.50f,.45f),new Vector2(2.35f,2.35f),.025f,1.05f)
+                ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
+                    new Color(.53f,.51f,.47f),new Vector2(2.55f,2.55f),.035f,1.0f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -289,10 +291,26 @@ namespace Eldoria.Presentation
                 string lower=n.ToLowerInvariant();
                 if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
 
-                // Preserve the authored PBR identity of the AP2 buildings.
+                // Preserve AP2 authored maps.
                 if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
                 {
                     PolishImportedSurface(renderer,new Color(.99f,.98f,.96f));
+                    continue;
+                }
+
+                // The existing fortress silhouette stays. Only masonry receives one coherent stone family.
+                bool bastion=n.StartsWith("Bastion ·")||n.StartsWith("Valoria · Bastion hero");
+                if(bastion)
+                {
+                    bool preserve=lower.Contains("banner")||lower.Contains("slit")||
+                                  lower.Contains("scaffold")||lower.Contains("roof")||
+                                  lower.Contains("crown");
+                    if(!preserve)
+                    {
+                        bool deep=lower.Contains("backing")||lower.Contains("plinth")||
+                                  lower.Contains("rubble")||lower.Contains("collapse");
+                        renderer.sharedMaterial=deep?bastionDeep:bastionStone;
+                    }
                     continue;
                 }
 
@@ -306,21 +324,21 @@ namespace Eldoria.Presentation
                 else if(paving)renderer.sharedMaterial=cobble;
             }
 
-            // One small geology seam on each side visually seats the new fortress in the same terrace.
+            // Seat the existing silhouette into the terrace; no replacement fortress is instantiated.
             if(art!=null&&art.SlavicFlatRock!=null)
             {
-                TargetFramePiece("Valoria · TargetFrame · bastion rock west",art.SlavicFlatRock,
-                    new Vector3(-4.55f,2.75f,6.20f),2.50f,1.20f,36f,new Color(.78f,.77f,.72f));
-                TargetFramePiece("Valoria · TargetFrame · bastion rock east",art.SlavicFlatRock,
-                    new Vector3(4.55f,2.75f,6.35f),2.45f,1.18f,214f,new Color(.78f,.77f,.72f));
+                TargetFramePiece("Valoria · SurfaceCell · bastion seam west",art.SlavicFlatRock,
+                    new Vector3(-4.45f,2.72f,6.10f),2.35f,1.05f,36f,new Color(.73f,.72f,.67f));
+                TargetFramePiece("Valoria · SurfaceCell · bastion seam east",art.SlavicFlatRock,
+                    new Vector3(4.45f,2.72f,6.25f),2.30f,1.02f,214f,new Color(.73f,.72f,.67f));
             }
 
-            WarmLight("Valoria · SurfaceCell · target gate warmth",new Vector3(0f,4.05f,4.05f),
-                new Color(1.0f,.57f,.26f),.32f,4.9f);
+            WarmLight("Valoria · SurfaceCell · bastion gate warmth",new Vector3(0f,4.05f,4.05f),
+                new Color(1.0f,.57f,.26f),.24f,4.5f);
             WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.6f,1.95f,-4.85f),
-                new Color(1.0f,.62f,.31f),.13f,3.7f);
+                new Color(1.0f,.62f,.31f),.12f,3.7f);
             WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.55f,1.95f,-5.20f),
-                new Color(1.0f,.66f,.36f),.12f,3.5f);
+                new Color(1.0f,.66f,.36f),.11f,3.5f);
         }
 
         static void BuildSurfaceCellTargetBastion(ValoriaExternalAssetLibrary art)
