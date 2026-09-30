@@ -371,8 +371,11 @@ jobs:
             if ($splitMin -le 0) { $splitMin = 250 }
             $clusterCount = [int]$request.multipiece.expected_piece_count
             if ($clusterCount -lt 0) { $clusterCount = 0 }
-            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount,"--split-salvage-config",$salvageConfig)
-            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | salvage=$([bool]$request.multipiece.salvage.enabled) | dir=$splitDir"
+            $clusterAxes = ([string]$request.multipiece.cluster_axes).ToLowerInvariant()
+            if ([string]::IsNullOrWhiteSpace($clusterAxes)) { $clusterAxes = 'xy' }
+            if ($clusterAxes -notin @('xy','xz','yz')) { throw "Unsupported multipiece.cluster_axes: $clusterAxes" }
+            $args += @("--split-components-dir",$splitDir,"--split-min-triangles",$splitMin,"--split-cluster-count",$clusterCount,"--split-cluster-axes",$clusterAxes,"--split-salvage-config",$salvageConfig)
+            Write-Host "MULTIPIECE_SPLIT: enabled=true | min_component_triangles=$splitMin | expected_piece_count=$clusterCount | cluster_axes=$clusterAxes | salvage=$([bool]$request.multipiece.salvage.enabled) | dir=$splitDir"
           }
           $process = Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $errLog
           if ($process.ExitCode -ne 0) {
