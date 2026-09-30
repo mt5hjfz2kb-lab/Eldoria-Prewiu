@@ -251,6 +251,14 @@ namespace Eldoria.Presentation
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight=new Color(.47f,.50f,.53f);
 
+            var art=ValoriaExternalAssetLibrary.Load();
+            var cobble=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
+                new Color(.86f,.82f,.74f),new Vector2(3.4f,3.4f),.10f,1.0f);
+            var dirt=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
+                new Color(.72f,.62f,.48f),new Vector2(4.2f,4.2f),.045f,.85f);
+            var stone=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
+                new Color(.77f,.74f,.68f),new Vector2(3.0f,3.0f),.075f,.85f);
+
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
@@ -274,11 +282,10 @@ namespace Eldoria.Presentation
                             lower.Contains("street slab")||lower.Contains("worn tread")||
                             lower.Contains("apron")||lower.Contains("court");
                 if(earth)
-                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.285f,.245f,.19f),"earth",new Vector2(5.5f,6.5f),.42f);
+                    renderer.sharedMaterial=dirt;
                 else if(paving)
-                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.41f,.37f,.305f),"stone",new Vector2(4.8f,4.8f),.78f);
+                    renderer.sharedMaterial=lower.Contains("street")||lower.Contains("apron")||lower.Contains("court")
+                        ?cobble:stone;
             }
 
             // Minimal practical pools: existing occupations gain depth, without new decorative clutter.
