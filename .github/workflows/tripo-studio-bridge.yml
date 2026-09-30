@@ -33,7 +33,14 @@ jobs:
           const emit=v=>fs.appendFileSync(out,`ready=${v}\n`);
           if(!req.enabled){ console.log('TRIPO_PREFLIGHT=DISABLED'); emit('false'); process.exit(0); }
           if(['stage_upload','generate'].includes(req.mode)){
-            if(req.input_transport!=='repo_exact_input') throw new Error('Production Tripo input must use repo_exact_input.');
+            const ingressException = req.input_transport==='chatgpt_exact_input' && req.temporary_ingress_exception===true;
+            if(req.input_transport!=='repo_exact_input' && !ingressException) throw new Error('Production Tripo input must use repo_exact_input unless an explicit temporary exact-byte ingress exception is declared.');
+            if(ingressException){
+              if(!req.probe_chatgpt_file_id) throw new Error('temporary ChatGPT ingress requires probe_chatgpt_file_id.');
+              console.log('TRIPO_PREFLIGHT=TEMP_CHATGPT_EXACT_INPUT_EXCEPTION');
+              emit('true');
+              process.exit(0);
+            }
             if(!req.upload_base64_glob) throw new Error('repo_exact_input requires upload_base64_glob.');
             const dir=path.dirname(req.upload_base64_glob);
             const files=fs.readdirSync(dir).filter(n=>/^part_\d+\.b64$/.test(n)).sort();
@@ -109,8 +116,12 @@ jobs:
           }
 
           $runtimeRequestPath = "$env:RUNNER_TEMP\tripo-studio-request-runtime.json"
-          if ($mode -in @('stage_upload','generate') -and ([string]$request.input_transport).Trim().ToLowerInvariant() -ne 'repo_exact_input') {
-            throw "chatgpt_exact_input is retired for production. Persist exact bytes in repo before Tripo staging."
+          if ($mode -in @('stage_upload','generate')) {
+            $transportCheck = ([string]$request.input_transport).Trim().ToLowerInvariant()
+            $temporaryIngress = ($transportCheck -eq 'chatgpt_exact_input' -and [bool]$request.temporary_ingress_exception)
+            if ($transportCheck -ne 'repo_exact_input' -and -not $temporaryIngress) {
+              throw "Production Tripo staging requires repo_exact_input unless a documented temporary exact-byte ingress exception is enabled."
+            }
           }
           if ($mode -in @('stage_upload','generate')) {
             $expected = ([string]$request.upload_sha256).ToLowerInvariant()
@@ -120,11 +131,11 @@ jobs:
             if ($transport -notin @('auto','repo_exact_input','runner_fallback','chatgpt_exact_input')) {
               throw "Unsupported input_transport: $transport"
             }
-            if ($transport -eq 'chatgpt_exact_input') {
-              throw 'chatgpt_exact_input is deprecated for staging. Persist approved bytes into pipeline/exact-inputs first and use repo_exact_input. Refusing browser-session wait/fallback.'
+            if ($transport -eq 'chatgpt_exact_input' -and -not [bool]$request.temporary_ingress_exception) {
+              throw 'chatgpt_exact_input requires temporary_ingress_exception=true and is never a standing production route.'
             }
 
-            # Historical direct-chat ingestion block retained only as unreachable reference.
+            # One-time exact-byte ingress exception: retrieve the approved chat file, verify SHA/size, persist it to repo, then continue staging.
             # Direct chat-approved input ingestion: retrieve exact uploaded bytes via the authenticated
             # ChatGPT browser session, persist them into the canonical repo exact-input store, then
             # continue this same zero-spend staging run with those verified bytes.
