@@ -2,56 +2,58 @@
 
 Date: 2026-09-30  
 Branch: `visual-proof/golden-cell-new-base-v1`  
-Validated code: `3b5764ea786af415fb918e98da83dd7f893d715e`  
+Validated visual code: `3b5764ea786af415fb918e98da83dd7f893d715e`  
 Run: `36783595411`  
 Artifact: `11129220413`
 
 ## Verdict
 
-**VISUAL PROOF PASS / PRODUCTION NOT YET**
+**VISUAL FAIL — do not propagate to production.**
 
-The Golden Cell finally demonstrates a materially better visual base than current Valoria at the real gameplay cameras.
+The Golden Cell proves that a coherent PBR material family and bounded-cell workflow materially improve Valoria, but it does **not** satisfy the owner's required success bar:
 
-This is not yet an instruction to replace Valoria citywide. The experiment remains isolated.
+> the cell must look like it belongs to a visibly higher category of mobile fantasy city-builder, not merely like a more polished Eldoria.
+
+The final Unity captures still read as the existing Eldoria generation with improved surfaces, lighting and access composition.
 
 ## What is proven
 
-- A coherent material family for stone / dark stone / cobble / dirt / timber / roof / metal / moss / plaster reads substantially better than flat procedural/default surfaces.
-- Keeping the certified Bastion silhouette while bringing its visible shell into the same material family works better than replacing the Bastion with unrelated Castle Kit or low Mega/Masonry substitutes.
-- The processional route is readable at 12 / 9 / mobile.
-- The gate, upper terrace, retaining wall, rock transition, residence and productive structure read as one district instead of independent test pieces.
-- Rock-to-architecture transitions and sparse vegetation improve the sense that the settlement is embedded in terrain.
-- Human-scale figures, controlled heraldry and restrained warm practical lights add scale without becoming the primary source of detail.
-- The experiment uses no paid assets and no Tripo credits.
-- Gameplay collider / hotspot signature remains unchanged.
+- Coherent stone / cobble / timber / roof / metal / moss / plaster surfaces are visibly better than the previous flat/synthetic presentation.
+- The processional route and terrace remain readable at 19 / 12 / 9 / mobile.
+- Rock ↔ retaining-wall transitions work better than isolated prefab placement.
+- Human-scale support buildings and restrained practical lighting improve local believability.
+- Same-scene collider / hotspot signature remains unchanged.
+- Tripo credits: **0**.
+- Paid assets: **0**.
 
-## What is not yet production-ready
+## Why it still fails
 
-- Some architecture is still generated from simplified helper geometry and should not be propagated citywide as final art.
-- Residential / productive structures still need a normalized family pass before large-scale use.
-- Terrain beyond the Golden Cell remains visibly flatter and lower quality, so the cell currently outclasses its surroundings.
-- The Bastion still needs a dedicated authored architecture pass eventually; the current result proves the material direction more than final mesh quality.
-- The gate threshold / lighting should remain restrained; do not reintroduce the earlier over-bright fire treatment.
-- Do not copy failed alternatives:
-  - Castle Kit pastel coherent proof;
-  - low Mega/Masonry wall substitute;
-  - citywide/global material replacement;
-  - density-first dressing;
-  - white/yellow unmodulated Slavic materials.
+- Bastion / hero architecture remains too blocky and low-detail in silhouette.
+- The gate and retaining structures still read as helper/prototype geometry at close zoom.
+- Re-materialing the existing Bastion does not create a generational jump.
+- The surrounding legacy city makes the visual-generation mismatch immediately visible.
+- Material quality alone cannot compensate for the structural mesh / silhouette ceiling.
 
-## Production rule derived from the proof
+## Pipeline consequence
 
-The next production path for Valoria is:
+Keep:
 
-1. preserve certified gameplay topology and major successful silhouettes;
-2. apply the Golden Cell material / light hierarchy to one bounded production district;
-3. replace only obviously provisional civil/support meshes with a single normalized authored family;
-4. build terrain ↔ retaining wall ↔ rock transitions before adding density;
-5. validate at 19 / 12 / 9 / mobile using matched before/after;
-6. only propagate to additional districts after the first production district passes visually.
+1. bounded Golden Cell validation;
+2. blockout before final art;
+3. matched 19 / 12 / 9 / mobile evidence;
+4. gameplay topology independent from visuals;
+5. same-scene collider/hotspot certification;
+6. coherent PBR material staging.
 
-## Current acceptance
+Invalidate:
 
-The Golden Cell is the first experiment in this investigation that demonstrates a **real, clearly visible improvement in the in-engine scene** without relying on concept art.
+1. assuming material replacement alone can create the premium jump;
+2. preserving the current Bastion visual shell as final hero architecture;
+3. primitive-heavy hero architecture as a final-quality solution;
+4. density / dressing / lighting as substitutes for genuinely stronger hero geometry.
 
-It is accepted as the **new visual-direction proof**, not as a citywide production asset drop.
+## Next proof
+
+The next experiment must introduce **one genuinely higher-grade authored Bastion/access architecture family** inside the same bounded Golden Cell, then re-use the validated material stack around it.
+
+Until that exists, this branch remains diagnostic only and must not be merged into `main`.
