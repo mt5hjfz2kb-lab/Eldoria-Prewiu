@@ -26,7 +26,7 @@ namespace Eldoria.Presentation
         // (shared ground language + props + occupation + atmosphere) before scaling citywide.
         // Visual-only; it never owns gameplay topology, colliders or hotspots.
         public static bool ProductionCellEnabled = false;
-        // Surface Cell v4: bounded URP look-dev proof. Disabled in production until matched-camera review passes.
+        // Surface Cell v5: bounded URP/PBR look-dev proof. Disabled in production until matched-camera review passes.
         public static bool SurfaceCellEnabled = false;
 
         public static void ResetVisualCachesForGate()
@@ -216,57 +216,81 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v4 — real URP look-dev proof. No gameplay/topology changes and no new architecture:
-            // preserve authored buildings, upgrade shared ground + Bastion stone, then finish the frame with
-            // restrained ACES/color/bloom rather than repainting the whole city.
-            RenderSettings.ambientIntensity=.78f;
+            // Surface Cell v5 — keep authored architecture, use real PBR ground, restrained URP finish,
+            // tri-light ambient hierarchy and selective treatment only for procedural Bastion backing masses.
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor=new Color(.78f,.82f,.85f);
+            RenderSettings.ambientEquatorColor=new Color(.52f,.51f,.47f);
+            RenderSettings.ambientGroundColor=new Color(.27f,.245f,.21f);
+            RenderSettings.ambientIntensity=.93f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.57f,.595f,.60f);
-            RenderSettings.fogStartDistance=46f;
-            RenderSettings.fogEndDistance=118f;
+            RenderSettings.fogColor=new Color(.56f,.61f,.64f);
+            RenderSettings.fogStartDistance=48f;
+            RenderSettings.fogEndDistance=122f;
 
             var camera=Camera.main;
             if(camera!=null)
             {
-                camera.backgroundColor=RenderSettings.fogColor;
+                camera.clearFlags=CameraClearFlags.SolidColor;
+                camera.backgroundColor=new Color(.50f,.59f,.64f);
                 camera.allowHDR=true;
-                TrySetComponentProperty(camera.gameObject,"UniversalAdditionalCameraData","renderPostProcessing",true);
+                var cameraData=camera.GetComponent<UniversalAdditionalCameraData>();
+                if(cameraData!=null)cameraData.renderPostProcessing=true;
             }
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(light.name!="Valoria · amber dusk")continue;
-                light.color=new Color(1.0f,.84f,.69f);
-                light.intensity=1.42f;
-                light.shadowStrength=.80f;
+                light.color=new Color(1.0f,.88f,.74f);
+                light.intensity=1.28f;
+                light.shadowStrength=.70f;
                 light.shadows=LightShadows.Soft;
-                light.transform.rotation=Quaternion.Euler(46f,-34f,0f);
+                light.transform.rotation=Quaternion.Euler(48f,-34f,0f);
             }
 
             var fillGo=new GameObject("Valoria · SurfaceCell · cool sky fill");
             fillGo.transform.SetParent(root,true);
-            fillGo.transform.rotation=Quaternion.Euler(58f,148f,0f);
+            fillGo.transform.rotation=Quaternion.Euler(34f,150f,0f);
             var fill=fillGo.AddComponent<Light>();
             fill.type=LightType.Directional;
-            fill.color=new Color(.59f,.68f,.82f);
-            fill.intensity=.10f;
+            fill.color=new Color(.62f,.74f,1.0f);
+            fill.intensity=.16f;
             fill.shadows=LightShadows.None;
 
-            // Global production-style finishing for this proof only. The Presentation assembly deliberately
-            // has no compile-time URP dependency; reflection activates the installed URP stack when available.
-            InstallUrpFinish();
+            var volumeGo=new GameObject("Valoria · SurfaceCell · URP finish");
+            volumeGo.transform.SetParent(root,true);
+            var volume=volumeGo.AddComponent<Volume>();
+            volume.isGlobal=true;
+            volume.priority=90f;
+            var profile=ScriptableObject.CreateInstance<VolumeProfile>();
+            volume.profile=profile;
 
-            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight=new Color(.42f,.45f,.49f);
+            var tone=profile.Add<Tonemapping>(true);
+            tone.mode.Override(TonemappingMode.ACES);
+
+            var color=profile.Add<ColorAdjustments>(true);
+            color.postExposure.Override(.05f);
+            color.contrast.Override(10f);
+            color.saturation.Override(4f);
+            color.colorFilter.Override(new Color(1.0f,.992f,.975f,1f));
+
+            var bloom=profile.Add<Bloom>(true);
+            bloom.threshold.Override(1.16f);
+            bloom.intensity.Override(.10f);
+            bloom.scatter.Override(.48f);
+
+            var vignette=profile.Add<Vignette>(true);
+            vignette.intensity.Override(.055f);
+            vignette.smoothness.Override(.27f);
 
             var art=ValoriaExternalAssetLibrary.Load();
             var cobble=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
-                new Color(.82f,.78f,.68f),new Vector2(3.2f,3.2f),.085f,1.05f);
+                new Color(.86f,.83f,.75f),new Vector2(3.35f,3.35f),.085f,1.0f);
             var dirt=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
-                new Color(.61f,.51f,.38f),new Vector2(4.0f,4.0f),.035f,.90f);
+                new Color(.69f,.59f,.45f),new Vector2(4.1f,4.1f),.035f,.88f);
             var stone=ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
-                new Color(.72f,.69f,.62f),new Vector2(2.65f,2.65f),.065f,1.02f);
+                new Color(.76f,.75f,.71f),new Vector2(2.8f,2.8f),.060f,.95f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -276,19 +300,21 @@ namespace Eldoria.Presentation
 
                 if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
 
-                // Hero Bastion is currently the largest flat-grey mass in the frame. Use the already-imported
-                // licensed stone PBR here, but do not replace timber/roof/banner elements.
-                if(n.StartsWith("Valoria · Bastion hero") &&
-                   !lower.Contains("roof")&&!lower.Contains("crown")&&!lower.Contains("banner"))
+                // Dedicated buildings keep their authored PBR maps; only normalize response slightly.
+                if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
                 {
-                    renderer.sharedMaterial=stone;
+                    PolishImportedSurface(renderer,new Color(.99f,.98f,.96f));
                     continue;
                 }
 
-                // Keep authored building maps on the dedicated AP2 buildings.
-                if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
+                // IMPORTANT: imported Mega/Masonry towers/walls stay untouched.
+                // Only procedural flat backing masses receive the shared stone PBR.
+                bool bastionProcedural=n.StartsWith("Valoria · Bastion hero") &&
+                    (lower.Contains("backing")||lower.Contains("plinth")||lower.Contains("fallback")||
+                     lower.Contains("buttress")||lower.Contains("rubble"));
+                if(bastionProcedural)
                 {
-                    PolishImportedSurface(renderer,new Color(.98f,.965f,.93f));
+                    renderer.sharedMaterial=stone;
                     continue;
                 }
 
@@ -303,134 +329,20 @@ namespace Eldoria.Presentation
                 else if(paving)renderer.sharedMaterial=cobble;
             }
 
-            // Small practical pools only; bloom now gives them a controlled emissive read.
+            // Small authored rock seams at the cell edges: terrain integration only, no new buildings/clutter.
+            if(art!=null&&art.SlavicFlatRock!=null)
+            {
+                foreach(var p in new[]{
+                    new Vector3(-11.4f,.02f,-7.2f),new Vector3(-11.7f,.16f,-1.5f),
+                    new Vector3(11.4f,.02f,-7.2f),new Vector3(11.7f,.16f,-1.3f)})
+                    Piece("Valoria · SurfaceCell · buried valley rock",art.SlavicFlatRock,p,2.45f,1.10f,p.x*17f,
+                        new Color(.84f,.84f,.79f));
+            }
+
             WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.6f,1.95f,-4.85f),
-                new Color(1.0f,.62f,.31f),.18f,3.8f);
+                new Color(1.0f,.62f,.31f),.15f,3.7f);
             WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.55f,1.95f,-5.20f),
-                new Color(1.0f,.66f,.36f),.16f,3.6f);
-        }
-
-        static Type FindRuntimeType(string fullName)
-        {
-            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                var type=assembly.GetType(fullName,false);
-                if(type!=null)return type;
-            }
-            return null;
-        }
-
-        static void TrySetComponentProperty(GameObject go,string shortTypeName,string propertyName,object value)
-        {
-            foreach(var component in go.GetComponents<Component>())
-            {
-                if(component==null||component.GetType().Name!=shortTypeName)continue;
-                var property=component.GetType().GetProperty(propertyName);
-                if(property!=null&&property.CanWrite)property.SetValue(component,value,null);
-                return;
-            }
-        }
-
-        static void InstallUrpFinish()
-        {
-            var volumeType=FindRuntimeType("UnityEngine.Rendering.Volume");
-            var profileType=FindRuntimeType("UnityEngine.Rendering.VolumeProfile");
-            if(volumeType==null||profileType==null)return;
-
-            var go=new GameObject("Valoria · SurfaceCell · URP finish");
-            go.transform.SetParent(root,true);
-            var volume=go.AddComponent(volumeType);
-            SetReflectedMember(volume,"isGlobal",true);
-            SetReflectedMember(volume,"priority",90f);
-
-            var profile=ScriptableObject.CreateInstance(profileType);
-            SetReflectedMember(volume,"profile",profile);
-
-            var tone=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Tonemapping");
-            OverrideVolumeEnum(tone,"mode","ACES");
-
-            var color=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.ColorAdjustments");
-            OverrideVolumeValue(color,"postExposure",.12f);
-            OverrideVolumeValue(color,"contrast",15f);
-            OverrideVolumeValue(color,"saturation",7f);
-            OverrideVolumeValue(color,"colorFilter",new Color(1.0f,.985f,.955f,1f));
-
-            var bloom=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Bloom");
-            OverrideVolumeValue(bloom,"threshold",1.08f);
-            OverrideVolumeValue(bloom,"intensity",.16f);
-            OverrideVolumeValue(bloom,"scatter",.55f);
-
-            var vignette=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Vignette");
-            OverrideVolumeValue(vignette,"intensity",.10f);
-            OverrideVolumeValue(vignette,"smoothness",.30f);
-        }
-
-        static void SetReflectedMember(object target,string name,object value)
-        {
-            if(target==null)return;
-            var type=target.GetType();
-            var property=type.GetProperty(name);
-            if(property!=null&&property.CanWrite){property.SetValue(target,value,null);return;}
-            var field=type.GetField(name);
-            if(field!=null)field.SetValue(target,value);
-        }
-
-        static object AddVolumeOverride(object profile,string overrideTypeName)
-        {
-            if(profile==null)return null;
-            var overrideType=FindRuntimeType(overrideTypeName);
-            if(overrideType==null)return null;
-            foreach(var method in profile.GetType().GetMethods())
-            {
-                if(method.Name!="Add")continue;
-                var parameters=method.GetParameters();
-                if(!method.IsGenericMethod&&parameters.Length==2&&parameters[0].ParameterType==typeof(Type))
-                    return method.Invoke(profile,new object[]{overrideType,true});
-                if(method.IsGenericMethodDefinition&&parameters.Length==1&&parameters[0].ParameterType==typeof(bool))
-                    return method.MakeGenericMethod(overrideType).Invoke(profile,new object[]{true});
-            }
-            return null;
-        }
-
-        static object GetReflectedMember(object target,string name)
-        {
-            if(target==null)return null;
-            var type=target.GetType();
-            var property=type.GetProperty(name);
-            if(property!=null)return property.GetValue(target,null);
-            var field=type.GetField(name);
-            return field!=null?field.GetValue(target):null;
-        }
-
-        static void OverrideVolumeValue(object component,string parameterName,object value)
-        {
-            var parameter=GetReflectedMember(component,parameterName);
-            if(parameter==null)return;
-            foreach(var method in parameter.GetType().GetMethods())
-            {
-                if(method.Name!="Override")continue;
-                var args=method.GetParameters();
-                if(args.Length!=1)continue;
-                var expected=args[0].ParameterType;
-                object converted=value;
-                if(value!=null&&!expected.IsInstanceOfType(value))
-                {
-                    try{converted=Convert.ChangeType(value,expected);}
-                    catch{continue;}
-                }
-                method.Invoke(parameter,new[]{converted});
-                return;
-            }
-        }
-
-        static void OverrideVolumeEnum(object component,string parameterName,string enumName)
-        {
-            var parameter=GetReflectedMember(component,parameterName);
-            if(parameter==null)return;
-            var valueProperty=parameter.GetType().GetProperty("value");
-            if(valueProperty==null||!valueProperty.PropertyType.IsEnum)return;
-            var value=Enum.Parse(valueProperty.PropertyType,enumName);
-            OverrideVolumeValue(component,parameterName,value);
+                new Color(1.0f,.66f,.36f),.14f,3.5f);
         }
 
         static void PolishImportedSurface(Renderer renderer,Color tint)
