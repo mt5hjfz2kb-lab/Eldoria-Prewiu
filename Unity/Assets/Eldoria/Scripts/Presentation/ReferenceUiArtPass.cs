@@ -284,7 +284,15 @@ namespace Eldoria.Presentation
                         primary.SetActive(true);
                         var pr=primary.GetComponent<RectTransform>();pr.anchorMin=Vector2.zero;pr.anchorMax=Vector2.one;pr.offsetMin=pr.offsetMax=Vector2.zero;
                         primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.12f);
-                        var t=primary.GetComponentInChildren<Text>();if(t!=null){t.text="›";t.fontSize=20;t.color=GoldSoft;}
+                        var t=primary.GetComponentInChildren<Text>();if(t!=null)t.color=Color.clear;
+                        var arrow=primary.transform.Find("Reference quest arrow");
+                        Text arrowText=arrow!=null?arrow.GetComponent<Text>():null;
+                        if(arrowText==null)
+                        {
+                            arrowText=MakeText("Reference quest arrow",primary.transform,20,GoldSoft,TextAnchor.MiddleCenter);
+                            Stretch(arrowText.rectTransform,0f);
+                        }
+                        arrowText.gameObject.SetActive(true);arrowText.text="›";arrowText.fontSize=20;arrowText.color=GoldSoft;
                     }
                 }
             }
