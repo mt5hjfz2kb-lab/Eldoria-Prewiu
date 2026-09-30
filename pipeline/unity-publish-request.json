@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Publish certified approved-reference HUD after green Unity slice 36697252245.",
-  "source_sha": "82008d1ed5e532ea8fd999458ef09e4fd07815ea",
+  "reason": "Publish the exact owner-reference HUD crop integration after functional UI certification.",
+  "source_sha": "ab8a390379911fe849dca6c94851ad664a9b4e76",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
