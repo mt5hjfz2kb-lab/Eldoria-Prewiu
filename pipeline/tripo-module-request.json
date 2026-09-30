@@ -23,7 +23,7 @@
     "enabled": true,
     "min_component_triangles": 100,
     "expected_piece_count": 7,
-    "cluster_axes": "xz",
+    "cluster_axes": "xy",
     "salvage": {
       "enabled": false,
       "mode": "disconnected_residue_only",
@@ -34,6 +34,6 @@
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "terrain-terrace-v1-isolated-1",
-  "notes": "Single owner-approved exact input hash 47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71; one 55-credit generation only; exact GLB exported by run 36734554068, 77291792 bytes. Blender/Unity zero-credit validation. Evaluate strict per-piece evidence before any integration. XZ clustering follows recently corrected sheet-plane contract; verify actual grouping against captures."
+  "run_nonce": "terrain-terrace-v1-xy-repair-1",
+  "notes": "Zero-credit repair from exact exported GLB. Measured Blender sheet spans X=.981/Y=.958/Z=.309, so the correct sheet plane is XY, unlike prior PlayerCity. First XZ grouping mixed fragments from distinct modules and is visual FAIL. Recluster on measured XY plane; retain strict individual review and no promotion."
 }

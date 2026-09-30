@@ -30,6 +30,8 @@ namespace Eldoria.EditorTools
             public int colliders;
             public bool uvPresent;
             public bool normalsPresent;
+            public bool colliderRaycastHit;
+            public bool emptySpaceMiss;
         }
 
         [Serializable] class Report
@@ -99,7 +101,13 @@ namespace Eldoria.EditorTools
                     mc.sharedMesh = filter.sharedMesh;
                     colliders++;
                 }
-                metrics.Add(Measure(go, files[i], colliders));
+                var metric = Measure(go, files[i], colliders);
+                metric.colliderRaycastHit = VerifyColliderHit(go);
+                metric.emptySpaceMiss = !Physics.Raycast(new Vector3(10000f, 10000f, 10000f), Vector3.up, 100f);
+                if (!metric.uvPresent || !metric.normalsPresent || metric.materials < 1 ||
+                    metric.meshes < 1 || metric.colliders < 1 || !metric.colliderRaycastHit || !metric.emptySpaceMiss)
+                    throw new Exception("Multipiece technical gate failed for " + files[i]);
+                metrics.Add(metric);
             }
 
             var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -127,6 +135,13 @@ namespace Eldoria.EditorTools
             cam.transform.LookAt(all.center + Vector3.up * (all.extents.y * .1f));
             cam.orthographicSize = Mathf.Max(8f, Mathf.Max(all.extents.x, all.extents.z) * 1.25f);
             var overview = Save(cam, OutputFolder + "/overview-textured.png");
+            // Fixed zoom evidence complements fit-to-bounds diagnostics. It proves the
+            // reusable kit at the same zoom family used to accept production Valoria.
+            foreach (var zoom in new[] { 19f, 12f, 9f }) {
+                cam.orthographicSize = zoom;
+                if (!Save(cam, OutputFolder + "/kit-" + zoom.ToString("0") + ".png"))
+                    throw new Exception("Empty official-zoom kit capture: " + zoom);
+            }
 
             cam.transform.position = all.center + new Vector3(0f, 8f, -24f);
             cam.transform.LookAt(all.center + Vector3.up * (all.extents.y * .1f));
@@ -236,6 +251,32 @@ namespace Eldoria.EditorTools
             var b = rs[0].bounds;
             for (int i = 1; i < rs.Length; i++) b.Encapsulate(rs[i].bounds);
             return b;
+        }
+
+        static bool VerifyColliderHit(GameObject go)
+        {
+            // Aim at real triangle interiors, rather than assuming every support has
+            // a closed surface at its bounds centre (terrace corners may be open).
+            foreach (var collider in go.GetComponentsInChildren<MeshCollider>()) {
+                var mesh = collider.sharedMesh;
+                if (mesh == null) continue;
+                var vertices = mesh.vertices;
+                var triangles = mesh.triangles;
+                for (int i = 0; i + 2 < triangles.Length; i += 3) {
+                    var a = collider.transform.TransformPoint(vertices[triangles[i]]);
+                    var b = collider.transform.TransformPoint(vertices[triangles[i + 1]]);
+                    var c = collider.transform.TransformPoint(vertices[triangles[i + 2]]);
+                    var normal = Vector3.Cross(b - a, c - a);
+                    if (normal.sqrMagnitude < .00000001f) continue;
+                    normal.Normalize();
+                    var centre = (a + b + c) / 3f;
+                    var offset = Mathf.Max(.01f, BoundsOf(go).size.magnitude * .02f);
+                    if (collider.Raycast(new Ray(centre + normal * offset, -normal), out _, offset * 2f) ||
+                        collider.Raycast(new Ray(centre - normal * offset, normal), out _, offset * 2f)) return true;
+                    if (i > 300) break;
+                }
+            }
+            return false;
         }
 
         static Bounds BoundsOfMany(List<GameObject> roots)
