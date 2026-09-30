@@ -446,34 +446,11 @@ namespace Eldoria.EditorTools
 
         static void BuildHeroCitadel()
         {
-            // HERO FORTRESS REPLACEMENT v1.
-            // Only the visual Bastion/access layer changes. Terrain, stair, plaza, lighting and gameplay stay frozen.
-            const string rootPath="Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/";
-
-            HeroAsset(rootPath+"Tower/tower.007.prefab","HF · central keep",
-                new Vector3(0f,2.60f,7.55f),4.75f,7.15f,0f);
-            HeroAsset(rootPath+"Tower/Windows/tower_small_window.003.prefab","HF · west tower",
-                new Vector3(-3.65f,2.58f,6.85f),2.85f,5.65f,7f);
-            HeroAsset(rootPath+"Tower/Windows/tower_small_window.004.prefab","HF · east tower",
-                new Vector3(3.55f,2.58f,7.00f),2.72f,5.20f,-8f);
-
-            HeroAsset(rootPath+"stone_wall_detailed.prefab","HF · west hero wall",
-                new Vector3(-2.25f,2.58f,5.45f),3.55f,3.10f,4f);
-            HeroAsset(rootPath+"stone_wall_detailed.prefab","HF · east hero wall",
-                new Vector3(2.25f,2.58f,5.45f),3.55f,3.10f,176f);
-            HeroAsset(rootPath+"stone_wall_detailed_corner.prefab","HF · west return",
-                new Vector3(-4.18f,2.58f,7.75f),2.85f,3.25f,92f);
-            HeroAsset(rootPath+"stone_wall_detailed_corner.001.prefab","HF · east return",
-                new Vector3(4.08f,2.58f,7.80f),2.78f,3.20f,268f);
-
-            // Deep authored entry rather than a primitive arch.
-            HeroAsset(rootPath+"stone_half_gate.001.prefab","HF · monumental gate",
-                new Vector3(0f,2.60f,4.45f),4.65f,4.45f,0f);
-
-            // One restrained rear ruined accent gives ancient/rebuilt identity without adding a new library.
-            HeroAsset(rootPath+"Tower/tower_destroyed.prefab","HF · ancient rear crown",
-                new Vector3(-1.15f,2.60f,10.0f),2.15f,3.75f,18f);
-
+            // Candidate B — complete CC0 fortified courtyard, tested as a single authored hero mass.
+            // Source is staged by the workflow from 3DAssets.dev; gameplay/topology remain untouched.
+            HeroAsset("Assets/Resources/Valoria/HeroFortressExternal/BlueBannerCastleCourtyard.glb",
+                "HF · CC0 Blue Banner Castle Courtyard",
+                new Vector3(0f,2.42f,7.15f),11.6f,8.2f,180f);
             BeveledBlock("HF · gate threshold",new Vector3(0f,2.63f,4.30f),
                 new Vector3(5.0f,.14f,1.20f),Cobble,.04f);
         }
