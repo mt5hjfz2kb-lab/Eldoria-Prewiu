@@ -16,6 +16,7 @@ namespace Eldoria.Presentation
         static readonly Color Rock = new Color(.42f,.43f,.39f);
         static Transform root;
         // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
+        // Production placement set: 2 CornerWallL / 2 HighStraightWall / 3 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
 
         public static void World(PlayerState state)
