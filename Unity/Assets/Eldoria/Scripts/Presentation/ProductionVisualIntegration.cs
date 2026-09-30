@@ -246,37 +246,10 @@ namespace Eldoria.Presentation
             fill.intensity=.12f;
             fill.shadows=LightShadows.None;
 
-            // URP post stack: restrained, gameplay-safe finishing rather than a cinematic filter.
-            var volumeGo=new GameObject("Valoria · SurfaceCell · finishing volume");
-            volumeGo.transform.SetParent(root,true);
-            var volume=volumeGo.AddComponent<UnityEngine.Rendering.Volume>();
-            volume.isGlobal=true;
-            volume.priority=40f;
-            var profile=ScriptableObject.CreateInstance<UnityEngine.Rendering.VolumeProfile>();
-            profile.name="Valoria Surface Cell v3 runtime profile";
-            volume.profile=profile;
-
-            var tone=profile.Add<UnityEngine.Rendering.Universal.Tonemapping>(true);
-            tone.mode.Override(UnityEngine.Rendering.Universal.TonemappingMode.ACES);
-
-            var color=profile.Add<UnityEngine.Rendering.Universal.ColorAdjustments>(true);
-            color.postExposure.Override(-.08f);
-            color.contrast.Override(16f);
-            color.saturation.Override(5f);
-            color.colorFilter.Override(new Color(1.0f,.965f,.91f,1f));
-
-            var wb=profile.Add<UnityEngine.Rendering.Universal.WhiteBalance>(true);
-            wb.temperature.Override(6f);
-            wb.tint.Override(-2f);
-
-            var bloom=profile.Add<UnityEngine.Rendering.Universal.Bloom>(true);
-            bloom.intensity.Override(.16f);
-            bloom.threshold.Override(1.05f);
-            bloom.scatter.Override(.48f);
-
-            var vignette=profile.Add<UnityEngine.Rendering.Universal.Vignette>(true);
-            vignette.intensity.Override(.075f);
-            vignette.smoothness.Override(.28f);
+            // Keep the proof runtime-assembly-safe: no direct URP package component dependency here.
+            // Global finish is carried by daylight/fog/ambient hierarchy while authored PBR stays intact.
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight=new Color(.47f,.50f,.53f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
