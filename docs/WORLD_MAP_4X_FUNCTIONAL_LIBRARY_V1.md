@@ -139,20 +139,19 @@ Existing useful inventory:
 Purpose:
 represent each player's persistent city/kingdom on the shared map.
 
-Required Player City Kit:
-- City T1 / early;
-- City T2 / developing;
-- City T3 / established;
-- City T4 / high power;
-- City T5 / prestige/late placeholder until progression tiers are locked;
-- ruined/protected/teleported visual state only if gameplay requires it.
+Player City v1 contract:
+- one universal strategic city mesh represents every player city on the shared map;
+- player identity, alliance, ownership, level/power and protection state remain UI/gameplay-owned;
+- visual variation through skins, banners or additional development silhouettes is deferred until it is justified by gameplay or cosmetics.
 
 Rules:
 - city silhouette must survive far and normal strategic zoom;
-- city level/power should produce visible growth without becoming UI noise;
-- cities need variation through banners, walls, district density, color/owner treatment or modular dressing so the map does not read as copy/paste;
+- the universal v1 mesh is intentionally reused across players rather than blocking world production on multiple city tiers;
+- future skins/variants may change appearance without changing the player-city gameplay contract;
 - player city mesh never owns account/player state logic;
 - Valoria may inspire architectural language, but world-map city representation is a strategic iconographic model, not a miniature full Valoria scene.
+
+Canonical v1 decision: `docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md`.
 
 ### F. March / army layer — PRIMARY 4X
 Required families/states:
@@ -203,10 +202,11 @@ Do not replace this number with a higher terrain-only estimate.
 ## 4. Missing library — production/search queue
 
 ### P0 — required to make the map read as 4X
-1. **Player City Kit v1**
-   - 3 initial strategic city tiers minimum;
-   - one neutral/friendly owner-variation mechanism;
-   - official camera proof 18/14/10/7 + mobile.
+1. **Player City v1**
+   - one universal production city mesh for all players;
+   - identity/ownership handled by UI/banner/state rather than separate geometry;
+   - official camera proof 18/14/10/7 + mobile;
+   - skins/tiers are future optional expansion, not a v1 blocker.
 
 2. **Resource Node Kit v1**
    - wood;
