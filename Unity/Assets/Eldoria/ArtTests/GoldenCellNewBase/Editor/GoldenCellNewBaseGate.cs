@@ -100,60 +100,34 @@ namespace Eldoria.EditorTools
 
         static void PrepareGoldenCellTextures()
         {
-            const string folder="Assets/Resources/Valoria/GoldenCellExternal";
-            if(!Directory.Exists(folder))return;
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
+            foreach(var folder in new[]{
+                "Assets/Resources/Valoria/GoldenCellExternal",
+                "Assets/Resources/Valoria/GoldenCellPBR"})
             {
-                var path=AssetDatabase.GUIDToAssetPath(guid);
-                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
-                if(importer==null)continue;
-                string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
-                importer.wrapMode=TextureWrapMode.Repeat;
-                importer.filterMode=FilterMode.Trilinear;
-                importer.mipmapEnabled=true;
-                importer.maxTextureSize=1024;
-                if(lower.EndsWith("_normal"))
+                if(!Directory.Exists(folder))continue;
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+                foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
                 {
-                    importer.textureType=TextureImporterType.NormalMap;
-                    importer.sRGBTexture=false;
+                    var path=AssetDatabase.GUIDToAssetPath(guid);
+                    var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+                    if(importer==null)continue;
+                    string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+                    importer.wrapMode=TextureWrapMode.Repeat;
+                    importer.filterMode=FilterMode.Trilinear;
+                    importer.mipmapEnabled=true;
+                    importer.maxTextureSize=1024;
+                    if(lower.EndsWith("_normal"))
+                    {
+                        importer.textureType=TextureImporterType.NormalMap;
+                        importer.sRGBTexture=false;
+                    }
+                    else
+                    {
+                        importer.textureType=TextureImporterType.Default;
+                        importer.sRGBTexture=!lower.EndsWith("_ao");
+                    }
+                    importer.SaveAndReimport();
                 }
-                else
-                {
-                    importer.textureType=TextureImporterType.Default;
-                    importer.sRGBTexture=!lower.EndsWith("_ao");
-                }
-                importer.SaveAndReimport();
-            }
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-        }
-
-        static void PrepareGoldenCellTextures()
-        {
-            const string folder="Assets/Resources/Valoria/GoldenCellPBR";
-            if(!Directory.Exists(folder))return;
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{folder}))
-            {
-                var path=AssetDatabase.GUIDToAssetPath(guid);
-                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
-                if(importer==null)continue;
-                string lower=Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
-                importer.wrapMode=TextureWrapMode.Repeat;
-                importer.filterMode=FilterMode.Trilinear;
-                importer.mipmapEnabled=true;
-                importer.maxTextureSize=1024;
-                if(lower.EndsWith("_normal"))
-                {
-                    importer.textureType=TextureImporterType.NormalMap;
-                    importer.sRGBTexture=false;
-                }
-                else
-                {
-                    importer.textureType=TextureImporterType.Default;
-                    importer.sRGBTexture=!lower.EndsWith("_ao");
-                }
-                importer.SaveAndReimport();
             }
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
