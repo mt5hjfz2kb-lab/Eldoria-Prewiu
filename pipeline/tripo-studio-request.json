@@ -2,7 +2,7 @@
   "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "Fallback recovery after authenticated ChatGPT exact-input endpoint returned 401/403 on runner. Search runner user folders only for the exact approved SHA-256 + byte size, persist exact bytes to repo, stage in Tripo, read visible Generate cost, and STOP before Generate. No credit spend; never accept a visual-only or non-identical candidate.",
+  "notes": "Recover the exact ChatGPT Library input by file id, verify SHA-256 + byte size, persist exact bytes to repo, stage in Tripo, read visible Generate cost, and STOP before Generate. If the runner ChatGPT session is logged out, wait up to 7 minutes for sign-in. Never fall back to non-identical bytes. No credit spend.",
   "request_id": "eldoria-stone-architecture-kit-v1-stage",
   "asset_name": "Eldoria_StoneArchitectureKit_v1",
   "function": "Single-sheet multipiece source for eight reusable Valoria masonry families: low wall, high wall, exterior corner, interior corner, arch/opening, pillar/buttress, parapet/cap/merlon, and rock-to-wall transition.",
@@ -16,7 +16,7 @@
   "approved_input_sha256": "5a7a5353e7a8b1a914cb968d856a738868ac548311aee0be4df69b4eeac76258",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "input_transport": "runner_fallback",
+  "input_transport": "chatgpt_exact_input",
   "expected_families": [
     "low straight wall",
     "high straight wall",
@@ -27,10 +27,11 @@
     "parapet cap merlon",
     "rock-to-wall transition"
   ],
-  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-exact-sha-fallback",
-  "search_downloads_for_sha": true,
+  "probe_nonce": "2026-09-30-stone-architecture-kit-v1-chatgpt-auth-wait",
+  "search_downloads_for_sha": false,
   "persist_exact_input": true,
-  "probe_chatgpt_session": false,
+  "probe_chatgpt_session": true,
   "probe_chatgpt_file_id": "file_0000000006b081f4bb5b1192abe859a5",
-  "upload_base64_glob": ""
+  "upload_base64_glob": "",
+  "wait_for_chatgpt_login_seconds": 420
 }
