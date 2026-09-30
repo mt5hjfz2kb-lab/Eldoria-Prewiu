@@ -19,6 +19,7 @@ namespace Eldoria.Presentation
         // Production placement set after camera review: 2 CornerWallL / 1 HighStraightWall / 2 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
         // Gate switch for the citywide Terrain & Terrace v1 composition. Visual-only; topology/collision remain authoritative below.
+        // This line also keeps the final composed HEAD inside the Unity/Valoria/world visual path filters.
         public static bool TerrainTerraceEnabled = true;
 
         public static void ResetVisualCachesForGate()
