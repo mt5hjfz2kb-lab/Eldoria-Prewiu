@@ -195,6 +195,7 @@ namespace Eldoria.Presentation
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
+            ComposeHeroFrame(state,art);
             Finish();
         }
 
@@ -462,6 +463,119 @@ namespace Eldoria.Presentation
             mat.SetTexture("_BaseMap",texture);mat.SetTextureScale("_BaseMap",new Vector2(4,4));
             mat.SetColor("_BaseColor",Color.white);mat.SetFloat("_Smoothness",.02f);
             return mat;
+        }
+
+        static void ComposeHeroFrame(PlayerState state, ValoriaExternalAssetLibrary art)
+        {
+            // VALORIA HERO FRAME — whole-frame art direction only.
+            // This layer owns no gameplay topology, collision, routes, floors or hotspots.
+            // It deliberately attacks the benchmark gaps that cannot be solved by adding one more isolated prefab:
+            // depth, skyline hierarchy, warm/cool separation, inhabited density and a readable hero focal point.
+
+            // Pull the current flat owner-review rig toward a brighter cinematic dusk without returning
+            // to the previously rejected dark neutral-overcast candidate.
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight=new Color(.68f,.70f,.70f);
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.61f,.64f,.66f);
+            RenderSettings.fogStartDistance=30f;
+            RenderSettings.fogEndDistance=82f;
+            var camera=Camera.main;
+            if(camera!=null)
+            {
+                camera.backgroundColor=RenderSettings.fogColor;
+                camera.clearFlags=CameraClearFlags.SolidColor;
+            }
+            foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(light.name!="Valoria · amber dusk")continue;
+                light.color=new Color(1.0f,.86f,.72f);
+                light.intensity=1.48f;
+                light.shadowStrength=.61f;
+                light.transform.rotation=Quaternion.Euler(50f,-31f,0);
+            }
+
+            // Mid-distance geology creates a second depth plane between the inhabited city and the far
+            // VisualWorld mountains. Keep the central Bastion silhouette open.
+            foreach(var spec in new[]{
+                new Vector4(-16.5f,17.0f,7.1f,11f),
+                new Vector4(15.0f,18.2f,6.7f,-18f),
+                new Vector4(-22.0f,10.5f,5.5f,29f),
+                new Vector4(21.5f,11.5f,5.2f,-34f)})
+            {
+                Imported("Valoria · hero frame foothill","Mountain01",
+                    new Vector3(spec.x,-1.35f,spec.y),spec.z,3.75f,spec.w,new Color(.34f,.36f,.35f),false);
+            }
+            foreach(var p in new[]{
+                new Vector3(-13.8f,-.16f,12.4f),new Vector3(12.5f,-.14f,12.9f),
+                new Vector3(-19.0f,-.18f,7.8f),new Vector3(18.2f,-.18f,8.6f)})
+                Imported("Valoria · hero frame buried ridge","Rock02",p,3.8f,1.7f,p.x*9f,new Color(.36f,.36f,.33f),false);
+
+            // Inhabited middle-distance: roofs behind roofs, but never across the certified central route.
+            // Existing Slavic support architecture is intentionally subordinate to the dedicated hero buildings.
+            if(art!=null&&art.SlavicHouse!=null)
+            {
+                var homes=new[]{
+                    new Vector4(-10.8f,10.1f,2.05f,-18f),
+                    new Vector4(-14.0f,8.8f,1.92f,8f),
+                    new Vector4(10.9f,10.4f,1.96f,21f),
+                    new Vector4(14.0f,8.5f,1.82f,-9f),
+                    new Vector4(-18.2f,5.2f,1.72f,16f),
+                    new Vector4(17.4f,5.6f,1.70f,-17f)};
+                for(int i=0;i<homes.Length;i++)
+                {
+                    var h=homes[i];
+                    Piece("Valoria · hero frame inhabited roofline",art.SlavicHouse,
+                        new Vector3(h.x,.40f,h.y),2.05f,h.z,h.w,new Color(.60f,.55f,.47f));
+                }
+            }
+
+            // A controlled tree line frames the city instead of filling it randomly.
+            foreach(var spec in new[]{
+                new Vector4(-18.2f,13.7f,1.30f,0),new Vector4(-14.9f,14.4f,1.48f,1),
+                new Vector4(-11.9f,13.2f,1.22f,0),new Vector4(11.8f,13.5f,1.24f,1),
+                new Vector4(15.0f,14.3f,1.46f,0),new Vector4(18.0f,13.1f,1.26f,1),
+                new Vector4(-20.0f,7.0f,1.18f,1),new Vector4(19.8f,7.5f,1.20f,0)})
+            {
+                Imported("Valoria · hero frame pine",spec.w>.5f?"Tree01B":"Tree01A",
+                    new Vector3(spec.x,.03f,spec.y),spec.z,2.65f,spec.x*13f,new Color(.31f,.42f,.28f),true);
+            }
+
+            // Bastion becomes the visual thesis: restrained heraldry and warm occupation cues draw the eye
+            // without changing its mesh, footprint or interaction target.
+            Flag("Valoria · Bastion banner west",new Vector3(-2.55f,3.05f,5.18f),Blue,3.05f);
+            Flag("Valoria · Bastion banner east",new Vector3(2.48f,3.00f,5.24f),Blue,2.85f);
+            WarmLight("Valoria · Bastion gate warmth",new Vector3(0,3.25f,4.25f),new Color(1.0f,.53f,.24f),1.65f,5.2f);
+            WarmLight("Valoria · Bastion upper warmth",new Vector3(-.65f,6.65f,7.2f),new Color(1.0f,.59f,.30f),.95f,4.0f);
+
+            // Sparse occupation cues: warm pools at real working districts, not a blanket of lights.
+            WarmLight("Valoria · sawmill work glow",new Vector3(-7.2f,1.45f,-3.15f),new Color(1.0f,.50f,.21f),1.15f,3.5f);
+            WarmLight("Valoria · barracks court glow",new Vector3(7.3f,1.55f,-4.45f),new Color(1.0f,.56f,.27f),1.00f,3.2f);
+            WarmLight("Valoria · west quarter hearth",new Vector3(-13.8f,1.45f,-2.4f),new Color(1.0f,.52f,.24f),.82f,2.8f);
+            WarmLight("Valoria · upper quarter hearth",new Vector3(-5.3f,3.85f,6.3f),new Color(1.0f,.55f,.27f),.78f,2.6f);
+
+            // Existing production props make the lower city read occupied from strategic distance.
+            if(art!=null&&art.Firewood!=null)
+            {
+                Piece("Valoria · hero frame sawmill timber",art.Firewood,new Vector3(-8.2f,.39f,-5.2f),1.45f,.72f,-13f,new Color(.72f,.62f,.48f));
+                Piece("Valoria · hero frame rebuild timber",art.Firewood,new Vector3(-13.4f,.39f,1.45f),1.25f,.62f,18f,new Color(.69f,.59f,.46f));
+            }
+            if(state.BastionLevel>=3)
+                WarmLight("Valoria · granary activity glow",new Vector3(-17.2f,1.25f,-4.65f),new Color(1.0f,.58f,.28f),.72f,2.5f);
+        }
+
+        static void WarmLight(string name,Vector3 p,Color color,float intensity,float range)
+        {
+            var go=new GameObject(name);
+            go.transform.position=p;
+            go.transform.SetParent(root,true);
+            var light=go.AddComponent<Light>();
+            light.type=LightType.Point;
+            light.color=color;
+            light.intensity=intensity;
+            light.range=range;
+            light.shadows=LightShadows.None;
         }
 
         static void Imported(string name,string resource,Vector3 p,float footprint,float height,float yaw,Color tint,bool foliage)
