@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// World Map gate refresh: replace stale runner capture without touching Valoria.
 namespace Eldoria.Presentation
 {
     /// <summary>
