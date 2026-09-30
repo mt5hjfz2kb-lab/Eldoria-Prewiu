@@ -105,6 +105,7 @@ Measured expanded production baseline: **567,460 triangles / 644 renderers / 80 
 - **Ground Kit v1** is certified and integrated; the six StoneKit pieces now extend it in the verified Work wedge.
 - **Granero BIII** is already dedicated production art. Remaining future dedicated gaps: Cantera, Forja, Hospital.
 - **Stone Architecture Kit v1 generation/gate is closed: TECH PASS / overall VISUAL KIT FAIL.** Canonical closeout: `docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md`. A separate zero-credit strict per-piece gate selectively promoted only **RockToWallTransition** to `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/`; all other generated pieces remain cleanup/reject inventory. After this closed block, the next new acquisition priority is **Player City Kit v1**, then **Beast Kit v1**.
+- **Terrain & Terrace Kit v1 is closed: isolated technical PARTIAL, West Rebuilders pilot VISUAL FAIL.** Canonical closeout: `docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md`. The exact approved input was generated once; only `SteppedRockTerrace` and `BroadRockPlatform` remain as source-traceable production inventory. The two trial placements were removed after same-camera 19/12/9/mobile comparison failed to demonstrate a credible mountain-city leap. Final Valoria instance count: zero.
 
 Purpose:
 make new districts an assembly problem rather than a one-off art problem. Ground/Support modules are visual skins over approved topology; they never dictate circulation or gameplay floors.

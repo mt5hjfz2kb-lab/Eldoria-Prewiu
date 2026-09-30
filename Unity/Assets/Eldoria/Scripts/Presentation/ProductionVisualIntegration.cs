@@ -18,7 +18,6 @@ namespace Eldoria.Presentation
         // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
         // Production placement set after camera review: 2 CornerWallL / 1 HighStraightWall / 2 RockToWallTransition.
         public static bool StoneArchitectureEnabled = true;
-        public static bool TerrainTerraceEnabled = true;
 
         public static void ResetVisualCachesForGate()
         {
@@ -185,7 +184,6 @@ namespace Eldoria.Presentation
             // Certified Stone Architecture v1 is visual dressing only. It adapts to the approved city topology;
             // it never owns circulation, floors, hotspots or gameplay collision.
             if(StoneArchitectureEnabled)IntegrateStoneArchitecture();
-            if(TerrainTerraceEnabled)IntegrateTerrainTerrace();
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
@@ -249,37 +247,6 @@ namespace Eldoria.Presentation
                 }
                 renderer.sharedMaterials=mats;
             }
-        }
-
-        public static void AddTerrainTerraceForGate()
-        {
-            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
-            IntegrateTerrainTerrace();
-            Finish();
-        }
-
-        static void IntegrateTerrainTerrace()
-        {
-            // Sparse supports at certified West Rebuilders Quarter parcels. The original roads,
-            // stairs, lots and building anchors retain all gameplay and collision ownership.
-            TerrainTerracePiece("SteppedRockTerrace","Valoria · TerrainTerrace · stepped upper homes",
-                new Vector3(-18.0f,.22f,2.0f),4.30f,94f);
-            TerrainTerracePiece("BroadRockPlatform","Valoria · TerrainTerrace · lower homes platform",
-                new Vector3(-16.4f,.12f,-4.5f),5.00f,100f);
-        }
-
-        static void TerrainTerracePiece(string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
-        {
-            var source=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/"+resource);
-            if(source==null)throw new InvalidOperationException("Missing certified Terrain Terrace v1 resource: "+resource);
-            var go=Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
-            var bounds=Bounds(go);float span=Mathf.Max(bounds.size.x,bounds.size.z);
-            if(span<=.001f)throw new InvalidOperationException("Terrain Terrace v1 resource has empty bounds: "+resource);
-            go.transform.localScale*=targetSpan/span;
-            bounds=Bounds(go);
-            go.transform.position+=groundAnchor-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
-            go.transform.SetParent(root,true);
-            // Keep the certified Tripo UV and embedded stone/rock surface. Finish removes collision.
         }
 
         static readonly Dictionary<string,Material> groundSkins=new();
@@ -668,4 +635,3 @@ namespace Eldoria.Presentation
         }
     }
 }
-

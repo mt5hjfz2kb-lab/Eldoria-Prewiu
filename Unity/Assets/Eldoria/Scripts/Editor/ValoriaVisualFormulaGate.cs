@@ -19,7 +19,6 @@ namespace Eldoria.EditorTools
             UnityEditor.ShaderUtil.allowAsyncCompilation=false;
             CaptureMatchedWedge();
             CaptureStoneArchitectureWedge();
-            CaptureTerrainTerraceWedge();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -193,54 +192,6 @@ namespace Eldoria.EditorTools
                 "}\n");
 
             ProductionVisualIntegration.StoneArchitectureEnabled=true;
-        }
-
-        static void CaptureTerrainTerraceWedge()
-        {
-            const string folder="VisualFormulaCaptures";
-            Directory.CreateDirectory(folder);
-            var position=new Vector3(18.2f,14.6f,-25.8f);
-            var target=new Vector3(0,3.15f,5.8f);
-            var westShift=new Vector3(-13.4f,-2.0f,-3.5f);
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-            SceneSetup.SetupRenderPipeline();
-            ProductionVisualIntegration.ResetVisualCachesForGate();
-            VisualWorld.VisualIntegrationEnabled=true;
-            ProductionVisualIntegration.TerrainTerraceEnabled=false;
-            VisualWorld.Create(true,new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true});
-            var camera=Camera.main;
-            if(camera==null)throw new System.Exception("Valoria camera missing for Terrain Terrace gate.");
-            var baseline=CollisionSignature();
-            foreach(var zoom in new[]{19f,12f,9f})
-            {
-                Save(camera,folder+"/terrain-terrace-overview-before-"+zoom+".png",position,target,zoom,1280,720);
-                Save(camera,folder+"/terrain-terrace-west-before-"+zoom+".png",position+westShift,target+westShift,zoom,1280,720);
-            }
-            Save(camera,folder+"/terrain-terrace-overview-before-mobile.png",position,target,12f,390,844);
-            Save(camera,folder+"/terrain-terrace-west-before-mobile.png",position+westShift,target+westShift,12f,390,844);
-            ProductionVisualIntegration.AddTerrainTerraceForGate();
-            if(CollisionSignature()!=baseline)throw new System.Exception("Terrain Terrace v1 altered certified colliders/hotspots.");
-            foreach(var zoom in new[]{19f,12f,9f})
-            {
-                Save(camera,folder+"/terrain-terrace-overview-after-"+zoom+".png",position,target,zoom,1280,720);
-                Save(camera,folder+"/terrain-terrace-west-after-"+zoom+".png",position+westShift,target+westShift,zoom,1280,720);
-            }
-            Save(camera,folder+"/terrain-terrace-overview-after-mobile.png",position,target,12f,390,844);
-            Save(camera,folder+"/terrain-terrace-west-after-mobile.png",position+westShift,target+westShift,12f,390,844);
-            var names=new[]{"Valoria · TerrainTerrace · stepped upper homes",
-                "Valoria · TerrainTerrace · lower homes platform"};
-            foreach(var name in names)
-            {
-                var go=GameObject.Find(name);
-                if(go==null)throw new System.Exception("Terrain Terrace production instance missing: "+name);
-                foreach(var collider in go.GetComponentsInChildren<Collider>(true))
-                    if(collider.enabled)throw new System.Exception("Terrain Terrace collider enabled: "+name);
-            }
-            File.WriteAllText(folder+"/terrain-terrace-evidence.json",
-                "{\n  \"camera_matched\": true,\n  \"same_scene_before_after\": true,\n"+
-                "  \"collider_hotspot_signature_equal\": true,\n  \"instances\": 2,\n"+
-                "  \"gameplay_topology_changed\": false,\n  \"tripo_credits_additional\": 0\n}\n");
-            ProductionVisualIntegration.TerrainTerraceEnabled=true;
         }
 
         public static void CaptureRescueDistrict()
@@ -535,4 +486,3 @@ namespace Eldoria.EditorTools
         }
     }
 }
-
