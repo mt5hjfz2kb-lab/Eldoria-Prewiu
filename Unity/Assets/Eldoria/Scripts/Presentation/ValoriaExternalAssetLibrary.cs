@@ -36,6 +36,10 @@ namespace Eldoria.Presentation
         public GameObject MegaHalfGate;
         public GameObject MegaDestroyedTower;
         public GameObject MegaWallPassage;
+        // Existing licensed PBR surface materials reused by Valoria Surface Cell / production ground.
+        public Material ValoriaCobbleSurface;
+        public Material ValoriaDirtSurface;
+        public Material ValoriaStoneSurface;
 
         public static ValoriaExternalAssetLibrary Load()
             => Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
