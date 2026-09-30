@@ -59,3 +59,17 @@ Only the single certified Resource GLB above was added. `Valoria.unity`, `Visual
 
 ## Closure
 This Stone Architecture v1 generation/certification block is closed. The 8-family kit itself is not production-certified; only `RockToWallTransition` is individually certified/promoted. Any future work on pieces 01/05/06 is a separate zero-credit cleanup/salvage task, while 03/04/07/08 require reconstruction or a newly authorized generation.
+
+## Selective production promotion
+After the kit-level closeout, the strict per-piece evidence was used for a separate zero-credit selective promotion. Only **piece 02 / RockToWallTransition** met the visual gate as-is.
+
+- Promotion workflow: **36707553542 SUCCESS**
+- Promotion evidence artifact: **11092856576**
+- Certified source artifact: **11091584269**
+- Production path: `Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb`
+- Exact promoted bytes: **12,414,676**
+- Exact promoted SHA-256: `116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0`
+- Promotion commit: `f5b9f9ecdd426a17166d7051500f3c8b6e43193a`
+- Files changed by that commit: **only the production GLB above**.
+
+The overall eight-family kit verdict remains **VISUAL FAIL**. Piece 01, 05 and 06 are cleanup candidates; pieces 03, 04, 07 and 08 remain rejected. This selective promotion did not alter Valoria.unity, VisualWorld, gameplay, hotspots or topology and consumed **0 additional Tripo credits** beyond the already-authorized 55-credit generation.
