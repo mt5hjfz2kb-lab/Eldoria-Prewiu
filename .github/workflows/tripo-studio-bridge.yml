@@ -73,7 +73,11 @@ jobs:
             if ($transport -notin @('auto','repo_exact_input','runner_fallback','chatgpt_exact_input')) {
               throw "Unsupported input_transport: $transport"
             }
+            if ($transport -eq 'chatgpt_exact_input') {
+              throw 'chatgpt_exact_input is deprecated for staging. Persist approved bytes into pipeline/exact-inputs first and use repo_exact_input. Refusing browser-session wait/fallback.'
+            }
 
+            # Historical direct-chat ingestion block retained only as unreachable reference.
             # Direct chat-approved input ingestion: retrieve exact uploaded bytes via the authenticated
             # ChatGPT browser session, persist them into the canonical repo exact-input store, then
             # continue this same zero-spend staging run with those verified bytes.
