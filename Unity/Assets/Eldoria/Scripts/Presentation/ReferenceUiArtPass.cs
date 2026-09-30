@@ -552,15 +552,27 @@ namespace Eldoria.Presentation
         static void ApplyReferenceChip(Transform parent,string childName,string spriteName)
         {
             var child=parent.Find(childName);if(child==null)return;
-            var image=child.GetComponent<Image>();if(image!=null){image.sprite=ReferenceSprite(spriteName);image.color=Color.white;image.preserveAspect=true;}
-            var text=child.GetComponentInChildren<Text>();if(text!=null)text.color=Color.clear;
+            var image=child.GetComponent<Image>();if(image!=null){image.sprite=null;image.color=new Color(.015f,.020f,.024f,.78f);}
+            var text=child.GetComponentInChildren<Text>();
+            if(text!=null)
+            {
+                var parts=(text.text??"").Split('\n');
+                text.text=parts.Length>0?parts[parts.Length-1]:text.text;
+                text.color=new Color(.96f,.96f,.93f,1f);text.alignment=TextAnchor.MiddleRight;
+                var tr=text.rectTransform;tr.anchorMin=Vector2.zero;tr.anchorMax=Vector2.one;tr.offsetMin=new Vector2(36,1);tr.offsetMax=new Vector2(-5,-1);
+            }
+            var icon=child.Find("Reference exact icon")?.GetComponent<Image>();
+            if(icon==null)icon=CreateReferenceImage("Reference exact icon",child,spriteName).GetComponent<Image>();
+            icon.sprite=ReferenceSprite(spriteName);
+            var ir=icon.rectTransform;ir.anchorMin=ir.anchorMax=new Vector2(0,.5f);ir.pivot=new Vector2(0,.5f);ir.anchoredPosition=new Vector2(2,0);ir.sizeDelta=new Vector2(34,31);
         }
 
         static void FutureResource(Transform parent,string name,string spriteName,int index)
         {
-            var go=PanelObject(name,parent,new Vector2(126,48));var img=go.GetComponent<Image>();
-            img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;
+            var go=PanelObject(name,parent,new Vector2(126,48));var bg=go.GetComponent<Image>();bg.color=new Color(.015f,.020f,.024f,.78f);
             var rt=go.GetComponent<RectTransform>();rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(index*136f,0);
+            var icon=CreateReferenceImage("Reference exact icon",go.transform,spriteName);var ir=icon.GetComponent<RectTransform>();ir.anchorMin=ir.anchorMax=new Vector2(0,.5f);ir.pivot=new Vector2(0,.5f);ir.anchoredPosition=new Vector2(2,0);ir.sizeDelta=new Vector2(34,31);
+            var value=MakeText("Value",go.transform,14,new Color(.70f,.72f,.72f,1),TextAnchor.MiddleRight);value.text="—";Stretch(value.rectTransform,4);value.rectTransform.offsetMin=new Vector2(38,1);
         }
 
         static void ActionMedallion(Transform parent,string name,string spriteName,string count,int index)
