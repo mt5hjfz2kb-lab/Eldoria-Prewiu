@@ -70,6 +70,13 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Long-term Valoria planning must use `docs/VALORIA_MASTER_PLAN_V1.md`, `docs/VALORIA_PROGRESSION_MAP_V1.md` and `docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md`. Bastion I–X is the prologue/first arc, not the structural city ceiling; hard-to-reverse terrain, road, district, plot or camera-bound decisions must preserve headroom for the current long-range planning target of roughly Bastion 25–35.
 - The certified Playable District Skeleton is the city **kernel**, not the whole production footprint. Before broad final-art dressing, validate a larger-than-one-mobile-viewport master-envelope graybox with bounded panning, reserved expansion districts and progression-aware camera bounds.
 
+## GitHub access stability rule
+- Use the connected GitHub app/connector as the canonical repository access path for reads, commits, workflow inspection, artifacts and ordinary repository writes.
+- Do **not** open github.com in the Work cloud browser, start a separate GitHub OAuth/login flow, or request a fresh GitHub authorization when connector access is already working.
+- Do **not** switch to a separate CLI authentication path merely for convenience. Use CLI/browser GitHub authentication only when a required operation is genuinely unsupported by the connected GitHub tool, and document that exception first.
+- After a Work resume/restart/context change, test the existing GitHub connector with one read call before asking the owner for access again. If that call succeeds, reuse the existing connection and continue without another authorization prompt.
+- Repeated GitHub approval prompts are an operational defect to avoid, not a normal step of the Eldoria workflow.
+
 ## Permanent working rules
 - Make surgical changes to the canonical runtime; never rebuild from an old version.
 - **Progression-visibility contract:** the canonical vertical slice defines when player-facing content exists. Buildings, units, districts, world nodes, narrative props and UI entry points may be authored/certified early, but completed art and gameplay interaction must remain hidden/disabled until their canonical unlock. Unity must reconstruct the correct visible/interactable state from PlayerState before the first rendered frame and after scene/state refresh. See `docs/PROGRESSION_VISUAL_CONTRACT.md`.
