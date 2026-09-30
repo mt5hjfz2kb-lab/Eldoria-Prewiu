@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -460,7 +462,18 @@ namespace Eldoria.Presentation
                     {
                         var bytes=System.Convert.FromBase64String(encoded);
                         referenceAtlas=new Texture2D(2,2,TextureFormat.RGBA32,false){name="Approved Eldoria HUD atlas",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
-                        referenceAtlas.LoadImage(bytes,false);
+                        bool loaded=referenceAtlas.LoadImage(bytes,false);
+                        if(!loaded || referenceAtlas.width<128 || referenceAtlas.height<128)
+                        {
+                            Object.Destroy(referenceAtlas);
+                            referenceAtlas=DecodeIndexedPng(bytes);
+                            if(referenceAtlas!=null)
+                            {
+                                referenceAtlas.name="Approved Eldoria HUD atlas";
+                                referenceAtlas.wrapMode=TextureWrapMode.Clamp;
+                                referenceAtlas.filterMode=FilterMode.Bilinear;
+                            }
+                        }
                     }
                     catch(System.Exception e){Debug.LogWarning("Reference HUD atlas decode failed: "+e.Message);}
                 }
@@ -503,6 +516,114 @@ namespace Eldoria.Presentation
         }
 
         static Rect AtlasTop(float x,float y,float w,float h)=>new Rect(x,128f-y-h,w,h);
+
+        static Texture2D DecodeIndexedPng(byte[] png)
+        {
+            // Unity's runtime decoder can collapse this compact indexed PNG on some runner/player
+            // paths. Decode the exact 8-bit indexed atlas deterministically so reference crops
+            // remain 128x128 and pixel-identical to the approved source.
+            try
+            {
+                if(png==null || png.Length<33) return null;
+                int width=ReadBe32(png,16),height=ReadBe32(png,20);
+                int bitDepth=png[24],colorType=png[25];
+                if(width<=0||height<=0||bitDepth!=8||colorType!=3) return null;
+
+                byte[] palette=null,alpha=null;
+                using(var idat=new MemoryStream())
+                {
+                    int p=8;
+                    while(p+12<=png.Length)
+                    {
+                        int len=ReadBe32(png,p); if(len<0||p+12+len>png.Length) break;
+                        string type=System.Text.Encoding.ASCII.GetString(png,p+4,4);
+                        int data=p+8;
+                        if(type=="PLTE")
+                        {
+                            palette=new byte[len];
+                            System.Buffer.BlockCopy(png,data,palette,0,len);
+                        }
+                        else if(type=="tRNS")
+                        {
+                            alpha=new byte[len];
+                            System.Buffer.BlockCopy(png,data,alpha,0,len);
+                        }
+                        else if(type=="IDAT") idat.Write(png,data,len);
+                        else if(type=="IEND") break;
+                        p+=12+len;
+                    }
+                    if(palette==null||palette.Length<3||idat.Length<7) return null;
+
+                    byte[] z=idat.ToArray();
+                    using(var packed=new MemoryStream(z,2,z.Length-6,false))
+                    using(var deflate=new DeflateStream(packed,CompressionMode.Decompress))
+                    using(var raw=new MemoryStream())
+                    {
+                        deflate.CopyTo(raw);
+                        byte[] scan=raw.ToArray();
+                        int stride=width;
+                        int expected=height*(stride+1);
+                        if(scan.Length<expected) return null;
+                        byte[] prior=new byte[stride];
+                        byte[] row=new byte[stride];
+                        var pixels=new Color32[width*height];
+                        int src=0;
+                        for(int y=0;y<height;y++)
+                        {
+                            int filter=scan[src++];
+                            for(int x=0;x<stride;x++)
+                            {
+                                int v=scan[src++];
+                                int left=x>0?row[x-1]:0;
+                                int up=prior[x];
+                                int upperLeft=x>0?prior[x-1]:0;
+                                switch(filter)
+                                {
+                                    case 0: break;
+                                    case 1: v=(v+left)&255; break;
+                                    case 2: v=(v+up)&255; break;
+                                    case 3: v=(v+((left+up)>>1))&255; break;
+                                    case 4: v=(v+Paeth(left,up,upperLeft))&255; break;
+                                    default: return null;
+                                }
+                                row[x]=(byte)v;
+                            }
+                            int dstY=height-1-y;
+                            for(int x=0;x<width;x++)
+                            {
+                                int index=row[x],pi=index*3;
+                                byte r=pi+2<palette.Length?palette[pi]:(byte)255;
+                                byte g=pi+2<palette.Length?palette[pi+1]:(byte)255;
+                                byte b=pi+2<palette.Length?palette[pi+2]:(byte)255;
+                                byte a=alpha!=null&&index<alpha.Length?alpha[index]:(byte)255;
+                                pixels[dstY*width+x]=new Color32(r,g,b,a);
+                            }
+                            var swap=prior;prior=row;row=swap;
+                        }
+                        var tex=new Texture2D(width,height,TextureFormat.RGBA32,false);
+                        tex.SetPixels32(pixels);tex.Apply(false,true);
+                        return tex;
+                    }
+                }
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogWarning("Reference indexed PNG decode failed: "+e.Message);
+                return null;
+            }
+        }
+
+        static int ReadBe32(byte[] data,int offset)
+        {
+            return (data[offset]<<24)|(data[offset+1]<<16)|(data[offset+2]<<8)|data[offset+3];
+        }
+
+        static int Paeth(int a,int b,int c)
+        {
+            int p=a+b-c,pa=Mathf.Abs(p-a),pb=Mathf.Abs(p-b),pc=Mathf.Abs(p-c);
+            return pa<=pb&&pa<=pc?a:(pb<=pc?b:c);
+        }
+
 
         static void SetFont(Transform parent,string childName,int size)
         {
