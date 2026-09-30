@@ -1,4 +1,5 @@
 name: Publish Eldoria Preview
+# Runner-throughput maintenance trigger: workflow-only changes stay off the Windows Unity lane.
 
 on:
   workflow_dispatch:
