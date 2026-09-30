@@ -28,6 +28,9 @@ namespace Eldoria.Presentation
         public static bool ProductionCellEnabled = false;
         // Surface Cell v6: bounded URP/PBR + CC0 + skyline look-dev proof. Disabled in production until matched-camera review passes. Validation trigger after governance repair.
         public static bool SurfaceCellEnabled = false;
+        // Gate-only coherent asset-language proof using a single CC0 Kenney Castle Kit family.
+        // Never enabled in production automatically.
+        public static bool CoherentCastleProofEnabled = false;
 
         public static void ResetVisualCachesForGate()
         {
@@ -203,6 +206,7 @@ namespace Eldoria.Presentation
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
+            if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(ProductionCellEnabled)IntegrateProductionCell(state,art);
             Finish();
         }
@@ -507,6 +511,80 @@ namespace Eldoria.Presentation
                 mats[i]=copy;
             }
             renderer.sharedMaterials=mats;
+        }
+
+        public static void AddCoherentCastleProofForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateCoherentCastleProof();
+            Finish();
+        }
+
+        static void IntegrateCoherentCastleProof()
+        {
+            // The authoritative Bastion target, stair and route stay untouched. Only visible shell is hidden.
+            Suppress("Bastion ·","Valoria · Bastion hero","Valoria · rescued hero flank","Valoria · TargetFrame");
+
+            var gate=Resources.Load<GameObject>("Valoria/CoherentKitProof/gate");
+            var wall=Resources.Load<GameObject>("Valoria/CoherentKitProof/wall");
+            var tower=Resources.Load<GameObject>("Valoria/CoherentKitProof/tower-square");
+            var towerTop=Resources.Load<GameObject>("Valoria/CoherentKitProof/tower-square-top-roof-high-windows");
+            var hills=Resources.Load<GameObject>("Valoria/CoherentKitProof/ground-hills");
+            var rocks=Resources.Load<GameObject>("Valoria/CoherentKitProof/rocks-large");
+            if(gate==null||wall==null||tower==null||towerTop==null)
+                throw new InvalidOperationException("Coherent Castle Proof resources were not staged/imported.");
+
+            var p=new Vector3(0f,2.95f,7.25f);
+
+            // One coherent family: foundation/terrain seat.
+            CoherentCastlePiece("Valoria · CoherentProof · hill seat",hills,p+new Vector3(0f,-.52f,.45f),
+                8.2f,1.25f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · rock west",rocks,p+new Vector3(-4.0f,-.15f,-.2f),
+                2.25f,1.10f,22f);
+            CoherentCastlePiece("Valoria · CoherentProof · rock east",rocks,p+new Vector3(4.0f,-.15f,.05f),
+                2.15f,1.05f,198f);
+
+            // Gate + connected front curtain.
+            CoherentCastlePiece("Valoria · CoherentProof · gate",gate,p+new Vector3(0f,0f,-2.65f),
+                2.25f,3.40f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · front wall west",wall,p+new Vector3(-2.15f,.02f,-2.20f),
+                2.75f,2.70f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · front wall east",wall,p+new Vector3(2.15f,.02f,-2.20f),
+                2.75f,2.70f,180f);
+
+            // Asymmetric but single-language skyline.
+            CoherentCastlePiece("Valoria · CoherentProof · keep base",tower,p+new Vector3(-.35f,.02f,.85f),
+                2.55f,4.05f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · keep crown",towerTop,p+new Vector3(-.35f,3.35f,.85f),
+                2.55f,2.55f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · west tower",tower,p+new Vector3(-3.00f,.02f,-.25f),
+                1.85f,3.55f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · west crown",towerTop,p+new Vector3(-3.00f,2.95f,-.25f),
+                1.85f,1.90f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · east tower",tower,p+new Vector3(2.90f,.02f,.10f),
+                1.70f,3.10f,0f);
+            CoherentCastlePiece("Valoria · CoherentProof · east crown",towerTop,p+new Vector3(2.90f,2.58f,.10f),
+                1.70f,1.75f,0f);
+
+            // Rear wall visually closes the volume.
+            CoherentCastlePiece("Valoria · CoherentProof · rear wall west",wall,p+new Vector3(-1.95f,.02f,2.10f),
+                2.55f,2.45f,180f);
+            CoherentCastlePiece("Valoria · CoherentProof · rear wall east",wall,p+new Vector3(1.85f,.02f,2.15f),
+                2.55f,2.45f,180f);
+
+            WarmLight("Valoria · CoherentProof · gate warmth",p+new Vector3(0f,1.55f,-3.10f),
+                new Color(1.0f,.56f,.25f),.24f,4.0f);
+        }
+
+        static GameObject CoherentCastlePiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw)
+        {
+            if(source==null)return null;
+            var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,height,Quaternion.Euler(0f,yaw,0f));
+            if(go==null)return null;
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var hotspot in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(hotspot);
+            return go;
         }
 
         public static void AddProductionCellForGate(PlayerState state)
