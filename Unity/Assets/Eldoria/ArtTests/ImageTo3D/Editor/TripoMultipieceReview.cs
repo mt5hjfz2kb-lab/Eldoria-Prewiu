@@ -41,6 +41,8 @@ namespace Eldoria.EditorTools
             public bool overviewNonEmpty;
             public bool frontNonEmpty;
             public bool closeNonEmpty;
+            public bool individualCapturesNonEmpty;
+            public string[] individualCaptures;
         }
 
         public static void Capture()
@@ -136,6 +138,48 @@ namespace Eldoria.EditorTools
             cam.orthographicSize = Mathf.Max(5f, Mathf.Min(10f, Mathf.Max(all.extents.x, all.extents.z) * .8f));
             var close = Save(cam, OutputFolder + "/close-oblique.png");
 
+            var individualCaptures = new List<string>();
+            var individualOk = true;
+            floor.SetActive(false);
+            for (int i = 0; i < roots.Count; i++) {
+                for (int j = 0; j < roots.Count; j++)
+                    roots[j].SetActive(j == i);
+
+                var piece = roots[i];
+                var pb = BoundsOf(piece);
+                var span = Mathf.Max(pb.extents.x, pb.extents.y, pb.extents.z);
+                var d = Mathf.Max(4f, span * 5f);
+                cam.orthographicSize = Mathf.Max(1.2f, Mathf.Max(pb.extents.x, pb.extents.y) * 1.45f);
+
+                var prefix = OutputFolder + "/piece-" + (i + 1).ToString("00");
+
+                cam.transform.position = pb.center + new Vector3(d, d * .65f, -d);
+                cam.transform.LookAt(pb.center);
+                var obliquePath = prefix + "-oblique.png";
+                individualOk &= Save(cam, obliquePath);
+                individualCaptures.Add(Path.GetFileName(obliquePath));
+
+                cam.transform.position = pb.center + new Vector3(0f, d * .18f, -d);
+                cam.transform.LookAt(pb.center);
+                var frontPath = prefix + "-front.png";
+                individualOk &= Save(cam, frontPath);
+                individualCaptures.Add(Path.GetFileName(frontPath));
+
+                cam.transform.position = pb.center + new Vector3(0f, d * .18f, d);
+                cam.transform.LookAt(pb.center);
+                var rearPath = prefix + "-rear.png";
+                individualOk &= Save(cam, rearPath);
+                individualCaptures.Add(Path.GetFileName(rearPath));
+
+                cam.transform.position = pb.center + new Vector3(d, d * .18f, 0f);
+                cam.transform.LookAt(pb.center);
+                var sidePath = prefix + "-side.png";
+                individualOk &= Save(cam, sidePath);
+                individualCaptures.Add(Path.GetFileName(sidePath));
+            }
+            foreach (var root in roots) root.SetActive(true);
+            floor.SetActive(true);
+
             var report = new Report {
                 pieceCount = metrics.Count,
                 totalTriangles = metrics.Sum(x => x.triangles),
@@ -143,9 +187,11 @@ namespace Eldoria.EditorTools
                 pieces = metrics.ToArray(),
                 overviewNonEmpty = overview,
                 frontNonEmpty = front,
-                closeNonEmpty = close
+                closeNonEmpty = close,
+                individualCapturesNonEmpty = individualOk,
+                individualCaptures = individualCaptures.ToArray()
             };
-            if (!overview || !front || !close) throw new Exception("Multipiece review produced an empty/flat capture.");
+            if (!overview || !front || !close || !individualOk) throw new Exception("Multipiece review produced an empty/flat capture.");
             File.WriteAllText(OutputFolder + "/metrics.json", JsonUtility.ToJson(report, true));
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), ScenePath);
             Debug.Log($"Tripo multipiece review complete: {report.pieceCount} pieces, {report.totalTriangles} tris");
