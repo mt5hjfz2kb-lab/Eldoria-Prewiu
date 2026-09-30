@@ -23,12 +23,11 @@ jobs:
               owner, repo, per_page: 100
             });
             const stale = runs.filter(r =>
-              r.path === '.github/workflows/pages.yml' &&
-              r.status === 'in_progress' &&
-              r.head_sha !== context.sha
+              (r.path === '.github/workflows/pages.yml' && r.status === 'in_progress' && r.head_sha !== context.sha) ||
+              (r.path === '.github/workflows/ui-progression-cert.yml' && r.status === 'queued')
             );
-            core.info(`Found ${stale.length} stale Pages run(s).`);
+            core.info(`Found ${stale.length} stale/blocking run(s).`);
             for (const run of stale) {
-              core.info(`Cancelling Pages run ${run.id} at ${run.head_sha}.`);
+              core.info(`Cancelling blocking run ${run.id} (${run.name}) at ${run.head_sha}.`);
               await github.rest.actions.cancelWorkflowRun({owner, repo, run_id: run.id});
             }
