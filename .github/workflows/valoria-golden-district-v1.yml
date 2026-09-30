@@ -59,7 +59,7 @@ jobs:
       - name: Stage Golden District CC0 PBR materials
         shell: powershell
         run: |
-          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenCellExternal"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenDistrictExternal"
           Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
@@ -101,7 +101,7 @@ jobs:
       - name: Stage Golden District CC0 hero fort
         shell: powershell
         run: |
-          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenCellHero"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenDistrictHero"
           Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
