@@ -15,6 +15,8 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaProductionCellCaptures";
         static readonly Vector3 CameraPosition=new Vector3(18.2f,14.6f,-25.8f);
         static readonly Vector3 CameraTarget=new Vector3(0f,3.65f,7.25f);
+        static string BeforeMetrics="{\"triangles\":0,\"renderers\":0,\"materials\":0,\"lights\":0}";
+        static string AfterMetrics="{\"triangles\":0,\"renderers\":0,\"materials\":0,\"lights\":0}";
 
         public static void CaptureBlockout()
         {
@@ -28,7 +30,7 @@ namespace Eldoria.EditorTools
             if(camera==null)throw new Exception("Valoria camera missing.");
             Directory.CreateDirectory(Folder);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
-            var beforeMetrics=MetricsJson();
+            BeforeMetrics=MetricsJson();
 
             Save(camera,Folder+"/before-19.png",19f,1280,720);
             Save(camera,Folder+"/before-12.png",12f,1280,720);
@@ -72,7 +74,7 @@ namespace Eldoria.EditorTools
             if(camera==null)throw new Exception("Valoria camera missing.");
             Directory.CreateDirectory(Folder);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
-            var beforeMetrics=MetricsJson();
+            BeforeMetrics=MetricsJson();
 
             Save(camera,Folder+"/before-19.png",19f,1280,720);
             Save(camera,Folder+"/before-12.png",12f,1280,720);
@@ -80,7 +82,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-mobile.png",12f,390,844);
 
             ValoriaProductionCellFinished.Build();
-            var afterMetrics=MetricsJson();
+            AfterMetrics=MetricsJson();
 
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Valoria Production Cell finished art altered gameplay collider/hotspot signature.");
@@ -97,8 +99,8 @@ namespace Eldoria.EditorTools
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0,\n"+
                 "  \"paid_assets\": 0,\n"+
-                "  \"before_metrics\": "+beforeMetrics+",\n"+
-                "  \"after_metrics\": "+afterMetrics+"\n"+
+                "  \"before_metrics\": "+BeforeMetrics+",\n"+
+                "  \"after_metrics\": "+AfterMetrics+"\n"+
                 "}\n");
             EditorApplication.Exit(0);
         }
