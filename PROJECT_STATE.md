@@ -1,4 +1,12 @@
 # Eldoria — PROJECT STATE
+## Stone Architecture Kit v1 final gate — 2026-09-30
+- Exact approved PNG was generated once in Tripo at the owner-authorized **55-credit** cost; exported GLB identity: **74,616,872 bytes / SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422**.
+- Canonical multipiece gate **36704168246 SUCCESS / artifact 11091836294** and per-piece visual gate **36705459251 SUCCESS / artifact 11091584269**.
+- Technical pipeline PASS: **1,951,506 raw triangles -> 49,800 optimized**; Unity extracted **8 groups / 49,792 triangles** with mesh/material/collider/UV0/normals present.
+- Production visual acceptance **FAIL**. No piece is certified for production as-is because dedicated front/oblique/rear/side evidence exposes detached residuals, protrusions/spikes or incorrect grouping. Piece 02 is the strongest cleanup candidate; pieces 01 and 05 are secondary cleanup candidates.
+- **No StoneArchitecture production promotion was performed.** Valoria.unity, VisualWorld, gameplay, hotspots and certified circulation/topology remain unchanged.
+- Canonical closeout: `docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md`. Reuse of this GLB requires a separate zero-credit cleanup/salvage gate; a new Tripo generation would require fresh owner authorization.
+
 ## Valoria Granero BIII dedicated production asset — 2026-09-29
 - Bastion III now has a dedicated visual Granero in the west food/survival growth plot.
 - The certified production asset is `Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb`; runtime presentation uses the dedicated GLB only from Bastion III onward.
