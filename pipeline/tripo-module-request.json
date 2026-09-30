@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "eldoria-stone-architecture-kit-v1-gate",
   "module_label": "Eldoria_StoneArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -8,7 +8,7 @@
     "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
     "exact_sha256": "da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422",
     "name_regex": "^Eldoria_StoneArchitectureKit_v1\\.glb$",
-    "max_age_hours": 6,
+    "max_age_hours": 168,
     "exclude_sha256": []
   },
   "refinement": {
@@ -22,14 +22,24 @@
   "multipiece": {
     "enabled": true,
     "min_component_triangles": 250,
-    "expected_piece_count": 8
+    "expected_piece_count": 8,
+    "salvage": {
+      "enabled": true,
+      "mode": "disconnected_residue_only",
+      "piece_indices": [
+        1,
+        5
+      ],
+      "min_component_ratio": 0.08,
+      "min_component_triangles": 120
+    }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "FINAL GATE CLOSED. Technical and multipiece gates PASS, but the 8-family kit FAILS production visual acceptance. Only piece 02 is individually clean as-is. Pieces 01/05/06 are cleanup candidates; 03/04/07/08 fail modular separability/geometry. No automatic rerun and no production promotion.",
+  "notes": "CANONICAL ZERO-CREDIT SALVAGE VALIDATION. Reuse exact existing Stone Architecture source; canonical Blender now performs safe disconnected-residue salvage inline for pieces 01 and 05 before the same Unity multipiece gate. Piece 06 remains diagnostic-only until a safe connected-protrusion rule exists. No Tripo generation and no promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed-no-promotion",
+  "run_nonce": "2026-09-30-canonical-inline-salvage-01-05",
   "visual_verdicts": {
     "reviewed_artifact_id": 11091584269,
     "reviewed_run_id": 36705459251,
