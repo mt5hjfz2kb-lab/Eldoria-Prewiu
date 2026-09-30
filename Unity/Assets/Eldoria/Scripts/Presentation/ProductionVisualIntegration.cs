@@ -22,6 +22,10 @@ namespace Eldoria.Presentation
         // Gate switch for the citywide Terrain & Terrace v1 composition. Visual-only; topology/collision remain authoritative below.
         // This line also keeps the final composed HEAD inside the Unity/Valoria/world visual path filters.
         public static bool TerrainTerraceEnabled = true;
+        // Production Cell v1: small finished slice used to prove the new environment-art process
+        // (shared ground language + props + occupation + atmosphere) before scaling citywide.
+        // Visual-only; it never owns gameplay topology, colliders or hotspots.
+        public static bool ProductionCellEnabled = true;
 
         public static void ResetVisualCachesForGate()
         {
@@ -196,7 +200,77 @@ namespace Eldoria.Presentation
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
+            if(ProductionCellEnabled)IntegrateProductionCell(state,art);
             Finish();
+        }
+
+        public static void AddProductionCellForGate(PlayerState state)
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateProductionCell(state,ValoriaExternalAssetLibrary.Load());
+            Finish();
+        }
+
+        static void IntegrateProductionCell(PlayerState state,ValoriaExternalAssetLibrary art)
+        {
+            // PRODUCTION CELL v1 — deliberately small finished slice around the lower civic street.
+            // The test changes no building parcels, route colliders, hotspots or camera. It demonstrates
+            // the new production order: circulation/ground -> shared surface language -> occupation props
+            // -> atmospheric motion/light. Only after this reads better should the recipe scale citywide.
+
+            // 1) Ground/circulation polish: irregular widening over the already-certified lower entry.
+            var plaza=ValoriaGroundKit.StreetBlendWidening("Valoria · ProductionCell · lower civic apron",
+                new Vector3(0,.432f,-6.55f),5.55f,2.75f,0f);
+            plaza.transform.SetParent(root,true);
+            var westWear=ValoriaGroundKit.GroundSeam("Valoria · ProductionCell · sawmill yard wear",
+                new Vector3(-5.05f,.415f,-4.85f),2.15f,2.55f,7f);
+            westWear.transform.SetParent(root,true);
+            var eastWear=ValoriaGroundKit.GroundSeam("Valoria · ProductionCell · barracks yard wear",
+                new Vector3(5.10f,.415f,-5.35f),2.05f,2.35f,-8f);
+            eastWear.transform.SetParent(root,true);
+
+            // 2) Repeated shared stone language frames the cell without creating a new wall/route.
+            StonePiece(3,"Valoria · ProductionCell · west low curb",
+                new Vector3(-2.25f,.42f,-7.0f),new Vector3(.22f,.20f,1.45f),0f);
+            StonePiece(3,"Valoria · ProductionCell · east low curb",
+                new Vector3(2.25f,.42f,-7.0f),new Vector3(.22f,.20f,1.45f),180f);
+            StonePiece(4,"Valoria · ProductionCell · sawmill corner",
+                new Vector3(-5.45f,.39f,-5.75f),new Vector3(.82f,.24f,.95f),180f);
+            StonePiece(4,"Valoria · ProductionCell · barracks corner",
+                new Vector3(5.55f,.39f,-6.05f),new Vector3(.82f,.24f,.95f),90f);
+
+            // 3) Set dressing uses the existing production library; no new generated geometry.
+            var crate=Resources.Load<GameObject>("Valoria/UrbanProps/Crate");
+            var barrel=Resources.Load<GameObject>("Valoria/UrbanProps/Barrel");
+            var sack=Resources.Load<GameObject>("Valoria/UrbanProps/Sack");
+            foreach(var spec in new[]{
+                new Vector4(-5.70f,-5.20f,.52f,18f),new Vector4(-4.95f,-5.62f,.48f,-12f),
+                new Vector4(5.85f,-5.62f,.50f,21f),new Vector4(4.95f,-5.82f,.46f,-19f)})
+                Piece("Valoria · ProductionCell · work crate",crate,new Vector3(spec.x,.42f,spec.y),spec.z,spec.z,spec.w,new Color(.73f,.63f,.49f));
+            Piece("Valoria · ProductionCell · sawmill barrel",barrel,new Vector3(-5.23f,.42f,-5.10f),.43f,.62f,9f,new Color(.68f,.58f,.45f));
+            Piece("Valoria · ProductionCell · barracks barrel",barrel,new Vector3(5.22f,.42f,-5.45f),.43f,.62f,-11f,new Color(.68f,.58f,.45f));
+            if(state.BastionLevel>=3)
+            {
+                Piece("Valoria · ProductionCell · provision sack west",sack,new Vector3(-4.72f,.42f,-5.23f),.52f,.38f,0f,new Color(.78f,.70f,.56f));
+                Piece("Valoria · ProductionCell · provision sack east",sack,new Vector3(4.70f,.42f,-5.52f),.52f,.38f,0f,new Color(.78f,.70f,.56f));
+            }
+            if(art!=null&&art.Firewood!=null)
+                Piece("Valoria · ProductionCell · active timber stock",art.Firewood,
+                    new Vector3(-6.05f,.42f,-4.95f),1.20f,.64f,24f,new Color(.70f,.60f,.46f));
+
+            // 4) Life and movement: sparse readable silhouettes and chimney smoke, not random clutter.
+            foreach(var p in new[]{
+                new Vector3(-3.85f,.43f,-5.85f),new Vector3(-2.95f,.43f,-6.65f),
+                new Vector3(3.55f,.43f,-6.20f),new Vector3(4.15f,.43f,-5.25f)})
+                Civilian(p);
+            ValoriaKit.SmokePlume("Valoria · ProductionCell · sawmill chimney smoke",
+                new Vector3(-7.05f,3.30f,-2.55f),.72f,5f);
+
+            // 5) Focal hierarchy: restrained heraldry and warm pools identify the working/military fronts.
+            Flag("Valoria · ProductionCell · civic blue standard",new Vector3(-1.72f,.44f,-7.15f),Blue,1.65f);
+            Flag("Valoria · ProductionCell · military blue standard",new Vector3(4.45f,.44f,-5.05f),Blue,1.45f);
+            WarmLight("Valoria · ProductionCell · lower street warmth",new Vector3(-.35f,1.20f,-6.15f),
+                new Color(1.0f,.54f,.25f),.58f,2.25f);
         }
 
         public static void AddStoneArchitectureForGate()
