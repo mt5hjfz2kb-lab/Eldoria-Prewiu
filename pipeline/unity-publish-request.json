@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "reason": "Final owner-reference HUD visual certification on current canonical main.",
-  "source_sha": "ca1c11cc5cfc3cf5d942e1ed24a99c9e57aab042",
+  "reason": "Publish final native dynamic HUD implementation after screenshot-atlas removal; visual review required.",
+  "source_sha": "2adcd7a63e89486f6d41f92856cc1b71099ddfd2",
   "requested_by": "agent",
   "updated_at": "2026-09-30"
 }
