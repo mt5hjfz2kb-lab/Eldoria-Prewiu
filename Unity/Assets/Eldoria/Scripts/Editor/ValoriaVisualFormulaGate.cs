@@ -410,7 +410,7 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/slavic-district-after-9.png",position+focusShift,target+focusShift,9f,1280,720);
             Save(camera,folder+"/slavic-district-after-mobile.png",position+focusShift,target+focusShift,12f,390,844);
 
-            if(GameObject.Find("Valoria · SlavicProof · sawmill")==null)
+            if(GameObject.Find("Valoria · SlavicProof · civil house 0")==null)
                 throw new System.Exception("Slavic District proof did not instantiate.");
 
             File.WriteAllText(folder+"/slavic-district-evidence.json",
@@ -418,7 +418,7 @@ namespace Eldoria.EditorTools
                 "  \"schema_version\": 1,\n"+
                 "  \"camera_matched\": true,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
-                "  \"single_asset_family\": \"EmaceArt Slavic World Free\",\n"+
+                "  \"civil_asset_family\": \"EmaceArt Slavic World Free\",\n"+
                 "  \"production_enabled\": false,\n"+
                 "  \"gameplay_topology_changed\": false\n"+
                 "}\n");
