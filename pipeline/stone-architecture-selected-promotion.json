@@ -1,92 +1,65 @@
 {
-  "enabled": false,
-  "request_id": "eldoria-stone-architecture-kit-v1-selected-promotion",
+  "enabled": true,
+  "request_id": "eldoria-terrain-terrace-kit-v1-selected-promotion",
   "source": {
-    "exact_name": "Eldoria_StoneArchitectureKit_v1.glb",
-    "exact_sha256": "da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422",
-    "bytes": 74616872
+    "exact_name": "TerrainTerraceKit_v1.glb",
+    "exact_sha256": "63d74d19455a92b0e134ada49bde41a3b050bdb8bfe19102eac632bf1d15264e",
+    "bytes": 77291792,
+    "exact_image_sha256": "47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71"
   },
-  "optimization": {
-    "target_triangles": 49800,
-    "min_triangles": 49500,
-    "max_triangles": 50000
-  },
-  "split": {
-    "expected_piece_count": 8,
-    "min_component_triangles": 250
+  "certified_artifact": {
+    "run_id": 36737671375,
+    "id": 11107953070
   },
   "approved": [
     {
-      "piece_file": "piece_01_7335tris.glb",
-      "expected_sha256": "af94cac37d0d4037d2349d632a408ec05793d21eec608255726e38bf6cb4b245",
-      "expected_bytes": 12436120,
-      "semantic_name": "CornerWallL",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
-      "verdict": "VISUAL_PASS_AFTER_SPATIAL_REPAIR"
+      "piece_file": "piece_01_6379tris.glb",
+      "expected_sha256": "SteppedRockTerrace",
+      "expected_bytes": 13767544,
+      "semantic_name": "b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe.glb",
+      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     },
     {
-      "piece_file": "piece_05_6440tris.glb",
-      "expected_sha256": "03acb79b41301c5c23cb7ded042e827aa6bca15027e008304c13a2e01d5791b7",
-      "expected_bytes": 12405180,
-      "semantic_name": "HighStraightWall",
-      "destination": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
-      "verdict": "VISUAL_PASS_AFTER_SPATIAL_REPAIR"
+      "piece_file": "piece_02_7671tris.glb",
+      "expected_sha256": "CornerRetainingTerrace",
+      "expected_bytes": 13797856,
+      "semantic_name": "2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/2da09320a07744663402eaac0b97558848f3897eb82761bc9d0631e0abedae38.glb",
+      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
+    },
+    {
+      "piece_file": "piece_03_4419tris.glb",
+      "expected_sha256": "RockStreetTransition",
+      "expected_bytes": 13698148,
+      "semantic_name": "1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/1dec413182684b6a577cb785312f702e68e1b3e8822b713091dc488ea356dd96.glb",
+      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
+    },
+    {
+      "piece_file": "piece_07_8650tris.glb",
+      "expected_sha256": "BroadRockPlatform",
+      "expected_bytes": 13852688,
+      "semantic_name": "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
+      "destination": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520.glb",
+      "verdict": "VISUAL_PASS_AFTER_BOUNDED_RESIDUE_CLEANUP"
     }
   ],
   "rejected": [
     {
-      "piece_file": "piece_03_8774tris.glb",
-      "reason": "cluster contains disconnected corner/wall fragments; not reusable as one module"
+      "piece_file": "piece_04_7127tris.glb",
+      "reason": "fragmented retaining geometry, poor modular edge"
     },
     {
-      "piece_file": "piece_04_3304tris.glb",
-      "reason": "parapet/merlon candidate has floating/torn geometry and incomplete side profile"
+      "piece_file": "piece_05_8862tris.glb",
+      "reason": "fused wall/rock silhouette with disconnected protrusions"
     },
     {
-      "piece_file": "piece_06_2296tris.glb",
-      "reason": "bounded connected-protrusion trim still leaves mutilated/incomplete silhouette and stretched residual strips; reject this version"
-    },
-    {
-      "piece_file": "piece_07_7448tris.glb",
-      "reason": "pillar/arch geometry fused into two disconnected structures"
-    },
-    {
-      "piece_file": "piece_08_6114tris.glb",
-      "reason": "arch candidate is split with detached/floating upper fragments"
+      "piece_file": "piece_06_5005tris.glb",
+      "reason": "thin connector candidate has unstable incomplete profile"
     }
   ],
-  "no_valoria_scene_changes": true,
   "no_gameplay_changes": true,
-  "credit_spend_total": 55,
-  "run_nonce": "closed-2026-09-30-spatial-repaired-01-05",
-  "certified_artifact": {
-    "run_id": 36715424694,
-    "id": 11096157750
-  },
-  "closeout": {
-    "promotion_run_id": 36717246333,
-    "promoted": [
-      "CornerWallL",
-      "HighStraightWall"
-    ],
-    "previously_promoted": [
-      "RockToWallTransition"
-    ],
-    "rejected_piece_06_run_id": 36717083816,
-    "rejected_piece_06_artifact_id": 11096319220
-  },
-  "promotion_result": {
-    "run_id": 36717246333,
-    "conclusion": "SUCCESS",
-    "promoted": [
-      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
-      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb"
-    ],
-    "already_promoted": [
-      "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
-    ],
-    "final_piece06_verdict": "REJECT_AFTER_SECOND_AXIS_CLIP",
-    "final_piece06_run_id": 36717083816,
-    "final_piece06_artifact_id": 11096319220
-  }
+  "promotion_commit_message": "art: promote strict-pass Terrain Terrace Kit v1 modules",
+  "run_nonce": "terrain-terrace-2026-09-30-salvage-01-02-03-07"
 }

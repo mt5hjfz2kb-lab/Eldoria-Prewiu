@@ -1,4 +1,4 @@
-name: Promote selected Stone Architecture pieces
+name: Promote selected certified Tripo pieces
 
 on:
   push:
@@ -83,22 +83,23 @@ jobs:
               exit 1
             fi
             case "$dest" in
-              Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/*) ;;
+              Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/*.glb|Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/*.glb) ;;
               *) echo "Unsafe destination: $dest" >&2; exit 1 ;;
             esac
             mkdir -p "$(dirname "$dest")"
             cp "$src" "$dest"
+            git add -- "$dest"
             echo "APPROVED_PROMOTION: $semantic -> $dest | $actual_bytes bytes | sha256 $actual_sha"
           done
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1
           if git diff --cached --quiet; then
             echo "Selected promotion already present with identical bytes."
             exit 0
           fi
-          git commit -m 'art: promote strict-pass Stone Architecture module'
+          message=$(jq -r '.promotion_commit_message // "art: promote strict-pass Stone Architecture module"' "$req")
+          git commit -m "$message"
           for attempt in 1 2 3 4; do
             if git push origin HEAD:main; then
               exit 0
