@@ -130,7 +130,7 @@ These may be reused by active gates but do not define the production flow by the
 
 ## HISTORICAL / DIAGNOSTIC — do not start new work here
 
-The following workflows/scripts remain for evidence and reproducibility of prior experiments. They are **not** the default route for new modules. The four superseded module/source workflows are now **manual-only** and prefixed `[LEGACY]` in GitHub Actions so they cannot be mistaken for the active route:
+The following workflows/scripts remain for evidence and reproducibility of prior experiments. They are **not** the default route for new modules. Historical/diagnostic workflows are now **manual-only** and prefixed `[LEGACY]` where appropriate so they cannot compete with production work or be mistaken for the active route:
 
 - `.github/workflows/tripo-module-gate.yml`
 - `.github/workflows/tripo-module3-pipeline.yml`
@@ -168,7 +168,7 @@ When continuing Valoria art development:
 3. Read this index.
 4. Read `docs/VALORIA_MODULE_KIT.md`.
 5. If validating a new Tripo module, use the ACTIVE canonical pipeline only.
-6. If composing certified modules, use Micro-Valoria.
+6. Use Micro-Valoria only when an explicit diagnostic/reproduction task requires it; production city topology stays in the real playable district/VisualWorld path.
 7. Consult historical workflows only to reproduce or audit prior evidence.
 
 If a chat starts creating another per-module Blender script, Unity capturer or workflow without a demonstrated requirement that the generic path cannot satisfy, stop and extend the canonical pipeline instead.
