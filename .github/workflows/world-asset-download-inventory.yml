@@ -1,11 +1,7 @@
-name: World Asset Download Inventory
+name: "[LEGACY] World Asset Download Inventory"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/world-asset-download-inventory.yml'
 
 permissions:
   contents: read
