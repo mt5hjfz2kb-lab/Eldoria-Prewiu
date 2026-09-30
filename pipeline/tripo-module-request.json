@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "eldoria-player-city-progression-sheet-v1-gate",
   "module_label": "Eldoria_PlayerCity_ProgressionSheet_v1",
   "unity_yaw_degrees": 0,
@@ -27,21 +27,20 @@
       "enabled": false,
       "mode": "disconnected_residue_only",
       "piece_indices": []
-    }
+    },
+    "cluster_axes": "xz"
   },
   "visual_acceptance": "Player City Progression Sheet v1 must resolve into exactly six coherent spatially separated city-stage pieces in stable top-to-bottom, left-to-right sheet order: early camp, timber settlement, fortified timber town, early stone city, mature stone castle-city, and advanced capital. PASS requires each extracted piece to read as one coherent standalone settlement at official review cameras, preserve its progression identity and major silhouette, retain usable materials/UV/normals/collider, and show no cross-stage fused geometry, remote floating fragments, catastrophic missing walls/buildings, or unusable side/rear geometry. Technical separation alone is insufficient.",
-  "notes": "CLOSED 2026-09-30 after canonical run 36730306902 / artifact 11104198135. TECH PASS: exact GLB identified, Blender optimization PASS, Unity isolated PASS, six groups extracted, UV/normals/materials/colliders present. STRICT VISUAL FAIL: the six extracted groups do not correspond to six coherent city stages; each group contains vertically separated fragments/slices belonging to multiple progression cities. No piece is production-safe as a standalone player-city stage. Do not promote this sheet. No additional Tripo generation is authorized from this request.",
+  "notes": "ZERO-CREDIT REPAIR ATTEMPT after strict visual fail of run 36730306902. Root cause identified in the extractor: the generated city sheet is laid out on the ground plane X/Z in Unity, but spatial clustering assumed X/Y and therefore mixed vertical slices from multiple city stages. Re-run the exact same exported GLB with configurable cluster_axes=xz. No Tripo generation, no credit spend, no production promotion. PASS still requires six coherent standalone progression cities in multi-angle evidence.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "closed-2026-09-30-player-city-sheet-visual-fail",
+  "run_nonce": "2026-09-30-player-city-xz-cluster-repair-1",
   "visual_verdicts": {
-    "reviewed_run_id": 36730306902,
-    "reviewed_artifact_id": 11104198135,
-    "technical": "PASS",
-    "visual": "FAIL",
-    "production_promotion": "NONE",
-    "reason": "six numerical groups were extracted, but each is a mixed vertical stack of fragments from multiple intended city stages rather than one coherent city",
-    "next_rule": "future Player City generation must use one complete city per generation, or at most two very widely separated compact cities; do not reuse this six-stage sheet as a multipiece source"
+    "previous_run_id": 36730306902,
+    "previous_artifact_id": 11104198135,
+    "previous_visual": "FAIL",
+    "repair_hypothesis": "wrong clustering plane XY mixed height with sheet layout; retry exact GLB on XZ ground plane",
+    "production_promotion": "NONE_PENDING_REVIEW"
   }
 }
