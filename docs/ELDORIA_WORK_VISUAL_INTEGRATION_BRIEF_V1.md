@@ -1,6 +1,6 @@
 # Eldoria — Work Visual Integration Brief v1
 
-Status: READY FOR EXECUTION  
+Status: EXECUTED — see `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md` for final verified evidence and remaining benchmark limits  
 Updated: 2026-09-30
 
 ## Mission

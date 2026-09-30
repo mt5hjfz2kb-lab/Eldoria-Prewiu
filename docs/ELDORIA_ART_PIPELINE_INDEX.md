@@ -1,11 +1,19 @@
 # Eldoria — Art Production Pipeline Index
 
 Status: active organizational map.  
-Updated: 2026-09-29.
+Updated: 2026-09-30.
 
 The purpose of this file is to prevent experimental code from being mistaken for the current production route.
 
 ## ACTIVE — use by default
+
+### Integrated production visual wedges v1
+- Runtime assembly: `Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs`, called by real `VisualWorld`.
+- Verified record/cameras/gaps: `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md`.
+- Exact before/after evidence: `docs/evidence/work-visual-integration-v1/`.
+- Uses existing World/Valoria visual formula gates and the full Unity slice; no parallel art pipeline.
+- GroundKit + six StoneKit pieces are now an integrated visual-only construction layer. Final architecture/reference benchmark remains open.
+
 
 ### Master asset-library roadmap
 - Canonical inventory: `docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md`
@@ -94,8 +102,9 @@ Measured expanded production baseline: **567,460 triangles / 644 renderers / 80 
 
 ### Reusable Valoria construction library v1
 - Plan: `docs/VALORIA_LIBRARY_PRODUCTION_PLAN_V1.md`
-- Immediate next family: **Ground Kit v1** (StreetStraight, StreetBlend/Widening, TerraceFloor, RetainingEdge, GroundSeam)
-- Next dedicated building after Ground Kit: **Granero** (Bastion III)
+- **Ground Kit v1** is certified and integrated; the six StoneKit pieces now extend it in the verified Work wedge.
+- **Granero BIII** is already dedicated production art. Remaining future dedicated gaps: Cantera, Forja, Hospital.
+- Next construction family: **Stone Architecture Kit v1**, following the current three-family priority in the master roadmap.
 
 Purpose:
 make new districts an assembly problem rather than a one-off art problem. Ground/Support modules are visual skins over approved topology; they never dictate circulation or gameplay floors.

@@ -28,7 +28,7 @@ Related canonical sources:
 
 ### Geographic / environmental
 - Current Frontier terrain and presentation.
-- Holotna Mountain candidate: strong mountain / rock / bridge / natural geography source under the real 4X camera.
+- Holotna Mountain: selected mountain, rock and two tree variants are now persisted and used in the real runtime wedge; official-camera evidence is in `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md`.
 - NatureStarterKit2: available, lower-priority baseline.
 - Selected Slavic hard-surface props: conditional only.
 - Slavic foliage: REJECTED as primary forest language.
@@ -379,3 +379,26 @@ A new asset family enters this roadmap as “available” only when:
 - its evidence is stored in the repo.
 
 Pretty but functionless assets do not improve library completion.
+
+
+# F. VERIFIED WORK WEDGE — 2026-09-30
+
+Record and exact images: `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md`; source `616d5f8e1e969e917f885c970562135e45fc2191`. World visual **36675166099**, Valoria visual **36675166037**, full Unity **36675166031** all SUCCESS. Zero purchases/Tripo spend. The final reference benchmark remains OPEN; do not equate these incremental wedges with final asset-family completion.
+
+| Existing inventory now used | Verified production role |
+| --- | --- |
+| Holotna + selected Quaternius | Mountains/rock/forest geography; neutral ruin and hostile secondary masonry |
+| Frontier / WorldRouteKit / WorldResourceKit | Preserve real targets/route semantics, integrate continuous geography and resource access strips |
+| GroundKit + all six StoneKit GLBs | Streets, courts, borders, corners, twelve exact visual tread skins, transitions and small bases; no gameplay collision |
+| Current Aserradero / Cuartel / Granero / Bastion | Existing functional plots, visibility and dedicated source art preserved |
+| ResidentialTerraceRock / RockTerrainSeamFiller / TowerWallRock | Retained civil/seam support plus one decorative recovered flank |
+| West Rebuilders + selected hard surface | Roof/work-frontage/stock support; no new dedicated functional buildings |
+
+Visible gaps remain exact: **A2.1** compact city/tier silhouette; **A2.2** food/common node variations and depleted states; **A2.3** wolf/boar/Engendro primitive art; **A2.4** final installation identity/states; **A2.5** capsule/banner march; **B2.1** provisional Bastion/retaining masonry; **B2.2–3** civil bodies/repeated roofs; **B2.4** partial inhabited dressing and symbolic workers. Cantera/Forja/Hospital stay future **B2.5–7** gaps.
+
+For the immediate block following this integrated evidence, narrow the general search queue to **only these three families**, in order:
+1. **Stone Architecture Kit v1** — dominant remaining Valoria masonry/support screen area.
+2. **Player City Kit v1** — strongest missing strategic landmark/tier identity.
+3. **Beast Kit v1** — visible PvE silhouettes still provisional.
+
+Current shots make Resource/Installation/March/Residential/Props gaps concrete, but this entry does not authorize a wider acquisition wishlist or paid generation.
