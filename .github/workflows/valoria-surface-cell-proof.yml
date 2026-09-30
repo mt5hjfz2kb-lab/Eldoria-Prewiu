@@ -53,6 +53,40 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
 
+      - name: Stage CC0 Poly Haven PBR surfaces
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-SurfaceCell/1.0'}
+          $assets=@(
+            @{ id='stone_block_wall'; prefix='stone' },
+            @{ id='cobblestone_floor_001'; prefix='cobble' },
+            @{ id='dirt'; prefix='dirt' }
+          )
+          foreach($asset in $assets){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            $patterns=@(
+              @{ key='diff'; rx='_diff_1k\.(jpg|png)(\?|$)' },
+              @{ key='normal'; rx='_nor_gl_1k\.(jpg|png)(\?|$)' },
+              @{ key='ao'; rx='_ao_1k\.(jpg|png)(\?|$)' }
+            )
+            foreach($map in $patterns){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){
+                if($map.key -eq 'ao'){ continue }
+                throw "Missing Poly Haven $($map.key) map for $($asset.id)"
+              }
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){ throw "Downloaded map too small: $out" }
+            }
+          }
+
       - name: Capture Surface Cell before-after
         shell: powershell
         run: |
