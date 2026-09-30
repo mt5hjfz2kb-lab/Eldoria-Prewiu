@@ -468,6 +468,59 @@ namespace Eldoria.Presentation
             }
         }
 
+        static GameObject CreateReferenceImage(string name,Transform parent,string spriteName)
+        {
+            var go=new GameObject(name,typeof(RectTransform),typeof(Image));go.transform.SetParent(parent,false);
+            var img=go.GetComponent<Image>();img.sprite=ReferenceSprite(spriteName);img.color=Color.white;img.preserveAspect=true;img.raycastTarget=false;
+            return go;
+        }
+
+        static Sprite ReferenceSprite(string name)
+        {
+            if(ReferenceSprites.TryGetValue(name,out var cached)&&cached!=null)return cached;
+            const int n=64;
+            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false){name="Eldoria UI icon "+name,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
+            var px=new Color32[n*n];
+            for(int i=0;i<px.Length;i++)px[i]=new Color32(0,0,0,0);
+            DrawIcon(px,n,name);
+            tex.SetPixels32(px);tex.Apply(false,true);
+            var sprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
+            ReferenceSprites[name]=sprite;
+            return sprite;
+        }
+
+        static void DrawIcon(Color32[] p,int n,string name)
+        {
+            var gold=new Color32(224,190,112,255);var pale=new Color32(238,232,210,255);var blue=new Color32(78,139,194,255);var red=new Color32(196,54,47,255);var grey=new Color32(171,179,184,255);
+            void Dot(int x,int y,int r,Color32 col){for(int yy=y-r;yy<=y+r;yy++)for(int xx=x-r;xx<=x+r;xx++){if(xx<0||yy<0||xx>=n||yy>=n)continue;int dx=xx-x,dy=yy-y;if(dx*dx+dy*dy<=r*r)p[yy*n+xx]=col;}}
+            void Line(int x0,int y0,int x1,int y1,int w,Color32 col){int dx=Mathf.Abs(x1-x0),sx=x0<x1?1:-1,dy=-Mathf.Abs(y1-y0),sy=y0<y1?1:-1,err=dx+dy;while(true){Dot(x0,y0,w,col);if(x0==x1&&y0==y1)break;int e2=2*err;if(e2>=dy){err+=dy;x0+=sx;}if(e2<=dx){err+=dx;y0+=sy;}}}
+            void Fill(int x,int y,int w,int h,Color32 col){for(int yy=y;yy<y+h;yy++)for(int xx=x;xx<x+w;xx++)if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}
+            void Diamond(int cx,int cy,int r,Color32 col){for(int y=-r;y<=r;y++){int span=r-Mathf.Abs(y);for(int x=-span;x<=span;x++){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
+            void Ring(int cx,int cy,int r,int t,Color32 col){for(int y=-r;y<=r;y++)for(int x=-r;x<=r;x++){int d=x*x+y*y;if(d<=r*r&&d>=(r-t)*(r-t)){int xx=cx+x,yy=cy+y;if(xx>=0&&yy>=0&&xx<n&&yy<n)p[yy*n+xx]=col;}}}
+
+            switch(name)
+            {
+                case "power": case "army": Line(18,16,46,48,3,pale);Line(46,16,18,48,3,pale);Line(14,13,22,21,4,gold);Line(50,13,42,21,4,gold);break;
+                case "wood": Fill(14,23,36,18,new Color32(126,78,38,255));Line(18,23,18,41,2,gold);Line(46,23,46,41,2,gold);break;
+                case "stone": Diamond(32,32,20,grey);Line(20,32,32,44,1,pale);break;
+                case "wheat": Line(32,10,32,52,2,gold);for(int i=0;i<5;i++){Line(32,19+i*7,22,24+i*7,2,gold);Line(32,22+i*7,42,27+i*7,2,gold);}break;
+                case "iron": Fill(15,24,34,15,grey);Line(18,39,45,39,2,pale);break;
+                case "gem": Diamond(32,31,20,red);Line(32,12,32,50,1,pale);Line(12,31,52,31,1,pale);break;
+                case "chapter": case "missions": Fill(16,14,32,38,new Color32(226,204,151,255));Line(21,42,43,42,1,new Color32(99,72,42,255));Line(21,35,41,35,1,new Color32(99,72,42,255));Line(21,28,39,28,1,new Color32(99,72,42,255));break;
+                case "left_build": Line(18,17,45,44,4,gold);Fill(38,39,15,8,pale);break;
+                case "left_research": Fill(27,36,10,14,pale);Line(25,36,18,17,2,pale);Line(39,36,46,17,2,pale);Line(18,17,46,17,2,gold);break;
+                case "left_people": case "social": Dot(24,39,7,pale);Dot(41,37,6,pale);Dot(31,22,11,gold);break;
+                case "world": Ring(32,32,22,3,gold);Line(10,32,54,32,1,pale);Line(32,10,32,54,1,pale);Ring(32,32,11,1,pale);break;
+                case "heroes": Ring(32,33,20,3,gold);Fill(23,20,18,24,grey);Line(23,44,32,53,3,pale);Line(41,44,32,53,3,pale);break;
+                case "inventory": Fill(17,20,30,30,new Color32(112,70,38,255));Ring(32,46,11,3,gold);break;
+                case "alliance": Fill(23,17,18,28,blue);Line(23,45,41,45,3,gold);Line(32,17,32,54,2,gold);break;
+                case "bastion": Fill(14,16,36,24,blue);Fill(18,40,8,12,pale);Fill(38,40,8,12,pale);Fill(28,32,8,20,pale);break;
+                case "mail": Fill(12,20,40,28,new Color32(226,204,151,255));Line(12,48,32,31,2,new Color32(99,72,42,255));Line(52,48,32,31,2,new Color32(99,72,42,255));break;
+                case "menu": Line(14,43,50,43,3,pale);Line(14,32,50,32,3,pale);Line(14,21,50,21,3,pale);break;
+                default: Ring(32,32,22,3,gold);Dot(32,32,7,pale);break;
+            }
+        }
+
         static void SetFont(Transform parent,string childName,int size)
         {
             var child=parent.Find(childName);if(child==null)return;
