@@ -1,1 +1,1 @@
-{"name":"Eldoria.Presentation","rootNamespace":"Eldoria.Presentation","references":["Eldoria.Application","Eldoria.Domain","Eldoria.Infrastructure","Unity.InputSystem","Unity.ugui"],"autoReferenced":true}
+{"name":"Eldoria.Presentation","rootNamespace":"Eldoria.Presentation","references":["Eldoria.Application","Eldoria.Domain","Eldoria.Infrastructure","Unity.InputSystem","Unity.ugui","Unity.RenderPipelines.Universal.Runtime"],"autoReferenced":true}
