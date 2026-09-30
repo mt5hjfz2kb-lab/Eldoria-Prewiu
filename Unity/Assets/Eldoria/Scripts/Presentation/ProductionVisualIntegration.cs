@@ -351,7 +351,7 @@ namespace Eldoria.Presentation
                     // These neutral masonry families share Valoria's aged-stone surface.
                     if(resource.StartsWith("Mega")||resource=="Arch_Gothic"||resource=="Wall_Broken"||resource=="Column_Round")
                     {
-                        mats[i]=ValoriaKit.SurfaceMaterial(name.StartsWith("Valoria")?tint:tint.linear,"stone",new Vector2(3,3));
+                        mats[i]=ValoriaKit.SurfaceMaterial(go.name.StartsWith("Valoria")?tint:tint.linear,"stone",new Vector2(3,3));
                         continue;
                     }
                     bool leaves=foliage&&i==0;
