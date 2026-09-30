@@ -30,7 +30,9 @@ namespace Eldoria.Presentation
         public static bool SurfaceCellEnabled = false;
         // Gate-only coherent asset-language proof using a single CC0 Kenney Castle Kit family.
         // Never enabled in production automatically.
-        public static bool CoherentCastleProofEnabled = false; // validation retrigger after governance repair
+        public static bool CoherentCastleProofEnabled = false;
+        // Gate-only proof using one higher-detail family already shipped in the project.
+        public static bool SlavicDistrictProofEnabled = false; // validation retrigger after governance repair
 
         public static void ResetVisualCachesForGate()
         {
@@ -207,6 +209,7 @@ namespace Eldoria.Presentation
             ComposeHeroFrame(state,art);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
+            if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
             if(ProductionCellEnabled)IntegrateProductionCell(state,art);
             Finish();
         }
@@ -577,6 +580,70 @@ namespace Eldoria.Presentation
         }
 
         static GameObject CoherentCastlePiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw)
+        {
+            if(source==null)return null;
+            var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,height,Quaternion.Euler(0f,yaw,0f));
+            if(go==null)return null;
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var hotspot in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(hotspot);
+            return go;
+        }
+
+        public static void AddSlavicDistrictProofForGate()
+        {
+            if(root==null)throw new InvalidOperationException("Valoria visual integration root is not initialized.");
+            IntegrateSlavicDistrictProof();
+            Finish();
+        }
+
+        static void IntegrateSlavicDistrictProof()
+        {
+            // Lower-civic comparison only. Preserve all authoritative targets/colliders underneath.
+            Suppress("Aserradero ·","Cuartel ·","Valoria · reused civil house",
+                "VPD · west rebuilders home","VPD · west rebuilders upper dwelling");
+
+            var houseA=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/house-a");
+            var houseB=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/house-b");
+            var admin=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/administrative");
+            var shed=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/shed");
+            var road=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/cobble");
+            var rock=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/rock");
+            var tree=Resources.Load<GameObject>("Valoria/SlavicCoherentProof/tree");
+            if(houseA==null||houseB==null||admin==null||shed==null||road==null)
+                throw new InvalidOperationException("Slavic District proof resources were not staged/imported.");
+
+            // Functional identities retain their footprint: workshop = shed/workshop family,
+            // barracks = larger administrative masonry/timber volume.
+            SlavicProofPiece("Valoria · SlavicProof · sawmill",shed,new Vector3(-7.0f,.40f,-2.8f),3.55f,3.55f,180f);
+            SlavicProofPiece("Valoria · SlavicProof · barracks",admin,new Vector3(7.0f,.40f,-4.0f),3.85f,4.10f,180f);
+
+            // A compact inhabited street uses two variants from exactly the same authored family.
+            SlavicProofPiece("Valoria · SlavicProof · house west A",houseA,new Vector3(-11.7f,.40f,-3.15f),3.05f,3.25f,168f);
+            SlavicProofPiece("Valoria · SlavicProof · house west B",houseB,new Vector3(-12.4f,.40f,2.05f),3.15f,3.30f,194f);
+            SlavicProofPiece("Valoria · SlavicProof · house east A",houseA,new Vector3(11.4f,.40f,-2.30f),2.95f,3.15f,192f);
+
+            // One family for circulation and terrain seams as well.
+            for(int i=0;i<6;i++)
+                SlavicProofPiece("Valoria · SlavicProof · cobble "+i,road,
+                    new Vector3((i%2==0?-.10f:.12f),.425f,-6.0f+i*1.05f),2.75f,.18f,i%2==0?0f:180f);
+            if(rock!=null)
+            {
+                SlavicProofPiece("Valoria · SlavicProof · rock west",rock,new Vector3(-9.1f,.10f,-5.8f),2.20f,1.05f,38f);
+                SlavicProofPiece("Valoria · SlavicProof · rock east",rock,new Vector3(9.1f,.10f,-6.1f),2.15f,1.00f,218f);
+            }
+            if(tree!=null)
+            {
+                SlavicProofPiece("Valoria · SlavicProof · tree west",tree,new Vector3(-9.5f,.15f,-1.0f),1.65f,3.55f,12f);
+                SlavicProofPiece("Valoria · SlavicProof · tree east",tree,new Vector3(9.7f,.15f,-1.4f),1.60f,3.45f,-18f);
+            }
+            WarmLight("Valoria · SlavicProof · workshop warmth",new Vector3(-6.7f,1.55f,-4.1f),
+                new Color(1.0f,.57f,.26f),.18f,3.5f);
+            WarmLight("Valoria · SlavicProof · barracks warmth",new Vector3(6.9f,1.55f,-5.1f),
+                new Color(1.0f,.61f,.29f),.15f,3.4f);
+        }
+
+        static GameObject SlavicProofPiece(string name,GameObject source,Vector3 ground,float footprint,float height,float yaw)
         {
             if(source==null)return null;
             var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,height,Quaternion.Euler(0f,yaw,0f));
