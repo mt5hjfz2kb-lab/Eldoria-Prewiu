@@ -1,7 +1,7 @@
 # Valoria Camera & Expansion Plan v1
 
 Date: 2026-09-28  
-Status: **ACTIVE DESIGN BASELINE — IMPLEMENTATION GATE PENDING**
+Status: **ACTIVE DESIGN BASELINE — PAN + PINCH ZOOM IMPLEMENTED; FULL CAMERA ENVELOPE GATE STILL PENDING**
 
 ## Purpose
 
@@ -104,7 +104,14 @@ Do not auto-snap constantly while the player is exploring.
 
 ## 7. Zoom behavior
 
-Retain the existing orthographic range `9..19` unless mobile testing proves a change is needed.
+Implemented on 2026-09-30 in `SlicePresenter` using the Unity Input System:
+- two-finger pinch changes orthographic size;
+- spreading fingers zooms in, pinching together zooms out;
+- the gesture is clamped to the approved `9..19` range;
+- a pinch exclusively owns the gesture frame and suppresses one-finger pan/tap selection;
+- the first frame after one finger leaves is consumed so the gesture cannot end as an accidental building tap.
+
+Retain the orthographic range `9..19` unless mobile testing proves a change is needed.
 
 Intended reads:
 - **19 strategic:** district relationships / navigation;
