@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using Object = UnityEngine.Object;
 
 namespace Eldoria.Presentation
@@ -233,8 +231,7 @@ namespace Eldoria.Presentation
             {
                 camera.backgroundColor=RenderSettings.fogColor;
                 camera.allowHDR=true;
-                var cameraData=camera.GetComponent<UniversalAdditionalCameraData>();
-                if(cameraData!=null)cameraData.renderPostProcessing=true;
+                TrySetComponentProperty(camera.gameObject,"UniversalAdditionalCameraData","renderPostProcessing",true);
             }
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
@@ -256,32 +253,9 @@ namespace Eldoria.Presentation
             fill.intensity=.10f;
             fill.shadows=LightShadows.None;
 
-            // Global production-style finishing for this proof only.
-            var volumeGo=new GameObject("Valoria · SurfaceCell · URP finish");
-            volumeGo.transform.SetParent(root,true);
-            var volume=volumeGo.AddComponent<Volume>();
-            volume.isGlobal=true;
-            volume.priority=90f;
-            var profile=ScriptableObject.CreateInstance<VolumeProfile>();
-            volume.profile=profile;
-
-            var tone=profile.Add<Tonemapping>(true);
-            tone.mode.Override(TonemappingMode.ACES);
-
-            var color=profile.Add<ColorAdjustments>(true);
-            color.postExposure.Override(.12f);
-            color.contrast.Override(15f);
-            color.saturation.Override(7f);
-            color.colorFilter.Override(new Color(1.0f,.985f,.955f,1f));
-
-            var bloom=profile.Add<Bloom>(true);
-            bloom.threshold.Override(1.08f);
-            bloom.intensity.Override(.16f);
-            bloom.scatter.Override(.55f);
-
-            var vignette=profile.Add<Vignette>(true);
-            vignette.intensity.Override(.10f);
-            vignette.smoothness.Override(.30f);
+            // Global production-style finishing for this proof only. The Presentation assembly deliberately
+            // has no compile-time URP dependency; reflection activates the installed URP stack when available.
+            InstallUrpFinish();
 
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight=new Color(.42f,.45f,.49f);
@@ -334,6 +308,129 @@ namespace Eldoria.Presentation
                 new Color(1.0f,.62f,.31f),.18f,3.8f);
             WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.55f,1.95f,-5.20f),
                 new Color(1.0f,.66f,.36f),.16f,3.6f);
+        }
+
+        static Type FindRuntimeType(string fullName)
+        {
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var type=assembly.GetType(fullName,false);
+                if(type!=null)return type;
+            }
+            return null;
+        }
+
+        static void TrySetComponentProperty(GameObject go,string shortTypeName,string propertyName,object value)
+        {
+            foreach(var component in go.GetComponents<Component>())
+            {
+                if(component==null||component.GetType().Name!=shortTypeName)continue;
+                var property=component.GetType().GetProperty(propertyName);
+                if(property!=null&&property.CanWrite)property.SetValue(component,value,null);
+                return;
+            }
+        }
+
+        static void InstallUrpFinish()
+        {
+            var volumeType=FindRuntimeType("UnityEngine.Rendering.Volume");
+            var profileType=FindRuntimeType("UnityEngine.Rendering.VolumeProfile");
+            if(volumeType==null||profileType==null)return;
+
+            var go=new GameObject("Valoria · SurfaceCell · URP finish");
+            go.transform.SetParent(root,true);
+            var volume=go.AddComponent(volumeType);
+            SetReflectedMember(volume,"isGlobal",true);
+            SetReflectedMember(volume,"priority",90f);
+
+            var profile=ScriptableObject.CreateInstance(profileType);
+            SetReflectedMember(volume,"profile",profile);
+
+            var tone=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Tonemapping");
+            OverrideVolumeEnum(tone,"mode","ACES");
+
+            var color=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.ColorAdjustments");
+            OverrideVolumeValue(color,"postExposure",.12f);
+            OverrideVolumeValue(color,"contrast",15f);
+            OverrideVolumeValue(color,"saturation",7f);
+            OverrideVolumeValue(color,"colorFilter",new Color(1.0f,.985f,.955f,1f));
+
+            var bloom=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Bloom");
+            OverrideVolumeValue(bloom,"threshold",1.08f);
+            OverrideVolumeValue(bloom,"intensity",.16f);
+            OverrideVolumeValue(bloom,"scatter",.55f);
+
+            var vignette=AddVolumeOverride(profile,"UnityEngine.Rendering.Universal.Vignette");
+            OverrideVolumeValue(vignette,"intensity",.10f);
+            OverrideVolumeValue(vignette,"smoothness",.30f);
+        }
+
+        static void SetReflectedMember(object target,string name,object value)
+        {
+            if(target==null)return;
+            var type=target.GetType();
+            var property=type.GetProperty(name);
+            if(property!=null&&property.CanWrite){property.SetValue(target,value,null);return;}
+            var field=type.GetField(name);
+            if(field!=null)field.SetValue(target,value);
+        }
+
+        static object AddVolumeOverride(object profile,string overrideTypeName)
+        {
+            if(profile==null)return null;
+            var overrideType=FindRuntimeType(overrideTypeName);
+            if(overrideType==null)return null;
+            foreach(var method in profile.GetType().GetMethods())
+            {
+                if(method.Name!="Add")continue;
+                var parameters=method.GetParameters();
+                if(!method.IsGenericMethod&&parameters.Length==2&&parameters[0].ParameterType==typeof(Type))
+                    return method.Invoke(profile,new object[]{overrideType,true});
+                if(method.IsGenericMethodDefinition&&parameters.Length==1&&parameters[0].ParameterType==typeof(bool))
+                    return method.MakeGenericMethod(overrideType).Invoke(profile,new object[]{true});
+            }
+            return null;
+        }
+
+        static object GetReflectedMember(object target,string name)
+        {
+            if(target==null)return null;
+            var type=target.GetType();
+            var property=type.GetProperty(name);
+            if(property!=null)return property.GetValue(target,null);
+            var field=type.GetField(name);
+            return field!=null?field.GetValue(target):null;
+        }
+
+        static void OverrideVolumeValue(object component,string parameterName,object value)
+        {
+            var parameter=GetReflectedMember(component,parameterName);
+            if(parameter==null)return;
+            foreach(var method in parameter.GetType().GetMethods())
+            {
+                if(method.Name!="Override")continue;
+                var args=method.GetParameters();
+                if(args.Length!=1)continue;
+                var expected=args[0].ParameterType;
+                object converted=value;
+                if(value!=null&&!expected.IsInstanceOfType(value))
+                {
+                    try{converted=Convert.ChangeType(value,expected);}
+                    catch{continue;}
+                }
+                method.Invoke(parameter,new[]{converted});
+                return;
+            }
+        }
+
+        static void OverrideVolumeEnum(object component,string parameterName,string enumName)
+        {
+            var parameter=GetReflectedMember(component,parameterName);
+            if(parameter==null)return;
+            var valueProperty=parameter.GetType().GetProperty("value");
+            if(valueProperty==null||!valueProperty.PropertyType.IsEnum)return;
+            var value=Enum.Parse(valueProperty.PropertyType,enumName);
+            OverrideVolumeValue(component,parameterName,value);
         }
 
         static void PolishImportedSurface(Renderer renderer,Color tint)
