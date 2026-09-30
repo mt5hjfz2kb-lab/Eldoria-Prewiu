@@ -1,11 +1,6 @@
-name: Tripo V4 appearance gate
+name: "[LEGACY] Tripo V4 appearance gate"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/tripo-appearance-v4-gate.yml'
-      - 'Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoAppearanceV4Review.cs'
   workflow_dispatch:
 
 concurrency:
