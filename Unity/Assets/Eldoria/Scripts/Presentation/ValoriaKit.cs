@@ -289,6 +289,52 @@ namespace Eldoria.Presentation
             return mat;
         }
 
+        public static Material PbrSurfaceMaterial(Material source,Color tint,Vector2 tiling,float smoothness=.08f,float bumpScale=1f)
+        {
+            if(source==null)return DetailedSurfaceMaterial(tint,"stone",tiling,bumpScale);
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null)return new Material(source);
+            var mat=new Material(shader){name="Valoria PBR · "+source.name};
+
+            Texture baseMap=null,normal=null,occlusion=null,metallic=null;
+            foreach(string property in new[]{"_BaseMap","_MainTex"})
+                if(source.HasProperty(property)&&source.GetTexture(property)!=null){baseMap=source.GetTexture(property);break;}
+            if(source.HasProperty("_BumpMap"))normal=source.GetTexture("_BumpMap");
+            if(source.HasProperty("_OcclusionMap"))occlusion=source.GetTexture("_OcclusionMap");
+            if(source.HasProperty("_MetallicGlossMap"))metallic=source.GetTexture("_MetallicGlossMap");
+
+            if(baseMap!=null)
+            {
+                mat.SetTexture("_BaseMap",baseMap);
+                mat.SetTextureScale("_BaseMap",tiling);
+            }
+            mat.SetColor("_BaseColor",tint);
+            mat.SetFloat("_Metallic",0f);
+            mat.SetFloat("_Smoothness",smoothness);
+            if(normal!=null)
+            {
+                mat.SetTexture("_BumpMap",normal);
+                mat.SetTextureScale("_BumpMap",tiling);
+                mat.SetFloat("_BumpScale",bumpScale);
+                mat.EnableKeyword("_NORMALMAP");
+            }
+            if(occlusion!=null)
+            {
+                mat.SetTexture("_OcclusionMap",occlusion);
+                mat.SetTextureScale("_OcclusionMap",tiling);
+                mat.SetFloat("_OcclusionStrength",1f);
+            }
+            if(metallic!=null)
+            {
+                mat.SetTexture("_MetallicGlossMap",metallic);
+                mat.SetTextureScale("_MetallicGlossMap",tiling);
+                mat.EnableKeyword("_METALLICSPECGLOSSMAP");
+            }
+            if(mat.HasProperty("_SpecularHighlights"))mat.SetFloat("_SpecularHighlights",1f);
+            if(mat.HasProperty("_EnvironmentReflections"))mat.SetFloat("_EnvironmentReflections",1f);
+            return mat;
+        }
+
         public static Material DetailedSurfaceMaterial(Color color,string pattern,Vector2 tiling,float relief=1f)
         {
             bool urp=GraphicsSettings.defaultRenderPipeline!=null;
