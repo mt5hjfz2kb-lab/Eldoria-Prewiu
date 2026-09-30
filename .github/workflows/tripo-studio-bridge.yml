@@ -194,11 +194,35 @@ jobs:
               }
               Write-Host "CHATGPT_EXACT_INPUT_PERSISTED: asset=$assetName parts=$part bytes=$size sha256=$actual"
             }
-            if ($transport -eq 'repo_exact_input' -and [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob)) {
-              throw "repo_exact_input requires upload_base64_glob. Refusing runner search/manual fallback."
+            if ($transport -eq 'repo_exact_input' -and [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob) -and [string]::IsNullOrWhiteSpace([string]$request.upload_colonhex_glob)) {
+              throw "repo_exact_input requires upload_base64_glob or upload_colonhex_glob. Refusing runner search/manual fallback."
             }
 
-            # Canonical exact-input route for ChatGPT-approved references: reconstruct repository base64 parts first.
+            # Canonical exact-input route for ChatGPT-approved references: reconstruct repository colon-hex parts first.
+            if (-not [string]::IsNullOrWhiteSpace([string]$request.upload_colonhex_glob)) {
+              $hexGlob = Join-Path $env:GITHUB_WORKSPACE ([string]$request.upload_colonhex_glob)
+              $hexParts = @(Get-ChildItem $hexGlob -File -ErrorAction SilentlyContinue | Sort-Object Name)
+              if ($hexParts.Count -eq 0) { throw "No exact-input colon-hex parts found for: $hexGlob" }
+              $colonHex = ($hexParts | ForEach-Object { (Get-Content $_.FullName -Raw).Trim() }) -join ''
+              $hex = $colonHex.Replace(':','').Replace([char]13,'').Replace([char]10,'').Trim()
+              if (($hex.Length % 2) -ne 0) { throw "Exact-input colon-hex payload has odd length." }
+              try {
+                $bytes = New-Object byte[] ($hex.Length / 2)
+                for ($i = 0; $i -lt $bytes.Length; $i++) {
+                  $bytes[$i] = [Convert]::ToByte($hex.Substring($i * 2, 2), 16)
+                }
+              } catch {
+                throw "Exact-input colon-hex decode failed before Tripo: $($_.Exception.Message)"
+              }
+              $fileName = [string]$request.upload_file_name
+              if ([string]::IsNullOrWhiteSpace($fileName)) { $fileName = 'tripo-exact-input.png' }
+              $dest = Join-Path $env:RUNNER_TEMP $fileName
+              [IO.File]::WriteAllBytes($dest,$bytes)
+              $resolved = $dest
+              Write-Host "EXACT_TRIPO_INPUT_RECONSTRUCTED_COLONHEX: parts=$($hexParts.Count) | path=$dest"
+            }
+
+            # Canonical exact-input route for ChatGPT-approved references: reconstruct repository base64 parts.
             if (-not [string]::IsNullOrWhiteSpace([string]$request.upload_base64_glob)) {
               $glob = Join-Path $env:GITHUB_WORKSPACE ([string]$request.upload_base64_glob)
               $parts = @(Get-ChildItem $glob -File -ErrorAction SilentlyContinue | Sort-Object Name)
