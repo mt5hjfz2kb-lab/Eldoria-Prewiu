@@ -313,7 +313,20 @@ namespace Eldoria.Presentation
             var portrait=safe.Find("Reference portrait") as RectTransform;if(portrait!=null){portrait.anchoredPosition=new Vector2(8,-72);portrait.sizeDelta=new Vector2(58,58);}
             var vip=safe.Find("Reference VIP") as RectTransform;if(vip!=null){vip.anchoredPosition=new Vector2(71,-81);vip.sizeDelta=new Vector2(82,24);}
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
-            if(quest!=null){quest.anchoredPosition=new Vector2(10,-142);quest.sizeDelta=new Vector2(Mathf.Min(300,safe.rect.width-20),150);}
+            if(quest!=null)
+            {
+                quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
+                quest.anchoredPosition=new Vector2(10,-142);quest.sizeDelta=new Vector2(Mathf.Min(300,safe.rect.width-20),150);
+                var ql=quest.GetComponent<VerticalLayoutGroup>();if(ql!=null)ql.enabled=false;
+                var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
+                if(kicker!=null){kicker.text="❓   Capítulo I                    3/5   ›";kicker.fontSize=11;var rt=kicker.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(10,-7);rt.sizeDelta=new Vector2(quest.sizeDelta.x-20,25);}
+                var subtitle=quest.transform.Find("Reference quest subtitle")?.GetComponent<Text>();
+                if(subtitle!=null){subtitle.fontSize=10;var rt=subtitle.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(12,-34);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,22);}
+                var checks=quest.transform.Find("Reference quest checks")?.GetComponent<Text>();
+                if(checks!=null){checks.fontSize=8;var rt=checks.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(12,-58);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,58);}
+                var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
+                if(obj!=null){obj.fontSize=7;obj.alignment=TextAnchor.LowerLeft;var rt=obj.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(12,6);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,28);}
+            }
             var left=safe.Find("Reference left actions") as RectTransform;if(left!=null)left.anchoredPosition=new Vector2(8,-310);
             var chat=safe.Find("Reference chat") as RectTransform;if(chat!=null){chat.anchoredPosition=new Vector2(8,82);chat.sizeDelta=new Vector2(Mathf.Min(270,safe.rect.width-16),68);}
             var menu=safe.Find("Reference top menu") as RectTransform;if(menu!=null)menu.anchoredPosition=new Vector2(-5,-72);
@@ -332,6 +345,12 @@ namespace Eldoria.Presentation
             {
                 nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);nav.sizeDelta=new Vector2(0,68);nav.anchoredPosition=Vector2.zero;
                 var hg=nav.GetComponent<HorizontalLayoutGroup>();if(hg!=null)hg.enabled=true;
+            }
+            var primary=GameObject.Find("CONTINUAR");
+            if(primary!=null)
+            {
+                var liveText=primary.GetComponentInChildren<Text>();if(liveText!=null)liveText.color=Ink;
+                var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
             }
             var extra=safe.Find("Reference extra nav");if(extra!=null)extra.gameObject.SetActive(false);
         }
