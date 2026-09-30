@@ -163,7 +163,15 @@ If a feature technically works but requires external developer explanation to un
 - Medium block: focused + related segment green.
 - Important/release delivery: `npm run validate:local` green + push + Pages certification + published Chromium verification.
 
-When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn and return only with a verified result, a required product decision, or a genuine blocker.
+## Continuation / no-premature-stop rule
+- The default behavior is to continue through the entire coherent work block without waiting for the owner between routine substeps.
+- Do **not** stop merely because a commit was made, one workflow completed, a new workflow started, evidence was generated, a document was updated, a chat/context was resumed, or the next technical step is obvious.
+- Do **not** convert intermediate checkpoints into owner handoffs. Intermediate status is informational only; continue automatically.
+- Waiting for CI/runner results is not a reason to return control to the owner if the same turn can inspect the result and continue.
+- Stop only for: (1) a real product/design choice with materially different outcomes, (2) explicit authorization required for spend/credits/irreversible action, (3) missing access/input only the owner can provide, (4) a genuine technical blocker after reasonable recovery attempts, or (5) the requested block is fully completed and verified.
+- If a substep fails, diagnose and attempt the safe recovery path before escalating. Do not ask the owner to choose between routine technical recovery options.
+- After a chat/resume/context boundary, reconstruct state from the repository and continue from the real next unfinished step; do not treat the boundary itself as a stopping point.
+- When the owner says **hazlo / sigue / adelante / continúa**, execute the largest safe block in the same turn and return only with a verified result, a required product decision, or a genuine blocker.
 
 ## Frozen tester isolation
 - **Eldoria Closed Playtest T1** is immutable research: `0.26.5-test.2`, frozen integration commit `df618e86be9da399bb827d5e6cebc3f13e55ff97` (re-frozen after the approved final-survey contrast hotfix), path `/tester-v0265/`.
