@@ -526,7 +526,37 @@ namespace Eldoria.Presentation
             bounds=Bounds(go);
             go.transform.position+=p-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
             go.transform.SetParent(root,true);
+            NormalizePlayerCity(go);
             Flag("4X · Valoria standard",p+new Vector3(.9f,.15f,.5f),Blue,1.4f);
+        }
+
+        static void NormalizePlayerCity(GameObject go)
+        {
+            // Tripo's baked city atlas reads correctly in isolation but is too hot under the
+            // bright strategic-world lighting. Preserve its textures; only normalize material
+            // response so stone/roofs remain legible instead of clipping toward white.
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    if(mats[i]==null)continue;
+                    var m=new Material(mats[i]){name="Eldoria · Player City v1 · "+mats[i].name};
+                    foreach(string property in new[]{"_BaseColorFactor","_BaseColor","_Color"})
+                    {
+                        if(!m.HasProperty(property))continue;
+                        var c=m.GetColor(property);
+                        m.SetColor(property,new Color(c.r*.58f,c.g*.57f,c.b*.54f,c.a));
+                    }
+                    foreach(string property in new[]{"_EmissiveFactor","_EmissiveColor","_EmissionColor"})
+                        if(m.HasProperty(property))m.SetColor(property,Color.black);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.04f);
+                    m.DisableKeyword("_EMISSION");
+                    mats[i]=m;
+                }
+                renderer.sharedMaterials=mats;
+            }
         }
         static void March(Vector3 p)
         {
