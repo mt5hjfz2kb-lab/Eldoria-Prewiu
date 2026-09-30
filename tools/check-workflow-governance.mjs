@@ -35,6 +35,14 @@ for (const file of files) {
   if (/actions\/runs\/\d+\/cancel/.test(text)) {
     failures.push(`${file}: hard-coded workflow-run cancellation IDs are forbidden.`);
   }
+  const heavyWindows = /runs-on:\s*\[self-hosted,\s*windows,\s*unity-6000-3-23f1\]/i.test(text);
+  const workflowSelfTrigger = new RegExp(`['"]?\\.github/workflows/${file.replace(/[.*+?^$\{\}()|[\\]\\]/g,'\\  if (/actions\/runs\/\d+\/cancel/.test(text)) {
+    failures.push(`${file}: hard-coded workflow-run cancellation IDs are forbidden.`);
+  }
+')}['"]?`).test(trigger);
+  if (heavyWindows && workflowSelfTrigger) {
+    failures.push(`${file}: heavy Windows workflows must not auto-trigger from edits to their own workflow file.`);
+  }
 }
 
 console.log(`Workflow governance: ${files.length} workflows, ${automatic} automatic, ${legacy} legacy/manual.`);
