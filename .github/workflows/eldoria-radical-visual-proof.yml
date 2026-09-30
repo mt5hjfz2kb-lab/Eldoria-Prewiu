@@ -1,6 +1,8 @@
 name: "[EXPERIMENT] Eldoria radical visual proof"
 
 on:
+  push:
+    branches: ['visual-proof/eldoria-radical-v1']
   pull_request:
     branches: [main]
     paths:
