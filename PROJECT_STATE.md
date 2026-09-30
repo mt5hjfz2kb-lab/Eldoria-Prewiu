@@ -1,3 +1,12 @@
+## Valoria Hero Frame v1 — 2026-09-30
+- Whole-frame production art pass is integrated in real Valoria. The pass prioritizes composition, depth and hierarchy over isolated prefab replacement.
+- Visual changes: rebuilt authored-stone Bastion hero shell, valley heightfield, denser inhabited middle distance, ridge vegetation, restrained warm work lights and stronger Bastion focal hierarchy.
+- Existing certified/project assets only; **0 Tripo credits, 0 purchases** in this block.
+- Gameplay contract is preserved: visual layer owns no authoritative route/floor/hotspot topology; camera-matched evidence retains the collider/hotspot signature.
+- Final code checkpoint: **50b6bf732b1f7397376ddd891397f8b70b3e4344**.
+- Final validation: Valoria Visual Formula **36760390349 SUCCESS** / artifact **11118336388**; World Map Visual Formula **36760390465 SUCCESS**; Unity slice **36760390348 SUCCESS** including EditMode, PlayMode, Windows build and Valoria benchmark.
+- Result is a meaningful visual step change and establishes the preferred next production method: improve the full strategic frame. Remaining benchmark gap is primarily horizon/sky atmosphere, residential coherence and replacement of remaining lower-city placeholder families, not missing pipeline capability.
+
 ## Terrain & Terrace Kit v1 citywide production reuse — 2026-09-30
 - Only certified source modules 01 SteppedRockTerrace and 07 BroadRockPlatform are used; groups 02–06 remain rejected.
 - Production Valoria uses **7 visual-only, top-aligned buried-support instances** distributed across suitable existing terrace/court edges; the original two-instance West Rebuilders pilot remains rejected.
