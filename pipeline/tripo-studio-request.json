@@ -2,7 +2,7 @@
   "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "notes": "2026-09-30 Player City progression sheet: exact 1254x1254 JPEG, SHA-locked runner fallback. ZERO CREDIT SPEND; stage in Tripo and stop before Generate with visible cost.",
+  "notes": "2026-09-30 Player City progression sheet: exact 1254x1254 JPEG, SHA-locked runner fallback enabled end-to-end. ZERO CREDIT SPEND; stage and stop before Generate with visible cost.",
   "request_id": "eldoria-player-city-progression-sheet-v1-stage",
   "asset_name": "Eldoria_PlayerCity_ProgressionSheet_v1",
   "function": "Single-sheet multipiece source containing six isolated player-city progression stages, from camp to advanced fortified capital. Experimental multipiece generation/gate; do not modify Valoria gameplay.",
@@ -21,5 +21,5 @@
   "persist_exact_input": true,
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "2026-09-30-player-city-progression-sheet-stage-2"
+  "run_nonce": "2026-09-30-player-city-progression-sheet-stage-3"
 }
