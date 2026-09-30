@@ -2,161 +2,123 @@
 
 ## Status
 
-**VISUAL FAIL — useful material/system proof, but below the requested category-jump threshold.**
+**VISUAL PROOF PASS / NO PRODUCTION.**
 
-This is **not** a production promotion and does **not** modify `main`.
-The experiment remains isolated on:
+This experiment proves that Eldoria can move to a materially stronger visual base inside Unity while preserving gameplay authority. It does **not** prove that the current implementation is ready to be propagated citywide.
+
+Canonical experimental evidence:
 
 - branch: `visual-proof/golden-cell-new-base-v1`
-- final visual code checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`
-- final successful workflow run: `36783595411`
+- best validated visual code: `3b5764ea786af415fb918e98da83dd7f893d715e`
+- successful run: `36783595411 — SUCCESS`
 - artifact: `11129220413`
-
-## What the proof establishes
-
-The Golden Cell demonstrates that Valoria can gain a materially more coherent surface base while preserving gameplay authority:
-
-- readable processional stair and plaza;
-- raised civic terrace;
-- explicit rock ↔ architecture transitions;
-- support residential / productive architecture at human scale;
-- a coherent stone / ground / wood / roof / metal / moss material family;
-- CC0 PBR staging for the experimental surface base;
-- warmer local lighting and stronger material separation;
-- readable hierarchy at orthographic 19 / 12 / 9 and mobile framing.
-
-## Gameplay safety
-
-The final evidence records:
-
-- same-scene before / after: **true**
-- collider + hotspot signature equal: **true**
-- gameplay topology changed: **no**
-- Tripo credits spent: **0**
+- official views: 19 / 12 / 9 / mobile
+- Tripo credits: **0**
 - paid assets: **0**
+- `main`: **untouched**
 
-Only visual renderers / visual-only experimental geometry are affected inside the isolated proof.
+## What passed visually
 
-## Strict visual verdict
+Compared with the original Valoria cell, the best checkpoint demonstrates a real and repeatable improvement in:
 
-The experiment **does not pass** the owner's requested Golden Cell success criterion.
+1. **surface coherence** — stone, ground, timber and roofs no longer read as unrelated placeholder families;
+2. **depth and hierarchy** — the route, terrace and fortified access read as one spatial composition instead of disconnected objects;
+3. **rock ↔ architecture integration** — the cell is seated into a built/terrain transition rather than placed on a flat board;
+4. **human scale** — residential/productive support structures, restrained vegetation and practical lighting make the district read as inhabited;
+5. **focal readability** — the Bastion/access remains the visual destination at zoom 19 / 12 / 9 and mobile;
+6. **gameplay independence** — all changes remain visual-only and matched collider/hotspot signatures stay unchanged.
 
-The AFTER is clearly better than the BEFORE in the cell itself, especially in:
+This is enough to validate the **direction**.
 
-1. surface coherence;
-2. light-stone identity;
-3. road / stair / terrace legibility;
-4. warm/cool separation;
-5. residential / productive human scale.
+## What did not pass for production
 
-However, it still reads as **the existing Eldoria generation with improved materials and dressing**, not as a cell from a visibly higher category of mobile fantasy city-builder.
+The proof is **not production-ready** and must not be merged into `main` as-is.
 
-The remaining ceiling is structural:
+Remaining limits:
 
-- the Bastion and support architecture still use visibly blocky / low-detail silhouette language;
-- the hero entrance is assembled from coarse masses rather than a genuinely higher-grade authored hero asset;
-- roof, wall-edge, arch and retaining geometry still read as prototype-scale construction at zoom 9;
-- the surrounding legacy city immediately exposes the generation mismatch;
-- material quality alone cannot hide the geometry / silhouette ceiling.
+- the implementation is still a hand-built Golden Cell rather than a reusable modular production kit;
+- some supporting architecture and transitions remain prototype-grade at close zoom;
+- the surrounding legacy city exposes a generation mismatch;
+- the material/lighting language has not yet been converted into reusable production systems for all of Valoria;
+- no citywide performance/promotion gate has been passed for this artistic base.
 
-Therefore the Golden Cell must **not** be propagated to production as the new artistic base.
+Therefore:
 
-## What was decisive
+**PASS as a visual-direction proof.  
+FAIL as a production-promotion candidate.**
 
-### Useful / validated
+## Decisive rejected follow-up: complete CC0 hero glTF
 
-- CC0 PBR material staging is a real improvement over synthetic flat materials.
-- The bounded-cell workflow is correct.
-- Blockout → frame validation before final art prevented wasting effort on the rejected v1 massing.
-- Gameplay-safe visual replacement with matched BEFORE / AFTER evidence works.
-- Re-surfacing an existing district can improve coherence without changing topology.
+After the best checkpoint, a complete Poly Haven hero-fort glTF was staged and validated with full dependencies.
 
-### Insufficient
+Evidence:
 
-- procedural / primitive-based hero architecture;
-- merely re-materialing the existing Bastion silhouette;
-- using material quality to compensate for low-detail structural geometry;
-- trying to reach the premium benchmark without at least one genuinely higher-quality authored hero architecture family.
+- experimental head: `7936001ed2862990dd88724b0aadda0f6143ddaf`
+- run: `36786986339 — SUCCESS`
+- artifact: `11130336527`
 
-## Pipeline implication
+Visual verdict: **REJECTED**.
 
-The experiment invalidates the assumption that a new material stack plus improved composition is enough to create the requested generational jump.
+The imported fort increases authored geometry but breaks the strongest qualities of the Golden Cell:
 
-For the next proof, the order should remain:
+- fragmented silhouette;
+- weaker military hierarchy;
+- too many disconnected wall/tower components;
+- worse readability at official zoom;
+- reads again as an asset collection instead of one coherent Bastion/access.
 
-1. bounded Golden Cell;
-2. blockout and camera proof;
-3. coherent PBR surface system;
-4. **one genuinely higher-grade authored hero architecture set** for the Bastion/access;
-5. only then supporting modular architecture and life;
-6. performance after the visual bar is proven.
+This proves that “more detailed imported geometry” is not enough. Correct fortress silhouette, coherent composition and material integration remain mandatory.
 
-Do not rebuild all Valoria, do not propagate this cell, and do not spend Tripo credits automatically.
+## Pipeline consequence
+
+Keep permanently:
+
+1. bounded Golden Cell before citywide propagation;
+2. blockout/camera proof before final art;
+3. same-scene BEFORE / AFTER at 19 / 12 / 9 / mobile;
+4. visual layer independent from gameplay topology;
+5. collider/hotspot equality gate;
+6. coherent PBR material families;
+7. terrain/architecture integration;
+8. explicit rejection of assets that are technically valid but visually regress the composition.
+
+Do **not** keep as production assumptions:
+
+1. “more assets = better visuals”;
+2. “more triangles = better Bastion”;
+3. material replacement without composition;
+4. citywide propagation before one cell is convincingly solved;
+5. preserving every legacy visual shell merely because its gameplay logic is certified.
+
+## Next production experiment
+
+The next step is **not** to keep iterating this branch blindly and **not** to merge it.
+
+Create a new isolated production proof that reuses the validated principles from `3b5764e…`:
+
+- coherent surface family;
+- processional route hierarchy;
+- rock/architecture seam treatment;
+- human-scale support architecture;
+- controlled warm/cool lighting;
+- gameplay-authority separation;
+
+but rebuilds those principles as **reusable production modules/material systems**, not hand-authored Golden Cell geometry.
+
+The new proof must answer one question:
+
+> Can the Golden Cell visual language be reproduced from reusable production components without losing the improvement?
+
+Only after that passes should anything move toward Valoria production.
 
 ## Final disposition
 
-- branch remains experimental;
-- `main` remains untouched;
-- no production promotion;
-- result: **VISUAL FAIL** under the requested “new category, not Eldoria improved” standard.
-
-
-## Final strict proof
-
-The decisive final comparison deliberately hides **only the legacy Bastion renderers** inside the isolated experiment while leaving the Bastion gameplay hotspot/collider and all authoritative topology unchanged. The Golden Cell hero fort then becomes the visual focal point.
-
-This is the important diagnostic result: the previous Bastion visual representation itself was part of the artistic ceiling. Surrounding a lower-category hero asset with better surfaces was not enough; replacing the hero visual language together with the material system was.
-
-Final successful Unity evidence:
-- run: **36783595411 — SUCCESS**
-- artifact: **11129220413**
-- visual code: **3b5764ea786af415fb918e98da83dd7f893d715e**
-- official captures: **19 / 12 / 9 / mobile**
-- same-scene gameplay signature: **unchanged**
-- Tripo credits: **0**
-- paid assets: **0**
-
-### Pipeline consequence
-
-The following assumptions are invalidated for a higher-category Valoria rebuild:
-
-1. preserving the existing Bastion visual shell as an untouchable hero asset;
-2. expecting procedural primitive-heavy architecture plus synthetic pattern materials to carry final-quality hero structures;
-3. solving the quality ceiling through dressing, density or lighting before replacing the visual language of the focal architecture.
-
-The reusable part of the current pipeline is the **camera-first validation, independent gameplay topology, same-scene collider/hotspot gate and cell-by-cell promotion discipline**. The artistic base itself must be allowed to change.
-
-
-## Final exploratory closure — OriginalHero rejected
-
-After the material-unified Golden Cell checkpoint, the existing internal asset
-`Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx` was tested as the next higher-detail hero architecture candidate.
-
-Two isolated variants were rendered:
-
-- original proportions;
-- widened / vertically compressed gameplay proportions.
-
-Both variants preserved gameplay authority and passed the isolated capture workflow, but both were rejected visually.
-
-Reason:
-
-- the fragment has more geometric detail than the current Bastion;
-- however, its dominant silhouette reads as civic manor / tower-house rather than a fortified Bastion;
-- scaling cannot change that architectural language;
-- the result weakens military hierarchy even when material integration is acceptable.
-
-Therefore `OriginalHero` is **not** a valid Bastion replacement.
-
-### Best-known Golden Cell checkpoint
-
-The branch has been restored to the best-known visual configuration:
-
-- code checkpoint restored from: `3b5764ea786af415fb918e98da83dd7f893d715e`;
-- restoration commit: `977d3cf94e6563fbd6c08cdab563d0e25328dfd7`;
-- successful evidence run for the best checkpoint: `36783595411`;
-- artifact: `11129220413`.
-
-This checkpoint remains the **best current experimental reference**, but still does not satisfy the owner's category-jump threshold and is not approved for production propagation.
-
-The next credible route is no longer material tuning or reshaping existing hero studies. It requires a genuinely fortress-specific, higher-grade authored Bastion/access family.
+- visual direction: **PROVEN**
+- production readiness: **NOT PROVEN**
+- branch: remains experimental
+- `main`: unchanged
+- production promotion: **NO**
+- canonical visual checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`
+- canonical run: `36783595411`
+- canonical artifact: `11129220413`
+- final verdict: **VISUAL PROOF PASS / NO PRODUCTION**
