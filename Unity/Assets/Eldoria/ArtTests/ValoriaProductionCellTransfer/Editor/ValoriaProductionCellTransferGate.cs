@@ -99,6 +99,7 @@ namespace Eldoria.EditorTools
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0,\n"+
                 "  \"paid_assets\": 0,\n"+
+                "  \"suppressed_legacy_renderers\": "+SuppressedLegacyRenderers+",\n"+
                 "  \"before_metrics\": "+BeforeMetrics+",\n"+
                 "  \"after_metrics\": "+AfterMetrics+"\n"+
                 "}\n");
@@ -282,25 +283,43 @@ namespace Eldoria.EditorTools
     {
         static Transform Root;
         static Material Stone,StoneDark,BastionStone,Cobble,Dirt,Wood,Roof,Metal,Moss,Plaster,Blue,Gold,Corrupt;
+        static int SuppressedLegacyRenderers;
 
         public static void Build()
         {
             Root=new GameObject("VALORIA PRODUCTION CELL · finished v2 hero replacement proof").transform;
-            HideOldBastionVisuals();
+            HideLegacyCellVisuals();
             SetupMaterials();
             SetupLighting();
-            UnifyExistingBastionSurface();
 
-            // Replace only the cell's visual read. Gameplay/colliders remain untouched.
+            // Replace the selected production cell as one coherent visual layer.
+            // Gameplay colliders/hotspots remain in the authoritative layer underneath.
             BuildTerraceAndPlaza();
             BuildProcessionalAccess();
-            BuildGateWings();
+            BuildHeroCitadel();
             BuildRockArchitectureTransition();
             BuildResidence();
             BuildWorkshop();
             BuildHeraldry();
             BuildVegetationAndLife();
             BuildCorruptionHint();
+            CompactStaticVisuals();
+        }
+
+        static void HideLegacyCellVisuals()
+        {
+            SuppressedLegacyRenderers=0;
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled)continue;
+                var b=r.bounds;
+                var p=b.center;
+                var s=b.size;
+                if(Mathf.Abs(p.x)>7.25f||p.z<1.45f||p.z>10.9f||p.y>11.5f)continue;
+                if(s.x>20f||s.z>20f)continue; // never suppress terrain/world backdrop.
+                r.enabled=false;
+                SuppressedLegacyRenderers++;
+            }
         }
 
         static void HideOldBastionVisuals()
@@ -387,9 +406,7 @@ namespace Eldoria.EditorTools
                 l.transform.rotation=Quaternion.Euler(47f,-35f,0f);
             }
 
-            WarmLight("GC · gate fire",new Vector3(0f,3.2f,4.7f),6.0f,1.55f);
-            WarmLight("GC · residence hearth",new Vector3(-7.4f,2.2f,-.9f),4.5f,1.9f);
-            WarmLight("GC · workshop hearth",new Vector3(7.5f,2.1f,-1.0f),4.7f,2.0f);
+            WarmLight("PC · gate fire",new Vector3(0f,3.35f,4.65f),6.2f,1.45f);
         }
 
         static void BuildTerraceAndPlaza()
@@ -425,6 +442,75 @@ namespace Eldoria.EditorTools
                     BeveledBlock("GC · stair edge east "+i,new Vector3(2.25f,y+.16f,z),
                         new Vector3(.25f,.55f,.62f),Stone,.04f);
                 }
+            }
+        }
+
+        static void BuildHeroCitadel()
+        {
+            // Purpose-built production hero: strong central keep + flanking towers + deep gate.
+            // Metric access remains the separate processional stair/threshold layer.
+            var keep=new Vector3(0f,5.05f,7.25f);
+            BeveledBlock("PC · hero keep",keep,new Vector3(4.9f,5.25f,3.75f),BastionStone,.15f);
+            BeveledBlock("PC · hero keep plinth",keep+new Vector3(0,-2.68f,0),new Vector3(5.45f,.42f,4.15f),StoneDark,.08f);
+            GableRoof("PC · hero keep roof",keep+new Vector3(0,2.62f,0),5.55f,4.30f,1.38f,0f);
+
+            for(int side=-1;side<=1;side+=2)
+            {
+                float x=side*3.75f;
+                var tower=new Vector3(x,4.42f,6.72f);
+                BeveledBlock("PC · flank tower "+side,tower,new Vector3(2.72f,4.35f,3.05f),Stone,.14f);
+                BeveledBlock("PC · flank tower plinth "+side,tower+new Vector3(0,-2.25f,0),new Vector3(3.06f,.36f,3.34f),StoneDark,.07f);
+                GableRoof("PC · flank roof "+side,tower+new Vector3(0,2.16f,0),3.22f,3.46f,1.08f,side*4f);
+                BeveledBlock("PC · tower buttress "+side,tower+new Vector3(side*1.58f,-.45f,-.35f),new Vector3(.58f,3.65f,.92f),StoneDark,.07f);
+                BeveledBlock("PC · blue standard "+side,new Vector3(x-side*.18f,5.1f,5.05f),new Vector3(.48f,1.65f,.06f),Blue,.02f);
+                BeveledBlock("PC · gold standard cap "+side,new Vector3(x-side*.18f,6.02f,5.02f),new Vector3(.58f,.12f,.08f),Gold,.02f);
+            }
+
+            BeveledBlock("PC · west connector",new Vector3(-2.45f,3.52f,6.35f),new Vector3(2.15f,2.55f,2.72f),Stone,.10f);
+            BeveledBlock("PC · east connector",new Vector3(2.45f,3.52f,6.35f),new Vector3(2.15f,2.55f,2.72f),Stone,.10f);
+
+            BuildArch("PC · monumental gate",new Vector3(0f,3.18f,4.12f),2.42f,2.55f,.72f,Stone);
+            BeveledBlock("PC · gate recess",new Vector3(0f,3.15f,4.56f),new Vector3(3.38f,3.08f,.34f),StoneDark,.04f);
+            BeveledBlock("PC · gate leaves",new Vector3(0f,2.92f,4.30f),new Vector3(2.72f,2.62f,.16f),Wood,.025f);
+
+            for(int row=0;row<2;row++)
+            for(int side=-1;side<=1;side+=2)
+                BeveledBlock("PC · keep slit "+row+" "+side,
+                    new Vector3(side*1.18f,4.65f+row*1.15f,5.33f),
+                    new Vector3(.22f,.64f,.09f),Metal,.01f);
+
+            BeveledBlock("PC · gate threshold",new Vector3(0f,2.63f,4.30f),new Vector3(5.0f,.14f,1.20f),Cobble,.04f);
+        }
+
+        static void CompactStaticVisuals()
+        {
+            var groups=new Dictionary<Material,List<MeshFilter>>();
+            foreach(var mf in Root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if(mf==null||mf.sharedMesh==null)continue;
+                var mr=mf.GetComponent<MeshRenderer>();
+                if(mr==null||!mr.enabled||mr.sharedMaterials.Length!=1||mr.sharedMaterial==null)continue;
+                if(!groups.TryGetValue(mr.sharedMaterial,out var list)){list=new List<MeshFilter>();groups[mr.sharedMaterial]=list;}
+                list.Add(mf);
+            }
+            int batch=0;
+            foreach(var pair in groups)
+            {
+                if(pair.Value.Count<2)continue;
+                var combines=new CombineInstance[pair.Value.Count];
+                for(int i=0;i<pair.Value.Count;i++)
+                {
+                    combines[i]=new CombineInstance{mesh=pair.Value[i].sharedMesh,transform=pair.Value[i].transform.localToWorldMatrix};
+                    pair.Value[i].GetComponent<MeshRenderer>().enabled=false;
+                }
+                var mesh=new Mesh{name="PC combined "+batch,indexFormat=IndexFormat.UInt32};
+                mesh.CombineMeshes(combines,true,true,false);
+                mesh.RecalculateBounds();
+                var go=new GameObject("PC · combined material batch "+batch++);
+                go.transform.SetParent(Root,true);
+                go.AddComponent<MeshFilter>().sharedMesh=mesh;
+                var mr=go.AddComponent<MeshRenderer>();mr.sharedMaterial=pair.Key;
+                mr.shadowCastingMode=ShadowCastingMode.On;mr.receiveShadows=true;
             }
         }
 
@@ -537,7 +623,7 @@ namespace Eldoria.EditorTools
             {
                 var p=new Vector3(-5.8f+i*2.9f,.74f,-2.55f+(i%2)*.30f);
                 BeveledBlock("GC · bollard "+i,p,new Vector3(.22f,.78f,.22f),StoneDark,.04f);
-                if(i%2==0)WarmLight("GC · plaza lantern "+i,p+new Vector3(0,.65f,0),2.8f,.8f);
+                if(i==2)WarmLight("PC · plaza lantern",p+new Vector3(0,.65f,0),2.8f,.72f);
             }
 
             // Human-scale silhouettes.
@@ -557,8 +643,8 @@ namespace Eldoria.EditorTools
                     new Vector3(.52f,.08f,1.05f),Corrupt,.015f);
                 scar.transform.rotation=Quaternion.Euler(0,-24f+i*9f,0);
             }
-            var glow=new GameObject("GC · distant corruption glow").AddComponent<Light>();
-            glow.transform.SetParent(Root);glow.type=LightType.Point;glow.range=6.8f;glow.intensity=1.15f;
+            var glow=new GameObject("PC · distant corruption glow").AddComponent<Light>();
+            glow.transform.SetParent(Root);glow.type=LightType.Point;glow.range=5.4f;glow.intensity=.72f;
             glow.color=new Color(.52f,.16f,.68f);glow.transform.position=new Vector3(11.6f,1.0f,8.8f);
         }
 
@@ -692,7 +778,7 @@ namespace Eldoria.EditorTools
             var diff=Resources.Load<Texture2D>("Valoria/ProductionCellExternal/"+prefix+"_diff");
             if(diff==null)return Procedural(prefix=="stone"?"stone":"ground",tint,smooth);
             var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            var m=new Material(shader){name="Valoria Production Cell PBR · "+prefix};
+            var m=new Material(shader){name="Valoria Production Cell PBR · "+prefix,enableInstancing=true};
             if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
             if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
             if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",diff);m.SetTextureScale("_BaseMap",tiling);}
@@ -745,7 +831,7 @@ namespace Eldoria.EditorTools
             }
             tex.SetPixels(px);tex.Apply(true,false);
             var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            var m=new Material(shader){name="Valoria Production Cell procedural · "+kind};
+            var m=new Material(shader){name="Valoria Production Cell procedural · "+kind,enableInstancing=true};
             if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",Color.white);
             if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",tex);m.SetTextureScale("_BaseMap",new Vector2(3.2f,3.2f));}
             if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);
