@@ -34,7 +34,13 @@ jobs:
           if(!req.enabled){ console.log('TRIPO_PREFLIGHT=DISABLED'); emit('false'); process.exit(0); }
           if(['stage_upload','generate'].includes(req.mode)){
             const ingressException = req.input_transport==='chatgpt_exact_input' && req.temporary_ingress_exception===true;
-            if(req.input_transport!=='repo_exact_input' && !ingressException) throw new Error('Production Tripo input must use repo_exact_input unless an explicit temporary exact-byte ingress exception is declared.');
+            const runnerFallback = req.input_transport==='runner_fallback' && req.search_downloads_for_sha===true && !!req.upload_sha256 && Number(req.upload_size_bytes)>0;
+            if(req.input_transport!=='repo_exact_input' && !ingressException && !runnerFallback) throw new Error('Production Tripo input must use repo_exact_input, or an explicitly SHA-locked runner fallback.');
+            if(runnerFallback){
+              console.log('TRIPO_PREFLIGHT=SHA_LOCKED_RUNNER_FALLBACK');
+              emit('true');
+              process.exit(0);
+            }
             if(ingressException){
               if(!req.probe_chatgpt_file_id) throw new Error('temporary ChatGPT ingress requires probe_chatgpt_file_id.');
               console.log('TRIPO_PREFLIGHT=TEMP_CHATGPT_EXACT_INPUT_EXCEPTION');
