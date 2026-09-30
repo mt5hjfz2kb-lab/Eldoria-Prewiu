@@ -22,6 +22,7 @@ def parse_args():
     p.add_argument("--split-components-dir", default="")
     p.add_argument("--split-min-triangles", type=int, default=250)
     p.add_argument("--split-cluster-count", type=int, default=0)
+    p.add_argument("--split-salvage-config", default="")
     return p.parse_args(argv)
 
 def mesh_objects():
@@ -489,7 +490,40 @@ def _normalize_bottom_center(obj):
     obj.location = (0.0, 0.0, 0.0)
     return [round(maxx-minx,6), round(maxy-miny,6), round(maxz-minz,6)]
 
-def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0):
+def _salvage_group_members(members, cfg, group_index):
+    if not cfg or not cfg.get("enabled", False):
+        return members, {"enabled": False}
+    selected = set(int(x) for x in cfg.get("piece_indices", []))
+    if selected and int(group_index) not in selected:
+        return members, {"enabled": False, "reason": "piece_not_selected"}
+    rows = sorted([(o, tri_count(o)) for o in members], key=lambda x: x[1], reverse=True)
+    if not rows:
+        return members, {"enabled": True, "removed": [], "kept": []}
+    largest = rows[0][1]
+    ratio = float(cfg.get("min_component_ratio", 0.08))
+    floor = int(cfg.get("min_component_triangles", 120))
+    threshold = max(floor, int(round(largest * ratio)))
+    kept=[]; removed=[]
+    for o,t in rows:
+        if t >= threshold: kept.append(o)
+        else: removed.append((o,t))
+    # Never erase a whole clustered piece.
+    if not kept:
+        kept=[rows[0][0]]
+        removed=rows[1:]
+    for o,t in removed:
+        bpy.data.objects.remove(o, do_unlink=True)
+    return kept, {
+        "enabled": True,
+        "policy": "disconnected_residue_only",
+        "threshold_triangles": threshold,
+        "largest_component_triangles": largest,
+        "kept_components": len(kept),
+        "removed_components": len(removed),
+        "removed_triangles": sum(t for _,t in removed),
+    }
+
+def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0, salvage_cfg=None):
     if not output_dir:
         return {"enabled": False, "pieces": []}
     os.makedirs(output_dir, exist_ok=True)
@@ -517,7 +551,8 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0):
         exported = []
         group_rows = []
         for index, group in enumerate(groups, start=1):
-            obj = _join_group(group["members"], f"Eldoria_MultiPiece_Group_{index:02d}")
+            members, salvage = _salvage_group_members(group["members"], salvage_cfg, index)
+            obj = _join_group(members, f"Eldoria_MultiPiece_Group_{index:02d}")
             tris = tri_count(obj)
             bounds = _normalize_bottom_center(obj)
             safe = f"piece_{index:02d}_{tris}tris.glb"
@@ -546,6 +581,7 @@ def split_components_to_glbs(output_dir, min_triangles=250, cluster_count=0):
                 "triangles": tris,
                 "bounds": bounds,
                 "sheet_center_xy": [round(group["center"].x,6), round(group["center"].y,6)],
+                "salvage": salvage,
             })
 
         return {
@@ -679,7 +715,8 @@ def main():
     )
     # Optional reusable multipiece extraction runs after the canonical combined export so
     # per-piece pivot normalization cannot alter the certified combined geometry.
-    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles, a.split_cluster_count)
+    salvage_cfg = load_refine_config(a.split_salvage_config)
+    multipiece = split_components_to_glbs(a.split_components_dir, a.split_min_triangles, a.split_cluster_count, salvage_cfg)
     report = {
         "target_triangles": target,
         "accepted_range": [min_tris, max_tris],
