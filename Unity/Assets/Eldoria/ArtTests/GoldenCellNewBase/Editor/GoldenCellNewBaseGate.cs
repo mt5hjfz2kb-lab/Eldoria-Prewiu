@@ -258,7 +258,7 @@ namespace Eldoria.EditorTools
 
         public static void Build()
         {
-            Root=new GameObject("GOLDEN CELL · finished v5 forest-horizon proof").transform;
+            Root=new GameObject("GOLDEN CELL · finished v6 clean-valley proof").transform;
             SetupMaterials();
             SetupLighting();
             UnifyExistingBastionSurface();
@@ -414,7 +414,9 @@ namespace Eldoria.EditorTools
                 new Vector3(68f,.22f,54f),grass,.01f);
 
             var art=ValoriaExternalAssetLibrary.Load();
-            var tree=art!=null?(art.SlavicTree!=null?art.SlavicTree:art.SlavicTreeTall):null;
+            var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
+            var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
+            var tree=treeA!=null?treeA:treeB;
             var boulder=art!=null?(art.SlavicBoulder!=null?art.SlavicBoulder:art.SlavicFlatRock):null;
 
             // A shallow rear carpet sits just above the old debug/world plane so the horizon remains natural.
@@ -437,7 +439,8 @@ namespace Eldoria.EditorTools
                 };
                 foreach(var s in specs)
                 {
-                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · forest pine",tree,
+                    var source=((Mathf.Abs(s.x)*10f)%2f)<1f && treeB!=null?treeB:tree;
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · forest pine",source,
                         new Vector3(s.x,.08f,s.y),1.50f*s.w,4.35f*s.w,
                         Quaternion.Euler(0f,s.z,0f),new Color(.40f,.51f,.37f,1f));
                     if(go==null)continue;
@@ -460,7 +463,8 @@ namespace Eldoria.EditorTools
                 };
                 foreach(var s in backSpecs)
                 {
-                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · back forest pine",tree,
+                    var source=((Mathf.Abs(s.x)*10f)%2f)>=1f && treeB!=null?treeB:tree;
+                    var go=ValoriaKit.BenchmarkPieceModulated("GC ENV · back forest pine",source,
                         new Vector3(s.x,.06f,s.y),1.40f*s.w,4.65f*s.w,
                         Quaternion.Euler(0f,s.z,0f),new Color(.31f,.41f,.30f,1f));
                     if(go==null)continue;
@@ -493,9 +497,10 @@ namespace Eldoria.EditorTools
             string[] markers={
                 "reused civil house","upper civil house fallback","west rebuilders home",
                 "west rebuilders upper dwelling","upper dwelling",
-                // The old SM_Mountains_11 silhouettes are the giant grey polygons visible behind
-                // the new forest valley. Golden Cell owns its own forest/fog horizon, so hide them here only.
-                "valoria · distant mountain"
+                // Golden Cell owns its own ground/horizon inside the experiment.
+                "valoria · distant mountain",
+                "valoria · hero frame valley terrain",
+                "valoria · hero frame buried ridge"
             };
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
