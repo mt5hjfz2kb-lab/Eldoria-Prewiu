@@ -7,6 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+// Surface Cell v5 validation retrigger: workflow restored after isolated CC0 staging YAML failure.
 namespace Eldoria.EditorTools
 {
     // Stone Architecture v1 integration evidence is captured here with identical cameras and topology signatures.
