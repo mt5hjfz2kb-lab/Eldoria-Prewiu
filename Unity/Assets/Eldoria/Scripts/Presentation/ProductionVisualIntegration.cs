@@ -493,8 +493,17 @@ namespace Eldoria.Presentation
             var text=new GameObject("4X · "+label+" semantic label").AddComponent<TextMesh>();
             text.transform.SetParent(root,true);text.transform.position=p+new Vector3(0,.38f,-radius-.22f);
             text.transform.rotation=Quaternion.LookRotation(new Vector3(-20,-24,22));
-            text.text=label;text.fontSize=48;text.characterSize=.075f;text.anchor=TextAnchor.MiddleCenter;
-            text.color=new Color(.87f,.81f,.66f);
+            text.text=label;text.fontSize=64;text.characterSize=.10f;text.anchor=TextAnchor.MiddleCenter;
+            text.color=new Color(.94f,.88f,.72f);
+            // Strategic identity must survive the pale terrain at the mobile/far zooms.
+            // A small camera-aligned backing follows the fixed view; it owns no interaction.
+            var backing=GameObject.CreatePrimitive(PrimitiveType.Quad);
+            backing.name="4X · "+label+" label backing";
+            backing.transform.SetParent(root,true);
+            backing.transform.SetPositionAndRotation(text.transform.position+text.transform.forward*.02f,text.transform.rotation);
+            backing.transform.localScale=new Vector3(Mathf.Max(.92f,label.Length*.145f+.18f),.34f,1);
+            backing.GetComponent<Renderer>().sharedMaterial=ValoriaKit.Material(new Color(.035f,.04f,.032f));
+            backing.GetComponent<Collider>().enabled=false;
         }
         static void Primitive(string name,PrimitiveType type,Vector3 p,Vector3 size,Color color)
         {
