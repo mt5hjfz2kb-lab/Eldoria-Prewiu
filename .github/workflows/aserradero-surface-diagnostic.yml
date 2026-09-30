@@ -1,12 +1,7 @@
-name: Aserradero surface diagnostic
+name: "[LEGACY] Aserradero surface diagnostic"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/aserradero-surface-diagnostic.yml'
-      - 'Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb'
 
 permissions:
   contents: read
