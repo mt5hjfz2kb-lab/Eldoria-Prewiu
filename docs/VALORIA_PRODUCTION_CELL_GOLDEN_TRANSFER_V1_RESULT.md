@@ -1,174 +1,152 @@
 # Valoria Production Cell — Golden Transfer v1 — Final Result
 
 Date: 2026-10-01  
-Base main HEAD: `9da483e4ea1b9780b1afc22ad610c6c0289ed0f9`  
+Base main HEAD at branch creation: `9da483e4ea1b9780b1afc22ad610c6c0289ed0f9`  
 Experimental branch: `visual-proof/valoria-production-cell-golden-transfer-v1`
 
 ## Final verdict
 
-**TRANSFER PASS / NO MERGE.**
+**VISUAL FAIL / NO MERGE / NO PRODUCTION**
 
-This experiment answers the transfer question successfully:
+The transfer mechanics are technically valid, but the production-zone result does **not** retain the category jump required by the benchmark.
 
-> Can the visual language proven in the Golden Cell be recreated on the real production Valoria scene without changing gameplay authority?
+## Exact production cell tested
 
-**Yes.**
+- Bastion;
+- processional access / stairs;
+- lower plaza;
+- immediate civic terrace;
+- rock ↔ architecture seams.
 
-It does **not** answer the production-promotion question:
+The gameplay layer remained authoritative. Visual renderers were replaced/suppressed only inside the selected cell; colliders, hotspots, routes and navigation ownership were not transferred to the art layer.
 
-> Is this exact implementation ready to be merged and propagated citywide?
+## Canonical final evidence
 
-**No.**
+Final successful Unity validation:
 
-## Canonical evidence
-
-Successful transfer run: **36786910345 — SUCCESS**  
-Artifact: **11129683214**  
-Validated source HEAD: `ad32df3609f0162c2384c9494b0650dd02d2d74a`
-
-Golden Cell reference used for fidelity comparison:
-
-- validated visual checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`
-- run: **36783595411 — SUCCESS**
-- artifact: **11129220413**
-
-The production AFTER reproduces the useful Golden Cell result at the official framings:
-
-- orthographic 19;
-- orthographic 12;
-- orthographic 9;
-- mobile 390×844.
-
-## Gameplay / topology safety
-
+- proof HEAD: `9a66ceff4ac0bed3dca86e7335763fee5ef1576a`
+- run: **36787683142 — SUCCESS**
+- artifact: **11130876302**
 - same-scene BEFORE / AFTER: **true**
 - collider + hotspot signature equal: **true**
-- gameplay topology changed: **false**
 - Tripo credits: **0**
 - paid assets: **0**
+- official captures: **zoom 19 / 12 / 9 / mobile 390×844**
 
-The experiment therefore proves that Eldoria can replace or overlay the visual layer of a real production cell while leaving authoritative gameplay intact.
-
-## Render metrics
+## Render metrics — final attempt
 
 | Metric | BEFORE | AFTER | Delta |
 | --- | ---: | ---: | ---: |
-| triangles | 1,574,646 | 1,594,962 | +20,316 |
-| active renderers | 1,199 | 1,588 | +389 |
-| unique materials | 629 | 627 | -2 |
-| lights | 22 | 29 | +7 |
+| triangles | 1,574,646 | 1,171,138 | **-403,508 (-25.6%)** |
+| active renderers | 1,199 | 1,038 | **-161 (-13.4%)** |
+| unique material instances | 629 | 576 | **-53 (-8.4%)** |
+| lights | 22 | 25 | +3 |
 
-Interpretation:
+The final attempt therefore solved the structural cost problem that existed in the first transfer attempt. The fail is visual, not technical/performance-by-count.
 
-- triangle growth is modest for the local visual gain;
-- unique materials do not increase;
-- **renderer growth is too high for a citywide production pattern**;
-- editor counts are not a substitute for Android device profiling.
+## Attempt history
 
-So the visual recipe transfers, but the current helper-heavy implementation must be rebuilt more efficiently.
+### Attempt 1 — literal Golden transfer
 
-## What transferred successfully
+Run **36786910345**, artifact **11129683214**.
 
-The useful visual gain comes from the combination of:
+Technical safety passed, but the frame still read as **“Eldoria improved”** and the implementation added too many small renderers:
 
-1. coherent PBR stone / ground / wood / roof / metal / plaster / moss families;
-2. processional stair → terrace → fortified focal hierarchy;
-3. rock ↔ architecture transition instead of flat placement;
-4. human-scale residential/productive support;
-5. restrained blue/gold identity;
-6. controlled warm local light against cooler ambience;
-7. freedom to change the visual shell while preserving gameplay objects underneath.
+- triangles: 1,574,646 → 1,594,962;
+- renderers: 1,199 → 1,588;
+- materials: 629 → 627;
+- lights: 22 → 29.
 
-This is the production lesson.
+It was rejected.
 
-## What must NOT be copied into production
+### Attempt 2 — complete visual-cell replacement
 
-Do not propagate:
+Run **36787683142**, artifact **11130876302**.
 
-- primitive/bevel helper construction as final architecture;
-- one GameObject/renderer per small edge/detail;
-- the experimental point-light count;
-- hand-authored one-off placement as a citywide authoring model;
-- the current visual implementation merely because transfer fidelity passed.
+Changes:
 
-The +389 active renderer delta is the clearest warning.
+- legacy renderers in the selected cell are suppressed while gameplay remains;
+- one coherent PBR family drives stone / ground / wood / roof / metal / plaster / moss;
+- Bastion/access/plaza/terrace are rebuilt as one visual composition;
+- static generated meshes are combined by shared material;
+- instancing is enabled on shared materials;
+- local light count is reduced;
+- atmospheric separation remains restrained.
 
-## Production conversion required
+This version substantially improves the render structure, but the hero architecture still reads as procedural/blockout geometry. At zoom 12 and mobile, the silhouette, roof construction, openings and secondary forms do not reach premium authored-architecture quality. PBR surfaces cannot compensate for insufficient hero source geometry.
 
-Before any merge, rebuild the Golden/Transfer recipe as reusable production systems:
+## Unity systems evaluated / used
 
-### A. Surface families
-Create shared production materials for:
+### Useful and retained as principles
 
-- fortress stone;
-- retaining / dark foundation stone;
-- cobble / paved ground;
-- packed earth;
-- timber;
-- slate / roof;
-- metal;
-- plaster;
-- moss / rock transition.
+- **URP/Lit shared PBR material family** — meaningful surface/cohesion gain.
+- **Normal + AO + diffuse maps** — meaningful upgrade from synthetic flat materials.
+- **Shared materials + GPU instancing** — correct production structure.
+- **Static mesh combination by material** — reduced renderer count materially.
+- **Fog / atmospheric perspective** — useful for depth, secondary to architecture.
+- **Restrained warm local light** — hierarchy support only.
+- **Visual-layer replacement independent of gameplay layer** — technically validated and essential.
 
-Use shared materials, atlas/trim approaches where appropriate, and measured variation rather than unique material proliferation.
+### Not used because they do not solve the dominant blocker yet
 
-### B. Architecture modules
-Replace helper blocks with reusable authored modules for:
+- Shader Graph;
+- decals;
+- baked lightmaps;
+- Light Probes;
+- Reflection Probes;
+- LODGroup;
+- Terrain replacement for the city cell.
 
-- Bastion/access façade;
-- gate/arch;
-- retaining wall;
-- stair/landing;
-- terrace edge;
-- rock ↔ wall seam;
-- residential frontage;
-- productive frontage.
+Those remain valid tools, but adding them now would polish geometry that still fails the hero-architecture bar.
 
-The modules must be composable under the existing gameplay topology.
+## What actually changed quality
 
-### C. Renderer reduction
-The production proof must substantially reduce renderer count versus this transfer while preserving the visual read. Candidate techniques include:
+The positive changes were:
 
-- combined modular meshes where logical;
-- shared material batching;
-- GPU instancing for repeated props/vegetation where beneficial;
-- fewer helper edge objects;
-- authored mesh detail instead of many tiny primitives.
+1. coherent PBR surfaces instead of flat/synthetic materials;
+2. a clearer Bastion → stair → plaza/terrace hierarchy;
+3. continuous rock ↔ retaining architecture;
+4. removal of mixed legacy visual shells inside the converted cell;
+5. less dependence on point lights;
+6. a renderer-efficient visual replacement strategy.
 
-Do not adopt any optimization blindly; measure the actual result.
+The remaining dominant blocker is **hero architecture source quality**.
 
-### D. Same acceptance discipline
-Every production conversion still requires:
+## Pipeline conclusions / invalidations
 
-- official cameras 19 / 12 / 9 / mobile;
-- same-scene BEFORE / AFTER;
-- unchanged collider/hotspot signature;
-- visual review before citywide propagation;
-- performance profiling only after the visual bar is retained.
+Rejected for hero production architecture:
 
-## Rejected escalation
+- procedural cubes/beveled primitives as the final Bastion shell;
+- expecting a PBR pass to create a category jump on insufficient geometry;
+- adding density/props before the hero architecture itself is premium;
+- layering new art over legacy visual shells inside a converted cell;
+- treating a green technical gate as a visual PASS.
 
-The later complete CC0 hero-fort glTF experiment on the Golden branch was technically valid but visually worse:
+Still valid:
 
-- head: `7936001ed2862990dd88724b0aadda0f6143ddaf`
-- run: **36786986339 — SUCCESS**
-- artifact: **11130336527**
-
-It fragmented the focal architecture and weakened silhouette/hierarchy.
-
-Therefore:
-
-> More authored geometry is not automatically better. Production modules must preserve the composition proven by the best Golden Cell.
+- metric/procedural construction for circulation, stairs, terraces and connectivity;
+- shared material families;
+- visual/gameplay layer separation;
+- BEFORE/AFTER at 19/12/9/mobile;
+- collider/hotspot signature gate;
+- measured renderer/material/triangle gates.
 
 ## Main disposition
 
-Nothing from this branch is promoted to `main`.
+**Nothing from this branch is approved for main.**
 
-- transfer fidelity: **PASS**
-- gameplay safety: **PASS**
-- exact implementation production readiness: **FAIL**
-- merge: **NO**
-- citywide propagation: **NO**
-- next step: **rebuild the proven recipe as reusable, renderer-efficient production modules**
+The branch is an experimental record only. The Golden Cell branch is also not merged wholesale.
 
-This branch is now a transfer reference, not production content.
+## Next concrete step
+
+Do **not** extend the recipe across Valoria.
+
+Keep the validated production-cell replacement mechanics, PBR family, mesh compaction and gameplay-safety gate. Replace only the **hero Bastion/access source geometry** with genuinely authored geometry that survives zoom 12 and mobile.
+
+Order:
+
+`hero source geometry → real production cell → 19/12/9/mobile → collider/hotspot signature → render metrics → visual verdict`
+
+Use a free/local authored source first. Tripo remains limited to hero architecture and requires explicit authorization before any credit spend.
+
+Only after this exact cell reaches **VISUAL PASS** should the system be industrialized for the rest of Valoria.
