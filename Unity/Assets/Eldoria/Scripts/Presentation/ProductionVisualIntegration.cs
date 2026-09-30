@@ -400,24 +400,43 @@ namespace Eldoria.Presentation
 
         static void DressBastion()
         {
-            // Legacy prefab FBX file IDs lose mesh bindings under the current importer.
-            // Exact source FBX aliases restore authored masonry over the same visual envelope.
+            // Hero-frame Bastion: retain the certified functional Bastion/hotspot underneath,
+            // but replace the old generic Mega* envelope with the project's authored stone family.
+            // No visual piece below owns collision or interaction; Finish() strips both.
             Suppress("Bastion · connected", "Bastion · rear connected", "Bastion · high lantern",
                 "Bastion · keep facing fallback", "Bastion · keep side fallback", "Bastion · keep rear fallback",
                 "Bastion · dead palace wall", "Bastion · dead palace tower");
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null||art.StoneTower==null||art.StoneWall==null||art.StoneGate==null)
+                throw new InvalidOperationException("Hero-frame Bastion requires StoneTower/StoneWall/StoneGate in ExternalAssetLibrary.");
+
             var p=new Vector3(0,3.0f,7.25f);
-            foreach(var q in new[]{new Vector4(-3.28f,-2.48f,2.05f,5.85f),new Vector4(3.18f,-2.45f,1.82f,4.95f),
-                new Vector4(-2.55f,2.25f,1.85f,6.75f),new Vector4(2.45f,1.95f,1.65f,5.45f),new Vector4(-.62f,2.28f,1.62f,6.95f)})
-                Imported("Valoria · restored masonry tower","MegaTower",p+new Vector3(q.x,.08f,q.y),q.z,q.w,0,new Color(.30f,.29f,.25f),false);
-            Imported("Valoria · restored entry arch","MegaGate",p+new Vector3(0,.12f,-3.08f),2.35f,3.15f,0,new Color(.30f,.29f,.25f),false);
-            foreach(float x in new[]{-2.15f,2.15f})
-                Imported("Valoria · restored curtain masonry","MegaWall",p+new Vector3(x,.12f,-3.02f),2.55f,3.05f,0,new Color(.30f,.29f,.25f),false);
-            foreach(float x in new[]{-1.55f,1.55f})
-                Imported("Valoria · keep masonry facing","MegaWall",p+new Vector3(x,2.42f,-1.28f),3f,2.62f,0,new Color(.29f,.28f,.24f),false);
-            foreach(float x in new[]{-2.25f,2.25f})
-                Imported("Valoria · keep side masonry","MegaWall",p+new Vector3(x,2.32f,1.05f),2.75f,2.48f,90,new Color(.29f,.28f,.24f),false);
-            Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(-4.15f,.10f,3.75f),4.2f,3.15f,16,new Color(.42f,.43f,.39f),false);
-            Imported("Valoria · restored palace remnant","MegaWall",p+new Vector3(3.75f,.10f,4.20f),3.65f,2.85f,-18,new Color(.42f,.43f,.39f),false);
+
+            // Strong recessed front gate aligned to the certified stair mouth.
+            Piece("Valoria · Bastion hero gate",art.StoneGate,p+new Vector3(0,.08f,-3.00f),
+                5.15f,4.25f,0,new Color(.82f,.80f,.74f));
+
+            // Connected front/side masonry keeps the entrance legible while giving the keep a real base.
+            Piece("Valoria · Bastion hero wall west",art.StoneWall,p+new Vector3(-3.05f,.08f,-2.20f),
+                4.15f,3.55f,3,new Color(.80f,.78f,.72f));
+            Piece("Valoria · Bastion hero wall east",art.StoneWall,p+new Vector3(3.05f,.08f,-2.12f),
+                4.05f,3.45f,-4,new Color(.80f,.78f,.72f));
+            Piece("Valoria · Bastion hero wall rear",art.StoneWall,p+new Vector3(.15f,.18f,2.25f),
+                5.10f,3.70f,180,new Color(.76f,.75f,.70f));
+
+            // Asymmetric tower hierarchy: one dominant rear keep, two unequal supporting masses.
+            Piece("Valoria · Bastion hero tower crown",art.StoneTower,p+new Vector3(-.55f,.20f,1.10f),
+                4.55f,7.20f,-2,new Color(.84f,.82f,.76f));
+            Piece("Valoria · Bastion hero tower west",art.StoneTower,p+new Vector3(-3.25f,.12f,.25f),
+                3.10f,5.55f,5,new Color(.80f,.78f,.72f));
+            Piece("Valoria · Bastion hero tower east",art.StoneTower,p+new Vector3(3.05f,.10f,.65f),
+                2.85f,4.75f,-7,new Color(.78f,.77f,.71f));
+
+            // Rock-to-architecture seams break the pedestal read without creating any route/floor.
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Bastion hero rock seam west",
+                p+new Vector3(-4.15f,-2.72f,-.70f),2.55f,58f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Bastion hero rock seam east",
+                p+new Vector3(4.15f,-2.72f,-.35f),2.40f,238f);
         }
 
         static void UnifyLandscape(bool city)
@@ -497,20 +516,26 @@ namespace Eldoria.Presentation
             }
 
             // Mid-distance geology creates a second depth plane between the inhabited city and the far
-            // VisualWorld mountains. Keep the central Bastion silhouette open.
-            foreach(var spec in new[]{
-                new Vector4(-16.5f,17.0f,7.1f,11f),
-                new Vector4(15.0f,18.2f,6.7f,-18f),
-                new Vector4(-22.0f,10.5f,5.5f,29f),
-                new Vector4(21.5f,11.5f,5.2f,-34f)})
+            // VisualWorld mountains. Use the authored Valoria terrain prefabs already shipped with the project,
+            // keeping the central Bastion silhouette open and hiding the remaining flat valley edges.
+            var cliffA=Resources.Load<GameObject>("Valoria/SM_Cliffs_01");
+            var cliffB=Resources.Load<GameObject>("Valoria/SM_Cliffs_03");
+            var hill=Resources.Load<GameObject>("Valoria/SM_Hills_01");
+            if(cliffA!=null)
             {
-                Imported("Valoria · hero frame foothill","Mountain01",
-                    new Vector3(spec.x,-1.35f,spec.y),spec.z,3.75f,spec.w,new Color(.34f,.36f,.35f),false);
+                Piece("Valoria · hero frame cliff west",cliffA,new Vector3(-18.2f,-.55f,13.2f),11.8f,6.4f,18f,new Color(.65f,.66f,.62f));
+                Piece("Valoria · hero frame cliff east",cliffA,new Vector3(17.9f,-.60f,14.0f),11.2f,5.9f,-24f,new Color(.63f,.65f,.62f));
             }
-            foreach(var p in new[]{
-                new Vector3(-13.8f,-.16f,12.4f),new Vector3(12.5f,-.14f,12.9f),
-                new Vector3(-19.0f,-.18f,7.8f),new Vector3(18.2f,-.18f,8.6f)})
-                Imported("Valoria · hero frame buried ridge","Rock02",p,3.8f,1.7f,p.x*9f,new Color(.36f,.36f,.33f),false);
+            if(cliffB!=null)
+            {
+                Piece("Valoria · hero frame cliff west near",cliffB,new Vector3(-20.0f,-.62f,6.4f),8.8f,4.8f,36f,new Color(.61f,.62f,.58f));
+                Piece("Valoria · hero frame cliff east near",cliffB,new Vector3(20.2f,-.62f,7.6f),8.6f,4.6f,-32f,new Color(.61f,.62f,.58f));
+            }
+            if(hill!=null)
+            {
+                Piece("Valoria · hero frame hill rear west",hill,new Vector3(-10.8f,-.72f,18.4f),13.5f,4.0f,9f,new Color(.55f,.58f,.52f));
+                Piece("Valoria · hero frame hill rear east",hill,new Vector3(10.5f,-.74f,19.0f),13.2f,3.9f,-11f,new Color(.55f,.58f,.52f));
+            }
 
             // Inhabited middle-distance: roofs behind roofs, but never across the certified central route.
             // Existing Slavic support architecture is intentionally subordinate to the dedicated hero buildings.
