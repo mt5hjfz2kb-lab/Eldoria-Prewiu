@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "mode": "stage_upload",
+  "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "terrain-terrace-kit-v1-stage",
   "asset_name": "TerrainTerraceKit_v1",
@@ -10,8 +10,8 @@
   "upload_size_bytes": 597320,
   "visual_width": 1448,
   "visual_height": 1086,
-  "allow_credit_spend": false,
-  "authorized_credit_cost": 0,
+  "allow_credit_spend": true,
+  "authorized_credit_cost": 55,
   "approved_input_sha256": "47d4db0a40fec121f86c7c871bfd197314635976abcd87e4ad211eb098d79c71",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -19,6 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/TerrainTerraceKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "terrain-terrace-v1-exact-stage-1",
-  "notes": "User-approved exact attached JPEG. Stage zero-spend and record visible cost. No generation or gameplay changes at staging."
+  "run_nonce": "terrain-terrace-v1-generate-once-1",
+  "notes": "Owner explicitly instructs exact attached approved image through full production flow, without intermediate stops. One generation only at verified visible 55-credit cost; stage preview SHA/size match. No extra generations authorized.",
+  "prior_stage_run_id": 36733759312,
+  "prior_stage_artifact_id": 11105714637
 }
