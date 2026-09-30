@@ -1,43 +1,53 @@
 # Valoria Production Cell — Golden Transfer v1 — Final Result
 
-Date: 2026-10-01
-Base main HEAD: `9da483e4ea1b9780b1afc22ad610c6c0289ed0f9`
+Date: 2026-10-01  
+Base main HEAD: `9da483e4ea1b9780b1afc22ad610c6c0289ed0f9`  
 Experimental branch: `visual-proof/valoria-production-cell-golden-transfer-v1`
 
-## Scope
-Real production Valoria cell only:
-- Bastion visual shell / main access;
-- processional stair and immediate plaza;
-- upper civic terrace;
-- rock ↔ retaining architecture transitions;
-- small residential / productive support frontage.
+## Final verdict
 
-Gameplay topology, authoritative stairs, colliders and hotspots remain owned by the existing production scene.
+**TRANSFER PASS / NO MERGE.**
+
+This experiment answers the transfer question successfully:
+
+> Can the visual language proven in the Golden Cell be recreated on the real production Valoria scene without changing gameplay authority?
+
+**Yes.**
+
+It does **not** answer the production-promotion question:
+
+> Is this exact implementation ready to be merged and propagated citywide?
+
+**No.**
 
 ## Canonical evidence
-Final successful transfer run: **36786910345 — SUCCESS**
-Artifact: **11129683214**
-Validated source HEAD: **ad32df3609f0162c2384c9494b0650dd02d2d74a**
 
-The run produces matched same-scene BEFORE / AFTER captures at:
+Successful transfer run: **36786910345 — SUCCESS**  
+Artifact: **11129683214**  
+Validated source HEAD: `ad32df3609f0162c2384c9494b0650dd02d2d74a`
+
+Golden Cell reference used for fidelity comparison:
+
+- validated visual checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`
+- run: **36783595411 — SUCCESS**
+- artifact: **11129220413**
+
+The production AFTER reproduces the useful Golden Cell result at the official framings:
+
 - orthographic 19;
 - orthographic 12;
 - orthographic 9;
 - mobile 390×844.
 
-The Golden Cell reference used for direct fidelity comparison is:
-- visual checkpoint: `3b5764ea786af415fb918e98da83dd7f893d715e`;
-- run: **36783595411**;
-- artifact: **11129220413**.
+## Gameplay / topology safety
 
-Direct Golden AFTER ↔ production AFTER review shows the transferred cell is effectively the same visual result at all four official framings. The experiment therefore proves that the Golden Cell recipe can technically be recreated on the real production Valoria scene without changing gameplay authority.
-
-## Gameplay / topology gate
-- same-scene before / after: **true**
+- same-scene BEFORE / AFTER: **true**
 - collider + hotspot signature equal: **true**
 - gameplay topology changed: **false**
 - Tripo credits: **0**
 - paid assets: **0**
+
+The experiment therefore proves that Eldoria can replace or overlay the visual layer of a real production cell while leaving authoritative gameplay intact.
 
 ## Render metrics
 
@@ -48,81 +58,117 @@ Direct Golden AFTER ↔ production AFTER review shows the transferred cell is ef
 | unique materials | 629 | 627 | -2 |
 | lights | 22 | 29 | +7 |
 
-These are editor scene counts, not physical Android profiling. No device-performance conclusion is inferred.
+Interpretation:
 
-The renderer increase is structurally undesirable for a final production implementation and comes mainly from primitive/bevel helper construction. This must not be propagated citywide.
+- triangle growth is modest for the local visual gain;
+- unique materials do not increase;
+- **renderer growth is too high for a citywide production pattern**;
+- editor counts are not a substitute for Android device profiling.
 
-## Unity systems actually used
-- URP/Lit material base;
-- shared PBR material families for stone, cobble/ground, wood, roof, metal, plaster and moss-rock;
-- imported CC0 texture maps with mipmaps / trilinear filtering and normal-map import;
-- existing real production camera and scene;
-- visual-only renderer replacement while preserving gameplay objects;
-- directional lighting adjustment;
-- restrained warm point lights / emissive-like focal treatment;
-- linear fog / atmospheric separation;
-- shared materials rather than one material per generated piece.
+So the visual recipe transfers, but the current helper-heavy implementation must be rebuilt more efficiently.
 
-Not adopted in this proof because they were not needed to answer the transfer question:
-- new Unity Terrain ownership;
-- Shader Graph;
-- decals;
-- baked lightmaps / Light Probes / Reflection Probes;
-- LODGroup;
-- GPU-instancing-specific implementation;
-- MaterialPropertyBlock variation;
-- occlusion culling.
+## What transferred successfully
 
-Those remain candidates only where a measured production problem justifies them.
+The useful visual gain comes from the combination of:
 
-## Visual verdict
+1. coherent PBR stone / ground / wood / roof / metal / plaster / moss families;
+2. processional stair → terrace → fortified focal hierarchy;
+3. rock ↔ architecture transition instead of flat placement;
+4. human-scale residential/productive support;
+5. restrained blue/gold identity;
+6. controlled warm local light against cooler ambience;
+7. freedom to change the visual shell while preserving gameplay objects underneath.
 
-**VISUAL FAIL — do not promote to main.**
+This is the production lesson.
 
-Two separate conclusions must not be confused:
+## What must NOT be copied into production
 
-1. **TRANSFER FIDELITY: PASS.** The real production cell reproduces the best Golden Cell visual checkpoint essentially 1:1 while preserving colliders/hotspots.
-2. **PRODUCTION VISUAL ACCEPTANCE: FAIL.** Under the current owner gate, the result still reads as “Eldoria improved” rather than the requested category change. The hero architecture is stronger than main, but the surrounding generation, coarse architectural language and prototype-like support construction still expose the same ceiling.
+Do not propagate:
 
-The canonical Golden Cell documentation also records that checkpoint as diagnostic / below the final category-jump threshold. Therefore this branch must not silently reinterpret it as a production visual certification.
+- primitive/bevel helper construction as final architecture;
+- one GameObject/renderer per small edge/detail;
+- the experimental point-light count;
+- hand-authored one-off placement as a citywide authoring model;
+- the current visual implementation merely because transfer fidelity passed.
 
-## What actually improved quality
-The visible gain comes from the combination, not from density:
-- replacing the old Bastion visual representation instead of protecting it;
-- one coherent PBR surface family;
-- lighter, more readable masonry;
-- a stronger gateway / fortress hierarchy;
-- continuous stair → terrace → Bastion composition;
-- rock / wall transitions;
-- restrained blue / gold identity and warm focal light.
+The +389 active renderer delta is the clearest warning.
 
-The gain did **not** come from adding more props, more lights or Tripo geometry.
+## Production conversion required
 
-## Pipeline conclusions
+Before any merge, rebuild the Golden/Transfer recipe as reusable production systems:
 
-Keep:
-- gameplay/topology and art as independent layers;
-- blockout / frame proof before final fabrication;
-- matched 19 / 12 / 9 / mobile review;
-- same-scene collider/hotspot signature gate;
-- coherent shared PBR material families;
-- permission to replace legacy hero visuals;
-- bounded production-cell proof before citywide propagation.
+### A. Surface families
+Create shared production materials for:
 
-Invalidated for final production:
-- primitive/bevel-heavy helper geometry as final architecture;
-- treating the Golden Cell checkpoint itself as sufficient proof of a new visual category;
-- citywide propagation before the hero architecture reaches the benchmark;
-- solving the remaining gap through density or extra lights;
-- preserving the old Bastion shell because of sunk cost.
+- fortress stone;
+- retaining / dark foundation stone;
+- cobble / paved ground;
+- packed earth;
+- timber;
+- slate / roof;
+- metal;
+- plaster;
+- moss / rock transition.
 
-## Next concrete step
-Do **not** rebuild the rest of Valoria.
+Use shared materials, atlas/trim approaches where appropriate, and measured variation rather than unique material proliferation.
 
-The next proof should keep the same real production cell and replace only the remaining weak architectural layer with a genuinely higher-grade fortress-specific hero/access family, while reusing the now-proven PBR / camera / gameplay-safe transfer system.
+### B. Architecture modules
+Replace helper blocks with reusable authored modules for:
 
-Before any paid/credit generation, test zero-cost local or already-owned authored fortress candidates. Tripo remains a last escalation requiring explicit owner authorization.
+- Bastion/access façade;
+- gate/arch;
+- retaining wall;
+- stair/landing;
+- terrace edge;
+- rock ↔ wall seam;
+- residential frontage;
+- productive frontage.
+
+The modules must be composable under the existing gameplay topology.
+
+### C. Renderer reduction
+The production proof must substantially reduce renderer count versus this transfer while preserving the visual read. Candidate techniques include:
+
+- combined modular meshes where logical;
+- shared material batching;
+- GPU instancing for repeated props/vegetation where beneficial;
+- fewer helper edge objects;
+- authored mesh detail instead of many tiny primitives.
+
+Do not adopt any optimization blindly; measure the actual result.
+
+### D. Same acceptance discipline
+Every production conversion still requires:
+
+- official cameras 19 / 12 / 9 / mobile;
+- same-scene BEFORE / AFTER;
+- unchanged collider/hotspot signature;
+- visual review before citywide propagation;
+- performance profiling only after the visual bar is retained.
+
+## Rejected escalation
+
+The later complete CC0 hero-fort glTF experiment on the Golden branch was technically valid but visually worse:
+
+- head: `7936001ed2862990dd88724b0aadda0f6143ddaf`
+- run: **36786986339 — SUCCESS**
+- artifact: **11130336527**
+
+It fragmented the focal architecture and weakened silhouette/hierarchy.
+
+Therefore:
+
+> More authored geometry is not automatically better. Production modules must preserve the composition proven by the best Golden Cell.
 
 ## Main disposition
-Nothing from this experimental branch is promoted to `main`.
-Production `main` remains unchanged by this proof.
+
+Nothing from this branch is promoted to `main`.
+
+- transfer fidelity: **PASS**
+- gameplay safety: **PASS**
+- exact implementation production readiness: **FAIL**
+- merge: **NO**
+- citywide propagation: **NO**
+- next step: **rebuild the proven recipe as reusable, renderer-efficient production modules**
+
+This branch is now a transfer reference, not production content.
