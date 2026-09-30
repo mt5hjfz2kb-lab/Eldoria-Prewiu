@@ -216,46 +216,84 @@ namespace Eldoria.Presentation
 
         static void IntegrateSurfaceCell()
         {
-            // Surface Cell v1 deliberately changes no geometry or gameplay. It upgrades the existing lower civic
-            // slice only: streets/steps/retaining stone plus the dedicated Aserradero/Cuartel material response.
+            // Surface Cell v2 — no new architecture. The proof now attacks the dominant frame:
+            // coherent material families + stronger daylight hierarchy + less flattening fog.
+            RenderSettings.ambientIntensity=.72f;
+            RenderSettings.fogColor=new Color(.57f,.59f,.58f);
+            RenderSettings.fogStartDistance=37f;
+            RenderSettings.fogEndDistance=92f;
+            var camera=Camera.main;
+            if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;}
+
+            foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(light.name!="Valoria · amber dusk")continue;
+                light.color=new Color(1.0f,.88f,.72f);
+                light.intensity=1.78f;
+                light.shadowStrength=.72f;
+                light.transform.rotation=Quaternion.Euler(47f,-38f,0f);
+            }
+            var fillGo=new GameObject("Valoria · SurfaceCell · cool sky fill");
+            fillGo.transform.SetParent(root,true);
+            fillGo.transform.rotation=Quaternion.Euler(58f,142f,0f);
+            var fill=fillGo.AddComponent<Light>();
+            fill.type=LightType.Directional;
+            fill.color=new Color(.60f,.70f,.82f);
+            fill.intensity=.24f;
+            fill.shadows=LightShadows.None;
+
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
                 var centre=renderer.bounds.center;
-                if(centre.x < -10.5f || centre.x > 10.5f || centre.z < -9.2f || centre.z > 1.4f)continue;
+                if(centre.x < -20.5f || centre.x > 20.5f || centre.z < -10.2f || centre.z > 13.0f)continue;
 
                 string n=renderer.gameObject.name;
-                if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker"))continue;
+                if(n.Contains("target")||n.Contains("Hero")||n.Contains("Archer")||n.Contains("worker")||
+                   n.Contains("pine")||n.Contains("banner")||n.Contains("cloth"))continue;
 
-                if(n.Contains("GroundKit")||n.Contains("vertical stair")||n.Contains("street slab")||
-                   n.Contains("worn tread")||n.Contains("court")||n.Contains("apron"))
-                {
-                    bool earth=n.Contains("earth")||n.Contains("wear")||n.Contains("seam");
-                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        earth?new Color(.31f,.265f,.205f):new Color(.48f,.43f,.34f),
-                        earth?"earth":"stone",earth?new Vector2(4.5f,5.5f):new Vector2(4.2f,4.2f),earth?.55f:.85f);
-                    continue;
-                }
-
+                // Preserve authored texture identity on the dedicated buildings, but give their imported
+                // PBR maps a shared Valoria response and controlled value hierarchy.
                 if(n.StartsWith("Aserradero")||n.StartsWith("Cuartel"))
                 {
-                    PolishImportedSurface(renderer,n.StartsWith("Aserradero")?new Color(.93f,.86f,.73f):new Color(.88f,.86f,.79f));
+                    PolishImportedSurface(renderer,n.StartsWith("Aserradero")
+                        ?new Color(.86f,.76f,.62f):new Color(.82f,.80f,.73f));
                     continue;
                 }
 
-                if(n.Contains("rescued seam")||n.Contains("lower cliff")||n.Contains("rock wall seam")||
-                   n.Contains("TerrainTerrace")||n.Contains("retaining stone face"))
-                {
+                string lower=n.ToLowerInvariant();
+                bool roof=lower.Contains("roof")||lower.Contains("crown")||lower.Contains("slate");
+                bool wood=lower.Contains("timber")||lower.Contains("beam")||lower.Contains("post")||
+                          lower.Contains("door")||lower.Contains("log ")||lower.Contains("scaffold")||
+                          lower.Contains("plank")||lower.Contains("firewood");
+                bool earth=lower.Contains("groundkit")&&
+                          (lower.Contains("earth")||lower.Contains("wear")||lower.Contains("seam"));
+                bool stone=lower.Contains("groundkit")||lower.Contains("vertical stair")||
+                           lower.Contains("street slab")||lower.Contains("worn tread")||
+                           lower.Contains("stone")||lower.Contains("masonry")||lower.Contains("retaining")||
+                           lower.Contains("rock")||lower.Contains("wall")||lower.Contains("plinth");
+
+                if(roof)
                     renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
-                        new Color(.345f,.325f,.285f),"stone",new Vector2(3.8f,3.8f),.95f);
-                }
+                        new Color(.19f,.205f,.215f),"slate",new Vector2(5.0f,5.0f),.72f);
+                else if(wood)
+                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                        new Color(.31f,.185f,.095f),"wood",new Vector2(4.6f,4.6f),.72f);
+                else if(earth)
+                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                        new Color(.29f,.245f,.185f),"earth",new Vector2(5.2f,6.2f),.55f);
+                else if(stone)
+                    renderer.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(
+                        new Color(.46f,.405f,.325f),"stone",new Vector2(4.4f,4.4f),1.0f);
             }
 
-            // Small lighting correction over the proof cell: enough to read material relief, not a cinematic relight.
-            WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.7f,2.1f,-5.0f),
-                new Color(1.0f,.76f,.50f),.24f,4.2f);
+            // Restrained warm pools reveal the new surface response while preserving daylight gameplay readability.
+            WarmLight("Valoria · SurfaceCell · sawmill grazing warmth",new Vector3(-5.7f,2.05f,-5.0f),
+                new Color(1.0f,.72f,.43f),.34f,4.4f);
             WarmLight("Valoria · SurfaceCell · barracks grazing warmth",new Vector3(5.6f,2.0f,-5.35f),
-                new Color(1.0f,.79f,.56f),.21f,3.9f);
+                new Color(1.0f,.76f,.48f),.30f,4.1f);
+            WarmLight("Valoria · SurfaceCell · stair focal warmth",new Vector3(0f,2.25f,-.25f),
+                new Color(1.0f,.80f,.58f),.22f,4.8f);
         }
 
         static void PolishImportedSurface(Renderer renderer,Color tint)
