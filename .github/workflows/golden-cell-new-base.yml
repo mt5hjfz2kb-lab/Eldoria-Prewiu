@@ -98,43 +98,6 @@ jobs:
           Experimental branch only; not promoted to production.
           '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
 
-      - name: Stage Golden Cell CC0 PBR materials
-        shell: powershell
-        run: |
-          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\GoldenCellPBR"
-          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Force -Path $dest | Out-Null
-          $headers=@{'User-Agent'='Eldoria-GoldenCell/1.0'}
-          $assets=@(
-            @{ id='stone_block_wall'; prefix='stone' },
-            @{ id='cobblestone_floor_001'; prefix='cobble' },
-            @{ id='dirt'; prefix='dirt' }
-          )
-          foreach($asset in $assets){
-            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
-            $json=$payload | ConvertTo-Json -Depth 50
-            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
-            foreach($map in @(
-              @{ key='diff'; rx='_diff_1k\.(jpg|png)(\?|$)' },
-              @{ key='normal'; rx='_nor_gl_1k\.(jpg|png)(\?|$)' },
-              @{ key='ao'; rx='_ao_1k\.(jpg|png)(\?|$)' }
-            )){
-              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
-              if(-not $url){ if($map.key -eq 'ao'){continue}; throw "Missing $($map.key) for $($asset.id)" }
-              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
-              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
-              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
-              if((Get-Item $out).Length -lt 10000){ throw "PBR map unexpectedly small: $out" }
-            }
-          }
-          @'
-          Golden Cell experimental PBR
-          Assets: stone_block_wall, cobblestone_floor_001, dirt
-          License: CC0
-          Source: Poly Haven
-          Experimental branch only; not production-promoted.
-          '@ | Set-Content (Join-Path $dest 'SOURCE.txt') -Encoding UTF8
-
       - name: Capture Golden Cell
         shell: powershell
         run: |
