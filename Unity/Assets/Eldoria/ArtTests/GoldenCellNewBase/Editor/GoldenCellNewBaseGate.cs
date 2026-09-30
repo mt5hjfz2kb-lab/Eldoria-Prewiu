@@ -262,12 +262,15 @@ namespace Eldoria.EditorTools
             HideOldBastionVisuals();
             SetupMaterials();
             SetupLighting();
-            UnifyExistingBastionSurface();
 
             // Replace only the cell's visual read. Gameplay/colliders remain untouched.
             BuildTerraceAndPlaza();
             BuildProcessionalAccess();
-            BuildGateWings();
+            if(!BuildOriginalHeroFragment())
+            {
+                UnifyExistingBastionSurface();
+                BuildGateWings();
+            }
             BuildRockArchitectureTransition();
             BuildResidence();
             BuildWorkshop();
@@ -287,6 +290,45 @@ namespace Eldoria.EditorTools
                 if(n.StartsWith("Bastion",StringComparison.OrdinalIgnoreCase))
                     r.enabled=false;
             }
+        }
+
+        static bool BuildOriginalHeroFragment()
+        {
+            var asset=AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx");
+            if(asset==null)return false;
+
+            // The original hero fragment is a visual-only higher-detail architecture study.
+            // Hide only legacy Bastion renderers; colliders/hotspots remain authoritative underneath.
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                bool bastion=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    if(t.name.StartsWith("Bastion ·",StringComparison.Ordinal)||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.Ordinal))
+                    { bastion=true; break; }
+                }
+                if(bastion)r.enabled=false;
+            }
+
+            var hero=ValoriaKit.BenchmarkPieceModulated(
+                "GC · OriginalHero authored Bastion",
+                asset,
+                new Vector3(0f,2.48f,5.35f),
+                11.4f,
+                7.8f,
+                Quaternion.Euler(0f,180f,0f),
+                new Color(.96f,.91f,.82f,1f));
+            if(hero==null)return false;
+            hero.transform.SetParent(Root,true);
+            foreach(var col in hero.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            foreach(var hotspot in hero.GetComponentsInChildren<WorldHotspot>(true))
+                UnityEngine.Object.DestroyImmediate(hotspot);
+
+            // Warm focal light is much lower than previous versions: reveal depth, do not blow out the gate.
+            WarmLight("GC · authored hero gate warmth",new Vector3(0f,3.65f,3.95f),5.4f,1.10f);
+            return true;
         }
 
         static void SetupMaterials()
