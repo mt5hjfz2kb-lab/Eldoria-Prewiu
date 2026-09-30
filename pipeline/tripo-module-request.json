@@ -39,7 +39,7 @@
           "min_triangles": 0,
           "axis_clip": {
             "axis": "x",
-            "side": "min",
+            "side": "max",
             "fraction": 0.14
           }
         }
@@ -47,11 +47,11 @@
     }
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "ZERO-CREDIT STONE ARCHITECTURE REPAIR v2. Restore original clustered architectural shells; do NOT use disconnected-component size salvage. Piece 01/05: keep spatially connected architectural neighborhood around the strongest shell and remove only remote AABB outliers. Piece 06: trim only the connected left-side protrusion with a bounded X-axis clip. Reuse exact existing GLB; no Tripo generation; no promotion until visual review.",
+  "notes": "ZERO-CREDIT STONE ARCHITECTURE REPAIR v3. Piece 01/05 spatial cleanup already visually successful in run 36715424694. Keep those exact rules. Piece 06 first axis test clipped the architectural pillar side because local X orientation is opposite the screen read; rerun with max-side X clip to target only the long connected protrusion. No Tripo generation. No promotion until final visual review.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-stone-architecture-repair-v2-spatial-01-05-axis-06",
+  "run_nonce": "2026-09-30-stone-architecture-repair-v3-piece06-opposite-axis",
   "visual_verdicts": {
     "reviewed_artifact_id": 11094888075,
     "reviewed_run_id": 36710463132,
