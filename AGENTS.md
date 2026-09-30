@@ -77,6 +77,14 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - After a Work resume/restart/context change, test the existing GitHub connector with one read call before asking the owner for access again. If that call succeeds, reuse the existing connection and continue without another authorization prompt.
 - Repeated GitHub approval prompts are an operational defect to avoid, not a normal step of the Eldoria workflow.
 
+## Tripo exact-input ingress rule
+- A ChatGPT-generated or user-approved image intended for Tripo is not production-ready until its exact bytes are persisted under `pipeline/exact-inputs/<asset_name>/` with a manifest containing SHA-256 and byte size.
+- Persist those bytes in the **same chat/work block where the image is generated or approved**, before dispatching any Windows/Tripo workflow. Use `tools/persist-tripo-exact-input.mjs` when a local/materialized image path is available.
+- Canonical Tripo staging uses `input_transport=repo_exact_input`. Do not use a runner browser session to retrieve ChatGPT images, do not wait for ChatGPT login, and do not recursively hunt Downloads/iCloud for an approved chat image.
+- If exact bytes are absent, fail immediately before occupying the Windows runner. Never wait minutes hoping a browser/session transfer becomes available.
+- Once persisted, all later Tripo retries must reconstruct the input from repo chunks and verify SHA-256 + byte size before upload.
+- Generated reference creation and exact-input persistence are one atomic production block: do not hand off between them.
+
 ## Unity publication batching rule
 - Unity/UI iteration must not publish WebGL on every source commit. Dedicated Unity/UI gates certify iteration; owner publication is a separate coherent-block step.
 - The canonical trigger for a Unity WebGL publication is `pipeline/unity-publish-request.json`. Update it only after the current Unity/UI block is coherent and ready for owner review.
