@@ -25,53 +25,57 @@
     "expected_piece_count": 8
   },
   "visual_acceptance": "Stone Architecture Kit v1 must yield eight independent reusable aged-stone Valoria families from one generated sheet: low straight wall, high straight wall, exterior corner wall, interior corner wall, stone arch opening, square pillar/buttress, parapet/cap/merlon, and rock-to-wall transition. PASS requires real separability, readable silhouettes at official 19/12/9 cameras, clean side/rear geometry, usable UV/materials, sensible pivots/orientation, no fused pieces that prevent modular reuse, and no blocking geometry that defeats streets/entrances when used as architecture. Technical PASS alone is insufficient.",
-  "notes": "FINAL 2026-09-30: Stone Architecture Kit v1 = TECH PASS + MULTIPIECE PASS + VISUAL FAIL. Canonical per-piece gate run 36705459251 SUCCESS; artifact 11091584269. Eight useful spatial groups exist and all have UV/normals/material/collider evidence, but strict visual review of 32 per-piece captures rejects production promotion: piece 01 and 02 are strongest salvage candidates; 05 and 06 require cleanup; 03, 04, 07 and 08 contain fragmentation/floating or broken geometry and must not ship. Request disabled to prevent accidental reruns. No production promotion.",
+  "notes": "FINAL GATE CLOSED. Technical and multipiece gates PASS, but the 8-family kit FAILS production visual acceptance. Only piece 02 is individually clean as-is. Pieces 01/05/06 are cleanup candidates; 03/04/07/08 fail modular separability/geometry. No automatic rerun and no production promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed",
+  "run_nonce": "2026-09-30-stone-architecture-kit-v1-final-closed-no-promotion",
   "visual_verdicts": {
     "reviewed_artifact_id": 11091584269,
     "reviewed_run_id": 36705459251,
-    "production_pass": [],
-    "cleanup_candidates": [
+    "individual_visual_pass": [
       {
         "index": 2,
         "family": "rock-to-wall transition",
-        "issue": "coherent main form but requires cleanup/pivot certification before promotion"
-      },
+        "reason": "clean coherent module in front/side/rear/oblique evidence; no detached residual geometry visible"
+      }
+    ],
+    "cleanup_candidates": [
       {
         "index": 1,
-        "family": "corner wall",
-        "issue": "small detached residual fragment"
+        "family": "corner wall L variant",
+        "reason": "main form strong but detached residual fragment is visible in the piece's own front evidence"
       },
       {
         "index": 5,
         "family": "high straight wall",
-        "issue": "detached vertical fragment"
+        "reason": "main form strong but detached residual fragment is visible below the wall"
+      },
+      {
+        "index": 6,
+        "family": "low straight wall",
+        "reason": "main form strong but long thin protruding geometry extends from the wall"
       }
     ],
-    "fail_as_is": [
+    "fail": [
       {
         "index": 3,
-        "reason": "two separate architectural masses grouped together"
+        "reason": "multiple detached architectural masses grouped as one module"
       },
       {
         "index": 4,
         "reason": "disconnected masonry masses plus thin/curved residual geometry"
       },
       {
-        "index": 6,
-        "reason": "long thin protrusions/spikes remain"
-      },
-      {
         "index": 7,
-        "reason": "two separate pillar-like masses grouped together; damaged/protruding geometry"
+        "reason": "multiple separate pillar-like masses and damaged/protruding geometry"
       },
       {
         "index": 8,
-        "reason": "arch has detached upper/side mass and protruding residual geometry"
+        "reason": "arch is incomplete with detached/protruding upper-side geometry"
       }
-    ]
+    ],
+    "kit_verdict": "VISUAL_FAIL",
+    "production_promotion": "NONE"
   }
 }
