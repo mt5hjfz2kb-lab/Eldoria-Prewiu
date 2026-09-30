@@ -1,0 +1,91 @@
+name: "[EXPERIMENT] Eldoria radical visual proof"
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/ArtTests/RadicalVisualProof/**'
+      - '.github/workflows/eldoria-radical-visual-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-radical-visual-proof-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  radical-proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Capture radical BEFORE AFTER
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\RadicalVisualProofCaptures"
+          $log="$env:RUNNER_TEMP\Eldoria-RadicalVisualProof.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.EldoriaRadicalVisualProofGate.Capture','-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(15)
+          while(-not $process.HasExited -and (Get-Date) -lt $deadline){
+            Start-Sleep -Seconds 2
+            $process.Refresh()
+          }
+          if (-not $process.HasExited) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 250}
+            throw 'Radical visual proof timed out.'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 300}
+            throw "Radical visual proof failed: $($process.ExitCode)"
+          }
+          $expected=@('before-19.png','before-12.png','before-9.png','before-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','proof.json')
+          foreach($name in $expected){
+            $p=Join-Path $folder $name
+            if(-not (Test-Path $p)){throw "Missing proof output: $name"}
+            if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){throw "Empty capture: $name"}
+          }
+          Get-Content (Join-Path $folder 'proof.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-radical-visual-proof-${{ github.run_id }}
+          path: |
+            Unity/RadicalVisualProofCaptures/*
+            ${{ runner.temp }}/Eldoria-RadicalVisualProof.log
+          if-no-files-found: warn
+          retention-days: 14
