@@ -754,8 +754,8 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log = "$env:RUNNER_TEMP\blender-proof-unity.log"
           $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.BlenderLODReview.Run","-logFile",$log)
-          & $env:UNITY_EDITOR_PATH @args
-          $exitCode = $LASTEXITCODE
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $exitCode = $p.ExitCode
           if ($exitCode -ne 0) {
             if(Test-Path $log){ Get-Content $log -Tail 300 }
             throw "Unity Blender LOD review failed: $exitCode"
@@ -777,8 +777,8 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log = "$env:RUNNER_TEMP\unity-environment-capabilities.log"
           $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.UnityEnvironmentCapabilitiesAudit.Run","-logFile",$log)
-          & $env:UNITY_EDITOR_PATH @args
-          $exitCode = $LASTEXITCODE
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $exitCode = $p.ExitCode
           if ($exitCode -ne 0) {
             if(Test-Path $log){ Get-Content $log -Tail 300 }
             throw "Unity environment capability audit failed: $exitCode"
@@ -841,8 +841,8 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log="$env:RUNNER_TEMP\blender-bake-unity.log"
           $args=@("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
-          & $env:UNITY_EDITOR_PATH @args
-          $exitCode=$LASTEXITCODE
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          $exitCode=$p.ExitCode
           if($exitCode -ne 0){
             if(Test-Path $log){ Get-Content $log -Tail 300 }
             throw "Unity baked-low validation failed: $exitCode"
