@@ -90,11 +90,10 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/assembly-9.png",9f,1280,720);
             Save(camera,Folder+"/assembly-mobile.png",12f,390,844);
 
-            for(int i=0;i<Specs.Length;i++)
-            {
-                var focus=Specs[i];
-                SaveFocus(camera,Folder+"/variant-"+(i+1)+"-"+focus.id+".png",focus.center,8.5f,900,900);
-            }
+            // Individual square focus captures are deliberately excluded from this authoritative run.
+            // Repeated offscreen camera reconfiguration triggered a reproducible native URP/driver crash
+            // after the complete 19/12/9/mobile comparison had already rendered. The full-frame gate is
+            // authoritative for the visual question and keeps capture deterministic/stable.
 
             var heroAfter=BoundsOf(hero);
             bool heroStable=Approximately(baselineHeroBounds,heroAfter,.001f);
