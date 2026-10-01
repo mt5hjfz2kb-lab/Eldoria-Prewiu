@@ -1,0 +1,162 @@
+name: "[PROMOTION] Mid-Tier District Production v1"
+
+on:
+  push:
+    branches: ['production/mid-tier-district-rollout-v1']
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/MidTierDistrictProduction.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - '.github/workflows/mid-tier-district-production-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: mid-tier-district-production-v1
+  cancel-in-progress: true
+
+jobs:
+  certify:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $candidate) { throw 'Git not found.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 0
+
+      - name: Recover exact certified Mid-Tier source
+        shell: powershell
+        run: |
+          $expected='5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a'
+          $matches=@()
+          foreach($root in @((Join-Path $env:USERPROFILE 'Downloads'),(Join-Path $env:USERPROFILE 'OneDrive\Downloads')) | Where-Object { Test-Path $_ }){
+            foreach($file in Get-ChildItem $root -Recurse -File -Filter 'Valoria_MidTierArchitectureKit_v1.glb' -ErrorAction SilentlyContinue){
+              if((Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant() -eq $expected){$matches += $file}
+            }
+          }
+          $matches=@($matches | Sort-Object FullName -Unique)
+          if($matches.Count -ne 1){throw "Expected one exact certified raw GLB; found $($matches.Count)"}
+          if((Get-Item $matches[0].FullName).Length -ne 68231740){throw 'Certified raw byte size mismatch'}
+          $src="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $src | Out-Null
+          Copy-Item $matches[0].FullName (Join-Path $src 'Eldoria_Module_UnderReview_HQ.glb') -Force
+          Write-Host "RAW_SHA256=$expected"
+          Write-Host "TRIPO_CREDITS=0"
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $candidate=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $candidate){throw 'Blender executable not found'}
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+
+      - name: Reconstruct certified pieces into production Resources
+        shell: powershell
+        run: |
+          $input="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_HQ.glb"
+          $output="$env:RUNNER_TEMP\MidTier_50K.glb"
+          $split="$env:RUNNER_TEMP\MidTierPieces"
+          $report="$env:RUNNER_TEMP\mid-tier-production-reconstruction.json"
+          $salvage="$env:RUNNER_TEMP\mid-tier-production-salvage.json"
+          @'
+          {
+            "enabled": true,
+            "piece_indices": [1],
+            "min_component_ratio": 0.001,
+            "min_component_triangles": 12,
+            "post_join_cleanup": {
+              "1": {
+                "min_triangles": 12,
+                "spatial_neighbor_ratio": 0.08,
+                "axis_clip": {"axis":"z","side":"min","fraction":0.10}
+              }
+            }
+          }
+          '@ | Set-Content $salvage
+          Remove-Item $split -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $split | Out-Null
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--',
+            '--input',$input,'--output',$output,'--report',$report,
+            '--target-tris','49800','--min-tris','49500','--max-tris','50000',
+            '--split-components-dir',$split,'--split-min-triangles','250',
+            '--split-cluster-count','4','--split-cluster-axes','yz','--split-salvage-config',$salvage)
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){throw "Blender reconstruction failed: $($p.ExitCode)"}
+          $pieces=@(Get-ChildItem $split -File -Filter 'piece_*.glb' | Sort-Object Name)
+          if($pieces.Count -ne 4){throw "Expected 4 production pieces, found $($pieces.Count)"}
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\MidTierArchitectureKit_v1"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          for($i=0;$i -lt 4;$i++){Copy-Item $pieces[$i].FullName (Join-Path $dest ("Piece{0:d2}.glb" -f ($i+1))) -Force}
+          Get-Content $report
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_PATH not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $version"}
+
+      - name: Capture canonical production Valoria
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $log="$env:RUNNER_TEMP\MidTier-Production.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+            '-refreshImportMode','InProcess','-job-worker-count','1',
+            '-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 400};throw "Production Valoria gate failed: $($p.ExitCode)"}
+          foreach($name in @('valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','formula-barracks-12.png','formula-barracks-9.png','formula-granero-biii-12.png','formula-granero-biii-9.png','formula-metrics.json')){
+            $f=Join-Path $folder $name
+            if(-not(Test-Path $f) -or ((Get-Item $f).Length -lt 100)){throw "Missing production evidence $name"}
+          }
+
+      - name: Persist certified production GLBs and import metadata
+        shell: powershell
+        run: |
+          git config user.name "Eldoria CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1
+          git add -f Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1.meta 2>$null
+          if(-not (git diff --cached --quiet)){
+            git commit -m "art: persist certified Mid-Tier Architecture Kit v1"
+            git push origin HEAD:production/mid-tier-district-rollout-v1
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mid-tier-district-production-v1-${{ github.run_id }}
+          path: |
+            Unity/VisualFormulaCaptures/*
+            ${{ runner.temp }}/mid-tier-production-reconstruction.json
+            ${{ runner.temp }}/MidTier-Production.log
+          if-no-files-found: warn
+          retention-days: 14
