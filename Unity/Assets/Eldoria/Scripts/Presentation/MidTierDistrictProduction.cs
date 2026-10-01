@@ -10,6 +10,7 @@ namespace Eldoria.Presentation
     // It never owns gameplay topology, colliders, hotspots or progression.
     public static class MidTierDistrictProduction
     {
+        public static bool Enabled=true;
         static readonly Dictionary<int,Material> sharedSurfaceMaterials=new();
 
         struct Parcel
@@ -27,7 +28,7 @@ namespace Eldoria.Presentation
         public static void Build(Transform parent,PlayerState state)
         {
             // The certified comparison was made at Bastion III. Do not leak this dressing into earlier progression states.
-            if(parent==null||state==null||state.BastionLevel<3)return;
+            if(!Enabled||parent==null||state==null||state.BastionLevel<3)return;
             HideLegacyParcelRenderers();
 
             var root=new GameObject("Valoria · Mid-Tier District v1 · production visual only").transform;
