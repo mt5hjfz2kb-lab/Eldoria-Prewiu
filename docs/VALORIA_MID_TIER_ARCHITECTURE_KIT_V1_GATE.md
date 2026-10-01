@@ -60,3 +60,19 @@ The official Unity captures confirm the independent forensic review: **all four 
 - **PRODUCTION PROMOTION: NO**
 
 No additional Tripo credits were spent in the rerun. No production scene, Valoria.unity, gameplay topology, hotspots, colliders or circulation were changed. The correct next move is not to integrate these four extracted GLBs. If this source is revisited, use a zero-credit manual/reconstruction-based separation strategy; otherwise generate future modular references as one clean object per Tripo task instead of relying on sheet clustering for critical architecture.
+
+## Zero-credit YZ reconstruction — recovered four intended objects
+
+A new reconstruction pass changed only the multipiece spatial clustering from `xy` to **`yz`**, using the exact same already-generated raw GLB and exact pinned source SHA. No Tripo generation, no paid retry and no production promotion occurred.
+
+Canonical recovery run **36857266003 SUCCESS** (source commit `83116384dde97d25af73045f67e4fd3661fb07aa`). Evidence artifact **11160571815**; full module artifact **11160251379**. Blender again reduced the exact raw source to **49,800 tris** and Unity multipiece review passed technically with **4 pieces / 49,413 tris total**, UVs, normals, material, renderer, collider and raycast checks present.
+
+The corrected YZ grouping visually recovers the four intended sheet objects:
+- **piece 01 — arched entry / porch mass:** correct standalone architecture recovered, but one small detached fragment remains below the main mass. **VISUAL PARTIAL; cleanup required before production use.**
+- **piece 02 — two-storey residential mass:** coherent standalone building recovered. **ISOLATED VISUAL PASS CANDIDATE.**
+- **piece 03 — workshop / facade mass:** coherent standalone building recovered, including the intended side/hanging-sign structure. **ISOLATED VISUAL PASS CANDIDATE.**
+- **piece 04 — roof / upper-structure module with tower/chimney:** coherent partial-height reusable roof module recovered. **ISOLATED VISUAL PASS CANDIDATE.**
+
+This supersedes the earlier conclusion that the paid Tripo generation itself was unusable. The failure was primarily the original **wrong clustering axes**, not the source generation. The sheet can therefore be salvaged at zero additional credit cost. It is **not yet production-integrated**: piece 01 needs a bounded cleanup, and the recovered candidates still require a real Valoria composition/integration proof before promotion.
+
+Request closed disabled after review; no automatic integration.
