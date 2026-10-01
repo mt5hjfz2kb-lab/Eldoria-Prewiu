@@ -18,7 +18,9 @@ Unity failed during package import with **System out of memory** (exit1073741845
 
 Recovery commit **7f1e83cac017cab93e68c790853f41077fca63a0**, run **36852832649**: same exact GLB, same optimization, no refinement/salvage/promotion. Opt-in Unity session flags `-refreshImportMode InProcess -job-worker-count 1` reduce concurrent import work. Official documentation: https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html . Added a captures/logs-only artifact so visual evidence can be retrieved independently of large model archives.
 
-Recovery currently queued behind another owner's remote toolchain proof. Do not cancel unrelated work or launch another paid Tripo task. Review actual official19/12/9 and per-piece diagnostics before certifying any reusable pieces.
+Recovery **36852832649 FAILURE**. Blender again succeeded. Unity review step's PowerShell process exited **-1073741819** after approximately9minutes; downstream Node artifact upload failed with **Committing semi space failed / JavaScript heap out of memory**, and manifest parsing/cleanup also failed. Job cleanup terminated this run's orphan Unity process and children. This demonstrates continuing runner-wide memory exhaustion; it is not a visual rejection of the model. **No artifacts were uploaded by this recovery run; no current Unity captures or technical/visual certification available.** Generic combined gate was skipped in multipiece mode; its successful step cannot be called Unity PASS.
+
+Requests are parked disabled. Total spend stays55credits; no further paid generation and no production promotion. Full recovery job logs preserve the failure. Resolve runner memory availability before another zero-credit review; do not repeatedly launch the same blocked workload or certify from cluster count alone.
 
 ## Checks and boundaries
 

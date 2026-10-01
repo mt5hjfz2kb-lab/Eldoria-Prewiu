@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-mid-tier-architecture-kit-v1-four-piece-isolated-gate",
   "module_label": "Valoria_MidTierArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -32,8 +32,8 @@
     "enabled": false
   },
   "visual_acceptance": "Four distinct reusable architecture pieces derived from exactly the owner-approved sheet: 2-storey residential facade/corner mass with balconies; arched entry/porch mass with blue/gold banners and steps; roof/upper structure with tower/chimney (partial-height module is intentional); workshop/facade mass with open arch and side canopy. Require each intended mass to remain complete, coherent stone/timber/red-tile identity, readable major silhouettes and attached roofs/walls; no cross-piece fusion, stranded fragments, connected spikes, severed principal facades or major texture washout. Evaluate real official19/12/9 kit captures plus each piece front/rear/side/oblique. Technical separation alone does not certify usability or integrated Valoria quality. Isolated gate only, gameplay topology/hotspots/colliders/circulation authoritative; no automatic production promotion.",
-  "run_nonce": "mid-tier-kit-v1-sequential-import-recovery",
-  "notes": "Owner authorized exact four-object sheet as-is on2026-10-01. Source JPEG SHA f2329e4f2a19d68c4fecc13eaf633f4f89687183a5c50c1387923078b970eae7/605572bytes/1448x1086. H3.1 generated exactly once at55credits run36850489399/artifact11155202054; task3b143007-754d-46ad-8acb-8094e56181f3; export run36850732821/artifact11155272611. Zero-credit canonical multipiece Blender/Unity gate. Source raw exact SHA pinned; no paid retry and no promotion.",
+  "run_nonce": "mid-tier-kit-v1-closed-runner-memory-blocker-36852832649",
+  "notes": "Owner authorized exact four-object sheet as-is on2026-10-01. Source JPEG SHA f2329e4f2a19d68c4fecc13eaf633f4f89687183a5c50c1387923078b970eae7/605572bytes/1448x1086. H3.1 generated exactly once at55credits run36850489399/artifact11155202054; task3b143007-754d-46ad-8acb-8094e56181f3; export run36850732821/artifact11155272611. Zero-credit canonical multipiece Blender/Unity gate. Source raw exact SHA pinned; no paid retry and no promotion. Recovery36852832649 failed runner-wide memory exhaustion, including artifact upload; no artifacts/current Unity certification. Requests parked, no paid retry. Report docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1

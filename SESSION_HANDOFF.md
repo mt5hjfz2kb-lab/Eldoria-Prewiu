@@ -1,3 +1,7 @@
+## Mid-Tier Architecture Kit v1 — Tripo/Blender PASS / Unity BLOCKED / requests parked (2026-10-01)
+
+Exact owner-approved four-object JPEG generated once55credits (balance2490→2435) and exported to GLB, task3b143007-754d-46ad-8acb-8094e56181f3. Blender49800tris/four spatialgroups PASS. Unity36851146406 failed import OOM; sequential recovery36852832649 also failed runner-wide memory exhaustion, including artifact upload (zero artifacts). No Unity technical/visual PASS and no production promotion. Requests disabled, spendfalse/cost0; no more paid retries. Full report: docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md. Restore runner memory before zero-credit capture review.
+
 ## Mid-Tier Architecture Kit v1 — generated once / exported / isolated Unity recovery queued (2026-10-01)
 
 Owner approved exact sheet and55credits. Generation36850489399 and export36850732821 SUCCESS; balance2490→2435. Raw GLB SHA5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a. Blender49800tris/four spatialclusters PASS. Unity36851146406 failed System out of memory during import, not visual rejection. Sequential-import recovery36852832649 queued; same GLB/zero credits/no promotion. Full source, evidence and checks: docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md. Do not spend again or certify until actual captures reviewed.
