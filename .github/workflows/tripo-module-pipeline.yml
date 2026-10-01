@@ -752,13 +752,14 @@ jobs:
           $generated = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ToolchainProof\Generated"
           $expected = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
           New-Item -ItemType Directory -Force (Split-Path $expected) | Out-Null
-          @{
-            module_label='BlenderCapabilityProof'
-            unity_yaw_degrees=0
-            visual_acceptance='Compare LOD preservation only; no production promotion.'
-          } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
-
           foreach($lod in 0..2) {
+            @{
+              module_label=("BlenderCapabilityProof_LOD"+$lod)
+              unity_yaw_degrees=0
+              visual_acceptance='Compare LOD preservation only; no production promotion.'
+              min_triangles=1
+              max_triangles=2000000
+            } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
             Copy-Item (Join-Path $generated ("lod"+$lod+".glb")) $expected -Force
             $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
             Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
