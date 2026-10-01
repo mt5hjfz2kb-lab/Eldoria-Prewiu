@@ -1,3 +1,14 @@
+## Mid-Tier Citywide Production v2 — promoted visual scope (2026-10-01)
+
+- Certified run: `36893216721` — SUCCESS.
+- Evidence artifact: `11178632606`.
+- Production kit: `Resources/Valoria/MidTierArchitectureKit_v1/Piece01..04.glb`.
+- Scope: certified D1/D2/D3 Mid/Lower sector plus W1/W2/W3 west/lower residential footprints.
+- Gameplay contract: collider/hotspot signature unchanged; 0 gameplay colliders and 0 hotspots added; Bastion II remains unchanged; dressing begins at Bastion III.
+- Tripo spend for rollout: **0 credits**.
+- Visual decision: stop expansion here. Rural plots, civic/special buildings, Hero District and Hero Bastion are not candidates for stamping this family. Further repetition would reduce architectural diversity.
+- Next visual capability required: a second architectural family / specialized civic vocabulary, then the same evidence-first rollout process.
+
 ## Toolchain Automation v2 — CANONICAL ENTRY LOCK (2026-10-01)
 
 The previously promoted Toolchain Automation v2 is now explicitly locked as the mandatory entry gate for new Valoria visual/art work. Read `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`, represent the route in `pipeline/art-production-request.json`, and validate it with `tools/plan-art-production.mjs` / `.github/workflows/art-production-plan.yml` before heavy execution. The planner routes into the existing canonical Unity/Blender/Tripo engines; it does not create a parallel pipeline. Old blanket `image -> Tripo -> decimate -> Unity` execution is a process regression unless the planner has first proven a geometry gap and selected that route. Tripo credit gates and 19/12/9/mobile visual acceptance remain unchanged.
