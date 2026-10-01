@@ -2,8 +2,9 @@ name: "[EXPERIMENT] Mid-Tier Kit Parcel Proof v1"
 
 on:
   push:
-    branches: ['visual-proof/mid-tier-kit-parcel-proof-v1']
+    branches: ['visual-proof/mid-lower-district-upgrade-v1']
     paths:
+      - 'Unity/Assets/Eldoria/ArtTests/MidLowerDistrictUpgrade/**'
       - 'Unity/Assets/Eldoria/ArtTests/MidTierParcelProof/**'
       - '.github/workflows/mid-tier-kit-parcel-proof-v1.yml'
   workflow_dispatch:
@@ -13,7 +14,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: mid-tier-kit-parcel-proof-v1
+  group: mid-lower-district-upgrade-v1
   cancel-in-progress: true
 
 jobs:
@@ -179,29 +180,29 @@ jobs:
       - name: Capture real parcel baseline and after
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\MidTierKitParcelProofCaptures"
-          $log="$env:RUNNER_TEMP\MidTier-ParcelProof.log"
+          $folder="$env:GITHUB_WORKSPACE\Unity\MidLowerDistrictUpgradeCaptures"
+          $log="$env:RUNNER_TEMP\MidLower-DistrictUpgrade.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
             '-refreshImportMode','InProcess','-job-worker-count','1',
-            '-executeMethod','Eldoria.EditorTools.MidTierKitParcelProofGate.Capture','-logFile',$log)
+            '-executeMethod','Eldoria.EditorTools.MidLowerDistrictUpgradeGate.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Parcel proof failed: $($p.ExitCode)"}
-          foreach($name in @('baseline-19.png','baseline-12.png','baseline-9.png','baseline-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','mid-tier-parcel-evidence.json')){
+          foreach($name in @('baseline-19.png','baseline-12.png','baseline-9.png','baseline-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','mid-lower-district-evidence.json')){
             $f=Join-Path $folder $name
             if(-not(Test-Path $f) -or ((Get-Item $f).Length -lt 100)){throw "Missing parcel evidence $name"}
           }
-          Get-Content (Join-Path $folder 'mid-tier-parcel-evidence.json')
+          Get-Content (Join-Path $folder 'mid-lower-district-evidence.json')
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mid-tier-kit-parcel-proof-v1-${{ github.run_id }}
+          name: mid-lower-district-upgrade-v1-${{ github.run_id }}
           path: |
             Unity/TripoMultipieceReviewCaptures/*
-            Unity/MidTierKitParcelProofCaptures/*
+            Unity/MidLowerDistrictUpgradeCaptures/*
             ${{ runner.temp }}/mid-tier-cleanup-report.json
             ${{ runner.temp }}/MidTier-CleanMultipiece.log
-            ${{ runner.temp }}/MidTier-ParcelProof.log
+            ${{ runner.temp }}/MidLower-DistrictUpgrade.log
           if-no-files-found: warn
           retention-days: 14
