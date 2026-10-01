@@ -173,3 +173,19 @@ When continuing Valoria art development:
 7. Consult historical workflows only to reproduce or audit prior evidence.
 
 If a chat starts creating another per-module Blender script, Unity capturer or workflow without a demonstrated requirement that the generic path cannot satisfy, stop and extend the canonical pipeline instead.
+
+## TOOLCHAIN AUTOMATION v2 — canonical routing layer
+
+- Contract: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`
+- Result: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`
+- Request: `pipeline/art-production-request.json`
+- Capability registry: `pipeline/toolchain-capabilities.json`
+- Planner: `tools/plan-art-production.mjs`
+- Static Unity audit: `tools/audit-unity-environment-capabilities.mjs`
+- Blender LOD proof tool: `tools/blender_capability_proof.py`
+- Blender bake tool: `tools/blender_bake_capability_proof.py`
+- Tripo read-only probe: `tools/tripo-advanced-capability-probe.mjs`
+- Lightweight planner workflow: `.github/workflows/art-production-plan.yml`
+
+Default route: composition→Unity; surface→Unity/Blender; geometry→Tripo only after a proven gap; credit spend always needs fresh explicit owner approval. Capability availability must not be confused with visual certification.
+
