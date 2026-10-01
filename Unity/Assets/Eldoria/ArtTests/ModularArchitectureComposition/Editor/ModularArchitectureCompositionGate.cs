@@ -125,31 +125,10 @@ namespace Eldoria.EditorTools
             Physics.SyncTransforms();
         }
 
-        static readonly HashSet<int> baselineColliderIds=new();
-
-        static void CaptureBaselineColliderIds()
-        {
-            baselineColliderIds.Clear();
-            foreach(var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
-                if(c!=null&&c.enabled&&c.gameObject.activeInHierarchy)
-                    baselineColliderIds.Add(c.GetInstanceID());
-        }
-
-        static void DisableAnyNewColliders()
-        {
-            foreach(var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
-            {
-                if(c==null||!c.enabled||!c.gameObject.activeInHierarchy)continue;
-                if(!baselineColliderIds.Contains(c.GetInstanceID()))c.enabled=false;
-            }
-            Physics.SyncTransforms();
-        }
-
         static void AssertSignature(string baseline,string label)
         {
-            DisableAnyNewColliders();
             var now=ValoriaVisualFormulaGate.CollisionSignature();
-            if(now!=baseline)throw new Exception("Alternative "+label+" altered an existing gameplay collider/hotspot signature.");
+            if(now!=baseline)throw new Exception("Alternative "+label+" altered gameplay collider/hotspot signature.");
         }
 
         static int HideTargetParcelVisuals()
