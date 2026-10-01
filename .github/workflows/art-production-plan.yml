@@ -3,7 +3,7 @@ name: Eldoria art production planner
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, pipeline/toolchain-automation-v2]
     paths:
       - 'pipeline/art-production-request.json'
       - 'pipeline/toolchain-capabilities.json'
