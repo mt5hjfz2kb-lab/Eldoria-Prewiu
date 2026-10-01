@@ -124,7 +124,12 @@ jobs:
             "post_join_cleanup": {
               "1": {
                 "min_triangles": 12,
-                "spatial_neighbor_ratio": 0.08
+                "spatial_neighbor_ratio": 0.08,
+                "axis_clip": {
+                  "axis": "z",
+                  "side": "min",
+                  "fraction": 0.10
+                }
               }
             }
           }
@@ -166,7 +171,7 @@ jobs:
             '-executeMethod','Eldoria.EditorTools.TripoMultipieceReview.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "Multipiece gate failed: $($p.ExitCode)"}
-          foreach($name in @('piece-01-front.png','piece-01-rear.png','piece-01-left.png','piece-01-right.png','piece-01-oblique.png','metrics.json')){
+          foreach($name in @('piece-01-front.png','piece-01-rear.png','piece-01-side.png','piece-01-oblique.png','metrics.json')){
             $f=Join-Path $folder $name
             if(-not(Test-Path $f)){throw "Missing cleanup evidence $name"}
           }
