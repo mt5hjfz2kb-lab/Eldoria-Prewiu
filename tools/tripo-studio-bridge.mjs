@@ -561,7 +561,7 @@ try {
       const approvedCost = Number(request.authorized_credit_cost);
       const assetName = String(request.asset_name || '').trim();
       if (request.allow_credit_spend !== true || !Number.isFinite(approvedCost) || approvedCost <= 0 ||
-          request.approved_input_sha256 !== sourceSha || !assetName) {
+          request.approved_input_sha256 !== sourceSha || !assetName || !previewHashMatch) {
         throw new Error('The generation approval does not match this exact image, visible credit cost and asset identity.');
       }
       const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');

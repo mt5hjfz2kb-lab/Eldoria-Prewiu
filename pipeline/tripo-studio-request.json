@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "mode": "generate_staged",
+  "mode": "generate",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "request_id": "valoria-mid-tier-architecture-kit-v1-generate-authorized55",
+  "request_id": "valoria-mid-tier-architecture-kit-v1-exact-restage-generate55",
   "asset_name": "Valoria_MidTierArchitectureKit_v1",
   "function": "Four-piece owner-approved architectural kit for isolated Blender/Unity validation: residential facade/corner mass, arched entrance, roof module, workshop mass.",
   "upload_file_name": "DFDFB4B8-3458-4112-A912-4B33D5A0DEFC.jpeg",
@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_MidTierArchitectureKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "valoria-mid-tier-architecture-kit-v1-generate-authorized55",
-  "notes": "Owner explicitly authorized the 55-credit generation of this exact original four-piece JPEG on 2026-10-01 after staged identity verification. Single Generate click only; live preview hash/bytes must match approved input before click. This owner instruction authorizes the sheet as-is. No second paid generation/retry, no automatic production promotion.",
+  "run_nonce": "valoria-mid-tier-architecture-kit-v1-exact-restage-generate55",
+  "notes": "Owner explicitly authorized the 55-credit generation of this exact original four-piece JPEG on 2026-10-01 after staged identity verification. Single Generate click only; live preview hash/bytes must match approved input before click. This owner instruction authorizes the sheet as-is. No second paid generation/retry, no automatic production promotion. Attempt36849284316 correctly refused Generate before guard/click because browser recovery lost the staged blob. Zero-spend repair: reconstruct original from repo_exact_input, restage it, require live blob SHA+size match, then use SAME one-generation55-credit authorization. Do not retry after any recorded click.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
