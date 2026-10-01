@@ -1,13 +1,13 @@
 {
-  "enabled": false,
-  "request_id": "valoria-hero-bastion-v1-isolated-gate",
-  "module_label": "Valoria_HeroBastion_v1",
-  "unity_yaw_degrees": 180,
+  "enabled": true,
+  "request_id": "valoria-mid-tier-architecture-kit-v1-four-piece-isolated-gate",
+  "module_label": "Valoria_MidTierArchitectureKit_v1",
+  "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "Valoria_HeroBastion_v1.glb",
-    "exact_sha256": "fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf",
-    "name_regex": "^Valoria_HeroBastion_v1\\.glb$",
+    "exact_name": "Valoria_MidTierArchitectureKit_v1.glb",
+    "exact_sha256": "5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a",
+    "name_regex": "^Valoria_MidTierArchitectureKit_v1\\.glb$",
     "max_age_hours": 24,
     "exclude_sha256": []
   },
@@ -20,12 +20,18 @@
     "max_triangles": 50000
   },
   "multipiece": {
-    "enabled": false
+    "enabled": true,
+    "expected_piece_count": 4,
+    "cluster_axes": "xy",
+    "min_component_triangles": 250,
+    "salvage": {
+      "enabled": false
+    }
   },
-  "visual_acceptance": "Hero Bastion visual-only replacement proof from exact owner-approved JPEG. Monumental central keep + two flanking towers, coherent natural stone/wood with blue roofs/heraldry and restrained gold. Readable front entry and staircase on rocky foundation; complete architecture silhouette at official orthographic 19/12/9 and oblique, diagnostic views. No floating fragments, torn roofs/walls, melted masses or texture washout. Isolated technical/source acceptance does not certify gameplay circulation, integrated benchmark or production readiness. Protect Valoria.unity/VisualWorld/gameplay; no automatic promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "valoria-hero-bastion-v1-closed-36822848151",
-  "notes": "One owner-authorized H3.1 Studio generation at 55 credits; exact task 849c6e57-42bb-4e80-b846-4f637b7f9952. Exact source JPEG hash c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. Raw GLB export 71123588 bytes / SHA fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf. Generic canonical Blender/Unity isolated gate; no extra credits or production changes. First gate 36822030531/artifact11143584599 TECH PASS (49800 tris) but yaw0 official cameras face rear courtyard. Rear diagnostic confirms exact approved entry/stairs are on +Z. Canonical orientation corrected to yaw180; repeat isolated gate only, same exact source, zero spend. FINAL CLOSED: front-facing gate36822848151/artifact11143009723 SUCCESS. TECH PASS / VISUAL PARTIAL / NO PRODUCTION. Source and normalized GLB SHA unchanged; actual official captures and diagnostics reviewed. Requests parked; no extra credits. Report docs/VALORIA_HERO_BASTION_V1_FINAL_GATE.md."
+  "visual_acceptance": "Four distinct reusable architecture pieces derived from exactly the owner-approved sheet: 2-storey residential facade/corner mass with balconies; arched entry/porch mass with blue/gold banners and steps; roof/upper structure with tower/chimney (partial-height module is intentional); workshop/facade mass with open arch and side canopy. Require each intended mass to remain complete, coherent stone/timber/red-tile identity, readable major silhouettes and attached roofs/walls; no cross-piece fusion, stranded fragments, connected spikes, severed principal facades or major texture washout. Evaluate real official19/12/9 kit captures plus each piece front/rear/side/oblique. Technical separation alone does not certify usability or integrated Valoria quality. Isolated gate only, gameplay topology/hotspots/colliders/circulation authoritative; no automatic production promotion.",
+  "run_nonce": "mid-tier-kit-v1-source-3b143007-gate",
+  "notes": "Owner authorized exact four-object sheet as-is on2026-10-01. Source JPEG SHA f2329e4f2a19d68c4fecc13eaf633f4f89687183a5c50c1387923078b970eae7/605572bytes/1448x1086. H3.1 generated exactly once at55credits run36850489399/artifact11155202054; task3b143007-754d-46ad-8acb-8094e56181f3; export run36850732821/artifact11155272611. Zero-credit canonical multipiece Blender/Unity gate. Source raw exact SHA pinned; no paid retry and no promotion."
 }

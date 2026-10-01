@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-mid-tier-architecture-kit-v1-export-exact-generated-task",
@@ -20,7 +20,7 @@
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
   "run_nonce": "valoria-mid-tier-architecture-kit-v1-export-exact-generated-task",
-  "notes": "Single authorized55-credit Generate clicked once in run36850489399/artifact11155202054, exact source+UI preview matched f2329e4f.../605572bytes. Task3b143007-754d-46ad-8acb-8094e56181f3 is the only export target. Wait for completion and export its GLB zero-credit; no Generate or paid retry.",
+  "notes": "Single authorized55-credit Generate clicked once in run36850489399/artifact11155202054, exact source+UI preview matched f2329e4f.../605572bytes. Task3b143007-754d-46ad-8acb-8094e56181f3 is the only export target. Wait for completion and export its GLB zero-credit; no Generate or paid retry. Export SUCCESS run36850732821/artifact11155272611. Raw GLB68231740bytes/SHA5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a. Actual balance2490->2435,55credits once. All further work zero-credit.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
