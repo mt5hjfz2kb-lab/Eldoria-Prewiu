@@ -88,14 +88,13 @@ namespace Eldoria.EditorTools
             var root=new GameObject("HERO DISTRICT INTEGRATION v1 · visual only");
             var art=ValoriaExternalAssetLibrary.Load();
 
-            // Surface continuity first: keep certified physical stair/landing topology exactly where it is,
-            // but make their visible faces share one restrained Eldoria stone response.
+            // 1) Keep the certified physical route, but unify the visible stair/landing response.
             var stairMat=ValoriaKit.PbrSurfaceMaterial(
                 art!=null?art.ValoriaStoneSurface:null,
-                new Color(.66f,.64f,.59f,1f),new Vector2(2.4f,1.5f),.025f,.90f);
+                new Color(.64f,.62f,.57f,1f),new Vector2(2.6f,1.6f),.022f,.95f);
             var groundMat=ValoriaKit.PbrSurfaceMaterial(
                 art!=null?art.ValoriaCobbleSurface:null,
-                new Color(.72f,.69f,.61f,1f),new Vector2(3.4f,3.4f),.028f,.78f);
+                new Color(.70f,.67f,.59f,1f),new Vector2(3.8f,3.8f),.025f,.82f);
 
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -109,38 +108,39 @@ namespace Eldoria.EditorTools
                     r.sharedMaterial=groundMat;
             }
 
-            // Seat the fused Hero Bastion into the authored mountain instead of leaving a clean model/base seam.
+            // 2) Use certified Terrain & Terrace geometry as buried visual support.
+            // Two flank shelves preserve the central certified stair/landing corridor while making
+            // the upper district read as one mountain mass rather than a rectangular platform.
+            AddTerrainTerraceTop(root,"BroadRockPlatform","HeroDistrict · buried west hero shelf",
+                new Vector3(-4.75f,0f,7.55f),2.58f,6.15f,18f);
+            AddTerrainTerraceTop(root,"BroadRockPlatform","HeroDistrict · buried east hero shelf",
+                new Vector3(4.70f,0f,7.65f),2.58f,6.10f,198f);
+            AddTerrainTerraceTop(root,"SteppedRockTerrace","HeroDistrict · west stair shoulder",
+                new Vector3(-3.65f,0f,4.85f),2.34f,4.35f,92f);
+            AddTerrainTerraceTop(root,"SteppedRockTerrace","HeroDistrict · east stair shoulder",
+                new Vector3(3.70f,0f,4.95f),2.34f,4.30f,268f);
+
+            // 3) Certified rock-to-wall transition modules close the Bastion/retaining seams.
+            AddStoneArchitecturePiece(root,"RockToWallTransition","HeroDistrict · bastion seam west",
+                new Vector3(-5.45f,2.20f,7.15f),2.45f,58f);
+            AddStoneArchitecturePiece(root,"RockToWallTransition","HeroDistrict · bastion seam east",
+                new Vector3(5.40f,2.20f,7.25f),2.40f,238f);
+            AddStoneArchitecturePiece(root,"HighStraightWall","HeroDistrict · west retaining fragment",
+                new Vector3(-5.70f,1.20f,5.08f),2.65f,4f);
+            AddStoneArchitecturePiece(root,"HighStraightWall","HeroDistrict · east retaining fragment",
+                new Vector3(5.70f,1.20f,5.08f),2.65f,176f);
+
+            // 4) Keep only two authored natural breaks at the stair foot; no density-for-density.
             if(art!=null&&art.SlavicFlatRock!=null)
             {
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · seat rock west A",art.SlavicFlatRock,
-                    new Vector3(-5.15f,2.18f,8.15f),3.65f,1.75f,Quaternion.Euler(0,-34f,0),new Color(.53f,.55f,.52f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · seat rock west B",art.SlavicFlatRock,
-                    new Vector3(-3.65f,2.28f,10.20f),3.20f,1.50f,Quaternion.Euler(0,48f,0),new Color(.50f,.52f,.50f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · seat rock east A",art.SlavicFlatRock,
-                    new Vector3(5.10f,2.18f,8.30f),3.60f,1.70f,Quaternion.Euler(0,30f,0),new Color(.53f,.55f,.52f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · seat rock east B",art.SlavicFlatRock,
-                    new Vector3(3.75f,2.25f,10.30f),3.10f,1.45f,Quaternion.Euler(0,-52f,0),new Color(.50f,.52f,.50f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · stair rock west",art.SlavicFlatRock,
-                    new Vector3(-2.42f,.82f,3.62f),2.25f,1.20f,Quaternion.Euler(0,-18f,0),new Color(.48f,.50f,.47f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · stair rock east",art.SlavicFlatRock,
-                    new Vector3(2.45f,.84f,3.76f),2.20f,1.18f,Quaternion.Euler(0,21f,0),new Color(.48f,.50f,.47f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · stair foot rock west",art.SlavicFlatRock,
+                    new Vector3(-2.55f,.50f,3.70f),2.25f,1.15f,Quaternion.Euler(0,-18f,0),new Color(.49f,.51f,.48f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · stair foot rock east",art.SlavicFlatRock,
+                    new Vector3(2.60f,.50f,3.78f),2.20f,1.12f,Quaternion.Euler(0,20f,0),new Color(.49f,.51f,.48f,1f)));
             }
 
-            // Retaining faces make the landing read as masonry cut into rock, not a floating flat platform.
-            if(art!=null&&art.SlavicStoneFence!=null)
-            {
-                foreach(var data in new[]{
-                    new[]{-4.65f,1.46f,5.00f,-4f},new[]{-2.55f,1.52f,4.92f,2f},
-                    new[]{2.55f,1.52f,4.92f,-2f},new[]{4.65f,1.46f,5.00f,4f}})
-                {
-                    AddPiece(root,ValoriaKit.BenchmarkPieceModulated("HeroDistrict · retaining masonry",art.SlavicStoneFence,
-                        new Vector3(data[0],data[1],data[2]),2.35f,1.35f,Quaternion.Euler(0,data[3],0),
-                        new Color(.74f,.73f,.68f,1f)));
-                }
-            }
-
-            // The right upper dwelling is the one immediate procedural building that competes directly
-            // with the hero asset. Replace only its renderer after an authored visual replacement exists.
+            // 5) The immediate east procedural dwelling competes directly with the Hero Bastion.
+            // Swap only its renderer after a real authored replacement is available.
             GameObject authoredHouse=null;
             if(art!=null&&art.SlavicHouse!=null)
                 authoredHouse=ValoriaKit.BenchmarkPieceModulated("HeroDistrict · east upper residence",art.SlavicHouse,
@@ -152,11 +152,39 @@ namespace Eldoria.EditorTools
                 HideVisualFamily("VPD · upper dwelling");
             }
 
-            // Restrained inhabited warmth: local only, no global exposure trick.
-            AddWarmLight(root,"HeroDistrict · landing warmth",new Vector3(0f,3.35f,5.45f),.42f,4.0f);
-            AddWarmLight(root,"HeroDistrict · east hearth",new Vector3(4.65f,3.75f,6.35f),.26f,2.6f);
+            // 6) Restrained local warmth only; no whole-scene exposure change.
+            AddWarmLight(root,"HeroDistrict · landing warmth",new Vector3(0f,3.35f,5.45f),.38f,3.7f);
+            AddWarmLight(root,"HeroDistrict · east hearth",new Vector3(4.65f,3.75f,6.35f),.23f,2.4f);
 
             return root;
+        }
+
+        static void AddTerrainTerraceTop(GameObject root,string resource,string name,Vector3 xzAnchor,float topY,float targetSpan,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/"+resource);
+            if(source==null)throw new Exception("Missing Terrain Terrace resource: "+resource);
+            var go=UnityEngine.Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var bounds=BoundsOf(go);float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new Exception("Empty Terrain Terrace resource: "+resource);
+            go.transform.localScale*=targetSpan/span;
+            bounds=BoundsOf(go);
+            go.transform.position+=new Vector3(xzAnchor.x-bounds.center.x,topY-bounds.max.y,xzAnchor.z-bounds.center.z);
+            go.transform.SetParent(root.transform,true);
+            DisableAllGameplayOnVisuals(go);
+        }
+
+        static void AddStoneArchitecturePiece(GameObject root,string resource,string name,Vector3 groundAnchor,float targetSpan,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/"+resource);
+            if(source==null)throw new Exception("Missing Stone Architecture resource: "+resource);
+            var go=UnityEngine.Object.Instantiate(source);go.name=name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var bounds=BoundsOf(go);float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f)throw new Exception("Empty Stone Architecture resource: "+resource);
+            go.transform.localScale*=targetSpan/span;
+            bounds=BoundsOf(go);
+            go.transform.position+=groundAnchor-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            go.transform.SetParent(root.transform,true);
+            DisableAllGameplayOnVisuals(go);
         }
 
         static void AddWarmLight(GameObject root,string name,Vector3 p,float intensity,float range)
