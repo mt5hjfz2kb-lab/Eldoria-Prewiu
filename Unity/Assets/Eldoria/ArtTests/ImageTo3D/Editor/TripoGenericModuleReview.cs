@@ -27,6 +27,8 @@ namespace Eldoria.EditorTools
             public float unity_yaw_degrees;
             public string visual_acceptance;
             public string lookdev_profile;
+            public long min_triangles;
+            public long max_triangles;
         }
 
         [Serializable] class Report
@@ -197,8 +199,10 @@ namespace Eldoria.EditorTools
 
             var report = Measure(module, scale);
             report.colliders = colliders;
-            if (report.triangles < MinTriangles || report.triangles > MaxTriangles)
-                throw new Exception($"Generic Tripo triangle gate failed: {report.triangles}; expected {MinTriangles}-{MaxTriangles}.");
+            var minTriangles = config.min_triangles > 0 ? config.min_triangles : MinTriangles;
+            var maxTriangles = config.max_triangles > 0 ? config.max_triangles : MaxTriangles;
+            if (report.triangles < minTriangles || report.triangles > maxTriangles)
+                throw new Exception($"Generic Tripo triangle gate failed: {report.triangles}; expected {minTriangles}-{maxTriangles}.");
 
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), Scene);
             return Tuple.Create(camera, module, report);
