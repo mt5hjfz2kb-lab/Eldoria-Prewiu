@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "mode": "watch",
+  "mode": "export_glb",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-hero-bastion-v1-generate-authorized-55",
   "asset_name": "Valoria_HeroBastion_v1",
@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_HeroBastion_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "valoria-hero-bastion-v1-watch-1",
-  "notes": "One authorized 55-credit generation clicked once at 2026-10-01T05:48:48.626Z. Zero-credit watch of exact resulting task; no retries or paid action.",
+  "run_nonce": "valoria-hero-bastion-v1-export-1",
+  "notes": "Exact generated task completed. Balance 2545 before -> 2490 after, exactly 55 credits once. Zero-credit GLB export of task 849c6e57-42bb-4e80-b846-4f637b7f9952; no generation/retry authorized.",
   "prior_stage_run_id": 36821159124,
   "prior_stage_artifact_id": 11143301589,
   "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-village-with-stone-walls-timber-houses-blue-banners-and-su-849c6e57-42bb-4e80-b846-4f637b7f9952"
