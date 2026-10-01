@@ -770,26 +770,14 @@ jobs:
           if(-not (Test-Path "$folder\summary.json")) { throw 'LOD summary missing.' }
           Get-Content "$folder\summary.json"
 
-      - name: Audit Unity environment-art capabilities
+      - name: Audit Unity environment-art capabilities statically
         if: steps.proof.outputs.enabled == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE\Unity\UnityEnvironmentCapabilitiesAudit"
-          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $log = "$env:RUNNER_TEMP\unity-environment-capabilities.log"
-          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.UnityEnvironmentCapabilitiesAudit.Run","-logFile",$log)
-          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if (-not $p.WaitForExit(180000)) {
-            & taskkill.exe /PID $p.Id /T /F | Out-Null
-            if(Test-Path $log){ Get-Content $log -Tail 300 }
-            throw 'Unity environment capability audit timed out.'
-          }
-          if ($p.ExitCode -ne 0) {
-            if(Test-Path $log){ Get-Content $log -Tail 300 }
-            throw "Unity environment capability audit failed: $($p.ExitCode)"
-          }
-          if(-not (Test-Path "$folder\capabilities.json")) { throw 'Unity capability report missing.' }
-          Get-Content "$folder\capabilities.json"
+          $out="$env:RUNNER_TEMP\unity-environment-capabilities-static.json"
+          node tools/audit-unity-environment-capabilities.mjs Unity/Packages/manifest.json Unity/Packages/packages-lock.json $out
+          if(-not (Test-Path $out)){ throw 'Unity static capability report missing.' }
+          Get-Content $out
 
       - name: Read Blender bake proof request
         if: steps.proof.outputs.enabled == 'true'
@@ -897,10 +885,9 @@ jobs:
             ${{ runner.temp }}/blender-proof-unity.log
             pipeline/blender-capability-proof-request.json
             pipeline/blender-bake-capability-proof-request.json
-            Unity/UnityEnvironmentCapabilitiesAudit/**/*
-            Unity/Assets/Eldoria/ArtTests/ToolchainProof/BakeGenerated/*.glb
+                        Unity/Assets/Eldoria/ArtTests/ToolchainProof/BakeGenerated/*.glb
             Unity/BlenderBakeCapabilityProof/**/*
-            ${{ runner.temp }}/unity-environment-capabilities.log
+            ${{ runner.temp }}/unity-environment-capabilities-static.json
             ${{ runner.temp }}/blender-bake-capability-proof-report.json
             ${{ runner.temp }}/blender-bake-capability-proof.log
             ${{ runner.temp }}/blender-bake-capability-proof-error.log
