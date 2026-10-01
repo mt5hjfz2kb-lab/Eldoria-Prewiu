@@ -1,3 +1,7 @@
+## Canonical Valoria environment-art direction — 2026-10-01
+
+Read `docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md` before future Valoria visual work. Current direction is environment-art-system first, not isolated-model first: composition, modular assemblies, terrain/rock integration, coherent shared materials, blending/decals, lighting/atmosphere, secondary detail, then optimization. Existing modules must be tested as a construction vocabulary before new geometry is generated. Tripo is reserved for proven missing geometry and always requires fresh explicit credit authorization. Validate only in real 19/12/9/mobile frames; preserve gameplay topology/hotspots/colliders/circulation.
+
 ## Valoria Hero Frame v1 — 2026-09-30
 - Whole-frame production art pass is integrated in real Valoria. The pass prioritizes composition, depth and hierarchy over isolated prefab replacement.
 - Visual changes: rebuilt authored-stone Bastion hero shell, valley heightfield, denser inhabited middle distance, ridge vegetation, restrained warm work lights and stronger Bastion focal hierarchy.
