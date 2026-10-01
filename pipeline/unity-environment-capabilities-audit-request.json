@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "request_id": "unity-environment-capabilities-audit-v1",
+  "zero_spend": true,
+  "checks": [
+    "URP_Lit",
+    "MaterialPropertyBlock",
+    "DecalProjector",
+    "LightProbeGroup",
+    "ReflectionProbe",
+    "LODGroup",
+    "Terrain",
+    "GPU_instancing_material_flag",
+    "fog_and_color_grading_pipeline_presence"
+  ],
+  "notes": "Prepared technical availability audit. This does not claim visual benefit until a real-frame proof passes."
+}
