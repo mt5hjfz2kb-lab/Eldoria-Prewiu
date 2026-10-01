@@ -1,0 +1,32 @@
+{
+  "enabled": false,
+  "request_id": "example-disabled",
+  "asset_or_sector": "Valoria",
+  "profile": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "tripo_parts": false,
+    "tripo_retopology": false,
+    "blender_lod": false,
+    "blender_bake": false,
+    "blender_material_consolidation": false,
+    "unity_modular_assembly": true,
+    "unity_shared_materials": true,
+    "unity_decals": false,
+    "unity_probes": false,
+    "unity_terrain_blending": false
+  },
+  "validation": {
+    "official_camera_19": true,
+    "official_camera_12": true,
+    "official_camera_9": true,
+    "mobile": true,
+    "preserve_gameplay_signature": true
+  },
+  "notes": "Disabled template. Zero-spend by default."
+}
