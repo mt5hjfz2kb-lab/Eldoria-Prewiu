@@ -141,9 +141,9 @@ namespace Eldoria.EditorTools
                 ParcelCenter+new Vector3(.25f,.10f,1.25f),3.15f,176f);
             AddStoneArchitecturePiece(root,"RockToWallTransition","A · west rock seam",
                 ParcelCenter+new Vector3(-2.0f,.10f,.25f),2.10f,64f);
-            AddRawModule(root,"Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",
+            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",
                 "A · balcony gallery",ParcelCenter+new Vector3(.10f,1.62f,-1.52f),2.55f,1.10f,Quaternion.Euler(0,172f,0),new Color(.60f,.48f,.34f,1f));
-            AddRawModule(root,"Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx",
+            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx",
                 "A · secondary slate roof",ParcelCenter+new Vector3(-.55f,2.55f,.20f),3.20f,1.25f,Quaternion.Euler(0,-8f,0),new Color(.39f,.43f,.46f,1f));
             AddLocalWarmth(root,ParcelCenter+new Vector3(.20f,1.25f,-1.25f),.24f,2.4f);
             return root;
@@ -165,9 +165,9 @@ namespace Eldoria.EditorTools
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("B · civic stone entrance",art.SlavicRockGate,
                     ParcelCenter+new Vector3(.05f,.06f,-1.85f),2.55f,2.05f,Quaternion.Euler(0,180f,0),new Color(.67f,.66f,.61f,1f)));
-            AddRawModule(root,"Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
+            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
                 "B · porch projection",ParcelCenter+new Vector3(-.05f,.38f,-1.30f),2.75f,1.75f,Quaternion.Euler(0,180f,0),new Color(.65f,.54f,.40f,1f));
-            AddRawModule(root,"Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01b.fbx",
+            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01b.fbx",
                 "B · civic roof crown",ParcelCenter+new Vector3(.15f,2.45f,.25f),3.45f,1.35f,Quaternion.Euler(0,4f,0),new Color(.37f,.41f,.45f,1f));
             AddLocalWarmth(root,ParcelCenter+new Vector3(.05f,1.20f,-1.35f),.22f,2.3f);
             return root;
@@ -191,7 +191,7 @@ namespace Eldoria.EditorTools
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("C · lower arch entry",art.SlavicRockGate,
                     ParcelCenter+new Vector3(.65f,.06f,-1.75f),2.30f,1.90f,Quaternion.Euler(0,180f,0),new Color(.65f,.64f,.59f,1f)));
-            AddRawModule(root,"Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_02a.fbx",
+            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_02a.fbx",
                 "C · roof connector",ParcelCenter+new Vector3(.80f,2.30f,.20f),2.95f,1.15f,Quaternion.Euler(0,-6f,0),new Color(.36f,.40f,.43f,1f));
             AddLocalWarmth(root,ParcelCenter+new Vector3(.75f,1.20f,-1.30f),.20f,2.2f);
             return root;
