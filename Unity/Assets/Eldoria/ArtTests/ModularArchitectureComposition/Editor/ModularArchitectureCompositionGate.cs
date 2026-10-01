@@ -141,7 +141,6 @@ namespace Eldoria.EditorTools
                 ParcelCenter+new Vector3(1.72f,.04f,.35f),1.85f,244f);
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",
                 "A · front command gallery",ParcelCenter+new Vector3(.05f,1.48f,-1.36f),2.35f,1.00f,Quaternion.Euler(0,180f,0),new Color(.58f,.47f,.34f,1f));
-            AddBlueStandard(root,ParcelCenter+new Vector3(-1.15f,.45f,-1.05f),2.05f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.15f,1.18f,-1.22f),.22f,2.2f);
             return root;
         }
@@ -164,7 +163,6 @@ namespace Eldoria.EditorTools
                     ParcelCenter+new Vector3(.0f,.03f,-1.62f),2.25f,1.80f,Quaternion.Euler(0,180f,0),new Color(.67f,.66f,.61f,1f)));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
                 "B · timber porch",ParcelCenter+new Vector3(0,.42f,-1.12f),2.35f,1.50f,Quaternion.Euler(0,180f,0),new Color(.64f,.53f,.39f,1f));
-            AddBlueStandard(root,ParcelCenter+new Vector3(1.10f,.42f,-1.02f),1.95f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.05f,1.12f,-1.18f),.21f,2.1f);
             return root;
         }
@@ -187,7 +185,6 @@ namespace Eldoria.EditorTools
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("C · lower arch entry",art.SlavicRockGate,
                     ParcelCenter+new Vector3(.55f,.03f,-1.45f),2.05f,1.65f,Quaternion.Euler(0,180f,0),new Color(.65f,.64f,.59f,1f)));
-            AddBlueStandard(root,ParcelCenter+new Vector3(.25f,.38f,-1.18f),1.85f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.62f,1.05f,-1.10f),.18f,2.0f);
             return root;
         }
@@ -264,14 +261,6 @@ namespace Eldoria.EditorTools
                 r.SetPropertyBlock(block);
             }
         }
-
-        static void AddBlueStandard(GameObject root,Vector3 p,float height)
-        {
-            // Existing banner helper creates only visual primitives; no gameplay ownership.
-            ValoriaKit.Banner("Modular composition · blue standard",p,
-                new Vector3(.48f,height,.07f),new Color(.13f,.24f,.38f));
-        }
-
         static void AddLocalWarmth(GameObject root,Vector3 p,float intensity,float range)
         {
             var go=new GameObject("Modular composition · local occupied warmth");
