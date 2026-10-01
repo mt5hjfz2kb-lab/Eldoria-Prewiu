@@ -39,7 +39,7 @@ namespace Eldoria.EditorTools
         }
 
         static readonly AssemblySpec[] Specs=new[]{
-            new AssemblySpec("P1","mid/lower west terraced residence",new Vector3(-11.80f,.34f,-2.45f),350f,3.55f,4.15f,5.35f,18f,CoreKind.House,BaseKind.Broad,ProjectionKind.Porch,true,true,false,-1f,new Color(.70f,.66f,.58f,1f))
+            new AssemblySpec("P1","mid/lower front guardhouse-residence parcel",new Vector3(7.20f,.42f,-4.00f),180f,3.55f,4.15f,5.10f,92f,CoreKind.House,BaseKind.Broad,ProjectionKind.Porch,true,true,false,-1f,new Color(.70f,.66f,.58f,1f))
         };
 
         public static void Capture()
@@ -98,8 +98,8 @@ namespace Eldoria.EditorTools
 
             File.WriteAllText(Folder+"/mid-tier-parcel-evidence.json",
                 "{\n"+
-                "  \"phase\": \"VALORIA_MODULAR_ASSEMBLY_SYSTEM_V1\",\n"+
-                "  \"branch\": \"visual-proof/modular-assembly-system-v1\",\n"+
+                "  \"phase\": \"VALORIA_MID_TIER_KIT_PARCEL_PROOF_V1\",\n"+
+                "  \"branch\": \"visual-proof/mid-tier-kit-parcel-proof-v1\",\n"+
                 "  \"tripo_credits\": 0,\n"+
                 "  \"assemblies_active\": "+assemblies+",\n"+
                 "  \"target_renderers_hidden\": "+hidden+",\n"+
@@ -111,7 +111,7 @@ namespace Eldoria.EditorTools
                 "  \"gameplay_hotspots_added\": 0,\n"+
                 "  \"baseline_metrics\": "+baselineMetrics+",\n"+
                 "  \"assembly_metrics\": "+afterMetrics+",\n"+
-                "  \"variants\": [\"secondary guardhouse\",\"terraced residence\",\"civic corner house\",\"workshop residence hybrid\",\"small fortified residence\"]\n"+
+                "  \"variants\": [\"single real mid/lower front parcel using cleaned Piece01 + Pieces02/03/04 as one assembly\"]\n"+
                 "}\n");
             EditorApplication.Exit(0);
         }
@@ -119,8 +119,8 @@ namespace Eldoria.EditorTools
         static void BuildAssembly(GameObject parent,AssemblySpec s)
         {
             var root=new GameObject("MidTier Parcel · "+s.role);root.transform.SetParent(parent.transform,true);
-            AddTerrain(root,BaseKind.Broad,s.center,s.center.y+.02f,5.35f,18f);
-            AddTerrain(root,BaseKind.Stepped,s.center+RotatedOffset(s.yaw,new Vector3(-1.25f,-.02f,-.35f)),s.center.y+.01f,3.20f,92f);
+            AddTerrain(root,BaseKind.Broad,s.center,s.center.y+.02f,s.baseSpan,s.baseYaw);
+            AddTerrain(root,BaseKind.Stepped,s.center+RotatedOffset(s.yaw,new Vector3(-1.25f,-.02f,-.35f)),s.center.y+.01f,3.20f,s.yaw+90f);
 
             AddMidTier(root,"Piece02.glb","P1 · two-storey inhabited core",
                 s.center+RotatedOffset(s.yaw,new Vector3(.15f,.05f,-.12f)),3.55f,4.15f,s.yaw,new Color(.73f,.69f,.61f,1f));
