@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-hero-bastion-v1-stage",
@@ -19,6 +19,6 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_HeroBastion_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "valoria-hero-bastion-v1-approved-jpeg-20261001",
-  "notes": "Owner explicitly approved the attached JPEG after being shown PNG identity mismatch. Persist unchanged attached JPEG: 1448x1086, 596810 bytes, SHA256 c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. repo_exact_input only. Stage upload and visible cost only; STOP before Generate. No credit spend authorized."
+  "run_nonce": "valoria-hero-bastion-v1-stage-closed-36821159124",
+  "notes": "Owner explicitly approved the attached JPEG after being shown PNG identity mismatch. Persist unchanged attached JPEG: 1448x1086, 596810 bytes, SHA256 c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. repo_exact_input only. Stage upload and visible cost only; STOP before Generate. No credit spend authorized. Stage verified: run 36821159124 SUCCESS, artifact 11143301589, preview SHA/bytes match source, visible cost 55, Generate not clicked. Parked disabled after verified staging."
 }
