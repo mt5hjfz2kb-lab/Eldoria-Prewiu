@@ -47,25 +47,28 @@ jobs:
       - name: Recover exact Mid-Tier raw GLB
         shell: powershell
         run: |
-          $artifactId=11155272611
           $expected='5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a'
-          $root="$env:RUNNER_TEMP\mid-tier-source"; $zip="$root.zip"
-          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item $zip -Force -ErrorAction SilentlyContinue
-          $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
-          Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
-          New-Item -ItemType Directory -Force $root | Out-Null
-          Expand-Archive -LiteralPath $zip -DestinationPath $root -Force
+          $roots=@(
+            (Join-Path $env:USERPROFILE 'Downloads'),
+            (Join-Path $env:USERPROFILE 'OneDrive\\Downloads')
+          ) | Where-Object { Test-Path $_ }
           $matches=@()
-          foreach($file in Get-ChildItem $root -Recurse -File -Filter '*.glb'){
-            $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($sha -eq $expected){$matches += $file}
+          foreach($root in $roots){
+            foreach($file in Get-ChildItem $root -Recurse -File -Filter 'Valoria_MidTierArchitectureKit_v1.glb' -ErrorAction SilentlyContinue){
+              $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($sha -eq $expected){$matches += $file}
+            }
           }
-          if($matches.Count -ne 1){throw "Expected one raw Mid-Tier GLB; found $($matches.Count)"}
-          $src="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          $matches=@($matches | Sort-Object FullName -Unique)
+          if($matches.Count -ne 1){throw "Expected one exact raw Mid-Tier GLB in runner Downloads; found $($matches.Count)"}
+          $src="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Eldoria\\ArtTests\\ImageTo3D\\Source"
           New-Item -ItemType Directory -Force $src | Out-Null
           Copy-Item $matches[0].FullName (Join-Path $src 'Eldoria_Module_UnderReview_HQ.glb') -Force
+          $bytes=(Get-Item $matches[0].FullName).Length
+          if($bytes -ne 68231740){throw "Raw GLB byte size mismatch: $bytes"}
+          Write-Host "RAW_SOURCE=$($matches[0].FullName)"
           Write-Host "RAW_SOURCE_SHA256=$expected"
+          Write-Host "RAW_SOURCE_BYTES=$bytes"
           Write-Host "TRIPO_CREDITS=0"
 
       - name: Recover exact optimized Hero Bastion
