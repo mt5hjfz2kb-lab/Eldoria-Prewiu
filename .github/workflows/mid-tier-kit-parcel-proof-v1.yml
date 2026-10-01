@@ -1,0 +1,183 @@
+name: "[EXPERIMENT] Mid-Tier Kit Parcel Proof v1"
+
+on:
+  push:
+    branches: ['visual-proof/mid-tier-kit-parcel-proof-v1']
+    paths:
+      - 'Unity/Assets/Eldoria/ArtTests/MidTierParcelProof/**'
+      - '.github/workflows/mid-tier-kit-parcel-proof-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: mid-tier-kit-parcel-proof-v1
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Recover exact Mid-Tier raw GLB
+        shell: powershell
+        run: |
+          $artifactId=11160251379
+          $expected='5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a'
+          $root="$env:RUNNER_TEMP\mid-tier-source"; $zip="$root.zip"
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $zip -Force -ErrorAction SilentlyContinue
+          $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
+          New-Item -ItemType Directory -Force $root | Out-Null
+          Expand-Archive -LiteralPath $zip -DestinationPath $root -Force
+          $matches=@()
+          foreach($file in Get-ChildItem $root -Recurse -File -Filter '*.glb'){
+            $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($sha -eq $expected){$matches += $file}
+          }
+          if($matches.Count -ne 1){throw "Expected one raw Mid-Tier GLB; found $($matches.Count)"}
+          $src="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source"
+          New-Item -ItemType Directory -Force $src | Out-Null
+          Copy-Item $matches[0].FullName (Join-Path $src 'Eldoria_Module_UnderReview_HQ.glb') -Force
+          Write-Host "RAW_SOURCE_SHA256=$expected"
+          Write-Host "TRIPO_CREDITS=0"
+
+      - name: Recover exact optimized Hero Bastion
+        shell: powershell
+        run: |
+          $artifactId=11143009723
+          $expected='afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c'
+          $root="$env:RUNNER_TEMP\hero-bastion-source"; $zip="$root.zip"
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $zip -Force -ErrorAction SilentlyContinue
+          $headers=@{Authorization="Bearer $env:GITHUB_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
+          New-Item -ItemType Directory -Force $root | Out-Null
+          Expand-Archive -LiteralPath $zip -DestinationPath $root -Force
+          $matches=@()
+          foreach($file in Get-ChildItem $root -Recurse -File -Filter '*.glb'){
+            $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($sha -eq $expected){$matches += $file}
+          }
+          if($matches.Count -ne 1){throw "Expected one Hero Bastion GLB; found $($matches.Count)"}
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\HeroBastionGenerated"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item $matches[0].FullName (Join-Path $dest 'Valoria_HeroBastion_v1.glb') -Force
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $candidate=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $candidate){throw 'Blender executable not found'}
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Reconstruct YZ and conservatively clean Piece 01
+        shell: powershell
+        run: |
+          $input="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_HQ.glb"
+          $output="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          $split="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
+          $report="$env:RUNNER_TEMP\mid-tier-cleanup-report.json"
+          $salvage="$env:RUNNER_TEMP\mid-tier-salvage.json"
+          @'
+          {
+            "enabled": true,
+            "piece_indices": [1],
+            "min_component_ratio": 0.001,
+            "min_component_triangles": 12,
+            "post_join_cleanup": {
+              "1": {
+                "min_triangles": 12,
+                "spatial_neighbor_ratio": 0.08
+              }
+            }
+          }
+          '@ | Set-Content $salvage
+          Remove-Item $split -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $split | Out-Null
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py",'--',
+            '--input',$input,'--output',$output,'--report',$report,
+            '--target-tris','49800','--min-tris','49500','--max-tris','50000',
+            '--split-components-dir',$split,'--split-min-triangles','250',
+            '--split-cluster-count','4','--split-cluster-axes','yz',
+            '--split-salvage-config',$salvage)
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){throw "Blender cleanup failed: $($p.ExitCode)"}
+          if(-not(Test-Path $report)){throw 'Missing cleanup report'}
+          Get-Content $report
+          $pieces=@(Get-ChildItem $split -File -Filter 'piece_*.glb' | Sort-Object Name)
+          if($pieces.Count -ne 4){throw "Expected four reconstructed pieces, found $($pieces.Count)"}
+          $fixed="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\MidTierParcelProof\Source"
+          Remove-Item $fixed -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $fixed | Out-Null
+          for($i=0;$i -lt 4;$i++){Copy-Item $pieces[$i].FullName (Join-Path $fixed ("Piece{0:d2}.glb" -f ($i+1))) -Force}
+
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_PATH not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $version"}
+
+      - name: Capture cleaned multipiece diagnostics
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\TripoMultipieceReviewCaptures"
+          $log="$env:RUNNER_TEMP\MidTier-CleanMultipiece.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+            '-refreshImportMode','InProcess','-job-worker-count','1',
+            '-executeMethod','Eldoria.EditorTools.TripoMultipieceReview.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "Multipiece gate failed: $($p.ExitCode)"}
+          foreach($name in @('piece-01-front.png','piece-01-rear.png','piece-01-left.png','piece-01-right.png','piece-01-oblique.png','metrics.json')){
+            $f=Join-Path $folder $name
+            if(-not(Test-Path $f)){throw "Missing cleanup evidence $name"}
+          }
+
+      - name: Capture real parcel baseline and after
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\MidTierKitParcelProofCaptures"
+          $log="$env:RUNNER_TEMP\MidTier-ParcelProof.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
+            '-refreshImportMode','InProcess','-job-worker-count','1',
+            '-executeMethod','Eldoria.EditorTools.MidTierKitParcelProofGate.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Parcel proof failed: $($p.ExitCode)"}
+          foreach($name in @('baseline-19.png','baseline-12.png','baseline-9.png','baseline-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','mid-tier-parcel-evidence.json')){
+            $f=Join-Path $folder $name
+            if(-not(Test-Path $f) -or ((Get-Item $f).Length -lt 100)){throw "Missing parcel evidence $name"}
+          }
+          Get-Content (Join-Path $folder 'mid-tier-parcel-evidence.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mid-tier-kit-parcel-proof-v1-${{ github.run_id }}
+          path: |
+            Unity/TripoMultipieceReviewCaptures/*
+            Unity/MidTierKitParcelProofCaptures/*
+            ${{ runner.temp }}/mid-tier-cleanup-report.json
+            ${{ runner.temp }}/MidTier-CleanMultipiece.log
+            ${{ runner.temp }}/MidTier-ParcelProof.log
+          if-no-files-found: warn
+          retention-days: 14
