@@ -267,9 +267,9 @@ namespace Eldoria.EditorTools
 
         static void AddBlueStandard(GameObject root,Vector3 p,float height)
         {
-            var go=ValoriaKit.Banner("Modular composition · blue standard",p,
+            // Existing banner helper creates only visual primitives; no gameplay ownership.
+            ValoriaKit.Banner("Modular composition · blue standard",p,
                 new Vector3(.48f,height,.07f),new Color(.13f,.24f,.38f));
-            if(go!=null){go.transform.SetParent(root.transform,true);DisableAllGameplayOnVisuals(go);}
         }
 
         static void AddLocalWarmth(GameObject root,Vector3 p,float intensity,float range)
