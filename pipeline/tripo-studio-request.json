@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-hero-bastion-v1-stage",
@@ -15,11 +15,10 @@
   "approved_input_sha256": "3fdc667f3f67f6a717a3fb6c9270892406dcaebf46522480810a06473183a396",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
-  "input_transport": "chatgpt_exact_input",
-  "temporary_ingress_exception": true,
-  "probe_chatgpt_file_id": "file_00000000b68881f4abdbfb98f063cf65",
+  "input_transport": "repo_exact_input",
+  "upload_base64_glob": "pipeline/exact-inputs/Valoria_HeroBastion_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
-  "probe_chatgpt_session": true,
-  "run_nonce": "valoria-hero-bastion-v1-stage-20261001",
-  "notes": "Owner approved exact Hero Bastion reference in chat. One-time exact-byte ingress to persist canonical repo input, stage in Tripo Studio, expose visible credit cost, and STOP before Generate. No credit spend authorized."
+  "probe_chatgpt_session": false,
+  "run_nonce": "valoria-hero-bastion-v1-awaiting-exact-input",
+  "notes": "Approved Hero Bastion exact PNG: 2358987 bytes, 1448x1086, SHA256 3fdc667f3f67f6a717a3fb6c9270892406dcaebf46522480810a06473183a396. Canonical contract requires exact bytes persisted under pipeline/exact-inputs/Valoria_HeroBastion_v1 before enabling stage_upload. No credit spend authorized. Prior chatgpt_exact_input attempt was invalid/deprecated and failed safely with zero spend."
 }
