@@ -44,3 +44,19 @@ Recovered pieces:
 This means the current four-piece extraction must not be integrated into Valoria or used to extend the Modular Assembly System. The source generation remains preserved for possible future zero-credit manual re-separation/reconstruction, but no further paid generation is authorized or needed to establish this verdict. Production promotion remains disabled; gameplay topology, hotspots, colliders, circulation and Valoria.unity remain untouched.
 
 A rerun of recovery workflow **36852832649** was started once at zero credit after runner recovery. Its result may provide additional Unity evidence if it completes, but it cannot overturn the already-observed disconnected geometry without a different separation/reconstruction method.
+
+## Authoritative Unity rerun — final closure
+
+The zero-credit rerun of recovery workflow **36852832649** completed **SUCCESS** after runner memory became available. Final evidence artifact: **11159128095**; full module artifact: **11158673298**. Source commit for the rerun: `7f1e83cac017cab93e68c790853f41077fca63a0`. The exact raw source identity remained **68,231,740 bytes / SHA-256 5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a**; optimized combined GLB **49,800 tris / SHA-256 24193e411efefc98e0d49d1db9a74f71ae02c0435647bb5f2a7832f26ac16b0a**.
+
+Unity multipiece technical gate passed: **4 pieces / 49,413 tris total** with UVs, normals, one renderer/material/collider per piece, raycast hit and empty-space miss. Official captures now exist: kit 19/12/9, overview, front diagnostic, close oblique, plus front/rear/side/oblique for every piece.
+
+The official Unity captures confirm the independent forensic review: **all four extracted pieces are visually invalid as standalone reusable modules** because each piece contains two disconnected architectural masses stacked/separated in space or major floating/severed geometry. Therefore the final status is:
+
+- **TRIPO GENERATION: PASS**
+- **BLENDER REDUCTION: PASS**
+- **UNITY TECHNICAL MULTIPIECE GATE: PASS**
+- **VISUAL KIT: FAIL**
+- **PRODUCTION PROMOTION: NO**
+
+No additional Tripo credits were spent in the rerun. No production scene, Valoria.unity, gameplay topology, hotspots, colliders or circulation were changed. The correct next move is not to integrate these four extracted GLBs. If this source is revisited, use a zero-credit manual/reconstruction-based separation strategy; otherwise generate future modular references as one clean object per Tripo task instead of relying on sheet clustering for critical architecture.
