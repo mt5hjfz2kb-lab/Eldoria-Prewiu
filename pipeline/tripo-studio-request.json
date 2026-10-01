@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "mode": "generate",
+  "mode": "watch",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-hero-bastion-v1-generate-authorized-55",
   "asset_name": "Valoria_HeroBastion_v1",
@@ -10,8 +10,8 @@
   "upload_size_bytes": 596810,
   "visual_width": 1448,
   "visual_height": 1086,
-  "allow_credit_spend": true,
-  "authorized_credit_cost": 55,
+  "allow_credit_spend": false,
+  "authorized_credit_cost": 0,
   "approved_input_sha256": "c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -19,8 +19,9 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_HeroBastion_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "valoria-hero-bastion-v1-generate-20261001",
-  "notes": "Owner explicitly authorized 55 credits in this chat on 2026-10-01 after seeing the exact staged JPEG and visible Generar 55. One generation only. Canonical repo_exact_input reconstructs unchanged JPEG and re-verifies source and preview before paid click. SHA c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981; 596810 bytes; 1448x1086. No gameplay/Valoria changes. Complete generation/export and isolated validation; no automatic production promotion.",
+  "run_nonce": "valoria-hero-bastion-v1-watch-1",
+  "notes": "One authorized 55-credit generation clicked once at 2026-10-01T05:48:48.626Z. Zero-credit watch of exact resulting task; no retries or paid action.",
   "prior_stage_run_id": 36821159124,
-  "prior_stage_artifact_id": 11143301589
+  "prior_stage_artifact_id": 11143301589,
+  "generated_task_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-village-with-stone-walls-timber-houses-blue-banners-and-su-849c6e57-42bb-4e80-b846-4f637b7f9952"
 }
