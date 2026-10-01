@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "request_id": "blender-bake-capability-proof-v1",
+  "source": {
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb"
+  },
+  "low_ratio": 0.35,
+  "texture_size": 1024,
+  "notes": "Prepared zero-spend high-to-low normal bake proof. Disabled until LOD proof closes so the single Windows runner is not contended."
+}
