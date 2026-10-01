@@ -42,7 +42,7 @@ namespace Eldoria.EditorTools
             new AssemblySpec("A1","secondary guardhouse",new Vector3(7.20f,.42f,-4.00f),180f,3.18f,3.30f,4.60f,92f,CoreKind.House,BaseKind.Stepped,ProjectionKind.Balcony,true,true,false,+1f,new Color(.72f,.68f,.60f,1f)),
             new AssemblySpec("A2","terraced residence",new Vector3(-11.80f,.34f,-2.45f),350f,3.35f,3.45f,5.15f,18f,CoreKind.House,BaseKind.Broad,ProjectionKind.Porch,true,true,false,-1f,new Color(.70f,.66f,.58f,1f)),
             new AssemblySpec("A3","civic corner house",new Vector3(11.60f,.34f,-2.25f),194f,3.05f,3.25f,4.85f,205f,CoreKind.House,BaseKind.Stepped,ProjectionKind.Gate,false,true,true,+1f,new Color(.73f,.69f,.61f,1f)),
-            new AssemblySpec("A4","workshop residence hybrid",new Vector3(-15.00f,.34f,1.65f),16f,2.90f,2.85f,4.35f,32f,CoreKind.Shed,BaseKind.Broad,ProjectionKind.Porch,true,true,false,+1f,new Color(.64f,.57f,.48f,1f)),
+            new AssemblySpec("A4","workshop residence hybrid",new Vector3(-15.00f,.34f,1.65f),16f,3.05f,2.95f,4.45f,32f,CoreKind.Shed,BaseKind.Broad,ProjectionKind.Porch,false,true,false,+1f,new Color(.64f,.57f,.48f,1f)),
             new AssemblySpec("A5","small fortified residence",new Vector3(14.80f,.34f,1.95f),166f,2.80f,3.05f,4.25f,174f,CoreKind.House,BaseKind.Stepped,ProjectionKind.Balcony,true,false,true,-1f,new Color(.68f,.64f,.56f,1f))
         };
 
@@ -136,20 +136,23 @@ namespace Eldoria.EditorTools
             }
             if(core!=null){ApplySharedSurface(core,s.tint);AddPiece(root,core);}
 
-            Vector3 rear=RotatedOffset(s.yaw,new Vector3(0,.05f,Mathf.Max(1.00f,s.span*.34f)));
-            if(s.wall)AddStone(root,"HighStraightWall",s.id+" · masonry spine",s.center+rear,s.span*.84f,s.yaw);
+            // The occupied-core convention inherited from Alternative A uses local +Z as the
+            // camera-facing side at yaw 180. Therefore the retaining spine belongs on local -Z.
+            // Keeping this convention is what makes overlap read as architecture instead of a wall pasted on the facade.
+            Vector3 rear=RotatedOffset(s.yaw,new Vector3(0,.05f,-Mathf.Max(.88f,s.span*.30f)));
+            if(s.wall)AddStone(root,"HighStraightWall",s.id+" · masonry spine",s.center+rear,s.span*.66f,s.yaw);
             if(s.corner)
             {
-                Vector3 side=RotatedOffset(s.yaw,new Vector3(s.span*.43f,0,s.span*.14f));
-                AddStone(root,"CornerWallL",s.id+" · corner mass",s.center+side,s.span*.58f,s.yaw+88f);
+                Vector3 side=RotatedOffset(s.yaw,new Vector3(s.span*.40f,0,-s.span*.10f));
+                AddStone(root,"CornerWallL",s.id+" · corner mass",s.center+side,s.span*.48f,s.yaw+88f);
             }
             if(s.seam)
             {
-                Vector3 side=RotatedOffset(s.yaw,new Vector3(s.projectionSide*s.span*.55f,.02f,s.span*.05f));
-                AddStone(root,"RockToWallTransition",s.id+" · rock wall seam",s.center+side,s.span*.55f,s.yaw+(s.projectionSide>0?64f:-64f));
+                Vector3 side=RotatedOffset(s.yaw,new Vector3(s.projectionSide*s.span*.48f,.02f,-s.span*.04f));
+                AddStone(root,"RockToWallTransition",s.id+" · rock wall seam",s.center+side,s.span*.44f,s.yaw+(s.projectionSide>0?58f:-58f));
             }
 
-            Vector3 front=RotatedOffset(s.yaw,new Vector3(s.projectionSide*s.span*.10f,1.10f,-s.span*.44f));
+            Vector3 front=RotatedOffset(s.yaw,new Vector3(s.projectionSide*s.span*.10f,1.05f,s.span*.41f));
             if(s.projection==ProjectionKind.Balcony)
                 AddRaw(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",s.id+" · gallery",
                     s.center+front,s.span*.72f,1.05f,Quaternion.Euler(0,s.yaw,0),new Color(.58f,.47f,.34f,1f));
@@ -159,11 +162,11 @@ namespace Eldoria.EditorTools
             else if(s.projection==ProjectionKind.Gate && art!=null&&art.SlavicRockGate!=null)
             {
                 var gate=ValoriaKit.BenchmarkPieceModulated(s.id+" · civic entry",art.SlavicRockGate,
-                    s.center+RotatedOffset(s.yaw,new Vector3(0,.03f,-s.span*.50f)),s.span*.68f,1.70f,Quaternion.Euler(0,s.yaw,0),Color.white);
+                    s.center+RotatedOffset(s.yaw,new Vector3(0,.03f,s.span*.47f)),s.span*.62f,1.55f,Quaternion.Euler(0,s.yaw,0),Color.white);
                 ApplySharedSurface(gate,new Color(.66f,.65f,.60f,1f));AddPiece(root,gate);
             }
 
-            var lightPos=s.center+RotatedOffset(s.yaw,new Vector3(0,1.15f,-s.span*.38f));
+            var lightPos=s.center+RotatedOffset(s.yaw,new Vector3(0,1.15f,s.span*.34f));
             AddLocalWarmth(root,lightPos,.16f+(s.id=="A1"?.05f:0f),2.0f+(s.id=="A1"?.25f:0f));
             DisableAllGameplayOnVisuals(root);
         }
