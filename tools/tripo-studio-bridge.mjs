@@ -296,6 +296,18 @@ try {
     selectedInfo = inspected[0];
   }
 
+  if (['watch', 'export_glb', 'export_probe'].includes(mode) && request.generated_task_url) {
+    const task = new URL(String(request.generated_task_url));
+    if (task.protocol !== 'https:' || task.hostname !== 'studio.tripo3d.ai' ||
+        !/^\/(?:[a-z]{2}\/)?workspace\/generate\//i.test(task.pathname) ||
+        !/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(task.pathname)) {
+      throw new Error('Configured export/watch task URL is invalid.');
+    }
+    if (selectedPage.url() !== task.href) await selectedPage.goto(task.href, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await selectedPage.waitForTimeout(4000);
+    selectedInfo = await inspectPage(selectedPage);
+  }
+
   const report = {
     ok: true,
     mode,
@@ -644,6 +656,15 @@ try {
     const approvedTaskId = approvedTaskUrl.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)?.[0] || '';
     if (!approvedTaskId || !selectedPage.url().includes(approvedTaskId)) {
       throw new Error('The approved generated task is not active.');
+    }
+    const generationDeadline = Date.now() + 9 * 60 * 1000;
+    while (Date.now() < generationDeadline) {
+      const text = await selectedPage.locator('body').innerText();
+      if (!/(?:Generando|Generating)\.{0,3}/i.test(text)) break;
+      await sleep(10000);
+    }
+    if (/(?:Generando|Generating)\.{0,3}/i.test(await selectedPage.locator('body').innerText())) {
+      throw new Error('Authorized model is still generating; export can be retried without spending.');
     }
     let exportButtons = selectedPage.getByRole('button', { name: 'Exportar', exact: true });
     const dialogLabel = selectedPage.getByText('Nombre del archivo', { exact: true });
