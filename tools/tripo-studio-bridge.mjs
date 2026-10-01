@@ -420,11 +420,21 @@ try {
     }
     if (renderedInput) report.rendered_input = renderedInput;
 
+    if (request.staging_workspace_url) {
+      const workspace = new URL(String(request.staging_workspace_url));
+      if (workspace.protocol !== 'https:' || workspace.hostname !== 'studio.tripo3d.ai' ||
+          !/^\/(?:[a-z]{2}\/)?workspace\/generate\//i.test(workspace.pathname)) {
+        throw new Error('Configured staging workspace URL is not a Tripo generation workspace.');
+      }
+      await selectedPage.goto(workspace.href, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await selectedPage.waitForTimeout(5000);
+    }
+
     let uploadPage = null;
     let imageInput = null;
 
     for (let attempt = 1; attempt <= 8; attempt++) {
-      const livePages = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('studio.tripo3d.ai'));
+      const livePages = browser.contexts().flatMap(c => c.pages()).filter(p => /studio\.tripo3d\.ai\/(?:[a-z]{2}\/)?workspace\/generate/i.test(p.url()));
       for (const page of livePages) {
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
         const candidate = page.locator('input[type="file"][accept*="image"]').first();
