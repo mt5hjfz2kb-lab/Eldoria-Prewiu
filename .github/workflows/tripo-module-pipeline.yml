@@ -670,7 +670,7 @@ jobs:
             $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
               Sort-Object Name -Descending |
               ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
-              Where-Object { Test-Path $_ } | Select-Object -First 1 -ExpandProperty FullName
+              Where-Object { Test-Path $_ } | Select-Object -First 1
             if (-not $candidate) { throw 'Git not found for checkout.' }
             $dir = Split-Path $candidate
             Add-Content -Path $env:GITHUB_PATH -Value $dir
