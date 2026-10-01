@@ -2,7 +2,7 @@
   "enabled": true,
   "request_id": "valoria-hero-bastion-v1-isolated-gate",
   "module_label": "Valoria_HeroBastion_v1",
-  "unity_yaw_degrees": 0,
+  "unity_yaw_degrees": 180,
   "source": {
     "mode": "downloads_glb",
     "exact_name": "Valoria_HeroBastion_v1.glb",
@@ -26,6 +26,6 @@
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "valoria-hero-bastion-v1-raw-export-gate-1",
-  "notes": "One owner-authorized H3.1 Studio generation at 55 credits; exact task 849c6e57-42bb-4e80-b846-4f637b7f9952. Exact source JPEG hash c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. Raw GLB export 71123588 bytes / SHA fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf. Generic canonical Blender/Unity isolated gate; no extra credits or production changes."
+  "run_nonce": "valoria-hero-bastion-v1-front-facing-gate-2",
+  "notes": "One owner-authorized H3.1 Studio generation at 55 credits; exact task 849c6e57-42bb-4e80-b846-4f637b7f9952. Exact source JPEG hash c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. Raw GLB export 71123588 bytes / SHA fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf. Generic canonical Blender/Unity isolated gate; no extra credits or production changes. First gate 36822030531/artifact11143584599 TECH PASS (49800 tris) but yaw0 official cameras face rear courtyard. Rear diagnostic confirms exact approved entry/stairs are on +Z. Canonical orientation corrected to yaw180; repeat isolated gate only, same exact source, zero spend."
 }
