@@ -936,7 +936,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version | head -2
       - name: Run zero-spend high-to-low normal bake proof
         run: |
