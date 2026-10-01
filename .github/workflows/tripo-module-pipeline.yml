@@ -15,7 +15,8 @@ permissions:
   actions: read
 
 concurrency:
-  group: eldoria-tripo-module-canonical
+  # Experimental branch must not be cancelled by unrelated main Tripo/module work.
+  group: eldoria-tripo-module-canonical-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
