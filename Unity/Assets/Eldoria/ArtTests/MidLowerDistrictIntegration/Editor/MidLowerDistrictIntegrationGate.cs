@@ -110,19 +110,25 @@ namespace Eldoria.EditorTools
             SuppressByWorldRegion("Valoria · hero frame inhabited roofline",-22f,-8f,-2f,7.0f);
             SuppressByWorldRegion("Valoria · hero frame inhabited roofline",8f,22f,-2f,8.0f);
 
-            // Replace many small huts with two already-certified residential+rock masses.
-            AddRescuedResidential(root,"MidLower · west inhabited rock terrace",
-                new Vector3(-11.85f,.28f,-1.35f),5.65f,4.35f,Quaternion.Euler(0,-8f,0));
-            AddRescuedResidential(root,"MidLower · east inhabited rock terrace",
-                new Vector3(11.55f,.28f,-1.55f),5.55f,4.25f,Quaternion.Euler(0,188f,0));
-
-            // One subordinate authored dwelling per side keeps the lower city inhabited without repetition.
+            // Rebuild each flank with a small number of stable authored structures.
+            // Deliberately avoid ResidentialTerraceRock here: its imported material path failed this URP gate.
             if(art!=null&&art.SlavicHouse!=null)
             {
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · west secondary dwelling",art.SlavicHouse,
-                    new Vector3(-15.6f,.34f,2.35f),2.70f,2.90f,Quaternion.Euler(0,12f,0),new Color(.69f,.66f,.58f,1f)));
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east secondary dwelling",art.SlavicHouse,
-                    new Vector3(15.2f,.34f,2.10f),2.65f,2.85f,Quaternion.Euler(0,170f,0),new Color(.67f,.64f,.57f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · west residence A",art.SlavicHouse,
+                    new Vector3(-11.8f,.34f,-2.45f),3.20f,3.20f,Quaternion.Euler(0,-10f,0),new Color(.72f,.68f,.60f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · west residence B",art.SlavicHouse,
+                    new Vector3(-15.0f,.34f,1.65f),2.85f,3.00f,Quaternion.Euler(0,16f,0),new Color(.68f,.64f,.56f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east residence A",art.SlavicHouse,
+                    new Vector3(11.6f,.34f,-2.25f),3.15f,3.15f,Quaternion.Euler(0,194f,0),new Color(.70f,.67f,.59f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east residence B",art.SlavicHouse,
+                    new Vector3(14.8f,.34f,1.95f),2.80f,2.95f,Quaternion.Euler(0,166f,0),new Color(.67f,.64f,.57f,1f)));
+            }
+            if(art!=null&&art.SlavicShed!=null)
+            {
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · west workshop",art.SlavicShed,
+                    new Vector3(-9.55f,.34f,1.85f),2.45f,2.35f,Quaternion.Euler(0,-24f,0),new Color(.64f,.57f,.48f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east workshop",art.SlavicShed,
+                    new Vector3(9.55f,.34f,2.15f),2.40f,2.30f,Quaternion.Euler(0,204f,0),new Color(.63f,.56f,.47f,1f)));
             }
 
             // E. Break the board read with buried certified terrain/terrace support.
