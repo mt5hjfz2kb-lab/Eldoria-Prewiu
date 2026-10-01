@@ -5,7 +5,6 @@ on:
     branches: ['visual-proof/hero-bastion-integrated-v1']
     paths:
       - 'Unity/Assets/Eldoria/ArtTests/HeroBastionIntegrated/**'
-      - '.github/workflows/hero-bastion-integrated-v1.yml'
   workflow_dispatch:
 
 permissions:
