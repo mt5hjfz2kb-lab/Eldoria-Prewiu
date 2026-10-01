@@ -770,6 +770,12 @@ jobs:
           if(-not (Test-Path "$folder\summary.json")) { throw 'LOD summary missing.' }
           Get-Content "$folder\summary.json"
 
+      - name: Setup Node for static capability audit
+        if: steps.proof.outputs.enabled == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Audit Unity environment-art capabilities statically
         if: steps.proof.outputs.enabled == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
