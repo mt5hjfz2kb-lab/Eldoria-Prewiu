@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "request_id": "blender-capability-proof-v1-residential-terrace",
+  "source": {
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb"
+  },
+  "lod_ratios": [1.0, 0.5, 0.25],
+  "preserve_uvs": true,
+  "preserve_materials": true,
+  "attempt_material_slot_consolidation": true,
+  "validation": {
+    "reuse_canonical_unity_module_gate": true,
+    "official_camera_capture": true
+  },
+  "notes": "Zero-spend proof. No Tripo. Compare baseline vs deterministic Blender LOD generation on an existing certified production asset."
+}
