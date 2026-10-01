@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Eldoria.EditorTools
 {
-    public static class HeroBastionIntegratedGate
+    // trigger: integrated-proof-v1\n    public static class HeroBastionIntegratedGate
     {
         const string Folder="HeroBastionIntegratedCaptures";
         const string AssetPath="Assets/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb";
