@@ -27,6 +27,7 @@ namespace Eldoria.EditorTools
             public float unity_yaw_degrees;
             public string visual_acceptance;
             public string lookdev_profile;
+            public bool allow_variable_triangle_count;
             public long min_triangles;
             public long max_triangles;
         }
