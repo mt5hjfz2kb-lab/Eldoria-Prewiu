@@ -1,13 +1,13 @@
 {
   "enabled": true,
-  "request_id": "terrain-terrace-kit-v1-isolated-gate",
-  "module_label": "TerrainTerraceKit_v1",
+  "request_id": "valoria-hero-bastion-v1-isolated-gate",
+  "module_label": "Valoria_HeroBastion_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "downloads_glb",
-    "exact_name": "TerrainTerraceKit_v1.glb",
-    "exact_sha256": "63d74d19455a92b0e134ada49bde41a3b050bdb8bfe19102eac632bf1d15264e",
-    "name_regex": "^TerrainTerraceKit_v1\\.glb$",
+    "exact_name": "Valoria_HeroBastion_v1.glb",
+    "exact_sha256": "fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf",
+    "name_regex": "^Valoria_HeroBastion_v1\\.glb$",
     "max_age_hours": 24,
     "exclude_sha256": []
   },
@@ -20,45 +20,12 @@
     "max_triangles": 50000
   },
   "multipiece": {
-    "enabled": true,
-    "min_component_triangles": 100,
-    "expected_piece_count": 7,
-    "cluster_axes": "xy",
-    "salvage": {
-      "enabled": true,
-      "mode": "disconnected_residue_only",
-      "piece_indices": [
-        1,
-        2,
-        3,
-        7
-      ],
-      "min_component_ratio": 0,
-      "min_component_triangles": 5,
-      "post_join_cleanup": {
-        "1": {
-          "min_triangles": 20,
-          "spatial_neighbor_ratio": 0.025
-        },
-        "2": {
-          "min_triangles": 20,
-          "spatial_neighbor_ratio": 0.025
-        },
-        "3": {
-          "min_triangles": 20,
-          "spatial_neighbor_ratio": 0.025
-        },
-        "7": {
-          "min_triangles": 20,
-          "spatial_neighbor_ratio": 0.025
-        }
-      }
-    }
+    "enabled": false
   },
-  "visual_acceptance": "Strict individual-module review: seven approved-sheet terrain/terrace source shapes. Accept only coherent reusable rock+masonry supports, intact terrace tops and usable rock-to-street/building joins at official 19/12/9 and oblique/multi-angle captures. No fused remote fragments, chaotic masses, torn silhouettes or floating components. Modules must adapt visually to certified West Rebuilders Quarter without owning or moving gameplay topology. Technical clustering never implies visual PASS.",
+  "visual_acceptance": "Hero Bastion visual-only replacement proof from exact owner-approved JPEG. Monumental central keep + two flanking towers, coherent natural stone/wood with blue roofs/heraldry and restrained gold. Readable front entry and staircase on rocky foundation; complete architecture silhouette at official orthographic 19/12/9 and oblique, diagnostic views. No floating fragments, torn roofs/walls, melted masses or texture washout. Isolated technical/source acceptance does not certify gameplay circulation, integrated benchmark or production readiness. Protect Valoria.unity/VisualWorld/gameplay; no automatic promotion.",
   "promotion": {
     "enabled": false
   },
-  "run_nonce": "terrain-terrace-v1-spatial-residue-repair-1",
-  "notes": "Zero-credit bounded cleanup after XY review run36736179242/artifact11107497320. 01 stepped-support,02 corner-terrace,03 straight-support,07 broad-platform are candidates with remote residues. Use established disconnected/spatial cleanup only; no connected clipping/regeneration.04/05/06 currently reject: torn/mixed masses. No promotion until final multi-angle review."
+  "run_nonce": "valoria-hero-bastion-v1-raw-export-gate-1",
+  "notes": "One owner-authorized H3.1 Studio generation at 55 credits; exact task 849c6e57-42bb-4e80-b846-4f637b7f9952. Exact source JPEG hash c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981. Raw GLB export 71123588 bytes / SHA fd859fe52b45dbdd3224f7f607897c1d36f326dc0ff2632b0a0f2a4b14348ebf. Generic canonical Blender/Unity isolated gate; no extra credits or production changes."
 }
