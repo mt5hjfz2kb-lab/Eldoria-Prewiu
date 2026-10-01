@@ -754,15 +754,11 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log = "$env:RUNNER_TEMP\blender-proof-unity.log"
           $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.BlenderLODReview.Run","-logFile",$log)
-          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if (-not $p.WaitForExit(540000)) {
-            & taskkill.exe /PID $p.Id /T /F | Out-Null
-            if(Test-Path $log){ Get-Content $log -Tail 260 }
-            throw 'Unity Blender LOD review timed out.'
-          }
-          if ($p.ExitCode -ne 0) {
+          & $env:UNITY_EDITOR_PATH @args
+          $exitCode = $LASTEXITCODE
+          if ($exitCode -ne 0) {
             if(Test-Path $log){ Get-Content $log -Tail 300 }
-            throw "Unity Blender LOD review failed: $($p.ExitCode)"
+            throw "Unity Blender LOD review failed: $exitCode"
           }
           foreach($lod in 0..2) {
             foreach($name in @('city.png','detail.png','metrics.json')) {
