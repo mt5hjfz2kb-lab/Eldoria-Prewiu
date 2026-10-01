@@ -1,0 +1,15 @@
+{
+  "asset_name": "Valoria_HeroBastion_v1",
+  "file_name": "A7D3BB2C-D568-4195-B782-9B3B845FF862.jpeg",
+  "sha256": "c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981",
+  "size_bytes": 596810,
+  "parts": 7,
+  "source": "user_attached_jpeg_explicitly_approved_2026-10-01",
+  "parts_dir": "pipeline/exact-inputs/Valoria_HeroBastion_v1",
+  "expected_sha256": "c5caa1b087a0cde510225168b7347e72527b6abad7669135e687822497104981",
+  "expected_size_bytes": 596810,
+  "format": "JPEG",
+  "width": 1448,
+  "height": 1086,
+  "approval_note": "Owner explicitly approved this attached JPEG after being shown mismatch with the previously expected PNG. Original JPEG bytes unchanged."
+}
