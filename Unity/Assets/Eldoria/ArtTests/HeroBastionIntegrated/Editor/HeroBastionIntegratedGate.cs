@@ -148,10 +148,54 @@ namespace Eldoria.EditorTools
                 groundY-bounds.min.y,
                 targetCenter.z-bounds.center.z);
 
-            // Do not replace imported Tripo materials/textures. The point of this proof is
-            // to judge the generated asset in the real frame, not a generic material override.
+            // Zero-credit surface-fit pass: keep the generated textures/normal detail and only
+            // normalize their lighting response to the real Valoria frame. No mesh edits.
+            FitGeneratedHeroSurface(go);
             go.transform.SetParent(new GameObject("HERO BASTION INTEGRATED PROOF · visual only").transform,true);
             return go;
+        }
+
+        static void FitGeneratedHeroSurface(GameObject go)
+        {
+            var cache=new Dictionary<int,Material>();
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var sourceMats=r.sharedMaterials;
+                var fitted=new Material[sourceMats.Length];
+                for(int i=0;i<sourceMats.Length;i++)
+                {
+                    var src=sourceMats[i];
+                    if(src==null){fitted[i]=null;continue;}
+                    if(cache.TryGetValue(src.GetInstanceID(),out var cached)){fitted[i]=cached;continue;}
+
+                    Texture baseMap=null,normal=null,mask=null;
+                    foreach(string p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_MaskMap","_MetallicGlossMap","_OcclusionMap"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){mask=src.GetTexture(p);break;}
+
+                    var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+                    var m=new Material(shader){name="Valoria fitted · "+src.name};
+                    if(baseMap!=null)m.SetTexture("_BaseMap",baseMap);
+                    if(normal!=null)
+                    {
+                        m.SetTexture("_BumpMap",normal);
+                        m.EnableKeyword("_NORMALMAP");
+                        if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",1.0f);
+                    }
+                    if(mask!=null && m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",mask);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.74f,.71f,.66f,1f));
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.74f,.71f,.66f,1f));
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
+                    if(m.HasProperty("_OcclusionStrength"))m.SetFloat("_OcclusionStrength",1.0f);
+                    cache[src.GetInstanceID()]=m;
+                    fitted[i]=m;
+                }
+                r.sharedMaterials=fitted;
+            }
         }
 
         static string MetricsJson()
