@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-mid-tier-architecture-kit-v1-four-piece-isolated-gate",
   "module_label": "Valoria_MidTierArchitectureKit_v1",
   "unity_yaw_degrees": 0,
@@ -32,8 +32,8 @@
     "enabled": false
   },
   "visual_acceptance": "Four distinct reusable architecture pieces derived from exactly the owner-approved sheet: 2-storey residential facade/corner mass with balconies; arched entry/porch mass with blue/gold banners and steps; roof/upper structure with tower/chimney (partial-height module is intentional); workshop/facade mass with open arch and side canopy. Require each intended mass to remain complete, coherent stone/timber/red-tile identity, readable major silhouettes and attached roofs/walls; no cross-piece fusion, stranded fragments, connected spikes, severed principal facades or major texture washout. Evaluate real official19/12/9 kit captures plus each piece front/rear/side/oblique. Technical separation alone does not certify usability or integrated Valoria quality. Isolated gate only, gameplay topology/hotspots/colliders/circulation authoritative; no automatic production promotion.",
-  "run_nonce": "mid-tier-kit-v1-yz-reconstruction",
-  "notes": "Zero-credit reconstruction attempt from the exact already-generated raw GLB. Change only multipiece clustering axes xy->yz after recovered geometry analysis showed the four intended objects occupy four distinct Y/Z regions. No Tripo generation, no paid retry, no promotion. Source SHA remains exact and pinned. Validate four clean modules in isolated Blender/Unity captures before any production decision.",
+  "run_nonce": "mid-tier-kit-v1-yz-reconstruction-closed-36857266003",
+  "notes": "Zero-credit YZ reconstruction completed in run 36857266003. Same exact raw GLB/SHA; no Tripo generation, no paid retry, no promotion. Blender+Unity multipiece technical gate PASS. Visual review recovered the intended four objects cleanly enough to continue as isolated candidates: piece01 arched entry/porch has one small detached fragment below the mass (VISUAL PARTIAL, cleanup required before production); piece02 two-storey residence PASS candidate; piece03 workshop/facade PASS candidate; piece04 roof/upper structure PASS candidate. No automatic Valoria integration. Evidence artifact 11160571815; full artifact 11160251379.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
