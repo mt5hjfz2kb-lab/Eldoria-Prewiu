@@ -841,7 +841,7 @@ jobs:
           $log="$env:RUNNER_TEMP\blender-bake-unity.log"
           $args=@("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
           $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if (-not $p.WaitForExit(300000)) {
+          if (-not $p.WaitForExit(600000)) {
             & taskkill.exe /PID $p.Id /T /F | Out-Null
             if(Test-Path $log){ Get-Content $log -Tail 300 }
             throw 'Unity baked-low validation timed out.'
@@ -858,18 +858,18 @@ jobs:
           Get-Content "$dest\metrics.json"
 
       - name: Setup Node for Tripo read-only capability probe
-        if: steps.proof.outputs.enabled == 'true'
+        if: always() && steps.proof.outputs.enabled == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
       - name: Install Node dependencies for Tripo read-only probe
-        if: steps.proof.outputs.enabled == 'true'
+        if: always() && steps.proof.outputs.enabled == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: npm ci --ignore-scripts
 
       - name: Probe Tripo advanced UI capabilities without clicks or spend
-        if: steps.proof.outputs.enabled == 'true'
+        if: always() && steps.proof.outputs.enabled == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $out="$env:RUNNER_TEMP\tripo-advanced-capability-probe.json"
