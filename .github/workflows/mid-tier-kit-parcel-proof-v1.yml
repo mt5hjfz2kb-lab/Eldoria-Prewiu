@@ -47,7 +47,7 @@ jobs:
       - name: Recover exact Mid-Tier raw GLB
         shell: powershell
         run: |
-          $artifactId=11160251379
+          $artifactId=11155272611
           $expected='5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a'
           $root="$env:RUNNER_TEMP\mid-tier-source"; $zip="$root.zip"
           Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
