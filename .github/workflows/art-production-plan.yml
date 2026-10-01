@@ -1,0 +1,34 @@
+name: Eldoria art production planner
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, pipeline/toolchain-automation-v2]
+    paths:
+      - 'pipeline/art-production-request.json'
+      - 'pipeline/toolchain-capabilities.json'
+      - 'tools/plan-art-production.mjs'
+      - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build deterministic zero-spend art-production plan
+        run: |
+          node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plan.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-art-production-plan-${{ github.sha }}
+          path: |
+            art-production-plan.json
+            pipeline/art-production-request.json
+            pipeline/toolchain-capabilities.json
+          if-no-files-found: error
