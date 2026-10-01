@@ -27,3 +27,20 @@ Requests are parked disabled. Total spend stays55credits; no further paid genera
 Changed workflow YAML parses. Required full workflow governance check ran and reported one **pre-existing unrelated** violation in `hero-bastion-integrated-v1.yml` (heavy runner workflow self-trigger); the changed canonical workflow does not introduce that violation.
 
 Production promotion remains disabled. No changes to Valoria.unity, VisualWorld, gameplay topology, hotspots, colliders or circulation. Source identities, raw exported GLB and generation evidence are pinned; review is isolated.
+
+## Final recovered visual review — 2026-10-01
+
+The first Unity-attempt artifact **11156331060** preserved the actual Blender-normalized source and all four extracted GLBs despite the later Unity OOM. Those exact files were recovered and rendered independently at multiple azimuths for visual forensics; no regeneration, Tripo call, source substitution or production integration was performed.
+
+Recovered pieces:
+- piece_01: **9,889 tris**
+- piece_02: **8,703 tris**
+- piece_03: **11,296 tris**
+- piece_04: **19,525 tris**
+- combined canonical Blender target: **49,800 tris**
+
+**FINAL VISUAL VERDICT: FAIL / NOT PROMOTABLE.** All four extracted GLBs are spatially mis-grouped: each contains two vertically separated architectural masses or substantial disconnected fragments rather than one coherent reusable module. The issue is therefore not merely missing Unity captures or runner memory. The generated sheet survived Tripo and Blender technically, but the automatic spatial clustering did not recover the intended four authored objects as clean standalone modules.
+
+This means the current four-piece extraction must not be integrated into Valoria or used to extend the Modular Assembly System. The source generation remains preserved for possible future zero-credit manual re-separation/reconstruction, but no further paid generation is authorized or needed to establish this verdict. Production promotion remains disabled; gameplay topology, hotspots, colliders, circulation and Valoria.unity remain untouched.
+
+A rerun of recovery workflow **36852832649** was started once at zero credit after runner recovery. Its result may provide additional Unity evidence if it completes, but it cannot overturn the already-observed disconnected geometry without a different separation/reconstruction method.
