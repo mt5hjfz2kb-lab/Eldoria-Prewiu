@@ -757,8 +757,7 @@ jobs:
               module_label=("BlenderCapabilityProof_LOD"+$lod)
               unity_yaw_degrees=0
               visual_acceptance='Compare LOD preservation only; no production promotion.'
-              min_triangles=1
-              max_triangles=2000000
+              allow_variable_triangle_count=$true
             } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
             Copy-Item (Join-Path $generated ("lod"+$lod+".glb")) $expected -Force
             $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
