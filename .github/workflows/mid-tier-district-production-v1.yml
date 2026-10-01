@@ -6,6 +6,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/MidTierDistrictProduction.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/MidTierDistrictProductionGate.cs'
       - '.github/workflows/mid-tier-district-production-v1.yml'
   workflow_dispatch:
 
@@ -125,15 +126,15 @@ jobs:
       - name: Capture canonical production Valoria
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $folder="$env:GITHUB_WORKSPACE\Unity\MidTierDistrictProductionCaptures"
           $log="$env:RUNNER_TEMP\MidTier-Production.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",
             '-refreshImportMode','InProcess','-job-worker-count','1',
-            '-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.Capture','-logFile',$log)
+            '-executeMethod','Eldoria.EditorTools.MidTierDistrictProductionGate.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 400};throw "Production Valoria gate failed: $($p.ExitCode)"}
-          foreach($name in @('valoria-after-19.png','valoria-after-12.png','valoria-after-9.png','valoria-after-mobile.png','formula-barracks-12.png','formula-barracks-9.png','formula-granero-biii-12.png','formula-granero-biii-9.png','formula-metrics.json')){
+          foreach($name in @('baseline-19.png','baseline-12.png','baseline-9.png','baseline-mobile.png','production-19.png','production-12.png','production-9.png','production-mobile.png','evidence.json')){
             $f=Join-Path $folder $name
             if(-not(Test-Path $f) -or ((Get-Item $f).Length -lt 100)){throw "Missing production evidence $name"}
           }
@@ -155,7 +156,7 @@ jobs:
         with:
           name: mid-tier-district-production-v1-${{ github.run_id }}
           path: |
-            Unity/VisualFormulaCaptures/*
+            Unity/MidTierDistrictProductionCaptures/*
             ${{ runner.temp }}/mid-tier-production-reconstruction.json
             ${{ runner.temp }}/MidTier-Production.log
           if-no-files-found: warn
