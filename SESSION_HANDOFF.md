@@ -1,3 +1,7 @@
+## Toolchain Automation v2 — CANONICAL ENTRY LOCK (2026-10-01)
+
+The previously promoted Toolchain Automation v2 is now explicitly locked as the mandatory entry gate for new Valoria visual/art work. Read `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`, represent the route in `pipeline/art-production-request.json`, and validate it with `tools/plan-art-production.mjs` / `.github/workflows/art-production-plan.yml` before heavy execution. The planner routes into the existing canonical Unity/Blender/Tripo engines; it does not create a parallel pipeline. Old blanket `image -> Tripo -> decimate -> Unity` execution is a process regression unless the planner has first proven a geometry gap and selected that route. Tripo credit gates and 19/12/9/mobile visual acceptance remain unchanged.
+
 ## Toolchain Automation v2 — CANONICAL ROUTING + ZERO-SPEND CAPABILITY PROOFS (2026-10-01)
 
 Promoted to `main`: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`, `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`, `pipeline/art-production-request.json`, `pipeline/toolchain-capabilities.json`, planner/audit/Blender/Tripo probe tools and `.github/workflows/art-production-plan.yml`. Final proof run `36859609770 SUCCESS`; artifacts `11161505766` (planner/static Unity audit), `11161572190` (Blender+Unity+Tripo proof), `11160897012` (hosted Blender bake cross-check). **0 Tripo credits**.
