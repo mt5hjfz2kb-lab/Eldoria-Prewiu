@@ -778,11 +778,15 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log = "$env:RUNNER_TEMP\unity-environment-capabilities.log"
           $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.UnityEnvironmentCapabilitiesAudit.Run","-logFile",$log)
-          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
-          $exitCode = $p.ExitCode
-          if ($exitCode -ne 0) {
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $p.WaitForExit(180000)) {
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
             if(Test-Path $log){ Get-Content $log -Tail 300 }
-            throw "Unity environment capability audit failed: $exitCode"
+            throw 'Unity environment capability audit timed out.'
+          }
+          if ($p.ExitCode -ne 0) {
+            if(Test-Path $log){ Get-Content $log -Tail 300 }
+            throw "Unity environment capability audit failed: $($p.ExitCode)"
           }
           if(-not (Test-Path "$folder\capabilities.json")) { throw 'Unity capability report missing.' }
           Get-Content "$folder\capabilities.json"
@@ -842,11 +846,15 @@ jobs:
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $log="$env:RUNNER_TEMP\blender-bake-unity.log"
           $args=@("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
-          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
-          $exitCode=$p.ExitCode
-          if($exitCode -ne 0){
+          $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if (-not $p.WaitForExit(300000)) {
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
             if(Test-Path $log){ Get-Content $log -Tail 300 }
-            throw "Unity baked-low validation failed: $exitCode"
+            throw 'Unity baked-low validation timed out.'
+          }
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){ Get-Content $log -Tail 300 }
+            throw "Unity baked-low validation failed: $($p.ExitCode)"
           }
           if(-not (Test-Path "$folder\metrics.json")){ throw 'Baked-low Unity metrics missing.' }
           $dest="$env:GITHUB_WORKSPACE\Unity\BlenderBakeCapabilityProof"
