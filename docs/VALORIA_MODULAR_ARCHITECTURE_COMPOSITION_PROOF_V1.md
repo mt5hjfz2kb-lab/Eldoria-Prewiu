@@ -2,9 +2,9 @@
 
 Closed: 2026-10-01.  
 Branch: `visual-proof/modular-architecture-composition-v1`  
-Final visual code: `be43ad8b35e9eaffd3b3af98a4a84efad0a91799`  
-Final run: **36835900386 — SUCCESS**  
-Artifact: **11148933433**
+Final visual code: `be9377f1ea4f46b9fbb0994a4e3e427092568605`  
+Final run: **36836045274 — SUCCESS**  
+Artifact: **11149091920**
 
 Verdict: **TECH PASS / MODULAR COMPOSITION PASS / NOT PROMOTED TO PRODUCTION**.
 
@@ -151,7 +151,7 @@ Terrain, decals, baked lightmaps, reflection probes and LODGroups were considere
 
 ## Technical evidence
 
-Final run **36835900386 — SUCCESS**.
+Final run **36836045274 — SUCCESS**.
 
 - `collider_hotspot_signature_equal=true`
 - `hero_district_preserved=true`
