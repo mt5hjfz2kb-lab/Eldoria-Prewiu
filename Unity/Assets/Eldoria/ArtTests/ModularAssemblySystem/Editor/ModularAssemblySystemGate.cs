@@ -185,9 +185,20 @@ namespace Eldoria.EditorTools
                            n.Contains("Rebuilder shelter",StringComparison.OrdinalIgnoreCase)||
                            n.Contains("Valoria · reused civil house",StringComparison.OrdinalIgnoreCase)||
                            n.Contains("Valoria · hero frame inhabited roofline",StringComparison.OrdinalIgnoreCase);
-                if(named){r.enabled=false;count++;}
+                if(named&&NearAssemblyParcel(r.bounds.center,4.25f)){r.enabled=false;count++;}
             }
             return count;
+        }
+
+        static bool NearAssemblyParcel(Vector3 p,float radius)
+        {
+            float r2=radius*radius;
+            foreach(var s in Specs)
+            {
+                var d=new Vector2(p.x-s.center.x,p.z-s.center.z);
+                if(d.sqrMagnitude<=r2)return true;
+            }
+            return false;
         }
 
         static void AddTerrain(GameObject root,BaseKind kind,Vector3 anchor,float topY,float span,float yaw)
@@ -322,7 +333,40 @@ namespace Eldoria.EditorTools
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);var source=AssetDatabase.LoadAssetAtPath<GameObject>(AssetPath);if(source==null)throw new Exception("Hero Bastion missing.");
             var go=UnityEngine.Object.Instantiate(source);go.name="Valoria · Generated Hero Bastion v1 · assembly proof";go.transform.rotation=Quaternion.Euler(0,180f,0);DisableAllGameplayOnVisuals(go);
             var b=BoundsOf(go);float scale=Mathf.Min(12.8f/Mathf.Max(b.size.x,b.size.z),10.2f/b.size.y);go.transform.localScale*=scale;b=BoundsOf(go);go.transform.position+=new Vector3(-b.center.x,2.52f-b.min.y,8.75f-b.center.z);
-            ApplySharedSurface(go,new Color(.72f,.69f,.64f,1f));return go;
+            FitGeneratedHeroSurface(go);return go;
+        }
+
+        static void FitGeneratedHeroSurface(GameObject go)
+        {
+            var cache=new Dictionary<int,Material>();
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
+                for(int i=0;i<srcs.Length;i++)
+                {
+                    var src=srcs[i];if(src==null){dst[i]=null;continue;}
+                    if(cache.TryGetValue(src.GetInstanceID(),out var cached)){dst[i]=cached;continue;}
+                    Texture baseMap=null,normal=null,mask=null;
+                    foreach(string p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_MaskMap","_MetallicGlossMap","_OcclusionMap"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){mask=src.GetTexture(p);break;}
+                    var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+                    var m=new Material(shader){name="Valoria fitted · "+src.name};
+                    if(baseMap!=null&&m.HasProperty("_BaseMap"))m.SetTexture("_BaseMap",baseMap);
+                    if(normal!=null&&m.HasProperty("_BumpMap")){m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",1f);}
+                    if(mask!=null&&m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",mask);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.72f,.69f,.64f,1f));
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.72f,.69f,.64f,1f));
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.03f);
+                    if(m.HasProperty("_OcclusionStrength"))m.SetFloat("_OcclusionStrength",1f);
+                    cache[src.GetInstanceID()]=m;dst[i]=m;
+                }
+                r.sharedMaterials=dst;
+            }
         }
 
         static Bounds BoundsOf(GameObject go){var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(go.transform.position,Vector3.zero);var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);return b;}
