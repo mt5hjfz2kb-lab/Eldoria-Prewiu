@@ -2,9 +2,12 @@ name: Canonical Tripo module pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, pipeline/toolchain-automation-v2]
     paths:
       - 'pipeline/tripo-module-request.json'
+      - 'pipeline/blender-capability-proof-request.json'
+      - 'tools/blender_capability_proof.py'
+      - '.github/workflows/tripo-module-pipeline.yml'
   workflow_dispatch:
 
 permissions:
@@ -17,7 +20,7 @@ concurrency:
 
 jobs:
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    if: vars.UNITY_RUNNER_READY == 'true' && github.ref != 'refs/heads/pipeline/toolchain-automation-v2'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 20
 
@@ -651,3 +654,143 @@ jobs:
           if (-not $pushed) { throw 'git push failed after concurrent-main retries' }
           Write-Host "PROMOTION_PUSHED: mode=$promotionMode count=$($tracked.Count)"
 
+
+
+  blender-capability-proof:
+    if: vars.UNITY_RUNNER_READY == 'true' && github.ref == 'refs/heads/pipeline/toolchain-automation-v2'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git installed with GitHub Desktop
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1 -ExpandProperty FullName
+            if (-not $candidate) { throw 'Git not found for checkout.' }
+            $dir = Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH = "$dir;$env:PATH"
+          }
+          git --version
+
+      - uses: actions/checkout@v4
+
+      - name: Read proof request
+        id: proof
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $path = "$env:GITHUB_WORKSPACE\pipeline\blender-capability-proof-request.json"
+          $request = Get-Content $path -Raw | ConvertFrom-Json
+          "enabled=$(([bool]$request.enabled).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "request_id=$($request.request_id)" >> $env:GITHUB_OUTPUT
+          Write-Host "BLENDER_CAPABILITY_PROOF: enabled=$($request.enabled) id=$($request.request_id)"
+
+      - name: Locate Blender
+        if: steps.proof.outputs.enabled == 'true'
+        id: blenderproof
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @('C:\Program Files\Blender Foundation',"$env:LOCALAPPDATA\Programs\Blender Foundation")
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Generate deterministic LOD family
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\blender-capability-proof-request.json" -Raw | ConvertFrom-Json
+          $input = Join-Path $env:GITHUB_WORKSPACE ([string]$request.source.path)
+          if (-not (Test-Path $input)) { throw "Proof source missing: $input" }
+          $outDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ToolchainProof\Generated"
+          Remove-Item $outDir -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $outDir | Out-Null
+          $report = "$env:RUNNER_TEMP\blender-capability-proof-report.json"
+          $log = "$env:RUNNER_TEMP\blender-capability-proof.log"
+          $err = "$env:RUNNER_TEMP\blender-capability-proof-error.log"
+          $ratios = (($request.lod_ratios | ForEach-Object { [string]$_ }) -join ',')
+          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\blender_capability_proof.py","--","--input",$input,"--output-dir",$outDir,"--report",$report,"--ratios",$ratios)
+          $p = Start-Process -FilePath "${{ steps.blenderproof.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if ($p.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            if (Test-Path $err) { Get-Content $err -Tail 240 }
+            throw "Blender capability proof failed: $($p.ExitCode)"
+          }
+          Get-Content $report
+          foreach($lod in 0..2) {
+            $f=Join-Path $outDir ("lod"+$lod+".glb")
+            if(-not (Test-Path $f) -or (Get-Item $f).Length -lt 1000){ throw "Missing LOD output: $f" }
+          }
+
+      - name: Verify Unity 6.3.23f1
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'UNITY_EDITOR_PATH not found' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
+
+      - name: Capture each LOD with canonical module gate
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $generated = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ToolchainProof\Generated"
+          $expected = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          New-Item -ItemType Directory -Force (Split-Path $expected) | Out-Null
+          @{
+            module_label='BlenderCapabilityProof'
+            unity_yaw_degrees=0
+            visual_acceptance='Compare LOD preservation only; no production promotion.'
+          } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+
+          foreach($lod in 0..2) {
+            Copy-Item (Join-Path $generated ("lod"+$lod+".glb")) $expected -Force
+            $folder = "$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
+            Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+            $log = "$env:RUNNER_TEMP\blender-proof-unity-lod$lod.log"
+            $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
+            $p = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if (-not $p.WaitForExit(540000)) {
+              & taskkill.exe /PID $p.Id /T /F | Out-Null
+              throw "Unity LOD $lod review timed out."
+            }
+            if ($p.ExitCode -ne 0) {
+              if(Test-Path $log){ Get-Content $log -Tail 240 }
+              throw "Unity LOD $lod review failed: $($p.ExitCode)"
+            }
+            $dest="$env:GITHUB_WORKSPACE\Unity\BlenderCapabilityProof\LOD$lod"
+            Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Force $dest | Out-Null
+            Copy-Item "$folder\*" $dest -Recurse -Force
+            if(-not (Test-Path "$dest\metrics.json")){ throw "LOD $lod metrics missing." }
+          }
+
+      - name: Upload Blender capability proof
+        if: always() && steps.proof.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-capability-proof-v1-${{ github.sha }}
+          path: |
+            Unity/Assets/Eldoria/ArtTests/ToolchainProof/Generated/*.glb
+            Unity/BlenderCapabilityProof/**/*
+            ${{ runner.temp }}/blender-capability-proof-report.json
+            ${{ runner.temp }}/blender-capability-proof.log
+            ${{ runner.temp }}/blender-capability-proof-error.log
+            ${{ runner.temp }}/blender-proof-unity-lod*.log
+            pipeline/blender-capability-proof-request.json
+          if-no-files-found: warn
