@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
@@ -20,7 +20,7 @@
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
   "run_nonce": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
-  "notes": "Zero-credit staging retry with automatic recovery of the owner's documented existing Eldoria-Edge-Remote profile. Exact original sheet unchanged; no Generate or credits authorized. Previous attempt failed before upload because CDP was closed.",
+  "notes": "STAGING VERIFIED run36847170877 SUCCESS/artifact11153988767. Existing owner Edge profile reopened automatically: browser_recovery.attempted=true/ready=true. Exact 1448x1086 JPEG preview SHA/605572 bytes match original. Visible H3.1 Generate cost55; generate_clicked=false, credits_spent=false. Owner requested bringing image to Tripo, not generation. Parked disabled; recovery configuration retained for future zero-credit staging. Central 3D viewport is prior Hero Bastion, not output from this sheet.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",

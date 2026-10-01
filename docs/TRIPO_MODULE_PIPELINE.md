@@ -82,6 +82,21 @@ Before enabling a repo-backed `stage_upload`, run:
 The validator must PASS the expected SHA-256 and byte count before Tripo is touched. If the repo payload is incomplete, keep the request disabled and do not fall back to Downloads for a ChatGPT-approved exact input.
 
 
+
+### Recovery of the owner's existing Tripo browser
+
+The canonical Studio bridge supports opt-in recovery after a refused CDP connection. This avoids requiring the owner at the PC when the dedicated browser has closed.
+
+`browser_recovery` configuration:
+- `enabled: true`;
+- `executable_path: C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe`;
+- `user_data_dir: C:\\Users\\crist\\Eldoria-Edge-Remote`;
+- `start_timeout_ms: 30000`.
+
+Recovery is restricted to Windows, `http://127.0.0.1:9222`, an existing Edge executable, and the existing dedicated profile with `Local State` and `Default/Preferences`. These paths correspond to the owner's original setup command; do not guess a different profile, copy credentials, create a substitute profile, or kill an existing browser. The original profile is reopened with the same remote-debugging arguments and Tripo URL. Connection retries are bounded, and `browser_recovery` evidence is included in the probe report. The browser is excluded from Actions child cleanup so it remains available to the owner and future bridge jobs.
+
+This does not authorize generation, solve an expired sign-in/verification challenge, or change the exact-input/credit gates. Recovery runtime validation must be recorded separately from source syntax validation.
+
 ## Source of truth
 
 Canonical entry points:
