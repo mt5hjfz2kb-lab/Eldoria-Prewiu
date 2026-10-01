@@ -101,39 +101,28 @@ namespace Eldoria.EditorTools
 
             // B. Subordinate the dedicated front barracks: preserve its real mesh/textures,
             // but normalize the over-bright material response instead of replacing the building.
-            ToneVisualFamily("Cuartel · dedicated barracks",new Color(.61f,.59f,.55f,1f),.025f);
-            ToneVisualFamily("Valoria_Cuartel_AP2_v1",new Color(.61f,.59f,.55f,1f),.025f);
+            ToneVisualFamily("Cuartel · dedicated barracks",new Color(.48f,.48f,.46f,1f),.018f);
+            ToneVisualFamily("Valoria_Cuartel_AP2_v1",new Color(.48f,.48f,.46f,1f),.018f);
+            ToneVisualFamily("Aserradero · dedicated sawmill",new Color(.72f,.66f,.56f,1f),.022f);
 
-            // C. Replace the visible lower-left prototype mass with fewer authored, larger homes.
+            // C. Remove the remaining dark/repetitive support-house shells in the lower camera band.
+            SuppressByWorldRegion("Valoria · reused civil house",-22f,-8f,-7f,4.8f);
+            SuppressByWorldRegion("Valoria · hero frame inhabited roofline",-22f,-8f,-2f,7.0f);
+            SuppressByWorldRegion("Valoria · hero frame inhabited roofline",8f,22f,-2f,8.0f);
+
+            // Replace many small huts with two already-certified residential+rock masses.
+            AddRescuedResidential(root,"MidLower · west inhabited rock terrace",
+                new Vector3(-11.85f,.28f,-1.35f),5.65f,4.35f,Quaternion.Euler(0,-8f,0));
+            AddRescuedResidential(root,"MidLower · east inhabited rock terrace",
+                new Vector3(11.55f,.28f,-1.55f),5.55f,4.25f,Quaternion.Euler(0,188f,0));
+
+            // One subordinate authored dwelling per side keeps the lower city inhabited without repetition.
             if(art!=null&&art.SlavicHouse!=null)
             {
-                foreach(var spec in new[]{
-                    new Vector4(-12.4f,-3.25f,2.65f,-12f),
-                    new Vector4(-15.45f,-2.85f,2.55f,8f),
-                    new Vector4(-12.9f,1.85f,2.45f,-28f),
-                    new Vector4(-16.45f,2.25f,2.50f,18f)})
-                {
-                    var go=ValoriaKit.BenchmarkPieceModulated("MidLower · authored west residence",art.SlavicHouse,
-                        new Vector3(spec.x,.34f,spec.y),spec.z,3.05f,Quaternion.Euler(0,spec.w,0),
-                        new Color(.72f,.68f,.60f,1f));
-                    AddPiece(root,go);
-                }
-            }
-
-            // D. Reduce repetitive right-side huts: suppress only the far/right members and rebuild a sparse urban rhythm.
-            SuppressByWorldRegion("Valoria · hero frame inhabited roofline",8.5f,22f,-1f,10.2f);
-            if(art!=null)
-            {
-                if(art.SlavicHouse!=null)
-                {
-                    AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east residence A",art.SlavicHouse,
-                        new Vector3(10.8f,.34f,-1.4f),3.05f,3.15f,Quaternion.Euler(0,202f,0),new Color(.70f,.67f,.60f,1f)));
-                    AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east residence B",art.SlavicHouse,
-                        new Vector3(14.3f,.34f,2.25f),2.75f,2.95f,Quaternion.Euler(0,166f,0),new Color(.68f,.65f,.58f,1f)));
-                }
-                if(art.SlavicShed!=null)
-                    AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east workshop",art.SlavicShed,
-                        new Vector3(11.8f,.34f,4.7f),2.85f,2.65f,Quaternion.Euler(0,212f,0),new Color(.67f,.61f,.52f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · west secondary dwelling",art.SlavicHouse,
+                    new Vector3(-15.6f,.34f,2.35f),2.70f,2.90f,Quaternion.Euler(0,12f,0),new Color(.69f,.66f,.58f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("MidLower · east secondary dwelling",art.SlavicHouse,
+                    new Vector3(15.2f,.34f,2.10f),2.65f,2.85f,Quaternion.Euler(0,170f,0),new Color(.67f,.64f,.57f,1f)));
             }
 
             // E. Break the board read with buried certified terrain/terrace support.
@@ -163,14 +152,14 @@ namespace Eldoria.EditorTools
             eastCourt.transform.SetParent(root.transform,true);
 
             // G. Retaining fragments visually connect the mid district to the already-approved stair zone.
-            AddStoneArchitecturePiece(root,"RockToWallTransition","MidLower · stair flank west",
-                new Vector3(-4.35f,.40f,1.65f),2.55f,52f);
-            AddStoneArchitecturePiece(root,"RockToWallTransition","MidLower · stair flank east",
-                new Vector3(4.35f,.40f,1.70f),2.50f,232f);
+            AddRescuedSeam(root,"MidLower · stair flank west",
+                new Vector3(-3.85f,0f,1.55f),.70f,2.80f,58f);
+            AddRescuedSeam(root,"MidLower · stair flank east",
+                new Vector3(3.90f,0f,1.62f),.70f,2.75f,302f);
             AddStoneArchitecturePiece(root,"CornerWallL","MidLower · west court retaining corner",
-                new Vector3(-8.55f,.36f,-4.65f),2.05f,108f);
+                new Vector3(-8.55f,.30f,-4.65f),1.55f,108f);
             AddStoneArchitecturePiece(root,"CornerWallL","MidLower · east court retaining corner",
-                new Vector3(8.45f,.36f,-4.85f),2.00f,252f);
+                new Vector3(8.45f,.30f,-4.85f),1.50f,252f);
 
             // H. Controlled vegetation masks only outer joins and empty residuals; never the route.
             if(art!=null&&art.SlavicTree!=null)
@@ -216,6 +205,9 @@ namespace Eldoria.EditorTools
                     }
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smoothness);
                     if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_EmissionColor"))m.SetColor("_EmissionColor",Color.black);
+                    if(m.HasProperty("_SpecularHighlights"))m.SetFloat("_SpecularHighlights",0f);
+                    if(m.HasProperty("_EnvironmentReflections"))m.SetFloat("_EnvironmentReflections",0f);
                     dst[i]=m;
                 }
                 r.sharedMaterials=dst;
@@ -231,6 +223,17 @@ namespace Eldoria.EditorTools
                 var p=r.bounds.center;
                 if(p.x>=minX&&p.x<=maxX&&p.z>=minZ&&p.z<=maxZ)r.enabled=false;
             }
+        }
+
+        static void AddRescuedResidential(GameObject root,string name,Vector3 ground,float footprint,float maxHeight,Quaternion rotation)
+        {
+            var source=Resources.Load<GameObject>("Valoria/Rescued/ResidentialTerraceRock");
+            if(source==null)throw new Exception("Missing ResidentialTerraceRock resource.");
+            var go=ValoriaKit.BenchmarkPieceModulated(name,source,ground,footprint,maxHeight,rotation,
+                new Color(.78f,.76f,.70f,1f));
+            if(go==null)throw new Exception("ResidentialTerraceRock failed to instantiate.");
+            go.transform.SetParent(root.transform,true);
+            DisableAllGameplayOnVisuals(go);
         }
 
         static void AddRescuedSeam(GameObject root,string name,Vector3 xzAnchor,float topY,float targetSpan,float yaw)
