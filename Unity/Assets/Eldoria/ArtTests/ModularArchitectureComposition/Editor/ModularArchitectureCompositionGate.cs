@@ -87,12 +87,13 @@ namespace Eldoria.EditorTools
                 "{\n"+
                 "  \"phase\": \"VALORIA_MODULAR_ARCHITECTURE_COMPOSITION_PROOF_V1\",\n"+
                 "  \"branch\": \"visual-proof/modular-architecture-composition-v1\",\n"+
-                "  \"parcel\": \"west rebuilders lower residential parcel\",\n"+
-                "  \"parcel_center\": [-12.45,0.34,-3.05],\n"+
+                "  \"parcel\": \"front central Cuartel visual parcel\",\n"+
+                "  \"parcel_center\": [7.20,0.42,-4.00],\n"+
                 "  \"source_optimized_sha256\": \"afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c\",\n"+
                 "  \"tripo_credits_this_proof\": 0,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"hero_district_preserved\": true,\n"+
+                "  \"alternatives_captured\": 3,\n"+
                 "  \"parcel_renderers_hidden\": "+parcelHidden+",\n"+
                 "  \"baseline_metrics\": "+baselineMetrics+",\n"+
                 "  \"alternative_a_metrics\": "+aMetrics+",\n"+
@@ -140,8 +141,7 @@ namespace Eldoria.EditorTools
                 ParcelCenter+new Vector3(1.72f,.04f,.35f),1.85f,244f);
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",
                 "A · front command gallery",ParcelCenter+new Vector3(.05f,1.48f,-1.36f),2.35f,1.00f,Quaternion.Euler(0,180f,0),new Color(.58f,.47f,.34f,1f));
-            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx",
-                "A · secondary slate roof",ParcelCenter+new Vector3(-.38f,2.45f,.10f),2.90f,1.12f,Quaternion.Euler(0,180f,0),new Color(.38f,.42f,.46f,1f));
+            AddBlueStandard(root,ParcelCenter+new Vector3(-1.15f,.45f,-1.05f),2.05f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.15f,1.18f,-1.22f),.22f,2.2f);
             return root;
         }
@@ -164,8 +164,7 @@ namespace Eldoria.EditorTools
                     ParcelCenter+new Vector3(.0f,.03f,-1.62f),2.25f,1.80f,Quaternion.Euler(0,180f,0),new Color(.67f,.66f,.61f,1f)));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
                 "B · timber porch",ParcelCenter+new Vector3(0,.42f,-1.12f),2.35f,1.50f,Quaternion.Euler(0,180f,0),new Color(.64f,.53f,.39f,1f));
-            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01b.fbx",
-                "B · civic roof crown",ParcelCenter+new Vector3(.05f,2.32f,.18f),3.00f,1.18f,Quaternion.Euler(0,180f,0),new Color(.37f,.41f,.45f,1f));
+            AddBlueStandard(root,ParcelCenter+new Vector3(1.10f,.42f,-1.02f),1.95f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.05f,1.12f,-1.18f),.21f,2.1f);
             return root;
         }
@@ -188,8 +187,7 @@ namespace Eldoria.EditorTools
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("C · lower arch entry",art.SlavicRockGate,
                     ParcelCenter+new Vector3(.55f,.03f,-1.45f),2.05f,1.65f,Quaternion.Euler(0,180f,0),new Color(.65f,.64f,.59f,1f)));
-            AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_02a.fbx",
-                "C · roof connector",ParcelCenter+new Vector3(.55f,2.10f,.14f),2.60f,1.00f,Quaternion.Euler(0,180f,0),new Color(.36f,.40f,.43f,1f));
+            AddBlueStandard(root,ParcelCenter+new Vector3(.25f,.38f,-1.18f),1.85f);
             AddLocalWarmth(root,ParcelCenter+new Vector3(.62f,1.05f,-1.10f),.18f,2.0f);
             return root;
         }
@@ -265,6 +263,13 @@ namespace Eldoria.EditorTools
                     block.SetColor("_BaseColor",tint*new Color(.98f,.98f,.98f,1f));
                 r.SetPropertyBlock(block);
             }
+        }
+
+        static void AddBlueStandard(GameObject root,Vector3 p,float height)
+        {
+            var go=ValoriaKit.Banner("Modular composition · blue standard",p,
+                new Vector3(.48f,height,.07f),new Color(.13f,.24f,.38f));
+            if(go!=null){go.transform.SetParent(root.transform,true);DisableAllGameplayOnVisuals(go);}
         }
 
         static void AddLocalWarmth(GameObject root,Vector3 p,float intensity,float range)
