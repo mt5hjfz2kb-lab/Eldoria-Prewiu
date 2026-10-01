@@ -89,7 +89,7 @@ links.new(bsdf.outputs["BSDF"],out.inputs["Surface"])
 low.data.materials.clear(); low.data.materials.append(mat)
 
 # Bake source -> low.
-bpy.context.scene.render.engine="BLENDER_EEVEE_NEXT"
+bpy.context.scene.render.engine="CYCLES"
 bpy.ops.object.select_all(action="DESELECT")
 high.select_set(True); low.select_set(True)
 bpy.context.view_layer.objects.active=low
