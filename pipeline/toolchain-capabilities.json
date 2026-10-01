@@ -29,6 +29,30 @@
     "rigging": {
       "tool_capability": true,
       "eldoria_automation": "deferred_character_route"
+    },
+    "advanced_ui_probe": {
+      "eldoria_automation": "read_only_probe_certified",
+      "evidence": {
+        "run": 36859609770,
+        "artifact": 11161572190,
+        "credits_spent": 0,
+        "clicks_performed": 0,
+        "stable_snapshot": true
+      },
+      "visible_now": [
+        "Malla Smart P2.0: Quads y edición",
+        "UV Smart",
+        "Rigging humanoide / texto a movimiento",
+        "Exportar"
+      ],
+      "not_certified": [
+        "parts_segmentation",
+        "part_completion",
+        "retopology_execution",
+        "pbr_texture_editing_execution",
+        "rigging_execution"
+      ],
+      "note": "This proves current Studio UI availability only. No advanced Tripo transform was executed and no credit was spent."
     }
   },
   "blender": {
@@ -59,7 +83,24 @@
       }
     },
     "high_low_baking": {
-      "eldoria_automation": "candidate"
+      "eldoria_automation": "certified_technical",
+      "evidence": {
+        "run": 36859609770,
+        "artifact": 11161572190,
+        "source": "ResidentialTerraceRock",
+        "source_triangles": 49800,
+        "low_triangles": 17430,
+        "source_materials": 4,
+        "low_materials": 1,
+        "baked_normal": "1024x1024",
+        "unity_isolated_gate": true,
+        "uv_preserved": true,
+        "normals_present": true,
+        "positive_raycast": true,
+        "empty_space_miss": true,
+        "tripo_credits": 0
+      },
+      "note": "Certified as a technical production stage. Visual equivalence to the high asset must still be judged in real game frames before using a baked LOD as final art."
     },
     "material_consolidation": {
       "eldoria_automation": "candidate"
@@ -98,10 +139,37 @@
     },
     "package_baseline": {
       "eldoria_automation": "verified_available",
+      "evidence": {
+        "run": 36859609770,
+        "artifact": 11161505766
+      },
       "urp": "17.3.0",
       "shadergraph": "17.3.0",
       "terrain_module": "1.0.0",
-      "note": "Availability is not visual certification."
+      "apis_available": [
+        "DecalProjector",
+        "MaterialPropertyBlock",
+        "LightProbeGroup",
+        "ReflectionProbe",
+        "LODGroup",
+        "GPUInstancing",
+        "VolumeFramework"
+      ],
+      "note": "Availability is verified; each technique still needs a real-frame visual proof before production certification."
     }
+  },
+  "toolchain_planner": {
+    "eldoria_automation": "certified",
+    "evidence": {
+      "run": 36859609770,
+      "artifact": 11161505766
+    },
+    "zero_spend_default": true,
+    "rules": [
+      "composition->Unity",
+      "surface->Unity/Blender",
+      "new geometry requires proven gap",
+      "Tripo spend requires fresh explicit authorization"
+    ]
   }
 }
