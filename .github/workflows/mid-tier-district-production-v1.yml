@@ -144,8 +144,9 @@ jobs:
         run: |
           git config user.name "Eldoria CI"
           git config user.email "actions@users.noreply.github.com"
-          git add Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1
-          git add -f Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1.meta 2>$null
+          git config core.safecrlf false
+          git add Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1 2>&1 | Write-Host
+          if(Test-Path 'Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1.meta'){ git add -f Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1.meta 2>&1 | Write-Host }
           if(-not (git diff --cached --quiet)){
             git commit -m "art: persist certified Mid-Tier Architecture Kit v1"
             git push origin HEAD:production/mid-tier-district-rollout-v1
