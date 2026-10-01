@@ -1,7 +1,7 @@
 # Eldoria Toolchain Automation v2
 
 Date: 2026-10-01
-Status: experimental automation contract; zero-spend by default.
+Status: canonical production orchestration contract; zero-spend by default.
 
 ## Goal
 
@@ -89,6 +89,19 @@ Future character/creature route. Kept separate until rigging/animation automatio
 - Main production topology, hotspots, colliders and circulation remain authoritative.
 - Experiments stay isolated until visual proof passes.
 - A capability may be known to exist in a tool but still be marked unautomated in Eldoria.
+
+## Canonical-entry rule
+
+This contract is the mandatory first routing step for new Valoria visual/art production work on `main`.
+
+Before heavy execution:
+1. classify the visual need through one of the supported profiles;
+2. represent the intended route in `pipeline/art-production-request.json`;
+3. validate the route with `tools/plan-art-production.mjs` or `.github/workflows/art-production-plan.yml`;
+4. execute the selected stages through the existing canonical Unity/Blender/Tripo engines;
+5. validate the integrated result at official 19/12/9/mobile views before promotion.
+
+This does **not** mean every stage runs for every request, and it does not make experimental proof tooling a production dependency. The planner chooses the route; the existing execution engines perform the work.
 
 ## Current implementation
 
