@@ -23,7 +23,7 @@ namespace Eldoria.EditorTools
         {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var report=new Report {
-                unityVersion=Application.unityVersion,
+                unityVersion=UnityEngine.Application.unityVersion,
                 renderPipeline=GraphicsSettings.currentRenderPipeline!=null?GraphicsSettings.currentRenderPipeline.GetType().FullName:"null"
             };
 
