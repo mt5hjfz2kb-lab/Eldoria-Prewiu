@@ -1,3 +1,9 @@
+## Toolchain Automation v2 — 2026-10-01
+
+Canonical toolchain routing and zero-spend capability evidence live in `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md` and `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`. Planner request: `pipeline/art-production-request.json`; capability registry: `pipeline/toolchain-capabilities.json`; workflow: `.github/workflows/art-production-plan.yml`.
+
+Validated: Blender LOD generation; Blender high→low normal bake technical stage; Unity isolated import/gate for baked low assets; static availability of URP/Shader Graph/Terrain/Decal/MPB/probes/LOD/instancing/Volume; read-only Tripo Studio advanced-UI probe. Final proof run `36859609770`, 0 Tripo credits. Advanced Tripo transforms are still not execution-certified.
+
 ## Canonical Valoria environment-art direction — 2026-10-01
 
 Read `docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md` before future Valoria visual work. Current direction is environment-art-system first, not isolated-model first: composition, modular assemblies, terrain/rock integration, coherent shared materials, blending/decals, lighting/atmosphere, secondary detail, then optimization. Existing modules must be tested as a construction vocabulary before new geometry is generated. Tripo is reserved for proven missing geometry and always requires fresh explicit credit authorization. Validate only in real 19/12/9/mobile frames; preserve gameplay topology/hotspots/colliders/circulation.
