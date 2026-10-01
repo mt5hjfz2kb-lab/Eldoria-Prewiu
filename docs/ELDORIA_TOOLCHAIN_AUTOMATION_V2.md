@@ -102,3 +102,34 @@ The planner produces a deterministic route and blocks invalid combinations, espe
 The lightweight workflow `.github/workflows/art-production-plan.yml` runs the planner without waking the Windows runner.
 
 This is the orchestration layer. Existing canonical Tripo/Blender/Unity workflows remain the execution engines until each advanced capability is individually proven and promoted.
+
+
+## Certification result — 2026-10-01
+
+Final zero-spend proof run: `36859609770`.
+
+Evidence:
+- Toolchain planner + static Unity capability audit: artifact `11161505766`.
+- Blender/Unity/Tripo integrated capability proof: artifact `11161572190`.
+- Hosted Blender bake cross-check: artifact `11160897012`.
+
+Certified now:
+- deterministic Blender LOD family generation;
+- Blender high-to-low normal-map bake as a technical stage;
+- Unity import/gate of the baked low asset with UVs, normals, raycast and captures intact;
+- zero-spend route planner;
+- read-only Tripo Studio capability inspection with 0 clicks / 0 credits.
+
+Measured bake proof on `ResidentialTerraceRock`:
+- source: 49,800 tris / 4 materials;
+- baked low: 17,430 tris / 1 material;
+- baked normal: 1024x1024;
+- Unity: 1 mesh / 1 renderer / 1 material / 1 texture;
+- UV + normals present;
+- positive raycast PASS;
+- empty-space miss PASS;
+- all isolated captures non-empty.
+
+Current Tripo Studio session visibly exposes Smart Mesh P2.0 (quads/editing), UV Smart, humanoid rigging/text-to-motion and export. This is **availability evidence**, not authorization to execute those transforms. Parts/part-completion remain unverified in Eldoria automation.
+
+The canonical safety rule remains unchanged: no Tripo credit spend without fresh explicit owner authorization.
