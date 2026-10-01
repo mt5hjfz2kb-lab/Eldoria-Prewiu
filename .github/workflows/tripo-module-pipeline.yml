@@ -6,7 +6,7 @@ on:
     paths:
       - 'pipeline/tripo-module-request.json'
       - 'pipeline/blender-capability-proof-request.json'
-      - 'tools/blender_capability_proof.py'
+      - 'tools/blender_capability_proof.py'\n      - 'tools/tripo-advanced-capability-probe.mjs'
       - '.github/workflows/tripo-module-pipeline.yml'
   workflow_dispatch:
 
