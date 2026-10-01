@@ -597,6 +597,10 @@ try {
     if (!request.prior_stage_run_id || !request.prior_stage_artifact_id) {
       throw new Error('generate_staged requires prior staged run and artifact evidence.');
     }
+    const livePreviewHashes = await inlineImageHashes(selectedPage, request.visual_width, request.visual_height);
+    if (!livePreviewHashes.some(item => item.sha256 === approvedSha && item.bytes === Number(request.upload_size_bytes))) {
+      throw new Error('Live staged image bytes do not match the authorized original; refusing Generate.');
+    }
     const costPattern = new RegExp('^Generar\\s+' + approvedCost + '$', 'i');
     const button = selectedPage.getByRole('button', { name: costPattern });
     if (await button.count() !== 1 || !(await button.isEnabled())) {

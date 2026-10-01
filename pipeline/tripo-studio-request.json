@@ -1,17 +1,17 @@
 {
-  "enabled": false,
-  "mode": "stage_upload",
+  "enabled": true,
+  "mode": "generate_staged",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "request_id": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
+  "request_id": "valoria-mid-tier-architecture-kit-v1-generate-authorized55",
   "asset_name": "Valoria_MidTierArchitectureKit_v1",
-  "function": "Owner-provided four-piece mid-tier architectural vocabulary: residential mass, arched entrance, roof mass and workshop mass. Stage exact original sheet only; do not generate.",
+  "function": "Four-piece owner-approved architectural kit for isolated Blender/Unity validation: residential facade/corner mass, arched entrance, roof module, workshop mass.",
   "upload_file_name": "DFDFB4B8-3458-4112-A912-4B33D5A0DEFC.jpeg",
   "upload_sha256": "f2329e4f2a19d68c4fecc13eaf633f4f89687183a5c50c1387923078b970eae7",
   "upload_size_bytes": 605572,
   "visual_width": 1448,
   "visual_height": 1086,
-  "allow_credit_spend": false,
-  "authorized_credit_cost": 0,
+  "allow_credit_spend": true,
+  "authorized_credit_cost": 55,
   "approved_input_sha256": "f2329e4f2a19d68c4fecc13eaf633f4f89687183a5c50c1387923078b970eae7",
   "connect_timeout_ms": 10000,
   "page_probe_timeout_ms": 12000,
@@ -19,12 +19,14 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_MidTierArchitectureKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
-  "notes": "STAGING VERIFIED run36847170877 SUCCESS/artifact11153988767. Existing owner Edge profile reopened automatically: browser_recovery.attempted=true/ready=true. Exact 1448x1086 JPEG preview SHA/605572 bytes match original. Visible H3.1 Generate cost55; generate_clicked=false, credits_spent=false. Owner requested bringing image to Tripo, not generation. Parked disabled; recovery configuration retained for future zero-credit staging. Central 3D viewport is prior Hero Bastion, not output from this sheet.",
+  "run_nonce": "valoria-mid-tier-architecture-kit-v1-generate-authorized55",
+  "notes": "Owner explicitly authorized the 55-credit generation of this exact original four-piece JPEG on 2026-10-01 after staged identity verification. Single Generate click only; live preview hash/bytes must match approved input before click. This owner instruction authorizes the sheet as-is. No second paid generation/retry, no automatic production promotion.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
     "user_data_dir": "C:\\Users\\crist\\Eldoria-Edge-Remote",
     "start_timeout_ms": 30000
-  }
+  },
+  "prior_stage_run_id": 36847170877,
+  "prior_stage_artifact_id": 11153988767
 }
