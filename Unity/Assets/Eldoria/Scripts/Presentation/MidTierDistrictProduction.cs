@@ -22,7 +22,11 @@ namespace Eldoria.Presentation
         static readonly Parcel[] Parcels={
             new Parcel("D1",new Vector3(7.20f,.42f,-4.00f),180f),
             new Parcel("D2",new Vector3(11.60f,.34f,-2.25f),194f),
-            new Parcel("D3",new Vector3(14.80f,.34f,1.95f),166f)
+            new Parcel("D3",new Vector3(14.80f,.34f,1.95f),166f),
+            // Existing authored west/lower residential footprints: visual replacement only.
+            new Parcel("W1",new Vector3(-12.00f,.34f,-3.25f),8f),
+            new Parcel("W2",new Vector3(-15.25f,.36f,-3.05f),-10f),
+            new Parcel("W3",new Vector3(-13.25f,.36f,2.45f),16f)
         };
 
         public static void Build(Transform parent,PlayerState state)
@@ -61,7 +65,7 @@ namespace Eldoria.Presentation
                 AddStone(root,"RockToWallTransition","rock seam",p.center+Rotated(p.yaw,new Vector3(1.55f,.04f,-.48f)),1.95f,p.yaw-58f);
                 AddStone(root,"CornerWallL","corner retaining mass",p.center+Rotated(p.yaw,new Vector3(1.18f,.04f,-.35f)),1.80f,p.yaw+88f);
             }
-            else
+            else if(p.id=="D3")
             {
                 AddPiece(root,"Piece02","compact core",p.center+Rotated(p.yaw,new Vector3(.05f,.04f,-.08f)),2.95f,3.45f,p.yaw,new Color(.70f,.66f,.58f,1f));
                 AddPiece(root,"Piece04","tall roofline",p.center+Rotated(p.yaw,new Vector3(.30f,1.95f,-.10f)),2.15f,2.05f,p.yaw-7f,new Color(.67f,.61f,.52f,1f));
@@ -69,6 +73,16 @@ namespace Eldoria.Presentation
                 AddPiece(root,"Piece01","fortified entry",p.center+Rotated(p.yaw,new Vector3(.45f,.03f,1.30f)),1.55f,1.85f,p.yaw-3f,new Color(.71f,.67f,.59f,1f));
                 AddStone(root,"HighStraightWall","rear masonry spine",p.center+Rotated(p.yaw,new Vector3(.55f,.06f,-1.45f)),2.55f,p.yaw+3f);
                 AddStone(root,"CornerWallL","corner retaining mass",p.center+Rotated(p.yaw,new Vector3(1.18f,.04f,-.35f)),1.80f,p.yaw+88f);
+            }
+            else
+            {
+                // West/lower variants deliberately use fewer modules and smaller spans:
+                // improve the generic housing without turning every parcel into the same landmark.
+                float variant=p.id=="W1"?0f:p.id=="W2"?1f:2f;
+                AddPiece(root,"Piece02","west inhabited core",p.center+Rotated(p.yaw,new Vector3(0f,.03f,-.05f)),2.65f+variant*.12f,3.25f+variant*.10f,p.yaw,new Color(.70f,.65f,.56f,1f));
+                AddPiece(root,variant<1.5f?"Piece03":"Piece04","west secondary mass",p.center+Rotated(p.yaw,new Vector3(-1.38f,.03f,.12f)),1.90f,2.20f,p.yaw+(variant<1?12f:-14f),new Color(.63f,.57f,.48f,1f));
+                AddPiece(root,"Piece01","west arched entry",p.center+Rotated(p.yaw,new Vector3(.30f,.03f,1.15f)),1.38f,1.65f,p.yaw,new Color(.71f,.67f,.59f,1f));
+                AddStone(root,"RockToWallTransition","west buried seam",p.center+Rotated(p.yaw,new Vector3(1.10f,.03f,-.42f)),1.45f,p.yaw-62f);
             }
             AddWarmth(root,p.center+Rotated(p.yaw,new Vector3(.15f,1.25f,1.18f)),.18f,2.15f);
         }
