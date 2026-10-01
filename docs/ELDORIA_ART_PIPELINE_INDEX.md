@@ -173,3 +173,13 @@ When continuing Valoria art development:
 7. Consult historical workflows only to reproduce or audit prior evidence.
 
 If a chat starts creating another per-module Blender script, Unity capturer or workflow without a demonstrated requirement that the generic path cannot satisfy, stop and extend the canonical pipeline instead.
+
+## Toolchain orchestration v2 — experimental zero-spend controller
+- Contract: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`
+- Request: `pipeline/art-production-request.json`
+- Capability registry: `pipeline/toolchain-capabilities.json`
+- Planner: `tools/plan-art-production.mjs`
+- Lightweight workflow: `.github/workflows/art-production-plan.yml`
+
+Purpose:
+route visual work by defect type before waking heavy tooling. Composition/surface problems stay in Unity/Blender zero-spend paths; Tripo is permitted only for a proven geometry gap and retains the existing explicit credit gate. The registry distinguishes tool capability from Eldoria-certified automation so future chats do not pretend an unverified feature is already operational.
