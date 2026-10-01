@@ -925,3 +925,33 @@ jobs:
             pipeline/art-production-request.json
             pipeline/toolchain-capabilities.json
           if-no-files-found: error
+
+
+  blender-bake-hosted-proof:
+    if: github.ref == 'refs/heads/pipeline/toolchain-automation-v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version | head -2
+      - name: Run zero-spend high-to-low normal bake proof
+        run: |
+          mkdir -p hosted-bake-proof
+          blender --background --python tools/blender_bake_capability_proof.py -- \
+            --input Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb \
+            --output hosted-bake-proof/baked-low.glb \
+            --report hosted-bake-proof/report.json \
+            --ratio 0.35 \
+            --size 1024
+          test -s hosted-bake-proof/baked-low.glb
+          test -s hosted-bake-proof/report.json
+          cat hosted-bake-proof/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blender-bake-hosted-proof-${{ github.sha }}
+          path: hosted-bake-proof/*
+          if-no-files-found: error
