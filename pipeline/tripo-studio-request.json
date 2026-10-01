@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-mid-tier-architecture-kit-v1-stage-20261001",
@@ -20,5 +20,5 @@
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
   "run_nonce": "mid-tier-kit-v1-stage-only-20261001",
-  "notes": "Owner requested bringing this attached image to Tripo. Preserve exact original JPEG bytes. Zero-spend staging; no Generate click. Four distinct objects are a sheet, not multiview; isolated generation inputs/cost approval remain pending."
+  "notes": "Owner requested bringing this attached image to Tripo. Preserve exact original JPEG bytes. Zero-spend staging; no Generate click. Four distinct objects are a sheet, not multiview; isolated generation inputs/cost approval remain pending. BLOCKED: run36846094734 input-preflight PASS; Windows reconstructed exact SHA/605572 bytes PASS; browser CDP refused 127.0.0.1:9222 before upload. Artifact11153895820. No image received by Tripo; no Generate or spend. Existing bridge has no safe browser/profile relaunch contract. Re-enable zero-credit staging after owner restores existing automation browser."
 }
