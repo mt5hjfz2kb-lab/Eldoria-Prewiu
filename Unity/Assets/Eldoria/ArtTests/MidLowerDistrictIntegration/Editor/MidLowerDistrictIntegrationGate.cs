@@ -130,13 +130,6 @@ namespace Eldoria.EditorTools
                 new Vector3(-7.15f,0f,-3.25f),.36f,6.30f,16f);
             AddTerrainTerraceTop(root,"BroadRockPlatform","MidLower · east lower buried shelf",
                 new Vector3(7.25f,0f,-4.15f),.36f,6.20f,194f);
-            AddTerrainTerraceTop(root,"SteppedRockTerrace","MidLower · west middle transition",
-                new Vector3(-5.0f,0f,1.25f),.72f,4.75f,82f);
-            AddTerrainTerraceTop(root,"SteppedRockTerrace","MidLower · east middle transition",
-                new Vector3(5.05f,0f,1.35f),.72f,4.70f,276f);
-
-            AddRescuedSeam(root,"MidLower · lower front seam west",new Vector3(-5.65f,0f,-7.25f),.36f,3.25f,32f);
-            AddRescuedSeam(root,"MidLower · lower front seam east",new Vector3(5.70f,0f,-7.10f),.36f,3.20f,208f);
             AddRescuedSeam(root,"MidLower · stair foot seam west",new Vector3(-3.15f,0f,-.25f),.54f,2.75f,64f);
             AddRescuedSeam(root,"MidLower · stair foot seam east",new Vector3(3.20f,0f,-.20f),.54f,2.70f,294f);
 
@@ -184,34 +177,48 @@ namespace Eldoria.EditorTools
 
         static void ToneVisualFamily(string family,Color tint,float smoothness)
         {
+            int count=0;
             foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 if(!HierarchyName(r.transform).Contains(family,StringComparison.OrdinalIgnoreCase))continue;
-                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
-                for(int i=0;i<srcs.Length;i++)
-                {
-                    var src=srcs[i];if(src==null){dst[i]=null;continue;}
-                    var m=new Material(src){name="MidLower fitted · "+src.name};
-                    if(m.HasProperty("_BaseColor"))
-                    {
-                        var c=m.GetColor("_BaseColor");
-                        m.SetColor("_BaseColor",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
-                    }
-                    if(m.HasProperty("_Color"))
-                    {
-                        var c=m.GetColor("_Color");
-                        m.SetColor("_Color",new Color(c.r*tint.r,c.g*tint.g,c.b*tint.b,c.a));
-                    }
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smoothness);
-                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                    if(m.HasProperty("_EmissionColor"))m.SetColor("_EmissionColor",Color.black);
-                    if(m.HasProperty("_SpecularHighlights"))m.SetFloat("_SpecularHighlights",0f);
-                    if(m.HasProperty("_EnvironmentReflections"))m.SetFloat("_EnvironmentReflections",0f);
-                    dst[i]=m;
-                }
-                r.sharedMaterials=dst;
+                RebuildRendererMaterials(r,tint,smoothness);
+                count++;
             }
+            if(count==0)Debug.LogWarning("MidLower: no renderers matched material family "+family);
+        }
+
+        static void RebuildRendererMaterials(Renderer r,Color tint,float smoothness)
+        {
+            var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
+            for(int i=0;i<srcs.Length;i++)
+            {
+                var src=srcs[i];if(src==null){dst[i]=null;continue;}
+                Texture baseMap=null,normal=null,occlusion=null;
+                foreach(string p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})
+                    if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
+                foreach(string p in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                    if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
+                foreach(string p in new[]{"_OcclusionMap","_MaskMap","_MetallicGlossMap"})
+                    if(src.HasProperty(p)&&src.GetTexture(p)!=null){occlusion=src.GetTexture(p);break;}
+                var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+                var m=new Material(shader){name="MidLower URP fitted · "+src.name};
+                if(baseMap!=null&&m.HasProperty("_BaseMap"))m.SetTexture("_BaseMap",baseMap);
+                if(normal!=null&&m.HasProperty("_BumpMap"))
+                {
+                    m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");
+                    if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",.9f);
+                }
+                if(occlusion!=null&&m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",occlusion);
+                if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smoothness);
+                if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                if(m.HasProperty("_OcclusionStrength"))m.SetFloat("_OcclusionStrength",1f);
+                if(m.HasProperty("_EmissionColor"))m.SetColor("_EmissionColor",Color.black);
+                dst[i]=m;
+            }
+            r.sharedMaterials=dst;
         }
 
         static void SuppressByWorldRegion(string family,float minX,float maxX,float minZ,float maxZ)
@@ -229,9 +236,10 @@ namespace Eldoria.EditorTools
         {
             var source=Resources.Load<GameObject>("Valoria/Rescued/ResidentialTerraceRock");
             if(source==null)throw new Exception("Missing ResidentialTerraceRock resource.");
-            var go=ValoriaKit.BenchmarkPieceModulated(name,source,ground,footprint,maxHeight,rotation,
-                new Color(.78f,.76f,.70f,1f));
+            var go=ValoriaKit.BenchmarkPiece(name,source,ground,footprint,maxHeight,rotation);
             if(go==null)throw new Exception("ResidentialTerraceRock failed to instantiate.");
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+                RebuildRendererMaterials(r,new Color(.72f,.69f,.63f,1f),.025f);
             go.transform.SetParent(root.transform,true);
             DisableAllGameplayOnVisuals(go);
         }
