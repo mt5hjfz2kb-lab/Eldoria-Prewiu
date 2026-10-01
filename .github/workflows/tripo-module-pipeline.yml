@@ -769,6 +769,91 @@ jobs:
           if(-not (Test-Path "$folder\summary.json")) { throw 'LOD summary missing.' }
           Get-Content "$folder\summary.json"
 
+      - name: Audit Unity environment-art capabilities
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $folder = "$env:GITHUB_WORKSPACE\Unity\UnityEnvironmentCapabilitiesAudit"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $log = "$env:RUNNER_TEMP\unity-environment-capabilities.log"
+          $args = @("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.UnityEnvironmentCapabilitiesAudit.Run","-logFile",$log)
+          & $env:UNITY_EDITOR_PATH @args
+          $exitCode = $LASTEXITCODE
+          if ($exitCode -ne 0) {
+            if(Test-Path $log){ Get-Content $log -Tail 300 }
+            throw "Unity environment capability audit failed: $exitCode"
+          }
+          if(-not (Test-Path "$folder\capabilities.json")) { throw 'Unity capability report missing.' }
+          Get-Content "$folder\capabilities.json"
+
+      - name: Read Blender bake proof request
+        if: steps.proof.outputs.enabled == 'true'
+        id: bakeproof
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\blender-bake-capability-proof-request.json" -Raw | ConvertFrom-Json
+          "enabled=$(([bool]$request.enabled).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "ratio=$($request.low_ratio)" >> $env:GITHUB_OUTPUT
+          "size=$($request.texture_size)" >> $env:GITHUB_OUTPUT
+          Write-Host "BLENDER_BAKE_PROOF: enabled=$($request.enabled) ratio=$($request.low_ratio) size=$($request.texture_size)"
+
+      - name: Run Blender high-to-low normal bake proof
+        if: steps.proof.outputs.enabled == 'true' && steps.bakeproof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\blender-bake-capability-proof-request.json" -Raw | ConvertFrom-Json
+          $input = Join-Path $env:GITHUB_WORKSPACE ([string]$request.source.path)
+          if (-not (Test-Path $input)) { throw "Bake source missing: $input" }
+          $outDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ToolchainProof\BakeGenerated"
+          Remove-Item $outDir -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $outDir | Out-Null
+          $out = Join-Path $outDir "baked-low.glb"
+          $report = "$env:RUNNER_TEMP\blender-bake-capability-proof-report.json"
+          $log = "$env:RUNNER_TEMP\blender-bake-capability-proof.log"
+          $err = "$env:RUNNER_TEMP\blender-bake-capability-proof-error.log"
+          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\blender_bake_capability_proof.py","--","--input",$input,"--output",$out,"--report",$report,"--ratio",[string]$request.low_ratio,"--size",[string]$request.texture_size)
+          $p = Start-Process -FilePath "${{ steps.blenderproof.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if ($p.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 260 }
+            if (Test-Path $err) { Get-Content $err -Tail 260 }
+            throw "Blender bake proof failed: $($p.ExitCode)"
+          }
+          if(-not (Test-Path $out) -or (Get-Item $out).Length -lt 1000) { throw 'Baked GLB missing or empty.' }
+          if(-not (Test-Path $report)) { throw 'Bake report missing.' }
+          Get-Content $report
+
+      - name: Validate baked low asset in Unity isolated gate
+        if: steps.proof.outputs.enabled == 'true' && steps.bakeproof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $src = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ToolchainProof\BakeGenerated\baked-low.glb"
+          $expected = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\Eldoria_Module_UnderReview_50K.glb"
+          New-Item -ItemType Directory -Force (Split-Path $expected) | Out-Null
+          Copy-Item $src $expected -Force
+          @{
+            module_label='BlenderBakeCapabilityProof'
+            unity_yaw_degrees=0
+            visual_acceptance='Validate baked low geometry/UV/normals/material/captures only; no production promotion.'
+            min_triangles=1
+            max_triangles=2000000
+          } | ConvertTo-Json | Set-Content "$env:GITHUB_WORKSPACE\Unity\TripoModuleReviewConfig.json"
+          $folder="$env:GITHUB_WORKSPACE\Unity\TripoGenericModuleReviewCaptures"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $log="$env:RUNNER_TEMP\blender-bake-unity.log"
+          $args=@("-batchmode","-quit","-projectPath","$env:GITHUB_WORKSPACE\Unity","-executeMethod","Eldoria.EditorTools.TripoGenericModuleReview.Capture","-logFile",$log)
+          & $env:UNITY_EDITOR_PATH @args
+          $exitCode=$LASTEXITCODE
+          if($exitCode -ne 0){
+            if(Test-Path $log){ Get-Content $log -Tail 300 }
+            throw "Unity baked-low validation failed: $exitCode"
+          }
+          if(-not (Test-Path "$folder\metrics.json")){ throw 'Baked-low Unity metrics missing.' }
+          $dest="$env:GITHUB_WORKSPACE\Unity\BlenderBakeCapabilityProof"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$folder\*" $dest -Recurse -Force
+          Get-Content "$dest\metrics.json"
+
       - name: Upload Blender capability proof
         if: always() && steps.proof.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
@@ -782,4 +867,13 @@ jobs:
             ${{ runner.temp }}/blender-capability-proof-error.log
             ${{ runner.temp }}/blender-proof-unity.log
             pipeline/blender-capability-proof-request.json
+            pipeline/blender-bake-capability-proof-request.json
+            Unity/UnityEnvironmentCapabilitiesAudit/**/*
+            Unity/Assets/Eldoria/ArtTests/ToolchainProof/BakeGenerated/*.glb
+            Unity/BlenderBakeCapabilityProof/**/*
+            ${{ runner.temp }}/unity-environment-capabilities.log
+            ${{ runner.temp }}/blender-bake-capability-proof-report.json
+            ${{ runner.temp }}/blender-bake-capability-proof.log
+            ${{ runner.temp }}/blender-bake-capability-proof-error.log
+            ${{ runner.temp }}/blender-bake-unity.log
           if-no-files-found: warn
