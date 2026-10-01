@@ -6,10 +6,41 @@ const outPath = process.argv[3] || 'tripo-advanced-capability-probe.json';
 const request = JSON.parse(fs.readFileSync(requestPath,'utf8'));
 const endpoint = request.cdp_endpoint || 'http://127.0.0.1:9222';
 
-const browser = await chromium.connectOverCDP(endpoint);
-const pages = browser.contexts().flatMap(c => c.pages());
-const page = pages.find(p => /studio\.tripo3d\.ai/i.test(p.url()));
-if (!page) throw new Error('No open Tripo Studio page found on runner browser.');
+let browser = null;
+let page = null;
+try {
+  browser = await chromium.connectOverCDP(endpoint);
+  const pages = browser.contexts().flatMap(c => c.pages());
+  page = pages.find(p => /studio\.tripo3d\.ai/i.test(p.url()));
+} catch (error) {
+  const result = {
+    schema_version: 1,
+    mode: 'read_only_ui_probe',
+    session_available: false,
+    credits_spent: 0,
+    clicks_performed: 0,
+    error: String(error && error.message ? error.message : error),
+    note: 'No action was performed. This is a safe zero-spend probe.'
+  };
+  fs.writeFileSync(outPath, JSON.stringify(result, null, 2) + '\n');
+  console.log(JSON.stringify(result, null, 2));
+  process.exit(0);
+}
+if (!page) {
+  const result = {
+    schema_version: 1,
+    mode: 'read_only_ui_probe',
+    session_available: false,
+    credits_spent: 0,
+    clicks_performed: 0,
+    error: 'No open Tripo Studio page found on runner browser.',
+    note: 'No action was performed. This is a safe zero-spend probe.'
+  };
+  fs.writeFileSync(outPath, JSON.stringify(result, null, 2) + '\n');
+  console.log(JSON.stringify(result, null, 2));
+  await browser.close();
+  process.exit(0);
+}
 
 await page.waitForLoadState('domcontentloaded',{timeout:8000}).catch(()=>{});
 const snapshot = await page.evaluate(() => {
@@ -47,6 +78,7 @@ for (const [name,re] of Object.entries(families)) {
 const result = {
   schema_version:1,
   mode:'read_only_ui_probe',
+  session_available:true,
   credits_spent:0,
   clicks_performed:0,
   page:{url:snapshot.url,title:snapshot.title},
