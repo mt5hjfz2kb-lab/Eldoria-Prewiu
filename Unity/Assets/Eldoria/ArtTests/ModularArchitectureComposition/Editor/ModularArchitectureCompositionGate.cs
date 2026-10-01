@@ -39,6 +39,7 @@ namespace Eldoria.EditorTools
             DisableAllGameplayOnVisuals(heroDistrict);
 
             string baselineSignature=ValoriaVisualFormulaGate.CollisionSignature();
+            var baselineColliderIds=EnabledColliderIds();
             string baselineMetrics=MetricsJson();
 
             Save(camera,Folder+"/current-19.png",19f,1280,720);
@@ -54,6 +55,7 @@ namespace Eldoria.EditorTools
             string aMetrics,bMetrics,cMetrics;
             var a=BuildAlternativeA();
             DisableAllGameplayOnVisuals(a);
+            DisableNonBaselineColliders(baselineColliderIds);
             AssertSignature(baselineSignature,"A");
             aMetrics=MetricsJson();
             Save(camera,Folder+"/alternative-a-19.png",19f,1280,720);
@@ -64,6 +66,7 @@ namespace Eldoria.EditorTools
 
             var b=BuildAlternativeB();
             DisableAllGameplayOnVisuals(b);
+            DisableNonBaselineColliders(baselineColliderIds);
             AssertSignature(baselineSignature,"B");
             bMetrics=MetricsJson();
             Save(camera,Folder+"/alternative-b-19.png",19f,1280,720);
@@ -74,6 +77,7 @@ namespace Eldoria.EditorTools
 
             var c=BuildAlternativeC();
             DisableAllGameplayOnVisuals(c);
+            DisableNonBaselineColliders(baselineColliderIds);
             AssertSignature(baselineSignature,"C");
             cMetrics=MetricsJson();
             Save(camera,Folder+"/alternative-c-19.png",19f,1280,720);
@@ -104,6 +108,21 @@ namespace Eldoria.EditorTools
                 "}\n");
 
             EditorApplication.Exit(0);
+        }
+
+        static HashSet<int> EnabledColliderIds()
+        {
+            var ids=new HashSet<int>();
+            foreach(var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+                if(c!=null&&c.enabled&&c.gameObject.activeInHierarchy)ids.Add(c.GetInstanceID());
+            return ids;
+        }
+
+        static void DisableNonBaselineColliders(HashSet<int> baseline)
+        {
+            foreach(var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+                if(c!=null&&c.enabled&&c.gameObject.activeInHierarchy&&!baseline.Contains(c.GetInstanceID()))c.enabled=false;
+            Physics.SyncTransforms();
         }
 
         static void AssertSignature(string baseline,string label)
