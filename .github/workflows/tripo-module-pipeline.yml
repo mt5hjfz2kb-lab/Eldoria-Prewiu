@@ -854,6 +854,26 @@ jobs:
           Copy-Item "$folder\*" $dest -Recurse -Force
           Get-Content "$dest\metrics.json"
 
+      - name: Setup Node for Tripo read-only capability probe
+        if: steps.proof.outputs.enabled == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install Node dependencies for Tripo read-only probe
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: npm ci --ignore-scripts
+
+      - name: Probe Tripo advanced UI capabilities without clicks or spend
+        if: steps.proof.outputs.enabled == 'true'
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $out="$env:RUNNER_TEMP\tripo-advanced-capability-probe.json"
+          node tools/tripo-advanced-capability-probe.mjs pipeline/tripo-advanced-probe-request.json $out
+          if(-not (Test-Path $out)){ throw 'Tripo capability probe report missing.' }
+          Get-Content $out
+
       - name: Upload Blender capability proof
         if: always() && steps.proof.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
@@ -876,4 +896,6 @@ jobs:
             ${{ runner.temp }}/blender-bake-capability-proof.log
             ${{ runner.temp }}/blender-bake-capability-proof-error.log
             ${{ runner.temp }}/blender-bake-unity.log
+            ${{ runner.temp }}/tripo-advanced-capability-probe.json
+            pipeline/tripo-advanced-probe-request.json
           if-no-files-found: warn
