@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "request_id": "tripo-advanced-capability-readonly-probe-v1",
+  "cdp_endpoint": "http://127.0.0.1:9222",
+  "zero_spend": true,
+  "allow_clicks": false,
+  "notes": "Read-only probe of the already-open Tripo Studio session. No generation, no transform, no credit spend."
+}
