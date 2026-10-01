@@ -17,5 +17,5 @@
     "official_camera_capture": true
   },
   "notes": "Zero-spend proof. No Tripo. Compare baseline vs deterministic Blender LOD generation on an existing certified production asset.",
-  "run_nonce": "blender-capability-proof-v1-retry-1790850109799"
+  "run_nonce": "retry-after-unity-namespace-fix-20261001"
 }
