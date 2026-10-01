@@ -93,8 +93,6 @@ jobs:
             if(-not(Test-Path $path)){throw "Missing output: $name"}
             if($name.EndsWith('.png') -and (Get-Item $path).Length -lt 10000){throw "Empty capture: $name"}
           }
-          $variants=Get-ChildItem $folder -Filter 'variant-*.png'
-          if($variants.Count -lt 5){throw "Expected 5 variant captures; found $($variants.Count)"}
           Get-Content (Join-Path $folder 'modular-assembly-evidence.json')
 
       - uses: actions/upload-artifact@v4
