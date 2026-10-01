@@ -46,6 +46,15 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Valoria production art must inherit `docs/VALORIA_VISUAL_FORMULA_v1.md`; deviations require explicit evidence and documentation. The formula remains provisional until Aserradero + Cuartel + hero-fragment gates are green.
 - `.github/workflows/unity-cache-probe.yml` is an isolated measurement workflow only. Do not promote persistent Library reuse into canonical CI until cold/warm results are deterministic and source contamination is excluded.
 
+## Canonical Toolchain Automation v2 entry rule
+- Every new Valoria visual/art production block must begin with `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md` and a route represented by `pipeline/art-production-request.json`; run/validate it with `tools/plan-art-production.mjs` (or the lightweight `.github/workflows/art-production-plan.yml`) before waking heavy tooling or requesting/generated geometry.
+- The planner is the mandatory routing gate, not a replacement for the execution engines. Its selected route must dispatch into the existing canonical Unity, Blender and Tripo workflows/tools rather than creating a parallel per-asset pipeline.
+- Routing is authoritative: **composition -> Unity first; surface/detail -> Unity then Blender when justified; new geometry -> only after a proven geometry gap; animated assets -> separate character route.**
+- Tripo must never be the default first step. Any credit-consuming Tripo operation remains blocked until the exact input/reference and visible cost have been shown and the owner gives fresh explicit authorization.
+- Tool/capability availability is not production certification. LOD/bake/material/lighting/decals/probes/terrain/Tripo transforms must still pass the relevant technical gate and real 19/12/9/mobile visual validation before promotion.
+- Experimental proof requests and proof-only Unity classes are evidence/reproduction infrastructure, not required production dependencies. Do not merge stale experimental branch history merely to recreate already-promoted canonical behavior.
+- If a future chat proposes the old blanket `image -> Tripo -> decimate -> Unity` flow without first passing the routing gate, treat that as a process regression and correct it before execution.
+
 ## Canonical Valoria modular-art pipeline
 - Start Valoria art work at `docs/ELDORIA_ART_PIPELINE_INDEX.md` and `docs/VALORIA_MODULE_KIT.md`; these distinguish active production tooling, support infrastructure, historical experiments and real certified families.
 - For every new Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
