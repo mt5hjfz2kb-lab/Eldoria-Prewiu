@@ -15,7 +15,7 @@ namespace Eldoria.EditorTools
         const string AssetPath="Assets/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb";
         static readonly Vector3 CameraPosition=new Vector3(18.2f,14.6f,-25.8f);
         static readonly Vector3 CameraTarget=new Vector3(0f,3.65f,7.25f);
-        static readonly Vector3 ParcelCenter=new Vector3(-12.45f,.34f,-3.05f);
+        static readonly Vector3 ParcelCenter=new Vector3(7.20f,.42f,-4.00f);
 
         public static void Capture()
         {
@@ -118,82 +118,79 @@ namespace Eldoria.EditorTools
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 var n=HierarchyName(r.transform);
-                var p=r.bounds.center;
-                bool inParcel=p.x>-16.2f&&p.x<-9.4f&&p.z>-6.0f&&p.z<.8f;
-                bool family=n.Contains("Valoria · reused civil house",StringComparison.OrdinalIgnoreCase)||
-                            n.Contains("VPD · west rebuilders home",StringComparison.OrdinalIgnoreCase)||
-                            n.Contains("Valoria lower-town home",StringComparison.OrdinalIgnoreCase);
-                if(inParcel&&family){r.enabled=false;count++;}
+                bool family=n.Contains("Cuartel · dedicated barracks",StringComparison.OrdinalIgnoreCase)||
+                            n.Contains("Cuartel · fallback guardhouse",StringComparison.OrdinalIgnoreCase);
+                if(family){r.enabled=false;count++;}
             }
             return count;
         }
 
         static GameObject BuildAlternativeA()
         {
-            var root=new GameObject("MODULAR ALT A · rock integrated vertical residence");
+            var root=new GameObject("MODULAR ALT A · rock integrated guardhouse");
             var art=ValoriaExternalAssetLibrary.Load();
             AddTerrainTerraceTop(root,"SteppedRockTerrace","A · buried stepped rock base",
-                ParcelCenter, .38f,5.25f,92f);
+                ParcelCenter, .44f,4.60f,92f);
             if(art!=null&&art.SlavicHouse!=null)
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("A · residential core",art.SlavicHouse,
-                    ParcelCenter+new Vector3(.15f,.05f,.05f),3.55f,3.35f,Quaternion.Euler(0,-8f,0),new Color(.72f,.68f,.60f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("A · inhabited guardhouse core",art.SlavicHouse,
+                    ParcelCenter+new Vector3(.10f,.04f,.10f),3.18f,3.30f,Quaternion.Euler(0,180f,0),new Color(.72f,.68f,.60f,1f)));
             AddStoneArchitecturePiece(root,"HighStraightWall","A · rear masonry spine",
-                ParcelCenter+new Vector3(.25f,.10f,1.25f),3.15f,176f);
-            AddStoneArchitecturePiece(root,"RockToWallTransition","A · west rock seam",
-                ParcelCenter+new Vector3(-2.0f,.10f,.25f),2.10f,64f);
+                ParcelCenter+new Vector3(.05f,.06f,1.18f),2.75f,180f);
+            AddStoneArchitecturePiece(root,"RockToWallTransition","A · east rock seam",
+                ParcelCenter+new Vector3(1.72f,.04f,.35f),1.85f,244f);
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Balcony_R_01a.fbx",
-                "A · balcony gallery",ParcelCenter+new Vector3(.10f,1.62f,-1.52f),2.55f,1.10f,Quaternion.Euler(0,172f,0),new Color(.60f,.48f,.34f,1f));
+                "A · front command gallery",ParcelCenter+new Vector3(.05f,1.48f,-1.36f),2.35f,1.00f,Quaternion.Euler(0,180f,0),new Color(.58f,.47f,.34f,1f));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx",
-                "A · secondary slate roof",ParcelCenter+new Vector3(-.55f,2.55f,.20f),3.20f,1.25f,Quaternion.Euler(0,-8f,0),new Color(.39f,.43f,.46f,1f));
-            AddLocalWarmth(root,ParcelCenter+new Vector3(.20f,1.25f,-1.25f),.24f,2.4f);
+                "A · secondary slate roof",ParcelCenter+new Vector3(-.38f,2.45f,.10f),2.90f,1.12f,Quaternion.Euler(0,180f,0),new Color(.38f,.42f,.46f,1f));
+            AddLocalWarmth(root,ParcelCenter+new Vector3(.15f,1.18f,-1.22f),.22f,2.2f);
             return root;
         }
 
         static GameObject BuildAlternativeB()
         {
-            var root=new GameObject("MODULAR ALT B · civic terraced house");
+            var root=new GameObject("MODULAR ALT B · civic military terrace");
             var art=ValoriaExternalAssetLibrary.Load();
             AddTerrainTerraceTop(root,"BroadRockPlatform","B · civic buried plinth",
-                ParcelCenter+new Vector3(.05f,0,.10f),.38f,5.55f,14f);
+                ParcelCenter,.44f,4.80f,12f);
             AddStoneArchitecturePiece(root,"CornerWallL","B · west civic corner",
-                ParcelCenter+new Vector3(-1.55f,.08f,.55f),2.35f,102f);
+                ParcelCenter+new Vector3(-1.40f,.04f,.40f),1.85f,104f);
             AddStoneArchitecturePiece(root,"CornerWallL","B · east civic corner",
-                ParcelCenter+new Vector3(1.55f,.08f,.40f),2.25f,258f);
+                ParcelCenter+new Vector3(1.40f,.04f,.35f),1.80f,256f);
             if(art!=null&&art.SlavicHouse!=null)
-                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("B · civic residential core",art.SlavicHouse,
-                    ParcelCenter+new Vector3(0,.18f,.35f),3.15f,3.05f,Quaternion.Euler(0,4f,0),new Color(.74f,.70f,.62f,1f)));
+                AddPiece(root,ValoriaKit.BenchmarkPieceModulated("B · central occupied hall",art.SlavicHouse,
+                    ParcelCenter+new Vector3(0,.12f,.25f),2.95f,3.05f,Quaternion.Euler(0,180f,0),new Color(.74f,.70f,.62f,1f)));
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("B · civic stone entrance",art.SlavicRockGate,
-                    ParcelCenter+new Vector3(.05f,.06f,-1.85f),2.55f,2.05f,Quaternion.Euler(0,180f,0),new Color(.67f,.66f,.61f,1f)));
+                    ParcelCenter+new Vector3(.0f,.03f,-1.62f),2.25f,1.80f,Quaternion.Euler(0,180f,0),new Color(.67f,.66f,.61f,1f)));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
-                "B · porch projection",ParcelCenter+new Vector3(-.05f,.38f,-1.30f),2.75f,1.75f,Quaternion.Euler(0,180f,0),new Color(.65f,.54f,.40f,1f));
+                "B · timber porch",ParcelCenter+new Vector3(0,.42f,-1.12f),2.35f,1.50f,Quaternion.Euler(0,180f,0),new Color(.64f,.53f,.39f,1f));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01b.fbx",
-                "B · civic roof crown",ParcelCenter+new Vector3(.15f,2.45f,.25f),3.45f,1.35f,Quaternion.Euler(0,4f,0),new Color(.37f,.41f,.45f,1f));
-            AddLocalWarmth(root,ParcelCenter+new Vector3(.05f,1.20f,-1.35f),.22f,2.3f);
+                "B · civic roof crown",ParcelCenter+new Vector3(.05f,2.32f,.18f),3.00f,1.18f,Quaternion.Euler(0,180f,0),new Color(.37f,.41f,.45f,1f));
+            AddLocalWarmth(root,ParcelCenter+new Vector3(.05f,1.12f,-1.18f),.21f,2.1f);
             return root;
         }
 
         static GameObject BuildAlternativeC()
         {
-            var root=new GameObject("MODULAR ALT C · fortified secondary residence");
+            var root=new GameObject("MODULAR ALT C · fortified secondary guardhouse");
             var art=ValoriaExternalAssetLibrary.Load();
             AddTerrainTerraceTop(root,"BroadRockPlatform","C · fortified buried base",
-                ParcelCenter,.38f,5.25f,188f);
+                ParcelCenter,.44f,4.55f,188f);
             AddResourceModule(root,"Valoria/Rescued/TowerWallRock","C · tower rock corner",
-                ParcelCenter+new Vector3(-1.45f,.10f,.65f),2.45f,3.60f,Quaternion.Euler(0,18f,0),new Color(.66f,.65f,.60f,1f));
+                ParcelCenter+new Vector3(-1.18f,.04f,.62f),1.95f,3.15f,Quaternion.Euler(0,18f,0),new Color(.66f,.65f,.60f,1f));
             if(art!=null&&art.SlavicHouse!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("C · inhabited core",art.SlavicHouse,
-                    ParcelCenter+new Vector3(.65f,.20f,.10f),2.95f,2.95f,Quaternion.Euler(0,-6f,0),new Color(.69f,.65f,.57f,1f)));
+                    ParcelCenter+new Vector3(.62f,.12f,.05f),2.55f,2.80f,Quaternion.Euler(0,180f,0),new Color(.69f,.65f,.57f,1f)));
             AddStoneArchitecturePiece(root,"HighStraightWall","C · fortified rear wall",
-                ParcelCenter+new Vector3(.35f,.10f,1.45f),3.05f,176f);
+                ParcelCenter+new Vector3(.30f,.04f,1.25f),2.60f,180f);
             AddStoneArchitecturePiece(root,"RockToWallTransition","C · east foundation seam",
-                ParcelCenter+new Vector3(1.95f,.10f,.40f),2.15f,244f);
+                ParcelCenter+new Vector3(1.62f,.04f,.28f),1.80f,244f);
             if(art!=null&&art.SlavicRockGate!=null)
                 AddPiece(root,ValoriaKit.BenchmarkPieceModulated("C · lower arch entry",art.SlavicRockGate,
-                    ParcelCenter+new Vector3(.65f,.06f,-1.75f),2.30f,1.90f,Quaternion.Euler(0,180f,0),new Color(.65f,.64f,.59f,1f)));
+                    ParcelCenter+new Vector3(.55f,.03f,-1.45f),2.05f,1.65f,Quaternion.Euler(0,180f,0),new Color(.65f,.64f,.59f,1f)));
             AddRawModule(root,"Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_02a.fbx",
-                "C · roof connector",ParcelCenter+new Vector3(.80f,2.30f,.20f),2.95f,1.15f,Quaternion.Euler(0,-6f,0),new Color(.36f,.40f,.43f,1f));
-            AddLocalWarmth(root,ParcelCenter+new Vector3(.75f,1.20f,-1.30f),.20f,2.2f);
+                "C · roof connector",ParcelCenter+new Vector3(.55f,2.10f,.14f),2.60f,1.00f,Quaternion.Euler(0,180f,0),new Color(.36f,.40f,.43f,1f));
+            AddLocalWarmth(root,ParcelCenter+new Vector3(.62f,1.05f,-1.10f),.18f,2.0f);
             return root;
         }
 
