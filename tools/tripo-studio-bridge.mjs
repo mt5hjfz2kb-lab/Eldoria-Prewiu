@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { spawn } from 'node:child_process';
 
 const requestPath = process.argv[2] || 'pipeline/tripo-studio-request.json';
 const outPath = process.argv[3] || 'tripo-studio-probe.json';
@@ -206,6 +207,50 @@ async function inspectPage(page) {
   };
 }
 
+
+let browserRecovery = { attempted: false };
+async function connectOwnerBrowser() {
+  try {
+    return await withTimeout(chromium.connectOverCDP(endpoint), connectTimeoutMs, 'CDP connection');
+  } catch (initialError) {
+    const recovery = request.browser_recovery;
+    if (!recovery?.enabled || !/ECONNREFUSED/.test(String(initialError?.message || initialError))) throw initialError;
+    if (process.platform !== 'win32') throw new Error('Owner browser recovery requires the Windows runner.');
+    const target = new URL(endpoint);
+    if (target.protocol !== 'http:' || target.hostname !== '127.0.0.1' || target.port !== '9222') {
+      throw new Error('Owner browser recovery is restricted to http://127.0.0.1:9222.');
+    }
+    const executable = String(recovery.executable_path || '');
+    const profile = String(recovery.user_data_dir || '');
+    if (!path.isAbsolute(executable) || path.basename(executable).toLowerCase() !== 'msedge.exe' || !fs.existsSync(executable)) {
+      throw new Error('Configured owner Edge executable is missing.');
+    }
+    if (!path.isAbsolute(profile) || path.basename(profile) !== 'Eldoria-Edge-Remote' ||
+        !fs.existsSync(path.join(profile, 'Local State')) || !fs.existsSync(path.join(profile, 'Default', 'Preferences'))) {
+      throw new Error('Existing dedicated Eldoria Edge profile is missing; refusing to create or substitute a profile.');
+    }
+    browserRecovery = { attempted: true, executable_path: executable, user_data_dir: profile, ready: false };
+    const env = { ...process.env };
+    // This is the owner's persistent browser, not an Actions child to terminate at job cleanup.
+    delete env.RUNNER_TRACKING_ID;
+    const child = spawn(executable, ['--remote-debugging-port=9222', '--user-data-dir=' + profile, 'https://studio.tripo3d.ai'],
+      { detached: true, stdio: 'ignore', env });
+    await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); });
+    child.unref();
+    const deadline = Date.now() + Math.min(60000, Math.max(5000, Number(recovery.start_timeout_ms || 30000)));
+    let lastError = initialError;
+    while (Date.now() < deadline) {
+      await sleep(1000);
+      try {
+        const connected = await chromium.connectOverCDP(endpoint, { timeout: 3000 });
+        browserRecovery.ready = true;
+        return connected;
+      } catch (error) { lastError = error; }
+    }
+    throw new Error('Existing owner Edge profile did not reopen its CDP endpoint: ' + String(lastError?.message || lastError));
+  }
+}
+
 let browser;
 try {
   if (request.allow_credit_spend === true && !['generate','generate_staged'].includes(mode)) {
@@ -215,7 +260,7 @@ try {
     throw new Error('stage_upload requires authorized_credit_cost=0.');
   }
 
-  browser = await withTimeout(chromium.connectOverCDP(endpoint), connectTimeoutMs, 'CDP connection');
+  browser = await connectOwnerBrowser();
 
   const contexts = browser.contexts();
   if (!contexts.length) throw new Error('No browser context available on the Edge CDP endpoint.');
@@ -255,6 +300,7 @@ try {
     ok: true,
     mode,
     endpoint,
+    browser_recovery: browserRecovery,
     tripo_page_count: tripoPages.length,
     all_open_pages: await Promise.all(pages.map(async p => ({
       url: p.url(),

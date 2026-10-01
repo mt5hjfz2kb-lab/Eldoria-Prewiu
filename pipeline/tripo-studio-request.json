@@ -1,8 +1,8 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
-  "request_id": "valoria-mid-tier-architecture-kit-v1-stage-20261001",
+  "request_id": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
   "asset_name": "Valoria_MidTierArchitectureKit_v1",
   "function": "Owner-provided four-piece mid-tier architectural vocabulary: residential mass, arched entrance, roof mass and workshop mass. Stage exact original sheet only; do not generate.",
   "upload_file_name": "DFDFB4B8-3458-4112-A912-4B33D5A0DEFC.jpeg",
@@ -19,6 +19,12 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_MidTierArchitectureKit_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "mid-tier-kit-v1-stage-only-20261001",
-  "notes": "Owner requested bringing this attached image to Tripo. Preserve exact original JPEG bytes. Zero-spend staging; no Generate click. Four distinct objects are a sheet, not multiview; isolated generation inputs/cost approval remain pending. BLOCKED: run36846094734 input-preflight PASS; Windows reconstructed exact SHA/605572 bytes PASS; browser CDP refused 127.0.0.1:9222 before upload. Artifact11153895820. No image received by Tripo; no Generate or spend. Existing bridge has no safe browser/profile relaunch contract. Re-enable zero-credit staging after owner restores existing automation browser."
+  "run_nonce": "valoria-mid-tier-architecture-kit-v1-stage-browser-recovery-20261001",
+  "notes": "Zero-credit staging retry with automatic recovery of the owner's documented existing Eldoria-Edge-Remote profile. Exact original sheet unchanged; no Generate or credits authorized. Previous attempt failed before upload because CDP was closed.",
+  "browser_recovery": {
+    "enabled": true,
+    "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "user_data_dir": "C:\\Users\\crist\\Eldoria-Edge-Remote",
+    "start_timeout_ms": 30000
+  }
 }
