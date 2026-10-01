@@ -16,6 +16,9 @@
     "reuse_canonical_unity_module_gate": true,
     "official_camera_capture": true
   },
-  "notes": "Zero-spend proof. No Tripo. Compare baseline vs deterministic Blender LOD generation on an existing certified production asset.",
-  "run_nonce": "retry-after-unity-namespace-fix-20261001"
+  "notes": "LOD proof already produced BLENDER_LOD_REVIEW_PASS in run 36848714893; wrapper timeout was infrastructure-only. Subsequent run skips duplicate Unity LOD review and continues remaining zero-spend proofs.",
+  "run_nonce": "retry-after-unity-namespace-fix-20261001",
+  "lod_proof_already_validated": true,
+  "lod_proof_evidence_run": 36848714893,
+  "lod_proof_evidence_artifact": 11154758577
 }
