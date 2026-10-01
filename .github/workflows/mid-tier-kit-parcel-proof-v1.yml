@@ -1,13 +1,8 @@
-name: "[EXPERIMENT] Mid-Tier Kit Parcel Proof v1"
+name: "[EXPERIMENT] Mid/Lower District Upgrade v1"
 
 on:
-  push:
-    branches: ['visual-proof/mid-lower-district-upgrade-v1']
-    paths:
-      - 'Unity/Assets/Eldoria/ArtTests/MidLowerDistrictUpgrade/**'
-      - 'Unity/Assets/Eldoria/ArtTests/MidTierParcelProof/**'
-      - '.github/workflows/mid-tier-kit-parcel-proof-v1.yml'
   workflow_dispatch:
+
 
 permissions:
   contents: read
