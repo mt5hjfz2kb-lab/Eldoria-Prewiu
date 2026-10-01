@@ -1,0 +1,66 @@
+name: "[PROMOTION] Mid-Tier Citywide Production v2"
+
+on:
+  push:
+    branches: ['production/mid-tier-citywide-rollout-v2']
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/MidTierDistrictProduction.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/MidTierDistrictProductionGate.cs'
+      - '.github/workflows/mid-tier-citywide-production-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mid-tier-citywide-production-v2
+  cancel-in-progress: true
+
+jobs:
+  certify:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Verify persisted production kit
+        shell: powershell
+        run: |
+          foreach($n in 1..4){
+            $p=Join-Path $env:GITHUB_WORKSPACE ("Unity\Assets\Resources\Valoria\MidTierArchitectureKit_v1\Piece{0:d2}.glb" -f $n)
+            if(-not(Test-Path $p)){throw "Missing persisted production piece $n"}
+          }
+          Write-Host 'TRIPO_CREDITS=0'
+      - name: Capture and validate canonical Valoria
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\MidTierDistrictProductionCaptures"
+          $log="$env:RUNNER_TEMP\MidTier-Citywide-v2.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-refreshImportMode','InProcess','-job-worker-count','1','-executeMethod','Eldoria.EditorTools.MidTierDistrictProductionGate.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Citywide v2 gate failed: $($p.ExitCode)"}
+          foreach($name in @('baseline-19.png','baseline-12.png','baseline-9.png','baseline-mobile.png','production-19.png','production-12.png','production-9.png','production-mobile.png','evidence.json')){
+            $f=Join-Path $folder $name;if(-not(Test-Path $f)){throw "Missing evidence $name"}
+          }
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mid-tier-citywide-production-v2-${{ github.run_id }}
+          path: |
+            Unity/MidTierDistrictProductionCaptures/*
+            ${{ runner.temp }}/MidTier-Citywide-v2.log
+          if-no-files-found: warn
+          retention-days: 14
