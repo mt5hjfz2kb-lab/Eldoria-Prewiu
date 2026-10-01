@@ -93,7 +93,9 @@ namespace Eldoria.EditorTools
                 for(var t=r.transform;t!=null;t=t.parent)
                 {
                     if(t.name.StartsWith("Bastion ·",StringComparison.OrdinalIgnoreCase) ||
-                       string.Equals(t.name,"Bastion",StringComparison.OrdinalIgnoreCase))
+                       string.Equals(t.name,"Bastion",StringComparison.OrdinalIgnoreCase) ||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.OrdinalIgnoreCase) ||
+                       t.name.StartsWith("Valoria · rescued hero flank",StringComparison.OrdinalIgnoreCase))
                     {
                         legacy=true;
                         break;
