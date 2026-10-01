@@ -895,3 +895,33 @@ jobs:
             ${{ runner.temp }}/tripo-advanced-capability-probe.json
             pipeline/tripo-advanced-probe-request.json
           if-no-files-found: warn
+
+
+  art-production-plan-proof:
+    if: github.ref == 'refs/heads/pipeline/toolchain-automation-v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate toolchain route planner
+        run: |
+          node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plan.json
+          test -s art-production-plan.json
+          cat art-production-plan.json
+      - name: Validate Unity package capability baseline
+        run: |
+          node tools/audit-unity-environment-capabilities.mjs Unity/Packages/manifest.json Unity/Packages/packages-lock.json unity-environment-capabilities-static.json
+          test -s unity-environment-capabilities-static.json
+          cat unity-environment-capabilities-static.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: toolchain-planner-proof-${{ github.sha }}
+          path: |
+            art-production-plan.json
+            unity-environment-capabilities-static.json
+            pipeline/art-production-request.json
+            pipeline/toolchain-capabilities.json
+          if-no-files-found: error
