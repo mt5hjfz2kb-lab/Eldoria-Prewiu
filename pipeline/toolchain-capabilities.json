@@ -2,33 +2,106 @@
   "schema_version": 1,
   "updated": "2026-10-01",
   "tripo": {
-    "single_image_generation": {"tool_capability": true, "eldoria_automation": "certified"},
-    "multiview_generation": {"tool_capability": true, "eldoria_automation": "supported_by_canonical_request"},
-    "parts_segmentation": {"tool_capability": true, "eldoria_automation": "not_yet_certified"},
-    "part_completion": {"tool_capability": true, "eldoria_automation": "not_yet_certified"},
-    "retopology": {"tool_capability": true, "eldoria_automation": "not_yet_certified"},
-    "pbr_texture_editing": {"tool_capability": true, "eldoria_automation": "not_yet_certified"},
-    "rigging": {"tool_capability": true, "eldoria_automation": "deferred_character_route"}
+    "single_image_generation": {
+      "tool_capability": true,
+      "eldoria_automation": "certified"
+    },
+    "multiview_generation": {
+      "tool_capability": true,
+      "eldoria_automation": "supported_by_canonical_request"
+    },
+    "parts_segmentation": {
+      "tool_capability": true,
+      "eldoria_automation": "not_yet_certified"
+    },
+    "part_completion": {
+      "tool_capability": true,
+      "eldoria_automation": "not_yet_certified"
+    },
+    "retopology": {
+      "tool_capability": true,
+      "eldoria_automation": "not_yet_certified"
+    },
+    "pbr_texture_editing": {
+      "tool_capability": true,
+      "eldoria_automation": "not_yet_certified"
+    },
+    "rigging": {
+      "tool_capability": true,
+      "eldoria_automation": "deferred_character_route"
+    }
   },
   "blender": {
-    "diagnostics_uv_normals": {"eldoria_automation": "certified"},
-    "decimation": {"eldoria_automation": "certified"},
-    "component_split": {"eldoria_automation": "certified"},
-    "surface_rescue": {"eldoria_automation": "limited_certified"},
-    "lod_generation": {"eldoria_automation": "candidate"},
-    "high_low_baking": {"eldoria_automation": "candidate"},
-    "material_consolidation": {"eldoria_automation": "candidate"},
-    "geometry_nodes_production_tools": {"eldoria_automation": "candidate"}
+    "diagnostics_uv_normals": {
+      "eldoria_automation": "certified"
+    },
+    "decimation": {
+      "eldoria_automation": "certified"
+    },
+    "component_split": {
+      "eldoria_automation": "certified"
+    },
+    "surface_rescue": {
+      "eldoria_automation": "limited_certified"
+    },
+    "lod_generation": {
+      "eldoria_automation": "certified",
+      "evidence": {
+        "run": 36848714893,
+        "artifact": 11154758577,
+        "asset": "ResidentialTerraceRock",
+        "lod_triangles": [
+          49800,
+          24900,
+          12450
+        ],
+        "uv_normals_bounds_preserved": true
+      }
+    },
+    "high_low_baking": {
+      "eldoria_automation": "candidate"
+    },
+    "material_consolidation": {
+      "eldoria_automation": "candidate"
+    },
+    "geometry_nodes_production_tools": {
+      "eldoria_automation": "candidate"
+    }
   },
   "unity": {
-    "real_frame_composition": {"eldoria_automation": "certified"},
-    "modular_assembly": {"eldoria_automation": "proven_experiment"},
-    "shared_material_system": {"eldoria_automation": "candidate"},
-    "material_property_block_variation": {"eldoria_automation": "candidate"},
-    "decals": {"eldoria_automation": "candidate"},
-    "light_probes": {"eldoria_automation": "candidate"},
-    "reflection_probes": {"eldoria_automation": "candidate"},
-    "terrain_mesh_blending": {"eldoria_automation": "candidate"},
-    "lodgroup_instancing_culling": {"eldoria_automation": "candidate"}
+    "real_frame_composition": {
+      "eldoria_automation": "certified"
+    },
+    "modular_assembly": {
+      "eldoria_automation": "proven_experiment"
+    },
+    "shared_material_system": {
+      "eldoria_automation": "candidate"
+    },
+    "material_property_block_variation": {
+      "eldoria_automation": "candidate"
+    },
+    "decals": {
+      "eldoria_automation": "candidate"
+    },
+    "light_probes": {
+      "eldoria_automation": "candidate"
+    },
+    "reflection_probes": {
+      "eldoria_automation": "candidate"
+    },
+    "terrain_mesh_blending": {
+      "eldoria_automation": "candidate"
+    },
+    "lodgroup_instancing_culling": {
+      "eldoria_automation": "candidate"
+    },
+    "package_baseline": {
+      "eldoria_automation": "verified_available",
+      "urp": "17.3.0",
+      "shadergraph": "17.3.0",
+      "terrain_module": "1.0.0",
+      "note": "Availability is not visual certification."
+    }
   }
 }
