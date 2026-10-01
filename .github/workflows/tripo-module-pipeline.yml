@@ -689,7 +689,8 @@ jobs:
           $request = Get-Content $path -Raw | ConvertFrom-Json
           "enabled=$(([bool]$request.enabled).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           "request_id=$($request.request_id)" >> $env:GITHUB_OUTPUT
-          Write-Host "BLENDER_CAPABILITY_PROOF: enabled=$($request.enabled) id=$($request.request_id)"
+          "lod_validated=$(([bool]$request.lod_proof_already_validated).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          Write-Host "BLENDER_CAPABILITY_PROOF: enabled=$($request.enabled) id=$($request.request_id) lod_validated=$($request.lod_proof_already_validated)"
 
       - name: Locate Blender
         if: steps.proof.outputs.enabled == 'true'
@@ -747,7 +748,7 @@ jobs:
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
 
       - name: Review Blender LOD family in one Unity process
-        if: steps.proof.outputs.enabled == 'true'
+        if: steps.proof.outputs.enabled == 'true' && steps.proof.outputs.lod_validated != 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:GITHUB_WORKSPACE\Unity\BlenderCapabilityProof"
