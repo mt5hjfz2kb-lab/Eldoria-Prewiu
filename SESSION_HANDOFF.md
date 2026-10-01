@@ -1,3 +1,13 @@
+## Toolchain Automation v2 — CANONICAL ROUTING + ZERO-SPEND CAPABILITY PROOFS (2026-10-01)
+
+Promoted to `main`: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`, `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`, `pipeline/art-production-request.json`, `pipeline/toolchain-capabilities.json`, planner/audit/Blender/Tripo probe tools and `.github/workflows/art-production-plan.yml`. Final proof run `36859609770 SUCCESS`; artifacts `11161505766` (planner/static Unity audit), `11161572190` (Blender+Unity+Tripo proof), `11160897012` (hosted Blender bake cross-check). **0 Tripo credits**.
+
+Certified technical stages now include deterministic Blender LODs and high→low normal-map bake. On ResidentialTerraceRock: 49,800 tris / 4 materials → 17,430 tris / 1 material with 1024² baked normal; Unity isolated gate preserved UV/normals, positive raycast, empty-space miss and all captures. Unity package/API baseline confirms URP 17.3.0, Shader Graph 17.3.0, Terrain and APIs for decals, MPB, probes, LODGroup, instancing and Volume. These APIs are available, not automatically visual-certified.
+
+Read-only Tripo Studio probe is certified at 0 clicks / 0 credits. Current Studio UI visibly exposes Smart Mesh P2.0 (quads/editing), UV Smart, humanoid rigging/text-to-motion and export. Advanced transforms remain **not execution-certified**; parts/part-completion remain unverified. Fresh explicit owner authorization is still mandatory for any credit-spending Tripo action.
+
+Canonical route: **composition→Unity; surface/detail→Unity then Blender when justified; new geometry→only after a proven gap; Tripo spend→only after fresh explicit approval.** Real 19/12/9/mobile visual validation remains mandatory before any art promotion.
+
 ## Mid-Tier Architecture Kit v1 — Tripo/Blender PASS / Unity BLOCKED / requests parked (2026-10-01)
 
 Exact owner-approved four-object JPEG generated once55credits (balance2490→2435) and exported to GLB, task3b143007-754d-46ad-8acb-8094e56181f3. Blender49800tris/four spatialgroups PASS. Unity36851146406 failed import OOM; sequential recovery36852832649 also failed runner-wide memory exhaustion, including artifact upload (zero artifacts). No Unity technical/visual PASS and no production promotion. Requests disabled, spendfalse/cost0; no more paid retries. Full report: docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md. Restore runner memory before zero-credit capture review.
