@@ -1,3 +1,17 @@
+## Mid/Lower District Upgrade v1 — certified experimental result (2026-10-01)
+
+- Branch: `visual-proof/mid-lower-district-upgrade-v1`.
+- Certified run: `36869777315` — SUCCESS.
+- Evidence artifact: `11167470142`.
+- Certified source commit: `1130773ea59edfb680fd58b60a9f64cc873bcc91`.
+- Result: **TECH PASS / VISUAL PASS at three-parcel sector scale**.
+- Three adjacent real Mid/Lower parcels were rebuilt visually with different grammar from the same recovered Mid-Tier family.
+- Gameplay signature unchanged; 0 gameplay colliders/hotspots added; Hero District and Hero Bastion preserved.
+- Tripo spend: **0 credits**; exact raw source SHA remains `5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a`.
+- Important limit: the family scales locally but must not be stamped across the whole city; the next visual capability gap is architectural diversity / specialized civic vocabulary.
+- Final report: `docs/VALORIA_MID_LOWER_DISTRICT_UPGRADE_V1_RESULT.md`.
+- No merge/promotion to `main`.
+
 ## Toolchain Automation v2 — CANONICAL ROUTING + ZERO-SPEND CAPABILITY PROOFS (2026-10-01)
 
 Promoted to `main`: `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md`, `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`, `pipeline/art-production-request.json`, `pipeline/toolchain-capabilities.json`, planner/audit/Blender/Tripo probe tools and `.github/workflows/art-production-plan.yml`. Final proof run `36859609770 SUCCESS`; artifacts `11161505766` (planner/static Unity audit), `11161572190` (Blender+Unity+Tripo proof), `11160897012` (hosted Blender bake cross-check). **0 Tripo credits**.
