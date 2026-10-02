@@ -49,23 +49,23 @@ namespace Eldoria.Presentation
                     float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
 
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-13.0f)/15.5f));
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-13.5f)/20.0f));
-                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+2.5f)/8.0f));
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-11.4f)/12.6f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-11.8f)/17.0f));
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+1.0f)/7.0f));
                     float sideRelief=side*frontGate;
                     float relief=Mathf.Max(sideRelief,rear);
 
                     // Broad natural valley walls: restrained height, no giant planar curtain.
-                    float ridge=sideRelief*sideRelief*4.2f + rear*rear*(4.1f+side*1.7f);
-                    float broad=Mathf.Sin(x*.115f+z*.035f)*.34f
-                               +Mathf.Sin(z*.145f-x*.028f)*.27f
-                               +Mathf.Sin((x+z)*.071f)*.19f;
-                    float fine=Mathf.Sin(x*.31f-z*.17f)*.10f;
+                    float ridge=sideRelief*sideRelief*5.6f + rear*rear*(5.3f+side*2.1f);
+                    float broad=Mathf.Sin(x*.115f+z*.035f)*.42f
+                               +Mathf.Sin(z*.145f-x*.028f)*.33f
+                               +Mathf.Sin((x+z)*.071f)*.23f;
+                    float fine=Mathf.Sin(x*.31f-z*.17f)*.13f;
                     float y=hiddenY + ridge + (broad+fine)*relief;
 
                     // Keep a generous central basin and the full approach invisible beneath gameplay ground.
-                    float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.5f)/4.0f));
-                    float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.0f)/7.0f));
+                    float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-9.6f)/3.6f));
+                    float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-9.0f)/6.5f));
                     float basin=cityX*cityZ;
                     y=Mathf.Lerp(y,hiddenY,basin);
                     if(z<-4.5f)y=hiddenY;
