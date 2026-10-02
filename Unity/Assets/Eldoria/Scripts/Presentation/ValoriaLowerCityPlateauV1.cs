@@ -94,73 +94,75 @@ namespace Eldoria.Presentation
 
         static Mesh BuildPlateauMesh()
         {
-            var ring=new[]{
-                new Vector2(-9.4f,-5.8f),
-                new Vector2(-7.0f,-8.4f),
-                new Vector2(-3.5f,-9.7f),
-                new Vector2(0f,-10.2f),
-                new Vector2(3.5f,-9.7f),
-                new Vector2(7.0f,-8.4f),
-                new Vector2(9.4f,-5.8f),
-                new Vector2(9.8f,-2.0f),
-                new Vector2(9.3f,2.3f),
-                new Vector2(7.5f,4.9f),
-                new Vector2(4.3f,5.7f),
-                new Vector2(0f,6.1f),
-                new Vector2(-4.3f,5.7f),
-                new Vector2(-7.5f,4.9f),
-                new Vector2(-9.3f,2.3f),
-                new Vector2(-9.8f,-2.0f)
-            };
+            const int nx=36;
+            const int nz=34;
+            const float minX=-10.2f,maxX=10.2f;
+            const float minZ=-10.8f,maxZ=6.4f;
 
-            const float topY=-.18f;
-            const float bottomY=-2.35f;
+            var vertices=new List<Vector3>((nx+1)*(nz+1));
+            var uvs=new List<Vector2>((nx+1)*(nz+1));
+            var innerTriangles=new List<int>();
+            var slopeTriangles=new List<int>();
 
-            var vertices=new List<Vector3>();
-            var uvs=new List<Vector2>();
-            vertices.Add(new Vector3(0f,topY,-1.1f));
-            uvs.Add(new Vector2(.5f,.5f));
-
-            for(int i=0;i<ring.Length;i++)
+            for(int z=0;z<=nz;z++)
             {
-                vertices.Add(new Vector3(ring[i].x,topY,ring[i].y));
-                uvs.Add(new Vector2((ring[i].x+10f)/20f,(ring[i].y+10.5f)/17f));
+                float vz=z/(float)nz;
+                float wz=Mathf.Lerp(minZ,maxZ,vz);
+                for(int x=0;x<=nx;x++)
+                {
+                    float vx=x/(float)nx;
+                    float wx=Mathf.Lerp(minX,maxX,vx);
+
+                    float ex=Mathf.Abs(wx)/10.0f;
+                    float ez=Mathf.Abs((wz+2.15f))/8.35f;
+                    float d=Mathf.Max(ex,ez);
+
+                    float noiseA=Mathf.PerlinNoise((wx+17.3f)*.18f,(wz+11.7f)*.18f)-.5f;
+                    float noiseB=Mathf.PerlinNoise((wx-4.1f)*.41f,(wz+23.5f)*.41f)-.5f;
+                    float top=-.20f + noiseA*.16f + noiseB*.055f;
+
+                    float edgeStart=.66f + (Mathf.PerlinNoise((wz+20f)*.13f,(wx+14f)*.13f)-.5f)*.07f;
+                    float fall=Mathf.InverseLerp(edgeStart,1.02f,d);
+                    fall=fall*fall*(3f-2f*fall);
+                    float y=Mathf.Lerp(top,-2.75f+noiseA*.42f,fall);
+
+                    float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/2.9f)*
+                                Mathf.Clamp01(1f-Mathf.Abs(wz+1.8f)/7.0f);
+                    y=Mathf.Lerp(y,Mathf.Max(y,-.16f),route*.72f*(1f-fall));
+
+                    vertices.Add(new Vector3(wx,y,wz));
+                    uvs.Add(new Vector2(vx*4f,vz*3.5f));
+                }
             }
 
-            int bottomStart=vertices.Count;
-            for(int i=0;i<ring.Length;i++)
+            int Row(int z)=>z*(nx+1);
+            for(int z=0;z<nz;z++)
+            for(int x=0;x<nx;x++)
             {
-                float variation=(i%3==0)?.32f:(i%3==1?-.18f:.08f);
-                vertices.Add(new Vector3(ring[i].x*.94f,bottomY+variation,ring[i].y*.94f));
-                uvs.Add(new Vector2(i/(float)ring.Length,0f));
+                int i0=Row(z)+x;
+                int i1=i0+1;
+                int i2=Row(z+1)+x;
+                int i3=i2+1;
+
+                var center=(vertices[i0]+vertices[i1]+vertices[i2]+vertices[i3])*.25f;
+                float ex=Mathf.Abs(center.x)/10.0f;
+                float ez=Mathf.Abs((center.z+2.15f))/8.35f;
+                bool inner=Mathf.Max(ex,ez)<.69f;
+                var target=inner?innerTriangles:slopeTriangles;
+
+                target.Add(i0);target.Add(i3);target.Add(i1);
+                target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var topTriangles=new List<int>();
-            for(int i=0;i<ring.Length;i++)
-            {
-                int a=1+i;
-                int b=1+((i+1)%ring.Length);
-                topTriangles.Add(0);topTriangles.Add(b);topTriangles.Add(a);
-            }
-
-            var sideTriangles=new List<int>();
-            for(int i=0;i<ring.Length;i++)
-            {
-                int ti=1+i;
-                int tn=1+((i+1)%ring.Length);
-                int bi=bottomStart+i;
-                int bn=bottomStart+((i+1)%ring.Length);
-                sideTriangles.Add(ti);sideTriangles.Add(tn);sideTriangles.Add(bn);
-                sideTriangles.Add(ti);sideTriangles.Add(bn);sideTriangles.Add(bi);
-            }
-
-            var mesh=new Mesh{name="Valoria Lower City Plateau v1"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v2"};
+            mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
-            mesh.SetTriangles(topTriangles,0);
-            mesh.SetTriangles(sideTriangles,1);
+            mesh.SetTriangles(innerTriangles,0);
+            mesh.SetTriangles(slopeTriangles,1);
             mesh.SetUVs(0,uvs);
             mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
             mesh.RecalculateBounds();
             return mesh;
         }
