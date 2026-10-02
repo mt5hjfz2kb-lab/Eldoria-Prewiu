@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Prioritize latest strongest visible-renderer audit fix at 2990c5bc; a022 revalidation is superseded.",
+  "reason": "Cancel stalled authored-material terrain proof and superseded source gate; preserve clean retry 37076853702.",
   "runs": [
-    37074667475,
-    37074667346
+    37076240185,
+    37076231362
   ],
   "keep_runs": [
-    37074329137
+    37076853702
   ],
-  "triggered_at": "2026-10-03T00:24:00+02:00"
+  "triggered_at": "2026-10-03T01:20:00+02:00"
 }
