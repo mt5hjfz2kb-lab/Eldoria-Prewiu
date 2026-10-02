@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Evaluate the strongest integrated Valoria frame with coherent secondary architecture plus organic lower-city terrain using authored Slavic rock/mud PBR surfaces.",
+  "objective": "Validate the strongest integrated Valoria frame with organic lower-city terrain using corrected low-frequency Eldoria PBR materials and world-proportional UVs; reject Slavic prefab atlas material reuse.",
   "route": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:18:00+02:00",
-  "retry_reason": "runner capture stalled beyond normal comparable gate duration; clean concurrency restart",
-  "retry_seq": 1
+  "triggered_at": "2026-10-03T01:20:00+02:00",
+  "retry_reason": "prior authored Slavic prefab material produced atlas/checkerboard corruption on generated terrain; corrected material and UV mapping",
+  "retry_seq": 2
 }
