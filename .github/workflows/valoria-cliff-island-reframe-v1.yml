@@ -2,12 +2,6 @@ name: "[EXPERIMENT] Valoria Cliff Island Reframe v1"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandReframeV1.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaCliffIslandReframeGateV1.cs'
-      - 'pipeline/valoria-cliff-island-reframe-v1-request.json'
 
 permissions:
   contents: read
