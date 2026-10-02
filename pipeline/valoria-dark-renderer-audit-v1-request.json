@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-dark-renderer-audit-v1",
+  "objective": "Identify active near-black or untextured dark renderers/materials that create the obvious black blocks and stains visible in the current Valoria full frame.",
+  "route": "diagnostic",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "constraints": {
+    "read_only_scene_audit": true,
+    "no_visual_mutation": true,
+    "no_paid_assets": true
+  }
+}
