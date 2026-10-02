@@ -2,7 +2,7 @@
   "enabled": true,
   "request_id": "valoria-in-city-surface-v1",
   "asset_or_sector": "Valoria In-City Surface & Lighting v1",
-  "profile": "surface_detail",
+  "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
