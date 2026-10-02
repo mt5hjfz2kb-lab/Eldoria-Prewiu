@@ -39,37 +39,25 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
-      - name: Stage CC0 mountain backplates
+      - name: Stage curated CC0 mountain backplates
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\BackplateCandidates"
           New-Item -ItemType Directory -Force -Path $dir | Out-Null
-
-          function Stage-Asset([string]$asset,[string]$prefix,[int]$count) {
-            Write-Host "Resolving Poly Haven asset $asset"
-            $payload=Invoke-RestMethod -Uri ("https://api.polyhaven.com/files/"+$asset) -Headers @{'User-Agent'='Eldoria-Valoria-Convergence/1.0'}
-            $json=$payload | ConvertTo-Json -Depth 100 -Compress
-            $all=[regex]::Matches($json,'https://[^"]+?\.jpg(?:\?[^"]*)?') | ForEach-Object { $_.Value.Replace('\u0026','&').Replace('\/','/') } | Select-Object -Unique
-            $urls=$all | Where-Object { $_ -match 'backplate|backplates' -and $_ -match 'pretty|jpg_pretty|JPG' }
-            if(($urls|Measure-Object).Count -lt $count) {
-              $urls=$all | Where-Object { $_ -notmatch 'Tonemapped|thumbnail|thumb|preview|colorchart' }
-            }
-            $urls=@($urls | Select-Object -Unique)
-            Write-Host "Resolved $($urls.Count) candidate JPGs for $asset"
-            if($urls.Count -lt $count){throw "Not enough backplate JPG URLs for $asset"}
-            for($i=0;$i -lt $count;$i++){
-              $dst=Join-Path $dir ($prefix+"_"+$i+".jpg")
-              Write-Host "download $asset candidate $i -> $dst"
-              Invoke-WebRequest -Uri $urls[$i] -OutFile $dst -UseBasicParsing
-              $bytes=(Get-Item $dst).Length
-              if($bytes -lt 150000){throw "Backplate $asset/$i unexpectedly small: $bytes"}
-            }
+          $items=@(
+            @('kiara1_a.jpg','https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_1_dawn/jpg_pretty/20160824-DSC01517.jpg'),
+            @('kiara1_b.jpg','https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_1_dawn/jpg_pretty/20160824-DSC01528.jpg'),
+            @('kiara3_a.jpg','https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01597.jpg'),
+            @('kiara7_a.jpg','https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_7_late-afternoon/jpg_pretty/20160825-DSC01762.jpg')
+          )
+          foreach($item in $items){
+            $dst=Join-Path $dir $item[0]
+            Write-Host "download $($item[0])"
+            Invoke-WebRequest -Uri $item[1] -OutFile $dst -UseBasicParsing
+            $bytes=(Get-Item $dst).Length
+            if($bytes -lt 1000000){throw "Backplate $($item[0]) unexpectedly small: $bytes"}
           }
-
-          Stage-Asset 'kiara_1_dawn' 'kiara1' 3
-          Stage-Asset 'kiara_3_morning' 'kiara3' 3
-          Stage-Asset 'kiara_7_late-afternoon' 'kiara7' 2
       - name: Capture backplate sweep
         shell: powershell
         run: |
