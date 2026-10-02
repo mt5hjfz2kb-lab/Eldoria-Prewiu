@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release the single Windows Unity runner from the legacy Valoria Visual Formula gate. Full-frame convergence now uses dedicated gates and the legacy formula gate is manual-only.",
+  "reason": "Release Windows runner for authoritative perspective panorama proof; generic Unity slice runs are redundant for this isolated full-frame visual candidate.",
   "runs": [
-    37070697886
+    37071415042,
+    37071338444
   ],
-  "triggered_at": "2026-10-02T22:20:00Z"
+  "triggered_at": "2026-10-02T22:16:00Z"
 }
