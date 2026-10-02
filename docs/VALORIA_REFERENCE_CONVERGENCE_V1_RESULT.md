@@ -1,88 +1,73 @@
 # VALORIA REFERENCE CONVERGENCE v1 — RESULT
 
 Date: 2026-10-02
-Status: **TECH PASS / VISUAL FAIL / GEOMETRY GAP PROVEN**
+Status: **TECH PASS / VISUAL FAIL vs approved reference**
 Branch: `visual-proof/valoria-reference-convergence-v1`
-Base composition: `VALORIA MASTER VISUAL REBUILD v2`
+Base: `visual-proof/valoria-master-visual-rebuild-v2`
 
 ## Objective
 
-Drive the blank-canvas Valoria composition toward the owner-approved reference: a monumental inhabited fortress-city carved into cliffs, framed by colossal ancient ruins, dense depth layers and visible reconstruction.
+Push the certified Blank Canvas rebuild toward the approved Valoria reference using the existing library only.
 
 ## Toolchain
 
 - profile: `environment_composition`
-- Tripo credits spent: **0**
-- gameplay/collider/hotspot authority preserved
-- official captures: zoom 19 / 12 / 9 / mobile
-- existing library only during the proof
-
-## Existing-library routes tested
-
-The pass tested, integrated and visually rejected or limited the following existing routes at official camera:
-
-1. MegaWall / MegaTower monumental framing — rejected: coarse rectangular module read.
-2. ReferenceKit bridge / tower / wall family — rejected: large brick-box read in the real frame.
-3. Arch_Gothic / Wall_Broken — rejected: slab/panel silhouette at required scale.
-4. Stone_Gate / Stone_Tower — rejected: oversized dark gate blocks, visually foreign.
-5. TowerWallRock + Stone Architecture + RockTerrainSeamFiller — cleanest existing-library result, but still insufficient for the benchmark's colossal broken-arch/cliff language.
-
-The cleanest iteration also reused:
-- Hero Bastion;
-- Aserradero / Cuartel / Granero dedicated assets;
-- Terrain & Terrace;
-- Stone Architecture;
-- RockTerrainSeamFiller;
-- vegetation, props, flags, warm lights;
-- continuous visual terrain.
+- Tripo spend: **0 credits**
+- allow_tripo: false
+- geometry_gap_proven: **true**
+- official validation: zoom 19 / 12 / 9 / mobile
+- gameplay collider/hotspot signature: **unchanged**
 
 ## Final evidence
 
-Latest accepted technical evidence reviewed:
-- run: `36993896223` — SUCCESS
-- artifact: `11220507506`
-- digest: `sha256:fb72725e53fbc2896e74824204833d02797f07cb6fd4780b0666ca30cb2a3ebb`
+- Run: `36994280995` — SUCCESS
+- Artifact: `11220589620`
+- Digest: `sha256:fb8f2c0596876cae10d113b296f9796090e5badfefbc465983d53f3379cb6113`
 
-The frame is cleaner and the functional third depth tier is better, but it remains materially below the approved visual benchmark.
+Measured scene:
+- BEFORE: 1,108,222 triangles / 163 renderers / 181 material slots / 4 lights
+- AFTER: 1,574,237 triangles / 358 renderers / 430 material slots / 7 lights
 
-## Visual diagnosis
+## What improved
 
-What now works:
-- compact vertical city logic;
-- Bastion hierarchy;
-- central ascent;
-- dedicated functional buildings;
-- visible future growth;
-- rock/terrace integration is better than the legacy city;
-- reconstruction cues and warm/cool separation.
+- stronger vertical composition around the Hero Bastion;
+- deeper foreground with the existing Granero and support structures;
+- more geological framing and terrace occupation;
+- additional authored cobble / retaining edges / vegetation / reconstruction props;
+- denser central read without resuming lateral residential sprawl;
+- 0 gameplay/collider/hotspot changes.
 
-What still fails against the reference:
-- no convincing colossal ancient arch/aqueduct silhouette;
-- insufficient vertical cliff architecture around the city;
-- side framing remains too sparse;
-- skyline does not communicate a much larger ruined civilization;
-- environment still reads as a compact game diorama rather than a city occupying a monumental mountain ruin;
-- existing ruin families become visibly modular when scaled to benchmark importance.
+## Why this is still a visual fail
 
-## Proven geometry gap
+The approved reference relies on a large-scale architectural/environmental motif that the current library does not contain at adequate quality:
 
-A new asset is justified, but only for the missing capability.
+**monumental broken-arch / ancient ruin masses physically fused with vertical cliff-rock.**
 
-Required family: **Valoria Monumental Ruin & Cliff Kit v1**.
+Attempts to approximate the role with:
+- TowerWallRock,
+- Stone Gate/Tower,
+- existing wall/passages,
+- generic Gothic arch inventory,
+- rock + terrace overlap
 
-Minimum geometry:
-1. **Colossal Broken Arch** — tall asymmetric ancient arch/aqueduct fragment, open negative space, broken crown, rock-grown foundations.
-2. **Ruin Tower / Wall-Rock Hybrid** — vertical fractured masonry mass that can flank the Bastion without reading as a rectangular wall prefab.
-3. **Cliff Architecture Connector** — stepped rock + masonry transition that visually carries terraces down a vertical cliff and accepts stairs/roads beside it.
+either read as placed modules, become too blocky, or do not create the continuous ruin-cliff silhouette of the reference.
 
-These are environment modules, not houses and not gameplay buildings. They must be designed for partial burial, overlap and official isometric camera use.
+This is now a **proven geometry gap**, not an unresolved composition problem.
 
-## Decision
+## Exact next asset role
 
-Do not promote this pass to `main` as benchmark-complete.
+Create one reusable hero environment module:
 
-Keep the Blank Canvas master composition.
+`Valoria_AncientRuinCliffArch_v1`
 
-Keep all existing library material.
+Required read:
+- single colossal broken stone arch / aqueduct remnant;
+- asymmetric ruined crown and missing chunks;
+- substantial cliff-rock fused into the base and sides;
+- believable thickness, buttresses and masonry breakup;
+- enough negative space through the arch to frame the distant world;
+- medieval-fantasy stone language compatible with Hero Bastion;
+- isolated production reference, not concept art and not a whole-scene image;
+- reusable mirrored / rotated on the left and right outer frame.
 
-The next high-return action is to create the exact Tripo input for **Valoria Monumental Ruin & Cliff Kit v1**, stage it through the canonical exact-input pipeline, show exact input + visible Tripo cost, and stop for fresh owner authorization before Generate.
+No Tripo generation may start until the exact input image is persisted, staged, visible cost is known, and the owner gives fresh explicit approval.
