@@ -186,8 +186,8 @@ namespace Eldoria.Presentation
                 new Vector3(-19.5f,-2.4f,24.5f),16.5f,11.2f,Quaternion.Euler(0,20f,0),tint);
             var east=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · mountain wall east",
                 new Vector3(20.0f,-2.5f,25.0f),16.0f,10.8f,Quaternion.Euler(0,-24f,0),tint);
-            if(west!=null)west.transform.SetParent(root,true);
-            if(east!=null)east.transform.SetParent(root,true);
+            if(west!=null){west.transform.SetParent(root,true);DisableGameplay(west);}
+            if(east!=null){east.transform.SetParent(root,true);DisableGameplay(east);}
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
