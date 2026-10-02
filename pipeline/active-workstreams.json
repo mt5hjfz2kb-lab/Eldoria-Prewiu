@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T12:18:00Z",
+  "updated_at": "2026-10-02T12:24:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -37,7 +37,8 @@
         "tools/asset-deep-uplift/**",
         "SESSION_HANDOFF.md",
         ".github/workflows/asset-deep-uplift-blender.yml",
-        "pipeline/asset-deep-uplift-run-request.json"
+        "pipeline/asset-deep-uplift-run-request.json",
+        "pipeline/candidates/asset-deep-uplift-v1/**"
       ],
       "resources": [
         "github-hosted-blender"
@@ -48,7 +49,7 @@
       "dependency": "valoria-reference-convergence-v2 still owns valoria-production-composition and windows-runner-heavy. This workstream may run Blender candidate generation only on GitHub-hosted runners; no Unity production integration or Windows-runner use until released.",
       "result_commit": "6e04c35d2c6ec69a7c8db39e7c006e0af5a93a75",
       "result": "26-GLB A/B/C/D classification merged; deep geometry queue prepared. Binary Blender + official Unity validation blocked by active valoria-reference-convergence-v2 ownership of windows-runner-heavy and valoria-production-composition.",
-      "next": "Generate SteppedRockTerrace candidate on GitHub-hosted Blender; hold candidate pending official Unity validation."
+      "next": "Persist TerraceStairRock and StreetLandingTransition PBR candidates outside Unity Resources; final promotion still requires official Unity 19/12/9/mobile validation after resource release."
     }
   ],
   "history": [
