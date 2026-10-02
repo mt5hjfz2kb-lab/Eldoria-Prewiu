@@ -1,9 +1,15 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Integrated Strongest Composite now contains MaterialResidueCleanupV2 and FullFrameArtifactCleanupV1. Cancel isolated residue proof to reserve the single Windows runner for authoritative full-frame evidence.",
+  "reason": "Prioritize newest integrated strongest composite at 420ab26a. Older strongest, generic Unity slice and standalone material cleanup are superseded because residue/artifact cleanup is already integrated into the authoritative composite.",
   "runs": [
+    37073034386,
+    37073145699,
     37073121595
   ],
-  "triggered_at": "2026-10-03T00:11:00+02:00"
+  "keep_runs": [
+    37073145668,
+    37073083726
+  ],
+  "triggered_at": "2026-10-02T22:36:00Z"
 }
