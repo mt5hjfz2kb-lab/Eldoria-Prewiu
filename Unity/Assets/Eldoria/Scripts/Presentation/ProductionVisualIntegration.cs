@@ -1397,17 +1397,21 @@ namespace Eldoria.Presentation
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · Bastion crown shelf",
                 new Vector3(0f,0,7.20f),3.16f,7.8f,0f);
 
-            // Processional spine: overlapping paving and landings create one continuous climb rather than floating slabs.
-            for(int i=0;i<10;i++)
-            {
-                float z=-4.85f+i*.72f;
-                float y=.42f+Mathf.Max(0,i-4)*.30f;
-                StonePiece(i%3==0?2:1,"Valoria · Master Rebuild v2 · processional spine",
-                    new Vector3(0f,y,z),new Vector3(2.28f,.052f,1.18f),i%2==0?2f:-2f);
-            }
-            foreach(var p in new[]{
-                new Vector3(0f,.43f,-4.55f),new Vector3(0f,1.02f,-.65f),new Vector3(0f,2.02f,3.10f)})
-                StonePiece(2,"Valoria · Master Rebuild v2 · processional landing",p,new Vector3(3.25f,.06f,1.85f),0f);
+            // Processional ascent: an irregular stepped street, not a ladder of identical slabs.
+            // Gameplay stairs/routes remain authoritative underneath.
+            foreach(var s in new[]{
+                new Vector4(-.55f,-4.55f,.44f,-5f),new Vector4(.38f,-3.55f,.44f,6f),
+                new Vector4(-.30f,-2.52f,.44f,-4f),new Vector4(.42f,-1.42f,.48f,7f),
+                new Vector4(-.38f,-.28f,.82f,-6f),new Vector4(.30f,.92f,1.18f,5f),
+                new Vector4(-.22f,2.10f,1.55f,-4f),new Vector4(.16f,3.28f,1.92f,3f)})
+                StonePiece(1,"Valoria · Master Rebuild v2 · stepped processional street",
+                    new Vector3(s.x,s.z,s.y),new Vector3(2.02f,.052f,1.20f),s.w);
+            StonePiece(2,"Valoria · Master Rebuild v2 · lower civic landing",
+                new Vector3(-.65f,.45f,-2.95f),new Vector3(3.35f,.052f,1.65f),-4f);
+            StonePiece(2,"Valoria · Master Rebuild v2 · middle civic landing",
+                new Vector3(.62f,1.18f,.72f),new Vector3(3.05f,.052f,1.48f),5f);
+            StonePiece(2,"Valoria · Master Rebuild v2 · upper gate landing",
+                new Vector3(-.35f,2.12f,4.05f),new Vector3(2.72f,.052f,1.34f),-3f);
 
             // Keep the upper crown geological, not two giant wall modules. Low buried transitions retain the terraces.
             StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · upper retaining west",
@@ -1424,8 +1428,8 @@ namespace Eldoria.Presentation
             // Reuse dedicated functional buildings at the two lower work shelves; their actual hotspots remain nearby.
             var saw=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
             var barracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
-            if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-3.90f,1.00f,-.35f),3.00f,2.62f,10f,Color.white);
-            if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(3.90f,1.00f,-.30f),3.00f,2.62f,-10f,Color.white);
+            if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-3.55f,.98f,-.15f),2.92f,2.58f,13f,Color.white);
+            if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(3.60f,.98f,-.05f),2.92f,2.58f,-8f,Color.white);
 
             // One representative inhabited upper mass per side, deliberately leaving large future plots.
             // Small offset landings keep the ascent readable without turning the spine into a monumental runway.
@@ -1438,9 +1442,9 @@ namespace Eldoria.Presentation
             var mid02=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
             var mid03=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece03");
             if(mid02!=null)Piece("Valoria · Master Rebuild v2 · upper residence west",mid02,
-                new Vector3(-2.95f,1.98f,3.15f),2.18f,2.58f,7f,new Color(.68f,.63f,.55f));
+                new Vector3(-2.72f,1.92f,3.32f),2.12f,2.52f,11f,new Color(.68f,.63f,.55f));
             if(mid03!=null)Piece("Valoria · Master Rebuild v2 · upper workshop east",mid03,
-                new Vector3(2.95f,1.98f,3.15f),2.18f,2.50f,-7f,new Color(.66f,.61f,.54f));
+                new Vector3(2.82f,1.92f,3.08f),2.12f,2.46f,-5f,new Color(.66f,.61f,.54f));
 
             // Certified Hero Bastion is reused as the visual summit when the runner has restored it.
             var hero=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
