@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-dark-mass-diagnostic-v1",
+  "objective": "Identify the renderer chain responsible for the prominent dark rectangular mass projected to the right of the Hero Bastion, using matched-camera hide-one-chain captures. Diagnostic only; no production mutation.",
+  "route": "environment_composition",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "constraints": {
+    "diagnostic_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true
+  },
+  "candidates": [
+    "Valoria · rescued hero flank",
+    "Valoria · Bastion hero wall west",
+    "Valoria · Bastion hero tower west",
+    "Valoria · Bastion hero wall rear",
+    "Valoria · Bastion hero tower crown",
+    "Valoria · Bastion hero gate"
+  ],
+  "validation": [
+    "baseline",
+    "hide_each_candidate",
+    "screen_space_report"
+  ]
+}
