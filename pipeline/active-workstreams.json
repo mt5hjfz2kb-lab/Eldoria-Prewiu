@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:35:00Z",
+  "updated_at": "2026-10-02T10:39:00Z",
   "active": [
     {
       "id": "asset-library-canonicalization-v1",
@@ -23,6 +23,24 @@
       "status": "active",
       "claimed_at": "2026-10-02T10:35:00Z",
       "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8"
+    },
+    {
+      "id": "valoria-reference-convergence-v2",
+      "title": "Valoria Reference Convergence Pass v2",
+      "owner": "chat-valoria-reference-convergence",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaReferenceConvergencePassV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs",
+        "docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md",
+        "pipeline/valoria-reference-convergence-v2-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T10:39:00Z",
+      "base_main_sha": "db86aeceea49e19cb7d3772c11b485a4e9a2165d",
+      "dependency": "asset-library-canonicalization-v1; do not mutate its asset-library scope or request windows-runner-heavy until released"
     }
   ],
   "history": [
