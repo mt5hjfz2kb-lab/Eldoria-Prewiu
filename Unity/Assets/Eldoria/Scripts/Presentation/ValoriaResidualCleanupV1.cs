@@ -118,6 +118,17 @@ namespace Eldoria.Presentation
             var go=ValoriaKit.BenchmarkPieceIntegrated("Valoria · Residual Cleanup · rock "+role,source,p,footprint,height,
                 Quaternion.Euler(0f,yaw,0f),new Color(.51f,.52f,.48f,1f));
             if(go==null)return;
+
+            var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "rock",new Color(.53f,.53f,.49f,1f),new Vector2(2.8f,2.8f),.025f,1.02f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.50f,.50f,.46f,1f),"stone",new Vector2(2.8f,2.8f));
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=rockMaterial;
+                renderer.sharedMaterials=mats;
+            }
+
             go.transform.SetParent(root,true);DisableGameplay(go);Replacements++;
         }
 
