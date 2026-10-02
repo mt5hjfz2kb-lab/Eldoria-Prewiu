@@ -44,7 +44,7 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
-              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*|Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs|Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs|Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs.meta)
+              Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaReferenceConvergencePassV2.cs|Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs|Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs|Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs.meta)
                 # Dedicated UI Progression Certification owns these UI-only changes.
                 continue
                 ;;
