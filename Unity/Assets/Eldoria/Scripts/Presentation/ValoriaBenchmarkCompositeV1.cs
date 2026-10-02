@@ -22,9 +22,11 @@ namespace Eldoria.Presentation
 
             ValoriaCameraBackdropV1.Enabled=true;
             ValoriaCameraBackdropV1.CropX=.55f;
-            ValoriaCameraBackdropV1.CropY=.10f;
+            ValoriaCameraBackdropV1.CropY=.52f;
             ValoriaCameraBackdropV1.CropW=.34f;
-            ValoriaCameraBackdropV1.CropH=.60f;
+            ValoriaCameraBackdropV1.CropH=.22f;
+            ValoriaCameraBackdropV1.BackdropHeight=15f;
+            ValoriaCameraBackdropV1.VerticalOffset=7.5f;
             if(!ValoriaCameraBackdropV1.Build(parent,camera))
                 throw new InvalidOperationException("Benchmark composite backdrop unavailable.");
 
