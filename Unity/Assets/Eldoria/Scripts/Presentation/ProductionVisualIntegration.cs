@@ -1518,28 +1518,40 @@ namespace Eldoria.Presentation
             // Goal: approach the approved reference's monumental ruin / inhabited cliff-city read
             // using only existing library assets. No gameplay ownership and no paid/new geometry.
 
-            // Monumental archaeological frame: broken Gothic arches embedded into rock.
-            // Use partial burial and overlapping geology so they read as remnants of an older city, not placed prefabs.
-            foreach(var s in new[]{
-                new Vector4(-9.8f,6.7f,7.8f,16f),new Vector4(10.2f,6.4f,8.4f,196f),
-                new Vector4(-7.1f,10.8f,5.6f,28f),new Vector4(7.3f,11.0f,5.7f,208f)})
+            // Monumental frame using only already-certified Valoria geometry.
+            // TowerWallRock carries vertical ruin identity; Stone Architecture v1 supplies masonry/rock joins.
+            var towerWall=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            if(towerWall!=null)
             {
-                Imported("Valoria · Reference v1 · colossal broken arch","Arch_Gothic",
-                    new Vector3(s.x,-.25f,s.y),s.z,s.z*1.18f,s.w,new Color(.40f,.40f,.37f),false);
-                Imported("Valoria · Reference v1 · arch ruin flank","Wall_Broken",
-                    new Vector3(s.x+(s.x<0?-1.8f:1.8f),-.55f,s.y+.85f),
-                    s.z*.48f,s.z*.56f,s.w+(s.x<0?-24f:24f),new Color(.36f,.36f,.33f),false);
-                Imported("Valoria · Reference v1 · arch buried geology","Rock02",
-                    new Vector3(s.x,-1.35f,s.y-.55f),s.z*.72f,s.z*.40f,s.w+37f,new Color(.29f,.30f,.29f),false);
+                Piece("Valoria · Reference v1 · west monumental tower wall",towerWall,
+                    new Vector3(-8.55f,.15f,6.75f),4.55f,7.25f,18f,new Color(.60f,.61f,.56f));
+                Piece("Valoria · Reference v1 · east monumental tower wall",towerWall,
+                    new Vector3(8.70f,.15f,6.95f),4.55f,7.25f,198f,new Color(.60f,.61f,.56f));
+                Piece("Valoria · Reference v1 · west rear ruin tower",towerWall,
+                    new Vector3(-6.65f,.60f,10.15f),3.55f,5.60f,34f,new Color(.55f,.56f,.52f));
+                Piece("Valoria · Reference v1 · east rear ruin tower",towerWall,
+                    new Vector3(6.80f,.60f,10.30f),3.55f,5.60f,214f,new Color(.55f,.56f,.52f));
             }
-
-            // Distant mountain chain creates the deep-world layer visible in the approved reference.
-            // Pieces are deliberately buried well below the terrain to avoid floating silhouettes.
+            StoneArchitecturePiece("HighStraightWall","Valoria · Reference v1 · west ancient retaining",
+                new Vector3(-7.65f,.05f,4.35f),4.10f,22f);
+            StoneArchitecturePiece("HighStraightWall","Valoria · Reference v1 · east ancient retaining",
+                new Vector3(7.75f,.05f,4.45f),4.10f,158f);
+            StoneArchitecturePiece("CornerWallL","Valoria · Reference v1 · west broken corner",
+                new Vector3(-9.15f,.20f,8.25f),3.75f,28f);
+            StoneArchitecturePiece("CornerWallL","Valoria · Reference v1 · east broken corner",
+                new Vector3(9.25f,.20f,8.35f),3.75f,208f);
             foreach(var s in new[]{
-                new Vector4(-20f,23f,14f,12f),new Vector4(-10f,27f,15f,34f),
-                new Vector4(0f,29f,16f,72f),new Vector4(10f,27f,15f,118f),new Vector4(20f,23f,14f,158f)})
-                Imported("Valoria · Reference v1 · distant mountain chain","Mountain01",
-                    new Vector3(s.x,-4.3f,s.y),s.z,5.4f,s.w,new Color(.38f,.42f,.43f),false);
+                new Vector4(-8.4f,5.4f,2.35f,42f),new Vector4(8.5f,5.5f,2.35f,222f),
+                new Vector4(-6.7f,9.0f,2.05f,64f),new Vector4(6.8f,9.1f,2.05f,244f)})
+                StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · monumental rock seam",
+                    new Vector3(s.x,.20f,s.y),s.z,s.w);
+
+            // Distant terrain depth: low buried natural mountains, never floating above the horizon.
+            foreach(var s in new[]{
+                new Vector4(-18f,24f,12f,14f),new Vector4(-8f,28f,13f,42f),
+                new Vector4(2f,30f,13.5f,82f),new Vector4(12f,27f,12.5f,128f),new Vector4(21f,23f,11f,164f)})
+                Imported("Valoria · Reference v1 · distant buried mountain","Mountain01",
+                    new Vector3(s.x,-5.8f,s.y),s.z,4.1f,s.w,new Color(.37f,.40f,.40f),false);
 
             // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
             foreach(var s in new[]{
