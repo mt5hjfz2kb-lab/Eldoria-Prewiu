@@ -33,8 +33,8 @@ namespace Eldoria.Presentation
         public static bool CoherentCastleProofEnabled = false;
         // Gate-only proof using one higher-detail family already shipped in the project.
         public static bool SlavicDistrictProofEnabled = false; // v2 material-integration proof
-        // Compact Footprint Reframe v1 gate: existing geometry only, visual-only, no gameplay authority.
-        public static bool CompactFootprintReframeEnabled = false;
+        // Compact Footprint Reframe v1 — certified production visual layer. Existing geometry only; no gameplay authority.
+        public static bool CompactFootprintReframeEnabled = true;
 
         public static void ResetVisualCachesForGate()
         {
