@@ -19,5 +19,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913002/force-cancel || true
-          echo "force-cancel requested for stale Slavic District proof"
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/37000228189/force-cancel || true
+          echo "force-cancel requested for superseded convergence v2 run 37000228189"
