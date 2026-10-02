@@ -1,11 +1,9 @@
 name: Eldoria art production planner
 
 on:
-  pull_request:
-    branches: [main]
   workflow_dispatch:
   push:
-    branches: [main, pipeline/toolchain-automation-v2, visual-proof/asset-library-reprocessing-pass-v1]
+    branches: [main, pipeline/toolchain-automation-v2]
     paths:
       - 'pipeline/art-production-request.json'
       - 'pipeline/toolchain-capabilities.json'
