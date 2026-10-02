@@ -8,6 +8,8 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaCompactFootprintReframeGate.cs'
       - '.github/workflows/valoria-compact-footprint-reframe-v1.yml'
   workflow_dispatch:
+  pull_request:
+    branches: ['main']
 
 permissions:
   contents: write
