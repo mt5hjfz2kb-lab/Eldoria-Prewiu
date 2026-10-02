@@ -1292,6 +1292,19 @@ namespace Eldoria.Presentation
                     new Vector3(s.x,s.y,s.z),2.15f,2.85f,s.w,new Color(.64f,.60f,.53f));
             }
 
+            // Surface unification for the full frame: suppress the bright tiled-board read while preserving authored hero/AP2 materials.
+            var fullGround=ValoriaKit.SurfaceMaterial(new Color(.36f,.33f,.28f,1f),"earth",new Vector2(8f,8f));
+            var fullStone=ValoriaKit.SurfaceMaterial(new Color(.46f,.44f,.40f,1f),"stone",new Vector2(5f,5f));
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
+                string n=renderer.gameObject.name.ToLowerInvariant();
+                if(n.Contains("certified hero bastion")||n.Contains("mid-tier")||n.Contains("aserradero")||n.Contains("cuartel"))continue;
+                bool ground=n.Contains("groundkit")||n.Contains("street slab")||n.Contains("court")||n.Contains("apron")||n.Contains("worn tread")||n.Contains("fullframe · lower")||n.Contains("fullframe · west cross")||n.Contains("fullframe · east cross")||n.Contains("processional");
+                bool retaining=n.Contains("retaining")||n.Contains("terrainterrace")||n.Contains("rock seam");
+                if(ground)renderer.sharedMaterial=fullGround;else if(retaining)renderer.sharedMaterial=fullStone;
+            }
+
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
             WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
             WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
