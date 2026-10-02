@@ -57,16 +57,21 @@ namespace Eldoria.Presentation
                     float sideRelief=side*frontGate;
                     float relief=Mathf.Max(sideRelief,rear);
 
-                    // Broad natural valley walls: restrained height, no giant planar curtain.
+                    // Final framing refinement: keep the proven silhouette but make it read as rock,
+                    // not a smooth berm. The matched camera magnifies the west/left wall, so it stays lower.
                     float rearSide=rear*side;
-                    float sideScale=x<0f?.72f:.82f;
-                    float ridge=sideRelief*sideRelief*3.45f*sideScale + rearSide*rearSide*1.75f;
-                    float broad=Mathf.Sin(x*.115f+z*.035f)*.42f
-                               +Mathf.Sin(z*.145f-x*.028f)*.33f
-                               +Mathf.Sin((x+z)*.071f)*.23f;
-                    float fine=Mathf.Sin(x*.31f-z*.17f)*.13f;
+                    float sideScale=x<0f?.60f:.78f;
+                    float ridge=sideRelief*sideRelief*3.35f*sideScale + rearSide*rearSide*1.70f;
+
+                    float broad=Mathf.Sin(x*.115f+z*.035f)*.30f
+                               +Mathf.Sin(z*.145f-x*.028f)*.24f
+                               +Mathf.Sin((x+z)*.071f)*.16f;
+                    float macroNoise=(Mathf.PerlinNoise(x*.085f+7.31f,z*.085f+11.17f)-.5f)*1.05f;
+                    float detailNoise=(Mathf.PerlinNoise(x*.22f+19.43f,z*.22f+2.71f)-.5f)*.34f;
+                    float strata=Mathf.Sin(z*.58f+x*.075f)*.10f;
                     float visibleRelief=Mathf.Max(sideRelief,rearSide);
-                    float y=hiddenY + ridge + (broad+fine)*visibleRelief*.82f;
+                    float y=hiddenY + ridge
+                        + (broad+macroNoise+detailNoise+strata)*visibleRelief*.72f;
 
                     // Keep a generous central basin and the full approach invisible beneath gameplay ground.
                     float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.6f)/3.8f));
