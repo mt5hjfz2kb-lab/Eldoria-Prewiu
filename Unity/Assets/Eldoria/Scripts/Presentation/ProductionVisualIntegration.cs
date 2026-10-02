@@ -1518,58 +1518,28 @@ namespace Eldoria.Presentation
             // Goal: approach the approved reference's monumental ruin / inhabited cliff-city read
             // using only existing library assets. No gameplay ownership and no paid/new geometry.
 
-            // Better existing ruin family from Mega Fantasy Props Pack, exposed through ReferenceKit.
-            // This replaces the coarse prototype arches/walls from the first convergence attempt.
-            var ruinTower=Resources.Load<GameObject>("Valoria/ReferenceKit/tower_destroyed");
-            var stoneBridge=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_bridge");
-            var wallPassage=Resources.Load<GameObject>("Valoria/ReferenceKit/wall_passage");
-            var detailedWall=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_wall_detailed");
-
-            // Monumental open ruin frame. The approved reference gains scale from broken arches that
-            // reveal the valley through them; closed slab-like masses are rejected because they read as blockout.
+            // Monumental archaeological frame: broken Gothic arches embedded into rock.
+            // Use partial burial and overlapping geology so they read as remnants of an older city, not placed prefabs.
             foreach(var s in new[]{
-                new Vector4(-9.15f,5.85f,5.70f,10f),new Vector4(9.25f,5.95f,5.70f,170f),
-                new Vector4(-10.45f,8.05f,4.10f,22f),new Vector4(10.55f,8.15f,4.10f,158f)})
-                Imported("Valoria · Reference v1 · monumental open arch","Arch_Gothic",
-                    new Vector3(s.x,.42f,s.y),s.z,7.30f,s.w,new Color(.47f,.45f,.40f),false);
-            foreach(var s in new[]{
-                new Vector4(-11.0f,4.60f,3.10f,44f),new Vector4(11.0f,4.75f,3.10f,136f),
-                new Vector4(-8.15f,8.70f,2.65f,18f),new Vector4(8.20f,8.85f,2.65f,162f)})
-                Imported("Valoria · Reference v1 · broken arch flank","Wall_Broken",
-                    new Vector3(s.x,.38f,s.y),s.z,3.15f,s.w,new Color(.44f,.42f,.38f),false);
-            foreach(var s in new[]{
-                new Vector4(-10.0f,6.95f,1.50f,0f),new Vector4(10.0f,7.05f,1.50f,180f),
-                new Vector4(-7.55f,9.35f,1.25f,0f),new Vector4(7.55f,9.45f,1.25f,180f)})
-                Imported("Valoria · Reference v1 · ruin column","Column_Round",
-                    new Vector3(s.x,.35f,s.y),s.z,4.65f,s.w,new Color(.46f,.44f,.39f),false);
-
-            // Destroyed towers are subordinate vertical landmarks: taller than houses, lower and visually older
-            // than the active Hero Bastion.
-            if(ruinTower!=null)
+                new Vector4(-9.8f,6.7f,7.8f,16f),new Vector4(10.2f,6.4f,8.4f,196f),
+                new Vector4(-7.1f,10.8f,5.6f,28f),new Vector4(7.3f,11.0f,5.7f,208f)})
             {
-                Piece("Valoria · Reference v1 · west ruined tower",ruinTower,
-                    new Vector3(-8.55f,.56f,8.55f),4.0f,6.15f,16f,new Color(.72f,.69f,.62f));
-                Piece("Valoria · Reference v1 · east ruined tower",ruinTower,
-                    new Vector3(8.65f,.58f,8.75f),4.0f,6.15f,196f,new Color(.72f,.69f,.62f));
+                Imported("Valoria · Reference v1 · colossal broken arch","Arch_Gothic",
+                    new Vector3(s.x,-.25f,s.y),s.z,s.z*1.18f,s.w,new Color(.40f,.40f,.37f),false);
+                Imported("Valoria · Reference v1 · arch ruin flank","Wall_Broken",
+                    new Vector3(s.x+(s.x<0?-1.8f:1.8f),-.55f,s.y+.85f),
+                    s.z*.48f,s.z*.56f,s.w+(s.x<0?-24f:24f),new Color(.36f,.36f,.33f),false);
+                Imported("Valoria · Reference v1 · arch buried geology","Rock02",
+                    new Vector3(s.x,-1.35f,s.y-.55f),s.z*.72f,s.z*.40f,s.w+37f,new Color(.29f,.30f,.29f),false);
             }
 
-            // Lower ruined passages and detailed masonry create depth around the inhabited shelves without
-            // becoming new functional buildings or closing future construction plots.
-            if(wallPassage!=null)
-            {
-                Piece("Valoria · Reference v1 · west lower ruin passage",wallPassage,
-                    new Vector3(-6.05f,.44f,.55f),3.25f,2.65f,18f,new Color(.76f,.72f,.64f));
-                Piece("Valoria · Reference v1 · east lower ruin passage",wallPassage,
-                    new Vector3(6.10f,.44f,.65f),3.25f,2.65f,162f,new Color(.76f,.72f,.64f));
-            }
-            // Keep only short detailed masonry fragments near the lower shelves; no long closed side walls.
-            if(detailedWall!=null)
-            {
-                Piece("Valoria · Reference v1 · west broken terrace fragment",detailedWall,
-                    new Vector3(-6.15f,.44f,-1.25f),1.85f,1.30f,18f,new Color(.70f,.67f,.60f));
-                Piece("Valoria · Reference v1 · east broken terrace fragment",detailedWall,
-                    new Vector3(6.20f,.44f,-1.18f),1.85f,1.30f,162f,new Color(.70f,.67f,.60f));
-            }
+            // Distant mountain chain creates the deep-world layer visible in the approved reference.
+            // Pieces are deliberately buried well below the terrain to avoid floating silhouettes.
+            foreach(var s in new[]{
+                new Vector4(-20f,23f,14f,12f),new Vector4(-10f,27f,15f,34f),
+                new Vector4(0f,29f,16f,72f),new Vector4(10f,27f,15f,118f),new Vector4(20f,23f,14f,158f)})
+                Imported("Valoria · Reference v1 · distant mountain chain","Mountain01",
+                    new Vector3(s.x,-4.3f,s.y),s.z,5.4f,s.w,new Color(.38f,.42f,.43f),false);
 
             // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
             foreach(var s in new[]{
@@ -1596,6 +1566,13 @@ namespace Eldoria.Presentation
                 new Vector3(-3.7f,0,-5.8f),.36f,3.2f,54f);
             RescuedTerrainSeam("Valoria · Reference v1 · foreground seam east",
                 new Vector3(3.7f,0,-5.7f),.36f,3.2f,306f);
+
+            foreach(var s in new[]{
+                new Vector4(-11.0f,5.9f,1.22f,0),new Vector4(-9.2f,7.7f,1.35f,1),
+                new Vector4(-7.8f,9.4f,1.18f,0),new Vector4(11.1f,5.7f,1.22f,1),
+                new Vector4(9.3f,7.9f,1.35f,0),new Vector4(7.9f,9.6f,1.18f,1)})
+                Imported("Valoria · Reference v1 · ruin pine",s.w>.5f?"Tree01B":"Tree01A",
+                    new Vector3(s.x,.02f,s.y),s.z,3.45f,s.x*17f,new Color(.24f,.35f,.22f),true);
 
             // Dense but controlled mountain vegetation. It occupies geology/seams, never buildable plots or the central route.
             foreach(var s in new[]{
