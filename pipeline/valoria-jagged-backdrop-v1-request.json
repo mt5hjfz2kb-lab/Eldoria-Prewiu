@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-jagged-backdrop-v1",
+  "objective": "Test a verified CC0 jagged-alpine-valley photograph as a fixed camera-facing Valoria backplate at five vertical placements, replacing rolling-hill backgrounds that fail the benchmark.",
+  "route": "environment_composition",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Jagged peaks over a valley",
+    "provider": "Wikimedia Commons",
+    "license": "CC0",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Jagged_peaks_over_a_valley_(Unsplash).jpg",
+    "runtime_persistence": false
+  },
+  "constraints": {
+    "proof_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "open_valley_required": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "5_vertical_biases",
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature"
+  ]
+}
