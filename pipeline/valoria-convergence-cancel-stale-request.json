@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner for latest camera-backdrop proof; cancel superseded backdrop run and generic Unity slice awakened by proof-only presentation file.",
+  "reason": "Architecture dedicated gate already captured successfully; cancel redundant generic Unity slice so latest corrected camera-backdrop proof runs next.",
   "runs": [
-    37062958308,
-    37062958435
+    37063106023
   ],
-  "triggered_at": "2026-10-02T20:51:00Z"
+  "triggered_at": "2026-10-02T20:52:00Z"
 }
