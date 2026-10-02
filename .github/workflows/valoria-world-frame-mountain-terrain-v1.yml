@@ -6,7 +6,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/valoria-world-frame-mountain-terrain-v1.yml'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWorldFrameMountainTerrainV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaWorldFrameMountainTerrainGateV1.cs'
 
