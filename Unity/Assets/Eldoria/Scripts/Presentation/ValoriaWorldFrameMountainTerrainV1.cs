@@ -107,28 +107,8 @@ namespace Eldoria.Presentation
                 AddFramePrefab(root,art.SlavicBoulder,"margin boulder "+i,anchors[i],
                     1.48f+(i%3)*.14f,1.0f+(i%2)*.08f,(i*47)%360,new Color(.34f,.36f,.34f,1f));
 
-            var pines=new[]{
-                new Vector3(-16.4f,.02f,8.6f),new Vector3(-14.8f,.02f,12.8f),
-                new Vector3(16.2f,.02f,9.0f),new Vector3(14.8f,.02f,13.0f),
-                new Vector3(-10.0f,.03f,17.0f),new Vector3(-5.6f,.03f,18.0f),
-                new Vector3(5.8f,.03f,18.2f),new Vector3(10.0f,.03f,17.2f)
-            };
-            for(int i=0;i<pines.Length;i++)
-                AddCanonicalPine(root,"margin pine "+i,pines[i],.42f+(i%3)*.05f);
-        }
-
-        static void AddCanonicalPine(Transform root,string role,Vector3 p,float scale)
-        {
-            string baseName="Valoria · World Frame v1 · "+role;
-            ValoriaKit.PineTree(baseName,p,scale);
-            foreach(var suffix in new[]{" · trunk"," · lower crown"," · middle crown"," · upper crown"})
-            {
-                var go=GameObject.Find(baseName+suffix);
-                if(go==null)continue;
-                foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
-                go.transform.SetParent(root,true);
-            }
-            Physics.SyncTransforms();
+            // No pass-owned pines: the canonical procedural pine reads as a dark low-poly cone
+            // at strategic zooms and reduces the quality of the validated World Frame.
         }
 
         static void AddFramePrefab(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
