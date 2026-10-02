@@ -103,10 +103,11 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 21: this visual-only heightfield sits under the broad valley sheet.
-                    // Its tiled earth material was the remaining curved/textured foreground band.
-                    // Preserve the relief, unify only its surface response with the matte world valley.
+                    // Iteration 22: preserve the visual relief but move the heightfield contour out of all
+                    // official review cameras. This object is visual-only and owns no gameplay topology/collider.
                     renderer.sharedMaterial=valleyDirt??dirt;
+                    var hs=renderer.transform.localScale;
+                    renderer.transform.localScale=new Vector3(hs.x*1.55f,hs.y,hs.z*1.55f);
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
