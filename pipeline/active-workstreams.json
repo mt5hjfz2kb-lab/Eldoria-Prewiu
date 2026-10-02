@@ -1,8 +1,28 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T17:50:03Z",
-  "active": [],
+  "updated_at": "2026-10-02T17:55:00Z",
+  "active": [
+    {
+      "id": "valoria-in-city-surface-v1",
+      "title": "Valoria In-City Surface & Lighting Pass v1",
+      "owner": "chat-valoria-in-city-surface-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaInCitySurfacePassV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaInCitySurfaceGateV1.cs",
+        ".github/workflows/valoria-in-city-surface-v1.yml",
+        "docs/VALORIA_IN_CITY_SURFACE_PASS_V1_RESULT.md",
+        "pipeline/valoria-in-city-surface-v1-request.json"
+      ],
+      "resources": [
+        "valoria-in-city-surface-proof"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T17:55:00Z",
+      "base_main_sha": "3fa008249d61eab63d91f9c9d11b42a49d7f23e9",
+      "dependency": "World Frame v1 is closed/promoted and must not be mutated. Compact footprint, Hero Bastion, gameplay topology, colliders/hotspots and no-sprawl rule remain authoritative."
+    }
+  ],
   "history": [
     {
       "id": "valoria-reference-convergence-v2",
