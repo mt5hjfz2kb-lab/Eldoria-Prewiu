@@ -7,6 +7,7 @@ namespace Eldoria.Presentation
 {
     public static class ValoriaWorldFrameMountainTerrainV1
     {
+        // Production visual frame: validated by matched WorldFrame proof and the Valoria/world-map formula gates.
         public static bool Enabled=true;
         const string RootName="Valoria · World Frame Mountain Terrain v1";
 
