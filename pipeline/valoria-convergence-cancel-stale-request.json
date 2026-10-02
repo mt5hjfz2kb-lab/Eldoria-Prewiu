@@ -1,12 +1,15 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release the single Windows Unity runner for the current strongest-composite revalidation at HEAD 8ec6d9a7; queued/in-progress visual proofs below are superseded by later composition/material commits.",
+  "reason": "Strict integrated full-frame priority after unified rock PBR cleanup: cancel redundant isolated side gates so Strongest Composite and then Strongest Jagged Composite can own the Windows runner.",
   "runs": [
-    37072122740,
-    37072011937,
-    37071589123
+    37072445277,
+    37072445273,
+    37072441254,
+    37072438093,
+    37072425217,
+    37072316373,
+    37072313545
   ],
-  "keep_run": 37072145528,
-  "triggered_at": "2026-10-02T23:59:00Z"
+  "triggered_at": "2026-10-02T23:30:00+02:00"
 }
