@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-finish-v1",
+  "objective": "Apply a restrained whole-frame URP finishing stack over the currently accepted Valoria composition: ACES, modest color adjustment, bloom, vignette and lift/gamma/gain, with no gameplay or geometry changes.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "hud_world_balance"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
