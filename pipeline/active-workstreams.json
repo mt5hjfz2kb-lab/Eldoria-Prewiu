@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:45:00Z",
+  "updated_at": "2026-10-02T10:55:00Z",
   "active": [
     {
       "id": "asset-library-canonicalization-v1",
@@ -17,12 +17,12 @@
         "SESSION_HANDOFF.md"
       ],
       "resources": [
-        "asset-library-production",
-        "windows-runner-heavy"
+        "asset-library-production"
       ],
       "status": "active",
       "claimed_at": "2026-10-02T10:35:00Z",
-      "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8"
+      "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8",
+      "note": "Canonicalization migrated to GitHub-hosted runner; Windows runner no longer reserved."
     },
     {
       "id": "valoria-reference-convergence-v2",
