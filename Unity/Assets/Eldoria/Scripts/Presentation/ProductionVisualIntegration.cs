@@ -1379,12 +1379,13 @@ namespace Eldoria.Presentation
                 float z=-4.8f+i*1.05f;
                 float y=.44f+Mathf.Max(0,i-3)*.39f;
                 StonePiece(1,"Valoria · Master Rebuild v2 · processional spine",
-                    new Vector3(0f,y,z),new Vector3(3.10f,.06f,.96f),i%2==0?0f:180f);
+                    new Vector3(0f,y,z),new Vector3(2.34f,.055f,.88f),i%2==0?0f:180f);
             }
-            StoneArchitecturePiece("HighStraightWall","Valoria · Master Rebuild v2 · upper retaining west",
-                new Vector3(-4.55f,1.30f,3.95f),4.2f,8f);
-            StoneArchitecturePiece("HighStraightWall","Valoria · Master Rebuild v2 · upper retaining east",
-                new Vector3(4.55f,1.30f,4.05f),4.2f,172f);
+            // Keep the upper crown geological, not two giant wall modules. Low buried transitions retain the terraces.
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · upper retaining west",
+                new Vector3(-4.35f,2.08f,4.55f),2.05f,18f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · upper retaining east",
+                new Vector3(4.35f,2.08f,4.62f),2.05f,198f);
             foreach(var s in new[]{
                 new Vector4(-5.3f,.12f,-1.4f,38f),new Vector4(5.3f,.12f,-1.3f,218f),
                 new Vector4(-4.55f,1.02f,2.6f,64f),new Vector4(4.55f,1.02f,2.7f,244f),
@@ -1397,6 +1398,13 @@ namespace Eldoria.Presentation
             var barracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
             if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-4.55f,1.10f,-.55f),3.15f,2.70f,12f,Color.white);
             if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(4.55f,1.10f,-.45f),3.15f,2.70f,-12f,Color.white);
+
+            // One representative inhabited upper mass per side, deliberately leaving large future plots.
+            // Small offset landings keep the ascent readable without turning the spine into a monumental runway.
+            StonePiece(2,"Valoria · Master Rebuild v2 · west upper landing",
+                new Vector3(-2.15f,1.72f,2.15f),new Vector3(1.75f,.05f,1.28f),12f);
+            StonePiece(2,"Valoria · Master Rebuild v2 · east upper landing",
+                new Vector3(2.15f,1.72f,2.18f),new Vector3(1.75f,.05f,1.28f),-12f);
 
             // One representative inhabited upper mass per side, deliberately leaving two large empty future plots.
             var mid02=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
