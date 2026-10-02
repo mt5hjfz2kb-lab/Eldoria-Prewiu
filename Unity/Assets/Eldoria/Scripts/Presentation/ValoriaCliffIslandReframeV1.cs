@@ -75,14 +75,14 @@ namespace Eldoria.Presentation
                 var go=ValoriaKit.BenchmarkPieceIntegrated(
                     "Valoria · Cliff Island · edge "+i,source,new Vector3(p.x,p.y,p.z),
                     i<4?3.6f:3.0f,i<4?1.8f:1.45f,Quaternion.Euler(0f,p.w,0f),
-                    new Color(.52f,.53f,.48f,1f));
+                    new Color(.40f,.40f,.36f,1f));
                 if(go==null)continue;
 
                 // These are screen-dominant cliff silhouettes. Do not preserve dark legacy
                 // atlas values: use one coherent rock surface so geometry reads as cliff, not black cards.
                 var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
-                    "rock",new Color(.54f,.54f,.50f,1f),new Vector2(2.9f,2.9f),.025f,1.03f)
-                    ?? ValoriaKit.SurfaceMaterial(new Color(.50f,.50f,.46f,1f),"stone",new Vector2(2.9f,2.9f));
+                    "rock",new Color(.41f,.40f,.36f,1f),new Vector2(2.9f,2.9f),.025f,1.03f)
+                    ?? ValoriaKit.SurfaceMaterial(new Color(.38f,.37f,.34f,1f),"stone",new Vector2(2.9f,2.9f));
                 foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
                 {
                     var mats=renderer.sharedMaterials;
@@ -110,8 +110,8 @@ namespace Eldoria.Presentation
             // neutral PBR rock family used by the rest of Valoria instead of inheriting
             // importer color factors.
             var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.60f,.59f,.54f,1f),new Vector2(3.4f,3.4f),.025f,1.04f)
-                ?? ValoriaKit.SurfaceMaterial(new Color(.55f,.54f,.50f,1f),"stone",new Vector2(3.4f,3.4f));
+                "rock",new Color(.44f,.42f,.38f,1f),new Vector2(3.4f,3.4f),.025f,1.04f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.41f,.39f,.36f,1f),"stone",new Vector2(3.4f,3.4f));
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var mats=renderer.sharedMaterials;
