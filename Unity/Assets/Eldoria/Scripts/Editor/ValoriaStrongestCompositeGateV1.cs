@@ -45,6 +45,8 @@ namespace Eldoria.EditorTools
             ValoriaCliffIslandReframeV1.Enabled=false;
             ValoriaCliffIslandCleanupV2.Enabled=false;
             ValoriaResidualCleanupV1.Enabled=false;
+            ValoriaMaterialResidueCleanupV2.Enabled=false;
+            ValoriaFullFrameArtifactCleanupV1.Enabled=false;
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
 
@@ -69,6 +71,8 @@ namespace Eldoria.EditorTools
 
             ValoriaCliffIslandCleanupV2.Enabled=true;ValoriaCliffIslandCleanupV2.Build(root.transform,state);
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
+            ValoriaMaterialResidueCleanupV2.Enabled=true;ValoriaMaterialResidueCleanupV2.Build(root.transform,state);
+            ValoriaFullFrameArtifactCleanupV1.Enabled=true;ValoriaFullFrameArtifactCleanupV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -88,6 +92,12 @@ namespace Eldoria.EditorTools
                 $"  \"cliff_cleanup_barracks_suppressed\": {ValoriaCliffIslandCleanupV2.SuppressedBarracksRenderers},\n"+
                 $"  \"residual_suppressed\": {ValoriaResidualCleanupV1.Suppressed},\n"+
                 $"  \"residual_replacements\": {ValoriaResidualCleanupV1.Replacements},\n"+
+                $"  \"material_residue_suppressed\": {ValoriaMaterialResidueCleanupV2.SuppressedPeripheral},\n"+
+                $"  \"material_residue_environment_slots\": {ValoriaMaterialResidueCleanupV2.NormalizedEnvironment},\n"+
+                $"  \"artifact_rock_renderers\": {ValoriaFullFrameArtifactCleanupV1.RockRenderersNormalized},\n"+
+                $"  \"artifact_terrace_renderers\": {ValoriaFullFrameArtifactCleanupV1.TerraceRenderersNormalized},\n"+
+                $"  \"artifact_foliage_lifted\": {ValoriaFullFrameArtifactCleanupV1.FoliageRenderersLifted},\n"+
+                $"  \"artifact_dark_flat_lifted\": {ValoriaFullFrameArtifactCleanupV1.DarkFlatRenderersLifted},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
                 $"  \"tripo_credits\": 0\n"+
                 $"}}\n");
