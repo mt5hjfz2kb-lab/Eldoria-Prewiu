@@ -127,10 +127,13 @@ namespace Eldoria.Presentation
                     var m=new Material(src[i]){name="Valoria Full Frame Architecture · "+src[i].name};
                     if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
                     if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(m.HasProperty("_BaseColorFactor"))m.SetColor("_BaseColorFactor",tint.linear);
                     if(forceSlate)
                     {
-                        if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.25f,.29f,.32f,1f));
-                        if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.25f,.29f,.32f,1f));
+                        var slate=new Color(.32f,.35f,.37f,1f);
+                        if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",slate);
+                        if(m.HasProperty("_Color"))m.SetColor("_Color",slate);
+                        if(m.HasProperty("_BaseColorFactor"))m.SetColor("_BaseColorFactor",slate.linear);
                         if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.025f);
                     }
                     dst[i]=m;
