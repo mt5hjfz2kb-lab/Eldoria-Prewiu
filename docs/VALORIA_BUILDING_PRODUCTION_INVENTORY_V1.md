@@ -109,3 +109,7 @@ No paid asset should be acquired simply because it looks useful.
 Bastion I–X is the prologue, not Valoria's ceiling. Every dedicated building family should be authored with enough upgrade headroom that later visual tiers can grow without moving certified roads, interaction corridors or neighboring plots.
 
 Future XI+ buildings remain outside this inventory until their gameplay role is explicitly designed.
+
+## Canonical asset-storage note — 2026-10-02
+
+Asset Library Canonicalization Pass v1 confirms the current dedicated/hero production GLBs and support library are persisted in the repository with committed Unity metadata. The canonical audit is `pipeline/asset-library-canonicalization-audit.json` (26 GLBs / 0 missing `.meta`). Mid-Tier Architecture now lives under `Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/`; `Resources.Load("Valoria/MidTierArchitectureKit_v1/...")` remains unchanged because the relative Resources path is identical.
