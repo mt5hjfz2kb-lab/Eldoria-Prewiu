@@ -195,6 +195,23 @@ namespace Eldoria.Presentation
             l.intensity=intensity;l.range=range;l.shadows=LightShadows.None;
         }
 
+        static void AddTopAligned(Transform root,string resource,string role,Vector3 topAnchor,float span,float yaw,Color tint)
+        {
+            var source=Resources.Load<GameObject>(resource);
+            if(source==null)return;
+            var go=Object.Instantiate(source);
+            go.name="Valoria · Reference Convergence v2 · "+role;
+            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+            var b=Bounds(go);
+            if(b.size.sqrMagnitude<.0001f){Object.DestroyImmediate(go);return;}
+            go.transform.localScale*=span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));
+            b=Bounds(go);
+            go.transform.position+=new Vector3(topAnchor.x-b.center.x,topAnchor.y-b.max.y,topAnchor.z-b.center.z);
+            ApplyTint(go,tint);
+            go.transform.SetParent(root,true);
+            DisableGameplay(go);
+        }
+
         static void AddResource(Transform root,string resource,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
         {
             var source=Resources.Load<GameObject>(resource);
