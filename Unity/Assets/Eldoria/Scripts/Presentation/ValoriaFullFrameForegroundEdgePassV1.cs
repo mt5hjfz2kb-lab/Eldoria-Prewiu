@@ -52,8 +52,8 @@ namespace Eldoria.Presentation
             // Large foreground rocks must not retain near-black legacy atlas response.
             // Keep authored geometry, but unify every visible submesh into Valoria's neutral PBR rock family.
             var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.52f,.52f,.48f,1f),new Vector2(2.7f,2.7f),.025f,1.02f)
-                ?? ValoriaKit.SurfaceMaterial(new Color(.49f,.49f,.45f,1f),"stone",new Vector2(2.7f,2.7f));
+                "rock",new Color(.39f,.39f,.35f,1f),new Vector2(2.7f,2.7f),.025f,1.02f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.36f,.36f,.33f,1f),"stone",new Vector2(2.7f,2.7f));
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var mats=renderer.sharedMaterials;
