@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T12:15:00Z",
+  "updated_at": "2026-10-02T12:18:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -36,7 +36,8 @@
         "pipeline/asset-deep-uplift-v1-audit.json",
         "tools/asset-deep-uplift/**",
         "SESSION_HANDOFF.md",
-        ".github/workflows/asset-deep-uplift-blender.yml"
+        ".github/workflows/asset-deep-uplift-blender.yml",
+        "pipeline/asset-deep-uplift-run-request.json"
       ],
       "resources": [
         "github-hosted-blender"
