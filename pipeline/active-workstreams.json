@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T22:58:00Z",
+  "updated_at": "2026-10-02T23:12:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -181,7 +181,10 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaJaggedBackdropV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaJaggedBackdropGateV1.cs",
         ".github/workflows/valoria-jagged-backdrop-v1.yml",
-        "pipeline/valoria-jagged-backdrop-v1-request.json"
+        "pipeline/valoria-jagged-backdrop-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestJaggedCompositeGateV1.cs",
+        ".github/workflows/valoria-strongest-jagged-composite-v1.yml",
+        "pipeline/valoria-strongest-jagged-composite-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
