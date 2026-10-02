@@ -12,6 +12,10 @@ namespace Eldoria.Presentation
         public static float CropY=.18f;
         public static float CropW=.36f;
         public static float CropH=.58f;
+        public static float BackdropWidth=62f;
+        public static float BackdropHeight=18f;
+        public static float VerticalOffset=6.4f;
+        public static float Distance=52f;
 
         const string RootName="Valoria · Camera Backdrop v1";
         static Material material;
@@ -37,9 +41,9 @@ namespace Eldoria.Presentation
             go.transform.SetParent(root,true);
 
             var dir=(new Vector3(0f,3.15f,5.8f)-camera.transform.position).normalized;
-            go.transform.position=camera.transform.position+dir*52f;
+            go.transform.position=camera.transform.position+dir*Distance+camera.transform.up*VerticalOffset;
             go.transform.rotation=Quaternion.LookRotation(dir,camera.transform.up);
-            go.transform.localScale=new Vector3(62f,35f,1f);
+            go.transform.localScale=new Vector3(BackdropWidth,BackdropHeight,1f);
 
             material=new Material(shader){name="Valoria · Alps Field backdrop material"};
             if(material.HasProperty("_BaseMap"))material.SetTexture("_BaseMap",tex);
@@ -81,7 +85,7 @@ namespace Eldoria.Presentation
         {
             if(quad==null||camera==null)return;
             var dir=(new Vector3(0f,3.15f,5.8f)-camera.transform.position).normalized;
-            quad.position=camera.transform.position+dir*52f;
+            quad.position=camera.transform.position+dir*Distance+camera.transform.up*VerticalOffset;
             quad.rotation=Quaternion.LookRotation(dir,camera.transform.up);
         }
     }
