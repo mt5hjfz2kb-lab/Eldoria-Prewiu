@@ -1,3 +1,14 @@
+## Asset Visual Uplift Pass v1 — TECH PASS / SELECTIVE VISUAL PASS (2026-10-02)
+
+- Validated run: **37002187636 SUCCESS**; artifact **11223898210**.
+- Exact matched evidence: 19 / 12 / 9 / mobile BEFORE+AFTER, identical collider/hotspot signature, no gameplay topology change.
+- Metrics unchanged except material variety: **781 renderers**, **1,647,618 triangles**, **25 lights** before/after; unique materials **74 -> 76**.
+- Coverage: Hero **1**, dedicated production **2**, rescued support **8**, imported Stone/Terrain **17**, Mid-Tier **0** renderers touched.
+- Visual result: clearer Hero/retaining-wall/terrace depth and surface hierarchy, strongest at zoom 12/9/mobile; no composition inflation.
+- No new GLB, no canonical GLB mutation, no Blender, **0 Tripo credits**.
+- Do not overclaim Mid-Tier or Granero: current validated frame does not prove separate uplift for them; do not force placement merely for evidence.
+- Full result: `docs/ASSET_VISUAL_UPLIFT_PASS_V1_RESULT.md`.
+
 ## Asset Library Canonicalization Pass v1 — PASS / CLOSED (2026-10-02)
 
 - Final run: **36997740541 SUCCESS**; artifact **11221974353**.
