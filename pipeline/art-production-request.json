@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "example-disabled",
-  "asset_or_sector": "Valoria",
+  "enabled": true,
+  "request_id": "valoria-reference-convergence-v2",
+  "asset_or_sector": "Valoria full-frame reference convergence v2",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -19,7 +19,7 @@
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": false
+    "unity_terrain_blending": true
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Disabled template. Zero-spend by default."
+  "notes": "Reference image target: monumental compact fantasy fortress-city. Reuse only existing certified assets. Focus on giant ruined framing structures, terrain depth, fortress vertical hierarchy, atmospheric separation and integrated full-frame read. No lateral residential expansion. No Tripo spend."
 }
