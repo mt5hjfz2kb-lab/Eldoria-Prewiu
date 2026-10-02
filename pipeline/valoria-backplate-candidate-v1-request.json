@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-backplate-candidate-v1",
+  "objective": "Test eight CC0 high-resolution mountain-valley backplates from Poly Haven as fixed-camera world backgrounds behind the current strongest Valoria composite.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "sources": [
+    {
+      "asset": "kiara_1_dawn",
+      "license": "CC0",
+      "slots": 3
+    },
+    {
+      "asset": "kiara_3_morning",
+      "license": "CC0",
+      "slots": 3
+    },
+    {
+      "asset": "kiara_7_late-afternoon",
+      "license": "CC0",
+      "slots": 2
+    }
+  ],
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "composition_and_mass",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "proof_only": true,
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "8_backplates",
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature"
+  ]
+}
