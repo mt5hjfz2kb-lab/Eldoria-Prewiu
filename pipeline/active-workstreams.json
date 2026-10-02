@@ -1,8 +1,30 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:32:00Z",
-  "active": [],
+  "updated_at": "2026-10-02T10:35:00Z",
+  "active": [
+    {
+      "id": "asset-library-canonicalization-v1",
+      "title": "Asset Library Canonicalization Pass v1",
+      "owner": "chat-asset-library-canonicalization",
+      "scope": [
+        "Unity/Assets/Eldoria/Resources/**",
+        "Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1/**",
+        "pipeline/historical-module-rescue.json",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md",
+        "docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md",
+        "docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "asset-library-production",
+        "windows-runner-heavy"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T10:35:00Z",
+      "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8"
+    }
+  ],
   "history": [
     {
       "id": "governance-parallel-workstreams-v1",
