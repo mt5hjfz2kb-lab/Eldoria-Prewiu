@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T22:31:00Z",
+  "updated_at": "2026-10-02T22:43:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -169,7 +169,10 @@
         "pipeline/valoria-dark-renderer-audit-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaIntegratedSideRuinsGateV2.cs",
         ".github/workflows/valoria-integrated-side-ruins-v2.yml",
-        "pipeline/valoria-integrated-side-ruins-v2-request.json"
+        "pipeline/valoria-integrated-side-ruins-v2-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMegaArchitectureAtlasGateV1.cs",
+        ".github/workflows/valoria-mega-architecture-atlas-v1.yml",
+        "pipeline/valoria-mega-architecture-atlas-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
