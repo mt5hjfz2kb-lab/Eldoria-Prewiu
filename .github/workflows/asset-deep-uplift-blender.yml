@@ -10,19 +10,21 @@ on:
       - .github/workflows/asset-deep-uplift-blender.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  blender-uplift:
+  persist-candidates:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: visual-proof/asset-deep-uplift-v1-r3
       - name: Guard request
         shell: bash
         run: |
           test "$(jq -r '.enabled' pipeline/asset-deep-uplift-run-request.json)" = "true"
-          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "surface_rescue_batch"
+          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "persist_valid_candidates"
           test "$(jq -r '.tripo_credits' pipeline/asset-deep-uplift-run-request.json)" = "0"
       - name: Install Blender
         shell: bash
@@ -30,33 +32,46 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy
           blender --version
-      - name: Build rescued PBR candidates
+      - name: Rebuild and verify candidates
         shell: bash
         run: |
-          mkdir -p deep-uplift-evidence
-          target="$(jq -r '.triangle_gate.target' pipeline/asset-deep-uplift-run-request.json)"
-          mintri="$(jq -r '.triangle_gate.min' pipeline/asset-deep-uplift-run-request.json)"
-          maxtri="$(jq -r '.triangle_gate.max' pipeline/asset-deep-uplift-run-request.json)"
+          root="$(jq -r '.candidate_root' pipeline/asset-deep-uplift-run-request.json)"
+          profile="$(jq -r '.surface_profile' pipeline/asset-deep-uplift-run-request.json)"
+          target="$(jq -r '.target_triangles' pipeline/asset-deep-uplift-run-request.json)"
+          mintri="$(jq -r '.min_triangles' pipeline/asset-deep-uplift-run-request.json)"
+          maxtri="$(jq -r '.max_triangles' pipeline/asset-deep-uplift-run-request.json)"
+          mkdir -p "$root"
           jq -c '.assets[]' pipeline/asset-deep-uplift-run-request.json | while read -r row; do
             asset="$(echo "$row" | jq -r '.asset')"
             input="$(echo "$row" | jq -r '.input')"
-            profile="$(echo "$row" | jq -r '.surface_profile')"
-            test -f "$input"
+            expected_source="$(echo "$row" | jq -r '.source_sha256')"
+            expected_candidate="$(echo "$row" | jq -r '.expected_candidate_sha256')"
+            actual_source="$(sha256sum "$input" | cut -d' ' -f1)"
+            test "$actual_source" = "$expected_source"
             blender --background --python tools/tripo_module_blender.py -- \
               --input "$input" \
-              --output "deep-uplift-evidence/${asset}-PBRRescue.glb" \
-              --report "deep-uplift-evidence/${asset}-PBRRescue-report.json" \
+              --output "$root/${asset}-PBRRescue.glb" \
+              --report "$root/${asset}-PBRRescue-report.json" \
               --surface-rescue-profile "$profile" \
               --target-tris "$target" \
               --min-tris "$mintri" \
               --max-tris "$maxtri"
-            test -s "deep-uplift-evidence/${asset}-PBRRescue.glb"
-            test -s "deep-uplift-evidence/${asset}-PBRRescue-report.json"
-            sha256sum "$input" > "deep-uplift-evidence/${asset}-source.sha256"
-            sha256sum "deep-uplift-evidence/${asset}-PBRRescue.glb" > "deep-uplift-evidence/${asset}-candidate.sha256"
+            actual_candidate="$(sha256sum "$root/${asset}-PBRRescue.glb" | cut -d' ' -f1)"
+            test "$actual_candidate" = "$expected_candidate"
+            printf '%s  %s\n' "$actual_source" "$input" > "$root/${asset}-source.sha256"
+            printf '%s  %s\n' "$actual_candidate" "$root/${asset}-PBRRescue.glb" > "$root/${asset}-candidate.sha256"
           done
+      - name: Persist candidates on branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pipeline/candidates/asset-deep-uplift-v1
+          git diff --cached --quiet && exit 0
+          git commit -m "art: persist deep uplift PBR candidates"
+          git push origin HEAD:visual-proof/asset-deep-uplift-v1-r3
       - uses: actions/upload-artifact@v4
         with:
-          name: asset-deep-uplift-remaining-rescued-pbr
-          path: deep-uplift-evidence/
+          name: asset-deep-uplift-persisted-candidates
+          path: pipeline/candidates/asset-deep-uplift-v1/
           if-no-files-found: error
