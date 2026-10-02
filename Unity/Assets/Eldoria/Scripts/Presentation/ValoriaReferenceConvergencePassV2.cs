@@ -58,11 +58,11 @@ namespace Eldoria.Presentation
             // at world scale it tiles visibly. Re-skin visual renderers only; geometry,
             // colliders, hotspots and gameplay topology remain untouched.
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
-                new Color(.70f,.66f,.56f,1f),new Vector2(18f,18f),.018f,.92f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.33f,.30f,.24f,1f),"earth",new Vector2(18f,18f),.80f);
+                new Color(.66f,.63f,.54f,1f),new Vector2(4.2f,4.2f),.014f,.90f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(4.2f,4.2f),.78f);
             var terrace=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
-                new Color(.78f,.72f,.61f,1f),new Vector2(10f,10f),.018f,.96f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.38f,.34f,.27f,1f),"earth",new Vector2(10f,10f),.85f);
+                new Color(.74f,.69f,.59f,1f),new Vector2(5.5f,5.5f),.014f,.94f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.33f,.27f,1f),"earth",new Vector2(5.5f,5.5f),.82f);
 
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
