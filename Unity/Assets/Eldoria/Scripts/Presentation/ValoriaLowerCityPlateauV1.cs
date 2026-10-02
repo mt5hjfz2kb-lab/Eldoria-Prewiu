@@ -33,18 +33,16 @@ namespace Eldoria.Presentation
             var mr=go.AddComponent<MeshRenderer>();
             mf.sharedMesh=mesh;
 
-            var art=ValoriaExternalAssetLibrary.Load();
-            var mudSource=art!=null&&art.SlavicMudFlat!=null
-                ?art.SlavicMudFlat.GetComponentInChildren<Renderer>(true)?.sharedMaterial
-                :art?.ValoriaDirtSurface;
-            var rockSource=art!=null&&art.SlavicFlatRock!=null
-                ?art.SlavicFlatRock.GetComponentInChildren<Renderer>(true)?.sharedMaterial
-                :art?.ValoriaStoneSurface;
+            // Use Eldoria's known-good seamless PBR sources. The authored Slavic prefab
+            // materials are atlas-mapped for their own meshes and produce catastrophic
+            // checkerboard/atlas reads on this generated substrate.
+            var earth=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "dirt",new Color(.46f,.41f,.32f,1f),new Vector2(1.15f,1.15f),.018f,.92f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.43f,.38f,.30f,1f),"earth",new Vector2(1.15f,1.15f),.92f);
 
-            var earth=ValoriaKit.PbrSurfaceMaterial(
-                mudSource,new Color(.72f,.68f,.58f,1f),new Vector2(5.2f,5.2f),.018f,.95f);
-            var rock=ValoriaKit.PbrSurfaceMaterial(
-                rockSource,new Color(.70f,.69f,.64f,1f),new Vector2(4.4f,4.4f),.022f,1.08f);
+            var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "rock",new Color(.43f,.43f,.39f,1f),new Vector2(1.05f,1.05f),.020f,1.02f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.41f,.41f,.37f,1f),"stone",new Vector2(1.05f,1.05f),1.02f);
 
             mr.sharedMaterials=new[]{earth,rock};
 
@@ -136,7 +134,7 @@ namespace Eldoria.Presentation
                     y=Mathf.Lerp(y,Mathf.Max(y,-.16f),route*.72f*(1f-fall));
 
                     vertices.Add(new Vector3(wx,y,wz));
-                    uvs.Add(new Vector2(vx*4f,vz*3.5f));
+                    uvs.Add(new Vector2(wx*.10f,wz*.10f));
                 }
             }
 
