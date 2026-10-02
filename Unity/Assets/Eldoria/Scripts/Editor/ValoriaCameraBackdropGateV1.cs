@@ -62,6 +62,7 @@ namespace Eldoria.EditorTools
 
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.47f,.56f,.61f);
+            camera.farClipPlane=500f;
             ValoriaCameraBackdropV1.Enabled=true;
             if(!ValoriaCameraBackdropV1.Build(root.transform,camera))
                 throw new System.Exception("Camera backdrop could not be built.");
