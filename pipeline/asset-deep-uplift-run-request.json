@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "asset": "SteppedRockTerrace",
+  "input": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+  "mode": "diagnostic",
+  "goal": "measure the canonical geometry before any deep uplift; preserve footprint, UVs and gameplay independence",
+  "tripo_credits": 0
+}
