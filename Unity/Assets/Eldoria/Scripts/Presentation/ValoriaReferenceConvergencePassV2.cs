@@ -148,120 +148,114 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 32: continuous visual terrain banks. No floating modular rock islands.
-            AddContinuousSideBank(root,true);
-            AddContinuousSideBank(root,false);
-            AddContinuousRearBank(root);
+            // Iteration 33: narrow continuous cliff ribbons. Their footprint is deliberately constrained
+            // so no terrain surface can cover a large part of the review frame.
+            AddCliffRibbon(root,true);
+            AddCliffRibbon(root,false);
+            AddRearCliffRibbon(root);
 
             if(art!=null && art.SlavicBoulder!=null)
             {
                 var rocks=new[]{
-                    new Vector3(-11.8f,.04f,-1.0f),new Vector3(-11.6f,.06f,5.5f),new Vector3(-11.2f,.08f,11.3f),
-                    new Vector3(11.8f,.04f,-.6f),new Vector3(11.6f,.06f,5.8f),new Vector3(11.2f,.08f,11.5f)
+                    new Vector3(-11.5f,.02f,1.0f),new Vector3(-11.2f,.04f,7.0f),
+                    new Vector3(11.5f,.02f,1.4f),new Vector3(11.2f,.04f,7.4f)
                 };
                 for(int i=0;i<rocks.Length;i++)
-                    AddPrefab(root,art.SlavicBoulder,"bank edge boulder "+i,rocks[i],
-                        1.15f+(i%3)*.12f,.85f+(i%2)*.08f,(i*43)%360,new Color(.42f,.43f,.41f,1f),true);
+                    AddPrefab(root,art.SlavicBoulder,"cliff transition boulder "+i,rocks[i],
+                        1.05f+(i%2)*.12f,.82f,(i*51)%360,new Color(.42f,.43f,.41f,1f),true);
             }
         }
 
-        static Material ContinuousBankMaterial()
+        static Material CliffRibbonMaterial()
         {
-            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            if(shader==null)return null;
-            var m=new Material(shader){name="Valoria Reference v2 · continuous bank"};
-            var c=new Color(.31f,.325f,.30f,1f);
-            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",c);
-            if(m.HasProperty("_Color"))m.SetColor("_Color",c);
-            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.018f);
-            return m;
+            return ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(2.8f,5.2f),.95f);
         }
 
-        static void AddContinuousSideBank(Transform root,bool west)
+        static void AddCliffRibbon(Transform root,bool west)
         {
-            const int nx=8,nz=13;
-            float inner=west?-11.2f:11.2f;
-            float outer=west?-31.0f:31.0f;
-            float zMin=-8f,zMax=25f;
-            var verts=new Vector3[nx*nz];
-            var uv=new Vector2[verts.Length];
-            var tris=new int[(nx-1)*(nz-1)*6];
+            const int segments=12;
+            float innerX=west?-11.4f:11.4f;
+            float outerX=west?-16.2f:16.2f;
+            float outerBottomX=west?-17.2f:17.2f;
+            float zMin=-5.5f,zMax=21.5f;
+            var verts=new List<Vector3>();
+            var uv=new List<Vector2>();
+            var tris=new List<int>();
 
-            for(int z=0;z<nz;z++)
+            for(int i=0;i<=segments;i++)
             {
-                float tz=z/(float)(nz-1);
-                float wz=Mathf.Lerp(zMin,zMax,tz);
-                for(int x=0;x<nx;x++)
-                {
-                    float tx=x/(float)(nx-1);
-                    float wx=Mathf.Lerp(inner,outer,tx);
-                    float rise=Mathf.SmoothStep(0f,1f,tx);
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wz-8f)/17f));
-                    float y=-.16f + rise*3.25f + rear*rise*1.35f;
-                    float organic=(Mathf.Sin(wz*.31f+(west?0f:1.2f))+Mathf.Sin(wx*.21f))*.16f*rise;
-                    verts[z*nx+x]=new Vector3(wx,y+organic,wz);
-                    uv[z*nx+x]=new Vector2(tx,tz);
-                }
+                float t=i/(float)segments;
+                float z=Mathf.Lerp(zMin,zMax,t);
+                float top=.35f+Mathf.SmoothStep(0f,1f,t)*1.65f
+                    +Mathf.Sin(t*7.1f+(west?0f:1.4f))*.22f;
+                float innerY=-.12f+Mathf.Sin(t*5.3f)*.04f;
+                verts.Add(new Vector3(innerX,innerY,z));
+                verts.Add(new Vector3(outerX,top,z));
+                verts.Add(new Vector3(outerBottomX,-2.4f,z));
+                uv.Add(new Vector2(0f,t*4f));
+                uv.Add(new Vector2(1f,t*4f));
+                uv.Add(new Vector2(1.35f,t*4f));
             }
 
-            int ti=0;
-            for(int z=0;z<nz-1;z++)
-                for(int x=0;x<nx-1;x++)
-                {
-                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,c=d+1;
-                    tris[ti++]=a;tris[ti++]=d;tris[ti++]=b;
-                    tris[ti++]=b;tris[ti++]=d;tris[ti++]=c;
-                }
+            for(int i=0;i<segments;i++)
+            {
+                int a=i*3,na=(i+1)*3;
+                // Narrow top slope.
+                tris.Add(a);tris.Add(na);tris.Add(a+1);
+                tris.Add(a+1);tris.Add(na);tris.Add(na+1);
+                // Outer cliff face.
+                tris.Add(a+1);tris.Add(na+1);tris.Add(a+2);
+                tris.Add(a+2);tris.Add(na+1);tris.Add(na+2);
+            }
 
-            var mesh=new Mesh{name=west?"Valoria west continuous bank":"Valoria east continuous bank"};
-            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west continuous bank":"Valoria · Reference Convergence v2 · east continuous bank");
+            var mesh=new Mesh{name=west?"Valoria west cliff ribbon":"Valoria east cliff ribbon"};
+            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west cliff ribbon":"Valoria · Reference Convergence v2 · east cliff ribbon");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=ContinuousBankMaterial();
+            go.AddComponent<MeshRenderer>().sharedMaterial=CliffRibbonMaterial();
         }
 
-        static void AddContinuousRearBank(Transform root)
+        static void AddRearCliffRibbon(Transform root)
         {
-            const int nx=13,nz=7;
-            float xMin=-16f,xMax=16f,zMin=12.5f,zMax=31f;
-            var verts=new Vector3[nx*nz];
-            var uv=new Vector2[verts.Length];
-            var tris=new int[(nx-1)*(nz-1)*6];
+            const int segments=14;
+            float xMin=-16.5f,xMax=16.5f;
+            float innerZ=14.0f,outerZ=19.2f,bottomZ=20.5f;
+            var verts=new List<Vector3>();
+            var uv=new List<Vector2>();
+            var tris=new List<int>();
 
-            for(int z=0;z<nz;z++)
+            for(int i=0;i<=segments;i++)
             {
-                float tz=z/(float)(nz-1);
-                float wz=Mathf.Lerp(zMin,zMax,tz);
-                for(int x=0;x<nx;x++)
-                {
-                    float tx=x/(float)(nx-1);
-                    float wx=Mathf.Lerp(xMin,xMax,tx);
-                    float rise=Mathf.SmoothStep(0f,1f,tz);
-                    float centreOpen=1f-Mathf.Exp(-Mathf.Pow(wx/7.5f,2f));
-                    float y=-.18f + rise*(2.5f+1.8f*centreOpen);
-                    float organic=(Mathf.Sin(wx*.22f)+Mathf.Sin(wz*.27f))*.14f*rise;
-                    verts[z*nx+x]=new Vector3(wx,y+organic,wz);
-                    uv[z*nx+x]=new Vector2(tx,tz);
-                }
+                float t=i/(float)segments;
+                float x=Mathf.Lerp(xMin,xMax,t);
+                float side=Mathf.Abs(t-.5f)*2f;
+                float top=1.45f+side*1.15f+Mathf.Sin(t*8.4f)*.20f;
+                verts.Add(new Vector3(x,-.14f,innerZ));
+                verts.Add(new Vector3(x,top,outerZ));
+                verts.Add(new Vector3(x,-2.5f,bottomZ));
+                uv.Add(new Vector2(t*5f,0f));
+                uv.Add(new Vector2(t*5f,1f));
+                uv.Add(new Vector2(t*5f,1.4f));
             }
 
-            int ti=0;
-            for(int z=0;z<nz-1;z++)
-                for(int x=0;x<nx-1;x++)
-                {
-                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,c=d+1;
-                    tris[ti++]=a;tris[ti++]=d;tris[ti++]=b;
-                    tris[ti++]=b;tris[ti++]=d;tris[ti++]=c;
-                }
+            for(int i=0;i<segments;i++)
+            {
+                int a=i*3,na=(i+1)*3;
+                tris.Add(a);tris.Add(a+1);tris.Add(na);
+                tris.Add(a+1);tris.Add(na+1);tris.Add(na);
+                tris.Add(a+1);tris.Add(a+2);tris.Add(na+1);
+                tris.Add(a+2);tris.Add(na+2);tris.Add(na+1);
+            }
 
-            var mesh=new Mesh{name="Valoria rear continuous bank"};
-            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject("Valoria · Reference Convergence v2 · rear continuous bank");
+            var mesh=new Mesh{name="Valoria rear cliff ribbon"};
+            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Reference Convergence v2 · rear cliff ribbon");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=ContinuousBankMaterial();
+            go.AddComponent<MeshRenderer>().sharedMaterial=CliffRibbonMaterial();
         }
 
         static void BuildMountainHorizon(Transform root)
