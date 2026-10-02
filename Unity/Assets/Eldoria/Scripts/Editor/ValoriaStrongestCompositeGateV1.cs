@@ -7,8 +7,7 @@ using Eldoria.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object = Object;
-using Object=Object;
+using Object = UnityEngine.Object;
 
 namespace Eldoria.EditorTools
 {
