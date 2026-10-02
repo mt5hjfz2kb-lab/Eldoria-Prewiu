@@ -51,18 +51,23 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 13: certified PBR rock vocabulary only.
-            // Keep the masses low, irregular and partly camera-cropped so they frame the compact city rather than expand it.
+            // Iteration 14: stronger PBR world framing, still no city-width expansion.
+            // Build asymmetrical rocky shoulders that enter the official frame edges and hide the open-board silhouette.
 
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left lower PBR shoulder",new Vector3(-13.2f,-.10f,1.8f),7.6f,24f,new Color(.46f,.47f,.45f,1f));
+                "left foreground PBR shoulder",new Vector3(-11.9f,.18f,-3.2f),10.2f,18f,new Color(.45f,.46f,.44f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "right lower PBR shoulder",new Vector3(13.1f,-.10f,2.0f),7.6f,204f,new Color(.46f,.47f,.45f,1f));
+                "right foreground PBR shoulder",new Vector3(12.7f,.08f,-2.4f),9.0f,208f,new Color(.45f,.46f,.44f,1f));
 
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "left upper PBR shoulder",new Vector3(-12.8f,1.05f,8.8f),4.6f,96f,new Color(.45f,.46f,.44f,1f));
+                "left mid PBR cliff",new Vector3(-12.8f,1.35f,4.6f),6.0f,88f,new Color(.44f,.45f,.43f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right upper PBR shoulder",new Vector3(12.8f,1.05f,9.0f),4.6f,276f,new Color(.45f,.46f,.44f,1f));
+                "right mid PBR cliff",new Vector3(13.3f,1.15f,5.4f),5.5f,272f,new Color(.44f,.45f,.43f,1f));
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "left rear PBR shelf",new Vector3(-10.9f,.95f,10.8f),7.0f,42f,new Color(.46f,.47f,.45f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
 
             if(art!=null)
             {
@@ -70,12 +75,23 @@ namespace Eldoria.Presentation
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.8f,.10f,-.8f),new Vector3(-13.1f,.12f,3.0f),new Vector3(-12.4f,.12f,6.6f),new Vector3(-12.9f,.12f,10.6f),
-                        new Vector3(13.7f,.10f,-.6f),new Vector3(13.0f,.12f,3.2f),new Vector3(12.3f,.12f,6.8f),new Vector3(12.8f,.12f,10.8f)
+                        new Vector3(-14.0f,.10f,-2.8f),new Vector3(-12.8f,.12f,.8f),new Vector3(-13.6f,.12f,4.3f),new Vector3(-12.2f,.12f,7.8f),new Vector3(-11.8f,.12f,11.2f),
+                        new Vector3(13.8f,.10f,-2.0f),new Vector3(12.9f,.12f,1.5f),new Vector3(13.7f,.12f,5.0f),new Vector3(12.4f,.12f,8.5f),new Vector3(12.0f,.12f,11.7f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
                         AddPrefab(root,tree,"side PBR tree "+i,sideTrees[i],
-                            .80f+(i%2)*.10f,2.45f+(i%3)*.22f,(i*53)%360,FoliageTint);
+                            .82f+(i%3)*.11f,2.5f+(i%2)*.32f,(i*53)%360,FoliageTint);
+                }
+
+                if(art.SlavicBush!=null)
+                {
+                    var scrub=new[]{
+                        new Vector3(-11.8f,.08f,-1.8f),new Vector3(-12.4f,.08f,2.2f),new Vector3(-11.7f,.08f,6.1f),new Vector3(-11.3f,.08f,9.7f),
+                        new Vector3(12.1f,.08f,-1.0f),new Vector3(12.6f,.08f,2.8f),new Vector3(11.8f,.08f,6.7f),new Vector3(11.4f,.08f,10.2f)
+                    };
+                    for(int i=0;i<scrub.Length;i++)
+                        AddPrefab(root,art.SlavicBush,"side PBR scrub "+i,scrub[i],
+                            .60f,.64f,(i*37)%360,new Color(.37f,.43f,.33f,1f));
                 }
             }
         }
