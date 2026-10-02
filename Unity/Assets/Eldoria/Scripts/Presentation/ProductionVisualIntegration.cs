@@ -1360,9 +1360,9 @@ namespace Eldoria.Presentation
             }
 
             // Rebuild the landscape after blanking inherited presentation so zoom 19 never reads as a flat board.
-            HeroValleyTerrain();
+            MasterRebuildTerrain();
             foreach(var s in new[]{
-                new Vector4(-17.8f,13.8f,9.4f,-18f),new Vector4(15.3f,16.0f,7.8f,23f),new Vector4(-2.8f,23.0f,11.8f,7f)})
+                new Vector4(-19.8f,15.8f,6.4f,-18f),new Vector4(18.2f,18.0f,5.6f,23f),new Vector4(-3.8f,25.0f,7.2f,7f)})
                 Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",
                     new Vector3(s.x,-.75f,s.y),s.z,s.z*.53f,s.w,Rock,false);
 
@@ -1484,15 +1484,19 @@ namespace Eldoria.Presentation
                 {
                     float tx=x/(float)(nx-1);
                     float wx=Mathf.Lerp(minX,maxX,tx);
-                    float side=Mathf.Clamp01((Mathf.Abs(wx)-12f)/34f);
-                    float rear=Mathf.Clamp01((wz-11f)/37f);
-                    float front=Mathf.Clamp01((-wz-15f)/24f);
-                    float centralShelf=Mathf.Exp(-(wx*wx)/210f-(wz*wz)/520f);
-                    float terraces=Mathf.Max(0f,wz+4f)*.018f*centralShelf;
-                    float rise=side*side*5.8f+rear*rear*7.2f+front*front*2.2f+terraces;
-                    float noise=(Mathf.Sin(wx*.16f)+Mathf.Sin(wz*.19f)+Mathf.Sin((wx-wz)*.11f))*.22f;
-                    float quiet=Mathf.Clamp01((Mathf.Abs(wx)-7f)/17f)+Mathf.Clamp01((Mathf.Abs(wz)-10f)/24f);
-                    float y=-.42f+rise+noise*Mathf.Clamp01(quiet*.62f);
+                    float left=Mathf.Clamp01((-wx-10f)/31f);
+                    float right=Mathf.Clamp01((wx-12f)/30f);
+                    float rear=Mathf.Clamp01((wz-9f)/39f);
+                    float front=Mathf.Clamp01((-wz-17f)/22f);
+                    float westShoulder=Mathf.Exp(-((wx+22f)*(wx+22f))/170f-((wz-9f)*(wz-9f))/520f)*2.8f;
+                    float eastShoulder=Mathf.Exp(-((wx-25f)*(wx-25f))/230f-((wz-15f)*(wz-15f))/620f)*3.7f;
+                    float rearRidge=Mathf.Exp(-(wx*wx)/760f-((wz-34f)*(wz-34f))/190f)*4.3f;
+                    float centralShelf=Mathf.Exp(-(wx*wx)/185f-((wz-1f)*(wz-1f))/430f);
+                    float rise=left*left*3.8f+right*right*4.4f+rear*rear*3.0f+front*front*1.6f+
+                               westShoulder+eastShoulder+rearRidge;
+                    float noise=(Mathf.Sin(wx*.14f)+Mathf.Sin(wz*.17f)+Mathf.Sin((wx-wz)*.095f))*.34f;
+                    float quiet=1f-centralShelf;
+                    float y=-.48f+rise+noise*Mathf.Clamp01(quiet*.82f);
                     vertices[z*nx+x]=new Vector3(wx,y,wz);
                     uv[z*nx+x]=new Vector2(tx*22f,tz*20f);
                 }
