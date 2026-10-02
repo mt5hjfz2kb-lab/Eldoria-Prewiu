@@ -2,11 +2,6 @@ name: Valoria Slavic District proof
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
 
 permissions:
   contents: read
