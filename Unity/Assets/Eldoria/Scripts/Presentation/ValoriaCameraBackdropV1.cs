@@ -37,8 +37,8 @@ namespace Eldoria.Presentation
             go.transform.SetParent(root,true);
 
             var dir=(new Vector3(0f,3.15f,5.8f)-camera.transform.position).normalized;
-            go.transform.position=camera.transform.position+dir*90f;
-            go.transform.rotation=Quaternion.LookRotation(-dir,camera.transform.up);
+            go.transform.position=camera.transform.position+dir*52f;
+            go.transform.rotation=Quaternion.LookRotation(dir,camera.transform.up);
             go.transform.localScale=new Vector3(58f,32.5f,1f);
 
             material=new Material(shader){name="Valoria · Alps Field backdrop material"};
@@ -46,6 +46,9 @@ namespace Eldoria.Presentation
             if(material.HasProperty("_MainTex"))material.SetTexture("_MainTex",tex);
             if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",Color.white);
             if(material.HasProperty("_Color"))material.SetColor("_Color",Color.white);
+            if(material.HasProperty("_Cull"))material.SetFloat("_Cull",0f);
+            if(material.HasProperty("_CullMode"))material.SetFloat("_CullMode",0f);
+            if(material.HasProperty("_ZWrite"))material.SetFloat("_ZWrite",0f);
             material.mainTexture=tex;
             go.GetComponent<Renderer>().sharedMaterial=material;
             var collider=go.GetComponent<Collider>(); if(collider!=null)collider.enabled=false;
@@ -78,8 +81,8 @@ namespace Eldoria.Presentation
         {
             if(quad==null||camera==null)return;
             var dir=(new Vector3(0f,3.15f,5.8f)-camera.transform.position).normalized;
-            quad.position=camera.transform.position+dir*90f;
-            quad.rotation=Quaternion.LookRotation(-dir,camera.transform.up);
+            quad.position=camera.transform.position+dir*52f;
+            quad.rotation=Quaternion.LookRotation(dir,camera.transform.up);
         }
     }
 }
