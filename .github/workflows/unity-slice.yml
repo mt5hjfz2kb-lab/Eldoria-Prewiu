@@ -3,10 +3,8 @@ name: Unity slice source and editor gate
 # canonical certification checkpoint after Bastion II and asset-bible updates · Bastion II
 
 on:
-  pull_request:
-    branches: [main]
   push:
-    branches: [main, visual-proof/asset-library-reprocessing-pass-v1]
+    branches: [main]
     paths:
       - 'Unity/**'
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
