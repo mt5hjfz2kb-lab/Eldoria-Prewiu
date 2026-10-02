@@ -19,82 +19,65 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName);
             root.transform.SetParent(parent,true);
 
+            // One continuous terrain sheet avoids detached panels and inter-piece seams.
+            // The inhabited corridor sits below canonical ground; only side/rear relief emerges.
             var material=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.34f,.36f,.34f,1f),new Vector2(6f,6f),.025f,1.12f)
+                "rock",new Color(.31f,.34f,.32f,1f),new Vector2(8f,8f),.018f,1.20f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.31f,.33f,.30f,1f),"earth",new Vector2(6f,6f),1.12f);
+                    new Color(.285f,.31f,.285f,1f),"earth",new Vector2(8f,8f),1.20f);
 
-            BuildSide(root.transform,"west wall",-1,material);
-            BuildSide(root.transform,"east wall",1,material);
-            BuildRear(root.transform,material);
+            BuildContinuousValley(root.transform,material);
         }
 
-        static void BuildSide(Transform root,string role,int sign,Material material)
+        static void BuildContinuousValley(Transform root,Material material)
         {
-            const int along=49;
-            const int across=17;
-            const float zMin=-5f,zMax=32f;
-            const float inner=12.8f,outer=31.5f;
-            var verts=new Vector3[along*across];
+            const int cols=81;
+            const int rows=73;
+            const float xMin=-35f,xMax=35f,zMin=-18f,zMax=41f;
+            const float hiddenY=-.62f;
+
+            var verts=new Vector3[cols*rows];
             var uv=new Vector2[verts.Length];
-            var tris=new int[(along-1)*(across-1)*6];
+            var tris=new int[(cols-1)*(rows-1)*6];
 
-            for(int iz=0;iz<along;iz++)
+            for(int rz=0;rz<rows;rz++)
             {
-                float tz=iz/(float)(along-1);
+                float tz=rz/(float)(rows-1);
                 float z=Mathf.Lerp(zMin,zMax,tz);
-                float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+2f)/7f));
-                float rearBoost=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-14f)/15f));
-                for(int ix=0;ix<across;ix++)
+                for(int cx=0;cx<cols;cx++)
                 {
-                    float tx=ix/(float)(across-1);
-                    float xAbs=Mathf.Lerp(inner,outer,tx);
-                    float edge=Mathf.SmoothStep(0f,1f,tx);
-                    float ridge=edge*edge*(5.2f+rearBoost*2.2f)*frontGate;
-                    float macro=(Mathf.Sin(z*.21f+sign*.7f)+Mathf.Sin(xAbs*.18f)+Mathf.Sin((xAbs+z)*.095f))*0.36f*edge*frontGate;
-                    float shelves=.28f*Mathf.Sin(tx*10.5f+z*.12f)*edge*frontGate;
-                    float y=-.24f+ridge+macro+shelves;
-                    if(tx<.09f)y=Mathf.Lerp(-.24f,y,tx/.09f);
-                    int i=iz*across+ix;
-                    verts[i]=new Vector3(sign*xAbs,y,z);
-                    uv[i]=new Vector2(sign*xAbs*.11f,z*.11f);
-                }
-            }
-            FillGridTriangles(tris,along,across,sign<0);
-            CreateMeshObject(root,role,verts,uv,tris,material);
-        }
-
-        static void BuildRear(Transform root,Material material)
-        {
-            const int across=57;
-            const int depth=17;
-            const float xMin=-29f,xMax=29f,zMin=14.5f,zMax=37f;
-            var verts=new Vector3[across*depth];
-            var uv=new Vector2[verts.Length];
-            var tris=new int[(across-1)*(depth-1)*6];
-
-            for(int iz=0;iz<depth;iz++)
-            {
-                float tz=iz/(float)(depth-1);
-                float z=Mathf.Lerp(zMin,zMax,tz);
-                float rear=Mathf.SmoothStep(0f,1f,tz);
-                for(int ix=0;ix<across;ix++)
-                {
-                    float tx=ix/(float)(across-1);
+                    float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-7.5f)/17f));
-                    float saddle=.35f+side*.65f;
-                    float ridge=rear*rear*(4.8f+side*3.3f)*saddle;
-                    float macro=(Mathf.Sin(x*.16f)+Mathf.Sin(z*.20f)+Mathf.Sin((x-z)*.10f))*0.42f*rear;
-                    float y=-.26f+ridge+macro;
-                    if(tz<.10f)y=Mathf.Lerp(-.26f,y,tz/.10f);
-                    int i=iz*across+ix;
+
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-13.0f)/15.5f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-13.5f)/20.0f));
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+2.5f)/8.0f));
+                    float sideRelief=side*frontGate;
+                    float relief=Mathf.Max(sideRelief,rear);
+
+                    // Broad natural valley walls: restrained height, no giant planar curtain.
+                    float ridge=sideRelief*sideRelief*4.2f + rear*rear*(4.1f+side*1.7f);
+                    float broad=Mathf.Sin(x*.115f+z*.035f)*.34f
+                               +Mathf.Sin(z*.145f-x*.028f)*.27f
+                               +Mathf.Sin((x+z)*.071f)*.19f;
+                    float fine=Mathf.Sin(x*.31f-z*.17f)*.10f;
+                    float y=hiddenY + ridge + (broad+fine)*relief;
+
+                    // Keep a generous central basin and the full approach invisible beneath gameplay ground.
+                    float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.5f)/4.0f));
+                    float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.0f)/7.0f));
+                    float basin=cityX*cityZ;
+                    y=Mathf.Lerp(y,hiddenY,basin);
+                    if(z<-4.5f)y=hiddenY;
+
+                    int i=rz*cols+cx;
                     verts[i]=new Vector3(x,y,z);
-                    uv[i]=new Vector2(x*.11f,z*.11f);
+                    uv[i]=new Vector2(x*.13f,z*.13f);
                 }
             }
-            FillGridTriangles(tris,depth,across,false);
-            CreateMeshObject(root,"rear wall",verts,uv,tris,material);
+
+            FillGridTriangles(tris,rows,cols,false);
+            CreateMeshObject(root,"continuous mountain valley",verts,uv,tris,material);
         }
 
         static void FillGridTriangles(int[] tris,int rows,int cols,bool flip)
