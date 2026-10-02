@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Unity slice is redundant for the current full-frame visual-only convergence changes and would block the single Unity runner. Dedicated gates own validation.",
+  "reason": "Release Windows runner from stalled Strongest Composite Dark Audit; integrated Strongest Jagged Composite has higher visual return and the previous dark audit already identified affected families.",
   "runs": [
-    37071995829
+    37071589123
   ],
-  "triggered_at": "2026-10-02T22:54:00Z"
+  "triggered_at": "2026-10-02T23:59:30+02:00"
 }
