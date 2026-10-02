@@ -1,0 +1,23 @@
+name: "[TEMP] Cancel stale Hero Bastion persist"
+
+on:
+  push:
+    branches: [promotion/asset-library-reprocessing-pass-v1]
+    paths:
+      - '.github/workflows/cancel-stale-hero-persist.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel redundant stale run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36994496385/cancel
+          echo "cancel requested for redundant run 36994496385"
