@@ -1,9 +1,16 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "enabled": true,
-  "asset": "SteppedRockTerrace",
-  "input": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
-  "mode": "diagnostic",
-  "goal": "measure the canonical geometry before any deep uplift; preserve footprint, UVs and gameplay independence",
+  "mode": "diagnostic_batch",
+  "assets": [
+    {"asset":"TerraceStairRock","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb"},
+    {"asset":"BroadRockPlatform","input":"Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb"},
+    {"asset":"StreetLandingTransition","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb"},
+    {"asset":"MidTierPiece01","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb"},
+    {"asset":"MidTierPiece02","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb"},
+    {"asset":"MidTierPiece03","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"},
+    {"asset":"MidTierPiece04","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"}
+  ],
+  "goal": "identify true geometry-limited assets before any mesh surgery; no canonical mutation",
   "tripo_credits": 0
 }
