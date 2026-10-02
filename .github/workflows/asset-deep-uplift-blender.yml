@@ -55,6 +55,6 @@ jobs:
           sha256sum "deep-uplift-evidence/${asset}-PBRRescue.glb" > "deep-uplift-evidence/${asset}-candidate.sha256"
       - uses: actions/upload-artifact@v4
         with:
-          name: asset-deep-uplift-terrace-stair-rock-pbr-rescue
+          name: asset-deep-uplift-street-landing-transition-pbr-rescue
           path: deep-uplift-evidence/
           if-no-files-found: error
