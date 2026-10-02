@@ -60,61 +60,66 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 8 — reference-oriented lateral world curtains under a strict render budget.
-            // The margins are continuous masses (rock + masonry + a few trees), not extra city sprawl.
+            // Iteration 10: lateral margins are world mass, not extra architecture.
+            // Use only lightweight natural cliffs/hills plus sparse foliage so the Hero Bastion remains the sole monumental focal point.
 
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left edge rock shelf",new Vector3(-12.9f,.72f,3.4f),8.8f,20f,RockTint);
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "right edge rock shelf",new Vector3(12.9f,.72f,3.6f),8.8f,200f,RockTint);
+            AddResource(root,"Valoria/SM_Cliffs_01","left outer natural curtain",
+                new Vector3(-14.8f,-2.55f,3.0f),13.6f,7.4f,24f,new Color(.39f,.42f,.41f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","right outer natural curtain",
+                new Vector3(14.7f,-2.55f,3.2f),13.6f,7.4f,204f,new Color(.39f,.42f,.41f,1f));
 
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "left upper cliff curtain",new Vector3(-13.8f,2.05f,8.6f),6.7f,94f,new Color(.39f,.41f,.40f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right upper cliff curtain",new Vector3(13.8f,2.05f,8.8f),6.7f,266f,new Color(.39f,.41f,.40f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","left lower world shoulder",
+                new Vector3(-13.7f,-3.35f,-2.1f),12.0f,5.8f,32f,new Color(.36f,.40f,.38f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","right lower world shoulder",
+                new Vector3(13.6f,-3.35f,-1.9f),12.0f,5.8f,212f,new Color(.36f,.40f,.38f,1f));
 
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "left lateral retaining wall",new Vector3(-12.0f,.52f,5.8f),5.3f,4.0f,86f,new Color(.61f,.59f,.55f,1f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "right lateral retaining wall",new Vector3(12.0f,.52f,6.0f),5.3f,4.0f,266f,new Color(.61f,.59f,.55f,1f));
+            // A second, smaller cliff layer breaks the side silhouette without reading as a duplicated fortress.
+            AddResource(root,"Valoria/SM_Cliffs_03","left upper broken ridge",
+                new Vector3(-12.9f,-1.15f,9.4f),8.2f,5.0f,94f,new Color(.43f,.45f,.44f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_01","right upper broken ridge",
+                new Vector3(12.9f,-1.15f,9.6f),8.2f,5.0f,274f,new Color(.43f,.45f,.44f,1f));
 
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "left lower masonry anchor",new Vector3(-12.8f,.48f,1.2f),4.1f,3.6f,40f,new Color(.60f,.58f,.54f,1f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "right lower masonry anchor",new Vector3(12.8f,.48f,1.4f),4.1f,3.6f,220f,new Color(.60f,.58f,.54f,1f));
-
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "left upper defense seam",new Vector3(-10.9f,.58f,9.5f),3.5f,4.5f,18f,new Color(.56f,.55f,.51f,1f));
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "right upper defense seam",new Vector3(10.9f,.58f,9.7f),3.5f,4.5f,198f,new Color(.56f,.55f,.51f,1f));
-
-            // Sparse edge vegetation only. The reference reads side margins as world mass first, foliage second.
             if(art!=null)
             {
                 var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.5f,.14f,-.8f),new Vector3(-12.7f,.16f,5.0f),new Vector3(-13.2f,.16f,10.8f),
-                        new Vector3(13.4f,.14f,-.6f),new Vector3(12.6f,.16f,5.2f),new Vector3(13.1f,.16f,11.0f)
+                        new Vector3(-13.9f,.12f,-1.0f),new Vector3(-14.2f,.14f,2.4f),new Vector3(-13.1f,.14f,5.6f),new Vector3(-12.6f,.14f,9.0f),new Vector3(-13.8f,.14f,11.6f),
+                        new Vector3(13.8f,.12f,-.8f),new Vector3(14.1f,.14f,2.6f),new Vector3(13.0f,.14f,5.8f),new Vector3(12.5f,.14f,9.2f),new Vector3(13.7f,.14f,11.8f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
-                        AddPrefab(root,tree,"side curtain tree "+i,sideTrees[i],
-                            .88f+(i%2)*.12f,2.8f+(i%3)*.28f,(i*59)%360,FoliageTint);
+                        AddPrefab(root,tree,"side natural tree "+i,sideTrees[i],
+                            .82f+(i%3)*.10f,2.55f+(i%2)*.35f,(i*47)%360,FoliageTint);
+                }
+
+                if(art.SlavicBush!=null)
+                {
+                    var scrub=new[]{
+                        new Vector3(-12.5f,.10f,.5f),new Vector3(-12.9f,.10f,4.4f),new Vector3(-12.2f,.10f,8.1f),
+                        new Vector3(12.4f,.10f,.7f),new Vector3(12.8f,.10f,4.6f),new Vector3(12.1f,.10f,8.3f)
+                    };
+                    for(int i=0;i<scrub.Length;i++)
+                        AddPrefab(root,art.SlavicBush,"side natural scrub "+i,scrub[i],
+                            .62f,.66f,(i*31)%360,new Color(.38f,.44f,.34f,1f));
                 }
             }
         }
 
         static void BuildMountainHorizon(Transform root)
         {
-            // The old SM_Mountains_11 read as simplified pyramids in the official cameras.
-            // Use low-contrast cliff ridges instead until a production mountain family exists.
-            AddResource(root,"Valoria/SM_Cliffs_01","distant left ridge",
-                new Vector3(-14.5f,-2.4f,20.5f),14.5f,8.0f,12f,new Color(.46f,.50f,.51f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_03","distant center ridge",
-                new Vector3(0f,-2.6f,23.0f),17.0f,8.4f,94f,new Color(.47f,.51f,.52f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_01","distant right ridge",
-                new Vector3(14.5f,-2.4f,20.8f),14.5f,8.0f,192f,new Color(.46f,.50f,.51f,1f));
+            // Iteration 10: close the exposed rear plane with broad, low-contrast natural masses.
+            AddResource(root,"Valoria/SM_Hills_01","distant left mountain field",
+                new Vector3(-12.0f,-4.0f,18.8f),17.0f,7.0f,18f,new Color(.45f,.49f,.49f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","distant center mountain field",
+                new Vector3(0f,-4.4f,22.5f),20.0f,7.4f,94f,new Color(.46f,.50f,.50f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","distant right mountain field",
+                new Vector3(12.0f,-4.0f,19.1f),17.0f,7.0f,198f,new Color(.45f,.49f,.49f,1f));
+
+            AddResource(root,"Valoria/SM_Cliffs_01","distant left broken ridge",
+                new Vector3(-13.8f,-2.8f,20.6f),12.0f,5.6f,12f,new Color(.43f,.47f,.48f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","distant right broken ridge",
+                new Vector3(13.8f,-2.8f,20.9f),12.0f,5.6f,192f,new Color(.43f,.47f,.48f,1f));
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
