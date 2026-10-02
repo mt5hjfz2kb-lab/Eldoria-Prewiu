@@ -10,5 +10,6 @@
     "read_only_scene_audit": true,
     "no_visual_mutation": true,
     "no_paid_assets": true
-  }
+  },
+  "triggered_at": "2026-10-02T22:16:00Z"
 }
