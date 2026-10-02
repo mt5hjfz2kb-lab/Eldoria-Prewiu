@@ -93,6 +93,7 @@ namespace Eldoria.EditorTools
                 $"  \"residual_suppressed\": {ValoriaResidualCleanupV1.Suppressed},\n"+
                 $"  \"residual_replacements\": {ValoriaResidualCleanupV1.Replacements},\n"+
                 $"  \"material_residue_suppressed\": {ValoriaMaterialResidueCleanupV2.SuppressedPeripheral},\n"+
+                $"  \"material_residue_disconnected_suppressed\": {ValoriaMaterialResidueCleanupV2.SuppressedDisconnectedPeripheral},\n"+
                 $"  \"material_residue_environment_slots\": {ValoriaMaterialResidueCleanupV2.NormalizedEnvironment},\n"+
                 $"  \"artifact_rock_renderers\": {ValoriaFullFrameArtifactCleanupV1.RockRenderersNormalized},\n"+
                 $"  \"artifact_terrace_renderers\": {ValoriaFullFrameArtifactCleanupV1.TerraceRenderersNormalized},\n"+
