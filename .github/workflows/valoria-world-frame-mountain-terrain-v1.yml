@@ -1,4 +1,5 @@
 name: "[EXPERIMENT] Valoria World Frame / Mountain Terrain v1"
+# canonical baseline rerun after convergence-baseline cleanup
 
 on:
   workflow_dispatch:
