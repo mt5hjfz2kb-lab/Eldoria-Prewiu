@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-terrain-continuity-v1",
+  "objective": "Replace fragmented cliff-island shelf presentation in the current strongest composite with one continuous compact landform, preserving all gameplay authority and comparing matched full-frame views.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "base": "current strongest composite",
+  "lanes": [
+    "composition_and_mass",
+    "terrain_and_transitions",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_reserved_plots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "8",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
