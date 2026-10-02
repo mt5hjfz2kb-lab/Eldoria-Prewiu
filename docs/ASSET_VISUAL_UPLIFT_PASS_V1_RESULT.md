@@ -1,168 +1,244 @@
 # Asset Visual Uplift Pass v1 — Result
 
 Date: 2026-10-02  
-Status: **IN PROGRESS — visual evidence gate pending**  
+Status: **TECH PASS / SELECTIVE VISUAL PASS**  
 Branch: `visual-proof/asset-visual-uplift-v1`  
+Validated run: **37002187636 — SUCCESS**  
+Artifact: **11223898210**  
 Tripo credits: **0**  
 New source geometry: **0**  
-Gameplay topology changes: **0 intended; gate enforces collider/hotspot signature identity**
+Gameplay topology changes: **0**
 
 ## Objective
 
-Improve the perceived quality of the highest-return assets already present in the canonical Valoria library. This is a selective surface/material/integration pass, not a blanket library rewrite and not a new-asset generation block.
+Improve the perceived quality of the highest-return assets already present in the canonical Valoria library, without blanket reprocessing, new geometry by default, paid generation, or gameplay changes.
 
-The pass starts from the production result of `ASSET LIBRARY REPROCESSING PASS v1` and the canonicalized 26-GLB library. It does not alter canonical GLB bytes.
+The pass starts from the production result of `ASSET LIBRARY REPROCESSING PASS v1` and the canonicalized 26-GLB library. Canonical GLB bytes were not edited.
 
-## Concurrency boundary
+## Selection and actual result
 
-At start, `valoria-reference-convergence-v2` owned `ProductionVisualIntegration.cs`, `pipeline/art-production-request.json`, Valoria production composition and the Windows Unity runner.
-
-This workstream therefore narrowed itself to non-conflicting surface/material treatment and its own validation harness. It did not mutate the concurrent composition workstream or consume its runner while the lock remained active.
-
-## Selection
-
-### 1. Hero Bastion — SELECTED / high return
+### Hero Bastion — IMPROVED
 
 Canonical source:
 `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb`
 
-Reason:
+Why selected:
 - dominant focal asset at every official zoom;
 - geometry/silhouette already certified;
-- remaining leverage is surface/value hierarchy rather than regeneration.
+- remaining leverage was surface/value hierarchy, not regeneration.
 
-Executed treatment:
-- preserve existing authored textures/normals;
-- role-sensitive stone / rock / roof / metal / accent separation;
-- restrained roughness and normal-response normalization;
-- no GLB mutation, no scale/topology/collider/hotspot change.
+Executed:
+- renderer-local role treatment;
+- restrained stone / rock / roof / metal / accent separation;
+- low-gloss stone response and controlled normal strength;
+- existing source textures/normals preserved.
 
-### 2. Dedicated production buildings — SELECTED / high return
+Evidence:
+- **1 Hero renderer touched**;
+- matched BEFORE/AFTER frames show stronger focal separation and cleaner relation between the bright Bastion body and the darker supporting fortress mass, most clearly at zoom 12/9/mobile.
 
-Sources:
+Verdict: **VISUAL PASS**.
+
+### Dedicated production buildings — PARTIAL IMPROVEMENT
+
+Canonical sources in scope:
 - `Valoria_Aserradero_AP2_v1.glb`
 - `Valoria_Cuartel_AP2_v1.glb`
 - `Valoria_Granero_BIII_v1.glb`
 
-Reason:
-- visible functional landmarks;
-- already production-valid geometry;
-- strong benefit from clearer stone/timber/roof separation and consistent Valoria roughness.
-
-Executed treatment:
-- renderer-local MaterialPropertyBlock treatment;
-- functional palette distinction for production / military / granary roles;
-- existing maps and source materials remain authoritative;
+Executed:
+- functional palette separation for production / military / granary roles where the current canonical scene exposes matching renderer hierarchy;
+- existing source materials/maps remain authoritative;
 - no geometry or gameplay ownership changed.
 
-### 3. Stone Architecture production subset — SELECTED / highest surface return
+Evidence:
+- **2 dedicated renderers touched** in the validated canonical frame.
 
-Sources:
+Verdict:
+- the two matched in-frame dedicated renderers receive a visible but secondary surface uplift;
+- the gate does **not** prove a separate Granero renderer treatment, so this pass makes no unsupported claim for that asset.
+
+Practical ceiling for v1:
+- do not force a new placement or alter composition only to manufacture evidence;
+- Granero remains **not separately validated by this surface-only pass**.
+
+### Stone Architecture — IMPROVED / HIGH RETURN
+
+Production subset:
 - `CornerWallL.glb`
 - `HighStraightWall.glb`
 - `RockToWallTransition.glb`
 
-Reason:
-The previous reprocessing pass deliberately replaced all sub-materials on these instances with one flat architectural-stone material. That solved coherence but discarded potentially useful source base/normal/AO information and collapsed material separation.
+Why selected:
+The previous reprocessing pass replaced these instances with one flat architectural-stone material. That improved coherence but collapsed useful source map information and value separation.
 
-Executed treatment:
-- retain source base map where present;
-- retain normal map where present;
-- retain occlusion/mask information where representable in URP Lit;
-- normalize roughness/metallicity to Valoria Stone;
-- role-sensitive fallback tint rather than one universal flat material.
+Executed:
+- preserve source base map where present;
+- preserve normal map where present;
+- preserve occlusion/mask inputs where representable in URP Lit;
+- normalize roughness/metallicity;
+- role-sensitive fallback tint instead of one flat material.
 
-### 4. Terrain & Terrace production subset — SELECTED / highest surface return
+Evidence:
+- included within **17 imported Stone/Terrain renderers touched**;
+- the AFTER frames show materially stronger retaining-wall depth and darker side masses around the Hero approach, especially at zoom 12 and 9.
 
-Sources:
+Verdict: **VISUAL PASS / one of the strongest returns in the pass**.
+
+### Terrain & Terrace — IMPROVED / HIGH RETURN
+
+Production subset:
 - `BroadRockPlatform.glb`
 - `SteppedRockTerrace.glb`
 
-Reason:
-These are large screen-space support masses under Hero/core architecture. The old flat replacement material suppresses their surface information and makes rock/terrace depth read weaker than the geometry allows.
-
-Executed treatment:
-- preserve existing texture/normal/AO inputs;
+Executed:
+- preserve texture/normal/AO inputs;
 - stronger but controlled rock normal response;
-- low-gloss rock/earth family;
+- low-gloss terrain/rock family;
 - no geometry/regeneration.
 
-### 5. Mid-Tier Architecture Piece01–04 — SELECTED / medium-high return
+Evidence:
+- included within the same **17 imported Stone/Terrain renderers touched**;
+- AFTER improves separation between the bright processional route, terrace stone and darker geological support without changing silhouette.
 
-Reason:
-The geometry is already accepted for compact-core support. Previous treatment largely applied one fallback tint per piece; the current pass separates readable roof/timber/stone/rock roles while leaving original source materials and textures intact.
+Verdict: **VISUAL PASS**.
 
-Executed treatment:
-- per-submaterial classification;
-- darker roof;
-- warmer/desaturated timber;
-- medium architectural stone;
-- darker rock/base;
-- restrained accent handling;
-- MaterialPropertyBlock only.
+### Mid-Tier Architecture Piece01–04 — NO CURRENT-FRAME UPLIFT CLAIM
 
-### 6. Rescued support — SELECTIVE
+The family remains canonical and the uplift code supports sub-material separation if these pieces are instantiated through `AddMidTierPiece`.
 
-Current canonical family:
+However, the current accepted `AssetLibraryReprocessingPassV1.Build()` calls `ReassembleMidTierCore()`, which currently uses Terrain/Stone support only; `ReassembleCompactCoreArchitecture()` is not part of the accepted active build path.
+
+Evidence:
+- **0 Mid-Tier renderers touched** in the validated run.
+
+Verdict:
+- **NO CLAIM / practical ceiling for this surface-only v1 frame**.
+- Re-introducing Mid-Tier geometry solely to demonstrate the pass would be a composition change and would violate the selective, non-conflicting scope.
+- The family remains available for a future composition-owned pass.
+
+### Rescued support — IMPROVED WHERE ALREADY VISIBLE
+
+Canonical family:
 - ResidentialTerraceRock
 - RockTerrainSeamFiller
 - StreetLandingTransition
 - TerraceStairRock
 - TowerWallRock
 
-Selected in-frame treatment:
-- currently visible rescued renderers receive restrained support-family surface normalization.
+Executed:
+- only already-visible rescued renderers receive support-family surface normalization;
+- no new placement for the sake of coverage.
 
-Practical-ceiling / deferred cases:
-- `StreetLandingTransition` and `TerraceStairRock` are not primary current compact-core visual drivers; forcing new placement merely to show an uplift would violate the selective-pass rule.
-- `ResidentialTerraceRock` is retained where already useful but is not expanded laterally.
-- `TowerWallRock` remains useful as a visual-only defensive support mass.
-- `RockTerrainSeamFiller` remains a seam/burial support rather than a hero asset.
+Evidence:
+- **8 rescued renderers touched**.
 
-## Explicit exclusions
+Verdict:
+- **VISUAL PASS for the visible rescued support subset**;
+- StreetLandingTransition / TerraceStairRock and any non-active member receive no fabricated claim.
 
-- `GateStreetRiseRock_MV1`: no primary treatment. Its historical traversal/interface failure remains unchanged; visual-only landmark status remains.
-- Stone Architecture historical rejected pieces 03/04/06/07/08: no salvage attempt.
-- Terrain & Terrace historical rejected groups 02–06: no salvage attempt.
-- no new GLB;
-- no Tripo generation;
-- no paid operation;
-- no Blender processing because no geometry/cleanup defect has yet justified it.
+### GateStreetRiseRock_MV1 — EXPLICITLY EXCLUDED
+
+No primary treatment.
+Its historical traversal/interface failure remains unchanged; it stays visual-only and is not promoted by this pass.
 
 ## Implementation
 
-New runtime surface layer:
+Runtime surface layer:
 - `Unity/Assets/Eldoria/Scripts/Presentation/AssetVisualUpliftPassV1.cs`
 
-Integration point:
-- `AssetLibraryReprocessingPassV1.cs` now routes its existing Stone/Terrain instances through the uplift material-preservation path when enabled;
-- Mid-Tier instances receive sub-material separation;
-- already-instantiated Hero/dedicated/rescued assets receive renderer-local surface treatment.
+Integration:
+- `Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs`
+  - existing Stone/Terrain instances route through texture/normal-preserving uplift materials;
+  - existing scene Hero/dedicated/rescued assets receive renderer-local treatment;
+  - no collider/hotspot ownership is added.
 
 Validation:
 - `Unity/Assets/Eldoria/Scripts/Editor/AssetVisualUpliftGateV1.cs`
 - `.github/workflows/asset-visual-uplift-v1.yml`
 
-The gate rebuilds deterministic BEFORE and AFTER scenes, captures zoom 19 / 12 / 9 / mobile, records scene metrics, and requires identical gameplay collider/hotspot signatures.
+The stable gate uses D3D11 on the Windows Unity runner and avoids global shader-pass precompilation after the first D3D12 capture attempt crashed inside Unity culling.
 
-## Technical invariants
+## Validation evidence
 
-The uplift code:
-- does not create or move gameplay colliders;
-- does not create or move hotspots;
-- does not edit GLB bytes;
-- does not add source geometry;
-- uses renderer materials / MaterialPropertyBlock only for the selected surface changes;
-- keeps Tripo at 0 credits.
+Validated:
+- run **37002187636 — SUCCESS**
+- artifact **11223898210**
 
-## Visual evidence
+The artifact contains matched:
+- `before-19.png` / `after-19.png`
+- `before-12.png` / `after-12.png`
+- `before-9.png` / `after-9.png`
+- `before-mobile.png` / `after-mobile.png`
+- BEFORE/AFTER metrics
+- evidence JSON
+- Unity log
 
-Pending the owned Unity runner becoming available under the canonical workstream protocol.
+Technical invariants from evidence:
+- camera matched: **true**
+- deterministic rebuild BEFORE/AFTER: **true**
+- collider/hotspot signature equal: **true**
+- gameplay topology changed: **false**
+- new geometry generated: **false**
+- Tripo credits: **0**
 
-No VISUAL PASS is claimed until the matched 19/12/9/mobile evidence is inspected.
+Coverage:
+- Hero renderers touched: **1**
+- dedicated renderers touched: **2**
+- rescued renderers touched: **8**
+- imported Stone/Terrain renderers touched: **17**
+- Mid-Tier renderers touched: **0**
+
+Scene metrics:
+
+| Metric | BEFORE | AFTER |
+|---|---:|---:|
+| active renderers | 781 | 781 |
+| unique materials | 74 | 76 |
+| scene triangles | 1,647,618 | 1,647,618 |
+| active lights | 25 | 25 |
+
+Interpretation:
+- renderer count unchanged;
+- triangle count unchanged;
+- light count unchanged;
+- only +2 unique runtime materials, consistent with a surface/detail uplift rather than geometry inflation.
+
+## Visual review
+
+Official camera review:
+
+- **Zoom 19:** improvement is intentionally restrained; full-frame composition is unchanged, with slightly better mass separation around the Hero fortress.
+- **Zoom 12:** clear improvement in retaining-wall / terrace depth and Hero support mass readability.
+- **Zoom 9:** strongest desktop evidence; darker architectural supports create better stone hierarchy and edge separation without stealing focus from the Bastion.
+- **Mobile:** uplift remains perceptible despite reduced screen area; Hero/support contrast is clearer without increasing scene density.
+
+The pass does **not** solve the larger benchmark gap by itself. It improves the quality of existing assets; it does not replace the composition/verticality/environment work owned by separate Valoria convergence passes.
+
+## Cost / toolchain verdict
+
+- Tripo: **not used**
+- Blender: **not used**
+- new GLB generation: **none**
+- canonical GLB mutation: **none**
+- gameplay topology/colliders/hotspots: **unchanged**
+
+This validates the intended Toolchain Automation v2 decision rule: surface/detail gaps were handled in Unity rather than escalating to new geometry or paid generation.
 
 ## Final verdict
 
-**PENDING VISUAL GATE.**
+**TECH PASS / SELECTIVE VISUAL PASS.**
 
-This document must be updated with run/artifact IDs, before/after metrics, actual frame review and the final PASS/FAIL/ceiling classification before promotion.
+Promote:
+- Hero Bastion surface hierarchy;
+- Stone Architecture surface preservation/separation;
+- Terrain & Terrace surface preservation/separation;
+- visible rescued support treatment;
+- matched dedicated production treatment.
+
+Do not overclaim:
+- Mid-Tier has 0 active renderer coverage in this accepted frame;
+- Granero is not separately proven by the gate;
+- GateStreetRiseRock_MV1 remains outside the primary uplift target.
+
+The block meets the v1 success criterion: visible quality increases on the highest-return active assets, gameplay signature is unchanged, scene geometry is unchanged, and no Tripo credits were spent.
