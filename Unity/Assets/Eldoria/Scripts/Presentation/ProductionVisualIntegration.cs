@@ -1497,7 +1497,7 @@ namespace Eldoria.Presentation
             // Blank-canvas visual landform only. It is intentionally larger than every official camera
             // so zoom 19 never reveals a rectangular board edge. Gameplay collision remains untouched.
             const int nx=61,nz=61;
-            const float minX=-78f,maxX=78f,minZ=-72f,maxZ=82f;
+            const float minX=-96f,maxX=96f,minZ=-128f,maxZ=96f;
             var vertices=new Vector3[nx*nz];
             var uv=new Vector2[vertices.Length];
             var triangles=new int[(nx-1)*(nz-1)*6];
