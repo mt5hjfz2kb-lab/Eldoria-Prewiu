@@ -73,55 +73,47 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 8: lightweight reference-oriented side curtains.
-            // No duplicated heavy GLB modules here; use canonical prefab vocabulary + terrain + foliage only.
+            // Iteration 8 — reference-oriented lateral world curtains under a strict render budget.
+            // The margins are continuous masses (rock + masonry + a few trees), not extra city sprawl.
 
-            AddResource(root,"Valoria/SM_Cliffs_01","left outer cliff curtain",
-                new Vector3(-15.6f,-2.35f,3.4f),13.8f,9.2f,24f,new Color(.38f,.41f,.41f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_03","right outer cliff curtain",
-                new Vector3(15.5f,-2.35f,3.6f),13.8f,9.2f,204f,new Color(.38f,.41f,.41f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "left edge rock shelf",new Vector3(-12.9f,.72f,3.4f),8.8f,20f,RockTint);
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "right edge rock shelf",new Vector3(12.9f,.72f,3.6f),8.8f,200f,RockTint);
 
-            AddResource(root,"Valoria/SM_Hills_01","left lower side mass",
-                new Vector3(-14.7f,-3.45f,-2.8f),12.2f,6.6f,30f,new Color(.35f,.39f,.37f,1f));
-            AddResource(root,"Valoria/SM_Hills_01","right lower side mass",
-                new Vector3(14.6f,-3.45f,-2.6f),12.2f,6.6f,210f,new Color(.35f,.39f,.37f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "left upper cliff curtain",new Vector3(-13.8f,2.05f,8.6f),6.7f,94f,new Color(.39f,.41f,.40f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "right upper cliff curtain",new Vector3(13.8f,2.05f,8.8f),6.7f,266f,new Color(.39f,.41f,.40f,1f));
 
-            // Architectural silhouettes are lightweight canonical prefabs and intentionally partly cropped.
-            AddResource(root,"Valoria/Stone_Wall","left outer wall band",
-                new Vector3(-13.2f,.18f,4.8f),6.9f,3.2f,18f,new Color(.56f,.55f,.51f,1f));
-            AddResource(root,"Valoria/Stone_Wall","right outer wall band",
-                new Vector3(13.2f,.18f,5.0f),6.9f,3.2f,198f,new Color(.56f,.55f,.51f,1f));
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
+                "left lateral retaining wall",new Vector3(-12.0f,.52f,5.8f),5.3f,4.0f,86f,new Color(.61f,.59f,.55f,1f));
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
+                "right lateral retaining wall",new Vector3(12.0f,.52f,6.0f),5.3f,4.0f,266f,new Color(.61f,.59f,.55f,1f));
 
-            AddResource(root,"Valoria/Stone_Tower","left outer tower",
-                new Vector3(-13.7f,.48f,9.8f),3.8f,6.5f,22f,new Color(.57f,.56f,.52f,1f));
-            AddResource(root,"Valoria/Stone_Tower","right outer tower",
-                new Vector3(13.7f,.48f,10.0f),3.8f,6.5f,202f,new Color(.57f,.56f,.52f,1f));
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
+                "left lower masonry anchor",new Vector3(-12.8f,.48f,1.2f),4.1f,3.6f,40f,new Color(.60f,.58f,.54f,1f));
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
+                "right lower masonry anchor",new Vector3(12.8f,.48f,1.4f),4.1f,3.6f,220f,new Color(.60f,.58f,.54f,1f));
 
+            AddResource(root,"Valoria/Rescued/TowerWallRock",
+                "left upper defense seam",new Vector3(-10.9f,.58f,9.5f),3.5f,4.5f,18f,new Color(.56f,.55f,.51f,1f));
+            AddResource(root,"Valoria/Rescued/TowerWallRock",
+                "right upper defense seam",new Vector3(10.9f,.58f,9.7f),3.5f,4.5f,198f,new Color(.56f,.55f,.51f,1f));
+
+            // Sparse edge vegetation only. The reference reads side margins as world mass first, foliage second.
             if(art!=null)
             {
                 var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.7f,.16f,-1.3f),new Vector3(-13.8f,.18f,2.4f),new Vector3(-12.9f,.18f,6.0f),
-                        new Vector3(-13.2f,.18f,10.3f),
-                        new Vector3(13.6f,.16f,-1.1f),new Vector3(13.7f,.18f,2.6f),new Vector3(12.8f,.18f,6.2f),
-                        new Vector3(13.1f,.18f,10.5f)
+                        new Vector3(-13.5f,.14f,-.8f),new Vector3(-12.7f,.16f,5.0f),new Vector3(-13.2f,.16f,10.8f),
+                        new Vector3(13.4f,.14f,-.6f),new Vector3(12.6f,.16f,5.2f),new Vector3(13.1f,.16f,11.0f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
                         AddPrefab(root,tree,"side curtain tree "+i,sideTrees[i],
-                            .86f+(i%2)*.16f,2.8f+(i%3)*.35f,(i*47)%360,FoliageTint);
-                }
-
-                if(art.SlavicBush!=null)
-                {
-                    var scrub=new[]{
-                        new Vector3(-12.6f,.12f,.2f),new Vector3(-12.9f,.12f,4.2f),new Vector3(-12.4f,.12f,8.0f),
-                        new Vector3(12.5f,.12f,.4f),new Vector3(12.8f,.12f,4.4f),new Vector3(12.3f,.12f,8.2f)
-                    };
-                    for(int i=0;i<scrub.Length;i++)
-                        AddPrefab(root,art.SlavicBush,"side curtain scrub "+i,scrub[i],
-                            .70f,.74f,(i*31)%360,new Color(.38f,.44f,.34f,1f));
+                            .88f+(i%2)*.12f,2.8f+(i%3)*.28f,(i*59)%360,FoliageTint);
                 }
             }
         }
@@ -142,33 +134,17 @@ namespace Eldoria.Presentation
         {
             if(art==null)return;
             var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
-            var small=art.SlavicTree;
-            if(tree==null&&small==null)return;
+            if(tree==null)return;
 
-            var clusters=new[]{
-                new Vector3(-10.0f,.25f,3.0f),new Vector3(9.6f,.25f,3.4f),
-                new Vector3(-7.7f,.28f,10.2f),new Vector3(7.9f,.28f,10.4f),
-                new Vector3(-12.4f,.18f,-2.8f),new Vector3(11.8f,.18f,-2.4f)
+            // Keep only six depth anchors. They break silhouettes without exploding renderer count.
+            var anchors=new[]{
+                new Vector3(-9.4f,.22f,2.8f),new Vector3(9.1f,.22f,3.0f),
+                new Vector3(-7.4f,.24f,10.4f),new Vector3(7.5f,.24f,10.6f),
+                new Vector3(-11.2f,.16f,-2.5f),new Vector3(10.8f,.16f,-2.2f)
             };
-            for(int c=0;c<clusters.Length;c++)
-            for(int i=0;i<5;i++)
-            {
-                float a=(c*71+i*137)*Mathf.Deg2Rad;
-                float r=.8f+(i%3)*.58f;
-                var p=clusters[c]+new Vector3(Mathf.Cos(a)*r,0f,Mathf.Sin(a)*r);
-                AddPrefab(root,(i%3==0&&tree!=null)?tree:small,"depth tree "+c+"-"+i,
-                    p,.85f+(i%3)*.23f,2.5f+(i%4)*.42f,(c*37+i*53)%360,FoliageTint);
-            }
-
-            if(art.SlavicBush!=null)
-            for(int i=0;i<14;i++)
-            {
-                float a=i*2.39996f;
-                float radius=7.8f+(i%4)*1.15f;
-                AddPrefab(root,art.SlavicBush,"cliff scrub "+i,
-                    new Vector3(Mathf.Cos(a)*radius,.20f,3.5f+Mathf.Sin(a)*radius),
-                    .72f,.72f,i*31,new Color(.40f,.46f,.34f,1f));
-            }
+            for(int i=0;i<anchors.Length;i++)
+                AddPrefab(root,tree,"depth anchor tree "+i,anchors[i],
+                    .86f+(i%2)*.12f,2.7f+(i%3)*.30f,(i*67)%360,FoliageTint);
         }
 
         static void BuildOccupationAndAtmosphere(Transform root)
