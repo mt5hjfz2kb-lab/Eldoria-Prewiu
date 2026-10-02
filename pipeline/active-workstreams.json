@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T21:00:00Z",
+  "updated_at": "2026-10-02T21:29:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -94,7 +94,10 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV3.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCameraBackdropGateV3.cs",
         ".github/workflows/valoria-camera-backdrop-v3.yml",
-        "pipeline/valoria-camera-backdrop-v3-request.json"
+        "pipeline/valoria-camera-backdrop-v3-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaDarkMassDiagnosticGateV1.cs",
+        ".github/workflows/valoria-dark-mass-diagnostic-v1.yml",
+        "pipeline/valoria-dark-mass-diagnostic-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
