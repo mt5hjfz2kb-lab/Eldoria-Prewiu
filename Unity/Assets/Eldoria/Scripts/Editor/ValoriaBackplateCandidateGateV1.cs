@@ -31,7 +31,7 @@ namespace Eldoria.EditorTools
 
             Save(c,Folder+"/before.png",p,t,8f,1280,720);Save(c,Folder+"/before-mobile.png",p,t,8f,390,844);
 
-            string[] candidates={"kiara1_0","kiara1_1","kiara1_2","kiara3_0","kiara3_1","kiara3_2","kiara7_0","kiara7_1"};
+            string[] candidates={"kiara1_a","kiara1_b","kiara3_a","kiara7_a"};
             for(int i=0;i<candidates.Length;i++)
             {
                 ValoriaBackplateCandidateV1.Enabled=true;
