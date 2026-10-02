@@ -267,3 +267,16 @@ Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECIS
 - Bastion-II UX now tells the player to return to the world for missing recruitment resources rather than leaving an unexplained blocked recruit state.
 - Current Frontier baseline is the `4a282d32...` readability pass. The later stronger production experiment `0a07dfad...` was deliberately reverted by `c962f0f...` after visual regression; do not resurrect it blindly.
 - Next product gate is no longer another automated reachability pass: run the owner candidate from fresh save end-to-end without developer knowledge and capture pacing/clarity/visual feedback before promoting OWNER values or expanding to Bastion III.
+
+
+## 2026-10-02 — Asset Library Reprocessing Pass v1 — CERTIFIED
+- Final result: **TECH PASS / VISUAL PASS for reprocessing scope**.
+- Canonical record: `docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md`.
+- Final matched-camera gate: run **36994020902 SUCCESS**, artifact **11220733685**, digest `sha256:bbb9e67853d1dfc9e071197c4dec7eec64e14393b8272c6b4251ca85be5090bd`.
+- Official BEFORE/AFTER exists at zoom **19 / 12 / 9 / mobile 390×844**; collider/hotspot signature is identical and gameplay_topology_changed=false.
+- Exact certified Hero Bastion was recovered from existing artifact **11143009723**, SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`, and is now the production hero visual source under `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/`.
+- Final active-scene metrics: 782→781 renderers, 75→74 unique materials, 1,485,103→1,647,618 triangles, 22→25 active lights.
+- No Tripo operation or credit spend occurred; no Blender transform was required.
+- Production rule reinforced: preserve the accepted compact-growth footprint. Do **not** restore lateral residential sprawl to make the city feel fuller.
+- Reuse priority now: certified existing geometry + composition first. Stone Architecture 03/04/06/07/08 and Terrain/Terrace 02–06 remain structural replacement candidates; do not keep auto-salvaging them.
+- This pass materially improves the hero fortress read but does **not** claim the entire Eldoria visual benchmark is finished.

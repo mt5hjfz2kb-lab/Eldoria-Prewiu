@@ -189,3 +189,16 @@ If a chat starts creating another per-module Blender script, Unity capturer or w
 
 Default route: composition→Unity; surface→Unity/Blender; geometry→Tripo only after a proven gap; credit spend always needs fresh explicit owner approval. Capability availability must not be confused with visual certification.
 
+
+## ASSET LIBRARY REPROCESSING PASS v1 — production precedent
+
+Canonical result: `docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md`.
+
+Final proof:
+- run **36994020902 SUCCESS**
+- artifact **11220733685**
+- official 19/12/9/mobile BEFORE/AFTER
+- gameplay signature unchanged
+- Tripo credits: **0**
+
+This pass is now the strongest precedent for the Toolchain Automation v2 rule **existing library before new geometry**. It recovered the certified Hero Bastion and recomposed certified Stone Architecture / Terrain & Terrace / TowerWallRock support into the real compact Valoria frame. Use the same decision order for future Valoria work: KEEP/REFINE/REASSEMBLE first; mark structurally failed source pieces REPLACE instead of repeatedly polishing them.
