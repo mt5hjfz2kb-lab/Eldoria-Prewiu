@@ -1,0 +1,55 @@
+name: "[PROMOTION TEMP] Asset Library Reprocessing v1"
+
+on:
+  push:
+    branches: [promotion/asset-library-reprocessing-pass-v1]
+    paths:
+      - '.github/workflows/promote-asset-library-reprocessing-v1.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: promotion/asset-library-reprocessing-pass-v1
+          fetch-depth: 0
+      - name: Promote certified production files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin visual-proof/asset-library-reprocessing-pass-v1
+          git checkout origin/visual-proof/asset-library-reprocessing-pass-v1 --             Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs             Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs.meta
+          artifact_id=11143009723
+          expected=afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip > /tmp/hero.zip
+          rm -rf /tmp/hero && mkdir -p /tmp/hero
+          unzip -q /tmp/hero.zip -d /tmp/hero
+          match=""
+          while IFS= read -r -d '' f; do
+            sha=$(sha256sum "$f" | awk '{print $1}')
+            if [ "$sha" = "$expected" ]; then
+              if [ -n "$match" ]; then echo "Multiple Hero Bastion matches"; exit 1; fi
+              match="$f"
+            fi
+          done < <(find /tmp/hero -type f -name '*.glb' -print0)
+          if [ -z "$match" ]; then echo "Certified Hero Bastion GLB not found"; exit 1; fi
+          mkdir -p Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated
+          cp "$match" Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb
+          test "$(sha256sum Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb | awk '{print $1}')" = "$expected"
+          git add Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs                   Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs.meta                   Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb
+          git commit -m "art: persist certified Hero Bastion and reprocessing pass"
+          git push origin HEAD:promotion/asset-library-reprocessing-pass-v1
+      - name: Remove temporary promotion workflow
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/promote-asset-library-reprocessing-v1.yml
+          git commit -m "ci: remove temporary asset reprocessing promotion workflow"
+          git push origin HEAD:promotion/asset-library-reprocessing-pass-v1
