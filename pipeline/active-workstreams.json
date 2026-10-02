@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T11:46:30Z",
+  "updated_at": "2026-10-02T12:00:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -26,6 +26,24 @@
       "claimed_at": "2026-10-02T10:39:00Z",
       "base_main_sha": "db86aeceea49e19cb7d3772c11b485a4e9a2165d",
       "dependency": "asset-library-canonicalization-v1 remains active but has released the Windows runner; do not mutate its asset-library scope"
+    },
+    {
+      "id": "asset-deep-uplift-v1",
+      "title": "Asset Deep Uplift Pass v1",
+      "owner": "chat-asset-deep-uplift-v1",
+      "scope": [
+        "docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md",
+        "pipeline/asset-deep-uplift-v1-audit.json",
+        "tools/asset-deep-uplift/**",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "asset-deep-uplift-analysis"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T12:00:00Z",
+      "base_main_sha": "d4a388df26a991b4bd9a80f022fe6a33298007a3",
+      "dependency": "valoria-reference-convergence-v2 owns valoria-production-composition and windows-runner-heavy; this workstream must not mutate its files or occupy the Windows runner. Deep-uplift work is limited to non-conflicting asset classification/offline processing infrastructure until that resource is released."
     }
   ],
   "history": [
