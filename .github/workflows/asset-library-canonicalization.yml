@@ -87,53 +87,61 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import hashlib, pathlib
-          roots=[
+          import hashlib
+          import pathlib
+
+          roots = [
               pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria"),
               pathlib.Path("Unity/Assets/Eldoria/Resources/WorldPlayerCity"),
           ]
-          template="""fileFormatVersion: 2
-guid: {guid}
-ScriptedImporter:
-  internalIDToNameTable: []
-  externalObjects: {{}}
-  serializedVersion: 2
-  userData:
-  assetBundleName:
-  assetBundleVariant:
-  script: {{fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}}
-  editorImportSettings:
-    generateSecondaryUVSet: 0
-  importSettings:
-    nodeNameMethod: 1
-    animationMethod: 2
-    generateMipMaps: 1
-    texturesReadable: 0
-    defaultMinFilterMode: 9729
-    defaultMagFilterMode: 9729
-    anisotropicFilterLevel: 1
-  instantiationSettings:
-    mask: -1
-    layer: 0
-    skinUpdateWhenOffscreen: 1
-    lightIntensityFactor: 1
-    sceneObjectCreation: 2
-  assetDependencies: []
-  reportItems: []
-"""
-          created=[]
+
+          def meta_text(guid):
+              lines = [
+                  "fileFormatVersion: 2",
+                  f"guid: {guid}",
+                  "ScriptedImporter:",
+                  "  internalIDToNameTable: []",
+                  "  externalObjects: {}",
+                  "  serializedVersion: 2",
+                  "  userData:",
+                  "  assetBundleName:",
+                  "  assetBundleVariant:",
+                  "  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}",
+                  "  editorImportSettings:",
+                  "    generateSecondaryUVSet: 0",
+                  "  importSettings:",
+                  "    nodeNameMethod: 1",
+                  "    animationMethod: 2",
+                  "    generateMipMaps: 1",
+                  "    texturesReadable: 0",
+                  "    defaultMinFilterMode: 9729",
+                  "    defaultMagFilterMode: 9729",
+                  "    anisotropicFilterLevel: 1",
+                  "  instantiationSettings:",
+                  "    mask: -1",
+                  "    layer: 0",
+                  "    skinUpdateWhenOffscreen: 1",
+                  "    lightIntensityFactor: 1",
+                  "    sceneObjectCreation: 2",
+                  "  assetDependencies: []",
+                  "  reportItems: []",
+              ]
+              return "\n".join(lines) + "\n"
+
+          created = []
           for root in roots:
               for glb in sorted(root.rglob("*.glb")):
-                  meta=pathlib.Path(str(glb)+".meta")
+                  meta = pathlib.Path(str(glb) + ".meta")
                   if meta.exists():
                       continue
-                  key=("eldoria-canonical-glb-meta-v1:"+glb.as_posix()).encode()
-                  guid=hashlib.sha256(key).hexdigest()[:32]
-                  meta.write_text(template.format(guid=guid), encoding="utf-8")
-                  created.append((glb.as_posix(),guid))
-          print("CREATED_META_COUNT",len(created))
-          for path,guid in created:
-              print("META",guid,path)
+                  key = ("eldoria-canonical-glb-meta-v1:" + glb.as_posix()).encode()
+                  guid = hashlib.sha256(key).hexdigest()[:32]
+                  meta.write_text(meta_text(guid), encoding="utf-8")
+                  created.append((glb.as_posix(), guid))
+
+          print("CREATED_META_COUNT", len(created))
+          for path, guid in created:
+              print("META", guid, path)
           PY
 
       - name: Audit canonical GLBs and metadata
