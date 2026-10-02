@@ -128,7 +128,7 @@ namespace Eldoria.Presentation
                         if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",1f);
                     }
                     if(mask!=null&&m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",mask);
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.74f,.71f,.66f,1f));
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.64f,.61f,.56f,1f));
                     if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.74f,.71f,.66f,1f));
                     if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
@@ -141,38 +141,24 @@ namespace Eldoria.Presentation
 
         static void ReassembleHeroApproach(Transform root)
         {
-            // Iteration 3: spend the geometry budget where it changes the full-frame read.
-            // Build a stepped fortress plinth from certified historical modules instead of adding houses.
+            // Final subtractive seating pass: the recovered Hero Bastion already owns the landmark silhouette
+            // and a natural rock base. Support it with buried terraces + two seams; do not frame it with
+            // large repeated wall/tower props that compete at mobile scale.
             HideNamedRenderers("Valoria · rescued hero flank");
 
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "Hero lower terrace west",new Vector3(-3.85f,1.18f,5.95f),5.05f,12f,SurfaceFamily.Terrain);
+                "Hero lower terrace west",new Vector3(-3.65f,1.12f,5.92f),4.55f,12f,SurfaceFamily.Terrain);
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "Hero lower terrace east",new Vector3(3.85f,1.18f,6.02f),5.05f,168f,SurfaceFamily.Terrain);
+                "Hero lower terrace east",new Vector3(3.65f,1.12f,5.98f),4.55f,168f,SurfaceFamily.Terrain);
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "Hero upper terrace west",new Vector3(-2.85f,2.48f,7.10f),4.15f,98f,SurfaceFamily.Terrain);
+                "Hero upper terrace west",new Vector3(-2.72f,2.42f,7.05f),3.75f,98f,SurfaceFamily.Terrain);
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "Hero upper terrace east",new Vector3(2.85f,2.48f,7.16f),4.15f,262f,SurfaceFamily.Terrain);
-
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "Hero retaining wall west",new Vector3(-3.95f,.78f,5.42f),4.25f,88f,SurfaceFamily.Stone);
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "Hero retaining wall east",new Vector3(3.95f,.78f,5.48f),4.25f,268f,SurfaceFamily.Stone);
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "Hero retaining corner west",new Vector3(-6.05f,.78f,5.80f),2.35f,88f,SurfaceFamily.Stone);
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "Hero retaining corner east",new Vector3(6.05f,.78f,5.86f),2.35f,268f,SurfaceFamily.Stone);
+                "Hero upper terrace east",new Vector3(2.72f,2.42f,7.10f),3.75f,262f,SurfaceFamily.Terrain);
 
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam west",new Vector3(-3.15f,.58f,4.42f),2.15f,42f,SurfaceFamily.Stone);
+                "Hero approach seam west",new Vector3(-3.25f,.55f,4.48f),1.80f,42f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam east",new Vector3(3.15f,.58f,4.48f),2.15f,222f,SurfaceFamily.Stone);
-
-            // Recovered defensive flank family: paired visual-only masses complete the fortress silhouette.
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "Hero defensive flank west",new Vector3(-5.75f,1.02f,7.05f),3.15f,18f,SurfaceFamily.Stone);
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "Hero defensive flank east",new Vector3(5.75f,1.02f,7.05f),3.15f,198f,SurfaceFamily.Stone);
+                "Hero approach seam east",new Vector3(3.25f,.55f,4.54f),1.80f,222f,SurfaceFamily.Stone);
         }
 
         static void HideNamedRenderers(string fragment)
