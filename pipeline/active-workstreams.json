@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T18:14:00Z",
+  "updated_at": "2026-10-02T18:25:00Z",
   "active": [
     {
       "id": "valoria-stair-landing-integration-v1",
@@ -24,6 +24,26 @@
       "claimed_at": "2026-10-02T18:14:00Z",
       "base_main_sha": "2080e3ab983992a8afe0917fe31a690c4bc604ff",
       "dependency": "World Frame v1 and compact footprint are locked. Bastion stair circulation, gameplay colliders/hotspots/routes and Hero Bastion remain authoritative. Existing geometry only; no Tripo spend."
+    },
+    {
+      "id": "valoria-full-frame-convergence-system-v1",
+      "title": "Valoria Full-Frame Convergence System v1",
+      "owner": "chat-valoria-full-frame-convergence-system-v1",
+      "scope": [
+        "AGENTS.md",
+        "docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md",
+        "pipeline/valoria-full-frame-convergence-v1.json",
+        "tools/validate-valoria-full-frame-convergence.mjs",
+        ".github/workflows/valoria-full-frame-convergence-control.yml"
+      ],
+      "resources": [
+        "repo-governance",
+        "valoria-full-frame-convergence-control"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T18:25:00Z",
+      "base_main_sha": "4ac55e62c5702374f0ee283add43667a5c23ec98",
+      "dependency": "Do not touch pipeline/art-production-request.json or windows-runner-heavy while valoria-stair-landing-integration-v1 is active. This workstream changes orchestration/governance only."
     }
   ],
   "history": [
