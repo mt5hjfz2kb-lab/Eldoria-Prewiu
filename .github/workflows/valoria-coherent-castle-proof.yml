@@ -2,13 +2,6 @@ name: Valoria Coherent Castle proof
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
-      - 'tools/castle_kit_uv_rewrap.py'
 
 permissions:
   contents: read
