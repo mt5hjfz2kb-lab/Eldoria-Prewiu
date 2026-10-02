@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-monumental-arch-frame-v2",
+  "objective": "Test restrained lateral monumental arches using only Arch_Gothic, Wall_Broken and Rock02 to frame the Bastion closer to the approved benchmark without repeating the rejected Mega-block ruin pass.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "terrain_and_transitions"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
