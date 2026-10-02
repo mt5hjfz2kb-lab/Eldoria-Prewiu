@@ -35,6 +35,8 @@ namespace Eldoria.Presentation
         public static bool SlavicDistrictProofEnabled = false; // v2 material-integration proof
         // Compact Footprint Reframe v1 — certified production visual layer. Existing geometry only; no gameplay authority.
         public static bool CompactFootprintReframeEnabled = true;
+        // Blank-canvas master composition experiment. Off by default; gate enables it for matched comparison.
+        public static bool MasterVisualRebuildV2Enabled = false;
 
         public static void ResetVisualCachesForGate()
         {
@@ -212,6 +214,7 @@ namespace Eldoria.Presentation
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
             if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);
+            if(MasterVisualRebuildV2Enabled)ComposeMasterVisualRebuildV2(state,art);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
@@ -1323,6 +1326,123 @@ namespace Eldoria.Presentation
             RenderSettings.fogStartDistance=26f;RenderSettings.fogEndDistance=72f;
             WarmLight("Valoria · CompactFootprint · central lower warmth",
                 new Vector3(0f,1.12f,.75f),new Color(1f,.50f,.22f),.38f,2.35f);
+        }
+
+        static void ComposeMasterVisualRebuildV2(PlayerState state, ValoriaExternalAssetLibrary art)
+        {
+            // VALORIA MASTER VISUAL REBUILD v2 — blank-canvas composition.
+            // The existing library is the palette; inherited placements are not authoritative.
+            // Gameplay objects/colliders/hotspots remain untouched and invisible presentation replacements own no gameplay.
+
+            // Strip inherited presentation mass while preserving the authoritative functional targets underneath.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain="";
+                for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
+                bool uiOrActor=chain.Contains("hero")||chain.Contains("archer")||chain.Contains("worker");
+                bool target=chain.Contains("target")||chain.Contains("hotspot");
+                bool ourLayer=chain.Contains("master rebuild v2");
+                if(ourLayer||uiOrActor||target)continue;
+
+                // Current visual world is deliberately blanked: terrain, architecture, props and legacy shells
+                // are repainted below from library assets at new master-composition positions.
+                bool cityPresentation=chain.Contains("valoria")||chain.Contains("vpd")||chain.Contains("bastion ·")||
+                    chain.Contains("aserradero")||chain.Contains("cuartel")||chain.Contains("granero")||
+                    chain.Contains("mid-tier")||chain.Contains("compactfootprint");
+                if(cityPresentation)r.enabled=false;
+            }
+            foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(l==null||!l.enabled)continue;
+                if(l.name!="Valoria · amber dusk")l.enabled=false;
+            }
+
+            // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
+                new Vector3(0f,0,-3.7f),.42f,6.7f,0f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · west work shelf",
+                new Vector3(-4.35f,0,-.55f),1.02f,4.9f,10f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · east work shelf",
+                new Vector3(4.35f,0,-.45f),1.02f,4.9f,170f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · Master Rebuild v2 · upper growth shelf west",
+                new Vector3(-3.35f,0,3.25f),2.06f,4.15f,92f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · Master Rebuild v2 · upper growth shelf east",
+                new Vector3(3.35f,0,3.30f),2.06f,4.15f,268f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · Bastion crown shelf",
+                new Vector3(0f,0,7.20f),3.16f,7.8f,0f);
+
+            // Processional spine. Existing certified stairs remain gameplay-authoritative underneath;
+            // these skins establish a single visual route through the new composition.
+            for(int i=0;i<8;i++)
+            {
+                float z=-4.8f+i*1.05f;
+                float y=.44f+Mathf.Max(0,i-3)*.39f;
+                StonePiece(1,"Valoria · Master Rebuild v2 · processional spine",
+                    new Vector3(0f,y,z),new Vector3(3.10f,.06f,.96f),i%2==0?0f:180f);
+            }
+            StoneArchitecturePiece("HighStraightWall","Valoria · Master Rebuild v2 · upper retaining west",
+                new Vector3(-4.55f,1.30f,3.95f),4.2f,8f);
+            StoneArchitecturePiece("HighStraightWall","Valoria · Master Rebuild v2 · upper retaining east",
+                new Vector3(4.55f,1.30f,4.05f),4.2f,172f);
+            foreach(var s in new[]{
+                new Vector4(-5.3f,.12f,-1.4f,38f),new Vector4(5.3f,.12f,-1.3f,218f),
+                new Vector4(-4.55f,1.02f,2.6f,64f),new Vector4(4.55f,1.02f,2.7f,244f),
+                new Vector4(-3.75f,2.05f,5.4f,80f),new Vector4(3.75f,2.05f,5.45f,260f)})
+                StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · rock masonry seam",
+                    new Vector3(s.x,s.y,s.z),1.85f,s.w);
+
+            // Reuse dedicated functional buildings at the two lower work shelves; their actual hotspots remain nearby.
+            var saw=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
+            var barracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
+            if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-4.55f,1.10f,-.55f),3.15f,2.70f,12f,Color.white);
+            if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(4.55f,1.10f,-.45f),3.15f,2.70f,-12f,Color.white);
+
+            // One representative inhabited upper mass per side, deliberately leaving two large empty future plots.
+            var mid02=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
+            var mid03=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece03");
+            if(mid02!=null)Piece("Valoria · Master Rebuild v2 · upper residence west",mid02,
+                new Vector3(-3.30f,2.15f,3.15f),2.25f,2.65f,8f,new Color(.68f,.63f,.55f));
+            if(mid03!=null)Piece("Valoria · Master Rebuild v2 · upper workshop east",mid03,
+                new Vector3(3.30f,2.15f,3.15f),2.25f,2.55f,-8f,new Color(.66f,.61f,.54f));
+
+            // Certified Hero Bastion is reused as the visual summit when the runner has restored it.
+            var hero=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
+            if(hero!=null)
+                Piece("Valoria · Master Rebuild v2 · Hero Bastion",hero,new Vector3(0f,3.15f,7.20f),
+                    7.15f,7.65f,180f,new Color(.86f,.82f,.74f));
+
+            // Natural frame: compact inhabited mountain with obvious undeveloped territory beyond.
+            foreach(var p in new[]{
+                new Vector3(-10.8f,-.25f,-2.3f),new Vector3(10.8f,-.25f,-2.2f),
+                new Vector3(-10.0f,.05f,3.4f),new Vector3(10.0f,.05f,3.5f),
+                new Vector3(-8.2f,.75f,8.0f),new Vector3(8.2f,.75f,8.1f)})
+                Imported("Valoria · Master Rebuild v2 · mountain shoulder","Rock02",p,4.7f,1.8f,p.x*9f,new Color(.31f,.31f,.29f),false);
+            foreach(var s in new[]{
+                new Vector4(-11.8f,-.8f,1.10f,0),new Vector4(-11.0f,2.2f,1.25f,1),new Vector4(-10.5f,6.0f,1.18f,0),
+                new Vector4(11.8f,-.6f,1.10f,1),new Vector4(11.0f,2.4f,1.25f,0),new Vector4(10.5f,6.2f,1.18f,1)})
+                Imported("Valoria · Master Rebuild v2 · edge pine",s.w>.5f?"Tree01B":"Tree01A",
+                    new Vector3(s.x,.05f,s.y),s.z,2.65f,s.x*11f,new Color(.27f,.37f,.24f),true);
+
+            // Reserved growth plots are intentionally visible and empty.
+            StonePiece(2,"Valoria · Master Rebuild v2 · future plot west",
+                new Vector3(-6.55f,.46f,-3.25f),new Vector3(2.8f,.05f,2.15f),8f);
+            StonePiece(2,"Valoria · Master Rebuild v2 · future plot east",
+                new Vector3(6.55f,.46f,-3.15f),new Vector3(2.8f,.05f,2.15f),-8f);
+
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor=new Color(.67f,.71f,.73f);
+            RenderSettings.ambientEquatorColor=new Color(.43f,.41f,.37f);
+            RenderSettings.ambientGroundColor=new Color(.22f,.21f,.18f);
+            RenderSettings.ambientIntensity=.84f;
+            RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.55f,.59f,.61f);RenderSettings.fogStartDistance=27f;RenderSettings.fogEndDistance=76f;
+            var camera=Camera.main;if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.clearFlags=CameraClearFlags.SolidColor;}
+            foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if(l.name=="Valoria · amber dusk"){l.color=new Color(1f,.84f,.69f);l.intensity=1.34f;l.shadowStrength=.68f;l.shadows=LightShadows.Soft;l.transform.rotation=Quaternion.Euler(49f,-34f,0);}
+            WarmLight("Valoria · Master Rebuild v2 · gate warmth",new Vector3(0f,3.7f,4.65f),new Color(1f,.52f,.23f),.75f,3.1f);
+            WarmLight("Valoria · Master Rebuild v2 · west work warmth",new Vector3(-4.5f,1.8f,-.6f),new Color(1f,.55f,.26f),.42f,2.4f);
+            WarmLight("Valoria · Master Rebuild v2 · east work warmth",new Vector3(4.5f,1.8f,-.5f),new Color(1f,.55f,.26f),.42f,2.4f);
         }
 
         static void HeroValleyTerrain()
