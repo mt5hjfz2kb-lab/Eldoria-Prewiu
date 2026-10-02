@@ -1606,6 +1606,59 @@ namespace Eldoria.Presentation
                 Imported("Valoria · Reference v1 · terrace bush","Bush01",
                     new Vector3(s.x,.10f,s.y),s.z,.88f,s.w,new Color(.29f,.41f,.24f),true);
 
+            // Surface convergence: replace the graybox read with authored cobble, retaining edges and moss.
+            if(art!=null)
+            {
+                if(art.SlavicCobbleRoad!=null)
+                {
+                    foreach(var s in new[]{
+                        new Vector4(-.30f,-4.7f,.47f,-5f),new Vector4(.28f,-3.45f,.47f,6f),
+                        new Vector4(-.24f,-2.15f,.50f,-4f),new Vector4(.24f,-.85f,.82f,7f),
+                        new Vector4(-.20f,.50f,1.20f,-5f),new Vector4(.18f,1.85f,1.58f,5f),
+                        new Vector4(-.14f,3.15f,1.95f,-3f)})
+                        TargetFramePiece("Valoria · Reference v1 · authored cobble ascent",art.SlavicCobbleRoad,
+                            new Vector3(s.x,s.z,s.y),2.25f,.10f,s.w,new Color(.80f,.77f,.70f));
+                }
+                if(art.SlavicStoneFence!=null)
+                {
+                    foreach(var s in new[]{
+                        new Vector4(-5.0f,-2.8f,.48f,16f),new Vector4(5.0f,-2.7f,.48f,164f),
+                        new Vector4(-4.2f,.40f,1.15f,24f),new Vector4(4.2f,.55f,1.15f,156f),
+                        new Vector4(-3.4f,3.55f,2.10f,32f),new Vector4(3.4f,3.65f,2.10f,148f)})
+                        TargetFramePiece("Valoria · Reference v1 · terrace retaining edge",art.SlavicStoneFence,
+                            new Vector3(s.x,s.z,s.y),2.05f,.62f,s.w,new Color(.64f,.61f,.55f));
+                }
+                if(art.SlavicMoss!=null)
+                {
+                    foreach(var s in new[]{
+                        new Vector4(-5.2f,-4.9f,.43f,14f),new Vector4(5.1f,-4.7f,.43f,194f),
+                        new Vector4(-4.4f,-.4f,.96f,34f),new Vector4(4.5f,-.2f,.96f,214f),
+                        new Vector4(-3.5f,3.0f,1.85f,58f),new Vector4(3.6f,3.1f,1.85f,238f)})
+                        TargetFramePiece("Valoria · Reference v1 · terrace moss breakup",art.SlavicMoss,
+                            new Vector3(s.x,s.z,s.y),1.65f,.08f,s.w,new Color(.57f,.68f,.45f));
+                }
+                if(art.SlavicMudFlat!=null)
+                {
+                    TargetFramePiece("Valoria · Reference v1 · granary work yard",art.SlavicMudFlat,
+                        new Vector3(0f,.39f,-5.55f),4.8f,.06f,0f,new Color(.70f,.62f,.48f));
+                    TargetFramePiece("Valoria · Reference v1 · west work yard",art.SlavicMudFlat,
+                        new Vector3(-3.8f,.95f,-1.2f),3.2f,.06f,12f,new Color(.66f,.58f,.46f));
+                    TargetFramePiece("Valoria · Reference v1 · east work yard",art.SlavicMudFlat,
+                        new Vector3(3.8f,.95f,-1.1f),3.2f,.06f,-12f,new Color(.66f,.58f,.46f));
+                }
+            }
+
+            // Vertical density, not lateral sprawl: two existing Mid-Tier modules fill the empty transition
+            // between work shelves and Bastion while preserving the future outer plots.
+            var mid01=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece01");
+            var mid04=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece04");
+            if(mid01!=null)
+                Piece("Valoria · Reference v1 · mid stair frontage",mid01,
+                    new Vector3(-1.95f,1.05f,1.25f),1.72f,2.10f,13f,new Color(.68f,.63f,.54f));
+            if(mid04!=null)
+                Piece("Valoria · Reference v1 · upper roof accent",mid04,
+                    new Vector3(1.85f,2.12f,4.85f),1.62f,2.28f,-9f,new Color(.66f,.61f,.53f));
+
             // Rebuild activity around functional shelves using existing props only.
             if(art!=null&&art.Firewood!=null)
                 foreach(var s in new[]{
