@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T11:08:00Z",
+  "updated_at": "2026-10-02T11:46:30Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -26,7 +26,9 @@
       "claimed_at": "2026-10-02T10:39:00Z",
       "base_main_sha": "db86aeceea49e19cb7d3772c11b485a4e9a2165d",
       "dependency": "asset-library-canonicalization-v1 remains active but has released the Windows runner; do not mutate its asset-library scope"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "asset-visual-uplift-v1",
       "title": "Asset Visual Uplift Pass v1",
@@ -42,13 +44,16 @@
       "resources": [
         "asset-surface-uplift"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-02T11:06:00Z",
       "base_main_sha": "de279b3bab1ad1b2d698ca49071277d875a9c821",
-      "dependency": "Do not mutate ProductionVisualIntegration.cs, pipeline/art-production-request.json, or use windows-runner-heavy while valoria-reference-convergence-v2 remains active. Narrowed initially to non-conflicting surface/material/integration uplift."
-    }
-  ],
-  "history": [
+      "dependency": "Do not mutate ProductionVisualIntegration.cs, pipeline/art-production-request.json, or use windows-runner-heavy while valoria-reference-convergence-v2 remains active. Narrowed initially to non-conflicting surface/material/integration uplift.",
+      "completed_at": "2026-10-02T11:46:30Z",
+      "result_commit": "afb7eb403c363d1e21a963a0b8ff6f8c8038cc85",
+      "run_id": 37002187636,
+      "artifact_id": 11223898210,
+      "result": "TECH PASS / SELECTIVE VISUAL PASS; Hero, Stone/Terrain, visible rescued support and matched dedicated production surfaces improved; gameplay signature and geometry unchanged; 0 Tripo credits; Mid-Tier and separate Granero uplift not claimed."
+    },
     {
       "id": "asset-library-canonicalization-v1",
       "title": "Asset Library Canonicalization Pass v1",
