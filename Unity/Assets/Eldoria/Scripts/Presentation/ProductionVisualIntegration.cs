@@ -1289,6 +1289,41 @@ namespace Eldoria.Presentation
                 Piece("Valoria · FullFrame · east infill silhouette",art.SlavicHouse,new Vector3(17.8f,.42f,-.7f),1.72f,1.50f,-18f,new Color(.55f,.51f,.44f));
             }
 
+            // Iteration 2: replace the empty parade-ground read with a coherent civic spine while preserving
+            // the certified route underneath. These are thin visual skins/edges only, not traversable authority.
+            for(int i=0;i<7;i++)
+            {
+                float z=-5.4f+i*1.42f;
+                StonePiece(1,"Valoria · FullFrame · civic spine paving",new Vector3(0f,.447f,z),
+                    new Vector3(3.85f,.045f,1.52f),i%2==0?0f:180f);
+            }
+            for(int i=0;i<5;i++)
+            {
+                float z=-4.6f+i*1.75f;
+                StonePiece(3,"Valoria · FullFrame · civic spine west edge",new Vector3(-2.12f,.43f,z),
+                    new Vector3(.28f,.18f,1.82f),0f);
+                StonePiece(3,"Valoria · FullFrame · civic spine east edge",new Vector3(2.12f,.43f,z),
+                    new Vector3(.28f,.18f,1.82f),180f);
+            }
+
+            // Pull both lower quarters inward so the city reads as connected fabric rather than two prefab islands.
+            if(art!=null&&art.SlavicHouse!=null)
+            {
+                foreach(var h in new[]{
+                    new Vector4(-7.0f,-1.9f,1.72f,14f),new Vector4(-8.4f,1.6f,1.58f,-18f),
+                    new Vector4(7.1f,-1.8f,1.68f,-12f),new Vector4(8.5f,1.7f,1.55f,20f)})
+                    Piece("Valoria · FullFrame · connective urban mass",art.SlavicHouse,
+                        new Vector3(h.x,.43f,h.y),2.0f,h.z,h.w,new Color(.59f,.54f,.46f));
+            }
+            // Vertical connectors visually stitch the lower civic spine to the upper Bastion terrace.
+            foreach(var x in new[]{-4.35f,4.35f})
+            {
+                StoneArchitecturePiece("HighStraightWall","Valoria · FullFrame · upper terrace cheek",
+                    new Vector3(x,1.62f,4.75f),2.15f,x<0?8f:172f);
+                StoneArchitecturePiece("RockToWallTransition","Valoria · FullFrame · upper terrace foot",
+                    new Vector3(x,1.02f,3.65f),1.55f,x<0?32f:212f);
+            }
+
             // Depth framing uses already-shipped rock and foliage only. Keep the central route and Bastion silhouette open.
             foreach(var p in new[]{
                 new Vector3(-21.5f,-.12f,3.2f),new Vector3(21.5f,-.12f,3.5f),
