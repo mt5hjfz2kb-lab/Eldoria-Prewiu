@@ -26,7 +26,8 @@ namespace Eldoria.EditorTools
             CaptureSurfaceCellWedge();
             CaptureCoherentCastleProofWedge();
             CaptureSlavicDistrictProofWedge();
-            CaptureProductionCellWedge();\n            CaptureAssetLibraryReprocessingPassV1();
+            CaptureProductionCellWedge();
+            CaptureAssetLibraryReprocessingPassV1();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -193,8 +194,15 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/asset-reprocess-after-9.png",position,target,9f,1280,720);
             Save(camera,folder+"/asset-reprocess-after-mobile.png",position,target,12f,390,844);
             WriteMetrics(folder+"/asset-reprocess-metrics.json");
-            File.WriteAllText(folder+"/asset-reprocess-evidence.json",
-                "{\\n  \\"camera_matched\\": true,\\n  \\"same_scene_before_after\\": true,\\n  \\"collider_hotspot_signature_equal\\": true,\\n  \\"gameplay_topology_changed\\": false,\\n  \\"geometry_gap_proven\\": false,\\n  \\"tripo_credits\\": 0\\n}\\n");
+            File.WriteAllText(folder+"/asset-reprocess-evidence.json", @"{
+  ""camera_matched"": true,
+  ""same_scene_before_after"": true,
+  ""collider_hotspot_signature_equal"": true,
+  ""gameplay_topology_changed"": false,
+  ""geometry_gap_proven"": false,
+  ""tripo_credits"": 0
+}
+");
             AssetLibraryReprocessingPassV1.Enabled=true;
         }
 
