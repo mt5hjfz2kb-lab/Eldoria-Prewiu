@@ -1,13 +1,13 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "enabled": true,
-  "mode": "surface_rescue",
-  "asset": "StreetLandingTransition",
-  "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
-  "surface_profile": "rock",
-  "target_triangles": 49800,
-  "min_triangles": 49500,
-  "max_triangles": 50000,
-  "goal": "replace flat untextured historical material with deterministic Eldoria rock PBR while preserving geometry; remains visual overlay only",
+  "mode": "surface_rescue_batch",
+  "assets": [
+    {"asset":"ResidentialTerraceRock","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb","surface_profile":"rock"},
+    {"asset":"RockTerrainSeamFiller","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb","surface_profile":"rock"},
+    {"asset":"TowerWallRock","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb","surface_profile":"rock"}
+  ],
+  "triangle_gate": {"target": 49800, "min": 1, "max": 100000},
+  "goal": "author deterministic Eldoria rock PBR on the remaining flat/no-texture rescued historical support assets without geometry decimation or gameplay changes",
   "tripo_credits": 0
 }
