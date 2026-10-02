@@ -211,7 +211,7 @@ namespace Eldoria.Presentation
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
-            if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);\n            AssetLibraryReprocessingPassV1.Build(root,state);
+            if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);\n            // ASSET LIBRARY REPROCESSING PASS v1 — zero-spend existing-library proof.\n            AssetLibraryReprocessingPassV1.Build(root,state);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
