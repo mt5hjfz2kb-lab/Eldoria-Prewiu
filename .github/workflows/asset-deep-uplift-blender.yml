@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           test "$(jq -r '.enabled' pipeline/asset-deep-uplift-run-request.json)" = "true"
-          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "surface_rescue"
+          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "surface_rescue_batch"
           test "$(jq -r '.tripo_credits' pipeline/asset-deep-uplift-run-request.json)" = "0"
       - name: Install Blender
         shell: bash
@@ -30,31 +30,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy
           blender --version
-      - name: Build PBR rescue candidate
+      - name: Build rescued PBR candidates
         shell: bash
         run: |
-          asset="$(jq -r '.asset' pipeline/asset-deep-uplift-run-request.json)"
-          input="$(jq -r '.input' pipeline/asset-deep-uplift-run-request.json)"
-          profile="$(jq -r '.surface_profile' pipeline/asset-deep-uplift-run-request.json)"
-          target="$(jq -r '.target_triangles' pipeline/asset-deep-uplift-run-request.json)"
-          mintri="$(jq -r '.min_triangles' pipeline/asset-deep-uplift-run-request.json)"
-          maxtri="$(jq -r '.max_triangles' pipeline/asset-deep-uplift-run-request.json)"
           mkdir -p deep-uplift-evidence
-          test -f "$input"
-          blender --background --python tools/tripo_module_blender.py -- \
-            --input "$input" \
-            --output "deep-uplift-evidence/${asset}-PBRRescue.glb" \
-            --report "deep-uplift-evidence/${asset}-PBRRescue-report.json" \
-            --surface-rescue-profile "$profile" \
-            --target-tris "$target" \
-            --min-tris "$mintri" \
-            --max-tris "$maxtri"
-          test -s "deep-uplift-evidence/${asset}-PBRRescue.glb"
-          test -s "deep-uplift-evidence/${asset}-PBRRescue-report.json"
-          sha256sum "$input" > "deep-uplift-evidence/${asset}-source.sha256"
-          sha256sum "deep-uplift-evidence/${asset}-PBRRescue.glb" > "deep-uplift-evidence/${asset}-candidate.sha256"
+          target="$(jq -r '.triangle_gate.target' pipeline/asset-deep-uplift-run-request.json)"
+          mintri="$(jq -r '.triangle_gate.min' pipeline/asset-deep-uplift-run-request.json)"
+          maxtri="$(jq -r '.triangle_gate.max' pipeline/asset-deep-uplift-run-request.json)"
+          jq -c '.assets[]' pipeline/asset-deep-uplift-run-request.json | while read -r row; do
+            asset="$(echo "$row" | jq -r '.asset')"
+            input="$(echo "$row" | jq -r '.input')"
+            profile="$(echo "$row" | jq -r '.surface_profile')"
+            test -f "$input"
+            blender --background --python tools/tripo_module_blender.py -- \
+              --input "$input" \
+              --output "deep-uplift-evidence/${asset}-PBRRescue.glb" \
+              --report "deep-uplift-evidence/${asset}-PBRRescue-report.json" \
+              --surface-rescue-profile "$profile" \
+              --target-tris "$target" \
+              --min-tris "$mintri" \
+              --max-tris "$maxtri"
+            test -s "deep-uplift-evidence/${asset}-PBRRescue.glb"
+            test -s "deep-uplift-evidence/${asset}-PBRRescue-report.json"
+            sha256sum "$input" > "deep-uplift-evidence/${asset}-source.sha256"
+            sha256sum "deep-uplift-evidence/${asset}-PBRRescue.glb" > "deep-uplift-evidence/${asset}-candidate.sha256"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: asset-deep-uplift-street-landing-transition-pbr-rescue
+          name: asset-deep-uplift-remaining-rescued-pbr
           path: deep-uplift-evidence/
           if-no-files-found: error
