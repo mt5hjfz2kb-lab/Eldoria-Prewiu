@@ -1,20 +1,20 @@
-name: "[CERTIFY] Asset Library Reprocessing Pass v1 Final"
+name: "[CERT] Asset Library Reprocessing Pass v1 final"
 
 on:
   push:
     branches: [visual-proof/asset-library-reprocessing-pass-v1]
     paths:
-      - '.github/workflows/asset-library-reprocessing-final-cert.yml'
+      - 'pipeline/validation/asset-library-reprocessing-final-cert.txt'
 
 permissions:
   contents: read
 
 concurrency:
-  group: eldoria-asset-library-reprocessing-final-cert
-  cancel-in-progress: false
+  group: eldoria-asset-library-reprocessing-v1-final-cert
+  cancel-in-progress: true
 
 jobs:
-  capture:
+  final-cert:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 20
@@ -29,36 +29,46 @@ jobs:
               Sort-Object Name -Descending |
               ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
               Where-Object { Test-Path $_ } | Select-Object -First 1
-            if(-not $candidate){throw 'Git not found.'}
-            $dir=Split-Path $candidate
-            Add-Content -Path $env:GITHUB_PATH -Value $dir
-            $env:PATH="$dir;$env:PATH"
+            if(-not $candidate){ throw 'Git not found.' }
+            $dir=Split-Path $candidate; Add-Content -Path $env:GITHUB_PATH -Value $dir; $env:PATH="$dir;$env:PATH"
           }
           git --version
       - uses: actions/checkout@v4
         with:
           clean: false
+      - name: Verify persisted certified Hero Bastion
+        shell: powershell
+        run: |
+          $path="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\HeroBastionGenerated\Valoria_HeroBastion_v1.glb"
+          $expected='afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c'
+          $expectedBytes=13257704
+          if(-not(Test-Path $path)){throw 'Persisted Hero Bastion is missing.'}
+          $actual=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes=(Get-Item $path).Length
+          if($actual -ne $expected){throw "Persisted Hero Bastion SHA mismatch: $actual"}
+          if($bytes -ne $expectedBytes){throw "Persisted Hero Bastion size mismatch: $bytes"}
+          Write-Host "PERSISTED_HERO_BASTION_CERTIFIED sha256=$actual bytes=$bytes"
       - name: Verify Unity
         shell: powershell
         run: |
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_PATH not found'}
-          $v=& $env:UNITY_EDITOR_PATH -version
-          if($v -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $v"}
-      - name: Capture final matched proof
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $version"}
+      - name: Capture final real Valoria proof
         shell: powershell
         run: |
           $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingCaptures"
-          $log="$env:RUNNER_TEMP\Eldoria-AssetLibraryReprocessingFinal.log"
+          $log="$env:RUNNER_TEMP\Eldoria-AssetLibraryReprocessing-Final.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.AssetLibraryReprocessingPassV1Gate.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(15)
           while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
-          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;if(Test-Path $log){Get-Content $log -Tail 240};throw 'Final certification timed out.'}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;if(Test-Path $log){Get-Content $log -Tail 260};throw 'Final capture timed out.'}
           $p.Refresh()
-          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "Final certification failed: $($p.ExitCode)"}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 320};throw "Final gate failed: $($p.ExitCode)"}
           $expected=@('before-19.png','before-12.png','before-9.png','before-mobile-390x844.png','after-19.png','after-12.png','after-9.png','after-mobile-390x844.png','evidence.json')
-          foreach($n in $expected){$x=Join-Path $folder $n;if(-not(Test-Path $x)){throw "Missing $n"}}
+          foreach($name in $expected){$path=Join-Path $folder $name;if(-not(Test-Path $path)){throw "Missing final evidence: $name"}}
           Get-Content (Join-Path $folder 'evidence.json')
       - uses: actions/upload-artifact@v4
         if: always()
@@ -66,6 +76,6 @@ jobs:
           name: asset-library-reprocessing-final-${{ github.run_id }}
           path: |
             Unity/AssetLibraryReprocessingCaptures/*
-            ${{ runner.temp }}/Eldoria-AssetLibraryReprocessingFinal.log
+            ${{ runner.temp }}/Eldoria-AssetLibraryReprocessing-Final.log
           if-no-files-found: warn
           retention-days: 30
