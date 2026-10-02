@@ -15,6 +15,7 @@ namespace Eldoria.Presentation
         public static void Build(Transform parent, PlayerState state)
         {
             if(!Enabled || parent==null || state==null || state.BastionLevel<3) return;
+            if(GameObject.Find("Valoria · AssetLibrary Reprocessing v1 · visual only")!=null) return;
             var root = new GameObject("Valoria · AssetLibrary Reprocessing v1 · visual only").transform;
             root.SetParent(parent,true);
 
