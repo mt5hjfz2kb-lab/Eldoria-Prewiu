@@ -33,13 +33,18 @@ namespace Eldoria.Presentation
             var mr=go.AddComponent<MeshRenderer>();
             mf.sharedMesh=mesh;
 
-            var earth=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "dirt",new Color(.30f,.265f,.21f,1f),new Vector2(3.6f,3.6f),.016f,.96f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.30f,.265f,.21f,1f),"earth",new Vector2(3.6f,3.6f),.96f);
+            var art=ValoriaExternalAssetLibrary.Load();
+            var mudSource=art!=null&&art.SlavicMudFlat!=null
+                ?art.SlavicMudFlat.GetComponentInChildren<Renderer>(true)?.sharedMaterial
+                :art?.ValoriaDirtSurface;
+            var rockSource=art!=null&&art.SlavicFlatRock!=null
+                ?art.SlavicFlatRock.GetComponentInChildren<Renderer>(true)?.sharedMaterial
+                :art?.ValoriaStoneSurface;
 
-            var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.31f,.31f,.285f,1f),new Vector2(3.0f,3.0f),.018f,1.02f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.31f,.285f,1f),"stone",new Vector2(3.0f,3.0f),1.02f);
+            var earth=ValoriaKit.PbrSurfaceMaterial(
+                mudSource,new Color(.72f,.68f,.58f,1f),new Vector2(5.2f,5.2f),.018f,.95f);
+            var rock=ValoriaKit.PbrSurfaceMaterial(
+                rockSource,new Color(.70f,.69f,.64f,1f),new Vector2(4.4f,4.4f),.022f,1.08f);
 
             mr.sharedMaterials=new[]{earth,rock};
 
