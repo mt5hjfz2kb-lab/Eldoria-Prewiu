@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:43:00Z",
+  "updated_at": "2026-10-02T10:45:00Z",
   "active": [
     {
       "id": "asset-library-canonicalization-v1",
@@ -35,7 +35,8 @@
         "pipeline/valoria-reference-convergence-v2-request.json",
         "pipeline/art-production-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaReferenceConvergenceGateV2.cs",
-        ".github/workflows/valoria-reference-convergence-v2.yml"
+        ".github/workflows/valoria-reference-convergence-v2.yml",
+        ".github/workflows/art-production-plan.yml"
       ],
       "resources": [
         "valoria-production-composition"
