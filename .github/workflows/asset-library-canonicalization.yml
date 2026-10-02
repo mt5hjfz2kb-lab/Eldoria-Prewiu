@@ -1,10 +1,5 @@
 name: Asset Library Canonicalization
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - pipeline/asset-library-canonicalization-request.json
   workflow_dispatch:
 permissions:
   contents: write
