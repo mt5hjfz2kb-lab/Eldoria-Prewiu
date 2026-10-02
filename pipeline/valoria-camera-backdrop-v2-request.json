@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-backdrop-v2",
+  "objective": "Refine the successful Alps Field backdrop with higher mountain/sky crops, cooler/desaturated tint and atmospheric seam haze so the photographic source integrates with Valoria's stylized semi-realistic frame.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "composition_and_mass",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "proof_only": true,
+    "preserve_camera": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "12_candidates",
+    "desktop",
+    "mobile",
+    "haze_on_off",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
