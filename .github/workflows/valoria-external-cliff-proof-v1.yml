@@ -101,6 +101,19 @@ jobs:
           if(!gltfs.length) throw new Error('No glTF found after downloading selected Poly Haven candidate');
 
           const gltfPath=gltfs[0];
+          const includeUrls=new Map();
+          function collectIncludeUrls(v){
+            if(!v||typeof v!=='object') return;
+            if(typeof v.url==='string'){
+              const u=new URL(v.url);
+              const name=decodeURIComponent(path.basename(u.pathname));
+              if(name) includeUrls.set(name,v.url);
+            }
+            if(Array.isArray(v)){v.forEach(collectIncludeUrls);return;}
+            for(const x of Object.values(v)) collectIncludeUrls(x);
+          }
+          collectIncludeUrls(chosen.node);
+
           const gltfUrl=/\.gltf(?:\?|$)/i.test(chosen.url)?new URL(chosen.url):null;
           if(gltfUrl){
             const gltf=JSON.parse(fs.readFileSync(gltfPath,'utf8'));
@@ -115,8 +128,13 @@ jobs:
               if(fs.existsSync(target)) continue;
               fs.mkdirSync(path.dirname(target),{recursive:true});
               const remote=new URL(uri,gltfUrl).href;
-              const r=await fetch(remote,{headers});
-              if(!r.ok) throw new Error('dependency '+uri+' '+r.status);
+              let r=await fetch(remote,{headers});
+              if(!r.ok){
+                const fallback=includeUrls.get(path.basename(decodeURIComponent(uri)));
+                if(!fallback) throw new Error('dependency '+uri+' '+r.status+' and no API include fallback');
+                r=await fetch(fallback,{headers});
+              }
+              if(!r.ok) throw new Error('dependency '+uri+' fallback '+r.status);
               fs.writeFileSync(target,Buffer.from(await r.arrayBuffer()));
             }
           }
