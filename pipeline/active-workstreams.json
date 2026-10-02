@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T20:05:00Z",
+  "updated_at": "2026-10-02T20:14:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -47,13 +47,20 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaPanoramicSkyCandidateGateV1.cs",
         ".github/workflows/valoria-panoramic-sky-candidate-v1.yml",
-        "pipeline/valoria-panoramic-sky-candidate-v1-request.json"
+        "pipeline/valoria-panoramic-sky-candidate-v1-request.json",
+        ".github/workflows/valoria-surface-cell-proof.yml",
+        ".github/workflows/valoria-coherent-castle-proof.yml",
+        ".github/workflows/valoria-slavic-district-proof.yml",
+        ".github/workflows/valoria-visual-formula.yml",
+        ".github/workflows/world-map-visual-formula.yml",
+        ".github/workflows/unity-slice.yml"
       ],
       "resources": [
         "valoria-production-composition",
         "art-production-planner",
         "windows-runner-heavy",
-        "unity-owner-publish"
+        "unity-owner-publish",
+        "runner-trigger-governance"
       ],
       "status": "active",
       "claimed_at": "2026-10-02T19:20:00Z",
