@@ -26,7 +26,6 @@ namespace Eldoria.Presentation
 
             BuildMonumentalFrame(root,art);
             BuildCliffEnvelope(root);
-            BuildWorldGroundEnvelope(root);
             BuildLateralMargins(root,art);
             BuildMountainHorizon(root);
             BuildVegetationDepth(root,art);
@@ -48,41 +47,6 @@ namespace Eldoria.Presentation
             // Iteration 13: legacy SM_Cliffs are excluded from the convergence pass.
             // Their mixed grass/rock materials created flat green wedges at official camera distance.
             // The lateral world envelope is now authored only from the certified PBR Terrain & Terrace Kit below.
-        }
-
-        static void BuildWorldGroundEnvelope(Transform root)
-        {
-            // Iteration 14: close the visible prototype/grid floor around the compact city without expanding it.
-            // These are visual-only low ground shoulders placed outside the playable core.
-            AddGroundPatch(root,"left world ground",new Vector3(-17.2f,-.10f,4.0f),new Vector3(14.0f,.18f,29.0f),new Color(.31f,.33f,.29f,1f));
-            AddGroundPatch(root,"right world ground",new Vector3(17.0f,-.10f,4.2f),new Vector3(14.0f,.18f,29.0f),new Color(.31f,.33f,.29f,1f));
-            AddGroundPatch(root,"rear world ground",new Vector3(0f,-.11f,18.3f),new Vector3(23.0f,.18f,10.5f),new Color(.34f,.35f,.31f,1f));
-            AddGroundPatch(root,"front west ground",new Vector3(-9.2f,-.11f,-8.2f),new Vector3(17.5f,.18f,7.5f),new Color(.35f,.34f,.28f,1f));
-            AddGroundPatch(root,"front east ground",new Vector3(9.0f,-.11f,-8.0f),new Vector3(17.5f,.18f,7.5f),new Color(.35f,.34f,.28f,1f));
-        }
-
-        static void AddGroundPatch(Transform root,string role,Vector3 position,Vector3 scale,Color color)
-        {
-            var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.name="Valoria · Reference Convergence v2 · "+role;
-            go.transform.SetParent(root,true);
-            go.transform.position=position;
-            go.transform.localScale=scale;
-
-            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            if(shader!=null)
-            {
-                var m=new Material(shader){name="Valoria Reference v2 · world ground"};
-                if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",color);
-                if(m.HasProperty("_Color"))m.SetColor("_Color",color);
-                if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.025f);
-                var r=go.GetComponent<Renderer>();
-                if(r!=null)r.sharedMaterial=m;
-            }
-
-            var c=go.GetComponent<Collider>();
-            if(c!=null)c.enabled=false;
         }
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
@@ -174,8 +138,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.60f,.67f,.71f);
-            RenderSettings.fogStartDistance=22f;
-            RenderSettings.fogEndDistance=58f;
+            RenderSettings.fogStartDistance=20f;
+            RenderSettings.fogEndDistance=52f;
 
             var camera=Camera.main;
             if(camera!=null)
