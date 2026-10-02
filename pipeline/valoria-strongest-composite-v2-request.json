@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate the strongest integrated Valoria frame with organic lower-city terrain using corrected low-frequency Eldoria PBR materials and world-proportional UVs; reject Slavic prefab atlas material reuse.",
+  "objective": "Validate compact organic lower-city terrain v3: continuous eroded substrate, localized support under gameplay/secondary-building anchors, corrected Eldoria PBR materials, and reduced flat-board read.",
   "route": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:20:00+02:00",
-  "retry_reason": "prior authored Slavic prefab material produced atlas/checkerboard corruption on generated terrain; corrected material and UV mapping",
-  "retry_seq": 2
+  "triggered_at": "2026-10-03T01:34:00+02:00",
+  "retry_reason": "External cliff geometry proof was TECH PASS but visual FAIL due disconnected repeated rock faces; return to continuous organic terrain with compact support footprint.",
+  "retry_seq": 3
 }
