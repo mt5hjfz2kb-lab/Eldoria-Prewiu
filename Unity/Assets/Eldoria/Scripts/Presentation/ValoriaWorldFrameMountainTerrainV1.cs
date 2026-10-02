@@ -31,6 +31,7 @@ namespace Eldoria.Presentation
 
         static void BuildContinuousValley(Transform root,Material material)
         {
+            // Review iteration: balanced side walls + open central saddle; geometry unchanged by proof trigger.
             const int cols=81;
             const int rows=73;
             const float xMin=-27f,xMax=27f,zMin=-14f,zMax=33f;
