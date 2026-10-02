@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-secondary-architecture-replacement-v1",
+  "objective": "Replace the whole visible generic orange-roof secondary architecture family with a compact neutral premium family from existing licensed Slavic prefabs, judged at the stronger 9.1 camera framing.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "architecture_coherence",
+    "composition_and_mass",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "proof_only": true,
+    "preserve_bastion": true,
+    "preserve_functional_buildings": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "before_after"
+  ]
+}
