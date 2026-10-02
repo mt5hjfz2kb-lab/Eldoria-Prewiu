@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
             if(valleyShader!=null)
             {
                 valleyDirt=new Material(valleyShader){name="Valoria Reference v2 · matte world valley"};
-                var valleyColor=new Color(.245f,.255f,.235f,1f);
+                var valleyColor=new Color(.275f,.285f,.255f,1f);
                 if(valleyDirt.HasProperty("_BaseColor"))valleyDirt.SetColor("_BaseColor",valleyColor);
                 if(valleyDirt.HasProperty("_Color"))valleyDirt.SetColor("_Color",valleyColor);
                 if(valleyDirt.HasProperty("_Metallic"))valleyDirt.SetFloat("_Metallic",0f);
@@ -111,35 +111,10 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 29: reuse the certified visual-only heightfield only as side/rear world relief.
-                    // The inhabited centre and the entire foreground are flattened below the valley floor;
-                    // relief fades in gradually beyond the compact city, preventing any visible map corona.
-                    renderer.enabled=true;
-                    renderer.sharedMaterial=valleyDirt??dirt;
-
-                    var mf=renderer.GetComponent<MeshFilter>();
-                    if(mf!=null && mf.sharedMesh!=null)
-                    {
-                        var source=mf.sharedMesh;
-                        var mesh=Object.Instantiate(source);
-                        mesh.name=source.name+" · convergence side-rear relief";
-                        var verts=mesh.vertices;
-                        const float flatY=-.20f;
-                        for(int i=0;i<verts.Length;i++)
-                        {
-                            var v=verts[i];
-                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-13.5f)/10.5f));
-                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-12.0f)/14.0f));
-                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+2.0f)/6.0f));
-                            float relief=Mathf.Max(side*frontGate,rear);
-                            v.y=Mathf.Lerp(flatY,v.y,relief);
-                            verts[i]=v;
-                        }
-                        mesh.vertices=verts;
-                        mesh.RecalculateNormals();
-                        mesh.RecalculateBounds();
-                        mf.sharedMesh=mesh;
-                    }
+                    // Iteration 30: reject the procedural heightfield for convergence framing.
+                    // Even with a flattened centre it exposes large diagonal surfaces at zoom 12.
+                    // Keep it fully visual-only and hidden; framing is built from certified PBR rock assets below.
+                    renderer.enabled=false;
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
@@ -176,49 +151,50 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 14: stronger PBR world framing, still no city-width expansion.
-            // Build asymmetrical rocky shoulders that enter the official frame edges and hide the open-board silhouette.
+            // Iteration 30: layered certified PBR rock frame only.
+            // Build continuous side/rear world mass without widening the playable city.
 
+            // West curtain.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left foreground PBR shoulder",new Vector3(-11.9f,.18f,-3.2f),10.2f,18f,new Color(.45f,.46f,.44f,1f));
+                "west foreground rock mass",new Vector3(-14.6f,.55f,-3.5f),10.8f,18f,new Color(.43f,.44f,.42f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "west mid cliff mass",new Vector3(-14.8f,2.15f,3.0f),8.6f,84f,new Color(.42f,.43f,.41f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "right foreground PBR shoulder",new Vector3(12.7f,.08f,-2.4f),9.0f,208f,new Color(.45f,.46f,.44f,1f));
-
+                "west upper shelf mass",new Vector3(-14.2f,3.15f,9.2f),9.4f,40f,new Color(.44f,.45f,.43f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "left mid PBR cliff",new Vector3(-12.8f,1.35f,4.6f),6.0f,88f,new Color(.44f,.45f,.43f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right mid PBR cliff",new Vector3(13.3f,1.15f,5.4f),5.5f,272f,new Color(.44f,.45f,.43f,1f));
+                "west rear cliff mass",new Vector3(-12.2f,4.15f,15.0f),7.2f,128f,new Color(.41f,.42f,.40f,1f));
 
+            // East curtain, intentionally asymmetric.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left rear PBR shelf",new Vector3(-10.9f,.95f,10.8f),7.0f,42f,new Color(.46f,.47f,.45f,1f));
+                "east foreground rock mass",new Vector3(15.0f,.40f,-2.8f),9.8f,208f,new Color(.43f,.44f,.42f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
+                "east mid cliff mass",new Vector3(14.9f,1.95f,3.8f),8.2f,278f,new Color(.42f,.43f,.41f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "east upper shelf mass",new Vector3(14.0f,2.85f,9.8f),8.8f,222f,new Color(.44f,.45f,.43f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "east rear cliff mass",new Vector3(11.8f,3.95f,15.4f),7.0f,236f,new Color(.41f,.42f,.40f,1f));
 
-            // Iteration 18: authored edge occupation using shader-safe non-foliage props only.
-            // These enrich the world margins without widening the playable city or reintroducing unsafe tree LODs.
-            if(art!=null)
+            // Rear shoulders close the empty horizon while preserving an open Bastion silhouette.
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "rear west shoulder",new Vector3(-8.3f,3.0f,17.0f),8.4f,28f,new Color(.43f,.44f,.42f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "rear east shoulder",new Vector3(8.6f,2.8f,17.3f),8.0f,206f,new Color(.43f,.44f,.42f,1f));
+
+            if(art!=null && art.SlavicBoulder!=null)
             {
-                if(art.SlavicBoulder!=null)
-                {
-                    var rocks=new[]{
-                        new Vector3(-14.6f,.02f,-3.6f),new Vector3(-13.7f,.02f,1.2f),new Vector3(-14.4f,.02f,6.2f),new Vector3(-12.5f,.02f,11.8f),
-                        new Vector3(14.5f,.02f,-3.0f),new Vector3(13.6f,.02f,1.8f),new Vector3(14.2f,.02f,6.8f),new Vector3(12.7f,.02f,12.1f)
-                    };
-                    for(int i=0;i<rocks.Length;i++)
-                        AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
-                            1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
-                }
+                var rocks=new[]{
+                    new Vector3(-13.8f,.10f,-1.2f),new Vector3(-13.2f,.15f,4.7f),new Vector3(-12.7f,.20f,10.4f),
+                    new Vector3(13.9f,.10f,-.7f),new Vector3(13.0f,.15f,5.1f),new Vector3(12.5f,.20f,10.8f)
+                };
+                for(int i=0;i<rocks.Length;i++)
+                    AddPrefab(root,art.SlavicBoulder,"layered frame boulder "+i,rocks[i],
+                        1.55f+(i%3)*.18f,1.10f+(i%2)*.12f,(i*47)%360,new Color(.43f,.44f,.42f,1f),true);
             }
-
-            // Do not add pass-owned foliage: the base scene already provides vegetation and
-            // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
         }
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 28: no pass-owned mountains.
-            // The available legacy mountain mesh reads as an isolated low-poly pyramid at review distance.
-            // Keep the central silhouette clean and use atmosphere to suppress distant prototype scatter.
+            // Iteration 30: no legacy mountain proxy. The certified layered PBR rock frame owns world mass.
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
@@ -249,8 +225,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.52f,.61f,.66f);
-            RenderSettings.fogStartDistance=24f;
-            RenderSettings.fogEndDistance=72f;
+            RenderSettings.fogStartDistance=26f;
+            RenderSettings.fogEndDistance=78f;
 
             var camera=Camera.main;
             if(camera!=null)
