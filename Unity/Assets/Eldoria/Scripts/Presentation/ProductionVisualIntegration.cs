@@ -1472,7 +1472,7 @@ namespace Eldoria.Presentation
         {
             // Visual-only blank-canvas landform. Gameplay floors/colliders stay authoritative above it.
             const int nx=49,nz=49;
-            const float minX=-52f,maxX=52f,minZ=-42f,maxZ=58f;
+            const float minX=-40f,maxX=40f,minZ=-31f,maxZ=45f;
             var vertices=new Vector3[nx*nz];
             var uv=new Vector2[vertices.Length];
             var triangles=new int[(nx-1)*(nz-1)*6];
@@ -1484,13 +1484,13 @@ namespace Eldoria.Presentation
                 {
                     float tx=x/(float)(nx-1);
                     float wx=Mathf.Lerp(minX,maxX,tx);
-                    float left=Mathf.Clamp01((-wx-10f)/31f);
-                    float right=Mathf.Clamp01((wx-12f)/30f);
-                    float rear=Mathf.Clamp01((wz-9f)/39f);
-                    float front=Mathf.Clamp01((-wz-17f)/22f);
-                    float westShoulder=Mathf.Exp(-((wx+22f)*(wx+22f))/170f-((wz-9f)*(wz-9f))/520f)*2.8f;
-                    float eastShoulder=Mathf.Exp(-((wx-25f)*(wx-25f))/230f-((wz-15f)*(wz-15f))/620f)*3.7f;
-                    float rearRidge=Mathf.Exp(-(wx*wx)/760f-((wz-34f)*(wz-34f))/190f)*4.3f;
+                    float left=Mathf.Clamp01((-wx-9f)/23f);
+                    float right=Mathf.Clamp01((wx-11f)/22f);
+                    float rear=Mathf.Clamp01((wz-8f)/28f);
+                    float front=Mathf.Clamp01((-wz-14f)/16f);
+                    float westShoulder=Mathf.Exp(-((wx+17f)*(wx+17f))/105f-((wz-7f)*(wz-7f))/310f)*3.2f;
+                    float eastShoulder=Mathf.Exp(-((wx-19f)*(wx-19f))/135f-((wz-10f)*(wz-10f))/360f)*3.6f;
+                    float rearRidge=Mathf.Exp(-(wx*wx)/460f-((wz-27f)*(wz-27f))/145f)*4.0f;
                     float centralShelf=Mathf.Exp(-(wx*wx)/185f-((wz-1f)*(wz-1f))/430f);
                     float rise=left*left*3.8f+right*right*4.4f+rear*rear*3.0f+front*front*1.6f+
                                westShoulder+eastShoulder+rearRidge;
