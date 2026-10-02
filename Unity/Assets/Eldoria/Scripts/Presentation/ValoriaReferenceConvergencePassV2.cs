@@ -74,6 +74,28 @@ namespace Eldoria.Presentation
             }
         }
 
+        static void SuppressPrototypeGroundSurfaces()
+        {
+            // Iteration 15: remove only the visible renderers of oversized planning/prototype ground.
+            // Colliders, transforms, names, progression and interaction remain untouched.
+            var exactNames=new HashSet<string>(StringComparer.Ordinal)
+            {
+                "Valoria · valley floor",
+                "VPD · west expansion terrain",
+                "VPD · east expansion terrain",
+                "VPD · future valley shelf",
+                "VPD · west authored apron",
+                "VPD · east authored apron"
+            };
+
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null || r.gameObject==null)continue;
+                if(exactNames.Contains(r.gameObject.name))
+                    r.enabled=false;
+            }
+        }
+
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
             // Iteration 14: stronger PBR world framing, still no city-width expansion.
