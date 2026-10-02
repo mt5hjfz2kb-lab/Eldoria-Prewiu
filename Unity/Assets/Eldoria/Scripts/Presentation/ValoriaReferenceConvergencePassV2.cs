@@ -26,6 +26,7 @@ namespace Eldoria.Presentation
 
             BuildMonumentalFrame(root,art);
             BuildCliffEnvelope(root);
+            RefitWorldGroundSurfaces();
             BuildLateralMargins(root,art);
             BuildMountainHorizon(root);
             BuildVegetationDepth(root,art);
@@ -47,6 +48,30 @@ namespace Eldoria.Presentation
             // Iteration 13: legacy SM_Cliffs are excluded from the convergence pass.
             // Their mixed grass/rock materials created flat green wedges at official camera distance.
             // The lateral world envelope is now authored only from the certified PBR Terrain & Terrace Kit below.
+        }
+
+        static void RefitWorldGroundSurfaces()
+        {
+            // Iteration 15: remove the board/grid read at its source.
+            // Large irregular ground meshes inherited the generic procedural stone pattern;
+            // at world scale it tiles visibly. Re-skin visual renderers only; geometry,
+            // colliders, hotspots and gameplay topology remain untouched.
+            var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
+                new Color(.70f,.66f,.56f,1f),new Vector2(18f,18f),.018f,.92f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.33f,.30f,.24f,1f),"earth",new Vector2(18f,18f),.80f);
+            var terrace=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
+                new Color(.78f,.72f,.61f,1f),new Vector2(10f,10f),.018f,.96f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.38f,.34f,.27f,1f),"earth",new Vector2(10f,10f),.85f);
+
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
+                string n=renderer.gameObject.name;
+                if(n=="Valoria · valley floor"||n=="VPD · inhabited mountain floor")
+                    renderer.sharedMaterial=dirt;
+                else if(n=="VPD · lower terrace earth"||n=="VPD · upper terrace earth")
+                    renderer.sharedMaterial=terrace;
+            }
         }
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
