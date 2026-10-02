@@ -99,7 +99,7 @@ namespace Eldoria.Presentation
             var cloth=GameObject.CreatePrimitive(PrimitiveType.Cube);
             cloth.name="Valoria · Cliff Cleanup · military banner";
             cloth.transform.SetParent(root,true);cloth.transform.position=p;cloth.transform.localScale=new Vector3(.34f,1.0f,.06f);
-            cloth.GetComponent<Renderer>().sharedMaterial=ValoriaKit.Material(new Color(.10f,.22f,.38f,1f));
+            cloth.GetComponent<Renderer>().sharedMaterial=ValoriaKit.Material(new Color(.12f,.34f,.58f,1f));
             var c=cloth.GetComponent<Collider>();if(c!=null)c.enabled=false;
         }
 
