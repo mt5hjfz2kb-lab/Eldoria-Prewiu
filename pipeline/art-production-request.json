@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "example-disabled",
-  "asset_or_sector": "Valoria",
+  "enabled": true,
+  "request_id": "valoria-master-visual-rebuild-v2",
+  "asset_or_sector": "Valoria master visual rebuild v2 blank-canvas composition",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -19,7 +19,7 @@
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": false
+    "unity_terrain_blending": true
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Disabled template. Zero-spend by default."
+  "notes": "Blank-canvas visual composition using the existing library only. Preserve gameplay/topology. Design mountain/terraces/circulation/reserved growth plots first; existing asset positions have no authority. No new geometry and zero Tripo spend."
 }
