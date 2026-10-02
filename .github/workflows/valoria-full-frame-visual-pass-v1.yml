@@ -1,5 +1,7 @@
 name: "[EXPERIMENT] Valoria Full-Frame Visual Pass v1"
 on:
+  push:
+    branches: ['visual-proof/valoria-full-frame-visual-pass-v1']
   workflow_dispatch:
 
 permissions:
