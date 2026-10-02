@@ -1,13 +1,6 @@
 name: "[EXPERIMENT] Valoria Master Visual Rebuild v2"
 
 on:
-  push:
-    branches: ['visual-proof/valoria-master-visual-rebuild-v2']
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaMasterVisualRebuildV2Gate.cs'
-      - 'pipeline/art-production-request.json'
-      - '.github/workflows/valoria-master-visual-rebuild-v2.yml'
   workflow_dispatch:
 
 permissions:
