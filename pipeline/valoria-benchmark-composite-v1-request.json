@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-benchmark-composite-v1",
+  "objective": "Validate one integrated benchmark-facing frame combining accepted Open Valley cleanup, accepted compact architecture, accepted foreground edge, selected Alps Field camera backdrop crop 5, and removal of the obsolete dark rescued hero flank.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "atmosphere_horizon_depth",
+    "lighting_and_value_hierarchy",
+    "terrain_and_transitions"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
