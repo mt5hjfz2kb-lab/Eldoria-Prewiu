@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-external-cliff-proof-v1",
+  "objective": "Test a zero-cost CC0 production-quality cliff model family as the continuous lower-city terrain edge around Valoria, replacing fragmented prototype support geometry while preserving gameplay authority.",
+  "route": "external_cc0_environment_geometry",
+  "external_asset": {
+    "name": "Rock Face 02",
+    "provider": "Poly Haven",
+    "asset_id": "rock_face_02",
+    "license": "CC0",
+    "source_page": "https://polyhaven.com/a/rock_face_02",
+    "runtime_persistence": false
+  },
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ],
+  "triggered_at": "2026-10-03T01:21:00+02:00"
+}
