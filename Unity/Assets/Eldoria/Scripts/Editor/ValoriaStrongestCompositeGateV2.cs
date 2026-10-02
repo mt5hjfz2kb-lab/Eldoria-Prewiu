@@ -81,6 +81,8 @@ namespace Eldoria.EditorTools
             int ruins=0;
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
+            ValoriaLowerCityPlateauV1.Enabled=true;
+            ValoriaLowerCityPlateauV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -92,6 +94,7 @@ namespace Eldoria.EditorTools
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
                 $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
                 $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
+                $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
