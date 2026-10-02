@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-cliff-island-reframe-v1",
+  "objective": "Replace the broad visual ground sheet with a compact stepped cliff/island around the playable core so valley/mountain background can appear immediately around Valoria, preserving all invisible gameplay floors and reserved plots.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "background": {
+    "asset": "kiara_3_morning",
+    "backplate_index": 1,
+    "license": "CC0"
+  },
+  "lanes": [
+    "composition_and_mass",
+    "terrain_and_transitions",
+    "atmosphere_horizon_depth",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_reserved_plots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
