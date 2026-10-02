@@ -220,61 +220,6 @@ namespace Eldoria.Presentation
                 "MidTier D1 terrain seam",new Vector3(5.70f,.35f,-3.05f),1.55f,118f,SurfaceFamily.Stone);
         }
 
-        static void ReassembleCompactCoreArchitecture(Transform root)
-        {
-            // Reuse certified Mid-Tier geometry INSIDE the compact nucleus. These are support/civic masses,
-            // not lateral residential expansion, and they stay clear of the deliberately empty future terraces.
-            BuildCoreMass(root,"west",new Vector3(-4.95f,.44f,.35f),10f,false);
-            BuildCoreMass(root,"east",new Vector3(4.95f,.44f,.55f),-10f,true);
-        }
-
-        static void BuildCoreMass(Transform root,string side,Vector3 center,float yaw,bool mirror)
-        {
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "compact core "+side+" buried base",center,2.85f,mirror?174f:6f,SurfaceFamily.Terrain);
-
-            AddMidTierPiece(root,"Piece02","compact core "+side+" primary",
-                center+Rotated(yaw,new Vector3(0f,.03f,0f)),2.42f,3.05f,yaw,
-                new Color(.69f,.65f,.57f,1f));
-            AddMidTierPiece(root,"Piece03","compact core "+side+" secondary",
-                center+Rotated(yaw,new Vector3(mirror?1.20f:-1.20f,.02f,.15f)),1.62f,2.05f,yaw+(mirror?-14f:14f),
-                new Color(.61f,.56f,.48f,1f));
-            AddMidTierPiece(root,"Piece01","compact core "+side+" arched frontage",
-                center+Rotated(yaw,new Vector3(.18f,.02f,1.05f)),1.30f,1.55f,yaw,
-                new Color(.68f,.65f,.58f,1f));
-            AddMidTierPiece(root,"Piece04","compact core "+side+" roof crown",
-                center+Rotated(yaw,new Vector3(.12f,1.68f,-.08f)),1.58f,1.40f,yaw+(mirror?-5f:5f),
-                new Color(.63f,.58f,.50f,1f));
-
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "compact core "+side+" buried seam",
-                center+Rotated(yaw,new Vector3(mirror?-1.20f:1.20f,.02f,-.48f)),
-                1.28f,yaw+(mirror?62f:-62f),SurfaceFamily.Stone);
-        }
-
-        static Vector3 Rotated(float yaw,Vector3 offset)=>Quaternion.Euler(0f,yaw,0f)*offset;
-
-        static void AddMidTierPiece(Transform root,string resource,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
-        {
-            var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+resource);
-            if(source==null)throw new InvalidOperationException("Missing Mid-Tier production resource "+resource);
-            var go=Object.Instantiate(source);go.name="Valoria · AssetLibrary Reprocessing · "+role;
-            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-            var b=Bounds(go);
-            float scale=Mathf.Min(span/Mathf.Max(b.size.x,b.size.z),maxHeight/Mathf.Max(.001f,b.size.y));
-            go.transform.localScale*=scale;b=Bounds(go);
-            go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
-            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
-            {
-                var block=new MaterialPropertyBlock();r.GetPropertyBlock(block);
-                var mat=r.sharedMaterial;
-                if(mat!=null&&mat.HasProperty("_BaseColor"))block.SetColor("_BaseColor",tint);
-                else if(mat!=null&&mat.HasProperty("_Color"))block.SetColor("_Color",tint);
-                r.SetPropertyBlock(block);
-            }
-            go.transform.SetParent(root,true);DisableGameplay(go);
-        }
-
         static void ReassembleTerrainSeams(Transform root)
         {
             // Central supports stay buried and dark; they reinforce vertical progression without becoming pedestals.
@@ -293,8 +238,6 @@ namespace Eldoria.Presentation
         static void AddRestrainedOccupation(Transform root)
         {
             AddWarmLight(root,"Hero approach occupied warmth",new Vector3(0f,2.15f,4.45f),.18f,2.8f);
-            AddWarmLight(root,"Compact core west warmth",new Vector3(-4.95f,1.25f,1.05f),.10f,1.85f);
-            AddWarmLight(root,"Compact core east warmth",new Vector3(4.95f,1.25f,1.15f),.10f,1.85f);
         }
 
         enum SurfaceFamily { Stone, Terrain }
