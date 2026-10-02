@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner for authoritative perspective panorama proof; generic Unity slice runs are redundant for this isolated full-frame visual candidate.",
+  "reason": "Perspective panorama route is visually rejected and is consuming the single heavy Unity runner. Release it for the strongest-composite audit and Mega Architecture Atlas.",
   "runs": [
-    37071415042,
-    37071338444
+    37071425401
   ],
-  "triggered_at": "2026-10-02T22:16:00Z"
+  "triggered_at": "2026-10-02T22:38:00Z"
 }
