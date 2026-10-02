@@ -1425,6 +1425,21 @@ namespace Eldoria.Presentation
                 StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · rock masonry seam",
                     new Vector3(s.x,s.y,s.z),1.85f,s.w);
 
+            // Break the stacked-platform read with certified rescued geological skins.
+            // These are visual-only, partially buried and leave the future plots unobstructed.
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · lower seam west",
+                new Vector3(-5.65f,0,-1.65f),.96f,3.35f,38f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · lower seam east",
+                new Vector3(5.70f,0,-1.55f),.96f,3.30f,322f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · middle seam west",
+                new Vector3(-4.75f,0,2.05f),2.00f,3.05f,62f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · middle seam east",
+                new Vector3(4.78f,0,2.10f),2.00f,3.00f,298f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · crown seam west",
+                new Vector3(-3.95f,0,5.80f),3.08f,2.80f,76f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · crown seam east",
+                new Vector3(3.98f,0,5.82f),3.08f,2.80f,284f);
+
             // Reuse dedicated functional buildings at the two lower work shelves; their actual hotspots remain nearby.
             var saw=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
             var barracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
