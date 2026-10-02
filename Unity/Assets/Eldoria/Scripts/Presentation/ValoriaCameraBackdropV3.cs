@@ -67,7 +67,7 @@ namespace Eldoria.Presentation
 
         static Texture2D BuildStylized(Texture source)
         {
-            const int width=384,height=192;
+            const int width=640,height=320;
             var rt=RenderTexture.GetTemporary(width,height,0,RenderTextureFormat.ARGB32,RenderTextureReadWrite.Linear);
             var prev=RenderTexture.active;
             try
@@ -87,20 +87,20 @@ namespace Eldoria.Presentation
                 for(int y=0;y<height;y++)
                 {
                     float yn=y/(float)(height-1);
-                    float lowerHaze=Mathf.Clamp01((.62f-yn)/.62f)*.28f;
+                    float lowerHaze=Mathf.Clamp01((.62f-yn)/.62f)*.18f;
                     for(int x=0;x<width;x++)
                     {
                         int i=y*width+x;
                         var c=pixels[i];
                         float lum=.2126f*c.r+.7152f*c.g+.0722f*c.b;
                         var grey=new Color(lum,lum,lum,1f);
-                        c=Color.Lerp(grey,c,.44f);
+                        c=Color.Lerp(grey,c,.52f);
                         c=new Color(
-                            .5f+(c.r-.5f)*.72f,
-                            .5f+(c.g-.5f)*.72f,
-                            .5f+(c.b-.5f)*.72f,1f);
+                            .5f+(c.r-.5f)*.80f,
+                            .5f+(c.g-.5f)*.80f,
+                            .5f+(c.b-.5f)*.80f,1f);
                         c=new Color(c.r*.86f,c.g*.91f,c.b*.95f,1f);
-                        c=Color.Lerp(c,haze,lowerHaze+.08f);
+                        c=Color.Lerp(c,haze,lowerHaze+.045f);
                         pixels[i]=c;
                     }
                 }
@@ -129,7 +129,7 @@ namespace Eldoria.Presentation
             for(int y=0;y<256;y++)
             {
                 float t=y/255f;
-                float a=Mathf.Pow(1f-t,2.1f)*.76f;
+                float a=Mathf.Pow(1f-t,2.1f)*.55f;
                 var c=new Color(.52f,.59f,.61f,a);
                 for(int x=0;x<4;x++)pixels[y*4+x]=c;
             }
