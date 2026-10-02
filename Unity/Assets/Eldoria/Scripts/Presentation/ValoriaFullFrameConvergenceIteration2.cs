@@ -165,7 +165,7 @@ namespace Eldoria.Presentation
                 go.name="Valoria · Full Frame v2 · corruption rock "+i;
                 go.transform.position=anchors[i];
                 go.transform.rotation=Quaternion.Euler((i-1)*7f,31f+i*43f,(i-1)*6f);
-                go.transform.localScale*=new Vector3(1.0f,.8f+(.18f*i),1.0f)*(1.8f+i*.28f);
+                go.transform.localScale=Vector3.Scale(go.transform.localScale,new Vector3(1.0f,.8f+(.18f*i),1.0f))*(1.8f+i*.28f);
                 foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
                 foreach(var b in go.GetComponentsInChildren<MonoBehaviour>(true))b.enabled=false;
                 Tint(go,new Color(.31f,.22f,.36f,1f));
