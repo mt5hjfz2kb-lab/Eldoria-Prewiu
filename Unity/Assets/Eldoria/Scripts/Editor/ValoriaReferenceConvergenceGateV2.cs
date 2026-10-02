@@ -116,13 +116,11 @@ namespace Eldoria.EditorTools
             try
             {
                 camera.targetTexture=rt;
-                var warmed=new HashSet<Material>();
-                foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-                    if(r!=null&&r.enabled)
-                        foreach(var m in r.sharedMaterials)
-                            if(m!=null&&warmed.Add(m))
-                                for(int p=0;p<m.passCount;p++)ShaderUtil.CompilePass(m,p,true);
-                camera.Render();camera.Render();
+                // Synchronous rendering is sufficient here. Avoid compiling every pass for every
+                // material before each of the eight captures; that made full-frame convergence gates
+                // scale with the entire library rather than with the visible frame.
+                camera.Render();
+                camera.Render();
                 RenderTexture.active=rt;
                 var image=new Texture2D(width,height,TextureFormat.RGB24,false);
                 image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
