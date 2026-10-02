@@ -14,9 +14,9 @@ This is not a claim that final art quality has been reached. It is a structural/
 
 ## Certified evidence
 
-Final converged run: `36987597562` — **SUCCESS**
-Artifact: `11218102656`
-Digest: `sha256:3cf7cb4b0ad6233a946747f4ce45f3a6d62795d6aa37a6289791152aaa951c21`
+Final converged run: `36987961140` — **SUCCESS**
+Artifact: `11217374327`
+Digest: `sha256:629911d13fb54244cd9afc825b48c2cccd84acd9509fd4febd82839682ade079`
 
 Toolchain Automation v2:
 - profile: `environment_composition`
@@ -29,7 +29,7 @@ Gameplay invariants:
 
 Metrics:
 - current compact baseline: 1,484,527 triangles / 782 renderers / 970 material slots / 22 lights
-- rebuild: 578,599 triangles / 180 renderers / 198 material slots / 4 lights
+- rebuild: 548,919 triangles / 178 renderers / 196 material slots / 4 lights
 
 ## What the blank canvas establishes
 
@@ -45,7 +45,7 @@ Metrics:
 ## Iteration findings
 
 The first blank-canvas render proved the direction but exposed oversized upper wall modules and a fragmented central stair.
-Subsequent iterations replaced the giant wall read with buried rock/masonry transitions, narrowed and connected the processional ascent, rebuilt the surrounding landform, and reduced the wide-camera procedural-board appearance.
+Subsequent iterations replaced the giant wall read with buried rock/masonry transitions, narrowed and connected the processional ascent, rebuilt the surrounding landform, reduced the wide-camera procedural-board appearance, and finally broke the central ladder into an irregular stepped street with distinct civic/gate landings.
 
 ## Verdict
 
