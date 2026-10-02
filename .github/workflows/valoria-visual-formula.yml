@@ -2,18 +2,6 @@ name: Valoria Visual Formula gate
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/valoria-visual-formula.yml'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWorldFrameMountainTerrainV1.cs'
-      - 'Unity/Assets/Eldoria/Resources/WorldInventory/**'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs'
-      - 'Unity/Assets/Eldoria/Resources/Valoria/**'
-      - 'docs/VALORIA_VISUAL_FORMULA_v1.md'
 
 permissions:
   contents: read
