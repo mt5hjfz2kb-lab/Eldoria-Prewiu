@@ -1203,76 +1203,84 @@ namespace Eldoria.Presentation
 
         static void ComposeCompactFootprintReframeV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // Toolchain Automation v2 / environment_composition only.
-            // Existing geometry only: suppress/recompose visual dressing; never touch gameplay authority.
+            // Toolchain Automation v2 / environment_composition — iteration 2.
+            // Existing geometry only: subtract peripheral urban mass, compress the readable core and
+            // expose empty development shelves. Gameplay authority remains untouched.
 
-            // Freeze lateral urban expansion. Remove presentation architecture at the east/west extremes,
-            // while preserving natural terrain, certified circulation, Bastion and all interaction layers.
+            // Freeze lateral urban expansion. Functional buildings keep their presentation, but generic
+            // residential/mid-tier dressing beyond the compact core is hidden from the official frame.
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 var b=r.bounds;string chain="";
                 for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
-                bool lateral=Mathf.Abs(b.center.x)>11.7f&&b.center.z>-6.8f&&b.center.z<11.8f;
-                bool presentationUrban=chain.Contains("mid-tier")||chain.Contains("reused civil house")||
+                bool functional=chain.Contains("aserradero")||chain.Contains("cuartel")||chain.Contains("granary")||chain.Contains("granero");
+                bool genericUrban=chain.Contains("mid-tier")||chain.Contains("reused civil house")||
                     chain.Contains("inhabited roofline")||chain.Contains("civil house")||chain.Contains("west inhabited");
-                bool preserveNatural=chain.Contains("terrainterrace")||chain.Contains("rock")||chain.Contains("pine")||
+                bool natural=chain.Contains("terrainterrace")||chain.Contains("rock")||chain.Contains("pine")||
                     chain.Contains("tree")||chain.Contains("ground")||chain.Contains("route")||chain.Contains("street")||
-                    chain.Contains("stair")||chain.Contains("bastion")||chain.Contains("wall")||chain.Contains("seam");
-                if(lateral&&presentationUrban&&!preserveNatural)r.enabled=false;
+                    chain.Contains("stair")||chain.Contains("bastion")||chain.Contains("seam");
+                bool outer=Mathf.Abs(b.center.x)>9.15f&&b.center.z>-7.0f&&b.center.z<12.5f;
+                if(outer&&genericUrban&&!functional&&!natural)r.enabled=false;
             }
+
+            // Remove lateral residential light rhythm so the eye returns to the Bastion/core.
             foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(l==null||!l.enabled)continue;
-                if(Mathf.Abs(l.transform.position.x)>11.7f&&
-                   (l.name.Contains("quarter",StringComparison.OrdinalIgnoreCase)||l.name.Contains("granary",StringComparison.OrdinalIgnoreCase)))
-                    l.enabled=false;
+                string n=l.name.ToLowerInvariant();
+                if(Mathf.Abs(l.transform.position.x)>9.1f&&(n.Contains("quarter")||n.Contains("hearth")))l.enabled=false;
             }
 
-            // Lateral edges become geology/forest and visibly unfinished land, not another building row.
+            // Outer frame becomes natural transition and visibly undeveloped territory.
             foreach(var p in new[]{
-                new Vector4(-15.7f,-.10f,1.2f,18f),new Vector4(-14.9f,-.08f,4.9f,62f),new Vector4(-13.9f,.10f,8.4f,114f),
-                new Vector4(15.6f,-.10f,1.3f,198f),new Vector4(14.9f,-.08f,5.0f,242f),new Vector4(13.9f,.10f,8.5f,294f)})
-                Imported("Valoria · CompactFootprint · edge geology","Rock02",new Vector3(p.x,p.y,p.z),3.25f,1.20f,p.w,new Color(.34f,.34f,.31f),false);
+                new Vector4(-14.9f,-.12f,.7f,18f),new Vector4(-14.2f,-.10f,4.3f,62f),new Vector4(-13.3f,.06f,8.0f,114f),
+                new Vector4(14.9f,-.12f,.9f,198f),new Vector4(14.2f,-.10f,4.5f,242f),new Vector4(13.3f,.06f,8.2f,294f)})
+                Imported("Valoria · CompactFootprint · edge geology","Rock02",new Vector3(p.x,p.y,p.z),
+                    3.55f,1.18f,p.w,new Color(.34f,.34f,.31f),false);
             foreach(var p in new[]{
-                new Vector4(-17.0f,2.0f,1.10f,0),new Vector4(-16.2f,6.0f,1.22f,1),new Vector4(-15.0f,10.0f,1.16f,0),
-                new Vector4(17.0f,2.2f,1.10f,1),new Vector4(16.2f,6.2f,1.22f,0),new Vector4(15.0f,10.2f,1.16f,1)})
+                new Vector4(-16.2f,1.7f,1.18f,0),new Vector4(-15.3f,5.4f,1.25f,1),new Vector4(-14.4f,9.5f,1.18f,0),
+                new Vector4(16.2f,1.9f,1.18f,1),new Vector4(15.3f,5.6f,1.25f,0),new Vector4(14.4f,9.7f,1.18f,1)})
                 Imported("Valoria · CompactFootprint · edge pine",p.w>.5f?"Tree01B":"Tree01A",
-                    new Vector3(p.x,.05f,p.y),p.z,2.55f,p.x*9f,new Color(.29f,.39f,.26f),true);
+                    new Vector3(p.x,.05f,p.y),p.z,2.65f,p.x*9f,new Color(.29f,.39f,.26f),true);
 
-            // Empty development terraces preserve visible headroom for future Valoria growth.
+            // Deliberately empty buildable terraces: closer to the core and clearly not occupied by houses.
             TerrainTerraceTop("BroadRockPlatform","Valoria · CompactFootprint · west future terrace",
-                new Vector3(-8.4f,0,1.85f),.43f,3.35f,10f);
+                new Vector3(-7.15f,0,1.55f),.43f,3.05f,12f);
             TerrainTerraceTop("BroadRockPlatform","Valoria · CompactFootprint · east future terrace",
-                new Vector3(8.3f,0,1.95f),.43f,3.30f,170f);
+                new Vector3(7.10f,0,1.70f),.43f,3.05f,168f);
             TerrainTerraceTop("SteppedRockTerrace","Valoria · CompactFootprint · west upper growth shelf",
-                new Vector3(-5.7f,0,5.45f),1.62f,3.05f,94f);
+                new Vector3(-4.75f,0,4.65f),1.48f,2.85f,96f);
             TerrainTerraceTop("SteppedRockTerrace","Valoria · CompactFootprint · east upper growth shelf",
-                new Vector3(5.6f,0,5.55f),1.62f,3.05f,266f);
+                new Vector3(4.75f,0,4.72f),1.48f,2.85f,264f);
 
-            // Reinforce the vertical civic spine around the Bastion using existing certified wall/seam modules.
-            StoneArchitecturePiece("HighStraightWall","Valoria · CompactFootprint · west upper retaining spine",
-                new Vector3(-4.75f,1.28f,4.65f),2.55f,8f);
-            StoneArchitecturePiece("HighStraightWall","Valoria · CompactFootprint · east upper retaining spine",
-                new Vector3(4.75f,1.28f,4.72f),2.55f,172f);
-            StoneArchitecturePiece("RockToWallTransition","Valoria · CompactFootprint · west vertical seam",
-                new Vector3(-6.05f,.36f,3.45f),1.65f,56f);
-            StoneArchitecturePiece("RockToWallTransition","Valoria · CompactFootprint · east vertical seam",
-                new Vector3(6.05f,.36f,3.48f),1.65f,236f);
+            // Central geology shelves visually connect lower city -> stairs -> Bastion without adding buildings.
+            TerrainTerraceTop("BroadRockPlatform","Valoria · CompactFootprint · central middle shelf",
+                new Vector3(0f,0,4.85f),1.55f,5.25f,0f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · CompactFootprint · Bastion lower shelf",
+                new Vector3(0f,0,6.55f),2.58f,5.65f,90f);
+            foreach(var p in new[]{
+                new Vector4(-5.55f,.22f,3.55f,40f),new Vector4(5.55f,.22f,3.60f,220f),
+                new Vector4(-4.15f,1.15f,5.35f,72f),new Vector4(4.15f,1.15f,5.40f,252f)})
+                Imported("Valoria · CompactFootprint · buried core rock","Rock02",
+                    new Vector3(p.x,p.y,p.z),1.75f,.68f,p.w,new Color(.33f,.33f,.30f),false);
 
-            // The foreground reads as a ceremonial approach/plaza edge, not a suburban infill strip.
+            // Ceremonial approach: restrained paving rhythm, leaving the central route fully readable.
             for(int i=0;i<4;i++)
             {
-                float z=-.35f+i*1.08f;
-                StonePiece(2,"Valoria · CompactFootprint · processional edge west",new Vector3(-2.55f,.445f,z),new Vector3(1.15f,.05f,.92f),7f);
-                StonePiece(2,"Valoria · CompactFootprint · processional edge east",new Vector3(2.55f,.445f,z),new Vector3(1.15f,.05f,.92f),-7f);
+                float z=-.25f+i*1.04f;
+                StonePiece(2,"Valoria · CompactFootprint · processional edge west",
+                    new Vector3(-2.45f,.445f,z),new Vector3(1.05f,.045f,.88f),7f);
+                StonePiece(2,"Valoria · CompactFootprint · processional edge east",
+                    new Vector3(2.45f,.445f,z),new Vector3(1.05f,.045f,.88f),-7f);
             }
             if(art!=null&&art.Firewood!=null)
                 Piece("Valoria · CompactFootprint · restrained reconstruction stock",art.Firewood,
-                    new Vector3(-4.65f,.42f,1.05f),.86f,.46f,12f,new Color(.67f,.57f,.43f));
+                    new Vector3(-4.45f,.42f,.80f),.78f,.43f,12f,new Color(.67f,.57f,.43f));
 
-            RenderSettings.fogStartDistance=27f;RenderSettings.fogEndDistance=76f;
-            WarmLight("Valoria · CompactFootprint · central lower warmth",new Vector3(0f,1.10f,.75f),new Color(1f,.50f,.22f),.42f,2.5f);
+            RenderSettings.fogStartDistance=26f;RenderSettings.fogEndDistance=72f;
+            WarmLight("Valoria · CompactFootprint · central lower warmth",
+                new Vector3(0f,1.12f,.75f),new Color(1f,.50f,.22f),.38f,2.35f);
         }
 
         static void HeroValleyTerrain()
