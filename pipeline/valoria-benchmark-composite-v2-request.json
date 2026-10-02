@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-benchmark-composite-v2",
+  "objective": "Close the dominant benchmark gap by combining tighter official framing, six additional high-quality compact urban clusters, mountain-only camera backdrop band, open-valley suppression and full-frame post finish.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "atmosphere_horizon_depth",
+    "lighting_and_value_hierarchy",
+    "life_props_storytelling"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_grid_sizes_8.6_8.0_7.4",
+    "horizon_crop_y_0.50_0.60_0.70",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
