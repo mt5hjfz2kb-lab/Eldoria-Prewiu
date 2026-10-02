@@ -123,8 +123,11 @@ namespace Eldoria.Presentation
             foreach(var suffix in new[]{" · trunk"," · lower crown"," · middle crown"," · upper crown"})
             {
                 var go=GameObject.Find(baseName+suffix);
-                if(go!=null)go.transform.SetParent(root,true);
+                if(go==null)continue;
+                foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
+                go.transform.SetParent(root,true);
             }
+            Physics.SyncTransforms();
         }
 
         static void AddFramePrefab(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
