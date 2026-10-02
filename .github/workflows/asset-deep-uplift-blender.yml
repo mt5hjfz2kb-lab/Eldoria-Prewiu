@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version
       - name: Diagnose canonical GLB
         shell: bash
@@ -47,6 +47,7 @@ jobs:
             --output deep-uplift-evidence/unused.glb \
             --report deep-uplift-evidence/SteppedRockTerrace-diagnostic.json \
             --diagnostic-only
+          test -s deep-uplift-evidence/SteppedRockTerrace-diagnostic.json
           sha256sum "${{ steps.req.outputs.input }}" | tee deep-uplift-evidence/SteppedRockTerrace-source.sha256
           stat -c '%s' "${{ steps.req.outputs.input }}" | tee deep-uplift-evidence/SteppedRockTerrace-source.bytes
       - uses: actions/upload-artifact@v4
