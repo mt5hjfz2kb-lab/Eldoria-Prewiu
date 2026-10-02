@@ -69,6 +69,7 @@ namespace Eldoria.EditorTools
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
             ValoriaMaterialResidueCleanupV2.Enabled=true;ValoriaMaterialResidueCleanupV2.Build(root.transform,state);
             ValoriaFullFrameArtifactCleanupV1.Enabled=true;ValoriaFullFrameArtifactCleanupV1.Build(root.transform,state);
+            ValoriaCliffSubstrateV1.Enabled=true;ValoriaCliffSubstrateV1.Build(root.transform,state);
 
             int normalizedDarkFamilies=NormalizeKnownDarkFamilies();
 
