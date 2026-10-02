@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "request_id": "valoria-master-visual-rebuild-v2",
-  "asset_or_sector": "Valoria master visual rebuild v2 blank-canvas composition",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "request_id": "valoria-monumental-ruin-gap-v1",
+  "asset_or_sector": "Valoria monumental ruined arch integrated cliff frame",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -12,9 +12,9 @@
   "capabilities": {
     "tripo_parts": false,
     "tripo_retopology": false,
-    "blender_lod": false,
-    "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_lod": true,
+    "blender_bake": true,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Blank-canvas visual composition using the existing library only. Preserve gameplay/topology. Design mountain/terraces/circulation/reserved growth plots first; existing asset positions have no authority. No new geometry and zero Tripo spend."
+  "notes": "Geometry gap proven by Reference Convergence v1: existing Arch_Gothic, Wall_Broken and Mega Fantasy ruin/bridge assets read as detached blockout walls when scaled to the approved benchmark. Required new geometry is ONE reusable monumental broken arch/cliff-frame asset, mirrorable left/right, not a new building family. Tripo remains blocked pending exact input, visible cost and fresh owner approval."
 }
