@@ -1565,6 +1565,19 @@ namespace Eldoria.Presentation
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam west",new Vector3(-3.8f,0,-5.7f),.34f,3.3f,56f);
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam east",new Vector3(3.8f,0,-5.6f),.34f,3.3f,304f);
 
+            // Functional lower district: reuse the dedicated Granero instead of filling the frame with more houses.
+            var granary=Resources.Load<GameObject>("Valoria/Valoria_Granero_BIII_v1");
+            if(granary!=null)
+                Piece("Valoria · Reference v1 · Granero",granary,
+                    new Vector3(1.55f,.28f,-6.35f),3.25f,2.35f,-8f,Color.white);
+
+            StonePiece(2,"Valoria · Reference v1 · granary court",
+                new Vector3(.75f,.40f,-5.65f),new Vector3(2.65f,.055f,1.65f),-5f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · lower retaining west",
+                new Vector3(-3.10f,.12f,-4.55f),2.45f,72f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · lower retaining east",
+                new Vector3(3.20f,.12f,-4.45f),2.45f,288f);
+
             // Distant ridge from overlapping rock masses: no floating mountain prefabs.
             foreach(var s in new[]{
                 new Vector4(-15.5f,16.0f,8.4f,18f),new Vector4(-8.5f,18.6f,8.8f,46f),
@@ -1607,6 +1620,12 @@ namespace Eldoria.Presentation
                     p+new Vector3(side*.28f,0,.22f),.35f,.54f,i*37f,new Color(.67f,.57f,.43f));
             }
 
+            Piece("Valoria · Reference v1 · granary sacks",Resources.Load<GameObject>("Valoria/UrbanProps/Sack"),
+                new Vector3(2.85f,.44f,-5.95f),.62f,.48f,12f,new Color(.80f,.72f,.56f));
+            Piece("Valoria · Reference v1 · granary barrel",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),
+                new Vector3(2.45f,.44f,-6.55f),.42f,.62f,-8f,new Color(.69f,.59f,.45f));
+            Flag("Valoria · Reference v1 · granary standard",new Vector3(.10f,.42f,-5.15f),Blue,1.85f);
+
             Flag("Valoria · Reference v1 · west standard",new Vector3(-4.15f,.45f,-1.05f),Blue,2.05f);
             Flag("Valoria · Reference v1 · east standard",new Vector3(4.15f,.45f,-.95f),Blue,2.05f);
             Flag("Valoria · Reference v1 · upper standard",new Vector3(0f,2.58f,4.30f),Blue,2.25f);
@@ -1627,6 +1646,7 @@ namespace Eldoria.Presentation
                 if(l.name=="Valoria · amber dusk"){l.color=new Color(1f,.82f,.66f);l.intensity=1.52f;l.shadowStrength=.72f;}
             WarmLight("Valoria · Reference v1 · lower west fire",new Vector3(-4.0f,1.10f,-1.2f),new Color(1f,.46f,.18f),.68f,2.6f);
             WarmLight("Valoria · Reference v1 · lower east fire",new Vector3(4.0f,1.10f,-1.1f),new Color(1f,.46f,.18f),.68f,2.6f);
+            WarmLight("Valoria · Reference v1 · granary warmth",new Vector3(1.55f,1.05f,-6.10f),new Color(1f,.49f,.20f),.54f,2.4f);
             WarmLight("Valoria · Reference v1 · upper warmth",new Vector3(0f,2.90f,4.5f),new Color(1f,.50f,.21f),.68f,2.9f);
         }
 
