@@ -2,6 +2,10 @@ name: "[EXPERIMENT] Asset Visual Uplift v1"
 
 on:
   workflow_dispatch:
+  push:
+    branches: [visual-proof/asset-visual-uplift-v1]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Editor/AssetVisualUpliftGateV1.cs'
 
 permissions:
   contents: read
