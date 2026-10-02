@@ -25,6 +25,7 @@ namespace Eldoria.EditorTools
             var p=new Vector3(18.2f,14.6f,-25.8f);var t=new Vector3(0f,3.15f,5.8f);var baseline=ValoriaVisualFormulaGate.CollisionSignature();
             SaveSet(camera,"before",p,t);WriteMetrics(Folder+"/before-metrics.json");
 
+            var heroValley=GameObject.Find("Valoria · Hero Frame valley terrain");if(heroValley!=null)Object.DestroyImmediate(heroValley);
             var legacy=GameObject.Find("Valoria · World Frame Mountain Terrain v1");if(legacy!=null)Object.DestroyImmediate(legacy);
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             ValoriaFullFrameWorldSurroundV2.Enabled=true;ValoriaFullFrameWorldSurroundV2.Build(root.transform,state);Physics.SyncTransforms();
