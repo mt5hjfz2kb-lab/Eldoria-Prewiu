@@ -22,9 +22,9 @@ namespace Eldoria.Presentation
             // One continuous terrain sheet avoids detached panels and inter-piece seams.
             // The inhabited corridor sits below canonical ground; only side/rear relief emerges.
             var material=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.285f,.31f,.295f,1f),new Vector2(10f,10f),.018f,1.24f)
+                "rock",new Color(.25f,.275f,.255f,1f),new Vector2(5.2f,5.2f),.018f,1.18f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.265f,.29f,.27f,1f),"earth",new Vector2(10f,10f),1.24f);
+                    new Color(.245f,.27f,.25f,1f),"earth",new Vector2(5.2f,5.2f),1.18f);
 
             BuildContinuousValley(root.transform,material);
         }
