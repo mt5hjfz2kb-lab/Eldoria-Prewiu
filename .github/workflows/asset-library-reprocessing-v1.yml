@@ -68,6 +68,50 @@ jobs:
           Get-Content (Join-Path $folder 'asset-reprocess-evidence.json')
           Get-Content (Join-Path $folder 'asset-reprocess-before-metrics.json')
           Get-Content (Join-Path $folder 'asset-reprocess-after-metrics.json')
+      - name: Emit visual contact sheet
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingV1Captures"
+          $canvas=New-Object System.Drawing.Bitmap 800,960
+          $g=[System.Drawing.Graphics]::FromImage($canvas)
+          $g.Clear([System.Drawing.Color]::FromArgb(34,34,34))
+          $font=New-Object System.Drawing.Font("Arial",14,[System.Drawing.FontStyle]::Bold)
+          $small=New-Object System.Drawing.Font("Arial",11,[System.Drawing.FontStyle]::Regular)
+          $white=[System.Drawing.Brushes]::White
+          $g.DrawString("BEFORE",$font,$white,170,4)
+          $g.DrawString("AFTER",$font,$white,575,4)
+          $pairs=@(
+            @('asset-reprocess-before-19.png','asset-reprocess-after-19.png','ZOOM 19'),
+            @('asset-reprocess-before-12.png','asset-reprocess-after-12.png','ZOOM 12'),
+            @('asset-reprocess-before-9.png','asset-reprocess-after-9.png','ZOOM 9'),
+            @('asset-reprocess-before-mobile.png','asset-reprocess-after-mobile.png','MOBILE 390x844')
+          )
+          for($row=0;$row -lt $pairs.Count;$row++){
+            $y=30+$row*232
+            $g.DrawString($pairs[$row][2],$small,$white,4,$y+4)
+            for($col=0;$col -lt 2;$col++){
+              $img=[System.Drawing.Image]::FromFile((Join-Path $folder $pairs[$row][$col]))
+              $cellX=$col*400
+              $maxW=392;$maxH=210
+              $scale=[Math]::Min($maxW/$img.Width,$maxH/$img.Height)
+              $w=[int]($img.Width*$scale);$h=[int]($img.Height*$scale)
+              $x=$cellX+[int]((400-$w)/2);$iy=$y+20+[int](($maxH-$h)/2)
+              $g.DrawImage($img,$x,$iy,$w,$h)
+              $img.Dispose()
+            }
+          }
+          $g.Dispose()
+          $sheet=Join-Path $folder 'asset-reprocess-contact-sheet.jpg'
+          $codec=[System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object {$_.MimeType -eq 'image/jpeg'}
+          $ep=New-Object System.Drawing.Imaging.EncoderParameters 1
+          $ep.Param[0]=New-Object System.Drawing.Imaging.EncoderParameter ([System.Drawing.Imaging.Encoder]::Quality),55L
+          $canvas.Save($sheet,$codec,$ep)
+          $canvas.Dispose()
+          $b64=[Convert]::ToBase64String([IO.File]::ReadAllBytes($sheet))
+          Write-Host "CONTACT_SHEET_BASE64_BEGIN"
+          Write-Host $b64
+          Write-Host "CONTACT_SHEET_BASE64_END"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
