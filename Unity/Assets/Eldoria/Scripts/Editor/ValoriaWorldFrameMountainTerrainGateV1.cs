@@ -57,6 +57,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-9.png",position,target,9f,1280,720);
             Save(camera,Folder+"/before-mobile.png",position,target,12f,390,844);
 
+            SuppressLegacyFramingForWorldFrame();
             ValoriaWorldFrameMountainTerrainV1.Enabled=true;
             ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
             Physics.SyncTransforms();
@@ -84,6 +85,31 @@ namespace Eldoria.EditorTools
 
             Debug.Log("VALORIA_WORLD_FRAME_MOUNTAIN_TERRAIN_V1_GATE=PASS");
             EditorApplication.Exit(0);
+        }
+
+        static void SuppressLegacyFramingForWorldFrame()
+        {
+            // AFTER is a replacement proof, not an additive stack.
+            // Preserve Convergence v2 ground/material/lighting/atmosphere work, but remove only
+            // its visual framing geometry so World Frame v1 can be judged on its own.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||r.gameObject==null)continue;
+                var n=r.gameObject.name??string.Empty;
+
+                if(n=="Valoria · Hero Frame valley terrain")
+                {
+                    r.enabled=false;
+                    continue;
+                }
+
+                if(!n.StartsWith("Valoria · Reference Convergence v2 ·"))continue;
+                if(n.Contains("PBR shoulder")||
+                   n.Contains("PBR cliff")||
+                   n.Contains("PBR shelf")||
+                   n.Contains("edge occupation boulder"))
+                    r.enabled=false;
+            }
         }
 
         static void WriteMetrics(string path)
