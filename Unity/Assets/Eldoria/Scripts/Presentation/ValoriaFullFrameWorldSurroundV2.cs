@@ -147,36 +147,36 @@ namespace Eldoria.Presentation
             if(mountain==null)return;
 
             var far=new[]{
-                new Vector4(-25f,30f,22f,11.0f),
-                new Vector4(-13f,33f,19f,12.6f),
-                new Vector4(0f,36f,21f,14.0f),
-                new Vector4(14f,33f,20f,12.5f),
-                new Vector4(27f,29f,22f,10.8f)
+                new Vector4(-18f,25.5f,8.0f,5.2f),
+                new Vector4(-9f,27.0f,7.0f,5.8f),
+                new Vector4(0f,28.0f,8.0f,6.4f),
+                new Vector4(9.5f,27.0f,7.2f,5.7f),
+                new Vector4(18.5f,25.0f,8.2f,5.1f)
             };
             for(int i=0;i<far.Length;i++)
             {
                 var s=far[i];
-                Add(root,mountain,"far mountain "+i,new Vector3(s.x,-4.0f,s.y),s.z,s.w,137f+i*41f,
-                    new Color(.55f,.63f,.67f,1f));
+                Add(root,mountain,"far mountain "+i,new Vector3(s.x,-1.55f,s.y),s.z,s.w,137f+i*41f,
+                    new Color(.48f,.56f,.61f,1f),true);
             }
 
             var mid=new[]{
-                new Vector4(-22f,22f,13.5f,7.2f),
-                new Vector4(-9f,24f,11.0f,6.3f),
-                new Vector4(11f,24f,11.5f,6.5f),
-                new Vector4(23f,21f,13.8f,7.0f)
+                new Vector4(-16f,19.5f,6.2f,4.0f),
+                new Vector4(-7f,21.0f,5.4f,3.7f),
+                new Vector4(8f,21.0f,5.6f,3.8f),
+                new Vector4(17f,19.0f,6.4f,4.1f)
             };
             for(int i=0;i<mid.Length;i++)
             {
                 var s=mid[i];
-                Add(root,mountain,"mid mountain "+i,new Vector3(s.x,-2.7f,s.y),s.z,s.w,168f+i*47f,
-                    new Color(.42f,.48f,.48f,1f));
+                Add(root,mountain,"mid mountain "+i,new Vector3(s.x,-1.10f,s.y),s.z,s.w,168f+i*47f,
+                    new Color(.38f,.43f,.43f,1f),true);
             }
 
             if(rock!=null)
             {
-                Add(root,rock,"rear rock west",new Vector3(-14.6f,-.55f,16.6f),5.8f,2.8f,46f,new Color(.38f,.39f,.36f,1f));
-                Add(root,rock,"rear rock east",new Vector3(14.4f,-.55f,16.9f),5.9f,2.8f,221f,new Color(.38f,.39f,.36f,1f));
+                Add(root,rock,"rear rock west",new Vector3(-13.8f,-.55f,15.6f),4.6f,2.2f,46f,new Color(.34f,.36f,.34f,1f),true);
+                Add(root,rock,"rear rock east",new Vector3(13.6f,-.55f,15.9f),4.7f,2.2f,221f,new Color(.34f,.36f,.34f,1f),true);
             }
         }
 
@@ -192,8 +192,8 @@ namespace Eldoria.Presentation
                 if(Mathf.Abs(x)<5.0f)continue;
                 float z=13.0f+(i%5)*.85f;
                 var source=(i%2==0?a:b)??a??b;
-                Add(root,source,"rear forest "+i,new Vector3(x,-.12f,z),1.10f+(i%3)*.10f,2.7f+(i%4)*.22f,
-                    (i*53)%360,new Color(.48f,.59f,.48f,1f));
+                Add(root,source,"rear forest "+i,new Vector3(x,-.12f,z),.62f+(i%3)*.07f,1.55f+(i%4)*.12f,
+                    (i*53)%360,new Color(.23f,.32f,.25f,1f),true);
             }
 
             for(int i=0;i<18;i++)
@@ -203,8 +203,8 @@ namespace Eldoria.Presentation
                 float x=side*(13.4f+k*.95f);
                 float z=-1.5f+k*1.35f;
                 var source=(i%2==0?a:b)??a??b;
-                Add(root,source,"side forest "+i,new Vector3(x,-.08f,z),1.00f,2.45f+(i%3)*.18f,
-                    (i*67)%360,new Color(.45f,.57f,.46f,1f));
+                Add(root,source,"side forest "+i,new Vector3(x,-.08f,z),.78f,1.95f+(i%3)*.13f,
+                    (i*67)%360,new Color(.22f,.31f,.24f,1f),true);
             }
         }
 
@@ -212,15 +212,15 @@ namespace Eldoria.Presentation
         {
             var arch=Resources.Load<GameObject>("WorldInventory/Arch_Gothic");
             var wall=Resources.Load<GameObject>("WorldInventory/Wall_Broken");
-            if(arch!=null)Add(root,arch,"threat arch",new Vector3(18.1f,-.35f,18.8f),4.8f,7.2f,198f,new Color(.42f,.40f,.43f,1f));
+            if(arch!=null)Add(root,arch,"threat arch",new Vector3(15.7f,-.35f,18.3f),3.2f,4.8f,198f,new Color(.34f,.33f,.36f,1f),true);
             if(wall!=null)
             {
-                Add(root,wall,"threat wall west",new Vector3(15.2f,-.30f,19.6f),4.0f,3.8f,181f,new Color(.40f,.38f,.41f,1f));
-                Add(root,wall,"threat wall east",new Vector3(20.8f,-.30f,20.1f),3.6f,3.5f,229f,new Color(.40f,.38f,.41f,1f));
+                Add(root,wall,"threat wall west",new Vector3(13.8f,-.30f,18.9f),2.8f,2.7f,181f,new Color(.33f,.32f,.35f,1f),true);
+                Add(root,wall,"threat wall east",new Vector3(17.8f,-.30f,19.2f),2.5f,2.5f,229f,new Color(.33f,.32f,.35f,1f),true);
             }
             var glow=new GameObject("Valoria · World Surround v2 · corruption glow");
             glow.transform.SetParent(root,true);
-            glow.transform.position=new Vector3(18.1f,4.9f,19.0f);
+            glow.transform.position=new Vector3(15.8f,3.8f,18.4f);
             var l=glow.AddComponent<Light>();
             l.type=LightType.Point;
             l.color=new Color(.58f,.20f,.77f);
@@ -229,10 +229,12 @@ namespace Eldoria.Presentation
             l.shadows=LightShadows.None;
         }
 
-        static void Add(Transform root,GameObject source,string role,Vector3 p,float footprint,float maxHeight,float yaw,Color tint)
+        static void Add(Transform root,GameObject source,string role,Vector3 p,float footprint,float maxHeight,float yaw,Color tint,bool normalized=false)
         {
             if(source==null)return;
-            var go=ValoriaKit.BenchmarkPieceModulated("Valoria · World Surround v2 · "+role,source,p,footprint,maxHeight,Quaternion.Euler(0f,yaw,0f),tint);
+            var go=normalized
+                ? ValoriaKit.BenchmarkPieceIntegrated("Valoria · World Surround v2 · "+role,source,p,footprint,maxHeight,Quaternion.Euler(0f,yaw,0f),tint)
+                : ValoriaKit.BenchmarkPieceModulated("Valoria · World Surround v2 · "+role,source,p,footprint,maxHeight,Quaternion.Euler(0f,yaw,0f),tint);
             if(go==null)return;
             go.transform.SetParent(root,true);
             foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
