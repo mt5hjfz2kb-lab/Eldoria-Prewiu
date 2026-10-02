@@ -162,49 +162,6 @@ namespace Eldoria.EditorTools
             VisualWorld.VisualIntegrationEnabled=true;
         }
 
-        public static void CaptureAssetLibraryReprocessingPassV1()
-        {
-            const string folder="VisualFormulaCaptures";
-            Directory.CreateDirectory(folder);
-            var position=new Vector3(18.2f,14.6f,-25.8f);
-            var target=new Vector3(0,3.15f,5.8f);
-            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
-
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-            SceneSetup.SetupRenderPipeline();
-            ProductionVisualIntegration.ResetVisualCachesForGate();
-            VisualWorld.VisualIntegrationEnabled=true;
-            AssetLibraryReprocessingPassV1.Enabled=false;
-            VisualWorld.Create(true,state);
-            var camera=Camera.main;
-            if(camera==null)throw new System.Exception("Valoria camera missing for Asset Library Reprocessing gate.");
-            var baseline=CollisionSignature();
-
-            Save(camera,folder+"/asset-reprocess-before-19.png",position,target,19f,1280,720);
-            Save(camera,folder+"/asset-reprocess-before-12.png",position,target,12f,1280,720);
-            Save(camera,folder+"/asset-reprocess-before-9.png",position,target,9f,1280,720);
-            Save(camera,folder+"/asset-reprocess-before-mobile.png",position,target,12f,390,844);
-
-            AssetLibraryReprocessingPassV1.BuildForGate(state);
-            if(CollisionSignature()!=baseline)throw new System.Exception("Asset Library Reprocessing altered certified colliders/hotspots.");
-
-            Save(camera,folder+"/asset-reprocess-after-19.png",position,target,19f,1280,720);
-            Save(camera,folder+"/asset-reprocess-after-12.png",position,target,12f,1280,720);
-            Save(camera,folder+"/asset-reprocess-after-9.png",position,target,9f,1280,720);
-            Save(camera,folder+"/asset-reprocess-after-mobile.png",position,target,12f,390,844);
-            WriteMetrics(folder+"/asset-reprocess-metrics.json");
-            File.WriteAllText(folder+"/asset-reprocess-evidence.json", @"{
-  ""camera_matched"": true,
-  ""same_scene_before_after"": true,
-  ""collider_hotspot_signature_equal"": true,
-  ""gameplay_topology_changed"": false,
-  ""geometry_gap_proven"": false,
-  ""tripo_credits"": 0
-}
-");
-            AssetLibraryReprocessingPassV1.Enabled=true;
-        }
-
         static void CaptureStoneArchitectureWedge()
         {
             const string folder="VisualFormulaCaptures";
