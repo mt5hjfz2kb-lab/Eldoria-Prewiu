@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T11:06:00Z",
+  "updated_at": "2026-10-02T11:08:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -36,7 +36,8 @@
         "Unity/Assets/Eldoria/Scripts/Editor/AssetVisualUpliftGateV1.cs",
         ".github/workflows/asset-visual-uplift-v1.yml",
         "docs/ASSET_VISUAL_UPLIFT_PASS_V1_RESULT.md",
-        "SESSION_HANDOFF.md"
+        "SESSION_HANDOFF.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs"
       ],
       "resources": [
         "asset-surface-uplift"
