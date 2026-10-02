@@ -1,10 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Reserve the single Windows runner for the authoritative integrated Strongest Composite with all current cleanup layers. Cancel secondary Jagged and isolated residue proof.",
+  "reason": "Jagged run e28f0c predates integrated residue/artifact cleanup at 420ab26a. Prioritize the authoritative cleaned Strongest Composite; background alternatives must be rebased onto the same clean state before comparison.",
   "runs": [
-    37073083726,
-    37073121595
+    37073083726
   ],
-  "triggered_at": "2026-10-02T23:36:00Z"
+  "keep_runs": [
+    37073145668
+  ],
+  "triggered_at": "2026-10-02T22:36:00Z"
 }
