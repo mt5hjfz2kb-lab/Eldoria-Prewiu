@@ -54,77 +54,73 @@ jobs:
       - name: Stage Poly Haven Rock Face 02 CC0
         shell: powershell
         run: |
+          $ErrorActionPreference='Stop'
           $dst="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ExternalProof\RockFace02"
+          Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path $dst | Out-Null
-          $script=Join-Path $env:RUNNER_TEMP 'fetch-polyhaven-rock-face-02.mjs'
-          @'
-          import fs from 'node:fs';
-          import path from 'node:path';
 
-          const out=process.argv[2];
-          const api='https://api.polyhaven.com/files/rock_face_02';
-          const response=await fetch(api,{headers:{'User-Agent':'Eldoria-Visual-Proof/1.0'}});
-          if(!response.ok) throw new Error('Poly Haven API '+response.status);
-          const tree=await response.json();
+          $headers=@{'User-Agent'='Eldoria-Visual-Proof/1.0'}
+          $tree=Invoke-RestMethod -Uri 'https://api.polyhaven.com/files/rock_face_02' -Headers $headers
 
-          const candidates=[];
-          function walk(v,p=[]){
-            if(!v||typeof v!=='object') return;
-            if(typeof v.url==='string' && /\.gltf(?:\?|$)/i.test(v.url))
-              candidates.push({node:v,path:p.join('/')});
-            if(Array.isArray(v)){v.forEach((x,i)=>walk(x,p.concat(String(i))));return;}
-            for(const [k,x] of Object.entries(v)) walk(x,p.concat(k));
-          }
-          walk(tree);
-          if(!candidates.length) throw new Error('No glTF candidate in Poly Haven files tree');
-          candidates.sort((a,b)=>{
-            const score=x=>{
-              const p=x.path.toLowerCase();
-              return (p.includes('2k')?0:p.includes('1k')?1:p.includes('4k')?2:3) +
-                     (p.includes('gltf')?0:10);
-            };
-            return score(a)-score(b);
-          });
-          const chosen=candidates[0];
-          const records=new Map();
-          function collect(v){
-            if(!v||typeof v!=='object') return;
-            if(typeof v.url==='string' && /^https:\/\//.test(v.url)){
-              const u=new URL(v.url);
-              const name=decodeURIComponent(path.basename(u.pathname));
-              if(name) records.set(name,v.url);
+          $candidates=New-Object System.Collections.Generic.List[object]
+          function Walk-Node($value,[string]$path){
+            if($null -eq $value){ return }
+            if($value -is [string]){ return }
+
+            $urlProp=$value.PSObject.Properties['url']
+            if($null -ne $urlProp -and $urlProp.Value -is [string] -and $urlProp.Value -match '\\.gltf(?:\\?|$)'){
+              $candidates.Add([pscustomobject]@{Url=$urlProp.Value;Path=$path})
             }
-            if(Array.isArray(v)){v.forEach(collect);return;}
-            for(const x of Object.values(v)) collect(x);
-          }
-          collect(chosen.node);
-          if(chosen.node.include) collect(chosen.node.include);
 
-          // Some include trees are siblings/ancestors, so collect files sharing the chosen
-          // resolution + glTF branch when the selected record alone is sparse.
-          const branch=chosen.path.split('/').slice(0,-1);
-          let cur=tree;
-          for(const k of branch){
-            if(cur && typeof cur==='object' && k in cur) cur=cur[k];
-            else break;
-          }
-          collect(cur);
+            if($value -is [System.Collections.IEnumerable] -and -not ($value -is [pscustomobject])){
+              $i=0
+              foreach($item in $value){ Walk-Node $item ($path+'/'+$i); $i++ }
+              return
+            }
 
-          if(![...records.keys()].some(x=>x.toLowerCase().endsWith('.gltf')))
-            records.set(decodeURIComponent(path.basename(new URL(chosen.node.url).pathname)),chosen.node.url);
-
-          fs.mkdirSync(out,{recursive:true});
-          for(const [name,url] of records){
-            if(!/\.(gltf|bin|png|jpg|jpeg|webp)$/i.test(name)) continue;
-            const r=await fetch(url,{headers:{'User-Agent':'Eldoria-Visual-Proof/1.0'}});
-            if(!r.ok) throw new Error('download '+name+' '+r.status);
-            fs.writeFileSync(path.join(out,name),Buffer.from(await r.arrayBuffer()));
+            foreach($prop in $value.PSObject.Properties){
+              if($prop.Name -eq 'url'){ continue }
+              Walk-Node $prop.Value ($path+'/'+$prop.Name)
+            }
           }
-          const gltfs=fs.readdirSync(out).filter(x=>x.toLowerCase().endsWith('.gltf'));
-          if(!gltfs.length) throw new Error('glTF not materialized');
-          console.log(JSON.stringify({selected:chosen.path,files:fs.readdirSync(out)},null,2));
-          '@ | Set-Content -Encoding UTF8 $script
-          node $script $dst
+          Walk-Node $tree ''
+
+          if($candidates.Count -eq 0){ throw 'No glTF candidate in Poly Haven files tree.' }
+          $chosen=$candidates | Sort-Object @{
+            Expression={
+              $p=$_.Path.ToLowerInvariant()
+              $score=30
+              if($p.Contains('2k')){$score=0}
+              elseif($p.Contains('1k')){$score=10}
+              elseif($p.Contains('4k')){$score=20}
+              if(-not $p.Contains('gltf')){$score+=100}
+              $score
+            }
+          } | Select-Object -First 1
+
+          $gltfPath=Join-Path $dst 'rock_face_02.gltf'
+          Invoke-WebRequest -Uri $chosen.Url -Headers $headers -OutFile $gltfPath -UseBasicParsing
+          if((Get-Item $gltfPath).Length -lt 1000){ throw 'Downloaded glTF is unexpectedly small.' }
+
+          $gltf=Get-Content $gltfPath -Raw | ConvertFrom-Json
+          $uris=@()
+          if($null -ne $gltf.buffers){ foreach($b in $gltf.buffers){ if($b.uri -and -not $b.uri.StartsWith('data:')){$uris+=$b.uri} } }
+          if($null -ne $gltf.images){ foreach($i in $gltf.images){ if($i.uri -and -not $i.uri.StartsWith('data:')){$uris+=$i.uri} } }
+
+          $base=[Uri]$chosen.Url
+          $dstFull=[IO.Path]::GetFullPath($dst)
+          foreach($uri in ($uris | Select-Object -Unique)){
+            $remote=[Uri]::new($base,$uri).AbsoluteUri
+            $rel=[Uri]::UnescapeDataString($uri).Replace('/','\')
+            $target=[IO.Path]::GetFullPath((Join-Path $dst $rel))
+            if(-not $target.StartsWith($dstFull,[StringComparison]::OrdinalIgnoreCase)){ throw "Dependency escapes staging folder: $uri" }
+            New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
+            Invoke-WebRequest -Uri $remote -Headers $headers -OutFile $target -UseBasicParsing
+          }
+
+          Write-Host "Selected Poly Haven glTF: $($chosen.Path)"
+          Get-ChildItem $dst -Recurse | Select-Object FullName,Length
+
       - name: Capture external cliff proof
         shell: powershell
         run: |
