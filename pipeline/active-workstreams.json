@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:01:00Z",
+  "updated_at": "2026-10-02T23:05:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -216,7 +216,10 @@
         "pipeline/valoria-full-frame-value-hierarchy-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameRebalanceGateV2.cs",
         ".github/workflows/valoria-visible-frame-rebalance-v2.yml",
-        "pipeline/valoria-visible-frame-rebalance-v2-request.json"
+        "pipeline/valoria-visible-frame-rebalance-v2-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFrameCompositionGateV1.cs",
+        ".github/workflows/valoria-frame-composition-v1.yml",
+        "pipeline/valoria-frame-composition-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
