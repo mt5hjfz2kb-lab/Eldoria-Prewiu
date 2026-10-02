@@ -1,14 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Second cleanup pass: two component jobs started during the first cancellation race. Keep only the two integrated composites.",
+  "reason": "Prioritize authoritative current-main full-frame composite; isolated Environment Uplift and Unity slice are redundant for visual acceptance at this stage.",
   "runs": [
-    37072445273,
-    37072425217
+    37072921896,
+    37072921874
   ],
-  "keep_runs": [
-    37072456986,
-    37072516942
-  ],
-  "triggered_at": "2026-10-02T22:28:00Z"
+  "triggered_at": "2026-10-03T00:05:00+02:00"
 }
