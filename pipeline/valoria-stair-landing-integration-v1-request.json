@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-stair-landing-integration-v1",
+  "objective": "Visually seat the canonical central Bastion stair and upper landing into Valoria rock/terrace mass using existing rescued transition geometry only.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "assets": [
+    "Resources/Valoria/Rescued/TerraceStairRock",
+    "Resources/Valoria/Rescued/StreetLandingTransition"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_central_stair": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "street_landing_transition_traversable": false,
+    "world_frame_mutation": false,
+    "city_footprint_expansion": false
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature"
+  ]
+}
