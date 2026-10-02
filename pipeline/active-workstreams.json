@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:55:00Z",
+  "updated_at": "2026-10-02T10:56:00Z",
   "active": [
     {
       "id": "asset-library-canonicalization-v1",
@@ -39,12 +39,13 @@
         ".github/workflows/art-production-plan.yml"
       ],
       "resources": [
-        "valoria-production-composition"
+        "valoria-production-composition",
+        "windows-runner-heavy"
       ],
       "status": "active",
       "claimed_at": "2026-10-02T10:39:00Z",
       "base_main_sha": "db86aeceea49e19cb7d3772c11b485a4e9a2165d",
-      "dependency": "asset-library-canonicalization-v1; do not mutate its asset-library scope or request windows-runner-heavy until released"
+      "dependency": "asset-library-canonicalization-v1 remains active but has released the Windows runner; do not mutate its asset-library scope"
     }
   ],
   "history": [
