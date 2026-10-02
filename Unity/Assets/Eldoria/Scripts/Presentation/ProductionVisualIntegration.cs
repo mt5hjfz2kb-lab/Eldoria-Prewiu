@@ -33,6 +33,8 @@ namespace Eldoria.Presentation
         public static bool CoherentCastleProofEnabled = false;
         // Gate-only proof using one higher-detail family already shipped in the project.
         public static bool SlavicDistrictProofEnabled = false; // v2 material-integration proof
+        // Compact Footprint Reframe v1 gate: existing geometry only, visual-only, no gameplay authority.
+        public static bool CompactFootprintReframeEnabled = false;
 
         public static void ResetVisualCachesForGate()
         {
@@ -209,6 +211,7 @@ namespace Eldoria.Presentation
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
+            if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
@@ -1196,6 +1199,80 @@ namespace Eldoria.Presentation
             }
             if(state.BastionLevel>=3)
                 WarmLight("Valoria · granary activity glow",new Vector3(-17.2f,1.25f,-4.65f),new Color(1.0f,.58f,.28f),.72f,2.5f);
+        }
+
+        static void ComposeCompactFootprintReframeV1(PlayerState state, ValoriaExternalAssetLibrary art)
+        {
+            // Toolchain Automation v2 / environment_composition only.
+            // Existing geometry only: suppress/recompose visual dressing; never touch gameplay authority.
+
+            // Freeze lateral urban expansion. Remove presentation architecture at the east/west extremes,
+            // while preserving natural terrain, certified circulation, Bastion and all interaction layers.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;string chain="";
+                for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
+                bool lateral=Mathf.Abs(b.center.x)>11.7f&&b.center.z>-6.8f&&b.center.z<11.8f;
+                bool presentationUrban=chain.Contains("mid-tier")||chain.Contains("reused civil house")||
+                    chain.Contains("inhabited roofline")||chain.Contains("civil house")||chain.Contains("west inhabited");
+                bool preserveNatural=chain.Contains("terrainterrace")||chain.Contains("rock")||chain.Contains("pine")||
+                    chain.Contains("tree")||chain.Contains("ground")||chain.Contains("route")||chain.Contains("street")||
+                    chain.Contains("stair")||chain.Contains("bastion")||chain.Contains("wall")||chain.Contains("seam");
+                if(lateral&&presentationUrban&&!preserveNatural)r.enabled=false;
+            }
+            foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(l==null||!l.enabled)continue;
+                if(Mathf.Abs(l.transform.position.x)>11.7f&&
+                   (l.name.Contains("quarter",StringComparison.OrdinalIgnoreCase)||l.name.Contains("granary",StringComparison.OrdinalIgnoreCase)))
+                    l.enabled=false;
+            }
+
+            // Lateral edges become geology/forest and visibly unfinished land, not another building row.
+            foreach(var p in new[]{
+                new Vector4(-15.7f,-.10f,1.2f,18f),new Vector4(-14.9f,-.08f,4.9f,62f),new Vector4(-13.9f,.10f,8.4f,114f),
+                new Vector4(15.6f,-.10f,1.3f,198f),new Vector4(14.9f,-.08f,5.0f,242f),new Vector4(13.9f,.10f,8.5f,294f)})
+                Imported("Valoria · CompactFootprint · edge geology","Rock02",new Vector3(p.x,p.y,p.z),3.25f,1.20f,p.w,new Color(.34f,.34f,.31f),false);
+            foreach(var p in new[]{
+                new Vector4(-17.0f,2.0f,1.10f,0),new Vector4(-16.2f,6.0f,1.22f,1),new Vector4(-15.0f,10.0f,1.16f,0),
+                new Vector4(17.0f,2.2f,1.10f,1),new Vector4(16.2f,6.2f,1.22f,0),new Vector4(15.0f,10.2f,1.16f,1)})
+                Imported("Valoria · CompactFootprint · edge pine",p.w>.5f?"Tree01B":"Tree01A",
+                    new Vector3(p.x,.05f,p.y),p.z,2.55f,p.x*9f,new Color(.29f,.39f,.26f),true);
+
+            // Empty development terraces preserve visible headroom for future Valoria growth.
+            TerrainTerraceTop("BroadRockPlatform","Valoria · CompactFootprint · west future terrace",
+                new Vector3(-8.4f,0,1.85f),.43f,3.35f,10f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · CompactFootprint · east future terrace",
+                new Vector3(8.3f,0,1.95f),.43f,3.30f,170f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · CompactFootprint · west upper growth shelf",
+                new Vector3(-5.7f,0,5.45f),1.62f,3.05f,94f);
+            TerrainTerraceTop("SteppedRockTerrace","Valoria · CompactFootprint · east upper growth shelf",
+                new Vector3(5.6f,0,5.55f),1.62f,3.05f,266f);
+
+            // Reinforce the vertical civic spine around the Bastion using existing certified wall/seam modules.
+            StoneArchitecturePiece("HighStraightWall","Valoria · CompactFootprint · west upper retaining spine",
+                new Vector3(-4.75f,1.28f,4.65f),2.55f,8f);
+            StoneArchitecturePiece("HighStraightWall","Valoria · CompactFootprint · east upper retaining spine",
+                new Vector3(4.75f,1.28f,4.72f),2.55f,172f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · CompactFootprint · west vertical seam",
+                new Vector3(-6.05f,.36f,3.45f),1.65f,56f);
+            StoneArchitecturePiece("RockToWallTransition","Valoria · CompactFootprint · east vertical seam",
+                new Vector3(6.05f,.36f,3.48f),1.65f,236f);
+
+            // The foreground reads as a ceremonial approach/plaza edge, not a suburban infill strip.
+            for(int i=0;i<4;i++)
+            {
+                float z=-.35f+i*1.08f;
+                StonePiece(2,"Valoria · CompactFootprint · processional edge west",new Vector3(-2.55f,.445f,z),new Vector3(1.15f,.05f,.92f),7f);
+                StonePiece(2,"Valoria · CompactFootprint · processional edge east",new Vector3(2.55f,.445f,z),new Vector3(1.15f,.05f,.92f),-7f);
+            }
+            if(art!=null&&art.Firewood!=null)
+                Piece("Valoria · CompactFootprint · restrained reconstruction stock",art.Firewood,
+                    new Vector3(-4.65f,.42f,1.05f),.86f,.46f,12f,new Color(.67f,.57f,.43f));
+
+            RenderSettings.fogStartDistance=27f;RenderSettings.fogEndDistance=76f;
+            WarmLight("Valoria · CompactFootprint · central lower warmth",new Vector3(0f,1.10f,.75f),new Color(1f,.50f,.22f),.42f,2.5f);
         }
 
         static void HeroValleyTerrain()
