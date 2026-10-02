@@ -89,6 +89,13 @@ namespace Eldoria.Presentation
                     var s=renderer.transform.localScale;
                     renderer.transform.localScale=new Vector3(s.x*3.2f,s.y,s.z*3.2f);
                 }
+                else if(n=="Valoria · Hero Frame valley terrain")
+                {
+                    // Iteration 21: this visual-only heightfield sits under the broad valley sheet.
+                    // Its tiled earth material was the remaining curved/textured foreground band.
+                    // Preserve the relief, unify only its surface response with the matte world valley.
+                    renderer.sharedMaterial=valleyDirt??dirt;
+                }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=dirt;
                 else if(n=="VPD · lower terrace earth"||n=="VPD · upper terrace earth")
