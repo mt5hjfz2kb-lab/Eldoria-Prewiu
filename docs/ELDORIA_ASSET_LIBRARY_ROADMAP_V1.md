@@ -1,7 +1,7 @@
 # Eldoria — Asset Library Roadmap v1
 
 Status: ACTIVE MASTER LIBRARY ROADMAP  
-Updated: 2026-09-30
+Updated: 2026-10-02
 
 ## Purpose
 
@@ -34,6 +34,7 @@ Related canonical sources:
 - Slavic foliage: REJECTED as primary forest language.
 - Existing `WorldRouteKit`.
 - Existing `WorldResourceKit` quarry/rock support compositions.
+- **Player City v1 — PRODUCTION / PASS:** `Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb`; one universal strategic city mesh for v1, with player/alliance/state differences handled outside the mesh.
 - Quaternius ruins: useful secondary POI architecture after Eldoria material adaptation.
 - Existing route/corruption/frontier presentation from Unity + web semantics.
 
@@ -55,13 +56,7 @@ Related canonical sources:
 ## A2. What is still missing
 
 ### P0 — makes the map actually read as a 4X
-1. **Player City Kit v1**
-   - at least 3 strategic city tiers;
-   - readable silhouette progression;
-   - owner/banner variation;
-   - optional protected/ruined/teleport state only if gameplay requires it.
-
-2. **Resource Node Kit v1**
+1. **Resource Node Kit v1**
    - wood;
    - stone;
    - food;
@@ -70,14 +65,14 @@ Related canonical sources:
    - abundance/depleted states;
    - 3–4 shape variants per common resource where practical.
 
-3. **Beast Kit v1**
+2. **Beast Kit v1**
    - wolf;
    - boar;
    - Rift common enemy;
    - elite enemy;
    - boss visual language.
 
-4. **Installation / POI Kit v1**
+3. **Installation / POI Kit v1**
    - Fissure/Breach;
    - corrupt camp;
    - neutral ruin;
@@ -85,7 +80,7 @@ Related canonical sources:
    - resource installation/mine;
    - shrine/event landmark.
 
-5. **March Representation Kit v1**
+4. **March Representation Kit v1**
    - own march;
    - allied march;
    - hostile march;
@@ -164,10 +159,12 @@ Ground Kit v1:
 ### Certified/rescued architecture / terrain support
 - TowerWallRock;
 - TerraceStairRock;
-- GateStreetRiseRock MV1 — landmark/support only, not certified traversal;
+- GateStreetRiseRock MV1 — landmark/support only, not certified traversal; canonical GLB persisted under `HistoricalLandmarks`.
 - ResidentialTerraceRock;
-- StreetLandingTransition;
+- StreetLandingTransition — canonical GLB persisted under `Rescued`;
 - RockTerrainSeamFiller.
+- Mid-Tier Architecture Kit v1 — 4 production GLBs, now normalized under `Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/`.
+- Stone Architecture Kit v1 — 3 production-safe GLBs: CornerWallL / HighStraightWall / RockToWallTransition.
 
 ### Multipiece StoneKit proof
 One exact Tripo generation proved a six-piece sheet can be converted into six independent reusable GLBs:
@@ -194,18 +191,10 @@ Final proof:
 ## B2. What is still missing
 
 ### P0 — city construction multiplier
-1. **Stone Architecture Kit v1**
-   Best next multipiece-sheet candidate:
-   - low straight wall;
-   - high wall;
-   - interior/exterior corner;
-   - arch/opening;
-   - pillar;
-   - parapet/cap;
-   - rock-to-wall transition where sheet capacity allows.
-
-   Goal:
-   turn the successful multipiece method into a real urban masonry kit.
+1. **Stone Architecture expansion / remaining masonry vocabulary**
+   - current production-safe core already exists: CornerWallL / HighStraightWall / RockToWallTransition;
+   - remaining need is selective expansion only where a proven city-composition gap requires it;
+   - do not regenerate the rejected v1 pieces merely to increase asset count.
 
 2. **Residential Support Kit v1**
    - small house;
@@ -300,14 +289,13 @@ The next large gain comes from:
 When looking for free assets, using Tripo, or authoring in Unity/Blender, work in this order unless a current gameplay milestone overrides it:
 
 ## Immediate
-1. Player City Kit v1
-2. Resource Node Kit v1
-3. Beast Kit v1
-4. Installation/POI Kit v1
-5. March Representation Kit v1
-6. Stone Architecture Kit v1
-7. Residential Support Kit v1
-8. Urban Props Kit v1
+1. Resource Node Kit v1
+2. Beast Kit v1
+3. Installation/POI Kit v1
+4. March Representation Kit v1
+5. Stone Architecture expansion only when a proven gap remains
+6. Residential Support Kit v1
+7. Urban Props Kit v1
 
 ## Then
 9. World Vegetation Kit v1
@@ -402,3 +390,16 @@ The three-family priority remains the governing sequence, but the first generati
 3. **Beast Kit v1 — NEXT AFTER PLAYER CITY**; visible PvE silhouettes remain provisional.
 
 Current shots make Resource/Installation/March/Residential/Props gaps concrete, but this entry does not authorize a wider acquisition wishlist or paid generation.
+
+## G. CANONICAL LIBRARY STORAGE — 2026-10-02
+
+Asset Library Canonicalization Pass v1 is complete. Canonical audit: `pipeline/asset-library-canonicalization-audit.json`.
+
+- 26 canonical GLBs inventoried across Valoria + WorldPlayerCity.
+- 0 canonical GLBs missing committed Unity `.meta` files.
+- TerraceStairRock and StreetLandingTransition were recovered from their exact certified historical artifacts and persisted under `Resources/Valoria/Rescued/`.
+- GateStreetRiseRock MV1 was recovered by exact SHA and persisted separately under `Resources/Valoria/HistoricalLandmarks/` to preserve its landmark-only / interface-fail limitation.
+- Mid-Tier Architecture Kit Piece01–04 was moved from the generic `Unity/Assets/Resources/` tree into `Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/` with its existing GLB metadata/GUIDs preserved.
+- Player City v1 and Granero BIII are existing production assets and must not be listed as missing acquisition targets.
+- Historical artifacts remain provenance/recovery evidence, not the only storage location for reusable certified GLBs.
+
