@@ -27,19 +27,19 @@ namespace Eldoria.Presentation
             var art=ValoriaExternalAssetLibrary.Load();
 
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "dirt",new Color(.69f,.61f,.47f,1f),new Vector2(4.2f,4.2f),.018f,.98f)
+                "dirt",new Color(.59f,.52f,.41f,1f),new Vector2(4.2f,4.2f),.018f,.98f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaDirtSurface:null,
-                    new Color(.66f,.58f,.45f,1f),new Vector2(4.2f,4.2f),.02f,.95f);
+                    new Color(.57f,.50f,.40f,1f),new Vector2(4.2f,4.2f),.02f,.95f);
 
             var cobble=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "cobble",new Color(.80f,.78f,.70f,1f),new Vector2(3.4f,3.4f),.05f,1.02f)
+                "cobble",new Color(.68f,.65f,.58f,1f),new Vector2(3.4f,3.4f),.05f,1.02f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaCobbleSurface:null,
-                    new Color(.78f,.75f,.68f,1f),new Vector2(3.4f,3.4f),.05f,1f);
+                    new Color(.66f,.63f,.56f,1f),new Vector2(3.4f,3.4f),.05f,1f);
 
             var stone=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "stone",new Color(.62f,.61f,.56f,1f),new Vector2(2.8f,2.8f),.03f,1.02f)
+                "stone",new Color(.53f,.51f,.46f,1f),new Vector2(2.8f,2.8f),.03f,1.02f)
                 ?? ValoriaKit.PbrSurfaceMaterial(art!=null?art.ValoriaStoneSurface:null,
-                    new Color(.61f,.60f,.55f,1f),new Vector2(2.8f,2.8f),.03f,1f);
+                    new Color(.52f,.50f,.45f,1f),new Vector2(2.8f,2.8f),.03f,1f);
 
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -169,7 +169,7 @@ namespace Eldoria.Presentation
                     Mathf.Clamp(Mathf.Max(b.size.x,b.size.z)*.82f,.9f,4.6f),
                     Mathf.Clamp(b.size.y*1.00f,.55f,2.6f),
                     Quaternion.Euler(0f,(ReplacedRocks*61)%360,0f),
-                    new Color(.53f,.54f,.50f,1f));
+                    new Color(.42f,.43f,.39f,1f));
                 if(go!=null)
                 {
                     go.transform.SetParent(root,true);
