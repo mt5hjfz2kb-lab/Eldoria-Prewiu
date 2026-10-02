@@ -202,7 +202,10 @@
         ".github/workflows/valoria-full-frame-terrain-continuity-v1.yml",
         "pipeline/valoria-full-frame-terrain-continuity-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffSubstrateV1.cs",
-        "pipeline/valoria-cliff-substrate-v1-request.json"
+        "pipeline/valoria-cliff-substrate-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        ".github/workflows/valoria-strongest-composite-v2.yml",
+        "pipeline/valoria-strongest-composite-v2-request.json"
       ],
       "resources": [
         "valoria-production-composition",
