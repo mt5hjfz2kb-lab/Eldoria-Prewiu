@@ -18,6 +18,7 @@ namespace Eldoria.Presentation
             var root = new GameObject("Valoria · AssetLibrary Reprocessing v1 · visual only").transform;
             root.SetParent(parent,true);
 
+            ReplaceWithCertifiedHeroBastion(root);
             ReassembleHeroApproach(root);
             ReassembleMidTierCore(root);
             ReassembleCompactCoreArchitecture(root);
@@ -32,6 +33,109 @@ namespace Eldoria.Presentation
             if(parent==null) throw new InvalidOperationException("Valoria production visual root missing for Asset Library Reprocessing gate.");
             if(GameObject.Find("Valoria · AssetLibrary Reprocessing v1 · visual only")!=null) return;
             bool old=Enabled;Enabled=true;Build(parent.transform,state);Enabled=old;
+        }
+
+        static void ReplaceWithCertifiedHeroBastion(Transform root)
+        {
+            // Highest-return historical recovery in this pass. The exact certified optimized GLB is
+            // staged by the proof/promotion workflow from artifact 11143009723 and verified by SHA.
+            // If the source is not present (ordinary source-only checks), leave the current Bastion untouched.
+            var source=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
+            if(source==null)return;
+
+            HideLegacyBastionVisuals();
+
+            var go=Object.Instantiate(source);
+            go.name="Valoria · AssetLibrary Reprocessing · certified Hero Bastion v1";
+            go.transform.rotation=Quaternion.Euler(0f,180f,0f);
+            DisableGameplay(go);
+
+            var renderers=go.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0)throw new InvalidOperationException("Certified Hero Bastion has no renderers.");
+            var bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            float span=Mathf.Max(bounds.size.x,bounds.size.z);
+            if(span<=.001f||bounds.size.y<=.001f)throw new InvalidOperationException("Certified Hero Bastion bounds invalid.");
+
+            // Same proportions/orientation as the prior successful integrated proof, now seated into the
+            // accepted Compact Footprint terrain. No mesh edits and no gameplay ownership.
+            const float targetSpan=12.8f;
+            const float targetHeight=10.2f;
+            float scale=Mathf.Min(targetSpan/span,targetHeight/bounds.size.y);
+            go.transform.localScale*=scale;
+
+            renderers=go.GetComponentsInChildren<Renderer>(true);
+            bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            var targetCenter=new Vector3(0f,0f,8.75f);
+            const float groundY=2.52f;
+            go.transform.position+=new Vector3(
+                targetCenter.x-bounds.center.x,
+                groundY-bounds.min.y,
+                targetCenter.z-bounds.center.z);
+
+            FitCertifiedHeroSurface(go);
+            go.transform.SetParent(root,true);
+        }
+
+        static void HideLegacyBastionVisuals()
+        {
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                bool legacy=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    if(t.name.StartsWith("Bastion ·",StringComparison.OrdinalIgnoreCase)||
+                       string.Equals(t.name,"Bastion",StringComparison.OrdinalIgnoreCase)||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.OrdinalIgnoreCase)||
+                       t.name.StartsWith("Valoria · rescued hero flank",StringComparison.OrdinalIgnoreCase))
+                    {
+                        legacy=true;break;
+                    }
+                }
+                if(legacy)r.enabled=false;
+            }
+        }
+
+        static void FitCertifiedHeroSurface(GameObject go)
+        {
+            var cache=new Dictionary<int,Material>();
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
+                for(int i=0;i<srcs.Length;i++)
+                {
+                    var src=srcs[i];
+                    if(src==null){dst[i]=null;continue;}
+                    if(cache.TryGetValue(src.GetInstanceID(),out var cached)){dst[i]=cached;continue;}
+
+                    Texture baseMap=null,normal=null,mask=null;
+                    foreach(string p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
+                    foreach(string p in new[]{"_MaskMap","_MetallicGlossMap","_OcclusionMap"})
+                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){mask=src.GetTexture(p);break;}
+
+                    var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+                    var m=new Material(shader){name="Valoria AssetLibrary · Hero Bastion · "+src.name};
+                    if(baseMap!=null&&m.HasProperty("_BaseMap"))m.SetTexture("_BaseMap",baseMap);
+                    if(normal!=null&&m.HasProperty("_BumpMap"))
+                    {
+                        m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");
+                        if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",1f);
+                    }
+                    if(mask!=null&&m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",mask);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.74f,.71f,.66f,1f));
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.74f,.71f,.66f,1f));
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
+                    if(m.HasProperty("_OcclusionStrength"))m.SetFloat("_OcclusionStrength",1f);
+                    cache[src.GetInstanceID()]=m;dst[i]=m;
+                }
+                r.sharedMaterials=dst;
+            }
         }
 
         static void ReassembleHeroApproach(Transform root)
