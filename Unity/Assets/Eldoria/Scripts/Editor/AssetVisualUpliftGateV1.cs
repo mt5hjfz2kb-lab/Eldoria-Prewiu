@@ -11,7 +11,7 @@ namespace Eldoria.EditorTools
 {
     public static class AssetVisualUpliftGateV1
     {
-        const string Folder="AssetVisualUpliftV1Captures"; // retry v2: D3D11 + no global shader precompile
+        const string Folder="AssetVisualUpliftV1Captures"; // retry v3: active Mid-Tier coverage
 
         public static void Capture()
         {
