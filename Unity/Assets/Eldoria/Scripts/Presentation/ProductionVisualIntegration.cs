@@ -1479,10 +1479,10 @@ namespace Eldoria.Presentation
                         // Keep their certified URP graph and recolor its palette inputs.
                         Object.Destroy(m);m=new Material(source){name="Eldoria adapted · "+resource+" "+i};
                         Color primary=foliage?(leaves?new Color(.19f,.29f,.13f):new Color(.24f,.17f,.10f)):tint;
-                        if(m.HasProperty("_Color"))m.SetColor("_Color",primary.linear);
-                        if(m.HasProperty("_Primary_Color"))m.SetColor("_Primary_Color",primary.linear);
-                        if(m.HasProperty("_Secondary_Color"))m.SetColor("_Secondary_Color",(foliage?new Color(.24f,.20f,.12f):tint*.72f).linear);
-                        if(m.HasProperty("_Tertiary_Color"))m.SetColor("_Tertiary_Color",(tint*.48f).linear);
+                        if(m.HasProperty("_Color"))m.SetColor("_Color",primary);
+                        if(m.HasProperty("_Primary_Color"))m.SetColor("_Primary_Color",primary);
+                        if(m.HasProperty("_Secondary_Color"))m.SetColor("_Secondary_Color",foliage?new Color(.24f,.20f,.12f):tint*.72f);
+                        if(m.HasProperty("_Tertiary_Color"))m.SetColor("_Tertiary_Color",tint*.48f);
                         if(foliage)
                         {
                             foreach(string wind in new[]{"_Bend_Strength","_Bend_Distortion","_Wiggle_Strength"})if(m.HasProperty(wind))m.SetFloat(wind,0);
@@ -1494,7 +1494,7 @@ namespace Eldoria.Presentation
                         foreach(string property in new[]{"_BaseMap","_MainTex","_Albedo"})
                             if(source!=null&&source.HasProperty(property)&&source.GetTexture(property)!=null){texture=source.GetTexture(property);break;}
                         if(texture!=null&&texture.name.ToLowerInvariant().Contains("white"))texture=null;
-                        if(texture!=null)m.SetColor("_BaseColor",tint.linear);
+                        if(texture!=null)m.SetColor("_BaseColor",tint);
                         else m=ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3,3));
                     }
                     if(texture!=null)m.SetTexture("_BaseMap",texture);
