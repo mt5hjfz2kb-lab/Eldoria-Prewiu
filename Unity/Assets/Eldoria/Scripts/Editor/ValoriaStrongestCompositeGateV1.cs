@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor;
@@ -47,7 +50,6 @@ namespace Eldoria.EditorTools
             ValoriaResidualCleanupV1.Enabled=false;
             ValoriaMaterialResidueCleanupV2.Enabled=false;
             ValoriaFullFrameArtifactCleanupV1.Enabled=false;
-            ValoriaCliffSubstrateV1.Enabled=false;
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
 
@@ -74,9 +76,9 @@ namespace Eldoria.EditorTools
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
             ValoriaMaterialResidueCleanupV2.Enabled=true;ValoriaMaterialResidueCleanupV2.Build(root.transform,state);
             ValoriaFullFrameArtifactCleanupV1.Enabled=true;ValoriaFullFrameArtifactCleanupV1.Build(root.transform,state);
-            ValoriaCliffSubstrateV1.Enabled=true;ValoriaCliffSubstrateV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
+            WriteVisibleRendererAudit(c,Path.Combine(Folder,"visible-renderers.tsv"));
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new System.Exception("Strongest composite altered gameplay signature.");
 
@@ -106,6 +108,53 @@ namespace Eldoria.EditorTools
                 $"}}\n");
 
             EditorApplication.Exit(0);
+        }
+
+        static void WriteVisibleRendererAudit(Camera c,string path)
+        {
+            var rows=new List<string>();
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                if(Mathf.Max(b.size.x,Mathf.Max(b.size.y,b.size.z))<.55f)continue;
+                var v=c.WorldToViewportPoint(b.center);
+                if(v.z<=0f||v.x<-.10f||v.x>1.10f||v.y<-.10f||v.y>1.10f)continue;
+
+                float minLum=99f,maxLum=-1f;bool anyTex=false;var mats=new StringBuilder();
+                foreach(var m in r.sharedMaterials)
+                {
+                    if(m==null)continue;
+                    Color col=Color.white;
+                    if(m.HasProperty("_BaseColor"))col=m.GetColor("_BaseColor");
+                    else if(m.HasProperty("_Color"))col=m.GetColor("_Color");
+                    else if(m.HasProperty("_BaseColorFactor"))col=m.GetColor("_BaseColorFactor");
+                    float lum=.2126f*col.r+.7152f*col.g+.0722f*col.b;
+                    minLum=Mathf.Min(minLum,lum);maxLum=Mathf.Max(maxLum,lum);
+                    Texture tex=null;
+                    if(m.HasProperty("_BaseMap"))tex=m.GetTexture("_BaseMap");
+                    if(tex==null&&m.HasProperty("_MainTex"))tex=m.GetTexture("_MainTex");
+                    if(tex!=null)anyTex=true;
+                    if(mats.Length>0)mats.Append(";");
+                    mats.Append(m.name);
+                }
+                if(minLum>90f){minLum=.5f;maxLum=.5f;}
+
+                var chain=new StringBuilder();
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    if(chain.Length>0)chain.Append(" <- ");
+                    chain.Append(t.name);
+                }
+
+                float screenArea=Mathf.Max(.001f,b.size.x*b.size.y+b.size.x*b.size.z+b.size.y*b.size.z);
+                rows.Add($"{v.x:F3}\t{v.y:F3}\t{v.z:F2}\t{screenArea:F2}\t{minLum:F3}\t{maxLum:F3}\t{(anyTex?"tex":"no_tex")}\t{r.gameObject.name}\t{mats}\tcenter=({b.center.x:F2},{b.center.y:F2},{b.center.z:F2})\tsize=({b.size.x:F2},{b.size.y:F2},{b.size.z:F2})\t{chain}");
+            }
+            rows.Sort((a,b)=>string.CompareOrdinal(a,b));
+            var sb=new StringBuilder();
+            sb.AppendLine("viewport_x\tviewport_y\tdepth\tbound_area\tmin_lum\tmax_lum\ttexture\trenderer\tmaterials\tbounds_center\tbounds_size\tchain");
+            foreach(var row in rows)sb.AppendLine(row);
+            File.WriteAllText(path,sb.ToString());
         }
 
         static void Save(Camera c,string path,Vector3 p,Vector3 t,float size,int w,int h)
