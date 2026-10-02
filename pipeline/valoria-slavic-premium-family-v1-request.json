@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-slavic-premium-family-v1",
+  "objective": "Audit higher-quality existing Slavic World town/admin building prefabs as candidates to replace low-coherence secondary Valoria architecture before authorizing any paid generation.",
+  "route": "asset_selection",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "candidate_count": 8,
+  "constraints": {
+    "proof_only": true,
+    "existing_repo_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "family_grid",
+    "individual_candidate_captures",
+    "visual_family_selection"
+  ]
+}
