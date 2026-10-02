@@ -111,7 +111,35 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    renderer.enabled=false;
+                    // Iteration 29: reuse the certified visual-only heightfield only as side/rear world relief.
+                    // The inhabited centre and the entire foreground are flattened below the valley floor;
+                    // relief fades in gradually beyond the compact city, preventing any visible map corona.
+                    renderer.enabled=true;
+                    renderer.sharedMaterial=valleyDirt??dirt;
+
+                    var mf=renderer.GetComponent<MeshFilter>();
+                    if(mf!=null && mf.sharedMesh!=null)
+                    {
+                        var source=mf.sharedMesh;
+                        var mesh=Object.Instantiate(source);
+                        mesh.name=source.name+" · convergence side-rear relief";
+                        var verts=mesh.vertices;
+                        const float flatY=-.20f;
+                        for(int i=0;i<verts.Length;i++)
+                        {
+                            var v=verts[i];
+                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-13.5f)/10.5f));
+                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-12.0f)/14.0f));
+                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+2.0f)/6.0f));
+                            float relief=Mathf.Max(side*frontGate,rear);
+                            v.y=Mathf.Lerp(flatY,v.y,relief);
+                            verts[i]=v;
+                        }
+                        mesh.vertices=verts;
+                        mesh.RecalculateNormals();
+                        mesh.RecalculateBounds();
+                        mf.sharedMesh=mesh;
+                    }
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
@@ -148,113 +176,42 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 34: face-only cliff curtains. No broad top surfaces.
-            AddSideCliffFace(root,true);
-            AddSideCliffFace(root,false);
-            AddRearCliffFace(root);
+            // Iteration 14: stronger PBR world framing, still no city-width expansion.
+            // Build asymmetrical rocky shoulders that enter the official frame edges and hide the open-board silhouette.
 
-            if(art!=null && art.SlavicBoulder!=null)
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "left foreground PBR shoulder",new Vector3(-11.9f,.18f,-3.2f),10.2f,18f,new Color(.45f,.46f,.44f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "right foreground PBR shoulder",new Vector3(12.7f,.08f,-2.4f),9.0f,208f,new Color(.45f,.46f,.44f,1f));
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "left mid PBR cliff",new Vector3(-12.8f,1.35f,4.6f),6.0f,88f,new Color(.44f,.45f,.43f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "right mid PBR cliff",new Vector3(13.3f,1.15f,5.4f),5.5f,272f,new Color(.44f,.45f,.43f,1f));
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "left rear PBR shelf",new Vector3(-10.9f,.95f,10.8f),7.0f,42f,new Color(.46f,.47f,.45f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
+
+            // Iteration 18: authored edge occupation using shader-safe non-foliage props only.
+            // These enrich the world margins without widening the playable city or reintroducing unsafe tree LODs.
+            if(art!=null)
             {
-                var crown=new[]{
-                    new Vector3(-14.2f,1.15f,-1.0f),new Vector3(-14.2f,1.55f,6.5f),new Vector3(-14.2f,1.95f,13.0f),
-                    new Vector3(14.2f,1.10f,-.5f),new Vector3(14.2f,1.50f,6.8f),new Vector3(14.2f,1.90f,13.2f)
-                };
-                for(int i=0;i<crown.Length;i++)
-                    AddPrefab(root,art.SlavicBoulder,"cliff crown boulder "+i,crown[i],
-                        1.35f+(i%3)*.18f,1.0f+(i%2)*.10f,(i*47)%360,new Color(.40f,.41f,.39f,1f),true);
-            }
-        }
-
-        static Material CliffFaceMaterial()
-        {
-            return ValoriaKit.DetailedSurfaceMaterial(new Color(.30f,.31f,.29f,1f),"earth",new Vector2(2.4f,4.8f),1.15f);
-        }
-
-        static void AddSideCliffFace(Transform root,bool west)
-        {
-            const int segments=14;
-            float x=west?-14.2f:14.2f;
-            float zMin=-6f,zMax=22f;
-            var verts=new List<Vector3>();
-            var uv=new List<Vector2>();
-            var tris=new List<int>();
-
-            for(int i=0;i<=segments;i++)
-            {
-                float t=i/(float)segments;
-                float z=Mathf.Lerp(zMin,zMax,t);
-                float top=.85f+Mathf.SmoothStep(0f,1f,t)*1.75f
-                    +Mathf.Sin(t*8.1f+(west?0f:1.1f))*.24f;
-                float bottom=-2.6f-Mathf.Sin(t*5.2f)*.18f;
-                verts.Add(new Vector3(x,bottom,z));
-                verts.Add(new Vector3(x,top,z));
-                uv.Add(new Vector2(t*5f,0f));
-                uv.Add(new Vector2(t*5f,1f));
-            }
-
-            for(int i=0;i<segments;i++)
-            {
-                int b=i*2,t=b+1,nb=(i+1)*2,nt=nb+1;
-                if(west)
+                if(art.SlavicBoulder!=null)
                 {
-                    // Face inward (+X).
-                    tris.Add(b);tris.Add(t);tris.Add(nb);
-                    tris.Add(t);tris.Add(nt);tris.Add(nb);
-                }
-                else
-                {
-                    // Face inward (-X).
-                    tris.Add(b);tris.Add(nb);tris.Add(t);
-                    tris.Add(t);tris.Add(nb);tris.Add(nt);
+                    var rocks=new[]{
+                        new Vector3(-14.6f,.02f,-3.6f),new Vector3(-13.7f,.02f,1.2f),new Vector3(-14.4f,.02f,6.2f),new Vector3(-12.5f,.02f,11.8f),
+                        new Vector3(14.5f,.02f,-3.0f),new Vector3(13.6f,.02f,1.8f),new Vector3(14.2f,.02f,6.8f),new Vector3(12.7f,.02f,12.1f)
+                    };
+                    for(int i=0;i<rocks.Length;i++)
+                        AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
+                            1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
                 }
             }
 
-            var mesh=new Mesh{name=west?"Valoria west cliff face":"Valoria east cliff face"};
-            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-
-            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west cliff face":"Valoria · Reference Convergence v2 · east cliff face");
-            go.transform.SetParent(root,true);
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=CliffFaceMaterial();
-        }
-
-        static void AddRearCliffFace(Transform root)
-        {
-            const int segments=16;
-            float xMin=-16f,xMax=16f,z=17.5f;
-            var verts=new List<Vector3>();
-            var uv=new List<Vector2>();
-            var tris=new List<int>();
-
-            for(int i=0;i<=segments;i++)
-            {
-                float t=i/(float)segments;
-                float x=Mathf.Lerp(xMin,xMax,t);
-                float side=Mathf.Abs(t-.5f)*2f;
-                float top=1.15f+side*1.25f+Mathf.Sin(t*9.0f)*.22f;
-                verts.Add(new Vector3(x,-2.7f,z));
-                verts.Add(new Vector3(x,top,z));
-                uv.Add(new Vector2(t*6f,0f));
-                uv.Add(new Vector2(t*6f,1f));
-            }
-
-            for(int i=0;i<segments;i++)
-            {
-                int b=i*2,t=b+1,nb=(i+1)*2,nt=nb+1;
-                // Face forward (-Z).
-                tris.Add(b);tris.Add(t);tris.Add(nb);
-                tris.Add(t);tris.Add(nt);tris.Add(nb);
-            }
-
-            var mesh=new Mesh{name="Valoria rear cliff face"};
-            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
-
-            var go=new GameObject("Valoria · Reference Convergence v2 · rear cliff face");
-            go.transform.SetParent(root,true);
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=CliffFaceMaterial();
+            // Do not add pass-owned foliage: the base scene already provides vegetation and
+            // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
         }
 
         static void BuildMountainHorizon(Transform root)
