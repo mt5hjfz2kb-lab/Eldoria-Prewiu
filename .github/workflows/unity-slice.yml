@@ -4,7 +4,7 @@ name: Unity slice source and editor gate
 
 on:
   push:
-    branches: [main]
+    branches: [main, visual-proof/asset-library-reprocessing-pass-v1]
     paths:
       - 'Unity/**'
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
