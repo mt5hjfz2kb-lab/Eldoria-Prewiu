@@ -1,16 +1,13 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "enabled": true,
-  "mode": "diagnostic_batch",
-  "assets": [
-    {"asset":"TerraceStairRock","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb"},
-    {"asset":"BroadRockPlatform","input":"Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb"},
-    {"asset":"StreetLandingTransition","input":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb"},
-    {"asset":"MidTierPiece01","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb"},
-    {"asset":"MidTierPiece02","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb"},
-    {"asset":"MidTierPiece03","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"},
-    {"asset":"MidTierPiece04","input":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"}
-  ],
-  "goal": "identify true geometry-limited assets before any mesh surgery; no canonical mutation",
+  "mode": "surface_rescue",
+  "asset": "TerraceStairRock",
+  "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+  "surface_profile": "rock",
+  "target_triangles": 49800,
+  "min_triangles": 49500,
+  "max_triangles": 50000,
+  "goal": "replace flat untextured historical material with deterministic Eldoria rock PBR while preserving certified geometry and gameplay independence",
   "tripo_credits": 0
 }
