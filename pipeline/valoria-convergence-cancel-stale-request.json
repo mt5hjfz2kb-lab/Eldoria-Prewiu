@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Residual Cleanup v1 isolated run is superseded by Strongest Composite v1, which includes the same cleanup plus Cliff Island Cleanup v2. Free the single Windows runner queue.",
+  "reason": "Residual Cleanup v1 entered runner during first cancel race; Strongest Composite v1 supersedes it and is already queued.",
   "runs": [
     37068675601
   ],
-  "triggered_at": "2026-10-02T23:52:00Z"
+  "triggered_at": "2026-10-02T23:55:00Z"
 }
