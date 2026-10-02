@@ -1514,127 +1514,122 @@ namespace Eldoria.Presentation
 
         static void ComposeReferenceConvergenceV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // VALORIA REFERENCE CONVERGENCE v1.
-            // Goal: approach the approved reference's monumental ruin / inhabited cliff-city read
-            // using only existing library assets. No gameplay ownership and no paid/new geometry.
+            // VALORIA REFERENCE CONVERGENCE v1 — reference-driven whole-frame composition.
+            // Existing library only. Visual-only: no gameplay/collision ownership and no Tripo spend.
 
-            // Monumental frame using only already-certified Valoria geometry.
-            // TowerWallRock carries vertical ruin identity; Stone Architecture v1 supplies masonry/rock joins.
-            var towerWall=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
-            if(towerWall!=null)
+            // Reject the earlier giant Arch_Gothic wall read. The reference needs broken, inhabited monumental
+            // structure integrated into geology, not two vertical slabs at the edge of the city.
+            var destroyedTower=Resources.Load<GameObject>("Valoria/ReferenceKit/tower_destroyed");
+            var passage=Resources.Load<GameObject>("Valoria/ReferenceKit/wall_passage");
+            var detailedWall=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_wall_detailed");
+            var bridge=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_bridge");
+
+            // Monumental ruin frame. Keep the centre open so Bastion remains the hero and the city can still grow.
+            if(destroyedTower!=null)
             {
-                Piece("Valoria · Reference v1 · west monumental tower wall",towerWall,
-                    new Vector3(-8.55f,.15f,6.75f),4.55f,7.25f,18f,new Color(.60f,.61f,.56f));
-                Piece("Valoria · Reference v1 · east monumental tower wall",towerWall,
-                    new Vector3(8.70f,.15f,6.95f),4.55f,7.25f,198f,new Color(.60f,.61f,.56f));
-                Piece("Valoria · Reference v1 · west rear ruin tower",towerWall,
-                    new Vector3(-6.65f,.60f,10.15f),3.55f,5.60f,34f,new Color(.55f,.56f,.52f));
-                Piece("Valoria · Reference v1 · east rear ruin tower",towerWall,
-                    new Vector3(6.80f,.60f,10.30f),3.55f,5.60f,214f,new Color(.55f,.56f,.52f));
+                Piece("Valoria · Reference v1 · ruin tower west",destroyedTower,new Vector3(-8.1f,.10f,5.9f),4.1f,6.5f,18f,new Color(.55f,.54f,.49f));
+                Piece("Valoria · Reference v1 · ruin tower east",destroyedTower,new Vector3(8.4f,.15f,6.5f),4.0f,6.3f,202f,new Color(.55f,.54f,.49f));
             }
-            StoneArchitecturePiece("HighStraightWall","Valoria · Reference v1 · west ancient retaining",
-                new Vector3(-7.65f,.05f,4.35f),4.10f,22f);
-            StoneArchitecturePiece("HighStraightWall","Valoria · Reference v1 · east ancient retaining",
-                new Vector3(7.75f,.05f,4.45f),4.10f,158f);
-            StoneArchitecturePiece("CornerWallL","Valoria · Reference v1 · west broken corner",
-                new Vector3(-9.15f,.20f,8.25f),3.75f,28f);
-            StoneArchitecturePiece("CornerWallL","Valoria · Reference v1 · east broken corner",
-                new Vector3(9.25f,.20f,8.35f),3.75f,208f);
-            foreach(var s in new[]{
-                new Vector4(-8.4f,5.4f,2.35f,42f),new Vector4(8.5f,5.5f,2.35f,222f),
-                new Vector4(-6.7f,9.0f,2.05f,64f),new Vector4(6.8f,9.1f,2.05f,244f)})
-                StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · monumental rock seam",
-                    new Vector3(s.x,.20f,s.y),s.z,s.w);
+            if(passage!=null)
+            {
+                Piece("Valoria · Reference v1 · broken passage west",passage,new Vector3(-9.4f,-.25f,2.1f),5.2f,5.1f,14f,new Color(.52f,.51f,.47f));
+                Piece("Valoria · Reference v1 · broken passage east",passage,new Vector3(9.6f,-.25f,2.5f),5.2f,5.1f,194f,new Color(.52f,.51f,.47f));
+            }
+            if(detailedWall!=null)
+            {
+                Piece("Valoria · Reference v1 · ruin wall west",detailedWall,new Vector3(-7.4f,.30f,8.4f),4.3f,3.4f,8f,new Color(.52f,.50f,.46f));
+                Piece("Valoria · Reference v1 · ruin wall east",detailedWall,new Vector3(7.6f,.30f,8.7f),4.3f,3.4f,188f,new Color(.52f,.50f,.46f));
+            }
 
-            // Distant terrain depth: low buried natural mountains, never floating above the horizon.
-            foreach(var s in new[]{
-                new Vector4(-18f,24f,12f,14f),new Vector4(-8f,28f,13f,42f),
-                new Vector4(2f,30f,13.5f,82f),new Vector4(12f,27f,12.5f,128f),new Vector4(21f,23f,11f,164f)})
-                Imported("Valoria · Reference v1 · distant buried mountain","Mountain01",
-                    new Vector3(s.x,-5.8f,s.y),s.z,4.1f,s.w,new Color(.37f,.40f,.40f),false);
+            // Two broken bridges imply a once-larger ancient city and add the layered lateral silhouette
+            // present in the reference without filling future residential plots.
+            if(bridge!=null)
+            {
+                Piece("Valoria · Reference v1 · high broken bridge west",bridge,new Vector3(-6.7f,2.55f,6.3f),5.4f,2.1f,-12f,new Color(.58f,.56f,.50f));
+                Piece("Valoria · Reference v1 · high broken bridge east",bridge,new Vector3(6.9f,2.50f,6.6f),5.4f,2.1f,192f,new Color(.58f,.56f,.50f));
+            }
 
-            // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
+            // Bury the ruin frame into geology so nothing reads as a placed prefab.
             foreach(var s in new[]{
-                new Vector4(-8.8f,-4.4f,4.7f,26f),new Vector4(8.8f,-4.2f,4.8f,206f),
-                new Vector4(-7.5f,-.4f,4.3f,48f),new Vector4(7.5f,-.2f,4.3f,228f),
-                new Vector4(-6.3f,3.3f,3.8f,74f),new Vector4(6.3f,3.4f,3.8f,254f)})
-                Imported("Valoria · Reference v1 · vertical cliff mass","Rock02",
-                    new Vector3(s.x,-1.55f,s.y),s.z,s.z*1.30f,s.w,new Color(.31f,.31f,.29f),false);
+                new Vector4(-9.3f,1.4f,5.5f,26f),new Vector4(9.4f,1.6f,5.6f,206f),
+                new Vector4(-7.8f,5.5f,4.8f,48f),new Vector4(7.9f,5.7f,4.8f,228f),
+                new Vector4(-6.7f,8.2f,4.2f,72f),new Vector4(6.8f,8.4f,4.2f,252f)})
+                Imported("Valoria · Reference v1 · ruin geology","Rock02",
+                    new Vector3(s.x,-1.05f,s.y),s.z,s.z*.88f,s.w,new Color(.30f,.30f,.28f),false);
 
-            // Foreground geology carries the city toward the camera so the frame reads as a mountain settlement,
-            // not a small diorama floating in empty terrain.
+            // Larger foreground shelves pull the city toward the player and hide the flat-terrain edge at zoom 19.
             foreach(var s in new[]{
-                new Vector4(-10.5f,-8.7f,5.6f,18f),new Vector4(-6.8f,-9.8f,5.2f,48f),
-                new Vector4(-2.7f,-10.8f,4.9f,76f),new Vector4(2.8f,-10.6f,4.9f,256f),
-                new Vector4(6.9f,-9.6f,5.2f,228f),new Vector4(10.6f,-8.5f,5.6f,198f)})
-                Imported("Valoria · Reference v1 · foreground cliff shelf","Rock02",
-                    new Vector3(s.x,-1.65f,s.y),s.z,s.z*1.08f,s.w,new Color(.30f,.30f,.28f),false);
+                new Vector4(-11.5f,-10.5f,6.4f,18f),new Vector4(-6.8f,-12.0f,6.0f,48f),
+                new Vector4(-2.4f,-13.0f,5.8f,78f),new Vector4(2.6f,-12.8f,5.8f,258f),
+                new Vector4(7.0f,-11.8f,6.0f,228f),new Vector4(11.7f,-10.3f,6.4f,198f)})
+                Imported("Valoria · Reference v1 · foreground cliff wall","Rock02",
+                    new Vector3(s.x,-2.15f,s.y),s.z,s.z*1.30f,s.w,new Color(.29f,.29f,.27f),false);
 
-            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · foreground terrace west",
-                new Vector3(-5.6f,0,-6.9f),.20f,4.4f,10f);
-            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · foreground terrace east",
-                new Vector3(5.6f,0,-6.7f),.20f,4.4f,170f);
-            RescuedTerrainSeam("Valoria · Reference v1 · foreground seam west",
-                new Vector3(-3.7f,0,-5.8f),.36f,3.2f,54f);
-            RescuedTerrainSeam("Valoria · Reference v1 · foreground seam east",
-                new Vector3(3.7f,0,-5.7f),.36f,3.2f,306f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · lower terrace west",
+                new Vector3(-6.2f,0,-6.8f),.18f,5.6f,8f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · lower terrace centre",
+                new Vector3(0f,0,-7.5f),.16f,5.8f,0f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · lower terrace east",
+                new Vector3(6.2f,0,-6.7f),.18f,5.6f,172f);
+            RescuedTerrainSeam("Valoria · Reference v1 · lower seam west",new Vector3(-3.8f,0,-5.7f),.34f,3.3f,56f);
+            RescuedTerrainSeam("Valoria · Reference v1 · lower seam east",new Vector3(3.8f,0,-5.6f),.34f,3.3f,304f);
 
+            // Distant cool mountains: scenery only, deeply buried to avoid floating silhouettes.
             foreach(var s in new[]{
-                new Vector4(-11.0f,5.9f,1.22f,0),new Vector4(-9.2f,7.7f,1.35f,1),
-                new Vector4(-7.8f,9.4f,1.18f,0),new Vector4(11.1f,5.7f,1.22f,1),
-                new Vector4(9.3f,7.9f,1.35f,0),new Vector4(7.9f,9.6f,1.18f,1)})
-                Imported("Valoria · Reference v1 · ruin pine",s.w>.5f?"Tree01B":"Tree01A",
-                    new Vector3(s.x,.02f,s.y),s.z,3.45f,s.x*17f,new Color(.24f,.35f,.22f),true);
+                new Vector4(-24f,25f,17f,12f),new Vector4(-12f,31f,18f,34f),
+                new Vector4(0f,34f,19f,72f),new Vector4(12f,31f,18f,118f),new Vector4(24f,25f,17f,158f)})
+                Imported("Valoria · Reference v1 · distant mountain chain","Mountain01",
+                    new Vector3(s.x,-6.2f,s.y),s.z,6.7f,s.w,new Color(.36f,.40f,.42f),false);
 
-            // Dense but controlled mountain vegetation. It occupies geology/seams, never buildable plots or the central route.
+            // Vegetation sits in seams and ruins, never on the central route or future build plots.
             foreach(var s in new[]{
-                new Vector4(-8.9f,-2.4f,1.15f,0),new Vector4(-8.2f,.2f,1.32f,1),new Vector4(-7.5f,2.6f,1.18f,0),
-                new Vector4(-6.2f,5.0f,1.25f,1),new Vector4(-5.5f,7.2f,1.12f,0),
-                new Vector4(8.9f,-2.2f,1.15f,1),new Vector4(8.2f,.4f,1.32f,0),new Vector4(7.5f,2.8f,1.18f,1),
-                new Vector4(6.2f,5.2f,1.25f,0),new Vector4(5.5f,7.4f,1.12f,1)})
+                new Vector4(-10.0f,3.3f,1.25f,0),new Vector4(-9.0f,6.0f,1.38f,1),
+                new Vector4(-7.6f,8.7f,1.24f,0),new Vector4(-6.0f,10.3f,1.18f,1),
+                new Vector4(10.0f,3.5f,1.25f,1),new Vector4(9.0f,6.2f,1.38f,0),
+                new Vector4(7.6f,8.9f,1.24f,1),new Vector4(6.0f,10.5f,1.18f,0),
+                new Vector4(-5.8f,-2.2f,1.18f,0),new Vector4(5.8f,-2.0f,1.18f,1)})
                 Imported("Valoria · Reference v1 · cliff pine",s.w>.5f?"Tree01B":"Tree01A",
-                    new Vector3(s.x,.05f,s.y),s.z,3.15f,s.x*13f,new Color(.25f,.36f,.22f),true);
+                    new Vector3(s.x,.04f,s.y),s.z,3.4f,s.x*13f,new Color(.24f,.35f,.21f),true);
 
             foreach(var s in new[]{
-                new Vector4(-5.9f,-2.0f,.95f,12f),new Vector4(-4.7f,.0f,.85f,32f),new Vector4(-4.0f,2.0f,.80f,52f),
-                new Vector4(5.9f,-1.8f,.95f,192f),new Vector4(4.7f,.2f,.85f,212f),new Vector4(4.0f,2.2f,.80f,232f)})
+                new Vector4(-5.8f,-2.2f,.95f,12f),new Vector4(-4.7f,.1f,.86f,32f),new Vector4(-3.8f,2.4f,.82f,52f),
+                new Vector4(5.8f,-2.0f,.95f,192f),new Vector4(4.7f,.3f,.86f,212f),new Vector4(3.8f,2.6f,.82f,232f)})
                 Imported("Valoria · Reference v1 · terrace bush","Bush01",
-                    new Vector3(s.x,.10f,s.y),s.z,.85f,s.w,new Color(.30f,.42f,.25f),true);
+                    new Vector3(s.x,.10f,s.y),s.z,.88f,s.w,new Color(.29f,.41f,.24f),true);
 
-            // Inhabited reconstruction cues around functional shelves using existing props only.
+            // Rebuild activity around functional shelves using existing props only.
             if(art!=null&&art.Firewood!=null)
-            {
                 foreach(var s in new[]{
-                    new Vector4(-4.9f,-1.35f,.95f,12f),new Vector4(-3.1f,-1.75f,.82f,-18f),
-                    new Vector4(4.9f,-1.25f,.95f,-12f),new Vector4(3.2f,-1.65f,.82f,18f)})
+                    new Vector4(-4.7f,-1.25f,.98f,12f),new Vector4(-3.0f,-1.7f,.85f,-18f),
+                    new Vector4(4.7f,-1.18f,.98f,-12f),new Vector4(3.0f,-1.6f,.85f,18f)})
                     Piece("Valoria · Reference v1 · reconstruction timber",art.Firewood,
-                        new Vector3(s.x,.46f,s.y),s.z,.55f,s.w,new Color(.73f,.62f,.46f));
-            }
-            for(int i=0;i<6;i++)
+                        new Vector3(s.x,.46f,s.y),s.z,.58f,s.w,new Color(.73f,.62f,.46f));
+
+            for(int i=0;i<8;i++)
             {
-                float side=i<3?-1f:1f; int j=i%3;
-                var p=new Vector3(side*(4.0f+j*.62f),.48f,-2.0f+j*.48f);
+                float side=i<4?-1f:1f; int j=i%4;
+                var p=new Vector3(side*(3.7f+j*.55f),.46f,-2.1f+j*.42f);
                 Piece("Valoria · Reference v1 · work crate",Resources.Load<GameObject>("Valoria/UrbanProps/Crate"),
                     p,.46f,.46f,i*29f,new Color(.74f,.64f,.49f));
                 Piece("Valoria · Reference v1 · work barrel",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),
-                    p+new Vector3(side*.28f,0,.25f),.35f,.54f,i*37f,new Color(.67f,.57f,.43f));
+                    p+new Vector3(side*.28f,0,.22f),.35f,.54f,i*37f,new Color(.67f,.57f,.43f));
             }
 
-            // Stronger reference-like atmosphere: warm active city, cooler distant ruins.
-            RenderSettings.ambientSkyColor=new Color(.72f,.75f,.76f);
-            RenderSettings.ambientEquatorColor=new Color(.46f,.45f,.41f);
-            RenderSettings.ambientGroundColor=new Color(.20f,.19f,.17f);
-            RenderSettings.ambientIntensity=.90f;
-            RenderSettings.fogColor=new Color(.58f,.63f,.66f);
-            RenderSettings.fogStartDistance=23f;
-            RenderSettings.fogEndDistance=68f;
+            // Slightly stronger depth separation: warm active city, cooler ruins/background.
+            RenderSettings.ambientSkyColor=new Color(.73f,.77f,.79f);
+            RenderSettings.ambientEquatorColor=new Color(.47f,.46f,.42f);
+            RenderSettings.ambientGroundColor=new Color(.19f,.18f,.16f);
+            RenderSettings.ambientIntensity=.92f;
+            RenderSettings.fogColor=new Color(.57f,.63f,.67f);
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=74f;
             var camera=Camera.main;
             if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;}
             foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if(l.name=="Valoria · amber dusk"){l.color=new Color(1f,.82f,.66f);l.intensity=1.48f;l.shadowStrength=.72f;}
-            WarmLight("Valoria · Reference v1 · lower west fire",new Vector3(-4.2f,1.15f,-1.2f),new Color(1f,.46f,.18f),.62f,2.5f);
-            WarmLight("Valoria · Reference v1 · lower east fire",new Vector3(4.2f,1.15f,-1.1f),new Color(1f,.46f,.18f),.62f,2.5f);
-            WarmLight("Valoria · Reference v1 · upper warmth",new Vector3(0f,2.85f,4.5f),new Color(1f,.50f,.21f),.62f,2.8f);
+                if(l.name=="Valoria · amber dusk"){l.color=new Color(1f,.82f,.66f);l.intensity=1.52f;l.shadowStrength=.72f;}
+            WarmLight("Valoria · Reference v1 · lower west fire",new Vector3(-4.0f,1.10f,-1.2f),new Color(1f,.46f,.18f),.68f,2.6f);
+            WarmLight("Valoria · Reference v1 · lower east fire",new Vector3(4.0f,1.10f,-1.1f),new Color(1f,.46f,.18f),.68f,2.6f);
+            WarmLight("Valoria · Reference v1 · upper warmth",new Vector3(0f,2.90f,4.5f),new Color(1f,.50f,.21f),.68f,2.9f);
         }
 
         static void MasterRebuildTerrain()
