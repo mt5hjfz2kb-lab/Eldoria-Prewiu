@@ -1517,36 +1517,23 @@ namespace Eldoria.Presentation
             // VALORIA REFERENCE CONVERGENCE v1 — reference-driven whole-frame composition.
             // Existing library only. Visual-only: no gameplay/collision ownership and no Tripo spend.
 
-            // Reject the earlier giant Arch_Gothic wall read. The reference needs broken, inhabited monumental
-            // structure integrated into geology, not two vertical slabs at the edge of the city.
-            var destroyedTower=Resources.Load<GameObject>("Valoria/ReferenceKit/tower_destroyed");
-            var passage=Resources.Load<GameObject>("Valoria/ReferenceKit/wall_passage");
-            var detailedWall=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_wall_detailed");
-            var bridge=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_bridge");
-
-            // Monumental ruin frame. Keep the centre open so Bastion remains the hero and the city can still grow.
-            if(destroyedTower!=null)
+            // Monumental archaeological frame from the existing modular castle family.
+            // Real open gate silhouettes replace the rejected slab/bridge meshes.
+            var ruinGate=Resources.Load<GameObject>("Valoria/Stone_Gate");
+            var ruinTower=Resources.Load<GameObject>("Valoria/Stone_Tower");
+            if(ruinGate!=null)
             {
-                Piece("Valoria · Reference v1 · ruin tower west",destroyedTower,new Vector3(-8.1f,.10f,5.9f),4.1f,6.5f,18f,new Color(.55f,.54f,.49f));
-                Piece("Valoria · Reference v1 · ruin tower east",destroyedTower,new Vector3(8.4f,.15f,6.5f),4.0f,6.3f,202f,new Color(.55f,.54f,.49f));
+                Piece("Valoria · Reference v1 · west monumental gate ruin",ruinGate,
+                    new Vector3(-10.2f,.02f,6.2f),7.4f,7.8f,18f,new Color(.58f,.56f,.51f));
+                Piece("Valoria · Reference v1 · east monumental gate ruin",ruinGate,
+                    new Vector3(10.35f,.02f,6.45f),7.4f,7.8f,198f,new Color(.58f,.56f,.51f));
             }
-            if(passage!=null)
+            if(ruinTower!=null)
             {
-                Piece("Valoria · Reference v1 · broken passage west",passage,new Vector3(-9.4f,-.25f,2.1f),5.2f,5.1f,14f,new Color(.52f,.51f,.47f));
-                Piece("Valoria · Reference v1 · broken passage east",passage,new Vector3(9.6f,-.25f,2.5f),5.2f,5.1f,194f,new Color(.52f,.51f,.47f));
-            }
-            if(detailedWall!=null)
-            {
-                Piece("Valoria · Reference v1 · ruin wall west",detailedWall,new Vector3(-7.4f,.30f,8.4f),4.3f,3.4f,8f,new Color(.52f,.50f,.46f));
-                Piece("Valoria · Reference v1 · ruin wall east",detailedWall,new Vector3(7.6f,.30f,8.7f),4.3f,3.4f,188f,new Color(.52f,.50f,.46f));
-            }
-
-            // Two broken bridges imply a once-larger ancient city and add the layered lateral silhouette
-            // present in the reference without filling future residential plots.
-            if(bridge!=null)
-            {
-                Piece("Valoria · Reference v1 · high broken bridge west",bridge,new Vector3(-6.7f,2.55f,6.3f),5.4f,2.1f,-12f,new Color(.58f,.56f,.50f));
-                Piece("Valoria · Reference v1 · high broken bridge east",bridge,new Vector3(6.9f,2.50f,6.6f),5.4f,2.1f,192f,new Color(.58f,.56f,.50f));
+                Piece("Valoria · Reference v1 · west ancient flank tower",ruinTower,
+                    new Vector3(-12.7f,-.20f,7.7f),3.25f,5.5f,10f,new Color(.51f,.50f,.46f));
+                Piece("Valoria · Reference v1 · east ancient flank tower",ruinTower,
+                    new Vector3(12.85f,-.20f,7.95f),3.25f,5.5f,190f,new Color(.51f,.50f,.46f));
             }
 
             // Bury the ruin frame into geology so nothing reads as a placed prefab.
@@ -1576,10 +1563,10 @@ namespace Eldoria.Presentation
 
             // Distant cool mountains: scenery only, deeply buried to avoid floating silhouettes.
             foreach(var s in new[]{
-                new Vector4(-24f,25f,17f,12f),new Vector4(-12f,31f,18f,34f),
-                new Vector4(0f,34f,19f,72f),new Vector4(12f,31f,18f,118f),new Vector4(24f,25f,17f,158f)})
+                new Vector4(-20f,19f,15.5f,12f),new Vector4(-10f,21f,14.5f,34f),
+                new Vector4(0f,23f,16.5f,72f),new Vector4(10f,21f,14.5f,118f),new Vector4(20f,19f,15.5f,158f)})
                 Imported("Valoria · Reference v1 · distant mountain chain","Mountain01",
-                    new Vector3(s.x,-6.2f,s.y),s.z,6.7f,s.w,new Color(.36f,.40f,.42f),false);
+                    new Vector3(s.x,-2.6f,s.y),s.z,7.5f,s.w,new Color(.39f,.45f,.48f),false);
 
             // Vegetation sits in seams and ruins, never on the central route or future build plots.
             foreach(var s in new[]{
@@ -1615,14 +1602,18 @@ namespace Eldoria.Presentation
                     p+new Vector3(side*.28f,0,.22f),.35f,.54f,i*37f,new Color(.67f,.57f,.43f));
             }
 
+            Flag("Valoria · Reference v1 · west standard",new Vector3(-4.15f,.45f,-1.05f),Blue,2.05f);
+            Flag("Valoria · Reference v1 · east standard",new Vector3(4.15f,.45f,-.95f),Blue,2.05f);
+            Flag("Valoria · Reference v1 · upper standard",new Vector3(0f,2.58f,4.30f),Blue,2.25f);
+
             // Slightly stronger depth separation: warm active city, cooler ruins/background.
-            RenderSettings.ambientSkyColor=new Color(.73f,.77f,.79f);
-            RenderSettings.ambientEquatorColor=new Color(.47f,.46f,.42f);
+            RenderSettings.ambientSkyColor=new Color(.77f,.83f,.87f);
+            RenderSettings.ambientEquatorColor=new Color(.51f,.50f,.46f);
             RenderSettings.ambientGroundColor=new Color(.19f,.18f,.16f);
             RenderSettings.ambientIntensity=.92f;
-            RenderSettings.fogColor=new Color(.57f,.63f,.67f);
-            RenderSettings.fogStartDistance=24f;
-            RenderSettings.fogEndDistance=74f;
+            RenderSettings.fogColor=new Color(.56f,.68f,.76f);
+            RenderSettings.fogStartDistance=30f;
+            RenderSettings.fogEndDistance=94f;
             var camera=Camera.main;
             if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;}
             foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
