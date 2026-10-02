@@ -73,33 +73,29 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Reference-oriented side curtains: cliff + retaining masonry + vegetation.
-            // No residential expansion and no non-Valoria ruin vocabulary.
+            // Iteration 8: lightweight reference-oriented side curtains.
+            // No duplicated heavy GLB modules here; use canonical prefab vocabulary + terrain + foliage only.
 
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left edge rock shelf",new Vector3(-12.8f,.80f,3.2f),8.2f,24f,RockTint);
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "right edge rock shelf",new Vector3(12.8f,.80f,3.4f),8.2f,204f,RockTint);
+            AddResource(root,"Valoria/SM_Cliffs_01","left outer cliff curtain",
+                new Vector3(-15.6f,-2.35f,3.4f),13.8f,9.2f,24f,new Color(.38f,.41f,.41f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","right outer cliff curtain",
+                new Vector3(15.5f,-2.35f,3.6f),13.8f,9.2f,204f,new Color(.38f,.41f,.41f,1f));
 
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "left edge stepped cliff",new Vector3(-13.6f,2.15f,8.2f),6.2f,98f,new Color(.39f,.41f,.40f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right edge stepped cliff",new Vector3(13.6f,2.15f,8.4f),6.2f,262f,new Color(.39f,.41f,.40f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","left lower side mass",
+                new Vector3(-14.7f,-3.45f,-2.8f),12.2f,6.6f,30f,new Color(.35f,.39f,.37f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","right lower side mass",
+                new Vector3(14.6f,-3.45f,-2.6f),12.2f,6.6f,210f,new Color(.35f,.39f,.37f,1f));
 
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "left side retaining spine",new Vector3(-12.2f,.55f,6.0f),4.8f,4.2f,86f,new Color(.61f,.59f,.55f,1f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "right side retaining spine",new Vector3(12.2f,.55f,6.2f),4.8f,4.2f,266f,new Color(.61f,.59f,.55f,1f));
+            // Architectural silhouettes are lightweight canonical prefabs and intentionally partly cropped.
+            AddResource(root,"Valoria/Stone_Wall","left outer wall band",
+                new Vector3(-13.2f,.18f,4.8f),6.9f,3.2f,18f,new Color(.56f,.55f,.51f,1f));
+            AddResource(root,"Valoria/Stone_Wall","right outer wall band",
+                new Vector3(13.2f,.18f,5.0f),6.9f,3.2f,198f,new Color(.56f,.55f,.51f,1f));
 
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "left side masonry corner",new Vector3(-13.1f,.55f,1.5f),3.8f,3.7f,42f,new Color(.60f,.58f,.54f,1f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "right side masonry corner",new Vector3(13.1f,.55f,1.7f),3.8f,3.7f,222f,new Color(.60f,.58f,.54f,1f));
-
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "left side defense seam",new Vector3(-11.1f,.62f,9.6f),3.6f,4.7f,18f,new Color(.56f,.55f,.51f,1f));
-            AddResource(root,"Valoria/Rescued/TowerWallRock",
-                "right side defense seam",new Vector3(11.1f,.62f,9.8f),3.6f,4.7f,198f,new Color(.56f,.55f,.51f,1f));
+            AddResource(root,"Valoria/Stone_Tower","left outer tower",
+                new Vector3(-13.7f,.48f,9.8f),3.8f,6.5f,22f,new Color(.57f,.56f,.52f,1f));
+            AddResource(root,"Valoria/Stone_Tower","right outer tower",
+                new Vector3(13.7f,.48f,10.0f),3.8f,6.5f,202f,new Color(.57f,.56f,.52f,1f));
 
             if(art!=null)
             {
@@ -107,14 +103,25 @@ namespace Eldoria.Presentation
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.7f,.16f,-1.4f),new Vector3(-13.9f,.18f,2.1f),new Vector3(-12.8f,.18f,5.4f),
-                        new Vector3(-12.4f,.18f,9.0f),new Vector3(-13.6f,.18f,12.0f),
-                        new Vector3(13.5f,.16f,-1.2f),new Vector3(13.8f,.18f,2.3f),new Vector3(12.7f,.18f,5.6f),
-                        new Vector3(12.3f,.18f,9.2f),new Vector3(13.5f,.18f,12.2f)
+                        new Vector3(-13.7f,.16f,-1.3f),new Vector3(-13.8f,.18f,2.4f),new Vector3(-12.9f,.18f,6.0f),
+                        new Vector3(-13.2f,.18f,10.3f),
+                        new Vector3(13.6f,.16f,-1.1f),new Vector3(13.7f,.18f,2.6f),new Vector3(12.8f,.18f,6.2f),
+                        new Vector3(13.1f,.18f,10.5f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
                         AddPrefab(root,tree,"side curtain tree "+i,sideTrees[i],
-                            .92f+(i%3)*.13f,3.0f+(i%2)*.42f,(i*47)%360,FoliageTint);
+                            .86f+(i%2)*.16f,2.8f+(i%3)*.35f,(i*47)%360,FoliageTint);
+                }
+
+                if(art.SlavicBush!=null)
+                {
+                    var scrub=new[]{
+                        new Vector3(-12.6f,.12f,.2f),new Vector3(-12.9f,.12f,4.2f),new Vector3(-12.4f,.12f,8.0f),
+                        new Vector3(12.5f,.12f,.4f),new Vector3(12.8f,.12f,4.4f),new Vector3(12.3f,.12f,8.2f)
+                    };
+                    for(int i=0;i<scrub.Length;i++)
+                        AddPrefab(root,art.SlavicBush,"side curtain scrub "+i,scrub[i],
+                            .70f,.74f,(i*31)%360,new Color(.38f,.44f,.34f,1f));
                 }
             }
         }
@@ -210,23 +217,6 @@ namespace Eldoria.Presentation
             go.transform.SetParent(root,true);go.transform.position=p;
             var l=go.AddComponent<Light>();l.type=LightType.Point;l.color=new Color(1f,.58f,.28f);
             l.intensity=intensity;l.range=range;l.shadows=LightShadows.None;
-        }
-
-        static void AddTopAligned(Transform root,string resource,string role,Vector3 topAnchor,float span,float yaw,Color tint)
-        {
-            var source=Resources.Load<GameObject>(resource);
-            if(source==null)return;
-            var go=Object.Instantiate(source);
-            go.name="Valoria · Reference Convergence v2 · "+role;
-            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-            var b=Bounds(go);
-            if(b.size.sqrMagnitude<.0001f){Object.DestroyImmediate(go);return;}
-            go.transform.localScale*=span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));
-            b=Bounds(go);
-            go.transform.position+=new Vector3(topAnchor.x-b.center.x,topAnchor.y-b.max.y,topAnchor.z-b.center.z);
-            ApplyTint(go,tint);
-            go.transform.SetParent(root,true);
-            DisableGameplay(go);
         }
 
         static void AddResource(Transform root,string resource,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
