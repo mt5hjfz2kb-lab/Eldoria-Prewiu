@@ -1,7 +1,7 @@
 {
-  "enabled": true,
-  "request_id": "valoria-compact-footprint-reframe-v1",
-  "asset_or_sector": "Valoria full-frame compact footprint",
+  "enabled": false,
+  "request_id": "example-disabled",
+  "asset_or_sector": "Valoria",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -19,7 +19,7 @@
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_terrain_blending": false
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VALORIA COMPACT FOOTPRINT REFRAME v1. Existing geometry only. Freeze lateral urban growth; compact the visual footprint around Bastion; expose future-growth terraces; transition east/west edges into terrain/rock/forest. No Tripo, no new geometry, no new residential buildings."
+  "notes": "Disabled template. Zero-spend by default."
 }
