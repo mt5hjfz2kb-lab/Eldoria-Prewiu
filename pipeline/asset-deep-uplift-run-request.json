@@ -1,13 +1,13 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "enabled": true,
   "mode": "surface_rescue",
-  "asset": "TerraceStairRock",
-  "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+  "asset": "StreetLandingTransition",
+  "input": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
   "surface_profile": "rock",
   "target_triangles": 49800,
   "min_triangles": 49500,
   "max_triangles": 50000,
-  "goal": "replace flat untextured historical material with deterministic Eldoria rock PBR while preserving certified geometry and gameplay independence",
+  "goal": "replace flat untextured historical material with deterministic Eldoria rock PBR while preserving geometry; remains visual overlay only",
   "tripo_credits": 0
 }
