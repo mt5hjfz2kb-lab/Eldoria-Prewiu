@@ -42,9 +42,6 @@ namespace Eldoria.Presentation
             AddPiece(root,"Piece04","roof crown",center+Rot(yaw,new Vector3(.45f,1.92f,-.12f)),2.18f*scale,1.85f*scale,yaw-5f,new Color(.46f,.45f,.43f,1f));
             AddStone(root,"RockToWallTransition","buried seam",center+Rot(yaw,new Vector3(1.45f,.02f,-.55f)),1.65f*scale,yaw-60f);
             AddStone(root,"HighStraightWall","retaining spine",center+Rot(yaw,new Vector3(.25f,.03f,-1.55f)),2.10f*scale,yaw+3f);
-
-            ValoriaKit.Banner("Valoria · Full Frame · "+id+" banner",
-                center+Rot(yaw,new Vector3(.72f,2.55f,.95f)),new Vector3(.34f,.92f,.08f),Blue);
             AddWarmth(root,center+Rot(yaw,new Vector3(.25f,1.15f,1.05f)));
         }
 
