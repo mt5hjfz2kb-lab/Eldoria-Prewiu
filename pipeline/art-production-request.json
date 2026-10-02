@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "request_id": "valoria-world-frame-mountain-terrain-v1",
-  "asset_or_sector": "Valoria World Frame / Mountain Terrain v1",
-  "profile": "environment_new_geometry",
-  "geometry_gap_proven": true,
+  "request_id": "valoria-in-city-surface-v1",
+  "asset_or_sector": "Valoria In-City Surface & Lighting v1",
+  "profile": "surface_detail",
+  "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -12,10 +12,10 @@
   "capabilities": {
     "tripo_parts": false,
     "tripo_retopology": false,
-    "blender_lod": true,
-    "blender_bake": true,
-    "blender_material_consolidation": true,
-    "unity_modular_assembly": true,
+    "blender_lod": false,
+    "blender_bake": false,
+    "blender_material_consolidation": false,
+    "unity_modular_assembly": false,
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Geometry gap proven by Valoria Reference Convergence v2. Need a dedicated production-quality continuous side/rear mountain world frame for the compact Valoria footprint. No city sprawl, no competing monumental architecture, no gameplay topology changes. Zero-spend preflight only until a fresh explicit Tripo credit authorization is provided."
+  "notes": "Surface-first in-city proof only. Target existing L0/L1 civic floor, main street, entry apron, lower/upper terrace earth, landing, plots, stairs and retaining surfaces plus restrained warm local lighting. No new geometry, no city sprawl, no World Frame mutation, no gameplay topology/collider/hotspot changes, no Tripo spend."
 }
