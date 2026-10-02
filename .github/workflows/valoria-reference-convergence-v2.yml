@@ -83,7 +83,7 @@ jobs:
           $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaReferenceConvergenceV2Captures"
           $log="$env:RUNNER_TEMP\ValoriaReferenceConvergenceV2.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaReferenceConvergenceGateV2.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaReferenceConvergenceGateV2.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(20)
           while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
