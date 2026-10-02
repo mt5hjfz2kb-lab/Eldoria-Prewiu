@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T20:34:00Z",
+  "updated_at": "2026-10-02T20:25:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -63,7 +63,10 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV2.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaPanoramicSkyCandidateGateV2.cs",
         ".github/workflows/valoria-panoramic-sky-candidate-v2.yml",
-        "pipeline/valoria-panoramic-sky-candidate-v2-request.json"
+        "pipeline/valoria-panoramic-sky-candidate-v2-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaPerspectivePanoramaGateV1.cs",
+        ".github/workflows/valoria-perspective-panorama-v1.yml",
+        "pipeline/valoria-perspective-panorama-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
