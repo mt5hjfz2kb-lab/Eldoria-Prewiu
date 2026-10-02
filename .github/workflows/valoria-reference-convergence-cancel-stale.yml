@@ -19,5 +19,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913232/force-cancel || true
-          echo "force-cancel requested for 36997913232"
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36995372128/force-cancel || true
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36999219871/force-cancel || true
+          echo "force-cancel requested for stale convergence v1 and superseded unity-slice"
