@@ -717,12 +717,12 @@ namespace Eldoria.Presentation
                     if(lower.Contains("stone")||(!lower.Contains("rock")&&!lower.Contains("roof")&&!lower.Contains("timber")&&i==0))
                         color=new Color(.43f,.36f,.27f,1f);
                     else if(lower.Contains("rock")||i==1)
-                        color=new Color(.15f,.16f,.15f,1f);
+                        color=new Color(.30f,.31f,.29f,1f);
                     else if(lower.Contains("roof")||i==2)
-                        color=new Color(.085f,.095f,.105f,1f);
+                        color=new Color(.24f,.28f,.31f,1f);
                     else if(lower.Contains("timber")||i==3)
                         color=new Color(.34f,.18f,.075f,1f);
-                    else color=new Color(.25f,.24f,.21f,1f);
+                    else color=new Color(.36f,.34f,.30f,1f);
                     mats[i]=ValoriaKit.Material(color);
                 }
                 renderer.sharedMaterials=mats;
