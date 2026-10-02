@@ -1,6 +1,7 @@
 name: "[EXPERIMENT] Valoria Full-Frame Visual Pass v1"
 on:
   workflow_dispatch:
+
 permissions:
   contents: read
 concurrency:
