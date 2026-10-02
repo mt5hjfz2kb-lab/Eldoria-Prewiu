@@ -29,7 +29,12 @@ namespace Eldoria.EditorTools
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"gameplay_topology_changed\": false,\n"+
                 "  \"new_geometry_generated\": false,\n"+
-                "  \"tripo_credits\": 0\n"+
+                "  \"tripo_credits\": 0,\n"+
+                "  \"hero_renderers_touched\": "+AssetVisualUpliftPassV1.HeroRenderersTouched+",\n"+
+                "  \"dedicated_renderers_touched\": "+AssetVisualUpliftPassV1.DedicatedRenderersTouched+",\n"+
+                "  \"rescued_renderers_touched\": "+AssetVisualUpliftPassV1.RescuedRenderersTouched+",\n"+
+                "  \"imported_stone_terrain_renderers_touched\": "+AssetVisualUpliftPassV1.ImportedRenderersTouched+",\n"+
+                "  \"mid_tier_renderers_touched\": "+AssetVisualUpliftPassV1.MidTierRenderersTouched+"\n"+
                 "}\n");
             Debug.Log("ASSET_VISUAL_UPLIFT_V1_GATE=PASS");
             EditorApplication.Exit(0);
@@ -39,6 +44,7 @@ namespace Eldoria.EditorTools
         {
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            AssetVisualUpliftPassV1.ResetDiagnostics();
             ProductionVisualIntegration.ResetVisualCachesForGate();
             ProductionVisualIntegration.StoneArchitectureEnabled=true;
             ProductionVisualIntegration.TerrainTerraceEnabled=true;
@@ -107,13 +113,9 @@ namespace Eldoria.EditorTools
             try
             {
                 camera.targetTexture=rt;
-                var warmed=new HashSet<Material>();
-                foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-                    if(r!=null&&r.enabled)
-                        foreach(var m in r.sharedMaterials)
-                            if(m!=null&&warmed.Add(m))
-                                for(int p=0;p<m.passCount;p++)ShaderUtil.CompilePass(m,p,true);
-                camera.Render();camera.Render();
+                // Explicit CompilePass caused a URP culling crash under runner memory pressure.
+                camera.Render();
+                camera.Render();
                 RenderTexture.active=rt;
                 var image=new Texture2D(width,height,TextureFormat.RGB24,false);
                 image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
