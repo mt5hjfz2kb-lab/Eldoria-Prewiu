@@ -6,7 +6,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/AssetLibraryReprocessingPassV1Gate.cs'
       - '.github/workflows/asset-library-reprocessing-pass-v1.yml'
       - 'pipeline/art-production-request.json'
   workflow_dispatch:
@@ -52,10 +52,10 @@ jobs:
       - name: Capture real Valoria asset-library reprocessing proof
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\VisualFormulaCaptures"
+          $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingCaptures"
           $log="$env:RUNNER_TEMP\Eldoria-AssetLibraryReprocessingV1.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualFormulaGate.CaptureAssetLibraryReprocessingPassV1','-logFile',$log)
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.AssetLibraryReprocessingPassV1Gate.Capture','-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(15)
           while(-not $process.HasExited -and (Get-Date) -lt $deadline){ Start-Sleep -Seconds 2; $process.Refresh() }
@@ -63,23 +63,21 @@ jobs:
           $process.Refresh()
           if($process.ExitCode -ne 0){ if(Test-Path $log){Get-Content $log -Tail 260}; throw "Asset reprocessing gate failed: $($process.ExitCode)" }
           $expected=@(
-            'asset-reprocess-before-19.png','asset-reprocess-before-12.png','asset-reprocess-before-9.png','asset-reprocess-before-mobile.png',
-            'asset-reprocess-after-19.png','asset-reprocess-after-12.png','asset-reprocess-after-9.png','asset-reprocess-after-mobile.png',
-            'asset-reprocess-metrics.json','asset-reprocess-evidence.json'
+            'before-19.png','before-12.png','before-9.png','before-mobile-390x844.png',
+            'after-19.png','after-12.png','after-9.png','after-mobile-390x844.png','evidence.json'
           )
           foreach($name in $expected){
             $p=Join-Path $folder $name
             if(-not (Test-Path $p)){ throw "Missing asset reprocessing evidence: $name" }
             if($name.EndsWith('.png') -and (Get-Item $p).Length -lt 10000){ throw "Empty capture: $name" }
           }
-          Get-Content (Join-Path $folder 'asset-reprocess-evidence.json')
-          Get-Content (Join-Path $folder 'asset-reprocess-metrics.json')
+          Get-Content (Join-Path $folder 'evidence.json')
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: asset-library-reprocessing-v1-${{ github.run_id }}
           path: |
-            Unity/VisualFormulaCaptures/asset-reprocess-*
+            Unity/AssetLibraryReprocessingCaptures/*
             ${{ runner.temp }}/Eldoria-AssetLibraryReprocessingV1.log
           if-no-files-found: warn
           retention-days: 30
