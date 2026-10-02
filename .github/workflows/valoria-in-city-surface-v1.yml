@@ -1,0 +1,91 @@
+name: "[EXPERIMENT] Valoria In-City Surface v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-in-city-surface-v1.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaInCitySurfacePassV1.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaInCitySurfaceGateV1.cs'
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: valoria-in-city-surface-v1
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release older In-City Surface v1 runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          workflow_id=$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} --jq '.workflow_id')
+          gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/$workflow_id/runs?per_page=20" \
+            --jq '.workflow_runs[] | select((.status=="in_progress" or .status=="queued" or .status=="pending") and (.id != '${GITHUB_RUN_ID}')) | .id' |
+          while read -r run; do
+            [ -z "$run" ] && continue
+            gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/$run/cancel || true
+          done
+
+  capture:
+    needs: preflight
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Restore canonical Unity source while preserving Library cache
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          $dirty = git status --porcelain --untracked-files=all -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if($dirty){ Write-Host $dirty; throw 'Unity source cleanup did not converge to canonical Git state.' }
+      - name: Capture in-city surface proof
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaInCitySurfaceV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaInCitySurfaceV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaInCitySurfaceGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(20)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 260};throw "Gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+          Get-Content (Join-Path $folder 'before-metrics.json')
+          Get-Content (Join-Path $folder 'after-metrics.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-in-city-surface-v1-${{ github.run_id }}
+          path: |
+            Unity/ValoriaInCitySurfaceV1Captures/*
+            ${{ runner.temp }}/ValoriaInCitySurfaceV1.log
+          if-no-files-found: warn
+          retention-days: 30
