@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
             if(valleyShader!=null)
             {
                 valleyDirt=new Material(valleyShader){name="Valoria Reference v2 · matte world valley"};
-                var valleyColor=new Color(.305f,.30f,.272f,1f);
+                var valleyColor=new Color(.245f,.255f,.235f,1f);
                 if(valleyDirt.HasProperty("_BaseColor"))valleyDirt.SetColor("_BaseColor",valleyColor);
                 if(valleyDirt.HasProperty("_Color"))valleyDirt.SetColor("_Color",valleyColor);
                 if(valleyDirt.HasProperty("_Metallic"))valleyDirt.SetFloat("_Metallic",0f);
@@ -95,11 +95,8 @@ namespace Eldoria.Presentation
                     renderer.sharedMaterial=valleyDirt??dirt;
                     var p=renderer.transform.position;
                     renderer.transform.position=new Vector3(p.x,.045f,p.z);
-                    // Iteration 20: the 11-sided irregular valley mesh contour was entering the official cameras
-                    // as a dark curved map edge. This sheet is visual-only, so expand X/Z to push that contour
-                    // safely outside the captured frame without touching gameplay topology or colliders.
-                    var s=renderer.transform.localScale;
-                    renderer.transform.localScale=new Vector3(s.x*3.2f,s.y,s.z*3.2f);
+                    // Iteration 24: keep the authored 200x180 visual valley at canonical scale.
+                    // The earlier contour issue was traced to HeroValleyTerrain(), not this sheet.
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
@@ -214,15 +211,15 @@ namespace Eldoria.Presentation
             RenderSettings.ambientIntensity=.94f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.57f,.66f,.72f);
-            RenderSettings.fogStartDistance=34f;
-            RenderSettings.fogEndDistance=92f;
+            RenderSettings.fogColor=new Color(.52f,.61f,.66f);
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=68f;
 
             var camera=Camera.main;
             if(camera!=null)
             {
                 camera.clearFlags=CameraClearFlags.SolidColor;
-                camera.backgroundColor=new Color(.48f,.63f,.73f);
+                camera.backgroundColor=new Color(.45f,.58f,.66f);
                 camera.allowHDR=true;
             }
 
