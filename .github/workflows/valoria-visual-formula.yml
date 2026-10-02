@@ -3,7 +3,7 @@ name: Valoria Visual Formula gate
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, visual-proof/asset-library-reprocessing-pass-v1]
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
