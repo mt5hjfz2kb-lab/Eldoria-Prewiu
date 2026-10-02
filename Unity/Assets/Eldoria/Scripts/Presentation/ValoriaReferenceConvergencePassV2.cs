@@ -180,19 +180,14 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 27: the first mountain proof was technically present but almost fully lost in fog.
-            // Bring the side walls closer/taller while preserving an open central Bastion silhouette.
-            var tint=new Color(.36f,.39f,.40f,1f);
-            var a=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · near mountain west",
-                new Vector3(-20.0f,-2.6f,24.0f),16.0f,11.2f,Quaternion.Euler(0,18f,0),tint);
-            var b=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain west",
-                new Vector3(-11.0f,-3.1f,28.0f),14.0f,9.8f,Quaternion.Euler(0,-12f,0),tint);
-            var c=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain east",
-                new Vector3(11.5f,-3.0f,28.0f),14.2f,10.0f,Quaternion.Euler(0,14f,0),tint);
-            var d=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · near mountain east",
-                new Vector3(20.5f,-2.5f,24.5f),16.0f,11.0f,Quaternion.Euler(0,-25f,0),tint);
-            foreach(var go in new[]{a,b,c,d})
-                if(go!=null){go.transform.SetParent(root,true);DisableGameplay(go);}
+            // Iteration 27: two readable lateral mountain masses, centre kept open for the Hero Bastion.
+            var tint=new Color(.29f,.32f,.33f,1f);
+            var west=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · mountain wall west",
+                new Vector3(-19.5f,-2.4f,24.5f),16.5f,11.2f,Quaternion.Euler(0,20f,0),tint);
+            var east=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · mountain wall east",
+                new Vector3(20.0f,-2.5f,25.0f),16.0f,10.8f,Quaternion.Euler(0,-24f,0),tint);
+            if(west!=null)west.transform.SetParent(root,true);
+            if(east!=null)east.transform.SetParent(root,true);
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
