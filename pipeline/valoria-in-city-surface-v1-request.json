@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-in-city-surface-v1",
+  "objective": "Improve the accepted production Valoria frame from inside the city: coherent L0/L1 ground, terraces, stairs, retaining edges and restrained occupation lighting.",
+  "route": "surface_detail",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "world_frame_mutation": false,
+  "city_footprint_expansion": false,
+  "gameplay_topology_changes": false,
+  "targets": [
+    "L0 civic floor",
+    "L0 main street",
+    "lower entry apron",
+    "lower/upper terrace earth",
+    "L1 landing and plots",
+    "vertical/Bastion stairs",
+    "retaining surfaces"
+  ],
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature"
+  ]
+}
