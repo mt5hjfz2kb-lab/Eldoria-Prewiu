@@ -151,6 +151,7 @@ namespace Eldoria.Presentation
                         AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
                             1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
                 }
+            }
 
             // Do not add pass-owned foliage: the base scene already provides vegetation and
             // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
