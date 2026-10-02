@@ -194,6 +194,9 @@ namespace Eldoria.Presentation
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 string chain=Hierarchy(r.transform).ToLowerInvariant();
                 if(!chain.Contains("bastion"))continue;
+                // Never repaint the recovered certified Hero Bastion: its texture/normal preserving
+                // surface-fit is already the accepted zero-credit treatment from the integrated proof.
+                if(chain.Contains("certified hero bastion")||chain.Contains("assetlibrary · hero bastion"))continue;
                 if(chain.Contains("banner")||chain.Contains("flag"))continue;
 
                 var block=new MaterialPropertyBlock();r.GetPropertyBlock(block);
