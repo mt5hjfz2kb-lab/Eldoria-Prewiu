@@ -1,4 +1,4 @@
-## Asset Deep Uplift Pass v1 — Blender diagnostics complete / 2 PBR candidates persisted (2026-10-02)
+## Asset Deep Uplift Pass v1 — TECH PASS / DEEP AUDIT CLOSED (2026-10-02)
 
 - Real Blender diagnostics supersede the provisional geometry queue: **0 tested assets currently justify mesh surgery**.
 - SteppedRockTerrace: **6,379 tris / 3 PBR images** → keep geometry.
@@ -14,9 +14,9 @@
 - Candidate persistence proof: run **37006224604 SUCCESS / artifact 11226280027**; expected source/candidate SHAs were re-verified before commit.
 - Generic rescues for ResidentialTerraceRock, RockTerrainSeamFiller and TowerWallRock were **rejected** after current-file diagnostics showed existing PBR content (12 / 3 / 6 images respectively); do not replace their canonical materials with the generic rock rescue.
 - GateStreetRiseRock MV1 remains unsuitable as a certified traversable connector; surface work does not repair its historical interface failure.
-- Canonical production GLBs remain unchanged. Final promotion of the two candidates requires exact Unity **19/12/9/mobile** comparison and unchanged gameplay signature.
-- That Unity promotion step remains blocked only by live ownership: `valoria-reference-convergence-v2` still owns `windows-runner-heavy` and `valoria-production-composition`.
-- Hosted Blender workflow is parked manual-only; request is disabled.
+- Canonical production GLBs remain unchanged. Neither candidate is currently used by the accepted Valoria production composition, so **do not force placement merely for proof**.
+- If a future real placement selects either candidate, compare canonical vs candidate at exact Unity **19/12/9/mobile** cameras with unchanged gameplay signature before any canonical replacement.
+- Hosted Blender workflow is parked manual-only; request is disabled; deep-audit workstream is closed.
 - Full record: `docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md`.
 
 ## Asset Visual Uplift Pass v1 — TECH PASS / SELECTIVE VISUAL PASS (2026-10-02)
