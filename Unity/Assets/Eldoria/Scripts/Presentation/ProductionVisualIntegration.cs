@@ -1517,25 +1517,28 @@ namespace Eldoria.Presentation
             // VALORIA REFERENCE CONVERGENCE v1 — reference-driven whole-frame composition.
             // Existing library only. Visual-only: no gameplay/collision ownership and no Tripo spend.
 
-            // Monumental frame built only from Valoria-certified geometry.
-            // TowerWallRock already belongs to the city's rock/masonry language and survives the official camera.
+            // Monumental open-arch frame. Stone_Gate gives the large negative-space silhouette of the
+            // reference; TowerWallRock is retained only as broken flank masonry.
+            var monumentalGate=Resources.Load<GameObject>("Valoria/Stone_Gate");
             var towerWall=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            if(monumentalGate!=null)
+            {
+                ReferenceStonePiece("Valoria · Reference v1 · west monumental arch",monumentalGate,
+                    new Vector3(-10.2f,-.20f,6.75f),8.2f,8.6f,18f,new Color(.55f,.53f,.48f));
+                ReferenceStonePiece("Valoria · Reference v1 · east monumental arch",monumentalGate,
+                    new Vector3(10.45f,-.20f,7.00f),8.2f,8.6f,198f,new Color(.55f,.53f,.48f));
+            }
             if(towerWall!=null)
             {
-                Piece("Valoria · Reference v1 · west monumental tower wall",towerWall,
-                    new Vector3(-8.7f,.18f,6.5f),4.65f,7.1f,18f,new Color(.61f,.61f,.56f));
-                Piece("Valoria · Reference v1 · east monumental tower wall",towerWall,
-                    new Vector3(8.9f,.18f,6.7f),4.65f,7.1f,198f,new Color(.61f,.61f,.56f));
-                Piece("Valoria · Reference v1 · west rear ruin wall",towerWall,
-                    new Vector3(-6.5f,.70f,9.7f),3.45f,5.4f,34f,new Color(.56f,.56f,.52f));
-                Piece("Valoria · Reference v1 · east rear ruin wall",towerWall,
-                    new Vector3(6.7f,.70f,9.9f),3.45f,5.4f,214f,new Color(.56f,.56f,.52f));
+                ReferenceStonePiece("Valoria · Reference v1 · west ancient flank",towerWall,
+                    new Vector3(-13.1f,-.10f,8.15f),4.2f,6.0f,28f,new Color(.48f,.47f,.43f));
+                ReferenceStonePiece("Valoria · Reference v1 · east ancient flank",towerWall,
+                    new Vector3(13.25f,-.10f,8.35f),4.2f,6.0f,208f,new Color(.48f,.47f,.43f));
+                ReferenceStonePiece("Valoria · Reference v1 · west rear ruin",towerWall,
+                    new Vector3(-7.0f,.45f,10.15f),3.25f,4.7f,42f,new Color(.50f,.49f,.45f));
+                ReferenceStonePiece("Valoria · Reference v1 · east rear ruin",towerWall,
+                    new Vector3(7.2f,.45f,10.35f),3.25f,4.7f,222f,new Color(.50f,.49f,.45f));
             }
-            foreach(var s in new[]{
-                new Vector4(-8.3f,5.0f,2.30f,48f),new Vector4(8.5f,5.2f,2.30f,228f),
-                new Vector4(-6.6f,8.4f,2.05f,70f),new Vector4(6.8f,8.6f,2.05f,250f)})
-                StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · ancient tower rock seam",
-                    new Vector3(s.x,.15f,s.y),s.z,s.w);
 
             // Bury the ruin frame into geology so nothing reads as a placed prefab.
             foreach(var s in new[]{
@@ -1608,14 +1611,16 @@ namespace Eldoria.Presentation
             Flag("Valoria · Reference v1 · east standard",new Vector3(4.15f,.45f,-.95f),Blue,2.05f);
             Flag("Valoria · Reference v1 · upper standard",new Vector3(0f,2.58f,4.30f),Blue,2.25f);
 
+            InstallReferenceSky();
+
             // Slightly stronger depth separation: warm active city, cooler ruins/background.
             RenderSettings.ambientSkyColor=new Color(.77f,.83f,.87f);
             RenderSettings.ambientEquatorColor=new Color(.51f,.50f,.46f);
             RenderSettings.ambientGroundColor=new Color(.19f,.18f,.16f);
             RenderSettings.ambientIntensity=.92f;
             RenderSettings.fogColor=new Color(.56f,.68f,.76f);
-            RenderSettings.fogStartDistance=30f;
-            RenderSettings.fogEndDistance=94f;
+            RenderSettings.fogStartDistance=34f;
+            RenderSettings.fogEndDistance=108f;
             var camera=Camera.main;
             if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;}
             foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
@@ -1623,6 +1628,39 @@ namespace Eldoria.Presentation
             WarmLight("Valoria · Reference v1 · lower west fire",new Vector3(-4.0f,1.10f,-1.2f),new Color(1f,.46f,.18f),.68f,2.6f);
             WarmLight("Valoria · Reference v1 · lower east fire",new Vector3(4.0f,1.10f,-1.1f),new Color(1f,.46f,.18f),.68f,2.6f);
             WarmLight("Valoria · Reference v1 · upper warmth",new Vector3(0f,2.90f,4.5f),new Color(1f,.50f,.21f),.68f,2.9f);
+        }
+
+        static void ReferenceStonePiece(string name,GameObject source,Vector3 p,float footprint,float height,float yaw,Color tint)
+        {
+            if(source==null)return;
+            var go=ValoriaKit.BenchmarkPiece(name,source,p,footprint,height,Quaternion.Euler(0f,yaw,0f));
+            if(go==null)return;
+            go.transform.SetParent(root,true);
+            foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var hotspot in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(hotspot);
+            var stone=sharedStone!=null?sharedStone:ValoriaKit.SurfaceMaterial(tint,"stone",new Vector2(3.2f,3.2f));
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                int count=Mathf.Max(1,renderer.sharedMaterials.Length);
+                var mats=new Material[count];
+                for(int i=0;i<count;i++)mats[i]=stone;
+                renderer.sharedMaterials=mats;
+            }
+        }
+
+        static void InstallReferenceSky()
+        {
+            var shader=Shader.Find("Skybox/Procedural");
+            if(shader==null)return;
+            var sky=new Material(shader){name="Valoria · Reference v1 · procedural sky"};
+            if(sky.HasProperty("_SkyTint"))sky.SetColor("_SkyTint",new Color(.48f,.66f,.82f));
+            if(sky.HasProperty("_GroundColor"))sky.SetColor("_GroundColor",new Color(.36f,.40f,.37f));
+            if(sky.HasProperty("_AtmosphereThickness"))sky.SetFloat("_AtmosphereThickness",1.05f);
+            if(sky.HasProperty("_SunSize"))sky.SetFloat("_SunSize",.035f);
+            if(sky.HasProperty("_Exposure"))sky.SetFloat("_Exposure",1.15f);
+            RenderSettings.skybox=sky;
+            var camera=Camera.main;
+            if(camera!=null)camera.clearFlags=CameraClearFlags.Skybox;
         }
 
         static void MasterRebuildTerrain()
