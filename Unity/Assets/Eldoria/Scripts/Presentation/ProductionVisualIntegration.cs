@@ -213,6 +213,7 @@ namespace Eldoria.Presentation
             ComposeHeroFrame(state,art);
             if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);
             AssetLibraryReprocessingPassV1.Build(root,state);
+            ValoriaReferenceConvergencePassV2.Build(root,state);
             if(SurfaceCellEnabled)IntegrateSurfaceCell();
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
