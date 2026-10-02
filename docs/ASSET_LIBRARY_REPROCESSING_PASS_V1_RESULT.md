@@ -78,7 +78,7 @@ The geometry increase is justified by a clearly stronger full-frame hero silhoue
 | Terrain & Terrace: BroadRockPlatform | **KEEP / REASSEMBLE** | Production-safe when top-aligned/buried. |
 | Terrain & Terrace: SteppedRockTerrace | **KEEP / REASSEMBLE** | Production-safe when top-aligned/buried. |
 | Terrain & Terrace groups 02–06 | **REPLACE** | Historical visual rejects; do not promote. |
-| TowerWallRock | **KEEP / DEFER placement** | Production-safe historical defense vocabulary, but the final accepted hero-core pass suppresses the older flank instance so it does not compete with the recovered Hero Bastion silhouette. |
+| TowerWallRock | **KEEP / REASSEMBLE** | Production-safe historical defense vocabulary; the certified `d508...` proof uses paired visual-only defensive flanks while suppressing the older single hero-flank presentation. |
 | ResidentialTerraceRock | **KEEP** | Production-proven; not expanded because compact-growth logic forbids lateral housing fill. |
 | RockTerrainSeamFiller | **KEEP** | Production-proven seam support. |
 | TerraceStairRock | **KEEP / DEFER placement** | Reusable but redundant against the certified stair route in this core. |
@@ -127,7 +127,7 @@ Recovered/promoted for production use:
 - RockToWallTransition;
 - BroadRockPlatform;
 - SteppedRockTerrace;
-- TowerWallRock remains reusable historical inventory, but is **not** part of the final accepted Hero-core composition;
+- TowerWallRock, reused as paired visual-only defensive flanks in the certified Hero-core composition;
 - current compact-core Mid-Tier family where already appropriate.
 
 ## Assets that still require replacement
@@ -139,7 +139,14 @@ Structural replacement remains justified for:
 
 No paid replacement is authorized by this result. Any future geometry request must again prove a real geometry gap first.
 
+## Production/evidence alignment
+
+Production runtime source is intentionally aligned to the exact tested visual source from head `d508e3bfa0b6951230609c84ddba873963fec44b`. The canonical source blob for `AssetLibraryReprocessingPassV1.cs` is `4fa703421d84412000986c02c14c5024e1cbcb16`.
+
+This prevents a later unvalidated subtractive variant from being described by the earlier run. The promoted code therefore matches the composition that produced run **36994020902** / artifact **11220733685**.
+
 ## Closure
+
 
 ASSET LIBRARY REPROCESSING PASS v1 is closed as **TECH PASS / VISUAL PASS**.
 
