@@ -2,6 +2,8 @@ name: "[EXPERIMENT] Valoria Reference Convergence v2"
 
 on:
   workflow_dispatch:
+  push:
+    branches: [visual-proof/valoria-reference-convergence-v2]
 
 permissions:
   contents: read
