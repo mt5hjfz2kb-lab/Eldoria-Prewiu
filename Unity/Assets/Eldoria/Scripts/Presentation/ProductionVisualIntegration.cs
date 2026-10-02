@@ -1330,11 +1330,6 @@ namespace Eldoria.Presentation
                     if(t.name.StartsWith("Aserradero",StringComparison.OrdinalIgnoreCase)||t.name.StartsWith("Cuartel",StringComparison.OrdinalIgnoreCase)){work=true;break;}
                 if(work)r.enabled=false;
             }
-            var fullSawmill=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
-            if(fullSawmill!=null)Piece("Valoria · FullFrame · certified sawmill",fullSawmill,new Vector3(-7.0f,.40f,-2.8f),4.20f,3.35f,8f,new Color(.68f,.61f,.50f));
-            var fullBarracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
-            if(fullBarracks!=null)Piece("Valoria · FullFrame · certified barracks",fullBarracks,new Vector3(7.0f,.40f,-4.0f),4.35f,3.55f,176f,new Color(.66f,.60f,.51f));
-
             // Final full-frame cleanup: break the oversized forecourt and hard terrain seams with existing low-profile language.
             for(int i=0;i<5;i++)
             {
