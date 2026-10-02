@@ -21,6 +21,7 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName).transform;root.SetParent(parent,true);
             SuppressedGroundRenderers=0;AddedTerracePieces=0;
 
+            SuppressExact("Valoria · valley floor");
             SuppressExact("VPD · inhabited mountain floor");
             SuppressExact("VPD · lower terrace earth");
             SuppressExact("VPD · west expansion terrain");
