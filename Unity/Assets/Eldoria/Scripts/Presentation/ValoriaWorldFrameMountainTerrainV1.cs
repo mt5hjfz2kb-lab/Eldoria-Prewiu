@@ -108,12 +108,13 @@ namespace Eldoria.Presentation
                     1.48f+(i%3)*.14f,1.0f+(i%2)*.08f,(i*47)%360,new Color(.34f,.36f,.34f,1f));
 
             var pines=new[]{
-                new Vector3(-17.4f,.02f,-.8f),new Vector3(-16.7f,.02f,3.2f),new Vector3(-17.1f,.02f,7.7f),new Vector3(-15.0f,.02f,12.2f),
-                new Vector3(17.2f,.02f,-.2f),new Vector3(16.5f,.02f,3.8f),new Vector3(16.9f,.02f,8.2f),new Vector3(14.9f,.02f,12.5f),
-                new Vector3(-10.2f,.03f,17.0f),new Vector3(-6.6f,.03f,17.8f),new Vector3(6.8f,.03f,18.0f),new Vector3(10.4f,.03f,17.2f)
+                new Vector3(-16.4f,.02f,8.6f),new Vector3(-14.8f,.02f,12.8f),
+                new Vector3(16.2f,.02f,9.0f),new Vector3(14.8f,.02f,13.0f),
+                new Vector3(-10.0f,.03f,17.0f),new Vector3(-5.6f,.03f,18.0f),
+                new Vector3(5.8f,.03f,18.2f),new Vector3(10.0f,.03f,17.2f)
             };
             for(int i=0;i<pines.Length;i++)
-                AddCanonicalPine(root,"margin pine "+i,pines[i],.56f+(i%4)*.07f);
+                AddCanonicalPine(root,"margin pine "+i,pines[i],.42f+(i%3)*.05f);
         }
 
         static void AddCanonicalPine(Transform root,string role,Vector3 p,float scale)
