@@ -195,7 +195,7 @@ namespace Eldoria.Presentation
             r.sharedMaterial=hazeMaterial;
             r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             r.receiveShadows=false;
-            var c=haze.GetComponent<Collider>();if(c!=null)c.enabled=false;
+            var hazeCollider=haze.GetComponent<Collider>();if(hazeCollider!=null)hazeCollider.enabled=false;
             hazeQuad=haze.transform;
         }
 
