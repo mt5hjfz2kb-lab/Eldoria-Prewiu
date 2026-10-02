@@ -1,9 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner from stalled Strongest Composite Dark Audit; integrated Strongest Jagged Composite has higher visual return and the previous dark audit already identified affected families.",
+  "reason": "Release the single Windows Unity runner for the current strongest-composite revalidation at HEAD 8ec6d9a7; queued/in-progress visual proofs below are superseded by later composition/material commits.",
   "runs": [
+    37072122740,
+    37072011937,
     37071589123
   ],
-  "triggered_at": "2026-10-02T23:59:30+02:00"
+  "keep_run": 37072145528,
+  "triggered_at": "2026-10-02T23:59:00Z"
 }
