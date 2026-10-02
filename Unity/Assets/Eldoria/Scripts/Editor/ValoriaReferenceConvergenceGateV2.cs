@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-// Runner arbitration checkpoint v2: Editor-only convergence changes must not reserve the heavy Unity slice runner.
+// Runner arbitration checkpoint v3: Editor-only convergence changes must not reserve the heavy Unity slice runner.
 namespace Eldoria.EditorTools
 {
     public static class ValoriaReferenceConvergenceGateV2
