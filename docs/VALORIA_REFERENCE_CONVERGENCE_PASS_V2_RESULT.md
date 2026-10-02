@@ -120,3 +120,68 @@ Current implementation:
 - URP/Lit receives a restrained Valoria limestone tint instead of replacing the source surface with a flat material.
 
 Gate queued as **37003803609**. No credits or new geometry involved.
+
+
+## Later convergence iterations — ground, framing and runner cleanup
+
+The pass continued through matched-camera 19/12/9/mobile proofs. The important production conclusions are:
+
+- legacy paired gate/tower framing was rejected because it read as two competing fortresses;
+- legacy hills/cliffs were rejected where their mixed materials created flat green/grey wedges;
+- pass-owned foliage was removed after shader/readability failures;
+- oversized prototype/reserve ground renderers were suppressed without touching colliders or gameplay topology;
+- the global valley floor was reworked to remove visible tiling and board-edge seams;
+- the visual-only `Valoria · Hero Frame valley terrain` was identified as the source of the artificial foreground corona;
+- the corona/ring was removed while preserving gameplay;
+- legacy `SM_Mountains_11` horizon tests were rejected because the mesh read as detached triangular/pyramidal silhouettes rather than a continuous production mountain wall;
+- runner arbitration was corrected so `ValoriaReferenceConvergencePassV2.cs` no longer reserves the heavy Unity slice gate. The dedicated convergence workflow owns these visual-only proofs.
+
+### Current canonical proof
+
+- HEAD: **b7c39254e1f7dfa32ee743f53979b254662b2580**
+- Gate run: **37036363667 — SUCCESS** (rerun)
+- Artifact: **11240396450**
+- TECH: **PASS**
+- matched cameras: **true**
+- same scene before/after: **true**
+- collider/hotspot signature: **unchanged**
+- gameplay topology changed: **false**
+- geometry gap proven: **false**
+- Tripo credits: **0**
+
+Metrics before → after:
+- active renderers: **781 → 809**
+- unique materials: **74 → 71**
+- triangles: **1,647,618 → 1,693,163**
+- active lights: **25 → 30**
+
+### Visual verdict
+
+**VISUAL FAIL against the full ELDORIA_VISUAL_BENCHMARK, but materially improved from the starting frame.**
+
+Validated improvements:
+- the large green/textured foreground ring is gone;
+- the artificial foreground corona/map-edge read is gone;
+- the Hero Bastion remains the only dominant monumental focal point;
+- prototype planning surfaces no longer dominate the frame;
+- ground/material repetition is reduced;
+- atmosphere and warm occupation cues are more coherent;
+- the compact city footprint remains intact rather than expanding laterally.
+
+Remaining blocker:
+- at strategic zooms the world still lacks a production-quality continuous mountain/terrain family capable of enclosing Valoria with believable side/rear mass;
+- the available legacy mountain proxy was proven technically usable but visually unsuitable;
+- further placement-only iterations with the current legacy terrain vocabulary are now low-return and risk reintroducing detached/floating silhouettes.
+
+## Production conclusion
+
+Reference Convergence v2 has reached the useful limit of **composition-only reuse of the current terrain library**.
+
+Do not continue adding legacy mountain/hill proxies merely to increase object count.
+
+The next high-return visual block should be a dedicated **Valoria World Frame / Mountain Terrain family** (or an equivalent production-quality terrain solution) designed for the official 19/12/9/mobile cameras, while preserving:
+- the compact city footprint;
+- the certified Bastion and district topology;
+- the current gameplay collider/hotspot signature;
+- the no-sprawl rule;
+- the current visual-only separation between presentation geometry and gameplay authority.
