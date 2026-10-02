@@ -33,8 +33,8 @@ namespace Eldoria.Presentation
         {
             const int cols=81;
             const int rows=73;
-            const float xMin=-33f,xMax=33f,zMin=-16f,zMax=37f;
-            const float hiddenY=-.58f;
+            const float xMin=-27f,xMax=27f,zMin=-14f,zMax=33f;
+            const float hiddenY=-.62f;
 
             var verts=new Vector3[cols*rows];
             var uv=new Vector2[verts.Length];
@@ -49,31 +49,29 @@ namespace Eldoria.Presentation
                     float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
 
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.8f)/8.0f));
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.5f)/11.5f));
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-13.0f)/7.0f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-14.5f)/12.0f));
                     // Keep the player approach open, but let the world frame begin closer to the inhabited mass.
-                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-2.0f)/6.5f));
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-1.0f)/6.0f));
                     float sideRelief=side*frontGate;
                     float relief=Mathf.Max(sideRelief,rear);
 
                     // Broad natural valley walls: restrained height, no giant planar curtain.
-                    float rearSaddle=Mathf.Lerp(.10f,1f,Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-6.5f)/9.5f)));
-                    float ridge=sideRelief*sideRelief*6.8f + rear*rear*(7.2f+side*2.3f)*rearSaddle;
+                    float rearSide=rear*side;
+                    float ridge=sideRelief*sideRelief*4.4f + rearSide*rearSide*2.4f;
                     float broad=Mathf.Sin(x*.115f+z*.035f)*.42f
                                +Mathf.Sin(z*.145f-x*.028f)*.33f
                                +Mathf.Sin((x+z)*.071f)*.23f;
                     float fine=Mathf.Sin(x*.31f-z*.17f)*.13f;
-                    float centreSky=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-5.5f)/8.5f));
-                    float rearVisible=rear*Mathf.Lerp(.08f,1f,centreSky);
-                    float visibleRelief=Mathf.Max(sideRelief,rearVisible);
+                    float visibleRelief=Mathf.Max(sideRelief,rearSide);
                     float y=hiddenY + ridge + (broad+fine)*visibleRelief;
 
                     // Keep a generous central basin and the full approach invisible beneath gameplay ground.
-                    float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-9.2f)/3.8f));
-                    float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-9.5f)/6.5f));
+                    float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.6f)/3.8f));
+                    float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.5f)/7.0f));
                     float basin=cityX*cityZ;
                     y=Mathf.Lerp(y,hiddenY,basin);
-                    if(z<2.4f)y=hiddenY;
+                    if(z<1.5f)y=hiddenY;
 
                     int i=rz*cols+cx;
                     verts[i]=new Vector3(x,y,z);
