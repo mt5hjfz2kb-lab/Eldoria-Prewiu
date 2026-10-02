@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T22:06:00Z",
+  "updated_at": "2026-10-02T22:20:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -160,7 +160,10 @@
         "pipeline/valoria-slavic-premium-family-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCameraFramingGateV1.cs",
         ".github/workflows/valoria-camera-framing-v1.yml",
-        "pipeline/valoria-camera-framing-v1-request.json"
+        "pipeline/valoria-camera-framing-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSecondaryArchitectureReplacementGateV1.cs",
+        ".github/workflows/valoria-secondary-architecture-replacement-v1.yml",
+        "pipeline/valoria-secondary-architecture-replacement-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
