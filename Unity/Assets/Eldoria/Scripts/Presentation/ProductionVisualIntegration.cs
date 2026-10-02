@@ -1529,20 +1529,17 @@ namespace Eldoria.Presentation
                     new Vector3(s.x+(s.x<0?-2.4f:2.4f),.55f,s.y+.75f),4.15f,5.1f,s.w+(s.x<0?-18f:18f),
                     new Color(.39f,.38f,.35f),false);
             }
-
-            // Tall ruined silhouettes form secondary vertical landmarks, echoing the reference's colossal remnants.
+            // Ruined imperial frame built from broken arches/walls only; avoid rectangular asset-block silhouettes.
             foreach(var s in new[]{
-                new Vector4(-8.5f,8.7f,3.6f,8f),new Vector4(8.7f,9.0f,3.8f,188f),
-                new Vector4(-6.5f,11.4f,2.8f,22f),new Vector4(6.7f,11.6f,2.9f,202f)})
-                Imported("Valoria · Reference v1 · ruined tower","MegaTower",
-                    new Vector3(s.x,.05f,s.y),s.z,6.4f,s.w,new Color(.43f,.41f,.36f),false);
-
-            // Broken elevated masonry/bridge fragments connect the composition horizontally without widening the city footprint.
-            foreach(var s in new[]{
-                new Vector4(-7.6f,4.4f,6.0f,6f),new Vector4(7.7f,4.55f,6.0f,174f),
-                new Vector4(-5.7f,6.55f,4.2f,18f),new Vector4(5.8f,6.65f,4.2f,162f)})
-                Imported("Valoria · Reference v1 · elevated ruin wall","MegaWall",
-                    new Vector3(s.x,1.0f,s.y),s.z,3.0f,s.w,new Color(.42f,.40f,.36f),false);
+                new Vector4(-9.2f,8.6f,7.4f,10f),new Vector4(9.4f,8.8f,7.2f,190f),
+                new Vector4(-6.9f,11.2f,5.8f,24f),new Vector4(7.1f,11.4f,5.7f,204f)})
+            {
+                Imported("Valoria · Reference v1 · broken high arch","Arch_Gothic",
+                    new Vector3(s.x,.45f,s.y),s.z,s.z*.88f,s.w,new Color(.42f,.41f,.37f),false);
+                Imported("Valoria · Reference v1 · shattered masonry","Wall_Broken",
+                    new Vector3(s.x+(s.x<0?-1.7f:1.7f),.15f,s.y+.75f),
+                    s.z*.54f,s.z*.58f,s.w+(s.x<0?-20f:20f),new Color(.38f,.37f,.34f),false);
+            }
 
             // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
             foreach(var s in new[]{
@@ -1551,6 +1548,24 @@ namespace Eldoria.Presentation
                 new Vector4(-6.3f,3.3f,3.8f,74f),new Vector4(6.3f,3.4f,3.8f,254f)})
                 Imported("Valoria · Reference v1 · vertical cliff mass","Rock02",
                     new Vector3(s.x,-1.55f,s.y),s.z,s.z*1.30f,s.w,new Color(.31f,.31f,.29f),false);
+
+            // Foreground geology carries the city toward the camera so the frame reads as a mountain settlement,
+            // not a small diorama floating in empty terrain.
+            foreach(var s in new[]{
+                new Vector4(-10.5f,-8.7f,5.6f,18f),new Vector4(-6.8f,-9.8f,5.2f,48f),
+                new Vector4(-2.7f,-10.8f,4.9f,76f),new Vector4(2.8f,-10.6f,4.9f,256f),
+                new Vector4(6.9f,-9.6f,5.2f,228f),new Vector4(10.6f,-8.5f,5.6f,198f)})
+                Imported("Valoria · Reference v1 · foreground cliff shelf","Rock02",
+                    new Vector3(s.x,-1.65f,s.y),s.z,s.z*1.08f,s.w,new Color(.30f,.30f,.28f),false);
+
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · foreground terrace west",
+                new Vector3(-5.6f,0,-6.9f),.20f,4.4f,10f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Reference v1 · foreground terrace east",
+                new Vector3(5.6f,0,-6.7f),.20f,4.4f,170f);
+            RescuedTerrainSeam("Valoria · Reference v1 · foreground seam west",
+                new Vector3(-3.7f,0,-5.8f),.36f,3.2f,54f);
+            RescuedTerrainSeam("Valoria · Reference v1 · foreground seam east",
+                new Vector3(3.7f,0,-5.7f),.36f,3.2f,306f);
 
             // Dense but controlled mountain vegetation. It occupies geology/seams, never buildable plots or the central route.
             foreach(var s in new[]{
