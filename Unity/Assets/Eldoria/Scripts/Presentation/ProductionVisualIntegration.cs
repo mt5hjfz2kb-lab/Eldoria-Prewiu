@@ -1518,27 +1518,48 @@ namespace Eldoria.Presentation
             // Goal: approach the approved reference's monumental ruin / inhabited cliff-city read
             // using only existing library assets. No gameplay ownership and no paid/new geometry.
 
-            // Monumental broken-empire frame. Keep these behind the playable core so they enlarge the world
-            // without stealing the Bastion's role as the active-city focal point.
-            foreach(var s in new[]{
-                new Vector4(-10.8f,5.7f,8.1f,18f), new Vector4(10.9f,5.9f,8.0f,198f)})
+            // Better existing ruin family from Mega Fantasy Props Pack, exposed through ReferenceKit.
+            // This replaces the coarse prototype arches/walls from the first convergence attempt.
+            var ruinTower=Resources.Load<GameObject>("Valoria/ReferenceKit/tower_destroyed");
+            var stoneBridge=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_bridge");
+            var wallPassage=Resources.Load<GameObject>("Valoria/ReferenceKit/wall_passage");
+            var detailedWall=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_wall_detailed");
+
+            // Broken aqueduct / bridge silhouettes frame the active city and create the same large-scale
+            // archaeological layer that makes the approved reference feel older than the current settlement.
+            if(stoneBridge!=null)
             {
-                Imported("Valoria · Reference v1 · monumental arch","Arch_Gothic",
-                    new Vector3(s.x,1.15f,s.y),s.z,7.6f,s.w,new Color(.43f,.42f,.38f),false);
-                Imported("Valoria · Reference v1 · broken arch flank","Wall_Broken",
-                    new Vector3(s.x+(s.x<0?-2.4f:2.4f),.55f,s.y+.75f),4.15f,5.1f,s.w+(s.x<0?-18f:18f),
-                    new Color(.39f,.38f,.35f),false);
+                Piece("Valoria · Reference v1 · west ruined aqueduct",stoneBridge,
+                    new Vector3(-7.7f,1.12f,6.25f),6.2f,3.6f,12f,new Color(.78f,.75f,.68f));
+                Piece("Valoria · Reference v1 · east ruined aqueduct",stoneBridge,
+                    new Vector3(7.8f,1.18f,6.40f),6.2f,3.6f,168f,new Color(.78f,.75f,.68f));
             }
-            // Ruined imperial frame built from broken arches/walls only; avoid rectangular asset-block silhouettes.
-            foreach(var s in new[]{
-                new Vector4(-9.2f,8.6f,7.4f,10f),new Vector4(9.4f,8.8f,7.2f,190f),
-                new Vector4(-6.9f,11.2f,5.8f,24f),new Vector4(7.1f,11.4f,5.7f,204f)})
+
+            // Destroyed towers are subordinate vertical landmarks: taller than houses, lower and visually older
+            // than the active Hero Bastion.
+            if(ruinTower!=null)
             {
-                Imported("Valoria · Reference v1 · broken high arch","Arch_Gothic",
-                    new Vector3(s.x,.45f,s.y),s.z,s.z*.88f,s.w,new Color(.42f,.41f,.37f),false);
-                Imported("Valoria · Reference v1 · shattered masonry","Wall_Broken",
-                    new Vector3(s.x+(s.x<0?-1.7f:1.7f),.15f,s.y+.75f),
-                    s.z*.54f,s.z*.58f,s.w+(s.x<0?-20f:20f),new Color(.38f,.37f,.34f),false);
+                Piece("Valoria · Reference v1 · west ruined tower",ruinTower,
+                    new Vector3(-8.55f,.56f,8.55f),4.0f,6.15f,16f,new Color(.72f,.69f,.62f));
+                Piece("Valoria · Reference v1 · east ruined tower",ruinTower,
+                    new Vector3(8.65f,.58f,8.75f),4.0f,6.15f,196f,new Color(.72f,.69f,.62f));
+            }
+
+            // Lower ruined passages and detailed masonry create depth around the inhabited shelves without
+            // becoming new functional buildings or closing future construction plots.
+            if(wallPassage!=null)
+            {
+                Piece("Valoria · Reference v1 · west lower ruin passage",wallPassage,
+                    new Vector3(-6.05f,.44f,.55f),3.25f,2.65f,18f,new Color(.76f,.72f,.64f));
+                Piece("Valoria · Reference v1 · east lower ruin passage",wallPassage,
+                    new Vector3(6.10f,.44f,.65f),3.25f,2.65f,162f,new Color(.76f,.72f,.64f));
+            }
+            if(detailedWall!=null)
+            {
+                Piece("Valoria · Reference v1 · west broken terrace wall",detailedWall,
+                    new Vector3(-6.85f,.46f,-1.55f),3.35f,1.85f,10f,new Color(.74f,.70f,.62f));
+                Piece("Valoria · Reference v1 · east broken terrace wall",detailedWall,
+                    new Vector3(6.90f,.46f,-1.45f),3.35f,1.85f,170f,new Color(.74f,.70f,.62f));
             }
 
             // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
