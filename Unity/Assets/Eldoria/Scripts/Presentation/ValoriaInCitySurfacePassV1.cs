@@ -60,14 +60,14 @@ namespace Eldoria.Presentation
             root.transform.SetParent(parent,true);
 
             var earth=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "dirt",new Color(.62f,.56f,.45f,1f),new Vector2(3.2f,3.2f),.012f,.94f)
+                "dirt",new Color(.52f,.47f,.38f,1f),new Vector2(3.6f,3.6f),.010f,.96f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.34f,.305f,.245f,1f),"earth",new Vector2(3.2f,3.2f),.90f);
+                    new Color(.30f,.275f,.225f,1f),"earth",new Vector2(3.6f,3.6f),.92f);
 
             var stone=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.72f,.67f,.57f,1f),new Vector2(2.6f,2.6f),.018f,.96f)
+                "rock",new Color(.56f,.52f,.45f,1f),new Vector2(3.0f,3.0f),.014f,.97f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.48f,.445f,.375f,1f),"earth",new Vector2(2.6f,2.6f),.94f);
+                    new Color(.40f,.37f,.315f,1f),"earth",new Vector2(3.0f,3.0f),.95f);
 
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -89,17 +89,14 @@ namespace Eldoria.Presentation
                     continue;
                 }
 
-                if(IsRetainingSurface(r.transform))
-                {
-                    NudgeTexturedSurface(r,new Color(.76f,.71f,.62f,1f),.055f);
-                    LastRetainingRenderers++;
-                }
+                // Authored/textured retaining walls are deliberately untouched in v1 iteration 2.
+                // Iteration 1 proved that broad MPB colour overrides wash their material response out.
             }
 
-            AddWarmLight(root.transform,"lower approach",new Vector3(0f,1.15f,-5.0f),.16f,3.8f);
-            AddWarmLight(root.transform,"west work yard",new Vector3(-6.1f,1.35f,-2.4f),.13f,3.4f);
-            AddWarmLight(root.transform,"east training yard",new Vector3(6.3f,1.30f,-3.1f),.12f,3.2f);
-            AddWarmLight(root.transform,"upper landing",new Vector3(0f,3.15f,6.7f),.15f,3.6f);
+            AddWarmLight(root.transform,"lower approach",new Vector3(0f,1.15f,-5.0f),.09f,3.4f);
+            AddWarmLight(root.transform,"west work yard",new Vector3(-6.1f,1.35f,-2.4f),.07f,3.0f);
+            AddWarmLight(root.transform,"east training yard",new Vector3(6.3f,1.30f,-3.1f),.07f,3.0f);
+            AddWarmLight(root.transform,"upper landing",new Vector3(0f,3.15f,6.7f),.09f,3.2f);
         }
 
         static string FindOwner(Transform t,HashSet<string> exact,string[] prefixes)
