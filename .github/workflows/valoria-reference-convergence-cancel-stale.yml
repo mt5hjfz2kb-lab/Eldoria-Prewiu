@@ -1,0 +1,23 @@
+name: "[TEMP] Cancel stale Valoria formula gate"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-reference-convergence-cancel-stale.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel superseded convergence-triggered formula run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913084/cancel || true
+          echo "cancel requested for 36997913084"
