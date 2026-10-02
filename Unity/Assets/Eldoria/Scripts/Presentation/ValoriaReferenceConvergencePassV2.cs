@@ -41,19 +41,19 @@ namespace Eldoria.Presentation
             // Reference target uses broken monumental arches as a frame around the playable city.
             // Keep them outside circulation and let the Bastion remain the focal point.
             AddPrefab(root,art.MegaHalfGate,"left monumental broken arch",
-                new Vector3(-11.6f,.30f,5.8f),8.8f,12.5f,18f,StoneTint,true);
+                new Vector3(-10.8f,.55f,8.8f),6.7f,9.4f,24f,StoneTint,true);
             AddPrefab(root,art.MegaHalfGate,"right monumental broken arch",
-                new Vector3(11.9f,.25f,6.2f),9.3f,12.9f,198f,StoneTint,true);
+                new Vector3(10.9f,.55f,8.9f),6.9f,9.6f,204f,StoneTint,true);
 
             AddPrefab(root,art.MegaDestroyedTower,"left ruin crown",
-                new Vector3(-12.8f,1.25f,8.7f),4.2f,7.3f,32f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(-11.9f,1.05f,11.3f),3.4f,5.8f,38f,new Color(.55f,.54f,.51f,1f),true);
             AddPrefab(root,art.MegaDestroyedTower,"right ruin crown",
-                new Vector3(13.2f,1.10f,8.4f),4.0f,7.0f,214f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(12.0f,1.00f,11.1f),3.3f,5.6f,220f,new Color(.55f,.54f,.51f,1f),true);
 
             AddPrefab(root,art.MegaWallPassage,"rear left ruined passage",
-                new Vector3(-7.8f,2.0f,12.3f),5.4f,5.8f,8f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(-7.1f,1.65f,13.8f),4.2f,4.7f,12f,new Color(.57f,.56f,.52f,1f),true);
             AddPrefab(root,art.MegaWallPassage,"rear right ruined passage",
-                new Vector3(7.7f,2.0f,12.6f),5.4f,5.8f,174f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(7.0f,1.65f,13.9f),4.2f,4.7f,168f,new Color(.57f,.56f,.52f,1f),true);
         }
 
         static void BuildCliffEnvelope(Transform root)
@@ -200,19 +200,66 @@ namespace Eldoria.Presentation
         {
             var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
             if(shader==null){ApplyTint(go,tint);return;}
+
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
                 if(r==null)continue;
                 var src=r.sharedMaterials;
                 var dst=new Material[src.Length];
+
                 for(int i=0;i<src.Length;i++)
                 {
-                    if(src[i]==null){dst[i]=null;continue;}
-                    var m=new Material(shader){name="Valoria Reference v2 · safe stone"};
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
-                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    var old=src[i];
+                    if(old==null){dst[i]=null;continue;}
+
+                    var m=new Material(shader){name="Valoria Reference v2 · converted stone"};
+                    Texture baseTex=null;
+                    Vector2 scale=Vector2.one,offset=Vector2.zero;
+
+                    if(old.HasProperty("_BaseMap"))
+                    {
+                        baseTex=old.GetTexture("_BaseMap");
+                        scale=old.GetTextureScale("_BaseMap");
+                        offset=old.GetTextureOffset("_BaseMap");
+                    }
+                    else if(old.HasProperty("_MainTex"))
+                    {
+                        baseTex=old.GetTexture("_MainTex");
+                        scale=old.GetTextureScale("_MainTex");
+                        offset=old.GetTextureOffset("_MainTex");
+                    }
+
+                    if(baseTex!=null)
+                    {
+                        if(m.HasProperty("_BaseMap"))
+                        {
+                            m.SetTexture("_BaseMap",baseTex);
+                            m.SetTextureScale("_BaseMap",scale);
+                            m.SetTextureOffset("_BaseMap",offset);
+                        }
+                        if(m.HasProperty("_MainTex"))
+                        {
+                            m.SetTexture("_MainTex",baseTex);
+                            m.SetTextureScale("_MainTex",scale);
+                            m.SetTextureOffset("_MainTex",offset);
+                        }
+                    }
+
+                    Texture normal=null;
+                    if(old.HasProperty("_BumpMap"))normal=old.GetTexture("_BumpMap");
+                    else if(old.HasProperty("_NormalMap"))normal=old.GetTexture("_NormalMap");
+                    if(normal!=null&&m.HasProperty("_BumpMap"))
+                    {
+                        m.SetTexture("_BumpMap",normal);
+                        m.EnableKeyword("_NORMALMAP");
+                    }
+
+                    // Keep texture variation; tint only nudges it toward Valoria limestone.
+                    var surfaceTint=Color.Lerp(Color.white,tint,.34f);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",surfaceTint);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",surfaceTint);
                     if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.045f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.055f);
                     dst[i]=m;
                 }
                 r.sharedMaterials=dst;
