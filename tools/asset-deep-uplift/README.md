@@ -1,39 +1,72 @@
 # Asset Deep Uplift v1
 
-This folder records the deterministic execution lane for **existing canonical GLBs only**. It does not authorize new assets or Tripo spend.
+Deterministic zero-credit lane for improving **existing canonical GLBs** only.
 
-## Priority order
+## Evidence-driven result
 
-1. SteppedRockTerrace
-2. TerraceStairRock
-3. BroadRockPlatform
-4. StreetLandingTransition
-5. MidTier Piece01–04 isolated audit
+The deep audit found **no current asset that justifies blind geometry surgery**.
 
-## Required Blender sequence
+Blender diagnostics showed:
+- SteppedRockTerrace — 6,379 tris / full 3-image PBR → keep geometry.
+- BroadRockPlatform — 8,650 tris / full 3-image PBR → keep geometry.
+- MidTier Piece01–04 — 6,324–16,650 tris / full 3-image PBR → keep geometry; solve production placement/coverage separately.
+- TerraceStairRock — 49,800 tris / valid UV+normals / 0 images → surface rescue candidate produced.
+- StreetLandingTransition — 49,800 tris / valid UV+normals / 0 images → surface rescue candidate produced; route/interface failure remains unchanged.
 
-For each C candidate:
+Current canonical ResidentialTerraceRock, RockTerrainSeamFiller and TowerWallRock already contain PBR images. Generic one-material rescue outputs for those assets were rejected.
 
-1. run the canonical `tools/tripo_module_blender.py` in diagnostic-only mode and record objects, triangles, bounds, UVs, material/image routing and connected components;
-2. compare against the current canonical SHA from `pipeline/asset-library-canonicalization-audit.json`;
-3. apply only reversible conservative cleanup first: duplicate-vertex merge at tiny tolerance, outward normal consistency and material sanity;
-4. geometry edits are allowed only where the diagnostic + official camera evidence proves a form problem. Preserve occupied footprint and all gameplay topology; these GLBs are visual skins, never gameplay authority;
-5. do not use blanket decimation as an uplift. Triangle reduction is an optimization decision, not a visual-improvement decision;
-6. export to a candidate path, never overwrite the canonical GLB before Unity proof;
-7. validate isolated plus integrated 19/12/9/mobile before promotion;
-8. if the result is not clearly better, keep the current canonical GLB.
+## Persisted candidates
 
-## Candidate-specific guardrails
+Only two candidates survive this pass:
 
-- **SteppedRockTerrace:** prioritize readable landings, cleaner silhouette and authored rock/terrace transition. Do not alter the approved placement footprint just to make the mesh look dramatic.
-- **TerraceStairRock:** trim only sacrificial rock shoulders/occluding noise. It must remain a visual overlay on independent traversal.
-- **BroadRockPlatform:** attack pedestal/amorphous rock read, not the usable platform envelope.
-- **StreetLandingTransition:** visual overlay only. Its historical interface failure is not repaired by cosmetic geometry work.
-- **MidTier Piece01–04:** audit first; 0 renderers were touched in Asset Visual Uplift v1, so no production-frame geometry claim is currently justified.
+- `pipeline/candidates/asset-deep-uplift-v1/TerraceStairRock-PBRRescue.glb`
+  - SHA-256 `4173b794b875c872aee1cb663e67a516bf37c96273c752f8ef4b6fb9225727b9`
+  - exact geometry/bounds preserved
+  - 512 basecolor + roughness + normal
+
+- `pipeline/candidates/asset-deep-uplift-v1/StreetLandingTransition-PBRRescue.glb`
+  - SHA-256 `16b090b4f0fbd54284919887877e527d932c7366e3b78d970c546ae30837c28f`
+  - exact geometry/bounds preserved
+  - 512 basecolor + roughness + normal
+  - visual-overlay role only; never infer traversal certification
+
+Candidate GLBs live outside Unity Resources intentionally. They must not become production merely because they exist in the repository.
+
+## Promotion sequence
+
+1. verify candidate SHA and matching canonical source SHA;
+2. import candidate into an isolated Unity validation path;
+3. compare canonical vs candidate at official 19 / 12 / 9 / mobile cameras;
+4. verify collider/hotspot signature is unchanged;
+5. promote only if the candidate is clearly better in the integrated frame;
+6. otherwise retain the current canonical GLB.
+
+## Geometry-edit rule
+
+A future geometry edit needs direct evidence of a form defect that surface/composition cannot solve. Acceptable evidence includes:
+- destructive silhouette noise visible at official camera;
+- impossible/incorrect physical visual envelope for the intended visual-only role;
+- proven occlusion caused by removable sacrificial geometry;
+- severe normals/topology defect not fixable without mesh editing.
+
+Triangle count alone is not a reason to edit a mesh. Decimation is optimization, not visual uplift.
+
+## Surface preservation rule
+
+Before any generic material rescue, inspect the **current canonical file**, not only historical reports. If it already contains useful basecolor/normal/mask/material information, preserve it. Never replace authored PBR with one generic rock material merely because an older source version was flat.
+
+## Tooling
+
+The GitHub-hosted Blender lane is recorded by:
+- `pipeline/asset-deep-uplift-run-request.json`
+- `.github/workflows/asset-deep-uplift-blender.yml`
+
+The workflow is manual-only after this pass. It must remain zero-credit and must not use the Windows Unity runner.
 
 ## Stop conditions
 
-- any collider/hotspot/gameplay topology change;
-- any request to use the currently owned Windows runner before release;
-- any Tripo credit spend;
-- any output that changes silhouette/footprint without matched-camera evidence.
+- Tripo or other paid generation without fresh explicit authorization;
+- canonical GLB overwrite before official-camera proof;
+- gameplay collider/hotspot/topology change;
+- claiming an interface/traversal repair from a surface-only change;
+- replacing a current PBR source with a generic material without a matched-camera proof.

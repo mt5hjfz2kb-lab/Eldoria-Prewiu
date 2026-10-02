@@ -1,0 +1,20 @@
+name: "[LEGACY] Asset Deep Uplift Blender"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-note:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Explain parked workflow
+        shell: bash
+        run: |
+          echo "Asset Deep Uplift v1 hosted-Blender execution is parked."
+          echo "Read docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md and tools/asset-deep-uplift/README.md."
+          echo "The two valid candidates are persisted under pipeline/candidates/asset-deep-uplift-v1/."
+          echo "Final production promotion requires the official Unity 19/12/9/mobile gate."

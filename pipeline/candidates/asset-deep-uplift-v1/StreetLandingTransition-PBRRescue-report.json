@@ -1,0 +1,169 @@
+{
+  "target_triangles": 49800,
+  "accepted_range": [
+    49500,
+    50000
+  ],
+  "raw": {
+    "label": "raw_import",
+    "objects": 1,
+    "vertices": 65314,
+    "triangles": 49800,
+    "materials": 1,
+    "images": 0,
+    "bounds": [
+      0.470237,
+      0.979241,
+      0.300098
+    ],
+    "uv_present_all_meshes": true,
+    "normals_present": true
+  },
+  "optimized": {
+    "label": "optimized",
+    "objects": 1,
+    "vertices": 65314,
+    "triangles": 49800,
+    "materials": 1,
+    "images": 0,
+    "bounds": [
+      0.470237,
+      0.979241,
+      0.300098
+    ],
+    "uv_present_all_meshes": true,
+    "normals_present": true
+  },
+  "resized_images": [],
+  "surface_diagnostics": {
+    "images": [
+      {
+        "name": "Eldoria_Rock_SurfaceV1_BaseColor",
+        "source": "GENERATED",
+        "width": 512,
+        "height": 512,
+        "colorspace": "sRGB",
+        "packed": false,
+        "filepath": "",
+        "inferred_role": "basecolor"
+      },
+      {
+        "name": "Eldoria_Rock_SurfaceV1_Normal",
+        "source": "GENERATED",
+        "width": 512,
+        "height": 512,
+        "colorspace": "Non-Color",
+        "packed": false,
+        "filepath": "",
+        "inferred_role": "normal"
+      },
+      {
+        "name": "Eldoria_Rock_SurfaceV1_Roughness",
+        "source": "GENERATED",
+        "width": 512,
+        "height": 512,
+        "colorspace": "Non-Color",
+        "packed": false,
+        "filepath": "",
+        "inferred_role": "roughness"
+      }
+    ],
+    "materials": [
+      {
+        "name": "Eldoria Rock \u00b7 Surface v1 Rescue",
+        "use_nodes": true,
+        "principled": [
+          {
+            "Metallic": 0.0,
+            "Specular IOR Level": 0.23999999463558197,
+            "Alpha": 1.0
+          }
+        ],
+        "image_textures": [
+          {
+            "node": "Image Texture",
+            "image": "Eldoria_Rock_SurfaceV1_BaseColor",
+            "colorspace": "sRGB",
+            "targets": [
+              {
+                "from_socket": "Color",
+                "to_node": "Principled BSDF",
+                "to_socket": "Base Color"
+              }
+            ]
+          },
+          {
+            "node": "Image Texture.001",
+            "image": "Eldoria_Rock_SurfaceV1_Roughness",
+            "colorspace": "Non-Color",
+            "targets": [
+              {
+                "from_socket": "Color",
+                "to_node": "Principled BSDF",
+                "to_socket": "Roughness"
+              }
+            ]
+          },
+          {
+            "node": "Image Texture.002",
+            "image": "Eldoria_Rock_SurfaceV1_Normal",
+            "colorspace": "Non-Color",
+            "targets": [
+              {
+                "from_socket": "Color",
+                "to_node": "Normal Map",
+                "to_socket": "Color"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Eldoria_Module_Neutral",
+        "use_nodes": false,
+        "principled": [],
+        "image_textures": []
+      },
+      {
+        "name": "material",
+        "use_nodes": true,
+        "principled": [
+          {
+            "Base Color": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "Metallic": 0.0,
+            "Roughness": 0.5,
+            "Specular IOR Level": 0.5,
+            "Alpha": 1.0
+          }
+        ],
+        "image_textures": []
+      }
+    ]
+  },
+  "refinement": {
+    "enabled": false
+  },
+  "surface_rescue": {
+    "enabled": true,
+    "profile": "rock",
+    "texture_size": 512,
+    "material": "Eldoria Rock \u00b7 Surface v1 Rescue",
+    "textures": [
+      "Eldoria_Rock_SurfaceV1_BaseColor",
+      "Eldoria_Rock_SurfaceV1_Roughness",
+      "Eldoria_Rock_SurfaceV1_Normal"
+    ],
+    "geometry_modified": false
+  },
+  "input_bytes": 2390048,
+  "output_bytes": 2714904,
+  "multipiece": {
+    "enabled": false,
+    "pieces": []
+  }
+}

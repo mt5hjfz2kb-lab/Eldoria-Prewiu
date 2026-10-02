@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "date": "2026-10-02",
   "source_library_glbs": 26,
   "grading": {
@@ -27,48 +27,48 @@
     },
     {
       "path": "MidTierArchitectureKit_v1/Piece01.glb",
-      "grade": "C",
-      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+      "grade": "B",
+      "reason": "Blender diagnostic: 11,997 tris, UV/normals valid and full 3-image PBR. No mesh-surgery evidence; production-frame integration/coverage is the remaining question."
     },
     {
       "path": "MidTierArchitectureKit_v1/Piece02.glb",
-      "grade": "C",
-      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+      "grade": "B",
+      "reason": "Blender diagnostic: 13,201 tris, UV/normals valid and full 3-image PBR. No mesh-surgery evidence; production-frame integration/coverage is the remaining question."
     },
     {
       "path": "MidTierArchitectureKit_v1/Piece03.glb",
-      "grade": "C",
-      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+      "grade": "B",
+      "reason": "Blender diagnostic: 16,650 tris, UV/normals valid and full 3-image PBR. No mesh-surgery evidence; production-frame integration/coverage is the remaining question."
     },
     {
       "path": "MidTierArchitectureKit_v1/Piece04.glb",
-      "grade": "C",
-      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+      "grade": "B",
+      "reason": "Blender diagnostic: 6,324 tris, UV/normals valid and full 3-image PBR. No mesh-surgery evidence; production-frame integration/coverage is the remaining question."
     },
     {
       "path": "Rescued/ResidentialTerraceRock.glb",
       "grade": "B",
-      "reason": "Strong certified inhabited silhouette; historical evidence says flat/no-texture surface was the main limitation."
+      "reason": "Current canonical file has 4 materials and 12 images at 49,800 tris. Generic rock rescue was generated experimentally then rejected because it would discard authored PBR information."
     },
     {
       "path": "Rescued/RockTerrainSeamFiller.glb",
       "grade": "A",
-      "reason": "Useful buried support/seam role; standalone beauty is not required and geometry already fulfills the function."
+      "reason": "Current canonical file has 1 material and 3 images at 49,800 tris; its buried seam role is already served. Generic rescue rejected as regression risk."
     },
     {
       "path": "Rescued/StreetLandingTransition.glb",
-      "grade": "C",
-      "reason": "Heavy parapets and failed interface certification limit connector reuse; only controlled visual-overlay geometry changes are justified."
+      "grade": "B",
+      "reason": "49,800-triangle geometry is preserved; actual deficit is zero source images. A deterministic PBR candidate exists, but historical interface/traversal failure remains unchanged."
     },
     {
       "path": "Rescued/TerraceStairRock.glb",
-      "grade": "C",
-      "reason": "Strong vertical-city potential but interface is not certified; candidate for silhouette/shoulder cleanup over independent gameplay route."
+      "grade": "B",
+      "reason": "49,800-triangle geometry is preserved; actual deficit is zero source images. A deterministic PBR candidate exists for official-camera validation."
     },
     {
       "path": "Rescued/TowerWallRock.glb",
       "grade": "B",
-      "reason": "Distant defensive silhouette is useful; main deficit is flat historical surface and overuse risk, not core geometry."
+      "reason": "Current canonical file has 2 materials and 6 images at 50,000 tris. Generic rescue rejected because canonical PBR content already exists; focus on sparse placement/integration."
     },
     {
       "path": "StoneArchitectureKit_v1/CornerWallL.glb",
@@ -117,13 +117,13 @@
     },
     {
       "path": "TerrainTerraceKit_v1/BroadRockPlatform.glb",
-      "grade": "C",
-      "reason": "Prior isolated/pilot visual failure plus current integrated usefulness indicates form is serviceable but not yet a strong standalone mountain-city piece."
+      "grade": "B",
+      "reason": "Blender diagnostic: only 8,650 tris with UV/normals and full 3-image PBR. No evidence that mesh surgery would improve it; prior weakness is composition/identity, not raw mesh cleanup."
     },
     {
       "path": "TerrainTerraceKit_v1/SteppedRockTerrace.glb",
-      "grade": "C",
-      "reason": "High-value vertical/terrace role, but prior pilot failed to produce the desired leap; candidate for controlled silhouette/edge/landing refinement."
+      "grade": "B",
+      "reason": "Blender diagnostic: only 6,379 tris with UV/normals and full 3-image PBR. No evidence that mesh surgery would improve it; keep geometry."
     },
     {
       "path": "Valoria_Aserradero_AP2_v1.glb",
@@ -146,33 +146,153 @@
       "reason": "Existing world-map city mesh has a separate 4X role; assess in world-map camera rather than altering it from Valoria evidence."
     }
   ],
-  "priority_c": [
+  "priority_c": [],
+  "execution_state": "BLENDER_DIAGNOSTIC_COMPLETE_CANDIDATES_PERSISTED_UNITY_PROMOTION_BLOCKED",
+  "blocker": "Final integrated 19/12/9/mobile validation and promotion of the two valid PBR candidates requires valoria-production-composition/windows-runner-heavy, currently owned by valoria-reference-convergence-v2.",
+  "deep_diagnostic": {
+    "status": "COMPLETE",
+    "geometry_surgery_candidates_proven": 0,
+    "diagnostic_runs": [
+      {
+        "asset": "SteppedRockTerrace",
+        "run_id": 37004870013,
+        "artifact_id": 11225760232,
+        "triangles": 6379,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_PBR_COMPLETE"
+      },
+      {
+        "asset": "BroadRockPlatform",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 8650,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_PBR_COMPLETE"
+      },
+      {
+        "asset": "MidTier Piece01",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 11997,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_INTEGRATION_PENDING"
+      },
+      {
+        "asset": "MidTier Piece02",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 13201,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_INTEGRATION_PENDING"
+      },
+      {
+        "asset": "MidTier Piece03",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 16650,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_INTEGRATION_PENDING"
+      },
+      {
+        "asset": "MidTier Piece04",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 6324,
+        "images": 3,
+        "uv": true,
+        "normals": true,
+        "verdict": "KEEP_GEOMETRY_INTEGRATION_PENDING"
+      },
+      {
+        "asset": "TerraceStairRock",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 49800,
+        "images": 0,
+        "uv": true,
+        "normals": true,
+        "verdict": "SURFACE_GAP_NOT_GEOMETRY_GAP"
+      },
+      {
+        "asset": "StreetLandingTransition",
+        "run_id": 37005128307,
+        "artifact_id": 11225234064,
+        "triangles": 49800,
+        "images": 0,
+        "uv": true,
+        "normals": true,
+        "verdict": "SURFACE_GAP_INTERFACE_FAILURE_UNCHANGED"
+      }
+    ]
+  },
+  "valid_candidates": [
     {
-      "rank": 1,
-      "path": "TerrainTerraceKit_v1/SteppedRockTerrace.glb",
-      "goal": "cleaner stepped silhouette, readable landing edges, less generated rock noise, preserve footprint/interface"
+      "asset": "TerraceStairRock",
+      "source_sha256": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "candidate_sha256": "4173b794b875c872aee1cb663e67a516bf37c96273c752f8ef4b6fb9225727b9",
+      "run_id": 37005340145,
+      "artifact_id": 11225483548,
+      "candidate_path": "pipeline/candidates/asset-deep-uplift-v1/TerraceStairRock-PBRRescue.glb",
+      "triangles_before": 49800,
+      "triangles_after": 49800,
+      "bounds_changed": false,
+      "geometry_modified": false,
+      "surface": "512 basecolor + roughness + normal",
+      "promotion": "PENDING_OFFICIAL_UNITY_19_12_9_MOBILE"
     },
     {
-      "rank": 2,
-      "path": "Rescued/TerraceStairRock.glb",
-      "goal": "clean sacrificial rock shoulders and stair/terrace silhouette while keeping gameplay route independent"
-    },
-    {
-      "rank": 3,
-      "path": "TerrainTerraceKit_v1/BroadRockPlatform.glb",
-      "goal": "reduce amorphous pedestal read; strengthen authored platform/rock transition without changing occupied footprint"
-    },
-    {
-      "rank": 4,
-      "path": "Rescued/StreetLandingTransition.glb",
-      "goal": "reduce visually heavy parapet mass and occlusion for visual-overlay use only; no traversal certification claim"
-    },
-    {
-      "rank": 5,
-      "path": "MidTierArchitectureKit_v1/Piece01..04.glb",
-      "goal": "isolated geometry/interface audit first; only then decide whether conservative cleanup or replacement is warranted"
+      "asset": "StreetLandingTransition",
+      "source_sha256": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "candidate_sha256": "16b090b4f0fbd54284919887877e527d932c7366e3b78d970c546ae30837c28f",
+      "run_id": 37005568784,
+      "artifact_id": 11224644144,
+      "candidate_path": "pipeline/candidates/asset-deep-uplift-v1/StreetLandingTransition-PBRRescue.glb",
+      "triangles_before": 49800,
+      "triangles_after": 49800,
+      "bounds_changed": false,
+      "geometry_modified": false,
+      "surface": "512 basecolor + roughness + normal",
+      "role_limit": "visual overlay only; no interface/traversal certification",
+      "promotion": "PENDING_OFFICIAL_UNITY_19_12_9_MOBILE"
     }
   ],
-  "execution_state": "BLOCKED_FOR_BINARY_GEOMETRY_VALIDATION",
-  "blocker": "The active valoria-reference-convergence-v2 workstream owns windows-runner-heavy and valoria-production-composition. Deep geometry must not be run or integrated until ownership is released."
+  "rejected_generated_candidates": {
+    "run_id": 37005849399,
+    "artifact_id": 11225747180,
+    "reason": "Current canonical sources already contain PBR images/material structure, so replacing them with one generic rock material would discard authored information.",
+    "assets": [
+      {
+        "asset": "ResidentialTerraceRock",
+        "canonical_triangles": 49800,
+        "canonical_materials": 4,
+        "canonical_images": 12,
+        "verdict": "REJECT_GENERIC_RESCUE_KEEP_CANONICAL"
+      },
+      {
+        "asset": "RockTerrainSeamFiller",
+        "canonical_triangles": 49800,
+        "canonical_materials": 1,
+        "canonical_images": 3,
+        "verdict": "REJECT_GENERIC_RESCUE_KEEP_CANONICAL"
+      },
+      {
+        "asset": "TowerWallRock",
+        "canonical_triangles": 50000,
+        "canonical_materials": 2,
+        "canonical_images": 6,
+        "verdict": "REJECT_GENERIC_RESCUE_KEEP_CANONICAL"
+      }
+    ]
+  },
+  "final_decision": "No tested asset justified geometry surgery. Keep current geometry; validate only TerraceStairRock and StreetLandingTransition PBR surface candidates in Unity before promotion."
 }
