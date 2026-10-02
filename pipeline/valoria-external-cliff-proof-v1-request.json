@@ -28,7 +28,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:27:00+02:00",
-  "trigger_seq": 3,
-  "retry_reason": "Previous proof failed before Unity because node was unavailable on the Windows runner; workflow now stages Poly Haven glTF and dependencies with PowerShell only."
+  "triggered_at": "2026-10-03T01:30:00+02:00",
+  "trigger_seq": 4,
+  "retry_reason": "Moved Poly Haven asset preparation to GitHub-hosted Ubuntu; Windows runner now receives a prebuilt artifact and is reserved for Unity capture only."
 }
