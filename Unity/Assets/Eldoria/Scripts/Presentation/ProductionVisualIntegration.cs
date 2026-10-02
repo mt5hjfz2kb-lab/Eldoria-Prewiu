@@ -1205,6 +1205,7 @@ namespace Eldoria.Presentation
         {
             // Toolchain Automation v2 / environment_composition — iteration 2.
             FullFrameLandformV1();
+            PlaceCertifiedHeroBastionFullFrame();
             // Existing assets only. No gameplay authority.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
             RenderSettings.ambientSkyColor=new Color(.61f,.66f,.69f);
