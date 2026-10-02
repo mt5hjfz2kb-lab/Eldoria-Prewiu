@@ -1203,156 +1203,84 @@ namespace Eldoria.Presentation
 
         static void ComposeFullFrameV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // Toolchain Automation v2: environment_composition. Existing geometry only.
-            // This layer is presentation-only: no collider, hotspot, route, floor or camera authority.
+            // Toolchain Automation v2 / environment_composition — iteration 2.
+            // Existing assets only. No gameplay authority.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.68f,.73f,.76f);
-            RenderSettings.ambientEquatorColor=new Color(.46f,.43f,.38f);
-            RenderSettings.ambientGroundColor=new Color(.24f,.22f,.19f);
-            RenderSettings.ambientIntensity=.86f;
+            RenderSettings.ambientSkyColor=new Color(.61f,.66f,.69f);
+            RenderSettings.ambientEquatorColor=new Color(.39f,.37f,.34f);
+            RenderSettings.ambientGroundColor=new Color(.20f,.19f,.17f);
+            RenderSettings.ambientIntensity=.78f;
             RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.56f,.60f,.62f);
-            RenderSettings.fogStartDistance=27f;RenderSettings.fogEndDistance=76f;
+            RenderSettings.fogColor=new Color(.49f,.53f,.55f);
+            RenderSettings.fogStartDistance=24f;RenderSettings.fogEndDistance=69f;
             var camera=Camera.main;if(camera!=null){camera.backgroundColor=RenderSettings.fogColor;camera.clearFlags=CameraClearFlags.SolidColor;camera.allowHDR=true;}
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(light.name!="Valoria · amber dusk")continue;
-                light.color=new Color(1f,.83f,.68f);light.intensity=1.36f;light.shadowStrength=.70f;light.shadows=LightShadows.Soft;
-                light.transform.rotation=Quaternion.Euler(48f,-34f,0);
+                light.color=new Color(1f,.79f,.62f);light.intensity=1.22f;light.shadowStrength=.78f;light.shadows=LightShadows.Soft;
+                light.transform.rotation=Quaternion.Euler(50f,-38f,0);
             }
 
-            // Mid-ground retaining rhythm: bind the city into the rock and make the terraces read as one vertical system.
-            foreach(var s in new[]{
-                new Vector4(-10.8f,1.00f,1.6f,12f),new Vector4(-14.6f,1.02f,4.6f,92f),
-                new Vector4(10.8f,1.00f,1.8f,168f),new Vector4(14.5f,1.02f,4.8f,88f)})
+            // Continuous low terrace bands. They sit under the architecture instead of standing as isolated modules.
+            for(int i=0;i<7;i++)
             {
-                StoneArchitecturePiece("HighStraightWall","Valoria · FullFrame · retaining spine",
-                    new Vector3(s.x,s.y,s.z),2.30f,s.w);
+                float z=-1.25f+i*.62f;
+                StonePiece(2,"Valoria · FullFrame · west lower retaining band",new Vector3(-11.3f,.31f,z),
+                    new Vector3(7.6f,.16f,.72f),2f);
+                StonePiece(2,"Valoria · FullFrame · east lower retaining band",new Vector3(11.3f,.31f,z+.08f),
+                    new Vector3(7.6f,.16f,.72f),-2f);
             }
-            foreach(var s in new[]{
-                new Vector4(-9.3f,.20f,-2.8f,32f),new Vector4(-15.6f,.22f,1.0f,116f),
-                new Vector4(9.5f,.20f,-3.0f,210f),new Vector4(15.3f,.22f,1.2f,244f),
-                new Vector4(-6.8f,2.46f,5.0f,45f),new Vector4(6.9f,2.46f,5.1f,222f)})
-            {
-                StoneArchitecturePiece("RockToWallTransition","Valoria · FullFrame · buried rock seam",
-                    new Vector3(s.x,s.y,s.z),1.65f,s.w);
-            }
-
-            // Streets remain the certified physical routes underneath. Visual slabs connect courts and stairs into a legible network.
-            for(int i=0;i<6;i++)
-            {
-                StonePiece(2,"Valoria · FullFrame · west lane continuity",new Vector3(-7.8f-i*1.28f,.455f,-.35f+i*.36f),
-                    new Vector3(1.52f,.055f,1.22f),76f);
-                StonePiece(2,"Valoria · FullFrame · east lane continuity",new Vector3(7.8f+i*1.28f,.455f,-.25f+i*.38f),
-                    new Vector3(1.52f,.055f,1.22f),104f);
-            }
-            for(int i=0;i<5;i++)
-            {
-                StonePiece(1,"Valoria · FullFrame · upper terrace street",new Vector3(-5.2f+i*2.6f,2.735f,7.55f),
-                    new Vector3(2.65f,.055f,1.18f),0f);
-            }
-
-            // Break the oversized empty forecourt into connected urban rooms while leaving the certified physical route untouched.
             for(int i=0;i<5;i++)
             {
                 float x=-5.2f+i*2.6f;
-                StonePiece(i%2==0?2:1,"Valoria · FullFrame · lower market paving",
-                    new Vector3(x,.438f,-3.15f+(i%2)*.38f),new Vector3(2.72f,.045f,1.55f),i%2==0?4f:-5f);
-            }
-            for(int i=0;i<4;i++)
-            {
-                StonePiece(2,"Valoria · FullFrame · west cross street",
-                    new Vector3(-8.3f-i*1.75f,.446f,-2.0f+i*.18f),new Vector3(1.85f,.045f,1.32f),82f);
-                StonePiece(2,"Valoria · FullFrame · east cross street",
-                    new Vector3(8.3f+i*1.75f,.446f,-2.0f+i*.18f),new Vector3(1.85f,.045f,1.32f),98f);
+                StonePiece(1,"Valoria · FullFrame · upper inhabited terrace",new Vector3(x,2.64f,7.38f),
+                    new Vector3(2.72f,.18f,1.42f),0f);
             }
 
-            // Bastion plinth: layered existing rock masses remove the 'castle sitting on a shelf' read.
-            foreach(var s in new[]{
-                new Vector4(-5.2f,2.30f,5.1f,28f),new Vector4(5.2f,2.30f,5.2f,205f),
-                new Vector4(-4.1f,2.18f,8.4f,54f),new Vector4(4.2f,2.18f,8.5f,232f)})
-                Imported("Valoria · FullFrame · Bastion buried plinth","Rock02",
-                    new Vector3(s.x,s.y,s.z),3.55f,1.55f,s.w,new Color(.37f,.37f,.34f),false);
-
-            // Retaining walls are interrupted by towers/rock, avoiding the repeated freestanding-wall rhythm of iteration 1.
-            var flankTower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
-            if(flankTower!=null)
-            {
-                Piece("Valoria · FullFrame · west retaining tower",flankTower,new Vector3(-12.0f,.36f,1.9f),2.05f,3.05f,18f,new Color(.58f,.58f,.54f));
-                Piece("Valoria · FullFrame · east retaining tower",flankTower,new Vector3(12.0f,.36f,2.0f),2.05f,3.05f,162f,new Color(.58f,.58f,.54f));
-            }
-
-            // Edge occupation closes gaps between districts without creating new gameplay buildings.
-            if(art!=null&&art.SlavicHouse!=null)
-            {
-                Piece("Valoria · FullFrame · west infill silhouette",art.SlavicHouse,new Vector3(-18.1f,.42f,-1.0f),1.78f,1.55f,14f,new Color(.55f,.51f,.44f));
-                Piece("Valoria · FullFrame · east infill silhouette",art.SlavicHouse,new Vector3(17.8f,.42f,-.7f),1.72f,1.50f,-18f,new Color(.55f,.51f,.44f));
-            }
-
-            // Iteration 2: replace the empty parade-ground read with a coherent civic spine while preserving
-            // the certified route underneath. These are thin visual skins/edges only, not traversable authority.
+            // Make the certified roads read as one network. Thin visual paving only; physical routes stay untouched.
             for(int i=0;i<7;i++)
             {
-                float z=-5.4f+i*1.42f;
-                StonePiece(1,"Valoria · FullFrame · civic spine paving",new Vector3(0f,.447f,z),
-                    new Vector3(3.85f,.045f,1.52f),i%2==0?0f:180f);
+                StonePiece(2,"Valoria · FullFrame · west lane continuity",new Vector3(-7.4f-i*1.22f,.448f,-.55f+i*.40f),
+                    new Vector3(1.55f,.045f,1.34f),74f);
+                StonePiece(2,"Valoria · FullFrame · east lane continuity",new Vector3(7.4f+i*1.22f,.448f,-.48f+i*.40f),
+                    new Vector3(1.55f,.045f,1.34f),106f);
             }
-            for(int i=0;i<5;i++)
-            {
-                float z=-4.6f+i*1.75f;
-                StonePiece(3,"Valoria · FullFrame · civic spine west edge",new Vector3(-2.12f,.43f,z),
-                    new Vector3(.28f,.18f,1.82f),0f);
-                StonePiece(3,"Valoria · FullFrame · civic spine east edge",new Vector3(2.12f,.43f,z),
-                    new Vector3(.28f,.18f,1.82f),180f);
-            }
+            for(int i=0;i<6;i++)
+                StonePiece(1,"Valoria · FullFrame · upper street continuity",new Vector3(-6.4f+i*2.55f,2.718f,7.68f),
+                    new Vector3(2.62f,.045f,1.12f),0f);
 
-            // Pull both lower quarters inward so the city reads as connected fabric rather than two prefab islands.
-            if(art!=null&&art.SlavicHouse!=null)
-            {
-                foreach(var h in new[]{
-                    new Vector4(-7.0f,-1.9f,1.72f,14f),new Vector4(-8.4f,1.6f,1.58f,-18f),
-                    new Vector4(7.1f,-1.8f,1.68f,-12f),new Vector4(8.5f,1.7f,1.55f,20f)})
-                    Piece("Valoria · FullFrame · connective urban mass",art.SlavicHouse,
-                        new Vector3(h.x,.43f,h.y),2.0f,h.z,h.w,new Color(.59f,.54f,.46f));
-            }
-            // Vertical connectors visually stitch the lower civic spine to the upper Bastion terrace.
-            foreach(var x in new[]{-4.35f,4.35f})
-            {
-                StoneArchitecturePiece("HighStraightWall","Valoria · FullFrame · upper terrace cheek",
-                    new Vector3(x,1.62f,4.75f),2.15f,x<0?8f:172f);
-                StoneArchitecturePiece("RockToWallTransition","Valoria · FullFrame · upper terrace foot",
-                    new Vector3(x,1.02f,3.65f),1.55f,x<0?32f:212f);
-            }
+            // Bury rock transitions into the terrace edges; these break the clean Unity slab silhouette.
+            foreach(var s in new[]{
+                new Vector4(-15.2f,.10f,-1.2f,28f),new Vector4(-12.7f,.10f,2.7f,70f),new Vector4(-9.4f,.10f,3.6f,116f),
+                new Vector4(15.1f,.10f,-1.0f,208f),new Vector4(12.8f,.10f,2.8f,248f),new Vector4(9.4f,.10f,3.7f,296f),
+                new Vector4(-7.2f,2.30f,6.3f,42f),new Vector4(7.2f,2.30f,6.4f,222f)})
+                StoneArchitecturePiece("RockToWallTransition","Valoria · FullFrame · buried terrace seam",
+                    new Vector3(s.x,s.y,s.z),1.48f,s.w);
 
-            // Depth framing uses already-shipped rock and foliage only. Keep the central route and Bastion silhouette open.
+            // Frame the city with geology/vegetation, but keep the Bastion and central processional axis clear.
             foreach(var p in new[]{
-                new Vector3(-21.5f,-.12f,3.2f),new Vector3(21.5f,-.12f,3.5f),
-                new Vector3(-19.5f,-.10f,10.5f),new Vector3(19.5f,-.10f,10.8f)})
-                Imported("Valoria · FullFrame · side geology","Rock02",p,4.25f,1.85f,p.x*7f,new Color(.34f,.34f,.31f),false);
+                new Vector3(-21.0f,-.20f,3.8f),new Vector3(21.0f,-.20f,4.0f),
+                new Vector3(-19.3f,-.18f,10.8f),new Vector3(19.3f,-.18f,11.0f)})
+                Imported("Valoria · FullFrame · edge geology","Rock02",p,4.45f,1.60f,p.x*6f,new Color(.31f,.31f,.29f),false);
 
             foreach(var s in new[]{
-                new Vector4(-19.8f,2.4f,1.10f,0),new Vector4(-18.6f,5.5f,1.25f,1),
-                new Vector4(-17.9f,9.1f,1.18f,0),new Vector4(19.8f,2.7f,1.12f,1),
-                new Vector4(18.7f,5.8f,1.27f,0),new Vector4(18.0f,9.4f,1.20f,1)})
+                new Vector4(-20.4f,1.7f,1.05f,0),new Vector4(-19.2f,4.8f,1.18f,1),new Vector4(-18.0f,8.4f,1.08f,0),
+                new Vector4(-16.8f,11.0f,1.20f,1),new Vector4(20.4f,1.9f,1.05f,1),new Vector4(19.2f,5.0f,1.18f,0),
+                new Vector4(18.0f,8.6f,1.08f,1),new Vector4(16.8f,11.2f,1.20f,0)})
                 Imported("Valoria · FullFrame · framing pine",s.w>.5f?"Tree01B":"Tree01A",
-                    new Vector3(s.x,.06f,s.y),s.z,2.55f,s.x*11f,new Color(.27f,.36f,.24f),true);
+                    new Vector3(s.x,.04f,s.y),s.z,2.40f,s.x*9f,new Color(.23f,.31f,.21f),true);
 
-            // Occupation rhythm: sparse pools reinforce district hierarchy and vertical progression.
-            WarmLight("Valoria · FullFrame · west lane warmth",new Vector3(-10.8f,1.35f,.4f),new Color(1f,.53f,.23f),.55f,2.7f);
-            WarmLight("Valoria · FullFrame · east lane warmth",new Vector3(10.7f,1.35f,.5f),new Color(1f,.55f,.25f),.50f,2.6f);
-            WarmLight("Valoria · FullFrame · upper west warmth",new Vector3(-7.0f,3.55f,7.0f),new Color(1f,.57f,.27f),.48f,2.5f);
-            WarmLight("Valoria · FullFrame · upper east warmth",new Vector3(7.0f,3.55f,7.0f),new Color(1f,.57f,.27f),.45f,2.4f);
+            // Occupied-city light rhythm, deliberately subordinate to the Bastion.
+            WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
+            WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
+            WarmLight("Valoria · FullFrame · west upper warmth",new Vector3(-6.7f,3.45f,7.2f),new Color(1f,.52f,.22f),.42f,2.30f);
+            WarmLight("Valoria · FullFrame · east upper warmth",new Vector3(6.7f,3.45f,7.2f),new Color(1f,.52f,.22f),.40f,2.25f);
 
-            // Secondary life is concentrated at edges/courts, never scattered over circulation.
+            // Small secondary occupation only at terrace edges.
             if(art!=null&&art.Firewood!=null)
             {
-                Piece("Valoria · FullFrame · west terrace timber",art.Firewood,new Vector3(-15.0f,.41f,.25f),.95f,.52f,16f,new Color(.67f,.57f,.43f));
-                Piece("Valoria · FullFrame · east terrace timber",art.Firewood,new Vector3(13.9f,.41f,2.4f),.88f,.48f,-12f,new Color(.67f,.57f,.43f));
-            }
-            foreach(var p in new[]{new Vector3(-10.0f,.41f,1.65f),new Vector3(10.2f,.41f,1.75f),new Vector3(-6.9f,2.74f,7.9f),new Vector3(6.8f,2.74f,7.9f)})
-            {
-                Piece("Valoria · FullFrame · terrace barrel",Resources.Load<GameObject>("Valoria/UrbanProps/Barrel"),p,.34f,.52f,p.x*9f,new Color(.68f,.59f,.46f));
-                Piece("Valoria · FullFrame · terrace crate",Resources.Load<GameObject>("Valoria/UrbanProps/Crate"),p+new Vector3(.34f,0,.15f),.42f,.42f,p.z*17f,new Color(.72f,.62f,.48f));
+                Piece("Valoria · FullFrame · west timber",art.Firewood,new Vector3(-14.7f,.43f,.15f),.82f,.48f,14f,new Color(.62f,.52f,.39f));
+                Piece("Valoria · FullFrame · east timber",art.Firewood,new Vector3(14.0f,.43f,2.25f),.78f,.45f,-10f,new Color(.62f,.52f,.39f));
             }
         }
 
