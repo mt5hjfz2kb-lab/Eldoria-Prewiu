@@ -37,6 +37,23 @@ jobs:
           node tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\art-production-plan.json"
           $p=Get-Content "$env:RUNNER_TEMP\art-production-plan.json" | ConvertFrom-Json
           if($p.profile -ne 'environment_composition' -or $p.tripo_allowed -or $p.authorized_credit_cost -ne 0){throw 'Invalid full-frame route'}
+      - name: Recover certified Hero Bastion for existing-asset composition
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $artifactId=11143009723
+          $expected='afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c'
+          $root="$env:RUNNER_TEMP\hero-bastion-fullframe";$zip="$root.zip"
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue;Remove-Item $zip -Force -ErrorAction SilentlyContinue
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          Invoke-WebRequest -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -Headers $headers -OutFile $zip -MaximumRedirection 10
+          New-Item -ItemType Directory -Force $root | Out-Null;Expand-Archive $zip $root -Force
+          $matches=@(Get-ChildItem $root -Recurse -File -Filter '*.glb' | Where-Object {(Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() -eq $expected})
+          if($matches.Count -ne 1){throw "Certified Hero Bastion recovery mismatch: $($matches.Count)"}
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\HeroBastionGenerated";New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item $matches[0].FullName (Join-Path $dest 'Valoria_HeroBastion_v1.glb') -Force
+          Write-Host "CERTIFIED_HERO_BASTION_REUSED sha256=$expected tripo_credits=0"
       - name: Capture real matched BEFORE AFTER
         shell: powershell
         run: |
