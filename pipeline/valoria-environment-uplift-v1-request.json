@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-environment-uplift-v1",
+  "objective": "Apply a whole-frame zero-credit environment uplift over the current benchmark composite: coherent PBR terrain/paving/retaining materials and replacement of weak presentation-only trees/rocks with higher-quality existing Slavic assets.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "materials_and_surface",
+    "terrain_and_transitions",
+    "vegetation_and_environment",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
