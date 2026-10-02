@@ -56,9 +56,17 @@ namespace Eldoria.Presentation
             // Iteration 19: same dirt family everywhere, with world-scale-aware tiling.
             // IrregularGround uses 0..1 UVs regardless of physical size, so the 200x180 valley
             // needs roughly 8x the tiling of the ~24x26 inhabited floor to keep texture frequency coherent.
-            var valleyDirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
-                new Color(.66f,.63f,.54f,1f),new Vector2(34f,34f),.014f,.90f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(34f,34f),.78f);
+            Material valleyDirt=null;
+            var valleyShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(valleyShader!=null)
+            {
+                valleyDirt=new Material(valleyShader){name="Valoria Reference v2 · matte world valley"};
+                var valleyColor=new Color(.305f,.30f,.272f,1f);
+                if(valleyDirt.HasProperty("_BaseColor"))valleyDirt.SetColor("_BaseColor",valleyColor);
+                if(valleyDirt.HasProperty("_Color"))valleyDirt.SetColor("_Color",valleyColor);
+                if(valleyDirt.HasProperty("_Metallic"))valleyDirt.SetFloat("_Metallic",0f);
+                if(valleyDirt.HasProperty("_Smoothness"))valleyDirt.SetFloat("_Smoothness",.015f);
+            }
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
                 new Color(.66f,.63f,.54f,1f),new Vector2(4.2f,4.2f),.014f,.90f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(4.2f,4.2f),.78f);
@@ -72,7 +80,7 @@ namespace Eldoria.Presentation
                 string n=renderer.gameObject.name;
                 if(n=="Valoria · valley floor")
                 {
-                    renderer.sharedMaterial=valleyDirt;
+                    renderer.sharedMaterial=valleyDirt??dirt;
                     var p=renderer.transform.position;
                     renderer.transform.position=new Vector3(p.x,.045f,p.z);
                 }
@@ -143,29 +151,6 @@ namespace Eldoria.Presentation
                         AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
                             1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
                 }
-
-                if(art.SlavicStoneFence!=null)
-                {
-                    var fences=new[]{
-                        new Vector3(-11.7f,.06f,-5.8f),new Vector3(-13.0f,.08f,3.9f),new Vector3(-10.8f,.08f,12.5f),
-                        new Vector3(11.9f,.06f,-5.2f),new Vector3(13.1f,.08f,4.5f),new Vector3(10.9f,.08f,12.8f)
-                    };
-                    for(int i=0;i<fences.Length;i++)
-                        AddPrefab(root,art.SlavicStoneFence,"edge occupation fence "+i,fences[i],
-                            2.15f,.78f,(i<3?-18f:198f)+(i%3)*11f,new Color(.58f,.56f,.51f,1f),true);
-                }
-
-                if(art.Firewood!=null)
-                {
-                    var workProps=new[]{
-                        new Vector3(-10.9f,.06f,-5.0f),new Vector3(-12.0f,.06f,2.5f),
-                        new Vector3(10.9f,.06f,-4.7f),new Vector3(12.0f,.06f,3.0f)
-                    };
-                    for(int i=0;i<workProps.Length;i++)
-                        AddPrefab(root,art.Firewood,"edge occupation firewood "+i,workProps[i],
-                            1.0f,.72f,(i*61)%360,new Color(.58f,.47f,.34f,1f),true);
-                }
-            }
 
             // Do not add pass-owned foliage: the base scene already provides vegetation and
             // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
