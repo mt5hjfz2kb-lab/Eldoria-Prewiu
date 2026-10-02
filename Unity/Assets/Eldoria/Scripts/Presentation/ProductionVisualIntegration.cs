@@ -1305,6 +1305,19 @@ namespace Eldoria.Presentation
                 if(ground)renderer.sharedMaterial=fullGround;else if(retaining)renderer.sharedMaterial=fullStone;
             }
 
+            // Full-frame cleanup of the two work-district presentation roots. Gameplay authority remains untouched.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled)continue;bool work=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                    if(t.name.StartsWith("Aserradero",StringComparison.OrdinalIgnoreCase)||t.name.StartsWith("Cuartel",StringComparison.OrdinalIgnoreCase)){work=true;break;}
+                if(work)r.enabled=false;
+            }
+            var fullSawmill=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
+            if(fullSawmill!=null)Piece("Valoria · FullFrame · certified sawmill",fullSawmill,new Vector3(-7.0f,.40f,-2.8f),4.20f,3.35f,8f,new Color(.68f,.61f,.50f));
+            var fullBarracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
+            if(fullBarracks!=null)Piece("Valoria · FullFrame · certified barracks",fullBarracks,new Vector3(7.0f,.40f,-4.0f),4.35f,3.55f,176f,new Color(.66f,.60f,.51f));
+
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
             WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
             WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
