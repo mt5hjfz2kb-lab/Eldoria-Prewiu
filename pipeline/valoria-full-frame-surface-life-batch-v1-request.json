@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-surface-life-batch-v1",
+  "objective": "Increase whole-frame material coherence and functional occupation around the Sawmill, Barracks, lower approach and upper terraces using only existing certified PBR surfaces and project props.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "vegetation_and_environment",
+    "life_props_storytelling"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
