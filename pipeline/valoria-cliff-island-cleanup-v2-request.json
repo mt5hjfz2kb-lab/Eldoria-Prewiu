@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-cliff-island-cleanup-v2",
+  "objective": "Clean obsolete floating outer environment clutter from the compact cliff-island composition and replace the visually broken black Cuartel shell with a coherent military hall assembled from existing certified MidTierArchitectureKit and UrbanProps assets.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "materials_and_surface",
+    "life_props_storytelling"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_cuartel_hotspot": true,
+    "preserve_bastion": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
