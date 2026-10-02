@@ -67,3 +67,56 @@ Implemented on the proof branch before waking the Windows runner:
 - all reused instances are visual-only with colliders disabled and hotspots removed.
 
 The Windows gate is intentionally serialized behind the already-running canonical Unity certification job. No Tripo or Blender work is requested.
+
+## Iteration history
+
+### Iteration 1 — composition + smoke
+- Gate run: **36998107463 — FAILURE**
+- Cause: presentation assembly does not reference Unity Particle System module.
+- Decision: remove smoke rather than expand package/dependency surface for a secondary effect.
+
+### Iteration 2 — smoke removed
+- Multiple runner cancellations were caused by stale historical visual-proof jobs occupying or replacing the single Windows runner.
+- Workflow governance was tightened so convergence runs supersede only older convergence runs.
+
+### Iteration 3 — stable matched-camera gate
+- Gate run: **37002042771 — SUCCESS**
+- Artifact: **11223788190**
+- TECH: PASS
+- Gameplay signature: unchanged
+- gameplay_topology_changed=false
+- geometry_gap_proven=false
+- Tripo credits: **0**
+- Metrics before → after:
+  - active renderers: 781 → 929
+  - unique materials: 74 → 82
+  - triangles: 1,647,618 → 2,146,404
+  - active lights: 25 → 30
+- VISUAL: FAIL
+- Reason: monumental ruin prefabs rendered magenta because of incompatible legacy shaders.
+
+### Iteration 4 — safe URP material fallback
+- Gate run: **37002340801 — SUCCESS**
+- Artifact: **11224421094**
+- TECH: PASS
+- Gameplay signature: unchanged
+- gameplay_topology_changed=false
+- geometry_gap_proven=false
+- Tripo credits: **0**
+- Metrics before → after:
+  - active renderers: 781 → 929
+  - unique materials: 74 → 77
+  - triangles: 1,647,618 → 2,146,404
+  - active lights: 25 → 30
+- VISUAL: FAIL
+- Reason: magenta was removed, but the monumental arches became large flat light blocks. The framing idea is useful, but the material conversion and scale/placement are not production quality.
+
+### Iteration 5 — textured legacy→URP conversion + reframe
+Current implementation:
+- monumental arches reduced in scale;
+- moved farther behind/flanking the Hero Bastion;
+- destroyed towers/passages pushed rearward;
+- legacy material conversion now preserves available base textures, UV scale/offset and normal maps;
+- URP/Lit receives a restrained Valoria limestone tint instead of replacing the source surface with a flat material.
+
+Gate queued as **37003803609**. No credits or new geometry involved.
