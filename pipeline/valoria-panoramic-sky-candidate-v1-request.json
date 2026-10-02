@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-panoramic-sky-candidate-v1",
+  "objective": "Test continuous CC0 equirectangular mountain-valley panorama as Valoria horizon instead of repeated/floating geometry.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Kiara 1 Dawn",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kiara_1_dawn.jpg",
+    "runtime_persistence": false
+  },
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "lighting_and_value_hierarchy",
+    "composition_and_mass"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
