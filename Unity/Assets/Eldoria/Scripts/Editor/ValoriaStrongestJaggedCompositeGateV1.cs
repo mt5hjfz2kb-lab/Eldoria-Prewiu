@@ -92,7 +92,7 @@ namespace Eldoria.EditorTools
 
             File.WriteAllText(Folder+"/evidence.json",
                 "{\n"+
-                "  \"composition\": \"strongest-current-main + jagged-peaks\",\n"+
+                "  \"composition\": \"strongest-current-main + residue-cleanup-v2 + artifact-cleanup-v1 + jagged-peaks\",\n"+
                 "  \"camera_size\": 9.1,\n"+
                 "  \"vertical_biases\": [-5,-3,-1,1,3],\n"+
                 "  \"source\": \"Wikimedia Commons - Jagged peaks over a valley\",\n"+
