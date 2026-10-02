@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:38:00Z",
+  "updated_at": "2026-10-02T23:47:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -140,7 +140,10 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaResidualCleanupV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaResidualCleanupGateV1.cs",
         ".github/workflows/valoria-residual-cleanup-v1.yml",
-        "pipeline/valoria-residual-cleanup-v1-request.json"
+        "pipeline/valoria-residual-cleanup-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV1.cs",
+        ".github/workflows/valoria-strongest-composite-v1.yml",
+        "pipeline/valoria-strongest-composite-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
