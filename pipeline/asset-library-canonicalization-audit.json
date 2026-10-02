@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "glb_count": 26,
+  "missing_meta_count": 0,
+  "assets": [
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "bytes": 13257704,
+      "sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "bytes": 2101016,
+      "sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+      "bytes": 11415216,
+      "sha256": "4e77bcd6ddaa82882fbcbb3acdcde59baf58e4de1c2db8f1b226d7ab9bc08925",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+      "bytes": 11477736,
+      "sha256": "548e8ebfe1a6fdded7a1cd2b60e355e85acaa43be8b67bbbb8dfd3564da0cfa9",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+      "bytes": 11588700,
+      "sha256": "9b62b6bb04ef0f4f85444b2744ebbe62c17eb0ee8a10cfba07e193c4922b6159",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb",
+      "bytes": 11208916,
+      "sha256": "5583f96878b692cf2f2437ca4baf3f3b68eb7f474ea1e5133c2bf391b160241c",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+      "bytes": 3084800,
+      "sha256": "19fe86cd1829d4e6b9bee0a21878fb6712350c79e2dea46053d3d60c40d1816f",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+      "bytes": 2109728,
+      "sha256": "bf001593287a1d50cef23afc4f286cb682527722cf96c02f21df30fa1583c6d1",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "bytes": 2390048,
+      "sha256": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "bytes": 2062012,
+      "sha256": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+      "bytes": 2695720,
+      "sha256": "02692428311756ba37aace05da6a77146e18b4038eac27e2440b18aaf6bc1687",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "bytes": 12436120,
+      "sha256": "af94cac37d0d4037d2349d632a408ec05793d21eec608255726e38bf6cb4b245",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+      "bytes": 12405180,
+      "sha256": "03acb79b41301c5c23cb7ded042e827aa6bca15027e008304c13a2e01d5791b7",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "bytes": 12414676,
+      "sha256": "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+      "bytes": 14228020,
+      "sha256": "ebb223182a510036e911d619ac533c820de256eb3abebde9596735bd851b99ab",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+      "bytes": 14303504,
+      "sha256": "59ce2ff29eeff09660511624396263df254f9e429443b88f1833d94d6769703d",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+      "bytes": 14092856,
+      "sha256": "7bc93844297d70f053dfd5cb92262d6b9019420dd2736d183dc6274b48809f29",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+      "bytes": 14144300,
+      "sha256": "03ab6980bf4a14a9c159dc762316a0c04b7ef0260c6a9fc560bd85703b909272",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+      "bytes": 14066928,
+      "sha256": "c814b5c96ad2348cd56cdeb950b6a7ae76e7ac33731ae4254d2e9bb0cac43d37",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb",
+      "bytes": 14128696,
+      "sha256": "39a50b0f187b07336c1e1451e9b9583de913272c28359c396881e267ed258b12",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "bytes": 13852688,
+      "sha256": "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "bytes": 13767544,
+      "sha256": "b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "bytes": 11134796,
+      "sha256": "1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "bytes": 11603580,
+      "sha256": "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "bytes": 12951524,
+      "sha256": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+      "meta": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+      "bytes": 11177448,
+      "sha256": "e97319398ef1294348d8f59fb747628c6f077ce16dfe6f1cfd5189e108ba0ada",
+      "meta": true
+    }
+  ]
+}
