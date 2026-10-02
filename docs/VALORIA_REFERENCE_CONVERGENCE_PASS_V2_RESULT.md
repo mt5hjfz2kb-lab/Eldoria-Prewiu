@@ -16,6 +16,15 @@ Base objective: move the **entire real Valoria frame** toward the owner referenc
 
 ## Routing
 
+Planner validation:
+- run: **36997739244 — SUCCESS**
+- artifact: **11222157636**
+- route: `environment_composition`
+- stages: `unity_modular_assembly → unity_environment_art → official_camera_validation`
+- `geometry_gap_proven=false`
+- Tripo disabled / 0 credits
+
+
 - profile: `environment_composition`
 - `geometry_gap_proven=false`
 - `allow_tripo=false`
@@ -44,3 +53,17 @@ The block does not pass because the skyline contains more objects. It passes onl
 - fantasy-city finish.
 
 TECH PASS and VISUAL PASS remain separate.
+
+## Iteration 1 implementation
+
+Implemented on the proof branch before waking the Windows runner:
+- paired monumental broken arches from existing Mega ruin vocabulary;
+- ruined tower/passages framing the Hero Bastion without adding residential width;
+- side/rear cliff envelope using existing Valoria cliff/hill prefabs;
+- five-layer distant mountain horizon;
+- controlled tree/bush depth around the compact nucleus;
+- restrained warm occupation lights and chimney smoke;
+- cooler atmospheric depth while keeping a warm directional key;
+- all reused instances are visual-only with colliders disabled and hotspots removed.
+
+The Windows gate is intentionally serialized behind the already-running canonical Unity certification job. No Tripo or Blender work is requested.
