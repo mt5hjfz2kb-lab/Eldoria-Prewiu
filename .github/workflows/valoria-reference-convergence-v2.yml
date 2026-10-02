@@ -65,7 +65,17 @@ jobs:
           }
       - uses: actions/checkout@v4
         with:
-          clean: true
+          clean: false
+      - name: Verify tracked Unity source is clean
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          $dirty = git status --porcelain --untracked-files=all -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if($dirty){
+            Write-Host $dirty
+            throw 'Tracked Unity source workspace is contaminated; refusing warm-cache gate.'
+          }
+          Write-Host 'Unity source clean; preserving ignored Unity/Library cache only.'
       - name: Capture matched reference convergence proof
         shell: powershell
         run: |
