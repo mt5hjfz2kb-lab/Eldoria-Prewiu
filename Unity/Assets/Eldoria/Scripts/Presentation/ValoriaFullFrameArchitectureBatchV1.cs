@@ -8,7 +8,7 @@ namespace Eldoria.Presentation
     // Full-frame candidate: denser authored urban masses from existing certified production modules.
     public static class ValoriaFullFrameArchitectureBatchV1
     {
-        public static bool Enabled=false;
+        public static bool Enabled=true;
         const string RootName="Valoria · Full Frame Architecture Batch v1";
         static readonly Color Blue=new Color(.12f,.24f,.39f,1f);
 
