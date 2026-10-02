@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "active_rescue_inventory",
-  "updated": "2026-09-29",
+  "updated": "2026-10-02",
   "principle": "Re-evaluate certified historical modules through Surface v1 and official-camera gates before any regeneration. Geometry/function failures are not repaired by surface treatment.",
   "families": [
     {
@@ -42,7 +42,11 @@
         "gltf_images": 0,
         "visual_read": "Strong inhabited residential/terrace silhouette; current value is suppressed mainly by flat grey surface.",
         "rescue_decision": "HIGH_VALUE_SURFACE_RESCUE"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+      "canonical_current_sha256": "19fe86cd1829d4e6b9bee0a21878fb6712350c79e2dea46053d3d60c40d1816f",
+      "persisted_in_main": true,
+      "meta_persisted": true
     },
     {
       "family": "RockTerrainSeamFiller",
@@ -82,7 +86,11 @@
         "gltf_images": 0,
         "visual_read": "Low standalone visual appeal but useful rock mass for burying seams and grounding authored buildings.",
         "rescue_decision": "HIGH_VALUE_SUPPORT_RESCUE"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+      "canonical_current_sha256": "bf001593287a1d50cef23afc4f286cb682527722cf96c02f21df30fa1583c6d1",
+      "persisted_in_main": true,
+      "meta_persisted": true
     },
     {
       "family": "TerraceStairRock",
@@ -111,7 +119,11 @@
         "roughness_factor": 0.5,
         "uv_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "canonical_current_sha256": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "persisted_in_main": true,
+      "meta_persisted": true
     },
     {
       "family": "TowerWallRock",
@@ -150,7 +162,11 @@
         "uv_preserved": true,
         "normals_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+      "canonical_current_sha256": "02692428311756ba37aace05da6a77146e18b4038eac27e2440b18aaf6bc1687",
+      "persisted_in_main": true,
+      "meta_persisted": true
     },
     {
       "family": "StreetLandingTransition",
@@ -178,7 +194,11 @@
         "roughness_factor": 0.5,
         "uv_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "canonical_current_sha256": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "persisted_in_main": true,
+      "meta_persisted": true
     },
     {
       "family": "GateStreetRiseRock MV1",
@@ -207,10 +227,21 @@
         "roughness_factor": 0.5,
         "uv_preserved": true,
         "rescue_strategy": "AUTHOR_NEW_VALORIA_SURFACE_ON_CERTIFIED_GEOMETRY"
-      }
+      },
+      "canonical_path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "canonical_current_sha256": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "persisted_in_main": true,
+      "meta_persisted": true
     }
   ],
   "no_regeneration_rule": "No paid regeneration unless a required production function remains missing after attempting reuse with independent topology/collision and Surface v1.",
   "recovery_rule": "Prefer exact SHA in runner Downloads; if absent, retrieve the certified historical GitHub Actions artifact by artifact_id and accept only a GLB whose SHA matches optimized_sha256.",
-  "surface_rescue_rule": "Dedicated production GLBs with valid PBR preserve authored maps. Historical certified geometry with flat/no-texture material enters a separate author-new-surface lane; never treat the old flat material as final art."
+  "surface_rescue_rule": "Dedicated production GLBs with valid PBR preserve authored maps. Historical certified geometry with flat/no-texture material enters a separate author-new-surface lane; never treat the old flat material as final art.",
+  "canonicalization": {
+    "status": "PASS",
+    "run_id": 36997740541,
+    "artifact_id": 11221974353,
+    "commit": "3626b635a98a05df62dfde6ddbc3c784355326b6",
+    "rule": "Persist reusable certified GLBs in canonical Unity Resources with stable .meta; historical source SHA remains provenance and canonical_current_sha256 identifies the presently persisted production/rescue file."
+  }
 }
