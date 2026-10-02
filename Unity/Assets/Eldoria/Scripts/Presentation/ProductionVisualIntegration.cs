@@ -1374,17 +1374,26 @@ namespace Eldoria.Presentation
                 Imported("Valoria · Master Rebuild v2 · valley massif","Mountain01",
                     new Vector3(s.x,-1.25f,s.y),s.z,s.z*.50f,s.w,Rock,false);
 
+            // Bind the whole composition into one inhabited mountain before placing shelves.
+            // Broad buried geology fills the visual gaps between terraces without consuming future plots.
+            foreach(var s in new[]{
+                new Vector4(-5.6f,-1.8f,3.55f,12f),new Vector4(5.6f,-1.7f,3.55f,192f),
+                new Vector4(-4.8f,1.0f,3.25f,38f),new Vector4(4.8f,1.1f,3.25f,218f),
+                new Vector4(-3.6f,3.8f,2.85f,66f),new Vector4(3.6f,3.9f,2.85f,246f)})
+                Imported("Valoria · Master Rebuild v2 · buried mountain core","Rock02",
+                    new Vector3(s.x,-.42f,s.y),s.z,s.z*.58f,s.w,new Color(.33f,.32f,.29f),false);
+
             // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
                 new Vector3(0f,0,-3.7f),.42f,6.7f,0f);
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · west work shelf",
-                new Vector3(-4.35f,0,-.55f),1.02f,4.9f,10f);
+                new Vector3(-3.75f,0,-.35f),.94f,4.75f,8f);
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · east work shelf",
-                new Vector3(4.35f,0,-.45f),1.02f,4.9f,170f);
+                new Vector3(3.75f,0,-.30f),.94f,4.75f,172f);
             TerrainTerraceTop("SteppedRockTerrace","Valoria · Master Rebuild v2 · upper growth shelf west",
-                new Vector3(-3.35f,0,3.25f),2.06f,4.15f,92f);
+                new Vector3(-2.95f,0,3.15f),1.88f,4.05f,92f);
             TerrainTerraceTop("SteppedRockTerrace","Valoria · Master Rebuild v2 · upper growth shelf east",
-                new Vector3(3.35f,0,3.30f),2.06f,4.15f,268f);
+                new Vector3(2.95f,0,3.20f),1.88f,4.05f,268f);
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · Bastion crown shelf",
                 new Vector3(0f,0,7.20f),3.16f,7.8f,0f);
 
@@ -1415,8 +1424,8 @@ namespace Eldoria.Presentation
             // Reuse dedicated functional buildings at the two lower work shelves; their actual hotspots remain nearby.
             var saw=Resources.Load<GameObject>("Valoria/Valoria_Aserradero_AP2_v1");
             var barracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
-            if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-4.55f,1.10f,-.55f),3.15f,2.70f,12f,Color.white);
-            if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(4.55f,1.10f,-.45f),3.15f,2.70f,-12f,Color.white);
+            if(saw!=null)Piece("Valoria · Master Rebuild v2 · Aserradero",saw,new Vector3(-3.90f,1.00f,-.35f),3.00f,2.62f,10f,Color.white);
+            if(barracks!=null)Piece("Valoria · Master Rebuild v2 · Cuartel",barracks,new Vector3(3.90f,1.00f,-.30f),3.00f,2.62f,-10f,Color.white);
 
             // One representative inhabited upper mass per side, deliberately leaving large future plots.
             // Small offset landings keep the ascent readable without turning the spine into a monumental runway.
@@ -1429,9 +1438,9 @@ namespace Eldoria.Presentation
             var mid02=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
             var mid03=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece03");
             if(mid02!=null)Piece("Valoria · Master Rebuild v2 · upper residence west",mid02,
-                new Vector3(-3.30f,2.15f,3.15f),2.25f,2.65f,8f,new Color(.68f,.63f,.55f));
+                new Vector3(-2.95f,1.98f,3.15f),2.18f,2.58f,7f,new Color(.68f,.63f,.55f));
             if(mid03!=null)Piece("Valoria · Master Rebuild v2 · upper workshop east",mid03,
-                new Vector3(3.30f,2.15f,3.15f),2.25f,2.55f,-8f,new Color(.66f,.61f,.54f));
+                new Vector3(2.95f,1.98f,3.15f),2.18f,2.50f,-7f,new Color(.66f,.61f,.54f));
 
             // Certified Hero Bastion is reused as the visual summit when the runner has restored it.
             var hero=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
