@@ -97,10 +97,10 @@ namespace Eldoria.Presentation
 
         static Mesh BuildPlateauMesh()
         {
-            const int nx=36;
-            const int nz=34;
-            const float minX=-10.2f,maxX=10.2f;
-            const float minZ=-10.8f,maxZ=6.4f;
+            const int nx=40;
+            const int nz=38;
+            const float minX=-9.65f,maxX=9.65f;
+            const float minZ=-9.9f,maxZ=6.15f;
 
             var vertices=new List<Vector3>((nx+1)*(nz+1));
             var uvs=new List<Vector2>((nx+1)*(nz+1));
@@ -116,25 +116,38 @@ namespace Eldoria.Presentation
                     float vx=x/(float)nx;
                     float wx=Mathf.Lerp(minX,maxX,vx);
 
-                    float ex=Mathf.Abs(wx)/10.0f;
-                    float ez=Mathf.Abs((wz+2.15f))/8.35f;
-                    float d=Mathf.Max(ex,ez);
+                    float ex=Mathf.Abs(wx)/9.25f;
+                    float ez=Mathf.Abs((wz+2.05f))/7.55f;
+                    float d=Mathf.Pow(Mathf.Pow(ex,1.72f)+Mathf.Pow(ez,1.72f),1f/1.72f);
 
                     float noiseA=Mathf.PerlinNoise((wx+17.3f)*.18f,(wz+11.7f)*.18f)-.5f;
                     float noiseB=Mathf.PerlinNoise((wx-4.1f)*.41f,(wz+23.5f)*.41f)-.5f;
-                    float top=-.20f + noiseA*.16f + noiseB*.055f;
+                    float noiseC=Mathf.PerlinNoise((wx+31.2f)*.095f,(wz-7.4f)*.095f)-.5f;
+                    float top=-.22f + noiseA*.18f + noiseB*.065f;
 
-                    float edgeStart=.66f + (Mathf.PerlinNoise((wz+20f)*.13f,(wx+14f)*.13f)-.5f)*.07f;
-                    float fall=Mathf.InverseLerp(edgeStart,1.02f,d);
+                    float edgeNoise=(Mathf.PerlinNoise((wz+20f)*.13f,(wx+14f)*.13f)-.5f)*.10f;
+                    float edgeStart=.50f+edgeNoise+noiseC*.055f;
+                    float fall=Mathf.InverseLerp(edgeStart,.96f,d);
                     fall=fall*fall*(3f-2f*fall);
-                    float y=Mathf.Lerp(top,-2.75f+noiseA*.42f,fall);
+                    float erodedBottom=-3.55f+noiseA*.52f+noiseC*.34f;
+                    float y=Mathf.Lerp(top,erodedBottom,fall);
 
-                    float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/2.9f)*
-                                Mathf.Clamp01(1f-Mathf.Abs(wz+1.8f)/7.0f);
-                    y=Mathf.Lerp(y,Mathf.Max(y,-.16f),route*.72f*(1f-fall));
+                    float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/2.35f)*
+                                Mathf.Clamp01(1f-Mathf.Abs(wz+1.9f)/6.6f);
+
+                    float pad=0f;
+                    pad=Mathf.Max(pad,Disc(wx,wz,-6.2f,-4.4f,3.05f));
+                    pad=Mathf.Max(pad,Disc(wx,wz, 6.2f,-4.5f,3.05f));
+                    pad=Mathf.Max(pad,Disc(wx,wz,-5.2f, 2.5f,2.65f));
+                    pad=Mathf.Max(pad,Disc(wx,wz, 5.1f, 2.6f,2.65f));
+                    pad=Mathf.Max(pad,Disc(wx,wz,-3.9f, 5.0f,2.25f));
+                    pad=Mathf.Max(pad,Disc(wx,wz, 3.9f, 5.0f,2.25f));
+
+                    float support=Mathf.Max(route*.92f,pad*.78f);
+                    y=Mathf.Lerp(y,Mathf.Max(y,-.16f),support*(1f-fall*.76f));
 
                     vertices.Add(new Vector3(wx,y,wz));
-                    uvs.Add(new Vector2(wx*.10f,wz*.10f));
+                    uvs.Add(new Vector2(wx*.105f,wz*.105f));
                 }
             }
 
@@ -148,16 +161,19 @@ namespace Eldoria.Presentation
                 int i3=i2+1;
 
                 var center=(vertices[i0]+vertices[i1]+vertices[i2]+vertices[i3])*.25f;
-                float ex=Mathf.Abs(center.x)/10.0f;
-                float ez=Mathf.Abs((center.z+2.15f))/8.35f;
-                bool inner=Mathf.Max(ex,ez)<.69f;
+                float ex=Mathf.Abs(center.x)/9.25f;
+                float ez=Mathf.Abs((center.z+2.05f))/7.55f;
+                float d=Mathf.Pow(Mathf.Pow(ex,1.72f)+Mathf.Pow(ez,1.72f),1f/1.72f);
+                float route=Mathf.Clamp01(1f-Mathf.Abs(center.x)/2.35f)*
+                            Mathf.Clamp01(1f-Mathf.Abs(center.z+1.9f)/6.6f);
+                bool inner=d<.49f||route>.42f;
                 var target=inner?innerTriangles:slopeTriangles;
 
                 target.Add(i0);target.Add(i3);target.Add(i1);
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v2"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v3"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
@@ -168,6 +184,12 @@ namespace Eldoria.Presentation
             mesh.RecalculateTangents();
             mesh.RecalculateBounds();
             return mesh;
+        }
+
+        static float Disc(float x,float z,float cx,float cz,float radius)
+        {
+            float dx=x-cx,dz=z-cz;
+            return Mathf.Clamp01(1f-Mathf.Sqrt(dx*dx+dz*dz)/radius);
         }
 
         static string Chain(Transform t)
