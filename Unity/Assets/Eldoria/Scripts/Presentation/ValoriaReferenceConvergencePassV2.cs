@@ -68,7 +68,15 @@ namespace Eldoria.Presentation
             {
                 if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
                 string n=renderer.gameObject.name;
-                if(n=="Valoria · valley floor"||n=="VPD · inhabited mountain floor")
+                if(n=="Valoria · valley floor")
+                {
+                    renderer.sharedMaterial=dirt;
+                    // Bring the broad visual valley sheet closer to the inhabited-floor elevation.
+                    // It has no gameplay collider; this removes the visible artificial step at the foreground overlap.
+                    var p=renderer.transform.position;
+                    renderer.transform.position=new Vector3(p.x,.015f,p.z);
+                }
+                else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=dirt;
                 else if(n=="VPD · lower terrace earth"||n=="VPD · upper terrace earth")
                     renderer.sharedMaterial=terrace;
