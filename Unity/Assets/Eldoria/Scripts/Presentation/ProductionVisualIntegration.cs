@@ -1523,13 +1523,13 @@ namespace Eldoria.Presentation
             if(towerWall!=null)
             {
                 Piece("Valoria · Reference v1 · west monumental tower wall",towerWall,
-                    new Vector3(-8.7f,.18f,6.5f),4.65f,7.1f,18f,new Color(.61f,.61f,.56f));
+                    new Vector3(-8.0f,-.15f,6.7f),3.65f,5.4f,22f,new Color(.61f,.61f,.56f));
                 Piece("Valoria · Reference v1 · east monumental tower wall",towerWall,
-                    new Vector3(8.9f,.18f,6.7f),4.65f,7.1f,198f,new Color(.61f,.61f,.56f));
+                    new Vector3(8.2f,-.15f,6.9f),3.65f,5.4f,202f,new Color(.61f,.61f,.56f));
                 Piece("Valoria · Reference v1 · west rear ruin wall",towerWall,
-                    new Vector3(-6.5f,.70f,9.7f),3.45f,5.4f,34f,new Color(.56f,.56f,.52f));
+                    new Vector3(-6.2f,.35f,9.3f),2.75f,4.2f,38f,new Color(.56f,.56f,.52f));
                 Piece("Valoria · Reference v1 · east rear ruin wall",towerWall,
-                    new Vector3(6.7f,.70f,9.9f),3.45f,5.4f,214f,new Color(.56f,.56f,.52f));
+                    new Vector3(6.4f,.35f,9.5f),2.75f,4.2f,218f,new Color(.56f,.56f,.52f));
             }
             foreach(var s in new[]{
                 new Vector4(-8.3f,5.0f,2.30f,48f),new Vector4(8.5f,5.2f,2.30f,228f),
@@ -1562,6 +1562,20 @@ namespace Eldoria.Presentation
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam west",new Vector3(-3.8f,0,-5.7f),.34f,3.3f,56f);
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam east",new Vector3(3.8f,0,-5.6f),.34f,3.3f,304f);
 
+            // Third functional depth layer: existing Granero and support sheds occupy the foreground,
+            // matching the reference's construction hierarchy without introducing a new building family.
+            var granary=Resources.Load<GameObject>("Valoria/Valoria_Granero_BIII_v1");
+            if(state.BastionLevel>=3&&granary!=null)
+                Piece("Valoria · Reference v1 · Granero foreground",granary,
+                    new Vector3(0f,.34f,-6.15f),3.10f,2.42f,2f,Color.white);
+            if(art!=null&&art.SlavicShed!=null)
+            {
+                Piece("Valoria · Reference v1 · west rebuild shed",art.SlavicShed,
+                    new Vector3(-4.7f,.37f,-5.55f),1.55f,1.28f,-12f,new Color(.72f,.64f,.52f));
+                Piece("Valoria · Reference v1 · east rebuild shed",art.SlavicShed,
+                    new Vector3(4.8f,.37f,-5.42f),1.55f,1.28f,14f,new Color(.72f,.64f,.52f));
+            }
+
             // Distant ridge from overlapping rock masses: no floating mountain prefabs.
             foreach(var s in new[]{
                 new Vector4(-15.5f,16.0f,8.4f,18f),new Vector4(-8.5f,18.6f,8.8f,46f),
@@ -1579,6 +1593,12 @@ namespace Eldoria.Presentation
                 new Vector4(-5.8f,-2.2f,1.18f,0),new Vector4(5.8f,-2.0f,1.18f,1)})
                 Imported("Valoria · Reference v1 · cliff pine",s.w>.5f?"Tree01B":"Tree01A",
                     new Vector3(s.x,.04f,s.y),s.z,3.4f,s.x*13f,new Color(.24f,.35f,.21f),true);
+
+            foreach(var s in new[]{
+                new Vector4(-8.8f,-6.2f,1.30f,0),new Vector4(-6.9f,-7.6f,1.15f,1),
+                new Vector4(8.8f,-6.0f,1.30f,1),new Vector4(6.9f,-7.4f,1.15f,0)})
+                Imported("Valoria · Reference v1 · foreground pine",s.w>.5f?"Tree01B":"Tree01A",
+                    new Vector3(s.x,.02f,s.y),s.z,3.3f,s.x*11f,new Color(.24f,.35f,.21f),true);
 
             foreach(var s in new[]{
                 new Vector4(-5.8f,-2.2f,.95f,12f),new Vector4(-4.7f,.1f,.86f,32f),new Vector4(-3.8f,2.4f,.82f,52f),
