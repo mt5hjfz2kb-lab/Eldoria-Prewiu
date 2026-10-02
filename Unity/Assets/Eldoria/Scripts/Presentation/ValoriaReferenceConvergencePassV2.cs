@@ -117,31 +117,9 @@ namespace Eldoria.Presentation
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
                 "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
 
-            if(art!=null)
-            {
-                var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
-                if(tree!=null)
-                {
-                    var sideTrees=new[]{
-                        new Vector3(-14.0f,.10f,-2.8f),new Vector3(-12.8f,.12f,.8f),new Vector3(-13.6f,.12f,4.3f),new Vector3(-12.2f,.12f,7.8f),new Vector3(-11.8f,.12f,11.2f),
-                        new Vector3(13.8f,.10f,-2.0f),new Vector3(12.9f,.12f,1.5f),new Vector3(13.7f,.12f,5.0f),new Vector3(12.4f,.12f,8.5f),new Vector3(12.0f,.12f,11.7f)
-                    };
-                    for(int i=0;i<sideTrees.Length;i++)
-                        AddPrefab(root,tree,"side PBR tree "+i,sideTrees[i],
-                            .82f+(i%3)*.11f,2.5f+(i%2)*.32f,(i*53)%360,FoliageTint);
-                }
-
-                if(art.SlavicBush!=null)
-                {
-                    var scrub=new[]{
-                        new Vector3(-11.8f,.08f,-1.8f),new Vector3(-12.4f,.08f,2.2f),new Vector3(-11.7f,.08f,6.1f),new Vector3(-11.3f,.08f,9.7f),
-                        new Vector3(12.1f,.08f,-1.0f),new Vector3(12.6f,.08f,2.8f),new Vector3(11.8f,.08f,6.7f),new Vector3(11.4f,.08f,10.2f)
-                    };
-                    for(int i=0;i<scrub.Length;i++)
-                        AddPrefab(root,art.SlavicBush,"side PBR scrub "+i,scrub[i],
-                            .60f,.64f,(i*37)%360,new Color(.37f,.43f,.33f,1f));
-                }
-            }
+            // Iteration 17: do not add extra foliage here.
+            // A pass-added SlavicTree LOD produced a magenta shader failure at zoom 9.
+            // The base scene already provides sufficient vegetation around these PBR rock shoulders.
         }
 
         static void BuildMountainHorizon(Transform root)
@@ -152,19 +130,8 @@ namespace Eldoria.Presentation
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
         {
-            if(art==null)return;
-            var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
-            if(tree==null)return;
-
-            // Keep only six depth anchors. They break silhouettes without exploding renderer count.
-            var anchors=new[]{
-                new Vector3(-9.4f,.22f,2.8f),new Vector3(9.1f,.22f,3.0f),
-                new Vector3(-7.4f,.24f,10.4f),new Vector3(7.5f,.24f,10.6f),
-                new Vector3(-11.2f,.16f,-2.5f),new Vector3(10.8f,.16f,-2.2f)
-            };
-            for(int i=0;i<anchors.Length;i++)
-                AddPrefab(root,tree,"depth anchor tree "+i,anchors[i],
-                    .86f+(i%2)*.12f,2.7f+(i%3)*.30f,(i*67)%360,FoliageTint);
+            // Iteration 17: intentionally no pass-owned vegetation.
+            // Preserve only the canonical scene vegetation until a shader-safe foliage family is certified.
         }
 
         static void BuildOccupationAndAtmosphere(Transform root)
