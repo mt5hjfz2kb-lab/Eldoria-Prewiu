@@ -1363,6 +1363,11 @@ namespace Eldoria.Presentation
             // not on the legacy flat board. This reuses the existing procedural environment tool; no gameplay collision.
             HeroValleyTerrain();
 
+            // Rebuild the landscape itself after blanking the inherited presentation so zoom 19 never reads as a flat board.
+            HeroValleyTerrain();
+            foreach(var p in new[]{new Vector3(-16.5f,-.55f,12.5f),new Vector3(16.2f,-.55f,12.8f),new Vector3(0f,-.65f,19.5f)})
+                Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",p,10.8f,6.2f,p.x*5f,Rock,false);
+
             // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
                 new Vector3(0f,0,-3.7f),.42f,6.7f,0f);
