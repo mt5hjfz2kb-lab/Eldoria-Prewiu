@@ -15,6 +15,7 @@ namespace Eldoria.Presentation
             if(!Enabled||parent==null||state==null)return;
 
             SuppressChain("Valoria · rescued hero flank");
+            SuppressPrefix("VPD · upper dwelling");
 
             var camera=Camera.main;
             if(camera==null)return;
@@ -36,6 +37,18 @@ namespace Eldoria.Presentation
             RenderSettings.fogColor=new Color(.57f,.62f,.64f);
             RenderSettings.fogStartDistance=30f;
             RenderSettings.fogEndDistance=78f;
+        }
+
+        static void SuppressPrefix(string prefix)
+        {
+            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                bool match=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                    if(t.name.StartsWith(prefix,StringComparison.Ordinal)){match=true;break;}
+                if(match)r.enabled=false;
+            }
         }
 
         static void SuppressChain(string exactName)
