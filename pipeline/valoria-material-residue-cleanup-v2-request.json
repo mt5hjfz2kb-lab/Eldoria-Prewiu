@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-material-residue-cleanup-v2",
+  "objective": "Clean the current strongest Valoria composite by removing obsolete peripheral dwelling renderers and normalizing extreme residual environment/secondary-architecture materials identified by the strongest-composite audit.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "source_audit": {
+    "run_id": 37072854773,
+    "artifact_id": 11255476660,
+    "dark_entries": 42
+  },
+  "lanes": [
+    "materials_and_surface",
+    "architecture_coherence",
+    "terrain_and_transitions",
+    "composition_and_mass"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_bastion": true,
+    "preserve_functional_buildings": true,
+    "preserve_backplate": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9_1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
