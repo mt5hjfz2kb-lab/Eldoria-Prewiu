@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-architecture-coherence-v1",
+  "objective": "Unify all visible secondary architecture around the Hero Bastion into one warm stone/timber/slate PBR language while preserving authored textures/maps and gameplay geometry.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "architecture_coherence",
+    "materials_and_surface",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_bastion": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
