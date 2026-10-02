@@ -1,13 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stalled authored-material terrain proof and superseded source gate; preserve clean retry 37076853702.",
+  "reason": "Cancel stalled corrected organic-terrain capture after exceeding normal comparable gate duration; preserve external cliff proof as the next full-frame candidate.",
   "runs": [
-    37076240185,
-    37076231362
+    37076995808
   ],
   "keep_runs": [
-    37076853702
+    37077097033
   ],
-  "triggered_at": "2026-10-03T01:20:00+02:00"
+  "triggered_at": "2026-10-03T01:25:00+02:00"
 }
