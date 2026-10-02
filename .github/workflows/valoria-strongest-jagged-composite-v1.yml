@@ -45,9 +45,32 @@ jobs:
           $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\SkyCandidates"
           New-Item -ItemType Directory -Force -Path $dir | Out-Null
           $dst=Join-Path $dir 'jagged_peaks_valley.jpg'
-          $url='https://upload.wikimedia.org/wikipedia/commons/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg'
-          Invoke-WebRequest -Uri $url -OutFile $dst -UseBasicParsing
-          if((Get-Item $dst).Length -lt 1000000){throw 'Jagged Peaks image download unexpectedly small.'}
+          $sources=@(
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg/1280px-Jagged_peaks_over_a_valley_%28Unsplash%29.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg',
+            'https://web.archive.org/web/20170703112122id_/https://images.unsplash.com/photo-1484383364429-7ae3d3e9a125'
+          )
+          $headers=@{'User-Agent'='Eldoria-Valoria-Convergence/1.0 (CC0 asset validation)'}
+          $ok=$false
+          foreach($url in $sources){
+            for($attempt=1;$attempt -le 2;$attempt++){
+              try{
+                Remove-Item $dst -Force -ErrorAction SilentlyContinue
+                Write-Host "Jagged Peaks source=$url attempt=$attempt"
+                Invoke-WebRequest -Uri $url -Headers $headers -OutFile $dst -UseBasicParsing -TimeoutSec 90
+                if(Test-Path $dst){
+                  $bytes=(Get-Item $dst).Length
+                  Write-Host "Jagged Peaks bytes=$bytes"
+                  if($bytes -gt 250000){$ok=$true;break}
+                }
+              } catch {
+                Write-Warning $_.Exception.Message
+                Start-Sleep -Seconds (2*$attempt)
+              }
+            }
+            if($ok){break}
+          }
+          if(-not $ok){throw 'All verified transports for the CC0 Jagged Peaks image failed.'}
       - name: Stage Kiara 3 dependency for current composite modules
         shell: powershell
         run: |
