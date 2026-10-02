@@ -414,3 +414,14 @@ Unity run **36423010456** on `b971ba374b63bec0c1b65b33ea6e3f92f90ec09f` passed E
 Verdicts: **TECH PASS / INTERACTION PASS / VISUAL-URBAN PASS for skeleton scope**. This does not certify final art quality.
 
 The six certified Tripo families remain valid reusable art/reference assets, but are no longer the topology contract for the city. See `docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md`.
+
+
+## 2026-10-02 — Valoria Asset Library Reprocessing v1
+- Asset-library recovery/recomposition has been certified against the real Valoria frame.
+- **TECH PASS / VISUAL PASS for this scope**: run **36994020902**, artifact **11220733685**.
+- The certified historical Hero Bastion is promoted as production visual art, with exact source SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`.
+- Fortress approach now reuses certified Stone Architecture, Terrain/Terrace and TowerWallRock families as visual-only retaining/terrain support around the accepted compact core.
+- Matched 19/12/9/mobile evidence shows a material full-frame improvement; gameplay collider/hotspot signature remains unchanged.
+- Final measured active scene: **781 renderers / 74 materials / 1,647,618 triangles / 25 lights** after the pass.
+- Tripo spend: **0**. Geometry gap: **not proven / not required**.
+- This milestone improves the city-fortress presentation; it does not close all remaining architecture, surface or world-map art gaps.
