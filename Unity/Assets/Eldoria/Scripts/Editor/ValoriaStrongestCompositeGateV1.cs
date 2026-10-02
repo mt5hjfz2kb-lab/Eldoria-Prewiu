@@ -7,7 +7,8 @@ using Eldoria.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object=UnityEngine.Object;
+using Object = Object;
+using Object=Object;
 
 namespace Eldoria.EditorTools
 {
@@ -114,7 +115,7 @@ namespace Eldoria.EditorTools
         static void WriteVisibleRendererAudit(Camera c,string path)
         {
             var rows=new List<string>();
-            foreach(var r in UnityEngine.UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 var b=r.bounds;
