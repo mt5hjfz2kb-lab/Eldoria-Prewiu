@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-visible-frame-rebalance-v2",
+  "objective": "Compare the audit-driven visible-frame rebalance against the same frame with ValoriaCoherencePruneV1 applied, removing overlapping legacy visual generations without adding geometry.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "base": "Strongest Composite v1 + VisibleFrameRebalance v1",
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_new_geometry": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
