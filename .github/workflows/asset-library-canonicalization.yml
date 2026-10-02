@@ -196,12 +196,6 @@ jobs:
           set -euo pipefail
           git config user.name "eldoria-art-runner"
           git config user.email "actions@users.noreply.github.com"
-          git fetch origin main
-          remote="$(git rev-parse origin/main)"
-          if [[ "$remote" != "$GITHUB_SHA" ]]; then
-            echo "main advanced during canonicalization ($remote != $GITHUB_SHA)" >&2
-            exit 2
-          fi
           git add -A Unity/Assets/Eldoria/Resources/Valoria
           git add -A Unity/Assets/Eldoria/Resources/WorldPlayerCity
           git add -A Unity/Assets/Resources/Valoria
@@ -209,10 +203,31 @@ jobs:
           git diff --cached --stat
           if git diff --cached --quiet; then
             echo "Canonical library already matches repository."
-          else
-            git commit -m "chore: canonicalize Eldoria asset library"
-            git push origin HEAD:main
+            exit 0
           fi
+
+          git commit -m "chore: canonicalize Eldoria asset library"
+          git fetch origin main
+          remote="$(git rev-parse origin/main)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            changed="$(git diff --name-only "$GITHUB_SHA..origin/main")"
+            echo "main advanced; remote changes:"
+            echo "$changed"
+            if echo "$changed" | grep -Eq '^(Unity/Assets/Eldoria/Resources/|Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1|pipeline/asset-library-canonicalization-audit\.json)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-library-canonicalization-${{ github.run_id }}
+          path: pipeline/asset-library-canonicalization-audit.json
+          if-no-files-found: warn
+          retention-days: 30
+; then
+              echo "Remote work touched canonicalization scope; refusing automatic rebase." >&2
+              exit 2
+            fi
+            git rebase origin/main
+          fi
+          git push origin HEAD:main
 
       - uses: actions/upload-artifact@v4
         if: always()
