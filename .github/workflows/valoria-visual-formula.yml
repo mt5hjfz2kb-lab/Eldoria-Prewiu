@@ -1,6 +1,8 @@
 name: Valoria Visual Formula gate
 
 on:
+  pull_request:
+    branches: [main]
   workflow_dispatch:
   push:
     branches: [main, visual-proof/asset-library-reprocessing-pass-v1]
