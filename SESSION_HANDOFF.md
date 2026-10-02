@@ -346,3 +346,22 @@ Before execution: read `AGENTS.md`, this file, `PROJECT_STATE.md`, `DESIGN_DECIS
 - Production rule reinforced: preserve the accepted compact-growth footprint. Do **not** restore lateral residential sprawl to make the city feel fuller.
 - Reuse priority now: certified existing geometry + composition first. Stone Architecture 03/04/06/07/08 and Terrain/Terrace 02–06 remain structural replacement candidates; do not keep auto-salvaging them.
 - This pass materially improves the hero fortress read but does **not** claim the entire Eldoria visual benchmark is finished.
+
+
+## 2026-10-02 — Active Valoria owner directive
+This is the authoritative continuation instruction for any new chat working on Valoria:
+
+> Este es el objetivo, está la calidad y esto es lo que haya que hacer. Si en algún momento necesitas buscar información detallada de cómo utilizar alguna herramienta, consúltalo. Eres el programador jefe de este proyecto; quiero esto y, si con lo que tenemos no es posible llegar, quiero saberlo y también cuáles son las soluciones.
+
+Operational interpretation:
+- continue the canonical full-frame convergence loop without waiting for routine “continúa” messages;
+- use the approved Valoria reference as the visual-quality target;
+- judge only integrated full-frame evidence, not TECH PASS or local asset wins;
+- research tool usage when necessary;
+- preserve gameplay authority/colliders/hotspots/routes unless a separately approved design change requires otherwise;
+- use zero-credit / existing-library routes first; paid Tripo or other irreversible spend still needs explicit fresh authorization;
+- if the current stack reaches a real ceiling, document the exact blocker and the concrete alternatives required to go further;
+- stop only for a genuine owner-required decision/input/access/authorization or when the target block is actually verified complete.
+
+Current workstream: `valoria-full-frame-convergence-iteration-1` in `pipeline/active-workstreams.json`.
+Repo + live workflow/artifact evidence remain authoritative over chat memory.
