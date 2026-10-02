@@ -32,5 +32,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T22:03:00Z"
+  "triggered_at": "2026-10-02T22:03:00Z",
+  "retriggered_at": "2026-10-02T22:12:00Z",
+  "retry_reason": "Previous run compiled an older concurrent main snapshot containing a now-fixed Slavic premium proof error. Re-run unchanged matte proof on current main."
 }
