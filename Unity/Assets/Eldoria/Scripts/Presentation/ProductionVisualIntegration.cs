@@ -1122,7 +1122,7 @@ namespace Eldoria.Presentation
                 light.transform.rotation=Quaternion.Euler(50f,-31f,0);
             }
 
-            HeroValleyTerrain();
+            MasterRebuildTerrain();
 
             // Mid-distance geology creates a second depth plane between the inhabited city and the far
             // VisualWorld mountains. Keep this layer on the already-proven neutral rock inventory:
@@ -1512,6 +1512,51 @@ namespace Eldoria.Presentation
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             go.AddComponent<MeshRenderer>().sharedMaterial=
                 ValoriaKit.SurfaceMaterial(new Color(.30f,.29f,.25f,1f),"earth",new Vector2(22f,20f));
+        }
+
+        static void MasterRebuildTerrain()
+        {
+            // Large irregular basin dedicated to the blank-canvas composition.
+            // Oversized bounds keep every official camera inside authored terrain; the centre remains low
+            // while natural ridges rise toward the frame, so no rectangular board edge enters the shot.
+            const int nx=61,nz=61;
+            const float minX=-58f,maxX=58f,minZ=-38f,maxZ=62f;
+            var vertices=new Vector3[nx*nz];
+            var uv=new Vector2[vertices.Length];
+            var triangles=new int[(nx-1)*(nz-1)*6];
+            for(int z=0;z<nz;z++)
+            {
+                float tz=z/(float)(nz-1),wz=Mathf.Lerp(minZ,maxZ,tz);
+                for(int x=0;x<nx;x++)
+                {
+                    float tx=x/(float)(nx-1),wx=Mathf.Lerp(minX,maxX,tx);
+                    float side=Mathf.Clamp01((Mathf.Abs(wx)-15f)/33f);
+                    float rear=Mathf.Clamp01((wz-12f)/38f);
+                    float front=Mathf.Clamp01((-wz-10f)/24f);
+                    float basin=Mathf.Clamp01((Mathf.Sqrt(wx*wx+(wz-4f)*(wz-4f))-15f)/34f);
+                    float rise=side*side*5.4f+rear*rear*6.4f+front*front*2.2f+basin*basin*1.6f;
+                    float macro=Mathf.Sin(wx*.105f)*.24f+Mathf.Sin(wz*.12f)*.22f+Mathf.Sin((wx+wz)*.075f)*.16f;
+                    float centre=Mathf.Clamp01((Mathf.Abs(wx)-10f)/14f);
+                    float y=-.34f+rise+macro*Mathf.Lerp(.12f,1f,centre);
+                    vertices[z*nx+x]=new Vector3(wx,y,wz);
+                    uv[z*nx+x]=new Vector2(tx*7.5f,tz*6.5f);
+                }
+            }
+            int ti=0;
+            for(int z=0;z<nz-1;z++)
+                for(int x=0;x<nx-1;x++)
+                {
+                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,cc=d+1;
+                    triangles[ti++]=a;triangles[ti++]=d;triangles[ti++]=b;
+                    triangles[ti++]=b;triangles[ti++]=d;triangles[ti++]=cc;
+                }
+            var mesh=new Mesh{name="Valoria Master Rebuild v2 · basin terrain"};
+            mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Master Rebuild v2 · basin terrain");
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=LandscapeMaterial();
         }
 
         static void HeroValleyTerrain()
