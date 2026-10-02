@@ -1,3 +1,18 @@
+## Asset Library Reprocessing Pass v1 — closed / recovered production frame (2026-10-02)
+
+- Status: **TECH PASS / VISUAL PASS for the reprocessing objective**.
+- Base: `b1e4cd0673765608bfe3d9ce5797f320df54468e` (accepted Compact Footprint Reframe).
+- Final same-scene proof: run **36994020902 SUCCESS**, artifact **11220733685**.
+- Official evidence: matched zoom **19 / 12 / 9 / mobile 390×844**.
+- Gameplay collider/hotspot signature: **exactly unchanged**; topology changed=false.
+- Route: `environment_composition` + `environment_surface`; `geometry_gap_proven=false`; Tripo blocked; **0 credits**.
+- Highest-return recovery: certified Hero Bastion optimized GLB, **49,800 tris / 13,257,704 bytes / SHA-256 afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c**.
+- Hero Bastion exact bytes persisted to production Resources by run **36994561634 SUCCESS**, commit **e7ae0e1a91346a6003035e76c0e68927939b8ccb**.
+- Final scene: 782→781 active renderers, 75→74 unique materials, 1,485,103→1,647,618 triangles, 22→25 active lights.
+- Two earlier zero-credit iterations were correctly rejected visually; the final recovery is the first version whose change survives the whole 19/12/9/mobile frame.
+- Do not restore lateral residential sprawl. Do not regenerate Hero Bastion. Remaining visual bottleneck is lower/middle-city finish and coherence relative to the recovered hero anchor.
+- Result: `docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md`.
+
 ## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
 
 - Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
