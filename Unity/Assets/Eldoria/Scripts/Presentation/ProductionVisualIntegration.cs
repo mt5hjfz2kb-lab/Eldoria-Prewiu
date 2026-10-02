@@ -214,6 +214,7 @@ namespace Eldoria.Presentation
             Piece("Valoria · rescued hero flank",tower,new Vector3(-3.9f,.18f,3.9f),3.2f,4.2f,18,new Color(.62f,.64f,.60f));
             ComposeHeroFrame(state,art);
             if(CompactFootprintReframeEnabled)ComposeCompactFootprintReframeV1(state,art);
+            ValoriaOpenValleyCompositionV1.Build(root,state);
             AssetLibraryReprocessingPassV1.Build(root,state);
             ValoriaReferenceConvergencePassV2.Build(root,state);
             ValoriaFullFrameConvergenceIteration1.Build(root,state);
