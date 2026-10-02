@@ -23,9 +23,9 @@ namespace Eldoria.Presentation
             // One continuous terrain sheet avoids detached panels and inter-piece seams.
             // The inhabited corridor sits below canonical ground; only side/rear relief emerges.
             var material=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.25f,.275f,.255f,1f),new Vector2(5.2f,5.2f),.018f,1.18f)
+                "rock",new Color(.235f,.255f,.24f,1f),new Vector2(7.2f,7.2f),.014f,1.24f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.245f,.27f,.25f,1f),"earth",new Vector2(5.2f,5.2f),1.18f);
+                    new Color(.235f,.255f,.24f,1f),"earth",new Vector2(7.2f,7.2f),1.24f);
 
             BuildContinuousValley(root.transform,material);
             BuildMarginOccupation(root.transform);
@@ -52,30 +52,32 @@ namespace Eldoria.Presentation
                     float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
 
-                    // Iteration 2: the first continuous valley proved the concept, but its side walls
-                    // entered the review frame as broad smooth ramps. Start farther out and compress the rise
-                    // into a narrower rocky crest so the city remains visually open.
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-14.8f)/4.7f));
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-18.0f)/8.0f));
-                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-2.0f)/7.0f));
+                    // Iteration 3: keep the world frame continuous, but make it read as broken rocky shoulders
+                    // instead of one dominant smooth mountain. Push the rise farther out, lower the silhouette,
+                    // and use sharper local breakup while preserving an open central basin.
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-16.2f)/3.9f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-20.0f)/7.2f));
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-2.5f)/7.5f));
                     float sideRelief=side*frontGate;
-                    float rearSide=rear*Mathf.Max(.35f,side);
+                    float rearSide=rear*Mathf.Max(.28f,side);
                     float visibleRelief=Mathf.Max(sideRelief,rearSide);
 
-                    float sideScale=x<0f?.56f:.66f;
-                    float crest=Mathf.Pow(sideRelief,2.65f)*3.15f*sideScale;
-                    float rearCrest=Mathf.Pow(rearSide,2.25f)*1.55f;
+                    // The review camera sees the west wall more strongly, so bias it lower than the east.
+                    float sideScale=x<0f?.34f:.44f;
+                    float crest=Mathf.Pow(sideRelief,2.85f)*2.65f*sideScale;
+                    float rearCrest=Mathf.Pow(rearSide,2.35f)*1.05f;
 
-                    // Layered rock breakup: broad shape + deterministic Perlin + sharper ledge bands.
-                    float broad=Mathf.Sin(x*.17f+z*.065f)*.34f
-                               +Mathf.Sin(z*.23f-x*.055f)*.27f
-                               +Mathf.Sin((x+z)*.105f)*.18f;
-                    float macroNoise=(Mathf.PerlinNoise(x*.115f+7.31f,z*.115f+11.17f)-.5f)*1.30f;
-                    float detailNoise=(Mathf.PerlinNoise(x*.31f+19.43f,z*.31f+2.71f)-.5f)*.46f;
-                    float ledges=(Mathf.Abs(Mathf.Sin(z*.72f+x*.11f))-.50f)*.28f;
-                    float notch=(Mathf.PerlinNoise(x*.19f+3.2f,z*.14f+8.4f)-.5f)*.48f;
+                    // Fractured rock breakup: less broad hill shape, more ledges/notches.
+                    float broad=Mathf.Sin(x*.19f+z*.075f)*.20f
+                               +Mathf.Sin(z*.27f-x*.065f)*.17f
+                               +Mathf.Sin((x+z)*.125f)*.12f;
+                    float macroNoise=(Mathf.PerlinNoise(x*.145f+7.31f,z*.145f+11.17f)-.5f)*1.05f;
+                    float detailNoise=(Mathf.PerlinNoise(x*.38f+19.43f,z*.38f+2.71f)-.5f)*.58f;
+                    float ledges=(Mathf.Abs(Mathf.Sin(z*.96f+x*.15f))-.46f)*.42f;
+                    float notch=(Mathf.PerlinNoise(x*.24f+3.2f,z*.19f+8.4f)-.5f)*.66f;
+                    float terraceCut=(Mathf.Abs(Mathf.Sin((x-z)*.31f))-.62f)*.28f;
                     float y=hiddenY + crest + rearCrest
-                        + (broad+macroNoise+detailNoise+ledges+notch)*visibleRelief*.78f;
+                        + (broad+macroNoise+detailNoise+ledges+notch+terraceCut)*visibleRelief*.66f;
 
                     // Keep a generous central basin and the full approach invisible beneath gameplay ground.
                     float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.6f)/3.8f));
