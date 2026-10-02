@@ -11,7 +11,6 @@ namespace Eldoria.Presentation
     public static class AssetLibraryReprocessingPassV1
     {
         public static bool Enabled = true;
-        static readonly Dictionary<string, Material> sharedSurface = new();
 
         public static void Build(Transform parent, PlayerState state)
         {
@@ -22,7 +21,6 @@ namespace Eldoria.Presentation
             ReassembleHeroApproach(root);
             ReassembleMidTierCore(root);
             ReassembleTerrainSeams(root);
-            RefineExistingSurfaces();
             AddRestrainedOccupation(root);
             DisableGameplay(root.gameObject);
         }
@@ -37,92 +35,65 @@ namespace Eldoria.Presentation
 
         static void ReassembleHeroApproach(Transform root)
         {
-            // Existing Stone Architecture pieces become side retaining shoulders rather than isolated props.
+            // Use certified masonry as restrained retaining structure, not bright freestanding props.
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
+                "Hero retaining wall west",new Vector3(-4.65f,1.22f,6.05f),2.75f,88f,SurfaceFamily.Stone);
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
+                "Hero retaining wall east",new Vector3(4.65f,1.22f,6.10f),2.75f,268f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam west",new Vector3(-3.95f,1.02f,4.95f),2.15f,48f,new Color(.63f,.62f,.58f));
+                "Hero approach seam west",new Vector3(-3.72f,.92f,4.78f),1.72f,42f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam east",new Vector3(3.95f,1.02f,5.02f),2.15f,228f,new Color(.63f,.62f,.58f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "Hero retaining shoulder west",new Vector3(-4.85f,1.34f,6.05f),2.00f,86f,new Color(.66f,.64f,.59f));
-            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
-                "Hero retaining shoulder east",new Vector3(4.85f,1.34f,6.10f),2.00f,266f,new Color(.66f,.64f,.59f));
+                "Hero approach seam east",new Vector3(3.72f,.92f,4.84f),1.72f,222f,SurfaceFamily.Stone);
         }
 
         static void ReassembleMidTierCore(Transform root)
         {
-            // D1 survives the accepted compact-footprint cut. Improve how that mass meets terrain instead of stamping more houses.
+            // D1 is the surviving compact-core parcel. Give it one buried base and one coherent retaining spine.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "MidTier D1 buried base",new Vector3(6.85f,.44f,-3.85f),4.55f,176f,new Color(.43f,.42f,.38f));
+                "MidTier D1 buried base",new Vector3(6.85f,.43f,-3.85f),4.35f,176f,SurfaceFamily.Terrain);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "MidTier D1 rear retaining wall",new Vector3(7.70f,.40f,-2.10f),2.60f,184f,new Color(.64f,.62f,.57f));
+                "MidTier D1 rear retaining wall",new Vector3(7.55f,.37f,-2.15f),2.45f,184f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "MidTier D1 terrain seam",new Vector3(5.65f,.38f,-3.00f),1.72f,118f,new Color(.60f,.59f,.55f));
+                "MidTier D1 terrain seam",new Vector3(5.70f,.35f,-3.05f),1.55f,118f,SurfaceFamily.Stone);
         }
 
         static void ReassembleTerrainSeams(Transform root)
         {
-            // Reinforce central vertical read with buried historical terrain assets; no roads/floors/colliders are added.
+            // Central supports stay buried and dark; they reinforce vertical progression without becoming pedestals.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "central west buried terrace",new Vector3(-5.15f,.44f,2.55f),2.55f,100f,new Color(.40f,.40f,.37f));
+                "central west buried terrace",new Vector3(-5.05f,.42f,2.65f),2.35f,100f,SurfaceFamily.Terrain);
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "central east buried terrace",new Vector3(5.05f,.44f,2.70f),2.55f,260f,new Color(.40f,.40f,.37f));
+                "central east buried terrace",new Vector3(4.95f,.42f,2.78f),2.35f,260f,SurfaceFamily.Terrain);
         }
 
         static void RefineExistingSurfaces()
         {
-            // environment_surface: normalize only high-return surviving families.
-            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
-            {
-                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy) continue;
-                string chain=Hierarchy(r.transform);
-                bool hero=chain.Contains("bastion",StringComparison.OrdinalIgnoreCase)||
-                          chain.Contains("herobastion",StringComparison.OrdinalIgnoreCase);
-                bool mid=chain.Contains("Valoria Mid-Tier · D1",StringComparison.OrdinalIgnoreCase);
-                bool stone=chain.Contains("StoneArch",StringComparison.OrdinalIgnoreCase)||
-                           chain.Contains("AssetLibrary Reprocessing",StringComparison.OrdinalIgnoreCase);
-                bool terrain=chain.Contains("TerrainTerrace",StringComparison.OrdinalIgnoreCase)||
-                             chain.Contains("buried terrace",StringComparison.OrdinalIgnoreCase);
-                if(!(hero||mid||stone||terrain)) continue;
-
-                var block=new MaterialPropertyBlock();r.GetPropertyBlock(block);
-                Color tint=hero?new Color(.78f,.77f,.72f,1f):
-                           mid?new Color(.74f,.70f,.62f,1f):
-                           terrain?new Color(.58f,.58f,.54f,1f):
-                           new Color(.70f,.68f,.63f,1f);
-                var mat=r.sharedMaterial;
-                if(mat!=null&&mat.HasProperty("_BaseColor")) block.SetColor("_BaseColor",tint);
-                else if(mat!=null&&mat.HasProperty("_Color")) block.SetColor("_Color",tint);
-                if(mat!=null&&mat.HasProperty("_Smoothness")) block.SetFloat("_Smoothness",hero?.22f:.16f);
-                r.SetPropertyBlock(block);
-            }
-
-            // Slightly stronger depth separation, preserving the accepted compact composition.
-            RenderSettings.fog=true;
-            RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.52f,.58f,.60f);
-            RenderSettings.fogStartDistance=24f;
-            RenderSettings.fogEndDistance=68f;
+            // Intentionally unused in iteration 2. Existing production Bastion/D1 surfaces remain untouched;
+            // only reused historical modules receive the normalized families below.
         }
 
         static void AddRestrainedOccupation(Transform root)
         {
-            AddWarmLight(root,"Hero approach occupied warmth",new Vector3(0f,2.15f,4.45f),.24f,3.0f);
-            AddWarmLight(root,"MidTier D1 occupied warmth",new Vector3(7.05f,1.45f,-3.05f),.16f,2.25f);
+            AddWarmLight(root,"Hero approach occupied warmth",new Vector3(0f,2.15f,4.45f),.18f,2.8f);
         }
 
-        static void AddResource(Transform root,string resource,string role,Vector3 anchor,float span,float yaw,Color tint)
+        enum SurfaceFamily { Stone, Terrain }
+        static Material reprocessedStone;
+        static Material reprocessedTerrain;
+
+        static void AddResource(Transform root,string resource,string role,Vector3 anchor,float span,float yaw,SurfaceFamily family)
         {
             var source=Resources.Load<GameObject>(resource);
             if(source==null) throw new InvalidOperationException("Missing reprocessing resource: "+resource);
             var go=Object.Instantiate(source);go.name="Valoria · AssetLibrary Reprocessing · "+role;
             go.transform.rotation=Quaternion.Euler(0,yaw,0);
             FitGround(go,anchor,span);
-            ApplySharedSurface(go,tint);
+            ApplySharedSurface(go,family);
             go.transform.SetParent(root,true);
             DisableGameplay(go);
         }
 
-        static void AddTopAligned(Transform root,string resource,string role,Vector3 topAnchor,float span,float yaw,Color tint)
+        static void AddTopAligned(Transform root,string resource,string role,Vector3 topAnchor,float span,float yaw,SurfaceFamily family)
         {
             var source=Resources.Load<GameObject>(resource);
             if(source==null) throw new InvalidOperationException("Missing reprocessing resource: "+resource);
@@ -130,7 +101,7 @@ namespace Eldoria.Presentation
             go.transform.rotation=Quaternion.Euler(0,yaw,0);
             var b=Bounds(go);go.transform.localScale*=span/Mathf.Max(b.size.x,b.size.z);b=Bounds(go);
             go.transform.position+=new Vector3(topAnchor.x-b.center.x,topAnchor.y-b.max.y,topAnchor.z-b.center.z);
-            ApplySharedSurface(go,tint);
+            ApplySharedSurface(go,family);
             go.transform.SetParent(root,true);
             DisableGameplay(go);
         }
@@ -142,28 +113,37 @@ namespace Eldoria.Presentation
             go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
         }
 
-        static void ApplySharedSurface(GameObject go,Color tint)
+        static void ApplySharedSurface(GameObject go,SurfaceFamily family)
         {
+            Material material;
+            if(family==SurfaceFamily.Terrain)
+            {
+                if(reprocessedTerrain==null)
+                {
+                    reprocessedTerrain=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Reprocessed · buried terrain stone"};
+                    reprocessedTerrain.SetColor("_BaseColor",new Color(.285f,.275f,.245f,1f));
+                    reprocessedTerrain.SetFloat("_Smoothness",.025f);
+                    reprocessedTerrain.SetFloat("_Metallic",0f);
+                }
+                material=reprocessedTerrain;
+            }
+            else
+            {
+                if(reprocessedStone==null)
+                {
+                    reprocessedStone=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Reprocessed · architectural stone"};
+                    reprocessedStone.SetColor("_BaseColor",new Color(.40f,.385f,.34f,1f));
+                    reprocessedStone.SetFloat("_Smoothness",.055f);
+                    reprocessedStone.SetFloat("_Metallic",0f);
+                }
+                material=reprocessedStone;
+            }
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
-                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
-                for(int i=0;i<srcs.Length;i++)
-                {
-                    var src=srcs[i];if(src==null){dst[i]=null;continue;}
-                    string key=src.name;
-                    if(!sharedSurface.TryGetValue(key,out var m)||m==null)
-                    {
-                        m=new Material(src){name="Valoria Reprocessed · "+src.name};
-                        if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.16f);
-                        sharedSurface[key]=m;
-                    }
-                    dst[i]=m;
-                }
-                r.sharedMaterials=dst;
-                var block=new MaterialPropertyBlock();r.GetPropertyBlock(block);
-                if(r.sharedMaterial!=null&&r.sharedMaterial.HasProperty("_BaseColor"))block.SetColor("_BaseColor",tint);
-                else if(r.sharedMaterial!=null&&r.sharedMaterial.HasProperty("_Color"))block.SetColor("_Color",tint);
-                r.SetPropertyBlock(block);
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=material;
+                r.sharedMaterials=mats;
+                r.SetPropertyBlock(null);
             }
         }
 
