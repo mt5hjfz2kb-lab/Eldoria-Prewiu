@@ -103,33 +103,10 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 23: the remaining foreground "ring" is the deliberate front rise authored
-                    // inside HeroValleyTerrain(), not a texture seam. Preserve side/rear relief, but flatten
-                    // only the front rows below the valley floor so the review cameras no longer see a map corona.
-                    renderer.sharedMaterial=valleyDirt??dirt;
-
-                    var mf=renderer.GetComponent<MeshFilter>();
-                    if(mf!=null && mf.sharedMesh!=null)
-                    {
-                        var source=mf.sharedMesh;
-                        var mesh=Object.Instantiate(source);
-                        mesh.name=source.name+" · convergence front-flattened";
-                        var verts=mesh.vertices;
-                        for(int i=0;i<verts.Length;i++)
-                        {
-                            var v=verts[i];
-                            if(v.z<-6f)
-                            {
-                                float t=Mathf.Clamp01((-6f-v.z)/14f);
-                                v.y=Mathf.Lerp(v.y,-.18f,t);
-                                verts[i]=v;
-                            }
-                        }
-                        mesh.vertices=verts;
-                        mesh.RecalculateNormals();
-                        mesh.RecalculateBounds();
-                        mf.sharedMesh=mesh;
-                    }
+                    // Iteration 24 proof: this heightfield is visual-only and carries no gameplay collider.
+                    // Hide its renderer so the enlarged valley sheet becomes the sole continuous world base.
+                    // This directly tests whether the remaining soft foreground corona belongs to this mesh.
+                    renderer.enabled=false;
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
