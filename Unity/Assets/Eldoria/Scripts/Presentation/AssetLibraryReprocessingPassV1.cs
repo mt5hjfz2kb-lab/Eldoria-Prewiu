@@ -102,41 +102,26 @@ namespace Eldoria.Presentation
 
         static void FitCertifiedHeroSurface(GameObject go)
         {
-            var cache=new Dictionary<int,Material>();
+            // Preserve the imported Hero Bastion textures/materials. Cloning every material and
+            // re-reading embedded textures caused a cold-import OOM on the Windows runner.
+            // Per-slot MaterialPropertyBlock keeps the source textures/normals and adjusts only
+            // surface response without duplicating texture memory.
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
-                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
-                for(int i=0;i<srcs.Length;i++)
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
                 {
-                    var src=srcs[i];
-                    if(src==null){dst[i]=null;continue;}
-                    if(cache.TryGetValue(src.GetInstanceID(),out var cached)){dst[i]=cached;continue;}
-
-                    Texture baseMap=null,normal=null,mask=null;
-                    foreach(string p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})
-                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
-                    foreach(string p in new[]{"_BumpMap","_NormalMap","normalTexture"})
-                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
-                    foreach(string p in new[]{"_MaskMap","_MetallicGlossMap","_OcclusionMap"})
-                        if(src.HasProperty(p)&&src.GetTexture(p)!=null){mask=src.GetTexture(p);break;}
-
-                    var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-                    var m=new Material(shader){name="Valoria AssetLibrary · Hero Bastion · "+src.name};
-                    if(baseMap!=null&&m.HasProperty("_BaseMap"))m.SetTexture("_BaseMap",baseMap);
-                    if(normal!=null&&m.HasProperty("_BumpMap"))
-                    {
-                        m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");
-                        if(m.HasProperty("_BumpScale"))m.SetFloat("_BumpScale",1f);
-                    }
-                    if(mask!=null&&m.HasProperty("_OcclusionMap"))m.SetTexture("_OcclusionMap",mask);
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.64f,.61f,.56f,1f));
-                    if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.74f,.71f,.66f,1f));
-                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
-                    if(m.HasProperty("_OcclusionStrength"))m.SetFloat("_OcclusionStrength",1f);
-                    cache[src.GetInstanceID()]=m;dst[i]=m;
+                    var mat=mats[i];
+                    if(mat==null)continue;
+                    var block=new MaterialPropertyBlock();
+                    r.GetPropertyBlock(block,i);
+                    var tint=new Color(.72f,.69f,.64f,1f);
+                    if(mat.HasProperty("_BaseColor"))block.SetColor("_BaseColor",tint);
+                    else if(mat.HasProperty("_Color"))block.SetColor("_Color",tint);
+                    if(mat.HasProperty("_Smoothness"))block.SetFloat("_Smoothness",.035f);
+                    if(mat.HasProperty("_Metallic"))block.SetFloat("_Metallic",0f);
+                    r.SetPropertyBlock(block,i);
                 }
-                r.sharedMaterials=dst;
             }
         }
 
