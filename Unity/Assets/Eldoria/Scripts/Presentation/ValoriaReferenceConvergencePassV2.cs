@@ -44,29 +44,25 @@ namespace Eldoria.Presentation
 
         static void BuildCliffEnvelope(Transform root)
         {
-            // Iteration 13: use certified rescued rock-only vocabulary.
-            // SM_Cliffs_* was rejected because its grass sub-material created flat green wedges in matched captures.
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","left rock shelf",
-                new Vector3(-11.8f,-1.35f,1.8f),8.8f,5.2f,26f,RockTint);
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","right rock shelf",
-                new Vector3(11.6f,-1.35f,2.0f),8.8f,5.2f,206f,RockTint);
-
-            AddResource(root,"Valoria/Rescued/ResidentialTerraceRock","rear integrated rock shelf",
-                new Vector3(0f,-.70f,12.0f),11.5f,5.4f,92f,new Color(.43f,.45f,.44f,1f));
+            // Iteration 13: legacy SM_Cliffs are excluded from the convergence pass.
+            // Their mixed grass/rock materials created flat green wedges at official camera distance.
+            // The lateral world envelope is now authored only from the certified PBR Terrain & Terrace Kit below.
         }
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 13: lateral margins from rescued rock-only modules + sparse vegetation.
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","left outer rock curtain",
-                new Vector3(-13.8f,-1.65f,3.5f),7.2f,4.6f,18f,new Color(.40f,.42f,.42f,1f));
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","right outer rock curtain",
-                new Vector3(13.7f,-1.65f,3.7f),7.2f,4.6f,198f,new Color(.40f,.42f,.42f,1f));
+            // Iteration 13: certified PBR rock vocabulary only.
+            // Keep the masses low, irregular and partly camera-cropped so they frame the compact city rather than expand it.
 
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","left rear broken rock",
-                new Vector3(-12.6f,-1.20f,9.6f),5.8f,3.8f,104f,new Color(.44f,.45f,.44f,1f));
-            AddResource(root,"Valoria/Rescued/RockTerrainSeamFiller","right rear broken rock",
-                new Vector3(12.6f,-1.20f,9.8f),5.8f,3.8f,284f,new Color(.44f,.45f,.44f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "left lower PBR shoulder",new Vector3(-13.2f,-.10f,1.8f),7.6f,24f,new Color(.46f,.47f,.45f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "right lower PBR shoulder",new Vector3(13.1f,-.10f,2.0f),7.6f,204f,new Color(.46f,.47f,.45f,1f));
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "left upper PBR shoulder",new Vector3(-12.8f,1.05f,8.8f),4.6f,96f,new Color(.45f,.46f,.44f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "right upper PBR shoulder",new Vector3(12.8f,1.05f,9.0f),4.6f,276f,new Color(.45f,.46f,.44f,1f));
 
             if(art!=null)
             {
@@ -74,31 +70,20 @@ namespace Eldoria.Presentation
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.8f,.10f,-1.0f),new Vector3(-13.2f,.12f,2.7f),new Vector3(-12.7f,.12f,6.0f),new Vector3(-12.2f,.12f,9.4f),new Vector3(-13.1f,.12f,11.8f),
-                        new Vector3(13.7f,.10f,-.8f),new Vector3(13.1f,.12f,2.9f),new Vector3(12.6f,.12f,6.2f),new Vector3(12.1f,.12f,9.6f),new Vector3(13.0f,.12f,12.0f)
+                        new Vector3(-13.8f,.10f,-.8f),new Vector3(-13.1f,.12f,3.0f),new Vector3(-12.4f,.12f,6.6f),new Vector3(-12.9f,.12f,10.6f),
+                        new Vector3(13.7f,.10f,-.6f),new Vector3(13.0f,.12f,3.2f),new Vector3(12.3f,.12f,6.8f),new Vector3(12.8f,.12f,10.8f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
-                        AddPrefab(root,tree,"side rescued-rock tree "+i,sideTrees[i],
-                            .80f+(i%3)*.10f,2.45f+(i%2)*.30f,(i*47)%360,FoliageTint);
-                }
-
-                if(art.SlavicBush!=null)
-                {
-                    var scrub=new[]{
-                        new Vector3(-12.2f,.08f,.6f),new Vector3(-12.5f,.08f,4.5f),new Vector3(-11.9f,.08f,8.2f),
-                        new Vector3(12.1f,.08f,.8f),new Vector3(12.4f,.08f,4.7f),new Vector3(11.8f,.08f,8.4f)
-                    };
-                    for(int i=0;i<scrub.Length;i++)
-                        AddPrefab(root,art.SlavicBush,"side rescued-rock scrub "+i,scrub[i],
-                            .58f,.62f,(i*31)%360,new Color(.37f,.43f,.33f,1f));
+                        AddPrefab(root,tree,"side PBR tree "+i,sideTrees[i],
+                            .80f+(i%2)*.10f,2.45f+(i%3)*.22f,(i*53)%360,FoliageTint);
                 }
             }
         }
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 13: atmosphere-only horizon.
-            // Large pack mountains/cliffs read as repeated stage pieces; fog now owns the far-field transition.
+            // Iteration 13: no explicit legacy horizon meshes.
+            // Atmospheric depth carries the distant frame until a dedicated production mountain family exists.
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
