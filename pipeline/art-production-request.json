@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "example-disabled",
-  "asset_or_sector": "Valoria",
+  "enabled": true,
+  "request_id": "valoria-full-frame-visual-pass-v1",
+  "asset_or_sector": "Valoria full frame",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -17,9 +17,9 @@
     "blender_material_consolidation": false,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
-    "unity_decals": false,
-    "unity_probes": false,
-    "unity_terrain_blending": false
+    "unity_decals": true,
+    "unity_probes": true,
+    "unity_terrain_blending": true
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Disabled template. Zero-spend by default."
+  "notes": "Full-frame final composition pass. Existing assets only. Prioritize hierarchy, density/verticality, architecture-rock-terrain integration, real street/stair continuity, coherent surfaces, restrained vegetation/props, lighting/shadows/atmosphere. Direct benchmark comparison required; prototype read is FAIL."
 }
