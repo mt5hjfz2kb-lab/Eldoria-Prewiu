@@ -31,8 +31,8 @@
     "collider_hotspot_signature",
     "full_frame_integrated_verdict"
   ],
-  "triggered_at": "2026-10-02T23:27:00+02:00",
+  "triggered_at": "2026-10-02T23:33:00+02:00",
   "revalidated_at": "2026-10-02T22:27:00Z",
   "revalidate_reason": "Re-run strongest composite after fixing Jagged Backdrop gate compilation ambiguity; preserve foreground normalization and current strongest composition.",
-  "note": "Revalidate after unified PBR normalization of Foreground Edge, Cliff Island edge rocks and Residual Cleanup rocks to eliminate near-black atlas response."
+  "note": "Current-main validation after Jagged gate compile repair plus unified PBR normalization of foreground/cliff/residual rocks."
 }
