@@ -11,13 +11,33 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: valoria-reference-convergence-v2
   cancel-in-progress: true
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release stale unowned historical runner jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for run in 36994997684 36995060877; do
+            state=$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/$run --jq '.status' 2>/dev/null || echo missing)
+            if [ "$state" = "in_progress" ] || [ "$state" = "queued" ]; then
+              gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/$run/cancel || true
+              echo "cancel requested for stale historical run $run"
+            else
+              echo "historical run $run state=$state"
+            fi
+          done
+
   capture:
+    needs: preflight
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 25
