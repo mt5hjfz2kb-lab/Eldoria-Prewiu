@@ -45,6 +45,8 @@ namespace Eldoria.EditorTools
             ValoriaCliffIslandReframeV1.Enabled=false;
             ValoriaCliffIslandCleanupV2.Enabled=false;
             ValoriaResidualCleanupV1.Enabled=false;
+            ValoriaMaterialResidueCleanupV2.Enabled=false;
+            ValoriaFullFrameArtifactCleanupV1.Enabled=false;
             ValoriaJaggedBackdropV1.Enabled=false;
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
@@ -65,6 +67,8 @@ namespace Eldoria.EditorTools
             ValoriaCliffIslandReframeV1.Enabled=true;ValoriaCliffIslandReframeV1.Build(root.transform,state);
             ValoriaCliffIslandCleanupV2.Enabled=true;ValoriaCliffIslandCleanupV2.Build(root.transform,state);
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
+            ValoriaMaterialResidueCleanupV2.Enabled=true;ValoriaMaterialResidueCleanupV2.Build(root.transform,state);
+            ValoriaFullFrameArtifactCleanupV1.Enabled=true;ValoriaFullFrameArtifactCleanupV1.Build(root.transform,state);
 
             int normalizedDarkFamilies=NormalizeKnownDarkFamilies();
 
@@ -94,6 +98,11 @@ namespace Eldoria.EditorTools
                 "  \"source\": \"Wikimedia Commons - Jagged peaks over a valley\",\n"+
                 "  \"license\": \"CC0\",\n"+
                 "  \"normalized_known_dark_family_slots\": "+normalizedDarkFamilies+",\n"+
+                "  \"material_residue_environment_slots\": "+ValoriaMaterialResidueCleanupV2.NormalizedEnvironment+",\n"+
+                "  \"artifact_rock_renderers\": "+ValoriaFullFrameArtifactCleanupV1.RockRenderersNormalized+",\n"+
+                "  \"artifact_terrace_renderers\": "+ValoriaFullFrameArtifactCleanupV1.TerraceRenderersNormalized+",\n"+
+                "  \"artifact_foliage_lifted\": "+ValoriaFullFrameArtifactCleanupV1.FoliageRenderersLifted+",\n"+
+                "  \"artifact_dark_flat_lifted\": "+ValoriaFullFrameArtifactCleanupV1.DarkFlatRenderersLifted+",\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
