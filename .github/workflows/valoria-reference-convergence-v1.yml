@@ -1,13 +1,6 @@
 name: "[EXPERIMENT] Valoria Reference Convergence v1"
 
 on:
-  push:
-    branches: ['visual-proof/valoria-reference-convergence-v1']
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaReferenceConvergenceV1Gate.cs'
-      - 'pipeline/art-production-request.json'
-      - '.github/workflows/valoria-reference-convergence-v1.yml'
   workflow_dispatch:
 
 permissions:
