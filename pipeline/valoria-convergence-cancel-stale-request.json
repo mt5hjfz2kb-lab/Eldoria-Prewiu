@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Distant-world composite has dedicated gate; cancel redundant generic Unity slice so refined backdrop/composite can use Windows runner.",
+  "reason": "Release Windows runner for Benchmark Composite v2 and Distant World Composite v1; old Benchmark Composite v1 is superseded.",
   "runs": [
-    37065372513
+    37065384609
   ],
-  "triggered_at": "2026-10-02T21:16:00Z"
+  "triggered_at": "2026-10-02T21:52:00Z"
 }
