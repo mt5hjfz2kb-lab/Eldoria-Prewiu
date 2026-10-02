@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T19:10:00Z",
-  "active": [
+  "updated_at": "2026-10-02T19:18:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-stair-landing-integration-v1",
       "title": "Valoria Stair / Landing Integration v1",
@@ -20,13 +21,17 @@
         "art-production-planner",
         "windows-runner-heavy"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-02T18:14:00Z",
       "base_main_sha": "2080e3ab983992a8afe0917fe31a690c4bc604ff",
-      "dependency": "World Frame v1 and compact footprint are locked. Bastion stair circulation, gameplay colliders/hotspots/routes and Hero Bastion remain authoritative. Existing geometry only; no Tripo spend."
-    }
-  ],
-  "history": [
+      "dependency": "World Frame v1 and compact footprint are locked. Bastion stair circulation, gameplay colliders/hotspots/routes and Hero Bastion remain authoritative. Existing geometry only; no Tripo spend.",
+      "completed_at": "2026-10-02T19:18:00Z",
+      "result_commit": "4ac55e62c5702374f0ee283add43667a5c23ec98",
+      "run_id": 37046680226,
+      "artifact_id": 11244568499,
+      "result": "TECH PASS / LOCAL VISUAL INSUFFICIENT / NOT PROMOTED. 6 visual instances, gameplay signature unchanged, but mobile BEFORE/AFTER is effectively indistinguishable while scene triangles rise 1,659,618 -> 1,958,418. Pass remains disabled in production.",
+      "next": "Superseded by canonical full-frame convergence loop; do not continue micro-optimizing stair seating in isolation."
+    },
     {
       "id": "valoria-full-frame-convergence-system-v1",
       "title": "Valoria Full-Frame Convergence System v1",
