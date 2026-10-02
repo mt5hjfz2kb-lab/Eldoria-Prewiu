@@ -32,6 +32,6 @@
     "full_frame_integrated_verdict"
   ],
   "triggered_at": "2026-10-02T23:50:00Z",
-  "revalidated_at": "2026-10-02T22:24:00Z",
-  "revalidate_reason": "Re-run strongest integrated Valoria frame after promoted 9.1 framing and adapted-material color-space fix."
+  "revalidated_at": "2026-10-02T22:44:00Z",
+  "revalidate_reason": "Re-run strongest integrated frame after fixing double-linear adapted materials, rescued residence darkness, and Cliff Island terrace material inheritance."
 }
