@@ -420,7 +420,7 @@ The six certified Tripo families remain valid reusable art/reference assets, but
 - Asset-library recovery/recomposition has been certified against the real Valoria frame.
 - **TECH PASS / VISUAL PASS for this scope**: run **36994020902**, artifact **11220733685**.
 - The certified historical Hero Bastion is promoted as production visual art, with exact source SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`.
-- Fortress approach now reuses certified Stone Architecture, Terrain/Terrace and TowerWallRock families as visual-only retaining/terrain support around the accepted compact core.
+- Fortress approach now reuses certified Stone Architecture and Terrain/Terrace families as visual-only retaining/terrain support around the accepted compact core; the older TowerWallRock hero flank is deliberately suppressed so it does not compete with the recovered Bastion silhouette.
 - Matched 19/12/9/mobile evidence shows a material full-frame improvement; gameplay collider/hotspot signature remains unchanged.
 - Final measured active scene: **781 renderers / 74 materials / 1,647,618 triangles / 25 lights** after the pass.
 - Tripo spend: **0**. Geometry gap: **not proven / not required**.
