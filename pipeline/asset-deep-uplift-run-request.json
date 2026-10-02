@@ -1,7 +1,7 @@
 {
   "schema_version": 6,
-  "enabled": true,
-  "mode": "persist_valid_candidates",
+  "enabled": false,
+  "mode": "complete",
   "assets": [
     {
       "asset": "TerraceStairRock",
@@ -22,5 +22,7 @@
   "min_triangles": 49500,
   "max_triangles": 50000,
   "tripo_credits": 0,
-  "promotion": "blocked_pending_official_unity_validation"
+  "promotion": "blocked_pending_official_unity_validation",
+  "status": "blender_phase_complete_candidates_persisted",
+  "next": "official Unity 19/12/9/mobile validation after windows-runner-heavy and valoria-production-composition are released"
 }
