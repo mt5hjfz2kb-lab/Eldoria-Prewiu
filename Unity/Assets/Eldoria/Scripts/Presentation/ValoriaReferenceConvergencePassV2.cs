@@ -111,37 +111,28 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 29: use the existing continuous visual heightfield as the world frame.
-                    // Remove its artificial front rise, then strengthen only side/rear relief so Valoria
-                    // reads carved into one mountain valley instead of sitting on an open board.
+                    // Iteration 29: reuse the certified visual-only heightfield only as side/rear world relief.
+                    // The inhabited centre and the entire foreground are flattened below the valley floor;
+                    // relief fades in gradually beyond the compact city, preventing any visible map corona.
                     renderer.enabled=true;
-                    renderer.sharedMaterial=valleyWall??valleyDirt??dirt;
+                    renderer.sharedMaterial=valleyDirt??dirt;
 
                     var mf=renderer.GetComponent<MeshFilter>();
                     if(mf!=null && mf.sharedMesh!=null)
                     {
                         var source=mf.sharedMesh;
                         var mesh=Object.Instantiate(source);
-                        mesh.name=source.name+" · convergence valley-frame";
+                        mesh.name=source.name+" · convergence side-rear relief";
                         var verts=mesh.vertices;
+                        const float flatY=-.20f;
                         for(int i=0;i<verts.Length;i++)
                         {
                             var v=verts[i];
-
-                            // Flatten the authored foreground hump smoothly below the world floor.
-                            if(v.z<-4f)
-                            {
-                                float frontT=Mathf.Clamp01((-4f-v.z)/16f);
-                                v.y=Mathf.Lerp(v.y,-.18f,frontT);
-                            }
-
-                            // Continuous side/rear mass; keep the central inhabited corridor open.
-                            float side=Mathf.Clamp01((Mathf.Abs(v.x)-12f)/20f);
-                            float rear=Mathf.Clamp01((v.z-12f)/24f);
-                            float frontRelease=Mathf.Clamp01((v.z+10f)/8f);
-                            float extra=(side*side*4.2f+rear*rear*5.0f)*frontRelease;
-                            v.y+=extra;
-
+                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-13.5f)/10.5f));
+                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-12.0f)/14.0f));
+                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+2.0f)/6.0f));
+                            float relief=Mathf.Max(side*frontGate,rear);
+                            v.y=Mathf.Lerp(flatY,v.y,relief);
                             verts[i]=v;
                         }
                         mesh.vertices=verts;
@@ -258,8 +249,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.52f,.61f,.66f);
-            RenderSettings.fogStartDistance=20f;
-            RenderSettings.fogEndDistance=58f;
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=72f;
 
             var camera=Camera.main;
             if(camera!=null)
