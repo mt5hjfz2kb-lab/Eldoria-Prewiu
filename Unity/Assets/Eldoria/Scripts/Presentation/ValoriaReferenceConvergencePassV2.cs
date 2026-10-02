@@ -176,42 +176,41 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 14: stronger PBR world framing, still no city-width expansion.
-            // Build asymmetrical rocky shoulders that enter the official frame edges and hide the open-board silhouette.
+            // Iteration 31: continuous low escarpments, not floating rock islands.
+            // Overlap certified PBR modules near valley height so the margins read as one world mass.
 
+            // West continuous bank.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left foreground PBR shoulder",new Vector3(-11.9f,.18f,-3.2f),10.2f,18f,new Color(.45f,.46f,.44f,1f));
+                "west low bank south",new Vector3(-14.2f,.45f,-2.2f),11.2f,18f,new Color(.43f,.44f,.42f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "right foreground PBR shoulder",new Vector3(12.7f,.08f,-2.4f),9.0f,208f,new Color(.45f,.46f,.44f,1f));
-
+                "west low bank centre",new Vector3(-14.0f,.72f,5.2f),10.6f,32f,new Color(.43f,.44f,.42f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "left mid PBR cliff",new Vector3(-12.8f,1.35f,4.6f),6.0f,88f,new Color(.44f,.45f,.43f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right mid PBR cliff",new Vector3(13.3f,1.15f,5.4f),5.5f,272f,new Color(.44f,.45f,.43f,1f));
+                "west low bank north",new Vector3(-13.2f,1.12f,11.8f),8.6f,92f,new Color(.42f,.43f,.41f,1f));
 
+            // East continuous bank, slightly lower and offset for asymmetry.
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "left rear PBR shelf",new Vector3(-10.9f,.95f,10.8f),7.0f,42f,new Color(.46f,.47f,.45f,1f));
+                "east low bank south",new Vector3(14.5f,.38f,-1.6f),10.6f,202f,new Color(.43f,.44f,.42f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "east low bank centre",new Vector3(14.2f,.64f,5.7f),10.0f,218f,new Color(.43f,.44f,.42f,1f));
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
+                "east low bank north",new Vector3(13.1f,1.02f,12.1f),8.2f,274f,new Color(.42f,.43f,.41f,1f));
 
-            // Iteration 18: authored edge occupation using shader-safe non-foliage props only.
-            // These enrich the world margins without widening the playable city or reintroducing unsafe tree LODs.
-            if(art!=null)
+            // Low rear shoulders close the open horizon without creating a second skyline.
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "rear west low shoulder",new Vector3(-7.8f,1.28f,16.2f),8.2f,26f,new Color(.43f,.44f,.42f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "rear east low shoulder",new Vector3(7.9f,1.20f,16.4f),8.0f,206f,new Color(.43f,.44f,.42f,1f));
+
+            if(art!=null && art.SlavicBoulder!=null)
             {
-                if(art.SlavicBoulder!=null)
-                {
-                    var rocks=new[]{
-                        new Vector3(-14.6f,.02f,-3.6f),new Vector3(-13.7f,.02f,1.2f),new Vector3(-14.4f,.02f,6.2f),new Vector3(-12.5f,.02f,11.8f),
-                        new Vector3(14.5f,.02f,-3.0f),new Vector3(13.6f,.02f,1.8f),new Vector3(14.2f,.02f,6.8f),new Vector3(12.7f,.02f,12.1f)
-                    };
-                    for(int i=0;i<rocks.Length;i++)
-                        AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
-                            1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
-                }
+                var rocks=new[]{
+                    new Vector3(-12.9f,.08f,.2f),new Vector3(-12.4f,.10f,6.3f),new Vector3(-11.8f,.12f,11.8f),
+                    new Vector3(13.0f,.08f,.6f),new Vector3(12.5f,.10f,6.7f),new Vector3(11.9f,.12f,12.0f)
+                };
+                for(int i=0;i<rocks.Length;i++)
+                    AddPrefab(root,art.SlavicBoulder,"bank transition boulder "+i,rocks[i],
+                        1.35f+(i%3)*.15f,.95f+(i%2)*.10f,(i*47)%360,new Color(.43f,.44f,.42f,1f),true);
             }
-
-            // Do not add pass-owned foliage: the base scene already provides vegetation and
-            // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
         }
 
         static void BuildMountainHorizon(Transform root)
