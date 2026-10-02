@@ -153,7 +153,7 @@ fi
 
 git add -A Unity/Assets/Eldoria/Resources/Valoria
 git add -A Unity/Assets/Eldoria/Resources/WorldPlayerCity
-git add -A Unity/Assets/Resources/Valoria
+if [[ -e "Unity/Assets/Resources/Valoria" ]]; then git add -A Unity/Assets/Resources/Valoria; fi
 git add pipeline/asset-library-canonicalization-audit.json
 
 git diff --cached --stat
