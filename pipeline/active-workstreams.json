@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T00:20:00+02:00",
+  "updated_at": "2026-10-02T22:45:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -200,7 +200,9 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameTerrainContinuityV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameTerrainContinuityGateV1.cs",
         ".github/workflows/valoria-full-frame-terrain-continuity-v1.yml",
-        "pipeline/valoria-full-frame-terrain-continuity-v1-request.json"
+        "pipeline/valoria-full-frame-terrain-continuity-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffSubstrateV1.cs",
+        "pipeline/valoria-cliff-substrate-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
