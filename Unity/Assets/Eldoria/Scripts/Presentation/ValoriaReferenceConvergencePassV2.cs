@@ -67,6 +67,17 @@ namespace Eldoria.Presentation
                 if(valleyDirt.HasProperty("_Metallic"))valleyDirt.SetFloat("_Metallic",0f);
                 if(valleyDirt.HasProperty("_Smoothness"))valleyDirt.SetFloat("_Smoothness",.015f);
             }
+            Material valleyWall=null;
+            if(valleyShader!=null)
+            {
+                valleyWall=new Material(valleyShader){name="Valoria Reference v2 · continuous valley wall"};
+                var wallColor=new Color(.255f,.285f,.29f,1f);
+                if(valleyWall.HasProperty("_BaseColor"))valleyWall.SetColor("_BaseColor",wallColor);
+                if(valleyWall.HasProperty("_Color"))valleyWall.SetColor("_Color",wallColor);
+                if(valleyWall.HasProperty("_Metallic"))valleyWall.SetFloat("_Metallic",0f);
+                if(valleyWall.HasProperty("_Smoothness"))valleyWall.SetFloat("_Smoothness",.018f);
+            }
+
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
                 new Color(.66f,.63f,.54f,1f),new Vector2(4.2f,4.2f),.014f,.90f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(4.2f,4.2f),.78f);
@@ -100,10 +111,44 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 24 proof: this heightfield is visual-only and carries no gameplay collider.
-                    // Hide its renderer so the enlarged valley sheet becomes the sole continuous world base.
-                    // This directly tests whether the remaining soft foreground corona belongs to this mesh.
-                    renderer.enabled=false;
+                    // Iteration 29: use the existing continuous visual heightfield as the world frame.
+                    // Remove its artificial front rise, then strengthen only side/rear relief so Valoria
+                    // reads carved into one mountain valley instead of sitting on an open board.
+                    renderer.enabled=true;
+                    renderer.sharedMaterial=valleyWall??valleyDirt??dirt;
+
+                    var mf=renderer.GetComponent<MeshFilter>();
+                    if(mf!=null && mf.sharedMesh!=null)
+                    {
+                        var source=mf.sharedMesh;
+                        var mesh=Object.Instantiate(source);
+                        mesh.name=source.name+" · convergence valley-frame";
+                        var verts=mesh.vertices;
+                        for(int i=0;i<verts.Length;i++)
+                        {
+                            var v=verts[i];
+
+                            // Flatten the authored foreground hump smoothly below the world floor.
+                            if(v.z<-4f)
+                            {
+                                float frontT=Mathf.Clamp01((-4f-v.z)/16f);
+                                v.y=Mathf.Lerp(v.y,-.18f,frontT);
+                            }
+
+                            // Continuous side/rear mass; keep the central inhabited corridor open.
+                            float side=Mathf.Clamp01((Mathf.Abs(v.x)-12f)/20f);
+                            float rear=Mathf.Clamp01((v.z-12f)/24f);
+                            float frontRelease=Mathf.Clamp01((v.z+10f)/8f);
+                            float extra=(side*side*4.2f+rear*rear*5.0f)*frontRelease;
+                            v.y+=extra;
+
+                            verts[i]=v;
+                        }
+                        mesh.vertices=verts;
+                        mesh.RecalculateNormals();
+                        mesh.RecalculateBounds();
+                        mf.sharedMesh=mesh;
+                    }
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
