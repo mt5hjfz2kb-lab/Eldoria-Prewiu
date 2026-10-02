@@ -13,6 +13,20 @@ namespace Eldoria.Presentation
         public static bool Enabled = true;
 
         static readonly Dictionary<string,Material> ImportedMaterialCache=new Dictionary<string,Material>();
+        public static int HeroRenderersTouched { get; private set; }
+        public static int DedicatedRenderersTouched { get; private set; }
+        public static int RescuedRenderersTouched { get; private set; }
+        public static int ImportedRenderersTouched { get; private set; }
+        public static int MidTierRenderersTouched { get; private set; }
+
+        public static void ResetDiagnostics()
+        {
+            HeroRenderersTouched=0;
+            DedicatedRenderersTouched=0;
+            RescuedRenderersTouched=0;
+            ImportedRenderersTouched=0;
+            MidTierRenderersTouched=0;
+        }
 
         public static void ApplyExistingScene(PlayerState state)
         {
@@ -34,6 +48,7 @@ namespace Eldoria.Presentation
                     result[i]=BuildPreservedMaterial(source[i],family,i);
                 renderer.sharedMaterials=result;
                 renderer.SetPropertyBlock(null);
+                ImportedRenderersTouched++;
             }
         }
 
@@ -43,6 +58,7 @@ namespace Eldoria.Presentation
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 if(renderer==null)continue;
+                MidTierRenderersTouched++;
                 var mats=renderer.sharedMaterials;
                 for(int i=0;i<mats.Length;i++)
                 {
@@ -69,6 +85,7 @@ namespace Eldoria.Presentation
                 var chain=Hierarchy(renderer.transform).ToLowerInvariant();
                 if(!chain.Contains("certified hero bastion"))continue;
                 ApplyRendererRole(renderer,"hero");
+                HeroRenderersTouched++;
             }
         }
 
@@ -82,7 +99,11 @@ namespace Eldoria.Presentation
                 if(chain.Contains("aserradero"))family="production";
                 else if(chain.Contains("cuartel"))family="military";
                 else if(chain.Contains("granero"))family="granary";
-                if(family!=null)ApplyRendererRole(renderer,family);
+                if(family!=null)
+                {
+                    ApplyRendererRole(renderer,family);
+                    DedicatedRenderersTouched++;
+                }
             }
         }
 
@@ -95,6 +116,7 @@ namespace Eldoria.Presentation
                 if(!chain.Contains("rescued"))continue;
                 if(chain.Contains("certified hero bastion"))continue;
                 ApplyRendererRole(renderer,"support");
+                RescuedRenderersTouched++;
             }
         }
 
