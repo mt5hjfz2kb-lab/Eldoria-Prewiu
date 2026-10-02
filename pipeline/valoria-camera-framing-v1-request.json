@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-framing-v1",
+  "objective": "Measure whether tighter orthographic framing materially improves Valoria's benchmark match by increasing city screen occupancy without changing gameplay or production camera yet.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "variants": 6,
+  "constraints": {
+    "camera_only": true,
+    "production_camera_unchanged": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature"
+  ]
+}
