@@ -90,6 +90,10 @@ namespace Eldoria.Presentation
             // Colliders, transforms, names, progression and interaction remain untouched.
             var exactNames=new HashSet<string>(StringComparer.Ordinal)
             {
+                // The broad inhabited-floor sheet duplicates the continuous valley underneath and
+                // exposes its near mesh boundary at zoom 12. Hide only its renderer; detailed terraces,
+                // circulation, colliders and hotspots remain authoritative and visible.
+                "VPD · inhabited mountain floor",
                 "VPD · west expansion terrain",
                 "VPD · east expansion terrain",
                 "VPD · future valley shelf",
