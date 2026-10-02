@@ -107,7 +107,7 @@ namespace Eldoria.Presentation
                     // official review cameras. This object is visual-only and owns no gameplay topology/collider.
                     renderer.sharedMaterial=valleyDirt??dirt;
                     var hs=renderer.transform.localScale;
-                    renderer.transform.localScale=new Vector3(hs.x*1.55f,hs.y,hs.z*1.55f);
+                    renderer.transform.localScale=new Vector3(hs.x*2.6f,hs.y,hs.z*2.6f);
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
