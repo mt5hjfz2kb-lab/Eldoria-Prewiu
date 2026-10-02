@@ -1534,8 +1534,7 @@ namespace Eldoria.Presentation
             var go=new GameObject("Valoria · Master Rebuild v2 · continuous landform");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=
-                ValoriaKit.SurfaceMaterial(new Color(.30f,.29f,.25f,1f),"earth",new Vector2(22f,20f));
+            go.AddComponent<MeshRenderer>().sharedMaterial=LandscapeMaterial();
         }
 
         static void HeroValleyTerrain()
