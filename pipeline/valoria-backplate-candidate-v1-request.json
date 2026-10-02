@@ -10,17 +10,17 @@
     {
       "asset": "kiara_1_dawn",
       "license": "CC0",
-      "slots": 3
+      "slots": 2
     },
     {
       "asset": "kiara_3_morning",
       "license": "CC0",
-      "slots": 3
+      "slots": 1
     },
     {
       "asset": "kiara_7_late-afternoon",
       "license": "CC0",
-      "slots": 2
+      "slots": 1
     }
   ],
   "lanes": [
@@ -36,10 +36,11 @@
     "no_paid_assets": true
   },
   "validation": [
-    "8_backplates",
+    "4_curated_backplates",
     "desktop_8.0",
     "mobile_8.0",
     "collider_hotspot_signature"
   ],
-  "triggered_at": "2026-10-02T23:13:00Z"
+  "triggered_at": "2026-10-02T23:13:00Z",
+  "retriggered_at": "2026-10-02T23:20:00Z"
 }
