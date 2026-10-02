@@ -76,8 +76,10 @@ namespace Eldoria.EditorTools
             SaveSet(c,"before",p,t);
 
             int suppressed=SuppressDisconnectedResidue();
+            int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int premium=ReplaceSecondaryArchitecture(root.transform);
             int ruins=AddBuriedSideRuins(root.transform);
+            int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -87,6 +89,8 @@ namespace Eldoria.EditorTools
             File.WriteAllText(Folder+"/evidence.json",$"{{\n"+
                 $"  \"collider_hotspot_signature_equal\": true,\n"+
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
+                $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
+                $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
@@ -139,6 +143,85 @@ namespace Eldoria.EditorTools
                     r.enabled=false;
                     count++;
                 }
+            }
+            return count;
+        }
+
+        static int SuppressLowerPeripheralBoard()
+        {
+            int count=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                string chain=Chain(r.transform);
+
+                if(chain.Contains("backplate")||chain.Contains("bastion")||
+                   chain.Contains("aserradero")||chain.Contains("cuartel")||
+                   chain.Contains("granary")||chain.Contains("granero"))continue;
+
+                bool presentation=chain.Contains("valoria ·")||chain.Contains("vpd ·")||
+                    chain.Contains("assetlibrary")||chain.Contains("mid-tier");
+                if(!presentation)continue;
+
+                bool lowerPeripheral=b.center.z<-4.35f && Mathf.Abs(b.center.x)>4.65f && b.center.y<1.35f;
+                bool legacyBoard=chain.Contains("lower cliff authored rock")||
+                    chain.Contains("foreground edge")||
+                    chain.Contains("terrainterrace")||
+                    chain.Contains("expansion edge geology")||
+                    chain.Contains("environment uplift · rock");
+
+                bool nakedEdge=(chain.Contains("street edge")||chain.Contains("street transition")) &&
+                    Mathf.Abs(b.center.x)>6.5f;
+
+                if((lowerPeripheral&&legacyBoard)||nakedEdge)
+                {
+                    r.enabled=false;
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static int NormalizeLowerCitySurfaces()
+        {
+            int count=0;
+            var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "rock",new Color(.38f,.37f,.33f,1f),new Vector2(2.7f,2.7f),.018f,.93f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.37f,.36f,.32f,1f),"stone",new Vector2(2.7f,2.7f));
+            var earth=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "dirt",new Color(.35f,.30f,.23f,1f),new Vector2(3.1f,3.1f),.014f,.94f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.34f,.29f,.22f,1f),"earth",new Vector2(3.1f,3.1f));
+
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                string chain=Chain(r.transform);
+
+                if(chain.Contains("backplate")||chain.Contains("bastion hero")||
+                   chain.Contains("bastion · dedicated")||chain.Contains("banner")||
+                   chain.Contains("flag")||chain.Contains("aserradero")||
+                   chain.Contains("cuartel")||chain.Contains("granary")||
+                   chain.Contains("granero")||chain.Contains("premium secondary"))
+                    continue;
+
+                bool presentation=chain.Contains("valoria ·")||chain.Contains("vpd ·")||
+                    chain.Contains("assetlibrary");
+                if(!presentation||b.center.y>3.0f)continue;
+
+                bool surface=chain.Contains("rock")||chain.Contains("geology")||
+                    chain.Contains("terrain")||chain.Contains("cliff")||
+                    chain.Contains("platform")||chain.Contains("terrace")||
+                    chain.Contains("support")||chain.Contains("foundation");
+                if(!surface)continue;
+
+                var target=(chain.Contains("earth")||chain.Contains("mud")||
+                    chain.Contains("groundkit")||chain.Contains("court"))?earth:rock;
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=target;
+                r.sharedMaterials=mats;
+                count++;
             }
             return count;
         }
