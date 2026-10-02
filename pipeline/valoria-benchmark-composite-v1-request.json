@@ -34,6 +34,18 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T21:34:30Z",
-  "backdrop_mode": "high_horizon_band"
+  "triggered_at": "2026-10-02T21:48:00Z",
+  "backdrop_mode": "high_horizon_band",
+  "backdrop_crop": {
+    "x": 0.55,
+    "y": 0.52,
+    "w": 0.34,
+    "h": 0.22,
+    "height": 15,
+    "vertical_offset": 7.5
+  },
+  "suppressed_legacy": [
+    "Valoria · rescued hero flank",
+    "VPD · upper dwelling*"
+  ]
 }
