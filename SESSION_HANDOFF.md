@@ -365,3 +365,13 @@ Operational interpretation:
 
 Current workstream: `valoria-full-frame-convergence-iteration-1` in `pipeline/active-workstreams.json`.
 Repo + live workflow/artifact evidence remain authoritative over chat memory.
+
+
+## Owner visual-quality directive (2026-10-02)
+- The owner-approved Valoria reference image is the binding quality target. Treat it as a concrete production objective, not loose inspiration.
+- Operate as project lead/programming lead for visual convergence: choose and execute the technical route needed to close the integrated-frame gap while preserving gameplay authority.
+- When a tool, Unity feature, Blender technique, rendering method, asset-processing method or external zero/low-cost resource is not sufficiently understood, research the exact usage before deciding that it cannot help.
+- Do not present technical progress, asset creation, workflow success or local polish as visual success unless the official integrated frame materially improves against the approved reference.
+- Continue routine reversible work automatically through code, CI, artifact review, repair, retry and the next full-frame iteration. Stop only for a genuine owner-only blocker, irreversible/paid authorization, or a product decision with materially different outcomes.
+- If the current stack reaches a demonstrated ceiling below the approved target, state that clearly and identify the concrete limiting capability. Then provide and, when authorized and safe, execute the smallest viable solution: new geometry/family, better source asset, rendering/camera change, 2.5D/backplate support, material/lighting pipeline upgrade, performance-budget change, or another evidenced route.
+- On every new chat/resume, reconstruct from live `main`, `pipeline/active-workstreams.json`, current requests/workflows and latest run artifacts. Do not reconstruct production state from conversational memory.
