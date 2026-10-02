@@ -19,10 +19,11 @@ namespace Eldoria.Presentation
             root.SetParent(parent,true);
 
             ReplaceWithCertifiedHeroBastion(root);
+            RefineLegacyHeroSurface();
             ReassembleHeroApproach(root);
             ReassembleMidTierCore(root);
-            ReassembleCompactCoreArchitecture(root);
             ReassembleTerrainSeams(root);
+            RefineAtmosphere();
             AddRestrainedOccupation(root);
             DisableGameplay(root.gameObject);
         }
@@ -140,15 +141,83 @@ namespace Eldoria.Presentation
 
         static void ReassembleHeroApproach(Transform root)
         {
-            // Use certified masonry as restrained retaining structure, not bright freestanding props.
+            // Iteration 3: spend the geometry budget where it changes the full-frame read.
+            // Build a stepped fortress plinth from certified historical modules instead of adding houses.
+            HideNamedRenderers("Valoria · rescued hero flank");
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "Hero lower terrace west",new Vector3(-3.85f,1.18f,5.95f),5.05f,12f,SurfaceFamily.Terrain);
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "Hero lower terrace east",new Vector3(3.85f,1.18f,6.02f),5.05f,168f,SurfaceFamily.Terrain);
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "Hero upper terrace west",new Vector3(-2.85f,2.48f,7.10f),4.15f,98f,SurfaceFamily.Terrain);
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "Hero upper terrace east",new Vector3(2.85f,2.48f,7.16f),4.15f,262f,SurfaceFamily.Terrain);
+
             AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "Hero retaining wall west",new Vector3(-4.65f,1.22f,6.05f),2.75f,88f,SurfaceFamily.Stone);
+                "Hero retaining wall west",new Vector3(-3.95f,.78f,5.42f),4.25f,88f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/HighStraightWall",
-                "Hero retaining wall east",new Vector3(4.65f,1.22f,6.10f),2.75f,268f,SurfaceFamily.Stone);
+                "Hero retaining wall east",new Vector3(3.95f,.78f,5.48f),4.25f,268f,SurfaceFamily.Stone);
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
+                "Hero retaining corner west",new Vector3(-6.05f,.78f,5.80f),2.35f,88f,SurfaceFamily.Stone);
+            AddResource(root,"Valoria/StoneArchitectureKit_v1/CornerWallL",
+                "Hero retaining corner east",new Vector3(6.05f,.78f,5.86f),2.35f,268f,SurfaceFamily.Stone);
+
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam west",new Vector3(-3.72f,.92f,4.78f),1.72f,42f,SurfaceFamily.Stone);
+                "Hero approach seam west",new Vector3(-3.15f,.58f,4.42f),2.15f,42f,SurfaceFamily.Stone);
             AddResource(root,"Valoria/StoneArchitectureKit_v1/RockToWallTransition",
-                "Hero approach seam east",new Vector3(3.72f,.92f,4.84f),1.72f,222f,SurfaceFamily.Stone);
+                "Hero approach seam east",new Vector3(3.15f,.58f,4.48f),2.15f,222f,SurfaceFamily.Stone);
+
+            // Recovered defensive flank family: paired visual-only masses complete the fortress silhouette.
+            AddResource(root,"Valoria/Rescued/TowerWallRock",
+                "Hero defensive flank west",new Vector3(-5.75f,1.02f,7.05f),3.15f,18f,SurfaceFamily.Stone);
+            AddResource(root,"Valoria/Rescued/TowerWallRock",
+                "Hero defensive flank east",new Vector3(5.75f,1.02f,7.05f),3.15f,198f,SurfaceFamily.Stone);
+        }
+
+        static void HideNamedRenderers(string fragment)
+        {
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled)continue;
+                for(var t=r.transform;t!=null;t=t.parent)
+                    if(t.name.IndexOf(fragment,StringComparison.OrdinalIgnoreCase)>=0){r.enabled=false;break;}
+            }
+        }
+
+        static void RefineLegacyHeroSurface()
+        {
+            // If the certified generated Hero Bastion is unavailable in an ordinary checkout,
+            // refine the existing production Bastion instead of inventing replacement geometry.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain=Hierarchy(r.transform).ToLowerInvariant();
+                if(!chain.Contains("bastion"))continue;
+                if(chain.Contains("banner")||chain.Contains("flag"))continue;
+
+                var block=new MaterialPropertyBlock();r.GetPropertyBlock(block);
+                bool deep=chain.Contains("plinth")||chain.Contains("backing")||chain.Contains("rubble")||chain.Contains("collapse");
+                bool dark=chain.Contains("roof")||chain.Contains("crown")||chain.Contains("slit");
+                Color tint=deep?new Color(.43f,.42f,.39f,1f):
+                           dark?new Color(.35f,.35f,.34f,1f):
+                           new Color(.67f,.65f,.60f,1f);
+                var mat=r.sharedMaterial;
+                if(mat!=null&&mat.HasProperty("_BaseColor"))block.SetColor("_BaseColor",tint);
+                else if(mat!=null&&mat.HasProperty("_Color"))block.SetColor("_Color",tint);
+                if(mat!=null&&mat.HasProperty("_Smoothness"))block.SetFloat("_Smoothness",.06f);
+                r.SetPropertyBlock(block);
+            }
+        }
+
+        static void RefineAtmosphere()
+        {
+            // Return the compact pass to the frozen Visual Formula depth range:
+            // clearer architecture without removing atmospheric separation.
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogStartDistance=30f;
+            RenderSettings.fogEndDistance=68f;
         }
 
         static void ReassembleMidTierCore(Transform root)
