@@ -91,6 +91,21 @@ namespace Eldoria.Presentation
             go.transform.localScale*=span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));
             b=Bounds(go);
             go.transform.position+=new Vector3(anchor.x-b.center.x,topY-b.max.y,anchor.z-b.center.z);
+
+            // TerrainTerraceKit prefabs may retain very dark imported materials. These large
+            // presentation-only shelves dominate the official camera, so force the same
+            // neutral PBR rock family used by the rest of Valoria instead of inheriting
+            // importer color factors.
+            var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "rock",new Color(.60f,.59f,.54f,1f),new Vector2(3.4f,3.4f),.025f,1.04f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.55f,.54f,.50f,1f),"stone",new Vector2(3.4f,3.4f));
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=rock;
+                renderer.sharedMaterials=mats;
+            }
+
             go.transform.SetParent(root,true);DisableGameplay(go);AddedTerracePieces++;
         }
 
