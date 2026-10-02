@@ -2,10 +2,15 @@ name: "[EXPERIMENT] Valoria Compact Footprint Reframe v1"
 on:
   push:
     branches: ['visual-proof/valoria-compact-footprint-reframe-v1']
+    paths:
+      - 'pipeline/art-production-request.json'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaCompactFootprintReframeGate.cs'
+      - '.github/workflows/valoria-compact-footprint-reframe-v1.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: valoria-compact-footprint-reframe-v1
   cancel-in-progress: true
@@ -48,6 +53,7 @@ jobs:
           foreach($n in @('before-19.png','before-12.png','before-9.png','before-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','evidence.json')){$f=Join-Path $folder $n;if(-not(Test-Path $f)){throw "Missing $n"}}
           Get-Content (Join-Path $folder 'evidence.json')
       - uses: actions/upload-artifact@v4
+        id: upload
         if: always()
         with:
           name: valoria-compact-footprint-reframe-v1-${{ github.run_id }}
@@ -57,3 +63,28 @@ jobs:
             ${{ runner.temp }}/Valoria-CompactFootprint-v1.log
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Persist run pointer
+        if: always()
+        shell: powershell
+        run: |
+          $doc="$env:GITHUB_WORKSPACE\docs\VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RUN_POINTER.md"
+          $evidence="$env:GITHUB_WORKSPACE\Unity\ValoriaCompactFootprintReframeCaptures\evidence.json"
+          $status=if(Test-Path $evidence){Get-Content $evidence -Raw}else{'evidence unavailable'}
+          @"
+# VALORIA COMPACT FOOTPRINT REFRAME v1 — RUN POINTER
+
+Run: `${env:GITHUB_RUN_ID}`
+Artifact: `${{ steps.upload.outputs.artifact-id }}`
+Commit: `${env:GITHUB_SHA}`
+
+## Evidence
+
+```json
+$status
+```
+"@ | Set-Content -Path $doc -Encoding utf8
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RUN_POINTER.md
+          if(-not (git diff --cached --quiet)){git commit -m "ci: record compact footprint proof run [skip ci]";git push}
