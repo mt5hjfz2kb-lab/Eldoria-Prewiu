@@ -26,7 +26,7 @@ namespace Eldoria.Presentation
             var tex=Resources.Load<Texture2D>("Valoria/SkyCandidates/alps_field");
             if(tex==null)return false;
 
-            var shader=Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Texture");
+            var shader=Shader.Find("Unlit/Texture") ?? Shader.Find("Universal Render Pipeline/Unlit");
             if(shader==null)return false;
 
             var root=new GameObject(RootName).transform;
@@ -39,7 +39,7 @@ namespace Eldoria.Presentation
             var dir=(new Vector3(0f,3.15f,5.8f)-camera.transform.position).normalized;
             go.transform.position=camera.transform.position+dir*52f;
             go.transform.rotation=Quaternion.LookRotation(dir,camera.transform.up);
-            go.transform.localScale=new Vector3(58f,32.5f,1f);
+            go.transform.localScale=new Vector3(62f,35f,1f);
 
             material=new Material(shader){name="Valoria · Alps Field backdrop material"};
             if(material.HasProperty("_BaseMap"))material.SetTexture("_BaseMap",tex);
