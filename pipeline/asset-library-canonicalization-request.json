@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "asset-library-canonicalization-v1",
+  "enabled": true,
+  "requested_at": "2026-10-02T10:40:00Z",
+  "purpose": "Recover certified historical GLBs, normalize canonical Unity Resources placement, preserve Mid-Tier GUIDs, generate stable metadata, and emit an auditable GLB inventory.",
+  "no_visual_changes": true,
+  "tripo_credits": 0
+}
