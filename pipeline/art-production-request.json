@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-master-visual-rebuild-v2",
   "asset_or_sector": "Valoria master visual rebuild v2 blank-canvas composition",
   "profile": "environment_composition",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Blank-canvas visual composition using the existing library only. Preserve gameplay/topology. Design mountain/terraces/circulation/reserved growth plots first; existing asset positions have no authority. No new geometry and zero Tripo spend."
+  "notes": "Blank-canvas visual composition using the existing library only. Preserve gameplay/topology. Design mountain/terraces/circulation/reserved growth plots first; existing asset positions have no authority. No new geometry and zero Tripo spend. Completed and parked after certified run 36988913956; workflow frozen to manual."
 }
