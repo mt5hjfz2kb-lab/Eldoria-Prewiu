@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-open-valley-composition-v1",
+  "objective": "Open the rear Valoria valley by suppressing only visual future-reserve shelves plus historical full-frame skins, then evaluate Alps Field across rotations while preserving all physical reserves/gameplay.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "terrain_and_transitions",
+    "atmosphere_horizon_depth",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_physical_reserves": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "rotations_0_45_90_135_180_225_270_315",
+    "12",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
