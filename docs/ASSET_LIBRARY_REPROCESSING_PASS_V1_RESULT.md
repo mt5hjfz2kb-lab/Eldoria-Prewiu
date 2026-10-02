@@ -78,7 +78,7 @@ The geometry increase is justified by a clearly stronger full-frame hero silhoue
 | Terrain & Terrace: BroadRockPlatform | **KEEP / REASSEMBLE** | Production-safe when top-aligned/buried. |
 | Terrain & Terrace: SteppedRockTerrace | **KEEP / REASSEMBLE** | Production-safe when top-aligned/buried. |
 | Terrain & Terrace groups 02–06 | **REPLACE** | Historical visual rejects; do not promote. |
-| TowerWallRock | **KEEP / REASSEMBLE** | Recovered as paired visual-only defensive flank/support. |
+| TowerWallRock | **KEEP / DEFER placement** | Production-safe historical defense vocabulary, but the final accepted hero-core pass suppresses the older flank instance so it does not compete with the recovered Hero Bastion silhouette. |
 | ResidentialTerraceRock | **KEEP** | Production-proven; not expanded because compact-growth logic forbids lateral housing fill. |
 | RockTerrainSeamFiller | **KEEP** | Production-proven seam support. |
 | TerraceStairRock | **KEEP / DEFER placement** | Reusable but redundant against the certified stair route in this core. |
@@ -97,7 +97,7 @@ The geometry increase is justified by a clearly stronger full-frame hero silhoue
 1. Hero Bastion + fortress approach.
 2. Stone Architecture retaining/seam system.
 3. Terrain & Terrace buried support system.
-4. TowerWallRock defensive flank vocabulary.
+4. Existing ground/retaining support around the central vertical core without adding lateral housing.
 
 ### REFINE
 1. Certified Hero Bastion surface preservation / production seating.
@@ -127,7 +127,7 @@ Recovered/promoted for production use:
 - RockToWallTransition;
 - BroadRockPlatform;
 - SteppedRockTerrace;
-- TowerWallRock;
+- TowerWallRock remains reusable historical inventory, but is **not** part of the final accepted Hero-core composition;
 - current compact-core Mid-Tier family where already appropriate.
 
 ## Assets that still require replacement
