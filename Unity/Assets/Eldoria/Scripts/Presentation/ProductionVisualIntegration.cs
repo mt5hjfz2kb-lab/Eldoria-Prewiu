@@ -1340,7 +1340,8 @@ namespace Eldoria.Presentation
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 string chain="";
                 for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
-                bool uiOrActor=chain.Contains("hero")||chain.Contains("archer")||chain.Contains("worker");
+                bool uiOrActor=chain.Contains("archer")||chain.Contains("worker")||chain.Contains("sir aldric")||
+                    chain.Contains("|aldric ")||chain.Contains("worldhotspot")||chain.Contains("actor");
                 bool target=chain.Contains("target")||chain.Contains("hotspot");
                 bool ourLayer=chain.Contains("master rebuild v2");
                 if(ourLayer||uiOrActor||target)continue;
@@ -1357,6 +1358,10 @@ namespace Eldoria.Presentation
                 if(l==null||!l.enabled)continue;
                 if(l.name!="Valoria · amber dusk")l.enabled=false;
             }
+
+            // Rebuild the natural ground after blanking inherited presentation so the city sits in a valley,
+            // not on the legacy flat board. This reuses the existing procedural environment tool; no gameplay collision.
+            HeroValleyTerrain();
 
             // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
