@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: eldoria-asset-library-reprocessing-v1
+  group: eldoria-asset-library-reprocessing-v1-dedicated
   cancel-in-progress: true
 
 jobs:
