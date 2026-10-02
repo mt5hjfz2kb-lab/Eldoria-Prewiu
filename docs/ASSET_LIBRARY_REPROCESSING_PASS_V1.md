@@ -75,3 +75,10 @@ Same-scene camera-matched BEFORE/AFTER:
 - mobile 390x844
 
 The collision/hotspot signature must be byte-for-byte identical before/after. Visual verdict is separate from technical verdict.
+
+
+## Completion
+
+Execution is closed. Final canonical result: `docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md`.
+
+Final proof: run `36994020902` / artifact `11220733685`. Verdict: **TECH PASS / VISUAL PASS for the reprocessing objective**. Exact gameplay collider/hotspot signature remained unchanged and Tripo spend was 0. The certified Hero Bastion was recovered from historical artifact `11143009723` and persisted to production Resources by promotion run `36994561634`, exact SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`.
