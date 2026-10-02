@@ -53,24 +53,12 @@ namespace Eldoria.Presentation
 
         static void RefitWorldGroundSurfaces()
         {
-            // Iteration 15: remove the board/grid read at its source.
-            // Large irregular ground meshes inherited the generic procedural stone pattern;
-            // at world scale it tiles visibly. Re-skin visual renderers only; geometry,
-            // colliders, hotspots and gameplay topology remain untouched.
-            // Iteration 18: the world-scale valley floor must not expose a repeated texture pattern.
-            // Use a plain matte lit material for the distant/broad sheet; keep PBR detail only on nearby terraces.
-            Material valley=null;
-            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            if(shader!=null)
-            {
-                valley=new Material(shader){name="Valoria Reference v2 · matte valley floor"};
-                var valleyColor=new Color(.30f,.295f,.265f,1f);
-                if(valley.HasProperty("_BaseColor"))valley.SetColor("_BaseColor",valleyColor);
-                if(valley.HasProperty("_Color"))valley.SetColor("_Color",valleyColor);
-                if(valley.HasProperty("_Metallic"))valley.SetFloat("_Metallic",0f);
-                if(valley.HasProperty("_Smoothness"))valley.SetFloat("_Smoothness",.02f);
-            }
-
+            // Iteration 19: same dirt family everywhere, with world-scale-aware tiling.
+            // IrregularGround uses 0..1 UVs regardless of physical size, so the 200x180 valley
+            // needs roughly 8x the tiling of the ~24x26 inhabited floor to keep texture frequency coherent.
+            var valleyDirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
+                new Color(.66f,.63f,.54f,1f),new Vector2(34f,34f),.014f,.90f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(34f,34f),.78f);
             var dirt=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",
                 new Color(.66f,.63f,.54f,1f),new Vector2(4.2f,4.2f),.014f,.90f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.29f,.24f,1f),"earth",new Vector2(4.2f,4.2f),.78f);
@@ -84,11 +72,9 @@ namespace Eldoria.Presentation
                 string n=renderer.gameObject.name;
                 if(n=="Valoria · valley floor")
                 {
-                    renderer.sharedMaterial=valley??dirt;
-                    // Bring the broad visual valley sheet closer to the inhabited-floor elevation.
-                    // It has no gameplay collider; this removes the visible artificial step at the foreground overlap.
+                    renderer.sharedMaterial=valleyDirt;
                     var p=renderer.transform.position;
-                    renderer.transform.position=new Vector3(p.x,.015f,p.z);
+                    renderer.transform.position=new Vector3(p.x,.045f,p.z);
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=dirt;
