@@ -116,12 +116,12 @@ namespace Eldoria.Presentation
         {
             if(source==null)return;
             var go=ValoriaKit.BenchmarkPieceIntegrated("Valoria · Residual Cleanup · rock "+role,source,p,footprint,height,
-                Quaternion.Euler(0f,yaw,0f),new Color(.51f,.52f,.48f,1f));
+                Quaternion.Euler(0f,yaw,0f),new Color(.40f,.41f,.37f,1f));
             if(go==null)return;
 
             var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.53f,.53f,.49f,1f),new Vector2(2.8f,2.8f),.025f,1.02f)
-                ?? ValoriaKit.SurfaceMaterial(new Color(.50f,.50f,.46f,1f),"stone",new Vector2(2.8f,2.8f));
+                "rock",new Color(.41f,.41f,.37f,1f),new Vector2(2.8f,2.8f),.025f,1.02f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.38f,.38f,.34f,1f),"stone",new Vector2(2.8f,2.8f));
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var mats=renderer.sharedMaterials;
