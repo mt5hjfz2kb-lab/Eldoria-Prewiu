@@ -1,3 +1,16 @@
+## Asset Library Reprocessing Pass v1 — 2026-10-02
+
+- **TECH PASS / VISUAL PASS for the reprocessing objective**.
+- Final real-Valoria proof: run **36994020902**, artifact **11220733685**, matched 19/12/9/mobile.
+- Collider/hotspot signature is exactly unchanged; gameplay topology=false.
+- Toolchain v2 route remained zero-spend: `environment_composition` / `environment_surface`, `geometry_gap_proven=false`, no Tripo generation, **0 credits**.
+- Certified Hero Bastion v1 is now recovered as the production hero visual: 49,800 tris, 13,257,704 bytes, SHA-256 `afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c`.
+- Exact production promotion: run **36994561634 SUCCESS**, commit **e7ae0e1a91346a6003035e76c0e68927939b8ccb**.
+- Reuse also covers certified Stone Architecture 01/02/05, Terrain/Terrace Stepped/Broad supports and restrained Mid-Tier D1 integration.
+- Rejected Stone 03/04/06/07/08 and Terrain groups 02–06 remain replacement candidates; do not reopen automatic salvage.
+- Current benchmark gap has shifted downward: lower/middle-city architectural finish, surface richness and district coherence now lag behind the recovered hero anchor.
+- Canonical result: `docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md`.
+
 ## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
 
 - Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
