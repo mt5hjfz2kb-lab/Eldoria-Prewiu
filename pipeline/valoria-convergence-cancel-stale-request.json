@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Jagged run e28f0c predates integrated residue/artifact cleanup at 420ab26a. Prioritize the authoritative cleaned Strongest Composite; background alternatives must be rebased onto the same clean state before comparison.",
+  "reason": "Release runner from superseded full-frame composites; newest baseline and Jagged gates include disconnected-peripheral structural cleanup.",
   "runs": [
-    37073083726
+    37073385838,
+    37073145668
   ],
   "keep_runs": [
     37073145668
   ],
-  "triggered_at": "2026-10-02T22:36:00Z"
+  "triggered_at": "2026-10-03T00:09:00+02:00"
 }
