@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Supersede prior strongest composite 337e with integrated cleanup composite 420ab; release runner for authoritative full-frame validation.",
+  "reason": "Integrated Strongest Composite now contains MaterialResidueCleanupV2 and FullFrameArtifactCleanupV1. Cancel isolated residue proof to reserve the single Windows runner for authoritative full-frame evidence.",
   "runs": [
-    37073034386
+    37073121595
   ],
-  "triggered_at": "2026-10-03T00:08:00+02:00"
+  "triggered_at": "2026-10-03T00:11:00+02:00"
 }
