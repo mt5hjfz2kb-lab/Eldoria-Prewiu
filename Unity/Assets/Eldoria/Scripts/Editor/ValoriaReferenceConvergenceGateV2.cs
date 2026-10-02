@@ -8,6 +8,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 // Runner arbitration checkpoint v5: Editor-only convergence changes must not reserve the heavy Unity slice runner.
+// Runner arbitration checkpoint v3: convergence gate changes are owned by the dedicated lightweight proof workflow.
 namespace Eldoria.EditorTools
 {
     public static class ValoriaReferenceConvergenceGateV2
