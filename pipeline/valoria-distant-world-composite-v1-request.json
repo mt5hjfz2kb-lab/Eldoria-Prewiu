@@ -35,5 +35,6 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T21:10:00Z"
+  "triggered_at": "2026-10-02T21:15:00Z",
+  "refinement": "recover distant landscape detail + harmonize large visual ground skins"
 }
