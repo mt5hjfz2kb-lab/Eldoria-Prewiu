@@ -180,8 +180,19 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 13: no explicit legacy horizon meshes.
-            // Atmospheric depth carries the distant frame until a dedicated production mountain family exists.
+            // Iteration 26: distant world mass only. Keep the Bastion silhouette open while
+            // breaking the empty flat-valley horizon at strategic zooms.
+            var tint=new Color(.31f,.35f,.36f,1f);
+            var a=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · far mountain west",
+                new Vector3(-25.5f,-3.8f,31.5f),13.5f,9.2f,Quaternion.Euler(0,18f,0),tint);
+            var b=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain west",
+                new Vector3(-12.5f,-4.1f,35.5f),12.0f,8.5f,Quaternion.Euler(0,-12f,0),tint);
+            var c=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain east",
+                new Vector3(14.2f,-4.0f,35.0f),12.4f,8.8f,Quaternion.Euler(0,14f,0),tint);
+            var d=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · far mountain east",
+                new Vector3(27.0f,-3.7f,31.8f),13.0f,9.0f,Quaternion.Euler(0,-25f,0),tint);
+            foreach(var go in new[]{a,b,c,d})
+                if(go!=null)go.transform.SetParent(root,true);
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
