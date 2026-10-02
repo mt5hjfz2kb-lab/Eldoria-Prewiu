@@ -27,6 +27,7 @@ namespace Eldoria.Presentation
             BuildMonumentalFrame(root,art);
             BuildCliffEnvelope(root);
             RefitWorldGroundSurfaces();
+            SuppressPrototypeGroundSurfaces();
             BuildLateralMargins(root,art);
             BuildMountainHorizon(root);
             BuildVegetationDepth(root,art);
