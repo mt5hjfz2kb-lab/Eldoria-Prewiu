@@ -1,77 +1,20 @@
-name: Asset Deep Uplift Blender
+name: "[LEGACY] Asset Deep Uplift Blender"
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - visual-proof/asset-deep-uplift-v1-r3
-    paths:
-      - pipeline/asset-deep-uplift-run-request.json
-      - .github/workflows/asset-deep-uplift-blender.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  persist-candidates:
+  evidence-note:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: visual-proof/asset-deep-uplift-v1-r3
-      - name: Guard request
+      - name: Explain parked workflow
         shell: bash
         run: |
-          test "$(jq -r '.enabled' pipeline/asset-deep-uplift-run-request.json)" = "true"
-          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "persist_valid_candidates"
-          test "$(jq -r '.tripo_credits' pipeline/asset-deep-uplift-run-request.json)" = "0"
-      - name: Install Blender
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
-          blender --version
-      - name: Rebuild and verify candidates
-        shell: bash
-        run: |
-          root="$(jq -r '.candidate_root' pipeline/asset-deep-uplift-run-request.json)"
-          profile="$(jq -r '.surface_profile' pipeline/asset-deep-uplift-run-request.json)"
-          target="$(jq -r '.target_triangles' pipeline/asset-deep-uplift-run-request.json)"
-          mintri="$(jq -r '.min_triangles' pipeline/asset-deep-uplift-run-request.json)"
-          maxtri="$(jq -r '.max_triangles' pipeline/asset-deep-uplift-run-request.json)"
-          mkdir -p "$root"
-          jq -c '.assets[]' pipeline/asset-deep-uplift-run-request.json | while read -r row; do
-            asset="$(echo "$row" | jq -r '.asset')"
-            input="$(echo "$row" | jq -r '.input')"
-            expected_source="$(echo "$row" | jq -r '.source_sha256')"
-            expected_candidate="$(echo "$row" | jq -r '.expected_candidate_sha256')"
-            actual_source="$(sha256sum "$input" | cut -d' ' -f1)"
-            test "$actual_source" = "$expected_source"
-            blender --background --python tools/tripo_module_blender.py -- \
-              --input "$input" \
-              --output "$root/${asset}-PBRRescue.glb" \
-              --report "$root/${asset}-PBRRescue-report.json" \
-              --surface-rescue-profile "$profile" \
-              --target-tris "$target" \
-              --min-tris "$mintri" \
-              --max-tris "$maxtri"
-            actual_candidate="$(sha256sum "$root/${asset}-PBRRescue.glb" | cut -d' ' -f1)"
-            test "$actual_candidate" = "$expected_candidate"
-            printf '%s  %s\n' "$actual_source" "$input" > "$root/${asset}-source.sha256"
-            printf '%s  %s\n' "$actual_candidate" "$root/${asset}-PBRRescue.glb" > "$root/${asset}-candidate.sha256"
-          done
-      - name: Persist candidates on branch
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pipeline/candidates/asset-deep-uplift-v1
-          git diff --cached --quiet && exit 0
-          git commit -m "art: persist deep uplift PBR candidates"
-          git push origin HEAD:visual-proof/asset-deep-uplift-v1-r3
-      - uses: actions/upload-artifact@v4
-        with:
-          name: asset-deep-uplift-persisted-candidates
-          path: pipeline/candidates/asset-deep-uplift-v1/
-          if-no-files-found: error
+          echo "Asset Deep Uplift v1 hosted-Blender execution is parked."
+          echo "Read docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md and tools/asset-deep-uplift/README.md."
+          echo "The two valid candidates are persisted under pipeline/candidates/asset-deep-uplift-v1/."
+          echo "Final production promotion requires the official Unity 19/12/9/mobile gate."
