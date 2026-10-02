@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-convergence-iteration-1",
+  "objective": "Execute the first canonical full-frame batch against the approved Eldoria visual benchmark, attacking dominant zero-credit whole-frame gaps together rather than as micro-passes.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "vegetation_and_environment",
+    "corruption_world_threat"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_world_frame_v1": true,
+    "preserve_compact_footprint": true,
+    "city_footprint_expansion": false,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
