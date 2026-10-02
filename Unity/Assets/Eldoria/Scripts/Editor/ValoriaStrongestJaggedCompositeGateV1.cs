@@ -98,6 +98,7 @@ namespace Eldoria.EditorTools
                 "  \"source\": \"Wikimedia Commons - Jagged peaks over a valley\",\n"+
                 "  \"license\": \"CC0\",\n"+
                 "  \"normalized_known_dark_family_slots\": "+normalizedDarkFamilies+",\n"+
+                "  \"material_residue_disconnected_suppressed\": "+ValoriaMaterialResidueCleanupV2.SuppressedDisconnectedPeripheral+",\n"+
                 "  \"material_residue_environment_slots\": "+ValoriaMaterialResidueCleanupV2.NormalizedEnvironment+",\n"+
                 "  \"artifact_rock_renderers\": "+ValoriaFullFrameArtifactCleanupV1.RockRenderersNormalized+",\n"+
                 "  \"artifact_terrace_renderers\": "+ValoriaFullFrameArtifactCleanupV1.TerraceRenderersNormalized+",\n"+
