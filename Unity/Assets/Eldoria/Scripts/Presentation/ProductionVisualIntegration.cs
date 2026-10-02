@@ -1122,7 +1122,7 @@ namespace Eldoria.Presentation
                 light.transform.rotation=Quaternion.Euler(50f,-31f,0);
             }
 
-            MasterRebuildTerrain();
+            HeroValleyTerrain();
 
             // Mid-distance geology creates a second depth plane between the inhabited city and the far
             // VisualWorld mountains. Keep this layer on the already-proven neutral rock inventory:
@@ -1490,9 +1490,10 @@ namespace Eldoria.Presentation
 
         static void MasterRebuildTerrain()
         {
-            // Visual-only blank-canvas landform. Gameplay floors/colliders stay authoritative above it.
-            const int nx=49,nz=49;
-            const float minX=-40f,maxX=40f,minZ=-31f,maxZ=45f;
+            // Blank-canvas visual landform only. It is intentionally larger than every official camera
+            // so zoom 19 never reveals a rectangular board edge. Gameplay collision remains untouched.
+            const int nx=61,nz=61;
+            const float minX=-78f,maxX=78f,minZ=-72f,maxZ=82f;
             var vertices=new Vector3[nx*nz];
             var uv=new Vector2[vertices.Length];
             var triangles=new int[(nx-1)*(nz-1)*6];
@@ -1504,21 +1505,21 @@ namespace Eldoria.Presentation
                 {
                     float tx=x/(float)(nx-1);
                     float wx=Mathf.Lerp(minX,maxX,tx);
-                    float left=Mathf.Clamp01((-wx-9f)/23f);
-                    float right=Mathf.Clamp01((wx-11f)/22f);
-                    float rear=Mathf.Clamp01((wz-8f)/28f);
-                    float front=Mathf.Clamp01((-wz-14f)/16f);
-                    float westShoulder=Mathf.Exp(-((wx+17f)*(wx+17f))/105f-((wz-7f)*(wz-7f))/310f)*3.2f;
-                    float eastShoulder=Mathf.Exp(-((wx-19f)*(wx-19f))/135f-((wz-10f)*(wz-10f))/360f)*3.6f;
-                    float rearRidge=Mathf.Exp(-(wx*wx)/460f-((wz-27f)*(wz-27f))/145f)*4.0f;
-                    float centralShelf=Mathf.Exp(-(wx*wx)/185f-((wz-1f)*(wz-1f))/430f);
-                    float rise=left*left*3.8f+right*right*4.4f+rear*rear*3.0f+front*front*1.6f+
+                    float left=Mathf.Clamp01((-wx-12f)/48f);
+                    float right=Mathf.Clamp01((wx-14f)/47f);
+                    float rear=Mathf.Clamp01((wz-10f)/56f);
+                    float front=Mathf.Clamp01((-wz-20f)/42f);
+                    float westShoulder=Mathf.Exp(-((wx+23f)*(wx+23f))/210f-((wz-8f)*(wz-8f))/620f)*2.7f;
+                    float eastShoulder=Mathf.Exp(-((wx-27f)*(wx-27f))/260f-((wz-14f)*(wz-14f))/700f)*3.3f;
+                    float rearRidge=Mathf.Exp(-(wx*wx)/960f-((wz-38f)*(wz-38f))/240f)*4.6f;
+                    float centralShelf=Mathf.Exp(-(wx*wx)/190f-((wz-1f)*(wz-1f))/450f);
+                    float rise=left*left*4.0f+right*right*4.5f+rear*rear*4.0f+front*front*1.8f+
                                westShoulder+eastShoulder+rearRidge;
-                    float noise=(Mathf.Sin(wx*.14f)+Mathf.Sin(wz*.17f)+Mathf.Sin((wx-wz)*.095f))*.34f;
-                    float quiet=1f-centralShelf;
-                    float y=-.48f+rise+noise*Mathf.Clamp01(quiet*.82f);
+                    float noise=(Mathf.Sin(wx*.12f)+Mathf.Sin(wz*.15f)+Mathf.Sin((wx-wz)*.085f))*.30f;
+                    float y=-.48f+rise+noise*(1f-centralShelf)*.78f;
                     vertices[z*nx+x]=new Vector3(wx,y,wz);
-                    uv[z*nx+x]=new Vector2(tx*6.5f,tz*6.0f);
+                    // Same world-scale UV logic as the certified continuous landscape material.
+                    uv[z*nx+x]=new Vector2((wx/180f+.5f)/4f,(wz/180f+.5f)/4f);
                 }
             }
             int ti=0;
@@ -1530,7 +1531,9 @@ namespace Eldoria.Presentation
                     triangles[ti++]=b;triangles[ti++]=d;triangles[ti++]=cc;
                 }
             var mesh=new Mesh{name="Valoria Master Rebuild v2 · continuous landform"};
-            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject("Valoria · Master Rebuild v2 · continuous landform");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
