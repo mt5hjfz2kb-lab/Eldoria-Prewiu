@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+  "updated_at": "2026-10-02T10:32:00Z",
+  "active": [],
+  "history": [
+    {
+      "id": "governance-parallel-workstreams-v1",
+      "title": "Parallel-chat workstream ownership protocol v1",
+      "owner": "chat-governance",
+      "scope": [
+        "AGENTS.md",
+        "pipeline/active-workstreams.json",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "status": "completed",
+      "claimed_at": "2026-10-02T10:32:00Z",
+      "completed_at": "2026-10-02T10:32:00Z",
+      "base_main_sha": "840cd5de3fed2675352c9bf42f2fe01310788a67",
+      "result": "Protocol introduced; future substantive chats must claim non-conflicting work before mutation."
+    }
+  ]
+}
