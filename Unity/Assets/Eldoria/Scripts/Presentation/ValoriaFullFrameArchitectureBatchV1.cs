@@ -34,20 +34,34 @@ namespace Eldoria.Presentation
             var root=new GameObject("Valoria · Full Frame Architecture · "+id).transform;
             root.SetParent(parent,true);
 
-            AddTerrain(root,"BroadRockPlatform",center,center.y+.01f,4.25f*scale,yaw+92f);
-            AddTerrain(root,"SteppedRockTerrace",center+Rot(yaw,new Vector3(-1.35f,-.02f,-.40f)),center.y+.02f,2.45f*scale,yaw+6f);
+            AddTerrain(root,"BroadRockPlatform",center,center.y+.01f,4.05f*scale,yaw+92f);
+            AddTerrain(root,"SteppedRockTerrace",center+Rot(yaw,new Vector3(-1.25f,-.02f,-.38f)),center.y+.02f,2.25f*scale,yaw+6f);
 
-            AddPiece(root,"Piece02","inhabited core",center+Rot(yaw,new Vector3(.15f,.04f,-.15f)),3.05f*scale,3.65f*scale,yaw,new Color(.68f,.64f,.57f,1f));
-            AddPiece(root,"Piece03","work wing",center+Rot(yaw,new Vector3(-1.75f,.03f,.05f)),2.15f*scale,2.65f*scale,yaw+14f,new Color(.57f,.51f,.44f,1f));
-            AddPiece(root,"Piece04","roof crown",center+Rot(yaw,new Vector3(.45f,1.92f,-.12f)),2.18f*scale,1.85f*scale,yaw-5f,new Color(.46f,.45f,.43f,1f));
-            AddStone(root,"RockToWallTransition","buried seam",center+Rot(yaw,new Vector3(1.45f,.02f,-.55f)),1.65f*scale,yaw-60f);
-            AddStone(root,"HighStraightWall","retaining spine",center+Rot(yaw,new Vector3(.25f,.03f,-1.55f)),2.10f*scale,yaw+3f);
-            AddWarmth(root,center+Rot(yaw,new Vector3(.25f,1.15f,1.05f)));
+            bool middle=id.Contains("middle");
+            bool east=id.Contains("east");
+
+            if(!middle)
+            {
+                AddPiece(root,"Piece02","inhabited core",center+Rot(yaw,new Vector3(.10f,.04f,-.15f)),2.90f*scale,3.45f*scale,yaw,new Color(.66f,.62f,.55f,1f),false);
+                AddPiece(root,"Piece03","work wing",center+Rot(yaw,new Vector3(-1.58f,.03f,.06f)),1.95f*scale,2.45f*scale,yaw+(east?-11f:14f),new Color(.55f,.50f,.43f,1f),false);
+                AddPiece(root,"Piece04","roof crown",center+Rot(yaw,new Vector3(.40f,1.82f,-.10f)),1.88f*scale,1.55f*scale,yaw+(east?7f:-6f),new Color(.29f,.32f,.34f,1f),true);
+                AddStone(root,"RockToWallTransition","buried seam",center+Rot(yaw,new Vector3(1.32f,.02f,-.50f)),1.52f*scale,yaw-60f);
+            }
+            else
+            {
+                AddPiece(root,"Piece03","mid civic core",center+Rot(yaw,new Vector3(.05f,.04f,-.12f)),2.55f*scale,3.00f*scale,yaw,new Color(.61f,.56f,.49f,1f),false);
+                AddPiece(root,"Piece02","mid residence",center+Rot(yaw,new Vector3(east?1.30f:-1.30f,.03f,.18f)),1.90f*scale,2.40f*scale,yaw+(east?-16f:18f),new Color(.69f,.65f,.58f,1f),false);
+                if(east)
+                    AddPiece(root,"Piece04","small offset roof",center+Rot(yaw,new Vector3(-.55f,1.52f,-.18f)),1.28f*scale,1.10f*scale,yaw+11f,new Color(.27f,.30f,.32f,1f),true);
+                AddStone(root,"CornerWallL","corner retaining mass",center+Rot(yaw,new Vector3(east?1.18f:-1.18f,.03f,-.62f)),1.35f*scale,yaw+(east?88f:-88f));
+            }
+
+            AddWarmth(root,center+Rot(yaw,new Vector3(.20f,1.05f,1.00f)));
         }
 
         static Vector3 Rot(float yaw,Vector3 v)=>Quaternion.Euler(0f,yaw,0f)*v;
 
-        static void AddPiece(Transform root,string resource,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
+        static void AddPiece(Transform root,string resource,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint,bool forceSlate)
         {
             var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+resource);
             if(source==null)return;
@@ -55,7 +69,7 @@ namespace Eldoria.Presentation
             go.name="Valoria · Full Frame Architecture · "+role;
             go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
             Fit(go,anchor,span,maxHeight);
-            Tint(go,tint);
+            Tint(go,tint,forceSlate);
             go.transform.SetParent(root,true);
             DisableGameplay(go);
         }
@@ -71,7 +85,7 @@ namespace Eldoria.Presentation
             go.transform.localScale*=span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));
             b=Bounds(go);
             go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
-            Tint(go,new Color(.58f,.57f,.53f,1f));
+            Tint(go,new Color(.58f,.57f,.53f,1f),false);
             go.transform.SetParent(root,true);
             DisableGameplay(go);
         }
@@ -101,17 +115,27 @@ namespace Eldoria.Presentation
             go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
         }
 
-        static void Tint(GameObject go,Color tint)
+        static void Tint(GameObject go,Color tint,bool forceSlate)
         {
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
-                var m=r.sharedMaterial;
-                if(m==null)continue;
-                var block=new MaterialPropertyBlock();
-                r.GetPropertyBlock(block);
-                if(m.HasProperty("_BaseColor"))block.SetColor("_BaseColor",tint);
-                else if(m.HasProperty("_Color"))block.SetColor("_Color",tint);
-                r.SetPropertyBlock(block);
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    if(src[i]==null){dst[i]=null;continue;}
+                    var m=new Material(src[i]){name="Valoria Full Frame Architecture · "+src[i].name};
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(forceSlate)
+                    {
+                        if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",new Color(.25f,.29f,.32f,1f));
+                        if(m.HasProperty("_Color"))m.SetColor("_Color",new Color(.25f,.29f,.32f,1f));
+                        if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.025f);
+                    }
+                    dst[i]=m;
+                }
+                r.sharedMaterials=dst;
             }
         }
 
