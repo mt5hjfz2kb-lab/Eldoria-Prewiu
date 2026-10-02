@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "request_id": "valoria-stair-landing-integration-v1",
-  "asset_or_sector": "Valoria Central Stair / Landing Integration v1",
+  "request_id": "valoria-full-frame-convergence-iteration-1",
+  "asset_or_sector": "Valoria Full Frame Iteration 1",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Existing canonical TerraceStairRock and StreetLandingTransition only. Visual-only rock seating around the central Bastion stair and L1 landing; never replace or cover the authoritative stair route. StreetLandingTransition remains non-traversable visual overlay only. No new geometry, no city sprawl, no World Frame mutation, no gameplay topology/collider/hotspot changes, no Tripo spend."
+  "notes": "Canonical full-frame batch. Zero-credit whole-frame atmosphere/horizon/lighting/environment/corruption improvement. No micro-pass acceptance; judge only integrated BEFORE/AFTER."
 }
