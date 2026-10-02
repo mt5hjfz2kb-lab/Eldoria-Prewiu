@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:12:00Z",
+  "updated_at": "2026-10-02T23:18:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -184,14 +184,19 @@
         "pipeline/valoria-jagged-backdrop-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestJaggedCompositeGateV1.cs",
         ".github/workflows/valoria-strongest-jagged-composite-v1.yml",
-        "pipeline/valoria-strongest-jagged-composite-v1-request.json"
+        "pipeline/valoria-strongest-jagged-composite-v1-request.json",
+        ".github/workflows/valoria-in-city-surface-v1.yml",
+        ".github/workflows/valoria-reference-convergence-v2.yml",
+        ".github/workflows/valoria-stair-landing-integration-v1.yml",
+        ".github/workflows/valoria-world-frame-mountain-terrain-v1.yml"
       ],
       "resources": [
         "valoria-production-composition",
         "art-production-planner",
         "windows-runner-heavy",
         "unity-owner-publish",
-        "runner-trigger-governance"
+        "runner-trigger-governance",
+        "workflow-governance"
       ],
       "status": "active",
       "claimed_at": "2026-10-02T19:20:00Z",
