@@ -1,12 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Strict full-frame priority: stop side gates including the running Mega Architecture Atlas until the strongest-composite dark audit and integrated composite validation complete.",
+  "reason": "Unity slice is redundant for the current full-frame visual-only convergence changes and would block the single Unity runner. Dedicated gates own validation.",
   "runs": [
-    37071451571,
-    37071831952,
-    37071831946,
-    37071713124
+    37071995829
   ],
-  "triggered_at": "2026-10-02T22:50:00Z"
+  "triggered_at": "2026-10-02T22:54:00Z"
 }
