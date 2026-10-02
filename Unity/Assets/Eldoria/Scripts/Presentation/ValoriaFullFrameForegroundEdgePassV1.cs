@@ -44,18 +44,10 @@ namespace Eldoria.Presentation
         static void Add(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
         {
             if(source==null)return;
-            var go=Object.Instantiate(source);go.name="Valoria · Foreground Edge · "+role;go.transform.rotation=Quaternion.Euler(0,yaw,0);
-            var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0){Object.DestroyImmediate(go);return;}
-            var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
-            float scale=Mathf.Min(span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z)),maxHeight/Mathf.Max(.001f,b.size.y));
-            go.transform.localScale*=scale;
-            rs=go.GetComponentsInChildren<Renderer>(true);b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
-            go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
-            foreach(var r in rs)
-            {
-                var src=r.sharedMaterials;var dst=new Material[src.Length];
-                for(int i=0;i<src.Length;i++){if(src[i]==null){dst[i]=null;continue;}var m=new Material(src[i]);if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);if(m.HasProperty("_Color"))m.SetColor("_Color",tint);dst[i]=m;}r.sharedMaterials=dst;
-            }
+            var go=ValoriaKit.BenchmarkPieceIntegrated(
+                "Valoria · Foreground Edge · "+role,
+                source,anchor,span,maxHeight,Quaternion.Euler(0f,yaw,0f),tint);
+            if(go==null)return;
             foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
             foreach(var mb in go.GetComponentsInChildren<MonoBehaviour>(true))mb.enabled=false;
             go.transform.SetParent(root,true);
