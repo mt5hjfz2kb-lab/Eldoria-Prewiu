@@ -70,7 +70,17 @@ jobs:
             }
             if($ok){break}
           }
-          if(-not $ok){throw 'All verified transports for the CC0 Jagged Peaks image failed.'}
+          if(-not $ok){
+            Write-Host 'Jagged Peaks transports unavailable; falling back to Poly Haven Kiara 7 Late-Afternoon CC0 backplate.'
+            $api=Invoke-RestMethod -Uri 'https://api.polyhaven.com/files/kiara_7_late-afternoon' -Headers $headers
+            $json=$api | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+\\.jpg[^"]*') | ForEach-Object { $_.Value.Replace('\\u0026','&') } | Select-Object -Unique
+            $url=$urls | Where-Object { $_ -match 'Backplates|backplate|jpg_pretty' } | Select-Object -First 1
+            if(-not $url){$url=$urls | Select-Object -First 1}
+            if(-not $url){throw 'No CC0 mountain-valley JPG could be resolved from Poly Haven.'}
+            Invoke-WebRequest -Uri $url -Headers $headers -OutFile $dst -UseBasicParsing -TimeoutSec 90
+            if(-not (Test-Path $dst) -or (Get-Item $dst).Length -lt 250000){throw 'Poly Haven fallback image invalid.'}
+          }
       - name: Capture integrated strongest jagged composite
         shell: powershell
         run: |
