@@ -12,6 +12,7 @@ permissions:
 concurrency:
   group: valoria-full-frame-visual-pass-v1
   cancel-in-progress: true
+# clean retry marker: iteration 3b
 jobs:
   capture:
     if: vars.UNITY_RUNNER_READY == 'true'
