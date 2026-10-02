@@ -22,9 +22,9 @@ namespace Eldoria.Presentation
             // One continuous terrain sheet avoids detached panels and inter-piece seams.
             // The inhabited corridor sits below canonical ground; only side/rear relief emerges.
             var material=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.29f,.32f,.30f,1f),new Vector2(6f,6f),.018f,1.18f)
+                "rock",new Color(.285f,.31f,.295f,1f),new Vector2(10f,10f),.018f,1.24f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(
-                    new Color(.275f,.30f,.275f,1f),"earth",new Vector2(6f,6f),1.18f);
+                    new Color(.265f,.29f,.27f,1f),"earth",new Vector2(10f,10f),1.24f);
 
             BuildContinuousValley(root.transform,material);
         }
@@ -49,15 +49,16 @@ namespace Eldoria.Presentation
                     float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
 
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-11.2f)/11.8f));
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-12.5f)/15.5f));
-                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+1.0f)/7.0f));
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-12.4f)/8.8f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-13.2f)/12.8f));
+                    // Keep the entire approach/front third open. Side walls begin only behind the lower city.
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-4.2f)/7.8f));
                     float sideRelief=side*frontGate;
                     float relief=Mathf.Max(sideRelief,rear);
 
                     // Broad natural valley walls: restrained height, no giant planar curtain.
                     float rearSaddle=Mathf.Lerp(.10f,1f,Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-6.5f)/9.5f)));
-                    float ridge=sideRelief*sideRelief*6.2f + rear*rear*(5.7f+side*2.4f)*rearSaddle;
+                    float ridge=sideRelief*sideRelief*5.8f + rear*rear*(6.3f+side*2.0f)*rearSaddle;
                     float broad=Mathf.Sin(x*.115f+z*.035f)*.42f
                                +Mathf.Sin(z*.145f-x*.028f)*.33f
                                +Mathf.Sin((x+z)*.071f)*.23f;
@@ -72,7 +73,7 @@ namespace Eldoria.Presentation
                     float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.5f)/7.5f));
                     float basin=cityX*cityZ;
                     y=Mathf.Lerp(y,hiddenY,basin);
-                    if(z<-4.5f)y=hiddenY;
+                    if(z<3.2f)y=hiddenY;
 
                     int i=rz*cols+cx;
                     verts[i]=new Vector3(x,y,z);
