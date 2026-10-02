@@ -206,30 +206,32 @@ namespace Eldoria.Presentation
         static void RefineGlobalAtmosphere()
         {
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.72f,.79f,.84f);
-            RenderSettings.ambientEquatorColor=new Color(.48f,.50f,.48f);
-            RenderSettings.ambientGroundColor=new Color(.24f,.24f,.22f);
-            RenderSettings.ambientIntensity=.86f;
+            // Iteration 23: restore atmospheric separation instead of washing the whole city into one grey plane.
+            // Keep distant haze, but let the inhabited city retain stone/wood/vegetation colour and warm light.
+            RenderSettings.ambientSkyColor=new Color(.72f,.82f,.90f);
+            RenderSettings.ambientEquatorColor=new Color(.53f,.54f,.49f);
+            RenderSettings.ambientGroundColor=new Color(.28f,.25f,.21f);
+            RenderSettings.ambientIntensity=.94f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.60f,.67f,.71f);
-            RenderSettings.fogStartDistance=20f;
-            RenderSettings.fogEndDistance=52f;
+            RenderSettings.fogColor=new Color(.57f,.66f,.72f);
+            RenderSettings.fogStartDistance=34f;
+            RenderSettings.fogEndDistance=92f;
 
             var camera=Camera.main;
             if(camera!=null)
             {
                 camera.clearFlags=CameraClearFlags.SolidColor;
-                camera.backgroundColor=new Color(.55f,.67f,.74f);
+                camera.backgroundColor=new Color(.48f,.63f,.73f);
                 camera.allowHDR=true;
             }
 
             foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
                 if(light.type!=LightType.Directional)continue;
-                light.color=new Color(1f,.89f,.76f);
-                light.intensity=Mathf.Max(light.intensity,1.12f);
-                light.shadowStrength=.56f;
+                light.color=new Color(1f,.86f,.70f);
+                light.intensity=Mathf.Max(light.intensity,1.32f);
+                light.shadowStrength=.61f;
                 light.shadows=LightShadows.Soft;
             }
         }
