@@ -1,6 +1,6 @@
 # VALORIA REFERENCE CONVERGENCE PASS v2
 
-Status: IN EXECUTION  
+Status: CLOSED — WORLD FRAME v1 PROMOTED / CROSS-GATE PASS  
 Date: 2026-10-02  
 Base objective: move the **entire real Valoria frame** toward the owner reference, not beautify isolated assets.
 
@@ -185,3 +185,65 @@ The next high-return visual block should be a dedicated **Valoria World Frame / 
 - the current gameplay collider/hotspot signature;
 - the no-sprawl rule;
 - the current visual-only separation between presentation geometry and gameplay authority.
+
+
+## Final closure — World Frame v1 promoted
+
+The composition-only convergence pass correctly identified the remaining blocker as **missing production-quality continuous world-frame terrain**, not missing city buildings or another hero asset.
+
+That blocker has now been resolved by a dedicated visual-only world-frame implementation:
+
+- runtime implementation: `ValoriaWorldFrameMountainTerrainV1`;
+- production promotion commit: **d316adc80dc27d42a85e1051f744c3610f09a1e5**;
+- low-poly pass-owned pines were subsequently rejected and removed in **13b67ab159c413fdad4bf5a8ce3cee2c32f37d25**;
+- final promoted frame uses one continuous valley/mountain mesh, restrained rock material response and shader-safe boulder occupation only;
+- no gameplay collider, hotspot, route or progression ownership was added;
+- no Tripo generation and **0 credits** were used for the world-frame solution.
+
+### Final production revalidation
+
+Runtime/art state revalidated from **7e597593c00613c949d74c7c9c7bcd09327ca0ec**:
+
+- **Unity slice source/editor gate:** run **37042030543 — SUCCESS**
+- **Valoria World Frame / Mountain Terrain v1:** run **37042030550 — SUCCESS**
+  - artifact **11243245466**
+- **World Map Visual Formula gate:** run **37042030657 — SUCCESS**
+
+The first Valoria Visual Formula revalidation run (**37042030518**) failed for a **CI staging defect**, not a visual/runtime regression: the clean runner did not stage the external Coherent Castle Proof resources that the canonical gate already expects.
+
+The workflow was fixed to stage all external proof dependencies deterministically:
+- Kenney Castle Kit CC0;
+- Blender UV rewrap;
+- Slavic World proof prefabs;
+- Poly Haven Surface Cell PBR.
+
+Final canonical Valoria Visual Formula:
+- run **37043234440 — SUCCESS**
+- artifact **11243131294**
+- validated on **880f3ced1bc2ea4318f9628e173296a17092fb16**
+- production geometry is unchanged from the already-promoted World Frame state; commits after `7e597593...` are CI-only.
+
+## Final verdict
+
+**REFERENCE CONVERGENCE v2: CLOSED.**
+
+The accepted production direction is now:
+
+- compact, vertical Valoria nucleus;
+- Hero Bastion remains the dominant focal point;
+- continuous side/rear mountain-valley frame instead of floating legacy proxies;
+- no lateral residential sprawl;
+- no pass-owned low-poly pine curtain;
+- visual world-frame remains presentation-only and gameplay-authority-free;
+- 19/12/9/mobile and world-map/formula regression gates are green;
+- **0 additional Tripo credits**.
+
+Do **not** reopen the old sequence of:
+- twin gates/towers;
+- legacy green hills/cliffs;
+- floating PBR rock platforms;
+- synthetic cliff curtains;
+- procedural pine walls;
+- repeated micro-iterations on `ValoriaReferenceConvergencePassV2` framing.
+
+Future visual work should start from the promoted World Frame v1 and target the next benchmark gap inside the city/material/occupation hierarchy rather than rebuilding the world boundary again.
