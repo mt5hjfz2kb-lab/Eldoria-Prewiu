@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Prioritize full-frame validation. Unity slice, isolated Cliff Island gate and Jagged Backdrop are non-authoritative side gates; strongest-composite audit and integrated composite must run next.",
+  "reason": "Strict full-frame priority: stop side gates including the running Mega Architecture Atlas until the strongest-composite dark audit and integrated composite validation complete.",
   "runs": [
+    37071451571,
     37071831952,
     37071831946,
     37071713124
   ],
-  "triggered_at": "2026-10-02T22:48:00Z"
+  "triggered_at": "2026-10-02T22:50:00Z"
 }
