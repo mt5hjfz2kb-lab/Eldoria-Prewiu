@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "request_id": "valoria-reference-convergence-v2",
-  "asset_or_sector": "Valoria full-frame reference convergence v2",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "request_id": "valoria-world-frame-mountain-terrain-v1",
+  "asset_or_sector": "Valoria World Frame / Mountain Terrain v1",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -12,9 +12,9 @@
   "capabilities": {
     "tripo_parts": false,
     "tripo_retopology": false,
-    "blender_lod": false,
-    "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_lod": true,
+    "blender_bake": true,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Reference image target: monumental compact fantasy fortress-city. Reuse only existing certified assets. Focus on giant ruined framing structures, terrain depth, fortress vertical hierarchy, atmospheric separation and integrated full-frame read. No lateral residential expansion. No Tripo spend."
+  "notes": "Geometry gap proven by Valoria Reference Convergence v2. Need a dedicated production-quality continuous side/rear mountain world frame for the compact Valoria footprint. No city sprawl, no competing monumental architecture, no gameplay topology changes. Zero-spend preflight only until a fresh explicit Tripo credit authorization is provided."
 }
