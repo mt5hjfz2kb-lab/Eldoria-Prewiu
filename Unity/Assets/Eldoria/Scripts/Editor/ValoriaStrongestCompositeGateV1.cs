@@ -54,7 +54,7 @@ namespace Eldoria.EditorTools
             var root=GameObject.Find("Valoria · integrated construction visual layer");
             if(c==null||root==null)throw new System.Exception("Valoria capture prerequisites missing.");
             var p=new Vector3(18.2f,14.6f,-25.8f);
-            var t=new Vector3(0f,3.25f,5.2f);
+            var t=new Vector3(0f,3.35f,5.6f);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
 
             ValoriaBenchmarkCompositeV2.Enabled=true;ValoriaBenchmarkCompositeV2.Build(root.transform,state);
@@ -65,7 +65,7 @@ namespace Eldoria.EditorTools
             if(!ValoriaBackplateCandidateV1.Build(root.transform,c,"kiara3_1"))throw new System.Exception("Kiara 3 backplate unavailable.");
             ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
 
-            Save(c,Folder+"/baseline.png",p,t,8f,1280,720);
+            Save(c,Folder+"/baseline-production.png",p,t,9.1f,1280,720);
 
             ValoriaCliffIslandCleanupV2.Enabled=true;ValoriaCliffIslandCleanupV2.Build(root.transform,state);
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
@@ -78,8 +78,9 @@ namespace Eldoria.EditorTools
             Save(c,Folder+"/after-12.png",p,t,12f,1280,720);
             Save(c,Folder+"/after-9.png",p,t,9f,1280,720);
             Save(c,Folder+"/after-8.png",p,t,8f,1280,720);
+            Save(c,Folder+"/after-production.png",p,t,9.1f,1280,720);
             ValoriaBackplateCandidateV1.FitAspect(390f/844f);
-            Save(c,Folder+"/after-mobile.png",p,t,8f,390,844);
+            Save(c,Folder+"/after-mobile.png",p,t,9.1f,390,844);
 
             File.WriteAllText(Folder+"/evidence.json",$"{{\n"+
                 $"  \"collider_hotspot_signature_equal\": true,\n"+
