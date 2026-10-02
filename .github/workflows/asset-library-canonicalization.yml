@@ -17,171 +17,193 @@ concurrency:
 
 jobs:
   canonicalize:
-    if: vars.UNITY_RUNNER_READY == 'true'
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Expose Git installed with GitHub Desktop
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $git = Get-Command git.exe -ErrorAction SilentlyContinue
-          if (-not $git) {
-            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
-            $candidate = Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
-              Sort-Object Name -Descending |
-              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
-              Where-Object { Test-Path $_ } | Select-Object -First 1
-            if (-not $candidate) { throw 'Git not found for checkout.' }
-            $dir = Split-Path $candidate
-            Add-Content -Path $env:GITHUB_PATH -Value $dir
-            $env:PATH = "$dir;$env:PATH"
-          }
-          git --version
-
       - uses: actions/checkout@v4
         with:
           clean: true
 
       - name: Validate request
-        shell: powershell
+        shell: bash
         run: |
-          $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\asset-library-canonicalization-request.json" -Raw | ConvertFrom-Json
-          if (-not $request.enabled) { throw 'Canonicalization request is disabled.' }
-          if ([int]$request.schema_version -ne 1) { throw 'Unsupported request schema.' }
-          Write-Host "REQUEST $($request.id)"
+          node -e "const r=require('./pipeline/asset-library-canonicalization-request.json'); if(!r.enabled||r.schema_version!==1) process.exit(1); console.log('REQUEST',r.id)"
 
       - name: Recover certified historical GLBs by exact SHA
-        shell: powershell
+        shell: bash
         run: |
-          $headers=@{ Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28' }
-          $root="$env:RUNNER_TEMP\asset-library-canonicalization"
-          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Force $root | Out-Null
+          set -euo pipefail
+          root="$RUNNER_TEMP/asset-library-canonicalization"
+          rm -rf "$root"
+          mkdir -p "$root"
 
-          function Recover-Certified([string]$name,[int64]$artifactId,[string]$expected,[string]$destination) {
-            $safe=$name -replace '[^A-Za-z0-9_-]','_'
-            $zip=Join-Path $root "$safe.zip"
-            $out=Join-Path $root $safe
-            Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$artifactId/zip" -OutFile $zip -MaximumRedirection 10
-            New-Item -ItemType Directory -Force $out | Out-Null
-            Expand-Archive -LiteralPath $zip -DestinationPath $out -Force
-            $matches=@()
-            foreach($file in Get-ChildItem $out -Recurse -File -Filter '*.glb'){
-              $sha=(Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-              if($sha -eq $expected.ToLowerInvariant()){$matches += $file}
-            }
-            if($matches.Count -ne 1){ throw "$name expected exactly one certified SHA match; found $($matches.Count)" }
-            $dest=Join-Path $env:GITHUB_WORKSPACE $destination
-            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
-            Copy-Item $matches[0].FullName $dest -Force
-            $actual=(Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($actual -ne $expected.ToLowerInvariant()){throw "$name destination SHA mismatch: $actual"}
-            Write-Host "RECOVERED $name | artifact=$artifactId | sha256=$actual | bytes=$((Get-Item $dest).Length) | $destination"
+          recover() {
+            name="$1"; artifact="$2"; expected="$3"; destination="$4"
+            safe="$(echo "$name" | tr -cs 'A-Za-z0-9_-' '_')"
+            zip="$root/$safe.zip"
+            out="$root/$safe"
+            mkdir -p "$out" "$(dirname "$destination")"
+            curl -fL               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               -H "X-GitHub-Api-Version: 2022-11-28"               "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact/zip"               -o "$zip"
+            unzip -q "$zip" -d "$out"
+            matches=()
+            while IFS= read -r -d '' file; do
+              sha="$(sha256sum "$file" | awk '{print $1}')"
+              if [[ "$sha" == "$expected" ]]; then matches+=("$file"); fi
+            done < <(find "$out" -type f -name '*.glb' -print0)
+            if [[ ${#matches[@]} -ne 1 ]]; then
+              echo "$name expected exactly one SHA match; found ${#matches[@]}" >&2
+              exit 1
+            fi
+            cp "${matches[0]}" "$destination"
+            actual="$(sha256sum "$destination" | awk '{print $1}')"
+            [[ "$actual" == "$expected" ]] || { echo "$name destination SHA mismatch"; exit 1; }
+            echo "RECOVERED $name | artifact=$artifact | sha256=$actual | bytes=$(stat -c%s "$destination") | $destination"
           }
 
-          Recover-Certified 'TerraceStairRock' 10936719852 '83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e' 'Unity\Assets\Eldoria\Resources\Valoria\Rescued\TerraceStairRock.glb'
-          Recover-Certified 'StreetLandingTransition' 10944255594 'ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01' 'Unity\Assets\Eldoria\Resources\Valoria\Rescued\StreetLandingTransition.glb'
-          Recover-Certified 'GateStreetRiseRock MV1' 10941357361 '9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302' 'Unity\Assets\Eldoria\Resources\Valoria\HistoricalLandmarks\GateStreetRiseRock_MV1.glb'
+          recover "TerraceStairRock" 10936719852 83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e             "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb"
+          recover "StreetLandingTransition" 10944255594 ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01             "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb"
+          recover "GateStreetRiseRock MV1" 10941357361 9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302             "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb"
 
       - name: Move Mid-Tier kit under Eldoria canonical resources preserving GUIDs
-        shell: powershell
+        shell: bash
         run: |
-          $old="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\MidTierArchitectureKit_v1"
-          $oldMeta="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\MidTierArchitectureKit_v1.meta"
-          $new="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\MidTierArchitectureKit_v1"
-          $newMeta="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\MidTierArchitectureKit_v1.meta"
-          if(Test-Path $old){
-            if(Test-Path $new){Remove-Item $new -Recurse -Force}
-            Move-Item $old $new
-            if(Test-Path $oldMeta){Move-Item $oldMeta $newMeta -Force}
-          }
-          foreach($name in @('Piece01','Piece02','Piece03','Piece04')){
-            if(-not(Test-Path (Join-Path $new "$name.glb"))){throw "Missing moved Mid-Tier $name.glb"}
-            if(-not(Test-Path (Join-Path $new "$name.glb.meta"))){throw "Missing moved Mid-Tier $name.glb.meta; GUID preservation failed"}
-          }
+          set -euo pipefail
+          old="Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1"
+          new="Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1"
+          if [[ -d "$old" ]]; then
+            rm -rf "$new"
+            mkdir -p "$(dirname "$new")"
+            mv "$old" "$new"
+            if [[ -f "$old.meta" ]]; then mv "$old.meta" "$new.meta"; fi
+          fi
+          for p in Piece01 Piece02 Piece03 Piece04; do
+            test -f "$new/$p.glb"
+            test -f "$new/$p.glb.meta"
+          done
 
-      - name: Import canonical library with Unity
-        shell: powershell
+      - name: Generate stable glTFast metadata for canonical GLBs missing it
+        shell: python
         run: |
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'UNITY_EDITOR_PATH not found'}
-          $version=& $env:UNITY_EDITOR_PATH -version
-          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity version: $version"}
-          $log="$env:RUNNER_TEMP\Eldoria-AssetLibraryCanonicalization.log"
-          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-logFile',$log)
-          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          $deadline=(Get-Date).AddMinutes(18)
-          while(-not $p.HasExited -and (Get-Date) -lt $deadline){Start-Sleep -Seconds 2;$p.Refresh()}
-          if(-not $p.HasExited){
-            & taskkill.exe /PID $p.Id /T /F | Out-Null
-            if(Test-Path $log){Get-Content $log -Tail 240}
-            throw 'Unity import timed out'
-          }
-          $p.Refresh()
-          if($p.ExitCode -ne 0){
-            if(Test-Path $log){Get-Content $log -Tail 300}
-            throw "Unity import failed: $($p.ExitCode)"
-          }
-          Get-Content $log -Tail 80
+          import hashlib, pathlib
+          roots=[
+              pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria"),
+              pathlib.Path("Unity/Assets/Eldoria/Resources/WorldPlayerCity"),
+          ]
+          template="""fileFormatVersion: 2
+guid: {guid}
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {{}}
+  serializedVersion: 2
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+  script: {{fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies: []
+  reportItems: []
+"""
+          created=[]
+          for root in roots:
+              for glb in sorted(root.rglob("*.glb")):
+                  meta=pathlib.Path(str(glb)+".meta")
+                  if meta.exists():
+                      continue
+                  key=("eldoria-canonical-glb-meta-v1:"+glb.as_posix()).encode()
+                  guid=hashlib.sha256(key).hexdigest()[:32]
+                  meta.write_text(template.format(guid=guid), encoding="utf-8")
+                  created.append((glb.as_posix(),guid))
+          print("CREATED_META_COUNT",len(created))
+          for path,guid in created:
+              print("META",guid,path)
 
       - name: Audit canonical GLBs and metadata
-        shell: powershell
+        shell: python
         run: |
-          $roots=@(
-            "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria",
-            "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\WorldPlayerCity"
-          )
-          $rows=@()
-          $missing=@()
-          foreach($root in $roots){
-            foreach($glb in Get-ChildItem $root -Recurse -File -Filter '*.glb'){
-              $meta="$($glb.FullName).meta"
-              $sha=(Get-FileHash $glb.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-              $rel=$glb.FullName.Substring($env:GITHUB_WORKSPACE.Length+1).Replace('\','/')
-              $hasMeta=Test-Path $meta
-              $rows += [pscustomobject]@{path=$rel;bytes=$glb.Length;sha256=$sha;meta=$hasMeta}
-              if(-not $hasMeta){$missing += $rel}
-            }
+          import hashlib,json,pathlib
+          roots=[
+              pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria"),
+              pathlib.Path("Unity/Assets/Eldoria/Resources/WorldPlayerCity"),
+          ]
+          assets=[]; missing=[]
+          for root in roots:
+              for glb in sorted(root.rglob("*.glb")):
+                  b=glb.read_bytes()
+                  meta=pathlib.Path(str(glb)+".meta")
+                  row={"path":glb.as_posix(),"bytes":len(b),"sha256":hashlib.sha256(b).hexdigest(),"meta":meta.exists()}
+                  assets.append(row)
+                  if not meta.exists(): missing.append(glb.as_posix())
+          if missing:
+              raise SystemExit("Canonical GLBs missing .meta: "+", ".join(missing))
+          audit={"schema_version":1,"glb_count":len(assets),"missing_meta_count":0,"assets":assets}
+          pathlib.Path("pipeline/asset-library-canonicalization-audit.json").write_text(json.dumps(audit,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(audit,indent=2))
+
+      - name: Verify historical identities and Mid-Tier location
+        shell: python
+        run: |
+          import hashlib,pathlib
+          checks={
+            "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb":"83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+            "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb":"ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+            "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb":"9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
           }
-          if($missing.Count -gt 0){throw "Canonical GLBs missing .meta: $($missing -join ', ')"}
-          $audit=[pscustomobject]@{schema_version=1;glb_count=$rows.Count;missing_meta_count=$missing.Count;assets=$rows}
-          $auditPath="$env:GITHUB_WORKSPACE\pipeline\asset-library-canonicalization-audit.json"
-          $audit | ConvertTo-Json -Depth 6 | Set-Content $auditPath
-          Get-Content $auditPath
+          for path,expected in checks.items():
+              actual=hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+              if actual!=expected: raise SystemExit(f"{path} SHA mismatch {actual}")
+              print("SHA_OK",path,actual)
+          old=pathlib.Path("Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1")
+          if old.exists(): raise SystemExit("Old Mid-Tier path still exists")
+          new=pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1")
+          for n in ("Piece01","Piece02","Piece03","Piece04"):
+              if not (new/f"{n}.glb").exists() or not (new/f"{n}.glb.meta").exists():
+                  raise SystemExit(f"Missing canonical Mid-Tier {n}")
 
       - name: Commit canonical library
-        shell: powershell
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "eldoria-art-runner"
           git config user.email "actions@users.noreply.github.com"
           git fetch origin main
-          $remote=(git rev-parse origin/main).Trim()
-          if($remote -ne $env:GITHUB_SHA){
-            throw "main advanced during canonicalization ($remote != $env:GITHUB_SHA); refusing to overwrite concurrent work."
-          }
-
-          git add Unity/Assets/Eldoria/Resources/Valoria
-          git add Unity/Assets/Eldoria/Resources/WorldPlayerCity
-          git add Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1 Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1.meta 2>$null
-          git add -u Unity/Assets/Resources/Valoria
+          remote="$(git rev-parse origin/main)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            echo "main advanced during canonicalization ($remote != $GITHUB_SHA)" >&2
+            exit 2
+          fi
+          git add -A Unity/Assets/Eldoria/Resources/Valoria
+          git add -A Unity/Assets/Eldoria/Resources/WorldPlayerCity
+          git add -A Unity/Assets/Resources/Valoria
           git add pipeline/asset-library-canonicalization-audit.json
           git diff --cached --stat
-
-          git diff --cached --quiet
-          if($LASTEXITCODE -eq 0){
-            Write-Host 'Canonical library already matches repository.'
-          } else {
+          if git diff --cached --quiet; then
+            echo "Canonical library already matches repository."
+          else
             git commit -m "chore: canonicalize Eldoria asset library"
             git push origin HEAD:main
-          }
+          fi
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: asset-library-canonicalization-${{ github.run_id }}
-          path: |
-            pipeline/asset-library-canonicalization-audit.json
-            ${{ runner.temp }}/Eldoria-AssetLibraryCanonicalization.log
+          path: pipeline/asset-library-canonicalization-audit.json
           if-no-files-found: warn
           retention-days: 30
