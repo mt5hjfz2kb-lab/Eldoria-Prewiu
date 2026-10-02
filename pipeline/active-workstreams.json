@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T19:08:00Z",
+  "updated_at": "2026-10-02T19:10:00Z",
   "active": [
     {
       "id": "valoria-stair-landing-integration-v1",
@@ -24,7 +24,9 @@
       "claimed_at": "2026-10-02T18:14:00Z",
       "base_main_sha": "2080e3ab983992a8afe0917fe31a690c4bc604ff",
       "dependency": "World Frame v1 and compact footprint are locked. Bastion stair circulation, gameplay colliders/hotspots/routes and Hero Bastion remain authoritative. Existing geometry only; no Tripo spend."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-full-frame-convergence-system-v1",
       "title": "Valoria Full-Frame Convergence System v1",
@@ -42,13 +44,20 @@
         "repo-governance",
         "valoria-full-frame-convergence-control"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-02T18:25:00Z",
       "base_main_sha": "4ac55e62c5702374f0ee283add43667a5c23ec98",
-      "dependency": "Do not touch pipeline/art-production-request.json or windows-runner-heavy while valoria-stair-landing-integration-v1 is active. This workstream changes orchestration/governance only."
-    }
-  ],
-  "history": [
+      "dependency": "Do not touch pipeline/art-production-request.json or windows-runner-heavy while valoria-stair-landing-integration-v1 is active. This workstream changes orchestration/governance only.",
+      "completed_at": "2026-10-02T19:10:00Z",
+      "result_commit": "171de91da1bcff970fdffd853ecd69d322fb1fb9",
+      "result": "Canonical full-frame convergence system installed. TECH/LOCAL passes are non-terminal; all actionable zero-credit defects are batched and judged in integrated 19/12/9/mobile BEFORE/AFTER. Toolchain v2 is subordinate to this loop. Pages now rejects stale unity-publish requests.",
+      "run_ids": [
+        37051800868,
+        37051829250,
+        37051852291
+      ],
+      "next": "After valoria-stair-landing-integration-v1 releases art-production-planner/windows-runner-heavy, start the first full-frame batch from current main and refresh OWNER I-II WebGL only after coherent promotion."
+    },
     {
       "id": "valoria-in-city-surface-v1",
       "title": "Valoria In-City Surface & Lighting Pass v1",
