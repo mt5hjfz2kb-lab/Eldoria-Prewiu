@@ -44,6 +44,14 @@ Read `docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md` before future Valoria visual
 - Pieces 01/05/06 require cleanup before any promotion; pieces 03/04/07/08 remain rejected. Total Tripo spend for the generation is **55 credits once**.
 
 # Eldoria — PROJECT STATE
+## Valoria World Frame v1 — production visual frame promoted — 2026-10-02
+- The compact Valoria city is now framed by `ValoriaWorldFrameMountainTerrainV1`, a continuous visual-only mountain/valley mesh promoted into runtime presentation.
+- The frame owns no gameplay colliders, hotspots, routes or progression state and used **0 Tripo credits**.
+- Rejected alternatives are not production direction: legacy twin gates/towers, green hill/cliff wedges, floating PBR platforms, synthetic cliff curtains and pass-owned low-poly pine walls.
+- Production validation is green: World Frame run **37042030550**, World Map Visual Formula **37042030657**, Unity slice **37042030543**, and final Valoria Visual Formula **37043234440**.
+- The earlier Visual Formula failure was a clean-runner staging defect, now fixed by deterministic proof dependency staging.
+- Canonical closeout: `docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md`.
+
 ## Stone Architecture Kit v1 final gate — 2026-09-30
 - Exact approved PNG was generated once in Tripo at the owner-authorized **55-credit** cost; exported GLB identity: **74,616,872 bytes / SHA-256 da593271a03170ce00475a64ee1754c4b4a40621644d5a30cfb75803ccae6422**.
 - Canonical multipiece gate **36704168246 SUCCESS / artifact 11091836294** and per-piece visual gate **36705459251 SUCCESS / artifact 11091584269**.
