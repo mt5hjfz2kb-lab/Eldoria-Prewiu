@@ -180,14 +180,10 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 27: two readable lateral mountain masses, centre kept open for the Hero Bastion.
-            var tint=new Color(.29f,.32f,.33f,1f);
-            var west=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · mountain wall west",
-                new Vector3(-19.5f,-2.4f,24.5f),16.5f,11.2f,Quaternion.Euler(0,20f,0),tint);
-            var east=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · mountain wall east",
-                new Vector3(20.0f,-2.5f,25.0f),16.0f,10.8f,Quaternion.Euler(0,-24f,0),tint);
-            if(west!=null){west.transform.SetParent(root,true);DisableGameplay(west);}
-            if(east!=null){east.transform.SetParent(root,true);DisableGameplay(east);}
+            // Iteration 28: SM_Mountains_11 proof rejected.
+            // In matched cameras the mesh read as a detached triangular/pyramidal silhouette rather than
+            // a continuous mountain wall. Do not keep a technically valid but visually harmful horizon.
+            // A future mountain frame requires a dedicated production-quality terrain family.
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
