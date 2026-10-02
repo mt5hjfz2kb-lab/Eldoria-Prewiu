@@ -40,9 +40,22 @@ namespace Eldoria.Presentation
                 "dirt",new Color(.39f,.345f,.27f,1f),new Vector2(1.05f,1.05f),.018f,.90f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.38f,.335f,.265f,1f),"earth",new Vector2(1.05f,1.05f),.90f);
 
-            var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.35f,.36f,.34f,1f),new Vector2(.95f,.95f),.018f,1.00f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(.95f,.95f),1.00f);
+            var rockTemplate=Resources.Load<Material>("Valoria/LowerCityWorldRock");
+            Material rock;
+            if(rockTemplate!=null)
+            {
+                rock=new Material(rockTemplate){name="Valoria · lower-city world-space rock"};
+                if(rock.HasProperty("_Color"))rock.SetColor("_Color",new Color(.42f,.43f,.40f,1f));
+                if(rock.HasProperty("_Tiling"))rock.SetFloat("_Tiling",.085f);
+                if(rock.HasProperty("_Smoothness"))rock.SetFloat("_Smoothness",.14f);
+                if(rock.HasProperty("_Strength"))rock.SetFloat("_Strength",.72f);
+            }
+            else
+            {
+                rock=ValoriaKit.ExternalPbrSurfaceMaterial(
+                    "rock",new Color(.35f,.36f,.34f,1f),new Vector2(.95f,.95f),.018f,1.00f)
+                    ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(.95f,.95f),1.00f);
+            }
 
             mr.sharedMaterials=new[]{earth,rock};
 
@@ -183,7 +196,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v4"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v5"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
