@@ -37,12 +37,12 @@ namespace Eldoria.Presentation
             // materials are atlas-mapped for their own meshes and produce catastrophic
             // checkerboard/atlas reads on this generated substrate.
             var earth=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "dirt",new Color(.46f,.41f,.32f,1f),new Vector2(1.15f,1.15f),.018f,.92f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.43f,.38f,.30f,1f),"earth",new Vector2(1.15f,1.15f),.92f);
+                "dirt",new Color(.39f,.345f,.27f,1f),new Vector2(1.05f,1.05f),.018f,.90f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.38f,.335f,.265f,1f),"earth",new Vector2(1.05f,1.05f),.90f);
 
             var rock=ValoriaKit.ExternalPbrSurfaceMaterial(
-                "rock",new Color(.43f,.43f,.39f,1f),new Vector2(1.05f,1.05f),.020f,1.02f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.41f,.41f,.37f,1f),"stone",new Vector2(1.05f,1.05f),1.02f);
+                "rock",new Color(.35f,.36f,.34f,1f),new Vector2(.95f,.95f),.018f,1.00f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(.95f,.95f),1.00f);
 
             mr.sharedMaterials=new[]{earth,rock};
 
@@ -147,7 +147,17 @@ namespace Eldoria.Presentation
                     y=Mathf.Lerp(y,Mathf.Max(y,-.16f),support*(1f-fall*.76f));
 
                     vertices.Add(new Vector3(wx,y,wz));
-                    uvs.Add(new Vector2(wx*.105f,wz*.105f));
+                    Vector2 uv;
+                    if(d>.47f)
+                    {
+                        // Vertical projection on eroded skirts avoids the roof/carpet stretch
+                        // caused by XZ-only UVs on steep terrain faces.
+                        uv=ex>=ez
+                            ?new Vector2(wz*.155f,(y+3.8f)*.36f)
+                            :new Vector2(wx*.155f,(y+3.8f)*.36f);
+                    }
+                    else uv=new Vector2(wx*.105f,wz*.105f);
+                    uvs.Add(uv);
                 }
             }
 
@@ -173,7 +183,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v3"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v4"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
