@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-world-surround-v2",
+  "objective": "Open the Valoria skyline by replacing the broad rear world-frame sheet with side-only terrain shoulders, a front skirt, real Mountain01 layers, real tree bands and restrained ruin/corruption depth.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "prior_attempts": [
+    "flat_2d_horizon_rejected",
+    "procedural_3d_horizon_rejected",
+    "isolated_mountain_horizon_rejected"
+  ],
+  "lanes": [
+    "composition_and_mass",
+    "terrain_and_transitions",
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "vegetation_and_environment",
+    "corruption_world_threat"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
