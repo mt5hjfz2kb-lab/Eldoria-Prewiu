@@ -74,6 +74,18 @@ namespace Eldoria.Presentation
                 new Color(.74f,.69f,.59f,1f),new Vector2(5.5f,5.5f),.014f,.94f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.33f,.27f,1f),"earth",new Vector2(5.5f,5.5f),.82f);
 
+            Material inhabitedMatte=null;
+            var matteShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(matteShader!=null)
+            {
+                inhabitedMatte=new Material(matteShader){name="Valoria Reference v2 · inhabited matte ground"};
+                var c=new Color(.315f,.305f,.275f,1f);
+                if(inhabitedMatte.HasProperty("_BaseColor"))inhabitedMatte.SetColor("_BaseColor",c);
+                if(inhabitedMatte.HasProperty("_Color"))inhabitedMatte.SetColor("_Color",c);
+                if(inhabitedMatte.HasProperty("_Metallic"))inhabitedMatte.SetFloat("_Metallic",0f);
+                if(inhabitedMatte.HasProperty("_Smoothness"))inhabitedMatte.SetFloat("_Smoothness",.02f);
+            }
+
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
@@ -97,7 +109,7 @@ namespace Eldoria.Presentation
                     renderer.sharedMaterial=valleyDirt??dirt;
                 }
                 else if(n=="VPD · inhabited mountain floor")
-                    renderer.sharedMaterial=dirt;
+                    renderer.sharedMaterial=inhabitedMatte??dirt;
                 else if(n=="VPD · lower terrace earth"||n=="VPD · upper terrace earth")
                     renderer.sharedMaterial=terrace;
             }
