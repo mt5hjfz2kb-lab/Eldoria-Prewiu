@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-mega-architecture-atlas-v1",
+  "objective": "Render a visual atlas of 16 already-installed Mega Fantasy Props architecture candidates so full-frame integration selects silhouettes by evidence rather than filenames.",
+  "route": "asset_review",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "candidate_count": 16,
+  "constraints": {
+    "review_only": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "grid",
+    "individual_candidate_captures"
+  ]
+}
