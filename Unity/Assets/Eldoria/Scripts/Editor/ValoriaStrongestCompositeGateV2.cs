@@ -15,10 +15,10 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string path,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            ("town_house_01","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab",new Vector3(-7.45f,.42f,-2.55f),12f,2.75f,3.35f),
-            ("town_house_02","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(7.35f,.42f,-3.05f),190f,2.70f,3.25f),
-            ("town_house_03c","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03c_PRE.prefab",new Vector3(-5.25f,.72f,2.95f),18f,2.35f,2.85f),
-            ("admin_01a","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.15f,.72f,3.00f),174f,2.45f,2.90f),
+            ("town_house_01","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab",new Vector3(-6.85f,.34f,-2.85f),12f,3.15f,3.75f),
+            ("town_house_02","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(6.85f,.34f,-3.05f),190f,3.15f,3.75f),
+            ("town_house_03c","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03c_PRE.prefab",new Vector3(-5.25f,.60f,2.75f),18f,2.75f,3.25f),
+            ("admin_01a","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.15f,.60f,2.85f),174f,2.85f,3.35f),
             ("town_house_03a","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
             ("town_house_03b","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03b_PRE.prefab",new Vector3(4.10f,1.48f,5.20f),188f,2.15f,2.65f)
         };
@@ -78,7 +78,8 @@ namespace Eldoria.EditorTools
             int suppressed=SuppressDisconnectedResidue();
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int premium=ReplaceSecondaryArchitecture(root.transform);
-            int ruins=AddBuriedSideRuins(root.transform);
+            int ruins=0;
+            SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
 
             Physics.SyncTransforms();
@@ -226,6 +227,33 @@ namespace Eldoria.EditorTools
             return count;
         }
 
+        static void SuppressLegacySecondaryPresentation()
+        {
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain=Chain(r.transform);
+
+                if(chain.Contains("backplate")||chain.Contains("bastion")||
+                   chain.Contains("aserradero")||chain.Contains("cuartel")||
+                   chain.Contains("granary")||chain.Contains("granero")||
+                   chain.Contains("premium secondary"))continue;
+
+                bool obsoleteArchitecture=
+                    chain.Contains("composite v2")||
+                    chain.Contains("mid-tier district")||
+                    chain.Contains("full frame architecture")||
+                    chain.Contains("rescued upper civil residence");
+
+                bool obsoletePeripheral=
+                    chain.Contains("foreground edge")||
+                    chain.Contains("lower cliff authored rock")||
+                    chain.Contains("terrainterrace");
+
+                if(obsoleteArchitecture||obsoletePeripheral)r.enabled=false;
+            }
+        }
+
         static int ReplaceSecondaryArchitecture(Transform root)
         {
             HideFamily("Valoria · Mid-Tier District v1 · production visual only");
@@ -244,7 +272,6 @@ namespace Eldoria.EditorTools
                 go.name="Valoria · Strongest v2 · premium secondary · "+s.id;
                 go.transform.rotation=Quaternion.Euler(0f,s.yaw,0f);
                 Fit(go,s.p,s.span,s.height);
-                Neutralize(go);
                 go.transform.SetParent(proof,true);
                 DisableGameplay(go);
                 loaded++;
