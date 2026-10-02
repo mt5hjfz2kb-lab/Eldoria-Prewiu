@@ -1,12 +1,22 @@
-## Asset Deep Uplift Pass v1 — classification complete / geometry execution blocked (2026-10-02)
+## Asset Deep Uplift Pass v1 — Blender diagnostics complete / 2 PBR candidates persisted (2026-10-02)
 
-- Canonical 26-GLB library classified A/B/C/D in `pipeline/asset-deep-uplift-v1-audit.json`.
-- High-return geometry queue: SteppedRockTerrace → TerraceStairRock → BroadRockPlatform → StreetLandingTransition → MidTier Piece01–04 audit.
-- Most production assets are **not** geometry candidates: Hero Bastion, Aserradero, Cuartel, Granero, Stone Architecture and other accepted pieces remain surface/integration-first.
-- GateStreetRiseRock MV1 is **D for route use**: keep only as landmark fragment; do not spend more geometry work trying to certify traversal.
-- No GLB mutated, no Tripo spend, no gameplay changes.
-- Binary Blender + official Unity 19/12/9/mobile execution is blocked only because live workstream `valoria-reference-convergence-v2` owns `windows-runner-heavy` and `valoria-production-composition`.
-- Once that ownership is released, resume with **SteppedRockTerrace first** using `tools/asset-deep-uplift/README.md`; candidate output must not replace canonical GLB until matched-camera evidence proves improvement.
+- Real Blender diagnostics supersede the provisional geometry queue: **0 tested assets currently justify mesh surgery**.
+- SteppedRockTerrace: **6,379 tris / 3 PBR images** → keep geometry.
+- BroadRockPlatform: **8,650 tris / 3 PBR images** → keep geometry.
+- MidTier Piece01–04: **6,324–16,650 tris / 3 PBR images each** → keep geometry; remaining issue is production integration/coverage, not proven mesh quality.
+- TerraceStairRock and StreetLandingTransition are the real flat historical cases: **49,800 tris, UV/normals valid, 0 source images**.
+- Persisted PBR candidates:
+  - TerraceStairRock → `4173b794b875c872aee1cb663e67a516bf37c96273c752f8ef4b6fb9225727b9`
+  - StreetLandingTransition → `16b090b4f0fbd54284919887877e527d932c7366e3b78d970c546ae30837c28f`
+  - location: `pipeline/candidates/asset-deep-uplift-v1/`
+- Candidate geometry and bounds are unchanged; each adds deterministic 512 basecolor + roughness + normal; Tripo credits **0**.
+- Candidate-generation evidence: Terrace run **37005340145 / artifact 11225483548**; Street run **37005568784 / artifact 11224644144**.
+- Candidate persistence proof: run **37006224604 SUCCESS / artifact 11226280027**; expected source/candidate SHAs were re-verified before commit.
+- Generic rescues for ResidentialTerraceRock, RockTerrainSeamFiller and TowerWallRock were **rejected** after current-file diagnostics showed existing PBR content (12 / 3 / 6 images respectively); do not replace their canonical materials with the generic rock rescue.
+- GateStreetRiseRock MV1 remains unsuitable as a certified traversable connector; surface work does not repair its historical interface failure.
+- Canonical production GLBs remain unchanged. Final promotion of the two candidates requires exact Unity **19/12/9/mobile** comparison and unchanged gameplay signature.
+- That Unity promotion step remains blocked only by live ownership: `valoria-reference-convergence-v2` still owns `windows-runner-heavy` and `valoria-production-composition`.
+- Hosted Blender workflow is parked manual-only; request is disabled.
 - Full record: `docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md`.
 
 ## Asset Visual Uplift Pass v1 — TECH PASS / SELECTIVE VISUAL PASS (2026-10-02)
