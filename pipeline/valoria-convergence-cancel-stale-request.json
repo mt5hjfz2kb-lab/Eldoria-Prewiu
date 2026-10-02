@@ -1,11 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Prioritize current full-frame convergence candidate; cancel superseded legacy heavy runs.",
+  "reason": "Release Windows runner for panoramic sky candidate; both queued/in-progress jobs are superseded visual routes.",
   "runs": [
     37057268125,
-    37056841680,
-    37056841645
+    37057692571
   ],
-  "triggered_at": "2026-10-02T20:13:00Z"
+  "triggered_at": "2026-10-02T20:17:00Z"
 }
