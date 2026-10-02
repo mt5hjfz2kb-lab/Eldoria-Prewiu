@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T22:45:00Z",
+  "updated_at": "2026-10-02T22:55:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -205,7 +205,11 @@
         "pipeline/valoria-cliff-substrate-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
         ".github/workflows/valoria-strongest-composite-v2.yml",
-        "pipeline/valoria-strongest-composite-v2-request.json"
+        "pipeline/valoria-strongest-composite-v2-request.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameRebalanceV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameRebalanceGateV1.cs",
+        ".github/workflows/valoria-visible-frame-rebalance-v1.yml",
+        "pipeline/valoria-visible-frame-rebalance-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
