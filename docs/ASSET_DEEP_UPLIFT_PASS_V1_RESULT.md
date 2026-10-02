@@ -1,7 +1,7 @@
 # Asset Deep Uplift Pass v1 — Result
 
 Date: 2026-10-02  
-Status: **BLENDER DIAGNOSTIC PASS / 2 PBR CANDIDATES PERSISTED / UNITY PROMOTION PENDING**  
+Status: **TECH PASS / DEEP AUDIT CLOSED / 2 PBR CANDIDATES PARKED**  
 Branch: `visual-proof/asset-deep-uplift-v1-r3`  
 Tripo credits: **0**  
 Canonical production GLBs mutated: **0**  
@@ -175,25 +175,17 @@ This supersedes older historical assumptions that these current canonical files 
 
 The first hosted Blender diagnostic also exposed an infrastructure issue: Blender 4.0 on the GitHub-hosted environment lacked NumPy and could return exit code 0 despite the Python traceback. The workflow was hardened by installing `python3-numpy` and requiring a non-empty report before accepting a diagnostic.
 
-## Remaining gate
+## Production-placement decision
 
-The two valid PBR candidates are **not yet production-promoted**.
+Neither TerraceStairRock nor StreetLandingTransition is currently used by the accepted Valoria production composition. Therefore this pass deliberately does **not** force either candidate into the city merely to manufacture integrated-camera evidence.
 
-Promotion requires:
-- isolated/import technical validity in Unity;
-- matched integrated **19 / 12 / 9 / mobile** comparison;
-- unchanged collider/hotspot signature;
-- clear visual improvement from the official gameplay camera.
+The candidates remain parked outside Unity Resources. If a future real production placement selects either asset, that placement must compare canonical vs candidate at official **19 / 12 / 9 / mobile** cameras and verify an unchanged collider/hotspot signature before any canonical replacement.
 
-The live `valoria-reference-convergence-v2` workstream still owns:
-- `windows-runner-heavy`
-- `valoria-production-composition`
-
-This pass therefore does not seize that runner or mutate the composition in parallel. When those resources are released, the next exact action is to compare these two persisted candidates against their canonical versions and promote only the winners.
+No immediate Unity promotion gate is required for the current production frame because these assets are not currently contributing to it.
 
 ## Final verdict
 
-**BLENDER DIAGNOSTIC PASS / 2 VALID PBR CANDIDATES / NO GEOMETRY SURGERY JUSTIFIED.**
+**TECH PASS / DEEP AUDIT CLOSED / 2 VALID PBR CANDIDATES PARKED / NO GEOMETRY SURGERY JUSTIFIED.**
 
 The deeper audit did produce additional real asset work, but not in the originally assumed form:
 
@@ -201,4 +193,4 @@ The deeper audit did produce additional real asset work, but not in the original
 - TerraceStairRock and StreetLandingTransition were the genuine surface-deficit assets; both now have deterministic, SHA-pinned PBR candidates with unchanged geometry.
 - ResidentialTerraceRock, RockTerrainSeamFiller and TowerWallRock already carry PBR data in their current canonical versions; generic replacement candidates were rejected.
 - GateStreetRiseRock MV1 remains unsuitable as a certified traversable connector.
-- Final production promotion waits only for the official Unity camera gate after the currently owned shared resources are released.
+- No production promotion is currently warranted because neither candidate is used in the accepted production composition. Validate only when a real placement selects one.
