@@ -32,5 +32,6 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T20:40:00Z"
+  "triggered_at": "2026-10-02T20:50:00Z",
+  "rerun_reason": "single clean run after culling/far-clip fix"
 }
