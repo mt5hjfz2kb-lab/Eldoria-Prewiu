@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-02",
+  "source_library_glbs": 26,
+  "grading": {
+    "A": "Good enough for current production role; no deep rework justified.",
+    "B": "Geometry accepted; further gain should come from surface/bake/integration, not mesh surgery.",
+    "C": "Geometry/form/interface limits reuse or visual return; candidate for controlled Blender intervention before any regeneration.",
+    "D": "Do not invest in deep uplift for the failed role; retain only for narrower historical/landmark use or replace when that role is required."
+  },
+  "constraints": {
+    "new_assets": false,
+    "tripo_credits": 0,
+    "gameplay_topology_changes": false,
+    "active_conflict": "valoria-reference-convergence-v2 owns valoria-production-composition and windows-runner-heavy"
+  },
+  "assets": [
+    {
+      "path": "HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "grade": "B",
+      "reason": "Hero geometry/silhouette certified; next leverage is authored surface/bake and grounding, not remesh."
+    },
+    {
+      "path": "HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "grade": "D",
+      "reason": "Documented route/interface failure. Keep only as landmark fragment; do not spend deep-uplift effort trying to make it a traversable connector."
+    },
+    {
+      "path": "MidTierArchitectureKit_v1/Piece01.glb",
+      "grade": "C",
+      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+    },
+    {
+      "path": "MidTierArchitectureKit_v1/Piece02.glb",
+      "grade": "C",
+      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+    },
+    {
+      "path": "MidTierArchitectureKit_v1/Piece03.glb",
+      "grade": "C",
+      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+    },
+    {
+      "path": "MidTierArchitectureKit_v1/Piece04.glb",
+      "grade": "C",
+      "reason": "Canonical but not active in accepted frame; requires isolated geometry/interface proof before more surface investment."
+    },
+    {
+      "path": "Rescued/ResidentialTerraceRock.glb",
+      "grade": "B",
+      "reason": "Strong certified inhabited silhouette; historical evidence says flat/no-texture surface was the main limitation."
+    },
+    {
+      "path": "Rescued/RockTerrainSeamFiller.glb",
+      "grade": "A",
+      "reason": "Useful buried support/seam role; standalone beauty is not required and geometry already fulfills the function."
+    },
+    {
+      "path": "Rescued/StreetLandingTransition.glb",
+      "grade": "C",
+      "reason": "Heavy parapets and failed interface certification limit connector reuse; only controlled visual-overlay geometry changes are justified."
+    },
+    {
+      "path": "Rescued/TerraceStairRock.glb",
+      "grade": "C",
+      "reason": "Strong vertical-city potential but interface is not certified; candidate for silhouette/shoulder cleanup over independent gameplay route."
+    },
+    {
+      "path": "Rescued/TowerWallRock.glb",
+      "grade": "B",
+      "reason": "Distant defensive silhouette is useful; main deficit is flat historical surface and overuse risk, not core geometry."
+    },
+    {
+      "path": "StoneArchitectureKit_v1/CornerWallL.glb",
+      "grade": "B",
+      "reason": "Current uplift gave strong return; preserve geometry and improve authored stone separation only if needed."
+    },
+    {
+      "path": "StoneArchitectureKit_v1/HighStraightWall.glb",
+      "grade": "B",
+      "reason": "Current uplift gave strong return; no evidence that geometry surgery beats better authored surface/integration."
+    },
+    {
+      "path": "StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "grade": "B",
+      "reason": "Best role is transition support; geometry already selected for production and surface preservation improved it."
+    },
+    {
+      "path": "StoneKit/piece_01_10364tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "StoneKit/piece_02_12602tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "StoneKit/piece_03_6433tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "StoneKit/piece_04_7824tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "StoneKit/piece_05_4966tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "StoneKit/piece_06_7602tris.glb",
+      "grade": "A",
+      "reason": "Certified reusable construction geometry; no deep intervention justified."
+    },
+    {
+      "path": "TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "grade": "C",
+      "reason": "Prior isolated/pilot visual failure plus current integrated usefulness indicates form is serviceable but not yet a strong standalone mountain-city piece."
+    },
+    {
+      "path": "TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "grade": "C",
+      "reason": "High-value vertical/terrace role, but prior pilot failed to produce the desired leap; candidate for controlled silhouette/edge/landing refinement."
+    },
+    {
+      "path": "Valoria_Aserradero_AP2_v1.glb",
+      "grade": "B",
+      "reason": "Surface pipeline explicitly records accepted geometry; do not regenerate or remesh before S1-S3 surface work."
+    },
+    {
+      "path": "Valoria_Cuartel_AP2_v1.glb",
+      "grade": "B",
+      "reason": "Production PASS; prioritize material/identity refinement over geometry replacement."
+    },
+    {
+      "path": "Valoria_Granero_BIII_v1.glb",
+      "grade": "B",
+      "reason": "Production PASS; deep mesh work lacks evidence and Granero was not separately covered by the prior uplift gate."
+    },
+    {
+      "path": "WorldPlayerCity/PlayerCity_v1.glb",
+      "grade": "B",
+      "reason": "Existing world-map city mesh has a separate 4X role; assess in world-map camera rather than altering it from Valoria evidence."
+    }
+  ],
+  "priority_c": [
+    {
+      "rank": 1,
+      "path": "TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "goal": "cleaner stepped silhouette, readable landing edges, less generated rock noise, preserve footprint/interface"
+    },
+    {
+      "rank": 2,
+      "path": "Rescued/TerraceStairRock.glb",
+      "goal": "clean sacrificial rock shoulders and stair/terrace silhouette while keeping gameplay route independent"
+    },
+    {
+      "rank": 3,
+      "path": "TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "goal": "reduce amorphous pedestal read; strengthen authored platform/rock transition without changing occupied footprint"
+    },
+    {
+      "rank": 4,
+      "path": "Rescued/StreetLandingTransition.glb",
+      "goal": "reduce visually heavy parapet mass and occlusion for visual-overlay use only; no traversal certification claim"
+    },
+    {
+      "rank": 5,
+      "path": "MidTierArchitectureKit_v1/Piece01..04.glb",
+      "goal": "isolated geometry/interface audit first; only then decide whether conservative cleanup or replacement is warranted"
+    }
+  ],
+  "execution_state": "BLOCKED_FOR_BINARY_GEOMETRY_VALIDATION",
+  "blocker": "The active valoria-reference-convergence-v2 workstream owns windows-runner-heavy and valoria-production-composition. Deep geometry must not be run or integrated until ownership is released."
+}

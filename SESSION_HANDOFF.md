@@ -1,3 +1,14 @@
+## Asset Deep Uplift Pass v1 — classification complete / geometry execution blocked (2026-10-02)
+
+- Canonical 26-GLB library classified A/B/C/D in `pipeline/asset-deep-uplift-v1-audit.json`.
+- High-return geometry queue: SteppedRockTerrace → TerraceStairRock → BroadRockPlatform → StreetLandingTransition → MidTier Piece01–04 audit.
+- Most production assets are **not** geometry candidates: Hero Bastion, Aserradero, Cuartel, Granero, Stone Architecture and other accepted pieces remain surface/integration-first.
+- GateStreetRiseRock MV1 is **D for route use**: keep only as landmark fragment; do not spend more geometry work trying to certify traversal.
+- No GLB mutated, no Tripo spend, no gameplay changes.
+- Binary Blender + official Unity 19/12/9/mobile execution is blocked only because live workstream `valoria-reference-convergence-v2` owns `windows-runner-heavy` and `valoria-production-composition`.
+- Once that ownership is released, resume with **SteppedRockTerrace first** using `tools/asset-deep-uplift/README.md`; candidate output must not replace canonical GLB until matched-camera evidence proves improvement.
+- Full record: `docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md`.
+
 ## Asset Visual Uplift Pass v1 — TECH PASS / SELECTIVE VISUAL PASS (2026-10-02)
 
 - Validated run: **37002187636 SUCCESS**; artifact **11223898210**.
