@@ -48,6 +48,19 @@ namespace Eldoria.Presentation
                 "Valoria · Foreground Edge · "+role,
                 source,anchor,span,maxHeight,Quaternion.Euler(0f,yaw,0f),tint);
             if(go==null)return;
+
+            // Large foreground rocks must not retain near-black legacy atlas response.
+            // Keep authored geometry, but unify every visible submesh into Valoria's neutral PBR rock family.
+            var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "rock",new Color(.52f,.52f,.48f,1f),new Vector2(2.7f,2.7f),.025f,1.02f)
+                ?? ValoriaKit.SurfaceMaterial(new Color(.49f,.49f,.45f,1f),"stone",new Vector2(2.7f,2.7f));
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=renderer.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=rockMaterial;
+                renderer.sharedMaterials=mats;
+            }
+
             foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
             foreach(var mb in go.GetComponentsInChildren<MonoBehaviour>(true))mb.enabled=false;
             go.transform.SetParent(root,true);
