@@ -10,7 +10,7 @@ namespace Eldoria.Presentation
     {
         public static bool Enabled=true;
         const string RootName="Valoria · Full Frame Architecture Batch v1";
-        static readonly Color Blue=new Color(.12f,.24f,.39f,1f);
+        static readonly Color Blue=new Color(.12f,.34f,.58f,1f);
 
         public static void Build(Transform parent,PlayerState state)
         {
