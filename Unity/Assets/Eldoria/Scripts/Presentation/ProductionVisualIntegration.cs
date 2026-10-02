@@ -1525,15 +1525,23 @@ namespace Eldoria.Presentation
             var wallPassage=Resources.Load<GameObject>("Valoria/ReferenceKit/wall_passage");
             var detailedWall=Resources.Load<GameObject>("Valoria/ReferenceKit/stone_wall_detailed");
 
-            // Broken aqueduct / bridge silhouettes frame the active city and create the same large-scale
-            // archaeological layer that makes the approved reference feel older than the current settlement.
-            if(stoneBridge!=null)
-            {
-                Piece("Valoria · Reference v1 · west ruined aqueduct",stoneBridge,
-                    new Vector3(-7.7f,1.12f,6.25f),6.2f,3.6f,12f,new Color(.78f,.75f,.68f));
-                Piece("Valoria · Reference v1 · east ruined aqueduct",stoneBridge,
-                    new Vector3(7.8f,1.18f,6.40f),6.2f,3.6f,168f,new Color(.78f,.75f,.68f));
-            }
+            // Monumental open ruin frame. The approved reference gains scale from broken arches that
+            // reveal the valley through them; closed slab-like masses are rejected because they read as blockout.
+            foreach(var s in new[]{
+                new Vector4(-9.15f,5.85f,5.70f,10f),new Vector4(9.25f,5.95f,5.70f,170f),
+                new Vector4(-10.45f,8.05f,4.10f,22f),new Vector4(10.55f,8.15f,4.10f,158f)})
+                Imported("Valoria · Reference v1 · monumental open arch","Arch_Gothic",
+                    new Vector3(s.x,.42f,s.y),s.z,7.30f,s.w,new Color(.47f,.45f,.40f),false);
+            foreach(var s in new[]{
+                new Vector4(-11.0f,4.60f,3.10f,44f),new Vector4(11.0f,4.75f,3.10f,136f),
+                new Vector4(-8.15f,8.70f,2.65f,18f),new Vector4(8.20f,8.85f,2.65f,162f)})
+                Imported("Valoria · Reference v1 · broken arch flank","Wall_Broken",
+                    new Vector3(s.x,.38f,s.y),s.z,3.15f,s.w,new Color(.44f,.42f,.38f),false);
+            foreach(var s in new[]{
+                new Vector4(-10.0f,6.95f,1.50f,0f),new Vector4(10.0f,7.05f,1.50f,180f),
+                new Vector4(-7.55f,9.35f,1.25f,0f),new Vector4(7.55f,9.45f,1.25f,180f)})
+                Imported("Valoria · Reference v1 · ruin column","Column_Round",
+                    new Vector3(s.x,.35f,s.y),s.z,4.65f,s.w,new Color(.46f,.44f,.39f),false);
 
             // Destroyed towers are subordinate vertical landmarks: taller than houses, lower and visually older
             // than the active Hero Bastion.
@@ -1554,12 +1562,13 @@ namespace Eldoria.Presentation
                 Piece("Valoria · Reference v1 · east lower ruin passage",wallPassage,
                     new Vector3(6.10f,.44f,.65f),3.25f,2.65f,162f,new Color(.76f,.72f,.64f));
             }
+            // Keep only short detailed masonry fragments near the lower shelves; no long closed side walls.
             if(detailedWall!=null)
             {
-                Piece("Valoria · Reference v1 · west broken terrace wall",detailedWall,
-                    new Vector3(-6.85f,.46f,-1.55f),3.35f,1.85f,10f,new Color(.74f,.70f,.62f));
-                Piece("Valoria · Reference v1 · east broken terrace wall",detailedWall,
-                    new Vector3(6.90f,.46f,-1.45f),3.35f,1.85f,170f,new Color(.74f,.70f,.62f));
+                Piece("Valoria · Reference v1 · west broken terrace fragment",detailedWall,
+                    new Vector3(-6.15f,.44f,-1.25f),1.85f,1.30f,18f,new Color(.70f,.67f,.60f));
+                Piece("Valoria · Reference v1 · east broken terrace fragment",detailedWall,
+                    new Vector3(6.20f,.44f,-1.18f),1.85f,1.30f,162f,new Color(.70f,.67f,.60f));
             }
 
             // Cliff falloff: make the inhabited shelves feel carved into a high mountain rather than sitting on a board.
