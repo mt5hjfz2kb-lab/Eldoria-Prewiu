@@ -5,7 +5,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/valoria-in-city-surface-v1.yml'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaInCitySurfacePassV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaInCitySurfaceGateV1.cs'
 
