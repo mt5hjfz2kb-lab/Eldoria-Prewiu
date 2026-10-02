@@ -66,6 +66,8 @@ namespace Eldoria.EditorTools
             ValoriaCliffIslandCleanupV2.Enabled=true;ValoriaCliffIslandCleanupV2.Build(root.transform,state);
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
 
+            int normalizedDarkFamilies=NormalizeKnownDarkFamilies();
+
             // Capture current strongest composition without a photographic backdrop first.
             Save(c,Folder+"/baseline-no-backdrop.png",p,t,9.1f,1280,720);
 
@@ -91,10 +93,75 @@ namespace Eldoria.EditorTools
                 "  \"vertical_biases\": [-5,-3,-1,1,3],\n"+
                 "  \"source\": \"Wikimedia Commons - Jagged peaks over a valley\",\n"+
                 "  \"license\": \"CC0\",\n"+
+                "  \"normalized_known_dark_family_slots\": "+normalizedDarkFamilies+",\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
             EditorApplication.Exit(0);
+        }
+
+
+        static int NormalizeKnownDarkFamilies()
+        {
+            int changed=0;
+            var rockShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(rockShader==null)return 0;
+
+            Material rock=null,tree=null;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var mats=r.sharedMaterials;
+                bool dirty=false;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var m=mats[i];
+                    if(m==null)continue;
+                    string n=m.name??"";
+                    bool isRock=n.Contains("Rock02",System.StringComparison.OrdinalIgnoreCase);
+                    bool isTree=n.Contains("Tree01",System.StringComparison.OrdinalIgnoreCase);
+                    if(!isRock&&!isTree)continue;
+
+                    Texture tex=null;
+                    if(m.HasProperty("_BaseMap"))tex=m.GetTexture("_BaseMap");
+                    if(tex==null&&m.HasProperty("_MainTex"))tex=m.GetTexture("_MainTex");
+                    if(tex!=null)continue;
+
+                    Color col=Color.white;
+                    if(m.HasProperty("_BaseColor"))col=m.GetColor("_BaseColor");
+                    else if(m.HasProperty("_Color"))col=m.GetColor("_Color");
+                    float lum=.2126f*col.r+.7152f*col.g+.0722f*col.b;
+                    if(lum>=.16f)continue;
+
+                    if(isRock)
+                    {
+                        if(rock==null)
+                        {
+                            rock=new Material(rockShader){name="Valoria Strongest · normalized Rock02"};
+                            if(rock.HasProperty("_BaseColor"))rock.SetColor("_BaseColor",new Color(.39f,.38f,.34f,1f));
+                            if(rock.HasProperty("_Color"))rock.SetColor("_Color",new Color(.39f,.38f,.34f,1f));
+                            if(rock.HasProperty("_Smoothness"))rock.SetFloat("_Smoothness",.025f);
+                            if(rock.HasProperty("_Metallic"))rock.SetFloat("_Metallic",0f);
+                        }
+                        mats[i]=rock;
+                    }
+                    else
+                    {
+                        if(tree==null)
+                        {
+                            tree=new Material(rockShader){name="Valoria Strongest · normalized Tree01"};
+                            if(tree.HasProperty("_BaseColor"))tree.SetColor("_BaseColor",new Color(.17f,.27f,.18f,1f));
+                            if(tree.HasProperty("_Color"))tree.SetColor("_Color",new Color(.17f,.27f,.18f,1f));
+                            if(tree.HasProperty("_Smoothness"))tree.SetFloat("_Smoothness",.02f);
+                            if(tree.HasProperty("_Metallic"))tree.SetFloat("_Metallic",0f);
+                        }
+                        mats[i]=tree;
+                    }
+                    changed++;dirty=true;
+                }
+                if(dirty)r.sharedMaterials=mats;
+            }
+            return changed;
         }
 
         static void Save(Camera c,string path,Vector3 p,Vector3 t,float size,int w,int h)
