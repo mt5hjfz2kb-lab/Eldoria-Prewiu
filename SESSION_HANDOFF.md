@@ -1,3 +1,19 @@
+## Valoria Reference Convergence v2 / World Frame v1 — CLOSED / PROMOTED (2026-10-02)
+
+- Reference Convergence v2 is closed. The old placement-only framing route reached its limit and correctly exposed the missing capability: a continuous production world frame around compact Valoria.
+- Production World Frame v1 is now promoted in runtime via `ValoriaWorldFrameMountainTerrainV1` (promotion commit `d316adc80dc27d42a85e1051f744c3610f09a1e5`).
+- Final visual policy: one continuous valley/mountain frame; no legacy twin fortresses, green hill wedges, floating rock platforms, synthetic cliff curtains or low-poly pine walls.
+- Pass-owned pines were rejected and removed in `13b67ab159c413fdad4bf5a8ce3cee2c32f37d25`; margin occupation is limited to shader-safe boulders.
+- Gameplay contract remains unchanged: no gameplay collider/hotspot/route/progression ownership; 0 Tripo credits.
+- Cross-gate production revalidation:
+  - Unity slice `37042030543` — SUCCESS
+  - World Frame `37042030550` — SUCCESS / artifact `11243245466`
+  - World Map Visual Formula `37042030657` — SUCCESS
+  - Valoria Visual Formula `37043234440` — SUCCESS / artifact `11243131294`
+- The earlier Visual Formula failure `37042030518` was CI-only: clean runner lacked Coherent Castle Proof staging. Workflow now stages Kenney Castle + Blender UV rewrap + Slavic proof + Poly Haven PBR deterministically.
+- Final closure record: `docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md`.
+- Do not reopen world-boundary framing. Next visual work should build on the promoted World Frame and attack remaining in-city benchmark gaps.
+
 ## Asset Deep Uplift Pass v1 — TECH PASS / DEEP AUDIT CLOSED (2026-10-02)
 
 - Real Blender diagnostics supersede the provisional geometry queue: **0 tested assets currently justify mesh surgery**.
