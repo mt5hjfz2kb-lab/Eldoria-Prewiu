@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact organic lower-city terrain v3: continuous eroded substrate, localized support under gameplay/secondary-building anchors, corrected Eldoria PBR materials, and reduced flat-board read.",
+  "objective": "Validate compact organic lower-city terrain v4: continuous eroded substrate with vertical rock projection on steep skirts to remove stretched/carpet texture read while preserving localized gameplay-anchor support.",
   "route": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:34:00+02:00",
-  "retry_reason": "External cliff geometry proof was TECH PASS but visual FAIL due disconnected repeated rock faces; return to continuous organic terrain with compact support footprint.",
-  "retry_seq": 3
+  "triggered_at": "2026-10-03T01:49:00+02:00",
+  "retry_reason": "v3 improved continuity but steep skirts still showed severe stretched surface read; v4 changes slope UV projection only.",
+  "retry_seq": 4
 }
