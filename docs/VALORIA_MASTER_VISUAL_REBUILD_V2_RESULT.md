@@ -14,9 +14,9 @@ This is not a claim that final art quality has been reached. It is a structural/
 
 ## Certified evidence
 
-Final converged run: `36987961140` — **SUCCESS**
-Artifact: `11217374327`
-Digest: `sha256:629911d13fb54244cd9afc825b48c2cccd84acd9509fd4febd82839682ade079`
+Final converged run: `36988913956` — **SUCCESS**
+Artifact: `11218522799`
+Digest: `sha256:7b9210f0abd096d3ef86b9d84c1cbfb5f8103f97c0d08dcad03ac8aecd4cd1ca`
 
 Toolchain Automation v2:
 - profile: `environment_composition`
@@ -29,7 +29,7 @@ Gameplay invariants:
 
 Metrics:
 - current compact baseline: 1,484,527 triangles / 782 renderers / 970 material slots / 22 lights
-- rebuild: 548,919 triangles / 178 renderers / 196 material slots / 4 lights
+- rebuild: 1,108,222 triangles / 163 renderers / 181 material slots / 4 lights
 
 ## What the blank canvas establishes
 
@@ -45,7 +45,7 @@ Metrics:
 ## Iteration findings
 
 The first blank-canvas render proved the direction but exposed oversized upper wall modules and a fragmented central stair.
-Subsequent iterations replaced the giant wall read with buried rock/masonry transitions, narrowed and connected the processional ascent, rebuilt the surrounding landform, reduced the wide-camera procedural-board appearance, and finally broke the central ladder into an irregular stepped street with distinct civic/gate landings.
+Subsequent iterations replaced the giant wall read with buried rock/masonry transitions, narrowed and connected the processional ascent, rebuilt the surrounding landform, reduced the wide-camera procedural-board appearance, and finally broke the central ladder into an irregular stepped street with distinct civic/gate landings. The final pass also removed detached mountain props from the horizon so the surrounding landform reads as continuous terrain rather than floating set dressing.
 
 ## Verdict
 
