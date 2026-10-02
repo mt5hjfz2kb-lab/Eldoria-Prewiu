@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-integrated-side-ruins-v2",
+  "objective": "Retry benchmark-like lateral monumental ruins at restrained scale, partially buried in rock, so they frame the Bastion without reading as detached giant blocks.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "prior_attempt": "ruin_frame_v1_rejected_for_overscale_and_block_read",
+  "constraints": {
+    "proof_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "before_after"
+  ]
+}
