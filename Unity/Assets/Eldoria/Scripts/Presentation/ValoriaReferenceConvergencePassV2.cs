@@ -77,11 +77,11 @@ namespace Eldoria.Presentation
 
         static void SuppressPrototypeGroundSurfaces()
         {
-            // Iteration 15: remove only the visible renderers of oversized planning/prototype ground.
+            // Iteration 16: suppress only auxiliary rectangular planning/prototype shelves.
+            // Keep the irregular valley floor visible: it is now PBR-reskinned above and prevents a floating-island edge.
             // Colliders, transforms, names, progression and interaction remain untouched.
             var exactNames=new HashSet<string>(StringComparer.Ordinal)
             {
-                "Valoria · valley floor",
                 "VPD · west expansion terrain",
                 "VPD · east expansion terrain",
                 "VPD · future valley shelf",
