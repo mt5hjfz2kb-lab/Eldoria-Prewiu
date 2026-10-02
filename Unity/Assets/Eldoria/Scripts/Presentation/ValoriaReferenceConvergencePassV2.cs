@@ -26,6 +26,7 @@ namespace Eldoria.Presentation
 
             BuildMonumentalFrame(root,art);
             BuildCliffEnvelope(root);
+            BuildLateralMargins(root,art);
             BuildMountainHorizon(root);
             BuildVegetationDepth(root,art);
             BuildOccupationAndAtmosphere(root);
@@ -42,14 +43,14 @@ namespace Eldoria.Presentation
             // Keep them outside circulation and let the Bastion remain the focal point.
 
             AddPrefab(root,art.MegaDestroyedTower,"left ruin crown",
-                new Vector3(-10.9f,1.15f,10.9f),4.1f,6.8f,34f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(-14.2f,.95f,8.4f),4.6f,7.1f,28f,new Color(.55f,.54f,.51f,1f),true);
             AddPrefab(root,art.MegaDestroyedTower,"right ruin crown",
-                new Vector3(11.7f,.95f,11.8f),3.5f,6.1f,216f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(14.4f,.90f,8.8f),4.4f,6.9f,212f,new Color(.55f,.54f,.51f,1f),true);
 
             AddPrefab(root,art.MegaWallPassage,"rear left ruined passage",
-                new Vector3(-7.5f,1.35f,12.7f),4.9f,5.3f,18f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(-12.4f,1.15f,12.8f),4.2f,4.9f,16f,new Color(.57f,.56f,.52f,1f),true);
             AddPrefab(root,art.MegaWallPassage,"rear right ruined passage",
-                new Vector3(7.8f,1.30f,13.1f),4.5f,5.0f,162f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(12.6f,1.10f,13.0f),4.2f,4.9f,164f,new Color(.57f,.56f,.52f,1f),true);
         }
 
         static void BuildCliffEnvelope(Transform root)
@@ -66,6 +67,60 @@ namespace Eldoria.Presentation
                 new Vector3(-9.4f,-3.2f,-6.2f),11.0f,6.5f,35f,new Color(.38f,.42f,.40f,1f));
             AddResource(root,"Valoria/SM_Hills_01","front right mountain shoulder",
                 new Vector3(9.2f,-3.2f,-6.0f),11.0f,6.5f,215f,new Color(.38f,.42f,.40f,1f));
+        }
+
+        static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
+        {
+            // Reference-oriented side margins: world mass closes the frame without adding more city width.
+            // The outer cliff/ruin silhouettes should be partially cropped by the camera, like the target image.
+
+            AddResource(root,"Valoria/SM_Cliffs_01","far left vertical curtain",
+                new Vector3(-16.2f,-2.15f,4.4f),14.8f,10.2f,22f,new Color(.39f,.42f,.42f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","far right vertical curtain",
+                new Vector3(16.1f,-2.15f,4.7f),14.8f,10.2f,202f,new Color(.39f,.42f,.42f,1f));
+
+            AddResource(root,"Valoria/SM_Hills_01","left foreground side mass",
+                new Vector3(-15.0f,-3.45f,-2.8f),13.0f,7.3f,30f,new Color(.36f,.40f,.38f,1f));
+            AddResource(root,"Valoria/SM_Hills_01","right foreground side mass",
+                new Vector3(14.8f,-3.45f,-2.6f),13.0f,7.3f,210f,new Color(.36f,.40f,.38f,1f));
+
+            if(art!=null)
+            {
+                if(art.MegaDestroyedTower!=null)
+                {
+                    AddPrefab(root,art.MegaDestroyedTower,"outer left ruin silhouette",
+                        new Vector3(-16.0f,.80f,7.1f),3.8f,6.2f,24f,new Color(.49f,.49f,.47f,1f),true);
+                    AddPrefab(root,art.MegaDestroyedTower,"outer right ruin silhouette",
+                        new Vector3(16.0f,.75f,7.4f),3.8f,6.2f,204f,new Color(.49f,.49f,.47f,1f),true);
+                }
+
+                var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
+                if(tree!=null)
+                {
+                    var sideTrees=new[]{
+                        new Vector3(-13.9f,.15f,-.8f),new Vector3(-14.8f,.20f,2.3f),new Vector3(-13.4f,.18f,5.6f),
+                        new Vector3(-12.9f,.18f,9.0f),new Vector3(-14.3f,.20f,11.8f),
+                        new Vector3(13.7f,.15f,-.6f),new Vector3(14.7f,.20f,2.5f),new Vector3(13.3f,.18f,5.8f),
+                        new Vector3(12.8f,.18f,9.2f),new Vector3(14.2f,.20f,12.0f)
+                    };
+                    for(int i=0;i<sideTrees.Length;i++)
+                        AddPrefab(root,tree,"side curtain tree "+i,sideTrees[i],
+                            1.05f+(i%3)*.18f,3.2f+(i%2)*.55f,(i*47)%360,FoliageTint);
+                }
+
+                if(art.SlavicBush!=null)
+                {
+                    for(int i=0;i<12;i++)
+                    {
+                        bool left=i<6;
+                        int j=left?i:i-6;
+                        float x=left?(-12.7f-j*.46f):(12.7f+j*.46f);
+                        float z=-1.5f+j*2.45f;
+                        AddPrefab(root,art.SlavicBush,"side curtain scrub "+i,
+                            new Vector3(x,.12f,z),.82f,.80f,(i*29)%360,new Color(.38f,.45f,.34f,1f));
+                    }
+                }
+            }
         }
 
         static void BuildMountainHorizon(Transform root)
