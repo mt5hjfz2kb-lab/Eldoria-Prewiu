@@ -113,7 +113,7 @@ namespace Eldoria.EditorTools
         static void WriteVisibleRendererAudit(Camera c,string path)
         {
             var rows=new List<string>();
-            foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            foreach(var r in UnityEngine.UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 var b=r.bounds;
