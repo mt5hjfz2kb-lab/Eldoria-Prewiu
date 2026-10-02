@@ -60,24 +60,18 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 10: lateral margins are world mass, not extra architecture.
-            // Use only lightweight natural cliffs/hills plus sparse foliage so the Hero Bastion remains the sole monumental focal point.
+            // Iteration 11: rock-only lateral curtains. Hills introduced flat green/grey patches, so they are excluded.
+            // Keep silhouettes irregular and low enough that the Hero Bastion remains dominant.
 
-            AddResource(root,"Valoria/SM_Cliffs_01","left outer natural curtain",
-                new Vector3(-14.8f,-2.55f,3.0f),13.6f,7.4f,24f,new Color(.39f,.42f,.41f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_03","right outer natural curtain",
-                new Vector3(14.7f,-2.55f,3.2f),13.6f,7.4f,204f,new Color(.39f,.42f,.41f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_01","left outer rock curtain",
+                new Vector3(-14.6f,-2.65f,2.8f),12.8f,6.5f,24f,new Color(.40f,.43f,.42f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","right outer rock curtain",
+                new Vector3(14.5f,-2.65f,3.0f),12.8f,6.5f,204f,new Color(.40f,.43f,.42f,1f));
 
-            AddResource(root,"Valoria/SM_Hills_01","left lower world shoulder",
-                new Vector3(-13.7f,-3.35f,-2.1f),12.0f,5.8f,32f,new Color(.36f,.40f,.38f,1f));
-            AddResource(root,"Valoria/SM_Hills_01","right lower world shoulder",
-                new Vector3(13.6f,-3.35f,-1.9f),12.0f,5.8f,212f,new Color(.36f,.40f,.38f,1f));
-
-            // A second, smaller cliff layer breaks the side silhouette without reading as a duplicated fortress.
-            AddResource(root,"Valoria/SM_Cliffs_03","left upper broken ridge",
-                new Vector3(-12.9f,-1.15f,9.4f),8.2f,5.0f,94f,new Color(.43f,.45f,.44f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_01","right upper broken ridge",
-                new Vector3(12.9f,-1.15f,9.6f),8.2f,5.0f,274f,new Color(.43f,.45f,.44f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","left rear broken rock",
+                new Vector3(-12.8f,-2.05f,10.0f),8.0f,4.8f,96f,new Color(.44f,.46f,.45f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_01","right rear broken rock",
+                new Vector3(12.8f,-2.05f,10.2f),8.0f,4.8f,276f,new Color(.44f,.46f,.45f,1f));
 
             if(art!=null)
             {
@@ -85,41 +79,36 @@ namespace Eldoria.Presentation
                 if(tree!=null)
                 {
                     var sideTrees=new[]{
-                        new Vector3(-13.9f,.12f,-1.0f),new Vector3(-14.2f,.14f,2.4f),new Vector3(-13.1f,.14f,5.6f),new Vector3(-12.6f,.14f,9.0f),new Vector3(-13.8f,.14f,11.6f),
-                        new Vector3(13.8f,.12f,-.8f),new Vector3(14.1f,.14f,2.6f),new Vector3(13.0f,.14f,5.8f),new Vector3(12.5f,.14f,9.2f),new Vector3(13.7f,.14f,11.8f)
+                        new Vector3(-14.0f,.10f,-1.2f),new Vector3(-13.6f,.12f,2.2f),new Vector3(-12.9f,.12f,5.5f),new Vector3(-12.4f,.12f,8.8f),new Vector3(-13.4f,.12f,11.5f),
+                        new Vector3(13.9f,.10f,-1.0f),new Vector3(13.5f,.12f,2.4f),new Vector3(12.8f,.12f,5.7f),new Vector3(12.3f,.12f,9.0f),new Vector3(13.3f,.12f,11.7f)
                     };
                     for(int i=0;i<sideTrees.Length;i++)
-                        AddPrefab(root,tree,"side natural tree "+i,sideTrees[i],
-                            .82f+(i%3)*.10f,2.55f+(i%2)*.35f,(i*47)%360,FoliageTint);
+                        AddPrefab(root,tree,"side rock tree "+i,sideTrees[i],
+                            .80f+(i%3)*.10f,2.45f+(i%2)*.30f,(i*47)%360,FoliageTint);
                 }
 
                 if(art.SlavicBush!=null)
                 {
                     var scrub=new[]{
-                        new Vector3(-12.5f,.10f,.5f),new Vector3(-12.9f,.10f,4.4f),new Vector3(-12.2f,.10f,8.1f),
-                        new Vector3(12.4f,.10f,.7f),new Vector3(12.8f,.10f,4.6f),new Vector3(12.1f,.10f,8.3f)
+                        new Vector3(-12.5f,.08f,.4f),new Vector3(-12.8f,.08f,4.2f),new Vector3(-12.1f,.08f,7.8f),
+                        new Vector3(12.4f,.08f,.6f),new Vector3(12.7f,.08f,4.4f),new Vector3(12.0f,.08f,8.0f)
                     };
                     for(int i=0;i<scrub.Length;i++)
-                        AddPrefab(root,art.SlavicBush,"side natural scrub "+i,scrub[i],
-                            .62f,.66f,(i*31)%360,new Color(.38f,.44f,.34f,1f));
+                        AddPrefab(root,art.SlavicBush,"side rock scrub "+i,scrub[i],
+                            .58f,.62f,(i*31)%360,new Color(.37f,.43f,.33f,1f));
                 }
             }
         }
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 10: close the exposed rear plane with broad, low-contrast natural masses.
-            AddResource(root,"Valoria/SM_Hills_01","distant left mountain field",
-                new Vector3(-12.0f,-4.0f,18.8f),17.0f,7.0f,18f,new Color(.45f,.49f,.49f,1f));
-            AddResource(root,"Valoria/SM_Hills_01","distant center mountain field",
-                new Vector3(0f,-4.4f,22.5f),20.0f,7.4f,94f,new Color(.46f,.50f,.50f,1f));
-            AddResource(root,"Valoria/SM_Hills_01","distant right mountain field",
-                new Vector3(12.0f,-4.0f,19.1f),17.0f,7.0f,198f,new Color(.45f,.49f,.49f,1f));
-
-            AddResource(root,"Valoria/SM_Cliffs_01","distant left broken ridge",
-                new Vector3(-13.8f,-2.8f,20.6f),12.0f,5.6f,12f,new Color(.43f,.47f,.48f,1f));
-            AddResource(root,"Valoria/SM_Cliffs_03","distant right broken ridge",
-                new Vector3(13.8f,-2.8f,20.9f),12.0f,5.6f,192f,new Color(.43f,.47f,.48f,1f));
+            // Iteration 11: rock ridges only; no flat hill materials.
+            AddResource(root,"Valoria/SM_Cliffs_01","distant left ridge",
+                new Vector3(-14.0f,-3.1f,20.0f),13.8f,6.2f,12f,new Color(.47f,.50f,.50f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_03","distant center ridge",
+                new Vector3(0f,-3.4f,23.0f),16.0f,6.6f,94f,new Color(.48f,.51f,.51f,1f));
+            AddResource(root,"Valoria/SM_Cliffs_01","distant right ridge",
+                new Vector3(14.0f,-3.1f,20.3f),13.8f,6.2f,192f,new Color(.47f,.50f,.50f,1f));
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
@@ -157,9 +146,9 @@ namespace Eldoria.Presentation
             RenderSettings.ambientIntensity=.86f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.58f,.65f,.69f);
-            RenderSettings.fogStartDistance=38f;
-            RenderSettings.fogEndDistance=112f;
+            RenderSettings.fogColor=new Color(.60f,.67f,.71f);
+            RenderSettings.fogStartDistance=26f;
+            RenderSettings.fogEndDistance=72f;
 
             var camera=Camera.main;
             if(camera!=null)
