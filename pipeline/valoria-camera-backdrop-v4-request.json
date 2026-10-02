@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-backdrop-v4",
+  "objective": "Replace the remaining grey void around Valoria with a blurred, color-graded, camera-locked atmospheric valley backdrop derived from the CC0 Alps Field panorama, combined with Benchmark Composite v2 and Environment Uplift v1.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "composition_and_mass",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "4_crop_candidates",
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
