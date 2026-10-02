@@ -93,48 +93,19 @@ namespace Eldoria.Presentation
 
         static void BuildMarginOccupation(Transform root)
         {
+            // Keep only shader-safe dark boulders. The tested flat rocks, stone fences and firewood
+            // read as bright pasted props at strategic zooms and reduce visual cohesion.
             var art=ValoriaExternalAssetLibrary.Load();
-            if(art==null)return;
+            if(art==null||art.SlavicBoulder==null)return;
 
-            if(art.SlavicBoulder!=null)
-            {
-                var anchors=new[]{
-                    new Vector3(-15.8f,.05f,-1.8f),new Vector3(-16.4f,.05f,4.1f),new Vector3(-15.3f,.05f,10.6f),
-                    new Vector3(15.6f,.05f,-1.2f),new Vector3(16.2f,.05f,4.8f),new Vector3(15.1f,.05f,10.9f),
-                    new Vector3(-8.8f,.08f,16.0f),new Vector3(9.2f,.08f,16.4f)
-                };
-                for(int i=0;i<anchors.Length;i++)
-                    AddFramePrefab(root,art.SlavicBoulder,"margin boulder "+i,anchors[i],
-                        1.55f+(i%3)*.16f,1.05f+(i%2)*.10f,(i*47)%360,new Color(.37f,.39f,.37f,1f));
-            }
-
-            if(art.SlavicFlatRock!=null)
-            {
-                var anchors=new[]{
-                    new Vector3(-13.8f,.02f,-4.6f),new Vector3(-17.0f,.02f,7.2f),
-                    new Vector3(13.9f,.02f,-4.0f),new Vector3(16.8f,.02f,7.8f),
-                    new Vector3(-5.8f,.03f,16.8f),new Vector3(6.4f,.03f,17.0f)
-                };
-                for(int i=0;i<anchors.Length;i++)
-                    AddFramePrefab(root,art.SlavicFlatRock,"margin flat rock "+i,anchors[i],
-                        2.1f+(i%2)*.25f,.55f,(i*61)%360,new Color(.35f,.37f,.35f,1f));
-            }
-
-            if(art.SlavicStoneFence!=null)
-            {
-                AddFramePrefab(root,art.SlavicStoneFence,"west ruined edge fence",new Vector3(-13.8f,.02f,2.0f),
-                    3.6f,1.15f,22f,new Color(.48f,.47f,.43f,1f));
-                AddFramePrefab(root,art.SlavicStoneFence,"east ruined edge fence",new Vector3(13.7f,.02f,3.0f),
-                    3.4f,1.15f,202f,new Color(.48f,.47f,.43f,1f));
-            }
-
-            if(art.Firewood!=null)
-            {
-                AddFramePrefab(root,art.Firewood,"west work-edge firewood",new Vector3(-11.9f,.03f,-2.7f),
-                    1.9f,.95f,18f,new Color(.58f,.48f,.34f,1f));
-                AddFramePrefab(root,art.Firewood,"east work-edge firewood",new Vector3(11.8f,.03f,-2.0f),
-                    1.8f,.95f,198f,new Color(.58f,.48f,.34f,1f));
-            }
+            var anchors=new[]{
+                new Vector3(-15.8f,.05f,-1.8f),new Vector3(-16.4f,.05f,4.1f),new Vector3(-15.3f,.05f,10.6f),
+                new Vector3(15.6f,.05f,-1.2f),new Vector3(16.2f,.05f,4.8f),new Vector3(15.1f,.05f,10.9f),
+                new Vector3(-8.8f,.08f,16.0f),new Vector3(9.2f,.08f,16.4f)
+            };
+            for(int i=0;i<anchors.Length;i++)
+                AddFramePrefab(root,art.SlavicBoulder,"margin boulder "+i,anchors[i],
+                    1.48f+(i%3)*.14f,1.0f+(i%2)*.08f,(i*47)%360,new Color(.34f,.36f,.34f,1f));
         }
 
         static void AddFramePrefab(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
