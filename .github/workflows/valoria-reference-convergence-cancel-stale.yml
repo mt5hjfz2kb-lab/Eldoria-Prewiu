@@ -19,5 +19,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913084/cancel || true
-          echo "cancel requested for 36997913084"
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913084/force-cancel || true
+          echo "force-cancel requested for 36997913084"
