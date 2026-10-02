@@ -1272,6 +1272,26 @@ namespace Eldoria.Presentation
                 Imported("Valoria · FullFrame · framing pine",s.w>.5f?"Tree01B":"Tree01A",
                     new Vector3(s.x,.04f,s.y),s.z,2.40f,s.x*9f,new Color(.23f,.31f,.21f),true);
 
+            // Secondary urban tissue: existing certified Mid-Tier family, scaled down and partly occluded.
+            // Purpose is full-frame massing/skyline, not new landmarks.
+            foreach(var s in new[]{
+                new Vector4(-14.8f,3.15f,6.0f,12f),new Vector4(-11.7f,3.05f,7.7f,-8f),new Vector4(-9.0f,3.12f,9.5f,18f),
+                new Vector4(14.8f,3.15f,6.1f,168f),new Vector4(11.7f,3.05f,7.8f,188f),new Vector4(9.0f,3.12f,9.6f,162f)})
+            {
+                string piece=Mathf.Abs(s.x)>13f?"Piece03":Mathf.Abs(s.x)>10f?"Piece02":"Piece04";
+                var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+piece);
+                if(source!=null)Piece("Valoria · FullFrame · secondary urban tissue",source,
+                    new Vector3(s.x,s.y,s.z),2.05f,2.75f,s.w,new Color(.62f,.59f,.53f));
+            }
+            foreach(var s in new[]{
+                new Vector4(-16.3f,.40f,4.0f,18f),new Vector4(-13.6f,.42f,4.5f,-4f),
+                new Vector4(16.3f,.40f,4.1f,162f),new Vector4(13.6f,.42f,4.6f,184f)})
+            {
+                var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
+                if(source!=null)Piece("Valoria · FullFrame · lower urban infill",source,
+                    new Vector3(s.x,s.y,s.z),2.15f,2.85f,s.w,new Color(.64f,.60f,.53f));
+            }
+
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
             WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
             WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
