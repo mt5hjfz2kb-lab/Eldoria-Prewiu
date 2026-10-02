@@ -35,7 +35,7 @@ jobs:
             echo "cancel requested for older convergence run $run"
           done
 
-          for run in 36994997684 36995060877; do
+          for run in 36994997684 36995060877 36997913002 36997913113; do
             state=$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/$run --jq '.status' 2>/dev/null || echo missing)
             if [ "$state" = "in_progress" ] || [ "$state" = "queued" ]; then
               gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/$run/cancel || true
