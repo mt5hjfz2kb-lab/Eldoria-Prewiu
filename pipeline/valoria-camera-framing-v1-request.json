@@ -19,5 +19,7 @@
     "mobile",
     "collider_hotspot_signature"
   ],
-  "triggered_at": "2026-10-02T22:09:00Z"
+  "triggered_at": "2026-10-02T22:09:00Z",
+  "retriggered_at": "2026-10-02T22:14:00Z",
+  "retry_reason": "Previous attempt compiled a stale main snapshot with an unrelated Slavic proof error; rerun unchanged framing proof on repaired current main."
 }
