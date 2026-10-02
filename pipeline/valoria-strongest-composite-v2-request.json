@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Evaluate the strongest integrated Valoria frame with coherent secondary architecture plus an organic eroded lower-city terrain substrate replacing fragmented prototype supports.",
+  "objective": "Evaluate the strongest integrated Valoria frame with coherent secondary architecture plus organic lower-city terrain using authored Slavic rock/mud PBR surfaces.",
   "route": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -30,5 +30,5 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:05:00+02:00"
+  "triggered_at": "2026-10-03T01:10:00+02:00"
 }
