@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel obsolete rejected Full-Frame Iteration 1 rerun triggered by production wiring; free Windows runner for camera-backdrop convergence proof.",
+  "reason": "Cancel superseded first camera-backdrop rerun so the latest fix including far-clip correction can execute.",
   "runs": [
-    37061802379
+    37062869984
   ],
-  "triggered_at": "2026-10-02T20:43:00Z"
+  "triggered_at": "2026-10-02T20:49:00Z"
 }
