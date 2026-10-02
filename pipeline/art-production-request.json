@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Blank-canvas visual composition using the existing library only. Preserve gameplay/topology. Design mountain/terraces/circulation/reserved growth plots first; existing asset positions have no authority. No new geometry and zero Tripo spend. Completed and parked after certified run 36988913956; workflow frozen to manual."
+  "notes": "Master Visual Rebuild v2 composition certified on run 36988913956. Branch parked after structural PASS. Keep existing library; no Tripo spend."
 }
