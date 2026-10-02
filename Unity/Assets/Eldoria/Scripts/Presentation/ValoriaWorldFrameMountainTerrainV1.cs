@@ -36,7 +36,7 @@ namespace Eldoria.Presentation
             // Review iteration: balanced side walls + open central saddle; geometry unchanged by proof trigger.
             const int cols=81;
             const int rows=73;
-            const float xMin=-25f,xMax=25f,zMin=-13f,zMax=31f;
+            const float xMin=-23f,xMax=23f,zMin=-13f,zMax=31f;
             const float hiddenY=-.64f;
 
             var verts=new Vector3[cols*rows];
@@ -52,28 +52,30 @@ namespace Eldoria.Presentation
                     float tx=cx/(float)(cols-1);
                     float x=Mathf.Lerp(xMin,xMax,tx);
 
-                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-13.4f)/6.3f));
-                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-15.0f)/10.5f));
-                    // Keep the player approach open, but let the world frame begin closer to the inhabited mass.
-                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-1.0f)/6.0f));
+                    // Iteration 2: the first continuous valley proved the concept, but its side walls
+                    // entered the review frame as broad smooth ramps. Start farther out and compress the rise
+                    // into a narrower rocky crest so the city remains visually open.
+                    float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-14.8f)/4.7f));
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-18.0f)/8.0f));
+                    float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-2.0f)/7.0f));
                     float sideRelief=side*frontGate;
-                    float relief=Mathf.Max(sideRelief,rear);
-
-                    // Final framing refinement: keep the proven silhouette but make it read as rock,
-                    // not a smooth berm. The matched camera magnifies the west/left wall, so it stays lower.
-                    float rearSide=rear*side;
-                    float sideScale=x<0f?.60f:.78f;
-                    float ridge=sideRelief*sideRelief*3.35f*sideScale + rearSide*rearSide*1.70f;
-
-                    float broad=Mathf.Sin(x*.115f+z*.035f)*.30f
-                               +Mathf.Sin(z*.145f-x*.028f)*.24f
-                               +Mathf.Sin((x+z)*.071f)*.16f;
-                    float macroNoise=(Mathf.PerlinNoise(x*.085f+7.31f,z*.085f+11.17f)-.5f)*1.05f;
-                    float detailNoise=(Mathf.PerlinNoise(x*.22f+19.43f,z*.22f+2.71f)-.5f)*.34f;
-                    float strata=Mathf.Sin(z*.58f+x*.075f)*.10f;
+                    float rearSide=rear*Mathf.Max(.35f,side);
                     float visibleRelief=Mathf.Max(sideRelief,rearSide);
-                    float y=hiddenY + ridge
-                        + (broad+macroNoise+detailNoise+strata)*visibleRelief*.72f;
+
+                    float sideScale=x<0f?.56f:.66f;
+                    float crest=Mathf.Pow(sideRelief,2.65f)*3.15f*sideScale;
+                    float rearCrest=Mathf.Pow(rearSide,2.25f)*1.55f;
+
+                    // Layered rock breakup: broad shape + deterministic Perlin + sharper ledge bands.
+                    float broad=Mathf.Sin(x*.17f+z*.065f)*.34f
+                               +Mathf.Sin(z*.23f-x*.055f)*.27f
+                               +Mathf.Sin((x+z)*.105f)*.18f;
+                    float macroNoise=(Mathf.PerlinNoise(x*.115f+7.31f,z*.115f+11.17f)-.5f)*1.30f;
+                    float detailNoise=(Mathf.PerlinNoise(x*.31f+19.43f,z*.31f+2.71f)-.5f)*.46f;
+                    float ledges=(Mathf.Abs(Mathf.Sin(z*.72f+x*.11f))-.50f)*.28f;
+                    float notch=(Mathf.PerlinNoise(x*.19f+3.2f,z*.14f+8.4f)-.5f)*.48f;
+                    float y=hiddenY + crest + rearCrest
+                        + (broad+macroNoise+detailNoise+ledges+notch)*visibleRelief*.78f;
 
                     // Keep a generous central basin and the full approach invisible beneath gameplay ground.
                     float cityX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-10.6f)/3.8f));
@@ -100,13 +102,13 @@ namespace Eldoria.Presentation
             if(art==null||art.SlavicBoulder==null)return;
 
             var anchors=new[]{
-                new Vector3(-15.8f,.05f,-1.8f),new Vector3(-16.4f,.05f,4.1f),new Vector3(-15.3f,.05f,10.6f),
-                new Vector3(15.6f,.05f,-1.2f),new Vector3(16.2f,.05f,4.8f),new Vector3(15.1f,.05f,10.9f),
-                new Vector3(-8.8f,.08f,16.0f),new Vector3(9.2f,.08f,16.4f)
+                new Vector3(-16.2f,.05f,-.8f),new Vector3(-16.5f,.05f,4.8f),new Vector3(-15.8f,.05f,10.8f),
+                new Vector3(16.1f,.05f,-.3f),new Vector3(16.4f,.05f,5.2f),new Vector3(15.7f,.05f,11.1f),
+                new Vector3(-9.4f,.08f,17.2f),new Vector3(9.6f,.08f,17.4f)
             };
             for(int i=0;i<anchors.Length;i++)
                 AddFramePrefab(root,art.SlavicBoulder,"margin boulder "+i,anchors[i],
-                    1.48f+(i%3)*.14f,1.0f+(i%2)*.08f,(i*47)%360,new Color(.34f,.36f,.34f,1f));
+                    1.32f+(i%3)*.12f,.92f+(i%2)*.07f,(i*47)%360,new Color(.34f,.36f,.34f,1f));
 
             // No pass-owned pines: the canonical procedural pine reads as a dark low-poly cone
             // at strategic zooms and reduces the quality of the validated World Frame.
