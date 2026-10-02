@@ -1204,6 +1204,7 @@ namespace Eldoria.Presentation
         static void ComposeFullFrameV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
             // Toolchain Automation v2 / environment_composition — iteration 2.
+            FullFrameLandformV1();
             // Existing assets only. No gameplay authority.
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
             RenderSettings.ambientSkyColor=new Color(.61f,.66f,.69f);
@@ -1282,6 +1283,16 @@ namespace Eldoria.Presentation
                 Piece("Valoria · FullFrame · west timber",art.Firewood,new Vector3(-14.7f,.43f,.15f),.82f,.48f,14f,new Color(.62f,.52f,.39f));
                 Piece("Valoria · FullFrame · east timber",art.Firewood,new Vector3(14.0f,.43f,2.25f),.78f,.45f,-10f,new Color(.62f,.52f,.39f));
             }
+        }
+
+        static void FullFrameLandformV1()
+        {
+            const int nx=45,nz=39;const float minX=-42f,maxX=42f,minZ=-25f,maxZ=43f;
+            var v=new Vector3[nx*nz];var uv=new Vector2[v.Length];var tri=new int[(nx-1)*(nz-1)*6];
+            for(int z=0;z<nz;z++){float tz=z/(float)(nz-1),wz=Mathf.Lerp(minZ,maxZ,tz);for(int x=0;x<nx;x++){float tx=x/(float)(nx-1),wx=Mathf.Lerp(minX,maxX,tx);float side=Mathf.Clamp01((Mathf.Abs(wx)-13f)/24f);float rear=Mathf.Clamp01((wz-10f)/29f);float front=Mathf.Clamp01((-wz-8f)/15f);float shoulder=Mathf.Clamp01((Mathf.Abs(wx)-8f)/13f)*Mathf.Clamp01((12f-Mathf.Abs(wz-1f))/12f);float rise=side*side*5.8f+rear*rear*6f+front*front*2.4f+shoulder*.75f;float noise=(Mathf.Sin(wx*.19f)+Mathf.Sin(wz*.23f)+Mathf.Sin((wx-wz)*.11f))*.20f;float y=-.58f+rise+noise*Mathf.Lerp(.15f,1f,Mathf.Max(side,rear));float core=Mathf.Clamp01(1f-Mathf.Max(Mathf.Abs(wx)/17f,Mathf.Abs(wz-2f)/15f));y=Mathf.Lerp(y,-.42f,core*.92f);v[z*nx+x]=new Vector3(wx,y,wz);uv[z*nx+x]=new Vector2(tx*20f,tz*17f);}}
+            int k=0;for(int z=0;z<nz-1;z++)for(int x=0;x<nx-1;x++){int a=z*nx+x,b=a+1,d=(z+1)*nx+x,e=d+1;tri[k++]=a;tri[k++]=d;tri[k++]=b;tri[k++]=b;tri[k++]=d;tri[k++]=e;}
+            var mesh=new Mesh{name="Valoria FullFrame v1 · continuous landform"};mesh.vertices=v;mesh.uv=uv;mesh.triangles=tri;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · FullFrame · continuous landform");go.transform.SetParent(root,true);go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=ValoriaKit.SurfaceMaterial(new Color(.30f,.29f,.25f,1f),"earth",new Vector2(20f,17f));
         }
 
         static void HeroValleyTerrain()
