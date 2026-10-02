@@ -117,6 +117,19 @@ namespace Eldoria.Presentation
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
                 "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
 
+            // Iteration 16: foreground cliff lip hides the remaining visible island/map edge.
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "front west PBR lip",new Vector3(-8.6f,-.05f,-8.9f),7.6f,8f,new Color(.43f,.44f,.42f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "front centre PBR lip",new Vector3(.2f,-.18f,-9.6f),7.2f,184f,new Color(.42f,.43f,.41f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+                "front east PBR lip",new Vector3(8.9f,-.08f,-8.7f),7.4f,352f,new Color(.43f,.44f,.42f,1f));
+
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "front west broken cliff",new Vector3(-12.6f,.35f,-6.6f),4.7f,70f,new Color(.42f,.43f,.41f,1f));
+            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+                "front east broken cliff",new Vector3(12.8f,.30f,-6.3f),4.5f,292f,new Color(.42f,.43f,.41f,1f));
+
             if(art!=null)
             {
                 var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
