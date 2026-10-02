@@ -46,9 +46,9 @@ jobs:
           New-Item -ItemType Directory -Force -Path $dir | Out-Null
           $dst=Join-Path $dir 'jagged_peaks_valley.jpg'
           $sources=@(
+            'https://web.archive.org/web/20170703112122id_/https://images.unsplash.com/photo-1484383364429-7ae3d3e9a125',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg/1280px-Jagged_peaks_over_a_valley_%28Unsplash%29.jpg',
-            'https://upload.wikimedia.org/wikipedia/commons/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg',
-            'https://web.archive.org/web/20170703112122id_/https://images.unsplash.com/photo-1484383364429-7ae3d3e9a125'
+            'https://upload.wikimedia.org/wikipedia/commons/2/2e/Jagged_peaks_over_a_valley_%28Unsplash%29.jpg'
           )
           $headers=@{'User-Agent'='Eldoria-Valoria-Convergence/1.0 (CC0 asset validation)'}
           $ok=$false
