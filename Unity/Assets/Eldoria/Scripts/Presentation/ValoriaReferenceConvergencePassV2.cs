@@ -83,6 +83,11 @@ namespace Eldoria.Presentation
                     renderer.sharedMaterial=valleyDirt??dirt;
                     var p=renderer.transform.position;
                     renderer.transform.position=new Vector3(p.x,.045f,p.z);
+                    // Iteration 20: the 11-sided irregular valley mesh contour was entering the official cameras
+                    // as a dark curved map edge. This sheet is visual-only, so expand X/Z to push that contour
+                    // safely outside the captured frame without touching gameplay topology or colliders.
+                    var s=renderer.transform.localScale;
+                    renderer.transform.localScale=new Vector3(s.x*1.45f,s.y,s.z*1.45f);
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=dirt;
