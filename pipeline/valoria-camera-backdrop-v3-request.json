@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-backdrop-v3",
+  "objective": "Convert the successful Alps Field depth solution into an aspect-adaptive stylized distant plate: reduced photo detail/saturation, stronger atmospheric seam, one desktop crop and one portrait crop, with fixed orthographic camera and unchanged gameplay.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "composition_and_mass",
+    "lighting_and_value_hierarchy",
+    "mobile_readability"
+  ],
+  "constraints": {
+    "proof_only": true,
+    "preserve_camera": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "4_desktop_crops",
+    "6_mobile_crops",
+    "stylized_source",
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
