@@ -78,17 +78,7 @@ namespace Eldoria.Presentation
                     float cityZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z-10.5f)/7.0f));
                     float basin=cityX*cityZ;
                     y=Mathf.Lerp(y,hiddenY,basin);
-
-                    // Low foreground flanks close the exposed map corners without touching the central approach.
-                    // They are part of the same continuous sheet, so there are no seams or floating modules.
-                    if(z<1.5f)
-                    {
-                        float flankSide=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(x)-16.2f)/5.0f));
-                        float flankDepth=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((z+10.0f)/11.5f));
-                        float flank=flankSide*flankDepth;
-                        float flankOrganic=(Mathf.Sin(x*.27f)+Mathf.Sin(z*.31f))*0.11f*flank;
-                        y=hiddenY+flank*flank*1.55f+flankOrganic;
-                    }
+                    if(z<1.5f)y=hiddenY;
 
                     int i=rz*cols+cx;
                     verts[i]=new Vector3(x,y,z);
