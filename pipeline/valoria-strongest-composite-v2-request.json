@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-strongest-composite-v2",
+  "objective": "Evaluate one integrated full-frame upgrade over the current strongest composite: aggressively suppress disconnected peripheral residue, replace weak secondary architecture with existing Slavic premium prefabs, and add compact buried side ruins.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "base": "Valoria Strongest Composite v1",
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "terrain_and_transitions",
+    "materials_and_surface"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
