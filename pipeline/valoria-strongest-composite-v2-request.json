@@ -30,5 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:10:00+02:00"
+  "triggered_at": "2026-10-03T01:18:00+02:00",
+  "retry_reason": "runner capture stalled beyond normal comparable gate duration; clean concurrency restart",
+  "retry_seq": 1
 }
