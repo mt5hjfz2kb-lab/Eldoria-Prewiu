@@ -1,4 +1,0 @@
-ASSET LIBRARY REPROCESSING PASS v1 — FINAL CERTIFICATION
-Persisted Hero Bastion SHA-256: afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c
-Expected bytes: 13257704
-Final source checkpoint includes subtractive hero seating and no compact-core house expansion.
