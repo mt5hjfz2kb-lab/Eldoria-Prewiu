@@ -6,7 +6,7 @@ namespace Eldoria.Presentation
 {
     public static class ValoriaFullFrameForegroundEdgePassV1
     {
-        public static bool Enabled=false;
+        public static bool Enabled=true;
         const string RootName="Valoria · Full Frame Foreground Edge v1";
 
         public static void Build(Transform parent,PlayerState state)
