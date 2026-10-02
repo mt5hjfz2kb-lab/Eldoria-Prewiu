@@ -34,5 +34,6 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T21:12:00Z"
+  "triggered_at": "2026-10-02T21:34:30Z",
+  "backdrop_mode": "high_horizon_band"
 }
