@@ -37,22 +37,9 @@ namespace Eldoria.Presentation
 
         static void BuildMonumentalFrame(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 7: canonical Valoria vocabulary only.
-            // Edge ruins are intentionally cropped by the official cameras and must never compete with the Hero Bastion.
-            AddResource(root,"Valoria/Stone_Gate","left edge monumental gate",
-                new Vector3(-15.0f,.55f,8.5f),7.2f,9.4f,18f,new Color(.59f,.58f,.54f,1f));
-            AddResource(root,"Valoria/Stone_Gate","right edge monumental gate",
-                new Vector3(15.0f,.55f,8.7f),7.2f,9.4f,198f,new Color(.59f,.58f,.54f,1f));
-
-            AddResource(root,"Valoria/Stone_Tower","left edge broken tower",
-                new Vector3(-12.9f,.65f,11.5f),4.4f,7.6f,22f,new Color(.57f,.56f,.52f,1f));
-            AddResource(root,"Valoria/Stone_Tower","right edge broken tower",
-                new Vector3(12.9f,.65f,11.7f),4.4f,7.6f,202f,new Color(.57f,.56f,.52f,1f));
-
-            AddResource(root,"Valoria/Stone_Wall","left edge retaining shoulder",
-                new Vector3(-12.6f,.28f,5.8f),7.4f,3.3f,20f,new Color(.56f,.55f,.51f,1f));
-            AddResource(root,"Valoria/Stone_Wall","right edge retaining shoulder",
-                new Vector3(12.6f,.28f,6.0f),7.4f,3.3f,200f,new Color(.56f,.55f,.51f,1f));
+            // Iteration 9: the legacy Stone_Gate / Stone_Tower silhouettes read as two dark twin fortresses
+            // in the official cameras and competed with the Hero Bastion. Keep the frame open here.
+            // Lateral ruins are authored below from the certified terrain/terrace + stone-architecture vocabulary.
         }
 
         static void BuildCliffEnvelope(Transform root)
