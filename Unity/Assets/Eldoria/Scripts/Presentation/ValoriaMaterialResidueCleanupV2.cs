@@ -11,6 +11,7 @@ namespace Eldoria.Presentation
         public static bool Enabled=false;
         const string RootName="Valoria · Material Residue Cleanup v2";
         public static int SuppressedPeripheral{get;private set;}
+        public static int SuppressedDisconnectedPeripheral{get;private set;}
         public static int NormalizedEnvironment{get;private set;}
         public static int NormalizedArchitecture{get;private set;}
 
@@ -20,9 +21,10 @@ namespace Eldoria.Presentation
             var old=GameObject.Find(RootName);if(old!=null)Object.DestroyImmediate(old);
             var root=new GameObject(RootName).transform;root.SetParent(parent,true);
 
-            SuppressedPeripheral=0;NormalizedEnvironment=0;NormalizedArchitecture=0;
+            SuppressedPeripheral=0;SuppressedDisconnectedPeripheral=0;NormalizedEnvironment=0;NormalizedArchitecture=0;
 
             SuppressPeripheralLegacy();
+            SuppressDisconnectedPeripheralResidue();
             NormalizeResidualMaterials();
         }
 
@@ -40,6 +42,46 @@ namespace Eldoria.Presentation
                     r.enabled=false;
                     SuppressedPeripheral++;
                 }
+            }
+        }
+
+        static void SuppressDisconnectedPeripheralResidue()
+        {
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                bool outside=Mathf.Abs(b.center.x)>10.6f||b.center.z>12.0f||b.center.z<-9.3f;
+                if(!outside)continue;
+
+                string chain=Chain(r.transform);
+
+                // Preserve accepted authored anchors and the current frame systems.
+                bool keep=
+                    chain.Contains("bastion")||
+                    chain.Contains("aserradero")||
+                    chain.Contains("cuartel")||
+                    chain.Contains("granary")||
+                    chain.Contains("granero")||
+                    chain.Contains("backplate")||
+                    chain.Contains("jagged peaks")||
+                    chain.Contains("cliff island")||
+                    chain.Contains("foreground edge");
+
+                if(keep)continue;
+
+                // This cleanup acts only on Valoria's presentation hierarchy. Gameplay
+                // colliders/routes/reservations remain separate and untouched.
+                bool presentation=
+                    chain.Contains("valoria ·")||
+                    chain.Contains("vpd ·")||
+                    chain.Contains("assetlibrary")||
+                    chain.Contains("mid-tier");
+
+                if(!presentation)continue;
+
+                r.enabled=false;
+                SuppressedDisconnectedPeripheral++;
             }
         }
 
