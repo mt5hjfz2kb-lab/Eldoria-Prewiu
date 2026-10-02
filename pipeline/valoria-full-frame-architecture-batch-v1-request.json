@@ -26,5 +26,17 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-02T19:41:00Z"
+  "triggered_at": "2026-10-02T19:43:00Z",
+  "prior_iterations": [
+    {
+      "id": "full-frame-iteration-1",
+      "verdict": "VISUAL_FAIL",
+      "reason": "flat 2.5D horizon silhouettes"
+    },
+    {
+      "id": "full-frame-iteration-2",
+      "verdict": "VISUAL_FAIL",
+      "reason": "volumetric horizon sheets visibly intrude; insufficient benchmark improvement"
+    }
+  ]
 }
