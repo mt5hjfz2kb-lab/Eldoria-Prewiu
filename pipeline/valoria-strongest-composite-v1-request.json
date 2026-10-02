@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-strongest-composite-v1",
+  "objective": "Evaluate the strongest current zero-credit Valoria composition as one integrated frame: benchmark density + environment uplift + architecture coherence + compact cliff-island + Kiara 3 valley backplate + barracks cleanup + upper-dwelling/residual cleanup.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "terrain_and_transitions",
+    "materials_and_surface",
+    "atmosphere_horizon_depth",
+    "vegetation_and_environment",
+    "life_props_storytelling"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_reserved_plots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "8",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_integrated_verdict"
+  ]
+}
