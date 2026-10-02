@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T12:24:00Z",
+  "updated_at": "2026-10-02T12:39:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -46,10 +46,10 @@
       "status": "active",
       "claimed_at": "2026-10-02T12:00:00Z",
       "base_main_sha": "d4a388df26a991b4bd9a80f022fe6a33298007a3",
-      "dependency": "valoria-reference-convergence-v2 still owns valoria-production-composition and windows-runner-heavy. This workstream may run Blender candidate generation only on GitHub-hosted runners; no Unity production integration or Windows-runner use until released.",
-      "result_commit": "6e04c35d2c6ec69a7c8db39e7c006e0af5a93a75",
-      "result": "26-GLB A/B/C/D classification merged; deep geometry queue prepared. Binary Blender + official Unity validation blocked by active valoria-reference-convergence-v2 ownership of windows-runner-heavy and valoria-production-composition.",
-      "next": "Persist TerraceStairRock and StreetLandingTransition PBR candidates outside Unity Resources; final promotion still requires official Unity 19/12/9/mobile validation after resource release."
+      "dependency": "No immediate production action required. valoria-reference-convergence-v2 still owns valoria-production-composition/windows-runner-heavy; its workflow currently also causes the repository workflow-governance check to fail because valoria-reference-convergence-v2.yml auto-triggers from edits to itself. Do not edit that owned workflow from this workstream.",
+      "result_commit": "7399b1d57a9f2c47eda17113845efad347b34fe8",
+      "result": "Blender diagnostic phase merged: 0 tested assets justify geometry surgery; TerraceStairRock and StreetLandingTransition have deterministic SHA-pinned PBR candidates persisted outside Unity Resources with unchanged geometry/bounds and 0 Tripo credits. Current production composition does not place either asset, so no production visual uplift is claimed.",
+      "next": "Do not force either candidate into Valoria. When/if one is selected for a real production placement, validate canonical vs candidate at official 19/12/9/mobile cameras and unchanged gameplay signature before replacing the canonical GLB."
     }
   ],
   "history": [
