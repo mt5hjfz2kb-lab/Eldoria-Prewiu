@@ -180,19 +180,19 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 26: distant world mass only. Keep the Bastion silhouette open while
-            // breaking the empty flat-valley horizon at strategic zooms.
-            var tint=new Color(.31f,.35f,.36f,1f);
-            var a=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · far mountain west",
-                new Vector3(-25.5f,-3.8f,31.5f),13.5f,9.2f,Quaternion.Euler(0,18f,0),tint);
+            // Iteration 27: the first mountain proof was technically present but almost fully lost in fog.
+            // Bring the side walls closer/taller while preserving an open central Bastion silhouette.
+            var tint=new Color(.36f,.39f,.40f,1f);
+            var a=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · near mountain west",
+                new Vector3(-20.0f,-2.6f,24.0f),16.0f,11.2f,Quaternion.Euler(0,18f,0),tint);
             var b=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain west",
-                new Vector3(-12.5f,-4.1f,35.5f),12.0f,8.5f,Quaternion.Euler(0,-12f,0),tint);
+                new Vector3(-11.0f,-3.1f,28.0f),14.0f,9.8f,Quaternion.Euler(0,-12f,0),tint);
             var c=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · rear mountain east",
-                new Vector3(14.2f,-4.0f,35.0f),12.4f,8.8f,Quaternion.Euler(0,14f,0),tint);
-            var d=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · far mountain east",
-                new Vector3(27.0f,-3.7f,31.8f),13.0f,9.0f,Quaternion.Euler(0,-25f,0),tint);
+                new Vector3(11.5f,-3.0f,28.0f),14.2f,10.0f,Quaternion.Euler(0,14f,0),tint);
+            var d=ValoriaKit.TerrainPieceTinted("SM_Mountains_11","Valoria convergence · near mountain east",
+                new Vector3(20.5f,-2.5f,24.5f),16.0f,11.0f,Quaternion.Euler(0,-25f,0),tint);
             foreach(var go in new[]{a,b,c,d})
-                if(go!=null)go.transform.SetParent(root,true);
+                if(go!=null){go.transform.SetParent(root,true);DisableGameplay(go);}
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
@@ -223,8 +223,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.52f,.61f,.66f);
-            RenderSettings.fogStartDistance=24f;
-            RenderSettings.fogEndDistance=68f;
+            RenderSettings.fogStartDistance=28f;
+            RenderSettings.fogEndDistance=82f;
 
             var camera=Camera.main;
             if(camera!=null)
