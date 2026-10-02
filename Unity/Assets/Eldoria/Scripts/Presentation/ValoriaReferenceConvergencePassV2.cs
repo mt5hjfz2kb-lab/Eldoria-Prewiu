@@ -41,19 +41,19 @@ namespace Eldoria.Presentation
             // Reference target uses broken monumental arches as a frame around the playable city.
             // Keep them outside circulation and let the Bastion remain the focal point.
             AddPrefab(root,art.MegaHalfGate,"left monumental broken arch",
-                new Vector3(-11.6f,.30f,5.8f),8.8f,12.5f,18f,StoneTint);
+                new Vector3(-11.6f,.30f,5.8f),8.8f,12.5f,18f,StoneTint,true);
             AddPrefab(root,art.MegaHalfGate,"right monumental broken arch",
-                new Vector3(11.9f,.25f,6.2f),9.3f,12.9f,198f,StoneTint);
+                new Vector3(11.9f,.25f,6.2f),9.3f,12.9f,198f,StoneTint,true);
 
             AddPrefab(root,art.MegaDestroyedTower,"left ruin crown",
-                new Vector3(-12.8f,1.25f,8.7f),4.2f,7.3f,32f,new Color(.55f,.54f,.51f,1f));
+                new Vector3(-12.8f,1.25f,8.7f),4.2f,7.3f,32f,new Color(.55f,.54f,.51f,1f),true);
             AddPrefab(root,art.MegaDestroyedTower,"right ruin crown",
-                new Vector3(13.2f,1.10f,8.4f),4.0f,7.0f,214f,new Color(.55f,.54f,.51f,1f));
+                new Vector3(13.2f,1.10f,8.4f),4.0f,7.0f,214f,new Color(.55f,.54f,.51f,1f),true);
 
             AddPrefab(root,art.MegaWallPassage,"rear left ruined passage",
-                new Vector3(-7.8f,2.0f,12.3f),5.4f,5.8f,8f,new Color(.57f,.56f,.52f,1f));
+                new Vector3(-7.8f,2.0f,12.3f),5.4f,5.8f,8f,new Color(.57f,.56f,.52f,1f),true);
             AddPrefab(root,art.MegaWallPassage,"rear right ruined passage",
-                new Vector3(7.7f,2.0f,12.6f),5.4f,5.8f,174f,new Color(.57f,.56f,.52f,1f));
+                new Vector3(7.7f,2.0f,12.6f),5.4f,5.8f,174f,new Color(.57f,.56f,.52f,1f),true);
         }
 
         static void BuildCliffEnvelope(Transform root)
@@ -177,7 +177,7 @@ namespace Eldoria.Presentation
             AddPrefab(root,source,role,anchor,span,maxHeight,yaw,tint);
         }
 
-        static void AddPrefab(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint)
+        static void AddPrefab(Transform root,GameObject source,string role,Vector3 anchor,float span,float maxHeight,float yaw,Color tint,bool forceSafeLit=false)
         {
             if(source==null)return;
             var go=Object.Instantiate(source);
@@ -190,9 +190,33 @@ namespace Eldoria.Presentation
             go.transform.localScale*=scale;
             b=Bounds(go);
             go.transform.position+=anchor-new Vector3(b.center.x,b.min.y,b.center.z);
-            ApplyTint(go,tint);
+            if(forceSafeLit)ApplySafeLit(go,tint);
+            else ApplyTint(go,tint);
             go.transform.SetParent(root,true);
             DisableGameplay(go);
+        }
+
+        static void ApplySafeLit(GameObject go,Color tint)
+        {
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(shader==null){ApplyTint(go,tint);return;}
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                if(r==null)continue;
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    if(src[i]==null){dst[i]=null;continue;}
+                    var m=new Material(shader){name="Valoria Reference v2 · safe stone"};
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.045f);
+                    dst[i]=m;
+                }
+                r.sharedMaterials=dst;
+            }
         }
 
         static void ApplyTint(GameObject go,Color tint)
