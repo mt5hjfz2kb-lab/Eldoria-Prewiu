@@ -1359,14 +1359,12 @@ namespace Eldoria.Presentation
                 if(l.name!="Valoria · amber dusk")l.enabled=false;
             }
 
-            // Rebuild the natural ground after blanking inherited presentation so the city sits in a valley,
-            // not on the legacy flat board. This reuses the existing procedural environment tool; no gameplay collision.
+            // Rebuild the landscape after blanking inherited presentation so zoom 19 never reads as a flat board.
             HeroValleyTerrain();
-
-            // Rebuild the landscape itself after blanking the inherited presentation so zoom 19 never reads as a flat board.
-            HeroValleyTerrain();
-            foreach(var p in new[]{new Vector3(-16.5f,-.55f,12.5f),new Vector3(16.2f,-.55f,12.8f),new Vector3(0f,-.65f,19.5f)})
-                Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",p,10.8f,6.2f,p.x*5f,Rock,false);
+            foreach(var s in new[]{
+                new Vector4(-17.8f,13.8f,9.4f,-18f),new Vector4(15.3f,16.0f,7.8f,23f),new Vector4(-2.8f,23.0f,11.8f,7f)})
+                Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",
+                    new Vector3(s.x,-.75f,s.y),s.z,s.z*.53f,s.w,Rock,false);
 
             // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
@@ -1386,10 +1384,10 @@ namespace Eldoria.Presentation
             // these skins establish a single visual route through the new composition.
             for(int i=0;i<8;i++)
             {
-                float z=-4.8f+i*1.05f;
+                float z=-4.65f+i*.91f;
                 float y=.44f+Mathf.Max(0,i-3)*.39f;
                 StonePiece(1,"Valoria · Master Rebuild v2 · processional spine",
-                    new Vector3(0f,y,z),new Vector3(2.34f,.055f,.88f),i%2==0?0f:180f);
+                    new Vector3(0f,y,z),new Vector3(2.18f,.055f,1.02f),i%2==0?0f:180f);
             }
             // Keep the upper crown geological, not two giant wall modules. Low buried transitions retain the terraces.
             StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · upper retaining west",
@@ -1441,6 +1439,13 @@ namespace Eldoria.Presentation
                 new Vector4(11.8f,-.6f,1.10f,1),new Vector4(11.0f,2.4f,1.25f,0),new Vector4(10.5f,6.2f,1.18f,1)})
                 Imported("Valoria · Master Rebuild v2 · edge pine",s.w>.5f?"Tree01B":"Tree01A",
                     new Vector3(s.x,.05f,s.y),s.z,2.65f,s.x*11f,new Color(.27f,.37f,.24f),true);
+
+            // Low natural shoulders hide hard shelf silhouettes without consuming future building plots.
+            foreach(var s in new[]{
+                new Vector4(-7.4f,-2.4f,2.35f,18f),new Vector4(7.1f,-2.2f,2.10f,202f),
+                new Vector4(-6.4f,1.2f,1.75f,62f),new Vector4(6.2f,1.3f,1.70f,246f)})
+                Imported("Valoria · Master Rebuild v2 · buried shelf shoulder","Rock02",
+                    new Vector3(s.x,.02f,s.y),s.z,s.z*.38f,s.w,new Color(.32f,.31f,.28f),false);
 
             // Reserved growth plots are intentionally visible and empty.
             StonePiece(2,"Valoria · Master Rebuild v2 · future plot west",
