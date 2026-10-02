@@ -5,7 +5,6 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/valoria-reference-convergence-v2.yml'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaReferenceConvergencePassV2.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaReferenceConvergenceGateV2.cs'
 
