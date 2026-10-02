@@ -1542,12 +1542,12 @@ namespace Eldoria.Presentation
                     float left=Mathf.Clamp01((-wx-12f)/48f);
                     float right=Mathf.Clamp01((wx-14f)/47f);
                     float rear=Mathf.Clamp01((wz-10f)/56f);
-                    float front=Mathf.Clamp01((-wz-20f)/42f);
+                    float front=Mathf.Clamp01((-wz-58f)/58f);
                     float westShoulder=Mathf.Exp(-((wx+23f)*(wx+23f))/210f-((wz-8f)*(wz-8f))/620f)*2.7f;
                     float eastShoulder=Mathf.Exp(-((wx-27f)*(wx-27f))/260f-((wz-14f)*(wz-14f))/700f)*3.3f;
                     float rearRidge=Mathf.Exp(-(wx*wx)/960f-((wz-38f)*(wz-38f))/240f)*4.6f;
                     float centralShelf=Mathf.Exp(-(wx*wx)/190f-((wz-1f)*(wz-1f))/450f);
-                    float rise=left*left*4.0f+right*right*4.5f+rear*rear*4.0f+front*front*1.8f+
+                    float rise=left*left*4.0f+right*right*4.5f+rear*rear*4.0f+front*front*.9f+
                                westShoulder+eastShoulder+rearRidge;
                     float noise=(Mathf.Sin(wx*.12f)+Mathf.Sin(wz*.15f)+Mathf.Sin((wx-wz)*.085f))*.30f;
                     float y=-.48f+rise+noise*(1f-centralShelf)*.78f;
