@@ -15,43 +15,40 @@ permissions:
 jobs:
   blender-diagnostic:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Read request
-        id: req
-        shell: bash
-        run: |
-          echo "enabled=$(jq -r '.enabled' pipeline/asset-deep-uplift-run-request.json)" >> "$GITHUB_OUTPUT"
-          echo "asset=$(jq -r '.asset' pipeline/asset-deep-uplift-run-request.json)" >> "$GITHUB_OUTPUT"
-          echo "input=$(jq -r '.input' pipeline/asset-deep-uplift-run-request.json)" >> "$GITHUB_OUTPUT"
-          echo "mode=$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" >> "$GITHUB_OUTPUT"
       - name: Guard request
         shell: bash
         run: |
-          test "${{ steps.req.outputs.enabled }}" = "true"
-          test "${{ steps.req.outputs.mode }}" = "diagnostic"
-          test -f "${{ steps.req.outputs.input }}"
+          test "$(jq -r '.enabled' pipeline/asset-deep-uplift-run-request.json)" = "true"
+          test "$(jq -r '.mode' pipeline/asset-deep-uplift-run-request.json)" = "diagnostic_batch"
+          test "$(jq '.assets | length' pipeline/asset-deep-uplift-run-request.json)" -gt 0
       - name: Install Blender
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy
           blender --version
-      - name: Diagnose canonical GLB
+      - name: Diagnose candidate GLBs
         shell: bash
         run: |
           mkdir -p deep-uplift-evidence
-          blender --background --python tools/tripo_module_blender.py -- \
-            --input "${{ steps.req.outputs.input }}" \
-            --output deep-uplift-evidence/unused.glb \
-            --report deep-uplift-evidence/SteppedRockTerrace-diagnostic.json \
-            --diagnostic-only
-          test -s deep-uplift-evidence/SteppedRockTerrace-diagnostic.json
-          sha256sum "${{ steps.req.outputs.input }}" | tee deep-uplift-evidence/SteppedRockTerrace-source.sha256
-          stat -c '%s' "${{ steps.req.outputs.input }}" | tee deep-uplift-evidence/SteppedRockTerrace-source.bytes
+          jq -c '.assets[]' pipeline/asset-deep-uplift-run-request.json | while read -r row; do
+            asset="$(echo "$row" | jq -r '.asset')"
+            input="$(echo "$row" | jq -r '.input')"
+            test -f "$input"
+            blender --background --python tools/tripo_module_blender.py -- \
+              --input "$input" \
+              --output "deep-uplift-evidence/${asset}-unused.glb" \
+              --report "deep-uplift-evidence/${asset}-diagnostic.json" \
+              --diagnostic-only
+            test -s "deep-uplift-evidence/${asset}-diagnostic.json"
+            sha256sum "$input" > "deep-uplift-evidence/${asset}-source.sha256"
+            stat -c '%s' "$input" > "deep-uplift-evidence/${asset}-source.bytes"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: asset-deep-uplift-stepped-rock-terrace-diagnostic
+          name: asset-deep-uplift-geometry-diagnostics
           path: deep-uplift-evidence/
           if-no-files-found: error
