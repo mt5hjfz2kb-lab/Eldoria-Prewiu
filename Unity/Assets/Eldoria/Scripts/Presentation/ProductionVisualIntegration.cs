@@ -1203,7 +1203,7 @@ namespace Eldoria.Presentation
 
         static void ComposeCompactFootprintReframeV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // Toolchain Automation v2 / environment_composition — iteration 4.
+            // Toolchain Automation v2 / environment_composition — iteration 5.
             // Existing geometry only: subtract peripheral urban mass, compress the readable core and
             // expose empty development shelves. Gameplay authority remains untouched.
 
@@ -1244,6 +1244,26 @@ namespace Eldoria.Presentation
                 bool outer=Mathf.Abs(b.center.x)>9.35f&&b.center.z>-6.5f&&b.center.z<11.5f;
                 bool buildingScale=b.size.y>.9f&&b.size.y<6.5f&&Mathf.Max(b.size.x,b.size.z)<7.5f;
                 if(outer&&buildingScale&&!functional&&!environment)r.enabled=false;
+            }
+
+            // Remove the old lateral expansion-envelope presentation. Its gameplay reservation/colliders
+            // remain untouched; the continuous valley terrain underneath becomes the visible edge.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain="";
+                for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
+                bool legacyExpansionSkin=
+                    chain.Contains("vpd · west expansion terrain")||
+                    chain.Contains("vpd · east expansion terrain")||
+                    chain.Contains("vpd · west authored apron")||
+                    chain.Contains("vpd · east authored apron")||
+                    chain.Contains("vpd · west rebuilders terrace")||
+                    chain.Contains("vpd · west rebuilders upper shelf")||
+                    chain.Contains("vpd · west rebuilders route")||
+                    chain.Contains("vpd · west rebuilders cobble")||
+                    chain.Contains("vpd · future route stone");
+                if(legacyExpansionSkin)r.enabled=false;
             }
 
             // Remove lateral residential light rhythm so the eye returns to the Bastion/core.
