@@ -15,7 +15,125 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare-asset:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch Poly Haven Rock Face 02 CC0
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p external-cliff
+          cat > /tmp/fetch-rock-face.mjs <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import {execFileSync} from 'node:child_process';
+
+          const out=path.resolve('external-cliff');
+          const api='https://api.polyhaven.com/files/rock_face_02';
+          const headers={'User-Agent':'Eldoria-Visual-Proof/1.0'};
+          const response=await fetch(api,{headers});
+          if(!response.ok) throw new Error('Poly Haven API '+response.status);
+          const tree=await response.json();
+
+          const candidates=[];
+          function walk(v,p=[]){
+            if(!v||typeof v!=='object') return;
+            if(typeof v.url==='string'){
+              const joined=p.join('/').toLowerCase();
+              const url=v.url;
+              if(joined.includes('gltf') || /gltf/i.test(url))
+                candidates.push({url,path:p.join('/'),node:v});
+            }
+            if(Array.isArray(v)){v.forEach((x,i)=>walk(x,p.concat(String(i))));return;}
+            for(const [k,x] of Object.entries(v)) if(k!=='url') walk(x,p.concat(k));
+          }
+          walk(tree);
+          if(!candidates.length){
+            const urls=[];
+            function all(v,p=[]){
+              if(!v||typeof v!=='object') return;
+              if(typeof v.url==='string') urls.push({path:p.join('/'),url:v.url});
+              if(Array.isArray(v)){v.forEach((x,i)=>all(x,p.concat(String(i))));return;}
+              for(const [k,x] of Object.entries(v)) if(k!=='url') all(x,p.concat(k));
+            }
+            all(tree);
+            console.log(JSON.stringify({sample_urls:urls.slice(0,80)},null,2));
+            throw new Error('No glTF-labelled candidate in Poly Haven files tree');
+          }
+
+          const score=x=>{
+            const p=x.path.toLowerCase();
+            let s=p.includes('2k')?0:p.includes('1k')?10:p.includes('4k')?20:30;
+            if(p.includes('gltf')) s-=5;
+            if(/\.gltf(?:\?|$)/i.test(x.url)) s-=3;
+            if(/\.zip(?:\?|$)/i.test(x.url)) s+=1;
+            return s;
+          };
+          candidates.sort((a,b)=>score(a)-score(b));
+          const chosen=candidates[0];
+          console.log(JSON.stringify({chosen:{path:chosen.path,url:chosen.url},candidate_count:candidates.length},null,2));
+
+          fs.mkdirSync(out,{recursive:true});
+          const chosenUrl=new URL(chosen.url);
+          let fileName=decodeURIComponent(path.basename(chosenUrl.pathname)) || 'rock_face_02_download';
+          const downloadPath=path.join(out,fileName);
+          const dl=await fetch(chosen.url,{headers});
+          if(!dl.ok) throw new Error('asset download '+dl.status);
+          fs.writeFileSync(downloadPath,Buffer.from(await dl.arrayBuffer()));
+
+          if(/\.zip$/i.test(fileName)){
+            execFileSync('unzip',['-q','-o',downloadPath,'-d',out],{stdio:'inherit'});
+            fs.unlinkSync(downloadPath);
+          }
+
+          let gltfs=[];
+          function scan(dir){
+            for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
+              const p=path.join(dir,ent.name);
+              if(ent.isDirectory()) scan(p);
+              else if(ent.name.toLowerCase().endsWith('.gltf')) gltfs.push(p);
+            }
+          }
+          scan(out);
+
+          if(!gltfs.length && /\.gltf$/i.test(fileName)) gltfs=[downloadPath];
+          if(!gltfs.length) throw new Error('No glTF found after downloading selected Poly Haven candidate');
+
+          const gltfPath=gltfs[0];
+          const gltfUrl=/\.gltf(?:\?|$)/i.test(chosen.url)?new URL(chosen.url):null;
+          if(gltfUrl){
+            const gltf=JSON.parse(fs.readFileSync(gltfPath,'utf8'));
+            const uris=[
+              ...(gltf.buffers||[]).map(x=>x.uri),
+              ...(gltf.images||[]).map(x=>x.uri)
+            ].filter(x=>x && !x.startsWith('data:'));
+
+            for(const uri of [...new Set(uris)]){
+              const target=path.resolve(path.dirname(gltfPath),decodeURIComponent(uri));
+              if(!target.startsWith(out)) throw new Error('dependency escapes output: '+uri);
+              if(fs.existsSync(target)) continue;
+              fs.mkdirSync(path.dirname(target),{recursive:true});
+              const remote=new URL(uri,gltfUrl).href;
+              const r=await fetch(remote,{headers});
+              if(!r.ok) throw new Error('dependency '+uri+' '+r.status);
+              fs.writeFileSync(target,Buffer.from(await r.arrayBuffer()));
+            }
+          }
+
+          console.log(JSON.stringify({files:fs.readdirSync(out),gltf:path.relative(out,gltfPath)},null,2));
+          NODE
+          node /tmp/fetch-rock-face.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-rock-face-02-cc0
+          path: external-cliff/**
+          if-no-files-found: error
+          retention-days: 1
+
   capture:
+    needs: prepare-asset
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 30
@@ -51,76 +169,16 @@ jobs:
           $dst=Join-Path $dir 'kiara3_1.jpg'
           Invoke-WebRequest -Uri 'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01604.jpg' -OutFile $dst -UseBasicParsing
           if((Get-Item $dst).Length -lt 500000){throw 'Backplate unexpectedly small.'}
-      - name: Stage Poly Haven Rock Face 02 CC0
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-rock-face-02-cc0
+          path: Unity/Assets/Eldoria/ExternalProof/RockFace02
+      - name: Verify staged cliff
         shell: powershell
         run: |
-          $ErrorActionPreference='Stop'
-          $dst="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ExternalProof\RockFace02"
-          Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Force -Path $dst | Out-Null
-
-          $headers=@{'User-Agent'='Eldoria-Visual-Proof/1.0'}
-          $tree=Invoke-RestMethod -Uri 'https://api.polyhaven.com/files/rock_face_02' -Headers $headers
-
-          $candidates=New-Object System.Collections.Generic.List[object]
-          function Walk-Node($value,[string]$path){
-            if($null -eq $value){ return }
-            if($value -is [string]){ return }
-
-            $urlProp=$value.PSObject.Properties['url']
-            if($null -ne $urlProp -and $urlProp.Value -is [string] -and $urlProp.Value -match '\\.gltf(?:\\?|$)'){
-              $candidates.Add([pscustomobject]@{Url=$urlProp.Value;Path=$path})
-            }
-
-            if($value -is [System.Collections.IEnumerable] -and -not ($value -is [pscustomobject])){
-              $i=0
-              foreach($item in $value){ Walk-Node $item ($path+'/'+$i); $i++ }
-              return
-            }
-
-            foreach($prop in $value.PSObject.Properties){
-              if($prop.Name -eq 'url'){ continue }
-              Walk-Node $prop.Value ($path+'/'+$prop.Name)
-            }
-          }
-          Walk-Node $tree ''
-
-          if($candidates.Count -eq 0){ throw 'No glTF candidate in Poly Haven files tree.' }
-          $chosen=$candidates | Sort-Object @{
-            Expression={
-              $p=$_.Path.ToLowerInvariant()
-              $score=30
-              if($p.Contains('2k')){$score=0}
-              elseif($p.Contains('1k')){$score=10}
-              elseif($p.Contains('4k')){$score=20}
-              if(-not $p.Contains('gltf')){$score+=100}
-              $score
-            }
-          } | Select-Object -First 1
-
-          $gltfPath=Join-Path $dst 'rock_face_02.gltf'
-          Invoke-WebRequest -Uri $chosen.Url -Headers $headers -OutFile $gltfPath -UseBasicParsing
-          if((Get-Item $gltfPath).Length -lt 1000){ throw 'Downloaded glTF is unexpectedly small.' }
-
-          $gltf=Get-Content $gltfPath -Raw | ConvertFrom-Json
-          $uris=@()
-          if($null -ne $gltf.buffers){ foreach($b in $gltf.buffers){ if($b.uri -and -not $b.uri.StartsWith('data:')){$uris+=$b.uri} } }
-          if($null -ne $gltf.images){ foreach($i in $gltf.images){ if($i.uri -and -not $i.uri.StartsWith('data:')){$uris+=$i.uri} } }
-
-          $base=[Uri]$chosen.Url
-          $dstFull=[IO.Path]::GetFullPath($dst)
-          foreach($uri in ($uris | Select-Object -Unique)){
-            $remote=[Uri]::new($base,$uri).AbsoluteUri
-            $rel=[Uri]::UnescapeDataString($uri).Replace('/','\')
-            $target=[IO.Path]::GetFullPath((Join-Path $dst $rel))
-            if(-not $target.StartsWith($dstFull,[StringComparison]::OrdinalIgnoreCase)){ throw "Dependency escapes staging folder: $uri" }
-            New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
-            Invoke-WebRequest -Uri $remote -Headers $headers -OutFile $target -UseBasicParsing
-          }
-
-          Write-Host "Selected Poly Haven glTF: $($chosen.Path)"
-          Get-ChildItem $dst -Recurse | Select-Object FullName,Length
-
+          $files=Get-ChildItem "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ExternalProof\RockFace02" -Recurse
+          $files | Select-Object FullName,Length
+          if(-not ($files | Where-Object {$_.Extension -eq '.gltf'})){throw 'No staged glTF found.'}
       - name: Capture external cliff proof
         shell: powershell
         run: |
