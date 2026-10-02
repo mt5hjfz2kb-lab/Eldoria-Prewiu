@@ -1,29 +1,8 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T10:56:00Z",
+  "updated_at": "2026-10-02T11:09:00Z",
   "active": [
-    {
-      "id": "asset-library-canonicalization-v1",
-      "title": "Asset Library Canonicalization Pass v1",
-      "owner": "chat-asset-library-canonicalization",
-      "scope": [
-        "Unity/Assets/Eldoria/Resources/**",
-        "Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1/**",
-        "pipeline/historical-module-rescue.json",
-        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md",
-        "docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md",
-        "docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md",
-        "SESSION_HANDOFF.md"
-      ],
-      "resources": [
-        "asset-library-production"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-02T10:35:00Z",
-      "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8",
-      "note": "Canonicalization migrated to GitHub-hosted runner; Windows runner no longer reserved."
-    },
     {
       "id": "valoria-reference-convergence-v2",
       "title": "Valoria Reference Convergence Pass v2",
@@ -49,6 +28,32 @@
     }
   ],
   "history": [
+    {
+      "id": "asset-library-canonicalization-v1",
+      "title": "Asset Library Canonicalization Pass v1",
+      "owner": "chat-asset-library-canonicalization",
+      "scope": [
+        "Unity/Assets/Eldoria/Resources/**",
+        "Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1/**",
+        "pipeline/historical-module-rescue.json",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md",
+        "docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md",
+        "docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "asset-library-production"
+      ],
+      "status": "completed",
+      "claimed_at": "2026-10-02T10:35:00Z",
+      "base_main_sha": "1671b018806dd65a094ed93fe27362ca518e1ce8",
+      "note": "Canonicalization migrated to GitHub-hosted runner; Windows runner no longer reserved.",
+      "completed_at": "2026-10-02T11:09:00Z",
+      "result_commit": "f82321854dff6a921e47dd15880fd8ddbc2a512f",
+      "run_id": 36997740541,
+      "artifact_id": 11221974353,
+      "result": "26 canonical GLBs inventoried, 0 missing committed metadata; historical certified GLBs persisted; Mid-Tier normalized; stale inventory corrected."
+    },
     {
       "id": "governance-parallel-workstreams-v1",
       "title": "Parallel-chat workstream ownership protocol v1",
