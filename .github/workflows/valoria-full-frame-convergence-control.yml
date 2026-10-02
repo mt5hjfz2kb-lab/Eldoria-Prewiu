@@ -1,0 +1,27 @@
+name: Valoria Full-Frame Convergence Control
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md'
+      - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
+      - 'pipeline/valoria-full-frame-convergence-v1.json'
+      - 'tools/validate-valoria-full-frame-convergence.mjs'
+      - '.github/workflows/valoria-full-frame-convergence-control.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate full-frame convergence contract
+        run: node tools/validate-valoria-full-frame-convergence.mjs
