@@ -6,10 +6,13 @@ on:
       - 'pipeline/art-production-request.json'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaCompactFootprintReframeGate.cs'
-      - '.github/workflows/valoria-compact-footprint-reframe-v1.yml'
   workflow_dispatch:
   pull_request:
     branches: ['main']
+    paths:
+      - 'pipeline/art-production-request.json'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaCompactFootprintReframeGate.cs'
 
 permissions:
   contents: write
