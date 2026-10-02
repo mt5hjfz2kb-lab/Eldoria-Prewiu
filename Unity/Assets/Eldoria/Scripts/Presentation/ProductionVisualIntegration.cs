@@ -1305,6 +1305,23 @@ namespace Eldoria.Presentation
                 if(ground)renderer.sharedMaterial=fullGround;else if(retaining)renderer.sharedMaterial=fullStone;
             }
 
+            // Remove the two visually obsolete Bastion-side shed silhouettes from the final frame.
+            // Spatial suppression is presentation-only; gameplay components remain active and authoritative.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;string n=r.gameObject.name.ToLowerInvariant();
+                bool hero=n.Contains("certified hero bastion")||n.Contains("fullframe");
+                bool sideShed=Mathf.Abs(b.center.x)>5.7f&&Mathf.Abs(b.center.x)<10.8f&&b.center.z>6.0f&&b.center.z<11.8f&&b.size.y<5.2f;
+                if(sideShed&&!hero)r.enabled=false;
+            }
+            var sideHouse=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
+            if(sideHouse!=null)
+            {
+                Piece("Valoria · FullFrame · Bastion west inhabited flank",sideHouse,new Vector3(-7.7f,2.48f,8.9f),2.35f,2.75f,10f,new Color(.62f,.59f,.53f));
+                Piece("Valoria · FullFrame · Bastion east inhabited flank",sideHouse,new Vector3(7.7f,2.48f,8.9f),2.35f,2.75f,170f,new Color(.62f,.59f,.53f));
+            }
+
             // Full-frame cleanup of the two work-district presentation roots. Gameplay authority remains untouched.
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -1368,7 +1385,7 @@ namespace Eldoria.Presentation
 
         static void FullFrameLandformV1()
         {
-            const int nx=45,nz=39;const float minX=-42f,maxX=42f,minZ=-25f,maxZ=43f;
+            const int nx=49,nz=49;const float minX=-46f,maxX=46f,minZ=-46f,maxZ=46f;
             var v=new Vector3[nx*nz];var uv=new Vector2[v.Length];var tri=new int[(nx-1)*(nz-1)*6];
             for(int z=0;z<nz;z++){float tz=z/(float)(nz-1),wz=Mathf.Lerp(minZ,maxZ,tz);for(int x=0;x<nx;x++){float tx=x/(float)(nx-1),wx=Mathf.Lerp(minX,maxX,tx);float side=Mathf.Clamp01((Mathf.Abs(wx)-13f)/24f);float rear=Mathf.Clamp01((wz-10f)/29f);float front=Mathf.Clamp01((-wz-8f)/15f);float shoulder=Mathf.Clamp01((Mathf.Abs(wx)-8f)/13f)*Mathf.Clamp01((12f-Mathf.Abs(wz-1f))/12f);float rise=side*side*5.8f+rear*rear*6f+front*front*2.4f+shoulder*.75f;float noise=(Mathf.Sin(wx*.19f)+Mathf.Sin(wz*.23f)+Mathf.Sin((wx-wz)*.11f))*.20f;float y=-.58f+rise+noise*Mathf.Lerp(.15f,1f,Mathf.Max(side,rear));float core=Mathf.Clamp01(1f-Mathf.Max(Mathf.Abs(wx)/17f,Mathf.Abs(wz-2f)/15f));y=Mathf.Lerp(y,-.42f,core*.92f);v[z*nx+x]=new Vector3(wx,y,wz);uv[z*nx+x]=new Vector2(tx*20f,tz*17f);}}
             int k=0;for(int z=0;z<nz-1;z++)for(int x=0;x<nx-1;x++){int a=z*nx+x,b=a+1,d=(z+1)*nx+x,e=d+1;tri[k++]=a;tri[k++]=d;tri[k++]=b;tri[k++]=b;tri[k++]=d;tri[k++]=e;}
