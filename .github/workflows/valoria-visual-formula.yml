@@ -56,6 +56,89 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch '6000\.3\.23f1') { throw "Wrong Unity version: $version" }
 
+      - name: Stage Kenney Castle Kit CC0
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\CoherentKitProof"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $base='https://raw.githubusercontent.com/Hidencod/tge-assets/main/packs/castle-kit'
+          $files=@(
+            'gate.glb',
+            'wall.glb',
+            'tower-square.glb',
+            'tower-square-top-roof-high-windows.glb',
+            'ground-hills.glb',
+            'rocks-large.glb'
+          )
+          foreach($name in $files) {
+            $out=Join-Path $dest $name
+            Invoke-WebRequest -Headers @{'User-Agent'='Eldoria-VisualFormula/1.0'} -Uri ($base+'/'+$name) -OutFile $out
+            if ((Get-Item $out).Length -lt 8000) { throw "Downloaded Castle Kit model too small: $name" }
+          }
+          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Kenney Castle Kit via Hidencod/tge-assets mirror. CC0-1.0. Gate-only visual proof staging.' -Encoding UTF8
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $candidate = (Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if (-not $candidate) {
+            $roots = @(
+              'C:\Program Files\Blender Foundation',
+              "$env:LOCALAPPDATA\Programs\Blender Foundation",
+              "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+            )
+            foreach ($root in $roots) {
+              if ($candidate) { break }
+              if (Test-Path $root) {
+                $candidate = Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if (-not $candidate -or -not (Test-Path $candidate)) { throw 'Blender executable not found on Unity runner.' }
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Reproject Castle Kit UVs for tileable PBR
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\CoherentKitProof"
+          $log="$env:RUNNER_TEMP\Eldoria-CoherentCastle-UV.log"
+          $err="$env:RUNNER_TEMP\Eldoria-CoherentCastle-UV-error.log"
+          $args=@('--background','--python',"$env:GITHUB_WORKSPACE\tools\castle_kit_uv_rewrap.py",'--','--input-dir',$dest)
+          $p=Start-Process -FilePath "${{ steps.blender.outputs.path }}" -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if ($p.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            if(Test-Path $err){Get-Content $err -Tail 200}
+            throw "Castle Kit UV rewrap failed: $($p.ExitCode)"
+          }
+          Get-Content $log -Tail 80
+
+      - name: Stage existing Slavic World prefabs
+        shell: powershell
+        run: |
+          $root="$env:GITHUB_WORKSPACE\Unity\Assets\EmaceArt\Slavic World Free\Prefabs"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SlavicCoherentProof"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $items=@(
+            @{src='Town\Building\EA03_Town_House_Comp_01a_PRE.prefab'; dst='house-a.prefab'},
+            @{src='Town\Building\EA03_Town_House_Comp_02a_PRE.prefab'; dst='house-b.prefab'},
+            @{src='Town\Administrative\EA03_Town_Building_Administrative _01a_PRE.prefab'; dst='administrative.prefab'},
+            @{src='Village\Building\Shed\EA03_Village_OutBuilding_Shed_03b_PRE.prefab'; dst='shed.prefab'},
+            @{src='Environment\Road\EA03_Environment_Road_Cobble_01a_PRE.prefab'; dst='cobble.prefab'},
+            @{src='Environment\Rock\EA03_Environment_Rock_Flat_04c_PRE.prefab'; dst='rock.prefab'},
+            @{src='Nature\Tree\EA03_Nature_Tree_02b_PRE.prefab'; dst='tree.prefab'}
+          )
+          foreach($item in $items) {
+            $source=Join-Path $root $item.src
+            if(-not (Test-Path $source)){ throw "Missing Slavic source prefab: $source" }
+            Copy-Item $source (Join-Path $dest $item.dst) -Force
+          }
+          Set-Content -Path (Join-Path $dest 'SOURCE.txt') -Value 'Gate-only copies of already imported EmaceArt Slavic World Free prefabs.' -Encoding UTF8
+
       - name: Stage CC0 Poly Haven Surface Cell PBR
         shell: powershell
         run: |
