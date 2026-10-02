@@ -88,7 +88,15 @@ namespace Eldoria.Presentation
             // world click or PlayMode gate queries Collider.bounds / raycasts.
             if(VisualIntegrationEnabled)
             {
-                if(city)ProductionVisualIntegration.City(state);
+                if(city)
+                {
+                    ProductionVisualIntegration.City(state);
+                    // World Frame v1 is the validated replacement for the failed legacy framing experiments.
+                    // It is visual-only; its gate can still disable it for matched BEFORE captures.
+                    var visualRoot=GameObject.Find("Valoria · integrated construction visual layer");
+                    if(visualRoot!=null)
+                        ValoriaWorldFrameMountainTerrainV1.Build(visualRoot.transform,state);
+                }
                 else ProductionVisualIntegration.World(state);
             }
             Physics.SyncTransforms();
