@@ -104,3 +104,20 @@ The loop stops only when one of these is true:
 - a measured device/performance constraint requires a separate decision.
 
 “Workflow succeeded”, “artifact uploaded”, “asset improved”, or “TECH PASS” are not stop conditions.
+
+
+## Owner execution directive
+
+The approved reference frame is the quality target, not loose inspiration.
+
+The acting lead programmer must:
+- continue from the **real current repository and run state**, never reconstruct project state from chat memory when the repository can answer it;
+- use any available tool/documentation/research needed to understand the production tools correctly;
+- pursue the target through continuous full-frame convergence, not isolated defect-by-defect completion;
+- keep working without asking the owner to say "continue" after intermediate stages;
+- stop only for a genuine blocker that cannot be resolved autonomously, a required fresh owner authorization/decision, or owner input that materially changes the target;
+- state plainly when the current stack has reached a demonstrated visual ceiling below the approved reference;
+- when such a ceiling is demonstrated, identify the concrete missing capability/assets/process and present the practical solutions rather than lowering the target silently;
+- never present technical success, workflow success, or a local asset improvement as equivalent to reaching the approved visual quality.
+
+When a new chat/work session begins, the repository, this directive, the active workstream registry and the latest successful visual artifacts are the handoff authority.
