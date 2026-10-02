@@ -25,9 +25,10 @@
     "collider_hotspot_signature",
     "integrated_full_frame"
   ],
-  "triggered_at": "2026-10-03T00:05:00+02:00",
+  "triggered_at": "2026-10-03T00:16:00+02:00",
   "revalidate_after_compile_fix": "31e1c660e36d632f791bfff8406dcabc0c6310fa",
-  "note": "Integrated Jagged candidate on current main after foreground/cliff/residual/environment material midtone rebalance. Compare against latest successful strongest composite.",
+  "note": "Authoritative current-main integrated Jagged comparison; same strongest cleanup stack, disconnected peripheral prune included, terrain continuity candidate remains disabled.",
   "retriggered_after_material_rebalance": "2026-10-02T22:35:00Z",
-  "transport_hardening_commit": "4707db6f5c73b2d978c1f54a16a637ca012ed32a"
+  "transport_hardening_commit": "4707db6f5c73b2d978c1f54a16a637ca012ed32a",
+  "authoritative_main_at_trigger": "f5f7bb5c9c4f2e87101abe40e26b429b8853c209"
 }
