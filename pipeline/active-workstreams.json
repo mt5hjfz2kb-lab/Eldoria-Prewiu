@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T20:14:00Z",
+  "updated_at": "2026-10-02T20:12:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -53,7 +53,9 @@
         ".github/workflows/valoria-slavic-district-proof.yml",
         ".github/workflows/valoria-visual-formula.yml",
         ".github/workflows/world-map-visual-formula.yml",
-        ".github/workflows/unity-slice.yml"
+        ".github/workflows/unity-slice.yml",
+        ".github/workflows/valoria-convergence-cancel-stale.yml",
+        "pipeline/valoria-convergence-cancel-stale-request.json"
       ],
       "resources": [
         "valoria-production-composition",
