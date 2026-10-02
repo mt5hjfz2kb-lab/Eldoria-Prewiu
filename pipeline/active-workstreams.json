@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T21:08:00Z",
+  "updated_at": "2026-10-02T21:40:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -101,7 +101,13 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaDistantWorldCompositeV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaDistantWorldCompositeGateV1.cs",
         ".github/workflows/valoria-distant-world-composite-v1.yml",
-        "pipeline/valoria-distant-world-composite-v1-request.json"
+        "pipeline/valoria-distant-world-composite-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaDarkMassScreenDiagnosticV2.cs",
+        ".github/workflows/valoria-dark-mass-screen-diagnostic-v2.yml",
+        "pipeline/valoria-dark-mass-screen-diagnostic-v2-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBackdropHorizonCropGateV2.cs",
+        ".github/workflows/valoria-backdrop-horizon-crop-v2.yml",
+        "pipeline/valoria-backdrop-horizon-crop-v2-request.json"
       ],
       "resources": [
         "valoria-production-composition",
