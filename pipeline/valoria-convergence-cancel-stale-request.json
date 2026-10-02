@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel superseded first camera-backdrop rerun so the latest fix including far-clip correction can execute.",
+  "reason": "Release Windows runner for latest camera-backdrop proof; cancel superseded backdrop run and generic Unity slice awakened by proof-only presentation file.",
   "runs": [
-    37062869984
+    37062958308,
+    37062958435
   ],
-  "triggered_at": "2026-10-02T20:49:00Z"
+  "triggered_at": "2026-10-02T20:51:00Z"
 }
