@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-reference-convergence-v1",
   "asset_or_sector": "Valoria reference convergence v1 whole-frame environment composition",
   "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Reference-driven convergence pass layered on the certified Blank Canvas rebuild. Existing library only: monumental ruins, cliff integration, vegetation, reconstruction occupation and atmosphere. No new houses, no Tripo, 0 credits."
+  "notes": "Reference Convergence v1 exhausted existing-library routes in the real 19/12/9/mobile frame. TECH PASS / VISUAL FAIL against the approved benchmark. A specific geometry gap is now proven: monumental broken-arch / ancient ruin masses integrated with vertical cliff-rock. No Tripo authorization yet; 0 credits."
 }
