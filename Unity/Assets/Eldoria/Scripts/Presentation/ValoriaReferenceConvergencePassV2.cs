@@ -111,10 +111,49 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 30: reject the procedural heightfield for convergence framing.
-                    // Even with a flattened centre it exposes large diagonal surfaces at zoom 12.
-                    // Keep it fully visual-only and hidden; framing is built from certified PBR rock assets below.
-                    renderer.enabled=false;
+                    // Iteration 30: continuous visual-only valley walls.
+                    // Keep the compact inhabited corridor and all foreground flat, then grow side/rear
+                    // mass smoothly from the same mesh so no detached mountain proxy or map corona appears.
+                    renderer.enabled=true;
+                    renderer.sharedMaterial=valleyDirt??dirt;
+
+                    var mf=renderer.GetComponent<MeshFilter>();
+                    if(mf!=null && mf.sharedMesh!=null)
+                    {
+                        var source=mf.sharedMesh;
+                        var mesh=Object.Instantiate(source);
+                        mesh.name=source.name+" · convergence continuous valley walls";
+                        var verts=mesh.vertices;
+                        const float flatY=-.20f;
+                        for(int i=0;i<verts.Length;i++)
+                        {
+                            var v=verts[i];
+
+                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-10.0f)/11.0f));
+                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-8.0f)/15.0f));
+                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+1.0f)/6.0f));
+
+                            // No side wall may rise in the foreground.
+                            float sideRelief=side*frontGate;
+                            float relief=Mathf.Max(sideRelief,rear);
+
+                            float ridge=sideRelief*sideRelief*3.3f + rear*rear*4.1f;
+                            float organic=(Mathf.Sin(v.x*.19f)+Mathf.Sin(v.z*.23f)+Mathf.Sin((v.x-v.z)*.11f))*.22f*relief;
+                            v.y=flatY + ridge + organic;
+
+                            // Preserve an open corridor around the compact city and approach.
+                            float corridorX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-8.5f)/4.0f));
+                            float corridorZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-10f)/7f));
+                            float corridor=corridorX*corridorZ;
+                            v.y=Mathf.Lerp(v.y,flatY,corridor);
+
+                            verts[i]=v;
+                        }
+                        mesh.vertices=verts;
+                        mesh.RecalculateNormals();
+                        mesh.RecalculateBounds();
+                        mf.sharedMesh=mesh;
+                    }
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
