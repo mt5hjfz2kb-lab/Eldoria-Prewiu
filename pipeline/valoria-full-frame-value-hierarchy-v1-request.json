@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-value-hierarchy-v1",
+  "objective": "Use the authoritative visible-renderer audit to correct the dominant whole-frame value mismatch: screen-dominant terrain families are too bright/washed while one major secondary residence is too dark. Preserve hero/functional architecture and gameplay.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "evidence": {
+    "run_id": 37074806574,
+    "artifact_id": 11255849808,
+    "visible_renderer_rows": 585
+  },
+  "lanes": [
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "terrain_and_transitions",
+    "architecture_coherence"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_bastion": true,
+    "preserve_functional_buildings": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "before_after"
+  ]
+}
