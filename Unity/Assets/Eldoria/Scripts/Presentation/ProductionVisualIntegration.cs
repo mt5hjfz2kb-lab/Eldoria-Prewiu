@@ -1203,7 +1203,7 @@ namespace Eldoria.Presentation
 
         static void ComposeCompactFootprintReframeV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // Toolchain Automation v2 / environment_composition — iteration 3.
+            // Toolchain Automation v2 / environment_composition — iteration 4.
             // Existing geometry only: subtract peripheral urban mass, compress the readable core and
             // expose empty development shelves. Gameplay authority remains untouched.
 
@@ -1226,7 +1226,24 @@ namespace Eldoria.Presentation
                     chain.Contains("tree")||chain.Contains("ground")||chain.Contains("route")||chain.Contains("street")||
                     chain.Contains("stair")||chain.Contains("bastion")||chain.Contains("seam");
                 bool outer=Mathf.Abs(b.center.x)>8.15f&&b.center.z>-7.0f&&b.center.z<12.5f;
-                if((peripheralParcel||heroFrameHouse||(outer&&genericUrban))&&!functional&&!natural)r.enabled=false;
+                bool keepPeripheralTerrace=peripheralParcel&&(chain.Contains("buried broadrockplatform")||chain.Contains("buried steppedrockterrace"));
+                bool residualOuterBuilding=outer&&!functional&&!natural&&b.size.y>.75f&&b.size.y<6.5f&&Mathf.Max(b.size.x,b.size.z)<7.5f;
+                if((peripheralParcel&&!keepPeripheralTerrace)||heroFrameHouse||(outer&&genericUrban)||residualOuterBuilding)r.enabled=false;
+            }
+
+            // Final subtraction of residual outer house silhouettes that survived legacy naming.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;string chain="";
+                for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
+                bool functional=chain.Contains("aserradero")||chain.Contains("cuartel")||chain.Contains("granary")||chain.Contains("granero")||chain.Contains("bastion");
+                bool environment=chain.Contains("rock")||chain.Contains("terrain")||chain.Contains("pine")||chain.Contains("tree")||
+                    chain.Contains("ground")||chain.Contains("route")||chain.Contains("street")||chain.Contains("stair")||
+                    chain.Contains("platform")||chain.Contains("terrace")||chain.Contains("seam");
+                bool outer=Mathf.Abs(b.center.x)>9.35f&&b.center.z>-6.5f&&b.center.z<11.5f;
+                bool buildingScale=b.size.y>.9f&&b.size.y<6.5f&&Mathf.Max(b.size.x,b.size.z)<7.5f;
+                if(outer&&buildingScale&&!functional&&!environment)r.enabled=false;
             }
 
             // Remove lateral residential light rhythm so the eye returns to the Bastion/core.
