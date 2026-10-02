@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "mode": "full_frame_batch",
+  "benchmark": "docs/ELDORIA_VISUAL_BENCHMARK.md",
+  "art_direction": "docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md",
+  "toolchain": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+  "acceptance": {
+    "tech_pass_terminal": false,
+    "local_visual_pass_terminal": false,
+    "require_full_frame_visual_pass": true,
+    "require_before_after": true,
+    "official_views": [
+      "zoom19",
+      "zoom12",
+      "zoom9",
+      "mobile"
+    ],
+    "preserve_gameplay_signature": true
+  },
+  "batch_policy": {
+    "execute_all_currently_actionable_zero_credit_defects": true,
+    "isolated_micro_pass_terminal_forbidden": true,
+    "defer_requires_reason": true,
+    "revert_net_negative_batch": true
+  },
+  "lanes": [
+    "composition_and_mass",
+    "architecture_coherence",
+    "terrain_and_transitions",
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "vegetation_and_environment",
+    "life_props_storytelling",
+    "corruption_world_threat",
+    "hud_world_balance"
+  ],
+  "dependency_order": [
+    "composition_and_mass",
+    "terrain_and_transitions",
+    "architecture_coherence",
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "vegetation_and_environment",
+    "life_props_storytelling",
+    "corruption_world_threat",
+    "hud_world_balance"
+  ],
+  "publish": {
+    "publish_after_full_frame_pass": true,
+    "request_file": "pipeline/unity-publish-request.json",
+    "forbid_stale_owner_review": true
+  }
+}
