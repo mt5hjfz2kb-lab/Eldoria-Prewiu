@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Strongest Jagged e28f predates integrated MaterialResidueCleanupV2 + FullFrameArtifactCleanupV1 and is now stale. Cancel it and isolated residue proof so authoritative 420ab Strongest Composite runs next.",
+  "reason": "Reserve the single Windows runner for the authoritative integrated Strongest Composite with all current cleanup layers. Cancel secondary Jagged and isolated residue proof.",
   "runs": [
     37073083726,
     37073121595
   ],
-  "triggered_at": "2026-10-03T00:13:00+02:00"
+  "triggered_at": "2026-10-02T23:36:00Z"
 }
