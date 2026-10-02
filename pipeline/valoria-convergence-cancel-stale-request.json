@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Reserve the single Windows runner for authoritative Strongest Composite v2 run 37074329137. Cancel secondary Jagged Backdrop v1 run 37074321705.",
+  "reason": "Prioritize latest strongest visible-renderer audit fix at 2990c5bc; a022 revalidation is superseded.",
   "runs": [
-    37074321705
+    37074667475,
+    37074667346
   ],
   "keep_runs": [
     37074329137
   ],
-  "triggered_at": "2026-10-03T00:22:00+02:00"
+  "triggered_at": "2026-10-03T00:24:00+02:00"
 }
