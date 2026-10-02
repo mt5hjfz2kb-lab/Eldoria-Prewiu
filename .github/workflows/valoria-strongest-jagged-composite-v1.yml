@@ -71,13 +71,6 @@ jobs:
             if($ok){break}
           }
           if(-not $ok){throw 'All verified transports for the CC0 Jagged Peaks image failed.'}
-      - name: Stage Kiara 3 dependency for current composite modules
-        shell: powershell
-        run: |
-          $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\BackplateCandidates"
-          New-Item -ItemType Directory -Force -Path $dir | Out-Null
-          $dst=Join-Path $dir 'kiara3_1.jpg'
-          Invoke-WebRequest -Uri 'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01604.jpg' -OutFile $dst -UseBasicParsing
       - name: Capture integrated strongest jagged composite
         shell: powershell
         run: |
