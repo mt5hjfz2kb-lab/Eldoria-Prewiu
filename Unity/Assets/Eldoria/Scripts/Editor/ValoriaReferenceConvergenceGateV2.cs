@@ -28,6 +28,7 @@ namespace Eldoria.EditorTools
             ProductionVisualIntegration.CoherentCastleProofEnabled=false;
             ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
             ProductionVisualIntegration.CompactFootprintReframeEnabled=true;
+            AssetVisualUpliftPassV1.Enabled=false;
             AssetLibraryReprocessingPassV1.Enabled=true;
             ValoriaReferenceConvergencePassV2.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
