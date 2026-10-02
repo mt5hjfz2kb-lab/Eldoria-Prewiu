@@ -30,11 +30,11 @@ namespace Eldoria.Presentation
             RenderSettings.fogStartDistance=city?30:36; RenderSettings.fogEndDistance=city?68:110;
             var cameraGo = new GameObject("Isometric camera");
             var camera = cameraGo.AddComponent<Camera>(); camera.orthographic=true;
-            camera.orthographicSize = city ? 10.2f : 14;
+            camera.orthographicSize = city ? 9.1f : 14;
             camera.backgroundColor = RenderSettings.fogColor; camera.clearFlags=CameraClearFlags.SolidColor;
             cameraGo.tag="MainCamera";
             cameraGo.transform.position = city ? new Vector3(18.2f,14.6f,-25.8f) : new Vector3(20,24,-21);
-            cameraGo.transform.LookAt(city ? new Vector3(0,3.15f,5.8f) : new Vector3(0,0,1));
+            cameraGo.transform.LookAt(city ? new Vector3(0,3.35f,5.6f) : new Vector3(0,0,1));
             var sun = new GameObject("Valoria · amber dusk").AddComponent<Light>();
             sun.type=LightType.Directional; sun.color=city?new Color(1.0f,.97f,.90f):new Color(1.0f,.95f,.86f);
             sun.intensity=city?1.22f:2.30f;
