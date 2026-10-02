@@ -25,5 +25,6 @@
     "collider_hotspot_signature",
     "integrated_full_frame"
   ],
-  "triggered_at": "2026-10-02T23:18:00Z"
+  "triggered_at": "2026-10-03T00:02:00+02:00",
+  "revalidate_after_compile_fix": "31e1c660e36d632f791bfff8406dcabc0c6310fa"
 }
