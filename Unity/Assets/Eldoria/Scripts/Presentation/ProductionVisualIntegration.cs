@@ -1275,8 +1275,8 @@ namespace Eldoria.Presentation
             // Secondary urban tissue: existing certified Mid-Tier family, scaled down and partly occluded.
             // Purpose is full-frame massing/skyline, not new landmarks.
             foreach(var s in new[]{
-                new Vector4(-14.8f,3.15f,6.0f,12f),new Vector4(-11.7f,3.05f,7.7f,-8f),new Vector4(-9.0f,3.12f,9.5f,18f),
-                new Vector4(14.8f,3.15f,6.1f,168f),new Vector4(11.7f,3.05f,7.8f,188f),new Vector4(9.0f,3.12f,9.6f,162f)})
+                new Vector4(-14.2f,1.00f,5.1f,12f),new Vector4(-11.8f,1.18f,6.3f,-8f),new Vector4(-9.4f,1.62f,7.6f,18f),
+                new Vector4(14.2f,1.00f,5.2f,168f),new Vector4(11.8f,1.18f,6.4f,188f),new Vector4(9.4f,1.62f,7.7f,162f)})
             {
                 string piece=Mathf.Abs(s.x)>13f?"Piece03":Mathf.Abs(s.x)>10f?"Piece02":"Piece04";
                 var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+piece);
@@ -1284,8 +1284,8 @@ namespace Eldoria.Presentation
                     new Vector3(s.x,s.y,s.z),2.05f,2.75f,s.w,new Color(.62f,.59f,.53f));
             }
             foreach(var s in new[]{
-                new Vector4(-16.3f,.40f,4.0f,18f),new Vector4(-13.6f,.42f,4.5f,-4f),
-                new Vector4(16.3f,.40f,4.1f,162f),new Vector4(13.6f,.42f,4.6f,184f)})
+                new Vector4(-15.6f,.40f,3.2f,18f),new Vector4(-13.4f,.42f,4.0f,-4f),
+                new Vector4(15.6f,.40f,3.3f,162f),new Vector4(13.4f,.42f,4.1f,184f)})
             {
                 var source=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
                 if(source!=null)Piece("Valoria · FullFrame · lower urban infill",source,
@@ -1339,6 +1339,17 @@ namespace Eldoria.Presentation
                 bool darkPlaceholder=(n.Contains("fallback")||n.Contains("placeholder")||n.Contains("proxy")||n.Contains("debug"));
                 bool inCore=Mathf.Abs(b.center.x)<18f&&b.center.z>-2f&&b.center.z<11f;
                 if(darkPlaceholder&&inCore)r.enabled=false;
+            }
+
+            // Low geology shelves physically/visually seat the secondary clusters in the slope.
+            foreach(var s in new[]{
+                new Vector4(-14.0f,.18f,4.8f,8f),new Vector4(-10.6f,.72f,6.6f,22f),
+                new Vector4(14.0f,.18f,4.9f,172f),new Vector4(10.6f,.72f,6.7f,158f)})
+            {
+                Imported("Valoria · FullFrame · inhabited rock shelf","Rock02",
+                    new Vector3(s.x,s.y,s.z),3.15f,1.05f,s.w,new Color(.30f,.30f,.28f),false);
+                StonePiece(2,"Valoria · FullFrame · inhabited shelf paving",
+                    new Vector3(s.x,s.y+.42f,s.z-.10f),new Vector3(3.5f,.08f,2.15f),s.w);
             }
 
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
