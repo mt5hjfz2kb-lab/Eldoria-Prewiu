@@ -1,3 +1,11 @@
+## Parallel-chat workstream ownership — CANONICAL (2026-10-02)
+
+- Parallel Eldoria chats must now read and claim `pipeline/active-workstreams.json` before substantive mutation.
+- One coherent workstream = one active owner. Overlapping scope/resources are forbidden until the current owner releases/completes the claim.
+- Claims use the current registry blob SHA; a stale-SHA write failure is treated as a real concurrency signal and requires re-read/reassessment.
+- Canonical rules: `AGENTS.md` + `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
+- Governance introduction itself is closed in registry history; there are no permanent global locks.
+
 ## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
 
 - Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
