@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T19:44:00Z",
+  "updated_at": "2026-10-02T19:48:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -27,7 +27,11 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameHorizonAssetPassV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameHorizonAssetGateV1.cs",
         ".github/workflows/valoria-full-frame-horizon-asset-v1.yml",
-        "pipeline/valoria-full-frame-horizon-asset-v1-request.json"
+        "pipeline/valoria-full-frame-horizon-asset-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameWorldSurroundV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameWorldSurroundGateV1.cs",
+        ".github/workflows/valoria-full-frame-world-surround-v1.yml",
+        "pipeline/valoria-full-frame-world-surround-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
