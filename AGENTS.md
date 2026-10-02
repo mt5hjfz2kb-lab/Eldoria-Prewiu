@@ -250,3 +250,13 @@ If a feature technically works but requires external developer explanation to un
 - Do not claim the target is achievable with current means unless integrated evidence supports that claim. If the current stack reaches a demonstrated ceiling, state the exact limiting factor and propose concrete solutions in dependency/cost order.
 - The owner does not want repeated “continue” prompts. Continue through the full-frame loop until: (a) the required visual quality is reached and verified, or (b) a genuine blocker requires owner input/authorization/access.
 - A new chat must reconstruct from `main`, `pipeline/active-workstreams.json`, `SESSION_HANDOFF.md`, `docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md`, and the latest full-frame evidence, then continue this same directive automatically.
+
+
+## Owner visual-quality directive (2026-10-02)
+- The owner-approved Valoria reference image is the binding quality target. Treat it as a concrete production objective, not loose inspiration.
+- Operate as project lead/programming lead for visual convergence: choose and execute the technical route needed to close the integrated-frame gap while preserving gameplay authority.
+- When a tool, Unity feature, Blender technique, rendering method, asset-processing method or external zero/low-cost resource is not sufficiently understood, research the exact usage before deciding that it cannot help.
+- Do not present technical progress, asset creation, workflow success or local polish as visual success unless the official integrated frame materially improves against the approved reference.
+- Continue routine reversible work automatically through code, CI, artifact review, repair, retry and the next full-frame iteration. Stop only for a genuine owner-only blocker, irreversible/paid authorization, or a product decision with materially different outcomes.
+- If the current stack reaches a demonstrated ceiling below the approved target, state that clearly and identify the concrete limiting capability. Then provide and, when authorized and safe, execute the smallest viable solution: new geometry/family, better source asset, rendering/camera change, 2.5D/backplate support, material/lighting pipeline upgrade, performance-budget change, or another evidenced route.
+- On every new chat/resume, reconstruct from live `main`, `pipeline/active-workstreams.json`, current requests/workflows and latest run artifacts. Do not reconstruct production state from conversational memory.
