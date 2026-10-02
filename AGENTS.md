@@ -16,8 +16,21 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 1. Read this file.
 2. Read `SESSION_HANDOFF.md`.
 3. Read `PROJECT_STATE.md`.
-4. Confirm real branch + HEAD.
-5. Work from the canonical source and inspect only task-relevant code/tests unless a wider audit is explicitly requested.
+4. Read `pipeline/active-workstreams.json` and apply the parallel-chat ownership protocol below.
+5. Confirm real branch + HEAD.
+6. Before substantive edits, claim one non-conflicting workstream in the registry using the current file SHA.
+7. Work from the canonical source and inspect only task-relevant code/tests unless a wider audit is explicitly requested.
+
+## Parallel-chat workstream ownership
+- Multiple chats/agents may work on Eldoria concurrently, but **one coherent workstream has exactly one active owner at a time**. The canonical live registry is `pipeline/active-workstreams.json`; protocol details live in `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
+- Before substantive edits, workflow dispatches, Tripo staging/generation, Unity visual production, promotion, or documentation that changes project state, an agent must fetch the current registry from `main` and claim a workstream. Read-only investigation may proceed unclaimed only when it cannot mutate repo state or consume shared runner/credits.
+- A claim must declare a stable `id`, human-readable `title`, `owner`, `scope`, `resources`, `claimed_at`, `base_main_sha`, and `status=active`. Use the current registry blob SHA for the write. A stale-SHA failure is a concurrency signal: re-read the registry and reassess; never blindly retry an overlapping claim.
+- Do not claim a workstream whose scope or exclusive resources overlap an existing active claim. Treat shared production surfaces such as the same canonical files, the same Valoria district/asset family, the Windows self-hosted runner for heavy jobs, Tripo credit spend, or the same promotion target as conflicts unless the existing owner explicitly narrows/releases them in the registry.
+- Distinct workstreams may consume already-promoted/certified outputs from one another, but must not silently expand into another active owner's scope. If new findings reveal overlap, stop that overlapping sub-part, record the dependency, and continue only the non-conflicting scope.
+- Before updating `main` after substantial work, re-read the registry and live `main` HEAD. Rebase/reconcile conceptually against newer canonical state rather than overwriting another chat's result.
+- On completion, blocker, or deliberate handoff, update the registry immediately: release exclusive resources, set `status` to `completed`, `blocked`, or `handoff`, record the resulting commit/run/artifact when relevant, and move the entry from `active` to `history` when complete. Do not leave stale active claims.
+- The registry is coordination state, not product truth. `AGENTS.md`, `SESSION_HANDOFF.md`, `PROJECT_STATE.md`, certified evidence, and live code remain authoritative for project/product state.
+- Never solve a conflict by creating a parallel replacement pipeline or duplicate asset family. Resolve ownership first, then reuse/promote the canonical result.
 
 ## Active line and versions
 - Development branch: `main` only.
