@@ -129,10 +129,6 @@ namespace Eldoria.Presentation
             AddWarmLight(root,"east military quarter",new Vector3(8.6f,1.30f,-4.0f),.20f,3.2f);
             AddWarmLight(root,"upper west ruin",new Vector3(-8.2f,3.9f,10.8f),.15f,2.6f);
             AddWarmLight(root,"upper east ruin",new Vector3(8.1f,3.8f,10.9f),.15f,2.6f);
-
-            AddSmoke(root,new Vector3(-8.7f,1.25f,-3.4f),1.1f);
-            AddSmoke(root,new Vector3(8.4f,1.20f,-3.9f),.9f);
-            AddSmoke(root,new Vector3(-4.8f,3.35f,7.6f),.75f);
         }
 
         static void RefineGlobalAtmosphere()
@@ -163,29 +159,6 @@ namespace Eldoria.Presentation
                 light.intensity=Mathf.Max(light.intensity,1.12f);
                 light.shadowStrength=.56f;
                 light.shadows=LightShadows.Soft;
-            }
-        }
-
-        static void AddSmoke(Transform root,Vector3 position,float scale)
-        {
-            var go=new GameObject("Valoria · Reference Convergence v2 · chimney smoke");
-            go.transform.SetParent(root,true);go.transform.position=position;
-            var ps=go.AddComponent<ParticleSystem>();
-            var main=ps.main;main.loop=true;main.startLifetime=5.5f;main.startSpeed=.22f*scale;
-            main.startSize=.52f*scale;main.startColor=new Color(.52f,.53f,.52f,.34f);main.maxParticles=28;
-            var emission=ps.emission;emission.rateOverTime=2.2f;
-            var shape=ps.shape;shape.shapeType=ParticleSystemShapeType.Cone;shape.angle=11f;shape.radius=.10f*scale;
-            var velocity=ps.velocityOverLifetime;velocity.enabled=true;velocity.space=ParticleSystemSimulationSpace.World;
-            velocity.y=new ParticleSystem.MinMaxCurve(.20f*scale,.42f*scale);
-            var noise=ps.noise;noise.enabled=true;noise.strength=.12f;noise.frequency=.18f;
-            var renderer=ps.GetComponent<ParticleSystemRenderer>();renderer.renderMode=ParticleSystemRenderMode.Billboard;
-            var shader=Shader.Find("Universal Render Pipeline/Particles/Unlit")??Shader.Find("Particles/Standard Unlit");
-            if(shader!=null)
-            {
-                var material=new Material(shader){name="Valoria Reference Convergence · smoke"};
-                if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",new Color(.50f,.51f,.50f,.28f));
-                else if(material.HasProperty("_Color"))material.SetColor("_Color",new Color(.50f,.51f,.50f,.28f));
-                renderer.sharedMaterial=material;
             }
         }
 
