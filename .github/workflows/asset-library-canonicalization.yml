@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: eldoria-asset-library-canonicalization
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   canonicalize:
