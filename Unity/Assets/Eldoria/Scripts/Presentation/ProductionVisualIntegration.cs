@@ -1224,8 +1224,7 @@ namespace Eldoria.Presentation
             // Mid-ground retaining rhythm: bind the city into the rock and make the terraces read as one vertical system.
             foreach(var s in new[]{
                 new Vector4(-10.8f,1.00f,1.6f,12f),new Vector4(-14.6f,1.02f,4.6f,92f),
-                new Vector4(10.8f,1.00f,1.8f,168f),new Vector4(14.5f,1.02f,4.8f,88f),
-                new Vector4(-8.0f,2.68f,6.9f,8f),new Vector4(8.0f,2.68f,7.0f,172f)})
+                new Vector4(10.8f,1.00f,1.8f,168f),new Vector4(14.5f,1.02f,4.8f,88f)})
             {
                 StoneArchitecturePiece("HighStraightWall","Valoria · FullFrame · retaining spine",
                     new Vector3(s.x,s.y,s.z),2.30f,s.w);
@@ -1251,6 +1250,43 @@ namespace Eldoria.Presentation
             {
                 StonePiece(1,"Valoria · FullFrame · upper terrace street",new Vector3(-5.2f+i*2.6f,2.735f,7.55f),
                     new Vector3(2.65f,.055f,1.18f),0f);
+            }
+
+            // Break the oversized empty forecourt into connected urban rooms while leaving the certified physical route untouched.
+            for(int i=0;i<5;i++)
+            {
+                float x=-5.2f+i*2.6f;
+                StonePiece(i%2==0?2:1,"Valoria · FullFrame · lower market paving",
+                    new Vector3(x,.438f,-3.15f+(i%2)*.38f),new Vector3(2.72f,.045f,1.55f),i%2==0?4f:-5f);
+            }
+            for(int i=0;i<4;i++)
+            {
+                StonePiece(2,"Valoria · FullFrame · west cross street",
+                    new Vector3(-8.3f-i*1.75f,.446f,-2.0f+i*.18f),new Vector3(1.85f,.045f,1.32f),82f);
+                StonePiece(2,"Valoria · FullFrame · east cross street",
+                    new Vector3(8.3f+i*1.75f,.446f,-2.0f+i*.18f),new Vector3(1.85f,.045f,1.32f),98f);
+            }
+
+            // Bastion plinth: layered existing rock masses remove the 'castle sitting on a shelf' read.
+            foreach(var s in new[]{
+                new Vector4(-5.2f,2.30f,5.1f,28f),new Vector4(5.2f,2.30f,5.2f,205f),
+                new Vector4(-4.1f,2.18f,8.4f,54f),new Vector4(4.2f,2.18f,8.5f,232f)})
+                Imported("Valoria · FullFrame · Bastion buried plinth","Rock02",
+                    new Vector3(s.x,s.y,s.z),3.55f,1.55f,s.w,new Color(.37f,.37f,.34f),false);
+
+            // Retaining walls are interrupted by towers/rock, avoiding the repeated freestanding-wall rhythm of iteration 1.
+            var flankTower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            if(flankTower!=null)
+            {
+                Piece("Valoria · FullFrame · west retaining tower",flankTower,new Vector3(-12.0f,.36f,1.9f),2.05f,3.05f,18f,new Color(.58f,.58f,.54f));
+                Piece("Valoria · FullFrame · east retaining tower",flankTower,new Vector3(12.0f,.36f,2.0f),2.05f,3.05f,162f,new Color(.58f,.58f,.54f));
+            }
+
+            // Edge occupation closes gaps between districts without creating new gameplay buildings.
+            if(art!=null&&art.SlavicHouse!=null)
+            {
+                Piece("Valoria · FullFrame · west infill silhouette",art.SlavicHouse,new Vector3(-18.1f,.42f,-1.0f),1.78f,1.55f,14f,new Color(.55f,.51f,.44f));
+                Piece("Valoria · FullFrame · east infill silhouette",art.SlavicHouse,new Vector3(17.8f,.42f,-.7f),1.72f,1.50f,-18f,new Color(.55f,.51f,.44f));
             }
 
             // Depth framing uses already-shipped rock and foliage only. Keep the central route and Bastion silhouette open.
