@@ -1318,6 +1318,29 @@ namespace Eldoria.Presentation
             var fullBarracks=Resources.Load<GameObject>("Valoria/Valoria_Cuartel_AP2_v1");
             if(fullBarracks!=null)Piece("Valoria · FullFrame · certified barracks",fullBarracks,new Vector3(7.0f,.40f,-4.0f),4.35f,3.55f,176f,new Color(.66f,.60f,.51f));
 
+            // Final full-frame cleanup: break the oversized forecourt and hard terrain seams with existing low-profile language.
+            for(int i=0;i<5;i++)
+            {
+                float x=-5.0f+i*2.5f;
+                StonePiece(2,"Valoria · FullFrame · forecourt rhythm",new Vector3(x,.452f,1.65f+(i%2)*.42f),
+                    new Vector3(1.55f,.042f,1.05f),i%2==0?8f:-7f);
+            }
+            foreach(var p in new[]{
+                new Vector3(-7.8f,.08f,-1.5f),new Vector3(-4.9f,.08f,-1.9f),new Vector3(5.0f,.08f,-1.9f),new Vector3(7.9f,.08f,-1.5f),
+                new Vector3(-16.8f,.05f,-1.8f),new Vector3(16.8f,.05f,-1.7f)})
+                Imported("Valoria · FullFrame · foreground seam rock","Rock02",p,1.55f,.58f,p.x*13f,new Color(.30f,.30f,.28f),false);
+
+            // Suppress only legacy placeholder renderers that visually contradict the certified architecture.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string n=r.gameObject.name.ToLowerInvariant();
+                var b=r.bounds;
+                bool darkPlaceholder=(n.Contains("fallback")||n.Contains("placeholder")||n.Contains("proxy")||n.Contains("debug"));
+                bool inCore=Mathf.Abs(b.center.x)<18f&&b.center.z>-2f&&b.center.z<11f;
+                if(darkPlaceholder&&inCore)r.enabled=false;
+            }
+
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
             WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
             WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
