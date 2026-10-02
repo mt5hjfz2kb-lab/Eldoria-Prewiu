@@ -2,7 +2,7 @@ name: "[EXPERIMENT] Valoria Reference Convergence v1"
 
 on:
   push:
-    branches: ['visual-proof/valoria-reference-convergence-v1']
+    branches: ['visual-proof/valoria-reference-convergence-v1-refine']
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaReferenceConvergenceV1Gate.cs'
@@ -15,7 +15,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: valoria-reference-convergence-v1
+  group: valoria-reference-convergence-v1-refine
   cancel-in-progress: true
 
 jobs:
