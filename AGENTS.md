@@ -230,3 +230,13 @@ If a feature technically works but requires external developer explanation to un
 - Main development must not inherit tester intro/report/survey layers unless explicitly promoted into product.
 - Pages must guard tester bytes against drift from the frozen integration commit.
 - Feedback is evidence, not an automatic backlog; use `TESTER_FEEDBACK_PROTOCOL.md`.
+
+
+## Canonical Valoria full-frame convergence rule
+- Valoria visual production is now governed by `docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md`.
+- The terminal unit of progress is the **integrated official gameplay frame**, not an isolated asset or defect.
+- Every visual iteration must inventory all significant benchmark gaps, batch every currently actionable zero-credit correction by dependency, capture matched BEFORE/AFTER at zoom 19/12/9/mobile, and continue until a FULL-FRAME VISUAL PASS or a documented blocker.
+- **TECH PASS is safety evidence, not visual completion. LOCAL VISUAL PASS is bounded evidence, not visual completion. Only FULL-FRAME VISUAL PASS may close a Valoria visual iteration.**
+- Do not create one workstream per stair/wall/material/prop defect unless a real exclusive-resource dependency requires isolation. Bounded proofs must immediately re-enter the same full-frame iteration.
+- After a promoted FULL-FRAME VISUAL PASS, refresh `pipeline/unity-publish-request.json` to the promoted `main` SHA so owner review never relies on a stale WebGL build.
+- The machine-readable contract is `pipeline/valoria-full-frame-convergence-v1.json` and is guarded by `tools/validate-valoria-full-frame-convergence.mjs`.
