@@ -25,6 +25,7 @@ namespace Eldoria.Presentation
             ReassembleTerrainSeams(root);
             RefineAtmosphere();
             AddRestrainedOccupation(root);
+            AssetVisualUpliftPassV1.ApplyExistingScene(state);
             DisableGameplay(root.gameObject);
         }
 
@@ -286,6 +287,7 @@ namespace Eldoria.Presentation
                 else if(mat!=null&&mat.HasProperty("_Color"))block.SetColor("_Color",tint);
                 r.SetPropertyBlock(block);
             }
+            if(AssetVisualUpliftPassV1.Enabled)AssetVisualUpliftPassV1.ApplyMidTier(go,tint);
             go.transform.SetParent(root,true);DisableGameplay(go);
         }
 
@@ -349,6 +351,11 @@ namespace Eldoria.Presentation
 
         static void ApplySharedSurface(GameObject go,SurfaceFamily family)
         {
+            if(AssetVisualUpliftPassV1.Enabled)
+            {
+                AssetVisualUpliftPassV1.ApplyImportedFamily(go,family==SurfaceFamily.Terrain?"terrain":"stone");
+                return;
+            }
             Material material;
             if(family==SurfaceFamily.Terrain)
             {
