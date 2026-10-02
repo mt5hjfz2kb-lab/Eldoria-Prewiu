@@ -206,6 +206,7 @@ namespace Eldoria.Presentation
             IntegrateRescuedTerrainSeams();
             // Certified Mid-Tier District v1: three real Mid/Lower parcels, visual-only, Bastion III+.
             MidTierDistrictProduction.Build(root,state);
+            ValoriaFullFrameArchitectureBatchV1.Build(root,state);
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
             if(tower==null)throw new InvalidOperationException("Persisted TowerWallRock could not import as a prefab");
