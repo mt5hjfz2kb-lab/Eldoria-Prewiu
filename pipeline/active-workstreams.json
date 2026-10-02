@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T12:00:00Z",
+  "updated_at": "2026-10-02T12:06:00Z",
   "active": [
     {
       "id": "valoria-reference-convergence-v2",
@@ -37,13 +37,14 @@
         "tools/asset-deep-uplift/**",
         "SESSION_HANDOFF.md"
       ],
-      "resources": [
-        "asset-deep-uplift-analysis"
-      ],
-      "status": "active",
+      "resources": [],
+      "status": "blocked",
       "claimed_at": "2026-10-02T12:00:00Z",
       "base_main_sha": "d4a388df26a991b4bd9a80f022fe6a33298007a3",
-      "dependency": "valoria-reference-convergence-v2 owns valoria-production-composition and windows-runner-heavy; this workstream must not mutate its files or occupy the Windows runner. Deep-uplift work is limited to non-conflicting asset classification/offline processing infrastructure until that resource is released."
+      "dependency": "valoria-reference-convergence-v2 owns valoria-production-composition and windows-runner-heavy; this workstream must not mutate its files or occupy the Windows runner. Deep-uplift work is limited to non-conflicting asset classification/offline processing infrastructure until that resource is released.",
+      "result_commit": "6e04c35d2c6ec69a7c8db39e7c006e0af5a93a75",
+      "result": "26-GLB A/B/C/D classification merged; deep geometry queue prepared. Binary Blender + official Unity validation blocked by active valoria-reference-convergence-v2 ownership of windows-runner-heavy and valoria-production-composition.",
+      "next": "Resume with SteppedRockTerrace once the conflicting resources are released."
     }
   ],
   "history": [
