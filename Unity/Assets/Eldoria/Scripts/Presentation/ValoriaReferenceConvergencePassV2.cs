@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
             if(valleyShader!=null)
             {
                 valleyDirt=new Material(valleyShader){name="Valoria Reference v2 · matte world valley"};
-                var valleyColor=new Color(.275f,.285f,.255f,1f);
+                var valleyColor=new Color(.245f,.255f,.235f,1f);
                 if(valleyDirt.HasProperty("_BaseColor"))valleyDirt.SetColor("_BaseColor",valleyColor);
                 if(valleyDirt.HasProperty("_Color"))valleyDirt.SetColor("_Color",valleyColor);
                 if(valleyDirt.HasProperty("_Metallic"))valleyDirt.SetFloat("_Metallic",0f);
@@ -111,9 +111,9 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 30: continuous visual-only valley walls.
-                    // Keep the compact inhabited corridor and all foreground flat, then grow side/rear
-                    // mass smoothly from the same mesh so no detached mountain proxy or map corona appears.
+                    // Iteration 29: reuse the certified visual-only heightfield only as side/rear world relief.
+                    // The inhabited centre and the entire foreground are flattened below the valley floor;
+                    // relief fades in gradually beyond the compact city, preventing any visible map corona.
                     renderer.enabled=true;
                     renderer.sharedMaterial=valleyDirt??dirt;
 
@@ -122,31 +122,17 @@ namespace Eldoria.Presentation
                     {
                         var source=mf.sharedMesh;
                         var mesh=Object.Instantiate(source);
-                        mesh.name=source.name+" · convergence continuous valley walls";
+                        mesh.name=source.name+" · convergence side-rear relief";
                         var verts=mesh.vertices;
                         const float flatY=-.20f;
                         for(int i=0;i<verts.Length;i++)
                         {
                             var v=verts[i];
-
-                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-10.0f)/11.0f));
-                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-8.0f)/15.0f));
-                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+1.0f)/6.0f));
-
-                            // No side wall may rise in the foreground.
-                            float sideRelief=side*frontGate;
-                            float relief=Mathf.Max(sideRelief,rear);
-
-                            float ridge=sideRelief*sideRelief*3.3f + rear*rear*4.1f;
-                            float organic=(Mathf.Sin(v.x*.19f)+Mathf.Sin(v.z*.23f)+Mathf.Sin((v.x-v.z)*.11f))*.22f*relief;
-                            v.y=flatY + ridge + organic;
-
-                            // Preserve an open corridor around the compact city and approach.
-                            float corridorX=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-8.5f)/4.0f));
-                            float corridorZ=1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-10f)/7f));
-                            float corridor=corridorX*corridorZ;
-                            v.y=Mathf.Lerp(v.y,flatY,corridor);
-
+                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-13.5f)/10.5f));
+                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-12.0f)/14.0f));
+                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+2.0f)/6.0f));
+                            float relief=Mathf.Max(side*frontGate,rear);
+                            v.y=Mathf.Lerp(flatY,v.y,relief);
                             verts[i]=v;
                         }
                         mesh.vertices=verts;
@@ -230,7 +216,9 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 30: no legacy mountain proxy. The certified layered PBR rock frame owns world mass.
+            // Iteration 28: no pass-owned mountains.
+            // The available legacy mountain mesh reads as an isolated low-poly pyramid at review distance.
+            // Keep the central silhouette clean and use atmosphere to suppress distant prototype scatter.
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
@@ -261,8 +249,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.52f,.61f,.66f);
-            RenderSettings.fogStartDistance=26f;
-            RenderSettings.fogEndDistance=78f;
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=72f;
 
             var camera=Camera.main;
             if(camera!=null)
