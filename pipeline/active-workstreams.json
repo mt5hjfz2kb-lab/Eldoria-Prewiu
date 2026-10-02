@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T17:56:00Z",
+  "updated_at": "2026-10-02T18:00:00Z",
   "active": [
     {
       "id": "valoria-in-city-surface-v1",
@@ -17,7 +17,8 @@
       ],
       "resources": [
         "valoria-in-city-surface-proof",
-        "art-production-planner"
+        "art-production-planner",
+        "windows-runner-heavy"
       ],
       "status": "active",
       "claimed_at": "2026-10-02T17:55:00Z",
