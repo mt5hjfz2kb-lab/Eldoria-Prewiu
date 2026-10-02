@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Reserve the single Windows runner for the authoritative structurally-cleaned Strongest Composite. Cancel Jagged secondary proof and preserve Strongest Composite explicitly.",
+  "reason": "Reserve the single Windows runner for Strongest Composite v2 run 37074329137; cancel secondary Jagged comparison 37074255501.",
   "runs": [
-    37073591515
+    37074255501
   ],
   "keep_runs": [
-    37073588501
+    37074329137
   ],
-  "triggered_at": "2026-10-02T23:43:00Z"
+  "triggered_at": "2026-10-03T00:20:00+02:00"
 }
