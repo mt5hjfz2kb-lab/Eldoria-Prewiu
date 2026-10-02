@@ -1369,6 +1369,31 @@ namespace Eldoria.Presentation
                     new Vector3(s.x,s.y+.42f,s.z-.10f),new Vector3(3.5f,.08f,2.15f),s.w);
             }
 
+            // Spatial cleanup for legacy work-building presentation that survives under renamed hierarchy nodes.
+            // Disable only building-scale renderers in the certified Aserradero/Cuartel envelopes; never colliders/hotspots/routes.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var bc=r.bounds.center;var bs=r.bounds.size;
+                bool buildingScale=bs.y>1.0f&&bs.y<6.5f&&Mathf.Max(bs.x,bs.z)<7.0f;
+                bool west=Vector2.Distance(new Vector2(bc.x,bc.z),new Vector2(-7.0f,-2.8f))<2.8f;
+                bool east=Vector2.Distance(new Vector2(bc.x,bc.z),new Vector2(7.0f,-4.0f))<3.0f;
+                bool keep=r.name.Contains("FullFrame",StringComparison.OrdinalIgnoreCase)||r.name.Contains("Mid-Tier",StringComparison.OrdinalIgnoreCase);
+                if(buildingScale&&(west||east)&&!keep)r.enabled=false;
+            }
+            var infill=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece03");
+            var entry=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece01");
+            if(infill!=null)
+            {
+                Piece("Valoria · FullFrame · west work architecture",infill,new Vector3(-7.0f,.40f,-2.8f),3.55f,3.15f,10f,new Color(.65f,.59f,.50f));
+                Piece("Valoria · FullFrame · east work architecture",infill,new Vector3(7.0f,.40f,-4.0f),3.70f,3.25f,172f,new Color(.64f,.58f,.49f));
+            }
+            if(entry!=null)
+            {
+                Piece("Valoria · FullFrame · west work entry",entry,new Vector3(-6.25f,.42f,-1.55f),1.45f,1.65f,8f,new Color(.69f,.64f,.56f));
+                Piece("Valoria · FullFrame · east work entry",entry,new Vector3(6.35f,.42f,-2.70f),1.50f,1.70f,176f,new Color(.68f,.63f,.55f));
+            }
+
             // Occupied-city light rhythm, deliberately subordinate to the Bastion.
             WarmLight("Valoria · FullFrame · west lower warmth",new Vector3(-11.1f,1.25f,.6f),new Color(1f,.49f,.20f),.46f,2.45f);
             WarmLight("Valoria · FullFrame · east lower warmth",new Vector3(11.0f,1.25f,.7f),new Color(1f,.50f,.21f),.44f,2.40f);
