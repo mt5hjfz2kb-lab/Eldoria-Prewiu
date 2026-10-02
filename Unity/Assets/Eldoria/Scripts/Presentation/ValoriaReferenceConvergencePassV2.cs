@@ -148,36 +148,33 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 33: narrow continuous cliff ribbons. Their footprint is deliberately constrained
-            // so no terrain surface can cover a large part of the review frame.
-            AddCliffRibbon(root,true);
-            AddCliffRibbon(root,false);
-            AddRearCliffRibbon(root);
+            // Iteration 34: face-only cliff curtains. No broad top surfaces.
+            AddSideCliffFace(root,true);
+            AddSideCliffFace(root,false);
+            AddRearCliffFace(root);
 
             if(art!=null && art.SlavicBoulder!=null)
             {
-                var rocks=new[]{
-                    new Vector3(-11.5f,.02f,1.0f),new Vector3(-11.2f,.04f,7.0f),
-                    new Vector3(11.5f,.02f,1.4f),new Vector3(11.2f,.04f,7.4f)
+                var crown=new[]{
+                    new Vector3(-14.2f,1.15f,-1.0f),new Vector3(-14.2f,1.55f,6.5f),new Vector3(-14.2f,1.95f,13.0f),
+                    new Vector3(14.2f,1.10f,-.5f),new Vector3(14.2f,1.50f,6.8f),new Vector3(14.2f,1.90f,13.2f)
                 };
-                for(int i=0;i<rocks.Length;i++)
-                    AddPrefab(root,art.SlavicBoulder,"cliff transition boulder "+i,rocks[i],
-                        1.05f+(i%2)*.12f,.82f,(i*51)%360,new Color(.42f,.43f,.41f,1f),true);
+                for(int i=0;i<crown.Length;i++)
+                    AddPrefab(root,art.SlavicBoulder,"cliff crown boulder "+i,crown[i],
+                        1.35f+(i%3)*.18f,1.0f+(i%2)*.10f,(i*47)%360,new Color(.40f,.41f,.39f,1f),true);
             }
         }
 
-        static Material CliffRibbonMaterial()
+        static Material CliffFaceMaterial()
         {
-            return ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(2.8f,5.2f),.95f);
+            return ValoriaKit.DetailedSurfaceMaterial(new Color(.30f,.31f,.29f,1f),"earth",new Vector2(2.4f,4.8f),1.15f);
         }
 
-        static void AddCliffRibbon(Transform root,bool west)
+        static void AddSideCliffFace(Transform root,bool west)
         {
-            const int segments=12;
-            float innerX=west?-11.4f:11.4f;
-            float outerX=west?-16.2f:16.2f;
-            float outerBottomX=west?-17.2f:17.2f;
-            float zMin=-5.5f,zMax=21.5f;
+            const int segments=14;
+            float x=west?-14.2f:14.2f;
+            float zMin=-6f,zMax=22f;
             var verts=new List<Vector3>();
             var uv=new List<Vector2>();
             var tris=new List<int>();
@@ -186,42 +183,46 @@ namespace Eldoria.Presentation
             {
                 float t=i/(float)segments;
                 float z=Mathf.Lerp(zMin,zMax,t);
-                float top=.35f+Mathf.SmoothStep(0f,1f,t)*1.65f
-                    +Mathf.Sin(t*7.1f+(west?0f:1.4f))*.22f;
-                float innerY=-.12f+Mathf.Sin(t*5.3f)*.04f;
-                verts.Add(new Vector3(innerX,innerY,z));
-                verts.Add(new Vector3(outerX,top,z));
-                verts.Add(new Vector3(outerBottomX,-2.4f,z));
-                uv.Add(new Vector2(0f,t*4f));
-                uv.Add(new Vector2(1f,t*4f));
-                uv.Add(new Vector2(1.35f,t*4f));
+                float top=.85f+Mathf.SmoothStep(0f,1f,t)*1.75f
+                    +Mathf.Sin(t*8.1f+(west?0f:1.1f))*.24f;
+                float bottom=-2.6f-Mathf.Sin(t*5.2f)*.18f;
+                verts.Add(new Vector3(x,bottom,z));
+                verts.Add(new Vector3(x,top,z));
+                uv.Add(new Vector2(t*5f,0f));
+                uv.Add(new Vector2(t*5f,1f));
             }
 
             for(int i=0;i<segments;i++)
             {
-                int a=i*3,na=(i+1)*3;
-                // Narrow top slope.
-                tris.Add(a);tris.Add(na);tris.Add(a+1);
-                tris.Add(a+1);tris.Add(na);tris.Add(na+1);
-                // Outer cliff face.
-                tris.Add(a+1);tris.Add(na+1);tris.Add(a+2);
-                tris.Add(a+2);tris.Add(na+1);tris.Add(na+2);
+                int b=i*2,t=b+1,nb=(i+1)*2,nt=nb+1;
+                if(west)
+                {
+                    // Face inward (+X).
+                    tris.Add(b);tris.Add(t);tris.Add(nb);
+                    tris.Add(t);tris.Add(nt);tris.Add(nb);
+                }
+                else
+                {
+                    // Face inward (-X).
+                    tris.Add(b);tris.Add(nb);tris.Add(t);
+                    tris.Add(t);tris.Add(nb);tris.Add(nt);
+                }
             }
 
-            var mesh=new Mesh{name=west?"Valoria west cliff ribbon":"Valoria east cliff ribbon"};
+            var mesh=new Mesh{name=west?"Valoria west cliff face":"Valoria east cliff face"};
             mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
             mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west cliff ribbon":"Valoria · Reference Convergence v2 · east cliff ribbon");
+
+            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west cliff face":"Valoria · Reference Convergence v2 · east cliff face");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=CliffRibbonMaterial();
+            go.AddComponent<MeshRenderer>().sharedMaterial=CliffFaceMaterial();
         }
 
-        static void AddRearCliffRibbon(Transform root)
+        static void AddRearCliffFace(Transform root)
         {
-            const int segments=14;
-            float xMin=-16.5f,xMax=16.5f;
-            float innerZ=14.0f,outerZ=19.2f,bottomZ=20.5f;
+            const int segments=16;
+            float xMin=-16f,xMax=16f,z=17.5f;
             var verts=new List<Vector3>();
             var uv=new List<Vector2>();
             var tris=new List<int>();
@@ -231,31 +232,29 @@ namespace Eldoria.Presentation
                 float t=i/(float)segments;
                 float x=Mathf.Lerp(xMin,xMax,t);
                 float side=Mathf.Abs(t-.5f)*2f;
-                float top=1.45f+side*1.15f+Mathf.Sin(t*8.4f)*.20f;
-                verts.Add(new Vector3(x,-.14f,innerZ));
-                verts.Add(new Vector3(x,top,outerZ));
-                verts.Add(new Vector3(x,-2.5f,bottomZ));
-                uv.Add(new Vector2(t*5f,0f));
-                uv.Add(new Vector2(t*5f,1f));
-                uv.Add(new Vector2(t*5f,1.4f));
+                float top=1.15f+side*1.25f+Mathf.Sin(t*9.0f)*.22f;
+                verts.Add(new Vector3(x,-2.7f,z));
+                verts.Add(new Vector3(x,top,z));
+                uv.Add(new Vector2(t*6f,0f));
+                uv.Add(new Vector2(t*6f,1f));
             }
 
             for(int i=0;i<segments;i++)
             {
-                int a=i*3,na=(i+1)*3;
-                tris.Add(a);tris.Add(a+1);tris.Add(na);
-                tris.Add(a+1);tris.Add(na+1);tris.Add(na);
-                tris.Add(a+1);tris.Add(a+2);tris.Add(na+1);
-                tris.Add(a+2);tris.Add(na+2);tris.Add(na+1);
+                int b=i*2,t=b+1,nb=(i+1)*2,nt=nb+1;
+                // Face forward (-Z).
+                tris.Add(b);tris.Add(t);tris.Add(nb);
+                tris.Add(t);tris.Add(nt);tris.Add(nb);
             }
 
-            var mesh=new Mesh{name="Valoria rear cliff ribbon"};
+            var mesh=new Mesh{name="Valoria rear cliff face"};
             mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
             mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject("Valoria · Reference Convergence v2 · rear cliff ribbon");
+
+            var go=new GameObject("Valoria · Reference Convergence v2 · rear cliff face");
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=CliffRibbonMaterial();
+            go.AddComponent<MeshRenderer>().sharedMaterial=CliffFaceMaterial();
         }
 
         static void BuildMountainHorizon(Transform root)
