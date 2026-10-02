@@ -2,6 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Eldoria.Presentation;
 using Object=UnityEngine.Object;
 
 namespace Eldoria.EditorTools
@@ -32,7 +33,7 @@ namespace Eldoria.EditorTools
             var root=new GameObject("Valoria · Slavic Premium Family Proof").transform;
             var ground=GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name="proof ground";ground.transform.SetParent(root,true);ground.transform.position=Vector3.zero;ground.transform.localScale=new Vector3(4.5f,1f,3f);
-            ground.GetComponent<Renderer>().sharedMaterial=Valoria.Presentation.ValoriaKit.Material(new Color(.33f,.31f,.26f,1f));
+            ground.GetComponent<Renderer>().sharedMaterial=ValoriaKit.Material(new Color(.33f,.31f,.26f,1f));
             Object.DestroyImmediate(ground.GetComponent<Collider>());
 
             var lightGo=new GameObject("key");
