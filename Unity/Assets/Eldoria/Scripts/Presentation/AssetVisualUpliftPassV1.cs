@@ -33,6 +33,7 @@ namespace Eldoria.Presentation
             if(!Enabled||state==null||state.BastionLevel<3)return;
             RefineHeroBastion();
             RefineDedicatedProductionBuildings();
+            RefineMidTierProduction();
             RefineRescuedSupport();
         }
 
@@ -104,6 +105,21 @@ namespace Eldoria.Presentation
                     ApplyRendererRole(renderer,family);
                     DedicatedRenderersTouched++;
                 }
+            }
+        }
+
+        static void RefineMidTierProduction()
+        {
+            // MidTierDistrictProduction is built before the library-reprocessing layer.
+            // Treat the renderers that are actually present in the production scene rather than
+            // relying on the older auxiliary AddMidTierPiece path.
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
+                var chain=Hierarchy(renderer.transform).ToLowerInvariant();
+                if(!chain.Contains("valoria mid-tier"))continue;
+                ApplyRendererRole(renderer,"midtier");
+                MidTierRenderersTouched++;
             }
         }
 
