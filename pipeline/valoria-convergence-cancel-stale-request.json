@@ -1,9 +1,11 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Perspective panorama route is visually rejected and is consuming the single heavy Unity runner. Release it for the strongest-composite audit and Mega Architecture Atlas.",
+  "reason": "Prioritize full-frame validation. Unity slice, isolated Cliff Island gate and Jagged Backdrop are non-authoritative side gates; strongest-composite audit and integrated composite must run next.",
   "runs": [
-    37071425401
+    37071831952,
+    37071831946,
+    37071713124
   ],
-  "triggered_at": "2026-10-02T22:38:00Z"
+  "triggered_at": "2026-10-02T22:48:00Z"
 }
