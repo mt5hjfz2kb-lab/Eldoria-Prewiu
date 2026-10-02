@@ -36,6 +36,8 @@ namespace Eldoria.Presentation
             camera.farClipPlane=Mathf.Max(camera.farClipPlane,500f);
 
             BuildTransitionBand(root);
+            ValoriaGroundMaterialHarmonizationV1.Enabled=true;
+            ValoriaGroundMaterialHarmonizationV1.Build(root,state);
             ValoriaFullFrameFinishV1.Enabled=true;
             ValoriaFullFrameFinishV1.Build(root,state);
         }
