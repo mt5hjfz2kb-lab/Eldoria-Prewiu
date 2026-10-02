@@ -47,6 +47,7 @@ namespace Eldoria.EditorTools
             ValoriaResidualCleanupV1.Enabled=false;
             ValoriaMaterialResidueCleanupV2.Enabled=false;
             ValoriaFullFrameArtifactCleanupV1.Enabled=false;
+            ValoriaCliffSubstrateV1.Enabled=false;
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
 
@@ -73,6 +74,7 @@ namespace Eldoria.EditorTools
             ValoriaResidualCleanupV1.Enabled=true;ValoriaResidualCleanupV1.Build(root.transform,state);
             ValoriaMaterialResidueCleanupV2.Enabled=true;ValoriaMaterialResidueCleanupV2.Build(root.transform,state);
             ValoriaFullFrameArtifactCleanupV1.Enabled=true;ValoriaFullFrameArtifactCleanupV1.Build(root.transform,state);
+            ValoriaCliffSubstrateV1.Enabled=true;ValoriaCliffSubstrateV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
