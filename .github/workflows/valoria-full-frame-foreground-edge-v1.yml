@@ -1,12 +1,8 @@
 name: "[EXPERIMENT] Valoria Full-Frame Foreground Edge v1"
+
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameForegroundEdgePassV1.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameForegroundEdgeGateV1.cs'
-      - 'pipeline/valoria-full-frame-foreground-edge-v1-request.json'
+
 permissions:
   contents: read
 concurrency:
