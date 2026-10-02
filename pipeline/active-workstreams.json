@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T12:41:00Z",
-  "active": [
+  "updated_at": "2026-10-02T17:50:03Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-reference-convergence-v2",
       "title": "Valoria Reference Convergence Pass v2",
@@ -22,13 +23,25 @@
         "valoria-production-composition",
         "windows-runner-heavy"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-02T10:39:00Z",
       "base_main_sha": "db86aeceea49e19cb7d3772c11b485a4e9a2165d",
-      "dependency": "asset-library-canonicalization-v1 remains active but has released the Windows runner; do not mutate its asset-library scope"
-    }
-  ],
-  "history": [
+      "dependency": "asset-library-canonicalization-v1 remains active but has released the Windows runner; do not mutate its asset-library scope",
+      "completed_at": "2026-10-02T17:50:03Z",
+      "result_commit": "8d80ad4a2746885012101cc21c16918c1fb254b9",
+      "result": "CLOSED / WORLD FRAME v1 PROMOTED. Continuous visual-only Valoria mountain/valley frame is production presentation; old convergence framing experiments rejected. Cross-gate revalidation green; 0 Tripo credits; gameplay authority unchanged.",
+      "next": "Do not reopen world-boundary framing. Future visual work should start from promoted World Frame v1 and target remaining in-city benchmark gaps.",
+      "run_ids": [
+        37042030543,
+        37042030550,
+        37042030657,
+        37043234440
+      ],
+      "artifact_ids": [
+        11243245466,
+        11243131294
+      ]
+    },
     {
       "id": "asset-deep-uplift-v1",
       "title": "Asset Deep Uplift Pass v1",
