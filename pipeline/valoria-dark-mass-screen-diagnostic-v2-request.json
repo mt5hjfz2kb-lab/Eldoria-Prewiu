@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-dark-mass-screen-diagnostic-v2",
+  "objective": "List every active renderer whose bounds center projects into the dark-mass screen region right of the Hero Bastion.",
+  "allow_tripo": false,
+  "tripo_credits": 0
+}
