@@ -10,6 +10,7 @@ namespace Eldoria.EditorTools
 {
     public static class ValoriaCompactFootprintReframeGate
     {
+        // Iteration 2 trigger after workflow governance repair.
         const string Folder="ValoriaCompactFootprintReframeCaptures";
         static readonly Vector3 CameraPosition=new Vector3(18.2f,14.6f,-25.8f);
         static readonly Vector3 CameraTarget=new Vector3(0f,3.65f,7.25f);
