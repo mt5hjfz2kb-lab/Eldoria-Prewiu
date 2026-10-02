@@ -51,11 +51,8 @@ namespace Eldoria.Presentation
             AddResource(root,"Valoria/SM_Cliffs_03","rear cliff bridge",
                 new Vector3(0f,-.15f,12.6f),15.0f,9.5f,92f,new Color(.43f,.45f,.45f,1f));
 
-            // Lower edge mass makes the compact city feel carved into a vertical mountain rather than placed on a board.
-            AddResource(root,"Valoria/SM_Hills_01","front left mountain shoulder",
-                new Vector3(-9.4f,-3.2f,-6.2f),11.0f,6.5f,35f,new Color(.38f,.42f,.40f,1f));
-            AddResource(root,"Valoria/SM_Hills_01","front right mountain shoulder",
-                new Vector3(9.2f,-3.2f,-6.0f),11.0f,6.5f,215f,new Color(.38f,.42f,.40f,1f));
+            // Iteration 12: SM_Hills_01 is intentionally excluded.
+            // In matched captures its grass material produced flat green wedges at the lower frame edge.
         }
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
@@ -147,8 +144,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.60f,.67f,.71f);
-            RenderSettings.fogStartDistance=26f;
-            RenderSettings.fogEndDistance=72f;
+            RenderSettings.fogStartDistance=24f;
+            RenderSettings.fogEndDistance=66f;
 
             var camera=Camera.main;
             if(camera!=null)
