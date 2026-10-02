@@ -8,7 +8,7 @@ namespace Eldoria.Presentation
     // Opens the rear valley visually while preserving all reserved gameplay/topology space.
     public static class ValoriaOpenValleyCompositionV1
     {
-        public static bool Enabled=false;
+        public static bool Enabled=true;
         const string RootName="Valoria · Open Valley Composition v1";
 
         public static int SuppressedRenderers{get;private set;}
