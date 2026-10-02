@@ -111,35 +111,7 @@ namespace Eldoria.Presentation
                 }
                 else if(n=="Valoria · Hero Frame valley terrain")
                 {
-                    // Iteration 29: reuse the certified visual-only heightfield only as side/rear world relief.
-                    // The inhabited centre and the entire foreground are flattened below the valley floor;
-                    // relief fades in gradually beyond the compact city, preventing any visible map corona.
-                    renderer.enabled=true;
-                    renderer.sharedMaterial=valleyDirt??dirt;
-
-                    var mf=renderer.GetComponent<MeshFilter>();
-                    if(mf!=null && mf.sharedMesh!=null)
-                    {
-                        var source=mf.sharedMesh;
-                        var mesh=Object.Instantiate(source);
-                        mesh.name=source.name+" · convergence side-rear relief";
-                        var verts=mesh.vertices;
-                        const float flatY=-.20f;
-                        for(int i=0;i<verts.Length;i++)
-                        {
-                            var v=verts[i];
-                            float side=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((Mathf.Abs(v.x)-13.5f)/10.5f));
-                            float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z-12.0f)/14.0f));
-                            float frontGate=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((v.z+2.0f)/6.0f));
-                            float relief=Mathf.Max(side*frontGate,rear);
-                            v.y=Mathf.Lerp(flatY,v.y,relief);
-                            verts[i]=v;
-                        }
-                        mesh.vertices=verts;
-                        mesh.RecalculateNormals();
-                        mesh.RecalculateBounds();
-                        mf.sharedMesh=mesh;
-                    }
+                    renderer.enabled=false;
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=inhabitedMatte??dirt;
@@ -176,41 +148,120 @@ namespace Eldoria.Presentation
 
         static void BuildLateralMargins(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 31: continuous low escarpments, not floating rock islands.
-            // Overlap certified PBR modules near valley height so the margins read as one world mass.
-
-            // West continuous bank.
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "west low bank south",new Vector3(-14.2f,.45f,-2.2f),11.2f,18f,new Color(.43f,.44f,.42f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "west low bank centre",new Vector3(-14.0f,.72f,5.2f),10.6f,32f,new Color(.43f,.44f,.42f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "west low bank north",new Vector3(-13.2f,1.12f,11.8f),8.6f,92f,new Color(.42f,.43f,.41f,1f));
-
-            // East continuous bank, slightly lower and offset for asymmetry.
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "east low bank south",new Vector3(14.5f,.38f,-1.6f),10.6f,202f,new Color(.43f,.44f,.42f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "east low bank centre",new Vector3(14.2f,.64f,5.7f),10.0f,218f,new Color(.43f,.44f,.42f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
-                "east low bank north",new Vector3(13.1f,1.02f,12.1f),8.2f,274f,new Color(.42f,.43f,.41f,1f));
-
-            // Low rear shoulders close the open horizon without creating a second skyline.
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "rear west low shoulder",new Vector3(-7.8f,1.28f,16.2f),8.2f,26f,new Color(.43f,.44f,.42f,1f));
-            AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
-                "rear east low shoulder",new Vector3(7.9f,1.20f,16.4f),8.0f,206f,new Color(.43f,.44f,.42f,1f));
+            // Iteration 32: continuous visual terrain banks. No floating modular rock islands.
+            AddContinuousSideBank(root,true);
+            AddContinuousSideBank(root,false);
+            AddContinuousRearBank(root);
 
             if(art!=null && art.SlavicBoulder!=null)
             {
                 var rocks=new[]{
-                    new Vector3(-12.9f,.08f,.2f),new Vector3(-12.4f,.10f,6.3f),new Vector3(-11.8f,.12f,11.8f),
-                    new Vector3(13.0f,.08f,.6f),new Vector3(12.5f,.10f,6.7f),new Vector3(11.9f,.12f,12.0f)
+                    new Vector3(-11.8f,.04f,-1.0f),new Vector3(-11.6f,.06f,5.5f),new Vector3(-11.2f,.08f,11.3f),
+                    new Vector3(11.8f,.04f,-.6f),new Vector3(11.6f,.06f,5.8f),new Vector3(11.2f,.08f,11.5f)
                 };
                 for(int i=0;i<rocks.Length;i++)
-                    AddPrefab(root,art.SlavicBoulder,"bank transition boulder "+i,rocks[i],
-                        1.35f+(i%3)*.15f,.95f+(i%2)*.10f,(i*47)%360,new Color(.43f,.44f,.42f,1f),true);
+                    AddPrefab(root,art.SlavicBoulder,"bank edge boulder "+i,rocks[i],
+                        1.15f+(i%3)*.12f,.85f+(i%2)*.08f,(i*43)%360,new Color(.42f,.43f,.41f,1f),true);
             }
+        }
+
+        static Material ContinuousBankMaterial()
+        {
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(shader==null)return null;
+            var m=new Material(shader){name="Valoria Reference v2 · continuous bank"};
+            var c=new Color(.31f,.325f,.30f,1f);
+            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",c);
+            if(m.HasProperty("_Color"))m.SetColor("_Color",c);
+            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.018f);
+            return m;
+        }
+
+        static void AddContinuousSideBank(Transform root,bool west)
+        {
+            const int nx=8,nz=13;
+            float inner=west?-11.2f:11.2f;
+            float outer=west?-31.0f:31.0f;
+            float zMin=-8f,zMax=25f;
+            var verts=new Vector3[nx*nz];
+            var uv=new Vector2[verts.Length];
+            var tris=new int[(nx-1)*(nz-1)*6];
+
+            for(int z=0;z<nz;z++)
+            {
+                float tz=z/(float)(nz-1);
+                float wz=Mathf.Lerp(zMin,zMax,tz);
+                for(int x=0;x<nx;x++)
+                {
+                    float tx=x/(float)(nx-1);
+                    float wx=Mathf.Lerp(inner,outer,tx);
+                    float rise=Mathf.SmoothStep(0f,1f,tx);
+                    float rear=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((wz-8f)/17f));
+                    float y=-.16f + rise*3.25f + rear*rise*1.35f;
+                    float organic=(Mathf.Sin(wz*.31f+(west?0f:1.2f))+Mathf.Sin(wx*.21f))*.16f*rise;
+                    verts[z*nx+x]=new Vector3(wx,y+organic,wz);
+                    uv[z*nx+x]=new Vector2(tx,tz);
+                }
+            }
+
+            int ti=0;
+            for(int z=0;z<nz-1;z++)
+                for(int x=0;x<nx-1;x++)
+                {
+                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,c=d+1;
+                    tris[ti++]=a;tris[ti++]=d;tris[ti++]=b;
+                    tris[ti++]=b;tris[ti++]=d;tris[ti++]=c;
+                }
+
+            var mesh=new Mesh{name=west?"Valoria west continuous bank":"Valoria east continuous bank"};
+            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(west?"Valoria · Reference Convergence v2 · west continuous bank":"Valoria · Reference Convergence v2 · east continuous bank");
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=ContinuousBankMaterial();
+        }
+
+        static void AddContinuousRearBank(Transform root)
+        {
+            const int nx=13,nz=7;
+            float xMin=-16f,xMax=16f,zMin=12.5f,zMax=31f;
+            var verts=new Vector3[nx*nz];
+            var uv=new Vector2[verts.Length];
+            var tris=new int[(nx-1)*(nz-1)*6];
+
+            for(int z=0;z<nz;z++)
+            {
+                float tz=z/(float)(nz-1);
+                float wz=Mathf.Lerp(zMin,zMax,tz);
+                for(int x=0;x<nx;x++)
+                {
+                    float tx=x/(float)(nx-1);
+                    float wx=Mathf.Lerp(xMin,xMax,tx);
+                    float rise=Mathf.SmoothStep(0f,1f,tz);
+                    float centreOpen=1f-Mathf.Exp(-Mathf.Pow(wx/7.5f,2f));
+                    float y=-.18f + rise*(2.5f+1.8f*centreOpen);
+                    float organic=(Mathf.Sin(wx*.22f)+Mathf.Sin(wz*.27f))*.14f*rise;
+                    verts[z*nx+x]=new Vector3(wx,y+organic,wz);
+                    uv[z*nx+x]=new Vector2(tx,tz);
+                }
+            }
+
+            int ti=0;
+            for(int z=0;z<nz-1;z++)
+                for(int x=0;x<nx-1;x++)
+                {
+                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,c=d+1;
+                    tris[ti++]=a;tris[ti++]=d;tris[ti++]=b;
+                    tris[ti++]=b;tris[ti++]=d;tris[ti++]=c;
+                }
+
+            var mesh=new Mesh{name="Valoria rear continuous bank"};
+            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Reference Convergence v2 · rear continuous bank");
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=ContinuousBankMaterial();
         }
 
         static void BuildMountainHorizon(Transform root)
