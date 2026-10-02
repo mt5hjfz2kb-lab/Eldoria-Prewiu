@@ -1,0 +1,66 @@
+name: "[UTILITY] Asset Reprocessing Contact Sheet"
+
+on:
+  push:
+    branches:
+      - visual-proof/asset-library-reprocessing-pass-v1
+    paths:
+      - '.github/workflows/asset-reprocessing-contact-sheet.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sheet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download certified capture artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11220732481/zip > /tmp/captures.zip
+          mkdir -p /tmp/captures
+          unzip -q /tmp/captures.zip -d /tmp/captures
+          find /tmp/captures -maxdepth 3 -type f | sort
+      - name: Build paired contact sheet
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image, ImageOps, ImageDraw
+          import os, glob, base64
+          root="/tmp/captures"
+          names=[
+            ("asset-reprocess-before-19.png","asset-reprocess-after-19.png","ZOOM 19"),
+            ("asset-reprocess-before-12.png","asset-reprocess-after-12.png","ZOOM 12"),
+            ("asset-reprocess-before-9.png","asset-reprocess-after-9.png","ZOOM 9"),
+            ("asset-reprocess-before-mobile.png","asset-reprocess-after-mobile.png","MOBILE"),
+          ]
+          def find(name):
+              hits=glob.glob(root+"/**/"+name,recursive=True)
+              if not hits: raise SystemExit("missing "+name)
+              return hits[0]
+          W,H=1200,1120
+          sheet=Image.new("RGB",(W,H),(35,35,35))
+          draw=ImageDraw.Draw(sheet)
+          draw.text((270,8),"BEFORE",fill="white")
+          draw.text((875,8),"AFTER",fill="white")
+          for r,(b,a,label) in enumerate(names):
+              y=38+r*270
+              draw.text((8,y+8),label,fill="white")
+              for c,n in enumerate((b,a)):
+                  im=Image.open(find(n)).convert("RGB")
+                  box=(570,235)
+                  im.thumbnail(box)
+                  x=c*600+(600-im.width)//2
+                  iy=y+28+(235-im.height)//2
+                  sheet.paste(im,(x,iy))
+          out="/tmp/asset-reprocess-contact-sheet.jpg"
+          sheet.save(out,quality=68,optimize=True)
+          data=open(out,"rb").read()
+          print("CONTACT_SHEET_BASE64_BEGIN")
+          print(base64.b64encode(data).decode())
+          print("CONTACT_SHEET_BASE64_END")
+          PY
