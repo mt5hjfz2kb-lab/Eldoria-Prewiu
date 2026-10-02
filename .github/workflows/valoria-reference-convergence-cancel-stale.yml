@@ -19,5 +19,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36994997684/force-cancel || true
-          echo "force-cancel requested for stale asset-library final cert"
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997913004/force-cancel || true
+          echo "force-cancel requested for stale surface-cell proof"
