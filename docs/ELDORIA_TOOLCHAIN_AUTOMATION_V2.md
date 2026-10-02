@@ -146,3 +146,24 @@ Measured bake proof on `ResidentialTerraceRock`:
 Current Tripo Studio session visibly exposes Smart Mesh P2.0 (quads/editing), UV Smart, humanoid rigging/text-to-motion and export. This is **availability evidence**, not authorization to execute those transforms. Parts/part-completion remain unverified in Eldoria automation.
 
 The canonical safety rule remains unchanged: no Tripo credit spend without fresh explicit owner authorization.
+
+
+## Full-frame convergence orchestration
+
+Toolchain Automation v2 is an execution/routing layer inside the canonical Valoria full-frame loop defined by `docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md`.
+
+The production objective is no longer “successfully process one asset/defect”. The orchestration target is:
+
+`capture full frame -> classify all visible gaps -> route each gap -> execute the complete currently actionable zero-credit batch -> recapture -> integrated visual verdict -> repeat`.
+
+Rules:
+- planning may route different defects to Unity, Blender or Tripo, but they remain members of one full-frame iteration;
+- a successful individual tool stage cannot terminate the iteration;
+- TECH PASS and LOCAL VISUAL PASS are non-terminal;
+- only a materially improved integrated 19/12/9/mobile frame may receive FULL-FRAME VISUAL PASS;
+- net-negative or imperceptible batches are reverted/disabled rather than accumulated;
+- new paid geometry remains blocked by the existing exact-input/cost/fresh-authorization policy;
+- after a promoted full-frame pass, owner-facing WebGL publication must be refreshed to that coherent `main` state.
+
+Machine-readable loop contract: `pipeline/valoria-full-frame-convergence-v1.json`.
+Validation: `node tools/validate-valoria-full-frame-convergence.mjs`.
