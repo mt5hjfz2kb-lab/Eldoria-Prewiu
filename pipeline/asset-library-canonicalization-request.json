@@ -1,12 +1,16 @@
 {
   "schema_version": 1,
   "id": "asset-library-canonicalization-v1",
-  "enabled": true,
+  "enabled": false,
   "requested_at": "2026-10-02T10:57:00Z",
   "purpose": "Recover certified historical GLBs, normalize canonical Unity Resources placement, preserve Mid-Tier GUIDs, generate stable metadata, and emit an auditable GLB inventory.",
   "no_visual_changes": true,
   "tripo_credits": 0,
   "revision": 8,
   "execution_runner": "ubuntu-latest",
-  "workflow_mode": "hosted-script-v1"
+  "workflow_mode": "hosted-script-v1",
+  "status": "completed",
+  "completed_at": "2026-10-02T11:06:00Z",
+  "final_run": 36997740541,
+  "final_artifact": 11221974353
 }
