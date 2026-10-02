@@ -28,6 +28,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:22:00+02:00",
-  "trigger_seq": 2
+  "triggered_at": "2026-10-03T01:27:00+02:00",
+  "trigger_seq": 3,
+  "retry_reason": "Previous proof failed before Unity because node was unavailable on the Windows runner; workflow now stages Poly Haven glTF and dependencies with PowerShell only."
 }
