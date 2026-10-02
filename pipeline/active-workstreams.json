@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T19:18:00Z",
-  "active": [],
+  "updated_at": "2026-10-02T19:20:00Z",
+  "active": [
+    {
+      "id": "valoria-full-frame-convergence-iteration-1",
+      "title": "Valoria Full-Frame Convergence Iteration 1",
+      "owner": "chat-valoria-full-frame-convergence-iteration-1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameConvergenceGateV1.cs",
+        ".github/workflows/valoria-full-frame-convergence-iteration-1.yml",
+        "pipeline/valoria-full-frame-convergence-iteration-1-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_FULL_FRAME_CONVERGENCE_ITERATION_1_RESULT.md",
+        "pipeline/unity-publish-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "art-production-planner",
+        "windows-runner-heavy",
+        "unity-owner-publish"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T19:20:00Z",
+      "base_main_sha": "e329aebc332eea5e1a5937133b1f42240b64e0f7",
+      "dependency": "Build on promoted World Frame v1 and current canonical production. Zero-credit full-frame batch first. Preserve gameplay topology/colliders/hotspots/circulation. No Tripo spend without a newly proven geometry gap and fresh authorization."
+    }
+  ],
   "history": [
     {
       "id": "valoria-stair-landing-integration-v1",
