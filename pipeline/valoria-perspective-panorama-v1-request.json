@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-perspective-panorama-v1",
+  "objective": "Test whether a restrained perspective camera materially improves Valoria full-frame depth versus the current orthographic camera when paired with the Alps Field CC0 panorama. Proof only; no production camera change.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "candidate_camera": {
+    "projection": "perspective",
+    "fov": [
+      28,
+      32
+    ],
+    "rotations": [
+      0,
+      90,
+      180,
+      270
+    ]
+  },
+  "constraints": {
+    "proof_only": true,
+    "production_camera_unchanged": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
