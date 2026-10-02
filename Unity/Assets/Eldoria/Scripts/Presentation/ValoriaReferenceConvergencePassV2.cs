@@ -180,10 +180,9 @@ namespace Eldoria.Presentation
 
         static void BuildMountainHorizon(Transform root)
         {
-            // Iteration 28: SM_Mountains_11 proof rejected.
-            // In matched cameras the mesh read as a detached triangular/pyramidal silhouette rather than
-            // a continuous mountain wall. Do not keep a technically valid but visually harmful horizon.
-            // A future mountain frame requires a dedicated production-quality terrain family.
+            // Iteration 28: no pass-owned mountains.
+            // The available legacy mountain mesh reads as an isolated low-poly pyramid at review distance.
+            // Keep the central silhouette clean and use atmosphere to suppress distant prototype scatter.
         }
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
@@ -214,8 +213,8 @@ namespace Eldoria.Presentation
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.52f,.61f,.66f);
-            RenderSettings.fogStartDistance=28f;
-            RenderSettings.fogEndDistance=82f;
+            RenderSettings.fogStartDistance=20f;
+            RenderSettings.fogEndDistance=58f;
 
             var camera=Camera.main;
             if(camera!=null)
