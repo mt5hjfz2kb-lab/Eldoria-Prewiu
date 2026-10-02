@@ -190,8 +190,25 @@ namespace Eldoria.Presentation
 
         static void BuildVegetationDepth(Transform root,ValoriaExternalAssetLibrary art)
         {
-            // Iteration 17: intentionally no pass-owned vegetation.
-            // Preserve only the canonical scene vegetation until a shader-safe foliage family is certified.
+            // Iteration 24: shader-safe procedural pine curtains.
+            // Keep the playable footprint compact; vegetation occupies only visual margins/depth.
+            var pines=new[]{
+                new Vector4(-17.8f,-6.4f,.78f,0f), new Vector4(-19.1f,-1.8f,.92f,0f),
+                new Vector4(-17.2f, 3.2f,1.04f,0f), new Vector4(-18.7f, 8.0f,.88f,0f),
+                new Vector4(-15.6f,12.8f,1.10f,0f), new Vector4(-13.8f,16.4f,.82f,0f),
+                new Vector4(-10.8f,-8.2f,.74f,0f), new Vector4(-14.2f,-5.3f,.86f,0f),
+
+                new Vector4( 17.1f,-5.7f,.84f,0f), new Vector4( 18.8f,-.9f,1.00f,0f),
+                new Vector4( 16.4f, 4.3f,.90f,0f), new Vector4( 18.1f, 9.1f,1.08f,0f),
+                new Vector4( 15.2f,13.7f,.82f,0f), new Vector4( 12.9f,17.1f,.96f,0f),
+                new Vector4( 10.7f,-7.5f,.72f,0f), new Vector4( 13.8f,-4.4f,.88f,0f),
+
+                new Vector4(-7.8f,18.6f,.74f,0f), new Vector4(7.2f,19.0f,.80f,0f)
+            };
+
+            for(int i=0;i<pines.Length;i++)
+                AddSafeProceduralPine(root,"depth pine "+i,
+                    new Vector3(pines[i].x,.02f,pines[i].y),pines[i].z);
         }
 
         static void BuildOccupationAndAtmosphere(Transform root)
@@ -233,6 +250,19 @@ namespace Eldoria.Presentation
                 light.intensity=Mathf.Max(light.intensity,1.32f);
                 light.shadowStrength=.61f;
                 light.shadows=LightShadows.Soft;
+            }
+        }
+
+        static void AddSafeProceduralPine(Transform root,string role,Vector3 p,float scale)
+        {
+            string baseName="Valoria · Reference Convergence v2 · "+role;
+            ValoriaKit.PineTree(baseName,p,scale);
+            foreach(string suffix in new[]{" · trunk"," · lower crown"," · middle crown"," · upper crown"})
+            {
+                var go=GameObject.Find(baseName+suffix);
+                if(go==null)continue;
+                go.transform.SetParent(root,true);
+                DisableGameplay(go);
             }
         }
 
