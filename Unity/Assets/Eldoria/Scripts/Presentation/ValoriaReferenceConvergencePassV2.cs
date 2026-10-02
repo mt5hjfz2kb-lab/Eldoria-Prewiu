@@ -179,6 +179,14 @@ namespace Eldoria.Presentation
             velocity.y=new ParticleSystem.MinMaxCurve(.20f*scale,.42f*scale);
             var noise=ps.noise;noise.enabled=true;noise.strength=.12f;noise.frequency=.18f;
             var renderer=ps.GetComponent<ParticleSystemRenderer>();renderer.renderMode=ParticleSystemRenderMode.Billboard;
+            var shader=Shader.Find("Universal Render Pipeline/Particles/Unlit")??Shader.Find("Particles/Standard Unlit");
+            if(shader!=null)
+            {
+                var material=new Material(shader){name="Valoria Reference Convergence · smoke"};
+                if(material.HasProperty("_BaseColor"))material.SetColor("_BaseColor",new Color(.50f,.51f,.50f,.28f));
+                else if(material.HasProperty("_Color"))material.SetColor("_Color",new Color(.50f,.51f,.50f,.28f));
+                renderer.sharedMaterial=material;
+            }
         }
 
         static void AddWarmLight(Transform root,string name,Vector3 p,float intensity,float range)
@@ -241,7 +249,7 @@ namespace Eldoria.Presentation
             foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var b in go.GetComponentsInChildren<MonoBehaviour>(true))
-                if(!(b is WorldHotspot)&&!(b is ParticleSystem))b.enabled=false;
+                if(!(b is WorldHotspot))b.enabled=false;
             Physics.SyncTransforms();
         }
     }
