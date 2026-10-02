@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:18:00Z",
+  "updated_at": "2026-10-02T23:28:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -188,7 +188,11 @@
         ".github/workflows/valoria-in-city-surface-v1.yml",
         ".github/workflows/valoria-reference-convergence-v2.yml",
         ".github/workflows/valoria-stair-landing-integration-v1.yml",
-        ".github/workflows/valoria-world-frame-mountain-terrain-v1.yml"
+        ".github/workflows/valoria-world-frame-mountain-terrain-v1.yml",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMaterialResidueCleanupV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMaterialResidueCleanupGateV2.cs",
+        ".github/workflows/valoria-material-residue-cleanup-v2.yml",
+        "pipeline/valoria-material-residue-cleanup-v2-request.json"
       ],
       "resources": [
         "valoria-production-composition",
