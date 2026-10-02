@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-// AssetLibraryReprocessingPassV1 CI queue nudge — no runtime behavior.\nnamespace Eldoria.EditorTools
+namespace Eldoria.EditorTools
 {
     // Regenerate proper Unity YAML after first editor import; scene geometry is intentionally generated at runtime.
     public static class SceneSetup
