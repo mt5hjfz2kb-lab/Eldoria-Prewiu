@@ -196,11 +196,13 @@ jobs:
           set -euo pipefail
           git config user.name "eldoria-art-runner"
           git config user.email "actions@users.noreply.github.com"
+
           git add -A Unity/Assets/Eldoria/Resources/Valoria
           git add -A Unity/Assets/Eldoria/Resources/WorldPlayerCity
           git add -A Unity/Assets/Resources/Valoria
           git add pipeline/asset-library-canonicalization-audit.json
           git diff --cached --stat
+
           if git diff --cached --quiet; then
             echo "Canonical library already matches repository."
             exit 0
@@ -213,15 +215,7 @@ jobs:
             changed="$(git diff --name-only "$GITHUB_SHA..origin/main")"
             echo "main advanced; remote changes:"
             echo "$changed"
-            if echo "$changed" | grep -Eq '^(Unity/Assets/Eldoria/Resources/|Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1|pipeline/asset-library-canonicalization-audit\.json)
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: asset-library-canonicalization-${{ github.run_id }}
-          path: pipeline/asset-library-canonicalization-audit.json
-          if-no-files-found: warn
-          retention-days: 30
-; then
+            if echo "$changed" | grep -Eq '^(Unity/Assets/Eldoria/Resources/|Unity/Assets/Resources/Valoria/MidTierArchitectureKit_v1|pipeline/asset-library-canonicalization-audit\.json)'; then
               echo "Remote work touched canonicalization scope; refusing automatic rebase." >&2
               exit 2
             fi
