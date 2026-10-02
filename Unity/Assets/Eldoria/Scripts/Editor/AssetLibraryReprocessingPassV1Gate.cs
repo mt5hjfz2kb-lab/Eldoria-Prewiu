@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor.SceneManagement;
@@ -27,6 +29,7 @@ namespace Eldoria.EditorTools
             var position=new Vector3(18.2f,14.6f,-25.8f);
             var target=new Vector3(0f,3.15f,5.8f);
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
+            var baselineSha=Sha(baseline);
 
             Save(camera,folder+"/before-19.png",position,target,19f,1280,720);
             Save(camera,folder+"/before-12.png",position,target,12f,1280,720);
@@ -50,6 +53,7 @@ namespace Eldoria.EditorTools
                 "  \"camera_matched\": true,\n"+
                 "  \"same_scene_before_after\": true,\n"+
                 "  \"collider_hotspot_signature_equal\": true,\n"+
+                "  \"gameplay_signature_sha256\": \""+baselineSha+"\",\n"+
                 "  \"gameplay_topology_changed\": false,\n"+
                 "  \"geometry_gap_proven\": false,\n"+
                 "  \"tripo_credits\": 0,\n"+
@@ -60,6 +64,15 @@ namespace Eldoria.EditorTools
             AssetLibraryReprocessingPassV1.Enabled=true;
             Debug.Log("ASSET_LIBRARY_REPROCESSING_PASS_V1_GATE=PASS");
             UnityEditor.EditorApplication.Exit(0);
+        }
+
+        static string Sha(string value)
+        {
+            using var sha=SHA256.Create();
+            var bytes=sha.ComputeHash(Encoding.UTF8.GetBytes(value??""));
+            var sb=new StringBuilder(bytes.Length*2);
+            foreach(var b in bytes)sb.Append(b.ToString("x2"));
+            return sb.ToString();
         }
 
         static string Metrics()
