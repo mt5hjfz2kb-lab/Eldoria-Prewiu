@@ -1203,7 +1203,7 @@ namespace Eldoria.Presentation
 
         static void ComposeCompactFootprintReframeV1(PlayerState state, ValoriaExternalAssetLibrary art)
         {
-            // Toolchain Automation v2 / environment_composition — iteration 2.
+            // Toolchain Automation v2 / environment_composition — iteration 3.
             // Existing geometry only: subtract peripheral urban mass, compress the readable core and
             // expose empty development shelves. Gameplay authority remains untouched.
 
@@ -1216,12 +1216,17 @@ namespace Eldoria.Presentation
                 for(var t=r.transform;t!=null;t=t.parent)chain+="|"+t.name.ToLowerInvariant();
                 bool functional=chain.Contains("aserradero")||chain.Contains("cuartel")||chain.Contains("granary")||chain.Contains("granero");
                 bool genericUrban=chain.Contains("mid-tier")||chain.Contains("reused civil house")||
-                    chain.Contains("inhabited roofline")||chain.Contains("civil house")||chain.Contains("west inhabited");
+                    chain.Contains("inhabited roofline")||chain.Contains("civil house")||chain.Contains("west inhabited")||
+                    chain.Contains("civilian");
+                bool peripheralParcel=chain.Contains("valoria mid-tier · d2")||chain.Contains("valoria mid-tier · d3")||
+                    chain.Contains("valoria mid-tier · w1")||chain.Contains("valoria mid-tier · w2")||
+                    chain.Contains("valoria mid-tier · w3");
+                bool heroFrameHouse=chain.Contains("hero frame inhabited roofline");
                 bool natural=chain.Contains("terrainterrace")||chain.Contains("rock")||chain.Contains("pine")||
                     chain.Contains("tree")||chain.Contains("ground")||chain.Contains("route")||chain.Contains("street")||
                     chain.Contains("stair")||chain.Contains("bastion")||chain.Contains("seam");
-                bool outer=Mathf.Abs(b.center.x)>9.15f&&b.center.z>-7.0f&&b.center.z<12.5f;
-                if(outer&&genericUrban&&!functional&&!natural)r.enabled=false;
+                bool outer=Mathf.Abs(b.center.x)>8.15f&&b.center.z>-7.0f&&b.center.z<12.5f;
+                if((peripheralParcel||heroFrameHouse||(outer&&genericUrban))&&!functional&&!natural)r.enabled=false;
             }
 
             // Remove lateral residential light rhythm so the eye returns to the Bastion/core.
@@ -1229,7 +1234,7 @@ namespace Eldoria.Presentation
             {
                 if(l==null||!l.enabled)continue;
                 string n=l.name.ToLowerInvariant();
-                if(Mathf.Abs(l.transform.position.x)>9.1f&&(n.Contains("quarter")||n.Contains("hearth")))l.enabled=false;
+                if(Mathf.Abs(l.transform.position.x)>8.1f&&(n.Contains("quarter")||n.Contains("hearth")))l.enabled=false;
             }
 
             // Outer frame becomes natural transition and visibly undeveloped territory.
