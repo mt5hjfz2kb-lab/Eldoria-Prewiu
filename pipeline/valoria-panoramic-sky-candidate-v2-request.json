@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-panoramic-sky-candidate-v2",
+  "objective": "Evaluate Poly Haven Alps Field CC0 as Valoria's continuous alpine horizon after removing the visual-only Hero Valley and World Frame sheets; capture eight rotations in one run for the fixed orthographic gameplay camera.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "page": "https://polyhaven.com/a/alps_field",
+    "proof_transport": "runner_download_only",
+    "runtime_persistence": false
+  },
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "lighting_and_value_hierarchy",
+    "composition_and_mass"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "rotations_0_45_90_135_180_225_270_315",
+    "12",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
