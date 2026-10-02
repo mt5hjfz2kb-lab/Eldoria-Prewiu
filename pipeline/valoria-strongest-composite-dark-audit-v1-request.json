@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-strongest-composite-dark-audit-v1",
+  "objective": "Audit the fully assembled strongest Valoria composite and identify every materially sized dark renderer/material still responsible for black masses in the official 9.1 framing.",
+  "route": "diagnostic",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "constraints": {
+    "read_only_scene_audit": true,
+    "no_visual_mutation": true,
+    "official_framing_9_1": true,
+    "no_paid_assets": true
+  }
+}
