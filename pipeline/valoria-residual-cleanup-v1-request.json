@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-residual-cleanup-v1",
+  "objective": "Clean the strongest compact cliff-island frame by replacing the near-black legacy upper dwelling, suppressing exposed primitive rock/worker residues, and re-grounding edges with existing authored rocks.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "background": {
+    "asset": "kiara_3_morning",
+    "backplate": "20160824-DSC01604.jpg",
+    "license": "CC0"
+  },
+  "lanes": [
+    "architecture_coherence",
+    "terrain_and_transitions",
+    "life_props_storytelling",
+    "composition_and_mass"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_reserved_plots": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop_8.0",
+    "mobile_8.0",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
