@@ -1471,11 +1471,26 @@ namespace Eldoria.Presentation
                 Imported("Valoria · Master Rebuild v2 · buried shelf shoulder","Rock02",
                     new Vector3(s.x,.02f,s.y),s.z,s.z*.38f,s.w,new Color(.32f,.31f,.28f),false);
 
-            // Reserved growth plots are intentionally visible and empty.
-            StonePiece(2,"Valoria · Master Rebuild v2 · future plot west",
-                new Vector3(-6.55f,.46f,-3.25f),new Vector3(2.8f,.05f,2.15f),8f);
-            StonePiece(2,"Valoria · Master Rebuild v2 · future plot east",
-                new Vector3(6.55f,.46f,-3.15f),new Vector3(2.8f,.05f,2.15f),-8f);
+            // Reserved growth plots are intentionally visible and empty rocky shelves.
+            // They communicate future construction without pre-building houses.
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · future plot west",
+                new Vector3(-6.45f,0,-3.20f),.43f,3.35f,8f);
+            TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · future plot east",
+                new Vector3(6.45f,0,-3.12f),.43f,3.35f,172f);
+
+            // Certified seam fillers knit the processional route and terraces into the mountain.
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · lower spine seam west",
+                new Vector3(-2.35f,0,-1.20f),.56f,2.15f,70f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · lower spine seam east",
+                new Vector3(2.35f,0,-1.12f),.56f,2.15f,290f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · middle ascent seam west",
+                new Vector3(-2.80f,0,2.30f),1.78f,2.30f,78f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · middle ascent seam east",
+                new Vector3(2.80f,0,2.35f),1.78f,2.30f,282f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · crown seam west",
+                new Vector3(-3.20f,0,5.30f),2.72f,2.45f,82f);
+            RescuedTerrainSeam("Valoria · Master Rebuild v2 · crown seam east",
+                new Vector3(3.20f,0,5.35f),2.72f,2.45f,278f);
 
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
             RenderSettings.ambientSkyColor=new Color(.67f,.71f,.73f);
