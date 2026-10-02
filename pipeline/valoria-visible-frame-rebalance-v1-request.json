@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-visible-frame-rebalance-v1",
+  "objective": "Use the Strongest Composite visible-renderer audit to remove the redundant disconnected foreground-edge family and rebalance the highest-area washed-out in-frame surfaces while preserving geometry and textures.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "audit_source": {
+    "run_id": 37074806574,
+    "artifact_id": 11255849808,
+    "file": "visible-renderers.tsv"
+  },
+  "lanes": [
+    "materials_and_surface",
+    "terrain_and_transitions",
+    "architecture_coherence",
+    "composition_and_mass"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_geometry": true,
+    "preserve_textures": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
