@@ -1,3 +1,14 @@
+## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
+
+- Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
+- Final certified run: `36983913307`.
+- Artifact: `11216454398`.
+- Toolchain: `environment_composition`; `geometry_gap_proven=false`; `allow_tripo=false`; 0 credits.
+- Urban width: **37.650 -> 18.008**.
+- Gameplay collider/hotspot signature: unchanged.
+- Direction locked: Valoria is a compact, vertical fortress-city nucleus with visible room to grow; do not resume lateral residential expansion.
+- Full result: `docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RESULT.md`.
+
 ## Mid-Tier Citywide Production v2 — promoted visual scope (2026-10-01)
 
 - Certified run: `36893216721` — SUCCESS.

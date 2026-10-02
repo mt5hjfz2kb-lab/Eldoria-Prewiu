@@ -1,3 +1,14 @@
+## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
+
+- Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
+- Final certified run: `36983913307`.
+- Artifact: `11216454398`.
+- Toolchain: `environment_composition`; `geometry_gap_proven=false`; `allow_tripo=false`; 0 credits.
+- Urban width: **37.650 -> 18.008**.
+- Gameplay collider/hotspot signature: unchanged.
+- Direction locked: Valoria is a compact, vertical fortress-city nucleus with visible room to grow; do not resume lateral residential expansion.
+- Full result: `docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RESULT.md`.
+
 ## Toolchain Automation v2 — 2026-10-01
 
 Canonical toolchain routing and zero-spend capability evidence live in `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md` and `docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md`. Planner request: `pipeline/art-production-request.json`; capability registry: `pipeline/toolchain-capabilities.json`; workflow: `.github/workflows/art-production-plan.yml`.
