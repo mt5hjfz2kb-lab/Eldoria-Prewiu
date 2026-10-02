@@ -1517,24 +1517,25 @@ namespace Eldoria.Presentation
             // VALORIA REFERENCE CONVERGENCE v1 — reference-driven whole-frame composition.
             // Existing library only. Visual-only: no gameplay/collision ownership and no Tripo spend.
 
-            // Monumental archaeological frame from the existing modular castle family.
-            // Real open gate silhouettes replace the rejected slab/bridge meshes.
-            var ruinGate=Resources.Load<GameObject>("Valoria/Stone_Gate");
-            var ruinTower=Resources.Load<GameObject>("Valoria/Stone_Tower");
-            if(ruinGate!=null)
+            // Monumental frame built only from Valoria-certified geometry.
+            // TowerWallRock already belongs to the city's rock/masonry language and survives the official camera.
+            var towerWall=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+            if(towerWall!=null)
             {
-                Piece("Valoria · Reference v1 · west monumental gate ruin",ruinGate,
-                    new Vector3(-10.2f,.02f,6.2f),7.4f,7.8f,18f,new Color(.58f,.56f,.51f));
-                Piece("Valoria · Reference v1 · east monumental gate ruin",ruinGate,
-                    new Vector3(10.35f,.02f,6.45f),7.4f,7.8f,198f,new Color(.58f,.56f,.51f));
+                Piece("Valoria · Reference v1 · west monumental tower wall",towerWall,
+                    new Vector3(-8.7f,.18f,6.5f),4.65f,7.1f,18f,new Color(.61f,.61f,.56f));
+                Piece("Valoria · Reference v1 · east monumental tower wall",towerWall,
+                    new Vector3(8.9f,.18f,6.7f),4.65f,7.1f,198f,new Color(.61f,.61f,.56f));
+                Piece("Valoria · Reference v1 · west rear ruin wall",towerWall,
+                    new Vector3(-6.5f,.70f,9.7f),3.45f,5.4f,34f,new Color(.56f,.56f,.52f));
+                Piece("Valoria · Reference v1 · east rear ruin wall",towerWall,
+                    new Vector3(6.7f,.70f,9.9f),3.45f,5.4f,214f,new Color(.56f,.56f,.52f));
             }
-            if(ruinTower!=null)
-            {
-                Piece("Valoria · Reference v1 · west ancient flank tower",ruinTower,
-                    new Vector3(-12.7f,-.20f,7.7f),3.25f,5.5f,10f,new Color(.51f,.50f,.46f));
-                Piece("Valoria · Reference v1 · east ancient flank tower",ruinTower,
-                    new Vector3(12.85f,-.20f,7.95f),3.25f,5.5f,190f,new Color(.51f,.50f,.46f));
-            }
+            foreach(var s in new[]{
+                new Vector4(-8.3f,5.0f,2.30f,48f),new Vector4(8.5f,5.2f,2.30f,228f),
+                new Vector4(-6.6f,8.4f,2.05f,70f),new Vector4(6.8f,8.6f,2.05f,250f)})
+                StoneArchitecturePiece("RockToWallTransition","Valoria · Reference v1 · ancient tower rock seam",
+                    new Vector3(s.x,.15f,s.y),s.z,s.w);
 
             // Bury the ruin frame into geology so nothing reads as a placed prefab.
             foreach(var s in new[]{
@@ -1561,12 +1562,13 @@ namespace Eldoria.Presentation
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam west",new Vector3(-3.8f,0,-5.7f),.34f,3.3f,56f);
             RescuedTerrainSeam("Valoria · Reference v1 · lower seam east",new Vector3(3.8f,0,-5.6f),.34f,3.3f,304f);
 
-            // Distant cool mountains: scenery only, deeply buried to avoid floating silhouettes.
+            // Distant ridge from overlapping rock masses: no floating mountain prefabs.
             foreach(var s in new[]{
-                new Vector4(-20f,19f,15.5f,12f),new Vector4(-10f,21f,14.5f,34f),
-                new Vector4(0f,23f,16.5f,72f),new Vector4(10f,21f,14.5f,118f),new Vector4(20f,19f,15.5f,158f)})
-                Imported("Valoria · Reference v1 · distant mountain chain","Mountain01",
-                    new Vector3(s.x,-2.6f,s.y),s.z,7.5f,s.w,new Color(.39f,.45f,.48f),false);
+                new Vector4(-15.5f,16.0f,8.4f,18f),new Vector4(-8.5f,18.6f,8.8f,46f),
+                new Vector4(-1.5f,20.2f,9.4f,76f),new Vector4(5.8f,19.2f,8.9f,112f),
+                new Vector4(13.0f,16.8f,8.2f,148f)})
+                Imported("Valoria · Reference v1 · distant rock ridge","Rock02",
+                    new Vector3(s.x,-3.25f,s.y),s.z,3.7f,s.w,new Color(.34f,.37f,.37f),false);
 
             // Vegetation sits in seams and ruins, never on the central route or future build plots.
             foreach(var s in new[]{
