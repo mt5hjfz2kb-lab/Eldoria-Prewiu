@@ -1,11 +1,5 @@
 name: "[EXPERIMENT] Valoria Full-Frame Visual Pass v1"
 on:
-  push:
-    branches: ['visual-proof/valoria-full-frame-visual-pass-v1']
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameVisualPassGate.cs'
-      - '.github/workflows/valoria-full-frame-visual-pass-v1.yml'
   workflow_dispatch:
 permissions:
   contents: read
