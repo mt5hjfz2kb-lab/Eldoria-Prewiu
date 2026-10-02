@@ -1,3 +1,13 @@
+## Asset Library Canonicalization Pass v1 — PASS / CLOSED (2026-10-02)
+
+- Final run: **36997740541 SUCCESS**; artifact **11221974353**.
+- Canonical audit: `pipeline/asset-library-canonicalization-audit.json` -> **26 GLBs / 0 missing committed .meta**.
+- Recovered into main by exact certified SHA: TerraceStairRock, StreetLandingTransition, GateStreetRiseRock MV1.
+- Mid-Tier Architecture Piece01–04 moved under `Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/` with existing metadata/GUIDs preserved.
+- Player City v1 and Granero BIII inventory status corrected to production/PASS.
+- No visual/gameplay change and **0 Tripo credits**.
+- Full result: `docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md`.
+
 ## Parallel-chat workstream ownership — CANONICAL (2026-10-02)
 
 - Parallel Eldoria chats must now read and claim `pipeline/active-workstreams.json` before substantive mutation.
