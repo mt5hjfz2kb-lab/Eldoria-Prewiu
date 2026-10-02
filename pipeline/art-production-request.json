@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "asset-library-reprocessing-pass-v1-composition",
   "asset_or_sector": "Valoria asset library reprocessing pass v1",
   "profile": "environment_composition",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "ASSET LIBRARY REPROCESSING PASS v1. Existing geometry only. Primary composition route; environment_surface refinement follows inside the same zero-spend proof. No lateral residential expansion."
+  "notes": "ASSET LIBRARY REPROCESSING PASS v1 CLOSED. Final proof run 36994020902 / artifact 11220733685: TECH PASS / VISUAL PASS for reprocessing objective; gameplay signature equal; geometry_gap_proven=false; 0 Tripo credits. Certified Hero Bastion persisted by promotion run 36994561634, exact SHA afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c. Do not restore lateral residential sprawl or regenerate Hero Bastion."
 }
