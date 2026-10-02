@@ -87,7 +87,7 @@ namespace Eldoria.Presentation
                     // as a dark curved map edge. This sheet is visual-only, so expand X/Z to push that contour
                     // safely outside the captured frame without touching gameplay topology or colliders.
                     var s=renderer.transform.localScale;
-                    renderer.transform.localScale=new Vector3(s.x*1.45f,s.y,s.z*1.45f);
+                    renderer.transform.localScale=new Vector3(s.x*3.2f,s.y,s.z*3.2f);
                 }
                 else if(n=="VPD · inhabited mountain floor")
                     renderer.sharedMaterial=dirt;
