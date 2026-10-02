@@ -240,3 +240,13 @@ If a feature technically works but requires external developer explanation to un
 - Do not create one workstream per stair/wall/material/prop defect unless a real exclusive-resource dependency requires isolation. Bounded proofs must immediately re-enter the same full-frame iteration.
 - After a promoted FULL-FRAME VISUAL PASS, refresh `pipeline/unity-publish-request.json` to the promoted `main` SHA so owner review never relies on a stale WebGL build.
 - The machine-readable contract is `pipeline/valoria-full-frame-convergence-v1.json` and is guarded by `tools/validate-valoria-full-frame-convergence.mjs`.
+
+
+## Permanent owner visual target directive — Valoria
+- The approved Valoria reference image is the binding visual-quality target for the current production campaign. Treat it as a concrete convergence target, not loose inspiration.
+- Owner directive: **“Este es el objetivo, está la calidad y esto es lo que haya que hacer. Si en algún momento necesitas buscar información detallada de cómo utilizar alguna herramienta, consúltalo. Eres el programador jefe de este proyecto; quiero esto y, si con lo que tenemos no es posible llegar, quiero saberlo y también cuáles son las soluciones.”**
+- Act as lead programmer / technical art integrator for this campaign. Use the repository and live evidence to choose the next safe implementation step without waiting for owner micro-instructions.
+- If an unfamiliar Unity/Blender/Tripo/GitHub/toolchain capability blocks progress, research authoritative usage and apply it rather than stopping at uncertainty.
+- Do not claim the target is achievable with current means unless integrated evidence supports that claim. If the current stack reaches a demonstrated ceiling, state the exact limiting factor and propose concrete solutions in dependency/cost order.
+- The owner does not want repeated “continue” prompts. Continue through the full-frame loop until: (a) the required visual quality is reached and verified, or (b) a genuine blocker requires owner input/authorization/access.
+- A new chat must reconstruct from `main`, `pipeline/active-workstreams.json`, `SESSION_HANDOFF.md`, `docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md`, and the latest full-frame evidence, then continue this same directive automatically.
