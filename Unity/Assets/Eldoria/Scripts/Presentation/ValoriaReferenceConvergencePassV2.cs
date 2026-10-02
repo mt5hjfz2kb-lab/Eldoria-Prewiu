@@ -40,20 +40,16 @@ namespace Eldoria.Presentation
 
             // Reference target uses broken monumental arches as a frame around the playable city.
             // Keep them outside circulation and let the Bastion remain the focal point.
-            AddPrefab(root,art.MegaHalfGate,"left monumental broken arch",
-                new Vector3(-10.8f,.55f,8.8f),6.7f,9.4f,24f,StoneTint,true);
-            AddPrefab(root,art.MegaHalfGate,"right monumental broken arch",
-                new Vector3(10.9f,.55f,8.9f),6.9f,9.6f,204f,StoneTint,true);
 
             AddPrefab(root,art.MegaDestroyedTower,"left ruin crown",
-                new Vector3(-11.9f,1.05f,11.3f),3.4f,5.8f,38f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(-10.9f,1.15f,10.9f),4.1f,6.8f,34f,new Color(.55f,.54f,.51f,1f),true);
             AddPrefab(root,art.MegaDestroyedTower,"right ruin crown",
-                new Vector3(12.0f,1.00f,11.1f),3.3f,5.6f,220f,new Color(.55f,.54f,.51f,1f),true);
+                new Vector3(11.7f,.95f,11.8f),3.5f,6.1f,216f,new Color(.55f,.54f,.51f,1f),true);
 
             AddPrefab(root,art.MegaWallPassage,"rear left ruined passage",
-                new Vector3(-7.1f,1.65f,13.8f),4.2f,4.7f,12f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(-7.5f,1.35f,12.7f),4.9f,5.3f,18f,new Color(.57f,.56f,.52f,1f),true);
             AddPrefab(root,art.MegaWallPassage,"rear right ruined passage",
-                new Vector3(7.0f,1.65f,13.9f),4.2f,4.7f,168f,new Color(.57f,.56f,.52f,1f),true);
+                new Vector3(7.8f,1.30f,13.1f),4.5f,5.0f,162f,new Color(.57f,.56f,.52f,1f),true);
         }
 
         static void BuildCliffEnvelope(Transform root)
@@ -63,7 +59,7 @@ namespace Eldoria.Presentation
             AddResource(root,"Valoria/SM_Cliffs_03","right cliff shelf",
                 new Vector3(12.2f,-1.55f,1.7f),12.5f,8.2f,208f,RockTint);
             AddResource(root,"Valoria/SM_Cliffs_03","rear cliff bridge",
-                new Vector3(0f,-.85f,13.8f),13.2f,7.0f,92f,new Color(.43f,.45f,.45f,1f));
+                new Vector3(0f,-.15f,12.6f),15.0f,9.5f,92f,new Color(.43f,.45f,.45f,1f));
 
             // Lower edge mass makes the compact city feel carved into a vertical mountain rather than placed on a board.
             AddResource(root,"Valoria/SM_Hills_01","front left mountain shoulder",
@@ -75,17 +71,15 @@ namespace Eldoria.Presentation
         static void BuildMountainHorizon(Transform root)
         {
             var specs=new[]{
-                new Vector4(-18f,30f,15.5f,8f),
-                new Vector4(-8f,34f,18f,24f),
-                new Vector4(3f,36f,20f,-8f),
-                new Vector4(14f,32f,17f,-22f),
-                new Vector4(23f,29f,14f,-36f)
+                new Vector4(-13f,20f,18f,10f),
+                new Vector4(1f,23f,22f,-6f),
+                new Vector4(15f,21f,19f,-24f)
             };
             for(int i=0;i<specs.Length;i++)
             {
                 var s=specs[i];
                 AddResource(root,"Valoria/SM_Mountains_11","horizon mountain "+i,
-                    new Vector3(s.x,-4.8f,s.y),s.z,10.5f,s.w,new Color(.46f,.50f,.51f,1f));
+                    new Vector3(s.x,-1.8f,s.y),s.z,14.5f,s.w,new Color(.47f,.53f,.56f,1f));
             }
         }
 
