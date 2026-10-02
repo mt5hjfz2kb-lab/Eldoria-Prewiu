@@ -13,7 +13,7 @@ namespace Eldoria.Presentation
         static Material sharedStone;
         static Material terrainTerraceStone;
         static readonly Dictionary<string,Material> adapted = new();
-        static readonly Color Blue = new Color(.13f,.24f,.38f);
+        static readonly Color Blue = new Color(.12f,.34f,.58f);
         static readonly Color Rock = new Color(.42f,.43f,.39f);
         static Transform root;
         // Gate-only switch: lets CI compare the current city with/without Stone Architecture v1 while keeping every other visual layer identical.
