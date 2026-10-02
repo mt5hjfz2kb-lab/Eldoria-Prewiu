@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-full-frame-convergence-iteration-2",
+  "objective": "Replace rejected flat 2.5D horizon with real volumetric 3D mountain relief, combine with existing in-city surface correction, and improve full-frame depth/lighting/corruption at zero credit cost.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "iteration_1_verdict": "VISUAL FAIL / rejected",
+  "lanes": [
+    "terrain_and_transitions",
+    "materials_and_surface",
+    "lighting_and_value_hierarchy",
+    "atmosphere_horizon_depth",
+    "corruption_world_threat"
+  ],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_world_frame_v1": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true,
+    "no_tripo": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
