@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-strongest-jagged-composite-v1",
+  "objective": "Evaluate Jagged Peaks CC0 only inside the current strongest accepted Valoria composition, keeping all current cleanup/coherence layers and testing five vertical placements at production framing.",
+  "route": "environment_composition",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Jagged peaks over a valley",
+    "provider": "Wikimedia Commons",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "constraints": {
+    "proof_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "production_framing": 9.1,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "5_vertical_biases",
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "integrated_full_frame"
+  ]
+}
