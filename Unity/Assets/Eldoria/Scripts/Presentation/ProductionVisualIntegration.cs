@@ -1366,6 +1366,14 @@ namespace Eldoria.Presentation
                 Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",
                     new Vector3(s.x,-.75f,s.y),s.z,s.z*.53f,s.w,Rock,false);
 
+            // Existing rock masses break the procedural basin into a believable valley at wide zoom.
+            foreach(var s in new[]{
+                new Vector4(-28f,-2f,7.5f,18f),new Vector4(27f,1f,8.0f,-16f),
+                new Vector4(-23f,13f,6.4f,32f),new Vector4(24f,16f,7.0f,-28f),
+                new Vector4(-14f,22f,5.8f,12f),new Vector4(15f,24f,6.2f,-10f)})
+                Imported("Valoria · Master Rebuild v2 · valley massif","Mountain01",
+                    new Vector3(s.x,-1.25f,s.y),s.z,s.z*.50f,s.w,Rock,false);
+
             // One deliberate mountain/city axis: lower civic shelf -> two working shelves -> upper growth shelf -> Bastion crown.
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · lower civic shelf",
                 new Vector3(0f,0,-3.7f),.42f,6.7f,0f);
@@ -1380,15 +1388,18 @@ namespace Eldoria.Presentation
             TerrainTerraceTop("BroadRockPlatform","Valoria · Master Rebuild v2 · Bastion crown shelf",
                 new Vector3(0f,0,7.20f),3.16f,7.8f,0f);
 
-            // Processional spine. Existing certified stairs remain gameplay-authoritative underneath;
-            // these skins establish a single visual route through the new composition.
-            for(int i=0;i<8;i++)
+            // Processional spine: overlapping paving and landings create one continuous climb rather than floating slabs.
+            for(int i=0;i<10;i++)
             {
-                float z=-4.65f+i*.91f;
-                float y=.44f+Mathf.Max(0,i-3)*.39f;
-                StonePiece(1,"Valoria · Master Rebuild v2 · processional spine",
-                    new Vector3(0f,y,z),new Vector3(2.18f,.055f,1.02f),i%2==0?0f:180f);
+                float z=-4.85f+i*.72f;
+                float y=.42f+Mathf.Max(0,i-4)*.30f;
+                StonePiece(i%3==0?2:1,"Valoria · Master Rebuild v2 · processional spine",
+                    new Vector3(0f,y,z),new Vector3(2.28f,.052f,1.18f),i%2==0?2f:-2f);
             }
+            foreach(var p in new[]{
+                new Vector3(0f,.43f,-4.55f),new Vector3(0f,1.02f,-.65f),new Vector3(0f,2.02f,3.10f)})
+                StonePiece(2,"Valoria · Master Rebuild v2 · processional landing",p,new Vector3(3.25f,.06f,1.85f),0f);
+
             // Keep the upper crown geological, not two giant wall modules. Low buried transitions retain the terraces.
             StoneArchitecturePiece("RockToWallTransition","Valoria · Master Rebuild v2 · upper retaining west",
                 new Vector3(-4.35f,2.08f,4.55f),2.05f,18f);
@@ -1498,7 +1509,7 @@ namespace Eldoria.Presentation
                     float quiet=1f-centralShelf;
                     float y=-.48f+rise+noise*Mathf.Clamp01(quiet*.82f);
                     vertices[z*nx+x]=new Vector3(wx,y,wz);
-                    uv[z*nx+x]=new Vector2(tx*22f,tz*20f);
+                    uv[z*nx+x]=new Vector2(tx*6.5f,tz*6.0f);
                 }
             }
             int ti=0;
