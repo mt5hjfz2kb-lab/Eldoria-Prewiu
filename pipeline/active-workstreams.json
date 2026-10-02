@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T18:00:00Z",
+  "updated_at": "2026-10-02T18:14:00Z",
   "active": [
+    {
+      "id": "valoria-stair-landing-integration-v1",
+      "title": "Valoria Stair / Landing Integration v1",
+      "owner": "chat-valoria-stair-landing-integration-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaStairLandingIntegrationV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStairLandingIntegrationGateV1.cs",
+        ".github/workflows/valoria-stair-landing-integration-v1.yml",
+        "docs/VALORIA_STAIR_LANDING_INTEGRATION_V1_RESULT.md",
+        "pipeline/valoria-stair-landing-integration-v1-request.json",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-central-stair-landing-proof",
+        "art-production-planner",
+        "windows-runner-heavy"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-02T18:14:00Z",
+      "base_main_sha": "2080e3ab983992a8afe0917fe31a690c4bc604ff",
+      "dependency": "World Frame v1 and compact footprint are locked. Bastion stair circulation, gameplay colliders/hotspots/routes and Hero Bastion remain authoritative. Existing geometry only; no Tripo spend."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-in-city-surface-v1",
       "title": "Valoria In-City Surface & Lighting Pass v1",
@@ -20,13 +44,24 @@
         "art-production-planner",
         "windows-runner-heavy"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-02T17:55:00Z",
       "base_main_sha": "3fa008249d61eab63d91f9c9d11b42a49d7f23e9",
-      "dependency": "World Frame v1 is closed/promoted and must not be mutated. Compact footprint, Hero Bastion, gameplay topology, colliders/hotspots and no-sprawl rule remain authoritative."
-    }
-  ],
-  "history": [
+      "dependency": "World Frame v1 is closed/promoted and must not be mutated. Compact footprint, Hero Bastion, gameplay topology, colliders/hotspots and no-sprawl rule remain authoritative.",
+      "completed_at": "2026-10-02T18:14:00Z",
+      "result_commit": "2080e3ab983992a8afe0917fe31a690c4bc604ff",
+      "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED. Retaining washout fixed in iteration 2; route/stair warming is safe but too small for benchmark promotion.",
+      "next": "Test real visual-only seating of the central stair/landing with existing TerraceStairRock and StreetLandingTransition vocabulary; preserve canonical stair circulation and gameplay authority.",
+      "planner_run_id": 37044611044,
+      "run_ids": [
+        37044505972,
+        37045539351
+      ],
+      "artifact_ids": [
+        11243404622,
+        11243349211
+      ]
+    },
     {
       "id": "valoria-reference-convergence-v2",
       "title": "Valoria Reference Convergence Pass v2",
