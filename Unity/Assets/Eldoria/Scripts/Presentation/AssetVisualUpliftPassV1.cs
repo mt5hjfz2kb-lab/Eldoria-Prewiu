@@ -92,7 +92,7 @@ namespace Eldoria.Presentation
             {
                 if(renderer==null||!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
                 var chain=Hierarchy(renderer.transform).ToLowerInvariant();
-                if(!chain.Contains("rescued")&&!chain.Contains("assetlibrary reprocessing"))continue;
+                if(!chain.Contains("rescued"))continue;
                 if(chain.Contains("certified hero bastion"))continue;
                 ApplyRendererRole(renderer,"support");
             }
