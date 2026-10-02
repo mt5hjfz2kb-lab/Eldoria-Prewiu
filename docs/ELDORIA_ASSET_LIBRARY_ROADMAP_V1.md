@@ -37,6 +37,7 @@ Related canonical sources:
 - **Player City v1 — PRODUCTION / PASS:** `Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb`; one universal strategic city mesh for v1, with player/alliance/state differences handled outside the mesh.
 - Quaternius ruins: useful secondary POI architecture after Eldoria material adaptation.
 - Existing route/corruption/frontier presentation from Unity + web semantics.
+- **Player City v1 universal strategic city mesh — PRODUCTION / PASS**, persisted at `Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb`; player/alliance/protection identity remains UI/state-driven.
 
 ### Functional gameplay seed already defined in web
 - wood / forest resource interaction;
@@ -120,13 +121,14 @@ Related canonical sources:
    - crates/sacks/cart.
 
 ### P2 — scale and late-game diversity
-10. biome variants;
-11. alliance structures;
-12. territory markers;
-13. teleport structures;
-14. special event arenas;
-15. advanced resource installations;
-16. civilization/region-specific POI dressing.
+10. optional Player City visual tiers/skins if later gameplay justifies them;
+11. biome variants;
+12. alliance structures;
+13. territory markers;
+14. teleport structures;
+15. special event arenas;
+16. advanced resource installations;
+17. civilization/region-specific POI dressing.
 
 ## A3. Current readiness
 
@@ -146,7 +148,7 @@ Approximate:
 - Aserradero — PASS.
 - Cuartel — PASS.
 - Granero BIII — PASS.
-- Bastion — active HERO line / existing production presentation with later refinement headroom.
+- Hero Bastion v1 — PASS / production hero anchor after Asset Library Reprocessing v1.
 
 ### Certified/reusable ground
 Ground Kit v1:
@@ -203,7 +205,7 @@ Final proof:
    - workshop/shed;
    - storage/support structure.
 
-3. **Roof / Facade Variation Kit v1**
+2. **Roof / Facade Variation Kit v1**
    - roof straight;
    - roof corner/end;
    - chimney;
@@ -212,7 +214,7 @@ Final proof:
    - balcony/overhang;
    - awning/sign where appropriate.
 
-4. **Urban Props Kit v1**
+3. **Urban Props Kit v1**
    - barrels;
    - crates;
    - sacks;
@@ -280,7 +282,7 @@ Approximate readiness:
 - total visual city library including architecture/buildings/props: roughly **35–45%**, depending on how aggressively current VisualWorld housing/support patterns are reused.
 
 The next large gain comes from:
-**Stone Architecture Kit + Residential Support Kit + Urban Props Kit**, not another isolated hero building.
+**Residential Support Kit + Roof/Facade Variation + Urban Props Kit**, while extending the already-promoted Stone Architecture family only for proven missing masonry roles.
 
 ---
 
@@ -382,7 +384,7 @@ Record and exact images: `docs/ELDORIA_WORK_VISUAL_INTEGRATION_V1.md`; source `6
 | ResidentialTerraceRock / RockTerrainSeamFiller / TowerWallRock | Retained civil/seam support plus one decorative recovered flank |
 | West Rebuilders + selected hard surface | Roof/work-frontage/stock support; no new dedicated functional buildings |
 
-Visible gaps remain exact: **A2.1** compact city/tier silhouette; **A2.2** food/common node variations and depleted states; **A2.3** wolf/boar/Engendro primitive art; **A2.4** final installation identity/states; **A2.5** capsule/banner march; **B2.1** provisional Bastion/retaining masonry; **B2.2–3** civil bodies/repeated roofs; **B2.4** partial inhabited dressing and symbolic workers. Cantera/Forja/Hospital stay future **B2.5–7** gaps.
+Visible world gaps now start after the promoted universal Player City v1: resource-node variations/depleted states, wolf/boar/Engendro art, final installation identity/states, and march representation; **B2.1** provisional Bastion/retaining masonry; **B2.2–3** civil bodies/repeated roofs; **B2.4** partial inhabited dressing and symbolic workers. Cantera/Forja/Hospital stay future **B2.5–7** gaps.
 
 The three-family priority remains the governing sequence, but the first generation block is now closed:
 1. **Stone Architecture Kit v1 — CLOSED AS GENERATED: TECH PASS / overall VISUAL KIT FAIL.** Strict per-piece review selectively promoted only **RockToWallTransition**; the remaining seven generated groups stay cleanup/reject inventory and do not constitute a production kit.
@@ -403,3 +405,16 @@ Asset Library Canonicalization Pass v1 is complete. Canonical audit: `pipeline/a
 - Player City v1 and Granero BIII are existing production assets and must not be listed as missing acquisition targets.
 - Historical artifacts remain provenance/recovery evidence, not the only storage location for reusable certified GLBs.
 
+
+## G. ASSET LIBRARY CANONICALIZATION — 2026-10-02
+
+Canonical audit: `pipeline/asset-library-canonicalization-audit.json`.
+
+- **26 canonical GLBs** are persisted across Valoria + WorldPlayerCity.
+- **0 canonical GLBs lack a committed Unity `.meta`**.
+- Historical certified `TerraceStairRock`, `StreetLandingTransition` and `GateStreetRiseRock MV1` were recovered by exact SHA from their certified Actions artifacts and are now persisted in `main`.
+- Mid-Tier Architecture Kit Piece01–04 moved from the generic `Unity/Assets/Resources/Valoria/` tree into `Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/`, preserving the existing Unity metadata/GUIDs and the same `Resources.Load("Valoria/MidTierArchitectureKit_v1/...")` address.
+- Production/rescue GLBs now live under the Eldoria-owned Resources tree; rejected historical source pieces remain evidence, not production-library entries.
+- Canonicalization changed library persistence/organization only; it did not authorize new geometry, alter visuals, or spend Tripo credits.
+
+Full closeout: `docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md`.
