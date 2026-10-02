@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:47:00Z",
+  "updated_at": "2026-10-02T23:59:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -143,7 +143,11 @@
         "pipeline/valoria-residual-cleanup-v1-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV1.cs",
         ".github/workflows/valoria-strongest-composite-v1.yml",
-        "pipeline/valoria-strongest-composite-v1-request.json"
+        "pipeline/valoria-strongest-composite-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCoherencePruneV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCoherencePruneGateV1.cs",
+        ".github/workflows/valoria-coherence-prune-v1.yml",
+        "pipeline/valoria-coherence-prune-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
