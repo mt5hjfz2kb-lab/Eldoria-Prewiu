@@ -84,8 +84,9 @@ jobs:
           done
 
       - name: Generate stable glTFast metadata for canonical GLBs missing it
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           import hashlib, pathlib
           roots=[
               pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria"),
@@ -133,10 +134,12 @@ ScriptedImporter:
           print("CREATED_META_COUNT",len(created))
           for path,guid in created:
               print("META",guid,path)
+          PY
 
       - name: Audit canonical GLBs and metadata
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           import hashlib,json,pathlib
           roots=[
               pathlib.Path("Unity/Assets/Eldoria/Resources/Valoria"),
@@ -155,10 +158,12 @@ ScriptedImporter:
           audit={"schema_version":1,"glb_count":len(assets),"missing_meta_count":0,"assets":assets}
           pathlib.Path("pipeline/asset-library-canonicalization-audit.json").write_text(json.dumps(audit,indent=2)+"\n",encoding="utf-8")
           print(json.dumps(audit,indent=2))
+          PY
 
       - name: Verify historical identities and Mid-Tier location
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           import hashlib,pathlib
           checks={
             "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb":"83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
@@ -175,6 +180,7 @@ ScriptedImporter:
           for n in ("Piece01","Piece02","Piece03","Piece04"):
               if not (new/f"{n}.glb").exists() or not (new/f"{n}.glb.meta").exists():
                   raise SystemExit(f"Missing canonical Mid-Tier {n}")
+          PY
 
       - name: Commit canonical library
         shell: bash
