@@ -1468,6 +1468,52 @@ namespace Eldoria.Presentation
             WarmLight("Valoria · Master Rebuild v2 · east work warmth",new Vector3(4.5f,1.8f,-.5f),new Color(1f,.55f,.26f),.42f,2.4f);
         }
 
+        static void MasterRebuildTerrain()
+        {
+            // Visual-only blank-canvas landform. Gameplay floors/colliders stay authoritative above it.
+            const int nx=49,nz=49;
+            const float minX=-52f,maxX=52f,minZ=-42f,maxZ=58f;
+            var vertices=new Vector3[nx*nz];
+            var uv=new Vector2[vertices.Length];
+            var triangles=new int[(nx-1)*(nz-1)*6];
+            for(int z=0;z<nz;z++)
+            {
+                float tz=z/(float)(nz-1);
+                float wz=Mathf.Lerp(minZ,maxZ,tz);
+                for(int x=0;x<nx;x++)
+                {
+                    float tx=x/(float)(nx-1);
+                    float wx=Mathf.Lerp(minX,maxX,tx);
+                    float side=Mathf.Clamp01((Mathf.Abs(wx)-12f)/34f);
+                    float rear=Mathf.Clamp01((wz-11f)/37f);
+                    float front=Mathf.Clamp01((-wz-15f)/24f);
+                    float centralShelf=Mathf.Exp(-(wx*wx)/210f-(wz*wz)/520f);
+                    float terraces=Mathf.Max(0f,wz+4f)*.018f*centralShelf;
+                    float rise=side*side*5.8f+rear*rear*7.2f+front*front*2.2f+terraces;
+                    float noise=(Mathf.Sin(wx*.16f)+Mathf.Sin(wz*.19f)+Mathf.Sin((wx-wz)*.11f))*.22f;
+                    float quiet=Mathf.Clamp01((Mathf.Abs(wx)-7f)/17f)+Mathf.Clamp01((Mathf.Abs(wz)-10f)/24f);
+                    float y=-.42f+rise+noise*Mathf.Clamp01(quiet*.62f);
+                    vertices[z*nx+x]=new Vector3(wx,y,wz);
+                    uv[z*nx+x]=new Vector2(tx*22f,tz*20f);
+                }
+            }
+            int ti=0;
+            for(int z=0;z<nz-1;z++)
+                for(int x=0;x<nx-1;x++)
+                {
+                    int a=z*nx+x,b=a+1,d=(z+1)*nx+x,cc=d+1;
+                    triangles[ti++]=a;triangles[ti++]=d;triangles[ti++]=b;
+                    triangles[ti++]=b;triangles[ti++]=d;triangles[ti++]=cc;
+                }
+            var mesh=new Mesh{name="Valoria Master Rebuild v2 · continuous landform"};
+            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Master Rebuild v2 · continuous landform");
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=
+                ValoriaKit.SurfaceMaterial(new Color(.30f,.29f,.25f,1f),"earth",new Vector2(22f,20f));
+        }
+
         static void HeroValleyTerrain()
         {
             // Purely visual heightfield. The certified floors/routes/colliders remain authoritative above it.
