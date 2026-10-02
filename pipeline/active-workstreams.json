@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:18:00Z",
+  "updated_at": "2026-10-02T23:31:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -132,7 +132,11 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandReframeV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCliffIslandReframeGateV1.cs",
         ".github/workflows/valoria-cliff-island-reframe-v1.yml",
-        "pipeline/valoria-cliff-island-reframe-v1-request.json"
+        "pipeline/valoria-cliff-island-reframe-v1-request.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandCleanupV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCliffIslandCleanupGateV2.cs",
+        ".github/workflows/valoria-cliff-island-cleanup-v2.yml",
+        "pipeline/valoria-cliff-island-cleanup-v2-request.json"
       ],
       "resources": [
         "valoria-production-composition",
