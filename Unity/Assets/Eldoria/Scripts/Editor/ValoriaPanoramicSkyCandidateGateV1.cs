@@ -23,7 +23,8 @@ namespace Eldoria.EditorTools
    var camera=Camera.main;var root=GameObject.Find("Valoria · integrated construction visual layer");if(camera==null||root==null)throw new System.Exception("Valoria capture prerequisites missing.");
    var p=new Vector3(18.2f,14.6f,-25.8f);var t=new Vector3(0f,3.15f,5.8f);var baseline=ValoriaVisualFormulaGate.CollisionSignature();
    Metrics(Folder+"/before-metrics.json");SaveSet(camera,"before",p,t);
-   var legacy=GameObject.Find("Valoria · World Frame Mountain Terrain v1");if(legacy!=null)Object.DestroyImmediate(legacy);ValoriaWorldFrameMountainTerrainV1.Enabled=false;
+   var heroValley=GameObject.Find("Valoria · Hero Frame valley terrain");if(heroValley!=null)Object.DestroyImmediate(heroValley);
+            var legacy=GameObject.Find("Valoria · World Frame Mountain Terrain v1");if(legacy!=null)Object.DestroyImmediate(legacy);ValoriaWorldFrameMountainTerrainV1.Enabled=false;
    ValoriaPanoramicSkyCandidateV1.Enabled=true;if(!ValoriaPanoramicSkyCandidateV1.Apply())throw new System.Exception("Panoramic sky candidate unavailable.");
    Physics.SyncTransforms();if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)throw new System.Exception("Panoramic sky altered gameplay signature.");
    Metrics(Folder+"/after-metrics.json");SaveSet(camera,"after",p,t);
