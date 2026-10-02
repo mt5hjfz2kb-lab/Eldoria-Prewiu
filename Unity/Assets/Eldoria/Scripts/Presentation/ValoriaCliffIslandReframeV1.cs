@@ -77,6 +77,19 @@ namespace Eldoria.Presentation
                     i<4?3.6f:3.0f,i<4?1.8f:1.45f,Quaternion.Euler(0f,p.w,0f),
                     new Color(.52f,.53f,.48f,1f));
                 if(go==null)continue;
+
+                // These are screen-dominant cliff silhouettes. Do not preserve dark legacy
+                // atlas values: use one coherent rock surface so geometry reads as cliff, not black cards.
+                var rockMaterial=ValoriaKit.ExternalPbrSurfaceMaterial(
+                    "rock",new Color(.54f,.54f,.50f,1f),new Vector2(2.9f,2.9f),.025f,1.03f)
+                    ?? ValoriaKit.SurfaceMaterial(new Color(.50f,.50f,.46f,1f),"stone",new Vector2(2.9f,2.9f));
+                foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+                {
+                    var mats=renderer.sharedMaterials;
+                    for(int mi=0;mi<mats.Length;mi++)mats[mi]=rockMaterial;
+                    renderer.sharedMaterials=mats;
+                }
+
                 go.transform.SetParent(root,true);DisableGameplay(go);AddedTerracePieces++;
             }
         }
