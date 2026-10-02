@@ -1,15 +1,14 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Strict integrated full-frame priority after unified rock PBR cleanup: cancel redundant isolated side gates so Strongest Composite and then Strongest Jagged Composite can own the Windows runner.",
+  "reason": "Second cleanup pass: two component jobs started during the first cancellation race. Keep only the two integrated composites.",
   "runs": [
-    37072445277,
     37072445273,
-    37072441254,
-    37072438093,
-    37072425217,
-    37072316373,
-    37072313545
+    37072425217
   ],
-  "triggered_at": "2026-10-02T23:30:00+02:00"
+  "keep_runs": [
+    37072456986,
+    37072516942
+  ],
+  "triggered_at": "2026-10-02T22:28:00Z"
 }
