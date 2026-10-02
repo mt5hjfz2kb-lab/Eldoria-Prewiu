@@ -1,15 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Prioritize newest integrated strongest composite at 420ab26a. Older strongest, generic Unity slice and standalone material cleanup are superseded because residue/artifact cleanup is already integrated into the authoritative composite.",
+  "reason": "Strongest Jagged e28f predates integrated MaterialResidueCleanupV2 + FullFrameArtifactCleanupV1 and is now stale. Cancel it and isolated residue proof so authoritative 420ab Strongest Composite runs next.",
   "runs": [
-    37073034386,
-    37073145699,
+    37073083726,
     37073121595
   ],
-  "keep_runs": [
-    37073145668,
-    37073083726
-  ],
-  "triggered_at": "2026-10-02T22:36:00Z"
+  "triggered_at": "2026-10-03T00:13:00+02:00"
 }
