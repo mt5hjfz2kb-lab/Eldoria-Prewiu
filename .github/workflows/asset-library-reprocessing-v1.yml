@@ -1,0 +1,79 @@
+name: "[EXPERIMENT] Asset Library Reprocessing Pass v1"
+
+on:
+  push:
+    branches:
+      - visual-proof/asset-library-reprocessing-pass-v1
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Editor/AssetLibraryReprocessingGateV1.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - '.github/workflows/asset-library-reprocessing-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-asset-library-reprocessing-v1
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){ throw 'Git not found.' }
+            $dir=Split-Path $candidate; Add-Content -Path $env:GITHUB_PATH -Value $dir; $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Verify Unity
+        shell: powershell
+        run: |
+          if(-not (Test-Path $env:UNITY_EDITOR_PATH)){ throw 'UNITY_EDITOR_PATH not found' }
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){ throw "Wrong Unity version: $version" }
+      - name: Capture matched before after
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingV1Captures"
+          $log="$env:RUNNER_TEMP\Eldoria-AssetLibraryReprocessingV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.AssetLibraryReprocessingGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(20)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Capture timed out.'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 260};throw "Gate failed: $($p.ExitCode)"}
+          $expected=@(
+            'asset-reprocess-before-19.png','asset-reprocess-before-12.png','asset-reprocess-before-9.png','asset-reprocess-before-mobile.png',
+            'asset-reprocess-after-19.png','asset-reprocess-after-12.png','asset-reprocess-after-9.png','asset-reprocess-after-mobile.png',
+            'asset-reprocess-before-metrics.json','asset-reprocess-after-metrics.json','asset-reprocess-evidence.json'
+          )
+          foreach($name in $expected){$path=Join-Path $folder $name;if(-not(Test-Path $path)){throw "Missing evidence $name"}}
+          Get-Content (Join-Path $folder 'asset-reprocess-evidence.json')
+          Get-Content (Join-Path $folder 'asset-reprocess-before-metrics.json')
+          Get-Content (Join-Path $folder 'asset-reprocess-after-metrics.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-library-reprocessing-v1-${{ github.run_id }}
+          path: |
+            Unity/AssetLibraryReprocessingV1Captures/*
+            ${{ runner.temp }}/Eldoria-AssetLibraryReprocessingV1.log
+          if-no-files-found: warn
+          retention-days: 30
