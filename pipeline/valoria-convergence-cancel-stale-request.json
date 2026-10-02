@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Architecture dedicated gate already captured successfully; cancel redundant generic Unity slice so latest corrected camera-backdrop proof runs next.",
+  "reason": "Release Windows runner for Benchmark Composite v2; Benchmark Composite v1 and Backdrop v3 are superseded by the integrated v2 proof.",
   "runs": [
-    37063106023
+    37065250953,
+    37065287492
   ],
-  "triggered_at": "2026-10-02T20:52:00Z"
+  "triggered_at": "2026-10-02T22:47:00Z"
 }
