@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-frame-composition-v1",
+  "objective": "Evaluate whether a tighter orthographic framing of the current best clean stack materially improves full-frame composition before changing geometry. Test five matched desktop/mobile framings without changing production camera.",
+  "route": "environment_composition",
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "base": "Strongest + VisibleFrameRebalance v1 + CoherencePrune v1",
+  "candidates": [
+    {
+      "size": 9.1,
+      "target_y": 3.35,
+      "target_z": 5.6
+    },
+    {
+      "size": 8.7,
+      "target_y": 3.6,
+      "target_z": 5.7
+    },
+    {
+      "size": 8.4,
+      "target_y": 3.8,
+      "target_z": 5.8
+    },
+    {
+      "size": 8.1,
+      "target_y": 3.95,
+      "target_z": 5.9
+    },
+    {
+      "size": 7.8,
+      "target_y": 4.05,
+      "target_z": 6
+    }
+  ],
+  "constraints": {
+    "proof_only": true,
+    "production_camera_changed": false,
+    "preserve_gameplay_signature": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature"
+  ]
+}
