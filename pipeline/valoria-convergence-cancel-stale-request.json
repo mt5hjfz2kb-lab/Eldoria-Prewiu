@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner for Benchmark Composite v2 and Distant World Composite v1; old Benchmark Composite v1 is superseded.",
+  "reason": "Residual Cleanup v1 isolated run is superseded by Strongest Composite v1, which includes the same cleanup plus Cliff Island Cleanup v2. Free the single Windows runner queue.",
   "runs": [
-    37065384609
+    37068675601
   ],
-  "triggered_at": "2026-10-02T21:52:00Z"
+  "triggered_at": "2026-10-02T23:52:00Z"
 }
