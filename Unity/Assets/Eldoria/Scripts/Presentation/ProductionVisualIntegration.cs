@@ -1361,19 +1361,6 @@ namespace Eldoria.Presentation
 
             // Rebuild the landscape after blanking inherited presentation so zoom 19 never reads as a flat board.
             MasterRebuildTerrain();
-            foreach(var s in new[]{
-                new Vector4(-19.8f,15.8f,6.4f,-18f),new Vector4(18.2f,18.0f,5.6f,23f),new Vector4(-3.8f,25.0f,7.2f,7f)})
-                Imported("Valoria · Master Rebuild v2 · mountain frame","Mountain01",
-                    new Vector3(s.x,-.75f,s.y),s.z,s.z*.53f,s.w,Rock,false);
-
-            // Existing rock masses break the procedural basin into a believable valley at wide zoom.
-            foreach(var s in new[]{
-                new Vector4(-28f,-2f,7.5f,18f),new Vector4(27f,1f,8.0f,-16f),
-                new Vector4(-23f,13f,6.4f,32f),new Vector4(24f,16f,7.0f,-28f),
-                new Vector4(-14f,22f,5.8f,12f),new Vector4(15f,24f,6.2f,-10f)})
-                Imported("Valoria · Master Rebuild v2 · valley massif","Mountain01",
-                    new Vector3(s.x,-1.25f,s.y),s.z,s.z*.50f,s.w,Rock,false);
-
             // Bind the whole composition into one inhabited mountain before placing shelves.
             // Broad buried geology fills the visual gaps between terraces without consuming future plots.
             foreach(var s in new[]{
