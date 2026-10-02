@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-master-visual-rebuild-v2",
-  "asset_or_sector": "Valoria master visual rebuild v2 blank-canvas composition",
+  "enabled": true,
+  "request_id": "valoria-reference-convergence-v1",
+  "asset_or_sector": "Valoria reference convergence v1 whole-frame environment composition",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Master Visual Rebuild v2 composition certified on run 36988913956. Branch parked after structural PASS. Keep existing library; no Tripo spend."
+  "notes": "Reference-driven convergence pass layered on the certified Blank Canvas rebuild. Existing library only: monumental ruins, cliff integration, vegetation, reconstruction occupation and atmosphere. No new houses, no Tripo, 0 credits."
 }
