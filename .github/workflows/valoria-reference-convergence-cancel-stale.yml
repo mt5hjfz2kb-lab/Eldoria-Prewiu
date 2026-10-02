@@ -1,4 +1,4 @@
-name: "[TEMP] Cancel stale Valoria formula gate"
+name: "[TEMP] Cancel stale Unity slice for convergence v2"
 
 on:
   push:
@@ -14,10 +14,10 @@ jobs:
   cancel:
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel superseded convergence-triggered formula run
+      - name: Cancel stale Unity slice from superseded convergence commit
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/37000228189/force-cancel || true
-          echo "force-cancel requested for superseded convergence v2 run 37000228189"
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/37008528578/force-cancel || true
+          echo "force-cancel requested for stale Unity slice 37008528578"
