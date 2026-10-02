@@ -1,7 +1,7 @@
 # Valoria — Building Production Inventory v1
 
 Status: ACTIVE PRODUCTION BASELINE  
-Updated: 2026-09-29
+Updated: 2026-10-02
 
 ## Purpose
 
@@ -31,10 +31,10 @@ A first-class game system that does **not** consume a physical Valoria plot unle
 
 | Bastion | Gameplay / system | Physical art requirement | Class | Current production state | Next art action |
 |---|---|---|---|---|---|
-| I | Bastion core | Central stronghold / progression anchor | HERO | Existing provisional Bastion; silhouette/roof hierarchy under active refinement | Hero Pass first; only full rebuild if existing mass cannot reach benchmark |
+| I | Bastion core | Central stronghold / progression anchor | HERO | **PRODUCTION / PASS — certified Hero Bastion recovered** | Preserve certified Hero Bastion identity; refine only through validated composition/surface work |
 | I | Aserradero / wood | Dedicated production building | DEDICATED FUNCTIONAL | **PRODUCTION / PASS** | Preserve PBR and future upgrade envelope |
 | II | Cuartel / troops | Dedicated military building | DEDICATED FUNCTIONAL | **PRODUCTION / PASS** | Preserve PBR; add training/military dressing by progression state |
-| III | Granero / food | Dedicated food/storage building | DEDICATED FUNCTIONAL | **MISSING** | Reserve plot/envelope, define brief, produce when district sequencing reaches Bastion III |
+| III | Granero / food | Dedicated food/storage building | DEDICATED FUNCTIONAL | **PRODUCTION / PASS** | Preserve dedicated Granero BIII asset and progression visibility |
 | III | Food/survival district | Paths, stores, sacks, carts, civilian activity | DISTRICT / SUPPORT | Partial generic support only | Build with reusable dressing around Granero |
 | IV | Priority: Production / Defense / Shelter | Visible consequence, not a new mandatory building | DISTRICT / SUPPORT | Design CLOSED; visual variants pending | Produce reversible dressing/state layers for the three priorities |
 | V | Cantera / stone | Dedicated quarry/extraction area and functional identity | DEDICATED FUNCTIONAL | **MISSING** | Reserve extraction plot/envelope; produce Cantera family |
@@ -52,8 +52,10 @@ A first-class game system that does **not** consume a physical Valoria plot unle
 ## Existing reusable production/support inventory
 
 ### Production dedicated
+- Hero Bastion — PASS / hero anchor.
 - Aserradero — PASS.
 - Cuartel — PASS.
+- Granero BIII — PASS.
 
 ### Certified/rescued support families
 - ResidentialTerraceRock — inhabited/civic density.
@@ -63,16 +65,15 @@ A first-class game system that does **not** consume a physical Valoria plot unle
 - StreetLandingTransition — visual street/landing dressing only.
 - GateStreetRiseRock MV1 — visual hero/landmark fragment only; historical traversal failure remains out of scope.
 
-These assets can reduce new production cost, but they **do not replace** a missing functional building such as Granero, Cantera, Forja or Hospital unless a later dedicated adaptation actually communicates that function.
+These assets can reduce new production cost, but they **do not replace** a missing functional building such as Cantera, Forja or Hospital unless a later dedicated adaptation actually communicates that function.
 
 ## Current dedicated-building gap
 
 Known Arc-I dedicated functional art still missing:
 
-1. **Granero**
-2. **Cantera**
-3. **Forja**
-4. **Hospital**
+1. **Cantera**
+2. **Forja**
+3. **Hospital**
 
 Bastion remains a separate HERO line rather than an ordinary building gap.
 
@@ -84,8 +85,8 @@ Default art-production sequence after the current district block:
 
 1. close and validate the current production district;
 2. maintain the Bastion Hero Pass only as far as needed to remove dominant provisional silhouette defects;
-3. reserve maximum upgrade envelopes for Granero / Cantera / Forja / Hospital in the approved Master Envelope;
-4. produce dedicated functional buildings in **game chronology / district need order**, beginning with Granero unless a current Unity milestone requires another first;
+3. preserve the certified Granero envelope and reserve maximum upgrade envelopes for Cantera / Forja / Hospital in the approved Master Envelope;
+4. produce the remaining dedicated functional buildings in **game chronology / district need order**, beginning with Cantera unless a current Unity milestone requires another first;
 5. build reusable district dressing alongside each functional building;
 6. validate at official zoom 19 / 12 / 9 before promoting;
 7. profile representative mobile performance before broad city-scale replication.
