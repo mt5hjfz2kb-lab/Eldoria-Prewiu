@@ -125,9 +125,46 @@ namespace Eldoria.Presentation
             AddTopAligned(root,"Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
                 "right rear PBR shelf",new Vector3(11.6f,1.55f,11.4f),5.2f,238f,new Color(.45f,.46f,.44f,1f));
 
-            // Iteration 17: do not add extra foliage here.
-            // A pass-added SlavicTree LOD produced a magenta shader failure at zoom 9.
-            // The base scene already provides sufficient vegetation around these PBR rock shoulders.
+            // Iteration 18: authored edge occupation using shader-safe non-foliage props only.
+            // These enrich the world margins without widening the playable city or reintroducing unsafe tree LODs.
+            if(art!=null)
+            {
+                if(art.SlavicBoulder!=null)
+                {
+                    var rocks=new[]{
+                        new Vector3(-14.6f,.02f,-3.6f),new Vector3(-13.7f,.02f,1.2f),new Vector3(-14.4f,.02f,6.2f),new Vector3(-12.5f,.02f,11.8f),
+                        new Vector3(14.5f,.02f,-3.0f),new Vector3(13.6f,.02f,1.8f),new Vector3(14.2f,.02f,6.8f),new Vector3(12.7f,.02f,12.1f)
+                    };
+                    for(int i=0;i<rocks.Length;i++)
+                        AddPrefab(root,art.SlavicBoulder,"edge occupation boulder "+i,rocks[i],
+                            1.55f+(i%3)*.18f,1.05f+(i%2)*.12f,(i*43)%360,new Color(.43f,.44f,.42f,1f),true);
+                }
+
+                if(art.SlavicStoneFence!=null)
+                {
+                    var fences=new[]{
+                        new Vector3(-11.7f,.06f,-5.8f),new Vector3(-13.0f,.08f,3.9f),new Vector3(-10.8f,.08f,12.5f),
+                        new Vector3(11.9f,.06f,-5.2f),new Vector3(13.1f,.08f,4.5f),new Vector3(10.9f,.08f,12.8f)
+                    };
+                    for(int i=0;i<fences.Length;i++)
+                        AddPrefab(root,art.SlavicStoneFence,"edge occupation fence "+i,fences[i],
+                            2.15f,.78f,(i<3?-18f:198f)+(i%3)*11f,new Color(.58f,.56f,.51f,1f),true);
+                }
+
+                if(art.Firewood!=null)
+                {
+                    var workProps=new[]{
+                        new Vector3(-10.9f,.06f,-5.0f),new Vector3(-12.0f,.06f,2.5f),
+                        new Vector3(10.9f,.06f,-4.7f),new Vector3(12.0f,.06f,3.0f)
+                    };
+                    for(int i=0;i<workProps.Length;i++)
+                        AddPrefab(root,art.Firewood,"edge occupation firewood "+i,workProps[i],
+                            1.0f,.72f,(i*61)%360,new Color(.58f,.47f,.34f,1f),true);
+                }
+            }
+
+            // Do not add pass-owned foliage: the base scene already provides vegetation and
+            // the previously tested SlavicTree LOD was shader-unsafe at zoom 9.
         }
 
         static void BuildMountainHorizon(Transform root)
