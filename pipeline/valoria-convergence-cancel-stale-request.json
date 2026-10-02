@@ -1,13 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release runner from superseded full-frame composites; newest baseline and Jagged gates include disconnected-peripheral structural cleanup.",
+  "reason": "Reserve the single Windows runner for authoritative Strongest Composite run 37073588501. Cancel secondary Jagged comparison run 37073591515; do not cancel the strongest composite.",
   "runs": [
-    37073385838,
-    37073145668
+    37073591515
   ],
   "keep_runs": [
-    37073145668
+    37073588501
   ],
-  "triggered_at": "2026-10-03T00:09:00+02:00"
+  "triggered_at": "2026-10-03T00:12:00+02:00"
 }
