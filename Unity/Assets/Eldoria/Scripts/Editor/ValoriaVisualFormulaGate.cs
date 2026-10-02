@@ -27,7 +27,6 @@ namespace Eldoria.EditorTools
             CaptureCoherentCastleProofWedge();
             CaptureSlavicDistrictProofWedge();
             CaptureProductionCellWedge();
-            CaptureAssetLibraryReprocessingPassV1();
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var state = new PlayerState
@@ -163,7 +162,7 @@ namespace Eldoria.EditorTools
             VisualWorld.VisualIntegrationEnabled=true;
         }
 
-        static void CaptureAssetLibraryReprocessingPassV1()
+        public static void CaptureAssetLibraryReprocessingPassV1()
         {
             const string folder="VisualFormulaCaptures";
             Directory.CreateDirectory(folder);
