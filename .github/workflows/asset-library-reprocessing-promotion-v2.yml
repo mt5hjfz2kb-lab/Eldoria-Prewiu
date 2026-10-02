@@ -1,0 +1,100 @@
+name: "[PROMOTION GATE V2] Asset Library Reprocessing"
+
+on:
+  push:
+    branches: [promotion/asset-library-reprocessing-pass-v1]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/AssetLibraryReprocessingPromotionGateV2.cs'
+      - '.github/workflows/asset-library-reprocessing-promotion-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: asset-library-reprocessing-promotion-v2
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Sanitize source but retain Unity Library cache
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -ffdx -e Unity/Library/ -e Unity/Temp/
+          $dirty=git status --porcelain
+          if($dirty){$dirty;throw 'Source workspace remains dirty'}
+      - name: Verify exact tracked Hero Bastion
+        shell: powershell
+        run: |
+          $p="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\HeroBastionGenerated\Valoria_HeroBastion_v1.glb"
+          if(-not(Test-Path $p)){throw 'Hero Bastion missing'}
+          if((Get-Item $p).Length -ne 13257704){throw 'Hero Bastion byte mismatch'}
+          $sha=(Get-FileHash $p -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($sha -ne 'afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c'){throw "Hero Bastion SHA mismatch $sha"}
+      - name: Capture final matched proof
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingPromotionV2Captures"
+          $log="$env:RUNNER_TEMP\AssetLibraryReprocessingPromotionV2.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.AssetLibraryReprocessingPromotionGateV2.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(10)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;if(Test-Path $log){Get-Content $log -Tail 220};throw 'Gate V2 timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 260};throw "Gate V2 failed $($p.ExitCode)"}
+          $expected=@('before-19.png','before-12.png','before-9.png','before-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','evidence.json')
+          foreach($name in $expected){if(-not(Test-Path (Join-Path $folder $name))){throw "Missing evidence $name"}}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - name: Build contact sheet
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $folder="$env:GITHUB_WORKSPACE\Unity\AssetLibraryReprocessingPromotionV2Captures"
+          $canvas=New-Object System.Drawing.Bitmap 800,960
+          $g=[System.Drawing.Graphics]::FromImage($canvas);$g.Clear([System.Drawing.Color]::FromArgb(34,34,34))
+          $font=New-Object System.Drawing.Font("Arial",14,[System.Drawing.FontStyle]::Bold);$small=New-Object System.Drawing.Font("Arial",11)
+          $g.DrawString("BEFORE",$font,[System.Drawing.Brushes]::White,170,4);$g.DrawString("AFTER",$font,[System.Drawing.Brushes]::White,575,4)
+          $pairs=@(@('before-19.png','after-19.png','ZOOM 19'),@('before-12.png','after-12.png','ZOOM 12'),@('before-9.png','after-9.png','ZOOM 9'),@('before-mobile.png','after-mobile.png','MOBILE'))
+          for($row=0;$row -lt 4;$row++){
+            $y=30+$row*232;$g.DrawString($pairs[$row][2],$small,[System.Drawing.Brushes]::White,4,$y+4)
+            for($col=0;$col -lt 2;$col++){
+              $img=[System.Drawing.Image]::FromFile((Join-Path $folder $pairs[$row][$col]));$maxW=392;$maxH=210
+              $scale=[Math]::Min($maxW/$img.Width,$maxH/$img.Height);$w=[int]($img.Width*$scale);$h=[int]($img.Height*$scale)
+              $x=$col*400+[int]((400-$w)/2);$iy=$y+20+[int](($maxH-$h)/2);$g.DrawImage($img,$x,$iy,$w,$h);$img.Dispose()
+            }
+          }
+          $g.Dispose();$canvas.Save((Join-Path $folder 'contact-sheet.jpg'),[System.Drawing.Imaging.ImageFormat]::Jpeg);$canvas.Dispose()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asset-library-reprocessing-promotion-v2-${{ github.run_id }}
+          path: |
+            Unity/AssetLibraryReprocessingPromotionV2Captures/*
+            ${{ runner.temp }}/AssetLibraryReprocessingPromotionV2.log
+          if-no-files-found: warn
+          retention-days: 30
