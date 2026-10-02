@@ -5,6 +5,7 @@ using Eldoria.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Object=UnityEngine.Object;
 
 namespace Eldoria.EditorTools
 {
