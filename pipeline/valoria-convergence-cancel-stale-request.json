@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner for panoramic sky candidate; both queued/in-progress jobs are superseded visual routes.",
+  "reason": "Release Windows runner by cancelling redundant Open Valley rerun after successful certified capture; preserve active full-frame production validation and queued camera-backdrop proof.",
   "runs": [
-    37057268125,
-    37057692571
+    37061795326
   ],
-  "triggered_at": "2026-10-02T20:22:00Z"
+  "triggered_at": "2026-10-02T20:41:00Z"
 }
