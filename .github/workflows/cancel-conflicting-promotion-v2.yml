@@ -1,0 +1,23 @@
+name: "[TEMP] Cancel conflicting promotion V2 gate"
+
+on:
+  push:
+    branches: [promotion/asset-library-reprocessing-pass-v1]
+    paths:
+      - '.github/workflows/cancel-conflicting-promotion-v2.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel queued conflicting Windows run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --method POST repos/${GITHUB_REPOSITORY}/actions/runs/36997540623/cancel || true
+          echo "cancel requested for run 36997540623"
