@@ -1295,6 +1295,56 @@ namespace Eldoria.Presentation
             var go=new GameObject("Valoria · FullFrame · continuous landform");go.transform.SetParent(root,true);go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=ValoriaKit.SurfaceMaterial(new Color(.30f,.29f,.25f,1f),"earth",new Vector2(20f,17f));
         }
 
+        static void PlaceCertifiedHeroBastionFullFrame()
+        {
+            var source=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
+            if(source==null)throw new InvalidOperationException("Certified Hero Bastion resource missing from full-frame gate.");
+
+            // Suppress presentation renderers only. Gameplay colliders/hotspots remain on the certified legacy objects.
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                bool legacy=false;
+                for(var t=r.transform;t!=null;t=t.parent)
+                    if(t.name.StartsWith("Bastion ·",StringComparison.OrdinalIgnoreCase)||
+                       string.Equals(t.name,"Bastion",StringComparison.OrdinalIgnoreCase)||
+                       t.name.StartsWith("Valoria · Bastion hero",StringComparison.OrdinalIgnoreCase)||
+                       t.name.StartsWith("Valoria · rescued hero flank",StringComparison.OrdinalIgnoreCase)){legacy=true;break;}
+                if(legacy)r.enabled=false;
+            }
+
+            var go=Object.Instantiate(source);go.name="Valoria · Certified Hero Bastion · FullFrame";go.transform.rotation=Quaternion.Euler(0,180f,0);
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+            var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)throw new InvalidOperationException("Certified Hero Bastion has no renderers.");
+            var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            float scale=Mathf.Min(12.8f/Mathf.Max(b.size.x,b.size.z),10.2f/b.size.y);go.transform.localScale*=scale;
+            rs=go.GetComponentsInChildren<Renderer>(true);b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            go.transform.position+=new Vector3(-b.center.x,2.52f-b.min.y,8.75f-b.center.z);
+            var cache=new Dictionary<int,Material>();
+            foreach(var r in rs)
+            {
+                var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
+                for(int i=0;i<srcs.Length;i++)
+                {
+                    var src=srcs[i];if(src==null){continue;}
+                    if(cache.TryGetValue(src.GetInstanceID(),out var hit)){dst[i]=hit;continue;}
+                    Texture baseMap=null,normal=null;
+                    foreach(var p in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Texture"})if(src.HasProperty(p)&&src.GetTexture(p)!=null){baseMap=src.GetTexture(p);break;}
+                    foreach(var p in new[]{"_BumpMap","_NormalMap","normalTexture"})if(src.HasProperty(p)&&src.GetTexture(p)!=null){normal=src.GetTexture(p);break;}
+                    var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard")){name="Valoria FullFrame Hero · "+src.name};
+                    if(baseMap!=null&&mat.HasProperty("_BaseMap"))mat.SetTexture("_BaseMap",baseMap);
+                    if(normal!=null&&mat.HasProperty("_BumpMap")){mat.SetTexture("_BumpMap",normal);mat.EnableKeyword("_NORMALMAP");}
+                    if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",new Color(.72f,.69f,.63f,1f));
+                    if(mat.HasProperty("_Color"))mat.SetColor("_Color",new Color(.72f,.69f,.63f,1f));
+                    if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",0f);if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",.035f);
+                    cache[src.GetInstanceID()]=mat;dst[i]=mat;
+                }
+                r.sharedMaterials=dst;
+            }
+            go.transform.SetParent(root,true);
+        }
+
         static void HeroValleyTerrain()
         {
             // Purely visual heightfield. The certified floors/routes/colliders remain authoritative above it.
