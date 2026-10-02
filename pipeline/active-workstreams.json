@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T22:05:00Z",
+  "updated_at": "2026-10-02T22:30:00Z",
   "active": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
@@ -174,7 +174,10 @@
         ".github/workflows/valoria-mega-architecture-atlas-v1.yml",
         "pipeline/valoria-mega-architecture-atlas-v1-request.json",
         "AGENTS.md",
-        "SESSION_HANDOFF.md"
+        "SESSION_HANDOFF.md",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeDarkAuditV1.cs",
+        ".github/workflows/valoria-strongest-composite-dark-audit-v1.yml",
+        "pipeline/valoria-strongest-composite-dark-audit-v1-request.json"
       ],
       "resources": [
         "valoria-production-composition",
