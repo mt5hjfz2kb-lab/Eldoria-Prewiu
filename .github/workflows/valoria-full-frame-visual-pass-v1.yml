@@ -1,0 +1,56 @@
+name: "[EXPERIMENT] Valoria Full-Frame Visual Pass v1"
+on:
+  push:
+    branches: ['visual-proof/valoria-full-frame-visual-pass-v1']
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFullFrameVisualPassGate.cs'
+      - '.github/workflows/valoria-full-frame-visual-pass-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: valoria-full-frame-visual-pass-v1
+  cancel-in-progress: true
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if (-not (Get-Command git.exe -ErrorAction SilentlyContinue)) {
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'};$dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: {clean: false}
+      - name: Verify Toolchain Automation v2 route
+        shell: powershell
+        run: |
+          node tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\art-production-plan.json"
+          $p=Get-Content "$env:RUNNER_TEMP\art-production-plan.json" | ConvertFrom-Json
+          if($p.profile -ne 'environment_composition' -or $p.tripo_allowed -or $p.authorized_credit_cost -ne 0){throw 'Invalid full-frame route'}
+      - name: Capture real matched BEFORE AFTER
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaFullFrameVisualPassCaptures";$log="$env:RUNNER_TEMP\Valoria-FullFrame-v1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-refreshImportMode','InProcess','-job-worker-count','1','-executeMethod','Eldoria.EditorTools.ValoriaFullFrameVisualPassGate.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 400};throw "Full-frame gate failed: $($p.ExitCode)"}
+          foreach($n in @('before-19.png','before-12.png','before-9.png','before-mobile.png','after-19.png','after-12.png','after-9.png','after-mobile.png','evidence.json')){$f=Join-Path $folder $n;if(-not(Test-Path $f)){throw "Missing $n"}}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-full-frame-visual-pass-v1-${{ github.run_id }}
+          path: |
+            Unity/ValoriaFullFrameVisualPassCaptures/*
+            ${{ runner.temp }}/art-production-plan.json
+            ${{ runner.temp }}/Valoria-FullFrame-v1.log
+          if-no-files-found: warn
+          retention-days: 14
