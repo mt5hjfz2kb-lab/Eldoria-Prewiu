@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-backdrop-v1",
+  "objective": "Test a camera-matched Alps Field CC0 backdrop plane behind Valoria so the mountain valley can be framed exactly for the fixed orthographic gameplay camera, after the Open Valley cleanup.",
+  "route": "environment_composition",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "external_asset": {
+    "name": "Alps Field",
+    "provider": "Poly Haven",
+    "license": "CC0",
+    "runtime_persistence": false
+  },
+  "lanes": [
+    "atmosphere_horizon_depth",
+    "composition_and_mass",
+    "lighting_and_value_hierarchy"
+  ],
+  "constraints": {
+    "proof_only": true,
+    "preserve_camera": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_compact_footprint": true,
+    "no_paid_assets": true
+  },
+  "validation": [
+    "11_crops",
+    "desktop",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ]
+}
