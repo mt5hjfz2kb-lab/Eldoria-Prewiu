@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Release Windows runner for Benchmark Composite v2; Benchmark Composite v1 and Backdrop v3 are superseded by the integrated v2 proof.",
+  "reason": "Backdrop v3 is superseded by Benchmark Composite v2 and is occupying the only heavy Unity runner.",
   "runs": [
-    37065250953,
     37065287492
   ],
-  "triggered_at": "2026-10-02T22:47:00Z"
+  "triggered_at": "2026-10-02T22:48:00Z"
 }
