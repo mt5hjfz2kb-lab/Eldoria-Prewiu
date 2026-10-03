@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate retracted unified lower-city cliff v27: pull the procedural cliff mass back into the fortress foot, narrow its width, reduce vertical drop, and preserve all gameplay authority.",
+  "objective": "Diagnostic v29: hide only Valoria Cliff Island upper bastion rear to determine whether it is the remaining grey lower tongue in the integrated full-frame candidate.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:38:00+02:00",
-  "retry_reason": "v26 TECH PASS / VISUAL FAIL: the unified cliff removed floating pillars but formed an oversized grey skirt because it started too far forward, was too wide and had excessive uniform drop. v27 corrects only that geometry profile.",
-  "retry_seq": 37
+  "triggered_at": "2026-10-03T12:03:00+02:00",
+  "retry_reason": "Normal v3 cleanup is currently strongest. Blender v1-v3 did not improve the frame. Artifact audit points to upper bastion rear as the dominant remaining stone candidate in the tongue region; isolate it before any further geometry work.",
+  "retry_seq": 38
 }
