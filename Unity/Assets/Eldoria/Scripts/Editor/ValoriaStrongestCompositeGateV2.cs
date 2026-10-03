@@ -109,7 +109,10 @@ namespace Eldoria.EditorTools
             // the component in v35 accidentally exposed the full legacy staircase.
             ValoriaCompactStairMeshV1.Enabled=true;
             ValoriaCompactStairMeshV1.Build(root.transform,state);
-            int stairPieces=1;
+            // v38: Build is still required to suppress the legacy staircase, but the
+            // compact replacement itself is now hidden from the strongest full-frame.
+            int compactStairSuppressed=SuppressRendererChain("valoria · compact stair mesh v1");
+            int stairPieces=0;
             int terrainEdgeRocks=0;
 
             Physics.SyncTransforms();
@@ -140,6 +143,7 @@ namespace Eldoria.EditorTools
                 $"  \"terrain_visuals_hidden\": {terrainVisualsHidden},\n"+
                 $"  \"authored_lower_terrace_pieces\": {terracePieces},\n"+
                 $"  \"authored_stair_pieces\": {stairPieces},\n"+
+                $"  \"compact_stair_renderers_suppressed\": {compactStairSuppressed},\n"+
                 $"  \"terrain_edge_rock_meshes\": {terrainEdgeRocks},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
