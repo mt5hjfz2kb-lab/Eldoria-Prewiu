@@ -115,11 +115,11 @@ namespace Eldoria.EditorTools
             int stairPieces=0;
             int terrainEdgeRocks=0;
 
-            // v39 world-integration proof: rebuild the existing continuous mountain-valley
-            // layer after Open Valley has removed its historical instance. This layer is
-            // visual-only and exists specifically to eliminate exposed island/map edges.
-            ValoriaWorldFrameMountainTerrainV1.Enabled=true;
-            ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
+            // Visual Shell v2 method 1: replace the rejected v39-v41 world-frame
+            // geometry with a fixed-camera projected matte shell. It samples the exact
+            // Kiara backplate and adds only a soft contact grade around the fortress.
+            ValoriaWorldFrameMountainTerrainV1.Enabled=false;
+            bool visualShellBuilt=ValoriaVisualShellV2.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -151,6 +151,7 @@ namespace Eldoria.EditorTools
                 $"  \"authored_stair_pieces\": {stairPieces},\n"+
                 $"  \"compact_stair_renderers_suppressed\": {compactStairSuppressed},\n"+
                 $"  \"terrain_edge_rock_meshes\": {terrainEdgeRocks},\n"+
+                $"  \"visual_shell_v2_built\": {(visualShellBuilt?"true":"false")},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
