@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-visual-quality-breakthrough-v1",
   "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
   "profile": "environment_surface",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VQB candidate: accepted authored curtain wall rhythm + semantic PBR uplift on canonical Aserradero/Cuartel/Granero + intact canonical Hero Bastion wrapped by warm authored StoneArchitecture retaining interface. No segmentation, no Slavic replacement, no macrocomposition change, no paid tools."
+  "notes": "CLOSED 2026-10-03: TECH PASS / VISUAL FAIL. Final certified implementation 7a564bc5056bb7166b7704c313ae4db7d55d4530; run 37149992067; artifact 11284220007. Retain wall rhythm, semantic functional response, intact Hero/interface, continuous exterior surface, bounded occupation and HUD-safe hierarchy. Do not continue VQB micro-polish; see docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESULT.md."
 }
