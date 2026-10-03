@@ -1,0 +1,41 @@
+name: "[AUDIT] Hero Bastion geometry donor"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - visual-proof/valoria-composition-frame-v2
+    paths:
+      - 'tools/audit_hero_bastion_geometry.py'
+      - '.github/workflows/hero-bastion-geometry-audit.yml'
+
+jobs:
+  audit:
+    runs-on: [self-hosted, Windows, X64, eldoria-unity]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $candidate=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $candidate){throw 'Blender not found'}
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+      - name: Audit Hero Bastion GLB
+        shell: powershell
+        run: |
+          $env:BASTION_AUDIT_OUT="$env:RUNNER_TEMP\hero-bastion-geometry-audit.json"
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\audit_hero_bastion_geometry.py"
+          if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
+          Get-Content $env:BASTION_AUDIT_OUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hero-bastion-geometry-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/hero-bastion-geometry-audit.json
+          retention-days: 30
