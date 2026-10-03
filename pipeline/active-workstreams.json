@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T18:32:12.289Z",
-  "active": [],
+  "updated_at": "2026-10-03T18:49:00Z",
+  "active": [
+    {
+      "id": "valoria-visual-quality-breakthrough-v1",
+      "title": "Valoria Visual Quality Breakthrough v1",
+      "owner": "chat-valoria-visual-quality-breakthrough-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaBreakthrough*",
+        ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+        "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1*",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T18:49:00Z",
+      "base_main_sha": "fb348f7147caf65459e30a756dac8092ccde0b23",
+      "status": "active",
+      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops."
+    }
+  ],
   "history": [
     {
       "id": "valoria-asset-coherence-game-presentation-v1",
