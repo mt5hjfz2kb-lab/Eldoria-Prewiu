@@ -5,7 +5,6 @@ on:
     branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
     paths:
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaHeroSegmentationComparisonGateV1.cs"
-      - ".github/workflows/valoria-visual-quality-breakthrough-hero-comparison.yml"
       - "pipeline/candidates/valoria-vqb-hero-segmentation/**"
   workflow_dispatch:
 

@@ -1,25 +1,18 @@
-name: "[EXPERIMENT] Valoria Visual Quality Breakthrough v1"
+name: "[EXPERIMENT] Valoria Unified Visual Language Proof v1"
 
 on:
   push:
-    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    branches: [visual-proof/valoria-unified-visual-language-proof-v1]
     paths:
       - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
       - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
       - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
-      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
+
       - "pipeline/art-production-request.json"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedVisualLanguageV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedVisualLanguageGateV1.cs"
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
-      - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
-      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
-      - "pipeline/art-production-request.json"
 
 permissions:
   contents: write
@@ -92,10 +85,10 @@ jobs:
       - name: Capture breakthrough complete frame
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaVisualQualityBreakthroughV1Captures"
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaUnifiedVisualLanguageProofV1Captures"
           $log="$env:RUNNER_TEMP\ValoriaVisualQualityBreakthroughV1.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualQualityBreakthroughGateV1.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaUnifiedVisualLanguageGateV1.Capture','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(29)
           while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
@@ -119,9 +112,9 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-visual-quality-breakthrough-v1-${{ github.run_id }}
+          name: valoria-unified-visual-language-v1-${{ github.run_id }}
           path: |
-            Unity/ValoriaVisualQualityBreakthroughV1Captures/*
+            Unity/ValoriaUnifiedVisualLanguageProofV1Captures/*
             ${{ runner.temp }}/Coherence-HUD-PlayMode.*
             ${{ runner.temp }}/ValoriaVisualQualityBreakthroughV1.log
           if-no-files-found: warn
