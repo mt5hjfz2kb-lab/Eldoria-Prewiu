@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T14:46:00Z",
+  "updated_at": "2026-10-03T14:52:00Z",
   "active": [
     {
       "id": "valoria-shell-v2-bastion-continuity",
-      "title": "Valoria Visual Shell v2 — authored Bastion-to-city continuity",
+      "title": "Valoria Visual Shell v2 — fixed-camera authored DCC set",
       "owner": "chat-valoria-shell-v2-bastion-continuity-20261003",
       "scope": [
         "tools/valoria-shell-v2-bastion-continuity/**",
@@ -26,7 +26,7 @@
       "status": "active",
       "claimed_at": "2026-10-03T14:24:00Z",
       "base_main_sha": "e684ab69c677faab37fb62cf7c7821ecdf94ac10",
-      "dependency": "Two voxel/fused attempts and two photogrammetry-placement attempts are visually closed. New method must design one continuous macro landform in image space from Hero Bastion down to lower city, then conform/project detail from existing rock donor meshes; no scan plates, no voxel union, no Tripo, preserve gameplay/camera."
+      "dependency": "Latest complete macroform run 37130843614 is TECH PASS / VISUAL FAIL: composition still reads as independent layers with dark retaining/stair bars and no coherent mountain-to-city mass. Hero Bastion audit proves its 49,800-triangle geometry is one inseparable mesh. Stop-rule reclassification: author the full fixed-camera visual set in Blender (Hero Bastion + functional buildings + district + terrain/supports) as one composition; Unity keeps gameplay authority and hides duplicate renderers. No Tripo, zero spend."
     }
   ],
   "history": [
