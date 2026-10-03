@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-02T23:06:00Z",
-  "active": [
+  "updated_at": "2026-10-03T11:22:49Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
       "title": "Valoria Full-Frame Convergence Iterations 1–N",
@@ -229,13 +230,23 @@
         "runner-trigger-governance",
         "workflow-governance"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-02T19:20:00Z",
       "base_main_sha": "e329aebc332eea5e1a5937133b1f42240b64e0f7",
-      "dependency": "Continuous canonical full-frame loop. Renderer audit run 37074806574 is authoritative evidence for the next value-hierarchy batch; preserve gameplay topology/colliders/hotspots/circulation."
-    }
-  ],
-  "history": [
+      "dependency": "Continuous canonical full-frame loop. Renderer audit run 37074806574 is authoritative evidence for the next value-hierarchy batch; preserve gameplay topology/colliders/hotspots/circulation.",
+      "completed_at": "2026-10-03T11:22:49Z",
+      "result_commit": "0572848b791b86d45d5eeba8566fd312d8edb7d1",
+      "run_ids": [
+        37119361077,
+        37119382002
+      ],
+      "artifact_ids": [
+        11272528243,
+        11272473436
+      ],
+      "result": "HANDOFF. Stop all further visual convergence iterations. v41 world-frame mountain shell capture and strongest-composite validation completed successfully; no further visual runs or visual commits are authorized in this workstream.",
+      "next": "VALORIA VISUAL SHELL v2. Start from the real repository state and preserve gameplay/progression/hotspots/colliders/routes/cameras/automation/pipeline/asset library while rebuilding only the player-facing visual shell."
+    },
     {
       "id": "valoria-stair-landing-integration-v1",
       "title": "Valoria Stair / Landing Integration v1",
