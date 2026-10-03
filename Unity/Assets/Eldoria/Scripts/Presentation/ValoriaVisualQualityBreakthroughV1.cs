@@ -20,6 +20,7 @@ namespace Eldoria.Presentation
    HidePrimitiveMerlons(canonicalRoot);
    BuildAuthoredCurtainCaps(root);
    UpliftFunctionalMaterials(canonicalRoot);
+   UpliftContainedGround(canonicalRoot);
    StripGameplay(root.gameObject);
   }
 
@@ -93,6 +94,23 @@ namespace Eldoria.Presentation
    AdaptStone(go);
    StripGameplay(go);
    AuthoredWallModules++;
+  }
+
+
+  static void UpliftContainedGround(Transform root)
+  {
+   foreach(var r in root.GetComponentsInChildren<Renderer>(true))
+   {
+    if(r==null||!r.enabled)continue;
+    string n=Chain(r.transform);
+    if(!n.Contains("contained natural surround"))continue;
+    var src=r.sharedMaterial;
+    if(src==null||src.shader==null||src.shader.name!="Eldoria/Valoria Coherence"||!src.HasProperty("_WorldEdgeUplift"))continue;
+    var m=new Material(src){name="Valoria breakthrough continuous world edge"};
+    m.SetFloat("_WorldEdgeUplift",1f);
+    r.sharedMaterial=m;
+    ExteriorModules++;
+   }
   }
 
   static void UpliftFunctionalMaterials(Transform root)
