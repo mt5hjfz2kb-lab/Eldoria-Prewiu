@@ -25,34 +25,28 @@ namespace Eldoria.Presentation
             field=Surface(shader,"dirt",6,.61f);stone=Surface(shader,"stone",5,.72f);
             if(paving==null||earth==null||stone==null)throw new InvalidOperationException("CC0 source maps missing");
 
-            // One continuous approach supplies an outside-world destination, not another island.
-            Ribbon(root,"gate road · connected external approach",new[]{new Vector3(0,-.018f,-6.65f),new Vector3(-.4f,-.017f,-10f),new Vector3(-1.4f,-.012f,-15.5f),new Vector3(-3.1f,-.01f,-22f),new Vector3(-5.4f,-.008f,-30f)},new[]{2.45f,2.35f,2.20f,2.05f,1.85f},earth,0.65f);
-            ConnectorCount++;
-            // The city centre shares its material rhythm with the Bastion approach and gate.
-            Ribbon(root,"processional stone apron",new[]{new Vector3(0,.035f,-.5f),new Vector3(0,.041f,1.25f),new Vector3(0,.055f,2.90f),new Vector3(0,.09f,3.95f)},new[]{1.92f,2.02f,2.18f,2.32f},paving,.95f);
-            ConnectorCount++;
-            // Side buttress footprints sit at the access seam; central stair and C0 remain open.
-            Ribbon(root,"west architectural transition",new[]{new Vector3(-3.75f,.045f,3.75f),new Vector3(-3.30f,.06f,4.25f),new Vector3(-2.60f,.075f,4.68f)},new[]{.75f,.64f,.35f},stone,.7f);
-            Ribbon(root,"east architectural transition",new[]{new Vector3(3.75f,.045f,3.75f),new Vector3(3.30f,.06f,4.25f),new Vector3(2.60f,.075f,4.68f)},new[]{.75f,.64f,.35f},stone,.7f);
-            ConnectorCount+=2;
-
-            // Crop territory has bounded low relief, disconnected from all growth corridors and parcels.
-            // Fields use one source material grammar; no random surface carpet or high silhouette.
-            for(int side=-1;side<=1;side+=2)
-            {
-                for(int row=0;row<4;row++)
-                {
-                    float z=-10.1f-row*4.15f;
-                    Ribbon(root,"outer cultivated strip "+side+"/"+row,
-                        new[]{new Vector3(side*(11.9f+.22f*row),-.032f,z),new Vector3(side*(16.4f+.35f*row),-.026f,z-.42f),new Vector3(side*(21.4f+.36f*row),-.020f,z-.1f)},
-                        new[]{1.22f,1.55f,1.30f},row%2==0?field:earth,.67f);
-                    LandscapeSections++;
-                }
-            }
-            // A service track visually links the lumber working yard to the exterior but ends
-            // well before the reserved XW corridor at z +3.8.
-            Ribbon(root,"sawmill service spur",new[]{new Vector3(-7.7f,.025f,-1.6f),new Vector3(-9.4f,.012f,-2.8f),new Vector3(-11.2f,-.008f,-4.55f),new Vector3(-14.0f,-.023f,-7.4f)},new[]{.78f,.86f,1.02f,.90f},earth,.64f);
-            ConnectorCount++;
+            // One civic material and proportion rule for the existing gate, public court,
+            // work-yard approaches and Hero access. Empty future plots remain soil.
+            Ribbon(root,"central public street",
+                new[]{new Vector3(0,.026f,-5.45f),new Vector3(0,.035f,-2.8f),new Vector3(0,.044f,-.50f),new Vector3(0,.055f,1.9f),new Vector3(0,.067f,3.50f)},
+                new[]{1.86f,1.88f,2.15f,2.40f,2.55f},paving,.86f);ConnectorCount++;
+            Ribbon(root,"west work-yard walk",
+                new[]{new Vector3(-.95f,.043f,-1.55f),new Vector3(-2.4f,.044f,-1.45f),new Vector3(-3.45f,.045f,-1.48f)},
+                new[]{1.06f,1.06f,.87f},paving,.78f);ConnectorCount++;
+            Ribbon(root,"east training-yard walk",
+                new[]{new Vector3(.95f,.043f,-1.60f),new Vector3(2.4f,.044f,-1.52f),new Vector3(3.45f,.045f,-1.50f)},
+                new[]{1.04f,1.04f,.87f},paving,.78f);ConnectorCount++;
+            Ribbon(root,"west Hero access return",
+                new[]{new Vector3(-1.55f,.062f,2.55f),new Vector3(-2.40f,.075f,3.45f),new Vector3(-3.35f,.09f,4.05f)},
+                new[]{.80f,.78f,.45f},stone,.74f);ConnectorCount++;
+            Ribbon(root,"east Hero access return",
+                new[]{new Vector3(1.55f,.062f,2.55f),new Vector3(2.40f,.075f,3.45f),new Vector3(3.35f,.09f,4.05f)},
+                new[]{.80f,.78f,.45f},stone,.74f);ConnectorCount++;
+            // These are strictly temporary ground treatments, not construction or
+            // occupancy of R4/R5/R6. The full maximum building envelopes stay clear.
+            Patch(root,"R4 future quarry compacted earth",new Vector3(-6.25f,.028f,3.20f),4.80f,3.95f,earth,.48f);LandscapeSections++;
+            Patch(root,"R5 future forge compacted earth",new Vector3(6.25f,.028f,3.15f),4.55f,3.86f,earth,.48f);LandscapeSections++;
+            Patch(root,"R6 future hospital compacted earth",new Vector3(2.70f,.027f,-4.35f),4.10f,3.55f,earth,.48f);LandscapeSections++;
             foreach(var c in root.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in root.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
@@ -65,6 +59,12 @@ namespace Eldoria.Presentation
             m.SetFloat("_Family",family);m.SetFloat("_Ground",family==5?0:1);
             m.SetFloat("_BumpScale",0);m.SetFloat("_Smoothness",.055f);
             m.SetColor("_BaseColor",new Color(value,value,value,1));return m;
+        }
+
+        static void Patch(Transform parent,string name,Vector3 centre,float width,float depth,Material material,float density)
+        {
+            var pts=new[]{centre+new Vector3(0,0,-depth*.5f),centre+new Vector3(0,0,depth*.5f)};
+            Ribbon(parent,name,pts,new[]{width,width},material,density);
         }
 
         static void Ribbon(Transform parent,string name,Vector3[] points,float[] widths,Material material,float uvDensity)
