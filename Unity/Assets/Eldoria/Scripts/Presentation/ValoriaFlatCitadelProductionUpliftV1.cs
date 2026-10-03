@@ -297,71 +297,65 @@ namespace Eldoria.Presentation
 
         static void BuildPrimaryAxisProduction(Transform root)
         {
-            var roadMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.50f,1f),"stone",new Vector2(2.0f,2.0f),1.0f);
-            var plazaMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.62f,.60f,.55f,1f),"stone",new Vector2(1.7f,1.7f),1.0f);
+            // After the first ground run, prefer deterministic mesh overlays over imported road tiles:
+            // the thin overlays are camera-stable in URP and keep the hierarchy readable at 19/12/9/mobile.
+            var road=ValoriaKit.DetailedSurfaceMaterial(new Color(.56f,.54f,.49f,1f),"stone",new Vector2(2.1f,2.1f),1.05f);
+            var plaza=ValoriaKit.DetailedSurfaceMaterial(new Color(.62f,.60f,.55f,1f),"stone",new Vector2(2.5f,2.5f),.92f);
+            var edge=ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.29f,.22f,1f),"earth",new Vector2(2.0f,2.0f),.85f);
 
-            // One calm civic plaza, surrounded by narrower streets. These are mesh ribbons with UVs,
-            // so their material language remains stable across editor batchmode and mobile review.
-            AddIrregularGroundPatch(root,"production central plaza",
-                new[]{new Vector2(-3.10f,-1.55f),new Vector2(3.05f,-1.45f),new Vector2(3.25f,2.55f),
-                      new Vector2(2.55f,3.15f),new Vector2(-2.65f,3.10f),new Vector2(-3.30f,2.15f)},
-                .126f,new Color(.62f,.60f,.55f,1f),"stone",plazaMat);
+            AddSlab(root,"production central plaza",new Vector3(0,.132f,.70f),new Vector3(6.55f,.05f,5.15f),plaza);
 
-            AddRoadRibbon(root,"main civic road",
-                new[]{new Vector3(0f,.132f,-6.0f),new Vector3(-.08f,.132f,-4.25f),new Vector3(.06f,.132f,-2.30f),
-                      new Vector3(-.04f,.132f,-.45f),new Vector3(.04f,.132f,1.60f),new Vector3(0f,.132f,4.55f)},
-                1.22f,roadMat);
+            // Main processional street from gate to Bastion. Segment rhythm gives a worn authored path
+            // while remaining one unmistakable axis rather than a uniform white rectangle.
+            for(int i=0;i<7;i++)
+            {
+                float z=-5.45f+i*1.42f;
+                float x=(i==2?-.10f:i==4?.08f:0f);
+                AddSlab(root,"production main street "+i,new Vector3(x,.145f,z),
+                    new Vector3(2.65f+(i%2)*.12f,.035f,1.52f),road);
+            }
+            for(int side=-1;side<=1;side+=2)
+            for(int i=0;i<3;i++)
+            {
+                float x=side*(2.15f+i*1.55f);
+                AddSlab(root,"production branch street "+side+" "+i,new Vector3(x,.143f,-1.0f),
+                    new Vector3(1.70f,.033f,1.55f),road);
+            }
 
-            AddRoadRibbon(root,"west branch",
-                new[]{new Vector3(-.55f,.131f,-.85f),new Vector3(-2.3f,.131f,-.95f),new Vector3(-4.25f,.131f,-1.05f),
-                      new Vector3(-6.15f,.131f,-1.15f),new Vector3(-7.55f,.131f,-1.45f)},
-                .80f,roadMat);
-            AddRoadRibbon(root,"east branch",
-                new[]{new Vector3(.55f,.131f,-.85f),new Vector3(2.3f,.131f,-.95f),new Vector3(4.25f,.131f,-1.05f),
-                      new Vector3(6.10f,.131f,-1.25f),new Vector3(7.45f,.131f,-1.50f)},
-                .80f,roadMat);
+            // Dirt shoulders soften the road-to-parcel jump without rebuilding topography.
+            AddSlab(root,"production west road shoulder",new Vector3(-2.0f,.128f,-2.65f),new Vector3(1.05f,.025f,4.25f),edge);
+            AddSlab(root,"production east road shoulder",new Vector3( 2.0f,.128f,-2.65f),new Vector3(1.05f,.025f,4.25f),edge);
 
             ValoriaKit.Cylinder("Valoria · Flat Citadel Production · plaza plinth",
-                new Vector3(0,.24f,.70f),new Vector3(.64f,.16f,.64f),WarmStone,Quaternion.identity);
+                new Vector3(0,.25f,.70f),new Vector3(.64f,.16f,.64f),WarmStone,Quaternion.identity);
             ValoriaKit.Banner("Valoria · Flat Citadel Production · central standard",
                 new Vector3(0,1.25f,.70f),new Vector3(.42f,1.35f,.06f),Blue);
         }
 
-        static void AddRoadRibbon(Transform root,string role,Vector3[] centers,float halfWidth,Material mat)
+        static void CreateSurfacePolygon(Transform root,string role,Vector2[] ring,float y,Material material)
         {
-            if(centers==null||centers.Length<2)return;
-            int n=centers.Length;
-            var verts=new Vector3[n*2];
-            var uv=new Vector2[n*2];
-            float total=0f;
-            var distances=new float[n];
-            for(int i=1;i<n;i++){total+=Vector3.Distance(centers[i-1],centers[i]);distances[i]=total;}
+            int n=ring.Length;
+            var verts=new Vector3[n+1];
+            Vector2 center=Vector2.zero;
+            for(int i=0;i<n;i++)center+=ring[i];
+            center/=n;
+            verts[0]=new Vector3(center.x,y,center.y);
+            for(int i=0;i<n;i++)verts[i+1]=new Vector3(ring[i].x,y,ring[i].y);
+
+            // Write both windings: presentation surfaces remain visible regardless of imported camera/cull convention.
+            var tris=new int[n*6];
             for(int i=0;i<n;i++)
             {
-                Vector3 dir;
-                if(i==0)dir=centers[1]-centers[0];
-                else if(i==n-1)dir=centers[n-1]-centers[n-2];
-                else dir=centers[i+1]-centers[i-1];
-                dir.y=0f;dir.Normalize();
-                var side=new Vector3(-dir.z,0f,dir.x)*halfWidth;
-                verts[i*2]=centers[i]-side;
-                verts[i*2+1]=centers[i]+side;
-                float v=distances[i]/Mathf.Max(.001f,halfWidth*2f);
-                uv[i*2]=new Vector2(0f,v);uv[i*2+1]=new Vector2(1f,v);
+                int a=i+1,b=((i+1)%n)+1,t=i*6;
+                tris[t]=0;tris[t+1]=b;tris[t+2]=a;
+                tris[t+3]=0;tris[t+4]=a;tris[t+5]=b;
             }
-            var tris=new int[(n-1)*6];
-            for(int i=0;i<n-1;i++)
-            {
-                int v=i*2,t=i*6;
-                tris[t]=v;tris[t+1]=v+2;tris[t+2]=v+1;
-                tris[t+3]=v+1;tris[t+4]=v+2;tris[t+5]=v+3;
-            }
-            var mesh=new Mesh{name="Valoria Flat Citadel road · "+role};
-            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var mesh=new Mesh{name="Valoria Flat Citadel Production · "+role};
+            mesh.vertices=verts;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject("Valoria · Flat Citadel Production · "+role);
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=true;
+            var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.receiveShadows=true;
         }
 
         static void BuildBastionRise(Transform root)
