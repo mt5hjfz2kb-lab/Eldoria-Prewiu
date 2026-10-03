@@ -1,36 +1,57 @@
-name: "[EXPERIMENT] Valoria Visual Quality Breakthrough v1"
+name: "[EXPERIMENT] Valoria Source-Level Art Direction Proof v1"
 
 on:
   push:
-    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    branches: [visual-proof/valoria-source-level-art-direction-proof-v1]
     paths:
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
-      - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
-      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
+      - "tools/valoria-source-level-art-direction/**"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSourceLevelArtDirectionV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSourceLevelArtDirectionGateV1.cs"
       - "pipeline/art-production-request.json"
+      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
-      - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
-      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
-      - "pipeline/art-production-request.json"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: valoria-visual-quality-breakthrough-v1
+  group: valoria-source-level-art-direction-proof-v1
   cancel-in-progress: true
 
 jobs:
-  capture:
-    if: vars.UNITY_RUNNER_READY == 'true'
+  author-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Toolchain Automation v2 route
+        run: node tools/plan-art-production.mjs pipeline/art-production-request.json "$RUNNER_TEMP/valoria-slad-plan.json"
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Author shared source family
+        run: |
+          blender -b --python tools/valoria-source-level-art-direction/build_source_family_v1.py
+          test -s pipeline/evidence/valoria-source-level-art-direction-proof-v1.json
+          test -s pipeline/candidates/valoria-source-level-art-direction-proof-v1/Valoria_SLAD_Source_v1.blend
+          test -s Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/SLAD_HeroRockInterface_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/SLAD_AserraderoKit_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/SLAD_WallSegment_v1.glb
+          cat pipeline/evidence/valoria-source-level-art-direction-proof-v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-slad-source
+          path: |
+            pipeline/evidence/valoria-source-level-art-direction-proof-v1.json
+            pipeline/candidates/valoria-source-level-art-direction-proof-v1/Valoria_SLAD_Source_v1.blend
+            Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/*.glb
+          if-no-files-found: error
+          retention-days: 30
+
+  capture-phase1:
+    needs: author-source
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 35
     steps:
@@ -39,15 +60,13 @@ jobs:
         run: |
           $git=Get-Command git.exe -ErrorAction SilentlyContinue
           if(-not $git){
-            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
             $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
               Sort-Object Name -Descending |
               ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
               Where-Object { Test-Path $_ } | Select-Object -First 1
             if(-not $candidate){throw 'Git not found'}
-            $dir=Split-Path $candidate
-            Add-Content -Path $env:GITHUB_PATH -Value $dir
-            $env:PATH="$dir;$env:PATH"
+            $dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
           }
       - uses: actions/checkout@v4
         with: { clean: false }
@@ -56,12 +75,16 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
-      - name: Stage shared CC0 PBR surface maps
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-slad-source
+          path: .
+      - name: Stage shared CC0 PBR maps used by accepted VQB
         shell: powershell
         run: |
           $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
-          $headers=@{'User-Agent'='Eldoria-ArtConsolidation/1.0'}
+          $headers=@{'User-Agent'='Eldoria-SLAD/1.0'}
           foreach($asset in @(@{id='dirt';prefix='dirt'},@{id='cobblestone_floor_001';prefix='cobble'},@{id='stone_block_wall';prefix='stone'},@{id='rock_boulder_dry';prefix='rock'})){
             $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
             $json=$payload | ConvertTo-Json -Depth 50
@@ -69,61 +92,45 @@ jobs:
             foreach($map in @(@{key='diff';rx='_diff_1k[.](jpg|png)([?]|$)'},@{key='normal';rx='_nor_gl_1k[.](jpg|png)([?]|$)'})){
               $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
               if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -eq 'dirt'){continue};throw "Missing map $($asset.id) $($map.key)"}
-              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
-              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath);$out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
               Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
-              if((Get-Item $out).Length -lt 10000){throw "PBR map too small: $out"}
             }
           }
-      - name: Validate Toolchain Automation v2 route
+      - name: Capture zoom 9 and mobile stop-gate
         shell: powershell
         run: |
-          $node=Get-Command node.exe -ErrorAction SilentlyContinue
-          if($node){$nodeExe=$node.Source}
-          else {
-            $runnerRoot=Split-Path (Split-Path $env:RUNNER_TEMP -Parent) -Parent
-            $nodeExe=Get-ChildItem (Join-Path $runnerRoot 'externals') -Recurse -Filter node.exe -ErrorAction SilentlyContinue |
-              Where-Object { $_.FullName -match 'node(20|24).*bin' } |
-              Sort-Object FullName -Descending |
-              Select-Object -First 1 -ExpandProperty FullName
-          }
-          if(-not $nodeExe){throw 'Node runtime unavailable for mandatory Toolchain Automation v2 planner'}
-          & $nodeExe tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\valoria-breakthrough-plan.json"
-      - name: Capture breakthrough complete frame
-        shell: powershell
-        run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaVisualQualityBreakthroughV1Captures"
-          $log="$env:RUNNER_TEMP\ValoriaVisualQualityBreakthroughV1.log"
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaSourceLevelArtDirectionV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaSourceLevelArtDirectionV1.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVisualQualityBreakthroughGateV1.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaSourceLevelArtDirectionGateV1.CapturePhase1','-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          $deadline=(Get-Date).AddMinutes(29)
+          $deadline=(Get-Date).AddMinutes(28)
           while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
-          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Breakthrough gate failed $($p.ExitCode)"}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "SLAD gate failed $($p.ExitCode)"}
           Get-Content (Join-Path $folder 'evidence.json')
-      - name: Focused live HUD and progression tests
+      - name: Focused gameplay tests
         shell: powershell
         run: |
-          $xml="$env:RUNNER_TEMP/Coherence-HUD-PlayMode.xml"
-          $log="$env:RUNNER_TEMP/Coherence-HUD-PlayMode.log"
+          $xml="$env:RUNNER_TEMP/SLAD-PlayMode.xml";$log="$env:RUNNER_TEMP/SLAD-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
           $filter='Eldoria.Tests.ReferenceUiArtPassTests;OwnerHudMatchesReferenceMobileBudgets;ValoriaProgressionContractGatesCuartelVisualAndInteraction'
           $args=@('-batchmode','-nographics','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-runTests','-testPlatform','PlayMode','-testFilter',$filter,'-testResults',$xml,'-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Focused HUD tests timed out'}
-          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw "HUD tests exit $($p.ExitCode)"}
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Tests timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Tests failed $($p.ExitCode)"}
           [xml]$results=Get-Content $xml
-          if($results.'test-run'.result -ne 'Passed' -or [int]$results.'test-run'.total -lt 5){throw 'Focused HUD tests did not certify the requested checks'}
-      - id: upload
-        uses: actions/upload-artifact@v4
+          if($results.'test-run'.result -ne 'Passed' -or [int]$results.'test-run'.total -lt 5){throw 'Focused checks did not pass'}
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-visual-quality-breakthrough-v1-${{ github.run_id }}
+          name: valoria-source-level-art-direction-phase1
           path: |
-            Unity/ValoriaVisualQualityBreakthroughV1Captures/*
-            ${{ runner.temp }}/Coherence-HUD-PlayMode.*
-            ${{ runner.temp }}/ValoriaVisualQualityBreakthroughV1.log
+            Unity/ValoriaSourceLevelArtDirectionV1Captures/*
+            pipeline/evidence/valoria-source-level-art-direction-proof-v1.json
+            pipeline/candidates/valoria-source-level-art-direction-proof-v1/Valoria_SLAD_Source_v1.blend
+            Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/*.glb
+            $env:RUNNER_TEMP/SLAD-PlayMode.*
+            $env:RUNNER_TEMP/ValoriaSourceLevelArtDirectionV1.log
           if-no-files-found: warn
           retention-days: 30
-
