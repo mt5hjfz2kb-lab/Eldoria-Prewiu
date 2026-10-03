@@ -78,6 +78,7 @@ namespace Eldoria.EditorTools
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int auditPruned=PruneAuditConfirmedLowerResidue();
             int premium=ReplaceSecondaryArchitecture(root.transform);
+            int localSupports=AddLocalLowerSupports(root.transform);
             int ruins=0;
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
@@ -108,6 +109,7 @@ namespace Eldoria.EditorTools
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
                 $"  \"terrain_surface_samples\": {ValoriaLowerCityTerrainV1.SurfaceSamples},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
+                $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
                 $"  \"existing_assets_only\": true,\n"+
@@ -282,7 +284,11 @@ namespace Eldoria.EditorTools
                     chain.Contains("vpd · groundkit west plot seam · seam earth")||
                     chain.Contains("vpd · groundkit east plot seam · seam earth");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam)
+                bool floatingCleanupProps=
+                    chain.Contains("valoria · cliff cleanup · barrel")||
+                    chain.Contains("valoria · cliff cleanup · crate");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps)
                 {
                     r.enabled=false;
                     count++;
@@ -419,6 +425,29 @@ namespace Eldoria.EditorTools
             return loaded;
         }
 
+        static int AddLocalLowerSupports(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null||art.SlavicFlatRock==null)return 0;
+
+            var supportRoot=new GameObject("Valoria · Strongest v2 · local lower supports").transform;
+            supportRoot.SetParent(root,true);
+
+            int count=0;
+            count+=Add(supportRoot,art.SlavicFlatRock,"sawmill local bed",
+                new Vector3(-7.18f,-.10f,-2.78f),3.55f,.82f,18f,new Color(.50f,.49f,.45f,1f));
+            count+=Add(supportRoot,art.SlavicFlatRock,"barracks local bed",
+                new Vector3(6.60f,-.12f,-3.82f),3.70f,.88f,196f,new Color(.49f,.48f,.44f,1f));
+
+            // One smaller shoulder each ties the buildings back toward the stair/central rock
+            // without rebuilding a full-width lower platform.
+            count+=Add(supportRoot,art.SlavicFlatRock,"sawmill inner shoulder",
+                new Vector3(-5.55f,-.18f,-2.55f),2.10f,.58f,42f,new Color(.46f,.46f,.42f,1f));
+            count+=Add(supportRoot,art.SlavicFlatRock,"barracks inner shoulder",
+                new Vector3(5.05f,-.18f,-3.35f),2.15f,.58f,214f,new Color(.46f,.46f,.42f,1f));
+            return count;
+        }
+
         static int AddBuriedSideRuins(Transform root)
         {
             var art=ValoriaExternalAssetLibrary.Load();
@@ -522,7 +551,7 @@ namespace Eldoria.EditorTools
                 var b=r.bounds;
                 if(Mathf.Max(b.size.x,Mathf.Max(b.size.y,b.size.z))<.42f)continue;
                 var v=c.WorldToViewportPoint(b.center);
-                if(v.z<=0f||v.x<-.08f||v.x>1.08f||v.y<-.08f||v.y>1.08f)continue;
+                if(v.z<=0f||v.x<-.12f||v.x>1.12f||v.y<-.30f||v.y>1.08f)continue;
 
                 var mats=new System.Text.StringBuilder();
                 float minLum=99f,maxLum=-1f;
