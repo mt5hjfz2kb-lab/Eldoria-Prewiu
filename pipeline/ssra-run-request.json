@@ -1,6 +1,6 @@
 {
-  "enabled": true,
-  "nonce": "phase1-20261004-e2",
+  "enabled": false,
+  "nonce": "closed-final-20261004",
   "scope": "source-authoring-and-zoom9-mobile",
-  "note": "final visual variant 2: integrated rich transition, no Hero prism band"
+  "note": "Definitive closure after two visual variants. Do not auto-run."
 }
