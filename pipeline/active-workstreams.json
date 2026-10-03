@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T18:49:00Z",
+  "updated_at": "2026-10-03T19:06:30Z",
   "active": [
     {
       "id": "valoria-visual-quality-breakthrough-v1",
@@ -14,7 +14,10 @@
         ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
         "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1*",
         "pipeline/art-production-request.json",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "tools/valoria-visual-quality-breakthrough/**",
+        ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
+        "pipeline/evidence/valoria-vqb-hero-audit.json"
       ],
       "resources": [
         "valoria-production-composition",
@@ -24,7 +27,7 @@
       "claimed_at": "2026-10-03T18:49:00Z",
       "base_main_sha": "fb348f7147caf65459e30a756dac8092ccde0b23",
       "status": "active",
-      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops."
+      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops. After two placement-family visual attempts (candidate 1 regression; candidate 2 marginal), anti-loop escalates to zero-spend Blender source audit/authoring before any further Unity placement iteration."
     }
   ],
   "history": [
