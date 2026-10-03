@@ -52,14 +52,85 @@ namespace Eldoria.Presentation
             if(topRock.HasProperty("_Tiling"))topRock.SetFloat("_Tiling",.070f);
             if(topRock.HasProperty("_Smoothness"))topRock.SetFloat("_Smoothness",.10f);
 
-            // v21: the procedural terrace family hit its visual ceiling. Use the
-            // already-certified PBR Terrain & Terrace GLBs as the visible substrate.
-            // These instances remain presentation-only and own no gameplay geometry.
-            BuildCertifiedSubstrate(root);
+            // v26: v22-v25b prove the existing terrace library cannot create a single
+            // continuous lower-city mass at the official camera. Build one visual-only
+            // authored cliff substrate and reuse the existing production rock material.
+            // Gameplay colliders, hotspots and the real stair route remain untouched.
+            BuildUnifiedCliffMass(root,rock);
+        }
 
-            // v25: legacy edge dressing produced small detached pillars/rocks at the
-            // official camera. The certified substrate below now owns the complete
-            // lower approach silhouette, so do not layer those old fragments on top.
+        static void BuildUnifiedCliffMass(Transform root,Material rock)
+        {
+            var go=new GameObject("Valoria · Lower City unified cliff mass v1");
+            go.transform.SetParent(root,false);
+            var mf=go.AddComponent<MeshFilter>();
+            var mr=go.AddComponent<MeshRenderer>();
+            mr.sharedMaterial=rock;
+
+            // Longitudinal sections climb directly into the existing hero-island foot.
+            // Five vertices per section create a broad rocky ridge with sloped shoulders;
+            // the central stair stays just above this visual-only substrate.
+            var z=new[]{-.35f,.65f,1.65f,2.75f,3.85f,4.95f,5.95f};
+            var half=new[]{3.55f,4.05f,4.55f,4.95f,5.15f,5.05f,4.72f};
+            var topY=new[]{.16f,.38f,.70f,1.00f,1.30f,1.60f,1.88f};
+            var drop=new[]{1.05f,1.12f,1.18f,1.22f,1.24f,1.20f,1.12f};
+
+            var v=new List<Vector3>();
+            var uv=new List<Vector2>();
+            var tris=new List<int>();
+
+            for(int i=0;i<z.Length;i++)
+            {
+                float wobble=Mathf.Sin(i*1.83f)*.14f;
+                float h=half[i];
+                float y=topY[i]+Mathf.Sin(i*2.27f)*.035f;
+                float low=y-drop[i];
+
+                v.Add(new Vector3(-h-.48f+wobble,low,z[i]-.08f));
+                v.Add(new Vector3(-h*.58f+wobble*.35f,y-.16f,z[i]+.04f));
+                v.Add(new Vector3(wobble*.18f,y,z[i]));
+                v.Add(new Vector3(h*.58f+wobble*.20f,y-.13f,z[i]-.03f));
+                v.Add(new Vector3(h+.48f+wobble*.15f,low+.04f,z[i]+.07f));
+
+                for(int k=0;k<5;k++)
+                {
+                    var p=v[v.Count-5+k];
+                    uv.Add(new Vector2(p.x*.105f,p.z*.105f));
+                }
+            }
+
+            for(int i=0;i<z.Length-1;i++)
+            {
+                int a=i*5,b=(i+1)*5;
+                for(int k=0;k<4;k++)
+                {
+                    tris.Add(a+k);tris.Add(b+k+1);tris.Add(a+k+1);
+                    tris.Add(a+k);tris.Add(b+k);tris.Add(b+k+1);
+                }
+            }
+
+            // Close the front/rear faces so the approach reads as one mountain mass.
+            tris.Add(0);tris.Add(2);tris.Add(1);
+            tris.Add(0);tris.Add(4);tris.Add(2);
+            tris.Add(2);tris.Add(4);tris.Add(3);
+            int e=(z.Length-1)*5;
+            tris.Add(e);tris.Add(e+1);tris.Add(e+2);
+            tris.Add(e);tris.Add(e+2);tris.Add(e+4);
+            tris.Add(e+2);tris.Add(e+3);tris.Add(e+4);
+
+            var mesh=new Mesh{name="Valoria Lower City Unified Cliff Mass v1"};
+            mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.SetVertices(v);
+            mesh.SetTriangles(tris,0);
+            mesh.SetUVs(0,uv);
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.RecalculateBounds();
+            mf.sharedMesh=mesh;
+
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+            PiecesBuilt=1;
         }
 
         static void BuildCertifiedSubstrate(Transform root)
