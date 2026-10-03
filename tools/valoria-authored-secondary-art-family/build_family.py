@@ -122,7 +122,7 @@ def build_sawmill_from_canonical():
 
     zs=[(o.matrix_world@v.co).z for v in me.vertices]
     zmin,zmax=min(zs),max(zs);h=max(1e-6,zmax-zmin)
-    counts=[0,0,0,0]
+    samples=[]
     for p in me.polygons:
         centre=o.matrix_world@p.center
         zn=(centre.z-zmin)/h
@@ -130,18 +130,39 @@ def build_sawmill_from_canonical():
         rgb=sample_face_rgb(o,p,image)
         lum=.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]
         warm=rgb[0]-(rgb[2]*.92)
-        # Foundation: entire low band + low vertical support.
-        if zn < .19:
+        samples.append((p,zn,normal,rgb,lum,warm))
+
+    # Derive timber from the asset's own albedo distribution instead of absolute RGB thresholds.
+    # This is robust to Blender's color-space conversion and keeps the classification source-led.
+    vertical_mid=[x for x in samples if .14<=x[1]<=.78 and abs(x[2].z)<.48]
+    vertical_lums=sorted(x[4] for x in vertical_mid)
+    if not vertical_lums: raise RuntimeError("No mid-height vertical faces available for semantic split")
+    q_index=max(0,min(len(vertical_lums)-1,int(len(vertical_lums)*.32)))
+    timber_lum_threshold=vertical_lums[q_index]
+    warm_values=sorted(x[5] for x in vertical_mid)
+    warm_median=warm_values[len(warm_values)//2]
+
+    counts=[0,0,0,0]
+    lum_stats={"min":min(x[4] for x in samples),"max":max(x[4] for x in samples),
+               "timber_threshold":timber_lum_threshold,"warm_median":warm_median}
+    for p,zn,normal,rgb,lum,warm in samples:
+        # Foundation: conservative lower band only. The canonical mesh geometry is unchanged.
+        if zn < .135:
             idx=0
-        # Roof: upper sloped/horizontal surfaces; avoid chimney-like verticals.
-        elif zn > .53 and normal.z > .28:
+        # Roof: upper surfaces with a clear upward-facing component.
+        elif zn > .50 and normal.z > .20:
             idx=2
-        # Timber: dark/warm albedo regions or narrow near-vertical structural areas.
-        elif (lum < .34 and warm > .015) or (zn>.18 and zn<.72 and abs(normal.z)<.22 and lum<.44 and warm>.03):
+        # Timber: darkest third of plausible structural vertical faces, with a small warm-color assist.
+        elif .14<=zn<=.78 and abs(normal.z)<.48 and (lum<=timber_lum_threshold or (lum<=timber_lum_threshold*1.18 and warm>=warm_median)):
             idx=1
         else:
             idx=3
         p.material_index=idx;counts[idx]+=1
+
+    total_faces=max(1,sum(counts))
+    if counts[1] < total_faces*.04: raise RuntimeError("Semantic timber split too small: %s"%counts)
+    if counts[2] < total_faces*.02: raise RuntimeError("Semantic roof split too small: %s"%counts)
+    if counts[3] < total_faces*.10: raise RuntimeError("Semantic infill split too small: %s"%counts)
 
     me.calc_loop_triangles()
     return "Valoria_Authored_Aserradero_v1.glb",{
@@ -149,6 +170,7 @@ def build_sawmill_from_canonical():
         "triangles":len(me.loop_triangles),
         "vertices":len(me.vertices),
         "semantic_face_counts":{"foundation":counts[0],"timber":counts[1],"roof":counts[2],"infill":counts[3]},
+        "semantic_thresholds":lum_stats,
         "source_image":image.name if image else None
     }
 
