@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact stepped lower-city terrain v22: remove the oversized detached BroadRockPlatform and seat the lower city on three compact certified SteppedRockTerrace instances close to the stair and functional buildings.",
+  "objective": "Validate embedded lower-city composition v23: remove the isolated central stepped support, tuck two certified rock shelves beneath compact lower architecture, and pull presentation-only buildings into the fortress nucleus while preserving gameplay routes/colliders/hotspots.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:43:00+02:00",
-  "retry_reason": "v21 TECH PASS / VISUAL FAIL: the certified BroadRockPlatform was too large and detached at the official camera, reading as a monumental platform in front of Valoria. v22 removes it and keeps only compact certified stepped terrain seating.",
-  "retry_seq": 27
+  "triggered_at": "2026-10-03T10:51:00+02:00",
+  "retry_reason": "v22 TECH PASS / VISUAL INSUFFICIENT: the broad platform was reduced, but three isolated stepped supports and detached lower buildings still made the city read as separate floating pieces. v23 attacks macro integration only.",
+  "retry_seq": 28
 }
