@@ -82,15 +82,20 @@ namespace Eldoria.EditorTools
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
             int routeStyled=StyleCoreRoute();
-            ValoriaLowerCityPlateauV1.Enabled=false;
-            ValoriaLowerCityTerrainV1.Enabled=true;
-            ValoriaLowerCityTerrainV1.Build(root.transform,state);
+            ValoriaLowerCityTerrainV1.Enabled=false;
+            ValoriaLowerCityPlateauV1.Enabled=true;
+            ValoriaLowerCityPlateauV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
 
             SaveSet(c,"after",p,t);
+            ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
+            Save(c,Folder+"/after-reference-8.1.png",p,new Vector3(0f,3.95f,5.90f),8.1f,1280,720);
+            ValoriaBackplateCandidateV1.FitAspect(390f/844f);
+            Save(c,Folder+"/after-reference-mobile.png",p,new Vector3(0f,3.95f,5.90f),8.1f,390,844);
+            ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
             WriteVisibleRendererAudit(c,Folder+"/visible-renderers.tsv");
             File.WriteAllText(Folder+"/evidence.json",$"{{\n"+
                 $"  \"collider_hotspot_signature_equal\": true,\n"+
@@ -265,7 +270,19 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · residual cleanup · rock mid west")||
                     chain.Contains("valoria · residual cleanup · rock mid east");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks)
+                bool supersededHeroSupports=
+                    chain.Contains("assetlibrary reprocessing · hero lower terrace")||
+                    chain.Contains("assetlibrary reprocessing · hero upper terrace")||
+                    chain.Contains("assetlibrary reprocessing · hero approach seam")||
+                    chain.Contains("assetlibrary reprocessing · hero defensive flank")||
+                    chain.Contains("valoria · rescued seam · bastion west shelf")||
+                    chain.Contains("valoria · rescued seam · bastion east shelf");
+
+                bool broadPlotSeam=
+                    chain.Contains("vpd · groundkit west plot seam · seam earth")||
+                    chain.Contains("vpd · groundkit east plot seam · seam earth");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam)
                 {
                     r.enabled=false;
                     count++;
