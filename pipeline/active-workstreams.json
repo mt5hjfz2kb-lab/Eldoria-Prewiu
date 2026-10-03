@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:05:00Z",
-  "active": [
+  "updated_at": "2026-10-03T20:23:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-authored-secondary-art-family-v1",
       "title": "Valoria Authored Secondary Art Family v1",
@@ -25,11 +26,18 @@
       ],
       "claimed_at": "2026-10-03T20:05:00Z",
       "base_main_sha": "71b9aa018297b59965eaa4d23ad75fcb2393a71b",
-      "status": "active",
-      "dependency": "Start from closed VQB experimental BEFORE 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve locked Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP. Do not reopen VQB micro-polish, terrain/island/mountain families, wholesale Slavic/Mega replacement, Hero height segmentation, or paid generation. First proof only: source-authored coherent modular roof/stone/timber/foundation language for Aserradero plus one wall/gate support pair. Expand only if matched 19/12/9/mobile evidence shows a clear benchmark jump."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "dependency": "Start from closed VQB experimental BEFORE 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve locked Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP. Do not reopen VQB micro-polish, terrain/island/mountain families, wholesale Slavic/Mega replacement, Hero height segmentation, or paid generation. First proof only: source-authored coherent modular roof/stone/timber/foundation language for Aserradero plus one wall/gate support pair. Expand only if matched 19/12/9/mobile evidence shows a clear benchmark jump.",
+      "completed_at": "2026-10-03T20:23:00Z",
+      "result_commit": "2437438af220d473de32ee112a06e2379b02f83c",
+      "final_branch_head": "b52c3e78c3be7f1a2b8027fc73c5350890942cf0",
+      "branch": "visual-proof/valoria-authored-secondary-art-family-v1",
+      "run_id": 37151178579,
+      "artifact_id": 11283369532,
+      "result_doc": "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md",
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Blender source authoring is proven: canonical Aserradero can be semantically segmented without geometry loss, shared authored Stone/Timber/Slate maps are viable, and canonical wall/gate support sources can be reauthored at zero paid cost. Integrated baseline/authored-complete/source-preserving/source-atlas-v2 comparison preserved gameplay signature, F1 envelope, gate route and macrocomposition. None produced the required clear benchmark jump; full rebuild loses richness and shared-atlas v2 reads over-saturated/banded. No Cuartel/Granero expansion or production promotion.",
+      "next": "ART-DIRECTION DECISION BOUNDARY. Do not open another isolated asset/material/micro-polish pass. The next meaningful move is a whole-frame visual-language choice: retain the current semi-realistic mixed-source shell and accept its ceiling, or deliberately rebase the player-facing visual shell toward a unified authored/stylized language while preserving gameplay, Flat Citadel geography, parcel reservations and systems."
+    },
     {
       "id": "valoria-visual-quality-breakthrough-v1",
       "title": "Valoria Visual Quality Breakthrough v1",
