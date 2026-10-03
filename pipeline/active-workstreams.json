@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:53:17.150Z",
-  "active": [],
+  "updated_at": "2026-10-03T20:57:22.596Z",
+  "active": [
+    {
+      "id": "valoria-authored-gameplay-cell-art-direction-v1",
+      "title": "Valoria Authored Gameplay Cell Art Direction v1",
+      "owner": "work-authored-cell-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAuthoredGameplayCellV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredGameplayCellGateV1.cs",
+        "tools/valoria-authored-gameplay-cell/**",
+        "docs/VALORIA_AUTHORED_GAMEPLAY_CELL*",
+        "pipeline/art-production-request.json",
+        ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:57:22.596Z",
+      "base_main_sha": "aa85fd0f30bec7c760350e8a5273b1b19319a13d",
+      "status": "active",
+      "dependency": "Accepted VQB visual 7a564bc; prior unified proof not promoted. One authored gameplay cell and real 19/12/9/mobile gate; preserve fixed Flat Citadel/parcels/gameplay; zero paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-unified-visual-language-proof-v1",
