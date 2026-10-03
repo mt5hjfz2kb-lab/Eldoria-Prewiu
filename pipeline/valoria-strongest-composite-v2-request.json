@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate open world-frame valley v40: preserve the v38/v39 strongest fortress composition and world-frame side/rear mountain relief, but remove all central/front world-frame triangles so no grey sheet appears beneath Valoria and the photographic valley remains visible through the basin.",
+  "objective": "Validate v41 world-frame mountain shell using existing Valoria mountain, cliff and hill resources only.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:18:00+02:00",
-  "retry_reason": "v39 TECH PASS / VISUAL FAIL: continuous terrain removed the floating-island read but created a giant flat grey foreground sheet. v40 keeps only lateral/rear mountain cells and opens a real central valley hole.",
-  "retry_seq": 51
+  "triggered_at": "2026-10-03T13:26:00+02:00",
+  "retry_reason": "v40 exposed visible terrain wedges; v41 removes the procedural terrain sheet and uses only discrete library mountain masses around the frame.",
+  "retry_seq": 52
 }
