@@ -77,6 +77,7 @@ namespace Eldoria.EditorTools
             WriteEvidence();
             File.WriteAllLines(Folder+"/asset-audit.txt",ValoriaAssetCoherenceV1.Audit);
             File.WriteAllText(Folder+"/coherence-metrics.json",$"{{\"materials\":{ValoriaAssetCoherenceV1.MaterialCount},\"population\":{ValoriaAssetCoherenceV1.PopulationCount},\"ground_triangles\":{ValoriaAssetCoherenceV1.GroundTriangles}}}");
+            File.WriteAllText(Folder+"/breakthrough-metrics.json",$"{{\"hidden_legacy_wall_renderers\":{ValoriaVisualQualityBreakthroughV1.HiddenLegacyWallRenderers},\"authored_wall_modules\":{ValoriaVisualQualityBreakthroughV1.AuthoredWallModules},\"secondary_foundation_modules\":{ValoriaVisualQualityBreakthroughV1.SecondaryFoundationModules},\"bastion_transition_modules\":{ValoriaVisualQualityBreakthroughV1.BastionTransitionModules},\"exterior_modules\":{ValoriaVisualQualityBreakthroughV1.ExteriorModules}}}");
             Debug.Log("VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_GATE=PASS");
             EditorApplication.Exit(0);
         }
@@ -172,6 +173,7 @@ namespace Eldoria.EditorTools
                 $"  \"meta_systems_without_reserved_world_plot\": [\"Codice\",\"Relicario\"],\n"+
                 $"  \"long_range_growth_interfaces\": [\"XW\",\"XE\",\"XU\",\"XS\"],\n"+
                 $"  \"canonical_hud_capture\": true,\n"+
+                $"  \"visual_quality_breakthrough\": true,\n"+
                 $"  \"visual_state_bastion_level\": 6,\n"+
                 $"  \"hud_contract_scope\": \"current Unity Bastion I-II slice (captured independently of art-tier state)\",\n"+
                 $"  \"tripo_credits\": 0\n"+
