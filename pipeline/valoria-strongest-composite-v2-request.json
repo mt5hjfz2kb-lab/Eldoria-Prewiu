@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate stair-free strongest composition v38: preserve v37 hero-first functional layout, run the compact stair builder only to suppress the legacy staircase, then hide the compact replacement renderer as well so no detached foreground stair remains.",
+  "objective": "Validate world-integration proof v39: preserve the current stair-free dedicated functional composition, then rebuild the existing visual-only World Frame Mountain Terrain after Open Valley so Valoria no longer reads as an isolated floating island.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:12:00+02:00",
-  "retry_reason": "v37 is the strongest composition so far, but the compact stair replacement still peeks below the island as a detached visual fragment. v38 removes only that presentation renderer while preserving the gameplay route and legacy-stair suppression.",
-  "retry_seq": 49
+  "triggered_at": "2026-10-03T13:31:00+02:00",
+  "retry_reason": "v38 TECH PASS / VISUAL INSUFFICIENT: the lower functional composition is cleaner, but the benchmark explicitly forbids isolated prefab islands and the full frame still exposes a floating island edge against the photographic backplate. v39 tests the repo's existing continuous mountain-valley layer as a single-variable fix.",
+  "retry_seq": 50
 }
