@@ -22,15 +22,26 @@ namespace Eldoria.Presentation
             root=new GameObject("Valoria · Composition Frame v2").transform;
             root.SetParent(parent,true);
             VisualPieces=0;RestoredFunctionalRenderers=0;
-            ground=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",new Color(.63f,.61f,.54f),new Vector2(.43f,.43f),.02f,.90f);
+            var shader=Shader.Find("Eldoria/ValoriaCompositionGround");
+            if(shader==null)throw new Exception("Composition ground shader missing.");
+            ground=new Material(shader){name="Valoria v2 · blended rock and earth"};
+            foreach(var pair in new[]{("_RockTex","rock_diff"),("_GroundTex","dirt_diff"),("_RockNormal","rock_normal")})
+            {
+                var tex=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+pair.Item2);
+                if(tex==null)throw new Exception("Shared surface missing: "+pair.Item2);
+                tex.wrapMode=TextureWrapMode.Repeat;
+                tex.anisoLevel=8;
+                ground.SetTexture(pair.Item1,tex);
+            }
             rock=ValoriaKit.ExternalPbrSurfaceMaterial("rock",new Color(.76f,.75f,.69f),new Vector2(.52f,.52f),.035f,.95f);
             stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.77f,.75f,.68f),new Vector2(.54f,.54f),.035f,.92f);
             if(ground==null||rock==null||stone==null)throw new Exception("Composition frame shared PBR maps missing.");
             BuildConnectedBedrock();
             RestoreFunctional("Aserradero · dedicated sawmill");
             RestoreFunctional("Cuartel · dedicated barracks");
-            Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(-2.6f,.34f,-5.2f),2.6f,2.1f,16f);
+            Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(-2.6f,.34f,-6.1f),3.3f,2.7f,16f);
             BuildMasonry();
+            Add("Valoria/MidTierArchitectureKit_v1/Piece03","upper civic service",new Vector3(-5.15f,1.7f,5.8f),2.1f,2.55f,12f);
             BuildRoute();
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
@@ -64,8 +75,7 @@ namespace Eldoria.Presentation
         {
             const int n=145;
             var vertices=new Vector3[n*n];var uvs=new Vector2[n*n];
-            var groundTris=new System.Collections.Generic.List<int>();
-            var rockTris=new System.Collections.Generic.List<int>();
+            var tris=new System.Collections.Generic.List<int>();
             for(int j=0;j<n;j++)for(int i=0;i<n;i++)
             {
                 float x=Mathf.Lerp(-13.8f,13.8f,i/(float)(n-1));
@@ -75,16 +85,14 @@ namespace Eldoria.Presentation
             for(int j=0;j<n-1;j++)for(int i=0;i<n-1;i++)
             {
                 int a=j*n+i,b=a+1,c=a+n,d=c+1;
-                var list=(Mathf.Abs(vertices[d].y-vertices[a].y)>.21f)?rockTris:groundTris;
-                list.Add(a);list.Add(c);list.Add(b);list.Add(b);list.Add(c);list.Add(d);
+                tris.Add(a);tris.Add(c);tris.Add(b);tris.Add(b);tris.Add(c);tris.Add(d);
             }
             var mesh=new Mesh{name="Valoria v2 · one connected city bedrock",indexFormat=IndexFormat.UInt32};
-            mesh.vertices=vertices;mesh.uv=uvs;mesh.subMeshCount=2;
-            mesh.SetTriangles(groundTris,0);mesh.SetTriangles(rockTris,1);
+            mesh.vertices=vertices;mesh.uv=uvs;mesh.triangles=tris.ToArray();
             mesh.RecalculateNormals();mesh.RecalculateTangents();mesh.RecalculateBounds();
             var go=new GameObject(mesh.name);go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterials=new[]{ground,rock};
+            go.AddComponent<MeshRenderer>().sharedMaterial=ground;
             VisualPieces++;
         }
         static void RestoreFunctional(string name)
@@ -99,11 +107,12 @@ namespace Eldoria.Presentation
             var specs=new[]{
                 ("west rock wall",new Vector3(-5.0f,1.25f,4.0f),30f,2.25f,1.65f),
                 ("east rock wall",new Vector3(5.0f,1.25f,4.0f),205f,2.25f,1.65f),
-                ("west civic retaining",new Vector3(-6.6f,.40f,.4f),36f,2.9f,1.65f),
-                ("east civic retaining",new Vector3(6.6f,.40f,.4f),207f,2.9f,1.65f)
+                ("west civic retaining",new Vector3(-4.8f,.85f,1.1f),36f,4.2f,2.1f),
+                ("east civic retaining",new Vector3(4.8f,.85f,1.1f),207f,4.2f,2.1f)
             };
             foreach(var s in specs)
-                Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition",s.Item1,s.Item2,s.Item4,s.Item5,s.Item3);
+                Add("Valoria/StoneArchitectureKit_v1/"+(s.Item1.Contains("civic")?"HighStraightWall":"RockToWallTransition"),
+                    s.Item1,s.Item2,s.Item4,s.Item5,s.Item3);
         }
         static void BuildRoute()
         {
