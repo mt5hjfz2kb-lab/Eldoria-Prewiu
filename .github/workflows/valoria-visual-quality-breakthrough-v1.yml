@@ -73,15 +73,6 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
-      - name: Stage segmented Hero candidates
-        shell: powershell
-        run: |
-          $src="$env:GITHUB_WORKSPACE\pipeline\candidates\valoria-vqb-hero-segmentation"
-          $dst="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\VQBSegments"
-          if(-not (Test-Path $src)){throw "Persisted Hero segmentation candidates missing: $src"}
-          New-Item -ItemType Directory -Force -Path $dst | Out-Null
-          Copy-Item "$src\*.glb" $dst -Force
-          if((Get-ChildItem $dst -Filter '*.glb').Count -lt 3){throw "Expected three segmented Hero candidates"}
       - name: Stage shared CC0 PBR surface maps
         shell: powershell
         run: |
