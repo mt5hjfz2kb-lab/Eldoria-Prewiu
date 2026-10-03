@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Candidate 2 after visual rejection of candidate 1. Retain accepted wall and surround. Test only canonical Mid-Tier annex silhouettes inside F1/F2/F3 and authored RockToWall/landing interface at Hero Bastion. No paid tools, no macro change."
+  "notes": "Hero segmentation Unity A/B/C validation. Compare canonical vs low14/low20/low26 at 19/12/9/mobile. Preserve gameplay signature, Flat Citadel, parcel map and zero paid credits. Select only if visual integration improves at first glance."
 }
