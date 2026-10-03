@@ -1,0 +1,95 @@
+name: "[EXPERIMENT] Valoria Authored Secondary Family Comparison"
+
+on:
+  push:
+    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
+    paths:
+      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredSecondaryArtFamilyGateV1.cs"
+      - ".github/workflows/valoria-authored-secondary-art-family-comparison.yml"
+      - "pipeline/candidates/valoria-authored-secondary-art-family-v1/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-authored-secondary-art-family-comparison
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Stage authored family candidates
+        shell: powershell
+        run: |
+          $src="$env:GITHUB_WORKSPACE\pipeline\candidates\valoria-authored-secondary-art-family-v1"
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\AuthoredSecondaryCandidates"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          Copy-Item "$src\*.glb" $dest -Force
+          if((Get-ChildItem $dest -Filter '*.glb').Count -lt 6){throw 'Expected six authored candidate GLBs'}
+      - name: Stage shared CC0 PBR maps
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-AuthoredSecondary/1.0'}
+          foreach($asset in @(@{id='dirt';prefix='dirt'},@{id='cobblestone_floor_001';prefix='cobble'},@{id='stone_block_wall';prefix='stone'},@{id='rock_boulder_dry';prefix='rock'})){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            foreach($map in @(@{key='diff';rx='_diff_1k[.](jpg|png)([?]|$)'},@{key='normal';rx='_nor_gl_1k[.](jpg|png)([?]|$)'})){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -eq 'dirt'){continue};throw "Missing map $($asset.id) $($map.key)"}
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){throw "PBR map too small: $out"}
+            }
+          }
+      - name: Capture integrated family comparison
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaAuthoredSecondaryArtFamilyV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaAuthoredSecondaryArtFamilyV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaAuthoredSecondaryArtFamilyGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(33)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Authored family gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 400};throw "Authored family gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-authored-secondary-family-comparison-${{ github.run_id }}
+          path: |
+            Unity/ValoriaAuthoredSecondaryArtFamilyV1Captures/*
+            ${{ runner.temp }}/ValoriaAuthoredSecondaryArtFamilyV1.log
+          if-no-files-found: warn
+          retention-days: 30
