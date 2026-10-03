@@ -102,6 +102,24 @@ def irregular_slab(name,unity_center,width,depth,thickness,cut=.75):
     return o
 
 a=parse_args()
+
+# CI diagnostic: PowerShell can collapse Blender's Python traceback into NativeCommandError.
+# Persist the full exception into the report artifact before Blender exits.
+import traceback
+def _eldoria_excepthook(exc_type, exc_value, exc_tb):
+    payload={
+        "status":"BLENDER_SCRIPT_EXCEPTION",
+        "error_type":getattr(exc_type,"__name__",str(exc_type)),
+        "error":str(exc_value),
+        "traceback":"".join(traceback.format_exception(exc_type,exc_value,exc_tb))
+    }
+    try:
+        os.makedirs(os.path.dirname(a.report),exist_ok=True)
+        with open(a.report,"w",encoding="utf-8") as f: json.dump(payload,f,indent=2)
+    finally:
+        sys.__excepthook__(exc_type,exc_value,exc_tb)
+sys.excepthook=_eldoria_excepthook
+
 bpy.ops.wm.read_factory_settings(use_empty=True)
 workspace=os.environ.get("GITHUB_WORKSPACE",os.getcwd())
 mesh_dir=os.path.join(workspace,"Unity","Assets","EmaceArt","Slavic World Free","Meshes")
