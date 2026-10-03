@@ -181,21 +181,12 @@ namespace Eldoria.Presentation
             if(wall==null)return;
             AddModule(root,wall,role+" curtain",p,span,maxHeight,yaw,Stone);
 
-            // Low buttresses break silhouette and repetition without introducing another tower.
+            // Low pilaster modules break silhouette and repetition without introducing another tower.
             Vector3 axis=Mathf.Abs(Mathf.DeltaAngle(yaw,90f))<25f?Vector3.forward:Vector3.right;
             for(int i=-1;i<=1;i+=2)
             {
                 var bp=p+axis*(span*.37f*i);
-                var b=GameObject.CreatePrimitive(PrimitiveType.Cube);
-                b.name="Valoria · Art Consolidation · "+role+" buttress";
-                b.transform.SetParent(root,true);
-                b.transform.position=bp+new Vector3(0,.58f,0);
-                b.transform.rotation=Quaternion.Euler(0,yaw,0);
-                b.transform.localScale=(axis==Vector3.right)
-                    ?new Vector3(.36f,1.12f,.64f)
-                    :new Vector3(.64f,1.12f,.36f);
-                b.GetComponent<Renderer>().sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(StoneDark,"stone",new Vector2(1.8f,1.8f),1.0f);
-                var col=b.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
+                AddModule(root,wall,role+" pilaster "+i,bp,.82f,Mathf.Min(1.34f,maxHeight*.86f),yaw,StoneDark);
             }
         }
 
@@ -329,9 +320,63 @@ namespace Eldoria.Presentation
                 Quaternion.Euler(0,yaw,0),tint);
             if(go==null)throw new InvalidOperationException("Failed wall/interface module: "+role);
             go.transform.SetParent(root,true);
+            NormalizeImportedStone(go,tint);
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             ConsolidatedWallModules++;
+        }
+
+        static void NormalizeImportedStone(GameObject go,Color tint)
+        {
+            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(lit==null)return;
+
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var src=renderer.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    var old=src[i];
+                    if(old==null){dst[i]=null;continue;}
+
+                    Texture baseMap=null,normal=null;
+                    Vector2 scale=Vector2.one,offset=Vector2.zero;
+                    foreach(string prop in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Albedo"})
+                    {
+                        if(!old.HasProperty(prop)||old.GetTexture(prop)==null)continue;
+                        baseMap=old.GetTexture(prop);
+                        try{scale=old.GetTextureScale(prop);offset=old.GetTextureOffset(prop);}catch{}
+                        break;
+                    }
+                    foreach(string prop in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(old.HasProperty(prop)&&old.GetTexture(prop)!=null){normal=old.GetTexture(prop);break;}
+
+                    var m=new Material(lit){name="Valoria Art Consolidation stone · "+old.name};
+                    if(baseMap!=null)
+                    {
+                        if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",baseMap);m.SetTextureScale("_BaseMap",scale);m.SetTextureOffset("_BaseMap",offset);}
+                        if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",baseMap);m.SetTextureScale("_MainTex",scale);m.SetTextureOffset("_MainTex",offset);}
+                    }
+                    if(normal!=null&&m.HasProperty("_BumpMap"))
+                    {
+                        m.SetTexture("_BumpMap",normal);
+                        m.SetFloat("_BumpScale",.92f);
+                        m.EnableKeyword("_NORMALMAP");
+                    }
+
+                    var baseColor=Color.Lerp(new Color(.73f,.70f,.64f,1f),tint,.22f);
+                    baseColor.a=1f;
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",baseColor);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",baseColor);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
+                    if(m.HasProperty("_SpecularHighlights"))m.SetFloat("_SpecularHighlights",1f);
+                    if(m.HasProperty("_EnvironmentReflections"))m.SetFloat("_EnvironmentReflections",1f);
+                    dst[i]=m;
+                }
+                renderer.sharedMaterials=dst;
+            }
         }
 
         static void AddBanner(Transform root,Vector3 p,float scale)
