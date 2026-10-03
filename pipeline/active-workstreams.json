@@ -1,8 +1,31 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:43:13.109Z",
-  "active": [],
+  "updated_at": "2026-10-03T12:47:21.946Z",
+  "active": [
+    {
+      "id": "valoria-shell-v2-authored-environment",
+      "title": "Valoria Visual Shell v2 — camera-authored terrace and retaining-wall assembly",
+      "owner": "chat-valoria-shell-v2-authored-environment-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        ".github/workflows/valoria-composition-frame-v2.yml",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T12:47:21.946Z",
+      "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
+      "dependency": "Distinct image-space authored terrace/wall architecture experiment after five visually failed generic landform and assembly methods. Reuse existing branch/workflow, no Tripo, preserve gameplay signature and camera; one category-scale proof before stop-rule decision."
+    }
+  ],
   "history": [
     {
       "id": "valoria-shell-v2-composition-frame",
