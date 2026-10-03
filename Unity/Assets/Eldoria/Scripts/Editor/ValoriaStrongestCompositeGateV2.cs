@@ -82,6 +82,12 @@ namespace Eldoria.EditorTools
             // creates the detached grey tongue without contributing visible fortress mass.
             // Keep it suppressed in the strongest candidate.
             int upperRearSuppressed=SuppressRendererChain("valoria · cliff island · upper bastion rear");
+            // Scan-conformed Shell v2 replaces the remaining detached upper Cliff Island pair.
+            upperRearSuppressed+=SuppressRendererChain("valoria · cliff island · upper bastion west");
+            upperRearSuppressed+=SuppressRendererChain("valoria · cliff island · upper bastion east");
+            // The scan-conformed transition now owns this surface; keeping the old VPD sheet
+            // would mask the donor texture and reintroduce the platform reading.
+            upperRearSuppressed+=SuppressRendererChain("vpd · upper terrace earth");
             // v33 diagnostic composition: remove the entire substitute secondary family.
             // This isolates whether current library architecture is helping or hurting the
             // hero-first reference match. Gameplay buildings/hotspots remain authoritative.
@@ -118,17 +124,16 @@ namespace Eldoria.EditorTools
             // v39 world-integration proof: rebuild the existing continuous mountain-valley
             // layer after Open Valley has removed its historical instance. This layer is
             // visual-only and exists specifically to eliminate exposed island/map edges.
-            ValoriaWorldFrameMountainTerrainV1.Enabled=true;
-            ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
-
-            bool bastionContinuity=Resources.Load<GameObject>("Valoria/ExperimentalBastionContinuity/ValoriaBastionContinuity")!=null;
-            if(bastionContinuity)ValoriaBastionContinuityV2.Build(root.transform,state);
+            ValoriaWorldFrameMountainTerrainV1.Enabled=false;
+            ValoriaCompositionFrameV2.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
 
             SaveSet(c,"after",p,t);
+            SaveSet(c,"after-west",p+new Vector3(-6,0,0),t+new Vector3(-6,0,0));
+            SaveSet(c,"after-east",p+new Vector3(6,0,0),t+new Vector3(6,0,0));
             ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
             Save(c,Folder+"/after-reference-8.1.png",p,new Vector3(0f,3.95f,5.90f),8.1f,1280,720);
             ValoriaBackplateCandidateV1.FitAspect(390f/844f);
