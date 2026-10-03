@@ -62,9 +62,11 @@ namespace Eldoria.Presentation
 
         static void BuildCertifiedSubstrate(Transform root)
         {
-            AddCertifiedTerrain(root,"BroadRockPlatform","central bed",new Vector3(0f,0f,-.62f),-.02f,8.25f,8f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","west shoulder",new Vector3(-3.35f,0f,-.66f),.04f,4.20f,24f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","east shoulder",new Vector3(3.35f,0f,-.72f),.04f,4.20f,204f);
+            // v22: BroadRockPlatform proved visually oversized/detached at the official camera.
+            // Keep only the certified stepped terrain family and use it as compact rock seating.
+            AddCertifiedTerrain(root,"SteppedRockTerrace","central stair foot",new Vector3(0f,0f,-.10f),.08f,4.65f,8f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","west shoulder",new Vector3(-3.45f,0f,-.18f),.10f,3.55f,28f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","east shoulder",new Vector3(3.45f,0f,-.20f),.10f,3.55f,208f);
         }
 
         static void AddCertifiedTerrain(Transform root,string resource,string role,Vector3 anchor,float topY,float span,float yaw)
