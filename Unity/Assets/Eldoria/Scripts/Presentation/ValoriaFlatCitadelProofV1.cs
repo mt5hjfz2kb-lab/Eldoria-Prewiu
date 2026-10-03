@@ -131,6 +131,7 @@ namespace Eldoria.Presentation
         static void BuildFunctionalArchitecture(Transform root, PlayerState state)
         {
             FunctionalBuildings=0;
+            int before=0;
 
             var heroSource=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
             if(heroSource!=null)
@@ -144,7 +145,7 @@ namespace Eldoria.Presentation
             }
             else
             {
-                int before=root.childCount;
+                before=root.childCount;
                 ValoriaKit.BastionCore("Bastion · Flat Citadel",new Vector3(0,.78f,7.25f),Glow);
                 ReparentNew(root,before); FunctionalBuildings++;
             }
