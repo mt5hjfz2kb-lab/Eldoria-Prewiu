@@ -78,10 +78,10 @@ namespace Eldoria.EditorTools
             int suppressed=SuppressDisconnectedResidue();
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int auditPruned=PruneAuditConfirmedLowerResidue();
-            // v29 diagnostic: isolate the remaining grey lower tongue. This renderer is
-            // presentation-only Cliff Island geology; hide only this candidate and judge
-            // the full frame before deciding whether the suppression can be promoted.
-            int diagnosticRearSuppressed=SuppressRendererChain("valoria · cliff island · upper bastion rear");
+            // v30: v29 full-frame evidence proved this presentation-only rear terrace
+            // creates the detached grey tongue without contributing visible fortress mass.
+            // Keep it suppressed in the strongest candidate.
+            int upperRearSuppressed=SuppressRendererChain("valoria · cliff island · upper bastion rear");
             int premium=ReplaceSecondaryArchitecture(root.transform);
             int localSupports=0;
             int ruins=0;
@@ -122,7 +122,7 @@ namespace Eldoria.EditorTools
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
                 $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
                 $"  \"audit_pruned_renderers\": {auditPruned},\n"+
-                $"  \"diagnostic_upper_bastion_rear_suppressed\": {diagnosticRearSuppressed},\n"+
+                $"  \"upper_bastion_rear_suppressed\": {upperRearSuppressed},\n"+
                 $"  \"core_route_renderers_styled\": {routeStyled},\n"+
                 $"  \"core_side_renderers_toned\": {sideToneAdjusted},\n"+
                 $"  \"core_side_visuals_reframed\": {coreVisualsReframed},\n"+
@@ -444,7 +444,7 @@ namespace Eldoria.EditorTools
                 {
                     if(src[i]==null){dst[i]=null;continue;}
                     var m=new Material(src[i]){name="Valoria · sawmill grounded · "+src[i].name};
-                    var tint=new Color(.54f,.45f,.34f,1f);
+                    var tint=new Color(.43f,.40f,.35f,1f);
                     if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
                     else if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.06f);
@@ -747,11 +747,14 @@ namespace Eldoria.EditorTools
                     if(src[i]==null){dst[i]=null;continue;}
                     var m=new Material(src[i]){name="Valoria Strongest v2 · "+src[i].name};
                     string n=(r.name+" "+src[i].name).ToLowerInvariant();
+                    // v30: pull the certified secondary kit into the same Valoria language
+                    // as the hero Bastion: cool slate roofs, desaturated timber and warm stone.
+                    // We keep the source PBR textures/normals and only modulate base colour.
                     Color tint=(n.Contains("roof")||n.Contains("tile")||n.Contains("shingle"))
-                        ?new Color(.34f,.37f,.38f,1f)
+                        ?new Color(.25f,.31f,.35f,1f)
                         :(n.Contains("wood")||n.Contains("beam")||n.Contains("timber"))
-                            ?new Color(.36f,.28f,.21f,1f)
-                            :new Color(.67f,.63f,.55f,1f);
+                            ?new Color(.31f,.28f,.24f,1f)
+                            :new Color(.61f,.60f,.56f,1f);
                     if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
                     else if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
                     if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
