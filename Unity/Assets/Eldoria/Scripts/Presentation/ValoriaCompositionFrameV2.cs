@@ -72,9 +72,9 @@ namespace Eldoria.Presentation
         {
             // Architecture-first candidate: compact inhabited bands carry the eye from city to Bastion.
             // Rock is only a buried/supporting mass; there are no exposed terrain boards.
-            // Distinct method: Blender fuses certified rock/terrace support forms into one manifold city foundation.
-            ValoriaFusedTransitionV2.Build(root,state);
-            VisualPieces+=ValoriaFusedTransitionV2.RenderersBuilt;
+            // Distinct method: full-width CC0 photogrammetric geology replaces the island/substrate family.
+            ValoriaPhotogrammetryMidgroundV2.Build(root,state);
+            VisualPieces+=ValoriaPhotogrammetryMidgroundV2.RenderersBuilt;
 
             // Bring the gate's visual-only functional clones into the city section.
             PlaceExistingPresentation("Valoria · Strongest v2 · compact sawmill visual",
