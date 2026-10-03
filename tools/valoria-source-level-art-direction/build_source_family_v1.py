@@ -17,7 +17,8 @@ def mat(name,color,rough=.8,metal=0.0):
     b.inputs["Roughness"].default_value=rough
     b.inputs["Metallic"].default_value=metal
     return m
-bpy.ops.wm.read_factory_settings(use_empty=True)\nSTONE=mat("SLAD Warm Limestone",(0.47,0.43,0.35),.88)
+bpy.ops.wm.read_factory_settings(use_empty=True)
+STONE=mat("SLAD Warm Limestone",(0.47,0.43,0.35),.88)
 STONE_DARK=mat("SLAD Foundation Stone",(0.31,0.30,0.27),.92)
 TIMBER=mat("SLAD Dark Oak",(0.19,0.105,0.055),.78)
 SLATE=mat("SLAD Blue Slate",(0.15,0.20,0.23),.9)
