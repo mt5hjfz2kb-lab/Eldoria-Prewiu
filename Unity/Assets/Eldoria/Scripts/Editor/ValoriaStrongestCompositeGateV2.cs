@@ -313,7 +313,14 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · workshop court")||
                     chain.Contains("valoria · barracks apron");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts)
+                bool legacyStairDressing=
+                    chain.Contains("valoria · worn tread skin")||
+                    chain.Contains("vpd · retaining stone face")||
+                    chain.Contains("valoria · stair cheek stone")||
+                    chain.Contains("valoria · upper landing cheek")||
+                    chain.Contains("valoria · retaining foundation stone");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing)
                 {
                     r.enabled=false;
                     count++;
