@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T19:34:30Z",
-  "active": [
+  "updated_at": "2026-10-03T20:04:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-visual-quality-breakthrough-v1",
       "title": "Valoria Visual Quality Breakthrough v1",
@@ -37,11 +38,18 @@
       ],
       "claimed_at": "2026-10-03T18:49:00Z",
       "base_main_sha": "fb348f7147caf65459e30a756dac8092ccde0b23",
-      "status": "active",
-      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops. After two placement-family visual attempts (candidate 1 regression; candidate 2 marginal), anti-loop escalates to zero-spend Blender source audit/authoring before any further Unity placement iteration. Library audit escalation: run one normalized secondary-architecture lineup before authoring/replacing any family. Functional GLB source audit: prove material/submesh separability before any source reauthoring. Hero component-height segmentation low14/20/26 captured in run 37148183339 and visually rejected: low14 marginal, low20/low26 damage support silhouette. Next wall-family selection must use normalized lineup before integration."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops. After two placement-family visual attempts (candidate 1 regression; candidate 2 marginal), anti-loop escalates to zero-spend Blender source audit/authoring before any further Unity placement iteration. Library audit escalation: run one normalized secondary-architecture lineup before authoring/replacing any family. Functional GLB source audit: prove material/submesh separability before any source reauthoring. Hero component-height segmentation low14/20/26 captured in run 37148183339 and visually rejected: low14 marginal, low20/low26 damage support silhouette. Next wall-family selection must use normalized lineup before integration.",
+      "completed_at": "2026-10-03T20:04:00Z",
+      "result_commit": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "final_branch_head": "5822ce13cf43f34277be1a83e2afbf813838147b",
+      "run_id": 37149992067,
+      "artifact_id": 11284220007,
+      "result": "TECH PASS / VISUAL FAIL. Real first-glance improvement retained: non-uniform continuous wall rhythm, semantic PBR hierarchy on canonical functional buildings, intact Hero with architectural interface wrapping, continuous exterior surface uplift plus bounded occupation cues, and responsive real Unity HUD with canonical interaction budgets. Final focused HUD/progression tests pass. Flat Citadel and all parcel reservations remain intact; 0 paid/Tripo credits. Still below benchmark because secondary source-art richness, world depth and premium material coherence remain visibly behind Hero Bastion / commercial target.",
+      "next": "VALORIA AUTHORED SECONDARY ART FAMILY v1. Source-level Blender/material authoring proof for a coherent reusable secondary architecture family (start with Aserradero + one wall/gate support pair); preserve Flat Citadel, parcel map and current VQB as BEFORE. No further VQB micro-polish.",
+      "branch": "visual-proof/valoria-visual-quality-breakthrough-v1",
+      "result_doc": "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESULT.md"
+    },
     {
       "id": "valoria-asset-coherence-game-presentation-v1",
       "title": "Valoria Asset Coherence & Game Presentation v1",
