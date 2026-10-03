@@ -28,7 +28,11 @@ namespace Eldoria.Presentation
                 ?? ValoriaKit.DetailedSurfaceMaterial(
                     new Color(.245f,.27f,.25f,1f),"earth",new Vector2(5.2f,5.2f),1.18f);
 
-            BuildContinuousValley(root.transform,material);
+            // v41: the procedural terrain sheet was rejected in v39/v40 because
+            // even with a central hole its triangulated silhouette read as a test-map panel.
+            // Use only real library mountain/cliff masses around the frame and keep the
+            // photographic valley completely open between them.
+            BuildLibraryMountainShell(root.transform);
             BuildMarginOccupation(root.transform);
         }
 
@@ -115,6 +119,26 @@ namespace Eldoria.Presentation
                 }
             }
             CreateMeshObject(root,"open mountain valley frame",verts,uv,triList.ToArray(),material);
+        }
+
+        static void BuildLibraryMountainShell(Transform root)
+        {
+            var mountain=Resources.Load<GameObject>("Valoria/SM_Mountains_11");
+            var cliffA=Resources.Load<GameObject>("Valoria/SM_Cliffs_01");
+            var cliffB=Resources.Load<GameObject>("Valoria/SM_Cliffs_03");
+            var hill=Resources.Load<GameObject>("Valoria/SM_Hills_01");
+
+            // Near flanks: cliffs sit outside the hero island and visually continue its geology.
+            AddFramePrefab(root,cliffA,"west near cliff",new Vector3(-13.2f,-1.05f,4.6f),8.2f,4.0f,28f,new Color(.42f,.43f,.40f,1f));
+            AddFramePrefab(root,cliffB,"east near cliff",new Vector3(13.0f,-1.10f,5.0f),8.0f,4.1f,206f,new Color(.42f,.43f,.40f,1f));
+
+            // Rear flanks: larger mountain silhouettes create parallax/depth but leave the
+            // central horizon open so the backplate remains the distant-world layer.
+            AddFramePrefab(root,mountain,"west rear mountain",new Vector3(-16.0f,-1.65f,17.8f),13.5f,6.7f,36f,new Color(.38f,.40f,.38f,1f));
+            AddFramePrefab(root,mountain,"east rear mountain",new Vector3(16.0f,-1.70f,18.2f),13.5f,6.7f,218f,new Color(.38f,.40f,.38f,1f));
+
+            AddFramePrefab(root,hill,"west rear shoulder",new Vector3(-9.6f,-1.10f,20.5f),9.2f,3.8f,22f,new Color(.40f,.42f,.39f,1f));
+            AddFramePrefab(root,hill,"east rear shoulder",new Vector3(9.8f,-1.10f,20.8f),9.2f,3.8f,202f,new Color(.40f,.42f,.39f,1f));
         }
 
         static void BuildMarginOccupation(Transform root)
