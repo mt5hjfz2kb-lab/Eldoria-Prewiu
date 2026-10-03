@@ -15,7 +15,6 @@ os.makedirs(OUT,exist_ok=True);os.makedirs(CAND,exist_ok=True);os.makedirs(os.pa
 SOURCES={
  "hero":os.path.join(RES,"HeroBastionGenerated","Valoria_HeroBastion_v1.glb"),
  "aserradero":os.path.join(RES,"Valoria_Aserradero_AP2_v1.glb"),
- "wall":os.path.join(RES,"StoneArchitectureKit_v1","HighStraightWall.glb"),
 }
 for k,p in SOURCES.items():
     if not os.path.isfile(p): raise RuntimeError("Missing canonical source %s: %s"%(k,p))
@@ -164,8 +163,7 @@ wall_col=bpy.data.collections.new("03_Wall_Reauthored");bpy.context.scene.collec
 # Import all three canonical sources.
 hero=import_one("Hero",SOURCES["hero"],hero_col)
 saw=import_one("Aserradero",SOURCES["aserradero"],saw_col)
-wall=import_one("Wall",SOURCES["wall"],wall_col)
-hero_tex=texture_report(hero);saw_tex=texture_report(saw);wall_tex=texture_report(wall)
+hero_tex=texture_report(hero);saw_tex=texture_report(saw);wall_tex=[]
 
 # HERO: remove only the proven low 14% component band, then build the masonry transition
 # inside the authored source file using the high-detail wall material as donor.
@@ -179,9 +177,8 @@ for g in component_groups(hero):
         for fi in g["faces"]:
             if fi<len(hero.data.polygons):hero.data.polygons[fi].material_index=1
 
-wall_donor=wall.data.materials[0]
-masonry=clone_tinted(wall_donor,"Shared_Warm_Masonry",(0.90,0.84,0.72),1.05)
-foundation=clone_tinted(wall_donor,"Shared_Dark_Foundation",(0.58,0.54,0.48),1.10)
+masonry=clone_tinted(hero.data.materials[0],"Shared_Warm_Masonry",(0.90,0.84,0.72),1.05)
+foundation=clone_tinted(hero.data.materials[0],"Shared_Dark_Foundation",(0.58,0.54,0.48),1.10)
 timber=clone_tinted(saw.data.materials[0],"Shared_Dark_Timber",(0.50,0.38,0.28),1.05)
 slate=clone_tinted(saw.data.materials[0],"Shared_Slate",(0.52,0.61,0.68),1.12)
 
@@ -210,19 +207,20 @@ saw_counts=assign_semantic_materials(saw,saw_class,{
 })
 saw.name="Aserradero_Source_Semantic"
 
-# WALL: preserve rich source mesh and use same warm-stone/base/cap hierarchy.
-wb=mesh_bounds(wall);wz0=wb["min"][2];wh=wb["size"][2]
-def wall_class(g):
-    b=g["bounds"];c=b["center"][2]
-    if b["max"][2] <= wz0+wh*.20:return "foundation"
-    if b["min"][2] >= wz0+wh*.72:return "cap"
-    return "stone"
-wall_counts=assign_semantic_materials(wall,wall_class,{
-    "foundation":((0.62,0.57,0.49),1.10),
-    "stone":((0.91,0.84,0.72),1.06),
-    "cap":((0.60,0.66,0.68),1.12)
-})
-wall.name="Wall_Source_Semantic"
+# WALL: source-derived authored segment. The repaired production HighStraightWall GLB
+# is Unity-valid but imports as an empty mesh in hosted Blender, so phase 1 derives a fresh
+# representative curtain from Hero/Aserradero material grammar rather than fighting that file.
+wall_parts=[]
+wall_parts.append(add_box("Wall_Foundation",wall_col,(0,0,.08),(1.00,.28,.16),foundation,.010))
+wall_parts.append(add_box("Wall_Ashlar_Core",wall_col,(0,0,.39),(.94,.24,.52),masonry,.012))
+for x in (-.43,-.215,0,.215,.43):
+    wall_parts.append(add_box("Wall_Buttress",wall_col,(x,-.10,.39),(.065,.12,.58),masonry,.008))
+wall_parts.append(add_box("Wall_Timber_Course",wall_col,(0,-.005,.67),(.96,.27,.055),timber,.006))
+for x in (-.39,-.195,0,.195,.39):
+    wall_parts.append(add_box("Wall_Merlon",wall_col,(x,0,.80),(.11,.24,.22),masonry,.008))
+for x in (-.2925,-.0975,.0975,.2925):
+    wall_parts.append(add_box("Wall_Slate_Coping",wall_col,(x,0,.705),(.12,.27,.035),slate,.004))
+wall_counts={"foundation":tri_count([wall_parts[0]]),"stone":tri_count(wall_parts[1:6]+wall_parts[7:12]),"timber":tri_count([wall_parts[6]]),"cap":tri_count(wall_parts[12:])}
 
 hero_path,hero_objs=export_collection(hero_col,"SSRA_HeroBastion_v1")
 saw_path,saw_objs=export_collection(saw_col,"SSRA_Aserradero_v1")
