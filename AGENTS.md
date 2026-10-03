@@ -54,6 +54,7 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Development workflow optimization and CI profiles: `docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md`.
 - Unity capability migration execution: `docs/UNITY_MIGRATION_ACCELERATION_PLAN.md` in addition to `UNITY_MIGRATION_PLAN.md`.
 - Valoria art decisions must follow `docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md`: prove composition/look-dev cheaply before paid/final geometry, classify defects before regenerating, and judge final quality integrated at official cameras.
+- Permanent visual-production governance lives in `docs/ELDORIA_VISUAL_PRODUCTION_RULES.md`. Read it for every Valoria visual block. Do not repeat those permanent rules in long chat prompts; prompts should normally contain only the new block objective, bounded scope, stop gate and any exceptional authorization.
 - Graphics-tool decisions and adoption/defer/reject rationale live in `docs/ELDORIA_GRAPHICS_TOOLCHAIN_AUDIT_2026.md`; do not add a tool merely because it is capable or fashionable.
 - Accepted geometry enters `docs/ELDORIA_SURFACE_PIPELINE.md` before any regeneration caused by a visual defect. Diagnose SURFACE separately from COMPOSITION and IDENTITY.
 - Valoria production art must inherit `docs/VALORIA_VISUAL_FORMULA_v1.md`; deviations require explicit evidence and documentation. The formula remains provisional until Aserradero + Cuartel + hero-fragment gates are green.
