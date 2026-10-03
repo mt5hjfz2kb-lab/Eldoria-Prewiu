@@ -57,20 +57,8 @@ namespace Eldoria.EditorTools
             AttachCanonicalHud(before.camera,hudState,true);
             SaveSet(before.camera,"before-game",p,t);
 
-            var after=CreateCanonicalScene(state);
-            var afterSig=ValoriaVisualFormulaGate.CollisionSignature();
-            ConfigureUplift();
-            ValoriaFlatCitadelProductionUpliftV1.Build(after.root.transform,state);
-            ValoriaFlatCitadelArtConsolidationV1.Apply(after.root.transform,state);
-            ValoriaAssetCoherenceV1.Apply(after.root.transform,state);
-            ValoriaVisualQualityBreakthroughV1.Apply(after.root.transform,state);
-            RemoveAddedGameplay(after.colliderIds,after.hotspotIds);
-            Physics.SyncTransforms();
-            if(ValoriaVisualFormulaGate.CollisionSignature()!=afterSig)
-                throw new Exception("Visual Quality Breakthrough altered gameplay signature.");
-            SaveSet(after.camera,"after",p,t);
-            AttachCanonicalHud(after.camera,hudState,true);
-            SaveSet(after.camera,"game",p,t);
+            foreach(var variant in new[]{"low14","low20","low26"})
+                CaptureHeroVariant(state,hudState,p,t,variant);
 
             var coherenceShader=Shader.Find("Eldoria/Valoria Coherence");
             if(ShaderUtil.ShaderHasError(coherenceShader))throw new Exception("Coherence shader compilation failed");
@@ -80,6 +68,25 @@ namespace Eldoria.EditorTools
             File.WriteAllText(Folder+"/breakthrough-metrics.json",$"{{\"hidden_legacy_wall_renderers\":{ValoriaVisualQualityBreakthroughV1.HiddenLegacyWallRenderers},\"authored_wall_modules\":{ValoriaVisualQualityBreakthroughV1.AuthoredWallModules},\"secondary_foundation_modules\":{ValoriaVisualQualityBreakthroughV1.SecondaryFoundationModules},\"bastion_transition_modules\":{ValoriaVisualQualityBreakthroughV1.BastionTransitionModules},\"exterior_modules\":{ValoriaVisualQualityBreakthroughV1.ExteriorModules}}}");
             Debug.Log("VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_GATE=PASS");
             EditorApplication.Exit(0);
+        }
+
+        static void CaptureHeroVariant(PlayerState state,PlayerState hudState,Vector3 p,Vector3 t,string variant)
+        {
+            var scene=CreateCanonicalScene(state);
+            var sig=ValoriaVisualFormulaGate.CollisionSignature();
+            ConfigureUplift();
+            ValoriaFlatCitadelProductionUpliftV1.Build(scene.root.transform,state);
+            ValoriaFlatCitadelArtConsolidationV1.Apply(scene.root.transform,state);
+            ValoriaAssetCoherenceV1.Apply(scene.root.transform,state);
+            ValoriaVisualQualityBreakthroughV1.HeroVariant=variant;
+            ValoriaVisualQualityBreakthroughV1.Apply(scene.root.transform,state);
+            RemoveAddedGameplay(scene.colliderIds,scene.hotspotIds);
+            Physics.SyncTransforms();
+            if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)
+                throw new Exception("Hero segmentation "+variant+" altered gameplay signature.");
+            SaveSet(scene.camera,"after-"+variant,p,t);
+            AttachCanonicalHud(scene.camera,hudState,true);
+            SaveSet(scene.camera,"game-"+variant,p,t);
         }
 
         static void ConfigureUplift()
