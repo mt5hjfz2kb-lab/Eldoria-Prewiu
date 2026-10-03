@@ -254,7 +254,15 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · environment uplift · tree") &&
                     b.center.z<0.2f && b.center.y<0.55f;
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree)
+                bool redundantCliffEdges=
+                    chain.Contains("valoria · cliff island · edge") &&
+                    Mathf.Abs(b.center.x)>5.7f && b.center.y<2.55f;
+
+                bool redundantMidRocks=
+                    chain.Contains("valoria · residual cleanup · rock mid west")||
+                    chain.Contains("valoria · residual cleanup · rock mid east");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks)
                 {
                     r.enabled=false;
                     count++;
