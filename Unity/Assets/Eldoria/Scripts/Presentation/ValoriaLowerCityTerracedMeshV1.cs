@@ -61,6 +61,46 @@ namespace Eldoria.Presentation
 
         static void BuildUnifiedCliffMass(Transform root,Material rock)
         {
+            // Blender cliff proof: experimental workflows may stage a generated GLB here.
+            // Production remains deterministic because the repository does not contain this
+            // resource unless a candidate is explicitly promoted later.
+            var blender=Resources.Load<GameObject>("Valoria/ExperimentalBlenderCliff/UnifiedLowerCityCliff");
+            if(blender!=null)
+            {
+                var candidate=Object.Instantiate(blender);
+                candidate.name="Valoria · Lower City Blender unified cliff proof";
+                candidate.transform.rotation=Quaternion.Euler(0f,180f,0f);
+
+                var renderers=candidate.GetComponentsInChildren<Renderer>(true);
+                if(renderers.Length>0)
+                {
+                    var b=renderers[0].bounds;
+                    for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
+                    var s=candidate.transform.localScale;
+                    candidate.transform.localScale=new Vector3(
+                        s.x*(9.70f/Mathf.Max(.001f,b.size.x)),
+                        s.y*(2.75f/Mathf.Max(.001f,b.size.y)),
+                        s.z*(6.55f/Mathf.Max(.001f,b.size.z)));
+
+                    renderers=candidate.GetComponentsInChildren<Renderer>(true);
+                    b=renderers[0].bounds;
+                    for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
+                    candidate.transform.position+=new Vector3(-b.center.x,1.92f-b.max.y,3.05f-b.max.z);
+
+                    foreach(var r in renderers)
+                    {
+                        var mats=r.sharedMaterials;
+                        for(int i=0;i<mats.Length;i++)mats[i]=rock;
+                        r.sharedMaterials=mats;
+                    }
+                }
+                candidate.transform.SetParent(root,true);
+                foreach(var col in candidate.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                foreach(var h in candidate.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+                PiecesBuilt=1;
+                return;
+            }
+
             var go=new GameObject("Valoria · Lower City unified cliff mass v1");
             go.transform.SetParent(root,false);
             var mf=go.AddComponent<MeshFilter>();
