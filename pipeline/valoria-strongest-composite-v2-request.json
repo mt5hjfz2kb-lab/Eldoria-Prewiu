@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate Valoria palette coherence v30: keep the proven upper-bastion-rear suppression, preserve the compact no-second-island composition, and recolor presentation-only secondary architecture toward the hero Bastion's warm-stone / slate-roof / desaturated-timber language.",
+  "objective": "Validate canonical-stone secondary architecture v31: keep the proven compact fortress composition and upper-bastion-rear suppression, but replace the visually incompatible MidTier red-roof secondary family with existing Stone_Tower and Stone_Wall modules from Resources/Valoria.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T12:31:00+02:00",
-  "retry_reason": "v29 localized and removed the detached grey tongue successfully. The dominant remaining mismatch is architectural identity: lower secondary buildings still read as a different red/timber kit from the stone-and-slate hero fortress. v30 changes material modulation only; geometry/gameplay remain unchanged.",
-  "retry_seq": 39
+  "triggered_at": "2026-10-03T12:35:00+02:00",
+  "retry_reason": "v30 TECH PASS / VISUAL INSUFFICIENT: material modulation did not materially change the red-roof/timber identity of the secondary kit. v31 changes the presentation family itself using existing canonical stone modules only.",
+  "retry_seq": 40
 }
