@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-aserradero-selective-v1-stage",
@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "selective-aserradero-v1-stage-recovered-handshake10-20261004",
-  "notes": "Zero-spend staging only. Final bounded retry: same dedicated Eldoria Edge profile; recovery permitted after CDP timeout; recovered Playwright handshake window 10s. No browser kill/profile substitution/security change. No generation/spend.",
+  "run_nonce": "selective-aserradero-v1-parked-after-cdp-handshake-block-20261004",
+  "notes": "Parked after resumed zero-spend recovery attempts. Exact JPEG preflight remains PASS. Runs 37160022369 and 37160157487 both failed before upload/generation/spend because Playwright could not complete CDP session initialization against the dedicated Eldoria Edge profile, even after same-profile relaunch and 10s recovered-handshake window. 0 generations / 0 credits.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
