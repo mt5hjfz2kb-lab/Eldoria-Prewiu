@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact integrated lower-city v11: reframed Sawmill/Barracks visuals, compact side terraces, unified cobble stair, shallow terraced rock edges and removal of legacy stair/support dressing.",
+  "objective": "Validate compact integrated lower-city v12: replace three separate lower terraces with one continuous irregular presentation shelf supporting stair, sawmill and military building while preserving gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T09:17:00+02:00",
-  "retry_reason": "v10 TECH PASS / VISUAL PARTIAL: stair cleanup improved coherence, but lower functional buildings remained too detached and forced oversized terrace masses. v11 pulls visual proxies inward and shrinks their supports while preserving gameplay authority.",
-  "retry_seq": 16
+  "triggered_at": "2026-10-03T09:30:00+02:00",
+  "retry_reason": "v11 TECH PASS / VISUAL PARTIAL: side buildings moved inward but the lower city still reads as three floating islands. v12 unifies the three presentation terraces into one continuous irregular shelf.",
+  "retry_seq": 17
 }
