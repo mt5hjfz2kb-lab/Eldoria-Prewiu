@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact integrated lower-city v14: retain v13 compact geometry, replace the broad brown terrace top with world-space rock integrated into the castle mass, and add restrained authored rock/scrub edge dressing.",
+  "objective": "Validate compact integrated lower-city v15: keep the compact rock terrace and add a carved rock support mass beneath the unified cobble stair so the lower city connects visually into the castle mountain.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T09:42:00+02:00",
-  "retry_reason": "v13 TECH PASS / VISUAL PARTIAL: footprint and building placement improved materially, but the large brown top still read as a flat editor platform. v14 keeps the compact silhouette and converts the terrace top to the same rocky terrain language as the castle, with restrained edge dressing.",
-  "retry_seq": 19
+  "triggered_at": "2026-10-03T09:45:00+02:00",
+  "retry_reason": "v14 TECH PASS / VISUAL PARTIAL: the brown editor-platform read was removed, but the stair still floated over a visible gap between lower terrace and fortress. v15 adds visual-only rock mass beneath the stair to unify the vertical composition.",
+  "retry_seq": 20
 }
