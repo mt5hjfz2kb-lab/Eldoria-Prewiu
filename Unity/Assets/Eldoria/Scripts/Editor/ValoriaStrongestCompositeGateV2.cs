@@ -89,6 +89,7 @@ namespace Eldoria.EditorTools
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
 
             SaveSet(c,"after",p,t);
+            WriteVisibleRendererAudit(c,Folder+"/visible-renderers.tsv");
             File.WriteAllText(Folder+"/evidence.json",$"{{\n"+
                 $"  \"collider_hotspot_signature_equal\": true,\n"+
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
@@ -374,6 +375,56 @@ namespace Eldoria.EditorTools
             string s="";
             for(var p=t;p!=null;p=p.parent)s+="|"+p.name.ToLowerInvariant();
             return s;
+        }
+
+        static void WriteVisibleRendererAudit(Camera c,string path)
+        {
+            var rows=new System.Collections.Generic.List<string>();
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                if(Mathf.Max(b.size.x,Mathf.Max(b.size.y,b.size.z))<.42f)continue;
+                var v=c.WorldToViewportPoint(b.center);
+                if(v.z<=0f||v.x<-.08f||v.x>1.08f||v.y<-.08f||v.y>1.08f)continue;
+
+                var mats=new System.Text.StringBuilder();
+                float minLum=99f,maxLum=-1f;
+                bool anyTex=false;
+                foreach(var m in r.sharedMaterials)
+                {
+                    if(m==null)continue;
+                    Color col=Color.white;
+                    if(m.HasProperty("_BaseColor"))col=m.GetColor("_BaseColor");
+                    else if(m.HasProperty("_Color"))col=m.GetColor("_Color");
+                    else if(m.HasProperty("_BaseColorFactor"))col=m.GetColor("_BaseColorFactor");
+                    float lum=.2126f*col.r+.7152f*col.g+.0722f*col.b;
+                    minLum=Mathf.Min(minLum,lum);maxLum=Mathf.Max(maxLum,lum);
+                    Texture tex=null;
+                    if(m.HasProperty("_BaseMap"))tex=m.GetTexture("_BaseMap");
+                    if(tex==null&&m.HasProperty("_MainTex"))tex=m.GetTexture("_MainTex");
+                    if(tex==null&&m.HasProperty("_Albedo"))tex=m.GetTexture("_Albedo");
+                    if(tex!=null)anyTex=true;
+                    if(mats.Length>0)mats.Append(";");
+                    mats.Append(m.name);
+                }
+                if(minLum>90f){minLum=.5f;maxLum=.5f;}
+
+                var chain=new System.Text.StringBuilder();
+                for(var t=r.transform;t!=null;t=t.parent)
+                {
+                    if(chain.Length>0)chain.Append(" <- ");
+                    chain.Append(t.name);
+                }
+
+                float area=Mathf.Max(.001f,b.size.x*b.size.y+b.size.x*b.size.z+b.size.y*b.size.z);
+                rows.Add($"{v.x:F3}\t{v.y:F3}\t{v.z:F2}\t{area:F2}\t{minLum:F3}\t{maxLum:F3}\t{(anyTex?"tex":"no_tex")}\t{r.gameObject.name}\t{mats}\tcenter=({b.center.x:F2},{b.center.y:F2},{b.center.z:F2})\tsize=({b.size.x:F2},{b.size.y:F2},{b.size.z:F2})\t{chain}");
+            }
+            rows.Sort((a,b)=>string.CompareOrdinal(a,b));
+            var sb=new System.Text.StringBuilder();
+            sb.AppendLine("viewport_x\tviewport_y\tdepth\tbound_area\tmin_lum\tmax_lum\ttexture\trenderer\tmaterials\tbounds_center\tbounds_size\tchain");
+            foreach(var row in rows)sb.AppendLine(row);
+            File.WriteAllText(path,sb.ToString());
         }
 
         static void SaveSet(Camera c,string tag,Vector3 p,Vector3 t)
