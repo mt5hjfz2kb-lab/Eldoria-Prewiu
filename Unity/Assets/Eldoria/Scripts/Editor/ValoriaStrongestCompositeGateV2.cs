@@ -86,6 +86,7 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityPlateauV1.Enabled=false;
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
+            int terrainEdgeRocks=AddTerrainEdgeRocks(root.transform);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -109,6 +110,7 @@ namespace Eldoria.EditorTools
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
                 $"  \"terrain_surface_samples\": {ValoriaLowerCityTerrainV1.SurfaceSamples},\n"+
                 $"  \"terrain_legacy_renderers_suppressed\": {ValoriaLowerCityTerrainV1.SuppressedLegacyRenderers},\n"+
+                $"  \"terrain_edge_rock_meshes\": {terrainEdgeRocks},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
@@ -424,6 +426,41 @@ namespace Eldoria.EditorTools
                 loaded++;
             }
             return loaded;
+        }
+
+        static int AddTerrainEdgeRocks(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null)return 0;
+            var rockA=art.SlavicBoulder??art.SlavicFlatRock;
+            var rockB=art.SlavicFlatRock??rockA;
+            var rockC=Resources.Load<GameObject>("WorldInventory/Rock02")??rockB;
+            if(rockA==null&&rockB==null&&rockC==null)return 0;
+
+            var edgeRoot=new GameObject("Valoria · Strongest v2 · hybrid terrain cliff edges").transform;
+            edgeRoot.SetParent(root,true);
+            int count=0;
+
+            var specs=new[]{
+                new Vector4(-8.35f,-4.15f,28f,0f), new Vector4(-6.15f,-5.15f,61f,1f),
+                new Vector4(-5.15f,-2.15f,104f,2f), new Vector4(-3.70f,-.55f,142f,1f),
+                new Vector4( 3.65f,-.75f,214f,0f), new Vector4( 5.25f,-2.55f,242f,2f),
+                new Vector4( 6.55f,-5.15f,278f,1f), new Vector4( 8.55f,-4.55f,318f,0f),
+                new Vector4(-1.80f,-6.35f,18f,2f), new Vector4( 1.85f,-6.45f,198f,1f)
+            };
+
+            for(int i=0;i<specs.Length;i++)
+            {
+                var s=specs[i];
+                GameObject src=s.w<.5f?rockA:(s.w<1.5f?rockB:rockC);
+                if(src==null)continue;
+                float span=(i==1||i==6)?3.15f:(i>=8?2.55f:2.80f);
+                float height=(i==1||i==6)?2.05f:1.65f;
+                count+=Add(edgeRoot,src,"terrain cliff edge "+i,
+                    new Vector3(s.x,-1.02f,s.y),span,height,s.z,
+                    new Color(.48f,.48f,.44f,1f));
+            }
+            return count;
         }
 
         static int AddLocalLowerSupports(Transform root)
