@@ -1,0 +1,63 @@
+name: "[EXPERIMENT] Valoria VQB Hero Segmentation"
+
+on:
+  push:
+    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    paths:
+      - "tools/valoria-visual-quality-breakthrough/hero_segment_variants.py"
+      - ".github/workflows/valoria-visual-quality-breakthrough-hero-segmentation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  segment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Build conservative Hero segmentation variants
+        shell: bash
+        env:
+          ELDORIA_HERO_GLB: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb
+          ELDORIA_HERO_SEGMENT_DIR: ${{ github.workspace }}/pipeline/candidates/valoria-vqb-hero-segmentation
+          ELDORIA_HERO_SEGMENT_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-vqb-hero-segmentation.json
+        run: |
+          blender -b --python tools/valoria-visual-quality-breakthrough/hero_segment_variants.py
+          test -s pipeline/evidence/valoria-vqb-hero-segmentation.json
+          test -s pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low14.glb
+          test -s pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low20.glb
+          test -s pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low26.glb
+          cat pipeline/evidence/valoria-vqb-hero-segmentation.json
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-vqb-hero-segmentation-${{ github.run_id }}
+          path: |
+            pipeline/evidence/valoria-vqb-hero-segmentation.json
+            pipeline/candidates/valoria-vqb-hero-segmentation/*.glb
+          if-no-files-found: error
+      - name: Persist segmentation candidates
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p pipeline/evidence
+          cat > pipeline/evidence/valoria-vqb-hero-segmentation-run.json <<EOF
+          {"run_id":"${{ github.run_id }}","source_sha":"${{ github.sha }}","job_status":"${{ job.status }}","artifact_id":"${{ steps.upload.outputs.artifact-id }}"}
+          EOF
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/evidence/valoria-vqb-hero-segmentation-run.json
+          if [ -f pipeline/evidence/valoria-vqb-hero-segmentation.json ]; then git add pipeline/evidence/valoria-vqb-hero-segmentation.json; fi
+          if [ -d pipeline/candidates/valoria-vqb-hero-segmentation ]; then git add pipeline/candidates/valoria-vqb-hero-segmentation/*.glb; fi
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: persist Hero segmentation candidates ${{ github.run_id }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
