@@ -15,10 +15,16 @@
       "triangles": 49800,
       "vertices": 55752,
       "semantic_face_counts": {
-        "foundation": 23950,
-        "timber": 0,
-        "roof": 2337,
-        "infill": 23513
+        "foundation": 17730,
+        "timber": 17956,
+        "roof": 2883,
+        "infill": 11231
+      },
+      "semantic_thresholds": {
+        "min": 0.5,
+        "max": 0.5,
+        "timber_threshold": 0.5,
+        "warm_median": 0.03999999999999998
       },
       "source_image": "Valoria_Aserradero_AP2_v1_basecolor",
       "file": "Valoria_Authored_Aserradero_v1.glb",
@@ -30,7 +36,7 @@
         "Eldoria_Sawmill_Roof",
         "Eldoria_Sawmill_Timber"
       ],
-      "bytes": 11214132
+      "bytes": 11496156
     },
     {
       "file": "Valoria_Authored_Wall_v1.glb",
