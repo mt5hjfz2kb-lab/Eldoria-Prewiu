@@ -1,8 +1,31 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T15:22:00Z",
+  "updated_at": "2026-10-03T15:39:00Z",
   "active": [
+    {
+      "id": "valoria-flat-citadel-proof-v1",
+      "title": "Valoria Flat Citadel Proof v1",
+      "owner": "chat-valoria-flat-citadel-proof-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelProofV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelGateV1.cs",
+        ".github/workflows/valoria-flat-citadel-proof-v1.yml",
+        "docs/VALORIA_FLAT_CITADEL_PROOF_V1_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T15:39:00Z",
+      "base_main_sha": "ecac491e734329171c8b0cbf5d329e379a577020",
+      "dependency": "New owner-approved compositional reference: 75–85% buildable flat/very-gentle city plane; Hero Bastion remains the only major elevation; clear Bastion→plaza→city axis; continuous outer wall; sparse functional buildings; reduced background; preserve gameplay/hotspots/colliders/cameras. No mountain-rescue, no district-by-district terraces, no scan plates/photographic foreground/voxel/fused terrain, no Tripo."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-shell-v2-worldframe-district-cells",
       "title": "Valoria Visual Shell v2 — World Frame + district terrace cells",
@@ -21,13 +44,14 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-03T15:22:00Z",
       "base_main_sha": "bed16d83213dec1706d7962c91f4b473b9f09df3",
-      "dependency": "Central open-sheet and central volumetric landform families are visually closed. New method must leave the photographic/world valley open, use existing World Frame v41 only at side/rear margins, and create only compact local visual-only terrace cells underneath district architecture. No giant island, no Tripo, preserve Hero Bastion/cameras/gameplay."
-    }
-  ],
-  "history": [
+      "dependency": "Central open-sheet and central volumetric landform families are visually closed. New method must leave the photographic/world valley open, use existing World Frame v41 only at side/rear margins, and create only compact local visual-only terrace cells underneath district architecture. No giant island, no Tripo, preserve Hero Bastion/cameras/gameplay.",
+      "completed_at": "2026-10-03T15:39:00Z",
+      "result": "HANDOFF / NOT EXECUTED. No implementation commit and no district-cell run were produced after the claim. A late run from the already-closed volumetric branch (run 37133681630, HEAD deb32c3519fe03d7280438a4cb08f310f2d47e9b, artifact 11277174847) completed TECH PASS with gameplay signature unchanged, but its real 12/19/9/mobile evidence still shows a giant flat/volumetric terrain mass and does not satisfy the new flat-city composition premise.",
+      "next": "Superseded by VALORIA FLAT CITADEL PROOF v1. Do not continue district terrace-cell or mountain continuity iterations."
+    },
     {
       "id": "valoria-shell-v2-volumetric-landform",
       "title": "Valoria Visual Shell v2 — volumetric contour-loft landform",
