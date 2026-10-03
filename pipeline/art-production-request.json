@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Visual Quality Breakthrough v1 candidate 1. Reuse canonical authored GLBs; preserve Flat Citadel and parcel map; no paid tools. Structural change must be obvious at first glance. PR evidence trigger after infrastructure path/metrics correction. Bootstrap workflow now present on main; synchronize PR for evidence."
+  "notes": "Visual Quality Breakthrough v1 candidate 1. Reuse canonical authored GLBs; preserve Flat Citadel and parcel map; no paid tools. Structural change must be obvious at first glance. PR evidence trigger after infrastructure path/metrics correction. Bootstrap workflow now present on main; synchronize PR for evidence. Final PR synchronize against bootstrap-aware main."
 }
