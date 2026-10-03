@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-source-level-art-direction-proof-v1",
   "asset_or_sector": "Representative Hero Bastion rock interface + Aserradero F1 + one front wall segment on locked Flat Citadel",
   "profile": "environment_surface",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Phase 1 stop gate. Deterministic Blender-authored shared Hero/Aserradero/wall interface family. Preserve canonical source Hero and Aserradero richness; no whole-model atlas/recolor retry. Validate zoom 9 + portrait mobile first; only extend to 12/19 after clear screenshot improvement. Zero paid credits."
+  "notes": "Phase 1 stop gate. Deterministic Blender-authored shared Hero/Aserradero/wall interface family. Preserve canonical source Hero and Aserradero richness; no whole-model atlas/recolor retry. Validate zoom 9 + portrait mobile first; only extend to 12/19 after clear screenshot improvement. Zero paid credits. CLOSED: phase-1 zoom 9/mobile real-HUD evidence was a clear visual regression; do not extend to 12/19 or rerun without a new technique."
 }
