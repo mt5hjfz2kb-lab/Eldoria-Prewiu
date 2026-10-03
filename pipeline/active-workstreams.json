@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:57:22.596Z",
-  "active": [
+  "updated_at": "2026-10-03T21:11:29.471Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-authored-gameplay-cell-art-direction-v1",
       "title": "Valoria Authored Gameplay Cell Art Direction v1",
@@ -23,11 +24,26 @@
       ],
       "claimed_at": "2026-10-03T20:57:22.596Z",
       "base_main_sha": "aa85fd0f30bec7c760350e8a5273b1b19319a13d",
-      "status": "active",
-      "dependency": "Accepted VQB visual 7a564bc; prior unified proof not promoted. One authored gameplay cell and real 19/12/9/mobile gate; preserve fixed Flat Citadel/parcels/gameplay; zero paid credits."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "dependency": "Accepted VQB visual 7a564bc; prior unified proof not promoted. One authored gameplay cell and real 19/12/9/mobile gate; preserve fixed Flat Citadel/parcels/gameplay; zero paid credits.",
+      "completed_at": "2026-10-03T21:11:29.471Z",
+      "result_commit": "d9d206192497eb3c3eabbfdd830dfcb67b80c00c",
+      "closure_doc_commit": "4ec9bd6902e8abacda1f011b45197770a9ee840a",
+      "final_branch_head": "4ec9bd6902e8abacda1f011b45197770a9ee840a",
+      "branch": "visual-proof/valoria-authored-gameplay-cell-art-direction-v1",
+      "result_doc": "docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md",
+      "run_ids": [
+        37153721252,
+        37153946756
+      ],
+      "artifact_ids": [
+        11284773218,
+        11285112696
+      ],
+      "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Paving variant rejected as flatter rectangular seam; temporary staging visually imperceptible, mobile pixel-identical. Real Unity captures 19/12/9/mobile and 5/5 tests. Fixed Flat Citadel/gameplay/parcels intact, zero paid credits.",
+      "next": "Source-level semantic Hero/Aserradero/wall art family with dedicated Blender authoring and real played-camera proof; no rollout before visual pass."
+    },
     {
       "id": "valoria-unified-visual-language-proof-v1",
       "title": "Valoria Unified Visual Language Proof v1",
