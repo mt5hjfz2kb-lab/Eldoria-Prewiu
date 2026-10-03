@@ -128,9 +128,8 @@ namespace Eldoria.Presentation
                 terrain.basemapDistance=200f;
                 terrain.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
 
-                var terrainShader=Shader.Find("Universal Render Pipeline/Terrain/Lit");
-                if(terrainShader!=null)
-                    terrain.materialTemplate=new Material(terrainShader){name="Valoria · Terrain Lit v3"};
+                // URP supplies Terrain Lit for Terrain rendering; keep the default
+                // pipeline terrain material and drive appearance through TerrainLayer remaps.
             }
 
             // TerrainCollider lives in the optional Terrain Physics assembly, which this
