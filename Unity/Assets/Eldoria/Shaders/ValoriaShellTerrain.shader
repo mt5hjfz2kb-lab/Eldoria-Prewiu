@@ -3,15 +3,18 @@ Shader "Eldoria/Valoria Shell Terrain"
     Properties
     {
         _BackplateTex ("Backplate", 2D) = "white" {}
-        _ContactStrength ("Contact Strength", Range(0,1)) = 1\n        _BackplateTint ("Backplate Tint", Color) = (0.84,0.88,0.91,1)
+        _BackplateTint ("Backplate Tint", Color) = (0.84,0.88,0.91,1)
+        _ContactStrength ("Contact Strength", Range(0,1)) = 0
+        _UseMeshUv ("Use Mesh UV", Range(0,1)) = 0
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry-10" "RenderPipeline"="UniversalPipeline" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent-20" "RenderPipeline"="UniversalPipeline" }
         Pass
         {
-            Name "ProjectedBackplate"
-            ZWrite On
+            Name "PhotographicTerrain"
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
             ZTest LEqual
             Cull Off
 
@@ -22,11 +25,14 @@ Shader "Eldoria/Valoria Shell Terrain"
 
             TEXTURE2D(_BackplateTex);
             SAMPLER(sampler_BackplateTex);
-            float _ContactStrength;\n            float4 _BackplateTint;
+            float4 _BackplateTint;
+            float _ContactStrength;
+            float _UseMeshUv;
 
             struct Attributes
             {
                 float4 positionOS : POSITION;
+                float2 uv : TEXCOORD0;
                 float4 color : COLOR;
             };
 
@@ -34,7 +40,8 @@ Shader "Eldoria/Valoria Shell Terrain"
             {
                 float4 positionHCS : SV_POSITION;
                 float4 screenPos : TEXCOORD0;
-                float contact : TEXCOORD1;
+                float2 uv : TEXCOORD1;
+                float4 color : COLOR;
             };
 
             Varyings vert(Attributes input)
@@ -43,20 +50,20 @@ Shader "Eldoria/Valoria Shell Terrain"
                 VertexPositionInputs p=GetVertexPositionInputs(input.positionOS.xyz);
                 o.positionHCS=p.positionCS;
                 o.screenPos=ComputeScreenPos(p.positionCS);
-                o.contact=input.color.r;
+                o.uv=input.uv;
+                o.color=input.color;
                 return o;
             }
 
             half4 frag(Varyings input) : SV_Target
             {
-                float2 uv=input.screenPos.xy/max(input.screenPos.w,1e-5);
-                half4 c=SAMPLE_TEXTURE2D(_BackplateTex,sampler_BackplateTex,uv);\n                c.rgb*=_BackplateTint.rgb;
-                float darken=saturate(input.contact*_ContactStrength);
-                c.rgb*=lerp(1.0,0.90,darken);
-                // Slightly warm only the contact zone so the shell reads as grounded earth,
-                // while the outer shell remains pixel-matched to the photographed valley.
-                c.rgb*=lerp(float3(1,1,1),float3(1.008,1.0,.988),darken*.55);
-                c.a=1;
+                float2 screenUv=input.screenPos.xy/max(input.screenPos.w,1e-5);
+                float2 sampleUv=lerp(screenUv,input.uv,saturate(_UseMeshUv));
+                half4 c=SAMPLE_TEXTURE2D(_BackplateTex,sampler_BackplateTex,sampleUv);
+                c.rgb*=_BackplateTint.rgb;
+                float darken=saturate(input.color.r*_ContactStrength);
+                c.rgb*=lerp(1.0,0.92,darken);
+                c.a=saturate(input.color.a);
                 return c;
             }
             ENDHLSL
