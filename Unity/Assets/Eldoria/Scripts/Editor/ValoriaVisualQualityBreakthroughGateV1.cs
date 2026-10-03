@@ -64,7 +64,7 @@ namespace Eldoria.EditorTools
             WriteEvidence();
             File.WriteAllLines(Folder+"/asset-audit.txt",ValoriaAssetCoherenceV1.Audit);
             File.WriteAllText(Folder+"/coherence-metrics.json",$"{{\"materials\":{ValoriaAssetCoherenceV1.MaterialCount},\"population\":{ValoriaAssetCoherenceV1.PopulationCount},\"ground_triangles\":{ValoriaAssetCoherenceV1.GroundTriangles}}}");
-            File.WriteAllText(Folder+"/breakthrough-metrics.json",$"{{\"hidden_legacy_wall_renderers\":{ValoriaVisualQualityBreakthroughV1.HiddenLegacyWallRenderers},\"authored_wall_modules\":{ValoriaVisualQualityBreakthroughV1.AuthoredWallModules},\"secondary_foundation_modules\":{ValoriaVisualQualityBreakthroughV1.SecondaryFoundationModules},\"bastion_transition_modules\":{ValoriaVisualQualityBreakthroughV1.BastionTransitionModules},\"exterior_modules\":{ValoriaVisualQualityBreakthroughV1.ExteriorModules}}}");
+            File.WriteAllText(Folder+"/breakthrough-metrics.json",$"{{\"hidden_legacy_wall_renderers\":{ValoriaVisualQualityBreakthroughV1.HiddenLegacyWallRenderers},\"authored_wall_modules\":{ValoriaVisualQualityBreakthroughV1.AuthoredWallModules},\"functional_renderers_semantic_uplift\":{ValoriaVisualQualityBreakthroughV1.SecondaryFoundationModules},\"bastion_transition_modules\":{ValoriaVisualQualityBreakthroughV1.BastionTransitionModules},\"exterior_modules\":{ValoriaVisualQualityBreakthroughV1.ExteriorModules}}}");
             Debug.Log("VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_GATE=PASS");
             EditorApplication.Exit(0);
         }
