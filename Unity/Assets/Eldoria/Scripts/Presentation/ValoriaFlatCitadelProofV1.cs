@@ -36,58 +36,18 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName).transform;
             root.SetParent(parent,true);
 
-            int clonedHeroPieces=CloneCanonicalHeroBastion(root,new Vector3(0f,-2.35f,0f));
             HiddenLegacyRenderers=HideAllNonProofRenderers(root);
 
             BuildFlatCitySurface(root);
             BuildPrimaryAxis(root);
             BuildBastionRise(root);
+            BuildFlatHeroBastion(root);
             BuildFunctionalArchitecture(root,state);
             BuildOuterWall(root);
             BuildSparseNature(root);
             BuildLifeCues(root);
 
             DisableGameplay(root.gameObject);
-        }
-
-        static int CloneCanonicalHeroBastion(Transform proofRoot,Vector3 offset)
-        {
-            var sources=new System.Collections.Generic.HashSet<GameObject>();
-            foreach(var t in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
-            {
-                if(t==null||t==proofRoot)continue;
-                string n=t.name.ToLowerInvariant();
-                bool hero=n.StartsWith("valoria · bastion hero");
-                if(!hero)continue;
-
-                // ProductionVisualIntegration suppresses the old generic "Bastion ·" shell and
-                // exposes this authored Hero family. Clone only currently visible Hero pieces.
-                var p=t.parent;
-                bool parentHero=false;
-                while(p!=null)
-                {
-                    string pn=p.name.ToLowerInvariant();
-                    if(pn.StartsWith("valoria · bastion hero")){parentHero=true;break;}
-                    p=p.parent;
-                }
-                bool visible=false;
-                foreach(var rr in t.GetComponentsInChildren<Renderer>(true))
-                    if(rr!=null&&rr.enabled&&rr.gameObject.activeInHierarchy){visible=true;break;}
-                if(!parentHero && visible)sources.Add(t.gameObject);
-            }
-
-            int count=0;
-            foreach(var source in sources)
-            {
-                var clone=Object.Instantiate(source);
-                clone.name="Valoria · Flat Citadel · hero clone · "+source.name;
-                clone.transform.position+=offset;
-                clone.transform.SetParent(proofRoot,true);
-                foreach(var col in clone.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
-                foreach(var h in clone.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
-                count++;
-            }
-            return count;
         }
 
         static int HideAllNonProofRenderers(Transform proofRoot)
