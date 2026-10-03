@@ -82,7 +82,10 @@ namespace Eldoria.EditorTools
             // creates the detached grey tongue without contributing visible fortress mass.
             // Keep it suppressed in the strongest candidate.
             int upperRearSuppressed=SuppressRendererChain("valoria · cliff island · upper bastion rear");
-            int premium=ReplaceSecondaryArchitecture(root.transform);
+            // v33 diagnostic composition: remove the entire substitute secondary family.
+            // This isolates whether current library architecture is helping or hurting the
+            // hero-first reference match. Gameplay buildings/hotspots remain authoritative.
+            int premium=0;
             int localSupports=0;
             int ruins=0;
             SuppressLegacySecondaryPresentation();
