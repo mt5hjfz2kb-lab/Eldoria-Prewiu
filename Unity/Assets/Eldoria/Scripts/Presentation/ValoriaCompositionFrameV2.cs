@@ -36,12 +36,7 @@ namespace Eldoria.Presentation
             rock=ValoriaKit.ExternalPbrSurfaceMaterial("rock",new Color(.76f,.75f,.69f),new Vector2(.52f,.52f),.035f,.95f);
             stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.77f,.75f,.68f),new Vector2(.54f,.54f),.035f,.92f);
             if(ground==null||rock==null||stone==null)throw new Exception("Composition frame shared PBR maps missing.");
-            BuildCliffCitadelMass();
-            RestoreFunctional("Aserradero · dedicated sawmill");
-            RestoreFunctional("Cuartel · dedicated barracks");
-            Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(-2.6f,.34f,-6.1f),3.3f,2.7f,16f);
-            BuildArchitecturalRetaining();
-            BuildEmbeddedDistrict();
+            BuildArchitectureFirstTransition();
             BuildRoute();
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
@@ -73,23 +68,59 @@ namespace Eldoria.Presentation
             y=Mathf.Lerp(y,Mathf.Lerp(.35f,2.35f,Smooth(-.3f,5.9f,z))-.13f,route*segment*.8f);
             return y;
         }
-        static void BuildCliffCitadelMass()
+        static void BuildArchitectureFirstTransition()
         {
-            // Distinct method: overlapping authored environment meshes form one geological city section.
-            // No generated platform/deck geometry is used in this candidate.
-            AddEnvironment("Valoria/SM_Cliffs_03","front west bedrock",new Vector3(-6.7f,-2.75f,-6.35f),11.4f,4.8f,18f);
-            AddEnvironment("Valoria/SM_Cliffs_01","front east bedrock",new Vector3( 6.5f,-2.65f,-6.15f),11.0f,4.7f,198f);
-            AddEnvironment("Valoria/SM_Cliffs_01","lower west rise",new Vector3(-7.2f,-2.05f,-1.85f),10.0f,4.9f,42f);
-            AddEnvironment("Valoria/SM_Cliffs_03","lower east rise",new Vector3( 7.0f,-2.00f,-1.65f),10.2f,5.0f,222f);
-            AddEnvironment("Valoria/SM_Cliffs_03","middle west rise",new Vector3(-6.3f,-1.15f,2.55f),9.0f,4.75f,68f);
-            AddEnvironment("Valoria/SM_Cliffs_01","middle east rise",new Vector3( 6.15f,-1.10f,2.75f),9.2f,4.8f,248f);
-            AddEnvironment("Valoria/SM_Cliffs_01","hero west buttress",new Vector3(-5.1f,-.35f,5.65f),7.5f,4.25f,92f);
-            AddEnvironment("Valoria/SM_Cliffs_03","hero east buttress",new Vector3( 5.0f,-.30f,5.80f),7.6f,4.30f,272f);
+            // Architecture-first candidate: compact inhabited bands carry the eye from city to Bastion.
+            // Rock is only a buried/supporting mass; there are no exposed terrain boards.
+            AddEnvironment("Valoria/SM_Cliffs_03","buried west foundation",new Vector3(-5.9f,-2.15f,-2.4f),9.4f,4.0f,24f);
+            AddEnvironment("Valoria/SM_Cliffs_01","buried east foundation",new Vector3( 5.8f,-2.10f,-2.2f),9.4f,4.0f,204f);
+            AddEnvironment("Valoria/SM_Cliffs_01","buried west hero rise",new Vector3(-4.6f,-1.15f,3.8f),7.7f,3.9f,58f);
+            AddEnvironment("Valoria/SM_Cliffs_03","buried east hero rise",new Vector3( 4.6f,-1.10f,3.9f),7.7f,3.9f,238f);
 
-            // Buried terrain meshes only close unavoidable gaps; they never become visible rectangular shelves.
-            AddEnvironment("Valoria/SM_Terrain_03","buried lower ground",new Vector3(0f,-1.35f,-3.8f),14.0f,1.15f,9f);
-            AddEnvironment("Valoria/SM_Terrain_03","buried middle ground",new Vector3(0f,-.52f,1.15f),11.8f,1.05f,191f);
+            // Bring the gate's visual-only functional clones into the city section.
+            PlaceExistingPresentation("Valoria · Strongest v2 · compact sawmill visual",
+                new Vector3(-6.35f,.22f,-3.05f),3.55f,3.15f,10f);
+            PlaceExistingPresentation("Valoria · Strongest v2 · compact barracks visual",
+                new Vector3( 6.35f,.24f,-2.85f),3.65f,3.25f,350f);
+
+            // Lower inhabited frontage: dense, overlapping roofline rather than isolated plots.
+            Add("Valoria/MidTierArchitectureKit_v1/Piece01","lower west frontage",new Vector3(-3.85f,.22f,-3.75f),2.85f,2.80f,15f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece04","lower centre west",new Vector3(-1.25f,.24f,-4.25f),2.55f,2.55f,7f);
+            Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(1.15f,.24f,-4.15f),2.85f,2.75f,352f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece02","lower east frontage",new Vector3(3.95f,.22f,-3.65f),2.90f,2.85f,345f);
+
+            // Middle district presses into the retaining line and visually connects to the Hero District.
+            Add("Valoria/MidTierArchitectureKit_v1/Piece03","middle west house",new Vector3(-5.05f,1.18f,.25f),2.65f,2.85f,18f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece01","middle west inner",new Vector3(-2.55f,1.20f,.65f),2.45f,2.55f,10f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece04","middle east inner",new Vector3(2.50f,1.20f,.72f),2.45f,2.55f,350f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece02","middle east house",new Vector3(5.05f,1.18f,.32f),2.65f,2.85f,342f);
+
+            // Upper shoulders close the last gap into the Bastion's authored rock skirt.
+            Add("Valoria/MidTierArchitectureKit_v1/Piece02","upper west service",new Vector3(-4.05f,2.02f,4.15f),2.35f,2.55f,16f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece03","upper east service",new Vector3(4.05f,2.02f,4.20f),2.35f,2.55f,344f);
+
+            // Continuous masonry bands stitch buildings and geology into one city section.
+            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","lower west city corner",new Vector3(-7.55f,-.02f,-1.25f),2.65f,2.25f,92f);
+            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","lower west city wall",new Vector3(-4.75f,.02f,-1.55f),3.85f,2.10f,4f);
+            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","lower east city wall",new Vector3(4.75f,.02f,-1.50f),3.85f,2.10f,176f);
+            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","lower east city corner",new Vector3(7.55f,-.02f,-1.20f),2.65f,2.25f,268f);
+            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","middle west join",new Vector3(-5.55f,1.00f,2.55f),3.05f,2.30f,30f);
+            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","middle east join",new Vector3(5.55f,1.00f,2.60f),3.05f,2.30f,210f);
+            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","upper west wall",new Vector3(-3.15f,1.75f,4.95f),2.95f,2.10f,8f);
+            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","upper east wall",new Vector3(3.15f,1.75f,5.00f),2.95f,2.10f,172f);
         }
+
+        static void PlaceExistingPresentation(string name,Vector3 point,float span,float height,float yaw)
+        {
+            var go=GameObject.Find(name);if(go==null)throw new Exception("Presentation clone missing: "+name);
+            go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)throw new Exception("Presentation clone has no renderer: "+name);
+            var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            go.transform.localScale*=Mathf.Min(span/Mathf.Max(b.size.x,b.size.z),height/Mathf.Max(.01f,b.size.y));
+            rs=go.GetComponentsInChildren<Renderer>(true);b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            go.transform.position+=point-new Vector3(b.center.x,b.min.y,b.center.z);
+        }
+
         static void AddEnvironment(string path,string name,Vector3 point,float span,float height,float yaw)
         {
             var src=Resources.Load<GameObject>(path);if(src==null)throw new Exception("Environment source missing: "+path);
@@ -103,43 +134,10 @@ namespace Eldoria.Presentation
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var behaviour in go.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
-            foreach(var r in rs)r.sharedMaterial=rock;
+            // Preserve the prefab's authored material/UV relationship; overriding it caused visible texture stretching.
             VisualPieces++;
         }
-        static void RestoreFunctional(string name)
-        {
-            var go=GameObject.Find(name);
-            if(go==null)throw new Exception("Functional source missing: "+name);
-            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
-            {if(!r.enabled){r.enabled=true;RestoredFunctionalRenderers++;}}
-        }
-        static void BuildArchitecturalRetaining()
-        {
-            // Real architectural modules stitch the rock bands; no procedural arcade slabs.
-            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","lower west retaining",new Vector3(-5.45f,-.05f,-2.35f),4.0f,2.0f,6f);
-            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","lower east retaining",new Vector3( 5.35f,-.02f,-2.25f),4.0f,2.0f,174f);
-            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","lower west corner",new Vector3(-8.25f,-.10f,-1.15f),2.8f,2.25f,92f);
-            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","lower east corner",new Vector3( 8.15f,-.08f,-1.05f),2.8f,2.25f,268f);
-            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","middle west rock join",new Vector3(-5.9f,.95f,2.15f),3.2f,2.25f,28f);
-            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","middle east rock join",new Vector3( 5.85f,.97f,2.20f),3.2f,2.25f,208f);
-            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","hero west retaining",new Vector3(-4.65f,1.78f,5.05f),3.15f,2.05f,8f);
-            Add("Valoria/StoneArchitectureKit_v1/HighStraightWall","hero east retaining",new Vector3( 4.60f,1.80f,5.10f),3.15f,2.05f,172f);
-            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","west bastion join",new Vector3(-6.35f,1.45f,5.45f),2.65f,2.30f,36f);
-            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition","east bastion join",new Vector3( 6.35f,1.45f,5.45f),2.65f,2.30f,216f);
-        }
-        static void BuildEmbeddedDistrict()
-        {
-            // Architecture is embedded in the retaining sequence so each terrace reads as a district, not an empty pad.
-            Add("Valoria/MidTierArchitectureKit_v1/Piece01","lower west workshop row",new Vector3(-6.85f,.32f,-4.85f),2.35f,2.35f,18f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece02","lower east military row",new Vector3(6.55f,.32f,-4.55f),2.45f,2.45f,342f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece04","lower civic edge",new Vector3(2.85f,.34f,-5.35f),2.15f,2.20f,10f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece03","middle west housing",new Vector3(-6.15f,1.31f,.65f),2.35f,2.55f,14f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece01","middle east housing",new Vector3(6.05f,1.31f,.90f),2.20f,2.40f,346f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece02","upper west service",new Vector3(-5.25f,2.31f,4.95f),2.05f,2.35f,16f);
-            Add("Valoria/MidTierArchitectureKit_v1/Piece04","upper east service",new Vector3(5.15f,2.31f,5.05f),2.05f,2.35f,344f);
-            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","west terrace corner",new Vector3(-8.05f,.35f,-1.15f),2.2f,1.85f,92f);
-            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","east terrace corner",new Vector3(8.05f,.35f,-1.15f),2.2f,1.85f,268f);
-        }
+
         static void BuildRoute()
         {
             const int n=32;var v=new Vector3[n*2];var uv=new Vector2[n*2];var tris=new int[(n-1)*6];
