@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Visual Shell v2 method 1: validate a fixed-camera 2.5D annulus that samples the exact Kiara backplate in screen space, keeps the city center genuinely open, adds only subtle contact darkening near Valoria, and disables the rejected v39-v41 world-frame geometry.",
+  "objective": "Visual Shell v2 method 2: validate exact backplate color matching, a nearly invisible contact grade, and a slightly raised/tighter inner matte edge to mask the floating lower cliff while keeping the photographic valley visually continuous.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:31:00+02:00",
-  "retry_reason": "v39-v41 proved that procedural terrain panels and existing low-poly mountain prefabs visibly degrade the full frame. Method 1 tests a 0-credit projected matte shell on the isolated visual-shell branch.",
-  "retry_seq": 53
+  "triggered_at": "2026-10-03T13:35:00+02:00",
+  "retry_reason": "Method 1 TECH PASS / VISUAL FAIL: the projected shell sampled the raw JPG while the canonical backplate used a .84/.88/.91 tint, producing a visible dark annulus. Method 2 matches that grading and uses the shell as a subtle camera-locked matte.",
+  "retry_seq": 54
 }
