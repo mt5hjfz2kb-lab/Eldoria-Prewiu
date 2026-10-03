@@ -2,12 +2,6 @@ name: "[EXPERIMENT] Valoria Authored Secondary Family Comparison"
 # stable-head rerun after candidate persistence
 
 on:
-  push:
-    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
-    paths:
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredSecondaryArtFamilyGateV1.cs"
-      - ".github/workflows/valoria-authored-secondary-art-family-comparison.yml"
-      - "pipeline/candidates/valoria-authored-secondary-art-family-v1/**"
   workflow_dispatch:
 
 permissions:
