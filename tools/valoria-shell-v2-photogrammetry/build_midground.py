@@ -209,6 +209,11 @@ def authored_transition(donor_meshes):
 
     # Transfer the scan UVs so the custom silhouette inherits real scanned texture detail.
     if donor.data.uv_layers:
+        # Data Transfer does not create the destination UV layer for us.
+        # Seed one explicitly so the scan texture survives export on the authored skin.
+        uv_name=donor.data.uv_layers.active.name if donor.data.uv_layers.active else "UVMap"
+        skin.data.uv_layers.new(name=uv_name)
+        skin.data.uv_layers.active=skin.data.uv_layers[-1]
         dt=skin.modifiers.new("TransferScanUV","DATA_TRANSFER")
         dt.object=donor
         dt.use_loop_data=True
@@ -229,6 +234,15 @@ def authored_transition(donor_meshes):
             m=o.modifiers.new("buried edge","BEVEL");m.width=bevel;m.segments=2
             bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=m.name)
         o.data.materials.append(donor_mat)
+        # Structural pieces use deterministic cube UVs; they are small/buried and must not
+        # fall back to a flat base-colour material in Unity.
+        bpy.context.view_layer.objects.active=o
+        o.select_set(True)
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.uv.cube_project(cube_size=1.25)
+        bpy.ops.object.mode_set(mode='OBJECT')
+        o.select_set(False)
         pieces.append(o)
         return o
 
