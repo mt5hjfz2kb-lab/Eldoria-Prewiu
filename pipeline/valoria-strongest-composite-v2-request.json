@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact rock-dressed lower-city v18: pull back the exposed foreground lip and break the top plane with low existing-library rock shelves so the lower city reads as a compact mountain terrace rather than a painted board.",
+  "objective": "Validate compact lower-city architecture v19: replace the lower-detail secondary prefab family with already-certified Mid-Tier GLB modules, placed selectively inside the compact fortress nucleus without lateral city expansion.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:22:00+02:00",
-  "retry_reason": "v17 TECH PASS / VISUAL INSUFFICIENT: warm earth improved palette but the lower foreground remained a broad rectangular platform. v18 reduces that exposed lip and adds low rock shelves on the top plane using existing assets only.",
-  "retry_seq": 23
+  "triggered_at": "2026-10-03T10:31:00+02:00",
+  "retry_reason": "v18 TECH PASS / VISUAL PARTIAL: pruning oversized retaining slabs substantially improved the fortress silhouette, but the remaining secondary buildings still have a visibly lower fidelity than the Hero Bastion. v19 exhausts the strongest existing-library alternative before proving any need for new geometry.",
+  "retry_seq": 24
 }
