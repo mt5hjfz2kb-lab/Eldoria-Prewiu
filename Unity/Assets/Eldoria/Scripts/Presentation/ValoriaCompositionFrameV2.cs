@@ -72,10 +72,14 @@ namespace Eldoria.Presentation
         {
             // Architecture-first candidate: compact inhabited bands carry the eye from city to Bastion.
             // Rock is only a buried/supporting mass; there are no exposed terrain boards.
-            AddEnvironment("Valoria/SM_Cliffs_03","buried west foundation",new Vector3(-5.9f,-2.15f,-2.4f),9.4f,4.0f,24f);
-            AddEnvironment("Valoria/SM_Cliffs_01","buried east foundation",new Vector3( 5.8f,-2.10f,-2.2f),9.4f,4.0f,204f);
-            AddEnvironment("Valoria/SM_Cliffs_01","buried west hero rise",new Vector3(-4.6f,-1.15f,3.8f),7.7f,3.9f,58f);
-            AddEnvironment("Valoria/SM_Cliffs_03","buried east hero rise",new Vector3( 4.6f,-1.10f,3.9f),7.7f,3.9f,238f);
+            AddSupport("Valoria/Rescued/ResidentialTerraceRock","lower west terrace rock",new Vector3(-5.85f,-.32f,-3.05f),7.2f,3.1f,14f);
+            AddSupport("Valoria/Rescued/ResidentialTerraceRock","lower east terrace rock",new Vector3( 5.75f,-.30f,-2.90f),7.2f,3.1f,194f);
+            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","lower centre seam",new Vector3(0f,-.18f,-3.60f),6.8f,2.35f,4f);
+            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","middle west seam",new Vector3(-4.55f,.65f,.55f),5.8f,2.55f,34f);
+            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","middle east seam",new Vector3( 4.50f,.66f,.60f),5.8f,2.55f,214f);
+            AddSupport("Valoria/Rescued/TowerWallRock","upper west wall rock",new Vector3(-3.85f,1.40f,4.15f),4.8f,2.65f,18f);
+            AddSupport("Valoria/Rescued/TowerWallRock","upper east wall rock",new Vector3( 3.85f,1.40f,4.20f),4.8f,2.65f,198f);
+            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","hero centre seam",new Vector3(0f,1.45f,4.75f),5.2f,2.25f,96f);
 
             // Bring the gate's visual-only functional clones into the city section.
             PlaceExistingPresentation("Valoria · Strongest v2 · compact sawmill visual",
@@ -121,11 +125,11 @@ namespace Eldoria.Presentation
             go.transform.position+=point-new Vector3(b.center.x,b.min.y,b.center.z);
         }
 
-        static void AddEnvironment(string path,string name,Vector3 point,float span,float height,float yaw)
+        static void AddSupport(string path,string name,Vector3 point,float span,float height,float yaw)
         {
-            var src=Resources.Load<GameObject>(path);if(src==null)throw new Exception("Environment source missing: "+path);
+            var src=Resources.Load<GameObject>(path);if(src==null)throw new Exception("Certified support source missing: "+path);
             var go=Object.Instantiate(src);go.name="Valoria v2 · "+name;go.transform.rotation=Quaternion.Euler(0,yaw,0);
-            var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)throw new Exception("Environment renderer missing: "+path);
+            var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)throw new Exception("Certified support renderer missing: "+path);
             var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
             go.transform.localScale*=Mathf.Min(span/Mathf.Max(b.size.x,b.size.z),height/Mathf.Max(.01f,b.size.y));
             rs=go.GetComponentsInChildren<Renderer>(true);b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
@@ -134,7 +138,6 @@ namespace Eldoria.Presentation
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var behaviour in go.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
-            // Preserve the prefab's authored material/UV relationship; overriding it caused visible texture stretching.
             VisualPieces++;
         }
 
