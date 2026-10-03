@@ -64,9 +64,11 @@ namespace Eldoria.Presentation
         {
             // v22: BroadRockPlatform proved visually oversized/detached at the official camera.
             // Keep only the certified stepped terrain family and use it as compact rock seating.
-            AddCertifiedTerrain(root,"SteppedRockTerrace","central stair foot",new Vector3(0f,0f,-.10f),.08f,4.65f,8f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","west shoulder",new Vector3(-3.45f,0f,-.18f),.10f,3.55f,28f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","east shoulder",new Vector3(3.45f,0f,-.20f),.10f,3.55f,208f);
+            // v23: the three front supports in v22 still read as detached pillars.
+            // Use only two compact shelves tucked under the lower buildings so the central
+            // stair visually reaches the fortress mass without a separate foreground island.
+            AddCertifiedTerrain(root,"SteppedRockTerrace","west embedded shelf",new Vector3(-2.55f,0f,.58f),.16f,3.20f,34f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","east embedded shelf",new Vector3(2.55f,0f,.56f),.16f,3.20f,214f);
         }
 
         static void AddCertifiedTerrain(Transform root,string resource,string role,Vector3 anchor,float topY,float span,float yaw)
