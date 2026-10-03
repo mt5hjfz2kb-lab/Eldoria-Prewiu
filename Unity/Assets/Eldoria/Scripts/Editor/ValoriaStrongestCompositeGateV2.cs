@@ -14,12 +14,13 @@ namespace Eldoria.EditorTools
     {
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
-        static readonly (string id,string path,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(3.35f,.68f,-.05f),184f,2.72f,3.18f),
-            ("west_residence","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(-4.45f,.62f,2.40f),14f,2.65f,3.05f),
-            ("east_civic","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(4.40f,.66f,2.45f),174f,2.75f,3.20f),
-            ("upper_west","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
-            ("upper_east","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03b_PRE.prefab",new Vector3(4.10f,1.48f,5.20f),188f,2.15f,2.65f)
+        static readonly (string id,string resource,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
+            // v19: use the already-certified Mid-Tier GLBs instead of the much lower-detail
+            // Slavic prefab family. Positions stay compact around the fortress nucleus.
+            ("lower_west","Piece02",new Vector3(-3.85f,.34f,-.30f),18f,2.75f,3.10f),
+            ("lower_east","Piece03",new Vector3( 3.70f,.34f,-.42f),186f,2.70f,3.05f),
+            ("mid_west","Piece03",new Vector3(-3.75f,1.02f,2.72f),12f,2.50f,2.90f),
+            ("mid_east","Piece02",new Vector3( 3.78f,1.02f,2.78f),190f,2.50f,2.90f)
         };
 
         public static void Capture()
@@ -504,13 +505,14 @@ namespace Eldoria.EditorTools
 
             foreach(var s in PremiumSpecs)
             {
-                var src=AssetDatabase.LoadAssetAtPath<GameObject>(s.path);
+                var src=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+s.resource);
                 if(src==null)continue;
-                var go=(GameObject)PrefabUtility.InstantiatePrefab(src);
+                var go=Object.Instantiate(src);
                 if(go==null)continue;
                 go.name="Valoria · Strongest v2 · premium secondary · "+s.id;
                 go.transform.rotation=Quaternion.Euler(0f,s.yaw,0f);
                 Fit(go,s.p,s.span,s.height);
+                Neutralize(go);
                 go.transform.SetParent(proof,true);
                 DisableGameplay(go);
                 loaded++;
