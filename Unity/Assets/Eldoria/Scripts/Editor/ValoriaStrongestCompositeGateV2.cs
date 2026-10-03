@@ -115,6 +115,12 @@ namespace Eldoria.EditorTools
             int stairPieces=0;
             int terrainEdgeRocks=0;
 
+            // v39 world-integration proof: rebuild the existing continuous mountain-valley
+            // layer after Open Valley has removed its historical instance. This layer is
+            // visual-only and exists specifically to eliminate exposed island/map edges.
+            ValoriaWorldFrameMountainTerrainV1.Enabled=true;
+            ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
+
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
