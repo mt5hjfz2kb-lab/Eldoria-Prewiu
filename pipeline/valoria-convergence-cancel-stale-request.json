@@ -1,13 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stale Unity slice from TerrainData v3b so connected terraced landforms v4 can use the self-hosted Unity runner.",
+  "reason": "Cancel stalled terraced-landforms v4 capture after source-preflight passed; preserve the Unity slice so code can be validated independently, then rerun the visual proof on a clean runner.",
   "runs": [
-    37100305316
+    37100614193
   ],
   "keep_runs": [
-    37100614193,
     37100604984
   ],
-  "triggered_at": "2026-10-03T07:42:00+02:00"
+  "triggered_at": "2026-10-03T07:46:00+02:00"
 }
