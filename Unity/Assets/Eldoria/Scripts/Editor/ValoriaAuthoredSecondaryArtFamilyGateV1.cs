@@ -123,7 +123,9 @@ namespace Eldoria.EditorTools
    var gate=Resources.Load<GameObject>(gatePath);
    if(wall==null||gate==null)throw new Exception("Authored wall/gate support missing.");
 
-   Place(root,wall,"wall west",new Vector3(-4.72f,.18f,-6.28f),1.90f,1.34f,0f,useAtlas);\n   Place(root,wall,"wall east",new Vector3(4.18f,.18f,-6.28f),1.90f,1.34f,180f,useAtlas);\n   Place(root,gate,"gate support",new Vector3(0f,.18f,-6.18f),3.55f,2.65f,0f,useAtlas);
+   Place(root,wall,"wall west",new Vector3(-4.72f,.18f,-6.28f),1.90f,1.34f,0f,useAtlas);
+   Place(root,wall,"wall east",new Vector3(4.18f,.18f,-6.28f),1.90f,1.34f,180f,useAtlas);
+   Place(root,gate,"gate support",new Vector3(0f,.18f,-6.18f),3.55f,2.65f,0f,useAtlas);
   }
 
   static void Place(Transform root,GameObject src,string role,Vector3 ground,float span,float maxHeight,float yaw,bool useAtlas)
