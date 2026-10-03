@@ -1,0 +1,107 @@
+{
+  "run_id": 37153946756,
+  "artifact_id": 11285112696,
+  "variant_commit": "d9d206192497eb3c3eabbfdd830dfcb67b80c00c",
+  "comparison": {
+    "19": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "pixels_changed_over_20_rgb": 248,
+      "fraction_changed_over_20_rgb": 0.00027,
+      "mean_abs_rgb": 0.01
+    },
+    "12": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "pixels_changed_over_20_rgb": 678,
+      "fraction_changed_over_20_rgb": 0.00074,
+      "mean_abs_rgb": 0.027
+    },
+    "9": {
+      "resolution": [
+        1280,
+        720
+      ],
+      "pixels_changed_over_20_rgb": 1203,
+      "fraction_changed_over_20_rgb": 0.00131,
+      "mean_abs_rgb": 0.048
+    },
+    "mobile": {
+      "resolution": [
+        390,
+        844
+      ],
+      "pixels_changed_over_20_rgb": 0,
+      "fraction_changed_over_20_rgb": 0.0,
+      "mean_abs_rgb": 0.0
+    },
+    "after-12.png": {
+      "sha256": "d30287a3387486bdf135f398029465e67983189512795a8fd0709e68368095e1",
+      "bytes": 1014215
+    },
+    "after-19.png": {
+      "sha256": "53aeac0398ef03d167e87d96e1f820e2384438b6fb16992ca2b8b35088f4d845",
+      "bytes": 771020
+    },
+    "after-9.png": {
+      "sha256": "6bfe596e68bf3013a74496891235588c4012e225bc71d1b07ce544fcaa958256",
+      "bytes": 1122145
+    },
+    "after-mobile.png": {
+      "sha256": "e463b0029e4f1d38c059d2f8fe71174b76576dd714dd0cb96f31d39e0d99532a",
+      "bytes": 454058
+    },
+    "before-12.png": {
+      "sha256": "f58583ab26247dbd83a492a412bd0f2632a2e468c389411be67c6f535de22d28",
+      "bytes": 1012948
+    },
+    "before-19.png": {
+      "sha256": "672105ff7897f23d0e36d950522aa2c6648d1e51cb2483f80c3bd384efa4ea40",
+      "bytes": 770463
+    },
+    "before-9.png": {
+      "sha256": "63eec46bf097bff9531f0bf4e3517f43c4bd1957e6ace4cdf7fb223ad982a787",
+      "bytes": 1120441
+    },
+    "before-game-12.png": {
+      "sha256": "1316ad391013335034eaf6e5fc02396d3bedd27c2c5643578a03c6e1f7fb4a72",
+      "bytes": 869305
+    },
+    "before-game-19.png": {
+      "sha256": "31bf3a36dce6eab137fe632e0a5147584c393261a57d207b1910e1e6135a8583",
+      "bytes": 687491
+    },
+    "before-game-9.png": {
+      "sha256": "143887e6e59907699f67380020b3973e7fb845ffb4fa0e3325edcfc83149473b",
+      "bytes": 956542
+    },
+    "before-game-mobile.png": {
+      "sha256": "76a10247b6ba38dfbe5c0e240b2f453f17f78232c8c53ed32ea2f650137eb882",
+      "bytes": 398279
+    },
+    "before-mobile.png": {
+      "sha256": "ed382e62f2d07d7230ebe6c4a61d5dbea9925b327c333a8456fff32bf27d92e1",
+      "bytes": 454056
+    },
+    "game-12.png": {
+      "sha256": "55d4a79af020531ffd1d54a4cb4ecf5aa01036d08057347b1012c71532e96922",
+      "bytes": 870527
+    },
+    "game-19.png": {
+      "sha256": "06e0191bddc69d49a05227110bf70505eb2abca4003ed6a216cb17ad267d0f76",
+      "bytes": 688138
+    },
+    "game-9.png": {
+      "sha256": "9ec6d8f1261a7e500edd2dd37bdc9b66165f799e115e74dc31d97bf127edcfc4",
+      "bytes": 958244
+    },
+    "game-mobile.png": {
+      "sha256": "b7c3c4906193759f39223265d6ca984d6bccdbd7af3c9e27976cc58e5a200873",
+      "bytes": 398279
+    }
+  }
+}

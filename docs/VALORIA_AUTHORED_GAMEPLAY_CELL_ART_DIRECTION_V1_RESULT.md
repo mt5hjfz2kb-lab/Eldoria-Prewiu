@@ -1,5 +1,31 @@
-# VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1 — in progress
+# VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1 — closure
 
-Experimental source branch `visual-proof/valoria-authored-gameplay-cell-art-direction-v1` starts at accepted VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`. This is not promoted. [Research and art sheet](VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESEARCH.md).
+2026-10-03. **TECH PASS / VISUAL FAIL / NOT PROMOTED.** This bounded zero-credit Unity authorship proof was completed and closed after two different hypotheses. The accepted image remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`. Flat Citadel, Hero source, gameplay, HUD, progression and parcel contracts remain unchanged in the production runtime. The experimental class is gated only by its capture method and must not be represented as an integrated release.
 
-The run, original screenshots and comparison determine TECH and VISUAL verdicts. No verdict is asserted before that evidence.
+## Exact source and evidence
+
+- Canonical repo `mt5hjfz2kb-lab/Eldoria-Prewiu`; main at opening `aa85fd0f30bec7c760350e8a5273b1b19319a13d`, claim `381a417bda87e8bbbeeea1959c48fedefe2868a9`.
+- Branch `visual-proof/valoria-authored-gameplay-cell-art-direction-v1`, based on accepted VQB `7a564bc`. Variant 1 `3fc8a42cf99925fb6cb2ec10f7e9c8560f62e377` [run 37153721252](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37153721252), artifact `11284773218`. The failed paving technique was fully removed from variant 2.
+- Variant 2 `d9d206192497eb3c3eabbfdd830dfcb67b80c00c` [run 37153946756](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37153946756), [artifact 11285112696](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37153946756/artifacts/11285112696), ZIP SHA-256 `8ead5ae8a6dfe4b101b34f1469a375549db2433d9016ab5c95553f684f4fb5b3`. [Original PNG hashes and measurements](evidence/valoria-authored-gameplay-cell-v1/manifest.json).
+- Captures are real Unity 6000.3.23f1 output with the **canonical HUD**: `before-game-{19,12,9,mobile}.png` is VQB, `game-{19,12,9,mobile}.png` is the candidate in the artifact; corresponding no-HUD `before-*`/`after-*` also included. Portrait is 390×844. No fake UI or compositing. Both runs passed capture and the same **5/5** focused PlayMode HUD/progression tests. Collision/hotspot signature preserved by the gate. No phone-device profiling or full player build.
+
+## Direct BEFORE / AFTER judgment
+
+| Frame | VQB accepted → candidate 1 → candidate 2 | Quantitative support for candidate 2 |
+| --- | --- | ---: |
+| 19 strategic | Candidate 1 grey pavement is invisible at strategic scale; candidate 2 staging vanishes into the city. Exterior still dominates. | 248 of 921,600 pixels changed over 20 RGB levels (0.027%). |
+| 12 city | Candidate 1 introduces a rectangular joint; candidate 2 adds tiny site work without improving architecture. | 678 / 921,600 (0.074%). |
+| 9 detail | Candidate 1 overwrites source-rich plaza with a flatter tongue; candidate 2 leaves plaza intact but adds small isolated sticks/blocks. Hero rock and wall remain different source grammars. | 1,203 / 921,600 (0.131%). |
+| Mobile portrait | Candidate 1 leaves an obvious paving edge; candidate 2 is pixel-identical at the primary portrait crop. City is already cropped by fixed pan, but this variant does nothing for its commercial read. | **0 / 329,160 (0.000%).** |
+
+Numbers are exact image differences at threshold `max(|R|,|G|,|B|)>20`, not a quality score. The visual judgment comes from inspecting the real pairs. Approximate projected ring widths remain 36% at 19, 57% at 12, 76.5% at 9 and 282% at portrait 9.4, calculated in the preceding proof for the same unchanged capture camera. Thus the 19 overview intentionally has lots of terrain; at 9 the city fills much more width, yet brown reserved ground and architectural mismatch still dominate. The reference benchmark requires layered inhabited masonry, coherent detail and a polished whole-frame game impression; neither candidate moves the full frame perceptibly toward it. [Benchmark](ELDORIA_VISUAL_BENCHMARK.md) and [art sheet / research](VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESEARCH.md).
+
+## Method, scalability and stop decision
+
+The mandatory planner returned `environment_composition` with no Tripo or credit spend. Variant 1 authored a combined four-mesh paving system (229 individual stone faces, 16 low returns, 5 props), technically reproducible but visually poorer. Variant 2 replaced the pavement with reversible construction supply staging (8 masonry, 13 props) at the south shoulders of R4/R5 and inside F1. Future Cantera, Forja, Hospital, C0/C1/C2 and XW/XE/XU/XS remain protected; no new collider or hotspot. It passed all technical checks but is absent from the portrait frame and nearly absent elsewhere. Neither is promoted. The after artifact is evidence of the failed variant, not the new production base.
+
+Six-month answer: **the underlying city, source prefabs, presentation roots, material seams, capture tooling and gameplay contracts remain replaceable without rebuilding Valoria; this proof did not create the desired own visual language.** The fused Hero rock needs semantic source segmentation or a designed architectural facade; procedural pavers and temporary props cannot change its visible source identity. The Aserradero and wall need an authored matched stone/timber/roof grammar at the same source-rich density as the Hero. Those modules can later be swapped independently of parcel topology. No engine ceiling or mountain/layout rebuild was demonstrated. Real performance risk remains unmeasured on device; variant 2 adds 21 small pieces and resource-prefab renderers, not a certified mobile budget.
+
+The existing Blender semantic-authoring scripts and prior source segmentation remain reproducible research, but no new `.blend`/GLB was produced or accepted in this proof. A genuine next source art cell is estimated at **8–15 artist/technical-artist working days plus 3–6 engineering/QA days** for semantic Hero interface, Aserradero/wall/ground shared source kit, UV/bakes, integration and pan-envelope/mobile evidence. This is a planning range, not a completed implementation or a cost to roll out all cities. Do not scale this failed Unity decoration technique.
+
+**Next block:** commission/author a *source-level shared Hero–Aserradero–wall sample* with an actual environment-art style sheet and replaceable semantic Blender parts; demonstrate a significant paired 9/mobile screenshot win before extending to Granero/Cuartel or other Bastions. Keep VQB as the current accepted visual and avoid another pass of ground tints, generic low masonry, or empty-plot props. The question “can a coherent own visual language improve the played screen?” remains **unproven** by this block, not answered yes by CI.

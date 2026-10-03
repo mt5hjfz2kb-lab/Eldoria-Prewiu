@@ -1,12 +1,6 @@
 name: "[EXPERIMENT] Valoria Authored Gameplay Cell Art Direction v1"
 
 on:
-  push:
-    branches: [visual-proof/valoria-authored-gameplay-cell-art-direction-v1]
-    paths:
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAuthoredGameplayCellV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredGameplayCellGateV1.cs"
-      - "pipeline/art-production-request.json"
   workflow_dispatch:
 
 permissions:

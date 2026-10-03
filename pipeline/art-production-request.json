@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-authored-gameplay-cell-art-direction-v1",
   "asset_or_sector": "Bastion threshold / civic plaza / Aserradero apron shared modular stone and timber cell",
   "profile": "environment_composition",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Single reversible authored Unity mesh kit on VQB visual. Official played camera and HUD proof; reserved plots and canonical gameplay unchanged. No Tripo or credit spend."
+  "notes": "Closed TECH PASS / VISUAL FAIL / NOT PROMOTED after runs 37153721252 and 37153946756, artifact 11285112696. Both candidate visual methods rejected; VQB remains accepted. No further automatic iteration."
 }
