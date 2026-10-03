@@ -15,12 +15,11 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string path,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            ("town_house_01","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab",new Vector3(-6.85f,.34f,-2.85f),12f,3.15f,3.75f),
-            ("town_house_02","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(6.85f,.34f,-3.05f),190f,3.15f,3.75f),
-            ("town_house_03c","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03c_PRE.prefab",new Vector3(-5.25f,.60f,2.75f),18f,2.75f,3.25f),
-            ("admin_01a","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.15f,.60f,2.85f),174f,2.85f,3.35f),
-            ("town_house_03a","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
-            ("town_house_03b","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03b_PRE.prefab",new Vector3(4.10f,1.48f,5.20f),188f,2.15f,2.65f)
+            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(6.65f,.38f,-3.85f),184f,3.15f,3.55f),
+            ("west_residence","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(-5.15f,.62f,2.55f),14f,2.65f,3.05f),
+            ("east_civic","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.10f,.66f,2.80f),174f,2.75f,3.20f),
+            ("upper_west","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
+            ("upper_east","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03b_PRE.prefab",new Vector3(4.10f,1.48f,5.20f),188f,2.15f,2.65f)
         };
 
         public static void Capture()
@@ -77,10 +76,12 @@ namespace Eldoria.EditorTools
 
             int suppressed=SuppressDisconnectedResidue();
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
+            int auditPruned=PruneAuditConfirmedLowerResidue();
             int premium=ReplaceSecondaryArchitecture(root.transform);
             int ruins=0;
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
+            int routeStyled=StyleCoreRoute();
             ValoriaLowerCityPlateauV1.Enabled=true;
             ValoriaLowerCityPlateauV1.Build(root.transform,state);
 
@@ -94,6 +95,8 @@ namespace Eldoria.EditorTools
                 $"  \"collider_hotspot_signature_equal\": true,\n"+
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
                 $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
+                $"  \"audit_pruned_renderers\": {auditPruned},\n"+
+                $"  \"core_route_renderers_styled\": {routeStyled},\n"+
                 $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
                 $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
@@ -184,6 +187,72 @@ namespace Eldoria.EditorTools
                     r.enabled=false;
                     count++;
                 }
+            }
+            return count;
+        }
+
+        static int PruneAuditConfirmedLowerResidue()
+        {
+            int count=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain=Chain(r.transform);
+                var b=r.bounds;
+
+                // New continuous substrate now owns these old visual pads/seams.
+                bool oldPads=
+                    chain.Contains("vpd · groundkit west workshop terrace")||
+                    chain.Contains("vpd · groundkit east military terrace")||
+                    chain.Contains("vpd · rescued seam west")||
+                    chain.Contains("vpd · rescued seam east")||
+                    chain.Contains("valoria · residual cleanup · rock lower");
+
+                // The old military presentation is visibly duplicated by the new coherent barracks family.
+                bool oldMilitary=
+                    chain.Contains("valoria · cliff cleanup · military hall")||
+                    chain.Contains("valoria · cliff cleanup · military store")||
+                    chain.Contains("valoria · cliff cleanup · military roof crown");
+
+                // Asset-library D1 pieces belong to the superseded lower-district generation.
+                bool oldMidTier=
+                    chain.Contains("assetlibrary reprocessing · midtier d1");
+
+                // Only remove the low/front Cliff Island rocks now replaced by the organic substrate.
+                bool lowCliffEdge=
+                    chain.Contains("valoria · cliff island · edge") &&
+                    b.center.y<1.15f && b.center.z<0.25f;
+
+                // GroundKit is already the street. The later decorative slab layer duplicates it.
+                bool duplicateStreet=
+                    chain.Contains("valoria · stone street slab");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet)
+                {
+                    r.enabled=false;
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static int StyleCoreRoute()
+        {
+            int count=0;
+            var stair=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "cobble",new Color(.34f,.33f,.30f,1f),new Vector2(2.35f,2.35f),.025f,.94f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.33f,.32f,.29f,1f),"stone",new Vector2(2.35f,2.35f),.96f);
+
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain=Chain(r.transform);
+                if(!chain.Contains("vpd · vertical stair"))continue;
+
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)mats[i]=stair;
+                r.sharedMaterials=mats;
+                count++;
             }
             return count;
         }
