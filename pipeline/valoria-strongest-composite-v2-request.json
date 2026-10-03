@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Visual Shell v2 method 2: validate exact backplate color matching, a nearly invisible contact grade, and a slightly raised/tighter inner matte edge to mask the floating lower cliff while keeping the photographic valley visually continuous.",
+  "objective": "Visual Shell v2 method 3: validate a localized camera-locked projected matte that covers only the lower-right hanging cliff residue while sampling the exact canonical backplate and leaving the rest of the frame untouched.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:38:00+02:00",
-  "retry_reason": "Retry method 2 after fixing a literal backslash-n compile error in ValoriaVisualShellV2.cs. Visual design unchanged.",
-  "retry_seq": 55
+  "triggered_at": "2026-10-03T13:42:00+02:00",
+  "retry_reason": "Method 2 TECH PASS but visually near-identical to the v38 baseline: exact projection became seamless, but the annulus did not materially improve the floating lower cliff. Method 3 uses the same proven projection only as a localized matte over that residue.",
+  "retry_seq": 56
 }
