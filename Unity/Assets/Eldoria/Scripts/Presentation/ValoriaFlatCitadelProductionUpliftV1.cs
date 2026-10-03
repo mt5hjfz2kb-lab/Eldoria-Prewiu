@@ -155,83 +155,45 @@ namespace Eldoria.Presentation
 
         static void BuildGroundProduction(Transform root)
         {
-            // Replace proof-grade rectangular road/parcel slabs with authored cobble and irregular plot language.
-            HideProofGroundSlabs(root);
-
-            var art=ValoriaExternalAssetLibrary.Load();
-            var cobble=art!=null?art.SlavicCobbleRoad:null;
-            var mud=art!=null?art.SlavicMudFlat:null;
-            var moss=art!=null?art.SlavicMoss:null;
-
-            var roadTint=new Color(.58f,.55f,.49f,1f);
-            if(cobble!=null)
-            {
-                // Gate -> plaza -> Bastion: one continuous readable route with controlled variation.
-                for(int i=0;i<8;i++)
-                {
-                    float z=-5.15f+i*1.28f;
-                    float x=(i%3-1)*.08f;
-                    float yaw=(i%4==0?-3f:(i%4==1?2f:0f));
-                    float span=(i<2?2.65f:(i>5?3.0f:2.85f));
-                    AddGroundAsset(root,cobble,"main road "+i,new Vector3(x,.135f,z),span,.16f,yaw,roadTint*(.96f+(i%2)*.035f));
-                }
-
-                // Cross streets terminate in buildable parcels rather than reading as a giant paved board.
-                for(int side=-1;side<=1;side+=2)
-                {
-                    for(int i=0;i<4;i++)
-                    {
-                        float x=side*(1.85f+i*1.25f);
-                        AddGroundAsset(root,cobble,(side<0?"west":"east")+" branch "+i,
-                            new Vector3(x,.132f,-.72f+(i%2)*.06f),2.05f,.14f,90f+(i%2==0?2f:-2f),
-                            roadTint*(.95f+(i%2)*.04f));
-                    }
-                }
-
-                // Plaza: authored stone patches with a larger centre and four edge pieces;
-                // readable as civic space, but not a single rectangular tile.
-                AddGroundAsset(root,cobble,"plaza centre",new Vector3(0,.142f,.72f),4.05f,.15f,0f,new Color(.62f,.59f,.53f,1f));
-                foreach(var s in new[]{
-                    new Vector4(-2.25f,.72f, 90f,2.45f), new Vector4(2.25f,.72f,90f,2.45f),
-                    new Vector4(0f,-.95f,0f,2.55f), new Vector4(0f,2.35f,0f,2.55f)})
-                    AddGroundAsset(root,cobble,"plaza edge",new Vector3(s.x,.137f,s.y),s.w,.13f,s.z,new Color(.57f,.55f,.50f,1f));
-            }
-
-            // Buildable plots: warmer compacted earth fields with irregular silhouettes.
+            // Ground block owns plot hierarchy only. Roads/plaza are authored by BuildPrimaryAxisProduction.
             AddIrregularGroundPatch(root,"west buildable parcel",
                 new[]{new Vector2(-8.55f,1.55f),new Vector2(-4.75f,1.20f),new Vector2(-4.45f,4.15f),
                       new Vector2(-5.55f,5.05f),new Vector2(-8.70f,4.45f),new Vector2(-9.0f,2.65f)},
-                .105f,new Color(.46f,.39f,.28f,1f));
+                .108f,new Color(.40f,.32f,.22f,1f));
             AddIrregularGroundPatch(root,"east buildable parcel",
                 new[]{new Vector2(4.55f,1.35f),new Vector2(8.45f,1.50f),new Vector2(8.95f,2.80f),
                       new Vector2(8.60f,4.50f),new Vector2(5.35f,4.95f),new Vector2(4.35f,4.0f)},
-                .105f,new Color(.46f,.39f,.28f,1f));
+                .108f,new Color(.40f,.32f,.22f,1f));
 
-            // Functional plots get distinct but related surface identities.
             AddIrregularGroundPatch(root,"sawmill work yard",
-                new[]{new Vector2(-8.5f,-3.65f),new Vector2(-4.25f,-3.25f),new Vector2(-4.15f,-.65f),
-                      new Vector2(-5.0f,.05f),new Vector2(-8.55f,-.20f),new Vector2(-9.0f,-2.0f)},
-                .112f,new Color(.50f,.39f,.25f,1f));
+                new[]{new Vector2(-8.65f,-3.75f),new Vector2(-4.25f,-3.30f),new Vector2(-4.15f,-.60f),
+                      new Vector2(-5.05f,.02f),new Vector2(-8.55f,-.15f),new Vector2(-9.05f,-2.0f)},
+                .113f,new Color(.48f,.36f,.22f,1f));
             AddIrregularGroundPatch(root,"barracks training yard",
-                new[]{new Vector2(4.1f,-3.55f),new Vector2(8.35f,-3.75f),new Vector2(8.85f,-2.10f),
-                      new Vector2(8.45f,-.35f),new Vector2(4.85f,.05f),new Vector2(4.05f,-1.0f)},
-                .112f,new Color(.43f,.40f,.33f,1f));
+                new[]{new Vector2(4.10f,-3.65f),new Vector2(8.45f,-3.80f),new Vector2(8.90f,-2.10f),
+                      new Vector2(8.40f,-.30f),new Vector2(4.80f,.04f),new Vector2(4.05f,-1.0f)},
+                .113f,new Color(.41f,.38f,.31f,1f));
+            AddIrregularGroundPatch(root,"granary yard",
+                new[]{new Vector2(-4.25f,-5.55f),new Vector2(-1.10f,-5.55f),new Vector2(-.85f,-3.35f),
+                      new Vector2(-1.65f,-2.95f),new Vector2(-4.25f,-3.25f)},
+                .112f,new Color(.46f,.38f,.24f,1f));
 
-            // Small authored dirt/moss overlays soften the city/meadow and road/parcel joins.
-            if(mud!=null)
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art!=null&&art.SlavicStoneFence!=null)
             {
                 foreach(var s in new[]{
-                    new Vector4(-7.7f,4.35f,18f,1.65f),new Vector4(-5.0f,1.45f,72f,1.25f),
-                    new Vector4(7.65f,4.20f,192f,1.65f),new Vector4(5.05f,1.35f,108f,1.25f),
-                    new Vector4(-3.1f,-3.9f,35f,1.20f),new Vector4(3.35f,-3.95f,210f,1.20f)})
-                    AddGroundAsset(root,mud,"earth transition",new Vector3(s.x,.118f,s.y),s.w,.10f,s.z,new Color(.56f,.49f,.37f,1f));
-            }
-            if(moss!=null)
-            {
-                foreach(var s in new[]{
-                    new Vector4(-8.75f,5.15f,15f,1.1f),new Vector4(8.65f,5.0f,205f,1.1f),
-                    new Vector4(-8.9f,-4.55f,30f,.95f),new Vector4(8.85f,-4.55f,220f,.95f)})
-                    AddGroundAsset(root,moss,"grass transition",new Vector3(s.x,.12f,s.y),s.w,.08f,s.z,new Color(.44f,.55f,.36f,1f));
+                    new Vector4(-7.7f,4.72f, 8f,2.0f),new Vector4(7.6f,4.68f,-7f,2.0f),
+                    new Vector4(-8.55f,-3.05f,90f,1.75f),new Vector4(8.45f,-3.05f,90f,1.75f)})
+                {
+                    var edge=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · plot boundary",
+                        art.SlavicStoneFence,new Vector3(s.x,.12f,s.y),s.w,.55f,Quaternion.Euler(0f,s.z,0f),
+                        new Color(.73f,.70f,.63f,1f));
+                    if(edge!=null)
+                    {
+                        edge.transform.SetParent(root,true);
+                        foreach(var col in edge.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                    }
+                }
             }
         }
 
@@ -257,25 +219,27 @@ namespace Eldoria.Presentation
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
-        static void AddIrregularGroundPatch(Transform root,string role,Vector2[] ring,float y,Color tint)
+        static void AddIrregularGroundPatch(Transform root,string role,Vector2[] ring,float y,Color tint,string pattern="earth",Material overrideMaterial=null)
         {
             if(ring==null||ring.Length<3)return;
             int n=ring.Length;
             var verts=new Vector3[n+1];
+            var uv=new Vector2[n+1];
             Vector2 center=Vector2.zero;
             foreach(var p in ring)center+=p;
             center/=n;
             verts[0]=new Vector3(center.x,y,center.y);
-            for(int i=0;i<n;i++)verts[i+1]=new Vector3(ring[i].x,y,ring[i].y);
+            uv[0]=new Vector2(center.x*.22f,center.y*.22f);
+            for(int i=0;i<n;i++){verts[i+1]=new Vector3(ring[i].x,y,ring[i].y);uv[i+1]=new Vector2(ring[i].x*.22f,ring[i].y*.22f);}
             var tris=new int[n*3];
             for(int i=0;i<n;i++){tris[i*3]=0;tris[i*3+1]=i+1;tris[i*3+2]=((i+1)%n)+1;}
             var mesh=new Mesh{name="Valoria Flat Citadel ground · "+role};
-            mesh.vertices=verts;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject("Valoria · Flat Citadel Production · "+role);
             go.transform.SetParent(root,true);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var r=go.AddComponent<MeshRenderer>();
-            r.sharedMaterial=ValoriaKit.DetailedSurfaceMaterial(tint,"earth",new Vector2(2.3f,2.3f),.94f);
+            r.sharedMaterial=overrideMaterial??ValoriaKit.DetailedSurfaceMaterial(tint,pattern,new Vector2(2.3f,2.3f),.94f);
             r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=true;
         }
 
@@ -294,13 +258,11 @@ namespace Eldoria.Presentation
                 new Vector2( 2.9f,10.5f),new Vector2(-2.8f,10.4f),new Vector2(-7.9f, 9.5f),
                 new Vector2(-10.3f,6.0f),new Vector2(-10.8f,.2f)
             };
-            var cityMat=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",new Color(.52f,.46f,.35f,1f),new Vector2(1.6f,1.6f),.015f,.86f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.48f,.42f,.32f,1f),"earth",new Vector2(3.4f,3.4f),.92f);
+            var cityMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.47f,.40f,.29f,1f),"earth",new Vector2(3.1f,3.1f),.92f);
             CreatePrism(root,"production buildable city plane",ring,.015f,.075f,cityMat,
                 ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.34f,.31f,1f),"rock",new Vector2(3.0f,3.0f),1.0f));
 
-            var parcelMat=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",new Color(.42f,.35f,.24f,1f),new Vector2(1.25f,1.25f),.012f,.82f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.39f,.33f,.24f,1f),"earth",new Vector2(2.6f,2.6f),.92f);
+            var parcelMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.39f,.31f,.21f,1f),"earth",new Vector2(2.4f,2.4f),.90f);
             AddSlab(root,"west growth parcel",new Vector3(-6.55f,.102f,3.25f),new Vector3(4.45f,.035f,3.35f),parcelMat);
             AddSlab(root,"east growth parcel",new Vector3( 6.45f,.102f,3.15f),new Vector3(4.45f,.035f,3.35f),parcelMat);
             AddSlab(root,"granary work parcel",new Vector3(-2.75f,.103f,-4.40f),new Vector3(3.55f,.035f,2.65f),parcelMat);
@@ -335,45 +297,71 @@ namespace Eldoria.Presentation
 
         static void BuildPrimaryAxisProduction(Transform root)
         {
-            var art=ValoriaExternalAssetLibrary.Load();
-            var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.66f,.63f,.56f,1f),new Vector2(1.8f,1.8f),.020f,.95f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.56f,.50f,1f),"stone",new Vector2(2.3f,2.3f),1.0f);
+            var roadMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.50f,1f),"stone",new Vector2(2.0f,2.0f),1.0f);
+            var plazaMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.62f,.60f,.55f,1f),"stone",new Vector2(1.7f,1.7f),1.0f);
 
-            // Plaza is one calm visual anchor. Authored cobble modules define circulation on top.
-            AddSlab(root,"production central plaza",new Vector3(0,.118f,.70f),new Vector3(6.5f,.055f,5.2f),stone);
+            // One calm civic plaza, surrounded by narrower streets. These are mesh ribbons with UVs,
+            // so their material language remains stable across editor batchmode and mobile review.
+            AddIrregularGroundPatch(root,"production central plaza",
+                new[]{new Vector2(-3.10f,-1.55f),new Vector2(3.05f,-1.45f),new Vector2(3.25f,2.55f),
+                      new Vector2(2.55f,3.15f),new Vector2(-2.65f,3.10f),new Vector2(-3.30f,2.15f)},
+                .126f,new Color(.62f,.60f,.55f,1f),"stone",plazaMat);
 
-            if(art!=null&&art.SlavicCobbleRoad!=null)
-            {
-                for(int i=0;i<8;i++)
-                {
-                    float z=-5.55f+i*1.35f;
-                    var road=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · main road "+i,
-                        art.SlavicCobbleRoad,new Vector3(0,.135f,z),2.55f,.22f,
-                        Quaternion.Euler(0,(i%3-1)*2.5f,0),new Color(.92f,.89f,.81f,1f));
-                    if(road!=null)road.transform.SetParent(root,true);
-                }
-                for(int side=-1;side<=1;side+=2)
-                for(int i=0;i<3;i++)
-                {
-                    float x=side*(2.15f+i*1.55f);
-                    var branch=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · branch road "+side+" "+i,
-                        art.SlavicCobbleRoad,new Vector3(x,.135f,-1.0f),2.45f,.22f,
-                        Quaternion.Euler(0,90f+(i%2==0?2f:-2f),0),new Color(.90f,.87f,.79f,1f));
-                    if(branch!=null)branch.transform.SetParent(root,true);
-                }
-            }
-            else
-            {
-                AddSlab(root,"production gate road",new Vector3(0,.13f,-4.7f),new Vector3(2.8f,.06f,4.3f),stone);
-                AddSlab(root,"production bastion approach",new Vector3(0,.13f,4.1f),new Vector3(3.4f,.06f,2.5f),stone);
-                AddSlab(root,"production west branch",new Vector3(-4.2f,.13f,-1.0f),new Vector3(5.3f,.05f,1.55f),stone);
-                AddSlab(root,"production east branch",new Vector3(4.2f,.13f,-1.0f),new Vector3(5.3f,.05f,1.55f),stone);
-            }
+            AddRoadRibbon(root,"main civic road",
+                new[]{new Vector3(0f,.132f,-6.0f),new Vector3(-.08f,.132f,-4.25f),new Vector3(.06f,.132f,-2.30f),
+                      new Vector3(-.04f,.132f,-.45f),new Vector3(.04f,.132f,1.60f),new Vector3(0f,.132f,4.55f)},
+                1.22f,roadMat);
+
+            AddRoadRibbon(root,"west branch",
+                new[]{new Vector3(-.55f,.131f,-.85f),new Vector3(-2.3f,.131f,-.95f),new Vector3(-4.25f,.131f,-1.05f),
+                      new Vector3(-6.15f,.131f,-1.15f),new Vector3(-7.55f,.131f,-1.45f)},
+                .80f,roadMat);
+            AddRoadRibbon(root,"east branch",
+                new[]{new Vector3(.55f,.131f,-.85f),new Vector3(2.3f,.131f,-.95f),new Vector3(4.25f,.131f,-1.05f),
+                      new Vector3(6.10f,.131f,-1.25f),new Vector3(7.45f,.131f,-1.50f)},
+                .80f,roadMat);
 
             ValoriaKit.Cylinder("Valoria · Flat Citadel Production · plaza plinth",
                 new Vector3(0,.24f,.70f),new Vector3(.64f,.16f,.64f),WarmStone,Quaternion.identity);
             ValoriaKit.Banner("Valoria · Flat Citadel Production · central standard",
                 new Vector3(0,1.25f,.70f),new Vector3(.42f,1.35f,.06f),Blue);
+        }
+
+        static void AddRoadRibbon(Transform root,string role,Vector3[] centers,float halfWidth,Material mat)
+        {
+            if(centers==null||centers.Length<2)return;
+            int n=centers.Length;
+            var verts=new Vector3[n*2];
+            var uv=new Vector2[n*2];
+            float total=0f;
+            var distances=new float[n];
+            for(int i=1;i<n;i++){total+=Vector3.Distance(centers[i-1],centers[i]);distances[i]=total;}
+            for(int i=0;i<n;i++)
+            {
+                Vector3 dir;
+                if(i==0)dir=centers[1]-centers[0];
+                else if(i==n-1)dir=centers[n-1]-centers[n-2];
+                else dir=centers[i+1]-centers[i-1];
+                dir.y=0f;dir.Normalize();
+                var side=new Vector3(-dir.z,0f,dir.x)*halfWidth;
+                verts[i*2]=centers[i]-side;
+                verts[i*2+1]=centers[i]+side;
+                float v=distances[i]/Mathf.Max(.001f,halfWidth*2f);
+                uv[i*2]=new Vector2(0f,v);uv[i*2+1]=new Vector2(1f,v);
+            }
+            var tris=new int[(n-1)*6];
+            for(int i=0;i<n-1;i++)
+            {
+                int v=i*2,t=i*6;
+                tris[t]=v;tris[t+1]=v+2;tris[t+2]=v+1;
+                tris[t+3]=v+1;tris[t+4]=v+2;tris[t+5]=v+3;
+            }
+            var mesh=new Mesh{name="Valoria Flat Citadel road · "+role};
+            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject("Valoria · Flat Citadel Production · "+role);
+            go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=true;
         }
 
         static void BuildBastionRise(Transform root)
