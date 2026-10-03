@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T21:28:00.000Z",
-  "active": [
+  "updated_at": "2026-10-03T21:45:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-source-level-art-direction-proof-v1",
       "title": "Valoria Source-Level Art Direction Proof v1",
@@ -23,13 +24,22 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T21:28:00.000Z",
       "base_main_sha": "f740a1703ed5e4edf81e64591e44bc16c811e4e5",
-      "dependency": "Start from accepted VQB visual source 7a564bc5056bb7166b7704c313ae4db7d55d4530. Prior Unified Visual Language, Authored Secondary Art Family and Authored Gameplay Cell proofs are TECH PASS / VISUAL FAIL / NOT PROMOTED evidence only. Preserve Flat Citadel geography, parcel reservations, gameplay colliders/hotspots/camera contracts. Source-level Hero/Aserradero/wall proof only; validate zoom 9 and mobile before extending. Zero paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "Start from accepted VQB visual source 7a564bc5056bb7166b7704c313ae4db7d55d4530. Prior Unified Visual Language, Authored Secondary Art Family and Authored Gameplay Cell proofs are TECH PASS / VISUAL FAIL / NOT PROMOTED evidence only. Preserve Flat Citadel geography, parcel reservations, gameplay colliders/hotspots/camera contracts. Source-level Hero/Aserradero/wall proof only; validate zoom 9 and mobile before extending. Zero paid credits.",
+      "completed_at": "2026-10-03T21:45:00Z",
+      "branch": "visual-proof/valoria-source-level-art-direction-proof-v1",
+      "final_branch_head": "ee51cfbbb4752b631a099e32da1b361ce568dd1e",
+      "valid_capture_head": "471dd82eb1acc9c3db9ceb47b84b40eb65276c85",
+      "result_doc": "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESULT.md",
+      "run_id": 37155891705,
+      "artifact_id": 11286036653,
+      "source_artifact_id": 11285676565,
+      "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Deterministic Blender .blend + 3 GLBs, real-HUD zoom 9/mobile captures, gameplay signature preserved and focused tests green. Low-detail shared wrapper family regressed visibly: pale Aserradero/wall masses and pasted-on Hero rock interface. Per stop-gate, no 12/19 extension and no rollout. Zero paid credits.",
+      "next": "Do not revive this wrapper family. A future block, if opened, should test high-fidelity semantic source editing of Hero rock/masonry + source-preserving Aserradero + wall under one rich grammar, again validating 9/mobile first."
+    },
     {
       "id": "valoria-authored-gameplay-cell-art-direction-v1",
       "title": "Valoria Authored Gameplay Cell Art Direction v1",
