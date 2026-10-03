@@ -33,11 +33,28 @@ jobs:
           ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
           ELDORIA_CANONICAL_SAWMILL: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
         run: |
-          blender -b --python tools/valoria-authored-secondary-art-family/build_family.py
+          rm -rf pipeline/candidates/valoria-authored-secondary-art-family-v1
+          rm -f pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          mkdir -p pipeline/candidates/valoria-authored-secondary-art-family-v1 pipeline/evidence
+          set -o pipefail
+          blender -b --python tools/valoria-authored-secondary-art-family/build_family.py | tee "$RUNNER_TEMP/valoria-authored-secondary-blender.log"
+          grep -q "VALORIA_AUTHORED_SECONDARY_FAMILY=PASS" "$RUNNER_TEMP/valoria-authored-secondary-blender.log"
           test -s pipeline/evidence/valoria-authored-secondary-art-family-v1.json
           test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb
           test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb
           test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb
+          python3 - <<'PY'
+          import json
+          p='pipeline/evidence/valoria-authored-secondary-art-family-v1.json'
+          d=json.load(open(p,encoding='utf-8'))
+          assert d.get('schema_version')==2,d
+          a=d['assets'][0]
+          assert a['file']=='Valoria_Authored_Aserradero_v1.glb',a
+          assert a['triangles']==49800,a
+          assert len(a.get('materials',[]))>=3,a
+          assert a.get('semantic_face_counts'),a
+          print('AUTHORED_FAMILY_EVIDENCE=PASS')
+          PY
           cat pipeline/evidence/valoria-authored-secondary-art-family-v1.json
       - id: upload
         uses: actions/upload-artifact@v4
