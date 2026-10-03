@@ -78,14 +78,14 @@ namespace Eldoria.Presentation
                     for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
                     var s=candidate.transform.localScale;
                     candidate.transform.localScale=new Vector3(
-                        s.x*(8.45f/Mathf.Max(.001f,b.size.x)),
-                        s.y*(2.45f/Mathf.Max(.001f,b.size.y)),
-                        s.z*(3.95f/Mathf.Max(.001f,b.size.z)));
+                        s.x*(8.10f/Mathf.Max(.001f,b.size.x)),
+                        s.y*(2.30f/Mathf.Max(.001f,b.size.y)),
+                        s.z*(3.55f/Mathf.Max(.001f,b.size.z)));
 
                     renderers=candidate.GetComponentsInChildren<Renderer>(true);
                     b=renderers[0].bounds;
                     for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
-                    candidate.transform.position+=new Vector3(-b.center.x,2.05f-b.max.y,5.15f-b.max.z);
+                    candidate.transform.position+=new Vector3(-b.center.x,2.00f-b.max.y,5.25f-b.max.z);
 
                     Material cliffMaterial=rock;
                     var heroRock=GameObject.Find("Valoria · Cliff Island · upper bastion west");
