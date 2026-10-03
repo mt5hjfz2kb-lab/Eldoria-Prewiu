@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-flat-citadel-art-consolidation-v1",
   "asset_or_sector": "Valoria Flat Citadel — art consolidation and progression-reserved city",
   "profile": "environment_composition",
@@ -28,5 +28,12 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Flat Citadel macrocomposition is locked. First preserve growth capacity using canonical Bastion I-X gameplay plus long-range 11-35 planning: active Aserradero/Cuartel/Granero, reserved Cantera/Forja/Hospital, no world-space plot for Codex/Relicario by default, plus west/east/upper/special late-game reserves. Then consolidate wall, Hero Bastion interface, materials, secondary architecture, atmosphere and final HUD presentation. Unity-first, zero spend, no mountain/topography reopening, no Tripo."
+  "notes": "Flat Citadel macrocomposition is locked. First preserve growth capacity using canonical Bastion I-X gameplay plus long-range 11-35 planning: active Aserradero/Cuartel/Granero, reserved Cantera/Forja/Hospital, no world-space plot for Codex/Relicario by default, plus west/east/upper/special late-game reserves. Then consolidate wall, Hero Bastion interface, materials, secondary architecture, atmosphere and final HUD presentation. Unity-first, zero spend, no mountain/topography reopening, no Tripo.",
+  "closed_at": "2026-10-03T17:39:00Z",
+  "result": "TECH PASS / VISUAL FAIL. Art Consolidation completed with progression parcel reservations, wall hierarchy consolidation, Bastion architectural interface, material calibration, restrained atmosphere and real canonical Unity HUD captures. Flat Citadel remains locked. Zero Tripo spend.",
+  "validation_run_id": 37140939404,
+  "validation_artifact_id": 11280003633,
+  "closure_revalidation_run_id": 37141174327,
+  "closure_revalidation_artifact_id": 11280596584,
+  "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1"
 }
