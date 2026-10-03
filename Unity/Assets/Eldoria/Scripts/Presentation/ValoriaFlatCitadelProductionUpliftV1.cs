@@ -252,7 +252,7 @@ namespace Eldoria.Presentation
             // Keep the accepted macro footprint but give the natural surround and buildable ground
             // distinct material/value families instead of one uniform plane.
             var meadow=ValoriaKit.DetailedSurfaceMaterial(new Color(.31f,.39f,.25f,1f),"earth",new Vector2(7.2f,7.2f),.90f);
-            AddSlab(root,"production surrounding meadow",new Vector3(0,-.06f,1.0f),new Vector3(31f,.08f,26f),meadow);
+            AddSlab(root,"production surrounding meadow",new Vector3(0,-.06f,1.0f),new Vector3(64f,.08f,52f),meadow);
 
             Vector2[] ring={
                 new Vector2(-10.4f,-7.0f),new Vector2(-6.2f,-7.7f),new Vector2(-1.8f,-7.5f),
@@ -937,21 +937,6 @@ namespace Eldoria.Presentation
             {
                 AddDressingPrefab(root,art.SlavicBoulder,"gate shoulder west",new Vector3(-5.10f,.05f,-6.72f),1.10f,.62f,28f,new Color(.73f,.72f,.67f,1f));
                 AddDressingPrefab(root,art.SlavicBoulder,"gate shoulder east",new Vector3( 5.20f,.05f,-6.68f),1.00f,.58f,208f,new Color(.72f,.71f,.66f,1f));
-            }
-
-            // Existing production tree prefabs frame the outside of the wall only.
-            var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
-            var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
-            var trees=new[]{
-                new Vector4(-12.15f,-3.80f, 12f,2.55f),new Vector4(-12.55f, 2.80f, 58f,2.85f),
-                new Vector4(-11.65f, 8.45f,106f,2.45f),new Vector4( 12.10f,-3.45f,192f,2.60f),
-                new Vector4( 12.45f, 3.10f,238f,2.80f),new Vector4( 11.55f, 8.50f,286f,2.45f),
-                new Vector4(-6.90f,11.30f, 30f,2.35f),new Vector4( 7.10f,11.45f,210f,2.35f)
-            };
-            for(int i=0;i<trees.Length;i++)
-            {
-                var s=trees[i];
-                AddDressingPrefab(root,(i%2==0?treeA:treeB),"perimeter tree",new Vector3(s.x,.02f,s.y),1.55f,s.w,s.z,new Color(.72f,.78f,.66f,1f));
             }
 
             // Restrained blue standards reinforce Valoria identity at functional districts.
