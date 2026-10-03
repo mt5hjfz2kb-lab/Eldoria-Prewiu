@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-blender-cliff-proof-v1",
+  "objective": "Generate a zero-credit organic lower-city cliff in Blender, stage it only for the experimental Unity run, and compare the integrated 19/12/9/mobile frame against the canonical reference.",
+  "route": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "source": "procedural_blender",
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "no_paid_assets": true,
+    "do_not_promote_binary_without_visual_pass": true
+  },
+  "validation": [
+    "19",
+    "12",
+    "9",
+    "production_9.1",
+    "mobile",
+    "collider_hotspot_signature",
+    "full_frame_before_after"
+  ],
+  "triggered_at": "2026-10-03T11:36:00+02:00"
+}
