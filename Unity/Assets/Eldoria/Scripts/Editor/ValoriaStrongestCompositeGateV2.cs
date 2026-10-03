@@ -17,10 +17,10 @@ namespace Eldoria.EditorTools
         static readonly (string id,string resource,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
             // v19: use the already-certified Mid-Tier GLBs instead of the much lower-detail
             // Slavic prefab family. Positions stay compact around the fortress nucleus.
-            ("lower_west","Piece02",new Vector3(-2.55f,.48f,.55f),18f,2.62f,3.00f),
-            ("lower_east","Piece03",new Vector3( 2.58f,.48f,.52f),186f,2.58f,2.98f),
-            ("mid_west","Piece03",new Vector3(-3.05f,1.12f,3.05f),12f,2.40f,2.82f),
-            ("mid_east","Piece02",new Vector3( 3.08f,1.12f,3.08f),190f,2.40f,2.82f)
+            ("lower_west","Piece02",new Vector3(-2.55f,.98f,1.72f),18f,2.52f,2.92f),
+            ("lower_east","Piece03",new Vector3( 2.55f,.98f,1.70f),186f,2.50f,2.90f),
+            ("mid_west","Piece03",new Vector3(-3.15f,1.42f,3.35f),12f,2.32f,2.72f),
+            ("mid_east","Piece02",new Vector3( 3.18f,1.42f,3.38f),190f,2.32f,2.72f)
         };
 
         public static void Capture()
@@ -386,7 +386,7 @@ namespace Eldoria.EditorTools
             {
                 var clone=Object.Instantiate(original);
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
-                clone.transform.position+=new Vector3(4.55f,.22f,3.85f);
+                clone.transform.position+=new Vector3(4.20f,.72f,4.75f);
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
