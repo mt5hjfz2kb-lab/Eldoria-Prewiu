@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate no-second-island composition v27: remove the separate lower-city cliff substrate from the candidate, seat presentation-only lower architecture inside the existing fortress rock silhouette, and crop the visible stair to the upper approach while preserving gameplay colliders/hotspots/routes.",
+  "objective": "Validate retracted unified lower-city cliff v27: pull the procedural cliff mass back into the fortress foot, narrow its width, reduce vertical drop, and preserve all gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -31,6 +31,6 @@
     "full_frame_before_after"
   ],
   "triggered_at": "2026-10-03T11:38:00+02:00",
-  "retry_reason": "v26 TECH PASS / VISUAL FAIL: the unified lower-city cliff removed floating fragments but read as a large artificial grey slab. v27 tests the alternative macro composition with no separate lower island at all.",
-  "retry_seq": 36
+  "retry_reason": "v26 TECH PASS / VISUAL FAIL: the unified cliff removed floating pillars but formed an oversized grey skirt because it started too far forward, was too wide and had excessive uniform drop. v27 corrects only that geometry profile.",
+  "retry_seq": 37
 }
