@@ -244,7 +244,7 @@ async function connectOwnerBrowser() {
     while (Date.now() < deadline) {
       await sleep(1000);
       try {
-        const connected = await chromium.connectOverCDP(endpoint, { timeout: 3000 });
+        const connected = await chromium.connectOverCDP(endpoint, { timeout: Math.min(10000, connectTimeoutMs) });
         browserRecovery.ready = true;
         return connected;
       } catch (error) { lastError = error; }
