@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact dedicated functional buildings v37: keep the proven v36 hero-first composition and stair behavior, reduce Aserradero and Cuartel presentation scale, and nudge both deeper into the fortress foot for a balanced functional pair.",
+  "objective": "Validate dedicated functional trio v38: preserve v37 compact sawmill/barracks composition and add the canonical dedicated granary as a small presentation-only silhouette behind the west functional layer.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:06:00+02:00",
-  "retry_reason": "v36 TECH PASS / VISUAL INSUFFICIENT: the frame is compact and clean, but the Aserradero remains oversized relative to the fortress base and the Cuartel is visually weak. v37 changes only presentation transform/scale for those two dedicated Valoria GLBs.",
-  "retry_seq": 47
+  "triggered_at": "2026-10-03T13:08:00+02:00",
+  "retry_reason": "v37 TECH PASS / visual best-so-far. Benchmark still requires Bastion, Sawmill, Barracks and Granary to remain distinct/readable. v38 adds only the dedicated Granary GLB, compact and embedded, with no gameplay changes.",
+  "retry_seq": 48
 }
