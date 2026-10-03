@@ -166,6 +166,7 @@ bpy.ops.export_scene.gltf(filepath=OUT,export_format='GLB',use_selection=True,ex
 tri={}
 for o in out_objs:
     if o.type=="MESH":o.data.calc_loop_triangles();tri[o.name]=len(o.data.loop_triangles)
+# Trigger note: composition shader is now staged on this branch.
 # Audit the real Hero Bastion geometry in the same GitHub-hosted Blender process.
 hero_path=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria","HeroBastionGenerated","Valoria_HeroBastion_v1.glb")
 hero_audit=[]
