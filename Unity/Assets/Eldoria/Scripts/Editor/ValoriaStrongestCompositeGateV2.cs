@@ -83,6 +83,7 @@ namespace Eldoria.EditorTools
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
             int routeStyled=StyleCoreRoute();
+            int sideToneAdjusted=ToneCoreSideBuildings();
             ValoriaLowerCityPlateauV1.Enabled=false;
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
@@ -105,6 +106,7 @@ namespace Eldoria.EditorTools
                 $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
                 $"  \"audit_pruned_renderers\": {auditPruned},\n"+
                 $"  \"core_route_renderers_styled\": {routeStyled},\n"+
+                $"  \"core_side_renderers_toned\": {sideToneAdjusted},\n"+
                 $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
                 $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
@@ -291,7 +293,17 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · cliff cleanup · barrel")||
                     chain.Contains("valoria · cliff cleanup · crate");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps)
+                bool obsoleteSideSeams=
+                    chain.Contains("valoria · stonearch · rock wall seam · sawmill")||
+                    chain.Contains("valoria · stonearch · rock wall seam · barracks")||
+                    chain.Contains("vpd · groundkit west plot seam · buried rock")||
+                    chain.Contains("vpd · groundkit east plot seam · buried rock");
+
+                bool broadDecorativeCourts=
+                    chain.Contains("valoria · workshop court")||
+                    chain.Contains("valoria · barracks apron");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts)
                 {
                     r.enabled=false;
                     count++;
@@ -328,6 +340,33 @@ namespace Eldoria.EditorTools
                 var mats=r.sharedMaterials;
                 for(int i=0;i<mats.Length;i++)mats[i]=target;
                 r.sharedMaterials=mats;
+                count++;
+            }
+            return count;
+        }
+
+        static int ToneCoreSideBuildings()
+        {
+            int count=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                string chain=Chain(r.transform);
+                if(!chain.Contains("aserradero · dedicated sawmill"))continue;
+
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    if(src[i]==null){dst[i]=null;continue;}
+                    var m=new Material(src[i]){name="Valoria · sawmill grounded · "+src[i].name};
+                    var tint=new Color(.54f,.45f,.34f,1f);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                    else if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.06f);
+                    dst[i]=m;
+                }
+                r.sharedMaterials=dst;
                 count++;
             }
             return count;
@@ -445,8 +484,7 @@ namespace Eldoria.EditorTools
                 new Vector4(-8.35f,-4.15f,28f,0f), new Vector4(-6.15f,-5.15f,61f,1f),
                 new Vector4(-5.15f,-2.15f,104f,2f), new Vector4(-3.70f,-.55f,142f,1f),
                 new Vector4( 3.65f,-.75f,214f,0f), new Vector4( 5.25f,-2.55f,242f,2f),
-                new Vector4( 6.55f,-5.15f,278f,1f), new Vector4( 8.55f,-4.55f,318f,0f),
-                new Vector4(-1.80f,-6.35f,18f,2f), new Vector4( 1.85f,-6.45f,198f,1f)
+                new Vector4( 6.55f,-5.15f,278f,1f), new Vector4( 8.55f,-4.55f,318f,0f)
             };
 
             for(int i=0;i<specs.Length;i++)
@@ -454,8 +492,8 @@ namespace Eldoria.EditorTools
                 var s=specs[i];
                 GameObject src=s.w<.5f?rockA:(s.w<1.5f?rockB:rockC);
                 if(src==null)continue;
-                float span=(i==1||i==6)?3.15f:(i>=8?2.55f:2.80f);
-                float height=(i==1||i==6)?2.05f:1.65f;
+                float span=(i==1||i==6)?2.75f:2.45f;
+                float height=(i==1||i==6)?1.72f:1.38f;
                 count+=Add(edgeRoot,src,"terrain cliff edge "+i,
                     new Vector3(s.x,-1.02f,s.y),span,height,s.z,
                     new Color(.48f,.48f,.44f,1f));
