@@ -1,0 +1,20 @@
+{
+  "proof": "VALORIA SEMANTIC SOURCE REAUTHORING PROOF v1",
+  "verdict": "TECH PASS / VISUAL FAIL / NOT PROMOTED",
+  "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+  "captured_head": "0631016c7ef2ade1d04d77628364db86bdc20029",
+  "run_id": 37161308188,
+  "artifact_id": 11287623524,
+  "source_artifact_id": 11287494742,
+  "artifact_digest": "sha256:7fce8cdec138c0d61a1a69fa31ed2690ee69438c4bb7225c6bd847524261c341",
+  "captures": [
+    "before-9.png",
+    "after-9.png",
+    "before-mobile-home.png",
+    "after-mobile-home.png",
+    "before-mobile-aserradero.png",
+    "after-mobile-aserradero.png"
+  ],
+  "phase2_12_19": "NOT RUN - zoom9/mobile stop gate failed",
+  "credits_spent": 0
+}
