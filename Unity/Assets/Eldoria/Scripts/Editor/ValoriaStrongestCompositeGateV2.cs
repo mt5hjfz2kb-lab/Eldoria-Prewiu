@@ -422,8 +422,9 @@ namespace Eldoria.EditorTools
             {
                 var clone=Object.Instantiate(sawmill);
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
-                // v34: keep the dedicated building readable but seat it inside the west cliff foot.
-                clone.transform.position+=new Vector3(4.65f,1.35f,6.10f);
+                // v35: v34 still left the sawmill reading as a detached foreground appendage.
+                // Bury it further into the west cliff foot while preserving its readable roofline.
+                clone.transform.position+=new Vector3(5.35f,1.62f,6.70f);
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
