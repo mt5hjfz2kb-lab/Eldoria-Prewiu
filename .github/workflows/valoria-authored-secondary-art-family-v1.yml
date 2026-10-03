@@ -17,6 +17,9 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+      - name: Validate Toolchain Automation v2 route
+        shell: bash
+        run: node tools/plan-art-production.mjs pipeline/art-production-request.json "$RUNNER_TEMP/valoria-authored-secondary-route.json"
       - name: Install Blender
         shell: bash
         run: |
@@ -27,7 +30,7 @@ jobs:
         shell: bash
         env:
           ELDORIA_AUTHORED_FAMILY_DIR: ${{ github.workspace }}/pipeline/candidates/valoria-authored-secondary-art-family-v1
-          ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json\n          ELDORIA_CANONICAL_SAWMILL: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
         run: |
           blender -b --python tools/valoria-authored-secondary-art-family/build_family.py
           test -s pipeline/evidence/valoria-authored-secondary-art-family-v1.json
