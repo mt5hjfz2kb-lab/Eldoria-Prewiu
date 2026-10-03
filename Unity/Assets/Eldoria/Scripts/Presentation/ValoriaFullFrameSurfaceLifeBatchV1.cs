@@ -23,11 +23,19 @@ namespace Eldoria.Presentation
             ValoriaInCitySurfacePassV1.Enabled=true;
             ValoriaInCitySurfacePassV1.Build(parent,state);
 
+            BuildOccupationOnly(root,state);
+        }
+
+        // VQB may reuse the authored occupation cues without reopening the older surface/material pass.
+        // This keeps the experiment focused on lived-in readability only.
+        public static void BuildOccupationOnly(Transform parent,PlayerState state)
+        {
+            if(parent==null||state==null)return;
             var art=ValoriaExternalAssetLibrary.Load();
-            BuildSawmillOccupation(root,art);
-            BuildBarracksOccupation(root,art);
-            BuildLowerApproachOccupation(root,art);
-            BuildUpperTerraceOccupation(root,art);
+            BuildSawmillOccupation(parent,art);
+            BuildBarracksOccupation(parent,art);
+            BuildLowerApproachOccupation(parent,art);
+            BuildUpperTerraceOccupation(parent,art);
         }
 
         static void BuildSawmillOccupation(Transform root,ValoriaExternalAssetLibrary art)
