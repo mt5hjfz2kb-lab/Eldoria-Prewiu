@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T23:40:00Z",
+  "updated_at": "2026-10-03T23:46:00Z",
   "active": [
     {
       "id": "valoria-semantic-source-reauthoring-proof-v1",
@@ -30,7 +30,9 @@
       "claimed_at": "2026-10-03T23:08:00Z",
       "base_main_sha": "c95b03e7f1453323b40e3690efc9ff5dbc794605",
       "dependency": "Experimental visual proof only. Preserve accepted VQB 7a564bc5 gameplay/layout/parcels and do not touch Granero/Cuartel/Forja/Hospital/Cantera/other Bastions. Zoom 9 + mobile stop gate before 12/19."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "visual-production-governance-v1",
       "title": "Eldoria Visual Production Governance v1",
@@ -43,13 +45,15 @@
       "resources": [
         "repo-governance-visual-rules"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T23:40:00Z",
       "base_main_sha": "5413ca189b0d1bc08bf40f7b44f9a4db7b3e2f0a",
-      "dependency": "Governance/documentation only. Do not touch active Valoria Semantic Source Reauthoring proof implementation, runner, art-production request, SESSION_HANDOFF, or visual assets."
-    }
-  ],
-  "history": [
+      "dependency": "Governance/documentation only. Do not touch active Valoria Semantic Source Reauthoring proof implementation, runner, art-production request, SESSION_HANDOFF, or visual assets.",
+      "completed_at": "2026-10-03T23:46:00Z",
+      "result_commit": "a9ed58c873a790ed08cf8d838ec6ec7dd74441cd",
+      "result": "Canonical visual production governance added. Permanent rules now live in docs/ELDORIA_VISUAL_PRODUCTION_RULES.md and AGENTS.md points future Valoria visual blocks to it, allowing short prompts while preserving screen-space/mobile, sharpness, toolchain evolution, honesty, scalability, evidence and promotion rules.",
+      "next": "Future visual prompts should be short: name the block, objective, bounded scope and stop gate; agents must read the canonical visual production rules from repo."
+    },
     {
       "id": "valoria-tripo-selective-replacement-proof-v1-resume",
       "title": "Valoria Tripo Selective Replacement Proof v1 — resume",
