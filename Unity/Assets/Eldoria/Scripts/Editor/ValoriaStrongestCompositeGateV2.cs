@@ -245,7 +245,7 @@ namespace Eldoria.EditorTools
 
                 bool badForegroundTree=
                     chain.Contains("valoria · environment uplift · tree") &&
-                    b.center.z<-2.8f && b.center.y<1.8f;
+                    b.center.z<0.2f && b.center.y<0.55f;
 
                 if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree)
                 {
