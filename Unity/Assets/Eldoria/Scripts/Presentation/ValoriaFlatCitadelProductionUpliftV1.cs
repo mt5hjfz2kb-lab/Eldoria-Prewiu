@@ -54,6 +54,7 @@ namespace Eldoria.Presentation
             if(BastionIntegrationUpliftEnabled) BuildBastionRiseProduction(root);
             else BuildBastionRiseBaseline(root);
             BuildFunctionalArchitecture(root,state);
+            if(FunctionalBuildingUpliftEnabled) BuildFunctionalBuildingProduction(root);
             if(WallUpliftEnabled) BuildOuterWallProduction(root);
             else BuildOuterWallBaseline(root);
             BuildSparseNature(root);
@@ -470,6 +471,97 @@ namespace Eldoria.Presentation
             before=root.childCount;
             ValoriaKit.House("Valoria · Flat Citadel · cottage east",new Vector3(5.7f,.18f,3.45f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
             ReparentNew(root,before);
+        }
+
+        static void BuildFunctionalBuildingProduction(Transform root)
+        {
+            HarmonizeFunctionalMaterials(root);
+
+            // Minimal district heraldry makes the interactable buildings legible at strategic zoom
+            // without adding UI-like billboards or competing with the Hero Bastion.
+            AddDistrictBanner(root,"sawmill",new Vector3(-4.55f,1.55f,-2.30f),.78f);
+            AddDistrictBanner(root,"barracks west",new Vector3(4.55f,1.70f,-2.60f),.88f);
+            AddDistrictBanner(root,"barracks east",new Vector3(7.15f,1.62f,-2.05f),.82f);
+            AddDistrictBanner(root,"granary",new Vector3(-1.20f,1.55f,-4.95f),.76f);
+
+            // Low authored parcel edges give each functional building a readable operational footprint.
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art!=null&&art.SlavicStoneFence!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-6.00f,-3.20f,  0f,2.15f),new Vector4(-8.10f,-1.10f,90f,1.75f),
+                    new Vector4( 6.05f,-3.35f,  0f,2.20f),new Vector4( 8.05f,-1.45f,90f,1.70f),
+                    new Vector4(-2.75f,-5.45f,  0f,2.20f)})
+                {
+                    var edge=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · functional parcel edge",
+                        art.SlavicStoneFence,new Vector3(s.x,.12f,s.y),s.w,.48f,Quaternion.Euler(0f,s.z,0f),
+                        new Color(.70f,.67f,.60f,1f));
+                    if(edge!=null)
+                    {
+                        edge.transform.SetParent(root,true);
+                        foreach(var col in edge.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                    }
+                }
+            }
+        }
+
+        static void HarmonizeFunctionalMaterials(Transform root)
+        {
+            foreach(var r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                string chain=Chain(r.transform);
+                bool saw=chain.Contains("aserradero · flat citadel");
+                bool barracks=chain.Contains("cuartel · flat citadel");
+                bool granary=chain.Contains("granero · flat citadel");
+                if(!saw&&!barracks&&!granary)continue;
+
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    var old=src[i];
+                    if(old==null){dst[i]=null;continue;}
+                    var m=new Material(old){name="Valoria functional uplift · "+old.name};
+                    float lift=barracks?1.22f:(saw?1.08f:1.12f);
+                    Color warm=barracks?new Color(1.05f,1.03f,.98f,1f):
+                               (saw?new Color(1.06f,1.00f,.92f,1f):new Color(1.05f,1.02f,.93f,1f));
+                    foreach(string prop in new[]{"_BaseColor","_Color","_BaseColorFactor","_Primary_Color"})
+                    {
+                        if(!m.HasProperty(prop))continue;
+                        try
+                        {
+                            var col=m.GetColor(prop);
+                            var next=new Color(
+                                Mathf.Clamp01(col.r*lift*warm.r),
+                                Mathf.Clamp01(col.g*lift*warm.g),
+                                Mathf.Clamp01(col.b*lift*warm.b),
+                                col.a);
+                            m.SetColor(prop,next);
+                        }
+                        catch{}
+                    }
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",Mathf.Min(.08f,m.GetFloat("_Smoothness")));
+                    dst[i]=m;
+                }
+                r.sharedMaterials=dst;
+            }
+        }
+
+        static void AddDistrictBanner(Transform root,string role,Vector3 p,float scale)
+        {
+            int before=root.parent!=null?root.parent.childCount:0;
+            ValoriaKit.Banner("Valoria · Flat Citadel Production · "+role+" banner",
+                p,new Vector3(.38f*scale,1.18f*scale,.055f),Blue);
+            var canonical=root.parent;
+            if(canonical==null)return;
+            for(int i=canonical.childCount-1;i>=0;i--)
+            {
+                var child=canonical.GetChild(i);
+                if(child==root)continue;
+                if(child.name.Contains("Flat Citadel Production")&&child.name.Contains("banner"))
+                    child.SetParent(root,true);
+            }
         }
 
         static void BuildOuterWallBaseline(Transform root)
