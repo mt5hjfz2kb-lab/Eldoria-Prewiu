@@ -453,6 +453,21 @@ namespace Eldoria.EditorTools
                 count++;
             }
 
+            // v38: add the dedicated Granary as a compact third functional silhouette.
+            // It is presentation-only and sits behind the west functional layer so it
+            // reads as part of the inhabited fortress, not as a new detached foreground island.
+            var granarySource=Resources.Load<GameObject>("Valoria/Valoria_Granero_BIII_v1");
+            if(granarySource!=null)
+            {
+                var granary=Object.Instantiate(granarySource);
+                granary.name="Valoria · Strongest v2 · compact granary visual";
+                granary.transform.rotation=Quaternion.Euler(0f,18f,0f);
+                Fit(granary,new Vector3(-3.35f,2.02f,5.35f),1.85f,2.22f);
+                granary.transform.SetParent(root,true);
+                DisableGameplay(granary);
+                count++;
+            }
+
             return count;
         }
 
