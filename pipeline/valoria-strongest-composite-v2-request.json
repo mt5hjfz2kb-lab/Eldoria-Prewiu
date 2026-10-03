@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:35:00+02:00",
-  "retry_reason": "Method 1 TECH PASS / VISUAL FAIL: the projected shell sampled the raw JPG while the canonical backplate used a .84/.88/.91 tint, producing a visible dark annulus. Method 2 matches that grading and uses the shell as a subtle camera-locked matte.",
-  "retry_seq": 54
+  "triggered_at": "2026-10-03T13:38:00+02:00",
+  "retry_reason": "Retry method 2 after fixing a literal backslash-n compile error in ValoriaVisualShellV2.cs. Visual design unchanged.",
+  "retry_seq": 55
 }
