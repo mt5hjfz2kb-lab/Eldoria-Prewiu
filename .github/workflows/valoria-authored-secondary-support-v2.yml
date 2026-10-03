@@ -1,0 +1,63 @@
+name: "[EXPERIMENT] Valoria ASF Source Support v2"
+
+on:
+  push:
+    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
+    paths:
+      - "tools/valoria-authored-secondary-art-family/author_support_sources_v2.py"
+      - ".github/workflows/valoria-authored-secondary-support-v2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-authored-secondary-support-v2
+  cancel-in-progress: true
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender exporter dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Author source-preserving wall and gate
+        shell: bash
+        env:
+          ELDORIA_ASF_WALL_SOURCE: ${{ github.workspace }}/Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Wall.fbx
+          ELDORIA_ASF_GATE_SOURCE: ${{ github.workspace }}/Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Gate.fbx
+          ELDORIA_ASF_OUT: ${{ github.workspace }}/pipeline/candidates/valoria-authored-secondary-art-family-v1
+          ELDORIA_ASF_SUPPORT_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-support-v2.json
+        run: |
+          blender -b --python tools/valoria-authored-secondary-art-family/author_support_sources_v2.py
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceWall_v2.glb
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceGate_v2.glb
+          test -s pipeline/evidence/valoria-authored-secondary-support-v2.json
+          cat pipeline/evidence/valoria-authored-secondary-support-v2.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-asf-source-support-v2-${{ github.run_id }}
+          path: |
+            pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceWall_v2.glb
+            pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceGate_v2.glb
+            pipeline/evidence/valoria-authored-secondary-support-v2.json
+          if-no-files-found: error
+      - name: Persist support proof
+        shell: bash
+        run: |
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceWall_v2.glb
+          git add pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceGate_v2.glb
+          git add pipeline/evidence/valoria-authored-secondary-support-v2.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist source-authored wall gate support v2"
+            git pull --rebase origin "${{ github.ref_name }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
