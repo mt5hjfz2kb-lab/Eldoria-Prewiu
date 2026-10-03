@@ -41,6 +41,60 @@ namespace Eldoria.Presentation
                 "cobble",new Color(.44f,.42f,.37f,1f),new Vector2(1.35f,1.35f),.022f,.92f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.42f,.40f,.36f,1f),"stone",new Vector2(1.35f,1.35f),.94f);
             mr.sharedMaterial=cobble;
+
+            var rockTemplate=Resources.Load<Material>("Valoria/LowerCityWorldRock");
+            Material rock;
+            if(rockTemplate!=null)
+            {
+                rock=new Material(rockTemplate){name="Valoria · Compact Stair · support rock"};
+                if(rock.HasProperty("_Color"))rock.SetColor("_Color",new Color(.40f,.41f,.38f,1f));
+                if(rock.HasProperty("_Tiling"))rock.SetFloat("_Tiling",.082f);
+                if(rock.HasProperty("_Smoothness"))rock.SetFloat("_Smoothness",.11f);
+                if(rock.HasProperty("_Strength"))rock.SetFloat("_Strength",.74f);
+            }
+            else
+            {
+                rock=ValoriaKit.ExternalPbrSurfaceMaterial(
+                    "rock",new Color(.38f,.39f,.37f,1f),new Vector2(.95f,.95f),.018f,.98f)
+                    ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.38f,.36f,1f),"stone",new Vector2(.95f,.95f),.98f);
+            }
+
+            var support=new GameObject("Valoria · Compact Stair · carved rock support");
+            support.transform.SetParent(root,false);
+            var smf=support.AddComponent<MeshFilter>();
+            var smr=support.AddComponent<MeshRenderer>();
+            smf.sharedMesh=BuildSupportMesh();
+            smr.sharedMaterial=rock;
+        }
+
+        static Mesh BuildSupportMesh()
+        {
+            var v=new List<Vector3>{
+                new Vector3(-1.48f,.24f,-.38f),
+                new Vector3( 1.48f,.24f,-.38f),
+                new Vector3( 2.18f,2.18f,5.78f),
+                new Vector3(-2.18f,2.18f,5.78f),
+                new Vector3(-1.78f,-.52f,-.52f),
+                new Vector3( 1.78f,-.52f,-.52f),
+                new Vector3( 2.55f,.86f,5.95f),
+                new Vector3(-2.55f,.86f,5.95f)
+            };
+            var uv=new List<Vector2>{
+                new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),new Vector2(0,1),
+                new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),new Vector2(0,1)
+            };
+            var tris=new List<int>{
+                0,2,1,0,3,2,
+                4,5,6,4,6,7,
+                0,1,5,0,5,4,
+                1,2,6,1,6,5,
+                2,3,7,2,7,6,
+                3,0,4,3,4,7
+            };
+            var mesh=new Mesh{name="Valoria Compact Stair Rock Support v1"};
+            mesh.SetVertices(v);mesh.SetTriangles(tris,0);mesh.SetUVs(0,uv);
+            mesh.RecalculateNormals();mesh.RecalculateTangents();mesh.RecalculateBounds();
+            return mesh;
         }
 
         static Mesh BuildMesh()
