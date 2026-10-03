@@ -21,7 +21,7 @@ def noise(x,z):
 a=parse_args()
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
-nx,nz=45,31
+nx,nz=55,37
 z0,z1=-3.2,3.3
 verts=[]
 uvs=[]
@@ -44,7 +44,7 @@ for iz in range(nz):
         x=-hw+2*hw*u
         edge=abs(u-.5)*2.0
         crown=(1.0-edge*edge)*.22
-        z=center_y(t)+crown+noise(x,y2)*(0.35+0.65*(1-edge))
+        z=center_y(t)+crown+noise(x,y2)*(0.48+0.78*(1-edge))
         # carve a subtle central approach valley, not a flat road.
         valley=math.exp(-((x/1.25)**2))*0.13
         z-=valley
@@ -73,22 +73,32 @@ for iz in range(nz-2,-1,-1): edge_indices.append(iz*nx+(nx-1))
 for ix in range(nx-2,0,-1): edge_indices.append(ix)
 
 ring_top=edge_indices
+ring_mid=[]
 ring_bottom=[]
 for idx in ring_top:
     x,y,z=verts[idx]
-    # more drop toward the camera/front, slightly less where buried in island.
+    # v2: two fractured wall bands. This creates readable ledges and avoids a single
+    # smooth skirt when the mesh is lit from the official strategic camera.
     t=(y-z0)/(z1-z0)
-    drop=1.10-.30*t + .12*math.sin(x*1.9+y*.8)
+    drop=1.04-.24*t + .16*math.sin(x*1.9+y*.8)
+    lateral=.10*math.sin(x*2.7-y*1.3)+.05*math.sin(y*3.1)
+    ring_mid.append(len(verts))
+    verts.append((x*1.018+lateral,y,z-drop*.46 + .05*math.sin(x*3.2)))
+    uvs.append((x*.095,y*.095))
     ring_bottom.append(len(verts))
-    verts.append((x*1.035,y,z-drop))
+    verts.append((x*1.045-lateral*.35,y,z-drop))
     uvs.append((x*.095,y*.095))
 
 m=len(ring_top)
 for i in range(m):
     j=(i+1)%m
-    ti=ring_top[i]; tj=ring_top[j]; bi=ring_bottom[i]; bj=ring_bottom[j]
-    faces.append((ti,bi,bj))
-    faces.append((ti,bj,tj))
+    ti=ring_top[i]; tj=ring_top[j]
+    mi=ring_mid[i]; mj=ring_mid[j]
+    bi=ring_bottom[i]; bj=ring_bottom[j]
+    faces.append((ti,mi,mj))
+    faces.append((ti,mj,tj))
+    faces.append((mi,bi,bj))
+    faces.append((mi,bj,mj))
 
 mesh=bpy.data.meshes.new("Eldoria Unified Lower City Cliff v1")
 mesh.from_pydata(verts,[],faces)
@@ -130,7 +140,7 @@ report={
     "output":a.output,
     "bytes":os.path.getsize(a.output),
     "tripo_credits":0,
-    "method":"Blender procedural organic cliff mesh; deterministic multi-frequency displacement; existing Unity rock PBR material assigned at integration"
+    "method":"Blender procedural organic cliff mesh v2; denser deterministic displacement + two fractured wall bands; hero-island rock material assigned at Unity integration"
 }
 with open(a.report,"w",encoding="utf-8") as f: json.dump(report,f,indent=2)
 print(json.dumps(report,indent=2))
