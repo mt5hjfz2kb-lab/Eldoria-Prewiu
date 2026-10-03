@@ -39,11 +39,22 @@ jobs:
           path: pipeline/evidence/valoria-vqb-hero-audit.json
           if-no-files-found: error
       - name: Persist audit evidence
+        if: always()
         shell: bash
         run: |
+          mkdir -p pipeline/evidence
+          cat > pipeline/evidence/valoria-vqb-hero-audit-run.json <<EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "source_sha": "${{ github.sha }}",
+            "job_status": "${{ job.status }}",
+            "artifact_id": "${{ steps.upload.outputs.artifact-id }}"
+          }
+          EOF
           git config user.name "eldoria-ci"
           git config user.email "actions@github.com"
-          git add pipeline/evidence/valoria-vqb-hero-audit.json
+          git add pipeline/evidence/valoria-vqb-hero-audit-run.json
+          if [ -f pipeline/evidence/valoria-vqb-hero-audit.json ]; then git add pipeline/evidence/valoria-vqb-hero-audit.json; fi
           if ! git diff --cached --quiet; then
             git commit -m "chore: record Hero source audit ${{ github.run_id }}"
             git push origin HEAD:${{ github.ref_name }}
