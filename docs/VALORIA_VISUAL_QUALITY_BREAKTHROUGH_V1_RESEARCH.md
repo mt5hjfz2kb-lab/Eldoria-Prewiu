@@ -1,7 +1,7 @@
 # VALORIA VISUAL QUALITY BREAKTHROUGH v1 — applied research and tool decision
 
 Date: 2026-10-03
-Status: active experimental block.
+Status: closed experimental block.
 
 ## Real baseline
 Source is the closed Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. Real 19/12/9/mobile review shows three high-impact structural defects: repeated cube/merlon wall rhythm, secondary buildings sitting as isolated source models with weak foundations, and the Hero Bastion's fused rock/retaining interface reading as a separate pedestal. The exterior is contained but still too uniform.
@@ -83,3 +83,30 @@ Retained techniques:
 1. continuous wall base + authored non-uniform cap rhythm;
 2. canonical functional GLBs + semantic PBR response;
 3. canonical Hero intact + architectural interface wrapping (currently under validation).
+
+
+## Final exterior / presentation decisions
+
+The opaque low-relief berm/mound geometry candidate was captured in run 37149234924 / artifact 11282194211 and rejected visually: its dark geometric patches read as technical overlays rather than natural landform. It was reverted in commit 9ed27661dc03d4321577672c48fd63f142c9c99a.
+
+The replacement technique keeps the accepted contained natural surround and adds only continuous world-space material variation outside the locked city envelope, then reuses bounded occupation cues from the existing surface-life system. Run 37149635857 / artifact 11283347407 showed a net visual improvement without visible geometry patches or parcel occupation, so this technique is retained.
+
+The HUD refinement in 0043f6c9b18da1543e96e84923e4ab17d3982401 initially violated canonical interaction budgets (top/nav 68 px and primary action >=44 px). Commit 7a564bc5056bb7166b7704c313ae4db7d55d4530 restores those budgets while keeping the hierarchy/contrast cleanup. Final run 37149992067 passes the focused HUD/progression tests and produces the authoritative artifact 11284220007.
+
+## Final tool decisions
+
+Retained:
+- Unity URP with the existing ValoriaCoherence shader, now used for semantic functional response and continuous world-space exterior variation.
+- Existing canonical Stone_Wall + CornerWallL for a non-uniform cap rhythm over the continuous accepted wall base.
+- Existing occupation/surface-life presentation helpers, reused only in bounded form.
+- Blender as a diagnostic/authoring tool for source audits and deterministic segmentation experiments.
+
+Evaluated but not incorporated:
+- Whole-family wall replacement: visually fragmented or stylistically heavier.
+- Hero height-only source subtraction: insufficient at low thresholds and destructive at higher thresholds.
+- Large opaque exterior patches / low-relief ribbons: visible technical shapes.
+- Slavic/Mega wholesale functional-building replacement: weaker identity/coherence than current canonical GLBs.
+- New terrain/foliage plugins, Material Maker, Substance/ArmorPaint and URP Decal Renderer Feature: no measured advantage large enough to justify a new dependency in this block.
+- Tripo / paid generation: not required; total spend remains 0.
+
+The current toolchain does not impose a hard ceiling on future improvement. Shader/material response, wall modules, functional assets, foliage/dressing and HUD remain replaceable independently. The principal remaining ceiling is art-source coherence, not repository architecture.
