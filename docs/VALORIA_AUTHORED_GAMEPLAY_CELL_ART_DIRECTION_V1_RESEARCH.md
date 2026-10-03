@@ -29,3 +29,9 @@ Reserved R4/R5/R6, F1–F3, H0, C0/C1/C2, XW/XE/XU/XS are protected. Only shallo
 ## Reproduction
 
 `pipeline/art-production-request.json` routes `environment_composition` to existing Unity assembly and official-camera validation. `ValoriaAuthoredGameplayCellV1.Apply` is a reversible visual-only root on top of VQB. The reused VQB capture workflow calls `ValoriaAuthoredGameplayCellGateV1.Capture` and stages the same external CC0 surface inputs as before. Gate captures BEFORE from VQB and AFTER from VQB plus candidate with real HUD at all four views; collision signature and focused HUD/progression tests must pass. Candidate remains experimental until actual images establish a significant whole-frame improvement.
+
+## Iteration 1 review and variant 2 hypothesis
+
+Run `37153721252` (artifact `11284773218`) Unity success with 5/5 focused tests, 229 paving units combined into four meshes, 16 low masonry pieces and five work props. The new stone geometry overwrote the original source-rich civic plaza with a flat rectangular tongue; at 9 and portrait its join to the accepted paving is stark. **Rejected, fully removed** before variant 2. Technical batching did not rescue visual quality.
+
+Variant 2 changes the cause addressed: it restores the VQB plaza, then tests small *removable* work staging within the south edge of R4/R5 and F1 lumber. The clear majority of each future plot stays accessible. This is a world-storytelling and spatial-intent experiment, not a stone color refinement.
