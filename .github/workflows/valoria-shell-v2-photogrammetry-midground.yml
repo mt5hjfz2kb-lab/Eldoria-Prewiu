@@ -1,7 +1,7 @@
 name: "[EXPERIMENT] Valoria Shell v2 Photogrammetry Midground"
 on:
   push:
-    branches: [visual-proof/valoria-shell-v2-photogrammetry-midground]
+    branches: [visual-proof/valoria-photogrammetry-midground-v1]
     paths:
       - 'tools/valoria-shell-v2-photogrammetry/build_midground.py'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPhotogrammetryMidgroundV2.cs'
@@ -35,7 +35,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-photogrammetry-midground-source
-          path: ${{ runner.temp }}/fused/*
+          path: ${{ runner.temp }}/photogrammetry/*
           retention-days: 30
 
   capture:
