@@ -88,9 +88,11 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
             int terrainVisualsHidden=HideLowerTerrainVisual();
-            int terracePieces=AddAuthoredLowerTerraces(root.transform);
+            ValoriaLowerCityTerracedMeshV1.Enabled=true;
+            ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
+            int terracePieces=ValoriaLowerCityTerracedMeshV1.PiecesBuilt;
             int stairPieces=ReplaceVerticalStairVisual(root.transform);
-            int terrainEdgeRocks=AddTerrainEdgeRocks(root.transform);
+            int terrainEdgeRocks=0;
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
