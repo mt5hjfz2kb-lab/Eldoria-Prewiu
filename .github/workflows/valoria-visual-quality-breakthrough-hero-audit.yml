@@ -1,0 +1,50 @@
+name: "[EXPERIMENT] Valoria VQB Hero Source Audit"
+
+on:
+  push:
+    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    paths:
+      - "tools/valoria-visual-quality-breakthrough/hero_source_audit.py"
+      - ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Audit Hero Bastion source
+        shell: bash
+        env:
+          ELDORIA_HERO_GLB: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb
+          ELDORIA_HERO_AUDIT: ${{ github.workspace }}/pipeline/evidence/valoria-vqb-hero-audit.json
+        run: |
+          blender -b --python tools/valoria-visual-quality-breakthrough/hero_source_audit.py
+          test -s pipeline/evidence/valoria-vqb-hero-audit.json
+          cat pipeline/evidence/valoria-vqb-hero-audit.json
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-vqb-hero-audit-${{ github.run_id }}
+          path: pipeline/evidence/valoria-vqb-hero-audit.json
+          if-no-files-found: error
+      - name: Persist audit evidence
+        shell: bash
+        run: |
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/evidence/valoria-vqb-hero-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record Hero source audit ${{ github.run_id }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
