@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:52:53.504Z",
+  "updated_at": "2026-10-03T13:03:00.000Z",
   "active": [
     {
       "id": "valoria-shell-v2-authored-environment",
       "title": "Valoria Visual Shell v2 — camera-authored terrace and retaining-wall assembly",
-      "owner": "chat-valoria-shell-v2-authored-environment-20261003",
+      "owner": "chat-valoria-shell-v2-authored-environment-continuation-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
@@ -25,7 +25,7 @@
       "status": "active",
       "claimed_at": "2026-10-03T12:47:21.946Z",
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
-      "dependency": "Distinct image-space authored terrace/wall architecture experiment after five visually failed generic landform and assembly methods. Reuse existing branch/workflow, no Tripo, preserve gameplay signature and camera; one category-scale proof before stop-rule decision."
+      "dependency": "Continuation after prior Work chat exhausted credits. Same canonical workstream and experimental branch; first review run 37124151619 visually failed despite TECH PASS. Continue with a materially distinct authored Hero-to-city transition, zero spend, no Tripo, preserve gameplay/camera, and require real 19/12/9/mobile evidence."
     }
   ],
   "history": [
