@@ -3,16 +3,18 @@ name: "[EXPERIMENT] Valoria Strongest Composite v2"
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [visual-proof/valoria-shell-v2-landform]
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs'
       - 'pipeline/valoria-strongest-composite-v2-request.json'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2.cs'
+      - 'Unity/Assets/Eldoria/Shaders/ValoriaShellTerrain.shader'
 
 permissions:
   contents: read
 
 concurrency:
-  group: valoria-strongest-composite-v2
+  group: valoria-strongest-composite-v2-landform
   cancel-in-progress: true
 
 jobs:
@@ -51,6 +53,31 @@ jobs:
           $dst=Join-Path $dir 'kiara3_1.jpg'
           Invoke-WebRequest -Uri 'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01604.jpg' -OutFile $dst -UseBasicParsing
           if((Get-Item $dst).Length -lt 500000){throw 'Backplate unexpectedly small.'}
+      - name: Stage CC0 Valoria shared surfaces
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-ShellV2/1.0'}
+          $assets=@(
+            @{ id='rock_boulder_dry'; prefix='rock' },
+            @{ id='stone_block_wall'; prefix='stone' },
+            @{ id='dirt'; prefix='dirt' }
+          )
+          foreach($asset in $assets){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            foreach($map in @(@{key='diff';rx='_diff_1k\.(jpg|png)(\?|$)'},@{key='normal';rx='_nor_gl_1k\.(jpg|png)(\?|$)'})){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -ne 'rock'){continue};throw "Missing $($asset.id) $($map.key)"}
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){throw "PBR map too small: $out"}
+            }
+          }
       - name: Capture strongest composite v2
         shell: powershell
         run: |

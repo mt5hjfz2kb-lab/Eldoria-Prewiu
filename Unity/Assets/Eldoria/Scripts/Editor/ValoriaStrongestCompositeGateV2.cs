@@ -26,6 +26,17 @@ namespace Eldoria.EditorTools
         public static void Capture()
         {
             ShaderUtil.allowAsyncCompilation=false;
+            foreach(var guid in AssetDatabase.FindAssets("t:Texture2D",new[]{"Assets/Resources/Valoria/SurfaceCellExternal"}))
+            {
+                var path=AssetDatabase.GUIDToAssetPath(guid);
+                var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+                if(importer==null)continue;
+                importer.mipmapEnabled=true;importer.anisoLevel=8;
+                if(path.Contains("_normal"))importer.textureType=TextureImporterType.NormalMap;
+                importer.SaveAndReimport();
+            }
+            var shellShader=Shader.Find("Eldoria/ValoriaShellTerrain");
+            if(shellShader==null||ShaderUtil.ShaderHasError(shellShader))throw new Exception("Visual Shell terrain shader invalid.");
             Directory.CreateDirectory(Folder);
             SceneSetup.SetupRenderPipeline();
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
@@ -125,7 +136,14 @@ namespace Eldoria.EditorTools
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
 
+            SaveSet(c,"current",p,t);
+            ValoriaVisualShellV2.Build(root.transform,state);
+            Physics.SyncTransforms();
+            if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
+                throw new Exception("Visual Shell v2 altered gameplay signature.");
             SaveSet(c,"after",p,t);
+            SaveSet(c,"after-west",p+new Vector3(-6,0,0),t+new Vector3(-6,0,0));
+            SaveSet(c,"after-east",p+new Vector3(6,0,0),t+new Vector3(6,0,0));
             ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
             Save(c,Folder+"/after-reference-8.1.png",p,new Vector3(0f,3.95f,5.90f),8.1f,1280,720);
             ValoriaBackplateCandidateV1.FitAspect(390f/844f);
@@ -154,6 +172,8 @@ namespace Eldoria.EditorTools
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
+                $"  \"shell_hidden_renderers\": {ValoriaVisualShellV2.HiddenRenderers},\n"+
+                $"  \"shell_visual_pieces\": {ValoriaVisualShellV2.VisualPieces},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
                 $"  \"existing_assets_only\": true,\n"+
                 $"  \"tripo_credits\": 0\n"+
@@ -906,3 +926,4 @@ namespace Eldoria.EditorTools
         }
     }
 }
+
