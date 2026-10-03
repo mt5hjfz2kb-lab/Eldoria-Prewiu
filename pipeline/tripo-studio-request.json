@@ -13,21 +13,19 @@
   "allow_credit_spend": false,
   "authorized_credit_cost": 0,
   "approved_input_sha256": "26634ed6eaaac629b4e21b0f1007368a8eb0bab8d27e7ff68c0cef55b8a5f611",
-  "connect_timeout_ms": 10000,
+  "connect_timeout_ms": 30000,
   "page_probe_timeout_ms": 12000,
   "input_transport": "repo_exact_input",
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "selective-aserradero-v1-stage-20261003",
-  "notes": "Exact user-provided JPEG. One generation authorized in scope; spend stays disabled until visible credit cost confirmed. Zero-spend staging only.",
+  "run_nonce": "selective-aserradero-v1-stage-retry-timeout30-20261003",
+  "notes": "Exact user-provided JPEG. One generation authorized in scope; spend stays disabled until visible credit cost confirmed. Zero-spend staging only. First zero-spend attempt37159272344 failed CDP connect at10s before upload; artifact11286657877 confirms noGenerate/noSpend. Single bounded transport retry at30s; not a generation retry.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
     "user_data_dir": "C:\\Users\\crist\\Eldoria-Edge-Remote",
     "start_timeout_ms": 30000
   },
-  "prior_stage_run_id": 36847170877,
-  "prior_stage_artifact_id": 11153988767,
   "staging_workspace_url": "https://studio.tripo3d.ai/es/workspace/generate/medieval-village-with-stone-walls-timber-houses-blue-banners-and-su-849c6e57-42bb-4e80-b846-4f637b7f9952"
 }
