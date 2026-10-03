@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T21:45:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T22:38:52.241Z",
+  "active": [
+    {
+      "id": "valoria-tripo-selective-replacement-proof-v1",
+      "title": "Valoria Tripo Selective Replacement Proof v1",
+      "owner": "work-tripo-selective-20261003",
+      "scope": [
+        "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1/**",
+        "pipeline/tripo-studio-request.json",
+        "pipeline/tripo-module-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1*",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "tripo-credit-spend",
+        "art-production-planner"
+      ],
+      "claimed_at": "2026-10-03T22:38:52.241Z",
+      "base_main_sha": "2590f5effcde0c0cb1bc9e577c4a2e1ed33c77e9",
+      "status": "active",
+      "dependency": "Single Aserradero replacement hypothesis only; preserve VQB Hero/wall/terrain/HUD/gameplay/parcels. Exact image persistence and zero-credit staging first; one generation after visible cost authorization. Zoom9/mobile stop gate; no other buildings."
+    }
+  ],
   "history": [
     {
       "id": "valoria-source-level-art-direction-proof-v1",
