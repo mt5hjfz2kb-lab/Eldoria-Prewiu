@@ -2,7 +2,28 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-03T22:49:36.016Z",
-  "active": [],
+  "active": [
+    {
+      "id": "valoria-tripo-selective-replacement-proof-v1-resume",
+      "title": "Valoria Tripo Selective Replacement Proof v1 — resume",
+      "owner": "chat-resume-after-work-credit-limit",
+      "scope": [
+        "pipeline/tripo-studio-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "tripo-studio-bridge",
+        "windows-runner-heavy",
+        "valoria-aserradero-proof"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T22:53:00Z",
+      "base_main_sha": "f93ff437ec28e688f48b14702097db8d418d0640",
+      "dependency": "Resume only the isolated Aserradero proof. Zero-spend staging/cost check first; no generation or credit spend without fresh visible-cost approval."
+    }
+  ],
   "history": [
     {
       "id": "valoria-tripo-selective-replacement-proof-v1",
