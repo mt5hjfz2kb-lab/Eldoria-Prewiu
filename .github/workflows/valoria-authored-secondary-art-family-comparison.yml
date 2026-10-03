@@ -1,4 +1,5 @@
 name: "[EXPERIMENT] Valoria Authored Secondary Family Comparison"
+# stable-head rerun after candidate persistence
 
 on:
   push:
