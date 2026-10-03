@@ -2,7 +2,36 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-03T22:49:36.016Z",
-  "active": [],
+  "active": [
+    {
+      "id": "valoria-semantic-source-reauthoring-proof-v1",
+      "title": "Valoria Semantic Source Reauthoring Proof v1",
+      "owner": "chat-valoria-semantic-source-reauthoring-v1",
+      "scope": [
+        "tools/valoria-semantic-source-reauthoring/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/SemanticSourceReauthoring_v1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSemanticSourceReauthoringV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSemanticSourceReauthoringGateV1.cs",
+        ".github/workflows/valoria-semantic-source-reauthoring-v1.yml",
+        "pipeline/art-production-request.json",
+        "pipeline/evidence/valoria-semantic-source-reauthoring-v1.json",
+        "pipeline/candidates/valoria-semantic-source-reauthoring-v1/**",
+        "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESEARCH.md",
+        "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md",
+        "docs/evidence/valoria-semantic-source-reauthoring-v1/**",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition",
+        "valoria-hero-aserradero-wall-source-authoring"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T23:08:00Z",
+      "base_main_sha": "c95b03e7f1453323b40e3690efc9ff5dbc794605",
+      "dependency": "Experimental visual proof only. Preserve accepted VQB 7a564bc5 gameplay/layout/parcels and do not touch Granero/Cuartel/Forja/Hospital/Cantera/other Bastions. Zoom 9 + mobile stop gate before 12/19."
+    }
+  ],
   "history": [
     {
       "id": "valoria-tripo-selective-replacement-proof-v1-resume",
