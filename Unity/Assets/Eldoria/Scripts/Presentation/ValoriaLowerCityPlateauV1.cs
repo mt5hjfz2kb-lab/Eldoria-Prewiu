@@ -58,6 +58,10 @@ namespace Eldoria.Presentation
             }
 
             mr.sharedMaterials=new[]{rock};
+            // Proof variant: the continuous city slab is the dominant remaining blockout read.
+            // Keep its generated data available, but remove it from the rendered frame while
+            // authored cliff/support families and the narrow approach spine carry the composition.
+            mr.enabled=false;
 
             var causeway=new GameObject("Valoria · Lower City Plateau · narrow approach spine");
             causeway.transform.SetParent(root,false);
