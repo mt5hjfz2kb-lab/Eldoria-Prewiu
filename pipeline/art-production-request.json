@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-semantic-source-reauthoring-proof-v1",
   "asset_or_sector": "Hero Bastion + Aserradero + one representative wall segment; source-level semantic reauthoring only",
   "profile": "environment_surface",
@@ -28,5 +28,6 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "SSRA visual variant 2 only: front-only Hero source surgery plus integrated certified RockToWallTransition; subtler Aserradero zoning. Zero credits; 9/mobile stop gate."
+  "notes": "SSRA visual variant 2 only: front-only Hero source surgery plus integrated certified RockToWallTransition; subtler Aserradero zoning. Zero credits; 9/mobile stop gate.",
+  "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED after two distinct Hero variants; zoom9/mobile stop gate failed; no 12/19."
 }
