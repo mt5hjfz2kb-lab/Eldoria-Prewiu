@@ -1,8 +1,31 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T13:53:00.000Z",
+  "updated_at": "2026-10-03T14:24:00Z",
   "active": [
+    {
+      "id": "valoria-shell-v2-bastion-continuity",
+      "title": "Valoria Visual Shell v2 — authored Bastion-to-city continuity",
+      "owner": "chat-valoria-shell-v2-bastion-continuity-20261003",
+      "scope": [
+        "tools/valoria-shell-v2-bastion-continuity/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBastionContinuityV2.cs",
+        ".github/workflows/valoria-shell-v2-bastion-continuity.yml",
+        "docs/VALORIA_SHELL_V2_BASTION_CONTINUITY_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T14:24:00Z",
+      "base_main_sha": "e684ab69c677faab37fb62cf7c7821ecdf94ac10",
+      "dependency": "Two voxel/fused attempts and two photogrammetry-placement attempts are visually closed. New method must design one continuous macro landform in image space from Hero Bastion down to lower city, then conform/project detail from existing rock donor meshes; no scan plates, no voxel union, no Tripo, preserve gameplay/camera."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-shell-v2-authored-environment",
       "title": "Valoria Visual Shell v2 — coherent photogrammetry midground",
@@ -32,13 +55,14 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-03T12:47:21.946Z",
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
-      "dependency": "Fused authored transition e88d821 / run 37126944625 TECH PASS / VISUAL FAIL: manifold base improved continuity but remained a floating asset island and lower-city quality lagged Hero Bastion. Historical Slavic architecture proof is coherent but visibly too low-detail/stylized. Directed research selects zero-cost CC0 photogrammetric cliff/mountainside models as a materially different hero-quality midground shell, architecture retained and buried into it; no Tripo."
-    }
-  ],
-  "history": [
+      "dependency": "Fused authored transition e88d821 / run 37126944625 TECH PASS / VISUAL FAIL: manifold base improved continuity but remained a floating asset island and lower-city quality lagged Hero Bastion. Historical Slavic architecture proof is coherent but visibly too low-detail/stylized. Directed research selects zero-cost CC0 photogrammetric cliff/mountainside models as a materially different hero-quality midground shell, architecture retained and buried into it; no Tripo.",
+      "completed_at": "2026-10-03T14:24:00Z",
+      "result": "HANDOFF after two photogrammetry attempts. Run 37127805549 TECH PASS / VISUAL FAIL: high-detail scan rocks remained separate floating plates. Run 37129227661 TECH PASS / VISUAL FAIL: territorial-scale CC0 scans improved intrinsic geology but still produced visible scan boundaries/terrain-sheet edges and did not solve Bastion→city continuity. Photogrammetry placement family closed under stop rule; no production promotion, 0 Tripo credits.",
+      "next": "Switch method: author a continuous Hero-Bastion-to-city landform macroform first, using existing real rock geometry only as donor/projection detail via Blender shrinkwrap/boolean; preserve official cameras/gameplay and validate 19/12/9/mobile."
+    },
     {
       "id": "valoria-shell-v2-composition-frame",
       "title": "Valoria Visual Shell v2 — composition-first complete frame",
