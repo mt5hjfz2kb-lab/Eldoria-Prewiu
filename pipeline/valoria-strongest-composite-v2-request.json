@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate current combined v25 HEAD: no monolithic stair support, continuous certified SteppedRockTerrace approach, embedded lower architecture, prototype guide suppression, and preserved gameplay authority.",
+  "objective": "Validate continuous certified rock approach v25b on current HEAD: combine the cliff-foot stair crop and embedded lower architecture with a five-piece overlapping SteppedRockTerrace geological bridge, removing legacy detached edge dressing.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:07:00+02:00",
-  "retry_reason": "Previous v25 run 37111775431 predates commits 5401aad and 341db7f. A fresh capture is required because the current HEAD removes the bulky stair support and replaces detached edge dressing with a continuous certified rock approach.",
-  "retry_seq": 32
+  "triggered_at": "2026-10-03T11:08:00+02:00",
+  "retry_reason": "Previous v25 run targeted SHA 94a8605 before the continuous certified rock approach commit 341db7f. This run validates the actual combined HEAD and is the decisive existing-library proof for lower-city mass continuity.",
+  "retry_seq": 33
 }
