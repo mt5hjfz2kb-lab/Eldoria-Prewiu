@@ -57,8 +57,7 @@ namespace Eldoria.EditorTools
             AttachCanonicalHud(before.camera,hudState,true);
             SaveSet(before.camera,"before-game",p,t);
 
-            foreach(var variant in new[]{"low14","low20","low26"})
-                CaptureHeroVariant(state,hudState,p,t,variant);
+            CaptureCurrentCandidate(state,hudState,p,t);
 
             var coherenceShader=Shader.Find("Eldoria/Valoria Coherence");
             if(ShaderUtil.ShaderHasError(coherenceShader))throw new Exception("Coherence shader compilation failed");
@@ -70,7 +69,7 @@ namespace Eldoria.EditorTools
             EditorApplication.Exit(0);
         }
 
-        static void CaptureHeroVariant(PlayerState state,PlayerState hudState,Vector3 p,Vector3 t,string variant)
+        static void CaptureCurrentCandidate(PlayerState state,PlayerState hudState,Vector3 p,Vector3 t)
         {
             var scene=CreateCanonicalScene(state);
             var sig=ValoriaVisualFormulaGate.CollisionSignature();
@@ -78,15 +77,14 @@ namespace Eldoria.EditorTools
             ValoriaFlatCitadelProductionUpliftV1.Build(scene.root.transform,state);
             ValoriaFlatCitadelArtConsolidationV1.Apply(scene.root.transform,state);
             ValoriaAssetCoherenceV1.Apply(scene.root.transform,state);
-            ValoriaVisualQualityBreakthroughV1.HeroVariant=variant;
             ValoriaVisualQualityBreakthroughV1.Apply(scene.root.transform,state);
             RemoveAddedGameplay(scene.colliderIds,scene.hotspotIds);
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)
-                throw new Exception("Hero segmentation "+variant+" altered gameplay signature.");
-            SaveSet(scene.camera,"after-"+variant,p,t);
+                throw new Exception("Visual Quality Breakthrough altered gameplay signature.");
+            SaveSet(scene.camera,"after",p,t);
             AttachCanonicalHud(scene.camera,hudState,true);
-            SaveSet(scene.camera,"game-"+variant,p,t);
+            SaveSet(scene.camera,"game",p,t);
         }
 
         static void ConfigureUplift()
