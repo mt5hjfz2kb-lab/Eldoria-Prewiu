@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:51:55.250Z",
-  "active": [],
+  "updated_at": "2026-10-03T11:55:00Z",
+  "active": [
+    {
+      "id": "valoria-visual-shell-v2-native-geometry",
+      "title": "Valoria Visual Shell v2 — native terrain/architecture full-frame proof",
+      "owner": "chat-valoria-visual-shell-v2-native-geometry-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2NativeGeometry.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualShellV2NativeGeometryGate.cs",
+        ".github/workflows/valoria-visual-shell-v2-native-geometry.yml",
+        "pipeline/valoria-visual-shell-v2-native-geometry-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_VISUAL_SHELL_V2_NATIVE_GEOMETRY_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "art-production-planner",
+        "windows-runner-heavy",
+        "runner-trigger-governance",
+        "workflow-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T11:55:00Z",
+      "base_main_sha": "93351cbea5bc4a5d2c8ab358dcbb6b16dd71a1f9",
+      "dependency": "Distinct-method proof after projected matte and procedural terrain visual failures. Use real native 3D terrain/rock/retaining-wall/circulation geometry and coherent mid/lower architecture; no photographic foreground, no procedural-heightfield microiteration, preserve gameplay/hotspots/colliders/routes/camera, zero Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-shell-v2-result-correction",
