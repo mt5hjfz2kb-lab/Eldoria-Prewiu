@@ -15,8 +15,6 @@ namespace Eldoria.Presentation
         // their scale, colliders and materials when it instantiates them.
         public GameObject SlavicShed;
         public GameObject SlavicHouse;
-        public GameObject SlavicTownHouse03c;
-        public GameObject SlavicAdministrative;
         public GameObject SlavicTree;
         public GameObject RuinedTower;
         public GameObject Firewood;
