@@ -36,7 +36,7 @@ namespace Eldoria.Presentation
             rock=ValoriaKit.ExternalPbrSurfaceMaterial("rock",new Color(.76f,.75f,.69f),new Vector2(.52f,.52f),.035f,.95f);
             stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.77f,.75f,.68f),new Vector2(.54f,.54f),.035f,.92f);
             if(ground==null||rock==null||stone==null)throw new Exception("Composition frame shared PBR maps missing.");
-            BuildArchitectureFirstTransition();
+            BuildArchitectureFirstTransition(state);
             BuildRoute();
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
@@ -68,7 +68,7 @@ namespace Eldoria.Presentation
             y=Mathf.Lerp(y,Mathf.Lerp(.35f,2.35f,Smooth(-.3f,5.9f,z))-.13f,route*segment*.8f);
             return y;
         }
-        static void BuildArchitectureFirstTransition()
+        static void BuildArchitectureFirstTransition(PlayerState state)
         {
             // Architecture-first candidate: compact inhabited bands carry the eye from city to Bastion.
             // Rock is only a buried/supporting mass; there are no exposed terrain boards.
