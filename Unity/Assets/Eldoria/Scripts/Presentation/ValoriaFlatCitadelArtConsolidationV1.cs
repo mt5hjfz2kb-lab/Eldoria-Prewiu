@@ -95,8 +95,9 @@ namespace Eldoria.Presentation
 
         static void HidePrototypePines(Transform uplift)
         {
-            foreach(var r in uplift.GetComponentsInChildren<Renderer>(true))
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
+                if(r==null)continue;
                 string n=Chain(r.transform);
                 if(n.Contains("perimeter pine"))r.enabled=false;
             }
