@@ -29,11 +29,13 @@
     "preserve_gameplay_signature": true
   },
   "notes": "Flat Citadel macrocomposition is locked. First preserve growth capacity using canonical Bastion I-X gameplay plus long-range 11-35 planning: active Aserradero/Cuartel/Granero, reserved Cantera/Forja/Hospital, no world-space plot for Codex/Relicario by default, plus west/east/upper/special late-game reserves. Then consolidate wall, Hero Bastion interface, materials, secondary architecture, atmosphere and final HUD presentation. Unity-first, zero spend, no mountain/topography reopening, no Tripo.",
-  "closed_at": "2026-10-03T17:39:00Z",
-  "result": "TECH PASS / VISUAL FAIL. Art Consolidation completed with progression parcel reservations, wall hierarchy consolidation, Bastion architectural interface, material calibration, restrained atmosphere and real canonical Unity HUD captures. Flat Citadel remains locked. Zero Tripo spend.",
-  "validation_run_id": 37140939404,
-  "validation_artifact_id": 11280003633,
-  "closure_revalidation_run_id": 37141174327,
-  "closure_revalidation_artifact_id": 11280596584,
-  "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1"
+  "closed_at": "2026-10-03T17:48:00Z",
+  "result": "TECH PASS / VISUAL FAIL. Final Art Consolidation keeps Flat Citadel locked, adds a progression-aware parcel reservation contract, reduces wall hero repetition to 11 modules over a continuous low defensive ring, improves Bastion access/material calibration, preserves gameplay authority, and captures real canonical Unity HUD at 19/12/9/mobile. A late washed-out masonry/foundation variant was capture-reviewed and reverted. Remaining gap is asset-family coherence, Hero Bastion fused rock interface, perimeter/world-edge quality, occupancy and HUD art quality. Zero Tripo spend.",
+  "validation_run_id": 37141597937,
+  "validation_artifact_id": 11280900578,
+  "closure_revalidation_run_id": 37141750828,
+  "closure_revalidation_artifact_id": 11280692388,
+  "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1",
+  "final_branch_head": "7ef4944adb9d877160be944a286a8f20933c1005",
+  "final_implementation_head": "c2894925c97aea7cd514b6e90b1cac81b802a63e"
 }
