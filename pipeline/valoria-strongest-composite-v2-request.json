@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate unified world-space lower-city terrain v10: remove the hard earth/rock submesh seam while preserving compact organic geometry, gameplay authority and the tighter candidate frame.",
+  "objective": "Validate TerrainData lower-city landscape v1: smoothed heightmap, slope-blended dirt/rock layers, irregular holes and framed-valley silhouette while preserving gameplay authority.",
   "route": "environment_composition",
-  "geometry_gap_proven": false,
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "tripo_credits": 0,
   "base": "Valoria Strongest Composite v1",
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T02:49:00+02:00",
-  "retry_reason": "v9 proved that higher mesh density does not remove the visible sawtooth because the defect is the binary earth/rock submesh boundary. v10 uses one world-space terrain material to test continuity before implementing a more complex slope blend.",
-  "retry_seq": 6
+  "triggered_at": "2026-10-03T03:11:00+02:00",
+  "retry_reason": "Generated mesh v11 remained VISUAL FAIL: foreground still read as one technical rock tongue. TerrainData is the zero-credit structural fallback using heightmap smoothing, slope-based texture blending and terrain holes.",
+  "retry_seq": 7
 }
