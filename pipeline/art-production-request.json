@@ -33,9 +33,9 @@
   "result": "TECH PASS / VISUAL FAIL. Final Art Consolidation keeps Flat Citadel locked, adds a progression-aware parcel reservation contract, reduces wall hero repetition to 11 modules over a continuous low defensive ring, improves Bastion access/material calibration, preserves gameplay authority, and captures real canonical Unity HUD at 19/12/9/mobile. A late washed-out masonry/foundation variant was capture-reviewed and reverted. Remaining gap is asset-family coherence, Hero Bastion fused rock interface, perimeter/world-edge quality, occupancy and HUD art quality. Zero Tripo spend.",
   "validation_run_id": 37141597937,
   "validation_artifact_id": 11280900578,
-  "closure_revalidation_run_id": 37141750828,
-  "closure_revalidation_artifact_id": 11280692388,
+  "closure_revalidation_run_id": 37141808349,
+  "closure_revalidation_artifact_id": 11280418173,
   "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1",
-  "final_branch_head": "7ef4944adb9d877160be944a286a8f20933c1005",
+  "final_branch_head": "ff9531256f62a9bd0976ea385db46af7e0060edb",
   "final_implementation_head": "c2894925c97aea7cd514b6e90b1cac81b802a63e"
 }
