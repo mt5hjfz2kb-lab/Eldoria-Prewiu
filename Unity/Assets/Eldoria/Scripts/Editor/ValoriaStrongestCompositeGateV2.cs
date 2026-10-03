@@ -119,7 +119,7 @@ namespace Eldoria.EditorTools
             // geometry with a fixed-camera projected matte shell. It samples the exact
             // Kiara backplate and adds only a soft contact grade around the fortress.
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
-            bool visualShellBuilt=ValoriaVisualShellV2.Build(root.transform,state);
+            bool visualShellBuilt=ValoriaVisualShellV2.Build(root.transform,state,c);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
