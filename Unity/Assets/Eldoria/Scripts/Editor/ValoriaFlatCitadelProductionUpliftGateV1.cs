@@ -44,6 +44,7 @@ namespace Eldoria.EditorTools
             var afterSig=ValoriaVisualFormulaGate.CollisionSignature();
             ValoriaFlatCitadelProductionUpliftV1.WallUpliftEnabled=true;
             ValoriaFlatCitadelProductionUpliftV1.GroundUpliftEnabled=true;
+            ValoriaFlatCitadelProductionUpliftV1.BastionIntegrationUpliftEnabled=true;
             ValoriaFlatCitadelProductionUpliftV1.Build(after.root.transform,state);
             RemoveAddedGameplay(after.colliderIds,after.hotspotIds);
             Physics.SyncTransforms();
@@ -133,7 +134,7 @@ namespace Eldoria.EditorTools
                 $"  \"after_signature_hash\": \"{afterSig.GetHashCode()}\",\n"+
                 $"  \"wall_uplift_enabled\": true,\n"+
                 $"  \"ground_uplift_enabled\": true,\n"+
-                $"  \"ground_uplift_enabled\": true,\n"+
+                $"  \"bastion_integration_uplift_enabled\": true,\n"+
                 $"  \"authored_wall_modules\": {ValoriaFlatCitadelProductionUpliftV1.AuthoredWallModules},\n"+
                 $"  \"authored_wall_towers\": {ValoriaFlatCitadelProductionUpliftV1.AuthoredWallTowers},\n"+
                 $"  \"functional_buildings\": {ValoriaFlatCitadelProductionUpliftV1.FunctionalBuildings},\n"+
