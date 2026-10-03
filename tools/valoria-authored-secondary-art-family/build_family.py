@@ -46,6 +46,7 @@ def box(name,loc,scale,material,bevel=.04,rot=(0,0,0)):
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     if material:o.data.materials.append(material)
     if bevel>0:
+        if hasattr(o.data,"use_auto_smooth"): o.data.use_auto_smooth=True
         b=o.modifiers.new("Bevel","BEVEL");b.width=bevel;b.segments=2
         try:b.affect='EDGES'
         except:pass
@@ -58,6 +59,7 @@ def cylinder(name,loc,radius,depth,material,rot=(0,0,0),verts=20,bevel=.02):
     o=bpy.context.object;o.name=name
     if material:o.data.materials.append(material)
     if bevel>0:
+        if hasattr(o.data,"use_auto_smooth"): o.data.use_auto_smooth=True
         b=o.modifiers.new("Bevel","BEVEL");b.width=bevel;b.segments=2
         n=o.modifiers.new("WeightedNormal","WEIGHTED_NORMAL")
         apply_mods(o)
