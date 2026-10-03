@@ -56,9 +56,12 @@ namespace Eldoria.Presentation
             // Keeping one irregular silhouette removes the three-island read while preserving
             // all gameplay colliders/hotspots underneath as presentation-only geometry.
             Create(root,"integrated lower city",new[]{
-                V(-5.75f,-2.35f),V(-4.85f,-2.85f),V(-3.40f,-2.65f),V(-1.80f,-2.35f),
-                V(0f,-2.50f),V(1.80f,-2.35f),V(3.40f,-2.65f),V(4.90f,-2.85f),
-                V(5.80f,-2.30f),V(5.85f,-1.25f),V(5.25f,-.55f),V(4.25f,-.35f),
+                // v18: pull the exposed foreground lip back toward the functional buildings.
+                // The lower city keeps one connected visual substrate, but the official camera
+                // now sees a compact mountain terrace rather than a broad presentation board.
+                V(-5.55f,-2.10f),V(-4.65f,-2.34f),V(-3.35f,-2.20f),V(-1.75f,-1.96f),
+                V(0f,-2.12f),V(1.75f,-1.96f),V(3.35f,-2.20f),V(4.68f,-2.34f),
+                V(5.58f,-2.08f),V(5.72f,-1.20f),V(5.25f,-.55f),V(4.25f,-.35f),
                 V(3.55f,.45f),V(2.00f,.92f),V(0f,.84f),V(-2.00f,.95f),
                 V(-3.55f,.48f),V(-4.25f,-.32f),V(-5.25f,-.55f),V(-5.85f,-1.25f)
             },-.12f,-.48f,-.82f,earth,rock);
@@ -83,9 +86,21 @@ namespace Eldoria.Presentation
 
                 // v17: break the broad front lip into authored rock masses so the
                 // lower city reads as terrain cut into the mountain, not a grey board.
-                AddDecor(root,rock,"front west",new Vector3(-2.45f,-.50f,-2.52f),1.45f,.64f,18f);
-                AddDecor(root,rock,"front centre",new Vector3(0.00f,-.54f,-2.70f),1.72f,.72f,96f);
-                AddDecor(root,rock,"front east",new Vector3(2.45f,-.50f,-2.52f),1.45f,.64f,198f);
+                AddDecor(root,rock,"front west",new Vector3(-2.55f,-.50f,-2.12f),1.35f,.66f,18f);
+                AddDecor(root,rock,"front centre west",new Vector3(-.78f,-.54f,-2.22f),1.25f,.70f,74f);
+                AddDecor(root,rock,"front centre east",new Vector3(.82f,-.54f,-2.20f),1.28f,.70f,122f);
+                AddDecor(root,rock,"front east",new Vector3(2.55f,-.50f,-2.12f),1.35f,.66f,198f);
+
+                // v18: seed the top plane with low rock shelves so the earth surface breaks
+                // into authored terraces instead of remaining one uninterrupted flat colour.
+                var flat=art.SlavicFlatRock;
+                if(flat!=null)
+                {
+                    AddDecor(root,flat,"top west shelf",new Vector3(-4.20f,-.04f,-1.35f),2.10f,.24f,28f);
+                    AddDecor(root,flat,"top west inner",new Vector3(-2.65f,-.06f,-1.20f),1.65f,.20f,72f);
+                    AddDecor(root,flat,"top east inner",new Vector3(2.55f,-.06f,-1.18f),1.65f,.20f,252f);
+                    AddDecor(root,flat,"top east shelf",new Vector3(4.18f,-.04f,-1.38f),2.10f,.24f,208f);
+                }
             }
 
             if(art.SlavicBush!=null)
