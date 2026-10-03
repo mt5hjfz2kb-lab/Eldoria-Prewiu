@@ -84,7 +84,7 @@ def clone_tinted(mat,name,tint,rough_mul=1.0):
         link=next((l for l in nt.links if l.to_socket==base),None)
         if link:
             mix=nt.nodes.new("ShaderNodeMixRGB");mix.name=name+" Tint";mix.blend_type="MULTIPLY";mix.inputs[0].default_value=1.0;mix.inputs[2].default_value=(*tint,1)
-            nt.links.remove(link);nt.links.new(link.from_socket,mix.inputs[1]);nt.links.new(mix.outputs[0],base)
+            src_socket=link.from_socket;nt.links.remove(link);nt.links.new(src_socket,mix.inputs[1]);nt.links.new(mix.outputs[0],base)
         else: base.default_value=(*tint,1)
     rough=bsdf.inputs.get("Roughness")
     if rough:
