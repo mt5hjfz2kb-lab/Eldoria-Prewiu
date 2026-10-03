@@ -21,6 +21,7 @@ namespace Eldoria.Presentation
    BuildAuthoredCurtainCaps(root);
    UpliftFunctionalMaterials(canonicalRoot);
    UpliftContainedGround(canonicalRoot);
+   ValoriaFullFrameSurfaceLifeBatchV1.BuildOccupationOnly(root,state);
    StripGameplay(root.gameObject);
   }
 
