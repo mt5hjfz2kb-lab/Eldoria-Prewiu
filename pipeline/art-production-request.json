@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-flat-citadel-art-consolidation-v1",
-  "asset_or_sector": "Valoria Flat Citadel — art consolidation and progression-reserved city",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
-  "allow_tripo": false,
+  "enabled": true,
+  "request_id": "valoria-tripo-selective-replacement-proof-v1",
+  "asset_or_sector": "F1 Aserradero single replacement proof",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "allow_tripo": true,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
@@ -14,7 +14,7 @@
     "tripo_retopology": false,
     "blender_lod": false,
     "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": true,
@@ -22,20 +22,11 @@
     "unity_terrain_blending": true
   },
   "validation": {
-    "official_camera_19": true,
-    "official_camera_12": true,
+    "official_camera_19": false,
+    "official_camera_12": false,
     "official_camera_9": true,
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Flat Citadel macrocomposition is locked. First preserve growth capacity using canonical Bastion I-X gameplay plus long-range 11-35 planning: active Aserradero/Cuartel/Granero, reserved Cantera/Forja/Hospital, no world-space plot for Codex/Relicario by default, plus west/east/upper/special late-game reserves. Then consolidate wall, Hero Bastion interface, materials, secondary architecture, atmosphere and final HUD presentation. Unity-first, zero spend, no mountain/topography reopening, no Tripo.",
-  "closed_at": "2026-10-03T17:48:00Z",
-  "result": "TECH PASS / VISUAL FAIL. Final Art Consolidation keeps Flat Citadel locked, adds a progression-aware parcel reservation contract, reduces wall hero repetition to 11 modules over a continuous low defensive ring, improves Bastion access/material calibration, preserves gameplay authority, and captures real canonical Unity HUD at 19/12/9/mobile. A late washed-out masonry/foundation variant was capture-reviewed and reverted. Remaining gap is asset-family coherence, Hero Bastion fused rock interface, perimeter/world-edge quality, occupancy and HUD art quality. Zero Tripo spend.",
-  "validation_run_id": 37141597937,
-  "validation_artifact_id": 11280900578,
-  "closure_revalidation_run_id": 37141808349,
-  "closure_revalidation_artifact_id": 11280418173,
-  "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1",
-  "final_branch_head": "ff9531256f62a9bd0976ea385db46af7e0060edb",
-  "final_implementation_head": "c2894925c97aea7cd514b6e90b1cac81b802a63e"
+  "notes": "Owner-requested bounded source-richness hypothesis after failed source-level/source-atlas/wrapper proofs; does not prove Tripo succeeds. Exact supplied image only. Single generation, technical retry only. Stage at zero credits; no paid authorization recorded until cost verified. Preserve VQB accepted 7a564bc Hero/wall/terrain/HUD/position/gameplay. Stop gate zoom9/mobile; user overrides broad rollout and12/19. F1(-5.95,-1.55),max5.0x4.4."
 }
