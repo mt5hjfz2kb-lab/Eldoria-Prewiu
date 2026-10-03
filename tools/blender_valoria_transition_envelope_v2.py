@@ -47,6 +47,10 @@ def normalized_copy(source,name,unity_center,unity_dims,yaw=0,pitch=0,roll=0):
     o.data=source.data.copy()
     bpy.context.scene.collection.objects.link(o)
     o.name=name
+    # Source objects are hidden to keep them out of export; copies must be visible/editable.
+    o.hide_viewport=False
+    o.hide_render=False
+    o.hide_set(False)
     mn,mx=bounds(o)
     size=mx-mn
     o.scale=(unity_dims[0]/max(size.x,.001),unity_dims[2]/max(size.y,.001),unity_dims[1]/max(size.z,.001))
