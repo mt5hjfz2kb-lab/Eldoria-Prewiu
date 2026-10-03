@@ -91,7 +91,8 @@ def clone_tinted(mat,name,tint,rough_mul=1.0):
         link=next((l for l in nt.links if l.to_socket==rough),None)
         if link and abs(rough_mul-1)>1e-4:
             mul=nt.nodes.new("ShaderNodeMath");mul.operation="MULTIPLY";mul.inputs[1].default_value=rough_mul
-            nt.links.remove(link);nt.links.new(link.from_socket,mul.inputs[0]);nt.links.new(mul.outputs[0],rough)
+            source_socket=link.from_socket
+            nt.links.remove(link);nt.links.new(source_socket,mul.inputs[0]);nt.links.new(mul.outputs[0],rough)
         elif not link: rough.default_value=max(0,min(1,rough.default_value*rough_mul))
     return m
 
