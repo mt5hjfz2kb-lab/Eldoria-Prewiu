@@ -121,6 +121,12 @@ namespace Eldoria.EditorTools
             ValoriaWorldFrameMountainTerrainV1.Enabled=true;
             ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
 
+            // Visual Shell v2 native-geometry proof: replace the failed photographic/heightfield
+            // foreground approach with authored 3D crag masses + rock/masonry connectors.
+            ValoriaVisualShellV2NativeGeometry.Enabled=true;
+            ValoriaVisualShellV2NativeGeometry.Build(root.transform,state);
+            int nativeShellPieces=ValoriaVisualShellV2NativeGeometry.PiecesBuilt;
+
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
@@ -151,6 +157,7 @@ namespace Eldoria.EditorTools
                 $"  \"authored_stair_pieces\": {stairPieces},\n"+
                 $"  \"compact_stair_renderers_suppressed\": {compactStairSuppressed},\n"+
                 $"  \"terrain_edge_rock_meshes\": {terrainEdgeRocks},\n"+
+                $"  \"native_visual_shell_pieces\": {nativeShellPieces},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
