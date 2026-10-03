@@ -32,6 +32,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -y blender
           fi
+          sudo apt-get install -y python3-numpy
           mkdir -p "$RUNNER_TEMP/volumetric-landform"
           blender -b --factory-startup --python tools/valoria-shell-v2-volumetric-landform/build_landform.py -- "$RUNNER_TEMP/volumetric-landform/ValoriaVolumetricLandform.glb" "$RUNNER_TEMP/volumetric-landform/report.json"
           test -s "$RUNNER_TEMP/volumetric-landform/ValoriaVolumetricLandform.glb"
