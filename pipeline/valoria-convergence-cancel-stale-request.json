@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel intermediate Unity slice run so the current compact lower-city v13 integrated visual gate can use the Windows runner; preserve the v13 Strongest Composite candidate.",
+  "reason": "Cancel stale Unity slice from v14 so the current carved-stair-support v15 integrated visual gate can use the Windows runner; preserve v15.",
   "runs": [
-    37106692502
+    37107156512,
+    37107342347
   ],
   "keep_runs": [
-    37106700587
+    37107351837
   ],
-  "triggered_at": "2026-10-03T09:33:00+02:00"
+  "triggered_at": "2026-10-03T09:45:00+02:00"
 }
