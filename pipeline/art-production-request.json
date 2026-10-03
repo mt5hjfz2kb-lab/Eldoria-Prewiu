@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-flat-citadel-production-uplift-v1",
   "asset_or_sector": "Valoria Flat Citadel — production uplift",
   "profile": "environment_composition",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Composition is fixed and accepted from Flat Citadel Proof v1. Zero-spend Unity-first production uplift only: upgrade wall silhouette/variation, authored surface hierarchy, Bastion seating/approach, functional-building coherence, then restrained dressing/life. Do not reopen mountain/topography experiments and do not use Tripo."
+  "notes": "VALORIA FLAT CITADEL PRODUCTION UPLIFT v1 closed. TECH PASS / VISUAL FAIL. Final implementation ca018faf089d10e777566974f2bc6fd3e470ede0; validation run 37137847235 / artifact 11279086781. Closure doc commit c33b82bf8a3141127727d3c1d77daf4798d23297 revalidated successfully in run 37137964874 / artifact 11278977322. Keep Flat Citadel composition; next recommended block is ART CONSOLIDATION, not mountain/topography rework. No Tripo spend."
 }
