@@ -72,14 +72,9 @@ namespace Eldoria.Presentation
         {
             // Architecture-first candidate: compact inhabited bands carry the eye from city to Bastion.
             // Rock is only a buried/supporting mass; there are no exposed terrain boards.
-            AddSupport("Valoria/Rescued/ResidentialTerraceRock","lower west terrace rock",new Vector3(-5.85f,-.32f,-3.05f),7.2f,3.1f,14f);
-            AddSupport("Valoria/Rescued/ResidentialTerraceRock","lower east terrace rock",new Vector3( 5.75f,-.30f,-2.90f),7.2f,3.1f,194f);
-            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","lower centre seam",new Vector3(0f,-.18f,-3.60f),6.8f,2.35f,4f);
-            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","middle west seam",new Vector3(-4.55f,.65f,.55f),5.8f,2.55f,34f);
-            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","middle east seam",new Vector3( 4.50f,.66f,.60f),5.8f,2.55f,214f);
-            AddSupport("Valoria/Rescued/TowerWallRock","upper west wall rock",new Vector3(-3.85f,1.40f,4.15f),4.8f,2.65f,18f);
-            AddSupport("Valoria/Rescued/TowerWallRock","upper east wall rock",new Vector3( 3.85f,1.40f,4.20f),4.8f,2.65f,198f);
-            AddSupport("Valoria/Rescued/RockTerrainSeamFiller","hero centre seam",new Vector3(0f,1.45f,4.75f),5.2f,2.25f,96f);
+            // Distinct method: Blender fuses certified rock/terrace support forms into one manifold city foundation.
+            ValoriaFusedTransitionV2.Build(root,state);
+            VisualPieces+=ValoriaFusedTransitionV2.RenderersBuilt;
 
             // Bring the gate's visual-only functional clones into the city section.
             PlaceExistingPresentation("Valoria · Strongest v2 · compact sawmill visual",
