@@ -51,21 +51,57 @@ def fit_center(o,center,dims,yaw=0):
 def add_asset(rel,name,center,dims,yaw=0):
     return fit_center(import_join(rel,name),center,dims,yaw)
 
-def ground_mesh(name,z0,z1,y,half0,half1):
-    # One irregular inhabited terrace, full width, with a sloped/rock front instead of a floating board.
-    xs=13;verts=[];faces=[]
-    for row,(z,half,yy) in enumerate([(z0,half0,y-.36),(z0+.42,half0-.25,y),(z1,half1,y)]):
+def macroform():
+    # One continuous terraced landform from the lower city through the Hero interface.
+    # Horizontal pairs are inhabited shelves; the short connecting pairs are rock faces.
+    profile=[
+      (-7.55,-.38,11.8),(-4.85,-.38,11.2),
+      (-4.42,.62,10.2),(-2.55,.62,9.7),
+      (-2.10,1.45,8.6),(1.55,1.45,8.0),
+      (2.02,2.28,6.9),(5.35,2.28,5.85),
+      (5.75,2.72,5.15),(7.05,2.72,4.65)
+    ]
+    xs=31;verts=[];faces=[];mi=[];rows=[]
+    for ri,(z,y,half) in enumerate(profile):
+        row=[]
         for i in range(xs):
             t=i/(xs-1);x=-half+2*half*t
-            edge=abs(t-.5)*2
-            x+=.16*math.sin(i*1.37+row*.9)*edge
-            verts.append(tuple(ub((x,yy,z))))
-    for r in range(2):
+            x+=.13*math.sin(i*.73+ri*.51)*(abs(t-.5)*2)
+            row.append(len(verts));verts.append(tuple(ub((x,y,z))))
+        rows.append(row)
+    for r in range(len(rows)-1):
+        riser=(r%2==1)
         for i in range(xs-1):
-            a=r*xs+i;b=a+1;c=a+xs;d=c+1
-            faces += [(a,d,c,b)]
-    me=bpy.data.meshes.new(name+"Mesh");me.from_pydata(verts,[],faces);me.update()
-    o=bpy.data.objects.new(name,me);bpy.context.scene.collection.objects.link(o)
+            a,b=rows[r][i],rows[r][i+1];c,d=rows[r+1][i+1],rows[r+1][i]
+            faces.append((a,d,c,b));mi.append(0 if riser else 1)
+    datum=-2.7
+    # close both side silhouettes and the front edge down into the valley, eliminating floating-sheet reads
+    for side in (0,xs-1):
+        top=[rows[r][side] for r in range(len(rows))]
+        bot=[]
+        for src in top:
+            co=Vector(verts[src]);bot.append(len(verts));verts.append((co.x,co.y,datum))
+        for r in range(len(top)-1):
+            faces.append((top[r],bot[r],bot[r+1],top[r+1]));mi.append(0)
+    front=rows[0]
+    fbot=[]
+    for src in front:
+        co=Vector(verts[src]);fbot.append(len(verts));verts.append((co.x,co.y,datum))
+    for i in range(xs-1):
+        faces.append((front[i],front[i+1],fbot[i+1],fbot[i]));mi.append(0)
+
+    me=bpy.data.meshes.new("DCC_MacroformMesh");me.from_pydata(verts,[],faces);me.update()
+    o=bpy.data.objects.new("DCC_Macroform",me);bpy.context.scene.collection.objects.link(o)
+    rock=bpy.data.materials.new("DCC_RockSurface");rock.diffuse_color=(.34,.32,.29,1)
+    ground=bpy.data.materials.new("DCC_GroundSurface");ground.diffuse_color=(.34,.29,.22,1)
+    o.data.materials.append(rock);o.data.materials.append(ground)
+    for p,m in zip(o.data.polygons,mi):p.material_index=m
+    bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+    bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bev=o.modifiers.new("DCC terrain edge soften","BEVEL");bev.width=.045;bev.segments=2;bev.limit_method='ANGLE'
+    bpy.ops.object.modifier_apply(modifier=bev.name)
     return o
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -75,13 +111,8 @@ objects=[]
 objects.append(add_asset("HeroBastionGenerated/Valoria_HeroBastion_v1.glb","DCC_HeroBastion",
     (0,7.14,8.75),(12.80,9.24,10.96),0))
 
-# Terrain is authored around the architecture, not added underneath afterwards.
-tiers=[
-    ground_mesh("DCC_LowerTerrace",-7.5,-2.35,-.15,11.7,9.6),
-    ground_mesh("DCC_MiddleTerrace",-2.75,1.85,.85,9.8,7.7),
-    ground_mesh("DCC_HeroTerrace",1.45,5.25,2.22,7.8,5.7)
-]
-objects += tiers
+# One continuous landform owns all three inhabited levels and the Hero interface.
+objects.append(macroform())
 
 # Functional anchors are composed into the lower/middle retaining sequence.
 objects += [
