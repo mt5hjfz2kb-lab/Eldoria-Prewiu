@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-blender-cliff-proof-v1",
-  "objective": "Generate a zero-credit organic lower-city cliff in Blender, stage it only for the experimental Unity run, and compare the integrated 19/12/9/mobile frame against the canonical reference.",
+  "objective": "Blender cliff proof v2: generate a denser fractured organic cliff, fit it tightly beneath the lower city, inherit the hero-island rock material, and validate the integrated 19/12/9/mobile frame.",
   "route": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -23,7 +23,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:43:00+02:00",
-  "retry_seq": 1,
-  "retry_reason": "First proof generated a valid zero-credit GLB but the composite gate kept ValoriaLowerCityTerracedMeshV1 disabled, so the staged Blender resource was not instantiated. Retry enables the mesh path only when that experimental resource exists."
+  "triggered_at": "2026-10-03T12:00:00+02:00",
+  "retry_seq": 2,
+  "retry_reason": "v1 rerun proved Blender staging works, but the candidate was too deep toward the camera and used a flatter surface read. v2 reduces depth, buries the mesh under the fortress foot, uses hero rock material and adds fractured side bands."
 }
