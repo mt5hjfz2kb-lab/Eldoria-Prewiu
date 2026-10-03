@@ -2,8 +2,8 @@
   "enabled": true,
   "request_id": "valoria-full-frame-convergence-iteration-1",
   "asset_or_sector": "Valoria Full Frame Iteration 1",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Canonical full-frame batch. Zero-credit whole-frame atmosphere/horizon/lighting/environment/corruption improvement. No micro-pass acceptance; judge only integrated BEFORE/AFTER."
+  "notes": "Full-frame convergence geometry gap proven by v22-v25b: certified SteppedRockTerrace reuse still reads as detached blocks/pillars and cannot form the required continuous lower-city cliff mass. First new-geometry proof is a zero-credit Unity-authored visual-only unified cliff substrate using existing PBR rock material. Tripo remains disabled pending proof outcome."
 }
