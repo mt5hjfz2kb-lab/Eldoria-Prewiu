@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stalled terraced-landforms v4 capture after source-preflight passed; preserve the Unity slice so code can be validated independently, then rerun the visual proof on a clean runner.",
+  "reason": "Cancel stalled Unity slice run blocking compact integrated lower-city v11 full-frame capture; preserve the current Strongest Composite v11 candidate.",
   "runs": [
-    37100614193
+    37105818873
   ],
   "keep_runs": [
-    37100604984
+    37105844202
   ],
-  "triggered_at": "2026-10-03T07:46:00+02:00"
+  "triggered_at": "2026-10-03T08:59:00+02:00"
 }
