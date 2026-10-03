@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "method": "source-preserving canonical support meshes + shared embedded stone/timber surfaces",
+  "wall": {
+    "source": "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Wall.fbx",
+    "before": {
+      "triangles": 4388,
+      "objects": 3,
+      "materials": [
+        "Gray_Gradient"
+      ],
+      "bounds": {
+        "min": [
+          -2.608891010284424,
+          -0.43537387251853943,
+          -0.01592455618083477
+        ],
+        "max": [
+          2.644085645675659,
+          0.42930299043655396,
+          4.968562602996826
+        ],
+        "size": [
+          5.252976655960083,
+          0.8646768629550934,
+          4.984487159177661
+        ]
+      }
+    },
+    "after": {
+      "triangles": 22520,
+      "objects": 3,
+      "assigned": {
+        "stone": 3,
+        "timber": 0,
+        "iron": 0
+      },
+      "bytes": 1939416,
+      "bounds": {
+        "min": [
+          -2.626488208770752,
+          -0.4323384463787079,
+          -3.5001335163542535e-11
+        ],
+        "max": [
+          2.626488208770752,
+          0.4323384463787079,
+          4.984487056732178
+        ],
+        "size": [
+          5.252976417541504,
+          0.8646768927574158,
+          4.984487056767179
+        ]
+      }
+    },
+    "output": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceWall_v2.glb"
+  },
+  "gate": {
+    "source": "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Gate.fbx",
+    "before": {
+      "triangles": 2420,
+      "objects": 4,
+      "materials": [
+        "Gray_Gradient.001"
+      ],
+      "bounds": {
+        "min": [
+          -2.8046159744262695,
+          -0.5807738304138184,
+          -0.020230762660503387
+        ],
+        "max": [
+          2.758467674255371,
+          0.5807746052742004,
+          5.465724468231201
+        ],
+        "size": [
+          5.563083648681641,
+          1.1615484356880188,
+          5.485955230891705
+        ]
+      }
+    },
+    "after": {
+      "triangles": 17920,
+      "objects": 4,
+      "assigned": {
+        "stone": 3,
+        "timber": 1,
+        "iron": 0
+      },
+      "bytes": 1882060,
+      "bounds": {
+        "min": [
+          -2.7814583778381348,
+          -0.5807742476463318,
+          3.7483260939552565e-10
+        ],
+        "max": [
+          2.7814583778381348,
+          0.5807742476463318,
+          5.485917091369629
+        ],
+        "size": [
+          5.5629167556762695,
+          1.1615484952926636,
+          5.485917090994796
+        ]
+      }
+    },
+    "output": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_SourceGate_v2.glb"
+  },
+  "tripo_credits": 0
+}
