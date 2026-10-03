@@ -32,9 +32,11 @@ jobs:
           ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
           ELDORIA_CANONICAL_SAWMILL: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
         run: |
-          rm -rf pipeline/candidates/valoria-authored-secondary-art-family-v1
-          rm -f pipeline/evidence/valoria-authored-secondary-art-family-v1.json
           mkdir -p pipeline/candidates/valoria-authored-secondary-art-family-v1 pipeline/evidence
+          rm -f pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb
+          rm -f pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb
+          rm -f pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb
+          rm -f pipeline/evidence/valoria-authored-secondary-art-family-v1.json
           set -o pipefail
           blender -b --python tools/valoria-authored-secondary-art-family/build_family.py | tee "$RUNNER_TEMP/valoria-authored-secondary-blender.log"
           grep -q "VALORIA_AUTHORED_SECONDARY_FAMILY=PASS" "$RUNNER_TEMP/valoria-authored-secondary-blender.log"
