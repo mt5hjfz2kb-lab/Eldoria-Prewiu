@@ -5,7 +5,7 @@ Shader "Eldoria/Valoria Coherence"
   _BaseColor("Tint",Color)=(1,1,1,1) _BumpScale("Normal strength",Float)=0.8
   _Family("Family",Float)=0 _Bottom("World bottom",Float)=0 _Height("World height",Float)=1
   _RockMap("Shared stone transition",2D)="white"{} _Ground("Ground",Float)=0
-  _Smoothness("Smoothness",Float)=0.06 _Metallic("Metallic",Float)=0
+  _Smoothness("Smoothness",Float)=0.06 _Metallic("Metallic",Float)=0\n  _SemanticUplift("Semantic uplift",Float)=0
  }
  SubShader {
  Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
@@ -23,7 +23,7 @@ Shader "Eldoria/Valoria Coherence"
   TEXTURE2D(_BumpMap);SAMPLER(sampler_BumpMap);
   TEXTURE2D(_RockMap);SAMPLER(sampler_RockMap);
   CBUFFER_START(UnityPerMaterial)
-   float4 _BaseMap_ST; half4 _BaseColor; float _Family,_Bottom,_Height,_Ground; half _BumpScale,_Smoothness,_Metallic;
+   float4 _BaseMap_ST; half4 _BaseColor; float _Family,_Bottom,_Height,_Ground,_SemanticUplift; half _BumpScale,_Smoothness,_Metallic;
   CBUFFER_END
   struct A{float4 positionOS:POSITION;float3 normalOS:NORMAL;float4 tangentOS:TANGENT;float2 uv:TEXCOORD0;half4 color:COLOR;};
   struct V{float4 positionCS:SV_POSITION;float3 positionWS:TEXCOORD0;half3 normalWS:TEXCOORD1;half4 tangentWS:TEXCOORD2;float2 uv:TEXCOORD3;half4 color:TEXCOORD4;half fog:TEXCOORD5;};
@@ -42,6 +42,22 @@ Shader "Eldoria/Valoria Coherence"
     c*=half3(1.04,1.02,.94);
     half roof=smoothstep(.46,.66,h)*smoothstep(.32,.62,abs(i.normalWS.y));
     c=lerp(c,half3(.24,.32,.39)*(lum*1.35+.28),roof*.64);
+    if(_SemanticUplift>.5){
+     half chroma=max(tex.r,max(tex.g,tex.b))-min(tex.r,min(tex.g,tex.b));
+     half upper=smoothstep(.38,.58,h);
+     half roof2=upper*smoothstep(.20,.50,abs(i.normalWS.y));
+     half foundation=(1-smoothstep(.10,.25,h))*smoothstep(.08,.42,1-abs(i.normalWS.y));
+     half vertical=smoothstep(.48,.82,1-abs(i.normalWS.y));
+     half timber=vertical*(1-roof2)*smoothstep(.045,.18,tex.r-tex.b)*smoothstep(.16,.58,chroma);
+     half3 roofTone=_Family<2.5?half3(.28,.34,.37):(_Family<3.5?half3(.20,.29,.37):half3(.31,.35,.36));
+     half3 stoneTone=half3(.57,.55,.49);
+     half3 timberTone=_Family<2.5?half3(.34,.245,.16):(_Family<3.5?half3(.29,.235,.18):half3(.38,.285,.17));
+     c=lerp(c,roofTone*(lum*1.08+.34),roof2*.86);
+     c=lerp(c,stoneTone*(lum*.72+.42),foundation*.70);
+     c=lerp(c,timberTone*(lum*.72+.38),timber*.58);
+     half contrast=saturate((lum-.5)*1.16+.5);
+     c*=lerp(1,contrast/max(lum,.12),.12);
+    }
    }
    if(_Family>4.5 && _Family<5.5){c=lerp(lum.xxx,tex,.28)*1.10*half3(1.10,1.07,.98);}
    if(_Family>.5 && _Family<1.5){
