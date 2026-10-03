@@ -91,7 +91,9 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerracedMeshV1.Enabled=true;
             ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
             int terracePieces=ValoriaLowerCityTerracedMeshV1.PiecesBuilt;
-            int stairPieces=ReplaceVerticalStairVisual(root.transform);
+            ValoriaCompactStairMeshV1.Enabled=true;
+            ValoriaCompactStairMeshV1.Build(root.transform,state);
+            int stairPieces=1;
             int terrainEdgeRocks=0;
 
             Physics.SyncTransforms();
