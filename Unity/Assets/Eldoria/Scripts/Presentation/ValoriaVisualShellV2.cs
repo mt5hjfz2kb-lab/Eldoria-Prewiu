@@ -13,9 +13,9 @@ namespace Eldoria.Presentation
         public static bool Enabled=true;
         const string RootName="Valoria · Visual Shell v2";
 
-        public static bool Build(Transform parent,PlayerState state)
+        public static bool Build(Transform parent,PlayerState state,Camera camera)
         {
-            if(!Enabled||parent==null)return false;
+            if(!Enabled||parent==null||camera==null)return false;
             var old=GameObject.Find(RootName);
             if(old!=null)Object.DestroyImmediate(old);
 
@@ -26,61 +26,52 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName);
             root.transform.SetParent(parent,true);
 
-            var go=new GameObject(RootName+" · projected valley annulus");
+            // Method 3: localized fixed-camera matte. The full annulus proved invisible after
+            // grading calibration but did not materially improve the frame. This patch exists
+            // only over the lower-right hanging cliff residue and samples the exact backplate.
+            var go=new GameObject(RootName+" · lower cliff matte");
             go.transform.SetParent(root.transform,true);
 
-            const int segments=96;
-            const int rings=5;
-            const float cx=0f,cz=5.55f;
-            const float innerX=7.05f,innerZ=4.85f;
-            const float outerX=22.5f,outerZ=17.5f;
+            var vp=new[]{
+                new Vector2(.525f,.305f),
+                new Vector2(.565f,.278f),
+                new Vector2(.665f,.282f),
+                new Vector2(.704f,.320f),
+                new Vector2(.684f,.372f),
+                new Vector2(.575f,.368f)
+            };
 
-            var verts=new Vector3[(rings+1)*segments];
+            // The matte must sit in front of the fortress residue but behind UI. With the fixed
+            // orthographic review camera, ViewportToWorldPoint gives deterministic placement.
+            const float depth=24f;
+            var verts=new Vector3[vp.Length+1];
             var uv=new Vector2[verts.Length];
             var colors=new Color[verts.Length];
-            var tris=new int[rings*segments*6];
 
-            for(int r=0;r<=rings;r++)
+            Vector2 centre=Vector2.zero;
+            for(int i=0;i<vp.Length;i++)centre+=vp[i];
+            centre/=vp.Length;
+
+            verts[0]=camera.ViewportToWorldPoint(new Vector3(centre.x,centre.y,depth));
+            uv[0]=centre;
+            colors[0]=Color.black;
+            for(int i=0;i<vp.Length;i++)
             {
-                float t=r/(float)rings;
-                // Bias vertices toward the inner edge so the contact gradient is smooth.
-                float shaped=1f-Mathf.Pow(1f-t,1.65f);
-                float rx=Mathf.Lerp(innerX,outerX,shaped);
-                float rz=Mathf.Lerp(innerZ,outerZ,shaped);
-                float y=Mathf.Lerp(.34f,-1.35f,t);
-
-                for(int s=0;s<segments;s++)
-                {
-                    float a=s/(float)segments*Mathf.PI*2f;
-                    float wobble=1f+.028f*Mathf.Sin(a*5f)+.018f*Mathf.Sin(a*9f+1.7f);
-                    float x=cx+Mathf.Cos(a)*rx*wobble;
-                    float z=cz+Mathf.Sin(a)*rz*wobble;
-                    int i=r*segments+s;
-                    verts[i]=new Vector3(x,y,z);
-                    uv[i]=new Vector2(s/(float)segments,t);
-
-                    // Near-island contact darkening only. Outer ring becomes exact backplate.
-                    float contact=(1f-t);
-                    contact=contact*contact*.09f;
-                    colors[i]=new Color(contact,0f,0f,1f);
-                }
+                verts[i+1]=camera.ViewportToWorldPoint(new Vector3(vp[i].x,vp[i].y,depth));
+                uv[i+1]=vp[i];
+                colors[i+1]=Color.black;
             }
 
-            int ti=0;
-            for(int r=0;r<rings;r++)
-            for(int s=0;s<segments;s++)
+            var tris=new int[vp.Length*3];
+            for(int i=0;i<vp.Length;i++)
             {
-                int n=(s+1)%segments;
-                int a=r*segments+s;
-                int b=r*segments+n;
-                int c=(r+1)*segments+s;
-                int d=(r+1)*segments+n;
-                tris[ti++]=a;tris[ti++]=c;tris[ti++]=b;
-                tris[ti++]=b;tris[ti++]=c;tris[ti++]=d;
+                int n=(i+1)%vp.Length;
+                tris[i*3]=0;
+                tris[i*3+1]=i+1;
+                tris[i*3+2]=n+1;
             }
 
-            var mesh=new Mesh{name="Valoria Visual Shell v2 · annulus"};
-            mesh.indexFormat=IndexFormat.UInt32;
+            var mesh=new Mesh{name="Valoria Visual Shell v2 · lower cliff matte"};
             mesh.vertices=verts;
             mesh.uv=uv;
             mesh.colors=colors;
@@ -90,10 +81,10 @@ namespace Eldoria.Presentation
 
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var mr=go.AddComponent<MeshRenderer>();
-            var mat=new Material(shader){name="Valoria Visual Shell v2 · projected valley"};
+            var mat=new Material(shader){name="Valoria Visual Shell v2 · exact projected matte"};
             mat.SetTexture("_BackplateTex",tex);
             mat.SetColor("_BackplateTint",new Color(.84f,.88f,.91f,1f));
-            mat.SetFloat("_ContactStrength",.75f);
+            mat.SetFloat("_ContactStrength",0f);
             mr.sharedMaterial=mat;
             mr.shadowCastingMode=ShadowCastingMode.Off;
             mr.receiveShadows=false;
