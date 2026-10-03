@@ -276,8 +276,8 @@ namespace Eldoria.Presentation
 
             // Main gatehouse: one strong authored gate + twin towers + restrained heraldry.
             AddWallModule(root,gate,"main gate",new Vector3(0f,.10f,-6.55f),4.55f,3.55f,0f,new Color(.78f,.76f,.70f,1f));
-            AddWallModule(root,tower,"gate tower west",new Vector3(-3.15f,.08f,-6.25f),2.45f,4.20f,4f,new Color(.73f,.72f,.67f,1f),true);
-            AddWallModule(root,tower,"gate tower east",new Vector3(3.15f,.08f,-6.25f),2.30f,3.90f,-5f,new Color(.72f,.71f,.66f,1f),true);
+            AddWallModule(root,tower,"gate tower west",new Vector3(-3.15f,.08f,-6.25f),2.35f,3.70f,4f,new Color(.73f,.72f,.67f,1f),true);
+            AddWallModule(root,tower,"gate tower east",new Vector3(3.15f,.08f,-6.25f),2.22f,3.45f,-5f,new Color(.72f,.71f,.66f,1f),true);
             AddWallBanner(root,new Vector3(-1.70f,2.45f,-6.62f));
             AddWallBanner(root,new Vector3(1.70f,2.35f,-6.62f));
 
@@ -303,8 +303,8 @@ namespace Eldoria.Presentation
                     new Color(.69f,.68f,.63f,1f));
                 if(i==2)
                 {
-                    AddWallModule(root,tower,"west mid tower",new Vector3(-9.55f,.08f,3.95f),2.20f,3.65f,8f,new Color(.71f,.70f,.65f,1f),true);
-                    AddWallModule(root,tower,"east mid tower",new Vector3(9.55f,.08f,3.95f),2.08f,3.45f,-11f,new Color(.70f,.69f,.64f,1f),true);
+                    AddWallModule(root,tower,"west mid tower",new Vector3(-9.55f,.08f,3.95f),2.05f,3.20f,8f,new Color(.71f,.70f,.65f,1f),true);
+                    AddWallModule(root,tower,"east mid tower",new Vector3(9.55f,.08f,3.95f),1.98f,3.00f,-11f,new Color(.70f,.69f,.64f,1f),true);
                 }
             }
 
@@ -315,10 +315,10 @@ namespace Eldoria.Presentation
                     new Color(.66f,.66f,.62f,1f));
 
             foreach(var spec in new[]{
-                new Vector4(-9.35f,-6.10f, 10f,4.25f),
-                new Vector4( 9.35f,-6.10f,-12f,4.05f),
-                new Vector4(-9.30f, 9.05f, 22f,4.45f),
-                new Vector4( 9.30f, 9.05f,-18f,4.20f)})
+                new Vector4(-9.35f,-6.10f, 10f,3.55f),
+                new Vector4( 9.35f,-6.10f,-12f,3.45f),
+                new Vector4(-9.30f, 9.05f, 22f,3.75f),
+                new Vector4( 9.30f, 9.05f,-18f,3.60f)})
             {
                 AddWallModule(root,tower,"corner tower",new Vector3(spec.x,.08f,spec.y),2.55f,spec.w,spec.z,
                     new Color(.72f,.71f,.66f,1f),true);
@@ -339,8 +339,11 @@ namespace Eldoria.Presentation
 
         static void AddWallModule(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw,Color tint,bool tower=false)
         {
-            var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · "+role,source,ground,footprint,maxHeight,
-                Quaternion.Euler(0f,yaw,0f),tint);
+            // The first production-wall run proved the geometry family but the source base color
+            // multiplied too dark. Rebuild on URP/Lit with the authored albedo retained and a
+            // shared Valoria stone response so the wall supports, rather than competes with, Hero Bastion.
+            var go=ValoriaKit.BenchmarkPieceIntegrated("Valoria · Flat Citadel Production · "+role,source,ground,footprint,maxHeight,
+                Quaternion.Euler(0f,yaw,0f),Color.Lerp(Color.white,tint,.42f));
             if(go==null)throw new InvalidOperationException("Failed to build authored wall module: "+role);
             go.transform.SetParent(root,true);
             foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
