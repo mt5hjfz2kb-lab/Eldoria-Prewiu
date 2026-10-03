@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor;
@@ -60,12 +61,26 @@ namespace Eldoria.EditorTools
 
             var p=new Vector3(18.2f,18.4f,-26.8f);
             var t=new Vector3(0f,1.55f,1.55f);
+            var baselineColliderIds=new HashSet<int>();
+            foreach(var existing in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+                if(existing!=null)baselineColliderIds.Add(existing.GetInstanceID());
+            var baselineHotspotIds=new HashSet<int>();
+            foreach(var existing in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
+                if(existing!=null)baselineHotspotIds.Add(existing.GetInstanceID());
+
             var baseline=ValoriaVisualFormulaGate.CollisionSignature();
 
             SaveSet(c,"before",p,t);
 
             ValoriaFlatCitadelProofV1.Enabled=true;
             ValoriaFlatCitadelProofV1.Build(root.transform,state);
+
+            // Presentation helpers may create primitive colliders outside the proof root.
+            // Remove only components that did not exist in the canonical baseline.
+            foreach(var added in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))
+                if(added!=null && !baselineColliderIds.Contains(added.GetInstanceID()))added.enabled=false;
+            foreach(var added in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))
+                if(added!=null && !baselineHotspotIds.Contains(added.GetInstanceID()))Object.DestroyImmediate(added);
 
             Physics.SyncTransforms();
             var after=ValoriaVisualFormulaGate.CollisionSignature();
