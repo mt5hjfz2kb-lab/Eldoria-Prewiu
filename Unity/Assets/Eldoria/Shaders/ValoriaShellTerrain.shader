@@ -3,7 +3,7 @@ Shader "Eldoria/Valoria Shell Terrain"
     Properties
     {
         _BackplateTex ("Backplate", 2D) = "white" {}
-        _ContactStrength ("Contact Strength", Range(0,1)) = 1
+        _ContactStrength ("Contact Strength", Range(0,1)) = 1\n        _BackplateTint ("Backplate Tint", Color) = (0.84,0.88,0.91,1)
     }
     SubShader
     {
@@ -22,7 +22,7 @@ Shader "Eldoria/Valoria Shell Terrain"
 
             TEXTURE2D(_BackplateTex);
             SAMPLER(sampler_BackplateTex);
-            float _ContactStrength;
+            float _ContactStrength;\n            float4 _BackplateTint;
 
             struct Attributes
             {
@@ -50,12 +50,12 @@ Shader "Eldoria/Valoria Shell Terrain"
             half4 frag(Varyings input) : SV_Target
             {
                 float2 uv=input.screenPos.xy/max(input.screenPos.w,1e-5);
-                half4 c=SAMPLE_TEXTURE2D(_BackplateTex,sampler_BackplateTex,uv);
+                half4 c=SAMPLE_TEXTURE2D(_BackplateTex,sampler_BackplateTex,uv);\n                c.rgb*=_BackplateTint.rgb;
                 float darken=saturate(input.contact*_ContactStrength);
-                c.rgb*=lerp(1.0,0.82,darken);
+                c.rgb*=lerp(1.0,0.90,darken);
                 // Slightly warm only the contact zone so the shell reads as grounded earth,
                 // while the outer shell remains pixel-matched to the photographed valley.
-                c.rgb*=lerp(float3(1,1,1),float3(1.025,1.0,.965),darken*.55);
+                c.rgb*=lerp(float3(1,1,1),float3(1.008,1.0,.988),darken*.55);
                 c.a=1;
                 return c;
             }
