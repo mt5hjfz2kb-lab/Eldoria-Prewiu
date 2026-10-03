@@ -59,6 +59,7 @@ namespace Eldoria.Presentation
             else BuildOuterWallBaseline(root);
             BuildSparseNature(root);
             BuildLifeCues(root);
+            if(DressingUpliftEnabled) BuildDressingProduction(root);
 
             DisableGameplay(root.gameObject);
         }
@@ -905,6 +906,73 @@ namespace Eldoria.Presentation
             Glow("Valoria · Flat Citadel · bastion warmth",new Vector3(0,3.7f,7.0f),Amber,1.25f,5.6f);
             Glow("Valoria · Flat Citadel · sawmill warmth",new Vector3(-5.3f,1.4f,-1.8f),Amber,1.0f,3.0f);
             Glow("Valoria · Flat Citadel · barracks warmth",new Vector3(5.3f,1.4f,-1.9f),Amber,.95f,2.8f);
+        }
+
+
+        static void BuildDressingProduction(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null)return;
+
+            // District-specific props: enough to communicate function and occupation,
+            // deliberately sparse so future progression still has room to densify.
+            if(art.Firewood!=null)
+            {
+                AddDressingPrefab(root,art.Firewood,"sawmill timber reserve",new Vector3(-7.55f,.12f,-3.05f),1.20f,.75f,18f,new Color(.90f,.82f,.68f,1f));
+                AddDressingPrefab(root,art.Firewood,"sawmill timber reserve 2",new Vector3(-4.85f,.12f,-2.80f),.92f,.62f,-12f,new Color(.86f,.78f,.64f,1f));
+                AddDressingPrefab(root,art.Firewood,"granary fuel stack",new Vector3(-4.05f,.12f,-4.75f),.76f,.52f,25f,new Color(.82f,.74f,.61f,1f));
+            }
+
+            if(art.SlavicBush!=null)
+            {
+                foreach(var spec in new[]{
+                    new Vector4(-8.90f, 1.10f, 18f, .88f),new Vector4(-8.55f, 6.30f, 74f,.82f),
+                    new Vector4( 8.85f, 1.35f,198f, .90f),new Vector4( 8.55f, 6.45f,236f,.80f),
+                    new Vector4(-3.85f, 8.70f, 32f, .72f),new Vector4( 3.95f, 8.62f,212f,.72f),
+                    new Vector4(-7.25f,-5.30f, 12f, .68f),new Vector4( 7.20f,-5.25f,192f,.68f)})
+                    AddDressingPrefab(root,art.SlavicBush,"perimeter shrub",new Vector3(spec.x,.08f,spec.y),spec.w,.58f,spec.z,new Color(.58f,.72f,.52f,1f));
+            }
+
+            if(art.SlavicBoulder!=null)
+            {
+                AddDressingPrefab(root,art.SlavicBoulder,"gate shoulder west",new Vector3(-5.10f,.05f,-6.72f),1.10f,.62f,28f,new Color(.73f,.72f,.67f,1f));
+                AddDressingPrefab(root,art.SlavicBoulder,"gate shoulder east",new Vector3( 5.20f,.05f,-6.68f),1.00f,.58f,208f,new Color(.72f,.71f,.66f,1f));
+            }
+
+            // Existing production tree prefabs frame the outside of the wall only.
+            var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
+            var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
+            var trees=new[]{
+                new Vector4(-12.15f,-3.80f, 12f,2.55f),new Vector4(-12.55f, 2.80f, 58f,2.85f),
+                new Vector4(-11.65f, 8.45f,106f,2.45f),new Vector4( 12.10f,-3.45f,192f,2.60f),
+                new Vector4( 12.45f, 3.10f,238f,2.80f),new Vector4( 11.55f, 8.50f,286f,2.45f),
+                new Vector4(-6.90f,11.30f, 30f,2.35f),new Vector4( 7.10f,11.45f,210f,2.35f)
+            };
+            for(int i=0;i<trees.Length;i++)
+            {
+                var s=trees[i];
+                AddDressingPrefab(root,(i%2==0?treeA:treeB),"perimeter tree",new Vector3(s.x,.02f,s.y),1.55f,s.w,s.z,new Color(.72f,.78f,.66f,1f));
+            }
+
+            // Restrained blue standards reinforce Valoria identity at functional districts.
+            AddDistrictBanner(root,"sawmill yard",new Vector3(-8.10f,1.38f,-.70f),.72f);
+            AddDistrictBanner(root,"barracks yard",new Vector3( 8.10f,1.45f,-.90f),.78f);
+
+            // Warm pools identify occupied buildings without turning the frame into a light-show.
+            Glow("Valoria · Flat Citadel Production · granary activity",new Vector3(-2.4f,1.25f,-4.25f),Amber,.42f,2.25f);
+            Glow("Valoria · Flat Citadel Production · gate warmth west",new Vector3(-1.25f,1.45f,-6.20f),Amber,.32f,1.85f);
+            Glow("Valoria · Flat Citadel Production · gate warmth east",new Vector3( 1.25f,1.45f,-6.20f),Amber,.32f,1.85f);
+        }
+
+        static void AddDressingPrefab(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw,Color tint)
+        {
+            if(source==null)return;
+            var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · "+role,source,ground,footprint,maxHeight,
+                Quaternion.Euler(0f,yaw,0f),tint);
+            if(go==null)return;
+            go.transform.SetParent(root,true);
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
         static void WallSegment(Transform root,Vector3 p,Vector3 size,float yaw)
