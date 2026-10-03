@@ -53,6 +53,7 @@ namespace Eldoria.Presentation
    BuildGround(root,shader);
    BuildLowFoliage(root);
    BuildLife(root,state);
+   BuildSmoke(root,state);
   }
   static Texture Map(Material m,out string name,params string[] props){foreach(var p in props)if(m.HasProperty(p)&&m.GetTexture(p)!=null){name=p;return m.GetTexture(p);}name="";return null;}
   static string Chain(Transform t){string s="";for(;t!=null;t=t.parent)s+="|"+t.name.ToLowerInvariant();return s;}
@@ -79,12 +80,15 @@ namespace Eldoria.Presentation
   static GameObject Part(Transform parent,string name,PrimitiveType type,Vector3 p,Vector3 size,Material m){var g=GameObject.CreatePrimitive(type);g.name=name;g.transform.SetParent(parent,false);g.transform.localPosition=p;g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=m;Object.DestroyImmediate(g.GetComponent<Collider>());return g;}
   static void HarmonizeGround(Transform parent)
   {
+   var shader=Shader.Find("Eldoria/Valoria Coherence");
    foreach(var r in parent.GetComponentsInChildren<Renderer>(true)){
-    if(!r.enabled||r.bounds.max.y>.26f)continue;string chain=Chain(r.transform);
-    bool soil=chain.Contains("buildable city plane")||chain.Contains("growth parcel")||chain.Contains("work parcel")||chain.Contains("work yard")||chain.Contains("training yard")||chain.Contains("granary yard")||chain.Contains("worn ")||chain.Contains("road shoulder")||chain.Contains("future plot");
-    if(!soil)continue;
-    var tiling=chain.Contains("city plane")?new Vector2(3.6f,3.6f):new Vector2(Mathf.Max(1,r.bounds.size.x*.65f),Mathf.Max(1,r.bounds.size.z*.65f));
-    var mat=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",new Color(.72f,.64f,.49f),tiling,.04f,.35f);if(mat!=null)r.sharedMaterial=mat;
+    if(!r.enabled||r.bounds.max.y>.30f)continue;string chain=Chain(r.transform);
+    bool soil=chain.Contains("plane")||chain.Contains("parcel")||chain.Contains("yard")||chain.Contains("worn ")||chain.Contains("shoulder")||chain.Contains("future plot");
+    bool road=chain.Contains("plaza")||chain.Contains("main street")||chain.Contains("branch street")||chain.Contains("road")&&!chain.Contains("shoulder");
+    if(!soil&&!road)continue;
+    var diffuse=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+(road?"cobble":"dirt")+"_diff");
+    if(diffuse==null)continue;var m=new Material(shader){name="Valoria shared world-space "+(road?"paving":"earth")};m.SetTexture("_BaseMap",diffuse);m.SetFloat("_Family",road?7:6);m.SetFloat("_BumpScale",0);r.sharedMaterial=m;
+    MaterialCount++;
    }
   }
   static void BuildLowFoliage(Transform root)
@@ -97,10 +101,21 @@ namespace Eldoria.Presentation
     float a=(float)random.NextDouble()*Mathf.PI*2;float rx=12.2f+(float)random.NextDouble()*2.7f,rz=11.4f+(float)random.NextDouble()*2.2f;
     var p=new Vector3(Mathf.Cos(a)*rx,0,1.4f+Mathf.Sin(a)*rz);
     if(Mathf.Abs(p.z-3.8f)<2||Mathf.Abs(p.x)<4.2f)continue;
-    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · authored low foliage",source,p,.65f+(float)random.NextDouble()*.6f,.62f,Quaternion.Euler(0,i*71,0),new Color(.67f,.78f,.58f));
+    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · authored low foliage",source,p,1.05f+(float)random.NextDouble()*.8f,.66f,Quaternion.Euler(0,i*71,0),new Color(.67f,.78f,.58f));
     if(go==null)continue;go.transform.SetParent(root,true);
     foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
     foreach(var lod in go.GetComponentsInChildren<LODGroup>(true))lod.ForceLOD(0);
+   }
+  }
+  static void BuildSmoke(Transform root,PlayerState state)
+  {
+   if(state.SawmillLevel==0)return;
+   var shader=Shader.Find("Eldoria/Valoria Ambient Smoke");if(shader==null)return;
+   var mat=new Material(shader);var camera=Camera.main;
+   for(int i=0;i<7;i++){
+    var g=Part(root,"Valoria · sawmill working smoke",PrimitiveType.Quad,new Vector3(-5.8f+i*.035f,2.7f+i*.16f,-1.75f),Vector3.one*(.15f+i*.027f),mat);
+    if(camera!=null)g.transform.rotation=camera.transform.rotation;
+    var motion=g.AddComponent<ValoriaSmokeMotionV1>();motion.Origin=g.transform.position;motion.Phase=i*.4f;
    }
   }
   static void BuildLife(Transform root,PlayerState state)
@@ -116,6 +131,11 @@ namespace Eldoria.Presentation
     var motion=person.gameObject.AddComponent<ValoriaAmbientMotionV1>();motion.Origin=points[i];motion.Phase=i;motion.Range=i<4?.15f:.32f;PopulationCount++;
    }
   }
+ }
+ public sealed class ValoriaSmokeMotionV1:MonoBehaviour
+ {
+  public Vector3 Origin;public float Phase;
+  void Update(){float t=Mathf.Repeat(Time.time*.14f+Phase,1);transform.position=Origin+new Vector3(t*.2f,t*.35f,0);if(Camera.main!=null)transform.rotation=Camera.main.transform.rotation;}
  }
  public sealed class ValoriaAmbientMotionV1:MonoBehaviour
  {

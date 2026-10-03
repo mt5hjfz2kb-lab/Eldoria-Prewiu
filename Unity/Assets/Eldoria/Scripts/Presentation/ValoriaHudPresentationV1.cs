@@ -11,7 +11,7 @@ namespace Eldoria.Presentation
   {
    var safe=transform.Find("Safe area") as RectTransform;if(safe==null)return;
    var scaler=GetComponent<CanvasScaler>();scaler.referenceResolution=new Vector2(390,844);scaler.matchWidthOrHeight=height>width?0:1;
-   foreach(var image in GetComponentsInChildren<Image>(true))image.raycastTarget=image.GetComponent<Button>()!=null;
+   foreach(var image in GetComponentsInChildren<Image>(true))image.raycastTarget=image.GetComponent<Button>()!=null||image.name.Contains("panel")||image.name.Contains("dock")||image.name.Contains("topbar")||image.name.Contains("navigation");
    foreach(var text in GetComponentsInChildren<Text>(true)){
     text.raycastTarget=false;text.fontSize=Mathf.Max(text.fontSize,11);text.fontStyle=FontStyle.Normal;
     text.horizontalOverflow=HorizontalWrapMode.Wrap;text.verticalOverflow=VerticalWrapMode.Truncate;

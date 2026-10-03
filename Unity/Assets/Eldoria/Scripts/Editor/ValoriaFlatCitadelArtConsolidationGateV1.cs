@@ -244,7 +244,7 @@ namespace Eldoria.EditorTools
         {
             c.transform.position=p;c.transform.LookAt(t);c.orthographic=true;c.orthographicSize=size;
             c.clearFlags=CameraClearFlags.SolidColor;c.backgroundColor=new Color(.33f,.39f,.42f,1f);
-            var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32);var prev=RenderTexture.active;
+            var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};var prev=RenderTexture.active;
             try
             {
                 c.targetTexture=rt;

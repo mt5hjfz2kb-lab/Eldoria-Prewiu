@@ -9,6 +9,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAssetCoherenceV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs'
       - 'Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader'
+      - 'Unity/Assets/Eldoria/Shaders/ValoriaAmbientSmoke.shader'
       - 'docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md'
       - 'docs/VALORIA_PARCEL_RESERVATION_MAP.md'
   workflow_dispatch:
@@ -54,7 +55,7 @@ jobs:
           $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-ArtConsolidation/1.0'}
-          foreach($asset in @(@{id='dirt';prefix='dirt'},@{id='stone_block_wall';prefix='stone'},@{id='rock_boulder_dry';prefix='rock'})){
+          foreach($asset in @(@{id='dirt';prefix='dirt'},@{id='cobblestone_floor_001';prefix='cobble'},@{id='stone_block_wall';prefix='stone'},@{id='rock_boulder_dry';prefix='rock'})){
             $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
             $json=$payload | ConvertTo-Json -Depth 50
             $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique

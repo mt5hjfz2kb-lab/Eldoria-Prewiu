@@ -43,7 +43,7 @@ Shader "Eldoria/Valoria Coherence"
     half roof=smoothstep(.46,.66,h)*smoothstep(.32,.62,abs(i.normalWS.y));
     c=lerp(c,half3(.24,.32,.39)*(lum*1.35+.28),roof*.64);
    }
-   if(_Family>4.5){c=lerp(lum.xxx,tex,.28)*1.10*half3(1.10,1.07,.98);}
+   if(_Family>4.5 && _Family<5.5){c=lerp(lum.xxx,tex,.28)*1.10*half3(1.10,1.07,.98);}
    if(_Family>.5 && _Family<1.5){
     c=lerp(lum.xxx,tex,.85)*.89;
     float rock=1-smoothstep(.20,.29,h);
@@ -56,6 +56,12 @@ Shader "Eldoria/Valoria Coherence"
     c=(lum*.75+.18)*i.color.rgb;
     float road=(1-smoothstep(1.2,2.3,abs(i.positionWS.x)))*(1-smoothstep(-7,-5,i.positionWS.z));
     c=lerp(c,half3(.36,.31,.23)*(.65+lum),road);
+   }
+   if(_Family>5.5){
+    half3 groundTex=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.positionWS.xz*.62).rgb;
+    half gl=dot(groundTex,half3(.2126,.7152,.0722));
+    c=_Family<6.5?(gl*.55+.19)*half3(.79,.70,.51):lerp(gl.xxx,groundTex,.30)*half3(.91,.89,.79);
+    n=half3(0,1,0);
    }
    c*=_BaseColor.rgb;
    InputData d=(InputData)0;d.positionWS=i.positionWS;d.normalWS=n;d.viewDirectionWS=GetWorldSpaceNormalizeViewDir(i.positionWS);d.shadowCoord=TransformWorldToShadowCoord(i.positionWS);d.bakedGI=SampleSH(n);d.normalizedScreenSpaceUV=GetNormalizedScreenSpaceUV(i.positionCS);d.shadowMask=half4(1,1,1,1);
