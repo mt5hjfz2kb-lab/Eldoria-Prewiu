@@ -214,9 +214,7 @@ async function connectOwnerBrowser() {
     return await withTimeout(chromium.connectOverCDP(endpoint), connectTimeoutMs, 'CDP connection');
   } catch (initialError) {
     const recovery = request.browser_recovery;
-    const initialMessage = String(initialError?.message || initialError);
-    const recoverableTransportFailure = /ECONNREFUSED|CDP connection timed out|connectOverCDP.*timed out/i.test(initialMessage);
-    if (!recovery?.enabled || !recoverableTransportFailure) throw initialError;
+    if (!recovery?.enabled || !/ECONNREFUSED/.test(String(initialError?.message || initialError))) throw initialError;
     if (process.platform !== 'win32') throw new Error('Owner browser recovery requires the Windows runner.');
     const target = new URL(endpoint);
     if (target.protocol !== 'http:' || target.hostname !== '127.0.0.1' || target.port !== '9222') {
@@ -244,7 +242,7 @@ async function connectOwnerBrowser() {
     while (Date.now() < deadline) {
       await sleep(1000);
       try {
-        const connected = await chromium.connectOverCDP(endpoint, { timeout: Math.min(10000, connectTimeoutMs) });
+        const connected = await chromium.connectOverCDP(endpoint, { timeout: 3000 });
         browserRecovery.ready = true;
         return connected;
       } catch (error) { lastError = error; }
