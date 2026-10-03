@@ -59,12 +59,8 @@ namespace Eldoria.Presentation
                     ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.38f,.36f,1f),"stone",new Vector2(.95f,.95f),.98f);
             }
 
-            var support=new GameObject("Valoria · Compact Stair · carved rock support");
-            support.transform.SetParent(root,false);
-            var smf=support.AddComponent<MeshFilter>();
-            var smr=support.AddComponent<MeshRenderer>();
-            smf.sharedMesh=BuildSupportMesh();
-            smr.sharedMaterial=rock;
+            // v25: no large monolithic support. The stair is presentation-only and now
+            // sits directly against the fortress cliff; existing terrain/rock owns the mass.
         }
 
         static Mesh BuildSupportMesh()
