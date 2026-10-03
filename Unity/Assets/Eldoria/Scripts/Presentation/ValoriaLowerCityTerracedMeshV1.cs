@@ -57,7 +57,9 @@ namespace Eldoria.Presentation
             // These instances remain presentation-only and own no gameplay geometry.
             BuildCertifiedSubstrate(root);
 
-            DressEdges(root);
+            // v25: legacy edge dressing produced small detached pillars/rocks at the
+            // official camera. The certified substrate below now owns the complete
+            // lower approach silhouette, so do not layer those old fragments on top.
         }
 
         static void BuildCertifiedSubstrate(Transform root)
@@ -67,8 +69,13 @@ namespace Eldoria.Presentation
             // v23: the three front supports in v22 still read as detached pillars.
             // Use only two compact shelves tucked under the lower buildings so the central
             // stair visually reaches the fortress mass without a separate foreground island.
-            AddCertifiedTerrain(root,"SteppedRockTerrace","west embedded shelf",new Vector3(-2.70f,0f,1.72f),.72f,3.05f,34f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","east embedded shelf",new Vector3(2.70f,0f,1.68f),.72f,3.05f,214f);
+            // v25: form one continuous geological approach with overlapping certified
+            // terraces instead of a procedural stair support + detached side shelves.
+            AddCertifiedTerrain(root,"SteppedRockTerrace","lower spine",new Vector3(0f,0f,.38f),.28f,2.75f,8f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","middle spine",new Vector3(0f,0f,1.68f),.82f,3.15f,188f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","upper spine",new Vector3(0f,0f,3.05f),1.34f,3.35f,12f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","west embedded shelf",new Vector3(-2.35f,0f,1.82f),.80f,3.05f,34f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","east embedded shelf",new Vector3(2.35f,0f,1.78f),.80f,3.05f,214f);
         }
 
         static void AddCertifiedTerrain(Transform root,string resource,string role,Vector3 anchor,float topY,float span,float yaw)
