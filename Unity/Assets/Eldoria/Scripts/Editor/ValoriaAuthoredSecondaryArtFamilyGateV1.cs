@@ -30,20 +30,25 @@ namespace Eldoria.EditorTools
    var p=new Vector3(18.2f,18.4f,-26.8f);
    var t=new Vector3(0f,1.55f,1.55f);
 
-   CaptureVariant(state,p,t,"baseline",null,null,null);
+   CaptureVariant(state,p,t,"baseline",null,null,null,false);
    CaptureVariant(state,p,t,"authored-complete",
      "Valoria/AuthoredSecondaryCandidates/Valoria_Authored_Aserradero_v1",
      "Valoria/AuthoredSecondaryCandidates/Valoria_Authored_Wall_v1",
-     "Valoria/AuthoredSecondaryCandidates/Valoria_Authored_Gate_v1");
+     "Valoria/AuthoredSecondaryCandidates/Valoria_Authored_Gate_v1",false);
    CaptureVariant(state,p,t,"source-preserving",
      "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_Aserradero_v1",
      "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_WallSupport_v1",
-     "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_GateSupport_v1");
+     "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_GateSupport_v1",false);
+
+   CaptureVariant(state,p,t,"source-atlas-v2",
+     "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_Aserradero_v1",
+     "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_SourceWall_v2",
+     "Valoria/AuthoredSecondaryCandidates/Valoria_ASF_SourceGate_v2",true);
 
    File.WriteAllText(Folder+"/evidence.json",
     "{\n"+
     "  \"baseline\": \"VQB final 7a564bc\",\n"+
-    "  \"variants\": [\"authored-complete\",\"source-preserving\"],\n"+
+    "  \"variants\": [\"authored-complete\",\"source-preserving\",\"source-atlas-v2\"],\n"+
     "  \"gameplay_signature_preserved\": true,\n"+
     "  \"macro_composition_changed\": false,\n"+
     "  \"f1_envelope_preserved\": true,\n"+
@@ -54,7 +59,7 @@ namespace Eldoria.EditorTools
    EditorApplication.Exit(0);
   }
 
-  static void CaptureVariant(PlayerState state,Vector3 p,Vector3 t,string tag,string sawmillPath,string wallPath,string gatePath)
+  static void CaptureVariant(PlayerState state,Vector3 p,Vector3 t,string tag,string sawmillPath,string wallPath,string gatePath,bool useAtlas)
   {
    var s=CreateScene(state);
    var sig=ValoriaVisualFormulaGate.CollisionSignature();
@@ -66,8 +71,8 @@ namespace Eldoria.EditorTools
 
    if(!string.IsNullOrEmpty(sawmillPath))
    {
-    ReplaceSawmill(s.root.transform,sawmillPath);
-    ReplaceFrontSupport(s.root.transform,wallPath,gatePath);
+    ReplaceSawmill(s.root.transform,sawmillPath,useAtlas);
+    ReplaceFrontSupport(s.root.transform,wallPath,gatePath,useAtlas);
    }
 
    RemoveAddedGameplay(s.colliderIds,s.hotspotIds);
@@ -86,7 +91,7 @@ namespace Eldoria.EditorTools
    ValoriaFlatCitadelProductionUpliftV1.DressingUpliftEnabled=true;
   }
 
-  static void ReplaceSawmill(Transform root,string resourcePath)
+  static void ReplaceSawmill(Transform root,string resourcePath,bool useAtlas)
   {
    GameObject old=GameObject.Find("Valoria · Flat Citadel Production · Aserradero");
    if(old==null)
@@ -101,10 +106,10 @@ namespace Eldoria.EditorTools
    var go=Object.Instantiate(source);go.name="Valoria · Authored Secondary · Aserradero";
    go.transform.rotation=Quaternion.Euler(0f,-5f,0f);
    Fit(go,new Vector3(-5.95f,.13f,-1.55f),4.45f,3.65f);
-   go.transform.SetParent(root,true);AdaptMaterials(go);StripGameplay(go);
+   go.transform.SetParent(root,true);AdaptMaterials(go,useAtlas);StripGameplay(go);
   }
 
-  static void ReplaceFrontSupport(Transform root,string wallPath,string gatePath)
+  static void ReplaceFrontSupport(Transform root,string wallPath,string gatePath,bool useAtlas)
   {
    foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
    {
@@ -118,25 +123,29 @@ namespace Eldoria.EditorTools
    var gate=Resources.Load<GameObject>(gatePath);
    if(wall==null||gate==null)throw new Exception("Authored wall/gate support missing.");
 
-   Place(root,wall,"wall west",new Vector3(-4.72f,.18f,-6.28f),1.90f,1.34f,0f);
-   Place(root,wall,"wall east",new Vector3(4.18f,.18f,-6.28f),1.90f,1.34f,180f);
-   Place(root,gate,"gate support",new Vector3(0f,.18f,-6.18f),3.55f,2.65f,0f);
+   Place(root,wall,"wall west",new Vector3(-4.72f,.18f,-6.28f),1.90f,1.34f,0f,useAtlas);\n   Place(root,wall,"wall east",new Vector3(4.18f,.18f,-6.28f),1.90f,1.34f,180f,useAtlas);\n   Place(root,gate,"gate support",new Vector3(0f,.18f,-6.18f),3.55f,2.65f,0f,useAtlas);
   }
 
-  static void Place(Transform root,GameObject src,string role,Vector3 ground,float span,float maxHeight,float yaw)
+  static void Place(Transform root,GameObject src,string role,Vector3 ground,float span,float maxHeight,float yaw,bool useAtlas)
   {
    var go=Object.Instantiate(src);go.name="Valoria · Authored Secondary · "+role;
    go.transform.rotation=Quaternion.Euler(0f,yaw,0f);Fit(go,ground,span,maxHeight);
-   go.transform.SetParent(root,true);AdaptMaterials(go);StripGameplay(go);
+   go.transform.SetParent(root,true);AdaptMaterials(go,useAtlas);StripGameplay(go);
   }
 
-  static void AdaptMaterials(GameObject go)
+  static void AdaptMaterials(GameObject go,bool useAtlas)
   {
    var shader=Shader.Find("Eldoria/Valoria Coherence");
    if(shader==null)throw new Exception("Valoria coherence shader missing.");
    var rock=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/rock_diff");
    var stone=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/stone_diff");
    var dirt=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/dirt_diff");
+   var atlasStone=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Stone_diff"):null;
+   var atlasStoneN=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Stone_normal"):null;
+   var atlasTimber=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Timber_diff"):null;
+   var atlasTimberN=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Timber_normal"):null;
+   var atlasRoof=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Roof_diff"):null;
+   var atlasRoofN=useAtlas?Resources.Load<Texture2D>("Valoria/AuthoredSecondaryCandidates/Materials/ASF_Roof_normal"):null;
    foreach(var r in go.GetComponentsInChildren<Renderer>(true))
    {
     var srcs=r.sharedMaterials;var dst=new Material[srcs.Length];
@@ -153,7 +162,12 @@ namespace Eldoria.EditorTools
      bool roofName=name.Contains("roof")||name.Contains("slate");
      bool timberName=name.Contains("timber")||name.Contains("wood");
      bool stoneName=name.Contains("stone")||name.Contains("foundation")||name.Contains("infill")||name.Contains("plaster")||name.Contains("pier")||name.Contains("lintel");
-     if(baseMap==null)baseMap=roofName?(stone!=null?stone:rock):(timberName?(dirt!=null?dirt:rock):(stone!=null?stone:rock));
+     if(useAtlas){
+      if(roofName){baseMap=atlasRoof??stone??rock;normal=atlasRoofN;}
+      else if(timberName){baseMap=atlasTimber??dirt??rock;normal=atlasTimberN;}
+      else {baseMap=atlasStone??stone??rock;normal=atlasStoneN;}
+      baseProp="";
+     } else if(baseMap==null)baseMap=roofName?(stone!=null?stone:rock):(timberName?(dirt!=null?dirt:rock):(stone!=null?stone:rock));
 
      var m=new Material(shader){name="Valoria ASF · "+src.name};
      if(baseMap!=null)m.SetTexture("_BaseMap",baseMap);
@@ -166,9 +180,9 @@ namespace Eldoria.EditorTools
      m.SetFloat("_Family",0f);m.SetFloat("_Ground",0f);m.SetFloat("_Smoothness",.055f);
      m.SetFloat("_Bottom",r.bounds.min.y);m.SetFloat("_Height",Mathf.Max(.01f,r.bounds.size.y));
      if(rock!=null)m.SetTexture("_RockMap",rock);
-     if(roofName)m.SetColor("_BaseColor",new Color(.48f,.58f,.66f,1f));
-     else if(timberName)m.SetColor("_BaseColor",new Color(.72f,.56f,.38f,1f));
-     else if(stoneName)m.SetColor("_BaseColor",new Color(.92f,.89f,.80f,1f));
+     if(roofName)m.SetColor("_BaseColor",useAtlas?new Color(.72f,.82f,.88f,1f):new Color(.48f,.58f,.66f,1f));
+     else if(timberName)m.SetColor("_BaseColor",useAtlas?new Color(.90f,.78f,.62f,1f):new Color(.72f,.56f,.38f,1f));
+     else if(stoneName)m.SetColor("_BaseColor",useAtlas?new Color(.98f,.96f,.90f,1f):new Color(.92f,.89f,.80f,1f));
      else m.SetColor("_BaseColor",Color.white);
      dst[i]=m;
     }
