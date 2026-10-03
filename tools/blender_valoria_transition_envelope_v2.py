@@ -27,7 +27,7 @@ def unity_to_blender(v):
 
 def import_fbx(path,name):
     before=set(bpy.context.scene.objects)
-    bpy.ops.import_scene.fbx(filepath=path)
+    bpy.ops.wm.fbx_import(filepath=path)
     imported=[o for o in bpy.context.scene.objects if o not in before and o.type=='MESH']
     if not imported:
         raise RuntimeError("No mesh imported from "+path)
