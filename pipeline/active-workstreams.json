@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-03T22:49:36.016Z",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "valoria-tripo-selective-replacement-proof-v1-resume",
       "title": "Valoria Tripo Selective Replacement Proof v1 — resume",
@@ -19,14 +20,24 @@
         "windows-runner-heavy",
         "valoria-aserradero-proof"
       ],
-      "status": "active",
+      "status": "blocked",
       "claimed_at": "2026-10-03T22:53:00Z",
       "base_main_sha": "f93ff437ec28e688f48b14702097db8d418d0640",
       "dependency": "Resume only the isolated Aserradero proof. Zero-spend staging/cost check first; no generation or credit spend without fresh visible-cost approval.",
-      "note": "Bounded zero-spend transport recovery may extend existing dedicated-profile browser recovery to CDP timeouts; no browser kill, profile substitution, security changes, generation or spend."
-    }
-  ],
-  "history": [
+      "note": "Bounded zero-spend transport recovery may extend existing dedicated-profile browser recovery to CDP timeouts; no browser kill, profile substitution, security changes, generation or spend.",
+      "completed_at": "2026-10-03T22:59:30Z",
+      "result_commit": "ab097b3768db6b470c59335c5a2c466303009675",
+      "run_ids": [
+        37160022369,
+        37160157487
+      ],
+      "artifact_ids": [
+        11287686111,
+        11287516829
+      ],
+      "result": "TECH BLOCKED / VISUAL NOT EVALUATED / NOT PROMOTED. Exact input/preflight healthy; dedicated Tripo Edge CDP websocket reachable but Playwright cannot initialize a usable CDP session. 0 generations / 0 credits.",
+      "next": "Require a healthy authenticated Tripo browser session/profile reachable by the canonical bridge before another zero-spend staging attempt. Do not rerun blindly or spend credits."
+    },
     {
       "id": "valoria-tripo-selective-replacement-proof-v1",
       "title": "Valoria Tripo Selective Replacement Proof v1",
