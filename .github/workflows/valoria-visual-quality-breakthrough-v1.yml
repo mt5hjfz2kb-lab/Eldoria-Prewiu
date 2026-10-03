@@ -5,6 +5,7 @@ on:
     branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
     paths:
       - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
       - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
       - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
@@ -14,6 +15,7 @@ on:
     branches: [main]
     paths:
       - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
       - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
       - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
