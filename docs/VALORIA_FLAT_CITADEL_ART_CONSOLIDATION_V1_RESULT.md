@@ -12,12 +12,12 @@ Source closure evidence:
 - verdict **TECH PASS / VISUAL FAIL**
 - Flat Citadel macro direction locked
 
-Final Art Consolidation implementation HEAD: `676ff0d697de23d7544a2d77b0522806b0fd6fa2`
+Final Art Consolidation implementation HEAD: `bd3c59467410065680aae36677e9015349d1c0a7`
 
 Final implementation validation:
-- run **37140939404 — SUCCESS**
-- artifact **11280003633**
-- artifact digest: `sha256:f35fc40e73c9ee6142a6c19dd8f8ecc442a7f54b8aa78f71310208f598d7c028`
+- run **37141270379 — SUCCESS**
+- artifact **11280437080**
+- artifact digest: `sha256:cec9608f7d14562dbcbe4635911f22cb54fc26fe2dff568a81a509245f326ba3`
 
 Toolchain planner:
 - request `valoria-flat-citadel-art-consolidation-v1`
@@ -100,18 +100,19 @@ Applied result:
 
 Production Uplift wall renderers are hidden visually, never removed from gameplay.
 
-New visual wall:
-- continuous low defensive masonry base;
-- authored Stone_Wall / Stone_Tower / Stone_Gate modules above it;
-- fewer tower events;
-- stronger main gate hierarchy;
-- low rear mass;
-- explicit west/east future expansion gates;
+Final visual wall:
+- one continuous low masonry ring with a restrained crenellation cap;
+- authored Stone_Gate / Stone_Tower pieces reserved for hero events rather than every curtain span;
+- one main gatehouse with twin towers;
+- explicit west/east XW/XE future expansion gates;
+- only two rear watchtowers outside the main gate;
 - local earth/moss transitions.
 
-**Visual result:** clear improvement over Production Uplift. The wall no longer dominates the whole city or repeats a tower at every rhythm. At 12/9 it reads more as a defensive ring with hierarchy.
+A late in-scope simplification reduced the authored wall hero-module count from the earlier 35-module assembly to **11**. Real run 37141270379 shows a materially cleaner and more continuous defensive ring, with fewer large repeated tower assets.
 
-Remaining weakness: the low continuity band is still simpler than the hero modules and some authored pieces retain visibly modular silhouette boundaries.
+**Visual result:** clear improvement over Production Uplift. The wall no longer dominates the whole city or repeats a full tower/curtain kit at every rhythm.
+
+Remaining weakness: the continuous crenellation cadence is itself visibly regular, and the low masonry ring is still simpler than the best Hero Bastion stonework. This is preferable to the heavier 35-module variant, but it is not benchmark-quality final wall art.
 
 ### 2. Hero Bastion → city
 
@@ -130,7 +131,7 @@ Remaining failure: the rock pedestal is intrinsic to the current Hero Bastion so
 
 ### 3. Material language
 
-175 renderers are reported as consolidated in the final evidence.
+103 renderers are reported as consolidated in the final evidence after the final wall simplification removed redundant authored curtain modules.
 
 Real capture shows:
 - wall and retaining stone now occupy a closer grey/warm-neutral value family;
@@ -194,14 +195,14 @@ Important limitation: the current Unity HUD contract is only the Bastion I-II sl
 
 ## Final technical evidence
 
-Final `evidence.json` from artifact **11280003633**:
+Final `evidence.json` from artifact **11280437080**:
 
 - gameplay signature preserved: **true**
 - macro composition changed: **false**
 - hidden Production Uplift wall renderers: **78**
-- consolidated wall modules: **35**
+- consolidated wall hero modules: **11**
 - visible reserved Arc-I parcels: **3**
-- material renderers consolidated: **175**
+- material renderers consolidated: **103**
 - Bastion interface modules: **8**
 - confirmed future Arc-I plots: **Cantera / Forja / Hospital**
 - meta systems without default world plot: **Códice / Relicario**
@@ -229,7 +230,7 @@ Against Production Uplift v1:
 1. Hero Bastion fused rock pedestal still reads as a separate geological base.
 2. Functional/support buildings do not yet share one convincing art-family standard.
 3. City perimeter / natural surround is too empty and flat.
-4. Wall continuity base is visually simpler than the authored hero pieces.
+4. The simplified continuous wall improves hierarchy, but its regular crenellation cadence still reads as procedural/modular.
 5. Current Unity HUD is far below the approved reference in visual density, hierarchy and finish.
 6. No convincing NPC/population layer exists yet.
 7. Lighting/material depth remains weaker than the benchmark.
@@ -308,3 +309,18 @@ Do **not** reopen:
 - photographic foreground;
 - voxel/fused terrain;
 - density used to hide asset-quality problems.
+
+
+## Closure reconciliation
+
+A wall-simplification commit (`bd3c59467410065680aae36677e9015349d1c0a7`) landed inside this workstream immediately before the first closure bookkeeping completed. The workstream was briefly reopened only to reconcile documentation with the real branch HEAD.
+
+The late variant was not accepted blindly:
+- run **37141270379** completed successfully;
+- artifact **11280437080** was inspected;
+- gameplay signature remains preserved;
+- the macrocomposition remains unchanged;
+- the wall hero-module count falls to 11;
+- the continuous masonry/crenellation ring is visually more coherent than the previous fragmented 35-module wall, although its repeated merlon rhythm remains a visible prototype-quality defect.
+
+This reconciliation does not change the final verdict: **TECH PASS / VISUAL FAIL**.
