@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "id": "aserradero",
+      "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "mesh_objects": [
+        {
+          "name": "tripo_node_c6c52015-155b-4e0e-bfda-8cb0f25dda9f",
+          "triangles": 49800,
+          "vertices": 55752,
+          "material_slots": [
+            "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f"
+          ],
+          "connected_components": 5100,
+          "bounds": {
+            "min": [
+              -0.49075615406036377,
+              -0.45015549659729004,
+              -0.0004004687652923167
+            ],
+            "max": [
+              0.48949700593948364,
+              0.4525867700576782,
+              0.7552691102027893
+            ],
+            "size": [
+              0.9802531599998474,
+              0.9027422666549683,
+              0.7556695789680816
+            ]
+          }
+        }
+      ],
+      "triangle_count": 49800,
+      "vertex_count": 55752,
+      "materials": {
+        "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f#0": {
+          "name": "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f",
+          "triangles": 49800,
+          "objects": [
+            "tripo_node_c6c52015-155b-4e0e-bfda-8cb0f25dda9f"
+          ],
+          "bounds": [
+            {
+              "min": [
+                -0.49075615406036377,
+                -0.45015549659729004,
+                -0.0004004687652923167
+              ],
+              "max": [
+                0.48949700593948364,
+                0.4525867700576782,
+                0.7552691102027893
+              ],
+              "size": [
+                0.9802531599998474,
+                0.9027422666549683,
+                0.7556695789680816
+              ]
+            }
+          ],
+          "nodes": [
+            "BSDF_PRINCIPLED",
+            "TEX_IMAGE",
+            "TEX_IMAGE",
+            "NORMAL_MAP",
+            "TEX_IMAGE"
+          ]
+        }
+      },
+      "images": [
+        {
+          "name": "Valoria_Aserradero_AP2_v1_basecolor",
+          "size": [
+            2048,
+            2048
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Aserradero_AP2_v1_rm",
+          "size": [
+            1024,
+            1024
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Aserradero_AP2_v1_normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "filepath": ""
+        }
+      ],
+      "connected_components": 5100,
+      "semantic_surface_separation_possible": false,
+      "meaningful_material_count": 1
+    },
+    {
+      "id": "cuartel",
+      "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "mesh_objects": [
+        {
+          "name": "tripo_node_a0ed612d-5a6f-42ae-9d66-9558557c70ab",
+          "triangles": 49800,
+          "vertices": 61349,
+          "material_slots": [
+            "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+          ],
+          "connected_components": 7043,
+          "bounds": {
+            "min": [
+              -0.48909178376197815,
+              -0.3408014178276062,
+              0.0005764826782979071
+            ],
+            "max": [
+              0.48988693952560425,
+              0.341184139251709,
+              0.761139988899231
+            ],
+            "size": [
+              0.9789787232875824,
+              0.6819855570793152,
+              0.760563506220933
+            ]
+          }
+        }
+      ],
+      "triangle_count": 49800,
+      "vertex_count": 61349,
+      "materials": {
+        "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab#0": {
+          "name": "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab",
+          "triangles": 49800,
+          "objects": [
+            "tripo_node_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+          ],
+          "bounds": [
+            {
+              "min": [
+                -0.48909178376197815,
+                -0.3408014178276062,
+                0.0005764826782979071
+              ],
+              "max": [
+                0.48988693952560425,
+                0.341184139251709,
+                0.761139988899231
+              ],
+              "size": [
+                0.9789787232875824,
+                0.6819855570793152,
+                0.760563506220933
+              ]
+            }
+          ],
+          "nodes": [
+            "BSDF_PRINCIPLED",
+            "TEX_IMAGE",
+            "TEX_IMAGE",
+            "NORMAL_MAP",
+            "TEX_IMAGE"
+          ]
+        }
+      },
+      "images": [
+        {
+          "name": "Valoria_Cuartel_AP2_v1_basecolor",
+          "size": [
+            2048,
+            2048
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Cuartel_AP2_v1_rm",
+          "size": [
+            1024,
+            1024
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Cuartel_AP2_v1_normal",
+          "size": [
+            1024,
+            1024
+          ],
+          "filepath": ""
+        }
+      ],
+      "connected_components": 7043,
+      "semantic_surface_separation_possible": false,
+      "meaningful_material_count": 1
+    },
+    {
+      "id": "granero",
+      "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "mesh_objects": [
+        {
+          "name": "tripo_node_a91b5c26-b4a3-432a-afe2-120a3e279bee",
+          "triangles": 49800,
+          "vertices": 55232,
+          "material_slots": [
+            "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+          ],
+          "connected_components": 4981,
+          "bounds": {
+            "min": [
+              -0.48949941992759705,
+              -0.48783785104751587,
+              -0.00036863889545202255
+            ],
+            "max": [
+              0.4899218678474426,
+              0.4890143871307373,
+              0.5995303988456726
+            ],
+            "size": [
+              0.9794212877750397,
+              0.9768522381782532,
+              0.5998990377411246
+            ]
+          }
+        }
+      ],
+      "triangle_count": 49800,
+      "vertex_count": 55232,
+      "materials": {
+        "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee#0": {
+          "name": "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee",
+          "triangles": 49800,
+          "objects": [
+            "tripo_node_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+          ],
+          "bounds": [
+            {
+              "min": [
+                -0.48949941992759705,
+                -0.48783785104751587,
+                -0.00036863889545202255
+              ],
+              "max": [
+                0.4899218678474426,
+                0.4890143871307373,
+                0.5995303988456726
+              ],
+              "size": [
+                0.9794212877750397,
+                0.9768522381782532,
+                0.5998990377411246
+              ]
+            }
+          ],
+          "nodes": [
+            "BSDF_PRINCIPLED",
+            "TEX_IMAGE",
+            "TEX_IMAGE",
+            "NORMAL_MAP",
+            "TEX_IMAGE"
+          ]
+        }
+      },
+      "images": [
+        {
+          "name": "Valoria_Granero_BIII_v1_basecolor",
+          "size": [
+            2048,
+            2048
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Granero_BIII_v1_rm",
+          "size": [
+            1024,
+            1024
+          ],
+          "filepath": ""
+        },
+        {
+          "name": "Valoria_Granero_BIII_v1_normal",
+          "size": [
+            2048,
+            2048
+          ],
+          "filepath": ""
+        }
+      ],
+      "connected_components": 4981,
+      "semantic_surface_separation_possible": false,
+      "meaningful_material_count": 1
+    }
+  ]
+}
