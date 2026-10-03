@@ -150,6 +150,10 @@ def export_all(path):
 reset()
 hero=import_single(SOURCES["hero"],"Hero_Source_Retained")
 hero_tex=texture_report(hero); hb=mesh_bounds(hero); z0=hb["min"][2]; hh=hb["size"][2]; hero_base=tri_count([hero])
+# Import the certified rich wall only as a material donor for the new rock->masonry transition.
+# It is removed before Hero export, so Hero geometry remains source mesh + authored transition only.
+wall_donor=import_single(SOURCES["wall"],"Hero_Wall_Material_Donor")
+wall_donor_mat=wall_donor.data.materials[0]
 removed_groups,removed_tris=remove_components(hero,lambda g:g["bounds"]["max"][2] <= z0+hh*.14)
 if not hero.data.vertices: raise RuntimeError("Hero surgery removed entire source")
 hero_low=clone_tinted(hero.data.materials[0],"Hero_Lower_Integrated",(0.88,0.84,0.76),1.05); hero.data.materials.append(hero_low)
@@ -157,12 +161,16 @@ for g in component_groups(hero):
     if g["bounds"]["center"][2] < z0+hh*.30:
         for fi in g["faces"]:
             if fi<len(hero.data.polygons):hero.data.polygons[fi].material_index=1
-masonry=clone_tinted(hero.data.materials[0],"Shared_Warm_Masonry",(0.90,0.84,0.72),1.05)
-foundation=clone_tinted(hero.data.materials[0],"Shared_Dark_Foundation",(0.58,0.54,0.48),1.10)
-add_box("Hero_Retaining_Foundation",(0,-.29,z0+.045),(.90,.18,.09),foundation,.010)
-add_box("Hero_Retaining_Upper",(0,-.25,z0+.115),(.76,.22,.07),masonry,.009)
-for x in (-.34,-.17,.17,.34): add_box("Hero_Buttress",(x,-.315,z0+.10),(.055,.16,.20),masonry,.007)
-for i in range(4): add_box("Hero_Stair_%d"%i,(0,-.39+i*.045,z0+.025+i*.026),(.25,.12,.05),masonry,.006)
+masonry=clone_tinted(wall_donor_mat,"Shared_Warm_Masonry",(0.94,0.90,0.82),1.03)
+foundation=clone_tinted(wall_donor_mat,"Shared_Dark_Foundation",(0.72,0.68,0.60),1.08)
+# Keep the replacement architectural band shallow: it occupies only the removed low source zone
+# and must not become a foreground wall hiding the Hero silhouette.
+add_box("Hero_Retaining_Foundation",(0,-.23,z0+.022),(.62,.10,.044),foundation,.006)
+add_box("Hero_Retaining_Upper",(0,-.205,z0+.064),(.54,.105,.040),masonry,.005)
+for x in (-.24,-.08,.08,.24): add_box("Hero_Buttress",(x,-.245,z0+.065),(.030,.085,.105),masonry,.004)
+for i in range(4): add_box("Hero_Stair_%d"%i,(0,-.285+i*.026,z0+.010+i*.014),(.16,.070,.026),masonry,.003)
+# Donor geometry is not part of the Hero candidate.
+bpy.data.objects.remove(wall_donor,do_unlink=True)
 hero_path=os.path.join(OUT,"SSRA_HeroBastion_v1.glb"); hero_objs=export_all(hero_path); hero_out_tris=tri_count(hero_objs)
 
 # 2) ASERRADERO — fresh isolated import, no Hero datablock can affect it.
