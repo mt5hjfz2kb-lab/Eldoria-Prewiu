@@ -3,7 +3,7 @@ No generated terrain, no heightfield, no voxel/remesh substrate. The source mode
 own scan-derived geometry and PBR materials; Blender only composes/scales them into the frame.
 Poly Haven assets are CC0. API usage: Powered by Poly Haven — https://polyhaven.com
 """
-import bpy, os, sys, json, math, urllib.request, hashlib
+import bpy, os, sys, json, math, urllib.request, urllib.parse, hashlib
 from pathlib import Path
 from mathutils import Vector
 
