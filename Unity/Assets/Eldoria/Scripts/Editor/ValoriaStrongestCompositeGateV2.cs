@@ -15,12 +15,13 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string resource,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            // v19: use the already-certified Mid-Tier GLBs instead of the much lower-detail
-            // Slavic prefab family. Positions stay compact around the fortress nucleus.
-            ("lower_west","Piece02",new Vector3(-2.15f,1.78f,3.40f),18f,2.28f,2.62f),
-            ("lower_east","Piece03",new Vector3( 2.18f,1.78f,3.36f),186f,2.26f,2.60f),
-            ("mid_west","Piece03",new Vector3(-3.05f,2.02f,4.62f),12f,2.18f,2.52f),
-            ("mid_east","Piece02",new Vector3( 3.08f,2.02f,4.64f),190f,2.18f,2.52f)
+            // v31: replace the visually incompatible red-roof MidTier family with
+            // canonical stone modules already present in Resources/Valoria.
+            // These remain presentation-only and sit inside the fortress nucleus.
+            ("lower_west","Stone_Tower",new Vector3(-2.20f,1.72f,3.38f),12f,2.15f,2.72f),
+            ("lower_east","Stone_Tower",new Vector3( 2.22f,1.72f,3.34f),192f,2.15f,2.72f),
+            ("mid_west","Stone_Wall",new Vector3(-3.10f,1.96f,4.58f),18f,2.60f,2.10f),
+            ("mid_east","Stone_Wall",new Vector3( 3.12f,1.96f,4.60f),198f,2.60f,2.10f)
         };
 
         public static void Capture()
@@ -537,14 +538,13 @@ namespace Eldoria.EditorTools
 
             foreach(var s in PremiumSpecs)
             {
-                var src=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/"+s.resource);
+                var src=Resources.Load<GameObject>("Valoria/"+s.resource);
                 if(src==null)continue;
                 var go=Object.Instantiate(src);
                 if(go==null)continue;
                 go.name="Valoria · Strongest v2 · premium secondary · "+s.id;
                 go.transform.rotation=Quaternion.Euler(0f,s.yaw,0f);
                 Fit(go,s.p,s.span,s.height);
-                Neutralize(go);
                 go.transform.SetParent(proof,true);
                 DisableGameplay(go);
                 loaded++;
