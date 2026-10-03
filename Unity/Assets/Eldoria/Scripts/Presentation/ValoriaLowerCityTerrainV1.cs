@@ -33,7 +33,7 @@ namespace Eldoria.Presentation
             const float originY=-5.05f;
 
             var data=new TerrainData{
-                name="Valoria Lower City Hybrid Terrain v5",
+                name="Valoria Lower City Compact Hybrid Terrain v6",
                 heightmapResolution=hm,
                 alphamapResolution=alpha,
                 baseMapResolution=256,
@@ -222,13 +222,13 @@ namespace Eldoria.Presentation
 
         static float LandformField(float x,float z)
         {
-            float central=EllipseField(x,z,0f,3.35f,8.75f,5.25f);
-            float sawmill=Disc(x,z,-7.0f,-2.8f,3.55f);
-            float barracks=Disc(x,z,7.0f,-4.0f,3.65f);
+            float central=EllipseField(x,z,0f,3.55f,8.15f,4.80f);
+            float sawmill=Disc(x,z,-7.0f,-2.8f,2.88f);
+            float barracks=Disc(x,z,7.0f,-4.0f,2.98f);
 
-            float westLink=SegmentField(x,z,-4.55f,.45f,-7.0f,-2.8f,1.70f);
-            float eastLink=SegmentField(x,z,4.45f,.15f,7.0f,-4.0f,1.72f);
-            float approach=SegmentField(x,z,0f,-1.15f,0f,-7.85f,1.55f);
+            float westLink=SegmentField(x,z,-4.40f,.65f,-7.0f,-2.8f,1.20f);
+            float eastLink=SegmentField(x,z,4.35f,.45f,7.0f,-4.0f,1.22f);
+            float approach=SegmentField(x,z,0f,-.85f,0f,-6.55f,1.02f);
 
             return Mathf.Max(central,Mathf.Max(sawmill,
                 Mathf.Max(barracks,Mathf.Max(westLink,Mathf.Max(eastLink,approach)))));
@@ -263,16 +263,16 @@ namespace Eldoria.Presentation
 
         static float Route(float x,float z)
         {
-            float width=Mathf.Lerp(1.45f,2.25f,Mathf.InverseLerp(-7.5f,4.5f,z));
+            float width=Mathf.Lerp(.95f,1.72f,Mathf.InverseLerp(-6.5f,4.5f,z));
             return Mathf.Clamp01(1f-Mathf.Abs(x)/width)*
-                   Mathf.Clamp01(1f-Mathf.Abs(z+1.6f)/7.0f);
+                   Mathf.Clamp01(1f-Mathf.Abs(z+1.0f)/5.8f);
         }
 
         static float Pads(float x,float z)
         {
             float p=0f;
-            p=Mathf.Max(p,Disc(x,z,-7.15f,-2.65f,2.20f));
-            p=Mathf.Max(p,Disc(x,z, 6.65f,-3.80f,2.20f));
+            p=Mathf.Max(p,Disc(x,z,-7.15f,-2.65f,1.85f));
+            p=Mathf.Max(p,Disc(x,z, 6.65f,-3.80f,1.88f));
             p=Mathf.Max(p,Disc(x,z,-5.15f, 2.55f,2.35f));
             p=Mathf.Max(p,Disc(x,z, 5.10f, 2.75f,2.35f));
             p=Mathf.Max(p,Disc(x,z,-3.95f, 5.05f,2.10f));
