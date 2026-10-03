@@ -75,6 +75,37 @@ namespace Eldoria.EditorTools
             BuildStrongestBase(root.transform,state,c);
             SaveSet(c,"before",p,t);
 
+            // DCC-set route: the entire visible city is authored as one fixed-camera composition.
+            // Existing objects remain for gameplay authority, but their renderers are replaced.
+            bool dccSet=Resources.Load<GameObject>("Valoria/ExperimentalBastionContinuity/ValoriaBastionContinuity")!=null;
+            if(dccSet)
+            {
+                ValoriaBastionContinuityV2.Build(root.transform,state);
+                Physics.SyncTransforms();
+                if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
+                    throw new Exception("Fixed-camera DCC set altered gameplay signature.");
+
+                SaveSet(c,"after",p,t);
+                SaveSet(c,"after-west",p+new Vector3(-6,0,0),t+new Vector3(-6,0,0));
+                SaveSet(c,"after-east",p+new Vector3(6,0,0),t+new Vector3(6,0,0));
+                ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
+                Save(c,Folder+"/after-reference-8.1.png",p,new Vector3(0f,3.95f,5.90f),8.1f,1280,720);
+                ValoriaBackplateCandidateV1.FitAspect(390f/844f);
+                Save(c,Folder+"/after-reference-mobile.png",p,new Vector3(0f,3.95f,5.90f),8.1f,390,844);
+                ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
+                WriteVisibleRendererAudit(c,Folder+"/visible-renderers.tsv");
+                File.WriteAllText(Folder+"/evidence.json",$"{{\n"+
+                    $"  \"collider_hotspot_signature_equal\": true,\n"+
+                    $"  \"dcc_set_renderers\": {ValoriaBastionContinuityV2.RenderersBuilt},\n"+
+                    $"  \"existing_renderers_hidden\": {ValoriaBastionContinuityV2.ExistingRenderersHidden},\n"+
+                    $"  \"visual_authority\": \"fixed-camera Blender DCC set\",\n"+
+                    $"  \"tripo_credits\": 0\n"+
+                    $"}}\n");
+                Debug.Log("VALORIA_STRONGEST_COMPOSITE_V2_DCC_GATE=PASS");
+                EditorApplication.Exit(0);
+                return;
+            }
+
             int suppressed=SuppressDisconnectedResidue();
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int auditPruned=PruneAuditConfirmedLowerResidue();
