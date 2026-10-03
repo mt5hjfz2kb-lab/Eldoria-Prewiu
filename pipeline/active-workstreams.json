@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:27:00Z",
-  "active": [
+  "updated_at": "2026-10-03T20:34:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-unified-stylized-shell-v1",
       "title": "Valoria Unified Stylized Visual Shell v1",
@@ -23,11 +24,16 @@
       ],
       "claimed_at": "2026-10-03T20:27:00Z",
       "base_main_sha": "c7831eecf0be466862eda3b628ab3684bde69177",
-      "status": "active",
-      "dependency": "Art-direction decision boundary after Authored Secondary Art Family v1 TECH PASS / VISUAL FAIL. Start from VQB accepted shell 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve Flat Citadel geography, Hero Bastion geometry, F1 envelope, C0/C1/C2, R4/R5/R6, XW/XE/XU/XS, gameplay colliders/hotspots/cameras and real HUD contracts. This block is a whole-frame visual-language proof, not another isolated asset/material patch. Bright stylized 4X language must be applied coherently across architecture/ground/lighting while retaining source detail. No terrain-island/mountain rethink, no paid generation, no Tripo."
-    }
-  ],
-  "history": [
+      "status": "handoff",
+      "dependency": "Art-direction decision boundary after Authored Secondary Art Family v1 TECH PASS / VISUAL FAIL. Start from VQB accepted shell 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve Flat Citadel geography, Hero Bastion geometry, F1 envelope, C0/C1/C2, R4/R5/R6, XW/XE/XU/XS, gameplay colliders/hotspots/cameras and real HUD contracts. This block is a whole-frame visual-language proof, not another isolated asset/material patch. Bright stylized 4X language must be applied coherently across architecture/ground/lighting while retaining source detail. No terrain-island/mountain rethink, no paid generation, no Tripo.",
+      "completed_at": "2026-10-03T20:34:00Z",
+      "handoff_main_head": "dbeeffc9e1ef32c1d714b48b163358658c40aaeb",
+      "run_id": 37149992067,
+      "artifact_id": 11284220007,
+      "run_note": "No run was launched by this workstream before handoff. Registered run/artifact are the inherited last validated baseline from Valoria Visual Quality Breakthrough v1.",
+      "result": "HANDOFF. Block stopped before implementation/runs. No visual commits beyond the claim commit and no new runs launched. Preserve current repository state and inherited VQB baseline evidence.",
+      "next": "Continue in the other chat as VALORIA UNIFIED VISUAL LANGUAGE PROOF v1. Start from the real repository state; do not revive this workstream or launch work under its old claim."
+    },
     {
       "id": "valoria-authored-secondary-art-family-v1",
       "title": "Valoria Authored Secondary Art Family v1",
