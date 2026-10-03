@@ -71,11 +71,11 @@ namespace Eldoria.Presentation
             // stair visually reaches the fortress mass without a separate foreground island.
             // v25: form one continuous geological approach with overlapping certified
             // terraces instead of a procedural stair support + detached side shelves.
-            AddCertifiedTerrain(root,"SteppedRockTerrace","lower spine",new Vector3(0f,0f,.38f),.28f,2.75f,8f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","middle spine",new Vector3(0f,0f,1.68f),.82f,3.15f,188f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","upper spine",new Vector3(0f,0f,3.05f),1.34f,3.35f,12f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","west embedded shelf",new Vector3(-2.35f,0f,1.82f),.80f,3.05f,34f);
-            AddCertifiedTerrain(root,"SteppedRockTerrace","east embedded shelf",new Vector3(2.35f,0f,1.78f),.80f,3.05f,214f);
+            // v26: artifact audit proved the lower spine and side shelves remain visible
+            // as detached rocks under the city. Keep only the two upper overlapping pieces
+            // that actually merge into the fortress foot.
+            AddCertifiedTerrain(root,"SteppedRockTerrace","middle spine",new Vector3(0f,0f,2.05f),.92f,2.95f,188f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","upper spine",new Vector3(0f,0f,3.25f),1.42f,3.25f,12f);
         }
 
         static void AddCertifiedTerrain(Transform root,string resource,string role,Vector3 anchor,float topY,float span,float yaw)
