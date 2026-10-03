@@ -160,9 +160,14 @@ bridges=[
 ]
 mass=join(rocks+bridges,"RockEnvelope")
 activate(mass)
-mass.data.remesh_voxel_size=.095
-mass.data.remesh_voxel_adaptivity=.06
-bpy.ops.object.voxel_remesh()
+# Headless-safe Blender 5.2 voxel remesh: use the modifier rather than the
+# sculpt-context operator, which cannot poll successfully on the CI runner.
+rem=mass.modifiers.new("EnvelopeVoxelRemesh","REMESH")
+rem.mode='VOXEL'
+rem.voxel_size=.095
+rem.adaptivity=.06
+rem.use_smooth_shade=True
+bpy.ops.object.modifier_apply(modifier=rem.name)
 for p in mass.data.polygons:p.use_smooth=True
 dec=mass.modifiers.new("EnvelopeDecimate","DECIMATE");dec.ratio=.58
 bpy.ops.object.modifier_apply(modifier=dec.name)
