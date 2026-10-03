@@ -7,7 +7,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs'
       - 'Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader'
-      - 'tools/blender_authored_hero_city_transition_v1.py'
+      - 'tools/blender_valoria_transition_envelope_v2.py'
       - '.github/workflows/valoria-composition-frame-v2.yml'
 permissions:
   contents: read
@@ -60,14 +60,14 @@ jobs:
           if(-not $candidate -or -not (Test-Path $candidate)){throw 'Blender executable not found on Unity runner.'}
           "path=$candidate" >> $env:GITHUB_OUTPUT
           & $candidate --version | Select-Object -First 2
-      - name: Generate authored Hero-to-city transition
+      - name: Generate rock-kitbash Hero-to-city transition envelope
         shell: powershell
         run: |
           $dir="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Eldoria\\Resources\\Valoria\\ExperimentalAuthoredTransition"
           New-Item -ItemType Directory -Force -Path $dir | Out-Null
-          $output=Join-Path $dir 'HeroCityTransitionV1.glb'
-          $report="$env:RUNNER_TEMP\\hero-city-transition-v1-report.json"
-          $log="$env:RUNNER_TEMP\\hero-city-transition-v1-blender.log"
+          $output=Join-Path $dir 'HeroCityTransitionEnvelopeV2.glb'
+          $report="$env:RUNNER_TEMP\\hero-city-transition-envelope-v2-report.json"
+          $log="$env:RUNNER_TEMP\\hero-city-transition-envelope-v2-blender.log"
           & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\\tools\\blender_authored_hero_city_transition_v1.py" -- --output $output --report $report *> $log
           if($LASTEXITCODE -ne 0){
             if(Test-Path $log){Get-Content $log -Tail 320}
@@ -121,9 +121,9 @@ jobs:
           name: valoria-composition-frame-v2-${{ github.run_id }}
           path: |
             Unity/ValoriaStrongestCompositeV2Captures/*
-            Unity/Assets/Eldoria/Resources/Valoria/ExperimentalAuthoredTransition/HeroCityTransitionV1.glb
-            ${{ runner.temp }}/hero-city-transition-v1-report.json
-            ${{ runner.temp }}/hero-city-transition-v1-blender.log
+            Unity/Assets/Eldoria/Resources/Valoria/ExperimentalAuthoredTransition/HeroCityTransitionEnvelopeV2.glb
+            ${{ runner.temp }}/hero-city-transition-envelope-v2-report.json
+            ${{ runner.temp }}/hero-city-transition-envelope-v2-blender.log
             ${{ runner.temp }}/ValoriaCompositionFrameV2.log
           if-no-files-found: warn
           retention-days: 30

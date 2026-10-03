@@ -73,8 +73,8 @@ namespace Eldoria.Presentation
             // the geology, retaining bands, hero landing and civic circulation. Existing buildings
             // are embedded into that mass; no terrain board or scattered rock-support assembly.
             AddAuthoredTransition(
-                "Valoria/ExperimentalAuthoredTransition/HeroCityTransitionV1",
-                new Vector3(0f,-1.95f,.20f),18.2f,6.55f,0f);
+                "Valoria/ExperimentalAuthoredTransition/HeroCityTransitionEnvelopeV2",
+                Vector3.zero,1f,1f,0f);
 
             // Presentation-only functional clones stay inside the dense lower frontage.
             PlaceExistingPresentation("Valoria · Strongest v2 · compact sawmill visual",
@@ -105,14 +105,12 @@ namespace Eldoria.Presentation
             if(src==null)throw new Exception("Authored Hero-to-city transition missing: "+path);
             var go=Object.Instantiate(src);
             go.name="Valoria v2 · unified authored Hero-to-city transition";
-            go.transform.rotation=Quaternion.Euler(0,yaw,0);
+            go.transform.SetParent(root,true);
+            go.transform.localPosition=point;
+            go.transform.localRotation=Quaternion.Euler(0,yaw,0);
+            go.transform.localScale=Vector3.one;
             var rs=go.GetComponentsInChildren<Renderer>(true);
             if(rs.Length==0)throw new Exception("Authored Hero-to-city transition has no renderers.");
-            var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
-            go.transform.localScale*=Mathf.Min(span/Mathf.Max(b.size.x,b.size.z),height/Mathf.Max(.01f,b.size.y));
-            rs=go.GetComponentsInChildren<Renderer>(true);b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
-            go.transform.position+=point-new Vector3(b.center.x,b.min.y,b.center.z);
-            go.transform.SetParent(root,true);
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var behaviour in go.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
@@ -120,10 +118,11 @@ namespace Eldoria.Presentation
             foreach(var r in rs)
             {
                 string n=HierarchyName(r.transform);
-                bool masonry=n.IndexOf("CivicRoute",StringComparison.OrdinalIgnoreCase)>=0||
+                bool groundBand=n.IndexOf("TerraceStone",StringComparison.OrdinalIgnoreCase)>=0;
+                bool masonry=n.IndexOf("CivicSteps",StringComparison.OrdinalIgnoreCase)>=0||
                     n.IndexOf("RetainingMasonry",StringComparison.OrdinalIgnoreCase)>=0||
                     n.IndexOf("HeroLanding",StringComparison.OrdinalIgnoreCase)>=0;
-                r.sharedMaterial=masonry?stone:rock;
+                r.sharedMaterial=groundBand?ground:(masonry?stone:ground);
             }
             VisualPieces+=rs.Length;
         }
