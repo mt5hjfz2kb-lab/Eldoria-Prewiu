@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T23:46:00Z",
-  "active": [
+  "updated_at": "2026-10-03T23:49:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-semantic-source-reauthoring-proof-v1",
       "title": "Valoria Semantic Source Reauthoring Proof v1",
@@ -26,13 +27,22 @@
         "valoria-production-composition",
         "valoria-hero-aserradero-wall-source-authoring"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T23:08:00Z",
       "base_main_sha": "c95b03e7f1453323b40e3690efc9ff5dbc794605",
-      "dependency": "Experimental visual proof only. Preserve accepted VQB 7a564bc5 gameplay/layout/parcels and do not touch Granero/Cuartel/Forja/Hospital/Cantera/other Bastions. Zoom 9 + mobile stop gate before 12/19."
-    }
-  ],
-  "history": [
+      "dependency": "Experimental visual proof only. Preserve accepted VQB 7a564bc5 gameplay/layout/parcels and do not touch Granero/Cuartel/Forja/Hospital/Cantera/other Bastions. Zoom 9 + mobile stop gate before 12/19.",
+      "completed_at": "2026-10-03T23:49:00Z",
+      "branch": "visual-proof/valoria-semantic-source-reauthoring-proof-v1",
+      "valid_capture_head": "0631016c7ef2ade1d04d77628364db86bdc20029",
+      "final_branch_head": "e5c21252685ec513824afdc6cd52006e9d475581",
+      "result_doc": "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md",
+      "run_id": 37161308188,
+      "artifact_id": 11287623524,
+      "source_artifact_id": 11287494742,
+      "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Direct Blender source editing worked and preserved rich Aserradero geometry/PBR, but Hero low-band source surgery plus new transition geometry produced a severe first-glance regression at zoom9/mobile. No 12/19 extension. Gameplay signature preserved; 0 credits.",
+      "next": "Do not expand candidate or repeat automated Hero component-cut/material reuse. If revisited, author one manual high-fidelity Hero transition wedge with dedicated masonry UV/material/bake at game scale."
+    },
     {
       "id": "visual-production-governance-v1",
       "title": "Eldoria Visual Production Governance v1",
