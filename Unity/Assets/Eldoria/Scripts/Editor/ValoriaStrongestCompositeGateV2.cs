@@ -240,7 +240,9 @@ namespace Eldoria.EditorTools
                 bool redundantRetaining=
                     chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f;
 
-                bool badForegroundTree=chain.Contains("valoria · environment uplift · tree 29");
+                bool badForegroundTree=
+                    chain.Contains("valoria · environment uplift · tree 29")||
+                    chain.Contains("valoria · environment uplift · tree 111");
 
                 if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree)
                 {
@@ -528,9 +530,10 @@ namespace Eldoria.EditorTools
             Save(c,Folder+"/"+tag+"-19.png",p,t,19f,1280,720);
             Save(c,Folder+"/"+tag+"-12.png",p,t,12f,1280,720);
             Save(c,Folder+"/"+tag+"-9.png",p,t,9f,1280,720);
-            Save(c,Folder+"/"+tag+"-production.png",p,t,9.1f,1280,720);
+            var productionTarget=new Vector3(0f,3.95f,5.90f);
+            Save(c,Folder+"/"+tag+"-production.png",p,productionTarget,8.1f,1280,720);
             ValoriaBackplateCandidateV1.FitAspect(390f/844f);
-            Save(c,Folder+"/"+tag+"-mobile.png",p,t,9.1f,390,844);
+            Save(c,Folder+"/"+tag+"-mobile.png",p,productionTarget,8.1f,390,844);
             ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
         }
 
