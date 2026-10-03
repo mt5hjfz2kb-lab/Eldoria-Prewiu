@@ -12,12 +12,12 @@ Source closure evidence:
 - verdict **TECH PASS / VISUAL FAIL**
 - Flat Citadel macro direction locked
 
-Final Art Consolidation implementation HEAD: `bd3c59467410065680aae36677e9015349d1c0a7`
+Final Art Consolidation implementation HEAD: `c2894925c97aea7cd514b6e90b1cac81b802a63e`
 
 Final implementation validation:
-- run **37141270379 — SUCCESS**
-- artifact **11280437080**
-- artifact digest: `sha256:cec9608f7d14562dbcbe4635911f22cb54fc26fe2dff568a81a509245f326ba3`
+- run **37141597937 — SUCCESS**
+- artifact **11280900578**
+- artifact digest: `sha256:c9b647c1c457190765ef6c4ed2249418115c8277cde03a6c11aae11e975a1e7a`
 
 Toolchain planner:
 - request `valoria-flat-citadel-art-consolidation-v1`
@@ -195,7 +195,7 @@ Important limitation: the current Unity HUD contract is only the Bastion I-II sl
 
 ## Final technical evidence
 
-Final `evidence.json` from artifact **11280437080**:
+Final `evidence.json` from artifact **11280900578**:
 
 - gameplay signature preserved: **true**
 - macro composition changed: **false**
@@ -324,3 +324,28 @@ The late variant was not accepted blindly:
 - the continuous masonry/crenellation ring is visually more coherent than the previous fragmented 35-module wall, although its repeated merlon rhythm remains a visible prototype-quality defect.
 
 This reconciliation does not change the final verdict: **TECH PASS / VISUAL FAIL**.
+
+## Final late-variant decision
+
+After the cleaner 11-module wall validated, one additional large-block attempt (`6c8cb66d6b30081187071fdfb524f0e9153c103f`) tried two linked changes:
+
+- fully replacing the imported hero gate/tower surface response with one deterministic masonry material;
+- adding explicit functional-building foundation slabs / Aserradero work cues.
+
+Run **37141480932** was technically green, but real capture review showed that the material replacement washed out the gate/tower hierarchy and made the defensive ring visually flatter. The net result was worse despite technical correctness.
+
+That attempt was therefore **rejected and reverted**, not accumulated.
+
+The final branch HEAD `c2894925c97aea7cd514b6e90b1cac81b802a63e` restores the visually stronger previous masonry/tower treatment while retaining the accepted parcel map, 11-module wall hierarchy, Bastion interface, atmosphere, material calibration and real HUD capture infrastructure.
+
+Final revalidation run **37141597937** / artifact **11280900578** confirms:
+- TECH PASS;
+- gameplay signature preserved;
+- macrocomposition unchanged;
+- 11 wall hero modules;
+- 3 Arc-I future parcels visible;
+- 103 material renderers consolidated;
+- real canonical HUD captures;
+- 0 Tripo credits.
+
+The final verdict remains **VISUAL FAIL** because the remaining gap is now dominated by asset-family coherence, Hero Bastion fused-rock identity, world-edge quality, life/occupancy and the real Unity HUD visual system—not by the Flat Citadel composition.
