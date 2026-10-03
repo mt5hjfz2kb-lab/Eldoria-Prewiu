@@ -48,7 +48,6 @@ def export(name,objects):
     bpy.ops.export_scene.gltf(filepath=path,export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",export_yup=True)
     return path
 
-bpy.ops.wm.read_factory_settings(use_empty=True)
 # Hero interface: terraced retaining vocabulary that visually mediates fused rock -> civic stone.
 hero=[]
 hero += [cube("Hero lower retaining", (0,0,.22),(5.8,1.05,.44),STONE_DARK,.06)]
