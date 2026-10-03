@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate v36 regression fix: preserve v35 functional-building placement while restoring compact stair Build so legacy stair renderers are suppressed and only the short upper visual approach remains.",
+  "objective": "Validate compact dedicated functional buildings v37: keep the proven v36 hero-first composition and stair behavior, reduce Aserradero and Cuartel presentation scale, and nudge both deeper into the fortress foot for a balanced functional pair.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:04:00+02:00",
-  "retry_reason": "v35 latest TECH PASS / VISUAL FAIL: disabling ValoriaCompactStairMeshV1 exposed the full legacy gameplay staircase. v36 restores the compact visual stair path solely to suppress the legacy renderers and retain the short upper approach.",
-  "retry_seq": 46
+  "triggered_at": "2026-10-03T13:06:00+02:00",
+  "retry_reason": "v36 TECH PASS / VISUAL INSUFFICIENT: the frame is compact and clean, but the Aserradero remains oversized relative to the fortress base and the Cuartel is visually weak. v37 changes only presentation transform/scale for those two dedicated Valoria GLBs.",
+  "retry_seq": 47
 }
