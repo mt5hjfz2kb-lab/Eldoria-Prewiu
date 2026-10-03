@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:40:32.047Z",
-  "active": [
+  "updated_at": "2026-10-03T11:51:07.618Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-visual-shell-v2-continuous-terrain",
       "title": "Valoria Visual Shell v2 — continuous terrain full-frame proof",
@@ -24,13 +25,23 @@
         "runner-trigger-governance",
         "workflow-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T11:40:32.047Z",
       "base_main_sha": "007985fae42d560de8cae49f42f1ba1f65579055",
-      "dependency": "Experimental continuous landform visual-only. Existing projected-matte method 1–3 visual fail; no production promotion. Preserve gameplay/hotspots/colliders/routes/camera, zero Tripo."
-    }
-  ],
-  "history": [
+      "dependency": "Experimental continuous landform visual-only. Existing projected-matte method 1–3 visual fail; no production promotion. Preserve gameplay/hotspots/colliders/routes/camera, zero Tripo.",
+      "completed_at": "2026-10-03T11:51:07.618Z",
+      "result_commit": "7b913fa8c8ce72ee1ccf310c242797059309cdc7",
+      "run_ids": [
+        37120495376,
+        37120699376
+      ],
+      "artifact_ids": [
+        11272259962,
+        11272793710
+      ],
+      "result": "TECH PASS / VISUAL FAIL. Continuous terrain instantiated and gameplay signature equal, but both full-frame images remain prototype-like; broad ridge and then bare mesa/route seams. No production promotion, zero credits. Canonical result doc corrected projected-shell interpretation and recorded category-ranked gap.",
+      "next": "Author image-space terrain/rock/retaining-wall/circulation connector and coherent mid/lower architecture family in a distinct method; do not microiterate procedural heightfield."
+    },
     {
       "id": "valoria-visual-shell-v2",
       "title": "Valoria Visual Shell v2 — isolated complete-frame proof",
