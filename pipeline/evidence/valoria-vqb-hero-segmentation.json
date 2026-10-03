@@ -1,0 +1,39 @@
+{
+  "source": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+  "baseline_triangles": 49800,
+  "zmin": 0.000112092551717069,
+  "zmax": 0.7072261571884155,
+  "height": 0.7071140646366985,
+  "variants": [
+    {
+      "fraction": 0.14,
+      "threshold_z": 0.09910806160085486,
+      "removed_components": 840,
+      "removed_triangles": 5125,
+      "removed_fraction": 0.10291164658634538,
+      "remaining_triangles": 44675,
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low14.glb",
+      "bytes": 13028032
+    },
+    {
+      "fraction": 0.2,
+      "threshold_z": 0.14153490547905676,
+      "removed_components": 948,
+      "removed_triangles": 8067,
+      "removed_fraction": 0.1619879518072289,
+      "remaining_triangles": 41733,
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low20.glb",
+      "bytes": 12928332
+    },
+    {
+      "fraction": 0.26,
+      "threshold_z": 0.18396174935725867,
+      "removed_components": 1079,
+      "removed_triangles": 11852,
+      "removed_fraction": 0.23799196787148594,
+      "remaining_triangles": 37948,
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-vqb-hero-segmentation/Valoria_HeroBastion_segmented_low26.glb",
+      "bytes": 12798516
+    }
+  ]
+}
