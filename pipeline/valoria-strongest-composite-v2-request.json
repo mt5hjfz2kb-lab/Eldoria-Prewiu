@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate TerrainData lower-city landscape v3b: compact continuous city shelf, narrow central approach, lateral foreground holes, default URP Terrain rendering, and darker remapped dirt/rock layers.",
+  "objective": "Validate connected terraced landforms v4: central Bastion shelf, separate Sawmill and Barracks terraces, narrow natural links and central approach, preserving all certified gameplay positions.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:37:00+02:00",
-  "retry_reason": "TerrainData v3 capture stalled after adding a runtime Terrain Lit materialTemplate. v3b keeps the same geometry and TerrainLayer remaps but uses the default URP terrain material.",
-  "retry_seq": 13
+  "triggered_at": "2026-10-03T07:41:00+02:00",
+  "retry_reason": "TerrainData v3b TECH PASS / VISUAL FAIL: terrain continuity improved but one broad foreground mass remained necessary because gameplay buildings are widely distributed. v4 models those certified positions as connected terraced landforms instead of one continuous slab.",
+  "retry_seq": 14
 }
