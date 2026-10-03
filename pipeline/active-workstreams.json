@@ -11,7 +11,8 @@
         "pipeline/tripo-studio-request.json",
         "pipeline/art-production-request.json",
         "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
-        "SESSION_HANDOFF.md"
+        "SESSION_HANDOFF.md",
+        "tools/tripo-studio-bridge.mjs"
       ],
       "resources": [
         "tripo-studio-bridge",
@@ -21,7 +22,8 @@
       "status": "active",
       "claimed_at": "2026-10-03T22:53:00Z",
       "base_main_sha": "f93ff437ec28e688f48b14702097db8d418d0640",
-      "dependency": "Resume only the isolated Aserradero proof. Zero-spend staging/cost check first; no generation or credit spend without fresh visible-cost approval."
+      "dependency": "Resume only the isolated Aserradero proof. Zero-spend staging/cost check first; no generation or credit spend without fresh visible-cost approval.",
+      "note": "Bounded zero-spend transport recovery may extend existing dedicated-profile browser recovery to CDP timeouts; no browser kill, profile substitution, security changes, generation or spend."
     }
   ],
   "history": [
