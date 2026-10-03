@@ -15,6 +15,7 @@ SOURCES={
  "hero":os.path.join(RES,"HeroBastionGenerated","Valoria_HeroBastion_v1.glb"),
  "aserradero":os.path.join(RES,"Valoria_Aserradero_AP2_v1.glb"),
  "wall":os.path.join(RES,"StoneArchitectureKit_v1","HighStraightWall.glb"),
+ "transition":os.path.join(RES,"StoneArchitectureKit_v1","RockToWallTransition.glb"),
 }
 for k,p in SOURCES.items():
     if not os.path.isfile(p): raise RuntimeError("Missing canonical source %s: %s"%(k,p))
@@ -43,6 +44,14 @@ def import_single(path,name):
     meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and len(o.data.vertices)>0]
     if len(meshes)!=1: raise RuntimeError("%s expected one non-empty mesh, got %d"%(name,len(meshes)))
     o=meshes[0]; o.name=name
+    return o
+
+def import_added(path,name):
+    before=set(bpy.context.scene.objects)
+    bpy.ops.import_scene.gltf(filepath=path,merge_vertices=False)
+    meshes=[o for o in bpy.context.scene.objects if o not in before and o.type=="MESH" and len(o.data.vertices)>0]
+    if len(meshes)!=1: raise RuntimeError("%s expected one newly imported non-empty mesh, got %d"%(name,len(meshes)))
+    o=meshes[0];o.name=name
     return o
 
 def component_groups(obj):
@@ -150,28 +159,42 @@ def export_all(path):
 reset()
 hero=import_single(SOURCES["hero"],"Hero_Source_Retained")
 hero_tex=texture_report(hero); hb=mesh_bounds(hero); z0=hb["min"][2]; hh=hb["size"][2]; hero_base=tri_count([hero])
-# Import the certified rich wall only as a material donor for the new rock->masonry transition.
-# It is removed before Hero export, so Hero geometry remains source mesh + authored transition only.
-wall_donor=import_single(SOURCES["wall"],"Hero_Wall_Material_Donor")
-wall_donor_mat=wall_donor.data.materials[0]
-removed_groups,removed_tris=remove_components(hero,lambda g:g["bounds"]["max"][2] <= z0+hh*.14)
+hero_cy=hb["center"][1]; hero_depth=hb["size"][1]
+# Remove only low FRONT rock components. Rear/side rock remains part of the recognizable silhouette.
+removed_groups,removed_tris=remove_components(
+    hero,lambda g:g["bounds"]["max"][2] <= z0+hh*.14 and g["bounds"]["center"][1] <= hero_cy-hero_depth*.04)
 if not hero.data.vertices: raise RuntimeError("Hero surgery removed entire source")
-hero_low=clone_tinted(hero.data.materials[0],"Hero_Lower_Integrated",(0.88,0.84,0.76),1.05); hero.data.materials.append(hero_low)
+hero_low=clone_tinted(hero.data.materials[0],"Hero_Lower_Integrated",(0.94,0.91,0.86),1.04)
+hero.data.materials.append(hero_low)
 for g in component_groups(hero):
-    if g["bounds"]["center"][2] < z0+hh*.30:
+    if g["bounds"]["center"][2] < z0+hh*.26:
         for fi in g["faces"]:
             if fi<len(hero.data.polygons):hero.data.polygons[fi].material_index=1
-masonry=clone_tinted(wall_donor_mat,"Shared_Warm_Masonry",(0.94,0.90,0.82),1.03)
-foundation=clone_tinted(wall_donor_mat,"Shared_Dark_Foundation",(0.72,0.68,0.60),1.08)
-# Keep the replacement architectural band shallow: it occupies only the removed low source zone
-# and must not become a foreground wall hiding the Hero silhouette.
-add_box("Hero_Retaining_Foundation",(0,-.23,z0+.022),(.62,.10,.044),foundation,.006)
-add_box("Hero_Retaining_Upper",(0,-.205,z0+.064),(.54,.105,.040),masonry,.005)
-for x in (-.24,-.08,.08,.24): add_box("Hero_Buttress",(x,-.245,z0+.065),(.030,.085,.105),masonry,.004)
-for i in range(4): add_box("Hero_Stair_%d"%i,(0,-.285+i*.026,z0+.010+i*.014),(.16,.070,.026),masonry,.003)
-# Donor geometry is not part of the Hero candidate.
-bpy.data.objects.remove(wall_donor,do_unlink=True)
-hero_path=os.path.join(OUT,"SSRA_HeroBastion_v1.glb"); hero_objs=export_all(hero_path); hero_out_tris=tri_count(hero_objs)
+
+# Rich certified rock-to-wall geometry fills the removed source volume INSIDE the Hero export.
+# This replaces the prism/wrapper experiment: no box transition survives variant 2.
+transition=import_added(SOURCES["transition"],"Hero_Integrated_RockToWall")
+transition_tex=texture_report(transition); transition_tris=tri_count([transition])
+if transition.data.materials:
+    transition.data.materials[0]=clone_tinted(
+        transition.data.materials[0],"Hero_Integrated_Warm_Stone",(0.96,0.92,0.84),1.04)
+db=mesh_bounds(transition)
+target_span=hb["size"][0]*.48
+horizontal=max(.001,db["size"][0],db["size"][1])
+s=target_span/horizontal
+transition.scale*=s
+bpy.ops.object.select_all(action="DESELECT"); transition.select_set(True); bpy.context.view_layer.objects.active=transition
+bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+db=mesh_bounds(transition)
+target_x=hb["center"][0]
+target_y=hb["min"][1]+hb["size"][1]*.12
+target_z=hb["min"][2]+hh*.01
+transition.location.x+=target_x-db["center"][0]
+transition.location.y+=target_y-db["center"][1]
+transition.location.z+=target_z-db["min"][2]
+
+hero_path=os.path.join(OUT,"SSRA_HeroBastion_v1.glb")
+hero_objs=export_all(hero_path); hero_out_tris=tri_count(hero_objs)
 
 # 2) ASERRADERO — fresh isolated import, no Hero datablock can affect it.
 reset()
@@ -184,7 +207,7 @@ def saw_class(g):
     if dz > max(.001,max(dx,dy))*1.30 and zmin < sz0+sh*.66:return "timber"
     return "source"
 saw_counts=assign_semantic_materials(saw,saw_class,{
- "stone":((0.88,0.82,0.72),1.08),"timber":((0.56,0.40,0.27),1.05),"roof":((0.55,0.64,0.70),1.12)})
+ "stone":((0.96,0.92,0.86),1.06),"timber":((0.76,0.65,0.54),1.04),"roof":((0.72,0.78,0.82),1.10)})
 saw_path=os.path.join(OUT,"SSRA_Aserradero_v1.glb"); saw_objs=export_all(saw_path); saw_out_tris=tri_count(saw_objs)
 
 # 3) WALL — fresh isolated rich source, calibrated to same stone hierarchy.
@@ -215,7 +238,8 @@ report={
  "source_blend":"pipeline/candidates/valoria-semantic-source-reauthoring-v1/Valoria_SSRA_Source_v1.blend",
  "processing_model":"isolated_sequential_sources_then_assembly",
  "hero":{"source_triangles":hero_base,"removed_low_components":removed_groups,"removed_triangles":removed_tris,
-         "removed_fraction":removed_tris/max(1,hero_base),"output_triangles":hero_out_tris,"textures":hero_tex},
+         "removed_fraction":removed_tris/max(1,hero_base),"output_triangles":hero_out_tris,"textures":hero_tex,
+         "integrated_transition_triangles":transition_tris,"integrated_transition_textures":transition_tex},
  "aserradero":{"source_triangles":49800,"output_triangles":saw_out_tris,"semantic_triangles":saw_counts,"textures":saw_tex},
  "wall":{"output_triangles":wall_out_tris,"semantic_triangles":wall_counts,"textures":wall_tex},
  "outputs":[{"file":"SSRA_HeroBastion_v1.glb","bytes":os.path.getsize(hero_path)},
