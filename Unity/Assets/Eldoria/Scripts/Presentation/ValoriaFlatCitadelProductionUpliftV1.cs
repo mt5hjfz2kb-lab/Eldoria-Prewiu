@@ -339,12 +339,12 @@ namespace Eldoria.Presentation
 
         static void AddWallModule(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw,Color tint,bool tower=false)
         {
-            // The first production-wall run proved the geometry family but the source base color
-            // multiplied too dark. Rebuild on URP/Lit with the authored albedo retained and a
-            // shared Valoria stone response so the wall supports, rather than competes with, Hero Bastion.
-            var go=ValoriaKit.BenchmarkPieceIntegrated("Valoria · Flat Citadel Production · "+role,source,ground,footprint,maxHeight,
-                Quaternion.Euler(0f,yaw,0f),Color.Lerp(Color.white,tint,.42f));
+            // Preserve the source texture channels explicitly. The first material correction proved that
+            // replacing the shader without carrying every possible imported albedo property can bleach the wall.
+            var go=ValoriaKit.BenchmarkPiece("Valoria · Flat Citadel Production · "+role,source,ground,footprint,maxHeight,
+                Quaternion.Euler(0f,yaw,0f));
             if(go==null)throw new InvalidOperationException("Failed to build authored wall module: "+role);
+            NormalizeWallMaterials(go,Color.Lerp(new Color(.62f,.60f,.55f,1f),tint,.20f));
             go.transform.SetParent(root,true);
             NormalizeWallMaterials(go,tint,tower);
             foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
@@ -405,6 +405,51 @@ namespace Eldoria.Presentation
                     dst[i]=m;
                 }
                 r.sharedMaterials=dst;
+            }
+        }
+
+        static void NormalizeWallMaterials(GameObject go,Color tint)
+        {
+            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(lit==null)return;
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var src=renderer.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    var source=src[i];
+                    if(source==null){dst[i]=null;continue;}
+                    Texture baseMap=null,normal=null,mask=null;
+                    foreach(string property in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Albedo"})
+                        if(source.HasProperty(property)&&source.GetTexture(property)!=null){baseMap=source.GetTexture(property);break;}
+                    foreach(string property in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(source.HasProperty(property)&&source.GetTexture(property)!=null){normal=source.GetTexture(property);break;}
+                    foreach(string property in new[]{"_MetallicGlossMap","_MaskMap","metallicRoughnessTexture"})
+                        if(source.HasProperty(property)&&source.GetTexture(property)!=null){mask=source.GetTexture(property);break;}
+
+                    var m=new Material(lit){name="Valoria Flat Citadel wall · "+source.name};
+                    if(baseMap!=null)
+                    {
+                        if(m.HasProperty("_BaseMap"))m.SetTexture("_BaseMap",baseMap);
+                        if(m.HasProperty("_MainTex"))m.SetTexture("_MainTex",baseMap);
+                    }
+                    if(normal!=null&&m.HasProperty("_BumpMap"))
+                    {
+                        m.SetTexture("_BumpMap",normal);
+                        m.EnableKeyword("_NORMALMAP");
+                    }
+                    if(mask!=null&&m.HasProperty("_MetallicGlossMap"))
+                        m.SetTexture("_MetallicGlossMap",mask);
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
+                    if(m.HasProperty("_SpecularHighlights"))m.SetFloat("_SpecularHighlights",1f);
+                    if(m.HasProperty("_EnvironmentReflections"))m.SetFloat("_EnvironmentReflections",1f);
+                    dst[i]=m;
+                }
+                renderer.sharedMaterials=dst;
             }
         }
 
