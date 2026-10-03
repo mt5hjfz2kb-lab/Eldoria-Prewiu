@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact organic lower-city terrain v5 using the existing Holotna DetailWorldSpace triplanar rock shader on eroded slopes, with dirt retained on walkable/top surfaces, preserving gameplay authority.",
+  "objective": "Validate unified world-space lower-city terrain v10: remove the hard earth/rock submesh seam while preserving compact organic geometry, gameplay authority and the tighter candidate frame.",
   "route": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T01:58:00+02:00",
-  "retry_reason": "v4 remained visually invalid because slope texture still read as masonry wrapped over terrain; v5 reuses the repo's authored world-space/triplanar mountain shader for slope material mapping.",
-  "retry_seq": 5
+  "triggered_at": "2026-10-03T02:49:00+02:00",
+  "retry_reason": "v9 proved that higher mesh density does not remove the visible sawtooth because the defect is the binary earth/rock submesh boundary. v10 uses one world-space terrain material to test continuity before implementing a more complex slope blend.",
+  "retry_seq": 6
 }
