@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: valoria-authored-secondary-art-family-v1
+  cancel-in-progress: true
+
 jobs:
   author:
     runs-on: ubuntu-latest
@@ -69,8 +73,7 @@ jobs:
         run: |
           git config user.name "eldoria-ci"
           git config user.email "actions@github.com"
-          git add pipeline/evidence/valoria-authored-secondary-art-family-v1.json
-          git add pipeline/candidates/valoria-authored-secondary-art-family-v1/*.glb
+          git add -A pipeline/evidence/valoria-authored-secondary-art-family-v1.json pipeline/candidates/valoria-authored-secondary-art-family-v1
           if ! git diff --cached --quiet; then
             git commit -m "chore: persist authored secondary family ${{ github.run_id }}"
             git pull --rebase origin "${{ github.ref_name }}"
