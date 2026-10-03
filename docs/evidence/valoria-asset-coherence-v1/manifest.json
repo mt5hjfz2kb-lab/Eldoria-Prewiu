@@ -1,0 +1,137 @@
+{
+  "implementation": "1071454bd1bd27ec1f5a0c754805d61a7a77e829",
+  "run": 37143754581,
+  "artifact": 11281586517,
+  "artifact_sha256": "4cc15b70730dc9fb373dc1bd4d4342a77cfb8b5d4130325ab93f6674d25ce38d",
+  "original_pngs": {
+    "after-12.png": {
+      "sha256": "86a644163b012af7cc306f81f7a67e407a9718113d6f4b130654f0f048c5f352",
+      "bytes": 1023175,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-19.png": {
+      "sha256": "a530b39ac9ce56a477394b9926f0f477c57b2558a914ed6dd972fdb388eeff38",
+      "bytes": 778979,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-9.png": {
+      "sha256": "4896302b17ee93255d547026ce70c9af5d13ba3c3dfdcec403ae583cbbc0b0a5",
+      "bytes": 1127703,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-mobile.png": {
+      "sha256": "e7a8638a498a8fdd6931054d7215359de0415e912e08b3f9677e39d813a5460b",
+      "bytes": 456823,
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "before-12.png": {
+      "sha256": "b444121ab4ab11017cfa71c57a46963944ac957b333a27bc80b8a75e9114bacb",
+      "bytes": 949756,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-19.png": {
+      "sha256": "9c7805168be004a9b61eb4bd9b9ec47c452462144cdd029d8a9743d3d9e378d0",
+      "bytes": 614809,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-9.png": {
+      "sha256": "69f1b167406529f8a969fbd2f5e314b4fe19f78fc8eaa92968e61b524dc96f6c",
+      "bytes": 1091194,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-12.png": {
+      "sha256": "e6d44dbd613416014d35fb52d99b92240383e6ccde1d1b1b8a5e2efbec275254",
+      "bytes": 882032,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-19.png": {
+      "sha256": "184cf1bc5d05930de91308c1e47d7125a69a6190f2e57e17c47052118bdbda19",
+      "bytes": 606505,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-9.png": {
+      "sha256": "fc98d68a5e3e13cd649b54fe0add4d422a83850637750e17d701ed3c40083110",
+      "bytes": 998757,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-mobile.png": {
+      "sha256": "54bfcb29c69a3759cb161736047f27e2c71213a4e6409e5ada5d2c528005086c",
+      "bytes": 395860,
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "before-mobile.png": {
+      "sha256": "291228a863262fc2284a7c5d02348e180dffa30fba6ba49241d94d23a6849501",
+      "bytes": 451390,
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "game-12.png": {
+      "sha256": "03f2b3b50c74432e4c32d291bfdfdb8a4ebefc78b51dd2456e417a2d35112e66",
+      "bytes": 931829,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "game-19.png": {
+      "sha256": "5e3080262541150241e9d3702ba8b75ffbf80578ce353e77999bb88c290c106c",
+      "bytes": 736218,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "game-9.png": {
+      "sha256": "eefe4bcb611c63df0a1694e8505ff52d03a37d4f1ec81fc8aa86b7110942fa87",
+      "bytes": 1026674,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "game-mobile.png": {
+      "sha256": "6b6bda8bf7d8b33a765707b79f38a05f57de5ae92df0cc763bd787f1903c0c4a",
+      "bytes": 399858,
+      "resolution": [
+        390,
+        844
+      ]
+    }
+  },
+  "previews": "JPEG downscaled comparisons only; original unmodified full-frame PNGs in run artifact."
+}

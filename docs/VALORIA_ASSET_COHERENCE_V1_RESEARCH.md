@@ -1,6 +1,6 @@
 # Valoria Asset Coherence & Game Presentation v1 — applied research
 
-Scope: locked Flat Citadel; source 578ae2c65201dad74f004ba8448faab8a34952ad / accepted visual c2894925c97aea7cd514b6e90b1cac81b802a63e. Baseline run 37141904595 / artifact 11280049716. No promotion or visual verdict before integrated review.
+Scope: locked Flat Citadel; source 578ae2c65201dad74f004ba8448faab8a34952ad / accepted visual c2894925c97aea7cd514b6e90b1cac81b802a63e. Baseline run 37141904595 / artifact 11280049716. Closed after three integrated iterations: TECH PASS / VISUAL FAIL; no production promotion.
 
 ## Diagnosed causes from real baseline
 
@@ -25,7 +25,7 @@ Scope: locked Flat Citadel; source 578ae2c65201dad74f004ba8448faab8a34952ad / ac
 5. Unity uGUI CanvasScaler: https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-CanvasScaler.html
    Applied: responsive native HUD scaler and readable typography, explicit horizontal action sizing, gold panel framing. Existing resources/objectives/action listeners and unlock states remain owned by SlicePresenter. Decorative images/text do not intercept taps.
 6. Unity mobile optimization: https://docs.unity3d.com/6000.3/Documentation/Manual/OptimizingGraphicsPerformance.html
-   Applied: low foliage combined by shared palette; no new shadow lights; eight bounded ambient people. These choices reduce submissions relative to independent clumps, but representative-device performance still requires measurement.
+   Applied: canonical authored SlavicBush foliage with bounded placement and source materials; no new shadow lights; eight bounded ambient people. The initial combined sphere-clump method was rejected visually as token-like. No reduced draw-call or phone-performance claim is made; representative-device measurement remains required.
 
 ## Rejected/deferred before execution
 
@@ -39,3 +39,17 @@ Scope: locked Flat Citadel; source 578ae2c65201dad74f004ba8448faab8a34952ad / ac
 ## Iteration rule
 
 Compare matched baseline/consolidation and coherence 19/12/9/mobile. Each correction must target a diagnosed cause. Revert net-negative techniques; max 2–3 variants per technique. Technical signature alone never grants VISUAL PASS.
+
+## Executed iterations and actual decisions
+
+| Candidate | Run / artifact | Cause attacked | Review and disposition |
+| --- | --- | --- | --- |
+| 0e6371ad56de6f4d820fb1061e494a03b8e1c6c9 | 37143103648 / 11281296195 | Source response, detached rectangle, prototype HUD | Real captured improvement in response/edge; primitive foliage looked like tokens and decorative frame entered layout. Reject these methods. |
+| c2ed359a8c2a111bf60709f0c3b1298d7849f6c6 | 37143449509 / 11281720769 | Canonical foliage, ignore-layout frame and wide live action | HUD becomes readable; foliage better; ground still has dark procedural noise. Retain fixes, replace ground response. |
+| 1071454bd1bd27ec1f5a0c754805d61a7a77e829 | 37143754581 / 11281586517 | World-space dirt/paving with planar normal, calmer hero, smoke, tap interception | Best bounded candidate; noise removed and HUD functional. Stop tint/placement loop. TECH PASS / VISUAL FAIL. |
+
+Applied final ground technique: existing CC0 Poly Haven dirt and cobblestone diffuse maps, sampled in world space (shared scale .62), up-facing normal for planar city ground. Rock uses world-space triplanar diffuse only; source normal remains architecture-owned. This reduces inconsistent texel density; it is not complete PBR authoring. URP pass compilation is synchronous during capture and errors fail the gate.
+
+HUD regression correction: gold frames receive LayoutElement.ignoreLayout=true; native action layouts control/expand child width and height. Decoration/text do not intercept taps; active native panel backgrounds and buttons do. Five focused PlayMode tests pass after correction.
+
+Deferred after evidence: height-mask rock blending cannot remove fused pedestal silhouette; more tinting is not a substitute for source segmentation. No third primitive foliage revision, no further almost-identical run. No paid generation.

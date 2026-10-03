@@ -1,8 +1,75 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T16:06:00Z",
-  "active": [
+  "updated_at": "2026-10-03T18:30:33.538Z",
+  "active": [],
+  "history": [
+    {
+      "id": "valoria-asset-coherence-game-presentation-v1",
+      "title": "Valoria Asset Coherence & Game Presentation v1",
+      "owner": "work-coherence-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAssetCoherenceV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelArtConsolidationGateV1.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCoherence*",
+        "docs/VALORIA_ASSET_COHERENCE*",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T17:59:46.095Z",
+      "base_main_sha": "5579f4f3198700689712057597b81d4b8941629c",
+      "status": "completed",
+      "dependency": "Preserve accepted Art Consolidation c289492, closure 578ae2c / run 37141904595 / artifact 11280049716. Locked Flat Citadel and parcel map. No paid tools.",
+      "completed_at": "2026-10-03T18:30:33.538Z",
+      "result_commit": "1071454bd1bd27ec1f5a0c754805d61a7a77e829",
+      "run_id": 37143754581,
+      "artifact_id": 11281586517,
+      "result": "TECH PASS / VISUAL FAIL. Three integrated Unity variants completed; shared source response, world-space paving/contained edge, native HUD and bounded activity improved; fused Hero silhouette, generic wall and heterogeneous source quality remain. Locked Flat Citadel and parcel reservations preserved. 5/5 PlayMode tests. No paid credits, production promotion or publication.",
+      "next": "Recommend VALORIA SHARED SOURCE MATERIALS & BASTION INTERFACE AUTHORING v1; not opened. Semantic PBR masks/current source segmentation + replaceable wall atlas; no mountain/layout rethink.",
+      "branch": "visual-proof/valoria-asset-coherence-game-presentation-v1",
+      "result_doc": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md"
+    },
+    {
+      "id": "valoria-flat-citadel-art-consolidation-v1",
+      "title": "Valoria Flat Citadel Art Consolidation v1",
+      "owner": "chat-valoria-flat-citadel-art-consolidation-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelArtConsolidationV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelArtConsolidationGateV1.cs",
+        ".github/workflows/valoria-flat-citadel-art-consolidation-v1.yml",
+        "docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md",
+        "docs/VALORIA_PARCEL_RESERVATION_MAP.md",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "completed",
+      "claimed_at": "2026-10-03T17:10:00Z",
+      "base_main_sha": "f45040858f8657c9e6a4327eb6de260c7b1ca6ad",
+      "dependency": "Flat Citadel macrocomposition is fixed. Start from Production Uplift final implementation ca018faf089d10e777566974f2bc6fd3e470ede0 and closure evidence run 37137964874 / artifact 11278977322. First map current and future progression reservations from canonical progression/gameplay docs, then consolidate wall, Bastion-city interface, materials, secondary architecture, atmosphere and final HUD framing. No mountain/topography experiments.",
+      "completed_at": "2026-10-03T17:48:00Z",
+      "result_commit": "c2894925c97aea7cd514b6e90b1cac81b802a63e",
+      "run_id": 37141597937,
+      "artifact_id": 11280900578,
+      "closure_doc_commit": "578ae2c65201dad74f004ba8448faab8a34952ad",
+      "closure_revalidation_run_id": 37141904595,
+      "closure_revalidation_artifact_id": 11280049716,
+      "result": "TECH PASS / VISUAL FAIL. Flat Citadel remains the locked base. Progression-aware parcel reservations protect active Aserradero/Cuartel/Granero, confirmed future Cantera/Forja/Hospital, C0/C1/C2 roads and XW/XE/XU/XS growth. The accepted wall is a continuous low masonry ring with low crenellation plus 11 hero gate/tower modules; Bastion access/material response are improved; real canonical HUD 19/12/9/mobile captures exist; gameplay signature is preserved; 0 Tripo credits. Late stronger-material/foundation variants were capture-reviewed, found net-negative and reverted. Remaining visual gaps are asset-family coherence, fused Hero Bastion rock, world-edge/perimeter quality, life/occupancy and prototype-grade HUD presentation.",
+      "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1. Audit Hero Bastion mesh/material/submesh interface for selective rock masking/re-authoring; establish a shared stone/roof/timber palette across Hero and functional/support architecture; create a coherent low-cost perimeter ground/foliage language that respects the parcel reservation map; uplift the real SlicePresenter HUD visual hierarchy; add minimal population/activity only after coherence. Do not reopen macrocomposition, mountain or terrain-island experiments.",
+      "reopened_at": "2026-10-03T17:41:00Z",
+      "reopen_reason": "Closure reconciliation only: a late in-scope wall simplification commit bd3c59467410065680aae36677e9015349d1c0a7 landed before the prior closure bookkeeping completed and has now validated successfully in run 37141270379 / artifact 11280437080. Update result documentation and final evidence to the real branch HEAD; no new visual family is being opened.",
+      "final_branch_head": "578ae2c65201dad74f004ba8448faab8a34952ad",
+      "accepted_implementation_commit": "c2894925c97aea7cd514b6e90b1cac81b802a63e"
+    },
     {
       "id": "valoria-flat-citadel-production-uplift-v1",
       "title": "Valoria Flat Citadel Production Uplift v1",
@@ -20,13 +87,20 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T16:06:00Z",
       "base_main_sha": "add58c4b6bc19202480cb7fdb9d9cb3001859ab4",
-      "dependency": "Flat Citadel composition is accepted from TECH PASS / VISUAL FAIL run 37134976736, artifact 11278791152. Preserve Bastion-elevated + mostly-flat city macrocomposition. Production uplift order: wall -> ground/roads/parcels -> Hero Bastion approach -> functional buildings -> dressing/life -> final UI framing. No mountain/topography reopening unless a real documented blocker."
-    }
-  ],
-  "history": [
+      "dependency": "Flat Citadel composition is accepted from TECH PASS / VISUAL FAIL run 37134976736, artifact 11278791152. Preserve Bastion-elevated + mostly-flat city macrocomposition. Production uplift order: wall -> ground/roads/parcels -> Hero Bastion approach -> functional buildings -> dressing/life -> final UI framing. No mountain/topography reopening unless a real documented blocker.",
+      "completed_at": "2026-10-03T16:45:30Z",
+      "result_commit": "ca018faf089d10e777566974f2bc6fd3e470ede0",
+      "run_id": 37137847235,
+      "artifact_id": 11279086781,
+      "closure_doc_commit": "c33b82bf8a3141127727d3c1d77daf4798d23297",
+      "closure_revalidation_run_id": 37137964874,
+      "closure_revalidation_artifact_id": 11278977322,
+      "result": "TECH PASS / VISUAL FAIL. Flat Citadel composition is retained as the canonical visual direction. Wall, ground/roads/parcels, Bastion access, canonical functional buildings and restrained dressing all improved materially while gameplay signature remained preserved and Tripo spend stayed at 0. Full frame still reads as an advanced prototype because wall/tower repetition remains heavy, Hero Bastion rock pedestal is too dominant, architecture/material language is not fully unified, natural surround/atmosphere and final gameplay HUD/UI are not production-complete.",
+      "next": "VALORIA FLAT CITADEL ART CONSOLIDATION v1: lighter less-repetitive wall/tower presentation; architectural masking/retaining interface for Hero Bastion rock pedestal; shared material/value language across functional/support architecture; restrained perimeter/atmosphere; real final-game HUD/UI capture; lighting/shadow/fog/occupancy polish. Do not reopen mountain/topography experiments."
+    },
     {
       "id": "valoria-flat-citadel-proof-v1",
       "title": "Valoria Flat Citadel Proof v1",

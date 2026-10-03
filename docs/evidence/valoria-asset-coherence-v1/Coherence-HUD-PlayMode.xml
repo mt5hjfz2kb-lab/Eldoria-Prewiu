@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:43Z" duration="10,2948927">
+  <test-suite type="TestSuite" id="1027" name="Unity" fullname="Unity" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:43Z" duration="10.294893" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1021" name="Eldoria.Tests.PlayMode.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/Unity/Library/ScriptAssemblies/Eldoria.Tests.PlayMode.dll" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:43Z" duration="10.287421" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="14116" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1022" name="Eldoria" fullname="Eldoria" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:43Z" duration="10.286802" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1023" name="Tests" fullname="Eldoria.Tests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:43Z" duration="10.286391" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="ReferenceUiArtPassTests" fullname="Eldoria.Tests.ReferenceUiArtPassTests" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:42Z" duration="8.920285" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" methodname="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="932007016" result="Passed" start-time="2026-10-03 18:20:33Z" end-time="2026-10-03 18:20:34Z" duration="0.962309" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" fullname="Eldoria.Tests.ReferenceUiArtPassTests.OwnerFreshSaveCompletesIAndIIThroughGuidedHud" methodname="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1705015172" result="Passed" start-time="2026-10-03 18:20:34Z" end-time="2026-10-03 18:20:41Z" duration="6.712185" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" methodname="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1645904119" result="Passed" start-time="2026-10-03 18:20:41Z" end-time="2026-10-03 18:20:42Z" duration="1.236517" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1005" name="SliceSceneSmokeTests" fullname="Eldoria.Tests.SliceSceneSmokeTests" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-10-03 18:20:42Z" end-time="2026-10-03 18:20:43Z" duration="1.364639" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1018" name="OwnerHudMatchesReferenceMobileBudgets" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudMatchesReferenceMobileBudgets" methodname="OwnerHudMatchesReferenceMobileBudgets" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1958157696" result="Passed" start-time="2026-10-03 18:20:43Z" end-time="2026-10-03 18:20:43Z" duration="0.350226" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="ValoriaProgressionContractGatesCuartelVisualAndInteraction" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaProgressionContractGatesCuartelVisualAndInteraction" methodname="ValoriaProgressionContractGatesCuartelVisualAndInteraction" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="275512020" result="Passed" start-time="2026-10-03 18:20:43Z" end-time="2026-10-03 18:20:43Z" duration="0.355430" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/crist/AppData/LocalLow/DefaultCompany/Unity\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

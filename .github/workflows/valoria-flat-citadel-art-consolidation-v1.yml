@@ -1,17 +1,6 @@
 name: "[EXPERIMENT] Valoria Flat Citadel Asset Coherence and Game Presentation v1"
 
 on:
-  push:
-    branches: [visual-proof/valoria-asset-coherence-game-presentation-v1]
-    paths:
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelArtConsolidationV1.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelArtConsolidationGateV1.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAssetCoherenceV1.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs'
-      - 'Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader'
-      - 'Unity/Assets/Eldoria/Shaders/ValoriaAmbientSmoke.shader'
-      - 'docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md'
-      - 'docs/VALORIA_PARCEL_RESERVATION_MAP.md'
   workflow_dispatch:
 
 permissions:

@@ -1,0 +1,16 @@
+{
+  "gameplay_signature_preserved": true,
+  "macro_composition_changed": false,
+  "hidden_uplift_wall_renderers": 78,
+  "consolidated_wall_modules": 11,
+  "reserved_parcels_visible": 3,
+  "materials_consolidated": 103,
+  "bastion_interface_modules": 8,
+  "confirmed_future_arc1_plots": ["Cantera","Forja","Hospital"],
+  "meta_systems_without_reserved_world_plot": ["Codice","Relicario"],
+  "long_range_growth_interfaces": ["XW","XE","XU","XS"],
+  "canonical_hud_capture": true,
+  "visual_state_bastion_level": 6,
+  "hud_contract_scope": "current Unity Bastion I-II slice (captured independently of art-tier state)",
+  "tripo_credits": 0
+}

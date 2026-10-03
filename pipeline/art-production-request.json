@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-asset-coherence-game-presentation-v1",
   "asset_or_sector": "Valoria fixed Flat Citadel: shared asset response, fused-rock interface, contained edge, real HUD and activity",
   "profile": "environment_surface",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Unity surface first. Preserve canonical albedo/normal maps, localized world-height rock blending, low relief outside reservations, real live HUD controls. No Tripo, no macrocomposition change. Reuse Art Consolidation capturer/workflow."
+  "notes": "Unity surface first. Preserve canonical albedo/normal maps, localized world-height rock blending, low relief outside reservations, real live HUD controls. No Tripo, no macrocomposition change. Reuse Art Consolidation capturer/workflow. Closed TECH PASS / VISUAL FAIL; archived reproducible implementation 1071454 / run 37143754581. No automatic continuation."
 }
