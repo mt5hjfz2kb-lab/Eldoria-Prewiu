@@ -50,7 +50,6 @@ namespace Eldoria.EditorTools
             ValoriaFullFrameArtifactCleanupV1.Enabled=false;
             ValoriaWorldFrameMountainTerrainV1.Enabled=false;
             ValoriaLowerCityTerrainV1.Enabled=false;
-            ValoriaVisualShellV2.Enabled=false;
             VisualWorld.VisualIntegrationEnabled=true;
 
             var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
