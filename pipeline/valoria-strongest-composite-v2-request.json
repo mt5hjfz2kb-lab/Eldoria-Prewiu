@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate hybrid lower-city terrain v5: TerrainData owns walkable terrace tops and narrow links; authored rock meshes dress hole boundaries and vertical cliff language.",
+  "objective": "Validate compact integrated lower-city v11: reframed Sawmill/Barracks visuals, compact side terraces, unified cobble stair, shallow terraced rock edges and removal of legacy stair/support dressing.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:49:00+02:00",
-  "retry_reason": "Terraced landforms v4 TECH PASS / VISUAL PARTIAL: separated landforms improved composition but TerrainData itself produced dark bulbous cliff masses. Unity documentation recommends masking Terrain with holes and hiding hole edges using other rock geometry; v5 applies that split.",
-  "retry_seq": 15
+  "triggered_at": "2026-10-03T09:17:00+02:00",
+  "retry_reason": "v10 TECH PASS / VISUAL PARTIAL: stair cleanup improved coherence, but lower functional buildings remained too detached and forced oversized terrace masses. v11 pulls visual proxies inward and shrinks their supports while preserving gameplay authority.",
+  "retry_seq": 16
 }
