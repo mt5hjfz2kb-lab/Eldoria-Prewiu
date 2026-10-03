@@ -7,6 +7,8 @@ on:
       - 'tools/valoria-shell-v2-bastion-continuity/**'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBastionContinuityV2.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs'
+      - 'Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader'
       - '.github/workflows/valoria-shell-v2-bastion-continuity.yml'
   workflow_dispatch:
 
