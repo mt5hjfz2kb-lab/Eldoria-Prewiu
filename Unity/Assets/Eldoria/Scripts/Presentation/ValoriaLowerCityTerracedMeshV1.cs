@@ -47,24 +47,17 @@ namespace Eldoria.Presentation
                     ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.38f,.36f,1f),"stone",new Vector2(.95f,.95f),.98f);
             }
 
-            // Central terrace: compact landing beneath the stair, not a full-width board.
-            Create(root,"central landing",new[]{
-                V(-4.25f,-2.05f),V(-2.95f,-2.65f),V(-1.35f,-2.35f),V(0f,-2.75f),
-                V(1.40f,-2.38f),V(2.95f,-2.62f),V(4.30f,-2.00f),V(4.55f,-.65f),
-                V(3.75f,.55f),V(2.15f,1.05f),V(.10f,.88f),V(-2.05f,1.02f),V(-3.75f,.52f),V(-4.55f,-.62f)
-            },-.18f,-.56f,-.98f,earth,rock);
-
-            // West economic terrace, pulled inward and connected to the central landing.
-            Create(root,"west economic",new[]{
-                V(-7.25f,-3.45f),V(-6.15f,-3.95f),V(-4.75f,-3.55f),V(-3.85f,-2.70f),
-                V(-3.95f,-1.55f),V(-4.70f,-.82f),V(-5.90f,-.72f),V(-7.00f,-1.35f)
-            },-.18f,-.54f,-.92f,earth,rock);
-
-            // East military terrace.
-            Create(root,"east military",new[]{
-                V(3.75f,-2.55f),V(4.35f,-3.55f),V(5.55f,-4.05f),V(6.95f,-3.85f),
-                V(7.55f,-2.80f),V(7.25f,-1.70f),V(6.25f,-.92f),V(4.95f,-.88f),V(4.05f,-1.55f)
-            },-.18f,-.54f,-.92f,earth,rock);
+            // One continuous lower-city shelf now owns stair + economic + military seating.
+            // Keeping one irregular silhouette removes the three-island read while preserving
+            // all gameplay colliders/hotspots underneath as presentation-only geometry.
+            Create(root,"integrated lower city",new[]{
+                V(-7.10f,-3.05f),V(-6.10f,-3.78f),V(-4.80f,-3.62f),V(-3.35f,-3.08f),
+                V(-1.70f,-2.72f),V(0f,-2.88f),V(1.75f,-2.70f),V(3.40f,-3.08f),
+                V(4.85f,-3.65f),V(6.20f,-3.78f),V(7.15f,-3.02f),V(7.30f,-1.85f),
+                V(6.75f,-.88f),V(5.65f,-.48f),V(4.55f,-.55f),V(3.75f,.38f),
+                V(2.20f,.95f),V(.05f,.88f),V(-2.15f,.98f),V(-3.75f,.42f),
+                V(-4.55f,-.52f),V(-5.70f,-.48f),V(-6.78f,-.88f),V(-7.32f,-1.86f)
+            },-.18f,-.58f,-1.02f,earth,rock);
 
         }
 
