@@ -134,11 +134,11 @@ namespace Eldoria.Presentation
         {
             // v25: the low three presentation steps caused a long bridge/ramp read.
             // Start the visible stair inside the cliff foot while preserving the hidden real route.
-            const int steps=6;
-            const float z0=2.70f;
+            const int steps=5;
+            const float z0=3.15f;
             const float depth=.50f;
             const float rise=.22f;
-            const float baseY=1.36f;
+            const float baseY=1.52f;
 
             var v=new List<Vector3>();
             var uv=new List<Vector2>();
@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
             for(int i=0;i<steps;i++)
             {
                 float t=i/(float)(steps-1);
-                float width=Mathf.Lerp(1.48f,1.76f,t);
+                float width=Mathf.Lerp(1.42f,1.68f,t);
                 float half=width*.5f;
                 float y=baseY+i*rise;
                 float za=z0+i*depth;
