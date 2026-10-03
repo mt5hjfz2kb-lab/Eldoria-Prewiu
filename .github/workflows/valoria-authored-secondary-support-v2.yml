@@ -1,11 +1,6 @@
 name: "[EXPERIMENT] Valoria ASF Source Support v2"
 
 on:
-  push:
-    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
-    paths:
-      - "tools/valoria-authored-secondary-art-family/author_support_sources_v2.py"
-      - ".github/workflows/valoria-authored-secondary-support-v2.yml"
   workflow_dispatch:
 
 permissions:
