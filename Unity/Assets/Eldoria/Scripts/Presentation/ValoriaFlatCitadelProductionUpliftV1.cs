@@ -234,8 +234,13 @@ namespace Eldoria.Presentation
             verts[0]=new Vector3(center.x,y,center.y);
             uv[0]=new Vector2(center.x*.22f,center.y*.22f);
             for(int i=0;i<n;i++){verts[i+1]=new Vector3(ring[i].x,y,ring[i].y);uv[i+1]=new Vector2(ring[i].x*.22f,ring[i].y*.22f);}
-            var tris=new int[n*3];
-            for(int i=0;i<n;i++){tris[i*3]=0;tris[i*3+1]=i+1;tris[i*3+2]=((i+1)%n)+1;}
+            var tris=new int[n*6];
+            for(int i=0;i<n;i++)
+            {
+                int a=i+1,b=((i+1)%n)+1,t=i*6;
+                tris[t]=0;tris[t+1]=b;tris[t+2]=a;
+                tris[t+3]=0;tris[t+4]=a;tris[t+5]=b;
+            }
             var mesh=new Mesh{name="Valoria Flat Citadel ground · "+role};
             mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject("Valoria · Flat Citadel Production · "+role);
@@ -441,7 +446,8 @@ namespace Eldoria.Presentation
             {
                 var hero=Object.Instantiate(heroSource);
                 hero.name="Valoria · Flat Citadel · Hero Bastion";
-                FitPrefab(hero,new Vector3(0,BastionIntegrationUpliftEnabled?.54f:.76f,7.25f),7.6f,7.9f);
+                FitPrefab(hero,new Vector3(0,BastionIntegrationUpliftEnabled?.20f:.76f,7.25f),
+                    BastionIntegrationUpliftEnabled?7.15f:7.6f,BastionIntegrationUpliftEnabled?7.35f:7.9f);
                 hero.transform.SetParent(root,true);
                 DisableGameplay(hero);
                 FunctionalBuildings++;
@@ -453,17 +459,30 @@ namespace Eldoria.Presentation
                 ReparentNew(root,before); FunctionalBuildings++;
             }
 
-            before=root.childCount;
-            ValoriaKit.SawmillArchitecture("Aserradero · Flat Citadel",new Vector3(-5.9f,.16f,-1.55f),state.SawmillLevel>0,Glow);
-            ReparentNew(root,before); FunctionalBuildings++;
+            if(FunctionalBuildingUpliftEnabled)
+            {
+                PlaceFunctionalPrefab(root,"Aserradero","Valoria/Valoria_Aserradero_AP2_v1",
+                    new Vector3(-5.95f,.13f,-1.55f),4.45f,3.65f,-5f);
+                PlaceFunctionalPrefab(root,"Cuartel","Valoria/Valoria_Cuartel_AP2_v1",
+                    new Vector3(5.95f,.13f,-1.75f),4.55f,3.75f,4f);
+                PlaceFunctionalPrefab(root,"Granero","Valoria/Valoria_Granero_BIII_v1",
+                    new Vector3(-2.75f,.13f,-4.38f),3.75f,3.35f,-3f);
+                FunctionalBuildings+=3;
+            }
+            else
+            {
+                before=root.childCount;
+                ValoriaKit.SawmillArchitecture("Aserradero · Flat Citadel",new Vector3(-5.9f,.16f,-1.55f),state.SawmillLevel>0,Glow);
+                ReparentNew(root,before); FunctionalBuildings++;
 
-            before=root.childCount;
-            ValoriaKit.BarracksArchitecture("Cuartel · Flat Citadel",new Vector3(5.9f,.16f,-1.75f),state.BarracksLevel>0,Glow);
-            ReparentNew(root,before); FunctionalBuildings++;
+                before=root.childCount;
+                ValoriaKit.BarracksArchitecture("Cuartel · Flat Citadel",new Vector3(5.9f,.16f,-1.75f),state.BarracksLevel>0,Glow);
+                ReparentNew(root,before); FunctionalBuildings++;
 
-            before=root.childCount;
-            ValoriaKit.GranaryArchitecture("Granero · Flat Citadel",new Vector3(-2.7f,.15f,-4.4f),true,Glow);
-            ReparentNew(root,before); FunctionalBuildings++;
+                before=root.childCount;
+                ValoriaKit.GranaryArchitecture("Granero · Flat Citadel",new Vector3(-2.7f,.15f,-4.4f),true,Glow);
+                ReparentNew(root,before); FunctionalBuildings++;
+            }
 
             // Only two small rebuilt homes: this is a settlement with headroom, not a finished metropolis.
             before=root.childCount;
@@ -472,6 +491,19 @@ namespace Eldoria.Presentation
             before=root.childCount;
             ValoriaKit.House("Valoria · Flat Citadel · cottage east",new Vector3(5.7f,.18f,3.45f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
             ReparentNew(root,before);
+        }
+
+        static void PlaceFunctionalPrefab(Transform root,string role,string resourcePath,Vector3 ground,float span,float maxHeight,float yaw)
+        {
+            var source=Resources.Load<GameObject>(resourcePath);
+            if(source==null)throw new InvalidOperationException("Missing canonical functional asset: "+resourcePath);
+            var go=Object.Instantiate(source);
+            go.name="Valoria · Flat Citadel Production · "+role;
+            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+            FitPrefab(go,ground,span,maxHeight);
+            go.transform.SetParent(root,true);
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
         static void BuildFunctionalBuildingProduction(Transform root)
@@ -511,9 +543,9 @@ namespace Eldoria.Presentation
             foreach(var r in root.GetComponentsInChildren<Renderer>(true))
             {
                 string chain=Chain(r.transform);
-                bool saw=chain.Contains("aserradero · flat citadel");
-                bool barracks=chain.Contains("cuartel · flat citadel");
-                bool granary=chain.Contains("granero · flat citadel");
+                bool saw=chain.Contains("aserradero · flat citadel")||chain.Contains("flat citadel production · aserradero");
+                bool barracks=chain.Contains("cuartel · flat citadel")||chain.Contains("flat citadel production · cuartel");
+                bool granary=chain.Contains("granero · flat citadel")||chain.Contains("flat citadel production · granero");
                 if(!saw&&!barracks&&!granary)continue;
 
                 if(barracks)
@@ -997,12 +1029,12 @@ namespace Eldoria.Presentation
                 topVerts[i+1]=new Vector3(ring[i].x,top,ring[i].y);
                 topUv[i+1]=new Vector2(ring[i].x*.18f,ring[i].y*.18f);
             }
-            var topTris=new int[n*3];
+            var topTris=new int[n*6];
             for(int i=0;i<n;i++)
             {
-                topTris[i*3]=0;
-                topTris[i*3+1]=i+1;
-                topTris[i*3+2]=((i+1)%n)+1;
+                int a=i+1,b=((i+1)%n)+1,t=i*6;
+                topTris[t]=0;topTris[t+1]=b;topTris[t+2]=a;
+                topTris[t+3]=0;topTris[t+4]=a;topTris[t+5]=b;
             }
             var topMesh=new Mesh{name="Flat Citadel "+role+" top"};
             topMesh.vertices=topVerts; topMesh.uv=topUv; topMesh.triangles=topTris; topMesh.RecalculateNormals(); topMesh.RecalculateBounds();
