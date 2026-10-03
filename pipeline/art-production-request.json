@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "request_id": "valoria-visual-quality-breakthrough-v1",
-  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
+  "request_id": "valoria-semantic-source-reauthoring-proof-v1",
+  "asset_or_sector": "Hero Bastion + Aserradero + one representative wall segment; source-level semantic reauthoring only",
   "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -14,19 +14,19 @@
     "tripo_retopology": false,
     "blender_lod": false,
     "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_terrain_blending": false
   },
   "validation": {
-    "official_camera_19": true,
-    "official_camera_12": true,
+    "official_camera_19": false,
+    "official_camera_12": false,
     "official_camera_9": true,
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VQB candidate: accepted authored curtain wall rhythm + semantic PBR uplift on canonical Aserradero/Cuartel/Granero + intact canonical Hero Bastion wrapped by warm authored StoneArchitecture retaining interface. No segmentation, no Slavic replacement, no macrocomposition change, no paid tools."
+  "notes": "Deep-edit rich canonical sources. Hero removes only previously audited low14 loose components, then authors integrated retaining transition inside source .blend. Aserradero and wall retain source mesh/UV/textures and receive component-level material zoning. Zero credits. Stop at zoom9/mobile if no clear first-glance win."
 }
