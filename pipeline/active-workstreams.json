@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T14:52:00Z",
+  "updated_at": "2026-10-03T15:05:00Z",
   "active": [
+    {
+      "id": "valoria-shell-v2-volumetric-landform",
+      "title": "Valoria Visual Shell v2 — volumetric contour-loft landform",
+      "owner": "chat-valoria-shell-v2-volumetric-landform-20261003",
+      "scope": [
+        "tools/valoria-shell-v2-volumetric-landform/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVolumetricLandformV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader",
+        ".github/workflows/valoria-shell-v2-volumetric-landform.yml",
+        "docs/VALORIA_SHELL_V2_VOLUMETRIC_LANDFORM_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T15:05:00Z",
+      "base_main_sha": "0138fc459f551f234fa5f0ee37877d85cf71ca19",
+      "dependency": "Open-sheet terrace family closed after corrected visual proof. New method must be one closed irregular cliff/landform volume created from authored contour rings, with internal terrace cuts/steps, no exposed rectangular sheet perimeter, no scan plates, no voxel union, no Tripo; preserve Hero Bastion/cameras/gameplay."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-shell-v2-bastion-continuity",
       "title": "Valoria Visual Shell v2 — fixed-camera authored DCC set",
@@ -23,13 +49,14 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-03T14:24:00Z",
       "base_main_sha": "e684ab69c677faab37fb62cf7c7821ecdf94ac10",
-      "dependency": "Latest complete macroform run 37130843614 is TECH PASS / VISUAL FAIL: composition still reads as independent layers with dark retaining/stair bars and no coherent mountain-to-city mass. Hero Bastion audit proves its 49,800-triangle geometry is one inseparable mesh. Stop-rule reclassification: author the full fixed-camera visual set in Blender (Hero Bastion + functional buildings + district + terrain/supports) as one composition; Unity keeps gameplay authority and hides duplicate renderers. No Tripo, zero spend."
-    }
-  ],
-  "history": [
+      "dependency": "Latest complete macroform run 37130843614 is TECH PASS / VISUAL FAIL: composition still reads as independent layers with dark retaining/stair bars and no coherent mountain-to-city mass. Hero Bastion audit proves its 49,800-triangle geometry is one inseparable mesh. Stop-rule reclassification: author the full fixed-camera visual set in Blender (Hero Bastion + functional buildings + district + terrain/supports) as one composition; Unity keeps gameplay authority and hides duplicate renderers. No Tripo, zero spend.",
+      "completed_at": "2026-10-03T15:05:00Z",
+      "result": "TECH PASS / VISUAL FAIL. Run 37131227315 attempt 2 SUCCESS on HEAD 512ec14a650825071446ffb074283e50d1465ccc. Winding/material defects were corrected, proving the authored terrace sheet visibly. Final 12/19/9/mobile still reads as a large brown board/terraced sheet with exposed planar edges and mechanical bands; family closed under stop rule. Gameplay collider/hotspot signature remained equal; 0 Tripo credits.",
+      "next": "Switch geometry family: closed volumetric landform authored from irregular contour rings/loft, with terraces carved/embedded inside the mass rather than represented as an open sheet. Preserve full Shell v2 composition, Hero Bastion, official cameras and gameplay."
+    },
     {
       "id": "valoria-shell-v2-authored-environment",
       "title": "Valoria Visual Shell v2 — coherent photogrammetry midground",
