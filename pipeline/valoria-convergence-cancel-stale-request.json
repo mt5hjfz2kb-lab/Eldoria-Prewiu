@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stalled TerrainData v3 visual capture after exceeding normal comparable gate duration; source change will remove runtime Terrain Lit materialTemplate while preserving v3 geometry and layer remaps.",
+  "reason": "Cancel stale Unity slice from TerrainData v3b so connected terraced landforms v4 can use the self-hosted Unity runner.",
   "runs": [
-    37099964209
+    37100305316
   ],
   "keep_runs": [
-    37099957457
+    37100614193,
+    37100604984
   ],
-  "triggered_at": "2026-10-03T07:36:00+02:00"
+  "triggered_at": "2026-10-03T07:42:00+02:00"
 }
