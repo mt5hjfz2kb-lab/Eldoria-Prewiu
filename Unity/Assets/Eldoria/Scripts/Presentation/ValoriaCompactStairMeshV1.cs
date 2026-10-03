@@ -72,10 +72,12 @@ namespace Eldoria.Presentation
             // v16: follow the stair rise with a faceted rock spine instead of one broad
             // trapezoid. This keeps the support visually attached to the compact terrace
             // while breaking the artificial grey ramp silhouette at the official camera.
-            var z=new[]{-.52f,.92f,2.38f,3.86f,5.95f};
-            var half=new[]{1.02f,1.10f,1.18f,1.28f,1.38f};
-            var topY=new[]{.22f,.66f,1.10f,1.56f,2.16f};
-            var bottomY=new[]{-.50f,-.36f,-.12f,.26f,.82f};
+            // v25: crop the presentation-only support below the inhabited cliff foot.
+            // Gameplay route/colliders remain untouched; only the visible rock spine starts higher.
+            var z=new[]{1.28f,2.42f,3.58f,4.76f,5.95f};
+            var half=new[]{.94f,1.02f,1.12f,1.24f,1.36f};
+            var topY=new[]{.82f,1.12f,1.44f,1.78f,2.16f};
+            var bottomY=new[]{.18f,.30f,.46f,.64f,.84f};
 
             var v=new List<Vector3>();
             var uv=new List<Vector2>();
@@ -134,11 +136,13 @@ namespace Eldoria.Presentation
 
         static Mesh BuildMesh()
         {
-            const int steps=11;
-            const float z0=-.05f;
+            // v25: the low three presentation steps caused a long bridge/ramp read.
+            // Start the visible stair inside the cliff foot while preserving the hidden real route.
+            const int steps=9;
+            const float z0=1.22f;
             const float depth=.535f;
-            const float rise=.195f;
-            const float baseY=.39f;
+            const float rise=.205f;
+            const float baseY=.80f;
 
             var v=new List<Vector3>();
             var uv=new List<Vector2>();
