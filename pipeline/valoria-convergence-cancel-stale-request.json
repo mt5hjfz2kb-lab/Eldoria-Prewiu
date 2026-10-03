@@ -1,10 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "TerrainData Strongest Composite capture exceeded normal comparable gate duration by several multiples and stopped reporting progress. Cancel to recover final logs and identify the exact TerrainData/render stall before retrying.",
+  "reason": "Free Windows Unity runner for compact-city-base/narrow-causeway Strongest Composite proof. Preserve the visual candidate; the generic Unity slice is non-terminal for this iteration.",
   "runs": [
-    37085123270
+    37086044132
   ],
-  "keep_runs": [],
-  "triggered_at": "2026-10-03T03:19:30+02:00"
+  "keep_runs": [
+    37086054993
+  ],
+  "triggered_at": "2026-10-03T03:26:00+02:00"
 }
