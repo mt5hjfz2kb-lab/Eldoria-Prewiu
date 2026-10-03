@@ -15,7 +15,7 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string path,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(6.65f,.38f,-3.85f),184f,3.15f,3.55f),
+            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(5.55f,.46f,-2.35f),184f,2.95f,3.40f),
             ("west_residence","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(-5.15f,.62f,2.55f),14f,2.65f,3.05f),
             ("east_civic","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.10f,.66f,2.80f),174f,2.75f,3.20f),
             ("upper_west","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
@@ -84,6 +84,7 @@ namespace Eldoria.EditorTools
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
             int routeStyled=StyleCoreRoute();
             int sideToneAdjusted=ToneCoreSideBuildings();
+            int coreVisualsReframed=ReframeCoreSideVisuals(root.transform);
             ValoriaLowerCityPlateauV1.Enabled=false;
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
@@ -114,6 +115,7 @@ namespace Eldoria.EditorTools
                 $"  \"audit_pruned_renderers\": {auditPruned},\n"+
                 $"  \"core_route_renderers_styled\": {routeStyled},\n"+
                 $"  \"core_side_renderers_toned\": {sideToneAdjusted},\n"+
+                $"  \"core_side_visuals_reframed\": {coreVisualsReframed},\n"+
                 $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
                 $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
@@ -357,6 +359,25 @@ namespace Eldoria.EditorTools
                 var mats=r.sharedMaterials;
                 for(int i=0;i<mats.Length;i++)mats[i]=target;
                 r.sharedMaterials=mats;
+                count++;
+            }
+            return count;
+        }
+
+        static int ReframeCoreSideVisuals(Transform root)
+        {
+            int count=0;
+            var original=GameObject.Find("Aserradero · dedicated sawmill");
+            if(original!=null)
+            {
+                var clone=Object.Instantiate(original);
+                clone.name="Valoria · Strongest v2 · compact sawmill visual";
+                clone.transform.position+=new Vector3(1.42f,.04f,1.18f);
+                clone.transform.SetParent(root,true);
+                DisableGameplay(clone);
+
+                foreach(var r in original.GetComponentsInChildren<Renderer>(true))r.enabled=false;
+                foreach(var l in original.GetComponentsInChildren<Light>(true))l.enabled=false;
                 count++;
             }
             return count;
