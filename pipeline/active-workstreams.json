@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T17:48:00Z",
+  "updated_at": "2026-10-03T17:49:00Z",
   "active": [],
   "history": [
     {
@@ -30,13 +30,14 @@
       "result_commit": "c2894925c97aea7cd514b6e90b1cac81b802a63e",
       "run_id": 37141597937,
       "artifact_id": 11280900578,
-      "closure_doc_commit": "7ef4944adb9d877160be944a286a8f20933c1005",
-      "closure_revalidation_run_id": 37141750828,
-      "closure_revalidation_artifact_id": 11280692388,
+      "closure_doc_commit": "ff9531256f62a9bd0976ea385db46af7e0060edb",
+      "closure_revalidation_run_id": 37141808349,
+      "closure_revalidation_artifact_id": 11280418173,
       "result": "TECH PASS / VISUAL FAIL. Flat Citadel remains the locked base. A progression-aware parcel map now protects active Aserradero/Cuartel/Granero, confirmed future Cantera/Forja/Hospital, C0/C1/C2 roads and XW/XE/XU/XS growth. The final accepted wall uses a continuous low ring plus only 11 hero gate/tower modules; Bastion access/material response are improved; canonical HUD 19/12/9/mobile captures exist; gameplay signature is preserved; 0 Tripo credits. A late washed-out masonry/foundation attempt was reviewed from run 37141480932 and reverted rather than accumulated. Remaining visual gaps are asset-family coherence, fused Hero Bastion rock, world-edge/perimeter quality, life/occupancy and prototype-grade HUD presentation.",
       "next": "VALORIA ASSET COHERENCE & GAME PRESENTATION v1. Audit Hero Bastion mesh/material/submesh interface for selective rock masking/re-authoring; establish a shared stone/roof/timber palette across Hero and functional/support architecture; create a coherent low-cost perimeter ground/foliage language that respects the parcel reservation map; uplift the real SlicePresenter HUD visual hierarchy; add minimal population/activity only after coherence. Do not reopen macrocomposition, mountain or terrain-island experiments.",
       "reopened_at": "2026-10-03T17:41:00Z",
-      "reopen_reason": "Closure reconciliation only: a late in-scope wall simplification commit bd3c59467410065680aae36677e9015349d1c0a7 landed before the prior closure bookkeeping completed and has now validated successfully in run 37141270379 / artifact 11280437080. Update result documentation and final evidence to the real branch HEAD; no new visual family is being opened."
+      "reopen_reason": "Closure reconciliation only: a late in-scope wall simplification commit bd3c59467410065680aae36677e9015349d1c0a7 landed before the prior closure bookkeeping completed and has now validated successfully in run 37141270379 / artifact 11280437080. Update result documentation and final evidence to the real branch HEAD; no new visual family is being opened.",
+      "final_branch_head": "ff9531256f62a9bd0976ea385db46af7e0060edb"
     },
     {
       "id": "valoria-flat-citadel-production-uplift-v1",
