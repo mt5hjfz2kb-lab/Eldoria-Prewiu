@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: valoria-shell-v2-bastion-continuity
+  group: valoria-shell-v2-fixed-camera-dcc-set
   cancel-in-progress: true
 
 jobs:
