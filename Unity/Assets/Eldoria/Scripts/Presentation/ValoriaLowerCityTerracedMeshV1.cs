@@ -51,13 +51,12 @@ namespace Eldoria.Presentation
             // Keeping one irregular silhouette removes the three-island read while preserving
             // all gameplay colliders/hotspots underneath as presentation-only geometry.
             Create(root,"integrated lower city",new[]{
-                V(-7.10f,-3.05f),V(-6.10f,-3.78f),V(-4.80f,-3.62f),V(-3.35f,-3.08f),
-                V(-1.70f,-2.72f),V(0f,-2.88f),V(1.75f,-2.70f),V(3.40f,-3.08f),
-                V(4.85f,-3.65f),V(6.20f,-3.78f),V(7.15f,-3.02f),V(7.30f,-1.85f),
-                V(6.75f,-.88f),V(5.65f,-.48f),V(4.55f,-.55f),V(3.75f,.38f),
-                V(2.20f,.95f),V(.05f,.88f),V(-2.15f,.98f),V(-3.75f,.42f),
-                V(-4.55f,-.52f),V(-5.70f,-.48f),V(-6.78f,-.88f),V(-7.32f,-1.86f)
-            },-.18f,-.58f,-1.02f,earth,rock);
+                V(-5.75f,-2.35f),V(-4.85f,-2.85f),V(-3.40f,-2.65f),V(-1.80f,-2.35f),
+                V(0f,-2.50f),V(1.80f,-2.35f),V(3.40f,-2.65f),V(4.90f,-2.85f),
+                V(5.80f,-2.30f),V(5.85f,-1.25f),V(5.25f,-.55f),V(4.25f,-.35f),
+                V(3.55f,.45f),V(2.00f,.92f),V(0f,.84f),V(-2.00f,.95f),
+                V(-3.55f,.48f),V(-4.25f,-.32f),V(-5.25f,-.55f),V(-5.85f,-1.25f)
+            },-.12f,-.48f,-.82f,earth,rock);
 
         }
 
