@@ -1,0 +1,117 @@
+name: "[EXPERIMENT] Valoria Blender Cliff Proof v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-blender-cliff-proof-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-blender-cliff-proof-v1
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 30
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+
+      - uses: actions/checkout@v4
+        with: { clean: false }
+
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $roots=@('C:\Program Files\Blender Foundation',"${env:LOCALAPPDATA}\Programs\Blender Foundation")
+            foreach($root in $roots){
+              if($candidate){break}
+              if(Test-Path $root){
+                $candidate=Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if(-not $candidate -or -not (Test-Path $candidate)){throw 'Blender executable not found on Unity runner.'}
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+
+      - name: Generate zero-credit organic cliff GLB
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\ExperimentalBlenderCliff"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $output=Join-Path $dir 'UnifiedLowerCityCliff.glb'
+          $report="$env:RUNNER_TEMP\valoria-blender-cliff-v1-report.json"
+          $log="$env:RUNNER_TEMP\valoria-blender-cliff-v1.log"
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\tools\blender_lower_city_cliff_v1.py" -- --output $output --report $report *> $log
+          if($LASTEXITCODE -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw "Blender cliff generation failed: $LASTEXITCODE"
+          }
+          if(-not (Test-Path $output) -or (Get-Item $output).Length -lt 10000){throw 'Generated cliff GLB missing or unexpectedly small.'}
+          Get-Content $report
+
+      - name: Stage Kiara 3 CC0 backplate
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\Resources\Valoria\BackplateCandidates"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $dst=Join-Path $dir 'kiara3_1.jpg'
+          Invoke-WebRequest -Uri 'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01604.jpg' -OutFile $dst -UseBasicParsing
+          if((Get-Item $dst).Length -lt 500000){throw 'Backplate unexpectedly small.'}
+
+      - name: Capture Blender cliff candidate in canonical composite
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaStrongestCompositeV2Captures"
+          $log="$env:RUNNER_TEMP\ValoriaBlenderCliffProofV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaStrongestCompositeGateV2.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(24)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-blender-cliff-proof-v1-${{ github.run_id }}
+          path: |
+            Unity/ValoriaStrongestCompositeV2Captures/*
+            Unity/Assets/Eldoria/Resources/Valoria/ExperimentalBlenderCliff/UnifiedLowerCityCliff.glb
+            ${{ runner.temp }}/valoria-blender-cliff-v1-report.json
+            ${{ runner.temp }}/valoria-blender-cliff-v1.log
+            ${{ runner.temp }}/ValoriaBlenderCliffProofV1.log
+          if-no-files-found: warn
+          retention-days: 30
