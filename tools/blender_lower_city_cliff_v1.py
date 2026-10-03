@@ -29,7 +29,8 @@ faces=[]
 
 # Irregular trapezoid: narrower camera/front edge, broad rear that buries into hero island.
 def half_width(t):
-    return 3.55 + 1.30*t + .22*math.sin(t*math.pi*2.0)
+    # v3: narrow camera-facing toe, widening only as the cliff enters the fortress.
+    return 2.35 + 2.35*t + .16*math.sin(t*math.pi*2.0)
 
 def center_y(t):
     return -0.10 + 2.00*t + .18*math.sin(t*math.pi)
@@ -80,7 +81,7 @@ for idx in ring_top:
     # v2: two fractured wall bands. This creates readable ledges and avoids a single
     # smooth skirt when the mesh is lit from the official strategic camera.
     t=(y-z0)/(z1-z0)
-    drop=1.04-.24*t + .16*math.sin(x*1.9+y*.8)
+    drop=.66+.20*t + .10*math.sin(x*1.9+y*.8)
     lateral=.10*math.sin(x*2.7-y*1.3)+.05*math.sin(y*3.1)
     ring_mid.append(len(verts))
     verts.append((x*1.018+lateral,y,z-drop*.46 + .05*math.sin(x*3.2)))
@@ -140,7 +141,7 @@ report={
     "output":a.output,
     "bytes":os.path.getsize(a.output),
     "tripo_credits":0,
-    "method":"Blender procedural organic cliff mesh v2; denser deterministic displacement + two fractured wall bands; hero-island rock material assigned at Unity integration"
+    "method":"Blender procedural organic cliff mesh v3; narrow buried toe + widening fortress wedge + fractured wall bands; hero-island rock material assigned at Unity integration"
 }
 with open(a.report,"w",encoding="utf-8") as f: json.dump(report,f,indent=2)
 print(json.dumps(report,indent=2))
