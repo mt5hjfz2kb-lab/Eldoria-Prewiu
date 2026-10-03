@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
         void LateUpdate()
         {
             var canvas = GameObject.Find("Eldoria HUD");
-            if (canvas == null) return;
+            if (canvas == null || canvas.GetComponent<ValoriaHudPresentationV1>() != null) return;
             safe = canvas.transform.Find("Safe area") as RectTransform;
             if (safe == null) return;
             sceneCamera = GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
@@ -71,7 +71,7 @@ namespace Eldoria.Presentation
         void DecorateCurrentHud()
         {
             var canvas = GameObject.Find("Eldoria HUD");
-            if (canvas == null) return;
+            if (canvas == null || canvas.GetComponent<ValoriaHudPresentationV1>() != null) return;
             safe = canvas.transform.Find("Safe area") as RectTransform;
             if (safe == null) return;
 

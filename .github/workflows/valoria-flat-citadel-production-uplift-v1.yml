@@ -6,7 +6,6 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelProductionUpliftV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelProductionUpliftGateV1.cs'
-      - '.github/workflows/valoria-flat-citadel-production-uplift-v1.yml'
       - 'docs/VALORIA_FLAT_CITADEL_PRODUCTION_UPLIFT_V1_RESULT.md'
   workflow_dispatch:
 

@@ -14,7 +14,7 @@ namespace Eldoria.EditorTools
 {
     public static class ValoriaFlatCitadelArtConsolidationGateV1
     {
-        const string Folder="ValoriaFlatCitadelArtConsolidationV1Captures";
+        const string Folder="ValoriaAssetCoherenceV1Captures";
 
         public static void Capture()
         {
@@ -47,27 +47,33 @@ namespace Eldoria.EditorTools
             var beforeSig=ValoriaVisualFormulaGate.CollisionSignature();
             ConfigureUplift();
             ValoriaFlatCitadelProductionUpliftV1.Build(before.root.transform,state);
+            ValoriaFlatCitadelArtConsolidationV1.Apply(before.root.transform,state);
             RemoveAddedGameplay(before.colliderIds,before.hotspotIds);
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=beforeSig)
                 throw new Exception("Production-uplift BEFORE altered gameplay signature.");
             SaveSet(before.camera,"before",p,t);
+            AttachCanonicalHud(before.camera,hudState,false);
+            SaveSet(before.camera,"before-game",p,t);
 
             var after=CreateCanonicalScene(state);
             var afterSig=ValoriaVisualFormulaGate.CollisionSignature();
             ConfigureUplift();
             ValoriaFlatCitadelProductionUpliftV1.Build(after.root.transform,state);
             ValoriaFlatCitadelArtConsolidationV1.Apply(after.root.transform,state);
+            ValoriaAssetCoherenceV1.Apply(after.root.transform,state);
             RemoveAddedGameplay(after.colliderIds,after.hotspotIds);
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=afterSig)
                 throw new Exception("Art Consolidation altered gameplay signature.");
             SaveSet(after.camera,"after",p,t);
-            AttachCanonicalHud(after.camera,hudState);
+            AttachCanonicalHud(after.camera,hudState,true);
             SaveSet(after.camera,"game",p,t);
 
             WriteEvidence();
-            Debug.Log("VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_GATE=PASS");
+            File.WriteAllLines(Folder+"/asset-audit.txt",ValoriaAssetCoherenceV1.Audit);
+            File.WriteAllText(Folder+"/coherence-metrics.json",$"{{\"materials\":{ValoriaAssetCoherenceV1.MaterialCount},\"population\":{ValoriaAssetCoherenceV1.PopulationCount},\"ground_triangles\":{ValoriaAssetCoherenceV1.GroundTriangles}}}");
+            Debug.Log("VALORIA_ASSET_COHERENCE_V1_GATE=PASS");
             EditorApplication.Exit(0);
         }
 
@@ -177,7 +183,7 @@ namespace Eldoria.EditorTools
             public bool Advance()=>false;
         }
 
-        static void AttachCanonicalHud(Camera camera,PlayerState state)
+        static void AttachCanonicalHud(Camera camera,PlayerState state,bool uplift)
         {
             var go=new GameObject("Valoria · canonical HUD capture");
             var presenter=go.AddComponent<SlicePresenter>();
@@ -194,7 +200,9 @@ namespace Eldoria.EditorTools
             SetPrivate(type,presenter,"renderedEngendro",state.EngendroDefeated);
             SetPrivate(type,presenter,"renderedIdle",state.March.Phase=="idle");
 
+            ValoriaHudPresentationV1.Enabled=uplift;
             type.GetMethod("CreateHud",flags)?.Invoke(presenter,null);
+            ValoriaHudPresentationV1.Enabled=true;
             type.GetMethod("Refresh",flags)?.Invoke(presenter,null);
 
             var safe=type.GetField("safe",flags)?.GetValue(presenter) as RectTransform;
@@ -211,6 +219,7 @@ namespace Eldoria.EditorTools
                 canvas.worldCamera=camera;
                 canvas.planeDistance=.5f;
             }
+            if(!uplift){var skin=Object.FindFirstObjectByType<ValoriaHudPresentationV1>();if(skin!=null)Object.DestroyImmediate(skin);}
             Canvas.ForceUpdateCanvases();
         }
 
@@ -236,7 +245,9 @@ namespace Eldoria.EditorTools
             var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32);var prev=RenderTexture.active;
             try
             {
-                c.targetTexture=rt;Canvas.ForceUpdateCanvases();c.Render();c.Render();Canvas.ForceUpdateCanvases();RenderTexture.active=rt;
+                c.targetTexture=rt;
+                foreach(var skin in Object.FindObjectsByType<ValoriaHudPresentationV1>(FindObjectsSortMode.None))skin.Apply(w,h);
+                Canvas.ForceUpdateCanvases();c.Render();c.Render();Canvas.ForceUpdateCanvases();RenderTexture.active=rt;
                 var im=new Texture2D(w,h,TextureFormat.RGB24,false);
                 im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();
                 File.WriteAllBytes(path,im.EncodeToPNG());Object.DestroyImmediate(im);

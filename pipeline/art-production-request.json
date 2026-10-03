@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "request_id": "valoria-flat-citadel-production-uplift-v1",
-  "asset_or_sector": "Valoria Flat Citadel — production uplift",
-  "profile": "environment_composition",
+  "request_id": "valoria-asset-coherence-game-presentation-v1",
+  "asset_or_sector": "Valoria fixed Flat Citadel: shared asset response, fused-rock interface, contained edge, real HUD and activity",
+  "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Composition is fixed and accepted from Flat Citadel Proof v1. Zero-spend Unity-first production uplift only: upgrade wall silhouette/variation, authored surface hierarchy, Bastion seating/approach, functional-building coherence, then restrained dressing/life. Do not reopen mountain/topography experiments and do not use Tripo."
+  "notes": "Unity surface first. Preserve canonical albedo/normal maps, localized world-height rock blending, low relief outside reservations, real live HUD controls. No Tripo, no macrocomposition change. Reuse Art Consolidation capturer/workflow."
 }

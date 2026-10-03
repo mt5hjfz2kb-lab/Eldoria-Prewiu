@@ -1,12 +1,14 @@
-name: "[EXPERIMENT] Valoria Flat Citadel Art Consolidation v1"
+name: "[EXPERIMENT] Valoria Flat Citadel Asset Coherence and Game Presentation v1"
 
 on:
   push:
-    branches: [visual-proof/valoria-flat-citadel-art-consolidation-v1]
+    branches: [visual-proof/valoria-asset-coherence-game-presentation-v1]
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelArtConsolidationV1.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelArtConsolidationGateV1.cs'
-      - '.github/workflows/valoria-flat-citadel-art-consolidation-v1.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAssetCoherenceV1.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs'
+      - 'Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader'
       - 'docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md'
       - 'docs/VALORIA_PARCEL_RESERVATION_MAP.md'
   workflow_dispatch:
@@ -68,7 +70,7 @@ jobs:
       - name: Capture art consolidation complete frame
         shell: powershell
         run: |
-          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaFlatCitadelArtConsolidationV1Captures"
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaAssetCoherenceV1Captures"
           $log="$env:RUNNER_TEMP\ValoriaFlatCitadelArtConsolidationV1.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFlatCitadelArtConsolidationGateV1.Capture','-logFile',$log)
@@ -81,9 +83,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-flat-citadel-art-consolidation-v1-${{ github.run_id }}
+          name: valoria-asset-coherence-v1-${{ github.run_id }}
           path: |
-            Unity/ValoriaFlatCitadelArtConsolidationV1Captures/*
+            Unity/ValoriaAssetCoherenceV1Captures/*
             ${{ runner.temp }}/ValoriaFlatCitadelArtConsolidationV1.log
           if-no-files-found: warn
           retention-days: 30

@@ -532,6 +532,7 @@ namespace Eldoria.Presentation
 
             ConfigurePrimaryAction(gateway.Snapshot());
             CreateBuildingPanel(safe);
+            if(ValoriaHudPresentationV1.Enabled)canvasGo.AddComponent<ValoriaHudPresentationV1>().Apply(Screen.width,Screen.height);
         }
 
         static void StyleNavButton(Button button,bool active)
