@@ -1,0 +1,57 @@
+name: "[EXPERIMENT] Valoria VQB Wall Lineup"
+
+on:
+  push:
+    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    paths:
+      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVqbWallLineupGate.cs"
+      - ".github/workflows/valoria-vqb-wall-lineup.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lineup:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Capture normalized wall library lineup
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaVqbWallLineupCaptures"
+          $log="$env:RUNNER_TEMP\ValoriaVqbWallLineup.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaVqbWallLineupGate.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1100000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw "wall lineup timed out"}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 300};throw "wall lineup failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder "evidence.json")
+      - id: upload
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-vqb-wall-lineup-${{ github.run_id }}
+          path: |
+            Unity/ValoriaVqbWallLineupCaptures/*
+            ${{ runner.temp }}/ValoriaVqbWallLineup.log
+          if-no-files-found: warn
+      - name: Persist wall lineup receipt
+        if: always()
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\pipeline\evidence";New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $receipt=@{run_id="${{ github.run_id }}";artifact_id="${{ steps.upload.outputs.artifact-id }}";source_sha="${{ github.sha }}";job_status="${{ job.status }}"} | ConvertTo-Json
+          Set-Content -Path (Join-Path $dir "valoria-vqb-wall-lineup-run.json") -Value $receipt -Encoding utf8
+          git config user.name "eldoria-ci";git config user.email "actions@github.com"
+          git add pipeline/evidence/valoria-vqb-wall-lineup-run.json
+          git diff --cached --quiet
+          if($LASTEXITCODE -ne 0){git commit -m "chore: record wall lineup ${{ github.run_id }}";git pull --rebase origin "${{ github.ref_name }}";git push origin HEAD:${{ github.ref_name }}}
