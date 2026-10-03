@@ -65,6 +65,10 @@ namespace Eldoria.Presentation
 
         static void BuildFlatCitySurface(Transform root)
         {
+            // Large surrounding natural floor means the city no longer reads as a raised island/podium.
+            AddSlab(root,"surrounding meadow",new Vector3(0,-.06f,1.0f),new Vector3(31f,.08f,26f),
+                ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.40f,.27f,1f),"earth",new Vector2(6.5f,6.5f),.88f));
+
             // 82% of the useful footprint is one coherent, near-flat buildable plane.
             // The perimeter is intentionally irregular enough not to read as a rectangular test board.
             Vector2[] ring={
@@ -74,7 +78,7 @@ namespace Eldoria.Presentation
                 new Vector2( 2.9f,10.5f),new Vector2(-2.8f,10.4f),new Vector2(-7.9f, 9.5f),
                 new Vector2(-10.3f,6.0f),new Vector2(-10.8f,.2f)
             };
-            CreatePrism(root,"main buildable city plane",ring,-.22f,.08f,
+            CreatePrism(root,"main buildable city plane",ring,.015f,.075f,
                 ValoriaKit.DetailedSurfaceMaterial(Earth,"earth",new Vector2(3.2f,3.2f),.92f),
                 ValoriaKit.DetailedSurfaceMaterial(Earth*.72f,"rock",new Vector2(3.0f,3.0f),1.0f));
 
@@ -128,9 +132,22 @@ namespace Eldoria.Presentation
         {
             FunctionalBuildings=0;
 
-            int before=root.childCount;
-            ValoriaKit.BastionCore("Bastion · Flat Citadel",new Vector3(0,.78f,7.25f),Glow);
-            ReparentNew(root,before); FunctionalBuildings++;
+            var heroSource=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
+            if(heroSource!=null)
+            {
+                var hero=Object.Instantiate(heroSource);
+                hero.name="Valoria · Flat Citadel · Hero Bastion";
+                FitPrefab(hero,new Vector3(0,.76f,7.25f),7.6f,7.9f);
+                hero.transform.SetParent(root,true);
+                DisableGameplay(hero);
+                FunctionalBuildings++;
+            }
+            else
+            {
+                int before=root.childCount;
+                ValoriaKit.BastionCore("Bastion · Flat Citadel",new Vector3(0,.78f,7.25f),Glow);
+                ReparentNew(root,before); FunctionalBuildings++;
+            }
 
             before=root.childCount;
             ValoriaKit.SawmillArchitecture("Aserradero · Flat Citadel",new Vector3(-5.9f,.16f,-1.55f),state.SawmillLevel>0,Glow);
@@ -162,24 +179,24 @@ namespace Eldoria.Presentation
             for(int i=0;i<4;i++)
             {
                 float x=-8.8f+i*2.2f;
-                WallSegment(root,new Vector3(x,.12f,-6.35f),new Vector3(2.1f,1.7f,.48f),0f); WallPieces++;
+                WallSegment(root,new Vector3(x,.12f,-6.35f),new Vector3(2.1f,1.18f,.42f),0f); WallPieces++;
             }
             for(int i=0;i<4;i++)
             {
                 float x=2.2f+i*2.2f;
-                WallSegment(root,new Vector3(x,.12f,-6.35f),new Vector3(2.1f,1.7f,.48f),0f); WallPieces++;
+                WallSegment(root,new Vector3(x,.12f,-6.35f),new Vector3(2.1f,1.18f,.42f),0f); WallPieces++;
             }
 
             for(int i=0;i<8;i++)
             {
                 float z=-4.9f+i*2.0f;
-                WallSegment(root,new Vector3(-9.55f,.12f,z),new Vector3(.48f,1.7f,1.95f),0f); WallPieces++;
-                WallSegment(root,new Vector3( 9.55f,.12f,z),new Vector3(.48f,1.7f,1.95f),0f); WallPieces++;
+                WallSegment(root,new Vector3(-9.55f,.12f,z),new Vector3(.42f,1.18f,1.95f),0f); WallPieces++;
+                WallSegment(root,new Vector3( 9.55f,.12f,z),new Vector3(.42f,1.18f,1.95f),0f); WallPieces++;
             }
             for(int i=0;i<8;i++)
             {
                 float x=-7.7f+i*2.2f;
-                WallSegment(root,new Vector3(x,.12f,9.25f),new Vector3(2.1f,1.7f,.48f),0f); WallPieces++;
+                WallSegment(root,new Vector3(x,.12f,9.25f),new Vector3(2.1f,1.18f,.42f),0f); WallPieces++;
             }
 
             // Authored gate and four compact corner towers improve silhouette while the wall remains continuous.
@@ -194,7 +211,7 @@ namespace Eldoria.Presentation
                 new Vector3(-9.5f,.22f,9.1f),new Vector3(9.5f,.22f,9.1f)})
             {
                 ValoriaKit.Wall("Valoria · Flat Citadel · corner tower",p+new Vector3(0,.85f,0),
-                    new Vector3(1.25f,2.45f,1.25f),WallStone,false);
+                    new Vector3(1.15f,2.05f,1.15f),WallStone,false);
                 ReparentNewest(root);
             }
         }
@@ -300,6 +317,21 @@ namespace Eldoria.Presentation
             sideGo.transform.SetParent(root,true);
             sideGo.AddComponent<MeshFilter>().sharedMesh=sideMesh;
             var sr=sideGo.AddComponent<MeshRenderer>();sr.sharedMaterial=sideMat;sr.shadowCastingMode=ShadowCastingMode.On;sr.receiveShadows=true;
+        }
+
+        static void FitPrefab(GameObject go,Vector3 ground,float span,float maxHeight)
+        {
+            var rs=go.GetComponentsInChildren<Renderer>(true);
+            if(rs.Length==0)return;
+            var b=rs[0].bounds;
+            for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            float horizontal=Mathf.Max(b.size.x,b.size.z);
+            float scale=Mathf.Min(span/Mathf.Max(.001f,horizontal),maxHeight/Mathf.Max(.001f,b.size.y));
+            go.transform.localScale*=scale;
+            rs=go.GetComponentsInChildren<Renderer>(true);
+            b=rs[0].bounds;
+            for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            go.transform.position+=ground-new Vector3(b.center.x,b.min.y,b.center.z);
         }
 
         static void ReparentNew(Transform root,int previousChildCount)
