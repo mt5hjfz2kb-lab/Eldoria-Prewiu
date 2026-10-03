@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate functional-building pair v34: keep hero-first v33 composition, retain no substitute secondary family, seat the dedicated Valoria Aserradero and Cuartel visuals symmetrically inside the fortress foot, and shorten the visible stair to the upper approach only.",
+  "objective": "Validate integrated functional pair v35: preserve v34 hero-first composition and dedicated barracks, bury the dedicated sawmill further into the west cliff foot, and crop the visible stair to four upper steps only.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T12:44:00+02:00",
-  "retry_reason": "v33 is the strongest clean frame so far but is too sparse for the benchmark and leaves the sawmill/access visibly detached. v34 restores density only with dedicated Valoria functional GLBs already in production, not generic secondary kits.",
-  "retry_seq": 43
+  "triggered_at": "2026-10-03T12:58:00+02:00",
+  "retry_reason": "v34 TECH PASS / visual best-so-far. Remaining dominant defects: sawmill still reads as detached foreground appendage on the left and the lowest visible stair steps still float outside the rock mass. v35 changes only those two presentation variables.",
+  "retry_seq": 44
 }
