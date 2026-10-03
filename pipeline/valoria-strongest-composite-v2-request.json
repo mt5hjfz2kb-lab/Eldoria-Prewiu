@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate TerrainData lower-city landscape v3: continuous city shelf, narrow central approach, lateral foreground holes, explicit URP Terrain Lit material, and slope-based dirt/rock blending.",
+  "objective": "Validate TerrainData lower-city landscape v3b: compact continuous city shelf, narrow central approach, lateral foreground holes, default URP Terrain rendering, and darker remapped dirt/rock layers.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:31:00+02:00",
-  "retry_reason": "TerrainData v2 TECH PASS / VISUAL FAIL: continuity worked but foreground formed a large bright dome. v3 narrows the foreground support to a causeway while keeping continuous city terrain and explicitly assigns URP Terrain Lit with darker remapped layers.",
-  "retry_seq": 12
+  "triggered_at": "2026-10-03T07:37:00+02:00",
+  "retry_reason": "TerrainData v3 capture stalled after adding a runtime Terrain Lit materialTemplate. v3b keeps the same geometry and TerrainLayer remaps but uses the default URP terrain material.",
+  "retry_seq": 13
 }
