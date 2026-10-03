@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
                 V(5.80f,-2.30f),V(5.85f,-1.25f),V(5.25f,-.55f),V(4.25f,-.35f),
                 V(3.55f,.45f),V(2.00f,.92f),V(0f,.84f),V(-2.00f,.95f),
                 V(-3.55f,.48f),V(-4.25f,-.32f),V(-5.25f,-.55f),V(-5.85f,-1.25f)
-            },-.12f,-.48f,-.82f,topRock,rock);
+            },-.12f,-.48f,-.82f,earth,rock);
 
             DressEdges(root);
         }
@@ -80,6 +80,12 @@ namespace Eldoria.Presentation
                 AddDecor(root,rock,"west edge inner",new Vector3(-4.05f,-.40f,-2.12f),1.20f,.70f,74f);
                 AddDecor(root,rock,"east edge inner",new Vector3(4.05f,-.40f,-2.12f),1.20f,.70f,238f);
                 AddDecor(root,rock,"east edge outer",new Vector3(5.25f,-.42f,-2.45f),1.35f,.78f,314f);
+
+                // v17: break the broad front lip into authored rock masses so the
+                // lower city reads as terrain cut into the mountain, not a grey board.
+                AddDecor(root,rock,"front west",new Vector3(-2.45f,-.50f,-2.52f),1.45f,.64f,18f);
+                AddDecor(root,rock,"front centre",new Vector3(0.00f,-.54f,-2.70f),1.72f,.72f,96f);
+                AddDecor(root,rock,"front east",new Vector3(2.45f,-.50f,-2.52f),1.45f,.64f,198f);
             }
 
             if(art.SlavicBush!=null)
