@@ -87,6 +87,9 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityPlateauV1.Enabled=false;
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
+            int terrainVisualsHidden=HideLowerTerrainVisual();
+            int terracePieces=AddAuthoredLowerTerraces(root.transform);
+            int stairPieces=ReplaceVerticalStairVisual(root.transform);
             int terrainEdgeRocks=AddTerrainEdgeRocks(root.transform);
 
             Physics.SyncTransforms();
@@ -112,6 +115,9 @@ namespace Eldoria.EditorTools
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
                 $"  \"terrain_surface_samples\": {ValoriaLowerCityTerrainV1.SurfaceSamples},\n"+
                 $"  \"terrain_legacy_renderers_suppressed\": {ValoriaLowerCityTerrainV1.SuppressedLegacyRenderers},\n"+
+                $"  \"terrain_visuals_hidden\": {terrainVisualsHidden},\n"+
+                $"  \"authored_lower_terrace_pieces\": {terracePieces},\n"+
+                $"  \"authored_stair_pieces\": {stairPieces},\n"+
                 $"  \"terrain_edge_rock_meshes\": {terrainEdgeRocks},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
@@ -465,6 +471,78 @@ namespace Eldoria.EditorTools
                 loaded++;
             }
             return loaded;
+        }
+
+        static int HideLowerTerrainVisual()
+        {
+            int count=0;
+            foreach(var t in Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
+            {
+                if(t==null||!t.gameObject.activeInHierarchy)continue;
+                if(t.name.IndexOf("Lower City TerrainData",StringComparison.OrdinalIgnoreCase)<0)continue;
+                t.drawHeightmap=false;
+                t.drawTreesAndFoliage=false;
+                count++;
+            }
+            return count;
+        }
+
+        static int AddAuthoredLowerTerraces(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null||art.SlavicFlatRock==null)return 0;
+
+            var proof=new GameObject("Valoria · Strongest v2 · authored lower terraces").transform;
+            proof.SetParent(root,true);
+            int count=0;
+
+            var rock=art.SlavicFlatRock;
+            count+=Add(proof,rock,"sawmill terrace a",new Vector3(-7.10f,-.42f,-2.85f),4.20f,.78f,14f,new Color(.46f,.46f,.42f,1f));
+            count+=Add(proof,rock,"sawmill terrace b",new Vector3(-5.45f,-.46f,-2.05f),2.80f,.62f,48f,new Color(.43f,.44f,.41f,1f));
+            count+=Add(proof,rock,"barracks terrace a",new Vector3(6.70f,-.44f,-3.90f),4.10f,.78f,194f,new Color(.46f,.46f,.42f,1f));
+            count+=Add(proof,rock,"barracks terrace b",new Vector3(5.15f,-.48f,-2.75f),2.75f,.62f,226f,new Color(.43f,.44f,.41f,1f));
+
+            count+=Add(proof,rock,"central landing west",new Vector3(-2.15f,-.38f,-1.10f),3.25f,.62f,22f,new Color(.45f,.45f,.42f,1f));
+            count+=Add(proof,rock,"central landing east",new Vector3(2.15f,-.40f,-1.10f),3.25f,.62f,202f,new Color(.45f,.45f,.42f,1f));
+            count+=Add(proof,rock,"mid terrace west",new Vector3(-3.35f,.88f,3.20f),2.70f,.58f,34f,new Color(.47f,.47f,.44f,1f));
+            count+=Add(proof,rock,"mid terrace east",new Vector3(3.35f,.88f,3.25f),2.70f,.58f,214f,new Color(.47f,.47f,.44f,1f));
+
+            if(art.SlavicMudFlat!=null)
+            {
+                count+=Add(proof,art.SlavicMudFlat,"sawmill earth patch",new Vector3(-7.0f,-.02f,-2.78f),3.30f,.20f,6f,new Color(.62f,.55f,.42f,1f));
+                count+=Add(proof,art.SlavicMudFlat,"barracks earth patch",new Vector3(6.65f,-.02f,-3.82f),3.20f,.20f,188f,new Color(.62f,.55f,.42f,1f));
+                count+=Add(proof,art.SlavicMudFlat,"central earth patch",new Vector3(0f,-.04f,-1.05f),3.00f,.18f,0f,new Color(.60f,.53f,.41f,1f));
+            }
+            return count;
+        }
+
+        static int ReplaceVerticalStairVisual(Transform root)
+        {
+            int hidden=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                if(!Chain(r.transform).Contains("vpd · vertical stair"))continue;
+                r.enabled=false;
+                hidden++;
+            }
+
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null||art.SlavicCobbleRoad==null)return hidden;
+
+            var proof=new GameObject("Valoria · Strongest v2 · authored compact stair").transform;
+            proof.SetParent(root,true);
+            int added=0;
+            for(int i=0;i<11;i++)
+            {
+                float y=.42f+i*.195f;
+                float z=.18f+i*.535f;
+                float span=Mathf.Lerp(2.30f,2.62f,i/10f);
+                added+=Add(proof,art.SlavicCobbleRoad,"compact stair "+i,
+                    new Vector3(0f,y,z),span,.22f,(i%2==0?0f:180f),
+                    new Color(.58f,.56f,.51f,1f));
+            }
+            return added;
         }
 
         static int AddTerrainEdgeRocks(Transform root)
