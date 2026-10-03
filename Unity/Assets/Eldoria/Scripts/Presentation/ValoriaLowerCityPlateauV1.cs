@@ -113,7 +113,7 @@ namespace Eldoria.Presentation
             const int nx=40;
             const int nz=38;
             const float minX=-9.65f,maxX=9.65f;
-            const float minZ=-9.9f,maxZ=6.15f;
+            const float minZ=-8.05f,maxZ=6.15f;
 
             var vertices=new List<Vector3>((nx+1)*(nz+1));
             var uvs=new List<Vector2>((nx+1)*(nz+1));
@@ -130,7 +130,7 @@ namespace Eldoria.Presentation
                     float wx=Mathf.Lerp(minX,maxX,vx);
 
                     float ex=Mathf.Abs(wx)/9.25f;
-                    float ez=Mathf.Abs((wz+2.05f))/7.55f;
+                    float ez=Mathf.Abs((wz+1.55f))/6.35f;
                     float d=Mathf.Pow(Mathf.Pow(ex,1.72f)+Mathf.Pow(ez,1.72f),1f/1.72f);
 
                     float noiseA=Mathf.PerlinNoise((wx+17.3f)*.18f,(wz+11.7f)*.18f)-.5f;
@@ -142,7 +142,7 @@ namespace Eldoria.Presentation
                     float edgeStart=.50f+edgeNoise+noiseC*.055f;
                     float fall=Mathf.InverseLerp(edgeStart,.96f,d);
                     fall=fall*fall*(3f-2f*fall);
-                    float erodedBottom=-3.55f+noiseA*.52f+noiseC*.34f;
+                    float erodedBottom=-2.85f+noiseA*.42f+noiseC*.28f;
                     float y=Mathf.Lerp(top,erodedBottom,fall);
 
                     float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/1.55f)*
@@ -199,7 +199,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v7"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v8"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
