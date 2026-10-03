@@ -14,10 +14,10 @@ Source closure evidence:
 
 Final Art Consolidation implementation HEAD: `c2894925c97aea7cd514b6e90b1cac81b802a63e`
 
-Final implementation validation:
-- run **37141480932 — SUCCESS**
-- artifact **11280696905**
-- artifact digest: `sha256:01365cb6c949670dd72507cb2027af6209ad5445487c30084cb42db355112b56`
+Final accepted implementation validation:
+- run **37141597937 — SUCCESS**
+- artifact **11280900578**
+- accepted implementation: `c2894925c97aea7cd514b6e90b1cac81b802a63e`
 
 Toolchain planner:
 - request `valoria-flat-citadel-art-consolidation-v1`
@@ -153,7 +153,7 @@ Canonical dedicated building resources were retained:
 
 No generic replacement family was promoted.
 
-The final variant also adds restrained stone foundations under Aserradero / Cuartel / Granero plus active-yard work strips and Aserradero timber stock. These are visual-only, removable, and remain inside active parcel envelopes.
+A late attempt to add explicit stone foundation slabs / Aserradero work cues was capture-reviewed together with a stronger material replacement, found net-negative, and reverted. It is therefore not part of the accepted final implementation.
 
 Reserved cottages on future Cantera / Forja territory are visually suppressed in the consolidated result.
 
@@ -199,7 +199,7 @@ Important limitation: the current Unity HUD contract is only the Bastion I-II sl
 
 ## Final technical evidence
 
-Final artifact **11280696905** contains:
+Accepted final implementation artifact **11280900578** contains:
 
 Environment review:
 - `before-19.png`
@@ -297,7 +297,7 @@ These are not reasons to reopen terrain or macrocomposition.
 
 **Keep Flat Citadel locked as Valoria's base. Keep the parcel reservation map as a spatial contract. Do not promote Art Consolidation v1 as final visual production.**
 
-The final wall/foundation variant is preferred over all earlier Art Consolidation iterations: it is cleaner, more growth-aware and less visually dominant. It should be the starting environment frame for the next block.
+The final 11-module wall / parcel-reservation variant is preferred over all earlier Art Consolidation iterations: it is cleaner, more growth-aware and less visually dominant. It should be the starting environment frame for the next block.
 
 ## Recommended next block
 
