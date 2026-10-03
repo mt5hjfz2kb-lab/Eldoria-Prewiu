@@ -21,17 +21,25 @@ namespace Eldoria.EditorTools
             ShaderUtil.allowAsyncCompilation=false;
             Directory.CreateDirectory(Folder);
 
+            // Keep the same mature visual state used by the accepted Production Uplift evidence,
+            // so the BEFORE/AFTER art comparison does not accidentally swap Bastion art tiers.
             var state=new PlayerState{
+                BastionLevel=6,SawmillLevel=2,BarracksLevel=2,CorruptionDiscovered=true
+            };
+
+            // The current canonical Unity HUD contract is Bastion I-II only. It is captured as UI truth
+            // over the art frame without changing the visual-state comparison above.
+            var hudState=new PlayerState{
                 BastionLevel=2,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true,
                 Resources=new ResourceWallet{Wood=456,Stone=388,Food=298},
                 MarchConfigured=true
             };
-            state.Available.ArcherT1=48;
-            state.PreparedTroops=state.Available.Copy();
-            state.PreparedHeroId="aldric";
-            state.ChapterProgress.TrainedArchers=20;
-            state.ChapterProgress.MarchConfirmed=true;
-            state.ChapterProgress.ConfirmedExpeditionPower=2600;
+            hudState.Available.ArcherT1=48;
+            hudState.PreparedTroops=hudState.Available.Copy();
+            hudState.PreparedHeroId="aldric";
+            hudState.ChapterProgress.TrainedArchers=20;
+            hudState.ChapterProgress.MarchConfirmed=true;
+            hudState.ChapterProgress.ConfirmedExpeditionPower=2600;
             var p=new Vector3(18.2f,18.4f,-26.8f);
             var t=new Vector3(0f,1.55f,1.55f);
 
@@ -55,7 +63,7 @@ namespace Eldoria.EditorTools
             if(ValoriaVisualFormulaGate.CollisionSignature()!=afterSig)
                 throw new Exception("Art Consolidation altered gameplay signature.");
             SaveSet(after.camera,"after",p,t);
-            AttachCanonicalHud(after.camera,state);
+            AttachCanonicalHud(after.camera,hudState);
             SaveSet(after.camera,"game",p,t);
 
             WriteEvidence();
@@ -154,7 +162,8 @@ namespace Eldoria.EditorTools
                 $"  \"meta_systems_without_reserved_world_plot\": [\"Codice\",\"Relicario\"],\n"+
                 $"  \"long_range_growth_interfaces\": [\"XW\",\"XE\",\"XU\",\"XS\"],\n"+
                 $"  \"canonical_hud_capture\": true,\n"+
-                $"  \"hud_contract_scope\": \"current Unity Bastion I-II slice\",\n"+
+                $"  \"visual_state_bastion_level\": 6,\n"+
+                $"  \"hud_contract_scope\": \"current Unity Bastion I-II slice (captured independently of art-tier state)\",\n"+
                 $"  \"tripo_credits\": 0\n"+
                 $"}}\n");
         }
