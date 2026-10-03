@@ -6,7 +6,7 @@ Shader "Eldoria/Valoria Coherence"
   _Family("Family",Float)=0 _Bottom("World bottom",Float)=0 _Height("World height",Float)=1
   _RockMap("Shared stone transition",2D)="white"{} _Ground("Ground",Float)=0
   _Smoothness("Smoothness",Float)=0.06 _Metallic("Metallic",Float)=0
-  _SemanticUplift("Semantic uplift",Float)=0
+  _SemanticUplift("Semantic uplift",Float)=0 _WorldEdgeUplift("World edge uplift",Float)=0
  }
  SubShader {
  Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
@@ -24,7 +24,7 @@ Shader "Eldoria/Valoria Coherence"
   TEXTURE2D(_BumpMap);SAMPLER(sampler_BumpMap);
   TEXTURE2D(_RockMap);SAMPLER(sampler_RockMap);
   CBUFFER_START(UnityPerMaterial)
-   float4 _BaseMap_ST; half4 _BaseColor; float _Family,_Bottom,_Height,_Ground,_SemanticUplift; half _BumpScale,_Smoothness,_Metallic;
+   float4 _BaseMap_ST; half4 _BaseColor; float _Family,_Bottom,_Height,_Ground,_SemanticUplift,_WorldEdgeUplift; half _BumpScale,_Smoothness,_Metallic;
   CBUFFER_END
   struct A{float4 positionOS:POSITION;float3 normalOS:NORMAL;float4 tangentOS:TANGENT;float2 uv:TEXCOORD0;half4 color:COLOR;};
   struct V{float4 positionCS:SV_POSITION;float3 positionWS:TEXCOORD0;half3 normalWS:TEXCOORD1;half4 tangentWS:TEXCOORD2;float2 uv:TEXCOORD3;half4 color:TEXCOORD4;half fog:TEXCOORD5;};
@@ -73,6 +73,29 @@ Shader "Eldoria/Valoria Coherence"
     c=(lum*.75+.18)*i.color.rgb;
     float road=(1-smoothstep(1.2,2.3,abs(i.positionWS.x)))*(1-smoothstep(-7,-5,i.positionWS.z));
     c=lerp(c,half3(.36,.31,.23)*(.65+lum),road);
+    if(_WorldEdgeUplift>.5){
+     float2 w=i.positionWS.xz;
+     float city=max(abs(w.x)/11.4,abs(w.y-1.5)/10.6);
+     float outside=smoothstep(.98,1.28,city);
+     float macroA=.5+.5*sin(w.x*.19+sin(w.y*.13)*1.7)*sin(w.y*.16-w.x*.055);
+     float macroB=.5+.5*sin(w.x*.075-w.y*.115+sin(w.x*.09)*1.35);
+     half3 meadowA=half3(.91,.98,.81);
+     half3 meadowB=half3(.79,.88,.68);
+     c*=lerp(meadowA,meadowB,macroA*macroB*.62*outside);
+
+     float2 qsw=(w-float2(-14.5,-10.8))/float2(8.4,5.4);
+     float2 qse=(w-float2( 14.5,-10.6))/float2(8.1,5.2);
+     float field=saturate((1-smoothstep(.72,1.08,length(qsw)))+(1-smoothstep(.72,1.08,length(qse))));
+     field*=outside*(1-road);
+     float rows=.5+.5*sin(w.x*.92+w.y*.17+sin(w.y*.08)*.8);
+     half3 rowLo=half3(.79,.76,.58),rowHi=half3(.95,.98,.75);
+     c=lerp(c,c*lerp(rowLo,rowHi,rows),field*.42);
+
+     float2 qnw=(w-float2(-15.5,12.5))/float2(9.0,6.2);
+     float2 qne=(w-float2( 15.0,12.0))/float2(8.5,6.0);
+     float pasture=saturate((1-smoothstep(.78,1.15,length(qnw)))+(1-smoothstep(.78,1.15,length(qne))));
+     c=lerp(c,c*half3(.82,.94,.70),pasture*outside*.28);
+    }
    }
    if(_Family>5.5){
     half3 groundTex=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.positionWS.xz*.62).rgb;
