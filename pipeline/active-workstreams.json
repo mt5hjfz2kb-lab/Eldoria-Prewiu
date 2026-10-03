@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:36:35.945Z",
-  "active": [
+  "updated_at": "2026-10-03T20:53:17.150Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-unified-visual-language-proof-v1",
       "title": "Valoria Unified Visual Language Proof v1",
@@ -23,11 +24,26 @@
       ],
       "claimed_at": "2026-10-03T20:36:35.945Z",
       "base_main_sha": "7d384b6120365b34fc93d39288a69d2b57df47a2",
-      "status": "active",
-      "dependency": "VQB accepted implementation 7a564bc, final 37149992067 / artifact 11284220007; Authored Secondary Art Family v1 closed NOT PROMOTED, later infrastructure revalidation 37151352162 / artifact 11283663815. Screen-space and coherent whole-frame proof, preserve fixed Flat Citadel/gameplay/parcels. Zero paid credits."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "dependency": "VQB accepted implementation 7a564bc, final 37149992067 / artifact 11284220007; Authored Secondary Art Family v1 closed NOT PROMOTED, later infrastructure revalidation 37151352162 / artifact 11283663815. Screen-space and coherent whole-frame proof, preserve fixed Flat Citadel/gameplay/parcels. Zero paid credits.",
+      "completed_at": "2026-10-03T20:52:36.339Z",
+      "result_commit": "89ca7efc279b9c845aa746f1396755066d211320",
+      "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "run_ids": [
+        37152534859,
+        37152713806
+      ],
+      "artifact_ids": [
+        11284955622,
+        11284248212
+      ],
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Two reversible visual-language connective geometry variants rendered with 19/12/9/mobile and real HUD; exterior strip family regressed and civic surfaces were marginal/net-negative. Both Unity workflows succeeded, final focused tests 5/5. VQB remains best accepted visual. Flat Citadel/gameplay/parcels preserved, zero paid credits.",
+      "next": "VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1: source-rich art-direction sheet then semantic Hero/Aserradero/wall/ground shared kit at real played camera and pan extremes; no rollout until screenshot wins.",
+      "branch": "visual-proof/valoria-unified-visual-language-proof-v1",
+      "result_doc": "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md",
+      "closure_doc_commit": "9565ca577eb920abcb76b2b09b69022686685a12",
+      "final_branch_head": "9565ca577eb920abcb76b2b09b69022686685a12"
+    },
     {
       "id": "valoria-unified-stylized-shell-v1",
       "title": "Valoria Unified Stylized Visual Shell v1",

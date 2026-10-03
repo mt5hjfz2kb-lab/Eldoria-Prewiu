@@ -1,3 +1,13 @@
+## 2026-10-03 — Valoria Unified Visual Language Proof v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`.
+- Final branch closure `9565ca577eb920abcb76b2b09b69022686685a12`.
+- Experimental branch `visual-proof/valoria-unified-visual-language-proof-v1`: variant 1 `24ac0be` / run **37152534859 SUCCESS**, artifact **11284955622**; variant 2 `89ca7ef` / run **37152713806 SUCCESS**, artifact **11284248212**. Real 19/12/9/mobile capture and 5/5 focused live HUD/progression tests; collider/hotspot signature and parcels protected; credits=0.
+- Source-rich outer road/crop strips looked like technical dark bars and were rejected; city-path/temporary-soil revision was visually marginal with dark seam artifacts. No visual/runtime production promotion or player publication.
+- Screen-space audit: orthographic 19 is strategic overview (~36% projected ring width), 12 city (~57%), 9 detail (~77%). Actual Unity city home = 9.1, already close; portrait at 9.4 crops the city under bounded pan. Do not inflate city geometry or confuse strategic overview with playable home.
+- Full research, real comparisons, metrics and scalability/cost estimate: [proof result](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/visual-proof/valoria-unified-visual-language-proof-v1/docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md).
+- The next precise block, **VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1**, is recommended but not opened. Author a shared source-rich screen-space kit and prove one whole cell before expansion. Flat Citadel remains locked.
+
 ## 2026-10-03 — Valoria Authored Secondary Art Family v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL / NOT PROMOTED**.
