@@ -51,7 +51,8 @@ namespace Eldoria.Presentation
             if(GroundUpliftEnabled) BuildPrimaryAxisProduction(root);
             else BuildPrimaryAxisBaseline(root);
             if(GroundUpliftEnabled) BuildGroundProduction(root);
-            BuildBastionRise(root);
+            if(BastionIntegrationUpliftEnabled) BuildBastionRiseProduction(root);
+            else BuildBastionRiseBaseline(root);
             BuildFunctionalArchitecture(root,state);
             if(WallUpliftEnabled) BuildOuterWallProduction(root);
             else BuildOuterWallBaseline(root);
@@ -358,7 +359,7 @@ namespace Eldoria.Presentation
             var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.receiveShadows=true;
         }
 
-        static void BuildBastionRise(Transform root)
+        static void BuildBastionRiseBaseline(Transform root)
         {
             // One controlled elevation only: a civic/defensive plinth, not a mountain.
             Vector2[] ring={
@@ -380,6 +381,47 @@ namespace Eldoria.Presentation
             }
         }
 
+
+        static void BuildBastionRiseProduction(Transform root)
+        {
+            // One civic/defensive terrace seats the Hero Bastion into the city.
+            // It is deliberately low and architectural: no mountain, no stacked district terraces.
+            var terrace=ValoriaKit.DetailedSurfaceMaterial(new Color(.52f,.50f,.45f,1f),"stone",new Vector2(2.6f,2.6f),1.0f);
+            AddSlab(root,"production bastion civic terrace",new Vector3(0,.38f,7.15f),new Vector3(8.75f,.50f,5.85f),terrace);
+
+            var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
+            if(wall!=null)
+            {
+                // Front retaining wings frame a single central stair; side pieces close the platform without
+                // turning it into a second fortification ring.
+                foreach(var spec in new[]{
+                    new Vector4(-3.15f,4.82f,0f,2.80f),new Vector4(3.15f,4.82f,0f,2.80f),
+                    new Vector4(-4.12f,6.85f,90f,3.25f),new Vector4(4.12f,6.85f,90f,3.25f)})
+                {
+                    var go=ValoriaKit.BenchmarkPiece("Valoria · Flat Citadel Production · bastion retaining wall",
+                        wall,new Vector3(spec.x,.14f,spec.y),spec.w,1.25f,Quaternion.Euler(0,spec.z,0));
+                    if(go!=null)
+                    {
+                        NormalizeWallMaterials(go,new Color(.64f,.62f,.57f,1f));
+                        go.transform.SetParent(root,true);
+                    }
+                }
+            }
+
+            var stairMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.61f,.59f,.54f,1f),"stone",new Vector2(2.0f,2.0f),1.0f);
+            for(int i=0;i<7;i++)
+            {
+                float y=.17f+i*.065f;
+                float z=4.15f+i*.34f;
+                AddSlab(root,"production bastion stair "+i,new Vector3(0,y,z),
+                    new Vector3(3.25f,.085f,.55f),stairMat);
+            }
+
+            // Small landing bridges the processional street directly into the stair throat.
+            AddSlab(root,"production bastion lower landing",new Vector3(0,.17f,3.92f),
+                new Vector3(3.65f,.055f,1.05f),stairMat);
+        }
+
         static void BuildFunctionalArchitecture(Transform root, PlayerState state)
         {
             FunctionalBuildings=0;
@@ -390,7 +432,7 @@ namespace Eldoria.Presentation
             {
                 var hero=Object.Instantiate(heroSource);
                 hero.name="Valoria · Flat Citadel · Hero Bastion";
-                FitPrefab(hero,new Vector3(0,.76f,7.25f),7.6f,7.9f);
+                FitPrefab(hero,new Vector3(0,BastionIntegrationUpliftEnabled?.54f:.76f,7.25f),7.6f,7.9f);
                 hero.transform.SetParent(root,true);
                 DisableGameplay(hero);
                 FunctionalBuildings++;
