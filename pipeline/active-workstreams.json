@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:25:22.463Z",
+  "updated_at": "2026-10-03T12:31:48.866Z",
   "active": [
     {
       "id": "valoria-shell-v2-composition-frame",
@@ -13,7 +13,9 @@
         ".github/workflows/valoria-composition-frame-v2.yml",
         "pipeline/valoria-composition-frame-v2-request.json",
         "docs/VALORIA_COMPOSITION_FRAME_V2_RESULT.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader.meta"
       ],
       "resources": [
         "valoria-production-composition",
