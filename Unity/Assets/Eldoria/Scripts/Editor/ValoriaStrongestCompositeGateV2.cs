@@ -118,14 +118,16 @@ namespace Eldoria.EditorTools
             // v39 world-integration proof: rebuild the existing continuous mountain-valley
             // layer after Open Valley has removed its historical instance. This layer is
             // visual-only and exists specifically to eliminate exposed island/map edges.
-            ValoriaWorldFrameMountainTerrainV1.Enabled=true;
-            ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
+            ValoriaWorldFrameMountainTerrainV1.Enabled=false;
+            ValoriaCompositionFrameV2.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
 
             SaveSet(c,"after",p,t);
+            SaveSet(c,"after-west",p+new Vector3(-6,0,0),t+new Vector3(-6,0,0));
+            SaveSet(c,"after-east",p+new Vector3(6,0,0),t+new Vector3(6,0,0));
             ValoriaBackplateCandidateV1.FitAspect(1280f/720f);
             Save(c,Folder+"/after-reference-8.1.png",p,new Vector3(0f,3.95f,5.90f),8.1f,1280,720);
             ValoriaBackplateCandidateV1.FitAspect(390f/844f);
