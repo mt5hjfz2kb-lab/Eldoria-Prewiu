@@ -15,13 +15,12 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string resource,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            // v31: replace the visually incompatible red-roof MidTier family with
-            // canonical stone modules already present in Resources/Valoria.
-            // These remain presentation-only and sit inside the fortress nucleus.
-            ("lower_west","Stone_Tower",new Vector3(-2.20f,1.72f,3.38f),12f,2.15f,2.72f),
-            ("lower_east","Stone_Tower",new Vector3( 2.22f,1.72f,3.34f),192f,2.15f,2.72f),
-            ("mid_west","Stone_Wall",new Vector3(-3.10f,1.96f,4.58f),18f,2.60f,2.10f),
-            ("mid_east","Stone_Wall",new Vector3( 3.12f,1.96f,4.60f),198f,2.60f,2.10f)
+            // v32: use only the three visually certified StoneArchitectureKit_v1 modules.
+            // These are architecture↔rock transitions, not replacement city buildings.
+            ("lower_west","RockToWallTransition",new Vector3(-2.45f,1.44f,3.15f),28f,2.15f,1.75f),
+            ("lower_east","RockToWallTransition",new Vector3( 2.45f,1.44f,3.12f),208f,2.15f,1.75f),
+            ("mid_west","CornerWallL",new Vector3(-3.12f,1.78f,4.48f),112f,2.05f,2.20f),
+            ("mid_east","HighStraightWall",new Vector3( 3.15f,1.80f,4.52f),88f,2.35f,2.15f)
         };
 
         public static void Capture()
@@ -538,7 +537,7 @@ namespace Eldoria.EditorTools
 
             foreach(var s in PremiumSpecs)
             {
-                var src=Resources.Load<GameObject>("Valoria/"+s.resource);
+                var src=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/"+s.resource);
                 if(src==null)continue;
                 var go=Object.Instantiate(src);
                 if(go==null)continue;
