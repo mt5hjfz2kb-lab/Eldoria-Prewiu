@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:34:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T20:36:35.945Z",
+  "active": [
+    {
+      "id": "valoria-unified-visual-language-proof-v1",
+      "title": "Valoria Unified Visual Language Proof v1",
+      "owner": "work-unified-language-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedVisualLanguageV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedVisualLanguageGateV1.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaUnifiedVisualLanguage*",
+        "tools/valoria-unified-visual-language/**",
+        "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1*",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:36:35.945Z",
+      "base_main_sha": "7d384b6120365b34fc93d39288a69d2b57df47a2",
+      "status": "active",
+      "dependency": "VQB accepted implementation 7a564bc, final 37149992067 / artifact 11284220007; Authored Secondary Art Family v1 closed NOT PROMOTED, later infrastructure revalidation 37151352162 / artifact 11283663815. Screen-space and coherent whole-frame proof, preserve fixed Flat Citadel/gameplay/parcels. Zero paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-unified-stylized-shell-v1",
