@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate audited lower-frame cleanup v26: remove the detached lower certified rock support pieces and suppress the exact remaining presentation residues identified by visible-renderers.tsv, preserving the middle/upper rock approach and all gameplay authority.",
+  "objective": "Validate unified lower-city cliff substrate v26 on current HEAD: replace the failed multi-piece certified terrace bridge with one Unity-authored visual-only continuous rock mass using the existing production PBR rock material.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -31,6 +31,6 @@
     "full_frame_before_after"
   ],
   "triggered_at": "2026-10-03T11:22:00+02:00",
-  "retry_reason": "v25b TECH PASS / VISUAL INSUFFICIENT: artifact audit showed detached lower spine/embedded shelves plus GroundKit L1 retaining edge and restrained reconstruction stock still visible below the city. v26 removes only those audited presentation residues.",
-  "retry_seq": 34
+  "retry_reason": "v25b TECH PASS / VISUAL FAIL proved the existing terrace library cannot form the required continuous geology: five certified SteppedRockTerrace instances still read as detached blocks/pillars. Geometry gap is now proven; v26 is the zero-credit unified-mesh proof before any Tripo authorization is considered.",
+  "retry_seq": 35
 }
