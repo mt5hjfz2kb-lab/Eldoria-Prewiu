@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate continuous TerrainData lower-city landscape v2: smoothed heightmap, slope-blended dirt/rock, irregular outer silhouette only, no interior floating islands, and no local support props.",
+  "objective": "Validate TerrainData lower-city landscape v3: continuous city shelf, narrow central approach, lateral foreground holes, explicit URP Terrain Lit material, and slope-based dirt/rock blending.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:28:00+02:00",
-  "retry_reason": "TerrainData v2 did not render because of a literal newline escape compile error in ValoriaLowerCityTerrainV1.cs; source is fixed and this rerun is the first valid visual proof.",
-  "retry_seq": 11
+  "triggered_at": "2026-10-03T07:31:00+02:00",
+  "retry_reason": "TerrainData v2 TECH PASS / VISUAL FAIL: continuity worked but foreground formed a large bright dome. v3 narrows the foreground support to a causeway while keeping continuous city terrain and explicitly assigns URP Terrain Lit with darker remapped layers.",
+  "retry_seq": 12
 }
