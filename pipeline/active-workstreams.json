@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T14:47:00Z",
+  "updated_at": "2026-10-03T14:46:00Z",
   "active": [
     {
       "id": "valoria-shell-v2-bastion-continuity",
