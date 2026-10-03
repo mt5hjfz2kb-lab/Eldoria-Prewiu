@@ -342,7 +342,7 @@ namespace Eldoria.Presentation
 
         static void DisableGameplay(GameObject go)
         {
-            foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
+            foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
