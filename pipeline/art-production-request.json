@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "request_id": "valoria-full-frame-convergence-iteration-1",
-  "asset_or_sector": "Valoria Full Frame Iteration 1",
+  "request_id": "valoria-shell-v2-authored-transition-envelope",
+  "asset_or_sector": "Valoria Hero-to-City Authored Transition Envelope",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -14,10 +14,10 @@
     "tripo_retopology": false,
     "blender_lod": false,
     "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
-    "unity_decals": false,
+    "unity_decals": true,
     "unity_probes": false,
     "unity_terrain_blending": true
   },
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Full-frame convergence geometry gap proven by v22-v25b: certified SteppedRockTerrace reuse still reads as detached blocks/pillars and cannot form the required continuous lower-city cliff mass. First new-geometry proof is a zero-credit Unity-authored visual-only unified cliff substrate using existing PBR rock material. Tripo remains disabled pending proof outcome."
+  "notes": "Stop-rule replacement after multiple visual failures. Problem: Hero Bastion-to-city transition still reads as floating asset islands / board road. Research-selected zero-credit route: author one contiguous Blender transition envelope from deliberate rock/terrace/retaining volumes using boolean/remesh/conformal geometry principles, then Unity shared rock/stone surface treatment and optional decals only if needed. No Tripo. Preserve gameplay authority, routes, hotspots, colliders, camera and save."
 }
