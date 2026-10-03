@@ -18,7 +18,7 @@ on:
       - "pipeline/art-production-request.json"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: valoria-visual-quality-breakthrough-v1
@@ -100,7 +100,8 @@ jobs:
           if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw "HUD tests exit $($p.ExitCode)"}
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed' -or [int]$results.'test-run'.total -lt 5){throw 'Focused HUD tests did not certify the requested checks'}
-      - uses: actions/upload-artifact@v4
+      - id: upload
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: valoria-visual-quality-breakthrough-v1-${{ github.run_id }}
@@ -110,3 +111,27 @@ jobs:
             ${{ runner.temp }}/ValoriaVisualQualityBreakthroughV1.log
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Persist breakthrough run receipt
+        if: always() && github.event_name == 'push'
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\pipeline\evidence"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $receipt=@{
+            run_id="${{ github.run_id }}"
+            artifact_id="${{ steps.upload.outputs.artifact-id }}"
+            source_sha="${{ github.sha }}"
+            workflow="${{ github.workflow }}"
+            job_status="${{ job.status }}"
+            branch="${{ github.ref_name }}"
+          } | ConvertTo-Json
+          Set-Content -Path (Join-Path $dir "valoria-visual-quality-breakthrough-v1-latest.json") -Value $receipt -Encoding utf8
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/evidence/valoria-visual-quality-breakthrough-v1-latest.json
+          git diff --cached --quiet
+          if($LASTEXITCODE -ne 0){
+            git commit -m "chore: record Valoria breakthrough run ${{ github.run_id }}"
+            git push origin HEAD:${{ github.ref_name }}
+          }
