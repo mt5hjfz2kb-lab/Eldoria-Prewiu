@@ -1,8 +1,31 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T15:57:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T16:06:00Z",
+  "active": [
+    {
+      "id": "valoria-flat-citadel-production-uplift-v1",
+      "title": "Valoria Flat Citadel Production Uplift v1",
+      "owner": "chat-valoria-flat-citadel-production-uplift-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelProductionUpliftV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelProductionUpliftGateV1.cs",
+        ".github/workflows/valoria-flat-citadel-production-uplift-v1.yml",
+        "docs/VALORIA_FLAT_CITADEL_PRODUCTION_UPLIFT_V1_RESULT.md",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T16:06:00Z",
+      "base_main_sha": "add58c4b6bc19202480cb7fdb9d9cb3001859ab4",
+      "dependency": "Flat Citadel composition is accepted from TECH PASS / VISUAL FAIL run 37134976736, artifact 11278791152. Preserve Bastion-elevated + mostly-flat city macrocomposition. Production uplift order: wall -> ground/roads/parcels -> Hero Bastion approach -> functional buildings -> dressing/life -> final UI framing. No mountain/topography reopening unless a real documented blocker."
+    }
+  ],
   "history": [
     {
       "id": "valoria-flat-citadel-proof-v1",
