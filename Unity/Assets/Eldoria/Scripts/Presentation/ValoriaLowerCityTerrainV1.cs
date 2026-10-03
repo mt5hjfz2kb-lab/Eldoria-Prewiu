@@ -124,8 +124,11 @@ namespace Eldoria.Presentation
                 terrain.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
             }
 
-            var collider=go.GetComponent<TerrainCollider>();
-            if(collider!=null)collider.enabled=false;
+            // TerrainCollider lives in the optional Terrain Physics assembly, which this
+            // presentation asmdef intentionally does not reference. Remove it without a hard type dependency.
+            foreach(var component in go.GetComponents<Component>())
+                if(component!=null&&component.GetType().Name=="TerrainCollider")
+                    Object.DestroyImmediate(component);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
