@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact integrated lower-city v17: replace the broad grey terrace-top read with warm earth/stone and fracture the front lip with authored existing-library rock while preserving the compact footprint, routes and gameplay authority.",
+  "objective": "Validate compact rock-dressed lower-city v18: pull back the exposed foreground lip and break the top plane with low existing-library rock shelves so the lower city reads as a compact mountain terrace rather than a painted board.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:12:00+02:00",
-  "retry_reason": "v16 TECH PASS / VISUAL INSUFFICIENT: the faceted stair support improved continuity, but the lower-city platform still read as a broad grey prototype slab. v17 changes only visual surface/top treatment and front-edge rock breakup using existing assets.",
-  "retry_seq": 22
+  "triggered_at": "2026-10-03T10:22:00+02:00",
+  "retry_reason": "v17 TECH PASS / VISUAL INSUFFICIENT: warm earth improved palette but the lower foreground remained a broad rectangular platform. v18 reduces that exposed lip and adds low rock shelves on the top plane using existing assets only.",
+  "retry_seq": 23
 }
