@@ -104,9 +104,11 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerracedMeshV1.Enabled=blenderCliffProof;
             if(blenderCliffProof)ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
             int terracePieces=blenderCliffProof?ValoriaLowerCityTerracedMeshV1.PiecesBuilt:0;
-            ValoriaCompactStairMeshV1.Enabled=true;
-            ValoriaCompactStairMeshV1.Build(root.transform,state);
-            int stairPieces=1;
+            // v35: the remaining compact stair fragment still read as a detached
+            // foreground prop. Gameplay route/colliders remain authoritative, but the
+            // strongest visual candidate no longer renders this redundant lower segment.
+            ValoriaCompactStairMeshV1.Enabled=false;
+            int stairPieces=0;
             int terrainEdgeRocks=0;
 
             Physics.SyncTransforms();
@@ -439,7 +441,8 @@ namespace Eldoria.EditorTools
                 var clone=Object.Instantiate(barracks);
                 clone.name="Valoria · Strongest v2 · compact barracks visual";
                 // Symmetric compact functional landmark on the east cliff foot.
-                clone.transform.position+=new Vector3(-4.65f,1.40f,6.55f);
+                clone.transform.position+=new Vector3(-5.30f,1.55f,7.35f);
+                clone.transform.localScale*=.82f;
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
