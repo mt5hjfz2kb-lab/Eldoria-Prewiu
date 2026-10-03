@@ -1,0 +1,57 @@
+name: "[EXPERIMENT] Valoria Authored Secondary Art Family v1"
+
+on:
+  push:
+    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
+    paths:
+      - "tools/valoria-authored-secondary-art-family/**"
+      - ".github/workflows/valoria-authored-secondary-art-family-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Build authored proof family
+        shell: bash
+        env:
+          ELDORIA_AUTHORED_FAMILY_DIR: ${{ github.workspace }}/pipeline/candidates/valoria-authored-secondary-art-family-v1
+          ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+        run: |
+          blender -b --python tools/valoria-authored-secondary-art-family/build_family.py
+          test -s pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb
+          cat pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-authored-secondary-art-family-v1-${{ github.run_id }}
+          path: |
+            pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+            pipeline/candidates/valoria-authored-secondary-art-family-v1/*.glb
+          if-no-files-found: error
+      - name: Persist authored proof family
+        shell: bash
+        run: |
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          git add pipeline/candidates/valoria-authored-secondary-art-family-v1/*.glb
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: persist authored secondary family ${{ github.run_id }}"
+            git pull --rebase origin "${{ github.ref_name }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
