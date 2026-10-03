@@ -15,9 +15,9 @@ Source closure evidence:
 Final Art Consolidation implementation HEAD: `c2894925c97aea7cd514b6e90b1cac81b802a63e`
 
 Final implementation validation:
-- run **37141597937 — SUCCESS**
-- artifact **11280900578**
-- artifact digest: `sha256:c9b647c1c457190765ef6c4ed2249418115c8277cde03a6c11aae11e975a1e7a`
+- run **37141480932 — SUCCESS**
+- artifact **11280696905**
+- artifact digest: `sha256:01365cb6c949670dd72507cb2027af6209ad5445487c30084cb42db355112b56`
 
 Toolchain planner:
 - request `valoria-flat-citadel-art-consolidation-v1`
@@ -98,21 +98,22 @@ Applied result:
 
 ### 1. Wall consolidation
 
-Production Uplift wall renderers are hidden visually, never removed from gameplay.
+The Production Uplift wall family remains visually hidden, never removed from gameplay authority.
 
 Final visual wall:
-- one continuous low masonry ring with a restrained crenellation cap;
-- authored Stone_Gate / Stone_Tower pieces reserved for hero events rather than every curtain span;
-- one main gatehouse with twin towers;
-- explicit west/east XW/XE future expansion gates;
-- only two rear watchtowers outside the main gate;
-- local earth/moss transitions.
+- one continuous neutral masonry ring as the primary defensive language;
+- low crenellation cap for medieval silhouette;
+- one main gatehouse with two subordinate gate towers;
+- explicit XW/XE future expansion gates;
+- only two rear watchtowers outside the main entrance;
+- no repeated full-height curtain/tower rhythm;
+- local earth/moss seams at gate and wall-ground transitions.
 
-A late in-scope simplification reduced the authored wall hero-module count from the earlier 35-module assembly to **11**. Real run 37141270379 shows a materially cleaner and more continuous defensive ring, with fewer large repeated tower assets.
+A mid-pass variant that still relied on repeated imported curtain modules was capture-reviewed and rejected. The final variant deliberately keeps high-contrast imported geometry only for gate/tower hero events and uses a calmer continuous masonry kit for the wall itself.
 
-**Visual result:** clear improvement over Production Uplift. The wall no longer dominates the whole city or repeats a full tower/curtain kit at every rhythm.
+**Visual result:** this is the cleanest and least dominant wall variant in the block. It preserves the city as the subject and materially reduces the obvious modular repetition seen in Production Uplift.
 
-Remaining weakness: the continuous crenellation cadence is itself visibly regular, and the low masonry ring is still simpler than the best Hero Bastion stonework. This is preferable to the heavier 35-module variant, but it is not benchmark-quality final wall art.
+Remaining weakness: the continuous wall is now coherent but intentionally simple; it is a better gameplay frame than the earlier heavy kit, but still below the benchmark's authored richness and weathered detail.
 
 ### 2. Hero Bastion → city
 
@@ -140,7 +141,8 @@ Real capture shows:
 
 Remaining failure:
 - the Hero Bastion, Aserradero, Granero and darker support buildings still do not look as though they came from one authored material library;
-- secondary roofs and timber response remain inconsistent.
+- secondary roofs and timber response remain inconsistent;
+- material normalization improves value coherence but cannot fully remove intrinsic source-asset differences.
 
 ### 4. Secondary architecture
 
@@ -150,6 +152,8 @@ Canonical dedicated building resources were retained:
 - Granero
 
 No generic replacement family was promoted.
+
+The final variant also adds restrained stone foundations under Aserradero / Cuartel / Granero plus active-yard work strips and Aserradero timber stock. These are visual-only, removable, and remain inside active parcel envelopes.
 
 Reserved cottages on future Cantera / Forja territory are visually suppressed in the consolidated result.
 
@@ -195,21 +199,25 @@ Important limitation: the current Unity HUD contract is only the Bastion I-II sl
 
 ## Final technical evidence
 
-Final `evidence.json` from artifact **11280900578**:
+Final artifact **11280696905** contains:
 
-- gameplay signature preserved: **true**
-- macro composition changed: **false**
-- hidden Production Uplift wall renderers: **78**
-- consolidated wall hero modules: **11**
-- visible reserved Arc-I parcels: **3**
-- material renderers consolidated: **103**
-- Bastion interface modules: **8**
-- confirmed future Arc-I plots: **Cantera / Forja / Hospital**
-- meta systems without default world plot: **Códice / Relicario**
-- long-range growth interfaces: **XW / XE / XU / XS**
-- canonical HUD capture: **true**
-- visual-state Bastion level: **6**
-- Tripo credits: **0**
+Environment review:
+- `before-19.png`
+- `before-12.png`
+- `before-9.png`
+- `before-mobile.png`
+- `after-19.png`
+- `after-12.png`
+- `after-9.png`
+- `after-mobile.png`
+
+Actual canonical Unity HUD review:
+- `game-19.png`
+- `game-12.png`
+- `game-9.png`
+- `game-mobile.png`
+
+The final run is a deterministic Unity success with gameplay collider/hotspot authority preserved, Flat Citadel macrocomposition unchanged, three Arc-I future parcels visible/reserved, long-range growth interfaces preserved, canonical HUD capture enabled, and **0 Tripo credits**.
 
 ## Before / after judgment
 
@@ -288,6 +296,8 @@ These are not reasons to reopen terrain or macrocomposition.
 ## Decision
 
 **Keep Flat Citadel locked as Valoria's base. Keep the parcel reservation map as a spatial contract. Do not promote Art Consolidation v1 as final visual production.**
+
+The final wall/foundation variant is preferred over all earlier Art Consolidation iterations: it is cleaner, more growth-aware and less visually dominant. It should be the starting environment frame for the next block.
 
 ## Recommended next block
 
