@@ -26,6 +26,8 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -y blender
           fi
+          # Ubuntu's Blender glTF importer requires NumPy from the host Python packages.
+          sudo apt-get install -y python3-numpy
           mkdir -p "$RUNNER_TEMP/fused"
           blender -b --factory-startup --python tools/valoria-shell-v2-fused/build_fused_transition.py -- "$RUNNER_TEMP/fused/ValoriaFusedTransition.glb" "$RUNNER_TEMP/fused/report.json"
           test -s "$RUNNER_TEMP/fused/ValoriaFusedTransition.glb"
