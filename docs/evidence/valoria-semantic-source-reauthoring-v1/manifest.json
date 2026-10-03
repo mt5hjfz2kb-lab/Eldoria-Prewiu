@@ -15,6 +15,13 @@
     "before-mobile-aserradero.png",
     "after-mobile-aserradero.png"
   ],
-  "phase2_12_19": "NOT RUN - zoom9/mobile stop gate failed",
-  "credits_spent": 0
+  "phase2_12_19": "NOT RUN - zoom9/mobile stop gate failed in both visual variants",
+  "credits_spent": 0,
+  "final_valid_capture_head": "0556cf8e6b6a2b54a3bee75ad83067facacd72e5",
+  "final_run_id": 37162147598,
+  "final_artifact_id": 11288451036,
+  "final_source_artifact_id": 11288171793,
+  "final_artifact_digest": "sha256:524ee77cfb25345d10939ecf2e2467dd152e3dac4832505f7fbb3f7e0dd1cf59",
+  "variant2_verdict": "VISUAL FAIL",
+  "final_verdict": "TECH PASS / VISUAL FAIL / NOT PROMOTED"
 }
