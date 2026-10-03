@@ -37,7 +37,6 @@ namespace Eldoria.Presentation
             stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.77f,.75f,.68f),new Vector2(.54f,.54f),.035f,.92f);
             if(ground==null||rock==null||stone==null)throw new Exception("Composition frame shared PBR maps missing.");
             BuildArchitectureFirstTransition(state);
-            BuildRoute();
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
             RenderSettings.fogColor=new Color(.55f,.61f,.68f);
