@@ -85,6 +85,9 @@ namespace Eldoria.EditorTools
             // Scan-conformed Shell v2 replaces the remaining detached upper Cliff Island pair.
             upperRearSuppressed+=SuppressRendererChain("valoria · cliff island · upper bastion west");
             upperRearSuppressed+=SuppressRendererChain("valoria · cliff island · upper bastion east");
+            // The scan-conformed transition now owns this surface; keeping the old VPD sheet
+            // would mask the donor texture and reintroduce the platform reading.
+            upperRearSuppressed+=SuppressRendererChain("vpd · upper terrace earth");
             // v33 diagnostic composition: remove the entire substitute secondary family.
             // This isolates whether current library architecture is helping or hurting the
             // hero-first reference match. Gameplay buildings/hotspots remain authoritative.
