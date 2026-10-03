@@ -1,14 +1,6 @@
 name: "[EXPERIMENT] Valoria Source-Level Art Direction Proof v1"
 
 on:
-  push:
-    branches: [visual-proof/valoria-source-level-art-direction-proof-v1]
-    paths:
-      - "tools/valoria-source-level-art-direction/**"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSourceLevelArtDirectionV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSourceLevelArtDirectionGateV1.cs"
-      - "pipeline/art-production-request.json"
-      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
   workflow_dispatch:
 
 permissions:
