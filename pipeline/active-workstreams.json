@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T16:45:30Z",
-  "active": [],
+  "updated_at": "2026-10-03T17:10:00Z",
+  "active": [
+    {
+      "id": "valoria-flat-citadel-art-consolidation-v1",
+      "title": "Valoria Flat Citadel Art Consolidation v1",
+      "owner": "chat-valoria-flat-citadel-art-consolidation-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFlatCitadelArtConsolidationV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFlatCitadelArtConsolidationGateV1.cs",
+        ".github/workflows/valoria-flat-citadel-art-consolidation-v1.yml",
+        "docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md",
+        "docs/VALORIA_PARCEL_RESERVATION_MAP.md",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T17:10:00Z",
+      "base_main_sha": "f45040858f8657c9e6a4327eb6de260c7b1ca6ad",
+      "dependency": "Flat Citadel macrocomposition is fixed. Start from Production Uplift final implementation ca018faf089d10e777566974f2bc6fd3e470ede0 and closure evidence run 37137964874 / artifact 11278977322. First map current and future progression reservations from canonical progression/gameplay docs, then consolidate wall, Bastion-city interface, materials, secondary architecture, atmosphere and final HUD framing. No mountain/topography experiments."
+    }
+  ],
   "history": [
     {
       "id": "valoria-flat-citadel-production-uplift-v1",
