@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact integrated lower-city v16: replace the broad trapezoid stair support with a faceted terraced rock spine that follows the real stair rise and visually fuses the lower city into the castle mountain.",
+  "objective": "Validate compact integrated lower-city v17: replace the broad grey terrace-top read with warm earth/stone and fracture the front lip with authored existing-library rock while preserving the compact footprint, routes and gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:08:00+02:00",
-  "retry_reason": "v15 TECH PASS / VISUAL PARTIAL: the stair no longer floated over an open gap, but its single broad support read as an artificial grey ramp. v16 keeps the same route and stair while reshaping only the visual support into a stepped/faceted rock spine.",
-  "retry_seq": 21
+  "triggered_at": "2026-10-03T10:12:00+02:00",
+  "retry_reason": "v16 TECH PASS / VISUAL INSUFFICIENT: the faceted stair support improved continuity, but the lower-city platform still read as a broad grey prototype slab. v17 changes only visual surface/top treatment and front-edge rock breakup using existing assets.",
+  "retry_seq": 22
 }
