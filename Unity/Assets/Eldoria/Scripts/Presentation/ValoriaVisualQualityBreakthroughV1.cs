@@ -19,7 +19,7 @@ namespace Eldoria.Presentation
 
    HidePrimitiveMerlons(canonicalRoot);
    BuildAuthoredCurtainCaps(root);
-   ReplaceFunctionalArchitecture(canonicalRoot,root,state);
+   UpliftFunctionalMaterials(canonicalRoot);
    StripGameplay(root.gameObject);
   }
 
@@ -95,53 +95,27 @@ namespace Eldoria.Presentation
    AuthoredWallModules++;
   }
 
-  static void ReplaceFunctionalArchitecture(Transform canonicalRoot,Transform root,PlayerState state)
+  static void UpliftFunctionalMaterials(Transform root)
   {
-   var art=ValoriaExternalAssetLibrary.Load();
-   if(art==null)throw new InvalidOperationException("Valoria ExternalAssetLibrary missing.");
-   if(art.LumberMill==null||art.SlavicAdministrative==null||art.SlavicTownHouse03c==null)
-      throw new InvalidOperationException("Premium functional replacement sources are not wired.");
-
-   foreach(var r in canonicalRoot.GetComponentsInChildren<Renderer>(true))
+   int count=0;
+   foreach(var r in root.GetComponentsInChildren<Renderer>(true))
    {
     if(r==null||!r.enabled)continue;
     string n=Chain(r.transform);
-    bool saw=n.Contains("flat citadel production · aserradero");
-    bool barracks=n.Contains("flat citadel production · cuartel");
-    bool granary=n.Contains("flat citadel production · granero");
-    if(saw||barracks||granary)r.enabled=false;
+    if(!n.Contains("production · aserradero")&&!n.Contains("production · cuartel")&&!n.Contains("production · granero"))continue;
+    var mats=r.sharedMaterials;bool touched=false;
+    for(int i=0;i<mats.Length;i++)
+    {
+     var m=mats[i];
+     if(m==null||m.shader==null||m.shader.name!="Eldoria/Valoria Coherence"||!m.HasProperty("_SemanticUplift"))continue;
+     m.SetFloat("_SemanticUplift",1f);touched=true;
+    }
+    if(touched){r.sharedMaterials=mats;count++;}
    }
-
-   PlaceFunctional(root,art.LumberMill,"Aserradero premium",new Vector3(-5.95f,.13f,-1.55f),4.45f,3.65f,-5f,2f);
-   PlaceFunctional(root,art.SlavicAdministrative,"Cuartel premium",new Vector3(5.95f,.13f,-1.75f),4.55f,3.75f,4f,3f);
-   PlaceFunctional(root,art.SlavicTownHouse03c,"Granero premium",new Vector3(-2.75f,.13f,-4.38f),3.75f,3.35f,-3f,4f);
-
-   // Functional identity props remain restrained and inside active envelopes.
-   if(art.Firewood!=null)
-   {
-    var p=ValoriaKit.BenchmarkPiece("Valoria · breakthrough · Aserradero firewood",art.Firewood,
-      new Vector3(-7.70f,.13f,-2.75f),1.15f,.75f,Quaternion.Euler(0,18f,0));
-    if(p!=null){p.transform.SetParent(root,true);StripGameplay(p);}
-   }
-   if(art.SlavicShed!=null)
-   {
-    var p=ValoriaKit.BenchmarkPiece("Valoria · breakthrough · Aserradero work shed",art.SlavicShed,
-      new Vector3(-7.45f,.13f,-.35f),1.65f,1.65f,Quaternion.Euler(0,-12f,0));
-    if(p!=null){p.transform.SetParent(root,true);AdaptFamily(p,2f);StripGameplay(p);}
-   }
+   SecondaryFoundationModules=count;
   }
 
-  static void PlaceFunctional(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw,float family)
-  {
-   var go=ValoriaKit.BenchmarkPiece("Valoria · breakthrough · "+role,source,ground,footprint,maxHeight,Quaternion.Euler(0,yaw,0));
-   if(go==null)throw new InvalidOperationException("Failed to instantiate "+role);
-   go.transform.SetParent(root,true);
-   AdaptFamily(go,family);
-   StripGameplay(go);
-   SecondaryFoundationModules++;
-  }
-
-  static void AdaptFamily(GameObject go,float family)
+  static void AdaptStone(GameObject go)
   {
    var shader=Shader.Find("Eldoria/Valoria Coherence");if(shader==null||go==null)return;
    var rock=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/rock_diff");
@@ -154,18 +128,16 @@ namespace Eldoria.Presentation
      string bp;var albedo=Map(src,out bp,"_BaseMap","_BaseColorTexture","baseColorTexture","_MainTex","_Texture","_Albedo");
      string np;var normal=Map(src,out np,"_BumpMap","_NormalTexture","_NormalMap","normalTexture");
      if(albedo==null){dst[i]=src;continue;}
-     var m=new Material(shader){name="Valoria breakthrough functional · "+src.name};
+     var m=new Material(shader){name="Valoria breakthrough wall · "+src.name};
      m.SetTexture("_BaseMap",albedo);m.SetTextureScale("_BaseMap",src.GetTextureScale(bp));m.SetTextureOffset("_BaseMap",src.GetTextureOffset(bp));
      if(normal!=null)m.SetTexture("_BumpMap",normal);
-     m.SetFloat("_BumpScale",normal!=null?.74f:0f);m.SetFloat("_Family",family);
+     m.SetFloat("_BumpScale",normal!=null?.72f:0f);m.SetFloat("_Family",5f);
      m.SetFloat("_Bottom",r.bounds.min.y);m.SetFloat("_Height",Mathf.Max(.01f,r.bounds.size.y));m.SetFloat("_Smoothness",.05f);
      if(rock!=null)m.SetTexture("_RockMap",rock);dst[i]=m;
     }
     r.sharedMaterials=dst;
    }
   }
-
-  static void AdaptStone(GameObject go)=>AdaptFamily(go,5f);
 
   static Texture Map(Material m,out string name,params string[] props)
   {
