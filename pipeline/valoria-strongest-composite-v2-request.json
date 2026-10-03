@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate dedicated functional trio v38: preserve v37 compact sawmill/barracks composition and add the canonical dedicated granary as a small presentation-only silhouette behind the west functional layer.",
+  "objective": "Validate stair-free strongest composition v38: preserve v37 hero-first functional layout, run the compact stair builder only to suppress the legacy staircase, then hide the compact replacement renderer as well so no detached foreground stair remains.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:08:00+02:00",
-  "retry_reason": "v37 TECH PASS / visual best-so-far. Benchmark still requires Bastion, Sawmill, Barracks and Granary to remain distinct/readable. v38 adds only the dedicated Granary GLB, compact and embedded, with no gameplay changes.",
-  "retry_seq": 48
+  "triggered_at": "2026-10-03T13:12:00+02:00",
+  "retry_reason": "v37 is the strongest composition so far, but the compact stair replacement still peeks below the island as a detached visual fragment. v38 removes only that presentation renderer while preserving the gameplay route and legacy-stair suppression.",
+  "retry_seq": 49
 }
