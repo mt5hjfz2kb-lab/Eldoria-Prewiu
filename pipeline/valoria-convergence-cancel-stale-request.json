@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stale Unity slice from the previous causeway-only source so the current local-support Strongest Composite proof can use the Windows runner.",
+  "reason": "Cancel stale Unity slice from the previous TerrainData fix so the current TerrainData v3 visual proof can run on the self-hosted Unity runner.",
   "runs": [
-    37086181000,
-    37086518702
+    37099794906
   ],
   "keep_runs": [
-    37086518670
+    37099964209,
+    37099957457
   ],
-  "triggered_at": "2026-10-03T03:33:00+02:00"
+  "triggered_at": "2026-10-03T07:32:00+02:00"
 }
