@@ -44,8 +44,11 @@ namespace Eldoria.Presentation
             HideReservedPlotOccupants(uplift.transform);
 
             BuildProgressionReservations(root);
+            BuildWallContinuityBase(root);
             BuildConsolidatedWall(root);
             BuildBastionArchitecturalInterface(root);
+            BuildGroundEdgeIntegration(root);
+            ApplyAtmosphere();
             MaterialsConsolidated=ConsolidateMaterialLanguage(uplift.transform,root);
 
             DisableGameplay(root.gameObject);
@@ -129,6 +132,35 @@ namespace Eldoria.Presentation
             var c=go.GetComponent<Collider>();if(c!=null)Object.DestroyImmediate(c);
         }
 
+        static void BuildWallContinuityBase(Transform root)
+        {
+            var mat=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.61f,.59f,.54f,1f),new Vector2(2.25f,2.25f),.03f,.90f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.61f,.59f,.54f,1f),"stone",new Vector2(2.25f,2.25f),1.0f);
+
+            // Low continuous masonry establishes one defensive ring. Authored modules above it carry the silhouette.
+            // Openings are intentional: main gate + west/east future expansion interfaces.
+            AddWallBase(root,"front west base",new Vector3(-6.25f,.36f,-6.28f),new Vector3(7.05f,.70f,.54f),mat);
+            AddWallBase(root,"front east base",new Vector3( 6.25f,.36f,-6.28f),new Vector3(7.05f,.70f,.54f),mat);
+
+            AddWallBase(root,"west lower base",new Vector3(-9.46f,.36f,-1.45f),new Vector3(.54f,.70f,9.15f),mat);
+            AddWallBase(root,"west upper base",new Vector3(-9.46f,.36f, 6.75f),new Vector3(.54f,.70f,5.10f),mat);
+            AddWallBase(root,"east lower base",new Vector3( 9.46f,.36f,-1.45f),new Vector3(.54f,.70f,9.15f),mat);
+            AddWallBase(root,"east upper base",new Vector3( 9.46f,.36f, 6.75f),new Vector3(.54f,.70f,5.10f),mat);
+
+            AddWallBase(root,"rear base",new Vector3(0f,.34f,9.26f),new Vector3(18.45f,.66f,.54f),mat);
+        }
+
+        static void AddWallBase(Transform root,string role,Vector3 p,Vector3 size,Material mat)
+        {
+            var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name="Valoria · Art Consolidation · "+role;
+            go.transform.SetParent(root,true);
+            go.transform.position=p;
+            go.transform.localScale=size;
+            var r=go.GetComponent<Renderer>();r.sharedMaterial=mat;r.receiveShadows=true;
+            var col=go.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
+        }
+
         static void BuildConsolidatedWall(Transform root)
         {
             ConsolidatedWallModules=0;
@@ -207,21 +239,25 @@ namespace Eldoria.Presentation
             var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
             if(wall==null)return;
 
-            // Architectural apron masks the strongest isolated-rock read from the official camera.
-            var apronMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.56f,.54f,.50f,1f),"stone",new Vector2(1.8f,1.8f),1.0f);
-            var apron=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            apron.name="Valoria · Art Consolidation · Bastion stone apron";
-            apron.transform.SetParent(root,true);
-            apron.transform.position=new Vector3(0,.38f,5.72f);
-            apron.transform.localScale=new Vector3(7.25f,.72f,1.18f);
-            apron.GetComponent<Renderer>().sharedMaterial=apronMat;
-            var apronCol=apron.GetComponent<Collider>();if(apronCol!=null)Object.DestroyImmediate(apronCol);
-            BastionInterfaceModules++;
+            // Split retaining masses occupy the rock-facing shoulders while the central stair remains open.
+            var apronMat=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.57f,.55f,.50f,1f),new Vector2(1.85f,1.85f),.03f,.92f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.50f,1f),"stone",new Vector2(1.8f,1.8f),1.0f);
+            foreach(float x in new[]{-2.55f,2.55f})
+            {
+                var apron=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                apron.name="Valoria · Art Consolidation · Bastion retaining mass";
+                apron.transform.SetParent(root,true);
+                apron.transform.position=new Vector3(x,.58f,4.95f);
+                apron.transform.localScale=new Vector3(2.85f,1.08f,1.05f);
+                apron.GetComponent<Renderer>().sharedMaterial=apronMat;
+                var apronCol=apron.GetComponent<Collider>();if(apronCol!=null)Object.DestroyImmediate(apronCol);
+                BastionInterfaceModules++;
+            }
 
-            AddBastionFacing(root,wall,"west retaining face",new Vector3(-2.75f,.14f,5.18f),3.30f,1.55f,0f);
-            AddBastionFacing(root,wall,"east retaining face",new Vector3( 2.75f,.14f,5.18f),3.30f,1.55f,0f);
-            AddBastionFacing(root,wall,"west return",new Vector3(-3.65f,.14f,6.55f),2.75f,1.42f,90f);
-            AddBastionFacing(root,wall,"east return",new Vector3( 3.65f,.14f,6.55f),2.75f,1.42f,90f);
+            AddBastionFacing(root,wall,"west retaining face",new Vector3(-2.70f,.14f,4.58f),3.35f,1.92f,0f);
+            AddBastionFacing(root,wall,"east retaining face",new Vector3( 2.70f,.14f,4.58f),3.35f,1.92f,0f);
+            AddBastionFacing(root,wall,"west return",new Vector3(-3.72f,.14f,6.15f),2.95f,1.55f,90f);
+            AddBastionFacing(root,wall,"east return",new Vector3( 3.72f,.14f,6.15f),2.95f,1.55f,90f);
 
             // Flared stair and landing bridge plaza -> Bastion. Deliberately architectural, not geological.
             var stairMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.62f,.60f,.56f,1f),"stone",new Vector2(1.7f,1.7f),1.0f);
@@ -232,7 +268,7 @@ namespace Eldoria.Presentation
                 var step=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 step.name="Valoria · Art Consolidation · Bastion processional step "+i;
                 step.transform.SetParent(root,true);
-                step.transform.position=new Vector3(0,.18f+t*.46f,4.00f+t*.25f);
+                step.transform.position=new Vector3(0,.18f+t*.58f,3.82f+t*.43f);
                 step.transform.localScale=new Vector3(width,.105f,.52f);
                 step.GetComponent<Renderer>().sharedMaterial=stairMat;
                 var col=step.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
@@ -256,6 +292,56 @@ namespace Eldoria.Presentation
         {
             AddModule(root,source,"Bastion "+role,p,span,maxHeight,yaw,Stone);
             BastionInterfaceModules++;
+        }
+
+        static void BuildGroundEdgeIntegration(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null)return;
+
+            // Organic ground transitions only; no mature trees or permanent dressing enters reserved parcels.
+            if(art.SlavicMoss!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-8.6f,-5.85f, 12f,1.30f),new Vector4(-9.95f,-.35f, 76f,1.10f),
+                    new Vector4(-8.85f, 8.35f,124f,1.20f),new Vector4( 8.80f, 8.30f,214f,1.20f),
+                    new Vector4( 9.95f,-.25f,286f,1.10f),new Vector4( 8.55f,-5.82f,336f,1.30f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · wall meadow seam",
+                        art.SlavicMoss,new Vector3(s.x,.08f,s.y),s.w,.09f,Quaternion.Euler(0,s.z,0),new Color(.48f,.58f,.39f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                }
+            }
+            if(art.SlavicMudFlat!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-4.25f,-6.28f,14f,1.15f),new Vector4(4.25f,-6.28f,194f,1.15f),
+                    new Vector4(-9.38f,3.65f,86f,1.05f),new Vector4(9.38f,3.65f,266f,1.05f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · gate earth seam",
+                        art.SlavicMudFlat,new Vector3(s.x,.075f,s.y),s.w,.08f,Quaternion.Euler(0,s.z,0),new Color(.55f,.47f,.34f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                }
+            }
+        }
+
+        static void ApplyAtmosphere()
+        {
+            // Camera-contained haze softens the empty far field without reintroducing a panoramic background.
+            RenderSettings.fog=true;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=new Color(.48f,.53f,.54f,1f);
+            RenderSettings.fogStartDistance=43f;
+            RenderSettings.fogEndDistance=68f;
+            RenderSettings.ambientMode=AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor=new Color(.55f,.58f,.58f,1f);
+            RenderSettings.ambientEquatorColor=new Color(.43f,.44f,.41f,1f);
+            RenderSettings.ambientGroundColor=new Color(.28f,.29f,.25f,1f);
+            RenderSettings.ambientIntensity=.88f;
         }
 
         static int ConsolidateMaterialLanguage(Transform uplift,Transform additions)
@@ -289,7 +375,7 @@ namespace Eldoria.Presentation
                         try
                         {
                             var original=m.GetColor(prop);
-                            var blended=Color.Lerp(original,target,stone?.18f:.14f);
+                            var blended=Color.Lerp(original,target,stone?.20f:.26f);
                             blended.a=original.a;
                             m.SetColor(prop,blended);
                         }catch{}
