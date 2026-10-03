@@ -33,7 +33,7 @@ namespace Eldoria.Presentation
             const float originY=-5.05f;
 
             var data=new TerrainData{
-                name="Valoria Lower City TerrainData v3",
+                name="Valoria Lower City Terraced Landforms v4",
                 heightmapResolution=hm,
                 alphamapResolution=alpha,
                 baseMapResolution=256,
@@ -98,16 +98,9 @@ namespace Eldoria.Presentation
                 {
                     float nx=x/(float)(data.holesResolution-1);
                     float wx=-11.0f+nx*sizeX;
-                    float d=Footprint(wx,wz);
-                    float route=Route(wx,wz);
-                    float pad=Pads(wx,wz);
-                    float edgeNoise=(Mathf.PerlinNoise((wx+19.1f)*.16f,(wz+8.4f)*.16f)-.5f)*.09f;
-
-                    bool outer=d>(.95f+edgeNoise) && route<.16f && pad<.20f;
-                    bool foreground=wz<-4.15f;
-                    float causewayHalf=Mathf.Lerp(1.85f,2.45f,Mathf.InverseLerp(-8.0f,-4.15f,wz));
-                    bool offCauseway=foreground && Mathf.Abs(wx)>causewayHalf && pad<.24f;
-                    bool surface=!outer&&!offCauseway;
+                    float land=LandformField(wx,wz);
+                    float edgeNoise=(Mathf.PerlinNoise((wx+19.1f)*.16f,(wz+8.4f)*.16f)-.5f)*.055f;
+                    bool surface=land>(.12f+edgeNoise);
                     holes[z,x]=surface;
                     if(surface)SurfaceSamples++; else HoleSamples++;
                 }
@@ -115,7 +108,7 @@ namespace Eldoria.Presentation
             data.SetHoles(0,0,holes);
 
             var go=Terrain.CreateTerrainGameObject(data);
-            go.name=RootName+" · continuous landscape";
+            go.name=RootName+" · terraced landforms v4";
             go.transform.SetParent(parent,true);
             go.transform.position=new Vector3(-11.0f,originY,-8.0f);
 
@@ -201,32 +194,61 @@ namespace Eldoria.Presentation
 
         static float Height(float x,float z)
         {
-            float d=Footprint(x,z);
             float n1=Mathf.PerlinNoise((x+17.3f)*.14f,(z+11.7f)*.14f)-.5f;
             float n2=Mathf.PerlinNoise((x-4.1f)*.31f,(z+23.5f)*.31f)-.5f;
             float n3=Mathf.PerlinNoise((x+31.2f)*.075f,(z-7.4f)*.075f)-.5f;
 
-            float top=-.24f+n1*.18f+n2*.055f;
-            float fall=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.54f,.98f,d));
-            float bottom=-4.55f+n1*.46f+n3*.26f;
-            float y=Mathf.Lerp(top,bottom,fall);
+            float land=LandformField(x,z);
+            float top=-.22f+n1*.16f+n2*.05f;
+            float edgeFall=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.62f,.12f,land));
+            float bottom=-4.35f+n1*.42f+n3*.24f;
+            float y=Mathf.Lerp(top,bottom,edgeFall);
 
-            float route=Route(x,z);
-            float pad=Pads(x,z);
-            float support=Mathf.Max(route*.90f,pad*.72f);
-            y=Mathf.Lerp(y,Mathf.Max(y,-.18f),support*(1f-fall*.82f));
+            // Gameplay buildings keep their certified world positions. The terrain rises
+            // under their parcels and under the central stair/route, not across the whole frame.
+            float support=Mathf.Max(Route(x,z)*.88f,Pads(x,z)*.78f);
+            y=Mathf.Lerp(y,Mathf.Max(y,-.16f),support*(1f-edgeFall*.74f));
 
-            float front=Mathf.InverseLerp(-3.2f,-7.9f,z);
-            float side=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(2.6f,7.6f,Mathf.Abs(x)));
-            float causeway=Mathf.Clamp01(1f-Mathf.Abs(x)/2.25f)*front;
-
-            // City remains seated on one continuous shelf. In the foreground, terrain
-            // falls away sharply beside a narrow approach instead of forming a dome/slab.
-            float valley=front*(1f-causeway*.92f)*(1f-pad*.76f);
-            y-=valley*Mathf.Lerp(1.85f,.35f,side);
-            y=Mathf.Lerp(y,Mathf.Max(y,-.22f),causeway*.82f);
-            y+=front*side*.18f;
+            // Slight hierarchy: Bastion shelf is highest, lower economic/military terraces sit below.
+            float upper=EllipseField(x,z,0f,4.25f,7.9f,4.45f);
+            float lowerTerraces=Mathf.Max(
+                Disc(x,z,-7.0f,-2.8f,3.4f),
+                Disc(x,z, 7.0f,-4.0f,3.45f));
+            y+=upper*.24f-lowerTerraces*.08f;
             return y;
+        }
+
+        static float LandformField(float x,float z)
+        {
+            float central=EllipseField(x,z,0f,3.35f,8.75f,5.25f);
+            float sawmill=Disc(x,z,-7.0f,-2.8f,3.55f);
+            float barracks=Disc(x,z,7.0f,-4.0f,3.65f);
+
+            float westLink=SegmentField(x,z,-4.55f,.45f,-7.0f,-2.8f,1.70f);
+            float eastLink=SegmentField(x,z,4.45f,.15f,7.0f,-4.0f,1.72f);
+            float approach=SegmentField(x,z,0f,-1.15f,0f,-7.85f,1.55f);
+
+            return Mathf.Max(central,Mathf.Max(sawmill,
+                Mathf.Max(barracks,Mathf.Max(westLink,Mathf.Max(eastLink,approach)))));
+        }
+
+        static float EllipseField(float x,float z,float cx,float cz,float rx,float rz)
+        {
+            float dx=(x-cx)/rx,dz=(z-cz)/rz;
+            float d=Mathf.Sqrt(dx*dx+dz*dz);
+            return Mathf.Clamp01(1f-d);
+        }
+
+        static float SegmentField(float x,float z,float ax,float az,float bx,float bz,float radius)
+        {
+            var p=new Vector2(x,z);
+            var a=new Vector2(ax,az);
+            var b=new Vector2(bx,bz);
+            var ab=b-a;
+            float denom=Mathf.Max(.0001f,Vector2.Dot(ab,ab));
+            float t=Mathf.Clamp01(Vector2.Dot(p-a,ab)/denom);
+            float d=Vector2.Distance(p,a+ab*t);
+            return Mathf.Clamp01(1f-d/radius);
         }
 
         static float Footprint(float x,float z)
