@@ -36,7 +36,7 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName).transform;
             root.SetParent(parent,true);
 
-            int clonedHeroPieces=CloneCanonicalHeroBastion(root,new Vector3(0f,-.58f,0f));
+            int clonedHeroPieces=CloneCanonicalHeroBastion(root,new Vector3(0f,-2.35f,0f));
             HiddenLegacyRenderers=HideAllNonProofRenderers(root);
 
             BuildFlatCitySurface(root);
@@ -57,19 +57,23 @@ namespace Eldoria.Presentation
             {
                 if(t==null||t==proofRoot)continue;
                 string n=t.name.ToLowerInvariant();
-                bool hero=n.StartsWith("bastion ·")||n.StartsWith("valoria · bastion hero");
+                bool hero=n.StartsWith("valoria · bastion hero");
                 if(!hero)continue;
 
-                // Clone only the highest object in a same-family chain to avoid duplicate child meshes.
+                // ProductionVisualIntegration suppresses the old generic "Bastion ·" shell and
+                // exposes this authored Hero family. Clone only currently visible Hero pieces.
                 var p=t.parent;
                 bool parentHero=false;
                 while(p!=null)
                 {
                     string pn=p.name.ToLowerInvariant();
-                    if(pn.StartsWith("bastion ·")||pn.StartsWith("valoria · bastion hero")){parentHero=true;break;}
+                    if(pn.StartsWith("valoria · bastion hero")){parentHero=true;break;}
                     p=p.parent;
                 }
-                if(!parentHero && t.GetComponentInChildren<Renderer>(true)!=null)sources.Add(t.gameObject);
+                bool visible=false;
+                foreach(var rr in t.GetComponentsInChildren<Renderer>(true))
+                    if(rr!=null&&rr.enabled&&rr.gameObject.activeInHierarchy){visible=true;break;}
+                if(!parentHero && visible)sources.Add(t.gameObject);
             }
 
             int count=0;
