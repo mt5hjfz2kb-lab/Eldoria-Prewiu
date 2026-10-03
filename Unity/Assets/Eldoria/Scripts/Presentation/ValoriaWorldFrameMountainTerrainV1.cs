@@ -1,6 +1,7 @@
 using Eldoria.Domain;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
 namespace Eldoria.Presentation
@@ -41,7 +42,6 @@ namespace Eldoria.Presentation
 
             var verts=new Vector3[cols*rows];
             var uv=new Vector2[verts.Length];
-            var tris=new int[(cols-1)*(rows-1)*6];
 
             for(int rz=0;rz<rows;rz++)
             {
@@ -90,8 +90,31 @@ namespace Eldoria.Presentation
                 }
             }
 
-            FillGridTriangles(tris,rows,cols,false);
-            CreateMeshObject(root,"continuous mountain valley",verts,uv,tris,material);
+            // v40: do not tessellate the central/front basin. In v39 those lowered
+            // vertices still formed a giant visible grey sheet from the strategic camera.
+            // Keep only lateral and rear mountain cells so the photographic valley/backplate
+            // remains visible through a genuine opening around and in front of Valoria.
+            var triList=new List<int>((cols-1)*(rows-1)*6);
+            for(int rz=0;rz<rows-1;rz++)
+            {
+                float zc=Mathf.Lerp(zMin,zMax,(rz+.5f)/(rows-1f));
+                for(int cx=0;cx<cols-1;cx++)
+                {
+                    float xc=Mathf.Lerp(xMin,xMax,(cx+.5f)/(cols-1f));
+                    float ax=Mathf.Abs(xc);
+
+                    // Side mountains begin outside the playable city envelope.
+                    // Rear mountains close the horizon, with a wider opening toward camera.
+                    bool sideCell=ax>=13.25f && zc>=1.25f;
+                    bool rearCell=zc>=15.25f && ax>=8.75f;
+                    if(!sideCell && !rearCell)continue;
+
+                    int a=rz*cols+cx,b=a+1,d=(rz+1)*cols+cx,e=d+1;
+                    triList.Add(a);triList.Add(d);triList.Add(b);
+                    triList.Add(b);triList.Add(d);triList.Add(e);
+                }
+            }
+            CreateMeshObject(root,"open mountain valley frame",verts,uv,triList.ToArray(),material);
         }
 
         static void BuildMarginOccupation(Transform root)
