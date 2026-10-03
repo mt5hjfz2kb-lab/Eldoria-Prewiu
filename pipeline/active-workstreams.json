@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T22:49:36.016Z",
+  "updated_at": "2026-10-03T23:40:00Z",
   "active": [
     {
       "id": "valoria-semantic-source-reauthoring-proof-v1",
@@ -30,6 +30,23 @@
       "claimed_at": "2026-10-03T23:08:00Z",
       "base_main_sha": "c95b03e7f1453323b40e3690efc9ff5dbc794605",
       "dependency": "Experimental visual proof only. Preserve accepted VQB 7a564bc5 gameplay/layout/parcels and do not touch Granero/Cuartel/Forja/Hospital/Cantera/other Bastions. Zoom 9 + mobile stop gate before 12/19."
+    },
+    {
+      "id": "visual-production-governance-v1",
+      "title": "Eldoria Visual Production Governance v1",
+      "owner": "chat-visual-production-governance-20261004",
+      "scope": [
+        "AGENTS.md",
+        "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance-visual-rules"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T23:40:00Z",
+      "base_main_sha": "5413ca189b0d1bc08bf40f7b44f9a4db7b3e2f0a",
+      "dependency": "Governance/documentation only. Do not touch active Valoria Semantic Source Reauthoring proof implementation, runner, art-production request, SESSION_HANDOFF, or visual assets."
     }
   ],
   "history": [
