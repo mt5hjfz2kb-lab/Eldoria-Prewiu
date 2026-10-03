@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Diagnostic v29: hide only Valoria Cliff Island upper bastion rear to determine whether it is the remaining grey lower tongue in the integrated full-frame candidate.",
+  "objective": "Validate Valoria palette coherence v30: keep the proven upper-bastion-rear suppression, preserve the compact no-second-island composition, and recolor presentation-only secondary architecture toward the hero Bastion's warm-stone / slate-roof / desaturated-timber language.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T12:03:00+02:00",
-  "retry_reason": "Normal v3 cleanup is currently strongest. Blender v1-v3 did not improve the frame. Artifact audit points to upper bastion rear as the dominant remaining stone candidate in the tongue region; isolate it before any further geometry work.",
-  "retry_seq": 38
+  "triggered_at": "2026-10-03T12:31:00+02:00",
+  "retry_reason": "v29 localized and removed the detached grey tongue successfully. The dominant remaining mismatch is architectural identity: lower secondary buildings still read as a different red/timber kit from the stone-and-slate hero fortress. v30 changes material modulation only; geometry/gameplay remain unchanged.",
+  "retry_seq": 39
 }
