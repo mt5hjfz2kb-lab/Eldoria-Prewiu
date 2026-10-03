@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:04:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T20:05:00Z",
+  "active": [
+    {
+      "id": "valoria-authored-secondary-art-family-v1",
+      "title": "Valoria Authored Secondary Art Family v1",
+      "owner": "chat-valoria-authored-secondary-art-family-v1-20261003",
+      "scope": [
+        "tools/valoria-authored-secondary-art-family/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/AuthoredSecondaryArtFamily_v1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAuthoredSecondaryArtFamilyV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredSecondaryArtFamilyGateV1.cs",
+        ".github/workflows/valoria-authored-secondary-art-family-v1.yml",
+        "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1*",
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:05:00Z",
+      "base_main_sha": "71b9aa018297b59965eaa4d23ad75fcb2393a71b",
+      "status": "active",
+      "dependency": "Start from closed VQB experimental BEFORE 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve locked Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP. Do not reopen VQB micro-polish, terrain/island/mountain families, wholesale Slavic/Mega replacement, Hero height segmentation, or paid generation. First proof only: source-authored coherent modular roof/stone/timber/foundation language for Aserradero plus one wall/gate support pair. Expand only if matched 19/12/9/mobile evidence shows a clear benchmark jump."
+    }
+  ],
   "history": [
     {
       "id": "valoria-visual-quality-breakthrough-v1",
