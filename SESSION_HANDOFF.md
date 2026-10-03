@@ -1,3 +1,16 @@
+## 2026-10-03 — Valoria Authored Secondary Art Family v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL / NOT PROMOTED**.
+- Experimental branch: `visual-proof/valoria-authored-secondary-art-family-v1`.
+- Final valid integrated comparison: run **37151178579 SUCCESS**, artifact **11283369532**, source SHA `be2c806a83fb7692311d489b2d0d810e76055de7`.
+- Compared real VQB baseline against full authored rebuild, source-preserving semantic Aserradero, and source-preserving + shared Stone/Timber/Slate atlas + canonical support v2 at **19/12/9/mobile**.
+- Gameplay signature, macrocomposition, F1 envelope and front gate route stayed intact; **0 Tripo / paid credits**.
+- Full authored rebuild was rejected because it loses canonical source richness. Source-preserving authoring is technically proven at the canonical **49,800 triangles**, but shared-atlas v2 still reads too saturated/banded and does not produce a clear benchmark jump.
+- Do **not** expand this family to Cuartel/Granero and do not continue Aserradero color/material micro-tuning.
+- Result: `docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md`.
+- Workstream released; all experimental workflows are parked manual-only and the planner request is archived.
+- **Next is a genuine art-direction decision, not another routine technical pass**: either retain the current semi-realistic mixed-source visual shell and accept its measured ceiling, or deliberately rebase the player-facing shell toward a unified authored/stylized language while preserving gameplay, Flat Citadel geography, parcel reservations and systems.
+
 ## 2026-10-03 — Valoria Asset Coherence & Game Presentation v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL** after three real integrated variants; no production promotion or new owner publication.
