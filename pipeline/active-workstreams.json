@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T00:10:00Z",
+  "updated_at": "2026-10-04T00:13:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -16,7 +16,8 @@
         "pipeline/valoria-nation1-run-request.json",
         "docs/VALORIA_NATION1_AUTHORED_PRODUCTION_V1*",
         "docs/evidence/valoria-nation1-v1/**",
-        "SESSION_HANDOFF.md"
+        "SESSION_HANDOFF.md",
+        ".github/workflows/valoria-nation1-authored-production-v1.yml"
       ],
       "resources": [
         "valoria-production-composition",
