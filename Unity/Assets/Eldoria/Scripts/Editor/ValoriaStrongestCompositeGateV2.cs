@@ -247,7 +247,8 @@ namespace Eldoria.EditorTools
                     chain.Contains("assetlibrary reprocessing · central east buried terrace");
 
                 bool redundantRetaining=
-                    chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f;
+                    (chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f)||
+                    chain.Contains("valoria · barracks apron");
 
                 bool badForegroundTree=
                     chain.Contains("valoria · environment uplift · tree") &&
