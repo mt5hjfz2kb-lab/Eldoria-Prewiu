@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:24:00.643Z",
-  "active": [
+  "updated_at": "2026-10-03T11:35:02.328Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-visual-shell-v2",
       "title": "Valoria Visual Shell v2 — isolated complete-frame proof",
@@ -24,13 +25,15 @@
         "runner-trigger-governance",
         "workflow-governance"
       ],
-      "status": "active",
+      "status": "blocked",
       "claimed_at": "2026-10-03T11:23:39.368Z",
       "base_main_sha": "f98f200921a293383e9fd2d8b1d266e288a77903",
-      "dependency": "Experimental branch only for visual code. Preserve gameplay, colliders/hotspots, routes, camera/save/progression. 0 credits. Max 3 methods per major category before reclassification; no production promotion without full-frame visual evidence."
-    }
-  ],
-  "history": [
+      "dependency": "Experimental branch only for visual code. Preserve gameplay, colliders/hotspots, routes, camera/save/progression. 0 credits. Max 3 methods per major category before reclassification; no production promotion without full-frame visual evidence.",
+      "completed_at": "2026-10-03T11:35:02.328Z",
+      "result_commit": "d7ab8bae7ff591043e0b7a4204bf527ee11dfd58",
+      "result": "BLOCKED BY LIVE CONCURRENT WRITER. This session authored an isolated continuous terrain/PBR/full-frame shell candidate and local planner/YAML checks passed; no Unity run or visual PASS claimed. Branch advanced externally to c31612d09b7374c9dfa805e8933d2a0409be919b and then d46757f0270871792572a7434ed51845005fea37 while this session owned the registry. Non-fast-forward update correctly refused. Did not force, cancel or overwrite external work; candidate commit retained.",
+      "next": "Identify and stop the concurrent branch writer, then reclaim with a unique owner ID. Reconcile branch against latest evidence before adding the d7ab8bae candidate. The implementation and shader require actual Unity certification; no production promotion."
+    },
     {
       "id": "valoria-full-frame-convergence-iteration-1",
       "title": "Valoria Full-Frame Convergence Iterations 1–N",
