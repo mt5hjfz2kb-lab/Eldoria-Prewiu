@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T23:33:00Z",
-  "active": [
+  "updated_at": "2026-10-03T23:36:30Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-ssra-v1-variant2-validation",
       "title": "Valoria SSRA v1 variant 2 validation",
@@ -19,13 +20,20 @@
         "windows-runner-heavy",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T23:33:00Z",
       "base_main_sha": "9554bad03887e1d550e77f91df688521a6ad40d4",
-      "dependency": "Validate the final source-integrated Hero transition variant at zoom9/mobile only."
-    }
-  ],
-  "history": [
+      "dependency": "Validate the final source-integrated Hero transition variant at zoom9/mobile only.",
+      "completed_at": "2026-10-03T23:36:30Z",
+      "branch": "visual-proof/valoria-semantic-source-reauthoring-proof-v1",
+      "valid_capture_head": "0556cf8e6b6a2b54a3bee75ad83067facacd72e5",
+      "final_branch_head": "64675d692ac45318743b4d34d7aae7aff0917d7f",
+      "run_id": 37162147598,
+      "artifact_id": 11288451036,
+      "source_artifact_id": 11288171793,
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Variant2 removed only front-low Hero source components and embedded rich RockToWallTransition geometry, but integrated zoom9/mobile showed an oversized vertical rock mass that occluded Hero and worsened hierarchy. Second distinct Hero technique failed; anti-loop threshold reached.",
+      "next": "Stop SSRA Hero microvariants. Keep Aserradero semantic zoning as reusable secondary-asset technique; future Hero work requires deliberate high-fidelity local modeling with dedicated UV/material/bake and camera-authored proportions."
+    },
     {
       "id": "valoria-semantic-source-reauthoring-proof-v1",
       "title": "Valoria Semantic Source Reauthoring Proof v1",
