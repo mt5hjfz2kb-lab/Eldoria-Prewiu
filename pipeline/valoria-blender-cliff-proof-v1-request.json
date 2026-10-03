@@ -23,5 +23,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:36:00+02:00"
+  "triggered_at": "2026-10-03T11:43:00+02:00",
+  "retry_seq": 1,
+  "retry_reason": "First proof generated a valid zero-credit GLB but the composite gate kept ValoriaLowerCityTerracedMeshV1 disabled, so the staged Blender resource was not instantiated. Retry enables the mesh path only when that experimental resource exists."
 }
