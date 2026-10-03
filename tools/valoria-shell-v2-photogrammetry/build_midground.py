@@ -8,11 +8,11 @@ from pathlib import Path
 from mathutils import Vector
 
 ASSETS=[
-    {"id":"mountainside","name":"rear mountainside","anchor":(0.0,-3.1,9.5),"span":48.0,"height":11.5,"yaw":180.0},
-    {"id":"rock_face_01","name":"front west cliff","anchor":(-12.0,-3.25,-1.3),"span":27.5,"height":7.0,"yaw":18.0},
-    {"id":"rock_face_02","name":"front east cliff","anchor":(12.0,-3.15,-.9),"span":27.5,"height":7.2,"yaw":-18.0},
-]
-UA={"User-Agent":"Eldoria-ShellV2/1.0 (+https://polyhaven.com)"}
+    # Natural world-scale sources: no height-limited scaling. The mesh itself supplies the world envelope.
+    {"id":"coast_line_02","name":"foreground inhabited shelf","anchor":(0.0,-3.25,-3.6),"span":54.0,"yaw":180.0,"target_tris":260000},
+    {"id":"coastal_cliff_01","name":"rear world cliff","anchor":(0.0,-5.2,10.2),"span":54.0,"yaw":180.0,"target_tris":280000},
+    {"id":"namaqualand_cliff_02","name":"hero geology transition","anchor":(0.0,-2.65,4.7),"span":28.0,"yaw":170.0,"target_tris":170000},
+]UA={"User-Agent":"Eldoria-ShellV2/1.0 (+https://polyhaven.com)"}
 
 ROOT=Path(os.path.abspath(os.path.join(os.path.dirname(__file__),"..","..")))
 CACHE=Path(os.environ.get("ELDORIA_PH_CACHE",str(ROOT/".tmp_polyhaven")))
@@ -92,20 +92,38 @@ def import_and_place(spec):
     bpy.context.view_layer.update()
     lo,hi=bounds_world(imported)
     size=hi-lo
-    scale=min(spec["span"]/max(size.x,size.y,.001),spec["height"]/max(size.z,.001))
+    # Scale by natural horizontal width only. This prevents the previous proof from shrinking
+    # territorial cliffs into small floating plates simply because their vertical scan extent was large.
+    scale=spec["span"]/max(size.x,size.y,.001)
     root.scale=(scale,scale,scale)
+    bpy.context.view_layer.update()
+
+    # Fixed-camera proof keeps scan UV/material identity but caps geometry to a practical review budget.
+    raw_tris=0
+    for o in meshes:
+        raw_tris+=sum(max(0,len(p.vertices)-2) for p in o.data.polygons)
+    target=spec.get("target_tris",raw_tris)
+    if raw_tris>target:
+        ratio=max(.08,min(1.0,target/float(raw_tris)))
+        for o in meshes:
+            if o.data and len(o.data.polygons)>100:
+                bpy.context.view_layer.objects.active=o
+                mod=o.modifiers.new("fixed-camera scan decimate","DECIMATE")
+                mod.decimate_type="COLLAPSE";mod.ratio=ratio
+                bpy.ops.object.modifier_apply(modifier=mod.name)
+
     bpy.context.view_layer.update()
     lo,hi=bounds_world(imported)
     center=(lo+hi)*.5
-    target=unity_to_blender(spec["anchor"])
-    root.location += Vector((target.x-center.x,target.y-center.y,target.z-lo.z))
+    target_pos=unity_to_blender(spec["anchor"])
+    root.location += Vector((target_pos.x-center.x,target_pos.y-center.y,target_pos.z-lo.z))
     bpy.context.view_layer.update()
     lo,hi=bounds_world(imported)
     tris=0
     for o in meshes:
         for p in o.data.polygons:tris+=max(0,len(p.vertices)-2)
     return {
-        "id":spec["id"],"name":spec["name"],"tris":tris,
+        "id":spec["id"],"name":spec["name"],"source_tris":raw_tris,"tris":tris,
         "bounds":{"min":[round(v,3) for v in lo],"max":[round(v,3) for v in hi]},
         "download_url":entry["url"]
     }
