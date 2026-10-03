@@ -32,7 +32,7 @@ namespace Eldoria.Presentation
             const int segments=96;
             const int rings=5;
             const float cx=0f,cz=5.55f;
-            const float innerX=7.75f,innerZ=5.35f;
+            const float innerX=7.05f,innerZ=4.85f;
             const float outerX=22.5f,outerZ=17.5f;
 
             var verts=new Vector3[(rings+1)*segments];
@@ -47,7 +47,7 @@ namespace Eldoria.Presentation
                 float shaped=1f-Mathf.Pow(1f-t,1.65f);
                 float rx=Mathf.Lerp(innerX,outerX,shaped);
                 float rz=Mathf.Lerp(innerZ,outerZ,shaped);
-                float y=Mathf.Lerp(-.18f,-1.35f,t);
+                float y=Mathf.Lerp(.34f,-1.35f,t);
 
                 for(int s=0;s<segments;s++)
                 {
@@ -61,7 +61,7 @@ namespace Eldoria.Presentation
 
                     // Near-island contact darkening only. Outer ring becomes exact backplate.
                     float contact=(1f-t);
-                    contact=contact*contact*.13f;
+                    contact=contact*contact*.09f;
                     colors[i]=new Color(contact,0f,0f,1f);
                 }
             }
@@ -92,7 +92,7 @@ namespace Eldoria.Presentation
             var mr=go.AddComponent<MeshRenderer>();
             var mat=new Material(shader){name="Valoria Visual Shell v2 · projected valley"};
             mat.SetTexture("_BackplateTex",tex);
-            mat.SetFloat("_ContactStrength",1f);
+            mat.SetColor("_BackplateTint",new Color(.84f,.88f,.91f,1f));\n            mat.SetFloat("_ContactStrength",.75f);
             mr.sharedMaterial=mat;
             mr.shadowCastingMode=ShadowCastingMode.Off;
             mr.receiveShadows=false;
