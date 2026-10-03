@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "request_id": "valoria-full-frame-convergence-iteration-1",
-  "asset_or_sector": "Valoria Full Frame Iteration 1",
+  "request_id": "valoria-visual-shell-v2-native-geometry",
+  "asset_or_sector": "Valoria Visual Shell v2 Native Geometry",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -19,7 +19,7 @@
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_terrain_blending": false
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Full-frame convergence geometry gap proven by v22-v25b: certified SteppedRockTerrace reuse still reads as detached blocks/pillars and cannot form the required continuous lower-city cliff mass. First new-geometry proof is a zero-credit Unity-authored visual-only unified cliff substrate using existing PBR rock material. Tripo remains disabled pending proof outcome."
+  "notes": "Distinct method after 2.5D projected and TerrainData/mesa visual failures: authored native mesh crags plus existing rock/masonry connectors. No photographic foreground, no Tripo, gameplay authority unchanged."
 }
