@@ -82,8 +82,9 @@ namespace Eldoria.EditorTools
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
             int routeStyled=StyleCoreRoute();
-            ValoriaLowerCityPlateauV1.Enabled=true;
-            ValoriaLowerCityPlateauV1.Build(root.transform,state);
+            ValoriaLowerCityPlateauV1.Enabled=false;
+            ValoriaLowerCityTerrainV1.Enabled=true;
+            ValoriaLowerCityTerrainV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -99,6 +100,8 @@ namespace Eldoria.EditorTools
                 $"  \"core_route_renderers_styled\": {routeStyled},\n"+
                 $"  \"lower_surface_renderers_normalized\": {lowerSurfaceNormalized},\n"+
                 $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
+                $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
+                $"  \"terrain_surface_samples\": {ValoriaLowerCityTerrainV1.SurfaceSamples},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
