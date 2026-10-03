@@ -31,3 +31,12 @@ One bounded zero-credit transport retry at30000ms: commit `72ff0a6bf09fc68d101f7
 Alternative cloud Tripo tab is reachable but logged out. Secure existing-account login is the next owner-only prerequisite; do not ask for a raw GLB while this alternative remains possible. Exact original image already survives in repo. After access, resume zero-spend upload/model-cost verification; record explicit cost approval before spending under current AGENTS rule.
 
 Current verdict: TECH BLOCKED (Tripo access) / VISUAL NOT EVALUATED / NOT PROMOTED. No original Tripo GLB, clean.blend, final GLB, Unity replacement, BEFORE/AFTER proof, cleanup cost or scalable-production estimate exists yet. Generation ID=null. Do not mark a visual FAIL merely because transport failed. Accepted VQB/gameplay remains unchanged.
+
+## Resume evidence — 2026-10-04
+After the Work chat credit limit, the proof was resumed from canonical main without changing the exact input or widening scope. The workstream was reclaimed and two additional **zero-credit transport-only** attempts were made to distinguish a recoverable browser start problem from a true session blocker.
+
+- Run `37160022369` / artifact `11287686111`: exact-input preflight PASS; same dedicated `Eldoria-Edge-Remote` profile relaunch attempted after CDP timeout. WebSocket endpoint became available, but Playwright could not finish CDP session initialization within repeated 3s recovery handshakes. No upload/generation/spend.
+- Run `37160157487` / artifact `11287516829`: final bounded retry raised recovered handshake window to 10s. Exact-input preflight PASS again; CDP WebSocket connected, but Playwright still timed out before a usable browser context was established. No upload/generation/spend.
+- The experimental timeout-recovery bridge changes were reverted after the failed proof. Canonical request parked disabled.
+
+This upgrades the blocker diagnosis: **the input pipeline is healthy; the current dedicated Tripo browser/session is not attachable through Playwright despite a reachable CDP websocket.** Do not repeat unattended retries. Next prerequisite is a healthy authenticated Tripo session/profile accessible to the canonical bridge. Current cumulative spend remains **0 credits** and generations remain **0**.
