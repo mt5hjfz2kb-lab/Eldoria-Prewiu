@@ -30,7 +30,8 @@ jobs:
         shell: bash
         env:
           ELDORIA_AUTHORED_FAMILY_DIR: ${{ github.workspace }}/pipeline/candidates/valoria-authored-secondary-art-family-v1
-          ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json\n          ELDORIA_CANONICAL_SAWMILL: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
+          ELDORIA_AUTHORED_FAMILY_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          ELDORIA_CANONICAL_SAWMILL: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
         run: |
           blender -b --python tools/valoria-authored-secondary-art-family/build_family.py
           test -s pipeline/evidence/valoria-authored-secondary-art-family-v1.json
