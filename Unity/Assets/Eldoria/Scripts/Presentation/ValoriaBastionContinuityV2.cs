@@ -34,10 +34,18 @@ namespace Eldoria.Presentation
             foreach(var r in rs)
             {
                 string n=r.gameObject.name.ToLowerInvariant();
-                Material m=n.Contains("retaining")||n.Contains("civic")?stone:
-                           n.Contains("macroform")?rock:ground;
                 var mats=r.sharedMaterials;
-                for(int i=0;i<mats.Length;i++)mats[i]=m;
+                if(n.Contains("macroform"))
+                {
+                    // Blender exports material slot 0 = rock risers, slot 1 = ground terraces.
+                    // Preserve that authored distinction instead of flattening both submeshes to rock.
+                    for(int i=0;i<mats.Length;i++)mats[i]=(i==0?rock:ground);
+                }
+                else
+                {
+                    Material m=n.Contains("retaining")||n.Contains("civic")?stone:ground;
+                    for(int i=0;i<mats.Length;i++)mats[i]=m;
+                }
                 r.sharedMaterials=mats;r.receiveShadows=true;
                 r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
             }
