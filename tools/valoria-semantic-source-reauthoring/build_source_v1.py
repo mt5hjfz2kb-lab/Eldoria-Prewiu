@@ -71,6 +71,7 @@ def import_one(asset_id,path,collection):
     obj=meshes[0];obj.name=asset_id+"_SOURCE"
     for c in list(obj.users_collection): c.objects.unlink(obj)
     collection.objects.link(obj)
+    bpy.ops.object.select_all(action="DESELECT");obj.select_set(True);bpy.context.view_layer.objects.active=obj
     return obj
 
 def clone_tinted(mat,name,tint,rough_mul=1.0):
@@ -100,7 +101,7 @@ def remove_components(obj,predicate):
     for g in groups:
         if predicate(g):
             remove.update(g["verts"]);removed_tris+=g["tris"];removed_groups+=1
-    bpy.context.view_layer.objects.active=obj;obj.select_set(True);bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.object.select_all(action="DESELECT");obj.select_set(True);bpy.context.view_layer.objects.active=obj;bpy.ops.object.mode_set(mode="EDIT")
     bm=bmesh.from_edit_mesh(obj.data);bm.verts.ensure_lookup_table()
     for v in bm.verts:v.select=False
     for i in remove:
