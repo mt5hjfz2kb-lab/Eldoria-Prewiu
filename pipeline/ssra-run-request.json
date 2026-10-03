@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "nonce": "phase1-20261004-f",
+  "nonce": "phase1-20261004-e",
   "scope": "source-authoring-and-zoom9-mobile",
-  "note": "fresh wall import after hero/aserradero authoring"
+  "note": "run current branch head with node-link and isolated-edit fixes"
 }
