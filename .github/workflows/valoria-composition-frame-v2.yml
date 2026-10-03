@@ -68,7 +68,7 @@ jobs:
           $output=Join-Path $dir 'HeroCityTransitionEnvelopeV2.glb'
           $report="$env:RUNNER_TEMP\\hero-city-transition-envelope-v2-report.json"
           $log="$env:RUNNER_TEMP\\hero-city-transition-envelope-v2-blender.log"
-          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\\tools\\blender_authored_hero_city_transition_v1.py" -- --output $output --report $report *> $log
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\\tools\\blender_valoria_transition_envelope_v2.py" -- --output $output --report $report *> $log
           if($LASTEXITCODE -ne 0){
             if(Test-Path $log){Get-Content $log -Tail 320}
             throw "Authored transition Blender generation failed: $LASTEXITCODE"
