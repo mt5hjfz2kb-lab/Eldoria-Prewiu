@@ -1,8 +1,35 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:35:02.328Z",
-  "active": [],
+  "updated_at": "2026-10-03T11:40:32.047Z",
+  "active": [
+    {
+      "id": "valoria-visual-shell-v2-continuous-terrain",
+      "title": "Valoria Visual Shell v2 — continuous terrain full-frame proof",
+      "owner": "chat-valoria-visual-shell-v2-resume-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaShellTerrain.shader",
+        ".github/workflows/valoria-strongest-composite-v2.yml",
+        "pipeline/valoria-strongest-composite-v2-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_VISUAL_SHELL_V2_RESULT.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "art-production-planner",
+        "windows-runner-heavy",
+        "runner-trigger-governance",
+        "workflow-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T11:40:32.047Z",
+      "base_main_sha": "007985fae42d560de8cae49f42f1ba1f65579055",
+      "dependency": "Experimental continuous landform visual-only. Existing projected-matte method 1–3 visual fail; no production promotion. Preserve gameplay/hotspots/colliders/routes/camera, zero Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-visual-shell-v2",
