@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate connected terraced landforms v4: central Bastion shelf, separate Sawmill and Barracks terraces, narrow natural links and central approach, preserving all certified gameplay positions.",
+  "objective": "Validate hybrid lower-city terrain v5: TerrainData owns walkable terrace tops and narrow links; authored rock meshes dress hole boundaries and vertical cliff language.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:41:00+02:00",
-  "retry_reason": "TerrainData v3b TECH PASS / VISUAL FAIL: terrain continuity improved but one broad foreground mass remained necessary because gameplay buildings are widely distributed. v4 models those certified positions as connected terraced landforms instead of one continuous slab.",
-  "retry_seq": 14
+  "triggered_at": "2026-10-03T07:49:00+02:00",
+  "retry_reason": "Terraced landforms v4 TECH PASS / VISUAL PARTIAL: separated landforms improved composition but TerrainData itself produced dark bulbous cliff masses. Unity documentation recommends masking Terrain with holes and hiding hole edges using other rock geometry; v5 applies that split.",
+  "retry_seq": 15
 }
