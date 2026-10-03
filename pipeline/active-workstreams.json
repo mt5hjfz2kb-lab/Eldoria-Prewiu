@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:42:12.379Z",
-  "active": [
+  "updated_at": "2026-10-03T12:43:13.109Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-shell-v2-composition-frame",
       "title": "Valoria Visual Shell v2 — composition-first complete frame",
@@ -24,13 +25,23 @@
         "runner-trigger-governance",
         "workflow-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T12:25:22.463Z",
       "base_main_sha": "d259102c51da8dceea5e73bcbe878bb38aa1a630",
-      "dependency": "Composition-first complete-frame proof after rejected procedural/Blender terrain; preserve gameplay/collision/camera, visible sawmill/barracks/granary, no Tripo, no production promotion without visual pass."
-    }
-  ],
-  "history": [
+      "dependency": "Composition-first complete-frame proof after rejected procedural/Blender terrain; preserve gameplay/collision/camera, visible sawmill/barracks/granary, no Tripo, no production promotion without visual pass.",
+      "completed_at": "2026-10-03T12:43:13.109Z",
+      "result_commit": "c1ab98e2de7bda8dfce6744e1780835c3dd5aedd",
+      "run_ids": [
+        37122999352,
+        37123255424
+      ],
+      "artifact_ids": [
+        11274336732,
+        11273918113
+      ],
+      "result": "TECH PASS / VISUAL FAIL; current composition/PBR and procedural/assembled authoring strategy ceiling (C), not Unity/URP ceiling. Operational paintover archived as guidance only. No production promotion or credits.",
+      "next": "A distinct camera-authored connected environment assembly is needed. No more placement/material microiteration on failed composition branch; preserve gameplay and review at full frame."
+    },
     {
       "id": "valoria-shell-v2-blender-transition",
       "title": "Valoria Visual Shell v2 — authored Blender rock/terrace transition",

@@ -22,3 +22,24 @@ The tested library resolves individual buildings, stairs, stone fragments and ro
 ## Decision
 
 **C for the current environment authoring strategy.** Unity/URP remains capable, and gameplay did not regress, but the current asset assembly cannot be promoted toward the approved image. The next candidate must be authored against the exact full-frame silhouette and judged against the reference. A single contiguous terrain/terrace/retaining-wall connector is the candidate geometry gap. Before any Tripo credit, create an exact operational reference for that piece, show it with its expected cost, and obtain fresh approval. No Tripo request has been sent.
+
+## Composition target after stop-rule review
+
+The [operational paintover](../artifacts/valoria-visual-shell-v2/composition-guide-20261003.jpg) was edited from the **actual second-run production capture**, with the approved reference used as a quality target. SHA-256 of the persisted JPEG: `757eb0514a766d46bb309fa99a6298487300d8b9f45992474949929763867e5b`. It is **generated production guidance, not Unity evidence or an exact Tripo input**. Its castle details, framing and parcel edges are artistically altered, so no dimensions, camera position, collision or gameplay behavior may be inferred from it. The authoritative proof remains artifact `11273918113`.
+
+The paintover makes one missing relationship legible: the Bastion's rock base must descend into inhabited, load-bearing terraces and retaining walls that join the three existing functional parcels. The road needs a constructed civic landing and vertical circulation; the lower architecture needs foundations and shared masonry rather than freestanding complete buildings. The foreground should reveal a cliff section instead of a horizontal brown platform edge. Distant scenery must have compatible exposure, haze and scale. The strongest existing assets (Bastion, Aserradero, Cuartel) are retained as anchors; the paintover is not permission to copy its extra structures into gameplay.
+
+Priority by full-frame impact:
+
+1. Replace the broad flat platform silhouette with a carved, irregular connected mountain/terrace mass.
+2. Build one authored Bastion-to-civic-landing retaining-wall and stair relationship with a clear structural join.
+3. Embed the three functional parcels in one architectural family, keeping their certified interaction authority.
+4. Restore foreground cliff depth and remove isolated stone-kit pillars.
+5. Match distant atmosphere, horizon, exposure and sun direction to the 3D.
+6. Harmonize stone/rock/ground/timber/roof scale, wear and warmth across existing assets.
+
+The current stack does not prove a Unity/URP rendering ceiling. It proves a ceiling of the **current procedural/extruded surface and assembled-prefab authoring route**: projected matte, continuous Unity terrain, native crag extrusions, Blender heightfield and this composition/PBR frame all preserved functionality but missed the approved visual category. A further slider or placement pass on this branch would violate the stop rule.
+
+A next production candidate needs a deliberately authored **environment assembly** (rock skirt interface, retaining walls, civic terrace and plot foundations) laid out against the actual camera and pan/zoom envelope. It can be assembled from the existing certified kits plus new Blender geometry where the interface is absent. It must be tested as one complete frame at 19/12/9/mobile and ±6 pan, with exact collider/hotspot signature unchanged; only a visible category jump earns promotion. Any Tripo candidate must first isolate one missing geometry piece from this broader assembly, prove the library cannot supply it, persist its exact isolated input, show the current visible credit cost and receive fresh owner authorization. The broad paintover itself is unsuitable for that input.
+
+**Final classification for this bounded Visual Shell v2 experiment: C.** The current authoring strategy has a demonstrated visual ceiling. The concrete replacement is camera-authored connected environment geometry and shared architectural foundations; engine, gameplay, automation and certified Hero Bastion remain valuable. No product scene, tester build or gameplay was changed; the failed visual branch stays isolated.
