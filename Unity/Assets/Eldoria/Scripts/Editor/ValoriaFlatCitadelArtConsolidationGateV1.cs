@@ -70,6 +70,8 @@ namespace Eldoria.EditorTools
             AttachCanonicalHud(after.camera,hudState,true);
             SaveSet(after.camera,"game",p,t);
 
+            var coherenceShader=Shader.Find("Eldoria/Valoria Coherence");
+            if(ShaderUtil.ShaderHasError(coherenceShader))throw new Exception("Coherence shader compilation failed");
             WriteEvidence();
             File.WriteAllLines(Folder+"/asset-audit.txt",ValoriaAssetCoherenceV1.Audit);
             File.WriteAllText(Folder+"/coherence-metrics.json",$"{{\"materials\":{ValoriaAssetCoherenceV1.MaterialCount},\"population\":{ValoriaAssetCoherenceV1.PopulationCount},\"ground_triangles\":{ValoriaAssetCoherenceV1.GroundTriangles}}}");
@@ -246,6 +248,9 @@ namespace Eldoria.EditorTools
             try
             {
                 c.targetTexture=rt;
+                foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                    if(renderer.enabled)foreach(var material in renderer.sharedMaterials)
+                        if(material!=null)for(int pass=0;pass<material.passCount;pass++)ShaderUtil.CompilePass(material,pass,true);
                 foreach(var skin in Object.FindObjectsByType<ValoriaHudPresentationV1>(FindObjectsSortMode.None))skin.Apply(w,h);
                 Canvas.ForceUpdateCanvases();c.Render();c.Render();Canvas.ForceUpdateCanvases();RenderTexture.active=rt;
                 var im=new Texture2D(w,h,TextureFormat.RGB24,false);

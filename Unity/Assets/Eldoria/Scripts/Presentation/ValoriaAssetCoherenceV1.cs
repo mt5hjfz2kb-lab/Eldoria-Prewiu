@@ -49,6 +49,7 @@ namespace Eldoria.Presentation
     if(n.Contains("cottage west")||n.Contains("cottage east"))r.enabled=false;
     if(n.Contains("production surrounding meadow"))r.enabled=false;
    }
+   HarmonizeGround(parent);
    BuildGround(root,shader);
    BuildLowFoliage(root);
    BuildLife(root,state);
@@ -65,7 +66,7 @@ namespace Eldoria.Presentation
     float mask=Mathf.SmoothStep(0,1,Mathf.Clamp01((city-1)*1.6f));
     float noise=Mathf.PerlinNoise(px*.11f+16,pz*.11f+29);
     v[k]=new Vector3(px,-.055f+mask*(noise-.45f)*.62f,pz);uv[k]=new Vector2(px*.3f,pz*.3f);
-    colors[k]=Color.Lerp(new Color(.46f,.49f,.30f),new Color(.68f,.63f,.43f),noise);
+    colors[k]=Color.Lerp(new Color(.45f,.58f,.33f),new Color(.60f,.65f,.41f),noise);
    }
    for(int z=0;z<n;z++)for(int x=0;x<n;x++){int k=z*(n+1)+x,t=(z*n+x)*6;tri[t]=k;tri[t+1]=k+n+1;tri[t+2]=k+1;tri[t+3]=k+1;tri[t+4]=k+n+1;tri[t+5]=k+n+2;}
    var mesh=new Mesh{name="Contained low relief meadow"};mesh.vertices=v;mesh.uv=uv;mesh.colors=colors;mesh.triangles=tri;mesh.RecalculateNormals();mesh.RecalculateBounds();GroundTriangles=tri.Length/3;
@@ -76,25 +77,31 @@ namespace Eldoria.Presentation
   }
   static Material Mat(Color c){var m=new Material(Shader.Find("Universal Render Pipeline/Lit"));m.color=c;m.SetFloat("_Smoothness",.06f);return m;}
   static GameObject Part(Transform parent,string name,PrimitiveType type,Vector3 p,Vector3 size,Material m){var g=GameObject.CreatePrimitive(type);g.name=name;g.transform.SetParent(parent,false);g.transform.localPosition=p;g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=m;Object.DestroyImmediate(g.GetComponent<Collider>());return g;}
+  static void HarmonizeGround(Transform parent)
+  {
+   foreach(var r in parent.GetComponentsInChildren<Renderer>(true)){
+    if(!r.enabled||r.bounds.max.y>.26f)continue;string chain=Chain(r.transform);
+    bool soil=chain.Contains("buildable city plane")||chain.Contains("growth parcel")||chain.Contains("work parcel")||chain.Contains("work yard")||chain.Contains("training yard")||chain.Contains("granary yard")||chain.Contains("worn ")||chain.Contains("road shoulder")||chain.Contains("future plot");
+    if(!soil)continue;
+    var tiling=chain.Contains("city plane")?new Vector2(3.6f,3.6f):new Vector2(Mathf.Max(1,r.bounds.size.x*.65f),Mathf.Max(1,r.bounds.size.z*.65f));
+    var mat=ValoriaKit.ExternalPbrSurfaceMaterial("dirt",new Color(.72f,.64f,.49f),tiling,.04f,.35f);if(mat!=null)r.sharedMaterial=mat;
+   }
+  }
   static void BuildLowFoliage(Transform root)
   {
-   // Small continuous clumps only outside wall and expansion seams, combined into one mesh per palette.
-   var green=Mat(new Color(.22f,.30f,.15f));var pale=Mat(new Color(.36f,.39f,.22f));
-   var temporary=new List<GameObject>();var random=new System.Random(711);
-   for(int i=0;i<130;i++){
-    float a=(float)random.NextDouble()*Mathf.PI*2;float rx=12.2f+(float)random.NextDouble()*3.7f,rz=11.4f+(float)random.NextDouble()*3.1f;
+   var art=ValoriaExternalAssetLibrary.Load();var source=art!=null?art.SlavicBush:null;
+   if(source==null)source=Resources.Load<GameObject>("WorldInventory/Bush01");
+   if(source==null){Audit.Add("Foliage source unavailable: no primitive substitute");return;}
+   var random=new System.Random(711);
+   for(int i=0;i<36;i++){
+    float a=(float)random.NextDouble()*Mathf.PI*2;float rx=12.2f+(float)random.NextDouble()*2.7f,rz=11.4f+(float)random.NextDouble()*2.2f;
     var p=new Vector3(Mathf.Cos(a)*rx,0,1.4f+Mathf.Sin(a)*rz);
-    // Hard clearance for XW/XE and future upper approach, plus south gate road.
     if(Mathf.Abs(p.z-3.8f)<2||Mathf.Abs(p.x)<4.2f)continue;
-    float size=.30f+(float)random.NextDouble()*.65f;
-    var g=Part(root,"low hedge clump",PrimitiveType.Sphere,p+new Vector3(0,size*.2f,0),new Vector3(size,size*.42f,size*.78f),i%3==0?pale:green);temporary.Add(g);
+    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · authored low foliage",source,p,.65f+(float)random.NextDouble()*.6f,.62f,Quaternion.Euler(0,i*71,0),new Color(.67f,.78f,.58f));
+    if(go==null)continue;go.transform.SetParent(root,true);
+    foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
+    foreach(var lod in go.GetComponentsInChildren<LODGroup>(true))lod.ForceLOD(0);
    }
-   foreach(var mat in new[]{green,pale}){
-    var c=new List<CombineInstance>();foreach(var g in temporary)if(g.GetComponent<Renderer>().sharedMaterial==mat)c.Add(new CombineInstance{mesh=g.GetComponent<MeshFilter>().sharedMesh,transform=g.transform.localToWorldMatrix});
-    var mesh=new Mesh();mesh.indexFormat=IndexFormat.UInt32;mesh.CombineMeshes(c.ToArray());
-    var g2=new GameObject("Valoria · combined low foliage band");g2.transform.SetParent(root,true);g2.AddComponent<MeshFilter>().sharedMesh=mesh;g2.AddComponent<MeshRenderer>().sharedMaterial=mat;
-   }
-   foreach(var g in temporary)Object.DestroyImmediate(g);
   }
   static void BuildLife(Transform root,PlayerState state)
   {
