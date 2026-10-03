@@ -1,28 +1,35 @@
-"""Valoria Bastion-to-city continuity v1.
-Designed macroform first; existing certified rock is used only as shrinkwrap donor detail.
-No heightfield, no voxel union, no photogrammetry plate placement, no gameplay geometry.
+"""Valoria Shell v2 — fixed-camera DCC set v1.
+The whole player-facing set is composed in Blender around the official camera: Hero Bastion,
+functional buildings, inhabited district, terrain/supports and circulation. Unity retains gameplay
+authority but does not re-assemble this visual candidate from independent presentation layers.
 """
 import bpy, os, sys, json, math
 from mathutils import Vector
 
 ROOT=os.environ.get("GITHUB_WORKSPACE",os.getcwd())
-RES=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria","Rescued")
-OUT=sys.argv[sys.argv.index("--")+1] if "--" in sys.argv else "ValoriaBastionContinuity.glb"
-REPORT=sys.argv[sys.argv.index("--")+2] if "--" in sys.argv and len(sys.argv)>sys.argv.index("--")+2 else OUT+".json"
+VAL=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria")
+idx=sys.argv.index("--") if "--" in sys.argv else -1
+OUT=sys.argv[idx+1] if idx>=0 else "ValoriaBastionContinuity.glb"
+REPORT=sys.argv[idx+2] if idx>=0 and len(sys.argv)>idx+2 else OUT+".json"
 
 def ub(v):
     x,y,z=v
     return Vector((x,-z,y))
 
-def bounds(obj):
-    pts=[obj.matrix_world@Vector(c) for c in obj.bound_box]
+def bounds(objects):
+    pts=[]
+    if not isinstance(objects,(list,tuple)):objects=[objects]
+    for o in objects:
+        if o.type!="MESH":continue
+        pts.extend([o.matrix_world@Vector(c) for c in o.bound_box])
     return Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts))),Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
 
-def import_glb(path,name):
+def import_join(rel,name):
+    path=os.path.join(VAL,rel)
     before=set(bpy.context.scene.objects)
     bpy.ops.import_scene.gltf(filepath=path)
     meshes=[o for o in bpy.context.scene.objects if o not in before and o.type=="MESH"]
-    if not meshes: raise RuntimeError("No donor mesh: "+path)
+    if not meshes:raise RuntimeError("No meshes: "+rel)
     bpy.ops.object.select_all(action='DESELECT')
     for o in meshes:o.select_set(True)
     bpy.context.view_layer.objects.active=meshes[0]
@@ -30,170 +37,129 @@ def import_glb(path,name):
     o=bpy.context.view_layer.objects.active;o.name=name
     return o
 
-def normalized_copy(src,name,center,dims,yaw=0):
-    o=src.copy();o.data=src.data.copy();bpy.context.scene.collection.objects.link(o);o.name=name
+def fit_center(o,center,dims,yaw=0):
+    o.rotation_euler[2]=math.radians(-yaw)
+    bpy.context.view_layer.update()
     lo,hi=bounds(o);s=hi-lo
     o.scale=(dims[0]/max(s.x,.001),dims[2]/max(s.y,.001),dims[1]/max(s.z,.001))
-    o.rotation_euler[2]=math.radians(-yaw)
-    o.location=ub(center)
-    bpy.context.view_layer.objects.active=o
-    bpy.ops.object.select_all(action='DESELECT');o.select_set(True)
-    bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
+    bpy.context.view_layer.update()
+    lo,hi=bounds(o);c=(lo+hi)*.5
+    o.location+=ub(center)-c
+    bpy.context.view_layer.update()
     return o
 
-def make_macroform():
-    # Unity-space section, front/lower city -> Hero Bastion.
-    # Each pair creates a horizontal inhabited terrace followed by a rock riser.
-    profile=[
-      (-6.2,-0.80,9.8),
-      (-4.45,-0.80,9.5),
-      (-4.05, 0.08,9.0),
-      (-2.45, 0.08,8.7),
-      (-2.02, 0.82,8.1),
-      (-0.30, 0.82,7.8),
-      ( 0.15, 1.48,7.1),
-      ( 1.95, 1.48,6.8),
-      ( 2.42, 2.08,6.0),
-      ( 4.15, 2.08,5.6),
-      ( 4.62, 2.58,4.9),
-      ( 6.18, 2.58,4.45),
-      ( 6.55, 2.90,4.10)
-    ]
-    xs=31
-    verts=[];faces=[];mat_index=[];rock_verts=set()
-    rows=[]
-    for ri,(z,y,half) in enumerate(profile):
-        row=[]
+def add_asset(rel,name,center,dims,yaw=0):
+    return fit_center(import_join(rel,name),center,dims,yaw)
+
+def ground_mesh(name,z0,z1,y,half0,half1):
+    # One irregular inhabited terrace, full width, with a sloped/rock front instead of a floating board.
+    xs=13;verts=[];faces=[]
+    for row,(z,half,yy) in enumerate([(z0,half0,y-.36),(z0+.42,half0-.25,y),(z1,half1,y)]):
         for i in range(xs):
             t=i/(xs-1);x=-half+2*half*t
-            # camera-authored asymmetry: keep the silhouette natural without breaking terrace planarity.
-            x+=0.14*math.sin(t*math.pi*2.3 + ri*.43)
-            yy=y
-            if ri%2==0 and ri not in (0,len(profile)-1):
-                yy+=0.025*math.sin(t*math.pi*4.0+ri)
-            row.append(len(verts));verts.append(tuple(ub((x,yy,z))))
-        rows.append(row)
-    for r in range(len(rows)-1):
-        # horizontal segments are even->odd; risers are odd->even.
-        is_riser=(r%2==1)
+            edge=abs(t-.5)*2
+            x+=.16*math.sin(i*1.37+row*.9)*edge
+            verts.append(tuple(ub((x,yy,z))))
+    for r in range(2):
         for i in range(xs-1):
-            a,b=rows[r][i],rows[r][i+1];c,d=rows[r+1][i+1],rows[r+1][i]
-            # Unity camera sees the +Y/top and front-facing terrace section. After ub()
-            # (Unity z -> Blender -Y), this winding yields +Z on terrace tops and +Y on risers.
-            faces.append((a,d,c,b));mat_index.append(0 if is_riser else 1)
-            if is_riser:
-                rock_verts.update((a,b,c,d))
-    # side skirts hide the authored shell edges from approved camera envelope.
-    for side in (0,xs-1):
-        chain=[rows[r][side] for r in range(len(rows))]
-        bottom=[]
-        for r,(z,y,half) in enumerate(profile):
-            x=verts[chain[r]][0]
-            idx=len(verts);verts.append((x,verts[chain[r]][1],-2.2))
-            bottom.append(idx)
-        for r in range(len(chain)-1):
-            faces.append((chain[r],chain[r+1],bottom[r+1],bottom[r]));mat_index.append(0)
-    me=bpy.data.meshes.new("BastionContinuityMacroformMesh");me.from_pydata(verts,[],faces);me.update()
-    o=bpy.data.objects.new("BastionContinuityMacroform",me);bpy.context.scene.collection.objects.link(o)
-    vg=o.vertex_groups.new(name="RockFaces")
-    vg.add(list(rock_verts),1.0,'REPLACE')
-    rock=bpy.data.materials.new("Rock");rock.diffuse_color=(.34,.32,.29,1)
-    ground=bpy.data.materials.new("Ground");ground.diffuse_color=(.34,.29,.22,1)
-    o.data.materials.append(rock);o.data.materials.append(ground)
-    for p,mi in zip(o.data.polygons,mat_index):p.material_index=mi
-    return o
-
-def make_box(name,center,dims,mat):
-    bpy.ops.mesh.primitive_cube_add(size=1,location=ub(center))
-    o=bpy.context.object;o.name=name;o.dimensions=(dims[0],dims[2],dims[1])
-    bpy.context.view_layer.objects.active=o
-    bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
-    b=o.modifiers.new("edge soften","BEVEL");b.width=min(.10,dims[1]*.18);b.segments=2
-    bpy.ops.object.modifier_apply(modifier=b.name)
-    o.data.materials.append(mat)
+            a=r*xs+i;b=a+1;c=a+xs;d=c+1
+            faces += [(a,d,c,b)]
+    me=bpy.data.meshes.new(name+"Mesh");me.from_pydata(verts,[],faces);me.update()
+    o=bpy.data.objects.new(name,me);bpy.context.scene.collection.objects.link(o)
     return o
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
-macro=make_macroform()
+objects=[]
 
-# Existing certified rock is only a geometric donor. It is never exported.
-src=import_glb(os.path.join(RES,"ResidentialTerraceRock.glb"),"RockDonorSource")
-donors=[
- normalized_copy(src,"DonorLower",(0,.35,-3.0),(18.0,3.2,4.2),8),
- normalized_copy(src,"DonorMiddle",(0,1.35,.8),(14.5,3.0,4.0),-9),
- normalized_copy(src,"DonorUpper",(0,2.25,4.7),(10.0,2.7,3.4),6)
+# Exact focal: same visible bounds as the certified Unity Hero Bastion renderer audit.
+objects.append(add_asset("HeroBastionGenerated/Valoria_HeroBastion_v1.glb","DCC_HeroBastion",
+    (0,7.14,8.75),(12.80,9.24,10.96),0))
+
+# Terrain is authored around the architecture, not added underneath afterwards.
+tiers=[
+    ground_mesh("DCC_LowerTerrace",-7.5,-2.35,-.15,11.7,9.6),
+    ground_mesh("DCC_MiddleTerrace",-2.75,1.85,.85,9.8,7.7),
+    ground_mesh("DCC_HeroTerrace",1.45,5.25,2.22,7.8,5.7)
 ]
-bpy.data.objects.remove(src,do_unlink=True)
+objects += tiers
+
+# Functional anchors are composed into the lower/middle retaining sequence.
+objects += [
+ add_asset("Valoria_Aserradero_AP2_v1.glb","DCC_Aserradero",(-6.25,1.65,-1.15),(4.7,3.3,4.1),18),
+ add_asset("Valoria_Cuartel_AP2_v1.glb","DCC_Cuartel",(6.10,1.70,-.95),(5.0,3.4,4.3),342),
+ add_asset("Valoria_Granero_BIII_v1.glb","DCC_Granero",(-2.55,2.15,2.05),(3.1,2.7,3.25),12)
+]
+
+# Dense inhabited district. Deliberate overlap/burial makes one roofline rather than isolated plots.
+mid=[
+ ("Piece01",(-7.65,.95,-4.65),(3.0,2.45,3.0),20),
+ ("Piece04",(-4.55,1.05,-4.40),(2.7,2.45,2.8),10),
+ ("Piece02",(-1.35,1.00,-4.70),(2.7,2.45,2.8),5),
+ ("Piece03",(2.00,1.05,-4.60),(2.8,2.55,2.9),355),
+ ("Piece01",(5.25,1.00,-4.25),(2.8,2.45,2.9),346),
+ ("Piece04",(7.85,.95,-4.40),(2.8,2.45,2.9),338),
+ ("Piece03",(-5.15,1.85,.25),(2.8,2.65,2.9),18),
+ ("Piece01",(1.45,1.82,.50),(2.65,2.55,2.75),350),
+ ("Piece02",(4.70,1.82,.25),(2.75,2.65,2.85),342)
+]
+for i,(piece,c,d,yaw) in enumerate(mid):
+    objects.append(add_asset("MidTierArchitectureKit_v1/"+piece+".glb","DCC_Mid_%02d"%i,c,d,yaw))
+
+# Structural wall vocabulary follows the same three terrain levels and visually locks architecture to rock.
+walls=[
+ ("HighStraightWall",(-5.4,.55,-2.15),(4.0,1.45,.72),5),
+ ("HighStraightWall",(5.4,.55,-2.10),(4.0,1.45,.72),175),
+ ("CornerWallL",(-8.25,.62,-1.45),(2.5,1.8,2.0),96),
+ ("CornerWallL",(8.20,.62,-1.40),(2.5,1.8,2.0),264),
+ ("RockToWallTransition",(-4.65,1.55,1.95),(3.0,2.0,2.0),30),
+ ("RockToWallTransition",(4.65,1.55,2.00),(3.0,2.0,2.0),210),
+ ("HighStraightWall",(-3.55,2.18,4.55),(2.8,1.65,.72),8),
+ ("HighStraightWall",(3.55,2.18,4.55),(2.8,1.65,.72),172)
+]
+for i,(piece,c,d,yaw) in enumerate(walls):
+    objects.append(add_asset("StoneArchitectureKit_v1/"+piece+".glb","DCC_Wall_%02d"%i,c,d,yaw))
+
+# Existing certified rock modules are seam cover, never the substrate.
+rocks=[
+ ("ResidentialTerraceRock",(-8.55,-.15,-2.8),(5.2,2.7,4.0),30),
+ ("ResidentialTerraceRock",(8.45,-.12,-2.7),(5.2,2.7,4.0),210),
+ ("TerraceStairRock",(-6.8,.80,1.6),(4.4,2.6,3.4),35),
+ ("TerraceStairRock",(6.8,.82,1.7),(4.4,2.6,3.4),215),
+ ("StreetLandingTransition",(-4.45,1.75,4.5),(3.8,2.3,3.0),32),
+ ("StreetLandingTransition",(4.45,1.78,4.55),(3.8,2.3,3.0),212)
+]
+for i,(piece,c,d,yaw) in enumerate(rocks):
+    objects.append(add_asset("Rescued/"+piece+".glb","DCC_Rock_%02d"%i,c,d,yaw))
+
+# Camera-authored central circulation: broad landings linked by short flights; no continuous ribbon.
+stone=bpy.data.materials.new("DCC_Stone");stone.diffuse_color=(.40,.38,.34,1)
+def box(name,c,d):
+    bpy.ops.mesh.primitive_cube_add(size=1,location=ub(c));o=bpy.context.object;o.name=name
+    o.dimensions=(d[0],d[2],d[1]);bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+    be=o.modifiers.new("edge","BEVEL");be.width=.055;be.segments=2;bpy.ops.object.modifier_apply(modifier=be.name)
+    o.data.materials.append(stone);return o
+for i,(z,y,w) in enumerate([(-5.7,.02,2.8),(-2.1,.78,2.55),(1.45,1.72,2.4),(4.75,2.55,2.25)]):
+    objects.append(box("DCC_Landing_%d"%i,(0,y,z),(w,.14,1.25)))
+for i in range(12):
+    t=i/11;z=-5.0+9.25*t;y=.18+2.15*t
+    objects.append(box("DCC_Step_%02d"%i,(0,y,z),(1.42,.13,.62)))
+
+# Export the authored visual set as one scene root; source materials on real assets stay intact.
 bpy.ops.object.select_all(action='DESELECT')
-for o in donors:o.select_set(True)
-bpy.context.view_layer.objects.active=donors[0];bpy.ops.object.join();donor=bpy.context.object;donor.name="RockDonorCombined"
-
-# Professional workflow analogue: designed macroform keeps composition authority;
-# shrinkwrap only conforms rock-face vertices and has a strict projection limit.
-bpy.context.view_layer.objects.active=macro
-sw=macro.modifiers.new("Rock donor conform","SHRINKWRAP")
-sw.target=donor;sw.vertex_group="RockFaces";sw.wrap_method='NEAREST_SURFACEPOINT';sw.wrap_mode='ON_SURFACE'
-sw.offset=.015;sw.project_limit=.32
-bpy.ops.object.modifier_apply(modifier=sw.name)
-bev=macro.modifiers.new("Terrace edge soften","BEVEL");bev.width=.055;bev.segments=2;bev.limit_method='ANGLE'
-bpy.ops.object.modifier_apply(modifier=bev.name)
-
-# Structural retaining walls are aligned to the terrace risers, not scattered props.
-stone=bpy.data.materials.new("Stone");stone.diffuse_color=(.40,.38,.34,1)
-retaining=[]
-for level,(z,y,w) in enumerate([(-4.12,-.02,8.25),(-2.10,.72,7.35),(.05,1.38,6.35),(2.32,1.98,5.25),(4.52,2.49,4.30)]):
-    gap=1.55
-    retaining.append(make_box(f"RetainingWall_{level}_L",(-(w+gap)*.25,y,z),((w-gap)*.50,.62,.30),stone))
-    retaining.append(make_box(f"RetainingWall_{level}_R",((w+gap)*.25,y,z),((w-gap)*.50,.62,.30),stone))
-
-# Narrow civic circulation grows through the landform as stairs + landings.
-route=[]
-levels=[(-5.35,-.66),(-4.15,-.16),(-3.05,.08),(-2.08,.61),(-1.15,.82),(-.05,1.25),(.95,1.48),(2.05,1.86),(3.12,2.08),(4.22,2.38),(5.25,2.58),(6.05,2.78)]
-for i,(z,y) in enumerate(levels):
-    x=.28*math.sin(i*.58)
-    route.append(make_box(f"CivicStep_{i:02d}",(x,y,z),(1.45,.12,.72),stone))
-# three authored landings create readable urban pauses.
-for i,(z,y,w) in enumerate([(-2.65,.12,2.65),(1.65,1.52,2.45),(5.55,2.63,2.25)]):
-    route.append(make_box(f"CivicLanding_{i}",(0,y,z),(w,.12,1.15),stone))
-
-# Keep donor out of export.
-donor.hide_render=True;donor.hide_viewport=True
-bpy.ops.object.select_all(action='DESELECT')
-out_objs=[macro]+retaining+route
-for o in out_objs:o.select_set(True)
-bpy.context.view_layer.objects.active=macro
+for o in objects:o.select_set(True)
+bpy.context.view_layer.objects.active=objects[0]
 os.makedirs(os.path.dirname(OUT),exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=OUT,export_format='GLB',use_selection=True,export_apply=True,export_yup=True)
 
 tri={}
-for o in out_objs:
+for o in objects:
     if o.type=="MESH":o.data.calc_loop_triangles();tri[o.name]=len(o.data.loop_triangles)
-# Trigger note: composition shader is now staged on this branch.
-# Audit the real Hero Bastion geometry in the same GitHub-hosted Blender process.
-hero_path=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria","HeroBastionGenerated","Valoria_HeroBastion_v1.glb")
-hero_audit=[]
-if os.path.exists(hero_path):
-    before=set(bpy.context.scene.objects)
-    bpy.ops.import_scene.gltf(filepath=hero_path)
-    hero_objs=[o for o in bpy.context.scene.objects if o not in before and o.type=="MESH"]
-    for o in hero_objs:
-        lo,hi=bounds(o)
-        o.data.calc_loop_triangles()
-        hero_audit.append({
-          "name":o.name,
-          "triangles":len(o.data.loop_triangles),
-          "materials":[m.name if m else None for m in o.data.materials],
-          "bounds_blender":{"min":[round(v,4) for v in lo],"max":[round(v,4) for v in hi]}
-        })
-    for o in [o for o in bpy.context.scene.objects if o not in before]:
-        bpy.data.objects.remove(o,do_unlink=True)
-
-report={
- "method":"designed terraced macroform + limited shrinkwrap from certified ResidentialTerraceRock donor",
- "donor":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
- "voxel_union":False,"photogrammetry_placement":False,"terrain_heightfield":False,
- "objects":[o.name for o in out_objs],"triangles":tri,"total_triangles":sum(tri.values()),
- "output_bytes":os.path.getsize(OUT),"tripo_credits":0,"hero_bastion_audit":hero_audit
-}
-with open(REPORT,"w",encoding="utf-8") as f:json.dump(report,f,indent=2)
-print(json.dumps(report,indent=2))
+with open(REPORT,"w",encoding="utf-8") as f:
+    json.dump({
+      "method":"fixed-camera complete DCC set assembly",
+      "focal_bounds_unity":{"center":[0,7.14,8.75],"size":[12.8,9.24,10.96]},
+      "includes":["Hero Bastion","Aserradero","Cuartel","Granero","MidTier Architecture","Stone Architecture","terrain terraces","rock seams","circulation"],
+      "objects":len(objects),"total_triangles":sum(tri.values()),"triangles":tri,
+      "output_bytes":os.path.getsize(OUT),"tripo_credits":0
+    },f,indent=2)
+print("VALORIA_DCC_SET_BUILT",len(objects),sum(tri.values()))
