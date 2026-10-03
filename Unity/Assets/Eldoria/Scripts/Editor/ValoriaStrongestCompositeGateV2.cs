@@ -427,7 +427,8 @@ namespace Eldoria.EditorTools
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
                 // v35: v34 still left the sawmill reading as a detached foreground appendage.
                 // Bury it further into the west cliff foot while preserving its readable roofline.
-                clone.transform.position+=new Vector3(5.35f,1.62f,6.70f);
+                clone.transform.position+=new Vector3(5.62f,1.72f,6.95f);
+                clone.transform.localScale*=.70f;
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
@@ -442,8 +443,8 @@ namespace Eldoria.EditorTools
                 var clone=Object.Instantiate(barracks);
                 clone.name="Valoria · Strongest v2 · compact barracks visual";
                 // Symmetric compact functional landmark on the east cliff foot.
-                clone.transform.position+=new Vector3(-5.30f,1.55f,7.35f);
-                clone.transform.localScale*=.82f;
+                clone.transform.position+=new Vector3(-5.58f,1.72f,7.55f);
+                clone.transform.localScale*=.72f;
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
