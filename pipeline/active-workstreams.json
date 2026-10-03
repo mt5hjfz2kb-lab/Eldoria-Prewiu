@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T21:11:58.078Z",
-  "active": [],
+  "updated_at": "2026-10-03T21:28:00.000Z",
+  "active": [
+    {
+      "id": "valoria-source-level-art-direction-proof-v1",
+      "title": "Valoria Source-Level Art Direction Proof v1",
+      "owner": "chat-source-level-art-direction-20261003",
+      "scope": [
+        "tools/valoria-source-level-art-direction/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/SourceLevelArtDirection_v1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSourceLevelArtDirectionV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSourceLevelArtDirectionGateV1.cs",
+        "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1*",
+        "pipeline/art-production-request.json",
+        ".github/workflows/valoria-source-level-art-direction-proof-v1.yml",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T21:28:00.000Z",
+      "base_main_sha": "f740a1703ed5e4edf81e64591e44bc16c811e4e5",
+      "dependency": "Start from accepted VQB visual source 7a564bc5056bb7166b7704c313ae4db7d55d4530. Prior Unified Visual Language, Authored Secondary Art Family and Authored Gameplay Cell proofs are TECH PASS / VISUAL FAIL / NOT PROMOTED evidence only. Preserve Flat Citadel geography, parcel reservations, gameplay colliders/hotspots/camera contracts. Source-level Hero/Aserradero/wall proof only; validate zoom 9 and mobile before extending. Zero paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-authored-gameplay-cell-art-direction-v1",
