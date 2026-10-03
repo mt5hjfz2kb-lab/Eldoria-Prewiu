@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stalled corrected organic-terrain capture after exceeding normal comparable gate duration; preserve external cliff proof as the next full-frame candidate.",
+  "reason": "Cancel stalled Unity slice run blocking the current Strongest Composite v2 visual gate; preserve unified world-space lower-city terrain v10 as the current full-frame candidate.",
   "runs": [
-    37076995808
+    37083589705
   ],
   "keep_runs": [
-    37077097033
+    37083613272
   ],
-  "triggered_at": "2026-10-03T01:25:00+02:00"
+  "triggered_at": "2026-10-03T02:28:00+02:00"
 }
