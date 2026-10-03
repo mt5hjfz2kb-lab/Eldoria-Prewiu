@@ -11,7 +11,7 @@ namespace Eldoria.Presentation
     {
         public static bool Enabled=false;
         public static int HoleSamples{get;private set;}
-        public static int SurfaceSamples{get;private set;}
+        public static int SurfaceSamples{get;private set;}\n        public static int SuppressedLegacyRenderers{get;private set;}
 
         const string RootName="Valoria · Lower City TerrainData v1";
 
@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
             const float originY=-5.05f;
 
             var data=new TerrainData{
-                name="Valoria Lower City TerrainData v1",
+                name="Valoria Lower City TerrainData v2",
                 heightmapResolution=hm,
                 alphamapResolution=alpha,
                 baseMapResolution=256,
@@ -96,13 +96,11 @@ namespace Eldoria.Presentation
                     float nx=x/(float)(data.holesResolution-1);
                     float wx=-11.0f+nx*sizeX;
                     float d=Footprint(wx,wz);
-                    float front=Mathf.InverseLerp(-2.7f,-7.6f,wz);
-                    float ax=Mathf.Abs(wx);
                     float route=Route(wx,wz);
                     float pad=Pads(wx,wz);
-                    bool valleyGap=front>.38f && ax>2.2f && ax<4.8f && route<.22f && pad<.28f;
-                    bool outer=d>1.00f && route<.18f && pad<.24f;
-                    bool surface=!valleyGap&&!outer;
+                    float edgeNoise=(Mathf.PerlinNoise((wx+19.1f)*.16f,(wz+8.4f)*.16f)-.5f)*.10f;
+                    bool outer=d>(.94f+edgeNoise) && route<.16f && pad<.20f;
+                    bool surface=!outer;
                     holes[z,x]=surface;
                     if(surface)SurfaceSamples++; else HoleSamples++;
                 }
@@ -110,7 +108,7 @@ namespace Eldoria.Presentation
             data.SetHoles(0,0,holes);
 
             var go=Terrain.CreateTerrainGameObject(data);
-            go.name=RootName;
+            go.name=RootName+" · continuous landscape";
             go.transform.SetParent(parent,true);
             go.transform.position=new Vector3(-11.0f,originY,-8.0f);
 
@@ -130,6 +128,46 @@ namespace Eldoria.Presentation
                 if(component!=null&&component.GetType().Name=="TerrainCollider")
                     Object.DestroyImmediate(component);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+        }
+
+        static int SuppressLegacySupports()
+        {
+            int count=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                var b=r.bounds;
+                string chain=Chain(r.transform);
+
+                if(chain.Contains("backplate")||chain.Contains("bastion")||
+                   chain.Contains("aserradero")||chain.Contains("cuartel")||
+                   chain.Contains("granary")||chain.Contains("granero")||
+                   chain.Contains("premium secondary"))continue;
+
+                bool lower=b.center.y<1.65f && b.center.z<5.8f;
+                bool superseded=
+                    chain.Contains("lower cliff authored rock")||
+                    chain.Contains("foreground edge")||
+                    chain.Contains("terrainterrace")||
+                    chain.Contains("expansion edge geology")||
+                    chain.Contains("environment uplift · rock")||
+                    chain.Contains("cliff island · lower")||
+                    chain.Contains("cliff island · middle")||
+                    chain.Contains("assetlibrary reprocessing · hero lower terrace")||
+                    chain.Contains("broadrockplatform")||
+                    chain.Contains("steppedrockterrace")||
+                    chain.Contains("local lower support");
+
+                if(lower&&superseded){r.enabled=false;count++;}
+            }
+            return count;
+        }
+
+        static string Chain(Transform t)
+        {
+            string s="";
+            for(var p=t;p!=null;p=p.parent)s+="|"+p.name.ToLowerInvariant();
+            return s;
         }
 
         static TerrainLayer LayerFrom(Material source,string name,Vector2 tile,float smoothness)
@@ -158,7 +196,7 @@ namespace Eldoria.Presentation
 
             float top=-.24f+n1*.18f+n2*.055f;
             float fall=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.54f,.98f,d));
-            float bottom=-4.15f+n1*.52f+n3*.30f;
+            float bottom=-4.55f+n1*.46f+n3*.26f;
             float y=Mathf.Lerp(top,bottom,fall);
 
             float route=Route(x,z);
@@ -166,11 +204,11 @@ namespace Eldoria.Presentation
             float support=Mathf.Max(route*.90f,pad*.72f);
             y=Mathf.Lerp(y,Mathf.Max(y,-.18f),support*(1f-fall*.82f));
 
-            float front=Mathf.InverseLerp(-2.6f,-7.6f,z);
-            float side=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(4.8f,8.0f,Mathf.Abs(x)));
-            float valley=front*(1f-route)*(1f-side)*(1f-pad*.65f);
-            y-=valley*1.20f;
-            y+=front*side*.18f;
+            float front=Mathf.InverseLerp(-2.4f,-7.8f,z);
+            float side=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(3.8f,7.8f,Mathf.Abs(x)));
+            float valley=front*(1f-route*.78f)*(1f-pad*.72f);
+            y-=valley*Mathf.Lerp(.72f,.22f,side);
+            y+=front*side*.34f;
             return y;
         }
 
