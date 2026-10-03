@@ -166,12 +166,31 @@ bpy.ops.export_scene.gltf(filepath=OUT,export_format='GLB',use_selection=True,ex
 tri={}
 for o in out_objs:
     if o.type=="MESH":o.data.calc_loop_triangles();tri[o.name]=len(o.data.loop_triangles)
+# Audit the real Hero Bastion geometry in the same GitHub-hosted Blender process.
+hero_path=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria","HeroBastionGenerated","Valoria_HeroBastion_v1.glb")
+hero_audit=[]
+if os.path.exists(hero_path):
+    before=set(bpy.context.scene.objects)
+    bpy.ops.import_scene.gltf(filepath=hero_path)
+    hero_objs=[o for o in bpy.context.scene.objects if o not in before and o.type=="MESH"]
+    for o in hero_objs:
+        lo,hi=bounds(o)
+        o.data.calc_loop_triangles()
+        hero_audit.append({
+          "name":o.name,
+          "triangles":len(o.data.loop_triangles),
+          "materials":[m.name if m else None for m in o.data.materials],
+          "bounds_blender":{"min":[round(v,4) for v in lo],"max":[round(v,4) for v in hi]}
+        })
+    for o in [o for o in bpy.context.scene.objects if o not in before]:
+        bpy.data.objects.remove(o,do_unlink=True)
+
 report={
  "method":"designed terraced macroform + limited shrinkwrap from certified ResidentialTerraceRock donor",
  "donor":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
  "voxel_union":False,"photogrammetry_placement":False,"terrain_heightfield":False,
  "objects":[o.name for o in out_objs],"triangles":tri,"total_triangles":sum(tri.values()),
- "output_bytes":os.path.getsize(OUT),"tripo_credits":0
+ "output_bytes":os.path.getsize(OUT),"tripo_credits":0,"hero_bastion_audit":hero_audit
 }
 with open(REPORT,"w",encoding="utf-8") as f:json.dump(report,f,indent=2)
 print(json.dumps(report,indent=2))
