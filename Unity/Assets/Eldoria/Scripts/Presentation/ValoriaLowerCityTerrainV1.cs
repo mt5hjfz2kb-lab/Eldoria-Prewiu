@@ -11,7 +11,8 @@ namespace Eldoria.Presentation
     {
         public static bool Enabled=false;
         public static int HoleSamples{get;private set;}
-        public static int SurfaceSamples{get;private set;}\n        public static int SuppressedLegacyRenderers{get;private set;}
+        public static int SurfaceSamples{get;private set;}
+        public static int SuppressedLegacyRenderers{get;private set;}
 
         const string RootName="Valoria · Lower City TerrainData v1";
 
@@ -21,6 +22,8 @@ namespace Eldoria.Presentation
 
             var old=GameObject.Find(RootName);
             if(old!=null)Object.DestroyImmediate(old);
+
+            SuppressedLegacyRenderers=SuppressLegacySupports();
 
             const int hm=129;
             const int alpha=128;
