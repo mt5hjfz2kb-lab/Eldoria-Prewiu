@@ -346,11 +346,66 @@ namespace Eldoria.Presentation
                 Quaternion.Euler(0f,yaw,0f),Color.Lerp(Color.white,tint,.42f));
             if(go==null)throw new InvalidOperationException("Failed to build authored wall module: "+role);
             go.transform.SetParent(root,true);
+            NormalizeWallMaterials(go,tint,tower);
             foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             AuthoredWallModules++;
             WallPieces++;
             if(tower)AuthoredWallTowers++;
+        }
+
+        static void NormalizeWallMaterials(GameObject go,Color tint,bool tower)
+        {
+            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(lit==null)return;
+
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    var old=src[i];
+                    if(old==null){dst[i]=null;continue;}
+
+                    Texture baseMap=null,normal=null;
+                    Vector2 scale=Vector2.one,offset=Vector2.zero;
+                    foreach(string prop in new[]{"_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture"})
+                    {
+                        if(old.HasProperty(prop)&&old.GetTexture(prop)!=null)
+                        {
+                            baseMap=old.GetTexture(prop);
+                            try{scale=old.GetTextureScale(prop);offset=old.GetTextureOffset(prop);}catch{}
+                            break;
+                        }
+                    }
+                    foreach(string prop in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                        if(old.HasProperty(prop)&&old.GetTexture(prop)!=null){normal=old.GetTexture(prop);break;}
+
+                    var m=new Material(lit){name="Valoria Flat Citadel wall · "+old.name};
+                    if(baseMap!=null)
+                    {
+                        if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",baseMap);m.SetTextureScale("_BaseMap",scale);m.SetTextureOffset("_BaseMap",offset);}
+                        if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",baseMap);m.SetTextureScale("_MainTex",scale);m.SetTextureOffset("_MainTex",offset);}
+                    }
+                    if(normal!=null&&m.HasProperty("_BumpMap"))
+                    {
+                        m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");
+                    }
+
+                    // Same warm, readable stone family as Hero Bastion. Towers are only slightly darker
+                    // so silhouette variation comes from geometry, not black-value contrast.
+                    var baseColor=Color.Lerp(new Color(.72f,.69f,.62f,1f),tint,.26f);
+                    if(tower)baseColor*=.96f;
+                    baseColor.a=1f;
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",baseColor);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",baseColor);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.025f);
+                    dst[i]=m;
+                }
+                r.sharedMaterials=dst;
+            }
         }
 
         static void AddWallBanner(Transform root,Vector3 p)
