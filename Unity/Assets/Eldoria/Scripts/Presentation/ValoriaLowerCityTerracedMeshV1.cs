@@ -52,26 +52,47 @@ namespace Eldoria.Presentation
             if(topRock.HasProperty("_Tiling"))topRock.SetFloat("_Tiling",.070f);
             if(topRock.HasProperty("_Smoothness"))topRock.SetFloat("_Smoothness",.10f);
 
-            // v20: replace the broad single foreground board with three compact authored
-            // terraces. Gameplay colliders/routes remain untouched underneath; only the visible
-            // substrate changes. Rock dressing bridges the seams so the result reads as one
-            // excavated mountain base rather than three floating islands.
-            Create(root,"west work terrace",new[]{
-                V(-5.45f,-1.92f),V(-4.45f,-2.10f),V(-3.20f,-1.98f),V(-1.78f,-1.62f),
-                V(-1.62f,-.72f),V(-2.10f,.20f),V(-3.65f,.48f),V(-5.12f,.12f),V(-5.58f,-.72f)
-            },-.14f,-.50f,-.86f,earth,rock);
-
-            Create(root,"central stair foot",new[]{
-                V(-1.82f,-1.55f),V(0f,-1.72f),V(1.82f,-1.55f),V(2.02f,-.70f),
-                V(1.62f,.36f),V(.98f,.86f),V(0f,.92f),V(-.98f,.86f),V(-1.62f,.36f),V(-2.02f,-.70f)
-            },-.10f,-.46f,-.82f,earth,rock);
-
-            Create(root,"east military terrace",new[]{
-                V(1.78f,-1.62f),V(3.20f,-1.98f),V(4.48f,-2.10f),V(5.46f,-1.90f),
-                V(5.58f,-.72f),V(5.10f,.10f),V(3.65f,.46f),V(2.10f,.20f),V(1.62f,-.72f)
-            },-.14f,-.50f,-.86f,earth,rock);
+            // v21: the procedural terrace family hit its visual ceiling. Use the
+            // already-certified PBR Terrain & Terrace GLBs as the visible substrate.
+            // These instances remain presentation-only and own no gameplay geometry.
+            BuildCertifiedSubstrate(root);
 
             DressEdges(root);
+        }
+
+        static void BuildCertifiedSubstrate(Transform root)
+        {
+            AddCertifiedTerrain(root,"BroadRockPlatform","central bed",new Vector3(0f,0f,-.62f),-.02f,8.25f,8f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","west shoulder",new Vector3(-3.35f,0f,-.66f),.04f,4.20f,24f);
+            AddCertifiedTerrain(root,"SteppedRockTerrace","east shoulder",new Vector3(3.35f,0f,-.72f),.04f,4.20f,204f);
+        }
+
+        static void AddCertifiedTerrain(Transform root,string resource,string role,Vector3 anchor,float topY,float span,float yaw)
+        {
+            var source=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/"+resource);
+            if(source==null)return;
+
+            var go=Object.Instantiate(source);
+            if(go==null)return;
+            go.name="Valoria · Lower City authored terrain · "+role;
+            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+
+            var rs=go.GetComponentsInChildren<Renderer>(true);
+            if(rs.Length==0){Object.DestroyImmediate(go);return;}
+            var b=rs[0].bounds;
+            for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            float scale=span/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));
+            go.transform.localScale*=scale;
+
+            rs=go.GetComponentsInChildren<Renderer>(true);
+            b=rs[0].bounds;
+            for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);
+            go.transform.position+=new Vector3(anchor.x-b.center.x,topY-b.max.y,anchor.z-b.center.z);
+            go.transform.SetParent(root,true);
+
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+            PiecesBuilt++;
         }
 
         static void DressEdges(Transform root)
