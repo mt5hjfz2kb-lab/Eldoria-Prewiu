@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Free Windows Unity runner for compact-city-base/narrow-causeway Strongest Composite proof. Preserve the visual candidate; the generic Unity slice is non-terminal for this iteration.",
+  "reason": "Cancel stale Unity slice from the previous causeway-only source so the current local-support Strongest Composite proof can use the Windows runner.",
   "runs": [
-    37086044132
+    37086181000,
+    37086518702
   ],
   "keep_runs": [
-    37086054993
+    37086518670
   ],
-  "triggered_at": "2026-10-03T03:26:00+02:00"
+  "triggered_at": "2026-10-03T03:33:00+02:00"
 }
