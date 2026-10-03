@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T14:24:00Z",
+  "updated_at": "2026-10-03T14:28:00Z",
   "active": [
     {
       "id": "valoria-shell-v2-bastion-continuity",
@@ -12,7 +12,8 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBastionContinuityV2.cs",
         ".github/workflows/valoria-shell-v2-bastion-continuity.yml",
         "docs/VALORIA_SHELL_V2_BASTION_CONTINUITY_RESULT.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs"
       ],
       "resources": [
         "valoria-production-composition",
