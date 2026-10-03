@@ -1,8 +1,33 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T15:05:00Z",
+  "updated_at": "2026-10-03T15:22:00Z",
   "active": [
+    {
+      "id": "valoria-shell-v2-worldframe-district-cells",
+      "title": "Valoria Visual Shell v2 — World Frame + district terrace cells",
+      "owner": "chat-valoria-shell-v2-worldframe-district-cells-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaDistrictTerraceCellsV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader",
+        ".github/workflows/valoria-shell-v2-worldframe-district-cells.yml",
+        "docs/VALORIA_SHELL_V2_WORLDFRAME_DISTRICT_CELLS_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T15:22:00Z",
+      "base_main_sha": "bed16d83213dec1706d7962c91f4b473b9f09df3",
+      "dependency": "Central open-sheet and central volumetric landform families are visually closed. New method must leave the photographic/world valley open, use existing World Frame v41 only at side/rear margins, and create only compact local visual-only terrace cells underneath district architecture. No giant island, no Tripo, preserve Hero Bastion/cameras/gameplay."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-shell-v2-volumetric-landform",
       "title": "Valoria Visual Shell v2 — volumetric contour-loft landform",
@@ -22,13 +47,14 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-03T15:05:00Z",
       "base_main_sha": "0138fc459f551f234fa5f0ee37877d85cf71ca19",
-      "dependency": "Open-sheet terrace family closed after corrected visual proof. New method must be one closed irregular cliff/landform volume created from authored contour rings, with internal terrace cuts/steps, no exposed rectangular sheet perimeter, no scan plates, no voxel union, no Tripo; preserve Hero Bastion/cameras/gameplay."
-    }
-  ],
-  "history": [
+      "dependency": "Open-sheet terrace family closed after corrected visual proof. New method must be one closed irregular cliff/landform volume created from authored contour rings, with internal terrace cuts/steps, no exposed rectangular sheet perimeter, no scan plates, no voxel union, no Tripo; preserve Hero Bastion/cameras/gameplay.",
+      "completed_at": "2026-10-03T15:22:00Z",
+      "result": "TECH PASS / VISUAL FAIL after two volumetric variants. Run 37132373485 SUCCESS proved a closed contour-loft mass but read as concentric wedding-cake terraces. Run 37132716042 SUCCESS replaced global rings with a continuous polar slope; it removed the board/cake geometry but still read as a cut-out island/pedestal in front of the world. Collider/hotspot signature remained equal; 0 Tripo credits.",
+      "next": "Stop solving Valoria with one central terrain object. Reuse validated World Frame v41 only at side/rear margins, and ground the city with compact local architectural terrace cells under districts, using existing retaining-wall architecture and the shared triplanar rock/earth material."
+    },
     {
       "id": "valoria-shell-v2-bastion-continuity",
       "title": "Valoria Visual Shell v2 — fixed-camera authored DCC set",
