@@ -81,12 +81,54 @@ for obj in [o for o in bpy.context.scene.objects if o.type=="MESH"]:
         "material_slots":[m.name if m else None for m in me.materials],"bounds":bounds(verts),
         "connected_component_count":len(comps),"connected_components":comps[:60],"materials":mats})
 
-report["summary"]={"mesh_object_count":mesh_count,"triangle_count":total_tris,"bounds":bounds(all_points),"largest_components":[]}
-for o in report["objects"]:
-    for c in o["connected_components"]:
-        report["summary"]["largest_components"].append({"object":o["name"],**c})
-report["summary"]["largest_components"].sort(key=lambda x:x["tris"],reverse=True)
-report["summary"]["largest_components"]=report["summary"]["largest_components"][:80]
+report["summary"]={"mesh_object_count":mesh_count,"triangle_count":total_tris,"bounds":bounds(all_points),"largest_components":[],"height_thresholds":[]}
+all_components=[]
+for obj in [o for o in bpy.context.scene.objects if o.type=="MESH"]:
+    me=obj.data
+    verts=[world_vertex(obj,v.co) for v in me.vertices]
+    parent=list(range(len(me.vertices))); rank=[0]*len(parent)
+    def find2(x):
+        while parent[x]!=x:
+            parent[x]=parent[parent[x]]
+            x=parent[x]
+        return x
+    def union2(a,b):
+        ra,rb=find2(a),find2(b)
+        if ra==rb:return
+        if rank[ra]<rank[rb]:ra,rb=rb,ra
+        parent[rb]=ra
+        if rank[ra]==rank[rb]:rank[ra]+=1
+    for p in me.polygons:
+        vs=list(p.vertices)
+        if len(vs)>1:
+            for v in vs[1:]:union2(vs[0],v)
+    groups=defaultdict(lambda:{"tris":0,"verts":set()})
+    for p in me.polygons:
+        if not p.vertices:continue
+        g=groups[find2(p.vertices[0])]
+        g["tris"]+=max(1,len(p.vertices)-2);g["verts"].update(p.vertices)
+    for g in groups.values():
+        b=bounds([verts[i] for i in g["verts"]])
+        all_components.append({"tris":g["tris"],"bounds":b})
+
+all_components.sort(key=lambda x:x["tris"],reverse=True)
+report["summary"]["largest_components"]=all_components[:80]
+for th in [0.08,0.12,0.16,0.20,0.24,0.28]:
+    selected=[x for x in all_components if x["bounds"]["max"][2] <= th]
+    points=[]
+    for x in selected:
+        b=x["bounds"]
+        points += [
+            type("P",(),{"x":b["min"][0],"y":b["min"][1],"z":b["min"][2]})(),
+            type("P",(),{"x":b["max"][0],"y":b["max"][1],"z":b["max"][2]})()
+        ]
+    report["summary"]["height_thresholds"].append({
+        "max_z":th,
+        "component_count":len(selected),
+        "triangles":sum(x["tris"] for x in selected),
+        "triangle_fraction":sum(x["tris"] for x in selected)/max(1,total_tris),
+        "combined_bounds":bounds(points)
+    })
 
 os.makedirs(os.path.dirname(out),exist_ok=True)
 with open(out,"w",encoding="utf-8") as f:
