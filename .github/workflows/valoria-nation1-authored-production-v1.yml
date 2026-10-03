@@ -1,0 +1,97 @@
+name: "[PRODUCTION] Valoria Nation 1 Authored v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [production/valoria-nation1-authored-v1]
+    paths:
+      - 'pipeline/valoria-nation1-run-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-nation1-authored-v1
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'};$dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Stage shared CC0 PBR surface maps
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\SurfaceCellExternal"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-Nation1/1.0'}
+          foreach($asset in @(@{id='dirt';prefix='dirt'},@{id='cobblestone_floor_001';prefix='cobble'},@{id='stone_block_wall';prefix='stone'},@{id='rock_boulder_dry';prefix='rock'})){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\u0026','&') } | Select-Object -Unique
+            foreach($map in @(@{key='diff';rx='_diff_1k[.](jpg|png)([?]|$)'},@{key='normal';rx='_nor_gl_1k[.](jpg|png)([?]|$)'})){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -eq 'dirt'){continue};throw "Missing map $($asset.id) $($map.key)"}
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath);$out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+            }
+          }
+      - name: Validate production route
+        shell: powershell
+        run: |
+          $node=Get-Command node.exe -ErrorAction SilentlyContinue
+          if($node){$nodeExe=$node.Source}else{$runnerRoot=Split-Path (Split-Path $env:RUNNER_TEMP -Parent) -Parent;$nodeExe=Get-ChildItem (Join-Path $runnerRoot 'externals') -Recurse -Filter node.exe -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match 'node(20|24).*bin' } | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $nodeExe){throw 'Node unavailable'}
+          & $nodeExe tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\nation1-plan.json"
+      - name: Capture Nation 1 zoom9 mobile
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaNation1AuthoredProductionV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaNation1AuthoredProductionV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaNation1AuthoredProductionGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(32)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Nation1 gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Nation1 gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - name: Focused gameplay tests
+        shell: powershell
+        run: |
+          $xml="$env:RUNNER_TEMP/Nation1-PlayMode.xml";$log="$env:RUNNER_TEMP/Nation1-PlayMode.log"
+          $filter='Eldoria.Tests.ReferenceUiArtPassTests;OwnerHudMatchesReferenceMobileBudgets;ValoriaProgressionContractGatesCuartelVisualAndInteraction'
+          $args=@('-batchmode','-nographics','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-runTests','-testPlatform','PlayMode','-testFilter',$filter,'-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Nation1 tests timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Nation1 tests failed $($p.ExitCode)"}
+          [xml]$results=Get-Content $xml
+          if($results.'test-run'.result -ne 'Passed' -or [int]$results.'test-run'.total -lt 5){throw 'Nation1 focused checks did not pass'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-nation1-authored-v1
+          path: |
+            Unity/ValoriaNation1AuthoredProductionV1Captures/*
+            ${{ runner.temp }}/Nation1-PlayMode.*
+            ${{ runner.temp }}/ValoriaNation1AuthoredProductionV1.log
+          if-no-files-found: warn
+          retention-days: 30
