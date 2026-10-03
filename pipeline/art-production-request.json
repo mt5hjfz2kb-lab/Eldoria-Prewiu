@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-authored-secondary-art-family-v1",
   "asset_or_sector": "First authored secondary family proof: Aserradero + wall support + gate support, fixed Flat Citadel",
   "profile": "environment_surface",
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Source-authored proof only. Blender semantically separates the canonical Aserradero into Stone/Timber/Roof material regions and authors one small wall-support + gate-support pair in the same language. Compare against closed VQB final 7a564bc / run 37149992067 / artifact 11284220007. Preserve F1 envelope, C0/C1/C2, R4/R5/R6 and XW/XE/XU/XS. Expand family only if integrated 19/12/9/mobile shows a clear benchmark jump. 0 paid credits."
+  "notes": "CLOSED 2026-10-03: TECH PASS / VISUAL FAIL / NOT PROMOTED. Final valid integrated comparison run 37151178579, artifact 11283369532. Full authored rebuild loses source richness; source-preserving semantic authoring and shared Stone/Timber/Slate atlas are technically viable but do not deliver a clear benchmark jump in 19/12/9/mobile. Do not expand to Cuartel/Granero or continue color/material micro-tuning. See docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md."
 }
