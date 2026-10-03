@@ -5,7 +5,8 @@ Shader "Eldoria/Valoria Coherence"
   _BaseColor("Tint",Color)=(1,1,1,1) _BumpScale("Normal strength",Float)=0.8
   _Family("Family",Float)=0 _Bottom("World bottom",Float)=0 _Height("World height",Float)=1
   _RockMap("Shared stone transition",2D)="white"{} _Ground("Ground",Float)=0
-  _Smoothness("Smoothness",Float)=0.06 _Metallic("Metallic",Float)=0\n  _SemanticUplift("Semantic uplift",Float)=0
+  _Smoothness("Smoothness",Float)=0.06 _Metallic("Metallic",Float)=0
+  _SemanticUplift("Semantic uplift",Float)=0
  }
  SubShader {
  Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
