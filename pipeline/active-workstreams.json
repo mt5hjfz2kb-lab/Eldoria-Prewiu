@@ -1,8 +1,35 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:22:49Z",
-  "active": [],
+  "updated_at": "2026-10-03T11:24:00.643Z",
+  "active": [
+    {
+      "id": "valoria-visual-shell-v2",
+      "title": "Valoria Visual Shell v2 — isolated complete-frame proof",
+      "owner": "chat-valoria-visual-shell-v2",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualShellV2.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaShellTerrain.shader",
+        ".github/workflows/valoria-strongest-composite-v2.yml",
+        "pipeline/valoria-strongest-composite-v2-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_VISUAL_SHELL_V2_RESULT.md",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "art-production-planner",
+        "windows-runner-heavy",
+        "runner-trigger-governance",
+        "workflow-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T11:23:39.368Z",
+      "base_main_sha": "f98f200921a293383e9fd2d8b1d266e288a77903",
+      "dependency": "Experimental branch only for visual code. Preserve gameplay, colliders/hotspots, routes, camera/save/progression. 0 credits. Max 3 methods per major category before reclassification; no production promotion without full-frame visual evidence."
+    }
+  ],
   "history": [
     {
       "id": "valoria-full-frame-convergence-iteration-1",
