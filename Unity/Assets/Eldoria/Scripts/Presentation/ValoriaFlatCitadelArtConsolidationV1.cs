@@ -42,6 +42,7 @@ namespace Eldoria.Presentation
 
             HiddenUpliftWallRenderers=HideUpliftOuterWall(uplift.transform);
             HideReservedPlotOccupants(uplift.transform);
+            HidePrototypePines(uplift.transform);
 
             BuildProgressionReservations(root);
             BuildWallContinuityBase(root);
@@ -92,6 +93,15 @@ namespace Eldoria.Presentation
             }
         }
 
+        static void HidePrototypePines(Transform uplift)
+        {
+            foreach(var r in uplift.GetComponentsInChildren<Renderer>(true))
+            {
+                string n=Chain(r.transform);
+                if(n.Contains("perimeter pine"))r.enabled=false;
+            }
+        }
+
         static void BuildProgressionReservations(Transform root)
         {
             ReservedParcels=0;
@@ -135,7 +145,7 @@ namespace Eldoria.Presentation
 
         static void BuildWallContinuityBase(Transform root)
         {
-            var mat=ValoriaKit.DetailedSurfaceMaterial(new Color(.61f,.59f,.55f,1f),"stone",new Vector2(2.25f,2.25f),1.0f);
+            var mat=ValoriaKit.DetailedSurfaceMaterial(new Color(.49f,.48f,.45f,1f),"stone",new Vector2(2.25f,2.25f),1.0f);
 
             // Low continuous masonry establishes one defensive ring. Authored modules above it carry the silhouette.
             // Openings are intentional: main gate + west/east future expansion interfaces.
@@ -240,7 +250,7 @@ namespace Eldoria.Presentation
             if(wall==null)return;
 
             // Split retaining masses occupy the rock-facing shoulders while the central stair remains open.
-            var apronMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.51f,1f),"stone",new Vector2(1.85f,1.85f),1.0f);
+            var apronMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.51f,.50f,.47f,1f),"stone",new Vector2(1.85f,1.85f),1.0f);
             foreach(float x in new[]{-2.55f,2.55f})
             {
                 var apron=GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -373,10 +383,18 @@ namespace Eldoria.Presentation
             RenderSettings.fogStartDistance=43f;
             RenderSettings.fogEndDistance=68f;
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.55f,.58f,.58f,1f);
-            RenderSettings.ambientEquatorColor=new Color(.43f,.44f,.41f,1f);
-            RenderSettings.ambientGroundColor=new Color(.28f,.29f,.25f,1f);
-            RenderSettings.ambientIntensity=.88f;
+            RenderSettings.ambientSkyColor=new Color(.50f,.53f,.53f,1f);
+            RenderSettings.ambientEquatorColor=new Color(.37f,.39f,.37f,1f);
+            RenderSettings.ambientGroundColor=new Color(.25f,.26f,.23f,1f);
+            RenderSettings.ambientIntensity=.78f;
+            foreach(var light in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+            {
+                if(light==null||light.type!=LightType.Directional)continue;
+                light.color=new Color(1f,.95f,.86f,1f);
+                light.intensity=1.05f;
+                light.shadows=LightShadows.Soft;
+                light.shadowStrength=.52f;
+            }
         }
 
         static int ConsolidateMaterialLanguage(Transform uplift,Transform additions)
