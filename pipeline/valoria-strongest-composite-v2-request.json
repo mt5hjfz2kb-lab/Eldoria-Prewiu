@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T07:21:00+02:00",
-  "retry_reason": "Causeway-only and local-support proofs were visual FAIL because the lower city floated over the backplate. TerrainData v2 restores continuous 3D landscape under the city while preserving gameplay authority.",
-  "retry_seq": 10
+  "triggered_at": "2026-10-03T07:28:00+02:00",
+  "retry_reason": "TerrainData v2 did not render because of a literal newline escape compile error in ValoriaLowerCityTerrainV1.cs; source is fixed and this rerun is the first valid visual proof.",
+  "retry_seq": 11
 }
