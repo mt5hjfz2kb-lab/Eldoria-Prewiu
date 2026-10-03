@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "request_id": "valoria-visual-quality-breakthrough-v1",
-  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
-  "profile": "environment_surface",
+  "request_id": "valoria-nation1-authored-production-v1",
+  "asset_or_sector": "Valoria Nation 1 player-facing core: Hero terraces/stairs/plaza/front walls + Aserradero/Cuartel/Granero + civic density",
+  "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -22,11 +22,11 @@
     "unity_terrain_blending": true
   },
   "validation": {
-    "official_camera_19": true,
-    "official_camera_12": true,
+    "official_camera_19": false,
+    "official_camera_12": false,
     "official_camera_9": true,
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VQB candidate: accepted authored curtain wall rhythm + semantic PBR uplift on canonical Aserradero/Cuartel/Granero + intact canonical Hero Bastion wrapped by warm authored StoneArchitecture retaining interface. No segmentation, no Slavic replacement, no macrocomposition change, no paid tools."
+  "notes": "Production pass, not micro-proof. Reuse accepted VQB + certified rich library. Build Hero as a whole terraced civic core from existing high-fidelity modules. Stop at 9/mobile if not a first-glance jump. Zero paid credits."
 }
