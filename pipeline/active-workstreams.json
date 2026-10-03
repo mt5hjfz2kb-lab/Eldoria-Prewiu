@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T17:59:46.095Z",
-  "active": [
+  "updated_at": "2026-10-03T18:32:12.289Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-asset-coherence-game-presentation-v1",
       "title": "Valoria Asset Coherence & Game Presentation v1",
@@ -22,11 +23,19 @@
       ],
       "claimed_at": "2026-10-03T17:59:46.095Z",
       "base_main_sha": "5579f4f3198700689712057597b81d4b8941629c",
-      "status": "active",
-      "dependency": "Preserve accepted Art Consolidation c289492, closure 578ae2c / run 37141904595 / artifact 11280049716. Locked Flat Citadel and parcel map. No paid tools."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "dependency": "Preserve accepted Art Consolidation c289492, closure 578ae2c / run 37141904595 / artifact 11280049716. Locked Flat Citadel and parcel map. No paid tools.",
+      "completed_at": "2026-10-03T18:30:33.538Z",
+      "result_commit": "1071454bd1bd27ec1f5a0c754805d61a7a77e829",
+      "run_id": 37143754581,
+      "artifact_id": 11281586517,
+      "result": "TECH PASS / VISUAL FAIL. Three integrated Unity variants completed; shared source response, world-space paving/contained edge, native HUD and bounded activity improved; fused Hero silhouette, generic wall and heterogeneous source quality remain. Locked Flat Citadel and parcel reservations preserved. 5/5 PlayMode tests. No paid credits, production promotion or publication.",
+      "next": "Recommend VALORIA SHARED SOURCE MATERIALS & BASTION INTERFACE AUTHORING v1; not opened. Semantic PBR masks/current source segmentation + replaceable wall atlas; no mountain/layout rethink.",
+      "branch": "visual-proof/valoria-asset-coherence-game-presentation-v1",
+      "result_doc": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md",
+      "closure_doc_commit": "df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac",
+      "final_branch_head": "df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac"
+    },
     {
       "id": "valoria-flat-citadel-art-consolidation-v1",
       "title": "Valoria Flat Citadel Art Consolidation v1",

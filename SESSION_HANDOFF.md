@@ -1,3 +1,15 @@
+## 2026-10-03 — Valoria Asset Coherence & Game Presentation v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL** after three real integrated variants; no production promotion or new owner publication.
+- Documentation/evidence closure: `df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac`.
+- Experimental branch: `visual-proof/valoria-asset-coherence-game-presentation-v1`; captured implementation `1071454bd1bd27ec1f5a0c754805d61a7a77e829`; final run **37143754581 SUCCESS**, artifact **11281586517**.
+- Shared source material response, world-space earth/paving, contained low-relief edge, canonical foliage, bounded visual activity and real Unity HUD improved. Five focused PlayMode tests passed; 19/12/9/mobile captured. Collider/hotspot signature and parcel reservations preserved; credits=0.
+- Still below commercial benchmark: fused Hero rock silhouette, repetitive walls, different architectural source families, proxy inhabitants and incomplete HUD art. No claim of phone performance or Bastion-VI gameplay; captured art VI/HUD current I-II are separate.
+- Flat Citadel remains locked. No mountain, macro/layout rethink or automatic new run. Claim released; experimental workflow parked manual-only and planner request archived.
+- Full closure/research/scalability/BEFORE-AFTER: [branch result](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/visual-proof/valoria-asset-coherence-game-presentation-v1/docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md).
+- Recommended next (not opened): **VALORIA SHARED SOURCE MATERIALS & BASTION INTERFACE AUTHORING v1**. Upgrade source semantic masks/PBR and fused-rock/access interface within fixed envelopes; do not continue another tint/placement loop. Layout has upgrade seams; fused Hero requires source segmentation for genuine independent geometry.
+- This entry supersedes older mountain/world-frame priorities and stale active directives below for Valoria.
+
 ## Valoria Reference Convergence v2 / World Frame v1 — CLOSED / PROMOTED (2026-10-02)
 
 - Reference Convergence v2 is closed. The old placement-only framing route reached its limit and correctly exposed the missing capability: a continuous production world frame around compact Valoria.

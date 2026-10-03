@@ -1,3 +1,7 @@
+## 2026-10-03 — Current Valoria visual state
+
+Flat Citadel remains locked: elevated Hero Bastion, mainly flat city, outer wall, functional plots and protected growth; older mountain-based visual priorities below are historical. **VALORIA ASSET COHERENCE & GAME PRESENTATION v1 is closed TECH PASS / VISUAL FAIL**, experimental branch `visual-proof/valoria-asset-coherence-game-presentation-v1`, captured implementation `1071454bd1bd27ec1f5a0c754805d61a7a77e829`, evidence closure `df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac`, run **37143754581 SUCCESS**, artifact **11281586517**. Materials, contained edge, activity and real HUD improved; five focused tests passed, gameplay signature/parcel map preserved, credits=0. Fused rock, generic wall/source-family gaps remain. No runtime code promotion or new public player publication occurred. Mobile-resolution capture is not phone-performance evidence. Next recommended source-material/Bastion-interface authoring block is not opened. See the newest SESSION_HANDOFF entry and branch result/research/scalability documents.
+
 ## Valoria Compact Footprint Reframe v1 — accepted (2026-10-02)
 
 - Status: **TECH PASS / VISUAL PASS for compact-footprint objective**.
