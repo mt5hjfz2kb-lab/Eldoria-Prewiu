@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T19:06:30Z",
+  "updated_at": "2026-10-03T19:09:30Z",
   "active": [
     {
       "id": "valoria-visual-quality-breakthrough-v1",
@@ -17,7 +17,7 @@
         "pipeline/active-workstreams.json",
         "tools/valoria-visual-quality-breakthrough/**",
         ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
-        "pipeline/evidence/valoria-vqb-hero-audit.json"
+        "pipeline/evidence/valoria-vqb-hero-audit*"
       ],
       "resources": [
         "valoria-production-composition",
