@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate authored lower-city terrain v21: remove the procedural lower terrace meshes from the candidate and seat the compact lower city on certified BroadRockPlatform and SteppedRockTerrace PBR GLBs, preserving all gameplay authority.",
+  "objective": "Validate compact stepped lower-city terrain v22: remove the oversized detached BroadRockPlatform and seat the lower city on three compact certified SteppedRockTerrace instances close to the stair and functional buildings.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:35:00+02:00",
-  "retry_reason": "v20 TECH PASS / VISUAL FAIL for the lower substrate: splitting the procedural board into three terraces still read as three artificial slabs. v21 replaces that visual substrate with existing certified authored terrain geometry.",
-  "retry_seq": 26
+  "triggered_at": "2026-10-03T10:43:00+02:00",
+  "retry_reason": "v21 TECH PASS / VISUAL FAIL: the certified BroadRockPlatform was too large and detached at the official camera, reading as a monumental platform in front of Valoria. v22 removes it and keeps only compact certified stepped terrain seating.",
+  "retry_seq": 27
 }
