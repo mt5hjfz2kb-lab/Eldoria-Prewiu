@@ -90,10 +90,13 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
             int terrainVisualsHidden=HideLowerTerrainVisual();
-            // v27: do not render a second lower-city island/substrate. Presentation-only
-            // architecture is now seated inside the existing fortress rock silhouette.
-            ValoriaLowerCityTerracedMeshV1.Enabled=false;
-            int terracePieces=0;
+            // v27 production stays substrate-free. Experimental Blender proof may stage
+            // an untracked resource; only then enable the lower-city mesh path so the staged
+            // candidate is actually instantiated for evidence. Normal production remains off.
+            bool blenderCliffProof=Resources.Load<GameObject>("Valoria/ExperimentalBlenderCliff/UnifiedLowerCityCliff")!=null;
+            ValoriaLowerCityTerracedMeshV1.Enabled=blenderCliffProof;
+            if(blenderCliffProof)ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
+            int terracePieces=blenderCliffProof?ValoriaLowerCityTerracedMeshV1.PiecesBuilt:0;
             ValoriaCompactStairMeshV1.Enabled=true;
             ValoriaCompactStairMeshV1.Build(root.transform,state);
             int stairPieces=1;
