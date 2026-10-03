@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate embedded lower-city composition v23: remove the isolated central stepped support, tuck two certified rock shelves beneath compact lower architecture, and pull presentation-only buildings into the fortress nucleus while preserving gameplay routes/colliders/hotspots.",
+  "objective": "Validate fortress-merged lower city v24: raise and push the two certified lower shelves into the existing rocky island silhouette, then seat presentation-only lower architecture on those shelves so the city reads as one continuous fortress mass.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T10:51:00+02:00",
-  "retry_reason": "v22 TECH PASS / VISUAL INSUFFICIENT: the broad platform was reduced, but three isolated stepped supports and detached lower buildings still made the city read as separate floating pieces. v23 attacks macro integration only.",
-  "retry_seq": 28
+  "triggered_at": "2026-10-03T11:02:00+02:00",
+  "retry_reason": "v23 TECH PASS / VISUAL FAIL: compact shelves and buildings remained visibly suspended in front of the hero island. v24 keeps the compact layout but moves the entire lower presentation layer upward/backward to overlap the existing castle rock mass.",
+  "retry_seq": 29
 }
