@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact lower-city terrain v12: stop the city substrate before the foreground and continue only a narrow authored causeway under the central route, preserving side-world framing and gameplay authority.",
+  "objective": "Validate causeway-only lower frame: remove the dominant continuous lower-city slab from rendering and retain only the narrow central approach plus authored local cliff/support families.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T03:25:00+02:00",
-  "retry_reason": "TerrainData proof was VISUAL FAIL with white cuts and blocky heightmap walls. Stable mesh route retained, but the single foreground rock tongue is replaced by compact city terrain plus a narrow approach spine.",
-  "retry_seq": 8
+  "triggered_at": "2026-10-03T03:28:00+02:00",
+  "retry_reason": "Compact city base still dominated the foreground audit (bound area 300.69) and remained the main blockout read. This proof removes that single visual mass without changing gameplay.",
+  "retry_seq": 9
 }
