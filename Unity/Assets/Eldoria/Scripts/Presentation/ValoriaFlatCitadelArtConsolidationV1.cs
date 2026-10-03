@@ -48,6 +48,7 @@ namespace Eldoria.Presentation
             BuildConsolidatedWall(root);
             BuildBastionArchitecturalInterface(root);
             BuildGroundEdgeIntegration(root);
+            BuildPerimeterLife(root);
             ApplyAtmosphere();
             MaterialsConsolidated=ConsolidateMaterialLanguage(uplift.transform,root);
 
@@ -134,8 +135,7 @@ namespace Eldoria.Presentation
 
         static void BuildWallContinuityBase(Transform root)
         {
-            var mat=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.61f,.59f,.54f,1f),new Vector2(2.25f,2.25f),.03f,.90f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.61f,.59f,.54f,1f),"stone",new Vector2(2.25f,2.25f),1.0f);
+            var mat=ValoriaKit.DetailedSurfaceMaterial(new Color(.61f,.59f,.55f,1f),"stone",new Vector2(2.25f,2.25f),1.0f);
 
             // Low continuous masonry establishes one defensive ring. Authored modules above it carry the silhouette.
             // Openings are intentional: main gate + west/east future expansion interfaces.
@@ -240,8 +240,7 @@ namespace Eldoria.Presentation
             if(wall==null)return;
 
             // Split retaining masses occupy the rock-facing shoulders while the central stair remains open.
-            var apronMat=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.57f,.55f,.50f,1f),new Vector2(1.85f,1.85f),.03f,.92f)
-                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.50f,1f),"stone",new Vector2(1.8f,1.8f),1.0f);
+            var apronMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.57f,.55f,.51f,1f),"stone",new Vector2(1.85f,1.85f),1.0f);
             foreach(float x in new[]{-2.55f,2.55f})
             {
                 var apron=GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -268,8 +267,8 @@ namespace Eldoria.Presentation
                 var step=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 step.name="Valoria · Art Consolidation · Bastion processional step "+i;
                 step.transform.SetParent(root,true);
-                step.transform.position=new Vector3(0,.18f+t*.58f,3.82f+t*.43f);
-                step.transform.localScale=new Vector3(width,.105f,.52f);
+                step.transform.position=new Vector3(0,.18f+t*.70f,3.72f+t*1.42f);
+                step.transform.localScale=new Vector3(width,.105f,.62f);
                 step.GetComponent<Renderer>().sharedMaterial=stairMat;
                 var col=step.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
             }
@@ -322,6 +321,42 @@ namespace Eldoria.Presentation
                 {
                     var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · gate earth seam",
                         art.SlavicMudFlat,new Vector3(s.x,.075f,s.y),s.w,.08f,Quaternion.Euler(0,s.z,0),new Color(.55f,.47f,.34f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                }
+            }
+        }
+
+        static void BuildPerimeterLife(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null)return;
+
+            if(art.SlavicBush!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-10.75f,-5.15f, 18f,.78f),new Vector4(-11.10f,-2.55f, 56f,.70f),
+                    new Vector4(-10.70f, 7.10f,104f,.74f),new Vector4(-7.35f,10.25f,142f,.72f),
+                    new Vector4( 7.25f,10.20f,218f,.72f),new Vector4(10.70f,7.10f,256f,.74f),
+                    new Vector4(11.10f,-2.50f,302f,.70f),new Vector4(10.75f,-5.05f,338f,.78f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · perimeter low vegetation",
+                        art.SlavicBush,new Vector3(s.x,.07f,s.y),s.w,.58f,Quaternion.Euler(0,s.z,0),new Color(.50f,.62f,.42f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                }
+            }
+
+            if(art.SlavicBoulder!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-10.60f,-6.15f,24f,.82f),new Vector4(-10.55f,8.80f,78f,.68f),
+                    new Vector4(10.55f,8.75f,206f,.68f),new Vector4(10.60f,-6.10f,214f,.82f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · perimeter low boulder",
+                        art.SlavicBoulder,new Vector3(s.x,.05f,s.y),s.w,.52f,Quaternion.Euler(0,s.z,0),new Color(.52f,.52f,.48f,1f));
                     if(go==null)continue;
                     go.transform.SetParent(root,true);
                     foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
