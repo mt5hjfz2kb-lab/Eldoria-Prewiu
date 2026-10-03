@@ -16,7 +16,7 @@ namespace Eldoria.Presentation
             if(src==null)throw new Exception("Blender shell resource was not staged.");
             var go=Object.Instantiate(src);
             go.name="Valoria · Blender transition v2 · visual only";
-            go.transform.rotation=Quaternion.Euler(0,180,0);
+            go.transform.rotation=Quaternion.identity;
             go.transform.SetParent(parent,true);
             var renderers=go.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length==0)throw new Exception("Blender shell GLB has no renderers.");

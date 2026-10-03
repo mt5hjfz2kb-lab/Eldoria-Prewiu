@@ -33,8 +33,8 @@ def height(x, z):
     return y
 
 n=161
-xs=[-19+38*i/(n-1) for i in range(n)]
-zs=[-18+44*j/(n-1) for j in range(n)]
+xs=[-15+30*i/(n-1) for i in range(n)]
+zs=[-10+30*j/(n-1) for j in range(n)]
 # Two named material regions in one connected mesh.
 verts=[(x,-z,height(x,z)) for z in zs for x in xs]
 faces=[]
@@ -45,6 +45,11 @@ for j in range(n-1):
 mesh=bpy.data.meshes.new("Valoria authored contiguous rock and terraces")
 mesh.from_pydata(verts,[],faces)
 mesh.update()
+uv_layer=mesh.uv_layers.new(name="Valoria ground metres")
+for poly in mesh.polygons:
+    for loop_index in poly.loop_indices:
+        co=mesh.vertices[mesh.loops[loop_index].vertex_index].co
+        uv_layer.data[loop_index].uv=(co.x*.22,co.y*.22)
 obj=bpy.data.objects.new("ValoriaShell_ContinuousBedrock",mesh)
 bpy.context.collection.objects.link(obj)
 
@@ -57,20 +62,6 @@ mesh.materials.append(rock)
 for poly in mesh.polygons:
     poly.use_smooth=True
     poly.material_index=0 if poly.normal.z>.72 else 1
-
-# Deliberate exposed rock strata are attached to the same landform. They break
-# the smooth cliff transition in silhouette without making separate floating pads.
-for x,z,angle,length,width in [
-    (-8,1,-.40,5.2,1.5),(8,2,.38,5.0,1.4),
-    (-6,6,-.23,3.8,1.2),(6,6,.26,3.9,1.2),
-    (-9,-6,-.36,4.3,1.4),(9,-6,.41,4.3,1.4)]:
-    y=height(x,z)-.35
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,-z,y))
-    o=bpy.context.object
-    o.name="ValoriaShell_BuriedRock"
-    o.scale=(length,width,.75)
-    o.rotation_euler[2]=angle
-    o.data.materials.append(rock)
 
 out=sys.argv[sys.argv.index("--")+1] if "--" in sys.argv else "ValoriaShellTransition.glb"
 bpy.ops.object.select_all(action="SELECT")
