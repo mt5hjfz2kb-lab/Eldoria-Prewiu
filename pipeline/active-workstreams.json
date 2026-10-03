@@ -1,8 +1,33 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:05:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T12:01:34.858Z",
+  "active": [
+    {
+      "id": "valoria-shell-v2-blender-transition",
+      "title": "Valoria Visual Shell v2 — authored Blender rock/terrace transition",
+      "owner": "chat-valoria-shell-v2-blender-transition-20261003",
+      "scope": [
+        "tools/valoria-shell-v2/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        ".github/workflows/valoria-shell-v2-blender-transition.yml",
+        "pipeline/valoria-shell-v2-blender-transition-request.json",
+        "docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "runner-trigger-governance",
+        "workflow-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T12:01:34.858Z",
+      "base_main_sha": "f3dedde2388c85bd28897e234353d0615572b5ce",
+      "dependency": "After failed native crag proof. One connected authored rock/terrace mesh for controlled camera, visual-only, existing gameplay/camera unchanged, no Tripo, no paid assets. Full-frame capture decides promotion."
+    }
+  ],
   "history": [
     {
       "id": "valoria-visual-shell-v2-native-geometry",
