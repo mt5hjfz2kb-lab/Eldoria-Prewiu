@@ -121,6 +121,9 @@ namespace Eldoria.EditorTools
             ValoriaWorldFrameMountainTerrainV1.Enabled=true;
             ValoriaWorldFrameMountainTerrainV1.Build(root.transform,state);
 
+            bool bastionContinuity=Resources.Load<GameObject>("Valoria/ExperimentalBastionContinuity/ValoriaBastionContinuity")!=null;
+            if(bastionContinuity)ValoriaBastionContinuityV2.Build(root.transform,state);
+
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
                 throw new Exception("Strongest Composite v2 altered gameplay signature.");
@@ -154,6 +157,7 @@ namespace Eldoria.EditorTools
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
+                $"  \"bastion_continuity_renderers\": {ValoriaBastionContinuityV2.RenderersBuilt},\n"+
                 $"  \"background\": \"Kiara 3 Morning CC0\",\n"+
                 $"  \"existing_assets_only\": true,\n"+
                 $"  \"tripo_credits\": 0\n"+
