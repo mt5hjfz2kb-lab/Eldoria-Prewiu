@@ -485,12 +485,24 @@ namespace Eldoria.Presentation
             }
 
             // Only two small rebuilt homes: this is a settlement with headroom, not a finished metropolis.
-            before=root.childCount;
-            ValoriaKit.House("Valoria · Flat Citadel · cottage west",new Vector3(-5.8f,.18f,3.55f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
-            ReparentNew(root,before);
-            before=root.childCount;
-            ValoriaKit.House("Valoria · Flat Citadel · cottage east",new Vector3(5.7f,.18f,3.45f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
-            ReparentNew(root,before);
+            if(FunctionalBuildingUpliftEnabled)
+            {
+                var support=ValoriaExternalAssetLibrary.Load();
+                if(support!=null&&support.SlavicHouse!=null)
+                {
+                    PlaceSupportHouse(root,support.SlavicHouse,"west rebuilt home",new Vector3(-5.85f,.12f,3.55f),2.75f,2.55f,-7f);
+                    PlaceSupportHouse(root,support.SlavicHouse,"east rebuilt home",new Vector3(5.75f,.12f,3.45f),2.65f,2.45f,11f);
+                }
+            }
+            else
+            {
+                before=root.childCount;
+                ValoriaKit.House("Valoria · Flat Citadel · cottage west",new Vector3(-5.8f,.18f,3.55f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
+                ReparentNew(root,before);
+                before=root.childCount;
+                ValoriaKit.House("Valoria · Flat Citadel · cottage east",new Vector3(5.7f,.18f,3.45f),new Vector3(2.0f,1.15f,1.7f),true,Glow);
+                ReparentNew(root,before);
+            }
         }
 
         static void PlaceFunctionalPrefab(Transform root,string role,string resourcePath,Vector3 ground,float span,float maxHeight,float yaw)
@@ -501,6 +513,16 @@ namespace Eldoria.Presentation
             go.name="Valoria · Flat Citadel Production · "+role;
             go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
             FitPrefab(go,ground,span,maxHeight);
+            go.transform.SetParent(root,true);
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+        }
+
+        static void PlaceSupportHouse(Transform root,GameObject source,string role,Vector3 ground,float span,float maxHeight,float yaw)
+        {
+            var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Flat Citadel Production · "+role,source,ground,span,maxHeight,
+                Quaternion.Euler(0f,yaw,0f),new Color(.88f,.82f,.72f,1f));
+            if(go==null)return;
             go.transform.SetParent(root,true);
             foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
@@ -904,17 +926,51 @@ namespace Eldoria.Presentation
         static void BuildSparseNature(Transform root)
         {
             NaturePieces=0;
-            foreach(var p in new[]{
-                new Vector3(-11.2f,.02f,-4.8f),new Vector3(-11.4f,.02f,1.0f),new Vector3(-11.0f,.02f,7.4f),
-                new Vector3(11.2f,.02f,-4.5f),new Vector3(11.3f,.02f,1.4f),new Vector3(11.0f,.02f,7.3f),
-                new Vector3(-7.9f,.02f,10.8f),new Vector3(7.8f,.02f,10.9f)})
+            var art=ValoriaExternalAssetLibrary.Load();
+
+            if(DressingUpliftEnabled && art!=null && (art.SlavicTreeTall!=null || art.SlavicTree!=null))
             {
-                int before=root.childCount;
-                ValoriaKit.PineTree("Valoria · Flat Citadel · perimeter pine",p,.58f);
-                ReparentNew(root,before); NaturePieces++;
+                var tall=art.SlavicTreeTall??art.SlavicTree;
+                var shortTree=art.SlavicTree??tall;
+                foreach(var s in new[]{
+                    new Vector4(-12.6f,-4.8f, 12f,3.6f),new Vector4(-12.9f, 1.0f, 42f,4.1f),
+                    new Vector4(-12.4f, 7.0f, 76f,3.7f),new Vector4(-8.6f,11.7f,112f,4.2f),
+                    new Vector4(-3.9f,12.5f,154f,3.5f),new Vector4( 3.9f,12.4f,204f,3.8f),
+                    new Vector4( 8.8f,11.6f,246f,4.1f),new Vector4(12.4f, 7.2f,282f,3.8f),
+                    new Vector4(12.9f, 1.4f,318f,4.0f),new Vector4(12.5f,-4.5f,346f,3.6f)})
+                {
+                    var source=((int)s.z/40)%2==0?tall:shortTree;
+                    AddDressingPrefab(root,source,"natural perimeter tree",
+                        new Vector3(s.x,.04f,s.y),1.55f,s.w,s.z,new Color(.45f,.58f,.38f,1f));
+                    NaturePieces++;
+                }
+
+                if(art.SlavicBush!=null)
+                {
+                    foreach(var s in new[]{
+                        new Vector4(-11.3f,-1.8f,12f,.85f),new Vector4(-10.8f,5.1f,66f,.82f),
+                        new Vector4(-6.8f,10.6f,124f,.78f),new Vector4(6.6f,10.7f,218f,.80f),
+                        new Vector4(10.9f,5.0f,264f,.84f),new Vector4(11.2f,-1.7f,312f,.82f)})
+                    {
+                        AddDressingPrefab(root,art.SlavicBush,"natural perimeter bush",
+                            new Vector3(s.x,.05f,s.y),s.w,.64f,s.z,new Color(.56f,.67f,.46f,1f));
+                        NaturePieces++;
+                    }
+                }
+            }
+            else
+            {
+                foreach(var p in new[]{
+                    new Vector3(-11.2f,.02f,-4.8f),new Vector3(-11.4f,.02f,1.0f),new Vector3(-11.0f,.02f,7.4f),
+                    new Vector3(11.2f,.02f,-4.5f),new Vector3(11.3f,.02f,1.4f),new Vector3(11.0f,.02f,7.3f),
+                    new Vector3(-7.9f,.02f,10.8f),new Vector3(7.8f,.02f,10.9f)})
+                {
+                    int before=root.childCount;
+                    ValoriaKit.PineTree("Valoria · Flat Citadel · perimeter pine",p,.58f);
+                    ReparentNew(root,before); NaturePieces++;
+                }
             }
 
-            var art=ValoriaExternalAssetLibrary.Load();
             if(art!=null && art.SlavicBoulder!=null)
             {
                 foreach(var p in new[]{new Vector3(-10.7f,.05f,4.5f),new Vector3(10.8f,.05f,4.2f)})
