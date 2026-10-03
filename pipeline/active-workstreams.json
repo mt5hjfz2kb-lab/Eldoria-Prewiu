@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T15:39:00Z",
-  "active": [
+  "updated_at": "2026-10-03T15:57:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-flat-citadel-proof-v1",
       "title": "Valoria Flat Citadel Proof v1",
@@ -19,13 +20,17 @@
         "windows-runner-heavy",
         "runner-trigger-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T15:39:00Z",
       "base_main_sha": "ecac491e734329171c8b0cbf5d329e379a577020",
-      "dependency": "New owner-approved compositional reference: 75–85% buildable flat/very-gentle city plane; Hero Bastion remains the only major elevation; clear Bastion→plaza→city axis; continuous outer wall; sparse functional buildings; reduced background; preserve gameplay/hotspots/colliders/cameras. No mountain-rescue, no district-by-district terraces, no scan plates/photographic foreground/voxel/fused terrain, no Tripo."
-    }
-  ],
-  "history": [
+      "dependency": "New owner-approved compositional reference: 75–85% buildable flat/very-gentle city plane; Hero Bastion remains the only major elevation; clear Bastion→plaza→city axis; continuous outer wall; sparse functional buildings; reduced background; preserve gameplay/hotspots/colliders/cameras. No mountain-rescue, no district-by-district terraces, no scan plates/photographic foreground/voxel/fused terrain, no Tripo.",
+      "completed_at": "2026-10-03T15:57:00Z",
+      "result_commit": "93692caa1c17ee87eb880fc640d27584a3326d64",
+      "run_id": 37134976736,
+      "artifact_id": 11278791152,
+      "result": "TECH PASS / VISUAL FAIL / COMPOSITION DIRECTION ACCEPTED. Final proof preserves collider/hotspot signature, uses 0 Tripo credits, keeps ~82% useful area flat, one major Bastion rise, four functional buildings and a continuous outer wall. Real 19/12/9/mobile captures show a much clearer city-builder composition than the mountain/island family, but wall, secondary architecture, ground surfacing, atmosphere and UI integration remain prototype-grade.",
+      "next": "Use the flat-citadel macro composition as the new visual base direction, but do not promote the proof implementation as production art. Next block should replace proof-grade wall/ground/secondary architecture in large coherent blocks while preserving the flat buildable city and Hero Bastion hierarchy."
+    },
     {
       "id": "valoria-shell-v2-worldframe-district-cells",
       "title": "Valoria Visual Shell v2 — World Frame + district terrace cells",
