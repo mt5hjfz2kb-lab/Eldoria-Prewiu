@@ -15,9 +15,9 @@ namespace Eldoria.EditorTools
         const string Folder="ValoriaStrongestCompositeV2Captures";
 
         static readonly (string id,string path,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
-            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(4.65f,.56f,-1.20f),184f,2.80f,3.25f),
-            ("west_residence","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(-5.15f,.62f,2.55f),14f,2.65f,3.05f),
-            ("east_civic","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(5.10f,.66f,2.80f),174f,2.75f,3.20f),
+            ("barracks_admin","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01c_PRE.prefab",new Vector3(3.85f,.56f,-.72f),184f,2.80f,3.25f),
+            ("west_residence","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",new Vector3(-4.45f,.62f,2.40f),14f,2.65f,3.05f),
+            ("east_civic","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Administrative/EA03_Town_Building_Administrative _01a_PRE.prefab",new Vector3(4.40f,.66f,2.45f),174f,2.75f,3.20f),
             ("upper_west","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab",new Vector3(-4.15f,1.48f,5.15f),12f,2.15f,2.65f),
             ("upper_east","Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03b_PRE.prefab",new Vector3(4.10f,1.48f,5.20f),188f,2.15f,2.65f)
         };
@@ -322,7 +322,20 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · upper landing cheek")||
                     chain.Contains("valoria · retaining foundation stone");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing)
+                // v18: these certified-era hero retaining slabs were useful while the
+                // fortress was isolated, but in the compact full frame they read as
+                // four giant rectangular pillars and overpower the inhabited city.
+                bool oversizedHeroRetaining=
+                    chain.Contains("assetlibrary reprocessing · hero retaining wall")||
+                    chain.Contains("assetlibrary reprocessing · hero retaining corner");
+
+                // Leftover pre-reframe sawmill frontage sits outside the compact shelf
+                // and is now duplicate visual noise; gameplay authority is elsewhere.
+                bool detachedLegacySawmill=
+                    chain.Contains("valoria · stocked work frontage")||
+                    chain.Contains("valoria · hero frame sawmill timber");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing||oversizedHeroRetaining||detachedLegacySawmill)
                 {
                     r.enabled=false;
                     count++;
@@ -372,7 +385,7 @@ namespace Eldoria.EditorTools
             {
                 var clone=Object.Instantiate(original);
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
-                clone.transform.position+=new Vector3(2.35f,.08f,2.10f);
+                clone.transform.position+=new Vector3(3.00f,.08f,2.50f);
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
