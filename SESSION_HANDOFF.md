@@ -1,3 +1,14 @@
+## 2026-10-04 — Valoria Semantic Source Reauthoring Proof v1 — DEFINITIVE CLOSURE AFTER VARIANT 2
+
+- Final verdict remains **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`.
+- Variant 1 valid run: **37161308188 SUCCESS**, artifact **11287623524**, Blender source artifact **11287494742**, captured head `0631016c7ef2ade1d04d77628364db86bdc20029`. Aserradero source-preserving semantic zoning was locally positive, but Hero retaining replacement became a huge horizontally stretched artificial band.
+- Variant 2 materially changed technique: only front-low Hero source components were removed and rich `RockToWallTransition` geometry was embedded inside the Hero export. Valid run: **37162147598 SUCCESS**, artifact **11288451036**, Blender source artifact **11288171793**, captured head `0556cf8e6b6a2b54a3bee75ad83067facacd72e5`.
+- Variant 2 also **VISUAL FAIL**: the prism disappears, but the rich transition becomes an oversized vertical rock mass that occludes the Hero and dominates zoom9/mobile. No 12/19 extension; anti-loop threshold reached after two distinct Hero techniques.
+- Positive reusable learning: Aserradero-class rich assets can retain full geometry/UV/PBR while receiving component-level semantic stone/timber/roof zoning. Negative learning: Hero/Bastion rock→architecture integration is not safely automatable via component cuts + automatic fitting of existing transition geometry.
+- Sharpness is not the primary blocker: source maps remain 2K/1K with mip chains and trilinear filtering. Failure is form/proportion/UV/material authoring of Hero integration.
+- Workflow parked manual-only and requests disabled. Do not expand this candidate to Granero/Cuartel/Forja/Hospital or run a third microvariant.
+- If Hero source reauthoring is revisited, treat it as deliberate high-fidelity Hero art production: camera-authored local modeling, controlled proportions, dedicated masonry UV/material/bake, then 9/mobile proof before any rollout.
+
 ## 2026-10-04 — Valoria Semantic Source Reauthoring Proof v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`; production/gameplay/parcels unchanged.
