@@ -149,8 +149,8 @@ namespace Eldoria.Presentation
                                 Mathf.Clamp01(1f-Mathf.Abs(wz+1.9f)/6.0f);
 
                     float pad=0f;
-                    pad=Mathf.Max(pad,Disc(wx,wz,-7.2f,-2.7f,3.10f));
-                    pad=Mathf.Max(pad,Disc(wx,wz, 6.65f,-3.85f,3.05f));
+                    pad=Mathf.Max(pad,Disc(wx,wz,-7.2f,-2.7f,2.35f));
+                    pad=Mathf.Max(pad,Disc(wx,wz, 6.65f,-3.85f,2.35f));
                     pad=Mathf.Max(pad,Disc(wx,wz,-5.2f, 2.5f,2.65f));
                     pad=Mathf.Max(pad,Disc(wx,wz, 5.1f, 2.6f,2.65f));
                     pad=Mathf.Max(pad,Disc(wx,wz,-3.9f, 5.0f,2.25f));
@@ -159,8 +159,18 @@ namespace Eldoria.Presentation
                     float routeLift=route*.78f*(1f-fall*.76f);
                     y=Mathf.Lerp(y,Mathf.Max(y,top),routeLift);
 
-                    float padLift=pad*.78f*(1f-fall*.76f);
+                    float padLift=pad*.62f*(1f-fall*.82f);
                     y=Mathf.Lerp(y,Mathf.Max(y,-.16f),padLift);
+
+                    // Reference-directed foreground shaping:
+                    // keep the route readable, open a central valley beside it, and let the
+                    // world close the frame with continuous side shoulders instead of one flat tongue.
+                    float front=Mathf.InverseLerp(-2.55f,-6.65f,wz);
+                    float sideFrame=Mathf.Clamp01((Mathf.Abs(wx)-4.55f)/2.65f);
+                    sideFrame=sideFrame*sideFrame*(3f-2f*sideFrame);
+                    float valleyOpen=front*(1f-route)*(1f-sideFrame)*(1f-pad*.55f);
+                    y-=valleyOpen*2.65f;
+                    y+=front*sideFrame*.20f;
 
                     vertices.Add(new Vector3(wx,y,wz));
                     Vector2 uv;
@@ -199,7 +209,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v10"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v11 · framed valley"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             var allTriangles=new List<int>(innerTriangles.Count+slopeTriangles.Count);
