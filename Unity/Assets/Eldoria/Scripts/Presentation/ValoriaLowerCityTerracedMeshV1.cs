@@ -49,29 +49,23 @@ namespace Eldoria.Presentation
 
             // Central terrace: compact landing beneath the stair, not a full-width board.
             Create(root,"central landing",new[]{
-                V(-4.85f,-2.55f),V(-3.30f,-3.35f),V(-1.45f,-3.00f),V(0f,-3.55f),
-                V(1.55f,-3.05f),V(3.35f,-3.30f),V(4.90f,-2.45f),V(5.15f,-.70f),
-                V(4.25f,.85f),V(2.35f,1.35f),V(.15f,1.05f),V(-2.15f,1.35f),V(-4.25f,.80f),V(-5.15f,-.65f)
-            },-.18f,-1.15f,-2.35f,earth,rock);
+                V(-4.25f,-2.05f),V(-2.95f,-2.65f),V(-1.35f,-2.35f),V(0f,-2.75f),
+                V(1.40f,-2.38f),V(2.95f,-2.62f),V(4.30f,-2.00f),V(4.55f,-.65f),
+                V(3.75f,.55f),V(2.15f,1.05f),V(.10f,.88f),V(-2.05f,1.02f),V(-3.75f,.52f),V(-4.55f,-.62f)
+            },-.18f,-.72f,-1.42f,earth,rock);
 
             // West economic terrace, pulled inward and connected to the central landing.
             Create(root,"west economic",new[]{
-                V(-9.25f,-4.95f),V(-7.75f,-5.75f),V(-5.75f,-5.30f),V(-4.15f,-4.20f),
-                V(-3.55f,-2.75f),V(-4.05f,-1.35f),V(-5.55f,-.65f),V(-7.45f,-.85f),V(-9.05f,-2.05f)
-            },-.20f,-1.20f,-2.25f,earth,rock);
+                V(-9.00f,-4.45f),V(-7.55f,-5.10f),V(-5.85f,-4.75f),V(-4.55f,-3.85f),
+                V(-4.15f,-2.55f),V(-4.65f,-1.45f),V(-5.85f,-.95f),V(-7.35f,-1.10f),V(-8.75f,-2.05f)
+            },-.20f,-.82f,-1.48f,earth,rock);
 
             // East military terrace.
             Create(root,"east military",new[]{
-                V(3.55f,-3.05f),V(4.35f,-4.75f),V(5.85f,-5.85f),V(7.85f,-5.95f),
-                V(9.25f,-4.75f),V(9.20f,-2.85f),V(8.10f,-1.45f),V(6.20f,-1.05f),V(4.55f,-1.65f)
-            },-.22f,-1.25f,-2.30f,earth,rock);
+                V(4.05f,-2.75f),V(4.65f,-4.25f),V(5.95f,-5.05f),V(7.65f,-5.15f),
+                V(8.95f,-4.20f),V(8.90f,-2.75f),V(7.95f,-1.65f),V(6.35f,-1.28f),V(4.85f,-1.72f)
+            },-.22f,-.84f,-1.50f,earth,rock);
 
-            // Narrow foreground approach. Its silhouette is intentionally tapered.
-            Create(root,"approach",new[]{
-                V(-1.20f,-7.65f),V(1.15f,-7.65f),V(1.60f,-6.15f),V(1.75f,-4.60f),
-                V(1.55f,-3.05f),V(.95f,-2.35f),V(-.95f,-2.35f),V(-1.55f,-3.05f),
-                V(-1.72f,-4.60f),V(-1.58f,-6.15f)
-            },-.34f,-1.32f,-2.42f,earth,rock);
         }
 
         static Vector2 V(float x,float z)=>new Vector2(x,z);
