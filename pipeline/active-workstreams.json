@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T14:41:00Z",
+  "updated_at": "2026-10-03T14:47:00Z",
   "active": [
     {
       "id": "valoria-shell-v2-bastion-continuity",
@@ -14,7 +14,9 @@
         "docs/VALORIA_SHELL_V2_BASTION_CONTINUITY_RESULT.md",
         "pipeline/active-workstreams.json",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader",
+        "Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader.meta"
       ],
       "resources": [
         "valoria-production-composition",
