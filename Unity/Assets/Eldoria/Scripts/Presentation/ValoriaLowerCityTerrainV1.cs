@@ -33,7 +33,7 @@ namespace Eldoria.Presentation
             const float originY=-5.05f;
 
             var data=new TerrainData{
-                name="Valoria Lower City TerrainData v2",
+                name="Valoria Lower City TerrainData v3",
                 heightmapResolution=hm,
                 alphamapResolution=alpha,
                 baseMapResolution=256,
@@ -64,8 +64,8 @@ namespace Eldoria.Presentation
             var rockMat=ValoriaKit.ExternalPbrSurfaceMaterial(
                 "rock",new Color(.38f,.39f,.37f,1f),new Vector2(1.10f,1.10f),.018f,.98f);
 
-            var dirtLayer=LayerFrom(dirtMat,"Valoria Terrain · dirt",new Vector2(3.2f,3.2f),.04f);
-            var rockLayer=LayerFrom(rockMat,"Valoria Terrain · rock",new Vector2(2.5f,2.5f),.08f);
+            var dirtLayer=LayerFrom(dirtMat,"Valoria Terrain · dirt",new Vector2(3.2f,3.2f),.04f,new Color(.42f,.37f,.29f,1f));
+            var rockLayer=LayerFrom(rockMat,"Valoria Terrain · rock",new Vector2(2.5f,2.5f),.08f,new Color(.36f,.37f,.35f,1f));
             data.terrainLayers=new[]{dirtLayer,rockLayer};
 
             var splat=new float[alpha,alpha,2];
@@ -101,9 +101,13 @@ namespace Eldoria.Presentation
                     float d=Footprint(wx,wz);
                     float route=Route(wx,wz);
                     float pad=Pads(wx,wz);
-                    float edgeNoise=(Mathf.PerlinNoise((wx+19.1f)*.16f,(wz+8.4f)*.16f)-.5f)*.10f;
-                    bool outer=d>(.94f+edgeNoise) && route<.16f && pad<.20f;
-                    bool surface=!outer;
+                    float edgeNoise=(Mathf.PerlinNoise((wx+19.1f)*.16f,(wz+8.4f)*.16f)-.5f)*.09f;
+
+                    bool outer=d>(.95f+edgeNoise) && route<.16f && pad<.20f;
+                    bool foreground=wz<-4.15f;
+                    float causewayHalf=Mathf.Lerp(1.85f,2.45f,Mathf.InverseLerp(-8.0f,-4.15f,wz));
+                    bool offCauseway=foreground && Mathf.Abs(wx)>causewayHalf && pad<.24f;
+                    bool surface=!outer&&!offCauseway;
                     holes[z,x]=surface;
                     if(surface)SurfaceSamples++; else HoleSamples++;
                 }
@@ -123,6 +127,10 @@ namespace Eldoria.Presentation
                 terrain.heightmapPixelError=2f;
                 terrain.basemapDistance=200f;
                 terrain.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
+
+                var terrainShader=Shader.Find("Universal Render Pipeline/Terrain/Lit");
+                if(terrainShader!=null)
+                    terrain.materialTemplate=new Material(terrainShader){name="Valoria · Terrain Lit v3"};
             }
 
             // TerrainCollider lives in the optional Terrain Physics assembly, which this
@@ -173,9 +181,11 @@ namespace Eldoria.Presentation
             return s;
         }
 
-        static TerrainLayer LayerFrom(Material source,string name,Vector2 tile,float smoothness)
+        static TerrainLayer LayerFrom(Material source,string name,Vector2 tile,float smoothness,Color tint)
         {
             var layer=new TerrainLayer{name=name,tileSize=tile,metallic=0f,smoothness=smoothness};
+            layer.diffuseRemapMin=new Vector4(tint.r*.20f,tint.g*.20f,tint.b*.20f,0f);
+            layer.diffuseRemapMax=new Vector4(tint.r,tint.g,tint.b,1f);
             if(source!=null)
             {
                 Texture2D baseTex=null,normalTex=null;
@@ -207,11 +217,16 @@ namespace Eldoria.Presentation
             float support=Mathf.Max(route*.90f,pad*.72f);
             y=Mathf.Lerp(y,Mathf.Max(y,-.18f),support*(1f-fall*.82f));
 
-            float front=Mathf.InverseLerp(-2.4f,-7.8f,z);
-            float side=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(3.8f,7.8f,Mathf.Abs(x)));
-            float valley=front*(1f-route*.78f)*(1f-pad*.72f);
-            y-=valley*Mathf.Lerp(.72f,.22f,side);
-            y+=front*side*.34f;
+            float front=Mathf.InverseLerp(-3.2f,-7.9f,z);
+            float side=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(2.6f,7.6f,Mathf.Abs(x)));
+            float causeway=Mathf.Clamp01(1f-Mathf.Abs(x)/2.25f)*front;
+
+            // City remains seated on one continuous shelf. In the foreground, terrain
+            // falls away sharply beside a narrow approach instead of forming a dome/slab.
+            float valley=front*(1f-causeway*.92f)*(1f-pad*.76f);
+            y-=valley*Mathf.Lerp(1.85f,.35f,side);
+            y=Mathf.Lerp(y,Mathf.Max(y,-.22f),causeway*.82f);
+            y+=front*side*.18f;
             return y;
         }
 
