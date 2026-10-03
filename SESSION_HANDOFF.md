@@ -1,3 +1,10 @@
+## 2026-10-03 — Valoria Authored Gameplay Cell Art Direction v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Branch `visual-proof/valoria-authored-gameplay-cell-art-direction-v1` closure `4ec9bd6902e8abacda1f011b45197770a9ee840a`.
+- Accepted production visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`; Flat Citadel/gameplay/HUD/parcels unchanged. No paid credits or owner publication.
+- Variant 1 paving `3fc8a42` / run **37153721252** / artifact **11284773218** visually worse; removed. Variant 2 removable site staging `d9d2061` / run **37153946756** / artifact **11285112696**, technical success and 5/5 tests but 0 changed pixels in mobile portrait and 0.131% at 9. No visual promotion.
+- Closure/research: `docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md`, `..._RESEARCH.md`; PNG manifest under `docs/evidence/valoria-authored-gameplay-cell-v1/`. Next: source-level semantic Hero–Aserradero–wall shared art cell; do not repeat procedural ground/plot dressing. No current active visual workstream.
+
 ## 2026-10-03 — Valoria Unified Visual Language Proof v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`.
