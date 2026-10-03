@@ -138,6 +138,9 @@ namespace Eldoria.Presentation
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var behaviour in go.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+            // Lane B / Surface v1: rescued support geometry is certified but its flat source material is not.
+            // Apply the deterministic Valoria rock profile already created at Build() startup.
+            foreach(var r in rs)if(rock!=null)r.sharedMaterial=rock;
             VisualPieces++;
         }
 
