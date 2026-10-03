@@ -1,0 +1,137 @@
+{
+  "baseline": "VQB 7a564bc5056bb7166b7704c313ae4db7d55d4530 / run 37149992067 / artifact 11284220007",
+  "candidate1": {
+    "sha": "24ac0be70f9f5199686c1769303dfc5e510e1420",
+    "run": 37152534859,
+    "artifact": 11284955622,
+    "digest": "sha256:b47e77bd2a144960dacd9b7662b3f5a3982ef3f1d7cbefead2c71b906b899895"
+  },
+  "candidate2": {
+    "sha": "89ca7efc279b9c845aa746f1396755066d211320",
+    "run": 37152713806,
+    "artifact": 11284248212,
+    "digest": "sha256:3c3f2214fe799a5530750db62cd9166862336f737b53b37628407029667f0574"
+  },
+  "original_pngs": {
+    "gameplay-home.png": {
+      "sha256": "b3a1cbba60235aca490fac328dafddbab5bc370614765b0280be5662b952bc0f",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-mobile.png": {
+      "sha256": "ed382e62f2d07d7230ebe6c4a61d5dbea9925b327c333a8456fff32bf27d92e1",
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "game-12.png": {
+      "sha256": "aac759e4265c93d6fde7ad6dfa205306659442618ecb3380950785545d16fbd1",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-12.png": {
+      "sha256": "f58583ab26247dbd83a492a412bd0f2632a2e468c389411be67c6f535de22d28",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-19.png": {
+      "sha256": "1c2a1327da47574662ea29fa68d896cf5067ba0947dedbbdcd9e7ecaf647b913",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-12.png": {
+      "sha256": "9f83a15f1b9a5a2a36938c5c39c8d6b29bae15bdcc1c08d99d8224777d7309c9",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-9.png": {
+      "sha256": "b02ef5de0a6897b2da6f9c2e0b47ded195ad653dfca7fd900ff1901b5274b1f1",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-9.png": {
+      "sha256": "143887e6e59907699f67380020b3973e7fb845ffb4fa0e3325edcfc83149473b",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-19.png": {
+      "sha256": "672105ff7897f23d0e36d950522aa2c6648d1e51cb2483f80c3bd384efa4ea40",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-9.png": {
+      "sha256": "63eec46bf097bff9531f0bf4e3517f43c4bd1957e6ace4cdf7fb223ad982a787",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-mobile.png": {
+      "sha256": "76a10247b6ba38dfbe5c0e240b2f453f17f78232c8c53ed32ea2f650137eb882",
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "game-9.png": {
+      "sha256": "76b47e9d8c02b6859dede8b090dc2c9eadd4ef00c9f54b9466344f85b1851c3c",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-19.png": {
+      "sha256": "31bf3a36dce6eab137fe632e0a5147584c393261a57d207b1910e1e6135a8583",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "after-mobile.png": {
+      "sha256": "98adc9ee7d240576bd9ae1c11b29abf34cf226fe6a955c234ac0374bb82b6122",
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "game-mobile.png": {
+      "sha256": "b6b4f41848a27c0a173f55c92484469369ce988d9d6b3c8bb126cd1581f1d823",
+      "resolution": [
+        390,
+        844
+      ]
+    },
+    "game-19.png": {
+      "sha256": "36e40f65df41e71020b61eb050e0585c2f162bff8c8ea5f725e338df366b357f",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    "before-game-12.png": {
+      "sha256": "1316ad391013335034eaf6e5fc02396d3bedd27c2c5643578a03c6e1f7fb4a72",
+      "resolution": [
+        1280,
+        720
+      ]
+    }
+  },
+  "previews": "Downscaled JPEG contact sheets of real matched Unity PNGs, no screenshot compositing except side-by-side labels. Original unmodified images available from run artifacts."
+}

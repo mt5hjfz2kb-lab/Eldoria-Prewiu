@@ -1,6 +1,29 @@
+## 2026-10-03 — Valoria Unified Visual Language Proof v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`.
+- Experimental branch `visual-proof/valoria-unified-visual-language-proof-v1`: variant 1 `24ac0be` / run **37152534859 SUCCESS**, artifact **11284955622**; variant 2 `89ca7ef` / run **37152713806 SUCCESS**, artifact **11284248212**. Real 19/12/9/mobile capture and 5/5 focused live HUD/progression tests; collider/hotspot signature and parcels protected; credits=0.
+- Source-rich outer road/crop strips looked like technical dark bars and were rejected; city-path/temporary-soil revision was visually marginal with dark seam artifacts. No visual/runtime production promotion or player publication.
+- Screen-space audit: orthographic 19 is strategic overview (~36% projected ring width), 12 city (~57%), 9 detail (~77%). Actual Unity city home = 9.1, already close; portrait at 9.4 crops the city under bounded pan. Do not inflate city geometry or confuse strategic overview with playable home.
+- Full research, real comparisons, metrics and scalability/cost estimate: [proof result](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/visual-proof/valoria-unified-visual-language-proof-v1/docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md).
+- The next precise block, **VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1**, is recommended but not opened. Author a shared source-rich screen-space kit and prove one whole cell before expansion. Flat Citadel remains locked.
+
+## 2026-10-03 — Valoria Authored Secondary Art Family v1 — CLOSED
+
+- **TECH PASS / VISUAL FAIL / NOT PROMOTED**.
+- Experimental branch: `visual-proof/valoria-authored-secondary-art-family-v1`.
+- Final valid integrated comparison: run **37151178579 SUCCESS**, artifact **11283369532**, source SHA `be2c806a83fb7692311d489b2d0d810e76055de7`.
+- Compared real VQB baseline against full authored rebuild, source-preserving semantic Aserradero, and source-preserving + shared Stone/Timber/Slate atlas + canonical support v2 at **19/12/9/mobile**.
+- Gameplay signature, macrocomposition, F1 envelope and front gate route stayed intact; **0 Tripo / paid credits**.
+- Full authored rebuild was rejected because it loses canonical source richness. Source-preserving authoring is technically proven at the canonical **49,800 triangles**, but shared-atlas v2 still reads too saturated/banded and does not produce a clear benchmark jump.
+- Do **not** expand this family to Cuartel/Granero and do not continue Aserradero color/material micro-tuning.
+- Result: `docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md`.
+- Workstream released; all experimental workflows are parked manual-only and the planner request is archived.
+- **Next is a genuine art-direction decision, not another routine technical pass**: either retain the current semi-realistic mixed-source visual shell and accept its measured ceiling, or deliberately rebase the player-facing shell toward a unified authored/stylized language while preserving gameplay, Flat Citadel geography, parcel reservations and systems.
+
 ## 2026-10-03 — Valoria Asset Coherence & Game Presentation v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL** after three real integrated variants; no production promotion or new owner publication.
+- Documentation/evidence closure: `df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac`.
 - Experimental branch: `visual-proof/valoria-asset-coherence-game-presentation-v1`; captured implementation `1071454bd1bd27ec1f5a0c754805d61a7a77e829`; final run **37143754581 SUCCESS**, artifact **11281586517**.
 - Shared source material response, world-space earth/paving, contained low-relief edge, canonical foliage, bounded visual activity and real Unity HUD improved. Five focused PlayMode tests passed; 19/12/9/mobile captured. Collider/hotspot signature and parcel reservations preserved; credits=0.
 - Still below commercial benchmark: fused Hero rock silhouette, repetitive walls, different architectural source families, proxy inhabitants and incomplete HUD art. No claim of phone performance or Bastion-VI gameplay; captured art VI/HUD current I-II are separate.

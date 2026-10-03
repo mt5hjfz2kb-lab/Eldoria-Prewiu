@@ -1,17 +1,6 @@
 name: "[EXPERIMENT] Valoria Unified Visual Language Proof v1"
 
 on:
-  push:
-    branches: [visual-proof/valoria-unified-visual-language-proof-v1]
-    paths:
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaHudPresentationV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
-      - "Unity/Assets/Eldoria/Shaders/ValoriaCoherence.shader"
-
-      - "pipeline/art-production-request.json"
-      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedVisualLanguageV1.cs"
-      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedVisualLanguageGateV1.cs"
   workflow_dispatch:
 
 permissions:

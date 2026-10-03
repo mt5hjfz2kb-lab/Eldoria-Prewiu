@@ -1,9 +1,157 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T18:30:33.538Z",
+  "updated_at": "2026-10-03T20:52:36.339Z",
   "active": [],
   "history": [
+    {
+      "id": "valoria-unified-visual-language-proof-v1",
+      "title": "Valoria Unified Visual Language Proof v1",
+      "owner": "work-unified-language-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedVisualLanguageV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedVisualLanguageGateV1.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaUnifiedVisualLanguage*",
+        "tools/valoria-unified-visual-language/**",
+        "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1*",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:36:35.945Z",
+      "base_main_sha": "7d384b6120365b34fc93d39288a69d2b57df47a2",
+      "status": "completed",
+      "dependency": "VQB accepted implementation 7a564bc, final 37149992067 / artifact 11284220007; Authored Secondary Art Family v1 closed NOT PROMOTED, later infrastructure revalidation 37151352162 / artifact 11283663815. Screen-space and coherent whole-frame proof, preserve fixed Flat Citadel/gameplay/parcels. Zero paid credits.",
+      "completed_at": "2026-10-03T20:52:36.339Z",
+      "result_commit": "89ca7efc279b9c845aa746f1396755066d211320",
+      "accepted_visual_source": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "run_ids": [
+        37152534859,
+        37152713806
+      ],
+      "artifact_ids": [
+        11284955622,
+        11284248212
+      ],
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Two reversible visual-language connective geometry variants rendered with 19/12/9/mobile and real HUD; exterior strip family regressed and civic surfaces were marginal/net-negative. Both Unity workflows succeeded, final focused tests 5/5. VQB remains best accepted visual. Flat Citadel/gameplay/parcels preserved, zero paid credits.",
+      "next": "VALORIA AUTHORED GAMEPLAY CELL ART DIRECTION v1: source-rich art-direction sheet then semantic Hero/Aserradero/wall/ground shared kit at real played camera and pan extremes; no rollout until screenshot wins.",
+      "branch": "visual-proof/valoria-unified-visual-language-proof-v1",
+      "result_doc": "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md"
+    },
+    {
+      "id": "valoria-unified-stylized-shell-v1",
+      "title": "Valoria Unified Stylized Visual Shell v1",
+      "owner": "chat-valoria-unified-stylized-shell-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Shaders/ValoriaUnifiedStylized*",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedStylizedShellV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedStylizedShellGateV1.cs",
+        ".github/workflows/valoria-unified-stylized-shell-v1.yml",
+        "docs/VALORIA_UNIFIED_STYLIZED_SHELL_V1*",
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:27:00Z",
+      "base_main_sha": "c7831eecf0be466862eda3b628ab3684bde69177",
+      "status": "handoff",
+      "dependency": "Art-direction decision boundary after Authored Secondary Art Family v1 TECH PASS / VISUAL FAIL. Start from VQB accepted shell 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve Flat Citadel geography, Hero Bastion geometry, F1 envelope, C0/C1/C2, R4/R5/R6, XW/XE/XU/XS, gameplay colliders/hotspots/cameras and real HUD contracts. This block is a whole-frame visual-language proof, not another isolated asset/material patch. Bright stylized 4X language must be applied coherently across architecture/ground/lighting while retaining source detail. No terrain-island/mountain rethink, no paid generation, no Tripo.",
+      "completed_at": "2026-10-03T20:34:00Z",
+      "handoff_main_head": "dbeeffc9e1ef32c1d714b48b163358658c40aaeb",
+      "run_id": 37149992067,
+      "artifact_id": 11284220007,
+      "run_note": "No run was launched by this workstream before handoff. Registered run/artifact are the inherited last validated baseline from Valoria Visual Quality Breakthrough v1.",
+      "result": "HANDOFF. Block stopped before implementation/runs. No visual commits beyond the claim commit and no new runs launched. Preserve current repository state and inherited VQB baseline evidence.",
+      "next": "Continue in the other chat as VALORIA UNIFIED VISUAL LANGUAGE PROOF v1. Start from the real repository state; do not revive this workstream or launch work under its old claim."
+    },
+    {
+      "id": "valoria-authored-secondary-art-family-v1",
+      "title": "Valoria Authored Secondary Art Family v1",
+      "owner": "chat-valoria-authored-secondary-art-family-v1-20261003",
+      "scope": [
+        "tools/valoria-authored-secondary-art-family/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/AuthoredSecondaryArtFamily_v1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAuthoredSecondaryArtFamilyV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAuthoredSecondaryArtFamilyGateV1.cs",
+        ".github/workflows/valoria-authored-secondary-art-family-v1.yml",
+        "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1*",
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:05:00Z",
+      "base_main_sha": "71b9aa018297b59965eaa4d23ad75fcb2393a71b",
+      "status": "completed",
+      "dependency": "Start from closed VQB experimental BEFORE 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve locked Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP. Do not reopen VQB micro-polish, terrain/island/mountain families, wholesale Slavic/Mega replacement, Hero height segmentation, or paid generation. First proof only: source-authored coherent modular roof/stone/timber/foundation language for Aserradero plus one wall/gate support pair. Expand only if matched 19/12/9/mobile evidence shows a clear benchmark jump.",
+      "completed_at": "2026-10-03T20:23:00Z",
+      "result_commit": "2437438af220d473de32ee112a06e2379b02f83c",
+      "final_branch_head": "b52c3e78c3be7f1a2b8027fc73c5350890942cf0",
+      "branch": "visual-proof/valoria-authored-secondary-art-family-v1",
+      "run_id": 37151178579,
+      "artifact_id": 11283369532,
+      "result_doc": "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md",
+      "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED. Blender source authoring is proven: canonical Aserradero can be semantically segmented without geometry loss, shared authored Stone/Timber/Slate maps are viable, and canonical wall/gate support sources can be reauthored at zero paid cost. Integrated baseline/authored-complete/source-preserving/source-atlas-v2 comparison preserved gameplay signature, F1 envelope, gate route and macrocomposition. None produced the required clear benchmark jump; full rebuild loses richness and shared-atlas v2 reads over-saturated/banded. No Cuartel/Granero expansion or production promotion.",
+      "next": "ART-DIRECTION DECISION BOUNDARY. Do not open another isolated asset/material/micro-polish pass. The next meaningful move is a whole-frame visual-language choice: retain the current semi-realistic mixed-source shell and accept its ceiling, or deliberately rebase the player-facing visual shell toward a unified authored/stylized language while preserving gameplay, Flat Citadel geography, parcel reservations and systems."
+    },
+    {
+      "id": "valoria-visual-quality-breakthrough-v1",
+      "title": "Valoria Visual Quality Breakthrough v1",
+      "owner": "chat-valoria-visual-quality-breakthrough-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs",
+        "Unity/Assets/Eldoria/Shaders/ValoriaBreakthrough*",
+        ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+        "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1*",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "tools/valoria-visual-quality-breakthrough/**",
+        ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
+        "pipeline/evidence/valoria-vqb-hero-audit*",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVqbSecondaryLineupGate.cs",
+        ".github/workflows/valoria-vqb-secondary-lineup.yml",
+        "pipeline/evidence/valoria-vqb-secondary-lineup*",
+        ".github/workflows/valoria-vqb-functional-source-audit.yml",
+        "pipeline/evidence/valoria-vqb-functional-source-audit*",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaHeroSegmentationComparisonGateV1.cs",
+        ".github/workflows/valoria-visual-quality-breakthrough-hero-comparison.yml",
+        "pipeline/evidence/valoria-vqb-hero-comparison*",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVqbWallLineupGate.cs",
+        ".github/workflows/valoria-vqb-wall-lineup.yml",
+        "pipeline/evidence/valoria-vqb-wall-lineup*"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T18:49:00Z",
+      "base_main_sha": "fb348f7147caf65459e30a756dac8092ccde0b23",
+      "status": "completed",
+      "dependency": "Flat Citadel and VALORIA_PARCEL_RESERVATION_MAP are hard locks. Start from accepted Asset Coherence implementation 1071454 / run 37143754581 / artifact 11281586517. No mountain/layout rethink; no paid generation. Breakthrough must target source/silhouette/interface/environment structure, not tint/placement micro-loops. After two placement-family visual attempts (candidate 1 regression; candidate 2 marginal), anti-loop escalates to zero-spend Blender source audit/authoring before any further Unity placement iteration. Library audit escalation: run one normalized secondary-architecture lineup before authoring/replacing any family. Functional GLB source audit: prove material/submesh separability before any source reauthoring. Hero component-height segmentation low14/20/26 captured in run 37148183339 and visually rejected: low14 marginal, low20/low26 damage support silhouette. Next wall-family selection must use normalized lineup before integration.",
+      "completed_at": "2026-10-03T20:04:00Z",
+      "result_commit": "7a564bc5056bb7166b7704c313ae4db7d55d4530",
+      "final_branch_head": "5822ce13cf43f34277be1a83e2afbf813838147b",
+      "run_id": 37149992067,
+      "artifact_id": 11284220007,
+      "result": "TECH PASS / VISUAL FAIL. Real first-glance improvement retained: non-uniform continuous wall rhythm, semantic PBR hierarchy on canonical functional buildings, intact Hero with architectural interface wrapping, continuous exterior surface uplift plus bounded occupation cues, and responsive real Unity HUD with canonical interaction budgets. Final focused HUD/progression tests pass. Flat Citadel and all parcel reservations remain intact; 0 paid/Tripo credits. Still below benchmark because secondary source-art richness, world depth and premium material coherence remain visibly behind Hero Bastion / commercial target.",
+      "next": "VALORIA AUTHORED SECONDARY ART FAMILY v1. Source-level Blender/material authoring proof for a coherent reusable secondary architecture family (start with Aserradero + one wall/gate support pair); preserve Flat Citadel, parcel map and current VQB as BEFORE. No further VQB micro-polish.",
+      "branch": "visual-proof/valoria-visual-quality-breakthrough-v1",
+      "result_doc": "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESULT.md"
+    },
     {
       "id": "valoria-asset-coherence-game-presentation-v1",
       "title": "Valoria Asset Coherence & Game Presentation v1",
@@ -32,7 +180,9 @@
       "result": "TECH PASS / VISUAL FAIL. Three integrated Unity variants completed; shared source response, world-space paving/contained edge, native HUD and bounded activity improved; fused Hero silhouette, generic wall and heterogeneous source quality remain. Locked Flat Citadel and parcel reservations preserved. 5/5 PlayMode tests. No paid credits, production promotion or publication.",
       "next": "Recommend VALORIA SHARED SOURCE MATERIALS & BASTION INTERFACE AUTHORING v1; not opened. Semantic PBR masks/current source segmentation + replaceable wall atlas; no mountain/layout rethink.",
       "branch": "visual-proof/valoria-asset-coherence-game-presentation-v1",
-      "result_doc": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md"
+      "result_doc": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md",
+      "closure_doc_commit": "df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac",
+      "final_branch_head": "df3d9dac7bfd442990d1e6325b5b5cdd45fb2cac"
     },
     {
       "id": "valoria-flat-citadel-art-consolidation-v1",

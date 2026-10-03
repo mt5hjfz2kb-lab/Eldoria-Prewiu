@@ -1,0 +1,9 @@
+{
+  "method": "Project ring world rectangle x \u00b19.5, z \u22126.4\u20269.3 onto camera p=(18.2,18.4,-26.8), target=(0,1.55,1.55); fraction is projected bbox / viewport, excludes HUD and Hero overhang; geometry ratio, not pixel segmentation",
+  "strategic19_landscape_ring_width_fraction": 0.362,
+  "city12_landscape_ring_width_fraction": 0.574,
+  "detail9_landscape_ring_width_fraction": 0.765,
+  "actual_runtime_home_ortho": 9.1,
+  "portrait9_4_ring_width_fraction": 2.817,
+  "portrait_crops_ring_by_design": true
+}

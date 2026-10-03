@@ -14,3 +14,16 @@ Base is VQB accepted implementation `7a564bc5056bb7166b7704c313ae4db7d55d4530`, 
 - [Unity graphics optimization](https://docs.unity3d.com/6000.3/Documentation/Manual/OptimizingGraphicsPerformance.html): proof uses a small set of low-triangle visual strips, no new lights/transparent field particles/colliders. **Deferred** production performance certification to physical device; CI screenshot is not FPS evidence.
 
 Toolchain route `environment_composition` via `tools/plan-art-production.mjs`: Unity assembly first, Blender source workflow available but prior semantic family rejected visually; no new plugin, paid tool, Tripo, or inferred need for regenerated geometry. One reversible whole-frame hypothesis: connect Hero approach → civic core → functional service route → cultivated outside, with compatible source-rich stone/dirt materials and protected parcels. If this reads as artificial strips or does not close the global gap at real 19/12/9/mobile, reject it and do not proliferate modules. This is not color-only tuning.
+
+## Executed Unity experiments and decisions
+
+| Variant | Captured code / run / artifact | Integrated finding | Decision |
+| --- | --- | --- | --- |
+| External continuity / cultivated strips | `24ac0be70f9f5199686c1769303dfc5e510e1420` / `37152534859` SUCCESS / `11284955622` | Road and crop bands read as dark rectangular technical patches at 19 and 12. Mobile central city was practically unchanged. | **Reject** the entire visible exterior-strip family. Never stamp more bands to hide it. |
+| Civic surface / prepared ground | `89ca7efc279b9c845aa746f1396755066d211320` / `37152713806` SUCCESS / `11284248212` | Source Hero/secondary/wall retained, 5 connectors + 3 temporary ground surfaces, but small dark patches appear near the Hero approach; 19/12/9/mobile remain visually near the base. | **Reject** as visual candidate. Surface/connective geometry does not solve scene-wide source-family mismatch. |
+
+Both ran real Unity capture and five focused live HUD/progression PlayMode tests. The anti-loop threshold is reached for procedural ribbon/patch assembly. Do not make a third almost-identical Unity material/placement iteration. The stronger accepted VQB view remains the production/review baseline; both candidates stay historical experimental evidence, unpromoted.
+
+## Toolchain outcome
+
+The existing Unity 6 URP response, source CC0 maps, deterministic gate and shared Windows runner successfully established a reproducible whole-frame falsification. Blender was not invoked in this block because the prior authored-secondary proof had already demonstrated technical mesh/material authoring and visually rejected its first family; pretending that another parameter tweak of the same source-atlas were a distinct hypothesis would be misleading. No plugin or generation service was adopted. The missing capability is a *new authored full-frame design system* with source richness and camera-composition art direction, then actual multi-source asset construction—not evidence that Blender, Unity or the Flat Citadel topology cannot do it.
