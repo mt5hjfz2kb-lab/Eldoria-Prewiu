@@ -150,18 +150,18 @@ namespace Eldoria.Presentation
 
             // Low continuous masonry establishes one defensive ring. Authored modules above it carry the silhouette.
             // Openings are intentional: main gate + west/east future expansion interfaces.
-            AddWallBase(root,"front west base",new Vector3(-6.25f,.36f,-6.28f),new Vector3(7.05f,.70f,.54f),mat);
-            AddWallBase(root,"front east base",new Vector3( 6.25f,.36f,-6.28f),new Vector3(7.05f,.70f,.54f),mat);
+            AddWallBase(root,"front west base",new Vector3(-6.25f,.38f,-6.28f),new Vector3(7.05f,.78f,.58f),mat,true);
+            AddWallBase(root,"front east base",new Vector3( 6.25f,.38f,-6.28f),new Vector3(7.05f,.78f,.58f),mat,true);
 
-            AddWallBase(root,"west lower base",new Vector3(-9.46f,.36f,-1.45f),new Vector3(.54f,.70f,9.15f),mat);
-            AddWallBase(root,"west upper base",new Vector3(-9.46f,.36f, 6.75f),new Vector3(.54f,.70f,5.10f),mat);
-            AddWallBase(root,"east lower base",new Vector3( 9.46f,.36f,-1.45f),new Vector3(.54f,.70f,9.15f),mat);
-            AddWallBase(root,"east upper base",new Vector3( 9.46f,.36f, 6.75f),new Vector3(.54f,.70f,5.10f),mat);
+            AddWallBase(root,"west lower base",new Vector3(-9.46f,.38f,-1.45f),new Vector3(.58f,.78f,9.15f),mat,false);
+            AddWallBase(root,"west upper base",new Vector3(-9.46f,.38f, 6.75f),new Vector3(.58f,.78f,5.10f),mat,false);
+            AddWallBase(root,"east lower base",new Vector3( 9.46f,.38f,-1.45f),new Vector3(.58f,.78f,9.15f),mat,false);
+            AddWallBase(root,"east upper base",new Vector3( 9.46f,.38f, 6.75f),new Vector3(.58f,.78f,5.10f),mat,false);
 
-            AddWallBase(root,"rear base",new Vector3(0f,.34f,9.26f),new Vector3(18.45f,.66f,.54f),mat);
+            AddWallBase(root,"rear base",new Vector3(0f,.34f,9.26f),new Vector3(18.45f,.66f,.54f),mat,true);
         }
 
-        static void AddWallBase(Transform root,string role,Vector3 p,Vector3 size,Material mat)
+        static void AddWallBase(Transform root,string role,Vector3 p,Vector3 size,Material mat,bool alongX)
         {
             var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
             go.name="Valoria · Art Consolidation · "+role;
@@ -170,52 +170,51 @@ namespace Eldoria.Presentation
             go.transform.localScale=size;
             var r=go.GetComponent<Renderer>();r.sharedMaterial=mat;r.receiveShadows=true;
             var col=go.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
+
+            // Low crenellation cap: repeated at a small visual scale so the wall reads medieval
+            // without repeating full high-contrast tower modules.
+            float length=alongX?size.x:size.z;
+            int count=Mathf.Max(2,Mathf.FloorToInt(length/.82f));
+            for(int i=0;i<count;i++)
+            {
+                float u=(i+.5f)/count-.5f;
+                var m=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                m.name="Valoria · Art Consolidation · "+role+" merlon";
+                m.transform.SetParent(root,true);
+                m.transform.position=p+(alongX?new Vector3(u*length,.58f,0):new Vector3(0,.58f,u*length));
+                m.transform.localScale=alongX?new Vector3(.42f,.38f,.68f):new Vector3(.68f,.38f,.42f);
+                m.GetComponent<Renderer>().sharedMaterial=mat;
+                var mc=m.GetComponent<Collider>();if(mc!=null)Object.DestroyImmediate(mc);
+            }
         }
 
         static void BuildConsolidatedWall(Transform root)
         {
             ConsolidatedWallModules=0;
-            var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
             var tower=Resources.Load<GameObject>("Valoria/Stone_Tower");
             var gate=Resources.Load<GameObject>("Valoria/Stone_Gate");
-            if(wall==null||tower==null||gate==null)
-                throw new InvalidOperationException("Consolidated wall requires canonical Stone_Wall / Stone_Tower / Stone_Gate.");
+            if(tower==null||gate==null)
+                throw new InvalidOperationException("Consolidated wall requires canonical Stone_Tower / Stone_Gate.");
 
-            // Hierarchy A: one credible main gatehouse. Tower pair is lower than the old uplift so it frames,
-            // rather than competes with, the Hero Bastion.
-            AddModule(root,gate,"main gatehouse",new Vector3(0f,.10f,-6.48f),4.45f,3.15f,0f,StoneLight);
-            AddModule(root,tower,"main gate west tower",new Vector3(-3.10f,.09f,-6.18f),2.15f,3.02f,4f,Stone);
-            AddModule(root,tower,"main gate east tower",new Vector3( 3.10f,.09f,-6.18f),2.08f,2.92f,-4f,Stone);
-            AddBanner(root,new Vector3(-1.55f,2.20f,-6.56f),.86f);
-            AddBanner(root,new Vector3( 1.55f,2.15f,-6.56f),.82f);
+            // Hero elements only. The continuous masonry ring below provides the main wall language.
+            AddModule(root,gate,"main gatehouse",new Vector3(0f,.10f,-6.48f),4.20f,2.95f,0f,StoneLight);
+            AddModule(root,tower,"main gate west tower",new Vector3(-3.02f,.09f,-6.18f),2.05f,2.82f,4f,Stone);
+            AddModule(root,tower,"main gate east tower",new Vector3( 3.02f,.09f,-6.18f),2.00f,2.75f,-4f,Stone);
+            AddBanner(root,new Vector3(-1.48f,2.05f,-6.54f),.82f);
+            AddBanner(root,new Vector3( 1.48f,2.02f,-6.54f),.80f);
 
-            // Hierarchy B: long quiet curtain groups. Each group is a wall + buttress pair rather than
-            // a rhythm of identical wall/tower/wall/tower modules.
-            AddCurtainGroup(root,"front west outer",new Vector3(-7.35f,.08f,-6.26f),4.60f,0f,false);
-            AddCurtainGroup(root,"front east outer",new Vector3( 7.35f,.08f,-6.26f),4.60f,0f,true);
+            // XW / XE stay as explicit future-growth seams but are visually subordinate.
+            AddModule(root,gate,"XW future expansion gate",new Vector3(-9.46f,.09f,3.65f),2.75f,2.10f,90f,Stone);
+            AddModule(root,gate,"XE future expansion gate",new Vector3( 9.46f,.09f,3.65f),2.75f,2.10f,90f,Stone);
 
-            AddCurtainGroup(root,"west lower",new Vector3(-9.45f,.08f,-3.15f),4.45f,90f,false);
-            AddCurtainGroup(root,"west upper",new Vector3(-9.45f,.08f, 7.15f),3.65f,90f,true);
-            AddCurtainGroup(root,"east lower",new Vector3( 9.45f,.08f,-3.15f),4.45f,90f,true);
-            AddCurtainGroup(root,"east upper",new Vector3( 9.45f,.08f, 7.15f),3.65f,90f,false);
+            // Only rear watchtowers remain outside the main gatehouse.
+            AddModule(root,tower,"rear west watchtower",new Vector3(-9.18f,.09f,9.02f),1.78f,2.45f,18f,StoneDark);
+            AddModule(root,tower,"rear east watchtower",new Vector3( 9.18f,.09f,9.02f),1.74f,2.40f,-18f,StoneDark);
 
-            // XW / XE progression seams: side gates are deliberate future extension interfaces.
-            // Today they read as controlled postern/repair gates; later they can become district streets.
-            AddModule(root,gate,"XW future expansion gate",new Vector3(-9.48f,.09f,3.65f),3.15f,2.45f,90f,Stone);
-            AddModule(root,gate,"XE future expansion gate",new Vector3( 9.48f,.09f,3.65f),3.15f,2.45f,90f,Stone);
-
-            // Rear ring stays deliberately low so it never becomes a skyline competitor.
-            AddCurtainGroup(root,"rear west",new Vector3(-5.45f,.08f,9.25f),6.10f,0f,false,1.55f);
-            AddCurtainGroup(root,"rear east",new Vector3( 5.45f,.08f,9.25f),6.10f,0f,true,1.55f);
-
-            // Only two rear corner towers. Front corners are articulated by buttresses instead of four more towers.
-            AddModule(root,tower,"rear west watchtower",new Vector3(-9.25f,.09f,9.05f),1.90f,2.70f,18f,StoneDark);
-            AddModule(root,tower,"rear east watchtower",new Vector3( 9.25f,.09f,9.05f),1.85f,2.62f,-18f,StoneDark);
-
-            AddGroundTransition(root,new Vector3(-4.65f,.07f,-6.48f),new Vector3(1.85f,.12f,1.05f));
-            AddGroundTransition(root,new Vector3( 4.65f,.07f,-6.48f),new Vector3(1.85f,.12f,1.05f));
-            AddGroundTransition(root,new Vector3(-9.48f,.07f,3.65f),new Vector3(1.05f,.12f,2.2f));
-            AddGroundTransition(root,new Vector3( 9.48f,.07f,3.65f),new Vector3(1.05f,.12f,2.2f));
+            AddGroundTransition(root,new Vector3(-4.35f,.07f,-6.42f),new Vector3(1.55f,.12f,.90f));
+            AddGroundTransition(root,new Vector3( 4.35f,.07f,-6.42f),new Vector3(1.55f,.12f,.90f));
+            AddGroundTransition(root,new Vector3(-9.46f,.07f,3.65f),new Vector3(.90f,.12f,1.85f));
+            AddGroundTransition(root,new Vector3( 9.46f,.07f,3.65f),new Vector3(.90f,.12f,1.85f));
         }
 
         static void AddCurtainGroup(Transform root,string role,Vector3 p,float span,float yaw,bool mirror,float maxHeight=1.72f)
