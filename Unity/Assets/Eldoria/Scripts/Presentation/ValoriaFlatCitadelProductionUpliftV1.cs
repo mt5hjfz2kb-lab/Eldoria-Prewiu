@@ -515,6 +515,12 @@ namespace Eldoria.Presentation
                 bool granary=chain.Contains("granero · flat citadel");
                 if(!saw&&!barracks&&!granary)continue;
 
+                if(barracks)
+                {
+                    NormalizeFunctionalRendererToUrp(r,new Color(.70f,.67f,.60f,1f));
+                    continue;
+                }
+
                 var src=r.sharedMaterials;
                 var dst=new Material[src.Length];
                 for(int i=0;i<src.Length;i++)
@@ -546,6 +552,59 @@ namespace Eldoria.Presentation
                 }
                 r.sharedMaterials=dst;
             }
+        }
+
+        static void NormalizeFunctionalRendererToUrp(Renderer renderer,Color tint)
+        {
+            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            if(lit==null||renderer==null)return;
+            var src=renderer.sharedMaterials;
+            var dst=new Material[src.Length];
+            for(int i=0;i<src.Length;i++)
+            {
+                var source=src[i];
+                if(source==null){dst[i]=null;continue;}
+                Texture baseMap=null,normal=null,mask=null;
+                Vector2 baseScale=Vector2.one,baseOffset=Vector2.zero;
+                foreach(string prop in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Albedo"})
+                {
+                    if(!source.HasProperty(prop)||source.GetTexture(prop)==null)continue;
+                    baseMap=source.GetTexture(prop);
+                    try{baseScale=source.GetTextureScale(prop);baseOffset=source.GetTextureOffset(prop);}catch{}
+                    break;
+                }
+                foreach(string prop in new[]{"_BumpMap","_NormalMap","normalTexture"})
+                    if(source.HasProperty(prop)&&source.GetTexture(prop)!=null){normal=source.GetTexture(prop);break;}
+                foreach(string prop in new[]{"_MetallicGlossMap","_MaskMap","metallicRoughnessTexture"})
+                    if(source.HasProperty(prop)&&source.GetTexture(prop)!=null){mask=source.GetTexture(prop);break;}
+
+                if(baseMap==null)
+                {
+                    var clone=new Material(source){name="Valoria functional uplift · "+source.name};
+                    foreach(string prop in new[]{"_BaseColor","_Color","_BaseColorFactor","_Primary_Color"})
+                        if(clone.HasProperty(prop))try{clone.SetColor(prop,tint);}catch{}
+                    dst[i]=clone;
+                    continue;
+                }
+
+                var m=new Material(lit){name="Valoria functional URP · "+source.name};
+                if(m.HasProperty("_BaseMap"))
+                {
+                    m.SetTexture("_BaseMap",baseMap);m.SetTextureScale("_BaseMap",baseScale);m.SetTextureOffset("_BaseMap",baseOffset);
+                }
+                if(m.HasProperty("_MainTex"))
+                {
+                    m.SetTexture("_MainTex",baseMap);m.SetTextureScale("_MainTex",baseScale);m.SetTextureOffset("_MainTex",baseOffset);
+                }
+                if(normal!=null&&m.HasProperty("_BumpMap")){m.SetTexture("_BumpMap",normal);m.EnableKeyword("_NORMALMAP");}
+                if(mask!=null&&m.HasProperty("_MetallicGlossMap"))m.SetTexture("_MetallicGlossMap",mask);
+                if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
+                if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
+                dst[i]=m;
+            }
+            renderer.sharedMaterials=dst;
         }
 
         static void AddDistrictBanner(Transform root,string role,Vector3 p,float scale)
