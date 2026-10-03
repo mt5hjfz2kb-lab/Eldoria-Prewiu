@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-visual-shell-v2-native-geometry",
+  "objective": "Validate a distinct native-geometry Visual Shell v2 method: authored 3D hero crag + compact functional shoulders + rock/masonry connectors, with no photographic foreground and no procedural TerrainData heightfield.",
+  "route": "environment_composition",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "tripo_credits": 0,
+  "base": "Valoria Strongest Composite v2 / clean hero-first baseline",
+  "lanes": ["composition_and_mass","terrain_and_transitions","architecture_coherence","materials_and_surface"],
+  "constraints": {
+    "visual_only": true,
+    "preserve_routes": true,
+    "preserve_colliders_hotspots": true,
+    "preserve_camera": true,
+    "preserve_compact_footprint": true,
+    "existing_assets_only": true,
+    "no_paid_assets": true,
+    "no_photographic_foreground": true,
+    "no_procedural_heightfield_microiteration": true
+  },
+  "validation": ["19","12","9","production_9.1","mobile","collider_hotspot_signature","full_frame_before_after"],
+  "triggered_at": "2026-10-03T14:02:00+02:00",
+  "retry_reason": "Projected-matte and continuous TerrainData/mesa methods are visually closed. This is a materially distinct authored-mesh method."
+}
