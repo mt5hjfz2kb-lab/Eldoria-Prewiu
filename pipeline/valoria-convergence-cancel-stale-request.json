@@ -1,13 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stale Unity slice from v14 so the current carved-stair-support v15 integrated visual gate can use the Windows runner; preserve v15.",
+  "reason": "Cancel the superseded full Unity slice spawned by the v17 visual-only source change so the authoritative v17 integrated full-frame capture can use the Windows runner; preserve the v17 capture.",
   "runs": [
-    37107156512,
-    37107342347
+    37108847781
   ],
   "keep_runs": [
-    37107351837
+    37108930871
   ],
-  "triggered_at": "2026-10-03T09:45:00+02:00"
+  "triggered_at": "2026-10-03T10:15:00+02:00"
 }
