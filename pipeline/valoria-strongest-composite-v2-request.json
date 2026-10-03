@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate compact integrated lower-city v15: keep the compact rock terrace and add a carved rock support mass beneath the unified cobble stair so the lower city connects visually into the castle mountain.",
+  "objective": "Validate compact integrated lower-city v16: replace the broad trapezoid stair support with a faceted terraced rock spine that follows the real stair rise and visually fuses the lower city into the castle mountain.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T09:45:00+02:00",
-  "retry_reason": "v14 TECH PASS / VISUAL PARTIAL: the brown editor-platform read was removed, but the stair still floated over a visible gap between lower terrace and fortress. v15 adds visual-only rock mass beneath the stair to unify the vertical composition.",
-  "retry_seq": 20
+  "triggered_at": "2026-10-03T10:08:00+02:00",
+  "retry_reason": "v15 TECH PASS / VISUAL PARTIAL: the stair no longer floated over an open gap, but its single broad support read as an artificial grey ramp. v16 keeps the same route and stair while reshaping only the visual support into a stepped/faceted rock spine.",
+  "retry_seq": 21
 }
