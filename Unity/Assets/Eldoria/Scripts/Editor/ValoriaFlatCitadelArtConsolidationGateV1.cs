@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
+using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using UnityEditor;
@@ -19,7 +21,17 @@ namespace Eldoria.EditorTools
             ShaderUtil.allowAsyncCompilation=false;
             Directory.CreateDirectory(Folder);
 
-            var state=new PlayerState{BastionLevel=6,SawmillLevel=2,BarracksLevel=2,CorruptionDiscovered=true};
+            var state=new PlayerState{
+                BastionLevel=2,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true,
+                Resources=new ResourceWallet{Wood=456,Stone=388,Food=298},
+                MarchConfigured=true
+            };
+            state.Available.ArcherT1=48;
+            state.PreparedTroops=state.Available.Copy();
+            state.PreparedHeroId="aldric";
+            state.ChapterProgress.TrainedArchers=20;
+            state.ChapterProgress.MarchConfirmed=true;
+            state.ChapterProgress.ConfirmedExpeditionPower=2600;
             var p=new Vector3(18.2f,18.4f,-26.8f);
             var t=new Vector3(0f,1.55f,1.55f);
 
@@ -43,6 +55,8 @@ namespace Eldoria.EditorTools
             if(ValoriaVisualFormulaGate.CollisionSignature()!=afterSig)
                 throw new Exception("Art Consolidation altered gameplay signature.");
             SaveSet(after.camera,"after",p,t);
+            AttachCanonicalHud(after.camera,state);
+            SaveSet(after.camera,"game",p,t);
 
             WriteEvidence();
             Debug.Log("VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_GATE=PASS");
@@ -139,8 +153,63 @@ namespace Eldoria.EditorTools
                 $"  \"confirmed_future_arc1_plots\": [\"Cantera\",\"Forja\",\"Hospital\"],\n"+
                 $"  \"meta_systems_without_reserved_world_plot\": [\"Codice\",\"Relicario\"],\n"+
                 $"  \"long_range_growth_interfaces\": [\"XW\",\"XE\",\"XU\",\"XS\"],\n"+
+                $"  \"canonical_hud_capture\": true,\n"+
+                $"  \"hud_contract_scope\": \"current Unity Bastion I-II slice\",\n"+
                 $"  \"tripo_credits\": 0\n"+
                 $"}}\n");
+        }
+
+        sealed class StaticGateway : ICommandGateway
+        {
+            readonly PlayerState state;
+            public StaticGateway(PlayerState state){this.state=state;}
+            public PlayerState Snapshot()=>state;
+            public CommandResult Execute(GameCommand command)=>new CommandResult(false,"capture-only",state.Revision);
+            public bool Advance()=>false;
+        }
+
+        static void AttachCanonicalHud(Camera camera,PlayerState state)
+        {
+            var go=new GameObject("Valoria · canonical HUD capture");
+            var presenter=go.AddComponent<SlicePresenter>();
+            presenter.Initialize(new StaticGateway(state));
+
+            var type=typeof(SlicePresenter);
+            const BindingFlags flags=BindingFlags.Instance|BindingFlags.NonPublic;
+
+            SetPrivate(type,presenter,"city",true);
+            SetPrivate(type,presenter,"renderedSawmill",state.SawmillLevel);
+            SetPrivate(type,presenter,"renderedBarracks",state.BarracksLevel);
+            SetPrivate(type,presenter,"renderedBastion",state.BastionLevel);
+            SetPrivate(type,presenter,"renderedScout",state.ScoutDefeated);
+            SetPrivate(type,presenter,"renderedEngendro",state.EngendroDefeated);
+            SetPrivate(type,presenter,"renderedIdle",state.March.Phase=="idle");
+
+            type.GetMethod("CreateHud",flags)?.Invoke(presenter,null);
+            type.GetMethod("Refresh",flags)?.Invoke(presenter,null);
+
+            var safe=type.GetField("safe",flags)?.GetValue(presenter) as RectTransform;
+            if(safe!=null)
+            {
+                safe.anchorMin=Vector2.zero;safe.anchorMax=Vector2.one;
+                safe.offsetMin=Vector2.zero;safe.offsetMax=Vector2.zero;
+            }
+
+            foreach(var canvas in Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+            {
+                if(canvas==null)continue;
+                canvas.renderMode=RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera=camera;
+                canvas.planeDistance=.5f;
+            }
+            Canvas.ForceUpdateCanvases();
+        }
+
+        static void SetPrivate(Type type,object target,string field,object value)
+        {
+            var f=type.GetField(field,BindingFlags.Instance|BindingFlags.NonPublic);
+            if(f==null)throw new MissingFieldException(type.FullName,field);
+            f.SetValue(target,value);
         }
 
         static void SaveSet(Camera c,string tag,Vector3 p,Vector3 t)
@@ -158,7 +227,7 @@ namespace Eldoria.EditorTools
             var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32);var prev=RenderTexture.active;
             try
             {
-                c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
+                c.targetTexture=rt;Canvas.ForceUpdateCanvases();c.Render();c.Render();Canvas.ForceUpdateCanvases();RenderTexture.active=rt;
                 var im=new Texture2D(w,h,TextureFormat.RGB24,false);
                 im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();
                 File.WriteAllBytes(path,im.EncodeToPNG());Object.DestroyImmediate(im);
