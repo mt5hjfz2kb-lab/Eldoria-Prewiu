@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "selective-aserradero-v1-stage-timeout-recovery-20261004",
-  "notes": "Exact user-provided JPEG. Resume after Work credit limit. Zero-spend staging only. Recovery now permits relaunch of the same dedicated Eldoria Edge profile after CDP timeout; no browser kill/profile substitution/security change. No generation/spend.",
+  "run_nonce": "selective-aserradero-v1-stage-recovered-handshake10-20261004",
+  "notes": "Zero-spend staging only. Final bounded retry: same dedicated Eldoria Edge profile; recovery permitted after CDP timeout; recovered Playwright handshake window 10s. No browser kill/profile substitution/security change. No generation/spend.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
