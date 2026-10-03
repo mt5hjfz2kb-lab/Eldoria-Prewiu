@@ -39,8 +39,14 @@ namespace Eldoria.Presentation
                 string n=r.gameObject.name.ToLowerInvariant();
                 // Preserve authored/source materials for Hero and all real architecture/rock assets.
                 // Only generated support geometry gets the common world material vocabulary.
-                if(n.Contains("dcc_lowerterrace")||n.Contains("dcc_middleterrace")||n.Contains("dcc_heroterrace"))
-                    ReplaceAll(r,ground);
+                if(n.Contains("dcc_macroform"))
+                {
+                    var mats=r.sharedMaterials;
+                    for(int i=0;i<mats.Length;i++)mats[i]=(i==0?rock:ground);
+                    r.sharedMaterials=mats;
+                }
+                else if(n.Contains("dcc_rock"))
+                    ReplaceAll(r,rock);
                 else if(n.Contains("dcc_landing")||n.Contains("dcc_step"))
                     ReplaceAll(r,stone);
                 r.receiveShadows=true;
