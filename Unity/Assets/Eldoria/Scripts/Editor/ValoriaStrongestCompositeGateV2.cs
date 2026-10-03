@@ -223,11 +223,27 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · cliff island · edge") &&
                     b.center.y<1.15f && b.center.z<0.25f;
 
-                // GroundKit is already the street. The later decorative slab layer duplicates it.
+                // GroundKit carries both broad blockout slabs and smaller authored cobble overlays.
+                // Keep the authored cobble pieces, but remove the broad visual bases that read as a board.
                 bool duplicateStreet=
-                    chain.Contains("valoria · stone street slab");
+                    chain.Contains("valoria · stone street slab")||
+                    chain.Contains("vpd · groundkit main street · street ")||
+                    chain.Contains("vpd · groundkit l1 landing · widening base")||
+                    chain.Contains("vpd · groundkit l1 landing · worn centre")||
+                    chain.Contains("valoria · low street edge")||
+                    chain.Contains("valoria · east street edge");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet)
+                bool redundantTerraces=
+                    chain.Contains("vpd · groundkit l1 west terrace")||
+                    chain.Contains("vpd · groundkit l1 east terrace")||
+                    chain.Contains("vpd · rescued seam residential")||
+                    chain.Contains("valoria · compactfootprint · west future terrace")||
+                    chain.Contains("valoria · compactfootprint · east future terrace");
+
+                bool redundantRetaining=
+                    chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f;
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining)
                 {
                     r.enabled=false;
                     count++;
