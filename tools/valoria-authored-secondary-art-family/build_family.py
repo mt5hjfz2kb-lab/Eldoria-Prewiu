@@ -106,7 +106,7 @@ def build_sawmill_from_canonical():
         bpy.context.view_layer.objects.active=meshes[0]
         bpy.ops.object.join();meshes=[bpy.context.object]
     o=meshes[0];o.name="Valoria_Authored_Aserradero_v1"
-    me=o.data;me.calc_normals()
+    me=o.data;me.update(calc_edges=True,calc_edges_loose=True)
     if len(me.materials)<1:raise RuntimeError("Canonical sawmill has no material")
     source=me.materials[0]
     image=basecolor_image(source)
