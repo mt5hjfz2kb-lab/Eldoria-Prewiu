@@ -1,6 +1,13 @@
 name: "[EXPERIMENT] Valoria Visual Quality Breakthrough v1"
 
 on:
+  push:
+    branches: [visual-proof/valoria-visual-quality-breakthrough-v1]
+    paths:
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisualQualityBreakthroughV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualQualityBreakthroughGateV1.cs"
+      - ".github/workflows/valoria-visual-quality-breakthrough-v1.yml"
+      - "pipeline/art-production-request.json"
   workflow_dispatch:
   pull_request:
     branches: [main]
