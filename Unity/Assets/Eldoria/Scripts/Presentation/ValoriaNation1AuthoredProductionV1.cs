@@ -25,27 +25,31 @@ namespace Eldoria.Presentation
 
   static void BuildHeroTerracedCore(Transform root)
   {
-   var broad=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/BroadRockPlatform");
-   var stepped=Resources.Load<GameObject>("Valoria/TerrainTerraceKit_v1/SteppedRockTerrace");
    var residential=Resources.Load<GameObject>("Valoria/Rescued/ResidentialTerraceRock");
-   var stair=Resources.Load<GameObject>("Valoria/Rescued/TerraceStairRock");
-   var landing=Resources.Load<GameObject>("Valoria/Rescued/StreetLandingTransition");
+   var seam=Resources.Load<GameObject>("Valoria/Rescued/RockTerrainSeamFiller");
    var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
-   var tower=Resources.Load<GameObject>("Valoria/Stone_Tower");
-   if(broad==null||stepped==null||residential==null||stair==null||landing==null||wall==null||tower==null)
-     throw new InvalidOperationException("Nation1 core requires the certified terrace/stone library.");
+   if(residential==null||seam==null||wall==null)throw new InvalidOperationException("Nation1 rich core library incomplete.");
 
-   Piece(root,broad,"hero broad platform",new Vector3(0f,.12f,6.55f),7.40f,1.28f,0f);
-   Piece(root,stepped,"hero west stepped terrace",new Vector3(-3.15f,.12f,5.35f),3.65f,1.12f,5f);
-   Piece(root,stepped,"hero east stepped terrace",new Vector3(3.20f,.12f,5.42f),3.55f,1.08f,-7f);
-   Piece(root,residential,"hero west shoulder",new Vector3(-4.25f,.13f,6.75f),3.05f,1.34f,20f);
-   Piece(root,residential,"hero east shoulder",new Vector3(4.25f,.13f,6.78f),3.00f,1.30f,198f);
-   Piece(root,landing,"hero lower landing",new Vector3(0f,.13f,3.30f),3.45f,.72f,0f);
-   Piece(root,stair,"hero monumental stair",new Vector3(0f,.16f,4.38f),3.85f,1.32f,0f);
-   Piece(root,wall,"hero west retaining wall",new Vector3(-3.70f,.18f,5.42f),2.85f,1.56f,8f);
-   Piece(root,wall,"hero east retaining wall",new Vector3(3.72f,.18f,5.42f),2.85f,1.56f,-8f);
-   Piece(root,tower,"hero west terrace turret",new Vector3(-4.52f,.18f,4.96f),1.55f,2.25f,8f);
-   Piece(root,tower,"hero east terrace turret",new Vector3(4.52f,.18f,4.96f),1.55f,2.25f,-8f);
+   // Preserve VQB's proven central stair/plaza. Build only rich, low-profile side integration around it.
+   RichPiece(root,residential,"hero west shoulder",new Vector3(-4.05f,.13f,6.20f),2.85f,1.02f,24f);
+   RichPiece(root,residential,"hero east shoulder",new Vector3(4.05f,.13f,6.22f),2.85f,1.02f,204f);
+   RichPiece(root,seam,"hero west seam",new Vector3(-3.25f,.13f,5.05f),2.20f,.70f,24f);
+   RichPiece(root,seam,"hero east seam",new Vector3(3.25f,.13f,5.08f),2.20f,.70f,204f);
+
+   StonePiece(root,wall,"hero west retaining wall",new Vector3(-3.95f,.16f,5.48f),2.50f,1.18f,8f);
+   StonePiece(root,wall,"hero east retaining wall",new Vector3(3.95f,.16f,5.48f),2.50f,1.18f,-8f);
+
+   BuildCivicPaving(root);
+  }
+
+  static void BuildCivicPaving(Transform root)
+  {
+   var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",new Color(.84f,.82f,.77f,1f),new Vector2(3.1f,3.1f),.05f,1.05f)
+      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.55f,.53f,.48f,1f),"stone",new Vector2(2.4f,2.4f),1f);
+   Surface(root,"west civic lane",new Vector3(-3.55f,.165f,.95f),new Vector3(3.15f,.045f,1.35f),cobble);
+   Surface(root,"east civic lane",new Vector3(3.55f,.165f,.95f),new Vector3(3.15f,.045f,1.35f),cobble);
+   Surface(root,"upper west court",new Vector3(-5.85f,.16f,2.65f),new Vector3(2.55f,.04f,2.25f),cobble);
+   Surface(root,"upper east court",new Vector3(5.85f,.16f,2.65f),new Vector3(2.55f,.04f,2.25f),cobble);
   }
 
   static void BuildCivicDensity(Transform root)
@@ -96,9 +100,29 @@ namespace Eldoria.Presentation
    go.transform.SetParent(root,true);StripGameplay(go);TerraceModules++;return go;
   }
 
+  static GameObject RichPiece(Transform root,GameObject src,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
+  {
+   return Piece(root,src,role,ground,footprint,maxHeight,yaw);
+  }
+
+  static GameObject StonePiece(Transform root,GameObject src,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
+  {
+   var go=Piece(root,src,role,ground,footprint,maxHeight,yaw);
+   var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.78f,.75f,.69f,1f),new Vector2(2.2f,2.2f),.04f,1.08f)
+      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.56f,.50f,1f),"stone",new Vector2(2.1f,2.1f),1f);
+   foreach(var r in go.GetComponentsInChildren<Renderer>(true))r.sharedMaterial=stone;
+   return go;
+  }
+
+  static void Surface(Transform root,string role,Vector3 p,Vector3 scale,Material material)
+  {
+   var go=GameObject.CreatePrimitive(PrimitiveType.Cube);go.name="Valoria · Nation1 · "+role;go.transform.SetParent(root,true);go.transform.position=p;go.transform.localScale=scale;
+   var r=go.GetComponent<Renderer>();if(r!=null)r.sharedMaterial=material;StripGameplay(go);
+  }
+
   static GameObject Building(Transform root,GameObject src,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
   {
-   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · "+role,src,ground,footprint,maxHeight,Quaternion.Euler(0,yaw,0));
+   var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Nation1 · "+role,src,ground,footprint,maxHeight,Quaternion.Euler(0,yaw,0),new Color(.90f,.90f,.88f,1f));
    if(go==null)throw new InvalidOperationException("Failed Nation1 building "+role);
    go.transform.SetParent(root,true);StripGameplay(go);MidTierBuildings++;return go;
   }
