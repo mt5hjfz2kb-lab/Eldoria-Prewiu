@@ -12,7 +12,8 @@ ASSETS=[
     {"id":"coast_line_02","name":"foreground inhabited shelf","anchor":(0.0,-3.25,-3.6),"span":54.0,"yaw":180.0,"target_tris":260000},
     {"id":"coastal_cliff_01","name":"rear world cliff","anchor":(0.0,-5.2,10.2),"span":54.0,"yaw":180.0,"target_tris":280000},
     {"id":"namaqualand_cliff_02","name":"hero geology transition","anchor":(0.0,-2.65,4.7),"span":28.0,"yaw":170.0,"target_tris":170000},
-]UA={"User-Agent":"Eldoria-ShellV2/1.0 (+https://polyhaven.com)"}
+]
+UA={"User-Agent":"Eldoria-ShellV2/1.0 (+https://polyhaven.com)"}
 
 ROOT=Path(os.path.abspath(os.path.join(os.path.dirname(__file__),"..","..")))
 CACHE=Path(os.environ.get("ELDORIA_PH_CACHE",str(ROOT/".tmp_polyhaven")))
