@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "request_id": "valoria-visual-quality-breakthrough-v1",
-  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
+  "request_id": "valoria-source-level-art-direction-proof-v1",
+  "asset_or_sector": "Representative Hero Bastion rock interface + Aserradero F1 + one front wall segment on locked Flat Citadel",
   "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -14,19 +14,19 @@
     "tripo_retopology": false,
     "blender_lod": false,
     "blender_bake": false,
-    "blender_material_consolidation": false,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_terrain_blending": false
   },
   "validation": {
-    "official_camera_19": true,
-    "official_camera_12": true,
+    "official_camera_19": false,
+    "official_camera_12": false,
     "official_camera_9": true,
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VQB candidate: accepted authored curtain wall rhythm + semantic PBR uplift on canonical Aserradero/Cuartel/Granero + intact canonical Hero Bastion wrapped by warm authored StoneArchitecture retaining interface. No segmentation, no Slavic replacement, no macrocomposition change, no paid tools."
+  "notes": "Phase 1 stop gate. Deterministic Blender-authored shared Hero/Aserradero/wall interface family. Preserve canonical source Hero and Aserradero richness; no whole-model atlas/recolor retry. Validate zoom 9 + portrait mobile first; only extend to 12/19 after clear screenshot improvement. Zero paid credits."
 }
