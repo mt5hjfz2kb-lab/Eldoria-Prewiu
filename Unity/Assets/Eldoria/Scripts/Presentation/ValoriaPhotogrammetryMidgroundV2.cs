@@ -22,7 +22,24 @@ namespace Eldoria.Presentation
 
             var rs=go.GetComponentsInChildren<Renderer>(true);
             if(rs.Length==0)throw new Exception("Photogrammetry midground has no renderers.");
-            foreach(var r in rs){r.receiveShadows=true;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}
+
+            // Geometry comes from photogrammetry, but Valoria owns the material language.
+            // World-space triplanar projection removes scan-albedo mismatch and UV/texel-density seams.
+            var shader=Shader.Find("Eldoria/ValoriaCompositionGround");
+            if(shader==null)throw new Exception("Valoria triplanar ground shader missing.");
+            var terrainMat=new Material(shader){name="Valoria Shell v2 · unified rock-ground triplanar"};
+            foreach(var pair in new[]{("_RockTex","rock_diff"),("_GroundTex","dirt_diff"),("_RockNormal","rock_normal")})
+            {
+                var tex=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/"+pair.Item2);
+                if(tex==null)throw new Exception("Valoria shared terrain texture missing: "+pair.Item2);
+                tex.wrapMode=TextureWrapMode.Repeat;tex.anisoLevel=8;terrainMat.SetTexture(pair.Item1,tex);
+            }
+            foreach(var r in rs)
+            {
+                r.sharedMaterial=terrainMat;
+                r.receiveShadows=true;
+                r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
+            }
             foreach(var c in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(c);
             foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
             foreach(var b in go.GetComponentsInChildren<MonoBehaviour>(true))b.enabled=false;
