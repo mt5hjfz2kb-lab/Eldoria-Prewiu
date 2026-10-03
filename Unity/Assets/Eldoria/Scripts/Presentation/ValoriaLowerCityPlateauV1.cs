@@ -57,7 +57,7 @@ namespace Eldoria.Presentation
                     ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.35f,.33f,1f),"stone",new Vector2(.95f,.95f),1.00f);
             }
 
-            mr.sharedMaterials=new[]{earth,rock};
+            mr.sharedMaterials=new[]{rock};
 
             foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
         }
@@ -199,12 +199,14 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v9"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v10"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
-            mesh.subMeshCount=2;
-            mesh.SetTriangles(innerTriangles,0);
-            mesh.SetTriangles(slopeTriangles,1);
+            var allTriangles=new List<int>(innerTriangles.Count+slopeTriangles.Count);
+            allTriangles.AddRange(innerTriangles);
+            allTriangles.AddRange(slopeTriangles);
+            mesh.subMeshCount=1;
+            mesh.SetTriangles(allTriangles,0);
             mesh.SetUVs(0,uvs);
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
