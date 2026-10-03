@@ -161,3 +161,26 @@ Do not promote this candidate and do not expand it to Granero/Cuartel/Forja/Hosp
 Keep VQB as accepted visual source. Preserve the useful technique as a future secondary-asset tool, but do not open another automated Hero micro-iteration. The next Hero attempt, if authorized as a new block, should be a **manual/high-fidelity Hero transition wedge**: one small camera-facing section authored with dedicated masonry UVs/materials/bake and no reused Hero texture on new architecture. Only after that isolated wedge looks correct at game scale should it replace more of the fused rock.
 
 No production migration is performed by this proof.
+
+
+## Final variant 2 validation — definitive closure
+
+After the first zoom9/mobile rejection, one materially different Hero technique already present in the same proof was validated once, then stopped under the anti-loop rule.
+
+Variant 2:
+- captured implementation: `0556cf8e6b6a2b54a3bee75ad83067facacd72e5`;
+- run: **37162147598 SUCCESS**;
+- integrated artifact: **11288451036**, digest `sha256:524ee77cfb25345d10939ecf2e2467dd152e3dac4832505f7fbb3f7e0dd1cf59`;
+- Blender-source artifact: **11288171793**, digest `sha256:a31edc7ebc32ba52c578952f48f1ca59dc99237191c22e1b4091e1f9a23d4325`.
+
+This variant removed only 421 low-front Hero components / 3,383 triangles (6.79%), then embedded the certified rich `RockToWallTransition` geometry inside the Hero export. The transition itself contributes 7,270 triangles and preserves its own 2K basecolor / 2K normal / 1K RM maps. Hero output becomes 53,687 triangles. Aserradero remains the same full 49,800-triangle source-preserving semantic zoning candidate.
+
+**Variant 2 VISUAL FAIL:** the rectangular/prism band from variant 1 disappears, but the rich transition scales/orients into an oversized vertical rock mass that occludes the Hero, destroys the focal hierarchy and dominates zoom 9 and mobile even more severely. It does not read as controlled rock→masonry integration.
+
+Therefore two materially different Hero approaches have now failed:
+1. new retaining architecture using reused Hero material/texture response → horizontal stretched artificial band;
+2. rich RockToWallTransition embedded in the Hero export → oversized vertical rock mass / occlusion.
+
+No third microvariant is justified. No 12/19 extension is run. Final proof verdict remains **TECH PASS / VISUAL FAIL / NOT PROMOTED**.
+
+The positive result remains narrow but useful: source-preserving semantic component zoning works for Aserradero-class secondary assets. The negative result is equally important: Hero-class source surgery cannot be made scalable by automatic component cutting plus automatic fitting of existing transition geometry. A future Hero attempt must use deliberate camera-authored modeling with controlled local proportions, dedicated UV/material treatment and likely a manual bake; it should be treated as real Hero art production, not another parameterized repair pass.
