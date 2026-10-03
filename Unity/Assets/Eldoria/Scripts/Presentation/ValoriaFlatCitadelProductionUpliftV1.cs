@@ -422,6 +422,53 @@ namespace Eldoria.Presentation
                 new Vector3(3.65f,.055f,1.05f),stairMat);
         }
 
+        static void BuildBastionRiseProduction(Transform root)
+        {
+            // A single architectural terrace seats the Hero Bastion. It is intentionally a modest
+            // defensive/civic platform, never a mountain or a stack of district terraces.
+            Vector2[] ring={
+                new Vector2(-4.45f,4.95f),new Vector2(-4.05f,8.75f),new Vector2(-2.55f,9.55f),
+                new Vector2( 2.60f,9.55f),new Vector2( 4.10f,8.70f),new Vector2( 4.45f,5.00f),
+                new Vector2( 3.15f,4.55f),new Vector2(-3.15f,4.55f)
+            };
+            var topMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.53f,.51f,.46f,1f),"stone",new Vector2(2.1f,2.1f),1.0f);
+            var sideMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.43f,.42f,.39f,1f),"stone",new Vector2(1.7f,1.7f),1.05f);
+            CreatePrism(root,"production bastion terrace",ring,.08f,.60f,topMat,sideMat);
+
+            // Wide central stair: one clear city -> Bastion transition, with a slight flare toward the plaza.
+            var stairMat=ValoriaKit.DetailedSurfaceMaterial(new Color(.59f,.57f,.52f,1f),"stone",new Vector2(1.7f,1.7f),1.0f);
+            const int steps=8;
+            for(int i=0;i<steps;i++)
+            {
+                float t=i/(float)(steps-1);
+                float y=.16f+t*.43f;
+                float z=4.08f+t*.55f;
+                float width=Mathf.Lerp(4.15f,3.45f,t);
+                AddSlab(root,"production bastion stair "+i,new Vector3(0f,y,z),new Vector3(width,.10f,.62f),stairMat);
+            }
+
+            // Retaining shoulders frame the stair mouth without becoming another wall line.
+            var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
+            if(wall!=null)
+            {
+                AddBastionRetaining(root,wall,"west retaining",new Vector3(-3.55f,.12f,5.25f),2.55f,1.25f,8f);
+                AddBastionRetaining(root,wall,"east retaining",new Vector3( 3.55f,.12f,5.25f),2.55f,1.25f,-8f);
+            }
+
+            // Two low stone landings visually tie the upper terrace back into the flat plaza.
+            AddSlab(root,"production stair landing",new Vector3(0f,.155f,3.78f),new Vector3(4.55f,.07f,1.10f),stairMat);
+        }
+
+        static void AddBastionRetaining(Transform root,GameObject source,string role,Vector3 ground,float span,float maxHeight,float yaw)
+        {
+            var go=ValoriaKit.BenchmarkPiece("Valoria · Flat Citadel Production · "+role,source,ground,span,maxHeight,Quaternion.Euler(0f,yaw,0f));
+            if(go==null)return;
+            go.transform.SetParent(root,true);
+            NormalizeWallMaterials(go,new Color(.67f,.65f,.60f,1f));
+            foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+        }
+
         static void BuildFunctionalArchitecture(Transform root, PlayerState state)
         {
             FunctionalBuildings=0;
@@ -775,8 +822,17 @@ namespace Eldoria.Presentation
         {
             int n=ring.Length;
             var topVerts=new Vector3[n+1];
-            topVerts[0]=new Vector3(0,top,1.2f);
-            for(int i=0;i<n;i++)topVerts[i+1]=new Vector3(ring[i].x,top,ring[i].y);
+            var topUv=new Vector2[n+1];
+            Vector2 centre=Vector2.zero;
+            for(int i=0;i<n;i++)centre+=ring[i];
+            centre/=Mathf.Max(1,n);
+            topVerts[0]=new Vector3(centre.x,top,centre.y);
+            topUv[0]=new Vector2(centre.x*.18f,centre.y*.18f);
+            for(int i=0;i<n;i++)
+            {
+                topVerts[i+1]=new Vector3(ring[i].x,top,ring[i].y);
+                topUv[i+1]=new Vector2(ring[i].x*.18f,ring[i].y*.18f);
+            }
             var topTris=new int[n*3];
             for(int i=0;i<n;i++)
             {
@@ -785,13 +841,14 @@ namespace Eldoria.Presentation
                 topTris[i*3+2]=((i+1)%n)+1;
             }
             var topMesh=new Mesh{name="Flat Citadel "+role+" top"};
-            topMesh.vertices=topVerts; topMesh.triangles=topTris; topMesh.RecalculateNormals(); topMesh.RecalculateBounds();
+            topMesh.vertices=topVerts; topMesh.uv=topUv; topMesh.triangles=topTris; topMesh.RecalculateNormals(); topMesh.RecalculateBounds();
             var topGo=new GameObject("Valoria · Flat Citadel · "+role+" top");
             topGo.transform.SetParent(root,true);
             topGo.AddComponent<MeshFilter>().sharedMesh=topMesh;
             var tr=topGo.AddComponent<MeshRenderer>();tr.sharedMaterial=topMat;tr.shadowCastingMode=ShadowCastingMode.Off;tr.receiveShadows=true;
 
             var sideVerts=new Vector3[n*4];
+            var sideUv=new Vector2[n*4];
             var sideTris=new int[n*6];
             for(int i=0;i<n;i++)
             {
@@ -801,12 +858,15 @@ namespace Eldoria.Presentation
                 sideVerts[v+1]=new Vector3(ring[j].x,top,ring[j].y);
                 sideVerts[v+2]=new Vector3(ring[i].x,bottom,ring[i].y);
                 sideVerts[v+3]=new Vector3(ring[j].x,bottom,ring[j].y);
+                float edgeLen=Vector2.Distance(ring[i],ring[j])*.35f;
+                sideUv[v]=new Vector2(0f,1f);sideUv[v+1]=new Vector2(edgeLen,1f);
+                sideUv[v+2]=new Vector2(0f,0f);sideUv[v+3]=new Vector2(edgeLen,0f);
                 int t=i*6;
                 sideTris[t]=v;sideTris[t+1]=v+2;sideTris[t+2]=v+1;
                 sideTris[t+3]=v+1;sideTris[t+4]=v+2;sideTris[t+5]=v+3;
             }
             var sideMesh=new Mesh{name="Flat Citadel "+role+" sides"};
-            sideMesh.vertices=sideVerts;sideMesh.triangles=sideTris;sideMesh.RecalculateNormals();sideMesh.RecalculateBounds();
+            sideMesh.vertices=sideVerts;sideMesh.uv=sideUv;sideMesh.triangles=sideTris;sideMesh.RecalculateNormals();sideMesh.RecalculateBounds();
             var sideGo=new GameObject("Valoria · Flat Citadel · "+role+" sides");
             sideGo.transform.SetParent(root,true);
             sideGo.AddComponent<MeshFilter>().sharedMesh=sideMesh;
