@@ -39,7 +39,10 @@ namespace Eldoria.Presentation
                 tex.wrapMode=TextureWrapMode.Repeat;tex.anisoLevel=8;
                 terrain.SetTexture(pair.Item1,tex);
             }
-            stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.68f,.66f,.60f),new Vector2(.7f,.7f),.035f,.8f);
+            stone=new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            stone.name="Valoria v2 · warm shared route stone";
+            stone.SetColor("_BaseColor",new Color(.67f,.64f,.55f));
+            stone.SetFloat("_Smoothness",.03f);
             BuildLandform();
             BuildArchitecture();
             BuildCirculation();
@@ -62,19 +65,16 @@ namespace Eldoria.Presentation
             float noise=(Mathf.PerlinNoise(x*.15f+12.1f,z*.15f+32.3f)-.5f);
             float basin=-5.3f+noise*.85f;
             // Lower civic terrace unifies workshop, military plot and the central street.
-            float lower=Disc(x+noise*.35f,z,0,-1.4f,12.8f,10f,.07f);
+            float lower=Disc(x+noise*.35f,z,0,-2f,15f,12f,.25f);
             float y=Mathf.Lerp(basin,.27f+noise*.12f,lower);
             // Upper rock mass absorbs the hero's authored 2.52m foundation; no detached platform.
-            float upper=Disc(x+noise*.32f,z,0,8.8f,7.4f,7.5f,.055f);
+            float upper=Disc(x+noise*.32f,z,0,8.8f,9f,9.5f,.24f);
             y=Mathf.Lerp(y,2.53f+noise*.1f,upper);
-            // One asymmetrical connected ridge, rather than two separate prefab mountains.
-            float rear=Disc(x,z,-5.5f,22.5f,17f,11f,.22f);
-            float crest=4.8f+Mathf.PerlinNoise(x*.085f+43f,z*.1f+27f)*3.5f;
-            y=Mathf.Max(y,Mathf.Lerp(basin,crest,rear));
-            float west=Disc(x,z,-19,7,9,19,.14f);
-            float east=Disc(x,z,21,10,9,20,.15f);
-            y=Mathf.Max(y,Mathf.Lerp(basin,3f+noise*1.8f,west));
-            y=Mathf.Max(y,Mathf.Lerp(basin,4f+noise*2f,east));
+            // The photographic valley owns the far depth; landform only supports the city.
+            float west=Disc(x,z,-19,7,8,14,.30f);
+            float east=Disc(x,z,21,10,8,15,.30f);
+            y=Mathf.Max(y,Mathf.Lerp(basin,.8f+noise*1.3f,west));
+            y=Mathf.Max(y,Mathf.Lerp(basin,1.1f+noise*1.4f,east));
             // Exact visual seats at existing gameplay parcels, not relocated targets.
             y=Mathf.Lerp(y,.32f,Disc(x,z,-7,-2.8f,3.25f,2.7f,.15f));
             y=Mathf.Lerp(y,.32f,Disc(x,z,7,-4,3.4f,2.8f,.15f));
@@ -87,7 +87,7 @@ namespace Eldoria.Presentation
         {
             const int n=257;var v=new Vector3[n*n];var uv=new Vector2[v.Length];var tris=new int[(n-1)*(n-1)*6];
             for(int j=0;j<n;j++)for(int i=0;i<n;i++)
-            {float x=Mathf.Lerp(-65,65,i/(float)(n-1)),z=Mathf.Lerp(-55,80,j/(float)(n-1));int k=j*n+i;v[k]=new Vector3(x,Height(x,z),z);uv[k]=new Vector2(x,z);}
+            {float x=Mathf.Lerp(-35,35,i/(float)(n-1)),z=Mathf.Lerp(-28,24,j/(float)(n-1));int k=j*n+i;v[k]=new Vector3(x,Height(x,z),z);uv[k]=new Vector2(x,z);}
             int p=0;for(int j=0;j<n-1;j++)for(int i=0;i<n-1;i++)
             {int a=j*n+i,b=a+1,d=a+n,e=d+1;tris[p++]=a;tris[p++]=d;tris[p++]=b;tris[p++]=b;tris[p++]=d;tris[p++]=e;}
             var m=new Mesh{name="Valoria v2 · continuous authored landform",indexFormat=IndexFormat.UInt32};
@@ -108,7 +108,8 @@ namespace Eldoria.Presentation
             if(art!=null)
             {
                 // One broken ancient arch is the signature frame. No paired competing castles.
-                Place(art.MegaHalfGate,"ancient western arch",new Vector3(-10.5f,Height(-10.5f,9)-.7f,9f),7.2f,8.5f,8f);
+                // The library arch reads as an unintegrated brick slab at hero scale.
+                // Keep it out of this terrain-continuity block until an architecture pass.
                 // Trees are limited to geology joints and depth cues; this is not density filling.
                 foreach(var p in new[]{new Vector2(-11,1),new Vector2(-10,6),new Vector2(11,0),new Vector2(12,6),new Vector2(-16,13),new Vector2(16,15)})
                     Place(art.SlavicTreeTall??art.SlavicTree,"ridge vegetation",new Vector3(p.x,Height(p.x,p.y)-.12f,p.y),1.6f,3.4f,p.x*19);
@@ -117,13 +118,21 @@ namespace Eldoria.Presentation
         }
         static void BuildCirculation()
         {
-            for(int i=0;i<12;i++)
+            // A restrained stone path follows the visual hillside; the old gameplay stair
+            // remains authoritative underneath the presentation mesh.
+            var v=new Vector3[48];var uv=new Vector2[48];var tris=new int[46*3];
+            for(int i=0;i<24;i++)
             {
-                float z=.05f+i*.46f,y=.38f+i*.185f;
-                Block("upper route step",new Vector3(0,y-.13f,z),new Vector3(2.8f,.27f,.55f));
+                float z=Mathf.Lerp(-5.5f,5.6f,i/23f);
+                float h=Height(0,z)+.065f;
+                v[i*2]=new Vector3(-1.18f,h,z);v[i*2+1]=new Vector3(1.18f,h,z);
+                uv[i*2]=new Vector2(0,z*.48f);uv[i*2+1]=new Vector2(1,z*.48f);
             }
-            // Broad civic route with burial at the boundaries instead of floating slab rims.
-            for(int i=0;i<10;i++)Block("civic route",new Vector3(0,.28f,-5.4f+i*.53f),new Vector3(2.9f,.10f,.60f));
+            int t=0;for(int i=0;i<23;i++)
+            {int k=i*2;tris[t++]=k;tris[t++]=k+2;tris[t++]=k+1;tris[t++]=k+1;tris[t++]=k+2;tris[t++]=k+3;}
+            var mesh=new Mesh{name="Valoria v2 · continuous civic route"};mesh.vertices=v;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();
+            var path=new GameObject(mesh.name);path.transform.SetParent(root,true);path.AddComponent<MeshFilter>().sharedMesh=mesh;
+            path.AddComponent<MeshRenderer>().sharedMaterial=stone;VisualPieces++;
         }
         static void Block(string role,Vector3 p,Vector3 scale)
         {
