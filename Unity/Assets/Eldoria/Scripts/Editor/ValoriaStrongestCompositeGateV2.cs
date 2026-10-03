@@ -347,7 +347,8 @@ namespace Eldoria.EditorTools
                 bool auditedLowerResidue=
                     chain.Contains("vpd · groundkit l1 retaining edge")||
                     chain.Contains("valoria · compactfootprint · restrained reconstruction stock")||
-                    chain.Contains("vpd · civic approach stone");
+                    chain.Contains("vpd · civic approach stone")||
+                    chain.Contains("valoria · cliff cleanup · military banner");
 
                 if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing||oversizedHeroRetaining||detachedLegacySawmill||auditedLowerResidue)
                 {
