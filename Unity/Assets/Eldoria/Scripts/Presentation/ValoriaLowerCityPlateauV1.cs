@@ -110,8 +110,8 @@ namespace Eldoria.Presentation
 
         static Mesh BuildPlateauMesh()
         {
-            const int nx=40;
-            const int nz=38;
+            const int nx=80;
+            const int nz=70;
             const float minX=-9.65f,maxX=9.65f;
             const float minZ=-8.05f,maxZ=6.15f;
 
@@ -149,8 +149,8 @@ namespace Eldoria.Presentation
                                 Mathf.Clamp01(1f-Mathf.Abs(wz+1.9f)/6.0f);
 
                     float pad=0f;
-                    pad=Mathf.Max(pad,Disc(wx,wz,-6.2f,-4.4f,3.05f));
-                    pad=Mathf.Max(pad,Disc(wx,wz, 6.2f,-4.5f,3.05f));
+                    pad=Mathf.Max(pad,Disc(wx,wz,-7.2f,-2.7f,3.10f));
+                    pad=Mathf.Max(pad,Disc(wx,wz, 6.65f,-3.85f,3.05f));
                     pad=Mathf.Max(pad,Disc(wx,wz,-5.2f, 2.5f,2.65f));
                     pad=Mathf.Max(pad,Disc(wx,wz, 5.1f, 2.6f,2.65f));
                     pad=Mathf.Max(pad,Disc(wx,wz,-3.9f, 5.0f,2.25f));
@@ -199,7 +199,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v8"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v9"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
