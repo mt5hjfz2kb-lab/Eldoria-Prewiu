@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T13:27:00.000Z",
+  "updated_at": "2026-10-03T13:24:00.000Z",
   "active": [
     {
       "id": "valoria-shell-v2-authored-environment",
-      "title": "Valoria Visual Shell v2 — camera-authored terrace and retaining-wall assembly",
+      "title": "Valoria Visual Shell v2 — fused authored Hero-to-city transition",
       "owner": "chat-valoria-shell-v2-authored-environment-continuation-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
@@ -17,7 +17,11 @@
         "SESSION_HANDOFF.md",
         "artifacts/valoria-visual-shell-v2/authored-environment-real-37124151619.jpg",
         "tools/blender_valoria_transition_envelope_v2.py",
-        "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESEARCH.md"
+        "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESEARCH.md",
+        "tools/valoria-shell-v2-fused/build_fused_transition.py",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFusedTransitionV2.cs",
+        ".github/workflows/valoria-shell-v2-fused-transition.yml",
+        "docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md"
       ],
       "resources": [
         "valoria-production-composition",
@@ -27,7 +31,7 @@
       "status": "active",
       "claimed_at": "2026-10-03T12:47:21.946Z",
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
-      "dependency": "Latest real branch HEAD 09423bb9 / run 37125767491 is TECH PASS / VISUAL FAIL: floating rock islands, board-like road and incoherent transition remain. Stop-rule research selected a materially distinct Blender authored transition-envelope method: boolean/remesh/shrinkwrap-style continuous visual-only geometry plus shared Unity surface treatment; no Tripo, zero spend, preserve gameplay/camera, validate 19/12/9/mobile."
+      "dependency": "Latest real run 37125767491 / 09423bb TECH PASS but VISUAL FAIL: surface correction did not solve floating-island/collage structure. Directed research selects Blender overlap + voxel-remesh fusion of already-certified rock/terrace assets into one camera-authored contiguous foundation, then Unity shared rock surface; no Tripo, zero spend, preserve gameplay/camera."
     }
   ],
   "history": [
