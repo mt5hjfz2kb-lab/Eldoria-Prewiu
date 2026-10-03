@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate fortress-merged lower city v24: raise and push the two certified lower shelves into the existing rocky island silhouette, then seat presentation-only lower architecture on those shelves so the city reads as one continuous fortress mass.",
+  "objective": "Validate fortress-integrated lower approach v24: narrow the compact stair/support spine, suppress prototype processional/main-street guides, and embed presentation-only lower architecture into the cliff foot while preserving gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -31,6 +31,6 @@
     "full_frame_before_after"
   ],
   "triggered_at": "2026-10-03T11:02:00+02:00",
-  "retry_reason": "v23 TECH PASS / VISUAL FAIL: compact shelves and buildings remained visibly suspended in front of the hero island. v24 keeps the compact layout but moves the entire lower presentation layer upward/backward to overlap the existing castle rock mass.",
-  "retry_seq": 29
+  "retry_reason": "v23 TECH PASS / VISUAL INSUFFICIENT: audit showed the 5.5x6.5 carved stair support and legacy processional/main-street visuals dominated the lower frame, preserving a bridge/prototype read. v24 removes those presentation residues and compacts the approach.",
+  "retry_seq": 30
 }
