@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel stalled Unity slice run blocking the current Strongest Composite v2 visual gate; preserve unified world-space lower-city terrain v10 as the current full-frame candidate.",
+  "reason": "Free the Windows Unity runner for the current TerrainData Strongest Composite visual proof after the compile-only Terrain Physics fix. Preserve the visual candidate run.",
   "runs": [
-    37083589705
+    37085099897
   ],
   "keep_runs": [
-    37083613272
+    37085123270
   ],
-  "triggered_at": "2026-10-03T02:28:00+02:00"
+  "triggered_at": "2026-10-03T03:12:00+02:00"
 }
