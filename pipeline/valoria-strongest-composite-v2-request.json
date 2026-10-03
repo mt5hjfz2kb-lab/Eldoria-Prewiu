@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate integrated functional pair v35: preserve v34 hero-first composition and dedicated barracks, bury the dedicated sawmill further into the west cliff foot, and crop the visible stair to four upper steps only.",
+  "objective": "Validate compact functional-foot composition v35: keep hero-first v33 structure, retain only the dedicated Valoria Aserradero/Cuartel visuals at reduced scale and deeper cliff-foot placement, and remove the detached lower stair rendering while preserving all gameplay routes/colliders/hotspots.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -31,6 +31,6 @@
     "full_frame_before_after"
   ],
   "triggered_at": "2026-10-03T12:58:00+02:00",
-  "retry_reason": "v34 TECH PASS / visual best-so-far. Remaining dominant defects: sawmill still reads as detached foreground appendage on the left and the lowest visible stair steps still float outside the rock mass. v35 changes only those two presentation variables.",
-  "retry_seq": 44
+  "retry_reason": "v34 TECH PASS / VISUAL INSUFFICIENT: the sawmill still protruded from the island and the small lower stair fragment read as a floating prop; barracks contribution was weak. v35 reduces both functional visuals and buries them deeper, while removing the redundant visible lower stair segment.",
+  "retry_seq": 45
 }
