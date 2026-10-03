@@ -73,7 +73,7 @@ namespace Eldoria.Presentation
             // trapezoid. This keeps the support visually attached to the compact terrace
             // while breaking the artificial grey ramp silhouette at the official camera.
             var z=new[]{-.52f,.92f,2.38f,3.86f,5.95f};
-            var half=new[]{1.72f,1.86f,2.04f,2.24f,2.48f};
+            var half=new[]{1.02f,1.10f,1.18f,1.28f,1.38f};
             var topY=new[]{.22f,.66f,1.10f,1.56f,2.16f};
             var bottomY=new[]{-.50f,-.36f,-.12f,.26f,.82f};
 
@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
             for(int i=0;i<steps;i++)
             {
                 float t=i/(float)(steps-1);
-                float width=Mathf.Lerp(2.32f,2.62f,t);
+                float width=Mathf.Lerp(1.62f,1.92f,t);
                 float half=width*.5f;
                 float y=baseY+i*rise;
                 float za=z0+i*depth;
