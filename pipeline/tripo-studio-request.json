@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "stage_upload",
   "cdp_endpoint": "http://127.0.0.1:9222",
   "request_id": "valoria-aserradero-selective-v1-stage",
@@ -19,8 +19,8 @@
   "upload_base64_glob": "pipeline/exact-inputs/Valoria_Aserradero_Selective_v1/part_*.b64",
   "wait_for_chatgpt_login_seconds": 0,
   "probe_chatgpt_session": false,
-  "run_nonce": "selective-aserradero-v1-stage-retry-timeout30-20261003",
-  "notes": "Exact user-provided JPEG. One generation authorized in scope; spend stays disabled until visible credit cost confirmed. Zero-spend staging only. First zero-spend attempt37159272344 failed CDP connect at10s before upload; artifact11286657877 confirms noGenerate/noSpend. Single bounded transport retry at30s; not a generation retry. Parked after second CDP timeout; no upload/generation/spend.",
+  "run_nonce": "selective-aserradero-v1-stage-timeout-recovery-20261004",
+  "notes": "Exact user-provided JPEG. Resume after Work credit limit. Zero-spend staging only. Recovery now permits relaunch of the same dedicated Eldoria Edge profile after CDP timeout; no browser kill/profile substitution/security change. No generation/spend.",
   "browser_recovery": {
     "enabled": true,
     "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
