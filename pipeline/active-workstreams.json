@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T20:23:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T20:27:00Z",
+  "active": [
+    {
+      "id": "valoria-unified-stylized-shell-v1",
+      "title": "Valoria Unified Stylized Visual Shell v1",
+      "owner": "chat-valoria-unified-stylized-shell-v1-20261003",
+      "scope": [
+        "Unity/Assets/Eldoria/Shaders/ValoriaUnifiedStylized*",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaUnifiedStylizedShellV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaUnifiedStylizedShellGateV1.cs",
+        ".github/workflows/valoria-unified-stylized-shell-v1.yml",
+        "docs/VALORIA_UNIFIED_STYLIZED_SHELL_V1*",
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-request.json"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "runner-trigger-governance"
+      ],
+      "claimed_at": "2026-10-03T20:27:00Z",
+      "base_main_sha": "c7831eecf0be466862eda3b628ab3684bde69177",
+      "status": "active",
+      "dependency": "Art-direction decision boundary after Authored Secondary Art Family v1 TECH PASS / VISUAL FAIL. Start from VQB accepted shell 7a564bc / closure 5822ce1 / run 37149992067 / artifact 11284220007. Preserve Flat Citadel geography, Hero Bastion geometry, F1 envelope, C0/C1/C2, R4/R5/R6, XW/XE/XU/XS, gameplay colliders/hotspots/cameras and real HUD contracts. This block is a whole-frame visual-language proof, not another isolated asset/material patch. Bright stylized 4X language must be applied coherently across architecture/ground/lighting while retaining source detail. No terrain-island/mountain rethink, no paid generation, no Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-authored-secondary-art-family-v1",
