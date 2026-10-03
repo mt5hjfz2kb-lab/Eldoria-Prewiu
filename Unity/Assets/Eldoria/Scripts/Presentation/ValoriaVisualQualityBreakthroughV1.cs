@@ -8,8 +8,6 @@ namespace Eldoria.Presentation
  public static class ValoriaVisualQualityBreakthroughV1
  {
   public const string RootName="Valoria · Visual Quality Breakthrough v1";
-  public static string HeroVariant="low20";
-  public static bool ArchitecturalTerrace=true;
   public static int HiddenLegacyWallRenderers,AuthoredWallModules,SecondaryFoundationModules,BastionTransitionModules,ExteriorModules;
 
   public static void Apply(Transform canonicalRoot,PlayerState state)
@@ -19,108 +17,86 @@ namespace Eldoria.Presentation
    var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);
    HiddenLegacyWallRenderers=AuthoredWallModules=SecondaryFoundationModules=BastionTransitionModules=ExteriorModules=0;
 
-   var hero=GameObject.Find("Valoria · Flat Citadel · Hero Bastion");
-   if(hero==null)throw new InvalidOperationException("Canonical Hero Bastion not found.");
-
-   string key="Valoria/VQBSegments/Valoria_HeroBastion_segmented_"+HeroVariant;
-   var source=Resources.Load<GameObject>(key);
-   if(source==null)throw new InvalidOperationException("Segmented Hero candidate missing: "+key);
-
-   Material heroResponse=null;
-   foreach(var r in hero.GetComponentsInChildren<Renderer>(true))
-   {
-    if(heroResponse==null&&r.sharedMaterials.Length>0)heroResponse=r.sharedMaterials[0];
-    if(r.enabled){r.enabled=false;HiddenLegacyWallRenderers++;}
-   }
-
-   var candidate=Object.Instantiate(source);
-   candidate.name="Valoria · breakthrough · Hero Bastion "+HeroVariant;
-   candidate.transform.SetParent(hero.transform.parent,true);
-   candidate.transform.position=hero.transform.position;
-   candidate.transform.rotation=hero.transform.rotation;
-   candidate.transform.localScale=hero.transform.localScale;
-   foreach(var r in candidate.GetComponentsInChildren<Renderer>(true))
-   {
-    if(heroResponse==null)continue;
-    var mats=r.sharedMaterials;for(int i=0;i<mats.Length;i++)mats[i]=heroResponse;r.sharedMaterials=mats;
-   }
-   StripGameplay(candidate);
-
-   if(ArchitecturalTerrace)
-   {
-    HideOldBlockyBastionInterface(canonicalRoot);
-    BuildArchitecturalTerrace(root);
-   }
+   HidePrimitiveMerlons(canonicalRoot);
+   BuildAuthoredCurtainCaps(root);
+   StripGameplay(root.gameObject);
   }
 
-  static void HideOldBlockyBastionInterface(Transform root)
+  static void HidePrimitiveMerlons(Transform root)
   {
    foreach(var r in root.GetComponentsInChildren<Renderer>(true))
    {
     if(r==null||!r.enabled)continue;
     string n=Chain(r.transform);
-    bool hide=n.Contains("art consolidation · bastion retaining mass")||
-              n.Contains("art consolidation · bastion stair plinth")||
-              n.Contains("art consolidation · bastion west retaining face")||
-              n.Contains("art consolidation · bastion east retaining face")||
-              n.Contains("art consolidation · bastion west return")||
-              n.Contains("art consolidation · bastion east return");
-    if(hide){r.enabled=false;HiddenLegacyWallRenderers++;}
+    if(n.Contains("art consolidation")&&n.Contains(" merlon"))
+    {
+     r.enabled=false;
+     HiddenLegacyWallRenderers++;
+    }
    }
   }
 
-  static void BuildArchitecturalTerrace(Transform root)
+  static void BuildAuthoredCurtainCaps(Transform root)
   {
-   var straight=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/HighStraightWall");
+   var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
    var corner=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/CornerWallL");
-   var transition=Resources.Load<GameObject>("Valoria/StoneArchitectureKit_v1/RockToWallTransition");
-   var landing=Resources.Load<GameObject>("Valoria/Rescued/StreetLandingTransition");
-   if(straight==null||transition==null)throw new InvalidOperationException("Canonical Bastion terrace kit missing.");
+   if(wall==null)throw new InvalidOperationException("Canonical Stone_Wall missing.");
 
-   // Front terrace shoulders frame the accepted processional stair rather than covering it.
-   AddStone(root,straight,"Bastion terrace west front",new Vector3(-2.55f,.12f,5.02f),3.25f,1.48f,0f);
-   AddStone(root,straight,"Bastion terrace east front",new Vector3( 2.55f,.12f,5.02f),3.25f,1.48f,180f);
+   // Front curtains stop before the gatehouse shoulders.
+   Line(root,wall,"front west",new Vector3(-8.60f,.18f,-6.28f),new Vector3(1,0,0),
+      new[]{2.10f,2.05f,1.85f},new[]{1.23f,1.31f,1.18f},0f);
+   Line(root,wall,"front east",new Vector3(4.15f,.18f,-6.28f),new Vector3(1,0,0),
+      new[]{1.85f,2.05f,2.10f},new[]{1.18f,1.31f,1.23f},0f);
 
-   // Side returns bury the residual rock silhouette and make the upper level read as a built citadel terrace.
-   AddStone(root,straight,"Bastion terrace west return",new Vector3(-3.72f,.12f,6.28f),2.95f,1.34f,90f);
-   AddStone(root,straight,"Bastion terrace east return",new Vector3( 3.72f,.12f,6.28f),2.95f,1.34f,90f);
+   // Lower side curtains lead to, but do not occupy, XW / XE future expansion seams.
+   Line(root,wall,"west lower",new Vector3(-9.46f,.18f,-4.95f),new Vector3(0,0,1),
+      new[]{2.05f,2.15f,2.00f,1.85f},new[]{1.20f,1.29f,1.18f,1.25f},90f);
+   Line(root,wall,"east lower",new Vector3(9.46f,.18f,-5.00f),new Vector3(0,0,1),
+      new[]{1.90f,2.10f,2.15f,1.90f},new[]{1.24f,1.18f,1.30f,1.20f},90f);
+
+   // Upper side curtains resume after the expansion seams and terminate at rear towers.
+   Line(root,wall,"west upper",new Vector3(-9.46f,.18f,4.85f),new Vector3(0,0,1),
+      new[]{1.55f,1.70f,1.55f},new[]{1.18f,1.27f,1.16f},90f);
+   Line(root,wall,"east upper",new Vector3(9.46f,.18f,4.85f),new Vector3(0,0,1),
+      new[]{1.55f,1.70f,1.55f},new[]{1.16f,1.27f,1.18f},90f);
+
+   // Rear rhythm is intentionally longest and quietest; the existing rear watchtowers carry hierarchy.
+   Line(root,wall,"rear west",new Vector3(-8.00f,.18f,9.26f),new Vector3(1,0,0),
+      new[]{1.80f,2.00f,2.05f,1.85f},new[]{1.14f,1.22f,1.18f,1.12f},0f);
+   Line(root,wall,"rear east",new Vector3(.10f,.18f,9.26f),new Vector3(1,0,0),
+      new[]{1.85f,2.05f,2.00f,1.80f},new[]{1.12f,1.18f,1.22f,1.14f},0f);
 
    if(corner!=null)
    {
-    AddStone(root,corner,"Bastion terrace west corner",new Vector3(-3.55f,.11f,5.18f),1.55f,1.34f,0f);
-    AddStone(root,corner,"Bastion terrace east corner",new Vector3( 3.55f,.11f,5.18f),1.55f,1.34f,180f);
+    Add(root,corner,"front west corner treatment",new Vector3(-9.32f,.16f,-6.06f),1.55f,1.30f,0f);
+    Add(root,corner,"front east corner treatment",new Vector3(9.32f,.16f,-6.06f),1.55f,1.30f,180f);
    }
-
-   // Authored rock-to-wall pieces absorb the unavoidable irregular Hero edge instead of exposing a raw cut.
-   AddStone(root,transition,"Bastion west seam",new Vector3(-2.95f,.10f,6.35f),2.35f,1.02f,14f);
-   AddStone(root,transition,"Bastion east seam",new Vector3( 2.95f,.10f,6.35f),2.35f,1.02f,166f);
-
-   if(landing!=null)
-    AddStone(root,landing,"Bastion processional landing",new Vector3(0f,.10f,4.18f),4.20f,.46f,0f);
   }
 
-  static void AddStone(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
+  static void Line(Transform root,GameObject source,string role,Vector3 start,Vector3 axis,float[] spans,float[] heights,float yaw)
   {
-   var go=Place(root,source,role,ground,footprint,maxHeight,yaw);
+   Vector3 p=start;
+   for(int i=0;i<spans.Length;i++)
+   {
+    float span=spans[i];
+    Add(root,source,role+" "+i,p,span,heights[i],yaw+(i%2==0?-1.25f:1.25f));
+    p+=axis*(span*.93f);
+   }
+  }
+
+  static void Add(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
+  {
+   var go=ValoriaKit.BenchmarkPiece("Valoria · breakthrough · "+role,source,ground,footprint,maxHeight,Quaternion.Euler(0,yaw,0));
+   if(go==null)return;
+   go.transform.SetParent(root,true);
    AdaptStone(go);
-   BastionTransitionModules++;
-  }
-
-  static GameObject Place(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
-  {
-   if(source==null)return null;
-   var go=Object.Instantiate(source);go.name="Valoria · breakthrough · "+role;go.transform.SetParent(root,true);
-   go.transform.position=Vector3.zero;go.transform.rotation=Quaternion.Euler(0,yaw,0);go.transform.localScale=Vector3.one;
-   var b=BoundsOf(go);float w=Mathf.Max(b.size.x,b.size.z),h=Mathf.Max(.001f,b.size.y);
-   float s=Mathf.Min(footprint/Mathf.Max(.001f,w),maxHeight/h);go.transform.localScale=Vector3.one*s;
-   b=BoundsOf(go);go.transform.position+=new Vector3(ground.x-b.center.x,ground.y-b.min.y,ground.z-b.center.z);
-   StripGameplay(go);return go;
+   StripGameplay(go);
+   AuthoredWallModules++;
   }
 
   static void AdaptStone(GameObject go)
   {
-   if(go==null)return;
-   var shader=Shader.Find("Eldoria/Valoria Coherence");if(shader==null)return;
+   var shader=Shader.Find("Eldoria/Valoria Coherence");if(shader==null||go==null)return;
    var rock=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/rock_diff");
    foreach(var r in go.GetComponentsInChildren<Renderer>(true))
    {
@@ -131,10 +107,10 @@ namespace Eldoria.Presentation
      string bp;var albedo=Map(src,out bp,"_BaseMap","_BaseColorTexture","baseColorTexture","_MainTex","_Texture","_Albedo");
      string np;var normal=Map(src,out np,"_BumpMap","_NormalTexture","_NormalMap","normalTexture");
      if(albedo==null){dst[i]=src;continue;}
-     var m=new Material(shader){name="Valoria breakthrough terrace · "+src.name};
+     var m=new Material(shader){name="Valoria breakthrough wall · "+src.name};
      m.SetTexture("_BaseMap",albedo);m.SetTextureScale("_BaseMap",src.GetTextureScale(bp));m.SetTextureOffset("_BaseMap",src.GetTextureOffset(bp));
      if(normal!=null)m.SetTexture("_BumpMap",normal);
-     m.SetFloat("_BumpScale",normal!=null?.72f:0);m.SetFloat("_Family",5f);
+     m.SetFloat("_BumpScale",normal!=null?.72f:0f);m.SetFloat("_Family",5f);
      m.SetFloat("_Bottom",r.bounds.min.y);m.SetFloat("_Height",Mathf.Max(.01f,r.bounds.size.y));m.SetFloat("_Smoothness",.05f);
      if(rock!=null)m.SetTexture("_RockMap",rock);dst[i]=m;
     }
@@ -146,11 +122,6 @@ namespace Eldoria.Presentation
   {
    foreach(var p in props)if(m.HasProperty(p)&&m.GetTexture(p)!=null){name=p;return m.GetTexture(p);}
    name="";return null;
-  }
-  static Bounds BoundsOf(GameObject go)
-  {
-   var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(go.transform.position,Vector3.one);
-   var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);return b;
   }
   static void StripGameplay(GameObject go)
   {
