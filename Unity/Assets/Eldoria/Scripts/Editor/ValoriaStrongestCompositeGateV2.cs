@@ -227,9 +227,6 @@ namespace Eldoria.EditorTools
                 // Keep the authored cobble pieces, but remove the broad visual bases that read as a board.
                 bool duplicateStreet=
                     chain.Contains("valoria · stone street slab")||
-                    chain.Contains("vpd · groundkit main street · street ")||
-                    chain.Contains("vpd · groundkit l1 landing · widening base")||
-                    chain.Contains("vpd · groundkit l1 landing · worn centre")||
                     chain.Contains("valoria · low street edge")||
                     chain.Contains("valoria · east street edge");
 
@@ -243,7 +240,9 @@ namespace Eldoria.EditorTools
                 bool redundantRetaining=
                     chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f;
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining)
+                bool badForegroundTree=chain.Contains("valoria · environment uplift · tree 29");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree)
                 {
                     r.enabled=false;
                     count++;
@@ -259,14 +258,26 @@ namespace Eldoria.EditorTools
                 "cobble",new Color(.34f,.33f,.30f,1f),new Vector2(2.35f,2.35f),.025f,.94f)
                 ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.33f,.32f,.29f,1f),"stone",new Vector2(2.35f,2.35f),.96f);
 
+            var routeEarth=ValoriaKit.ExternalPbrSurfaceMaterial(
+                "dirt",new Color(.37f,.325f,.255f,1f),new Vector2(1.15f,1.15f),.016f,.90f)
+                ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.36f,.315f,.25f,1f),"earth",new Vector2(1.15f,1.15f),.90f);
+
             foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
                 string chain=Chain(r.transform);
-                if(!chain.Contains("vpd · vertical stair"))continue;
+                string name=r.gameObject.name.ToLowerInvariant();
 
+                Material target=null;
+                if(chain.Contains("vpd · vertical stair"))target=stair;
+                else if(name.StartsWith("vpd · groundkit main street · street ")||
+                        name.Contains("groundkit l1 landing · widening base")||
+                        name.Contains("groundkit l1 landing · worn centre"))
+                    target=routeEarth;
+
+                if(target==null)continue;
                 var mats=r.sharedMaterials;
-                for(int i=0;i<mats.Length;i++)mats[i]=stair;
+                for(int i=0;i<mats.Length;i++)mats[i]=target;
                 r.sharedMaterials=mats;
                 count++;
             }
