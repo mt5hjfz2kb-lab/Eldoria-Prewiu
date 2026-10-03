@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "request_id": "valoria-semantic-source-reauthoring-proof-v1",
   "asset_or_sector": "Hero Bastion + Aserradero + one representative wall segment; source-level semantic reauthoring only",
   "profile": "environment_surface",
@@ -28,6 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Deep-edit rich canonical sources. Hero removes only previously audited low14 loose components, then authors integrated retaining transition inside source .blend. Aserradero and wall retain source mesh/UV/textures and receive component-level material zoning. Zero credits. Stop at zoom9/mobile if no clear first-glance win.",
-  "result": "TECH PASS / VISUAL FAIL / NOT PROMOTED; zoom9/mobile stop-gate failed; no 12/19."
+  "notes": "SSRA visual variant 2 only: front-only Hero source surgery plus integrated certified RockToWallTransition; subtler Aserradero zoning. Zero credits; 9/mobile stop gate."
 }
