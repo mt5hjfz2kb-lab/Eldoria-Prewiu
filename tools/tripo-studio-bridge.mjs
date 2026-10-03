@@ -214,7 +214,9 @@ async function connectOwnerBrowser() {
     return await withTimeout(chromium.connectOverCDP(endpoint), connectTimeoutMs, 'CDP connection');
   } catch (initialError) {
     const recovery = request.browser_recovery;
-    if (!recovery?.enabled || !/ECONNREFUSED/.test(String(initialError?.message || initialError))) throw initialError;
+    const initialMessage = String(initialError?.message || initialError);
+    const recoverableTransportFailure = /ECONNREFUSED|CDP connection timed out|connectOverCDP.*timed out/i.test(initialMessage);
+    if (!recovery?.enabled || !recoverableTransportFailure) throw initialError;
     if (process.platform !== 'win32') throw new Error('Owner browser recovery requires the Windows runner.');
     const target = new URL(endpoint);
     if (target.protocol !== 'http:' || target.hostname !== '127.0.0.1' || target.port !== '9222') {
