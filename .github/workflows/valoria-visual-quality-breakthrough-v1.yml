@@ -98,8 +98,8 @@ jobs:
         with:
           name: valoria-visual-quality-breakthrough-v1-${{ github.run_id }}
           path: |
-            Unity/ValoriaAssetCoherenceV1Captures/*
+            Unity/ValoriaVisualQualityBreakthroughV1Captures/*
             ${{ runner.temp }}/Coherence-HUD-PlayMode.*
-            ${{ runner.temp }}/ValoriaFlatCitadelArtConsolidationV1.log
+            ${{ runner.temp }}/ValoriaVisualQualityBreakthroughV1.log
           if-no-files-found: warn
           retention-days: 30
