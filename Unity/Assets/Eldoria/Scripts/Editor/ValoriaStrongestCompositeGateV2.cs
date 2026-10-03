@@ -238,7 +238,13 @@ namespace Eldoria.EditorTools
                     chain.Contains("vpd · groundkit l1 east terrace")||
                     chain.Contains("vpd · rescued seam residential")||
                     chain.Contains("valoria · compactfootprint · west future terrace")||
-                    chain.Contains("valoria · compactfootprint · east future terrace");
+                    chain.Contains("valoria · compactfootprint · east future terrace")||
+                    chain.Contains("valoria · compactfootprint · west upper growth shelf")||
+                    chain.Contains("valoria · compactfootprint · east upper growth shelf")||
+                    chain.Contains("valoria · compactfootprint · central middle shelf")||
+                    chain.Contains("valoria · compactfootprint · bastion lower shelf")||
+                    chain.Contains("assetlibrary reprocessing · central west buried terrace")||
+                    chain.Contains("assetlibrary reprocessing · central east buried terrace");
 
                 bool redundantRetaining=
                     chain.Contains("vpd · authored retaining rock") && b.center.y<1.55f;
