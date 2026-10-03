@@ -1,0 +1,32 @@
+{
+  "enabled": true,
+  "request_id": "valoria-visual-quality-breakthrough-v1",
+  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture foundations, Bastion interface transitions and contained exterior world edge",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "tripo_parts": false,
+    "tripo_retopology": false,
+    "blender_lod": false,
+    "blender_bake": false,
+    "blender_material_consolidation": false,
+    "unity_modular_assembly": true,
+    "unity_shared_materials": true,
+    "unity_decals": false,
+    "unity_probes": false,
+    "unity_terrain_blending": true
+  },
+  "validation": {
+    "official_camera_19": true,
+    "official_camera_12": true,
+    "official_camera_9": true,
+    "mobile": true,
+    "preserve_gameplay_signature": true
+  },
+  "notes": "Breakthrough iteration 1. Reuse canonical Stone Architecture, StoneKit and rescued seam/landing assets before any new geometry. Replace repetitive primitive wall rhythm in presentation only; protect R4/R5/R6, C0/C1/C2, XW/XE/XU/XS. No mountain, no macrocomposition, no paid tools."
+}
