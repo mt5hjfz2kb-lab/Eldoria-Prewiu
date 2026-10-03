@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate hero-first composition v33: remove the entire substitute secondary presentation family from the strongest candidate while preserving the hero fortress, integrated sawmill, proven upper-bastion-rear suppression, gameplay routes/colliders/hotspots, and all certified core visuals.",
+  "objective": "Validate functional-building pair v34: keep hero-first v33 composition, retain no substitute secondary family, seat the dedicated Valoria Aserradero and Cuartel visuals symmetrically inside the fortress foot, and shorten the visible stair to the upper approach only.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T12:41:00+02:00",
-  "retry_reason": "v31 and v32 both TECH PASS / VISUAL FAIL: low-poly canonical stone prefabs were visibly below target quality, while certified StoneArchitecture GLBs read as oversized attached fortification. v33 isolates whether the current secondary library itself is the blocker.",
-  "retry_seq": 42
+  "triggered_at": "2026-10-03T12:44:00+02:00",
+  "retry_reason": "v33 is the strongest clean frame so far but is too sparse for the benchmark and leaves the sawmill/access visibly detached. v34 restores density only with dedicated Valoria functional GLBs already in production, not generic secondary kits.",
+  "retry_seq": 43
 }
