@@ -338,7 +338,13 @@ namespace Eldoria.EditorTools
                     chain.Contains("valoria · stocked work frontage")||
                     chain.Contains("valoria · hero frame sawmill timber");
 
-                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing||oversizedHeroRetaining||detachedLegacySawmill)
+                // v26: exact artifact audit identified these as the remaining horizontal
+                // prototype residues beneath the now-integrated lower city.
+                bool auditedLowerResidue=
+                    chain.Contains("vpd · groundkit l1 retaining edge")||
+                    chain.Contains("valoria · compactfootprint · restrained reconstruction stock");
+
+                if(oldPads||oldMilitary||oldMidTier||lowCliffEdge||duplicateStreet||redundantTerraces||redundantRetaining||badForegroundTree||redundantCliffEdges||redundantMidRocks||supersededHeroSupports||broadPlotSeam||floatingCleanupProps||obsoleteSideSeams||broadDecorativeCourts||legacyStairDressing||oversizedHeroRetaining||detachedLegacySawmill||auditedLowerResidue)
                 {
                     r.enabled=false;
                     count++;
