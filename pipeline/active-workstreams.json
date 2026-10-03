@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:01:34.858Z",
+  "updated_at": "2026-10-03T12:02:30.410Z",
   "active": [
     {
       "id": "valoria-shell-v2-blender-transition",
@@ -13,7 +13,8 @@
         ".github/workflows/valoria-shell-v2-blender-transition.yml",
         "pipeline/valoria-shell-v2-blender-transition-request.json",
         "docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBlenderTransitionV2.cs"
       ],
       "resources": [
         "valoria-production-composition",
