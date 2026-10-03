@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:55:00Z",
+  "updated_at": "2026-10-03T11:58:00Z",
   "active": [
     {
       "id": "valoria-visual-shell-v2-native-geometry",
@@ -14,7 +14,9 @@
         "pipeline/valoria-visual-shell-v2-native-geometry-request.json",
         "pipeline/art-production-request.json",
         "docs/VALORIA_VISUAL_SHELL_V2_NATIVE_GEOMETRY_RESULT.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+        ".github/workflows/valoria-visual-shell-v2-native-geometry.yml"
       ],
       "resources": [
         "valoria-production-composition",
