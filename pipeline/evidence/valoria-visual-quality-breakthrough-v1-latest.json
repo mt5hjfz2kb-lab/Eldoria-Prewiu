@@ -1,8 +1,8 @@
 ﻿{
-    "job_status":  "success",
+    "job_status":  "failure",
     "workflow":  "[EXPERIMENT] Valoria Visual Quality Breakthrough v1",
     "branch":  "visual-proof/valoria-visual-quality-breakthrough-v1",
-    "source_sha":  "43c81d4fa466adb9013fc564812e5a696c5190c2",
-    "artifact_id":  "11282697304",
-    "run_id":  "37147338169"
+    "source_sha":  "42256ad4f0f167caea785b22000d3a9929783dbf",
+    "artifact_id":  "11282547979",
+    "run_id":  "37147587862"
 }
