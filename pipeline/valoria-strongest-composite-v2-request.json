@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate cliff-foot integrated lower city v25: crop the visible lower stair/support bridge and pull presentation-only lower architecture fully into the fortress cliff foot while preserving the real gameplay route and collider/hotspot signature.",
+  "objective": "Validate current combined v25 HEAD: no monolithic stair support, continuous certified SteppedRockTerrace approach, embedded lower architecture, prototype guide suppression, and preserved gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:08:00+02:00",
-  "retry_reason": "v24 TECH PASS / VISUAL INSUFFICIENT: lower buildings moved closer, but the visible stair/support still extended too far into the foreground and preserved a castle-plus-appendage read. v25 is the final existing-geometry macro-composition proof before declaring a geometry/compositing ceiling.",
-  "retry_seq": 31
+  "triggered_at": "2026-10-03T11:07:00+02:00",
+  "retry_reason": "Previous v25 run 37111775431 predates commits 5401aad and 341db7f. A fresh capture is required because the current HEAD removes the bulky stair support and replaces detached edge dressing with a continuous certified rock approach.",
+  "retry_seq": 32
 }
