@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate canonical-stone secondary architecture v31: keep the proven compact fortress composition and upper-bastion-rear suppression, but replace the visually incompatible MidTier red-roof secondary family with existing Stone_Tower and Stone_Wall modules from Resources/Valoria.",
+  "objective": "Validate certified Stone Architecture transition pass v32: remove the visually failed low-poly Stone_Tower/Stone_Wall substitution and use only the production-certified CornerWallL, RockToWallTransition and HighStraightWall GLBs as compact architecture-to-rock transition modules inside the fortress nucleus.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T12:35:00+02:00",
-  "retry_reason": "v30 TECH PASS / VISUAL INSUFFICIENT: material modulation did not materially change the red-roof/timber identity of the secondary kit. v31 changes the presentation family itself using existing canonical stone modules only.",
-  "retry_seq": 40
+  "triggered_at": "2026-10-03T12:38:00+02:00",
+  "retry_reason": "v31 TECH PASS / VISUAL FAIL: Stone_Tower/Stone_Wall prefabs were too low-poly/dark and visibly degraded quality. v32 uses only StoneArchitectureKit_v1 modules with prior visual certification and preserves their authored PBR materials.",
+  "retry_seq": 41
 }
