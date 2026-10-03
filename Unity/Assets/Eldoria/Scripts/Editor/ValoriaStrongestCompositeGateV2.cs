@@ -416,19 +416,37 @@ namespace Eldoria.EditorTools
         static int ReframeCoreSideVisuals(Transform root)
         {
             int count=0;
-            var original=GameObject.Find("Aserradero · dedicated sawmill");
-            if(original!=null)
+
+            var sawmill=GameObject.Find("Aserradero · dedicated sawmill");
+            if(sawmill!=null)
             {
-                var clone=Object.Instantiate(original);
+                var clone=Object.Instantiate(sawmill);
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
-                clone.transform.position+=new Vector3(5.15f,1.55f,6.35f);
+                // v34: keep the dedicated building readable but seat it inside the west cliff foot.
+                clone.transform.position+=new Vector3(4.65f,1.35f,6.10f);
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
-                foreach(var r in original.GetComponentsInChildren<Renderer>(true))r.enabled=false;
-                foreach(var l in original.GetComponentsInChildren<Light>(true))l.enabled=false;
+                foreach(var r in sawmill.GetComponentsInChildren<Renderer>(true))r.enabled=false;
+                foreach(var l in sawmill.GetComponentsInChildren<Light>(true))l.enabled=false;
                 count++;
             }
+
+            var barracks=GameObject.Find("Cuartel · dedicated barracks");
+            if(barracks!=null)
+            {
+                var clone=Object.Instantiate(barracks);
+                clone.name="Valoria · Strongest v2 · compact barracks visual";
+                // Symmetric compact functional landmark on the east cliff foot.
+                clone.transform.position+=new Vector3(-4.65f,1.40f,6.55f);
+                clone.transform.SetParent(root,true);
+                DisableGameplay(clone);
+
+                foreach(var r in barracks.GetComponentsInChildren<Renderer>(true))r.enabled=false;
+                foreach(var l in barracks.GetComponentsInChildren<Light>(true))l.enabled=false;
+                count++;
+            }
+
             return count;
         }
 
