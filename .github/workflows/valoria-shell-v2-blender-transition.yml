@@ -1,0 +1,116 @@
+name: "[EXPERIMENT] Valoria Shell v2 Blender Transition"
+on:
+  workflow_dispatch:
+  push:
+    branches: [visual-proof/valoria-shell-v2-blender-transition]
+    paths:
+      - 'tools/valoria-shell-v2/build_transition.py'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBlenderTransitionV2.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs'
+      - '.github/workflows/valoria-shell-v2-blender-transition.yml'
+permissions:
+  contents: read
+concurrency:
+  group: valoria-shell-v2-blender-transition
+  cancel-in-progress: true
+jobs:
+  blender:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build authored terrain in Blender
+        shell: bash
+        run: |
+          if ! command -v blender >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y blender
+          fi
+          blender -b --factory-startup --python tools/valoria-shell-v2/build_transition.py -- "$RUNNER_TEMP/ValoriaShellTransition.glb"
+          test -s "$RUNNER_TEMP/ValoriaShellTransition.glb"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-blender-shell
+          path: ${{ runner.temp }}/ValoriaShellTransition.glb
+          retention-days: 30
+  capture:
+    needs: blender
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop="${env:LOCALAPPDATA}\\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\\app\\git\\cmd\\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-blender-shell
+          path: Unity/Assets/Resources/Valoria/ExperimentalBlenderCliff
+      - name: Stage Kiara 3 CC0 backplate
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Eldoria\\Resources\\Valoria\\BackplateCandidates"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $dst=Join-Path $dir 'kiara3_1.jpg'
+          Invoke-WebRequest -Uri 'https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Backplates/kiara_3_morning/jpg_pretty/20160824-DSC01604.jpg' -OutFile $dst -UseBasicParsing
+          if((Get-Item $dst).Length -lt 500000){throw 'Backplate unexpectedly small.'}
+      - name: Stage shared CC0 rock and ground maps
+        shell: powershell
+        run: |
+          $dest="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Resources\\Valoria\\SurfaceCellExternal"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $headers=@{'User-Agent'='Eldoria-ShellV2/1.0'}
+          foreach($asset in @(@{id='rock_boulder_dry';prefix='rock'},@{id='dirt';prefix='dirt'})){
+            $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
+            $json=$payload | ConvertTo-Json -Depth 50
+            $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\\u0026','&') } | Select-Object -Unique
+            foreach($map in @(@{key='diff';rx='_diff_1k\\.(jpg|png)(\\?|$)'},@{key='normal';rx='_nor_gl_1k\\.(jpg|png)(\\?|$)'})){
+              $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
+              if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -eq 'dirt'){continue};throw "Missing map $($asset.id) $($map.key)"}
+              $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
+              $out=Join-Path $dest ($asset.prefix+'_'+$map.key+$ext)
+              Invoke-WebRequest -Headers $headers -Uri $url -OutFile $out
+              if((Get-Item $out).Length -lt 10000){throw "PBR map too small: $out"}
+            }
+          }
+      - name: Capture complete frame
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\\Unity\\ValoriaStrongestCompositeV2Captures"
+          $log="$env:RUNNER_TEMP\\ValoriaShellV2Blender.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaStrongestCompositeGateV2.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(29)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-shell-v2-blender-${{ github.run_id }}
+          path: |
+            Unity/ValoriaStrongestCompositeV2Captures/*
+            ${{ runner.temp }}/ValoriaShellV2Blender.log
+          if-no-files-found: warn
+          retention-days: 30
