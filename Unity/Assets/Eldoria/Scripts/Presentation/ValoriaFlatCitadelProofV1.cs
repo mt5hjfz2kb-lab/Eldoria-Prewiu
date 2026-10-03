@@ -41,7 +41,6 @@ namespace Eldoria.Presentation
             BuildFlatCitySurface(root);
             BuildPrimaryAxis(root);
             BuildBastionRise(root);
-            BuildFlatHeroBastion(root);
             BuildFunctionalArchitecture(root,state);
             BuildOuterWall(root);
             BuildSparseNature(root);
