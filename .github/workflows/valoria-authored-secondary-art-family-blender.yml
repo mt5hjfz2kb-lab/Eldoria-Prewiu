@@ -1,0 +1,70 @@
+name: "[EXPERIMENT] Valoria Authored Secondary Art Family Blender"
+
+on:
+  push:
+    branches: [visual-proof/valoria-authored-secondary-art-family-v1]
+    paths:
+      - "tools/valoria-authored-secondary-art-family/author_family_v1.py"
+      - ".github/workflows/valoria-authored-secondary-art-family-blender.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-authored-secondary-art-family-blender
+  cancel-in-progress: true
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Author first secondary family proof
+        shell: bash
+        env:
+          ELDORIA_ASF_SOURCE: ${{ github.workspace }}/Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb
+          ELDORIA_ASF_OUT: ${{ github.workspace }}/pipeline/candidates/valoria-authored-secondary-art-family-v1
+          ELDORIA_ASF_REPORT: ${{ github.workspace }}/pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+        run: |
+          blender -b --python tools/valoria-authored-secondary-art-family/author_family_v1.py
+          test -s pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_Aserradero_v1.glb
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_WallSupport_v1.glb
+          test -s pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_GateSupport_v1.glb
+          cat pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+      - id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-authored-secondary-art-family-blender-${{ github.run_id }}
+          path: |
+            pipeline/evidence/valoria-authored-secondary-art-family-v1.json
+            pipeline/candidates/valoria-authored-secondary-art-family-v1/*.glb
+          if-no-files-found: error
+          retention-days: 30
+      - name: Persist candidates and Blender evidence
+        shell: bash
+        run: |
+          cat > pipeline/evidence/valoria-authored-secondary-art-family-run.json <<EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "source_sha": "${{ github.sha }}",
+            "artifact_id": "${{ steps.upload.outputs.artifact-id }}",
+            "job_status": "${{ job.status }}"
+          }
+          EOF
+          git config user.name "eldoria-ci"
+          git config user.email "actions@github.com"
+          git add pipeline/candidates/valoria-authored-secondary-art-family-v1 pipeline/evidence/valoria-authored-secondary-art-family-v1.json pipeline/evidence/valoria-authored-secondary-art-family-run.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist authored secondary family candidates"
+            git pull --rebase origin "${{ github.ref_name }}"
+            git push origin HEAD:"${{ github.ref_name }}"
+          fi
