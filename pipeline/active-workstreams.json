@@ -1,8 +1,25 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T11:51:07.618Z",
-  "active": [],
+  "updated_at": "2026-10-03T11:51:33.604Z",
+  "active": [
+    {
+      "id": "valoria-shell-v2-result-correction",
+      "title": "Correct final visual conclusion against captured evidence",
+      "owner": "chat-valoria-shell-v2-result-correction",
+      "scope": [
+        "docs/VALORIA_VISUAL_SHELL_V2_RESULT.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T11:51:33.604Z",
+      "base_main_sha": "b480c179e0407b22678604a9b7fe0a7eb5cbc14b",
+      "dependency": "Read-only evidence already complete; single documentation correction only."
+    }
+  ],
   "history": [
     {
       "id": "valoria-visual-shell-v2-continuous-terrain",
