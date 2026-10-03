@@ -23,7 +23,7 @@ namespace Eldoria.Presentation
 
    var top=safe.Find("Reference topbar") as RectTransform;
    if(top!=null){
-    top.sizeDelta=new Vector2(0,portrait?60f:54f);
+    top.sizeDelta=new Vector2(0,68f);
     var im=top.GetComponent<Image>();if(im!=null)im.color=new Color(.025f,.045f,.058f,.91f);
     var l=top.GetComponent<HorizontalLayoutGroup>();if(l!=null){l.padding=new RectOffset(8,8,6,6);l.spacing=portrait?3:5;l.childForceExpandWidth=false;}
     SetWidth(top,"Realm crest",portrait?34:38);
@@ -45,7 +45,7 @@ namespace Eldoria.Presentation
 
    var nav=safe.Find("Bottom navigation") as RectTransform;
    if(nav!=null){
-    nav.sizeDelta=new Vector2(0,portrait?56f:50f);
+    nav.sizeDelta=new Vector2(0,68f);
     var ni=nav.GetComponent<Image>();if(ni!=null)ni.color=new Color(.022f,.038f,.048f,.94f);
     var nl=nav.GetComponent<HorizontalLayoutGroup>();if(nl!=null){nl.padding=new RectOffset(6,6,3,3);nl.spacing=2;}
     foreach(var b in nav.GetComponentsInChildren<Button>(true)){
@@ -63,10 +63,10 @@ namespace Eldoria.Presentation
     var desc=dock.Find("Story and world")?.GetComponent<Text>();if(desc!=null){desc.fontSize=portrait?9:8;var dle=desc.GetComponent<LayoutElement>();if(dle!=null)dle.preferredHeight=portrait?20:16;}
     var feedback=dock.Find("Feedback")?.GetComponent<Text>();if(feedback!=null){feedback.fontSize=8;var fle=feedback.GetComponent<LayoutElement>();if(fle!=null)fle.preferredHeight=10;}
     var row=dock.Find("Primary objective action");if(row!=null){
-     var rle=row.GetComponent<LayoutElement>();if(rle!=null)rle.preferredHeight=portrait?40:38;
+     var rle=row.GetComponent<LayoutElement>();if(rle!=null)rle.preferredHeight=44f;
      var group=row.GetComponent<HorizontalLayoutGroup>();if(group!=null){group.childControlHeight=true;group.childForceExpandHeight=true;group.childControlWidth=true;group.childForceExpandWidth=true;}
      foreach(var b in row.GetComponentsInChildren<Button>()){
-      var le=b.GetComponent<LayoutElement>();if(le!=null){le.minHeight=portrait?40:38;le.preferredHeight=portrait?40:38;le.flexibleWidth=1;}
+      var le=b.GetComponent<LayoutElement>();if(le!=null){le.minHeight=44f;le.preferredHeight=44f;le.flexibleWidth=1;}
       b.GetComponent<Image>().color=new Color(.73f,.58f,.31f,.98f);
       var tx=b.GetComponentInChildren<Text>();if(tx!=null){tx.fontSize=portrait?12:11;tx.fontStyle=FontStyle.Bold;tx.color=new Color(.055f,.065f,.065f);}
      }
