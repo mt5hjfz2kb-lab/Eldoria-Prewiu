@@ -7,6 +7,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs'
       - 'Unity/Assets/Eldoria/Shaders/ValoriaCompositionGround.shader'
+      - 'tools/blender_authored_hero_city_transition_v1.py'
       - '.github/workflows/valoria-composition-frame-v2.yml'
 permissions:
   contents: read
@@ -41,6 +42,39 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Locate Blender
+        id: blender
+        shell: powershell
+        run: |
+          $candidate=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $candidate){
+            $roots=@('C:\\Program Files\\Blender Foundation',"${env:LOCALAPPDATA}\\Programs\\Blender Foundation")
+            foreach($root in $roots){
+              if($candidate){break}
+              if(Test-Path $root){
+                $candidate=Get-ChildItem $root -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                  Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if(-not $candidate -or -not (Test-Path $candidate)){throw 'Blender executable not found on Unity runner.'}
+          "path=$candidate" >> $env:GITHUB_OUTPUT
+          & $candidate --version | Select-Object -First 2
+      - name: Generate authored Hero-to-city transition
+        shell: powershell
+        run: |
+          $dir="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Eldoria\\Resources\\Valoria\\ExperimentalAuthoredTransition"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $output=Join-Path $dir 'HeroCityTransitionV1.glb'
+          $report="$env:RUNNER_TEMP\\hero-city-transition-v1-report.json"
+          $log="$env:RUNNER_TEMP\\hero-city-transition-v1-blender.log"
+          & "${{ steps.blender.outputs.path }}" --background --python "$env:GITHUB_WORKSPACE\\tools\\blender_authored_hero_city_transition_v1.py" -- --output $output --report $report *> $log
+          if($LASTEXITCODE -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 320}
+            throw "Authored transition Blender generation failed: $LASTEXITCODE"
+          }
+          if(-not (Test-Path $output) -or (Get-Item $output).Length -lt 10000){throw 'Authored transition GLB missing or unexpectedly small.'}
+          Get-Content $report
       - name: Stage Kiara 3 CC0 backplate
         shell: powershell
         run: |
@@ -87,6 +121,9 @@ jobs:
           name: valoria-composition-frame-v2-${{ github.run_id }}
           path: |
             Unity/ValoriaStrongestCompositeV2Captures/*
+            Unity/Assets/Eldoria/Resources/Valoria/ExperimentalAuthoredTransition/HeroCityTransitionV1.glb
+            ${{ runner.temp }}/hero-city-transition-v1-report.json
+            ${{ runner.temp }}/hero-city-transition-v1-blender.log
             ${{ runner.temp }}/ValoriaCompositionFrameV2.log
           if-no-files-found: warn
           retention-days: 30
