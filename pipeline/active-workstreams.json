@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:02:30.410Z",
-  "active": [
+  "updated_at": "2026-10-03T12:22:27.213Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-shell-v2-blender-transition",
       "title": "Valoria Visual Shell v2 — authored Blender rock/terrace transition",
@@ -23,13 +24,27 @@
         "runner-trigger-governance",
         "workflow-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-03T12:01:34.858Z",
       "base_main_sha": "f3dedde2388c85bd28897e234353d0615572b5ce",
-      "dependency": "After failed native crag proof. One connected authored rock/terrace mesh for controlled camera, visual-only, existing gameplay/camera unchanged, no Tripo, no paid assets. Full-frame capture decides promotion."
-    }
-  ],
-  "history": [
+      "dependency": "After failed native crag proof. One connected authored rock/terrace mesh for controlled camera, visual-only, existing gameplay/camera unchanged, no Tripo, no paid assets. Full-frame capture decides promotion.",
+      "completed_at": "2026-10-03T12:22:27.213Z",
+      "result_commit": "014e0f561ea636f6890a0010ef0370115dfaa5ad",
+      "run_ids": [
+        37121765626,
+        37121873960,
+        37122003698,
+        37122211553,
+        37122415465
+      ],
+      "artifact_ids": [
+        11274220503,
+        11274220795,
+        11273791699
+      ],
+      "result": "TECH PASS / VISUAL FAIL. Blender GLB authored and imported, winding/orientation/UV corrected, gameplay signature equal, but final 19/12/9/mobile frame remains a broad empty earth slope with unresolved city and matte integration. No production promotion; 0 credits.",
+      "next": "Stop generated grid/heightfield and extruded-crag routes. Next distinct block must design complete Hero-to-district environment assembly in image space and restore visible functional district before proof; see docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md."
+    },
     {
       "id": "valoria-visual-shell-v2-native-geometry",
       "title": "Valoria Visual Shell v2 — native terrain/architecture full-frame proof",
