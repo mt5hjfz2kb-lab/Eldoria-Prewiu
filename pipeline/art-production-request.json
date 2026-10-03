@@ -1,25 +1,20 @@
 {
   "enabled": true,
-  "request_id": "valoria-full-frame-convergence-iteration-1",
-  "asset_or_sector": "Valoria Full Frame Iteration 1",
-  "profile": "environment_new_geometry",
-  "geometry_gap_proven": true,
+  "request_id": "valoria-shell-v2-authored-environment",
+  "asset_or_sector": "Valoria camera-authored terrace and retaining-wall assembly",
+  "profile": "environment_composition",
+  "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
   "capabilities": {
-    "tripo_parts": false,
-    "tripo_retopology": false,
-    "blender_lod": false,
-    "blender_bake": false,
-    "blender_material_consolidation": false,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
-    "unity_decals": false,
+    "unity_terrain_blending": true,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_decals": false
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +23,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Full-frame convergence geometry gap proven by v22-v25b: certified SteppedRockTerrace reuse still reads as detached blocks/pillars and cannot form the required continuous lower-city cliff mass. First new-geometry proof is a zero-credit Unity-authored visual-only unified cliff substrate using existing PBR rock material. Tripo remains disabled pending proof outcome."
+  "notes": "One category-scale zero-credit composition proof: irregular foreground mountain section and joined retaining-wall tiers around the existing functional plots. Existing Hero Bastion and gameplay authority retained. No production promotion without 19/12/9/mobile visual review."
 }

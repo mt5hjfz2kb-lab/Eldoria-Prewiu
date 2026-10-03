@@ -40,7 +40,7 @@ namespace Eldoria.Presentation
             RestoreFunctional("Aserradero · dedicated sawmill");
             RestoreFunctional("Cuartel · dedicated barracks");
             Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(-2.6f,.34f,-6.1f),3.3f,2.7f,16f);
-            BuildMasonry();
+            BuildTerracedMasonry();
             Add("Valoria/MidTierArchitectureKit_v1/Piece03","upper civic service",new Vector3(-5.15f,1.7f,5.8f),2.1f,2.55f,12f);
             BuildRoute();
             RenderSettings.fog=true;
@@ -63,7 +63,9 @@ namespace Eldoria.Presentation
             float micro=(Mathf.PerlinNoise(x*.91f+41f,z*.78f+18f)-.5f)*.12f;
             float lower=Seat(x,z,0,-2.8f,10.7f,8.3f,.29f);
             float y=Mathf.Lerp(-2.2f+macro,.35f+micro,lower);
-            float upper=Seat(x,z,0,8.75f,7.3f,7.6f,.26f);
+            float mid=Seat(x,z,0,3.5f,8.35f,5.15f,.15f);
+            y=Mathf.Lerp(y,1.18f+micro*.45f,mid);
+            float upper=Seat(x,z,0,8.75f,7.3f,7.6f,.18f);
             y=Mathf.Lerp(y,2.46f+micro*.55f,upper);
             // Walkway rises from the civic terrace into the original Bastion stair.
             float route=1f-Smooth(1.15f,2f,Mathf.Abs(x));
@@ -79,7 +81,10 @@ namespace Eldoria.Presentation
             for(int j=0;j<n;j++)for(int i=0;i<n;i++)
             {
                 float x=Mathf.Lerp(-13.8f,13.8f,i/(float)(n-1));
-                float z=Mathf.Lerp(-9.8f,18.5f,j/(float)(n-1));
+                // The visible perimeter is a fractured mountain edge, not a rectangular board.
+                float front=-8.15f+.48f*Mathf.Sin(x*.63f)+.31f*Mathf.Sin(x*1.72f)
+                    +1.3f*Mathf.Pow(Mathf.Abs(x)/13.8f,2f);
+                float z=Mathf.Lerp(front,18.5f,j/(float)(n-1));
                 int k=j*n+i;vertices[k]=new Vector3(x,Height(x,z),z);uvs[k]=new Vector2(x*.34f,z*.34f);
             }
             for(int j=0;j<n-1;j++)for(int i=0;i<n-1;i++)
@@ -94,6 +99,30 @@ namespace Eldoria.Presentation
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             go.AddComponent<MeshRenderer>().sharedMaterial=ground;
             VisualPieces++;
+            BuildCliffRim(vertices,n);
+        }
+        static void BuildCliffRim(Vector3[] surface,int n)
+        {
+            // The same top-edge vertices anchor the visible rock section. No independent slab seam.
+            var v=new Vector3[n*2];var uv=new Vector2[v.Length];
+            var tris=new System.Collections.Generic.List<int>();
+            for(int i=0;i<n;i++)
+            {
+                var top=surface[i];
+                float depth=-5.0f-.63f*Mathf.Sin(i*.37f)-.38f*Mathf.Sin(i*.93f);
+                v[2*i]=top;v[2*i+1]=new Vector3(top.x,depth,top.z-.7f);
+                uv[2*i]=new Vector2(top.x*.42f,top.y*.42f);
+                uv[2*i+1]=new Vector2(top.x*.42f,depth*.42f);
+                if(i==0)continue;
+                int k=2*i;
+                tris.Add(k-2);tris.Add(k);tris.Add(k-1);
+                tris.Add(k);tris.Add(k+1);tris.Add(k-1);
+            }
+            var m=new Mesh{name="Valoria v2 · integrated foreground mountain section",indexFormat=IndexFormat.UInt32};
+            m.vertices=v;m.uv=uv;m.triangles=tris.ToArray();m.RecalculateNormals();m.RecalculateBounds();
+            var go=new GameObject(m.name);go.transform.SetParent(root,true);
+            go.AddComponent<MeshFilter>().sharedMesh=m;go.AddComponent<MeshRenderer>().sharedMaterial=rock;
+            VisualPieces++;
         }
         static void RestoreFunctional(string name)
         {
@@ -102,17 +131,53 @@ namespace Eldoria.Presentation
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {if(!r.enabled){r.enabled=true;RestoredFunctionalRenderers++;}}
         }
-        static void BuildMasonry()
+        static void BuildTerracedMasonry()
         {
-            var specs=new[]{
-                ("west rock wall",new Vector3(-5.0f,1.25f,4.0f),30f,2.25f,1.65f),
-                ("east rock wall",new Vector3(5.0f,1.25f,4.0f),205f,2.25f,1.65f),
-                ("west civic retaining",new Vector3(-4.8f,.85f,1.1f),36f,4.2f,2.1f),
-                ("east civic retaining",new Vector3(4.8f,.85f,1.1f),207f,4.2f,2.1f)
-            };
-            foreach(var s in specs)
-                Add("Valoria/StoneArchitectureKit_v1/"+(s.Item1.Contains("civic")?"HighStraightWall":"RockToWallTransition"),
-                    s.Item1,s.Item2,s.Item4,s.Item5,s.Item3);
+            // Two nested tiers are one joined masonry family, with the certified stair axis clear.
+            // Recessed bays are structural rhythm rather than isolated freestanding kit fragments.
+            Arcade("upper west retaining wall",-8.1f,-1.35f,4.45f,-.45f,2.18f,4);
+            Arcade("upper east retaining wall",1.35f,8.1f,4.45f,-.45f,2.18f,4);
+            Arcade("west civic foundation",-10.35f,-1.45f,-3.35f,-2.7f,.36f,5);
+            Arcade("east civic foundation",1.45f,10.35f,-3.35f,-2.7f,.36f,5);
+            // These authored transition pieces merge the upper wall ends into the Bastion's skirt.
+            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition",
+                "west bastion rock-to-wall join",new Vector3(-6.6f,1.45f,5.1f),2.75f,2.15f,30f);
+            Add("Valoria/StoneArchitectureKit_v1/RockToWallTransition",
+                "east bastion rock-to-wall join",new Vector3(6.6f,1.45f,5.1f),2.75f,2.15f,205f);
+        }
+        static void Arcade(string name,float left,float right,float z,float bottom,float top,int bays)
+        {
+            var verts=new System.Collections.Generic.List<Vector3>();
+            var uv=new System.Collections.Generic.List<Vector2>();
+            var tris=new System.Collections.Generic.List<int>();
+            void Quad(float x0,float y0,float x1,float y1,float face)
+            {
+                int k=verts.Count;
+                verts.Add(new Vector3(x0,y0,face));verts.Add(new Vector3(x1,y0,face));
+                verts.Add(new Vector3(x0,y1,face));verts.Add(new Vector3(x1,y1,face));
+                uv.Add(new Vector2(x0*.55f,y0*.55f));uv.Add(new Vector2(x1*.55f,y0*.55f));
+                uv.Add(new Vector2(x0*.55f,y1*.55f));uv.Add(new Vector2(x1*.55f,y1*.55f));
+                tris.Add(k);tris.Add(k+2);tris.Add(k+1);tris.Add(k+1);tris.Add(k+2);tris.Add(k+3);
+            }
+            float width=(right-left)/bays;
+            for(int i=0;i<bays;i++)
+            {
+                float a=left+i*width,b=a+width;
+                float inset=width*.19f, spring=bottom+(top-bottom)*.52f;
+                // The dark recess is behind the parapet; broad connected piers carry the tier.
+                Quad(a,bottom,b,top,z+.19f);
+                Quad(a,bottom,a+inset,top,z-.05f);
+                Quad(b-inset,bottom,b,top,z-.05f);
+                Quad(a+inset,spring,b-inset,top,z-.05f);
+                Quad(a,top-.22f,b,top+.08f,z-.13f);
+            }
+            var mesh=new Mesh{name="Valoria v2 · "+name,indexFormat=IndexFormat.UInt32};
+            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var obj=new GameObject(mesh.name);obj.transform.SetParent(root,true);
+            obj.AddComponent<MeshFilter>().sharedMesh=mesh;
+            obj.AddComponent<MeshRenderer>().sharedMaterial=stone;
+            VisualPieces++;
         }
         static void BuildRoute()
         {
