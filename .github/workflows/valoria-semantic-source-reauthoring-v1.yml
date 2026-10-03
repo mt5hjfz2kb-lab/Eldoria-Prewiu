@@ -2,10 +2,6 @@ name: "[EXPERIMENT] Valoria Semantic Source Reauthoring Proof v1"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [visual-proof/valoria-semantic-source-reauthoring-proof-v1]
-    paths:
-      - 'pipeline/ssra-run-request.json'
 
 permissions:
   contents: read
