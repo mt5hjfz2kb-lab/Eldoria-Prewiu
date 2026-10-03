@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "family": "Valoria Authored Secondary Art Family v1",
+  "principles": [
+    "deterministic metric modules",
+    "beveled hard-surface edges",
+    "weighted normals",
+    "shared stone/timber/plaster/blue-slate material vocabulary",
+    "source-level semantic separation"
+  ],
+  "assets": [
+    {
+      "file": "Valoria_Authored_Aserradero_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb",
+      "objects": 102,
+      "triangles": 11552,
+      "materials": [
+        "Eldoria_Blue_Slate",
+        "Eldoria_Blue_Slate_Light",
+        "Eldoria_Iron",
+        "Eldoria_Stone",
+        "Eldoria_Stone_Dark",
+        "Eldoria_Timber",
+        "Eldoria_Timber_Light",
+        "Eldoria_Warm_Plaster"
+      ]
+    },
+    {
+      "file": "Valoria_Authored_Wall_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb",
+      "objects": 33,
+      "triangles": 3564,
+      "materials": [
+        "Eldoria_Stone",
+        "Eldoria_Stone_Dark"
+      ]
+    },
+    {
+      "file": "Valoria_Authored_Gate_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb",
+      "objects": 30,
+      "triangles": 3240,
+      "materials": [
+        "Eldoria_Blue_Slate",
+        "Eldoria_Iron",
+        "Eldoria_Stone",
+        "Eldoria_Stone_Dark",
+        "Eldoria_Timber",
+        "Eldoria_Timber_Light"
+      ]
+    }
+  ]
+}
