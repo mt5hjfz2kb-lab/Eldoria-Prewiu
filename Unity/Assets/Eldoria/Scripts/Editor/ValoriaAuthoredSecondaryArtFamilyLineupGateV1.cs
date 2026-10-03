@@ -25,10 +25,14 @@ namespace Eldoria.EditorTools
     "Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
     "Assets/Eldoria/Resources/Valoria/Stone_Wall.prefab",
     "Assets/Eldoria/Resources/Valoria/Stone_Gate.prefab"),
-   new Family("source_semantic",
+   new Family("source_semantic_simple",
     "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_Aserradero_v1.glb",
     "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_WallSupport_v1.glb",
     "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_GateSupport_v1.glb"),
+   new Family("source_semantic_v2",
+    "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_Aserradero_v1.glb",
+    "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_SourceWall_v2.glb",
+    "Assets/Resources/Valoria/ASFCandidates/Valoria_ASF_SourceGate_v2.glb"),
    new Family("modular_new",
     "Assets/Resources/Valoria/ASFCandidates/Valoria_Authored_Aserradero_v1.glb",
     "Assets/Resources/Valoria/ASFCandidates/Valoria_Authored_Wall_v1.glb",
@@ -61,7 +65,7 @@ namespace Eldoria.EditorTools
    var evidence=new List<string>();
    for(int i=0;i<Families.Length;i++)
    {
-    var f=Families[i];float x=(i-1)*7.4f;
+    var f=Families[i];float x=(i-1.5f)*6.65f;
     int sawTris=Place(f.sawmill,"ASF lineup · "+f.id+" · sawmill",new Vector3(x,0f,2.3f),5.25f,4.7f,18f);
     int wallTris=Place(f.wall,"ASF lineup · "+f.id+" · wall",new Vector3(x-1.65f,0f,-3.7f),3.15f,1.75f,8f);
     int gateTris=Place(f.gate,"ASF lineup · "+f.id+" · gate",new Vector3(x+1.70f,0f,-3.7f),3.15f,3.25f,-8f);
@@ -70,9 +74,9 @@ namespace Eldoria.EditorTools
 
    var camGo=new GameObject("ASF lineup camera");var cam=camGo.AddComponent<Camera>();
    cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=new Color(.12f,.15f,.17f,1f);cam.orthographic=true;
-   Save(cam,Folder+"/lineup-isometric.png",new Vector3(20f,17f,-24f),new Vector3(0f,1.3f,0f),13.4f,2048,1280);
-   Save(cam,Folder+"/lineup-front.png",new Vector3(0f,7.6f,-29f),new Vector3(0f,1.25f,0f),11.4f,2048,1280);
-   Save(cam,Folder+"/lineup-sawmills.png",new Vector3(17f,12f,-22f),new Vector3(0f,1.8f,2.3f),9.8f,2048,1152);
+   Save(cam,Folder+"/lineup-isometric.png",new Vector3(23f,18f,-27f),new Vector3(0f,1.3f,0f),15.7f,2048,1280);
+   Save(cam,Folder+"/lineup-front.png",new Vector3(0f,8.2f,-32f),new Vector3(0f,1.25f,0f),13.6f,2048,1280);
+   Save(cam,Folder+"/lineup-sawmills.png",new Vector3(21f,13f,-25f),new Vector3(0f,1.8f,2.3f),11.8f,2048,1152);
 
    File.WriteAllText(Folder+"/evidence.json",
     "{\n  \"normalized_same_envelope\": true,\n  \"source_materials_retained\": true,\n  \"families\": [\n    "+
