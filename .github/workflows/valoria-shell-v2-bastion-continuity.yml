@@ -1,8 +1,8 @@
-name: "[EXPERIMENT] Valoria Shell v2 Bastion Continuity"
+name: "[EXPERIMENT] Valoria Shell v2 Fixed-Camera DCC Set"
 
 on:
   push:
-    branches: [visual-proof/valoria-bastion-continuity-v1]
+    branches: [visual-proof/valoria-dcc-set-v1]
     paths:
       - 'tools/valoria-shell-v2-bastion-continuity/**'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBastionContinuityV2.cs'
@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Build authored Bastion-to-city continuity in Blender
+      - name: Build complete fixed-camera Valoria set in Blender
         shell: bash
         run: |
           if ! command -v blender >/dev/null; then
@@ -102,7 +102,7 @@ jobs:
               if((Get-Item $out).Length -lt 10000){throw "PBR map too small: $out"}
             }
           }
-      - name: Capture authored continuity complete frame
+      - name: Capture complete fixed-camera DCC set
         shell: powershell
         run: |
           $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaStrongestCompositeV2Captures"
