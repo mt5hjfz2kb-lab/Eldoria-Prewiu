@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T13:03:00.000Z",
+  "updated_at": "2026-10-03T13:27:00.000Z",
   "active": [
     {
       "id": "valoria-shell-v2-authored-environment",
@@ -15,7 +15,9 @@
         "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESULT.md",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "artifacts/valoria-visual-shell-v2/authored-environment-real-37124151619.jpg"
+        "artifacts/valoria-visual-shell-v2/authored-environment-real-37124151619.jpg",
+        "tools/blender_valoria_transition_envelope_v2.py",
+        "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESEARCH.md"
       ],
       "resources": [
         "valoria-production-composition",
@@ -25,7 +27,7 @@
       "status": "active",
       "claimed_at": "2026-10-03T12:47:21.946Z",
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
-      "dependency": "Continuation after prior Work chat exhausted credits. Same canonical workstream and experimental branch; first review run 37124151619 visually failed despite TECH PASS. Continue with a materially distinct authored Hero-to-city transition, zero spend, no Tripo, preserve gameplay/camera, and require real 19/12/9/mobile evidence."
+      "dependency": "Latest real branch HEAD 09423bb9 / run 37125767491 is TECH PASS / VISUAL FAIL: floating rock islands, board-like road and incoherent transition remain. Stop-rule research selected a materially distinct Blender authored transition-envelope method: boolean/remesh/shrinkwrap-style continuous visual-only geometry plus shared Unity surface treatment; no Tripo, zero spend, preserve gameplay/camera, validate 19/12/9/mobile."
     }
   ],
   "history": [
