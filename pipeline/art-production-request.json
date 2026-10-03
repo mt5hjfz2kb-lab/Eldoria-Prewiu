@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "request_id": "valoria-visual-quality-breakthrough-v1",
-  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
-  "profile": "environment_surface",
+  "request_id": "valoria-authored-gameplay-cell-art-direction-v1",
+  "asset_or_sector": "Bastion threshold / civic plaza / Aserradero apron shared modular stone and timber cell",
+  "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -19,7 +19,7 @@
     "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": true
+    "unity_terrain_blending": false
   },
   "validation": {
     "official_camera_19": true,
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VQB candidate: accepted authored curtain wall rhythm + semantic PBR uplift on canonical Aserradero/Cuartel/Granero + intact canonical Hero Bastion wrapped by warm authored StoneArchitecture retaining interface. No segmentation, no Slavic replacement, no macrocomposition change, no paid tools."
+  "notes": "Single reversible authored Unity mesh kit on VQB visual. Official played camera and HUD proof; reserved plots and canonical gameplay unchanged. No Tripo or credit spend."
 }
