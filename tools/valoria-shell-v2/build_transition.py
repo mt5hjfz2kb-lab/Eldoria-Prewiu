@@ -41,7 +41,7 @@ faces=[]
 for j in range(n-1):
     for i in range(n-1):
         a=j*n+i; b=a+1; c=a+n; d=c+1
-        faces.extend(((a,b,c),(b,d,c)))
+        faces.extend(((a,c,b),(b,c,d)))
 mesh=bpy.data.meshes.new("Valoria authored contiguous rock and terraces")
 mesh.from_pydata(verts,[],faces)
 mesh.update()
