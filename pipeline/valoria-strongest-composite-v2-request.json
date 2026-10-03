@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate v41 world-frame mountain shell using existing Valoria mountain, cliff and hill resources only.",
+  "objective": "Visual Shell v2 method 1: validate a fixed-camera 2.5D annulus that samples the exact Kiara backplate in screen space, keeps the city center genuinely open, adds only subtle contact darkening near Valoria, and disables the rejected v39-v41 world-frame geometry.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T13:26:00+02:00",
-  "retry_reason": "v40 exposed visible terrain wedges; v41 removes the procedural terrain sheet and uses only discrete library mountain masses around the frame.",
-  "retry_seq": 52
+  "triggered_at": "2026-10-03T13:31:00+02:00",
+  "retry_reason": "v39-v41 proved that procedural terrain panels and existing low-poly mountain prefabs visibly degrade the full frame. Method 1 tests a 0-credit projected matte shell on the isolated visual-shell branch.",
+  "retry_seq": 53
 }
