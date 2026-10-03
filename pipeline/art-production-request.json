@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-flat-citadel-production-uplift-v1",
-  "asset_or_sector": "Valoria Flat Citadel — production uplift",
+  "enabled": true,
+  "request_id": "valoria-flat-citadel-art-consolidation-v1",
+  "asset_or_sector": "Valoria Flat Citadel — art consolidation and progression-reserved city",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -18,7 +18,7 @@
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": true,
-    "unity_probes": false,
+    "unity_probes": true,
     "unity_terrain_blending": true
   },
   "validation": {
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "VALORIA FLAT CITADEL PRODUCTION UPLIFT v1 closed. TECH PASS / VISUAL FAIL. Final implementation ca018faf089d10e777566974f2bc6fd3e470ede0; validation run 37137847235 / artifact 11279086781. Closure doc commit c33b82bf8a3141127727d3c1d77daf4798d23297 revalidated successfully in run 37137964874 / artifact 11278977322. Keep Flat Citadel composition; next recommended block is ART CONSOLIDATION, not mountain/topography rework. No Tripo spend."
+  "notes": "Flat Citadel macrocomposition is locked. First preserve growth capacity using canonical Bastion I-X gameplay plus long-range 11-35 planning: active Aserradero/Cuartel/Granero, reserved Cantera/Forja/Hospital, no world-space plot for Codex/Relicario by default, plus west/east/upper/special late-game reserves. Then consolidate wall, Hero Bastion interface, materials, secondary architecture, atmosphere and final HUD presentation. Unity-first, zero spend, no mountain/topography reopening, no Tripo."
 }
