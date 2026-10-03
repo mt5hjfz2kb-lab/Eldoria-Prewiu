@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T13:24:00.000Z",
+  "updated_at": "2026-10-03T13:53:00.000Z",
   "active": [
     {
       "id": "valoria-shell-v2-authored-environment",
-      "title": "Valoria Visual Shell v2 — fused authored Hero-to-city transition",
+      "title": "Valoria Visual Shell v2 — coherent photogrammetry midground",
       "owner": "chat-valoria-shell-v2-authored-environment-continuation-20261003",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompositionFrameV2.cs",
@@ -21,7 +21,11 @@
         "tools/valoria-shell-v2-fused/build_fused_transition.py",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFusedTransitionV2.cs",
         ".github/workflows/valoria-shell-v2-fused-transition.yml",
-        "docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md"
+        "docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md",
+        "tools/valoria-shell-v2-photogrammetry/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPhotogrammetryMidgroundV2.cs",
+        ".github/workflows/valoria-shell-v2-photogrammetry-midground.yml",
+        "docs/VALORIA_SHELL_V2_PHOTOGRAMMETRY_MIDGROUND_RESULT.md"
       ],
       "resources": [
         "valoria-production-composition",
@@ -31,7 +35,7 @@
       "status": "active",
       "claimed_at": "2026-10-03T12:47:21.946Z",
       "base_main_sha": "e01b163eafc503cb7e3ef5f3c9b574ea61b5bd43",
-      "dependency": "Latest real run 37125767491 / 09423bb TECH PASS but VISUAL FAIL: surface correction did not solve floating-island/collage structure. Directed research selects Blender overlap + voxel-remesh fusion of already-certified rock/terrace assets into one camera-authored contiguous foundation, then Unity shared rock surface; no Tripo, zero spend, preserve gameplay/camera."
+      "dependency": "Fused authored transition e88d821 / run 37126944625 TECH PASS / VISUAL FAIL: manifold base improved continuity but remained a floating asset island and lower-city quality lagged Hero Bastion. Historical Slavic architecture proof is coherent but visibly too low-detail/stylized. Directed research selects zero-cost CC0 photogrammetric cliff/mountainside models as a materially different hero-quality midground shell, architecture retained and buried into it; no Tripo."
     }
   ],
   "history": [
