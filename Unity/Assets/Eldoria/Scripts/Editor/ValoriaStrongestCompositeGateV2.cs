@@ -17,10 +17,10 @@ namespace Eldoria.EditorTools
         static readonly (string id,string resource,Vector3 p,float yaw,float span,float height)[] PremiumSpecs={
             // v19: use the already-certified Mid-Tier GLBs instead of the much lower-detail
             // Slavic prefab family. Positions stay compact around the fortress nucleus.
-            ("lower_west","Piece02",new Vector3(-2.10f,1.16f,2.28f),18f,2.42f,2.82f),
-            ("lower_east","Piece03",new Vector3( 2.12f,1.16f,2.24f),186f,2.40f,2.80f),
-            ("mid_west","Piece03",new Vector3(-2.72f,1.52f,3.72f),12f,2.26f,2.66f),
-            ("mid_east","Piece02",new Vector3( 2.75f,1.52f,3.74f),190f,2.26f,2.66f)
+            ("lower_west","Piece02",new Vector3(-2.15f,1.78f,3.40f),18f,2.28f,2.62f),
+            ("lower_east","Piece03",new Vector3( 2.18f,1.78f,3.36f),186f,2.26f,2.60f),
+            ("mid_west","Piece03",new Vector3(-3.05f,2.02f,4.62f),12f,2.18f,2.52f),
+            ("mid_east","Piece02",new Vector3( 3.08f,2.02f,4.64f),190f,2.18f,2.52f)
         };
 
         public static void Capture()
@@ -90,9 +90,10 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerrainV1.Enabled=true;
             ValoriaLowerCityTerrainV1.Build(root.transform,state);
             int terrainVisualsHidden=HideLowerTerrainVisual();
-            ValoriaLowerCityTerracedMeshV1.Enabled=true;
-            ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
-            int terracePieces=ValoriaLowerCityTerracedMeshV1.PiecesBuilt;
+            // v27: do not render a second lower-city island/substrate. Presentation-only
+            // architecture is now seated inside the existing fortress rock silhouette.
+            ValoriaLowerCityTerracedMeshV1.Enabled=false;
+            int terracePieces=0;
             ValoriaCompactStairMeshV1.Enabled=true;
             ValoriaCompactStairMeshV1.Build(root.transform,state);
             int stairPieces=1;
@@ -394,7 +395,7 @@ namespace Eldoria.EditorTools
             {
                 var clone=Object.Instantiate(original);
                 clone.name="Valoria · Strongest v2 · compact sawmill visual";
-                clone.transform.position+=new Vector3(4.78f,.90f,5.38f);
+                clone.transform.position+=new Vector3(5.15f,1.55f,6.35f);
                 clone.transform.SetParent(root,true);
                 DisableGameplay(clone);
 
