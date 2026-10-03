@@ -47,6 +47,11 @@ namespace Eldoria.Presentation
                     ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.38f,.36f,1f),"stone",new Vector2(.95f,.95f),.98f);
             }
 
+            var topRock=new Material(rock){name="Valoria · terraced mesh top rock"};
+            if(topRock.HasProperty("_Color"))topRock.SetColor("_Color",new Color(.47f,.46f,.41f,1f));
+            if(topRock.HasProperty("_Tiling"))topRock.SetFloat("_Tiling",.070f);
+            if(topRock.HasProperty("_Smoothness"))topRock.SetFloat("_Smoothness",.10f);
+
             // One continuous lower-city shelf now owns stair + economic + military seating.
             // Keeping one irregular silhouette removes the three-island read while preserving
             // all gameplay colliders/hotspots underneath as presentation-only geometry.
@@ -56,8 +61,9 @@ namespace Eldoria.Presentation
                 V(5.80f,-2.30f),V(5.85f,-1.25f),V(5.25f,-.55f),V(4.25f,-.35f),
                 V(3.55f,.45f),V(2.00f,.92f),V(0f,.84f),V(-2.00f,.95f),
                 V(-3.55f,.48f),V(-4.25f,-.32f),V(-5.25f,-.55f),V(-5.85f,-1.25f)
-            },-.12f,-.48f,-.82f,earth,rock);
+            },-.12f,-.48f,-.82f,topRock,rock);
 
+            DressEdges(root);
         }
 
         static void DressEdges(Transform root)
@@ -70,18 +76,18 @@ namespace Eldoria.Presentation
             {
                 AddDecor(root,rock,"central edge west",new Vector3(-3.15f,-.62f,-2.15f),1.85f,1.05f,26f);
                 AddDecor(root,rock,"central edge east",new Vector3(3.10f,-.64f,-2.18f),1.85f,1.05f,206f);
-                AddDecor(root,rock,"west edge outer",new Vector3(-6.75f,-.52f,-3.20f),1.55f,.88f,38f);
-                AddDecor(root,rock,"west edge inner",new Vector3(-4.65f,-.50f,-2.85f),1.40f,.78f,74f);
-                AddDecor(root,rock,"east edge inner",new Vector3(4.70f,-.50f,-2.85f),1.40f,.78f,238f);
-                AddDecor(root,rock,"east edge outer",new Vector3(6.85f,-.52f,-3.25f),1.55f,.88f,314f);
+                AddDecor(root,rock,"west edge outer",new Vector3(-5.20f,-.42f,-2.42f),1.35f,.78f,38f);
+                AddDecor(root,rock,"west edge inner",new Vector3(-4.05f,-.40f,-2.12f),1.20f,.70f,74f);
+                AddDecor(root,rock,"east edge inner",new Vector3(4.05f,-.40f,-2.12f),1.20f,.70f,238f);
+                AddDecor(root,rock,"east edge outer",new Vector3(5.25f,-.42f,-2.45f),1.35f,.78f,314f);
             }
 
             if(art.SlavicBush!=null)
             {
-                AddDecor(root,art.SlavicBush,"west scrub a",new Vector3(-6.65f,-.02f,-2.65f),.80f,.95f,18f);
-                AddDecor(root,art.SlavicBush,"west scrub b",new Vector3(-5.15f,-.02f,-2.10f),.80f,.95f,66f);
-                AddDecor(root,art.SlavicBush,"east scrub a",new Vector3(5.15f,-.02f,-2.35f),.80f,.95f,208f);
-                AddDecor(root,art.SlavicBush,"east scrub b",new Vector3(6.70f,-.02f,-2.75f),.80f,.95f,292f);
+                AddDecor(root,art.SlavicBush,"west scrub a",new Vector3(-5.05f,-.02f,-1.95f),.70f,.85f,18f);
+                AddDecor(root,art.SlavicBush,"west scrub b",new Vector3(-4.15f,-.02f,-1.55f),.68f,.82f,66f);
+                AddDecor(root,art.SlavicBush,"east scrub a",new Vector3(4.15f,-.02f,-1.60f),.68f,.82f,208f);
+                AddDecor(root,art.SlavicBush,"east scrub b",new Vector3(5.10f,-.02f,-2.00f),.70f,.85f,292f);
             }
         }
 
