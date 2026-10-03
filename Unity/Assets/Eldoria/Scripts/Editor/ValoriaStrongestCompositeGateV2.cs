@@ -78,14 +78,14 @@ namespace Eldoria.EditorTools
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int auditPruned=PruneAuditConfirmedLowerResidue();
             int premium=ReplaceSecondaryArchitecture(root.transform);
-            int localSupports=AddLocalLowerSupports(root.transform);
+            int localSupports=0;
             int ruins=0;
             SuppressLegacySecondaryPresentation();
             int lowerSurfaceNormalized=NormalizeLowerCitySurfaces();
             int routeStyled=StyleCoreRoute();
-            ValoriaLowerCityTerrainV1.Enabled=false;
-            ValoriaLowerCityPlateauV1.Enabled=true;
-            ValoriaLowerCityPlateauV1.Build(root.transform,state);
+            ValoriaLowerCityPlateauV1.Enabled=false;
+            ValoriaLowerCityTerrainV1.Enabled=true;
+            ValoriaLowerCityTerrainV1.Build(root.transform,state);
 
             Physics.SyncTransforms();
             if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
@@ -108,6 +108,7 @@ namespace Eldoria.EditorTools
                 $"  \"lower_plateau_fragment_renderers_suppressed\": {ValoriaLowerCityPlateauV1.SuppressedFragmentRenderers},\n"+
                 $"  \"terrain_hole_samples\": {ValoriaLowerCityTerrainV1.HoleSamples},\n"+
                 $"  \"terrain_surface_samples\": {ValoriaLowerCityTerrainV1.SurfaceSamples},\n"+
+                $"  \"terrain_legacy_renderers_suppressed\": {ValoriaLowerCityTerrainV1.SuppressedLegacyRenderers},\n"+
                 $"  \"premium_secondary_loaded\": {premium},\n"+
                 $"  \"local_lower_supports_loaded\": {localSupports},\n"+
                 $"  \"buried_side_ruin_pieces\": {ruins},\n"+
