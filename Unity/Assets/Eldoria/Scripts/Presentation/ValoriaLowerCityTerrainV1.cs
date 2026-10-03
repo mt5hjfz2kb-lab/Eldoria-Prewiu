@@ -33,7 +33,7 @@ namespace Eldoria.Presentation
             const float originY=-5.05f;
 
             var data=new TerrainData{
-                name="Valoria Lower City Terraced Landforms v4",
+                name="Valoria Lower City Hybrid Terrain v5",
                 heightmapResolution=hm,
                 alphamapResolution=alpha,
                 baseMapResolution=256,
@@ -64,8 +64,8 @@ namespace Eldoria.Presentation
             var rockMat=ValoriaKit.ExternalPbrSurfaceMaterial(
                 "rock",new Color(.38f,.39f,.37f,1f),new Vector2(1.10f,1.10f),.018f,.98f);
 
-            var dirtLayer=LayerFrom(dirtMat,"Valoria Terrain · dirt",new Vector2(3.2f,3.2f),.04f,new Color(.42f,.37f,.29f,1f));
-            var rockLayer=LayerFrom(rockMat,"Valoria Terrain · rock",new Vector2(2.5f,2.5f),.08f,new Color(.36f,.37f,.35f,1f));
+            var dirtLayer=LayerFrom(dirtMat,"Valoria Terrain · dirt",new Vector2(3.2f,3.2f),.04f,new Color(.62f,.55f,.42f,1f));
+            var rockLayer=LayerFrom(rockMat,"Valoria Terrain · rock",new Vector2(2.5f,2.5f),.08f,new Color(.52f,.53f,.49f,1f));
             data.terrainLayers=new[]{dirtLayer,rockLayer};
 
             var splat=new float[alpha,alpha,2];
@@ -108,7 +108,7 @@ namespace Eldoria.Presentation
             data.SetHoles(0,0,holes);
 
             var go=Terrain.CreateTerrainGameObject(data);
-            go.name=RootName+" · terraced landforms v4";
+            go.name=RootName+" · hybrid terrain v5";
             go.transform.SetParent(parent,true);
             go.transform.position=new Vector3(-11.0f,originY,-8.0f);
 
@@ -199,10 +199,12 @@ namespace Eldoria.Presentation
             float n3=Mathf.PerlinNoise((x+31.2f)*.075f,(z-7.4f)*.075f)-.5f;
 
             float land=LandformField(x,z);
-            float top=-.22f+n1*.16f+n2*.05f;
-            float edgeFall=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.62f,.12f,land));
-            float bottom=-4.35f+n1*.42f+n3*.24f;
-            float y=Mathf.Lerp(top,bottom,edgeFall);
+            float top=-.22f+n1*.14f+n2*.045f;
+            float edgeFall=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.48f,.12f,land));
+            // Terrain owns the walkable/inhabited shelf only. Vertical cliff language
+            // is supplied by authored rock meshes around the hole boundary.
+            float shoulder=-1.05f+n1*.18f+n3*.10f;
+            float y=Mathf.Lerp(top,shoulder,edgeFall);
 
             // Gameplay buildings keep their certified world positions. The terrain rises
             // under their parcels and under the central stair/route, not across the whole frame.
