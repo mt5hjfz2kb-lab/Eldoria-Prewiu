@@ -78,7 +78,9 @@ def make_macroform():
         is_riser=(r%2==1)
         for i in range(xs-1):
             a,b=rows[r][i],rows[r][i+1];c,d=rows[r+1][i+1],rows[r+1][i]
-            faces.append((a,b,c,d));mat_index.append(0 if is_riser else 1)
+            # Unity camera sees the +Y/top and front-facing terrace section. After ub()
+            # (Unity z -> Blender -Y), this winding yields +Z on terrace tops and +Y on risers.
+            faces.append((a,d,c,b));mat_index.append(0 if is_riser else 1)
             if is_riser:
                 rock_verts.update((a,b,c,d))
     # side skirts hide the authored shell edges from approved camera envelope.
