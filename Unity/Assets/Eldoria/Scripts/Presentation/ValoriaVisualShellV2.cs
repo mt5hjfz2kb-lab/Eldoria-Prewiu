@@ -26,52 +26,61 @@ namespace Eldoria.Presentation
             var root=new GameObject(RootName);
             root.transform.SetParent(parent,true);
 
-            // Method 3: localized fixed-camera matte. The full annulus proved invisible after
-            // grading calibration but did not materially improve the frame. This patch exists
-            // only over the lower-right hanging cliff residue and samples the exact backplate.
-            var go=new GameObject(RootName+" · lower cliff matte");
+            // Continuous-terrain method 1: camera-locked photographic foreground ridge.
+            // The ridge reuses the lower portion of the canonical mountain photograph, lifted
+            // upward as a feathered foreground landform so Valoria sits behind real-looking
+            // geology instead of floating over the distant valley.
+            var go=new GameObject(RootName+" · photographic foreground ridge");
             go.transform.SetParent(root.transform,true);
 
-            var vp=new[]{
-                new Vector2(.525f,.305f),
-                new Vector2(.565f,.278f),
-                new Vector2(.665f,.282f),
-                new Vector2(.704f,.320f),
-                new Vector2(.684f,.372f),
-                new Vector2(.575f,.368f)
-            };
-
-            // The matte must sit in front of the fortress residue but behind UI. With the fixed
-            // orthographic review camera, ViewportToWorldPoint gives deterministic placement.
-            const float depth=24f;
-            var verts=new Vector3[vp.Length+1];
+            const int cols=25;
+            const float depth=23f;
+            var verts=new Vector3[cols*3];
             var uv=new Vector2[verts.Length];
             var colors=new Color[verts.Length];
+            var tris=new int[(cols-1)*12];
 
-            Vector2 centre=Vector2.zero;
-            for(int i=0;i<vp.Length;i++)centre+=vp[i];
-            centre/=vp.Length;
-
-            verts[0]=camera.ViewportToWorldPoint(new Vector3(centre.x,centre.y,depth));
-            uv[0]=centre;
-            colors[0]=Color.black;
-            for(int i=0;i<vp.Length;i++)
+            for(int i=0;i<cols;i++)
             {
-                verts[i+1]=camera.ViewportToWorldPoint(new Vector3(vp[i].x,vp[i].y,depth));
-                uv[i+1]=vp[i];
-                colors[i+1]=Color.black;
+                float x=i/(float)(cols-1);
+                float centre=1f-Mathf.Abs(x-.5f)*2f;
+                centre=Mathf.Clamp01(centre);
+
+                // Lower at the edges, highest below the fortress; deterministic rock-like wobble.
+                float ridge=.205f + .070f*Mathf.Pow(centre,1.45f)
+                    + .012f*Mathf.Sin(x*Mathf.PI*5f)
+                    + .008f*Mathf.Sin(x*Mathf.PI*11f+.7f);
+                float feather=ridge+.045f;
+
+                int b=i;
+                int r=cols+i;
+                int f=cols*2+i;
+
+                verts[b]=camera.ViewportToWorldPoint(new Vector3(x,-.035f,depth));
+                verts[r]=camera.ViewportToWorldPoint(new Vector3(x,ridge,depth));
+                verts[f]=camera.ViewportToWorldPoint(new Vector3(x,feather,depth));
+
+                // Reuse the bottom photographic geology but stretch it upward into the ridge.
+                uv[b]=new Vector2(x,.015f);
+                uv[r]=new Vector2(x,.225f);
+                uv[f]=new Vector2(x,.255f);
+
+                colors[b]=new Color(1,1,1,1);
+                colors[r]=new Color(1,1,1,1);
+                colors[f]=new Color(1,1,1,0);
             }
 
-            var tris=new int[vp.Length*3];
-            for(int i=0;i<vp.Length;i++)
+            int ti=0;
+            for(int i=0;i<cols-1;i++)
             {
-                int n=(i+1)%vp.Length;
-                tris[i*3]=0;
-                tris[i*3+1]=i+1;
-                tris[i*3+2]=n+1;
+                int b0=i,b1=i+1,r0=cols+i,r1=cols+i+1,f0=cols*2+i,f1=cols*2+i+1;
+                tris[ti++]=b0;tris[ti++]=r0;tris[ti++]=b1;
+                tris[ti++]=b1;tris[ti++]=r0;tris[ti++]=r1;
+                tris[ti++]=r0;tris[ti++]=f0;tris[ti++]=r1;
+                tris[ti++]=r1;tris[ti++]=f0;tris[ti++]=f1;
             }
 
-            var mesh=new Mesh{name="Valoria Visual Shell v2 · lower cliff matte"};
+            var mesh=new Mesh{name="Valoria Visual Shell v2 · photographic ridge"};
             mesh.vertices=verts;
             mesh.uv=uv;
             mesh.colors=colors;
@@ -81,15 +90,15 @@ namespace Eldoria.Presentation
 
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var mr=go.AddComponent<MeshRenderer>();
-            var mat=new Material(shader){name="Valoria Visual Shell v2 · exact projected matte"};
+            var mat=new Material(shader){name="Valoria Visual Shell v2 · photographic ridge"};
             mat.SetTexture("_BackplateTex",tex);
             mat.SetColor("_BackplateTint",new Color(.84f,.88f,.91f,1f));
             mat.SetFloat("_ContactStrength",0f);
+            mat.SetFloat("_UseMeshUv",1f);
             mr.sharedMaterial=mat;
             mr.shadowCastingMode=ShadowCastingMode.Off;
             mr.receiveShadows=false;
 
-            foreach(var col in go.GetComponentsInChildren<Collider>(true))col.enabled=false;
             return true;
         }
     }
