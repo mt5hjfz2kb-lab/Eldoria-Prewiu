@@ -84,7 +84,7 @@ jobs:
             $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
             $json=$payload | ConvertTo-Json -Depth 50
             $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\\u0026','&') } | Select-Object -Unique
-            foreach($map in @(@{key='diff';rx='_diff_1k\\.(jpg|png)(\\?|$)'},@{key='normal';rx='_nor_gl_1k\\.(jpg|png)(\\?|$)'})){
+            foreach($map in @(@{key='diff';rx='_diff_1k[.](jpg|png)([?]|$)'},@{key='normal';rx='_nor_gl_1k[.](jpg|png)([?]|$)'})){
               $url=$urls | Where-Object { $_ -match $map.rx } | Select-Object -First 1
               if(-not $url){if($map.key -eq 'normal' -and $asset.prefix -eq 'dirt'){continue};throw "Missing map $($asset.id) $($map.key)"}
               $ext=[IO.Path]::GetExtension(([uri]$url).AbsolutePath)
