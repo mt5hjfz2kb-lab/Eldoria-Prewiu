@@ -145,8 +145,8 @@ namespace Eldoria.Presentation
                     float erodedBottom=-3.55f+noiseA*.52f+noiseC*.34f;
                     float y=Mathf.Lerp(top,erodedBottom,fall);
 
-                    float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/2.35f)*
-                                Mathf.Clamp01(1f-Mathf.Abs(wz+1.9f)/6.6f);
+                    float route=Mathf.Clamp01(1f-Mathf.Abs(wx)/1.55f)*
+                                Mathf.Clamp01(1f-Mathf.Abs(wz+1.9f)/6.0f);
 
                     float pad=0f;
                     pad=Mathf.Max(pad,Disc(wx,wz,-6.2f,-4.4f,3.05f));
@@ -156,7 +156,7 @@ namespace Eldoria.Presentation
                     pad=Mathf.Max(pad,Disc(wx,wz,-3.9f, 5.0f,2.25f));
                     pad=Mathf.Max(pad,Disc(wx,wz, 3.9f, 5.0f,2.25f));
 
-                    float support=Mathf.Max(route*.92f,pad*.78f);
+                    float support=Mathf.Max(route*.78f,pad*.78f);
                     y=Mathf.Lerp(y,Mathf.Max(y,-.16f),support*(1f-fall*.76f));
 
                     vertices.Add(new Vector3(wx,y,wz));
@@ -196,7 +196,7 @@ namespace Eldoria.Presentation
                 target.Add(i0);target.Add(i2);target.Add(i3);
             }
 
-            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v5"};
+            var mesh=new Mesh{name="Valoria Lower City Organic Terrain v6"};
             mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.subMeshCount=2;
