@@ -33,10 +33,11 @@ namespace Eldoria.Presentation
             var old=GameObject.Find(RootName);
             if(old!=null) Object.DestroyImmediate(old);
 
-            HiddenLegacyRenderers=HideCanonicalPresentationRenderers(parent);
-
             var root=new GameObject(RootName).transform;
             root.SetParent(parent,true);
+
+            int clonedHeroPieces=CloneCanonicalHeroBastion(root,new Vector3(0f,-.58f,0f));
+            HiddenLegacyRenderers=HideAllNonProofRenderers(root);
 
             BuildFlatCitySurface(root);
             BuildPrimaryAxis(root);
@@ -49,14 +50,49 @@ namespace Eldoria.Presentation
             DisableGameplay(root.gameObject);
         }
 
-        static int HideCanonicalPresentationRenderers(Transform canonicalRoot)
+        static int CloneCanonicalHeroBastion(Transform proofRoot,Vector3 offset)
+        {
+            var sources=new System.Collections.Generic.HashSet<GameObject>();
+            foreach(var t in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+            {
+                if(t==null||t==proofRoot)continue;
+                string n=t.name.ToLowerInvariant();
+                bool hero=n.StartsWith("bastion ·")||n.StartsWith("valoria · bastion hero");
+                if(!hero)continue;
+
+                // Clone only the highest object in a same-family chain to avoid duplicate child meshes.
+                var p=t.parent;
+                bool parentHero=false;
+                while(p!=null)
+                {
+                    string pn=p.name.ToLowerInvariant();
+                    if(pn.StartsWith("bastion ·")||pn.StartsWith("valoria · bastion hero")){parentHero=true;break;}
+                    p=p.parent;
+                }
+                if(!parentHero && t.GetComponentInChildren<Renderer>(true)!=null)sources.Add(t.gameObject);
+            }
+
+            int count=0;
+            foreach(var source in sources)
+            {
+                var clone=Object.Instantiate(source);
+                clone.name="Valoria · Flat Citadel · hero clone · "+source.name;
+                clone.transform.position+=offset;
+                clone.transform.SetParent(proofRoot,true);
+                foreach(var col in clone.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                foreach(var h in clone.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
+                count++;
+            }
+            return count;
+        }
+
+        static int HideAllNonProofRenderers(Transform proofRoot)
         {
             int count=0;
-            foreach(var r in canonicalRoot.GetComponentsInChildren<Renderer>(true))
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
-                if(r==null || !r.enabled) continue;
-                string chain=Chain(r.transform);
-                if(chain.Contains("flat citadel proof")) continue;
+                if(r==null||!r.enabled)continue;
+                if(r.transform.IsChildOf(proofRoot))continue;
                 r.enabled=false;
                 count++;
             }
