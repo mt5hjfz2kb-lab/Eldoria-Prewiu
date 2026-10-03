@@ -84,7 +84,7 @@ jobs:
           $dest="$env:GITHUB_WORKSPACE\\Unity\\Assets\\Resources\\Valoria\\SurfaceCellExternal"
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           $headers=@{'User-Agent'='Eldoria-ShellV2/1.0'}
-          foreach($asset in @(@{id='rock_boulder_dry';prefix='rock'},@{id='dirt';prefix='dirt'})){
+          foreach($asset in @(@{id='rock_boulder_dry';prefix='rock'},@{id='dirt';prefix='dirt'},@{id='stone_block_wall';prefix='stone'})){
             $payload=Invoke-RestMethod -Headers $headers -Uri ("https://api.polyhaven.com/files/"+$asset.id)
             $json=$payload | ConvertTo-Json -Depth 50
             $urls=[regex]::Matches($json,'https://[^"]+') | ForEach-Object { $_.Value.Replace('\\u0026','&') } | Select-Object -Unique
