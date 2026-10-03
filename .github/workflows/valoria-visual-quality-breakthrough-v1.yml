@@ -73,7 +73,18 @@ jobs:
           }
       - name: Validate Toolchain Automation v2 route
         shell: powershell
-        run: node tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\\valoria-breakthrough-plan.json"
+        run: |
+          $node=Get-Command node.exe -ErrorAction SilentlyContinue
+          if($node){$nodeExe=$node.Source}
+          else {
+            $runnerRoot=Split-Path (Split-Path $env:RUNNER_TEMP -Parent) -Parent
+            $nodeExe=Get-ChildItem (Join-Path $runnerRoot 'externals') -Recurse -Filter node.exe -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match 'node(20|24).*bin' } |
+              Sort-Object FullName -Descending |
+              Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $nodeExe){throw 'Node runtime unavailable for mandatory Toolchain Automation v2 planner'}
+          & $nodeExe tools/plan-art-production.mjs pipeline/art-production-request.json "$env:RUNNER_TEMP\valoria-breakthrough-plan.json"
       - name: Capture breakthrough complete frame
         shell: powershell
         run: |
