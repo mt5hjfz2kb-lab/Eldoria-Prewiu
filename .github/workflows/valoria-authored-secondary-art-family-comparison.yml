@@ -51,7 +51,11 @@ jobs:
           $dest="$env:GITHUB_WORKSPACE\Unity\Assets\Resources\Valoria\AuthoredSecondaryCandidates"
           New-Item -ItemType Directory -Force -Path $dest | Out-Null
           Copy-Item "$src\*.glb" $dest -Force
-          if((Get-ChildItem $dest -Filter '*.glb').Count -lt 6){throw 'Expected six authored candidate GLBs'}
+          if((Get-ChildItem $dest -Filter '*.glb').Count -lt 8){throw 'Expected authored candidate GLBs including source support v2'}
+          $matDest=Join-Path $dest 'Materials'
+          New-Item -ItemType Directory -Force -Path $matDest | Out-Null
+          Copy-Item "$src\materials\*.png" $matDest -Force
+          if((Get-ChildItem $matDest -Filter '*.png').Count -lt 6){throw 'Expected six authored shared-atlas textures'}
       - name: Stage shared CC0 PBR maps
         shell: powershell
         run: |
