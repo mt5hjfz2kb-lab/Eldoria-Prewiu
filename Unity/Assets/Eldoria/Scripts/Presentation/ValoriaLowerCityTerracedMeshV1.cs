@@ -52,20 +52,55 @@ namespace Eldoria.Presentation
                 V(-4.25f,-2.05f),V(-2.95f,-2.65f),V(-1.35f,-2.35f),V(0f,-2.75f),
                 V(1.40f,-2.38f),V(2.95f,-2.62f),V(4.30f,-2.00f),V(4.55f,-.65f),
                 V(3.75f,.55f),V(2.15f,1.05f),V(.10f,.88f),V(-2.05f,1.02f),V(-3.75f,.52f),V(-4.55f,-.62f)
-            },-.18f,-.72f,-1.42f,earth,rock);
+            },-.18f,-.56f,-.98f,earth,rock);
 
             // West economic terrace, pulled inward and connected to the central landing.
             Create(root,"west economic",new[]{
                 V(-9.00f,-4.45f),V(-7.55f,-5.10f),V(-5.85f,-4.75f),V(-4.55f,-3.85f),
                 V(-4.15f,-2.55f),V(-4.65f,-1.45f),V(-5.85f,-.95f),V(-7.35f,-1.10f),V(-8.75f,-2.05f)
-            },-.20f,-.82f,-1.48f,earth,rock);
+            },-.20f,-.60f,-1.04f,earth,rock);
 
             // East military terrace.
             Create(root,"east military",new[]{
                 V(4.05f,-2.75f),V(4.65f,-4.25f),V(5.95f,-5.05f),V(7.65f,-5.15f),
                 V(8.95f,-4.20f),V(8.90f,-2.75f),V(7.95f,-1.65f),V(6.35f,-1.28f),V(4.85f,-1.72f)
-            },-.22f,-.84f,-1.50f,earth,rock);
+            },-.22f,-.62f,-1.06f,earth,rock);
 
+        }
+
+        static void DressEdges(Transform root)
+        {
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art==null)return;
+
+            var rock=art.SlavicBoulder??art.SlavicFlatRock;
+            if(rock!=null)
+            {
+                AddDecor(root,rock,"central edge west",new Vector3(-3.15f,-.62f,-2.15f),1.85f,1.05f,26f);
+                AddDecor(root,rock,"central edge east",new Vector3(3.10f,-.64f,-2.18f),1.85f,1.05f,206f);
+                AddDecor(root,rock,"west edge outer",new Vector3(-8.15f,-.64f,-4.15f),1.95f,1.10f,38f);
+                AddDecor(root,rock,"west edge inner",new Vector3(-5.15f,-.58f,-3.65f),1.65f,.92f,74f);
+                AddDecor(root,rock,"east edge inner",new Vector3(5.35f,-.60f,-3.72f),1.65f,.92f,238f);
+                AddDecor(root,rock,"east edge outer",new Vector3(8.10f,-.66f,-4.28f),1.95f,1.10f,314f);
+            }
+
+            if(art.SlavicBush!=null)
+            {
+                AddDecor(root,art.SlavicBush,"west scrub a",new Vector3(-8.05f,-.02f,-3.20f),.95f,1.10f,18f);
+                AddDecor(root,art.SlavicBush,"west scrub b",new Vector3(-5.15f,-.02f,-2.10f),.80f,.95f,66f);
+                AddDecor(root,art.SlavicBush,"east scrub a",new Vector3(5.15f,-.02f,-2.35f),.80f,.95f,208f);
+                AddDecor(root,art.SlavicBush,"east scrub b",new Vector3(8.05f,-.02f,-3.45f),.95f,1.10f,292f);
+            }
+        }
+
+        static void AddDecor(Transform root,GameObject source,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
+        {
+            var go=ValoriaKit.BenchmarkPieceIntegrated("Valoria · terraced edge · "+role,source,ground,footprint,maxHeight,
+                Quaternion.Euler(0f,yaw,0f),new Color(.48f,.48f,.44f,1f));
+            if(go==null)return;
+            go.transform.SetParent(root,true);
+            foreach(var c in go.GetComponentsInChildren<Collider>(true))c.enabled=false;
+            foreach(var h in go.GetComponentsInChildren<WorldHotspot>(true))Object.DestroyImmediate(h);
         }
 
         static Vector2 V(float x,float z)=>new Vector2(x,z);
