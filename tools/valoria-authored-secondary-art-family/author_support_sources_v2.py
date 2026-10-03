@@ -13,7 +13,11 @@ REPORT=os.environ.get("ELDORIA_ASF_SUPPORT_REPORT",os.path.join(ROOT,"pipeline",
 os.makedirs(OUT,exist_ok=True);os.makedirs(os.path.dirname(REPORT),exist_ok=True)
 
 def reset():
-    bpy.ops.wm.read_factory_settings(use_empty=True)
+    # Keep the shared authored material/image library alive across wall/gate imports.
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
+    for mesh in list(bpy.data.meshes):
+        if mesh.users==0:bpy.data.meshes.remove(mesh)
 
 def mesh_objects():
     return [o for o in bpy.context.scene.objects if o.type=="MESH" and o.data]
