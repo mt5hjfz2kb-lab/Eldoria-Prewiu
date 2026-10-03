@@ -48,6 +48,7 @@ namespace Eldoria.Presentation
             BuildWallContinuityBase(root);
             BuildConsolidatedWall(root);
             BuildBastionArchitecturalInterface(root);
+            BuildFunctionalFoundationsAndWorkCues(root);
             BuildGroundEdgeIntegration(root);
             BuildPerimeterLife(root);
             ApplyAtmosphere();
@@ -174,15 +175,15 @@ namespace Eldoria.Presentation
             // Low crenellation cap: repeated at a small visual scale so the wall reads medieval
             // without repeating full high-contrast tower modules.
             float length=alongX?size.x:size.z;
-            int count=Mathf.Max(2,Mathf.FloorToInt(length/.82f));
+            int count=Mathf.Max(2,Mathf.FloorToInt(length/.72f));
             for(int i=0;i<count;i++)
             {
                 float u=(i+.5f)/count-.5f;
                 var m=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 m.name="Valoria · Art Consolidation · "+role+" merlon";
                 m.transform.SetParent(root,true);
-                m.transform.position=p+(alongX?new Vector3(u*length,.58f,0):new Vector3(0,.58f,u*length));
-                m.transform.localScale=alongX?new Vector3(.42f,.38f,.68f):new Vector3(.68f,.38f,.42f);
+                m.transform.position=p+(alongX?new Vector3(u*length,.49f,0):new Vector3(0,.49f,u*length));
+                m.transform.localScale=alongX?new Vector3(.30f,.22f,.62f):new Vector3(.62f,.22f,.30f);
                 m.GetComponent<Renderer>().sharedMaterial=mat;
                 var mc=m.GetComponent<Collider>();if(mc!=null)Object.DestroyImmediate(mc);
             }
@@ -301,6 +302,46 @@ namespace Eldoria.Presentation
         {
             AddModule(root,source,"Bastion "+role,p,span,maxHeight,yaw,Stone);
             BastionInterfaceModules++;
+        }
+
+        static void BuildFunctionalFoundationsAndWorkCues(Transform root)
+        {
+            var stone=ValoriaKit.DetailedSurfaceMaterial(new Color(.52f,.50f,.46f,1f),"stone",new Vector2(1.9f,1.9f),1.0f);
+            var earth=ValoriaKit.DetailedSurfaceMaterial(new Color(.43f,.34f,.23f,1f),"earth",new Vector2(2.2f,2.2f),.92f);
+
+            AddFoundation(root,"Aserradero foundation",new Vector3(-5.95f,.155f,-1.55f),new Vector3(4.45f,.10f,3.45f),stone);
+            AddFoundation(root,"Cuartel foundation",new Vector3( 5.95f,.155f,-1.75f),new Vector3(4.55f,.10f,3.55f),stone);
+            AddFoundation(root,"Granero foundation",new Vector3(-2.75f,.155f,-4.38f),new Vector3(3.72f,.10f,3.05f),stone);
+
+            // Work areas remain low/readable and sit inside active parcel envelopes.
+            AddFoundation(root,"Aserradero work strip",new Vector3(-7.25f,.135f,-3.18f),new Vector3(2.25f,.055f,.86f),earth);
+            AddFoundation(root,"Cuartel drill strip",new Vector3( 6.55f,.135f,-3.38f),new Vector3(2.65f,.055f,.92f),earth);
+
+            var art=ValoriaExternalAssetLibrary.Load();
+            if(art!=null&&art.Firewood!=null)
+            {
+                foreach(var s in new[]{
+                    new Vector4(-7.55f,-2.85f, 10f,.78f),
+                    new Vector4(-6.85f,-3.02f,188f,.66f)})
+                {
+                    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Art Consolidation · Aserradero timber stock",
+                        art.Firewood,new Vector3(s.x,.18f,s.y),s.w,.62f,Quaternion.Euler(0,s.z,0),new Color(.70f,.55f,.38f,1f));
+                    if(go==null)continue;
+                    go.transform.SetParent(root,true);
+                    foreach(var col in go.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(col);
+                }
+            }
+        }
+
+        static void AddFoundation(Transform root,string role,Vector3 p,Vector3 size,Material mat)
+        {
+            var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name="Valoria · Art Consolidation · "+role;
+            go.transform.SetParent(root,true);
+            go.transform.position=p;
+            go.transform.localScale=size;
+            var r=go.GetComponent<Renderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;
+            var col=go.GetComponent<Collider>();if(col!=null)Object.DestroyImmediate(col);
         }
 
         static void BuildGroundEdgeIntegration(Transform root)
@@ -467,53 +508,14 @@ namespace Eldoria.Presentation
 
         static void NormalizeImportedStone(GameObject go,Color tint)
         {
-            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-            if(lit==null)return;
-
+            var shared=ValoriaKit.DetailedSurfaceMaterial(
+                Color.Lerp(new Color(.59f,.58f,.55f,1f),tint,.20f),
+                "stone",new Vector2(1.75f,1.75f),1.0f);
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
             {
                 var src=renderer.sharedMaterials;
                 var dst=new Material[src.Length];
-                for(int i=0;i<src.Length;i++)
-                {
-                    var old=src[i];
-                    if(old==null){dst[i]=null;continue;}
-
-                    Texture baseMap=null,normal=null;
-                    Vector2 scale=Vector2.one,offset=Vector2.zero;
-                    foreach(string prop in new[]{"_Texture","_BaseMap","_MainTex","_BaseColorTexture","baseColorTexture","_Albedo"})
-                    {
-                        if(!old.HasProperty(prop)||old.GetTexture(prop)==null)continue;
-                        baseMap=old.GetTexture(prop);
-                        try{scale=old.GetTextureScale(prop);offset=old.GetTextureOffset(prop);}catch{}
-                        break;
-                    }
-                    foreach(string prop in new[]{"_BumpMap","_NormalMap","normalTexture"})
-                        if(old.HasProperty(prop)&&old.GetTexture(prop)!=null){normal=old.GetTexture(prop);break;}
-
-                    var m=new Material(lit){name="Valoria Art Consolidation stone · "+old.name};
-                    if(baseMap!=null)
-                    {
-                        if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",baseMap);m.SetTextureScale("_BaseMap",scale);m.SetTextureOffset("_BaseMap",offset);}
-                        if(m.HasProperty("_MainTex")){m.SetTexture("_MainTex",baseMap);m.SetTextureScale("_MainTex",scale);m.SetTextureOffset("_MainTex",offset);}
-                    }
-                    if(normal!=null&&m.HasProperty("_BumpMap"))
-                    {
-                        m.SetTexture("_BumpMap",normal);
-                        m.SetFloat("_BumpScale",.92f);
-                        m.EnableKeyword("_NORMALMAP");
-                    }
-
-                    var baseColor=Color.Lerp(new Color(.73f,.70f,.64f,1f),tint,.22f);
-                    baseColor.a=1f;
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",baseColor);
-                    if(m.HasProperty("_Color"))m.SetColor("_Color",baseColor);
-                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",0f);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",.035f);
-                    if(m.HasProperty("_SpecularHighlights"))m.SetFloat("_SpecularHighlights",1f);
-                    if(m.HasProperty("_EnvironmentReflections"))m.SetFloat("_EnvironmentReflections",1f);
-                    dst[i]=m;
-                }
+                for(int i=0;i<src.Length;i++)dst[i]=shared;
                 renderer.sharedMaterials=dst;
             }
         }
