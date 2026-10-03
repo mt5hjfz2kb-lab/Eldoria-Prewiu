@@ -92,7 +92,8 @@ namespace Eldoria.Presentation
             var mr=go.AddComponent<MeshRenderer>();
             var mat=new Material(shader){name="Valoria Visual Shell v2 · projected valley"};
             mat.SetTexture("_BackplateTex",tex);
-            mat.SetColor("_BackplateTint",new Color(.84f,.88f,.91f,1f));\n            mat.SetFloat("_ContactStrength",.75f);
+            mat.SetColor("_BackplateTint",new Color(.84f,.88f,.91f,1f));
+            mat.SetFloat("_ContactStrength",.75f);
             mr.sharedMaterial=mat;
             mr.shadowCastingMode=ShadowCastingMode.Off;
             mr.receiveShadows=false;
