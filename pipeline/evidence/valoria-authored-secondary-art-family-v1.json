@@ -1,43 +1,63 @@
 {
-  "status": "PASS",
-  "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
-  "source_metrics": {
-    "mesh_objects": 1,
-    "triangles": 49800,
-    "materials": 1,
-    "bytes": 11134796
-  },
-  "aserradero_authored": {
-    "triangles": 49800,
-    "materials": 3,
-    "semantic_polygons": {
-      "stone": 33685,
-      "timber": 7953,
-      "roof": 8162
-    },
-    "bytes": 11365908
-  },
-  "outputs": {
-    "aserradero": {
-      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_Aserradero_v1.glb",
-      "bytes": 11365908
-    },
-    "wall_support": {
-      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_WallSupport_v1.glb",
-      "triangles": 540,
-      "bytes": 39644
-    },
-    "gate_support": {
-      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_GateSupport_v1.glb",
-      "triangles": 672,
-      "bytes": 50896
-    }
-  },
-  "geometry_change_aserradero": false,
-  "shared_language": [
-    "ASF_Stone",
-    "ASF_Timber",
-    "ASF_Roof"
+  "schema_version": 2,
+  "family": "Valoria Authored Secondary Art Family v1",
+  "principles": [
+    "canonical Aserradero geometry preserved",
+    "source-level semantic material slots",
+    "shared stone/timber/infill/blue-slate vocabulary",
+    "metric modular wall/gate support",
+    "beveled support geometry",
+    "zero paid generation"
   ],
-  "tripo_credits": 0
+  "assets": [
+    {
+      "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "triangles": 49800,
+      "vertices": 55752,
+      "semantic_face_counts": {
+        "foundation": 23950,
+        "timber": 0,
+        "roof": 2337,
+        "infill": 23513
+      },
+      "source_image": "Valoria_Aserradero_AP2_v1_basecolor",
+      "file": "Valoria_Authored_Aserradero_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb",
+      "objects": 1,
+      "materials": [
+        "Eldoria_Sawmill_Foundation",
+        "Eldoria_Sawmill_Infill",
+        "Eldoria_Sawmill_Roof",
+        "Eldoria_Sawmill_Timber"
+      ],
+      "bytes": 11214132
+    },
+    {
+      "file": "Valoria_Authored_Wall_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb",
+      "objects": 35,
+      "triangles": 3780,
+      "materials": [
+        "Eldoria_Blue_Slate",
+        "Eldoria_Stone",
+        "Eldoria_Stone_Dark",
+        "Eldoria_Timber"
+      ],
+      "bytes": 270132
+    },
+    {
+      "file": "Valoria_Authored_Gate_v1.glb",
+      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb",
+      "objects": 20,
+      "triangles": 2160,
+      "materials": [
+        "Eldoria_Blue_Slate",
+        "Eldoria_Blue_Slate_Light",
+        "Eldoria_Stone",
+        "Eldoria_Stone_Dark",
+        "Eldoria_Timber"
+      ],
+      "bytes": 155416
+    }
+  ]
 }
