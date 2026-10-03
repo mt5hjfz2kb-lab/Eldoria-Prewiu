@@ -104,11 +104,12 @@ namespace Eldoria.EditorTools
             ValoriaLowerCityTerracedMeshV1.Enabled=blenderCliffProof;
             if(blenderCliffProof)ValoriaLowerCityTerracedMeshV1.Build(root.transform,state);
             int terracePieces=blenderCliffProof?ValoriaLowerCityTerracedMeshV1.PiecesBuilt:0;
-            // v35: the remaining compact stair fragment still read as a detached
-            // foreground prop. Gameplay route/colliders remain authoritative, but the
-            // strongest visual candidate no longer renders this redundant lower segment.
-            ValoriaCompactStairMeshV1.Enabled=false;
-            int stairPieces=0;
+            // v36: Build must run because it suppresses the legacy gameplay stair
+            // renderers before drawing the compact visual-only upper approach. Disabling
+            // the component in v35 accidentally exposed the full legacy staircase.
+            ValoriaCompactStairMeshV1.Enabled=true;
+            ValoriaCompactStairMeshV1.Build(root.transform,state);
+            int stairPieces=1;
             int terrainEdgeRocks=0;
 
             Physics.SyncTransforms();
