@@ -1,3 +1,4 @@
+# full-height histogram revision 2
 import bpy, json, os
 from collections import defaultdict
 
