@@ -36,12 +36,12 @@ namespace Eldoria.Presentation
             rock=ValoriaKit.ExternalPbrSurfaceMaterial("rock",new Color(.76f,.75f,.69f),new Vector2(.52f,.52f),.035f,.95f);
             stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.77f,.75f,.68f),new Vector2(.54f,.54f),.035f,.92f);
             if(ground==null||rock==null||stone==null)throw new Exception("Composition frame shared PBR maps missing.");
-            BuildConnectedBedrock();
+            BuildAuthoredCityMass();
             RestoreFunctional("Aserradero · dedicated sawmill");
             RestoreFunctional("Cuartel · dedicated barracks");
             Add("Valoria/Valoria_Granero_BIII_v1","civic granary",new Vector3(-2.6f,.34f,-6.1f),3.3f,2.7f,16f);
             BuildTerracedMasonry();
-            Add("Valoria/MidTierArchitectureKit_v1/Piece03","upper civic service",new Vector3(-5.15f,1.7f,5.8f),2.1f,2.55f,12f);
+            BuildEmbeddedDistrict();
             BuildRoute();
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
@@ -73,56 +73,79 @@ namespace Eldoria.Presentation
             y=Mathf.Lerp(y,Mathf.Lerp(.35f,2.35f,Smooth(-.3f,5.9f,z))-.13f,route*segment*.8f);
             return y;
         }
-        static void BuildConnectedBedrock()
+        static void BuildAuthoredCityMass()
         {
-            const int n=145;
-            var vertices=new Vector3[n*n];var uvs=new Vector2[n*n];
-            var tris=new System.Collections.Generic.List<int>();
-            for(int j=0;j<n;j++)for(int i=0;i<n;i++)
-            {
-                float x=Mathf.Lerp(-13.8f,13.8f,i/(float)(n-1));
-                // The visible perimeter is a fractured mountain edge, not a rectangular board.
-                float front=-8.15f+.48f*Mathf.Sin(x*.63f)+.31f*Mathf.Sin(x*1.72f)
-                    +1.3f*Mathf.Pow(Mathf.Abs(x)/13.8f,2f);
-                float z=Mathf.Lerp(front,18.5f,j/(float)(n-1));
-                int k=j*n+i;vertices[k]=new Vector3(x,Height(x,z),z);uvs[k]=new Vector2(x*.34f,z*.34f);
-            }
-            for(int j=0;j<n-1;j++)for(int i=0;i<n-1;i++)
-            {
-                int a=j*n+i,b=a+1,c=a+n,d=c+1;
-                tris.Add(a);tris.Add(c);tris.Add(b);tris.Add(b);tris.Add(c);tris.Add(d);
-            }
-            var mesh=new Mesh{name="Valoria v2 · one connected city bedrock",indexFormat=IndexFormat.UInt32};
-            mesh.vertices=vertices;mesh.uv=uvs;mesh.triangles=tris.ToArray();
-            mesh.RecalculateNormals();mesh.RecalculateTangents();mesh.RecalculateBounds();
-            var go=new GameObject(mesh.name);go.transform.SetParent(root,true);
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=ground;
-            VisualPieces++;
-            BuildCliffRim(vertices,n);
+            // Camera-authored Hero-to-city transition: three inhabited shelves, not one exposed terrain slab.
+            TerraceDeck("lower inhabited shelf",-10.8f,10.8f,-7.0f,-1.1f,.22f,.35f);
+            TerraceDeck("middle civic shelf",-9.1f,9.1f,-1.4f,4.0f,1.18f,1.28f);
+            TerraceDeck("upper hero shelf",-7.4f,7.4f,3.75f,7.25f,2.18f,2.28f);
+
+            RetainingFront("lower retaining city wall",-10.8f,10.8f,-1.12f,-2.25f,.32f,8);
+            RetainingFront("middle retaining city wall",-9.1f,9.1f,3.98f,.28f,1.30f,7);
+            RetainingFront("upper retaining hero wall",-7.4f,7.4f,7.18f,1.20f,2.31f,6);
+
+            // Continuous rock shoulders close the shelves into the mountain and conceal hard joins.
+            RockShoulder("west mountain shoulder",-11.7f,-7.0f,-6.9f,7.2f);
+            RockShoulder("east mountain shoulder",7.0f,11.7f,-6.9f,7.2f);
+            RockShoulder("front mountain apron",-10.9f,10.9f,-9.0f,-6.75f);
         }
-        static void BuildCliffRim(Vector3[] surface,int n)
+        static void TerraceDeck(string name,float left,float right,float front,float back,float y,float crown)
         {
-            // The same top-edge vertices anchor the visible rock section. No independent slab seam.
-            var v=new Vector3[n*2];var uv=new Vector2[v.Length];
-            var tris=new System.Collections.Generic.List<int>();
-            for(int i=0;i<n;i++)
-            {
-                var top=surface[i];
-                float depth=-5.0f-.63f*Mathf.Sin(i*.37f)-.38f*Mathf.Sin(i*.93f);
-                v[2*i]=top;v[2*i+1]=new Vector3(top.x,depth,top.z-.7f);
-                uv[2*i]=new Vector2(top.x*.42f,top.y*.42f);
-                uv[2*i+1]=new Vector2(top.x*.42f,depth*.42f);
-                if(i==0)continue;
-                int k=2*i;
-                tris.Add(k-2);tris.Add(k);tris.Add(k-1);
-                tris.Add(k);tris.Add(k+1);tris.Add(k-1);
-            }
-            var m=new Mesh{name="Valoria v2 · integrated foreground mountain section",indexFormat=IndexFormat.UInt32};
-            m.vertices=v;m.uv=uv;m.triangles=tris.ToArray();m.RecalculateNormals();m.RecalculateBounds();
+            var v=new[]{
+                new Vector3(left,y,front),new Vector3(right,y,front),
+                new Vector3(left,crown,back),new Vector3(right,crown,back)
+            };
+            var uv=new[]{new Vector2(0,0),new Vector2((right-left)*.32f,0),
+                         new Vector2(0,(back-front)*.32f),new Vector2((right-left)*.32f,(back-front)*.32f)};
+            var m=new Mesh{name="Valoria v2 · "+name};
+            m.vertices=v;m.uv=uv;m.triangles=new[]{0,2,1,1,2,3};m.RecalculateNormals();m.RecalculateTangents();m.RecalculateBounds();
             var go=new GameObject(m.name);go.transform.SetParent(root,true);
-            go.AddComponent<MeshFilter>().sharedMesh=m;go.AddComponent<MeshRenderer>().sharedMaterial=rock;
-            VisualPieces++;
+            go.AddComponent<MeshFilter>().sharedMesh=m;go.AddComponent<MeshRenderer>().sharedMaterial=ground;VisualPieces++;
+        }
+        static void RetainingFront(string name,float left,float right,float z,float bottom,float top,int bays)
+        {
+            var verts=new System.Collections.Generic.List<Vector3>();
+            var uv=new System.Collections.Generic.List<Vector2>();
+            var tris=new System.Collections.Generic.List<int>();
+            float w=(right-left)/bays;
+            void Quad(float x0,float y0,float x1,float y1,float dz)
+            {
+                int k=verts.Count;
+                verts.Add(new Vector3(x0,y0,z+dz));verts.Add(new Vector3(x1,y0,z+dz));
+                verts.Add(new Vector3(x0,y1,z+dz));verts.Add(new Vector3(x1,y1,z+dz));
+                uv.Add(new Vector2(x0*.48f,y0*.48f));uv.Add(new Vector2(x1*.48f,y0*.48f));
+                uv.Add(new Vector2(x0*.48f,y1*.48f));uv.Add(new Vector2(x1*.48f,y1*.48f));
+                tris.Add(k);tris.Add(k+2);tris.Add(k+1);tris.Add(k+1);tris.Add(k+2);tris.Add(k+3);
+            }
+            for(int i=0;i<bays;i++)
+            {
+                float a=left+i*w,b=a+w, pier=w*.18f, spring=bottom+(top-bottom)*.58f;
+                Quad(a,bottom,b,top,.04f);
+                // Recessed arch rhythm makes the support read as occupied architecture, not a bare cliff.
+                Quad(a,bottom,a+pier,top,-.11f);Quad(b-pier,bottom,b,top,-.11f);
+                Quad(a+pier,spring,b-pier,top,-.11f);
+            }
+            var mesh=new Mesh{name="Valoria v2 · "+name,indexFormat=IndexFormat.UInt32};
+            mesh.SetVertices(verts);mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var obj=new GameObject(mesh.name);obj.transform.SetParent(root,true);
+            obj.AddComponent<MeshFilter>().sharedMesh=mesh;obj.AddComponent<MeshRenderer>().sharedMaterial=stone;VisualPieces++;
+        }
+        static void RockShoulder(string name,float left,float right,float front,float back)
+        {
+            const int rows=7, cols=7;
+            var v=new Vector3[rows*cols];var uv=new Vector2[v.Length];var tris=new System.Collections.Generic.List<int>();
+            for(int j=0;j<rows;j++)for(int i=0;i<cols;i++)
+            {
+                float tx=i/(float)(cols-1),tz=j/(float)(rows-1);
+                float x=Mathf.Lerp(left,right,tx),z=Mathf.Lerp(front,back,tz);
+                float edge=Mathf.Min(tx,1f-tx);
+                float y=-2.35f+1.15f*tz+Mathf.Sin((x+z)*.73f)*.20f+edge*.55f;
+                int k=j*cols+i;v[k]=new Vector3(x,y,z);uv[k]=new Vector2(x*.4f,z*.4f);
+            }
+            for(int j=0;j<rows-1;j++)for(int i=0;i<cols-1;i++)
+            {int a=j*cols+i,b=a+1,c=a+cols,d=c+1;tris.Add(a);tris.Add(c);tris.Add(b);tris.Add(b);tris.Add(c);tris.Add(d);}
+            var m=new Mesh{name="Valoria v2 · "+name};m.vertices=v;m.uv=uv;m.triangles=tris.ToArray();m.RecalculateNormals();m.RecalculateBounds();
+            var go=new GameObject(m.name);go.transform.SetParent(root,true);go.AddComponent<MeshFilter>().sharedMesh=m;go.AddComponent<MeshRenderer>().sharedMaterial=rock;VisualPieces++;
         }
         static void RestoreFunctional(string name)
         {
@@ -178,6 +201,19 @@ namespace Eldoria.Presentation
             obj.AddComponent<MeshFilter>().sharedMesh=mesh;
             obj.AddComponent<MeshRenderer>().sharedMaterial=stone;
             VisualPieces++;
+        }
+        static void BuildEmbeddedDistrict()
+        {
+            // Architecture is embedded in the retaining sequence so each terrace reads as a district, not an empty pad.
+            Add("Valoria/MidTierArchitectureKit_v1/Piece01","lower west workshop row",new Vector3(-6.85f,.32f,-4.85f),2.35f,2.35f,18f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece02","lower east military row",new Vector3(6.55f,.32f,-4.55f),2.45f,2.45f,342f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece04","lower civic edge",new Vector3(2.85f,.34f,-5.35f),2.15f,2.20f,10f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece03","middle west housing",new Vector3(-6.15f,1.31f,.65f),2.35f,2.55f,14f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece01","middle east housing",new Vector3(6.05f,1.31f,.90f),2.20f,2.40f,346f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece02","upper west service",new Vector3(-5.25f,2.31f,4.95f),2.05f,2.35f,16f);
+            Add("Valoria/MidTierArchitectureKit_v1/Piece04","upper east service",new Vector3(5.15f,2.31f,5.05f),2.05f,2.35f,344f);
+            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","west terrace corner",new Vector3(-8.05f,.35f,-1.15f),2.2f,1.85f,92f);
+            Add("Valoria/StoneArchitectureKit_v1/CornerWallL","east terrace corner",new Vector3(8.05f,.35f,-1.15f),2.2f,1.85f,268f);
         }
         static void BuildRoute()
         {
