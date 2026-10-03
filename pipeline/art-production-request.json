@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-asset-coherence-game-presentation-v1",
-  "asset_or_sector": "Valoria fixed Flat Citadel: shared asset response, fused-rock interface, contained edge, real HUD and activity",
+  "enabled": true,
+  "request_id": "valoria-visual-quality-breakthrough-v1",
+  "asset_or_sector": "Valoria locked Flat Citadel: authored defensive ring, secondary architecture grounding, Bastion interface transitions, contained exterior",
   "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -17,7 +17,7 @@
     "blender_material_consolidation": false,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
-    "unity_decals": true,
+    "unity_decals": false,
     "unity_probes": false,
     "unity_terrain_blending": true
   },
@@ -28,5 +28,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Unity surface first. Preserve canonical albedo/normal maps, localized world-height rock blending, low relief outside reservations, real live HUD controls. No Tripo, no macrocomposition change. Reuse Art Consolidation capturer/workflow. Closed TECH PASS / VISUAL FAIL; archived reproducible implementation 1071454 / run 37143754581. No automatic continuation."
+  "notes": "Visual Quality Breakthrough v1 candidate 1. Reuse canonical authored GLBs; preserve Flat Citadel and parcel map; no paid tools. Structural change must be obvious at first glance."
 }
