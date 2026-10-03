@@ -1,53 +1,43 @@
 {
-  "schema_version": 1,
-  "family": "Valoria Authored Secondary Art Family v1",
-  "principles": [
-    "deterministic metric modules",
-    "beveled hard-surface edges",
-    "weighted normals",
-    "shared stone/timber/plaster/blue-slate material vocabulary",
-    "source-level semantic separation"
-  ],
-  "assets": [
-    {
-      "file": "Valoria_Authored_Aserradero_v1.glb",
-      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Aserradero_v1.glb",
-      "objects": 102,
-      "triangles": 11552,
-      "materials": [
-        "Eldoria_Blue_Slate",
-        "Eldoria_Blue_Slate_Light",
-        "Eldoria_Iron",
-        "Eldoria_Stone",
-        "Eldoria_Stone_Dark",
-        "Eldoria_Timber",
-        "Eldoria_Timber_Light",
-        "Eldoria_Warm_Plaster"
-      ]
+  "status": "PASS",
+  "source": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+  "source_metrics": {
+    "mesh_objects": 1,
+    "triangles": 49800,
+    "materials": 1,
+    "bytes": 11134796
+  },
+  "aserradero_authored": {
+    "triangles": 49800,
+    "materials": 3,
+    "semantic_polygons": {
+      "stone": 33685,
+      "timber": 7953,
+      "roof": 8162
     },
-    {
-      "file": "Valoria_Authored_Wall_v1.glb",
-      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Wall_v1.glb",
-      "objects": 33,
-      "triangles": 3564,
-      "materials": [
-        "Eldoria_Stone",
-        "Eldoria_Stone_Dark"
-      ]
+    "bytes": 11365908
+  },
+  "outputs": {
+    "aserradero": {
+      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_Aserradero_v1.glb",
+      "bytes": 11365908
     },
-    {
-      "file": "Valoria_Authored_Gate_v1.glb",
-      "path": "/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_Authored_Gate_v1.glb",
-      "objects": 30,
-      "triangles": 3240,
-      "materials": [
-        "Eldoria_Blue_Slate",
-        "Eldoria_Iron",
-        "Eldoria_Stone",
-        "Eldoria_Stone_Dark",
-        "Eldoria_Timber",
-        "Eldoria_Timber_Light"
-      ]
+    "wall_support": {
+      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_WallSupport_v1.glb",
+      "triangles": 540,
+      "bytes": 39644
+    },
+    "gate_support": {
+      "path": "pipeline/candidates/valoria-authored-secondary-art-family-v1/Valoria_ASF_GateSupport_v1.glb",
+      "triangles": 672,
+      "bytes": 50896
     }
-  ]
+  },
+  "geometry_change_aserradero": false,
+  "shared_language": [
+    "ASF_Stone",
+    "ASF_Timber",
+    "ASF_Roof"
+  ],
+  "tripo_credits": 0
 }
