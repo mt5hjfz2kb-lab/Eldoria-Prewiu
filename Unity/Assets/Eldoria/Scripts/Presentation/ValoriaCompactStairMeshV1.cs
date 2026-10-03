@@ -69,29 +69,64 @@ namespace Eldoria.Presentation
 
         static Mesh BuildSupportMesh()
         {
-            var v=new List<Vector3>{
-                new Vector3(-1.48f,.24f,-.38f),
-                new Vector3( 1.48f,.24f,-.38f),
-                new Vector3( 2.18f,2.18f,5.78f),
-                new Vector3(-2.18f,2.18f,5.78f),
-                new Vector3(-1.78f,-.52f,-.52f),
-                new Vector3( 1.78f,-.52f,-.52f),
-                new Vector3( 2.55f,.86f,5.95f),
-                new Vector3(-2.55f,.86f,5.95f)
-            };
-            var uv=new List<Vector2>{
-                new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),new Vector2(0,1),
-                new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),new Vector2(0,1)
-            };
-            var tris=new List<int>{
-                0,2,1,0,3,2,
-                4,5,6,4,6,7,
-                0,1,5,0,5,4,
-                1,2,6,1,6,5,
-                2,3,7,2,7,6,
-                3,0,4,3,4,7
-            };
-            var mesh=new Mesh{name="Valoria Compact Stair Rock Support v1"};
+            // v16: follow the stair rise with a faceted rock spine instead of one broad
+            // trapezoid. This keeps the support visually attached to the compact terrace
+            // while breaking the artificial grey ramp silhouette at the official camera.
+            var z=new[]{-.52f,.92f,2.38f,3.86f,5.95f};
+            var half=new[]{1.72f,1.86f,2.04f,2.24f,2.48f};
+            var topY=new[]{.22f,.66f,1.10f,1.56f,2.16f};
+            var bottomY=new[]{-.50f,-.36f,-.12f,.26f,.82f};
+
+            var v=new List<Vector3>();
+            var uv=new List<Vector2>();
+            var tris=new List<int>();
+
+            for(int i=0;i<z.Length;i++)
+            {
+                float wobble=(i%2==0?-.10f:.08f);
+                float left=-half[i]+wobble;
+                float right=half[i]+wobble*.45f;
+                v.Add(new Vector3(left,topY[i],z[i]));
+                v.Add(new Vector3(right,topY[i],z[i]));
+                v.Add(new Vector3(left-.24f,bottomY[i],z[i]-.05f));
+                v.Add(new Vector3(right+.24f,bottomY[i],z[i]-.05f));
+                float u=i/(float)(z.Length-1);
+                uv.Add(new Vector2(0f,u));
+                uv.Add(new Vector2(1f,u));
+                uv.Add(new Vector2(0f,u));
+                uv.Add(new Vector2(1f,u));
+            }
+
+            for(int i=0;i<z.Length-1;i++)
+            {
+                int a=i*4;
+                int b=(i+1)*4;
+
+                // narrow top shoulder under the stair
+                tris.Add(a);tris.Add(b+1);tris.Add(a+1);
+                tris.Add(a);tris.Add(b);tris.Add(b+1);
+
+                // left fractured face
+                tris.Add(a+2);tris.Add(b);tris.Add(a);
+                tris.Add(a+2);tris.Add(b+2);tris.Add(b);
+
+                // right fractured face
+                tris.Add(a+1);tris.Add(b+1);tris.Add(a+3);
+                tris.Add(a+3);tris.Add(b+1);tris.Add(b+3);
+
+                // underside closes the visual mass without affecting gameplay
+                tris.Add(a+2);tris.Add(a+3);tris.Add(b+3);
+                tris.Add(a+2);tris.Add(b+3);tris.Add(b+2);
+            }
+
+            // front and rear caps
+            tris.Add(0);tris.Add(1);tris.Add(3);
+            tris.Add(0);tris.Add(3);tris.Add(2);
+            int e=(z.Length-1)*4;
+            tris.Add(e);tris.Add(e+3);tris.Add(e+1);
+            tris.Add(e);tris.Add(e+2);tris.Add(e+3);
+
+            var mesh=new Mesh{name="Valoria Compact Stair Rock Support v2"};
             mesh.SetVertices(v);mesh.SetTriangles(tris,0);mesh.SetUVs(0,uv);
             mesh.RecalculateNormals();mesh.RecalculateTangents();mesh.RecalculateBounds();
             return mesh;
