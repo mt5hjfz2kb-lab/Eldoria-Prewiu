@@ -135,6 +135,7 @@ namespace Eldoria.EditorTools
                 $"  \"wall_uplift_enabled\": true,\n"+
                 $"  \"ground_uplift_enabled\": true,\n"+
                 $"  \"bastion_integration_uplift_enabled\": true,\n"+
+                $"  \"bastion_integration_uplift_enabled\": true,\n"+
                 $"  \"authored_wall_modules\": {ValoriaFlatCitadelProductionUpliftV1.AuthoredWallModules},\n"+
                 $"  \"authored_wall_towers\": {ValoriaFlatCitadelProductionUpliftV1.AuthoredWallTowers},\n"+
                 $"  \"functional_buildings\": {ValoriaFlatCitadelProductionUpliftV1.FunctionalBuildings},\n"+
