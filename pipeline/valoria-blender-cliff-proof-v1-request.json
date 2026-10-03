@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-blender-cliff-proof-v1",
-  "objective": "Generate and validate Blender lower-city cliff proof v2 with the same zero-credit procedural GLB, but a much tighter fortress-foot fit, shallower depth and hero-rock material so the candidate reads as buried geology rather than a foreground wing.",
+  "objective": "Blender cliff proof v3: narrow the camera-facing toe, widen only into the fortress, reduce visible depth, keep hero-island rock material, remove the audited dangling military banner, and validate the integrated frame.",
   "route": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -23,7 +23,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:56:00+02:00",
+  "triggered_at": "2026-10-03T12:08:00+02:00",
   "retry_seq": 3,
-  "retry_reason": "Blender proof v1b correctly instantiated the generated GLB but visually failed as a large dark wing. v2 keeps Blender generation zero-credit and tests a reduced 8.45 x 2.45 x 3.95 fit, rear burial at z=5.15, and hero-island rock material."
+  "retry_reason": "v2 materially improved fit but still showed a pointed left toe and one dangling legacy banner. v3 reshapes the generated cliff as a buried wedge and removes the exact audited banner residue."
 }
