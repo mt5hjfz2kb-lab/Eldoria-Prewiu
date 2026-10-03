@@ -78,6 +78,10 @@ namespace Eldoria.EditorTools
             int suppressed=SuppressDisconnectedResidue();
             int lowerBoardSuppressed=SuppressLowerPeripheralBoard();
             int auditPruned=PruneAuditConfirmedLowerResidue();
+            // v29 diagnostic: isolate the remaining grey lower tongue. This renderer is
+            // presentation-only Cliff Island geology; hide only this candidate and judge
+            // the full frame before deciding whether the suppression can be promoted.
+            int diagnosticRearSuppressed=SuppressRendererChain("valoria · cliff island · upper bastion rear");
             int premium=ReplaceSecondaryArchitecture(root.transform);
             int localSupports=0;
             int ruins=0;
@@ -118,6 +122,7 @@ namespace Eldoria.EditorTools
                 $"  \"disconnected_renderers_suppressed\": {suppressed},\n"+
                 $"  \"lower_board_renderers_suppressed\": {lowerBoardSuppressed},\n"+
                 $"  \"audit_pruned_renderers\": {auditPruned},\n"+
+                $"  \"diagnostic_upper_bastion_rear_suppressed\": {diagnosticRearSuppressed},\n"+
                 $"  \"core_route_renderers_styled\": {routeStyled},\n"+
                 $"  \"core_side_renderers_toned\": {sideToneAdjusted},\n"+
                 $"  \"core_side_visuals_reframed\": {coreVisualsReframed},\n"+
@@ -355,6 +360,19 @@ namespace Eldoria.EditorTools
                     r.enabled=false;
                     count++;
                 }
+            }
+            return count;
+        }
+
+        static int SuppressRendererChain(string token)
+        {
+            int count=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                if(!Chain(r.transform).Contains(token))continue;
+                r.enabled=false;
+                count++;
             }
             return count;
         }
