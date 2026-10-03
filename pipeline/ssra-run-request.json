@@ -1,6 +1,6 @@
 {
-  "enabled": true,
-  "nonce": "phase1-hero-refine-20261004-a",
+  "enabled": false,
+  "nonce": "closed-20261004",
   "scope": "source-authoring-and-zoom9-mobile",
-  "note": "sequential isolated Hero/Aserradero/wall processing"
+  "note": "Proof closed TECH PASS / VISUAL FAIL / NOT PROMOTED. Do not auto-run."
 }
