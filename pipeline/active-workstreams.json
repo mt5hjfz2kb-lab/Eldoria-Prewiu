@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T12:47:21.946Z",
+  "updated_at": "2026-10-03T12:52:30.393Z",
   "active": [
     {
       "id": "valoria-shell-v2-authored-environment",
@@ -13,7 +13,8 @@
         ".github/workflows/valoria-composition-frame-v2.yml",
         "pipeline/art-production-request.json",
         "docs/VALORIA_SHELL_V2_AUTHORED_ENVIRONMENT_RESULT.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md"
       ],
       "resources": [
         "valoria-production-composition",
