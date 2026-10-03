@@ -67,13 +67,13 @@ namespace Eldoria.Presentation
             var mr=go.AddComponent<MeshRenderer>();
             mr.sharedMaterial=rock;
 
-            // Longitudinal sections climb directly into the existing hero-island foot.
-            // Five vertices per section create a broad rocky ridge with sloped shoulders;
-            // the central stair stays just above this visual-only substrate.
-            var z=new[]{-.35f,.65f,1.65f,2.75f,3.85f,4.95f,5.95f};
-            var half=new[]{3.55f,4.05f,4.55f,4.95f,5.15f,5.05f,4.72f};
-            var topY=new[]{.16f,.38f,.70f,1.00f,1.30f,1.60f,1.88f};
-            var drop=new[]{1.05f,1.12f,1.18f,1.22f,1.24f,1.20f,1.12f};
+            // v27: retract the mass from the camera and grow it into the hero-island foot.
+            // Keep the footprint compact and the vertical drop shallow so the result reads
+            // as a rocky transition under the buildings, not a broad cloth-like foreground skirt.
+            var z=new[]{1.05f,1.85f,2.70f,3.60f,4.50f,5.35f,6.05f};
+            var half=new[]{2.15f,2.55f,3.00f,3.45f,3.85f,4.10f,4.25f};
+            var topY=new[]{.82f,.98f,1.18f,1.38f,1.58f,1.76f,1.92f};
+            var drop=new[]{.46f,.54f,.62f,.72f,.82f,.90f,.96f};
 
             var v=new List<Vector3>();
             var uv=new List<Vector2>();
@@ -81,16 +81,16 @@ namespace Eldoria.Presentation
 
             for(int i=0;i<z.Length;i++)
             {
-                float wobble=Mathf.Sin(i*1.83f)*.14f;
+                float wobble=Mathf.Sin(i*1.83f)*.11f;
                 float h=half[i];
                 float y=topY[i]+Mathf.Sin(i*2.27f)*.035f;
                 float low=y-drop[i];
 
-                v.Add(new Vector3(-h-.48f+wobble,low,z[i]-.08f));
+                v.Add(new Vector3(-h-.26f+wobble,low,z[i]-.05f));
                 v.Add(new Vector3(-h*.58f+wobble*.35f,y-.16f,z[i]+.04f));
                 v.Add(new Vector3(wobble*.18f,y,z[i]));
                 v.Add(new Vector3(h*.58f+wobble*.20f,y-.13f,z[i]-.03f));
-                v.Add(new Vector3(h+.48f+wobble*.15f,low+.04f,z[i]+.07f));
+                v.Add(new Vector3(h+.26f+wobble*.15f,low+.04f,z[i]+.05f));
 
                 for(int k=0;k<5;k++)
                 {
