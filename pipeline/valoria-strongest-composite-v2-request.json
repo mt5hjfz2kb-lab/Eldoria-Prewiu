@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-strongest-composite-v2",
-  "objective": "Validate continuous certified rock approach v25b on current HEAD: combine the cliff-foot stair crop and embedded lower architecture with a five-piece overlapping SteppedRockTerrace geological bridge, removing legacy detached edge dressing.",
+  "objective": "Validate audited lower-frame cleanup v26: remove the detached lower certified rock support pieces and suppress the exact remaining presentation residues identified by visible-renderers.tsv, preserving the middle/upper rock approach and all gameplay authority.",
   "route": "environment_composition",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -30,7 +30,7 @@
     "collider_hotspot_signature",
     "full_frame_before_after"
   ],
-  "triggered_at": "2026-10-03T11:08:00+02:00",
-  "retry_reason": "Previous v25 run targeted SHA 94a8605 before the continuous certified rock approach commit 341db7f. This run validates the actual combined HEAD and is the decisive existing-library proof for lower-city mass continuity.",
-  "retry_seq": 33
+  "triggered_at": "2026-10-03T11:22:00+02:00",
+  "retry_reason": "v25b TECH PASS / VISUAL INSUFFICIENT: artifact audit showed detached lower spine/embedded shelves plus GroundKit L1 retaining edge and restrained reconstruction stock still visible below the city. v26 removes only those audited presentation residues.",
+  "retry_seq": 34
 }
