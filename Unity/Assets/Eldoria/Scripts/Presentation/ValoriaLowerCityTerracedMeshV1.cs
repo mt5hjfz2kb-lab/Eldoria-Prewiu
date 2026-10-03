@@ -52,19 +52,24 @@ namespace Eldoria.Presentation
             if(topRock.HasProperty("_Tiling"))topRock.SetFloat("_Tiling",.070f);
             if(topRock.HasProperty("_Smoothness"))topRock.SetFloat("_Smoothness",.10f);
 
-            // One continuous lower-city shelf now owns stair + economic + military seating.
-            // Keeping one irregular silhouette removes the three-island read while preserving
-            // all gameplay colliders/hotspots underneath as presentation-only geometry.
-            Create(root,"integrated lower city",new[]{
-                // v18: pull the exposed foreground lip back toward the functional buildings.
-                // The lower city keeps one connected visual substrate, but the official camera
-                // now sees a compact mountain terrace rather than a broad presentation board.
-                V(-5.55f,-2.10f),V(-4.65f,-2.34f),V(-3.35f,-2.20f),V(-1.75f,-1.96f),
-                V(0f,-2.12f),V(1.75f,-1.96f),V(3.35f,-2.20f),V(4.68f,-2.34f),
-                V(5.58f,-2.08f),V(5.72f,-1.20f),V(5.25f,-.55f),V(4.25f,-.35f),
-                V(3.55f,.45f),V(2.00f,.92f),V(0f,.84f),V(-2.00f,.95f),
-                V(-3.55f,.48f),V(-4.25f,-.32f),V(-5.25f,-.55f),V(-5.85f,-1.25f)
-            },-.12f,-.48f,-.82f,earth,rock);
+            // v20: replace the broad single foreground board with three compact authored
+            // terraces. Gameplay colliders/routes remain untouched underneath; only the visible
+            // substrate changes. Rock dressing bridges the seams so the result reads as one
+            // excavated mountain base rather than three floating islands.
+            Create(root,"west work terrace",new[]{
+                V(-5.45f,-1.92f),V(-4.45f,-2.10f),V(-3.20f,-1.98f),V(-1.78f,-1.62f),
+                V(-1.62f,-.72f),V(-2.10f,.20f),V(-3.65f,.48f),V(-5.12f,.12f),V(-5.58f,-.72f)
+            },-.14f,-.50f,-.86f,earth,rock);
+
+            Create(root,"central stair foot",new[]{
+                V(-1.82f,-1.55f),V(0f,-1.72f),V(1.82f,-1.55f),V(2.02f,-.70f),
+                V(1.62f,.36f),V(.98f,.86f),V(0f,.92f),V(-.98f,.86f),V(-1.62f,.36f),V(-2.02f,-.70f)
+            },-.10f,-.46f,-.82f,earth,rock);
+
+            Create(root,"east military terrace",new[]{
+                V(1.78f,-1.62f),V(3.20f,-1.98f),V(4.48f,-2.10f),V(5.46f,-1.90f),
+                V(5.58f,-.72f),V(5.10f,.10f),V(3.65f,.46f),V(2.10f,.20f),V(1.62f,-.72f)
+            },-.14f,-.50f,-.86f,earth,rock);
 
             DressEdges(root);
         }
