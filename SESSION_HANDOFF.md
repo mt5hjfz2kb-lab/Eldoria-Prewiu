@@ -1,3 +1,7 @@
+## 2026-10-03 — Valoria Tripo Selective Replacement Proof v1 — BLOCKED
+
+Exact isolated Aserradero JPEG persisted unchanged (1536x1024 / 706818 bytes / SHA26634ed6...). Planner and runner ingress PASS. Tripo Studio connection failed before upload at10s then30s: runs37159272344/37159563795, artifacts11286657877/11286747969. **0 generations / 0 credits; TECH BLOCKED / VISUAL NOT EVALUATED / NOT PROMOTED.** No Unity/geometry change. Requests parked disabled; ownership released. Branch `visual-proof/valoria-tripo-selective-replacement-proof-v1`. Plan/evidence/blocker: `docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md`. Next: secure Tripo existing-account login in reachable cloud browser, reclaim, zero-spend stage+cost check, then only one authorized generation and Blender/Unity9/mobile comparison. No other buildings. Prior accepted VQB remains authoritative.
+
 ## 2026-10-03 — Valoria Authored Gameplay Cell Art Direction v1 — CLOSED
 
 - **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Branch `visual-proof/valoria-authored-gameplay-cell-art-direction-v1` closure `4ec9bd6902e8abacda1f011b45197770a9ee840a`.

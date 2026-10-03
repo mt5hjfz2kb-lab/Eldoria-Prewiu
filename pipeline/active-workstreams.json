@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T22:38:52.241Z",
-  "active": [
+  "updated_at": "2026-10-03T22:49:36.016Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-tripo-selective-replacement-proof-v1",
       "title": "Valoria Tripo Selective Replacement Proof v1",
@@ -23,11 +24,26 @@
       ],
       "claimed_at": "2026-10-03T22:38:52.241Z",
       "base_main_sha": "2590f5effcde0c0cb1bc9e577c4a2e1ed33c77e9",
-      "status": "active",
-      "dependency": "Single Aserradero replacement hypothesis only; preserve VQB Hero/wall/terrain/HUD/gameplay/parcels. Exact image persistence and zero-credit staging first; one generation after visible cost authorization. Zoom9/mobile stop gate; no other buildings."
-    }
-  ],
-  "history": [
+      "status": "blocked",
+      "dependency": "Single Aserradero replacement hypothesis only; preserve VQB Hero/wall/terrain/HUD/gameplay/parcels. Exact image persistence and zero-credit staging first; one generation after visible cost authorization. Zoom9/mobile stop gate; no other buildings.",
+      "completed_at": "2026-10-03T22:49:36.016Z",
+      "branch": "visual-proof/valoria-tripo-selective-replacement-proof-v1",
+      "staging_head": "1a6cd46284b848a36a5a42bdd5ae6a32a23b8f62",
+      "retry_head": "72ff0a6bf09fc68d101f78d81233f1085fcb9113",
+      "run_ids": [
+        37159272344,
+        37159563795
+      ],
+      "artifact_ids": [
+        11286657877,
+        11286747969
+      ],
+      "credits_spent": 0,
+      "generations": 0,
+      "result": "TECH BLOCKED / VISUAL NOT EVALUATED / NOT PROMOTED. Exact JPEG preflight and planner PASS; Windows Studio CDP timed out at10s then30s before upload. Cloud browser Tripo reachable but logged out; secure existing-account login is next prerequisite. No geometry/Unity changes.",
+      "result_doc": "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
+      "next": "Reclaim scope after access; zero-credit upload/model-cost verification then explicit cost authorization, one generation, clean Blender/GLB, matched zoom9/mobile A/B. No other assets."
+    },
     {
       "id": "valoria-source-level-art-direction-proof-v1",
       "title": "Valoria Source-Level Art Direction Proof v1",

@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-tripo-selective-replacement-proof-v1",
   "asset_or_sector": "F1 Aserradero single replacement proof",
   "profile": "environment_new_geometry",
@@ -28,5 +28,6 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Owner-requested bounded source-richness hypothesis after failed source-level/source-atlas/wrapper proofs; does not prove Tripo succeeds. Exact supplied image only. Single generation, technical retry only. Stage at zero credits; no paid authorization recorded until cost verified. Preserve VQB accepted 7a564bc Hero/wall/terrain/HUD/position/gameplay. Stop gate zoom9/mobile; user overrides broad rollout and12/19. F1(-5.95,-1.55),max5.0x4.4."
+  "notes": "Owner-requested bounded source-richness hypothesis after failed source-level/source-atlas/wrapper proofs; does not prove Tripo succeeds. Exact supplied image only. Single generation, technical retry only. Stage at zero credits; no paid authorization recorded until cost verified. Preserve VQB accepted 7a564bc Hero/wall/terrain/HUD/position/gameplay. Stop gate zoom9/mobile; user overrides broad rollout and12/19. F1(-5.95,-1.55),max5.0x4.4.",
+  "result": "BLOCKED BEFORE TRIPO; exact-input and route PASS, no visual verdict."
 }
