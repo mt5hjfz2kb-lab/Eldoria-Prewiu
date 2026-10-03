@@ -321,7 +321,9 @@ namespace Eldoria.EditorTools
                     chain.Contains("vpd · retaining stone face")||
                     chain.Contains("valoria · stair cheek stone")||
                     chain.Contains("valoria · upper landing cheek")||
-                    chain.Contains("valoria · retaining foundation stone");
+                    chain.Contains("valoria · retaining foundation stone")||
+                    chain.Contains("valoria · compactfootprint · processional edge")||
+                    chain.Contains("vpd · groundkit main street");
 
                 // v18: these certified-era hero retaining slabs were useful while the
                 // fortress was isolated, but in the compact full frame they read as
