@@ -20,6 +20,7 @@ namespace Eldoria.Presentation
    HidePrimitiveMerlons(canonicalRoot);
    BuildAuthoredCurtainCaps(root);
    UpliftFunctionalMaterials(canonicalRoot);
+   BuildContainedExteriorEdge(root);
    StripGameplay(root.gameObject);
   }
 
@@ -93,6 +94,104 @@ namespace Eldoria.Presentation
    AdaptStone(go);
    StripGameplay(go);
    AuthoredWallModules++;
+  }
+
+
+  static void BuildContainedExteriorEdge(Transform root)
+  {
+   // Cardinal growth interfaces remain open. Landscape cues sit diagonally/outside the wall
+   // and frame the existing south road instead of filling future parcels.
+   var shader=Shader.Find("Eldoria/Valoria Coherence");
+   var dirt=Resources.Load<Texture2D>("Valoria/SurfaceCellExternal/dirt_diff");
+   if(shader==null||dirt==null)return;
+   var mat=new Material(shader){name="Valoria breakthrough low-relief world edge"};
+   mat.SetTexture("_BaseMap",dirt);mat.SetFloat("_Ground",1f);mat.SetFloat("_BumpScale",0f);
+   mat.SetColor("_BaseColor",new Color(.96f,.94f,.86f,1f));
+
+   BermRibbon(root,"south road west bank",
+      new[]{new Vector2(-3.8f,-7.0f),new Vector2(-4.55f,-9.3f),new Vector2(-5.65f,-12.1f),new Vector2(-7.0f,-15.0f)},1.25f,.22f,mat);
+   BermRibbon(root,"south road east bank",
+      new[]{new Vector2(3.8f,-7.0f),new Vector2(4.55f,-9.3f),new Vector2(5.55f,-12.1f),new Vector2(6.9f,-15.0f)},1.25f,.22f,mat);
+
+   Mound(root,"south-west diagonal mound",new Vector2(-12.4f,-9.5f),new Vector2(3.0f,2.0f),.24f,mat);
+   Mound(root,"south-east diagonal mound",new Vector2(12.2f,-9.2f),new Vector2(2.8f,1.9f),.22f,mat);
+   Mound(root,"north-west diagonal mound",new Vector2(-12.2f,11.5f),new Vector2(2.8f,1.9f),.22f,mat);
+   Mound(root,"north-east diagonal mound",new Vector2(12.0f,11.3f),new Vector2(2.7f,1.8f),.20f,mat);
+
+   var art=ValoriaExternalAssetLibrary.Load();
+   var bush=art!=null?art.SlavicBush:null;
+   if(bush!=null)
+   {
+    var spots=new[]{
+     new Vector4(-4.65f,-8.5f,17f,.88f),new Vector4(-5.55f,-10.7f,63f,.72f),new Vector4(-6.6f,-13.2f,121f,.84f),
+     new Vector4(4.65f,-8.6f,199f,.82f),new Vector4(5.45f,-10.8f,247f,.70f),new Vector4(6.55f,-13.1f,301f,.88f),
+     new Vector4(-12.8f,-9.4f,31f,.92f),new Vector4(-11.5f,-9.8f,156f,.74f),
+     new Vector4(12.4f,-9.1f,221f,.88f),new Vector4(11.2f,-9.5f,284f,.72f),
+     new Vector4(-12.5f,11.5f,75f,.82f),new Vector4(12.3f,11.2f,188f,.82f)
+    };
+    foreach(var v in spots)
+    {
+     var go=ValoriaKit.BenchmarkPieceModulated("Valoria · breakthrough · exterior grouped scrub",bush,
+      new Vector3(v.x,.04f,v.y),v.w,.55f,Quaternion.Euler(0,v.z,0),new Color(.70f,.78f,.56f,1f));
+     if(go==null)continue;go.transform.SetParent(root,true);StripGameplay(go);ExteriorModules++;
+    }
+   }
+
+   var rock=Resources.Load<GameObject>("Valoria/Rescued/RockTerrainSeamFiller");
+   if(rock!=null)
+   {
+    AddExteriorRock(root,rock,"west roadside stone",new Vector3(-5.05f,.02f,-9.7f),.78f,.34f,26f);
+    AddExteriorRock(root,rock,"east roadside stone",new Vector3(5.05f,.02f,-9.8f),.72f,.31f,-19f);
+    AddExteriorRock(root,rock,"north-west field stone",new Vector3(-11.8f,.02f,11.0f),.66f,.28f,67f);
+    AddExteriorRock(root,rock,"north-east field stone",new Vector3(11.7f,.02f,10.9f),.62f,.27f,-72f);
+   }
+  }
+
+  static void BermRibbon(Transform root,string name,Vector2[] path,float width,float height,Material mat)
+  {
+   if(path==null||path.Length<2)return;
+   int n=path.Length;var verts=new Vector3[n*3];var cols=new Color[n*3];
+   for(int i=0;i<n;i++)
+   {
+    Vector2 dir=(i==0?path[1]-path[0]:(i==n-1?path[n-1]-path[n-2]:path[i+1]-path[i-1])).normalized;
+    Vector2 side=new Vector2(-dir.y,dir.x);
+    float taper=Mathf.Sin(Mathf.PI*i/(n-1f));
+    float y=-.025f+height*(.55f+.45f*taper);
+    verts[i*3+0]=new Vector3(path[i].x-side.x*width,-.035f,path[i].y-side.y*width);
+    verts[i*3+1]=new Vector3(path[i].x,y,path[i].y);
+    verts[i*3+2]=new Vector3(path[i].x+side.x*width,-.035f,path[i].y+side.y*width);
+    cols[i*3+0]=new Color(.43f,.55f,.31f);cols[i*3+1]=new Color(.52f,.60f,.34f);cols[i*3+2]=new Color(.43f,.55f,.31f);
+   }
+   var tris=new int[(n-1)*12];int t=0;
+   for(int i=0;i<n-1;i++){int a=i*3,b=(i+1)*3;
+    tris[t++]=a;tris[t++]=b;tris[t++]=a+1;tris[t++]=a+1;tris[t++]=b;tris[t++]=b+1;
+    tris[t++]=a+1;tris[t++]=b+1;tris[t++]=a+2;tris[t++]=a+2;tris[t++]=b+1;tris[t++]=b+2;
+   }
+   MeshObject(root,name,verts,tris,cols,mat);ExteriorModules++;
+  }
+
+  static void Mound(Transform root,string name,Vector2 center,Vector2 radius,float height,Material mat)
+  {
+   const int seg=12;var verts=new Vector3[seg+1];var cols=new Color[seg+1];
+   verts[0]=new Vector3(center.x,height-.02f,center.y);cols[0]=new Color(.50f,.60f,.35f);
+   for(int i=0;i<seg;i++){float a=Mathf.PI*2*i/seg;
+    verts[i+1]=new Vector3(center.x+Mathf.Cos(a)*radius.x,-.035f,center.y+Mathf.Sin(a)*radius.y);
+    cols[i+1]=new Color(.44f,.56f,.32f);}
+   var tris=new int[seg*3];for(int i=0;i<seg;i++){tris[i*3]=0;tris[i*3+1]=i+1;tris[i*3+2]=((i+1)%seg)+1;}
+   MeshObject(root,name,verts,tris,cols,mat);ExteriorModules++;
+  }
+
+  static void MeshObject(Transform root,string name,Vector3[] verts,int[] tris,Color[] colors,Material mat)
+  {
+   var mesh=new Mesh{name="Valoria breakthrough "+name};mesh.vertices=verts;mesh.triangles=tris;mesh.colors=colors;mesh.RecalculateNormals();mesh.RecalculateBounds();
+   var go=new GameObject("Valoria · breakthrough · "+name);go.transform.SetParent(root,true);
+   go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=mat;
+  }
+
+  static void AddExteriorRock(Transform root,GameObject source,string role,Vector3 p,float footprint,float maxHeight,float yaw)
+  {
+   var go=ValoriaKit.BenchmarkPiece("Valoria · breakthrough · "+role,source,p,footprint,maxHeight,Quaternion.Euler(0,yaw,0));
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);ExteriorModules++;
   }
 
   static void UpliftFunctionalMaterials(Transform root)
