@@ -1,8 +1,30 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-03T23:49:00Z",
-  "active": [],
+  "updated_at": "2026-10-03T23:33:00Z",
+  "active": [
+    {
+      "id": "valoria-ssra-v1-variant2-validation",
+      "title": "Valoria SSRA v1 variant 2 validation",
+      "owner": "chat-valoria-semantic-source-reauthoring-v1",
+      "scope": [
+        ".github/workflows/valoria-semantic-source-reauthoring-v1.yml",
+        "pipeline/art-production-request.json",
+        "pipeline/ssra-run-request.json",
+        "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md",
+        "docs/evidence/valoria-semantic-source-reauthoring-v1/manifest.json",
+        "SESSION_HANDOFF.md"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-03T23:33:00Z",
+      "base_main_sha": "9554bad03887e1d550e77f91df688521a6ad40d4",
+      "dependency": "Validate the final source-integrated Hero transition variant at zoom9/mobile only."
+    }
+  ],
   "history": [
     {
       "id": "valoria-semantic-source-reauthoring-proof-v1",
