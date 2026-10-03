@@ -78,19 +78,27 @@ namespace Eldoria.Presentation
                     for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
                     var s=candidate.transform.localScale;
                     candidate.transform.localScale=new Vector3(
-                        s.x*(9.70f/Mathf.Max(.001f,b.size.x)),
-                        s.y*(2.75f/Mathf.Max(.001f,b.size.y)),
-                        s.z*(6.55f/Mathf.Max(.001f,b.size.z)));
+                        s.x*(8.45f/Mathf.Max(.001f,b.size.x)),
+                        s.y*(2.45f/Mathf.Max(.001f,b.size.y)),
+                        s.z*(3.95f/Mathf.Max(.001f,b.size.z)));
 
                     renderers=candidate.GetComponentsInChildren<Renderer>(true);
                     b=renderers[0].bounds;
                     for(int i=1;i<renderers.Length;i++)b.Encapsulate(renderers[i].bounds);
-                    candidate.transform.position+=new Vector3(-b.center.x,1.92f-b.max.y,3.05f-b.max.z);
+                    candidate.transform.position+=new Vector3(-b.center.x,2.05f-b.max.y,5.15f-b.max.z);
+
+                    Material cliffMaterial=rock;
+                    var heroRock=GameObject.Find("Valoria · Cliff Island · upper bastion west");
+                    if(heroRock!=null)
+                    {
+                        var heroRenderer=heroRock.GetComponent<Renderer>();
+                        if(heroRenderer!=null&&heroRenderer.sharedMaterial!=null)cliffMaterial=heroRenderer.sharedMaterial;
+                    }
 
                     foreach(var r in renderers)
                     {
                         var mats=r.sharedMaterials;
-                        for(int i=0;i<mats.Length;i++)mats[i]=rock;
+                        for(int i=0;i<mats.Length;i++)mats[i]=cliffMaterial;
                         r.sharedMaterials=mats;
                     }
                 }
