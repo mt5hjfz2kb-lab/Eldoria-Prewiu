@@ -8,7 +8,7 @@ This document defines the **official initial visual benchmark for Eldoria**. It 
 
 For Valoria, `docs/VALORIA_VISUAL_BIBLE.md` now explicitly replaces this document as the current top-level art-direction authority. Retain this benchmark for the approved-reference criteria it records; where wording conflicts, the Visual Bible wins.
 
-The benchmark is based on the owner-approved reference image supplied on 2026-09-25. The image itself remains an external visual reference; this file preserves the durable art-direction contract in the repository so future work does not depend on chat history.
+The benchmark is based on the owner-approved reference image supplied on 2026-09-25 and now stored canonically at `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`. Future reviews should inspect that file directly as well as this durable art-direction contract.
 
 ## Core direction
 
@@ -29,6 +29,10 @@ The target feeling is:
 - Secondary composition should pull the eye toward the outer world and the corruption/Breach.
 - Avoid flat board-like staging, exposed map edges, empty planes or isolated prefab islands.
 - Use elevation changes, terraces, cliffs, bridges, stairs, retaining walls and natural terrain transitions to create scale.
+
+## Density tolerance
+
+The approved reference is intentionally rich and dense, but Valoria does **not** need to reproduce its exact density. A somewhat less dense city is acceptable when it remains visually rich, cohesive, inhabited and premium, preserves strong hierarchy and readability, and avoids large unjustified empty areas. Density must be authored; lower density must not become an excuse for prototype-like spacing.
 
 ## Environment density
 
