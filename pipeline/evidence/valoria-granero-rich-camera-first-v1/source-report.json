@@ -21,7 +21,7 @@
     "bounds": [
       -3.5201,
       -2.4848,
-      0.0,
+      0,
       3.5201,
       2.4848,
       2.9094
@@ -35,6 +35,14 @@
   ],
   "tripo": false,
   "paid_credits": 0,
-  "source_visual_verdict": "PENDING_VISUAL_REVIEW",
-  "unity_integration_allowed": false
+  "source_visual_verdict": "SOURCE VISUAL PASS",
+  "unity_integration_allowed": false,
+  "visual_review": {
+    "verdict": "SOURCE VISUAL PASS",
+    "reason": "Three already-rich approved Granero volumes form one coherent camera-first storage complex with dominant loading opening, broad roof mass and secondary storage annexes; no visible primitive/procedural architecture.",
+    "run_id": 37209284772,
+    "run_attempt": 2,
+    "artifact_id": 11306380357,
+    "unity_deferred_reason": "Active conflicting workstream valoria-camera-first-functional-unity-gate-v1 owns VisualWorld/windows-runner-heavy/valoria-production-composition."
+  }
 }
