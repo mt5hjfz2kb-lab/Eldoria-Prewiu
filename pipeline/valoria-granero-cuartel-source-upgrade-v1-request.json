@@ -3,7 +3,7 @@
   "enabled": true,
   "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
   "phase": "source_isolated",
-  "nonce": "gcsu-v1-source-20261004-1341",
+  "nonce": "gcsu-v1-cuartel-transform-20261004-1341",
   "assets": [
     "Granero",
     "Cuartel"
