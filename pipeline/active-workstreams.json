@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:39:00Z",
-  "active": [
+  "updated_at": "2026-10-04T14:46:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-paired-functional-unity-gate-v1",
       "title": "Valoria Paired Functional Unity Gate v1",
@@ -27,13 +28,18 @@
         "valoria-production-composition",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T14:39:00Z",
       "base_main_sha": "eb2c161f933255d7a3e0f64caeb05e1ff45c5393",
-      "dependency": "Pair SOURCE VISUAL PASS Valoria_Granero_RCFv1 with retained SOURCE VISUAL PASS Valoria_Cuartel_CFSv1. One real matched Unity zoom9/mobile gate. Preserve canonical orthographic camera, RESET Final Look, Hero Bastion, accepted defense, terrain, gameplay, parcels/routes/hotspots/colliders/future reserves. No further source/layout iteration inside this block. Zero Tripo/paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "Pair SOURCE VISUAL PASS Valoria_Granero_RCFv1 with retained SOURCE VISUAL PASS Valoria_Cuartel_CFSv1. One real matched Unity zoom9/mobile gate. Preserve canonical orthographic camera, RESET Final Look, Hero Bastion, accepted defense, terrain, gameplay, parcels/routes/hotspots/colliders/future reserves. No further source/layout iteration inside this block. Zero Tripo/paid credits.",
+      "completed_at": "2026-10-04T14:46:00Z",
+      "run_id": 37209941711,
+      "artifact_id": 11306341489,
+      "credits_spent": 0,
+      "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md",
+      "next": "Explicit structural decision required: functional parcel/anchor composition or mobile framing/visibility policy. No more source/material/prop/micro-layout iteration."
+    },
     {
       "id": "valoria-granero-rich-camera-first-v1",
       "title": "Valoria Granero Rich Camera-First v1",
