@@ -222,6 +222,7 @@ namespace Eldoria.Presentation
             if(CoherentCastleProofEnabled)IntegrateCoherentCastleProof();
             if(SlavicDistrictProofEnabled)IntegrateSlavicDistrictProof();
             if(ProductionCellEnabled)IntegrateProductionCell(state,art);
+            ValoriaVisibleFrameCohesionV1.Build(root,state);
             Finish();
         }
 
