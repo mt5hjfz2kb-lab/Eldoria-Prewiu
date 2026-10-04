@@ -1,5 +1,10 @@
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
+## Valoria functional screen readability — 2026-10-04
+
+`VALORIA FUNCTIONAL SCREEN READABILITY v1` is **CLOSED: TECH PASS / VISUAL PARTIAL / NOT PROMOTED**. Run **37208123181** / artifact **11305333489** preserved gameplay, camera, Final Look, defense, Hero Bastion and terrain with 0 credits. The one allowed layout/presentation hypothesis improved presence but did not make Granero and Cuartel simultaneously unmistakable at zoom9 + mobile. No further placement/material/prop pass is authorized; rollout remains HOLD and the next required method is camera-first functional source authoring. See `docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md`.
+
+
 **TECH PASS / SOURCE VISUAL PASS (BOTH) / UNITY VISUAL PARTIAL / NOT PROMOTED.** Isolated run **37206352843** / artifact **11305265539** proves substantially stronger dedicated Granero and military-compound Cuartel sources. Unity matched run **37206779989** / artifact **11305635813** preserves gameplay signature, orthographic camera, Final Look, defense and terrain, with focused gameplay tests PASS and 0 credits. However, at zoom9/mobile the two upgraded functions remain insufficiently distinct from the surrounding dense civil family to satisfy the required player-facing semantic jump. Upgraded sources are retained/certified at source level but runtime promotion remains disabled; rollout to Forja/Hospital/Cantera stays HOLD. Remaining gap is screen-space functional hierarchy/integration, not source geometry or pipeline capability. See `docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md`.
 
 ## 2026-10-04 — Valoria First Production District v1 promoted to playable runtime
