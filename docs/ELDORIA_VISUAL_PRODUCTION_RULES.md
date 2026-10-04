@@ -10,9 +10,10 @@ The repository, live branch/HEAD, workflow runs, artifacts and real Unity captur
 
 At the start of any visual block:
 1. read `AGENTS.md`, `SESSION_HANDOFF.md`, `PROJECT_STATE.md` and `pipeline/active-workstreams.json`;
-2. read this file;
-3. read only the result/research/evidence documents relevant to the previous block and proposed next block;
-4. verify live `main` HEAD, active workstream ownership and the last valid visual artifact before editing.
+2. for Valoria, read `docs/VALORIA_VISUAL_BIBLE.md` and `docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md`;
+3. read this file;
+4. read only the result/research/evidence documents relevant to the previous block and proposed next block;
+5. verify live `main` HEAD, active workstream ownership and the last valid visual artifact before editing.
 
 Prompts should describe only the new block, its objective, scope and any exceptional constraint. Do not restate these permanent rules in every prompt.
 
@@ -142,6 +143,20 @@ Before adoption:
 Adopt only when it provides a clear advantage.
 
 Tripo or any paid/generative path is selective, never the default. Credit spend requires the existing explicit authorization rules in `AGENTS.md`.
+
+## 8a. Greybox is not final art
+
+For Valoria, classify visual geometry using `docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md`.
+
+Primitive-based architecture created from Unity `CreatePrimitive`, simple cubes/cylinders/cones, minimal mathematical roof modules or equivalent procedural Blender primitive assembly defaults to GREYBOX / SUPPORT / TEMPORARY.
+
+Do not call it final production architecture merely because:
+- it was produced in Blender;
+- it has PBR materials;
+- CI is green;
+- it looks cleaner than the previous prototype.
+
+Production architecture requires authored source quality and real official-camera acceptance.
 
 ## 9. Asset strategy: preserve, reauthor or replace based on evidence
 
