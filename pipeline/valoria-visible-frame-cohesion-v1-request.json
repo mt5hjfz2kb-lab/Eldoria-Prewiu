@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "REQUESTED_TECHNIQUE_CHANGE",
+  "status": "REQUESTED_TECH_FIX",
   "workstream": "VALORIA VISIBLE FRAME COHESION v1",
   "objective": "Improve large-scale ground, edge, architecture-ground and lower-city continuity across the promoted reachable camera envelope with one structural visual intervention.",
   "baseline": {
@@ -47,6 +47,7 @@
     "tripo": 0,
     "paid": 0
   },
-  "attempt": 2,
-  "technique_change": "Discard linear lateral streets/world verges; use irregular terrace/ground seams and buried authored transitions instead."
+  "attempt": 3,
+  "technique_change": "Discard linear lateral streets/world verges; use irregular terrace/ground seams and buried authored transitions instead.",
+  "tech_fix": "Replace GroundSeam helpers because they spawn RockCluster colliders outside the visual root; retain irregular terrace technique with explicit visual-only authored pieces."
 }
