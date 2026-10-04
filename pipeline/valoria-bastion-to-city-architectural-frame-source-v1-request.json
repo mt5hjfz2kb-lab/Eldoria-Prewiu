@@ -12,5 +12,8 @@
   ],
   "tripo_credits": 0,
   "paid_credits": 0,
-  "attempt": 1
+  "attempt": 2,
+  "tech_fix": "Initialize a Blender World before source-review rendering. Geometry, materials, silhouette and composition unchanged.",
+  "previous_run_id": 37225650194,
+  "previous_result": "TECH FAIL after GLB export, before preview/report: scene.world was null."
 }
