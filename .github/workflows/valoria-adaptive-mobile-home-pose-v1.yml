@@ -1,9 +1,5 @@
 name: "[PRODUCTION] Valoria Adaptive Mobile Home Pose v1"
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-adaptive-mobile-home-pose-v1-request.json'
   workflow_dispatch:
 concurrency:
   group: valoria-adaptive-mobile-home-pose-v1
