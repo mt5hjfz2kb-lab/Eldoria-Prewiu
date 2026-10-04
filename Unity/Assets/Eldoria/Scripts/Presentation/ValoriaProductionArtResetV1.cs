@@ -90,6 +90,12 @@ namespace Eldoria.Presentation
             }
         }
 
+        public static void NormalizeProductionMaterials(GameObject root)
+        {
+            if(root==null)return;
+            ApplyProductionMaterials(root);
+        }
+
         static void ApplyProductionMaterials(GameObject go)
         {
             var stone=ValoriaKit.DetailedSurfaceMaterial(new Color(.50f,.42f,.33f,1f),"stone",new Vector2(2.1f,2.1f),1.12f);
