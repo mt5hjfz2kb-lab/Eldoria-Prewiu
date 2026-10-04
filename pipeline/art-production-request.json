@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-camera-first-functional-source-v1",
   "asset_or_sector": "Granero + Cuartel camera-first functional source",
   "profile": "environment_new_geometry",
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "New source-authoring technique after GCSU sources passed isolated but failed played-camera readability and one layout hypothesis also failed. Author new camera-first macro silhouettes in Blender using retained rich source geometry plus bounded authored macro forms / accepted defensive modules. Source gate first. No Tripo or paid credits."
+  "notes": "CLOSED: camera-first source gate run 37208777268 / artifact 11305893049. Cuartel rich-module source passes isolated visual review; Granero rich-core + procedural macro forms fails production-art quality. No Unity integration. Next is Granero rich-geometry-only camera-first assembly. Tripo remains unauthorized."
 }
