@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T11:53:00Z",
-  "active": [
+  "updated_at": "2026-10-04T11:59:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-production-art-starter-source-v1",
       "title": "Valoria Production Art Starter Source v1",
@@ -104,13 +105,26 @@
         "art-production-planner",
         "unity-slice-impact-routing"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T10:16:00Z",
       "base_main_sha": "50663bc988799f9b8a89d0941fec93faea106cac",
-      "dependency": "Nation1 handed off with last valid run 37193601814 / artifact 11299573844; preserve its branch and inherit composition only. Execute starter family -> materials -> Final Look -> camera -> integration -> density."
-    }
-  ],
-  "history": [
+      "dependency": "Nation1 handed off with last valid run 37193601814 / artifact 11299573844; preserve its branch and inherit composition only. Execute starter family -> materials -> Final Look -> camera -> integration -> density.",
+      "completed_at": "2026-10-04T11:59:00Z",
+      "result_doc": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
+      "run_ids": [
+        37199970115,
+        37200169545,
+        37200361506
+      ],
+      "artifact_ids": [
+        11302597038,
+        11302104433,
+        11302572572
+      ],
+      "credits_spent": 0,
+      "result": "SYSTEM PASS / CURRENT FRAME BELOW REFERENCE / PRODUCTION ROUTE PROMOTED. Authored source pipeline, Stone defense, reversible Final Look, orthographic camera decision and controlled density validated with gameplay preserved.",
+      "next": "Post-reset rollout: replace visible proxies, then Granero/Cuartel/Forja/Hospital and world transitions; certify zoom9/mobile per asset and defer zoom12/19 until full-frame core passes."
+    },
     {
       "id": "valoria-nation1-authored-production-v1",
       "title": "Valoria Nation 1 Authored Production Build v1",
