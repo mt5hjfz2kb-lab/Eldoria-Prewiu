@@ -60,6 +60,22 @@
         },
         "authoring_method": {
           "type": "string"
+        },
+        "authoring_standard": {
+          "type": "string"
+        },
+        "tool_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "primitive_role": {
+          "enum": [
+            "none",
+            "intermediate_only",
+            "primary_form"
+          ]
         }
       }
     },
@@ -191,6 +207,34 @@
         },
         "visual_verdict": {
           "type": "string"
+        }
+      }
+    },
+    "art_review": {
+      "type": "object",
+      "properties": {
+        "standard": {
+          "type": "string"
+        },
+        "preview_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "questions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "verdict": {
+          "enum": [
+            "PASS",
+            "PARTIAL",
+            "FAIL",
+            "NOT_RUN"
+          ]
         }
       }
     }
