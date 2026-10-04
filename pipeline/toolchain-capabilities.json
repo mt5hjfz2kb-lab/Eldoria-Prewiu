@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-01",
+  "updated": "2026-10-04",
   "tripo": {
     "single_image_generation": {
       "tool_capability": true,
@@ -107,6 +107,49 @@
     },
     "geometry_nodes_production_tools": {
       "eldoria_automation": "candidate"
+    },
+    "professional_authoring_standard": {
+      "eldoria_automation": "canonical_policy",
+      "standard": "BLENDER_PROFESSIONAL_V1",
+      "doc": "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md"
+    },
+    "screen_space_art_brief": {
+      "eldoria_automation": "required_policy"
+    },
+    "mesh_authoring_toolbox": {
+      "eldoria_automation": "workflow_supported",
+      "includes": [
+        "mesh_edit",
+        "extrude",
+        "inset",
+        "selective_bevel",
+        "controlled_boolean",
+        "solidify",
+        "curves_profiles",
+        "deform"
+      ]
+    },
+    "sculpt_highpoly": {
+      "eldoria_automation": "available_not_generic_automated"
+    },
+    "geometry_nodes_artist_tools": {
+      "eldoria_automation": "candidate_tooling",
+      "rule": "artist_tool_not_whole-building-quality-proxy"
+    },
+    "uv_texel_density": {
+      "eldoria_automation": "required_for_new_visible_sources"
+    },
+    "isolated_art_source_review": {
+      "eldoria_automation": "required_policy",
+      "hard_stop_before_unity_for_new_visible_sources": true
+    },
+    "preview_evidence": {
+      "eldoria_automation": "required_policy",
+      "views": [
+        "silhouette_or_clay",
+        "lit_three_quarter",
+        "official_camera_or_proxy_when_practical"
+      ]
     }
   },
   "unity": {
