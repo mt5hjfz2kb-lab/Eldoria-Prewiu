@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "block": "VALORIA BASTION-TO-CITY EXACT SOURCE IMAGE v1",
+  "status": "TECH PASS / EXACT SOURCE IMAGE FAIL / 0 CREDITS / STOP",
+  "credits_spent": 0,
+  "tripo_launched": false,
+  "blender_opened": false,
+  "unity_touched": false,
+  "canonical_base": {
+    "filename": "AFTER-HORIZONTAL-16x9.png",
+    "run_id": 37221732105,
+    "artifact_id": 11309549299,
+    "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1",
+    "width": 1600,
+    "height": 900
+  },
+  "locked_constraints": {
+    "replacement_envelope": "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json#replacement_envelope",
+    "protected_regions": [
+      "Hero Bastion approx bbox [610,35,1165,475]",
+      "promoted lower city approx bbox [30,520,600,865]",
+      "central stair corridor approx bbox [652,414,903,627]"
+    ]
+  },
+  "method": {
+    "direct_image_edit_attempt": "FAIL: image model re-rendered whole scene instead of localized inpaint",
+    "fallback": "Generate transition-rich donor, then deterministic pixel compositing constrained to replacement envelope",
+    "preservation_verification": {
+      "outside_replacement_envelope_max_channel_delta": 0,
+      "hero_bastion_protected_region_max_channel_delta": 0,
+      "promoted_lower_city_protected_region_max_channel_delta": 0,
+      "central_stair_protected_region_max_channel_delta": 0
+    }
+  },
+  "rejected_outputs": [
+    {
+      "name": "rejected-integrated.jpg",
+      "conversation_file_id": "file_0000000088b48210b25a3885ded11349",
+      "sha256": "441880829fe0d19554e0f0d11dc5d0726734a91d4ef1f99b0cafd129267198e2",
+      "bytes": 229936,
+      "role": "integrated exact-pixel-lock candidate",
+      "reason": "Valoria identity is preserved outside the envelope, but inserted architecture reads as pasted donor fragments rather than one authored Bastion-to-city frame."
+    },
+    {
+      "name": "rejected-isolated.jpg",
+      "conversation_file_id": "file_00000000816881f4a2dd4706d32facf0",
+      "sha256": "a5ce585b3a9a28d5fd68f0aafe710fbd5dd45f497a53a6ad6da17753a92376ee",
+      "bytes": 82297,
+      "role": "isolated same-solution Tripo candidate",
+      "reason": "Isolation removes Hero Bastion/lower-city reconstruction risk but exposes disconnected fragments and insufficient coherent primary volume."
+    }
+  ],
+  "proposed_tripo_input": null,
+  "exact_input_persisted": false,
+  "stop_reason": "No owner-approvable single source image meets both exact Valoria preservation and coherent 3D-source readability. Nothing is authorized for Tripo.",
+  "mandatory_questions": {
+    "preserves_valoria_and_only_changes_transition": "YES technically for the integrated composite, verified by zero pixel delta outside the envelope and in protected regions.",
+    "safe_for_3d_without_reconstructing_bastion_or_lower_city": "NO. The integrated image contains the protected scene context; the isolated version avoids that risk but is not structurally coherent enough to submit."
+  },
+  "future_tripo_generation_block_opened": false
+}
