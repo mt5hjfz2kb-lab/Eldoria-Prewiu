@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "DECIDED",
   "canonical": "ORTHOGRAPHIC",
-  "decision": "Retain orthographic. Strategic long-lens perspective is technically viable but visually rejected for the current composition.",
+  "decision": "Retain orthographic. Do not globally tighten framing from Screen-Space Breakpoint v1; next camera work must be aspect-ratio-aware, especially for portrait mobile.",
   "evidence": {
     "run": 37200169545,
     "artifact": 11302104433
@@ -13,5 +13,17 @@
     "less empty exterior exposure",
     "preserves current gameplay readability"
   ],
-  "perspective_state": "NOT_PROMOTED"
+  "perspective_state": "NOT_PROMOTED",
+  "screen_space_breakpoint_v1": {
+    "status": "CLOSED_NOT_PROMOTED",
+    "run": 37211095096,
+    "artifact": 11307155373,
+    "technical": "PASS",
+    "A": "SCREEN-SPACE VISUAL FAIL",
+    "B": "SCREEN-SPACE VISUAL PARTIAL",
+    "C": "SCREEN-SPACE VISUAL PARTIAL",
+    "decision": "Do not promote tighter B/C as one global framing. Retain orthographic/current global framing pending aspect-ratio-aware mobile home-pose proof.",
+    "key_finding": "16:9 benefits from tighter screen-space; portrait mobile is already crop-limited rather than scale-limited.",
+    "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md"
+  }
 }
