@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_PAIRED_FUNCTIONAL_UNITY_VISUAL_FAIL",
+  "status": "HOLD_AFTER_SCREEN_SPACE_BREAKPOINT_PARTIAL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Granero_RCFv1 and Cuartel_CFSv1 are retained SOURCE VISUAL PASS assets, but paired real Unity run 37209941711 / artifact 11306341489 still fails simultaneous functional readability on mobile at canonical anchors. Do not iterate source/material/props/layout again. Next requires an explicit structural decision about functional parcel composition or mobile framing/visibility policy. Forja/Hospital/Cantera remain HOLD.",
+  "next_priority": "Screen-Space Breakpoint v1 proved a real 16:9 scale benefit but a portrait-mobile crop failure. Do not rebuild Granero/Cuartel and do not extend to Forja/Hospital/Cantera. Next structural proof must be aspect-ratio-aware/mobile home framing/crop policy using existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -132,5 +132,14 @@
     "cuartel_source": "Valoria_Cuartel_CFSv1",
     "blocker": "canonical anchors + portrait mobile crop insufficient for simultaneous independent functional read",
     "result_doc": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md"
+  },
+  "screen_space_breakpoint_v1": {
+    "result": "TECH PASS / A FAIL / B PARTIAL / C PARTIAL / NOT PROMOTED",
+    "run_id": 37211095096,
+    "artifact_id": 11307155373,
+    "credits_spent": 0,
+    "canonical_framing_promoted": false,
+    "key_finding": "Tighter 16:9 reduces maquette feeling, but tighter portrait mobile over-crops the functional lower city; mobile blocker is framing allocation/crop, not insufficient source scale.",
+    "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md"
   }
 }
