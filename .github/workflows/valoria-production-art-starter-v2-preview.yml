@@ -1,0 +1,30 @@
+name: "[PRODUCTION] Valoria Starter v2 Isolated Preview"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['pipeline/valoria-production-art-starter-v2-preview-request.json']
+permissions:
+  contents: read
+concurrency:
+  group: valoria-production-art-starter-v2-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+      - name: Render v2 isolated previews
+        run: |
+          blender -b --python tools/valoria-production-art-starter/render_starter_v2_previews.py
+          test -s pipeline/evidence/valoria-production-art-starter-v2-previews/manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-starter-v2-previews
+          path: pipeline/evidence/valoria-production-art-starter-v2-previews/**
+          if-no-files-found: error
+          retention-days: 30
