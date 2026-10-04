@@ -5,9 +5,47 @@
   "objective": "Replace the largest weak secondary/support masses and articulate the repetitive lower-city house cluster across the promoted reachable HOME/PAN/16:9 envelope.",
   "baseline_head": "da85669dc3d8c2d28658af9b4494c7d7302c2a3c",
   "technique": "One large-form authored composition pass using existing accepted masonry, Slavic house/shed, stone fence, flat-rock and boulder sources. Replace fragmented retaining/support presentation and six-house repeated west cluster with fewer differentiated masses, courts and lanes.",
-  "views": ["HOME mobile BEFORE/AFTER","PAN Granero BEFORE/AFTER","PAN intermediate BEFORE/AFTER","PAN Cuartel BEFORE/AFTER","16:9 BEFORE/AFTER"],
-  "preserve": ["Hero Bastion","accepted defense","Granero","Cuartel","Flat Citadel","orthographic camera","mobile HOME","panning","recenter","16:9 framing","Final Look","gameplay","hotspots","colliders","routes","parcels","future reserves"],
-  "prohibited": ["Forja","Hospital","Cantera","camera changes","projection changes","ground-decoration iteration","microprops","Tripo spend"],
-  "credits": {"tripo":0,"paid":0},
-  "promotion_rule": "Promote only if the matched played frame is clearly better; TECH PASS alone is insufficient."
+  "views": [
+    "HOME mobile BEFORE/AFTER",
+    "PAN Granero BEFORE/AFTER",
+    "PAN intermediate BEFORE/AFTER",
+    "PAN Cuartel BEFORE/AFTER",
+    "16:9 BEFORE/AFTER"
+  ],
+  "preserve": [
+    "Hero Bastion",
+    "accepted defense",
+    "Granero",
+    "Cuartel",
+    "Flat Citadel",
+    "orthographic camera",
+    "mobile HOME",
+    "panning",
+    "recenter",
+    "16:9 framing",
+    "Final Look",
+    "gameplay",
+    "hotspots",
+    "colliders",
+    "routes",
+    "parcels",
+    "future reserves"
+  ],
+  "prohibited": [
+    "Forja",
+    "Hospital",
+    "Cantera",
+    "camera changes",
+    "projection changes",
+    "ground-decoration iteration",
+    "microprops",
+    "Tripo spend"
+  ],
+  "credits": {
+    "tripo": 0,
+    "paid": 0
+  },
+  "promotion_rule": "Promote only if the matched played frame is clearly better; TECH PASS alone is insufficient.",
+  "attempt": 2,
+  "tech_fix": "Qualify UnityEngine.Object.DestroyImmediate in editor gate; no visual/composition change."
 }
