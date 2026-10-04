@@ -183,30 +183,12 @@ namespace Eldoria.Presentation
 
    var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",new Color(.86f,.84f,.79f,1f),new Vector2(2.8f,2.8f),.045f,1.06f)
       ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.56f,.51f,1f),"stone",new Vector2(2.2f,2.2f),1f);
-   var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.76f,.73f,.67f,1f),new Vector2(2.0f,2.0f),.035f,1.08f)
-      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.55f,.49f,1f),"stone",new Vector2(2f,2f),1f);
+   Disc(root,"civic plaza outer",new Vector3(0f,.174f,.72f),2.05f,.055f,cobble);
 
-   Disc(root,"civic plaza outer",new Vector3(0f,.174f,.72f),2.15f,.055f,cobble);
-   Disc(root,"civic plaza inner",new Vector3(0f,.218f,.72f),1.00f,.045f,stone);
-
-   var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_CivicMonument_v1");
-   if(monument!=null)
-   {
-    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.23f,.72f),1.38f,2.55f,Quaternion.identity);
-    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
-   }
-
-   var stall=Resources.Load<GameObject>("Valoria/Nation1/Nation1_MarketStall_v1");
-   if(stall!=null)
-   {
-    foreach(var spec in new[]{
-      new Vector4(-1.72f,.14f,-.10f,18f),new Vector4(1.72f,.14f,-.05f,-18f),
-      new Vector4(-1.48f,.14f,1.88f,166f),new Vector4(1.52f,.14f,1.86f,194f)})
-    {
-     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · market stall",stall,new Vector3(spec.x,spec.y,spec.z),1.18f,1.55f,Quaternion.Euler(0f,spec.w,0f));
-     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
-    }
-   }
+   var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_PlazaMonument_v1");
+   if(monument==null)throw new InvalidOperationException("Nation1 plaza monument missing.");
+   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.19f,.72f),2.35f,2.35f,0f);
+   if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
   }
 
   static void Disc(Transform root,string name,Vector3 p,float radius,float height,Material mat)
