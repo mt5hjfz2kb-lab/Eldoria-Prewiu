@@ -29,11 +29,11 @@ namespace Eldoria.Presentation
             SuppressVisualRoot("VPD · rescued upper civil residence");
 
             // Entry cell around the certified lower entrance; visual-only.
-            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.72f),3.35f,2.75f,0f);
-            Piece(root,tower,"west entry tower",new Vector3(-2.95f,.13f,-8.30f),1.72f,2.95f,4f);
-            Piece(root,tower,"east entry tower",new Vector3(2.95f,.13f,-8.30f),1.72f,2.95f,-4f);
-            Piece(root,wall,"west entry curtain",new Vector3(-5.25f,.13f,-8.02f),2.55f,1.55f,5f);
-            Piece(root,wall,"east entry curtain",new Vector3(5.25f,.13f,-8.02f),2.55f,1.55f,-5f);
+            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.72f),2.75f,2.25f,0f);
+            Piece(root,tower,"west entry tower",new Vector3(-2.72f,.13f,-8.34f),1.38f,2.35f,4f);
+            Piece(root,tower,"east entry tower",new Vector3(2.72f,.13f,-8.34f),1.38f,2.35f,-4f);
+            Piece(root,wall,"west entry curtain",new Vector3(-4.85f,.13f,-8.08f),1.88f,1.08f,5f);
+            Piece(root,wall,"east entry curtain",new Vector3(4.85f,.13f,-8.08f),1.88f,1.08f,-5f);
 
             // Existing upper civic footprints, now using the authored source family.
             Piece(root,house,"upper west civic house",new Vector3(-5.80f,2.76f,6.95f),2.42f,2.95f,-12f);
@@ -112,32 +112,36 @@ namespace Eldoria.Presentation
 
         static void ApplyNeutralPreview(GameObject go)
         {
-            // Geometry proof only: neutral diagnostic colors keep imported glTF from reading as
-            // blown-out white. This is not the phase-D production material stack.
-            int baseColor=Shader.PropertyToID("_BaseColor");
-            int color=Shader.PropertyToID("_Color");
+            // Phase-C clay/role preview. glTFast materials use shader-specific properties, so
+            // MaterialPropertyBlock tinting is not reliable here. Replace only the candidate
+            // instance materials with deterministic URP/Lit diagnostics. Phase D later restores
+            // texture/mask-driven production surfaces.
+            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
-                var mats=r.sharedMaterials;
-                for(int i=0;i<mats.Length;i++)
+                var src=r.sharedMaterials;
+                var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
                 {
-                    var m=mats[i]; if(m==null)continue;
-                    string n=(m.name??"").ToLowerInvariant();
+                    var sm=src[i];
+                    string n=(sm!=null?sm.name:"").ToLowerInvariant();
                     Color tint=
-                        n.Contains("slate")||n.Contains("roof") ? new Color(.13f,.18f,.22f,1f) :
-                        n.Contains("timber")||n.Contains("wood") ? new Color(.24f,.14f,.075f,1f) :
-                        n.Contains("metal") ? new Color(.24f,.23f,.21f,1f) :
-                        n.Contains("blue")||n.Contains("herald") ? new Color(.08f,.24f,.52f,1f) :
-                        n.Contains("window") ? new Color(.63f,.28f,.08f,1f) :
-                        n.Contains("plaster") ? new Color(.61f,.51f,.38f,1f) :
+                        n.Contains("slate")||n.Contains("roof") ? new Color(.16f,.20f,.24f,1f) :
+                        n.Contains("timber")||n.Contains("wood") ? new Color(.28f,.17f,.09f,1f) :
+                        n.Contains("metal") ? new Color(.25f,.24f,.22f,1f) :
+                        n.Contains("blue")||n.Contains("herald") ? new Color(.10f,.28f,.55f,1f) :
+                        n.Contains("window") ? new Color(.56f,.24f,.07f,1f) :
+                        n.Contains("plaster") ? new Color(.58f,.48f,.35f,1f) :
                         n.Contains("dark") ? new Color(.34f,.31f,.27f,1f) :
-                        new Color(.52f,.46f,.38f,1f);
-                    var block=new MaterialPropertyBlock();
-                    r.GetPropertyBlock(block,i);
-                    block.SetColor(baseColor,tint);
-                    block.SetColor(color,tint);
-                    r.SetPropertyBlock(block,i);
+                        new Color(.53f,.46f,.37f,1f);
+                    var m=new Material(lit){name="Valoria Phase C Preview · "+n};
+                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
+                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
+                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",n.Contains("metal")?.22f:.035f);
+                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",n.Contains("metal")?.12f:0f);
+                    dst[i]=m;
                 }
+                r.sharedMaterials=dst;
             }
         }
 
