@@ -15,7 +15,70 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  author-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate production route
+        run: node tools/plan-art-production.mjs pipeline/art-production-request.json "$RUNNER_TEMP/nation1-plan.json"
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Stage Nation1 PBR source maps
+        shell: bash
+        run: |
+          export NATION1_PBR_DIR="$RUNNER_TEMP/nation1-pbr"
+          mkdir -p "$NATION1_PBR_DIR"
+          python3 - <<'PY'
+          import json, os, re, urllib.request
+          out=os.environ["NATION1_PBR_DIR"]
+          ua={"User-Agent":"Eldoria-Nation1-Blender/1.0"}
+          def strings(x):
+              if isinstance(x,str): yield x
+              elif isinstance(x,dict):
+                  for v in x.values(): yield from strings(v)
+              elif isinstance(x,list):
+                  for v in x: yield from strings(v)
+          for asset in ("stone_block_wall","rock_boulder_dry"):
+              req=urllib.request.Request("https://api.polyhaven.com/files/"+asset,headers=ua)
+              with urllib.request.urlopen(req,timeout=30) as r: payload=json.load(r)
+              urls=list(dict.fromkeys(u.replace("\\u0026","&") for u in strings(payload) if u.startswith("https://")))
+              for key,rx in (("diff",r"_diff_1k\.(?:jpg|png)(?:\?|$)"),("nor_gl",r"_nor_gl_1k\.(?:jpg|png)(?:\?|$)")):
+                  url=next((u for u in urls if re.search(rx,u,re.I)),None)
+                  if not url: raise SystemExit(f"missing {asset} {key}")
+                  ext=os.path.splitext(urllib.parse.urlparse(url).path)[1] or ".jpg"
+                  dest=os.path.join(out,f"{asset}_{key}_1k{ext}")
+                  q=urllib.request.Request(url,headers=ua)
+                  with urllib.request.urlopen(q,timeout=60) as src, open(dest,"wb") as dst: dst.write(src.read())
+                  if os.path.getsize(dest)<10000: raise SystemExit("map too small "+dest)
+                  print(dest,os.path.getsize(dest))
+          PY
+          echo "NATION1_PBR_DIR=$NATION1_PBR_DIR" >> "$GITHUB_ENV"
+      - name: Author Nation1 stone family in Blender
+        run: |
+          blender -b --python tools/valoria-nation1/build_fortification_v1.py
+          test -s pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend
+          test -s pipeline/evidence/valoria-nation1-v1.json
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Wall_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Tower_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Gate_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Stair_v1.glb
+          cat pipeline/evidence/valoria-nation1-v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-nation1-blender-source
+          path: |
+            pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend
+            pipeline/evidence/valoria-nation1-v1.json
+            Unity/Assets/Eldoria/Resources/Valoria/Nation1/*.glb
+          if-no-files-found: error
+          retention-days: 30
+
   capture:
+    needs: author-source
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 40
@@ -37,6 +100,10 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-nation1-blender-source
+          path: .
       - name: Stage shared CC0 PBR surface maps
         shell: powershell
         run: |
@@ -91,6 +158,9 @@ jobs:
           name: valoria-nation1-authored-v1
           path: |
             Unity/ValoriaNation1AuthoredProductionV1Captures/*
+            pipeline/evidence/valoria-nation1-v1.json
+            pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend
+            Unity/Assets/Eldoria/Resources/Valoria/Nation1/*.glb
             ${{ runner.temp }}/Nation1-PlayMode.*
             ${{ runner.temp }}/ValoriaNation1AuthoredProductionV1.log
           if-no-files-found: warn
