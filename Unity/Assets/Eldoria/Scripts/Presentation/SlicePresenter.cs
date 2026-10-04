@@ -29,6 +29,7 @@ namespace Eldoria.Presentation
         bool pinchActive;
         float lastPinchDistance;
         Vector3 cameraHome;
+        float cameraHomeOrthographicSize;
         float panHalfX=5f,panHalfZ=4f;
         const float PanGestureThreshold=12f;
         public const float MinOrthographicZoom=9f;
@@ -47,7 +48,10 @@ namespace Eldoria.Presentation
             VisualWorld.Create(city,state);
             if(city&&OfficialCamera!=null)
             {
+                float aspect=Screen.height>0?Screen.width/(float)Screen.height:OfficialCamera.aspect;
+                ValoriaMobileNavigableCityV1.ApplyHomePose(OfficialCamera,aspect);
                 cameraHome=OfficialCamera.transform.position;
+                cameraHomeOrthographicSize=OfficialCamera.orthographicSize;
                 ConfigureCityPanBounds(state.BastionLevel);
             }
             CreateHud();Refresh();
@@ -173,17 +177,10 @@ namespace Eldoria.Presentation
 
         void ConfigureCityPanBounds(int bastionLevel)
         {
-            // The West Rebuilders quarter is already authored/inhabited in the I-II city,
-            // so early-game bounds must let a portrait mobile viewport actually reach it.
-            // Portrait gets a little extra horizontal travel because its visible world width is smaller.
             var camera=OfficialCamera;
             float aspect=camera!=null&&camera.aspect>0f?camera.aspect:(Screen.height>0?Screen.width/(float)Screen.height:.5625f);
-            float portraitExtra=Mathf.Clamp((.80f-aspect)*8f,0f,2.5f);
-            if(bastionLevel<=10){panHalfX=13.5f+portraitExtra;panHalfZ=7f;}
-            else if(bastionLevel<=15){panHalfX=15f+portraitExtra;panHalfZ=9f;}
-            else if(bastionLevel<=20){panHalfX=17.5f+portraitExtra;panHalfZ=11f;}
-            else if(bastionLevel<=25){panHalfX=20f+portraitExtra;panHalfZ=13f;}
-            else {panHalfX=23f+portraitExtra;panHalfZ=16f;}
+            var half=ValoriaMobileNavigableCityV1.PanHalfExtents(bastionLevel,aspect);
+            panHalfX=half.x;panHalfZ=half.y;
         }
 
         void PanCameraByScreenDelta(Vector2 screenDelta)
@@ -195,16 +192,15 @@ namespace Eldoria.Presentation
             var up=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
             if(up.sqrMagnitude<.001f)up=Vector3.forward;
             var desired=camera.transform.position+(-right*screenDelta.x-up*screenDelta.y)*worldPerPixel;
-            var offset=desired-cameraHome;
-            offset.x=Mathf.Clamp(offset.x,-panHalfX,panHalfX);
-            offset.z=Mathf.Clamp(offset.z,-panHalfZ,panHalfZ);
-            camera.transform.position=new Vector3(cameraHome.x+offset.x,cameraHome.y,cameraHome.z+offset.z);
+            float aspect=camera.aspect>0f?camera.aspect:(Screen.height>0?Screen.width/(float)Screen.height:.5625f);
+            camera.transform.position=ValoriaMobileNavigableCityV1.ClampToEnvelope(cameraHome,desired,gateway.Snapshot().BastionLevel,aspect);
         }
 
         void RecenterCamera()
         {
             if(!city||OfficialCamera==null)return;
             OfficialCamera.transform.position=cameraHome;
+            OfficialCamera.orthographicSize=cameraHomeOrthographicSize;
         }
 
         void FocusCityHotspot(string objectName)
@@ -491,6 +487,13 @@ namespace Eldoria.Presentation
             resources=ResourceChip("Wood resource",top,"♣","MADERA",62);
             stoneResource=ResourceChip("Stone resource",top,"◆","PIEDRA",62);
             power=ResourceChip("Power",top,"⚔","PODER",72,new Color(.085f,.075f,.045f,.96f));
+            if(city)
+            {
+                var homeButton=Button(top,"⌂",RecenterCamera);
+                var homeLayout=homeButton.GetComponent<LayoutElement>();
+                homeLayout.minWidth=32;homeLayout.preferredWidth=32;homeLayout.minHeight=34;
+                homeButton.gameObject.name="City home / recenter";
+            }
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
