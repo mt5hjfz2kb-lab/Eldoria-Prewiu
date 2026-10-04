@@ -1,60 +1,90 @@
 # VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1 — RESULT
 
 Status: CLOSED  
-Final verdict: **TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY NOT RUN / NOT PROMOTED**  
+Final verdict: **TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY DIAGNOSTIC VISUAL FAIL / NOT PROMOTED**  
 Date: 2026-10-04
 
-## Purpose
-Test a genuinely different source-authoring technique after Functional Screen Readability v1 proved that the previously approved isolated sources could not survive canonical orthographic zoom9/mobile through layout alone.
+## Objective
 
-## Authoritative source gate
-- Run: **37208777268 SUCCESS**
-- Artifact: **11305893049**
-- Tripo / paid credits: **0**
+Test a genuinely different camera-first source-authoring technique after the approved GCSU sources and the single allowed layout/readability pass failed to make Granero and Cuartel unmistakable at zoom 9/mobile.
 
-## Granero
-The camera-first macro idea increased functional explicitness, but the actual source candidate does **not** meet production-art quality.
+## Source gate
 
-Positive:
-- loading apron is large;
-- loading mouths are front-facing;
-- storage mass is more explicit;
-- silhouette intent is camera-first rather than generic-house-first.
+Authoritative source run: **37208777268 SUCCESS**  
+Artifact: **11305893049**  
+Tripo / paid credits: **0**
 
-Failure:
-- the newly authored canopy and grain-bin masses read as visibly procedural/simple next to the retained rich granary core;
-- the contrast between rich textured source geometry and smooth authored macro geometry makes the building look assembled from different quality tiers;
-- therefore it is not valid to continue into Unity just because the function is clearer.
+### Granero — SOURCE VISUAL FAIL
 
-Verdict: **SOURCE VISUAL FAIL**.
+The camera-first source makes agricultural/storage function more explicit through a large loading apron, front-facing loading mouths and twin storage volumes.
 
-## Cuartel
-The same camera-first principle works materially better when the source can be composed from already-rich certified geometry.
+However, it fails production-art quality because the newly authored canopy/bin macro masses are visibly simpler and smoother than the retained rich granary core. The source therefore reads as geometry from two different quality tiers.
 
-Positive:
-- twin front defensive towers survive as large military verticals;
-- the U-shaped guarded court creates a martial organization rather than a large civil house;
-- the central barracks remains legible behind the fortified training court;
-- the military read no longer depends on flags or tiny props.
+This is a source-authoring failure, not a placement/material/camera problem.
 
-Verdict: **SOURCE VISUAL PASS**.
+### Cuartel — SOURCE VISUAL PASS
 
-Candidate:
-`Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb`
+The Cuartel camera-first candidate reads as a military compound through the building core, twin guarded front masses, fortified perimeter and open training court. Its semantic read does not depend only on flags/banners.
 
-## Unity decision
-Unity integration was **not run** because the source stop-gate required both buildings to pass. Carrying a known weak Granero into Unity would violate the anti-loop rule.
+The source is retained as a valid source-level candidate, but it is not promoted independently in this block because final acceptance is played-camera integration.
 
-## Technical note
-The automated silhouette preview itself is not valid evidence because the preview-floor material was included in the silhouette override and fills the frame. The color camera-first previews remain valid and sufficient for the source visual verdict. The broken silhouette evidence is documented rather than silently treated as a pass.
+## Unity diagnostic gate
 
-## Learning
-Camera-first source authorship is directionally correct, but the production method must preserve art richness at the same time.
+Although the stricter visual audit rejects Granero at source level, a Unity integration gate was already dispatched for both candidates. That run remains useful diagnostic evidence and is recorded rather than discarded.
 
-- Cuartel proves that **rich-module camera-first composition works**.
-- Granero proves that **rich core + simple procedural macro forms does not**.
+Authoritative Unity run: **37209373554 SUCCESS**  
+Artifact: **11305759556**
 
-## Next
-Do not iterate the failed Granero procedural canopy/bin source.
+Matched evidence:
+- BEFORE zoom 9: `before-9.png`
+- AFTER zoom 9: `after-9.png`
+- BEFORE mobile: `before-mobile.png`
+- AFTER mobile: `after-mobile.png`
 
-The next Granero technique is a new rich-geometry-only camera-first assembly using already-rich granary geometry for all visible architecture. Cuartel_CFSv1 remains retained as a source-level candidate but is not promoted until paired with a passing Granero in the real Unity gate.
+Technical result:
+- gameplay collider/hotspot signature preserved;
+- exactly 2 visual replacements;
+- established FPD anchors retained;
+- orthographic camera preserved;
+- RESET Final Look preserved;
+- accepted defense unchanged;
+- Hero Bastion unchanged;
+- terrain unchanged;
+- focused gameplay tests PASS;
+- renderers: **852 -> 873**;
+- materials: **81 -> 94**;
+- triangles: **2,083,716 -> 2,295,829**;
+- lights: **31 -> 31**;
+- Tripo credits: **0**;
+- paid credits: **0**.
+
+## Unity visual verdict
+
+**VISUAL FAIL / NOT PROMOTED.**
+
+At zoom 9 the Granero functional cue is stronger, but the pale/simple camera-first additions visibly lower the art quality and coherence of the district. The Cuartel still does not acquire enough independent screen-space military identity to justify promotion of the pair.
+
+On mobile the acceptance criterion fails decisively: Granero and Cuartel do not survive simultaneously as two obvious, independently readable functions.
+
+## Promotion decision
+
+- Granero CFS source: **REJECTED**
+- Cuartel CFS source: **retained as SOURCE VISUAL PASS evidence, not runtime-promoted**
+- paired CFS Unity integration: **REJECTED / NOT PROMOTED**
+- `ValoriaCameraFirstFunctionalSourceV1.Enabled` remains false by default
+- existing playable runtime remains canonical
+- no second procedural camera-first variant is allowed in this block
+
+## Concrete learning
+
+Camera-first authorship is still the correct problem framing, but functional macro form and production richness must be solved simultaneously.
+
+For Granero, the next valid technique must use **rich production geometry for the visible loading/storage macro architecture itself**. Do not repeat a procedural canopy/bin overlay.
+
+For Cuartel, retain the military-compound source idea, but any later integration must prove stronger played-camera/mobile presence without relying on layout nudges or banners.
+
+## Final answer
+
+**¿LA LECTURA FUNCIONAL DE GRANERO Y CUARTEL ESTÁ RESUELTA EN PANTALLA REAL? — NO.**
+
+The camera-first procedural pair is closed and rejected. The Granero requires a richer source technique; the Cuartel source direction remains viable but unpromoted.
