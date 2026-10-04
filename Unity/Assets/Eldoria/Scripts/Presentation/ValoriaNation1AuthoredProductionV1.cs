@@ -200,13 +200,19 @@ namespace Eldoria.Presentation
 
   static void BuildGranaryFields(Transform root)
   {
-   var crop=ValoriaKit.DetailedSurfaceMaterial(new Color(.66f,.52f,.20f,1f),"earth",new Vector2(2.2f,2.2f),.86f);
-   var soil=ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.28f,.17f,1f),"earth",new Vector2(2.8f,2.8f),.92f);
-   Surface(root,"granary field bed",new Vector3(-.65f,.155f,-3.62f),new Vector3(2.55f,.035f,1.55f),soil);
-   for(int i=0;i<7;i++)
+   var crop=ValoriaKit.DetailedSurfaceMaterial(new Color(.72f,.56f,.18f,1f),"earth",new Vector2(2.0f,2.0f),.84f);
+   var soil=ValoriaKit.DetailedSurfaceMaterial(new Color(.34f,.25f,.14f,1f),"earth",new Vector2(2.6f,2.6f),.94f);
+   Field(root,"granary west field",new Vector3(-1.45f,.16f,-3.18f),1.22f,1.02f,crop,soil);
+   Field(root,"granary east field",new Vector3(.95f,.16f,-3.42f),1.08f,.92f,crop,soil);
+  }
+
+  static void Field(Transform root,string name,Vector3 center,float halfX,float halfZ,Material crop,Material soil)
+  {
+   Surface(root,name+" soil",center,new Vector3(halfX*2f,.035f,halfZ*2f),soil);
+   for(int i=0;i<6;i++)
    {
-    float z=-4.18f+i*.19f;
-    Surface(root,"granary crop row "+i,new Vector3(-.65f,.225f,z),new Vector3(2.28f,.11f,.09f),crop);
+    float z=center.z-halfZ*.72f+i*(halfZ*1.44f/5f);
+    Surface(root,name+" crop "+i,new Vector3(center.x,center.y+.07f,z),new Vector3(halfX*1.80f,.12f,.085f),crop);
    }
   }
 
