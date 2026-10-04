@@ -5,6 +5,15 @@ OUT=os.path.join(ROOT,"pipeline","evidence","valoria-production-art-donor-audit-
 os.makedirs(os.path.dirname(OUT),exist_ok=True)
 
 ASSETS=[
+ ("HeroBastion","Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb"),
+ ("MidTier01","Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb"),
+ ("MidTier02","Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb"),
+ ("MidTier03","Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"),
+ ("MidTier04","Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"),
+ ("TowerWallRock","Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb"),
+ ("CornerWallL","Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb"),
+ ("HighStraightWall","Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb"),
+ ("RockToWallTransition","Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"),
  ("Aserradero","Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb"),
  ("Cuartel","Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb"),
  ("Granero","Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb"),
@@ -20,6 +29,34 @@ def world_bounds(o):
  corners=[o.matrix_world @ __import__("mathutils").Vector(c) for c in o.bound_box]
  xs=[v.x for v in corners];ys=[v.y for v in corners];zs=[v.z for v in corners]
  return [min(xs),min(ys),min(zs),max(xs),max(ys),max(zs)]
+
+
+def loose_components(mesh):
+ n=len(mesh.vertices)
+ adj=[[] for _ in range(n)]
+ for e in mesh.edges:
+  a,b=e.vertices
+  adj[a].append(b);adj[b].append(a)
+ seen=[False]*n
+ comps=[]
+ for root in range(n):
+  if seen[root]:continue
+  stack=[root];seen[root]=True;idx=[]
+  while stack:
+   v=stack.pop();idx.append(v)
+   for nb in adj[v]:
+    if not seen[nb]:
+     seen[nb]=True;stack.append(nb)
+  xs=[mesh.vertices[i].co.x for i in idx]
+  ys=[mesh.vertices[i].co.y for i in idx]
+  zs=[mesh.vertices[i].co.z for i in idx]
+  comps.append({
+   "vertices":len(idx),
+   "bounds":[round(min(xs),5),round(min(ys),5),round(min(zs),5),round(max(xs),5),round(max(ys),5),round(max(zs),5)],
+   "dimensions":[round(max(xs)-min(xs),5),round(max(ys)-min(ys),5),round(max(zs)-min(zs),5)]
+  })
+ comps.sort(key=lambda x:x["vertices"],reverse=True)
+ return comps
 
 def mat_info(m):
  d={"name":m.name,"shader":None,"textures":[]}
@@ -48,6 +85,7 @@ for label,rel in ASSETS:
    if not m:continue
    mi.append(m.name)
    if m.name not in mats:mats[m.name]=mat_info(m)
+  comps=loose_components(o.data)
   meshes.append({
    "name":o.name,
    "parent":o.parent.name if o.parent else None,
@@ -56,7 +94,11 @@ for label,rel in ASSETS:
    "materials":mi,
    "location":[round(x,5) for x in o.location],
    "dimensions":[round(x,5) for x in o.dimensions],
-   "bounds":[round(x,5) for x in world_bounds(o)]
+   "bounds":[round(x,5) for x in world_bounds(o)],
+   "loose_component_count":len(comps),
+   "largest_components":comps[:40],
+   "component_vertices_ge_100":sum(1 for x in comps if x["vertices"]>=100),
+   "component_vertices_ge_500":sum(1 for x in comps if x["vertices"]>=500)
   })
  meshes.sort(key=lambda x:x["triangles"],reverse=True)
  report["assets"].append({
