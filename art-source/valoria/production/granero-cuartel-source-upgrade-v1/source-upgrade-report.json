@@ -6,7 +6,7 @@
   "tripo": false,
   "paid_credits": 0,
   "blend": "art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend",
-  "blend_sha256": "d051f4bcf3701d7eda0cbd36784e94f0e5a1e0f1d030ca1b4f23247d46dc70be",
+  "blend_sha256": "26ad25398c876d39ace895a31c5470b3e36fcb4ef0ae982855197d630170fc70",
   "assets": [
     {
       "role": "granero",
@@ -18,7 +18,7 @@
         "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67"
       ],
       "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
-      "glb_sha256": "6122f57e9b444e7d68aa823b38567989e4ccf91fa13e34c83ea2aabfef29f2c5",
+      "glb_sha256": "565d282dc84d1244a212b43d310332fc89a2766b6adc742bf92bcccd6695b977",
       "geometry": {
         "objects": 1,
         "vertices": 55232,
@@ -57,11 +57,11 @@
         "0f23b50e4025617dc593f88e90bcac7947a1ae80d82f1167321d3b25ebfc43d2"
       ],
       "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
-      "glb_sha256": "cd1dbf40da6314f6216148d05096a22ce09d0bb933785ce7b12e5dedae4deec0",
+      "glb_sha256": "5e25e0258d228e6b424f779cf29b34021c992ae0c0d93f092acf7f8107be35fd",
       "geometry": {
-        "objects": 11,
-        "vertices": 348786,
-        "triangles": 288735,
+        "objects": 5,
+        "vertices": 149211,
+        "triangles": 120015,
         "materials": [
           "Eldoria Rock \u00b7 Hero Prototype",
           "Eldoria Stone \u00b7 Hero Prototype",
@@ -71,12 +71,12 @@
           "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
         ],
         "bounds": [
-          -1.7336,
-          -2.7572,
+          -2.7632,
+          -1.3143,
           0.0,
-          6.3404,
-          0.6603,
-          2.0616
+          2.7632,
+          1.3143,
+          2.8657
         ]
       },
       "prior_certification": {
