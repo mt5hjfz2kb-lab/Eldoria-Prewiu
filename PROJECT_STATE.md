@@ -546,3 +546,11 @@ The six certified Tripo families remain valid reusable art/reference assets, but
 - Final measured active scene: **781 renderers / 74 materials / 1,647,618 triangles / 25 lights** after the pass.
 - Tripo spend: **0**. Geometry gap: **not proven / not required**.
 - This milestone improves the city-fortress presentation; it does not close all remaining architecture, surface or world-map art gaps.
+
+
+## 2026-10-04 — Known Valoria source-input gap
+- Bastion→city high-salience source generation still lacks an exact owner-approvable multiview 2D input set.
+- The required future package shape is fixed: **1 primary + 2 auxiliaries**, all depicting the same canonical Hero Bastion / locked transition design.
+- Zero-credit prep proved that visually rich generic fortress imagery is not acceptable if it changes the canonical Bastion, central receiver/stair relationship or lower-city continuity.
+- Current gate remains **TRIPO INPUT PREP FAIL**; Tripo generation, Blender reauthoring and Unity integration are blocked until the exact input set passes owner review.
+- This does not change gameplay or the promoted lower-city state.
