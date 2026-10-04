@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "source_gate": {
+    "run_id": 37208777268,
+    "artifact_id": 11305893049,
+    "granero": "SOURCE FUNCTIONAL PASS",
+    "cuartel": "SOURCE FUNCTIONAL PASS"
+  },
+  "unity_gate": {
+    "run_id": 37209373554,
+    "artifact_id": 11305759556,
+    "tech": "PASS",
+    "visual": "FAIL",
+    "gameplay_signature_preserved": true
+  },
+  "metrics": {
+    "before": {
+      "active_renderers": 852,
+      "unique_materials": 81,
+      "scene_triangles": 2083716,
+      "active_lights": 31
+    },
+    "after": {
+      "active_renderers": 873,
+      "unique_materials": 94,
+      "scene_triangles": 2295829,
+      "active_lights": 31
+    }
+  },
+  "camera": "ORTHOGRAPHIC",
+  "final_look": "RESET_ACCEPTED_RUNTIME",
+  "anchors_changed_from_canonical_fpd": false,
+  "defense_changed": false,
+  "hero_bastion_changed": false,
+  "terrain_changed": false,
+  "tripo_credits": 0,
+  "paid_credits": 0,
+  "promotion": false,
+  "reason": "Camera-first macro massing strengthens function in isolation but procedural pale additions degrade visual integration; mobile still fails simultaneous Granero + Cuartel functional read.",
+  "next": "Use rich production geometry for all camera-first macro architecture; do not repeat procedural canopy/bin overlay or layout nudges."
+}
