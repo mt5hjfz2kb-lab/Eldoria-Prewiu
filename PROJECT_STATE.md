@@ -1,3 +1,13 @@
+## Valoria Lower-City Urban Massing Reauthoring v1 — promoted 2026-10-04
+- **TECH PASS / VISUAL PASS / PROMOTED**.
+- Direct canonical reference review completed against `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37221347279**; authoritative A/B **37221732105**, artifact **11309549299**; confirmation **37222027889**, artifact **11309364965**.
+- The old repeated band was caused by overlapping visual systems, not a lack of houses. Six reused civil houses plus Mid-Tier and Full Frame presentation layers were visually redundant.
+- Runtime now promotes three authored groups: west craft court, east merchant front, upper terrace houses. 18 pieces; 27 renderers and 10 lights from redundant presentation suppressed.
+- Gameplay/collider/hotspot signature, promoted camera policy, Hero Bastion, Granero, Cuartel, Flat Citadel, routes/parcels/reserves and Final Look preserved. Credits **0**.
+- Lower city now reads materially more as separated hierarchical urban groups and less as a prefab strip; direct reference convergence improves in massing, breathing and hierarchy while Valoria stays less dense.
+- Next priority: **VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1**. Remaining large gray supports are now the strongest screen-level prototype cue. Do not reopen house spacing/density.
+- Result: `docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md`.
 ## Valoria Secondary / Support Form Replacement v1 — closed 2026-10-04
 - **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
 - Planner: **37219017523 SUCCESS**. Authoritative final A/B: **37219568955 SUCCESS**, artifact **11309203816**.
