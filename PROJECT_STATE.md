@@ -1,5 +1,10 @@
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
+## Valoria paired functional Unity gate — 2026-10-04
+
+The strongest current Granero/Cuartel sources were paired in real Unity: run **37209941711**, artifact **11306341489**. Technical integrity passes, zoom9 improves, but portrait mobile still fails simultaneous independent Granero + Cuartel readability at canonical anchors. Both source assets are retained as SOURCE VISUAL PASS, runtime candidate is not promoted, and rollout remains HOLD. Further source/material/prop/micro-layout iteration is closed; the next move requires a structural composition or mobile-framing decision. See `docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md`.
+
+
 ## Valoria camera-first functional source — 2026-10-04
 
 `VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1` is closed with a split source verdict: run **37208777268** / artifact **11305893049**. Cuartel passes isolated source review using a rich twin-tower guarded-court composition; Granero fails because visible procedural macro forms clash with the rich core. Unity was not run, credits remain 0, and no runtime promotion occurred. Next is Granero-only rich-geometry camera-first assembly, then a paired Unity gate only if it passes. See `docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md`.
