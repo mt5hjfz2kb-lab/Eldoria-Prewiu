@@ -3,7 +3,7 @@
   "enabled": true,
   "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
   "phase": "source_isolated",
-  "nonce": "gcsu-v1-source-20261004-1336",
+  "nonce": "gcsu-v1-source-20261004-1341",
   "assets": [
     "Granero",
     "Cuartel"
@@ -16,5 +16,6 @@
   "allow_unity_integration": false,
   "camera": "neutral isolated preview",
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "notes": "Granero isolated preview visually passes. Cuartel rerun fixes imported GLB hierarchy transforms before any Unity integration."
 }
