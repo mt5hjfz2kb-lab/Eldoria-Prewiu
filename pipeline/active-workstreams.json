@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T15:45:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T16:02:00Z",
+  "active": [
+    {
+      "id": "valoria-visible-frame-cohesion-v1",
+      "title": "Valoria Visible Frame Cohesion v1",
+      "owner": "chat-valoria-visible-frame-cohesion-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameCohesionV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameCohesionGateV1.cs",
+        ".github/workflows/valoria-visible-frame-cohesion-v1.yml",
+        "pipeline/valoria-visible-frame-cohesion-v1-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T16:02:00Z",
+      "base_main_sha": "955fc41b8504d3d2fd14acbd38d32d30266631c3",
+      "dependency": "One significant visible-frame cohesion intervention across promoted HOME/PAN Granero/intermediate/PAN Cuartel/16:9. Preserve camera/mobile navigation, Hero Bastion, accepted defense, Granero/Cuartel, gameplay, parcels/routes/reserves and Final Look. Existing rich assets only; zero Tripo/paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-mobile-navigable-city-v1",
