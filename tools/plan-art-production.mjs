@@ -24,6 +24,7 @@ const cost = Number((req.credit_authorization && req.credit_authorization.author
 const allowTripo = Boolean(req.allow_tripo);
 const gap = Boolean(req.geometry_gap_proven);
 const cap = req.capabilities || {};
+const authoringEngine = req.authoring_engine || (allowTripo ? 'tripo' : '');
 
 if (approved && cost <= 0) fail('Credit authorization approved=true requires a positive authorized_credit_cost.');
 if (allowTripo && req.profile !== 'environment_new_geometry' && req.profile !== 'animated_asset') {
@@ -54,17 +55,24 @@ if (req.profile === 'environment_surface') {
 }
 if (req.profile === 'environment_new_geometry') {
   stages.push('geometry_gap_evidence');
-  stages.push('tripo_exact_input_or_source_preflight');
-  stages.push('tripo_cost_probe');
-  if (!allowTripo || !approved) {
-    stopBeforeSpend = true;
-  } else {
-    if (cap.tripo_parts) stages.push('tripo_parts_or_segmentation');
-    if (cap.tripo_retopology) stages.push('tripo_retopology');
-    stages.push('tripo_generate_or_transform');
+  if (authoringEngine === 'blender') {
+    stages.push('blender_authored_geometry');
     stages.push('blender_production_processing');
     stages.push('unity_environment_art');
     stages.push('official_camera_validation');
+  } else {
+    stages.push('tripo_exact_input_or_source_preflight');
+    stages.push('tripo_cost_probe');
+    if (!allowTripo || !approved) {
+      stopBeforeSpend = true;
+    } else {
+      if (cap.tripo_parts) stages.push('tripo_parts_or_segmentation');
+      if (cap.tripo_retopology) stages.push('tripo_retopology');
+      stages.push('tripo_generate_or_transform');
+      stages.push('blender_production_processing');
+      stages.push('unity_environment_art');
+      stages.push('official_camera_validation');
+    }
   }
 }
 if (req.profile === 'animated_asset') {
@@ -82,6 +90,7 @@ const plan = {
   profile: req.profile,
   zero_spend_default: true,
   geometry_gap_proven: gap,
+  authoring_engine: authoringEngine || null,
   tripo_allowed: allowTripo,
   credit_authorized: approved,
   authorized_credit_cost: cost,
