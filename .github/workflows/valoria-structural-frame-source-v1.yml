@@ -1,0 +1,55 @@
+name: "[PRODUCTION] Valoria Structural Frame Blender Source v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - pipeline/valoria-structural-frame-source-v1-request.json
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-structural-frame-source-v1
+  cancel-in-progress: true
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - name: Install Blender
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          blender --version | head -2
+      - name: Author structural frame sources
+        shell: bash
+        run: |
+          OUT="Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1"
+          mkdir -p "$OUT" "pipeline/evidence/valoria-structural-frame-urban-support-integration-v1/source"
+          blender -b --python tools/blender_valoria_structural_frame_v1.py -- \
+            --output-dir "$OUT" \
+            --report "pipeline/evidence/valoria-structural-frame-urban-support-integration-v1/source/blender-report.json"
+          ls -lh "$OUT"
+          cat pipeline/evidence/valoria-structural-frame-urban-support-integration-v1/source/blender-report.json
+      - name: Commit authored zero-credit sources
+        shell: bash
+        run: |
+          git config user.name "eldoria-production-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1 \
+                  pipeline/evidence/valoria-structural-frame-urban-support-integration-v1/source/blender-report.json
+          if git diff --cached --quiet; then
+            echo "No source changes"
+          else
+            git commit -m "Author structural frame Blender sources"
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-structural-frame-blender-source-v1
+          path: |
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/*.glb
+            pipeline/evidence/valoria-structural-frame-urban-support-integration-v1/source/blender-report.json
+          retention-days: 30
