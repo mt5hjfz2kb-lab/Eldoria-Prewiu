@@ -2,7 +2,7 @@
   "schema_version": 1,
   "enabled": true,
   "program": "VALORIA FIRST PRODUCTION DISTRICT v1",
-  "nonce": "fpd-v1-production-20261004-1237-fix1",
+  "nonce": "fpd-v1-production-20261004-1244-correction",
   "scope": [
     "Hero-compatible visible defense",
     "Granero",
