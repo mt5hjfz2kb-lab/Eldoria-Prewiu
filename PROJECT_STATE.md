@@ -1,3 +1,6 @@
+## 2026-10-04 — Bastion-to-City frame target locked
+Valoria now has a canonical screen-space design target for the future Bastion-to-city architectural transition. The base is the promoted Lower-City 16:9 AFTER capture (run 37221732105 / artifact 11309549299). The design locks the replacement envelope, protected Hero Bastion/lower-city/stair regions, asymmetric west/east retaining masses, nested depth, receiving terrace, material/value hierarchy and stone-rock interlock requirements. No runtime or production geometry changed. Future Blender work must construct this target rather than improvise a new shape. See `docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md`.
+
 ## Valoria Bastion-to-City Architectural Frame v1 — closed 2026-10-04
 - **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / NOT PROMOTED**.
 - Canonical reference reviewed directly: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.

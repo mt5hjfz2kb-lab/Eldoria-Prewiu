@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T19:12:00Z",
-  "active": [
+  "updated_at": "2026-10-04T19:24:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-to-city-frame-design-brief-v1",
       "title": "Valoria Bastion-to-City Frame Design Brief v1",
@@ -17,13 +18,25 @@
       "resources": [
         "valoria-frame-design-brief"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T19:12:00Z",
       "base_main_sha": "d13402cd70072cf893fb935f492e9b7e89eb429e",
-      "dependency": "Design-only screen-space production brief. Lock the exact 16:9 promoted Valoria frame and target Bastion-to-city architecture before any new Blender authoring. No final 3D geometry, no Unity A/B, no camera/density/building changes, no Tripo, zero credits."
-    }
-  ],
-  "history": [
+      "dependency": "Design-only screen-space production brief. Lock the exact 16:9 promoted Valoria frame and target Bastion-to-city architecture before any new Blender authoring. No final 3D geometry, no Unity A/B, no camera/density/building changes, no Tripo, zero credits.",
+      "completed_at": "2026-10-04T19:24:00Z",
+      "result": "DESIGN TARGET LOCKED / no 3D authoring / no Unity / 0 Tripo",
+      "result_doc": "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+      "evidence": [
+        "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json",
+        "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-overlay.svg"
+      ],
+      "base_capture": {
+        "run_id": 37221732105,
+        "artifact_id": 11309549299,
+        "filename": "AFTER-HORIZONTAL-16x9.png",
+        "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1"
+      },
+      "next": "Future Blender source block must reproduce the locked screen-space silhouette using freeform/direct DCC authoring and pass isolated ART SOURCE before Unity. Do not redesign the frame in 3D."
+    },
     {
       "id": "valoria-bastion-to-city-architectural-frame-v1",
       "title": "Valoria Bastion-to-City Architectural Frame v1",

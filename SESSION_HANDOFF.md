@@ -1,3 +1,12 @@
+## 2026-10-04 — VALORIA BASTION-TO-CITY FRAME DESIGN BRIEF v1 — CLOSED / DESIGN TARGET LOCKED
+- Exact base locked: Lower-City Urban Massing promoted `AFTER-HORIZONTAL-16x9.png`, run **37221732105**, artifact **11309549299**, captured head `5231a9e208cf99d9cc5d6a350f8de17bbdb6ae62`, 1600x900, SHA-256 `ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1`.
+- Design-only block: **no new production geometry, no Unity A/B, no camera/density/building changes, no Tripo, 0 credits**.
+- Locked replacement zone: only the grey technical stair-flanking retaining/support transition and its weak rock contacts / lower receiving band. Hero Bastion, central stair/circulation and promoted lower city remain protected.
+- Target reading: one asymmetric, layered, inhabited civic retaining architecture; lower/broader west shoulder, slightly taller civic east shoulder, deep recesses with real wall thickness, stepped receiving terrace, irregular stone-rock interlock.
+- Canonical package: `docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md` + `docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json` + `target-overlay.svg`.
+- Next block must build this silhouette in Blender with genuinely freeform DCC authoring; Blender may solve topology/detail but must not redesign the primary screen-space composition.
+- Result: **DESIGN TARGET LOCKED / READY FOR FUTURE BLENDER SOURCE AUTHORING**.
+
 ## 2026-10-04 — VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1 — CLOSED / SOURCE REJECTED
 - Planner **37225548192 SUCCESS**; professional Blender standard validation PASS.
 - Authoritative isolated source run **37226253119 SUCCESS**, artifact **11312172507**, source commit `649e9401bdaa0404aada894b42754983d72c59ed`; **0 Tripo / 0 paid credits**.
