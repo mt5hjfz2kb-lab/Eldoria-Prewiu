@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T15:00:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T15:05:00Z",
+  "active": [
+    {
+      "id": "valoria-adaptive-mobile-home-pose-v1",
+      "title": "Valoria Adaptive Mobile Home Pose v1",
+      "owner": "chat-valoria-adaptive-mobile-home-pose-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAdaptiveMobileHomePoseV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaAdaptiveMobileHomePoseGateV1.cs",
+        ".github/workflows/valoria-adaptive-mobile-home-pose-v1.yml",
+        "pipeline/valoria-adaptive-mobile-home-pose-v1-request.json",
+        "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md",
+        "docs/evidence/valoria-adaptive-mobile-home-pose-v1/**",
+        "pipeline/valoria-camera-ab-spec.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T15:05:00Z",
+      "base_main_sha": "3fccf55a03197e4fdd57750a80b537dd000d5c2d",
+      "dependency": "Test only M0/M1/M2 portrait-mobile camera home poses using existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1. M0=current mobile baseline; M1=target/center only; M2=target/center + mobile-specific orthographic size. No world/layout/asset/material changes. Max three states. Zero paid/Tripo credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-screen-space-breakpoint-v1",
