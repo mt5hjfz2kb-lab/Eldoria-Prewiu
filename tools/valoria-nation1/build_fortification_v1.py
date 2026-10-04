@@ -15,7 +15,7 @@ def map_path(stem):
     if not hits: raise RuntimeError("Missing PBR map "+stem+" in "+PBR)
     return hits[0]
 
-def mat_pbr(name,diffuse,normal=None,rough=.72):
+def mat_pbr(name,diffuse,normal=None,rough=.72,saturation=1.0,value=1.0):
     m=bpy.data.materials.new(name);m.use_nodes=True
     nt=m.node_tree;nt.nodes.clear()
     out=nt.nodes.new("ShaderNodeOutputMaterial");bs=nt.nodes.new("ShaderNodeBsdfPrincipled")
@@ -23,7 +23,11 @@ def mat_pbr(name,diffuse,normal=None,rough=.72):
     nt.links.new(bs.outputs["BSDF"],out.inputs["Surface"])
     img=bpy.data.images.load(map_path(diffuse),check_existing=True)
     tex=nt.nodes.new("ShaderNodeTexImage");tex.image=img;tex.interpolation="Linear"
-    nt.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
+    if abs(saturation-1.0)>1e-4 or abs(value-1.0)>1e-4:
+        hsv=nt.nodes.new("ShaderNodeHueSaturation");hsv.inputs["Saturation"].default_value=saturation;hsv.inputs["Value"].default_value=value
+        nt.links.new(tex.outputs["Color"],hsv.inputs["Color"]);nt.links.new(hsv.outputs["Color"],bs.inputs["Base Color"])
+    else:
+        nt.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
     if normal:
         nimg=bpy.data.images.load(map_path(normal),check_existing=True);nimg.colorspace_settings.name="Non-Color"
         ntex=nt.nodes.new("ShaderNodeTexImage");ntex.image=nimg;ntex.interpolation="Linear"
@@ -37,8 +41,8 @@ def mat_color(name,color,rough=.72,metal=0):
     bs.inputs["Base Color"].default_value=(*color,1);bs.inputs["Roughness"].default_value=rough;bs.inputs["Metallic"].default_value=metal
     return m
 
-STONE=mat_pbr("Nation1 Warm Limestone","stone_block_wall_diff_1k","stone_block_wall_nor_gl_1k",.78)
-STONE_DARK=mat_pbr("Nation1 Foundation Stone","rock_boulder_dry_diff_1k","rock_boulder_dry_nor_gl_1k",.86)
+STONE=mat_pbr("Nation1 Warm Limestone","castle_wall_slates_diff_1k","castle_wall_slates_nor_gl_1k",.78,.58,1.28)
+STONE_DARK=mat_pbr("Nation1 Foundation Stone","castle_wall_slates_diff_1k","castle_wall_slates_nor_gl_1k",.88,.50,.88)
 WOOD=mat_color("Nation1 Dark Timber",(.19,.105,.055),.76)
 BLUE=mat_color("Nation1 Valoria Blue",(.045,.14,.34),.64)
 DARK=mat_color("Nation1 Recess",(.025,.028,.03),.92)
