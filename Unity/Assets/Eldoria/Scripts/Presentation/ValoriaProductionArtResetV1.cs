@@ -13,6 +13,7 @@ namespace Eldoria.Presentation
         public static int Pieces;
         public const string CandidateFamily="StarterFamilyV2";
         public const string CandidateSuffix="_v2";
+        public const string DefensiveFamily="StoneDefensiveFamilyV2";
 
         public static void Apply(Transform canonicalRoot,PlayerState state)
         {
@@ -20,9 +21,9 @@ namespace Eldoria.Presentation
             var old=GameObject.Find(RootName);if(old!=null)Object.DestroyImmediate(old);
             var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);Pieces=0;
 
-            var wall=Load("Valoria_WallSegment"+CandidateSuffix);
-            var gate=Load("Valoria_MainGate"+CandidateSuffix);
-            var tower=Load("Valoria_Tower"+CandidateSuffix);
+            var wall=LoadDefensive("Valoria_WallSegment_StoneDefV2");
+            var gate=LoadDefensive("Valoria_MainGate_StoneDefV2");
+            var tower=LoadDefensive("Valoria_Tower_StoneDefV2");
             var house=Load("Valoria_CivicHouse"+CandidateSuffix);
             var workshop=Load("Valoria_Workshop"+CandidateSuffix);
 
@@ -51,6 +52,13 @@ namespace Eldoria.Presentation
         {
             var x=Resources.Load<GameObject>("Valoria/ProductionArt/"+CandidateFamily+"/"+n);
             if(x==null)throw new InvalidOperationException("Missing production art starter resource "+n);
+            return x;
+        }
+
+        static GameObject LoadDefensive(string n)
+        {
+            var x=Resources.Load<GameObject>("Valoria/ProductionArt/"+DefensiveFamily+"/"+n);
+            if(x==null)throw new InvalidOperationException("Missing Stone defensive candidate "+n);
             return x;
         }
 
