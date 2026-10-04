@@ -43,8 +43,8 @@ namespace Eldoria.EditorTools
             Save(scene.camera,Folder+"/after-mobile.png",9.4f,390,844);
 
             // Phase D: normalize candidate surface response while preserving the same geometry/gameplay.
-            var resetRoot=GameObject.Find(ValoriaProductionArtResetV1.RootName);
-            ValoriaProductionArtResetV1.NormalizeProductionMaterials(resetRoot);
+            // Phase D runtime remap was visually rejected. Preserve source-authored materials;
+            // the canonical stack remains an authoring contract for future source work.
             Save(scene.camera,Folder+"/material-9.png",9f,1280,720);
             Save(scene.camera,Folder+"/material-mobile.png",9.4f,390,844);
 
@@ -56,6 +56,12 @@ namespace Eldoria.EditorTools
             // Phase F: matched mild strategic perspective, same target and production frame.
             SavePerspective(scene.camera,Folder+"/perspective-9.png",1280,720,false);
             SavePerspective(scene.camera,Folder+"/perspective-mobile.png",390,844,true);
+
+            // Return to accepted orthographic camera, then test controlled phase-H density/life.
+            ValoriaProductionDensityLifeV1.Enabled=true;
+            ValoriaProductionDensityLifeV1.Apply(scene.root.transform,state);
+            Save(scene.camera,Folder+"/density-9.png",9f,1280,720);
+            Save(scene.camera,Folder+"/density-mobile.png",9.4f,390,844);
 
             if(ValoriaVisualFormulaGate.CollisionSignature()!=signature)
                 throw new Exception("D/E/F visual layers changed gameplay collider/hotspot signature.");
@@ -69,6 +75,7 @@ namespace Eldoria.EditorTools
                 "  \"materials_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
                 "  \"final_look_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
                 "  \"camera_ab_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
+                "  \"density_life_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
             Debug.Log("VALORIA_PRODUCTION_ART_RESET_PHASE_C_GATE=PASS");
