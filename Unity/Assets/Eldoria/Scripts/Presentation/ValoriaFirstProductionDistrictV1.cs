@@ -19,7 +19,7 @@ namespace Eldoria.Presentation
    SuppressByChain("valoria · production art · main gate","valoria · production art · west entry tower",
     "valoria · production art · east entry tower","valoria · production art · west entry curtain",
     "valoria · production art · east entry curtain","flat citadel production · cuartel",
-    "flat citadel production · granero","nation1 fortification");
+    "flat citadel production · granero","cuartel · dedicated barracks","cuartel · fallback guardhouse","granero","nation1 fortification");
 
    var gate=Load("Valoria_MainGate_FPDv1");
    var tower=Load("Valoria_DefenseTower_FPDv1");
@@ -32,8 +32,8 @@ namespace Eldoria.Presentation
    Piece(root,tower,"east gate tower",new Vector3(4.15f,.13f,-8.15f),2.72f,4.35f,-4f);
    Piece(root,wall,"west visible curtain",new Vector3(-7.15f,.13f,-7.90f),3.65f,2.12f,5f);
    Piece(root,wall,"east visible curtain",new Vector3(7.15f,.13f,-7.90f),3.65f,2.12f,-5f);
-   Piece(root,granero,"Granero production",new Vector3(-2.75f,.16f,-4.25f),4.55f,3.65f,7f);
-   Piece(root,cuartel,"Cuartel production",new Vector3(5.95f,.16f,-2.05f),4.75f,3.90f,-8f);
+   Piece(root,granero,"Granero production",new Vector3(-3.10f,.16f,-4.45f),5.05f,4.15f,7f);
+   Piece(root,cuartel,"Cuartel production",new Vector3(6.90f,.16f,-3.65f),5.15f,4.35f,-8f);
    StripGameplay(root.gameObject);
   }
 
