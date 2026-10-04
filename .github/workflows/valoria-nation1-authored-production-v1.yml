@@ -68,7 +68,7 @@ jobs:
               for x in range(im.width):
                   r,g,b=px[x,y]
                   lum=(r*0.2126+g*0.7152+b*0.0722)/255.0
-                  px[x,y]=(int(18+lum*34),int(45+lum*58),int(92+lum*92))
+                  px[x,y]=(int(14+lum*22),int(30+lum*38),int(55+lum*58))
           im=ImageEnhance.Contrast(im).enhance(1.08)
           out=os.path.join(root,"roof_slates_03_blue_1k.jpg")
           im.save(out,quality=92)
