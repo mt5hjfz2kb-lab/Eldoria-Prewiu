@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "PROMOTION_CONFIRMATION",
+  "status": "CLOSED_PROMOTED",
   "workstream": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1",
   "objective": "Reauthor the dominant visible lower-city residential/frontage band as 2–3 differentiated urban groups rather than layered repeated house/cluster systems.",
   "baseline_head": "7168a47cebea950f1088efce7eee499ffb9d2102",
@@ -64,5 +64,12 @@
   "authoritative_candidate_run_id": 37221732105,
   "authoritative_candidate_artifact_id": 11309549299,
   "visual_review": "VISUAL PASS for block objective: three differentiated urban groups read clearly; immediate repeated-house band is materially reduced; direct comparison to canonical reference shows closer massing hierarchy and urban articulation while remaining intentionally less dense.",
-  "promotion": "Enable candidate by default and hook it into ProductionVisualIntegration.City after MidTierDistrictProduction and ValoriaFullFrameArchitectureBatchV1 are built, so it can replace those redundant visual layers while preserving gameplay authority."
+  "promotion": "Enable candidate by default and hook it into ProductionVisualIntegration.City after MidTierDistrictProduction and ValoriaFullFrameArchitectureBatchV1 are built, so it can replace those redundant visual layers while preserving gameplay authority.",
+  "authoritative_run_id": 37221732105,
+  "authoritative_artifact_id": 11309549299,
+  "confirmation_run_id": 37222027889,
+  "confirmation_artifact_id": 11309364965,
+  "final_result": "TECH PASS / VISUAL PASS / PROMOTED",
+  "result_doc": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
+  "next": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1"
 }
