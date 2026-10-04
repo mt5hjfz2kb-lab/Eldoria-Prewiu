@@ -43,6 +43,7 @@ jobs:
             git push origin HEAD:main
           fi
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: valoria-production-art-donor-audit-v1
           path: pipeline/evidence/valoria-production-art-donor-audit-v1.json
