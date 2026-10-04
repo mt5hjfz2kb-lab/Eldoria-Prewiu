@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:55:00Z",
+  "updated_at": "2026-10-04T17:56:00Z",
   "active": [],
   "history": [
     {
@@ -38,7 +38,9 @@
       "confirmation_artifact_id": 11309364965,
       "result": "TECH PASS / VISUAL PASS / PROMOTED",
       "result_doc": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
-      "next": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1; do not reopen lower-city house density/spacing."
+      "next": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1; do not reopen lower-city house density/spacing.",
+      "closeout_run_id": 37222277115,
+      "closeout_artifact_id": 11311140673
     },
     {
       "id": "valoria-secondary-support-form-replacement-v1",
