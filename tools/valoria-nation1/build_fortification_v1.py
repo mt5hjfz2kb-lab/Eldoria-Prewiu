@@ -324,7 +324,7 @@ def add_civic_monument(col):
     bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=.26,radius2=0,depth=.48,location=(0,0,2.08))
     crown=bpy.context.object;crown.name="monument crown";crown.data.materials.append(GOLD);move_to(crown,col);parts.append(crown)
     for o in parts:
-        if o.name.startswith("monument") and o not in col.objects: move_to(o,col)
+        move_to(o,col)
     join_by_material(col)
 
 def add_market_stall(col):
