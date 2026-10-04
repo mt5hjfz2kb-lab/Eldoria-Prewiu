@@ -1,3 +1,19 @@
+## 2026-10-04 — VALORIA PAIRED FUNCTIONAL UNITY GATE v1 — CLOSED / TECH PASS / VISUAL PARTIAL-FAIL
+
+- Final paired gate: run **37209941711 SUCCESS**, artifact **11306341489**, 0 credits.
+- Sources: **Granero_RCFv1 SOURCE VISUAL PASS** + **Cuartel_CFSv1 SOURCE VISUAL PASS**.
+- Real `VisualWorld` matched BEFORE/AFTER at zoom9 + mobile; canonical FPD anchors retained.
+- Technical invariants PASS: gameplay signature, ORTHOGRAPHIC camera, RESET Final Look, Hero Bastion, accepted defense, terrain, parcels/routes/hotspots/colliders preserved; focused gameplay tests PASS.
+- Metrics: renderers **852 -> 860**, materials **81 -> 93**, triangles **2,083,716 -> 2,393,761**, lights **31 -> 31**.
+- Zoom9: meaningful source-quality/readability gain, especially Granero, but functions still compete with lower-city mass.
+- Mobile: decisive **VISUAL FAIL**. Both functions do not survive simultaneously as unmistakable Granero + Cuartel at canonical anchors.
+- Root cause now proven: **screen-space composition / portrait crop**, not missing source richness.
+- Candidate **NOT PROMOTED**; existing playable runtime remains canonical.
+- Retain both new sources; no more source v2/v3, material, prop or micro-layout passes.
+- Forja/Hospital/Cantera remain HOLD.
+- Next requires owner-level structural decision: functional parcel/anchor composition or mobile framing/visibility policy.
+- Result: `docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1 — CLOSED / SPLIT SOURCE VERDICT
 
 - Source gate: run **37208777268 SUCCESS**, artifact **11305893049**, 0 credits.
