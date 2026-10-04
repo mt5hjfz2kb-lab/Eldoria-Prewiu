@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-camera-first-functional-source-v1",
-  "asset_or_sector": "Granero + Cuartel camera-first functional source",
+  "enabled": true,
+  "request_id": "valoria-granero-rich-camera-first-v1",
+  "asset_or_sector": "Granero rich-geometry camera-first source",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -11,7 +11,7 @@
   },
   "capabilities": {
     "blender_material_consolidation": false,
-    "unity_modular_assembly": true,
+    "unity_modular_assembly": false,
     "unity_shared_materials": false,
     "unity_decals": false,
     "unity_probes": false,
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "CLOSED: camera-first source gate run 37208777268 / artifact 11305893049. Cuartel rich-module source passes isolated visual review; Granero rich-core + procedural macro forms fails production-art quality. No Unity integration. Next is Granero rich-geometry-only camera-first assembly. Tripo remains unauthorized."
+  "notes": "Granero-only new source technique. Build one camera-first storage complex using only already-rich approved granary geometry; no new visible primitive/procedural architecture. Source gate only. If PASS, later pair with retained Cuartel_CFSv1 in Unity. Zero Tripo/paid credits."
 }
