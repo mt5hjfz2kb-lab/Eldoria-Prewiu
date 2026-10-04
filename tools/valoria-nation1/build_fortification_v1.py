@@ -15,26 +15,30 @@ def map_path(stem):
     if not hits: raise RuntimeError("Missing PBR map "+stem+" in "+PBR)
     return hits[0]
 
-def mat_pbr(name,diffuse,normal=None,rough=.72,saturation=1.0,value=1.0):
+def mat_pbr(name,diffuse,normal=None,rough=.72,saturation=1.0,value=1.0,tint=None):
     m=bpy.data.materials.new(name);m.use_nodes=True
     nt=m.node_tree;nt.nodes.clear()
     out=nt.nodes.new("ShaderNodeOutputMaterial");bs=nt.nodes.new("ShaderNodeBsdfPrincipled")
     bs.inputs["Roughness"].default_value=rough
+    if "Specular IOR Level" in bs.inputs: bs.inputs["Specular IOR Level"].default_value=.22
     nt.links.new(bs.outputs["BSDF"],out.inputs["Surface"])
     img=bpy.data.images.load(map_path(diffuse),check_existing=True)
     tex=nt.nodes.new("ShaderNodeTexImage");tex.image=img;tex.interpolation="Linear"
+    source=tex.outputs["Color"]
     if abs(saturation-1.0)>1e-4 or abs(value-1.0)>1e-4:
         hsv=nt.nodes.new("ShaderNodeHueSaturation");hsv.inputs["Saturation"].default_value=saturation;hsv.inputs["Value"].default_value=value
-        nt.links.new(tex.outputs["Color"],hsv.inputs["Color"]);nt.links.new(hsv.outputs["Color"],bs.inputs["Base Color"])
-    else:
-        nt.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
+        nt.links.new(source,hsv.inputs["Color"]);source=hsv.outputs["Color"]
+    if tint is not None:
+        mix=nt.nodes.new("ShaderNodeMixRGB");mix.blend_type="MULTIPLY";mix.inputs["Fac"].default_value=1.0
+        mix.inputs["Color2"].default_value=(*tint,1)
+        nt.links.new(source,mix.inputs["Color1"]);source=mix.outputs["Color"]
+    nt.links.new(source,bs.inputs["Base Color"])
     if normal:
         nimg=bpy.data.images.load(map_path(normal),check_existing=True);nimg.colorspace_settings.name="Non-Color"
         ntex=nt.nodes.new("ShaderNodeTexImage");ntex.image=nimg;ntex.interpolation="Linear"
         nm=nt.nodes.new("ShaderNodeNormalMap");nm.inputs["Strength"].default_value=.65
         nt.links.new(ntex.outputs["Color"],nm.inputs["Color"]);nt.links.new(nm.outputs["Normal"],bs.inputs["Normal"])
     return m
-
 def mat_color(name,color,rough=.72,metal=0):
     m=bpy.data.materials.new(name);m.use_nodes=True
     bs=next(n for n in m.node_tree.nodes if n.type=="BSDF_PRINCIPLED")
@@ -47,7 +51,7 @@ WOOD=mat_color("Nation1 Dark Timber",(.19,.105,.055),.76)
 BLUE=mat_color("Nation1 Valoria Blue",(.045,.14,.34),.64)
 DARK=mat_color("Nation1 Recess",(.025,.028,.03),.92)
 GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
-ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_diff_1k","roof_slates_03_nor_gl_1k",.92,.46,.64)
+ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_diff_1k","roof_slates_03_nor_gl_1k",.94,.72,.86,(.32,.50,.92))
 PLASTER=mat_color("Nation1 Warm Plaster",(.68,.61,.48),.84)
 WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
 
