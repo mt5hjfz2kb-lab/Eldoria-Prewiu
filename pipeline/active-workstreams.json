@@ -1,8 +1,40 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T11:59:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T12:23:00Z",
+  "active": [
+    {
+      "id": "valoria-first-production-district-v1",
+      "title": "Valoria First Production District v1",
+      "owner": "chat-valoria-first-production-district-v1",
+      "scope": [
+        "art-source/valoria/production/first-production-district-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstProductionDistrictGateV1.cs",
+        ".github/workflows/valoria-first-production-district-v1.yml",
+        "pipeline/valoria-first-production-district-v1-request.json",
+        "pipeline/evidence/valoria-first-production-district-v1/**",
+        "docs/evidence/valoria-first-production-district-v1/**",
+        "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "valoria-production-source-design",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T12:23:00Z",
+      "base_main_sha": "5d8dd2ef6a64b6df73eac83ac61c63cf99db8080",
+      "dependency": "Use the promoted Production Art System to replace only the visible Hero-compatible defense + Granero + Cuartel + directly related proxies. Preserve Flat Citadel, Hero Bastion, parcels, gameplay, orthographic camera and accepted Final Look. Stop at matched zoom9/mobile BEFORE/AFTER. Zero paid/Tripo credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-production-art-starter-source-v1",
