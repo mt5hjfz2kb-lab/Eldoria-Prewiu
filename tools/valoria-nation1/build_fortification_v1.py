@@ -47,6 +47,9 @@ WOOD=mat_color("Nation1 Dark Timber",(.19,.105,.055),.76)
 BLUE=mat_color("Nation1 Valoria Blue",(.045,.14,.34),.64)
 DARK=mat_color("Nation1 Recess",(.025,.028,.03),.92)
 GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
+ROOF=mat_color("Nation1 Slate Blue",(.055,.12,.25),.72)
+PLASTER=mat_color("Nation1 Warm Plaster",(.68,.61,.48),.84)
+WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
 
 def box(name,loc,scale,mat,bevel=.03,rot=(0,0,0),uv=True):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc,rotation=rot)
@@ -60,6 +63,15 @@ def box(name,loc,scale,mat,bevel=.03,rot=(0,0,0),uv=True):
         bpy.context.view_layer.objects.active=o;o.select_set(True);bpy.ops.object.mode_set(mode="EDIT")
         bpy.ops.mesh.select_all(action="SELECT");bpy.ops.uv.cube_project(cube_size=1.35,correct_aspect=True)
         bpy.ops.object.mode_set(mode="OBJECT");o.select_set(False)
+    return o
+
+def hip_roof(name,loc,width,depth,height,mat):
+    bpy.ops.mesh.primitive_cone_add(vertices=4,radius1=1.0,radius2=0.0,depth=height,location=(loc[0],loc[1],loc[2]+height*.5),rotation=(0,0,math.radians(45)))
+    o=bpy.context.object;o.name=name
+    # Blender's 4-sided cone is square in XY; scale independently for a hipped roof.
+    o.scale=(width/math.sqrt(2),depth/math.sqrt(2),1)
+    bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+    o.data.materials.append(mat)
     return o
 
 def collection(name):
@@ -119,6 +131,8 @@ def tower_parts(cx=0,cy=0,base_z=0,scale=1.0,prefix="tower"):
 
 def add_tower(col):
     for o in tower_parts():move_to(o,col)
+    move_to(hip_roof("tower slate roof",(0,0,3.28),2.72,2.72,1.22,ROOF),col)
+    move_to(box("tower roof finial",(0,0,4.02),(.09,.09,.62),GOLD,.006,uv=False),col)
     # blue heraldic banner facing the official front.
     move_to(box("tower banner",(0,-1.205,1.65),(.46,.035,1.10),BLUE,.008,uv=False),col)
     move_to(box("tower banner trim",(0,-1.232,2.22),(.54,.035,.07),GOLD,.005,uv=False),col)
@@ -129,6 +143,11 @@ def add_gate(col):
     # Two strong square towers.
     parts.extend(tower_parts(-2.25,0,0,1.03,"gate west"))
     parts.extend(tower_parts(2.25,0,0,1.03,"gate east"))
+    # Slate roofs give the gatehouse the same silhouette language as the Hero.
+    parts.append(hip_roof("gate west slate roof",(-2.25,0,3.39),2.78,2.78,1.18,ROOF))
+    parts.append(hip_roof("gate east slate roof",(2.25,0,3.39),2.78,2.78,1.18,ROOF))
+    parts.append(box("gate west finial",(-2.25,0,4.12),(.09,.09,.62),GOLD,.006,uv=False))
+    parts.append(box("gate east finial",(2.25,0,4.12),(.09,.09,.62),GOLD,.006,uv=False))
     # Side shoulders and bridge above the opening.
     parts.append(box("gate west shoulder",(-1.25,0,1.08),(1.30,.68,1.92),STONE,.04))
     parts.append(box("gate east shoulder",(1.25,0,1.08),(1.30,.68,1.92),STONE,.04))
@@ -147,6 +166,42 @@ def add_gate(col):
     # Blue banners on the two towers.
     parts.append(box("gate west banner",(-2.25,-1.255,1.75),(.46,.035,1.18),BLUE,.008,uv=False))
     parts.append(box("gate east banner",(2.25,-1.255,1.75),(.46,.035,1.18),BLUE,.008,uv=False))
+    for o in parts:move_to(o,col)
+    join_by_material(col)
+
+def add_civic_house(col,variant=0):
+    parts=[]
+    w=2.65 if variant==0 else 2.35
+    d=1.95 if variant==0 else 2.15
+    parts.append(box("house stone base",(0,0,.48),(w,d,.92),STONE,.035))
+    parts.append(box("house plaster upper",(0,0,1.28),(w*.94,d*.94,.72),PLASTER,.028))
+    # dark structural timber frame
+    for x in (-w*.42,w*.42):
+        parts.append(box("house post",(x,-d*.48,1.28),(.12,.10,.92),WOOD,.012,uv=False))
+    parts.append(box("house beam",(0,-d*.49,1.06),(w*.9,.10,.12),WOOD,.01,uv=False))
+    parts.append(box("house beam upper",(0,-d*.49,1.55),(w*.9,.10,.12),WOOD,.01,uv=False))
+    parts.append(hip_roof("house slate roof",(0,0,1.62),w*1.12,d*1.15,.98,ROOF))
+    # warm front door/window read at gameplay zoom
+    parts.append(box("house door",(0,-d*.505,.48),(.42,.06,.72),WOOD,.012,uv=False))
+    for x in (-.68,.68):
+        parts.append(box("house warm window",(x,-d*.508,1.30),(.30,.045,.34),WINDOW,.008,uv=False))
+        parts.append(box("house window frame",(x,-d*.535,1.30),(.36,.035,.06),WOOD,.006,uv=False))
+    parts.append(box("house chimney",(w*.28,d*.12,2.18),(.25,.25,.82),STONE_DARK,.015))
+    for o in parts:move_to(o,col)
+    join_by_material(col)
+
+def add_workshop(col):
+    parts=[]
+    parts.append(box("workshop stone plinth",(0,0,.32),(3.10,2.30,.58),STONE_DARK,.035))
+    parts.append(box("workshop timber hall",(0,0,1.05),(3.0,2.18,1.20),PLASTER,.03))
+    for x in (-1.30,0,1.30):
+        parts.append(box("workshop front post",(x,-1.105,1.05),(.14,.12,1.34),WOOD,.012,uv=False))
+    parts.append(box("workshop lower beam",(0,-1.11,.62),(2.78,.11,.14),WOOD,.01,uv=False))
+    parts.append(box("workshop upper beam",(0,-1.11,1.42),(2.78,.11,.14),WOOD,.01,uv=False))
+    parts.append(hip_roof("workshop slate roof",(0,0,1.64),3.45,2.60,1.04,ROOF))
+    parts.append(box("workshop broad door",(0,-1.125,.72),(.82,.06,1.05),WOOD,.012,uv=False))
+    parts.append(box("workshop warm window",(-.88,-1.128,1.15),(.38,.045,.36),WINDOW,.008,uv=False))
+    parts.append(box("workshop warm window",( .88,-1.128,1.15),(.38,.045,.36),WINDOW,.008,uv=False))
     for o in parts:move_to(o,col)
     join_by_material(col)
 
@@ -182,15 +237,23 @@ wall_col=collection("Nation1_Wall_v1");add_wall(wall_col)
 tower_col=collection("Nation1_Tower_v1");add_tower(tower_col)
 gate_col=collection("Nation1_Gate_v1");add_gate(gate_col)
 stair_col=collection("Nation1_Stair_v1");add_stair(stair_col)
+house_col=collection("Nation1_CivicHouse_v1");add_civic_house(house_col,0)
+house2_col=collection("Nation1_CivicHouseB_v1");add_civic_house(house2_col,1)
+work_col=collection("Nation1_Workshop_v1");add_workshop(work_col)
 
 exports=[]
-for col,fn in [(wall_col,"Nation1_Wall_v1.glb"),(tower_col,"Nation1_Tower_v1.glb"),(gate_col,"Nation1_Gate_v1.glb"),(stair_col,"Nation1_Stair_v1.glb")]:
+for col,fn in [
+    (wall_col,"Nation1_Wall_v1.glb"),(tower_col,"Nation1_Tower_v1.glb"),
+    (gate_col,"Nation1_Gate_v1.glb"),(stair_col,"Nation1_Stair_v1.glb"),
+    (house_col,"Nation1_CivicHouse_v1.glb"),(house2_col,"Nation1_CivicHouseB_v1.glb"),
+    (work_col,"Nation1_Workshop_v1.glb")
+]:
     p,objs=export_collection(col,fn);exports.append({"file":fn,"bytes":os.path.getsize(p),"objects":len(objs),"vertices":sum(len(o.data.vertices) for o in objs)})
 
 blend=os.path.join(CAND,"Valoria_Nation1_Fortification_v1.blend")
 bpy.ops.file.pack_all()
 bpy.ops.wm.save_as_mainfile(filepath=blend)
 with open(EVID,"w",encoding="utf-8") as f:
-    json.dump({"status":"PASS","blender_version":bpy.app.version_string,"source_blend":"pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend","exports":exports,"materials":["Warm Limestone PBR","Foundation Stone PBR","Dark Timber","Valoria Blue","Recess"],"tripo_credits":0},f,indent=2)
+    json.dump({"status":"PASS","blender_version":bpy.app.version_string,"source_blend":"pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend","exports":exports,"materials":["Warm Limestone PBR","Foundation Stone PBR","Dark Timber","Valoria Blue","Slate Blue","Warm Plaster","Warm Window","Recess"],"tripo_credits":0},f,indent=2)
 print("VALORIA_NATION1_BLENDER_FORTIFICATION=PASS")
 print(json.dumps(exports,indent=2))
