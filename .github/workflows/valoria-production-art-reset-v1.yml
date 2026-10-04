@@ -1,0 +1,104 @@
+name: "[PRODUCTION] Valoria Production Art Reset v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-production-art-reset-run-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-production-art-reset-v1
+  cancel-in-progress: true
+
+jobs:
+  author-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and glTF dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Build starter family
+        run: |
+          blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
+          test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
+          for f in Valoria_MainGate_v1 Valoria_WallSegment_v1 Valoria_Tower_v1 Valoria_CivicHouse_v1 Valoria_Workshop_v1; do
+            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/${f}.glb"
+          done
+          node tools/check-production-art-source.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-reset-source
+          path: |
+            art-source/valoria/production/starter-family/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
+            pipeline/production-art-source-audit.json
+          if-no-files-found: error
+          retention-days: 30
+
+  capture:
+    needs: author-source
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'};$dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-production-art-reset-source
+          path: .
+      - name: Capture reset A/B
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaProductionArtResetV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaProductionArtResetV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaProductionArtResetGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(32)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Reset gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Reset gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - name: Focused gameplay tests
+        shell: powershell
+        run: |
+          $xml="$env:RUNNER_TEMP/ProductionArtReset-PlayMode.xml";$log="$env:RUNNER_TEMP/ProductionArtReset-PlayMode.log"
+          $filter='Eldoria.Tests.ReferenceUiArtPassTests;OwnerHudMatchesReferenceMobileBudgets;ValoriaProgressionContractGatesCuartelVisualAndInteraction'
+          $args=@('-batchmode','-nographics','-projectPath',"$env:GITHUB_WORKSPACE/Unity",'-runTests','-testPlatform','PlayMode','-testFilter',$filter,'-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Reset tests timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Reset tests failed $($p.ExitCode)"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-production-art-reset-v1
+          path: |
+            Unity/ValoriaProductionArtResetV1Captures/*
+            art-source/valoria/production/starter-family/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
+            ${{ runner.temp }}/ProductionArtReset-PlayMode.*
+            ${{ runner.temp }}/ValoriaProductionArtResetV1.log
+          if-no-files-found: warn
+          retention-days: 30
