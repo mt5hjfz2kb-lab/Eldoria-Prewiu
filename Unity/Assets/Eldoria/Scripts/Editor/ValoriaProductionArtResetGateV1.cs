@@ -1,15 +1,115 @@
-using System;using System.IO;using System.Collections.Generic;using Eldoria.Domain;using Eldoria.Presentation;using UnityEditor;using UnityEditor.SceneManagement;using UnityEngine;using Object=UnityEngine.Object;
-namespace Eldoria.EditorTools {public static class ValoriaProductionArtResetGateV1 {
- const string Folder="ValoriaProductionArtResetV1Captures";
- public static void Capture(){ShaderUtil.allowAsyncCompilation=false;Directory.CreateDirectory(Folder);var state=new PlayerState{BastionLevel=6,SawmillLevel=2,BarracksLevel=2,CorruptionDiscovered=true};var p=new Vector3(18.2f,18.4f,-26.8f);var t=new Vector3(0,1.55f,1.55f);
-  var before=Create(state);var sig=ValoriaVisualFormulaGate.CollisionSignature();BuildAccepted(before.root.transform,state);RemoveAddedGameplay(before.cols,before.hotspots);Physics.SyncTransforms();if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)throw new Exception("Production Art BEFORE changed gameplay.");Save(before.camera,Folder+"/before-9.png",p,t,9,1280,720);Save(before.camera,Folder+"/before-mobile.png",p,new Vector3(0,1.7f,1.8f),9.4f,390,844);
-  var after=Create(state);sig=ValoriaVisualFormulaGate.CollisionSignature();BuildAccepted(after.root.transform,state);ValoriaProductionArtResetV1.Apply(after.root.transform,state);RemoveAddedGameplay(after.cols,after.hotspots);Physics.SyncTransforms();if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)throw new Exception("Production Art candidate changed gameplay.");Save(after.camera,Folder+"/after-9.png",p,t,9,1280,720);Save(after.camera,Folder+"/after-mobile.png",p,new Vector3(0,1.7f,1.8f),9.4f,390,844);SavePerspective(after.camera,Folder+"/camera-perspective-9.png",new Vector3(22.8f,22.5f,-34),t,35,1280,720);SavePerspective(after.camera,Folder+"/camera-perspective-mobile.png",new Vector3(24.8f,24,-37),new Vector3(0,1.7f,1.8f),32,390,844);
-  File.WriteAllText(Folder+"/evidence.json","{\n  \"gameplay_signature_preserved\":true,\n  \"starter_pieces\":"+ValoriaProductionArtResetV1.Pieces+",\n  \"zoom9_mobile_stop_gate\":true,\n  \"camera_ab\":true,\n  \"tripo_credits\":0\n}\n");Debug.Log("VALORIA_PRODUCTION_ART_RESET_V1=PASS");EditorApplication.Exit(0);}
- struct SceneData{public Camera camera;public GameObject root;public HashSet<int> cols;public HashSet<int> hotspots;}
- static SceneData Create(PlayerState state){SceneSetup.SetupRenderPipeline();EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);ProductionVisualIntegration.ResetVisualCachesForGate();ProductionVisualIntegration.StoneArchitectureEnabled=true;ProductionVisualIntegration.TerrainTerraceEnabled=true;ProductionVisualIntegration.SurfaceCellEnabled=false;ProductionVisualIntegration.ProductionCellEnabled=false;ProductionVisualIntegration.CoherentCastleProofEnabled=false;ProductionVisualIntegration.SlavicDistrictProofEnabled=false;ProductionVisualIntegration.CompactFootprintReframeEnabled=true;AssetVisualUpliftPassV1.Enabled=false;AssetLibraryReprocessingPassV1.Enabled=true;MidTierDistrictProduction.Enabled=true;ValoriaFullFrameArchitectureBatchV1.Enabled=true;ValoriaOpenValleyCompositionV1.Enabled=false;ValoriaReferenceConvergencePassV2.Enabled=false;ValoriaInCitySurfacePassV1.Enabled=false;ValoriaStairLandingIntegrationV1.Enabled=false;ValoriaFullFrameConvergenceIteration1.Enabled=false;ValoriaFullFrameConvergenceIteration2.Enabled=false;ValoriaBenchmarkCompositeV2.Enabled=false;ValoriaEnvironmentUpliftV1.Enabled=false;ValoriaArchitectureCoherenceV1.Enabled=false;ValoriaBackplateCandidateV1.Enabled=false;ValoriaCliffIslandReframeV1.Enabled=false;ValoriaCliffIslandCleanupV2.Enabled=false;ValoriaResidualCleanupV1.Enabled=false;ValoriaMaterialResidueCleanupV2.Enabled=false;ValoriaFullFrameArtifactCleanupV1.Enabled=false;ValoriaWorldFrameMountainTerrainV1.Enabled=false;ValoriaLowerCityTerrainV1.Enabled=false;VisualWorld.VisualIntegrationEnabled=true;VisualWorld.Create(true,state);var c=Camera.main;var root=GameObject.Find("Valoria · integrated construction visual layer");if(c==null||root==null)throw new Exception("Production Art capture prerequisites missing.");var cs=new HashSet<int>();foreach(var x in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))if(x!=null)cs.Add(x.GetInstanceID());var hs=new HashSet<int>();foreach(var x in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))if(x!=null)hs.Add(x.GetInstanceID());return new SceneData{camera=c,root=root,cols=cs,hotspots=hs};}
- static void BuildAccepted(Transform root,PlayerState state){ValoriaFlatCitadelProductionUpliftV1.WallUpliftEnabled=true;ValoriaFlatCitadelProductionUpliftV1.GroundUpliftEnabled=true;ValoriaFlatCitadelProductionUpliftV1.BastionIntegrationUpliftEnabled=true;ValoriaFlatCitadelProductionUpliftV1.FunctionalBuildingUpliftEnabled=true;ValoriaFlatCitadelProductionUpliftV1.DressingUpliftEnabled=true;ValoriaFlatCitadelProductionUpliftV1.Build(root,state);ValoriaFlatCitadelArtConsolidationV1.Apply(root,state);ValoriaAssetCoherenceV1.Apply(root,state);ValoriaVisualQualityBreakthroughV1.Apply(root,state);}
- static void RemoveAddedGameplay(HashSet<int> c,HashSet<int> h){foreach(var x in Object.FindObjectsByType<Collider>(FindObjectsSortMode.None))if(x!=null&&!c.Contains(x.GetInstanceID()))Object.DestroyImmediate(x);foreach(var x in Object.FindObjectsByType<WorldHotspot>(FindObjectsSortMode.None))if(x!=null&&!h.Contains(x.GetInstanceID()))Object.DestroyImmediate(x);}
- static void Save(Camera c,string path,Vector3 p,Vector3 t,float size,int w,int h){c.transform.position=p;c.transform.LookAt(t);c.orthographic=true;c.orthographicSize=size;Render(c,path,w,h);}
- static void SavePerspective(Camera c,string path,Vector3 p,Vector3 t,float fov,int w,int h){c.transform.position=p;c.transform.LookAt(t);c.orthographic=false;c.fieldOfView=fov;Render(c,path,w,h);}
- static void Render(Camera c,string path,int w,int h){c.clearFlags=CameraClearFlags.SolidColor;c.backgroundColor=new Color(.33f,.39f,.42f,1);var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};var prev=RenderTexture.active;try{c.targetTexture=rt;foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(r.enabled)foreach(var m in r.sharedMaterials)if(m!=null)for(int pass=0;pass<m.passCount;pass++)ShaderUtil.CompilePass(m,pass,true);c.Render();c.Render();RenderTexture.active=rt;var im=new Texture2D(w,h,TextureFormat.RGB24,false);im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();File.WriteAllBytes(path,im.EncodeToPNG());Object.DestroyImmediate(im);}finally{c.targetTexture=null;RenderTexture.active=prev;rt.Release();Object.DestroyImmediate(rt);}}
-}}
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Eldoria.Domain;
+using Eldoria.Presentation;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using Object=UnityEngine.Object;
+
+namespace Eldoria.EditorTools
+{
+    public static class ValoriaProductionArtResetGateV1
+    {
+        const string Folder="ValoriaProductionArtResetV1Captures";
+
+        public static void Capture()
+        {
+            ShaderUtil.allowAsyncCompilation=false;
+            Directory.CreateDirectory(Folder);
+            var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
+
+            var before=Create(state);
+            var signature=ValoriaVisualFormulaGate.CollisionSignature();
+            WriteMetrics(Folder+"/before-metrics.json");
+            Save(before.camera,Folder+"/before-9.png",9f,1280,720);
+            Save(before.camera,Folder+"/before-mobile.png",9.4f,390,844);
+
+            var after=Create(state);
+            var baseline=ValoriaVisualFormulaGate.CollisionSignature();
+            if(baseline!=signature)throw new Exception("Matched baseline gameplay signature is unstable.");
+            ValoriaProductionArtResetV1.Apply(after.root.transform,state);
+            Physics.SyncTransforms();
+            if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
+                throw new Exception("Production Art candidate changed gameplay collider/hotspot signature.");
+            if(ValoriaProductionArtResetV1.Pieces!=8)
+                throw new Exception("Expected 8 authored starter instances, got "+ValoriaProductionArtResetV1.Pieces);
+
+            WriteMetrics(Folder+"/after-metrics.json");
+            Save(after.camera,Folder+"/after-9.png",9f,1280,720);
+            Save(after.camera,Folder+"/after-mobile.png",9.4f,390,844);
+
+            File.WriteAllText(Folder+"/evidence.json",
+                "{\n"+
+                "  \"gameplay_signature_preserved\": true,\n"+
+                "  \"starter_pieces\": 8,\n"+
+                "  \"source_classification\": \"TEMPORARY_PENDING_VISUAL_REVIEW\",\n"+
+                "  \"zoom9_mobile_stop_gate\": true,\n"+
+                "  \"materials_phase\": \"NOT_STARTED\",\n"+
+                "  \"final_look_phase\": \"NOT_STARTED\",\n"+
+                "  \"camera_ab_phase\": \"NOT_STARTED\",\n"+
+                "  \"tripo_credits\": 0\n"+
+                "}\n");
+            Debug.Log("VALORIA_PRODUCTION_ART_RESET_PHASE_C_GATE=PASS");
+            EditorApplication.Exit(0);
+        }
+
+        struct SceneData{public Camera camera;public GameObject root;}
+
+        static SceneData Create(PlayerState state)
+        {
+            SceneSetup.SetupRenderPipeline();
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            ProductionVisualIntegration.ResetVisualCachesForGate();
+            ProductionVisualIntegration.StoneArchitectureEnabled=true;
+            ProductionVisualIntegration.TerrainTerraceEnabled=true;
+            ProductionVisualIntegration.SurfaceCellEnabled=false;
+            ProductionVisualIntegration.ProductionCellEnabled=false;
+            ProductionVisualIntegration.CoherentCastleProofEnabled=false;
+            ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
+            ProductionVisualIntegration.CompactFootprintReframeEnabled=true;
+            VisualWorld.VisualIntegrationEnabled=true;
+            VisualWorld.Create(true,state);
+            var camera=Camera.main;
+            var root=GameObject.Find("Valoria · integrated construction visual layer");
+            if(camera==null||root==null)throw new Exception("Production Art capture prerequisites missing.");
+            return new SceneData{camera=camera,root=root};
+        }
+
+        static void WriteMetrics(string path)
+        {
+            int renderers=0,lights=0;long triangles=0;var materials=new HashSet<string>();
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;
+                renderers++;foreach(var m in r.sharedMaterials)if(m!=null)materials.Add(m.name);
+            }
+            foreach(var mf in Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None))
+            {
+                if(mf==null||mf.sharedMesh==null||!mf.gameObject.activeInHierarchy)continue;
+                var rr=mf.GetComponent<Renderer>();if(rr!=null&&!rr.enabled)continue;
+                for(int s=0;s<mf.sharedMesh.subMeshCount;s++)triangles+=(long)mf.sharedMesh.GetIndexCount(s)/3L;
+            }
+            foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if(l!=null&&l.enabled&&l.gameObject.activeInHierarchy)lights++;
+            File.WriteAllText(path,
+                "{\n  \"active_renderers\": "+renderers+
+                ",\n  \"unique_materials\": "+materials.Count+
+                ",\n  \"scene_triangles\": "+triangles+
+                ",\n  \"active_lights\": "+lights+"\n}\n");
+        }
+
+        static void Save(Camera c,string path,float size,int w,int h)
+        {
+            var p=new Vector3(18.2f,14.6f,-25.8f);var t=new Vector3(0f,3.15f,5.8f);
+            c.transform.position=p;c.transform.LookAt(t);c.orthographic=true;c.orthographicSize=size;
+            var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};var prev=RenderTexture.active;
+            try{
+                c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
+                var im=new Texture2D(w,h,TextureFormat.RGB24,false);
+                im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();File.WriteAllBytes(path,im.EncodeToPNG());Object.DestroyImmediate(im);
+            }finally{c.targetTexture=null;RenderTexture.active=prev;rt.Release();Object.DestroyImmediate(rt);}
+        }
+    }
+}
