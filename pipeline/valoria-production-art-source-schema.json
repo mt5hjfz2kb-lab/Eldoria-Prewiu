@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Eldoria Production Art Source Manifest",
+  "type": "object",
+  "required": [
+    "asset_id",
+    "classification",
+    "source",
+    "role",
+    "materials",
+    "export",
+    "unity",
+    "evidence"
+  ],
+  "properties": {
+    "asset_id": {
+      "type": "string"
+    },
+    "classification": {
+      "enum": [
+        "GREYBOX",
+        "SUPPORT",
+        "TEMPORARY",
+        "PRODUCTION_ART_SOURCE"
+      ]
+    },
+    "role": {
+      "enum": [
+        "HERO",
+        "PRIMARY",
+        "SECONDARY",
+        "SUPPORT"
+      ]
+    },
+    "function": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "tool",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "tool": {
+          "type": "string"
+        },
+        "tool_version": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "reproducible": {
+          "type": "boolean"
+        },
+        "authoring_method": {
+          "type": "string"
+        }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "properties": {
+        "triangles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "materials": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uv0": {
+          "type": "boolean"
+        },
+        "normals": {
+          "type": "boolean"
+        },
+        "tangents": {
+          "type": "boolean"
+        },
+        "bounds": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "modular_interfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "family"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "family": {
+            "enum": [
+              "Eldoria_Stone",
+              "Eldoria_Timber",
+              "Eldoria_Slate",
+              "Eldoria_Ground",
+              "Eldoria_Rock",
+              "Eldoria_Metal_Accent"
+            ]
+          },
+          "maps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "export": {
+      "type": "object",
+      "required": [
+        "glb_path",
+        "sha256"
+      ],
+      "properties": {
+        "glb_path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "forward_axis": {
+          "type": "string"
+        },
+        "up_axis": {
+          "type": "string"
+        }
+      }
+    },
+    "unity": {
+      "type": "object",
+      "properties": {
+        "resource_path": {
+          "type": "string"
+        },
+        "parcel_or_interface": {
+          "type": "string"
+        },
+        "owns_gameplay_collider": {
+          "type": "boolean"
+        },
+        "owns_hotspot": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "zoom9": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "zoom12": {
+          "type": "string"
+        },
+        "zoom19": {
+          "type": "string"
+        },
+        "technical_verdict": {
+          "type": "string"
+        },
+        "visual_verdict": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
