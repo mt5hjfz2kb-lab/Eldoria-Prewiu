@@ -63,7 +63,7 @@ def preview(aid,objs):
  bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.lens=58;cam.location=ctr+Vector((span*1.45,-span*1.8,span*1.05));cam.rotation_euler=(ctr-cam.location).to_track_quat("-Z","Y").to_euler();sc.camera=cam
  bpy.ops.object.light_add(type="AREA",location=ctr+Vector((span,-span,span*1.6)));key=bpy.context.object;key.data.energy=1100;key.data.size=span*1.4
  bpy.ops.object.light_add(type="AREA",location=ctr+Vector((-span*.8,-span*.1,span)));fill=bpy.context.object;fill.data.energy=450;fill.data.size=span
- sc.render.engine="BLENDER_EEVEE_NEXT";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100;sc.render.image_settings.file_format="PNG";sc.render.filepath=os.path.join(PRE,aid+".png");sc.view_settings.look="AgX - Medium High Contrast";bpy.ops.render.render(write_still=True)
+ sc.render.engine="BLENDER_WORKBENCH";sc.display.shading.light="STUDIO";sc.display.shading.show_cavity=True;sc.display.shading.cavity_type="WORLD";sc.display.shading.color_type="MATERIAL";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100;sc.render.image_settings.file_format="PNG";sc.render.filepath=os.path.join(PRE,aid+".png");bpy.ops.render.render(write_still=True)
 
 def metrics(objs):
  t=v=0;m=set()
