@@ -1,10 +1,6 @@
 name: "[PRODUCTION] Valoria Camera-First Functional Source v1"
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-camera-first-functional-source-v1-request.json'
 permissions:
   contents: write
 concurrency:
