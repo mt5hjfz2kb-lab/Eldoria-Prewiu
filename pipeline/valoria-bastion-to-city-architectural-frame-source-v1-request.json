@@ -12,8 +12,8 @@
   ],
   "tripo_credits": 0,
   "paid_credits": 0,
-  "attempt": 3,
-  "tech_fix": "Correctly insert Blender World initialization before preview rendering. Geometry/material/silhouette unchanged.",
-  "previous_run_id": 37225791412,
-  "previous_result": "TECH FAIL repeated because prior edit did not modify the source line."
+  "attempt": 4,
+  "tech_fix": "Repair literal newline token syntax in set_world. Geometry, materials, silhouette and composition unchanged.",
+  "previous_run_id": 37225907239,
+  "previous_result": "TECH FAIL before Blender execution due literal \\\\n tokens."
 }
