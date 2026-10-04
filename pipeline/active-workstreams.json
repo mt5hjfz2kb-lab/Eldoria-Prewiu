@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:50:00Z",
-  "active": [
+  "updated_at": "2026-10-04T15:00:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-screen-space-breakpoint-v1",
       "title": "Valoria Screen-Space Breakpoint v1",
@@ -26,13 +27,18 @@
         "windows-runner-heavy",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T14:50:00Z",
       "base_main_sha": "86b8192146aaca8ba9ec7948a1f60b467972615f",
-      "dependency": "Test only A/B/C screen-space framing using the strongest retained Granero_RCFv1 + Cuartel_CFSv1 pair. A=current orthographic framing; B=tighter orthographic framing only; C=B plus minimal immediate negative-space/orientation cleanup around Granero/Cuartel. Preserve Final Look, Hero Bastion, defense, gameplay/topology/hotspots/colliders. No new assets/materials/perspective/density. Max three states. Zero paid/Tripo credits."
-    }
-  ],
-  "history": [
+      "dependency": "Test only A/B/C screen-space framing using the strongest retained Granero_RCFv1 + Cuartel_CFSv1 pair. A=current orthographic framing; B=tighter orthographic framing only; C=B plus minimal immediate negative-space/orientation cleanup around Granero/Cuartel. Preserve Final Look, Hero Bastion, defense, gameplay/topology/hotspots/colliders. No new assets/materials/perspective/density. Max three states. Zero paid/Tripo credits.",
+      "completed_at": "2026-10-04T15:00:00Z",
+      "run_id": 37211095096,
+      "artifact_id": 11307155373,
+      "credits_spent": 0,
+      "result": "TECH PASS / A SCREEN-SPACE VISUAL FAIL / B SCREEN-SPACE VISUAL PARTIAL / C SCREEN-SPACE VISUAL PARTIAL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md",
+      "next": "Aspect-ratio-aware/mobile home framing and crop policy using existing Granero_RCFv1 + Cuartel_CFSv1. No D/E/F; no further source variants."
+    },
     {
       "id": "valoria-paired-functional-unity-gate-v1",
       "title": "Valoria Paired Functional Unity Gate v1",
