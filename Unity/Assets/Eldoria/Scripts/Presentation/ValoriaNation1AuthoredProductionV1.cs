@@ -38,8 +38,8 @@ namespace Eldoria.Presentation
    {
     if(r==null||!r.enabled)continue;
     string n=Chain(r.transform);
-    bool breakthrough=n.Contains("valoria · breakthrough ·")&&(n.Contains("front ")||n.Contains("west ")||n.Contains("east ")||n.Contains("rear "));
-    bool production=n.Contains("flat citadel production")&&(n.Contains("main gate")||n.Contains("gate tower")||n.Contains("curtain")||n.Contains("mid tower")||n.Contains("corner tower"));
+    bool breakthrough=n.Contains("valoria · breakthrough")&&(n.Contains("wall")||n.Contains("tower")||n.Contains("gate")||n.Contains("curtain")||n.Contains("front ")||n.Contains("west ")||n.Contains("east ")||n.Contains("rear "));
+    bool production=n.Contains("flat citadel production")&&(n.Contains("wall")||n.Contains("tower")||n.Contains("gate")||n.Contains("curtain"));
     if(breakthrough||production)r.enabled=false;
    }
 
