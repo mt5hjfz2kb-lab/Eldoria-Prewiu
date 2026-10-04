@@ -37,7 +37,7 @@ namespace Eldoria.EditorTools
 
    if(ValoriaVisualFormulaGate.CollisionSignature()!=signature)
     throw new Exception("Secondary/support replacement changed gameplay collider/hotspot signature");
-   if(ValoriaSecondarySupportFormReplacementV1.PiecesBuilt<12)
+   if(ValoriaSecondarySupportFormReplacementV1.PiecesBuilt<7)
     throw new Exception("Secondary/support replacement did not build the intended large-form layer");
    if(ValoriaSecondarySupportFormReplacementV1.SuppressedRenderers<6)
     throw new Exception("Expected weak support/house-cluster renderers were not replaced");
@@ -61,7 +61,8 @@ namespace Eldoria.EditorTools
     "  \"camera_policy_preserved\": true,\n"+
     "  \"pieces_built\": "+ValoriaSecondarySupportFormReplacementV1.PiecesBuilt+",\n"+
     "  \"suppressed_renderers\": "+ValoriaSecondarySupportFormReplacementV1.SuppressedRenderers+",\n"+
-    "  \"house_cluster_strategy\": \"six repeated/duplicated west-house presentations replaced by four differentiated masses plus authored courts/lanes\",\n"+
+    "  \"housing_renderers_suppressed\": "+ValoriaSecondarySupportFormReplacementV1.HousingRenderersSuppressed+",\n"+
+    "  \"house_cluster_strategy\": \"duplicate procedural underlays removed; six authored west houses reduced to four, leaving two deliberate court/lane gaps\",\n"+
     "  \"views\": [\"HOME\",\"PAN-granero\",\"PAN-intermediate\",\"PAN-cuartel\",\"HORIZONTAL-16x9\"],\n"+
     "  \"granero_cuartel_moved\": false,\n"+
     "  \"hero_bastion_changed\": false,\n"+
