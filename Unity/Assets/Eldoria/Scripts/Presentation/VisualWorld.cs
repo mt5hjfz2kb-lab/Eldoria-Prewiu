@@ -101,6 +101,7 @@ namespace Eldoria.Presentation
                         // playable Valoria visual path, not only an evidence-gate overlay.
                         ValoriaFirstProductionDistrictV1.Apply(visualRoot.transform,state);
                         ValoriaGraneroCuartelSourceUpgradeV1.Apply(visualRoot.transform,state);
+                        ValoriaFunctionalScreenReadabilityV1.Apply(visualRoot.transform,state);
                     }
                     // RESET-approved Final Look is canonical for player-facing Valoria.
                     ValoriaProductionFinalLookV1.Apply();
