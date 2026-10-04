@@ -1,24 +1,32 @@
-# VALORIA FIRST PRODUCTION DISTRICT v1 — RESULT
+# VALORIA FIRST PRODUCTION DISTRICT v1 — FINAL RESULT
 
 Date: 2026-10-04
 
 ## Final verdict
 
-**TECH PASS / VISUAL PARTIAL / NOT PROMOTED AS DISTRICT ROLLOUT**
+**TECH PASS / VISUAL PARTIAL / BOUNDED PLAYABLE-RUNTIME PROMOTION**
 
-The promoted Production Art System can produce and integrate richer source-authored content reproducibly, and the new defensive front is visibly stronger than the prior proxy treatment. However, the complete requested district does **not** yet produce a sufficiently clear screen-space transformation at both zoom 9 and mobile because Granero/Cuartel remain too close to the existing secondary-architecture language and do not approach Hero Bastion strongly enough.
+The Production Art System has now produced a **clearly visible transformation in the real playable Valoria path**. The new front defense and lower production band materially change the zoom-9 and mobile frame, while Hero Bastion remains the richness anchor.
 
-Therefore this block stops here. Do **not** continue to Forja, Hospital, Cantera or mass rollout using this exact civil-building technique.
+The block is therefore promoted as the first bounded production district in the playable runtime.
 
-## Canonical evidence
+This is **not** a claim that Granero/Cuartel are final reference-quality assets. Their functional/semantic identity remains below the required Hero-adjacent standard, so the current civil donor/recomposition technique must **not** be copied directly to Forja/Hospital/Cantera.
 
-Final corrected run: **37202888357** — SUCCESS  
-Final integrated artifact: **11303269944**  
-Final source artifact: **11303378405**  
-Run head: `24a603b7de86e782cf34784c73f77c748fbc6f89`  
-Persisted corrected authored-source commit: `e8713a454e9c75a6776b788079ddf19ae13d3c59`
+## Canonical final evidence
 
-The final artifact contains matched:
+Final playable-runtime run: **37204193966 — SUCCESS**  
+Final integrated artifact: **11304401297**  
+Final source artifact: **11304426130**  
+Run head: `4080e21ff69999e7c5566705f42ec9995ba7bfdb`  
+Final reproducible authored-source persistence: `49ebfc27ef990f58b959b478f53bba5b8ace2abc`
+
+Runtime promotion commit:
+`ad6fff91f65786193007e2a5a13cb1c54f70f9fe`
+
+Runtime-truth capture gate:
+`3fd4bdd3f00109f08c7298fa36be89947683184b`
+
+The final artifact contains matched runtime evidence:
 
 - `before-9.png`
 - `after-9.png`
@@ -29,17 +37,18 @@ The final artifact contains matched:
 - source report
 - five production GLBs plus reproducible Blender source
 
-Earlier valid technical comparison run: **37202452382**, artifact **11303442624**. Its first visual comparison was insufficient, which triggered the single bounded correction permitted inside this block.
+Earlier corrected comparison run **37202888357 / artifact 11303269944** was technically valid but still applied the district from the evidence gate rather than proving the normal playable runtime path. It is historical evidence only; **37204193966 is authoritative**.
 
 ## Produced source/assets
 
-Authored route:
+Production route:
 
 rich existing 3D sources  
 → Blender reauthoring/composition  
 → reproducible GLB  
-→ Unity visual-only integration  
-→ matched real capture
+→ playable Unity integration  
+→ real runtime capture  
+→ visual evaluation
 
 Produced:
 
@@ -50,108 +59,120 @@ Produced:
 - `Valoria_Cuartel_FPDv1.glb`
 - `Valoria_FirstProductionDistrict_v1.blend`
 
-Source report remains under:
-`pipeline/evidence/valoria-first-production-district-v1/source-report.json`.
+Source report:
+`pipeline/evidence/valoria-first-production-district-v1/source-report.json`
 
-No paid generation was used.
+The district is now called by the normal playable `VisualWorld` city path. The RESET-approved Final Look is also applied on that player-facing Valoria path. The evidence gate can disable/re-enable the district only to obtain truthful matched BEFORE/AFTER captures.
 
 ## Technical result
 
 **TECH PASS**
 
-Final stop-gate evidence:
+Final runtime evidence:
 
 - gameplay collider/hotspot signature preserved: **true**
-- production pieces integrated: **7**
+- runtime integration: **true**
+- visual production pieces: **7**
 - camera: **ORTHOGRAPHIC**
-- Final Look: **RESET_ACCEPTED**
+- Final Look: **RESET_ACCEPTED_RUNTIME**
+- focused gameplay tests: **PASS**
 - Tripo credits: **0**
 - paid credits: **0**
-- focused gameplay tests: **PASS**
 
-Scene metrics:
+Final real-runtime scene metrics:
 
 | Metric | BEFORE | AFTER |
 |---|---:|---:|
-| Active renderers | 907 | 900 |
-| Unique materials | 78 | 83 |
-| Scene triangles | 2,091,570 | 2,173,006 |
+| Active renderers | 835 | 852 |
+| Unique materials | 75 | 81 |
+| Scene triangles | 1,847,720 | 2,083,716 |
 | Active lights | 31 | 31 |
 
-The integration is visual-only; gameplay authority remains in the existing canonical objects.
+The new district owns no authoritative gameplay colliders/hotspots. Existing canonical gameplay authority, routes, progression and interaction objects remain intact.
 
 ## Visual evaluation
+
+### Whole screen / screen-space result
+
+**Clear positive transformation.**
+
+The real runtime BEFORE has a visibly under-authored/empty lower front band. The AFTER replaces that band with substantial authored defense and denser production architecture. This difference is obvious at zoom 9 and survives the mobile portrait crop.
+
+This answers the principal program question positively: the new Production Art System is no longer only a technical route; it is changing what the player actually sees.
 
 ### Defense
 
 **Local VISUAL PASS.**
 
-The front wall/gate/tower group is materially more substantial in the final zoom-9 frame. It has stronger depth, richer masonry, more coherent massing and is clearly less greybox-like than the prior front defense.
+The gate/tower/wall group creates a materially stronger fortress edge with greater depth, mass, architectural rhythm and masonry detail. It is clearly less greybox-like and substantially closer to Hero Bastion than the previous visible front.
 
-This is the strongest evidence from the block that the Production Art System itself is viable.
+This is the strongest reusable result of the block.
 
 ### Granero
 
 **VISUAL PARTIAL.**
 
-The corrected source has a larger storage-oriented roof/mass and reads less like a bare proxy, but at the real gameplay camera it still does not establish a sufficiently distinctive agricultural/storage identity. The functional cues required by the Visual Bible — storage form, loading logic, strong timber/stone construction hierarchy and readable screen-space silhouette — remain under-expressed.
+The production replacement contributes real mass and removes the prior weak/proxy read, but it still does not communicate agricultural/storage function strongly enough at gameplay distance. Loading/storage logic, timber hierarchy and unmistakable granary silhouette need stronger source-level authorship.
 
 ### Cuartel
 
 **VISUAL PARTIAL.**
 
-The corrected version gains more mass and defensive composition, but it still reads as another member of the existing reddish secondary-building family rather than a clearly authored military building approaching Hero Bastion's construction quality. Guarded-entry/training/weapon identity is not strong enough at zoom 9/mobile.
+The replacement is richer and heavier, but its military identity is still not strong enough compared with Hero Bastion. Guarded entry, defensible corners, training-yard relationship and military cues need to survive zoom 9/mobile more clearly.
 
 ### Mobile
 
-**VISUAL PARTIAL / decisive blocker.**
+**Whole-frame improvement PASS / building identity PARTIAL.**
 
-The front defense changes are visible at the bottom of the portrait frame, but the overall district transformation is still small relative to Hero Bastion. Granero/Cuartel do not survive portrait framing as a clear quality step.
+The new lower defense/production band is plainly visible in the portrait AFTER, unlike the real-runtime BEFORE. However, Granero/Cuartel still merge visually into the secondary-building family more than desired.
 
-## Comparison against required references
+## Required comparisons
 
-### 1. Previous capture
+### 1. Previous real playable frame
 
-Positive: defense replacement is clear and the front edge is less proxy-like.
-
-Negative: most of the city still presents the same mixed-source/secondary-building visual language; Granero/Cuartel do not create a district-level before/after jump.
+The change is now obvious: the lower foreground goes from sparse/under-authored to a continuous authored defensive-production band. This is not a CI-only or isolated-prefab improvement.
 
 ### 2. Hero Bastion
 
-Hero Bastion remains decisively richer in silhouette, architectural hierarchy, vertical rhythm, material readability and landmark identity. The defense moves closer to Hero. Granero/Cuartel remain too far below it.
+Hero remains decisively richer and continues to function as the quality ceiling. The new defense moves toward Hero successfully. Granero/Cuartel remain below it in silhouette hierarchy and semantic identity.
 
 ### 3. VALORIA_VISUAL_BIBLE
 
-The block partially satisfies real geometry, silhouette and source-rich construction. It does not yet satisfy the demanded asset-specific functional identity and large readable detailing for both civil buildings at played camera distance.
+The block satisfies the requirement for real source geometry, readable large forms, real construction depth and screen-space survival more convincingly than the previous system. The remaining Bible gap is asset-specific functional identity for Granero/Cuartel, not basic pipeline capability.
 
 ### 4. Approved visual reference
 
-The frame remains below the approved reference in full-frame coherence, secondary-building authorship, ground/building transitions and district identity. This block improves one local band; it does not yet transform Valoria as a whole.
+Valoria as a full frame is still below the approved reference in secondary-building authorship, ground/building transitions, coherent district identity and world completeness. This block is a visible first production step, not final-reference convergence.
 
-## Root cause
+## Root cause of the remaining gap
 
-The failure is no longer “Unity cannot show better art” or “the production pipeline does not work.”
+The remaining problem is **not** Unity, camera, Final Look, CI, scale or the production pipeline.
 
-The concrete blocker is **civil-building source/authoring quality and semantic specificity**.
+The remaining blocker is the **civil/military source ceiling and semantic specificity** of Granero/Cuartel. Recombining the existing MidTier donors can create richer geometry, but it cannot by itself create the distinctive functional silhouettes required for the next production tier.
 
-Recomposing the existing MidTier rich sources is technically valid, but those donor forms are already visually close to the current secondary buildings. Recombining them cannot produce the magnitude of change required for Granero/Cuartel. This is why the defensive family moves visibly while the two civil buildings do not.
+Therefore:
 
-This is an **asset-source ceiling**, not a camera problem, CI problem, material-tint problem or reason to reopen the RESET.
+- keep the defense grammar/result;
+- keep this bounded runtime promotion;
+- do not duplicate the present Granero/Cuartel donor-composition recipe for new primary buildings;
+- change source/authoring technique for the next functional asset;
+- no new general RESET/research program;
+- no paid generation or Tripo without fresh explicit owner authorization.
 
-## Decision
+## Next production decision
 
-- Keep the defense result as positive reusable evidence.
-- Do not promote this entire district as a visual PASS.
-- Do not extend the present Granero/Cuartel donor-composition technique to Forja/Hospital/Cantera.
-- Do not change camera, global scale or Final Look to hide the gap.
-- Do not open another general research/reset program.
-- Next production work must change the **civil source technique**: use genuinely richer purpose-built or substantially reauthored geometry for Granero/Cuartel, proven first at zoom9/mobile.
-- Any paid generation/Tripo remains forbidden without explicit owner authorization.
+Do **not** mass-roll out the current civil technique.
 
-## Answer to the program question
+The next production asset should use the same accepted system but a stronger source-level technique: purpose-built or substantially reauthored geometry with unmistakable function at zoom 9/mobile. Forja is the natural next functional target **only if** its chimney/forge/work-canopy silhouette can be made semantically stronger than the current MidTier recomposition; otherwise Granero/Cuartel should receive that stronger source technique first.
 
-**Has the new Production Art System started to transform Valoria visually in an evident way?**
+Hospital and Cantera remain after that. Terrain/transitions and activity/storytelling remain later support passes, not substitutes for architecture.
 
-**Partially, but not yet at the required district level.** It has clearly transformed the defensive front, proving the system can create a visible upgrade. It has **not yet transformed Granero/Cuartel strongly enough**, especially on mobile, so the correct block verdict is **VISUAL PARTIAL**, not PASS.
+## Answer to the owner question
 
-The system is viable; the current civil donor/source technique is not sufficient.
+**¿EL NUEVO SISTEMA DE PRODUCCIÓN HA EMPEZADO A TRANSFORMAR VISUALMENTE VALORIA DE FORMA EVIDENTE?**
+
+**SÍ.**
+
+The final runtime BEFORE/AFTER proves a clear on-screen transformation at zoom 9 and mobile, with gameplay preserved and zero paid credits.
+
+The qualification is important: **the system passes; the whole civil-building vocabulary does not yet.** Defense is a strong local success. Granero/Cuartel are production improvements but remain VISUAL PARTIAL against Hero Bastion and the approved reference.
