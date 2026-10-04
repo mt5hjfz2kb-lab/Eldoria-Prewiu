@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_CAMERA_FIRST_SOURCE_SPLIT_VERDICT",
+  "status": "HOLD_AFTER_PAIRED_FUNCTIONAL_UNITY_VISUAL_FAIL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Cuartel camera-first rich-module source passes isolated review. Granero camera-first procedural macro source fails production-art quality. Next: Granero-only rich-geometry camera-first assembly using no new primitive/procedural visible architecture; if source passes, pair with retained Cuartel_CFSv1 in one real Unity zoom9/mobile gate. Forja/Hospital/Cantera remain HOLD.",
+  "next_priority": "Granero_RCFv1 and Cuartel_CFSv1 are retained SOURCE VISUAL PASS assets, but paired real Unity run 37209941711 / artifact 11306341489 still fails simultaneous functional readability on mobile at canonical anchors. Do not iterate source/material/props/layout again. Next requires an explicit structural decision about functional parcel composition or mobile framing/visibility policy. Forja/Hospital/Cantera remain HOLD.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -121,5 +121,16 @@
     "credits_spent": 0,
     "cuartel_candidate": "Valoria_Cuartel_CFSv1.glb",
     "result_doc": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md"
+  },
+  "paired_functional_unity_gate": {
+    "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+    "run_id": 37209941711,
+    "artifact_id": 11306341489,
+    "credits_spent": 0,
+    "gameplay_signature_preserved": true,
+    "granero_source": "Valoria_Granero_RCFv1",
+    "cuartel_source": "Valoria_Cuartel_CFSv1",
+    "blocker": "canonical anchors + portrait mobile crop insufficient for simultaneous independent functional read",
+    "result_doc": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md"
   }
 }
