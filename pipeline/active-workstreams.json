@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:03:00Z",
-  "active": [
+  "updated_at": "2026-10-04T13:08:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-first-production-district-v1",
       "title": "Valoria First Production District v1",
@@ -30,17 +31,28 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T12:23:00Z",
       "base_main_sha": "5d8dd2ef6a64b6df73eac83ac61c63cf99db8080",
       "dependency": "Use the promoted Production Art System to replace only the visible Hero-compatible defense + Granero + Cuartel + directly related proxies. Preserve Flat Citadel, Hero Bastion, parcels, gameplay, orthographic camera and accepted Final Look. Stop at matched zoom9/mobile BEFORE/AFTER. Zero paid/Tripo credits.",
-      "authored_asset_commit": "e8713a454e9c75a6776b788079ddf19ae13d3c59",
+      "authored_asset_commit": "49ebfc27ef990f58b959b478f53bba5b8ace2abc",
       "credits_spent": 0,
       "reopened_at": "2026-10-04T13:03:00Z",
-      "reopen_reason": "Closeout audit found the district was only applied by the evidence gate, not the playable VisualWorld runtime path. Reclaim same v1 block to complete production integration and regenerate truthful runtime BEFORE/AFTER evidence."
-    }
-  ],
-  "history": [
+      "reopen_reason": "Closeout audit found the district was only applied by the evidence gate, not the playable VisualWorld runtime path. Reclaim same v1 block to complete production integration and regenerate truthful runtime BEFORE/AFTER evidence.",
+      "completed_at": "2026-10-04T13:08:00Z",
+      "result_doc": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md",
+      "final_run_id": 37204193966,
+      "final_artifact_id": 11304401297,
+      "source_artifact_id": 11304426130,
+      "final_run_head": "4080e21ff69999e7c5566705f42ec9995ba7bfdb",
+      "runtime_promotion_commit": "ad6fff91f65786193007e2a5a13cb1c54f70f9fe",
+      "runtime_capture_gate_commit": "3fd4bdd3f00109f08c7298fa36be89947683184b",
+      "closeout_result_commit": "6d85a60959fa0977dec5ea6f2df1972cb30edc12",
+      "closeout_handoff_commit": "af4cd3875c7bdcffd994e48ba3ffc360cd3d6454",
+      "closeout_project_state_commit": "b16e6dc3a8cd65a8d0f0c1aa9efc10f821e5367a",
+      "result": "TECH PASS / VISUAL PARTIAL / BOUNDED PLAYABLE-RUNTIME PROMOTION. The real runtime zoom9/mobile BEFORE/AFTER shows an evident lower-frame transformation; defense is a local visual pass. Granero/Cuartel remain semantically below Hero/reference, so the current MidTier donor-composition recipe is not approved for blind rollout.",
+      "next": "Use stronger source-level functional authorship for the next primary building. Do not reopen RESET or mass-roll the current civil recipe. Forja may proceed only with a functionally unmistakable source technique; otherwise strengthen Granero/Cuartel first. Paid/Tripo generation remains explicit-owner-authorized only."
+    },
     {
       "id": "valoria-production-art-starter-source-v1",
       "title": "Valoria Production Art Starter Source v1",
