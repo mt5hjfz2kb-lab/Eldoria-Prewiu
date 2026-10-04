@@ -17,24 +17,26 @@ namespace Eldoria.EditorTools
   {
    ShaderUtil.allowAsyncCompilation=false;Directory.CreateDirectory(Folder);
    var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
-   var scene=Create(state);var sig=ValoriaVisualFormulaGate.CollisionSignature();
 
-   ValoriaProductionArtResetV1.Apply(scene.root.transform,state);
-   ValoriaProductionFinalLookV1.Apply();
-   ValoriaProductionDensityLifeV1.Enabled=true;ValoriaProductionDensityLifeV1.Apply(scene.root.transform,state);
-   Physics.SyncTransforms();
-   if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)throw new Exception("Baseline changed gameplay signature");
+   // BEFORE is the real playable runtime path with this district disabled.
+   ValoriaFirstProductionDistrictV1.Enabled=false;
+   var before=Create(state);var sig=ValoriaVisualFormulaGate.CollisionSignature();
+   if(GameObject.Find(ValoriaFirstProductionDistrictV1.RootName)!=null)throw new Exception("FPD root leaked into BEFORE runtime");
    WriteMetrics(Folder+"/before-metrics.json");
-   Save(scene.camera,Folder+"/before-9.png",9f,1280,720);
-   Save(scene.camera,Folder+"/before-mobile.png",9.4f,390,844);
+   Save(before.camera,Folder+"/before-9.png",9f,1280,720);
+   Save(before.camera,Folder+"/before-mobile.png",9.4f,390,844);
 
-   ValoriaFirstProductionDistrictV1.Apply(scene.root.transform,state);Physics.SyncTransforms();
+   // AFTER is rebuilt from scratch through the same playable runtime path with production enabled.
+   ValoriaFirstProductionDistrictV1.Enabled=true;
+   var after=Create(state);Physics.SyncTransforms();
+   if(GameObject.Find(ValoriaFirstProductionDistrictV1.RootName)==null)throw new Exception("FPD root missing from playable runtime");
    if(ValoriaFirstProductionDistrictV1.Pieces!=7)throw new Exception("Expected 7 production pieces");
    if(ValoriaVisualFormulaGate.CollisionSignature()!=sig)throw new Exception("FPD changed gameplay collider/hotspot signature");
    WriteMetrics(Folder+"/after-metrics.json");
-   Save(scene.camera,Folder+"/after-9.png",9f,1280,720);
-   Save(scene.camera,Folder+"/after-mobile.png",9.4f,390,844);
-   File.WriteAllText(Folder+"/evidence.json","{\n  \"gameplay_signature_preserved\": true,\n  \"pieces\": 7,\n  \"camera\": \"ORTHOGRAPHIC\",\n  \"final_look\": \"RESET_ACCEPTED\",\n  \"tripo_credits\": 0,\n  \"paid_credits\": 0\n}\n");
+   Save(after.camera,Folder+"/after-9.png",9f,1280,720);
+   Save(after.camera,Folder+"/after-mobile.png",9.4f,390,844);
+   File.WriteAllText(Folder+"/evidence.json","{\n  \"gameplay_signature_preserved\": true,\n  \"pieces\": 7,\n  \"runtime_integration\": true,\n  \"camera\": \"ORTHOGRAPHIC\",\n  \"final_look\": \"RESET_ACCEPTED_RUNTIME\",\n  \"tripo_credits\": 0,\n  \"paid_credits\": 0\n}\n");
+   ValoriaFirstProductionDistrictV1.Enabled=true;
    EditorApplication.Exit(0);
   }
 
