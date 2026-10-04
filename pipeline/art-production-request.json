@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-paired-functional-unity-gate-v1",
-  "asset_or_sector": "Granero RCFv1 + Cuartel CFSv1 paired playable integration",
+  "enabled": true,
+  "request_id": "valoria-mobile-navigable-city-v1",
+  "asset_or_sector": "Valoria mobile home pose + bounded city navigation using existing Granero RCFv1 and Cuartel CFSv1",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "CLOSED: paired Unity run 37209941711 / artifact 11306341489 = TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED. Stronger Granero_RCFv1 + Cuartel_CFSv1 still fail simultaneous mobile functional readability at canonical anchors. Do not continue source/material/prop/layout iteration. Next requires explicit structural composition/mobile framing decision. Tripo remains unauthorized."
+  "notes": "Single anti-loop proof. Treat M2 only as the portrait home principle, preserve 16:9, use existing bounded pan/tap-drag/recenter architecture, do not move Granero/Cuartel, do not alter assets/materials/Final Look/Hero/defense, zero paid or Tripo credits."
 }
