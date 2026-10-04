@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
+  "phase": "source_isolated",
+  "nonce": "gcsu-v1-source-20261004-1318",
+  "assets": [
+    "Granero",
+    "Cuartel"
+  ],
+  "strategy": "certified dedicated functional sources, normalized/cleaned in Blender; no MidTier recomposition",
+  "stop_gate": [
+    "isolated_3q_upper",
+    "zoom9_readability_equivalent"
+  ],
+  "allow_unity_integration": false,
+  "camera": "neutral isolated preview",
+  "tripo": false,
+  "credits": 0
+}
