@@ -1,5 +1,17 @@
 ## 2026-10-04 — VALORIA PAIRED FUNCTIONAL UNITY GATE v1 — CLOSED / TECH PASS / VISUAL PARTIAL-FAIL
 
+## 2026-10-04 — VALORIA ADAPTIVE MOBILE HOME POSE v1 CLOSED
+- Run **37212276777**: SUCCESS. Artifact **11307147019**.
+- Verdict: **TECH PASS / M0 FAIL / M1 FAIL / M2 PARTIAL / NOT PROMOTED**.
+- M0 actual runtime home pose: pos (18.2,14.6,-25.8), target (0,3.35,5.6), ortho 9.1. Granero 0% visible; Cuartel 90.9%; Bastion ~84% viewport height.
+- M1 center-only offset (+1.2,0,-2.8), same ortho 9.1: no meaningful solve; Granero only 3.8% visible.
+- M2 same center offset + ortho 12.2: real improvement; Cuartel 100% visible, Granero ~27.4%, Bastion ~62.6% viewport height and still dominant. Still fails simultaneous Granero+Cuartel criterion.
+- Aspect-ratio-aware mobile framing is validated as a useful principle, but **no tested home pose is promoted**. Runtime camera/panning/recenter remain unchanged.
+- Do not create M3/M4/M5 and do not rebuild Granero/Cuartel.
+- Next valid structural block: **VALORIA MOBILE FUNCTIONAL DISTRICT ANCHOR REBALANCE v1** — one bounded anchor/parcel-presentation rebalance using the existing SOURCE VISUAL PASS pair, validated in 16:9 + portrait. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md`.
+
+
 ## 2026-10-04 — VALORIA SCREEN-SPACE BREAKPOINT v1 CLOSED
 - Run **37211095096**: SUCCESS. Artifact **11307155373**.
 - Verdict: **TECH PASS / A SCREEN-SPACE VISUAL FAIL / B SCREEN-SPACE VISUAL PARTIAL / C SCREEN-SPACE VISUAL PARTIAL / NOT PROMOTED**.
