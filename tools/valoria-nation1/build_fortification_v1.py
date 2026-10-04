@@ -54,6 +54,9 @@ GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
 ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_blue_1k","roof_slates_03_nor_gl_1k",.94,1.0,1.0)
 PLASTER=mat_color("Nation1 Warm Plaster",(.54,.43,.28),.88)
 WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
+MOUNTAIN=mat_color("Nation1 Distant Mountain",(.18,.23,.21),.96)
+MOUNTAIN2=mat_color("Nation1 Distant Mountain Secondary",(.24,.29,.26),.97)
+SNOW=mat_color("Nation1 Distant Snow",(.72,.76,.76),.98)
 
 def box(name,loc,scale,mat,bevel=.03,rot=(0,0,0),uv=True):
     bpy.ops.mesh.primitive_cube_add(size=1,location=loc,rotation=rot)
@@ -224,6 +227,28 @@ def add_workshop(col):
     for o in parts:move_to(o,col)
     join_by_material(col)
 
+def add_backdrop_ridge(col):
+    # Camera-facing distant silhouette, deliberately simple because it sits well outside the playable city.
+    peaks=[
+      (-5.4,0,2.1,4.8,3.2),(-2.9,.15,2.9,5.0,4.4),(-.4,.05,3.8,5.8,5.8),
+      (2.4,.15,3.1,5.0,4.8),(5.0,0,2.2,4.2,3.4)
+    ]
+    for i,(x,y,z,w,h) in enumerate(peaks):
+        bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=w*.52,radius2=0.0,depth=h,location=(x,y,z))
+        o=bpy.context.object;o.name="distant peak "+str(i)
+        o.scale=(1.0,.56,1.0);bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+        o.rotation_euler[2]=math.radians(18 if i%2==0 else -12)
+        o.data.materials.append(MOUNTAIN if i%2==0 else MOUNTAIN2)
+        move_to(o,col)
+        if i in (1,2,3):
+            bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=w*.22,radius2=0.0,depth=h*.22,location=(x,y-.03,z+h*.34))
+            s=bpy.context.object;s.name="snow cap "+str(i);s.scale=(1.0,.56,1.0)
+            bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+            s.rotation_euler[2]=o.rotation_euler[2];s.data.materials.append(SNOW);move_to(s,col)
+    # lower foothill shelf ties peaks together.
+    move_to(box("distant foothill", (0,.32,.72),(12.5,1.15,1.25),MOUNTAIN2,.18),col)
+    join_by_material(col)
+
 def add_stair(col):
     parts=[]
     steps=12;depth=.34;height=.085
@@ -259,13 +284,14 @@ stair_col=collection("Nation1_Stair_v1");add_stair(stair_col)
 house_col=collection("Nation1_CivicHouse_v1");add_civic_house(house_col,0)
 house2_col=collection("Nation1_CivicHouseB_v1");add_civic_house(house2_col,1)
 work_col=collection("Nation1_Workshop_v1");add_workshop(work_col)
+back_col=collection("Nation1_BackdropRidge_v1");add_backdrop_ridge(back_col)
 
 exports=[]
 for col,fn in [
     (wall_col,"Nation1_Wall_v1.glb"),(tower_col,"Nation1_Tower_v1.glb"),
     (gate_col,"Nation1_Gate_v1.glb"),(stair_col,"Nation1_Stair_v1.glb"),
     (house_col,"Nation1_CivicHouse_v1.glb"),(house2_col,"Nation1_CivicHouseB_v1.glb"),
-    (work_col,"Nation1_Workshop_v1.glb")
+    (work_col,"Nation1_Workshop_v1.glb"),(back_col,"Nation1_BackdropRidge_v1.glb")
 ]:
     p,objs=export_collection(col,fn);exports.append({"file":fn,"bytes":os.path.getsize(p),"objects":len(objs),"vertices":sum(len(o.data.vertices) for o in objs)})
 
@@ -273,6 +299,6 @@ blend=os.path.join(CAND,"Valoria_Nation1_Fortification_v1.blend")
 bpy.ops.file.pack_all()
 bpy.ops.wm.save_as_mainfile(filepath=blend)
 with open(EVID,"w",encoding="utf-8") as f:
-    json.dump({"status":"PASS","blender_version":bpy.app.version_string,"source_blend":"pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend","exports":exports,"materials":["Warm Limestone PBR","Foundation Stone PBR","Dark Timber","Valoria Blue","Slate Blue","Warm Plaster","Warm Window","Recess"],"tripo_credits":0},f,indent=2)
+    json.dump({"status":"PASS","blender_version":bpy.app.version_string,"source_blend":"pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend","exports":exports,"materials":["Warm Limestone PBR","Foundation Stone PBR","Dark Timber","Valoria Blue","Slate Blue","Warm Plaster","Warm Window","Distant Mountain","Distant Snow","Recess"],"tripo_credits":0},f,indent=2)
 print("VALORIA_NATION1_BLENDER_FORTIFICATION=PASS")
 print(json.dumps(exports,indent=2))
