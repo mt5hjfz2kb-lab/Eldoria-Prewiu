@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
       - name: Render v2 isolated previews
         run: |
           blender -b --python tools/valoria-production-art-starter/render_starter_v2_previews.py
