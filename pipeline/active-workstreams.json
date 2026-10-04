@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T18:41:00Z",
-  "active": [
+  "updated_at": "2026-10-04T18:58:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-to-city-architectural-frame-v1",
       "title": "Valoria Bastion-to-City Architectural Frame v1",
@@ -26,13 +27,20 @@
         "art-production-planner",
         "github-hosted-blender"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T18:41:00Z",
       "base_main_sha": "b65ae6f8fcac7fdff1aa2303a352ca13a5517ea5",
-      "dependency": "One strong method-level intervention: replace the complete dominant Bastion-to-lower-city stair frame with one deliberately screen-designed architectural composition authored under BLENDER_PROFESSIONAL_V1, including material/value relationships and rock/stone interfaces before Unity. Preserve Hero Bastion, promoted lower city, Granero, Cuartel, defense, camera/mobile navigation, terrain as primary problem, density, Forja/Hospital/Cantera, gameplay/routes/parcels/reserves. Zero Tripo credits."
-    }
-  ],
-  "history": [
+      "dependency": "One strong method-level intervention: replace the complete dominant Bastion-to-lower-city stair frame with one deliberately screen-designed architectural composition authored under BLENDER_PROFESSIONAL_V1, including material/value relationships and rock/stone interfaces before Unity. Preserve Hero Bastion, promoted lower city, Granero, Cuartel, defense, camera/mobile navigation, terrain as primary problem, density, Forja/Hospital/Cantera, gameplay/routes/parcels/reserves. Zero Tripo credits.",
+      "completed_at": "2026-10-04T18:58:00Z",
+      "planner_run_id": 37225548192,
+      "source_run_id": 37226253119,
+      "source_artifact_id": 11312172507,
+      "result_commit": "649e9401bdaa0404aada894b42754983d72c59ed",
+      "result": "TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md",
+      "credits_spent": 0,
+      "next": "Do not open v2/v3 or micro-adjust this scripted frame. If Bastion-to-city frame is revisited, change authoring mode to high-fidelity screen-space design/paintover plus genuinely freeform DCC/sculpt/boolean/deformation authoring, or another owner-approved high-quality source route followed by Blender reauthoring. Tripo requires explicit authorization."
+    },
     {
       "id": "valoria-structural-frame-urban-support-integration-v1",
       "title": "Valoria Structural Frame / Urban Support Integration v1",
