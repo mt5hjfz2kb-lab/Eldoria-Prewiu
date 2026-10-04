@@ -41,10 +41,7 @@ jobs:
           OUT="art-source/valoria/production/bastion-to-city-blender-authoring-v1"
           EVI="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source"
           mkdir -p "$OUT" "$EVI"
-          blender -b --python tools/valoria-bastion-to-city-blender-authoring-v1/build.py -- \
-            --output-dir "$OUT" \
-            --evidence-dir "$EVI" \
-            --report "$EVI/source-report.json"
+          blender -b --python tools/valoria-bastion-to-city-blender-authoring-v1/build.py
           test -s "$OUT/Valoria_BastionToCity_BlenderAuthoring_v1.blend"
           test -s "$OUT/Valoria_BastionToCity_BlenderAuthoring_v1.glb"
           test -s "$EVI/01-silhouette-clay.png"
