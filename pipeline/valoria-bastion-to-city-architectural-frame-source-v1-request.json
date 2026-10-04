@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "AUTHOR_SOURCE",
+  "workstream": "VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1",
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "hypothesis": "Replace the complete dominant stair-flanking technical support silhouette with one coherent asymmetric architectural frame whose silhouette, terraces, stair throat, recesses, retaining masses and rock interfaces are authored together before Unity.",
+  "required_previews": [
+    "silhouette/clay",
+    "lit 3/4",
+    "game-camera proxy"
+  ],
+  "tripo_credits": 0,
+  "paid_credits": 0,
+  "attempt": 1
+}
