@@ -8,7 +8,11 @@
     "run_id": 37208777268,
     "artifact_id": 11305893049,
     "granero": "SOURCE FUNCTIONAL PASS",
-    "cuartel": "SOURCE FUNCTIONAL PASS"
+    "cuartel": "SOURCE FUNCTIONAL PASS",
+    "final_visual_review": {
+      "granero": "SOURCE VISUAL FAIL",
+      "cuartel": "SOURCE VISUAL PASS"
+    }
   },
   "comparison": "current canonical playable runtime BEFORE vs camera-first Granero/Cuartel sources AFTER at established district anchors",
   "preserve": [
@@ -28,7 +32,7 @@
   "credits": 0,
   "run_id": 37209373554,
   "artifact_id": 11305759556,
-  "final_verdict": "TECH PASS / SOURCE FUNCTIONAL PASS / UNITY VISUAL FAIL / NOT PROMOTED",
+  "final_verdict": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY DIAGNOSTIC VISUAL FAIL / NOT PROMOTED",
   "metrics": {
     "before": {
       "renderers": 852,
@@ -44,5 +48,6 @@
     }
   },
   "visual_reason": "Granero macro additions improve functional visibility but read as pale/geometric non-production additions; Cuartel still lacks independent played-camera/mobile military read. Both functions do not survive simultaneously on mobile.",
-  "promotion": false
+  "promotion": false,
+  "next": "Granero must use rich production geometry for camera-first macro storage/loading architecture. Retain Cuartel CFS only as source-level evidence. No second procedural CFS variant."
 }
