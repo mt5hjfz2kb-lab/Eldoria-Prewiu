@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA SCREEN-SPACE BREAKPOINT v1",
+  "phase": "capture",
+  "nonce": "screen-space-breakpoint-v1-20261004-1655",
+  "baseline": "Paired SOURCE VISUAL PASS candidates at the current canonical orthographic camera/framing; reproduces the immediate pre-breakpoint played-camera condition without source/material changes.",
+  "variants": {
+    "A": {
+      "zoom9_orthographic_size": 9,
+      "mobile_orthographic_size": 9.4,
+      "spatial_adjustment": false
+    },
+    "B": {
+      "zoom9_orthographic_size": 7.4,
+      "mobile_orthographic_size": 8,
+      "spatial_adjustment": false
+    },
+    "C": {
+      "zoom9_orthographic_size": 7.4,
+      "mobile_orthographic_size": 8,
+      "spatial_adjustment": "bounded Granero/Cuartel presentation transform only"
+    }
+  },
+  "preserve": [
+    "orthographic camera direction",
+    "RESET Final Look",
+    "Hero Bastion source",
+    "accepted defense",
+    "terrain",
+    "materials",
+    "gameplay",
+    "hotspots",
+    "colliders",
+    "macrocomposition"
+  ],
+  "forbidden": [
+    "new assets",
+    "new materials",
+    "perspective",
+    "density/props",
+    "Hero Bastion changes",
+    "defense changes",
+    "variant D/E/F"
+  ],
+  "sources": {
+    "granero": "Valoria_Granero_RCFv1",
+    "cuartel": "Valoria_Cuartel_CFSv1"
+  },
+  "tripo": false,
+  "credits": 0
+}
