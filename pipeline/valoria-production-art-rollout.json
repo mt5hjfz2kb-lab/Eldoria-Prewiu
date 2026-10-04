@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "READY_FOR_GRAPHICAL_PRODUCTION_AFTER_MOBILE_NAVIGATION_PASS",
+  "status": "READY_FOR_SECONDARY_SUPPORT_FORM_REPLACEMENT_AFTER_COHESION_PARTIAL_FAIL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Camera/screen-space question is closed. Do not rebalance Granero/Cuartel for simultaneous portrait visibility. Next high-impact visual block: terrain/edge/architectural-transition cohesion across the reachable pan envelope, then secondary architecture/lower-city richness and restrained life/storytelling. Forja/Hospital/Cantera remain HOLD until the visible-frame cohesion pass is complete.",
+  "next_priority": "Visible Frame Cohesion v1 proved additional ground overlays are not the dominant remaining bottleneck. Next high-impact block: bounded secondary/support form replacement in the reachable HOME/PAN envelope, targeting large greybox-like retaining/support masses and architecture-terrain interfaces. Do not reopen camera, move Granero/Cuartel, or produce Forja/Hospital/Cantera yet.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -161,5 +161,19 @@
     "horizontal_preserved": true,
     "key_finding": "Valoria should remain larger than one portrait viewport. M2-equivalent HOME + bounded pan preserves useful architectural scale and removes the false requirement that Granero and Cuartel be simultaneously visible.",
     "result_doc": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md"
+  },
+  "visible_frame_cohesion_v1": {
+    "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+    "planner_run_id": 37215004613,
+    "authoritative_run_id": 37216176561,
+    "artifact_id": 11309016498,
+    "rejected_linear_run_id": 37215207719,
+    "rejected_linear_artifact_id": 11307744277,
+    "credits_spent": 0,
+    "gameplay_signature_preserved": true,
+    "camera_policy_preserved": true,
+    "candidate_promoted": false,
+    "key_finding": "Ground/contact treatment can improve local continuity, but the remaining screen-level gap is dominated by weak temporary-looking secondary/support masses and architecture-terrain interfaces. More ground dressing would decorate rather than solve that weakness.",
+    "result_doc": "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md"
   }
 }
