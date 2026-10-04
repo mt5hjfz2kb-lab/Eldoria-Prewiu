@@ -1,3 +1,18 @@
+## 2026-10-04 — VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1 — CLOSED / SOURCE PASS / UNITY VISUAL PARTIAL
+
+- Final verdict: **TECH PASS / SOURCE VISUAL PASS (Granero + Cuartel) / UNITY VISUAL PARTIAL / NOT PROMOTED**.
+- Isolated source gate: run **37206352843 SUCCESS**, artifact **11305265539**.
+- Unity matched gate: run **37206779989 SUCCESS**, artifact **11305635813**.
+- Granero upgraded source: dedicated BIII granary normalized/cleaned; **49,800 tris**, SOURCE VISUAL PASS.
+- Cuartel upgraded source: dedicated AP2 barracks core + bounded accepted rich defensive wall/tower geometry; **120,015 tris**, SOURCE VISUAL PASS.
+- Unity gameplay collider/hotspot signature preserved; orthographic camera, RESET Final Look, defense and terrain unchanged; focused gameplay tests PASS.
+- Runtime metrics: renderers **852 -> 850**, materials **81 -> 81**, triangles **2,083,716 -> 2,166,395**, lights **31 -> 31**.
+- Played-camera verdict: replacement is real, but at zoom9 and especially mobile both buildings still do not separate strongly enough from surrounding civil mass to become unmistakable Granero/Cuartel simultaneously.
+- Remaining blocker is **screen-space functional hierarchy/integration**, not source geometry, Blender, materials, camera, Final Look or pipeline capability.
+- Per anti-loop rule, no v2/v3 micro-placement/scale iteration was opened. Runtime upgrade remains disabled and rollout to Forja/Hospital/Cantera remains HOLD.
+- Tripo/paid credits: **0**.
+- Canonical result: `docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA FIRST PRODUCTION DISTRICT v1 — CLOSED / PLAYABLE RUNTIME PROMOTED / VISUAL PARTIAL
 
 - Final verdict: **TECH PASS / VISUAL PARTIAL / BOUNDED PLAYABLE-RUNTIME PROMOTION**.
