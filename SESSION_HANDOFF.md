@@ -1,3 +1,16 @@
+## 2026-10-04 — VALORIA FIRST PRODUCTION DISTRICT v1 — CLOSED / VISUAL PARTIAL
+
+- Final verdict: **TECH PASS / VISUAL PARTIAL / NOT PROMOTED AS DISTRICT ROLLOUT**.
+- Final corrected run **37202888357 SUCCESS**, integrated artifact **11303269944**, source artifact **11303378405**, run head `24a603b7de86e782cf34784c73f77c748fbc6f89`; corrected authored assets persisted at `e8713a454e9c75a6776b788079ddf19ae13d3c59`.
+- Real matched evidence captured at **zoom 9 + mobile** with accepted ORTHOGRAPHIC camera and RESET Final Look. Gameplay collider/hotspot signature preserved; focused gameplay tests PASS; paid/Tripo credits **0**.
+- Five reproducible production assets plus Blender source produced: main gate, defense tower, defense wall, Granero, Cuartel.
+- **Defense is a local VISUAL PASS** and proves the Production Art System can produce a clear on-screen upgrade.
+- **Granero/Cuartel remain VISUAL PARTIAL**: their source recomposition is technically richer but still too close to the existing secondary-building family; mobile especially does not show a district-level quality jump toward Hero Bastion.
+- Root cause is now concrete: **civil donor/source ceiling and insufficient semantic specificity**, not camera, Unity, CI or Final Look.
+- Do **not** extend the current MidTier donor-composition technique to Forja/Hospital/Cantera. Rollout is held.
+- Next production step: change the civil source technique for Granero/Cuartel to genuinely richer purpose-built or substantially reauthored geometry, then re-prove only zoom9/mobile before any further rollout. No paid generation without explicit authorization.
+- Canonical result: `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA PRODUCTION ART SYSTEM RESET v1 — CLOSED / SYSTEM PASS
 
 - Canonical result: `docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md`.
