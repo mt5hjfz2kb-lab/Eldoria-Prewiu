@@ -20,25 +20,25 @@ namespace Eldoria.EditorTools
             Directory.CreateDirectory(Folder);
             var state=new PlayerState{BastionLevel=3,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true};
 
-            var before=Create(state);
+            var scene=Create(state);
             var signature=ValoriaVisualFormulaGate.CollisionSignature();
             WriteMetrics(Folder+"/before-metrics.json");
-            Save(before.camera,Folder+"/before-9.png",9f,1280,720);
-            Save(before.camera,Folder+"/before-mobile.png",9.4f,390,844);
+            Save(scene.camera,Folder+"/before-9.png",9f,1280,720);
+            Save(scene.camera,Folder+"/before-mobile.png",9.4f,390,844);
 
-            var after=Create(state);
-            var baseline=ValoriaVisualFormulaGate.CollisionSignature();
-            if(baseline!=signature)throw new Exception("Matched baseline gameplay signature is unstable.");
-            ValoriaProductionArtResetV1.Apply(after.root.transform,state);
+            // Matched A/B in one live scene. Recreating the entire canonical scene here invalidated
+            // runtime-created material state owned by older visual passes; phase C only needs to add
+            // the visual-only authored family to the exact captured baseline.
+            ValoriaProductionArtResetV1.Apply(scene.root.transform,state);
             Physics.SyncTransforms();
-            if(ValoriaVisualFormulaGate.CollisionSignature()!=baseline)
+            if(ValoriaVisualFormulaGate.CollisionSignature()!=signature)
                 throw new Exception("Production Art candidate changed gameplay collider/hotspot signature.");
             if(ValoriaProductionArtResetV1.Pieces!=8)
                 throw new Exception("Expected 8 authored starter instances, got "+ValoriaProductionArtResetV1.Pieces);
 
             WriteMetrics(Folder+"/after-metrics.json");
-            Save(after.camera,Folder+"/after-9.png",9f,1280,720);
-            Save(after.camera,Folder+"/after-mobile.png",9.4f,390,844);
+            Save(scene.camera,Folder+"/after-9.png",9f,1280,720);
+            Save(scene.camera,Folder+"/after-mobile.png",9.4f,390,844);
 
             File.WriteAllText(Folder+"/evidence.json",
                 "{\n"+
