@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-functional-screen-readability-v1",
   "asset_or_sector": "Granero + Cuartel played-camera functional readability",
   "profile": "environment_composition",
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "One bounded Unity layout/presentation hypothesis per approved source. Granero: bring loading/storage mass into readable mobile/zoom9 screen-space with larger footprint, camera-facing facade, loading court/negative space. Cuartel: bring guarded entry/military mass into readable screen-space inside east military parcel with larger footprint and open training-yard separation. Preserve orthographic camera, RESET Final Look, terrain, Hero Bastion, accepted defense, routes, parcels, hotspots/colliders and future reserves. Zero paid/Tripo credits."
+  "notes": "CLOSED: Unity composition route executed once. Run 37208123181 / artifact 11305333489 = TECH PASS / VISUAL PARTIAL / NOT PROMOTED. No second layout/material/prop pass allowed. Next block must change to camera-first source authoring; Tripo remains unauthorized."
 }
