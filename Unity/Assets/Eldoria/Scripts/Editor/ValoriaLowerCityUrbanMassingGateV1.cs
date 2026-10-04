@@ -42,7 +42,8 @@ namespace Eldoria.EditorTools
    if(ValoriaLowerCityUrbanMassingReauthoringV1.PiecesBuilt<14)
     throw new Exception("Urban groups are incomplete");
    if(ValoriaLowerCityUrbanMassingReauthoringV1.SuppressedRenderers<8)
-    throw new Exception("Expected redundant lower-city layers were not suppressed");\n   Debug.Log("Urban massing suppressed renderers="+ValoriaLowerCityUrbanMassingReauthoringV1.SuppressedRenderers+" lights="+ValoriaLowerCityUrbanMassingReauthoringV1.SuppressedLights);
+    throw new Exception("Expected redundant lower-city layers were not suppressed");
+   Debug.Log("Urban massing suppressed renderers="+ValoriaLowerCityUrbanMassingReauthoringV1.SuppressedRenderers+" lights="+ValoriaLowerCityUrbanMassingReauthoringV1.SuppressedLights);
 
    CaptureSet(camera,"AFTER");
 
