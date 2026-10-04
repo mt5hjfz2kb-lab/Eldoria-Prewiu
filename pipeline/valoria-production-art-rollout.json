@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_GRANERO_CUARTEL_SOURCE_PASS_UNITY_VISUAL_PARTIAL",
+  "status": "HOLD_AFTER_FUNCTIONAL_SCREEN_READABILITY_V1_VISUAL_PARTIAL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Do not extend to Forja/Hospital/Cantera yet. Granero/Cuartel now have SOURCE VISUAL PASS assets, but played-camera zoom9/mobile functional separation remains insufficient. Next work must solve screen-space functional hierarchy/integration as a deliberate presentation/art-direction problem, not another source/material micro-pass.",
+  "next_priority": "Granero/Cuartel retain SOURCE VISUAL PASS but failed the single allowed played-camera layout hypothesis at zoom9/mobile. Do not run another layout/material/prop pass. Next technique must be camera-first source authoring with functional identity encoded into large silhouette/massing for the canonical orthographic/mobile view. Forja/Hospital/Cantera remain HOLD.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -105,5 +105,13 @@
     "unity_artifact_id": 11305635813,
     "credits_spent": 0,
     "result_doc": "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md"
+  },
+  "functional_screen_readability": {
+    "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+    "run_id": 37208123181,
+    "artifact_id": 11305333489,
+    "credits_spent": 0,
+    "result_doc": "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
+    "anti_loop": "closed after one hypothesis; no second layout pass"
   }
 }
