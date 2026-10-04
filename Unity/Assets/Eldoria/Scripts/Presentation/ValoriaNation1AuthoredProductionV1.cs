@@ -23,6 +23,7 @@ namespace Eldoria.Presentation
    BuildGranaryFields(root);
    BuildFunctionalDressing(root);
    BuildGreenery(root);
+   BuildBackdrop(root);
    BuildLighting(root);
    StripGameplay(root.gameObject);
   }
@@ -227,6 +228,55 @@ namespace Eldoria.Presentation
    }
   }
 
+  static void BuildBackdrop(Transform root)
+  {
+   // The target frame is a mountain/lake city, not a diorama on an empty green board.
+   // This layer lives entirely outside the playable wall and owns no collision or hotspots.
+   var mountain=Resources.Load<GameObject>("Valoria/SM_Mountains_11");
+   var hill=Resources.Load<GameObject>("Valoria/SM_Hills_01");
+   var cliff1=Resources.Load<GameObject>("Valoria/SM_Cliffs_01");
+   var cliff3=Resources.Load<GameObject>("Valoria/SM_Cliffs_03");
+
+   BackdropPiece(root,mountain,"rear mountain west",new Vector3(-8.0f,-.15f,18.0f),12.0f,7.5f,18f);
+   BackdropPiece(root,mountain,"rear mountain east",new Vector3(7.5f,-.20f,19.5f),11.0f,7.0f,-18f);
+   BackdropPiece(root,hill,"rear hill center",new Vector3(0f,-.10f,14.7f),9.5f,4.2f,7f);
+   BackdropPiece(root,cliff1,"rear cliff west",new Vector3(-13.0f,-.05f,13.6f),7.8f,4.2f,32f);
+   BackdropPiece(root,cliff3,"rear cliff east",new Vector3(13.0f,-.05f,13.4f),7.5f,4.0f,-28f);
+
+   var waterShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(waterShader!=null)
+   {
+    var water=new Material(waterShader){name="Valoria Nation1 lake"};
+    if(water.HasProperty("_BaseColor"))water.SetColor("_BaseColor",new Color(.12f,.30f,.40f,1f));
+    if(water.HasProperty("_Color"))water.SetColor("_Color",new Color(.12f,.30f,.40f,1f));
+    if(water.HasProperty("_Smoothness"))water.SetFloat("_Smoothness",.62f);
+    Surface(root,"outer lake",new Vector3(6.8f,.015f,14.5f),new Vector3(14.0f,.025f,8.0f),water);
+   }
+
+   var art=ValoriaExternalAssetLibrary.Load();
+   var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
+   if(tree!=null)
+   {
+    foreach(var s in new[]{
+      new Vector4(-13.5f,10.8f,12f,1.55f),new Vector4(-11.7f,11.5f,28f,1.65f),
+      new Vector4(-10.4f,13.2f,-12f,1.45f),new Vector4(-8.8f,12.4f,18f,1.50f),
+      new Vector4(-6.8f,13.0f,42f,1.40f),new Vector4(-4.8f,11.4f,-22f,1.30f),
+      new Vector4(10.8f,11.0f,16f,1.38f),new Vector4(12.4f,12.2f,-18f,1.48f),
+      new Vector4(14.0f,11.7f,34f,1.58f),new Vector4(9.8f,14.0f,-30f,1.26f)})
+    {
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · backdrop pine",tree,new Vector3(s.x,.05f,s.y),s.w,s.w*2.65f,Quaternion.Euler(0,s.z,0));
+     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    }
+   }
+  }
+
+  static void BackdropPiece(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
+  {
+   if(src==null)return;
+   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;
+  }
+
   static void BuildLighting(Transform root)
   {
    RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
@@ -248,11 +298,28 @@ namespace Eldoria.Presentation
    var fill=fillGo.AddComponent<Light>();fill.type=LightType.Directional;fill.color=new Color(.62f,.72f,.92f,1f);fill.intensity=.12f;fill.shadows=LightShadows.None;
 
    WarmExistingStone();
-   Warm(root,"hero stair west",new Vector3(-1.25f,1.25f,4.40f),.22f,3.6f);
-   Warm(root,"hero stair east",new Vector3(1.25f,1.25f,4.40f),.22f,3.6f);
-   Warm(root,"hero terrace west",new Vector3(-3.55f,1.35f,5.45f),.16f,3.2f);
-   Warm(root,"hero terrace east",new Vector3(3.55f,1.35f,5.45f),.16f,3.2f);
-   Warm(root,"gate warmth",new Vector3(0f,1.55f,-5.95f),.20f,3.7f);
+   HarmonizeBanners();
+   Warm(root,"hero stair west",new Vector3(-1.25f,1.25f,4.40f),.72f,4.2f);
+   Warm(root,"hero stair east",new Vector3(1.25f,1.25f,4.40f),.72f,4.2f);
+   Warm(root,"hero terrace west",new Vector3(-3.55f,1.35f,5.45f),.48f,3.8f);
+   Warm(root,"hero terrace east",new Vector3(3.55f,1.35f,5.45f),.48f,3.8f);
+   Warm(root,"gate warmth",new Vector3(0f,1.55f,-5.95f),.68f,4.3f);
+  }
+
+  static void HarmonizeBanners()
+  {
+   var shader=Shader.Find("Universal Render Pipeline/Unlit")??Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(shader==null)return;
+   var blue=new Material(shader){name="Valoria Nation1 heraldic blue"};
+   if(blue.HasProperty("_BaseColor"))blue.SetColor("_BaseColor",new Color(.04f,.13f,.36f,1f));
+   if(blue.HasProperty("_Color"))blue.SetColor("_Color",new Color(.04f,.13f,.36f,1f));
+   foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+   {
+    if(r==null||!r.enabled)continue;
+    string n=Chain(r.transform);
+    if((n.Contains("banner")||n.Contains("standard"))&&!n.Contains("hud"))
+      r.sharedMaterial=blue;
+   }
   }
 
   static void WarmExistingStone()
