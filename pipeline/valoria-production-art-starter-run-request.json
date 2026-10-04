@@ -1,6 +1,6 @@
 {
-  "enabled": true,
-  "nonce": "starter-c4-preview-retry-world-20261004-1126",
-  "scope": "build-reauthored-starter-family-c4-with-isolated-previews",
+  "enabled": false,
+  "nonce": "starter-v1-parked-anti-loop-20261004-1128",
+  "scope": "park-v1-after-visual-fail",
   "credits": 0
 }
