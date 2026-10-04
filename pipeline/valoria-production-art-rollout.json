@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_FIRST_DISTRICT_VISUAL_PARTIAL",
+  "status": "HOLD_AFTER_GRANERO_CUARTEL_SOURCE_PASS_UNITY_VISUAL_PARTIAL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,12 +89,21 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Replace the civil-building donor/composition technique for Granero and Cuartel with genuinely richer purpose-built or substantially reauthored geometry; prove zoom9/mobile before Forja/Hospital/Cantera.",
+  "next_priority": "Do not extend to Forja/Hospital/Cantera yet. Granero/Cuartel now have SOURCE VISUAL PASS assets, but played-camera zoom9/mobile functional separation remains insufficient. Next work must solve screen-space functional hierarchy/integration as a deliberate presentation/art-direction problem, not another source/material micro-pass.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
     "run_id": 37202888357,
     "artifact_id": 11303269944,
     "result_doc": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md"
+  },
+  "granero_cuartel_source_upgrade": {
+    "result": "TECH PASS / SOURCE VISUAL PASS (BOTH) / UNITY VISUAL PARTIAL / NOT PROMOTED",
+    "source_run_id": 37206352843,
+    "source_artifact_id": 11305265539,
+    "unity_run_id": 37206779989,
+    "unity_artifact_id": 11305635813,
+    "credits_spent": 0,
+    "result_doc": "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md"
   }
 }
