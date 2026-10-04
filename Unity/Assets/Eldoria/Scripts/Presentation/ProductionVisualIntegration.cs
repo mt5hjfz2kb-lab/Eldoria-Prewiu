@@ -207,6 +207,7 @@ namespace Eldoria.Presentation
             // Certified Mid-Tier District v1: three real Mid/Lower parcels, visual-only, Bastion III+.
             MidTierDistrictProduction.Build(root,state);
             ValoriaFullFrameArchitectureBatchV1.Build(root,state);
+            ValoriaLowerCityUrbanMassingReauthoringV1.Build(root,state);
             ValoriaFullFrameForegroundEdgePassV1.Build(root,state);
             DressBastion();
             var tower=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
