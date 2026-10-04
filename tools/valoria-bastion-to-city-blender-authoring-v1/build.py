@@ -9,9 +9,9 @@ def args():
     av=sys.argv
     av=av[av.index("--")+1:] if "--" in av else []
     p=argparse.ArgumentParser()
-    p.add_argument("--output-dir",required=True)
-    p.add_argument("--evidence-dir",required=True)
-    p.add_argument("--report",required=True)
+    p.add_argument("--output-dir",default="art-source/valoria/production/bastion-to-city-blender-authoring-v1")
+    p.add_argument("--evidence-dir",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source")
+    p.add_argument("--report",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source/source-report.json")
     return p.parse_args()
 A=args()
 
