@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
-  "phase": "unity_stop_gate",
+  "phase": "closed",
   "nonce": "gcsu-v1-unity-runtime-wired-20261004-1349",
   "source_visual_verdict": {
     "granero": "SOURCE VISUAL PASS",
@@ -20,5 +20,6 @@
     "colliders"
   ],
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "final_verdict": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED"
 }
