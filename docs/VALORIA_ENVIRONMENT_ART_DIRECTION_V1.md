@@ -1,8 +1,10 @@
 # Valoria Environment Art Direction v1
 
 Date: 2026-10-01  
-Status: **CANONICAL VISUAL DIRECTION / applies across future Valoria art chats**  
+Status: **HISTORICAL / PROCESS EVIDENCE — superseded as top-level art direction by `docs/VALORIA_VISUAL_BIBLE.md`**  
 Repository authority: `main` remains the source of truth.
+
+> Supersession note (2026-10-04): retain this document for environment-art layering, material integration and proof history. It no longer defines Valoria's top-level identity or composition. The canonical direction is `docs/VALORIA_VISUAL_BIBLE.md`. Any mountain-dominant or primitive-to-final-art interpretation is deprecated.
 
 ## Why this exists
 
