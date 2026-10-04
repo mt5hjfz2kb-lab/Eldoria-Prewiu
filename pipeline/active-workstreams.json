@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:36:00Z",
+  "updated_at": "2026-10-04T17:49:00Z",
   "active": [
     {
       "id": "valoria-lower-city-urban-massing-reauthoring-v1",
@@ -17,7 +17,8 @@
         "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs"
       ],
       "resources": [
         "valoria-production-composition",
