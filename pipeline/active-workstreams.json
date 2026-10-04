@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:18:00Z",
-  "active": [
+  "updated_at": "2026-10-04T14:26:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-camera-first-functional-source-v1",
       "title": "Valoria Camera-First Functional Source v1",
@@ -35,13 +36,18 @@
         "art-production-planner",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T14:18:00Z",
       "base_main_sha": "d8934cbf48155cec822ae794552f8b9e04996c26",
-      "dependency": "New block after Functional Screen Readability v1 closed. Author one camera-first source per Granero/Cuartel with functional identity encoded in large silhouette/massing for canonical southeast orthographic zoom9/mobile. Existing GCSU sources remain evidence inputs, not iteration targets. Source-isolated gate first, then Unity only if both pass. Zero Tripo/paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "New block after Functional Screen Readability v1 closed. Author one camera-first source per Granero/Cuartel with functional identity encoded in large silhouette/massing for canonical southeast orthographic zoom9/mobile. Existing GCSU sources remain evidence inputs, not iteration targets. Source-isolated gate first, then Unity only if both pass. Zero Tripo/paid credits.",
+      "completed_at": "2026-10-04T14:26:00Z",
+      "run_id": 37208777268,
+      "artifact_id": 11305893049,
+      "credits_spent": 0,
+      "result": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY NOT RUN / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md",
+      "next": "Granero rich-geometry-only camera-first assembly; retain Cuartel_CFSv1 source candidate."
+    },
     {
       "id": "valoria-functional-screen-readability-v1",
       "title": "Valoria Functional Screen Readability v1",
