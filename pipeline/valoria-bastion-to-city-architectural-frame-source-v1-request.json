@@ -23,7 +23,9 @@
   "art_source_verdict": "FAIL",
   "unity_run": "NOT_RUN",
   "promotion": "NOT_PROMOTED",
-  "final_finding": "Source is deliberately asymmetric and has real recess/stair depth, but isolated clay/lit/proxy evidence still reads as sophisticated blockout: rectilinear masses with attached trim/arch elements, schematic rock interfaces, insufficient continuous authored silhouette and stone-rock interlock.",
-  "next_method": "Do not open v2/v3. Change authoring mode: high-fidelity screen-space design/paintover followed by genuinely freeform direct DCC/sculpt/boolean/deformation authoring or another owner-approved high-quality source route followed by Blender reauthoring. Tripo remains blocked without explicit authorization.",
-  "result_doc": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md"
+  "final_finding": "Asymmetric full-frame source is more architectural than the previous support system, but isolated clay/lit/proxy evidence still reads as blockout-like rectilinear masses with shallow facade articulation, weak stone-rock interlock and insufficient premium spatial richness versus the approved reference. Stop-gate prevents Unity integration.",
+  "next_method": "Do not open v2/v3. Change authoring mode: lock a high-fidelity 2D played-frame architectural elevation/paintover first, then use genuinely freeform/source-rich Blender construction (manual mesh deformation/boolean/curve/sculpt and authored stone-rock transitions) before another source gate.",
+  "result_doc": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md",
+  "unity_gate": "NOT_RUN",
+  "visual_verdict": "NOT_RUN"
 }
