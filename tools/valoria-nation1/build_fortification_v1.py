@@ -179,6 +179,7 @@ for col,fn in [(wall_col,"Nation1_Wall_v1.glb"),(tower_col,"Nation1_Tower_v1.glb
     p,objs=export_collection(col,fn);exports.append({"file":fn,"bytes":os.path.getsize(p),"objects":len(objs),"vertices":sum(len(o.data.vertices) for o in objs)})
 
 blend=os.path.join(CAND,"Valoria_Nation1_Fortification_v1.blend")
+bpy.ops.file.pack_all()
 bpy.ops.wm.save_as_mainfile(filepath=blend)
 with open(EVID,"w",encoding="utf-8") as f:
     json.dump({"status":"PASS","blender_version":bpy.app.version_string,"source_blend":"pipeline/candidates/valoria-nation1-v1/Valoria_Nation1_Fortification_v1.blend","exports":exports,"materials":["Warm Limestone PBR","Foundation Stone PBR","Dark Timber","Valoria Blue","Recess"],"tripo_credits":0},f,indent=2)
