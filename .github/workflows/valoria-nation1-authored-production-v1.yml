@@ -66,6 +66,9 @@ jobs:
           test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Tower_v1.glb
           test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Gate_v1.glb
           test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Stair_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_CivicHouse_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_CivicHouseB_v1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/Nation1/Nation1_Workshop_v1.glb
           cat pipeline/evidence/valoria-nation1-v1.json
       - uses: actions/upload-artifact@v4
         with:
