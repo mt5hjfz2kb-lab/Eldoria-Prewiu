@@ -1,0 +1,66 @@
+name: "[PRODUCTION] Valoria Functional Screen Readability v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-functional-screen-readability-v1-request.json'
+concurrency:
+  group: valoria-functional-screen-readability-v1
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { ref: main, clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Capture functional readability gate
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaFunctionalScreenReadabilityV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaFunctionalScreenReadabilityV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFunctionalScreenReadabilityGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(32)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'FSR gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "FSR gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - name: Focused gameplay tests
+        shell: powershell
+        run: |
+          $xml="$env:RUNNER_TEMP\FunctionalScreenReadability-PlayMode.xml"
+          $log="$env:RUNNER_TEMP\FunctionalScreenReadability-PlayMode.log"
+          $filter='Eldoria.Tests.ReferenceUiArtPassTests;OwnerHudMatchesReferenceMobileBudgets;ValoriaProgressionContractGatesCuartelVisualAndInteraction'
+          $args=@('-batchmode','-nographics','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','PlayMode','-testFilter',$filter,'-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'FSR tests timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 180;throw "FSR tests failed $($p.ExitCode)"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-functional-screen-readability-v1
+          path: |
+            Unity/ValoriaFunctionalScreenReadabilityV1Captures/*
+          if-no-files-found: warn
+          retention-days: 30
