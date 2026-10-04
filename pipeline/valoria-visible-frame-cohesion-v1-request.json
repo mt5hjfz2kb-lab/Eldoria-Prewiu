@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "REQUESTED_RETRY_AFTER_GAMEPLAY_SIGNATURE_FIX",
+  "status": "CLOSED_NOT_PROMOTED",
   "workstream": "VALORIA VISIBLE FRAME COHESION v1",
   "objective": "Improve large-scale ground, edge, architecture-ground and lower-city continuity across the promoted reachable camera envelope with one structural visual intervention.",
   "baseline": {
@@ -51,5 +51,10 @@
   "technique_change": "Discard linear lateral streets/world verges; use irregular terrace/ground seams and buried authored transitions instead.",
   "tech_fix": "Replace GroundSeam helpers because they spawn RockCluster colliders outside the visual root; retain irregular terrace technique with explicit visual-only authored pieces.",
   "retry_reason": "Identical source retry after Unity native crash inside Camera.Render; no code/visual changes.",
-  "technical_fix": "Remove GroundSeam helper because its RockCluster children escape the candidate root and alter collider signature; use collider-free terrace skins plus explicitly collider-disabled authored rocks."
+  "technical_fix": "Remove GroundSeam helper because its RockCluster children escape the candidate root and alter collider signature; use collider-free terrace skins plus explicitly collider-disabled authored rocks.",
+  "authoritative_run_id": 37216176561,
+  "artifact_id": 11309016498,
+  "planner_run_id": 37215004613,
+  "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+  "candidate_promoted": false
 }
