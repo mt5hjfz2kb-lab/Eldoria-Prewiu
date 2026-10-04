@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "ACTIVE",
+  "workstream": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1",
+  "objective": "Reauthor the dominant visible lower-city residential/frontage band as 2–3 differentiated urban groups rather than layered repeated house/cluster systems.",
+  "baseline_head": "7168a47cebea950f1088efce7eee499ffb9d2102",
+  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "route": "environment_composition",
+  "hypothesis": "The visible prefab-cluster read is caused partly by overlapping reused-house, Mid-Tier W1-W3 and Full Frame Architecture cluster systems. Suppress redundant urban layers and rebuild only three screen-legible groups with distinct height, silhouette, orientation, court/lanes and integrated authored bases.",
+  "preserve": [
+    "Hero Bastion",
+    "accepted defense",
+    "Granero",
+    "Cuartel",
+    "Flat Citadel",
+    "orthographic camera",
+    "HOME mobile",
+    "panning",
+    "recenter",
+    "16:9 framing",
+    "Final Look",
+    "gameplay",
+    "hotspots",
+    "colliders",
+    "routes",
+    "parcels",
+    "future reserves",
+    "screen-space policy"
+  ],
+  "prohibited": [
+    "Forja",
+    "Hospital",
+    "Cantera",
+    "camera changes",
+    "projection changes",
+    "ground-decoration iteration",
+    "support-form-pass continuation",
+    "primitive final architecture",
+    "Tripo spend"
+  ],
+  "stop_gate": [
+    "HOME mobile BEFORE/AFTER",
+    "PAN Granero BEFORE/AFTER",
+    "PAN intermediate BEFORE/AFTER",
+    "PAN Cuartel BEFORE/AFTER",
+    "16:9 BEFORE/AFTER",
+    "direct visual review against canonical reference"
+  ],
+  "promotion_rule": "TECH PASS is necessary but insufficient. Promote only if the lower city reads at first glance as differentiated authored urban groups and visibly converges toward the canonical reference.",
+  "credits": {
+    "tripo": 0,
+    "paid": 0
+  }
+}
