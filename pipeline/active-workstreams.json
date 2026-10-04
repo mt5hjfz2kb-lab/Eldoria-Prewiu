@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T16:02:00Z",
-  "active": [
+  "updated_at": "2026-10-04T16:34:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-visible-frame-cohesion-v1",
       "title": "Valoria Visible Frame Cohesion v1",
@@ -25,13 +26,21 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T16:02:00Z",
       "base_main_sha": "955fc41b8504d3d2fd14acbd38d32d30266631c3",
-      "dependency": "One significant visible-frame cohesion intervention across promoted HOME/PAN Granero/intermediate/PAN Cuartel/16:9. Preserve camera/mobile navigation, Hero Bastion, accepted defense, Granero/Cuartel, gameplay, parcels/routes/reserves and Final Look. Existing rich assets only; zero Tripo/paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "One significant visible-frame cohesion intervention across promoted HOME/PAN Granero/intermediate/PAN Cuartel/16:9. Preserve camera/mobile navigation, Hero Bastion, accepted defense, Granero/Cuartel, gameplay, parcels/routes/reserves and Final Look. Existing rich assets only; zero Tripo/paid credits.",
+      "completed_at": "2026-10-04T16:34:00Z",
+      "planner_run_id": 37215004613,
+      "run_id": 37216176561,
+      "artifact_id": 11309016498,
+      "confirmation_run_id": 37216912861,
+      "confirmation_artifact_id": 11308563246,
+      "result_commit": "7c64171ed7f81707b41563e9fd2d3f746d4c0d24",
+      "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md",
+      "next": "VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1. Replace the largest greybox-like retaining/support masses and architecture-terrain interfaces visible across the reachable HOME/PAN envelope. Do not reopen camera, ground-overlay micro-iterations, Granero/Cuartel placement, or Forja/Hospital/Cantera."
+    },
     {
       "id": "valoria-mobile-navigable-city-v1",
       "title": "Valoria Mobile Navigable City v1",
