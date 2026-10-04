@@ -30,6 +30,9 @@ def bounds(objects):
 
 def setup_world():
     w=bpy.context.scene.world
+    if w is None:
+        w=bpy.data.worlds.new("Valoria Donor Review World")
+        bpy.context.scene.world=w
     w.color=(0.018,0.022,0.030)
     w.use_nodes=True
     bg=w.node_tree.nodes.get("Background")
