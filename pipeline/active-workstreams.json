@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:29:00Z",
+  "updated_at": "2026-10-04T14:31:00Z",
   "active": [
     {
       "id": "valoria-granero-rich-camera-first-v1",
@@ -31,6 +31,29 @@
       "claimed_at": "2026-10-04T14:29:00Z",
       "base_main_sha": "9ddecda547e95a79fab30ffb57d0c572de7944f5",
       "dependency": "Granero-only distinct source technique after procedural camera-first Granero failed. Use only already-rich approved granary geometry for visible architecture; camera-first multi-volume storage complex. One candidate. No Unity unless SOURCE VISUAL PASS. Retained Cuartel_CFSv1 remains source-level candidate. Zero Tripo/paid credits."
+    },
+    {
+      "id": "valoria-camera-first-functional-unity-gate-v1",
+      "title": "Valoria Camera-First Functional Unity Gate v1",
+      "owner": "chat-valoria-camera-first-functional-source-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraFirstFunctionalSourceV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCameraFirstFunctionalUnityGateV1.cs",
+        ".github/workflows/valoria-camera-first-functional-unity-gate-v1.yml",
+        "pipeline/valoria-camera-first-functional-unity-gate-v1-request.json",
+        "pipeline/evidence/valoria-camera-first-functional-source-v1/unity/**",
+        "docs/evidence/valoria-camera-first-functional-source-v1/unity/**",
+        "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T14:31:00Z",
+      "base_main_sha": "53468c0a7141bf07216aee9a48cdf4b33c841096",
+      "dependency": "Narrowed after concurrent Granero source-only workstream appeared. Finish already-dispatched Unity zoom9/mobile gate for existing CFS Granero+Cuartel candidate. Do not touch shared art-production request, rollout, source design or other chat files while overlap exists."
     }
   ],
   "history": [
