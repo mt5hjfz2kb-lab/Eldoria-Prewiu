@@ -1,0 +1,66 @@
+name: "[PRODUCTION] Valoria Starter Family v3"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-production-art-starter-v3-request.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-production-art-starter-v3
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read request
+        id: req
+        run: |
+          python3 - <<'PY'
+          import json,os
+          d=json.load(open('pipeline/valoria-production-art-starter-v3-request.json'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('enabled='+('true' if d.get('enabled') else 'false')+'\n')
+          PY
+      - name: Install Blender
+        if: steps.req.outputs.enabled == 'true'
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy
+      - name: Build v3
+        if: steps.req.outputs.enabled == 'true'
+        run: |
+          blender -b --python tools/valoria-production-art-starter/build_starter_family_v3.py
+          test -s art-source/valoria/production/starter-family-v3/Valoria_StarterFamily_v3.blend
+          for f in Valoria_MainGate_v3 Valoria_WallSegment_v3 Valoria_Tower_v3 Valoria_CivicHouse_v3 Valoria_Workshop_v3; do
+            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/${f}.glb"
+            test -s "pipeline/evidence/valoria-production-art-starter-v3/${f}.png"
+          done
+      - name: Persist v3
+        if: steps.req.outputs.enabled == 'true'
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/production/starter-family-v3
+          git add Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3
+          git add pipeline/evidence/valoria-production-art-starter-v3
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist coherent Valoria starter family v3"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        if: steps.req.outputs.enabled == 'true'
+        with:
+          name: valoria-production-art-starter-v3
+          path: |
+            art-source/valoria/production/starter-family-v3/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/*.glb
+            pipeline/evidence/valoria-production-art-starter-v3/*.png
+          if-no-files-found: error
+          retention-days: 30
