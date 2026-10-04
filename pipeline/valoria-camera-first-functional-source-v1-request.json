@@ -2,7 +2,7 @@
   "schema_version": 1,
   "enabled": false,
   "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
-  "phase": "closed",
+  "phase": "source_pass_unity_authorized",
   "nonce": "cfs-v1-source-20261004-1422",
   "assets": [
     "Granero",
@@ -14,7 +14,7 @@
     "camera_first_silhouette_preview",
     "functional_identity_without_small_props"
   ],
-  "allow_unity_integration": false,
+  "allow_unity_integration": true,
   "camera": "canonical-orientation-equivalent orthographic isolated preview",
   "tripo": false,
   "credits": 0,
@@ -24,5 +24,11 @@
     "run_id": 37208777268,
     "artifact_id": 11305893049
   },
-  "next": "Granero rich-geometry-only camera-first assembly; retain Cuartel_CFSv1 as source candidate."
+  "next": "Granero rich-geometry-only camera-first assembly; retain Cuartel_CFSv1 as source candidate.",
+  "source_visual_verdict": {
+    "granero": "SOURCE FUNCTIONAL PASS",
+    "cuartel": "SOURCE FUNCTIONAL PASS"
+  },
+  "source_gate_run_id": 37208777268,
+  "source_gate_artifact_id": 11305893049
 }
