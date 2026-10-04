@@ -20,6 +20,7 @@ namespace Eldoria.Presentation
    BuildHeroTerracedCore(root);
    ScaleCoreVisuals();
    BuildCivicDensity(root);
+   BuildCentralPlaza(root);
    BuildGranaryFields(root);
    BuildFunctionalDressing(root);
    BuildGreenery(root);
@@ -171,15 +172,65 @@ namespace Eldoria.Presentation
    Building(root,house,"east inner house",new Vector3(7.25f,.13f,.10f),1.72f,2.02f,-18f);
   }
 
+  static void BuildCentralPlaza(Transform root)
+  {
+   // Replace the old thin plinth/standard with a civic focal point that reads at strategic zoom.
+   foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+   {
+    if(r==null||!r.enabled)continue;
+    string n=Chain(r.transform);
+    if(n.Contains("plaza plinth")||n.Contains("central standard"))r.enabled=false;
+   }
+
+   var cobble=ValoriaKit.ExternalPbrSurfaceMaterial("cobble",new Color(.86f,.84f,.79f,1f),new Vector2(2.8f,2.8f),.045f,1.06f)
+      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.56f,.51f,1f),"stone",new Vector2(2.2f,2.2f),1f);
+   var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.76f,.73f,.67f,1f),new Vector2(2.0f,2.0f),.035f,1.08f)
+      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.55f,.49f,1f),"stone",new Vector2(2f,2f),1f);
+
+   Disc(root,"civic plaza outer",new Vector3(0f,.174f,.72f),2.15f,.055f,cobble);
+   Disc(root,"civic plaza inner",new Vector3(0f,.218f,.72f),1.12f,.055f,stone);
+
+   var plinth=GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+   plinth.name="Valoria · Nation1 · civic monument plinth";plinth.transform.SetParent(root,true);
+   plinth.transform.position=new Vector3(0f,.36f,.72f);plinth.transform.localScale=new Vector3(.82f,.16f,.82f);
+   plinth.GetComponent<Renderer>().sharedMaterial=stone;StripGameplay(plinth);
+
+   var obelisk=GameObject.CreatePrimitive(PrimitiveType.Cube);
+   obelisk.name="Valoria · Nation1 · civic monument";obelisk.transform.SetParent(root,true);
+   obelisk.transform.position=new Vector3(0f,1.18f,.72f);obelisk.transform.localScale=new Vector3(.34f,1.45f,.34f);
+   obelisk.GetComponent<Renderer>().sharedMaterial=stone;StripGameplay(obelisk);
+
+   var cap=GameObject.CreatePrimitive(PrimitiveType.Cube);
+   cap.name="Valoria · Nation1 · civic blue crown";cap.transform.SetParent(root,true);
+   cap.transform.position=new Vector3(0f,1.92f,.72f);cap.transform.localScale=new Vector3(.48f,.12f,.48f);
+   var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(shader!=null)
+   {
+    var blue=new Material(shader){name="Nation1 civic blue"};
+    if(blue.HasProperty("_BaseColor"))blue.SetColor("_BaseColor",new Color(.035f,.12f,.34f,1f));
+    if(blue.HasProperty("_Color"))blue.SetColor("_Color",new Color(.035f,.12f,.34f,1f));
+    cap.GetComponent<Renderer>().sharedMaterial=blue;
+   }
+   StripGameplay(cap);
+   DetailProps+=3;
+  }
+
+  static void Disc(Transform root,string name,Vector3 p,float radius,float height,Material mat)
+  {
+   var go=GameObject.CreatePrimitive(PrimitiveType.Cylinder);go.name="Valoria · Nation1 · "+name;go.transform.SetParent(root,true);
+   go.transform.position=p;go.transform.localScale=new Vector3(radius*2f,height*.5f,radius*2f);
+   go.GetComponent<Renderer>().sharedMaterial=mat;StripGameplay(go);
+  }
+
   static void BuildGranaryFields(Transform root)
   {
    var crop=ValoriaKit.DetailedSurfaceMaterial(new Color(.66f,.52f,.20f,1f),"earth",new Vector2(2.2f,2.2f),.86f);
    var soil=ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.28f,.17f,1f),"earth",new Vector2(2.8f,2.8f),.92f);
-   Surface(root,"granary field bed",new Vector3(.45f,.155f,-4.55f),new Vector3(3.00f,.035f,2.15f),soil);
+   Surface(root,"granary field bed",new Vector3(-.65f,.155f,-3.62f),new Vector3(2.55f,.035f,1.55f),soil);
    for(int i=0;i<7;i++)
    {
-    float z=-5.30f+i*.25f;
-    Surface(root,"granary crop row "+i,new Vector3(.45f,.195f,z),new Vector3(2.70f,.055f,.10f),crop);
+    float z=-4.18f+i*.19f;
+    Surface(root,"granary crop row "+i,new Vector3(-.65f,.225f,z),new Vector3(2.28f,.11f,.09f),crop);
    }
   }
 
@@ -203,120 +254,48 @@ namespace Eldoria.Presentation
 
   static void BuildGreenery(Transform root)
   {
-   var art=ValoriaExternalAssetLibrary.Load();if(art==null)return;
-   var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
-   var bush=art.SlavicBush;
-   if(tree!=null)
+   var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
+   var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
+   var art=ValoriaExternalAssetLibrary.Load();
+   var fallback=art!=null?art.SlavicTree:null;
+
+   var specs=new[]{
+     new Vector4(-5.25f,4.45f,12f,1.05f),new Vector4(5.20f,4.42f,-18f,1.02f),
+     new Vector4(-6.70f,5.65f,28f,.95f),new Vector4(6.62f,5.58f,-22f,.98f),
+     new Vector4(-2.70f,7.25f,8f,.82f),new Vector4(2.72f,7.22f,-10f,.84f),
+     new Vector4(-2.30f,2.55f,18f,.70f),new Vector4(2.35f,2.52f,-16f,.72f),
+     new Vector4(-8.25f,1.85f,36f,.76f),new Vector4(8.22f,1.82f,-32f,.76f)
+   };
+   for(int i=0;i<specs.Length;i++)
    {
-    foreach(var s in new[]{
-      new Vector4(-5.25f,4.55f,12f,1.20f),new Vector4(5.25f,4.55f,-18f,1.18f),
-      new Vector4(-6.65f,5.65f,28f,1.05f),new Vector4(6.60f,5.55f,-22f,1.08f),
-      new Vector4(-2.65f,7.35f,8f,.92f),new Vector4(2.70f,7.30f,-10f,.94f),
-      new Vector4(-2.20f,2.65f,18f,.78f),new Vector4(2.30f,2.62f,-16f,.80f)})
-    {
-     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic tree",tree,new Vector3(s.x,.14f,s.y),s.w,s.w*2.4f,Quaternion.Euler(0,s.z,0));
-     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
-    }
-   }
-   if(bush!=null)
-   {
-    foreach(var p in new[]{new Vector3(-4.75f,.14f,3.85f),new Vector3(4.80f,.14f,3.85f),new Vector3(-1.65f,.14f,2.30f),new Vector3(1.70f,.14f,2.30f)})
-    {
-     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic shrub",bush,p,.62f,.62f,Quaternion.identity);
-     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
-    }
+    var spec=specs[i];
+    var src=(i%2==0?treeA:treeB)??treeA??treeB??fallback;
+    if(src==null)continue;
+    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · living tree",src,new Vector3(spec.x,.14f,spec.y),spec.w,spec.w*2.9f,Quaternion.Euler(0,spec.z,0));
+    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
    }
   }
 
   static void BuildBackdrop(Transform root)
   {
-   // Controlled Nation1 backdrop: authored ridge + irregular lake + existing licensed pines.
-   // No external mountain kit remains because its materials broke the target palette.
-   var ridge=Resources.Load<GameObject>("Valoria/Nation1/Nation1_BackdropRidge_v1");
-   if(ridge!=null)
-   {
-    BackdropPiece(root,ridge,"rear ridge west",new Vector3(-7.8f,-.20f,18.9f),13.0f,7.2f,3f);
-    BackdropPiece(root,ridge,"rear ridge east",new Vector3(8.8f,-.28f,21.0f),11.0f,6.2f,-8f);
-   }
+   var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
+   var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
+   if(treeA==null&&treeB==null)return;
 
-   BuildIrregularLake(root);
-
-   var art=ValoriaExternalAssetLibrary.Load();
-   var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
-   if(tree!=null)
-   {
-    foreach(var spec in new[]{
-      new Vector4(-14.6f,10.4f,12f,1.55f),new Vector4(-13.1f,12.2f,28f,1.72f),
-      new Vector4(-11.4f,13.1f,-12f,1.62f),new Vector4(-9.7f,12.7f,18f,1.48f),
-      new Vector4(-7.7f,13.6f,42f,1.55f),new Vector4(-5.7f,12.1f,-22f,1.42f),
-      new Vector4(8.8f,12.0f,-30f,1.30f),new Vector4(10.7f,11.0f,16f,1.40f),
-      new Vector4(12.1f,12.3f,-18f,1.52f),new Vector4(13.8f,12.0f,34f,1.62f),
-      new Vector4(15.0f,10.8f,-8f,1.48f),new Vector4(11.0f,14.0f,24f,1.30f)})
-    {
-     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · backdrop pine",tree,new Vector3(spec.x,.05f,spec.y),spec.w,spec.w*2.65f,Quaternion.Euler(0,spec.z,0));
-     if(go!=null)
-     {
-      go.transform.SetParent(root,true);
-      TintTree(go,new Color(.17f,.25f,.17f,1f));
-      StripGameplay(go);DetailProps++;
-     }
-    }
-   }
-  }
-
-  static void BuildIrregularLake(Transform root)
-  {
-   var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-   if(shader==null)return;
-   var mat=new Material(shader){name="Valoria Nation1 lake"};
-   if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",new Color(.105f,.255f,.34f,1f));
-   if(mat.HasProperty("_Color"))mat.SetColor("_Color",new Color(.105f,.255f,.34f,1f));
-   if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",.72f);
-   if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",.02f);
-
-   var go=new GameObject("Valoria · Nation1 · outer lake");go.transform.SetParent(root,true);
-   var mf=go.AddComponent<MeshFilter>();var mr=go.AddComponent<MeshRenderer>();
-   var verts=new[]{
-    new Vector3(2.2f,.02f,10.4f),new Vector3(8.4f,.02f,9.9f),new Vector3(13.8f,.02f,11.0f),
-    new Vector3(17.0f,.02f,14.2f),new Vector3(15.6f,.02f,18.0f),new Vector3(10.6f,.02f,21.0f),
-    new Vector3(4.6f,.02f,20.2f),new Vector3(1.4f,.02f,16.8f)
+   var specs=new[]{
+     new Vector4(-13.8f,11.6f,8f,1.32f),new Vector4(-12.2f,12.8f,30f,1.40f),
+     new Vector4(-10.4f,13.5f,-12f,1.25f),new Vector4(-8.6f,12.4f,18f,1.34f),
+     new Vector4(-6.8f,13.4f,42f,1.18f),new Vector4(-4.9f,12.2f,-22f,1.16f),
+     new Vector4(4.8f,12.6f,14f,1.16f),new Vector4(6.7f,13.5f,-16f,1.20f),
+     new Vector4(8.8f,12.5f,22f,1.32f),new Vector4(10.8f,13.4f,-24f,1.38f),
+     new Vector4(12.6f,12.0f,32f,1.42f),new Vector4(14.0f,11.2f,-14f,1.36f)
    };
-   var tris=new[]{0,1,2,0,2,3,0,3,4,0,4,5,0,5,6,0,6,7};
-   var mesh=new Mesh{name="Nation1 irregular lake"};mesh.vertices=verts;mesh.triangles=tris;
-   var uv=new Vector2[verts.Length];for(int i=0;i<verts.Length;i++)uv[i]=new Vector2(verts[i].x*.08f,verts[i].z*.08f);
-   mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;mr.sharedMaterial=mat;
-   StripGameplay(go);DetailProps++;
-  }
-
-  static void TintTree(GameObject go,Color tint)
-  {
-   foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+   for(int i=0;i<specs.Length;i++)
    {
-    var src=r.sharedMaterials;var dst=new Material[src.Length];
-    for(int i=0;i<src.Length;i++)
-    {
-     var m=src[i];if(m==null){dst[i]=null;continue;}
-     var clone=new Material(m){name="Nation1 forest · "+m.name};
-     foreach(var prop in new[]{"_BaseColor","_Color"})
-     {
-      if(!clone.HasProperty(prop))continue;
-      try
-      {
-       var col=clone.GetColor(prop);
-       clone.SetColor(prop,new Color(col.r*tint.r,col.g*tint.g,col.b*tint.b,col.a));
-      }catch{}
-     }
-     dst[i]=clone;
-    }
-    r.sharedMaterials=dst;
+    var spec=specs[i];var src=(i%2==0?treeA:treeB)??treeA??treeB;
+    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · distant tree",src,new Vector3(spec.x,.02f,spec.y),spec.w,spec.w*3.0f,Quaternion.Euler(0,spec.z,0));
+    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
    }
-  }
-
-  static void BackdropPiece(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
-  {
-   if(src==null)return;
-   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
-   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;
   }
 
   static void BuildLighting(Transform root)
@@ -326,7 +305,11 @@ namespace Eldoria.Presentation
    RenderSettings.ambientEquatorColor=new Color(.60f,.55f,.47f,1f);
    RenderSettings.ambientGroundColor=new Color(.27f,.23f,.19f,1f);
    RenderSettings.ambientIntensity=1.10f;
-   RenderSettings.fog=false;
+   RenderSettings.fog=true;
+   RenderSettings.fogMode=FogMode.Linear;
+   RenderSettings.fogColor=new Color(.43f,.49f,.50f,1f);
+   RenderSettings.fogStartDistance=38f;
+   RenderSettings.fogEndDistance=68f;
 
    foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
    {
@@ -346,6 +329,9 @@ namespace Eldoria.Presentation
    Warm(root,"hero terrace west",new Vector3(-3.55f,1.35f,5.45f),.48f,3.8f);
    Warm(root,"hero terrace east",new Vector3(3.55f,1.35f,5.45f),.48f,3.8f);
    Warm(root,"gate warmth",new Vector3(0f,1.55f,-5.95f),.68f,4.3f);
+   Warm(root,"sawmill warmth",new Vector3(-6.0f,1.55f,-1.7f),.42f,3.5f);
+   Warm(root,"barracks warmth",new Vector3(5.9f,1.55f,-1.9f),.38f,3.4f);
+   Warm(root,"granary warmth",new Vector3(-2.7f,1.35f,-4.2f),.34f,3.2f);
   }
 
   static void HarmonizeBanners()
