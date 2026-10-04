@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-04T14:36:00Z",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "valoria-granero-rich-camera-first-v1",
       "title": "Valoria Granero Rich Camera-First v1",
@@ -27,13 +28,19 @@
         "github-hosted-blender",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T14:29:00Z",
       "base_main_sha": "9ddecda547e95a79fab30ffb57d0c572de7944f5",
-      "dependency": "Granero-only distinct source technique after procedural camera-first Granero failed. Use only already-rich approved granary geometry for visible architecture; camera-first multi-volume storage complex. One candidate. No Unity unless SOURCE VISUAL PASS. Retained Cuartel_CFSv1 remains source-level candidate. Zero Tripo/paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "Granero-only distinct source technique after procedural camera-first Granero failed. Use only already-rich approved granary geometry for visible architecture; camera-first multi-volume storage complex. One candidate. No Unity unless SOURCE VISUAL PASS. Retained Cuartel_CFSv1 remains source-level candidate. Zero Tripo/paid credits.",
+      "completed_at": "2026-10-04T14:36:00Z",
+      "source_run_id": 37209284772,
+      "source_run_attempt": 2,
+      "source_artifact_id": 11306380357,
+      "credits_spent": 0,
+      "result": "TECH PASS / SOURCE VISUAL PASS / UNITY DEFERRED BY WORKSTREAM CONFLICT / NOT YET PROMOTED",
+      "result_doc": "docs/VALORIA_GRANERO_RICH_CAMERA_FIRST_V1_RESULT.md",
+      "next": "After valoria-camera-first-functional-unity-gate-v1 releases Unity resources, pair Valoria_Granero_RCFv1 with Valoria_Cuartel_CFSv1 in one matched zoom9/mobile gate."
+    },
     {
       "id": "valoria-camera-first-functional-unity-gate-v1",
       "title": "Valoria Camera-First Functional Unity Gate v1",
