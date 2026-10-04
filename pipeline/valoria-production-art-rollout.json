@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_SCREEN_SPACE_BREAKPOINT_PARTIAL",
+  "status": "HOLD_AFTER_ADAPTIVE_MOBILE_HOME_POSE_PARTIAL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Screen-Space Breakpoint v1 proved a real 16:9 scale benefit but a portrait-mobile crop failure. Do not rebuild Granero/Cuartel and do not extend to Forja/Hospital/Cantera. Next structural proof must be aspect-ratio-aware/mobile home framing/crop policy using existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1.",
+  "next_priority": "Adaptive Mobile Home Pose v1 proves portrait-specific framing helps, but camera-only M2 still leaves Granero mostly cropped. Do not rebuild Granero/Cuartel and do not iterate camera again. Next structural proof: bounded mobile functional-district anchor/parcel-presentation rebalance using existing SOURCE VISUAL PASS pair, validated in both 16:9 and portrait. Forja/Hospital/Cantera remain HOLD.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -141,5 +141,14 @@
     "canonical_framing_promoted": false,
     "key_finding": "Tighter 16:9 reduces maquette feeling, but tighter portrait mobile over-crops the functional lower city; mobile blocker is framing allocation/crop, not insufficient source scale.",
     "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md"
+  },
+  "adaptive_mobile_home_pose_v1": {
+    "result": "TECH PASS / M0 FAIL / M1 FAIL / M2 PARTIAL / NOT PROMOTED",
+    "run_id": 37212276777,
+    "artifact_id": 11307147019,
+    "credits_spent": 0,
+    "canonical_mobile_home_pose_promoted": false,
+    "key_finding": "M2 improves Bastion/lower-city balance and gets Cuartel fully visible, but Granero remains ~27% visible; current functional anchors are too horizontally spread in portrait.",
+    "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md"
   }
 }
