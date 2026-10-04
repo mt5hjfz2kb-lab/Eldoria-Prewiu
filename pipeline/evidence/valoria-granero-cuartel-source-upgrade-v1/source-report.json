@@ -29,7 +29,7 @@
         "bounds": [
           -2.225,
           -2.2192,
-          0.0,
+          0,
           2.225,
           2.2192,
           2.7256
@@ -63,8 +63,8 @@
         "vertices": 149211,
         "triangles": 120015,
         "materials": [
-          "Eldoria Rock \u00b7 Hero Prototype",
-          "Eldoria Stone \u00b7 Hero Prototype",
+          "Eldoria Rock · Hero Prototype",
+          "Eldoria Stone · Hero Prototype",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.002",
@@ -73,7 +73,7 @@
         "bounds": [
           -2.7632,
           -1.3143,
-          0.0,
+          0,
           2.7632,
           1.3143,
           2.8657
@@ -89,8 +89,22 @@
     }
   ],
   "source_visual_verdict": {
-    "granero": "PENDING_VISUAL_REVIEW",
-    "cuartel": "PENDING_VISUAL_REVIEW"
+    "granero": "SOURCE VISUAL PASS",
+    "cuartel": "SOURCE VISUAL PASS"
   },
-  "integration_allowed": false
+  "integration_allowed": true,
+  "visual_review": {
+    "reviewed_against": [
+      "functional silhouette",
+      "hierarchy",
+      "depth",
+      "macrodetail",
+      "Hero Bastion / Visual Bible coherence",
+      "zoom9/mobile survivability"
+    ],
+    "granero": "Dedicated granary reads as agricultural storage through hall mass, dominant roof, deep loading access, annexes and secondary vertical storage volume.",
+    "cuartel": "Dedicated barracks core plus bounded stone defense reads as military compound through fortified entry, robust stone mass and guarded perimeter; banners are supporting cues rather than sole identity.",
+    "source_gate_run_id": 37206352843,
+    "source_gate_artifact_id": 11305265539
+  }
 }
