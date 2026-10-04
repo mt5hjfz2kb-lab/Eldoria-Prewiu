@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T16:58:00Z",
-  "active": [
+  "updated_at": "2026-10-04T17:16:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-secondary-support-form-replacement-v1",
       "title": "Valoria Secondary / Support Form Replacement v1",
@@ -25,13 +26,21 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T16:58:00Z",
       "base_main_sha": "5dbf52b5945013c884ffb1c34aeb79ce993d74a4",
-      "dependency": "One significant zero-credit replacement/re-authoring pass for the largest weak secondary/support masses in the reachable HOME/PAN/16:9 envelope. Prioritize retaining/support architecture, architecture-rock interfaces, secondary fronts and lower-city cluster articulation. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, hotspots/colliders/routes/parcels/future reserves and Final Look. No Forja/Hospital/Cantera, no Tripo spend."
-    }
-  ],
-  "history": [
+      "dependency": "One significant zero-credit replacement/re-authoring pass for the largest weak secondary/support masses in the reachable HOME/PAN/16:9 envelope. Prioritize retaining/support architecture, architecture-rock interfaces, secondary fronts and lower-city cluster articulation. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, hotspots/colliders/routes/parcels/future reserves and Final Look. No Forja/Hospital/Cantera, no Tripo spend.",
+      "completed_at": "2026-10-04T17:16:00Z",
+      "planner_run_id": 37219017523,
+      "discarded_run_id": 37219171093,
+      "discarded_artifact_id": 11310056089,
+      "run_id": 37219568955,
+      "artifact_id": 11309203816,
+      "result_commit": "8b1e4b085053b8c258bd21165f296116776fbe9e",
+      "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
+      "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1; dominant visible frontage as 2–3 differentiated groups. Restore canonical reference binary before direct image-to-image benchmark claims."
+    },
     {
       "id": "valoria-visible-frame-cohesion-v1",
       "title": "Valoria Visible Frame Cohesion v1",
