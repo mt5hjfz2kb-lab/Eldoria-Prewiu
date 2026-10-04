@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "verdict": "PASS",
+  "retained": [
+    "ACES tonemapping",
+    "restrained contrast/color adjustment",
+    "warm directional key",
+    "cool low-intensity fill",
+    "soft shadows",
+    "trilight ambient",
+    "restrained exponential-squared fog"
+  ],
+  "rejected_or_deferred": {
+    "runtime_material_remap": "VISUAL_FAIL",
+    "perspective_camera": "VISUAL_FAIL; orthographic retained",
+    "ssao": "DEFERRED; no isolated A/B",
+    "decals": "DEFERRED; no isolated A/B",
+    "apv": "DEFERRED; no isolated A/B",
+    "reflection_probe_changes": "DEFERRED; no isolated A/B",
+    "taa_smaa": "DEFERRED; no isolated A/B",
+    "render_scale_upscaling": "DEFERRED; no isolated A/B"
+  },
+  "evidence": {
+    "phase_c": {
+      "run": 37199970115,
+      "artifact": 11302597038
+    },
+    "def": {
+      "run": 37200169545,
+      "artifact": 11302104433
+    },
+    "final_density": {
+      "run": 37200361506,
+      "artifact": 11302572572
+    }
+  },
+  "canonical_camera": "orthographic",
+  "paid_credits": 0,
+  "tripo_credits": 0
+}
