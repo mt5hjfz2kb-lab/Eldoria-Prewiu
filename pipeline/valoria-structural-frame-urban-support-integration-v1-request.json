@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "RUN_UNITY_GATE",
+  "status": "CLOSED_NOT_PROMOTED",
   "workstream": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1",
   "baseline_head": "b60b0be754909683b97a86d788f6fed4bd2d7811",
   "planner_run_id": 37223687136,
@@ -67,5 +67,18 @@
   "attempt": 2,
   "tech_fix": "Editor-gate-only syntax repair: replace accidental literal \\\\n tokens in closeout statements. No geometry, placement, suppression target, camera or material change.",
   "previous_run_id": 37224089729,
-  "previous_result": "TECH FAIL at C# compilation before scene creation; no visual judgment."
+  "previous_result": "TECH FAIL at C# compilation before scene creation; no visual judgment.",
+  "authoritative_run_id": 37224171472,
+  "authoritative_artifact_id": 11311297059,
+  "tech_verdict": "PASS",
+  "visual_verdict": "PARTIAL-FAIL",
+  "promotion": "NOT PROMOTED",
+  "gameplay_signature_preserved": true,
+  "camera_policy_preserved": true,
+  "lower_city_preserved": true,
+  "pieces_built": 4,
+  "suppressed_renderers": 84,
+  "final_finding": "Authored arcades/cornices visibly improve architectural articulation, but the largest stair-flanking grey pillars remain dominant and the new structural masses render too light/disconnected from the Bastion/city material family. HOME remains a production scene rather than the requested final-game read.",
+  "next_method": "Do not open a support v2/v3. Next valid process: approved reference -> deliberate full screen-space structural-frame design (including the complete stair/Bastion retaining silhouette and material/value plan) -> explicit 3D authoring -> Unity -> one matched comparison.",
+  "result_doc": "docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md"
 }
