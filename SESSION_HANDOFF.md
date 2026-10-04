@@ -654,3 +654,15 @@ Repo + live workflow/artifact evidence remain authoritative over chat memory.
 - Canonical record: `docs/VALORIA_BASTION_TO_CITY_TRIPO_SOURCE_PREP_V1.md`.
 - Evidence manifest: `docs/evidence/valoria-bastion-to-city-tripo-source-prep-v1/package-manifest.json`.
 - Do **not** open `VALORIA BASTION-TO-CITY TRIPO SOURCE GENERATION v1` until an exact owner-reviewable image set exists that preserves the canonical Hero Bastion and locked Bastion→city design.
+
+
+## 2026-10-04 — VALORIA BASTION-TO-CITY EXACT SOURCE IMAGE v1 — CLOSED
+- Final verdict: **TECH PASS / EXACT SOURCE IMAGE FAIL / 0 CREDITS / STOP**.
+- Canonical base verified: `AFTER-HORIZONTAL-16x9.png`, run **37221732105**, artifact **11309549299**, SHA-256 `ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1`.
+- Direct image editing still re-rendered the complete city, so it was rejected.
+- Deterministic fallback proved exact pixel locking: outside replacement envelope, Hero Bastion protected region, promoted lower-city protected region and central stair protected region all have max channel delta **0** versus canonical base.
+- Visual/source gate still fails: inserted architecture reads as composited donor fragments rather than one coherent Bastion→city structure; isolated derivative avoids whole-city reconstruction scope but exposes disconnected geometry.
+- No Tripo, no credits, no 3D, no Blender, no Unity, no gameplay/runtime changes, no multiview.
+- No `pipeline/exact-inputs` package was created because there is no approved source image.
+- Canonical record: `docs/VALORIA_BASTION_TO_CITY_EXACT_SOURCE_IMAGE_V1.md`.
+- Evidence manifest: `docs/evidence/valoria-bastion-to-city-exact-source-image-v1/package-manifest.json`.
