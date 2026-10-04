@@ -71,7 +71,11 @@ namespace Eldoria.Presentation
   static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw,Color tint)
   {
    var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Nation1 fortification · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
-   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);TerraceModules++;
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);
+   var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.90f,.87f,.80f,1f),new Vector2(2.25f,2.25f),.035f,1.12f)
+      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.68f,.65f,.59f,1f),"stone",new Vector2(2.1f,2.1f),1f);
+   foreach(var r in go.GetComponentsInChildren<Renderer>(true))r.sharedMaterial=stone;
+   TerraceModules++;
   }
 
   static string Chain(Transform t){string s="";for(;t!=null;t=t.parent)s+="|"+t.name.ToLowerInvariant();return s;}
