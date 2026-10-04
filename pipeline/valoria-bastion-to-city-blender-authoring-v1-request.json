@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "phase": "SOURCE_ISOLATED",
+  "workstream": "VALORIA BASTION-TO-CITY BLENDER AUTHORING v1",
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "locked_base": {
+    "run_id": 37221732105,
+    "artifact_id": 11309549299,
+    "filename": "AFTER-HORIZONTAL-16x9.png",
+    "width": 1600,
+    "height": 900,
+    "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1"
+  },
+  "design_brief": "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+  "target_spec": "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json",
+  "target_overlay": "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-overlay.svg",
+  "approved_chat_target_role": "Visual direction approved by owner; base capture + canonical brief/spec override any idealized changes outside replacement envelope.",
+  "hypothesis": "One genuinely authored asymmetric civic retaining composition can replace the technical stair-flanking read without redesigning Valoria: west lower/broader/inhabited, east taller/civic, central stair open, stepped receiver, real deep arcades, wall thickness/returns, warm stone and continuous dark rock interlock.",
+  "required_previews": [
+    "silhouette/clay",
+    "lit three-quarter",
+    "matched strategic camera proxy"
+  ],
+  "allow_unity_integration": false,
+  "tripo": false,
+  "credits": 0,
+  "anti_loop": "Single production source. No A/B/C, no v2/v3, no micro-iteration chain. If hard ART SOURCE questions fail, close and document method limit."
+}

@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-bastion-to-city-architectural-frame-v1",
-  "asset_or_sector": "Valoria complete dominant architectural frame linking Hero Bastion to promoted lower city",
+  "enabled": true,
+  "request_id": "valoria-bastion-to-city-blender-authoring-v1",
+  "asset_or_sector": "Valoria Bastion-to-city transition inside locked replacement envelope",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
@@ -27,13 +27,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Method-level replacement after Structural Frame / Urban Support Integration v1 partial-fail. One complete asymmetric architectural composition, screen-first and material-designed before Unity. Must replace the dominant stair-flanking support silhouette as one coherent Bastion-to-city frame. Follow BLENDER_PROFESSIONAL_V1. No houses, density, camera, terrain-as-primary-problem, functional-building, gameplay/route/parcel/reserve changes. Zero Tripo.",
-  "result": "TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / NOT PROMOTED",
-  "final_run_id": null,
-  "final_artifact_id": null,
-  "source_run_id": 37226253119,
-  "source_artifact_id": 11312172507,
-  "credits_spent": 0,
-  "final_note": "Source-first stop-gate rejected the complete architectural frame before Unity. It remains blockout-like against the approved reference despite asymmetry and real recesses; no runtime integration or A/B was permitted. Change authoring method rather than iterate this source.",
-  "planner_run_id": 37225548192
+  "notes": "Locked design target already exists. Build one source only under BLENDER_PROFESSIONAL_V1. Preserve Hero Bastion, central stair/circulation, promoted lower city, Granero, Cuartel, camera, global composition, density and gameplay. New method must use freeform/direct DCC-style authored volumes, real boolean depth, wall returns and continuous stone-rock interlock. Stop before Unity unless isolated ART SOURCE passes. Zero Tripo / zero credits."
 }

@@ -1,0 +1,71 @@
+name: "[PRODUCTION] Valoria Bastion-to-City Blender Authoring v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-bastion-to-city-blender-authoring-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-bastion-to-city-blender-authoring-v1
+  cancel-in-progress: true
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Validate request and professional standard
+        run: |
+          node tools/validate-blender-professional-authoring.mjs
+          python3 - <<'PY'
+          import json
+          r=json.load(open('pipeline/valoria-bastion-to-city-blender-authoring-v1-request.json'))
+          assert r['enabled'] is True and r['phase']=='SOURCE_ISOLATED'
+          assert r['allow_unity_integration'] is False
+          assert r['tripo'] is False and r['credits']==0
+          PY
+      - name: Install Blender headless dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libgl1-mesa-dri
+          blender --version | head -2
+      - name: Author one locked-design source
+        run: |
+          OUT="art-source/valoria/production/bastion-to-city-blender-authoring-v1"
+          EVI="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source"
+          mkdir -p "$OUT" "$EVI"
+          blender -b --python tools/valoria-bastion-to-city-blender-authoring-v1/build.py -- \
+            --output-dir "$OUT" \
+            --evidence-dir "$EVI" \
+            --report "$EVI/source-report.json"
+          test -s "$OUT/Valoria_BastionToCity_BlenderAuthoring_v1.blend"
+          test -s "$OUT/Valoria_BastionToCity_BlenderAuthoring_v1.glb"
+          test -s "$EVI/01-silhouette-clay.png"
+          test -s "$EVI/02-lit-three-quarter.png"
+          test -s "$EVI/03-matched-camera-proxy.png"
+          cat "$EVI/source-report.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-bastion-to-city-blender-authoring-v1-source
+          path: |
+            art-source/valoria/production/bastion-to-city-blender-authoring-v1/**
+            pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source/**
+          if-no-files-found: error
+          retention-days: 30
+      - name: Persist reproducible source and evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/bastion-to-city-blender-authoring-v1 pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist Bastion-to-City Blender authored source"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
