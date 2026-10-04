@@ -19,9 +19,14 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
       - name: Build Stone defensive family
-        run: blender -b --python tools/valoria-production-art-starter/build_stone_defensive_family_v2.py
+        run: |
+          blender -b --python tools/valoria-production-art-starter/build_stone_defensive_family_v2.py
+          test -s art-source/valoria/production/stone-defensive-family-v2/stone-defensive-family-v2-build-report.json
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-production-art-stone-defensive-v2
