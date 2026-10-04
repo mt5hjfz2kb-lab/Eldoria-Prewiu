@@ -1,0 +1,105 @@
+name: "[PRODUCTION] Valoria First Production District v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-first-production-district-v1-request.json'
+permissions:
+  contents: write
+concurrency:
+  group: valoria-first-production-district-v1
+  cancel-in-progress: true
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+      - name: Build production district source
+        run: |
+          blender -b --python tools/valoria-first-production-district/build_first_production_district_v1.py
+          test -s art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend
+          for f in Valoria_DefenseWall_FPDv1 Valoria_DefenseTower_FPDv1 Valoria_MainGate_FPDv1 Valoria_Granero_FPDv1 Valoria_Cuartel_FPDv1; do test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/$f.glb"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-first-production-district-v1-source
+          path: |
+            art-source/valoria/production/first-production-district-v1/**
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/**
+            pipeline/evidence/valoria-first-production-district-v1/**
+      - name: Persist reproducible source and GLBs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/first-production-district-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1 pipeline/evidence/valoria-first-production-district-v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist first production district authored assets"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+
+  capture:
+    needs: source
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with: { ref: main, clean: false }
+      - name: Restore canonical Unity source
+        shell: powershell
+        run: |
+          git reset --hard HEAD
+          git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Capture matched stop gate
+        shell: powershell
+        run: |
+          $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaFirstProductionDistrictV1Captures"
+          $log="$env:RUNNER_TEMP\ValoriaFirstProductionDistrictV1.log"
+          Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaFirstProductionDistrictGateV1.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $deadline=(Get-Date).AddMinutes(32)
+          while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'FPD gate timed out'}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "FPD gate failed $($p.ExitCode)"}
+          Get-Content (Join-Path $folder 'evidence.json')
+      - name: Focused gameplay tests
+        shell: powershell
+        run: |
+          $xml="$env:RUNNER_TEMP\FirstProductionDistrict-PlayMode.xml"
+          $log="$env:RUNNER_TEMP\FirstProductionDistrict-PlayMode.log"
+          $filter='Eldoria.Tests.ReferenceUiArtPassTests;OwnerHudMatchesReferenceMobileBudgets;ValoriaProgressionContractGatesCuartelVisualAndInteraction'
+          $args=@('-batchmode','-nographics','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','PlayMode','-testFilter',$filter,'-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'FPD tests timed out'}
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 180;throw "FPD tests failed $($p.ExitCode)"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-first-production-district-v1
+          path: |
+            Unity/ValoriaFirstProductionDistrictV1Captures/*
+            art-source/valoria/production/first-production-district-v1/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/*.glb
+            pipeline/evidence/valoria-first-production-district-v1/*
+          if-no-files-found: warn
+          retention-days: 30
