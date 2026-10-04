@@ -54,17 +54,26 @@ if (req.profile === 'environment_surface') {
 }
 if (req.profile === 'environment_new_geometry') {
   stages.push('geometry_gap_evidence');
-  stages.push('tripo_exact_input_or_source_preflight');
-  stages.push('tripo_cost_probe');
-  if (!allowTripo || !approved) {
-    stopBeforeSpend = true;
-  } else {
-    if (cap.tripo_parts) stages.push('tripo_parts_or_segmentation');
-    if (cap.tripo_retopology) stages.push('tripo_retopology');
-    stages.push('tripo_generate_or_transform');
-    stages.push('blender_production_processing');
+  stages.push('screen_space_art_brief');
+  if (!allowTripo) {
+    stages.push('blender_professional_authoring');
+    stages.push('blender_isolated_art_source_review');
     stages.push('unity_environment_art');
     stages.push('official_camera_validation');
+  } else {
+    stages.push('tripo_exact_input_or_source_preflight');
+    stages.push('tripo_cost_probe');
+    if (!approved) {
+      stopBeforeSpend = true;
+    } else {
+      if (cap.tripo_parts) stages.push('tripo_parts_or_segmentation');
+      if (cap.tripo_retopology) stages.push('tripo_retopology');
+      stages.push('tripo_generate_or_transform');
+      stages.push('blender_professional_reauthoring');
+      stages.push('blender_isolated_art_source_review');
+      stages.push('unity_environment_art');
+      stages.push('official_camera_validation');
+    }
   }
 }
 if (req.profile === 'animated_asset') {
@@ -88,7 +97,9 @@ const plan = {
   stop_before_credit_spend: stopBeforeSpend,
   stages,
   validation: req.validation || {},
-  capabilities_requested: cap
+  capabilities_requested: cap,
+  blender_authoring_standard: req.profile === 'environment_new_geometry' ? 'BLENDER_PROFESSIONAL_V1' : null,
+  required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS']
 };
 
 const json = JSON.stringify(plan, null, 2);
