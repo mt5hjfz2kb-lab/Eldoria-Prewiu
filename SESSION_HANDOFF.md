@@ -1,3 +1,16 @@
+## 2026-10-04 — VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1 — CLOSED / PROMOTED
+- Direct reference used: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37221347279 SUCCESS**.
+- Authoritative A/B **37221732105 SUCCESS**, artifact **11309549299**.
+- Post-promotion confirmation **37222027889 SUCCESS**, artifact **11309364965**.
+- Verdict: **TECH PASS / VISUAL PASS / PROMOTED**.
+- Root cause: overlapping visual systems (six reused civil houses + Mid-Tier District + Full Frame Architecture Batch) created the repeated orange-roof band.
+- Promoted solution: suppress redundant presentation layers and rebuild three authored groups — west craft court, east merchant front, upper terrace houses — from existing MidTier/TerrainTerrace/StoneArchitecture sources.
+- Evidence: 3 groups, 18 authored pieces, 27 renderers + 10 lights suppressed; gameplay signature and camera policy preserved; Granero/Cuartel/Hero unchanged; 0 Tripo / 0 paid credits.
+- Direct reference review: lower-city massing, height hierarchy, breathing and repetition are visibly closer to the approved reference while remaining intentionally less dense.
+- Remaining major gap: exposed gray structural/support frame still reads too technical compared with the integrated civic architecture of the reference.
+- Next: **VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1**. Do not reopen lower-city house density/spacing, camera, terrain dressing or Forja/Hospital/Cantera.
+- Result: `docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md`.
 ## 2026-10-04 — VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1 — CLOSED / NOT PROMOTED
 - Planner **37219017523 SUCCESS**.
 - First matched technique: **37219171093 SUCCESS**, artifact **11310056089** — TECH PASS / VISUAL FAIL; MasonryWall + new Slavic houses visibly broke the current family and was discarded rather than micro-tuned.
