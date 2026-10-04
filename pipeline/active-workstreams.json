@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:34:00Z",
+  "updated_at": "2026-10-04T10:16:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -32,6 +32,24 @@
       "claimed_at": "2026-10-04T00:10:00Z",
       "base_main_sha": "f61512f3331c6fb4f83793f9db6b3d483496f775",
       "dependency": "Build the player-facing Valoria Nation 1 core from accepted VQB visual baseline and certified library assets. Hero/terraces/stairs/plaza/front wall+gate/Aserradero/Cuartel/Granero. Zoom9/mobile first. Zero paid credits; do not use Tripo without separate explicit approval."
+    },
+    {
+      "id": "valoria-production-art-starter-source-v1",
+      "title": "Valoria Production Art Starter Source v1",
+      "owner": "chat-valoria-production-art-system-reset-v1",
+      "scope": [
+        "art-source/valoria/production/starter-family/**",
+        "tools/valoria-production-art-starter/**",
+        "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-production-source-design"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T10:16:00Z",
+      "base_main_sha": "50663bc988799f9b8a89d0941fec93faea106cac",
+      "dependency": "Prepare high-fidelity source design only. Do not run Blender/Unity or touch Nation1 branch/resources until valoria-nation1-authored-production-v1 releases github-hosted-blender/windows-runner-heavy/valoria-production-composition."
     }
   ],
   "history": [
