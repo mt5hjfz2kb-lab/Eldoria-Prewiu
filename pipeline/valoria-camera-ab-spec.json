@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "DECIDED",
   "canonical": "ORTHOGRAPHIC",
-  "decision": "Retain orthographic. Do not globally tighten framing from Screen-Space Breakpoint v1; next camera work must be aspect-ratio-aware, especially for portrait mobile.",
+  "decision": "Retain orthographic and current runtime home pose. Aspect-aware mobile framing is directionally validated but not yet promotable; next change is structural functional-district anchor rebalancing, not another camera variant.",
   "evidence": {
     "run": 37200169545,
     "artifact": 11302104433
@@ -25,5 +25,68 @@
     "decision": "Do not promote tighter B/C as one global framing. Retain orthographic/current global framing pending aspect-ratio-aware mobile home-pose proof.",
     "key_finding": "16:9 benefits from tighter screen-space; portrait mobile is already crop-limited rather than scale-limited.",
     "result_doc": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md"
+  },
+  "adaptive_mobile_home_pose_v1": {
+    "status": "CLOSED_NOT_PROMOTED",
+    "run": 37212276777,
+    "artifact": 11307147019,
+    "technical": "PASS",
+    "M0": "MOBILE COMPOSITION VISUAL FAIL",
+    "M1": "MOBILE COMPOSITION VISUAL FAIL",
+    "M2": "MOBILE COMPOSITION VISUAL PARTIAL",
+    "tested": {
+      "M0": {
+        "position": [
+          18.2,
+          14.6,
+          -25.8
+        ],
+        "target": [
+          0,
+          3.35,
+          5.6
+        ],
+        "orthographic_size": 9.1
+      },
+      "M1": {
+        "center_offset": [
+          1.2,
+          0,
+          -2.8
+        ],
+        "position": [
+          19.4,
+          14.6,
+          -28.6
+        ],
+        "target": [
+          1.2,
+          3.35,
+          2.8
+        ],
+        "orthographic_size": 9.1
+      },
+      "M2": {
+        "center_offset": [
+          1.2,
+          0,
+          -2.8
+        ],
+        "position": [
+          19.4,
+          14.6,
+          -28.6
+        ],
+        "target": [
+          1.2,
+          3.35,
+          2.8
+        ],
+        "orthographic_size": 12.2
+      }
+    },
+    "decision": "Aspect-ratio-specific home framing is validated as a useful principle, but no tested mobile pose is promoted. Current runtime home pose remains canonical pending functional-district anchor rebalancing.",
+    "key_finding": "M2 keeps Hero Bastion dominant and reveals Cuartel fully, but Granero remains mostly outside portrait due to horizontal projected anchor spread.",
+    "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md"
   }
 }
