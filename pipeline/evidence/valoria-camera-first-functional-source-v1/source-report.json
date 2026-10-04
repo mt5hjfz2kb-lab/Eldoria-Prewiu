@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "phase": "SOURCE_ISOLATED",
+  "method": "New camera-first source authoring, not a placement iteration. Granero retains rich approved core but adds large authored loading canopy, loading mouths and twin grain-bin macro silhouette. Cuartel retains rich approved core and uses certified rich defense modules to form a symmetric U-shaped guarded training court with twin front towers.",
+  "tripo": false,
+  "paid_credits": 0,
+  "inputs": {
+    "granero": {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+      "sha256": "565d282dc84d1244a212b43d310332fc89a2766b6adc742bf92bcccd6695b977"
+    },
+    "cuartel": {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+      "sha256": "5e25e0258d228e6b424f779cf29b34021c992ae0c0d93f092acf7f8107be35fd"
+    },
+    "wall": {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+      "sha256": "8431f5a0d3ab5cfcf26d36b3b9289c8ce94c0ae5d3df554d605ee0facd1bc220"
+    },
+    "tower": {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb",
+      "sha256": "0f23b50e4025617dc593f88e90bcac7947a1ae80d82f1167321d3b25ebfc43d2"
+    }
+  },
+  "blend": "art-source/valoria/production/camera-first-functional-source-v1/Valoria_CameraFirst_Functional_Source_v1.blend",
+  "blend_sha256": "db64bad1099e5de9eccb2b3669f9f38487e3b4a5b6233c0ff059e7fc70a546a6",
+  "assets": [
+    {
+      "role": "granero",
+      "asset_id": "Valoria_Granero_CFSv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb",
+      "glb_sha256": "a6211e5aed82c2900de913587e65c81b8c5efceeb1be7e977a7a79ac6a6e87bc",
+      "geometry": {
+        "objects": 16,
+        "vertices": 56096,
+        "triangles": 51468,
+        "materials": [
+          "Eldoria Slate \u00b7 camera-first",
+          "Eldoria Stone \u00b7 camera-first",
+          "Eldoria Timber \u00b7 camera-first",
+          "Functional recess \u00b7 camera-first",
+          "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+        ],
+        "bounds": [
+          -2.75,
+          -2.5114,
+          0.0,
+          2.75,
+          2.5114,
+          2.82
+        ]
+      },
+      "camera_authorship": "macro silhouette authored for canonical southeast orthographic/mobile read before Unity placement",
+      "previews": [
+        "docs/evidence/valoria-camera-first-functional-source-v1/granero-camera-first.png",
+        "docs/evidence/valoria-camera-first-functional-source-v1/granero-silhouette-camera.png"
+      ]
+    },
+    {
+      "role": "cuartel",
+      "asset_id": "Valoria_Cuartel_CFSv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb",
+      "glb_sha256": "506a33e06587a5e8f92e3995c42c303b0a3f718d791ddb7b84491a9fcf078cf5",
+      "geometry": {
+        "objects": 13,
+        "vertices": 314695,
+        "triangles": 247781,
+        "materials": [
+          "Eldoria Rock \u00b7 Hero Prototype",
+          "Eldoria Rock \u00b7 Hero Prototype.001",
+          "Eldoria Rock \u00b7 Hero Prototype.002",
+          "Eldoria Stone \u00b7 Hero Prototype",
+          "Eldoria Stone \u00b7 Hero Prototype.001",
+          "Eldoria Stone \u00b7 Hero Prototype.002",
+          "Eldoria Stone \u00b7 camera-first",
+          "Functional yard \u00b7 camera-first",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.002",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.003",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.004",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.005",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.006",
+          "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+        ],
+        "bounds": [
+          -3.0469,
+          -2.0845,
+          0.0,
+          3.0469,
+          2.0845,
+          2.1979
+        ]
+      },
+      "camera_authorship": "macro silhouette authored for canonical southeast orthographic/mobile read before Unity placement",
+      "previews": [
+        "docs/evidence/valoria-camera-first-functional-source-v1/cuartel-camera-first.png",
+        "docs/evidence/valoria-camera-first-functional-source-v1/cuartel-silhouette-camera.png"
+      ]
+    }
+  ],
+  "source_visual_verdict": {
+    "granero": "PENDING_VISUAL_REVIEW",
+    "cuartel": "PENDING_VISUAL_REVIEW"
+  },
+  "unity_integration_allowed": false
+}
