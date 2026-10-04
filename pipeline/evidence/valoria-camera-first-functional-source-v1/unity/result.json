@@ -12,7 +12,8 @@
     "artifact_id": 11305759556,
     "tech": "PASS",
     "visual": "FAIL",
-    "gameplay_signature_preserved": true
+    "gameplay_signature_preserved": true,
+    "mode": "DIAGNOSTIC_AFTER_SOURCE_REVIEW"
   },
   "metrics": {
     "before": {
@@ -38,5 +39,10 @@
   "paid_credits": 0,
   "promotion": false,
   "reason": "Camera-first macro massing strengthens function in isolation but procedural pale additions degrade visual integration; mobile still fails simultaneous Granero + Cuartel functional read.",
-  "next": "Use rich production geometry for all camera-first macro architecture; do not repeat procedural canopy/bin overlay or layout nudges."
+  "next": "Granero rich-geometry camera-first source technique; no repeat procedural overlay. Cuartel retained source-level only.",
+  "final_source_visual_review": {
+    "granero": "SOURCE VISUAL FAIL",
+    "cuartel": "SOURCE VISUAL PASS"
+  },
+  "final_verdict": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY DIAGNOSTIC VISUAL FAIL / NOT PROMOTED"
 }
