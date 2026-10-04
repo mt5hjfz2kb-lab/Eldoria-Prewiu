@@ -185,7 +185,7 @@ namespace Eldoria.Presentation
       ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.56f,.51f,1f),"stone",new Vector2(2.2f,2.2f),1f);
    Disc(root,"civic plaza outer",new Vector3(0f,.174f,.72f),2.05f,.055f,cobble);
 
-   var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_PlazaMonument_v1");
+   var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_CivicMonument_v1") ?? Resources.Load<GameObject>("Valoria/Nation1/Nation1_PlazaMonument_v1");
    if(monument==null)throw new InvalidOperationException("Nation1 plaza monument missing.");
    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.19f,.72f),2.35f,2.35f,Quaternion.identity);
    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
