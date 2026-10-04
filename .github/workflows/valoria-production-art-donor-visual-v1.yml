@@ -1,0 +1,39 @@
+name: "[RESEARCH] Valoria Production Art Donor Visual v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-production-art-donor-visual-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-production-art-donor-visual-v1
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Render donor visual proof
+        run: |
+          blender -b --python tools/valoria-production-art-starter/render_donor_contact_sheet_v1.py
+          test -s pipeline/evidence/valoria-production-art-donor-visual-v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-donor-visual-v1
+          path: |
+            pipeline/evidence/valoria-production-art-donor-visual-v1.json
+            pipeline/evidence/valoria-production-art-donor-visual-v1/*.png
+          if-no-files-found: error
+          retention-days: 30
