@@ -8,7 +8,7 @@ namespace Eldoria.Presentation
  public static class ValoriaGraneroCuartelSourceUpgradeV1
  {
   public const string RootName="Valoria · Granero Cuartel Source Upgrade v1";
-  public static bool Enabled=true;
+  public static bool Enabled=false;
   public static int Pieces;
 
   public static void Apply(Transform canonicalRoot,PlayerState state)
