@@ -13,7 +13,7 @@
   "tripo_credits": 0,
   "paid_credits": 0,
   "attempt": 4,
-  "tech_fix": "Repair literal newline token syntax in set_world. Geometry, materials, silhouette and composition unchanged.",
+  "tech_fix": "Repair literal newline tokens in set_world. No art/design change.",
   "previous_run_id": 37225907239,
-  "previous_result": "TECH FAIL before Blender execution due literal \\\\n tokens."
+  "previous_result": "TECH FAIL at Python parse before authoring due escaped newline tokens."
 }
