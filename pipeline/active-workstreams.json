@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T16:34:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T16:58:00Z",
+  "active": [
+    {
+      "id": "valoria-secondary-support-form-replacement-v1",
+      "title": "Valoria Secondary / Support Form Replacement v1",
+      "owner": "chat-valoria-secondary-support-form-replacement-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSecondarySupportFormReplacementV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSecondarySupportFormReplacementGateV1.cs",
+        ".github/workflows/valoria-secondary-support-form-replacement-v1.yml",
+        "pipeline/valoria-secondary-support-form-replacement-v1-request.json",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T16:58:00Z",
+      "base_main_sha": "5dbf52b5945013c884ffb1c34aeb79ce993d74a4",
+      "dependency": "One significant zero-credit replacement/re-authoring pass for the largest weak secondary/support masses in the reachable HOME/PAN/16:9 envelope. Prioritize retaining/support architecture, architecture-rock interfaces, secondary fronts and lower-city cluster articulation. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, hotspots/colliders/routes/parcels/future reserves and Final Look. No Forja/Hospital/Cantera, no Tripo spend."
+    }
+  ],
   "history": [
     {
       "id": "valoria-visible-frame-cohesion-v1",
