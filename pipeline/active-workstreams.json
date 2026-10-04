@@ -1,8 +1,29 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T20:52:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T20:58:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-to-city-exact-source-image-v1",
+      "title": "Valoria Bastion-to-City Exact Source Image v1",
+      "owner": "chat-valoria-bastion-to-city-exact-source-image-v1",
+      "scope": [
+        "docs/evidence/valoria-bastion-to-city-exact-source-image-v1/**",
+        "pipeline/exact-inputs/valoria-bastion-to-city-exact-source-image-v1/**",
+        "docs/VALORIA_BASTION_TO_CITY_EXACT_SOURCE_IMAGE_V1.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-bastion-to-city-source-design"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T20:58:00Z",
+      "base_main_sha": "0027d9ab8d1272884c02a272b0aed245a3713bfd",
+      "dependency": "Create one exact single source image by localized editing of canonical AFTER-HORIZONTAL-16x9.png. Preserve all pixels/identity outside the locked replacement envelope; no Tripo, no credits, no Blender, no Unity, no multiview."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-to-city-tripo-source-prep-v1",
