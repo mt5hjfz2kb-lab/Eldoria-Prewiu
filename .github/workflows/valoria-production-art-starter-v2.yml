@@ -1,0 +1,62 @@
+name: "[PRODUCTION] Valoria Production Art Starter v2"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-production-art-starter-v2-request.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-production-art-starter-v2
+  cancel-in-progress: true
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
+      - name: Build source-reused starter v2
+        run: |
+          blender -b --python tools/valoria-production-art-starter/build_starter_family_v2.py
+          test -s art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend
+          for f in Valoria_MainGate_v2 Valoria_WallSegment_v2 Valoria_Tower_v2 Valoria_CivicHouse_v2 Valoria_Workshop_v2; do
+            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/${f}.glb"
+            test -s "art-source/valoria/production/starter-family-v2/${f}.production-art.json"
+          done
+      - name: Persist v2 source
+        shell: bash
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/production/starter-family-v2 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist Valoria production art starter v2"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then exit 0; fi
+            else
+              git rebase --abort || true
+            fi
+            sleep $((attempt*2))
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-production-art-starter-v2
+          path: |
+            art-source/valoria/production/starter-family-v2/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/*.glb
+          if-no-files-found: warn
+          retention-days: 30
