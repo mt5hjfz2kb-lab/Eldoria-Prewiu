@@ -1,3 +1,14 @@
+## 2026-10-04 — VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1 — CLOSED / SPLIT SOURCE VERDICT
+
+- Source gate: run **37208777268 SUCCESS**, artifact **11305893049**, 0 credits.
+- New technique was genuinely source-level and camera-first, not another placement pass.
+- **Granero: SOURCE VISUAL FAIL.** Large loading/storage cues improved function, but smooth procedural canopy/bin masses visibly clash with the rich retained granary core and fall below production-art quality.
+- **Cuartel: SOURCE VISUAL PASS.** Rich certified defensive modules form twin front towers + guarded U training court; military identity is architectural and does not depend on flags/small props.
+- Unity gate was **not run** because both sources had to pass the source stop-gate.
+- `Valoria_Cuartel_CFSv1.glb` is retained as a source candidate, not promoted.
+- Next: Granero-only **rich-geometry camera-first assembly**. No visible primitive/procedural architecture. If it passes isolated review, pair it with retained Cuartel_CFSv1 in one real zoom9/mobile Unity gate.
+- Canonical result: `docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA FUNCTIONAL SCREEN READABILITY v1 — CLOSED / TECH PASS / VISUAL PARTIAL / NOT PROMOTED
 
 - Authoritative gate: run **37208123181 SUCCESS**, artifact **11305333489**.
