@@ -1,0 +1,45 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Single deliberately asymmetric Bastion-to-city architectural frame authored as explicit unique masses/openings/terraces/stairs/rock interfaces; no modular bay formula and no mirrored half.",
+  "tool_families": [
+    "direct custom mesh",
+    "selective bevel",
+    "controlled arch mesh construction",
+    "authored stair run",
+    "weighted normals",
+    "material-ready source",
+    "orthographic proxy review"
+  ],
+  "primitive_role": "No Blender primitive stack used as final silhouette; explicit custom meshes are authored directly from vertices/faces.",
+  "source_blend": {
+    "path": "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.blend",
+    "sha256": "420099f745ab839a8a3080953b198e790bc0a2222f4a247815c9beeea0230e75",
+    "bytes": 983612
+  },
+  "export_glb": {
+    "path": "art-source/valoria/production/bastion-to-city-architectural-frame-v1/Valoria_BastionToCityArchitecturalFrame_v1.glb",
+    "sha256": "772f90196ac50e0fb874e95db492e615b92495a649b7a42ebeb0abf2ae8f0957",
+    "bytes": 298504
+  },
+  "geometry_metrics": {
+    "mesh_objects": 67,
+    "approx_triangles": 5028
+  },
+  "material_families": [
+    "Eldoria Warm Bastion Stone",
+    "Eldoria Warm Mid Stone",
+    "Eldoria Recess Shadow",
+    "Eldoria Pale Warm Trim",
+    "Eldoria Rock Interface",
+    "Eldoria Slate",
+    "Eldoria Heraldic Blue"
+  ],
+  "preview_evidence": [
+    "01-silhouette-clay.png",
+    "02-lit-three-quarter.png",
+    "03-game-camera-proxy.png"
+  ],
+  "intended_camera_role": "Dominant HOME/PAN architectural frame between Hero Bastion and lower city.",
+  "tripo_credits": 0,
+  "paid_credits": 0
+}
