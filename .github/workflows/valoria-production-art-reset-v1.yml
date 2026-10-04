@@ -38,8 +38,8 @@ jobs:
       - name: Verify persisted authored source
         shell: powershell
         run: |
-          if(-not (Test-Path 'art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend')){throw 'Missing canonical BLEND'}
-          foreach($f in @('Valoria_MainGate_v1','Valoria_WallSegment_v1','Valoria_Tower_v1','Valoria_CivicHouse_v1','Valoria_Workshop_v1')){if(-not (Test-Path "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/$f.glb")){throw "Missing $f GLB"}}
+          if(-not (Test-Path 'art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend')){throw 'Missing canonical v2 BLEND'}
+          foreach($f in @('Valoria_MainGate_v2','Valoria_WallSegment_v2','Valoria_Tower_v2','Valoria_CivicHouse_v2','Valoria_Workshop_v2')){if(-not (Test-Path "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/$f.glb")){throw "Missing $f GLB"}}
       - name: Capture reset A/B
         shell: powershell
         run: |
@@ -68,8 +68,8 @@ jobs:
           name: valoria-production-art-reset-v1
           path: |
             Unity/ValoriaProductionArtResetV1Captures/*
-            art-source/valoria/production/starter-family/*
-            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
+            art-source/valoria/production/starter-family-v2/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/*.glb
             ${{ runner.temp }}/ProductionArtReset-PlayMode.*
             ${{ runner.temp }}/ValoriaProductionArtResetV1.log
           if-no-files-found: warn
