@@ -299,24 +299,50 @@ namespace Eldoria.Presentation
 
   static void BuildBackdrop(Transform root)
   {
+   var ridge=Resources.Load<GameObject>("Valoria/Nation1/Nation1_BackdropRidge_v1");
+   if(ridge!=null)
+   {
+    BackdropPiece(root,ridge,"rear authored ridge",new Vector3(0f,-.05f,18.3f),22.5f,7.4f,0f);
+    BackdropPiece(root,ridge,"rear authored ridge offset",new Vector3(10.8f,-.20f,21.2f),16.0f,5.3f,-5f);
+   }
+
+   var waterShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(waterShader!=null)
+   {
+    var water=new Material(waterShader){name="Valoria Nation1 lake"};
+    var col=new Color(.085f,.20f,.26f,1f);
+    if(water.HasProperty("_BaseColor"))water.SetColor("_BaseColor",col);
+    if(water.HasProperty("_Color"))water.SetColor("_Color",col);
+    if(water.HasProperty("_Smoothness"))water.SetFloat("_Smoothness",.48f);
+    Surface(root,"outer lake",new Vector3(7.4f,.018f,14.6f),new Vector3(12.5f,.024f,6.5f),water);
+   }
+
    var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
    var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
-   if(treeA==null&&treeB==null)return;
-
-   var specs=new[]{
-     new Vector4(-13.8f,11.6f,8f,1.32f),new Vector4(-12.2f,12.8f,30f,1.40f),
-     new Vector4(-10.4f,13.5f,-12f,1.25f),new Vector4(-8.6f,12.4f,18f,1.34f),
-     new Vector4(-6.8f,13.4f,42f,1.18f),new Vector4(-4.9f,12.2f,-22f,1.16f),
-     new Vector4(4.8f,12.6f,14f,1.16f),new Vector4(6.7f,13.5f,-16f,1.20f),
-     new Vector4(8.8f,12.5f,22f,1.32f),new Vector4(10.8f,13.4f,-24f,1.38f),
-     new Vector4(12.6f,12.0f,32f,1.42f),new Vector4(14.0f,11.2f,-14f,1.36f)
-   };
-   for(int i=0;i<specs.Length;i++)
+   if(treeA!=null||treeB!=null)
    {
-    var spec=specs[i];var src=(i%2==0?treeA:treeB)??treeA??treeB;
-    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · distant tree",src,new Vector3(spec.x,.02f,spec.y),spec.w,spec.w*3.0f,Quaternion.Euler(0,spec.z,0));
-    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    var specs=new[]{
+     new Vector4(-13.8f,11.6f,8f,1.25f),new Vector4(-12.2f,12.8f,30f,1.32f),
+     new Vector4(-10.4f,13.5f,-12f,1.18f),new Vector4(-8.6f,12.4f,18f,1.26f),
+     new Vector4(-6.8f,13.4f,42f,1.12f),new Vector4(-4.9f,12.2f,-22f,1.10f),
+     new Vector4(4.8f,12.6f,14f,1.10f),new Vector4(6.7f,13.5f,-16f,1.14f),
+     new Vector4(8.8f,12.5f,22f,1.26f),new Vector4(10.8f,13.4f,-24f,1.30f),
+     new Vector4(12.6f,12.0f,32f,1.34f),new Vector4(14.0f,11.2f,-14f,1.30f)
+    };
+    for(int i=0;i<specs.Length;i++)
+    {
+     var spec=specs[i];var src=(i%2==0?treeA:treeB)??treeA??treeB;
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · distant tree",src,new Vector3(spec.x,.02f,spec.y),spec.w,spec.w*3.0f,Quaternion.Euler(0,spec.z,0));
+     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    }
    }
+  }
+
+  static void BackdropPiece(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
+  {
+   if(src==null)return;
+   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;
   }
 
   static void BuildLighting(Transform root)
