@@ -1,3 +1,14 @@
+## 2026-10-04 — VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1 — CLOSED / NOT PROMOTED
+- Planner **37219017523 SUCCESS**.
+- First matched technique: **37219171093 SUCCESS**, artifact **11310056089** — TECH PASS / VISUAL FAIL; MasonryWall + new Slavic houses visibly broke the current family and was discarded rather than micro-tuned.
+- Authoritative changed-technique A/B: **37219568955 SUCCESS**, artifact **11309203816**.
+- Final verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Final technique used only certified StoneArchitectureKit_v1 HighStraightWall/CornerWallL/RockToWallTransition + rescued ResidentialTerraceRock and subtractive housing articulation.
+- Gameplay signature, camera policy, Hero Bastion, defense, Granero, Cuartel, Final Look, routes/parcels/reserves preserved. 7 structural pieces; 81 renderers suppressed; 0 Tripo / 0 paid credits.
+- Real review: support material coherence improves, but HOME changes too little; some support still reads as repeated defensive kit and the dominant lower-city orange-roof cluster remains too compressed. No production hook; candidate stays disabled.
+- Canonical reference docs point to `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, but the binary is absent from the audited Git tree; do not claim pixel-to-pixel reference scoring until restored.
+- Next valid block: **VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1** — recompose the dominant visible frontage into 2–3 differentiated urban groups with height hierarchy, courts/lanes and integrated bases. No camera/ground micro-loop; Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md`.
 ## 2026-10-04 — VALORIA VISIBLE FRAME COHESION v1 — CLOSED / NOT PROMOTED
 - Planner **37215004613 SUCCESS**.
 - Authoritative matched A/B: **37216176561 SUCCESS**, artifact **11309016498**.
