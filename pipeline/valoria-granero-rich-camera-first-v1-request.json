@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA GRANERO RICH CAMERA-FIRST v1",
-  "phase": "source_isolated",
+  "phase": "closed",
   "nonce": "granero-rcf-v1-20261004-1433",
   "strategy": "One camera-first storage complex assembled only from already-rich approved Granero geometry. Main hall + two angled storage annexes. No visible primitive/procedural architecture.",
   "stop_gate": [
@@ -15,5 +15,13 @@
   "tripo": false,
   "credits": 0,
   "pairing_if_pass": "Valoria_Cuartel_CFSv1 from VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
-  "anti_loop": "One rich-geometry Granero candidate. If source visual read is not clearly better and coherent, close without Unity."
+  "anti_loop": "One rich-geometry Granero candidate. If source visual read is not clearly better and coherent, close without Unity.",
+  "source_visual_verdict": "SOURCE VISUAL PASS",
+  "source_gate": {
+    "run_id": 37209284772,
+    "run_attempt": 2,
+    "artifact_id": 11306380357
+  },
+  "final_verdict": "TECH PASS / SOURCE VISUAL PASS / UNITY DEFERRED BY WORKSTREAM CONFLICT / NOT YET PROMOTED",
+  "next": "Pair Valoria_Granero_RCFv1 with retained Valoria_Cuartel_CFSv1 in one real Unity zoom9/mobile gate after valoria-camera-first-functional-unity-gate-v1 releases resources."
 }
