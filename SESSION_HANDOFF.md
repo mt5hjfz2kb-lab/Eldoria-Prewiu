@@ -643,3 +643,14 @@ Repo + live workflow/artifact evidence remain authoritative over chat memory.
 - Continue routine reversible work automatically through code, CI, artifact review, repair, retry and the next full-frame iteration. Stop only for a genuine owner-only blocker, irreversible/paid authorization, or a product decision with materially different outcomes.
 - If the current stack reaches a demonstrated ceiling below the approved target, state that clearly and identify the concrete limiting capability. Then provide and, when authorized and safe, execute the smallest viable solution: new geometry/family, better source asset, rendering/camera change, 2.5D/backplate support, material/lighting pipeline upgrade, performance-budget change, or another evidenced route.
 - On every new chat/resume, reconstruct from live `main`, `pipeline/active-workstreams.json`, current requests/workflows and latest run artifacts. Do not reconstruct production state from conversational memory.
+
+
+## 2026-10-04 — VALORIA BASTION-TO-CITY TRIPO SOURCE PREP v1 — CLOSED
+- Final verdict: **TECH PASS / TRIPO INPUT PREP FAIL / 0 CREDITS / STOP**.
+- Live authority was reconstructed from `main`; the canonical visual reference + locked frame brief/spec remain the target.
+- A correct future package is defined as **3 coherent images only**: one primary 3/4 view, one opposite-side auxiliary for depth/returns/east civic mass, and one transition-detail auxiliary for arcades/receiver/stone-rock interlock.
+- Zero-credit 2D preparation attempts produced richer architecture but changed the canonical Hero Bastion and frame identity. They were rejected before Tripo and are not authorized inputs.
+- No Tripo session was opened, no credits were spent, no final 3D source was generated, Blender/Unity were not opened, gameplay was unchanged.
+- Canonical record: `docs/VALORIA_BASTION_TO_CITY_TRIPO_SOURCE_PREP_V1.md`.
+- Evidence manifest: `docs/evidence/valoria-bastion-to-city-tripo-source-prep-v1/package-manifest.json`.
+- Do **not** open `VALORIA BASTION-TO-CITY TRIPO SOURCE GENERATION v1` until an exact owner-reviewable image set exists that preserves the canonical Hero Bastion and locked Bastion→city design.
