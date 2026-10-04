@@ -10,5 +10,7 @@
   ],
   "visual_goal": "Replace dominant technical support masses with integrated civic retaining architecture: arches, buttresses, cornice, parapet and vertical articulation.",
   "tripo_credits": 0,
-  "paid_credits": 0
+  "paid_credits": 0,
+  "attempt": 2,
+  "tech_fix": "Install python3-numpy required by Ubuntu Blender 4.0 glTF exporter; authored geometry unchanged."
 }
