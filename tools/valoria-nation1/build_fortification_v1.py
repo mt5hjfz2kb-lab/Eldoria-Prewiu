@@ -47,7 +47,7 @@ WOOD=mat_color("Nation1 Dark Timber",(.19,.105,.055),.76)
 BLUE=mat_color("Nation1 Valoria Blue",(.045,.14,.34),.64)
 DARK=mat_color("Nation1 Recess",(.025,.028,.03),.92)
 GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
-ROOF=mat_color("Nation1 Slate Blue",(.055,.12,.25),.72)
+ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_diff_1k","roof_slates_03_nor_gl_1k",.92,.46,.64)
 PLASTER=mat_color("Nation1 Warm Plaster",(.68,.61,.48),.84)
 WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
 
@@ -72,6 +72,21 @@ def hip_roof(name,loc,width,depth,height,mat):
     o.scale=(width/math.sqrt(2),depth/math.sqrt(2),1)
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     o.data.materials.append(mat)
+    return o
+
+def gable_roof(name,loc,width,depth,height,mat):
+    x=width*.5;y=depth*.5;z=height
+    verts=[(-x,-y,0),(x,-y,0),(-x,y,0),(x,y,0),(0,-y,z),(0,y,z)]
+    faces=[(0,1,4),(2,5,3),(0,4,5,2),(1,3,5,4),(0,2,3,1)]
+    mesh=bpy.data.meshes.new(name+" Mesh");mesh.from_pydata(verts,[],faces);mesh.update()
+    o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.location=loc
+    o.data.materials.append(mat)
+    # deterministic UV projection
+    bpy.context.view_layer.objects.active=o;o.select_set(True);bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT");bpy.ops.uv.smart_project(island_margin=.025)
+    bpy.ops.object.mode_set(mode="OBJECT");o.select_set(False)
+    bev=o.modifiers.new("Roof edge softness","BEVEL");bev.width=.035;bev.segments=2
+    bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=bev.name)
     return o
 
 def collection(name):
@@ -180,7 +195,7 @@ def add_civic_house(col,variant=0):
         parts.append(box("house post",(x,-d*.48,1.28),(.12,.10,.92),WOOD,.012,uv=False))
     parts.append(box("house beam",(0,-d*.49,1.06),(w*.9,.10,.12),WOOD,.01,uv=False))
     parts.append(box("house beam upper",(0,-d*.49,1.55),(w*.9,.10,.12),WOOD,.01,uv=False))
-    parts.append(hip_roof("house slate roof",(0,0,1.62),w*1.12,d*1.15,.98,ROOF))
+    parts.append(gable_roof("house slate roof",(0,0,1.62),w*1.14,d*1.16,.86,ROOF))
     # warm front door/window read at gameplay zoom
     parts.append(box("house door",(0,-d*.505,.48),(.42,.06,.72),WOOD,.012,uv=False))
     for x in (-.68,.68):
@@ -198,7 +213,7 @@ def add_workshop(col):
         parts.append(box("workshop front post",(x,-1.105,1.05),(.14,.12,1.34),WOOD,.012,uv=False))
     parts.append(box("workshop lower beam",(0,-1.11,.62),(2.78,.11,.14),WOOD,.01,uv=False))
     parts.append(box("workshop upper beam",(0,-1.11,1.42),(2.78,.11,.14),WOOD,.01,uv=False))
-    parts.append(hip_roof("workshop slate roof",(0,0,1.64),3.45,2.60,1.04,ROOF))
+    parts.append(gable_roof("workshop slate roof",(0,0,1.64),3.48,2.62,.92,ROOF))
     parts.append(box("workshop broad door",(0,-1.125,.72),(.82,.06,1.05),WOOD,.012,uv=False))
     parts.append(box("workshop warm window",(-.88,-1.128,1.15),(.38,.045,.36),WINDOW,.008,uv=False))
     parts.append(box("workshop warm window",( .88,-1.128,1.15),(.38,.045,.36),WINDOW,.008,uv=False))
