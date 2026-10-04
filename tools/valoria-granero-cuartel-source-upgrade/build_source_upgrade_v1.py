@@ -25,12 +25,22 @@ def reset(): bpy.ops.wm.read_factory_settings(use_empty=True)
 def import_source(rel,prefix):
  p=os.path.join(ROOT,rel)
  if not os.path.isfile(p): raise RuntimeError("Missing canonical dedicated source: "+rel)
+ before=set(bpy.context.scene.objects)
  bpy.ops.import_scene.gltf(filepath=p)
- objs=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+ imported=[o for o in bpy.context.scene.objects if o not in before]
+ objs=[o for o in imported if o.type=="MESH"]
  if not objs: raise RuntimeError("No mesh in "+rel)
+ # Detach imported GLTF mesh nodes while preserving exact world transforms.
+ # This makes later compound transforms operate on geometry, not hidden parent hierarchies.
  for i,o in enumerate(objs):
+  mw=o.matrix_world.copy()
+  o.parent=None
+  o.matrix_world=mw
   o.name=f"{prefix} · authored {i:02d}"
   for poly in o.data.polygons: poly.use_smooth=True
+ for o in imported:
+  if o.type!="MESH" and o.name in bpy.data.objects and len(o.children)==0:
+   bpy.data.objects.remove(o,do_unlink=True)
  return objs
 
 def bounds(objs):
