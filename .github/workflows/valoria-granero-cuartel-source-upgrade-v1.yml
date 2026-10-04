@@ -1,10 +1,6 @@
 name: "[PRODUCTION] Valoria Granero Cuartel Source Upgrade v1"
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-granero-cuartel-source-upgrade-v1-request.json'
 permissions:
   contents: write
 concurrency:
