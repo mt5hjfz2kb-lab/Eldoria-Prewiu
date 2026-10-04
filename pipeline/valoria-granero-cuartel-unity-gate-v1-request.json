@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
+  "phase": "unity_stop_gate",
+  "nonce": "gcsu-v1-unity-20261004-1346",
+  "source_visual_verdict": {
+    "granero": "SOURCE VISUAL PASS",
+    "cuartel": "SOURCE VISUAL PASS"
+  },
+  "comparison": "runtime current FPD sources vs upgraded Granero/Cuartel only",
+  "preserve": [
+    "defense",
+    "terrain",
+    "camera",
+    "Final Look",
+    "gameplay",
+    "parcels",
+    "hotspots",
+    "colliders"
+  ],
+  "tripo": false,
+  "credits": 0
+}
