@@ -8,11 +8,14 @@ namespace Eldoria.Presentation
  public static class ValoriaFirstProductionDistrictV1
  {
   public const string RootName="Valoria · First Production District v1";
+  public static bool Enabled=true;
   public static int Pieces;
 
   public static void Apply(Transform canonicalRoot,PlayerState state)
   {
    if(canonicalRoot==null)throw new ArgumentNullException(nameof(canonicalRoot));
+   Pieces=0;
+   if(!Enabled)return;
    var old=GameObject.Find(RootName);if(old!=null)Object.DestroyImmediate(old);
    var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);Pieces=0;
 
