@@ -106,5 +106,27 @@
     "cuartel": "Dedicated barracks core plus bounded stone defense reads as military compound through fortified entry, robust stone mass and guarded perimeter; banners are supporting cues rather than sole identity.",
     "source_gate_run_id": 37206352843,
     "source_gate_artifact_id": 11305265539
-  }
+  },
+  "unity_gate": {
+    "run_id": 37206779989,
+    "artifact_id": 11305635813,
+    "verdict": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+    "gameplay_signature_preserved": true,
+    "metrics": {
+      "before": {
+        "renderers": 852,
+        "materials": 81,
+        "triangles": 2083716,
+        "lights": 31
+      },
+      "after": {
+        "renderers": 850,
+        "materials": 81,
+        "triangles": 2166395,
+        "lights": 31
+      }
+    },
+    "reason": "Both sources pass isolated review, but played-camera zoom9/mobile does not make both functions unmistakable enough simultaneously."
+  },
+  "final_promotion": false
 }
