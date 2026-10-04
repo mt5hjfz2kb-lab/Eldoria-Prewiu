@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "status": "canonical",
+  "effective_date": "2026-10-04",
+  "standard_id": "BLENDER_PROFESSIONAL_V1",
+  "applies_to": {
+    "tools": [
+      "Blender"
+    ],
+    "roles": [
+      "HERO",
+      "PRIMARY",
+      "SECONDARY"
+    ],
+    "condition": "new_or_materially_reauthored_player_visible_environment_geometry"
+  },
+  "principles": [
+    "screen_space_design_before_geometry",
+    "primary_forms_before_detail",
+    "deliberate_mesh_authoring_over_primitive_assembly",
+    "material_relationship_authored_before_unity",
+    "isolated_art_review_before_unity",
+    "integrated_visual_pass_required_for_promotion"
+  ],
+  "allowed_artist_tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "selective_bevel",
+    "controlled_boolean",
+    "solidify",
+    "curves_profiles",
+    "lattice_deform",
+    "intentional_array",
+    "intentional_mirror",
+    "geometry_nodes_artist_tools",
+    "sculpt_multires_voxel",
+    "custom_weighted_normals",
+    "uv_unwrap_texel_density",
+    "high_low_bake",
+    "trim_tileable_unique_masks",
+    "lod_after_visual_approval"
+  ],
+  "presumptive_rejection_patterns": [
+    "primitive_stack_as_primary_silhouette",
+    "uniform_mathematical_repetition_as_design",
+    "flat_principled_colors_as_final_materials",
+    "perfect_symmetry_without_design_reason",
+    "uniform_bevel_everywhere",
+    "procedural_noise_as_substitute_for_authored_damage",
+    "quality_claim_based_on_polygon_object_or_modifier_count"
+  ],
+  "art_review_required": true,
+  "art_review_questions": [
+    "silhouette_intentionally_designed",
+    "forms_read_at_official_camera",
+    "meaningful_depth",
+    "visible_repetition_controlled",
+    "coherent_with_neighboring_valoria_art",
+    "material_value_and_texel_scale_coherent",
+    "target_frame_materially_improved"
+  ],
+  "hard_stop_questions": [
+    "silhouette_intentionally_designed",
+    "forms_read_at_official_camera",
+    "target_frame_materially_improved"
+  ],
+  "required_preview_evidence": [
+    "silhouette_or_clay",
+    "lit_three_quarter",
+    "official_camera_or_proxy_when_practical"
+  ],
+  "source_report_required_fields": [
+    "authoring_standard",
+    "authoring_method",
+    "tool_families",
+    "primitive_role",
+    "source_sha",
+    "export_sha",
+    "geometry_metrics",
+    "material_families",
+    "preview_evidence",
+    "isolated_art_review",
+    "intended_camera_role"
+  ],
+  "automation_quality_non_proxies": [
+    "object_count",
+    "triangle_count",
+    "modifier_count",
+    "export_success",
+    "ci_success"
+  ],
+  "tripo_rule": "Generated high-salience geometry must still pass Blender professional reauthoring/art review before Unity promotion."
+}
