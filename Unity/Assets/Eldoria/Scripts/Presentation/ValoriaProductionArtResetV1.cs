@@ -29,18 +29,18 @@ namespace Eldoria.Presentation
             SuppressVisualRoot("VPD · rescued upper civil residence");
 
             // Entry cell around the certified lower entrance; visual-only.
-            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.95f),4.45f,3.85f,0f);
-            Piece(root,tower,"west entry tower",new Vector3(-3.15f,.13f,-8.25f),2.25f,4.05f,4f);
-            Piece(root,tower,"east entry tower",new Vector3(3.15f,.13f,-8.25f),2.25f,4.05f,-4f);
-            Piece(root,wall,"west entry curtain",new Vector3(-6.15f,.13f,-7.75f),3.65f,2.55f,7f);
-            Piece(root,wall,"east entry curtain",new Vector3(6.15f,.13f,-7.75f),3.65f,2.55f,-7f);
+            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.72f),3.35f,2.75f,0f);
+            Piece(root,tower,"west entry tower",new Vector3(-2.95f,.13f,-8.30f),1.72f,2.95f,4f);
+            Piece(root,tower,"east entry tower",new Vector3(2.95f,.13f,-8.30f),1.72f,2.95f,-4f);
+            Piece(root,wall,"west entry curtain",new Vector3(-5.25f,.13f,-8.02f),2.55f,1.55f,5f);
+            Piece(root,wall,"east entry curtain",new Vector3(5.25f,.13f,-8.02f),2.55f,1.55f,-5f);
 
             // Existing upper civic footprints, now using the authored source family.
-            Piece(root,house,"upper west civic house",new Vector3(-6.05f,2.76f,7.15f),3.15f,3.55f,-12f);
-            Piece(root,house,"upper east civic house",new Vector3(5.15f,2.76f,7.15f),3.05f,3.45f,8f);
+            Piece(root,house,"upper west civic house",new Vector3(-5.80f,2.76f,6.95f),2.42f,2.95f,-12f);
+            Piece(root,house,"upper east civic house",new Vector3(5.25f,2.76f,6.95f),2.38f,2.90f,8f);
 
             // One secondary authored workshop in a non-gameplay civic gap.
-            Piece(root,workshop,"lower civic workshop",new Vector3(3.55f,.40f,-.65f),2.75f,2.65f,-12f);
+            Piece(root,workshop,"lower civic workshop",new Vector3(4.15f,.24f,-2.05f),2.15f,2.15f,-12f);
 
             StripGameplay(root.gameObject);
         }
@@ -66,6 +66,37 @@ namespace Eldoria.Presentation
             var go=ValoriaKit.BenchmarkPiece("Valoria · Production Art · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Failed production piece "+role);
             go.transform.SetParent(root,true);ApplyProductionMaterials(go);StripGameplay(go);Pieces++;
+        }
+
+        static void ApplyNeutralPreview(GameObject go)
+        {
+            // Geometry proof only: neutral diagnostic colors keep imported glTF from reading as
+            // blown-out white. This is not the phase-D production material stack.
+            int baseColor=Shader.PropertyToID("_BaseColor");
+            int color=Shader.PropertyToID("_Color");
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats=r.sharedMaterials;
+                for(int i=0;i<mats.Length;i++)
+                {
+                    var m=mats[i]; if(m==null)continue;
+                    string n=(m.name??"").ToLowerInvariant();
+                    Color tint=
+                        n.Contains("slate")||n.Contains("roof") ? new Color(.13f,.18f,.22f,1f) :
+                        n.Contains("timber")||n.Contains("wood") ? new Color(.24f,.14f,.075f,1f) :
+                        n.Contains("metal") ? new Color(.24f,.23f,.21f,1f) :
+                        n.Contains("blue")||n.Contains("herald") ? new Color(.08f,.24f,.52f,1f) :
+                        n.Contains("window") ? new Color(.63f,.28f,.08f,1f) :
+                        n.Contains("plaster") ? new Color(.61f,.51f,.38f,1f) :
+                        n.Contains("dark") ? new Color(.34f,.31f,.27f,1f) :
+                        new Color(.52f,.46f,.38f,1f);
+                    var block=new MaterialPropertyBlock();
+                    r.GetPropertyBlock(block,i);
+                    block.SetColor(baseColor,tint);
+                    block.SetColor(color,tint);
+                    r.SetPropertyBlock(block,i);
+                }
+            }
         }
 
         static void StripGameplay(GameObject go)
