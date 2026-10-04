@@ -112,36 +112,44 @@ namespace Eldoria.Presentation
 
         static void ApplyNeutralPreview(GameObject go)
         {
-            // Phase-C clay/role preview. glTFast materials use shader-specific properties, so
-            // MaterialPropertyBlock tinting is not reliable here. Replace only the candidate
-            // instance materials with deterministic URP/Lit diagnostics. Phase D later restores
-            // texture/mask-driven production surfaces.
-            var lit=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            // Phase-C geometry proof only. Some imported glTF shaders ignore URP property blocks,
+            // so replace them with deterministic neutral URP/Lit diagnostic materials. Phase D
+            // later replaces this entire preview path with the production PBR material stack.
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
             foreach(var r in go.GetComponentsInChildren<Renderer>(true))
             {
                 var src=r.sharedMaterials;
                 var dst=new Material[src.Length];
                 for(int i=0;i<src.Length;i++)
                 {
-                    var sm=src[i];
-                    string n=(sm!=null?sm.name:"").ToLowerInvariant();
+                    var m=src[i];
+                    string n=(m!=null?m.name:"").ToLowerInvariant();
+                    string role=
+                        n.Contains("slate")||n.Contains("roof") ? "slate" :
+                        n.Contains("timber")||n.Contains("wood") ? "timber" :
+                        n.Contains("metal") ? "metal" :
+                        n.Contains("blue")||n.Contains("herald") ? "blue" :
+                        n.Contains("window") ? "window" :
+                        n.Contains("plaster") ? "plaster" :
+                        n.Contains("dark") ? "stone-dark" : "stone";
                     Color tint=
-                        n.Contains("slate")||n.Contains("roof") ? new Color(.16f,.20f,.24f,1f) :
-                        n.Contains("timber")||n.Contains("wood") ? new Color(.28f,.17f,.09f,1f) :
-                        n.Contains("metal") ? new Color(.25f,.24f,.22f,1f) :
-                        n.Contains("blue")||n.Contains("herald") ? new Color(.10f,.28f,.55f,1f) :
-                        n.Contains("window") ? new Color(.56f,.24f,.07f,1f) :
-                        n.Contains("plaster") ? new Color(.58f,.48f,.35f,1f) :
-                        n.Contains("dark") ? new Color(.34f,.31f,.27f,1f) :
-                        new Color(.53f,.46f,.37f,1f);
-                    var m=new Material(lit){name="Valoria Phase C Preview · "+n};
-                    if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",tint);
-                    if(m.HasProperty("_Color"))m.SetColor("_Color",tint);
-                    if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",n.Contains("metal")?.22f:.035f);
-                    if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",n.Contains("metal")?.12f:0f);
-                    dst[i]=m;
+                        role=="slate" ? new Color(.12f,.17f,.22f,1f) :
+                        role=="timber" ? new Color(.25f,.14f,.075f,1f) :
+                        role=="metal" ? new Color(.22f,.21f,.19f,1f) :
+                        role=="blue" ? new Color(.07f,.22f,.48f,1f) :
+                        role=="window" ? new Color(.66f,.28f,.07f,1f) :
+                        role=="plaster" ? new Color(.58f,.49f,.37f,1f) :
+                        role=="stone-dark" ? new Color(.31f,.29f,.25f,1f) :
+                        new Color(.50f,.44f,.36f,1f);
+                    var nm=new Material(shader){name="Valoria C3 Neutral · "+role};
+                    if(nm.HasProperty("_BaseColor"))nm.SetColor("_BaseColor",tint);
+                    if(nm.HasProperty("_Color"))nm.SetColor("_Color",tint);
+                    if(nm.HasProperty("_Metallic"))nm.SetFloat("_Metallic",role=="metal"?.12f:0f);
+                    if(nm.HasProperty("_Smoothness"))nm.SetFloat("_Smoothness",role=="metal"?.16f:role=="window"?.20f:.035f);
+                    dst[i]=nm;
                 }
                 r.sharedMaterials=dst;
+                r.SetPropertyBlock(null);
             }
         }
 
