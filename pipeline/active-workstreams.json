@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:16:00Z",
+  "updated_at": "2026-10-04T10:22:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -41,7 +41,9 @@
         "art-source/valoria/production/starter-family/**",
         "tools/valoria-production-art-starter/**",
         "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml",
+        "pipeline/valoria-production-art-starter-run-request.json"
       ],
       "resources": [
         "valoria-production-source-design"
