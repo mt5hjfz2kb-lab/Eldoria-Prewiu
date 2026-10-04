@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:16:00Z",
+  "updated_at": "2026-10-04T17:18:30Z",
   "active": [],
   "history": [
     {
@@ -39,7 +39,9 @@
       "result_commit": "8b1e4b085053b8c258bd21165f296116776fbe9e",
       "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
       "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
-      "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1; dominant visible frontage as 2–3 differentiated groups. Restore canonical reference binary before direct image-to-image benchmark claims."
+      "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1; dominant visible frontage as 2–3 differentiated groups. Restore canonical reference binary before direct image-to-image benchmark claims.",
+      "confirmation_run_id": 37219883054,
+      "confirmation_artifact_id": 11309782754
     },
     {
       "id": "valoria-visible-frame-cohesion-v1",
