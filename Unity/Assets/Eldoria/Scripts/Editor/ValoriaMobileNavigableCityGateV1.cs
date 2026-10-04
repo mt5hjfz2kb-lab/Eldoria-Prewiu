@@ -100,9 +100,12 @@ namespace Eldoria.EditorTools
    var col=go.GetComponent<Collider>();var hs=go.GetComponent<WorldHotspot>();
    if(col==null||!col.enabled||hs==null||hs.Id!=id)throw new Exception(name+" invalid");
    c.transform.position=Focus(c,home,col.bounds.center,level,c.aspect);Physics.SyncTransforms();
-   var ray=c.ViewportPointToRay(new Vector3(.5f,.5f,0));
+   var screen=c.WorldToScreenPoint(col.bounds.center);
+   if(screen.z<=0||screen.x<0||screen.x>c.pixelWidth||screen.y<0||screen.y>c.pixelHeight)
+    throw new Exception(name+" cannot be brought into the interaction viewport");
+   var ray=c.ScreenPointToRay(screen);
    foreach(var hit in Physics.RaycastAll(ray,100f)){var h=hit.collider.GetComponent<WorldHotspot>();if(h!=null&&h.Id==id)return;}
-   throw new Exception(name+" not selectable after pan");
+   throw new Exception(name+" target ray no longer resolves after pan");
   }
 
   static void Save(Camera c,string name,int w,int h)
