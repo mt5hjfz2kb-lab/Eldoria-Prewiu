@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "planned after starter family + final look pass",
+  "status": "READY_AFTER_RESET_SYSTEM_PASS",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -87,5 +87,8 @@
       "rule": "preserve Hero quality and silhouette hierarchy; add authored growth modules instead of reskinning or scaling primitives"
     }
   ],
-  "production_rule": "No broad rollout until five-piece starter family is visually accepted at zoom9/mobile and material/final-look system proves reusable."
+  "production_rule": "Use accepted authored Stone/Timber/Slate grammar with asset-specific functional identity. No primitive clones, no whole-kit collage, no blanket runtime recolor.",
+  "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
+  "next_priority": "replace visible proxy/greybox architecture before broad density",
+  "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes"
 }
