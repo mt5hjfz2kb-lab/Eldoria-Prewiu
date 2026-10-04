@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-secondary-support-form-replacement-v1",
-  "asset_or_sector": "Valoria reachable HOME/PAN envelope secondary/support architecture and lower-city massing",
+  "enabled": true,
+  "request_id": "valoria-lower-city-urban-massing-reauthoring-v1",
+  "asset_or_sector": "Valoria lower-city dominant visible residential/frontage band",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -12,7 +12,7 @@
   "capabilities": {
     "blender_material_consolidation": false,
     "unity_modular_assembly": true,
-    "unity_shared_materials": false,
+    "unity_shared_materials": true,
     "unity_decals": false,
     "unity_probes": false,
     "unity_terrain_blending": false
@@ -24,11 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "One significant large-form replacement pass. Existing authored masonry/Slavic/rock sources only. Replace weak retaining/support faces and articulate repetitive lower-city housing; no camera/ground micro-iterations, no Forja/Hospital/Cantera, 0 Tripo/paid credits.",
-  "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
-  "planner_run_id": 37219017523,
-  "authoritative_run_id": 37219568955,
-  "authoritative_artifact_id": 11309203816,
-  "credits_spent": 0,
-  "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1"
+  "notes": "Structural massing first. Existing authored MidTier/TerrainTerrace/StoneArchitecture sources only unless the structural gate proves a real geometry gap. Suppress overlapping repeated housing systems; build 2–3 distinct urban groups. No camera, ground micro-dressing, support-form continuation, Forja/Hospital/Cantera or Tripo spend."
 }
