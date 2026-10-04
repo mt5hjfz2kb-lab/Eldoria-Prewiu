@@ -61,9 +61,6 @@ namespace Eldoria.Presentation
                 new Vector3(6.55f,.405f,-4.45f),7.35f,7.20f,2f));
             Add(root,ValoriaGroundKit.StreetBlendWidening("Valoria · VFC · central lower plaza",
                 new Vector3(0f,.412f,-6.20f),6.60f,3.45f,0f));
-            Add(root,ValoriaGroundKit.StreetStraight("Valoria · VFC · processional street",
-                new Vector3(0f,.414f,-3.85f),6.1f,2.55f,0f));
-
             // A shallow front apron gives the foreground buildings a shared urban base rather than
             // separate floating pads. It intentionally stops before the exterior world.
             Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · foreground urban apron",
@@ -74,15 +71,15 @@ namespace Eldoria.Presentation
         {
             // Existing reserved lateral routes are preserved. These authored skins make them read
             // as streets that continue into the city rather than isolated rectangular strips.
-            Add(root,ValoriaGroundKit.StreetStraight("Valoria · VFC · west lateral street",
-                new Vector3(-11.15f,.392f,-1.05f),8.40f,2.20f,90f));
-            Add(root,ValoriaGroundKit.StreetStraight("Valoria · VFC · east lateral street",
-                new Vector3(11.15f,.392f,-.95f),8.40f,2.20f,90f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · west lateral urban ground",
+                new Vector3(-11.35f,.392f,-1.05f),7.70f,2.75f,-1f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · east lateral urban ground",
+                new Vector3(11.35f,.392f,-.95f),7.70f,2.75f,1f));
 
-            Add(root,ValoriaGroundKit.StreetBlendWidening("Valoria · VFC · west route junction",
-                new Vector3(-8.35f,.398f,-1.15f),3.45f,3.25f,2f));
-            Add(root,ValoriaGroundKit.StreetBlendWidening("Valoria · VFC · east route junction",
-                new Vector3(8.35f,.398f,-1.05f),3.45f,3.25f,-2f));
+            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · west route junction",
+                new Vector3(-8.65f,.355f,-1.10f),3.90f,3.35f,-2f));
+            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · east route junction",
+                new Vector3(8.65f,.355f,-1.00f),3.90f,3.35f,2f));
         }
 
         static void BuildArchitectureGroundSeats(Transform root)
@@ -140,11 +137,11 @@ namespace Eldoria.Presentation
                 AddAuthored(root,art.SlavicFlatRock,"peripheral buried rock",
                     new Vector3(spec.x,.13f,spec.y),spec.z,.55f,spec.w,new Color(.52f,.53f,.50f,1f));
 
-            // A few broad dirt trails visually continue streets into the world without inventing gameplay routes.
-            Add(root,ValoriaGroundKit.TrailStraight("Valoria · VFC · west world verge",
-                new Vector3(-15.8f,.24f,-1.0f),5.7f,1.35f,90f));
-            Add(root,ValoriaGroundKit.TrailStraight("Valoria · VFC · east world verge",
-                new Vector3(15.8f,.24f,-.9f),5.7f,1.35f,90f));
+            // Irregular earth/rock shoulders dissolve the authored city edge into the valley.
+            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · west world shoulder",
+                new Vector3(-15.45f,.205f,-1.0f),5.25f,3.55f,-4f));
+            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · east world shoulder",
+                new Vector3(15.45f,.205f,-.9f),5.25f,3.55f,4f));
         }
 
         static void BuildLowUrbanEdges(Transform root)
