@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T15:22:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T15:30:00Z",
+  "active": [
+    {
+      "id": "valoria-mobile-navigable-city-v1",
+      "title": "Valoria Mobile Navigable City v1",
+      "owner": "chat-valoria-mobile-navigable-city-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMobileNavigableCityV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMobileNavigableCityGateV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        ".github/workflows/valoria-mobile-navigable-city-v1.yml",
+        "pipeline/valoria-mobile-navigable-city-v1-request.json",
+        "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md",
+        "docs/evidence/valoria-mobile-navigable-city-v1/**",
+        "pipeline/valoria-camera-ab-spec.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T15:30:00Z",
+      "base_main_sha": "938c7cfce24359374849f37ec470a269a008e28b",
+      "dependency": "One bounded mobile navigation proof using the existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 and the already-proven pan architecture. M2 is only a starting composition principle, not automatically promoted. Preserve 16:9, assets, materials, Final Look, Hero Bastion, defense, parcels and gameplay. One implementation; zero Tripo/paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-adaptive-mobile-home-pose-v1",
