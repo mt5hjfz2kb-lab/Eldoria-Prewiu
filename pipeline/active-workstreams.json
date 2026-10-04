@@ -1,8 +1,35 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:18:30Z",
-  "active": [],
+  "updated_at": "2026-10-04T17:36:00Z",
+  "active": [
+    {
+      "id": "valoria-lower-city-urban-massing-reauthoring-v1",
+      "title": "Valoria Lower-City Urban Massing Reauthoring v1",
+      "owner": "chat-valoria-lower-city-urban-massing-reauthoring-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityUrbanMassingReauthoringV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaLowerCityUrbanMassingGateV1.cs",
+        ".github/workflows/valoria-lower-city-urban-massing-v1.yml",
+        "pipeline/valoria-lower-city-urban-massing-v1-request.json",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T17:36:00Z",
+      "base_main_sha": "066badef6b6e883dde5ff0a8755dc667b0c7de46",
+      "dependency": "One structural, zero-credit lower-city massing pass against the canonical reference image. Recompose the dominant orange-roof/frontage band into 2–3 differentiated urban groups using existing rich/authored sources first. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, routes/parcels/reserves and Final Look. No camera/ground/support-form reopen, no Forja/Hospital/Cantera, no Tripo spend."
+    }
+  ],
   "history": [
     {
       "id": "valoria-secondary-support-form-replacement-v1",
