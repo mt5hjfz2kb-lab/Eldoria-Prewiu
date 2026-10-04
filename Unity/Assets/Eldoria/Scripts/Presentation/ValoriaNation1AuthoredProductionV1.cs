@@ -29,13 +29,11 @@ namespace Eldoria.Presentation
 
   static void BuildFortificationFamily(Transform root)
   {
-   var art=ValoriaExternalAssetLibrary.Load();if(art==null)return;
-   var wall=art.MasonryWall!=null?art.MasonryWall:art.MegaWallPassage;
-   var gate=art.MasonryGate!=null?art.MasonryGate:art.MegaHalfGate;
-   var tower=art.MasonryTower!=null?art.MasonryTower:art.MegaTower;
-   if(wall==null||gate==null||tower==null)return;
+   var wall=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Wall_v1");
+   var gate=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Gate_v1");
+   var tower=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Tower_v1");
+   if(wall==null||gate==null||tower==null)throw new InvalidOperationException("Nation1 authored fortification resources missing.");
 
-   // Hide only presentation wall family from accepted VQB. Gameplay colliders/hotspots stay untouched.
    foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
    {
     if(r==null||!r.enabled)continue;
@@ -45,50 +43,54 @@ namespace Eldoria.Presentation
     if(breakthrough||production)r.enabled=false;
    }
 
-   var tint=new Color(.88f,.84f,.76f,1f);
-   Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.55f,3.55f,0f,tint);
-   Fort(root,tower,"gate west tower",new Vector3(-3.05f,.10f,-6.28f),2.15f,3.50f,4f,tint);
-   Fort(root,tower,"gate east tower",new Vector3(3.05f,.10f,-6.28f),2.15f,3.50f,-4f,tint);
+   Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.80f,3.95f,0f);
+   Fort(root,tower,"gate west tower",new Vector3(-3.30f,.10f,-6.22f),2.20f,3.25f,2f);
+   Fort(root,tower,"gate east tower",new Vector3(3.30f,.10f,-6.22f),2.20f,3.25f,-2f);
 
-   foreach(var x in new[]{-8.0f,-5.55f,5.55f,8.0f})
-     Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,2.05f,0f,tint);
+   foreach(var x in new[]{-8.05f,-5.55f,5.55f,8.05f})
+     Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,2.10f,0f);
 
-   foreach(var z in new[]{-3.55f,-.55f,2.55f,5.65f,8.05f})
+   foreach(var z in new[]{-3.55f,-.45f,2.65f,5.75f,8.15f})
    {
-    Fort(root,wall,"west curtain",new Vector3(-9.42f,.09f,z),3.25f,2.05f,90f,tint);
-    Fort(root,wall,"east curtain",new Vector3(9.42f,.09f,z),3.25f,2.05f,90f,tint);
+    Fort(root,wall,"west curtain",new Vector3(-9.42f,.09f,z),3.25f,2.08f,90f);
+    Fort(root,wall,"east curtain",new Vector3(9.42f,.09f,z),3.25f,2.08f,90f);
    }
 
    foreach(var x in new[]{-7.30f,-4.40f,-1.45f,1.45f,4.40f,7.30f})
-     Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.20f,1.90f,0f,tint);
+     Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.15f,1.92f,0f);
 
    foreach(var s in new[]{
      new Vector4(-9.25f,-6.05f,8f,2.75f),new Vector4(9.25f,-6.05f,-8f,2.75f),
      new Vector4(-9.20f,9.05f,172f,2.60f),new Vector4(9.20f,9.05f,188f,2.60f)})
-     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),2.00f,s.w,s.z,tint);
+     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),2.05f,s.w,s.z);
   }
 
-  static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw,Color tint)
+  static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
   {
-   var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Nation1 fortification · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
-   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);
-   var stone=ValoriaKit.ExternalPbrSurfaceMaterial("stone",new Color(.90f,.87f,.80f,1f),new Vector2(2.25f,2.25f),.035f,1.12f)
-      ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.68f,.65f,.59f,1f),"stone",new Vector2(2.1f,2.1f),1f);
-   foreach(var r in go.GetComponentsInChildren<Renderer>(true))r.sharedMaterial=stone;
-   TerraceModules++;
+   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 fortification · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);TerraceModules++;
   }
 
   static string Chain(Transform t){string s="";for(;t!=null;t=t.parent)s+="|"+t.name.ToLowerInvariant();return s;}
 
   static void BuildHeroTerracedCore(Transform root)
   {
-   var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
-   if(wall==null)throw new InvalidOperationException("Nation1 wall library incomplete.");
+   var wall=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Wall_v1");
+   var stair=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Stair_v1");
+   if(wall==null||stair==null)throw new InvalidOperationException("Nation1 authored Hero integration resources missing.");
 
-   // VQB already owns the successful Hero stair/rise. Nation1 reinforces it only with
-   // low warm masonry shoulders and paved courts — no extra rock assets or wrappers.
-   StonePiece(root,wall,"hero west retaining wall",new Vector3(-3.95f,.16f,5.48f),2.50f,1.18f,8f);
-   StonePiece(root,wall,"hero east retaining wall",new Vector3(3.95f,.16f,5.48f),2.50f,1.18f,-8f);
+   // Replace only the old proof stair/retaining presentation, never gameplay.
+   foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+   {
+    if(r==null||!r.enabled)continue;
+    string n=Chain(r.transform);
+    if(n.Contains("production bastion stair")||n.Contains("production stair landing")||n.Contains("west retaining")||n.Contains("east retaining"))
+      r.enabled=false;
+   }
+
+   Fort(root,stair,"hero monumental stair",new Vector3(0f,.14f,3.95f),4.65f,1.55f,0f);
+   Fort(root,wall,"hero west retaining wall",new Vector3(-3.95f,.16f,5.48f),2.55f,1.30f,8f);
+   Fort(root,wall,"hero east retaining wall",new Vector3(3.95f,.16f,5.48f),2.55f,1.30f,-8f);
 
    BuildCivicPaving(root);
   }
