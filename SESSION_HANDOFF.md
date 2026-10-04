@@ -1,3 +1,16 @@
+## 2026-10-04 — VALORIA MOBILE NAVIGABLE CITY v1 — CLOSED / PROMOTED
+- Planner run **37213645061 SUCCESS**.
+- Authoritative Unity run **37213794236 SUCCESS**, artifact **11307920631**.
+- Verdict: **TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS**.
+- Portrait <=0.72 promotes M2-equivalent HOME: pos (19.4,14.6,-28.6), target (1.2,3.35,2.8), ortho 12.2.
+- Early-game 390x844 pan half-extents: X 16.0 / Z 7.0; existing tap-vs-drag, pinch 9..19 and progression-aware pan retained.
+- HOME/recenter now restores position + zoom and has a small existing-HUD control.
+- Granero/Cuartel anchors/assets/materials/world layout unchanged; gameplay signature and focused tests PASS.
+- 16:9 remains exact canonical pos (18.2,14.6,-25.8), target (0,3.35,5.6), ortho 9.1.
+- Product decision: **HOME != toda Valoria**. Simultaneous visibility of all functional buildings is no longer required.
+- Camera/screen-space investigation is closed. Next work returns to graphical production: terrain/edge/architectural-transition cohesion across the reachable pan envelope, then secondary architecture/lower-city richness.
+- Result: `docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA PAIRED FUNCTIONAL UNITY GATE v1 — CLOSED / TECH PASS / VISUAL PARTIAL-FAIL
 
 ## 2026-10-04 — VALORIA ADAPTIVE MOBILE HOME POSE v1 CLOSED
