@@ -23,7 +23,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender python3-numpy libegl1
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libegl1
           blender --version
       - name: Render donor visual proof
         run: |
