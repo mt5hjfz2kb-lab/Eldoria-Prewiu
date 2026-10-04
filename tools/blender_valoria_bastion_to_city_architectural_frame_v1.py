@@ -11,7 +11,15 @@ def parse():
     p.add_argument("--report",required=True)
     return p.parse_args(av)
 
-A=parse(); bpy.ops.wm.read_factory_settings(use_empty=True)
+A=parse()
+request_path="pipeline/valoria-bastion-to-city-architectural-frame-source-v1-request.json"
+if os.path.exists(request_path):
+    with open(request_path,"r",encoding="utf-8") as rf:
+        request_state=json.load(rf)
+    if request_state.get("status")!="AUTHOR_SOURCE":
+        print("Source request is closed; refusing to regenerate rejected candidate.")
+        sys.exit(2)
+bpy.ops.wm.read_factory_settings(use_empty=True)
 os.makedirs(A.output_dir,exist_ok=True); os.makedirs(A.evidence_dir,exist_ok=True)
 
 def mat(name,c,rough=.76,metal=0):
