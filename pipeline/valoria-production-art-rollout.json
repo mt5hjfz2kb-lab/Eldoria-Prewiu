@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "LOWER_CITY_URBAN_MASSING_PROMOTED_READY_FOR_STRUCTURAL_FRAME_INTEGRATION",
+  "status": "STRUCTURAL_FRAME_VISUAL_PARTIAL_FAIL_METHOD_CHANGE_REQUIRED",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Lower-city urban massing is promoted. Do not reopen house density/spacing. Next high-impact gap is the remaining exposed gray structural/support frame between Hero Bastion and the new urban groups; reauthor it as inhabited civic architecture without reopening camera, terrain dressing, functional building placement, or lower-city group positions.",
+  "next_priority": "Do not open an incremental STRUCTURAL FRAME v2/v3. The next visual process must start from the approved reference with a deliberate full screen-space structural-frame design that replaces the complete dominant stair/Bastion retaining silhouette and defines its material/value relationship before 3D authoring. Then author the complete frame explicitly in 3D and run one Unity comparison. Do not reopen lower-city density/spacing, camera, terrain dressing, Granero/Cuartel placement or new functional buildings.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -206,5 +206,27 @@
     "suppressed_lights": 10,
     "key_finding": "The dominant lower-city prefab read came from overlapping visual systems, not insufficient house count. Removing redundant layers and rebuilding three differentiated groups materially improves hierarchy, breathing and convergence toward the approved reference while remaining less dense.",
     "result_doc": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md"
+  },
+  "structural_frame_urban_support_integration_v1": {
+    "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+    "planner_run_id": 37223687136,
+    "blender_source_run_id": 37223931751,
+    "blender_source_artifact_id": 11310713075,
+    "authoritative_run_id": 37224171472,
+    "artifact_id": 11311297059,
+    "credits_spent": 0,
+    "gameplay_signature_preserved": true,
+    "camera_policy_preserved": true,
+    "lower_city_preserved": true,
+    "pieces_built": 4,
+    "suppressed_renderers": 84,
+    "candidate_promoted": false,
+    "authored_sources": [
+      "CivicRetainingBay.glb",
+      "LowerArcadedFront.glb",
+      "CuartelTerraceSupport.glb"
+    ],
+    "key_finding": "Explicit Blender authoring adds recognizable civic architecture and creates a large A/B difference, but the dominant stair-flanking grey pillars survive and the new light structural masses remain materially disconnected. The blocker is now the complete authored structural-frame silhouette/material system, not module count or support placement.",
+    "result_doc": "docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md"
   }
 }
