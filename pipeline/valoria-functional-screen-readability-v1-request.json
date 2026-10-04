@@ -1,13 +1,29 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA FUNCTIONAL SCREEN READABILITY v1",
-  "phase": "candidate_gate",
+  "phase": "closed",
   "nonce": "fsr-v1-candidate-20261004-1404",
   "comparison": "approved GCSU source placement BEFORE vs one bounded played-camera layout/presentation hypothesis AFTER",
   "granero_hypothesis": "shift inward/forward, modestly enlarge, keep authored loading face aligned to canonical camera, rely on built-in loading/storage architecture rather than extra props",
   "cuartel_hypothesis": "shift inward/forward within east military plot, modestly enlarge, keep authored guarded facade aligned to canonical camera and recover negative screen space from civil mass",
-  "preserve": ["orthographic camera","RESET Final Look","Hero Bastion","accepted defense","terrain","gameplay","parcels","routes","future reserves","hotspots","colliders"],
+  "preserve": [
+    "orthographic camera",
+    "RESET Final Look",
+    "Hero Bastion",
+    "accepted defense",
+    "terrain",
+    "gameplay",
+    "parcels",
+    "routes",
+    "future reserves",
+    "hotspots",
+    "colliders"
+  ],
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "final_verdict": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+  "run_id": 37208123181,
+  "artifact_id": 11305333489,
+  "next": "camera-first source authoring; do not repeat layout/material/prop tuning"
 }
