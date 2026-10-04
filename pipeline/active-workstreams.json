@@ -1,8 +1,35 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T19:26:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T19:51:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-to-city-blender-authoring-v1",
+      "title": "Valoria Bastion-to-City Blender Authoring v1",
+      "owner": "chat-valoria-bastion-to-city-blender-authoring-v1",
+      "scope": [
+        "tools/valoria-bastion-to-city-blender-authoring-v1/**",
+        ".github/workflows/valoria-bastion-to-city-blender-authoring-v1.yml",
+        "pipeline/valoria-bastion-to-city-blender-authoring-v1-request.json",
+        "pipeline/art-production-request.json",
+        "art-source/valoria/production/bastion-to-city-blender-authoring-v1/**",
+        "pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/**",
+        "docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "art-production-planner",
+        "github-hosted-blender",
+        "valoria-bastion-to-city-source"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T19:51:00Z",
+      "base_main_sha": "cd9c3fe64285ae570c417966b86de05f792e81e1",
+      "dependency": "Build one final-art candidate from the locked Bastion-to-City design target under BLENDER_PROFESSIONAL_V1. Source gate first; Unity only if isolated ART SOURCE convincingly passes. Preserve Hero Bastion, central stair/circulation, promoted lower city, Granero, Cuartel, camera, density, gameplay/routes/parcels/reserves. No Tripo, zero credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-to-city-frame-design-brief-v1",
