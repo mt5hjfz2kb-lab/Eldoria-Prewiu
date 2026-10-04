@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA GRANERO RICH CAMERA-FIRST v1",
+  "phase": "source_isolated",
+  "nonce": "granero-rcf-v1-20261004-1433",
+  "strategy": "One camera-first storage complex assembled only from already-rich approved Granero geometry. Main hall + two angled storage annexes. No visible primitive/procedural architecture.",
+  "stop_gate": [
+    "camera_first_color_preview",
+    "valid_silhouette_preview",
+    "storage_complex_read",
+    "production_art_coherence"
+  ],
+  "allow_unity_integration": false,
+  "tripo": false,
+  "credits": 0,
+  "pairing_if_pass": "Valoria_Cuartel_CFSv1 from VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "anti_loop": "One rich-geometry Granero candidate. If source visual read is not clearly better and coherent, close without Unity."
+}
