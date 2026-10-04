@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:14:00Z",
+  "updated_at": "2026-10-04T13:43:00Z",
   "active": [
     {
       "id": "valoria-granero-cuartel-source-upgrade-v1",
@@ -21,7 +21,9 @@
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
-        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaGraneroCuartelSourceUpgradeGateV1.cs"
       ],
       "resources": [
         "valoria-production-source-design",
