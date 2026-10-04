@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "CAPTURE_CANDIDATE",
+  "workstream": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1",
+  "baseline_head": "b60b0be754909683b97a86d788f6fed4bd2d7811",
+  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "route": "explicit_blender_authored_geometry_then_unity",
+  "planner_run_id": 37223687136,
+  "source_run_id": 37223931751,
+  "source_artifact_id": 11310713075,
+  "hypothesis": "Replace the 2–4 largest grey technical support masses with one deliberately authored civic structural family: twin retaining bays around the ceremonial stair, a lower arcaded frontage, and a dedicated Cuartel terrace support. Arches, buttresses, cornices, parapets and recessed shadow should change the read from support geometry to capital architecture without competing with Hero Bastion.",
+  "authored_sources": [
+    "CivicRetainingBay.glb",
+    "LowerArcadedFront.glb",
+    "CuartelTerraceSupport.glb"
+  ],
+  "target_masses": [
+    "central Bastion stair flanking supports",
+    "central/lower retaining frontage",
+    "Cuartel-side terrace support"
+  ],
+  "preserve": [
+    "Hero Bastion",
+    "accepted defense",
+    "Granero",
+    "Cuartel",
+    "promoted lower-city massing",
+    "west craft court",
+    "east merchant front",
+    "upper terrace houses",
+    "Flat Citadel",
+    "orthographic camera",
+    "HOME mobile",
+    "panning",
+    "recenter",
+    "16:9",
+    "Final Look",
+    "hotspots",
+    "colliders",
+    "routes",
+    "parcels",
+    "future reserves",
+    "gameplay",
+    "progression"
+  ],
+  "stop_gate": [
+    "HOME mobile BEFORE/AFTER",
+    "PAN Granero BEFORE/AFTER",
+    "PAN intermediate BEFORE/AFTER",
+    "PAN Cuartel BEFORE/AFTER",
+    "16:9 BEFORE/AFTER",
+    "direct comparison against canonical high-resolution reference"
+  ],
+  "promotion_rule": "Promote only if the dominant structural masses visibly change from technical supports/greybox to integrated Valoria architecture at first glance. CI/geometry count is insufficient.",
+  "anti_loop": "One structural hypothesis only. No v2/v3 or placement/color micro-iterations after a valid visual candidate.",
+  "credits": {"tripo": 0, "paid": 0}
+}
