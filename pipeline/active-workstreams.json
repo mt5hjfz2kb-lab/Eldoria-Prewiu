@@ -1,8 +1,37 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:46:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T14:50:00Z",
+  "active": [
+    {
+      "id": "valoria-screen-space-breakpoint-v1",
+      "title": "Valoria Screen-Space Breakpoint v1",
+      "owner": "chat-valoria-screen-space-breakpoint-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaScreenSpaceBreakpointV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaScreenSpaceBreakpointGateV1.cs",
+        ".github/workflows/valoria-screen-space-breakpoint-v1.yml",
+        "pipeline/valoria-screen-space-breakpoint-v1-request.json",
+        "pipeline/evidence/valoria-screen-space-breakpoint-v1/**",
+        "docs/evidence/valoria-screen-space-breakpoint-v1/**",
+        "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md",
+        "pipeline/valoria-camera-ab-spec.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T14:50:00Z",
+      "base_main_sha": "86b8192146aaca8ba9ec7948a1f60b467972615f",
+      "dependency": "Test only A/B/C screen-space framing using the strongest retained Granero_RCFv1 + Cuartel_CFSv1 pair. A=current orthographic framing; B=tighter orthographic framing only; C=B plus minimal immediate negative-space/orientation cleanup around Granero/Cuartel. Preserve Final Look, Hero Bastion, defense, gameplay/topology/hotspots/colliders. No new assets/materials/perspective/density. Max three states. Zero paid/Tripo credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-paired-functional-unity-gate-v1",
