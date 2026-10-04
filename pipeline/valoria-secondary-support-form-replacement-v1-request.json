@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "ACTIVE",
+  "status": "CLOSED_NOT_PROMOTED",
   "workstream": "VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1",
   "objective": "Replace the largest weak secondary/support masses and articulate the repetitive lower-city house cluster across the promoted reachable HOME/PAN/16:9 envelope.",
   "baseline_head": "da85669dc3d8c2d28658af9b4494c7d7302c2a3c",
@@ -52,5 +52,12 @@
   "previous_visual_result": "Attempt 2 TECH PASS / VISUAL FAIL — brown masonry faces and new Slavic houses reduced family coherence.",
   "previous_run_id": 37219171093,
   "previous_artifact_id": 11310056089,
-  "previous_result": "TECH PASS / VISUAL FAIL / TECHNIQUE DISCARDED"
+  "previous_result": "TECH PASS / VISUAL FAIL / TECHNIQUE DISCARDED",
+  "authoritative_run_id": 37219568955,
+  "authoritative_artifact_id": 11309203816,
+  "authoritative_head": "a82d508a4d614749fb3b641927e26aae9a900c02",
+  "final_result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+  "candidate_promoted": false,
+  "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
+  "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1"
 }
