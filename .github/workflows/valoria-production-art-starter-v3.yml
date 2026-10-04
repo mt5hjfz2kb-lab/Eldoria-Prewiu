@@ -30,7 +30,7 @@ jobs:
           PY
       - name: Install Blender
         if: steps.req.outputs.enabled == 'true'
-        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy
+        run: sudo apt-get update && sudo apt-get install -y blender python3-numpy libegl1
       - name: Build v3
         if: steps.req.outputs.enabled == 'true'
         run: |
