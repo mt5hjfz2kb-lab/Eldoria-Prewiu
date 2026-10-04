@@ -13,7 +13,7 @@
     "roof": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"
   },
   "blend": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
-  "blend_sha256": "edb144951cdad9ed91ccddb329bb7ea4a9213dff9c960cd76949dab39008746d",
+  "blend_sha256": "f0af2ab2d212fee513ee9a68ea1d0a8f4ab5a345d7f9a1dd72f88493e044ffa4",
   "assets": [
     {
       "asset_id": "Valoria_DefenseWall_FPDv1",
