@@ -31,18 +31,18 @@ namespace Eldoria.Presentation
             SuppressVisualRoot("VPD · rescued upper civil residence");
 
             // Entry cell around the certified lower entrance; visual-only.
-            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.72f),2.75f,2.25f,0f);
-            Piece(root,tower,"west entry tower",new Vector3(-2.72f,.13f,-8.34f),1.38f,2.35f,4f);
-            Piece(root,tower,"east entry tower",new Vector3(2.72f,.13f,-8.34f),1.38f,2.35f,-4f);
-            Piece(root,wall,"west entry curtain",new Vector3(-4.85f,.13f,-8.08f),1.88f,1.08f,5f);
-            Piece(root,wall,"east entry curtain",new Vector3(4.85f,.13f,-8.08f),1.88f,1.08f,-5f);
+            Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.55f),5.10f,3.65f,0f);
+            Piece(root,tower,"west entry tower",new Vector3(-4.05f,.13f,-8.22f),2.45f,3.85f,4f);
+            Piece(root,tower,"east entry tower",new Vector3(4.05f,.13f,-8.22f),2.45f,3.85f,-4f);
+            Piece(root,wall,"west entry curtain",new Vector3(-6.75f,.13f,-7.95f),3.25f,1.85f,5f);
+            Piece(root,wall,"east entry curtain",new Vector3(6.75f,.13f,-7.95f),3.25f,1.85f,-5f);
 
             // Existing upper civic footprints, now using the authored source family.
-            Piece(root,house,"upper west civic house",new Vector3(-5.80f,2.76f,6.95f),2.42f,2.95f,-12f);
-            Piece(root,house,"upper east civic house",new Vector3(5.25f,2.76f,6.95f),2.38f,2.90f,8f);
+            Piece(root,house,"upper west civic house",new Vector3(-5.80f,2.76f,6.75f),3.20f,3.55f,-12f);
+            Piece(root,house,"upper east civic house",new Vector3(5.25f,2.76f,6.75f),3.15f,3.50f,8f);
 
             // One secondary authored workshop in a non-gameplay civic gap.
-            Piece(root,workshop,"lower civic workshop",new Vector3(4.15f,.24f,-2.05f),2.15f,2.15f,-12f);
+            Piece(root,workshop,"lower civic workshop",new Vector3(4.45f,.24f,-2.15f),3.15f,2.75f,-12f);
 
             StripGameplay(root.gameObject);
         }
@@ -67,7 +67,7 @@ namespace Eldoria.Presentation
         {
             var go=ValoriaKit.BenchmarkPiece("Valoria · Production Art · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Failed production piece "+role);
-            go.transform.SetParent(root,true);ApplyNeutralPreview(go);StripGameplay(go);Pieces++;
+            go.transform.SetParent(root,true);PreserveSourceMaterials(go);StripGameplay(go);Pieces++;
         }
 
         static void PreserveSourceMaterials(GameObject go)
