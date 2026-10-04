@@ -43,26 +43,26 @@ namespace Eldoria.Presentation
     if(breakthrough||production)r.enabled=false;
    }
 
-   Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.80f,3.95f,0f);
-   Fort(root,tower,"gate west tower",new Vector3(-3.30f,.10f,-6.22f),2.20f,3.25f,2f);
-   Fort(root,tower,"gate east tower",new Vector3(3.30f,.10f,-6.22f),2.20f,3.25f,-2f);
+   Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.75f,3.45f,0f);
+   Fort(root,tower,"gate west tower",new Vector3(-3.30f,.10f,-6.22f),2.12f,2.95f,2f);
+   Fort(root,tower,"gate east tower",new Vector3(3.30f,.10f,-6.22f),2.12f,2.95f,-2f);
 
    foreach(var x in new[]{-8.05f,-5.55f,5.55f,8.05f})
-     Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,2.10f,0f);
+     Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,1.62f,0f);
 
    foreach(var z in new[]{-3.55f,-.45f,2.65f,5.75f,8.15f})
    {
-    Fort(root,wall,"west curtain",new Vector3(-9.42f,.09f,z),3.25f,2.08f,90f);
-    Fort(root,wall,"east curtain",new Vector3(9.42f,.09f,z),3.25f,2.08f,90f);
+    Fort(root,wall,"west curtain",new Vector3(-9.42f,.09f,z),3.25f,1.60f,90f);
+    Fort(root,wall,"east curtain",new Vector3(9.42f,.09f,z),3.25f,1.60f,90f);
    }
 
    foreach(var x in new[]{-7.30f,-4.40f,-1.45f,1.45f,4.40f,7.30f})
-     Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.15f,1.92f,0f);
+     Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.15f,1.48f,0f);
 
    foreach(var s in new[]{
      new Vector4(-9.25f,-6.05f,8f,2.75f),new Vector4(9.25f,-6.05f,-8f,2.75f),
      new Vector4(-9.20f,9.05f,172f,2.60f),new Vector4(9.20f,9.05f,188f,2.60f)})
-     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),2.05f,s.w,s.z);
+     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),1.92f,s.w*.92f,s.z);
   }
 
   static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
@@ -103,7 +103,7 @@ namespace Eldoria.Presentation
     string n=t.name.ToLowerInvariant();
     if(n=="valoria · flat citadel · hero bastion")
     {
-     t.localScale*=1.12f;t.position+=new Vector3(0f,0f,-.22f);
+     t.localScale*=1.16f;t.position+=new Vector3(0f,0f,-.34f);
     }
     else if(n.Contains("flat citadel production · aserradero")||n.Contains("flat citadel production · cuartel")||n.Contains("flat citadel production · granero"))
     {
@@ -128,21 +128,20 @@ namespace Eldoria.Presentation
 
   static void BuildCivicDensity(Transform root)
   {
-   var p1=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece01");
-   var p2=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece02");
-   var p3=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece03");
-   var p4=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece04");
-   if(p1==null||p2==null||p3==null||p4==null)throw new InvalidOperationException("MidTier Architecture Kit v1 incomplete.");
+   var house=Resources.Load<GameObject>("Valoria/Nation1/Nation1_CivicHouse_v1");
+   var houseB=Resources.Load<GameObject>("Valoria/Nation1/Nation1_CivicHouseB_v1");
+   var workshop=Resources.Load<GameObject>("Valoria/Nation1/Nation1_Workshop_v1");
+   if(house==null||houseB==null||workshop==null)throw new InvalidOperationException("Nation1 authored civic family missing.");
 
-   Building(root,p1,"upper west residence",new Vector3(-6.20f,.13f,3.10f),2.45f,2.72f,16f);
-   Building(root,p2,"upper east residence",new Vector3(6.18f,.13f,3.05f),2.42f,2.70f,-15f);
-   Building(root,p3,"plaza west guildhouse",new Vector3(-3.10f,.13f,1.25f),2.10f,2.30f,8f);
-   Building(root,p4,"plaza east guildhouse",new Vector3(3.12f,.13f,1.20f),2.10f,2.30f,-9f);
+   Building(root,house,"upper west residence",new Vector3(-6.10f,.13f,3.05f),2.35f,2.78f,15f);
+   Building(root,houseB,"upper east residence",new Vector3(6.10f,.13f,3.02f),2.28f,2.70f,-15f);
+   Building(root,houseB,"plaza west residence",new Vector3(-3.15f,.13f,1.34f),1.92f,2.28f,7f);
+   Building(root,house,"plaza east residence",new Vector3(3.18f,.13f,1.30f),1.92f,2.28f,-8f);
 
-   Building(root,p2,"lower west workshop",new Vector3(-4.80f,.13f,-3.70f),1.72f,1.92f,13f);
-   Building(root,p1,"lower east workshop",new Vector3(4.55f,.13f,-4.15f),1.70f,1.90f,-14f);
-   Building(root,p4,"west inner house",new Vector3(-7.40f,.13f,.20f),1.68f,1.88f,18f);
-   Building(root,p3,"east inner house",new Vector3(7.35f,.13f,.15f),1.68f,1.88f,-18f);
+   Building(root,workshop,"lower west workshop",new Vector3(-4.70f,.13f,-3.72f),2.10f,2.15f,12f);
+   Building(root,workshop,"lower east workshop",new Vector3(4.62f,.13f,-4.02f),2.02f,2.08f,-13f);
+   Building(root,houseB,"west inner house",new Vector3(-7.28f,.13f,.12f),1.72f,2.02f,18f);
+   Building(root,house,"east inner house",new Vector3(7.25f,.13f,.10f),1.72f,2.02f,-18f);
   }
 
   static void BuildGranaryFields(Transform root)
