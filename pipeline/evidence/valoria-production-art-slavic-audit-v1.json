@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "family": "EmaceArt Slavic World Free",
+  "assets": [
+    {
+      "label": "Gate",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_WallGate_01a.fbx",
+      "sha256": "d5a1719c742eb73ed5aed893a13773638f2e331e255278d880960c58a2419bf6",
+      "objects": 3,
+      "vertices": 891,
+      "triangles": 1272,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.084"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Fence_WallGate_01a_LOD0",
+          "vertices": 380,
+          "triangles": 587,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.084"
+          ],
+          "dimensions": [
+            4.9742,
+            4.8869,
+            1.7618
+          ]
+        },
+        {
+          "name": "EA03_Fence_WallGate_01a_LOD1",
+          "vertices": 296,
+          "triangles": 425,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.084"
+          ],
+          "dimensions": [
+            4.9677,
+            4.8835,
+            1.7237
+          ]
+        },
+        {
+          "name": "EA03_Fence_WallGate_01a_LOD2",
+          "vertices": 215,
+          "triangles": 260,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.084"
+          ],
+          "dimensions": [
+            4.9432,
+            4.8446,
+            1.6901
+          ]
+        }
+      ]
+    },
+    {
+      "label": "WallA",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Wall_01b.fbx",
+      "sha256": "4cec4b10badf8b612dcab8819f4c687da2f23b361726855c40bec00c9036fb53",
+      "objects": 3,
+      "vertices": 1650,
+      "triangles": 2629,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Fence_Wall_01b_LOD0",
+          "vertices": 722,
+          "triangles": 1209,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            5.0,
+            3.554,
+            1.7618
+          ]
+        },
+        {
+          "name": "EA03_Fence_Wall_01b_LOD1",
+          "vertices": 551,
+          "triangles": 876,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            5.0119,
+            3.5562,
+            1.7237
+          ]
+        },
+        {
+          "name": "EA03_Fence_Wall_01b_LOD2",
+          "vertices": 377,
+          "triangles": 544,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            5.0133,
+            3.5179,
+            1.7237
+          ]
+        }
+      ]
+    },
+    {
+      "label": "WallB",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Fence_Wall_01d.fbx",
+      "sha256": "7d5ca19afe3d3828cdff39b491580cf459196833190ed2d4c87835bf04b9f998",
+      "objects": 3,
+      "vertices": 819,
+      "triangles": 1324,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.086"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Fence_Wall_01d_LOD0",
+          "vertices": 359,
+          "triangles": 612,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.086"
+          ],
+          "dimensions": [
+            1.5,
+            3.5431,
+            1.6333
+          ]
+        },
+        {
+          "name": "EA03_Fence_Wall_01d_LOD1",
+          "vertices": 273,
+          "triangles": 443,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.086"
+          ],
+          "dimensions": [
+            1.5,
+            3.5431,
+            1.5954
+          ]
+        },
+        {
+          "name": "EA03_Fence_Wall_01d_LOD2",
+          "vertices": 187,
+          "triangles": 269,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.086"
+          ],
+          "dimensions": [
+            1.4875,
+            3.5049,
+            1.5954
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Tower",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Tover_01a.fbx",
+      "sha256": "3c7a7b484da7c24f090f4485acab35a24774b94098050994c1791f912348db22",
+      "objects": 3,
+      "vertices": 8217,
+      "triangles": 11602,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.038"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Village_Tover_01a_LOD0",
+          "vertices": 3569,
+          "triangles": 5338,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.038"
+          ],
+          "dimensions": [
+            8.1244,
+            10.8561,
+            8.7957
+          ]
+        },
+        {
+          "name": "EA03_Village_Tover_01a_LOD1",
+          "vertices": 2742,
+          "triangles": 3866,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.038"
+          ],
+          "dimensions": [
+            8.1244,
+            10.8492,
+            8.7957
+          ]
+        },
+        {
+          "name": "EA03_Village_Tover_01a_LOD2",
+          "vertices": 1906,
+          "triangles": 2398,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.038"
+          ],
+          "dimensions": [
+            8.0892,
+            10.8492,
+            8.7665
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Civic",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Building_Administrative _01a.fbx",
+      "sha256": "114dd8da040657798ef1d5409d043cb18af1b5fd3562ed99e4a85b3de40f3e83",
+      "objects": 3,
+      "vertices": 30666,
+      "triangles": 36858,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Town_Building_Administrative _01a_LOD0",
+          "vertices": 12835,
+          "triangles": 16969,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.6411,
+            11.2837,
+            11.9114
+          ]
+        },
+        {
+          "name": "EA03_Town_Building_Administrative _01a_LOD1",
+          "vertices": 10292,
+          "triangles": 12301,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.6521,
+            11.2837,
+            11.9045
+          ]
+        },
+        {
+          "name": "EA03_Town_Building_Administrative _01a_LOD2",
+          "vertices": 7539,
+          "triangles": 7588,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.6436,
+            11.2495,
+            11.8549
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Workshop",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx",
+      "sha256": "5533d6c6e1bf6dc3c6a4111d28e24985eee9a87072bdfbca4613dad7205d486b",
+      "objects": 3,
+      "vertices": 5088,
+      "triangles": 6719,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.036"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Village_OutBuilding_Shed_03b_LOD0",
+          "vertices": 2229,
+          "triangles": 3091,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.036"
+          ],
+          "dimensions": [
+            15.446,
+            9.5078,
+            24.4748
+          ]
+        },
+        {
+          "name": "EA03_Village_OutBuilding_Shed_03b_LOD1",
+          "vertices": 1704,
+          "triangles": 2239,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.036"
+          ],
+          "dimensions": [
+            15.446,
+            9.5078,
+            24.4605
+          ]
+        },
+        {
+          "name": "EA03_Village_OutBuilding_Shed_03b_LOD2",
+          "vertices": 1155,
+          "triangles": 1389,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.036"
+          ],
+          "dimensions": [
+            15.446,
+            9.59,
+            24.2718
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Porch",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx",
+      "sha256": "c919808521496ba6ac5db3840a9e1b246e3877856ff4e6d4be3c0a24518ca47e",
+      "objects": 3,
+      "vertices": 1426,
+      "triangles": 1657,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.012"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Village_HouseModule_Porch_01d_LOD0",
+          "vertices": 598,
+          "triangles": 763,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.012"
+          ],
+          "dimensions": [
+            6.6316,
+            1.4543,
+            2.8937
+          ]
+        },
+        {
+          "name": "EA03_Village_HouseModule_Porch_01d_LOD1",
+          "vertices": 475,
+          "triangles": 552,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.012"
+          ],
+          "dimensions": [
+            6.6316,
+            1.4566,
+            2.8944
+          ]
+        },
+        {
+          "name": "EA03_Village_HouseModule_Porch_01d_LOD2",
+          "vertices": 353,
+          "triangles": 342,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.012"
+          ],
+          "dimensions": [
+            6.6309,
+            1.4433,
+            2.8944
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Roof",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_01c.fbx",
+      "sha256": "260f50f80beee4b0711fdc24ac3ba12b6fa074bcbcab543f1394441091f85936",
+      "objects": 3,
+      "vertices": 1579,
+      "triangles": 2228,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Village_Hut_Roof_01c_LOD0",
+          "vertices": 671,
+          "triangles": 1025,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.0154,
+            5.053,
+            11.297
+          ]
+        },
+        {
+          "name": "EA03_Village_Hut_Roof_01c_LOD1",
+          "vertices": 526,
+          "triangles": 742,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.0152,
+            5.053,
+            11.297
+          ]
+        },
+        {
+          "name": "EA03_Village_Hut_Roof_01c_LOD2",
+          "vertices": 382,
+          "triangles": 461,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1"
+          ],
+          "dimensions": [
+            20.0185,
+            5.0188,
+            11.2949
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Foundation",
+      "path": "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Foundation_02b.fbx",
+      "sha256": "e33488c3686daf6f0c64f8ddaf83634f0e54f4f23a76b31bd2746b0d6d4c1342",
+      "objects": 3,
+      "vertices": 3968,
+      "triangles": 4040,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1.png.170"
+      ],
+      "meshes": [
+        {
+          "name": "EA03_Village_Hut_Foundation_02b_LOD0",
+          "vertices": 1667,
+          "triangles": 1858,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.170"
+          ],
+          "dimensions": [
+            20.0967,
+            1.7443,
+            9.3697
+          ]
+        },
+        {
+          "name": "EA03_Village_Hut_Foundation_02b_LOD1",
+          "vertices": 1324,
+          "triangles": 1346,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.170"
+          ],
+          "dimensions": [
+            20.0967,
+            1.7372,
+            9.3682
+          ]
+        },
+        {
+          "name": "EA03_Village_Hut_Foundation_02b_LOD2",
+          "vertices": 977,
+          "triangles": 836,
+          "materials": [
+            "EA02_LPNP-Slavika_Colorsheet_v1.png.170"
+          ],
+          "dimensions": [
+            20.1078,
+            1.7459,
+            9.3509
+          ]
+        }
+      ]
+    }
+  ]
+}
