@@ -1,3 +1,12 @@
+## Valoria Secondary / Support Form Replacement v1 — closed 2026-10-04
+- **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Planner: **37219017523 SUCCESS**. Authoritative final A/B: **37219568955 SUCCESS**, artifact **11309203816**.
+- A first MasonryWall + SlavicHouse technique passed technically in run **37219171093** / artifact **11310056089** but visually failed and was discarded.
+- Final technique: certified StoneArchitectureKit_v1 large supports + rescued ResidentialTerraceRock + subtractive west-housing articulation. Gameplay/camera/Hero/defense/Granero/Cuartel/Final Look preserved; credits **0**.
+- Support coherence improves locally, but the dominant lower-city roof/frontage band still reads compressed/repetitive and frame-level change is insufficient for promotion. Candidate remains disabled; runtime unchanged.
+- Repo currently documents an approved reference path whose image binary is absent; restore it before claiming direct reference-image scoring.
+- Next: **VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1**. Treat the visible frontage as 2–3 authored groups, not more house duplication. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md`.
 ## Valoria Visible Frame Cohesion v1 — closed 2026-10-04
 - Verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
 - Authoritative matched A/B: run **37216176561 SUCCESS**, artifact **11309016498**; later identical technical confirmation run **37216912861 SUCCESS**, artifact **11308563246**.
