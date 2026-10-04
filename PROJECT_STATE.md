@@ -1,3 +1,14 @@
+## Valoria Structural Frame / Urban Support Integration v1 — closed 2026-10-04
+- **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Direct comparison completed against the restored high-resolution canonical reference `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37223687136**; Blender source run **37223931751**, artifact **11310713075**; authoritative Unity A/B **37224171472**, artifact **11311297059**.
+- Zero-credit Blender authored three structural sources and Unity tested exactly four placements: twin civic retaining bays, lower arcaded front and Cuartel terrace support. 84 targeted support renderers were suppressed.
+- Gameplay signature, lower-city promoted groups, Hero Bastion, Granero, Cuartel, mobile HOME/panning/recenter and 16:9 remain preserved.
+- The A/B change is obvious and the new geometry reads more architecturally, but the main stair-flanking grey pillars still dominate and the very light new structural masses do not integrate materially with Bastion/city stone. HOME therefore still reads as a production scene rather than the requested final-game capital.
+- Candidate is disabled and not hooked to production; canonical runtime is unchanged from the promoted Lower-City state.
+- Anti-loop closes incremental support iteration. Next process must be **reference → deliberate complete structural-frame screen design → explicit authored 3D shape/material system → Unity comparison**, not STRUCTURAL FRAME v2/v3.
+- Result: `docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md`.
+
 ## Valoria Lower-City Urban Massing Reauthoring v1 — promoted 2026-10-04
 - **TECH PASS / VISUAL PASS / PROMOTED**.
 - Direct canonical reference review completed against `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
