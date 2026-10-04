@@ -2,6 +2,7 @@
 - Planner **37219017523 SUCCESS**.
 - First matched technique: **37219171093 SUCCESS**, artifact **11310056089** — TECH PASS / VISUAL FAIL; MasonryWall + new Slavic houses visibly broke the current family and was discarded rather than micro-tuned.
 - Authoritative changed-technique A/B: **37219568955 SUCCESS**, artifact **11309203816**.
+- Closeout confirmation: **37219883054 SUCCESS**, artifact **11309782754**.
 - Final verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
 - Final technique used only certified StoneArchitectureKit_v1 HighStraightWall/CornerWallL/RockToWallTransition + rescued ResidentialTerraceRock and subtractive housing articulation.
 - Gameplay signature, camera policy, Hero Bastion, defense, Granero, Cuartel, Final Look, routes/parcels/reserves preserved. 7 structural pieces; 81 renderers suppressed; 0 Tripo / 0 paid credits.
