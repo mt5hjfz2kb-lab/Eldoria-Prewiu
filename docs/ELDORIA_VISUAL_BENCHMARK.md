@@ -1,10 +1,12 @@
 # Eldoria — Visual Benchmark
 
-Updated: 2026-09-25
+Updated: 2026-10-04
 
 ## Status
 
-This document defines the **official initial visual benchmark for Eldoria**. It is the art-direction target for the current Unity migration until a later Visual Bible explicitly replaces it.
+This document defines the **official initial visual benchmark for Eldoria**. It remains the original external benchmark/review vocabulary.
+
+For Valoria, `docs/VALORIA_VISUAL_BIBLE.md` now explicitly replaces this document as the current top-level art-direction authority. Retain this benchmark for the approved-reference criteria it records; where wording conflicts, the Visual Bible wins.
 
 The benchmark is based on the owner-approved reference image supplied on 2026-09-25. The image itself remains an external visual reference; this file preserves the durable art-direction contract in the repository so future work does not depend on chat history.
 
