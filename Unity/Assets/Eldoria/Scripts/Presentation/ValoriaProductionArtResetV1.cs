@@ -65,7 +65,7 @@ namespace Eldoria.Presentation
         {
             var go=ValoriaKit.BenchmarkPiece("Valoria · Production Art · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Failed production piece "+role);
-            go.transform.SetParent(root,true);ApplyProductionMaterials(go);StripGameplay(go);Pieces++;
+            go.transform.SetParent(root,true);ApplyNeutralPreview(go);StripGameplay(go);Pieces++;
         }
 
         static void ApplyNeutralPreview(GameObject go)
