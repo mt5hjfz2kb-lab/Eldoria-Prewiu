@@ -1,0 +1,48 @@
+{
+  "asset_id": "Valoria_Workshop_CohV1",
+  "classification": "TEMPORARY",
+  "source": {
+    "tool": "Blender",
+    "tool_version": "4.0.2",
+    "path": "art-source/valoria/production/coherent-family-v1/Valoria_CoherentFamily_v1.blend",
+    "sha256": "3bdcfa85824b903910729716545b39731a015cad4cbfa8e0bab27905c2d0c1fe",
+    "reproducible": true,
+    "authoring_method": "single_family_lod0_reauthoring",
+    "source_family": "EmaceArt Slavic World Free"
+  },
+  "geometry": {
+    "triangles": 3091,
+    "materials": 1,
+    "uv0": true,
+    "normals": true
+  },
+  "materials": [
+    {
+      "slot": "source-colorsheet",
+      "family": "Eldoria_Stone",
+      "maps": [
+        "Slavic colorsheet; phase D remap pending"
+      ]
+    }
+  ],
+  "export": {
+    "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1.glb",
+    "sha256": "c002c7384d5c2a65e96e863427c647dcc86ed1c10af870ad6596095e012cf082",
+    "scale": 1.0,
+    "forward_axis": "+Z",
+    "up_axis": "+Y"
+  },
+  "unity": {
+    "resource_path": "Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1",
+    "owns_gameplay_collider": false,
+    "owns_hotspot": false
+  },
+  "evidence": {
+    "isolated_preview": "pipeline/evidence/valoria-production-art-coherent-family-v1/Valoria_Workshop_CohV1.png",
+    "zoom9": "",
+    "mobile": "",
+    "technical_verdict": "PENDING_UNITY",
+    "visual_verdict": "PENDING_VISUAL",
+    "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+  }
+}
