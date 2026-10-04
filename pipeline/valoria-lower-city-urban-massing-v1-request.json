@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "ACTIVE",
+  "status": "PROMOTION_CONFIRMATION",
   "workstream": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1",
   "objective": "Reauthor the dominant visible lower-city residential/frontage band as 2–3 differentiated urban groups rather than layered repeated house/cluster systems.",
   "baseline_head": "7168a47cebea950f1088efce7eee499ffb9d2102",
@@ -60,5 +60,9 @@
   "previous_result": "Cancelled by newer gate-only commits before a valid visual A/B.",
   "tech_fix_2": "Fix invalid newline/logging syntax in editor gate after run 37221659645. No visual/composition change.",
   "previous_compile_run_id": 37221659645,
-  "previous_compile_result": "TECH FAIL at C# compilation before scene creation; no visual judgment."
+  "previous_compile_result": "TECH FAIL at C# compilation before scene creation; no visual judgment.",
+  "authoritative_candidate_run_id": 37221732105,
+  "authoritative_candidate_artifact_id": 11309549299,
+  "visual_review": "VISUAL PASS for block objective: three differentiated urban groups read clearly; immediate repeated-house band is materially reduced; direct comparison to canonical reference shows closer massing hierarchy and urban articulation while remaining intentionally less dense.",
+  "promotion": "Enable candidate by default and hook it into ProductionVisualIntegration.City after MidTierDistrictProduction and ValoriaFullFrameArchitectureBatchV1 are built, so it can replace those redundant visual layers while preserving gameplay authority."
 }
