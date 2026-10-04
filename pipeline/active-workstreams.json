@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T20:40:00Z",
-  "active": [
+  "updated_at": "2026-10-04T20:52:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-to-city-tripo-source-prep-v1",
       "title": "Valoria Bastion-to-City Tripo Source Prep v1",
@@ -17,13 +18,17 @@
       "resources": [
         "valoria-bastion-to-city-source-design"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T20:40:00Z",
       "base_main_sha": "d0988b761ca73ebdeff370c8d38dc4ea571fb7ec",
-      "dependency": "Prepare exactly the owner-reviewable Tripo visual input package from the locked Bastion-to-City design. No Tripo launch, no credits, no final 3D generation, no Blender final authoring, no Unity integration, no gameplay changes."
-    }
-  ],
-  "history": [
+      "dependency": "Prepare exactly the owner-reviewable Tripo visual input package from the locked Bastion-to-City design. No Tripo launch, no credits, no final 3D generation, no Blender final authoring, no Unity integration, no gameplay changes.",
+      "completed_at": "2026-10-04T20:52:00Z",
+      "result": "TECH PASS / TRIPO INPUT PREP FAIL / 0 CREDITS / STOP",
+      "result_doc": "docs/VALORIA_BASTION_TO_CITY_TRIPO_SOURCE_PREP_V1.md",
+      "evidence_manifest": "docs/evidence/valoria-bastion-to-city-tripo-source-prep-v1/package-manifest.json",
+      "credits_spent": 0,
+      "next": "Do not open Tripo source generation. First obtain an exact owner-reviewable 1+2 multiview input set that preserves canonical Hero Bastion and the locked Bastion-to-city frame."
+    },
     {
       "id": "valoria-bastion-to-city-blender-authoring-v1",
       "title": "Valoria Bastion-to-City Blender Authoring v1",
