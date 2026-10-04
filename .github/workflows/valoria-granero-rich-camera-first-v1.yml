@@ -1,10 +1,6 @@
 name: "[PRODUCTION] Valoria Granero Rich Camera-First v1"
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-granero-rich-camera-first-v1-request.json'
 permissions:
   contents: write
 concurrency:
