@@ -8,7 +8,7 @@ on:
       - 'pipeline/valoria-production-art-starter-run-request.json'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: valoria-production-art-starter-source-v1
@@ -51,6 +51,21 @@ jobs:
             test -s "art-source/valoria/production/starter-family/${f}.production-art.json"
           done
           node tools/check-production-art-source.mjs
+      - name: Persist reproducible source and GLBs
+        if: steps.request.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/production/starter-family
+          git add Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily
+          git add pipeline/production-art-source-audit.json
+          if git diff --cached --quiet; then
+            echo "No generated source changes to persist."
+          else
+            git commit -m "Persist Valoria production art starter source"
+            git push origin HEAD:main
+          fi
       - uses: actions/upload-artifact@v4
         if: steps.request.outputs.enabled == 'true'
         with:
