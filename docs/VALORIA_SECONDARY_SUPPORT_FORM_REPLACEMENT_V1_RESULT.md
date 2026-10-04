@@ -86,3 +86,7 @@ Repo documentation points to references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg, b
 ## Recommended next block
 
 **VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1** — one screen-first intervention on the dominant orange-roof/frontage band: recompose it into 2–3 authored groups with height/silhouette variation, breathing courts and integrated stone/rock support bases. No new primary functional buildings, no camera work, no density-by-duplication. Promote only if the five matched views clearly lose the prefab/kit-bashed read.
+
+## Closeout confirmation
+
+Closing the request retriggered the same matched gate. Confirmation run **37219883054 — SUCCESS**, artifact **11309782754**. This is a technical confirmation only; the visual verdict remains **PARTIAL-FAIL / NOT PROMOTED**.
