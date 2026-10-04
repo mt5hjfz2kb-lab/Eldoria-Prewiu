@@ -172,3 +172,7 @@ Post-promotion confirmation:
 Do **not** reopen lower-city house spacing or add more houses.
 
 Next highest-value block: **VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1** — replace or reauthor the remaining large gray gate/support masses that visually separate the new urban groups from Hero Bastion, using the now-promoted urban massing as fixed context. The objective should be to make the stone structural frame read as inhabited civic architecture rather than technical supports, without reopening camera, terrain dressing, Granero/Cuartel or lower-city group positions.
+
+## Closeout confirmation
+
+Closing the request retriggered the same gate. Closeout run **37222277115 — SUCCESS**, artifact **11311140673**. This does not change the visual verdict; it confirms the promoted runtime remains technically green after canonical closure.
