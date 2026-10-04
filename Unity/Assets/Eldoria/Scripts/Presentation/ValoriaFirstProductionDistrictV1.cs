@@ -9,6 +9,7 @@ namespace Eldoria.Presentation
  {
   public const string RootName="Valoria · First Production District v1";
   public static bool Enabled=true;
+  public static bool UseGraneroCuartelSourceUpgrade=false;
   public static int Pieces;
 
   public static void Apply(Transform canonicalRoot,PlayerState state)
@@ -27,8 +28,8 @@ namespace Eldoria.Presentation
    var gate=Load("Valoria_MainGate_FPDv1");
    var tower=Load("Valoria_DefenseTower_FPDv1");
    var wall=Load("Valoria_DefenseWall_FPDv1");
-   var granero=Load("Valoria_Granero_FPDv1");
-   var cuartel=Load("Valoria_Cuartel_FPDv1");
+   var granero=UseGraneroCuartelSourceUpgrade?LoadUpgrade("Valoria_Granero_GCSUv1"):Load("Valoria_Granero_FPDv1");
+   var cuartel=UseGraneroCuartelSourceUpgrade?LoadUpgrade("Valoria_Cuartel_GCSUv1"):Load("Valoria_Cuartel_FPDv1");
 
    Piece(root,gate,"main gate",new Vector3(0f,.14f,-8.55f),5.35f,4.05f,0f);
    Piece(root,tower,"west gate tower",new Vector3(-4.15f,.13f,-8.15f),2.72f,4.35f,4f);
@@ -44,6 +45,13 @@ namespace Eldoria.Presentation
   {
    var x=Resources.Load<GameObject>("Valoria/ProductionArt/FirstProductionDistrictV1/"+n);
    if(x==null)throw new InvalidOperationException("Missing First Production District resource "+n);
+   return x;
+  }
+
+  static GameObject LoadUpgrade(string n)
+  {
+   var x=Resources.Load<GameObject>("Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/"+n);
+   if(x==null)throw new InvalidOperationException("Missing Granero/Cuartel source-upgrade resource "+n);
    return x;
   }
 
