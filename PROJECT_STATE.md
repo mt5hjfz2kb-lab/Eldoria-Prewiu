@@ -554,3 +554,10 @@ The six certified Tripo families remain valid reusable art/reference assets, but
 - Zero-credit prep proved that visually rich generic fortress imagery is not acceptable if it changes the canonical Bastion, central receiver/stair relationship or lower-city continuity.
 - Current gate remains **TRIPO INPUT PREP FAIL**; Tripo generation, Blender reauthoring and Unity integration are blocked until the exact input set passes owner review.
 - This does not change gameplay or the promoted lower-city state.
+
+
+## 2026-10-04 — Bastion→city exact-source input gate
+- The exact-background-lock problem is now technically solved: a deterministic composite can preserve the canonical frame byte-for-byte outside the replacement envelope and preserve Hero Bastion, promoted lower city and the central stair protected regions exactly.
+- The remaining blocker is **visual source coherence**, not pixel preservation: current local image-generation/editing cannot produce one authored connected transition without either re-rendering Valoria globally or yielding composited fragments.
+- Current status: **EXACT SOURCE IMAGE FAIL / 0 CREDITS**.
+- Tripo remains blocked and no exact input is promoted.
