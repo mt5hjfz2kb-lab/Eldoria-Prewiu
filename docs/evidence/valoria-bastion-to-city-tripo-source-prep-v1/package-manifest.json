@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "block": "VALORIA BASTION-TO-CITY TRIPO SOURCE PREP v1",
+  "status": "TECH PASS / TRIPO INPUT PREP FAIL / 0 CREDITS / STOP",
+  "credits_spent": 0,
+  "tripo_launched": false,
+  "canonical_authority": {
+    "approved_visual_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "base_capture": {
+      "run_id": 37221732105,
+      "artifact_id": 11309549299,
+      "filename": "AFTER-HORIZONTAL-16x9.png",
+      "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1"
+    },
+    "design_brief": "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+    "target_spec": "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-spec.json",
+    "target_overlay": "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/target-overlay.svg"
+  },
+  "generation_strategy_proposed": "multi-view, 1 primary + 2 auxiliary, only if all three preserve the exact canonical Hero Bastion identity and locked Bastion-to-city architecture",
+  "proposed_files": [],
+  "rejected_candidates": [
+    {
+      "local_evidence_name": "candidate-01-main-source-REJECTED.jpg",
+      "role": "would-be primary",
+      "sha256": "dfbb0141860cab0c527475d527d91647eb856b493791c157e23aad904ef36a57",
+      "reason": "identity drift: generated a different fortress/city rather than preserving canonical Hero Bastion and locked frame"
+    },
+    {
+      "local_evidence_name": "candidate-02-aux-opposite-REJECTED.jpg",
+      "role": "would-be auxiliary",
+      "sha256": "78bf1f78f5b6383d02c39fdbee7cef6bc81cf1c01a976869bd7a603d48734543",
+      "reason": "same identity drift; cannot be used as coherent reconstruction evidence for canonical Valoria"
+    },
+    {
+      "local_evidence_name": "candidate-03-aux-transition-REJECTED.jpg",
+      "role": "would-be auxiliary detail",
+      "sha256": "b6f3a5f4bb9d18fbd01bb4bebde8d37b214d6f10d88717a05bf8c9c8fed07316",
+      "reason": "architectural vocabulary is rich but geometry/layout no longer matches the locked target envelope"
+    }
+  ],
+  "tripo_submission_order": [],
+  "stop_reason": "No exact owner-approvable image set exists. Submitting any generated candidate would spend credits on a different architecture.",
+  "consistency_question": "¿Estas vistas describen esencialmente la misma pieza y ayudarían a una reconstrucción 3D coherente, o en realidad se contradicen?",
+  "consistency_answer": "FAIL. They are internally related as generated imagery, but they do not describe the canonical Valoria piece locked by the repo; therefore they are not a coherent multiview package for the approved target.",
+  "future_block_candidate": "VALORIA BASTION-TO-CITY TRIPO SOURCE GENERATION v1",
+  "future_block_opened": false
+}
