@@ -36,16 +36,16 @@
         "vertices": 56096,
         "triangles": 51468,
         "materials": [
-          "Eldoria Slate \u00b7 camera-first",
-          "Eldoria Stone \u00b7 camera-first",
-          "Eldoria Timber \u00b7 camera-first",
-          "Functional recess \u00b7 camera-first",
+          "Eldoria Slate · camera-first",
+          "Eldoria Stone · camera-first",
+          "Eldoria Timber · camera-first",
+          "Functional recess · camera-first",
           "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
         ],
         "bounds": [
           -2.75,
           -2.5114,
-          0.0,
+          0,
           2.75,
           2.5114,
           2.82
@@ -67,14 +67,14 @@
         "vertices": 314695,
         "triangles": 247781,
         "materials": [
-          "Eldoria Rock \u00b7 Hero Prototype",
-          "Eldoria Rock \u00b7 Hero Prototype.001",
-          "Eldoria Rock \u00b7 Hero Prototype.002",
-          "Eldoria Stone \u00b7 Hero Prototype",
-          "Eldoria Stone \u00b7 Hero Prototype.001",
-          "Eldoria Stone \u00b7 Hero Prototype.002",
-          "Eldoria Stone \u00b7 camera-first",
-          "Functional yard \u00b7 camera-first",
+          "Eldoria Rock · Hero Prototype",
+          "Eldoria Rock · Hero Prototype.001",
+          "Eldoria Rock · Hero Prototype.002",
+          "Eldoria Stone · Hero Prototype",
+          "Eldoria Stone · Hero Prototype.001",
+          "Eldoria Stone · Hero Prototype.002",
+          "Eldoria Stone · camera-first",
+          "Functional yard · camera-first",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.002",
@@ -87,7 +87,7 @@
         "bounds": [
           -3.0469,
           -2.0845,
-          0.0,
+          0,
           3.0469,
           2.0845,
           2.1979
@@ -101,8 +101,15 @@
     }
   ],
   "source_visual_verdict": {
-    "granero": "PENDING_VISUAL_REVIEW",
-    "cuartel": "PENDING_VISUAL_REVIEW"
+    "granero": "SOURCE VISUAL FAIL",
+    "cuartel": "SOURCE VISUAL PASS"
   },
-  "unity_integration_allowed": false
+  "unity_integration_allowed": false,
+  "visual_review": {
+    "granero": "Function is clearer, but authored canopy/bin macro geometry is visibly procedural and lower-quality than the rich retained core; reject before Unity.",
+    "cuartel": "Twin rich defensive towers + U-shaped guarded court create a clear military source silhouette without prop dependence; retain as source-level candidate.",
+    "silhouette_preview_note": "Automated silhouette preview is invalid because the preview floor was included in the material override and fills the frame; color camera-first previews are the valid visual evidence.",
+    "run_id": 37208777268,
+    "artifact_id": 11305893049
+  }
 }
