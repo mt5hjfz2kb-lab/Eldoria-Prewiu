@@ -1,3 +1,13 @@
+## Valoria mobile navigable city — promoted 2026-10-04
+- Portrait mobile is now an authored **HOME + bounded navigation** experience, not a whole-city fit.
+- Aspect <=0.72 uses HOME position (19.4,14.6,-28.6), target (1.2,3.35,2.8), orthographic size 12.2.
+- 16:9 remains on the existing canonical position/target and orthographic size 9.1.
+- Existing fixed-orientation pan, tap-vs-drag, pinch 9..19 and progression-aware bounds remain authoritative; HOME/recenter restores position + zoom.
+- Run **37213794236**, artifact **11307920631**: TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS.
+- Granero/Cuartel no longer need simultaneous portrait visibility. Do not move/compress them merely to make them fit together.
+- Camera investigation is complete for this blocker; the next priority is visible-frame art quality across the reachable pan envelope, especially terrain/edge transitions, secondary architecture, cohesion and lower-city richness.
+- Canonical result: `docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md`.
+
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
 ## Valoria adaptive mobile home pose v1 — 2026-10-04
