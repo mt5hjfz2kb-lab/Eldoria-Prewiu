@@ -26,5 +26,9 @@
   "allow_unity_integration": false,
   "tripo": false,
   "credits": 0,
-  "anti_loop": "Single production source. No A/B/C, no v2/v3, no micro-iteration chain. If hard ART SOURCE questions fail, close and document method limit."
+  "anti_loop": "Single production source. No A/B/C, no v2/v3, no micro-iteration chain. If hard ART SOURCE questions fail, close and document method limit.",
+  "attempt": 2,
+  "tech_fix": "Blender 4 runner did not pass post -- arguments to Python wrapper; canonical output/evidence/report paths are now script defaults. Geometry/material/design code unchanged.",
+  "previous_run_id": 37230021110,
+  "previous_result": "TECH FAIL before geometry generation: argparse received no output/evidence/report arguments."
 }
