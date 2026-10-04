@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "source_branch": "production/valoria-nation1-authored-v1",
+  "audited_valid_capture_head": "56b1c34a99cd91182c423984c6869e94244a0ee0",
+  "later_uncaptured_head_at_audit": "f693d323e8fa1617c416674d17a4974160b0e521",
+  "policy": "Preserve accepted composition coordinates; replace visible procedural geometry incrementally. Gameplay authority remains independent.",
+  "replacements": {
+    "main_gate": {
+      "position": [
+        0,
+        0.1,
+        -6.52
+      ],
+      "footprint": 4.75,
+      "height": 3.45,
+      "yaw": 0,
+      "replace_with": "Valoria_MainGate_v1"
+    },
+    "gate_west_tower": {
+      "position": [
+        -3.3,
+        0.1,
+        -6.22
+      ],
+      "footprint": 2.18,
+      "height": 3.25,
+      "yaw": 2,
+      "replace_with": "Valoria_Tower_v1"
+    },
+    "gate_east_tower": {
+      "position": [
+        3.3,
+        0.1,
+        -6.22
+      ],
+      "footprint": 2.18,
+      "height": 3.25,
+      "yaw": -2,
+      "replace_with": "Valoria_Tower_v1"
+    },
+    "upper_west_residence": {
+      "position": [
+        -6.1,
+        0.13,
+        3.05
+      ],
+      "footprint": 2.35,
+      "height": 2.78,
+      "yaw": 15,
+      "replace_with": "Valoria_CivicHouse_v1"
+    },
+    "upper_east_residence": {
+      "position": [
+        6.1,
+        0.13,
+        3.02
+      ],
+      "footprint": 2.28,
+      "height": 2.7,
+      "yaw": -15,
+      "replace_with": "Valoria_CivicHouse_v1"
+    },
+    "plaza_west_residence": {
+      "position": [
+        -3.15,
+        0.13,
+        1.34
+      ],
+      "footprint": 1.92,
+      "height": 2.28,
+      "yaw": 7,
+      "replace_with": "Valoria_CivicHouse_v1"
+    },
+    "plaza_east_residence": {
+      "position": [
+        3.18,
+        0.13,
+        1.3
+      ],
+      "footprint": 1.92,
+      "height": 2.28,
+      "yaw": -8,
+      "replace_with": "Valoria_CivicHouse_v1"
+    },
+    "lower_west_workshop": {
+      "position": [
+        -4.7,
+        0.13,
+        -3.72
+      ],
+      "footprint": 2.1,
+      "height": 2.15,
+      "yaw": 12,
+      "replace_with": "Valoria_Workshop_v1"
+    },
+    "lower_east_workshop": {
+      "position": [
+        4.62,
+        0.13,
+        -4.02
+      ],
+      "footprint": 2.02,
+      "height": 2.08,
+      "yaw": -13,
+      "replace_with": "Valoria_Workshop_v1"
+    },
+    "west_inner_house": {
+      "position": [
+        -7.28,
+        0.13,
+        0.12
+      ],
+      "footprint": 1.72,
+      "height": 2.02,
+      "yaw": 18,
+      "replace_with": "Valoria_CivicHouse_v1"
+    },
+    "east_inner_house": {
+      "position": [
+        7.25,
+        0.13,
+        0.1
+      ],
+      "footprint": 1.72,
+      "height": 2.02,
+      "yaw": -18,
+      "replace_with": "Valoria_CivicHouse_v1"
+    }
+  },
+  "wall_policy": {
+    "source_positions": "Retain Nation1 defensive-ring spacing where final closure accepts it.",
+    "replacement": "Use Valoria_WallSegment_v1 and Valoria_Tower_v1 without changing gameplay circulation.",
+    "note": "Exact wall/tower replacement count may be reduced if repetition remains visually excessive."
+  },
+  "preserve": [
+    "Hero Bastion focal placement",
+    "central plaza axis",
+    "Aserradero/Cuartel/Granero functional plots",
+    "field and functional-yard relationships",
+    "mobile city occupancy lesson",
+    "lake/world-edge lessons if final Nation1 closure accepts them"
+  ],
+  "do_not_inherit_as_final_art": [
+    "procedural civic house meshes",
+    "procedural workshop mesh",
+    "procedural wall/tower/gate geometry unless exceptional later evidence passes",
+    "primitive plaza/field geometry as final premium architecture"
+  ]
+}
