@@ -287,42 +287,84 @@ namespace Eldoria.Presentation
 
   static void BuildBackdrop(Transform root)
   {
-   var ridge=Resources.Load<GameObject>("Valoria/Nation1/Nation1_BackdropRidge_v1");
-   if(ridge!=null)
-   {
-    BackdropPiece(root,ridge,"rear authored ridge",new Vector3(0f,-.05f,18.3f),22.5f,7.4f,0f);
-    BackdropPiece(root,ridge,"rear authored ridge offset",new Vector3(10.8f,-.20f,21.2f),16.0f,5.3f,-5f);
-   }
-
-   var waterShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-   if(waterShader!=null)
-   {
-    var water=new Material(waterShader){name="Valoria Nation1 lake"};
-    var col=new Color(.085f,.20f,.26f,1f);
-    if(water.HasProperty("_BaseColor"))water.SetColor("_BaseColor",col);
-    if(water.HasProperty("_Color"))water.SetColor("_Color",col);
-    if(water.HasProperty("_Smoothness"))water.SetFloat("_Smoothness",.48f);
-    Surface(root,"outer lake",new Vector3(7.4f,.018f,14.6f),new Vector3(12.5f,.024f,6.5f),water);
-   }
+   BuildIrregularLake(root);
 
    var treeA=Resources.Load<GameObject>("WorldInventory/Tree01A");
    var treeB=Resources.Load<GameObject>("WorldInventory/Tree01B");
    if(treeA!=null||treeB!=null)
    {
     var specs=new[]{
-     new Vector4(-13.8f,11.6f,8f,1.25f),new Vector4(-12.2f,12.8f,30f,1.32f),
-     new Vector4(-10.4f,13.5f,-12f,1.18f),new Vector4(-8.6f,12.4f,18f,1.26f),
-     new Vector4(-6.8f,13.4f,42f,1.12f),new Vector4(-4.9f,12.2f,-22f,1.10f),
-     new Vector4(4.8f,12.6f,14f,1.10f),new Vector4(6.7f,13.5f,-16f,1.14f),
-     new Vector4(8.8f,12.5f,22f,1.26f),new Vector4(10.8f,13.4f,-24f,1.30f),
-     new Vector4(12.6f,12.0f,32f,1.34f),new Vector4(14.0f,11.2f,-14f,1.30f)
+     new Vector4(-14.4f,11.4f,8f,1.28f),new Vector4(-12.8f,12.6f,30f,1.36f),
+     new Vector4(-11.2f,13.4f,-12f,1.22f),new Vector4(-9.5f,12.6f,18f,1.30f),
+     new Vector4(-7.7f,13.6f,42f,1.16f),new Vector4(-5.8f,12.4f,-22f,1.14f),
+     new Vector4(7.0f,12.3f,14f,1.12f),new Vector4(8.8f,13.1f,-16f,1.18f),
+     new Vector4(10.6f,12.0f,22f,1.26f),new Vector4(12.2f,12.8f,-24f,1.32f),
+     new Vector4(13.8f,11.4f,32f,1.36f),new Vector4(15.0f,10.6f,-14f,1.28f)
     };
     for(int i=0;i<specs.Length;i++)
     {
      var spec=specs[i];var src=(i%2==0?treeA:treeB)??treeA??treeB;
      var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · distant tree",src,new Vector3(spec.x,.02f,spec.y),spec.w,spec.w*3.0f,Quaternion.Euler(0,spec.z,0));
-     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+     if(go!=null)
+     {
+      go.transform.SetParent(root,true);
+      TintTree(go,new Color(.46f,.62f,.46f,1f));
+      StripGameplay(go);DetailProps++;
+     }
     }
+   }
+  }
+
+  static void BuildIrregularLake(Transform root)
+  {
+   var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(shader==null)return;
+   var water=new Material(shader){name="Valoria Nation1 lake"};
+   var col=new Color(.08f,.19f,.255f,1f);
+   if(water.HasProperty("_BaseColor"))water.SetColor("_BaseColor",col);
+   if(water.HasProperty("_Color"))water.SetColor("_Color",col);
+   if(water.HasProperty("_Smoothness"))water.SetFloat("_Smoothness",.70f);
+   if(water.HasProperty("_Metallic"))water.SetFloat("_Metallic",.02f);
+
+   var go=new GameObject("Valoria · Nation1 · irregular outer lake");go.transform.SetParent(root,true);
+   var mf=go.AddComponent<MeshFilter>();var mr=go.AddComponent<MeshRenderer>();
+   var verts=new[]{
+    new Vector3(4.8f,.018f,10.2f),new Vector3(8.6f,.018f,9.8f),
+    new Vector3(12.7f,.018f,10.7f),new Vector3(16.6f,.018f,12.9f),
+    new Vector3(17.6f,.018f,16.5f),new Vector3(15.5f,.018f,20.2f),
+    new Vector3(10.7f,.018f,22.0f),new Vector3(6.4f,.018f,20.6f),
+    new Vector3(3.4f,.018f,17.4f),new Vector3(3.8f,.018f,13.0f)
+   };
+   var tris=new[]{
+    0,1,2,0,2,3,0,3,4,0,4,5,0,5,6,0,6,7,0,7,8,0,8,9
+   };
+   var mesh=new Mesh{name="Nation1 irregular lake"};mesh.vertices=verts;mesh.triangles=tris;
+   var uv=new Vector2[verts.Length];for(int i=0;i<verts.Length;i++)uv[i]=new Vector2(verts[i].x*.08f,verts[i].z*.08f);
+   mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;mr.sharedMaterial=water;
+   StripGameplay(go);DetailProps++;
+  }
+
+  static void TintTree(GameObject go,Color tint)
+  {
+   foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+   {
+    var src=r.sharedMaterials;var dst=new Material[src.Length];
+    for(int i=0;i<src.Length;i++)
+    {
+     var m=src[i];if(m==null){dst[i]=null;continue;}
+     var clone=new Material(m){name="Nation1 distant forest · "+m.name};
+     foreach(var prop in new[]{"_BaseColor","_Color"})
+     {
+      if(!clone.HasProperty(prop))continue;
+      try
+      {
+       var col=clone.GetColor(prop);
+       clone.SetColor(prop,new Color(col.r*tint.r,col.g*tint.g,col.b*tint.b,col.a));
+      }catch{}
+     }
+     dst[i]=clone;
+    }
+    r.sharedMaterials=dst;
    }
   }
 
