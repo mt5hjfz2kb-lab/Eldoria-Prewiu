@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA GRANERO RICH CAMERA-FIRST v1",
+  "phase": "SOURCE_ISOLATED",
+  "method": "One camera-first storage compound assembled only from three instances of the already SOURCE-VISUAL-PASS rich Granero geometry. No visible primitive/procedural architecture.",
+  "input": {
+    "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+    "sha256": "565d282dc84d1244a212b43d310332fc89a2766b6adc742bf92bcccd6695b977"
+  },
+  "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb",
+  "glb_sha256": "e781757ebcf7bcb5d2358757ae24d347b10a1881d1a7c26ccd9d438f450a1ce8",
+  "geometry": {
+    "objects": 3,
+    "vertices": 165696,
+    "triangles": 149400,
+    "materials": [
+      "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee",
+      "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee.001",
+      "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee.002"
+    ],
+    "bounds": [
+      -3.5201,
+      -2.4848,
+      0.0,
+      3.5201,
+      2.4848,
+      2.9094
+    ]
+  },
+  "blend": "art-source/valoria/production/granero-rich-camera-first-v1/Valoria_Granero_RichCameraFirst_v1.blend",
+  "blend_sha256": "5e627a3701d70de240c579337504d3fe1ea13dd981b4520c5375080d3f36f2ff",
+  "previews": [
+    "docs/evidence/valoria-granero-rich-camera-first-v1/granero-rich-camera-first.png",
+    "docs/evidence/valoria-granero-rich-camera-first-v1/granero-rich-camera-first-silhouette.png"
+  ],
+  "tripo": false,
+  "paid_credits": 0,
+  "source_visual_verdict": "PENDING_VISUAL_REVIEW",
+  "unity_integration_allowed": false
+}
