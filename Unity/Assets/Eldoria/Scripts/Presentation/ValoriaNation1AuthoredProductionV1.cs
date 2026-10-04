@@ -45,8 +45,8 @@ namespace Eldoria.Presentation
    }
 
    Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.75f,3.45f,0f);
-   Fort(root,tower,"gate west tower",new Vector3(-3.30f,.10f,-6.22f),2.12f,2.95f,2f);
-   Fort(root,tower,"gate east tower",new Vector3(3.30f,.10f,-6.22f),2.12f,2.95f,-2f);
+   Fort(root,tower,"gate west tower",new Vector3(-3.30f,.10f,-6.22f),2.18f,3.25f,2f);
+   Fort(root,tower,"gate east tower",new Vector3(3.30f,.10f,-6.22f),2.18f,3.25f,-2f);
 
    foreach(var x in new[]{-8.05f,-5.55f,5.55f,8.05f})
      Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,1.62f,0f);
@@ -60,10 +60,35 @@ namespace Eldoria.Presentation
    foreach(var x in new[]{-7.30f,-4.40f,-1.45f,1.45f,4.40f,7.30f})
      Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.15f,1.48f,0f);
 
+   Fort(root,tower,"west mid tower",new Vector3(-9.42f,.10f,3.78f),1.95f,2.90f,8f);
+   Fort(root,tower,"east mid tower",new Vector3(9.42f,.10f,3.78f),1.95f,2.90f,-8f);
+
    foreach(var s in new[]{
      new Vector4(-9.25f,-6.05f,8f,2.75f),new Vector4(9.25f,-6.05f,-8f,2.75f),
      new Vector4(-9.20f,9.05f,172f,2.60f),new Vector4(9.20f,9.05f,188f,2.60f)})
-     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),1.92f,s.w*.92f,s.z);
+     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),2.12f,s.w*1.08f,s.z);
+
+   BuildWallHeraldry(root);
+  }
+
+  static void BuildWallHeraldry(Transform root)
+  {
+   foreach(var spec in new[]{
+     new Vector4(-6.15f,1.52f,-6.60f,0f),new Vector4(6.15f,1.52f,-6.60f,0f),
+     new Vector4(-9.62f,1.45f,-1.10f,90f),new Vector4(9.62f,1.45f,-1.10f,-90f),
+     new Vector4(-9.62f,1.45f,6.30f,90f),new Vector4(9.62f,1.45f,6.30f,-90f)})
+   {
+    string name="Valoria · Nation1 · wall banner "+spec.x+" "+spec.z;
+    ValoriaKit.Banner(name,new Vector3(spec.x,spec.y,spec.z),new Vector3(.34f,1.05f,.055f),new Color(.055f,.15f,.40f,1f));
+    var go=GameObject.Find(name);
+    if(go!=null)
+    {
+     go.transform.rotation=Quaternion.Euler(0f,spec.w,0f);
+     go.transform.SetParent(root,true);
+     StripGameplay(go);
+     DetailProps++;
+    }
+   }
   }
 
   static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw)
