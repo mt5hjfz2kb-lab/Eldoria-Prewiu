@@ -54,6 +54,10 @@ GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
 ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_blue_1k","roof_slates_03_nor_gl_1k",.94,1.0,1.0)
 PLASTER=mat_color("Nation1 Warm Plaster",(.54,.43,.28),.88)
 WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
+WATER=mat_color("Nation1 Water",(.055,.16,.22),.28,.0)
+MOUNTAIN=mat_color("Nation1 Mountain",(.22,.27,.25),.92)
+MOUNTAIN_FAR=mat_color("Nation1 Far Mountain",(.30,.34,.34),.96)
+SNOW=mat_color("Nation1 Snow",(.70,.73,.71),.94)
 MOUNTAIN=mat_color("Nation1 Distant Mountain",(.18,.23,.21),.96)
 MOUNTAIN2=mat_color("Nation1 Distant Mountain Secondary",(.24,.29,.26),.97)
 SNOW=mat_color("Nation1 Distant Snow",(.72,.76,.76),.98)
@@ -70,6 +74,13 @@ def box(name,loc,scale,mat,bevel=.03,rot=(0,0,0),uv=True):
         bpy.context.view_layer.objects.active=o;o.select_set(True);bpy.ops.object.mode_set(mode="EDIT")
         bpy.ops.mesh.select_all(action="SELECT");bpy.ops.uv.cube_project(cube_size=1.35,correct_aspect=True)
         bpy.ops.object.mode_set(mode="OBJECT");o.select_set(False)
+    return o
+
+def cylinder(name,loc,radius,depth,mat,vertices=48):
+    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices,radius=radius,depth=depth,location=loc)
+    o=bpy.context.object;o.name=name;o.data.materials.append(mat)
+    bev=o.modifiers.new("Cylinder softness","BEVEL");bev.width=min(.04,depth*.22);bev.segments=2
+    bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=bev.name)
     return o
 
 def hip_roof(name,loc,width,depth,height,mat):
@@ -248,6 +259,56 @@ def add_backdrop_ridge(col):
     # lower foothill shelf ties peaks together.
     move_to(box("distant foothill", (0,.32,.72),(12.5,1.15,1.25),MOUNTAIN2,.18),col)
     join_by_material(col)
+
+def add_plaza_monument(col):
+    parts=[]
+    parts.append(cylinder("plaza outer stone",(0,0,.10),1.42,.20,STONE,64))
+    parts.append(cylinder("plaza inner water",(0,0,.225),1.02,.055,WATER,64))
+    # stone rim as a torus
+    bpy.ops.mesh.primitive_torus_add(major_radius=1.12,minor_radius=.12,major_segments=64,minor_segments=12,location=(0,0,.28))
+    rim=bpy.context.object;rim.name="plaza fountain rim";rim.data.materials.append(STONE);parts.append(rim)
+    parts.append(cylinder("plaza pedestal",(0,0,.48),.48,.42,STONE_DARK,16))
+    parts.append(box("plaza pillar",(0,0,1.16),(.46,.46,1.42),STONE,.035))
+    parts.append(box("plaza capital",(0,0,1.92),(.72,.72,.18),STONE,.025))
+    parts.append(box("plaza blue crown",(0,0,2.08),(.46,.46,.20),BLUE,.02,uv=False))
+    parts.append(box("plaza finial",(0,0,2.38),(.10,.10,.52),GOLD,.008,uv=False))
+    for a in (0,90,180,270):
+        rad=math.radians(a)
+        x=.25*math.sin(rad);y=.25*math.cos(rad)
+        parts.append(box("plaza heraldic panel",(x,y,1.26),(.24,.035,.52),BLUE,.006,rot=(0,0,rad),uv=False))
+    for o in parts:move_to(o,col)
+    join_by_material(col)
+
+def ridge_object(name,heights,mat,depth=.75):
+    # heights is list of (x,z); closed vertical ridge with shallow depth.
+    verts=[];n=len(heights)
+    for y in (-depth*.5,depth*.5):
+        for x,z in heights: verts.append((x,y,z))
+        for x,z in heights: verts.append((x,y,0))
+    faces=[]
+    # front/back surfaces as quads between consecutive profile points and base.
+    for side in range(2):
+        off=side*(2*n)
+        for i in range(n-1):
+            top0=off+i;top1=off+i+1;base0=off+n+i;base1=off+n+i+1
+            faces.append((top0,top1,base1,base0) if side==0 else (base0,base1,top1,top0))
+    # top ridge strip and end caps
+    for i in range(n-1):
+        faces.append((i,i+1,2*n+i+1,2*n+i))
+    faces.append((0,n,3*n,2*n))
+    faces.append((n-1,2*n-1,4*n-1,3*n-1))
+    mesh=bpy.data.meshes.new(name+" Mesh");mesh.from_pydata(verts,[],faces);mesh.update()
+    o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);o.data.materials.append(mat)
+    return o
+
+def add_backdrop_ridge(col):
+    near=[(-10,1.1),(-8.2,2.7),(-6.8,2.0),(-5.2,4.0),(-3.5,2.6),(-1.2,5.1),(1.0,3.3),(3.3,5.8),(5.6,3.1),(7.8,4.2),(10,1.5)]
+    far=[(-10,2.0),(-7.5,4.0),(-5.0,3.1),(-2.2,5.8),(0,4.3),(2.5,6.7),(5.0,4.2),(7.0,5.1),(10,2.2)]
+    a=ridge_object("mountain near",near,MOUNTAIN,.95);move_to(a,col)
+    b=ridge_object("mountain far",far,MOUNTAIN_FAR,.80);b.location=(0,.85,.35);move_to(b,col)
+    # restrained snow caps on two highest peaks; intentionally broad, not white blobs.
+    move_to(box("snow cap west",(-1.2,-.52,5.0),(1.40,.06,.28),SNOW,.01,rot=(0,math.radians(-18),0),uv=False),col)
+    move_to(box("snow cap east",(2.5,.32,6.58),(1.55,.06,.30),SNOW,.01,rot=(0,math.radians(14),0),uv=False),col)
 
 def add_stair(col):
     parts=[]
