@@ -5,6 +5,16 @@ Program: **VALORIA PRODUCTION ART SYSTEM RESET v1**
 Effective: 2026-10-04  
 Repository authority: live `main` wins over chat history.
 
+## 0. Canonical approved reference image
+
+The owner-approved visual reference is stored in the repository at `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+
+This image is the canonical visual comparison anchor for Valoria. Major visual reviews must inspect it directly, not rely only on chat recollection or textual paraphrase.
+
+The reference is a directional quality target, not a literal layout blueprint. Preserve Eldoria's certified gameplay, Flat Citadel geography, progression, navigable-city camera policy and future expansion needs rather than copying the reference composition one-for-one.
+
+Valoria may be somewhat less dense than the reference. Matching its object count or pixel density is not required. A lower-density solution is acceptable only when the played frame still feels premium, cohesive, intentionally built and inhabited, with no large unjustified dead areas and with strong Bastion → functional buildings → lower-city hierarchy.
+
 ## 1. Authority and precedence
 
 This document is the single visual-direction authority for player-facing Valoria production.
