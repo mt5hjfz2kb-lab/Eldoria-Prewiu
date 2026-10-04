@@ -16,6 +16,7 @@ namespace Eldoria.Presentation
    var old=GameObject.Find(RootName);if(old!=null)Object.DestroyImmediate(old);
    var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);
    TerraceModules=MidTierBuildings=DetailProps=WarmLights=0;
+   BuildFortificationFamily(root);
    BuildHeroTerracedCore(root);
    ScaleCoreVisuals();
    BuildCivicDensity(root);
@@ -25,6 +26,55 @@ namespace Eldoria.Presentation
    BuildLighting(root);
    StripGameplay(root.gameObject);
   }
+
+  static void BuildFortificationFamily(Transform root)
+  {
+   var art=ValoriaExternalAssetLibrary.Load();if(art==null)return;
+   var wall=art.MasonryWall!=null?art.MasonryWall:art.MegaWallPassage;
+   var gate=art.MasonryGate!=null?art.MasonryGate:art.MegaHalfGate;
+   var tower=art.MasonryTower!=null?art.MasonryTower:art.MegaTower;
+   if(wall==null||gate==null||tower==null)return;
+
+   // Hide only presentation wall family from accepted VQB. Gameplay colliders/hotspots stay untouched.
+   foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+   {
+    if(r==null||!r.enabled)continue;
+    string n=Chain(r.transform);
+    bool breakthrough=n.Contains("valoria · breakthrough ·")&&(n.Contains("front ")||n.Contains("west ")||n.Contains("east ")||n.Contains("rear "));
+    bool production=n.Contains("flat citadel production")&&(n.Contains("main gate")||n.Contains("gate tower")||n.Contains("curtain")||n.Contains("mid tower")||n.Contains("corner tower"));
+    if(breakthrough||production)r.enabled=false;
+   }
+
+   var tint=new Color(.88f,.84f,.76f,1f);
+   Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.55f,3.55f,0f,tint);
+   Fort(root,tower,"gate west tower",new Vector3(-3.05f,.10f,-6.28f),2.15f,3.50f,4f,tint);
+   Fort(root,tower,"gate east tower",new Vector3(3.05f,.10f,-6.28f),2.15f,3.50f,-4f,tint);
+
+   foreach(var x in new[]{-8.0f,-5.55f,5.55f,8.0f})
+     Fort(root,wall,"front curtain",new Vector3(x,.09f,-6.30f),3.20f,2.05f,0f,tint);
+
+   foreach(var z in new[]{-3.55f,-.55f,2.55f,5.65f,8.05f})
+   {
+    Fort(root,wall,"west curtain",new Vector3(-9.42f,.09f,z),3.25f,2.05f,90f,tint);
+    Fort(root,wall,"east curtain",new Vector3(9.42f,.09f,z),3.25f,2.05f,90f,tint);
+   }
+
+   foreach(var x in new[]{-7.30f,-4.40f,-1.45f,1.45f,4.40f,7.30f})
+     Fort(root,wall,"rear curtain",new Vector3(x,.09f,9.18f),3.20f,1.90f,0f,tint);
+
+   foreach(var s in new[]{
+     new Vector4(-9.25f,-6.05f,8f,2.75f),new Vector4(9.25f,-6.05f,-8f,2.75f),
+     new Vector4(-9.20f,9.05f,172f,2.60f),new Vector4(9.20f,9.05f,188f,2.60f)})
+     Fort(root,tower,"corner tower",new Vector3(s.x,.10f,s.y),2.00f,s.w,s.z,tint);
+  }
+
+  static void Fort(Transform root,GameObject src,string role,Vector3 p,float footprint,float height,float yaw,Color tint)
+  {
+   var go=ValoriaKit.BenchmarkPieceModulated("Valoria · Nation1 fortification · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0),tint);
+   if(go==null)return;go.transform.SetParent(root,true);StripGameplay(go);TerraceModules++;
+  }
+
+  static string Chain(Transform t){string s="";for(;t!=null;t=t.parent)s+="|"+t.name.ToLowerInvariant();return s;}
 
   static void BuildHeroTerracedCore(Transform root)
   {
