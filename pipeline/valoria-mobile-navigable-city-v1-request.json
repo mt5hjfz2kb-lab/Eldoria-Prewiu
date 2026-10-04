@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "REQUESTED_RETRY_AFTER_HOTSPOT_GATE_FIX",
+  "status": "CLOSED_PROMOTED",
   "workstream": "VALORIA MOBILE NAVIGABLE CITY v1",
   "objective": "Prove one portrait-mobile home pose plus bounded pan can present Valoria as a large navigable city without fitting all buildings simultaneously.",
   "mobile": {
@@ -44,5 +44,8 @@
     "tripo": 0,
     "paid": 0
   },
-  "retry": 2
+  "retry": 2,
+  "run_id": 37213794236,
+  "artifact_id": 11307920631,
+  "result": "TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS / PROMOTED"
 }
