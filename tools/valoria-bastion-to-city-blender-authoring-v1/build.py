@@ -12,7 +12,7 @@ def args():
     p.add_argument("--output-dir",default="art-source/valoria/production/bastion-to-city-blender-authoring-v1")
     p.add_argument("--evidence-dir",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source")
     p.add_argument("--report",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source/source-report.json")
-    return p.parse_args()
+    return p.parse_args(av)
 A=args()
 
 REQ="pipeline/valoria-bastion-to-city-blender-authoring-v1-request.json"
