@@ -1,0 +1,59 @@
+name: "[PRODUCTION] Valoria Granero Cuartel Source Upgrade v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-granero-cuartel-source-upgrade-v1-request.json'
+permissions:
+  contents: write
+concurrency:
+  group: valoria-granero-cuartel-source-upgrade-v1
+  cancel-in-progress: true
+
+jobs:
+  isolated-source:
+    if: ${{ github.event_name == 'workflow_dispatch' || fromJson(github.event.head_commit.message != '') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+      - name: Build dedicated source candidates and isolated previews
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('pipeline/valoria-granero-cuartel-source-upgrade-v1-request.json'))
+          assert r['enabled'] is True and r['phase']=='source_isolated'
+          assert r['allow_unity_integration'] is False
+          assert r['tripo'] is False and r['credits']==0
+          PY
+          blender -b --python tools/valoria-granero-cuartel-source-upgrade/build_source_upgrade_v1.py
+          test -s art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb
+          test -s docs/evidence/valoria-granero-cuartel-source-upgrade-v1/granero-source-3q.png
+          test -s docs/evidence/valoria-granero-cuartel-source-upgrade-v1/cuartel-source-3q.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-granero-cuartel-source-upgrade-v1-isolated
+          path: |
+            art-source/valoria/production/granero-cuartel-source-upgrade-v1/**
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/**
+            pipeline/evidence/valoria-granero-cuartel-source-upgrade-v1/**
+            docs/evidence/valoria-granero-cuartel-source-upgrade-v1/*.png
+          retention-days: 30
+      - name: Persist isolated source evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/granero-cuartel-source-upgrade-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1 pipeline/evidence/valoria-granero-cuartel-source-upgrade-v1 docs/evidence/valoria-granero-cuartel-source-upgrade-v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist Granero Cuartel isolated source candidates"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
