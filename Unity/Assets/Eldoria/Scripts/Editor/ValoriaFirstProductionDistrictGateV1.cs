@@ -34,7 +34,7 @@ namespace Eldoria.EditorTools
    WriteMetrics(Folder+"/after-metrics.json");
    Save(scene.camera,Folder+"/after-9.png",9f,1280,720);
    Save(scene.camera,Folder+"/after-mobile.png",9.4f,390,844);
-   File.WriteAllText(Folder+"/evidence.json","{\\n  \\"gameplay_signature_preserved\\": true,\\n  \\"pieces\\": 7,\\n  \\"camera\\": \\"ORTHOGRAPHIC\\",\\n  \\"final_look\\": \\"RESET_ACCEPTED\\",\\n  \\"tripo_credits\\": 0,\\n  \\"paid_credits\\": 0\\n}\\n");
+   File.WriteAllText(Folder+"/evidence.json","{\n  \"gameplay_signature_preserved\": true,\n  \"pieces\": 7,\n  \"camera\": \"ORTHOGRAPHIC\",\n  \"final_look\": \"RESET_ACCEPTED\",\n  \"tripo_credits\": 0,\n  \"paid_credits\": 0\n}\n");
    EditorApplication.Exit(0);
   }
 
@@ -67,7 +67,7 @@ namespace Eldoria.EditorTools
    foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)){if(r==null||!r.enabled||!r.gameObject.activeInHierarchy)continue;renderers++;foreach(var m in r.sharedMaterials)if(m!=null)materials.Add(m.name);}
    foreach(var mf in Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None)){if(mf==null||mf.sharedMesh==null||!mf.gameObject.activeInHierarchy)continue;var rr=mf.GetComponent<Renderer>();if(rr!=null&&!rr.enabled)continue;for(int s=0;s<mf.sharedMesh.subMeshCount;s++)triangles+=(long)mf.sharedMesh.GetIndexCount(s)/3L;}
    foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))if(l!=null&&l.enabled&&l.gameObject.activeInHierarchy)lights++;
-   File.WriteAllText(path,"{\\n  \\"active_renderers\\": "+renderers+",\\n  \\"unique_materials\\": "+materials.Count+",\\n  \\"scene_triangles\\": "+triangles+",\\n  \\"active_lights\\": "+lights+"\\n}\\n");
+   File.WriteAllText(path,"{\n  \"active_renderers\": "+renderers+",\n  \"unique_materials\": "+materials.Count+",\n  \"scene_triangles\": "+triangles+",\n  \"active_lights\": "+lights+"\n}\n");
   }
  }
 }
