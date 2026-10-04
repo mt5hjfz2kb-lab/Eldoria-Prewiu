@@ -13,7 +13,6 @@ concurrency:
 
 jobs:
   isolated-source:
-    if: ${{ github.event_name == 'workflow_dispatch' || fromJson(github.event.head_commit.message != '') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
