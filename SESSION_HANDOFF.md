@@ -1,5 +1,16 @@
 ## 2026-10-04 — VALORIA PAIRED FUNCTIONAL UNITY GATE v1 — CLOSED / TECH PASS / VISUAL PARTIAL-FAIL
 
+## 2026-10-04 — VALORIA SCREEN-SPACE BREAKPOINT v1 CLOSED
+- Run **37211095096**: SUCCESS. Artifact **11307155373**.
+- Verdict: **TECH PASS / A SCREEN-SPACE VISUAL FAIL / B SCREEN-SPACE VISUAL PARTIAL / C SCREEN-SPACE VISUAL PARTIAL / NOT PROMOTED**.
+- 16:9 zoom9 clearly benefits from tighter framing: larger useful pixels, less empty exterior, less maquette feeling.
+- Portrait mobile does not: the city is already crop-limited; tighter B/C make Hero Bastion dominate and crop the lower functional city harder.
+- Granero_RCFv1 + Cuartel_CFSv1 remain the retained SOURCE VISUAL PASS pair; do **not** rebuild them again.
+- Canonical camera remains orthographic. Do **not** promote B/C as one global tighter framing.
+- Next valid structural proof: **aspect-ratio-aware/mobile home framing and crop policy**, reusing the existing pair. Forja/Hospital/Cantera remain HOLD. No D/E/F.
+- Result: `docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md`.
+
+
 - Final paired gate: run **37209941711 SUCCESS**, artifact **11306341489**, 0 credits.
 - Sources: **Granero_RCFv1 SOURCE VISUAL PASS** + **Cuartel_CFSv1 SOURCE VISUAL PASS**.
 - Real `VisualWorld` matched BEFORE/AFTER at zoom9 + mobile; canonical FPD anchors retained.
