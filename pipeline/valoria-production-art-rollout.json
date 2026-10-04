@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "READY_FOR_SECONDARY_SUPPORT_FORM_REPLACEMENT_AFTER_COHESION_PARTIAL_FAIL",
+  "status": "READY_FOR_LOWER_CITY_URBAN_MASSING_REAUTHORING_AFTER_SUPPORT_PARTIAL_FAIL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Visible Frame Cohesion v1 proved additional ground overlays are not the dominant remaining bottleneck. Next high-impact block: bounded secondary/support form replacement in the reachable HOME/PAN envelope, targeting large greybox-like retaining/support masses and architecture-terrain interfaces. Do not reopen camera, move Granero/Cuartel, or produce Forja/Hospital/Cantera yet.",
+  "next_priority": "Secondary/support replacement improved some structural seams but did not deliver a frame-level jump. Next: reauthor the dominant visible lower-city orange-roof/frontage band as 2–3 differentiated urban groups with height hierarchy, courts/lanes and integrated support bases. Do not reopen camera/ground micro-iterations or produce Forja/Hospital/Cantera.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -175,5 +175,19 @@
     "candidate_promoted": false,
     "key_finding": "Ground/contact treatment can improve local continuity, but the remaining screen-level gap is dominated by weak temporary-looking secondary/support masses and architecture-terrain interfaces. More ground dressing would decorate rather than solve that weakness.",
     "result_doc": "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md"
+  },
+  "secondary_support_form_replacement_v1": {
+    "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+    "planner_run_id": 37219017523,
+    "discarded_run_id": 37219171093,
+    "discarded_artifact_id": 11310056089,
+    "authoritative_run_id": 37219568955,
+    "artifact_id": 11309203816,
+    "credits_spent": 0,
+    "gameplay_signature_preserved": true,
+    "camera_policy_preserved": true,
+    "candidate_promoted": false,
+    "key_finding": "Certified stone support vocabulary is safer than donor masonry, but replacing supports alone and thinning only the west housing subset is insufficient. The dominant visible lower-city roof/frontage band must be reauthored as fewer differentiated urban groups.",
+    "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md"
   }
 }
