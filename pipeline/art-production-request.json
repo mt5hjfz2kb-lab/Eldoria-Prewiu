@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-visible-frame-cohesion-v1",
   "asset_or_sector": "Valoria reachable HOME/PAN envelope terrain, edges, circulation and architecture-ground cohesion",
   "profile": "environment_composition",
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "One significant cohesion intervention using existing accepted authored assets plus visual-only ground meshes. Prioritize large masses, continuity and transitions. Preserve camera/mobile navigation, Hero Bastion, defense, Granero/Cuartel, gameplay, parcels/routes/reserves and Final Look. No Forja/Hospital/Cantera. Zero Tripo/paid credits."
+  "notes": "CLOSED: planner 37215004613 PASS. Authoritative matched A/B run 37216176561 SUCCESS / artifact 11309016498 = TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED. Candidate hook removed; gameplay/camera preserved; 0 Tripo/paid credits. Next: secondary/support form replacement, not more ground dressing."
 }
