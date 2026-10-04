@@ -8,7 +8,7 @@ namespace Eldoria.Presentation
     // Visual-only: it suppresses redundant presentation layers and rebuilds three authored groups.
     public static class ValoriaLowerCityUrbanMassingReauthoringV1
     {
-        public static bool Enabled=false;
+        public static bool Enabled=true;
         public const string RootName="Valoria · Lower-City Urban Massing Reauthoring v1";
         public static int GroupsBuilt{get;private set;}
         public static int PiecesBuilt{get;private set;}
