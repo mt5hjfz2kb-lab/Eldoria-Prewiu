@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA ADAPTIVE MOBILE HOME POSE v1",
-  "phase": "capture",
+  "phase": "closed",
   "nonce": "adaptive-mobile-home-pose-v1-20261004-1710",
   "resolution": "390x844",
   "variants": {
@@ -91,5 +91,11 @@
     "M3/M4/M5"
   ],
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "run_id": 37212276777,
+  "artifact_id": 11307147019,
+  "final_verdict": "TECH PASS / M0 MOBILE COMPOSITION VISUAL FAIL / M1 MOBILE COMPOSITION VISUAL FAIL / M2 MOBILE COMPOSITION VISUAL PARTIAL / NOT PROMOTED",
+  "promotion": false,
+  "finding": "M2 materially improves portrait hierarchy and fully reveals Cuartel while preserving Hero Bastion dominance, but Granero remains only ~27% visible. Camera-only adaptation cannot satisfy simultaneous functional readability at current anchors.",
+  "next": "VALORIA MOBILE FUNCTIONAL DISTRICT ANCHOR REBALANCE v1: bounded structural anchor/parcel-presentation adjustment using existing Granero_RCFv1 + Cuartel_CFSv1, validated in 16:9 and portrait. No more camera micro-variants."
 }
