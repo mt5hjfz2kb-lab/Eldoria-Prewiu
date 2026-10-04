@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T15:05:00Z",
-  "active": [
+  "updated_at": "2026-10-04T15:22:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-adaptive-mobile-home-pose-v1",
       "title": "Valoria Adaptive Mobile Home Pose v1",
@@ -25,13 +26,18 @@
         "windows-runner-heavy",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T15:05:00Z",
       "base_main_sha": "3fccf55a03197e4fdd57750a80b537dd000d5c2d",
-      "dependency": "Test only M0/M1/M2 portrait-mobile camera home poses using existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1. M0=current mobile baseline; M1=target/center only; M2=target/center + mobile-specific orthographic size. No world/layout/asset/material changes. Max three states. Zero paid/Tripo credits."
-    }
-  ],
-  "history": [
+      "dependency": "Test only M0/M1/M2 portrait-mobile camera home poses using existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1. M0=current mobile baseline; M1=target/center only; M2=target/center + mobile-specific orthographic size. No world/layout/asset/material changes. Max three states. Zero paid/Tripo credits.",
+      "completed_at": "2026-10-04T15:22:00Z",
+      "run_id": 37212276777,
+      "artifact_id": 11307147019,
+      "credits_spent": 0,
+      "result": "TECH PASS / M0 MOBILE COMPOSITION VISUAL FAIL / M1 MOBILE COMPOSITION VISUAL FAIL / M2 MOBILE COMPOSITION VISUAL PARTIAL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md",
+      "next": "VALORIA MOBILE FUNCTIONAL DISTRICT ANCHOR REBALANCE v1; reuse existing Granero_RCFv1 + Cuartel_CFSv1, validate 16:9 + portrait, no more camera micro-variants."
+    },
     {
       "id": "valoria-screen-space-breakpoint-v1",
       "title": "Valoria Screen-Space Breakpoint v1",
