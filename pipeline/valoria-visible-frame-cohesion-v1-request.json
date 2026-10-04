@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "REQUESTED",
+  "status": "REQUESTED_TECHNIQUE_CHANGE",
   "workstream": "VALORIA VISIBLE FRAME COHESION v1",
   "objective": "Improve large-scale ground, edge, architecture-ground and lower-city continuity across the promoted reachable camera envelope with one structural visual intervention.",
   "baseline": {
@@ -46,5 +46,7 @@
   "credits": {
     "tripo": 0,
     "paid": 0
-  }
+  },
+  "attempt": 2,
+  "technique_change": "Discard linear lateral streets/world verges; use irregular terrace/ground seams and buried authored transitions instead."
 }
