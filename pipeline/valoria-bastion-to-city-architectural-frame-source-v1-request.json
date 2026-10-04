@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "AUTHOR_SOURCE",
+  "status": "CLOSED_ART_SOURCE_FAIL",
   "workstream": "VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1",
   "authoring_standard": "BLENDER_PROFESSIONAL_V1",
   "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
@@ -15,5 +15,15 @@
   "attempt": 5,
   "tech_fix": "Install libegl1 + libgl1-mesa-dri on the GitHub-hosted Blender runner so isolated EEVEE previews can render headlessly. Geometry, silhouette, materials and composition unchanged.",
   "previous_run_id": 37226044864,
-  "previous_result": "TECH FAIL after source/export due missing libEGL.so.1 when starting isolated preview render."
+  "previous_result": "TECH FAIL after source/export due missing libEGL.so.1 when starting isolated preview render.",
+  "successful_source_run_id": 37226253119,
+  "source_artifact_id": 11312172507,
+  "source_commit": "649e9401bdaa0404aada894b42754983d72c59ed",
+  "tech_verdict": "PASS",
+  "art_source_verdict": "FAIL",
+  "unity_run": "NOT_RUN",
+  "promotion": "NOT_PROMOTED",
+  "final_finding": "Source is deliberately asymmetric and has real recess/stair depth, but isolated clay/lit/proxy evidence still reads as sophisticated blockout: rectilinear masses with attached trim/arch elements, schematic rock interfaces, insufficient continuous authored silhouette and stone-rock interlock.",
+  "next_method": "Do not open v2/v3. Change authoring mode: high-fidelity screen-space design/paintover followed by genuinely freeform direct DCC/sculpt/boolean/deformation authoring or another owner-approved high-quality source route followed by Blender reauthoring. Tripo remains blocked without explicit authorization.",
+  "result_doc": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md"
 }
