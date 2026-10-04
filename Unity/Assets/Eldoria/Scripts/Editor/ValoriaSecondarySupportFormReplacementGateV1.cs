@@ -128,11 +128,11 @@ namespace Eldoria.EditorTools
     var im=new Texture2D(w,h,TextureFormat.RGB24,false);
     im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();
     File.WriteAllBytes(Folder+"/"+name+".png",im.EncodeToPNG());
-    Object.DestroyImmediate(im);
+    UnityEngine.Object.DestroyImmediate(im);
    }
    finally
    {
-    c.targetTexture=null;RenderTexture.active=prev;rt.Release();Object.DestroyImmediate(rt);
+    c.targetTexture=null;RenderTexture.active=prev;rt.Release();UnityEngine.Object.DestroyImmediate(rt);
    }
   }
  }
