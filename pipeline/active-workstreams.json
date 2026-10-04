@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:31:00Z",
+  "updated_at": "2026-10-04T10:34:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -32,7 +32,9 @@
       "claimed_at": "2026-10-04T00:10:00Z",
       "base_main_sha": "f61512f3331c6fb4f83793f9db6b3d483496f775",
       "dependency": "Build the player-facing Valoria Nation 1 core from accepted VQB visual baseline and certified library assets. Hero/terraces/stairs/plaza/front wall+gate/Aserradero/Cuartel/Granero. Zoom9/mobile first. Zero paid credits; do not use Tripo without separate explicit approval."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-production-art-system-reset-governance-v1",
       "title": "Valoria Production Art System Reset v1 — Governance Foundation",
@@ -56,13 +58,15 @@
       "resources": [
         "valoria-art-direction-governance"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T09:58:00Z",
       "base_main_sha": "81fc7c26dd8f7d6cc1142ba9a2d581523a5e0a83",
-      "dependency": "Governance/documentation phase only while valoria-nation1-authored-production-v1 owns production composition, Blender and runner. No edits to Nation1 scope, planner, SESSION_HANDOFF, Unity resources or heavy workflows."
-    }
-  ],
-  "history": [
+      "dependency": "Governance/documentation phase only while valoria-nation1-authored-production-v1 owns production composition, Blender and runner. No edits to Nation1 scope, planner, SESSION_HANDOFF, Unity resources or heavy workflows.",
+      "completed_at": "2026-10-04T10:34:00Z",
+      "result_commit": "a6af1dac7d005c32f29279ab8a7442bc4e8a7118",
+      "result": "Phase A/B foundation complete: canonical Visual Bible, production-art classification, material stack, Final Look/camera A/B specification, machine-readable source policy/schema/checker, and Nation1 compatibility audit. No production runner/Blender resources used; no credits spent.",
+      "next": "After valoria-nation1-authored-production-v1 releases, audit its final artifact, inherit accepted composition, then claim production resources for high-fidelity starter family and Final Look execution."
+    },
     {
       "id": "valoria-ssra-v1-variant2-validation",
       "title": "Valoria SSRA v1 variant 2 validation",
