@@ -76,10 +76,10 @@ namespace Eldoria.Presentation
             Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · east lateral urban ground",
                 new Vector3(11.35f,.392f,-.95f),7.70f,2.75f,1f));
 
-            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · west route junction",
-                new Vector3(-8.65f,.355f,-1.10f),3.90f,3.35f,-2f));
-            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · east route junction",
-                new Vector3(8.65f,.355f,-1.00f),3.90f,3.35f,2f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · west route junction",
+                new Vector3(-8.65f,.385f,-1.10f),3.90f,3.35f,-2f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · east route junction",
+                new Vector3(8.65f,.385f,-1.00f),3.90f,3.35f,2f));
         }
 
         static void BuildArchitectureGroundSeats(Transform root)
@@ -138,10 +138,10 @@ namespace Eldoria.Presentation
                     new Vector3(spec.x,.13f,spec.y),spec.z,.55f,spec.w,new Color(.52f,.53f,.50f,1f));
 
             // Irregular earth/rock shoulders dissolve the authored city edge into the valley.
-            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · west world shoulder",
-                new Vector3(-15.45f,.205f,-1.0f),5.25f,3.55f,-4f));
-            Add(root,ValoriaGroundKit.GroundSeam("Valoria · VFC · east world shoulder",
-                new Vector3(15.45f,.205f,-.9f),5.25f,3.55f,4f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · west world shoulder",
+                new Vector3(-15.45f,.215f,-1.0f),5.25f,3.55f,-4f));
+            Add(root,ValoriaGroundKit.TerraceFloor("Valoria · VFC · east world shoulder",
+                new Vector3(15.45f,.215f,-.9f),5.25f,3.55f,4f));
         }
 
         static void BuildLowUrbanEdges(Transform root)
