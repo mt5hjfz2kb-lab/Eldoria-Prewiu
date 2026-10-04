@@ -1,0 +1,79 @@
+{
+  "blend": "art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend",
+  "blend_sha256": "c63c6d2216148952a421c0a695dadb096c4a9b0a961d981d651ef67c7915c8d5",
+  "assets": [
+    {
+      "asset_id": "Valoria_MainGate_v2",
+      "objects": 6,
+      "triangles": 16960,
+      "materials": [
+        "Gray_Gradient",
+        "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001"
+      ],
+      "role": "PRIMARY",
+      "function": "main gate",
+      "sources": [
+        "Unity/Assets/Bublik/Simple Modular Castle Assets/Meshes/Stone_Gate.fbx",
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb"
+      ],
+      "glb_sha256": "2348f2bf2aeb25ab7db632f17d4363bbae2a32dc65c7c9030e46ab860863e80a"
+    },
+    {
+      "asset_id": "Valoria_WallSegment_v2",
+      "objects": 1,
+      "triangles": 6440,
+      "materials": [
+        "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+      ],
+      "role": "PRIMARY",
+      "function": "wall segment",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb"
+      ],
+      "glb_sha256": "d589cf30fee21a72f6d9987e44b15495b371e79f28357fe3b3f0baa8c5f231d5"
+    },
+    {
+      "asset_id": "Valoria_Tower_v2",
+      "objects": 1,
+      "triangles": 50000,
+      "materials": [
+        "Eldoria Rock \u00b7 Hero Prototype",
+        "Eldoria Stone \u00b7 Hero Prototype"
+      ],
+      "role": "PRIMARY",
+      "function": "tower",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb"
+      ],
+      "glb_sha256": "83af84e917153ee9ca302db56acb3fa676c97b0775109f3991696664dcada229"
+    },
+    {
+      "asset_id": "Valoria_CivicHouse_v2",
+      "objects": 3,
+      "triangles": 36858,
+      "materials": [
+        "EA02_LPNP-Slavika_Colorsheet_v1"
+      ],
+      "role": "SECONDARY",
+      "function": "civic house",
+      "sources": [
+        "Unity/Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Building_Administrative _01a.fbx"
+      ],
+      "glb_sha256": "d06fdde09bd8818c5df7b822aff79374533ab7cd7ce2d292da0e9fd5d559d5c9"
+    },
+    {
+      "asset_id": "Valoria_Workshop_v2",
+      "objects": 1,
+      "triangles": 49800,
+      "materials": [
+        "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f"
+      ],
+      "role": "SECONDARY",
+      "function": "workshop",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb"
+      ],
+      "glb_sha256": "2686cbba2c9c5e8856eb21a1a403441dbcbbc0b268a9fe72b319d3210f115a26"
+    }
+  ]
+}
