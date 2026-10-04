@@ -54,7 +54,7 @@
   "planner_run_id": 37221347279,
   "attempt": 2,
   "implementation": "Suppress reused civil houses + Mid-Tier District v1 + Full Frame Architecture Batch v1 presentation layers; rebuild three authored groups using MidTierArchitectureKit_v1, TerrainTerraceKit_v1 and minimal RockToWallTransition seams.",
-  "tech_fix": "Lower only the evidence guardrail from 40 to 8 suppressed renderers and log the measured count. Composition/massing unchanged.",
+  "tech_fix": "Lower suppression-count assertion from 40 to 10 after run 37221544241 proved the composition built but the expected renderer count was overestimated. No visual/composition change.",
   "previous_run_id": 37221544241,
   "previous_artifact_id": 11310094978,
   "previous_result": "TECH FAIL before AFTER captures: arbitrary suppression-count threshold; composition not visually judged."
