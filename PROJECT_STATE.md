@@ -1,5 +1,9 @@
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
+## Valoria screen-space breakpoint v1 — 2026-10-04
+**CLOSED: TECH PASS / A FAIL / B PARTIAL / C PARTIAL / NOT PROMOTED.** Run 37211095096, artifact 11307155373. Tighter orthographic framing materially improves 16:9 city scale and reduces the maquette-on-grass read, but portrait mobile is already dominated by crop pressure; tighter B/C worsen lower-city visibility and still do not make Granero/Cuartel simultaneously unmistakable. Orthographic/current global framing stays canonical pending an aspect-ratio-aware mobile home-pose/crop proof. Existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 are retained; no further source variants. Production rollout remains HOLD.
+
+
 ## Valoria paired functional Unity gate — 2026-10-04
 
 The strongest current Granero/Cuartel sources were paired in real Unity: run **37209941711**, artifact **11306341489**. Technical integrity passes, zoom9 improves, but portrait mobile still fails simultaneous independent Granero + Cuartel readability at canonical anchors. Both source assets are retained as SOURCE VISUAL PASS, runtime candidate is not promoted, and rollout remains HOLD. Further source/material/prop/micro-layout iteration is closed; the next move requires a structural composition or mobile-framing decision. See `docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md`.
