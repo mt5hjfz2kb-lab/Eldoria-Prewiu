@@ -1,7 +1,7 @@
 {
-  "enabled": false,
-  "request_id": "valoria-mobile-navigable-city-v1",
-  "asset_or_sector": "Valoria mobile home pose + bounded city navigation using existing Granero RCFv1 and Cuartel CFSv1",
+  "enabled": true,
+  "request_id": "valoria-visible-frame-cohesion-v1",
+  "asset_or_sector": "Valoria reachable HOME/PAN envelope terrain, edges, circulation and architecture-ground cohesion",
   "profile": "environment_composition",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -15,7 +15,7 @@
     "unity_shared_materials": false,
     "unity_decals": false,
     "unity_probes": false,
-    "unity_terrain_blending": false
+    "unity_terrain_blending": true
   },
   "validation": {
     "official_camera_19": false,
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "CLOSED: planner 37213645061 PASS; Unity run 37213794236 SUCCESS; artifact 11307920631. TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS. 0 credits. Camera investigation closed; next work returns to visible-frame graphical production."
+  "notes": "One significant cohesion intervention using existing accepted authored assets plus visual-only ground meshes. Prioritize large masses, continuity and transitions. Preserve camera/mobile navigation, Hero Bastion, defense, Granero/Cuartel, gameplay, parcels/routes/reserves and Final Look. No Forja/Hospital/Cantera. Zero Tripo/paid credits."
 }
