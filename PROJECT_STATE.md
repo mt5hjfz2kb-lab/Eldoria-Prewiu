@@ -1,5 +1,9 @@
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
+## Valoria adaptive mobile home pose v1 — 2026-10-04
+**CLOSED: TECH PASS / M0 FAIL / M1 FAIL / M2 PARTIAL / NOT PROMOTED.** Run 37212276777, artifact 11307147019. M2 proves portrait-specific framing materially improves hierarchy while keeping Hero Bastion dominant, but the existing Granero/Cuartel screen-projected horizontal spread remains too wide: Cuartel reaches 100% visibility while Granero remains ~27%. No camera variant is promoted; runtime camera, panning and recenter behavior remain canonical/unchanged. No further mobile camera micro-variants or asset rebuilds. Next structural proof is a bounded functional-district anchor/parcel-presentation rebalance using the existing SOURCE VISUAL PASS pair and validating both 16:9 and portrait. Rollout remains HOLD.
+
+
 ## Valoria screen-space breakpoint v1 — 2026-10-04
 **CLOSED: TECH PASS / A FAIL / B PARTIAL / C PARTIAL / NOT PROMOTED.** Run 37211095096, artifact 11307155373. Tighter orthographic framing materially improves 16:9 city scale and reduces the maquette-on-grass read, but portrait mobile is already dominated by crop pressure; tighter B/C worsen lower-city visibility and still do not make Granero/Cuartel simultaneously unmistakable. Orthographic/current global framing stays canonical pending an aspect-ratio-aware mobile home-pose/crop proof. Existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 are retained; no further source variants. Production rollout remains HOLD.
 
