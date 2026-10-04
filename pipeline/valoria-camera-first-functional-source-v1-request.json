@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "phase": "source_isolated",
+  "nonce": "cfs-v1-source-20261004-1422",
+  "assets": [
+    "Granero",
+    "Cuartel"
+  ],
+  "strategy": "New camera-first macro silhouette sources. Retain rich approved cores; add only large functional architecture that survives canonical southeast orthographic/mobile. Granero = dominant loading/storage composition. Cuartel = twin-tower guarded U training court.",
+  "stop_gate": [
+    "camera_first_color_preview",
+    "camera_first_silhouette_preview",
+    "functional_identity_without_small_props"
+  ],
+  "allow_unity_integration": false,
+  "camera": "canonical-orientation-equivalent orthographic isolated preview",
+  "tripo": false,
+  "credits": 0,
+  "anti_loop": "One camera-first source candidate per building. If either fails isolated functional read, close without Unity."
+}
