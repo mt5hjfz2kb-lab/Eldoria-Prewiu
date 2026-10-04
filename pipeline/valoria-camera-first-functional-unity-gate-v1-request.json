@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
-  "phase": "unity_gate",
+  "phase": "closed",
   "nonce": "cfs-v1-unity-20261004-1430",
   "source_gate": {
     "run_id": 37208777268,
@@ -25,5 +25,24 @@
     "colliders"
   ],
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "run_id": 37209373554,
+  "artifact_id": 11305759556,
+  "final_verdict": "TECH PASS / SOURCE FUNCTIONAL PASS / UNITY VISUAL FAIL / NOT PROMOTED",
+  "metrics": {
+    "before": {
+      "renderers": 852,
+      "materials": 81,
+      "triangles": 2083716,
+      "lights": 31
+    },
+    "after": {
+      "renderers": 873,
+      "materials": 94,
+      "triangles": 2295829,
+      "lights": 31
+    }
+  },
+  "visual_reason": "Granero macro additions improve functional visibility but read as pale/geometric non-production additions; Cuartel still lacks independent played-camera/mobile military read. Both functions do not survive simultaneously on mobile.",
+  "promotion": false
 }
