@@ -8,16 +8,6 @@
 - Anti-loop: do **not** open Bastion-to-City Frame v2/v3 and do not micro-tune this source. Next valid method must lock a high-fidelity 2D played-frame elevation/paintover first, then use genuinely freeform/source-rich Blender construction (manual mesh deformation/boolean/curve/sculpt + authored stone-rock transitions) before another source gate.
 - Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
 
-## 2026-10-04 — VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1 — CLOSED / ART SOURCE FAIL
-- Planner **37225548192 SUCCESS**.
-- Successful isolated Blender source run **37226253119 SUCCESS**, artifact **11312172507**, source commit `649e9401bdaa0404aada894b42754983d72c59ed`; **0 Tripo / 0 paid credits**.
-- Final verdict: **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED**.
-- One complete asymmetric Bastion-to-city frame was authored under `BLENDER_PROFESSIONAL_V1` and reviewed via clay, lit 3/4 and game-camera proxy before Unity.
-- Source review: real recess/stair depth and controlled asymmetry exist, but the frame still reads as sophisticated blockout — rectilinear masses with attached arch/trim elements, schematic rock interfaces and insufficient continuous authored silhouette/stone-rock interlock.
-- Mandatory stop-gate worked: Unity A/B was intentionally not dispatched. No HOME/PAN/16:9 AFTER exists, no gameplay/camera/parcels/routes/runtime changed, and the failed Resources copy/candidate Unity gate were removed.
-- Anti-loop: **do not open v2/v3**, do not micro-adjust dimensions/colors/trim. If revisited, change authoring mode to high-fidelity screen-space design/paintover + genuinely freeform direct DCC/sculpt/boolean/deformation authoring, or another owner-approved high-quality source route followed by Blender reauthoring. Tripo remains blocked without explicit authorization.
-- Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
-
 ## 2026-10-04 — VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1 — CLOSED / NOT PROMOTED
 - Canonical high-resolution reference reviewed directly: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
 - Planner **37223687136 SUCCESS**.
