@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:24:00Z",
+  "updated_at": "2026-10-04T10:26:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -50,7 +50,8 @@
         "pipeline/valoria-production-art-rollout.json",
         "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md",
         ".github/workflows/valoria-production-art-reset-static-gate.yml",
-        "tools/validate-valoria-production-art-reset.mjs"
+        "tools/validate-valoria-production-art-reset.mjs",
+        "pipeline/valoria-art-source-classification.json"
       ],
       "resources": [
         "valoria-production-source-design"
