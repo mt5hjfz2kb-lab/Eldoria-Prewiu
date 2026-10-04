@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "REQUESTED",
+  "workstream": "VALORIA MOBILE NAVIGABLE CITY v1",
+  "objective": "Prove one portrait-mobile home pose plus bounded pan can present Valoria as a large navigable city without fitting all buildings simultaneously.",
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "home_position": [
+      19.4,
+      14.6,
+      -28.6
+    ],
+    "target": [
+      1.2,
+      3.35,
+      2.8
+    ],
+    "orthographic_size": 12.2,
+    "portrait_aspect_threshold": 0.72
+  },
+  "captures": [
+    "HOME-mobile.png",
+    "PAN-granero-mobile.png",
+    "PAN-intermediate-mobile.png",
+    "PAN-cuartel-mobile.png",
+    "RETURN-HOME-mobile.png",
+    "HORIZONTAL-16x9.png"
+  ],
+  "preserve": [
+    "Granero_RCFv1",
+    "Cuartel_CFSv1",
+    "Hero Bastion",
+    "defense",
+    "Final Look",
+    "materials",
+    "world layout",
+    "gameplay topology",
+    "hotspots",
+    "colliders",
+    "16:9 canonical framing"
+  ],
+  "credits": {
+    "tripo": 0,
+    "paid": 0
+  }
+}
