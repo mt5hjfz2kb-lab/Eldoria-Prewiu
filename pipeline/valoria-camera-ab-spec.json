@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "A/B pending",
+  "canonical_until_proven": "ORTHOGRAPHIC",
+  "variants": {
+    "A": {
+      "id": "ORTHOGRAPHIC",
+      "source": "current canonical gameplay camera",
+      "requirements": [
+        "same pose family",
+        "same HUD",
+        "same progression state",
+        "same lighting",
+        "same city occupancy target"
+      ]
+    },
+    "B": {
+      "id": "STRATEGIC_LONG_LENS_PERSPECTIVE",
+      "requirements": [
+        "same view direction",
+        "long focal length/narrow FOV",
+        "minimal perspective distortion",
+        "same perceived city occupancy",
+        "no free orbit",
+        "no gameplay contract change"
+      ],
+      "tuning": "distance and FOV must be solved together"
+    }
+  },
+  "evaluate": [
+    "Bastion monumentality",
+    "depth separation",
+    "maquette feeling",
+    "roof and road readability",
+    "occlusion",
+    "parcel visibility",
+    "hotspot screen-space usability",
+    "bounded pan behavior",
+    "mobile portrait",
+    "zoom-equivalent stability"
+  ],
+  "promotion_rule": "Perspective replaces orthographic only on a clear full-frame win with no interaction/readability regression."
+}
