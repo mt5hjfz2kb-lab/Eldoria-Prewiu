@@ -1,8 +1,51 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:28:00Z",
+  "updated_at": "2026-10-04T10:30:00Z",
   "active": [
+    {
+      "id": "valoria-production-art-starter-source-v1",
+      "title": "Valoria Production Art Starter Source v1",
+      "owner": "chat-valoria-production-art-system-reset-v1",
+      "scope": [
+        "art-source/valoria/production/starter-family/**",
+        "tools/valoria-production-art-starter/**",
+        "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
+        "pipeline/active-workstreams.json",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-final-look-profiles.json",
+        "pipeline/valoria-camera-ab-spec.json",
+        "pipeline/valoria-density-life-plan.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md",
+        ".github/workflows/valoria-production-art-reset-static-gate.yml",
+        "tools/validate-valoria-production-art-reset.mjs",
+        "pipeline/valoria-art-source-classification.json",
+        "pipeline/valoria-nation1-composition-inheritance.json",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionArtResetV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaProductionArtResetGateV1.cs",
+        ".github/workflows/valoria-production-art-reset-v1.yml",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "docs/evidence/valoria-production-art-reset-v1/**",
+        "pipeline/evidence/valoria-production-art-reset-v1.json",
+        "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md"
+      ],
+      "resources": [
+        "valoria-production-source-design",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "valoria-production-composition",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T10:16:00Z",
+      "base_main_sha": "50663bc988799f9b8a89d0941fec93faea106cac",
+      "dependency": "Nation1 handed off with last valid run 37193601814 / artifact 11299573844; preserve its branch and inherit composition only. Execute starter family -> materials -> Final Look -> camera -> integration -> density."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-nation1-authored-production-v1",
       "title": "Valoria Nation 1 Authored Production Build v1",
@@ -28,42 +71,20 @@
         "github-hosted-blender",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "handoff",
       "claimed_at": "2026-10-04T00:10:00Z",
       "base_main_sha": "f61512f3331c6fb4f83793f9db6b3d483496f775",
-      "dependency": "Build the player-facing Valoria Nation 1 core from accepted VQB visual baseline and certified library assets. Hero/terraces/stairs/plaza/front wall+gate/Aserradero/Cuartel/Granero. Zoom9/mobile first. Zero paid credits; do not use Tripo without separate explicit approval."
+      "dependency": "Build the player-facing Valoria Nation 1 core from accepted VQB visual baseline and certified library assets. Hero/terraces/stairs/plaza/front wall+gate/Aserradero/Cuartel/Granero. Zoom9/mobile first. Zero paid credits; do not use Tripo without separate explicit approval.",
+      "completed_at": "2026-10-04T10:30:00Z",
+      "branch": "production/valoria-nation1-authored-v1",
+      "final_branch_head": "f693d323e8fa1617c416674d17a4974160b0e521",
+      "last_valid_capture_head": "56b1c34a99cd91182c423984c6869e94244a0ee0",
+      "run_id": 37193601814,
+      "artifact_id": 11299573844,
+      "source_artifact_id": 11300087170,
+      "result": "HANDOFF / NOT PROMOTED AS FINAL ART. Last complete Nation1 artifact is technically green and compositionally useful, but visible secondary architecture remains primitive-authored and below the new Visual Bible target. Later head f693d323 adds more box/gable detail but has no corresponding valid capture. No active/queued runs at takeover; branch preserved untouched.",
+      "next": "Production Art System Reset inherits accepted composition coordinates and replaces visible procedural secondary architecture incrementally. Do not delete Nation1 branch/evidence."
     },
-    {
-      "id": "valoria-production-art-starter-source-v1",
-      "title": "Valoria Production Art Starter Source v1",
-      "owner": "chat-valoria-production-art-system-reset-v1",
-      "scope": [
-        "art-source/valoria/production/starter-family/**",
-        "tools/valoria-production-art-starter/**",
-        "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
-        "pipeline/active-workstreams.json",
-        ".github/workflows/valoria-production-art-starter-source-v1.yml",
-        "pipeline/valoria-production-art-starter-run-request.json",
-        "pipeline/valoria-final-look-profiles.json",
-        "pipeline/valoria-camera-ab-spec.json",
-        "pipeline/valoria-density-life-plan.json",
-        "pipeline/valoria-production-art-rollout.json",
-        "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md",
-        ".github/workflows/valoria-production-art-reset-static-gate.yml",
-        "tools/validate-valoria-production-art-reset.mjs",
-        "pipeline/valoria-art-source-classification.json",
-        "pipeline/valoria-nation1-composition-inheritance.json"
-      ],
-      "resources": [
-        "valoria-production-source-design"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-04T10:16:00Z",
-      "base_main_sha": "50663bc988799f9b8a89d0941fec93faea106cac",
-      "dependency": "Prepare high-fidelity source design only. Do not run Blender/Unity or touch Nation1 branch/resources until valoria-nation1-authored-production-v1 releases github-hosted-blender/windows-runner-heavy/valoria-production-composition."
-    }
-  ],
-  "history": [
     {
       "id": "valoria-production-art-system-reset-governance-v1",
       "title": "Valoria Production Art System Reset v1 — Governance Foundation",
