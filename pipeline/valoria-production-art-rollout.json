@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "READY_AFTER_RESET_SYSTEM_PASS",
+  "status": "HOLD_AFTER_FIRST_DISTRICT_VISUAL_PARTIAL",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -87,8 +87,14 @@
       "rule": "preserve Hero quality and silhouette hierarchy; add authored growth modules instead of reskinning or scaling primitives"
     }
   ],
-  "production_rule": "Use accepted authored Stone/Timber/Slate grammar with asset-specific functional identity. No primitive clones, no whole-kit collage, no blanket runtime recolor.",
+  "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "replace visible proxy/greybox architecture before broad density",
-  "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes"
+  "next_priority": "Replace the civil-building donor/composition technique for Granero and Cuartel with genuinely richer purpose-built or substantially reauthored geometry; prove zoom9/mobile before Forja/Hospital/Cantera.",
+  "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
+  "first_production_district": {
+    "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+    "run_id": 37202888357,
+    "artifact_id": 11303269944,
+    "result_doc": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md"
+  }
 }
