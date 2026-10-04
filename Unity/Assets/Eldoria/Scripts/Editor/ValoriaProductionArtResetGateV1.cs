@@ -42,15 +42,33 @@ namespace Eldoria.EditorTools
             Save(scene.camera,Folder+"/after-9.png",9f,1280,720);
             Save(scene.camera,Folder+"/after-mobile.png",9.4f,390,844);
 
+            // Phase D: normalize candidate surface response while preserving the same geometry/gameplay.
+            var resetRoot=GameObject.Find(ValoriaProductionArtResetV1.RootName);
+            ValoriaProductionArtResetV1.NormalizeProductionMaterials(resetRoot);
+            Save(scene.camera,Folder+"/material-9.png",9f,1280,720);
+            Save(scene.camera,Folder+"/material-mobile.png",9.4f,390,844);
+
+            // Phase E: reversible final-look profile. No canonical mobile profile is modified.
+            ValoriaProductionFinalLookV1.Apply();
+            Save(scene.camera,Folder+"/final-look-9.png",9f,1280,720);
+            Save(scene.camera,Folder+"/final-look-mobile.png",9.4f,390,844);
+
+            // Phase F: matched mild strategic perspective, same target and production frame.
+            SavePerspective(scene.camera,Folder+"/perspective-9.png",1280,720,false);
+            SavePerspective(scene.camera,Folder+"/perspective-mobile.png",390,844,true);
+
+            if(ValoriaVisualFormulaGate.CollisionSignature()!=signature)
+                throw new Exception("D/E/F visual layers changed gameplay collider/hotspot signature.");
+
             File.WriteAllText(Folder+"/evidence.json",
                 "{\n"+
                 "  \"gameplay_signature_preserved\": true,\n"+
                 "  \"starter_pieces\": 8,\n"+
                 "  \"source_classification\": \"TEMPORARY_PENDING_VISUAL_REVIEW\",\n"+
                 "  \"zoom9_mobile_stop_gate\": true,\n"+
-                "  \"materials_phase\": \"NOT_STARTED\",\n"+
-                "  \"final_look_phase\": \"NOT_STARTED\",\n"+
-                "  \"camera_ab_phase\": \"NOT_STARTED\",\n"+
+                "  \"materials_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
+                "  \"final_look_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
+                "  \"camera_ab_phase\": \"CAPTURED_FOR_VISUAL_REVIEW\",\n"+
                 "  \"tripo_credits\": 0\n"+
                 "}\n");
             Debug.Log("VALORIA_PRODUCTION_ART_RESET_PHASE_C_GATE=PASS");
@@ -108,6 +126,21 @@ namespace Eldoria.EditorTools
         {
             var p=new Vector3(18.2f,14.6f,-25.8f);var t=new Vector3(0f,3.15f,5.8f);
             c.transform.position=p;c.transform.LookAt(t);c.orthographic=true;c.orthographicSize=size;
+            var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};var prev=RenderTexture.active;
+            try{
+                c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
+                var im=new Texture2D(w,h,TextureFormat.RGB24,false);
+                im.ReadPixels(new Rect(0,0,w,h),0,0);im.Apply();File.WriteAllBytes(path,im.EncodeToPNG());Object.DestroyImmediate(im);
+            }finally{c.targetTexture=null;RenderTexture.active=prev;rt.Release();Object.DestroyImmediate(rt);}
+        }
+
+        static void SavePerspective(Camera c,string path,int w,int h,bool mobile)
+        {
+            var target=mobile?new Vector3(0f,3.45f,5.8f):new Vector3(0f,3.15f,5.8f);
+            c.orthographic=false;
+            c.fieldOfView=mobile?24f:27f;
+            c.transform.position=mobile?new Vector3(22.5f,18.2f,-31.8f):new Vector3(22.8f,18.4f,-32.2f);
+            c.transform.LookAt(target);
             var rt=new RenderTexture(w,h,24,RenderTextureFormat.ARGB32){antiAliasing=4};var prev=RenderTexture.active;
             try{
                 c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
