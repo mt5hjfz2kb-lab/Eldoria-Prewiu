@@ -63,6 +63,13 @@ for(const item of manifests){
   if(!m.source?.sha256 || !m.export?.sha256)failures.push({path:item.path,reason:"production_source_missing_source_or_export_sha"});
   if(!Array.isArray(m.materials)||!m.materials.length)failures.push({path:item.path,reason:"production_source_missing_materials"});
   if(!m.evidence?.zoom9 || !m.evidence?.mobile)failures.push({path:item.path,reason:"production_source_missing_zoom9_or_mobile_evidence"});
+  if(m.source?.authoring_standard==="BLENDER_PROFESSIONAL_V1"){
+    if(!Array.isArray(m.source?.tool_families) || !m.source.tool_families.length) failures.push({path:item.path,reason:"professional_blender_source_missing_tool_families"});
+    if(!m.source?.primitive_role) failures.push({path:item.path,reason:"professional_blender_source_missing_primitive_role"});
+    if(!m.art_review || m.art_review.standard!=="BLENDER_PROFESSIONAL_V1") failures.push({path:item.path,reason:"professional_blender_source_missing_art_review"});
+    if(!Array.isArray(m.art_review?.preview_evidence) || !m.art_review.preview_evidence.length) failures.push({path:item.path,reason:"professional_blender_source_missing_preview_evidence"});
+    if(m.art_review?.verdict!=="PASS") failures.push({path:item.path,reason:"professional_blender_source_art_review_not_pass"});
+  }
 }
 
 const report={
