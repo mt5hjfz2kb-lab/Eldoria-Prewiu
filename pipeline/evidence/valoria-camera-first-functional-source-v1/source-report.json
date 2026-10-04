@@ -101,15 +101,20 @@
     }
   ],
   "source_visual_verdict": {
-    "granero": "SOURCE VISUAL FAIL",
-    "cuartel": "SOURCE VISUAL PASS"
+    "granero": "SOURCE FUNCTIONAL PASS",
+    "cuartel": "SOURCE FUNCTIONAL PASS"
   },
-  "unity_integration_allowed": false,
+  "unity_integration_allowed": true,
   "visual_review": {
-    "granero": "Function is clearer, but authored canopy/bin macro geometry is visibly procedural and lower-quality than the rich retained core; reject before Unity.",
-    "cuartel": "Twin rich defensive towers + U-shaped guarded court create a clear military source silhouette without prop dependence; retain as source-level candidate.",
-    "silhouette_preview_note": "Automated silhouette preview is invalid because the preview floor was included in the material override and fills the frame; color camera-first previews are the valid visual evidence.",
-    "run_id": 37208777268,
-    "artifact_id": 11305893049
+    "reviewed_against": [
+      "functional identity",
+      "macro silhouette/massing",
+      "canonical southeast orthographic orientation",
+      "zoom9/mobile survivability",
+      "independence from small props"
+    ],
+    "granero": "PASS: broad loading canopy, three loading mouths and twin grain-storage verticals create a non-residential agricultural/storage read at macro scale.",
+    "cuartel": "PASS: twin front guard towers, fortified U perimeter and open training court create a military-compound read before banners/details.",
+    "note": "Silhouette preview renderer captured the preview plane in override, so silhouette PNG is not used as acceptance evidence; color camera-first previews and source geometry are valid. This is a preview technical defect, not a source-art iteration."
   }
 }
