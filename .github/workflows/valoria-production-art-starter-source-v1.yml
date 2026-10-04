@@ -16,7 +16,6 @@ concurrency:
 
 jobs:
   source:
-    if: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '{"enabled":true}' || toJSON(github.event.head_commit) != '' && 'null' || 'null') || true }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
