@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T00:23:00Z",
+  "updated_at": "2026-10-04T09:58:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -32,6 +32,25 @@
       "claimed_at": "2026-10-04T00:10:00Z",
       "base_main_sha": "f61512f3331c6fb4f83793f9db6b3d483496f775",
       "dependency": "Build the player-facing Valoria Nation 1 core from accepted VQB visual baseline and certified library assets. Hero/terraces/stairs/plaza/front wall+gate/Aserradero/Cuartel/Granero. Zoom9/mobile first. Zero paid credits; do not use Tripo without separate explicit approval."
+    },
+    {
+      "id": "valoria-production-art-system-reset-governance-v1",
+      "title": "Valoria Production Art System Reset v1 — Governance Foundation",
+      "owner": "chat-valoria-production-art-system-reset-v1",
+      "scope": [
+        "docs/VALORIA_VISUAL_BIBLE.md",
+        "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md",
+        "docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md",
+        "docs/VALORIA_VISUAL_FORMULA_v1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "valoria-art-direction-governance"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T09:58:00Z",
+      "base_main_sha": "81fc7c26dd8f7d6cc1142ba9a2d581523a5e0a83",
+      "dependency": "Governance/documentation phase only while valoria-nation1-authored-production-v1 owns production composition, Blender and runner. No edits to Nation1 scope, planner, SESSION_HANDOFF, Unity resources or heavy workflows."
     }
   ],
   "history": [
