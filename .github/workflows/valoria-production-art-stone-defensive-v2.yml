@@ -19,7 +19,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+          sudo apt-get install -y blender python3-numpy libegl1 libegl1 libgl1
       - name: Build Stone defensive family
         run: |
           blender -b --python tools/valoria-production-art-starter/build_stone_defensive_family_v2.py
