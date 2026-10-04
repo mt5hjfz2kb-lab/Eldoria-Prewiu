@@ -1,6 +1,6 @@
 {
-  "enabled": false,
-  "nonce": "starter-source-parked-until-nation1-release",
-  "scope": "build-authored-starter-family-only-no-unity",
+  "enabled": true,
+  "nonce": "starter-source-build-20261004-1031",
+  "scope": "build-authored-starter-family-source-and-glbs",
   "credits": 0
 }
