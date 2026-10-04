@@ -57,5 +57,8 @@
   "tech_fix": "Gate-only correction: remove accidental literal \\\\n token from C# source after the suppression assertion. Composition/massing unchanged.",
   "previous_run_id": 37221645812,
   "previous_artifact_id": 11310094978,
-  "previous_result": "Cancelled by newer gate-only commits before a valid visual A/B."
+  "previous_result": "Cancelled by newer gate-only commits before a valid visual A/B.",
+  "tech_fix_2": "Fix invalid newline/logging syntax in editor gate after run 37221659645. No visual/composition change.",
+  "previous_compile_run_id": 37221659645,
+  "previous_compile_result": "TECH FAIL at C# compilation before scene creation; no visual judgment."
 }
