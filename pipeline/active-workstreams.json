@@ -1,8 +1,28 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T18:58:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T19:12:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-to-city-frame-design-brief-v1",
+      "title": "Valoria Bastion-to-City Frame Design Brief v1",
+      "owner": "chat-valoria-bastion-to-city-frame-design-brief-v1",
+      "scope": [
+        "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
+        "docs/evidence/valoria-bastion-to-city-frame-design-brief-v1/**",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-frame-design-brief"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T19:12:00Z",
+      "base_main_sha": "d13402cd70072cf893fb935f492e9b7e89eb429e",
+      "dependency": "Design-only screen-space production brief. Lock the exact 16:9 promoted Valoria frame and target Bastion-to-city architecture before any new Blender authoring. No final 3D geometry, no Unity A/B, no camera/density/building changes, no Tripo, zero credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-to-city-architectural-frame-v1",
