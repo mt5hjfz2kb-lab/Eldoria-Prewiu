@@ -489,6 +489,8 @@ def render_preview(col, asset_id):
     scene.display.shading.show_cavity=True
     scene.display.shading.cavity_type="WORLD"
     scene.render.film_transparent=False
+    if scene.world is None:
+        scene.world=bpy.data.worlds.new("PreviewWorld")
     scene.world.color=(0.055,0.065,0.075)
 
     for cc in bpy.data.collections:
