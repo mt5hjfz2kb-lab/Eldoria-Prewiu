@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T12:23:00Z",
-  "active": [
+  "updated_at": "2026-10-04T12:57:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-first-production-district-v1",
       "title": "Valoria First Production District v1",
@@ -29,13 +30,21 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T12:23:00Z",
       "base_main_sha": "5d8dd2ef6a64b6df73eac83ac61c63cf99db8080",
-      "dependency": "Use the promoted Production Art System to replace only the visible Hero-compatible defense + Granero + Cuartel + directly related proxies. Preserve Flat Citadel, Hero Bastion, parcels, gameplay, orthographic camera and accepted Final Look. Stop at matched zoom9/mobile BEFORE/AFTER. Zero paid/Tripo credits."
-    }
-  ],
-  "history": [
+      "dependency": "Use the promoted Production Art System to replace only the visible Hero-compatible defense + Granero + Cuartel + directly related proxies. Preserve Flat Citadel, Hero Bastion, parcels, gameplay, orthographic camera and accepted Final Look. Stop at matched zoom9/mobile BEFORE/AFTER. Zero paid/Tripo credits.",
+      "completed_at": "2026-10-04T12:57:00Z",
+      "result_doc": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md",
+      "final_run_id": 37202888357,
+      "final_artifact_id": 11303269944,
+      "source_artifact_id": 11303378405,
+      "final_run_head": "24a603b7de86e782cf34784c73f77c748fbc6f89",
+      "authored_asset_commit": "e8713a454e9c75a6776b788079ddf19ae13d3c59",
+      "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED AS DISTRICT ROLLOUT. Defense is a clear local visual upgrade; Granero/Cuartel remain insufficiently transformed, especially mobile.",
+      "credits_spent": 0,
+      "next": "Hold rollout. Replace civil donor/composition technique for Granero/Cuartel with genuinely richer purpose-built or substantially reauthored geometry, prove zoom9/mobile, then reconsider Forja/Hospital/Cantera."
+    },
     {
       "id": "valoria-production-art-starter-source-v1",
       "title": "Valoria Production Art Starter Source v1",
