@@ -1,7 +1,7 @@
 # VALORIA VISUAL FORMULA v1
 
-Status: VALIDATED v1 / FROZEN PRODUCTION BASELINE
-Owner intent: canonical visual-direction formula for Valoria until superseded by a validated revision.
+Status: HISTORICAL VALIDATED SURFACE BASELINE / SUPERSEDED FOR TOP-LEVEL ART DIRECTION
+Owner intent: retain validated surface/look-dev evidence; current art direction is `docs/VALORIA_VISUAL_BIBLE.md`.
 Updated: 2026-09-29.
 
 ## Purpose
@@ -10,7 +10,9 @@ Make Valoria converge visually without reinventing materials, lighting and integ
 
 ## Core identity
 
-Valoria is a vertical dark-fantasy fortress-city embedded into rock and mountain: ancient, inhabited, functional, sober, powerful, semi-realistic/stylized, never toy-like and never a collection of unrelated asset-store pieces.
+Historical v1 identity (superseded): Valoria was described as a vertical dark-fantasy fortress-city embedded into rock and mountain.
+
+Current identity: follow `docs/VALORIA_VISUAL_BIBLE.md`: premium medieval fantasy, semi-realistic/stylized realism, luminous/epic with depth and contrast, monumental Bastion, dense functional city, warm stone/timber/slate/metal/vegetation, no mountain-dominant composition, no obvious low-poly or maquette-on-grass read.
 
 ## Material families
 
