@@ -139,20 +139,22 @@ def timber_beam(name, loc, scale, rotz=0):
     o=cube(name,loc,scale,TIMBER,.012);o.rotation_euler[2]=math.radians(rotz);return o
 
 def add_window_recess(parent_mass, x, y_front, z, w=.46, h=.58, depth=.28, frame=True):
+    made=[]
     cut=cube("window cutter",(x,y_front,z),(w,depth,h),STONE,0)
     boolean_difference(parent_mass,cut)
     recess=cube("window recess",(x,y_front+depth*.28,z),(w*.82,.08,h*.84),WINDOW,.006)
+    made.append(recess)
     if frame:
         for dx,dz,sx,sz in [
             (-w*.5-.035,0,.07,h+.16),(w*.5+.035,0,.07,h+.16),
             (0,h*.5+.035,w+.16,.07),(0,-h*.5-.035,w+.16,.07)]:
-            timber_beam("window frame",(x+dx,y_front-.055,z+dz),(sx,.09,sz))
-    return recess
+            made.append(timber_beam("window frame",(x+dx,y_front-.055,z+dz),(sx,.09,sz)))
+    return made
 
 def add_door_recess(parent_mass, x, y_front, z_bottom, w=.62, h=1.18, depth=.38):
     cut=cube("door cutter",(x,y_front,z_bottom+h*.5),(w,depth,h),STONE,0)
     boolean_difference(parent_mass,cut)
-    return cube("door leaf",(x,y_front+depth*.30,z_bottom+h*.5),(w*.86,.10,h*.92),TIMBER,.012)
+    return [cube("door leaf",(x,y_front+depth*.30,z_bottom+h*.5),(w*.86,.10,h*.92),TIMBER,.012)]
 
 def add_buttress(x,y,z,h,depth=.48,width=.42):
     # Tapered profile instead of plain cube.
@@ -160,12 +162,15 @@ def add_buttress(x,y,z,h,depth=.48,width=.42):
     return custom_prism("stone buttress",poly,depth,(x,y,z),STONE,.02)
 
 def add_arch_ring(cx, front_y, spring_z, radius, count=13, depth=.22, block_w=.30, block_h=.38):
+    made=[]
     for i in range(count):
         a=math.pi*(i/(count-1))
         x=cx+math.cos(a)*radius
         z=spring_z+math.sin(a)*radius
         o=cube("arch voussoir",(x,front_y,z),(block_w,depth,block_h),STONE,.015)
         o.rotation_euler[1]=a-math.pi/2
+        made.append(o)
+    return made
 
 def collection(name):
     c=bpy.data.collections.new(name);bpy.context.scene.collection.children.link(c);return c
@@ -206,9 +211,9 @@ def build_tower():
     body=cube("tower body",(0,0,1.55),(2.85,2.85,2.85),STONE,.06);objs.append(body)
     # recessed windows on front and side; genuine cut geometry.
     for x in (-.62,.62):
-        add_window_recess(body,x,-1.36,1.55,.36,.70,.30)
+        objs += add_window_recess(body,x,-1.36,1.55,.36,.70,.30)
     # doorway
-    add_door_recess(body,0,-1.38,.18,.70,1.25,.34)
+    objs += add_door_recess(body,0,-1.38,.18,.70,1.25,.34)
     objs += [cube("tower plinth",(0,0,.20),(3.15,3.15,.40),STONE2,.045),
              cornice("tower belt",(0,0),3.02,3.02,1.02),
              cornice("tower crown",(0,0),3.08,3.08,2.92)]
@@ -234,7 +239,7 @@ def build_gate():
     cutter=arch_cutter("main gate opening",1.72,1.40,.86,2.0,2.6)
     cutter.location=(0,-.10,.12)
     boolean_difference(body,cutter)
-    add_arch_ring(0,-.83,1.48,1.02,15,.24,.28,.42)
+    objs += add_arch_ring(0,-.83,1.48,1.02,15,.24,.28,.42)
     # recessed portcullis + door thickness.
     objs.append(cube("recessed gate",(0,.44,1.02),(1.54,.10,1.90),TIMBER,.015))
     # flank piers / buttresses
@@ -257,12 +262,12 @@ def build_gate():
 def build_civic_house():
     col=collection("PA_CivicHouse_v1");objs=[]
     base=cube("civic stone ground floor",(0,0,.72),(3.55,2.55,1.32),STONE,.045);objs.append(base)
-    add_door_recess(base,0,-1.22,.16,.72,1.10,.36)
+    objs += add_door_recess(base,0,-1.22,.16,.72,1.10,.36)
     for x in (-1.04,1.04):
-        add_window_recess(base,x,-1.20,.78,.46,.55,.28)
+        objs += add_window_recess(base,x,-1.20,.78,.46,.55,.28)
     upper=cube("civic upper floor",(0,0,1.78),(3.32,2.38,.88),PLASTER,.035);objs.append(upper)
     for x in (-1.02,0,1.02):
-        add_window_recess(upper,x,-1.12,1.80,.42,.52,.24)
+        objs += add_window_recess(upper,x,-1.12,1.80,.42,.52,.24)
     # Structural timber grid + diagonal bracing, with projecting floor beam.
     objs.append(timber_beam("projecting sill",(0,-1.24,1.31),(3.48,.16,.18)))
     for x in (-1.46,-.72,0,.72,1.46):
@@ -273,7 +278,7 @@ def build_civic_house():
     objs.append(roof_gable_solid("civic slate roof",3.65,2.72,2.28,3.60,.16,.24,SLATE))
     # Dormer with actual recess.
     dorm=cube("dormer body",(0,-.58,2.72),(1.04,.78,.72),PLASTER,.025);objs.append(dorm)
-    add_window_recess(dorm,0,-.96,2.73,.38,.40,.16)
+    objs += add_window_recess(dorm,0,-.96,2.73,.38,.40,.16)
     dorm_roof=roof_gable_solid("dormer roof",1.24,.92,3.04,3.52,.12,.12,SLATE);dorm_roof.location.y=-.58;objs.append(dorm_roof)
     # Porch and foundation transition.
     objs.append(cube("stone entry stoop",(0,-1.52,.12),(1.38,.72,.24),STONE2,.025))
@@ -295,11 +300,11 @@ def build_workshop():
     # Use explicit authored visible masses for robustness.
     bpy.data.objects.remove(shell,do_unlink=True)
     hall=cube("workshop main hall",(-.18,0,.78),(3.55,2.60,1.48),STONE,.045);objs.append(hall)
-    add_door_recess(hall,.42,-1.25,.14,.92,1.24,.36)
-    add_window_recess(hall,-1.02,-1.24,.82,.50,.58,.28)
+    objs += add_door_recess(hall,.42,-1.25,.14,.92,1.24,.36)
+    objs += add_window_recess(hall,-1.02,-1.24,.82,.50,.58,.28)
     # side annex offsets silhouette and function.
     annex=cube("workshop timber annex",(1.64,.32,.64),(1.25,1.95,1.18),PLASTER,.035);objs.append(annex)
-    add_window_recess(annex,1.64,-.62,.72,.38,.46,.20)
+    objs += add_window_recess(annex,1.64,-.62,.72,.38,.46,.20)
     for x in (-1.56,-.78,0,.78,1.56):
         objs.append(timber_beam("workshop frame",(x,-1.28,.82),(.16,.12,1.56)))
     objs.append(timber_beam("workshop lintel",(0,-1.29,1.40),(3.35,.13,.16)))
@@ -360,7 +365,7 @@ for asset_id,builder in families:
     tris=sum(len(o.data.loop_triangles) if (o.data.calc_loop_triangles() or True) else 0 for o in col.objects if o.type=="MESH")
     manifest_assets.append({
         "asset_id":asset_id,
-        "classification":"PRODUCTION_ART_SOURCE",
+        "classification":"TEMPORARY",
         "role":"PRIMARY" if "Gate" in asset_id or "Tower" in asset_id else "SECONDARY",
         "function":asset_id.replace("Valoria_","").replace("_v1",""),
         "geometry":{"triangles":tris,"materials":len({m.name for o in col.objects if o.type=="MESH" for m in o.data.materials if m}),"uv0":True,"normals":True},
@@ -371,7 +376,7 @@ for asset_id,builder in families:
         ],
         "export":{"glb_path":os.path.relpath(glb,ROOT).replace("\\","/"),"sha256":sha256(glb),"scale":1.0,"forward_axis":"+Z","up_axis":"+Y"},
         "unity":{"resource_path":"Valoria/ProductionArt/StarterFamily/"+asset_id,"owns_gameplay_collider":False,"owns_hotspot":False},
-        "evidence":{"zoom9":"","mobile":"","technical_verdict":"PENDING_UNITY","visual_verdict":"PENDING_VISUAL"}
+        "evidence":{"zoom9":"","mobile":"","technical_verdict":"PENDING_UNITY","visual_verdict":"PENDING_VISUAL","promotion_state":"CANDIDATE_NOT_PRODUCTION"}
     })
 
 blend_path=os.path.join(SRC,"Valoria_StarterFamily_v1.blend")
