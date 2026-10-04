@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:45:00Z",
-  "active": [
+  "updated_at": "2026-10-04T13:52:30Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-granero-cuartel-source-upgrade-v1",
       "title": "Valoria Granero + Cuartel Source Upgrade v1",
@@ -36,7 +37,7 @@
         "art-production-planner",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T13:14:00Z",
       "base_main_sha": "561f8d78642f13ba919e1814316a083eb74ee9ba",
       "dependency": "Upgrade only Granero and Cuartel source quality. Source-isolated stop gate first; integrate into playable runtime only if both are SOURCE VISUAL PASS. Preserve defense, terrain, camera, Final Look, gameplay/parcels/hotspots/colliders. No Tripo spend without fresh owner authorization.",
@@ -46,10 +47,19 @@
         "granero": "SOURCE VISUAL PASS",
         "cuartel": "SOURCE VISUAL PASS",
         "credits_spent": 0
-      }
-    }
-  ],
-  "history": [
+      },
+      "completed_at": "2026-10-04T13:52:30Z",
+      "unity_gate": {
+        "run_id": 37206779989,
+        "artifact_id": 11305635813,
+        "tech": "PASS",
+        "visual": "PARTIAL",
+        "gameplay_signature_preserved": true
+      },
+      "result": "TECH PASS / SOURCE VISUAL PASS (BOTH) / UNITY VISUAL PARTIAL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md",
+      "next": "Do not expand to Forja/Hospital/Cantera. Retain source assets, keep runtime upgrade disabled, and only open a new block if it tackles played-camera functional hierarchy/integration rather than source/material micro-tuning."
+    },
     {
       "id": "valoria-first-production-district-v1",
       "title": "Valoria First Production District v1",
