@@ -1,11 +1,14 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-structural-frame-urban-support-integration-v1",
   "asset_or_sector": "Valoria dominant structural frame between Hero Bastion and promoted lower city",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "allow_tripo": false,
-  "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
   "capabilities": {
     "blender_material_consolidation": true,
     "unity_modular_assembly": true,
@@ -22,5 +25,11 @@
     "preserve_gameplay_signature": true
   },
   "notes": "Geometry gap is proven by the earlier certified-support replacement visual partial-fail and by direct inspection of the restored high-resolution canonical reference. Existing HighStraightWall/CornerWallL recomposition is not enough. Use explicit zero-credit Blender authoring for three structural civic sources, then one Unity A/B across HOME, Granero pan, intermediate pan, Cuartel pan and 16:9. Tripo remains prohibited.",
-  "result": "IN PROGRESS"
+  "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+  "final_run_id": 37224171472,
+  "final_artifact_id": 11311297059,
+  "source_run_id": 37223931751,
+  "source_artifact_id": 11310713075,
+  "credits_spent": 0,
+  "final_note": "One explicit Blender-authored structural hypothesis was tested. It produced a large visible A/B change but did not remove the dominant stair-flanking grey support silhouettes or integrate materials strongly enough for promotion. Anti-loop closes this support block."
 }
