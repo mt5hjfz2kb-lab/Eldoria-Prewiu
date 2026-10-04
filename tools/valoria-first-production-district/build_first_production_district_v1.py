@@ -5,7 +5,7 @@ SRC=os.path.join(ROOT,"art-source","valoria","production","first-production-dist
 OUT=os.path.join(ROOT,"Unity","Assets","Eldoria","Resources","Valoria","ProductionArt","FirstProductionDistrictV1")
 EVD=os.path.join(ROOT,"pipeline","evidence","valoria-first-production-district-v1")
 for p in (SRC,OUT,EVD): os.makedirs(p,exist_ok=True)
-D={"wall":"Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb","corner":"Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb","tower":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb","civil":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb","workshop":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"}
+D={"wall":"Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb","corner":"Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb","tower":"Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb","civil":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb","workshop":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb","roof":"Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"}
 def sha(p):
  h=hashlib.sha256()
  with open(p,"rb") as f:
@@ -55,9 +55,9 @@ def build_tower():
 def build_gate():
  reset();c=imp("corner","Gate west pylon");fit(c,2.15,3.15);parts=place(c,(-1.65,0,0),0,(.82,.82,1));parts+=dup(c,"Gate east pylon",(3.30,0,0),180,(1,1,1));w=imp("wall","Gate lintel");fit(w,3.35,1.15);parts+=place(w,(0,0,2.45),0,(1,.82,.58));t=imp("tower","Gate crown");fit(t,2.25,1.55);parts+=place(t,(0,.04,3.0),0,(.82,.78,.58));return parts
 def build_granero():
- reset();body=imp("civil","Granero main hall");fit(body,4.25,3.35);parts=place(body,(0,0,0),4,(1.0,.92,1.0));annex=imp("workshop","Granero loading porch");fit(annex,2.35,2.15);parts+=place(annex,(0,-1.45,.05),-6,(1.0,.72,.78));loft=imp("civil","Granero loft crown");fit(loft,2.25,1.85);parts+=place(loft,(.55,.15,2.10),4,(.72,.72,.58));return parts
+ reset();body=imp("civil","Granero main hall");fit(body,4.25,3.35);parts=place(body,(0,0,0),4,(1.0,.92,1.0));annex=imp("workshop","Granero loading porch");fit(annex,2.35,2.15);parts+=place(annex,(0,-1.45,.05),-6,(1.0,.72,.78));loft=imp("roof","Granero tall storage roof");fit(loft,3.10,2.45);parts+=place(loft,(.20,.05,2.05),4,(.92,.88,.76));return parts
 def build_cuartel():
- reset();body=imp("workshop","Cuartel main block");fit(body,4.45,3.55);parts=place(body,(0,0,0),-3,(1,.94,1));base=imp("wall","Cuartel stone plinth");fit(base,4.55,1.25);parts+=place(base,(0,.10,-.02),0,(1,.82,.48));flank=imp("corner","Cuartel guarded corner");fit(flank,1.75,2.65);parts+=place(flank,(-1.75,-.20,.05),0,(.72,.72,.92));parts+=dup(flank,"Cuartel opposite corner",(3.50,0,0),180,(1,1,1));return parts
+ reset();body=imp("workshop","Cuartel main block");fit(body,4.65,3.75);parts=place(body,(0,0,0),-3,(1,.94,1));core=imp("civil","Cuartel command block");fit(core,2.75,3.45);parts+=place(core,(.35,.12,1.35),-3,(.86,.86,.78));base=imp("wall","Cuartel stone plinth");fit(base,4.55,1.25);parts+=place(base,(0,.10,-.02),0,(1,.82,.48));flank=imp("corner","Cuartel guarded corner");fit(flank,1.75,2.65);parts+=place(flank,(-1.75,-.20,.05),0,(.72,.72,.92));parts+=dup(flank,"Cuartel opposite corner",(3.50,0,0),180,(1,1,1));return parts
 built=[]
 for aid,fn in [("Valoria_DefenseWall_FPDv1",build_wall),("Valoria_DefenseTower_FPDv1",build_tower),("Valoria_MainGate_FPDv1",build_gate),("Valoria_Granero_FPDv1",build_granero),("Valoria_Cuartel_FPDv1",build_cuartel)]:
  objs=fn();p=exp(aid,objs);built.append({"asset_id":aid,"glb":os.path.relpath(p,ROOT).replace("\\","/"),"sha256":sha(p),"geometry":metrics(objs)})
