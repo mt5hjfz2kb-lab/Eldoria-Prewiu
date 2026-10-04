@@ -1,8 +1,40 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:08:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T13:14:00Z",
+  "active": [
+    {
+      "id": "valoria-granero-cuartel-source-upgrade-v1",
+      "title": "Valoria Granero + Cuartel Source Upgrade v1",
+      "owner": "chat-valoria-granero-cuartel-source-upgrade-v1",
+      "scope": [
+        "art-source/valoria/production/granero-cuartel-source-upgrade-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/**",
+        "tools/valoria-granero-cuartel-source-upgrade/**",
+        ".github/workflows/valoria-granero-cuartel-source-upgrade-v1.yml",
+        "pipeline/valoria-granero-cuartel-source-upgrade-v1-request.json",
+        "pipeline/evidence/valoria-granero-cuartel-source-upgrade-v1/**",
+        "docs/evidence/valoria-granero-cuartel-source-upgrade-v1/**",
+        "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs"
+      ],
+      "resources": [
+        "valoria-production-source-design",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T13:14:00Z",
+      "base_main_sha": "561f8d78642f13ba919e1814316a083eb74ee9ba",
+      "dependency": "Upgrade only Granero and Cuartel source quality. Source-isolated stop gate first; integrate into playable runtime only if both are SOURCE VISUAL PASS. Preserve defense, terrain, camera, Final Look, gameplay/parcels/hotspots/colliders. No Tripo spend without fresh owner authorization."
+    }
+  ],
   "history": [
     {
       "id": "valoria-first-production-district-v1",
