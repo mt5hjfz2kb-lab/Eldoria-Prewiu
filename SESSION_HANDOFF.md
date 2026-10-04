@@ -1,14 +1,16 @@
-## 2026-10-04 — VALORIA FIRST PRODUCTION DISTRICT v1 — CLOSED / VISUAL PARTIAL
+## 2026-10-04 — VALORIA FIRST PRODUCTION DISTRICT v1 — CLOSED / PLAYABLE RUNTIME PROMOTED / VISUAL PARTIAL
 
-- Final verdict: **TECH PASS / VISUAL PARTIAL / NOT PROMOTED AS DISTRICT ROLLOUT**.
-- Final corrected run **37202888357 SUCCESS**, integrated artifact **11303269944**, source artifact **11303378405**, run head `24a603b7de86e782cf34784c73f77c748fbc6f89`; corrected authored assets persisted at `e8713a454e9c75a6776b788079ddf19ae13d3c59`.
-- Real matched evidence captured at **zoom 9 + mobile** with accepted ORTHOGRAPHIC camera and RESET Final Look. Gameplay collider/hotspot signature preserved; focused gameplay tests PASS; paid/Tripo credits **0**.
-- Five reproducible production assets plus Blender source produced: main gate, defense tower, defense wall, Granero, Cuartel.
-- **Defense is a local VISUAL PASS** and proves the Production Art System can produce a clear on-screen upgrade.
-- **Granero/Cuartel remain VISUAL PARTIAL**: their source recomposition is technically richer but still too close to the existing secondary-building family; mobile especially does not show a district-level quality jump toward Hero Bastion.
-- Root cause is now concrete: **civil donor/source ceiling and insufficient semantic specificity**, not camera, Unity, CI or Final Look.
-- Do **not** extend the current MidTier donor-composition technique to Forja/Hospital/Cantera. Rollout is held.
-- Next production step: change the civil source technique for Granero/Cuartel to genuinely richer purpose-built or substantially reauthored geometry, then re-prove only zoom9/mobile before any further rollout. No paid generation without explicit authorization.
+- Final verdict: **TECH PASS / VISUAL PARTIAL / BOUNDED PLAYABLE-RUNTIME PROMOTION**.
+- Authoritative final run **37204193966 SUCCESS**, integrated artifact **11304401297**, source artifact **11304426130**, run head `4080e21ff69999e7c5566705f42ec9995ba7bfdb`.
+- Final authored-source persistence: `49ebfc27ef990f58b959b478f53bba5b8ace2abc`.
+- Runtime promotion: `ad6fff91f65786193007e2a5a13cb1c54f70f9fe`; truthful runtime BEFORE/AFTER gate: `3fd4bdd3f00109f08c7298fa36be89947683184b`.
+- The first district is now part of the normal playable `VisualWorld` city path. Matched BEFORE/AFTER are generated from that path with the district disabled/enabled, not from a gate-only overlay.
+- Final runtime evidence: gameplay collider/hotspot signature preserved, 7 visual pieces, ORTHOGRAPHIC camera, RESET Final Look in runtime, focused gameplay tests PASS, paid/Tripo credits **0**.
+- Real-runtime metrics: renderers **835 -> 852**, materials **75 -> 81**, triangles **1,847,720 -> 2,083,716**, lights **31 -> 31**.
+- **Defense: local VISUAL PASS.** The lower fortress front is clearly transformed at zoom9 and mobile.
+- **Granero/Cuartel: VISUAL PARTIAL.** They are richer production replacements but still lack sufficiently unmistakable functional identity against Hero Bastion/reference.
+- Owner question answer: **YES, the new Production Art System has begun transforming Valoria visibly in the actual playable frame.**
+- Do not copy the current MidTier donor-composition recipe blindly to Forja/Hospital/Cantera. Next functional asset must use stronger source-level semantic authorship; no new RESET/general research program and no paid generation without explicit authorization.
 - Canonical result: `docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md`.
 
 ## 2026-10-04 — VALORIA PRODUCTION ART SYSTEM RESET v1 — CLOSED / SYSTEM PASS
