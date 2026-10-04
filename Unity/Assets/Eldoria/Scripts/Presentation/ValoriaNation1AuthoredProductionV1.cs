@@ -40,7 +40,8 @@ namespace Eldoria.Presentation
     string n=Chain(r.transform);
     bool breakthrough=n.Contains("valoria · breakthrough")&&(n.Contains("wall")||n.Contains("tower")||n.Contains("gate")||n.Contains("curtain")||n.Contains("front ")||n.Contains("west ")||n.Contains("east ")||n.Contains("rear "));
     bool production=n.Contains("flat citadel production")&&(n.Contains("wall")||n.Contains("tower")||n.Contains("gate")||n.Contains("curtain"));
-    if(breakthrough||production)r.enabled=false;
+    bool consolidation=n.Contains("art consolidation")&&(n.Contains("wall")||n.Contains("tower")||n.Contains("gate")||n.Contains("retaining")||n.Contains("return")||n.Contains("watchtower")||n.Contains("base"));
+    if(breakthrough||production||consolidation)r.enabled=false;
    }
 
    Fort(root,gate,"main gate",new Vector3(0f,.10f,-6.52f),4.75f,3.45f,0f);
