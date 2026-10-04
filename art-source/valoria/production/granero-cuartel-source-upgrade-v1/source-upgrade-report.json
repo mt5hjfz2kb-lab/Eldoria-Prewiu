@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
+  "phase": "SOURCE_ISOLATED",
+  "source_strategy": "Granero uses certified dedicated granary source; Cuartel uses dedicated barracks core plus bounded accepted rich defensive geometry for guarded military compound identity",
+  "tripo": false,
+  "paid_credits": 0,
+  "blend": "art-source/valoria/production/granero-cuartel-source-upgrade-v1/Valoria_Granero_Cuartel_SourceUpgrade_v1.blend",
+  "blend_sha256": "d051f4bcf3701d7eda0cbd36784e94f0e5a1e0f1d030ca1b4f23247d46dc70be",
+  "assets": [
+    {
+      "role": "granero",
+      "asset_id": "Valoria_Granero_GCSUv1",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb"
+      ],
+      "source_sha256": [
+        "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67"
+      ],
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+      "glb_sha256": "6122f57e9b444e7d68aa823b38567989e4ccf91fa13e34c83ea2aabfef29f2c5",
+      "geometry": {
+        "objects": 1,
+        "vertices": 55232,
+        "triangles": 49800,
+        "materials": [
+          "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+        ],
+        "bounds": [
+          -2.225,
+          -2.2192,
+          0.0,
+          2.225,
+          2.2192,
+          2.7256
+        ]
+      },
+      "prior_certification": {
+        "run": 36572780639,
+        "artifact": 11036129405,
+        "verdict": "TECH PASS / VISUAL PASS"
+      },
+      "method": "Granero: dedicated functional source normalization. Cuartel: dedicated barracks core + bounded accepted rich defensive modules forming guarded training forecourt; no MidTier donor recomposition; no primitive architecture.",
+      "preview": "docs/evidence/valoria-granero-cuartel-source-upgrade-v1/granero-source-3q.png"
+    },
+    {
+      "role": "cuartel",
+      "asset_id": "Valoria_Cuartel_GCSUv1",
+      "sources": [
+        "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb"
+      ],
+      "source_sha256": [
+        "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+        "8431f5a0d3ab5cfcf26d36b3b9289c8ce94c0ae5d3df554d605ee0facd1bc220",
+        "0f23b50e4025617dc593f88e90bcac7947a1ae80d82f1167321d3b25ebfc43d2"
+      ],
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+      "glb_sha256": "cd1dbf40da6314f6216148d05096a22ce09d0bb933785ce7b12e5dedae4deec0",
+      "geometry": {
+        "objects": 11,
+        "vertices": 348786,
+        "triangles": 288735,
+        "materials": [
+          "Eldoria Rock \u00b7 Hero Prototype",
+          "Eldoria Stone \u00b7 Hero Prototype",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.002",
+          "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+        ],
+        "bounds": [
+          -1.7336,
+          -2.7572,
+          0.0,
+          6.3404,
+          0.6603,
+          2.0616
+        ]
+      },
+      "prior_certification": {
+        "run": 36529204672,
+        "artifact": 11015563918,
+        "verdict": "dedicated source accepted technically; semantic military read requires stronger composition"
+      },
+      "method": "Granero: dedicated functional source normalization. Cuartel: dedicated barracks core + bounded accepted rich defensive modules forming guarded training forecourt; no MidTier donor recomposition; no primitive architecture.",
+      "preview": "docs/evidence/valoria-granero-cuartel-source-upgrade-v1/cuartel-source-3q.png"
+    }
+  ],
+  "source_visual_verdict": {
+    "granero": "PENDING_VISUAL_REVIEW",
+    "cuartel": "PENDING_VISUAL_REVIEW"
+  },
+  "integration_allowed": false
+}
