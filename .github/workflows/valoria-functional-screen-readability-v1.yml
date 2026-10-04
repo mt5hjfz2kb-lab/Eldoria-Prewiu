@@ -1,10 +1,6 @@
 name: "[PRODUCTION] Valoria Functional Screen Readability v1"
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-functional-screen-readability-v1-request.json'
 concurrency:
   group: valoria-functional-screen-readability-v1
   cancel-in-progress: true
