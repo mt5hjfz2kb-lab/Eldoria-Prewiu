@@ -19,6 +19,7 @@ namespace Eldoria.Presentation
    BuildHeroTerracedCore(root);
    BuildCivicDensity(root);
    BuildFunctionalDressing(root);
+   BuildGreenery(root);
    BuildLighting(root);
    StripGameplay(root.gameObject);
   }
@@ -84,13 +85,82 @@ namespace Eldoria.Presentation
    Prop(root,barrel,"granary barrel",new Vector3(-3.95f,.16f,-5.05f),.44f,4f);
   }
 
+  static void BuildGreenery(Transform root)
+  {
+   var art=ValoriaExternalAssetLibrary.Load();if(art==null)return;
+   var tree=art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree;
+   var bush=art.SlavicBush;
+   if(tree!=null)
+   {
+    foreach(var s in new[]{
+      new Vector4(-5.25f,4.55f,12f,1.20f),new Vector4(5.25f,4.55f,-18f,1.18f),
+      new Vector4(-6.65f,5.65f,28f,1.05f),new Vector4(6.60f,5.55f,-22f,1.08f),
+      new Vector4(-2.65f,7.35f,8f,.92f),new Vector4(2.70f,7.30f,-10f,.94f),
+      new Vector4(-2.20f,2.65f,18f,.78f),new Vector4(2.30f,2.62f,-16f,.80f)})
+    {
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic tree",tree,new Vector3(s.x,.14f,s.y),s.w,s.w*2.4f,Quaternion.Euler(0,s.z,0));
+     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    }
+   }
+   if(bush!=null)
+   {
+    foreach(var p in new[]{new Vector3(-4.75f,.14f,3.85f),new Vector3(4.80f,.14f,3.85f),new Vector3(-1.65f,.14f,2.30f),new Vector3(1.70f,.14f,2.30f)})
+    {
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic shrub",bush,p,.62f,.62f,Quaternion.identity);
+     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    }
+   }
+  }
+
   static void BuildLighting(Transform root)
   {
+   RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
+   RenderSettings.ambientSkyColor=new Color(.78f,.82f,.86f,1f);
+   RenderSettings.ambientEquatorColor=new Color(.60f,.55f,.47f,1f);
+   RenderSettings.ambientGroundColor=new Color(.27f,.23f,.19f,1f);
+   RenderSettings.ambientIntensity=1.10f;
+   RenderSettings.fog=false;
+
+   foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+   {
+    if(l.type!=LightType.Directional)continue;
+    l.color=new Color(1f,.90f,.76f,1f);l.intensity=Mathf.Max(l.intensity,1.18f);
+    l.shadows=LightShadows.Soft;l.shadowStrength=.72f;
+    l.transform.rotation=Quaternion.Euler(48f,-34f,0f);
+   }
+
+   var fillGo=new GameObject("Valoria · Nation1 · cool sky fill");fillGo.transform.SetParent(root,true);fillGo.transform.rotation=Quaternion.Euler(35f,150f,0f);
+   var fill=fillGo.AddComponent<Light>();fill.type=LightType.Directional;fill.color=new Color(.62f,.72f,.92f,1f);fill.intensity=.12f;fill.shadows=LightShadows.None;
+
+   WarmExistingStone();
    Warm(root,"hero stair west",new Vector3(-1.25f,1.25f,4.40f),.22f,3.6f);
    Warm(root,"hero stair east",new Vector3(1.25f,1.25f,4.40f),.22f,3.6f);
    Warm(root,"hero terrace west",new Vector3(-3.55f,1.35f,5.45f),.16f,3.2f);
    Warm(root,"hero terrace east",new Vector3(3.55f,1.35f,5.45f),.16f,3.2f);
    Warm(root,"gate warmth",new Vector3(0f,1.55f,-5.95f),.20f,3.7f);
+  }
+
+  static void WarmExistingStone()
+  {
+   foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+   {
+    string n=r.gameObject.name.ToLowerInvariant();
+    bool target=n.Contains("breakthrough")||n.Contains("flat citadel production")||n.Contains("flat citadel · main gate");
+    if(!target)continue;
+    var src=r.sharedMaterials;var dst=new Material[src.Length];
+    for(int i=0;i<src.Length;i++)
+    {
+     var m=src[i];if(m==null){dst[i]=null;continue;}
+     var clone=new Material(m){name="Nation1 warm · "+m.name};
+     foreach(var prop in new[]{"_BaseColor","_Color"})
+     {
+      if(!clone.HasProperty(prop))continue;
+      try{var col=clone.GetColor(prop);clone.SetColor(prop,new Color(Mathf.Min(1f,col.r*1.08f),Mathf.Min(1f,col.g*1.055f),Mathf.Min(1f,col.b*.98f),col.a));}catch{}
+     }
+     dst[i]=clone;
+    }
+    r.sharedMaterials=dst;
+   }
   }
 
   static GameObject Piece(Transform root,GameObject src,string role,Vector3 ground,float footprint,float maxHeight,float yaw)
