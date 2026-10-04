@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-secondary-support-form-replacement-v1",
   "asset_or_sector": "Valoria reachable HOME/PAN envelope secondary/support architecture and lower-city massing",
   "profile": "environment_composition",
@@ -24,5 +24,11 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "One significant large-form replacement pass. Existing authored masonry/Slavic/rock sources only. Replace weak retaining/support faces and articulate repetitive lower-city housing; no camera/ground micro-iterations, no Forja/Hospital/Cantera, 0 Tripo/paid credits."
+  "notes": "One significant large-form replacement pass. Existing authored masonry/Slavic/rock sources only. Replace weak retaining/support faces and articulate repetitive lower-city housing; no camera/ground micro-iterations, no Forja/Hospital/Cantera, 0 Tripo/paid credits.",
+  "result": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+  "planner_run_id": 37219017523,
+  "authoritative_run_id": 37219568955,
+  "authoritative_artifact_id": 11309203816,
+  "credits_spent": 0,
+  "next": "VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1"
 }
