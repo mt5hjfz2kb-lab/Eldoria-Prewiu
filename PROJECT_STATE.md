@@ -1,5 +1,10 @@
 ## 2026-10-04 — Valoria Granero + Cuartel Source Upgrade v1 closed
 
+## Valoria camera-first functional source — 2026-10-04
+
+`VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1` is closed with a split source verdict: run **37208777268** / artifact **11305893049**. Cuartel passes isolated source review using a rich twin-tower guarded-court composition; Granero fails because visible procedural macro forms clash with the rich core. Unity was not run, credits remain 0, and no runtime promotion occurred. Next is Granero-only rich-geometry camera-first assembly, then a paired Unity gate only if it passes. See `docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md`.
+
+
 ## Valoria functional screen readability — 2026-10-04
 
 `VALORIA FUNCTIONAL SCREEN READABILITY v1` is **CLOSED: TECH PASS / VISUAL PARTIAL / NOT PROMOTED**. Run **37208123181** / artifact **11305333489** preserved gameplay, camera, Final Look, defense, Hero Bastion and terrain with 0 credits. The one allowed layout/presentation hypothesis improved presence but did not make Granero and Cuartel simultaneously unmistakable at zoom9 + mobile. No further placement/material/prop pass is authorized; rollout remains HOLD and the next required method is camera-first functional source authoring. See `docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md`.
