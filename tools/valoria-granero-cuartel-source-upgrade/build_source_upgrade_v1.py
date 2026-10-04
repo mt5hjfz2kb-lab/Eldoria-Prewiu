@@ -77,8 +77,6 @@ def render_preview(kind,objs):
  if scene.world is None:
   scene.world=bpy.data.worlds.new("Neutral preview world")
  scene.world.color=(0.055,0.06,0.065)
-  scene.world=bpy.data.worlds.new("Neutral preview world")
- scene.world.color=(0.055,0.06,0.065)
  # neutral ground, deliberately not semantic dressing
  bpy.ops.mesh.primitive_plane_add(size=max(size.x,size.y)*3.2,location=(0,0,mn.z-.02))
  floor=bpy.context.object; floor.name="Neutral preview floor"
