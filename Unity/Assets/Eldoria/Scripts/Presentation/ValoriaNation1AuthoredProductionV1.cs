@@ -174,7 +174,6 @@ namespace Eldoria.Presentation
 
   static void BuildCentralPlaza(Transform root)
   {
-   // Replace the old thin plinth/standard with a civic focal point that reads at strategic zoom.
    foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
    {
     if(r==null||!r.enabled)continue;
@@ -188,31 +187,26 @@ namespace Eldoria.Presentation
       ?? ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.55f,.49f,1f),"stone",new Vector2(2f,2f),1f);
 
    Disc(root,"civic plaza outer",new Vector3(0f,.174f,.72f),2.15f,.055f,cobble);
-   Disc(root,"civic plaza inner",new Vector3(0f,.218f,.72f),1.12f,.055f,stone);
+   Disc(root,"civic plaza inner",new Vector3(0f,.218f,.72f),1.00f,.045f,stone);
 
-   var plinth=GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-   plinth.name="Valoria · Nation1 · civic monument plinth";plinth.transform.SetParent(root,true);
-   plinth.transform.position=new Vector3(0f,.36f,.72f);plinth.transform.localScale=new Vector3(.82f,.16f,.82f);
-   plinth.GetComponent<Renderer>().sharedMaterial=stone;StripGameplay(plinth);
-
-   var obelisk=GameObject.CreatePrimitive(PrimitiveType.Cube);
-   obelisk.name="Valoria · Nation1 · civic monument";obelisk.transform.SetParent(root,true);
-   obelisk.transform.position=new Vector3(0f,1.18f,.72f);obelisk.transform.localScale=new Vector3(.34f,1.45f,.34f);
-   obelisk.GetComponent<Renderer>().sharedMaterial=stone;StripGameplay(obelisk);
-
-   var cap=GameObject.CreatePrimitive(PrimitiveType.Cube);
-   cap.name="Valoria · Nation1 · civic blue crown";cap.transform.SetParent(root,true);
-   cap.transform.position=new Vector3(0f,1.92f,.72f);cap.transform.localScale=new Vector3(.48f,.12f,.48f);
-   var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-   if(shader!=null)
+   var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_CivicMonument_v1");
+   if(monument!=null)
    {
-    var blue=new Material(shader){name="Nation1 civic blue"};
-    if(blue.HasProperty("_BaseColor"))blue.SetColor("_BaseColor",new Color(.035f,.12f,.34f,1f));
-    if(blue.HasProperty("_Color"))blue.SetColor("_Color",new Color(.035f,.12f,.34f,1f));
-    cap.GetComponent<Renderer>().sharedMaterial=blue;
+    var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.23f,.72f),1.38f,2.55f,Quaternion.identity);
+    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
    }
-   StripGameplay(cap);
-   DetailProps+=3;
+
+   var stall=Resources.Load<GameObject>("Valoria/Nation1/Nation1_MarketStall_v1");
+   if(stall!=null)
+   {
+    foreach(var spec in new[]{
+      new Vector4(-1.72f,.14f,-.10f,18f),new Vector4(1.72f,.14f,-.05f,-18f),
+      new Vector4(-1.48f,.14f,1.88f,166f),new Vector4(1.52f,.14f,1.86f,194f)})
+    {
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · market stall",stall,new Vector3(spec.x,spec.y,spec.z),1.18f,1.55f,Quaternion.Euler(0f,spec.w,0f));
+     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+    }
+   }
   }
 
   static void Disc(Transform root,string name,Vector3 p,float radius,float height,Material mat)
@@ -239,17 +233,44 @@ namespace Eldoria.Presentation
    var barrel=Resources.Load<GameObject>("Valoria/UrbanProps/Barrel");
    var crate=Resources.Load<GameObject>("Valoria/UrbanProps/Crate");
    var sack=Resources.Load<GameObject>("Valoria/UrbanProps/Sack");
-   if(barrel==null||crate==null||sack==null)return;
+   if(barrel!=null&&crate!=null&&sack!=null)
+   {
+    Prop(root,barrel,"sawmill barrel 1",new Vector3(-7.55f,.16f,-2.75f),.48f,18f);
+    Prop(root,barrel,"sawmill barrel 2",new Vector3(-7.12f,.16f,-2.62f),.44f,-12f);
+    Prop(root,crate,"sawmill crate 1",new Vector3(-6.62f,.16f,-3.02f),.52f,8f);
+    Prop(root,crate,"sawmill crate 2",new Vector3(-6.15f,.16f,-3.15f),.44f,-18f);
+    Prop(root,crate,"barracks crate 1",new Vector3(6.65f,.16f,-3.30f),.48f,14f);
+    Prop(root,barrel,"barracks barrel 1",new Vector3(7.15f,.16f,-3.18f),.43f,-8f);
+    Prop(root,sack,"granary sack 1",new Vector3(-1.65f,.16f,-5.08f),.55f,10f);
+    Prop(root,sack,"granary sack 2",new Vector3(-1.28f,.16f,-5.00f),.50f,-12f);
+    Prop(root,barrel,"granary barrel",new Vector3(-3.95f,.16f,-5.05f),.44f,4f);
+   }
 
-   Prop(root,barrel,"sawmill barrel 1",new Vector3(-7.55f,.16f,-2.75f),.48f,18f);
-   Prop(root,barrel,"sawmill barrel 2",new Vector3(-7.12f,.16f,-2.62f),.44f,-12f);
-   Prop(root,crate,"sawmill crate 1",new Vector3(-6.62f,.16f,-3.02f),.52f,8f);
-   Prop(root,crate,"sawmill crate 2",new Vector3(-6.15f,.16f,-3.15f),.44f,-18f);
-   Prop(root,crate,"barracks crate 1",new Vector3(6.65f,.16f,-3.30f),.48f,14f);
-   Prop(root,barrel,"barracks barrel 1",new Vector3(7.15f,.16f,-3.18f),.43f,-8f);
-   Prop(root,sack,"granary sack 1",new Vector3(-1.65f,.16f,-5.08f),.55f,10f);
-   Prop(root,sack,"granary sack 2",new Vector3(-1.28f,.16f,-5.00f),.50f,-12f);
-   Prop(root,barrel,"granary barrel",new Vector3(-3.95f,.16f,-5.05f),.44f,4f);
+   var art=ValoriaExternalAssetLibrary.Load();
+   if(art!=null)
+   {
+    if(art.Firewood!=null)
+    {
+     foreach(var spec in new[]{
+       new Vector4(-7.35f,.14f,-1.30f,12f),new Vector4(-6.72f,.14f,-1.15f,-18f),
+       new Vector4(-5.92f,.14f,-2.55f,26f)})
+     {
+      var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · sawmill firewood",art.Firewood,new Vector3(spec.x,spec.y,spec.z),.72f,.80f,Quaternion.Euler(0,spec.w,0));
+      if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+     }
+    }
+
+    if(art.SlavicStoneFence!=null)
+    {
+     foreach(var spec in new[]{
+       new Vector4(-2.50f,.14f,-5.55f,0f),new Vector4(.25f,.14f,-5.55f,0f),
+       new Vector4(5.55f,.14f,-3.90f,90f),new Vector4(7.85f,.14f,-3.90f,90f)})
+     {
+      var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · yard fence",art.SlavicStoneFence,new Vector3(spec.x,spec.y,spec.z),1.25f,.75f,Quaternion.Euler(0,spec.w,0));
+      if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+     }
+    }
+   }
   }
 
   static void BuildGreenery(Transform root)
