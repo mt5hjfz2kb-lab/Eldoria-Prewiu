@@ -1,16 +1,13 @@
 {
-  "enabled": false,
-  "request_id": "valoria-lower-city-urban-massing-reauthoring-v1",
-  "asset_or_sector": "Valoria lower-city dominant visible residential/frontage band",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "enabled": true,
+  "request_id": "valoria-structural-frame-urban-support-integration-v1",
+  "asset_or_sector": "Valoria dominant structural frame between Hero Bastion and promoted lower city",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
   "allow_tripo": false,
-  "credit_authorization": {
-    "approved": false,
-    "authorized_credit_cost": 0
-  },
+  "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
   "capabilities": {
-    "blender_material_consolidation": false,
+    "blender_material_consolidation": true,
     "unity_modular_assembly": true,
     "unity_shared_materials": true,
     "unity_decals": false,
@@ -24,13 +21,6 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Structural massing first. Existing authored MidTier/TerrainTerrace/StoneArchitecture sources only unless the structural gate proves a real geometry gap. Suppress overlapping repeated housing systems; build 2–3 distinct urban groups. No camera, ground micro-dressing, support-form continuation, Forja/Hospital/Cantera or Tripo spend.",
-  "result": "TECH PASS / VISUAL PASS / PROMOTED",
-  "planner_run_id": 37221347279,
-  "authoritative_run_id": 37221732105,
-  "authoritative_artifact_id": 11309549299,
-  "confirmation_run_id": 37222027889,
-  "confirmation_artifact_id": 11309364965,
-  "credits_spent": 0,
-  "next": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1"
+  "notes": "Geometry gap is proven by the earlier certified-support replacement visual partial-fail and by direct inspection of the restored high-resolution canonical reference. Existing HighStraightWall/CornerWallL recomposition is not enough. Use explicit zero-credit Blender authoring for three structural civic sources, then one Unity A/B across HOME, Granero pan, intermediate pan, Cuartel pan and 16:9. Tripo remains prohibited.",
+  "result": "IN PROGRESS"
 }
