@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:22:00Z",
+  "updated_at": "2026-10-04T10:27:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -43,7 +43,12 @@
         "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
         "pipeline/active-workstreams.json",
         ".github/workflows/valoria-production-art-starter-source-v1.yml",
-        "pipeline/valoria-production-art-starter-run-request.json"
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-final-look-profiles.json",
+        "pipeline/valoria-camera-ab-spec.json",
+        "pipeline/valoria-density-life-plan.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md"
       ],
       "resources": [
         "valoria-production-source-design"
