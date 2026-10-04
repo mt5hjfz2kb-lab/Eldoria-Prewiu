@@ -1,0 +1,62 @@
+{
+  "asset_id": "Valoria_CivicHouse_v1",
+  "classification": "TEMPORARY",
+  "role": "SECONDARY",
+  "function": "CivicHouse",
+  "geometry": {
+    "triangles": 9800,
+    "materials": 6,
+    "uv0": true,
+    "normals": true
+  },
+  "materials": [
+    {
+      "slot": "stone",
+      "family": "Eldoria_Stone",
+      "maps": [
+        "authoring-procedural-placeholder"
+      ]
+    },
+    {
+      "slot": "timber",
+      "family": "Eldoria_Timber",
+      "maps": [
+        "authoring-procedural-placeholder"
+      ]
+    },
+    {
+      "slot": "slate",
+      "family": "Eldoria_Slate",
+      "maps": [
+        "authoring-procedural-placeholder"
+      ]
+    }
+  ],
+  "export": {
+    "glb_path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb",
+    "sha256": "eadcf08bf9f4afc675bb9da7d178418b8b0c001447b896d3f84a85b20613777a",
+    "scale": 1.0,
+    "forward_axis": "+Z",
+    "up_axis": "+Y"
+  },
+  "unity": {
+    "resource_path": "Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1",
+    "owns_gameplay_collider": false,
+    "owns_hotspot": false
+  },
+  "evidence": {
+    "zoom9": "",
+    "mobile": "",
+    "technical_verdict": "PENDING_UNITY",
+    "visual_verdict": "PENDING_VISUAL",
+    "promotion_state": "CANDIDATE_NOT_PRODUCTION"
+  },
+  "source": {
+    "tool": "Blender",
+    "tool_version": "4.x",
+    "path": "art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend",
+    "sha256": "85ccce27f6beb5087e93abc321e4991e572266eef9b3aa2ba5344295a4bce236",
+    "reproducible": true,
+    "authoring_method": "architectural_boolean_custom_mesh"
+  }
+}

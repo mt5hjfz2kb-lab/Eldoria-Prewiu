@@ -1,0 +1,251 @@
+{
+  "generated_at": "2026-10-04T10:38:03.788Z",
+  "policy": "pipeline/production-art-source-policy.json",
+  "primitive_signature_files": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/BastionImageTo3DReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoria2Review.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaInterfaceReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoAppearanceV4Review.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGateStreetModuleReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoModuleReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoMultipieceReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTerraceModuleReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTextureImportDebug.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/ValoriaInterfaceShortChainReview.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/LayeredValoriaArtTestCapture.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaMegaArchitectureAtlasGateV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaOriginalHeroCapture.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSlavicPremiumFamilyGateV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Plane"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/WorldPack4XComparisonGate.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Sphere"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Cylinder",
+        "PrimitiveType.Sphere",
+        "PrimitiveType.Capsule",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBackplateCandidateV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV2.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV3.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV4.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandCleanupV2.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameRuinFrameV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaJaggedBackdropV1.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Quad"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Cylinder",
+        "PrimitiveType.Sphere"
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+      "signatures": [
+        "GameObject.CreatePrimitive",
+        "PrimitiveType.Cube",
+        "PrimitiveType.Cylinder",
+        "PrimitiveType.Sphere"
+      ]
+    },
+    {
+      "path": "tools/valoria-production-art-starter/build_starter_family_v1.py",
+      "signatures": [
+        "bpy.ops.mesh.primitive_cube_add",
+        "bpy.ops.mesh.primitive_cylinder_add"
+      ]
+    }
+  ],
+  "production_manifests": [
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_CivicHouse_v1.production-art.json",
+      "classification": "TEMPORARY"
+    },
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_MainGate_v1.production-art.json",
+      "classification": "TEMPORARY"
+    },
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_Tower_v1.production-art.json",
+      "classification": "TEMPORARY"
+    },
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_WallSegment_v1.production-art.json",
+      "classification": "TEMPORARY"
+    },
+    {
+      "path": "art-source/valoria/production/starter-family/Valoria_Workshop_v1.production-art.json",
+      "classification": "TEMPORARY"
+    }
+  ],
+  "failures": [],
+  "verdict": "PASS"
+}
