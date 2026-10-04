@@ -13,7 +13,7 @@
   "tripo_credits": 0,
   "paid_credits": 0,
   "attempt": 5,
-  "tech_fix": "Install libegl1 and Mesa DRI so headless EEVEE source-review renders can execute. Art source unchanged.",
+  "tech_fix": "Install libegl1 + libgl1-mesa-dri on the GitHub-hosted Blender runner so isolated EEVEE previews can render headlessly. Geometry, silhouette, materials and composition unchanged.",
   "previous_run_id": 37226044864,
-  "previous_result": "TECH FAIL after GLB export when Blender preview render aborted because libEGL.so.1 was unavailable."
+  "previous_result": "TECH FAIL after source/export due missing libEGL.so.1 when starting isolated preview render."
 }
