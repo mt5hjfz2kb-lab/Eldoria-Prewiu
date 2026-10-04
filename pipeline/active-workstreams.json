@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:01:00Z",
-  "active": [
+  "updated_at": "2026-10-04T14:13:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-functional-screen-readability-v1",
       "title": "Valoria Functional Screen Readability v1",
@@ -28,13 +29,18 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T14:01:00Z",
       "base_main_sha": "22866b25b299b3fb214a1a949c9587668d95cd3b",
-      "dependency": "Resolve only Granero/Cuartel functional screen readability at zoom9/mobile using approved source assets. One primary layout/presentation hypothesis per building. Preserve orthographic camera, RESET Final Look, terrain, accepted defense, Hero Bastion, gameplay/hotspots/colliders/parcels/routes/future reserves. Zero Tripo/paid spend."
-    }
-  ],
-  "history": [
+      "dependency": "Resolve only Granero/Cuartel functional screen readability at zoom9/mobile using approved source assets. One primary layout/presentation hypothesis per building. Preserve orthographic camera, RESET Final Look, terrain, accepted defense, Hero Bastion, gameplay/hotspots/colliders/parcels/routes/future reserves. Zero Tripo/paid spend.",
+      "completed_at": "2026-10-04T14:13:00Z",
+      "run_id": 37208123181,
+      "artifact_id": 11305333489,
+      "credits_spent": 0,
+      "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
+      "next": "Do not repeat layout/material/prop tuning. Change to camera-first source authoring; rollout to Forja/Hospital/Cantera remains HOLD."
+    },
     {
       "id": "valoria-granero-cuartel-source-upgrade-v1",
       "title": "Valoria Granero + Cuartel Source Upgrade v1",
