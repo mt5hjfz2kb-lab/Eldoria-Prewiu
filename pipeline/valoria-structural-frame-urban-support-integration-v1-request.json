@@ -1,30 +1,24 @@
 {
   "schema_version": 1,
-  "status": "CAPTURE_CANDIDATE",
+  "status": "RUN_UNITY_GATE",
   "workstream": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1",
   "baseline_head": "b60b0be754909683b97a86d788f6fed4bd2d7811",
-  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
-  "route": "explicit_blender_authored_geometry_then_unity",
   "planner_run_id": 37223687136,
-  "source_run_id": 37223931751,
-  "source_artifact_id": 11310713075,
-  "hypothesis": "Replace the 2–4 largest grey technical support masses with one deliberately authored civic structural family: twin retaining bays around the ceremonial stair, a lower arcaded frontage, and a dedicated Cuartel terrace support. Arches, buttresses, cornices, parapets and recessed shadow should change the read from support geometry to capital architecture without competing with Hero Bastion.",
+  "blender_run_id": 37223931751,
+  "blender_artifact_id": 11310713075,
+  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "hypothesis": "Replace only the dominant technical support masses with four placements built from three deliberately authored Blender structural sources: paired civic retaining bays at the Bastion stair, one lower arcaded civic front, and one dedicated Cuartel terrace support. Suppress the technical shelves/seams they visually replace while preserving all gameplay and promoted lower-city urban groups.",
   "authored_sources": [
     "CivicRetainingBay.glb",
     "LowerArcadedFront.glb",
     "CuartelTerraceSupport.glb"
-  ],
-  "target_masses": [
-    "central Bastion stair flanking supports",
-    "central/lower retaining frontage",
-    "Cuartel-side terrace support"
   ],
   "preserve": [
     "Hero Bastion",
     "accepted defense",
     "Granero",
     "Cuartel",
-    "promoted lower-city massing",
+    "Valoria Lower-City Urban Massing Reauthoring v1 promoted groups",
     "west craft court",
     "east merchant front",
     "upper terrace houses",
@@ -43,15 +37,32 @@
     "gameplay",
     "progression"
   ],
+  "prohibited": [
+    "new houses",
+    "density changes",
+    "camera changes",
+    "terrain dressing changes",
+    "ground overlay changes",
+    "Granero/Cuartel repositioning",
+    "Forja",
+    "Hospital",
+    "Cantera",
+    "microprops",
+    "vegetation solution",
+    "Tripo spend"
+  ],
   "stop_gate": [
     "HOME mobile BEFORE/AFTER",
     "PAN Granero BEFORE/AFTER",
     "PAN intermediate BEFORE/AFTER",
     "PAN Cuartel BEFORE/AFTER",
     "16:9 BEFORE/AFTER",
-    "direct comparison against canonical high-resolution reference"
+    "direct comparison against approved high-resolution reference"
   ],
-  "promotion_rule": "Promote only if the dominant structural masses visibly change from technical supports/greybox to integrated Valoria architecture at first glance. CI/geometry count is insufficient.",
-  "anti_loop": "One structural hypothesis only. No v2/v3 or placement/color micro-iterations after a valid visual candidate.",
-  "credits": {"tripo": 0, "paid": 0}
+  "promotion_rule": "TECH PASS is insufficient. Promote only if the dominant support masses visibly read as real Valoria architecture at first glance, the Bastion-to-city relationship improves materially, and the AFTER looks more like a finishable premium game.",
+  "credits": {
+    "tripo": 0,
+    "paid": 0
+  },
+  "attempt": 1
 }
