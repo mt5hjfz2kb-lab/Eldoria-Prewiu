@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-mobile-navigable-city-v1",
   "asset_or_sector": "Valoria mobile home pose + bounded city navigation using existing Granero RCFv1 and Cuartel CFSv1",
   "profile": "environment_composition",
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Single anti-loop proof. Treat M2 only as the portrait home principle, preserve 16:9, use existing bounded pan/tap-drag/recenter architecture, do not move Granero/Cuartel, do not alter assets/materials/Final Look/Hero/defense, zero paid or Tripo credits."
+  "notes": "CLOSED: planner 37213645061 PASS; Unity run 37213794236 SUCCESS; artifact 11307920631. TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS. 0 credits. Camera investigation closed; next work returns to visible-frame graphical production."
 }
