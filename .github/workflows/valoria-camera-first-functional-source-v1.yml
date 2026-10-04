@@ -1,0 +1,60 @@
+name: "[PRODUCTION] Valoria Camera-First Functional Source v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-camera-first-functional-source-v1-request.json'
+permissions:
+  contents: write
+concurrency:
+  group: valoria-camera-first-functional-source-v1
+  cancel-in-progress: true
+
+jobs:
+  isolated-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+      - name: Build camera-first sources and source-camera previews
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('pipeline/valoria-camera-first-functional-source-v1-request.json'))
+          assert r['enabled'] is True and r['phase']=='source_isolated'
+          assert r['allow_unity_integration'] is False
+          assert r['tripo'] is False and r['credits']==0
+          PY
+          blender -b --python tools/valoria-camera-first-functional-source/build_camera_first_sources_v1.py
+          test -s art-source/valoria/production/camera-first-functional-source-v1/Valoria_CameraFirst_Functional_Source_v1.blend
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb
+          test -s docs/evidence/valoria-camera-first-functional-source-v1/granero-camera-first.png
+          test -s docs/evidence/valoria-camera-first-functional-source-v1/granero-silhouette-camera.png
+          test -s docs/evidence/valoria-camera-first-functional-source-v1/cuartel-camera-first.png
+          test -s docs/evidence/valoria-camera-first-functional-source-v1/cuartel-silhouette-camera.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-functional-source-v1-isolated
+          path: |
+            art-source/valoria/production/camera-first-functional-source-v1/**
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/**
+            pipeline/evidence/valoria-camera-first-functional-source-v1/**
+            docs/evidence/valoria-camera-first-functional-source-v1/*.png
+          retention-days: 30
+      - name: Persist camera-first source evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/camera-first-functional-source-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1 pipeline/evidence/valoria-camera-first-functional-source-v1 docs/evidence/valoria-camera-first-functional-source-v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist camera-first functional source candidates"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
