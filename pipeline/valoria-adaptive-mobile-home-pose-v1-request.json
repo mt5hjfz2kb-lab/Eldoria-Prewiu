@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA ADAPTIVE MOBILE HOME POSE v1",
+  "phase": "capture",
+  "nonce": "adaptive-mobile-home-pose-v1-20261004-1710",
+  "resolution": "390x844",
+  "variants": {
+    "M0": {
+      "description": "current runtime canonical home pose",
+      "position": [
+        18.2,
+        14.6,
+        -25.8
+      ],
+      "target": [
+        0,
+        3.35,
+        5.6
+      ],
+      "orthographic_size": 9.1
+    },
+    "M1": {
+      "description": "center adapted only; canonical direction preserved",
+      "center_offset": [
+        1.2,
+        0,
+        -2.8
+      ],
+      "position": [
+        19.4,
+        14.6,
+        -28.6
+      ],
+      "target": [
+        1.2,
+        3.35,
+        2.8
+      ],
+      "orthographic_size": 9.1
+    },
+    "M2": {
+      "description": "M1 center plus portrait-specific orthographic size",
+      "center_offset": [
+        1.2,
+        0,
+        -2.8
+      ],
+      "position": [
+        19.4,
+        14.6,
+        -28.6
+      ],
+      "target": [
+        1.2,
+        3.35,
+        2.8
+      ],
+      "orthographic_size": 12.2
+    }
+  },
+  "candidate_runtime_rule": {
+    "portrait_aspect_threshold": 0.72,
+    "fallback": "canonical M0 for aspect > 0.72"
+  },
+  "sources": {
+    "granero": "Valoria_Granero_RCFv1",
+    "cuartel": "Valoria_Cuartel_CFSv1"
+  },
+  "preserve": [
+    "orthographic projection",
+    "canonical camera direction",
+    "RESET Final Look",
+    "Hero Bastion",
+    "accepted defense",
+    "terrain",
+    "world layout",
+    "parcels",
+    "routes",
+    "hotspots",
+    "colliders",
+    "panning capability"
+  ],
+  "forbidden": [
+    "new assets",
+    "asset transforms",
+    "materials",
+    "perspective",
+    "density/props",
+    "layout changes",
+    "M3/M4/M5"
+  ],
+  "tripo": false,
+  "credits": 0
+}
