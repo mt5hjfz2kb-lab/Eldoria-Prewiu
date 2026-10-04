@@ -1,3 +1,14 @@
+## 2026-10-04 — VALORIA PRODUCTION ART SYSTEM RESET v1 — CLOSED / SYSTEM PASS
+
+- Canonical result: `docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md`.
+- Final verdict: **SYSTEM PASS / CURRENT FRAME BELOW REFERENCE / PRODUCTION ROUTE PROMOTED**. The reset proves a viable authored production system; it does **not** claim the current Valoria image matches the external reference.
+- Phase C final Stone defense: run **37199970115**, artifact **11302597038**, TECH PASS / VISUAL PASS relative to baseline; gameplay signature preserved; 0 paid/Tripo credits.
+- D/E/F matched gate: run **37200169545**, artifact **11302104433**. Runtime blanket material normalization rejected; source-authored materials retained. Reversible Final Look useful. Strategic perspective rejected; orthographic remains canonical.
+- G/H controlled-density gate: run **37200361506**, artifact **11302572572**, SUCCESS. 8 controlled trees + 6 functional props, gameplay preserved; neutral/small visual win.
+- Early primitive/procedural starter variants remain evidence only and are **NOT production art**. Final direction uses rich civil source grammar + reauthored Stone defensive grammar, with Hero Bastion as quality anchor.
+- Remaining visible gap is rollout/coherence: replace grey/black proxy architecture, complete secondary buildings, improve terrain/world transitions and functional activity. Do not answer the gap with random clutter or another primitive family.
+- Next production order: proxy replacement -> Granero -> Cuartel -> Forja -> Hospital -> Cantera/support -> terrain/world transitions -> activity/storytelling -> Bastion II+ -> zoom12/19 certification after full-frame pass.
+
 ## 2026-10-04 — Valoria Semantic Source Reauthoring Proof v1 — DEFINITIVE CLOSURE AFTER VARIANT 2
 
 - Final verdict remains **TECH PASS / VISUAL FAIL / NOT PROMOTED**. Accepted visual remains VQB `7a564bc5056bb7166b7704c313ae4db7d55d4530`.
