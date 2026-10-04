@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_FUNCTIONAL_SCREEN_READABILITY_V1_VISUAL_PARTIAL",
+  "status": "HOLD_AFTER_CAMERA_FIRST_SOURCE_SPLIT_VERDICT",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Granero/Cuartel retain SOURCE VISUAL PASS but failed the single allowed played-camera layout hypothesis at zoom9/mobile. Do not run another layout/material/prop pass. Next technique must be camera-first source authoring with functional identity encoded into large silhouette/massing for the canonical orthographic/mobile view. Forja/Hospital/Cantera remain HOLD.",
+  "next_priority": "Cuartel camera-first rich-module source passes isolated review. Granero camera-first procedural macro source fails production-art quality. Next: Granero-only rich-geometry camera-first assembly using no new primitive/procedural visible architecture; if source passes, pair with retained Cuartel_CFSv1 in one real Unity zoom9/mobile gate. Forja/Hospital/Cantera remain HOLD.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -113,5 +113,13 @@
     "credits_spent": 0,
     "result_doc": "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
     "anti_loop": "closed after one hypothesis; no second layout pass"
+  },
+  "camera_first_functional_source": {
+    "result": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY NOT RUN / NOT PROMOTED",
+    "source_run_id": 37208777268,
+    "source_artifact_id": 11305893049,
+    "credits_spent": 0,
+    "cuartel_candidate": "Valoria_Cuartel_CFSv1.glb",
+    "result_doc": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md"
   }
 }
