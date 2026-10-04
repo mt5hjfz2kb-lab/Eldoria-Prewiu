@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA FIRST PRODUCTION DISTRICT v1",
   "nonce": "fpd-v1-production-20261004-1244-correction",
   "scope": [
@@ -16,5 +16,8 @@
   "camera": "ORTHOGRAPHIC",
   "final_look": "RESET_ACCEPTED",
   "credits": 0,
-  "tripo": false
+  "tripo": false,
+  "closed_result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+  "final_run_id": 37202888357,
+  "final_artifact_id": 11303269944
 }
