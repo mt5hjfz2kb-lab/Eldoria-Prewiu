@@ -64,5 +64,8 @@
     "tripo": 0,
     "paid": 0
   },
-  "attempt": 1
+  "attempt": 2,
+  "tech_fix": "Editor-gate-only syntax repair: replace accidental literal \\\\n tokens in closeout statements. No geometry, placement, suppression target, camera or material change.",
+  "previous_run_id": 37224089729,
+  "previous_result": "TECH FAIL at C# compilation before scene creation; no visual judgment."
 }
