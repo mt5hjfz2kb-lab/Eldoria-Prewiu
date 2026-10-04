@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "DECIDED",
   "canonical": "ORTHOGRAPHIC",
-  "decision": "Retain orthographic and current runtime home pose. Aspect-aware mobile framing is directionally validated but not yet promotable; next change is structural functional-district anchor rebalancing, not another camera variant.",
+  "decision": "Retain orthographic. Promote portrait mobile (aspect <= 0.72) as an authored navigable HOME using the M2-equivalent pose plus bounded pan/recenter; 16:9 remains on the existing canonical framing. Full-city simultaneous visibility is no longer a requirement.",
   "evidence": {
     "run": 37200169545,
     "artifact": 11302104433
@@ -88,5 +88,47 @@
     "decision": "Aspect-ratio-specific home framing is validated as a useful principle, but no tested mobile pose is promoted. Current runtime home pose remains canonical pending functional-district anchor rebalancing.",
     "key_finding": "M2 keeps Hero Bastion dominant and reveals Cuartel fully, but Granero remains mostly outside portrait due to horizontal projected anchor spread.",
     "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md"
+  },
+  "mobile_navigable_city_v1": {
+    "status": "PROMOTED",
+    "run": 37213794236,
+    "artifact": 11307920631,
+    "technical": "PASS",
+    "mobile_navigation_visual": "PASS",
+    "gameplay": "PASS",
+    "mobile_home": {
+      "aspect_threshold": 0.72,
+      "position": [
+        19.4,
+        14.6,
+        -28.6
+      ],
+      "target": [
+        1.2,
+        3.35,
+        2.8
+      ],
+      "orthographic_size": 12.2
+    },
+    "early_game_pan_half_extents_at_390x844": [
+      16,
+      7
+    ],
+    "horizontal": {
+      "preserved": true,
+      "position": [
+        18.2,
+        14.6,
+        -25.8
+      ],
+      "target": [
+        0,
+        3.35,
+        5.6
+      ],
+      "orthographic_size": 9.1
+    },
+    "decision": "Home pose is an entry composition into a city larger than the viewport. Do not move Granero/Cuartel or zoom out merely for simultaneous visibility. Camera investigation is closed; return to graphical production.",
+    "result_doc": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md"
   }
 }
