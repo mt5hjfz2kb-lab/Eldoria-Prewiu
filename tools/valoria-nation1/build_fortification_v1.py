@@ -310,6 +310,37 @@ def add_backdrop_ridge(col):
     move_to(box("snow cap west",(-1.2,-.52,5.0),(1.40,.06,.28),SNOW,.01,rot=(0,math.radians(-18),0),uv=False),col)
     move_to(box("snow cap east",(2.5,.32,6.58),(1.55,.06,.30),SNOW,.01,rot=(0,math.radians(14),0),uv=False),col)
 
+def add_civic_monument(col):
+    parts=[]
+    # stepped octagonal pedestal
+    for z,rad,h,mat in [(0.10,1.05,.20,STONE_DARK),(0.25,.86,.16,STONE),(0.40,.68,.16,STONE)]:
+        bpy.ops.mesh.primitive_cylinder_add(vertices=8,radius=rad,depth=h,location=(0,0,z))
+        o=bpy.context.object;o.name="monument pedestal";o.data.materials.append(mat);move_to(o,col);parts.append(o)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=8,radius=.22,depth=1.55,location=(0,0,1.15))
+    colm=bpy.context.object;colm.name="monument column";colm.data.materials.append(STONE);move_to(colm,col);parts.append(colm)
+    # blue heraldic shield/plaque and gold trim at player-facing side.
+    parts.append(box("monument blue plaque",(0,-.235,1.18),(.46,.06,.58),BLUE,.025,uv=False))
+    parts.append(box("monument gold trim",(0,-.270,1.50),(.55,.045,.07),GOLD,.008,uv=False))
+    bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=.26,radius2=0,depth=.48,location=(0,0,2.08))
+    crown=bpy.context.object;crown.name="monument crown";crown.data.materials.append(GOLD);move_to(crown,col);parts.append(crown)
+    for o in parts:
+        if o.name.startswith("monument") and o not in col.objects: move_to(o,col)
+    join_by_material(col)
+
+def add_market_stall(col):
+    parts=[]
+    parts.append(box("stall deck",(0,0,.10),(2.10,1.35,.20),WOOD,.025,uv=False))
+    for x in (-.88,.88):
+        for y in (-.52,.52):
+            parts.append(box("stall post",(x,y,1.00),(.12,.12,1.85),WOOD,.012,uv=False))
+    parts.append(box("stall counter",(0,-.58,.72),(1.82,.24,.28),WOOD,.018,uv=False))
+    parts.append(box("stall rear shelf",(0,.48,.90),(1.70,.20,.18),WOOD,.015,uv=False))
+    # blue canopy with slight tilt/readable silhouette
+    parts.append(box("stall blue canopy",(0,0,1.92),(2.35,1.58,.16),BLUE,.025,rot=(math.radians(-4),0,0),uv=False))
+    parts.append(box("stall gold valance",(0,-.80,1.82),(2.28,.08,.14),GOLD,.008,uv=False))
+    for o in parts:move_to(o,col)
+    join_by_material(col)
+
 def add_stair(col):
     parts=[]
     steps=12;depth=.34;height=.085
@@ -346,13 +377,16 @@ house_col=collection("Nation1_CivicHouse_v1");add_civic_house(house_col,0)
 house2_col=collection("Nation1_CivicHouseB_v1");add_civic_house(house2_col,1)
 work_col=collection("Nation1_Workshop_v1");add_workshop(work_col)
 back_col=collection("Nation1_BackdropRidge_v1");add_backdrop_ridge(back_col)
+mon_col=collection("Nation1_CivicMonument_v1");add_civic_monument(mon_col)
+stall_col=collection("Nation1_MarketStall_v1");add_market_stall(stall_col)
 
 exports=[]
 for col,fn in [
     (wall_col,"Nation1_Wall_v1.glb"),(tower_col,"Nation1_Tower_v1.glb"),
     (gate_col,"Nation1_Gate_v1.glb"),(stair_col,"Nation1_Stair_v1.glb"),
     (house_col,"Nation1_CivicHouse_v1.glb"),(house2_col,"Nation1_CivicHouseB_v1.glb"),
-    (work_col,"Nation1_Workshop_v1.glb"),(back_col,"Nation1_BackdropRidge_v1.glb")
+    (work_col,"Nation1_Workshop_v1.glb"),(back_col,"Nation1_BackdropRidge_v1.glb"),
+    (mon_col,"Nation1_CivicMonument_v1.glb"),(stall_col,"Nation1_MarketStall_v1.glb")
 ]:
     p,objs=export_collection(col,fn);exports.append({"file":fn,"bytes":os.path.getsize(p),"objects":len(objs),"vertices":sum(len(o.data.vertices) for o in objs)})
 
