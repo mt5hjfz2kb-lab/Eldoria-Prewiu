@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
-  "phase": "source_isolated",
+  "phase": "closed",
   "nonce": "cfs-v1-source-20261004-1422",
   "assets": [
     "Granero",
@@ -18,5 +18,11 @@
   "camera": "canonical-orientation-equivalent orthographic isolated preview",
   "tripo": false,
   "credits": 0,
-  "anti_loop": "One camera-first source candidate per building. If either fails isolated functional read, close without Unity."
+  "anti_loop": "One camera-first source candidate per building. If either fails isolated functional read, close without Unity.",
+  "final_verdict": "TECH PASS / GRANERO SOURCE VISUAL FAIL / CUARTEL SOURCE VISUAL PASS / UNITY NOT RUN / NOT PROMOTED",
+  "source_gate": {
+    "run_id": 37208777268,
+    "artifact_id": 11305893049
+  },
+  "next": "Granero rich-geometry-only camera-first assembly; retain Cuartel_CFSv1 as source candidate."
 }
