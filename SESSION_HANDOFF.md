@@ -1,3 +1,17 @@
+## 2026-10-04 — VALORIA FUNCTIONAL SCREEN READABILITY v1 — CLOSED / TECH PASS / VISUAL PARTIAL / NOT PROMOTED
+
+- Authoritative gate: run **37208123181 SUCCESS**, artifact **11305333489**.
+- Route: Unity composition only; approved GCSU source geometry reused unchanged; Tripo/paid credits **0**.
+- Single hypothesis executed: Granero moved inward/forward and modestly enlarged to expose loading/storage mass; Cuartel moved inward/forward within the military side and modestly enlarged to recover its guarded facade in played-camera screen space.
+- Technical invariants: gameplay collider/hotspot signature preserved; ORTHOGRAPHIC camera, RESET Final Look, accepted defense, Hero Bastion and terrain unchanged; focused gameplay tests PASS.
+- Metrics remained identical: renderers **850 -> 850**, materials **81 -> 81**, triangles **2,166,395 -> 2,166,395**, lights **31 -> 31**.
+- Visual result: zoom9 improves presence but does not make both functions immediately unmistakable; mobile still fails simultaneous independent Granero + Cuartel readability.
+- Per anti-loop: **no second layout pass, no v2/v3, no material retune, no prop accumulation**.
+- Candidate remains disabled / not promoted. Existing playable runtime remains canonical.
+- Rollout to Forja/Hospital/Cantera remains **HOLD**.
+- Required next technique: camera-first source authoring whose large silhouette/massing already communicates function from canonical orthographic zoom9/mobile.
+- Canonical result: `docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1 — CLOSED / SOURCE PASS / UNITY VISUAL PARTIAL
 
 - Final verdict: **TECH PASS / SOURCE VISUAL PASS (Granero + Cuartel) / UNITY VISUAL PARTIAL / NOT PROMOTED**.
