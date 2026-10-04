@@ -69,6 +69,13 @@ Unity migration execution: start at `UNITY_MIGRATION_PLAN.md`, then `UNITY_CORE_
 - Experimental proof requests and proof-only Unity classes are evidence/reproduction infrastructure, not required production dependencies. Do not merge stale experimental branch history merely to recreate already-promoted canonical behavior.
 - If a future chat proposes the old blanket `image -> Tripo -> decimate -> Unity` flow without first passing the routing gate, treat that as a process regression and correct it before execution.
 
+## Canonical Blender professional-authoring rule
+- For new or materially reauthored player-visible Valoria environment geometry in Blender, follow `docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md` and `pipeline/blender-professional-authoring-standard.json`.
+- Blender is an artist-authoring environment, not a quality label. Primitive stacks, formulaic repeated bays, uniform procedural detail and flat placeholder materials remain GREYBOX/TEMPORARY unless visual evidence independently proves production quality.
+- For visible HERO/PRIMARY/SECONDARY work, design the screen-space silhouette and material relationship first; use real mesh authoring/modifiers/sculpt/Geometry Nodes as artist tools where appropriate; require an isolated ART SOURCE review before Unity integration; require integrated VISUAL PASS before promotion.
+- Do not use object count, triangle count, modifier count, successful export or green CI as art-quality proxies.
+- Tripo-sourced high-salience geometry is not exempt: it must pass professional Blender reauthoring/art review before production promotion.
+
 ## Canonical Valoria modular-art pipeline
 - Start Valoria art work at `docs/ELDORIA_ART_PIPELINE_INDEX.md` and `docs/VALORIA_MODULE_KIT.md`; these distinguish active production tooling, support infrastructure, historical experiments and real certified families.
 - For every new Tripo module, read and follow `docs/TRIPO_MODULE_PIPELINE.md`.
