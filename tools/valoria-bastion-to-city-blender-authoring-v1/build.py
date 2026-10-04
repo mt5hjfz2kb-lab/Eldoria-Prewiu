@@ -5,15 +5,11 @@ from mathutils import Vector
 # One source only. Primary forms are lofted irregular authored meshes; openings are true boolean voids.
 # No mirrored half, no formulaic repeated bays, no box-derived primary silhouette.
 
-def args():
-    av=sys.argv
-    av=av[av.index("--")+1:] if "--" in av else []
-    p=argparse.ArgumentParser()
-    p.add_argument("--output-dir",default="art-source/valoria/production/bastion-to-city-blender-authoring-v1")
-    p.add_argument("--evidence-dir",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source")
-    p.add_argument("--report",default="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source/source-report.json")
-    return p.parse_args(av)
-A=args()
+class FixedPaths:
+    output_dir="art-source/valoria/production/bastion-to-city-blender-authoring-v1"
+    evidence_dir="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source"
+    report="pipeline/evidence/valoria-bastion-to-city-blender-authoring-v1/source/source-report.json"
+A=FixedPaths()
 
 REQ="pipeline/valoria-bastion-to-city-blender-authoring-v1-request.json"
 r=json.load(open(REQ,encoding="utf-8"))
