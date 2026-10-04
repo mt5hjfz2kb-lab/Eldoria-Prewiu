@@ -10,6 +10,8 @@ using Object=UnityEngine.Object;
 
 namespace Eldoria.EditorTools
 {
+    // Editor-only deterministic stop gate. Per unity-slice impact policy this file does not
+    // require the full player-build job; it exists to certify reset phases with matched captures.
     public static class ValoriaProductionArtResetGateV1
     {
         const string Folder="ValoriaProductionArtResetV1Captures";
