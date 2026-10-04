@@ -65,7 +65,49 @@ namespace Eldoria.Presentation
         {
             var go=ValoriaKit.BenchmarkPiece("Valoria · Production Art · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Failed production piece "+role);
-            go.transform.SetParent(root,true);ApplyNeutralPreview(go);StripGameplay(go);Pieces++;
+            go.transform.SetParent(root,true);ApplyProductionMaterials(go);StripGameplay(go);Pieces++;
+        }
+
+        static void ApplyProductionMaterials(GameObject go)
+        {
+            var stone=ValoriaKit.DetailedSurfaceMaterial(new Color(.50f,.42f,.33f,1f),"stone",new Vector2(2.1f,2.1f),1.12f);
+            var darkStone=ValoriaKit.DetailedSurfaceMaterial(new Color(.32f,.29f,.25f,1f),"stone",new Vector2(2.5f,2.5f),1.05f);
+            var timber=ValoriaKit.DetailedSurfaceMaterial(new Color(.17f,.09f,.045f,1f),"wood",new Vector2(1.8f,1.8f),.96f);
+            var slate=ValoriaKit.DetailedSurfaceMaterial(new Color(.075f,.115f,.17f,1f),"slate",new Vector2(2.0f,2.0f),1.08f);
+            var plaster=ValoriaKit.DetailedSurfaceMaterial(new Color(.58f,.46f,.32f,1f),"stone",new Vector2(3.0f,3.0f),.42f);
+            var blue=Solid("Eldoria Heraldry Blue",new Color(.035f,.13f,.36f,1f),.24f,0f);
+            var warm=Solid("Eldoria Warm Window",new Color(.82f,.29f,.055f,1f),.38f,0f);
+            var metal=Solid("Eldoria Metal Accent",new Color(.20f,.15f,.075f,1f),.44f,.35f);
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                string on=(r.gameObject.name??"").ToLowerInvariant();
+                var src=r.sharedMaterials;var dst=new Material[src.Length];
+                for(int i=0;i<src.Length;i++)
+                {
+                    string mn=src[i]!=null?(src[i].name??"").ToLowerInvariant():"";
+                    string n=on+"|"+mn;
+                    if(n.Contains("roof")||n.Contains("slate"))dst[i]=slate;
+                    else if(n.Contains("timber")||n.Contains("wood")||n.Contains("door")||n.Contains("frame")||n.Contains("post")||n.Contains("beam")||n.Contains("bench"))dst[i]=timber;
+                    else if(n.Contains("plaster")||n.Contains("upper floor")||n.Contains("annex")||n.Contains("dormer body"))dst[i]=plaster;
+                    else if(n.Contains("banner")||n.Contains("herald"))dst[i]=blue;
+                    else if(n.Contains("window"))dst[i]=warm;
+                    else if(n.Contains("metal")||n.Contains("finial"))dst[i]=metal;
+                    else if(n.Contains("plinth")||n.Contains("shadow")||n.Contains("chimney"))dst[i]=darkStone;
+                    else dst[i]=stone;
+                }
+                r.sharedMaterials=dst;
+            }
+        }
+
+        static Material Solid(string name,Color color,float smooth,float metallic)
+        {
+            var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+            var m=new Material(shader){name=name};
+            if(m.HasProperty("_BaseColor"))m.SetColor("_BaseColor",color);
+            if(m.HasProperty("_Color"))m.SetColor("_Color",color);
+            if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth);
+            if(m.HasProperty("_Metallic"))m.SetFloat("_Metallic",metallic);
+            return m;
         }
 
         static void ApplyNeutralPreview(GameObject go)
