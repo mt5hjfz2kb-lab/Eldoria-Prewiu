@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T11:12:00Z",
+  "updated_at": "2026-10-04T11:17:00Z",
   "active": [
     {
       "id": "valoria-production-art-starter-source-v1",
@@ -36,7 +36,8 @@
         ".github/workflows/valoria-production-art-donor-audit-v1.yml",
         "pipeline/valoria-production-art-donor-audit-request.json",
         "tools/valoria-production-art-starter/audit_donor_glbs_v1.py",
-        "pipeline/evidence/valoria-production-art-donor-audit-v1.json"
+        "pipeline/evidence/valoria-production-art-donor-audit-v1.json",
+        "docs/VALORIA_PRODUCTION_ART_STARTER_V1_VERDICT.md"
       ],
       "resources": [
         "valoria-production-source-design",
