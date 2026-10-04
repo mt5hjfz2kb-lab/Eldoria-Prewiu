@@ -59,7 +59,9 @@ namespace Eldoria.EditorTools
       Mathf.Abs(camera.orthographicSize-ValoriaMobileNavigableCityV1.CanonicalOrthographicSize)>.001f)
     throw new Exception("16:9 canonical framing changed");
 
-   ValoriaStructuralFrameUrbanSupportIntegrationV1.Enabled=false;\n   ValoriaPairedFunctionalSourceV1.Enabled=false;\n   EditorApplication.Exit(0);
+   ValoriaStructuralFrameUrbanSupportIntegrationV1.Enabled=false;
+   ValoriaPairedFunctionalSourceV1.Enabled=false;
+   EditorApplication.Exit(0);
   }
 
   static Camera Create(PlayerState state)
