@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-bastion-to-city-architectural-frame-v1",
   "asset_or_sector": "Valoria complete dominant architectural frame linking Hero Bastion to promoted lower city",
   "profile": "environment_new_geometry",
@@ -27,5 +27,12 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Method-level replacement after Structural Frame / Urban Support Integration v1 partial-fail. One complete asymmetric architectural composition, screen-first and material-designed before Unity. Must replace the dominant stair-flanking support silhouette as one coherent Bastion-to-city frame. Follow BLENDER_PROFESSIONAL_V1. No houses, density, camera, terrain-as-primary-problem, functional-building, gameplay/route/parcel/reserve changes. Zero Tripo."
+  "notes": "Method-level replacement after Structural Frame / Urban Support Integration v1 partial-fail. One complete asymmetric architectural composition, screen-first and material-designed before Unity. Must replace the dominant stair-flanking support silhouette as one coherent Bastion-to-city frame. Follow BLENDER_PROFESSIONAL_V1. No houses, density, camera, terrain-as-primary-problem, functional-building, gameplay/route/parcel/reserve changes. Zero Tripo.",
+  "result": "TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / NOT PROMOTED",
+  "final_run_id": null,
+  "final_artifact_id": null,
+  "source_run_id": 37226253119,
+  "source_artifact_id": 11312172507,
+  "credits_spent": 0,
+  "final_note": "Mandatory isolated source review rejected the single complete architectural-frame candidate before Unity. No production resource/hook remains. Anti-loop forbids v2/v3 or micro-adjustment."
 }
