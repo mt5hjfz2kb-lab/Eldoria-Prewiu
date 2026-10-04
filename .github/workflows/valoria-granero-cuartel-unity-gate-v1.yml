@@ -1,10 +1,6 @@
 name: "[PRODUCTION] Valoria Granero Cuartel Unity Gate v1"
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-granero-cuartel-unity-gate-v1-request.json'
 concurrency:
   group: valoria-granero-cuartel-unity-gate-v1
   cancel-in-progress: true
