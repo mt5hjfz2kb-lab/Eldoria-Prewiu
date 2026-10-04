@@ -1,0 +1,25 @@
+{
+  "method": "Blender authored structural architecture; explicit arcades, buttresses, cornices, parapets and civic banner relief; no Tripo",
+  "sources_reused": [
+    "Eldoria stone/slate/civic-blue material grammar"
+  ],
+  "outputs": [
+    {
+      "file": "CivicRetainingBay.glb",
+      "bytes": 166136,
+      "objects": 40
+    },
+    {
+      "file": "LowerArcadedFront.glb",
+      "bytes": 209724,
+      "objects": 55
+    },
+    {
+      "file": "CuartelTerraceSupport.glb",
+      "bytes": 181820,
+      "objects": 42
+    }
+  ],
+  "tripo_credits": 0,
+  "paid_credits": 0
+}
