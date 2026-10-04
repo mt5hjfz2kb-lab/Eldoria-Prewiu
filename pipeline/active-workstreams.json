@@ -1,8 +1,39 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:56:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T18:09:00Z",
+  "active": [
+    {
+      "id": "valoria-structural-frame-urban-support-integration-v1",
+      "title": "Valoria Structural Frame / Urban Support Integration v1",
+      "owner": "chat-valoria-structural-frame-urban-support-integration-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaStructuralFrameUrbanSupportIntegrationV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaStructuralFrameUrbanSupportIntegrationGateV1.cs",
+        ".github/workflows/valoria-structural-frame-urban-support-integration-v1.yml",
+        "pipeline/valoria-structural-frame-urban-support-integration-v1-request.json",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs",
+        "art-source/valoria/production/structural-frame-urban-support-integration-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/**"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner",
+        "github-hosted-blender"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T18:09:00Z",
+      "base_main_sha": "5e1470422137d3d3e6013edfa885586849f650d4",
+      "dependency": "One strong structural-frame intervention. Reauthor only the 2–4 dominant grey support masses into integrated civic/retaining architecture linking Hero Bastion to upper/lower city. Preserve promoted lower-city groups, Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, terrain/ground dressing and gameplay. Blender allowed immediately when existing certified sources cannot achieve the required authored silhouette. Zero Tripo credits unless owner separately authorizes."
+    }
+  ],
   "history": [
     {
       "id": "valoria-lower-city-urban-massing-reauthoring-v1",
