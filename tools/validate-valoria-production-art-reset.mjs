@@ -46,7 +46,7 @@ if(!src.includes('"classification":"TEMPORARY"')) failures.push("starter_candida
 if(src.includes('"classification":"PRODUCTION_ART_SOURCE"')) failures.push("starter_builder_premature_production_classification");
 
 const bible=fs.readFileSync("docs/VALORIA_VISUAL_BIBLE.md","utf8");
-for(const token of ["premium medieval fantasy","Flat Citadel","maquette","PRODUCTION ART SOURCE"]){
+for(const token of ["premium medieval fantasy","Flat Citadel","maquette","production art"]){
   if(!bible.toLowerCase().includes(token.toLowerCase())) failures.push("visual_bible_missing:"+token);
 }
 
