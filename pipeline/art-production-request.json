@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-paired-functional-unity-gate-v1",
   "asset_or_sector": "Granero RCFv1 + Cuartel CFSv1 paired playable integration",
   "profile": "environment_composition",
@@ -24,5 +24,5 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Pair two SOURCE VISUAL PASS camera-first sources at established canonical FPD anchors: rich Granero RCFv1 + retained Cuartel CFSv1. One matched BEFORE/AFTER zoom9/mobile Unity gate. No source/layout/material iteration inside this block. Zero paid/Tripo credits."
+  "notes": "CLOSED: paired Unity run 37209941711 / artifact 11306341489 = TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED. Stronger Granero_RCFv1 + Cuartel_CFSv1 still fail simultaneous mobile functional readability at canonical anchors. Do not continue source/material/prop/layout iteration. Next requires explicit structural composition/mobile framing decision. Tripo remains unauthorized."
 }
