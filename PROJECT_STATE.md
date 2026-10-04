@@ -1,3 +1,13 @@
+## Valoria Visible Frame Cohesion v1 — closed 2026-10-04
+- Verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Authoritative matched A/B: run **37216176561 SUCCESS**, artifact **11309016498**; later identical technical confirmation run **37216912861 SUCCESS**, artifact **11308563246**.
+- Candidate improved some local ground/building contact and removed 4 visible planning proxies, but HOME/Granero/intermediate changed too little and Cuartel/16:9 still exposed broad platform-like/support forms.
+- The first long-road technique was visually rejected; the final irregular-ground technique passed gameplay/camera gates but remained below Visual Bible promotion threshold.
+- Candidate remains disabled; its production hook is removed. Canonical runtime is unchanged.
+- Camera/mobile navigation, Hero Bastion, defense, Granero/Cuartel, Final Look, routes/parcels/reserves and gameplay remain preserved. Credits: **0**.
+- Next visual priority: **VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1**, targeting the largest greybox-like retaining/support masses and architecture-terrain interfaces across HOME/PAN. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md`.
+
 ## Valoria mobile navigable city — promoted 2026-10-04
 - Portrait mobile is now an authored **HOME + bounded navigation** experience, not a whole-city fit.
 - Aspect <=0.72 uses HOME position (19.4,14.6,-28.6), target (1.2,3.35,2.8), orthographic size 12.2.
