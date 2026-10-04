@@ -1,0 +1,36 @@
+name: "[RESEARCH] Valoria Coherent Slavic Family Audit v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['pipeline/valoria-production-art-slavic-audit-request.json']
+permissions: { contents: write }
+concurrency:
+  group: valoria-production-art-slavic-audit-v1
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+      - run: |
+          blender -b --python tools/valoria-production-art-starter/audit_slavic_family_v1.py
+          test -s pipeline/evidence/valoria-production-art-slavic-audit-v1.json
+      - name: Persist audit
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pipeline/evidence/valoria-production-art-slavic-audit-v1.json
+          git commit -m "Persist coherent Slavic family audit" || exit 0
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-slavic-audit-v1
+          path: pipeline/evidence/valoria-production-art-slavic-audit-v1.json
+          retention-days: 30
