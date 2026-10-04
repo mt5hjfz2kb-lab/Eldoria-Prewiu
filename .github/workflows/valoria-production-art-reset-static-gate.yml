@@ -1,0 +1,43 @@
+name: "[QA] Valoria Production Art Reset Static Gate"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/VALORIA_VISUAL_BIBLE.md'
+      - 'docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md'
+      - 'docs/VALORIA_FINAL_LOOK_AND_CAMERA_AB_PLAN.md'
+      - 'docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md'
+      - 'docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md'
+      - 'pipeline/valoria-production-material-stack.json'
+      - 'pipeline/valoria-production-art-source-schema.json'
+      - 'pipeline/production-art-source-policy.json'
+      - 'pipeline/valoria-final-look-profiles.json'
+      - 'pipeline/valoria-camera-ab-spec.json'
+      - 'pipeline/valoria-density-life-plan.json'
+      - 'pipeline/valoria-production-art-rollout.json'
+      - 'tools/check-production-art-source.mjs'
+      - 'tools/validate-valoria-production-art-reset.mjs'
+      - 'tools/valoria-production-art-starter/**'
+      - '.github/workflows/valoria-production-art-reset-static-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: node tools/validate-valoria-production-art-reset.mjs
+      - run: node tools/check-production-art-source.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-reset-static-gate
+          path: |
+            pipeline/evidence/valoria-production-art-reset-static-gate.json
+            pipeline/production-art-source-audit.json
+          if-no-files-found: error
+          retention-days: 30
