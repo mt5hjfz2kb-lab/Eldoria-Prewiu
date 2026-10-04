@@ -85,7 +85,7 @@ def render_asset(label,rel):
     ground(max((hi-lo).x,(hi-lo).y)*5+1)
     light();camera_for(lo,hi)
     sc=bpy.context.scene
-    sc.render.engine='BLENDER_EEVEE_NEXT'
+    sc.render.engine='BLENDER_EEVEE'
     sc.render.resolution_x=640;sc.render.resolution_y=640;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format='PNG'
     sc.render.film_transparent=False
