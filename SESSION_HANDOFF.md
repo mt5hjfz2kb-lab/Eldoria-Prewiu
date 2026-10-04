@@ -1,3 +1,13 @@
+## 2026-10-04 — VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1 — CLOSED / SOURCE REJECTED
+- Planner **37225548192 SUCCESS**; professional Blender standard validation PASS.
+- Authoritative isolated source run **37226253119 SUCCESS**, artifact **11312172507**, source commit `649e9401bdaa0404aada894b42754983d72c59ed`; **0 Tripo / 0 paid credits**.
+- Verdict: **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / NOT PROMOTED**.
+- Direct review of clay, lit 3/4 and game-camera proxy: asymmetry/repetition control improved, but the complete frame still reads as a sophisticated blockout — large planar rectangular masses, shallow facade articulation, simple arch assemblies and weak stone-rock interlock. It remains far below the layered retaining terraces, nested depth and organic architectural continuity of the approved reference.
+- The source-first stop-gate therefore prevented Unity integration. No HOME/PAN/16:9 AFTER captures, no gameplay/runtime changes and no production hook.
+- The prepared disabled Unity candidate/gate/workflow were removed after rejection; canonical promoted runtime remains unchanged.
+- Anti-loop: do **not** open Bastion-to-City Frame v2/v3 and do not micro-tune this source. Next valid method must lock a high-fidelity 2D played-frame elevation/paintover first, then use genuinely freeform/source-rich Blender construction (manual mesh deformation/boolean/curve/sculpt + authored stone-rock transitions) before another source gate.
+- Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1 — CLOSED / ART SOURCE FAIL
 - Planner **37225548192 SUCCESS**.
 - Successful isolated Blender source run **37226253119 SUCCESS**, artifact **11312172507**, source commit `649e9401bdaa0404aada894b42754983d72c59ed`; **0 Tripo / 0 paid credits**.
