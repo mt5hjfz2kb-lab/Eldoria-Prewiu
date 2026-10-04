@@ -1,0 +1,42 @@
+name: "[PRODUCTION] Valoria Stone Defensive Family v2"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['pipeline/valoria-production-art-stone-defensive-v2-request.json']
+permissions:
+  contents: write
+concurrency:
+  group: valoria-production-art-stone-defensive-v2
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+      - name: Build Stone defensive family
+        run: blender -b --python tools/valoria-production-art-starter/build_stone_defensive_family_v2.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-production-art-stone-defensive-v2
+          path: |
+            art-source/valoria/production/stone-defensive-family-v2/**
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/**
+            pipeline/evidence/valoria-production-art-stone-defensive-v2/**
+          if-no-files-found: error
+      - name: Persist source and outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/stone-defensive-family-v2 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2 pipeline/evidence/valoria-production-art-stone-defensive-v2
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist Stone defensive family v2"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
