@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "classification": "PRODUCTION_CANDIDATE",
+  "authoring_method": "bounded rich-source Blender reauthoring",
+  "paid_credits": 0,
+  "tripo": false,
+  "donors": {
+    "wall": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+    "corner": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+    "tower": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+    "civil": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+    "workshop": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"
+  },
+  "blend": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
+  "blend_sha256": "23b928bb29356665997c014306e59766da331fa8767e803eb20e99a72147d9a8",
+  "assets": [
+    {
+      "asset_id": "Valoria_DefenseWall_FPDv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+      "sha256": "8431f5a0d3ab5cfcf26d36b3b9289c8ce94c0ae5d3df554d605ee0facd1bc220",
+      "geometry": {
+        "objects": 1,
+        "vertices": 5176,
+        "triangles": 6440,
+        "materials": [
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+        ],
+        "bounds": [
+          -1.1185,
+          -0.278,
+          0.0,
+          1.1185,
+          0.278,
+          2.35
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_DefenseTower_FPDv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb",
+      "sha256": "0f23b50e4025617dc593f88e90bcac7947a1ae80d82f1167321d3b25ebfc43d2",
+      "geometry": {
+        "objects": 2,
+        "vertices": 77140,
+        "triangles": 57335,
+        "materials": [
+          "Eldoria Rock \u00b7 Hero Prototype",
+          "Eldoria Stone \u00b7 Hero Prototype",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a"
+        ],
+        "bounds": [
+          -1.1852,
+          -1.2268,
+          0.0,
+          1.1852,
+          1.2268,
+          3.09
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_MainGate_FPDv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_MainGate_FPDv1.glb",
+      "sha256": "33355d37177ad8cd90cb396510a2001aedaabf50b5e28d37d3d0ce2abfa935f8",
+      "geometry": {
+        "objects": 4,
+        "vertices": 88291,
+        "triangles": 71110,
+        "materials": [
+          "Eldoria Rock \u00b7 Hero Prototype",
+          "Eldoria Stone \u00b7 Hero Prototype",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001"
+        ],
+        "bounds": [
+          -2.5016,
+          -0.8815,
+          0.0,
+          2.5016,
+          0.8815,
+          3.899
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_Granero_FPDv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb",
+      "sha256": "09697e87f80096d3bc16f0c151afdcb402dd63425b0c5f80b89bfa9c903a67f4",
+      "geometry": {
+        "objects": 3,
+        "vertices": 36520,
+        "triangles": 40644,
+        "materials": [
+          "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8",
+          "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8.001",
+          "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8.002"
+        ],
+        "bounds": [
+          -2.125,
+          -2.296,
+          0.0,
+          2.125,
+          1.5409,
+          3.1942
+        ]
+      }
+    },
+    {
+      "asset_id": "Valoria_Cuartel_FPDv1",
+      "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb",
+      "sha256": "1d2c8a7543bccbdf7b9315f97e647710f0341ef7ce577321cf6659885fec69a2",
+      "geometry": {
+        "objects": 4,
+        "vertices": 32332,
+        "triangles": 37760,
+        "materials": [
+          "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
+          "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001"
+        ],
+        "bounds": [
+          -2.3586,
+          -2.0915,
+          -0.02,
+          2.3586,
+          2.0915,
+          2.6401
+        ]
+      }
+    }
+  ]
+}
