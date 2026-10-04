@@ -90,8 +90,8 @@ def preview(col,aid):
  gm=bpy.data.materials.new("Preview Ground");gm.diffuse_color=(.08,.085,.075,1);ground.data.materials.append(gm)
  # ensure ground renders although outside source collection
  for c in ground.users_collection:c.hide_render=False
- sc.render.engine="BLENDER_EEVEE";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100;sc.render.image_settings.file_format="PNG"
- sc.view_settings.look="AgX - Medium High Contrast";sc.render.filepath=os.path.join(PRE,aid+".png")
+ sc.render.engine="BLENDER_WORKBENCH";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100;sc.render.image_settings.file_format="PNG"
+ sc.render.filepath=os.path.join(PRE,aid+".png")
  bpy.ops.render.render(write_still=True)
  bpy.data.objects.remove(cam,do_unlink=True);bpy.data.objects.remove(key,do_unlink=True);bpy.data.objects.remove(fill,do_unlink=True);bpy.data.objects.remove(ground,do_unlink=True)
 
