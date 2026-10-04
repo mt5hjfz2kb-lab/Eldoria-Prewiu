@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA FUNCTIONAL SCREEN READABILITY v1",
+  "status": "CLOSED",
+  "final_verdict": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
+  "run_id": 37208123181,
+  "artifact_id": 11305333489,
+  "source_geometry_changed": false,
+  "gameplay_signature_preserved": true,
+  "camera": "ORTHOGRAPHIC",
+  "final_look": "RESET_ACCEPTED_RUNTIME",
+  "defense_changed": false,
+  "hero_bastion_changed": false,
+  "terrain_changed": false,
+  "before_metrics": {
+    "active_renderers": 850,
+    "unique_materials": 81,
+    "scene_triangles": 2166395,
+    "active_lights": 31
+  },
+  "after_metrics": {
+    "active_renderers": 850,
+    "unique_materials": 81,
+    "scene_triangles": 2166395,
+    "active_lights": 31
+  },
+  "layout": {
+    "granero": {
+      "position": [
+        -2.35,
+        0.16,
+        -5
+      ],
+      "footprint": 5.68,
+      "height": 4.68,
+      "yaw": 0
+    },
+    "cuartel": {
+      "position": [
+        5.55,
+        0.16,
+        -4.7
+      ],
+      "footprint": 5.62,
+      "height": 4.72,
+      "yaw": 0
+    }
+  },
+  "captures": [
+    "before-9.png",
+    "after-9.png",
+    "before-mobile.png",
+    "after-mobile.png"
+  ],
+  "tripo_credits": 0,
+  "paid_credits": 0,
+  "promotion": false,
+  "next": "Change to camera-first source authoring; no second layout/material/prop pass."
+}
