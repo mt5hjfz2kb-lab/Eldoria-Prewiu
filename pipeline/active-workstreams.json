@@ -2,35 +2,7 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-04T18:28:39Z",
-  "active": [
-    {
-      "id": "eldoria-blender-professional-authoring-pipeline-v1",
-      "title": "Eldoria Blender Professional Authoring Pipeline v1",
-      "owner": "chat-audit-blender-professional-authoring-v1",
-      "scope": [
-        "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
-        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
-        "AGENTS.md",
-        "pipeline/blender-professional-authoring-standard.json",
-        "pipeline/toolchain-capabilities.json",
-        "pipeline/production-art-source-policy.json",
-        "pipeline/valoria-production-art-source-schema.json",
-        "tools/validate-blender-professional-authoring.mjs",
-        "tools/check-production-art-source.mjs",
-        "tools/plan-art-production.mjs",
-        ".github/workflows/art-production-plan.yml",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [
-        "art-production-planner",
-        "production-art-source-policy"
-      ],
-      "status": "active",
-      "claimed_at": "2026-10-04T18:30:00Z",
-      "base_main_sha": "31145651c33dea8d796bba0f43b4438be66033b9",
-      "dependency": "Canonicalize professional Blender authoring standards after structural-frame visual partial-fail. No asset production; no Tripo spend; no Unity gameplay changes."
-    }
-  ],
+  "active": [],
   "history": [
     {
       "id": "valoria-structural-frame-urban-support-integration-v1",
@@ -2089,6 +2061,42 @@
       "completed_at": "2026-10-02T10:32:00Z",
       "base_main_sha": "840cd5de3fed2675352c9bf42f2fe01310788a67",
       "result": "Protocol introduced; future substantive chats must claim non-conflicting work before mutation."
+    },
+    {
+      "id": "eldoria-blender-professional-authoring-pipeline-v1",
+      "title": "Eldoria Blender Professional Authoring Pipeline v1",
+      "owner": "chat-audit-blender-professional-authoring-v1",
+      "scope": [
+        "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "AGENTS.md",
+        "pipeline/blender-professional-authoring-standard.json",
+        "pipeline/toolchain-capabilities.json",
+        "pipeline/production-art-source-policy.json",
+        "pipeline/valoria-production-art-source-schema.json",
+        "tools/validate-blender-professional-authoring.mjs",
+        "tools/check-production-art-source.mjs",
+        "tools/plan-art-production.mjs",
+        ".github/workflows/art-production-plan.yml",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "art-production-planner",
+        "production-art-source-policy"
+      ],
+      "status": "completed",
+      "claimed_at": "2026-10-04T18:30:00Z",
+      "base_main_sha": "31145651c33dea8d796bba0f43b4438be66033b9",
+      "dependency": "Canonicalize professional Blender authoring standards after structural-frame visual partial-fail. No asset production; no Tripo spend; no Unity gameplay changes.",
+      "completed_at": "2026-10-04T18:38:00Z",
+      "result": {
+        "verdict": "CANONICALIZED",
+        "planner_run": 37225097091,
+        "planner_conclusion": "success",
+        "workflow_governance_run": 37225100042,
+        "workflow_governance_conclusion": "success",
+        "note": "Static Production Art Reset gate remains red on pre-existing reset-validator expectations (final look candidate / orthographic canonical / density reject rules); unrelated to Blender professional-authoring validator."
+      }
     }
   ]
 }
