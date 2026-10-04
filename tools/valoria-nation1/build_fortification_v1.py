@@ -213,12 +213,23 @@ def add_civic_house(col,variant=0):
         parts.append(box("house post",(x,-d*.48,1.28),(.16,.11,.92),WOOD,.012,uv=False))
     parts.append(box("house beam",(0,-d*.49,1.06),(w*.9,.11,.15),WOOD,.01,uv=False))
     parts.append(box("house beam upper",(0,-d*.49,1.55),(w*.9,.10,.12),WOOD,.01,uv=False))
+    # visible Tudor-style braces to break the flat facade at gameplay zoom
+    parts.append(box("house brace left",(-w*.20,-d*.505,1.31),(w*.46,.07,.10),WOOD,.008,rot=(0,0,math.radians(34)),uv=False))
+    parts.append(box("house brace right",(w*.20,-d*.505,1.31),(w*.46,.07,.10),WOOD,.008,rot=(0,0,math.radians(-34)),uv=False))
     parts.append(gable_roof("house slate roof",(0,0,1.62),w*1.14,d*1.16,.86,ROOF))
+    # front dormer creates a richer silhouette.
+    parts.append(box("house dormer body",(0,-d*.24,2.00),(.74,.50,.42),PLASTER,.018))
+    parts.append(gable_roof("house dormer roof",(0,-d*.24,2.20),.90,.62,.34,ROOF))
+    parts.append(box("house dormer window",(0,-d*.505,2.02),(.30,.045,.26),WINDOW,.008,uv=False))
     # warm front door/window read at gameplay zoom
     parts.append(box("house door",(0,-d*.505,.48),(.42,.06,.72),WOOD,.012,uv=False))
     for x in (-.68,.68):
         parts.append(box("house warm window",(x,-d*.508,1.30),(.30,.045,.34),WINDOW,.008,uv=False))
         parts.append(box("house window frame",(x,-d*.535,1.30),(.36,.035,.06),WOOD,.006,uv=False))
+    # small timber porch canopy over the entrance.
+    parts.append(gable_roof("house porch roof",(0,-d*.62,.92),1.08,.62,.30,ROOF))
+    for x in (-.42,.42):
+        parts.append(box("house porch post",(x,-d*.78,.58),(.08,.08,.70),WOOD,.008,uv=False))
     parts.append(box("house chimney",(w*.28,d*.12,2.18),(.25,.25,.82),STONE_DARK,.015))
     for o in parts:move_to(o,col)
     join_by_material(col)
