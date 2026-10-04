@@ -8,16 +8,6 @@
 - Anti-loop closes this method. Do not create v2/v3 or micro-adjust this source. A future revisit must start from a locked high-fidelity played-frame 2D architectural design and change to genuinely freeform/source-rich DCC construction before another ART SOURCE gate.
 - Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
 
-## 2026-10-04 — VALORIA BASTION-TO-CITY ARCHITECTURAL FRAME v1 — CLOSED / ART SOURCE FAIL
-- Planner **37225548192 SUCCESS**.
-- Successful isolated Blender source run **37226253119 SUCCESS**, artifact **11312172507**, source commit `649e9401bdaa0404aada894b42754983d72c59ed`; **0 Tripo / 0 paid credits**.
-- Final verdict: **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED**.
-- One complete asymmetric Bastion-to-city frame was authored under `BLENDER_PROFESSIONAL_V1` and reviewed via clay, lit 3/4 and game-camera proxy before Unity.
-- Source review: real recess/stair depth and controlled asymmetry exist, but the frame still reads as sophisticated blockout — rectilinear masses with attached arch/trim elements, schematic rock interfaces and insufficient continuous authored silhouette/stone-rock interlock.
-- Mandatory stop-gate worked: Unity A/B was intentionally not dispatched. No HOME/PAN/16:9 AFTER exists, no gameplay/camera/parcels/routes/runtime changed, and the failed Resources copy/candidate Unity gate were removed.
-- Anti-loop: **do not open v2/v3**, do not micro-adjust dimensions/colors/trim. If revisited, change authoring mode to high-fidelity screen-space design/paintover + genuinely freeform direct DCC/sculpt/boolean/deformation authoring, or another owner-approved high-quality source route followed by Blender reauthoring. Tripo remains blocked without explicit authorization.
-- Result: `docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md`.
-
 ## Valoria Structural Frame / Urban Support Integration v1 — closed 2026-10-04
 - **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
 - Direct comparison completed against the restored high-resolution canonical reference `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
