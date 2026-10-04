@@ -230,43 +230,85 @@ namespace Eldoria.Presentation
 
   static void BuildBackdrop(Transform root)
   {
-   // The target frame is a mountain/lake city, not a diorama on an empty green board.
-   // This layer lives entirely outside the playable wall and owns no collision or hotspots.
-   var mountain=Resources.Load<GameObject>("Valoria/SM_Mountains_11");
-   var hill=Resources.Load<GameObject>("Valoria/SM_Hills_01");
-   var cliff1=Resources.Load<GameObject>("Valoria/SM_Cliffs_01");
-   var cliff3=Resources.Load<GameObject>("Valoria/SM_Cliffs_03");
-
-   BackdropPiece(root,mountain,"rear mountain west",new Vector3(-8.0f,-.15f,18.0f),12.0f,7.5f,18f);
-   BackdropPiece(root,mountain,"rear mountain east",new Vector3(7.5f,-.20f,19.5f),11.0f,7.0f,-18f);
-   BackdropPiece(root,hill,"rear hill center",new Vector3(0f,-.10f,14.7f),9.5f,4.2f,7f);
-   BackdropPiece(root,cliff1,"rear cliff west",new Vector3(-13.0f,-.05f,13.6f),7.8f,4.2f,32f);
-   BackdropPiece(root,cliff3,"rear cliff east",new Vector3(13.0f,-.05f,13.4f),7.5f,4.0f,-28f);
-
-   var waterShader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
-   if(waterShader!=null)
+   // Controlled Nation1 backdrop: authored ridge + irregular lake + existing licensed pines.
+   // No external mountain kit remains because its materials broke the target palette.
+   var ridge=Resources.Load<GameObject>("Valoria/Nation1/Nation1_BackdropRidge_v1");
+   if(ridge!=null)
    {
-    var water=new Material(waterShader){name="Valoria Nation1 lake"};
-    if(water.HasProperty("_BaseColor"))water.SetColor("_BaseColor",new Color(.12f,.30f,.40f,1f));
-    if(water.HasProperty("_Color"))water.SetColor("_Color",new Color(.12f,.30f,.40f,1f));
-    if(water.HasProperty("_Smoothness"))water.SetFloat("_Smoothness",.62f);
-    Surface(root,"outer lake",new Vector3(6.8f,.015f,14.5f),new Vector3(14.0f,.025f,8.0f),water);
+    BackdropPiece(root,ridge,"rear ridge west",new Vector3(-7.8f,-.20f,18.9f),13.0f,7.2f,3f);
+    BackdropPiece(root,ridge,"rear ridge east",new Vector3(8.8f,-.28f,21.0f),11.0f,6.2f,-8f);
    }
+
+   BuildIrregularLake(root);
 
    var art=ValoriaExternalAssetLibrary.Load();
    var tree=art!=null?(art.SlavicTreeTall!=null?art.SlavicTreeTall:art.SlavicTree):null;
    if(tree!=null)
    {
-    foreach(var s in new[]{
-      new Vector4(-13.5f,10.8f,12f,1.55f),new Vector4(-11.7f,11.5f,28f,1.65f),
-      new Vector4(-10.4f,13.2f,-12f,1.45f),new Vector4(-8.8f,12.4f,18f,1.50f),
-      new Vector4(-6.8f,13.0f,42f,1.40f),new Vector4(-4.8f,11.4f,-22f,1.30f),
-      new Vector4(10.8f,11.0f,16f,1.38f),new Vector4(12.4f,12.2f,-18f,1.48f),
-      new Vector4(14.0f,11.7f,34f,1.58f),new Vector4(9.8f,14.0f,-30f,1.26f)})
+    foreach(var spec in new[]{
+      new Vector4(-14.6f,10.4f,12f,1.55f),new Vector4(-13.1f,12.2f,28f,1.72f),
+      new Vector4(-11.4f,13.1f,-12f,1.62f),new Vector4(-9.7f,12.7f,18f,1.48f),
+      new Vector4(-7.7f,13.6f,42f,1.55f),new Vector4(-5.7f,12.1f,-22f,1.42f),
+      new Vector4(8.8f,12.0f,-30f,1.30f),new Vector4(10.7f,11.0f,16f,1.40f),
+      new Vector4(12.1f,12.3f,-18f,1.52f),new Vector4(13.8f,12.0f,34f,1.62f),
+      new Vector4(15.0f,10.8f,-8f,1.48f),new Vector4(11.0f,14.0f,24f,1.30f)})
     {
-     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · backdrop pine",tree,new Vector3(s.x,.05f,s.y),s.w,s.w*2.65f,Quaternion.Euler(0,s.z,0));
-     if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
+     var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · backdrop pine",tree,new Vector3(spec.x,.05f,spec.y),spec.w,spec.w*2.65f,Quaternion.Euler(0,spec.z,0));
+     if(go!=null)
+     {
+      go.transform.SetParent(root,true);
+      TintTree(go,new Color(.17f,.25f,.17f,1f));
+      StripGameplay(go);DetailProps++;
+     }
     }
+   }
+  }
+
+  static void BuildIrregularLake(Transform root)
+  {
+   var shader=Shader.Find("Universal Render Pipeline/Lit")??Shader.Find("Standard");
+   if(shader==null)return;
+   var mat=new Material(shader){name="Valoria Nation1 lake"};
+   if(mat.HasProperty("_BaseColor"))mat.SetColor("_BaseColor",new Color(.105f,.255f,.34f,1f));
+   if(mat.HasProperty("_Color"))mat.SetColor("_Color",new Color(.105f,.255f,.34f,1f));
+   if(mat.HasProperty("_Smoothness"))mat.SetFloat("_Smoothness",.72f);
+   if(mat.HasProperty("_Metallic"))mat.SetFloat("_Metallic",.02f);
+
+   var go=new GameObject("Valoria · Nation1 · outer lake");go.transform.SetParent(root,true);
+   var mf=go.AddComponent<MeshFilter>();var mr=go.AddComponent<MeshRenderer>();
+   var verts=new[]{
+    new Vector3(2.2f,.02f,10.4f),new Vector3(8.4f,.02f,9.9f),new Vector3(13.8f,.02f,11.0f),
+    new Vector3(17.0f,.02f,14.2f),new Vector3(15.6f,.02f,18.0f),new Vector3(10.6f,.02f,21.0f),
+    new Vector3(4.6f,.02f,20.2f),new Vector3(1.4f,.02f,16.8f)
+   };
+   var tris=new[]{0,1,2,0,2,3,0,3,4,0,4,5,0,5,6,0,6,7};
+   var mesh=new Mesh{name="Nation1 irregular lake"};mesh.vertices=verts;mesh.triangles=tris;
+   var uv=new Vector2[verts.Length];for(int i=0;i<verts.Length;i++)uv[i]=new Vector2(verts[i].x*.08f,verts[i].z*.08f);
+   mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;mr.sharedMaterial=mat;
+   StripGameplay(go);DetailProps++;
+  }
+
+  static void TintTree(GameObject go,Color tint)
+  {
+   foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+   {
+    var src=r.sharedMaterials;var dst=new Material[src.Length];
+    for(int i=0;i<src.Length;i++)
+    {
+     var m=src[i];if(m==null){dst[i]=null;continue;}
+     var clone=new Material(m){name="Nation1 forest · "+m.name};
+     foreach(var prop in new[]{"_BaseColor","_Color"})
+     {
+      if(!clone.HasProperty(prop))continue;
+      try
+      {
+       var col=clone.GetColor(prop);
+       clone.SetColor(prop,new Color(col.r*tint.r,col.g*tint.g,col.b*tint.b,col.a));
+      }catch{}
+     }
+     dst[i]=clone;
+    }
+    r.sharedMaterials=dst;
    }
   }
 
