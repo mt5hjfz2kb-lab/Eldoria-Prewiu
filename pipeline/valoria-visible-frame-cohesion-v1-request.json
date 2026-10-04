@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "REQUESTED",
+  "workstream": "VALORIA VISIBLE FRAME COHESION v1",
+  "objective": "Improve large-scale ground, edge, architecture-ground and lower-city continuity across the promoted reachable camera envelope with one structural visual intervention.",
+  "baseline": {
+    "head": "955fc41b8504d3d2fd14acbd38d32d30266631c3",
+    "run": 37214258187,
+    "artifact": 11307314172
+  },
+  "views": [
+    "HOME mobile BEFORE/AFTER",
+    "PAN Granero BEFORE/AFTER",
+    "PAN intermediate BEFORE/AFTER",
+    "PAN Cuartel BEFORE/AFTER",
+    "16:9 BEFORE/AFTER"
+  ],
+  "preserve": [
+    "Flat Citadel",
+    "Hero Bastion",
+    "accepted defense",
+    "Granero/Cuartel anchors and sources",
+    "orthographic camera",
+    "mobile navigable city",
+    "panning",
+    "recenter",
+    "hotspots",
+    "colliders",
+    "routes",
+    "parcels",
+    "future reserves",
+    "gameplay",
+    "Final Look",
+    "screen-space policy",
+    "16:9 framing"
+  ],
+  "prohibited": [
+    "Forja",
+    "Hospital",
+    "Cantera",
+    "camera changes",
+    "projection changes",
+    "Tripo spend",
+    "new hero assets"
+  ],
+  "credits": {
+    "tripo": 0,
+    "paid": 0
+  }
+}
