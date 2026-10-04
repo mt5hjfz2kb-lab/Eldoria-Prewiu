@@ -47,12 +47,12 @@ def mat_color(name,color,rough=.72,metal=0):
 
 STONE=mat_pbr("Nation1 Warm Limestone","castle_wall_slates_diff_1k","castle_wall_slates_nor_gl_1k",.78,.58,1.28)
 STONE_DARK=mat_pbr("Nation1 Foundation Stone","castle_wall_slates_diff_1k","castle_wall_slates_nor_gl_1k",.88,.50,.88)
-WOOD=mat_color("Nation1 Dark Timber",(.19,.105,.055),.76)
+WOOD=mat_color("Nation1 Dark Timber",(.115,.060,.028),.82)
 BLUE=mat_color("Nation1 Valoria Blue",(.045,.14,.34),.64)
 DARK=mat_color("Nation1 Recess",(.025,.028,.03),.92)
 GOLD=mat_color("Nation1 Warm Metal",(.48,.29,.08),.44,.18)
-ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_diff_1k","roof_slates_03_nor_gl_1k",.94,.72,.86,(.32,.50,.92))
-PLASTER=mat_color("Nation1 Warm Plaster",(.68,.61,.48),.84)
+ROOF=mat_pbr("Nation1 Roof Slate","roof_slates_03_blue_1k","roof_slates_03_nor_gl_1k",.94,1.0,1.0)
+PLASTER=mat_color("Nation1 Warm Plaster",(.54,.43,.28),.88)
 WINDOW=mat_color("Nation1 Warm Window",(.85,.39,.10),.38)
 
 def box(name,loc,scale,mat,bevel=.03,rot=(0,0,0),uv=True):
@@ -196,8 +196,8 @@ def add_civic_house(col,variant=0):
     parts.append(box("house plaster upper",(0,0,1.28),(w*.94,d*.94,.72),PLASTER,.028))
     # dark structural timber frame
     for x in (-w*.42,w*.42):
-        parts.append(box("house post",(x,-d*.48,1.28),(.12,.10,.92),WOOD,.012,uv=False))
-    parts.append(box("house beam",(0,-d*.49,1.06),(w*.9,.10,.12),WOOD,.01,uv=False))
+        parts.append(box("house post",(x,-d*.48,1.28),(.16,.11,.92),WOOD,.012,uv=False))
+    parts.append(box("house beam",(0,-d*.49,1.06),(w*.9,.11,.15),WOOD,.01,uv=False))
     parts.append(box("house beam upper",(0,-d*.49,1.55),(w*.9,.10,.12),WOOD,.01,uv=False))
     parts.append(gable_roof("house slate roof",(0,0,1.62),w*1.14,d*1.16,.86,ROOF))
     # warm front door/window read at gameplay zoom
@@ -214,8 +214,8 @@ def add_workshop(col):
     parts.append(box("workshop stone plinth",(0,0,.32),(3.10,2.30,.58),STONE_DARK,.035))
     parts.append(box("workshop timber hall",(0,0,1.05),(3.0,2.18,1.20),PLASTER,.03))
     for x in (-1.30,0,1.30):
-        parts.append(box("workshop front post",(x,-1.105,1.05),(.14,.12,1.34),WOOD,.012,uv=False))
-    parts.append(box("workshop lower beam",(0,-1.11,.62),(2.78,.11,.14),WOOD,.01,uv=False))
+        parts.append(box("workshop front post",(x,-1.105,1.05),(.18,.13,1.34),WOOD,.012,uv=False))
+    parts.append(box("workshop lower beam",(0,-1.11,.62),(2.78,.12,.17),WOOD,.01,uv=False))
     parts.append(box("workshop upper beam",(0,-1.11,1.42),(2.78,.11,.14),WOOD,.01,uv=False))
     parts.append(gable_roof("workshop slate roof",(0,0,1.64),3.48,2.62,.92,ROOF))
     parts.append(box("workshop broad door",(0,-1.125,.72),(.82,.06,1.05),WOOD,.012,uv=False))
