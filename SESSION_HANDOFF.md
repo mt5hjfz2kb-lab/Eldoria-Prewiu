@@ -1,3 +1,15 @@
+## 2026-10-04 — VALORIA VISIBLE FRAME COHESION v1 — CLOSED / NOT PROMOTED
+- Planner **37215004613 SUCCESS**.
+- Authoritative matched A/B: **37216176561 SUCCESS**, artifact **11309016498**.
+- Verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Final candidate built 38 visual-only ground/edge/contact pieces and suppressed 4 visible planning-proxy renderers; gameplay signature and promoted camera policy preserved.
+- First linear-road technique (run **37215207719**, artifact **11307744277**) was rejected visually because it created artificial bright walkways. A GroundSeam attempt then failed gameplay signature; final visual-only irregular technique passed technically.
+- Real review: HOME / Granero / intermediate improve too little; Cuartel / 16:9 still expose broad platform-like ground. Ground dressing is not the dominant remaining bottleneck.
+- Candidate remains disabled and its production hook was removed.
+- No Granero/Cuartel/Hero/defense/camera/Final Look changes. Tripo/paid credits **0**.
+- Next valid visual block: **VALORIA SECONDARY / SUPPORT FORM REPLACEMENT v1** targeting the largest greybox-like retaining/support masses and architecture-terrain interfaces visible across HOME/PAN envelope. Forja/Hospital/Cantera remain HOLD.
+- Result: `docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA MOBILE NAVIGABLE CITY v1 — CLOSED / PROMOTED
 - Planner run **37213645061 SUCCESS**.
 - Authoritative Unity run **37213794236 SUCCESS**, artifact **11307920631**.
