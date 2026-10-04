@@ -27,7 +27,7 @@ def render(a):
   bpy.ops.object.light_add(type=typ,location=loc);L=bpy.context.object;L.data.energy=energy;L.data.shape='DISK';L.data.size=sizeL
  bpy.ops.object.camera_add();cam=bpy.context.object;cam.data.type="ORTHO";cam.data.ortho_scale=max(extent*1.55,.6)
  cam.location=ctr+Vector((extent*1.65,-extent*2.05,extent*1.45));cam.rotation_euler=(ctr-cam.location).to_track_quat("-Z","Y").to_euler();sc.camera=cam
- sc.render.engine="BLENDER_EEVEE_NEXT";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100
+ sc.render.engine="BLENDER_EEVEE";sc.render.resolution_x=720;sc.render.resolution_y=720;sc.render.resolution_percentage=100
  sc.render.image_settings.file_format="PNG";sc.render.filepath=os.path.join(OUT,a+".png");sc.view_settings.look="AgX - Medium High Contrast"
  bpy.ops.render.render(write_still=True)
  return {"asset":a,"png":os.path.relpath(sc.render.filepath,ROOT).replace("\\","/")}
