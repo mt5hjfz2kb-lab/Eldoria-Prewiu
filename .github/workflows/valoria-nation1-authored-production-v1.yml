@@ -42,7 +42,7 @@ jobs:
                   for v in x.values(): yield from strings(v)
               elif isinstance(x,list):
                   for v in x: yield from strings(v)
-          for asset in ("castle_wall_slates",):
+          for asset in ("castle_wall_slates","roof_slates_03"):
               req=urllib.request.Request("https://api.polyhaven.com/files/"+asset,headers=ua)
               with urllib.request.urlopen(req,timeout=30) as r: payload=json.load(r)
               urls=list(dict.fromkeys(u.replace("\\u0026","&") for u in strings(payload) if u.startswith("https://")))
