@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "canonical",
+  "updated_at": "2026-10-04",
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "classifications": [
+    "GREYBOX",
+    "SUPPORT",
+    "TEMPORARY",
+    "PRODUCTION_ART_SOURCE"
+  ],
+  "primitive_signatures": {
+    "csharp": [
+      "GameObject.CreatePrimitive",
+      "PrimitiveType.Cube",
+      "PrimitiveType.Cylinder",
+      "PrimitiveType.Sphere",
+      "PrimitiveType.Capsule",
+      "PrimitiveType.Plane",
+      "PrimitiveType.Quad"
+    ],
+    "blender_python": [
+      "bpy.ops.mesh.primitive_cube_add",
+      "bpy.ops.mesh.primitive_cylinder_add",
+      "bpy.ops.mesh.primitive_cone_add",
+      "bpy.ops.mesh.primitive_uv_sphere_add",
+      "bpy.ops.mesh.primitive_plane_add"
+    ]
+  },
+  "defaults": {
+    "primitive_authored_architecture": "GREYBOX",
+    "hidden_technical_geometry": "SUPPORT",
+    "known_replacement_visual": "TEMPORARY",
+    "authored_blend_or_equivalent_source": "PRODUCTION_ART_SOURCE"
+  },
+  "production_requirements": [
+    "reproducible authored source",
+    "intentional architectural depth and silhouette",
+    "UV/material contract",
+    "runtime export identity",
+    "zoom9/mobile visual acceptance",
+    "gameplay authority preserved"
+  ],
+  "enforcement": {
+    "mode": "report_then_enforce",
+    "fail_conditions": [
+      "explicit PRODUCTION_ART_SOURCE manifest whose authoring method is primitive_only",
+      "production manifest missing source sha or export sha",
+      "production manifest missing material families",
+      "production promotion lacking zoom9/mobile evidence"
+    ],
+    "note": "Primitive signatures are diagnostic, not an automatic failure for support/environment geometry."
+  }
+}
