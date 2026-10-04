@@ -1,3 +1,15 @@
+## 2026-10-04 — VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1 — CLOSED / NOT PROMOTED
+- Canonical high-resolution reference reviewed directly: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
+- Planner **37223687136 SUCCESS**.
+- Blender source authoring: **37223931751 SUCCESS**, artifact **11310713075**; sources: `CivicRetainingBay.glb`, `LowerArcadedFront.glb`, `CuartelTerraceSupport.glb`; **0 Tripo / 0 paid credits**.
+- Authoritative Unity A/B: **37224171472 SUCCESS**, artifact **11311297059**. Required HOME / Granero pan / intermediate pan / Cuartel pan / 16:9 BEFORE+AFTER and canonical reference are all present.
+- Verdict: **TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED**.
+- Technical preservation: gameplay signature, promoted mobile/16:9 camera policy, Hero Bastion, Granero, Cuartel and promoted lower-city urban massing all preserved; 4 authored pieces built; 84 targeted support renderers suppressed.
+- Visual review: arcades/buttresses/cornices create a clear first-glance A/B and are more architectural than the old shelves, but the largest stair-flanking grey support pillars remain dominant. The new structural masses also render too light/clean relative to Bastion/city stone, so old grey supports + new facades read as separate systems rather than one capital frame.
+- Candidate remains disabled and has no production hook. Canonical runtime therefore remains the promoted Lower-City state.
+- Anti-loop: do **not** open STRUCTURAL FRAME v2/v3 or micro-tune placement/colors. Next valid method is **approved reference → deliberate complete screen-space structural-frame design (shape + material/value + interfaces) → explicit 3D authoring → Unity → one matched comparison**.
+- Result: `docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA LOWER-CITY URBAN MASSING REAUTHORING v1 — CLOSED / PROMOTED
 - Direct reference used: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
 - Planner **37221347279 SUCCESS**.
