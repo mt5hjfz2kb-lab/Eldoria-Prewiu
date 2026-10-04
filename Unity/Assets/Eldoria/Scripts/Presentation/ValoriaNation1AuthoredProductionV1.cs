@@ -17,7 +17,9 @@ namespace Eldoria.Presentation
    var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);
    TerraceModules=MidTierBuildings=DetailProps=WarmLights=0;
    BuildHeroTerracedCore(root);
+   ScaleCoreVisuals();
    BuildCivicDensity(root);
+   BuildGranaryFields(root);
    BuildFunctionalDressing(root);
    BuildGreenery(root);
    BuildLighting(root);
@@ -26,21 +28,36 @@ namespace Eldoria.Presentation
 
   static void BuildHeroTerracedCore(Transform root)
   {
-   var residential=Resources.Load<GameObject>("Valoria/Rescued/ResidentialTerraceRock");
-   var seam=Resources.Load<GameObject>("Valoria/Rescued/RockTerrainSeamFiller");
    var wall=Resources.Load<GameObject>("Valoria/Stone_Wall");
-   if(residential==null||seam==null||wall==null)throw new InvalidOperationException("Nation1 rich core library incomplete.");
+   if(wall==null)throw new InvalidOperationException("Nation1 wall library incomplete.");
 
-   // Preserve VQB's proven central stair/plaza. Build only rich, low-profile side integration around it.
-   RichPiece(root,residential,"hero west shoulder",new Vector3(-4.05f,.13f,6.20f),2.85f,1.02f,24f);
-   RichPiece(root,residential,"hero east shoulder",new Vector3(4.05f,.13f,6.22f),2.85f,1.02f,204f);
-   RichPiece(root,seam,"hero west seam",new Vector3(-3.25f,.13f,5.05f),2.20f,.70f,24f);
-   RichPiece(root,seam,"hero east seam",new Vector3(3.25f,.13f,5.08f),2.20f,.70f,204f);
-
+   // VQB already owns the successful Hero stair/rise. Nation1 reinforces it only with
+   // low warm masonry shoulders and paved courts — no extra rock assets or wrappers.
    StonePiece(root,wall,"hero west retaining wall",new Vector3(-3.95f,.16f,5.48f),2.50f,1.18f,8f);
    StonePiece(root,wall,"hero east retaining wall",new Vector3(3.95f,.16f,5.48f),2.50f,1.18f,-8f);
 
    BuildCivicPaving(root);
+  }
+
+  static void ScaleCoreVisuals()
+  {
+   foreach(var t in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+   {
+    if(t==null)continue;
+    string n=t.name.ToLowerInvariant();
+    if(n=="valoria · flat citadel · hero bastion")
+    {
+     t.localScale*=1.12f;t.position+=new Vector3(0f,0f,-.22f);
+    }
+    else if(n.Contains("flat citadel production · aserradero")||n.Contains("flat citadel production · cuartel")||n.Contains("flat citadel production · granero"))
+    {
+     t.localScale*=1.07f;
+    }
+    else if(n.Contains("flat citadel production · main gate"))
+    {
+     t.localScale*=1.10f;
+    }
+   }
   }
 
   static void BuildCivicPaving(Transform root)
@@ -61,10 +78,27 @@ namespace Eldoria.Presentation
    var p4=Resources.Load<GameObject>("Valoria/MidTierArchitectureKit_v1/Piece04");
    if(p1==null||p2==null||p3==null||p4==null)throw new InvalidOperationException("MidTier Architecture Kit v1 incomplete.");
 
-   Building(root,p1,"upper west residence",new Vector3(-6.30f,.13f,3.25f),2.55f,2.85f,16f);
-   Building(root,p2,"upper east residence",new Vector3(6.28f,.13f,3.18f),2.50f,2.80f,-15f);
-   Building(root,p3,"plaza west guildhouse",new Vector3(-3.25f,.13f,1.45f),2.25f,2.45f,8f);
-   Building(root,p4,"plaza east guildhouse",new Vector3(3.28f,.13f,1.38f),2.25f,2.45f,-9f);
+   Building(root,p1,"upper west residence",new Vector3(-6.20f,.13f,3.10f),2.45f,2.72f,16f);
+   Building(root,p2,"upper east residence",new Vector3(6.18f,.13f,3.05f),2.42f,2.70f,-15f);
+   Building(root,p3,"plaza west guildhouse",new Vector3(-3.10f,.13f,1.25f),2.10f,2.30f,8f);
+   Building(root,p4,"plaza east guildhouse",new Vector3(3.12f,.13f,1.20f),2.10f,2.30f,-9f);
+
+   Building(root,p2,"lower west workshop",new Vector3(-4.80f,.13f,-3.70f),1.72f,1.92f,13f);
+   Building(root,p1,"lower east workshop",new Vector3(4.55f,.13f,-4.15f),1.70f,1.90f,-14f);
+   Building(root,p4,"west inner house",new Vector3(-7.40f,.13f,.20f),1.68f,1.88f,18f);
+   Building(root,p3,"east inner house",new Vector3(7.35f,.13f,.15f),1.68f,1.88f,-18f);
+  }
+
+  static void BuildGranaryFields(Transform root)
+  {
+   var crop=ValoriaKit.DetailedSurfaceMaterial(new Color(.66f,.52f,.20f,1f),"earth",new Vector2(2.2f,2.2f),.86f);
+   var soil=ValoriaKit.DetailedSurfaceMaterial(new Color(.37f,.28f,.17f,1f),"earth",new Vector2(2.8f,2.8f),.92f);
+   Surface(root,"granary field bed",new Vector3(.45f,.155f,-4.55f),new Vector3(3.00f,.035f,2.15f),soil);
+   for(int i=0;i<7;i++)
+   {
+    float z=-5.30f+i*.25f;
+    Surface(root,"granary crop row "+i,new Vector3(.45f,.195f,z),new Vector3(2.70f,.055f,.10f),crop);
+   }
   }
 
   static void BuildFunctionalDressing(Transform root)
