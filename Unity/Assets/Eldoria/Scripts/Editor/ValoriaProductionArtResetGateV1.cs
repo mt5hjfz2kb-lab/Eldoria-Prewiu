@@ -69,6 +69,8 @@ namespace Eldoria.EditorTools
             ProductionVisualIntegration.CoherentCastleProofEnabled=false;
             ProductionVisualIntegration.SlavicDistrictProofEnabled=false;
             ProductionVisualIntegration.CompactFootprintReframeEnabled=true;
+            AssetVisualUpliftPassV1.Enabled=false;
+            AssetLibraryReprocessingPassV1.Enabled=true;
             VisualWorld.VisualIntegrationEnabled=true;
             VisualWorld.Create(true,state);
             var camera=Camera.main;
