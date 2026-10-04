@@ -103,6 +103,7 @@ namespace Eldoria.Presentation
                         ValoriaGraneroCuartelSourceUpgradeV1.Apply(visualRoot.transform,state);
                         ValoriaFunctionalScreenReadabilityV1.Apply(visualRoot.transform,state);
                         ValoriaCameraFirstFunctionalSourceV1.Apply(visualRoot.transform,state);
+                        ValoriaPairedFunctionalSourceV1.Apply(visualRoot.transform,state);
                     }
                     // RESET-approved Final Look is canonical for player-facing Valoria.
                     ValoriaProductionFinalLookV1.Apply();
