@@ -5,7 +5,7 @@ using Object=UnityEngine.Object;
 
 namespace Eldoria.Presentation
 {
-    // Phase C only: authored starter geometry in the real current Valoria frame.
+    // Reset-owned visual source: dedicated Unity stop gate is authoritative for C/D/E/F iteration.
     // Materials/final-look/camera are deliberately left for later gates.
     public static class ValoriaProductionArtResetV1
     {
