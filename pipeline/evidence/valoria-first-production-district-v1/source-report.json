@@ -8,11 +8,12 @@
     "wall": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
     "corner": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
     "tower": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
-    "civil": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
-    "workshop": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"
+    "civil": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+    "workshop": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+    "roof": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb"
   },
   "blend": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
-  "blend_sha256": "0fdfbd46b38a29b6aaa3c4fad8ee5791bb7844b85c542b4f2233ed93ca70f04e",
+  "blend_sha256": "edb144951cdad9ed91ccddb329bb7ea4a9213dff9c960cd76949dab39008746d",
   "assets": [
     {
       "asset_id": "Valoria_DefenseWall_FPDv1",
@@ -85,46 +86,47 @@
     {
       "asset_id": "Valoria_Granero_FPDv1",
       "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb",
-      "sha256": "09697e87f80096d3bc16f0c151afdcb402dd63425b0c5f80b89bfa9c903a67f4",
+      "sha256": "509ff98b54ef2ee95ddc617fea67eb324516ed888ef4df8f75b666d8f3537b14",
       "geometry": {
         "objects": 3,
-        "vertices": 36520,
-        "triangles": 40644,
+        "vertices": 32865,
+        "triangles": 36175,
         "materials": [
           "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8",
           "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8.001",
           "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8.002"
         ],
         "bounds": [
-          -2.125,
+          -1.8485,
           -2.296,
           0.0,
-          2.125,
-          1.5409,
-          3.1942
+          1.8485,
+          1.546,
+          3.912
         ]
       }
     },
     {
       "asset_id": "Valoria_Cuartel_FPDv1",
       "glb": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb",
-      "sha256": "1d2c8a7543bccbdf7b9315f97e647710f0341ef7ce577321cf6659885fec69a2",
+      "sha256": "1ed5c1e7114f609669466c1448580beeb4e0c0b67123be10eae8a6b84fe8329a",
       "geometry": {
-        "objects": 4,
-        "vertices": 32332,
-        "triangles": 37760,
+        "objects": 5,
+        "vertices": 44717,
+        "triangles": 50961,
         "materials": [
           "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8",
+          "tripo_material_239e1fce-f16d-4eb2-92b2-d522553361c8.001",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a",
           "tripo_material_952c3295-42ba-4399-9702-fd72b3b3263a.001"
         ],
         "bounds": [
           -2.3586,
-          -2.0915,
+          -2.1855,
           -0.02,
           2.3586,
-          2.0915,
-          2.6401
+          2.1855,
+          3.2937
         ]
       }
     }
