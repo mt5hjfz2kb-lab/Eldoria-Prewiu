@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T10:05:00Z",
+  "updated_at": "2026-10-04T10:12:00Z",
   "active": [
     {
       "id": "valoria-nation1-authored-production-v1",
@@ -44,7 +44,10 @@
         "docs/VALORIA_VISUAL_FORMULA_v1.md",
         "pipeline/active-workstreams.json",
         "docs/ELDORIA_VISUAL_BENCHMARK.md",
-        "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md"
+        "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
+        "docs/VALORIA_FINAL_LOOK_AND_CAMERA_AB_PLAN.md",
+        "pipeline/valoria-production-material-stack.json",
+        "pipeline/valoria-production-art-source-schema.json"
       ],
       "resources": [
         "valoria-art-direction-governance"
