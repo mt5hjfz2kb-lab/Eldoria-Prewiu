@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:43:00Z",
+  "updated_at": "2026-10-04T13:42:00Z",
   "active": [
     {
       "id": "valoria-granero-cuartel-source-upgrade-v1",
@@ -23,18 +23,27 @@
         "PROJECT_STATE.md",
         "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
-        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaGraneroCuartelSourceUpgradeGateV1.cs"
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaGraneroCuartelSourceUpgradeGateV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGraneroCuartelSourceUpgradeV1.cs"
       ],
       "resources": [
         "valoria-production-source-design",
         "github-hosted-blender",
         "windows-runner-heavy",
-        "art-production-planner"
+        "art-production-planner",
+        "valoria-production-composition"
       ],
       "status": "active",
       "claimed_at": "2026-10-04T13:14:00Z",
       "base_main_sha": "561f8d78642f13ba919e1814316a083eb74ee9ba",
-      "dependency": "Upgrade only Granero and Cuartel source quality. Source-isolated stop gate first; integrate into playable runtime only if both are SOURCE VISUAL PASS. Preserve defense, terrain, camera, Final Look, gameplay/parcels/hotspots/colliders. No Tripo spend without fresh owner authorization."
+      "dependency": "Upgrade only Granero and Cuartel source quality. Source-isolated stop gate first; integrate into playable runtime only if both are SOURCE VISUAL PASS. Preserve defense, terrain, camera, Final Look, gameplay/parcels/hotspots/colliders. No Tripo spend without fresh owner authorization.",
+      "source_gate": {
+        "run_id": 37206352843,
+        "artifact_id": 11305265539,
+        "granero": "SOURCE VISUAL PASS",
+        "cuartel": "SOURCE VISUAL PASS",
+        "credits_spent": 0
+      }
     }
   ],
   "history": [
