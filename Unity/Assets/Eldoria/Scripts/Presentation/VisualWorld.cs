@@ -95,7 +95,14 @@ namespace Eldoria.Presentation
                     // It is visual-only; its gate can still disable it for matched BEFORE captures.
                     var visualRoot=GameObject.Find("Valoria · integrated construction visual layer");
                     if(visualRoot!=null)
+                    {
                         ValoriaWorldFrameMountainTerrainV1.Build(visualRoot.transform,state);
+                        // Production promotion: First Production District v1 is part of the real
+                        // playable Valoria visual path, not only an evidence-gate overlay.
+                        ValoriaFirstProductionDistrictV1.Apply(visualRoot.transform,state);
+                    }
+                    // RESET-approved Final Look is canonical for player-facing Valoria.
+                    ValoriaProductionFinalLookV1.Apply();
                 }
                 else ProductionVisualIntegration.World(state);
             }
