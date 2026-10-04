@@ -46,6 +46,8 @@
     "paid": 0
   },
   "promotion_rule": "Promote only if the matched played frame is clearly better; TECH PASS alone is insufficient.",
-  "attempt": 2,
-  "tech_fix": "Qualify UnityEngine.Object.DestroyImmediate in editor gate; no visual/composition change."
+  "attempt": 3,
+  "tech_fix": "Qualify UnityEngine.Object.DestroyImmediate in editor gate; no visual/composition change.",
+  "technique_change": "Discard masonry/Slavic replacement composition after matched visual FAIL. New technique is subtractive housing articulation plus certified StoneArchitectureKit_v1 (HighStraightWall, CornerWallL, RockToWallTransition) and one rescued ResidentialTerraceRock mass. No replacement houses, no color tweaks, no camera/ground changes.",
+  "previous_visual_result": "Attempt 2 TECH PASS / VISUAL FAIL — brown masonry faces and new Slavic houses reduced family coherence."
 }
