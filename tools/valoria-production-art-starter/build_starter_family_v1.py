@@ -325,10 +325,16 @@ def build_workshop():
 def uv_all(col):
     for o in col.objects:
         if o.type!="MESH": continue
-        bpy.context.view_layer.objects.active=o;o.select_set(True)
-        bpy.ops.object.mode_set(mode="EDIT");bpy.ops.mesh.select_all(action="SELECT")
+        if bpy.context.object is not None and bpy.context.object.mode != "OBJECT":
+            bpy.ops.object.mode_set(mode="OBJECT")
+        bpy.ops.object.select_all(action="DESELECT")
+        bpy.context.view_layer.objects.active=o
+        o.select_set(True)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
         bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=.02)
-        bpy.ops.object.mode_set(mode="OBJECT");o.select_set(False)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        o.select_set(False)
 
 def shade_normals(col):
     for o in col.objects:
