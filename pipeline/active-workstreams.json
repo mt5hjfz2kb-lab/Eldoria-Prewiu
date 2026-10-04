@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T17:49:00Z",
-  "active": [
+  "updated_at": "2026-10-04T17:55:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-lower-city-urban-massing-reauthoring-v1",
       "title": "Valoria Lower-City Urban Massing Reauthoring v1",
@@ -25,13 +26,20 @@
         "windows-runner-heavy",
         "art-production-planner"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T17:36:00Z",
       "base_main_sha": "066badef6b6e883dde5ff0a8755dc667b0c7de46",
-      "dependency": "One structural, zero-credit lower-city massing pass against the canonical reference image. Recompose the dominant orange-roof/frontage band into 2–3 differentiated urban groups using existing rich/authored sources first. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, routes/parcels/reserves and Final Look. No camera/ground/support-form reopen, no Forja/Hospital/Cantera, no Tripo spend."
-    }
-  ],
-  "history": [
+      "dependency": "One structural, zero-credit lower-city massing pass against the canonical reference image. Recompose the dominant orange-roof/frontage band into 2–3 differentiated urban groups using existing rich/authored sources first. Preserve Hero Bastion, defense, Granero, Cuartel, Flat Citadel, camera/mobile navigation, gameplay, routes/parcels/reserves and Final Look. No camera/ground/support-form reopen, no Forja/Hospital/Cantera, no Tripo spend.",
+      "completed_at": "2026-10-04T17:55:00Z",
+      "planner_run_id": 37221347279,
+      "run_id": 37221732105,
+      "artifact_id": 11309549299,
+      "confirmation_run_id": 37222027889,
+      "confirmation_artifact_id": 11309364965,
+      "result": "TECH PASS / VISUAL PASS / PROMOTED",
+      "result_doc": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
+      "next": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1; do not reopen lower-city house density/spacing."
+    },
     {
       "id": "valoria-secondary-support-form-replacement-v1",
       "title": "Valoria Secondary / Support Form Replacement v1",
