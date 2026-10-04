@@ -1,0 +1,55 @@
+name: "[PRODUCTION] Valoria Granero Rich Camera-First v1"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-granero-rich-camera-first-v1-request.json'
+permissions:
+  contents: write
+concurrency:
+  group: valoria-granero-rich-camera-first-v1
+  cancel-in-progress: true
+jobs:
+  isolated-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1
+      - name: Build rich camera-first Granero
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('pipeline/valoria-granero-rich-camera-first-v1-request.json'))
+          assert r['enabled'] is True and r['phase']=='source_isolated'
+          assert r['allow_unity_integration'] is False
+          assert r['tripo'] is False and r['credits']==0
+          PY
+          blender -b --python tools/valoria-granero-rich-camera-first/build_granero_rich_camera_first_v1.py
+          test -s Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb
+          test -s docs/evidence/valoria-granero-rich-camera-first-v1/granero-rich-camera-first.png
+          test -s docs/evidence/valoria-granero-rich-camera-first-v1/granero-rich-camera-first-silhouette.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-granero-rich-camera-first-v1-isolated
+          path: |
+            art-source/valoria/production/granero-rich-camera-first-v1/**
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/**
+            pipeline/evidence/valoria-granero-rich-camera-first-v1/**
+            docs/evidence/valoria-granero-rich-camera-first-v1/*.png
+          retention-days: 30
+      - name: Persist rich Granero source evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add art-source/valoria/production/granero-rich-camera-first-v1 Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1 pipeline/evidence/valoria-granero-rich-camera-first-v1 docs/evidence/valoria-granero-rich-camera-first-v1
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Persist rich camera-first Granero candidate"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
