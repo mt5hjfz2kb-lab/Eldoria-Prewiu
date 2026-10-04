@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "HOLD_AFTER_ADAPTIVE_MOBILE_HOME_POSE_PARTIAL",
+  "status": "READY_FOR_GRAPHICAL_PRODUCTION_AFTER_MOBILE_NAVIGATION_PASS",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Adaptive Mobile Home Pose v1 proves portrait-specific framing helps, but camera-only M2 still leaves Granero mostly cropped. Do not rebuild Granero/Cuartel and do not iterate camera again. Next structural proof: bounded mobile functional-district anchor/parcel-presentation rebalance using existing SOURCE VISUAL PASS pair, validated in both 16:9 and portrait. Forja/Hospital/Cantera remain HOLD.",
+  "next_priority": "Camera/screen-space question is closed. Do not rebalance Granero/Cuartel for simultaneous portrait visibility. Next high-impact visual block: terrain/edge/architectural-transition cohesion across the reachable pan envelope, then secondary architecture/lower-city richness and restrained life/storytelling. Forja/Hospital/Cantera remain HOLD until the visible-frame cohesion pass is complete.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -150,5 +150,16 @@
     "canonical_mobile_home_pose_promoted": false,
     "key_finding": "M2 improves Bastion/lower-city balance and gets Cuartel fully visible, but Granero remains ~27% visible; current functional anchors are too horizontally spread in portrait.",
     "result_doc": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md"
+  },
+  "mobile_navigable_city_v1": {
+    "result": "TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS / PROMOTED",
+    "run_id": 37213794236,
+    "artifact_id": 11307920631,
+    "planner_run_id": 37213645061,
+    "credits_spent": 0,
+    "canonical_mobile_home_promoted": true,
+    "horizontal_preserved": true,
+    "key_finding": "Valoria should remain larger than one portrait viewport. M2-equivalent HOME + bounded pan preserves useful architectural scale and removes the false requirement that Granero and Cuartel be simultaneously visible.",
+    "result_doc": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md"
   }
 }
