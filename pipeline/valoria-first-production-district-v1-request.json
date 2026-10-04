@@ -2,14 +2,17 @@
   "schema_version": 1,
   "enabled": true,
   "program": "VALORIA FIRST PRODUCTION DISTRICT v1",
-  "nonce": "fpd-v1-production-20261004-1234",
+  "nonce": "fpd-v1-production-20261004-1237-fix1",
   "scope": [
     "Hero-compatible visible defense",
     "Granero",
     "Cuartel",
     "related visible proxies"
   ],
-  "stop_gate": ["zoom9","mobile"],
+  "stop_gate": [
+    "zoom9",
+    "mobile"
+  ],
   "camera": "ORTHOGRAPHIC",
   "final_look": "RESET_ACCEPTED",
   "credits": 0,
