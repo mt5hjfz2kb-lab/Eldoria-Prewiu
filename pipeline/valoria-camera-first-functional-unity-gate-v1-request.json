@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA CAMERA-FIRST FUNCTIONAL SOURCE v1",
+  "phase": "unity_gate",
+  "nonce": "cfs-v1-unity-20261004-1430",
+  "source_gate": {
+    "run_id": 37208777268,
+    "artifact_id": 11305893049,
+    "granero": "SOURCE FUNCTIONAL PASS",
+    "cuartel": "SOURCE FUNCTIONAL PASS"
+  },
+  "comparison": "current canonical playable runtime BEFORE vs camera-first Granero/Cuartel sources AFTER at established district anchors",
+  "preserve": [
+    "orthographic camera",
+    "RESET Final Look",
+    "Hero Bastion",
+    "accepted defense",
+    "terrain",
+    "gameplay",
+    "parcels",
+    "routes",
+    "future reserves",
+    "hotspots",
+    "colliders"
+  ],
+  "tripo": false,
+  "credits": 0
+}
