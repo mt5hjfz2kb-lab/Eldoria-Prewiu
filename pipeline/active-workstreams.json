@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T19:51:00Z",
-  "active": [
+  "updated_at": "2026-10-04T20:04:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-to-city-blender-authoring-v1",
       "title": "Valoria Bastion-to-City Blender Authoring v1",
@@ -24,13 +25,20 @@
         "github-hosted-blender",
         "valoria-bastion-to-city-source"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T19:51:00Z",
       "base_main_sha": "cd9c3fe64285ae570c417966b86de05f792e81e1",
-      "dependency": "Build one final-art candidate from the locked Bastion-to-City design target under BLENDER_PROFESSIONAL_V1. Source gate first; Unity only if isolated ART SOURCE convincingly passes. Preserve Hero Bastion, central stair/circulation, promoted lower city, Granero, Cuartel, camera, density, gameplay/routes/parcels/reserves. No Tripo, zero credits."
-    }
-  ],
-  "history": [
+      "dependency": "Build one final-art candidate from the locked Bastion-to-City design target under BLENDER_PROFESSIONAL_V1. Source gate first; Unity only if isolated ART SOURCE convincingly passes. Preserve Hero Bastion, central stair/circulation, promoted lower city, Granero, Cuartel, camera, density, gameplay/routes/parcels/reserves. No Tripo, zero credits.",
+      "completed_at": "2026-10-04T20:04:00Z",
+      "planner_run_id": 37230021052,
+      "source_run_id": 37230275353,
+      "source_artifact_id": 11312479703,
+      "result_commit": "0e68cba321e02677c96b9964cf7c7fb713904afb",
+      "result": "TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED",
+      "result_doc": "docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md",
+      "credits_spent": 0,
+      "next": "Do not open v2/v3 or scripted micro-adjustment variants. Future revisit requires a materially different, direct artist-led/source-rich DCC authoring method. Tripo requires fresh explicit authorization."
+    },
     {
       "id": "valoria-bastion-to-city-frame-design-brief-v1",
       "title": "Valoria Bastion-to-City Frame Design Brief v1",

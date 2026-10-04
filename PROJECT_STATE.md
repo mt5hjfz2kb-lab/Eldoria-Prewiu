@@ -1,3 +1,6 @@
+## 2026-10-04 — Bastion-to-City Blender Authoring v1 closed at ART SOURCE
+The locked Bastion-to-city 2D design was translated into one reproducible BLENDER_PROFESSIONAL_V1 source and passed technical generation/export, but isolated clay/lit/matched-camera evidence still reads as large technical retaining masses rather than premium final capital architecture. ART SOURCE hard questions 1/3/4/7 fail, so Unity integration was correctly blocked and canonical runtime remains the promoted Lower-City state. See `docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md`.
+
 ## 2026-10-04 — Bastion-to-City frame target locked
 Valoria now has a canonical screen-space design target for the future Bastion-to-city architectural transition. The base is the promoted Lower-City 16:9 AFTER capture (run 37221732105 / artifact 11309549299). The design locks the replacement envelope, protected Hero Bastion/lower-city/stair regions, asymmetric west/east retaining masses, nested depth, receiving terrace, material/value hierarchy and stone-rock interlock requirements. No runtime or production geometry changed. Future Blender work must construct this target rather than improvise a new shape. See `docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md`.
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "enabled": true,
-  "phase": "SOURCE_ISOLATED",
+  "enabled": false,
+  "phase": "CLOSED_ART_SOURCE_FAIL",
   "workstream": "VALORIA BASTION-TO-CITY BLENDER AUTHORING v1",
   "authoring_standard": "BLENDER_PROFESSIONAL_V1",
   "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
@@ -30,5 +30,22 @@
   "attempt": 3,
   "tech_fix": "Remove Blender/Python CLI argument parsing entirely and use canonical internal source/evidence/report paths. Geometry/material/design code unchanged.",
   "previous_run_id": 37230133214,
-  "previous_result": "TECH FAIL before geometry generation: Blender 4 exposed its full process argv to argparse."
+  "previous_result": "TECH FAIL before geometry generation: Blender 4 exposed its full process argv to argparse.",
+  "source_run_id": 37230275353,
+  "source_artifact_id": 11312479703,
+  "source_commit": "0e68cba321e02677c96b9964cf7c7fb713904afb",
+  "tech_verdict": "PASS",
+  "art_source_verdict": "FAIL",
+  "unity_run": "NOT_RUN",
+  "visual_verdict": "NOT_RUN",
+  "promotion": "NOT_PROMOTED",
+  "final_finding": "Matched proxy still reads as two technical retaining masses around the stair. West/east asymmetry is present, but target silhouette, nested architectural depth, true screen-readable arcade hierarchy and convincing stone-rock interlock do not reach final environment-art quality.",
+  "hard_stop_failures": [
+    1,
+    3,
+    4,
+    7
+  ],
+  "result_doc": "docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md",
+  "next_method": "Do not open v2/v3 or micro-adjust this source. If revisited, change authoring mode materially toward direct artist-led DCC editing against the locked played-frame target, or another owner-approved high-quality source path followed by substantial manual Blender reauthoring. Tripo still requires fresh explicit authorization."
 }

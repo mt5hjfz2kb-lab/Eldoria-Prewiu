@@ -1,3 +1,13 @@
+## 2026-10-04 — VALORIA BASTION-TO-CITY BLENDER AUTHORING v1 — CLOSED
+- Final verdict: **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED**.
+- Canonical source run **37230275353** SUCCESS; artifact **11312479703**; source persistence commit **0e68cba321e02677c96b9964cf7c7fb713904afb**.
+- Reproducible source: `Valoria_BastionToCity_BlenderAuthoring_v1.blend` SHA-256 `2b77f20a5b52afcda7f273ff45d10717595e36e8b5dcccc3e5f56550e3676d4e`; GLB SHA-256 `935d66fb6cfb441e4829c2eb75e1ddb7754aa883ee875f8e4aaae423815675b4`.
+- Source-first review fails hard questions 1/3/4/7: target silhouette is not convincingly reproduced, nested depth is not screen-readable, stone-rock interlock is insufficient and matched camera still reads as two technical supports around the stair.
+- Unity was intentionally not run; no runtime/gameplay/camera/promotion changes.
+- 0 Tripo / 0 credits.
+- Anti-loop: do not open Blender Authoring v2/v3 or parameter micro-variants. Future revisit must materially change to direct artist-led/source-rich DCC authoring against the already-locked 2D target.
+- Result doc: `docs/VALORIA_BASTION_TO_CITY_BLENDER_AUTHORING_V1_RESULT.md`.
+
 ## 2026-10-04 — VALORIA BASTION-TO-CITY FRAME DESIGN BRIEF v1 — CLOSED / DESIGN TARGET LOCKED
 - Exact base locked: Lower-City Urban Massing promoted `AFTER-HORIZONTAL-16x9.png`, run **37221732105**, artifact **11309549299**, captured head `5231a9e208cf99d9cc5d6a350f8de17bbdb6ae62`, 1600x900, SHA-256 `ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1`.
 - Design-only block: **no new production geometry, no Unity A/B, no camera/density/building changes, no Tripo, 0 credits**.
