@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "assets": [
+    {
+      "label": "Aserradero",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "sha256": "1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e",
+      "mesh_count": 1,
+      "total_triangles": 49800,
+      "materials": [
+        {
+          "name": "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f",
+          "shader": "Principled BSDF",
+          "textures": [
+            {
+              "node": "Image Texture",
+              "image": "Valoria_Aserradero_AP2_v1_basecolor",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "Valoria_Aserradero_AP2_v1_rm",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "Valoria_Aserradero_AP2_v1_normal",
+              "filepath": ""
+            }
+          ]
+        }
+      ],
+      "meshes": [
+        {
+          "name": "tripo_node_c6c52015-155b-4e0e-bfda-8cb0f25dda9f",
+          "parent": null,
+          "vertices": 55752,
+          "triangles": 49800,
+          "materials": [
+            "tripo_material_c6c52015-155b-4e0e-bfda-8cb0f25dda9f"
+          ],
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "dimensions": [
+            0.98025,
+            0.90274,
+            0.75567
+          ],
+          "bounds": [
+            -0.49076,
+            -0.45016,
+            -0.0004,
+            0.4895,
+            0.45259,
+            0.75527
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Cuartel",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "sha256": "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+      "mesh_count": 1,
+      "total_triangles": 49800,
+      "materials": [
+        {
+          "name": "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab",
+          "shader": "Principled BSDF",
+          "textures": [
+            {
+              "node": "Image Texture",
+              "image": "Valoria_Cuartel_AP2_v1_basecolor",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "Valoria_Cuartel_AP2_v1_rm",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "Valoria_Cuartel_AP2_v1_normal",
+              "filepath": ""
+            }
+          ]
+        }
+      ],
+      "meshes": [
+        {
+          "name": "tripo_node_a0ed612d-5a6f-42ae-9d66-9558557c70ab",
+          "parent": null,
+          "vertices": 61349,
+          "triangles": 49800,
+          "materials": [
+            "tripo_material_a0ed612d-5a6f-42ae-9d66-9558557c70ab"
+          ],
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "dimensions": [
+            0.97898,
+            0.68199,
+            0.76056
+          ],
+          "bounds": [
+            -0.48909,
+            -0.3408,
+            0.00058,
+            0.48989,
+            0.34118,
+            0.76114
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Granero",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "sha256": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+      "mesh_count": 1,
+      "total_triangles": 49800,
+      "materials": [
+        {
+          "name": "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee",
+          "shader": "Principled BSDF",
+          "textures": [
+            {
+              "node": "Image Texture",
+              "image": "Valoria_Granero_BIII_v1_basecolor",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "Valoria_Granero_BIII_v1_rm",
+              "filepath": ""
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "Valoria_Granero_BIII_v1_normal",
+              "filepath": ""
+            }
+          ]
+        }
+      ],
+      "meshes": [
+        {
+          "name": "tripo_node_a91b5c26-b4a3-432a-afe2-120a3e279bee",
+          "parent": null,
+          "vertices": 55232,
+          "triangles": 49800,
+          "materials": [
+            "tripo_material_a91b5c26-b4a3-432a-afe2-120a3e279bee"
+          ],
+          "location": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "dimensions": [
+            0.97942,
+            0.97685,
+            0.5999
+          ],
+          "bounds": [
+            -0.4895,
+            -0.48784,
+            -0.00037,
+            0.48992,
+            0.48901,
+            0.59953
+          ]
+        }
+      ]
+    }
+  ]
+}
