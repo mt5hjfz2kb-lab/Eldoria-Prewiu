@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "AUTHOR_SOURCE",
+  "workstream": "VALORIA STRUCTURAL FRAME / URBAN SUPPORT INTEGRATION v1",
+  "method": "Blender authored zero-credit geometry",
+  "outputs": [
+    "CivicRetainingBay.glb",
+    "LowerArcadedFront.glb",
+    "CuartelTerraceSupport.glb"
+  ],
+  "visual_goal": "Replace dominant technical support masses with integrated civic retaining architecture: arches, buttresses, cornice, parapet and vertical articulation.",
+  "tripo_credits": 0,
+  "paid_credits": 0
+}
