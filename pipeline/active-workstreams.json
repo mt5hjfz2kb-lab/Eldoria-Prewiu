@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T15:30:00Z",
-  "active": [
+  "updated_at": "2026-10-04T15:45:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-mobile-navigable-city-v1",
       "title": "Valoria Mobile Navigable City v1",
@@ -25,13 +26,18 @@
         "windows-runner-heavy",
         "valoria-production-composition"
       ],
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-04T15:30:00Z",
       "base_main_sha": "938c7cfce24359374849f37ec470a269a008e28b",
-      "dependency": "One bounded mobile navigation proof using the existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 and the already-proven pan architecture. M2 is only a starting composition principle, not automatically promoted. Preserve 16:9, assets, materials, Final Look, Hero Bastion, defense, parcels and gameplay. One implementation; zero Tripo/paid credits."
-    }
-  ],
-  "history": [
+      "dependency": "One bounded mobile navigation proof using the existing SOURCE VISUAL PASS Granero_RCFv1 + Cuartel_CFSv1 and the already-proven pan architecture. M2 is only a starting composition principle, not automatically promoted. Preserve 16:9, assets, materials, Final Look, Hero Bastion, defense, parcels and gameplay. One implementation; zero Tripo/paid credits.",
+      "completed_at": "2026-10-04T15:45:00Z",
+      "run_id": 37213794236,
+      "artifact_id": 11307920631,
+      "planner_run_id": 37213645061,
+      "result": "TECH PASS / MOBILE NAVIGATION VISUAL PASS / GAMEPLAY PASS / PROMOTED",
+      "result_doc": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md",
+      "next": "Return to graphical production. Highest-impact next block: terrain/edge/architectural-transition cohesion across the reachable pan envelope; then secondary architecture/lower-city richness. Do not reopen camera or move Granero/Cuartel for simultaneous visibility."
+    },
     {
       "id": "valoria-adaptive-mobile-home-pose-v1",
       "title": "Valoria Adaptive Mobile Home Pose v1",
