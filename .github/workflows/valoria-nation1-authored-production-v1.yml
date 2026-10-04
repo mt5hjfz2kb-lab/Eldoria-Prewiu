@@ -25,7 +25,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
+          sudo apt-get install -y blender python3-numpy python3-pil
           blender --version
       - name: Stage Nation1 PBR source maps
         shell: bash
@@ -55,6 +55,24 @@ jobs:
                   with urllib.request.urlopen(q,timeout=60) as src, open(dest,"wb") as dst: dst.write(src.read())
                   if os.path.getsize(dest)<10000: raise SystemExit("map too small "+dest)
                   print(dest,os.path.getsize(dest))
+          PY
+          python3 - <<'PY'
+          import glob, os
+          from PIL import Image, ImageEnhance
+          root=os.environ["NATION1_PBR_DIR"]
+          src=glob.glob(os.path.join(root,"roof_slates_03_diff_1k.*"))[0]
+          im=Image.open(src).convert("RGB")
+          # Keep slate texture/luminance but shift it into the deep Valoria blue family.
+          px=im.load()
+          for y in range(im.height):
+              for x in range(im.width):
+                  r,g,b=px[x,y]
+                  lum=(r*0.2126+g*0.7152+b*0.0722)/255.0
+                  px[x,y]=(int(18+lum*34),int(45+lum*58),int(92+lum*92))
+          im=ImageEnhance.Contrast(im).enhance(1.08)
+          out=os.path.join(root,"roof_slates_03_blue_1k.jpg")
+          im.save(out,quality=92)
+          print(out,os.path.getsize(out))
           PY
           echo "NATION1_PBR_DIR=$NATION1_PBR_DIR" >> "$GITHUB_ENV"
       - name: Author Nation1 stone family in Blender
