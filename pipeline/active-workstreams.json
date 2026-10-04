@@ -1,8 +1,38 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T14:36:00Z",
-  "active": [],
+  "updated_at": "2026-10-04T14:39:00Z",
+  "active": [
+    {
+      "id": "valoria-paired-functional-unity-gate-v1",
+      "title": "Valoria Paired Functional Unity Gate v1",
+      "owner": "chat-valoria-paired-functional-unity-gate-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPairedFunctionalSourceV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaPairedFunctionalUnityGateV1.cs",
+        ".github/workflows/valoria-paired-functional-unity-gate-v1.yml",
+        "pipeline/valoria-paired-functional-unity-gate-v1-request.json",
+        "pipeline/evidence/valoria-paired-functional-unity-gate-v1/**",
+        "docs/evidence/valoria-paired-functional-unity-gate-v1/**",
+        "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "windows-runner-heavy",
+        "valoria-production-composition",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T14:39:00Z",
+      "base_main_sha": "eb2c161f933255d7a3e0f64caeb05e1ff45c5393",
+      "dependency": "Pair SOURCE VISUAL PASS Valoria_Granero_RCFv1 with retained SOURCE VISUAL PASS Valoria_Cuartel_CFSv1. One real matched Unity zoom9/mobile gate. Preserve canonical orthographic camera, RESET Final Look, Hero Bastion, accepted defense, terrain, gameplay, parcels/routes/hotspots/colliders/future reserves. No further source/layout iteration inside this block. Zero Tripo/paid credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-granero-rich-camera-first-v1",
