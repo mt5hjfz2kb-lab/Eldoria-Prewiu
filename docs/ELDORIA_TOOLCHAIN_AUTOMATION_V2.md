@@ -167,3 +167,21 @@ Rules:
 
 Machine-readable loop contract: `pipeline/valoria-full-frame-convergence-v1.json`.
 Validation: `node tools/validate-valoria-full-frame-convergence.mjs`.
+
+
+## Blender Professional Authoring Pipeline v1 — canonical extension
+
+Player-visible new or materially reauthored environment geometry now follows `docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md` and `pipeline/blender-professional-authoring-standard.json`.
+
+For `environment_new_geometry`, a zero-credit Blender route is a first-class production route. When Tripo is not authorized/required, the planner must route:
+
+`geometry gap evidence -> screen-space art brief -> blender professional authoring -> isolated art-source review -> Unity integration -> official-camera validation`.
+
+Do not treat Blender Python primitive assembly as professional authoring merely because it runs inside Blender. Visible source art must demonstrate deliberate silhouette, depth, repetition control, material relationship and camera-readability.
+
+Required separation of verdicts:
+- TECH PASS — source/export/integration/gameplay contract is valid;
+- ART SOURCE PASS — isolated source looks intentionally authored and passes the professional-authoring questions;
+- VISUAL PASS — integrated official-frame result materially improves the game.
+
+All three are required for promotion of new high-salience geometry.
