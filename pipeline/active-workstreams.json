@@ -1,8 +1,37 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T18:28:39Z",
-  "active": [],
+  "updated_at": "2026-10-04T18:41:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-to-city-architectural-frame-v1",
+      "title": "Valoria Bastion-to-City Architectural Frame v1",
+      "owner": "chat-valoria-bastion-to-city-architectural-frame-v1",
+      "scope": [
+        "art-source/valoria/production/bastion-to-city-architectural-frame-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/BastionToCityArchitecturalFrameV1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBastionToCityArchitecturalFrameV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBastionToCityArchitecturalFrameGateV1.cs",
+        ".github/workflows/valoria-bastion-to-city-architectural-frame-v1.yml",
+        "pipeline/valoria-bastion-to-city-architectural-frame-v1-request.json",
+        "pipeline/art-production-request.json",
+        "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner",
+        "github-hosted-blender"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T18:41:00Z",
+      "base_main_sha": "b65ae6f8fcac7fdff1aa2303a352ca13a5517ea5",
+      "dependency": "One strong method-level intervention: replace the complete dominant Bastion-to-lower-city stair frame with one deliberately screen-designed architectural composition authored under BLENDER_PROFESSIONAL_V1, including material/value relationships and rock/stone interfaces before Unity. Preserve Hero Bastion, promoted lower city, Granero, Cuartel, defense, camera/mobile navigation, terrain as primary problem, density, Forja/Hospital/Cantera, gameplay/routes/parcels/reserves. Zero Tripo credits."
+    }
+  ],
   "history": [
     {
       "id": "valoria-structural-frame-urban-support-integration-v1",
