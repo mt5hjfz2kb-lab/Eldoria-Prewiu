@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "program": "VALORIA PAIRED FUNCTIONAL UNITY GATE v1",
+  "phase": "candidate_gate",
+  "nonce": "paired-functional-unity-v1-20261004-1442",
+  "sources": {
+    "granero": {
+      "asset": "Valoria_Granero_RCFv1",
+      "source_verdict": "SOURCE VISUAL PASS",
+      "run_id": 37209284772,
+      "artifact_id": 11306380357
+    },
+    "cuartel": {
+      "asset": "Valoria_Cuartel_CFSv1",
+      "source_verdict": "SOURCE VISUAL PASS",
+      "run_id": 37208777268,
+      "artifact_id": 11305893049
+    }
+  },
+  "comparison": "current canonical playable runtime BEFORE vs paired camera-first sources AFTER at established canonical FPD anchors",
+  "preserve": [
+    "orthographic camera",
+    "RESET Final Look",
+    "Hero Bastion",
+    "accepted defense",
+    "terrain",
+    "gameplay",
+    "parcels",
+    "routes",
+    "future reserves",
+    "hotspots",
+    "colliders"
+  ],
+  "tripo": false,
+  "credits": 0,
+  "anti_loop": "One paired Unity gate only. No source/layout/material iteration inside this block."
+}
