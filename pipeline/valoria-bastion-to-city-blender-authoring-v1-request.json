@@ -27,8 +27,8 @@
   "tripo": false,
   "credits": 0,
   "anti_loop": "Single production source. No A/B/C, no v2/v3, no micro-iteration chain. If hard ART SOURCE questions fail, close and document method limit.",
-  "attempt": 2,
-  "tech_fix": "Blender 4 runner did not pass post -- arguments to Python wrapper; canonical output/evidence/report paths are now script defaults. Geometry/material/design code unchanged.",
-  "previous_run_id": 37230021110,
-  "previous_result": "TECH FAIL before geometry generation: argparse received no output/evidence/report arguments."
+  "attempt": 3,
+  "tech_fix": "Pass filtered post-- argv explicitly to argparse.parse_args(av). Geometry/material/design code unchanged.",
+  "previous_run_id": 37230133214,
+  "previous_result": "TECH FAIL before geometry generation: argparse parsed Blender's full argv instead of filtered post-- argv."
 }
