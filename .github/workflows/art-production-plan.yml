@@ -9,6 +9,9 @@ on:
       - 'pipeline/toolchain-capabilities.json'
       - 'tools/plan-art-production.mjs'
       - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
+      - 'docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md'
+      - 'pipeline/blender-professional-authoring-standard.json'
+      - 'tools/validate-blender-professional-authoring.mjs'
 
 permissions:
   contents: read
@@ -21,6 +24,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Validate Blender professional-authoring standard
+        run: node tools/validate-blender-professional-authoring.mjs
       - name: Build deterministic zero-spend art-production plan
         run: |
           node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plan.json
@@ -31,4 +36,5 @@ jobs:
             art-production-plan.json
             pipeline/art-production-request.json
             pipeline/toolchain-capabilities.json
+            pipeline/blender-professional-authoring-standard.json
           if-no-files-found: error
