@@ -1,9 +1,5 @@
 name: "[PRODUCTION] Valoria Screen-Space Breakpoint v1"
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/valoria-screen-space-breakpoint-v1-request.json'
   workflow_dispatch:
 concurrency:
   group: valoria-screen-space-breakpoint-v1
