@@ -12,5 +12,7 @@
   "tripo_credits": 0,
   "paid_credits": 0,
   "attempt": 2,
-  "tech_fix": "Install python3-numpy required by Ubuntu Blender 4.0 glTF exporter; authored geometry unchanged."
+  "tech_fix": "Install python3-numpy alongside apt Blender so the glTF exporter can import numpy. No geometry/design change.",
+  "previous_run_id": 37223697615,
+  "previous_result": "TECH FAIL before GLB export: Blender glTF exporter missing numpy; no candidate source produced."
 }
