@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "status": "canonical authoring baseline",
+  "updated_at": "2026-10-04",
+  "texel_density_policy": {
+    "principle": "coherent screen-space density by asset role",
+    "hero_authoring_max": "2K per major material set initially",
+    "primary_authoring_max": "2K when zoom-9 evidence benefits",
+    "support_target": "1K when quality survives official cameras",
+    "note": "Runtime compression/max size decided in Unity after real camera/device review."
+  },
+  "families": {
+    "Eldoria_Stone": {
+      "role": "architectural masonry",
+      "base_color": "warm neutral stone; avoid pale/chalk wash",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "ao",
+        "variation_mask"
+      ],
+      "optional": [
+        "edge_wear_mask",
+        "dirt_mask",
+        "moss_humidity_mask",
+        "trim_sheet"
+      ],
+      "response": {
+        "roughness": "medium-high",
+        "metallic": 0
+      },
+      "usage": [
+        "walls",
+        "gate",
+        "tower",
+        "civic bases",
+        "lintels",
+        "cornices",
+        "buttresses"
+      ]
+    },
+    "Eldoria_Timber": {
+      "role": "structural and functional wood",
+      "base_color": "dark-to-medium desaturated warm brown",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "ao",
+        "variation_mask"
+      ],
+      "optional": [
+        "edge_wear_mask",
+        "dirt_mask",
+        "trim_sheet"
+      ],
+      "response": {
+        "roughness": "medium-high",
+        "metallic": 0
+      },
+      "usage": [
+        "frames",
+        "beams",
+        "doors",
+        "porches",
+        "workshop structure"
+      ]
+    },
+    "Eldoria_Slate": {
+      "role": "roofing",
+      "base_color": "charcoal / muted blue-grey; dark but readable",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "ao"
+      ],
+      "optional": [
+        "macro_variation_mask",
+        "moss_humidity_mask",
+        "edge_wear_mask"
+      ],
+      "response": {
+        "roughness": "high",
+        "metallic": 0
+      },
+      "usage": [
+        "pitched roofs",
+        "dormers",
+        "roof caps"
+      ]
+    },
+    "Eldoria_Ground": {
+      "role": "roads courts soil and terrain transition",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "ao",
+        "macro_variation_mask"
+      ],
+      "optional": [
+        "traffic_wear_mask",
+        "wetness_mask",
+        "decal_layer"
+      ],
+      "response": {
+        "roughness": "high",
+        "metallic": 0
+      },
+      "usage": [
+        "cobble",
+        "dirt",
+        "plaza",
+        "yards",
+        "fields"
+      ]
+    },
+    "Eldoria_Rock": {
+      "role": "natural geology and architecture transition",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "ao",
+        "macro_variation_mask"
+      ],
+      "optional": [
+        "moss_humidity_mask",
+        "dirt_mask"
+      ],
+      "response": {
+        "roughness": "very-high",
+        "metallic": 0
+      },
+      "usage": [
+        "terrain seams",
+        "retaining geology",
+        "distant rock"
+      ]
+    },
+    "Eldoria_Metal_Accent": {
+      "role": "restrained metal and heraldic hardware",
+      "maps": [
+        "basecolor",
+        "normal",
+        "roughness_or_smoothness",
+        "metallic",
+        "ao"
+      ],
+      "optional": [
+        "wear_mask",
+        "dirt_mask"
+      ],
+      "response": {
+        "roughness": "role-dependent",
+        "metallic": "mask-driven"
+      },
+      "usage": [
+        "hardware",
+        "trim",
+        "gate fittings",
+        "limited gold accents"
+      ]
+    }
+  },
+  "shared_rules": [
+    "No constant roughness across all buildings.",
+    "Macro variation must survive zoom 9/mobile; micro noise alone does not count.",
+    "Masks and decals create controlled uniqueness without unrelated material families.",
+    "Ground/contact transitions are part of the material system, not an afterthought.",
+    "Hero richness is the upper anchor; secondary families approach it without copying silhouette."
+  ]
+}
