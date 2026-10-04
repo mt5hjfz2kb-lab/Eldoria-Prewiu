@@ -12,7 +12,7 @@
     "workshop": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb"
   },
   "blend": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
-  "blend_sha256": "23b928bb29356665997c014306e59766da331fa8767e803eb20e99a72147d9a8",
+  "blend_sha256": "0fdfbd46b38a29b6aaa3c4fad8ee5791bb7844b85c542b4f2233ed93ca70f04e",
   "assets": [
     {
       "asset_id": "Valoria_DefenseWall_FPDv1",
