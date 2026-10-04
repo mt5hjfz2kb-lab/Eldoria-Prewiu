@@ -15,36 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  author-source:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Blender and glTF dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
-          blender --version
-      - name: Build starter family
-        run: |
-          blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
-          test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
-          for f in Valoria_MainGate_v1 Valoria_WallSegment_v1 Valoria_Tower_v1 Valoria_CivicHouse_v1 Valoria_Workshop_v1; do
-            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/${f}.glb"
-          done
-          node tools/check-production-art-source.mjs
-      - uses: actions/upload-artifact@v4
-        with:
-          name: valoria-production-art-reset-source
-          path: |
-            art-source/valoria/production/starter-family/*
-            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
-            pipeline/production-art-source-audit.json
-          if-no-files-found: error
-          retention-days: 30
-
   capture:
-    needs: author-source
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 40
@@ -64,10 +35,11 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
-      - uses: actions/download-artifact@v4
-        with:
-          name: valoria-production-art-reset-source
-          path: .
+      - name: Verify persisted authored source
+        shell: powershell
+        run: |
+          if(-not (Test-Path 'art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend')){throw 'Missing canonical BLEND'}
+          foreach($f in @('Valoria_MainGate_v1','Valoria_WallSegment_v1','Valoria_Tower_v1','Valoria_CivicHouse_v1','Valoria_Workshop_v1')){if(-not (Test-Path "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/$f.glb")){throw "Missing $f GLB"}}
       - name: Capture reset A/B
         shell: powershell
         run: |
