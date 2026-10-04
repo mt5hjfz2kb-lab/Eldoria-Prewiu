@@ -100,6 +100,7 @@ namespace Eldoria.Presentation
                         // Production promotion: First Production District v1 is part of the real
                         // playable Valoria visual path, not only an evidence-gate overlay.
                         ValoriaFirstProductionDistrictV1.Apply(visualRoot.transform,state);
+                        ValoriaGraneroCuartelSourceUpgradeV1.Apply(visualRoot.transform,state);
                     }
                     // RESET-approved Final Look is canonical for player-facing Valoria.
                     ValoriaProductionFinalLookV1.Apply();
