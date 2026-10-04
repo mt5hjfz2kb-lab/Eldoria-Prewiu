@@ -3,7 +3,7 @@
   "enabled": true,
   "program": "VALORIA GRANERO + CUARTEL SOURCE UPGRADE v1",
   "phase": "unity_stop_gate",
-  "nonce": "gcsu-v1-unity-20261004-1346",
+  "nonce": "gcsu-v1-unity-runtime-wired-20261004-1349",
   "source_visual_verdict": {
     "granero": "SOURCE VISUAL PASS",
     "cuartel": "SOURCE VISUAL PASS"
