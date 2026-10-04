@@ -101,14 +101,24 @@ def render_preview(kind,objs):
  scene.render.image_settings.color_mode="RGB"; bpy.ops.render.render(write_still=True)
 
 def fit_component(objs,width,height,loc=(0,0,0),yaw=0,scale=(1,1,1)):
- mn,mx=bounds(objs); sz=mx-mn; k=min(width/max(sz.x,sz.y,.001),height/max(sz.z,.001))
- for o in objs:o.scale*=k
- bpy.context.view_layer.update(); mn,mx=bounds(objs); c=Vector(((mn.x+mx.x)*.5,(mn.y+mx.y)*.5,mn.z))
+ # Transform the imported source as one rigid authored component. GLBs may contain
+ # multiple meshes/parents; per-mesh scaling would destroy their internal layout.
+ from mathutils import Matrix
+ mn,mx=bounds(objs); sz=mx-mn
+ k=min(width/max(sz.x,sz.y,.001),height/max(sz.z,.001))
+ c=Vector(((mn.x+mx.x)*.5,(mn.y+mx.y)*.5,mn.z))
+ root=bpy.data.objects.new("component transform",None); bpy.context.scene.collection.objects.link(root)
  for o in objs:
-  o.location-=c
-  o.rotation_euler[2]+=math.radians(yaw)
-  o.scale.x*=scale[0];o.scale.y*=scale[1];o.scale.z*=scale[2]
-  o.location+=Vector(loc)
+  mw=o.matrix_world.copy(); o.parent=root; o.matrix_world=mw
+ M=(Matrix.Translation(Vector(loc)) @
+    Matrix.Rotation(math.radians(yaw),4,'Z') @
+    Matrix.Diagonal(Vector((k*scale[0],k*scale[1],k*scale[2],1.0))) @
+    Matrix.Translation(-c))
+ root.matrix_world=M
+ bpy.context.view_layer.update()
+ for o in objs:
+  mw=o.matrix_world.copy(); o.parent=None; o.matrix_world=mw
+ bpy.data.objects.remove(root,do_unlink=True)
  bpy.context.view_layer.update()
  return objs
 
