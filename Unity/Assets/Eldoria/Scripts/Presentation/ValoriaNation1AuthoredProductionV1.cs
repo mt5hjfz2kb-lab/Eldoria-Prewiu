@@ -187,7 +187,7 @@ namespace Eldoria.Presentation
 
    var monument=Resources.Load<GameObject>("Valoria/Nation1/Nation1_PlazaMonument_v1");
    if(monument==null)throw new InvalidOperationException("Nation1 plaza monument missing.");
-   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.19f,.72f),2.35f,2.35f,0f);
+   var go=ValoriaKit.BenchmarkPiece("Valoria · Nation1 · civic monument",monument,new Vector3(0f,.19f,.72f),2.35f,2.35f,Quaternion.identity);
    if(go!=null){go.transform.SetParent(root,true);StripGameplay(go);DetailProps++;}
   }
 
