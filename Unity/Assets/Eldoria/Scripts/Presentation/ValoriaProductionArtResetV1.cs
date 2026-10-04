@@ -18,11 +18,11 @@ namespace Eldoria.Presentation
             var old=GameObject.Find(RootName);if(old!=null)Object.DestroyImmediate(old);
             var root=new GameObject(RootName).transform;root.SetParent(canonicalRoot,true);Pieces=0;
 
-            var wall=Load("Valoria_WallSegment_v1");
-            var gate=Load("Valoria_MainGate_v1");
-            var tower=Load("Valoria_Tower_v1");
-            var house=Load("Valoria_CivicHouse_v1");
-            var workshop=Load("Valoria_Workshop_v1");
+            var wall=Load("Valoria_WallSegment_v2");
+            var gate=Load("Valoria_MainGate_v2");
+            var tower=Load("Valoria_Tower_v2");
+            var house=Load("Valoria_CivicHouse_v2");
+            var workshop=Load("Valoria_Workshop_v2");
 
             // Replace only two visibly provisional/support residential shells.
             SuppressVisualRoot("VPD · upper dwelling");
@@ -47,7 +47,7 @@ namespace Eldoria.Presentation
 
         static GameObject Load(string n)
         {
-            var x=Resources.Load<GameObject>("Valoria/ProductionArt/StarterFamily/"+n);
+            var x=Resources.Load<GameObject>("Valoria/ProductionArt/StarterFamilyV2/"+n);
             if(x==null)throw new InvalidOperationException("Missing production art starter resource "+n);
             return x;
         }
@@ -66,6 +66,18 @@ namespace Eldoria.Presentation
             var go=ValoriaKit.BenchmarkPiece("Valoria · Production Art · "+role,src,p,footprint,height,Quaternion.Euler(0,yaw,0));
             if(go==null)throw new InvalidOperationException("Failed production piece "+role);
             go.transform.SetParent(root,true);ApplyNeutralPreview(go);StripGameplay(go);Pieces++;
+        }
+
+        static void PreserveSourceMaterials(GameObject go)
+        {
+            // Starter v2 is a source-reauthoring proof: donor/source materials are intentionally
+            // preserved so geometry richness and authored surface response are judged together.
+            // Phase D may normalize them only after this family clears the zoom9/mobile stop gate.
+            foreach(var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                r.receiveShadows=true;
+                r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
+            }
         }
 
         static void ApplyProductionMaterials(GameObject go)
