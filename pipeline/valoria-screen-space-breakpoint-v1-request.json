@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA SCREEN-SPACE BREAKPOINT v1",
-  "phase": "capture",
+  "phase": "closed",
   "nonce": "screen-space-breakpoint-v1-20261004-1655",
   "baseline": "Paired SOURCE VISUAL PASS candidates at the current canonical orthographic camera/framing; reproduces the immediate pre-breakpoint played-camera condition without source/material changes.",
   "variants": {
@@ -48,5 +48,11 @@
     "cuartel": "Valoria_Cuartel_CFSv1"
   },
   "tripo": false,
-  "credits": 0
+  "credits": 0,
+  "run_id": 37211095096,
+  "artifact_id": 11307155373,
+  "final_verdict": "TECH PASS / A SCREEN-SPACE VISUAL FAIL / B SCREEN-SPACE VISUAL PARTIAL / C SCREEN-SPACE VISUAL PARTIAL / NOT PROMOTED",
+  "promotion": false,
+  "finding": "Tighter framing materially improves 16:9 zoom9 scale and reduces maquette feeling, but worsens portrait mobile crop and does not make Granero/Cuartel simultaneously unmistakable.",
+  "next": "Aspect-ratio-aware/mobile home framing and crop policy using the existing SOURCE VISUAL PASS Granero/Cuartel pair. No D/E/F and no further source variants."
 }
