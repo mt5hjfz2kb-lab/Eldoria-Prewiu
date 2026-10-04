@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "status": "blocked until architecture + surfaces + final look pass",
+  "principle": "Every item must improve depth, scale, function, life or identity.",
+  "categories": [
+    {
+      "name": "secondary_architecture",
+      "items": [
+        "houses",
+        "workshops",
+        "small civic support"
+      ],
+      "priority": "after starter family passes"
+    },
+    {
+      "name": "boundaries",
+      "items": [
+        "fences",
+        "low walls",
+        "yard edges"
+      ],
+      "priority": "high"
+    },
+    {
+      "name": "vegetation",
+      "items": [
+        "trees varied size",
+        "shrubs",
+        "gardens"
+      ],
+      "priority": "high"
+    },
+    {
+      "name": "food_land",
+      "items": [
+        "fields",
+        "crops",
+        "orchards"
+      ],
+      "priority": "functional"
+    },
+    {
+      "name": "work_props",
+      "items": [
+        "carts",
+        "crates",
+        "barrels",
+        "timber",
+        "stone piles",
+        "tools"
+      ],
+      "priority": "functional"
+    },
+    {
+      "name": "activity",
+      "items": [
+        "workers",
+        "soldiers",
+        "training",
+        "repair activity"
+      ],
+      "priority": "high after architecture"
+    },
+    {
+      "name": "atmosphere",
+      "items": [
+        "chimney smoke",
+        "torches",
+        "small fires"
+      ],
+      "priority": "controlled"
+    },
+    {
+      "name": "circulation",
+      "items": [
+        "roads",
+        "path borders",
+        "stairs transitions",
+        "small elevation changes"
+      ],
+      "priority": "high"
+    },
+    {
+      "name": "world_continuation",
+      "items": [
+        "water",
+        "forest",
+        "distant relief",
+        "roads leaving frame"
+      ],
+      "priority": "high"
+    },
+    {
+      "name": "identity",
+      "items": [
+        "heraldry",
+        "functional signage",
+        "reconstruction storytelling"
+      ],
+      "priority": "controlled"
+    }
+  ],
+  "reject": [
+    "random clutter",
+    "parcel-blocking irreversible dressing",
+    "density used to hide weak architecture",
+    "uniform prop scatter"
+  ]
+}
