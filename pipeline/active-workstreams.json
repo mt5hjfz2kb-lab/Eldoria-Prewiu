@@ -2,7 +2,35 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-04T18:28:39Z",
-  "active": [],
+  "active": [
+    {
+      "id": "eldoria-blender-professional-authoring-pipeline-v1",
+      "title": "Eldoria Blender Professional Authoring Pipeline v1",
+      "owner": "chat-audit-blender-professional-authoring-v1",
+      "scope": [
+        "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "AGENTS.md",
+        "pipeline/blender-professional-authoring-standard.json",
+        "pipeline/toolchain-capabilities.json",
+        "pipeline/production-art-source-policy.json",
+        "pipeline/valoria-production-art-source-schema.json",
+        "tools/validate-blender-professional-authoring.mjs",
+        "tools/check-production-art-source.mjs",
+        "tools/plan-art-production.mjs",
+        ".github/workflows/art-production-plan.yml",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "art-production-planner",
+        "production-art-source-policy"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T18:30:00Z",
+      "base_main_sha": "31145651c33dea8d796bba0f43b4438be66033b9",
+      "dependency": "Canonicalize professional Blender authoring standards after structural-frame visual partial-fail. No asset production; no Tripo spend; no Unity gameplay changes."
+    }
+  ],
   "history": [
     {
       "id": "valoria-structural-frame-urban-support-integration-v1",
