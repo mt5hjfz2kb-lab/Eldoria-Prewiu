@@ -49,6 +49,7 @@ jobs:
           for f in Valoria_MainGate_v1 Valoria_WallSegment_v1 Valoria_Tower_v1 Valoria_CivicHouse_v1 Valoria_Workshop_v1; do
             test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/${f}.glb"
             test -s "art-source/valoria/production/starter-family/${f}.production-art.json"
+            test -s "pipeline/evidence/valoria-production-art-starter-previews/${f}.png"
           done
           node tools/check-production-art-source.mjs
       - name: Persist reproducible source and GLBs
@@ -74,5 +75,6 @@ jobs:
             art-source/valoria/production/starter-family/*
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
             pipeline/production-art-source-audit.json
+            pipeline/evidence/valoria-production-art-starter-previews/*.png
           if-no-files-found: error
           retention-days: 30
