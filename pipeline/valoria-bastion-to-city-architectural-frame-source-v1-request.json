@@ -12,8 +12,8 @@
   ],
   "tripo_credits": 0,
   "paid_credits": 0,
-  "attempt": 4,
-  "tech_fix": "Repair literal newline tokens in set_world. No art/design change.",
-  "previous_run_id": 37225907239,
-  "previous_result": "TECH FAIL at Python parse before authoring due escaped newline tokens."
+  "attempt": 5,
+  "tech_fix": "Install libegl1 and Mesa DRI so headless EEVEE source-review renders can execute. Art source unchanged.",
+  "previous_run_id": 37226044864,
+  "previous_result": "TECH FAIL after GLB export when Blender preview render aborted because libEGL.so.1 was unavailable."
 }
