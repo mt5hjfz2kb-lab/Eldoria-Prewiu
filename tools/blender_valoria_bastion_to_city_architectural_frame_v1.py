@@ -134,7 +134,9 @@ bpy.ops.export_scene.gltf(filepath=glb,export_format="GLB",use_selection=True,ex
 def set_world():
     bpy.context.scene.render.engine="BLENDER_EEVEE"
     bpy.context.scene.render.resolution_x=900; bpy.context.scene.render.resolution_y=700; bpy.context.scene.render.resolution_percentage=100
-    if bpy.context.scene.world is None:\n        bpy.context.scene.world=bpy.data.worlds.new("Eldoria Review World")\n    bpy.context.scene.world.color=(0.055,0.06,0.07)
+    if bpy.context.scene.world is None:
+        bpy.context.scene.world=bpy.data.worlds.new("Eldoria Review World")
+    bpy.context.scene.world.color=(0.055,0.06,0.07)
 def camera(loc,target,name):
     bpy.ops.object.camera_add(location=loc); c=bpy.context.object; c.name=name
     direction=Vector(target)-c.location; c.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
