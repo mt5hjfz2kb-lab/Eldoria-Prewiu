@@ -323,18 +323,29 @@ def build_workshop():
 # ---------- UV / cleanup / export ----------
 
 def uv_all(col):
+    # Headless-safe deterministic box projection; no editor-area-dependent bpy.ops.uv calls.
+    scale=.35
     for o in col.objects:
         if o.type!="MESH": continue
-        if bpy.context.object is not None and bpy.context.object.mode != "OBJECT":
-            bpy.ops.object.mode_set(mode="OBJECT")
-        bpy.ops.object.select_all(action="DESELECT")
-        bpy.context.view_layer.objects.active=o
-        o.select_set(True)
-        bpy.ops.object.mode_set(mode="EDIT")
-        bpy.ops.mesh.select_all(action="SELECT")
-        bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=.02)
-        bpy.ops.object.mode_set(mode="OBJECT")
-        o.select_set(False)
+        me=o.data
+        if len(me.uv_layers)==0:
+            uv=me.uv_layers.new(name="UVMap")
+        else:
+            uv=me.uv_layers.active
+        me.update()
+        for poly in me.polygons:
+            n=poly.normal
+            ax=max(range(3), key=lambda i: abs(n[i]))
+            for li in poly.loop_indices:
+                co=me.vertices[me.loops[li].vertex_index].co
+                if ax==0:
+                    u,v=co.y,co.z
+                elif ax==1:
+                    u,v=co.x,co.z
+                else:
+                    u,v=co.x,co.y
+                uv.data[li].uv=(u*scale,v*scale)
+        me.update()
 
 def shade_normals(col):
     for o in col.objects:
