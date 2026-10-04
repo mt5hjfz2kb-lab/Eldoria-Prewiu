@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "canonical",
   "updated_at": "2026-10-04",
-  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1 + BLENDER PROFESSIONAL AUTHORING V1",
   "classifications": [
     "GREYBOX",
     "SUPPORT",
@@ -39,7 +39,8 @@
     "UV/material contract",
     "runtime export identity",
     "zoom9/mobile visual acceptance",
-    "gameplay authority preserved"
+    "gameplay authority preserved",
+    "isolated art-source review for new visible Blender sources"
   ],
   "enforcement": {
     "mode": "report_then_enforce",
@@ -47,8 +48,33 @@
       "explicit PRODUCTION_ART_SOURCE manifest whose authoring method is primitive_only",
       "production manifest missing source sha or export sha",
       "production manifest missing material families",
-      "production promotion lacking zoom9/mobile evidence"
+      "production promotion lacking zoom9/mobile evidence",
+      "BLENDER_PROFESSIONAL_V1 manifest missing art review or preview evidence"
     ],
     "note": "Primitive signatures are diagnostic, not an automatic failure for support/environment geometry."
+  },
+  "professional_blender_authoring": {
+    "standard": "BLENDER_PROFESSIONAL_V1",
+    "applies_to_roles": [
+      "HERO",
+      "PRIMARY",
+      "SECONDARY"
+    ],
+    "required_for": "new_or_materially_reauthored_player_visible_environment_geometry",
+    "requirements": [
+      "screen-space brief before geometry",
+      "deliberate primary-form and silhouette authoring",
+      "real architectural depth",
+      "controlled visible repetition",
+      "UV/texel-density and canonical material relationship",
+      "isolated art-source review before Unity",
+      "integrated visual pass before promotion"
+    ],
+    "rejection_patterns": [
+      "primitive stack as primary silhouette",
+      "uniform mathematical repetition as design",
+      "flat placeholder materials presented as final",
+      "quality claim based on object/triangle/modifier count"
+    ]
   }
 }
