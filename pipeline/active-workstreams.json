@@ -1,8 +1,39 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T13:52:30Z",
-  "active": [],
+  "updated_at": "2026-10-04T14:01:00Z",
+  "active": [
+    {
+      "id": "valoria-functional-screen-readability-v1",
+      "title": "Valoria Functional Screen Readability v1",
+      "owner": "chat-valoria-functional-screen-readability-v1",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGraneroCuartelSourceUpgradeV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFunctionalScreenReadabilityGateV1.cs",
+        ".github/workflows/valoria-functional-screen-readability-v1.yml",
+        "pipeline/valoria-functional-screen-readability-v1-request.json",
+        "pipeline/evidence/valoria-functional-screen-readability-v1/**",
+        "docs/evidence/valoria-functional-screen-readability-v1/**",
+        "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-rollout.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-production-composition",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "status": "active",
+      "claimed_at": "2026-10-04T14:01:00Z",
+      "base_main_sha": "22866b25b299b3fb214a1a949c9587668d95cd3b",
+      "dependency": "Resolve only Granero/Cuartel functional screen readability at zoom9/mobile using approved source assets. One primary layout/presentation hypothesis per building. Preserve orthographic camera, RESET Final Look, terrain, accepted defense, Hero Bastion, gameplay/hotspots/colliders/parcels/routes/future reserves. Zero Tripo/paid spend."
+    }
+  ],
   "history": [
     {
       "id": "valoria-granero-cuartel-source-upgrade-v1",
