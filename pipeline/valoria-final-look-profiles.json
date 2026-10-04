@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "program": "VALORIA PRODUCTION ART SYSTEM RESET v1",
+  "status": "execution-ready candidates; none promoted",
+  "profiles": {
+    "MOBILE_BASELINE": {
+      "purpose": "preserve current mobile intent until measured device bottleneck",
+      "renderer_features": [],
+      "anti_aliasing": "current",
+      "render_scale": "current",
+      "shadows": "current",
+      "hdr": "current",
+      "grading": "current",
+      "note": "Never reduce quality speculatively."
+    },
+    "FINAL_LOOK_CANDIDATE": {
+      "purpose": "development/owner-facing target ceiling before optimization",
+      "stages": [
+        {
+          "id": "F0",
+          "feature": "locked_baseline",
+          "enabled": true,
+          "keep_rule": "reference only"
+        },
+        {
+          "id": "F1",
+          "feature": "ssao",
+          "enabled": "A/B",
+          "initial": {
+            "intensity": "low-moderate",
+            "radius": "architectural-contact",
+            "source": "DepthNormals first"
+          },
+          "keep_rule": "clear depth/contact win without dirty halos"
+        },
+        {
+          "id": "F2",
+          "feature": "decals",
+          "enabled": "after architecture/material pass",
+          "uses": [
+            "base dirt",
+            "moisture",
+            "moss",
+            "soot",
+            "cracks",
+            "traffic wear",
+            "surface transitions"
+          ],
+          "keep_rule": "variation/transition only; never fake missing geometry"
+        },
+        {
+          "id": "F3",
+          "feature": "anti_aliasing",
+          "enabled": "A/B",
+          "variants": [
+            "current",
+            "SMAA",
+            "TAA if compatible",
+            "MSAA where relevant"
+          ],
+          "keep_rule": "best roof/timber/foliage stability with no HUD/ghosting regression"
+        },
+        {
+          "id": "F4",
+          "feature": "soft_shadows_cascades",
+          "enabled": "A/B",
+          "keep_rule": "better form/contact without muddy frame"
+        },
+        {
+          "id": "F5",
+          "feature": "reflection_probes",
+          "enabled": "conditional",
+          "mode": "baked first",
+          "candidate_zones": [
+            "Bastion/civic core",
+            "lower functional district",
+            "water/metal area if justified"
+          ],
+          "keep_rule": "visible reflection/parallax gain"
+        },
+        {
+          "id": "F6",
+          "feature": "indirect_light",
+          "enabled": "conditional",
+          "variants": [
+            "current",
+            "baked/mixed + conventional probes",
+            "APV only as separate candidate"
+          ],
+          "keep_rule": "visible depth gain with viable runtime cost"
+        },
+        {
+          "id": "F7",
+          "feature": "hdr_tonemapping_grading_fog",
+          "enabled": "A/B",
+          "keep_rule": "luminous epic hierarchy; no washed highlights/crushed blacks"
+        },
+        {
+          "id": "F8",
+          "feature": "texture_sharpness",
+          "enabled": "audit",
+          "checks": [
+            "mipmaps",
+            "anisotropic filtering",
+            "max size",
+            "compression",
+            "LOD bias",
+            "render scale"
+          ],
+          "keep_rule": "zoom9/mobile readability"
+        },
+        {
+          "id": "F9",
+          "feature": "render_scale_upscaling",
+          "enabled": "after target image",
+          "keep_rule": "measured cost/clarity win only"
+        }
+      ]
+    }
+  },
+  "gate_order": [
+    "zoom9",
+    "mobile",
+    "zoom12",
+    "zoom19"
+  ],
+  "promotion_requires": [
+    "gameplay signature preserved",
+    "clear full-frame win",
+    "cost recorded",
+    "no unsupported feature enabled by checklist"
+  ]
+}
