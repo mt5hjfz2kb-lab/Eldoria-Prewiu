@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enabled": true,
+  "enabled": false,
   "program": "VALORIA PAIRED FUNCTIONAL UNITY GATE v1",
-  "phase": "candidate_gate",
+  "phase": "closed",
   "nonce": "paired-functional-unity-v1-20261004-1442",
   "sources": {
     "granero": {
@@ -34,5 +34,24 @@
   ],
   "tripo": false,
   "credits": 0,
-  "anti_loop": "One paired Unity gate only. No source/layout/material iteration inside this block."
+  "anti_loop": "One paired Unity gate only. No source/layout/material iteration inside this block.",
+  "run_id": 37209941711,
+  "artifact_id": 11306341489,
+  "metrics": {
+    "before": {
+      "renderers": 852,
+      "materials": 81,
+      "triangles": 2083716,
+      "lights": 31
+    },
+    "after": {
+      "renderers": 860,
+      "materials": 93,
+      "triangles": 2393761,
+      "lights": 31
+    }
+  },
+  "final_verdict": "TECH PASS / VISUAL PARTIAL-FAIL / NOT PROMOTED",
+  "visual_reason": "Zoom9 improves source identity, but mobile portrait still does not preserve simultaneous independent Granero + Cuartel functional read at canonical anchors. Remaining blocker is screen-space composition/crop, not source richness.",
+  "promotion": false
 }
