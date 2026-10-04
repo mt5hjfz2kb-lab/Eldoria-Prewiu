@@ -9,6 +9,8 @@ Date: 2026-10-04
 
 This is the owner-approved visual reference used to judge whether Valoria is converging toward the intended premium medieval-fantasy 4X presentation.
 
+The canonical file is restored from the repository's previously archived **1536×1024 approved composition target** (`artifacts/valoria-visual-shell-v2/composition-guide-20261003.jpg`) so visual gates can judge real composition, architectural richness, materials and finish rather than a degraded thumbnail.
+
 ## What to emulate
 
 - Bastion-first visual hierarchy without isolating the Bastion from the city.
