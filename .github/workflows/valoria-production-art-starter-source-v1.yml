@@ -1,0 +1,64 @@
+name: "[PRODUCTION] Valoria Production Art Starter Source v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-production-art-starter-run-request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-production-art-starter-source-v1
+  cancel-in-progress: true
+
+jobs:
+  source:
+    if: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '{"enabled":true}' || toJSON(github.event.head_commit) != '' && 'null' || 'null') || true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read request
+        id: request
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os
+          p='pipeline/valoria-production-art-starter-run-request.json'
+          d=json.load(open(p))
+          print(json.dumps(d,indent=2))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('enabled='+('true' if d.get('enabled') else 'false')+'\n')
+          PY
+      - name: Skip parked request
+        if: steps.request.outputs.enabled != 'true'
+        run: echo "Starter source request parked."
+      - name: Install Blender
+        if: steps.request.outputs.enabled == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Build authored source
+        if: steps.request.outputs.enabled == 'true'
+        run: |
+          blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
+          test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
+          for f in Valoria_MainGate_v1 Valoria_WallSegment_v1 Valoria_Tower_v1 Valoria_CivicHouse_v1 Valoria_Workshop_v1; do
+            test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/${f}.glb"
+            test -s "art-source/valoria/production/starter-family/${f}.production-art.json"
+          done
+          node tools/check-production-art-source.mjs
+      - uses: actions/upload-artifact@v4
+        if: steps.request.outputs.enabled == 'true'
+        with:
+          name: valoria-production-art-starter-source-v1
+          path: |
+            art-source/valoria/production/starter-family/*
+            Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
+            pipeline/production-art-source-audit.json
+          if-no-files-found: error
+          retention-days: 30
