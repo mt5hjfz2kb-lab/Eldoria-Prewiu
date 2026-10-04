@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T19:24:00Z",
+  "updated_at": "2026-10-04T19:26:00Z",
   "active": [],
   "history": [
     {
@@ -35,7 +35,8 @@
         "filename": "AFTER-HORIZONTAL-16x9.png",
         "sha256": "ef45233a09199829c83f5cb3d5587753f5b93fa7b1e9ba726b633791b7e343c1"
       },
-      "next": "Future Blender source block must reproduce the locked screen-space silhouette using freeform/direct DCC authoring and pass isolated ART SOURCE before Unity. Do not redesign the frame in 3D."
+      "next": "Future Blender source block must reproduce the locked screen-space silhouette using freeform/direct DCC authoring and pass isolated ART SOURCE before Unity. Do not redesign the frame in 3D.",
+      "result_commit": "b66e413577bf7ae035eed47e5327d380c5305f6e"
     },
     {
       "id": "valoria-bastion-to-city-architectural-frame-v1",
