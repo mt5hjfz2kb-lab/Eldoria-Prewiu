@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "READY_FOR_LOWER_CITY_URBAN_MASSING_REAUTHORING_AFTER_SUPPORT_PARTIAL_FAIL",
+  "status": "LOWER_CITY_URBAN_MASSING_PROMOTED_READY_FOR_STRUCTURAL_FRAME_INTEGRATION",
   "quality_anchor": "Hero Bastion",
   "shared_grammar": [
     "Eldoria Stone",
@@ -89,7 +89,7 @@
   ],
   "production_rule": "Defense grammar is reusable. Do not extend the current MidTier donor recomposition technique to new civil buildings; asset-specific source richness and semantic identity must be visible at played camera distance.",
   "reset_result": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
-  "next_priority": "Secondary/support replacement improved some structural seams but did not deliver a frame-level jump. Next: reauthor the dominant visible lower-city orange-roof/frontage band as 2–3 differentiated urban groups with height hierarchy, courts/lanes and integrated support bases. Do not reopen camera/ground micro-iterations or produce Forja/Hospital/Cantera.",
+  "next_priority": "Lower-city urban massing is promoted. Do not reopen house density/spacing. Next high-impact gap is the remaining exposed gray structural/support frame between Hero Bastion and the new urban groups; reauthor it as inhabited civic architecture without reopening camera, terrain dressing, functional building placement, or lower-city group positions.",
   "certification_rule": "zoom9/mobile for each rollout asset; zoom12/19 only after full-frame core passes",
   "first_production_district": {
     "result": "TECH PASS / VISUAL PARTIAL / NOT PROMOTED",
@@ -189,5 +189,22 @@
     "candidate_promoted": false,
     "key_finding": "Certified stone support vocabulary is safer than donor masonry, but replacing supports alone and thinning only the west housing subset is insufficient. The dominant visible lower-city roof/frontage band must be reauthored as fewer differentiated urban groups.",
     "result_doc": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md"
+  },
+  "lower_city_urban_massing_reauthoring_v1": {
+    "result": "TECH PASS / VISUAL PASS / PROMOTED",
+    "planner_run_id": 37221347279,
+    "authoritative_run_id": 37221732105,
+    "artifact_id": 11309549299,
+    "confirmation_run_id": 37222027889,
+    "confirmation_artifact_id": 11309364965,
+    "credits_spent": 0,
+    "gameplay_signature_preserved": true,
+    "camera_policy_preserved": true,
+    "groups_built": 3,
+    "pieces_built": 18,
+    "suppressed_renderers": 27,
+    "suppressed_lights": 10,
+    "key_finding": "The dominant lower-city prefab read came from overlapping visual systems, not insufficient house count. Removing redundant layers and rebuilding three differentiated groups materially improves hierarchy, breathing and convergence toward the approved reference while remaining less dense.",
+    "result_doc": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md"
   }
 }
