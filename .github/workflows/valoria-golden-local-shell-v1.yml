@@ -58,15 +58,15 @@ jobs:
           if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.glb')){throw 'Missing GLB'}
           if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.blend')){throw 'Missing BLEND'}
           if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-report.json')){throw 'Missing source report'}
-      - name: Persist isolated source and evidence
+      - name: Persist isolated evidence
         shell: powershell
         run: |
           git config user.name "Eldoria Art Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -f art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1
+          if(Test-Path '.git/rebase-merge'){ git rebase --abort }
           git add -f docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1
           if(-not (git diff --cached --quiet)){
-            git commit -m "Persist Golden integrated base source"
+            git commit -m "Persist Golden integrated base evidence"
             git pull --rebase origin main
             git push origin HEAD:main
           }
