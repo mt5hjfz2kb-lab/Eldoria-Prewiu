@@ -1,8 +1,29 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T14:57:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T15:05:00Z",
+  "active": [
+    {
+      "id": "valoria-structural-quality-bar-review-v1",
+      "title": "VALORIA STRUCTURAL QUALITY BAR REVIEW v1",
+      "owner": "chat-valoria-structural-quality-bar-review-v1",
+      "scope": [
+        "docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md",
+        "docs/evidence/valoria-structural-quality-bar-review-v1/**",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "structural-frame-review"
+      ],
+      "claimed_at": "2026-10-05T15:05:00Z",
+      "base_main_sha": "2a38dc9d47ce68b0dacf7c60b52fc898cfa39b9b",
+      "status": "active",
+      "phase": "TARGET / BLOCKOUT / CURRENT STRUCTURAL FRAME VISUAL REVIEW",
+      "dependency": "Read-only review of closed Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls + Bastion Source08. No family mutation, no camera/target/composition/platform/gameplay change, no secondary-family production, no Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-family-v1",
