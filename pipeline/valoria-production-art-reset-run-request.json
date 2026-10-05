@@ -4,7 +4,7 @@
   "nonce": "road-source03-cumulative-lower-gate-bridge-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Road-only replacement with accepted Lower Gate + Bridge retained identically BEFORE/AFTER; Stair/Terrain/Ground/Bastion/camera/gameplay immutable; no runtime promotion",
+  "scope": "Road-only isolated replacement over approved blockout with accepted Lower Gate + Bridge retained identically in BEFORE/AFTER; Stair/Terrain/Ground/Bastion/camera/gameplay unchanged; no runtime promotion",
   "views": [
     {
       "name": "UNITY-source-3x2",
