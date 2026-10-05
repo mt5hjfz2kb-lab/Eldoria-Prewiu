@@ -83,6 +83,63 @@ for item in spec['meshes']:
    vi=o.data.loops[li].vertex_index;v=o.data.vertices[vi].co
    uv.data[li].uv=item['uv'][vi] if item.get('uv') and vi<len(item['uv']) else ((v.y/4,v.z/4) if axis==0 else (v.x/4,v.z/4) if axis==1 else (v.x/4,v.y/4))
  o.select_set(False)
+
+# Optional zero-credit geometric donor relief. This is deliberately guarded by the family spec:
+# it may enrich one authored module but never replaces the locked family macro silhouette.
+donor=spec.get('donor_relief')
+if donor:
+ donor_path=ROOT/donor['source_glb']
+ if not donor_path.is_file(): raise RuntimeError('Bastion donor GLB missing: '+str(donor_path))
+ before=set(bpy.data.objects)
+ bpy.ops.import_scene.gltf(filepath=str(donor_path))
+ imported=[o for o in bpy.data.objects if o not in before and o.type=='MESH']
+ if not imported: raise RuntimeError('Donor GLB imported no mesh objects')
+ world_pts=[]
+ for io in imported:
+  world_pts.extend([io.matrix_world@v.co for v in io.data.vertices])
+ dlo=Vector([min(p[i] for p in world_pts) for i in range(3)])
+ dhi=Vector([max(p[i] for p in world_pts) for i in range(3)])
+ dext=dhi-dlo
+ crop=donor['crop_normalized'];target=donor['target_bbox']
+ verts=[];faces=[];vmap={}
+ def inside(n):
+  return crop['x'][0]<=n[0]<=crop['x'][1] and crop['y'][0]<=n[1]<=crop['y'][1] and crop['z'][0]<=n[2]<=crop['z'][1]
+ def remap(n,axis):
+  a0,a1=crop[axis];t0,t1=target[axis]
+  q=0 if abs(a1-a0)<1e-8 else (n- a0)/(a1-a0)
+  return t0+q*(t1-t0)
+ for oi,io in enumerate(imported):
+  for poly in io.data.polygons:
+   ids=list(poly.vertices)
+   norms=[]
+   for vi in ids:
+    p=io.matrix_world@io.data.vertices[vi].co
+    norms.append(((p.x-dlo.x)/dext.x,(p.y-dlo.y)/dext.y,(p.z-dlo.z)/dext.z))
+   if not all(inside(n) for n in norms): continue
+   out=[]
+   for vi,n in zip(ids,norms):
+    key=(oi,vi)
+    if key not in vmap:
+     # Blender import is Z-up; normalized donor axes are remapped explicitly into the locked Keep box.
+     vmap[key]=len(verts);verts.append([remap(n[0],'x'),remap(n[1],'y'),remap(n[2],'z')])
+    out.append(vmap[key])
+   if len(out)>=3:
+    for k in range(1,len(out)-1):faces.append([out[0],out[k],out[k+1]])
+ for io in imported:bpy.data.objects.remove(io,do_unlink=True)
+ if len(faces)<500: raise RuntimeError('Donor crop produced insufficient relief geometry: '+str(len(faces)))
+ data=bpy.data.meshes.new(donor['name']);data.from_pydata(verts,[],faces);data.update()
+ o=bpy.data.objects.new(donor['name'],data);bpy.context.collection.objects.link(o)
+ o.data.materials.append(materials[donor['material']]);o['source_group']=donor['group'];o['authoring_source']='certified_zero_credit_geometry_donor_crop';objs.append(o)
+ bm=bmesh.new();bm.from_mesh(data);bmesh.ops.recalc_face_normals(bm,faces=bm.faces);bm.to_mesh(data);bm.free()
+ uv=o.data.uv_layers.new(name='MetricUV');o.data.uv_layers.active=uv;uv.active_render=True
+ for poly in o.data.polygons:
+  axis=max(range(3),key=lambda k:abs(poly.normal[k]))
+  for li in poly.loop_indices:
+   vi=o.data.loops[li].vertex_index;v=o.data.vertices[vi].co
+   uv.data[li].uv=((v.y/3,v.z/3) if axis==0 else (v.x/3,v.z/3) if axis==1 else (v.x/3,v.y/3))
+ o.select_set(False)
+ print('DONOR_RELIEF_AUTHORED',donor['name'],'verts',len(verts),'tris',len(faces),'source',donor['source_glb'])
+
 # Join by semantic module, retain per-material slots; reusable modules have an origin at foundation.
 groups={}
 for o in objs:groups.setdefault(o['source_group'],[]).append(o)
