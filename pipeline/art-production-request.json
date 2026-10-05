@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "request_id": "valoria-vegetation-representative-family-v1",
-  "asset_or_sector": "Valoria representative conifer vegetation family v1",
-  "profile": "environment_new_geometry",
-  "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md#vegetation-target",
+  "request_id": "valoria-golden-lookdev-slice-v1",
+  "asset_or_sector": "Valoria Golden Lookdev Slice v1 — Lower Gate edge + rock/ground/water/vegetation",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "geometry_gap_evidence": "docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md#geometry-policy",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -15,8 +15,8 @@
   },
   "validation": {
     "camera": "approved reset orthographic yaw20/pitch35/span48/distance110 + official variants",
-    "source_gate": "Vegetation ART SOURCE gate in block doc",
-    "final_gate": "ART SOURCE PASS before any Unity scaling; then matched-camera cumulative review"
+    "source_gate": "Golden target translation + authored surface recipe before broad scale-out",
+    "final_gate": "GOLDEN LOOKDEV PASS only if materials/lighting/contact/environment integration/premium perception >=4/5 with mobile/gameplay/performance sanity PASS"
   },
-  "notes": "Zero-credit authored opaque conifer family first. Do not scale placement or open water/shore until isolated source review passes."
+  "notes": "Surface/lookdev proof only. Unity materials/blending/lighting first; Blender only for evidence-proven geometry-limited defects. No Props+Background, no new family, no Tripo."
 }
