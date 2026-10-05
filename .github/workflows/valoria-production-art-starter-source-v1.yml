@@ -86,7 +86,17 @@ jobs:
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
-          blender -b --python tools/author-environment-family.py
+          blender -b --python-exit-code 1 --python tools/author-environment-family.py
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          d=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
+          r=json.load(open(pathlib.Path(d['evidence_dir'])/'source-report.json'))
+          for key in ['source','export']:
+              p=pathlib.Path(r[key])
+              if not p.is_file() or p.stat().st_size<10000:raise SystemExit('Source artifact missing: '+str(p))
+          for p in r['preview_evidence']:
+              if not pathlib.Path(p).is_file():raise SystemExit('Preview missing: '+p)
+          PY
       - name: Persist isolated family source and evidence
         if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source == 'true'
         run: |

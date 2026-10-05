@@ -51,7 +51,7 @@ for key,s in spec['materials'].items():
  materials[key]=m
 # Source images include desired warm tint (keep Blender and Unity material response consistent).
 for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54])]:
- im=tex[kind][0];p=np.array(im.pixels[:]).reshape(-1,4);p[:,:3]*=np.array(tint);im.pixels.foreach_set(p.reshape(-1));im.save();im.pack()
+ im=tex[kind][0];p=np.array(im.pixels[:],dtype=np.float32).reshape(-1,4);p[:,:3]*=np.array(tint);im.pixels.foreach_set(p.reshape(-1));im.save();im.pack()
 objs=[]
 for item in spec['meshes']:
  data=bpy.data.meshes.new(item['name']);data.from_pydata(item['vertices'],[],item['faces']);data.update();o=bpy.data.objects.new(item['name'],data);bpy.context.collection.objects.link(o);o.data.materials.append(materials[item['material']]);o['source_group']=item['group'];o['authoring_source']='editable_mesh_spec';objs.append(o)
