@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "golden-surface-authoring-v1-iteration01",
+  "nonce": "golden-surface-authoring-v1-iteration01-techretry01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 SURFACE AUTHORING iteration01. Freeze source03 contact geometry as baseline. Apply real per-pixel albedo/normal/AO/smoothness surface families only to the bounded Lower Gate/rock/ground/shore/vegetation slice. Remove legacy flat ground-overlay patches. Preserve lighting parameters, camera, macro composition, gameplay and all accepted family positions. Zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 SURFACE AUTHORING iteration01 technical retry. Exact same surface hypothesis and visual parameters after C# compile fixes only. Freeze source03 contact geometry as baseline. No geometry authoring, no lighting compensation, zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -129,7 +129,7 @@
   ],
   "result": "PENDING GOLDEN SURFACE AUTHORING ITERATION01",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration01-techretry01",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
