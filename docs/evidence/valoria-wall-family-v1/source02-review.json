@@ -1,0 +1,34 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source02",
+  "source_run": 37313884505,
+  "artifact_id": 11346822625,
+  "source_sha": "d8ec10a4c7321d491708277d62e629dfa5397dfa051d96ad6a3cc61f5e620a56",
+  "export_sha": "02e746768354e3281fd8b94d858b08fe3cddcec2b08af931b0e4e4b78a998eaa",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 9368,
+    "vertices": 4816,
+    "modules": 6,
+    "materials": 5,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "visual_progress": {
+    "designed_not_assembled": "PASS DIRECTIONALLY — battered/chamfered end masses, segmented wall face and grouped crenellation materially reduce Source01 kit read.",
+    "real_depth_thickness": "PASS",
+    "repetition_control": "PASS SOURCE — grouped crest rhythm and nonuniform structural divisions now read visibly.",
+    "mobile_crenellation": "PASS",
+    "lower_gate_union": "AUTHORIZED ONLY AFTER ENVELOPE FIX — endpoint language remains subordinate and compatible; exact integrated join still requires Unity.",
+    "rock_terrain_seating": "PASS DIRECTIONALLY — darker foundation, battered body and broad structural piers improve seating.",
+    "hierarchy": "PASS — peripheral defensive mass remains subordinate.",
+    "material_family": "PASS SOURCE — lower-frequency warm stone removes Source01 brick-course dominance.",
+    "frame_improvement": "PASS SOURCE DIRECTIONALLY — clear isolated quality jump over greybox/Source01."
+  },
+  "hard_stop": "FAIL — exact approved Wall family envelope violated: generated bounds north/minY = -20.3007278442, while approved family minimum is -20.1047271688. ~0.196 m outward spill originates in tower-merlon construction. No Unity integration permitted.",
+  "decision": "SOURCE03: preserve Source02 design/materials and fix tower merlon construction so every vertex remains inside the six approved blockout envelopes. Re-run source review; no other family/camera/composition change.",
+  "tripo_credits": 0
+}
