@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-cumulative-06-suppress-obsolete-shoulders",
+  "nonce": "rock-terrain-contact-uplift-cumulative-07-suppress-obsolete-shoulders-run",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
   "scope": "Controlled Rock/Terrain contact uplift. Single RockTerrain replacement suppresses all 12 Rock/Terrain blockout placeholders, including seven obsolete CliffShoulder proxies already absorbed by authoritative Source09 geometry. No retained Terrain duplication. Retain Lower Gate, Bridge, Road, Stair, Walls and Bastion exactly. Source09 geometry locked; 11 material assignments only. Zero Tripo.",
