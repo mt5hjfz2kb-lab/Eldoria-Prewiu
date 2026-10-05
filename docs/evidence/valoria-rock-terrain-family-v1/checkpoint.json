@@ -1,7 +1,7 @@
 {
   "family": "VALORIA ROCK / TERRAIN FAMILY v1",
   "result": "PRODUCTION FAMILY PASS / CLOSED",
-  "source_iteration": "source08",
+  "source_iteration": "source09",
   "gates": {
     "tech": "PASS",
     "art_source": "PASS",
@@ -12,16 +12,16 @@
     "gameplay_regression": "PASS"
   },
   "source": {
-    "run_id": 37308344056,
-    "artifact_id": 11344638101,
-    "source_sha": "559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b",
-    "export_sha": "f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed",
+    "run_id": 37310029846,
+    "artifact_id": 11345358292,
+    "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+    "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
     "triangles": 1909
   },
   "unity": {
-    "run_id": 37309039558,
-    "job_id": 111759642435,
-    "artifact_id": 11344907445,
+    "run_id": 37310582556,
+    "job_id": 111764702509,
+    "artifact_id": 11345546113,
     "runner": "DESKTOP-R10PE55"
   },
   "gameplay": {
@@ -57,6 +57,7 @@
   "credits": {
     "tripo": 0
   },
-  "quality_jump": "PASS — obvious global-frame improvement toward canonical target without composition change.",
+  "quality_jump": "PASS — Source09 preserves the structural frame jump and corrects Source08's integrated washout/low-poly facet defect without composition change.",
+  "source08_status": "Superseded. Source08 Unity integration TECH PASS but strict integrated visual FAIL due pale/high-contrast facets; contradictory later Source08 PASS is non-authoritative.",
   "next": "Owner review. Do not start Walls, Bastion or another family without explicit instruction."
 }
