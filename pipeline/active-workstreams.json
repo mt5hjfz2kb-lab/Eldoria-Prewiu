@@ -17,7 +17,10 @@
         "PROJECT_STATE.md",
         ".github/workflows/valoria-production-art-reset-v1.yml",
         "pipeline/valoria-production-art-reset-run-request.json",
-        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs"
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+        "AGENTS.md",
+        "docs/VALORIA_VISUAL_BIBLE.md",
+        "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md"
       ],
       "resources": [
         "valoria-reset-preproduction",
