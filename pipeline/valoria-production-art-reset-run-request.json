@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "wall-source03-cumulative-lower-gate-bridge-road-stair-rock09-matched-review-01",
+  "nonce": "bastion-source03-cumulative-lowergate-bridge-road-stair-rock09-wall-matched-hero-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Wall Source03 cumulative Unity matched-camera gate passed; PRODUCTION FAMILY PASS; parked.",
+  "scope": "Bastion Source03 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine approved Bastion placeholders. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
-  "artifact_name": "valoria-wall-family-v1-unity",
+  "result": "PRODUCTION PROOF PENDING / HERO QUALITY UNGRANTED",
+  "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+  "artifact_name": "valoria-bastion-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -230,24 +230,48 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "WALL SOURCE03 ACCEPTED",
+      "source_glb": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/WallFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-wall-family-v1/source-review.json",
+      "names": [
+        "WestPartialWall",
+        "WestWallTowerA",
+        "WestWallTowerB",
+        "EastPartialWall",
+        "EastWallTowerA",
+        "EastWallTowerB"
+      ],
+      "position": {
+        "x": 10,
+        "y": 7.059999942779541,
+        "z": -12
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "WALL",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/WallFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-wall-family-v1/source-review.json",
+    "label": "BASTION HERO",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/BastionFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-bastion-family-v1/source-review.json",
     "names": [
-      "WestPartialWall",
-      "WestWallTowerA",
-      "WestWallTowerB",
-      "EastPartialWall",
-      "EastWallTowerA",
-      "EastWallTowerB"
+      "BastionCurtainWest",
+      "BastionCurtainEast",
+      "BastionWestTower",
+      "BastionEastTower",
+      "BastionKeep",
+      "BastionLeftWing",
+      "BastionRightGatePillar",
+      "BastionGateLintel",
+      "BastionFarWestBlock"
     ],
     "position": {
-      "x": 10,
-      "y": 7.059999942779541,
-      "z": -12
+      "x": 5,
+      "y": 11.100000381469727,
+      "z": 8.5
     },
     "yaw": 180,
     "scale": 1
