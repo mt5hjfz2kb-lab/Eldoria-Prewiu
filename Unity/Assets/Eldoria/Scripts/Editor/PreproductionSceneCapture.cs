@@ -39,7 +39,12 @@ namespace Eldoria.EditorTools
                 var vertices=new Vector3[item.indices.Length];
                 var indices=new int[item.indices.Length];
                 // Flat face normals, no shading polish. Both sides survive coordinate handedness conversion.
-                for(int i=0;i<indices.Length;i++){vertices[i]=item.vertices[item.indices[i]];indices[i]=i;}
+                for(int i=0;i<indices.Length;i++)
+                {
+                    // X/Z/Y conversion reflects handedness: reverse triangle winding.
+                    int corner=i%3;int source=i-corner+(corner==1?2:corner==2?1:0);
+                    vertices[i]=item.vertices[item.indices[source]];indices[i]=i;
+                }
                 var mesh=new Mesh{name=item.name+"_GREYBOX"};mesh.vertices=vertices;mesh.triangles=indices;mesh.RecalculateNormals();mesh.RecalculateBounds();
                 go.AddComponent<MeshFilter>().sharedMesh=mesh;
                 var renderer=go.AddComponent<MeshRenderer>();

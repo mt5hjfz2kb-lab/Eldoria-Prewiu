@@ -131,9 +131,9 @@ def build():
     box('BastionGateLintel',np.array(anchor(953,242,11.1))+[0,0,4.5],[4.4,2.9,1.8])
     atbox('BastionFarWestBlock',723,193,11.1,[2.8,3.4,6.0])
     # One cabin and a two-tent camp; parcels deliberately mostly empty.
-    atbox('Cabin',453,402,7.1,[4.4,3.7,2.8],'wood')
-    roof('CabinRoof',np.array(anchor(453,402,7.1))+[0,0,3.3],[5.3,4.5,1.8])
-    atbox('CabinChimney',439,386,11.5,[.55,.55,1.5],'stone')
+    atbox('Cabin',453,379,7.1,[4.4,2.6,2.1],'wood')
+    roof('CabinRoof',np.array(anchor(453,379,7.1))+[0,0,2.6],[5.3,3.3,1.0])
+    atbox('CabinChimney',439,328,10.1,[.55,.55,1.3],'stone')
     for i,(x,y) in enumerate([(1221,456),(1302,472)]):
         roof('CampTent_%d'%i,np.array(anchor(x,y,7.1))+[0,0,1.35],[3.6 if i else 2.6,3.7 if i else 2.8,2.7],'tent')
     wall('CabinFence',(350,406),(568,426),7.1,.6,.13,'wood')
