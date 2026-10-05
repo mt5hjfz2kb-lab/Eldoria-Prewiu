@@ -1,8 +1,8 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-lower-gate-family-v1-source-04",
-  "nonce": "lower-gate-source-04-single-active-UV-surface-gate",
+  "request_id": "valoria-lower-gate-family-v1-source-05",
+  "nonce": "lower-gate-source-05-clean-modifier-attributes-and-UV",
   "mesh_spec": "docs/evidence/valoria-lower-gate-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/lower-gate-family-v1",
   "evidence_dir": "docs/evidence/valoria-lower-gate-family-v1/source",
