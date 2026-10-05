@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "vegetation-source03-water-shore02-final-instancing",
+  "nonce": "premium-hero-test-zone-v1-iteration01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Final certification of accepted Vegetation Source03 placement + Water/Shore02. Identical visual composition; reusable vegetation shared materials explicitly enable GPU instancing in the cumulative gate. Zero Tripo.",
+  "scope": "VALORIA PREMIUM HERO TEST ZONE v1. Preserve canonical camera/composition/gameplay and all accepted geometry. Unity-first presentation uplift: shadow/contact hierarchy, controlled hero-zone material response, atmospheric depth and background value. Props + Background remain blocked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING FINAL COMBINED CERTIFICATION",
+  "result": "PENDING PREMIUM HERO TEST ZONE ITERATION01",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-vegetation-water-shore-v1-final",
+  "artifact_name": "valoria-premium-hero-test-zone-v1-iteration01",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -645,5 +645,35 @@
         ]
       }
     ]
+  },
+  "premium": {
+    "enabled": true,
+    "ambient_color": [
+      232,
+      214,
+      188
+    ],
+    "ambient_intensity": 0.42,
+    "background_color": [
+      133,
+      158,
+      169
+    ],
+    "fog_color": [
+      146,
+      164,
+      169
+    ],
+    "fog": true,
+    "fog_start": 60,
+    "fog_end": 142,
+    "key_intensity": 1.22,
+    "shadow_strength": 0.84,
+    "hero_min_z": -42,
+    "hero_max_z": -10,
+    "hero_min_x": -20,
+    "hero_max_x": 22,
+    "albedo_variation": 0.065,
+    "stone_smoothness": 0.19
   }
 }
