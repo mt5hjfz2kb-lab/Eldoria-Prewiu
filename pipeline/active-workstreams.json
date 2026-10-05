@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T18:46:00Z",
+  "updated_at": "2026-10-05T19:38:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -31,9 +31,9 @@
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
       "status": "active",
-      "phase": "GOLDEN VISUAL SHELL / SURFACE METHOD PIVOT",
+      "phase": "GOLDEN LOCAL GEOMETRY UPLIFT / SURFACE METHOD EXHAUSTED",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "After three geometry/contact visual failures, prove a bounded local visual shell with authored PBR channel variation and official Golden close-crop integration. No broad family reopening or scale-out."
+      "next": "Surface-only exhausted after 3 valid iterations. Execute one bounded Blender local visual-shell geometry uplift on Golden Slice only, retain Blender Surface V2 maps, then re-run official Golden gate. No broad family reopening or scale-out."
     }
   ],
   "history": [
