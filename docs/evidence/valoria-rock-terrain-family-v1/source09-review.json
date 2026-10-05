@@ -16,18 +16,18 @@
     "normals": true,
     "tangents": true
   },
-  "change_from_source08": "MATERIAL ONLY — Source08 geometry and macro silhouette/interfaces are locked unchanged. Rock palette darkened/warmed, facet contrast compressed, earth values reduced to avoid integrated washout.",
+  "locked_geometry": "PASS — same Source08 macro geometry/envelopes/interfaces; Source09 is material-hierarchy correction only.",
   "hard_questions": {
-    "greybox_reduction": "PASS — continuous geological mass remains intact and darker values strengthen the non-greybox read.",
-    "rock_rhythm": "PASS — geometry unchanged from Source08; broad diagonal/recessed facets remain the dominant rhythm.",
-    "silhouette": "PASS — Source09 is material-only; exact Source08 macro geometry retained.",
-    "depth_without_noise": "PASS — darker shadow/base values improve depth hierarchy without adding geometry or micro-noise.",
-    "authored_not_procedural": "PASS — continuous mass remains; palette variation is compressed rather than patterned.",
-    "mobile_scale": "PASS — contrast now supports the same large forms at small screen sizes instead of washing them into pale planes.",
-    "architecture_integration": "AUTHORIZED FOR UNITY — darker terrain is more subordinate to accepted civic architecture.",
-    "material_difference": "PASS — rock/earth/paving separation is stronger than Source08.",
-    "real_quality_jump": "PASS — Source09 preserves Source08 structural jump and fixes its integrated material washout."
+    "greybox_reduction": "PASS — continuous authored geological mass retained.",
+    "rock_rhythm": "PASS — broad diagonal/recessed facets retained without shoulder proxies.",
+    "silhouette": "PASS — exact locked macro plateau envelope and 3/7/11 anchors unchanged.",
+    "depth_without_noise": "PASS — depth remains geometry-driven; darker compressed palette removes pale facet chatter.",
+    "authored_not_procedural": "PASS — no repeated proxy/pillar cadence; color contrast no longer exposes a checker/triangle identity.",
+    "mobile_scale": "PASS at source — large facets remain readable while reduced value spread prevents micro-pattern dominance.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — darker rock recedes beneath accepted architecture instead of competing with it.",
+    "material_difference": "PASS — rock is darker/warmer and compressed; earth remains distinct from civic paving without washout.",
+    "real_quality_jump": "PASS SOURCE — retains Source08 structural jump and directly fixes the integrated washout defect that caused the legitimate Source08 visual fail."
   },
-  "unity_gate": "AUTHORIZED — rerun cumulative seven-camera A/B with exact Source09 GLB; retain Lower Gate + Bridge + Road + Stair identically; Rock/Terrain only changes in material relative to Source08 geometry.",
+  "unity_gate": "AUTHORIZED NEXT — rerender all seven official cameras with exact Source09 GLB; Lower Gate + Bridge + Road + Stair fixed; no geometry/camera/composition change.",
   "tripo_credits": 0
 }
