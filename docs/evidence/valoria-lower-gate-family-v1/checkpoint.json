@@ -1,36 +1,51 @@
 {
   "workstream": "valoria-lower-gate-family-v1",
-  "state": "BLOCKED",
-  "result": "PRODUCTION FAMILY PARTIAL",
-  "gate_closed": false,
+  "state": "COMPLETED",
+  "result": "PRODUCTION FAMILY PASS",
+  "gate_closed": true,
   "source_gate": "ART SOURCE PASS",
-  "unity_gate": "NOT EXECUTED; queued",
-  "visual_gate": "NOT EXECUTED",
+  "unity_gate": "UNITY INTEGRATION PASS",
+  "visual_gate": "VISUAL PASS",
   "review_commit": "71b286cffea5e22c205cf6b32b8c2460ddad9c60",
   "source_run": 37281447235,
   "source_artifact_id": 11332112538,
   "unity_run": 37282357911,
   "unity_job": 111673150034,
-  "unity_artifacts": [],
-  "matched_captures": [],
-  "blocker": "Run37282357911 capture job111673150034 remains queued, runner_id0, no steps. No Unity Editor available locally and no remote runner-management tool exposed. Restore self-hosted Windows Unity6000.3.23f1 runner; resume this same family/run. Source PASS does not close visual gate.",
+  "unity_artifacts": [
+    11337479259
+  ],
+  "runner": "DESKTOP-R10PE55",
+  "matched_captures": [
+    "UNITY-source-3x2",
+    "UNITY-16x9",
+    "UNITY-mobile-landscape",
+    "UNITY-portrait-home",
+    "UNITY-portrait-left",
+    "UNITY-portrait-right",
+    "UNITY-portrait-entry"
+  ],
   "source_sha": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
   "export_sha": "46600b6248f23fa580249b2e4867dde793067bb7371de844b3702304d45adce9",
   "source_evidence": "docs/evidence/valoria-lower-gate-family-v1/source",
   "source_review": "docs/evidence/valoria-lower-gate-family-v1/source-review.json",
   "sanity": "docs/evidence/valoria-lower-gate-family-v1/production-sanity.json",
+  "matched_metrics": "docs/evidence/valoria-lower-gate-family-v1/matched-camera-metrics.json",
+  "integrated_visual_review": "docs/evidence/valoria-lower-gate-family-v1/integrated-visual-review.json",
   "tripo_credits": 0,
   "gameplay": {
     "base_sha": "5dedb34fe72fa8a120d0fcb3336b8d4713b56794",
-    "review_commit": "71b286cffea5e22c205cf6b32b8c2460ddad9c60",
-    "protected_count": 4082,
-    "changed": []
+    "captured_head": "71b286cffea5e22c205cf6b32b8c2460ddad9c60",
+    "protected_projection_max_delta_px": 0,
+    "colliders": 0,
+    "focused_playmode": "5/5 PASS",
+    "camera_composition_changed": false
   },
   "validation": {
     "workflow_governance": "success / run37282357920",
-    "unity_source_preflight": "success / run37282357864; not Editor execution",
+    "unity_source_preflight": "success / run37282357864",
     "source_parked": "success / run37282357935",
-    "new_focused_playmode_tests": "NOT EXECUTED"
+    "unity_capture": "success / run37282357911 / job111673150034",
+    "visual_review": "PASS"
   },
-  "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
+  "next": "Owner human review of closed Lower Gate family. Bridge is the recommended next family but must not start without explicit owner approval."
 }
