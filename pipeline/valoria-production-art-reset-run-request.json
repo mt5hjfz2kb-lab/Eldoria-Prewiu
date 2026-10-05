@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-cumulative-05-single-terrain-instance",
+  "nonce": "rock-terrain-contact-uplift-cumulative-06-suppress-obsolete-shoulders",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Controlled Rock/Terrain contact uplift. RockTerrainFamilyV1 exists ONLY as replacement under review, never retained simultaneously. Retain Lower Gate, Bridge, Road, Stair and Walls exactly; Bastion remains canonical phase context. Source09 geometry locked; 11 material assignments only. No camera/composition/platform/gameplay changes. Zero Tripo.",
+  "scope": "Controlled Rock/Terrain contact uplift. Single RockTerrain replacement suppresses all 12 Rock/Terrain blockout placeholders, including seven obsolete CliffShoulder proxies already absorbed by authoritative Source09 geometry. No retained Terrain duplication. Retain Lower Gate, Bridge, Road, Stair, Walls and Bastion exactly. Source09 geometry locked; 11 material assignments only. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,7 +112,7 @@
       }
     }
   ],
-  "result": "PENDING CONTROLLED UPLIFT UNITY GATE — SINGLE TERRAIN INSTANCE",
+  "result": "PENDING CONTROLLED UPLIFT UNITY GATE — EXACT SOURCE09 PLACEHOLDER SUPPRESSION",
   "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
@@ -259,7 +259,14 @@
       "MainPlatform",
       "PlayableGround",
       "UpperTerraceCliff",
-      "UpperTerraceGround"
+      "UpperTerraceGround",
+      "CliffShoulder_0",
+      "CliffShoulder_1",
+      "CliffShoulder_2",
+      "CliffShoulder_3",
+      "CliffShoulder_4",
+      "CliffShoulder_5",
+      "CliffShoulder_6"
     ],
     "position": {
       "x": 5,
