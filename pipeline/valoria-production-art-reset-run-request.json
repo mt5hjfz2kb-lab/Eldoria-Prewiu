@@ -1,10 +1,10 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_family_replacement",
   "nonce": "wall-source03-cumulative-lower-gate-bridge-road-stair-rock09-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Wall Family Source03 cumulative Unity matched-camera gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER; replace only WestPartialWall, WestWallTowerA/B, EastPartialWall, EastWallTowerA/B. Camera/target/composition/platform/Bastion/gameplay untouched. Zero Tripo.",
+  "scope": "Wall Source03 cumulative Unity matched-camera gate passed; PRODUCTION FAMILY PASS; parked.",
   "views": [
     {
       "name": "UNITY-source-3x2",
