@@ -1,0 +1,90 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "d15dcd939148eaa2fcd043580937f1dc87a09201be1765ea70f07c9bbaec098c",
+  "export_sha": "b0491266eff23af738bcc436faabfc645a72362dbc0239fa3c16b6ef9bf3ed60",
+  "source": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend",
+  "export": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 15830,
+    "vertices": 8234,
+    "modules": 6,
+    "materials": 4,
+    "bounds_world_blender": [
+      [
+        -14.023263931274414,
+        -1.951791763305664,
+        -0.3399996757507324
+      ],
+      [
+        12.869752883911133,
+        4.239864349365234,
+        8.299999237060547
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 26,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "stone",
+    "trim",
+    "metal",
+    "fabric"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-lower-gate-family-v1/source/01-clay-3quarter.png",
+    "docs/evidence/valoria-lower-gate-family-v1/source/02-lit-3quarter.png",
+    "docs/evidence/valoria-lower-gate-family-v1/source/03-frontal.png",
+    "docs/evidence/valoria-lower-gate-family-v1/source/04-lateral.png",
+    "docs/evidence/valoria-lower-gate-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-lower-gate-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    5.566,
+    -25.6,
+    7.1
+  ],
+  "unity_placement": {
+    "position": [
+      5.565999984741211,
+      7.099999904632568,
+      -25.600000381469727
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
