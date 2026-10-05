@@ -223,7 +223,25 @@ namespace Eldoria.EditorTools
             var mesh=new Mesh{name="Valoria Water Surface v1"};mesh.vertices=verts;mesh.triangles=tris;mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;
             var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Water v1"};
             var col=treatment.color!=null&&treatment.color.Length>=3?new Color(treatment.color[0]/255f,treatment.color[1]/255f,treatment.color[2]/255f,1f):new Color(.11f,.28f,.34f,1f);
-            mat.SetColor("_BaseColor",col);mat.SetFloat("_Smoothness",Mathf.Clamp01(treatment.smoothness));mat.SetFloat("_Metallic",.04f);mat.enableInstancing=true;rr.sharedMaterial=mat;
+            const int texSize=128;var albedo=new Texture2D(texSize,texSize,TextureFormat.RGB24,false){name="Valoria Water Albedo v1",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
+            var normal=new Texture2D(texSize,texSize,TextureFormat.RGBA32,false,true){name="Valoria Water Normal v1",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
+            var ac=new Color[texSize*texSize];var nc=new Color[texSize*texSize];
+            for(int py=0;py<texSize;py++)for(int px=0;px<texSize;px++)
+            {
+                float u=(float)px/texSize,v=(float)py/texSize;
+                float h1=Mathf.Sin((u*3.0f+v*.55f)*Mathf.PI*2f);
+                float h2=Mathf.Sin((v*4.0f-u*.35f)*Mathf.PI*2f+.7f);
+                float h3=Mathf.Sin((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f);
+                float mix=h1*.55f+h2*.30f+h3*.15f;
+                float shade=1f+mix*.055f;
+                ac[py*texSize+px]=new Color(Mathf.Clamp01(col.r*shade),Mathf.Clamp01(col.g*shade),Mathf.Clamp01(col.b*shade),1f);
+                float du=(Mathf.Cos((u*3.0f+v*.55f)*Mathf.PI*2f)*3f*.55f + Mathf.Cos((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f)*7f*.15f)*.055f;
+                float dv=(Mathf.Cos((v*4.0f-u*.35f)*Mathf.PI*2f+.7f)*4f*.30f + Mathf.Cos((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f)*5f*.15f)*.055f;
+                var n=new Vector3(-du,-dv,1f).normalized;nc[py*texSize+px]=new Color(n.x*.5f+.5f,n.y*.5f+.5f,n.z*.5f+.5f,1f);
+            }
+            albedo.SetPixels(ac);albedo.Apply();normal.SetPixels(nc);normal.Apply();
+            mat.SetColor("_BaseColor",Color.white);mat.SetTexture("_BaseMap",albedo);mat.SetTexture("_BumpMap",normal);mat.SetFloat("_BumpScale",.28f);mat.EnableKeyword("_NORMALMAP");
+            mat.SetFloat("_Smoothness",Mathf.Clamp01(treatment.smoothness));mat.SetFloat("_Metallic",.035f);mat.enableInstancing=true;rr.sharedMaterial=mat;
             evidence.water_treated=true;evidence.water_opaque=true;evidence.water_grid_triangles=tris.Length/3;
 
             if(treatment.shores!=null)foreach(var shore in treatment.shores)
