@@ -1,0 +1,97 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "163eed212fc872e6d1f7965fde14a8fcb53b0b0fc76f1e2aadbc90f1fb4990b7",
+  "export_sha": "2b2ceea5d5409b59bd009ed3caf6ed5a3aceaecb960175007f15a632abbeba80",
+  "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend",
+  "export": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 11232,
+    "vertices": 5792,
+    "modules": 9,
+    "materials": 6,
+    "bounds_world_blender": [
+      [
+        -9.836312294006348,
+        4.238635063171387,
+        11.100000381469727
+      ],
+      [
+        20.288347244262695,
+        13.259100914001465,
+        18.700000762939453
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "bastion_shadow",
+    "bastion_base",
+    "bastion_face",
+    "bastion_warm",
+    "bastion_trim",
+    "banner_blue"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-bastion-family-v1/source/01-clay-hero-3quarter.png",
+    "docs/evidence/valoria-bastion-family-v1/source/02-lit-hero-3quarter.png",
+    "docs/evidence/valoria-bastion-family-v1/source/03-frontal-gameplay.png",
+    "docs/evidence/valoria-bastion-family-v1/source/04-low-architectural.png",
+    "docs/evidence/valoria-bastion-family-v1/source/05-side-depth.png",
+    "docs/evidence/valoria-bastion-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    5,
+    8.5,
+    11.1
+  ],
+  "unity_placement": {
+    "position": [
+      5.0,
+      11.100000381469727,
+      8.5
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
