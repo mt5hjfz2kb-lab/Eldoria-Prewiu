@@ -1,3 +1,6 @@
+## VALORIA GOLDEN LOOKDEV SLICE v1 — ACTIVE (2026-10-05)
+Premium Hero Test Zone iterations 01–05 established TECH PASS but persistent PREMIUM VISUAL FAIL; broad-scene lighting/flat-color/contact-patch iteration is stopped. Project has pivoted to a single bounded Golden Lookdev Slice using the real Lower Gate/rock/ground/water/vegetation scene. Broad content production is blocked until the slice proves authored surface/material richness, lighting depth, contact integration, atmosphere and mobile readability at >=4/5. Canonical spec: `docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md`. Existing closed families remain preserved/reusable and are not automatically reopened. Tripo 0.
+
 
 ## VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1 — PASS / CLOSED (2026-10-05)
 
