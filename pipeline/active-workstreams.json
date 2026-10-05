@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T12:44:00Z",
-  "active": [
+  "updated_at": "2026-10-05T13:23:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-wall-family-v1",
       "title": "VALORIA WALL FAMILY v1",
@@ -31,12 +32,23 @@
       ],
       "claimed_at": "2026-10-05T12:44:00Z",
       "base_main_sha": "53f0cb1047814a996619a2a6eb002451218d1c66",
-      "status": "active",
-      "phase": "TARGET",
-      "dependency": "Walls only. Preserve Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09, camera, target, composition, platform, Bastion and gameplay exactly. Zero Tripo credits unless owner separately authorizes."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "phase": "PRODUCTION FAMILY PASS",
+      "dependency": "Walls only. Preserve Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09, camera, target, composition, platform, Bastion and gameplay exactly. Zero Tripo credits unless owner separately authorizes.",
+      "completed_at": "2026-10-05T13:23:00Z",
+      "result": "PRODUCTION FAMILY PASS / CLOSED / SOURCE03 AUTHORITATIVE / 0 TRIPO",
+      "result_doc": "docs/VALORIA_WALL_FAMILY_V1.md",
+      "planner_run_id": 37312260323,
+      "planner_artifact_id": 11345898190,
+      "source_run_id": 37315121461,
+      "source_artifact_id": 11348240013,
+      "unity_run_id": 37315821080,
+      "unity_artifact_id": 11347388530,
+      "source_sha": "0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430",
+      "export_sha": "22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b",
+      "credits_spent": 0,
+      "next": "STOP. Do not start Bastion or another family without explicit owner instruction."
+    },
     {
       "id": "unity-runner-resilience-v1",
       "title": "Unity self-hosted runner resilience v1",
