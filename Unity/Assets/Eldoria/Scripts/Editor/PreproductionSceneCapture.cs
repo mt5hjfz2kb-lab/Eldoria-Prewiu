@@ -24,7 +24,7 @@ namespace Eldoria.EditorTools
         [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; public WaterTreatment water; public PremiumTreatment premium; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; public bool premium_uplift; public bool shadows_enabled; public bool fog_enabled; public int premium_material_renderers; public int premium_ground_patches; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; public bool premium_uplift; public bool shadows_enabled; public bool fog_enabled; public int premium_material_renderers; public int premium_ground_patches; public bool surface_authoring; public int surface_authored_renderers; public int surface_uv_fixed_renderers; public int surface_texture_count; public string surface_texture_dimensions; public long surface_texture_bytes_estimated; public int surface_material_instances; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
@@ -299,85 +299,22 @@ namespace Eldoria.EditorTools
             QualitySettings.shadows=ShadowQuality.All;
             QualitySettings.shadowDistance=180f;
 
-            Texture2D premiumDetailAlbedo,premiumDetailNormal;CreatePremiumStoneDetail(out premiumDetailAlbedo,out premiumDetailNormal);
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
-                var bounds=renderer.bounds;
-                string rendererName=renderer.name.ToLowerInvariant();
+                var bounds=renderer.bounds;string rendererName=renderer.name.ToLowerInvariant();
                 bool giantCaster=bounds.size.x>18f||bounds.size.z>18f||rendererName.Contains("ground")||rendererName.Contains("platform")||rendererName.Contains("cliff")||rendererName.Contains("water")||rendererName.Contains("shore");
                 renderer.shadowCastingMode=giantCaster?UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;
                 renderer.receiveShadows=true;
-                var center=bounds.center;
-                if(center.z<treatment.hero_min_z||center.z>treatment.hero_max_z||center.x<treatment.hero_min_x||center.x>treatment.hero_max_x)continue;
-                var src=renderer.sharedMaterials;if(src==null||src.Length==0)continue;
-                var dst=new Material[src.Length];bool changed=false;
-                int hash=17;foreach(char ch in renderer.name)hash=(hash*31+ch)&0x7fffffff;
-                float unit=(hash%1000)/999f;
-                float variation=Mathf.Lerp(1f-treatment.albedo_variation,1f+treatment.albedo_variation,unit);
-                for(int i=0;i<src.Length;i++)
-                {
-                    if(src[i]==null){dst[i]=null;continue;}
-                    var m=new Material(src[i]){name=src[i].name+" · PremiumHeroV1"};
-                    if(m.HasProperty("_BaseColor"))
-                    {
-                        var baseColor=m.GetColor("_BaseColor");
-                        baseColor.r=Mathf.Clamp01(baseColor.r*variation);
-                        baseColor.g=Mathf.Clamp01(baseColor.g*variation*.985f);
-                        baseColor.b=Mathf.Clamp01(baseColor.b*variation*.955f);
-                        m.SetColor("_BaseColor",baseColor);
-                    }
-                    if(m.HasProperty("_Smoothness"))
-                    {
-                        string lower=m.name.ToLowerInvariant();
-                        float target=(lower.Contains("metal")||lower.Contains("iron")) ? .34f:treatment.stone_smoothness;
-                        m.SetFloat("_Smoothness",Mathf.Clamp01(Mathf.Max(m.GetFloat("_Smoothness"),target)));
-                    }
-                    if(m.HasProperty("_BaseColor")&&m.HasProperty("_DetailAlbedoMap"))
-                    {
-                        var bc=m.GetColor("_BaseColor");float hi=Mathf.Max(bc.r,Mathf.Max(bc.g,bc.b)),lo=Mathf.Min(bc.r,Mathf.Min(bc.g,bc.b));
-                        string lower=m.name.ToLowerInvariant();
-                        bool surface=(hi-lo)<.28f&&!lower.Contains("banner")&&!lower.Contains("gold")&&!lower.Contains("metal")&&!lower.Contains("iron")&&!lower.Contains("wood");
-                        if(surface)
-                        {
-                            m.SetTexture("_DetailAlbedoMap",premiumDetailAlbedo);
-                            if(m.HasProperty("_DetailNormalMap"))m.SetTexture("_DetailNormalMap",premiumDetailNormal);
-                            if(m.HasProperty("_DetailAlbedoMapScale"))m.SetFloat("_DetailAlbedoMapScale",.34f);
-                            if(m.HasProperty("_DetailNormalMapScale"))m.SetFloat("_DetailNormalMapScale",.42f);
-                            m.SetTextureScale("_DetailAlbedoMap",new Vector2(5.5f,5.5f));
-                            if(m.HasProperty("_DetailNormalMap"))m.SetTextureScale("_DetailNormalMap",new Vector2(5.5f,5.5f));
-                            m.EnableKeyword("_DETAIL_MULX2");
-                        }
-                    }
-                    m.enableInstancing=true;dst[i]=m;changed=true;
-                }
-                if(changed){renderer.sharedMaterials=dst;evidence.premium_material_renderers++;}
             }
+            // Surface-first pivot: actual authored albedo/normal/AO/smoothness maps by material family.
+            // No broad ground overlay meshes are added in this method.
+            GoldenSurfaceAuthoringV1.Apply(treatment,evidence);
+
             var fill=new GameObject("Premium cool sky fill").AddComponent<Light>();
             fill.type=LightType.Directional;fill.intensity=.16f;fill.color=new Color(.68f,.79f,.88f);fill.transform.rotation=Quaternion.Euler(58f,148f,0f);fill.shadows=LightShadows.None;
 
-            CreatePremiumGroundPatch("Gate west earth contact",new[]{
-                new Vector3(-8.6f,7.115f,-29.0f),new Vector3(-1.2f,7.115f,-27.5f),new Vector3(-.8f,7.115f,-19.2f),
-                new Vector3(-3.2f,7.115f,-13.0f),new Vector3(-10.2f,7.115f,-11.2f),new Vector3(-12.5f,7.115f,-20.6f)
-            },new Color(.43f,.40f,.28f),.06f,evidence);
-            CreatePremiumGroundPatch("Gate east earth contact",new[]{
-                new Vector3(8.1f,7.115f,-27.8f),new Vector3(17.8f,7.115f,-25.0f),new Vector3(19.1f,7.115f,-15.2f),
-                new Vector3(15.4f,7.115f,-10.1f),new Vector3(8.0f,7.115f,-12.7f),new Vector3(7.2f,7.115f,-20.7f)
-            },new Color(.45f,.42f,.29f),.055f,evidence);
-            CreatePremiumGroundPatch("Road west verge",new[]{
-                new Vector3(-.1f,7.12f,-17.7f),new Vector3(2.0f,7.12f,-17.0f),new Vector3(1.6f,7.12f,-7.8f),
-                new Vector3(-1.4f,7.12f,-5.8f),new Vector3(-3.3f,7.12f,-10.5f)
-            },new Color(.40f,.39f,.26f),.05f,evidence);
-            CreatePremiumGroundPatch("Road east verge",new[]{
-                new Vector3(5.2f,7.12f,-17.1f),new Vector3(8.0f,7.12f,-16.2f),new Vector3(9.6f,7.12f,-8.1f),
-                new Vector3(7.8f,7.12f,-5.7f),new Vector3(5.4f,7.12f,-7.4f)
-            },new Color(.42f,.40f,.27f),.05f,evidence);
-            CreatePremiumGroundPatch("Gate threshold soil break",new[]{
-                new Vector3(-.4f,7.118f,-25.4f),new Vector3(2.0f,7.118f,-27.2f),new Vector3(7.8f,7.118f,-26.3f),
-                new Vector3(9.1f,7.118f,-23.2f),new Vector3(6.9f,7.118f,-21.1f),new Vector3(1.2f,7.118f,-21.7f)
-            },new Color(.47f,.41f,.29f),.075f,evidence);
-
-            var water=GameObject.Find("Water");
+            // Flat overlay patches from the previous method are intentionally disabled for Golden Surface v1.\n\n            var water=GameObject.Find("Water");
             if(water!=null)
             {
                 var wr=water.GetComponent<MeshRenderer>();
