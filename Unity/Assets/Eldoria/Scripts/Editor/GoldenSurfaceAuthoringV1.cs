@@ -41,9 +41,9 @@ namespace Eldoria.EditorTools
                 SurfaceSet set=null;
                 if(n.StartsWith("lowergate_")||n.StartsWith("gatefoundation_")||n.Contains("foundationcontact")||n=="bridge_deck"||n=="bridge_parapetl"||n=="bridge_parapetr"||n=="bridge_support"||n=="gatethreshold") set=stone;
                 else if(n.StartsWith("rockcontact_")||n.StartsWith("shorerock_")||n.StartsWith("rock_")||n=="foregroundbank") set=rock;
-                else if(n.StartsWith("heroground_")||n.StartsWith("heroroadverge_")||n.Contains("_berm")||n.Contains("_vergebreak")||n.Contains("_shoulder")||n=="gatewestberm"||n=="gateeastberm"||n=="roadwestverge"||n=="roadeastverge"||n=="bridgewestshoulder"||n=="bridgeeastshoulder"||n=="foregroundroad"||n=="mainroad") set=ground;
+                else if(n.StartsWith("goldenground_")||n.StartsWith("heroground_")||n.StartsWith("heroroadverge_")||n.Contains("_berm")||n.Contains("_vergebreak")||n.Contains("_shoulder")||n=="gatewestberm"||n=="gateeastberm"||n=="roadwestverge"||n=="roadeastverge"||n=="bridgewestshoulder"||n=="bridgeeastshoulder"||n=="foregroundroad"||n=="mainroad") set=ground;
                 else if(n.StartsWith("valoria shore")) set=shore;
-                else if(n.StartsWith("tree_")) set=vegetation;
+                else if(n.StartsWith("tree_")&&!n.StartsWith("tree_goldenlocal_")) set=vegetation;
                 if(set==null) continue;
 
                 var mf=renderer.GetComponent<MeshFilter>();
