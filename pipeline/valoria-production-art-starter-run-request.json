@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-03",
-  "nonce": "rock-terrain-source-03-continuous-authored-cliffs",
+  "request_id": "valoria-rock-terrain-family-v1-source-04",
+  "nonce": "rock-terrain-source-04-structural-cliff-relief",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source03 strict ART SOURCE retry: continuous broad rock masses, geometry-driven shading, irregular diagonal/vertical faceting, restrained contiguous material zones, exact approved envelopes; no Unity until direct source review."
+  "scope": "Rock/Terrain source04 strict ART SOURCE retry: pronounced large-scale recessed/overhanging cliff masses, broad contiguous rock zones, exact top/bottom silhouette rings, ground interfaces untouched; zero Tripo; no Unity before direct source review."
 }
