@@ -1,0 +1,73 @@
+{
+  "verdict": "MATCHED-CAMERA TECH PASS",
+  "reviewed_at": "2026-10-05",
+  "unity_run": 37315821080,
+  "unity_artifact_id": 11347388530,
+  "source_iteration": "source03",
+  "source_export_sha": "22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b",
+  "official_views": [
+    {
+      "view": "UNITY-source-3x2",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983057195,
+      "wall_height_ratio_vs_blockout": 0.9793438608,
+      "wall_center_delta_px": 1.45733
+    },
+    {
+      "view": "UNITY-16x9",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983057194,
+      "wall_height_ratio_vs_blockout": 0.9793438608,
+      "wall_center_delta_px": 1.45733
+    },
+    {
+      "view": "UNITY-mobile-landscape",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983056922,
+      "wall_height_ratio_vs_blockout": 0.9793439448,
+      "wall_center_delta_px": 1.02472
+    },
+    {
+      "view": "UNITY-portrait-home",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983058066,
+      "wall_height_ratio_vs_blockout": 0.979344492,
+      "wall_center_delta_px": 1.20116
+    },
+    {
+      "view": "UNITY-portrait-left",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983057569,
+      "wall_height_ratio_vs_blockout": 0.9793444052,
+      "wall_center_delta_px": 1.60153
+    },
+    {
+      "view": "UNITY-portrait-right",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983057661,
+      "wall_height_ratio_vs_blockout": 0.9793444052,
+      "wall_center_delta_px": 1.60153
+    },
+    {
+      "view": "UNITY-portrait-entry",
+      "protected_max_delta_px": 0,
+      "wall_width_ratio_vs_blockout": 0.9983057539,
+      "wall_height_ratio_vs_blockout": 0.9793444038,
+      "wall_center_delta_px": 1.60153
+    }
+  ],
+  "protected_families": [
+    "Lower Gate",
+    "Bridge",
+    "Road",
+    "Stair",
+    "Rock/Terrain Source09",
+    "Bastion",
+    "camera",
+    "target",
+    "composition",
+    "platform",
+    "gameplay"
+  ],
+  "result": "All seven official views preserve every protected projected bound at exactly 0 px. Wall replacement stays inside the approved screen-space envelope with no camera compensation."
+}
