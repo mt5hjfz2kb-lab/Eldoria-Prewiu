@@ -1,0 +1,23 @@
+{
+  "verdict": "MATCHED-CAMERA VISUAL PASS",
+  "reviewed_at": "2026-10-05",
+  "unity_run": 37315821080,
+  "unity_artifact_id": 11347388530,
+  "source_iteration": "source03",
+  "hard_checks": {
+    "seven_official_cameras": "PASS",
+    "protected_family_zero_px": "PASS — 0 px in all seven views",
+    "wall_envelope_and_silhouette": "PASS — global width ~99.83%, height ~97.93% of approved blockout; max center delta ~1.60 px",
+    "lower_gate_continuity": "PASS — Wall remains subordinate and shares warm defensive-stone grammar; returns preserve the approved partial-wall relationship without moving Lower Gate.",
+    "rock_terrain_continuity": "PASS — battered/darker wall bases sit visually into Source09 terrain with no clipping or floating regression visible in matched views.",
+    "mobile_readability": "PASS — grouped crenellation and tower caps survive landscape and portrait; no microdetail dependency.",
+    "clipping_and_seams": "PASS — no new clipping/costume seam artifacts observed in seven AFTER views.",
+    "materials_uv_normals_tangents": "PASS",
+    "colliders": "PASS — 0",
+    "gameplay": "PASS — 5/5",
+    "performance_import": "PASS for family gate",
+    "hierarchy": "PASS — Bastion > Lower Gate > Walls maintained",
+    "real_quality_bar": "PASS — clear defensive-read improvement over blockout and Source01."
+  },
+  "note": "Bastion remains intentionally unopened/greybox in this family gate; its future production treatment is not used to excuse Wall defects and was not modified."
+}
