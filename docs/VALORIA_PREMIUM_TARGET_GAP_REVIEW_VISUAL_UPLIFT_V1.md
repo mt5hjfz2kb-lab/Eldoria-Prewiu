@@ -86,3 +86,11 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - Run gameplay regression and performance sanity.
 - Iterate on the same proof if visual verdict is FAIL.
 - Do not open Props + Background automatically.
+
+
+## Iteration 01 — VISUAL FAIL / NOT ACCEPTED
+- Run **37351913775** — SUCCESS; artifact **11362398793**.
+- Evidence confirms premium hook executed: shadows enabled, fog enabled, 19 hero-zone renderers received local material tuning, gameplay tests PASS.
+- Direct 16:9 review: **FAIL**. Early linear fog flattened the scene into a grey veil; the reference gap in contrast, depth and premium material response did not materially close.
+- This iteration is rejected and is not a quality-bar candidate.
+- Corrective hypothesis for iteration02: substantially lower ambient fill, stronger directional key/shadow hierarchy, much later/subtler atmosphere, larger but still controlled albedo/roughness separation. Geometry remains untouched.
