@@ -1,0 +1,88 @@
+{
+  "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
+  "reconstructed_from": "artifact 11337479259 evidence.json using tools/review-family-replacement.py equations",
+  "all_technical_alignment_pass": true,
+  "source_integrity_pass": true,
+  "official_views": [
+    {
+      "view": "UNITY-source-3x2",
+      "extent_ratio": [
+        0.9985998887,
+        1.0192157753
+      ],
+      "center_delta_px": 2.6338500977,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-16x9",
+      "extent_ratio": [
+        0.9985998887,
+        1.0192157753
+      ],
+      "center_delta_px": 2.6338500984,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-mobile-landscape",
+      "extent_ratio": [
+        0.9985998472,
+        1.0192160379
+      ],
+      "center_delta_px": 1.8519134521,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-home",
+      "extent_ratio": [
+        0.9985995072,
+        1.0192159204
+      ],
+      "center_delta_px": 2.1708679199,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-left",
+      "extent_ratio": [
+        0.9985996495,
+        1.0192159188
+      ],
+      "center_delta_px": 2.8945312501,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-right",
+      "extent_ratio": [
+        0.9985994365,
+        1.0192156747
+      ],
+      "center_delta_px": 2.8945007325,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-entry",
+      "extent_ratio": [
+        0.9985995295,
+        1.0192161677
+      ],
+      "center_delta_px": 2.8945007324,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    }
+  ],
+  "source_integrity": {
+    "triangles": 15830,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false
+  },
+  "tripo_credits": 0
+}
