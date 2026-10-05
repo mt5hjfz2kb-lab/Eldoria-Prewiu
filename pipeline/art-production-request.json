@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "request_id": "valoria-lower-gate-family-v1",
-  "asset_or_sector": "Lower Gate Family v1 only",
+  "request_id": "valoria-bridge-family-v1",
+  "asset_or_sector": "Bridge Family v1 only",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_LOWER_GATE_FAMILY_V1.md#legacy-review",
+  "geometry_gap_evidence": "docs/VALORIA_BRIDGE_FAMILY_V1.md#d-legacy-review",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "required before Unity",
-    "scope": "replace exactly five LowerGate masses, gameplay intact"
+    "scope": "replace exactly BridgeDeck/BridgeParapetL/BridgeParapetR/BridgeSupport; Lower Gate and gameplay intact"
   },
-  "notes": "zero-credit direct Blender; unchanged approved macro composition"
+  "notes": "zero-credit direct Blender; unchanged approved macro composition; inherit accepted Lower Gate stone language"
 }
