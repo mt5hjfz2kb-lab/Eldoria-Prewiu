@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-04",
-  "nonce": "rock-terrain-source-04-structural-cliff-relief",
+  "nonce": "rock-terrain-source-04-deep-overhang-recess",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source04 strict ART SOURCE retry: pronounced large-scale recessed/overhanging cliff masses, broad contiguous rock zones, exact top/bottom silhouette rings, ground interfaces untouched; zero Tripo; no Unity before direct source review."
+  "scope": "Rock/Terrain source04 strict ART SOURCE retry after source03 fail: substantially deeper inset mid-wall rings and broad shadow recess sectors; exact top/bottom silhouette and 3/7/11 anchors; no Unity until direct review."
 }
