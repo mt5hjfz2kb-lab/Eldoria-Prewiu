@@ -1,12 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-bastion-contact-uplift-v1b",
-  "nonce": "rock-terrain-contact-uplift-v1b-closed",
-  "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
-  "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
+  "request_id": "valoria-sawmill-state0-v1",
+  "nonce": "sawmill-state0-prebuild-01",
+  "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state0-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/sawmill-family-v1/state0",
+  "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state0/source",
   "credits": 0,
-  "scope": "PARKED. VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1b PASS/CLOSED. Source run 37334262852 artifact 11356270681; cumulative Unity 37334848469 artifact 11356615175. Same 11 faces only; zero Tripo. Do not rerun.",
-  "result": "PASS / CLOSED / V1B AUTHORITATIVE"
+  "scope": "Sawmill STATE 0 only. Reserved/prebuild plot: foundation, broken timber, staged logs/planks, no complete functional building. Preserve all structural families and camera. Zero Tripo."
 }
