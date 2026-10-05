@@ -1,0 +1,36 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "scope": "Road isolated source gate only; integrated Unity visual gate remains mandatory",
+  "planner_run": 37299158851,
+  "planner_artifact_id": 11340339774,
+  "source_run": 37300130602,
+  "artifact_id": 11341026650,
+  "source_sha": "0b672be9f522438754df5167c7376a65477b193c5251e4be39bedc722b98bc66",
+  "export_sha": "683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67",
+  "tech_pass": true,
+  "questions": {
+    "main_axis_read": "PASS — the four approved strips form the intended circulation spine without redesigning route geometry.",
+    "real_surface": "PASS — shallow structural section, paving skin and edge treatment read as actual surface geometry rather than a terrain decal.",
+    "gate_main_continuity": "PASS — source03 removes the source02 transverse dark break inside the locked overlap.",
+    "material_hierarchy": "PASS — warm muted paving stays darker/subordinate to Bridge/Lower Gate cut stone while remaining organized against Ground/Terrain.",
+    "mobile_detail_scale": "PASS — large staggered joints survive the approved-camera proxy without micro-cobble noise.",
+    "stair_interface": "PASS FOR ROAD SCOPE — UpperRoad/MainRoad terminate at the locked interfaces; no Stair geometry is invented.",
+    "neighbor_integrity": "PASS by source construction — no Bridge/Lower Gate/Stair/Terrain/Ground geometry exists in the Road source."
+  },
+  "topology": "1,944 triangles, 1,008 source vertices, 4 semantic modules, 3 material roles; nonmanifold edges 0.",
+  "direct_inspection": [
+    "01-clay-3quarter",
+    "02-lit-3quarter",
+    "03-axis-low",
+    "04-axis-side",
+    "05-approved-camera-proxy",
+    "06-wireframe"
+  ],
+  "limitations": [
+    "Whole-scene material/value integration remains for Unity visual gate",
+    "No device FPS claim",
+    "LOD1/LOD2 deferred"
+  ],
+  "tripo_credits": 0
+}
