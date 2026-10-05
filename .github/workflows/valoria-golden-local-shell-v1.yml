@@ -1,4 +1,4 @@
-name: "[PRODUCTION] Golden Integrated Base Reauthor v1"
+name: "[PRODUCTION] Golden Primary Forms Reauthor v1"
 
 on:
   push:
@@ -50,31 +50,31 @@ jobs:
           if(-not $exe){throw 'Blender executable unavailable on claimed Windows runner'}
           & $exe --version
           "exe=$exe" >> $env:GITHUB_OUTPUT
-      - name: Author integrated Golden base
+      - name: Author Golden primary forms
         shell: powershell
         run: |
-          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-integrated-base-v1.py
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
           if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.glb')){throw 'Missing GLB'}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.blend')){throw 'Missing BLEND'}
-          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-report.json')){throw 'Missing source report'}
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb')){throw 'Missing GLB'}
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend')){throw 'Missing BLEND'}
+          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json')){throw 'Missing source report'}
       - name: Persist isolated evidence
         shell: powershell
         run: |
           git config user.name "Eldoria Art Bot"
           git config user.email "actions@users.noreply.github.com"
           if(Test-Path '.git/rebase-merge'){ git rebase --abort }
-          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1
           if(-not (git diff --cached --quiet)){
-            git commit -m "Persist Golden integrated base evidence"
+            git commit -m "Persist Golden primary forms evidence"
             git pull --rebase origin main
             git push origin HEAD:main
           }
       - uses: actions/upload-artifact@v4
         with:
-          name: valoria-golden-integrated-base-v1-source
+          name: valoria-golden-primary-forms-v1-source
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/*
-            docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/*
+            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/*
           if-no-files-found: error
           retention-days: 30
