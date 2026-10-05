@@ -2,6 +2,23 @@
 
 Date 2026-10-05. Workstream `valoria-bastion-family-v1`. Base main `e1093da38df1d01d7045a5e63f4f01b77bfebcd2`.
 
+## FINAL RESULT — PRODUCTION FAMILY PASS / CLOSED
+
+**Source08 is authoritative. HERO QUALITY BAR PASS. 0 Tripo credits.**
+
+- Source01–05 were rejected during the isolated HERO source search; Source06 failed HERO/technical cleanliness; Source07 reached **ART SOURCE PASS** but failed the cumulative Unity HERO gate because its near-white hero masonry collapsed the upper fortress into a washed-out high-value band against the already accepted Valoria families.
+- Source08 preserves Source07 geometry and all nine approved Bastion envelopes exactly, changing only the exported material/value hierarchy. The authoring pipeline was corrected so source-specific texture tints are actually embedded in the Unity-consumed GLB rather than merely existing in the spec.
+- Authoritative source run: **37327905027**, artifact **11353460819**.
+- Authoritative BLEND SHA: `5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893`.
+- Authoritative GLB SHA: `3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477`.
+- Source metrics: **22,690 tris / 11,727 source vertices / 9 modules / 9 materials / 0 nonmanifold edges**, UV/normals/tangents PASS.
+- Cumulative Unity run: **37328467482**, artifact **11352609605** — SUCCESS. The earlier duplicate run **37328457083** was superseded/cancelled by the later identical Source08 trigger and is not authoritative.
+- Unity import: **22,690 tris / 64,705 imported vertices / 9 renderers / 9 materials / 7 textures / 35 submesh draws**; colliders 0; production scene not opened or saved; focused gameplay tests PASS.
+- All seven official capture poses were produced. Direct review of the authoritative 16:9 and mobile matched-camera frames passes the integrated HERO bar: the Bastion keeps the target-specific dominant Keep, blue/gold heraldry, adjacent command arch, controlled asymmetry, visible depth, scaffold/damage identity and stronger hierarchy than Lower Gate/Walls, while the warmer/lower-value Source08 stone removes Source07's pasted-white-band failure.
+- Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls remain retained; camera, canonical target, global composition, platform and gameplay remain locked and unchanged.
+- Final verdict: **ART SOURCE PASS / UNITY TECH PASS / MATCHED-CAMERA VISUAL PASS / HERO QUALITY BAR PASS / PRODUCTION FAMILY PASS / CLOSED**.
+- No next family is opened by this closure.
+
 ## Locked context
 Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls are closed **PRODUCTION FAMILY PASS** and immutable. Camera, canonical target, global composition, platform and gameplay are locked. This workstream authors **Bastion only**. Tripo is forbidden without a new explicit owner authorization.
 
