@@ -24,11 +24,12 @@ namespace Eldoria.EditorTools
 
         public static void Apply(PreproductionSceneCapture.PremiumTreatment treatment, PreproductionSceneCapture.Evidence evidence)
         {
-            var stone=Build("STONE",new Color(.62f,.53f,.39f),.13f,new Vector2(1.65f,1.65f));
-            var rock=Build("ROCK",new Color(.40f,.36f,.29f),.09f,new Vector2(1.35f,1.35f));
-            var ground=Build("GROUND",new Color(.43f,.38f,.25f),.07f,new Vector2(1.10f,1.10f));
-            var shore=Build("SHORE",new Color(.19f,.23f,.18f),.32f,new Vector2(1.55f,1.55f));
-            var vegetation=Build("VEGETATION",new Color(.32f,.48f,.29f),.08f,new Vector2(1.35f,1.35f));
+            bool persistent=AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png")!=null;
+            var stone=persistent?LoadPersisted("STONE","stone",.72f,new Vector2(1.55f,1.55f)):Build("STONE",new Color(.62f,.53f,.39f),.13f,new Vector2(1.65f,1.65f));
+            var rock=persistent?LoadPersisted("ROCK","rock",.88f,new Vector2(1.28f,1.28f)):Build("ROCK",new Color(.40f,.36f,.29f),.09f,new Vector2(1.35f,1.35f));
+            var ground=persistent?LoadPersisted("GROUND","ground",.62f,new Vector2(.92f,.92f)):Build("GROUND",new Color(.43f,.38f,.25f),.07f,new Vector2(1.10f,1.10f));
+            var shore=persistent?LoadPersisted("SHORE","shore",.46f,new Vector2(1.35f,1.35f)):Build("SHORE",new Color(.19f,.23f,.18f),.32f,new Vector2(1.55f,1.55f));
+            var vegetation=persistent?LoadPersisted("VEGETATION","vegetation",.34f,new Vector2(1.25f,1.25f)):Build("VEGETATION",new Color(.32f,.48f,.29f),.08f,new Vector2(1.35f,1.35f));
             int authoredRenderers=0,uvFixed=0;
             var uniqueMaterials=new HashSet<Material>();
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
@@ -96,9 +97,37 @@ namespace Eldoria.EditorTools
             evidence.surface_authored_renderers=authoredRenderers;
             evidence.surface_uv_fixed_renderers=uvFixed;
             evidence.surface_texture_count=20;
-            evidence.surface_texture_dimensions="5 families x 4 maps x 256x256 RGBA32";
-            evidence.surface_texture_bytes_estimated=5L*4L*256L*256L*4L*4L/3L;
+            evidence.surface_texture_dimensions=persistent?"Blender persisted V2: stone/rock/ground 512; shore/vegetation 256; 4 maps/family":"Runtime V1 fallback: 5 families x 4 maps x 256";
+            evidence.surface_texture_bytes_estimated=persistent?0:5L*4L*256L*256L*4L*4L/3L;
             evidence.surface_material_instances=uniqueMaterials.Count;
+        }
+
+        static SurfaceSet LoadPersisted(string kind,string file,float normalScale,Vector2 tiling)
+        {
+            string root="Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/";
+            var albedo=LoadMap(root+file+"_albedo.png",false,false);
+            var normal=LoadMap(root+file+"_normal.png",true,false);
+            var ao=LoadMap(root+file+"_ao.png",false,true);
+            var smooth=LoadMap(root+file+"_smoothness.png",false,true);
+            if(albedo==null||normal==null||ao==null||smooth==null) throw new Exception("Golden Surface V2 persistent map set incomplete: "+file);
+            return new SurfaceSet{name=kind+"-BLENDER-V2",albedo=albedo,normal=normal,occlusion=ao,metallicSmooth=smooth,normalScale=normalScale,tiling=tiling};
+        }
+
+        static Texture2D LoadMap(string path,bool normalMap,bool linear)
+        {
+            var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+            if(importer==null) return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            bool dirty=false;
+            var desiredType=normalMap?TextureImporterType.NormalMap:TextureImporterType.Default;
+            if(importer.textureType!=desiredType){importer.textureType=desiredType;dirty=true;}
+            bool desiredSrgb=!linear&&!normalMap;
+            if(importer.sRGBTexture!=desiredSrgb){importer.sRGBTexture=desiredSrgb;dirty=true;}
+            if(importer.mipmapEnabled!=true){importer.mipmapEnabled=true;dirty=true;}
+            if(importer.wrapMode!=TextureWrapMode.Repeat){importer.wrapMode=TextureWrapMode.Repeat;dirty=true;}
+            if(importer.filterMode!=FilterMode.Trilinear){importer.filterMode=FilterMode.Trilinear;dirty=true;}
+            if(importer.anisoLevel!=4){importer.anisoLevel=4;dirty=true;}
+            if(dirty){importer.SaveAndReimport();}
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
         static SurfaceSet Build(string kind,Color baseColor,float baseSmooth,Vector2 tiling)
