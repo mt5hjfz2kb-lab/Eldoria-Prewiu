@@ -1,0 +1,88 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "abb570a1a0481e97a7a83bcc3578aad2a3fefeccd6cb0f15f71d4442a0b59627",
+  "export_sha": "c244935332b6def6d8820401377fabf4d3c79cb629a648c60d1e389b6f6f48bd",
+  "source": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.blend",
+  "export": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 2916,
+    "vertices": 1512,
+    "modules": 4,
+    "materials": 2,
+    "bounds_world_blender": [
+      [
+        -5.026285648345947,
+        -33.85853576660156,
+        0.0
+      ],
+      [
+        8.933999061584473,
+        -26.205556869506836,
+        8.318509101867676
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "stone",
+    "trim"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-bridge-family-v1/source/01-clay-3quarter.png",
+    "docs/evidence/valoria-bridge-family-v1/source/02-lit-3quarter.png",
+    "docs/evidence/valoria-bridge-family-v1/source/03-frontal.png",
+    "docs/evidence/valoria-bridge-family-v1/source/04-lateral.png",
+    "docs/evidence/valoria-bridge-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-bridge-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    2,
+    -30,
+    3.2
+  ],
+  "unity_placement": {
+    "position": [
+      2.0,
+      3.200000047683716,
+      -30.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
