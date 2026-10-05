@@ -16,6 +16,13 @@ function Assert-Administrator {
 
 Assert-Administrator
 
+# This machine is a dedicated CI executor while connected to AC power. The runner
+# cannot accept queued GitHub jobs while Windows is asleep, and the watchdog can
+# only restart a stopped process after Windows is awake. Keep AC sleep/hibernate
+# disabled so the self-hosted runner remains reachable between jobs.
+& powercfg.exe /change standby-timeout-ac 0 | Out-Null
+& powercfg.exe /change hibernate-timeout-ac 0 | Out-Null
+
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force
 
 $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe"
@@ -64,6 +71,7 @@ Write-Host "Runner:  $RunnerName"
 Write-Host "Label:   $RunnerLabel"
 Write-Host "Service: $serviceName ($($service.Status))"
 Write-Host "Unity:   $unity"
+Write-Host "Power:   AC sleep/hibernate disabled for runner availability"
 Write-Host ""
 Write-Host "Next repository step: set Actions variable UNITY_RUNNER_READY=true."
 Write-Host "If Unity batch mode reports no license under the service account, run scripts\\switch-unity-runner-to-user-session.ps1 once."
