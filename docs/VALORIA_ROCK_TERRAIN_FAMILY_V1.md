@@ -76,7 +76,7 @@ If any hard question fails, source remains at ART SOURCE and must be reauthored 
 
 **MATCHED-CAMERA VISUAL PASS** requires all seven official cameras plus a dedicated **TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN** comparison, zero protected-family movement, preserved macro silhouette, clean interfaces, mobile readability, material/import sanity, zero unauthorized colliders and gameplay regression PASS.
 
-Current status: **SOURCE09 MATERIAL RETRY ACTIVE / UNITY BLOCKED / 0 TRIPO**.
+Current status: **PRODUCTION FAMILY PASS / CLOSED / SOURCE09 AUTHORITATIVE / 0 TRIPO**.
 
 
 ## Result
@@ -119,3 +119,68 @@ Camera, target, global composition, Bastion, Walls, BackgroundTerrain, accepted 
 ## Source09 material correction — authoritative newer repo state
 
 After the Source08 Unity A/B, a newer repository commit (`9eab04e64c983e0232065c6d4a942670d28cc9c0`) re-opened this family for a **material-only** correction. Source08 geometry remains locked; Source09 changes only the palette: darker warmer rock, compressed facet contrast and darker earth to avoid the integrated washed-out read. The previous Source08 closure is therefore superseded until Source09 passes ART SOURCE + cumulative Unity + matched-camera visual gates.
+
+
+## Final result — Source09 authoritative
+
+**PRODUCTION FAMILY PASS / CLOSED.**
+
+The previous Source08 closure is superseded. Source08 proved the structural geometry and Unity alignment, but its pale/high-contrast material hierarchy failed the later strict integrated visual review due to washout / low-poly facet dominance. **Source09 is the authoritative production source.**
+
+Source09 changes **materials only**; Source08 geometry, interfaces, 3/7/11 anchors, macro silhouette and placement remain locked unchanged.
+
+Authoritative Source09:
+- Source run **37310029846** — SUCCESS
+- Source artifact **11345358292**
+- Editable BLEND SHA-256 `309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd`
+- GLB SHA-256 `e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f`
+- **1,909 tris / 3,516 authored vertices / 5 modules / 7 materials**
+- UV / normals / tangents PASS
+- Tripo **0 credits**
+
+Authoritative cumulative Unity gate:
+- Run **37310582556** — SUCCESS
+- Job **111764702509**
+- Runner **DESKTOP-R10PE55**
+- Artifact **11345546113**
+- Import: **1,909 tris / 5,298 imported vertices / 5 renderers / 7 materials / 17 submesh draws**
+- Colliders: **0**
+- Focused PlayMode: **5/5 PASS**
+- Production scene opened/saved: **false**
+
+Matched-camera:
+- All seven official cameras PASS.
+- **63 protected non-terrain elements/view remain at exactly 0 px projection delta.**
+- Rock/Terrain macro width/height remains within approximately **0.00002%** of approved blockout across all official views.
+- Maximum family-center drift remains below **0.0001 px**.
+
+Visual quality bar:
+- Greybox reduction: PASS.
+- Target rock rhythm: PASS.
+- Plateau silhouette: PASS.
+- Depth without noise: PASS.
+- Authored / non-procedural read: PASS.
+- Mobile landscape + portrait detail scale: PASS.
+- Lower Gate / Bridge / Road / Stair integration: PASS with zero movement.
+- Rock / earth / paving material separation: PASS.
+- **REAL QUALITY JUMP: PASS.**
+
+TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN:
+- target demands a broad continuous two-level cliff platform with controlled medium/large rock facets and subdued warm terrain;
+- blockout preserved composition but read as technical slabs plus explicit shoulder proxies;
+- Source09 preserves the exact approved macro frame while replacing that read with one continuous authored geological mass and a darker, warmer, compressed material hierarchy that keeps architecture dominant.
+
+The remaining distance to final target quality belongs to intentionally unopened families: Walls, Bastion, Cabin/Camp, Vegetation, Props, Water/Shore and Background. They are not part of this gate.
+
+Formal authority:
+- `docs/evidence/valoria-rock-terrain-family-v1/source-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/source09-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/production-sanity.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/matched-camera-metrics.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/target-blockout-structural-comparison.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/integrated-visual-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/checkpoint.json`
+
+Camera, target, global composition, Bastion, Walls, BackgroundTerrain, BridgeSupport, Lower Gate, Bridge, Road, Stair and gameplay remain unchanged.
+
+**Do not start Walls, Bastion or another family without explicit owner instruction.**
