@@ -15,8 +15,9 @@ namespace Eldoria.EditorTools
         [Serializable] public class Input { public string classification; public MeshInput[] meshes; }
         [Serializable] public class View { public string name; public int width; public int height; public float pitch; public float yaw; public float span; public Vector3 center; public bool perspective; public float distance; }
         [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
+        [Serializable] public class RetainedFamily { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
         [Serializable] public class SourceReview { public string verdict; }
-        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; }
+        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
         [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; }
@@ -75,6 +76,31 @@ namespace Eldoria.EditorTools
             Directory.CreateDirectory(Folder);
             var results=new List<ViewResult>();
             var evidence=new Evidence{meshes=input.meshes.Length,triangles=triangles};
+            // Already accepted families may be retained identically in both phases so a new family
+            // is judged against the real accumulated production context without reopening them.
+            if(replacementMode && request.retained_families!=null)
+            {
+                foreach(var retained in request.retained_families)
+                {
+                    if(retained==null || retained.scale!=1) throw new Exception("Retained production family must use explicit unit scale");
+                    var retainedReview=JsonUtility.FromJson<SourceReview>(File.ReadAllText(Path.Combine(root,retained.source_review)));
+                    if(retainedReview.verdict!="ART SOURCE PASS") throw new Exception("Retained family requires accepted ART SOURCE PASS");
+                    foreach(var name in retained.names)
+                    {
+                        var go=GameObject.Find(name);if(go==null) throw new Exception("Retained placeholder missing: "+name);go.SetActive(false);
+                    }
+                    AssetDatabase.ImportAsset(retained.asset,ImportAssetOptions.ForceSynchronousImport|ImportAssetOptions.ForceUpdate);
+                    var retainedPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(retained.asset);
+                    if(retainedPrefab==null) throw new Exception("Retained glTFast import failed: "+retained.asset);
+                    var retainedRoot=Object.Instantiate(retainedPrefab);retainedRoot.name="Accepted retained family";
+                    retainedRoot.transform.position=retained.position;retainedRoot.transform.rotation=Quaternion.Euler(0,retained.yaw,0);retainedRoot.transform.localScale=Vector3.one;
+                    if(retainedRoot.GetComponentsInChildren<Collider>().Length!=0) throw new Exception("Retained visual family must not contain gameplay colliders");
+                    // Rebuild the active visual renderer set after placeholder suppression.
+                    renderers.Clear();
+                    foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                        if(rr.gameObject.activeInHierarchy) renderers.Add(rr);
+                }
+            }
             GameObject assetRoot=null;
             for(int phase=0;phase<(replacementMode?2:1);phase++)
             {
