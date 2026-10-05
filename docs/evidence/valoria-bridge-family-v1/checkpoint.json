@@ -1,0 +1,47 @@
+{
+  "workstream": "valoria-bridge-family-v1",
+  "state": "COMPLETED",
+  "result": "PRODUCTION FAMILY PASS",
+  "gate_closed": true,
+  "source_gate": "ART SOURCE PASS",
+  "source_revision": "source03",
+  "source_run": 37297309856,
+  "source_artifact_id": 11339267765,
+  "source_sha": "801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4",
+  "export_sha": "92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
+  "unity_gate": "UNITY INTEGRATION PASS",
+  "visual_gate": "VISUAL PASS",
+  "unity_run": 37298002864,
+  "unity_job": 111723747578,
+  "unity_artifact_id": 11339213616,
+  "runner": "DESKTOP-R10PE55",
+  "captured_head": "56ea398606d347f629683a70a08cabc53dc81b2f",
+  "matched_captures": [
+    "UNITY-source-3x2",
+    "UNITY-16x9",
+    "UNITY-mobile-landscape",
+    "UNITY-portrait-home",
+    "UNITY-portrait-left",
+    "UNITY-portrait-right",
+    "UNITY-portrait-entry"
+  ],
+  "matched_metrics": "docs/evidence/valoria-bridge-family-v1/matched-camera-metrics.json",
+  "integrated_visual_review": "docs/evidence/valoria-bridge-family-v1/integrated-visual-review.json",
+  "gameplay": {
+    "focused_playmode": "5/5 PASS",
+    "protected_projection_max_delta_px": 0,
+    "colliders": 0
+  },
+  "protected": {
+    "lower_gate": "retained identically BEFORE/AFTER",
+    "camera": true,
+    "composition": true,
+    "platform": true,
+    "bastion": true,
+    "road": true,
+    "terrain": true,
+    "other_families": true
+  },
+  "tripo_credits": 0,
+  "next": "Owner review. No Road/Stair/Terrain/other family started."
+}
