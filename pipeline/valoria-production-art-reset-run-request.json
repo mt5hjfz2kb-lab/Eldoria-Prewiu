@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-cumulative-02",
+  "nonce": "rock-terrain-bastion-contact-uplift-v1-cumulative-via-bastion-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Controlled Rock/Terrain Bastion contact uplift only. Compare against Source09 BEFORE. Replacement uses identical Source09 geometry with exactly 11 UpperTerraceCliff band-3 faces remapped rock_shadow -> rock_base. Bastion Source08, Walls Source03, Lower Gate, Bridge, Road, Stair, camera, target, composition, platform and gameplay locked. Zero Tripo.",
+  "scope": "Controlled Terrain uplift cumulative capture via already-valid Bastion Source08 replacement route. Terrain uplift GLB is retained family; Bastion remains identical Source08 replacement. This avoids attempting to replace terrain placeholders already suppressed by Source09. BEFORE authority 37328467482/11352609605. Only Terrain GLB differs. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -113,8 +113,8 @@
     }
   ],
   "result": "PENDING CONTROLLED UPLIFT UNITY GATE — RETRY AFTER VERDICT CONTRACT NORMALIZATION",
-  "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
-  "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-unity",
+  "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+  "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -226,34 +226,10 @@
       "scale": 1
     },
     {
-      "label": "BASTION SOURCE08 ACCEPTED",
-      "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/BastionFamilyV1.glb",
-      "source_review": "docs/evidence/valoria-bastion-family-v1/source-review.json",
-      "names": [
-        "BastionCurtainWest",
-        "BastionCurtainEast",
-        "BastionWestTower",
-        "BastionEastTower",
-        "BastionKeep",
-        "BastionLeftWing",
-        "BastionRightGatePillar",
-        "BastionGateLintel",
-        "BastionFarWestBlock"
-      ],
-      "position": {
-        "x": 5,
-        "y": 11.100000381469727,
-        "z": 8.5
-      },
-      "yaw": 180,
-      "scale": 1
-    },
-    {
-      "label": "BASTION SOURCE08 ACCEPTED",
-      "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/BastionFamilyV1.glb",
-      "source_review": "docs/evidence/valoria-bastion-family-v1/source-review.json",
+      "label": "ROCK TERRAIN CONTACT UPLIFT",
+      "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/RockTerrainFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
       "names": [
         "ForegroundBank",
         "MainPlatform",
@@ -278,27 +254,24 @@
     }
   ],
   "replacement": {
-    "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
+    "label": "BASTION SOURCE08 ACCEPTED",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/BastionFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-bastion-family-v1/source-review.json",
     "names": [
-      "ForegroundBank",
-      "MainPlatform",
-      "PlayableGround",
-      "UpperTerraceCliff",
-      "UpperTerraceGround",
-      "CliffShoulder_0",
-      "CliffShoulder_1",
-      "CliffShoulder_2",
-      "CliffShoulder_3",
-      "CliffShoulder_4",
-      "CliffShoulder_5",
-      "CliffShoulder_6"
+      "BastionCurtainWest",
+      "BastionCurtainEast",
+      "BastionWestTower",
+      "BastionEastTower",
+      "BastionKeep",
+      "BastionLeftWing",
+      "BastionRightGatePillar",
+      "BastionGateLintel",
+      "BastionFarWestBlock"
     ],
     "position": {
       "x": 5,
-      "y": 7,
-      "z": -8
+      "y": 11.100000381469727,
+      "z": 8.5
     },
     "yaw": 180,
     "scale": 1
