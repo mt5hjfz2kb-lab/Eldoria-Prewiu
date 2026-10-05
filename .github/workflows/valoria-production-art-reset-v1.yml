@@ -35,7 +35,20 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fdx -- Unity/Assets Unity/Packages Unity/ProjectSettings
+      - name: Select existing capture mode
+        id: mode
+        shell: powershell
+        run: |
+          $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
+          if($request.mode -eq 'preproduction_mesh_scene'){
+            Add-Content $env:GITHUB_OUTPUT 'preproduction=true'
+            Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.PreproductionSceneCapture.Capture'
+          }else{
+            Add-Content $env:GITHUB_OUTPUT 'preproduction=false'
+            Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.ValoriaProductionArtResetGateV1.Capture'
+          }
       - name: Verify persisted authored source
+        if: steps.mode.outputs.preproduction != 'true'
         shell: powershell
         run: |
           if(-not (Test-Path 'art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend')){throw 'Missing canonical v2 BLEND'}
@@ -46,7 +59,7 @@ jobs:
           $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaProductionArtResetV1Captures"
           $log="$env:RUNNER_TEMP\ValoriaProductionArtResetV1.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod','Eldoria.EditorTools.ValoriaProductionArtResetGateV1.Capture','-logFile',$log)
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-executeMethod',$env:RESET_EXECUTE_METHOD,'-logFile',$log)
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $deadline=(Get-Date).AddMinutes(32)
           while(-not $p.HasExited -and (Get-Date)-lt $deadline){Start-Sleep 2;$p.Refresh()}

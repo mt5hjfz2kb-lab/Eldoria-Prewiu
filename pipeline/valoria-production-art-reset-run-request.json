@@ -1,6 +1,115 @@
 {
   "enabled": true,
-  "nonce": "production-art-reset-final-look-density-20261004-1201",
-  "scope": "phase-e-final-look-h-density-source-materials-orthographic",
-  "credits": 0
+  "mode": "preproduction_mesh_scene",
+  "nonce": "valoria-art-production-reset-v1-greybox-20261005",
+  "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
+  "credits": 0,
+  "scope": "ISOLATED PREPRODUCTION ONLY; no canonical scene, assets or gameplay imported",
+  "views": [
+    {
+      "name": "UNITY-source-3x2",
+      "width": 1536,
+      "height": 1024,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 48,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "UNITY-16x9",
+      "width": 1820,
+      "height": 1024,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 48,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "UNITY-mobile-landscape",
+      "width": 1280,
+      "height": 720,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 48,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "name": "UNITY-portrait-home",
+      "width": 390,
+      "height": 844,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 48,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": -2.7271295734086154,
+        "y": 0.0,
+        "z": 16.401193454613995
+      }
+    },
+    {
+      "name": "UNITY-portrait-left",
+      "width": 390,
+      "height": 844,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 36,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": -16.167153620011856,
+        "y": 0.0,
+        "z": 1.2470901616785484
+      }
+    },
+    {
+      "name": "UNITY-portrait-right",
+      "width": 390,
+      "height": 844,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 36,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 20.60277299047967,
+        "y": 0.0,
+        "z": 12.195118721845164
+      }
+    },
+    {
+      "name": "UNITY-portrait-entry",
+      "width": 390,
+      "height": 844,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 36,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 1.9469909754850867,
+        "y": 0.0,
+        "z": -15.902420247865848
+      }
+    }
+  ]
 }

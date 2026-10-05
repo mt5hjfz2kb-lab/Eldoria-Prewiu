@@ -1,38 +1,21 @@
 {
   "enabled": false,
-  "request_id": "valoria-bastion-to-city-blender-authoring-v1",
-  "asset_or_sector": "Valoria Bastion-to-city transition inside locked replacement envelope",
-  "profile": "environment_new_geometry",
-  "geometry_gap_proven": true,
+  "request_id": "valoria-art-production-reset-v1",
+  "asset_or_sector": "Valoria full-scene isolated PREPRODUCTION blockout",
+  "profile": "environment_composition",
+  "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
   "capabilities": {
-    "blender_professional_authoring": true,
-    "blender_material_consolidation": true,
-    "unity_modular_assembly": false,
-    "unity_shared_materials": true,
-    "unity_decals": false,
-    "unity_probes": false,
-    "unity_terrain_blending": false
+    "unity_modular_assembly": true,
+    "unity_shared_materials": true
   },
   "validation": {
-    "art_source_review": true,
-    "silhouette_or_clay": true,
-    "lit_three_quarter": true,
-    "official_camera_proxy": true,
-    "official_camera_9": true,
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Locked design target already exists. Build one source only under BLENDER_PROFESSIONAL_V1. Preserve Hero Bastion, central stair/circulation, promoted lower city, Granero, Cuartel, camera, global composition, density and gameplay. New method must use freeform/direct DCC-style authored volumes, real boolean depth, wall returns and continuous stone-rock interlock. Stop before Unity unless isolated ART SOURCE passes. Zero Tripo / zero credits.",
-  "result": "TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED",
-  "final_run_id": null,
-  "final_artifact_id": null,
-  "source_run_id": 37230275353,
-  "source_artifact_id": 11312479703,
-  "credits_spent": 0,
-  "final_note": "Locked-design Blender source generated successfully, but isolated clay/lit/matched-proxy evidence remains support-block-like and fails hard ART SOURCE questions 1/3/4/7. Unity intentionally not run."
+  "notes": "Owner explicitly requests new full-scene primitive greybox against attached target. No existing art used; no final source authoring. Canonical Unity route retained for eventual engine validation; local deterministic CPU 3D proxy is composition evidence only, not Unity or runtime certification. No production integration or spend."
 }
