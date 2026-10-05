@@ -1,0 +1,93 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "84b1e5f492a552c8452751fbe3d9872c827dc8f01a36cdddffeef73068c47a05",
+  "export_sha": "442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88",
+  "source": "art-source/valoria/production/stair-family-v1/StairFamilyV1.blend",
+  "export": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 1360,
+    "vertices": 712,
+    "modules": 3,
+    "materials": 2,
+    "bounds_world_blender": [
+      [
+        -1.0508413314819336,
+        2.9686319828033447,
+        6.956666469573975
+      ],
+      [
+        8.356817245483398,
+        3.693894386291504,
+        12.129011154174805
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 12,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "stair_tread",
+    "stair_cheek"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-stair-family-v1/source/01-clay-3quarter.png",
+    "docs/evidence/valoria-stair-family-v1/source/02-lit-3quarter.png",
+    "docs/evidence/valoria-stair-family-v1/source/03-axis-low.png",
+    "docs/evidence/valoria-stair-family-v1/source/04-axis-side.png",
+    "docs/evidence/valoria-stair-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-stair-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    3.5,
+    3.35,
+    7.04
+  ],
+  "unity_placement": {
+    "position": [
+      3.5,
+      7.039999961853027,
+      3.3499999046325684
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
