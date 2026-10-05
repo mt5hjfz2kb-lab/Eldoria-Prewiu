@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-sawmill-state0-v1",
-  "nonce": "sawmill-state0-prebuild-01",
-  "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state0-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/sawmill-family-v1/state0",
-  "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state0/source",
+  "request_id": "valoria-sawmill-state1-v1",
+  "nonce": "sawmill-state1-construction-01",
+  "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state1-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/sawmill-family-v1/state1",
+  "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state1/source",
   "credits": 0,
-  "scope": "Sawmill STATE 0 only. Reserved/prebuild plot: foundation, broken timber, staged logs/planks, no complete functional building. Preserve all structural families and camera. Zero Tripo."
+  "scope": "Sawmill STATE 1 only. Active construction: same foundation DNA, erected timber frame, partial infill/roof, scaffold and staged materials. No complete functional mill. Preserve all structural families/camera. Zero Tripo."
 }
