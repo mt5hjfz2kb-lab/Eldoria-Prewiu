@@ -1,20 +1,22 @@
 {
   "title": "TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN",
+  "source_iteration": "source09",
   "target": {
     "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg + target-spec.json",
-    "required_read": "Broad continuous cliff platform, two clearly separated levels, controlled natural rock silhouette, large/medium rock facets, subdued terrain material supporting architecture."
+    "required_read": "Broad continuous cliff platform, two clearly separated levels, controlled natural rock silhouette, large/medium rock facets, subdued warm terrain supporting architecture."
   },
   "approved_blockout": {
     "evidence": "VALORIA ART PRODUCTION RESET v1 approved seven-camera blockout",
-    "strengths": "Correct composition, screen occupancy, level anchors and route/architecture placement.",
-    "weakness": "Structural terrain reads as flat technical slabs/dark cliff bands plus seven explicit shoulder proxies; insufficient authored geological identity."
+    "strengths": "Correct composition, screen occupancy, 3/7/11 level anchors and route/architecture placement.",
+    "weakness": "Flat technical slabs/dark cliff bands plus explicit shoulder proxies; no authored geological identity."
   },
-  "structural_frame_source08": {
-    "evidence": "Unity run 37309039558 / artifact 11344907445",
-    "result": "The same macro envelope is retained while the visible plateau and upper rise become continuous faceted rock masses with distinct earth planes. Seven shoulder proxies disappear into the geological mass instead of repeating as supports.",
-    "quantitative": "All 63 protected non-terrain elements/view are exactly 0 px delta. Rock/Terrain macro width/height differs from blockout by less than 0.00002% in every official view; center shift is below 0.0001 px.",
-    "visual_jump": "YES — this is a frame-level improvement, not a local polish pass. The accepted gate/bridge/road/stair now sit on authored terrain rather than greybox support geometry.",
-    "remaining_gap": "The overall frame is not final target quality because Walls, Bastion, Cabin/Camp, Vegetation, Props, Water/Shore and Background remain intentionally outside this block. Their greybox/placeholder state must not be counted against Rock/Terrain."
+  "structural_frame_source09": {
+    "evidence": "Unity run 37310582556 / artifact 11345546113",
+    "result": "Source08 continuous authored geology is preserved exactly, while Source09 compresses facet value contrast and darkens/warmens rock and earth. The visible plateau reads as one structural rock system rather than pale triangulated low-poly planes.",
+    "quantitative": "All 63 protected non-terrain elements/view are 0 px delta. Rock/Terrain macro width/height remains within ~0.00002% of blockout in every official view; center shift <0.0001 px.",
+    "source08_correction": "Source08 was a real structural jump but failed the strict integrated visual review because pale/high-contrast facets dominated mobile and read as low-poly. Source09 fixes only that material hierarchy; no geometry/composition/camera changes.",
+    "visual_jump": "YES — blockout → Source09 is a frame-level transformation: accepted gate/bridge/road/stair sit on authored, subdued terrain with real depth, while architecture remains hierarchy leader.",
+    "remaining_gap": "Frame is intentionally not final overall because Walls, Bastion, Cabin/Camp, Vegetation, Props, Water/Shore and Background remain outside this family."
   },
-  "conclusion": "PASS — Rock/Terrain materially closes the target gap while preserving composition. It produces the first major global-frame transformation in this family sequence without moving accepted architecture or gameplay."
+  "conclusion": "PASS — Source09 closes the specific Source08 washout/low-poly material defect while preserving the approved macro frame."
 }
