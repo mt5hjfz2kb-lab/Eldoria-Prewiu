@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-premium-hero-contact-uplift-v1",
-  "nonce": "premium-hero-contact-source02",
-  "mesh_spec": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source02-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/premium-hero-contact-uplift-v1/source02",
-  "evidence_dir": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source02",
+  "nonce": "premium-hero-contact-source03",
+  "mesh_spec": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03",
+  "evidence_dir": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03",
   "credits": 0,
-  "scope": "Local Premium Hero Test Zone contact uplift source02 only: method pivot from flat planar/paving source01 to triangulated non-planar terrain relief, narrow irregular road verges, foundation contacts and asymmetric multi-ring boulders. Closed accepted families remain untouched. No Unity integration yet. Zero Tripo."
+  "scope": "Local Premium Hero Test Zone contact uplift source03 only: method change removes broad ground shells and authors only narrow berm/contact/road-edge/bridge-shoulder interfaces plus asymmetric boulders and foundation contacts. Closed accepted families remain untouched. No Unity integration yet. Zero Tripo."
 }
