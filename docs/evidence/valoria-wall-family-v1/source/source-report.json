@@ -11,7 +11,7 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "37342e7dc515c1f3517f58cafa03ce645945f8a67c6d2c2018f6b6faf509bdd1",
+  "source_sha": "0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430",
   "export_sha": "22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b",
   "source": "art-source/valoria/production/wall-family-v1/WallFamilyV1.blend",
   "export": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
@@ -68,8 +68,12 @@
     ]
   },
   "preview_evidence": [
+    "docs/evidence/valoria-wall-family-v1/source/01-clay-defensive-3quarter.png",
+    "docs/evidence/valoria-wall-family-v1/source/02-lit-defensive-3quarter.png",
     "docs/evidence/valoria-wall-family-v1/source/03-wall-low.png",
-    "docs/evidence/valoria-wall-family-v1/source/04-wall-side.png"
+    "docs/evidence/valoria-wall-family-v1/source/04-wall-side.png",
+    "docs/evidence/valoria-wall-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-wall-family-v1/source/06-wireframe.png"
   ],
   "isolated_art_review": "PENDING; no automatic artistic acceptance",
   "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
