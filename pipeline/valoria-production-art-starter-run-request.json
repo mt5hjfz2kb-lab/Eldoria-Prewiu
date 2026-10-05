@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-wall-family-v1-source-01",
-  "nonce": "wall-family-source-01-authored-asymmetric-crenellation-structural-seating",
+  "request_id": "valoria-wall-family-v1-source-02",
+  "nonce": "wall-source-02-battered-authored-defense",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Wall Family source01 only. New target-bound authored wall source from approved blockout envelopes; asymmetric crenellation rhythm, real thickness, structural buttress/plinth seating, warm Valoria masonry. No legacy kits, no camera/composition changes, zero Tripo. Unity blocked pending explicit ART SOURCE review."
+  "scope": "Source02 reauthor after Source01 ART SOURCE FAIL: battered/tapered wall and end-cap masses, projected footing/coping/belt section, broad warm structural supports, asymmetric crenellation and lower-frequency stone. Same approved Wall envelopes. Zero Tripo. Unity blocked pending direct ART SOURCE review."
 }
