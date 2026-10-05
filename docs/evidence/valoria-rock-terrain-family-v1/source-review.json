@@ -17,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PASS — the plateau no longer reads as a supported technical platform; continuous cliff mass replaces the proxy rhythm.",
-    "rock_rhythm": "PASS — broad diagonal/irregular faceting reads as controlled geological structure rather than repeated modules.",
-    "silhouette": "PASS — MainPlatform, playable ground and upper terrace outer envelopes and 3/7/11 anchors remain unchanged.",
-    "depth_without_noise": "PASS — large recesses and planar breaks create depth without micro-rock scatter.",
-    "authored_not_procedural": "PASS — no repeated columns, checker palette, or uniform strip cadence remains dominant.",
-    "mobile_scale": "PASS — the primary facet rhythm is large enough to survive landscape and portrait; no subpixel geology drives the read.",
-    "architecture_integration": "SOURCE PASS — exact ground levels/interfaces are preserved for retained Lower Gate/Bridge/Road/Stair; Unity must verify seams.",
-    "material_difference": "PASS — rock mass is darker/cooler, ground warmer/matte, accepted road paving remains a separate civic material family.",
-    "real_quality_jump": "PASS at source — removes the strongest greybox cue around the central architecture; integrated frame still requires matched-camera proof."
+    "greybox_reduction": "PASS — the visible plateau edge is now a continuous authored rock mass rather than blockout prisms/shoulders.",
+    "rock_rhythm": "PASS — broad diagonal and recessed facets read at medium/large scale without repeated pillar cadence.",
+    "silhouette": "PASS — locked macro plateau/terrace envelopes and 3/7/11 height anchors remain preserved.",
+    "depth_without_noise": "PASS — large recesses/facets provide depth without micro-rock scatter or surface chatter.",
+    "authored_not_procedural": "PASS — removing one-to-one shoulder proxies eliminates the repeated construction rhythm; cliff reads as one geological system.",
+    "mobile_scale": "PASS — dominant forms are large enough to survive landscape and portrait projection; no subpixel rock noise is relied upon.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — source is visually quiet enough to receive Lower Gate/Bridge/Road/Stair without competing with them.",
+    "material_difference": "PASS — rock remains darker/cooler than earth; earth remains distinct from accepted civic paving.",
+    "real_quality_jump": "PASS — compared with approved blockout, Source08 changes the frame from flat technical support geometry to a coherent structural terrain foundation while preserving composition."
   },
-  "decision": "AUTHORIZED FOR CUMULATIVE UNITY INTEGRATION. Retain Lower Gate + Bridge + Road + Stair identically; suppress the 12 Rock/Terrain placeholders and replace with Source08 five semantic modules; BackgroundTerrain and BridgeSupport remain untouched.",
-  "unity_gate": "AUTHORIZED",
+  "legacy_reuse": "NONE — target-bound authored geometry only; legacy B/C candidates remain non-authoritative.",
+  "unity_gate": "AUTHORIZED NEXT — exact GLB SHA only; retain Lower Gate + Bridge + Road + Stair identically in BEFORE/AFTER; suppress the 12 Rock/Terrain blockout placeholders and replace with Source08 five-module family.",
   "tripo_credits": 0
 }
