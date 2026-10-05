@@ -1,11 +1,11 @@
 {
   "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
-  "source_iteration": "source08",
-  "source_run": 37308344056,
-  "artifact_id": 11344638101,
-  "source_sha": "559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b",
-  "export_sha": "f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed",
+  "source_iteration": "source09",
+  "source_run": 37310029846,
+  "artifact_id": 11345358292,
+  "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+  "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
   "tech_pass": true,
   "geometry": {
     "triangles": 1909,
@@ -16,18 +16,18 @@
     "normals": true,
     "tangents": true
   },
+  "locked_geometry": "PASS — same Source08 macro geometry/envelopes/interfaces; Source09 is material-hierarchy correction only.",
   "hard_questions": {
-    "greybox_reduction": "PASS — the visible plateau edge is now a continuous authored rock mass rather than blockout prisms/shoulders.",
-    "rock_rhythm": "PASS — broad diagonal and recessed facets read at medium/large scale without repeated pillar cadence.",
-    "silhouette": "PASS — locked macro plateau/terrace envelopes and 3/7/11 height anchors remain preserved.",
-    "depth_without_noise": "PASS — large recesses/facets provide depth without micro-rock scatter or surface chatter.",
-    "authored_not_procedural": "PASS — removing one-to-one shoulder proxies eliminates the repeated construction rhythm; cliff reads as one geological system.",
-    "mobile_scale": "PASS — dominant forms are large enough to survive landscape and portrait projection; no subpixel rock noise is relied upon.",
-    "architecture_integration": "AUTHORIZED FOR UNITY — source is visually quiet enough to receive Lower Gate/Bridge/Road/Stair without competing with them.",
-    "material_difference": "PASS — rock remains darker/cooler than earth; earth remains distinct from accepted civic paving.",
-    "real_quality_jump": "PASS — compared with approved blockout, Source08 changes the frame from flat technical support geometry to a coherent structural terrain foundation while preserving composition."
+    "greybox_reduction": "PASS — continuous authored geological mass retained.",
+    "rock_rhythm": "PASS — broad diagonal/recessed facets retained without shoulder proxies.",
+    "silhouette": "PASS — exact locked macro plateau envelope and 3/7/11 anchors unchanged.",
+    "depth_without_noise": "PASS — depth remains geometry-driven; darker compressed palette removes pale facet chatter.",
+    "authored_not_procedural": "PASS — no repeated proxy/pillar cadence; color contrast no longer exposes a checker/triangle identity.",
+    "mobile_scale": "PASS at source — large facets remain readable while reduced value spread prevents micro-pattern dominance.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — darker rock recedes beneath accepted architecture instead of competing with it.",
+    "material_difference": "PASS — rock is darker/warmer and compressed; earth remains distinct from civic paving without washout.",
+    "real_quality_jump": "PASS SOURCE — retains Source08 structural jump and directly fixes the integrated washout defect that caused the legitimate Source08 visual fail."
   },
-  "legacy_reuse": "NONE — target-bound authored geometry only; legacy B/C candidates remain non-authoritative.",
-  "unity_gate": "AUTHORIZED NEXT — exact GLB SHA only; retain Lower Gate + Bridge + Road + Stair identically in BEFORE/AFTER; suppress the 12 Rock/Terrain blockout placeholders and replace with Source08 five-module family.",
+  "unity_gate": "AUTHORIZED NEXT — rerender all seven official cameras with exact Source09 GLB; Lower Gate + Bridge + Road + Stair fixed; no geometry/camera/composition change.",
   "tripo_credits": 0
 }
