@@ -4,7 +4,7 @@
   "nonce": "rock-terrain-source08-cumulative-lower-gate-bridge-road-stair-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Source08 UNITY INTEGRATION PASS / MATCHED-CAMERA VISUAL FAIL. Unity parked pending Source09 source review.",
+  "scope": "Rock/Terrain Source08 cumulative Unity matched-camera gate passed; PRODUCTION FAMILY PASS; parked.",
   "views": [
     {
       "name": "UNITY-source-3x2",
