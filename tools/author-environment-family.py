@@ -23,6 +23,15 @@ def surface_maps(kind):
   height=np.clip(edge/4,0,1)*.8+grain
   base=.82+stonehash+grain
   base=np.where(edge<2,.40,base);base=np.where((edge>=2)&(edge<4),base*.82,base)
+ elif kind=='paving':
+  # Large staggered civic paving: broader slabs than wall masonry, readable at gameplay camera.
+  row=y//96;shift=(row%2)*64;xx=(x+shift)%128;yy=y%96
+  edge=np.minimum.reduce([xx,127-xx,yy,95-yy]).astype(float)
+  cell=(x+shift)//128+row*7
+  stonehash=np.sin(cell*5.731)*.055+np.cos(cell*2.119)*.025
+  height=np.clip(edge/5,0,1)*.72+grain*.7
+  base=.84+stonehash+grain*.65
+  base=np.where(edge<2,.43,base);base=np.where((edge>=2)&(edge<5),base*.84,base)
  else:
   height=.72+grain; base=.88+grain+np.sin(x*.025)*.025
  albedo=np.repeat(base[:,:,None],3,axis=2)
@@ -30,7 +39,7 @@ def surface_maps(kind):
  dx=(np.roll(height,-1,1)-np.roll(height,1,1))*.9;dy=(np.roll(height,-1,0)-np.roll(height,1,0))*.9
  z=np.ones_like(dx);length=np.sqrt(dx*dx+dy*dy+z*z);normal=np.stack((-dx/length*.5+.5,-dy/length*.5+.5,z/length*.5+.5),2)
  return image_data(kind+'_albedo',albedo),image_data(kind+'_normal',normal)
-tex={k:surface_maps(k) for k in ['masonry','stone_grain']}
+tex={k:surface_maps(k) for k in ['masonry','stone_grain','paving']}
 # Heraldry follows the large gold/blue accent already present in the exact target.
 n=256;y,x=np.mgrid[0:n,0:n];u=(x-128)/256;v=(y-128)/256
 cloth=np.zeros((n,n,3));cloth[:]=[.023,.087,.25];cloth+=((np.sin(x*.18)*.013+np.cos(y*.09)*.012)[:,:,None])
@@ -50,7 +59,7 @@ for key,s in spec['materials'].items():
    nt=m.node_tree.nodes.new('ShaderNodeTexImage');nt.image=tex[k][1];nt.image.colorspace_settings.name='Non-Color';nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.55;m.node_tree.links.new(nt.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],p.inputs['Normal'])
  materials[key]=m
 # Source images include desired warm tint (keep Blender and Unity material response consistent).
-for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54])]:
+for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54]),('paving',[.66,.60,.51])]:
  im=tex[kind][0];p=np.array(im.pixels[:],dtype=np.float32).reshape(-1,4);p[:,:3]*=np.array(tint);im.pixels.foreach_set(p.reshape(-1));im.save();im.pack()
 objs=[]
 for item in spec['meshes']:
@@ -123,5 +132,5 @@ for view in spec['preview_views']:
  scene.render.filepath=str(PRE/(view['name']+'.png'));bpy.ops.render.render(write_still=True);previews.append(str(Path(req['evidence_dir'])/(view['name']+'.png')))
  for o in wires:bpy.data.objects.remove(o,do_unlink=True)
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
-report={'authoring_standard':'BLENDER_PROFESSIONAL_V1','authoring_method':'Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.','tool_families':['mesh_edit','extrude','inset','curves_profiles','controlled_boolean','selective_bevel','uv_unwrap_texel_density'],'primitive_role':'Boolean cutters only; primary architecture is explicit mesh/profile source','source_sha':sha(blend),'export_sha':sha(glb),'source':str(blend.relative_to(ROOT)),'export':str(glb.relative_to(ROOT)),'geometry_metrics':{'triangles':tris,'vertices':verts,'modules':len(joined),'materials':len(materials),'bounds_world_blender':[lo,hi],'uv':True,'normals':True,'tangents_exported':True,'nonmanifold_edges':nm_edges,'nonmanifold_explanation':'Open cloth border and arch pieces mating at internal interfaces; no collision source'},'material_families':list(materials),'texture_sets':{'masonry':[512,512,'albedo+normal'],'stone_grain':[512,512,'albedo+normal'],'fabric':[256,256,'albedo']},'preview_evidence':previews,'isolated_art_review':'PENDING; no automatic artistic acceptance','intended_camera_role':'Approved orthographic20/35/24; exact lower entry placeholder replacement only','tripo_credits':0,'blender_version':bpy.app.version_string,'export_origin':spec['export_origin'],'unity_placement':{'position':[origin.x,origin.z,origin.y],'rotation_y':180,'scale':1}}
+report={'authoring_standard':'BLENDER_PROFESSIONAL_V1','authoring_method':'Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.','tool_families':['mesh_edit','extrude','inset','curves_profiles','controlled_boolean','selective_bevel','uv_unwrap_texel_density'],'primitive_role':'Boolean cutters only; primary architecture is explicit mesh/profile source','source_sha':sha(blend),'export_sha':sha(glb),'source':str(blend.relative_to(ROOT)),'export':str(glb.relative_to(ROOT)),'geometry_metrics':{'triangles':tris,'vertices':verts,'modules':len(joined),'materials':len(materials),'bounds_world_blender':[lo,hi],'uv':True,'normals':True,'tangents_exported':True,'nonmanifold_edges':nm_edges,'nonmanifold_explanation':'Open cloth border and arch pieces mating at internal interfaces; no collision source'},'material_families':list(materials),'texture_sets':{**{k:[512,512,'albedo+normal'] for k in tex},'fabric':[256,256,'albedo']},'preview_evidence':previews,'isolated_art_review':'PENDING; no automatic artistic acceptance','intended_camera_role':'Approved orthographic20/35/24; exact lower entry placeholder replacement only','tripo_credits':0,'blender_version':bpy.app.version_string,'export_origin':spec['export_origin'],'unity_placement':{'position':[origin.x,origin.z,origin.y],'rotation_y':180,'scale':1}}
 (PRE/'source-report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
