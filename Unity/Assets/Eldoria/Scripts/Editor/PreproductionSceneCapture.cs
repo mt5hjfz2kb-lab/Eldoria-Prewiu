@@ -16,7 +16,7 @@ namespace Eldoria.EditorTools
         [Serializable] public class View { public string name; public int width; public int height; public float pitch; public float yaw; public float span; public Vector3 center; public bool perspective; public float distance; }
         [Serializable] public class Placement { public string module; public string label; public Vector3 position; public float yaw; public float scale=1; }
         [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; public Placement[] placements; }
-        [Serializable] public class RetainedFamily { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
+        [Serializable] public class RetainedFamily { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; public bool after_only=false; }
         [Serializable] public class SourceReview { public string verdict; }
         [Serializable] public class ShoreSegment { public string name; public Vector3[] points; public float width=.8f; public int[] color; }
         [Serializable] public class WaterTreatment { public bool enabled; public string water_name="Water"; public int[] color; public float smoothness=.34f; public float wave_amplitude=.025f; public int grid=16; public ShoreSegment[] shores; }
@@ -89,6 +89,7 @@ namespace Eldoria.EditorTools
                 foreach(var retained in request.retained_families)
                 {
                     if(retained==null || retained.scale!=1) throw new Exception("Retained production family must use explicit unit scale");
+                    if(retained.after_only) continue;
                     var retainedReview=JsonUtility.FromJson<SourceReview>(File.ReadAllText(Path.Combine(root,retained.source_review)));
                     if(retainedReview.verdict!="ART SOURCE PASS") throw new Exception("Retained family requires accepted ART SOURCE PASS");
                     foreach(var name in retained.names)
@@ -112,6 +113,30 @@ namespace Eldoria.EditorTools
             {
             if(phase==1)
             {
+                // Bounded Golden geometry escalation may add reviewed visual-shell assets only in AFTER.
+                // They are excluded from BEFORE so the A/B measures the local geometry method itself.
+                if(request.retained_families!=null)
+                {
+                    foreach(var retained in request.retained_families)
+                    {
+                        if(retained==null || !retained.after_only) continue;
+                        if(retained.scale!=1) throw new Exception("AFTER-only retained family must use explicit unit scale");
+                        var retainedReview=JsonUtility.FromJson<SourceReview>(File.ReadAllText(Path.Combine(root,retained.source_review)));
+                        if(retainedReview.verdict!="ART SOURCE PASS") throw new Exception("AFTER-only retained family requires accepted ART SOURCE PASS");
+                        if(retained.names!=null) foreach(var name in retained.names)
+                        {
+                            if(string.IsNullOrEmpty(name)) continue;
+                            var go=GameObject.Find(name);if(go!=null)go.SetActive(false);
+                        }
+                        AssetDatabase.ImportAsset(retained.asset,ImportAssetOptions.ForceSynchronousImport|ImportAssetOptions.ForceUpdate);
+                        var retainedPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(retained.asset);
+                        if(retainedPrefab==null) throw new Exception("AFTER-only retained glTFast import failed: "+retained.asset);
+                        var retainedRoot=Object.Instantiate(retainedPrefab);retainedRoot.name="Golden AFTER-only visual shell";
+                        retainedRoot.transform.position=retained.position;retainedRoot.transform.rotation=Quaternion.Euler(0,retained.yaw,0);retainedRoot.transform.localScale=Vector3.one;
+                        if(retainedRoot.GetComponentsInChildren<Collider>().Length!=0) throw new Exception("Golden visual shell must not contain gameplay colliders");
+                    }
+                }
+
                 foreach(var name in request.replacement.names)
                 {
                     var go=GameObject.Find(name);if(go==null) throw new Exception("Replacement placeholder missing: "+name);go.SetActive(false);
@@ -171,6 +196,16 @@ namespace Eldoria.EditorTools
             }
             if(phase==1 && request.premium!=null && request.premium.enabled)
             {
+                bool hasGoldenLocalTrees=false;
+                foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+                    if(tr.name.StartsWith("Tree_GoldenLocal_")) { hasGoldenLocalTrees=true; break; }
+                if(hasGoldenLocalTrees)
+                {
+                    foreach(var holderName in new[]{"Authored vegetation · lower-gate west surround","Authored vegetation · foreground west framing","Authored vegetation · bridge east surround"})
+                    {
+                        var holder=GameObject.Find(holderName);if(holder!=null)holder.SetActive(false);
+                    }
+                }
                 ApplyPremiumPresentation(request.premium,light,camera,evidence);
                 renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
             }
