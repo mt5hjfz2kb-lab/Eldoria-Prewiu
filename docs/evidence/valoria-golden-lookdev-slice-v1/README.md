@@ -25,3 +25,15 @@ Date: 2026-10-05
 5. First integrated AFTER capture set.
 6. Metric review against 4/5 gate.
 7. Gameplay + performance sanity.
+
+
+## Integrated base Method B — final source gate
+- Target translation: `INTEGRATED_BASE_TARGET_TRANSLATION.md`
+- Final source review: `INTEGRATED_BASE_FINAL_SOURCE_GATE.md`
+- Source01: run **37370017454**, artifact **11370535174** — TECH PASS / VISUAL FAIL.
+- Source02 authoring: run **37370511627** — Blender authoring PASS; persistence failed only on normal GitHub file-size/rebase hygiene.
+- Source02 authoritative evidence retry: run **37370727523**, artifact **11369951282** — SUCCESS.
+- Source02 scale: ~147,198 triangles / 269,533 vertices / 33 mesh objects, UV/normals/tangents present, 0 colliders, 0 Tripo credits.
+- Isolated source visual gate: **FAIL** (~2–3/5, premium perception ~2/5).
+- Unity integration: **NOT RUN BY DESIGN** because source gate did not reach >=4/5.
+- Current state: **HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED**.
