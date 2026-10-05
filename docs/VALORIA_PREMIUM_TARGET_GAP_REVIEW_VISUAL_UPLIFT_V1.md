@@ -103,3 +103,12 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - Materials/lighting/depth do **not** reach 4/5; premium perception remains below gate.
 - Root cause now narrowed: giant-caster shadow presentation + missing local ground/contact breakup around Bridge → Lower Gate → Road.
 - Iteration02 is rejected. Next: selective caster policy, local authored ground-contact breakup and restrained grading; no geometry reauthor.
+
+
+## Iteration 03 — VISUAL FAIL / NOT ACCEPTED
+- Run **37353008605** — SUCCESS; artifact **11363950294**.
+- Selective caster policy and restrained atmosphere execute with gameplay PASS.
+- Direct BEFORE/AFTER review shows the dark cliff seam already exists in the accepted baseline; the new directional hierarchy exaggerates it rather than originating it.
+- Intended local earth/contact patches do not render in the official frame because their generated face orientation is culled; therefore the central ground-integration hypothesis was not actually tested.
+- Premium perception remains below 4/5. Iteration03 is rejected.
+- Next correction: make local blend surfaces explicitly two-sided / correctly oriented, tune cliff underside response rather than merely shadows, and strengthen water/shore material separation.
