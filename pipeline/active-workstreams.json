@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T08:19:33.535Z",
+  "updated_at": "2026-10-05T08:30:00Z",
   "active": [
     {
       "id": "valoria-lower-gate-family-v1",
@@ -39,6 +39,24 @@
       "unity_job_id": 111673150034,
       "gate_result": "PRODUCTION FAMILY PARTIAL / VISUAL GATE PENDING",
       "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
+    },
+    {
+      "id": "unity-runner-resilience-v1",
+      "title": "Unity self-hosted runner resilience v1",
+      "owner": "chat-runner-recovery",
+      "scope": [
+        "scripts/setup-unity-runner-windows.ps1",
+        "scripts/switch-unity-runner-to-user-session.ps1",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "runner-bootstrap-config"
+      ],
+      "claimed_at": "2026-10-05T08:30:00Z",
+      "base_main_sha": "cfdd311ac6b982b47f9b77e97ef6d84f4caaa0f0",
+      "status": "active",
+      "phase": "INFRASTRUCTURE RECOVERY",
+      "dependency": "Do not mutate Lower Gate source/Unity gate. Harden runner host against idle sleep; current queued Unity run remains authoritative."
     }
   ],
   "history": [
