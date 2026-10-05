@@ -1,7 +1,6 @@
 {
   "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
-  "scope": "Wall isolated source gate; cumulative Unity matched-camera gate remains mandatory",
   "source_iteration": "source03",
   "source_run": 37315121461,
   "artifact_id": 11348240013,
@@ -18,25 +17,29 @@
     "tangents": true,
     "nonmanifold_edges": 0
   },
-  "approved_envelope_check": {
-    "verdict": "PASS",
-    "note": "Every source03 group remains inside its owning approved blockout envelope. Source02 ~0.196m outward spill at WestWallTowerB was corrected without redesigning the accepted Source02 visual language."
+  "envelope": {
+    "result": "PASS",
+    "note": "All six authored module groups are contained inside their owning approved blockout envelopes; max outward spill = 0 (floating-point epsilon only). Source02 ~0.196m tower-merlon spill is corrected."
   },
   "hard_questions": {
-    "designed_not_assembled": "PASS — segmented wall bodies, battered/chamfered end masses, layered foundation/shoulder/crown sections and grouped crenellation remove Source01's obvious rectangular-kit read.",
-    "real_depth_thickness": "PASS — all six modules are solid authored volumes with real parapet/crown/base section.",
-    "repetition_control": "PASS — crest rhythm is visibly grouped and asymmetric; structural divisions do not repeat as a uniform array.",
-    "mobile_crenellation": "PASS — merlons remain broad/coarse in approved-camera proxy and low views; no microdetail dependency.",
-    "lower_gate_union": "PASS FOR SOURCE AUTHORIZATION — terminal proportions/material grammar are compatible and exact envelopes are preserved; contact/clipping is reserved for cumulative Unity proof.",
-    "rock_terrain_union": "PASS FOR SOURCE AUTHORIZATION — battered bases/darker foundation language provide structural seating while exact contact is reserved for Unity proof.",
-    "hierarchy": "PASS — peripheral mass and crown remain subordinate to Lower Gate/Bastion; no hero-scale towers introduced.",
-    "material_family": "PASS — warm Valoria stone uses lower-frequency stone response, clearly distinct from Road paving and darker Rock/Terrain.",
-    "frame_improvement": "PASS SOURCE — clear authored defensive upgrade over the technical blockout and Source01 without composition change."
+    "designed_not_assembled": "PASS — battered/chamfered terminal masses, three-part wall-face segmentation, structural piers and grouped crenellation create authored defensive rhythm rather than a cloned kit read.",
+    "real_depth_thickness": "PASS — wall bodies, foundation, shoulder/crown, parapets and merlons are solid volumes with visible section in low/side/wire views.",
+    "repetition_control": "PASS — crenellation is visibly grouped and unequal; buttress positions/heights and wall section vary at readable scale.",
+    "mobile_crenellation": "PASS SOURCE — large merlons and low-frequency grouping remain legible in the approved-camera proxy without microdetail dependence.",
+    "lower_gate_union": "PASS SOURCE / UNITY VERIFY — endpoint scale/material language is compatible and subordinate; exact integrated contact remains a mandatory Unity check.",
+    "rock_terrain_seating": "PASS SOURCE / UNITY VERIFY — darker foundations and battered lower bodies provide structural seating language; exact contact with Source09 remains mandatory in Unity.",
+    "hierarchy": "PASS — peripheral silhouette and material contrast preserve Bastion > Lower Gate > Walls.",
+    "material_family": "PASS — warm low-frequency Valoria stone is related to Lower Gate while darker/quieter and clearly distinct from Road paving and Rock/Terrain.",
+    "frame_improvement": "PASS SOURCE — clear isolated quality jump over the approved greybox and over rejected Source01 without expanding the locked envelope."
   },
-  "limitations": [
-    "Isolated source cannot certify final Lower Gate/Rock-Terrain contact shadows or clipping.",
-    "Whole-frame Bastion hierarchy and seven-camera mobile readability remain Unity visual-gate responsibilities."
+  "direct_review_views": [
+    "01-clay-defensive-3quarter",
+    "02-lit-defensive-3quarter",
+    "03-wall-low",
+    "04-wall-side",
+    "05-approved-camera-proxy",
+    "06-wireframe"
   ],
-  "unity_gate": "AUTHORIZED NEXT — exact source03 export SHA only; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER.",
+  "unity_gate": "AUTHORIZED NEXT — exact Source03 export SHA only. Retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER. Replace only six Wall placeholders.",
   "tripo_credits": 0
 }
