@@ -11,7 +11,7 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "59990cad73360faf497c9aed24b76a55fb225a532f8a17097126926f26415850",
+  "source_sha": "b4d4db6fda1983bda5d251ea01dd25a8c0154ca5fd4d44e0edea622d5134ca65",
   "export_sha": "aa0d41d96101b1f2dda729ac62c6a13abcf00115b7299e591bb82c4173b26309",
   "source": "art-source/valoria/production/wall-family-v1/WallFamilyV1.blend",
   "export": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
