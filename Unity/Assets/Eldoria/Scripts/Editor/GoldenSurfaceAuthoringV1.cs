@@ -115,18 +115,8 @@ namespace Eldoria.EditorTools
 
         static Texture2D LoadMap(string path,bool normalMap,bool linear)
         {
-            var importer=AssetImporter.GetAtPath(path) as TextureImporter;
-            if(importer==null) return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-            bool dirty=false;
-            var desiredType=normalMap?TextureImporterType.NormalMap:TextureImporterType.Default;
-            if(importer.textureType!=desiredType){importer.textureType=desiredType;dirty=true;}
-            bool desiredSrgb=!linear&&!normalMap;
-            if(importer.sRGBTexture!=desiredSrgb){importer.sRGBTexture=desiredSrgb;dirty=true;}
-            if(importer.mipmapEnabled!=true){importer.mipmapEnabled=true;dirty=true;}
-            if(importer.wrapMode!=TextureWrapMode.Repeat){importer.wrapMode=TextureWrapMode.Repeat;dirty=true;}
-            if(importer.filterMode!=FilterMode.Trilinear){importer.filterMode=FilterMode.Trilinear;dirty=true;}
-            if(importer.anisoLevel!=4){importer.anisoLevel=4;dirty=true;}
-            if(dirty){importer.SaveAndReimport();}
+            // Import settings are enforced by GoldenSurfaceV2TextureImporter before Capture runs.
+            // Never reimport from inside a batch executeMethod: that can trigger domain reload/hang.
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
