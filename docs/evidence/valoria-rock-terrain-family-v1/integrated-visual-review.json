@@ -1,0 +1,34 @@
+{
+  "verdict": "VISUAL PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source08",
+  "unity_run_id": 37309039558,
+  "unity_artifact_id": 11344907445,
+  "views_reviewed": [
+    "UNITY-source-3x2",
+    "UNITY-16x9",
+    "UNITY-mobile-landscape",
+    "UNITY-portrait-home",
+    "UNITY-portrait-left",
+    "UNITY-portrait-right",
+    "UNITY-portrait-entry"
+  ],
+  "quality_bar": {
+    "q1_greybox_reduction": "PASS — terrain surrounding accepted pieces no longer reads as a single grey technical slab/band; authored facets and earth/rock separation dominate the structural base.",
+    "q2_target_rock_rhythm": "PASS — large diagonal planes and broad recesses replace shoulder/pillar cadence and approach the target's controlled rock rhythm.",
+    "q3_plateau_silhouette": "PASS — macro envelope is numerically preserved across all seven cameras.",
+    "q4_depth_without_noise": "PASS — depth comes from medium/large facets, not micro-rock scatter.",
+    "q5_authored_not_procedural": "PASS — Source08 removes repeated shoulder proxies and reads as one designed geological system.",
+    "q6_mobile_detail_scale": "PASS — landscape and portrait retain the large facet breaks without turning into noisy texture.",
+    "q7_integration_closed_families": "PASS — Lower Gate, Bridge, Road and Stair remain exactly fixed and are visually better grounded by the terrain.",
+    "q8_material_difference": "PASS — earth/rock planes separate clearly from accepted paving; architecture remains hierarchy leader.",
+    "q9_real_quality_jump": "PASS — BEFORE→AFTER is an obvious frame-level transformation while target composition stays fixed."
+  },
+  "clipping_and_seams": "PASS in official matched cameras — no evident Road/Stair/Gate/Bridge seam requiring movement of protected families.",
+  "material_import": "PASS — 7 materials, UV/normals/tangents present; flat/material-driven source08 intentionally uses no texture payload.",
+  "protected_families": "63 protected common elements/view at 0 px delta",
+  "gameplay": "PASS — 0 colliders, 5/5 focused PlayMode, production scene not opened/saved.",
+  "target_blockout_structural_comparison": "docs/evidence/valoria-rock-terrain-family-v1/target-blockout-structural-comparison.json",
+  "conclusion": "MATCHED-CAMERA VISUAL PASS + REAL QUALITY BAR PASS. Rock/Terrain may be promoted.",
+  "tripo_credits": 0
+}
