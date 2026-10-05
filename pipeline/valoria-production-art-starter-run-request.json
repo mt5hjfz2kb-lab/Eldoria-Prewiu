@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-06",
-  "nonce": "rock-terrain-source-06-staggered-diagonal-cliffs-authoritative",
+  "request_id": "valoria-rock-terrain-family-v1-source-07",
+  "nonce": "rock-terrain-source-07-embedded-shoulders-no-pillars",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "AUTHORITATIVE Source06 after latest spec commit: continuous cliff wall, tangentially staggered intermediate rings, broad diagonal/vertical geological facets, shoulders embedded, exact top/bottom silhouette and 3/7/11 anchors; zero Tripo; Unity blocked pending direct ART SOURCE review."
+  "scope": "Source07 strict ART SOURCE retry: retain source06 continuous staggered main cliff skin, replace seven exact vertical shoulder prisms with tapered embedded rock wedges; no open bays/columns; exact macro silhouette and 3/7/11 anchors; zero Tripo; Unity blocked pending direct review."
 }
