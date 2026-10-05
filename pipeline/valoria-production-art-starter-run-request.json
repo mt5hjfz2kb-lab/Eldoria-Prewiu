@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-bridge-family-v1-source-02",
-  "nonce": "bridge-source-02-continuous-deck-segmented-arch",
+  "request_id": "valoria-bridge-family-v1-source-03",
+  "nonce": "bridge-source-03-metric-paving-surface",
   "mesh_spec": "docs/evidence/valoria-bridge-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/bridge-family-v1",
   "evidence_dir": "docs/evidence/valoria-bridge-family-v1/source",
   "credits": 0,
-  "scope": "Bridge source02 only; fixes source01 deck seam/support form; approved blockout envelope unchanged; zero Tripo"
+  "scope": "Bridge source03 surface-only correction over accepted source02 geometry; zero Tripo"
 }
