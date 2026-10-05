@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-v1b-cumulative-final-01",
+  "nonce": "rock-terrain-contact-uplift-v1b-rock-warm",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Controlled uplift v1b. Single RockTerrain replacement suppresses all 12 terrain placeholders including obsolete shoulders. Retain Lower Gate, Bridge, Road, Stair, Walls and Bastion exactly. Same 11 contact faces only changed to existing rock_warm; geometry locked. Zero Tripo.",
+  "scope": "Cumulative Unity visual gate for v1b. Same exact 11 UpperTerraceCliff band-3 faces only; rock_warm. Geometry and every protected structural family locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING V1B CUMULATIVE VISUAL GATE",
+  "result": "PENDING VISUAL GATE",
   "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
-  "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-cumulative",
+  "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1b-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -251,7 +251,7 @@
     }
   ],
   "replacement": {
-    "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT",
+    "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT v1b",
     "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
     "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
     "names": [
