@@ -11,24 +11,24 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "b4d4db6fda1983bda5d251ea01dd25a8c0154ca5fd4d44e0edea622d5134ca65",
-  "export_sha": "aa0d41d96101b1f2dda729ac62c6a13abcf00115b7299e591bb82c4173b26309",
+  "source_sha": "d8ec10a4c7321d491708277d62e629dfa5397dfa051d96ad6a3cc61f5e620a56",
+  "export_sha": "02e746768354e3281fd8b94d858b08fe3cddcec2b08af931b0e4e4b78a998eaa",
   "source": "art-source/valoria/production/wall-family-v1/WallFamilyV1.blend",
   "export": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 5616,
-    "vertices": 2912,
+    "triangles": 9368,
+    "vertices": 4816,
     "modules": 6,
     "materials": 5,
     "bounds_world_blender": [
       [
-        -14.841264724731445,
-        -20.104726791381836,
+        -14.840816497802734,
+        -20.30072784423828,
         7.059999942779541
       ],
       [
-        35.36589050292969,
-        -2.004941940307617,
+        35.36549758911133,
+        -2.00533390045166,
         12.65999984741211
       ]
     ],
