@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-05",
+  "workstream": "valoria-bridge-family-v1",
+  "verdict": "VISUAL PASS",
+  "production_family_verdict": "PRODUCTION FAMILY PASS",
+  "authority": {
+    "target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "approved_blockout_run": 37275659322,
+    "retained_lower_gate": "PRODUCTION FAMILY PASS",
+    "bridge_source_run": 37297309856,
+    "bridge_source_artifact": 11339267765,
+    "unity_run": 37298002864,
+    "unity_job": 111723747578,
+    "unity_artifact": 11339213616,
+    "runner": "DESKTOP-R10PE55",
+    "captured_head": "56ea398606d347f629683a70a08cabc53dc81b2f"
+  },
+  "gates": {
+    "tech_pass": "PASS",
+    "art_source_pass": "PASS — source03",
+    "unity_integration_pass": "PASS",
+    "visual_pass": "PASS",
+    "production_family_pass": "PASS"
+  },
+  "visual_gate": {
+    "silhouette_and_screen_weight": "PASS — the diagonal stone crossing, low parapets and terminal posts preserve the approved Bridge role and target silhouette.",
+    "position_scale_orientation": "PASS — all-four Bridge union is 99.891% of blockout width and 99.632% of blockout height in source 3:2, with 0.108 px center delta. No camera or placement compensation.",
+    "target_primary_match": "PASS — deck+parapets are 99.988% of target width and 104.915% of target annotated height, with 11.42 px / 0.619% frame-diagonal center error, inside the reset macro tolerance.",
+    "foreground_to_lower_gate": "PASS — deck grade and receiving edge remain continuous into the already-accepted Lower Gate; Lower Gate was retained identically in BEFORE and AFTER rather than modified to accommodate Bridge.",
+    "lower_gate_material_language": "PASS — warm masonry, cut-stone caps/posts and paving read as one civic-defensive construction family with the accepted gate.",
+    "support_read": "PASS — the lower support reads as a small masonry arch with real depth and remains subordinate to the crossing; it does not widen into Terrain scope.",
+    "mobile_landscape": "PASS — crossing and gate relationship remain legible at 1280×720.",
+    "portrait_entry": "PASS — paving, parapet edges, terminal posts and bridge→gate connection remain clear at 390×844.",
+    "generic_castle_kit_risk": "PASS — exact Valoria grade/receiver, restrained parapets, target-scale paving and specific masonry support avoid donor-kit read.",
+    "relevant_target_differences": "Final cliff rock, vegetation, water treatment, lighting and foreground dressing remain blockout because they belong to other families. These are not Bridge failures and were not changed."
+  },
+  "protected_state": {
+    "non_bridge_projected_elements_checked_per_view": 82,
+    "max_projection_delta_px": 0,
+    "lower_gate_changed": false,
+    "camera_changed": false,
+    "road_changed": false,
+    "terrain_changed": false,
+    "gameplay_changed": false,
+    "colliders_added": 0
+  },
+  "limitations": [
+    "No device FPS certification",
+    "LOD1/LOD2 not authored",
+    "Whole-scene final lighting/dressing is outside this family gate"
+  ],
+  "tripo_credits": 0,
+  "next": "Owner review of closed Bridge family. Do not start Road, Stair, Terrain or another family without a new instruction."
+}
