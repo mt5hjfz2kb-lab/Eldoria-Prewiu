@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
-  "asset_or_sector": "Valoria Golden Slice bounded local visual shell: cliff/ground/shore/contact + 3 local vegetation instances",
+  "enabled": true,
+  "request_id": "valoria-golden-lookdev-slice-v1-integrated-base-reauthor",
+  "asset_or_sector": "Valoria Golden Slice integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/SURFACE_ITERATION03_REVIEW.md",
+  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/FINAL_SURFACE_GEOMETRY_GATE.md",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -16,9 +16,8 @@
     "high_low_baking": true
   },
   "validation": {
-    "source_gate": "Editable BLEND + GLB + UV/normals/tangents + isolated lit/clay/proxy previews; bounded Golden Slice only",
-    "final_gate": "official Golden close/16:9/mobile >=4/5 core metrics; gameplay/performance sanity PASS; no macro-position change"
+    "source_gate": "GoldenIntegratedBaseV1 editable BLEND + GLB + UV/normals/tangents + isolated clay/lit/official-proxy; visual metrics approximately >=4/5 before Unity",
+    "final_gate": "Only after ART SOURCE PASS: matched official Golden close/16:9/mobile A/B >=4/5 core metrics; gameplay/performance sanity PASS; no macro-position change"
   },
-  "notes": "BLOCKED: bounded Golden surface/local geometry method exhausted below 4/5. Owner authorization required before reopening continuous Rock/Terrain + local ground substrate or integrated Lower Gate/Bridge edge profiles. Do not auto-run source04. Zero Tripo.",
-  "blocker": "HUMAN_SCOPE_AUTHORIZATION_REQUIRED"
+  "notes": "Owner explicitly authorized Method B on 2026-10-05. This is a method pivot after bounded surface+shell exhaustion, not source04. Reopen only Gate/Bridge screen-visible edge profiles plus continuous local Rock/Terrain/ground/shore and necessary vegetation. Zero Tripo."
 }
