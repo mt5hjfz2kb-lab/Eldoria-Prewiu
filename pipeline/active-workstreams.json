@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T15:05:00Z",
-  "active": [
+  "updated_at": "2026-10-05T15:12:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-structural-quality-bar-review-v1",
       "title": "VALORIA STRUCTURAL QUALITY BAR REVIEW v1",
@@ -19,12 +20,18 @@
       ],
       "claimed_at": "2026-10-05T15:05:00Z",
       "base_main_sha": "2a38dc9d47ce68b0dacf7c60b52fc898cfa39b9b",
-      "status": "active",
-      "phase": "TARGET / BLOCKOUT / CURRENT STRUCTURAL FRAME VISUAL REVIEW",
-      "dependency": "Read-only review of closed Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls + Bastion Source08. No family mutation, no camera/target/composition/platform/gameplay change, no secondary-family production, no Tripo."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "phase": "STRUCTURAL QUALITY BAR REVIEW / CLOSED",
+      "dependency": "Read-only review of closed Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls + Bastion Source08. No family mutation, no camera/target/composition/platform/gameplay change, no secondary-family production, no Tripo.",
+      "completed_at": "2026-10-05T15:12:00Z",
+      "result": "STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS / 0 TRIPO",
+      "result_doc": "docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md",
+      "evidence_manifest": "docs/evidence/valoria-structural-quality-bar-review-v1/evidence-manifest.json",
+      "current_frame_run_id": 37328467482,
+      "current_frame_artifact_id": 11352609605,
+      "controlled_uplift_recommendation": "Rock/Terrain Source09: localized dark upper-shelf seam beneath Bastion only; no wholesale family reopening/redesign.",
+      "next": "Owner authorization required. Recommended: controlled Rock/Terrain upper-shelf seam uplift, then Cabin/Sawmill + Camp → Vegetation + Water/Shore → Props + Background → Lighting/presentation."
+    },
     {
       "id": "valoria-bastion-family-v1",
       "title": "VALORIA BASTION FAMILY v1",
