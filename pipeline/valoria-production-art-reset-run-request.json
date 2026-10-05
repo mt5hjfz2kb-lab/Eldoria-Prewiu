@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "valoria-golden-surface-iteration03-blender-v2-techretry01",
+  "nonce": "valoria-golden-local-shell-integration01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface iteration03 technical retry. Same persisted Blender V2 maps and exact visual hypothesis. Only technical change: texture import settings moved to AssetPostprocessor to avoid SaveAndReimport during batch capture. Preserve camera/composition/source03 geometry/gameplay/lighting. No new geometry, zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 local geometry escalation integration01. AFTER-only reviewed GoldenLocalVisualShellV1 supersedes PremiumHeroContactUpliftV3 and three local vegetation instances inside the bounded Golden Slice. Reuse persisted Golden Surface V2, shallow/deep water, stable lighting and official camera. Preserve gameplay, hotspots, macro positions, global platform and all closed families. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN SURFACE ITERATION03 FINAL VISUAL GATE",
+  "result": "PENDING GOLDEN LOCAL SHELL INTEGRATION01 VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration03-blender-v2-techretry01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-local-shell-integration01",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -329,10 +329,9 @@
       "scale": 1
     },
     {
-      "label": "PREMIUM HERO CONTACT SOURCE03 INTEGRATED CANDIDATE",
-      "source_glb": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03/PremiumHeroContactUpliftV3.glb",
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/PremiumHeroContactUpliftV3.glb",
-      "source_review": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03/source-review.json",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/GoldenLocalVisualShellV1.glb",
+      "source_glb": "art-source/valoria/lookdev/golden-slice-v1/geometry-v1/GoldenLocalVisualShellV1.glb",
+      "source_review": "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v1/source-review.json",
       "names": [],
       "position": {
         "x": 4,
@@ -340,7 +339,8 @@
         "z": -22
       },
       "yaw": 180,
-      "scale": 1
+      "scale": 1,
+      "after_only": true
     }
   ],
   "replacement": {
