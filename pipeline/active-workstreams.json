@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T11:24:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T11:31:00Z",
+  "active": [
+    {
+      "id": "valoria-rock-terrain-family-v1",
+      "title": "VALORIA ROCK / TERRAIN FAMILY v1",
+      "owner": "chat-rock-terrain-family-v1",
+      "scope": [
+        "docs/VALORIA_ROCK_TERRAIN_FAMILY_V1.md",
+        "docs/evidence/valoria-rock-terrain-family-v1/**",
+        "art-source/valoria/production/rock-terrain-family-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "art-production-planner",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "valoria-rock-terrain-family"
+      ],
+      "claimed_at": "2026-10-05T11:31:00Z",
+      "base_main_sha": "18774d4e51c8136f0079b7a76595e8c9307a34b1",
+      "status": "active",
+      "phase": "TARGET → BLOCKOUT → FAMILY SPEC",
+      "dependency": "Lower Gate, Bridge, Road and Stair are closed PRODUCTION FAMILY PASS and immutable. Preserve camera/target/composition/platform/Bastion/Walls/gameplay. Rock/Terrain only; BackgroundTerrain and closed BridgeSupport excluded. Zero Tripo unless owner explicitly authorizes."
+    }
+  ],
   "history": [
     {
       "id": "unity-runner-resilience-v1",
