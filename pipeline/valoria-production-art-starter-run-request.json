@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-bastion-family-v1-source-08",
-  "nonce": "bastion-source08-integrated-warm-value-correction",
+  "nonce": "bastion-source08-integrated-warm-value-correction-texture-export",
   "mesh_spec": "docs/evidence/valoria-bastion-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/bastion-family-v1",
   "evidence_dir": "docs/evidence/valoria-bastion-family-v1/source",
   "credits": 0,
-  "scope": "Source08 after Source07 integrated HERO QUALITY BAR FAIL. Preserve Source07 geometry, nine envelopes, target-specific Keep/banner/large arch/scaffold/damage exactly; correct only material/value hierarchy into the accepted warm Valoria range and darken timber for gameplay readability. No camera/target/composition/platform/adjacent-family changes. Zero Tripo. Unity blocked pending strict HERO ART SOURCE PASS."
+  "scope": "Source08 material/value correction re-run after preflight detected identical Source07 GLB. Preserve Source07 geometry and all locked envelopes/camera/families. Apply source-specific texture tints so hero masonry/timber correction reaches the exported GLB. Zero Tripo. Unity blocked pending strict HERO ART SOURCE PASS."
 }
