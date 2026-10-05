@@ -7,7 +7,7 @@ on:
       - 'pipeline/golden-local-shell-v1-request.json'
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 concurrency:
@@ -69,6 +69,42 @@ jobs:
             'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-official-proxy.png'
           )
           foreach($p in $required){if(-not(Test-Path $p)){throw "Missing source02 evidence: $p"}}
+      - name: Persist clean source02 review evidence
+        shell: powershell
+        working-directory: ${{ steps.prepare.outputs.workdir }}
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02
+          if(-not (git diff --cached --quiet)){
+            git commit -m "Persist Golden primary forms source02 evidence"
+            git pull --rebase origin main
+            if($LASTEXITCODE -ne 0){throw "Rebase before evidence push failed $LASTEXITCODE"}
+            git push origin HEAD:main
+            if($LASTEXITCODE -ne 0){throw "Evidence push failed $LASTEXITCODE"}
+          }
+      - name: Record clean source02 run status
+        if: always()
+        shell: powershell
+        working-directory: ${{ steps.prepare.outputs.workdir }}
+        run: |
+          $dir='docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $status=@{
+            run_id=$env:GITHUB_RUN_ID
+            run_attempt=$env:GITHUB_RUN_ATTEMPT
+            head_sha=$env:GITHUB_SHA
+            runner=$env:RUNNER_NAME
+          } | ConvertTo-Json
+          Set-Content -Path (Join-Path $dir 'run-status.json') -Value $status
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f "$dir/run-status.json"
+          if(-not (git diff --cached --quiet)){
+            git commit -m "Record Golden primary forms source02 run status"
+            git pull --rebase origin main
+            if($LASTEXITCODE -eq 0){git push origin HEAD:main}
+          }
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-golden-primary-forms-v1-source02-review
