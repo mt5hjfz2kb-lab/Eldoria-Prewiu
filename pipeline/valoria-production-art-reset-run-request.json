@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-cumulative-04-correct-source",
+  "nonce": "rock-terrain-contact-uplift-cumulative-05-single-terrain-instance",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Controlled Rock/Terrain contact uplift. Stage the reviewed RockTerrainFamilyV1 GLB as the sole family under review; retain Lower Gate, Bridge, Road, Stair and Walls exactly. Bastion remains canonical phase context due capture contract. Source09 geometry locked; 11 material assignments only. No camera/composition/platform/gameplay changes. Zero Tripo.",
+  "scope": "Controlled Rock/Terrain contact uplift. RockTerrainFamilyV1 exists ONLY as replacement under review, never retained simultaneously. Retain Lower Gate, Bridge, Road, Stair and Walls exactly; Bastion remains canonical phase context. Source09 geometry locked; 11 material assignments only. No camera/composition/platform/gameplay changes. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,7 +112,7 @@
       }
     }
   ],
-  "result": "PENDING CONTROLLED UPLIFT UNITY GATE — CORRECT REVIEWED SOURCE IDENTITY",
+  "result": "PENDING CONTROLLED UPLIFT UNITY GATE — SINGLE TERRAIN INSTANCE",
   "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
