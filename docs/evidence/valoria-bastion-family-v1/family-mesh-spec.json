@@ -3,7 +3,7 @@
   "family": "BastionFamilyV1",
   "source_iteration": "source05",
   "classification": "HERO_PRODUCTION_CANDIDATE",
-  "coordinates": "Blender meters X east/Y north/Z up. Source05 preserves Source04 command facade and all nine envelopes, adding only canonical-target-specific left timber scaffold and deliberate right-curtain structural damage.",
+  "coordinates": "Source05 = Source04 locked macroarchitecture + one certified zero-credit geometric donor crop remapped into the BastionKeep envelope. Donor contributes only facade relief density; it cannot contribute original global silhouette, roofs, rock base, camera, placement or gameplay.",
   "export_origin": [
     5,
     8.5,
@@ -22610,6 +22610,49 @@
       "right curtain receives one deliberate large structural notch plus reduced adjacent crest, matching target asymmetry without random damage noise",
       "Source04 central command facade, portal, heraldry, pale hero masonry and quieter curtains remain unchanged",
       "no scale/camera/composition compensation; no adjacent family changes; zero Tripo"
+    ],
+    "source05_method_change": [
+      "retain Source04 command facade, portal, banner, crown, distinct tower/curtain macro hierarchy",
+      "crop only central mid-body geometry from the certified historical Hero Bastion",
+      "compress donor depth into a shallow Keep facade relief inside the existing envelope",
+      "retexture donor relief with current Valoria pale hero masonry; original donor blue roofs/material identity are not used",
+      "donor is subordinate geometric information, not a replacement asset"
     ]
+  },
+  "donor_relief": {
+    "name": "BastionKeep_CertifiedHeroFacadeRelief",
+    "source_glb": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+    "certified_source_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+    "source_role": "zero-credit geometry donor only; crop excludes donor global silhouette/roofline/rock base",
+    "crop_normalized": {
+      "x": [
+        0.28,
+        0.7
+      ],
+      "y": [
+        0.18,
+        0.82
+      ],
+      "z": [
+        0.18,
+        0.72
+      ]
+    },
+    "target_bbox": {
+      "x": [
+        1.3,
+        4.85
+      ],
+      "y": [
+        6.83,
+        7.52
+      ],
+      "z": [
+        11.42,
+        16.62
+      ]
+    },
+    "material": "bastion_hero_masonry",
+    "group": "BastionKeep"
   }
 }
