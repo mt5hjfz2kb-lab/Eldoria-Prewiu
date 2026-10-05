@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-stair-family-v1-source-01",
-  "nonce": "stair-source-01-broad-civic-steps",
-  "mesh_spec": "docs/evidence/valoria-stair-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/stair-family-v1",
-  "evidence_dir": "docs/evidence/valoria-stair-family-v1/source",
+  "request_id": "valoria-rock-terrain-family-v1-source-01",
+  "nonce": "rock-terrain-source-01-faceted-plateau",
+  "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
+  "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Stair source01 ART SOURCE PASS; family closed PRODUCTION FAMILY PASS; parked."
+  "scope": "Rock/Terrain source01 enhanced isolated TECH + ART SOURCE evidence; no Unity until strict visual source review."
 }
