@@ -190,7 +190,7 @@ bpy.context.view_layer.update()
 
 # Review renders.
 scene=bpy.context.scene
-scene.render.engine='BLENDER_EEVEE_NEXT';scene.render.resolution_x=1200;scene.render.resolution_y=800;scene.render.resolution_percentage=100
+scene.render.engine='BLENDER_EEVEE';scene.render.resolution_x=1200;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 world=bpy.data.worlds.new('Golden local neutral');world.use_nodes=True;world.node_tree.nodes['Background'].inputs[0].default_value=(.22,.24,.27,1);world.node_tree.nodes['Background'].inputs[1].default_value=.55;scene.world=world
 center=Vector((4,-25,5.0))
 for loc,energy,size in [(( -18,-42,30),1700,10),((25,-15,18),900,9)]:
