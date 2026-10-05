@@ -41,9 +41,9 @@ jobs:
         run: |
           $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
           if($request.enabled -eq $false){Add-Content $env:GITHUB_OUTPUT 'enabled=false'}else{Add-Content $env:GITHUB_OUTPUT 'enabled=true'}
-          if($request.mode -eq 'preproduction_mesh_scene' -or $request.mode -eq 'authored_family_replacement'){
+          if($request.mode -eq 'preproduction_mesh_scene' -or $request.mode -eq 'authored_family_replacement' -or $request.mode -eq 'authored_family_instances'){
             Add-Content $env:GITHUB_OUTPUT 'preproduction=true'
-            if($request.mode -eq 'authored_family_replacement'){Add-Content $env:GITHUB_OUTPUT "artifact_name=$($request.artifact_name)"}else{Add-Content $env:GITHUB_OUTPUT 'artifact_name=valoria-art-production-reset-v1-preproduction'}
+            if($request.mode -eq 'authored_family_replacement' -or $request.mode -eq 'authored_family_instances'){Add-Content $env:GITHUB_OUTPUT "artifact_name=$($request.artifact_name)"}else{Add-Content $env:GITHUB_OUTPUT 'artifact_name=valoria-art-production-reset-v1-preproduction'}
             Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.PreproductionSceneCapture.Capture'
           }else{
             Add-Content $env:GITHUB_OUTPUT 'preproduction=false'
@@ -54,7 +54,7 @@ jobs:
         shell: powershell
         run: |
           $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
-          if($request.mode -eq 'authored_family_replacement'){
+          if($request.mode -eq 'authored_family_replacement' -or $request.mode -eq 'authored_family_instances'){
             $review=Get-Content $request.replacement.source_review -Raw | ConvertFrom-Json
             if($review.verdict -ne 'ART SOURCE PASS'){throw 'ART SOURCE PASS required before integration'}
             $source=$request.source_glb
