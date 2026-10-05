@@ -33,6 +33,8 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:
               f.write('enabled='+('true' if d.get('enabled') else 'false')+'\n')
               f.write('mesh_source='+('true' if d.get('mode')=='authored_mesh_family' else 'false')+'\n')
+              f.write('source_dir='+d.get('source_dir','')+'\n')
+              f.write('evidence_dir='+d.get('evidence_dir','')+'\n')
           PY
       - name: Skip parked request
         if: steps.request.outputs.enabled != 'true'
@@ -120,8 +122,8 @@ jobs:
         with:
           name: authored-environment-family-source
           path: |
-            art-source/valoria/production/lower-gate-family-v1/*
-            docs/evidence/valoria-lower-gate-family-v1/source/*
+            ${{ steps.request.outputs.source_dir }}/*
+            ${{ steps.request.outputs.evidence_dir }}/*
           if-no-files-found: error
           retention-days: 30
 
