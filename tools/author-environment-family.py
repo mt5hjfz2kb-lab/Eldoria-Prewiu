@@ -16,6 +16,10 @@ def image_data(name,arr):
 # Tileable metric coursed masonry. Joints/stone height kept coarse enough for landscape/mobile.
 def surface_maps(kind):
  n=512;y,x=np.mgrid[0:n,0:n];rng=np.random.default_rng(7105);grain=rng.random((n,n))*.035
+ # Periodic macro fields keep every authored texture tileable while retaining readable
+ # mid-frequency variation at gameplay distance.
+ macro=(np.sin(2*np.pi*x/n*3.0)+np.cos(2*np.pi*y/n*2.0)+np.sin(2*np.pi*(x+y)/n*1.0+.7))/3
+ macro2=(np.sin(2*np.pi*x/n*7.0+1.3)*np.cos(2*np.pi*y/n*5.0-.4))
  if kind=='masonry':
   row=y//64;xx=(x+((row%2)*64))%128;yy=y%64
   edge=np.minimum.reduce([xx,127-xx,yy,63-yy]).astype(float)
@@ -23,6 +27,7 @@ def surface_maps(kind):
   height=np.clip(edge/4,0,1)*.8+grain
   base=.82+stonehash+grain
   base=np.where(edge<2,.40,base);base=np.where((edge>=2)&(edge<4),base*.82,base)
+  rough=.73+grain*1.6;rough=np.where(edge<4,.91,rough)
  elif kind=='hero_masonry':
   # Large pale fortress blocks for HERO architecture: lower-frequency than generic masonry,
   # with restrained joints so silhouette/planes remain dominant at gameplay distance.
@@ -33,12 +38,14 @@ def surface_maps(kind):
   height=np.clip(edge/6,0,1)*.58+grain*.45
   base=.94+stonehash+grain*.35
   base=np.where(edge<2,.56,base);base=np.where((edge>=2)&(edge<5),base*.90,base)
+  rough=.68+grain*1.25;rough=np.where(edge<5,.88,rough)
  elif kind=='timber':
   # Coarse structural timber grain for scaffold/decks; deliberately broad and low-noise.
   band=np.sin(x*.065)+np.sin(x*.017+1.7)*.45
   knots=np.sin((x+y*.18)*.09)*np.cos(y*.035)*.12
   height=.60+band*.06+knots*.04+grain*.25
   base=.68+band*.055+knots*.035+grain*.25
+  rough=.69+np.abs(band)*.035+grain
  elif kind=='paving':
   # Large staggered civic paving: broader slabs than wall masonry, readable at gameplay camera.
   row=y//96;shift=(row%2)*64;xx=(x+shift)%128;yy=y%96
@@ -48,14 +55,45 @@ def surface_maps(kind):
   height=np.clip(edge/5,0,1)*.72+grain*.7
   base=.84+stonehash+grain*.65
   base=np.where(edge<2,.43,base);base=np.where((edge>=2)&(edge<5),base*.84,base)
+  rough=.76+grain*1.4;rough=np.where(edge<5,.92,rough)
+ elif kind=='golden_stone':
+  # Warm limestone with broad block value variation, restrained staining and non-uniform joints.
+  row=y//88;shift=(row%2)*58;xx=(x+shift)%148;yy=y%88
+  edge=np.minimum.reduce([xx,147-xx,yy,87-yy]).astype(float)
+  cell=(x+shift)//148+row*13
+  celltone=np.sin(cell*3.913)*.055+np.cos(cell*1.337)*.028
+  stain=np.clip((macro+.45*macro2)*.5+.5,0,1)
+  height=np.clip(edge/6,0,1)*.64 + macro2*.025 + grain*.65
+  base=.88+celltone+macro*.055-grain*.18
+  base-=np.where(stain>.72,(stain-.72)*.12,0)
+  base=np.where(edge<2,.48,base);base=np.where((edge>=2)&(edge<6),base*.88,base)
+  rough=.62 + (1-stain)*.10 + grain*1.3
+  rough=np.where(edge<5,.84,rough)
+ elif kind=='golden_ground':
+  # Irregular compacted earth: broad chroma/value breakup plus readable mid-frequency clumps.
+  ridges=np.sin(2*np.pi*x/n*9.0+.7)*np.cos(2*np.pi*y/n*6.0-1.1)
+  clump=np.sin(2*np.pi*(x*.61+y*.37)/n*13.0)
+  height=.61+macro*.055+ridges*.025+clump*.012+grain*.75
+  base=.73+macro*.085+macro2*.045+ridges*.028-grain*.10
+  rough=.82+macro2*.035+grain*1.6
+ elif kind=='golden_rock':
+  # Cooler layered rock with non-uniform strata and ridge polishing.
+  strata=np.sin((x*.050+y*.018)+np.sin(y*.025)*1.2)
+  fracture=np.sin(2*np.pi*(x*.43-y*.71)/n*11.0+1.5)
+  height=.62+strata*.055+fracture*.022+macro*.035+grain*.55
+  base=.76+strata*.050+macro*.055-fracture*.020+grain*.18
+  ridge=np.clip((height-.61)*3.8,0,1)
+  rough=.84-ridge*.16+grain*1.1
  else:
-  height=.72+grain; base=.88+grain+np.sin(x*.025)*.025
- albedo=np.repeat(base[:,:,None],3,axis=2)
+  height=.72+grain+macro*.025; base=.88+grain+np.sin(x*.025)*.025
+  rough=.84+grain
+ albedo=np.repeat(np.clip(base,0,1)[:,:,None],3,axis=2)
  # Normal map from actual height, all tile edges periodic.
  dx=(np.roll(height,-1,1)-np.roll(height,1,1))*.9;dy=(np.roll(height,-1,0)-np.roll(height,1,0))*.9
  z=np.ones_like(dx);length=np.sqrt(dx*dx+dy*dy+z*z);normal=np.stack((-dx/length*.5+.5,-dy/length*.5+.5,z/length*.5+.5),2)
- return image_data(kind+'_albedo',albedo),image_data(kind+'_normal',normal)
-tex={k:surface_maps(k) for k in ['masonry','stone_grain','hero_masonry','timber','paving']}
+ rough_rgb=np.repeat(np.clip(rough,.18,.98)[:,:,None],3,axis=2)
+ return image_data(kind+'_albedo',albedo),image_data(kind+'_normal',normal),image_data(kind+'_roughness',rough_rgb)
+tex={k:surface_maps(k) for k in ['masonry','stone_grain','hero_masonry','timber','paving','golden_stone','golden_ground','golden_rock']}
 # Heraldry follows the large gold/blue accent already present in the exact target.
 n=256;y,x=np.mgrid[0:n,0:n];u=(x-128)/256;v=(y-128)/256
 cloth=np.zeros((n,n,3));cloth[:]=[.023,.087,.25];cloth+=((np.sin(x*.18)*.013+np.cos(y*.09)*.012)[:,:,None])
@@ -72,10 +110,12 @@ for key,s in spec['materials'].items():
   # Multiply albedo by shared family tint; glTF export requires explicit image color so tint stays in base factor.
   p.inputs['Base Color'].default_value=s['color'];m.node_tree.links.new(tx.outputs['Color'],p.inputs['Base Color'])
   if k!='banner':
-   nt=m.node_tree.nodes.new('ShaderNodeTexImage');nt.image=tex[k][1];nt.image.colorspace_settings.name='Non-Color';nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.55;m.node_tree.links.new(nt.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],p.inputs['Normal'])
+   nt=m.node_tree.nodes.new('ShaderNodeTexImage');nt.image=tex[k][1];nt.image.colorspace_settings.name='Non-Color';nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=s.get('normal_strength',.55);m.node_tree.links.new(nt.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],p.inputs['Normal'])
+   rt=m.node_tree.nodes.new('ShaderNodeTexImage');rt.image=tex[k][2];rt.image.colorspace_settings.name='Non-Color'
+   mult=m.node_tree.nodes.new('ShaderNodeMath');mult.operation='MULTIPLY';mult.inputs[1].default_value=s.get('roughness_scale',1.0);m.node_tree.links.new(rt.outputs['Color'],mult.inputs[0]);m.node_tree.links.new(mult.outputs[0],p.inputs['Roughness'])
  materials[key]=m
 # Source images include desired warm tint (keep Blender and Unity material response consistent).
-default_texture_tints={'masonry':[.61,.55,.46],'stone_grain':[.70,.64,.54],'hero_masonry':[.96,.91,.82],'timber':[.56,.31,.14],'paving':[.66,.60,.51]}
+default_texture_tints={'masonry':[.61,.55,.46],'stone_grain':[.70,.64,.54],'hero_masonry':[.96,.91,.82],'timber':[.56,.31,.14],'paving':[.66,.60,.51],'golden_stone':[.72,.63,.50],'golden_ground':[.49,.43,.30],'golden_rock':[.52,.50,.45]}
 texture_tints={**default_texture_tints,**spec.get('texture_tints',{})}
 for kind,tint in texture_tints.items():
  if kind not in tex: continue
