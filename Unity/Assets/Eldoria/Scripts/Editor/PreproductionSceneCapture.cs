@@ -14,23 +14,26 @@ namespace Eldoria.EditorTools
         [Serializable] public class MeshInput { public string name; public string family; public Vector3[] vertices; public int[] indices; public int[] color; }
         [Serializable] public class Input { public string classification; public MeshInput[] meshes; }
         [Serializable] public class View { public string name; public int width; public int height; public float pitch; public float yaw; public float span; public Vector3 center; public bool perspective; public float distance; }
-        [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
+        [Serializable] public class Placement { public string module; public string label; public Vector3 position; public float yaw; public float scale=1; }
+        [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; public Placement[] placements; }
         [Serializable] public class RetainedFamily { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
         [Serializable] public class SourceReview { public string verdict; }
         [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
         {
             var root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../.."));
             var request=JsonUtility.FromJson<Request>(File.ReadAllText(Path.Combine(root,"pipeline/valoria-production-art-reset-run-request.json")));
-            bool replacementMode=request.mode=="authored_family_replacement";
+            bool instanceMode=request.mode=="authored_family_instances";
+            bool replacementMode=request.mode=="authored_family_replacement" || instanceMode;
             if(request.mode!="preproduction_mesh_scene" && !replacementMode) throw new Exception("Wrong isolated capture mode");
             if(replacementMode) {
-                if(request.replacement==null || request.replacement.scale!=1) throw new Exception("A production replacement must use explicit unit scale");
+                if(request.replacement==null || (!instanceMode && request.replacement.scale!=1)) throw new Exception("A production replacement must use explicit unit scale");
+                if(instanceMode && (request.replacement.placements==null || request.replacement.placements.Length==0)) throw new Exception("Authored family instances require an explicit placement plan");
                 var review=JsonUtility.FromJson<SourceReview>(File.ReadAllText(Path.Combine(root,request.replacement.source_review)));
                 if(review.verdict!="ART SOURCE PASS") throw new Exception("Isolated art source gate required before Unity");
             }
@@ -113,15 +116,50 @@ namespace Eldoria.EditorTools
                 AssetDatabase.ImportAsset(request.replacement.asset,ImportAssetOptions.ForceSynchronousImport|ImportAssetOptions.ForceUpdate);
                 var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(request.replacement.asset);
                 if(prefab==null) throw new Exception("glTFast import failed: "+request.replacement.asset);
-                assetRoot=Object.Instantiate(prefab);assetRoot.name="Authored family under review";assetRoot.transform.position=request.replacement.position;assetRoot.transform.rotation=Quaternion.Euler(0,request.replacement.yaw,0);assetRoot.transform.localScale=Vector3.one;
-                if(assetRoot.GetComponentsInChildren<Collider>().Length!=0) throw new Exception("Visual family must not contain gameplay colliders");
-                renderers.RemoveAll(r=>!r.gameObject.activeInHierarchy);renderers.AddRange(assetRoot.GetComponentsInChildren<Renderer>());
-                evidence.classification="ISOLATED_PRODUCTION_FAMILY_REVIEW";evidence.source_asset=request.replacement.asset;evidence.source_position=request.replacement.position;evidence.source_yaw=request.replacement.yaw;
+                evidence.source_asset=request.replacement.asset;evidence.source_position=request.replacement.position;evidence.source_yaw=request.replacement.yaw;
                 var mats=new HashSet<Material>();var texs=new HashSet<Texture>();var textureSizes=new List<string>();
                 evidence.source_uv=true;evidence.source_normals=true;evidence.source_tangents=true;
-                foreach(var mf in assetRoot.GetComponentsInChildren<MeshFilter>()) { var m=mf.sharedMesh; if(m==null)continue; evidence.source_vertices+=m.vertexCount;evidence.source_mesh_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(m);for(int i=0;i<m.subMeshCount;i++){evidence.source_triangles+=(int)m.GetIndexCount(i)/3;evidence.source_submesh_draws++;}evidence.source_uv &= m.uv.Length==m.vertexCount;evidence.source_normals &= m.normals.Length==m.vertexCount;evidence.source_tangents &= m.tangents.Length==m.vertexCount; }
-                foreach(var r in assetRoot.GetComponentsInChildren<Renderer>()) { evidence.source_renderers++;foreach(var m in r.sharedMaterials) {if(m==null||!mats.Add(m))continue;foreach(var prop in m.GetTexturePropertyNames()) {var t=m.GetTexture(prop);if(t!=null&&texs.Add(t)){evidence.source_texture_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(t);textureSizes.Add(t.name+":"+t.width+"x"+t.height);}} } }
+                foreach(var mf in prefab.GetComponentsInChildren<MeshFilter>(true)) { var m=mf.sharedMesh; if(m==null)continue; evidence.source_vertices+=m.vertexCount;evidence.source_mesh_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(m);for(int i=0;i<m.subMeshCount;i++){evidence.source_triangles+=(int)m.GetIndexCount(i)/3;evidence.source_submesh_draws++;}evidence.source_uv &= m.uv.Length==m.vertexCount;evidence.source_normals &= m.normals.Length==m.vertexCount;evidence.source_tangents &= m.tangents.Length==m.vertexCount; }
+                foreach(var rr in prefab.GetComponentsInChildren<Renderer>(true)) { evidence.source_renderers++;foreach(var m in rr.sharedMaterials) {if(m==null||!mats.Add(m))continue;foreach(var prop in m.GetTexturePropertyNames()) {var t=m.GetTexture(prop);if(t!=null&&texs.Add(t)){evidence.source_texture_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(t);textureSizes.Add(t.name+":"+t.width+"x"+t.height);}} } }
                 evidence.source_materials=mats.Count;evidence.source_textures=texs.Count;evidence.source_texture_sizes=textureSizes.ToArray();
+
+                if(instanceMode)
+                {
+                    evidence.classification="CUMULATIVE_AUTHORED_FAMILY_PLACEMENT_REVIEW";
+                    var placedMaterials=new HashSet<Material>();var placedMeshes=new HashSet<Mesh>();
+                    foreach(var placement in request.replacement.placements)
+                    {
+                        if(placement.scale<=0f) throw new Exception("Placement scale must be positive");
+                        var holder=new GameObject("Authored vegetation · "+(string.IsNullOrEmpty(placement.label)?placement.module:placement.label));
+                        holder.transform.position=placement.position;holder.transform.rotation=Quaternion.Euler(0,placement.yaw,0);holder.transform.localScale=Vector3.one*placement.scale;
+                        var inst=Object.Instantiate(prefab);inst.name="Reusable source instance · "+placement.module;
+                        inst.transform.position=Vector3.zero;inst.transform.rotation=Quaternion.identity;inst.transform.localScale=Vector3.one;
+                        var module=FindNamed(inst.transform,placement.module);if(module==null) throw new Exception("Reusable module missing: "+placement.module);
+                        foreach(var rr in inst.GetComponentsInChildren<Renderer>(true)) rr.enabled=rr.transform==module || rr.transform.IsChildOf(module);
+                        var enabled=inst.GetComponentsInChildren<Renderer>(true);Bounds b=new Bounds();bool has=false;
+                        foreach(var rr in enabled) if(rr.enabled){if(!has){b=rr.bounds;has=true;}else b.Encapsulate(rr.bounds);}
+                        if(!has) throw new Exception("Reusable module has no renderers: "+placement.module);
+                        inst.transform.SetParent(holder.transform,false);inst.transform.localPosition=-new Vector3(b.center.x,b.min.y,b.center.z);
+                        foreach(var rr in inst.GetComponentsInChildren<Renderer>(true)) if(rr.enabled)
+                        {
+                            evidence.placement_renderers++;
+                            foreach(var m in rr.sharedMaterials)if(m!=null)placedMaterials.Add(m);
+                            var mf=rr.GetComponent<MeshFilter>();if(mf!=null&&mf.sharedMesh!=null&&placedMeshes.Add(mf.sharedMesh))
+                                for(int sm=0;sm<mf.sharedMesh.subMeshCount;sm++){}
+                            if(mf!=null&&mf.sharedMesh!=null)for(int sm=0;sm<mf.sharedMesh.subMeshCount;sm++)evidence.placement_triangles+=(int)mf.sharedMesh.GetIndexCount(sm)/3;
+                        }
+                        evidence.placement_instances++;
+                    }
+                    evidence.placement_unique_materials=placedMaterials.Count;evidence.placement_unique_meshes=placedMeshes.Count;
+                    renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
+                }
+                else
+                {
+                    assetRoot=Object.Instantiate(prefab);assetRoot.name="Authored family under review";assetRoot.transform.position=request.replacement.position;assetRoot.transform.rotation=Quaternion.Euler(0,request.replacement.yaw,0);assetRoot.transform.localScale=Vector3.one;
+                    if(assetRoot.GetComponentsInChildren<Collider>().Length!=0) throw new Exception("Visual family must not contain gameplay colliders");
+                    renderers.RemoveAll(r=>!r.gameObject.activeInHierarchy);renderers.AddRange(assetRoot.GetComponentsInChildren<Renderer>());
+                    evidence.classification="ISOLATED_PRODUCTION_FAMILY_REVIEW";
+                }
             }
             foreach(var view in request.views)
             {
@@ -155,6 +193,13 @@ namespace Eldoria.EditorTools
             File.WriteAllText(Folder+"/evidence.json",JsonUtility.ToJson(evidence,true));
             Debug.Log("PREPRODUCTION_CAPTURE_TECH_PASS; VISUAL_REVIEW_REQUIRED");
             EditorApplication.Exit(0);
+        }
+
+        static Transform FindNamed(Transform root,string name)
+        {
+            if(root.name==name)return root;
+            foreach(Transform child in root){var found=FindNamed(child,name);if(found!=null)return found;}
+            return null;
         }
 
         static void Save(Camera camera,string path,int width,int height)
