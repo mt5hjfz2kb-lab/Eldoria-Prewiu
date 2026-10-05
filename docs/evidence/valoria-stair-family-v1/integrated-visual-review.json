@@ -1,0 +1,28 @@
+{
+  "verdict": "VISUAL PASS",
+  "reviewed_at": "2026-10-05",
+  "unity_run_id": 37302198301,
+  "unity_artifact_id": 11340779541,
+  "views_reviewed": [
+    "UNITY-source-3x2",
+    "UNITY-16x9",
+    "UNITY-mobile-landscape",
+    "UNITY-portrait-home",
+    "UNITY-portrait-left",
+    "UNITY-portrait-right",
+    "UNITY-portrait-entry"
+  ],
+  "findings": {
+    "closed_family_invariance": "PASS — Lower Gate, Bridge and Road remain identical in BEFORE/AFTER; all 72 protected projected elements per view are 0 px delta.",
+    "camera_composition": "PASS — same seven locked cameras and framing; no compensation or recentering introduced.",
+    "road_stair_upper_continuity": "PASS — accepted Road terminates cleanly into the new stair, the stair completes the approved 4-unit rise, and UpperRoad resumes unchanged toward the Bastion.",
+    "silhouette_occupancy": "PASS — integrated Stair remains within ~0.21% width and ~0.30% height of approved blockout occupancy; max center delta ~0.058 px.",
+    "mobile_read": "PASS — broad tread rhythm survives mobile landscape and portrait without turning into micro-strip noise; portrait entry preserves route hierarchy.",
+    "architectural_read": "PASS — masonry cheeks and warm paving replace the white greybox with functional Valoria civic architecture while remaining subordinate to Lower Gate/Bastion.",
+    "material_hierarchy": "PASS — stair is coherent with Road/Bridge/Lower Gate but cheek/tread value separation avoids one uniform stone mass.",
+    "interfaces": "PASS — no Road, UpperRoad, Ground, Terrain, Bastion or Wall modification is used to hide seams.",
+    "gameplay": "PASS — 0 colliders, 5/5 focused PlayMode, production scene not opened/saved."
+  },
+  "conclusion": "MATCHED-CAMERA VISUAL PASS. Stair may be promoted as a closed production family.",
+  "tripo_credits": 0
+}
