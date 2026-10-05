@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-wall-family-v1-source-02",
-  "nonce": "wall-source-02-battered-authored-defense",
+  "nonce": "wall-source-02-battered-chamfered-low-frequency-stone",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Source02 reauthor after Source01 ART SOURCE FAIL: battered/tapered wall and end-cap masses, projected footing/coping/belt section, broad warm structural supports, asymmetric crenellation and lower-frequency stone. Same approved Wall envelopes. Zero Tripo. Unity blocked pending direct ART SOURCE review."
+  "scope": "Source02 after Source01 ART SOURCE FAIL. Preserve exact approved Wall envelopes. Reauthor long runs as segmented authored solids, towers as battered/chamfered bodies, stronger structural foundations/crowns, grouped crenellation rhythm, lower-frequency stone material. Zero Tripo. Unity blocked pending new direct ART SOURCE review."
 }
