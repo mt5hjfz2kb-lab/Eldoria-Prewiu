@@ -1,0 +1,36 @@
+{
+  "verdict": "ART SOURCE PARTIAL / HERO FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source04",
+  "source_run": 37321985100,
+  "artifact_id": 11350002682,
+  "source_sha": "bd438901bd988e9f039b21188b9f17a5a15abb90f5783ae12d76e21f82a91c35",
+  "export_sha": "a80ff9f204989cb35fac01ecf1b58374db6a77c38fb53823015a99d9a8a6f922",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 21296,
+    "vertices": 11006,
+    "modules": 9,
+    "materials": 8,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PASS DIRECTIONALLY — command facade/crown and unequal towers read deliberately.",
+    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — Keep is strongest local mass but the family still reads first as a long fortified strip.",
+    "3_primary_secondary_tertiary": "PASS",
+    "4_real_architectural_depth": "PASS",
+    "5_controlled_asymmetry": "PASS",
+    "6_no_cloned_modules": "PASS",
+    "7_rich_material_without_microdetail": "PARTIAL PASS — pale command masonry helps, but target-specific identity remains insufficient.",
+    "8_coherent_lower_gate_walls": "PASS",
+    "9_gameplay_camera": "PARTIAL FAIL — focal hierarchy is clearer but not yet unmistakably target-specific at gameplay distance.",
+    "10_authored_not_procedural": "PASS",
+    "11_not_castle_kit_generic": "FAIL HERO — architecture is competent, but lacks the canonical target's distinctive left timber scaffold / right structural damage storytelling.",
+    "12_obvious_full_frame_improvement": "PARTIAL FAIL — better than Source03 and blockout, but not yet enough for final hero promotion."
+  },
+  "decision": "SOURCE05 ONLY: preserve Source04 command facade and envelopes; add target-specific timber scaffold on the left support mass and a deliberate structural breach/notch on the right curtain. No extra generic ornament.",
+  "tripo_credits": 0
+}
