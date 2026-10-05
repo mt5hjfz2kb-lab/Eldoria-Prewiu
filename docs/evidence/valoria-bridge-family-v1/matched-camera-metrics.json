@@ -1,0 +1,149 @@
+{
+  "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
+  "reconstructed_from": "Unity artifact 11339213616 evidence.json using the canonical review-family-replacement equations",
+  "authority": {
+    "unity_run": 37298002864,
+    "unity_job": 111723747578,
+    "artifact": 11339213616,
+    "captured_head": "56ea398606d347f629683a70a08cabc53dc81b2f"
+  },
+  "source_integrity_pass": true,
+  "all_technical_alignment_pass": true,
+  "protected_mesh_count_per_view": 82,
+  "protected_projection_max_delta_px": 0,
+  "official_views": [
+    {
+      "view": "UNITY-source-3x2",
+      "old_bbox": [
+        424.36676025390625,
+        671.7637329101562,
+        754.68798828125,
+        902.5693969726562
+      ],
+      "new_bbox": [
+        424.5443115234375,
+        672.296142578125,
+        754.505615234375,
+        902.252685546875
+      ],
+      "extent_ratio": [
+        0.9989103809084396,
+        0.9963210560832682
+      ],
+      "center_delta_px": 0.10787606455967202,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-16x9",
+      "extent_ratio": [
+        0.9989100113581288,
+        0.9963210560832682
+      ],
+      "center_delta_px": 0.1078774458731129,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-mobile-landscape",
+      "extent_ratio": [
+        0.9989100730796329,
+        0.99632101010876
+      ],
+      "center_delta_px": 0.07582527097508733,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-home",
+      "extent_ratio": [
+        0.9989100265229869,
+        0.9963209060574949
+      ],
+      "center_delta_px": 0.08885950013331831,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-left",
+      "extent_ratio": [
+        0.9989101806329258,
+        0.9963209859728717
+      ],
+      "center_delta_px": 0.11852898508622987,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-right",
+      "extent_ratio": [
+        0.9989100546679253,
+        0.9963212266043079
+      ],
+      "center_delta_px": 0.11849864474867848,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-entry",
+      "extent_ratio": [
+        0.9989100336279457,
+        0.9963209859728717
+      ],
+      "center_delta_px": 0.1184687327615407,
+      "protected_projection_max_delta_px": 0,
+      "technical_alignment_pass": true
+    }
+  ],
+  "target_primary_comparison": {
+    "target_bbox": [
+      421,
+      688,
+      751,
+      885
+    ],
+    "integrated_deck_parapets_bbox": [
+      424.5443115234375,
+      672.296142578125,
+      754.505615234375,
+      878.978515625
+    ],
+    "center_error_px": 11.420288344450464,
+    "center_error_percent_frame_diagonal": 0.6186363462515009,
+    "width_ratio": 0.9998827385179925,
+    "height_ratio": 1.0491491017607868,
+    "note": "Target prefixes define BridgeDeck/BridgeParapet only; BridgeSupport is excluded from this target-primary comparison."
+  },
+  "source_statistics": {
+    "engine": "6000.3.23f1",
+    "triangles": 2592,
+    "vertices": 7076,
+    "renderers": 4,
+    "materials": 3,
+    "textures": 6,
+    "submesh_draws": 8,
+    "mesh_bytes": 748128,
+    "texture_bytes": 16782576,
+    "texture_sizes": [
+      "masonry_albedo:512x512",
+      "masonry_normal:512x512",
+      "paving_albedo:512x512",
+      "paving_normal:512x512",
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false
+  },
+  "gameplay": {
+    "focused_playmode_total": 5,
+    "passed": 5,
+    "failed": 0,
+    "result": "PASS"
+  },
+  "tripo_credits": 0
+}
