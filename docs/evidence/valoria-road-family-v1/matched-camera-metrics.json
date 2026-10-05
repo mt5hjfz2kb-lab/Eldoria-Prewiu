@@ -1,12 +1,12 @@
 {
   "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
+  "reconstructed_from": "Unity artifact 11341876912 evidence.json using canonical review-family-replacement equations",
   "authority": {
     "unity_run": 37300556571,
     "unity_job": 111732031845,
     "artifact": 11341876912,
     "captured_head": "0fbd21afbf7af0d3e835ebd24337a323fc0862b6"
   },
-  "source_identity": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
   "source_integrity_pass": true,
   "all_technical_alignment_pass": true,
   "protected_mesh_count_per_view": 82,
@@ -14,25 +14,12 @@
   "official_views": [
     {
       "view": "UNITY-source-3x2",
-      "old_bbox": [
-        306.00006103515625,
-        221.0001220703125,
-        1000,
-        1008.5242919921875
-      ],
-      "new_bbox": [
-        306.01702880859375,
-        221.0516357421875,
-        999.966064453125,
-        1008.4971923828125
-      ],
       "extent_ratio": [
         0.9999266522697561,
         0.9999001766748851
       ],
       "center_delta_px": 0.014865663315004118,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -43,7 +30,6 @@
       ],
       "center_delta_px": 0.014822254490543436,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -54,7 +40,6 @@
       ],
       "center_delta_px": 0.010393120122819566,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -65,7 +50,6 @@
       ],
       "center_delta_px": 0.012249902307141508,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -76,7 +60,6 @@
       ],
       "center_delta_px": 0.016328778671803493,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -87,7 +70,6 @@
       ],
       "center_delta_px": 0.016330121516610466,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
@@ -98,10 +80,27 @@
       ],
       "center_delta_px": 0.016304402130369797,
       "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     }
   ],
+  "source_3x2_bboxes": {
+    "approved_blockout_union": [
+      306.00006103515625,
+      221.0001220703125,
+      1000,
+      1008.5242919921875
+    ],
+    "integrated_road_union": [
+      306.01702880859375,
+      221.0516357421875,
+      999.966064453125,
+      1008.4971923828125
+    ]
+  },
+  "target_comparison": {
+    "numeric_road_bbox_available": false,
+    "reason": "target-spec defines the route requirement qualitatively ('diagonal continuous bridge-road-stair-gate spine') but does not contain a Road-specific target bbox; target judgment is therefore direct visual matched-camera rather than invented numeric annotation."
+  },
   "source_statistics": {
     "engine": "6000.3.23f1",
     "triangles": 1944,
@@ -126,8 +125,10 @@
     "production_scene_saved": false
   },
   "gameplay": {
-    "focused_playmode": "5/5 PASS"
+    "focused_playmode_total": 5,
+    "passed": 5,
+    "failed": 0,
+    "result": "PASS"
   },
-  "target_note": "Canonical target defines Road through the silhouette requirement 'diagonal continuous bridge-road-stair-gate spine' rather than a dedicated Road bbox. Visual target compliance is therefore judged by integrated matched-camera continuity between the locked Bridge/Lower Gate and locked Stair/Bastion, while exact Road screen occupancy is measured against approved blockout.",
   "tripo_credits": 0
 }
