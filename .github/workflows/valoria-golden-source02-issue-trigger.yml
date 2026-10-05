@@ -3,6 +3,8 @@ name: "[PRODUCTION] Golden Primary Forms Source02 Issue Trigger"
 on:
   issues:
     types: [opened, reopened]
+  schedule:
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: write
@@ -11,7 +13,7 @@ permissions:
 
 jobs:
   source02:
-    if: github.event.issue.title == '[CI TRIGGER] Golden Primary Forms Source02'
+    if: github.event_name == 'schedule' || (github.event_name == 'issues' && github.event.issue.title == '[CI TRIGGER] Golden Primary Forms Source02')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
