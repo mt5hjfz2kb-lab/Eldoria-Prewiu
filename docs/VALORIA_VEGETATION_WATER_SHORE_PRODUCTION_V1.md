@@ -1,7 +1,7 @@
 # VALORIA VEGETATION + WATER/SHORE PRODUCTION v1
 
 Date: 2026-10-05
-Status: IN PROGRESS — VEGETATION REPRESENTATIVE SOURCE
+Status: PRODUCTION PASS / CLOSED
 
 ## Locked authority
 - Canonical target: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`.
@@ -31,3 +31,18 @@ Water is a Unity-first presentation system after vegetation placement passes. It
 
 ## Final gate
 The block closes only when Vegetation ART SOURCE PASS + placement PASS + Water/Shore PASS + cumulative Unity/matched-camera/mobile/performance/gameplay PASS produce a clear full-frame step toward the canonical premium target.
+
+
+## Final certification
+- Final cumulative Unity run: **37347735272** — SUCCESS.
+- Artifact: **11361740372** — `valoria-vegetation-water-shore-v1-final`.
+- Artifact digest: `sha256:02f9bfb7458ad54d1f129bda31e41a6ce1dd7273581994aa74488177f593a42f`.
+- Final implementation HEAD: `6e1dbe984a76a7fe49a46b98f7950986367365cc`.
+- Captures present: 16:9, mobile landscape, 3:2, portrait home/left/right/entry, each with BEFORE/AFTER evidence.
+- Vegetation material instancing is enabled in the cumulative gate.
+- Water/shore iteration01 was rejected as too uniform; iteration02 added controlled authored surface variation and became the accepted final.
+- Final direct review: vegetation family/placement, water and shoreline are valid as this block's scoped environmental production pass. The scene is **not** claimed to meet the canonical premium target overall; a separate owner-authorized premium gap review follows.
+- Gameplay/camera/composition/closed families remain protected; Tripo credits: **0**.
+- Props + Background remains blocked.
+
+Result: **PRODUCTION PASS / CLOSED**.
