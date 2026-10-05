@@ -39,20 +39,6 @@
       "unity_job_id": 111673150034,
       "gate_result": "PRODUCTION FAMILY PARTIAL / VISUAL GATE PENDING",
       "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
-    },
-    {
-      "id": "valoria-bastion-i-x-visual-production-matrix-v1",
-      "title": "VALORIA BASTION I-X VISUAL PRODUCTION MATRIX v1",
-      "owner": "chat-progression-production-matrix",
-      "scope": [
-        "docs/VALORIA_BASTION_I_X_VISUAL_PRODUCTION_MATRIX_V1.md",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [],
-      "status": "active",
-      "claimed_at": "2026-10-05T09:30:00Z",
-      "base_main_sha": "609c66fb988097530272a34514f865ef5f7b219d",
-      "dependency": "Read-only dependency on canonical Bastion I-X progression documents. Must not mutate Lower Gate family, Unity runner workflows, SESSION_HANDOFF, PROJECT_STATE, gameplay, or art production requests."
     }
   ],
   "history": [
@@ -2372,6 +2358,23 @@
         "workflow_governance_conclusion": "success",
         "note": "Static Production Art Reset gate remains red on pre-existing reset-validator expectations (final look candidate / orthographic canonical / density reject rules); unrelated to Blender professional-authoring validator."
       }
+    },
+    {
+      "id": "valoria-bastion-i-x-visual-production-matrix-v1",
+      "title": "VALORIA BASTION I-X VISUAL PRODUCTION MATRIX v1",
+      "owner": "chat-progression-production-matrix",
+      "scope": [
+        "docs/VALORIA_BASTION_I_X_VISUAL_PRODUCTION_MATRIX_V1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [],
+      "status": "completed",
+      "claimed_at": "2026-10-05T09:30:00Z",
+      "base_main_sha": "609c66fb988097530272a34514f865ef5f7b219d",
+      "dependency": "Read-only dependency on canonical Bastion I-X progression documents. Must not mutate Lower Gate family, Unity runner workflows, SESSION_HANDOFF, PROJECT_STATE, gameplay, or art production requests.",
+      "completed_at": "2026-10-05T09:35:00Z",
+      "result_commit": "b0483255652a456f67d1f0ef57aef21698bd54dd",
+      "result": "Created canonical Bastion I-X visual production matrix. Explicitly fixes initial Bastion I state with no completed Sawmill; defines pre-unlock/construction/functional states, Bastion tiers, future building registry fields, and external-playtest gate. No Lower Gate/Unity/gameplay mutations."
     }
   ]
 }
