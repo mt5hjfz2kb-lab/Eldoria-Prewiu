@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-rock-terrain-family-v1",
   "asset_or_sector": "Rock / Terrain Family v1 only",
   "profile": "environment_new_geometry",
@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "enhanced quality bar required before Unity",
-    "scope": "replace ForegroundBank/MainPlatform/PlayableGround/UpperTerraceCliff/UpperTerraceGround/CliffShoulder_0..6 only; retain accepted Lower Gate + Bridge + Road + Stair; BackgroundTerrain/BridgeSupport/Bastion/Walls/gameplay intact"
+    "scope": "Rock/Terrain closed; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain. Bastion/Walls/Background/gameplay remain locked."
   },
-  "notes": "Rock/Terrain Family v1 source authoring. Real frame-level quality jump required. Zero Tripo."
+  "notes": "Rock/Terrain Family v1 closed PRODUCTION FAMILY PASS; Source08 authoritative; no next family authorized. Zero Tripo."
 }
