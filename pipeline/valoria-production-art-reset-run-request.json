@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "bastion-source07-cumulative-final-hero-gate-01",
+  "nonce": "bastion-source08-cumulative-final-hero-gate-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bastion Source07 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
+  "scope": "Bastion Source08 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders. Source08 geometry is Source07-identical; only corrected embedded material/value hierarchy may differ. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -114,7 +114,7 @@
   ],
   "result": "PRODUCTION PROOF PENDING / HERO QUALITY UNGRANTED",
   "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
-  "artifact_name": "valoria-bastion-family-v1-source07-unity",
+  "artifact_name": "valoria-bastion-family-v1-source08-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
