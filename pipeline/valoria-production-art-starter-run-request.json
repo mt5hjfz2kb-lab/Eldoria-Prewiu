@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-road-family-v1-source-03",
-  "nonce": "road-source-03-gate-main-paved-transition",
-  "mesh_spec": "docs/evidence/valoria-road-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/road-family-v1",
-  "evidence_dir": "docs/evidence/valoria-road-family-v1/source",
+  "request_id": "valoria-stair-family-v1-source-01",
+  "nonce": "stair-source-01-broad-civic-steps",
+  "mesh_spec": "docs/evidence/valoria-stair-family-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/stair-family-v1",
+  "evidence_dir": "docs/evidence/valoria-stair-family-v1/source",
   "credits": 0,
-  "scope": "Road source03 ART SOURCE PASS; source authoring parked during cumulative Unity gate."
+  "scope": "Stair source01 isolated TECH + ART SOURCE evidence; no Unity until explicit source review."
 }
