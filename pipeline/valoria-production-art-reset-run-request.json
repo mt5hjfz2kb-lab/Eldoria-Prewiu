@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "valoria-golden-surface-iteration02",
+  "nonce": "valoria-golden-surface-iteration03-blender-v2",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface method iteration02. Preserve camera, composition, geometry positions and gameplay. Expand authored PBR surface coverage only to real renderers dominating the Golden crop: Lower Gate, Bridge/threshold/roads, source03 contact pieces, adjacent ForegroundBank cliff, existing trees and shore. Add bounded shallow-to-deep water value response. Do not globally re-author MainPlatform/PlayableGround. No new geometry, no Props+Background, no Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface method iteration03 (FINAL surface-only iteration). Use persisted Blender-authored Golden Surface V2 PNG maps from commit 4e6f25190d639e33c8ef950ccc735a504060f23e on the same bounded Golden Slice renderer set and shallow/deep water. Preserve camera, macro composition, source03 geometry positions, gameplay and closed families. No new geometry, no lighting compensation, no Props+Background, zero Tripo. This is the third technically valid surface iteration; if visual gate remains <4/5, classify GEOMETRY BLOCKER / method exhausted.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN SURFACE ITERATION02 VISUAL GATE",
+  "result": "PENDING GOLDEN SURFACE ITERATION03 FINAL VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration02",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration03-blender-v2",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
