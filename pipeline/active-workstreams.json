@@ -1,8 +1,40 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T08:34:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T10:24:00Z",
+  "active": [
+    {
+      "id": "valoria-bridge-family-v1",
+      "title": "VALORIA BRIDGE FAMILY v1",
+      "owner": "chat-bridge-family-v1",
+      "scope": [
+        "docs/VALORIA_BRIDGE_FAMILY_V1.md",
+        "docs/evidence/valoria-bridge-family-v1/**",
+        "art-source/valoria/production/bridge-family-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml",
+        ".github/workflows/valoria-production-art-reset-v1.yml",
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+        "tools/review-family-replacement.py",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "art-production-planner",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "valoria-bridge-family"
+      ],
+      "claimed_at": "2026-10-05T10:24:00Z",
+      "base_main_sha": "c706b488c0b1c9ed0582b65ae3d504d8f43c9a58",
+      "status": "active",
+      "phase": "TARGET → BLOCKOUT → FAMILY SPEC",
+      "dependency": "Lower Gate is closed PRODUCTION FAMILY PASS and immutable. Preserve exact approved camera/composition/platform/Bastion/road/terrain/gameplay. Bridge only. Zero Tripo credits."
+    }
+  ],
   "history": [
     {
       "id": "unity-runner-resilience-v1",
