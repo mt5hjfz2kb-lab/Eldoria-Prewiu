@@ -1,0 +1,48 @@
+{
+  "verdict": "PASS",
+  "reviewed_at": "2026-10-05",
+  "comparison": "TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH WALLS",
+  "target": {
+    "source": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "west_wall_bbox": [
+      327,
+      446,
+      495,
+      579
+    ],
+    "east_wall_bbox": [
+      1237,
+      486,
+      1458,
+      653
+    ],
+    "requirement": "partial defensive perimeter; Bastion > Lower Gate > Walls; broad mobile-readable defensive rhythm, no generic-kit dominance"
+  },
+  "approved_blockout": {
+    "source": "run 37275659322 / artifact 11329019907",
+    "reading": "Correct peripheral position/occupancy but plain white technical wall slabs and rectangular tower proxies; defensive perimeter is present structurally but visually under-authored."
+  },
+  "structural_frame_with_walls": {
+    "source": "run 37315821080 / artifact 11347388530 / AFTER official views",
+    "west_wall_bbox_source_3x2": [
+      327.2979,
+      445.6732,
+      491.8541,
+      589.7969
+    ],
+    "east_wall_bbox_source_3x2": [
+      1238.6609,
+      457.4096,
+      1461.3254,
+      654.5841
+    ],
+    "west_target_width_ratio": 0.9795,
+    "west_target_height_ratio": 1.08364,
+    "west_target_center_error_px": 5.42523,
+    "east_target_width_ratio": 1.00753,
+    "east_target_height_ratio": 1.18069,
+    "east_target_center_error_px": 13.73138,
+    "reading": "Same partial-wall composition becomes authored warm stone defense with battered/chamfered terminal masses, real wall section, grouped crenellation, structural base/crown hierarchy and low-frequency stone response."
+  },
+  "conclusion": "PASS — Walls materially strengthen Valoria's defensive perimeter and reduce greybox character while remaining secondary to the larger Bastion silhouette and the more detailed/central Lower Gate. No camera, composition, target or closed-family movement was used."
+}
