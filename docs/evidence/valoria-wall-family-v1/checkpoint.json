@@ -1,0 +1,33 @@
+{
+  "status": "PRODUCTION FAMILY PASS",
+  "family": "VALORIA WALL FAMILY v1",
+  "authoritative_source": "source03",
+  "planner": {
+    "run": 37312260323,
+    "artifact_id": 11345898190,
+    "result": "SUCCESS"
+  },
+  "source": {
+    "run": 37315121461,
+    "artifact_id": 11348240013,
+    "result": "ART SOURCE PASS",
+    "source_sha": "0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430",
+    "export_sha": "22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b"
+  },
+  "unity": {
+    "run": 37315821080,
+    "artifact_id": 11347388530,
+    "result": "UNITY INTEGRATION PASS / MATCHED-CAMERA VISUAL PASS"
+  },
+  "gameplay": "5/5 PASS",
+  "colliders": 0,
+  "tripo_credits": 0,
+  "closed_families_unchanged": [
+    "Lower Gate",
+    "Bridge",
+    "Road",
+    "Stair",
+    "Rock/Terrain Source09"
+  ],
+  "next": "STOP. Do not start Bastion or another family without explicit owner instruction."
+}
