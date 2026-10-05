@@ -63,6 +63,14 @@ $serviceFile = Join-Path $runnerRoot ".service"
 if (-not (Test-Path $serviceFile)) { throw "Runner was registered but the Windows service file was not created." }
 $serviceName = (Get-Content $serviceFile -Raw).Trim()
 $service = Get-Service -Name $serviceName -ErrorAction Stop
+
+# Keep the runner recoverable without manual intervention if the listener/service
+# exits unexpectedly. Windows services do not automatically restart after every
+# failure unless recovery actions are configured explicitly.
+& sc.exe config $serviceName start= auto | Out-Null
+& sc.exe failure $serviceName reset= 0 actions= restart/5000/restart/10000/restart/30000 | Out-Null
+& sc.exe failureflag $serviceName 1 | Out-Null
+
 if ($service.Status -ne "Running") { Start-Service -Name $serviceName; $service = Get-Service -Name $serviceName }
 
 Write-Host ""
