@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-wall-family-v1",
   "asset_or_sector": "Wall Family v1 only",
   "profile": "environment_new_geometry",
@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "explicit 9-question Wall ART SOURCE hard gate required before Unity",
-    "scope": "Wall only; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09. Camera/target/composition/platform/Bastion/gameplay locked."
+    "scope": "Wall closed on Source03; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Wall. Bastion/background/gameplay remain locked."
   },
-  "notes": "Execute TARGET -> BLOCKOUT -> FAMILY SPEC -> SOURCE AUTHORING -> ART SOURCE GATE -> UNITY -> MATCHED CAMERA. Zero Tripo."
+  "notes": "Wall Family v1 closed PRODUCTION FAMILY PASS; Source03 authoritative; no next family authorized. Zero Tripo."
 }
