@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_mesh_family",
   "request_id": "valoria-bridge-family-v1-source-03",
   "nonce": "bridge-source-03-metric-paving-surface",
@@ -7,5 +7,5 @@
   "source_dir": "art-source/valoria/production/bridge-family-v1",
   "evidence_dir": "docs/evidence/valoria-bridge-family-v1/source",
   "credits": 0,
-  "scope": "Bridge source03 surface-only correction over accepted source02 geometry; zero Tripo"
+  "scope": "Bridge source03 ART SOURCE PASS and production family closed; parked."
 }
