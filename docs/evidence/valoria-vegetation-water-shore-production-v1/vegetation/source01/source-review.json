@@ -1,0 +1,16 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "iteration": "source01",
+  "reason": "Technically clean and mobile-cheap, but the three archetypes read as generic stacked-cone low-poly pines. Silhouette rhythm is too regular, canopy tiers are too concentric, authored asymmetry/depth is insufficient, and the family would make Valoria look like a prefab pack if scaled.",
+  "gate": {
+    "mobile_silhouette": "FAIL — readable as trees but overly generic",
+    "eldoria_identity": "FAIL",
+    "authored_variation": "PARTIAL",
+    "trunk_canopy_depth": "PARTIAL",
+    "material_lighting_fit": "PASS",
+    "reusable": "PASS",
+    "cost": "PASS"
+  },
+  "action": "Do not integrate. Reauthor Source02 with irregular radial profiles, non-concentric canopy masses, varied tier counts, visible trunk windows and restrained branch asymmetry while retaining opaque mobile-safe materials.",
+  "tripo_credits": 0
+}
