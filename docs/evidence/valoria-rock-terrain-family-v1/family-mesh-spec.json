@@ -3,7 +3,7 @@
   "family": "RockTerrainFamilyV1",
   "source_iteration": "source08",
   "classification": "PRODUCTION_CANDIDATE",
-  "coordinates": "Blender meters X east/Y north/Z up; source07 continuous staggered cliff/ground retained; CliffShoulder_0..6 greybox proxies absorbed into MainPlatform and intentionally omitted as standalone geometry; exact MainPlatform/ground/upper-terrace macro silhouette and 3/7/11 anchors preserved.",
+  "coordinates": "Blender meters X east/Y north/Z up; Source06/07 continuous main cliff preserved; CliffShoulder_0..6 proxies absorbed/removed; exact locked MainPlatform/ground/upper-terrace macro silhouette and 3/7/11 anchors preserved",
   "export_origin": [
     5,
     -8,
@@ -35528,5 +35528,6 @@
       ],
       "wire": true
     }
-  ]
+  ],
+  "authoring_note": "Source08 removes one-to-one CliffShoulder replacement geometry. The seven reset shoulder proxies are greybox construction aids, not production silhouette authorities. Continuous MainPlatform cliff mass carries the final geological read."
 }
