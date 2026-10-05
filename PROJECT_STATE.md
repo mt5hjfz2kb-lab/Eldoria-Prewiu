@@ -1,3 +1,13 @@
+## 2026-10-05 — WALL FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source03 is authoritative. Planner run **37312260323** / artifact **11345898190**; source run **37315121461** / artifact **11348240013**; cumulative Unity run **37315821080** / artifact **11347388530**.
+- Source01 was rejected for generic rectangular-kit / brick-course read. Source02 improved authored defense but failed exact envelope by ~0.196 m. Source03 preserves the improved design and restores every vertex inside its owning approved Wall envelope.
+- Source03 SHA: BLEND `0ac5ef48...`, GLB `22495d62...`; **9,368 tris / 6 modules / 5 materials**, UV/normals/tangents PASS, 0 nonmanifold edges, 0 Tripo.
+- Unity import: **9,368 tris / 26,870 imported vertices / 6 renderers / 5 materials / 2 textures / 30 submesh draws**, colliders 0; focused PlayMode **5/5 PASS**.
+- All seven official cameras pass; protected Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 remain at **0 px displacement**. Wall retains ~99.83% blockout width / ~97.93% height; max Wall center drift ~1.60 px.
+- Direct review: **MATCHED-CAMERA VISUAL PASS / REAL QUALITY BAR PASS**. Authored warm-stone partial perimeter improves defensive reading while preserving **Bastion > Lower Gate > Walls** hierarchy and the locked composition.
+- Camera, target, global composition, platform, Bastion and gameplay are unchanged. Requests parked; workstream released. **Do not start Bastion or another family without explicit owner instruction.**
+- Canonical result: `docs/VALORIA_WALL_FAMILY_V1.md` and `docs/evidence/valoria-wall-family-v1/`.
+
 ## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — SOURCE09 PRODUCTION FAMILY PASS / CLOSED
 - **Source09 is authoritative. Source08 is superseded**: Source08 proved the structural geometry but later strict integrated review identified pale/high-contrast washout; Source09 changes materials only and fixes that defect.
 - Source09: run **37310029846**, artifact **11345358292**, BLEND SHA `309a4cab...`, GLB SHA `e842a7c6...`; **1,909 tris / 5 modules / 7 materials**; geometry/interfaces/3-7-11 anchors unchanged; 0 Tripo.
