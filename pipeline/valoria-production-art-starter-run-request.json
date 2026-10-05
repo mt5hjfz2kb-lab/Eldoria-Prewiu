@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-road-family-v1-source-03",
-  "nonce": "road-source-03-gate-main-seam-cap",
+  "nonce": "road-source-03-gate-main-paved-transition",
   "mesh_spec": "docs/evidence/valoria-road-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/road-family-v1",
   "evidence_dir": "docs/evidence/valoria-road-family-v1/source",
   "credits": 0,
-  "scope": "Road source03 only; local GateThreshold/MainRoad overlap cap inside locked envelope; no neighbor changes; zero Tripo"
+  "scope": "Road source03 only; fixes internal GateThreshold/MainRoad continuity inside approved overlap; no outer bounds or neighbor changes; zero Tripo"
 }
