@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "vegetation-source03-water-shore01",
+  "nonce": "vegetation-source03-water-shore02",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Combined cumulative Vegetation Source03 + Water/Shore v1 gate. Preserve accepted vegetation placements and all retained closed families identically. Unity water surface is opaque, mobile-safe and subtly varied; irregular wet shore ribbons only. Zero Tripo.",
+  "scope": "Combined cumulative Vegetation Source03 + Water/Shore02 gate. Same accepted vegetation placement and shoreline geometry as iteration01; only shared opaque water material gains low-frequency albedo/normal/specular variation. No composition/camera/gameplay changes. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING WATER/SHORE + COMBINED MATCHED-CAMERA GATE",
+  "result": "PENDING WATER/SHORE02 + COMBINED MATCHED-CAMERA GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-vegetation-water-shore-v1-combined",
+  "artifact_name": "valoria-vegetation-water-shore-v1-water02",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -528,7 +528,7 @@
       104,
       119
     ],
-    "smoothness": 0.36,
+    "smoothness": 0.42,
     "wave_amplitude": 0.022,
     "grid": 16,
     "shores": [
