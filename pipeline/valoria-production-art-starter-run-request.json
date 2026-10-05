@@ -1,8 +1,8 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-lower-gate-family-v1-source-01",
-  "nonce": "lower-gate-source-01",
+  "request_id": "valoria-lower-gate-family-v1-source-02",
+  "nonce": "lower-gate-source-02-float32-and-returns",
   "mesh_spec": "docs/evidence/valoria-lower-gate-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/lower-gate-family-v1",
   "evidence_dir": "docs/evidence/valoria-lower-gate-family-v1/source",
