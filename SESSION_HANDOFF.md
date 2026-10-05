@@ -1,3 +1,10 @@
+## 2026-10-05 — LOWER GATE FAMILY v1 — ACTIVE PRODUCTION PROOF
+- Independent claim `valoria-lower-gate-family-v1`; preproduction remains closed. Owner's current instruction identifies blockout as approved and explicitly authorizes this one family.
+- Locked family spec/method/legacy decision: `docs/VALORIA_LOWER_GATE_FAMILY_V1.md`; source request uses existing starter workflow generic `authored_mesh_family`, no Tripo.
+- Source03 run37280566115/artifact11332635871 rejected at isolated ART SOURCE: active Boolean UVMap prevents correct masonry/heraldry. No Unity integration or runtime promotion.
+- Source05 run37281447235 is the current repair: normalized post-modifier mesh attributes, one MetricUV and material-index validation. Keep iterating this same family until source review then matched-camera Unity gate; do not begin other families.
+- Core silhouette projection retains width and height within1px of approved placeholder; this numerical check is not artistic acceptance. Zero credits, runtime/gameplay and preproduction evidence untouched.
+
 ## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
 - New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
 - New methodological workstream; no restart/deletion of Eldoria. Earlier artistic constraints are superseded for isolated preproduction, not gameplay.
