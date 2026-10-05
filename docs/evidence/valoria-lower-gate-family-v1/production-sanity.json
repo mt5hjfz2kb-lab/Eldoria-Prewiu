@@ -37,14 +37,41 @@
   },
   "texture_memory_RGBA32_full_mips_estimate_bytes": 5941930,
   "texture_memory_ASTC6x6_full_mips_estimate_bytes": 670570,
-  "memory_note": "Planning estimates; actual Unity runtime allocations and platform compression remain unmeasured",
+  "memory_note": "Source planning estimates are retained below; actual Unity import evidence is recorded in unity_import_actual. No device FPS claim.",
   "LOD_strategy": {
     "LOD0": "15830 triangles, reference approved silhouette",
     "LOD1": "Target 7-9k; remove quoin backs and repeated bevel loops, retain arch void, crown and banner; no LOD1 authored yet",
     "LOD2": "Target 3-4k; remove grille/bar relief and surface quoin geometry after same-camera mobile error review; no LOD2 authored yet"
   },
   "collider_state": "No source collider; isolated Unity capturer rejects all colliders",
-  "import_settings": "GLB, metric unit scale1; normals/UV/tangents supplied; glTFast default importer in isolated ArtTests path; explicit transform awaits real Unity review",
-  "mobile_suitability": "LOD0 budget plausible for one family, no device FPS claim",
-  "tripo_credits_spent": 0
+  "import_settings": "GLB metric scale1; glTFast importer in isolated ArtTests path; actual import verified at the approved transform.",
+  "mobile_suitability": "Integrated readability PASS at mobile landscape and portrait-entry; no device FPS certification.",
+  "tripo_credits_spent": 0,
+  "unity_import_actual": {
+    "engine": "6000.3.23f1",
+    "run": 37282357911,
+    "artifact": 11337479259,
+    "triangles": 15830,
+    "vertices": 42112,
+    "renderers": 6,
+    "materials": 4,
+    "textures": 5,
+    "submesh_draws": 14,
+    "mesh_bytes": 4432816,
+    "texture_bytes": 11888328,
+    "texture_sizes": [
+      "masonry_albedo:512x512",
+      "masonry_normal:512x512",
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512",
+      "banner_heraldry:256x256"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false,
+    "focused_playmode": "5/5 PASS"
+  }
 }
