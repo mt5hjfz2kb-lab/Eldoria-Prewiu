@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-wall-family-v1",
-  "asset_or_sector": "Wall Family v1 only",
+  "enabled": true,
+  "request_id": "valoria-bastion-family-v1",
+  "asset_or_sector": "Bastion Family v1 hero asset only",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_WALL_FAMILY_V1.md#family-spec",
+  "geometry_gap_evidence": "docs/VALORIA_BASTION_FAMILY_V1.md#family-spec--hero",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -12,9 +12,11 @@
   },
   "capabilities": {},
   "validation": {
-    "camera": "approved reset20/35/24, all7 views",
-    "source_gate": "explicit 9-question Wall ART SOURCE hard gate required before Unity",
-    "scope": "Wall closed on Source03; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Wall. Bastion/background/gameplay remain locked."
+    "camera": "approved reset orthographic yaw20/pitch35/span48/distance110 + six official variants",
+    "source_gate": "12-question HERO ART SOURCE gate; hard-stop fail on 1/2/9/11/12",
+    "hierarchy": "Bastion > Lower Gate > Walls",
+    "cumulative_context": "retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically",
+    "final_gate": "MATCHED-CAMERA VISUAL PASS + HERO QUALITY BAR PASS required"
   },
-  "notes": "Wall Family v1 closed PRODUCTION FAMILY PASS; Source03 authoritative; no next family authorized. Zero Tripo."
+  "notes": "Bastion only. Asset serves the locked frame; no camera/target/composition/platform/gameplay compensation. Zero Tripo."
 }
