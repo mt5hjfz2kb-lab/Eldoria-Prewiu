@@ -1,6 +1,7 @@
 {
   "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
+  "source_iteration": "source05",
   "source_run": 37306173325,
   "artifact_id": 11343632588,
   "source_sha": "def79ce2eb0204e33ea5800a44796edf407ee4b9040e4b634407e5582f0087f3",
@@ -16,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PARTIAL — shelf rhythm improves source04.",
-    "rock_rhythm": "FAIL — low view still exposes repeated support-like verticals rather than one continuous cliff face.",
-    "silhouette": "PASS — approved outer silhouette and 3/7/11 anchors preserved.",
-    "depth_without_noise": "PASS locally, FAIL globally — shelves are broad but main wall retreat exposes support artifacts.",
-    "authored_not_procedural": "PASS — pattern is not checker/procedural.",
-    "mobile_scale": "PARTIAL — broad shapes survive, but pillar read is semantically wrong.",
+    "greybox_reduction": "PARTIAL — shelf depth and upper rise improve, but visible perimeter still contains repeated pillar-like verticals.",
+    "rock_rhythm": "FAIL — ring correspondence creates vertical grid cadence inconsistent with natural controlled cliff.",
+    "silhouette": "PASS — approved outer silhouette and levels preserved.",
+    "depth_without_noise": "PASS — broad shelf depth works.",
+    "authored_not_procedural": "PARTIAL — topology still exposes a systematic vertical construction rhythm.",
+    "mobile_scale": "PASS for depth, FAIL for identity — pillars remain readable at mobile scale as architecture rather than rock.",
     "architecture_integration": "PENDING UNITY — not authorized.",
     "material_difference": "PASS.",
-    "real_quality_jump": "FAIL — insufficient target-like continuous rock wall."
+    "real_quality_jump": "PARTIAL — geometry jump is visible but wrong cliff identity remains."
   },
-  "decision": "REAUTHOR SOURCE06. Keep the main cliff wall very close to the approved outer perimeter at all vertical levels (0–2.5% inset), use large vertical/diagonal facet planes for geological rhythm, and bury the seven shoulder modules into that continuous mass so they cannot read as supports.",
+  "decision": "SOURCE06: stagger/tangentially shift intermediate rings to destroy vertical grid alignment; preserve exact top/bottom rings; use diagonal large facets and broad shelf recesses only.",
   "unity_gate": "BLOCKED",
   "tripo_credits": 0
 }
