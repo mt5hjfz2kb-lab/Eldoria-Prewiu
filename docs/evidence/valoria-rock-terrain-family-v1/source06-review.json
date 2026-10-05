@@ -17,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "FAIL — broad cliff shelves improve, but visible vertical supports make the plateau read as an elevated technical structure.",
-    "rock_rhythm": "PARTIAL — diagonal facets improve over source05, but repeated vertical void/support cadence remains dominant in several views.",
-    "silhouette": "PASS — approved outer silhouette and 3/7/11 anchors remain preserved.",
-    "depth_without_noise": "PASS — broad recesses and shelf depth are readable without micro-rock noise.",
-    "authored_not_procedural": "FAIL — support-like verticals expose the construction method and break geological continuity.",
-    "mobile_scale": "FAIL identity — the support rhythm remains legible at small scale as architecture/pillars rather than rock.",
-    "architecture_integration": "PENDING UNITY — source not authorized.",
-    "material_difference": "PASS — rock/earth/paving categories remain separable.",
-    "real_quality_jump": "FAIL — not acceptable as the frame-transforming terrain family while plateau still reads structurally artificial."
+    "greybox_reduction": "PASS for MainPlatform/UpperTerraceCliff; FAIL for seven retained shoulder prisms.",
+    "rock_rhythm": "PASS on primary wall; FAIL where CliffShoulder_0..6 still read as vertical pentagonal columns.",
+    "silhouette": "PASS — macro plateau envelope preserved.",
+    "depth_without_noise": "PASS — staggered diagonal wall facets work at medium/large scale.",
+    "authored_not_procedural": "PASS primary wall; FAIL shoulder identity because greybox prism geometry remains.",
+    "mobile_scale": "PASS primary wall; shoulder columns remain unmistakably artificial on low-angle/mobile reads.",
+    "architecture_integration": "PENDING UNITY — not authorized.",
+    "material_difference": "PASS.",
+    "real_quality_jump": "PARTIAL — wall quality is now sufficient, but seven shoulder greyboxes prevent family-level source pass."
   },
-  "decision": "SOURCE07: remove all pillar/support readings. Build continuous closed cliff skin between exact top/bottom perimeter rings with broad concave/convex facet fields and diagonal breaks only. No open vertical bays, no column-like separators. Ground surfaces remain exact. Unity stays blocked.",
+  "decision": "SOURCE07: preserve Source06 main cliff/ground authored geometry unchanged; reauthor only CliffShoulder_0..6 as tapered irregular rock buttresses inside their existing envelopes, exact bottom footprint and max height retained.",
   "unity_gate": "BLOCKED",
   "tripo_credits": 0
 }
