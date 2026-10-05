@@ -821,3 +821,11 @@ Repo + live workflow/artifact evidence remain authoritative over chat memory.
   - continuous Rock/Terrain + local ground around Lower Gate/Bridge; or
   - that substrate together with Lower Gate + Bridge edge profiles.
 - Until then, broad Valoria production remains blocked.
+
+
+## 2026-10-05 — Golden Method B integrated-base source gate
+Owner-authorized Method B was executed without Tripo and without Unity-first integration. The first integrated source (run **37370017454**, artifact **11370535174**) failed isolated visual review. A materially different second source reauthored from the real Lower Gate + Bridge families, continuous substrate and committed rich transition geometry. Authoritative evidence run **37370727523**, artifact **11369951282**, is TECH PASS but isolated VISUAL FAIL (approx. geometry/silhouette 2.5, material 3.0, contact 2.5, coherence 2.5, premium 2.0).
+
+**Unity was deliberately not run.** The source-first gate prohibits integration below 4/5.
+
+Current canonical state: **VALORIA GOLDEN LOOKDEV SLICE v1 — BLOCKED / HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED**. Edge/profile + substrate reauthoring is now proven insufficient because the existing Lower Gate/Bridge primary forms and retained vegetation source dominate the premium gap. Do not make another donor/overlay/source03/source04 iteration. The next owner decision must either authorize full screen-visible primary-form reauthor of Lower Gate + Bridge + local cliff/ground/shore + vegetation (macro positions/camera/gameplay remain locked), or separately authorize a new external source-generation route. Tripo remains 0 credits and unauthorized.
