@@ -1,0 +1,32 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_run": 37305549155,
+  "artifact_id": 11343159192,
+  "source_sha": "fbc0268fd9cc10f890be56eea010ac813a64e1152d4f421cfb45cf6151146e03",
+  "export_sha": "cf6bbbd27c5868bbfb114c67d4ebf2cd47aa05cbda6c3cebdbe38afbdc98745e",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 786,
+    "vertices": 1214,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "PARTIAL — relief is visibly stronger than source03.",
+    "rock_rhythm": "FAIL — deep voids and narrow supports read as a slab on pillars rather than continuous target-like cliff mass.",
+    "silhouette": "PASS — approved top/bottom outer rings and 3/7/11 anchors remain intact.",
+    "depth_without_noise": "FAIL in geological continuity — depth is strong but creates cavernous/artificial undercuts.",
+    "authored_not_procedural": "PASS — not repetitive, but authored form is the wrong geological read.",
+    "mobile_scale": "PASS for visibility, FAIL for semantics — the large voids survive mobile but read structurally wrong.",
+    "architecture_integration": "PENDING UNITY — not authorized.",
+    "material_difference": "PASS.",
+    "real_quality_jump": "FAIL — dramatic but farther from canonical cliff language."
+  },
+  "decision": "REAUTHOR SOURCE05. Return to continuous mass, moderate inset depth, emphasize broad vertical slab facets and diagonal fracture planes without open-looking cavities. Preserve exact boundaries/interfaces.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}
