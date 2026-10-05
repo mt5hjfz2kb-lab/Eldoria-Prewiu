@@ -15,6 +15,11 @@ function Assert-Administrator {
 
 Assert-Administrator
 
+# A scheduled-task watchdog recovers the listener if run.cmd exits, but it cannot
+# wake a sleeping PC. Keep the dedicated runner reachable while on AC power.
+& powercfg.exe /change standby-timeout-ac 0 | Out-Null
+& powercfg.exe /change hibernate-timeout-ac 0 | Out-Null
+
 if (-not (Test-Path (Join-Path $RunnerRoot "run.cmd"))) {
     throw "Runner not found at $RunnerRoot"
 }
@@ -69,6 +74,7 @@ Write-Host "Eldoria runner switched to the logged-in Windows user." -ForegroundC
 Write-Host "User: $userId"
 Write-Host "Task: $TaskName"
 Write-Host "State: $($task.State)"
+Write-Host "Power: AC sleep/hibernate disabled for runner availability"
 Write-Host ""
 Write-Host "Unity batch jobs will now use the same Windows profile/license as the interactive Unity Editor."
 Write-Host "A watchdog will restart the runner automatically if run.cmd exits unexpectedly."
