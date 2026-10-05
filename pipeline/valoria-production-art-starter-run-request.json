@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-09",
   "nonce": "rock-terrain-source-09-darker-compressed-facet-palette",
@@ -7,5 +7,5 @@
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Source09 strict visual retry after Source08 Unity VISUAL FAIL. Geometry locked unchanged. Darken/warm Eldoria Rock, compress per-facet contrast, darken earth enough to remove washed-out low-poly read while preserving rock/earth/paving separation. Zero Tripo. Unity blocked pending source review."
+  "scope": "Rock/Terrain Source08 ART SOURCE PASS; family closed PRODUCTION FAMILY PASS; parked."
 }
