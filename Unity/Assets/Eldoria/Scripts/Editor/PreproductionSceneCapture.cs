@@ -20,10 +20,11 @@ namespace Eldoria.EditorTools
         [Serializable] public class SourceReview { public string verdict; }
         [Serializable] public class ShoreSegment { public string name; public Vector3[] points; public float width=.8f; public int[] color; }
         [Serializable] public class WaterTreatment { public bool enabled; public string water_name="Water"; public int[] color; public float smoothness=.34f; public float wave_amplitude=.025f; public int grid=16; public ShoreSegment[] shores; }
-        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; public WaterTreatment water; }
+        [Serializable] public class PremiumTreatment { public bool enabled; public int[] ambient_color; public float ambient_intensity=.42f; public int[] background_color; public int[] fog_color; public bool fog=true; public float fog_start=62f; public float fog_end=145f; public float key_intensity=1.18f; public float shadow_strength=.82f; public float hero_min_z=-42f; public float hero_max_z=-10f; public float hero_min_x=-20f; public float hero_max_x=22f; public float albedo_variation=.06f; public float stone_smoothness=.18f; }
+        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; public WaterTreatment water; public PremiumTreatment premium; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; public bool premium_uplift; public bool shadows_enabled; public bool fog_enabled; public int premium_material_renderers; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
@@ -168,6 +169,11 @@ namespace Eldoria.EditorTools
                 ApplyWaterTreatment(request.water,evidence);
                 renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
             }
+            if(phase==1 && request.premium!=null && request.premium.enabled)
+            {
+                ApplyPremiumPresentation(request.premium,light,camera,evidence);
+                renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
+            }
             foreach(var view in request.views)
             {
                 float pitch=view.pitch*Mathf.Deg2Rad,yaw=view.yaw*Mathf.Deg2Rad;
@@ -262,6 +268,72 @@ namespace Eldoria.EditorTools
                 var shoreMat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Wet Shore v1"};shoreMat.SetColor("_BaseColor",sc);shoreMat.SetFloat("_Smoothness",.18f);shoreMat.enableInstancing=true;sr.sharedMaterial=shoreMat;
                 evidence.shore_segments++;evidence.shore_triangles+=st.Length/3;
             }
+        }
+
+
+        static void ApplyPremiumPresentation(PremiumTreatment treatment,Light key,Camera camera,Evidence evidence)
+        {
+            Color ambient=treatment.ambient_color!=null&&treatment.ambient_color.Length>=3
+                ?new Color(treatment.ambient_color[0]/255f,treatment.ambient_color[1]/255f,treatment.ambient_color[2]/255f)
+                :new Color(.50f,.46f,.40f);
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight=ambient*Mathf.Clamp(treatment.ambient_intensity,.2f,.75f);
+            RenderSettings.fog=treatment.fog;
+            RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogStartDistance=Mathf.Max(1f,treatment.fog_start);
+            RenderSettings.fogEndDistance=Mathf.Max(RenderSettings.fogStartDistance+5f,treatment.fog_end);
+            RenderSettings.fogColor=treatment.fog_color!=null&&treatment.fog_color.Length>=3
+                ?new Color(treatment.fog_color[0]/255f,treatment.fog_color[1]/255f,treatment.fog_color[2]/255f)
+                :new Color(.49f,.57f,.61f);
+            camera.backgroundColor=treatment.background_color!=null&&treatment.background_color.Length>=3
+                ?new Color(treatment.background_color[0]/255f,treatment.background_color[1]/255f,treatment.background_color[2]/255f)
+                :RenderSettings.fogColor;
+
+            key.intensity=Mathf.Clamp(treatment.key_intensity,.75f,2f);
+            key.color=new Color(1f,.91f,.78f);
+            key.transform.rotation=Quaternion.Euler(42f,-28f,0f);
+            key.shadows=LightShadows.Soft;
+            key.shadowStrength=Mathf.Clamp01(treatment.shadow_strength);
+            key.shadowBias=.035f;
+            key.shadowNormalBias=.28f;
+            QualitySettings.shadows=ShadowQuality.All;
+            QualitySettings.shadowDistance=180f;
+
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
+                renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
+                renderer.receiveShadows=true;
+                var center=renderer.bounds.center;
+                if(center.z<treatment.hero_min_z||center.z>treatment.hero_max_z||center.x<treatment.hero_min_x||center.x>treatment.hero_max_x)continue;
+                var src=renderer.sharedMaterials;if(src==null||src.Length==0)continue;
+                var dst=new Material[src.Length];bool changed=false;
+                int hash=17;foreach(char ch in renderer.name)hash=(hash*31+ch)&0x7fffffff;
+                float unit=(hash%1000)/999f;
+                float variation=Mathf.Lerp(1f-treatment.albedo_variation,1f+treatment.albedo_variation,unit);
+                for(int i=0;i<src.Length;i++)
+                {
+                    if(src[i]==null){dst[i]=null;continue;}
+                    var m=new Material(src[i]){name=src[i].name+" · PremiumHeroV1"};
+                    if(m.HasProperty("_BaseColor"))
+                    {
+                        var baseColor=m.GetColor("_BaseColor");
+                        baseColor.r=Mathf.Clamp01(baseColor.r*variation);
+                        baseColor.g=Mathf.Clamp01(baseColor.g*variation*.985f);
+                        baseColor.b=Mathf.Clamp01(baseColor.b*variation*.955f);
+                        m.SetColor("_BaseColor",baseColor);
+                    }
+                    if(m.HasProperty("_Smoothness"))
+                    {
+                        string lower=m.name.ToLowerInvariant();
+                        float target=lower.Contains("metal")||lower.Contains("iron")?.34f:treatment.stone_smoothness;
+                        m.SetFloat("_Smoothness",Mathf.Clamp01(Mathf.Max(m.GetFloat("_Smoothness"),target)));
+                    }
+                    m.enableInstancing=true;dst[i]=m;changed=true;
+                }
+                if(changed){renderer.sharedMaterials=dst;evidence.premium_material_renderers++;}
+            }
+            evidence.premium_uplift=true;evidence.shadows_enabled=true;evidence.fog_enabled=RenderSettings.fog;
         }
 
         static Transform FindNamed(Transform root,string name)
