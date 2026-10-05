@@ -1,0 +1,32 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_run": 37303611722,
+  "artifact_id": 11342123356,
+  "source_sha": "fde1fab1f2fc27af5fc12f5b834336fecdd7b8e8a396f617e2581fa133c6ef99",
+  "export_sha": "d8bb3793cfbe8839ffdc4df592532123e22972fbb4c9711b06a584ed33891a38",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 719,
+    "vertices": 664,
+    "modules": 12,
+    "materials": 6,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "FAIL — macro volume is preserved but still reads as a technical layered platform.",
+    "rock_rhythm": "FAIL — horizontal bands are too regular and do not approach the target's authored cliff rhythm.",
+    "silhouette": "PASS — outer approved envelope is preserved.",
+    "depth_without_noise": "PARTIAL — inset bands add depth but remain visually formulaic.",
+    "authored_not_procedural": "FAIL — repeated horizontal strip rhythm and texture pattern read procedural.",
+    "mobile_scale": "PARTIAL — scale is broad, but the repetitive striping becomes the dominant read.",
+    "architecture_integration": "PENDING UNITY — source not authorized for integration.",
+    "material_difference": "PARTIAL — earth/rock values differ, but directional striping undermines material credibility.",
+    "real_quality_jump": "FAIL — insufficient frame-level art jump to justify Unity integration."
+  },
+  "decision": "REAUTHOR SOURCE02 IN SAME FAMILY. Remove striped texture dependence; introduce irregular large faceted cliff planes with zig-zagged intermediate ring heights/insets while preserving exact top/bottom perimeter and level anchors.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}
