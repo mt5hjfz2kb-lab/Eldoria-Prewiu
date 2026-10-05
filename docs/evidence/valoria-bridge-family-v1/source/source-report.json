@@ -11,15 +11,15 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "a76e2dc28ae5af69da8cb6ef528ca0886b2e05534991e7862314935c5a12176b",
-  "export_sha": "e53b6495fa4457dcbe67210f67fad7f050a4d40712c6b951356c8c83865fa6e2",
+  "source_sha": "801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4",
+  "export_sha": "92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
   "source": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.blend",
   "export": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
   "geometry_metrics": {
     "triangles": 2592,
     "vertices": 1344,
     "modules": 4,
-    "materials": 2,
+    "materials": 3,
     "bounds_world_blender": [
       [
         -5.026285648345947,
@@ -40,7 +40,8 @@
   },
   "material_families": [
     "stone",
-    "trim"
+    "trim",
+    "paving"
   ],
   "texture_sets": {
     "masonry": [
@@ -49,6 +50,11 @@
       "albedo+normal"
     ],
     "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
       512,
       512,
       "albedo+normal"
