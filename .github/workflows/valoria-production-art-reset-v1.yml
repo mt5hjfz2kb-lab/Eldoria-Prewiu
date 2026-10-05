@@ -41,12 +41,31 @@ jobs:
         run: |
           $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
           if($request.enabled -eq $false){Add-Content $env:GITHUB_OUTPUT 'enabled=false'}else{Add-Content $env:GITHUB_OUTPUT 'enabled=true'}
-          if($request.mode -eq 'preproduction_mesh_scene'){
+          if($request.mode -eq 'preproduction_mesh_scene' -or $request.mode -eq 'authored_family_replacement'){
             Add-Content $env:GITHUB_OUTPUT 'preproduction=true'
+            if($request.mode -eq 'authored_family_replacement'){Add-Content $env:GITHUB_OUTPUT "artifact_name=$($request.artifact_name)"}else{Add-Content $env:GITHUB_OUTPUT 'artifact_name=valoria-art-production-reset-v1-preproduction'}
             Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.PreproductionSceneCapture.Capture'
           }else{
             Add-Content $env:GITHUB_OUTPUT 'preproduction=false'
             Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.ValoriaProductionArtResetGateV1.Capture'
+          }
+      - name: Stage source-approved family for isolated replacement only
+        if: steps.mode.outputs.enabled == 'true'
+        shell: powershell
+        run: |
+          $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
+          if($request.mode -eq 'authored_family_replacement'){
+            $review=Get-Content $request.replacement.source_review -Raw | ConvertFrom-Json
+            if($review.verdict -ne 'ART SOURCE PASS'){throw 'ART SOURCE PASS required before integration'}
+            $source=$request.source_glb
+            if(-not(Test-Path $source)){throw 'Missing source GLB'}
+            $hash=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($hash -ne $review.export_sha){throw 'Reviewed source identity mismatch'}
+            $asset=$request.replacement.asset
+            if(-not $asset.StartsWith('Assets/Eldoria/ArtTests/FamilyUnderReview/')){throw 'Only isolated ArtTests asset staging permitted'}
+            $dest=Join-Path 'Unity' $asset
+            New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
+            Copy-Item $source $dest -Force
           }
       - name: Verify persisted authored source
         if: steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction != 'true'
@@ -94,10 +113,11 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always() && steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction == 'true'
         with:
-          name: valoria-art-production-reset-v1-preproduction
+          name: ${{ steps.mode.outputs.artifact_name }}
           path: |
             Unity/ValoriaProductionArtResetV1Captures/*
             ${{ runner.temp }}/ProductionArtReset-PlayMode.*
             ${{ runner.temp }}/ValoriaProductionArtResetV1.log
           if-no-files-found: warn
           retention-days: 30
+

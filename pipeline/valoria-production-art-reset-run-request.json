@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "mode": "preproduction_mesh_scene",
-  "nonce": "valoria-art-production-reset-v1-final-threshold-continuity",
+  "enabled": true,
+  "mode": "authored_family_replacement",
+  "nonce": "lower-gate-source05-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "ISOLATED PREPRODUCTION ONLY; no canonical scene, assets or gameplay imported",
+  "scope": "Isolated one-family replacement in approved blockout; no runtime promotion",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,5 +112,26 @@
       }
     }
   ],
-  "result": "PREPRODUCTION PASS / OWNER REVIEW PENDING"
+  "result": "PRODUCTION PROOF",
+  "source_glb": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
+  "artifact_name": "valoria-lower-gate-family-v1-unity",
+  "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "replacement": {
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/LowerGateFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-lower-gate-family-v1/source-review.json",
+    "names": [
+      "LowerGate_WestTower",
+      "LowerGate_EastTower",
+      "LowerGate_Lintel",
+      "LowerGate_WestWing",
+      "LowerGate_EastWing"
+    ],
+    "position": {
+      "x": 5.566,
+      "y": 7.1,
+      "z": -25.6
+    },
+    "yaw": 180,
+    "scale": 1
+  }
 }

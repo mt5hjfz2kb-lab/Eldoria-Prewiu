@@ -46,8 +46,8 @@ Pipeline exception is limited and justified: existing starter source workflow pr
 
 Isolated clay/3quarter/front/side/approved-camera proxy/wireframe plus bounds/source hash; eight owner questions and professional hard questions reviewed explicitly before Unity. On fail correct source in this same family. Then existing Unity blockout capturer substitutes only the five approved masses with the GLB, fixed pivot, no normalization, same camera/light/background; matched BEFORE/AFTER generated in the same run. No canonical scene saved. Five focused gameplay tests plus protected runtime blob comparison.
 
-Planning budget≤25k LOD0 tris; four material roles, shared512px stone maps/256px heraldry. Estimated≤12 draws after semantic consolidation. LOD1 removes quoin relief/bevel segments while preserving arch/merlons, LOD2 removes metal grid and surface relief only after screen-space error review. Device FPS is not certified by this isolated proof. No automatic runtime rollout or next family.
+Planning budget≤25k LOD0 tris; four material roles, shared512px stone maps/256px heraldry. Estimated14 submesh draws after semantic consolidation. LOD1 removes quoin relief/bevel segments while preserving arch/merlons, LOD2 removes metal grid and surface relief only after screen-space error review. Device FPS is not certified by this isolated proof. No automatic runtime rollout or next family.
 
 ## Result
 
-PENDING source execution and review. No ART SOURCE, Unity or visual success claimed yet.
+Source05 **ART SOURCE PASS** after UV/material correction; run37281447235/artifact11332112538. Unity matched review in progress. No production-family success claimed.

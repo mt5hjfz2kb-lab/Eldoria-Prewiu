@@ -8,23 +8,31 @@ using Object = UnityEngine.Object;
 
 namespace Eldoria.EditorTools
 {
-    // Generic, editor-only primitive mesh review. Never opens or saves production scenes.
+    // Generic, editor-only blockout and source-approved family replacement review. Never opens or saves production scenes.
     public static class PreproductionSceneCapture
     {
         [Serializable] public class MeshInput { public string name; public string family; public Vector3[] vertices; public int[] indices; public int[] color; }
         [Serializable] public class Input { public string classification; public MeshInput[] meshes; }
         [Serializable] public class View { public string name; public int width; public int height; public float pitch; public float yaw; public float span; public Vector3 center; public bool perspective; public float distance; }
-        [Serializable] public class Request { public string mode; public string input; public View[] views; }
+        [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
+        [Serializable] public class SourceReview { public string verdict; }
+        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
-        [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; }
+        [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
         {
             var root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../.."));
             var request=JsonUtility.FromJson<Request>(File.ReadAllText(Path.Combine(root,"pipeline/valoria-production-art-reset-run-request.json")));
-            if(request.mode!="preproduction_mesh_scene") throw new Exception("Wrong preproduction mode");
+            bool replacementMode=request.mode=="authored_family_replacement";
+            if(request.mode!="preproduction_mesh_scene" && !replacementMode) throw new Exception("Wrong isolated capture mode");
+            if(replacementMode) {
+                if(request.replacement==null || request.replacement.scale!=1) throw new Exception("A production replacement must use explicit unit scale");
+                var review=JsonUtility.FromJson<SourceReview>(File.ReadAllText(Path.Combine(root,request.replacement.source_review)));
+                if(review.verdict!="ART SOURCE PASS") throw new Exception("Isolated art source gate required before Unity");
+            }
             var input=JsonUtility.FromJson<Input>(File.ReadAllText(Path.Combine(root,request.input)));
             if(input.classification!="GREYBOX_ONLY") throw new Exception("Final geometry prohibited");
             SceneSetup.SetupRenderPipeline();
@@ -66,6 +74,29 @@ namespace Eldoria.EditorTools
             camera.nearClipPlane=.1f;camera.farClipPlane=400f;
             Directory.CreateDirectory(Folder);
             var results=new List<ViewResult>();
+            var evidence=new Evidence{meshes=input.meshes.Length,triangles=triangles};
+            GameObject assetRoot=null;
+            for(int phase=0;phase<(replacementMode?2:1);phase++)
+            {
+            if(phase==1)
+            {
+                foreach(var name in request.replacement.names)
+                {
+                    var go=GameObject.Find(name);if(go==null) throw new Exception("Replacement placeholder missing: "+name);go.SetActive(false);
+                }
+                AssetDatabase.ImportAsset(request.replacement.asset,ImportAssetOptions.ForceSynchronousImport|ImportAssetOptions.ForceUpdate);
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(request.replacement.asset);
+                if(prefab==null) throw new Exception("glTFast import failed: "+request.replacement.asset);
+                assetRoot=Object.Instantiate(prefab);assetRoot.name="Authored family under review";assetRoot.transform.position=request.replacement.position;assetRoot.transform.rotation=Quaternion.Euler(0,request.replacement.yaw,0);assetRoot.transform.localScale=Vector3.one;
+                if(assetRoot.GetComponentsInChildren<Collider>().Length!=0) throw new Exception("Visual family must not contain gameplay colliders");
+                renderers.RemoveAll(r=>!r.gameObject.activeInHierarchy);renderers.AddRange(assetRoot.GetComponentsInChildren<Renderer>());
+                evidence.classification="ISOLATED_PRODUCTION_FAMILY_REVIEW";evidence.source_asset=request.replacement.asset;evidence.source_position=request.replacement.position;evidence.source_yaw=request.replacement.yaw;
+                var mats=new HashSet<Material>();var texs=new HashSet<Texture>();var textureSizes=new List<string>();
+                evidence.source_uv=true;evidence.source_normals=true;evidence.source_tangents=true;
+                foreach(var mf in assetRoot.GetComponentsInChildren<MeshFilter>()) { var m=mf.sharedMesh; if(m==null)continue; evidence.source_vertices+=m.vertexCount;evidence.source_mesh_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(m);for(int i=0;i<m.subMeshCount;i++){evidence.source_triangles+=(int)m.GetIndexCount(i)/3;evidence.source_submesh_draws++;}evidence.source_uv &= m.uv.Length==m.vertexCount;evidence.source_normals &= m.normals.Length==m.vertexCount;evidence.source_tangents &= m.tangents.Length==m.vertexCount; }
+                foreach(var r in assetRoot.GetComponentsInChildren<Renderer>()) { evidence.source_renderers++;foreach(var m in r.sharedMaterials) {if(m==null||!mats.Add(m))continue;foreach(var prop in m.GetTexturePropertyNames()) {var t=m.GetTexture(prop);if(t!=null&&texs.Add(t)){evidence.source_texture_bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(t);textureSizes.Add(t.name+":"+t.width+"x"+t.height);}} } }
+                evidence.source_materials=mats.Count;evidence.source_textures=texs.Count;evidence.source_texture_sizes=textureSizes.ToArray();
+            }
             foreach(var view in request.views)
             {
                 float pitch=view.pitch*Mathf.Deg2Rad,yaw=view.yaw*Mathf.Deg2Rad;
@@ -81,18 +112,21 @@ namespace Eldoria.EditorTools
                     float xmin=float.PositiveInfinity,ymin=xmin,xmax=float.NegativeInfinity,ymax=xmax;
                     foreach(var vertex in mesh.vertices)
                     {
-                        var p=camera.WorldToViewportPoint(vertex);
+                        var p=camera.WorldToViewportPoint(renderer.transform.TransformPoint(vertex));
                         xmin=Mathf.Min(xmin,p.x*view.width);xmax=Mathf.Max(xmax,p.x*view.width);
                         ymin=Mathf.Min(ymin,(1-p.y)*view.height);ymax=Mathf.Max(ymax,(1-p.y)*view.height);
                     }
                     bounds.Add(new Bound{name=renderer.name,bbox=new Vector4(xmin,ymin,xmax,ymax)});
                 }
-                Save(camera,Folder+"/"+view.name+".png",view.width,view.height);
-                results.Add(new ViewResult{name=view.name,width=view.width,height=view.height,bounds=bounds.ToArray()});
+                string prefix=replacementMode?(phase==0?"BEFORE-":"AFTER-"):"";
+                Save(camera,Folder+"/"+prefix+view.name+".png",view.width,view.height);
+                results.Add(new ViewResult{name=prefix+view.name,width=view.width,height=view.height,bounds=bounds.ToArray(),phase=phase==0?"BLOCKOUT":"INTEGRATED"});
+            }
             }
             int colliders=Object.FindObjectsByType<Collider>(FindObjectsSortMode.None).Length;
             if(colliders!=0) throw new Exception("Preproduction scene must have zero gameplay colliders");
-            File.WriteAllText(Folder+"/evidence.json",JsonUtility.ToJson(new Evidence{meshes=input.meshes.Length,triangles=triangles,colliders=colliders,views=results.ToArray()},true));
+            evidence.colliders=colliders;evidence.views=results.ToArray();
+            File.WriteAllText(Folder+"/evidence.json",JsonUtility.ToJson(evidence,true));
             Debug.Log("PREPRODUCTION_CAPTURE_TECH_PASS; VISUAL_REVIEW_REQUIRED");
             EditorApplication.Exit(0);
         }
@@ -111,3 +145,4 @@ namespace Eldoria.EditorTools
         }
     }
 }
+

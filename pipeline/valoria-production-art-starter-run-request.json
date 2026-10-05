@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_mesh_family",
   "request_id": "valoria-lower-gate-family-v1-source-05",
   "nonce": "lower-gate-source-05-clean-modifier-attributes-and-UV",
@@ -7,5 +7,5 @@
   "source_dir": "art-source/valoria/production/lower-gate-family-v1",
   "evidence_dir": "docs/evidence/valoria-lower-gate-family-v1/source",
   "credits": 0,
-  "scope": "ONE LOWER GATE FAMILY; source gate only, no Unity, no runtime promotion"
+  "scope": "Source05 passed isolated gate; source generation parked during Unity review"
 }
