@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
   "asset_or_sector": "Valoria Golden Slice bounded local visual shell: cliff/ground/shore/contact + 3 local vegetation instances",
   "profile": "environment_new_geometry",
@@ -19,5 +19,6 @@
     "source_gate": "Editable BLEND + GLB + UV/normals/tangents + isolated lit/clay/proxy previews; bounded Golden Slice only",
     "final_gate": "official Golden close/16:9/mobile >=4/5 core metrics; gameplay/performance sanity PASS; no macro-position change"
   },
-  "notes": "GEOMETRY BLOCKER proven after 3 valid surface-only failures. Local geometry escalation only: screen-visible cliff/ground/shore/contact and three existing vegetation instances. Preserve Lower Gate/Bridge/Road macro positions, camera, global platform, gameplay/hotspots and closed families. Reuse Golden Surface V2 maps. Zero Tripo."
+  "notes": "BLOCKED: bounded Golden surface/local geometry method exhausted below 4/5. Owner authorization required before reopening continuous Rock/Terrain + local ground substrate or integrated Lower Gate/Bridge edge profiles. Do not auto-run source04. Zero Tripo.",
+  "blocker": "HUMAN_SCOPE_AUTHORIZATION_REQUIRED"
 }
