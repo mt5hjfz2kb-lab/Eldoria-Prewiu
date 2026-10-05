@@ -11,8 +11,8 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "2299d03eb7ffab9e3d6bfb2449c11a9ee550620269f038ed60513bab4dbb2e34",
-  "export_sha": "182cfe2fbcf200c0f357a6df41c39e79e5dc99c02188216420abe4662078c1b3",
+  "source_sha": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "export_sha": "3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477",
   "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend",
   "export": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
   "geometry_metrics": {
