@@ -1,15 +1,15 @@
 {
   "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
-  "source_iteration": "source05",
-  "source_run": 37306173325,
-  "artifact_id": 11343632588,
-  "source_sha": "def79ce2eb0204e33ea5800a44796edf407ee4b9040e4b634407e5582f0087f3",
-  "export_sha": "7da26c47bfe746811ec9d838dcb23edfcc56d0022e5c66c4854d6b98f03a5525",
+  "source_iteration": "source06",
+  "source_run": 37306937341,
+  "artifact_id": 11344496216,
+  "source_sha": "4caa9f14a2504ee089274f6e86da3e7f27b3e83db140be25caebb45d393228f2",
+  "export_sha": "f3acb6f01b00b125e1d2cf0bb05844a34875b83f1e27ebf6c9e0b49cb115ab63",
   "tech_pass": true,
   "geometry": {
-    "triangles": 1844,
-    "vertices": 3286,
+    "triangles": 2000,
+    "vertices": 3586,
     "modules": 12,
     "materials": 7,
     "uv": true,
@@ -17,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PARTIAL — shelf depth and upper rise improve, but visible perimeter still contains repeated pillar-like verticals.",
-    "rock_rhythm": "FAIL — ring correspondence creates vertical grid cadence inconsistent with natural controlled cliff.",
-    "silhouette": "PASS — approved outer silhouette and levels preserved.",
-    "depth_without_noise": "PASS — broad shelf depth works.",
-    "authored_not_procedural": "PARTIAL — topology still exposes a systematic vertical construction rhythm.",
-    "mobile_scale": "PASS for depth, FAIL for identity — pillars remain readable at mobile scale as architecture rather than rock.",
+    "greybox_reduction": "PASS for MainPlatform/UpperTerraceCliff; FAIL for seven retained shoulder prisms.",
+    "rock_rhythm": "PASS on primary wall; FAIL where CliffShoulder_0..6 still read as vertical pentagonal columns.",
+    "silhouette": "PASS — macro plateau envelope preserved.",
+    "depth_without_noise": "PASS — staggered diagonal wall facets work at medium/large scale.",
+    "authored_not_procedural": "PASS primary wall; FAIL shoulder identity because greybox prism geometry remains.",
+    "mobile_scale": "PASS primary wall; shoulder columns remain unmistakably artificial on low-angle/mobile reads.",
     "architecture_integration": "PENDING UNITY — not authorized.",
     "material_difference": "PASS.",
-    "real_quality_jump": "PARTIAL — geometry jump is visible but wrong cliff identity remains."
+    "real_quality_jump": "PARTIAL — wall quality is now sufficient, but seven shoulder greyboxes prevent family-level source pass."
   },
-  "decision": "SOURCE06: stagger/tangentially shift intermediate rings to destroy vertical grid alignment; preserve exact top/bottom rings; use diagonal large facets and broad shelf recesses only.",
+  "decision": "SOURCE07: preserve Source06 main cliff/ground authored geometry unchanged; reauthor only CliffShoulder_0..6 as tapered irregular rock buttresses inside their existing envelopes, exact bottom footprint and max height retained.",
   "unity_gate": "BLOCKED",
   "tripo_credits": 0
 }
