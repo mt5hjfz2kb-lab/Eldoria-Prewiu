@@ -11,8 +11,8 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "d15dcd939148eaa2fcd043580937f1dc87a09201be1765ea70f07c9bbaec098c",
-  "export_sha": "b0491266eff23af738bcc436faabfc645a72362dbc0239fa3c16b6ef9bf3ed60",
+  "source_sha": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
+  "export_sha": "46600b6248f23fa580249b2e4867dde793067bb7371de844b3702304d45adce9",
   "source": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.blend",
   "export": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
   "geometry_metrics": {
@@ -22,14 +22,14 @@
     "materials": 4,
     "bounds_world_blender": [
       [
-        -14.023263931274414,
-        -1.951791763305664,
-        -0.3399996757507324
+        -8.457263946533203,
+        -27.55179214477539,
+        6.760000228881836
       ],
       [
-        12.869752883911133,
-        4.239864349365234,
-        8.299999237060547
+        18.435752868652344,
+        -21.360136032104492,
+        15.399999618530273
       ]
     ],
     "uv": true,
