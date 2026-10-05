@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-09",
   "nonce": "rock-terrain-source-09-darker-compressed-facet-palette-authoritative",
@@ -7,5 +7,5 @@
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "AUTHORITATIVE Source09 material-only retry after Source08 integrated washout: geometry locked unchanged; darker warmer rock, compressed facet contrast, darker earth; zero Tripo; Unity blocked pending direct ART SOURCE review."
+  "scope": "Rock/Terrain Source09 PRODUCTION FAMILY PASS; parked. Do not rerun without explicit new owner instruction."
 }
