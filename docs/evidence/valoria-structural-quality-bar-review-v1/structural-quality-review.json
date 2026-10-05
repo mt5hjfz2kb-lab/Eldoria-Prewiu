@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "review": "VALORIA STRUCTURAL QUALITY BAR REVIEW v1",
+  "reviewed_head": "2a38dc9d47ce68b0dacf7c60b52fc898cfa39b9b",
+  "authoritative_current_frame": {
+    "run_id": 37328467482,
+    "artifact_id": 11352609605,
+    "bastion_source": "Source08"
+  },
+  "baseline_blockout": {
+    "run_id": 37275659322,
+    "artifact_id": 11329019907
+  },
+  "canonical_target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "approved_blockout": "docs/evidence/valoria-art-production-reset-v1/",
+  "official_views_reviewed": [
+    "16:9",
+    "mobile-landscape",
+    "portrait-entry",
+    "source-3x2",
+    "portrait-home",
+    "portrait-left",
+    "portrait-right"
+  ],
+  "verdict": "STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS",
+  "frame_judgement": {
+    "commercial_read": "The structural core has crossed out of pure/improved greybox: authored defense, circulation and geology now establish a credible game frame skeleton. The complete screen is not yet commercial-finish because deliberately unproduced secondary families still occupy large screen areas.",
+    "convergence": "YES — macro silhouette, fortress hierarchy and entry-to-Bastion circulation are genuinely converging toward the canonical target rather than merely polishing the old prototype.",
+    "secondary_scale_safe": "YES, with one tightly bounded terrain uplift recommended before/during the next secondary block."
+  },
+  "mandatory_questions": {
+    "1_greybox_or_commercial": "Structural core no longer reads as mere greybox, but whole frame is not commercial-finish yet because secondary placeholders/dead areas remain.",
+    "2_bastion_dominance": "PASS. Bastion is the clear upper hero cluster through Keep height, heraldry, mass and elevated placement.",
+    "3_defensive_family_cohesion": "PASS. Lower Gate, Walls and Bastion share warm stone, crenellation/tower vocabulary and blue/gold accents without becoming identical.",
+    "4_circulation_axis": "PASS. Bridge → Lower Gate → Road → Stair → Bastion is immediate and legible in wide/mobile.",
+    "5_terrain_support": "PASS WITH UPLIFT. Macro geology supports terraces convincingly, but the upper Bastion shelf exposes an overly dark continuous seam/band that reads more like a rendering/terrain cut than natural support.",
+    "6_global_silhouette": "PASS. Main target anchors and stepped upper/lower silhouette are retained; missing secondary/background richness explains much of the remaining target gap.",
+    "7_hierarchy": "PASS. Bastion primary; Lower Gate/defensive frame secondary; road/stair/terrain tertiary/support.",
+    "8_material_value_cohesion": "PASS at structural level after Bastion Source08. Remaining flatness is dominated by missing lighting/presentation and unproduced secondary surfaces.",
+    "9_architectural_depth": "PASS structurally. Gates/Bastion/walls have real relief and depth; large empty parcels are not evidence against closed structural architecture.",
+    "10_valoria_identity": "PASS at structural identity level via blue/gold heraldry, reconstruction/damage cues and specific two-gate fortified axis; secondary life is still needed to escape sparse generic-medieval staging.",
+    "11_mobile": "PASS. Entry axis and hero Bastion remain readable in mobile landscape; portrait entry strongly reads Lower Gate/bridge but naturally cannot show the full city hierarchy at once.",
+    "12_family_below_rest": "No family warrants reopening wholesale. Rock/Terrain has one localized integrated defect below the rest: upper-shelf dark seam/band.",
+    "13_not_solvable_by_secondary": "The upper Bastion shelf dark seam is structural and should not be hidden with vegetation/props/lighting alone. Other major gaps can be addressed by secondary families/presentation.",
+    "14_safe_to_scale": "YES. Secondary production is justified; do not redesign the structural frame."
+  },
+  "gaps": [
+    {
+      "category": "A",
+      "area": "Lower Gate + Bridge + Road + Stair + Walls + Bastion",
+      "finding": "Core silhouette, circulation, hierarchy and defensive language are sufficient now; no reopening justified."
+    },
+    {
+      "category": "B",
+      "area": "Large central parcels / Cabin / Camp",
+      "finding": "Sparse/placeholder occupancy keeps the whole frame from reading inhabited/commercial. Expected to improve with Cabin/Sawmill + Camp and later props."
+    },
+    {
+      "category": "B",
+      "area": "Vegetation + Water/Shore + Background",
+      "finding": "Current cone trees, flat water/world context and empty edges suppress depth, scale and premium identity. These are explicitly secondary-family gaps."
+    },
+    {
+      "category": "B",
+      "area": "Lighting / presentation",
+      "finding": "Current neutral capture flattens contact, atmosphere and material separation. Final lighting/presentation should materially improve depth/value cohesion."
+    },
+    {
+      "category": "C",
+      "family": "VALORIA ROCK / TERRAIN FAMILY v1 (Source09)",
+      "defect": "Continuous very-dark horizontal seam/cut directly below the Bastion terrace, strongest across the upper shelf.",
+      "proof_views": [
+        "16:9",
+        "mobile-landscape",
+        "source-3x2"
+      ],
+      "impact": "Breaks natural geological support and reads as a black technical gap beneath the hero asset; secondary dressing should not be used to conceal it.",
+      "minimum_recommended_change": "Localized upper-shelf material/geometry/contact uplift only: remove/compress the dark seam and create a believable rock/earth transition under the Bastion while preserving exact macro envelope, camera, Bastion, Stair and all other closed families. No terrain redesign."
+    }
+  ],
+  "category_D": [],
+  "recommended_next": "Authorize one controlled Rock/Terrain upper-shelf seam uplift, then Cabin / Sawmill + Camp → Vegetation + Water/Shore → Props + Background → Lighting / presentation polish. The secondary block may be prepared after review closure, but no family is opened by this review.",
+  "tripo_credits": 0
+}
