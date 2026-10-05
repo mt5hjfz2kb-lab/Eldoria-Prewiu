@@ -1,0 +1,39 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "scope": "Rock/Terrain source03 isolated art gate. Integrated frame-level quality jump remains mandatory at Unity matched-camera gate.",
+  "planner_run": 37303606536,
+  "source_run": 37304825245,
+  "artifact_id": 11342464690,
+  "source_sha": "3258a865d9dcffa0f45a3d9a3cb03bbde8a9d4847ef94ab2d373a7431f90f228",
+  "export_sha": "9e2cf880c878c7ee24110cce28654b0a1fb8b3a98f45444be7675cab23e0c698",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1650,
+    "vertices": 2864,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 2782
+  },
+  "hard_questions": {
+    "greybox_reduction": "PASS at source intent — continuous cliff masses replace vertical technical slabs with authored inset/diagonal/vertical faceting; full-frame proof remains Unity.",
+    "rock_rhythm": "PASS — broad contiguous planes and restrained value zones read as one rock mass rather than repeated modules or checkerboard facets.",
+    "silhouette": "PASS — locked top/bottom perimeter and 3/7/11 height anchors are preserved; all added shaping is inset.",
+    "depth_without_noise": "PASS — depth comes from medium/large planes and recesses, not micro-rock scatter.",
+    "authored_not_procedural": "PASS — no texture-strip dependence, no repeated cliff stamp; material zones are contiguous and geometry carries the read.",
+    "mobile_scale": "PASS — major facets span metres and remain legible at landscape/portrait scale.",
+    "architecture_integration": "PASS for interface design — ground elevations and family bounds remain exact; Unity must prove no visible seams/clipping with accepted Gate/Bridge/Road/Stair.",
+    "material_difference": "PASS — quiet earth top family is separated from darker rock and from retained civic paving.",
+    "real_quality_jump": "PASS to integration — source is materially stronger than reset greybox and source01/02; actual frame-level jump must still pass matched-camera visual review."
+  },
+  "limitations": [
+    "Isolated source does not prove final contact shadows/seams against retained production families.",
+    "Integrated target-vs-blockout-vs-after comparison remains mandatory.",
+    "No device FPS certification; import/performance sanity required in Unity."
+  ],
+  "unity_gate": "AUTHORIZED NEXT — exact source03 export SHA only; retain accepted Lower Gate + Bridge + Road + Stair identically in BEFORE/AFTER.",
+  "tripo_credits": 0
+}
