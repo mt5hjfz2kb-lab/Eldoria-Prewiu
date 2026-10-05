@@ -1,23 +1,23 @@
 {
   "enabled": true,
-  "request_id": "valoria-golden-lookdev-slice-v1-surface-authoring",
-  "asset_or_sector": "Valoria Golden Lookdev Slice v1 — Lower Gate / rock / ground / water-shore / vegetation surface proof",
-  "profile": "environment_surface",
-  "geometry_gap_proven": false,
-  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/source03-integration01-review.md",
+  "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
+  "asset_or_sector": "Valoria Golden Slice bounded local visual shell: cliff/ground/shore/contact + 3 local vegetation instances",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/SURFACE_ITERATION03_REVIEW.md",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
   "capabilities": {
+    "blender_mesh_authoring": true,
     "unity_material_blending": true,
-    "blender_material_consolidation": false
+    "high_low_baking": true
   },
   "validation": {
-    "camera": "locked reset orthographic yaw20/pitch35/span48/distance110 + explicit Golden close crop",
-    "source_gate": "SURFACE_AUDIT_RECIPE_V1: real per-pixel albedo/normal/AO/smoothness, UV/texel sanity; no new geometry",
-    "final_gate": "surface richness/readability/ground/rock/premium >=4/5; mobile/gameplay/performance sanity PASS"
+    "source_gate": "Editable BLEND + GLB + UV/normals/tangents + isolated lit/clay/proxy previews; bounded Golden Slice only",
+    "final_gate": "official Golden close/16:9/mobile >=4/5 core metrics; gameplay/performance sanity PASS; no macro-position change"
   },
-  "notes": "Surface-first pass only. Source03 geometry is retained only as the current bounded contact baseline; do not author or integrate further geometry. No Props+Background, no family reopening, no Tripo."
+  "notes": "GEOMETRY BLOCKER proven after 3 valid surface-only failures. Local geometry escalation only: screen-visible cliff/ground/shore/contact and three existing vegetation instances. Preserve Lower Gate/Bridge/Road macro positions, camera, global platform, gameplay/hotspots and closed families. Reuse Golden Surface V2 maps. Zero Tripo."
 }
