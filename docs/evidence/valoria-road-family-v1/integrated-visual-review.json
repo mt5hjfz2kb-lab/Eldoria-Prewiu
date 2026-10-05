@@ -6,6 +6,7 @@
   "production_family_verdict": "PRODUCTION FAMILY PASS",
   "authority": {
     "target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "target_requirement": "diagonal continuous bridge-road-stair-gate spine",
     "approved_blockout_run": 37275659322,
     "retained_lower_gate": "PRODUCTION FAMILY PASS",
     "retained_bridge": "PRODUCTION FAMILY PASS",
@@ -19,33 +20,36 @@
   },
   "gates": {
     "tech_pass": "PASS",
-    "art_source_pass": "PASS — source03",
+    "art_source_pass": "PASS — source03 after source01/source02 stop-gates",
     "unity_integration_pass": "PASS",
     "visual_pass": "PASS",
     "production_family_pass": "PASS"
   },
   "visual_gate": {
-    "main_axis_read": "PASS — Road is immediately legible as the principal circulation spine from Lower Gate toward the locked Stair/Bastion axis without becoming a hero asset.",
-    "position_orientation_scale_screen_occupancy": "PASS — source 3:2 replacement is 99.9927% of approved blockout width and 99.9900% of approved height with 0.0149 px center delta. No camera/placement compensation.",
-    "bridge_gate_road_continuity": "PASS — accepted Bridge and Lower Gate are retained identically in BEFORE/AFTER; Road begins/continues through the gate receiver cleanly without modifying either family.",
-    "road_to_stair_preparation": "PASS — MainRoad and UpperRoad preserve the approved Stair receiving relationship; Stair itself remains greybox and untouched.",
-    "non_flat_surface_read": "PASS — paving, shallow edge bands and real mesh section read as circulation construction rather than a terrain decal.",
-    "material_hierarchy": "PASS — Road uses warmer/darker, finer civic paving than Bridge's lighter cut-stone deck, giving continuity without flattening all stone into one value.",
-    "mobile_landscape": "PASS — the long spine remains readable and paving rhythm survives without microdetail chatter at 1280×720.",
-    "portrait_entry": "PASS — Bridge → Gate → Road is strongly legible at 390×844; Road does not compete with the gate.",
-    "portrait_home": "PASS WITH APPROVED CROP — route framing follows the already-approved portrait strategy and introduces no new projection/crop regression.",
-    "target_difference": "The canonical target shows a softer worn road embedded in finished grass/terrain; the current isolated proof necessarily meets greybox Ground/Terrain. Road geometry/material rhythm and target route hierarchy pass; edge blending, soil/grass breakup and terrain wear belong to locked Ground/Terrain and are not fabricated inside Road."
+    "main_axis_read": "PASS — Road is immediately readable as the primary circulation spine from accepted Lower Gate toward the locked Stair/Bastion axis, without competing with Gate or Bridge.",
+    "position_scale_orientation": "PASS — source 3:2 union is 99.9927% of approved blockout width and 99.9900% of height with 0.0149 px center delta; maximum center delta in all official views is 0.0164 px.",
+    "target_silhouette_and_width": "PASS — direct target comparison preserves the broad lower approach, wide threshold, long narrower central road and upper receiving strip that define the canonical diagonal spine. No dedicated target Road bbox exists, so no fabricated target metric is claimed.",
+    "bridge_lower_gate_road_continuity": "PASS — accepted Bridge and Lower Gate were retained identically in BEFORE/AFTER. Paving now flows through GateThreshold into MainRoad with no source02 transverse seam.",
+    "stair_transition": "PASS FOR ROAD INTERFACE — MainRoad terminates at the locked Stair foot and UpperRoad preserves the approved receiving surface beyond it. Stair remains blockout and was not authored or moved.",
+    "ground_terrain_interface": "PASS FOR FAMILY SCOPE — Road sits inside its approved shallow envelopes and does not require Ground/Terrain deformation. Final terrain-edge dressing remains outside Road scope.",
+    "material_hierarchy": "PASS — darker/earthier civic paving differentiates Road from the brighter Bridge/Gate cut stone while maintaining the same Valoria stone grammar.",
+    "not_flat_texture": "PASS — shallow structural thickness and contained edge treatment are real geometry; paving detail is material-driven and coarse enough to survive mobile.",
+    "mobile_landscape": "PASS — central route remains unambiguous at 1280×720 and paving does not dissolve into microdetail.",
+    "portrait_home": "PASS — the main spine remains readable from Gate to Stair within the approved portrait crop.",
+    "portrait_entry": "PASS — Bridge→Gate→Road continuity is clear at 390×844; road remains subordinate to the gate.",
+    "portrait_left_right": "PASS / EXPECTED PARTIAL VISIBILITY — Road may be largely outside these panned portrait views by approved framing; no new crop or projection regression is introduced.",
+    "generic_asset_risk": "PASS — exact target/blockout footprints, restrained civic paving scale and cumulative accepted Gate/Bridge context prevent a generic detached-road read.",
+    "relevant_target_differences": "Canonical target includes final grass blending, irregular wear, vegetation, rocks, fires, lighting and completed Stair/Bastion surroundings. Those belong to Ground/Terrain/props/lighting/Stair or other families and are intentionally still blockout; Road does not alter them."
   },
   "protected_state": {
-    "protected_elements_checked_per_view": 82,
+    "non_road_projected_elements_checked_per_view": 82,
     "max_projection_delta_px": 0,
     "lower_gate_changed": false,
     "bridge_changed": false,
-    "camera_changed": false,
-    "target_changed": false,
     "stair_changed": false,
     "terrain_changed": false,
     "ground_changed": false,
+    "camera_changed": false,
     "bastion_changed": false,
     "gameplay_changed": false,
     "colliders_added": 0
@@ -53,7 +57,8 @@
   "limitations": [
     "No device FPS certification",
     "LOD1/LOD2 not authored",
-    "Final road-edge blending with grass/terrain is deferred to the Terrain/Ground family and cannot be judged as Road-owned work"
+    "No final Ground/Terrain blending or wear dressing in this family",
+    "No numeric Road landmark bbox exists in target-spec; target judgment is visual plus approved-blockout occupancy"
   ],
   "tripo_credits": 0,
   "next": "Owner review of closed Road family. Do not start Stair, Terrain, Walls, Bastion or another family without a new instruction."
