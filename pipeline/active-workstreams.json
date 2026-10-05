@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T18:15:00Z",
+  "updated_at": "2026-10-05T18:46:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -16,7 +16,11 @@
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
         "Unity/Assets/Eldoria/**",
-        "art-source/valoria/lookdev/golden-slice-v1/**"
+        "art-source/valoria/lookdev/golden-slice-v1/**",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "tools/author-environment-family.py",
+        "art-source/valoria/production/premium-hero-contact-uplift-v1/**"
       ],
       "resources": [
         "valoria-golden-lookdev-slice",
@@ -27,9 +31,9 @@
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
       "status": "active",
-      "phase": "GOLDEN LOOKDEV DEFINITION",
+      "phase": "GOLDEN VISUAL SHELL / SURFACE METHOD PIVOT",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Create exact Golden Slice target from current camera/reference, define measurable lookdev recipe, then implement one bounded slice. Do not scale until 4/5 premium-close core metrics pass."
+      "next": "After three geometry/contact visual failures, prove a bounded local visual shell with authored PBR channel variation and official Golden close-crop integration. No broad family reopening or scale-out."
     }
   ],
   "history": [
