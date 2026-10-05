@@ -1,0 +1,53 @@
+name: "[PREFLIGHT] Golden Generator Bake-Off v1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/golden-generator-bakeoff-v1-request.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-golden-generator-bakeoff-preflight-v1
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            pipeline/golden-generator-bakeoff-v1.json
+            pipeline/golden-generator-bakeoff-v1-request.json
+            pipeline/exact-inputs/valoria-golden-generator-bakeoff-v1
+            tools/validate-golden-generator-bakeoff-v1.mjs
+            docs/evidence/valoria-golden-lookdev-slice-v1/generator-bakeoff-v1
+          sparse-checkout-cone-mode: false
+
+      - name: Validate zero-spend bake-off preparation
+        run: node tools/validate-golden-generator-bakeoff-v1.mjs
+
+      - name: Persist preflight evidence
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/generator-bakeoff-v1/preflight.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Golden generator bake-off preflight"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-golden-generator-bakeoff-v1-preflight
+          path: docs/evidence/valoria-golden-lookdev-slice-v1/generator-bakeoff-v1/preflight.json
+          if-no-files-found: error
+          retention-days: 30
