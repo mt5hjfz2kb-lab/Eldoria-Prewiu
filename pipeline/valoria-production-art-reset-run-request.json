@@ -1,10 +1,10 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_family_replacement",
   "nonce": "bastion-source08-cumulative-final-hero-gate-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bastion Source08 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
+  "scope": "Closed. Source08 cumulative Unity gate passed. Do not rerun Bastion or alter retained families/camera/target/composition/platform/gameplay without explicit owner instruction. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,7 +112,7 @@
       }
     }
   ],
-  "result": "PRODUCTION PROOF PENDING / HERO QUALITY UNGRANTED",
+  "result": "PRODUCTION FAMILY PASS / HERO QUALITY BAR PASS / CLOSED",
   "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
   "artifact_name": "valoria-bastion-family-v1-source08-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
