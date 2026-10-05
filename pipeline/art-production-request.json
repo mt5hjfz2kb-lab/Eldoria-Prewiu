@@ -1,25 +1,20 @@
 {
-  "enabled": false,
-  "request_id": "valoria-art-production-reset-v1",
-  "asset_or_sector": "Valoria full-scene isolated PREPRODUCTION blockout",
-  "profile": "environment_composition",
-  "geometry_gap_proven": false,
+  "enabled": true,
+  "request_id": "valoria-lower-gate-family-v1",
+  "asset_or_sector": "Lower Gate Family v1 only",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "geometry_gap_evidence": "docs/VALORIA_LOWER_GATE_FAMILY_V1.md#legacy-review",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
-  "capabilities": {
-    "unity_modular_assembly": true,
-    "unity_shared_materials": true
-  },
+  "capabilities": {},
   "validation": {
-    "mobile": true,
-    "preserve_gameplay_signature": true
+    "camera": "approved reset20/35/24, all7 views",
+    "source_gate": "required before Unity",
+    "scope": "replace exactly five LowerGate masses, gameplay intact"
   },
-  "notes": "Owner explicitly requests new full-scene primitive greybox against attached target. No existing art used; no final source authoring. Canonical Unity route retained for eventual engine validation; local deterministic CPU 3D proxy is composition evidence only, not Unity or runtime certification. No production integration or spend.",
-  "result": "PREPRODUCTION PASS / OWNER REVIEW PENDING",
-  "final_run_id": 37275659322,
-  "final_artifact_id": 11329019907,
-  "credits_spent": 0
+  "notes": "zero-credit direct Blender; unchanged approved macro composition"
 }

@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: valoria-production-art-starter-source-v1
@@ -31,6 +32,7 @@ jobs:
           print(json.dumps(d,indent=2))
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:
               f.write('enabled='+('true' if d.get('enabled') else 'false')+'\n')
+              f.write('mesh_source='+('true' if d.get('mode')=='authored_mesh_family' else 'false')+'\n')
           PY
       - name: Skip parked request
         if: steps.request.outputs.enabled != 'true'
@@ -42,7 +44,7 @@ jobs:
           sudo apt-get install -y blender python3-numpy
           blender --version
       - name: Build authored source
-        if: steps.request.outputs.enabled == 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
         run: |
           blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
           test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
@@ -53,7 +55,7 @@ jobs:
           done
           node tools/check-production-art-source.mjs
       - name: Persist reproducible source and GLBs
-        if: steps.request.outputs.enabled == 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
         shell: bash
         run: |
           git config user.name "Eldoria Art Bot"
@@ -68,7 +70,7 @@ jobs:
             git push origin HEAD:main
           fi
       - uses: actions/upload-artifact@v4
-        if: steps.request.outputs.enabled == 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
         with:
           name: valoria-production-art-starter-source-v1
           path: |
@@ -78,3 +80,38 @@ jobs:
             pipeline/evidence/valoria-production-art-starter-previews/*.png
           if-no-files-found: error
           retention-days: 30
+
+      - name: Validate route and build editable mesh family source
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source == 'true'
+        run: |
+          node tools/plan-art-production.mjs
+          node tools/validate-blender-professional-authoring.mjs
+          blender -b --python tools/author-environment-family.py
+      - name: Persist isolated family source and evidence
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source == 'true'
+        run: |
+          python3 - <<'PY'
+          import json,subprocess
+          d=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
+          paths=[d['source_dir'],d['evidence_dir']]
+          if not paths[0].startswith('art-source/valoria/production/') or not paths[1].startswith('docs/evidence/'):
+              raise SystemExit('Invalid generic source output scope')
+          subprocess.run(['git','config','user.name','Eldoria Art Bot'],check=True)
+          subprocess.run(['git','config','user.email','actions@users.noreply.github.com'],check=True)
+          subprocess.run(['git','add',*paths],check=True)
+          if subprocess.run(['git','diff','--cached','--quiet']).returncode:
+              subprocess.run(['git','commit','-m','Persist isolated editable family source: '+d['request_id']],check=True)
+              subprocess.run(['git','pull','--rebase','origin','main'],check=True)
+              subprocess.run(['git','push','origin','HEAD:main'],check=True)
+          PY
+      - name: Upload isolated source evidence
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: authored-environment-family-source
+          path: |
+            art-source/valoria/production/lower-gate-family-v1/*
+            docs/evidence/valoria-lower-gate-family-v1/source/*
+          if-no-files-found: error
+          retention-days: 30
+

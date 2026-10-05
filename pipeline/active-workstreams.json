@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T07:37:15.256Z",
+  "updated_at": "2026-10-05T07:48:20.975Z",
   "active": [
     {
       "id": "valoria-lower-gate-family-v1",
@@ -18,12 +18,16 @@
         "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "tools/author-environment-family.py",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml",
+        "pipeline/valoria-production-art-starter-run-request.json"
       ],
       "resources": [
         "lower-gate-family-source",
         "art-production-planner",
-        "windows-runner-heavy"
+        "windows-runner-heavy",
+        "github-hosted-blender"
       ],
       "claimed_at": "2026-10-05T07:37:15.256Z",
       "base_main_sha": "5dedb34fe72fa8a120d0fcb3336b8d4713b56794",
