@@ -28,6 +28,16 @@
       ],
       "roughness": 0.83,
       "texture": "stone_grain"
+    },
+    "paving": {
+      "color": [
+        0.66,
+        0.6,
+        0.51,
+        1
+      ],
+      "roughness": 0.84,
+      "texture": "paving"
     }
   },
   "meshes": [
@@ -199,9 +209,43 @@
           7
         ]
       ],
-      "material": "trim",
+      "material": "paving",
       "bevel": 0.012,
-      "group": "Bridge_Deck"
+      "group": "Bridge_Deck",
+      "uv": [
+        [
+          0,
+          0
+        ],
+        [
+          2.8,
+          0
+        ],
+        [
+          2.8,
+          2.35
+        ],
+        [
+          0,
+          2.35
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2.8,
+          0
+        ],
+        [
+          2.8,
+          2.35
+        ],
+        [
+          0,
+          2.35
+        ]
+      ]
     },
     {
       "name": "Bridge_ParapetL_Wall",
