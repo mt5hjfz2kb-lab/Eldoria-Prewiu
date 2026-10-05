@@ -299,6 +299,7 @@ namespace Eldoria.EditorTools
             QualitySettings.shadows=ShadowQuality.All;
             QualitySettings.shadowDistance=180f;
 
+            Texture2D premiumDetailAlbedo,premiumDetailNormal;CreatePremiumStoneDetail(out premiumDetailAlbedo,out premiumDetailNormal);
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
@@ -332,6 +333,22 @@ namespace Eldoria.EditorTools
                         float target=(lower.Contains("metal")||lower.Contains("iron")) ? .34f:treatment.stone_smoothness;
                         m.SetFloat("_Smoothness",Mathf.Clamp01(Mathf.Max(m.GetFloat("_Smoothness"),target)));
                     }
+                    if(m.HasProperty("_BaseColor")&&m.HasProperty("_DetailAlbedoMap"))
+                    {
+                        var bc=m.GetColor("_BaseColor");float hi=Mathf.Max(bc.r,Mathf.Max(bc.g,bc.b)),lo=Mathf.Min(bc.r,Mathf.Min(bc.g,bc.b));
+                        string lower=m.name.ToLowerInvariant();
+                        bool surface=(hi-lo)<.28f&&!lower.Contains("banner")&&!lower.Contains("gold")&&!lower.Contains("metal")&&!lower.Contains("iron")&&!lower.Contains("wood");
+                        if(surface)
+                        {
+                            m.SetTexture("_DetailAlbedoMap",premiumDetailAlbedo);
+                            if(m.HasProperty("_DetailNormalMap"))m.SetTexture("_DetailNormalMap",premiumDetailNormal);
+                            if(m.HasProperty("_DetailAlbedoMapScale"))m.SetFloat("_DetailAlbedoMapScale",.34f);
+                            if(m.HasProperty("_DetailNormalMapScale"))m.SetFloat("_DetailNormalMapScale",.42f);
+                            m.SetTextureScale("_DetailAlbedoMap",new Vector2(5.5f,5.5f));
+                            if(m.HasProperty("_DetailNormalMap"))m.SetTextureScale("_DetailNormalMap",new Vector2(5.5f,5.5f));
+                            m.EnableKeyword("_DETAIL_MULX2");
+                        }
+                    }
                     m.enableInstancing=true;dst[i]=m;changed=true;
                 }
                 if(changed){renderer.sharedMaterials=dst;evidence.premium_material_renderers++;}
@@ -342,23 +359,23 @@ namespace Eldoria.EditorTools
             CreatePremiumGroundPatch("Gate west earth contact",new[]{
                 new Vector3(-8.6f,7.115f,-29.0f),new Vector3(-1.2f,7.115f,-27.5f),new Vector3(-.8f,7.115f,-19.2f),
                 new Vector3(-3.2f,7.115f,-13.0f),new Vector3(-10.2f,7.115f,-11.2f),new Vector3(-12.5f,7.115f,-20.6f)
-            },new Color(.31f,.34f,.22f),.06f,evidence);
+            },new Color(.43f,.40f,.28f),.06f,evidence);
             CreatePremiumGroundPatch("Gate east earth contact",new[]{
                 new Vector3(8.1f,7.115f,-27.8f),new Vector3(17.8f,7.115f,-25.0f),new Vector3(19.1f,7.115f,-15.2f),
                 new Vector3(15.4f,7.115f,-10.1f),new Vector3(8.0f,7.115f,-12.7f),new Vector3(7.2f,7.115f,-20.7f)
-            },new Color(.34f,.35f,.23f),.055f,evidence);
+            },new Color(.45f,.42f,.29f),.055f,evidence);
             CreatePremiumGroundPatch("Road west verge",new[]{
                 new Vector3(-.1f,7.12f,-17.7f),new Vector3(2.0f,7.12f,-17.0f),new Vector3(1.6f,7.12f,-7.8f),
                 new Vector3(-1.4f,7.12f,-5.8f),new Vector3(-3.3f,7.12f,-10.5f)
-            },new Color(.29f,.32f,.20f),.05f,evidence);
+            },new Color(.40f,.39f,.26f),.05f,evidence);
             CreatePremiumGroundPatch("Road east verge",new[]{
                 new Vector3(5.2f,7.12f,-17.1f),new Vector3(8.0f,7.12f,-16.2f),new Vector3(9.6f,7.12f,-8.1f),
                 new Vector3(7.8f,7.12f,-5.7f),new Vector3(5.4f,7.12f,-7.4f)
-            },new Color(.32f,.34f,.21f),.05f,evidence);
+            },new Color(.42f,.40f,.27f),.05f,evidence);
             CreatePremiumGroundPatch("Gate threshold soil break",new[]{
                 new Vector3(-.4f,7.118f,-25.4f),new Vector3(2.0f,7.118f,-27.2f),new Vector3(7.8f,7.118f,-26.3f),
                 new Vector3(9.1f,7.118f,-23.2f),new Vector3(6.9f,7.118f,-21.1f),new Vector3(1.2f,7.118f,-21.7f)
-            },new Color(.39f,.35f,.24f),.075f,evidence);
+            },new Color(.47f,.41f,.29f),.075f,evidence);
 
             var water=GameObject.Find("Water");
             if(water!=null)
@@ -382,7 +399,43 @@ namespace Eldoria.EditorTools
                 sm.SetFloat("_Cull",0f);sm.enableInstancing=true;shore.sharedMaterial=sm;
             }
 
+            var cameraData=camera.gameObject.GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            if(cameraData==null)cameraData=camera.gameObject.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            cameraData.renderPostProcessing=true;
+            cameraData.antialiasing=UnityEngine.Rendering.Universal.AntialiasingMode.FastApproximateAntialiasing;
+            var volume=new GameObject("Premium grading volume").AddComponent<UnityEngine.Rendering.Volume>();
+            volume.isGlobal=true;volume.priority=100f;
+            var profile=ScriptableObject.CreateInstance<UnityEngine.Rendering.VolumeProfile>();volume.sharedProfile=profile;
+            var grading=profile.Add<UnityEngine.Rendering.Universal.ColorAdjustments>(true);
+            grading.postExposure.Override(.08f);grading.contrast.Override(14f);grading.saturation.Override(6f);grading.colorFilter.Override(new Color(1f,.985f,.95f));
+            var balance=profile.Add<UnityEngine.Rendering.Universal.WhiteBalance>(true);
+            balance.temperature.Override(8f);balance.tint.Override(-2f);
+            var tonemap=profile.Add<UnityEngine.Rendering.Universal.Tonemapping>(true);
+            tonemap.mode.Override(UnityEngine.Rendering.Universal.TonemappingMode.ACES);
+            var bloom=profile.Add<UnityEngine.Rendering.Universal.Bloom>(true);
+            bloom.intensity.Override(.08f);bloom.threshold.Override(1.05f);bloom.scatter.Override(.55f);
+
             evidence.premium_uplift=true;evidence.shadows_enabled=true;evidence.fog_enabled=RenderSettings.fog;
+        }
+
+        static void CreatePremiumStoneDetail(out Texture2D albedo,out Texture2D normal)
+        {
+            const int size=128;
+            albedo=new Texture2D(size,size,TextureFormat.RGB24,true){name="Valoria Premium Stone Detail",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Trilinear,anisoLevel=4};
+            normal=new Texture2D(size,size,TextureFormat.RGBA32,true,true){name="Valoria Premium Stone Detail Normal",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Trilinear,anisoLevel=4};
+            var ac=new Color[size*size];var nc=new Color[size*size];
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++)
+            {
+                float u=(float)x/size,v=(float)y/size;
+                float strata=Mathf.Sin((u*2.7f+v*.45f)*Mathf.PI*2f)*.55f+Mathf.Sin((v*5.1f-u*.35f)*Mathf.PI*2f+.8f)*.25f;
+                float grain=Mathf.Sin((u*11f+v*7f)*Mathf.PI*2f+1.2f)*.20f;
+                float value=.50f+(strata+grain)*.055f;
+                ac[y*size+x]=new Color(value,value*.995f,value*.97f,1f);
+                float du=(Mathf.Cos((u*2.7f+v*.45f)*Mathf.PI*2f)*2.7f*.55f+Mathf.Cos((u*11f+v*7f)*Mathf.PI*2f+1.2f)*11f*.20f)*.018f;
+                float dv=(Mathf.Cos((v*5.1f-u*.35f)*Mathf.PI*2f+.8f)*5.1f*.25f+Mathf.Cos((u*11f+v*7f)*Mathf.PI*2f+1.2f)*7f*.20f)*.018f;
+                var n=new Vector3(-du,-dv,1f).normalized;nc[y*size+x]=new Color(n.x*.5f+.5f,n.y*.5f+.5f,n.z*.5f+.5f,1f);
+            }
+            albedo.SetPixels(ac);albedo.Apply(true,false);normal.SetPixels(nc);normal.Apply(true,false);
         }
 
         static void CreatePremiumGroundPatch(string name,Vector3[] points,Color color,float smoothness,Evidence evidence)
