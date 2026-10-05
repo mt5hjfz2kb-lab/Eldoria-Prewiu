@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-06",
-  "nonce": "rock-terrain-source-06-continuous-near-perimeter-cliff",
+  "nonce": "rock-terrain-source-06-continuous-cliff-wall",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source06 strict ART SOURCE retry: continuous near-perimeter cliff wall with broad vertical/diagonal facets, shoulders visually embedded, no cavern/pillar read, exact silhouette and ground interfaces; zero Tripo; Unity blocked pending direct review."
+  "scope": "Rock/Terrain source06 strict ART SOURCE retry: continuous cliff wall within 0–2.5% inset of approved perimeter, large vertical/diagonal geological facets, shoulders buried into mass, no support/pillar read, no micro-rock; exact 3/7/11 anchors; zero Tripo; Unity blocked pending direct review."
 }
