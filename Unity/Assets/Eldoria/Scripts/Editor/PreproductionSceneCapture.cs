@@ -145,7 +145,7 @@ namespace Eldoria.EditorTools
                         foreach(var rr in inst.GetComponentsInChildren<Renderer>(true)) if(rr.enabled)
                         {
                             evidence.placement_renderers++;
-                            foreach(var m in rr.sharedMaterials)if(m!=null)placedMaterials.Add(m);
+                            foreach(var m in rr.sharedMaterials)if(m!=null){m.enableInstancing=true;placedMaterials.Add(m);}
                             var mf=rr.GetComponent<MeshFilter>();if(mf!=null&&mf.sharedMesh!=null&&placedMeshes.Add(mf.sharedMesh))
                                 for(int sm=0;sm<mf.sharedMesh.subMeshCount;sm++){}
                             if(mf!=null&&mf.sharedMesh!=null)for(int sm=0;sm<mf.sharedMesh.subMeshCount;sm++)evidence.placement_triangles+=(int)mf.sharedMesh.GetIndexCount(sm)/3;
