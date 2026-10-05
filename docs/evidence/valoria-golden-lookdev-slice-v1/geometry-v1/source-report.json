@@ -1,0 +1,49 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "family": "GoldenLocalVisualShellV1",
+  "scope": "Bounded Golden Slice geometry escalation after three valid surface-only failures. Local cliff/ground/shore/contact/3 vegetation replacements only.",
+  "source": "art-source/valoria/lookdev/golden-slice-v1/geometry-v1/GoldenLocalVisualShellV1.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/geometry-v1/GoldenLocalVisualShellV1.glb",
+  "source_sha": "12eea1d07b01c3d6c8d9f9fc25a68b26e2a5cd58c4c25a63a788018666757b2b",
+  "export_sha": "59db7086496c2ffb52aa9cecf88f6d8af3d6abf40287d64e8598d680a3553223",
+  "geometry_metrics": {
+    "triangles": 8496,
+    "vertices": 4646,
+    "objects": 39,
+    "bounds_world_blender": [
+      [
+        -24.0,
+        -35.20000076293945,
+        0.0
+      ],
+      [
+        36.0,
+        -12.699999809265137,
+        14.732599258422852
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true
+  },
+  "unity_placement": {
+    "position": [
+      4.0,
+      7.0,
+      -22.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  },
+  "surface_basis": "Golden Surface V2 persisted maps",
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v1/source-lit-three-quarter.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v1/source-official-proxy.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v1/source-clay.png"
+  ],
+  "gameplay_geometry": false,
+  "colliders": 0,
+  "macro_positions_changed": false,
+  "tripo_credits": 0,
+  "isolated_art_review": "PENDING"
+}
