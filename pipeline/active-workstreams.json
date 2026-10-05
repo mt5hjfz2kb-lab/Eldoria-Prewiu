@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T13:30:00Z",
+  "updated_at": "2026-10-05T14:12:00Z",
   "active": [
     {
       "id": "valoria-bastion-family-v1",
@@ -16,7 +16,9 @@
         "pipeline/valoria-production-art-reset-run-request.json",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "tools/author-bastion-family.py",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml"
       ],
       "resources": [
         "valoria-bastion-family",
@@ -27,8 +29,8 @@
       "claimed_at": "2026-10-05T13:30:00Z",
       "base_main_sha": "e1093da38df1d01d7045a5e63f4f01b77bfebcd2",
       "status": "active",
-      "phase": "TARGET",
-      "dependency": "Bastion only. Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls are immutable. Camera, target, global composition, platform and gameplay locked. Zero Tripo unless owner explicitly authorizes."
+      "phase": "SOURCE AUTHORING — DONOR HYBRID",
+      "dependency": "Bastion only. Source01–04 strict hero reviews exposed a generic-fortress ceiling. Source05 may use the already-certified historical Hero Bastion ONLY as zero-credit geometric relief donor inside the current Keep envelope. No donor macro silhouette, roofs, rock base, camera/composition movement, adjacent-family edits or Tripo."
     }
   ],
   "history": [
