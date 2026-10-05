@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "golden-surface-authoring-v1-iteration01-techretry01",
+  "nonce": "valoria-golden-surface-iteration02",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 SURFACE AUTHORING iteration01 technical retry. Exact same surface hypothesis and visual parameters after C# compile fixes only. Freeze source03 contact geometry as baseline. No geometry authoring, no lighting compensation, zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface method iteration02. Preserve camera, composition, geometry positions and gameplay. Expand authored PBR surface coverage only to real renderers dominating the Golden crop: Lower Gate, Bridge/threshold/roads, source03 contact pieces, adjacent ForegroundBank cliff, existing trees and shore. Add bounded shallow-to-deep water value response. Do not globally re-author MainPlatform/PlayableGround. No new geometry, no Props+Background, no Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN SURFACE AUTHORING ITERATION01",
+  "result": "PENDING GOLDEN SURFACE ITERATION02 VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration01-techretry01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration02",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
