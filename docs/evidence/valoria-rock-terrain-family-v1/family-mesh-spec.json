@@ -1,7 +1,7 @@
 {
   "schema_version": 10,
   "family": "RockTerrainFamilyV1",
-  "source_iteration": "source09-contact-uplift-v1",
+  "source_iteration": "source09-contact-uplift-v1b",
   "classification": "CONTROLLED_UPLIFT_CANDIDATE",
   "coordinates": "Source09 authoritative geometry locked byte-for-value in mesh vertices/faces. Controlled Bastion-contact uplift changes ONLY the 11 UpperTerraceCliff band-3 faces previously assigned rock_shadow to rock_base, eliminating the continuous dark seam identified by Structural Quality Bar Review. No vertex, face, envelope, anchor, camera, platform, family or gameplay change.",
   "export_origin": [
@@ -30611,7 +30611,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30651,7 +30651,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30691,7 +30691,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30731,7 +30731,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30771,7 +30771,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30811,7 +30811,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31291,7 +31291,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31331,7 +31331,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31371,7 +31371,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31411,7 +31411,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31451,7 +31451,7 @@
           3
         ]
       ],
-      "material": "rock_base",
+      "material": "rock_warm",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -35549,9 +35549,11 @@
       "UpperTerraceCliff_Diag_3_24"
     ],
     "from_material": "rock_shadow",
-    "to_material": "rock_base",
+    "to_material": "rock_warm",
     "geometry_changed": false,
     "other_groups_changed": false,
-    "tripo_credits": 0
+    "tripo_credits": 0,
+    "iteration": "v1b",
+    "visual_reason": "v1 rock_base remap was correctly localized but remained too dark/continuous in authoritative 16:9 comparison. v1b raises only the same 11 faces one existing palette step to rock_warm; no scope or geometry expansion."
   }
 }
