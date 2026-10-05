@@ -1,0 +1,77 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "workstream": "GOLDEN PRIMARY FORMS \u2014 PROFESSIONAL MESH RECONSTRUCTION v1",
+  "method": "silhouette-first custom profile loops + direct vertex/edge authoring + tapered lofts + continuous geological surfaces + compound vegetation massing",
+  "supersedes_method": "source02/source03 repeated primitive/additive primary-form method",
+  "source": "art-source/valoria/lookdev/golden-slice-v1/professional-primary-reconstruction-v1/GoldenPrimaryProfessionalReconstructionV1.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/professional-primary-reconstruction-v1/GoldenPrimaryProfessionalReconstructionV1.glb",
+  "source_sha": "337c6ba08e21aff1883ba01cd4544d372b6b0d365b8f9aab684f43a057737402",
+  "export_sha": "2e207e8f1235ae9dec38883b628e2c91d131eb9a05aee52a11aaa8b985399647",
+  "geometry_metrics": {
+    "triangles": 2660,
+    "vertices": 1444,
+    "objects": 27,
+    "materials": [
+      "PRV1 Bark",
+      "PRV1 Canopy",
+      "PRV1 Cut Stone",
+      "PRV1 Geological Rock",
+      "PRV1 Ground",
+      "PRV1 Portal Shadow",
+      "PRV1 Warm Fortification Stone",
+      "PRV1 Water",
+      "PRV1 Wet Shelf"
+    ],
+    "bounds_world_blender": [
+      [
+        -22.0,
+        -40.0,
+        -0.052470073103904724
+      ],
+      [
+        31.0,
+        -18.586605072021484,
+        15.6023530960083
+      ]
+    ],
+    "uv": true,
+    "normals": true
+  },
+  "screen_space_changes": [
+    "Lower Gate reduced to a few continuous tapered authored masses; tower bodies and crowns are custom profiles rather than stacked blocks.",
+    "Portal is a deep continuous shell with explicit reveal/void hierarchy and non-rectangular crown silhouette.",
+    "Bridge is a continuous variable-section structural body with camber, taper, integrated parapet profiles and buried geological receivers.",
+    "Terrain banks run continuously from plateau through cliff strata to wet shelf with irregular cross-band offsets instead of flat platform + vertical face.",
+    "Vegetation is composed as four asymmetrical canopy masses made from overlapping authored lobes rather than isolated decorative trees."
+  ],
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-clay-gate.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-lit-review.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-official-proxy.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-contact-closeup.png"
+  ],
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "scope_guards": {
+    "canonical_camera_changed": false,
+    "macro_gate_position_changed": false,
+    "macro_bridge_position_changed": false,
+    "gameplay_changed": false,
+    "road_stair_bastion_changed": false,
+    "families_outside_golden_crop_changed": false,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "clay_gate": {
+    "required_geometry_silhouette": 4.0,
+    "status": "PENDING HUMAN/AGENT VISUAL REVIEW"
+  },
+  "visual_gate": {
+    "required": 4.0,
+    "geometry_silhouette": "PENDING",
+    "material_response": "PENDING",
+    "contact_integration": "PENDING",
+    "environment_coherence": "PENDING",
+    "premium_perception": "PENDING"
+  },
+  "unity_integration": "PROHIBITED UNTIL ALL VISUAL METRICS >=4.0"
+}
