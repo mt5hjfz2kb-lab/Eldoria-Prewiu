@@ -11,8 +11,8 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
-  "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
+  "source_sha": "c61f689d4cc48d15ad07ba1493e9dc4251104d7bc496b128ae662f851a9e300b",
+  "export_sha": "e856229cd0cff6f4bbb49ea44edebd8a6862c2ea0922b2b53462771973f99cfb",
   "source": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.blend",
   "export": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "geometry_metrics": {
@@ -54,6 +54,16 @@
       "albedo+normal"
     ],
     "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "hero_masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "timber": [
       512,
       512,
       "albedo+normal"
