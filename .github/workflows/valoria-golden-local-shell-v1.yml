@@ -39,13 +39,13 @@ jobs:
       - name: Author Golden primary forms
         id: authoring
         run: |
-          blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png
+          blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-source02.py
+          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/GoldenPrimaryFormsV1_source02.glb
+          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/GoldenPrimaryFormsV1_source02.blend
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source-report.json
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-clay-silhouette.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-lit-three-quarter.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-official-proxy.png
 
       - name: Persist isolated evidence
         id: persist
@@ -98,7 +98,7 @@ jobs:
         with:
           name: valoria-golden-primary-forms-v1-source
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/*
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/*
+            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/*
           if-no-files-found: warn
           retention-days: 30
