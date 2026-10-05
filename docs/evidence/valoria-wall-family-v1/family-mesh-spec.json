@@ -9731,54 +9731,20 @@
   "preview_span": 54,
   "preview_views": [
     {
-      "name": "01-clay-defensive-3quarter",
-      "direction": [
-        0.45,
-        -1.05,
-        0.78
-      ],
-      "clay": true
-    },
-    {
-      "name": "02-lit-defensive-3quarter",
-      "direction": [
-        0.45,
-        -1.05,
-        0.78
-      ]
-    },
-    {
       "name": "03-wall-low",
       "direction": [
-        0.12,
-        -1,
-        0.2
+        -0.72,
+        -0.5,
+        0.48
       ]
     },
     {
       "name": "04-wall-side",
       "direction": [
-        1,
-        -0.22,
-        0.35
+        0.64,
+        -0.72,
+        0.27
       ]
-    },
-    {
-      "name": "05-approved-camera-proxy",
-      "direction": [
-        0.2801664996,
-        -0.7697511313,
-        0.5735764364
-      ]
-    },
-    {
-      "name": "06-wireframe",
-      "direction": [
-        0.45,
-        -1.05,
-        0.78
-      ],
-      "wire": true
     }
   ],
   "production_intent": {
