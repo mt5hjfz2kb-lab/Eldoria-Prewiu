@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T20:20:00Z",
+  "updated_at": "2026-10-05T20:23:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -30,16 +30,16 @@
       ],
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
-      "status": "blocked",
-      "phase": "HUMAN SCOPE BLOCKER / BOUNDED SURFACE+GEOMETRY METHODS EXHAUSTED",
+      "status": "active",
+      "phase": "OWNER-AUTHORIZED METHOD B / INTEGRATED BASE REAUTHORING",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "OWNER DECISION REQUIRED: authorize either (A) continuous Rock/Terrain + local ground substrate reauthor around Lower Gate/Bridge, or (B) integrated Lower Gate + Bridge edge profiles + substrate micro-environment reauthor. Do not run source04 or more overlays.",
-      "blocked_at": "2026-10-05T20:20:00Z",
-      "blocker": "Golden core metrics remain <4/5 after 3 valid surface iterations and 3 bounded local geometry proofs. Further improvement requires reopening scope-locked continuous Rock/Terrain + local ground substrate, optionally together with Lower Gate/Bridge edge profiles. Owner authorization required.",
+      "next": "REFERENCE -> TARGET TRANSLATION -> PROFESSIONAL BLENDER BASE REAUTHORING -> ISOLATED HERO PREVIEW -> VISUAL REVIEW. Unity integration only after isolated source gate >=4/5.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
-      "strongest_bounded_artifact_id": 11368942273
+      "strongest_bounded_artifact_id": 11368942273,
+      "resumed_at": "2026-10-05T20:23:00Z",
+      "authorization": "Owner explicitly authorized option B: integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment reauthor. Preserve canonical camera/composition/macro positions/gameplay; no Tripo."
     }
   ],
   "history": [
