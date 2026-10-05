@@ -1,0 +1,96 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "59990cad73360faf497c9aed24b76a55fb225a532f8a17097126926f26415850",
+  "export_sha": "aa0d41d96101b1f2dda729ac62c6a13abcf00115b7299e591bb82c4173b26309",
+  "source": "art-source/valoria/production/wall-family-v1/WallFamilyV1.blend",
+  "export": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 5616,
+    "vertices": 2912,
+    "modules": 6,
+    "materials": 5,
+    "bounds_world_blender": [
+      [
+        -14.841264724731445,
+        -20.104726791381836,
+        7.059999942779541
+      ],
+      [
+        35.36589050292969,
+        -2.004941940307617,
+        12.65999984741211
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "wall_shadow",
+    "wall_base",
+    "wall_warm",
+    "wall_face",
+    "wall_cap"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-wall-family-v1/source/01-clay-defensive-3quarter.png",
+    "docs/evidence/valoria-wall-family-v1/source/02-lit-defensive-3quarter.png",
+    "docs/evidence/valoria-wall-family-v1/source/03-wall-low.png",
+    "docs/evidence/valoria-wall-family-v1/source/04-wall-side.png",
+    "docs/evidence/valoria-wall-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-wall-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    10,
+    -12,
+    7.06
+  ],
+  "unity_placement": {
+    "position": [
+      10.0,
+      7.059999942779541,
+      -12.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
