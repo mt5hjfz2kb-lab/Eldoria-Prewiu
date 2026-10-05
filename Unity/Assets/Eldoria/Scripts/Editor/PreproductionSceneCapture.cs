@@ -360,6 +360,28 @@ namespace Eldoria.EditorTools
                 new Vector3(9.1f,7.118f,-23.2f),new Vector3(6.9f,7.118f,-21.1f),new Vector3(1.2f,7.118f,-21.7f)
             },new Color(.39f,.35f,.24f),.075f,evidence);
 
+            var water=GameObject.Find("Water");
+            if(water!=null)
+            {
+                var wr=water.GetComponent<MeshRenderer>();
+                if(wr!=null&&wr.sharedMaterial!=null)
+                {
+                    var wm=new Material(wr.sharedMaterial){name="Valoria Water PremiumHeroV1"};
+                    if(wm.HasProperty("_Smoothness"))wm.SetFloat("_Smoothness",.58f);
+                    if(wm.HasProperty("_Metallic"))wm.SetFloat("_Metallic",.02f);
+                    wm.enableInstancing=true;wr.sharedMaterial=wm;
+                }
+            }
+            foreach(var shore in Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+            {
+                if(!shore.gameObject.name.StartsWith("Valoria Shore"))continue;
+                if(shore.sharedMaterial==null)continue;
+                var sm=new Material(shore.sharedMaterial){name=shore.sharedMaterial.name+" · PremiumHeroV1"};
+                if(sm.HasProperty("_BaseColor"))sm.SetColor("_BaseColor",new Color(.15f,.18f,.13f,1f));
+                if(sm.HasProperty("_Smoothness"))sm.SetFloat("_Smoothness",.30f);
+                sm.SetFloat("_Cull",0f);sm.enableInstancing=true;shore.sharedMaterial=sm;
+            }
+
             evidence.premium_uplift=true;evidence.shadows_enabled=true;evidence.fog_enabled=RenderSettings.fog;
         }
 
@@ -373,7 +395,7 @@ namespace Eldoria.EditorTools
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var rr=go.AddComponent<MeshRenderer>();rr.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;rr.receiveShadows=true;
             var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name+" material"};
-            mat.SetColor("_BaseColor",color);mat.SetFloat("_Smoothness",smoothness);mat.SetFloat("_Metallic",0f);mat.enableInstancing=true;
+            mat.SetColor("_BaseColor",color);mat.SetFloat("_Smoothness",smoothness);mat.SetFloat("_Metallic",0f);mat.SetFloat("_Cull",0f);mat.enableInstancing=true;
             rr.sharedMaterial=mat;evidence.premium_ground_patches++;
         }
 
