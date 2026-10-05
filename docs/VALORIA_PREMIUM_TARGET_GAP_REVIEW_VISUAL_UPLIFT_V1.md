@@ -119,3 +119,11 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - The local ground/contact blend surfaces finally render, but their generated winding produces downward-facing normals; under directional lighting they appear as large near-black polygons.
 - This invalidates the art judgement for the ground-integration hypothesis. It is an authoring defect in the test surface, not evidence against the lever itself.
 - Iteration04 is rejected. Iteration05 must change only winding/normals (plus no unrelated scope expansion) and rerun the same visual hypothesis.
+
+
+## Iteration 05 — VISUAL FAIL / TECHNICALLY VALID
+- Run **37353878139** — SUCCESS; artifact **11364280394**.
+- Corrected ground blends render with valid normals and demonstrate that local terrain/building contact can be changed without geometry or gameplay regression.
+- However the broad flat olive polygons themselves read as an overlay treatment, not a premium natural surface. The scene remains materially too simple and the central metrics stay below 4/5.
+- Per the anti-loop rule, stop tuning this technique. Five iterations are sufficient evidence that lighting + flat-color blend patches alone cannot cross the quality bar.
+- Technique pivot: retain only restrained contact breakup, then add **reusable PBR surface-detail response and actual Unity color/tone grading**. Geometry remains locked; no closed family is reopened.
