@@ -18,20 +18,28 @@
     "nonmanifold_edges": 0
   },
   "hero_questions": {
-    "1_deliberate_silhouette": "PARTIAL FAIL — staged keep and different towers improve Source01, but the family still reads first as a long crenellated wall band.",
-    "2_immediately_dominant_valoria_bastion": "FAIL — the central keep is clearer but not yet iconic enough to dominate the whole family at gameplay distance.",
-    "3_primary_secondary_tertiary": "PASS DIRECTIONALLY — keep/command masses, recessed curtain bays and tertiary crenellation are more legible.",
-    "4_real_architectural_depth": "PASS — recessed curtain bays, projecting piers and staged keep/tower sections create genuine depth.",
-    "5_controlled_asymmetry": "PASS — east tower, far-west block and left wing have distinct skyline roles.",
-    "6_no_cloned_modules": "PASS — tower section logic is visibly different.",
-    "7_rich_material_without_microdetail": "PARTIAL — low-frequency stone fixes Source01 brick dominance, but lit review is too dark/muddy for a hero focal asset.",
-    "8_coherent_lower_gate_walls": "PASS — same military stone language, richer hierarchy.",
-    "9_gameplay_camera": "FAIL HERO — from the gameplay-facing preview the keep and access still do not create the premium focal read required.",
-    "10_authored_not_procedural": "PASS — geometry is deliberately authored and semantically staged.",
-    "11_not_castle_kit_generic": "FAIL HERO — improved, but silhouette still resembles a competent generic crenellated fortress strip rather than an unmistakable Valoria landmark.",
-    "12_obvious_full_frame_improvement": "FAIL HERO BAR — clear improvement over blockout, not yet enough for the dominant landmark."
+    "1_deliberate_silhouette": "FAIL — improved articulation, but gameplay silhouette remains a long crenellated horizontal band with insufficient central break.",
+    "2_immediately_dominant_valoria_bastion": "FAIL — the Keep is identifiable yet still not visually dominant enough versus the curtain mass.",
+    "3_primary_secondary_tertiary": "PARTIAL PASS — hierarchy is stronger, but the primary keep/gate cluster does not yet separate decisively from secondary curtains.",
+    "4_real_architectural_depth": "PASS — recessed bays, projecting piers, staged towers and arch ring create genuine multi-plane depth.",
+    "5_controlled_asymmetry": "PASS — east/west tower logic differs and rear/left supporting masses vary coherently.",
+    "6_no_cloned_modules": "PASS — major towers and wings are visibly distinct.",
+    "7_rich_material_without_microdetail": "PASS DIRECTIONALLY — lower-frequency stone is better than Source01, but value hierarchy remains too compressed for hero emphasis.",
+    "8_coherent_lower_gate_walls": "PASS — military masonry and crenellation vocabulary belong to the established Valoria family.",
+    "9_gameplay_camera": "FAIL HERO — official-camera proxy still reads as fortified wall first, unique Bastion second.",
+    "10_authored_not_procedural": "PASS — explicit authored bays, piers, arch wedges and tower stages.",
+    "11_not_castle_kit_generic": "FAIL — the overall long-wall + rectangular command blocks silhouette still falls short of a bespoke Valoria hero identity.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — substantial source improvement, but not yet enough for the dominant landmark of the whole frame."
   },
-  "decision": "DO NOT INTEGRATE UNITY. Source03 must create one unmistakable command keep/access signature at large scale, brighter limestone hierarchy, and more narrative asymmetric crest/damage while preserving every approved envelope.",
-  "legacy_reference_note": "Historical certified Hero Bastion was inspected only as a quality/reference donor. It is richer but too vertical/palatial/blue-roofed for the current canonical target and will NOT be substituted as final geometry.",
+  "hard_stop_result": "FAIL on 1,2,9,11,12. Unity integration remains prohibited.",
+  "source03_direction": [
+    "compress visual emphasis into a stronger central keep/gate cluster while staying inside the exact same nine envelopes",
+    "give Keep a more distinctive stepped crown with projecting corner piers and a deeper heraldic front bay",
+    "make the gate read as a monumental portal composition, not an isolated arch ring between walls",
+    "lower visual cadence/contrast on the long curtains so they support rather than compete",
+    "use stronger light/dark material hierarchy around keep/gate and quieter side stone",
+    "introduce target-consistent blue/gold heraldic accents and a controlled top flag/banner element only inside Bastion envelopes",
+    "preserve exact camera/target/composition and zero Tripo"
+  ],
   "tripo_credits": 0
 }
