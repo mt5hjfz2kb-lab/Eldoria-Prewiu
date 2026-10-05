@@ -1,0 +1,94 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "b0c4aadd5991f71f318ada61e6e0e60ce495e8e3dc20b89be597a9291d358543",
+  "export_sha": "05fe5535768fd4a1ca0b34caf5072369c0b81500751652fb803d34959bed2e77",
+  "source": "art-source/valoria/production/road-family-v1/RoadFamilyV1.blend",
+  "export": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 1728,
+    "vertices": 896,
+    "modules": 4,
+    "materials": 3,
+    "bounds_world_blender": [
+      [
+        -6.454143524169922,
+        -46.59457015991211,
+        3.010000228881836
+      ],
+      [
+        8.745888710021973,
+        9.516408920288086,
+        11.09000015258789
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "road_base",
+    "road_paving",
+    "road_edge"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-road-family-v1/source/01-clay-3quarter.png",
+    "docs/evidence/valoria-road-family-v1/source/02-lit-3quarter.png",
+    "docs/evidence/valoria-road-family-v1/source/03-axis-low.png",
+    "docs/evidence/valoria-road-family-v1/source/04-axis-side.png",
+    "docs/evidence/valoria-road-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-road-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    3.5,
+    -18,
+    7.08
+  ],
+  "unity_placement": {
+    "position": [
+      3.5,
+      7.079999923706055,
+      -18.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
