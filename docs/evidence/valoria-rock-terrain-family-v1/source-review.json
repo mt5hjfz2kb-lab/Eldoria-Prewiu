@@ -1,14 +1,15 @@
 {
   "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
-  "source_run": 37304825245,
-  "artifact_id": 11342464690,
-  "source_sha": "3258a865d9dcffa0f45a3d9a3cb03bbde8a9d4847ef94ab2d373a7431f90f228",
-  "export_sha": "9e2cf880c878c7ee24110cce28654b0a1fb8b3a98f45444be7675cab23e0c698",
+  "source_iteration": "source04",
+  "source_run": 37305549155,
+  "artifact_id": 11343159192,
+  "source_sha": "fbc0268fd9cc10f890be56eea010ac813a64e1152d4f421cfb45cf6151146e03",
+  "export_sha": "cf6bbbd27c5868bbfb114c67d4ebf2cd47aa05cbda6c3cebdbe38afbdc98745e",
   "tech_pass": true,
   "geometry": {
-    "triangles": 1650,
-    "vertices": 2864,
+    "triangles": 786,
+    "vertices": 1214,
     "modules": 12,
     "materials": 7,
     "uv": true,
@@ -16,18 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PARTIAL — cleaner and less procedural, but the dominant read is still a broad slab with subdued cliff relief.",
-    "rock_rhythm": "PARTIAL — naturalized facets exist but are too shallow at approved-camera scale.",
-    "silhouette": "PASS — exact approved outer boundary and 3/7/11 anchors preserved.",
-    "depth_without_noise": "PASS — depth is controlled and noise-free, but insufficiently pronounced.",
-    "authored_not_procedural": "PASS — continuous value zones and geometry-driven shading remove the checker cadence.",
-    "mobile_scale": "FAIL/PARTIAL — relief is too subtle to carry a strong rock read at small screen size.",
-    "architecture_integration": "PENDING UNITY — source not authorized.",
-    "material_difference": "PASS — earth and rock are distinct and restrained.",
-    "real_quality_jump": "FAIL — not yet a frame-transforming structural rock treatment."
+    "greybox_reduction": "PARTIAL — deep recesses create strong depth but the wall reads as repeated vertical supports/cavities.",
+    "rock_rhythm": "FAIL — regular outer pillars are too architectural for the canonical rock base.",
+    "silhouette": "PASS — approved macro envelope preserved.",
+    "depth_without_noise": "PASS — depth is clear and broad-scale.",
+    "authored_not_procedural": "PARTIAL/FAIL — depth is authored, but repeated pillar cadence is too systematic.",
+    "mobile_scale": "PASS — relief is large and legible.",
+    "architecture_integration": "PENDING UNITY — not authorized.",
+    "material_difference": "PASS — rock/earth/paving hierarchy remains distinct.",
+    "real_quality_jump": "PARTIAL — strong depth jump, wrong geological read."
   },
-  "decision": "REAUTHOR SOURCE04 IN SAME FAMILY. Increase mid-wall inset/overhang depth substantially while keeping exact top/bottom rings; use large nonuniform vertical/diagonal planes and a few broad contiguous shadow recesses. No micro-rock or exterior silhouette additions.",
+  "decision": "SOURCE05: retain only thin exact top/bottom silhouette lips; inset the entire visible mid-wall so no repeated perimeter columns remain. Use large irregular diagonal facets and nonmonotonic recess rings for natural controlled cliff shelves.",
   "unity_gate": "BLOCKED",
-  "tripo_credits": 0,
-  "scope": "Authoritative current source review. Source03 rejected; Unity blocked pending source04."
+  "tripo_credits": 0
 }
