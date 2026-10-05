@@ -1,0 +1,31 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "scope": "GoldenLocalVisualShellV2 accepted only for bounded Golden Slice integration test. It directly addresses integration01 boundary artifacts and remains non-promoted.",
+  "source_iteration": "geometry-source02",
+  "source_sha": "df11a159970fbb76bbc0a0ba8db901faa4b41eceecbbfbb1666d9f98ddbd5726",
+  "export_sha": "aa28c7a7e928262cf9ccf08035b75c9412530d69dcefefa8c566c5d01244cb0d",
+  "technical": {
+    "triangles": 8564,
+    "vertices": 4616,
+    "objects": 39,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "visual_review": {
+    "pass_reasons": [
+      "Broad rectangular cliff/ground sheets from integration01 are removed.",
+      "Ground pieces use irregular tapered radial boundaries intended to disappear into retained terrain.",
+      "Rock banks are overlapping rounded authored masses instead of planar sheet replacements.",
+      "Three local vegetation replacements now use conifer-compatible layered whorls rather than broadleaf/broccoli silhouettes."
+    ],
+    "integration_risks": [
+      "Any visible patch perimeter in official camera is an automatic fail.",
+      "Rock banks must not occlude Bridge/Lower Gate silhouette or water channel.",
+      "Local trees must remain compatible in scale/value with retained vegetation."
+    ]
+  },
+  "next_gate": "AFTER-only Unity integration against unchanged BEFORE baseline; suppress source01 shell if present and only the three superseded retained vegetation instances; apply Golden Surface V2 to stone/rock/ground."
+}
