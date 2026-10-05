@@ -1,5 +1,5 @@
 {
-  "verdict": "ART SOURCE PASS — CONTROLLED UPLIFT",
+  "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
   "uplift": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
   "base_authority": "Rock/Terrain Source09",
@@ -22,5 +22,6 @@
     "other_groups_changed": false
   },
   "source_gate": "PASS. Source is authorized for cumulative Unity solely to test removal of the Bastion-contact dark seam. Final PASS remains visual and cannot be inferred from this gate.",
-  "tripo_credits": 0
+  "tripo_credits": 0,
+  "gate_context": "CONTROLLED UPLIFT — exact workflow contract label; scope remains 11 material assignments only."
 }
