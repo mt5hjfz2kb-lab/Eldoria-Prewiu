@@ -37,4 +37,20 @@ Planning LOD0 budget from preproduction: **≤12,000 triangles**. Two shared sto
 4. **VISUAL PASS**: matched-camera TARGET vs APPROVED BLOCKOUT vs BRIDGE INTEGRATED. Must preserve screen occupancy and structural continuity into Lower Gate in landscape and portrait-entry.
 5. **PRODUCTION FAMILY PASS** only if all four gates above pass. Failure stays inside Bridge; do not open Road/Stair/Terrain/other families.
 
-Current state: **FAMILY SPEC LOCKED / SOURCE AUTHORING NEXT**. Tripo credits: **0**.
+## Result
+
+**PRODUCTION FAMILY PASS / CLOSED.**
+
+Source progression was deliberately gated rather than promoted on technical success alone. Source01 (run **37296116400**, artifact **11338688062**) was TECH PASS but **ART SOURCE FAIL** because its deck created an unintended zipper/chevron seam and its support read as a technical block assembly. Source02 (run **37296800850**, artifact **11340060969**) fixed the geometry but exposed a surface gap. Source03 (run **37297309856**, artifact **11339267765**) retained the accepted geometry and added metric civic paving; it is the authoritative **ART SOURCE PASS**. Reviewed source SHA-256: `801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4`; GLB SHA-256: `92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c`.
+
+The cumulative Unity gate retained the already-approved Lower Gate identically in BEFORE and AFTER and replaced only Bridge. Authoritative run **37298002864**, job **111723747578**, runner **DESKTOP-R10PE55**, artifact **11339213616** — SUCCESS. Focused gameplay tests: **5/5 PASS**.
+
+Matched-camera technical alignment passes in all seven official views. The Bridge replacement union is ~**99.891%** of approved blockout width and **99.632%** of height with only **0.108 px** center delta in source 3:2; maximum center delta over all official views is **0.119 px**. All **82 protected non-Bridge projected elements remain unchanged at 0 px**. Against the canonical target's BridgeDeck/BridgeParapet bbox, the integrated primary bridge is **99.988%** of target width and **104.915%** of target annotated height, with **11.42 px / 0.619% of frame diagonal** center error.
+
+Direct integrated review is **VISUAL PASS**: the foreground crossing, stone paving, restrained parapets, terminal posts, small masonry arch support and accepted Lower Gate read as one coherent Valoria defensive-civic structure. Bridge→Lower Gate continuity survives 3:2, 16:9, mobile landscape and portrait-entry without moving Lower Gate, Road, Terrain or camera. Final cliff/vegetation/water/lighting belong to other families and were not altered or falsely claimed as Bridge completion.
+
+Real Unity import: **2,592 triangles, 7,076 imported vertices, 4 renderers, 3 materials, 6 textures, 8 submesh draws**, mesh bytes **748,128**, texture bytes **16,782,576**; UV/normals/tangents present; colliders **0**; production scene opened/saved **false**. Camera, composition, platform, Bastion, Road, Terrain, Lower Gate and gameplay remain intact. Tripo credits: **0**.
+
+Formal evidence: `docs/evidence/valoria-bridge-family-v1/source-review.json`, `production-sanity.json`, `matched-camera-metrics.json`, `integrated-visual-review.json`, and `checkpoint.json`.
+
+**Do not start Road, Stair, Terrain or another family without a new owner instruction.**
