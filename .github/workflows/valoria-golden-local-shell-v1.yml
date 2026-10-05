@@ -1,4 +1,4 @@
-name: "[PRODUCTION] Golden Local Visual Shell v1"
+name: "[PRODUCTION] Golden Integrated Base Reauthor v1"
 
 on:
   push:
@@ -11,14 +11,14 @@ permissions:
   actions: read
 
 concurrency:
-  group: valoria-golden-local-shell-v1
+  group: valoria-golden-integrated-base-v1
   cancel-in-progress: true
 
 jobs:
   author:
     if: vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - name: Expose Git
         shell: powershell
@@ -32,7 +32,7 @@ jobs:
         with:
           clean: false
           fetch-depth: 2
-      - name: Validate route
+      - name: Validate professional route
         shell: powershell
         run: |
           node tools/plan-art-production.mjs
@@ -50,31 +50,31 @@ jobs:
           if(-not $exe){throw 'Blender executable unavailable on claimed Windows runner'}
           & $exe --version
           "exe=$exe" >> $env:GITHUB_OUTPUT
-      - name: Build bounded Golden local shell
+      - name: Author integrated Golden base
         shell: powershell
         run: |
-          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-local-shell-v3.py
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-integrated-base-v1.py
           if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.glb')){throw 'Missing GLB'}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.blend')){throw 'Missing BLEND'}
-          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-report.json')){throw 'Missing source report'}
-      - name: Persist source and evidence
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.glb')){throw 'Missing GLB'}
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.blend')){throw 'Missing BLEND'}
+          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-report.json')){throw 'Missing source report'}
+      - name: Persist isolated source and evidence
         shell: powershell
         run: |
           git config user.name "Eldoria Art Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -f art-source/valoria/lookdev/golden-slice-v1/geometry-v3
-          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3
+          git add -f art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1
           if(-not (git diff --cached --quiet)){
-            git commit -m "Persist Golden local visual shell source"
+            git commit -m "Persist Golden integrated base source"
             git pull --rebase origin main
             git push origin HEAD:main
           }
       - uses: actions/upload-artifact@v4
         with:
-          name: valoria-golden-local-shell-v1-source
+          name: valoria-golden-integrated-base-v1-source
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/geometry-v3/*
-            docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/*
+            art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/*
           if-no-files-found: error
           retention-days: 30
