@@ -1,10 +1,10 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_family_replacement",
   "nonce": "rock-terrain-source03-cumulative-gate-bridge-road-stair-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Rock/Terrain cumulative Unity matched-camera gate: retain accepted Lower Gate + Bridge + Road + Stair identically; replace only 12 Rock/Terrain placeholders; BackgroundTerrain/Bastion/Walls/gameplay untouched.",
+  "scope": "Rock/Terrain source03 rejected at ART SOURCE; Unity gate blocked pending source04.",
   "views": [
     {
       "name": "UNITY-source-3x2",
