@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-wall-family-v1-source-02",
-  "nonce": "wall-source-02-battered-chamfered-review-contract-fixed",
+  "nonce": "wall-source-02-battered-chamfered-reviewviews-retry",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Same Source02 geometry/materials after technical preview-contract failure only. Six canonical direction-based isolated review views restored. Preserve exact approved Wall envelopes. Zero Tripo. Unity remains blocked pending ART SOURCE review."
+  "scope": "Source02 technical retry after preview schema error only. Geometry/material intent unchanged: battered/chamfered bodies, structural seating, grouped crenellation, lower-frequency stone; same approved Wall envelopes; zero Tripo; Unity blocked pending ART SOURCE review."
 }
