@@ -9731,14 +9731,54 @@
   "preview_span": 54,
   "preview_views": [
     {
+      "name": "01-clay-defensive-3quarter",
+      "direction": [
+        0.45,
+        -1.05,
+        0.78
+      ],
+      "clay": true
+    },
+    {
+      "name": "02-lit-defensive-3quarter",
+      "direction": [
+        0.45,
+        -1.05,
+        0.78
+      ]
+    },
+    {
       "name": "03-wall-low",
-      "elevation": 16,
-      "azimuth": 205
+      "direction": [
+        -0.4,
+        -0.86,
+        0.29
+      ]
     },
     {
       "name": "04-wall-side",
-      "elevation": 24,
-      "azimuth": 110
+      "direction": [
+        0.88,
+        -0.32,
+        0.39
+      ]
+    },
+    {
+      "name": "05-approved-camera-proxy",
+      "direction": [
+        0.2801664996,
+        -0.7697511313,
+        0.5735764364
+      ]
+    },
+    {
+      "name": "06-wireframe",
+      "direction": [
+        0.45,
+        -1.05,
+        0.78
+      ],
+      "wire": true
     }
   ],
   "production_intent": {
