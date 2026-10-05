@@ -219,7 +219,7 @@ namespace Eldoria.EditorTools
                 float u=(float)x/grid,v=(float)z/grid;
                 float px=Mathf.Lerp(old.min.x,old.max.x,u),pz=Mathf.Lerp(old.min.z,old.max.z,v);
                 float wave=treatment.wave_amplitude*(Mathf.Sin(px*.115f+pz*.071f)+Mathf.Sin(px*.043f-pz*.097f)*.55f);
-                verts[vi]=new Vector3(px,y+wave,pz);uv[vi]=new Vector2(u*9f,v*9f);vi++;
+                verts[vi]=new Vector3(px,y+wave,pz);uv[vi]=new Vector2(u,v);vi++;
             }
             int ti=0;for(int z=0;z<grid;z++)for(int x=0;x<grid;x++)
             {
@@ -229,8 +229,8 @@ namespace Eldoria.EditorTools
             var mesh=new Mesh{name="Valoria Water Surface v1"};mesh.vertices=verts;mesh.triangles=tris;mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;
             var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Water v1"};
             var col=treatment.color!=null&&treatment.color.Length>=3?new Color(treatment.color[0]/255f,treatment.color[1]/255f,treatment.color[2]/255f,1f):new Color(.11f,.28f,.34f,1f);
-            const int texSize=128;var albedo=new Texture2D(texSize,texSize,TextureFormat.RGB24,false){name="Valoria Water Albedo v1",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
-            var normal=new Texture2D(texSize,texSize,TextureFormat.RGBA32,false,true){name="Valoria Water Normal v1",wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
+            const int texSize=128;var albedo=new Texture2D(texSize,texSize,TextureFormat.RGB24,false){name="Valoria Water Albedo v2 shallow-deep",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
+            var normal=new Texture2D(texSize,texSize,TextureFormat.RGBA32,false,true){name="Valoria Water Normal v2 shallow-deep",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
             var ac=new Color[texSize*texSize];var nc=new Color[texSize*texSize];
             for(int py=0;py<texSize;py++)for(int px=0;px<texSize;px++)
             {
@@ -239,8 +239,14 @@ namespace Eldoria.EditorTools
                 float h2=Mathf.Sin((v*4.0f-u*.35f)*Mathf.PI*2f+.7f);
                 float h3=Mathf.Sin((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f);
                 float mix=h1*.55f+h2*.30f+h3*.15f;
-                float shade=1f+mix*.055f;
-                ac[py*texSize+px]=new Color(Mathf.Clamp01(col.r*shade),Mathf.Clamp01(col.g*shade),Mathf.Clamp01(col.b*shade),1f);
+                float edge=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
+                float deep=Mathf.SmoothStep(.045f,.32f,edge);
+                // Shallow water stays slightly warmer/brighter at the physical perimeter; the basin center
+                // shifts cooler/darker. This is a value-depth relationship, not foam or added decoration.
+                float depthShade=Mathf.Lerp(1.10f,.82f,deep);
+                float shade=depthShade+mix*.038f;
+                float cool=Mathf.Lerp(.98f,1.04f,deep);
+                ac[py*texSize+px]=new Color(Mathf.Clamp01(col.r*shade*.96f),Mathf.Clamp01(col.g*shade),Mathf.Clamp01(col.b*shade*cool),1f);
                 float du=(Mathf.Cos((u*3.0f+v*.55f)*Mathf.PI*2f)*3f*.55f + Mathf.Cos((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f)*7f*.15f)*.055f;
                 float dv=(Mathf.Cos((v*4.0f-u*.35f)*Mathf.PI*2f+.7f)*4f*.30f + Mathf.Cos((u*7.0f+v*5.0f)*Mathf.PI*2f+1.3f)*5f*.15f)*.055f;
                 var n=new Vector3(-du,-dv,1f).normalized;nc[py*texSize+px]=new Color(n.x*.5f+.5f,n.y*.5f+.5f,n.z*.5f+.5f,1f);
