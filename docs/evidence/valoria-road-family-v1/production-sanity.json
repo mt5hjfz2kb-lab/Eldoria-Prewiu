@@ -51,6 +51,34 @@
     "LOD1": "Future 40–60% only if matched-camera/mobile screen-space error warrants it.",
     "LOD2": "Future 15–25% only after mobile validation; road surface may remain material-driven."
   },
-  "mobile_suitability": "Broad paving and restrained edges selected for landscape/portrait readability; integrated Unity review pending.",
-  "tripo_credits_spent": 0
+  "mobile_suitability": "Integrated readability PASS in source 3:2, 16:9, mobile landscape and portrait-entry/home; no device FPS certification.",
+  "tripo_credits_spent": 0,
+  "unity_import_actual": {
+    "engine": "6000.3.23f1",
+    "run": 37300556571,
+    "job": 111732031845,
+    "artifact": 11341876912,
+    "runner": "DESKTOP-R10PE55",
+    "triangles": 1944,
+    "vertices": 5556,
+    "renderers": 4,
+    "materials": 3,
+    "textures": 4,
+    "submesh_draws": 12,
+    "mesh_bytes": 587056,
+    "texture_bytes": 11188384,
+    "texture_sizes": [
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512",
+      "paving_albedo:512x512",
+      "paving_normal:512x512"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false,
+    "focused_playmode": "5/5 PASS"
+  }
 }
