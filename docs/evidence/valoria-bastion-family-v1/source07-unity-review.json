@@ -1,0 +1,28 @@
+{
+  "verdict": "HERO QUALITY BAR FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source07",
+  "source_run": 37325445184,
+  "source_artifact_id": 11351737209,
+  "unity_run": 37326134610,
+  "unity_artifact_id": 11351538105,
+  "tech_pass": true,
+  "gameplay_tests": "PASS",
+  "tripo_credits": 0,
+  "exact_visual_cause": [
+    "At the official matched 16:9/mobile cameras the Bastion reads as an over-bright near-white strip against the accepted warm Lower Gate, Walls, Road and Terrain families.",
+    "The pale hero_masonry hierarchy collapses facade planes into one high-value band, reducing architectural depth and making the family feel visually pasted onto the scene rather than integrated.",
+    "The Keep/banner/large-arch identity is present, but the extreme value contrast makes material mismatch dominate before those hero cues can read.",
+    "Timber scaffold and controlled damage survive but are too subordinate at gameplay scale to counter the washed-out massing.",
+    "Therefore Source07 is a clear geometry/source improvement but does not meet the integrated commercial HERO QUALITY BAR."
+  ],
+  "preserved_successes": [
+    "nine Bastion envelopes unchanged",
+    "silhouette and asymmetric command massing retained",
+    "large arch and blue/gold heraldry retained",
+    "zero nonmanifold source geometry",
+    "closed Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls unchanged",
+    "camera/target/composition/platform/gameplay unchanged"
+  ],
+  "next_iteration": "Source08 only: material/value correction. Keep Source07 geometry byte-for-byte in specification; lower hero stone values into the accepted warm Valoria range and deepen timber contrast. No new geometry, no camera compensation, no adjacent-family edits, zero Tripo."
+}
