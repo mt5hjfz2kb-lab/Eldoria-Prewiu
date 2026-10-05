@@ -17,14 +17,15 @@
     "nonmanifold_edges": 0
   },
   "art_gate": {
-    "paving_scale": "PASS — large staggered stone paving reads clearly without mobile-scale microdetail.",
-    "road_hierarchy": "PASS — road remains subordinate and darker/earthier than accepted Bridge.",
-    "real_section": "PASS — edge bands and shallow section read as actual geometry.",
-    "gate_main_continuity": "FAIL — one transverse black band remains at the locked GateThreshold/MainRoad overlap.",
-    "other_interfaces": "PASS directionally; no neighboring family was modified."
+    "route_identity": "PASS",
+    "paving_read": "PASS — broad staggered paving survives source review without micro-cobble noise.",
+    "foreground_and_upper_segments": "PASS",
+    "gate_to_main_continuity": "FAIL — a transverse black strip remains visible at the approved GateThreshold/MainRoad overlap.",
+    "hero_competition": "PASS — Road remains subordinate.",
+    "conclusion": "Do not run Unity. Fix only the internal Road overlap."
   },
-  "defect_classification": "LOCAL ROAD-TO-ROAD SURFACE OVERLAP / Z-FIGHT",
-  "action": "Stay inside Road. Add one shallow paving seam cap contained entirely inside the existing GateThreshold/MainRoad overlap and below the approved 7.08m top envelope. Do not move or resize any placeholder or neighbor.",
+  "defect_classification": "ROAD-INTERNAL INTERFACE / SURFACE CONTINUITY",
+  "action": "Add one shallow paved transition skin entirely inside the existing GateThreshold/MainRoad overlap and below the approved 7.08 top envelope. Preserve all outer bounds and neighbor families.",
   "unity_gate": "NOT RUN",
   "tripo_credits": 0
 }
