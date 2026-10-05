@@ -19,7 +19,8 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 35
     steps:
-      - name: Expose Git
+      - name: Prepare clean source02 workspace
+        id: prepare
         shell: powershell
         run: |
           if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
@@ -27,15 +28,16 @@ jobs:
             $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
             if(-not $candidate){throw 'Git not found'}
             $dir=Split-Path $candidate
-            Add-Content -Path $env:GITHUB_PATH -Value $dir
             $env:PATH="$dir;$env:PATH"
           }
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-          fetch-depth: 1
+          $work=Join-Path $env:RUNNER_TEMP ("golden_source02_"+$env:GITHUB_RUN_ID)
+          if(Test-Path $work){Remove-Item -Recurse -Force $work}
+          git clone --depth 1 --branch main https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git $work
+          if($LASTEXITCODE -ne 0){throw "Fresh clone failed $LASTEXITCODE"}
+          "workdir=$work" >> $env:GITHUB_OUTPUT
       - name: Validate professional route
         shell: powershell
+        working-directory: ${{ steps.prepare.outputs.workdir }}
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
@@ -54,6 +56,7 @@ jobs:
           "exe=$exe" >> $env:GITHUB_OUTPUT
       - name: Author Golden primary forms source02
         shell: powershell
+        working-directory: ${{ steps.prepare.outputs.workdir }}
         run: |
           & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-primary-forms-source02.py
           if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
@@ -70,7 +73,7 @@ jobs:
         with:
           name: valoria-golden-primary-forms-v1-source02-review
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/*
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/*
+            ${{ steps.prepare.outputs.workdir }}/art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/*
+            ${{ steps.prepare.outputs.workdir }}/docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/*
           if-no-files-found: error
           retention-days: 30
