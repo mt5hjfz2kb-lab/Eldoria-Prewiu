@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T16:44:00Z",
+  "updated_at": "2026-10-05T17:03:00Z",
   "active": [
     {
       "id": "valoria-vegetation-water-shore-production-v1",
@@ -19,7 +19,9 @@
         "pipeline/valoria-production-art-reset-run-request.json",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+        ".github/workflows/valoria-production-art-reset-v1.yml"
       ],
       "resources": [
         "valoria-vegetation-water-shore",
@@ -29,8 +31,12 @@
       "claimed_at": "2026-10-05T16:44:00Z",
       "base_main_sha": "cae2197e93704dc6aee7766df87d8dba99ecb786",
       "status": "active",
-      "phase": "VEGETATION TARGET / REPRESENTATIVE FAMILY SOURCE",
-      "dependency": "Preserve all closed structural families plus Sawmill/Camp, camera, target, composition and gameplay. Vegetation first representative source -> source gate -> cumulative Unity; then water/shore. Zero Tripo."
+      "phase": "VEGETATION ART SOURCE PASS / UNITY PLACEMENT INTEGRATION",
+      "dependency": "Preserve all closed structural families plus Sawmill/Camp, camera, target, composition and gameplay. Vegetation first representative source -> source gate -> cumulative Unity; then water/shore. Zero Tripo.",
+      "source_verdict": "SOURCE03 ART SOURCE PASS",
+      "source_run_id": 37344966366,
+      "source_artifact_id": 11360561424,
+      "source_export_sha": "9f0e41a75972bd15846a8e948e6f519a1071cb0631f5f61b8eb389713c4d3242"
     }
   ],
   "history": [
