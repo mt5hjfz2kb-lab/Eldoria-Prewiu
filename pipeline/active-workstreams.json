@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T07:48:20.975Z",
+  "updated_at": "2026-10-05T08:05:52.281Z",
   "active": [
     {
       "id": "valoria-lower-gate-family-v1",
@@ -21,7 +21,8 @@
         "PROJECT_STATE.md",
         "tools/author-environment-family.py",
         ".github/workflows/valoria-production-art-starter-source-v1.yml",
-        "pipeline/valoria-production-art-starter-run-request.json"
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "tools/review-family-replacement.py"
       ],
       "resources": [
         "lower-gate-family-source",
@@ -32,8 +33,10 @@
       "claimed_at": "2026-10-05T07:37:15.256Z",
       "base_main_sha": "5dedb34fe72fa8a120d0fcb3336b8d4713b56794",
       "status": "active",
-      "phase": "PRODUCTION PROOF",
-      "dependency": "Owner current instruction approves the closed blockout for this single family. Preserve closed preproduction and all other masses/cameras. Zero Tripo; isolated source gate before Unity."
+      "phase": "PRODUCTION PROOF / SOURCE INTEGRITY ITERATION",
+      "dependency": "Owner current instruction approves the closed blockout for this single family. Preserve closed preproduction and all other masses/cameras. Zero Tripo; isolated source gate before Unity.",
+      "latest_source_run": 37281084566,
+      "source_art_gate": "FAIL on source03 UV transport; source05 normalization in progress, Unity not started"
     }
   ],
   "history": [
