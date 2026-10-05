@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T20:23:00Z",
+  "updated_at": "2026-10-05T20:43:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -30,16 +30,26 @@
       ],
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
-      "status": "active",
-      "phase": "OWNER-AUTHORIZED METHOD B / INTEGRATED BASE REAUTHORING",
+      "status": "blocked",
+      "phase": "HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "REFERENCE -> TARGET TRANSLATION -> PROFESSIONAL BLENDER BASE REAUTHORING -> ISOLATED HERO PREVIEW -> VISUAL REVIEW. Unity integration only after isolated source gate >=4/5.",
+      "next": "HUMAN DECISION: authorize full screen-visible primary-form reauthor of Lower Gate + Bridge + continuous local cliff/ground/shore + local vegetation source, while preserving macro positions/camera/gameplay; OR separately authorize an external source-generation route. Do not create another integrated donor/overlay iteration. No Tripo without explicit exact authorization.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
       "strongest_bounded_artifact_id": 11368942273,
       "resumed_at": "2026-10-05T20:23:00Z",
-      "authorization": "Owner explicitly authorized option B: integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment reauthor. Preserve canonical camera/composition/macro positions/gameplay; no Tripo."
+      "authorization": "Owner explicitly authorized option B: integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment reauthor. Preserve canonical camera/composition/macro positions/gameplay; no Tripo.",
+      "blocked_at": "2026-10-05T20:43:00Z",
+      "blocker": "Owner-authorized Method B was executed through isolated Blender source review. Integrated source01 and materially changed source02 both remain below the >=4/5 source visual gate. Full screen-visible Lower Gate/Bridge primary forms and local vegetation source now dominate the failure; edge/profile + continuous substrate scope is insufficient. Unity integration is prohibited by the source gate.",
+      "integrated_source01_run_id": 37370017454,
+      "integrated_source01_artifact_id": 11370535174,
+      "integrated_source02_authoring_run_id": 37370511627,
+      "integrated_source02_evidence_run_id": 37370727523,
+      "integrated_source02_artifact_id": 11369951282,
+      "source_visual_gate": "FAIL — approx Geometry/Silhouette 2.5, Material 3.0, Contact 2.5, Environment 2.5, Premium 2.0",
+      "unity_integration": "NOT RUN — prohibited because isolated source gate <4/5",
+      "credits_spent": 0
     }
   ],
   "history": [
