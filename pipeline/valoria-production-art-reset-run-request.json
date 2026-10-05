@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-cumulative-01",
+  "nonce": "rock-terrain-bastion-contact-uplift-v1-cumulative-02-contract-fix",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
   "scope": "Controlled Rock/Terrain Bastion contact uplift only. Compare against Source09 BEFORE. Replacement uses identical Source09 geometry with exactly 11 UpperTerraceCliff band-3 faces remapped rock_shadow -> rock_base. Bastion Source08, Walls Source03, Lower Gate, Bridge, Road, Stair, camera, target, composition, platform and gameplay locked. Zero Tripo.",
