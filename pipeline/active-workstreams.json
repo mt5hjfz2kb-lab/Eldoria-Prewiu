@@ -1,8 +1,41 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T12:41:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T12:44:00Z",
+  "active": [
+    {
+      "id": "valoria-wall-family-v1",
+      "title": "VALORIA WALL FAMILY v1",
+      "owner": "chat-valoria-wall-family-v1",
+      "scope": [
+        "docs/VALORIA_WALL_FAMILY_V1.md",
+        "docs/evidence/valoria-wall-family-v1/**",
+        "tools/valoria-wall-family-v1/**",
+        "art-source/valoria/production/wall-family-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/WallFamilyV1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWallFamilyV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaWallFamilyGateV1.cs",
+        ".github/workflows/valoria-wall-family-v1.yml",
+        "pipeline/valoria-wall-family-v1-request.json",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-wall-family",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "art-production-planner"
+      ],
+      "claimed_at": "2026-10-05T12:44:00Z",
+      "base_main_sha": "53f0cb1047814a996619a2a6eb002451218d1c66",
+      "status": "active",
+      "phase": "TARGET",
+      "dependency": "Walls only. Preserve Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09, camera, target, composition, platform, Bastion and gameplay exactly. Zero Tripo credits unless owner separately authorizes."
+    }
+  ],
   "history": [
     {
       "id": "unity-runner-resilience-v1",
