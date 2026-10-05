@@ -390,7 +390,7 @@ namespace Eldoria.EditorTools
             if(points==null||points.Length<3)return;
             var go=new GameObject("Premium ground blend · "+name);
             var mesh=new Mesh{name=name+" mesh"};var tris=new int[(points.Length-2)*3];
-            for(int i=0;i<points.Length-2;i++){tris[i*3]=0;tris[i*3+1]=i+1;tris[i*3+2]=i+2;}
+            for(int i=0;i<points.Length-2;i++){tris[i*3]=0;tris[i*3+1]=i+2;tris[i*3+2]=i+1;}
             mesh.vertices=points;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var rr=go.AddComponent<MeshRenderer>();rr.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;rr.receiveShadows=true;
