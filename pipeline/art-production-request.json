@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-golden-lookdev-slice-v1-integrated-base-reauthor",
-  "asset_or_sector": "Valoria Golden Slice integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment",
+  "enabled": true,
+  "request_id": "valoria-golden-primary-forms-reauthor-v1",
+  "asset_or_sector": "Valoria Golden crop full visible primary forms: Lower Gate + Bridge + continuous local cliff/ground/shore + local vegetation",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/FINAL_SURFACE_GEOMETRY_GATE.md",
+  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/INTEGRATED_BASE_FINAL_SOURCE_GATE.md",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -16,12 +16,12 @@
     "high_low_baking": true
   },
   "validation": {
-    "source_gate": "GoldenIntegratedBaseV1 editable BLEND + GLB + UV/normals/tangents + isolated clay/lit/official-proxy; visual metrics approximately >=4/5 before Unity",
-    "final_gate": "Only after ART SOURCE PASS: matched official Golden close/16:9/mobile A/B >=4/5 core metrics; gameplay/performance sanity PASS; no macro-position change"
+    "source_gate": "Purpose-built full primary forms source. Required evidence: clay/silhouette, lit 3/4, official-camera proxy, canonical-reference comparison, explicit visual review. Geometry/silhouette >=4/5, material response >=4/5, contact/integration >=4/5, environment coherence >=4/5, premium perception >=4/5.",
+    "final_gate": "Only after source gate >=4/5: Unity matched official Golden close/16:9/mobile A/B, gameplay/performance sanity PASS, canonical camera/macro positions/topology preserved."
   },
-  "notes": "Method B exhausted at isolated source gate. See docs/evidence/valoria-golden-lookdev-slice-v1/INTEGRATED_BASE_FINAL_SOURCE_GATE.md. No Unity integration and 0 credits.",
-  "status": "HUMAN_SCOPE_BLOCKER",
-  "blocker": "Integrated Method B failed isolated visual gate after real primary source reauthor attempt; Unity integration prohibited. Full visible Gate/Bridge primary forms + vegetation source require new owner scope.",
+  "notes": "New method after Integrated Method B exhaustion. Rebuild the screen-visible primary forms purpose-built for the canonical frame. Do not continue integrated source03/source04, do not add donor geometry to hide inherited forms, and do not run Unity until isolated clay/lit/official-camera proxy all support >=4/5 principal metrics.",
+  "status": "OWNER_AUTHORIZED_SOURCE_PHASE",
+  "blocker": null,
   "last_source_run_id": 37370727523,
   "last_source_artifact_id": 11369951282
 }
