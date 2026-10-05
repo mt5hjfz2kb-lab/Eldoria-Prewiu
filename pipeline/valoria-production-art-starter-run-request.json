@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-01",
-  "nonce": "rock-terrain-source-01-faceted-plateau",
+  "request_id": "valoria-rock-terrain-family-v1-source-02",
+  "nonce": "rock-terrain-source-02-irregular-faceted-cliffs",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source01 enhanced isolated TECH + ART SOURCE evidence; no Unity until strict visual source review."
+  "scope": "Rock/Terrain source02 strict ART SOURCE retry after source01 visual fail; irregular large facet geometry, flat authored material planes, exact approved envelopes; no Unity until source review."
 }
