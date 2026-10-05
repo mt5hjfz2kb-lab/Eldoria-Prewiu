@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-wall-family-v1-source-03",
-  "nonce": "wall-source-03-full-art-review-views-01",
-  "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/wall-family-v1",
-  "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
+  "request_id": "valoria-bastion-family-v1-source-01",
+  "nonce": "bastion-source01-hero-authored-asymmetric-valoria",
+  "mesh_spec": "docs/evidence/valoria-bastion-family-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/bastion-family-v1",
+  "evidence_dir": "docs/evidence/valoria-bastion-family-v1/source",
   "credits": 0,
-  "scope": "Wall Source03 ART SOURCE PASS and final Unity VISUAL PASS; Wall closed PRODUCTION FAMILY PASS; parked."
+  "scope": "Bastion Family v1 Source01 only. Hero asset authored from approved blockout envelopes with deliberate keep/curtain hierarchy, asymmetric towers/wings, real depth, structural bases/cornices, coarse crenellation and central heraldry. Zero Tripo. Unity blocked pending strict 12-question HERO ART SOURCE review."
 }
