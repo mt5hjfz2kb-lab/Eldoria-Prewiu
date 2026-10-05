@@ -2,10 +2,11 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-sawmill-state2-v1",
-  "nonce": "sawmill-state2-early-functional-02-saw-rig",
+  "nonce": "sawmill-state2-early-functional-02-production-identity",
   "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2-mesh-spec.json",
   "source_dir": "art-source/valoria/production/sawmill-family-v1/state2",
   "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source",
   "credits": 0,
-  "scope": "Sawmill STATE 2 Source02. Same footprint/DNA; add unmistakable cutting bay with log bed, saw frame and visible metal blade. No other family or camera change. Zero Tripo."
+  "scope": "Sawmill STATE 2 correction only: same accepted footprint/frame plus explicit saw frame/blade/log bed/work log to make wood-production identity immediate at mobile distance. No State0/1, Camp, structural, camera or Tripo changes.",
+  "result": "PENDING ART SOURCE RE-GATE"
 }
