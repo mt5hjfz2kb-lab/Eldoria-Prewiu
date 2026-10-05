@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-vegetation-representative-family-v1",
-  "nonce": "vegetation-representative-source02",
-  "mesh_spec": "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation-representative-source02-mesh-spec.json",
+  "nonce": "vegetation-representative-source03",
+  "mesh_spec": "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation-representative-source03-mesh-spec.json",
   "source_dir": "art-source/valoria/production/vegetation-family-v1/representative",
-  "evidence_dir": "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source02",
+  "evidence_dir": "docs/evidence/valoria-vegetation-water-shore-production-v1/vegetation/source03",
   "credits": 0,
-  "scope": "Representative vegetation Source02 only: three reusable stylized conifer archetypes with irregular non-concentric canopy profiles and restrained branch asymmetry. No Unity placement, water, shoreline, camera/composition/gameplay mutation. Zero Tripo."
+  "scope": "Representative vegetation Source03 only: branch-driven stylized conifers using radial directional foliage sprays, broken negative spaces and visible trunks. No Unity placement, water, shoreline, camera/composition/gameplay mutation. Zero Tripo."
 }
