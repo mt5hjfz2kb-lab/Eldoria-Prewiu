@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-bridge-family-v1",
   "asset_or_sector": "Bridge Family v1 only",
   "profile": "environment_new_geometry",
@@ -16,5 +16,5 @@
     "source_gate": "required before Unity",
     "scope": "replace exactly BridgeDeck/BridgeParapetL/BridgeParapetR/BridgeSupport; Lower Gate and gameplay intact"
   },
-  "notes": "zero-credit direct Blender; unchanged approved macro composition; inherit accepted Lower Gate stone language"
+  "notes": "Bridge Family v1 closed PRODUCTION FAMILY PASS; no next family authorized."
 }
