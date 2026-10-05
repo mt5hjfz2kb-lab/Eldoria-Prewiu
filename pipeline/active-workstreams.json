@@ -2,7 +2,34 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-05T15:45:00Z",
-  "active": [],
+  "active": [
+    {
+      "id": "valoria-cabin-sawmill-camp-production-v1",
+      "title": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+      "owner": "chat-valoria-cabin-sawmill-camp-production-v1",
+      "scope": [
+        "docs/VALORIA_CABIN_SAWMILL_CAMP_PRODUCTION_V1.md",
+        "docs/evidence/valoria-cabin-sawmill-camp-production-v1/**",
+        "art-source/valoria/production/sawmill-family-v1/**",
+        "art-source/valoria/production/camp-family-v1/**",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-sawmill-family",
+        "github-hosted-blender",
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-05T15:45:00Z",
+      "base_main_sha": "ec59a8389c70c804681136b0aeaa834db9adb391",
+      "status": "active",
+      "phase": "SAWMILL STATES — TARGET / FAMILY SPEC",
+      "dependency": "All structural families and Rock/Terrain Bastion contact uplift are closed. Preserve camera, target, Bastion, Walls, Terrain, Gate, Bridge, Road, Stair and gameplay. First produce Sawmill states and validate integrated before Camp. Zero Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-structural-quality-bar-review-v1",
