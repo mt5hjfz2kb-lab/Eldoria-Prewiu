@@ -1,0 +1,106 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "d01aa7e93e0ea849ab4f93fa36965ef83c0570b1f9a347ed3b0979a4a2b57740",
+  "export_sha": "efc50fe20564654fcf3ae75cf1c57aa627bb0da9c85845933376802910711f76",
+  "source": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.blend",
+  "export": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
+  "geometry_metrics": {
+    "triangles": 3792,
+    "vertices": 1960,
+    "modules": 6,
+    "materials": 6,
+    "bounds_world_blender": [
+      [
+        -17.524999618530273,
+        -6.355000019073486,
+        7.110000133514404
+      ],
+      [
+        -10.609999656677246,
+        -2.122377395629883,
+        11.728269577026367
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "stone",
+    "earth",
+    "timber",
+    "timber_dark",
+    "plank",
+    "roof"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "hero_masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "timber": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source/01-clay-3quarter.png",
+    "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source/02-lit-3quarter.png",
+    "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source/03-front-mobile.png",
+    "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source/04-side-depth.png",
+    "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source/05-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    -14.1,
+    -4.35,
+    7.1
+  ],
+  "unity_placement": {
+    "position": [
+      -14.100000381469727,
+      7.099999904632568,
+      -4.349999904632568
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
