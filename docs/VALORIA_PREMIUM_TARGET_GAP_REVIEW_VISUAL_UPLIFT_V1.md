@@ -127,3 +127,12 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - However the broad flat olive polygons themselves read as an overlay treatment, not a premium natural surface. The scene remains materially too simple and the central metrics stay below 4/5.
 - Per the anti-loop rule, stop tuning this technique. Five iterations are sufficient evidence that lighting + flat-color blend patches alone cannot cross the quality bar.
 - Technique pivot: retain only restrained contact breakup, then add **reusable PBR surface-detail response and actual Unity color/tone grading**. Geometry remains locked; no closed family is reopened.
+
+
+## Iteration 06 — VISUAL FAIL / UNITY-PRESENTATION CEILING PROVEN
+- Run **37354510544** — SUCCESS; artifact **11363438503**.
+- Technique pivot executed successfully: URP detail-albedo/normal support, ACES tonemapping, color grading, water/shore tuning and restrained contact breakup all coexist with gameplay PASS.
+- Direct review still fails the premium gate. Fine surface response cannot compensate for the dominant large, planar ground/platform shapes and simplified rock/architecture interfaces visible in the Hero Test Zone.
+- Central metrics remain below 4/5; therefore continuing shader/lighting micro-tuning would violate the anti-loop rule.
+- Evidence-based decision: **bounded Blender uplift is now justified**, but only for local Hero Test Zone geometry required to break the planar/prototype read. Closed Bridge/Lower Gate/Road/Rock-Terrain families remain closed; this is not a family reopening or redesign.
+- Scope for local DCC uplift: authored ground/rock contact shell and interface pieces around Bridge → Lower Gate → first Road segment only. Camera, positions, gameplay authority and family source assets remain immutable.
