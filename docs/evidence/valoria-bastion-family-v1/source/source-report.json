@@ -11,13 +11,13 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "0c40c58798fb4700288c2a38ec821cd6d8ef97a6441febaad4b8e9ab408f2138",
-  "export_sha": "c963de3aeaf6268de006ac7c7535c40c7ff5f48493ef95830e25ee3a83dccc21",
+  "source_sha": "7389fd319f1b6b1d1427f33f43300c4280eacb483fd8b7a7d3e70317e1f9f6bd",
+  "export_sha": "5a57ac72a5b0a145b44f4d7640a3a8f4f15adb220c5dab1ebf68f3632281c63a",
   "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend",
   "export": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 18272,
-    "vertices": 9438,
+    "triangles": 19892,
+    "vertices": 10278,
     "modules": 9,
     "materials": 8,
     "bounds_world_blender": [
