@@ -1,5 +1,8 @@
 # Eldoria — Agent entry point
 
+## Owner directive 2026-10-05 — new Valoria art preproduction
+Read `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` before further Valoria artistic production. Its exact new owner target/camera/blockout override conflicting legacy artistic layout/camera/density restrictions; existing gameplay/assets are protected. This is a methodological reset. Follow its 13-step order; no final assets to discover composition. The blockout awaits owner approval; do not begin the next family or resume old workstreams automatically.
+
 The repository is the source of truth. Chat history is disposable.
 
 ## Source-of-truth hierarchy

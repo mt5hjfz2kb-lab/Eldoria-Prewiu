@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "preproduction_mesh_scene",
   "nonce": "valoria-art-production-reset-v1-final-threshold-continuity",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
@@ -111,5 +111,6 @@
         "z": -15.902420247865848
       }
     }
-  ]
+  ],
+  "result": "PREPRODUCTION PASS / OWNER REVIEW PENDING"
 }

@@ -1,0 +1,9 @@
+{
+  "max_unity_cpu_projected_bbox_delta_px": 0.0003824681125479401,
+  "threshold_px": 0.02,
+  "pass": true,
+  "meshes": 85,
+  "triangles": 1115,
+  "method": "project only triangle-referenced vertices; unused construction anchors do not define render bounds",
+  "effect": "confirms exact camera/mesh transfer; not final-art quality"
+}

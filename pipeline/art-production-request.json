@@ -17,5 +17,9 @@
     "mobile": true,
     "preserve_gameplay_signature": true
   },
-  "notes": "Owner explicitly requests new full-scene primitive greybox against attached target. No existing art used; no final source authoring. Canonical Unity route retained for eventual engine validation; local deterministic CPU 3D proxy is composition evidence only, not Unity or runtime certification. No production integration or spend."
+  "notes": "Owner explicitly requests new full-scene primitive greybox against attached target. No existing art used; no final source authoring. Canonical Unity route retained for eventual engine validation; local deterministic CPU 3D proxy is composition evidence only, not Unity or runtime certification. No production integration or spend.",
+  "result": "PREPRODUCTION PASS / OWNER REVIEW PENDING",
+  "final_run_id": 37275659322,
+  "final_artifact_id": 11329019907,
+  "credits_spent": 0
 }

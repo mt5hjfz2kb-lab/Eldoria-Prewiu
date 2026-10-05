@@ -161,7 +161,9 @@ def render(name,width,height,camera=None):
         return np.column_stack([width/2+q@r*s*k,height/2-q@u*s*k,depth])
     for mi,m in enumerate(MESHES):
         world=np.asarray(m['vertices']);p=project(world)
-        bounds[m['name']]=[float(p[:,0].min()),float(p[:,1].min()),float(p[:,0].max()),float(p[:,1].max())]
+        used=np.unique(np.asarray(m['triangles']).reshape(-1))
+        # Match rendered geometry, excluding unused construction anchor vertices.
+        bounds[m['name']]=[float(p[used,0].min()),float(p[used,1].min()),float(p[used,0].max()),float(p[used,1].max())]
         for f in m['triangles']:
             a,b,c=p[f]; xmin=max(0,int(np.floor(min(a[0],b[0],c[0]))));xmax=min(width-1,int(np.ceil(max(a[0],b[0],c[0]))));ymin=max(0,int(np.floor(min(a[1],b[1],c[1]))));ymax=min(height-1,int(np.ceil(max(a[1],b[1],c[1]))))
             if xmin>xmax or ymin>ymax:continue

@@ -1,0 +1,11 @@
+{
+  "base_main": "6c80311087b77f9ddb19b9c0eb2ba14249f3725a",
+  "captured_main": "73d0bfee2692faa3c9590b65486057080031ba9a",
+  "protected_files_checked": 1000,
+  "protected_file_changes": [],
+  "deleted_original_files": [],
+  "new_unity_files": [
+    "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs"
+  ],
+  "method": "Git blob SHA equality across original art/source/scene/prefab/shader, functional runtime, presentation/domain/application; no assumption from chat"
+}

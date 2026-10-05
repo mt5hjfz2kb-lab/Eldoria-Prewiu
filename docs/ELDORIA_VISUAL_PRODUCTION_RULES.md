@@ -1,5 +1,8 @@
 # Eldoria — Visual Production Rules
 
+## 2026-10-05 — Production sequence reset
+Use the 13-step target/camera/full-blockout-before-assets order in `docs/VALORIA_ART_PRODUCTION_RESET_V1.md`. The new owner target supersedes legacy artistic layout/density/camera constraints in this isolated campaign. Preserve gameplay/assets. Obtain owner approval of the complete blockout, then prove one family, then vertical slice, then scale. Historical results below are evidence, not instructions to reopen workstreams.
+
 Status: canonical visual-production governance  
 Applies to: Valoria and later Eldoria visual production blocks  
 Owner intent: durable repository rules so future chat prompts stay short

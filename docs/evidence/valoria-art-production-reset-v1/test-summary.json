@@ -1,0 +1,27 @@
+{
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "cases": [
+    {
+      "name": "Eldoria.Tests.ReferenceUiArtPassTests.ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls",
+      "result": "Passed"
+    },
+    {
+      "name": "Eldoria.Tests.ReferenceUiArtPassTests.OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
+      "result": "Passed"
+    },
+    {
+      "name": "Eldoria.Tests.ReferenceUiArtPassTests.ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers",
+      "result": "Passed"
+    },
+    {
+      "name": "Eldoria.Tests.SliceSceneSmokeTests.OwnerHudMatchesReferenceMobileBudgets",
+      "result": "Passed"
+    },
+    {
+      "name": "Eldoria.Tests.SliceSceneSmokeTests.ValoriaProgressionContractGatesCuartelVisualAndInteraction",
+      "result": "Passed"
+    }
+  ]
+}

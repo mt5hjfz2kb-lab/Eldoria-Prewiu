@@ -1,0 +1,88 @@
+{
+  "workstream": "VALORIA ART PRODUCTION RESET v1",
+  "phase": "PREPRODUCTION",
+  "verdict": "PREPRODUCTION PASS",
+  "owner_approval": "PENDING",
+  "promoted_to_runtime": false,
+  "base_main": "6c80311087b77f9ddb19b9c0eb2ba14249f3725a",
+  "capture_main": "73d0bfee2692faa3c9590b65486057080031ba9a",
+  "branch": "work/valoria-art-production-reset-v1",
+  "worktree": "/workspace/scratch/ff1ba0ab7910/Eldoria",
+  "capture_run": 37275659322,
+  "capture_artifact": 11329019907,
+  "engine": "6000.3.23f1",
+  "meshes": 85,
+  "triangles": 1115,
+  "gate": {
+    "reference_identified": true,
+    "camera_fixed": true,
+    "spec_documented": true,
+    "macro_analyzed": true,
+    "full_scene_blockout": true,
+    "authoritative_capture": true,
+    "comparison": true,
+    "proportions_aligned": true,
+    "asset_families": true,
+    "legacy_classified": true,
+    "no_final_assets": true,
+    "zero_credits": true,
+    "gameplay_intact": true,
+    "recorded_in_repo": true,
+    "reproducible_evidence": true
+  },
+  "tripo_credits": 0,
+  "final_assets": 0,
+  "focused_tests": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "family_count": 14,
+  "legacy_files_classified": 83,
+  "as_is_geometry_reuse_approved": 0,
+  "preserved_original_files_checked": 1000,
+  "runs": [
+    {
+      "id": 37274146619,
+      "result": "FAIL: Application namespace; corrected"
+    },
+    {
+      "id": 37274332357,
+      "result": "PASS capture+5 tests"
+    },
+    {
+      "id": 37274756225,
+      "result": "PASS corrected winding+proportions"
+    },
+    {
+      "id": 37275034997,
+      "result": "PASS tree intersection removed"
+    },
+    {
+      "id": 37275659322,
+      "result": "PASS final floor continuity+5 tests"
+    },
+    {
+      "id": 37274146523,
+      "result": "PASS canonical planner"
+    },
+    {
+      "id": 37274332333,
+      "result": "PASS workflow governance"
+    },
+    {
+      "id": 37274756191,
+      "result": "PASS Unity source preflight; full player build deliberately skipped"
+    }
+  ],
+  "limitations": [
+    "macro PASS, not final-art approval/runtime promotion",
+    "manual target boxes \u00b112px; individual bbox proportion differences up to ~24% recorded",
+    "background/cliffs/vegetation are simple masses",
+    "UI masks and portrait views are not actual HUD/tap certification",
+    "device performance and final source pipeline proof are future gates",
+    "pre-existing Pages workflow failures persist; no WebGL publication requested/performed"
+  ],
+  "pending_human_blockers": [],
+  "next": "Owner reviews/approves blockout; then one Lower Gate family source/Unity/mobile/LOD pipeline proof. Do not start next block now."
+}

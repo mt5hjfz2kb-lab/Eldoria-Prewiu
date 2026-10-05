@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "status": "PREPRODUCTION_TARGET_FIXED_FOR_OWNER_REVIEW",
+  "scope": "new isolated art preproduction; canonical gameplay and old art preserved",
+  "reference": {
+    "filename": "AF172EB3-ED81-48F6-9C34-F996E9FD6FE1.jpeg",
+    "repository_path": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+    "byte_size": 702827,
+    "format": "JPEG",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "authoritative": "Owner attachment 2026-10-05; unchanged bytes",
+    "legacy_reference_preserved": true
+  },
+  "measurement_coordinates": "source pixels, origin top-left, 1536x1024",
+  "reference_annotation_uncertainty_px": 12,
+  "camera": {
+    "projection": "orthographic",
+    "pitch": 35.0,
+    "yaw": 20.0,
+    "vertical_span": 48,
+    "orthographic_size": 24,
+    "distance": 110,
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "basis_right": [
+      0.9396926207859084,
+      0.3420201433256687,
+      0.0
+    ],
+    "basis_up": [
+      -0.19617469496901108,
+      0.5389855446957562,
+      0.8191520442889918
+    ],
+    "basis_toward_camera": [
+      0.2801664995932355,
+      -0.7697511313200572,
+      0.573576436351046
+    ]
+  },
+  "camera_unity": {
+    "position": [
+      30.8183149552559,
+      63.0934079986151,
+      -84.6726244452063
+    ],
+    "target": [
+      0,
+      0,
+      0
+    ],
+    "orthographic_size": 24,
+    "near": 0.1,
+    "far": 400
+  },
+  "target_landmarks": {
+    "Bastion": {
+      "bbox": [
+        608,
+        64,
+        1265,
+        270
+      ],
+      "prefixes": [
+        "Bastion"
+      ],
+      "anchor": [
+        952,
+        217
+      ]
+    },
+    "Lower gate": {
+      "bbox": [
+        565,
+        526,
+        838,
+        737
+      ],
+      "prefixes": [
+        "LowerGate_WestTower",
+        "LowerGate_EastTower",
+        "LowerGate_Lintel"
+      ],
+      "anchor": [
+        691,
+        702
+      ]
+    },
+    "Bridge": {
+      "bbox": [
+        421,
+        688,
+        751,
+        885
+      ],
+      "prefixes": [
+        "BridgeDeck",
+        "BridgeParapet"
+      ],
+      "anchor": [
+        589,
+        787
+      ]
+    },
+    "Stair": {
+      "bbox": [
+        792,
+        272,
+        948,
+        381
+      ],
+      "prefixes": [
+        "Stair"
+      ],
+      "anchor": [
+        860,
+        357
+      ]
+    },
+    "Cabin": {
+      "bbox": [
+        383,
+        306,
+        527,
+        404
+      ],
+      "prefixes": [
+        "CabinRoof",
+        "CabinChimney",
+        "Cabin"
+      ],
+      "anchor": [
+        451,
+        398
+      ]
+    },
+    "Camp": {
+      "bbox": [
+        1108,
+        392,
+        1380,
+        499
+      ],
+      "prefixes": [
+        "CampTent",
+        "CampFence"
+      ],
+      "anchor": [
+        1261,
+        457
+      ]
+    },
+    "West wall": {
+      "bbox": [
+        327,
+        446,
+        495,
+        579
+      ],
+      "prefixes": [
+        "WestPartialWall",
+        "WestWallTower"
+      ],
+      "anchor": [
+        411,
+        536
+      ]
+    },
+    "East wall": {
+      "bbox": [
+        1237,
+        486,
+        1458,
+        653
+      ],
+      "prefixes": [
+        "EastPartialWall",
+        "EastWallTower"
+      ],
+      "anchor": [
+        1361,
+        590
+      ]
+    }
+  },
+  "composition_zones": {
+    "central_left": [
+      [
+        550,
+        423
+      ],
+      [
+        787,
+        407
+      ],
+      [
+        719,
+        553
+      ],
+      [
+        567,
+        576
+      ]
+    ],
+    "central_right": [
+      [
+        963,
+        408
+      ],
+      [
+        1085,
+        417
+      ],
+      [
+        1230,
+        537
+      ],
+      [
+        1130,
+        634
+      ],
+      [
+        851,
+        583
+      ]
+    ],
+    "main_platform_top": [
+      [
+        82,
+        547
+      ],
+      [
+        116,
+        482
+      ],
+      [
+        190,
+        401
+      ],
+      [
+        240,
+        358
+      ],
+      [
+        363,
+        334
+      ],
+      [
+        485,
+        301
+      ],
+      [
+        590,
+        305
+      ],
+      [
+        686,
+        328
+      ],
+      [
+        820,
+        345
+      ],
+      [
+        1050,
+        326
+      ],
+      [
+        1208,
+        338
+      ],
+      [
+        1390,
+        375
+      ],
+      [
+        1486,
+        409
+      ],
+      [
+        1530,
+        493
+      ],
+      [
+        1498,
+        593
+      ],
+      [
+        1471,
+        686
+      ],
+      [
+        1380,
+        757
+      ],
+      [
+        1220,
+        788
+      ],
+      [
+        1050,
+        788
+      ],
+      [
+        890,
+        735
+      ],
+      [
+        789,
+        694
+      ],
+      [
+        675,
+        681
+      ],
+      [
+        556,
+        671
+      ],
+      [
+        405,
+        647
+      ],
+      [
+        299,
+        622
+      ],
+      [
+        186,
+        586
+      ]
+    ]
+  },
+  "composition_zone_area_percent": {
+    "central_left": 1.817,
+    "central_right": 3.391,
+    "main_platform_top": 31.466
+  },
+  "height_levels": {
+    "water": 0,
+    "foreground": 3,
+    "main_platform": 7,
+    "upper_terrace": 11,
+    "keep_top": 18.7,
+    "lower_gate_tower_top": 15.4
+  },
+  "silhouette_requirements": [
+    "broad continuous cliff platform",
+    "two levels with clear 4-unit rise",
+    "long upper curtain and dominant single keep",
+    "lower gate twin towers with open passage",
+    "diagonal continuous bridge-road-stair-gate spine",
+    "small cabin left and light tent camp right",
+    "partial side walls",
+    "forest perimeter and visible water base"
+  ],
+  "negative_space_rule": "Keep both central polygons clear; retain gate exit, stair foot and upper receiving route. Not a runtime parcel edit.",
+  "rhythm": {
+    "filled_empty": "upper skyline and lower gate balanced by deliberately empty central construction ground",
+    "vertical_horizontal": "keep/towers/forest against wide terraces and curtains",
+    "nature_architecture": "cliff/trees perimeter, stone structural anchors, small timber/fabric compounds",
+    "light_future": "warm inhabited stone/lights, cooler water/forest/background; not implemented final look"
+  },
+  "mobile": {
+    "landscape": [
+      1280,
+      720
+    ],
+    "portrait": [
+      390,
+      844
+    ],
+    "strategy": "fixed orientation, separate HOME/left/right/entry; bounded pan proposed, no runtime modification",
+    "safe_areas_landscape_fraction": {
+      "top": 0.05,
+      "bottom": 0.12,
+      "left": 0.05,
+      "right": 0.05
+    },
+    "safe_areas_portrait_fraction": {
+      "top": 0.08,
+      "bottom": 0.16,
+      "left": 0.05,
+      "right": 0.05
+    },
+    "ui_integrated": false,
+    "device_performance_certified": false
+  },
+  "macro_tolerance": {
+    "center_error_percent_diagonal_max": 2.5,
+    "bbox_width_height_ratio": [
+      0.75,
+      1.25
+    ],
+    "interpretation": "primitive macro tolerance only; final art requires tighter source review",
+    "not_allowed": "image similarity score as visual pass"
+  },
+  "final_art_allowed": false,
+  "tripo_allowed": false,
+  "screen_space_hierarchy_bbox_percent": {
+    "Bastion": 8.605,
+    "Lower gate": 3.662,
+    "Bridge": 4.133,
+    "Stair": 1.081,
+    "Cabin": 0.897,
+    "Camp": 1.85,
+    "West wall": 1.421,
+    "East wall": 2.346
+  },
+  "target_family_screen_occupancy_estimates": {
+    "method": "manual broad family estimates, non-exclusive/uncertain, not CV segmentation",
+    "playable_ground": [
+      30,
+      38
+    ],
+    "cliff_and_upper_rise": [
+      12,
+      18
+    ],
+    "architecture_and_installations": [
+      10,
+      16
+    ],
+    "forest_perimeter_foreground": [
+      12,
+      20
+    ],
+    "water": [
+      6,
+      13
+    ],
+    "background_terrain_haze": [
+      15,
+      25
+    ]
+  }
+}

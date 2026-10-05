@@ -1,5 +1,8 @@
 # Valoria Visual Bible
 
+## 2026-10-05 — New owner target / preproduction precedence
+For this new campaign, `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` and its unchanged attached `canonical-target.jpeg` define the binding literal composition. They supersede conflicting artistic constraints below (Flat Citadel as visual constraint, dense city, no cliffs, directional-only reference, inherited camera). Existing gameplay, scenes, art and the historical Bible remain preserved. PREPRODUCTION PASS is not runtime promotion or final art approval. Owner blockout review is pending.
+
 Status: **CANONICAL VISUAL AUTHORITY**  
 Program: **VALORIA PRODUCTION ART SYSTEM RESET v1**  
 Effective: 2026-10-04  

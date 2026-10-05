@@ -1,3 +1,13 @@
+## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
+- New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
+- New methodological workstream; no restart/deletion of Eldoria. Earlier artistic constraints are superseded for isolated preproduction, not gameplay.
+- Full-scene greybox: 85 meshes / 1115 triangles; JSON+OBJ and editor-only reconstruction. Orthographic pitch35/yaw20/size24; landscape16:9 and portrait HOME/left/right/entry.
+- Unity 6000.3.23f1 run 37275659322 SUCCESS, artifact 11329019907; capture main 73d0bfee2692faa3c9590b65486057080031ba9a. Five focused gameplay tests PASS.
+- Eight landmarks fit documented macro tolerances; CPU/Unity renderable bounds agree within0.02px. 14 asset families; 83 actual legacy files classified; zero geometry approved as-is/imported.
+- 0 Tripo credits; 0 final assets; 1000 original protected files unchanged by Git blob comparison; no original file deleted; production scene/runtime untouched.
+- Read `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` and `session-result.json`. Next: owner's personal blockout approval, then one Lower Gate pipeline proof. Do not begin final art or resume old workstreams automatically.
+- Device performance, actual HUD/taps and final-art fidelity are later gates. Pages has a pre-existing workflow failure; no WebGL publication performed.
+
 ## 2026-10-04 — VALORIA BASTION-TO-CITY BLENDER AUTHORING v1 — CLOSED
 - Final verdict: **TECH PASS / ART SOURCE FAIL / UNITY NOT RUN / VISUAL NOT RUN / NOT PROMOTED**.
 - Canonical source run **37230275353** SUCCESS; artifact **11312479703**; source persistence commit **0e68cba321e02677c96b9964cf7c7fb713904afb**.

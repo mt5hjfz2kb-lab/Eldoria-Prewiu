@@ -40,6 +40,7 @@ jobs:
         shell: powershell
         run: |
           $request=Get-Content 'pipeline/valoria-production-art-reset-run-request.json' -Raw | ConvertFrom-Json
+          if($request.enabled -eq $false){Add-Content $env:GITHUB_OUTPUT 'enabled=false'}else{Add-Content $env:GITHUB_OUTPUT 'enabled=true'}
           if($request.mode -eq 'preproduction_mesh_scene'){
             Add-Content $env:GITHUB_OUTPUT 'preproduction=true'
             Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.PreproductionSceneCapture.Capture'
@@ -48,12 +49,13 @@ jobs:
             Add-Content $env:GITHUB_ENV 'RESET_EXECUTE_METHOD=Eldoria.EditorTools.ValoriaProductionArtResetGateV1.Capture'
           }
       - name: Verify persisted authored source
-        if: steps.mode.outputs.preproduction != 'true'
+        if: steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction != 'true'
         shell: powershell
         run: |
           if(-not (Test-Path 'art-source/valoria/production/starter-family-v2/Valoria_StarterFamily_v2.blend')){throw 'Missing canonical v2 BLEND'}
           foreach($f in @('Valoria_MainGate_v2','Valoria_WallSegment_v2','Valoria_Tower_v2','Valoria_CivicHouse_v2','Valoria_Workshop_v2')){if(-not (Test-Path "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/$f.glb")){throw "Missing $f GLB"}}
       - name: Capture reset A/B
+        if: steps.mode.outputs.enabled == 'true'
         shell: powershell
         run: |
           $folder="$env:GITHUB_WORKSPACE\Unity\ValoriaProductionArtResetV1Captures"
@@ -67,6 +69,7 @@ jobs:
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 350};throw "Reset gate failed $($p.ExitCode)"}
           Get-Content (Join-Path $folder 'evidence.json')
       - name: Focused gameplay tests
+        if: steps.mode.outputs.enabled == 'true'
         shell: powershell
         run: |
           $xml="$env:RUNNER_TEMP/ProductionArtReset-PlayMode.xml";$log="$env:RUNNER_TEMP/ProductionArtReset-PlayMode.log"
@@ -76,7 +79,7 @@ jobs:
           if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Reset tests timed out'}
           if($p.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Reset tests failed $($p.ExitCode)"}
       - uses: actions/upload-artifact@v4
-        if: always() && steps.mode.outputs.preproduction != 'true'
+        if: always() && steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction != 'true'
         with:
           name: valoria-production-art-reset-v1
           path: |
@@ -89,7 +92,7 @@ jobs:
           retention-days: 30
       - name: Upload preproduction evidence only
         uses: actions/upload-artifact@v4
-        if: always() && steps.mode.outputs.preproduction == 'true'
+        if: always() && steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction == 'true'
         with:
           name: valoria-art-production-reset-v1-preproduction
           path: |
