@@ -245,3 +245,20 @@ The closure must include:
 Only after this pass may broad Valoria production resume.
 
 The immediate next production action after closure is **not automatic**. The owner must explicitly authorize scaling the Golden Lookdev recipe to the rest of Valoria.
+
+## 2026-10-05 — Surface + bounded geometry final gate
+Status is now **BLOCKED — HUMAN SCOPE AUTHORIZATION REQUIRED**.
+
+The surface-only method was exhausted after three technically valid iterations. A persisted Blender-authored PBR stack (20 maps: albedo/normal/AO/smoothness across stone/rock/ground/shore/vegetation) is reproducible and mobile-sane, but the official Golden gate remained below 4/5.
+
+Bounded geometry escalation tested three local shells. Source02 is the strongest bounded result (run 37368033376 / artifact 11368942273), reaching approximately production-mid response without catastrophic boundary artifacts. Source03 final proof (run 37368890740 / artifact 11368813433) failed because continuous cliff aprons read as pasted substrate islands.
+
+**SURFACE AUTHORING PASS is not granted. GOLDEN LOOKDEV PASS is not granted.**
+
+The remaining blocker is structural and scope-locked: continuous Rock/Terrain + local ground substrate, with Lower Gate/Bridge edge profiles also constraining premium response. More local overlays are prohibited by evidence.
+
+Owner decision required before further work:
+- A: reopen continuous Rock/Terrain + local ground around Lower Gate/Bridge as one authored replacement surface; or
+- B: reopen that substrate together with Lower Gate + Bridge edge profiles as one integrated Golden micro-environment.
+
+Canonical detail: `docs/evidence/valoria-golden-lookdev-slice-v1/FINAL_SURFACE_GEOMETRY_GATE.md`.
