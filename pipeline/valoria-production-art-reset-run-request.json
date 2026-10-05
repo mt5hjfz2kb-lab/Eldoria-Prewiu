@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-bastion-contact-uplift-v1-cumulative-01",
+  "nonce": "rock-terrain-contact-uplift-cumulative-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Controlled uplift cumulative Unity A/B. BEFORE authority = Bastion Source08 cumulative run 37328467482 / artifact 11352609605 with Rock/Terrain Source09. AFTER changes only Rock/Terrain UpperTerraceCliff 11 material assignments rock_shadow -> rock_base. All other closed families, camera, platform, composition, lighting and gameplay immutable. Zero Tripo.",
+  "scope": "Controlled Rock/Terrain Bastion contact uplift only. Compare against Source09 BEFORE. Replacement uses identical Source09 geometry with exactly 11 UpperTerraceCliff band-3 faces remapped rock_shadow -> rock_base. Bastion Source08, Walls Source03, Lower Gate, Bridge, Road, Stair, camera, target, composition, platform and gameplay locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,7 +112,7 @@
       }
     }
   ],
-  "result": "PENDING CONTROLLED UPLIFT UNITY VISUAL GATE",
+  "result": "PENDING CONTROLLED UPLIFT UNITY GATE",
   "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
@@ -248,10 +248,37 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "BASTION SOURCE08 ACCEPTED",
+      "source_glb": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/BastionFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-bastion-family-v1/source-review.json",
+      "names": [
+        "ForegroundBank",
+        "MainPlatform",
+        "PlayableGround",
+        "UpperTerraceCliff",
+        "UpperTerraceGround",
+        "CliffShoulder_0",
+        "CliffShoulder_1",
+        "CliffShoulder_2",
+        "CliffShoulder_3",
+        "CliffShoulder_4",
+        "CliffShoulder_5",
+        "CliffShoulder_6"
+      ],
+      "position": {
+        "x": 5,
+        "y": 7,
+        "z": -8
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "ROCK TERRAIN CONTACT UPLIFT",
+    "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT",
     "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
     "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
     "names": [
