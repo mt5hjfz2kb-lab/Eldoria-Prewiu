@@ -1,0 +1,44 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source01",
+  "source_run": 37318634309,
+  "artifact_id": 11348962549,
+  "source_sha": "163eed212fc872e6d1f7965fde14a8fcb53b0b0fc76f1e2aadbc90f1fb4990b7",
+  "export_sha": "2b2ceea5d5409b59bd009ed3caf6ed5a3aceaecb960175007f15a632abbeba80",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 11232,
+    "vertices": 5792,
+    "modules": 9,
+    "materials": 6,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "FAIL — broad defensive line is coherent but still reads as a sequence of rectangular wall/tower masses; hero skyline lacks a strong authored focal break.",
+    "2_immediately_dominant_valoria_bastion": "FAIL — Keep is taller, but not sufficiently dominant in silhouette/value/depth to read instantly as the unique Bastion hero.",
+    "3_primary_secondary_tertiary": "PARTIAL — hierarchy exists in data, but visually primary and secondary masses collapse into one long wall band.",
+    "4_real_architectural_depth": "PARTIAL PASS — side view proves volume and some batter, but frontal/gameplay view remains too planar.",
+    "5_controlled_asymmetry": "PASS DIRECTIONALLY — east/west tower heights differ and rear masses vary.",
+    "6_no_cloned_modules": "PASS DIRECTIONALLY — towers are not literal clones, but the overall crenellated wall grammar remains too uniform.",
+    "7_rich_material_without_microdetail": "FAIL — coursed masonry pattern dominates the read and makes the source feel generic rather than materially rich.",
+    "8_coherent_lower_gate_walls": "PASS FAMILY DNA — warm masonry/crenellation relates correctly to accepted defense.",
+    "9_gameplay_camera": "FAIL HERO — gameplay-facing preview does not produce a sufficiently strong commercial hero focal read.",
+    "10_authored_not_procedural": "PASS technically, PARTIAL visually — explicit authored source, but visual result still resembles formulaic kit assembly.",
+    "11_not_castle_kit_generic": "FAIL — rectangular wall band + regular crenellation + brick course strongly evoke a generic medieval kit.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — better than blockout geometry, but not enough to justify replacing the dominant target landmark."
+  },
+  "hard_stop_result": "FAIL on 1,2,9,11,12. Unity integration prohibited.",
+  "source02_direction": [
+    "make Keep unmistakably dominant with a stepped/narrow upper stage, stronger crown, framed blue/gold heraldry and deeper front planes",
+    "replace flat rectangular Bastion gate head with a real segmented arched/voussoir silhouette inside the existing GateLintel envelope",
+    "reduce generic coursed-brick dominance: major hero faces use lower-frequency stone response; masonry retained only where it helps scale",
+    "increase deliberate depth using stepped curtain planes, recessed bays, stronger projecting piers/cornices and asymmetric top rhythm",
+    "make east/west tower identities visibly different at gameplay distance",
+    "preserve all nine approved envelopes, target/camera/composition and zero Tripo"
+  ],
+  "tripo_credits": 0
+}
