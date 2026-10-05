@@ -94,3 +94,12 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - Direct 16:9 review: **FAIL**. Early linear fog flattened the scene into a grey veil; the reference gap in contrast, depth and premium material response did not materially close.
 - This iteration is rejected and is not a quality-bar candidate.
 - Corrective hypothesis for iteration02: substantially lower ambient fill, stronger directional key/shadow hierarchy, much later/subtler atmosphere, larger but still controlled albedo/roughness separation. Geometry remains untouched.
+
+
+## Iteration 02 — VISUAL FAIL / NOT ACCEPTED
+- Run **37352381659** — SUCCESS; artifact **11363292016**.
+- Gameplay regression PASS and official capture set generated.
+- Direct 16:9 review: directional form/readability improved over iteration01, but large cliff/platform shadows became visually hard polygonal bands and the broad beige PlayableGround still dominates as an unintegrated board.
+- Materials/lighting/depth do **not** reach 4/5; premium perception remains below gate.
+- Root cause now narrowed: giant-caster shadow presentation + missing local ground/contact breakup around Bridge → Lower Gate → Road.
+- Iteration02 is rejected. Next: selective caster policy, local authored ground-contact breakup and restrained grading; no geometry reauthor.
