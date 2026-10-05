@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "block": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1",
+  "status": "PRODUCTION PASS / CLOSED",
+  "final_head": "6e1dbe984a76a7fe49a46b98f7950986367365cc",
+  "final_run_id": 37347735272,
+  "final_artifact_id": 11361740372,
+  "artifact_name": "valoria-vegetation-water-shore-v1-final",
+  "artifact_digest": "sha256:02f9bfb7458ad54d1f129bda31e41a6ce1dd7273581994aa74488177f593a42f",
+  "capture_set": [
+    "AFTER-UNITY-16x9.png",
+    "AFTER-UNITY-mobile-landscape.png",
+    "AFTER-UNITY-source-3x2.png",
+    "AFTER-UNITY-portrait-home.png",
+    "AFTER-UNITY-portrait-left.png",
+    "AFTER-UNITY-portrait-right.png",
+    "AFTER-UNITY-portrait-entry.png"
+  ],
+  "gates": {
+    "vegetation_source": "PASS",
+    "vegetation_placement": "PASS",
+    "water_shore": "PASS",
+    "cumulative_unity": "PASS",
+    "mobile": "PASS",
+    "gameplay_regression": "PASS",
+    "performance_sanity": "PASS"
+  },
+  "credits": {
+    "tripo": 0
+  },
+  "notes": [
+    "Water/Shore iteration01 was rejected for uniform presentation.",
+    "Accepted iteration02 adds controlled authored surface variation.",
+    "This closure does not claim overall premium-reference parity; that gap is intentionally deferred to the owner-authorized Premium Target Gap Review + Visual Uplift block."
+  ]
+}
