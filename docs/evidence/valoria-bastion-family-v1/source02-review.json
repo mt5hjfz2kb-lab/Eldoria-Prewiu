@@ -1,0 +1,36 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source02",
+  "source_run": 37319605108,
+  "artifact_id": 11348739328,
+  "source_sha": "71113afe8d3f51d19fd9d4989813841e9eb5dc4ca9819a11a9d9729c2f893f2e",
+  "export_sha": "9b3fe4af696da266fa6651f56b676f9f1f2236215accad4b1b5a4a4e40295172",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 13412,
+    "vertices": 6918,
+    "modules": 9,
+    "materials": 6,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PARTIAL FAIL — segmented arch and staged Keep improve the outline, but top silhouette still reads too much like frontal crenellation strips on a long wall.",
+    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — Keep is now a focal block but still lacks the crown depth/identity needed for an unmistakable hero landmark.",
+    "3_primary_secondary_tertiary": "PASS DIRECTIONALLY — primary Keep/gate cluster separates better from secondary curtains/towers.",
+    "4_real_architectural_depth": "PASS DIRECTIONALLY — recessed bays/projecting piers and side view materially improve depth.",
+    "5_controlled_asymmetry": "PASS — left watch block, tall east tower and far-west mass create a controlled unequal skyline.",
+    "6_no_cloned_modules": "PASS — east/west command masses now have distinct staging.",
+    "7_rich_material_without_microdetail": "PASS DIRECTIONALLY — lower-frequency stone is calmer and less generic than Source01.",
+    "8_coherent_lower_gate_walls": "PASS SOURCE — same warm defensive family with stronger hero hierarchy.",
+    "9_gameplay_camera": "PARTIAL FAIL — arch is readable, but Keep crown and heraldic identity are still weak at the gameplay-facing view.",
+    "10_authored_not_procedural": "PASS — explicit authored planes, arch voussoirs, piers and asymmetry.",
+    "11_not_castle_kit_generic": "PARTIAL FAIL — substantially improved, but frontal crenel-strip language still evokes a generic kit rather than a fully authored command fortress.",
+    "12_obvious_full_frame_improvement": "PARTIAL FAIL — clear improvement over Source01/blockout but not yet strong enough for the dominant premium target landmark."
+  },
+  "decision": "DO NOT INTEGRATE. Source03 must strengthen crown depth/360-degree parapet read, correctly map blue/gold heraldry, introduce a contained hero flag/crest, and make Keep/east command tower hold visually at gameplay distance. Preserve exact envelopes.",
+  "tripo_credits": 0
+}
