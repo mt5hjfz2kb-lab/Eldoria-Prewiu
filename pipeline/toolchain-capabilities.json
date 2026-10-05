@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-04",
+  "updated": "2026-10-06",
   "tripo": {
     "single_image_generation": {
       "tool_capability": true,
@@ -8,7 +8,15 @@
     },
     "multiview_generation": {
       "tool_capability": true,
-      "eldoria_automation": "supported_by_canonical_request"
+      "eldoria_automation": "supported_by_canonical_request",
+      "golden_bakeoff": {
+        "status": "priority_bakeoff_candidate_prepared_not_authorized",
+        "model_version": "P1-20260311",
+        "geometry_only": true,
+        "face_limit": 20000,
+        "expected_credits": 40,
+        "official_pricing_checked": "2026-10-06"
+      }
     },
     "parts_segmentation": {
       "tool_capability": true,
@@ -214,5 +222,32 @@
       "new geometry requires proven gap",
       "Tripo spend requires fresh explicit authorization"
     ]
+  },
+  "meshy": {
+    "multi_image_to_3d": {
+      "tool_capability": true,
+      "eldoria_automation": "priority_bakeoff_candidate_not_integrated",
+      "model": "meshy-7.1",
+      "geometry_resolution": "2k",
+      "geometry_only": true,
+      "expected_credits": 25,
+      "official_pricing_checked": "2026-10-06",
+      "note": "Prepared for exact-input Golden A/B only. No API integration or spend authorized."
+    }
+  },
+  "houdini": {
+    "houdini_engine_unity": {
+      "tool_capability": true,
+      "eldoria_automation": "priority_pilot_not_integrated",
+      "unity_compatibility": "official docs support Unity 2018.4 LTS through Unity 6.5; Eldoria uses Unity 6.3",
+      "note": "Candidate integration layer after a Golden generator winner exists."
+    },
+    "hda_environment_integration": {
+      "tool_capability": true,
+      "eldoria_automation": "design_prepared_not_executed",
+      "pilot_doc": "docs/VALORIA_HOUDINI_GOLDEN_INTEGRATION_PILOT_V1.md",
+      "pilot_config": "pipeline/houdini-golden-integration-pilot-v1.json",
+      "rule": "Houdini integrates hero source with terrain/cliff/shore; it must not redesign weak hero geometry."
+    }
   }
 }
