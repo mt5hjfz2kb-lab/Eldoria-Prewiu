@@ -1,8 +1,38 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T17:25:00Z",
+  "updated_at": "2026-10-05T18:15:00Z",
   "active": [
+    {
+      "id": "valoria-golden-lookdev-slice-v1",
+      "title": "VALORIA GOLDEN LOOKDEV SLICE v1",
+      "owner": "chat-valoria-golden-lookdev-slice-v1",
+      "scope": [
+        "docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md",
+        "docs/evidence/valoria-golden-lookdev-slice-v1/**",
+        "AGENTS.md",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/**",
+        "art-source/valoria/lookdev/golden-slice-v1/**"
+      ],
+      "resources": [
+        "valoria-golden-lookdev-slice",
+        "windows-runner-heavy",
+        "unity-presentation",
+        "github-hosted-blender"
+      ],
+      "claimed_at": "2026-10-05T18:15:00Z",
+      "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
+      "status": "active",
+      "phase": "GOLDEN LOOKDEV DEFINITION",
+      "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
+      "next": "Create exact Golden Slice target from current camera/reference, define measurable lookdev recipe, then implement one bounded slice. Do not scale until 4/5 premium-close core metrics pass."
+    }
+  ],
+  "history": [
     {
       "id": "valoria-premium-target-gap-review-visual-uplift-v1",
       "title": "VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1",
@@ -23,13 +53,16 @@
       ],
       "claimed_at": "2026-10-05T17:25:00Z",
       "base_main_sha": "eca8fb4abefbeadc5f4ba196fe3a1ff6b4716cd7",
-      "status": "active",
-      "phase": "PREMIUM TARGET GAP REVIEW",
+      "status": "completed",
+      "phase": "VISUAL FAIL / METHOD PIVOT",
       "dependency": "Preserve camera, target composition, gameplay axis, Bridge/Lower Gate/Road/Bastion/Sawmill/Camp positions, global platform, gameplay and hotspots. Local presentation-only uplift in Bridge -> Lower Gate -> Road hero test zone. No Props + Background. No Tripo; 0 credits.",
-      "next": "Audit reference vs final Vegetation/Water/Shore capture set, identify 3-5 top levers, then execute one bounded Unity-first hero-zone proof."
-    }
-  ],
-  "history": [
+      "next": "VALORIA GOLDEN LOOKDEV SLICE v1 — owner-authorized. Prove one tiny reference-matched lookdev slice with real surface authoring + lighting before any further broad scene production.",
+      "completed_at": "2026-10-05T18:15:00Z",
+      "result": "FIVE ITERATIONS: TECH PASS, PREMIUM VISUAL FAIL. Lighting + flat-color/contact-patch tuning cannot reach the canonical premium target. Stop iterative full-frame cosmetic tuning.",
+      "final_run_id": 37353878139,
+      "final_artifact_id": 11364280394,
+      "final_head": "040adeb1751feeb3a687f01621bb18f8de78db98"
+    },
     {
       "id": "valoria-vegetation-water-shore-production-v1",
       "title": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1",
