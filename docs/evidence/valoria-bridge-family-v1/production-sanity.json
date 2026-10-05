@@ -1,0 +1,56 @@
+{
+  "triangles": 2592,
+  "vertices": 1344,
+  "materials": 3,
+  "semantic_modules": 4,
+  "source_glb": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+  "source_sha": "801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4",
+  "export_sha": "92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
+  "bounds_world_blender": [
+    [
+      -5.026285648345947,
+      -33.85853576660156,
+      0
+    ],
+    [
+      8.933999061584473,
+      -26.205556869506836,
+      8.318509101867676
+    ]
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "uv": true,
+  "normals": true,
+  "tangents_exported": true,
+  "nonmanifold_edges": 0,
+  "collider_state": "No source collider; isolated Unity capturer rejects all colliders.",
+  "import_settings": "GLB metric scale1; glTFast isolated ArtTests import; explicit Unity placement [2,3.2,-30], yaw180.",
+  "LOD_strategy": {
+    "LOD0": "2592 triangles; accepted source03 silhouette/surface.",
+    "LOD1": "Future 40–60% only after matched-camera screen-space error review.",
+    "LOD2": "Future 15–25% only after mobile silhouette review."
+  },
+  "mobile_suitability": "Source proportions and paving scale authored for landscape/portrait-entry; integrated Unity review pending.",
+  "tripo_credits_spent": 0
+}
