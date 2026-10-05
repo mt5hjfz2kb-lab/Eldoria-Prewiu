@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "lower-gate-source05-matched-review-01",
+  "nonce": "bridge-source02-cumulative-lower-gate-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Isolated one-family replacement in approved blockout; no runtime promotion",
+  "scope": "Bridge-only isolated replacement over approved blockout with accepted Lower Gate retained identically in BEFORE/AFTER; no runtime promotion",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -62,7 +62,7 @@
       "perspective": false,
       "center": {
         "x": -2.7271295734086154,
-        "y": 0.0,
+        "y": 0,
         "z": 16.401193454613995
       }
     },
@@ -77,7 +77,7 @@
       "perspective": false,
       "center": {
         "x": -16.167153620011856,
-        "y": 0.0,
+        "y": 0,
         "z": 1.2470901616785484
       }
     },
@@ -92,7 +92,7 @@
       "perspective": false,
       "center": {
         "x": 20.60277299047967,
-        "y": 0.0,
+        "y": 0,
         "z": 12.195118721845164
       }
     },
@@ -107,29 +107,63 @@
       "perspective": false,
       "center": {
         "x": 1.9469909754850867,
-        "y": 0.0,
+        "y": 0,
         "z": -15.902420247865848
       }
     }
   ],
   "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
-  "artifact_name": "valoria-lower-gate-family-v1-unity",
+  "source_glb": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+  "artifact_name": "valoria-bridge-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "retained_families": [
+    {
+      "label": "LOWER GATE ACCEPTED",
+      "source_glb": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/LowerGateFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-lower-gate-family-v1/source-review.json",
+      "names": [
+        "LowerGate_WestTower",
+        "LowerGate_EastTower",
+        "LowerGate_Lintel",
+        "LowerGate_WestWing",
+        "LowerGate_EastWing"
+      ],
+      "position": {
+        "x": 5.566,
+        "y": 7.1,
+        "z": -25.6
+      },
+      "yaw": 180,
+      "scale": 1
+    }
+  ],
   "replacement": {
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/LowerGateFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-lower-gate-family-v1/source-review.json",
+    "label": "BRIDGE",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/BridgeFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-bridge-family-v1/source-review.json",
     "names": [
-      "LowerGate_WestTower",
-      "LowerGate_EastTower",
-      "LowerGate_Lintel",
-      "LowerGate_WestWing",
-      "LowerGate_EastWing"
+      "BridgeDeck",
+      "BridgeParapetL",
+      "BridgeParapetR",
+      "BridgeSupport"
+    ],
+    "metric_old_names": [
+      "BridgeDeck",
+      "BridgeParapetL",
+      "BridgeParapetR",
+      "BridgeSupport"
+    ],
+    "new_names": [
+      "Bridge_Deck",
+      "Bridge_ParapetL",
+      "Bridge_ParapetR",
+      "Bridge_Support"
     ],
     "position": {
-      "x": 5.566,
-      "y": 7.1,
-      "z": -25.6
+      "x": 2,
+      "y": 3.2,
+      "z": -30
     },
     "yaw": 180,
     "scale": 1
