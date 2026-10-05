@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-05",
+  "workstream": "valoria-lower-gate-family-v1",
+  "verdict": "VISUAL PASS",
+  "production_family_verdict": "PRODUCTION FAMILY PASS",
+  "authority": {
+    "target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "target_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+    "approved_blockout_run": 37275659322,
+    "integrated_run": 37282357911,
+    "integrated_artifact": 11337479259,
+    "captured_head": "71b286cffea5e22c205cf6b32b8c2460ddad9c60"
+  },
+  "matched_camera": {
+    "source_3x2": {
+      "target_primary_bbox": [
+        565,
+        526,
+        838,
+        737
+      ],
+      "approved_blockout_primary_bbox": [
+        566.2486572265625,
+        520.6528930664062,
+        826.7608642578125,
+        748.1398315429688
+      ],
+      "integrated_tower_arch_bbox": [
+        566.4310302734375,
+        521.10107421875,
+        826.5784912109375,
+        747.3761596679688
+      ],
+      "target_center_error_px": 5.6967041353,
+      "target_center_error_percent_diagonal": 0.3085901271,
+      "target_width_ratio": 0.9529211023,
+      "target_height_ratio": 1.0723937699
+    },
+    "replacement_alignment_vs_blockout": {
+      "extent_ratio_width": 0.9985998887,
+      "extent_ratio_height": 1.0192157753,
+      "center_delta_px_source_3x2": 2.6338500977,
+      "max_center_delta_px_all_official_views": 2.8945312501,
+      "protected_projection_max_delta_px": 0,
+      "protected_meshes_unchanged_per_view": 84,
+      "official_views_checked": 7,
+      "technical_alignment_pass": true
+    }
+  },
+  "visual_gate": {
+    "silhouette_and_screen_weight": "PASS — square paired towers, real rounded opening, crenellated crown and banners preserve the target's Lower Gate hierarchy without changing the frame.",
+    "position_scale_vs_blockout": "PASS — integrated primary mass remains effectively on the approved blockout footprint; no cosmetic camera/transform correction used.",
+    "bridge_gate_road_continuity": "PASS — BridgeDeck/GateThreshold/MainRoad projections are byte-for-byte capture-stable and the arch aperture receives the bridge on the approved axis.",
+    "base_stone_cliff_walls": "PASS FOR FAMILY INTERFACE — base and wings meet the approved receiver/endpoints without a visible transform break. Cliff, vegetation, fires and final adjacent-family dressing remain blockout by scope and are not falsely counted as Lower Gate completion.",
+    "mobile_landscape": "PASS — gate remains immediately legible as a paired-tower entrance at 1280x720.",
+    "portrait_entry": "PASS — arch void, grille, banners and tower separation remain legible at 390x844.",
+    "portrait_home": "PASS WITH EXPECTED CROP — partial framing is inherited from the approved mobile strategy; no new occlusion/crop regression.",
+    "valoria_identity_vs_generic_castle_kit": "PASS — the family uses the target-specific square asymmetry, open arch/vault, restrained cut-stone hierarchy and blue/gold heraldry rather than a legacy donor gate. Surface weathering remains intentionally restrained/clean.",
+    "relevant_target_differences": "The integrated proof does not reproduce final target lighting, vegetation, rock-cliff dressing, fires or finished adjacent wall families because those are outside this family and the comparison scene is the approved blockout. No Lower Gate-specific mismatch is large enough to reopen source authoring."
+  },
+  "unity_import": {
+    "engine": "6000.3.23f1",
+    "triangles": 15830,
+    "vertices": 42112,
+    "renderers": 6,
+    "materials": 4,
+    "textures": 5,
+    "submesh_draws": 14,
+    "mesh_bytes": 4432816,
+    "texture_bytes": 11888328,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false
+  },
+  "gameplay": {
+    "focused_tests": "5/5 PASS",
+    "protected_projection_delta_px": 0,
+    "gameplay_camera_composition_changed": false
+  },
+  "limitations": [
+    "No device FPS certification",
+    "No LOD1/LOD2 authored yet",
+    "No final whole-scene lighting/dressing judgment from this isolated family proof"
+  ],
+  "tripo_credits": 0,
+  "next": "Owner visual review. Bridge may be prepared conceptually but must not start until explicit owner approval."
+}
