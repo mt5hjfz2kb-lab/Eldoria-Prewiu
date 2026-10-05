@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "nonce": "golden-local-shell-v1-source03",
+  "nonce": "golden-local-shell-v1-source03-persistretry",
   "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
   "scope": "Golden Local Visual Shell source03 final bounded substrate uplift. Retain source02 rock banks/conifers, add one irregular Hero Ground Apron and two irregular sloped Cliff Aprons covering only screen-visible inherited substrate facets. Preserve camera, lighting, macro positions, gameplay, global platform, closed families and Golden Surface V2. No props, no Tripo.",
   "credits": 0
