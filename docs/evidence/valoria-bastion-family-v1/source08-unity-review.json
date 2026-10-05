@@ -1,0 +1,37 @@
+{
+  "verdict": "PRODUCTION FAMILY PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source08",
+  "source_run_id": 37327905027,
+  "source_artifact_id": 11353460819,
+  "source_sha": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "export_sha": "3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477",
+  "unity_run_id": 37328467482,
+  "unity_job_id": 111825737885,
+  "unity_artifact_id": 11352609605,
+  "unity_result": "SUCCESS",
+  "source_art_gate": "ART SOURCE PASS",
+  "unity_tech_gate": "PASS",
+  "gameplay_regression": "PASS",
+  "matched_camera_visual_gate": "PASS",
+  "hero_quality_bar": "PASS",
+  "official_cameras": [
+    "UNITY-source-3x2",
+    "UNITY-16x9",
+    "UNITY-mobile-landscape",
+    "UNITY-portrait-home",
+    "UNITY-portrait-entry",
+    "UNITY-portrait-left",
+    "UNITY-portrait-right"
+  ],
+  "integrated_review": [
+    "Source08 removes Source07's near-white pasted-band failure and restores the Bastion to the accepted warm Valoria value family.",
+    "The dominant Keep, blue/gold heraldry and adjacent command arch remain readable as the primary hero cluster in wide and mobile matched-camera views.",
+    "Asymmetric support masses, scaffold/damage cues and real facade depth survive the material correction; geometry and all nine approved Bastion envelopes are unchanged from Source07.",
+    "Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls remain retained; no camera, target, composition, platform or gameplay compensation was used."
+  ],
+  "target_blockout_final_comparison": "Final Source08 is an obvious authored step beyond the approved Bastion blockout and closes the integrated material mismatch exposed by Source07 while preserving the target-specific hero silhouette and hierarchy.",
+  "source07_superseded_reason": "Source07 passed isolated ART SOURCE but failed cumulative HERO QUALITY because near-white hero masonry flattened the upper fortress into a detached high-value band.",
+  "tripo_credits": 0,
+  "final": "ART SOURCE PASS / UNITY TECH PASS / MATCHED-CAMERA VISUAL PASS / HERO QUALITY BAR PASS / PRODUCTION FAMILY PASS / CLOSED"
+}
