@@ -3,11 +3,11 @@
   "reviewed_at": "2026-10-05",
   "uplift": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
   "base_authority": "Rock/Terrain Source09",
-  "source_iteration": "source09-contact-uplift-v1",
-  "source_run": 37331798714,
-  "artifact_id": 11354318939,
-  "source_sha": "c61f689d4cc48d15ad07ba1493e9dc4251104d7bc496b128ae662f851a9e300b",
-  "export_sha": "e856229cd0cff6f4bbb49ea44edebd8a6862c2ea0922b2b53462771973f99cfb",
+  "source_iteration": "source09-contact-uplift-v1b",
+  "source_run": 37334262852,
+  "artifact_id": 11356270681,
+  "source_sha": "569a48703122d47bfa2c2d3dec4d27be2cee5f2b6a6e7bf28c622e23d61f5778",
+  "export_sha": "3b3afb02f3896e5c38ef8e139e9bf7fae470f5cc5c6a78eb1dae6de7e6805b64",
   "geometry": {
     "triangles": 1909,
     "vertices": 3516,
@@ -18,10 +18,10 @@
     "geometry_changed": false,
     "vertex_face_spec": "unchanged from Source09",
     "material_assignment_changes": 11,
-    "exact_change": "UpperTerraceCliff band-3 rock_shadow -> rock_base only",
+    "exact_change": "Same 11 UpperTerraceCliff band-3 faces only: Source09 rock_shadow -> rock_warm after v1 rock_base failed strict visual gate",
     "other_groups_changed": false
   },
-  "source_gate": "PASS. Source is authorized for cumulative Unity solely to test removal of the Bastion-contact dark seam. Final PASS remains visual and cannot be inferred from this gate.",
+  "source_gate": "ART SOURCE PASS for cumulative visual test only. Geometry unchanged; final PASS requires authoritative BEFORE/AFTER visual review.",
   "tripo_credits": 0,
   "gate_context": "CONTROLLED UPLIFT — exact workflow contract label; scope remains 11 material assignments only."
 }
