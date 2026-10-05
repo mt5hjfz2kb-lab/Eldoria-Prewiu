@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-road-family-v1",
-  "asset_or_sector": "Road Family v1 only",
+  "enabled": true,
+  "request_id": "valoria-stair-family-v1",
+  "asset_or_sector": "Stair Family v1 only",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_ROAD_FAMILY_V1.md#5-legacy-review",
+  "geometry_gap_evidence": "docs/VALORIA_STAIR_FAMILY_V1.md#family-spec",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "required before Unity",
-    "scope": "replace exactly ForegroundRoad/GateThreshold/MainRoad/UpperRoad; retain accepted Bridge + Lower Gate; Stair/Terrain/Ground/gameplay intact"
+    "scope": "replace exactly Stair_00..Stair_11 + StairCheekLeft/Right; retain accepted Lower Gate + Bridge + Road; Terrain/Ground/Bastion/gameplay intact"
   },
-  "notes": "Road Family v1 closed PRODUCTION FAMILY PASS; no next family authorized."
+  "notes": "Stair Family v1 source-authoring stage; zero Tripo."
 }
