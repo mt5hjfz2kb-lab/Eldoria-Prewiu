@@ -11,13 +11,13 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "abb570a1a0481e97a7a83bcc3578aad2a3fefeccd6cb0f15f71d4442a0b59627",
-  "export_sha": "c244935332b6def6d8820401377fabf4d3c79cb629a648c60d1e389b6f6f48bd",
+  "source_sha": "a76e2dc28ae5af69da8cb6ef528ca0886b2e05534991e7862314935c5a12176b",
+  "export_sha": "e53b6495fa4457dcbe67210f67fad7f050a4d40712c6b951356c8c83865fa6e2",
   "source": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.blend",
   "export": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 2916,
-    "vertices": 1512,
+    "triangles": 2592,
+    "vertices": 1344,
     "modules": 4,
     "materials": 2,
     "bounds_world_blender": [
