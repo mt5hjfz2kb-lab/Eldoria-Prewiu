@@ -1,6 +1,7 @@
 {
   "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
+  "source_iteration": "source04",
   "source_run": 37305549155,
   "artifact_id": 11343159192,
   "source_sha": "fbc0268fd9cc10f890be56eea010ac813a64e1152d4f421cfb45cf6151146e03",
@@ -16,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PARTIAL — relief is visibly stronger than source03.",
-    "rock_rhythm": "FAIL — deep voids and narrow supports read as a slab on pillars rather than continuous target-like cliff mass.",
-    "silhouette": "PASS — approved top/bottom outer rings and 3/7/11 anchors remain intact.",
-    "depth_without_noise": "FAIL in geological continuity — depth is strong but creates cavernous/artificial undercuts.",
-    "authored_not_procedural": "PASS — not repetitive, but authored form is the wrong geological read.",
-    "mobile_scale": "PASS for visibility, FAIL for semantics — the large voids survive mobile but read structurally wrong.",
+    "greybox_reduction": "PARTIAL — deep recesses create strong depth but the wall reads as repeated vertical supports/cavities.",
+    "rock_rhythm": "FAIL — regular outer pillars are too architectural for the canonical rock base.",
+    "silhouette": "PASS — approved macro envelope preserved.",
+    "depth_without_noise": "PASS — depth is clear and broad-scale.",
+    "authored_not_procedural": "PARTIAL/FAIL — depth is authored, but repeated pillar cadence is too systematic.",
+    "mobile_scale": "PASS — relief is large and legible.",
     "architecture_integration": "PENDING UNITY — not authorized.",
-    "material_difference": "PASS.",
-    "real_quality_jump": "FAIL — dramatic but farther from canonical cliff language."
+    "material_difference": "PASS — rock/earth/paving hierarchy remains distinct.",
+    "real_quality_jump": "PARTIAL — strong depth jump, wrong geological read."
   },
-  "decision": "REAUTHOR SOURCE05. Return to continuous mass, moderate inset depth, emphasize broad vertical slab facets and diagonal fracture planes without open-looking cavities. Preserve exact boundaries/interfaces.",
+  "decision": "SOURCE05: retain only thin exact top/bottom silhouette lips; inset the entire visible mid-wall so no repeated perimeter columns remain. Use large irregular diagonal facets and nonmonotonic recess rings for natural controlled cliff shelves.",
   "unity_gate": "BLOCKED",
   "tripo_credits": 0
 }
