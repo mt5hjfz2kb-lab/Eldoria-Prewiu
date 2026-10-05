@@ -1,59 +1,80 @@
-name: "[PRODUCTION] Golden Primary Forms Minimal Proof"
+name: "[PRODUCTION] Golden Primary Forms Reauthor v1"
 
 on:
   push:
     branches: [main]
     paths:
       - 'pipeline/golden-local-shell-v1-request.json'
-  workflow_dispatch:
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: valoria-golden-primary-forms-minimal-proof
+  group: valoria-golden-primary-forms-v1
   cancel-in-progress: true
 
 jobs:
-  proof:
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-
+  author:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Blender
+      - name: Prepare minimal source02 workspace
+        id: prepare
+        shell: powershell
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
-          blender --version
-
-      - name: Generate Golden primary forms evidence
+          $work=Join-Path $env:RUNNER_TEMP ("golden_source02_min_"+$env:GITHUB_RUN_ID)
+          if(Test-Path $work){Remove-Item -Recurse -Force $work}
+          New-Item -ItemType Directory -Force -Path (Join-Path $work 'tools') | Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $work 'art-source/valoria/lookdev/golden-slice-v1/surface-v2') | Out-Null
+          $raw='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/main'
+          Invoke-WebRequest "$raw/tools/author-golden-primary-forms-source02.py" -OutFile (Join-Path $work 'tools/author-golden-primary-forms-source02.py')
+          $prefixes=@('stone','rock','ground','shore','vegetation')
+          $maps=@('albedo','normal','smoothness')
+          foreach($p in $prefixes){
+            foreach($m in $maps){
+              $name=$p+'_'+$m+'.png'
+              try {
+                Invoke-WebRequest "$raw/art-source/valoria/lookdev/golden-slice-v1/surface-v2/$name" -OutFile (Join-Path $work "art-source/valoria/lookdev/golden-slice-v1/surface-v2/$name")
+              } catch {
+                Write-Host "Optional surface map unavailable: $name"
+              }
+            }
+          }
+          "workdir=$work" >> $env:GITHUB_OUTPUT
+      - name: Resolve Blender
+        id: blender
+        shell: powershell
         run: |
-          blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
-
-      - name: Verify evidence
+          $cmd=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($cmd){$exe=$cmd.Source}
+          if(-not $exe){
+            $found=Get-ChildItem "$env:ProgramFiles\Blender Foundation" -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            if($found){$exe=$found.FullName}
+          }
+          if(-not $exe){throw 'Blender executable unavailable'}
+          & $exe --version
+          "exe=$exe" >> $env:GITHUB_OUTPUT
+      - name: Author Golden primary forms source02
+        shell: powershell
+        working-directory: ${{ steps.prepare.outputs.workdir }}
         run: |
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png
-          echo "Golden Primary Forms evidence generated successfully."
-
-      - name: Upload proof artifact
-        uses: actions/upload-artifact@v4
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-primary-forms-source02.py
+          if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
+          $required=@(
+            'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/GoldenPrimaryFormsV1_source02.glb',
+            'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/GoldenPrimaryFormsV1_source02.blend',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source-report.json',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-clay-silhouette.png',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-lit-three-quarter.png',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-official-proxy.png'
+          )
+          foreach($p in $required){if(-not(Test-Path $p)){throw "Missing source02 evidence: $p"}}
+      - uses: actions/upload-artifact@v4
         with:
-          name: valoria-golden-primary-forms-minimal-proof
+          name: valoria-golden-primary-forms-v1-source02-review
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb
-            art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png
-            docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png
+            ${{ steps.prepare.outputs.workdir }}/art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/*
+            ${{ steps.prepare.outputs.workdir }}/docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/*
           if-no-files-found: error
           retention-days: 30
