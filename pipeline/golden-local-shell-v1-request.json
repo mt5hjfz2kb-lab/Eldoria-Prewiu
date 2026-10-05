@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "nonce": "golden-local-shell-v1-source01-techretry-checkout",
+  "nonce": "golden-local-shell-v1-source01-techretry-preview-engine",
   "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
   "scope": "Bounded Golden Slice local Blender geometry uplift after three valid surface-only failures. Author only screen-visible cliff/ground/shore/contact shell and three existing vegetation replacements. Preserve macro positions/camera/gameplay/global platform/closed families. Reuse Golden Surface V2. Zero Tripo.",
   "credits": 0
