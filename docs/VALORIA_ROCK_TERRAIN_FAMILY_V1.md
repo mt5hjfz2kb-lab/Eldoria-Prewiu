@@ -76,4 +76,42 @@ If any hard question fails, source remains at ART SOURCE and must be reauthored 
 
 **MATCHED-CAMERA VISUAL PASS** requires all seven official cameras plus a dedicated **TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN** comparison, zero protected-family movement, preserved macro silhouette, clean interfaces, mobile readability, material/import sanity, zero unauthorized colliders and gameplay regression PASS.
 
-Current status: **SOURCE AUTHORING AUTHORIZED / 0 TRIPO**.
+Current status: **PRODUCTION FAMILY PASS / CLOSED / 0 TRIPO**.
+
+
+## Result
+
+**PRODUCTION FAMILY PASS / CLOSED.**
+
+Authoritative source is **Source08**, run **37308344056**, artifact **11344638101**. Editable source SHA-256 `559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b`; GLB SHA-256 `f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed`.
+
+Source08 is **ART SOURCE PASS** after seven deliberately rejected/iterated attempts. Source01 failed for striped horizontal banding; Source02/03/04/05/06/07 successively removed procedural cadence, pillar reads and one-to-one shoulder proxy repetition. Source08 resolves the root issue by absorbing `CliffShoulder_0..6` into a continuous authored geological mass rather than reproducing them as separate production rocks.
+
+Authoritative source metrics: **1,909 tris / 3,516 authored source vertices / 5 semantic modules / 7 materials**, UV/normals/tangents present, 0 Tripo credits. The five production modules are `ForegroundBank`, `MainPlatform`, `PlayableGround`, `UpperTerraceCliff`, `UpperTerraceGround`.
+
+Cumulative Unity gate: run **37309039558**, job **111759642435**, runner **DESKTOP-R10PE55**, artifact **11344907445** — SUCCESS. Accepted Lower Gate + Bridge + Road + Stair remain identical in BEFORE/AFTER; only structural Rock/Terrain changes. The seven shoulder placeholders are suppressed as obsolete greybox proxies.
+
+Unity import sanity: **1,909 triangles / 5,298 imported vertices / 5 renderers / 7 materials / 0 texture payload / 17 submesh draws**, mesh bytes **563,376**; UV/normals/tangents present; colliders **0**; production scene opened/saved **false**. Focused PlayMode **5/5 PASS**.
+
+All seven official matched cameras pass. **63 protected non-terrain elements per view remain at exactly 0 px projection delta.** The Rock/Terrain family macro envelope remains effectively identical to the approved blockout in every view: width/height ratios are ~**1.0000000**, with a maximum family-center delta below **0.0001 px**.
+
+### TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN
+
+- **TARGET:** broad continuous two-level cliff platform, clear 4-unit rise, large/medium controlled rock facets, subdued earth/rock hierarchy supporting architecture.
+- **APPROVED BLOCKOUT:** correct composition, levels and occupancy, but terrain reads as flat technical slabs/dark bands plus seven explicit shoulder proxies.
+- **STRUCTURAL FRAME / SOURCE08:** same macro silhouette and anchors, but visible plateau/upper rise now read as continuous faceted geological masses with separate earth planes; shoulder proxy cadence is gone.
+
+Conclusion: **REAL QUALITY JUMP PASS.** Rock/Terrain materially reduces the greybox character of the whole frame without moving accepted architecture, camera or composition. The frame is not yet final-target complete because Walls, Bastion, Cabin/Camp, Vegetation, Props, Water/Shore and Background remain intentionally outside this family.
+
+Formal evidence:
+- `docs/evidence/valoria-rock-terrain-family-v1/source08-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/source-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/production-sanity.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/matched-camera-metrics.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/target-blockout-structural-comparison.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/integrated-visual-review.json`
+- `docs/evidence/valoria-rock-terrain-family-v1/checkpoint.json`
+
+Camera, target, global composition, Bastion, Walls, BackgroundTerrain, accepted Lower Gate/Bridge/Road/Stair and gameplay remain unchanged. **Tripo: 0 credits.**
+
+**Do not start Walls, Bastion or another family without a new owner instruction.**
