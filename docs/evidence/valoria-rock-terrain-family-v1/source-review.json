@@ -1,8 +1,6 @@
 {
-  "verdict": "ART SOURCE PASS",
+  "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
-  "scope": "Rock/Terrain source03 isolated art gate. Integrated frame-level quality jump remains mandatory at Unity matched-camera gate.",
-  "planner_run": 37303606536,
   "source_run": 37304825245,
   "artifact_id": 11342464690,
   "source_sha": "3258a865d9dcffa0f45a3d9a3cb03bbde8a9d4847ef94ab2d373a7431f90f228",
@@ -15,25 +13,21 @@
     "materials": 7,
     "uv": true,
     "normals": true,
-    "tangents": true,
-    "nonmanifold_edges": 2782
+    "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PASS at source intent — continuous cliff masses replace vertical technical slabs with authored inset/diagonal/vertical faceting; full-frame proof remains Unity.",
-    "rock_rhythm": "PASS — broad contiguous planes and restrained value zones read as one rock mass rather than repeated modules or checkerboard facets.",
-    "silhouette": "PASS — locked top/bottom perimeter and 3/7/11 height anchors are preserved; all added shaping is inset.",
-    "depth_without_noise": "PASS — depth comes from medium/large planes and recesses, not micro-rock scatter.",
-    "authored_not_procedural": "PASS — no texture-strip dependence, no repeated cliff stamp; material zones are contiguous and geometry carries the read.",
-    "mobile_scale": "PASS — major facets span metres and remain legible at landscape/portrait scale.",
-    "architecture_integration": "PASS for interface design — ground elevations and family bounds remain exact; Unity must prove no visible seams/clipping with accepted Gate/Bridge/Road/Stair.",
-    "material_difference": "PASS — quiet earth top family is separated from darker rock and from retained civic paving.",
-    "real_quality_jump": "PASS to integration — source is materially stronger than reset greybox and source01/02; actual frame-level jump must still pass matched-camera visual review."
+    "greybox_reduction": "PARTIAL — cleaner and less procedural, but the dominant read is still a broad slab with subdued cliff relief.",
+    "rock_rhythm": "PARTIAL — naturalized facets exist but are too shallow at approved-camera scale.",
+    "silhouette": "PASS — exact approved outer boundary and 3/7/11 anchors preserved.",
+    "depth_without_noise": "PASS — depth is controlled and noise-free, but insufficiently pronounced.",
+    "authored_not_procedural": "PASS — continuous value zones and geometry-driven shading remove the checker cadence.",
+    "mobile_scale": "FAIL/PARTIAL — relief is too subtle to carry a strong rock read at small screen size.",
+    "architecture_integration": "PENDING UNITY — source not authorized.",
+    "material_difference": "PASS — earth and rock are distinct and restrained.",
+    "real_quality_jump": "FAIL — not yet a frame-transforming structural rock treatment."
   },
-  "limitations": [
-    "Isolated source does not prove final contact shadows/seams against retained production families.",
-    "Integrated target-vs-blockout-vs-after comparison remains mandatory.",
-    "No device FPS certification; import/performance sanity required in Unity."
-  ],
-  "unity_gate": "AUTHORIZED NEXT — exact source03 export SHA only; retain accepted Lower Gate + Bridge + Road + Stair identically in BEFORE/AFTER.",
-  "tripo_credits": 0
+  "decision": "REAUTHOR SOURCE04 IN SAME FAMILY. Increase mid-wall inset/overhang depth substantially while keeping exact top/bottom rings; use large nonuniform vertical/diagonal planes and a few broad contiguous shadow recesses. No micro-rock or exterior silhouette additions.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0,
+  "scope": "Authoritative current source review. Source03 rejected; Unity blocked pending source04."
 }
