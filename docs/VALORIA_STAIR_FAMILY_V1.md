@@ -29,4 +29,23 @@ Stair is the **4-unit level connection** between accepted MainRoad at the lower 
 4. **MATCHED-CAMERA VISUAL PASS** — all seven official views preserve protected families at zero displacement and confirm Road → Stair → upper terrace/Bastion continuity.
 5. **PRODUCTION FAMILY PASS** only after all previous gates pass.
 
-Current status: **SOURCE AUTHORING AUTHORIZED / 0 TRIPO**.
+Current status: **PRODUCTION FAMILY PASS / CLOSED / 0 TRIPO**.
+
+
+## Result
+
+**PRODUCTION FAMILY PASS / CLOSED.**
+
+Planner run **37301748302** / artifact **11341384021** passed with zero paid/Tripo credits. Source01 is the authoritative **ART SOURCE PASS**: run **37301752932**, artifact **11340838935**, editable source SHA-256 `84b1e5f492a552c8452751fbe3d9872c827dc8f01a36cdddffeef73068c47a05`, GLB SHA-256 `442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88`. Source geometry is **1,360 tris / 712 authored vertices / 3 semantic modules / 2 materials** with UV/normals/tangents and 0 Tripo credits.
+
+Cumulative Unity gate: run **37302198301**, job **111737317212**, runner **DESKTOP-R10PE55**, artifact **11340779541** — SUCCESS. Accepted Lower Gate + Bridge + Road are retained identically in BEFORE/AFTER and only the fourteen Stair placeholders are replaced by `StairSteps`, `StairCheekLeft`, `StairCheekRight`.
+
+All seven official matched cameras pass. **72 protected elements/view remain at 0 px delta**. Integrated Stair occupies **99.787%** of approved blockout width and **99.699%** of height in the source 3:2 view; max center delta over all official views is **0.0575 px**. Direct visual review is **VISUAL PASS**: the white greybox stair is replaced by a warm civic-stone stair with broad readable tread rhythm and masonry cheeks, preserving the exact 4-unit connection and completing Road → Stair → UpperRoad/Bastion without moving Road, UpperRoad, Ground, Terrain or Bastion.
+
+Real Unity import: **1,360 triangles / 3,756 imported vertices / 3 renderers / 2 materials / 4 textures / 3 submesh draws**, mesh bytes **397,896**, texture bytes **11,188,384**; UV/normals/tangents present; colliders **0**; production scene opened/saved **false**. Focused PlayMode **5/5 PASS**.
+
+Camera, target, global composition, platform, Bastion, Terrain, Walls, Ground, Lower Gate, Bridge, Road and gameplay remain unchanged. Tripo: **0 credits**.
+
+Formal evidence: `docs/evidence/valoria-stair-family-v1/{source-review,production-sanity,matched-camera-metrics,integrated-visual-review,checkpoint}.json`.
+
+**Do not start Terrain, Walls, Bastion or another family without a new owner instruction.**
