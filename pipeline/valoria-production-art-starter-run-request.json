@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-wall-family-v1-source-03",
-  "nonce": "wall-source-02-battered-chamfered-low-frequency-stone-previewfix-01",
+  "nonce": "wall-source-03-full-six-view-art-review",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Source03 exact-envelope correction after Source02 visual improvement / envelope hard-stop. Preserve Source02 design/materials; clamp all Wall geometry to owning approved blockout envelopes. 32 source vertices corrected. Zero Tripo. Unity blocked pending ART SOURCE PASS. Preview contract corrected only; geometry/design unchanged."
+  "scope": "Source03 geometry/materials unchanged; exact-envelope fix already proven. Regenerate mandatory six isolated review views only (clay/lit/low/side/approved-camera/wire). Zero Tripo. Unity remains blocked pending direct ART SOURCE PASS."
 }
