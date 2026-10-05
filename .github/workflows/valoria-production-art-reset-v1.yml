@@ -66,6 +66,20 @@ jobs:
             $dest=Join-Path 'Unity' $asset
             New-Item -ItemType Directory -Path (Split-Path $dest) -Force | Out-Null
             Copy-Item $source $dest -Force
+            if($request.retained_families){
+              foreach($retained in $request.retained_families){
+                $retainedReview=Get-Content $retained.source_review -Raw | ConvertFrom-Json
+                if($retainedReview.verdict -ne 'ART SOURCE PASS'){throw 'Retained family ART SOURCE PASS required'}
+                $retainedSource=$retained.source_glb
+                if(-not(Test-Path $retainedSource)){throw "Missing retained source GLB: $retainedSource"}
+                $retainedHash=(Get-FileHash $retainedSource -Algorithm SHA256).Hash.ToLowerInvariant()
+                if($retainedHash -ne $retainedReview.export_sha){throw 'Retained reviewed source identity mismatch'}
+                if(-not $retained.asset.StartsWith('Assets/Eldoria/ArtTests/RetainedFamilies/')){throw 'Retained family staging must stay in ArtTests/RetainedFamilies'}
+                $retainedDest=Join-Path 'Unity' $retained.asset
+                New-Item -ItemType Directory -Path (Split-Path $retainedDest) -Force | Out-Null
+                Copy-Item $retainedSource $retainedDest -Force
+              }
+            }
           }
       - name: Verify persisted authored source
         if: steps.mode.outputs.enabled == 'true' && steps.mode.outputs.preproduction != 'true'
