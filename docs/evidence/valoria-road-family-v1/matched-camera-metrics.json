@@ -1,12 +1,13 @@
 {
   "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
-  "reconstructed_from": "Unity artifact 11341876912 evidence.json using canonical review-family-replacement equations",
+  "reconstructed_from": "Unity artifact 11341876912 evidence.json using the canonical review-family-replacement equations",
   "authority": {
     "unity_run": 37300556571,
     "unity_job": 111732031845,
     "artifact": 11341876912,
     "captured_head": "0fbd21afbf7af0d3e835ebd24337a323fc0862b6"
   },
+  "source_identity": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
   "source_integrity_pass": true,
   "all_technical_alignment_pass": true,
   "protected_mesh_count_per_view": 82,
@@ -14,13 +15,16 @@
   "official_views": [
     {
       "view": "UNITY-source-3x2",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         306.00006103515625,
         221.0001220703125,
         1000,
         1008.5242919921875
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         306.01702880859375,
         221.0516357421875,
         999.966064453125,
@@ -31,19 +35,20 @@
         0.9999001766748851
       ],
       "center_delta_px": 0.014865663315004118,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-16x9",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         448.00006103515625,
         221.0001220703125,
         1142,
         1008.5242919921875
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         448.0170593261719,
         221.0516357421875,
         1141.9661865234375,
@@ -54,19 +59,20 @@
         0.9999001766748851
       ],
       "center_delta_px": 0.014822254490543436,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-mobile-landscape",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         315.1562805175781,
         155.39071655273438,
         803.125,
         709.11865234375
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         315.16827392578125,
         155.4269256591797,
         803.1011962890625,
@@ -77,19 +83,20 @@
         0.9999001077843895
       ],
       "center_delta_px": 0.010393120122819566,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-portrait-home",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         -239.3632354736328,
         346.9961853027344,
         332.64453125,
         996.0884399414062
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         -239.3492431640625,
         347.0386962890625,
         332.6165466308594,
@@ -100,19 +107,20 @@
         0.99989999743764
       ],
       "center_delta_px": 0.012249902307141508,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-portrait-left",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         33.453163146972656,
         192.3177947998047,
         796.1302490234375,
         1057.774169921875
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         33.47185134887695,
         192.37454223632812,
         796.0929565429688,
@@ -123,19 +131,20 @@
         0.9998998740253386
       ],
       "center_delta_px": 0.016328778671803493,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-portrait-right",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         -864.3958740234375,
         161.54698181152344,
         -101.71878814697266,
         1027.00341796875
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         -864.377197265625,
         161.6037139892578,
         -101.75609588623047,
@@ -146,19 +155,20 @@
         0.9998998916633152
       ],
       "center_delta_px": 0.016330121516610466,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     },
     {
       "view": "UNITY-portrait-entry",
-      "old_bbox": [
+      "protected_mesh_count": 82,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "old_primary_bbox": [
         -228.09896850585938,
         -107.69778442382812,
         534.5781860351562,
         757.758544921875
       ],
-      "new_bbox": [
+      "new_primary_bbox": [
         -228.0802764892578,
         -107.6411361694336,
         534.5408325195312,
@@ -169,15 +179,13 @@
         0.9998999886210059
       ],
       "center_delta_px": 0.016304402130369797,
-      "protected_projection_max_delta_px": 0,
-      "protected_missing": [],
       "technical_alignment_pass": true
     }
   ],
   "source_statistics": {
     "engine": "6000.3.23f1",
     "triangles": 1944,
-    "imported_vertices": 5556,
+    "vertices": 5556,
     "renderers": 4,
     "materials": 3,
     "textures": 4,
@@ -197,6 +205,7 @@
     "production_scene_opened": false,
     "production_scene_saved": false
   },
+  "target_comparison_note": "target-spec.json has no dedicated numeric Road landmark bbox. Do not invent one. Target validation for Road is direct matched-camera visual comparison against the canonical image and its explicit silhouette requirement 'diagonal continuous bridge-road-stair-gate spine'; quantitative occupancy is locked to the owner-approved blockout.",
   "gameplay": {
     "focused_playmode_total": 5,
     "passed": 5,
