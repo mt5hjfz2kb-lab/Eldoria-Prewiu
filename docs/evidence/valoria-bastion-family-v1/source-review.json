@@ -1,11 +1,11 @@
 {
   "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
-  "source_iteration": "source07",
-  "source_run": 37325445184,
-  "artifact_id": 11351737209,
-  "source_sha": "d9ecdad490086fa8ba25d4e516bc450e90435eed34693529d88243aed9e341ee",
-  "export_sha": "182cfe2fbcf200c0f357a6df41c39e79e5dc99c02188216420abe4662078c1b3",
+  "source_iteration": "source08",
+  "source_run": 37327905027,
+  "artifact_id": 11353460819,
+  "source_sha": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+  "export_sha": "3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477",
   "tech_pass": true,
   "geometry": {
     "triangles": 22690,
@@ -18,20 +18,20 @@
     "nonmanifold_edges": 0
   },
   "hero_questions": {
-    "1_deliberate_silhouette": "PASS — single dominant banner Keep, adjacent large arch, unequal support masses and irregular damaged/scaffolded flanks produce a deliberate target-specific silhouette.",
-    "2_immediately_dominant_valoria_bastion": "PASS SOURCE — pale Keep + blue/gold heraldry + command arch read first within the family.",
-    "3_primary_secondary_tertiary": "PASS — Keep/gate primary; asymmetric tower/wing/curtain secondary; crenels/corbels/scaffold/recesses tertiary.",
-    "4_real_architectural_depth": "PASS — stepped command facade, portal, arch, projecting piers, parapets and full side/rear depth survive clay/side views.",
-    "5_controlled_asymmetry": "PASS — left scaffold/support mass, taller command forms and damaged right curtain are unequal but compositionally controlled.",
-    "6_no_cloned_modules": "PASS — east/west towers and support blocks use distinct section/crown logic.",
-    "7_rich_material_without_microdetail": "PASS — large pale hero blocks, quieter curtain stone and timber scaffold carry the read without relying on noise.",
-    "8_coherent_lower_gate_walls": "PASS — same warm Valoria military family, with clearly richer hero hierarchy than accepted peripheral defense.",
-    "9_gameplay_camera": "PASS SOURCE — official-camera proxy preserves banner Keep, large arch, scaffold and damaged flank at gameplay scale.",
-    "10_authored_not_procedural": "PASS — explicit authored architecture; donor experiment removed from final source.",
-    "11_not_castle_kit_generic": "PASS SOURCE — target-specific banner Keep + adjacent arch + visible timber scaffold + deliberate right-side damage create a bespoke Valoria identity.",
-    "12_obvious_full_frame_improvement": "PASS SOURCE — clear category jump over the approved Bastion blockout; integrated proof remains mandatory."
+    "1_deliberate_silhouette": "PASS — Source07 silhouette is preserved exactly: dominant Keep, adjacent arch, unequal towers/support masses, scaffolded/damaged flanks.",
+    "2_immediately_dominant_valoria_bastion": "PASS SOURCE — Keep/banner/command arch remain the primary read without near-white clipping.",
+    "3_primary_secondary_tertiary": "PASS — hierarchy preserved; material correction no longer flattens the whole family into one bright band.",
+    "4_real_architectural_depth": "PASS — stepped facade, arch, piers, parapets and recesses remain legible in clay and lit views.",
+    "5_controlled_asymmetry": "PASS — left scaffold/support and damaged right side remain unequal and intentional.",
+    "6_no_cloned_modules": "PASS — distinct tower/support crown logic preserved.",
+    "7_rich_material_without_microdetail": "PASS — large-block hero masonry remains low-frequency while warmer/lower values avoid washed-out integration.",
+    "8_coherent_lower_gate_walls": "PASS SOURCE — stone range now sits materially closer to accepted Valoria defensive families while retaining hero hierarchy.",
+    "9_gameplay_camera": "PASS SOURCE — frontal/gameplay preview preserves banner Keep, arch and silhouette at target scale.",
+    "10_authored_not_procedural": "PASS — explicit editable source; geometry unchanged from Source07 and export is materially distinct through deterministic texture tinting.",
+    "11_not_castle_kit_generic": "PASS SOURCE — banner Keep + adjacent arch + scaffold + controlled damage preserve bespoke identity.",
+    "12_obvious_full_frame_improvement": "PASS SOURCE AUTHORIZATION — Source08 directly addresses Source07's only integrated failure mode; final proof requires cumulative Unity matched-camera comparison."
   },
-  "target_read": "Canonical target's defining Bastion cues are now present at large scale: pale block military stone, single blue/gold command Keep, large arch immediately right, timber scaffold on left support mass and controlled damaged right curtain.",
-  "unity_gate": "AUTHORIZED NEXT — exact Source07 export SHA only. Retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically; replace only nine Bastion placeholders. Seven official cameras + HERO QUALITY BAR mandatory.",
+  "delta_from_source07": "Geometry unchanged. Export SHA changed because source-specific texture tints are now embedded into the GLB: hero masonry and stone are warmer/lower-value; timber is darker.",
+  "unity_gate": "AUTHORIZED NEXT — exact Source08 export SHA only. Retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically; replace only nine Bastion placeholders. Seven official cameras + HERO QUALITY BAR mandatory.",
   "tripo_credits": 0
 }
