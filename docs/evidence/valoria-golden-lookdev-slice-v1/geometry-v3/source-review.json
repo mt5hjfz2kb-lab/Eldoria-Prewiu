@@ -1,0 +1,30 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "scope": "GoldenLocalVisualShellV3 accepted only for the final bounded Golden Slice integration proof. Source03 retains source02 and adds one irregular hero ground apron plus two irregular sloped cliff aprons; no global platform replacement.",
+  "source_iteration": "geometry-source03",
+  "source_sha": "7a0c2468da85b6399a01689f87f1f7948687f8e01183b686d487c9508957b291",
+  "export_sha": "5e286bbd97db8013a46ad4b081a4cd768e383eee98c8ddf209e53381ce2954ae",
+  "technical": {
+    "triangles": 9572,
+    "vertices": 5179,
+    "objects": 42,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "visual_review": {
+    "pass_reasons": [
+      "Hero Ground Apron is one continuous irregular tapered patch rather than disconnected rectangular overlays.",
+      "Cliff Aprons follow the local vertical slope and use irregular boundaries instead of broad planar sheets.",
+      "Source02 rock banks and conifer-compatible vegetation remain unchanged."
+    ],
+    "hard_fail_conditions": [
+      "Any large visible apron perimeter or floating substrate island at official camera.",
+      "Cliff apron occludes water/bridge path or changes macro silhouette materially.",
+      "Golden surface response remains below the required 4/5 despite substrate coverage."
+    ]
+  },
+  "next_gate": "Integrate V3 only in AFTER with Golden Surface V2 and unchanged lighting/camera/gameplay. This is the final bounded geometry proof before scope escalation."
+}
