@@ -1,0 +1,55 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "family": "GoldenLocalVisualShellV2",
+  "scope": "Source02 correction: no broad cliff/ground sheets. Irregular tapered berms + overlapping rock banks + compact shore lips + 3 conifer-compatible replacements.",
+  "source": "art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.glb",
+  "source_sha": "df11a159970fbb76bbc0a0ba8db901faa4b41eceecbbfbb1666d9f98ddbd5726",
+  "export_sha": "aa28c7a7e928262cf9ccf08035b75c9412530d69dcefefa8c566c5d01244cb0d",
+  "geometry_metrics": {
+    "triangles": 8564,
+    "vertices": 4616,
+    "objects": 39,
+    "bounds_world_blender": [
+      [
+        -11.054403305053711,
+        -35.372283935546875,
+        -0.26694154739379883
+      ],
+      [
+        27.655057907104492,
+        -16.53533172607422,
+        14.776000022888184
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true
+  },
+  "unity_placement": {
+    "position": [
+      4.0,
+      7.0,
+      -22.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  },
+  "surface_basis": "Golden Surface V2 persisted maps on rock/ground/stone; source materials retained for local trees",
+  "integration01_failure_addressed": [
+    "removed broad rectangular cliff sheets",
+    "removed rectangular road/ground sheets",
+    "irregular tapered borders",
+    "conifer-compatible tree language"
+  ],
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-lit-three-quarter.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-official-proxy.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-clay.png"
+  ],
+  "gameplay_geometry": false,
+  "colliders": 0,
+  "macro_positions_changed": false,
+  "tripo_credits": 0,
+  "isolated_art_review": "PENDING"
+}
