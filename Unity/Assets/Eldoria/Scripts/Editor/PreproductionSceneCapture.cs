@@ -205,6 +205,8 @@ namespace Eldoria.EditorTools
                     {
                         var holder=GameObject.Find(holderName);if(holder!=null)holder.SetActive(false);
                     }
+                    foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                        if(rr.name=="GoldenGround_BridgeWestShoulder"||rr.name=="GoldenGround_BridgeEastShoulder") rr.enabled=false;
                 }
                 ApplyPremiumPresentation(request.premium,light,camera,evidence);
                 renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
