@@ -1,22 +1,22 @@
 {
-  "enabled": false,
-  "request_id": "valoria-bastion-family-v1",
-  "asset_or_sector": "Bastion Family v1 hero asset only",
+  "enabled": true,
+  "request_id": "valoria-vegetation-representative-family-v1",
+  "asset_or_sector": "Valoria representative conifer vegetation family v1",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_BASTION_FAMILY_V1.md#family-spec--hero",
+  "geometry_gap_evidence": "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md#vegetation-target",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
-  "capabilities": {},
-  "validation": {
-    "camera": "approved reset orthographic yaw20/pitch35/span48/distance110 + six official variants",
-    "source_gate": "12-question HERO ART SOURCE gate; hard-stop fail on 1/2/9/11/12",
-    "hierarchy": "Bastion > Lower Gate > Walls",
-    "cumulative_context": "retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically",
-    "final_gate": "MATCHED-CAMERA VISUAL PASS + HERO QUALITY BAR PASS required"
+  "capabilities": {
+    "blender_material_consolidation": true
   },
-  "notes": "Closed. VALORIA BASTION FAMILY v1 completed at Source08 with ART SOURCE PASS + Unity TECH PASS + MATCHED-CAMERA VISUAL PASS + HERO QUALITY BAR PASS. No next family opened. Tripo remains unauthorized."
+  "validation": {
+    "camera": "approved reset orthographic yaw20/pitch35/span48/distance110 + official variants",
+    "source_gate": "Vegetation ART SOURCE gate in block doc",
+    "final_gate": "ART SOURCE PASS before any Unity scaling; then matched-camera cumulative review"
+  },
+  "notes": "Zero-credit authored opaque conifer family first. Do not scale placement or open water/shore until isolated source review passes."
 }
