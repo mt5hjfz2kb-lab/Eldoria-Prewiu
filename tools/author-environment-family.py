@@ -100,37 +100,48 @@ if donor:
  dlo=Vector([min(p[i] for p in world_pts) for i in range(3)])
  dhi=Vector([max(p[i] for p in world_pts) for i in range(3)])
  dext=dhi-dlo
- crop=donor['crop_normalized'];target=donor['target_bbox']
+ crop=donor['crop_normalized'];target=donor['target_bbox'];exclusions=donor.get('exclude_target_boxes',[])
  verts=[];faces=[];vmap={}
  def inside(n):
   return crop['x'][0]<=n[0]<=crop['x'][1] and crop['y'][0]<=n[1]<=crop['y'][1] and crop['z'][0]<=n[2]<=crop['z'][1]
  def remap(n,axis):
   a0,a1=crop[axis];t0,t1=target[axis]
-  q=0 if abs(a1-a0)<1e-8 else (n- a0)/(a1-a0)
+  q=0 if abs(a1-a0)<1e-8 else (n-a0)/(a1-a0)
   return t0+q*(t1-t0)
+ def excluded_target(points):
+  if not exclusions:return False
+  cx=sum(p[0] for p in points)/len(points);cy=sum(p[1] for p in points)/len(points);cz=sum(p[2] for p in points)/len(points)
+  return any(b['x'][0]<=cx<=b['x'][1] and b['y'][0]<=cy<=b['y'][1] and b['z'][0]<=cz<=b['z'][1] for b in exclusions)
  for oi,io in enumerate(imported):
   for poly in io.data.polygons:
-   ids=list(poly.vertices)
-   norms=[]
+   ids=list(poly.vertices);norms=[]
    for vi in ids:
     p=io.matrix_world@io.data.vertices[vi].co
     norms.append(((p.x-dlo.x)/dext.x,(p.y-dlo.y)/dext.y,(p.z-dlo.z)/dext.z))
-   if not all(inside(n) for n in norms): continue
+   if not all(inside(n) for n in norms):continue
+   mapped=[[remap(n[0],'x'),remap(n[1],'y'),remap(n[2],'z')] for n in norms]
+   if excluded_target(mapped):continue
    out=[]
-   for vi,n in zip(ids,norms):
+   for vi,n,p in zip(ids,norms,mapped):
     key=(oi,vi)
-    if key not in vmap:
-     # Blender import is Z-up; normalized donor axes are remapped explicitly into the locked Keep box.
-     vmap[key]=len(verts);verts.append([remap(n[0],'x'),remap(n[1],'y'),remap(n[2],'z')])
+    if key not in vmap:vmap[key]=len(verts);verts.append(p)
     out.append(vmap[key])
    if len(out)>=3:
     for k in range(1,len(out)-1):faces.append([out[0],out[k],out[k+1]])
  for io in imported:bpy.data.objects.remove(io,do_unlink=True)
- if len(faces)<500: raise RuntimeError('Donor crop produced insufficient relief geometry: '+str(len(faces)))
+ if len(faces)<500:raise RuntimeError('Donor crop produced insufficient relief geometry: '+str(len(faces)))
  data=bpy.data.meshes.new(donor['name']);data.from_pydata(verts,[],faces);data.update()
  o=bpy.data.objects.new(donor['name'],data);bpy.context.collection.objects.link(o)
  o.data.materials.append(materials[donor['material']]);o['source_group']=donor['group'];o['authoring_source']='certified_zero_credit_geometry_donor_crop';objs.append(o)
- bm=bmesh.new();bm.from_mesh(data);bmesh.ops.recalc_face_normals(bm,faces=bm.faces);bm.to_mesh(data);bm.free()
+ bm=bmesh.new();bm.from_mesh(data);bmesh.ops.recalc_face_normals(bm,faces=bm.faces)
+ if donor.get('close_boundaries',False):
+  boundary=[e for e in bm.edges if e.is_boundary]
+  if boundary:bmesh.ops.holes_fill(bm,edges=boundary,sides=0)
+  bmesh.ops.recalc_face_normals(bm,faces=bm.faces)
+ bm.to_mesh(data);bm.free();data.update()
+ if donor.get('decimate_ratio',1)<.999:
+  mod=o.modifiers.new('Donor relief simplification','DECIMATE');mod.ratio=float(donor['decimate_ratio']);mod.use_collapse_triangulate=True
+  bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=mod.name)
  uv=o.data.uv_layers.new(name='MetricUV');o.data.uv_layers.active=uv;uv.active_render=True
  for poly in o.data.polygons:
   axis=max(range(3),key=lambda k:abs(poly.normal[k]))
@@ -138,7 +149,7 @@ if donor:
    vi=o.data.loops[li].vertex_index;v=o.data.vertices[vi].co
    uv.data[li].uv=((v.y/3,v.z/3) if axis==0 else (v.x/3,v.z/3) if axis==1 else (v.x/3,v.y/3))
  o.select_set(False)
- print('DONOR_RELIEF_AUTHORED',donor['name'],'verts',len(verts),'tris',len(faces),'source',donor['source_glb'])
+ print('DONOR_RELIEF_AUTHORED',donor['name'],'verts',len(o.data.vertices),'polys',len(o.data.polygons),'source',donor['source_glb'],'closed',donor.get('close_boundaries',False),'decimate',donor.get('decimate_ratio',1))
 
 # Join by semantic module, retain per-material slots; reusable modules have an origin at foundation.
 groups={}
