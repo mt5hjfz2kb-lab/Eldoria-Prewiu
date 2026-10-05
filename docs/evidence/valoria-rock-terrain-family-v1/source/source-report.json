@@ -1,0 +1,97 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "authoring_method": "Editable designed profile/loft/arch meshes from locked family spec; DCC boolean embrasure, selective bevel, metric UV, tileable masonry normal/color; semantic consolidation. No asset generator.",
+  "tool_families": [
+    "mesh_edit",
+    "extrude",
+    "inset",
+    "curves_profiles",
+    "controlled_boolean",
+    "selective_bevel",
+    "uv_unwrap_texel_density"
+  ],
+  "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
+  "source_sha": "fde1fab1f2fc27af5fc12f5b834336fecdd7b8e8a396f617e2581fa133c6ef99",
+  "export_sha": "d8bb3793cfbe8839ffdc4df592532123e22972fbb4c9711b06a584ed33891a38",
+  "source": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.blend",
+  "export": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+  "geometry_metrics": {
+    "triangles": 719,
+    "vertices": 664,
+    "modules": 12,
+    "materials": 6,
+    "bounds_world_blender": [
+      [
+        -40.32315444946289,
+        -77.82352447509766,
+        -0.6999998092651367
+      ],
+      [
+        39.2631721496582,
+        14.54239273071289,
+        11.039999961853027
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true,
+    "nonmanifold_edges": 579,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
+  },
+  "material_families": [
+    "rock_shadow",
+    "rock_mid",
+    "rock_face",
+    "earth_bank",
+    "earth_top",
+    "earth_upper"
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "preview_evidence": [
+    "docs/evidence/valoria-rock-terrain-family-v1/source/01-clay-frame-3quarter.png",
+    "docs/evidence/valoria-rock-terrain-family-v1/source/02-lit-frame-3quarter.png",
+    "docs/evidence/valoria-rock-terrain-family-v1/source/03-cliff-low.png",
+    "docs/evidence/valoria-rock-terrain-family-v1/source/04-cliff-side.png",
+    "docs/evidence/valoria-rock-terrain-family-v1/source/05-approved-camera-proxy.png",
+    "docs/evidence/valoria-rock-terrain-family-v1/source/06-wireframe.png"
+  ],
+  "isolated_art_review": "PENDING; no automatic artistic acceptance",
+  "intended_camera_role": "Approved orthographic20/35/24; exact lower entry placeholder replacement only",
+  "tripo_credits": 0,
+  "blender_version": "4.0.2",
+  "export_origin": [
+    5,
+    -8,
+    7
+  ],
+  "unity_placement": {
+    "position": [
+      5.0,
+      7.0,
+      -8.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  }
+}
