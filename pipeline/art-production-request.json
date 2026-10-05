@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-road-family-v1",
   "asset_or_sector": "Road Family v1 only",
   "profile": "environment_new_geometry",
@@ -16,5 +16,5 @@
     "source_gate": "required before Unity",
     "scope": "replace exactly ForegroundRoad/GateThreshold/MainRoad/UpperRoad; retain accepted Bridge + Lower Gate; Stair/Terrain/Ground/gameplay intact"
   },
-  "notes": "zero-credit direct Blender authored circulation surface; no terrain fitting; no microdetail; preserve approved route envelope"
+  "notes": "Road Family v1 closed PRODUCTION FAMILY PASS; no next family authorized."
 }
