@@ -75,7 +75,10 @@ for key,s in spec['materials'].items():
    nt=m.node_tree.nodes.new('ShaderNodeTexImage');nt.image=tex[k][1];nt.image.colorspace_settings.name='Non-Color';nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.55;m.node_tree.links.new(nt.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],p.inputs['Normal'])
  materials[key]=m
 # Source images include desired warm tint (keep Blender and Unity material response consistent).
-for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54]),('hero_masonry',[.96,.91,.82]),('timber',[.56,.31,.14]),('paving',[.66,.60,.51])]:
+default_texture_tints={'masonry':[.61,.55,.46],'stone_grain':[.70,.64,.54],'hero_masonry':[.96,.91,.82],'timber':[.56,.31,.14],'paving':[.66,.60,.51]}
+texture_tints={**default_texture_tints,**spec.get('texture_tints',{})}
+for kind,tint in texture_tints.items():
+ if kind not in tex: continue
  im=tex[kind][0];p=np.array(im.pixels[:],dtype=np.float32).reshape(-1,4);p[:,:3]*=np.array(tint);im.pixels.foreach_set(p.reshape(-1));im.save();im.pack()
 objs=[]
 for item in spec['meshes']:
