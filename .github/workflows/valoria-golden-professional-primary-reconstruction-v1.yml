@@ -1,0 +1,83 @@
+name: "[PRODUCTION] Golden Professional Primary Reconstruction v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/golden-professional-reconstruction-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: valoria-golden-professional-primary-reconstruction-v1
+  cancel-in-progress: true
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - name: Install Blender headless stack
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx-mesa0 xvfb
+          blender --version
+          ldconfig -p | grep -E 'libEGL\\.so\\.1|libGL\\.so\\.1' || true
+
+      - name: Author professional reconstruction
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" blender -b --python-exit-code 1 --python tools/author-golden-professional-primary-reconstruction-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/source-report.json
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/REFERENCE_ANALYSIS.md
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/SCREEN_SPACE_DIAGNOSIS.md
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-clay-gate.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-lit-review.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-official-proxy.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/professional-contact-closeup.png
+
+      - name: Record run metadata
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os,json,pathlib
+          p=pathlib.Path('docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/run.json')
+          p.write_text(json.dumps({
+            "run_id":os.environ["RUN_ID"],
+            "run_attempt":os.environ["RUN_ATTEMPT"],
+            "head_sha":os.environ["HEAD_SHA"],
+            "status":"AUTHORING_COMPLETED"
+          },indent=2)+"\\n")
+          PY
+
+      - name: Persist evidence
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Golden professional reconstruction evidence"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-golden-professional-primary-reconstruction-v1
+          path: |
+            art-source/valoria/lookdev/golden-slice-v1/professional-primary-reconstruction-v1/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/*
+          if-no-files-found: error
+          retention-days: 30
