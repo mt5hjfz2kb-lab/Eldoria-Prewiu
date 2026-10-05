@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "enhanced quality bar required before Unity",
-    "scope": "Rock/Terrain Source09 closed; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain. Bastion/Walls/Background/gameplay remain locked."
+    "scope": "Rock/Terrain closed on authoritative Source09; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain. Bastion/Walls/Background/gameplay remain locked."
   },
-  "notes": "Rock/Terrain Family v1 closed PRODUCTION FAMILY PASS; Source09 authoritative; no next family authorized. Zero Tripo."
+  "notes": "Rock/Terrain Family v1 closed PRODUCTION FAMILY PASS; Source09 authoritative after Source08 material visual fail; no next family authorized. Zero Tripo."
 }
