@@ -1,34 +1,8 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T15:36:00Z",
-  "active": [
-    {
-      "id": "valoria-rock-terrain-bastion-contact-uplift-v1",
-      "title": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
-      "owner": "chat-valoria-rock-terrain-bastion-contact-uplift-v1",
-      "scope": [
-        "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/**",
-        "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
-        "art-source/valoria/production/rock-terrain-family-v1/**",
-        "pipeline/valoria-production-art-starter-run-request.json",
-        "pipeline/valoria-production-art-reset-run-request.json",
-        "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
-      ],
-      "resources": [
-        "rock-terrain-bastion-contact",
-        "github-hosted-blender",
-        "windows-runner-heavy"
-      ],
-      "claimed_at": "2026-10-05T15:36:00Z",
-      "base_main_sha": "63a5c2633d64a0f7a7b6ef612bed1366d271eb19",
-      "status": "active",
-      "phase": "VISUAL CORRECTION ITERATION 2",
-      "dependency": "Previous closure invalidated by direct authoritative BEFORE/AFTER inspection: intervention was localized but seam remained too visually continuous. Same 11 faces only; no geometry or scope expansion. Zero Tripo."
-    }
-  ],
+  "updated_at": "2026-10-05T15:45:00Z",
+  "active": [],
   "history": [
     {
       "id": "valoria-structural-quality-bar-review-v1",
@@ -2716,7 +2690,6 @@
       "title": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
       "owner": "chat-valoria-rock-terrain-bastion-contact-uplift-v1",
       "scope": [
-        "docs/VALORIA_ROCK_TERRAIN_BASTION_CONTACT_UPLIFT_V1.md",
         "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/**",
         "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
         "art-source/valoria/production/rock-terrain-family-v1/**",
@@ -2731,13 +2704,24 @@
         "github-hosted-blender",
         "windows-runner-heavy"
       ],
-      "claimed_at": "2026-10-05T15:20:00Z",
-      "base_main_sha": "0d065c5899e22943af3545700e1294ab326448bf",
+      "claimed_at": "2026-10-05T15:36:00Z",
+      "base_main_sha": "63a5c2633d64a0f7a7b6ef612bed1366d271eb19",
       "status": "completed",
-      "phase": "PASS / CLOSED",
-      "dependency": "Source09 remains authoritative base. Correct only the very-dark upper-shelf seam directly beneath Bastion. No other terrain opportunity, family, camera, platform, composition, lighting or gameplay change. Zero Tripo.",
-      "completed_at": "2026-10-05T15:34:00Z",
-      "result": "Source09 controlled contact uplift PASS. 11 UpperTerraceCliff material assignments only; Unity 37333453008 / artifact 11355212258 SUCCESS; gameplay PASS; 0 Tripo. Next Cabin/Sawmill + Camp only by explicit owner instruction."
+      "phase": "PASS / CLOSED / V1B AUTHORITATIVE",
+      "dependency": "Previous closure invalidated by direct authoritative BEFORE/AFTER inspection: intervention was localized but seam remained too visually continuous. Same 11 faces only; no geometry or scope expansion. Zero Tripo.",
+      "completed_at": "2026-10-05T15:44:10Z",
+      "result": "Controlled uplift v1b PASS / CLOSED. Same 11 UpperTerraceCliff band-3 material assignments only; rock_warm authoritative. Source run 37334262852 / artifact 11356270681. Cumulative Unity run 37334848469 / artifact 11356615175 SUCCESS. 16:9 + mobile landscape + 3:2 visually reviewed; focused gameplay PASS; geometry/camera/closed families unchanged; 0 Tripo.",
+      "source_iteration": "source09-contact-uplift-v1b",
+      "source_run_id": 37334262852,
+      "source_artifact_id": 11356270681,
+      "source_sha": "569a48703122d47bfa2c2d3dec4d27be2cee5f2b6a6e7bf28c622e23d61f5778",
+      "export_sha": "3b3afb02f3896e5c38ef8e139e9bf7fae470f5cc5c6a78eb1dae6de7e6805b64",
+      "unity_run_id": 37334848469,
+      "unity_artifact_id": 11356615175,
+      "gameplay_regression": "PASS",
+      "visual_gate": "PASS — v1b removes the prior technical/pillar read and breaks the contact into geological facets without changing geometry",
+      "credits_spent": 0,
+      "next": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1 may be claimed only by explicit owner instruction."
     }
   ]
 }
