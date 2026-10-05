@@ -1,3 +1,13 @@
+## 2026-10-05 — STAIR FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Planner: run **37301748302**, artifact **11341384021** — SUCCESS.
+- Source01: **ART SOURCE PASS**, run **37301752932**, artifact **11340838935**, BLEND SHA `84b1e5f4...`, GLB SHA `442fe2d2...`; **1,360 tris / 3 modules / 2 materials**; 0 Tripo.
+- Unity cumulative gate retained accepted Lower Gate + Bridge + Road identically in BEFORE/AFTER and replaced Stair only: run **37302198301**, job **111737317212**, runner **DESKTOP-R10PE55**, artifact **11340779541** — SUCCESS.
+- Matched-camera: all 7 official views TECH PASS; **72 protected elements/view at 0 px delta**; Stair union ~**99.787% width / 99.699% height** versus approved blockout; max center delta **0.0575 px**.
+- Direct visual gate: **VISUAL PASS**. Broad civic-stone treads and masonry cheeks replace the greybox while preserving the exact 4-unit rise and clean Road→Stair→UpperRoad/Bastion continuity.
+- Mobile landscape + portrait views PASS. Unity import: **1,360 tris / 3,756 verts / 3 renderers / 2 materials / 4 textures / 3 submesh draws**; UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- Camera, target, composition, platform, Bastion, Terrain, Walls, Ground, Lower Gate, Bridge, Road and gameplay unchanged. Result: **PRODUCTION FAMILY PASS**.
+- **No Terrain, Walls, Bastion or next family started.**
+
 ## 2026-10-05 — ROAD FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Planner: run **37299158851**, artifact **11340339774** — SUCCESS.
 - Source03: **ART SOURCE PASS**, run **37300130602**, artifact **11341026650**, BLEND SHA `0b672be9...`, GLB SHA `683310d6...`; **1,944 tris / 4 modules / 3 materials**; 0 Tripo.
