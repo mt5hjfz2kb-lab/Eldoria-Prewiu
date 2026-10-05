@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-04T21:12:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T06:36:37.096Z",
+  "active": [
+    {
+      "id": "valoria-art-production-reset-v1",
+      "title": "VALORIA ART PRODUCTION RESET v1",
+      "owner": "codex-work-reset-v1",
+      "scope": [
+        "docs/VALORIA_ART_PRODUCTION_RESET_V1.md",
+        "docs/evidence/valoria-art-production-reset-v1/**",
+        "tools/valoria-art-production-reset-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-reset-preproduction",
+        "art-production-planner"
+      ],
+      "claimed_at": "2026-10-05T06:36:37.094Z",
+      "base_main_sha": "6c80311087b77f9ddb19b9c0eb2ba14249f3725a",
+      "status": "active",
+      "phase": "PREPRODUCTION",
+      "dependency": "New owner-supplied target overrides legacy artistic constraints only for isolated preproduction. No runtime changes, no final assets, no Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-to-city-exact-source-image-v1",
