@@ -1,3 +1,15 @@
+## 2026-10-05 — BRIDGE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source03 is authoritative **ART SOURCE PASS**: run **37297309856**, artifact **11339267765**, source SHA `801fd7d3...`, GLB SHA `92a2c8ef...`; 2,592 tris / 4 semantic modules / 3 materials; 0 Tripo.
+- Source01 and source02 were deliberately stopped at ART SOURCE for visible defects before source03; do not revive them.
+- Cumulative Unity gate retained accepted Lower Gate identically in BEFORE/AFTER and changed Bridge only: run **37298002864**, job **111723747578**, runner **DESKTOP-R10PE55**, artifact **11339213616** — SUCCESS.
+- Matched-camera: all 7 official views TECH PASS; 82 protected non-Bridge projections remain at **0 px** delta. Bridge union is ~99.891% blockout width / 99.632% height, max center delta **0.119 px**.
+- Target primary Bridge comparison: width **99.988%**, height **104.915%**, center error **11.42 px / 0.619% diagonal**.
+- Direct visual gate: **VISUAL PASS** in 3:2, 16:9, mobile landscape and portrait-entry. Foreground→Bridge→Lower Gate continuity, paving, parapets and masonry support read coherently; Lower Gate was not modified.
+- Unity import: 2,592 tris / 7,076 imported verts / 4 renderers / 3 materials / 6 textures / 8 submesh draws; UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- Camera/composition/platform/Bastion/Road/Terrain/gameplay unchanged. Result **PRODUCTION FAMILY PASS**.
+- Formal evidence: `docs/evidence/valoria-bridge-family-v1/{source-review,production-sanity,matched-camera-metrics,integrated-visual-review,checkpoint}.json`.
+- **No Road, Stair, Terrain or next family started.**
+
 ## 2026-10-05 — LOWER GATE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Source: **ART SOURCE PASS**, run **37281447235**, artifact **11332112538**, editable BLEND/GLB retained; 0 Tripo.
 - Unity: run **37282357911** / job **111673150034** / runner **DESKTOP-R10PE55** / artifact **11337479259** — SUCCESS.
