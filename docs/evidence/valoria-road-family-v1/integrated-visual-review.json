@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-05",
+  "workstream": "valoria-road-family-v1",
+  "verdict": "VISUAL PASS",
+  "production_family_verdict": "PRODUCTION FAMILY PASS",
+  "authority": {
+    "target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+    "target_rule": "diagonal continuous bridge-road-stair-gate spine",
+    "approved_blockout_run": 37275659322,
+    "retained_lower_gate": "PRODUCTION FAMILY PASS",
+    "retained_bridge": "PRODUCTION FAMILY PASS",
+    "source_run": 37300130602,
+    "source_artifact": 11341026650,
+    "unity_run": 37300556571,
+    "unity_job": 111732031845,
+    "unity_artifact": 11341876912,
+    "runner": "DESKTOP-R10PE55",
+    "captured_head": "0fbd21afbf7af0d3e835ebd24337a323fc0862b6"
+  },
+  "gates": {
+    "tech_pass": "PASS",
+    "art_source_pass": "PASS — source03",
+    "unity_integration_pass": "PASS",
+    "visual_pass": "PASS",
+    "production_family_pass": "PASS"
+  },
+  "visual_gate": {
+    "main_axis": "PASS — Road is now an obvious but subordinate circulation spine from accepted Lower Gate toward the locked Stair/Bastion in source 3:2 and 16:9.",
+    "screen_occupancy": "PASS — source 3:2 Road union is 99.993% of approved blockout width and 99.990% of approved height with 0.015 px center delta.",
+    "bridge_lower_gate_continuity": "PASS — accepted Bridge and Lower Gate are retained identically in BEFORE/AFTER; Road starts/receives at their locked interfaces without moving them.",
+    "road_to_stair": "PASS FOR ROAD SCOPE — MainRoad ends at the untouched Stair foot and UpperRoad resumes at the untouched upper landing. The visible stair remains greybox by explicit scope; no Road geometry masks or replaces it.",
+    "real_surface": "PASS — coarse masonry paving, shallow real section and restrained edge bands remove the flat-placeholder read without becoming hero architecture.",
+    "value_hierarchy": "PASS — Road is darker/earthier than accepted Bridge and Lower Gate, preserving navigation while avoiding a single uniform stone value across the scene.",
+    "mobile_landscape": "PASS — route is immediately legible at 1280×720 and paving joints remain coarse enough to survive reduction.",
+    "portrait": "PASS — portrait-entry strongly preserves Bridge→Gate→Road direction; portrait-home retains the central route and locked Stair relationship without new crop regression.",
+    "terrain_independence": "PASS — no Ground/Terrain changes were made to make Road fit.",
+    "target_differences": "Final Stair, Ground/Terrain, cliff dressing, vegetation and lighting remain blockout/out-of-scope and are not counted as Road defects."
+  },
+  "protected_state": {
+    "protected_elements_per_view": 82,
+    "max_projection_delta_px": 0,
+    "lower_gate_changed": false,
+    "bridge_changed": false,
+    "camera_changed": false,
+    "stair_changed": false,
+    "terrain_changed": false,
+    "bastion_changed": false,
+    "gameplay_changed": false,
+    "colliders_added": 0
+  },
+  "limitations": [
+    "No device FPS certification",
+    "LOD1/LOD2 not authored",
+    "Stair/Terrain/Ground final art remains outside this family"
+  ],
+  "tripo_credits": 0,
+  "next": "Owner review of closed Road family. Do not start Stair, Terrain, Walls, Bastion or another family without a new instruction."
+}
