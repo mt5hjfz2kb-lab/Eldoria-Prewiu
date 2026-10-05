@@ -11,13 +11,13 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "def79ce2eb0204e33ea5800a44796edf407ee4b9040e4b634407e5582f0087f3",
-  "export_sha": "7da26c47bfe746811ec9d838dcb23edfcc56d0022e5c66c4854d6b98f03a5525",
+  "source_sha": "4caa9f14a2504ee089274f6e86da3e7f27b3e83db140be25caebb45d393228f2",
+  "export_sha": "f3acb6f01b00b125e1d2cf0bb05844a34875b83f1e27ebf6c9e0b49cb115ab63",
   "source": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.blend",
   "export": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 1844,
-    "vertices": 3286,
+    "triangles": 2000,
+    "vertices": 3586,
     "modules": 12,
     "materials": 7,
     "bounds_world_blender": [
@@ -35,7 +35,7 @@
     "uv": true,
     "normals": true,
     "tangents_exported": true,
-    "nonmanifold_edges": 3204,
+    "nonmanifold_edges": 3504,
     "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
   },
   "material_families": [
