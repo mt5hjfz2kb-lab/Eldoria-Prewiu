@@ -1,0 +1,34 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "scope": "Road isolated source gate only; Unity intentionally blocked",
+  "planner_run": 37299158851,
+  "planner_artifact_id": 11340339774,
+  "source_run": 37299283226,
+  "artifact_id": 11340204745,
+  "source_sha": "b0c4aadd5991f71f318ada61e6e0e60ce495e8e3dc20b89be597a9291d358543",
+  "export_sha": "05fe5535768fd4a1ca0b34caf5072369c0b81500751652fb803d34959bed2e77",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1728,
+    "vertices": 896,
+    "modules": 4,
+    "materials": 3,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "questions": {
+    "route_identity": "PASS: exact approved four-strip route footprints are retained.",
+    "real_section": "PASS in principle: core/center/edge geometry exists inside the approved envelope.",
+    "paving_read": "FAIL: coplanar overlap between core top and center skin produces near-black/z-fighting read.",
+    "gate_to_main_continuity": "FAIL/PARTIAL: edge treatment over-emphasizes the locked GateThreshold/MainRoad overlap instead of reading as one circulation spine.",
+    "mobile_detail_scale": "PASS directionally: no micro-cobble density introduced.",
+    "hero_competition": "PASS: Road remains subordinate."
+  },
+  "defect_classification": "SOURCE GEOMETRY LAYERING / SURFACE READ",
+  "action": "Stay in Road Family v1. Lower core top below the paving skin, remove internal edge bands at the GateThreshold/MainRoad shared overlap by using paving-to-paving center continuity, and keep all approved outer bounds exactly unchanged. Do not touch Bridge, Lower Gate, Ground, Terrain, Stair or camera.",
+  "unity_gate": "NOT RUN",
+  "tripo_credits": 0
+}
