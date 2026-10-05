@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-bastion-family-v1",
   "asset_or_sector": "Bastion Family v1 hero asset only",
   "profile": "environment_new_geometry",
@@ -18,5 +18,5 @@
     "cumulative_context": "retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically",
     "final_gate": "MATCHED-CAMERA VISUAL PASS + HERO QUALITY BAR PASS required"
   },
-  "notes": "Bastion only. Asset serves the locked frame; no camera/target/composition/platform/gameplay compensation. Zero Tripo."
+  "notes": "Closed. VALORIA BASTION FAMILY v1 completed at Source08 with ART SOURCE PASS + Unity TECH PASS + MATCHED-CAMERA VISUAL PASS + HERO QUALITY BAR PASS. No next family opened. Tripo remains unauthorized."
 }
