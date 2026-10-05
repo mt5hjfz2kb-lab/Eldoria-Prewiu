@@ -43,6 +43,7 @@ namespace Eldoria.EditorTools
                 else if(n.StartsWith("rockcontact_")||n.StartsWith("shorerock_")||n.StartsWith("rock_")||n=="foregroundbank") set=rock;
                 else if(n.StartsWith("goldenground_")||n.StartsWith("heroground_")||n.StartsWith("heroroadverge_")||n.Contains("_berm")||n.Contains("_vergebreak")||n.Contains("_shoulder")||n=="gatewestberm"||n=="gateeastberm"||n=="roadwestverge"||n=="roadeastverge"||n=="bridgewestshoulder"||n=="bridgeeastshoulder"||n=="foregroundroad"||n=="mainroad") set=ground;
                 else if(n.StartsWith("valoria shore")) set=shore;
+                else if(n.StartsWith("tree_goldenlocal_")&&n.Contains("_canopy_")) set=vegetation;
                 else if(n.StartsWith("tree_")&&!n.StartsWith("tree_goldenlocal_")) set=vegetation;
                 if(set==null) continue;
 
@@ -67,7 +68,10 @@ namespace Eldoria.EditorTools
                 for(int i=0;i<src.Length;i++)
                 {
                     if(src[i]==null){dst[i]=null;continue;}
-                    var m=new Material(src[i]){name=src[i].name+" · GoldenSurfaceV1 · "+set.name};
+                    bool goldenLocal=n.StartsWith("rock_golden")||n.StartsWith("shorerock_golden")||n.StartsWith("goldenground_")||n.StartsWith("gatefoundationcontact_golden")||n.StartsWith("tree_goldenlocal_");
+                    var shader=Shader.Find("Universal Render Pipeline/Lit");
+                    var m=goldenLocal&&shader!=null?new Material(shader):new Material(src[i]);
+                    m.name=src[i].name+" · GoldenSurfaceV1 · "+set.name;
                     if(m.HasProperty("_BaseColor")) m.SetColor("_BaseColor",Color.white);
                     if(m.HasProperty("_BaseMap")){m.SetTexture("_BaseMap",set.albedo);m.SetTextureScale("_BaseMap",set.tiling);}
                     if(m.HasProperty("_BumpMap"))
