@@ -18,20 +18,20 @@
     "nonmanifold_edges": 0
   },
   "hero_questions": {
-    "1_deliberate_silhouette": "PASS — Source07 silhouette is preserved exactly: dominant Keep, adjacent arch, unequal towers/support masses, scaffolded/damaged flanks.",
-    "2_immediately_dominant_valoria_bastion": "PASS SOURCE — Keep/banner/command arch remain the primary read without near-white clipping.",
-    "3_primary_secondary_tertiary": "PASS — hierarchy preserved; material correction no longer flattens the whole family into one bright band.",
-    "4_real_architectural_depth": "PASS — stepped facade, arch, piers, parapets and recesses remain legible in clay and lit views.",
-    "5_controlled_asymmetry": "PASS — left scaffold/support and damaged right side remain unequal and intentional.",
-    "6_no_cloned_modules": "PASS — distinct tower/support crown logic preserved.",
-    "7_rich_material_without_microdetail": "PASS — large-block hero masonry remains low-frequency while warmer/lower values avoid washed-out integration.",
-    "8_coherent_lower_gate_walls": "PASS SOURCE — stone range now sits materially closer to accepted Valoria defensive families while retaining hero hierarchy.",
-    "9_gameplay_camera": "PASS SOURCE — frontal/gameplay preview preserves banner Keep, arch and silhouette at target scale.",
-    "10_authored_not_procedural": "PASS — explicit editable source; geometry unchanged from Source07 and export is materially distinct through deterministic texture tinting.",
-    "11_not_castle_kit_generic": "PASS SOURCE — banner Keep + adjacent arch + scaffold + controlled damage preserve bespoke identity.",
-    "12_obvious_full_frame_improvement": "PASS SOURCE AUTHORIZATION — Source08 directly addresses Source07's only integrated failure mode; final proof requires cumulative Unity matched-camera comparison."
+    "1_deliberate_silhouette": "PASS — Source07 target-specific silhouette preserved exactly.",
+    "2_immediately_dominant_valoria_bastion": "PASS SOURCE — Keep/banner/command arch remain first-read forms without the near-white value spike.",
+    "3_primary_secondary_tertiary": "PASS — primary/secondary/tertiary geometry is unchanged and still legible.",
+    "4_real_architectural_depth": "PASS — warmer lower-value masonry restores plane separation instead of flattening the facade into a white band.",
+    "5_controlled_asymmetry": "PASS — scaffolded left support and damaged right flank remain.",
+    "6_no_cloned_modules": "PASS — unequal section/crown logic unchanged.",
+    "7_rich_material_without_microdetail": "PASS — large-block hero masonry remains low-frequency; export now carries warm target tint rather than relying on clipped brightness.",
+    "8_coherent_lower_gate_walls": "PASS SOURCE — material value is now deliberately pulled toward the accepted warm Valoria defense families.",
+    "9_gameplay_camera": "PASS SOURCE — hero cues survive frontal/gameplay proxy; cumulative Unity proof required.",
+    "10_authored_not_procedural": "PASS — same explicit manifold authored geometry; only exported texture tint changed.",
+    "11_not_castle_kit_generic": "PASS SOURCE — banner Keep, adjacent arch, scaffold and damaged flank preserved.",
+    "12_obvious_full_frame_improvement": "AUTHORIZED FOR UNITY — Source08 specifically addresses the integrated Source07 failure while preserving its successful geometry."
   },
-  "delta_from_source07": "Geometry unchanged. Export SHA changed because source-specific texture tints are now embedded into the GLB: hero masonry and stone are warmer/lower-value; timber is darker.",
+  "correction": "Source08 preflight run 37327135576 was not integrated because export_sha matched Source07. Authoring was corrected with source-specific texture_tints and re-run; final Source08 export_sha is now materially different.",
   "unity_gate": "AUTHORIZED NEXT — exact Source08 export SHA only. Retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically; replace only nine Bastion placeholders. Seven official cameras + HERO QUALITY BAR mandatory.",
   "tripo_credits": 0
 }
