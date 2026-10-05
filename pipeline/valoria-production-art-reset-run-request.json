@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-contact-uplift-v1b-rock-warm",
+  "nonce": "sawmill-state2-cumulative-first-gate-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Cumulative Unity visual gate for v1b. Same exact 11 UpperTerraceCliff band-3 faces only; rock_warm. Geometry and every protected structural family locked. Zero Tripo.",
+  "scope": "Sawmill State2 first cumulative integration gate. Retain all closed structural families including accepted Rock/Terrain contact uplift v1b identically. Replace Cabin parcel placeholders only. No Camp yet. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING VISUAL GATE",
-  "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
-  "artifact_name": "valoria-rock-terrain-bastion-contact-uplift-v1b-cumulative",
+  "result": "PENDING SAWMILL STATE2 CUMULATIVE VISUAL GATE",
+  "source_glb": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
+  "artifact_name": "valoria-sawmill-state2-first-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -248,30 +248,49 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT v1b ACCEPTED",
+      "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/RockTerrainFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
+      "names": [
+        "ForegroundBank",
+        "MainPlatform",
+        "PlayableGround",
+        "UpperTerraceCliff",
+        "UpperTerraceGround",
+        "CliffShoulder_0",
+        "CliffShoulder_1",
+        "CliffShoulder_2",
+        "CliffShoulder_3",
+        "CliffShoulder_4",
+        "CliffShoulder_5",
+        "CliffShoulder_6"
+      ],
+      "position": {
+        "x": 5,
+        "y": 7,
+        "z": -8
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "ROCK TERRAIN SOURCE09 CONTACT UPLIFT v1b",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/source-review.json",
+    "label": "SAWMILL STATE2 EARLY FUNCTIONAL",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/SawmillState2V1.glb",
+    "source_review": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source-review.json",
     "names": [
-      "ForegroundBank",
-      "MainPlatform",
-      "PlayableGround",
-      "UpperTerraceCliff",
-      "UpperTerraceGround",
-      "CliffShoulder_0",
-      "CliffShoulder_1",
-      "CliffShoulder_2",
-      "CliffShoulder_3",
-      "CliffShoulder_4",
-      "CliffShoulder_5",
-      "CliffShoulder_6"
+      "Cabin",
+      "CabinRoof",
+      "CabinChimney",
+      "CabinFence"
     ],
     "position": {
-      "x": 5,
-      "y": 7,
-      "z": -8
+      "x": -14.1,
+      "y": 7.1,
+      "z": -4.35
     },
     "yaw": 180,
     "scale": 1
