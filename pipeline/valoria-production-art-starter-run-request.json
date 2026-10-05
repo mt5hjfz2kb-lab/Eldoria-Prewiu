@@ -1,12 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-bastion-contact-uplift-v1",
-  "nonce": "source09-contact-uplift-material-only-01",
+  "request_id": "valoria-rock-terrain-bastion-contact-uplift-v1b",
+  "nonce": "source09-contact-uplift-v1b-same-11-rock-warm",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "PARKED. Rock/Terrain Bastion contact uplift PASS/CLOSED. Source09 controlled material correction authoritative; no rerun without explicit owner instruction. Zero Tripo.",
-  "result": "PASS / CLOSED"
+  "scope": "Visual iteration v1b after v1 failed strict visual gate. Same exact 11 UpperTerraceCliff band-3 faces only, now rock_warm instead of rock_base. Geometry and all other assignments locked. Zero Tripo."
 }
