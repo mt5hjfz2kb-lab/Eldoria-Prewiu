@@ -1,6 +1,6 @@
 {
   "authoring_standard": "BLENDER_PROFESSIONAL_V1",
-  "workstream": "GOLDEN PRIMARY FORMS \u2014 PROFESSIONAL MESH RECONSTRUCTION v1",
+  "workstream": "GOLDEN PRIMARY FORMS — PROFESSIONAL MESH RECONSTRUCTION v1",
   "method": "silhouette-first custom profile loops + direct vertex/edge authoring + tapered lofts + continuous geological surfaces + compound vegetation massing",
   "supersedes_method": "source02/source03 repeated primitive/additive primary-form method",
   "source": "art-source/valoria/lookdev/golden-slice-v1/professional-primary-reconstruction-v1/GoldenPrimaryProfessionalReconstructionV1.blend",
@@ -24,12 +24,12 @@
     ],
     "bounds_world_blender": [
       [
-        -22.0,
-        -40.0,
+        -22,
+        -40,
         -0.052470073103904724
       ],
       [
-        31.0,
+        31,
         -18.586605072021484,
         15.6023530960083
       ]
@@ -62,16 +62,20 @@
     "tripo_credits": 0
   },
   "clay_gate": {
-    "required_geometry_silhouette": 4.0,
-    "status": "PENDING HUMAN/AGENT VISUAL REVIEW"
+    "required_geometry_silhouette": 4,
+    "score": 3,
+    "status": "FAIL"
   },
   "visual_gate": {
-    "required": 4.0,
-    "geometry_silhouette": "PENDING",
-    "material_response": "PENDING",
-    "contact_integration": "PENDING",
-    "environment_coherence": "PENDING",
-    "premium_perception": "PENDING"
+    "required": 4,
+    "geometry_silhouette": 3,
+    "material_response": 2.5,
+    "contact_integration": 2.5,
+    "environment_coherence": 2.5,
+    "premium_perception": 2,
+    "verdict": "VISUAL FAIL / CODE-AUTHORING CEILING"
   },
-  "unity_integration": "PROHIBITED UNTIL ALL VISUAL METRICS >=4.0"
+  "unity_integration": "NOT AUTHORIZED",
+  "next_method": "Interactive / artist-led Blender authoring with direct viewport mesh editing + sculpt/voxel-remesh + manual official-camera silhouette correction; automation limited to export/render/evidence/QA.",
+  "human_blocker": "A manually artist-authored/sculpted Blender source is required, or the owner must explicitly authorize a genuinely different external geometry-source route. Do not continue by complicating the headless code-authored mesh script."
 }
