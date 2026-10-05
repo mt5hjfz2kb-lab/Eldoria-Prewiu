@@ -1,11 +1,10 @@
 {
   "enabled": true,
-  "mode": "authored_mesh_family",
-  "request_id": "valoria-premium-hero-contact-uplift-v1",
-  "nonce": "premium-hero-contact-source03",
-  "mesh_spec": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03",
-  "evidence_dir": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03",
+  "mode": "authored_surface_maps",
+  "request_id": "valoria-golden-lookdev-slice-v1-surface-v2",
+  "nonce": "golden-surface-v2-blender-maps-01",
+  "source_dir": "art-source/valoria/lookdev/golden-slice-v1/surface-v2",
+  "evidence_dir": "docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2",
   "credits": 0,
-  "scope": "Local Premium Hero Test Zone contact uplift source03 only: method change removes broad ground shells and authors only narrow berm/contact/road-edge/bridge-shoulder interfaces plus asymmetric boulders and foundation contacts. Closed accepted families remain untouched. No Unity integration yet. Zero Tripo."
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface iteration02 source authoring only. Blender headless deterministic authored masks -> persistent PNG maps for stone/rock/ground/wet shore/vegetation. No geometry creation or modification, no camera/composition/gameplay changes, no Tripo."
 }
