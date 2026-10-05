@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T22:26:00Z",
+  "updated_at": "2026-10-05T22:29:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -31,24 +31,24 @@
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "cb7d5d3ca2aad11c3aceb9f48f896be0ea8b1edd",
       "status": "blocked",
-      "phase": "GOLDEN PRIMARY FORMS — CODE-AUTHORING CEILING / HUMAN METHOD DECISION REQUIRED",
+      "phase": "GOLDEN PRIMARY FORMS — PROFESSIONAL MESH RECONSTRUCTION v1 / VISUAL FAIL / CODE-AUTHORING CEILING",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Owner decision required: choose interactive/artist-led Blender authoring (preferred) with automation limited to export/render/QA, or separately authorize an external geometry-source route. Do not run Unity, do not make cosmetic source05/source06, do not expand Props+Background/world map.",
+      "next": "HUMAN ACTION: provide/produce a manually artist-authored/sculpted Blender source for the Golden crop, or explicitly authorize a different external geometry-source method. Then resume at isolated clay gate. No Unity; no Tripo; broad Valoria remains frozen.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
       "strongest_bounded_artifact_id": 11368942273,
       "resumed_at": "2026-10-05T22:03:00Z",
       "authorization": "Owner explicitly authorizes professional mesh reconstruction of only the Golden crop visible primary forms: Lower Gate, Bridge, continuous local cliff/ground/shore, and local vegetation source. Preserve canonical camera/composition, macro Gate/Bridge positions, Gate→Road→Stair→Bastion axis, gameplay topology, parcels, hotspots, Road, Stair, Bastion, platform and all families outside Golden crop. No Unity before isolated >=4/5 source gate; no Tripo; no cosmetic procedural continuation.",
-      "blocked_at": "2026-10-05T22:26:00Z",
-      "blocker": "The professional reconstruction run is TECH PASS but VISUAL FAIL. Fully code-authored Blender geometry still reads algorithmic and remains below the >=4/5 canonical-reference gate. Further script complexity is explicitly rejected. Next meaningful route requires interactive/artist-led Blender authoring or separately authorized external geometry sourcing followed by Blender reauthoring.",
+      "blocked_at": "2026-10-05T22:29:00Z",
+      "blocker": "Professional reconstruction run 37381915933 is TECH PASS but VISUAL FAIL. Fully code-authored profile/loft reconstruction remains visibly algorithmic and below the canonical target. Next method requires genuine interactive/artist-led Blender sculpt/mesh authoring from official camera, or fresh owner authorization for a genuinely different external geometry-source route. No further scripted source iteration is permitted.",
       "integrated_source01_run_id": 37370017454,
       "integrated_source01_artifact_id": 11370535174,
       "integrated_source02_authoring_run_id": 37370511627,
       "integrated_source02_evidence_run_id": 37370727523,
       "integrated_source02_artifact_id": 11369951282,
-      "source_visual_gate": "FAIL — approx Geometry/Silhouette 2.5, Material 3.0, Contact 2.5, Environment 2.5, Premium 2.0",
-      "unity_integration": "NOT RUN — prohibited because isolated source gate <4/5",
+      "source_visual_gate": "FAIL — Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
+      "unity_integration": "NOT RUN / NOT AUTHORIZED",
       "credits_spent": 0,
       "source01_evidence_status": "NOT PRODUCED / NOT A VALID VISUAL ITERATION",
       "source02_authoring_commit": "f9e4243209618ed69d9d0b3ba81dafefe53ba65d",
@@ -60,7 +60,15 @@
       "professional_reconstruction_evidence_commit": "eb34d8238b39887011ae25b121b42c3f973aa760",
       "professional_reconstruction_visual_gate_commit": "1e548e25d1616e6e046437a43f31bbec3228d649",
       "professional_reconstruction_visual_gate": "FAIL — Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
-      "pipeline_stabilization": "Portable Blender cache + sparse checkout. Corrupted Pages workflow restored. Run 37381915933 completed SUCCESS end-to-end."
+      "pipeline_stabilization": "Portable Blender cache + sparse checkout. Corrupted Pages workflow restored. Run 37381915933 completed SUCCESS end-to-end.",
+      "professional_reconstruction_gate_commit": "1e548e25d1616e6e046437a43f31bbec3228d649",
+      "professional_reconstruction_scores": {
+        "geometry_silhouette": 3,
+        "material_response": 2.5,
+        "contact_integration": 2.5,
+        "environment_coherence": 2.5,
+        "premium_perception": 2
+      }
     }
   ],
   "history": [
