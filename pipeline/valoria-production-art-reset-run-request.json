@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-source09-cumulative-lower-gate-bridge-road-stair-matched-review-01",
+  "nonce": "wall-source03-cumulative-lower-gate-bridge-road-stair-rockterrain09-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Rock/Terrain Source09 cumulative Unity matched-camera gate passed; PRODUCTION FAMILY PASS; parked.",
+  "scope": "Wall Family Source03 cumulative Unity matched-camera gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER; replace only six approved Wall placeholders. Camera/target/composition/platform/Bastion/gameplay locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -113,8 +113,8 @@
     }
   ],
   "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
-  "artifact_name": "valoria-rock-terrain-family-v1-unity",
+  "source_glb": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
+  "artifact_name": "valoria-wall-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -203,51 +203,67 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "ROCK / TERRAIN SOURCE09 ACCEPTED",
+      "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/RockTerrainFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-rock-terrain-family-v1/source-review.json",
+      "names": [
+        "ForegroundBank",
+        "MainPlatform",
+        "PlayableGround",
+        "UpperTerraceCliff",
+        "UpperTerraceGround",
+        "CliffShoulder_0",
+        "CliffShoulder_1",
+        "CliffShoulder_2",
+        "CliffShoulder_3",
+        "CliffShoulder_4",
+        "CliffShoulder_5",
+        "CliffShoulder_6"
+      ],
+      "position": {
+        "x": 5,
+        "y": 7,
+        "z": -8
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "ROCK / TERRAIN",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-rock-terrain-family-v1/source-review.json",
+    "label": "WALL",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/WallFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-wall-family-v1/source-review.json",
     "names": [
-      "ForegroundBank",
-      "MainPlatform",
-      "PlayableGround",
-      "UpperTerraceCliff",
-      "UpperTerraceGround",
-      "CliffShoulder_0",
-      "CliffShoulder_1",
-      "CliffShoulder_2",
-      "CliffShoulder_3",
-      "CliffShoulder_4",
-      "CliffShoulder_5",
-      "CliffShoulder_6"
+      "WestPartialWall",
+      "WestWallTowerA",
+      "WestWallTowerB",
+      "EastPartialWall",
+      "EastWallTowerA",
+      "EastWallTowerB"
     ],
     "metric_old_names": [
-      "ForegroundBank",
-      "MainPlatform",
-      "PlayableGround",
-      "UpperTerraceCliff",
-      "UpperTerraceGround",
-      "CliffShoulder_0",
-      "CliffShoulder_1",
-      "CliffShoulder_2",
-      "CliffShoulder_3",
-      "CliffShoulder_4",
-      "CliffShoulder_5",
-      "CliffShoulder_6"
+      "WestPartialWall",
+      "WestWallTowerA",
+      "WestWallTowerB",
+      "EastPartialWall",
+      "EastWallTowerA",
+      "EastWallTowerB"
     ],
     "new_names": [
-      "ForegroundBank",
-      "MainPlatform",
-      "PlayableGround",
-      "UpperTerraceCliff",
-      "UpperTerraceGround"
+      "WestPartialWall",
+      "WestWallTowerA",
+      "WestWallTowerB",
+      "EastPartialWall",
+      "EastWallTowerA",
+      "EastWallTowerB"
     ],
     "position": {
-      "x": 5,
-      "y": 7,
-      "z": -8
+      "x": 10,
+      "y": 7.059999942779541,
+      "z": -12
     },
     "yaw": 180,
     "scale": 1
