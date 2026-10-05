@@ -1,3 +1,14 @@
+## 2026-10-05 — BASTION FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- **Source08 is authoritative. HERO QUALITY BAR PASS.** Source07 had reached ART SOURCE PASS but failed cumulative integration because its near-white hero masonry produced a washed-out/pasted upper fortress band.
+- Source08 preserves Source07 geometry and all nine Bastion envelopes; only the exported material/value hierarchy changes. The authoring route now embeds source-specific texture tints in the GLB.
+- Source run **37327905027** / artifact **11353460819**; BLEND SHA `5c7b7e09...`; GLB SHA `3a731789...`; **22,690 tris / 11,727 source verts / 9 modules / 9 materials / 0 nonmanifold**, UV/normals/tangents PASS.
+- Cumulative Unity run **37328467482** / artifact **11352609605** — SUCCESS. Superseded duplicate run **37328457083** was cancelled by the later identical trigger and is non-authoritative.
+- Unity import **22,690 tris / 64,705 verts / 9 renderers / 9 materials / 7 textures / 35 submesh draws**; colliders 0; focused gameplay tests PASS; production scene not opened/saved.
+- Seven official poses captured. Direct 16:9/mobile review: **MATCHED-CAMERA VISUAL PASS / HERO QUALITY BAR PASS**. Dominant Keep, blue/gold heraldry, adjacent arch, asymmetry, architectural depth and scaffold/damage identity hold at gameplay scale without Source07's white-band mismatch.
+- Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls remain unchanged; camera, target, composition, platform and gameplay remain locked. Tripo **0 credits**.
+- Workstream released. `pipeline/active-workstreams.json` now has no Bastion claim. **Do not open another family without explicit owner instruction.**
+- Canonical result: `docs/VALORIA_BASTION_FAMILY_V1.md`.
+
 ## 2026-10-05 — WALL FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Source03 is authoritative. Planner run **37312260323** / artifact **11345898190**; source run **37315121461** / artifact **11348240013**; cumulative Unity run **37315821080** / artifact **11347388530**.
 - Source01 was rejected for generic rectangular-kit / brick-course read. Source02 improved authored defense but failed exact envelope by ~0.196 m. Source03 preserves the improved design and restores every vertex inside its owning approved Wall envelope.
