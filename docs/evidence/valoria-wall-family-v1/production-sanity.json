@@ -1,0 +1,33 @@
+{
+  "verdict": "UNITY INTEGRATION PASS",
+  "reviewed_at": "2026-10-05",
+  "unity_run": 37315821080,
+  "unity_artifact_id": 11347388530,
+  "engine": "6000.3.23f1",
+  "source_asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/WallFamilyV1.glb",
+  "import": {
+    "triangles": 9368,
+    "vertices": 26870,
+    "renderers": 6,
+    "materials": 5,
+    "textures": 2,
+    "submesh_draws": 30,
+    "mesh_bytes": 2816048,
+    "texture_bytes": 5594192,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "colliders": 0,
+  "tripo_credits": 0,
+  "production_scene_opened": false,
+  "production_scene_saved": false,
+  "gameplay": {
+    "tests_total": 5,
+    "passed": 5,
+    "failed": 0,
+    "result": "PASS"
+  },
+  "retained_identity": "PASS — Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 staged from their ART SOURCE PASS hashes and unchanged in BEFORE/AFTER.",
+  "performance_import_sanity": "PASS for family gate — 9,368 source tris, 6 renderers, 5 materials, 2 textures, 30 submesh draws; below 12k Wall planning LOD0 budget. Device FPS/LOD tiers remain later whole-scene optimization, not a reopen condition."
+}
