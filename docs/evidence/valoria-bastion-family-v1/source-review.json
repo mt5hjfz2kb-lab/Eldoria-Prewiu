@@ -1,0 +1,42 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source03",
+  "source_run": 37321009434,
+  "artifact_id": 11350425988,
+  "source_sha": "7389fd319f1b6b1d1427f33f43300c4280eacb483fd8b7a7d3e70317e1f9f6bd",
+  "export_sha": "5a57ac72a5b0a145b44f4d7640a3a8f4f15adb220c5dab1ebf68f3632281c63a",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 19892,
+    "vertices": 10278,
+    "modules": 9,
+    "materials": 8,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 0
+  },
+  "hero_questions": {
+    "1_deliberate_silhouette": "PASS — long curtains are broken by a unique stepped Keep/gate cluster, unequal east/west towers and asymmetric rear masses; crown depth prevents a single flat crenellation strip.",
+    "2_immediately_dominant_valoria_bastion": "PASS SOURCE — Keep is now the unique highest command mass with mapped blue/gold heraldry, its own portal and full-depth crown; integrated frame must confirm dominance.",
+    "3_primary_secondary_tertiary": "PASS — Keep/gate are primary; east tower/left wing/far-west mass are secondary; piers, corbels, parapets, recesses, crenels and heraldry are tertiary.",
+    "4_real_architectural_depth": "PASS — recessed curtain bays, projecting piers/corbels, staged command masses, arched portal/head and side/rear parapets create real multiple planes.",
+    "5_controlled_asymmetry": "PASS — east tower is taller/heavier; west end is squat; left watch/far-west block and crest treatment are deliberately unequal.",
+    "6_no_cloned_modules": "PASS — command tower, west tower, left wing and Keep use different body/crown logic and proportions.",
+    "7_rich_material_without_microdetail": "PASS SOURCE — identity survives clay; lit source uses selective command masonry, lower-frequency stone, darker recesses and brighter trim rather than relying on micro-noise.",
+    "8_coherent_lower_gate_walls": "PASS SOURCE — same warm military stone/crenellation DNA, with greater hierarchy and heraldry reserved for the hero family.",
+    "9_gameplay_camera": "PASS SOURCE — gameplay-facing preview keeps Keep, portal, heraldry, arch and asymmetric skyline legible; exact frame test remains mandatory.",
+    "10_authored_not_procedural": "PASS — explicit semantic mesh authoring, segmented arches, selected recesses/corbels/crowns and controlled variation; no generic generator source.",
+    "11_not_castle_kit_generic": "PASS SOURCE — central portal+heraldry command Keep, asymmetric command masses and non-cloned crown logic give a Valoria-specific identity beyond a generic wall kit.",
+    "12_obvious_full_frame_improvement": "PASS SOURCE AUTHORIZATION — clear qualitative jump over the nine white blockout masses. Final full-frame/HERO QUALITY remains ungranted until Unity comparison."
+  },
+  "envelope": "PASS — source bounds exactly remain within the canonical Bastion macro blockout bounds; mesh spec was audited per owning module with zero spill.",
+  "limitations": [
+    "ART SOURCE PASS does not equal HERO QUALITY BAR PASS",
+    "isolated neutral lighting cannot prove final commercial hero presence against the complete structural frame",
+    "Bastion↔Walls↔Terrain contacts and Bridge→Gate→Road→Stair→Bastion axis require cumulative Unity review"
+  ],
+  "unity_gate": "AUTHORIZED NEXT — exact Source03 export SHA only. Retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders.",
+  "tripo_credits": 0
+}
