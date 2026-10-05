@@ -11,8 +11,8 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "b0c4aadd5991f71f318ada61e6e0e60ce495e8e3dc20b89be597a9291d358543",
-  "export_sha": "05fe5535768fd4a1ca0b34caf5072369c0b81500751652fb803d34959bed2e77",
+  "source_sha": "5390f0045eb2068e1cfea8909fbbde3aa849da95d2b6308dd19c0207a43bb950",
+  "export_sha": "d639592cb0070b8864ff261d13375c45c27734eeb893e92ad2e29185825dd3d9",
   "source": "art-source/valoria/production/road-family-v1/RoadFamilyV1.blend",
   "export": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
   "geometry_metrics": {
@@ -22,13 +22,13 @@
     "materials": 3,
     "bounds_world_blender": [
       [
-        -6.454143524169922,
-        -46.59457015991211,
+        -6.454679489135742,
+        -46.59498596191406,
         3.010000228881836
       ],
       [
-        8.745888710021973,
-        9.516408920288086,
+        8.746232986450195,
+        9.516475677490234,
         11.09000015258789
       ]
     ],
