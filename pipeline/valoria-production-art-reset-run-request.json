@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "road-source03-cumulative-lower-gate-bridge-matched-review-01",
+  "nonce": "stair-source01-cumulative-lower-gate-bridge-road-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Road cumulative Unity matched-camera gate passed: PRODUCTION FAMILY PASS; parked.",
+  "scope": "Stair cumulative Unity matched-camera gate: retain accepted Lower Gate + Bridge + Road identically; replace Stair only; Terrain/Ground/Bastion/Walls/gameplay untouched.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -113,8 +113,8 @@
     }
   ],
   "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
-  "artifact_name": "valoria-road-family-v1-unity",
+  "source_glb": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+  "artifact_name": "valoria-stair-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -155,34 +155,72 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "ROAD ACCEPTED",
+      "source_glb": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/RoadFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-road-family-v1/source-review.json",
+      "names": [
+        "ForegroundRoad",
+        "GateThreshold",
+        "MainRoad",
+        "UpperRoad"
+      ],
+      "position": {
+        "x": 3.5,
+        "y": 7.08,
+        "z": -18
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "ROAD",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RoadFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-road-family-v1/source-review.json",
+    "label": "STAIR",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/StairFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-stair-family-v1/source-review.json",
     "names": [
-      "ForegroundRoad",
-      "GateThreshold",
-      "MainRoad",
-      "UpperRoad"
+      "Stair_00",
+      "Stair_01",
+      "Stair_02",
+      "Stair_03",
+      "Stair_04",
+      "Stair_05",
+      "Stair_06",
+      "Stair_07",
+      "Stair_08",
+      "Stair_09",
+      "Stair_10",
+      "Stair_11",
+      "StairCheekLeft",
+      "StairCheekRight"
     ],
     "metric_old_names": [
-      "ForegroundRoad",
-      "GateThreshold",
-      "MainRoad",
-      "UpperRoad"
+      "Stair_00",
+      "Stair_01",
+      "Stair_02",
+      "Stair_03",
+      "Stair_04",
+      "Stair_05",
+      "Stair_06",
+      "Stair_07",
+      "Stair_08",
+      "Stair_09",
+      "Stair_10",
+      "Stair_11",
+      "StairCheekLeft",
+      "StairCheekRight"
     ],
     "new_names": [
-      "ForegroundRoad",
-      "GateThreshold",
-      "MainRoad",
-      "UpperRoad"
+      "StairSteps",
+      "StairCheekLeft",
+      "StairCheekRight"
     ],
     "position": {
       "x": 3.5,
-      "y": 7.08,
-      "z": -18
+      "y": 7.039999961853027,
+      "z": 3.3499999046325684
     },
     "yaw": 180,
     "scale": 1
