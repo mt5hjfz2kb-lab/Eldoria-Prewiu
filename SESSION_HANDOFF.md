@@ -797,3 +797,13 @@ Repo + live workflow/artifact evidence remain authoritative over chat memory.
 - No `pipeline/exact-inputs` package was created because there is no approved source image.
 - Canonical record: `docs/VALORIA_BASTION_TO_CITY_EXACT_SOURCE_IMAGE_V1.md`.
 - Evidence manifest: `docs/evidence/valoria-bastion-to-city-exact-source-image-v1/package-manifest.json`.
+
+
+## 2026-10-05 — VEGETATION + WATER/SHORE PRODUCTION v1 — PRODUCTION PASS / CLOSED
+- Final cumulative Unity run **37347735272** — SUCCESS; artifact **11361740372** (`valoria-vegetation-water-shore-v1-final`, digest `02f9bfb7...`).
+- Final implementation HEAD before administrative closure: `6e1dbe984a76a7fe49a46b98f7950986367365cc`.
+- Evidence includes BEFORE/AFTER **16:9, mobile landscape, 3:2, portrait home/left/right/entry**.
+- Vegetation source and placement PASS; Water/Shore iteration01 was rejected as too uniform, iteration02 accepted after authored surface variation; cumulative gameplay/performance sanity PASS.
+- Closed structural families, Sawmill/Camp, camera, composition and gameplay remain unchanged; Tripo **0 credits**.
+- The full scene is explicitly **not** claimed premium-reference-close yet. Owner-authorized next block is **VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1**.
+- **Props + Background remains blocked and must not be opened automatically.**
