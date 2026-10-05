@@ -7,7 +7,7 @@ on:
       - 'pipeline/golden-local-shell-v1-request.json'
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 concurrency:
@@ -16,89 +16,58 @@ concurrency:
 
 jobs:
   author:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 35
     steps:
+      - name: Expose Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'};$dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
+          }
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
-
+          clean: true
+          fetch-depth: 1
       - name: Validate professional route
-        id: validate
+        shell: powershell
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
-
-      - name: Install Blender
-        id: install
+      - name: Resolve Blender
+        id: blender
+        shell: powershell
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
-          blender --version
-
-      - name: Author Golden primary forms
-        id: authoring
-        run: |
-          blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb
-          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png
-          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png
-
-      - name: Persist isolated evidence
-        id: persist
-        if: steps.authoring.outcome == 'success'
-        run: |
-          git config user.name "Eldoria Art Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1
-          if ! git diff --cached --quiet; then
-            git commit -m "Persist Golden primary forms evidence"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
-
-      - name: Record run status
-        if: always()
-        env:
-          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
-          INSTALL_OUTCOME: ${{ steps.install.outcome }}
-          AUTHOR_OUTCOME: ${{ steps.authoring.outcome }}
-          PERSIST_OUTCOME: ${{ steps.persist.outcome }}
-        run: |
-          mkdir -p docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1
-          python3 - <<'PY'
-          import json,os,pathlib
-          p=pathlib.Path('docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/run-status.json')
-          d={
-            "run_id":os.environ.get("GITHUB_RUN_ID"),
-            "run_attempt":os.environ.get("GITHUB_RUN_ATTEMPT"),
-            "head_sha":os.environ.get("GITHUB_SHA"),
-            "validate":os.environ.get("VALIDATE_OUTCOME"),
-            "install":os.environ.get("INSTALL_OUTCOME"),
-            "authoring":os.environ.get("AUTHOR_OUTCOME"),
-            "persist":os.environ.get("PERSIST_OUTCOME")
+          $cmd=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if($cmd){$exe=$cmd.Source}
+          if(-not $exe){
+            $found=Get-ChildItem "$env:ProgramFiles\Blender Foundation" -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            if($found){$exe=$found.FullName}
           }
-          p.write_text(json.dumps(d,indent=2)+"\n")
-          print(json.dumps(d,indent=2))
-          PY
-          git config user.name "Eldoria Art Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/run-status.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Record Golden primary forms run status"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
-
+          if(-not $exe){throw 'Blender executable unavailable on claimed Windows runner'}
+          & $exe --version
+          "exe=$exe" >> $env:GITHUB_OUTPUT
+      - name: Author Golden primary forms
+        shell: powershell
+        run: |
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
+          if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
+          $required=@(
+            'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb',
+            'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png',
+            'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png'
+          )
+          foreach($p in $required){if(-not(Test-Path $p)){throw "Missing evidence: $p"}}
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: valoria-golden-primary-forms-v1-source
+          name: valoria-golden-primary-forms-v1-review
           path: |
             art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/*
             docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/*
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 30
