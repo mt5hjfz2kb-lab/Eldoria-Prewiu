@@ -1,12 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-sawmill-state2-v1",
-  "nonce": "sawmill-state2-early-functional-02-production-identity",
-  "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/sawmill-family-v1/state2",
-  "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source",
+  "request_id": "valoria-camp-family-v1",
+  "nonce": "camp-bastion1-source01",
+  "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/camp-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/camp-family-v1",
+  "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/camp/source",
   "credits": 0,
-  "scope": "Sawmill STATE 2 correction only: same accepted footprint/frame plus explicit saw frame/blade/log bed/work log to make wood-production identity immediate at mobile distance. No State0/1, Camp, structural, camera or Tripo changes.",
-  "result": "PENDING ART SOURCE RE-GATE"
+  "scope": "Camp only. Bastion-I temporary/modest right-zone camp: one main tent, small awning, timber supports, camp-owned crates/supplies and activity bench. No village, no new roads/terrain/vegetation/general props. Zero Tripo."
 }
