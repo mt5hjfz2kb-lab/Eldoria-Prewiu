@@ -1,0 +1,36 @@
+{
+  "workstream": "valoria-lower-gate-family-v1",
+  "state": "BLOCKED",
+  "result": "PRODUCTION FAMILY PARTIAL",
+  "gate_closed": false,
+  "source_gate": "ART SOURCE PASS",
+  "unity_gate": "NOT EXECUTED; queued",
+  "visual_gate": "NOT EXECUTED",
+  "review_commit": "71b286cffea5e22c205cf6b32b8c2460ddad9c60",
+  "source_run": 37281447235,
+  "source_artifact_id": 11332112538,
+  "unity_run": 37282357911,
+  "unity_job": 111673150034,
+  "unity_artifacts": [],
+  "matched_captures": [],
+  "blocker": "Run37282357911 capture job111673150034 remains queued, runner_id0, no steps. No Unity Editor available locally and no remote runner-management tool exposed. Restore self-hosted Windows Unity6000.3.23f1 runner; resume this same family/run. Source PASS does not close visual gate.",
+  "source_sha": "3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf",
+  "export_sha": "46600b6248f23fa580249b2e4867dde793067bb7371de844b3702304d45adce9",
+  "source_evidence": "docs/evidence/valoria-lower-gate-family-v1/source",
+  "source_review": "docs/evidence/valoria-lower-gate-family-v1/source-review.json",
+  "sanity": "docs/evidence/valoria-lower-gate-family-v1/production-sanity.json",
+  "tripo_credits": 0,
+  "gameplay": {
+    "base_sha": "5dedb34fe72fa8a120d0fcb3336b8d4713b56794",
+    "review_commit": "71b286cffea5e22c205cf6b32b8c2460ddad9c60",
+    "protected_count": 4082,
+    "changed": []
+  },
+  "validation": {
+    "workflow_governance": "success / run37282357920",
+    "unity_source_preflight": "success / run37282357864; not Editor execution",
+    "source_parked": "success / run37282357935",
+    "new_focused_playmode_tests": "NOT EXECUTED"
+  },
+  "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
+}

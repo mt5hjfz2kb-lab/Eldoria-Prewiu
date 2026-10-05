@@ -50,4 +50,10 @@ Planning budget≤25k LOD0 tris; four material roles, shared512px stone maps/256
 
 ## Result
 
-Source05 **ART SOURCE PASS** after UV/material correction; run37281447235/artifact11332112538. Unity matched review in progress. No production-family success claimed.
+**PRODUCTION FAMILY PARTIAL — HUMAN BLOCKER, VISUAL GATE OPEN.** Source05 **ART SOURCE PASS** after UV/material correction; run37281447235/artifact11332112538. BLEND SHA256 `3febc6df897ee4b3eec57fa9c717973194b0125afa8c471aca5af6ad86ead1cf`; GLB SHA256 `46600b6248f23fa580249b2e4867dde793067bb7371de844b3702304d45adce9`.
+
+Unity replacement committed at71b286cffea5e22c205cf6b32b8c2460ddad9c60; run37282357911/job111673150034 is queued with runner_id0 and no steps. No matching self-hosted Windows Unity runner has accepted it; local environment has no Unity Editor and no remote runner-management tool is exposed. No Unity integration, imported material review, matched comparison or new focused gameplay tests can be claimed. Source remains accepted for integration only. Restore runner availability, then collect this exact run and execute generic `tools/review-family-replacement.py` plus direct visual review. Do not create a duplicate request or begin another family.
+
+Source sanity: 15,830 triangles, 4 materials, 6 semantic modules, 14 submesh draws, 5 embedded maps; attribute/index payload estimate2.02MiB, RGBA32+mips texture estimate5.67MiB or ASTC6x6+mips0.64MiB. These are planning estimates, not Unity measurements; no mobile FPS claim. LOD1/2 strategies documented, not authored. No source collider; imports are restricted to isolated ArtTests, scale1, explicit pivot/orientation awaiting imported-bound validation.
+
+4,082 protected Unity/preproduction blobs unchanged relative to claimed base; runtime gameplay preserved by identity, newly requested PlayMode tests await runner. Workflow governance and source preflight passed; these do not imply Editor or visual PASS. Zero Tripo credits. Source workflow parked. Workstream blocked, reservations released, visual gate remains open; see `checkpoint.json` and `production-sanity.json`.

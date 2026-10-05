@@ -1,0 +1,50 @@
+{
+  "triangles": 15830,
+  "materials": 4,
+  "semantic_modules": 6,
+  "submesh_draws_estimate": 14,
+  "glb_bytes": 3604156,
+  "split_vertices": 42112,
+  "attribute_index_bytes_estimate": 2116338,
+  "texture_sets": {
+    "structural_stone": {
+      "albedo": [
+        512,
+        512
+      ],
+      "normal": [
+        512,
+        512
+      ]
+    },
+    "secondary_stone": {
+      "albedo": [
+        512,
+        512
+      ],
+      "normal": [
+        512,
+        512
+      ]
+    },
+    "fabric": {
+      "albedo": [
+        256,
+        256
+      ]
+    },
+    "metal": "constant"
+  },
+  "texture_memory_RGBA32_full_mips_estimate_bytes": 5941930,
+  "texture_memory_ASTC6x6_full_mips_estimate_bytes": 670570,
+  "memory_note": "Planning estimates; actual Unity runtime allocations and platform compression remain unmeasured",
+  "LOD_strategy": {
+    "LOD0": "15830 triangles, reference approved silhouette",
+    "LOD1": "Target 7-9k; remove quoin backs and repeated bevel loops, retain arch void, crown and banner; no LOD1 authored yet",
+    "LOD2": "Target 3-4k; remove grille/bar relief and surface quoin geometry after same-camera mobile error review; no LOD2 authored yet"
+  },
+  "collider_state": "No source collider; isolated Unity capturer rejects all colliders",
+  "import_settings": "GLB, metric unit scale1; normals/UV/tangents supplied; glTFast default importer in isolated ArtTests path; explicit transform awaits real Unity review",
+  "mobile_suitability": "LOD0 budget plausible for one family, no device FPS claim",
+  "tripo_credits_spent": 0
+}

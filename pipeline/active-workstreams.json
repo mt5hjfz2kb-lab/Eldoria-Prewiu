@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T08:13:36.401Z",
+  "updated_at": "2026-10-05T08:19:33.535Z",
   "active": [
     {
       "id": "valoria-lower-gate-family-v1",
@@ -24,20 +24,21 @@
         "pipeline/valoria-production-art-starter-run-request.json",
         "tools/review-family-replacement.py"
       ],
-      "resources": [
-        "lower-gate-family-source",
-        "art-production-planner",
-        "windows-runner-heavy",
-        "github-hosted-blender"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-05T07:37:15.256Z",
       "base_main_sha": "5dedb34fe72fa8a120d0fcb3336b8d4713b56794",
-      "status": "active",
-      "phase": "PRODUCTION PROOF / UNITY MATCHED REVIEW",
+      "status": "blocked",
+      "phase": "PRODUCTION PROOF / HUMAN BLOCKER: UNITY RUNNER UNASSIGNED",
       "dependency": "Owner current instruction approves the closed blockout for this single family. Preserve closed preproduction and all other masses/cameras. Zero Tripo; isolated source gate before Unity.",
       "latest_source_run": 37281447235,
       "source_art_gate": "ART SOURCE PASS",
-      "source_artifact_id": 11332112538
+      "source_artifact_id": 11332112538,
+      "blocked_at": "2026-10-05T08:19:33.535Z",
+      "blocker": "Run37282357911 capture job111673150034 remains queued, runner_id0, no steps. No Unity Editor available locally and no remote runner-management tool exposed. Restore self-hosted Windows Unity6000.3.23f1 runner; resume this same family/run. Source PASS does not close visual gate.",
+      "unity_run_id": 37282357911,
+      "unity_job_id": 111673150034,
+      "gate_result": "PRODUCTION FAMILY PARTIAL / VISUAL GATE PENDING",
+      "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
     }
   ],
   "history": [

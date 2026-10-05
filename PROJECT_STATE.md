@@ -1,5 +1,5 @@
-## 2026-10-05 — Lower Gate Family v1 production proof in progress
-One isolated source→Unity proof is active after the owner's blockout approval. No runtime promotion and no gameplay change. Source surface transport is being corrected before isolated ART SOURCE acceptance. See `docs/VALORIA_LOWER_GATE_FAMILY_V1.md` and the active registry; retain the closed preproduction evidence and all other visual families.
+## 2026-10-05 — Lower Gate Family v1: SOURCE PASS / UNITY BLOCKED
+Representative production proof is **PRODUCTION FAMILY PARTIAL**, gate still open. Source05 passed isolated review and is persisted with spec, provenance and six previews. Authorized Unity run37282357911 is queued without an assigned Windows Unity runner; no integrated visual acceptance or new PlayMode result exists. Restore runner availability and continue this same family. No runtime/gameplay/camera changes, no Tripo, no next family. See `docs/VALORIA_LOWER_GATE_FAMILY_V1.md` and `docs/evidence/valoria-lower-gate-family-v1/checkpoint.json`.
 
 ## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
 - New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
