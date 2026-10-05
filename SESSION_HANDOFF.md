@@ -1,9 +1,12 @@
-## 2026-10-05 — LOWER GATE FAMILY v1 — BLOCKED AT UNITY RUNNER
-- Continue the same claimed family; no restart, no next family. Source05 ART SOURCE PASS, run37281447235/artifact11332112538, editable BLEND/GLB and six source previews persisted.
-- Integration request and generic editor-only replacement committed at `71b286cffea5e22c205cf6b32b8c2460ddad9c60`. Run37282357911/job111673150034 queued with runner_id0/no steps. Current environment has no Unity Editor or runner-management capability. Restore self-hosted Windows `unity-6000-3-23f1` runner availability; the authorized request is already queued. Do not duplicate it.
-- Result **PRODUCTION FAMILY PARTIAL**, visual gate OPEN; no integration/captures/tests success claimed. Workstream blocked, exclusive reservations released; check pending job before claiming Windows for another task.
-- Spec/source review/sanity/checkpoint under `docs/evidence/valoria-lower-gate-family-v1/`; use `tools/review-family-replacement.py` against the downloaded Unity capture folder once the run finishes, then inspect visuals and close this same gate.
-- 15,830 tris / 4 materials / 6 semantic modules / 14 submesh draws; zero Tripo. 4,082 protected Unity/preproduction files unchanged. Runtime not promoted. Source workflow parked.
+## 2026-10-05 — LOWER GATE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source: **ART SOURCE PASS**, run **37281447235**, artifact **11332112538**, editable BLEND/GLB retained; 0 Tripo.
+- Unity: run **37282357911** / job **111673150034** / runner **DESKTOP-R10PE55** / artifact **11337479259** — SUCCESS.
+- Matched-camera technical gate: all 7 official views PASS; protected projection delta **0 px**, max replacement center delta **2.895 px**, width ratio ~**0.9986**, height ratio ~**1.0192** versus approved blockout.
+- Canonical target comparison: integrated primary bbox center error **5.697 px / 0.309% diagonal**; width ratio **0.9529**, height ratio **1.0724** against target annotation.
+- Direct visual gate: **VISUAL PASS**. Gate silhouette/weight, bridge→gate→road continuity, approved interfaces, mobile landscape and portrait-entry all pass. Final cliff dressing/lighting/vegetation/adjacent wall families remain out of scope and are not misreported as complete.
+- Unity import: **15,830 tris / 42,112 verts / 6 renderers / 4 materials / 5 textures / 14 submesh draws**; UV/normals/tangents present; colliders 0. Focused PlayMode **5/5 PASS**. No gameplay/camera/composition/runtime mutation.
+- Formal evidence: `docs/evidence/valoria-lower-gate-family-v1/matched-camera-metrics.json` + `integrated-visual-review.json`.
+- Result: **PRODUCTION FAMILY PASS**. Workstream closes. **Do not start Bridge without owner review.**
 
 ## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
 - New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
