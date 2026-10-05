@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "nonce": "golden-local-shell-v1-source03-persistretry2",
-  "request_id": "valoria-golden-lookdev-slice-v1-local-geometry-uplift",
-  "scope": "Golden Local Visual Shell source03 final bounded substrate uplift. Retain source02 rock banks/conifers, add one irregular Hero Ground Apron and two irregular sloped Cliff Aprons covering only screen-visible inherited substrate facets. Preserve camera, lighting, macro positions, gameplay, global platform, closed families and Golden Surface V2. No props, no Tripo.",
+  "nonce": "golden-integrated-base-v1-source01",
+  "request_id": "valoria-golden-lookdev-slice-v1-integrated-base-reauthor",
+  "scope": "Owner-authorized Method B. Author one integrated professional Blender source for Lower Gate visible edge/profile + Bridge edge/support/contact + continuous local substrate + ground + shoreline + 3 necessary conifers. Preserve canonical camera, macro positions, gameplay/layout and all families outside Golden frame. No source04 shell, no cosmetic overlays, no Tripo.",
   "credits": 0,
-  "requested_at": "2026-10-05T20:16:30Z"
+  "requested_at": "2026-10-05T20:30:00Z"
 }
