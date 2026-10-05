@@ -1,5 +1,5 @@
 {
-  "verdict": "ART SOURCE PARTIAL / HERO FAIL",
+  "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
   "source_iteration": "source04",
   "source_run": 37321985100,
@@ -12,25 +12,38 @@
     "vertices": 11006,
     "modules": 9,
     "materials": 8,
+    "bounds_world_blender": [
+      [
+        -9.836312294006348,
+        4.238635063171387,
+        11.100000381469727
+      ],
+      [
+        20.288347244262695,
+        13.259100914001465,
+        18.700000762939453
+      ]
+    ],
     "uv": true,
     "normals": true,
-    "tangents": true,
-    "nonmanifold_edges": 0
+    "tangents_exported": true,
+    "nonmanifold_edges": 0,
+    "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
   },
   "hero_questions": {
-    "1_deliberate_silhouette": "PASS DIRECTIONALLY — command facade/crown and unequal towers read deliberately.",
-    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — Keep is strongest local mass but the family still reads first as a long fortified strip.",
+    "1_deliberate_silhouette": "PARTIAL PASS — crown and command facade are clearer, but overall family silhouette remains dominated by a long curtain strip.",
+    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — Keep now reads first, but not yet at the premium landmark level required.",
     "3_primary_secondary_tertiary": "PASS",
     "4_real_architectural_depth": "PASS",
     "5_controlled_asymmetry": "PASS",
     "6_no_cloned_modules": "PASS",
-    "7_rich_material_without_microdetail": "PARTIAL PASS — pale command masonry helps, but target-specific identity remains insufficient.",
+    "7_rich_material_without_microdetail": "PARTIAL — focal masonry hierarchy improved, but source still lacks enough authored surface/form richness on the Keep body.",
     "8_coherent_lower_gate_walls": "PASS",
-    "9_gameplay_camera": "PARTIAL FAIL — focal hierarchy is clearer but not yet unmistakably target-specific at gameplay distance.",
+    "9_gameplay_camera": "PARTIAL FAIL — portal/banner/crown survive, but Keep body remains too planar at real gameplay distance.",
     "10_authored_not_procedural": "PASS",
-    "11_not_castle_kit_generic": "FAIL HERO — architecture is competent, but lacks the canonical target's distinctive left timber scaffold / right structural damage storytelling.",
-    "12_obvious_full_frame_improvement": "PARTIAL FAIL — better than Source03 and blockout, but not yet enough for final hero promotion."
+    "11_not_castle_kit_generic": "PARTIAL FAIL — strong custom composition, still insufficient large-scale facade identity.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — not yet a decisive commercial-hero step."
   },
-  "decision": "SOURCE05 ONLY: preserve Source04 command facade and envelopes; add target-specific timber scaffold on the left support mass and a deliberate structural breach/notch on the right curtain. No extra generic ornament.",
+  "decision": "DO NOT INTEGRATE. Change authoring method for Source05: preserve Source04 macroarchitecture, use only a cropped mid-body region of the already-certified historical Hero Bastion as zero-credit geometric facade relief inside the Keep envelope. Exclude donor macro silhouette, roofs, rock base and external towers.",
   "tripo_credits": 0
 }
