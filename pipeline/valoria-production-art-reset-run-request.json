@@ -4,7 +4,7 @@
   "nonce": "bastion-source08-cumulative-final-hero-gate-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bastion Source08 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders. Source08 geometry is Source07-identical; only corrected embedded material/value hierarchy may differ. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
+  "scope": "Bastion Source08 cumulative Unity matched-camera + HERO QUALITY gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 + Walls identically in BEFORE/AFTER; replace only nine Bastion placeholders. Camera/target/composition/platform/gameplay locked. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
