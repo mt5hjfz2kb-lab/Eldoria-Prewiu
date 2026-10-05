@@ -3,28 +3,10 @@
   "state": "COMPLETED",
   "result": "PRODUCTION FAMILY PASS",
   "gate_closed": true,
-  "source_progression": [
-    {
-      "revision": "source01",
-      "run": 37299283226,
-      "artifact": 11340204745,
-      "result": "TECH PASS / ART SOURCE FAIL",
-      "reason": "surface overlap/z-fight and internal route discontinuity"
-    },
-    {
-      "revision": "source02",
-      "run": 37299687746,
-      "artifact": 11341090915,
-      "result": "TECH PASS / ART SOURCE FAIL",
-      "reason": "transverse dark strip at GateThreshold→MainRoad overlap"
-    },
-    {
-      "revision": "source03",
-      "run": 37300130602,
-      "artifact": 11341026650,
-      "result": "ART SOURCE PASS"
-    }
-  ],
+  "source_gate": "ART SOURCE PASS",
+  "source_revision": "source03",
+  "source_run": 37300130602,
+  "source_artifact_id": 11341026650,
   "source_sha": "0b672be9f522438754df5167c7376a65477b193c5251e4be39bedc722b98bc66",
   "export_sha": "683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67",
   "unity_gate": "UNITY INTEGRATION PASS",
@@ -60,6 +42,7 @@
     "bastion": true,
     "stair": true,
     "terrain": true,
+    "ground": true,
     "walls": true,
     "gameplay": true
   },
