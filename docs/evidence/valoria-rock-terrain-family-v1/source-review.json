@@ -1,15 +1,15 @@
 {
   "verdict": "ART SOURCE FAIL",
   "reviewed_at": "2026-10-05",
-  "source_iteration": "source04",
-  "source_run": 37305549155,
-  "artifact_id": 11343159192,
-  "source_sha": "fbc0268fd9cc10f890be56eea010ac813a64e1152d4f421cfb45cf6151146e03",
-  "export_sha": "cf6bbbd27c5868bbfb114c67d4ebf2cd47aa05cbda6c3cebdbe38afbdc98745e",
+  "source_iteration": "source05",
+  "source_run": 37306173325,
+  "artifact_id": 11343632588,
+  "source_sha": "def79ce2eb0204e33ea5800a44796edf407ee4b9040e4b634407e5582f0087f3",
+  "export_sha": "7da26c47bfe746811ec9d838dcb23edfcc56d0022e5c66c4854d6b98f03a5525",
   "tech_pass": true,
   "geometry": {
-    "triangles": 786,
-    "vertices": 1214,
+    "triangles": 1844,
+    "vertices": 3286,
     "modules": 12,
     "materials": 7,
     "uv": true,
@@ -17,17 +17,17 @@
     "tangents": true
   },
   "hard_questions": {
-    "greybox_reduction": "PARTIAL — deep recesses create strong depth but the wall reads as repeated vertical supports/cavities.",
-    "rock_rhythm": "FAIL — regular outer pillars are too architectural for the canonical rock base.",
-    "silhouette": "PASS — approved macro envelope preserved.",
-    "depth_without_noise": "PASS — depth is clear and broad-scale.",
-    "authored_not_procedural": "PARTIAL/FAIL — depth is authored, but repeated pillar cadence is too systematic.",
-    "mobile_scale": "PASS — relief is large and legible.",
+    "greybox_reduction": "PARTIAL — shelf depth and upper rise improve, but visible perimeter still contains repeated pillar-like verticals.",
+    "rock_rhythm": "FAIL — ring correspondence creates vertical grid cadence inconsistent with natural controlled cliff.",
+    "silhouette": "PASS — approved outer silhouette and levels preserved.",
+    "depth_without_noise": "PASS — broad shelf depth works.",
+    "authored_not_procedural": "PARTIAL — topology still exposes a systematic vertical construction rhythm.",
+    "mobile_scale": "PASS for depth, FAIL for identity — pillars remain readable at mobile scale as architecture rather than rock.",
     "architecture_integration": "PENDING UNITY — not authorized.",
-    "material_difference": "PASS — rock/earth/paving hierarchy remains distinct.",
-    "real_quality_jump": "PARTIAL — strong depth jump, wrong geological read."
+    "material_difference": "PASS.",
+    "real_quality_jump": "PARTIAL — geometry jump is visible but wrong cliff identity remains."
   },
-  "decision": "SOURCE05: retain only thin exact top/bottom silhouette lips; inset the entire visible mid-wall so no repeated perimeter columns remain. Use large irregular diagonal facets and nonmonotonic recess rings for natural controlled cliff shelves.",
+  "decision": "SOURCE06: stagger/tangentially shift intermediate rings to destroy vertical grid alignment; preserve exact top/bottom rings; use diagonal large facets and broad shelf recesses only.",
   "unity_gate": "BLOCKED",
   "tripo_credits": 0
 }
