@@ -11,65 +11,45 @@ permissions:
   actions: read
 
 concurrency:
-  group: valoria-golden-integrated-base-v1
+  group: valoria-golden-primary-forms-v1
   cancel-in-progress: true
 
 jobs:
   author:
-    if: vars.UNITY_RUNNER_READY == 'true'
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
-      - name: Expose Git
-        shell: powershell
-        run: |
-          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
-            $desktop="$env:LOCALAPPDATA\GitHubDesktop"
-            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
-            if(-not $candidate){throw 'Git not found'};$dir=Split-Path $candidate;Add-Content -Path $env:GITHUB_PATH -Value $dir;$env:PATH="$dir;$env:PATH"
-          }
       - uses: actions/checkout@v4
         with:
-          clean: false
           fetch-depth: 2
       - name: Validate professional route
-        shell: powershell
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
-      - name: Resolve Blender
-        id: blender
-        shell: powershell
+      - name: Install Blender
         run: |
-          $cmd=Get-Command blender.exe -ErrorAction SilentlyContinue
-          if($cmd){$exe=$cmd.Source}
-          if(-not $exe){
-            $found=Get-ChildItem "$env:ProgramFiles\Blender Foundation" -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-            if($found){$exe=$found.FullName}
-          }
-          if(-not $exe){throw 'Blender executable unavailable on claimed Windows runner'}
-          & $exe --version
-          "exe=$exe" >> $env:GITHUB_OUTPUT
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+          blender --version
       - name: Author Golden primary forms
-        shell: powershell
         run: |
-          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
-          if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb')){throw 'Missing GLB'}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend')){throw 'Missing BLEND'}
-          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json')){throw 'Missing source report'}
+          blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-v1.py
+          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.glb
+          test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/GoldenPrimaryFormsV1.blend
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source-report.json
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-clay-silhouette.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-lit-three-quarter.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/primary-official-proxy.png
       - name: Persist isolated evidence
-        shell: powershell
         run: |
           git config user.name "Eldoria Art Bot"
           git config user.email "actions@users.noreply.github.com"
-          if(Test-Path '.git/rebase-merge'){ git rebase --abort }
           git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1
-          if(-not (git diff --cached --quiet)){
+          if ! git diff --cached --quiet; then
             git commit -m "Persist Golden primary forms evidence"
             git pull --rebase origin main
             git push origin HEAD:main
-          }
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-golden-primary-forms-v1-source
