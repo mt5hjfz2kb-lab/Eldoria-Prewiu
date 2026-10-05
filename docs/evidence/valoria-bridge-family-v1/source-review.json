@@ -2,16 +2,16 @@
   "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
   "scope": "Bridge isolated source gate only; Unity integrated visual gate remains mandatory",
-  "source_run": 37296800850,
-  "artifact_id": 11340060969,
-  "source_sha": "a76e2dc28ae5af69da8cb6ef528ca0886b2e05534991e7862314935c5a12176b",
-  "export_sha": "e53b6495fa4457dcbe67210f67fad7f050a4d40712c6b951356c8c83865fa6e2",
+  "source_run": 37297309856,
+  "artifact_id": 11339267765,
+  "source_sha": "801fd7d393c8c151c3036e793e62ff1aad88cd22b636598194b7c47e1ba2eed4",
+  "export_sha": "92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c",
   "tech_pass": true,
   "geometry": {
     "triangles": 2592,
     "vertices": 1344,
     "modules": 4,
-    "materials": 2,
+    "materials": 3,
     "nonmanifold_edges": 0,
     "uv": true,
     "normals": true,
@@ -22,11 +22,11 @@
     "same_visual_weight": "PASS in approved-camera proxy; final matched Unity measurement pending.",
     "foreground_to_gate_continuity": "PASS geometrically: exact blockout grade 3.20m → 7.03m retained.",
     "lower_gate_language": "PASS: warm structural masonry + lighter cut-stone trim inherit accepted Lower Gate vocabulary.",
-    "deck_read": "PASS after source02 correction: continuous deck surface, no source01 zipper/chevron seam.",
+    "deck_read": "PASS source03: metric cut-stone paving is readable at family scale, avoids source01 zipper seam and matches the target crossing language.",
     "support_read": "PASS: segmented masonry arch ring, piers and recessed upper mass replace source01 technical lintel/legs while remaining in the approved support envelope.",
     "parapet_read": "PASS: low restrained walls/caps and strong terminal posts remain target-subordinate.",
     "too_generic": "Acceptable for a restrained civic stone bridge; identity comes from exact Valoria interface/proportions and shared Lower Gate material grammar rather than added ornament.",
-    "production_art_quality": "PASS for representative family source; integrated lighting/contact and whole-frame judgment remain Unity gate."
+    "production_art_quality": "PASS source03 for representative family source; integrated lighting/contact and whole-frame judgment remain Unity gate."
   },
   "limitations": [
     "No final whole-scene lighting",
@@ -34,6 +34,6 @@
     "No device FPS certification",
     "LOD1/LOD2 not authored"
   ],
-  "unity_gate": "AUTHORIZED NEXT — only reviewed export SHA above; retain accepted Lower Gate unchanged in both A/B phases",
+  "unity_gate": "AUTHORIZED NEXT — source03 export SHA 92a2c8ef00621948aaef7f93ae364fb87428e4c54b05bdad62313f8de9942a9c only; retain accepted Lower Gate unchanged in both A/B phases",
   "tripo_credits": 0
 }
