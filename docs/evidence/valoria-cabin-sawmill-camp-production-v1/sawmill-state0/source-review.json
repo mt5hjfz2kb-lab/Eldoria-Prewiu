@@ -1,0 +1,19 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "family": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "subfamily": "SAWMILL STATE 0 — RESERVED / PREBUILD",
+  "source_run": 37335784556,
+  "artifact_id": 11355583597,
+  "source_sha": "aeaee07cdc06aec097e8b196799c0819d788a2900f1df5d4276444cea3203c08",
+  "export_sha": "215f5b621ca64f8a5472ac3d06a018b3df21a0229288ea1b490c8ff1ef4bcb87",
+  "gate": {
+    "productive_need_read": true,
+    "clearly_not_built": true,
+    "timber_stone_contrast": true,
+    "mobile_silhouette": true,
+    "shared_progression_dna": true,
+    "note": "Foundation, incomplete sill/uprights and staged logs/planks read as a reserved reconstruction site rather than a functional building."
+  },
+  "tripo_credits": 0
+}
