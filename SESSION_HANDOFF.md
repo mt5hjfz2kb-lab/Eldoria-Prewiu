@@ -1,3 +1,14 @@
+## 2026-10-05 — ROAD FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Planner: run **37299158851**, artifact **11340339774** — SUCCESS.
+- Source03: **ART SOURCE PASS**, run **37300130602**, artifact **11341026650**, BLEND SHA `0b672be9...`, GLB SHA `683310d6...`; **1,944 tris / 4 modules / 3 materials**; 0 Tripo.
+- Source01 and source02 were correctly stopped at ART SOURCE for paving/z-fight and internal continuity defects; source03 fixes only the Road-internal seam and preserves the approved outer envelopes.
+- Unity cumulative gate retained accepted Lower Gate + Bridge identically in BEFORE/AFTER and replaced only Road: run **37300556571**, job **111732031845**, runner **DESKTOP-R10PE55**, artifact **11341876912** — SUCCESS.
+- Matched-camera: all 7 official views TECH PASS; **82 protected elements/view at 0 px delta**; Road union ~**99.9927% width / 99.9900% height** versus approved blockout; max center delta **0.0164 px**.
+- Direct visual gate: **VISUAL PASS**. Coarse stone paving and real shallow section create a clear circulation spine without hero competition; Bridge→Lower Gate→Road is continuous; Road terminates/resumes cleanly at the locked greybox Stair without modifying it.
+- Mobile landscape + portrait-entry/home PASS. Ground/Terrain not altered. Unity import: **1,944 tris / 5,556 verts / 4 renderers / 3 materials / 4 textures / 12 submesh draws**; UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- Camera, target, composition, platform, Bastion, Stair, Terrain, Walls, Lower Gate, Bridge and gameplay unchanged. Result: **PRODUCTION FAMILY PASS**.
+- **No Stair, Terrain, Walls, Bastion or next family started.**
+
 ## 2026-10-05 — BRIDGE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Source03: **ART SOURCE PASS**, run **37297309856**, artifact **11339267765**, BLEND SHA `801fd7d…`, GLB SHA `92a2c8ef…`; 0 Tripo.
 - Source01 was correctly rejected at ART SOURCE for deck seam/technical support; source02 fixed geometry but exposed a smooth-deck SURFACE gap; source03 added metric stone paving without changing the approved envelope.
