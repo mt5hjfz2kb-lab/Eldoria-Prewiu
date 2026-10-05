@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T13:23:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T13:30:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-family-v1",
+      "title": "VALORIA BASTION FAMILY v1",
+      "owner": "chat-valoria-bastion-family-v1",
+      "scope": [
+        "docs/VALORIA_BASTION_FAMILY_V1.md",
+        "docs/evidence/valoria-bastion-family-v1/**",
+        "art-source/valoria/production/bastion-family-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-bastion-family",
+        "art-production-planner",
+        "github-hosted-blender",
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-05T13:30:00Z",
+      "base_main_sha": "e1093da38df1d01d7045a5e63f4f01b77bfebcd2",
+      "status": "active",
+      "phase": "TARGET",
+      "dependency": "Bastion only. Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and Walls are immutable. Camera, target, global composition, platform and gameplay locked. Zero Tripo unless owner explicitly authorizes."
+    }
+  ],
   "history": [
     {
       "id": "valoria-wall-family-v1",
