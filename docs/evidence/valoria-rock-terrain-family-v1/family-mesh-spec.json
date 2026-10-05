@@ -1,9 +1,9 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "family": "RockTerrainFamilyV1",
-  "source_iteration": "source09",
-  "classification": "PRODUCTION_CANDIDATE",
-  "coordinates": "Source08 geometry locked unchanged after Unity TECH PASS; Source09 is a material/readability correction only: darker warmer Eldoria Rock, compressed facet contrast, earth values reduced to avoid washout; exact macro silhouette/interfaces/3-7-11 anchors unchanged.",
+  "source_iteration": "source09-contact-uplift-v1",
+  "classification": "CONTROLLED_UPLIFT_CANDIDATE",
+  "coordinates": "Source09 authoritative geometry locked byte-for-value in mesh vertices/faces. Controlled Bastion-contact uplift changes ONLY the 11 UpperTerraceCliff band-3 faces previously assigned rock_shadow to rock_base, eliminating the continuous dark seam identified by Structural Quality Bar Review. No vertex, face, envelope, anchor, camera, platform, family or gameplay change.",
   "export_origin": [
     5,
     -8,
@@ -30611,7 +30611,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30651,7 +30651,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30691,7 +30691,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30731,7 +30731,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30771,7 +30771,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -30811,7 +30811,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31291,7 +31291,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31331,7 +31331,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31371,7 +31371,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31411,7 +31411,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -31451,7 +31451,7 @@
           3
         ]
       ],
-      "material": "rock_shadow",
+      "material": "rock_base",
       "bevel": 0,
       "group": "UpperTerraceCliff"
     },
@@ -35529,5 +35529,29 @@
       "wire": true
     }
   ],
-  "authoring_note": "Source08 removes one-to-one CliffShoulder replacement geometry. The seven reset shoulder proxies are greybox construction aids, not production silhouette authorities. Continuous MainPlatform cliff mass carries the final geological read."
+  "authoring_note": "Source08 removes one-to-one CliffShoulder replacement geometry. The seven reset shoulder proxies are greybox construction aids, not production silhouette authorities. Continuous MainPlatform cliff mass carries the final geological read. CONTROLLED UPLIFT: exactly 11 UpperTerraceCliff band-3 faces remapped rock_shadow -> rock_base; geometry unchanged. Correct the defect, not the family.",
+  "contact_uplift": {
+    "base": "Source09",
+    "defect": "continuous very-dark seam beneath Bastion upper shelf",
+    "method": "material assignment only",
+    "changed_mesh_count": 11,
+    "changed_meshes": [
+      "UpperTerraceCliff_Diag_3_3",
+      "UpperTerraceCliff_Diag_3_4",
+      "UpperTerraceCliff_Diag_3_5",
+      "UpperTerraceCliff_Diag_3_6",
+      "UpperTerraceCliff_Diag_3_7",
+      "UpperTerraceCliff_Diag_3_8",
+      "UpperTerraceCliff_Diag_3_20",
+      "UpperTerraceCliff_Diag_3_21",
+      "UpperTerraceCliff_Diag_3_22",
+      "UpperTerraceCliff_Diag_3_23",
+      "UpperTerraceCliff_Diag_3_24"
+    ],
+    "from_material": "rock_shadow",
+    "to_material": "rock_base",
+    "geometry_changed": false,
+    "other_groups_changed": false,
+    "tripo_credits": 0
+  }
 }
