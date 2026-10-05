@@ -1,0 +1,56 @@
+{
+  "triangles": 1944,
+  "vertices": 1008,
+  "materials": 3,
+  "semantic_modules": 4,
+  "source_glb": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+  "source_sha": "0b672be9f522438754df5167c7376a65477b193c5251e4be39bedc722b98bc66",
+  "export_sha": "683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67",
+  "bounds_world_blender": [
+    [
+      -6.454679489135742,
+      -46.59498596191406,
+      3.010000228881836
+    ],
+    [
+      8.746232986450195,
+      9.516475677490234,
+      11.09000015258789
+    ]
+  ],
+  "texture_sets": {
+    "masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "paving": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "fabric": [
+      256,
+      256,
+      "albedo"
+    ]
+  },
+  "uv": true,
+  "normals": true,
+  "tangents_exported": true,
+  "nonmanifold_edges": 0,
+  "collider_state": "No source collider; isolated Unity capturer rejects all colliders.",
+  "import_settings": "GLB metric scale1; glTFast isolated ArtTests import; explicit Unity placement [3.5,7.08,-18], yaw180.",
+  "LOD_strategy": {
+    "LOD0": "1,944 triangles — below 3,000-triangle planning budget.",
+    "LOD1": "Deferred until integrated screen-space error review.",
+    "LOD2": "Deferred until mobile screen-space review."
+  },
+  "mobile_suitability": "Source paving scale and value hierarchy pass isolated approved-camera review; integrated mobile landscape/portrait still required.",
+  "tripo_credits_spent": 0
+}
