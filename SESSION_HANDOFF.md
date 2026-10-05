@@ -1,3 +1,14 @@
+## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — SOURCE09 PRODUCTION FAMILY PASS / CLOSED
+- **Source09 is authoritative. Source08 is superseded**: Source08 proved the structural geometry but later strict integrated review identified pale/high-contrast washout; Source09 changes materials only and fixes that defect.
+- Source09: run **37310029846**, artifact **11345358292**, BLEND SHA `309a4cab...`, GLB SHA `e842a7c6...`; **1,909 tris / 5 modules / 7 materials**; geometry/interfaces/3-7-11 anchors unchanged; 0 Tripo.
+- Cumulative Unity: run **37310582556**, job **111764702509**, runner **DESKTOP-R10PE55**, artifact **11345546113** — SUCCESS.
+- All 7 official cameras PASS; **63 protected non-terrain elements/view at 0 px delta**; macro Rock/Terrain envelope remains effectively identical to approved blockout (<0.00002% width/height deviation; <0.0001 px center drift).
+- Material hierarchy PASS: darker/warmer rock, compressed facet contrast, quieter earth; civic paving and accepted architecture regain hierarchy while structural depth remains.
+- Unity import **1,909 tris / 5,298 verts / 5 renderers / 7 materials / 17 submesh draws**; UV/normals/tangents PASS; colliders 0; production scene not opened/saved; focused PlayMode **5/5 PASS**.
+- TARGET vs BLOCKOUT vs STRUCTURAL FRAME: **REAL QUALITY JUMP PASS**. Continuous authored geology replaces technical slab/shoulder-proxy reading without composition change.
+- Camera, target, composition, Bastion, Walls, BackgroundTerrain, BridgeSupport, Lower Gate, Bridge, Road, Stair and gameplay unchanged.
+- **No Walls, Bastion or next family started.**
+
 ## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Source08 is authoritative **ART SOURCE PASS** after strict rejection of Source01–07 for banding/procedural/pillar/shoulder-proxy reads.
 - Source08: run **37308344056**, artifact **11344638101**, BLEND SHA `559c3247...`, GLB SHA `f9e66881...`; **1,909 tris / 5 modules / 7 materials**; UV/normals/tangents PASS; 0 Tripo.
