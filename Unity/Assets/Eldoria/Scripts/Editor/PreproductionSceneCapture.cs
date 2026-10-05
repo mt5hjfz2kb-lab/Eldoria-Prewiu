@@ -314,7 +314,9 @@ namespace Eldoria.EditorTools
             var fill=new GameObject("Premium cool sky fill").AddComponent<Light>();
             fill.type=LightType.Directional;fill.intensity=.16f;fill.color=new Color(.68f,.79f,.88f);fill.transform.rotation=Quaternion.Euler(58f,148f,0f);fill.shadows=LightShadows.None;
 
-            // Flat overlay patches from the previous method are intentionally disabled for Golden Surface v1.\n\n            var water=GameObject.Find("Water");
+            // Flat overlay patches from the previous method are intentionally disabled for Golden Surface v1.
+
+            var water=GameObject.Find("Water");
             if(water!=null)
             {
                 var wr=water.GetComponent<MeshRenderer>();
