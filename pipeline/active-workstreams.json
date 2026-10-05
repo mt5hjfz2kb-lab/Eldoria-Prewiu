@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T17:23:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T17:25:00Z",
+  "active": [
+    {
+      "id": "valoria-premium-target-gap-review-visual-uplift-v1",
+      "title": "VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1",
+      "owner": "chat-valoria-premium-target-gap-review-visual-uplift-v1",
+      "scope": [
+        "docs/VALORIA_PREMIUM_TARGET_GAP_REVIEW_VISUAL_UPLIFT_V1.md",
+        "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-premium-hero-test-zone",
+        "windows-runner-heavy",
+        "unity-presentation"
+      ],
+      "claimed_at": "2026-10-05T17:25:00Z",
+      "base_main_sha": "eca8fb4abefbeadc5f4ba196fe3a1ff6b4716cd7",
+      "status": "active",
+      "phase": "PREMIUM TARGET GAP REVIEW",
+      "dependency": "Preserve camera, target composition, gameplay axis, Bridge/Lower Gate/Road/Bastion/Sawmill/Camp positions, global platform, gameplay and hotspots. Local presentation-only uplift in Bridge -> Lower Gate -> Road hero test zone. No Props + Background. No Tripo; 0 credits.",
+      "next": "Audit reference vs final Vegetation/Water/Shore capture set, identify 3-5 top levers, then execute one bounded Unity-first hero-zone proof."
+    }
+  ],
   "history": [
     {
       "id": "valoria-vegetation-water-shore-production-v1",
