@@ -656,3 +656,9 @@ Valoria Vegetation + Water/Shore is now formally **PRODUCTION PASS / CLOSED**. F
 VALORIA GOLDEN LOOKDEV SLICE v1 is **not passed**. Three surface iterations plus three bounded local-geometry proofs establish a real production ceiling under the current locked scope. The strongest bounded visual result is run **37368033376** / artifact **11368942273**, still approximately 3/5 on core premium metrics. Final V3 proof run **37368890740** / artifact **11368813433** confirms that further overlap-shell geometry creates visible substrate islands rather than premium continuity.
 
 Current state: **HUMAN SCOPE BLOCKER**. Broad production is frozen. The next meaningful action requires owner permission to reauthor continuous local Rock/Terrain + ground substrate, optionally together with Lower Gate/Bridge edge profiles. No Tripo credits were used.
+
+
+## Golden Lookdev Method B blocker — 2026-10-05
+The owner-authorized integrated Lower Gate + Bridge edge-profile + substrate micro-environment reauthor has reached its pre-Unity hard stop. Source01 and a materially reauthored source02 both failed the isolated >=4/5 visual gate. Source02 evidence authority: run **37370727523**, artifact **11369951282**; ~147k triangles, UV/normals/tangents valid, 0 colliders, 0 Tripo credits.
+
+No Unity integration was attempted because the source itself remained visibly production-mid/prototype-like. The proven blocker has moved from surface/local shell to the **screen-visible primary forms of Lower Gate and Bridge plus the retained vegetation source**. Current phase is **HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED**. Broad Valoria production remains frozen.
