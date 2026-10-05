@@ -1,41 +1,8 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T10:50:00Z",
-  "active": [
-    {
-      "id": "valoria-road-family-v1",
-      "title": "VALORIA ROAD FAMILY v1",
-      "owner": "chat-road-family-v1",
-      "scope": [
-        "docs/VALORIA_ROAD_FAMILY_V1.md",
-        "docs/evidence/valoria-road-family-v1/**",
-        "art-source/valoria/production/road-family-v1/**",
-        "pipeline/art-production-request.json",
-        "pipeline/valoria-production-art-starter-run-request.json",
-        "pipeline/valoria-production-art-reset-run-request.json",
-        ".github/workflows/valoria-production-art-starter-source-v1.yml",
-        ".github/workflows/valoria-production-art-reset-v1.yml",
-        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
-        "tools/review-family-replacement.py",
-        "tools/author-environment-family.py",
-        "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
-      ],
-      "resources": [
-        "art-production-planner",
-        "github-hosted-blender",
-        "windows-runner-heavy",
-        "valoria-road-family"
-      ],
-      "claimed_at": "2026-10-05T10:50:00Z",
-      "base_main_sha": "42fff830351a6c07384a37cb42c575bda6cb88ca",
-      "status": "active",
-      "phase": "TARGET → BLOCKOUT → FAMILY SPEC",
-      "dependency": "Lower Gate and Bridge are closed PRODUCTION FAMILY PASS and immutable. Preserve approved camera/target/composition/platform/Bastion/Terrain/Stair/Walls/gameplay. Road only. Zero Tripo."
-    }
-  ],
+  "updated_at": "2026-10-05T11:08:00Z",
+  "active": [],
   "history": [
     {
       "id": "unity-runner-resilience-v1",
@@ -2454,6 +2421,53 @@
       "credits_spent": 0,
       "result_commit": "97d6271d7d3b2cd05d71af841a24d63c2abdec2c",
       "next": "Owner review. Do not start Road, Stair, Terrain or another family without explicit instruction."
+    },
+    {
+      "id": "valoria-road-family-v1",
+      "title": "VALORIA ROAD FAMILY v1",
+      "owner": "chat-road-family-v1",
+      "scope": [
+        "docs/VALORIA_ROAD_FAMILY_V1.md",
+        "docs/evidence/valoria-road-family-v1/**",
+        "art-source/valoria/production/road-family-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        ".github/workflows/valoria-production-art-starter-source-v1.yml",
+        ".github/workflows/valoria-production-art-reset-v1.yml",
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+        "tools/review-family-replacement.py",
+        "tools/author-environment-family.py",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "art-production-planner",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "valoria-road-family"
+      ],
+      "claimed_at": "2026-10-05T10:50:00Z",
+      "base_main_sha": "42fff830351a6c07384a37cb42c575bda6cb88ca",
+      "status": "completed",
+      "phase": "PRODUCTION FAMILY PASS / CLOSED",
+      "dependency": "Lower Gate and Bridge are closed PRODUCTION FAMILY PASS and immutable. Preserve approved camera/target/composition/platform/Bastion/Terrain/Stair/Walls/gameplay. Road only. Zero Tripo.",
+      "completed_at": "2026-10-05T11:08:00Z",
+      "planner_run_id": 37299158851,
+      "planner_artifact_id": 11340339774,
+      "source_run_id": 37300130602,
+      "source_artifact_id": 11341026650,
+      "source_art_gate": "ART SOURCE PASS",
+      "unity_run_id": 37300556571,
+      "unity_job_id": 111732031845,
+      "unity_artifact_id": 11341876912,
+      "runner": "DESKTOP-R10PE55",
+      "visual_gate": "VISUAL PASS",
+      "gate_result": "PRODUCTION FAMILY PASS",
+      "credits_spent": 0,
+      "result_commit": "6920cb719dd33ab35f84c65f0cde26db01c185d4",
+      "next": "Owner review. Do not start Stair, Terrain, Walls, Bastion or another family without explicit instruction."
     }
   ]
 }
