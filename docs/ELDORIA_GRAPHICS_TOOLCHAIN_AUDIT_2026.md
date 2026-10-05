@@ -124,9 +124,46 @@ Excellent fast GPU baking and visual inspection, with Python scripting, but over
 
 Technically strong automatic reduction/remeshing/material baking. Current commercial pricing is disproportionate to Eldoria, and Simplygon adds another Unity/USD integration dependency. Our Blender pipeline now supports role-specific triangle profiles; prove that insufficient before revisiting enterprise optimization middleware.
 
-### Houdini / Houdini Engine — DEFER TO CITY-SCALE PROCEDURAL NEED
+### Houdini / Houdini Engine — PRIORITY PILOT AFTER GOLDEN GENERATOR WINNER
 
-Houdini could become useful for repeatable district/terrain/prop variation once the visual grammar is stable. Introducing a procedural-authoring platform before material/style convergence would create more systems to maintain without solving today's bottleneck.
+Decision updated 2026-10-05 after new evidence.
+
+The previous DEFER decision was made while the dominant blocker appeared to be surface/material convergence. That premise is no longer true.
+
+Since then Valoria has demonstrated, in order:
+- surface-only ceiling;
+- bounded geometry-shell ceiling;
+- integrated edge/profile + substrate ceiling;
+- procedural primary-form ceiling;
+- fully code-authored professional-reconstruction ceiling.
+
+The current measured blocker is hero-source quality plus architecture↔terrain integration, especially Gate↔Bridge↔cliff↔shore contacts.
+
+Houdini is therefore promoted to a PRIORITY PILOT, not yet a canonical dependency.
+
+Intended role:
+- consume a visually credible generated/artist-authored Gate + Bridge source;
+- build continuous geological receivers, abutments, cliff/shore transitions and masks;
+- preserve hero identity and gameplay macro transforms;
+- expose art-directed parameters through a reusable HDA;
+- automate deterministic cooks/exports after the HDA itself is artist-authored;
+- optionally integrate through Houdini Engine for Unity only after isolated proof.
+
+Houdini must NOT become another whole-building generator. It must not procedurally redesign the hero architecture or compensate for a weak source mesh.
+
+Entry gate:
+- first run `VALORIA GOLDEN GENERATOR BAKE-OFF v1`;
+- only a candidate that materially beats Professional Reconstruction v1 may enter Houdini;
+- preferred source threshold before Houdini: Geometry/Silhouette >=4/5 and Architectural Identity >=4/5.
+
+Adoption gate:
+- Gate↔Bridge↔cliff contact >=4/5;
+- geological coherence >=4/5;
+- official-camera integration >=4/5;
+- reproducible HDA output;
+- demonstrable reuse beyond the Golden crop.
+
+Unity 6.3 is inside the currently documented Houdini Engine for Unity support range. The pilot remains zero-spend/preparation-only until owner authorization is required for any license or paid external source.
 
 ### SpeedTree — DEFER
 
