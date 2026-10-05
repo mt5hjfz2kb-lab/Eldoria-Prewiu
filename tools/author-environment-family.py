@@ -23,6 +23,22 @@ def surface_maps(kind):
   height=np.clip(edge/4,0,1)*.8+grain
   base=.82+stonehash+grain
   base=np.where(edge<2,.40,base);base=np.where((edge>=2)&(edge<4),base*.82,base)
+ elif kind=='hero_masonry':
+  # Large pale fortress blocks for HERO architecture: lower-frequency than generic masonry,
+  # with restrained joints so silhouette/planes remain dominant at gameplay distance.
+  row=y//96;shift=(row%2)*72;xx=(x+shift)%160;yy=y%96
+  edge=np.minimum.reduce([xx,159-xx,yy,95-yy]).astype(float)
+  cell=(x+shift)//160+row*11
+  stonehash=np.sin(cell*4.913)*.035+np.cos(cell*1.731)*.018
+  height=np.clip(edge/6,0,1)*.58+grain*.45
+  base=.94+stonehash+grain*.35
+  base=np.where(edge<2,.56,base);base=np.where((edge>=2)&(edge<5),base*.90,base)
+ elif kind=='timber':
+  # Coarse structural timber grain for scaffold/decks; deliberately broad and low-noise.
+  band=np.sin(x*.065)+np.sin(x*.017+1.7)*.45
+  knots=np.sin((x+y*.18)*.09)*np.cos(y*.035)*.12
+  height=.60+band*.06+knots*.04+grain*.25
+  base=.68+band*.055+knots*.035+grain*.25
  elif kind=='paving':
   # Large staggered civic paving: broader slabs than wall masonry, readable at gameplay camera.
   row=y//96;shift=(row%2)*64;xx=(x+shift)%128;yy=y%96
@@ -39,7 +55,7 @@ def surface_maps(kind):
  dx=(np.roll(height,-1,1)-np.roll(height,1,1))*.9;dy=(np.roll(height,-1,0)-np.roll(height,1,0))*.9
  z=np.ones_like(dx);length=np.sqrt(dx*dx+dy*dy+z*z);normal=np.stack((-dx/length*.5+.5,-dy/length*.5+.5,z/length*.5+.5),2)
  return image_data(kind+'_albedo',albedo),image_data(kind+'_normal',normal)
-tex={k:surface_maps(k) for k in ['masonry','stone_grain','paving']}
+tex={k:surface_maps(k) for k in ['masonry','stone_grain','hero_masonry','timber','paving']}
 # Heraldry follows the large gold/blue accent already present in the exact target.
 n=256;y,x=np.mgrid[0:n,0:n];u=(x-128)/256;v=(y-128)/256
 cloth=np.zeros((n,n,3));cloth[:]=[.023,.087,.25];cloth+=((np.sin(x*.18)*.013+np.cos(y*.09)*.012)[:,:,None])
@@ -59,7 +75,7 @@ for key,s in spec['materials'].items():
    nt=m.node_tree.nodes.new('ShaderNodeTexImage');nt.image=tex[k][1];nt.image.colorspace_settings.name='Non-Color';nm=m.node_tree.nodes.new('ShaderNodeNormalMap');nm.inputs['Strength'].default_value=.55;m.node_tree.links.new(nt.outputs['Color'],nm.inputs['Color']);m.node_tree.links.new(nm.outputs['Normal'],p.inputs['Normal'])
  materials[key]=m
 # Source images include desired warm tint (keep Blender and Unity material response consistent).
-for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54]),('paving',[.66,.60,.51])]:
+for kind,tint in [('masonry',[.61,.55,.46]),('stone_grain',[.70,.64,.54]),('hero_masonry',[.96,.91,.82]),('timber',[.56,.31,.14]),('paving',[.66,.60,.51])]:
  im=tex[kind][0];p=np.array(im.pixels[:],dtype=np.float32).reshape(-1,4);p[:,:3]*=np.array(tint);im.pixels.foreach_set(p.reshape(-1));im.save();im.pack()
 objs=[]
 for item in spec['meshes']:
