@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "uplift": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
+  "verdict": "PASS / CLOSED",
+  "base_authority": {
+    "terrain": "Source09",
+    "bastion": "Source08",
+    "structural_review": "STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS"
+  },
+  "defect": "Very-dark continuous seam/band at Rock/Terrain upper-shelf contact directly below Bastion.",
+  "intervention": {
+    "type": "material-assignment-only",
+    "geometry_changed": false,
+    "exact_change": "11 UpperTerraceCliff band-3 faces remapped rock_shadow -> rock_base",
+    "silhouette_changed": false,
+    "camera_changed": false,
+    "platform_changed": false,
+    "bastion_changed": false,
+    "walls_changed": false,
+    "gameplay_changed": false
+  },
+  "source": {
+    "run_id": 37331798714,
+    "artifact_id": 11354318939,
+    "source_sha": "c61f689d4cc48d15ad07ba1493e9dc4251104d7bc496b128ae662f851a9e300b",
+    "export_sha": "e856229cd0cff6f4bbb49ea44edebd8a6862c2ea0922b2b53462771973f99cfb",
+    "triangles": 1909,
+    "authored_vertices": 3516,
+    "modules": 5,
+    "materials": 7
+  },
+  "unity": {
+    "run_id": 37333453008,
+    "artifact_id": 11355212258,
+    "conclusion": "SUCCESS",
+    "source_triangles": 1909,
+    "source_vertices": 5298,
+    "source_renderers": 5,
+    "source_materials": 7,
+    "colliders": 0,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "production_scene_opened": false,
+    "production_scene_saved": false,
+    "gameplay": "PASS"
+  },
+  "before_authority": {
+    "run_id": 37328467482,
+    "artifact_id": 11352609605,
+    "description": "Bastion Source08 cumulative frame containing authoritative Rock/Terrain Source09"
+  },
+  "visual_review": {
+    "views": [
+      "16:9",
+      "mobile-landscape",
+      "source-3x2"
+    ],
+    "seam": "PASS — the former continuous black reading is broken into ordinary geological facet/value variation; it no longer separates Bastion terrace as a single technical band.",
+    "grounding": "PASS — upper platform reads seated on faceted terrain rather than floating above a black cut.",
+    "no_clipping": "PASS in official views.",
+    "no_artificial_light_band": "PASS — remap uses existing rock_base, not a new bright contact strip.",
+    "structural_silhouette": "PASS — geometry is unchanged by construction.",
+    "protected_families": "PASS — intervention source changes no other family; cumulative frame retains accepted Lower Gate, Bridge, Road, Stair, Walls and Bastion sources.",
+    "intervention_visibility": "PASS — correction reads as removal of a defect rather than a new designed feature."
+  },
+  "note": "Workflow internal BEFORE images are canonical reset placeholders and are not the authoritative visual BEFORE for this controlled uplift. The authoritative BEFORE is run 37328467482 / artifact 11352609605. Final AFTER is run 37333453008 / artifact 11355212258.",
+  "tripo_credits": 0,
+  "final": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1 — PASS / CLOSED",
+  "next": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1 only after explicit owner instruction."
+}
