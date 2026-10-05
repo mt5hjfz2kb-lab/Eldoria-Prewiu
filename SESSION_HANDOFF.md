@@ -1,3 +1,6 @@
+## 2026-10-05 — VALORIA GOLDEN LOOKDEV SLICE v1 — ACTIVE
+Owner-authorized method pivot after Premium Hero iterations 01–05 failed the premium visual gate despite repeated TECH PASS. Broad Valoria production is frozen. Canonical active block: `docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md`. Scope is one tiny real-scene slice: Lower Gate edge + adjacent rock/cliff + ground + water/shore + 2–3 existing vegetation instances. Goal is to prove one complete reproducible lookdev recipe with authored surfaces, lighting, contacts, atmosphere and mobile validation before scaling anything. No Props + Background, no new production family, no world map, no Tripo. Golden pass requires core visual metrics >=4/5; green CI does not count as visual acceptance.
+
 
 ## VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1 — PASS / CLOSED (2026-10-05)
 
