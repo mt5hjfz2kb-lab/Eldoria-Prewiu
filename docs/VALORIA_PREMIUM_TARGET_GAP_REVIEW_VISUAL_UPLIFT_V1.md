@@ -112,3 +112,10 @@ Scale: 0 prototype, 1 very weak, 2 acceptable prototype, 3 production-mid, 4 pre
 - Intended local earth/contact patches do not render in the official frame because their generated face orientation is culled; therefore the central ground-integration hypothesis was not actually tested.
 - Premium perception remains below 4/5. Iteration03 is rejected.
 - Next correction: make local blend surfaces explicitly two-sided / correctly oriented, tune cliff underside response rather than merely shadows, and strengthen water/shore material separation.
+
+
+## Iteration 04 — TECH PASS / VISUAL INVALID / NOT ACCEPTED
+- Run **37353509728** — SUCCESS; artifact **11363831650**.
+- The local ground/contact blend surfaces finally render, but their generated winding produces downward-facing normals; under directional lighting they appear as large near-black polygons.
+- This invalidates the art judgement for the ground-integration hypothesis. It is an authoring defect in the test surface, not evidence against the lever itself.
+- Iteration04 is rejected. Iteration05 must change only winding/normals (plus no unrelated scope expansion) and rerun the same visual hypothesis.
