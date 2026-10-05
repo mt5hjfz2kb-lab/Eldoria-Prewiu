@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "premium-hero-golden-slice-source03-integration01",
+  "nonce": "golden-surface-authoring-v1-iteration01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 integrated test of narrow Premium Hero contact source03. Preserve canonical camera/composition/gameplay and all accepted families. Add only narrow source03 contact interfaces while keeping Vegetation Source03 instances and current premium surface/lighting/water recipe. Includes explicit Golden close crop. Zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 SURFACE AUTHORING iteration01. Freeze source03 contact geometry as baseline. Apply real per-pixel albedo/normal/AO/smoothness surface families only to the bounded Lower Gate/rock/ground/shore/vegetation slice. Remove legacy flat ground-overlay patches. Preserve lighting parameters, camera, macro composition, gameplay and all accepted family positions. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN LOOKDEV SOURCE03 INTEGRATED VISUAL GATE",
+  "result": "PENDING GOLDEN SURFACE AUTHORING ITERATION01",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-source03-integration01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-surface-iteration01",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
