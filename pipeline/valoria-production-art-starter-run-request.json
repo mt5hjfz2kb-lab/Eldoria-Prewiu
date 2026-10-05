@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-wall-family-v1-source-01",
-  "nonce": "wall-source-01-authored-defensive-perimeter",
+  "nonce": "wall-source-01-authored-defensive-perimeter-reviewviews",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Wall Family v1 Source01 only. Preserve approved Wall envelopes; authored crenellation rhythm, real thickness and structural seating; zero Tripo; Unity blocked pending direct ART SOURCE review."
+  "scope": "Wall Family v1 Source01 with required isolated clay/lit/low/side/official-camera/wire previews. Preserve approved envelopes; zero Tripo; Unity blocked pending direct ART SOURCE review."
 }
