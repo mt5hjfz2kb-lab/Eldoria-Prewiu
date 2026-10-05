@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-07",
-  "nonce": "rock-terrain-source-07-rock-shoulders-authoritative",
+  "request_id": "valoria-rock-terrain-family-v1-source-08",
+  "nonce": "rock-terrain-source-08-absorbed-shoulders-continuous-mass",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "AUTHORITATIVE Source07 after latest shoulder spec: preserve accepted Source06 continuous staggered main cliff/ground geometry, replace CliffShoulder_0..6 with embedded tapered irregular rock wedges inside their approved envelopes; no pillar/greybox read; zero Tripo; Unity blocked pending direct ART SOURCE review."
+  "scope": "Source08 strict ART SOURCE retry: continuous authored MainPlatform/UpperTerrace cliff mass only; suppress and absorb CliffShoulder_0..6 greybox proxies rather than reproducing them; exact macro silhouette/levels retained; zero Tripo; Unity blocked pending direct ART SOURCE review."
 }
