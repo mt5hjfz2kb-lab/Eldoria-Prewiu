@@ -63,7 +63,8 @@ for item in spec['meshes']:
  if item.get('bevel',0)>0:
   mod=o.modifiers.new('Selective structural edge bevel','BEVEL');mod.width=item['bevel'];mod.segments=2;mod.limit_method='ANGLE';bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=mod.name)
  # Planar metric UVs per face, seamless source coordinates for facade tile scale.
- uv=o.data.uv_layers.new(name='MetricUV')
+ for old_uv in list(o.data.uv_layers):o.data.uv_layers.remove(old_uv)
+ uv=o.data.uv_layers.new(name='MetricUV');o.data.uv_layers.active=uv;uv.active_render=True
  for poly in o.data.polygons:
   axis=max(range(3),key=lambda k:abs(poly.normal[k]))
   for li in poly.loop_indices:
@@ -98,6 +99,7 @@ bpy.ops.object.select_all(action='DESELECT')
 for o in joined:o.select_set(True)
 glb=SRC/(spec['family']+'.glb');bpy.ops.export_scene.gltf(filepath=str(glb),export_format='GLB',use_selection=True,export_apply=True,export_yup=True,export_materials='EXPORT',export_normals=True,export_tangents=True)
 for o in joined:o.location+=origin
+bpy.context.view_layer.update()
 # Source sanity: degeneracy/nonmanifold are measured, never an art verdict.
 verts=tris=0;nm_edges=0;bounds=[]
 for o in joined:
