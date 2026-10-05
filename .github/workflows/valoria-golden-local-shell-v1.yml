@@ -7,7 +7,7 @@ on:
       - 'pipeline/golden-local-shell-v1-request.json'
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 concurrency:
@@ -21,17 +21,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 2
+
       - name: Validate professional route
+        id: validate
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
+
       - name: Install Blender
+        id: install
         run: |
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy
           blender --version
+
       - name: Author Golden primary forms source02
+        id: authoring
         run: |
           blender -b --python-exit-code 1 --python tools/author-golden-primary-forms-source02.py
           test -s art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/GoldenPrimaryFormsV1_source02.glb
@@ -40,11 +46,59 @@ jobs:
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-clay-silhouette.png
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-lit-three-quarter.png
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/source02-official-proxy.png
+
+      - name: Persist source02 review evidence
+        id: persist
+        if: steps.authoring.outcome == 'success'
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Golden primary forms source02 evidence"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Record source02 run status
+        if: always()
+        env:
+          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+          AUTHOR_OUTCOME: ${{ steps.authoring.outcome }}
+          PERSIST_OUTCOME: ${{ steps.persist.outcome }}
+        run: |
+          mkdir -p docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02
+          python3 - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/run-status.json')
+          d={
+            "run_id":os.environ.get("GITHUB_RUN_ID"),
+            "run_attempt":os.environ.get("GITHUB_RUN_ATTEMPT"),
+            "head_sha":os.environ.get("GITHUB_SHA"),
+            "validate":os.environ.get("VALIDATE_OUTCOME"),
+            "install":os.environ.get("INSTALL_OUTCOME"),
+            "authoring":os.environ.get("AUTHOR_OUTCOME"),
+            "persist":os.environ.get("PERSIST_OUTCOME")
+          }
+          p.write_text(json.dumps(d,indent=2)+"\n")
+          print(json.dumps(d,indent=2))
+          PY
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/run-status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record Golden primary forms source02 run status"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: valoria-golden-primary-forms-v1-source02-review
           path: |
             art-source/valoria/lookdev/golden-slice-v1/primary-forms-v1/source02/*
             docs/evidence/valoria-golden-lookdev-slice-v1/primary-forms-v1/source02/*
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
