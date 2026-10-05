@@ -5,6 +5,10 @@ on:
     types: [opened, reopened]
   schedule:
     - cron: '*/5 * * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'pipeline/golden-local-shell-v1-request.json'
 
 permissions:
   contents: write
@@ -13,7 +17,7 @@ permissions:
 
 jobs:
   source02:
-    if: github.event_name == 'schedule' || (github.event_name == 'issues' && github.event.issue.title == '[CI TRIGGER] Golden Primary Forms Source02')
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'issues' && github.event.issue.title == '[CI TRIGGER] Golden Primary Forms Source02')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
