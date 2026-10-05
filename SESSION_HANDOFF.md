@@ -1,4 +1,15 @@
 ## 2026-10-05 — BRIDGE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source03: **ART SOURCE PASS**, run **37297309856**, artifact **11339267765**, BLEND SHA `801fd7d…`, GLB SHA `92a2c8ef…`; 0 Tripo.
+- Source01 was correctly rejected at ART SOURCE for deck seam/technical support; source02 fixed geometry but exposed a smooth-deck SURFACE gap; source03 added metric stone paving without changing the approved envelope.
+- Unity cumulative gate: run **37298002864** / job **111723747578** / runner **DESKTOP-R10PE55** / artifact **11339213616** — SUCCESS. Accepted Lower Gate is retained identically in BEFORE/AFTER.
+- Matched-camera: all 7 official views PASS; **82 protected elements/view at 0 px delta**; Bridge union ~**99.891% width / 99.632% height** versus blockout, max center delta **0.119 px**.
+- Canonical target primary comparison: integrated deck+parapets ~**99.988% width / 104.915% height**, center error **11.42 px / 0.619% frame diagonal**.
+- Direct visual gate: **VISUAL PASS**. Paving, parapets, terminal posts, support arch and foreground→Lower Gate connection read coherently in 3:2, 16:9, mobile landscape and portrait-entry.
+- Unity import: **2,592 tris / 7,076 verts / 4 renderers / 3 materials / 6 textures / 8 submesh draws**; UV/normals/tangents PASS; colliders 0. Focused PlayMode **5/5 PASS**.
+- Camera, composition, platform, Bastion, Road, Terrain, Lower Gate and gameplay unchanged. Requests parked. Result: **PRODUCTION FAMILY PASS**.
+- **No Road, Stair, Terrain or next family has been started.**
+
+## 2026-10-05 — BRIDGE FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Source03 is authoritative **ART SOURCE PASS**: run **37297309856**, artifact **11339267765**, source SHA `801fd7d3...`, GLB SHA `92a2c8ef...`; 2,592 tris / 4 semantic modules / 3 materials; 0 Tripo.
 - Source01 and source02 were deliberately stopped at ART SOURCE for visible defects before source03; do not revive them.
 - Cumulative Unity gate retained accepted Lower Gate identically in BEFORE/AFTER and changed Bridge only: run **37298002864**, job **111723747578**, runner **DESKTOP-R10PE55**, artifact **11339213616** — SUCCESS.
