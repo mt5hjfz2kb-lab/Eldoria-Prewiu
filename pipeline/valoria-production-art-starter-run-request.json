@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-wall-family-v1-source-03",
-  "nonce": "wall-source-03-full-six-view-art-review",
+  "nonce": "wall-source-03-full-art-review-views-01",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Source03 geometry/materials unchanged; exact-envelope fix already proven. Regenerate mandatory six isolated review views only (clay/lit/low/side/approved-camera/wire). Zero Tripo. Unity remains blocked pending direct ART SOURCE PASS."
+  "scope": "Source03 exact-envelope correction, geometry/material design unchanged. Re-render full six isolated art-review views (clay/lit/low/side/approved-camera/wire) after envelope fix. Zero Tripo. Unity blocked pending ART SOURCE PASS."
 }
