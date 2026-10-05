@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T19:38:00Z",
+  "updated_at": "2026-10-05T20:20:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -30,10 +30,16 @@
       ],
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "040adeb1751feeb3a687f01621bb18f8de78db98",
-      "status": "active",
-      "phase": "GOLDEN LOCAL GEOMETRY UPLIFT / SURFACE METHOD EXHAUSTED",
+      "status": "blocked",
+      "phase": "HUMAN SCOPE BLOCKER / BOUNDED SURFACE+GEOMETRY METHODS EXHAUSTED",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Surface-only exhausted after 3 valid iterations. Execute one bounded Blender local visual-shell geometry uplift on Golden Slice only, retain Blender Surface V2 maps, then re-run official Golden gate. No broad family reopening or scale-out."
+      "next": "OWNER DECISION REQUIRED: authorize either (A) continuous Rock/Terrain + local ground substrate reauthor around Lower Gate/Bridge, or (B) integrated Lower Gate + Bridge edge profiles + substrate micro-environment reauthor. Do not run source04 or more overlays.",
+      "blocked_at": "2026-10-05T20:20:00Z",
+      "blocker": "Golden core metrics remain <4/5 after 3 valid surface iterations and 3 bounded local geometry proofs. Further improvement requires reopening scope-locked continuous Rock/Terrain + local ground substrate, optionally together with Lower Gate/Bridge edge profiles. Owner authorization required.",
+      "final_bounded_run_id": 37368890740,
+      "final_bounded_artifact_id": 11368813433,
+      "strongest_bounded_run_id": 37368033376,
+      "strongest_bounded_artifact_id": 11368942273
     }
   ],
   "history": [
