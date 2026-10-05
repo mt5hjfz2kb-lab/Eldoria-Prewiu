@@ -2,10 +2,6 @@ name: "[PRODUCTION] Golden Primary Forms Source02 Manual Gate"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/golden-local-shell-v1-request.json'
 
 permissions:
   contents: write
