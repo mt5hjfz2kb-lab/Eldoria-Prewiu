@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "scope": "Stair isolated source gate only; integrated Unity matched-camera visual gate remains mandatory",
+  "source_run": 37301752932,
+  "artifact_id": 11340838935,
+  "source_sha": "84b1e5f492a552c8452751fbe3d9872c827dc8f01a36cdddffeef73068c47a05",
+  "export_sha": "442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1360,
+    "vertices": 712,
+    "modules": 3,
+    "materials": 2,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges": 12
+  },
+  "questions": {
+    "vertical_connection": "PASS — twelve broad treads cover the approved 4-unit rise without changing lower or upper levels.",
+    "silhouette": "PASS — exact blockout step/cheek outer envelopes retained; approved-camera proxy remains compact and subordinate.",
+    "mobile_detail_scale": "PASS — broad tread rhythm and coarse masonry/paving treatment; no micro-step or ornamental density.",
+    "real_section": "PASS — discrete solid tread masses plus substantial cheeks prevent a flat ramp/texture read.",
+    "valoria_architecture": "PASS — masonry cheeks and warm civic stone make the stair read as built infrastructure rather than an isolated generic stair.",
+    "hierarchy": "PASS — no towers, railings, props or hero silhouette additions; Bastion/Lower Gate hierarchy remains unchallenged.",
+    "interfaces": "PASS at source — lower/upper joins remain within approved Stair envelope; integrated Road/UpperRoad continuity still requires Unity gate.",
+    "scope": "PASS — no Terrain, Ground, Wall, Bastion, Road, Bridge or Lower Gate geometry authored."
+  },
+  "note": "12 reported nonmanifold edges are source topology diagnostics on joined interface boundaries; source has no collision role. Unity gate must still verify import integrity and zero colliders.",
+  "unity_gate": "AUTHORIZED NEXT — exact export SHA only; retain accepted Lower Gate + Bridge + Road identically in BEFORE/AFTER.",
+  "tripo_credits": 0
+}
