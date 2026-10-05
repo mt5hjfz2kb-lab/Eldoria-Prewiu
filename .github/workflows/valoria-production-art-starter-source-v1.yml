@@ -33,6 +33,7 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:
               f.write('enabled='+('true' if d.get('enabled') else 'false')+'\n')
               f.write('mesh_source='+('true' if d.get('mode')=='authored_mesh_family' else 'false')+'\n')
+              f.write('surface_source='+('true' if d.get('mode')=='authored_surface_maps' else 'false')+'\n')
               f.write('source_dir='+d.get('source_dir','')+'\n')
               f.write('evidence_dir='+d.get('evidence_dir','')+'\n')
           PY
@@ -46,7 +47,7 @@ jobs:
           sudo apt-get install -y blender python3-numpy
           blender --version
       - name: Build authored source
-        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true' && steps.request.outputs.surface_source != 'true'
         run: |
           blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
           test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
@@ -57,7 +58,7 @@ jobs:
           done
           node tools/check-production-art-source.mjs
       - name: Persist reproducible source and GLBs
-        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true' && steps.request.outputs.surface_source != 'true'
         shell: bash
         run: |
           git config user.name "Eldoria Art Bot"
@@ -72,7 +73,7 @@ jobs:
             git push origin HEAD:main
           fi
       - uses: actions/upload-artifact@v4
-        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true'
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true' && steps.request.outputs.surface_source != 'true'
         with:
           name: valoria-production-art-starter-source-v1
           path: |
@@ -80,6 +81,45 @@ jobs:
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/*.glb
             pipeline/production-art-source-audit.json
             pipeline/evidence/valoria-production-art-starter-previews/*.png
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Author persistent Golden surface maps in Blender
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.surface_source == 'true'
+        run: |
+          node tools/plan-art-production.mjs
+          node tools/validate-blender-professional-authoring.mjs
+          blender -b --python-exit-code 1 --python tools/author-golden-surface-maps.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2/texture-manifest.json
+          test -s Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png
+          test -s Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png
+          test -s Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_ao.png
+
+      - name: Persist Golden surface maps
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.surface_source == 'true'
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add art-source/valoria/lookdev/golden-slice-v1/surface-v2
+          git add Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures
+          git add docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2
+          if git diff --cached --quiet; then
+            echo "No Golden surface map changes to persist."
+          else
+            git commit -m "Persist Blender-authored Golden surface maps"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload Golden surface map evidence
+        if: steps.request.outputs.enabled == 'true' && steps.request.outputs.surface_source == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-golden-surface-v2-source
+          path: |
+            art-source/valoria/lookdev/golden-slice-v1/surface-v2/*
+            Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2/*
           if-no-files-found: error
           retention-days: 30
 
