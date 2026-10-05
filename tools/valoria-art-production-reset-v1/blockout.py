@@ -86,6 +86,7 @@ def build():
     screen_prism('UpperTerraceGround',upper,10.98,11.04,'ground')
     # Access spine and bridge are separate volumes with fully open gate passage.
     screen_prism('MainRoad',[(625,647),(724,668),(895,370),(832,358)],7.031,7.08,'road')
+    screen_prism('GateThreshold',[(590,697),(751,728),(773,657),(625,633)],7.031,7.08,'road')
     screen_prism('UpperRoad',[(827,297),(940,316),(1000,245),(896,221)],11.041,11.09,'road')
     a=np.array(anchor(847,366,7.04));b=np.array(anchor(884,296,11.04))
     count=12
