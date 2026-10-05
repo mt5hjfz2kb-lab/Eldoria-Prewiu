@@ -4,7 +4,7 @@
   "nonce": "bridge-source03-cumulative-lower-gate-matched-review-02",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bridge cumulative Unity gate complete: PRODUCTION FAMILY PASS; parked.",
+  "scope": "Bridge cumulative Unity gate passed; request parked after PRODUCTION FAMILY PASS",
   "views": [
     {
       "name": "UNITY-source-3x2",
