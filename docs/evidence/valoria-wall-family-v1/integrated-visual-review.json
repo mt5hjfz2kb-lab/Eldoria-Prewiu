@@ -1,23 +1,18 @@
 {
   "verdict": "MATCHED-CAMERA VISUAL PASS",
   "reviewed_at": "2026-10-05",
-  "unity_run": 37315821080,
-  "unity_artifact_id": 11347388530,
-  "source_iteration": "source03",
-  "hard_checks": {
-    "seven_official_cameras": "PASS",
-    "protected_family_zero_px": "PASS — 0 px in all seven views",
-    "wall_envelope_and_silhouette": "PASS — global width ~99.83%, height ~97.93% of approved blockout; max center delta ~1.60 px",
-    "lower_gate_continuity": "PASS — Wall remains subordinate and shares warm defensive-stone grammar; returns preserve the approved partial-wall relationship without moving Lower Gate.",
-    "rock_terrain_continuity": "PASS — battered/darker wall bases sit visually into Source09 terrain with no clipping or floating regression visible in matched views.",
-    "mobile_readability": "PASS — grouped crenellation and tower caps survive landscape and portrait; no microdetail dependency.",
-    "clipping_and_seams": "PASS — no new clipping/costume seam artifacts observed in seven AFTER views.",
-    "materials_uv_normals_tangents": "PASS",
-    "colliders": "PASS — 0",
-    "gameplay": "PASS — 5/5",
-    "performance_import": "PASS for family gate",
-    "hierarchy": "PASS — Bastion > Lower Gate > Walls maintained",
-    "real_quality_bar": "PASS — clear defensive-read improvement over blockout and Source01."
+  "seven_official_cameras": "PASS",
+  "questions": {
+    "defensive_read": "PASS — peripheral walls now read immediately as authored fortification rather than blockout bars.",
+    "envelope_silhouette": "PASS — no outward spill; union width ~99.83% and height ~97.93% of blockout while preserving the same defensive footprint.",
+    "lower_gate_continuity": "PASS — wall scale, crenellation vocabulary and warm stone belong to the same defensive language without copying Lower Gate's hero detailing.",
+    "rock_terrain_continuity": "PASS — darker bases/battered lower bodies read seated against the terrain hierarchy; no floating or pasted-on silhouette observed at official views.",
+    "mobile_readability": "PASS — tower/end masses and grouped merlons remain legible in mobile landscape and the relevant portrait pans; no dependence on microdetail.",
+    "clipping_seams": "PASS — no new visible clipping/costume seam regression in the seven matched views.",
+    "material_separation": "PASS — Walls are warm/quieter than Lower Gate, visibly different from Road paving, and lighter/architectural against darker Rock/Terrain Source09.",
+    "hierarchy": "PASS — Bastion > Lower Gate > Walls remains intact; Walls frame rather than dominate.",
+    "quality_jump": "PASS — clear frame-level upgrade over the white blockout placeholders."
   },
-  "note": "Bastion remains intentionally unopened/greybox in this family gate; its future production treatment is not used to excuse Wall defects and was not modified."
+  "note": "Bastion and several unopened families remain greybox by design and are not counted against Wall completion.",
+  "tripo_credits": 0
 }
