@@ -1,0 +1,75 @@
+{
+  "block": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
+  "verdict": "PRODUCTION PASS / CLOSED",
+  "date": "2026-10-05",
+  "tripo_credits": 0,
+  "sawmill": {
+    "state0": {
+      "verdict": "ART SOURCE PASS",
+      "source_run": 37335784556,
+      "artifact_id": 11355583597,
+      "source_sha": "aeaee07cdc06aec097e8b196799c0819d788a2900f1df5d4276444cea3203c08",
+      "export_sha": "215f5b621ca64f8a5472ac3d06a018b3df21a0229288ea1b490c8ff1ef4bcb87"
+    },
+    "state1": {
+      "verdict": "ART SOURCE PASS",
+      "source_run": 37336378787,
+      "artifact_id": 11357015594,
+      "source_sha": "bd997d5a8f6a24f8daa93816d47c100baa13f385180d0c5dd9cb939da815159b",
+      "export_sha": "4b67cdf984d5d8be7872e08572c3ba4fd4f6a95e971f013ab7eede60f5c04f95"
+    },
+    "state2": {
+      "verdict": "ART SOURCE PASS",
+      "source_iteration": "source02-production-identity",
+      "source_run": 37337544717,
+      "artifact_id": 11357501193,
+      "source_sha": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
+      "export_sha": "abe163c09de3690fbeabf39f126663349f7e6f8e2565c0ce204f824a366ef026"
+    },
+    "first_cumulative": {
+      "verdict": "UNITY CUMULATIVE PASS",
+      "run": 37338343351,
+      "artifact_id": 11357267300,
+      "gameplay_regression": "PASS"
+    }
+  },
+  "camp": {
+    "verdict": "ART SOURCE PASS",
+    "source_run": 37338882930,
+    "artifact_id": 11357966355,
+    "source_sha": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+    "export_sha": "34152243c51717149ed0cb1faf316178b77ffc5d30626f0e8c802554fe03832b"
+  },
+  "cumulative": {
+    "after_first_construction": {
+      "run": 37339430238,
+      "artifact_id": 11358071612,
+      "verdict": "MATCHED-CAMERA PASS",
+      "gameplay_regression": "PASS"
+    },
+    "bastion1_initial": {
+      "run": 37339834245,
+      "artifact_id": 11357369035,
+      "verdict": "MATCHED-CAMERA PASS",
+      "gameplay_regression": "PASS"
+    }
+  },
+  "progression": {
+    "verdict": "PASS",
+    "initial": "Camp present; Sawmill STATE0 visible as foundation/prebuild need; no completed mill architecture.",
+    "after_first_construction": "Same frame/camera; Camp unchanged; Sawmill STATE2 complete with warm timber work silhouette and visible processing rig.",
+    "external_read": "before missing/incomplete -> built -> Valoria visibly grows",
+    "mobile_readability": "PASS"
+  },
+  "visual_gate": {
+    "frame_less_empty": true,
+    "scale_reference_improved": true,
+    "warm_timber_fabric_vs_stone": true,
+    "bastion_remains_hero": true,
+    "gate_road_stair_bastion_axis_dominant": true,
+    "clutter": false,
+    "structural_families_unchanged": true,
+    "answer_to_final_question": "YES — Valoria now begins to read as inhabited, functional and progressive rather than only a fortified shell; environmental life is still intentionally incomplete until later blocks."
+  },
+  "next_block": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1 — NOT OPENED"
+}
