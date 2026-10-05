@@ -1,0 +1,71 @@
+{
+  "authoring_standard": "BLENDER_PROFESSIONAL_V1",
+  "family": "GoldenIntegratedBaseV1",
+  "method": "OWNER-AUTHORIZED METHOD B / integrated Lower Gate + Bridge edge profiles + continuous substrate micro-environment reauthor",
+  "primitive_role": "No primitive stack used for primary silhouette. Primary architecture uses custom tapered section meshes, swept profile curves and explicit arch bands; terrain uses continuous authored bank meshes.",
+  "tool_families": [
+    "mesh_edit",
+    "curves_profiles",
+    "selective_profile_depth",
+    "custom_weighted_normals",
+    "uv_unwrap_texel_density",
+    "authored_terrain_mesh",
+    "controlled_organic_form"
+  ],
+  "source": "art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.blend",
+  "export": "art-source/valoria/lookdev/golden-slice-v1/integrated-base-v1/GoldenIntegratedBaseV1.glb",
+  "source_sha": "abef143758a761a76b1ff09c2110ca868dd9070cd457da6cd551e414219ee731",
+  "export_sha": "48e868a3c5bc3a319dc3556d810fe04a5c972aa9dba99ae470b72c97c49487b9",
+  "geometry_metrics": {
+    "triangles": 46632,
+    "vertices": 24288,
+    "objects": 103,
+    "materials": [
+      "Golden Integrated Bark",
+      "Golden Integrated Ground",
+      "Golden Integrated Rock",
+      "Golden Integrated Stone",
+      "Golden Integrated Vegetation",
+      "Golden Integrated Wet Shore"
+    ],
+    "bounds_world_blender": [
+      [
+        -18.5,
+        -35.400001525878906,
+        -0.2022876739501953
+      ],
+      [
+        27.5,
+        -17.704343795776367,
+        14.869616508483887
+      ]
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents_exported": true
+  },
+  "surface_basis": "Golden Surface V2 reused for stone/rock/ground/shore/vegetation where compatible",
+  "preview_evidence": [
+    "docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-lit-three-quarter.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-official-proxy.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/integrated-base-v1/source-clay.png"
+  ],
+  "unity_placement": {
+    "position": [
+      4.0,
+      7.0,
+      -22.0
+    ],
+    "rotation_y": 180,
+    "scale": 1
+  },
+  "scope_guards": {
+    "camera_changed": false,
+    "macro_gate_position_changed": false,
+    "macro_bridge_position_changed": false,
+    "gameplay_geometry": false,
+    "colliders": 0,
+    "tripo_credits": 0
+  },
+  "isolated_art_review": "PENDING"
+}
