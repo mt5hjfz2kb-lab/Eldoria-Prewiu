@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-07",
-  "nonce": "rock-terrain-source-07-embedded-shoulders-no-pillars",
+  "nonce": "rock-terrain-source-07-tapered-rock-shoulders",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Source07 strict ART SOURCE retry: retain source06 continuous staggered main cliff skin, replace seven exact vertical shoulder prisms with tapered embedded rock wedges; no open bays/columns; exact macro silhouette and 3/7/11 anchors; zero Tripo; Unity blocked pending direct review."
+  "scope": "Rock/Terrain source07 strict ART SOURCE retry: preserve authoritative Source06 primary cliff/ground; replace only CliffShoulder_0..6 greybox prisms with tapered irregular rock buttresses inside exact envelopes; zero Tripo; Unity blocked pending direct review."
 }
