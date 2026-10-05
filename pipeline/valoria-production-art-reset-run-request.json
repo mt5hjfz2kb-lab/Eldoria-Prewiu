@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "valoria-golden-local-shell-integration02-techretry01",
+  "nonce": "valoria-golden-local-shell-integration03-final",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 local geometry integration02 technical retry. Same reviewed GoldenLocalVisualShellV2 geometry. Technical integration fixes only: normalize Golden shell renderers to URP/Lit before applying persisted Golden Surface V2 maps; disable the two bridge shoulder patch renderers that created isolated ground islands. Preserve camera, lighting, macro composition, gameplay, hotspots, global platform and all closed families. Zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 final bounded geometry proof. AFTER-only reviewed GoldenLocalVisualShellV3 replaces V2 and adds one irregular Hero Ground Apron plus two irregular sloped Cliff Aprons while retaining source02 rock banks/conifers. Reuse persisted Golden Surface V2, stable lighting, official camera and shallow/deep water. Preserve gameplay, hotspots, macro positions, global platform and all closed families. No props, no broad family reopening, zero Tripo. If core Golden metrics remain <4/5, stop bounded local geometry method and classify scope-locked structural blocker requiring owner authorization.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN LOCAL SHELL INTEGRATION02 TECHRETRY01 VISUAL GATE",
+  "result": "PENDING FINAL GOLDEN LOCAL SHELL V3 VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-local-shell-integration02-techretry01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-local-shell-integration03-final",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -329,9 +329,9 @@
       "scale": 1
     },
     {
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/GoldenLocalVisualShellV2.glb",
-      "source_glb": "art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.glb",
-      "source_review": "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-review.json",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/GoldenLocalVisualShellV3.glb",
+      "source_glb": "art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.glb",
+      "source_review": "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-review.json",
       "names": [],
       "position": {
         "x": 4,
