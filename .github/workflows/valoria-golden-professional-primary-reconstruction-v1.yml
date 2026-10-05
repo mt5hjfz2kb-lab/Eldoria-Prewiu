@@ -24,6 +24,13 @@ jobs:
         with:
           ref: main
           fetch-depth: 2
+          sparse-checkout: |
+            tools/author-golden-professional-primary-reconstruction-v1.py
+            art-source/valoria/lookdev/golden-slice-v1/surface-v2
+            art-source/valoria/lookdev/golden-slice-v1/professional-primary-reconstruction-v1
+            docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1
+            pipeline/golden-professional-reconstruction-v1-request.json
+          sparse-checkout-cone-mode: false
 
       - name: Cache portable Blender
         id: blender-cache
