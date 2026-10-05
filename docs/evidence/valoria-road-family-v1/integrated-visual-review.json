@@ -6,12 +6,11 @@
   "production_family_verdict": "PRODUCTION FAMILY PASS",
   "authority": {
     "target": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
-    "target_rule": "diagonal continuous bridge-road-stair-gate spine",
     "approved_blockout_run": 37275659322,
     "retained_lower_gate": "PRODUCTION FAMILY PASS",
     "retained_bridge": "PRODUCTION FAMILY PASS",
-    "source_run": 37300130602,
-    "source_artifact": 11341026650,
+    "road_source_run": 37300130602,
+    "road_source_artifact": 11341026650,
     "unity_run": 37300556571,
     "unity_job": 111732031845,
     "unity_artifact": 11341876912,
@@ -26,25 +25,27 @@
     "production_family_pass": "PASS"
   },
   "visual_gate": {
-    "main_axis": "PASS — Road is now an obvious but subordinate circulation spine from accepted Lower Gate toward the locked Stair/Bastion in source 3:2 and 16:9.",
-    "screen_occupancy": "PASS — source 3:2 Road union is 99.993% of approved blockout width and 99.990% of approved height with 0.015 px center delta.",
-    "bridge_lower_gate_continuity": "PASS — accepted Bridge and Lower Gate are retained identically in BEFORE/AFTER; Road starts/receives at their locked interfaces without moving them.",
-    "road_to_stair": "PASS FOR ROAD SCOPE — MainRoad ends at the untouched Stair foot and UpperRoad resumes at the untouched upper landing. The visible stair remains greybox by explicit scope; no Road geometry masks or replaces it.",
-    "real_surface": "PASS — coarse masonry paving, shallow real section and restrained edge bands remove the flat-placeholder read without becoming hero architecture.",
-    "value_hierarchy": "PASS — Road is darker/earthier than accepted Bridge and Lower Gate, preserving navigation while avoiding a single uniform stone value across the scene.",
-    "mobile_landscape": "PASS — route is immediately legible at 1280×720 and paving joints remain coarse enough to survive reduction.",
-    "portrait": "PASS — portrait-entry strongly preserves Bridge→Gate→Road direction; portrait-home retains the central route and locked Stair relationship without new crop regression.",
-    "terrain_independence": "PASS — no Ground/Terrain changes were made to make Road fit.",
-    "target_differences": "Final Stair, Ground/Terrain, cliff dressing, vegetation and lighting remain blockout/out-of-scope and are not counted as Road defects."
+    "main_axis_read": "PASS — Road is immediately legible as the principal circulation spine from Lower Gate toward the locked Stair/Bastion axis without becoming a hero asset.",
+    "position_orientation_scale_screen_occupancy": "PASS — source 3:2 replacement is 99.9927% of approved blockout width and 99.9900% of approved height with 0.0149 px center delta. No camera/placement compensation.",
+    "bridge_gate_road_continuity": "PASS — accepted Bridge and Lower Gate are retained identically in BEFORE/AFTER; Road begins/continues through the gate receiver cleanly without modifying either family.",
+    "road_to_stair_preparation": "PASS — MainRoad and UpperRoad preserve the approved Stair receiving relationship; Stair itself remains greybox and untouched.",
+    "non_flat_surface_read": "PASS — paving, shallow edge bands and real mesh section read as circulation construction rather than a terrain decal.",
+    "material_hierarchy": "PASS — Road uses warmer/darker, finer civic paving than Bridge's lighter cut-stone deck, giving continuity without flattening all stone into one value.",
+    "mobile_landscape": "PASS — the long spine remains readable and paving rhythm survives without microdetail chatter at 1280×720.",
+    "portrait_entry": "PASS — Bridge → Gate → Road is strongly legible at 390×844; Road does not compete with the gate.",
+    "portrait_home": "PASS WITH APPROVED CROP — route framing follows the already-approved portrait strategy and introduces no new projection/crop regression.",
+    "target_difference": "The canonical target shows a softer worn road embedded in finished grass/terrain; the current isolated proof necessarily meets greybox Ground/Terrain. Road geometry/material rhythm and target route hierarchy pass; edge blending, soil/grass breakup and terrain wear belong to locked Ground/Terrain and are not fabricated inside Road."
   },
   "protected_state": {
-    "protected_elements_per_view": 82,
+    "protected_elements_checked_per_view": 82,
     "max_projection_delta_px": 0,
     "lower_gate_changed": false,
     "bridge_changed": false,
     "camera_changed": false,
+    "target_changed": false,
     "stair_changed": false,
     "terrain_changed": false,
+    "ground_changed": false,
     "bastion_changed": false,
     "gameplay_changed": false,
     "colliders_added": 0
@@ -52,7 +53,7 @@
   "limitations": [
     "No device FPS certification",
     "LOD1/LOD2 not authored",
-    "Stair/Terrain/Ground final art remains outside this family"
+    "Final road-edge blending with grass/terrain is deferred to the Terrain/Ground family and cannot be judged as Road-owned work"
   ],
   "tripo_credits": 0,
   "next": "Owner review of closed Road family. Do not start Stair, Terrain, Walls, Bastion or another family without a new instruction."
