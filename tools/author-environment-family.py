@@ -84,8 +84,11 @@ for key,group in groups.items():
   m=o.data.materials[poly.material_index]
   if m not in mats:mats.append(m)
   poly.material_index=mats.index(m)
+ face_materials=[p.material_index for p in o.data.polygons]
  o.data.materials.clear()
  for m in mats:o.data.materials.append(m)
+ for p,idx in zip(o.data.polygons,face_materials):p.material_index=idx
+ bm=bmesh.new();bm.from_mesh(o.data);bmesh.ops.triangulate(bm,faces=bm.faces);bm.to_mesh(o.data);bm.free()
  bpy.context.scene.cursor.location=spec['export_origin'];bpy.ops.object.origin_set(type='ORIGIN_CURSOR');o.select_set(False)
 # Save artist source in its inherited world placement; export deterministic local family pivot.
 blend=SRC/(spec['family']+'.blend');bpy.ops.wm.save_as_mainfile(filepath=str(blend))
@@ -101,7 +104,7 @@ for o in joined:
  o.data.calc_loop_triangles();verts+=len(o.data.vertices);tris+=len(o.data.loop_triangles)
  bm=bmesh.new();bm.from_mesh(o.data);nm_edges+=sum(not e.is_manifold for e in bm.edges);bm.free();bounds.extend([o.matrix_world@Vector(v) for v in o.bound_box])
 lo=[min(p[i] for p in bounds) for i in range(3)];hi=[max(p[i] for p in bounds) for i in range(3)]
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=20;scene.cycles.use_denoising=True;scene.render.resolution_x=1200;scene.render.resolution_y=800;scene.render.resolution_percentage=100
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=40;scene.cycles.use_denoising=False;scene.render.resolution_x=1200;scene.render.resolution_y=800;scene.render.resolution_percentage=100
 scene.world=bpy.data.worlds.new('Neutral source review');scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.17,.19,.22,1);scene.world.node_tree.nodes['Background'].inputs[1].default_value=.6
 scene.view_settings.view_transform='Standard';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=0;scene.view_settings.gamma=1
 ctr=Vector(spec['preview_center']);span=spec['preview_span']
