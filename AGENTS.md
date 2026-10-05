@@ -1,5 +1,8 @@
 # Eldoria — Agent entry point
 
+## Owner directive 2026-10-05 — Golden Lookdev gate
+Before any further broad Valoria art production, read `docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md`. Broad Props/Background, new visual families and scene-filling iteration are blocked until one tiny real-scene slice proves the complete premium lookdev recipe at the official cameras. Green CI/TECH PASS is never a visual-quality proxy. After three technically valid failures inside one method, change method rather than stacking more tweaks. The Golden Slice must prove authored surface response + lighting + contacts + atmosphere + mobile readability before scale-out.
+
 ## Owner directive 2026-10-05 — new Valoria art preproduction
 Read `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` before further Valoria artistic production. Its exact new owner target/camera/blockout override conflicting legacy artistic layout/camera/density restrictions; existing gameplay/assets are protected. This is a methodological reset. Follow its 13-step order; no final assets to discover composition. The blockout awaits owner approval; do not begin the next family or resume old workstreams automatically.
 
