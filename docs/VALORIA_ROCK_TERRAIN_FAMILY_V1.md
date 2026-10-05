@@ -76,7 +76,7 @@ If any hard question fails, source remains at ART SOURCE and must be reauthored 
 
 **MATCHED-CAMERA VISUAL PASS** requires all seven official cameras plus a dedicated **TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH ROCK/TERRAIN** comparison, zero protected-family movement, preserved macro silhouette, clean interfaces, mobile readability, material/import sanity, zero unauthorized colliders and gameplay regression PASS.
 
-Current status: **PRODUCTION FAMILY PASS / CLOSED / 0 TRIPO**.
+Current status: **SOURCE09 MATERIAL RETRY ACTIVE / UNITY BLOCKED / 0 TRIPO**.
 
 
 ## Result
@@ -115,3 +115,7 @@ Formal evidence:
 Camera, target, global composition, Bastion, Walls, BackgroundTerrain, accepted Lower Gate/Bridge/Road/Stair and gameplay remain unchanged. **Tripo: 0 credits.**
 
 **Do not start Walls, Bastion or another family without a new owner instruction.**
+
+## Source09 material correction — authoritative newer repo state
+
+After the Source08 Unity A/B, a newer repository commit (`9eab04e64c983e0232065c6d4a942670d28cc9c0`) re-opened this family for a **material-only** correction. Source08 geometry remains locked; Source09 changes only the palette: darker warmer rock, compressed facet contrast and darker earth to avoid the integrated washed-out read. The previous Source08 closure is therefore superseded until Source09 passes ART SOURCE + cumulative Unity + matched-camera visual gates.
