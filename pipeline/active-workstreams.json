@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T08:30:00Z",
+  "updated_at": "2026-10-05T08:34:00Z",
   "active": [
     {
       "id": "valoria-lower-gate-family-v1",
@@ -39,7 +39,9 @@
       "unity_job_id": 111673150034,
       "gate_result": "PRODUCTION FAMILY PARTIAL / VISUAL GATE PENDING",
       "next": "Restore runner availability, collect run37282357911 artifact, review same-camera comparisons; no new family."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "unity-runner-resilience-v1",
       "title": "Unity self-hosted runner resilience v1",
@@ -54,12 +56,17 @@
       ],
       "claimed_at": "2026-10-05T08:30:00Z",
       "base_main_sha": "cfdd311ac6b982b47f9b77e97ef6d84f4caaa0f0",
-      "status": "active",
+      "status": "completed",
       "phase": "INFRASTRUCTURE RECOVERY",
-      "dependency": "Do not mutate Lower Gate source/Unity gate. Harden runner host against idle sleep; current queued Unity run remains authoritative."
-    }
-  ],
-  "history": [
+      "dependency": "Do not mutate Lower Gate source/Unity gate. Harden runner host against idle sleep; current queued Unity run remains authoritative.",
+      "completed_at": "2026-10-05T08:34:00Z",
+      "result": "Runner bootstrap hardened: AC sleep/hibernate disabled in both service and interactive watchdog setup paths. Existing queued Unity run remains authoritative; host must be awake once for updated bootstrap to take effect.",
+      "result_commits": [
+        "b80ac356bd66ab63f6aa8dae1d1f903ecc5864fe",
+        "e0c4631cd89a1d13c68bc3b239e200ec7f9439ca"
+      ],
+      "next": "Wake/sign in to DESKTOP-R10PE55 once if currently asleep, then rerun or execute the interactive runner switch script once; queued run 37282357911 should be picked automatically and future idle sleep should no longer drop the runner while on AC."
+    },
     {
       "id": "valoria-art-production-reset-v1",
       "title": "VALORIA ART PRODUCTION RESET v1",
