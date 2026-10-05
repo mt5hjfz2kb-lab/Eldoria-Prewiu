@@ -2,9 +2,9 @@
   "enabled": true,
   "mode": "authored_surface_maps",
   "request_id": "valoria-golden-lookdev-slice-v1-surface-v2",
-  "nonce": "golden-surface-v2-blender-maps-02-runner-retry",
+  "nonce": "golden-surface-v2-blender-maps-02",
   "source_dir": "art-source/valoria/lookdev/golden-slice-v1/surface-v2",
   "evidence_dir": "docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface iteration02 source authoring only. Blender headless deterministic authored masks -> persistent PNG maps for stone/rock/ground/wet shore/vegetation. No geometry creation or modification, no camera/composition/gameplay changes, no Tripo."
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface iteration02 source authoring only. Refined Blender-authored masks: explicit masonry/mortar/dirt/wear, warped rock strata/fissures, ground patch/path/pebbles, shore wetness/silt and restrained vegetation breakup; multiscale procedural breakup is secondary only. Persistent PNG maps. No geometry creation/modification, no camera/composition/gameplay changes, zero Tripo."
 }
