@@ -1,0 +1,119 @@
+{
+  "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
+  "source_identity": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+  "unity_run_id": 37302198301,
+  "unity_job_id": 111737317212,
+  "unity_artifact_id": 11340779541,
+  "runner": "DESKTOP-R10PE55",
+  "source_statistics": {
+    "source_triangles": 1360,
+    "source_vertices": 3756,
+    "source_renderers": 3,
+    "source_materials": 2,
+    "source_textures": 4,
+    "source_submesh_draws": 3,
+    "source_texture_sizes": [
+      "paving_albedo:512x512",
+      "paving_normal:512x512",
+      "masonry_albedo:512x512",
+      "masonry_normal:512x512"
+    ],
+    "source_mesh_bytes": 397896,
+    "source_texture_bytes": 11188384,
+    "source_uv": true,
+    "source_normals": true,
+    "source_tangents": true
+  },
+  "results": [
+    {
+      "view": "UNITY-source-3x2",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978734814583807,
+        0.996991759100629
+      ],
+      "center_delta_px": 0.05227076758899662,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-16x9",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978737964349476,
+        0.996991759100629
+      ],
+      "center_delta_px": 0.05229512703478664,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-mobile-landscape",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978734608179431,
+        0.996991648645904
+      ],
+      "center_delta_px": 0.036750996188981935,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-home",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978733903224899,
+        0.9969916698932731
+      ],
+      "center_delta_px": 0.043054408610185994,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-left",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.997873390933304,
+        0.9969913669071298
+      ],
+      "center_delta_px": 0.057471171128434424,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-right",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978736057408121,
+        0.9969911406947254
+      ],
+      "center_delta_px": 0.057468390377734775,
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-entry",
+      "protected_mesh_count": 72,
+      "protected_missing": [],
+      "protected_projection_max_delta_px": 0,
+      "extent_ratio": [
+        0.9978735342400912,
+        0.9969897762313851
+      ],
+      "center_delta_px": 0.05748663270715591,
+      "technical_alignment_pass": true
+    }
+  ],
+  "source_integrity_pass": true,
+  "all_technical_alignment_pass": true,
+  "tripo_credits": 0,
+  "gameplay_scene_opened": false,
+  "gameplay_scene_saved": false,
+  "colliders": 0
+}
