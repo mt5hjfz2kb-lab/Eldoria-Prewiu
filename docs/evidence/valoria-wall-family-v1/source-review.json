@@ -1,6 +1,7 @@
 {
   "verdict": "ART SOURCE PASS",
   "reviewed_at": "2026-10-05",
+  "scope": "Wall isolated source gate; cumulative Unity matched-camera gate remains mandatory",
   "source_iteration": "source03",
   "source_run": 37315121461,
   "artifact_id": 11348240013,
@@ -17,40 +18,25 @@
     "tangents": true,
     "nonmanifold_edges": 0
   },
-  "envelope": {
-    "approved_family_min": [
-      -14.841264454784744,
-      -20.1047271687794,
-      7.06
-    ],
-    "approved_family_max": [
-      35.36589239163579,
-      -2.0049413965777245,
-      12.66
-    ],
-    "generated_min": [
-      -14.840816497802734,
-      -20.104726791381836,
-      7.059999942779541
-    ],
-    "generated_max": [
-      35.36549758911133,
-      -2.00533390045166,
-      12.65999984741211
-    ],
-    "verdict": "PASS — generated family remains inside approved macro envelope to floating-point precision; Source02 outward spill removed."
+  "approved_envelope_check": {
+    "verdict": "PASS",
+    "note": "Every source03 group remains inside its owning approved blockout envelope. Source02 ~0.196m outward spill at WestWallTowerB was corrected without redesigning the accepted Source02 visual language."
   },
   "hard_questions": {
-    "designed_not_assembled": "PASS — battered/chamfered terminal masses, three-part wall-face articulation, crown/foundation hierarchy and grouped crenellation read as one designed defensive system rather than straight modules with box towers.",
-    "real_depth_thickness": "PASS — six solid modules have real wall/tower section, parapet/crown depth and structural bases.",
-    "repetition_control": "PASS — crest rhythm is grouped/asymmetric and major vertical divisions vary by authored station; no uniform array read.",
-    "mobile_crenellation": "PASS — coarse, sparse merlons remain legible in approved-camera proxy; no subpixel ornamental density.",
-    "lower_gate_union": "PASS AT SOURCE / UNITY MANDATORY — scale, warm-stone language and low peripheral hierarchy are compatible with accepted Lower Gate; exact visual join remains a required integrated gate.",
-    "rock_terrain_union": "PASS AT SOURCE / UNITY MANDATORY — darker foundations, battered bodies and broad piers create structural seating language; actual seam/clipping must be proven against Source09 in Unity.",
-    "hierarchy": "PASS — no hero tower inflation; peripheral wall silhouette remains subordinate to Lower Gate and intended Bastion hierarchy.",
-    "material_family": "PASS — lower-frequency warm stone belongs to Valoria while remaining distinct from Road paving and darker Rock/Terrain.",
-    "frame_improvement": "PASS SOURCE — clear authored improvement over white blockout and over Source01 generic-kit read; cumulative frame improvement still requires matched-camera Unity evidence."
+    "designed_not_assembled": "PASS — segmented wall bodies, battered/chamfered end masses, layered foundation/shoulder/crown sections and grouped crenellation remove Source01's obvious rectangular-kit read.",
+    "real_depth_thickness": "PASS — all six modules are solid authored volumes with real parapet/crown/base section.",
+    "repetition_control": "PASS — crest rhythm is visibly grouped and asymmetric; structural divisions do not repeat as a uniform array.",
+    "mobile_crenellation": "PASS — merlons remain broad/coarse in approved-camera proxy and low views; no microdetail dependency.",
+    "lower_gate_union": "PASS FOR SOURCE AUTHORIZATION — terminal proportions/material grammar are compatible and exact envelopes are preserved; contact/clipping is reserved for cumulative Unity proof.",
+    "rock_terrain_union": "PASS FOR SOURCE AUTHORIZATION — battered bases/darker foundation language provide structural seating while exact contact is reserved for Unity proof.",
+    "hierarchy": "PASS — peripheral mass and crown remain subordinate to Lower Gate/Bastion; no hero-scale towers introduced.",
+    "material_family": "PASS — warm Valoria stone uses lower-frequency stone response, clearly distinct from Road paving and darker Rock/Terrain.",
+    "frame_improvement": "PASS SOURCE — clear authored defensive upgrade over the technical blockout and Source01 without composition change."
   },
-  "unity_gate": "AUTHORIZED NEXT — integrate exact export SHA only; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically; replace only six Wall placeholders; all seven official cameras mandatory.",
+  "limitations": [
+    "Isolated source cannot certify final Lower Gate/Rock-Terrain contact shadows or clipping.",
+    "Whole-frame Bastion hierarchy and seven-camera mobile readability remain Unity visual-gate responsibilities."
+  ],
+  "unity_gate": "AUTHORIZED NEXT — exact source03 export SHA only; retain Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER.",
   "tripo_credits": 0
 }
