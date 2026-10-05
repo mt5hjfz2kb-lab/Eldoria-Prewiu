@@ -262,3 +262,18 @@ Owner decision required before further work:
 - B: reopen that substrate together with Lower Gate + Bridge edge profiles as one integrated Golden micro-environment.
 
 Canonical detail: `docs/evidence/valoria-golden-lookdev-slice-v1/FINAL_SURFACE_GEOMETRY_GATE.md`.
+
+
+## 2026-10-05 — Owner-authorized Method B final source gate
+
+Owner authorization **B** was executed exactly as a pre-Unity source phase: target translation → Blender base reauthor → isolated hero preview → visual review.
+
+Two integrated source attempts were produced. Source01 (run **37370017454**, artifact **11370535174**) failed visually at approximately 2–3/5. Source02 materially changed method by using the real closed Lower Gate + Bridge production geometry at canonical origins, a continuous authored substrate and already-committed higher-information transition geometry. Its authoritative evidence run **37370727523** / artifact **11369951282** is technically valid (~147k tris) but the isolated visual gate still fails: geometry/silhouette ~2.5/5, material response ~3/5, contact/integration ~2.5/5, environment coherence ~2.5/5, premium perception ~2/5.
+
+Therefore **Unity integration was not run**. This is intentional and required by the source-first gate.
+
+The new proven ceiling is that edge/profile reauthoring plus continuous local substrate cannot overcome the screen-space dominance of the existing Lower Gate/Bridge **primary forms** and the retained vegetation source. More donor pieces, overlays, rocks, decals, lighting compensation or another source iteration are prohibited.
+
+Current status: **BLOCKED — HUMAN SCOPE BLOCKER / INTEGRATED BASE METHOD EXHAUSTED**.
+
+Smallest viable next owner authorization: reopen the **full screen-visible primary forms** of Lower Gate + Bridge together with the continuous local cliff/ground/shore and local vegetation source, while preserving canonical camera, macro positions, gameplay topology, parcels, Bastion and every family outside the Golden crop. A separate external generation route, including Tripo, remains unauthorized unless explicitly approved.
