@@ -1,0 +1,133 @@
+{
+  "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
+  "authority": {
+    "unity_run": 37300556571,
+    "unity_job": 111732031845,
+    "artifact": 11341876912,
+    "captured_head": "0fbd21afbf7af0d3e835ebd24337a323fc0862b6"
+  },
+  "source_identity": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+  "source_integrity_pass": true,
+  "all_technical_alignment_pass": true,
+  "protected_mesh_count_per_view": 82,
+  "protected_projection_max_delta_px": 0,
+  "official_views": [
+    {
+      "view": "UNITY-source-3x2",
+      "old_bbox": [
+        306.00006103515625,
+        221.0001220703125,
+        1000,
+        1008.5242919921875
+      ],
+      "new_bbox": [
+        306.01702880859375,
+        221.0516357421875,
+        999.966064453125,
+        1008.4971923828125
+      ],
+      "extent_ratio": [
+        0.9999266522697561,
+        0.9999001766748851
+      ],
+      "center_delta_px": 0.014865663315004118,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-16x9",
+      "extent_ratio": [
+        0.9999267841901343,
+        0.9999001766748851
+      ],
+      "center_delta_px": 0.014822254490543436,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-mobile-landscape",
+      "extent_ratio": [
+        0.9999266405453641,
+        0.9999001077843895
+      ],
+      "center_delta_px": 0.010393120122819566,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-home",
+      "extent_ratio": [
+        0.9999266147574335,
+        0.99989999743764
+      ],
+      "center_delta_px": 0.012249902307141508,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-left",
+      "extent_ratio": [
+        0.9999265997583909,
+        0.9998998740253386
+      ],
+      "center_delta_px": 0.016328778671803493,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-right",
+      "extent_ratio": [
+        0.9999265947566709,
+        0.9998998916633152
+      ],
+      "center_delta_px": 0.016330121516610466,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    },
+    {
+      "view": "UNITY-portrait-entry",
+      "extent_ratio": [
+        0.9999265147357661,
+        0.9998999886210059
+      ],
+      "center_delta_px": 0.016304402130369797,
+      "protected_projection_max_delta_px": 0,
+      "protected_missing": [],
+      "technical_alignment_pass": true
+    }
+  ],
+  "source_statistics": {
+    "engine": "6000.3.23f1",
+    "triangles": 1944,
+    "vertices": 5556,
+    "renderers": 4,
+    "materials": 3,
+    "textures": 4,
+    "submesh_draws": 12,
+    "mesh_bytes": 587056,
+    "texture_bytes": 11188384,
+    "texture_sizes": [
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512",
+      "paving_albedo:512x512",
+      "paving_normal:512x512"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false
+  },
+  "gameplay": {
+    "focused_playmode": "5/5 PASS"
+  },
+  "target_note": "Canonical target defines Road through the silhouette requirement 'diagonal continuous bridge-road-stair-gate spine' rather than a dedicated Road bbox. Visual target compliance is therefore judged by integrated matched-camera continuity between the locked Bridge/Lower Gate and locked Stair/Bastion, while exact Road screen occupancy is measured against approved blockout.",
+  "tripo_credits": 0
+}
