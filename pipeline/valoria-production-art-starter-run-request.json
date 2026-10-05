@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-bastion-family-v1-source-01",
-  "nonce": "bastion-source01-hero-authored-asymmetric-valoria",
+  "request_id": "valoria-bastion-family-v1-source-02",
+  "nonce": "bastion-source02-arched-gate-command-keep-depth",
   "mesh_spec": "docs/evidence/valoria-bastion-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/bastion-family-v1",
   "evidence_dir": "docs/evidence/valoria-bastion-family-v1/source",
   "credits": 0,
-  "scope": "Bastion Family v1 Source01 only. Hero asset authored from approved blockout envelopes with deliberate keep/curtain hierarchy, asymmetric towers/wings, real depth, structural bases/cornices, coarse crenellation and central heraldry. Zero Tripo. Unity blocked pending strict 12-question HERO ART SOURCE review."
+  "scope": "Source02 after HERO ART SOURCE FAIL. Same nine approved Bastion envelopes. Reauthor hero silhouette with dominant stepped Keep, framed heraldry, segmented arched gate, recessed curtain bays/projecting piers, distinct east/west tower logic and lower-frequency stone. Zero Tripo. Unity blocked pending strict HERO ART SOURCE review."
 }
