@@ -18,19 +18,20 @@
     "nonmanifold_edges": 0
   },
   "hero_questions": {
-    "1_deliberate_silhouette": "PARTIAL FAIL — segmented arch and staged Keep improve the outline, but top silhouette still reads too much like frontal crenellation strips on a long wall.",
-    "2_immediately_dominant_valoria_bastion": "PARTIAL FAIL — Keep is now a focal block but still lacks the crown depth/identity needed for an unmistakable hero landmark.",
-    "3_primary_secondary_tertiary": "PASS DIRECTIONALLY — primary Keep/gate cluster separates better from secondary curtains/towers.",
-    "4_real_architectural_depth": "PASS DIRECTIONALLY — recessed bays/projecting piers and side view materially improve depth.",
-    "5_controlled_asymmetry": "PASS — left watch block, tall east tower and far-west mass create a controlled unequal skyline.",
-    "6_no_cloned_modules": "PASS — east/west command masses now have distinct staging.",
-    "7_rich_material_without_microdetail": "PASS DIRECTIONALLY — lower-frequency stone is calmer and less generic than Source01.",
-    "8_coherent_lower_gate_walls": "PASS SOURCE — same warm defensive family with stronger hero hierarchy.",
-    "9_gameplay_camera": "PARTIAL FAIL — arch is readable, but Keep crown and heraldic identity are still weak at the gameplay-facing view.",
-    "10_authored_not_procedural": "PASS — explicit authored planes, arch voussoirs, piers and asymmetry.",
-    "11_not_castle_kit_generic": "PARTIAL FAIL — substantially improved, but frontal crenel-strip language still evokes a generic kit rather than a fully authored command fortress.",
-    "12_obvious_full_frame_improvement": "PARTIAL FAIL — clear improvement over Source01/blockout but not yet strong enough for the dominant premium target landmark."
+    "1_deliberate_silhouette": "PARTIAL FAIL — staged keep and different towers improve Source01, but the family still reads first as a long crenellated wall band.",
+    "2_immediately_dominant_valoria_bastion": "FAIL — the central keep is clearer but not yet iconic enough to dominate the whole family at gameplay distance.",
+    "3_primary_secondary_tertiary": "PASS DIRECTIONALLY — keep/command masses, recessed curtain bays and tertiary crenellation are more legible.",
+    "4_real_architectural_depth": "PASS — recessed curtain bays, projecting piers and staged keep/tower sections create genuine depth.",
+    "5_controlled_asymmetry": "PASS — east tower, far-west block and left wing have distinct skyline roles.",
+    "6_no_cloned_modules": "PASS — tower section logic is visibly different.",
+    "7_rich_material_without_microdetail": "PARTIAL — low-frequency stone fixes Source01 brick dominance, but lit review is too dark/muddy for a hero focal asset.",
+    "8_coherent_lower_gate_walls": "PASS — same military stone language, richer hierarchy.",
+    "9_gameplay_camera": "FAIL HERO — from the gameplay-facing preview the keep and access still do not create the premium focal read required.",
+    "10_authored_not_procedural": "PASS — geometry is deliberately authored and semantically staged.",
+    "11_not_castle_kit_generic": "FAIL HERO — improved, but silhouette still resembles a competent generic crenellated fortress strip rather than an unmistakable Valoria landmark.",
+    "12_obvious_full_frame_improvement": "FAIL HERO BAR — clear improvement over blockout, not yet enough for the dominant landmark."
   },
-  "decision": "DO NOT INTEGRATE. Source03 must strengthen crown depth/360-degree parapet read, correctly map blue/gold heraldry, introduce a contained hero flag/crest, and make Keep/east command tower hold visually at gameplay distance. Preserve exact envelopes.",
+  "decision": "DO NOT INTEGRATE UNITY. Source03 must create one unmistakable command keep/access signature at large scale, brighter limestone hierarchy, and more narrative asymmetric crest/damage while preserving every approved envelope.",
+  "legacy_reference_note": "Historical certified Hero Bastion was inspected only as a quality/reference donor. It is richer but too vertical/palatial/blue-roofed for the current canonical target and will NOT be substituted as final geometry.",
   "tripo_credits": 0
 }
