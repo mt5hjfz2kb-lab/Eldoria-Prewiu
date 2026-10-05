@@ -1,0 +1,32 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_run": 37304825245,
+  "artifact_id": 11342464690,
+  "source_sha": "3258a865d9dcffa0f45a3d9a3cb03bbde8a9d4847ef94ab2d373a7431f90f228",
+  "export_sha": "9e2cf880c878c7ee24110cce28654b0a1fb8b3a98f45444be7675cab23e0c698",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1650,
+    "vertices": 2864,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "PARTIAL — cleaner and less procedural, but the dominant read is still a broad slab with subdued cliff relief.",
+    "rock_rhythm": "PARTIAL — naturalized facets exist but are too shallow at approved-camera scale.",
+    "silhouette": "PASS — exact approved outer boundary and 3/7/11 anchors preserved.",
+    "depth_without_noise": "PASS — depth is controlled and noise-free, but insufficiently pronounced.",
+    "authored_not_procedural": "PASS — continuous value zones and geometry-driven shading remove the checker cadence.",
+    "mobile_scale": "FAIL/PARTIAL — relief is too subtle to carry a strong rock read at small screen size.",
+    "architecture_integration": "PENDING UNITY — source not authorized.",
+    "material_difference": "PASS — earth and rock are distinct and restrained.",
+    "real_quality_jump": "FAIL — not yet a frame-transforming structural rock treatment."
+  },
+  "decision": "REAUTHOR SOURCE04 IN SAME FAMILY. Increase mid-wall inset/overhang depth substantially while keeping exact top/bottom rings; use large nonuniform vertical/diagonal planes and a few broad contiguous shadow recesses. No micro-rock or exterior silhouette additions.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}
