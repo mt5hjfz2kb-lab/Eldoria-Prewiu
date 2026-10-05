@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T17:03:00Z",
-  "active": [
+  "updated_at": "2026-10-05T17:23:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-vegetation-water-shore-production-v1",
       "title": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1",
@@ -30,16 +31,21 @@
       ],
       "claimed_at": "2026-10-05T16:44:00Z",
       "base_main_sha": "cae2197e93704dc6aee7766df87d8dba99ecb786",
-      "status": "active",
-      "phase": "VEGETATION ART SOURCE PASS / UNITY PLACEMENT INTEGRATION",
+      "status": "completed",
+      "phase": "PRODUCTION PASS / CLOSED",
       "dependency": "Preserve all closed structural families plus Sawmill/Camp, camera, target, composition and gameplay. Vegetation first representative source -> source gate -> cumulative Unity; then water/shore. Zero Tripo.",
       "source_verdict": "SOURCE03 ART SOURCE PASS",
       "source_run_id": 37344966366,
       "source_artifact_id": 11360561424,
-      "source_export_sha": "9f0e41a75972bd15846a8e948e6f519a1071cb0631f5f61b8eb389713c4d3242"
-    }
-  ],
-  "history": [
+      "source_export_sha": "9f0e41a75972bd15846a8e948e6f519a1071cb0631f5f61b8eb389713c4d3242",
+      "completed_at": "2026-10-05T17:22:31Z",
+      "result": "VEGETATION ART SOURCE PASS / PLACEMENT PASS / WATER-SHORE PASS / CUMULATIVE UNITY PASS / MOBILE PASS / GAMEPLAY PASS / PERFORMANCE SANITY PASS / 0 TRIPO",
+      "final_run_id": 37347735272,
+      "final_artifact_id": 11361740372,
+      "final_head": "6e1dbe984a76a7fe49a46b98f7950986367365cc",
+      "artifact_digest": "sha256:02f9bfb7458ad54d1f129bda31e41a6ce1dd7273581994aa74488177f593a42f",
+      "next": "VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1 is owner-authorized. Props + Background remains blocked."
+    },
     {
       "id": "valoria-cabin-sawmill-camp-production-v1",
       "title": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
