@@ -644,3 +644,7 @@ The six certified Tripo families remain valid reusable art/reference assets, but
 - The remaining blocker is **visual source coherence**, not pixel preservation: current local image-generation/editing cannot produce one authored connected transition without either re-rendering Valoria globally or yielding composited fragments.
 - Current status: **EXACT SOURCE IMAGE FAIL / 0 CREDITS**.
 - Tripo remains blocked and no exact input is promoted.
+
+
+## 2026-10-05 — Vegetation + Water/Shore Production v1 closed
+Valoria Vegetation + Water/Shore is now formally **PRODUCTION PASS / CLOSED**. Final cumulative Unity run **37347735272** succeeded and produced artifact **11361740372** with the complete official capture set: 16:9, mobile landscape, 3:2 and portrait home/left/right/entry. Vegetation source/placement and Water/Shore pass their scoped gates; gameplay and performance sanity pass; Tripo credits remain 0. This closure does **not** assert that the complete scene matches the premium target. The next owner-authorized task is **VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1**, with Props + Background still blocked.
