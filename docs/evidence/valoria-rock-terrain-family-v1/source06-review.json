@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE FAIL",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source06",
+  "source_run": 37306937341,
+  "artifact_id": 11344496216,
+  "source_sha": "4caa9f14a2504ee089274f6e86da3e7f27b3e83db140be25caebb45d393228f2",
+  "export_sha": "f3acb6f01b00b125e1d2cf0bb05844a34875b83f1e27ebf6c9e0b49cb115ab63",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 2000,
+    "vertices": 3586,
+    "modules": 12,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "hard_questions": {
+    "greybox_reduction": "FAIL — broad cliff shelves improve, but visible vertical supports make the plateau read as an elevated technical structure.",
+    "rock_rhythm": "PARTIAL — diagonal facets improve over source05, but repeated vertical void/support cadence remains dominant in several views.",
+    "silhouette": "PASS — approved outer silhouette and 3/7/11 anchors remain preserved.",
+    "depth_without_noise": "PASS — broad recesses and shelf depth are readable without micro-rock noise.",
+    "authored_not_procedural": "FAIL — support-like verticals expose the construction method and break geological continuity.",
+    "mobile_scale": "FAIL identity — the support rhythm remains legible at small scale as architecture/pillars rather than rock.",
+    "architecture_integration": "PENDING UNITY — source not authorized.",
+    "material_difference": "PASS — rock/earth/paving categories remain separable.",
+    "real_quality_jump": "FAIL — not acceptable as the frame-transforming terrain family while plateau still reads structurally artificial."
+  },
+  "decision": "SOURCE07: remove all pillar/support readings. Build continuous closed cliff skin between exact top/bottom perimeter rings with broad concave/convex facet fields and diagonal breaks only. No open vertical bays, no column-like separators. Ground surfaces remain exact. Unity stays blocked.",
+  "unity_gate": "BLOCKED",
+  "tripo_credits": 0
+}
