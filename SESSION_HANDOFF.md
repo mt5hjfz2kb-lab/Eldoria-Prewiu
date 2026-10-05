@@ -1,3 +1,14 @@
+## 2026-10-05 — VALORIA STRUCTURAL QUALITY BAR REVIEW v1 — PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS / CLOSED
+- Frame-level visual review only; no closed family was modified/reopened, no secondary family started, Tripo 0.
+- Review base HEAD: `2a38dc9d47ce68b0dacf7c60b52fc898cfa39b9b`. Latest integrated frame: Bastion Source08 cumulative Unity run **37328467482**, artifact **11352609605**. Approved blockout: run **37275659322**, artifact **11329019907**.
+- Verdict: **STRUCTURAL QUALITY BAR PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS**. The structural nucleus has genuinely crossed beyond improved greybox and is safe to scale; the complete screenshot is not yet commercial-finish because Cabin/Camp, vegetation, water/shore, props, background and lighting/presentation remain intentionally secondary/unproduced.
+- PASS: Bastion hero dominance; Lower Gate/Walls/Bastion family cohesion; Bridge→Gate→Road→Stair→Bastion axis; macro silhouette; primary/secondary/tertiary hierarchy; structural material cohesion; architectural depth; mobile read. No target/composition category-D problem.
+- One category-C recommendation only: **Rock/Terrain Source09 upper shelf beneath Bastion** has a continuous very-dark seam/cut visible in 16:9, mobile landscape and source 3:2. Minimum future uplift: localized contact/material/geometry correction only, exact macro envelope preserved; no Terrain redesign and do not hide it with dressing.
+- Category-B gaps: Cabin/Sawmill + Camp occupancy, vegetation, water/shore, props, background/world continuation, atmospheric depth and lighting/presentation.
+- Recommended next after owner authorization: **controlled Rock/Terrain upper-shelf seam uplift → Cabin/Sawmill + Camp → Vegetation + Water/Shore → Props + Background → Lighting/presentation polish**.
+- Canonical review: `docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md`; evidence: `docs/evidence/valoria-structural-quality-bar-review-v1/`.
+- Workstream released; no new family opened.
+
 ## 2026-10-05 — BASTION FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - **Source08 is authoritative**. Source07 passed isolated ART SOURCE but failed the cumulative HERO QUALITY gate because its near-white hero masonry read as a detached high-value band; Source08 preserves Source07 geometry and corrects only exported material/value hierarchy.
 - Source08 source run **37327905027**, artifact **11353460819**; BLEND SHA `5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893`; GLB SHA `3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477`; **22,690 tris / 11,727 source vertices / 9 modules / 9 materials / 0 nonmanifold edges**; UV/normals/tangents PASS; **0 Tripo**.
