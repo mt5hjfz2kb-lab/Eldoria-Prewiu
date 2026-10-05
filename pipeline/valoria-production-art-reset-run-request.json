@@ -4,7 +4,7 @@
   "nonce": "wall-source03-cumulative-lower-gate-bridge-road-stair-rock09-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Wall Family Source03 cumulative Unity matched-camera gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER; replace only WestPartialWall/WestWallTowerA/B/EastPartialWall/EastWallTowerA/B. Camera/target/composition/platform/Bastion/gameplay locked. Zero Tripo.",
+  "scope": "Wall Family Source03 cumulative Unity matched-camera gate. Retain accepted Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 identically in BEFORE/AFTER; replace only WestPartialWall, WestWallTowerA/B, EastPartialWall, EastWallTowerA/B. Camera/target/composition/platform/Bastion/gameplay untouched. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,7 +112,7 @@
       }
     }
   ],
-  "result": "PRODUCTION PROOF PENDING",
+  "result": "PRODUCTION PROOF",
   "source_glb": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
   "artifact_name": "valoria-wall-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
@@ -205,7 +205,7 @@
       "scale": 1
     },
     {
-      "label": "ROCK / TERRAIN SOURCE09 ACCEPTED",
+      "label": "ROCK TERRAIN SOURCE09 ACCEPTED",
       "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
       "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/RockTerrainFamilyV1.glb",
       "source_review": "docs/evidence/valoria-rock-terrain-family-v1/source-review.json",
