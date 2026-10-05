@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T06:36:37.096Z",
+  "updated_at": "2026-10-05T06:44:05.918Z",
   "active": [
     {
       "id": "valoria-art-production-reset-v1",
@@ -14,11 +14,15 @@
         "pipeline/art-production-request.json",
         "pipeline/active-workstreams.json",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        ".github/workflows/valoria-production-art-reset-v1.yml",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs"
       ],
       "resources": [
         "valoria-reset-preproduction",
-        "art-production-planner"
+        "art-production-planner",
+        "windows-runner-heavy"
       ],
       "claimed_at": "2026-10-05T06:36:37.094Z",
       "base_main_sha": "6c80311087b77f9ddb19b9c0eb2ba14249f3725a",
