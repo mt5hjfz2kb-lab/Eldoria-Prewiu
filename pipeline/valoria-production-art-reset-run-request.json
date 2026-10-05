@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "premium-hero-golden-slice-source02-integration01",
+  "nonce": "premium-hero-golden-slice-source03-integration01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 integrated test of Premium Hero contact source02. Preserve canonical camera/composition/gameplay and all accepted families. Add only the bounded source02 contact shell as retained visual support while keeping Vegetation Source03 instances and current premium lighting/surface recipe. Zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 integrated test of narrow Premium Hero contact source03. Preserve canonical camera/composition/gameplay and all accepted families. Add only narrow source03 contact interfaces while keeping Vegetation Source03 instances and current premium surface/lighting/water recipe. Includes explicit Golden close crop. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -110,11 +110,26 @@
         "y": 0,
         "z": -15.902420247865848
       }
+    },
+    {
+      "name": "UNITY-golden-close",
+      "width": 1280,
+      "height": 720,
+      "pitch": 35,
+      "yaw": 20,
+      "span": 22,
+      "distance": 110,
+      "perspective": false,
+      "center": {
+        "x": 3,
+        "y": 0,
+        "z": -21.5
+      }
     }
   ],
-  "result": "PENDING GOLDEN LOOKDEV SOURCE02 INTEGRATED VISUAL GATE",
+  "result": "PENDING GOLDEN LOOKDEV SOURCE03 INTEGRATED VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-source02-integration01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-source03-integration01",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -314,10 +329,10 @@
       "scale": 1
     },
     {
-      "label": "PREMIUM HERO CONTACT SOURCE02 INTEGRATED CANDIDATE",
-      "source_glb": "art-source/valoria/production/premium-hero-contact-uplift-v1/source02/PremiumHeroContactUpliftV2.glb",
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/PremiumHeroContactUpliftV2.glb",
-      "source_review": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source02/source-review.json",
+      "label": "PREMIUM HERO CONTACT SOURCE03 INTEGRATED CANDIDATE",
+      "source_glb": "art-source/valoria/production/premium-hero-contact-uplift-v1/source03/PremiumHeroContactUpliftV3.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/PremiumHeroContactUpliftV3.glb",
+      "source_review": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1/blender-contact-source03/source-review.json",
       "names": [],
       "position": {
         "x": 4,
