@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "sawmill-state2-cumulative-first-gate-01",
+  "nonce": "sawmill-camp-cumulative-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Sawmill State2 first cumulative integration gate. Retain all closed structural families including accepted Rock/Terrain contact uplift v1b identically. Replace Cabin parcel placeholders only. No Camp yet. Zero Tripo.",
+  "scope": "Camp cumulative integration after Sawmill State2 PASS. Retain Sawmill State2 and all closed structural families including Rock/Terrain uplift identically. Replace CampTent_0/1 and CampFence only. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING SAWMILL STATE2 CUMULATIVE VISUAL GATE",
-  "source_glb": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
-  "artifact_name": "valoria-sawmill-state2-first-cumulative",
+  "result": "PENDING SAWMILL + CAMP CUMULATIVE VISUAL GATE",
+  "source_glb": "art-source/valoria/production/camp-family-v1/CampFamilyV1.glb",
+  "artifact_name": "valoria-sawmill-camp-cumulative",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -275,22 +275,40 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "SAWMILL STATE2 EARLY FUNCTIONAL ACCEPTED",
+      "source_glb": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/SawmillState2V1.glb",
+      "source_review": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source-review.json",
+      "names": [
+        "Cabin",
+        "CabinRoof",
+        "CabinChimney",
+        "CabinFence"
+      ],
+      "position": {
+        "x": -14.1,
+        "y": 7.1,
+        "z": -4.35
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "SAWMILL STATE2 EARLY FUNCTIONAL",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/SawmillState2V1.glb",
-    "source_review": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source-review.json",
+    "label": "CAMP BASTION I",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/CampFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/camp/source-review.json",
     "names": [
-      "Cabin",
-      "CabinRoof",
-      "CabinChimney",
-      "CabinFence"
+      "CampTent_0",
+      "CampTent_1",
+      "CampFence"
     ],
     "position": {
-      "x": -14.1,
+      "x": 24.2,
       "y": 7.1,
-      "z": -4.35
+      "z": 2.1
     },
     "yaw": 180,
     "scale": 1
