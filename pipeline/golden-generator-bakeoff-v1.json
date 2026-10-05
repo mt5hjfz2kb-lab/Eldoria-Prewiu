@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "status": "prepared_zero_spend",
+  "request_id": "valoria-golden-generator-bakeoff-v1",
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "exact_input_dir": "pipeline/exact-inputs/valoria-golden-generator-bakeoff-v1",
+  "input_status": "NOT_READY",
+  "execution_authorized": false,
+  "max_authorized_credits": 0,
+  "candidates": [
+    {
+      "id": "tripo-p1",
+      "vendor": "tripo",
+      "mode": "multiview_to_model",
+      "model_version": "P1-20260311",
+      "geometry_only": true,
+      "texture": false,
+      "pbr": false,
+      "face_limit": 20000,
+      "expected_credits": 40,
+      "official_pricing_checked": "2026-10-06"
+    },
+    {
+      "id": "meshy-7.1-2k",
+      "vendor": "meshy",
+      "mode": "multi-image-to-3d",
+      "ai_model": "meshy-7.1",
+      "geometry_resolution": "2k",
+      "should_texture": false,
+      "target_formats": [
+        "glb"
+      ],
+      "expected_credits": 25,
+      "official_pricing_checked": "2026-10-06"
+    }
+  ],
+  "scoring": {
+    "scale": [
+      0,
+      5
+    ],
+    "required": {
+      "geometry_silhouette": 3.5,
+      "architectural_identity": 3.5
+    },
+    "preferred_before_houdini": {
+      "geometry_silhouette": 4,
+      "architectural_identity": 4
+    },
+    "reject_if": [
+      "catastrophic visible topology defect",
+      "identity drift",
+      "does not materially outperform professional reconstruction v1"
+    ]
+  },
+  "downstream": {
+    "winner_route": "VALORIA HOUDINI GOLDEN INTEGRATION PILOT v1",
+    "unity_before_houdini": false,
+    "texture_before_houdini": false
+  },
+  "safety": {
+    "no_vendor_calls_in_preflight": true,
+    "no_spend_without_fresh_owner_approval": true,
+    "no_candidate_specific_blender_rescue_before_scoring": true,
+    "tripo_credits_currently_authorized": 0,
+    "meshy_credits_currently_authorized": 0
+  }
+}
