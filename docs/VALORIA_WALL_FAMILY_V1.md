@@ -75,4 +75,33 @@ Seven official cameras are mandatory. Required evidence:
 - explicit **TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH WALLS** comparison;
 - explicit conclusion that Walls improve defensive reading without stealing Bastion hierarchy.
 
-Current state: **FAMILY SPEC LOCKED / PLANNER NEXT / 0 TRIPO**.
+Current state: **PRODUCTION FAMILY PASS / CLOSED / SOURCE03 AUTHORITATIVE / 0 TRIPO**.
+## Result
+
+**PRODUCTION FAMILY PASS / CLOSED / SOURCE03 AUTHORITATIVE / 0 TRIPO.**
+
+Planner run **37312260323** / artifact **11345898190** — SUCCESS under `BLENDER_PROFESSIONAL_V1` with zero paid/Tripo credits.
+
+Source01 was correctly rejected at ART SOURCE for an overly generic rectangular-kit read and dominant brick-course material. Source02 materially improved the family with battered/chamfered terminal masses, structural foundation/shoulder/crown sections, grouped crenellation and lower-frequency stone, but was rejected because one authored element escaped the approved Wall envelope by ~0.196 m. Source03 preserves the Source02 visual design and corrects that hard-stop: every vertex is back inside its owning approved blockout envelope.
+
+Authoritative Source03: run **37315121461**, artifact **11348240013**, editable BLEND SHA-256 `0ac5ef48b55946d0820b8b064662f8d077060332044b077f2993d9444595f430`, GLB SHA-256 `22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b`. Source: **9,368 tris / 4,816 authored vertices / 6 semantic modules / 5 materials**, UV/normals/tangents PASS, nonmanifold edges 0.
+
+Cumulative Unity gate: run **37315821080**, runner **DESKTOP-R10PE55**, artifact **11347388530** — SUCCESS. Lower Gate + Bridge + Road + Stair + Rock/Terrain Source09 are retained identically. Only `WestPartialWall`, `WestWallTowerA/B`, `EastPartialWall`, `EastWallTowerA/B` change.
+
+All seven official matched cameras pass. Every protected family remains at **0 px displacement**. Wall retains ~**99.83%** of approved blockout width and ~**97.93%** of height, with maximum family-center delta ~**1.60 px** over the seven views. Against target annotations in source 3:2, West Wall width/height ratios are ~**0.980 / 1.084** with **5.43 px** center error; East Wall ~**1.008 / 1.181** with **13.73 px** center error.
+
+Direct integrated visual review is **VISUAL PASS**. The previous white technical wall slabs become authored warm-stone perimeter defense with real thickness, battered/chamfered end masses, structural seating, restrained caps and grouped mobile-readable crenellation. The perimeter reads more defensively without stealing focus from the larger Bastion or the central Lower Gate. Lower Gate and Rock/Terrain interfaces remain visually coherent without camera/composition compensation or adjacent-family movement.
+
+Unity import sanity: **9,368 triangles / 26,870 imported vertices / 6 renderers / 5 materials / 2 textures / 30 submesh draws**, mesh bytes **2,816,048**, texture bytes **5,594,192**; UV/normals/tangents present; colliders **0**; production scene opened/saved **false**. Focused PlayMode **5/5 PASS**. Wall remains below the 12k planning LOD0 triangle budget.
+
+TARGET vs APPROVED BLOCKOUT vs STRUCTURAL FRAME WITH WALLS: target calls for partial side walls subordinate to Bastion/Lower Gate; approved blockout had correct positions/occupancy but technical white slabs; Source03 preserves that composition while introducing real authored defensive architecture and material hierarchy. **Conclusion: Walls improve defensive reading without robbing Bastion hierarchy — PASS.**
+
+Formal evidence:
+- `docs/evidence/valoria-wall-family-v1/source-review.json`
+- `docs/evidence/valoria-wall-family-v1/production-sanity.json`
+- `docs/evidence/valoria-wall-family-v1/matched-camera-metrics.json`
+- `docs/evidence/valoria-wall-family-v1/target-blockout-structural-comparison.json`
+- `docs/evidence/valoria-wall-family-v1/integrated-visual-review.json`
+- `docs/evidence/valoria-wall-family-v1/checkpoint.json`
+
+Camera, target, global composition, platform, Bastion, Lower Gate, Bridge, Road, Stair, Rock/Terrain Source09 and gameplay remain unchanged. **Do not start Bastion or another family without explicit owner instruction.**
