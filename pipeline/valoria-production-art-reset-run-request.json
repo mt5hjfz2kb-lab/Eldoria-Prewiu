@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "vegetation-placement-source03-01",
+  "nonce": "vegetation-source03-water-shore01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Vegetation placement cumulative gate only. Reuse accepted Source03 modules at intentional subset of approved TreeMass positions; suppress unused vegetation placeholders to preserve negative space. Retain all closed structural families + Sawmill State2 + Camp. No water/shore yet. Zero Tripo.",
+  "scope": "Combined cumulative Vegetation Source03 + Water/Shore v1 gate. Preserve accepted vegetation placements and all retained closed families identically. Unity water surface is opaque, mobile-safe and subtly varied; irregular wet shore ribbons only. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING VEGETATION PLACEMENT MATCHED-CAMERA GATE",
+  "result": "PENDING WATER/SHORE + COMBINED MATCHED-CAMERA GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-vegetation-placement-v1-source03",
+  "artifact_name": "valoria-vegetation-water-shore-v1-combined",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -517,6 +517,132 @@
         },
         "yaw": 11,
         "scale": 1.04
+      }
+    ]
+  },
+  "water": {
+    "enabled": true,
+    "water_name": "Water",
+    "color": [
+      55,
+      104,
+      119
+    ],
+    "smoothness": 0.36,
+    "wave_amplitude": 0.022,
+    "grid": 16,
+    "shores": [
+      {
+        "name": "lower-city-contact",
+        "width": 0.72,
+        "color": [
+          58,
+          67,
+          59
+        ],
+        "points": [
+          {
+            "x": -34,
+            "y": -0.1,
+            "z": -22
+          },
+          {
+            "x": -25,
+            "y": -0.1,
+            "z": -24.1
+          },
+          {
+            "x": -15,
+            "y": -0.1,
+            "z": -25.2
+          },
+          {
+            "x": -7,
+            "y": -0.1,
+            "z": -27.1
+          },
+          {
+            "x": 1,
+            "y": -0.1,
+            "z": -28.2
+          },
+          {
+            "x": 10,
+            "y": -0.1,
+            "z": -27
+          },
+          {
+            "x": 20,
+            "y": -0.1,
+            "z": -25.1
+          },
+          {
+            "x": 30,
+            "y": -0.1,
+            "z": -23
+          },
+          {
+            "x": 39,
+            "y": -0.1,
+            "z": -21.2
+          }
+        ]
+      },
+      {
+        "name": "foreground-bank-contact",
+        "width": 0.82,
+        "color": [
+          62,
+          72,
+          63
+        ],
+        "points": [
+          {
+            "x": -40.3,
+            "y": -0.1,
+            "z": -35.6
+          },
+          {
+            "x": -29,
+            "y": -0.1,
+            "z": -35.2
+          },
+          {
+            "x": -19.4,
+            "y": -0.1,
+            "z": -35.4
+          },
+          {
+            "x": -12,
+            "y": -0.1,
+            "z": -34.8
+          },
+          {
+            "x": -6.3,
+            "y": -0.1,
+            "z": -34.5
+          },
+          {
+            "x": 2,
+            "y": -0.1,
+            "z": -36.1
+          },
+          {
+            "x": 10.1,
+            "y": -0.1,
+            "z": -38.5
+          },
+          {
+            "x": 20,
+            "y": -0.1,
+            "z": -42
+          },
+          {
+            "x": 30.4,
+            "y": -0.1,
+            "z": -46.4
+          }
+        ]
       }
     ]
   }
