@@ -11,19 +11,19 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "d01aa7e93e0ea849ab4f93fa36965ef83c0570b1f9a347ed3b0979a4a2b57740",
-  "export_sha": "efc50fe20564654fcf3ae75cf1c57aa627bb0da9c85845933376802910711f76",
+  "source_sha": "7e7f6719806cadfef7a223bc6ef664b820ab17bc66db32fe6b27486d4236fec3",
+  "export_sha": "abe163c09de3690fbeabf39f126663349f7e6f8e2565c0ce204f824a366ef026",
   "source": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.blend",
   "export": "art-source/valoria/production/sawmill-family-v1/state2/SawmillState2V1.glb",
   "geometry_metrics": {
-    "triangles": 3792,
-    "vertices": 1960,
-    "modules": 6,
-    "materials": 6,
+    "triangles": 4876,
+    "vertices": 2520,
+    "modules": 7,
+    "materials": 7,
     "bounds_world_blender": [
       [
         -17.524999618530273,
-        -6.355000019073486,
+        -7.494999885559082,
         7.110000133514404
       ],
       [
@@ -44,7 +44,8 @@
     "timber",
     "timber_dark",
     "plank",
-    "roof"
+    "roof",
+    "metal"
   ],
   "texture_sets": {
     "masonry": [
