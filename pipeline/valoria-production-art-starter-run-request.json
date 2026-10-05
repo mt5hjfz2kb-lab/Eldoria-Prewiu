@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-family-v1-source-06",
-  "nonce": "rock-terrain-source-06-staggered-diagonal-cliffs",
+  "nonce": "rock-terrain-source-06-staggered-diagonal-cliffs-authoritative",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source06 strict ART SOURCE retry: tangentially staggered inset rings create large diagonal geological facets with no vertical grid/pillars; exact top/bottom silhouette and 3/7/11 interfaces; no micro-rock, zero Tripo; Unity blocked pending direct review."
+  "scope": "AUTHORITATIVE Source06 after latest spec commit: continuous cliff wall, tangentially staggered intermediate rings, broad diagonal/vertical geological facets, shoulders embedded, exact top/bottom silhouette and 3/7/11 anchors; zero Tripo; Unity blocked pending direct ART SOURCE review."
 }
