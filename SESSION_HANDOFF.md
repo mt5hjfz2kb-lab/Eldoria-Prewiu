@@ -1,3 +1,15 @@
+## 2026-10-05 — ROCK / TERRAIN FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
+- Source08 is authoritative **ART SOURCE PASS** after strict rejection of Source01–07 for banding/procedural/pillar/shoulder-proxy reads.
+- Source08: run **37308344056**, artifact **11344638101**, BLEND SHA `559c3247...`, GLB SHA `f9e66881...`; **1,909 tris / 5 modules / 7 materials**; UV/normals/tangents PASS; 0 Tripo.
+- Unity cumulative gate retained accepted Lower Gate + Bridge + Road + Stair identically and changed only Rock/Terrain: run **37309039558**, job **111759642435**, runner **DESKTOP-R10PE55**, artifact **11344907445** — SUCCESS.
+- Matched-camera: all 7 official views PASS; **63 protected non-terrain elements/view at 0 px delta**; Rock/Terrain macro envelope remains effectively 100% of approved blockout width/height with <0.0001 px center drift.
+- Source08 absorbs `CliffShoulder_0..6` into one continuous geological mass instead of reproducing greybox shoulder proxies.
+- Direct visual quality bar: **PASS / REAL QUALITY JUMP**. Plateau and upper rise now read as authored faceted rock + earth rather than flat greybox support geometry while composition is unchanged.
+- Unity import: **1,909 tris / 5,298 verts / 5 renderers / 7 materials / 17 submesh draws**, no texture payload, UV/normals/tangents present; colliders 0; focused PlayMode **5/5 PASS**.
+- TARGET vs BLOCKOUT vs STRUCTURAL comparison: target gap is materially reduced; remaining non-final areas are Walls/Bastion/Cabin/Camp/Vegetation/Props/Water-Shore/Background and remain intentionally untouched.
+- Camera, target, composition, Bastion, Walls, BackgroundTerrain, Lower Gate, Bridge, Road, Stair and gameplay unchanged. Result: **PRODUCTION FAMILY PASS**.
+- **No Walls, Bastion or next family started.**
+
 ## 2026-10-05 — STAIR FAMILY v1 — PRODUCTION FAMILY PASS / CLOSED
 - Planner: run **37301748302**, artifact **11341384021** — SUCCESS.
 - Source01: **ART SOURCE PASS**, run **37301752932**, artifact **11340838935**, BLEND SHA `84b1e5f4...`, GLB SHA `442fe2d2...`; **1,360 tris / 3 modules / 2 materials**; 0 Tripo.
