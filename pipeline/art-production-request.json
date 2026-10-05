@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-stair-family-v1",
   "asset_or_sector": "Stair Family v1 only",
   "profile": "environment_new_geometry",
@@ -14,7 +14,7 @@
   "validation": {
     "camera": "approved reset20/35/24, all7 views",
     "source_gate": "required before Unity",
-    "scope": "replace exactly Stair_00..Stair_11 + StairCheekLeft/Right; retain accepted Lower Gate + Bridge + Road; Terrain/Ground/Bastion/gameplay intact"
+    "scope": "Stair closed; retain Lower Gate + Bridge + Road + Stair. Terrain/Ground/Bastion/Walls/gameplay remain locked."
   },
-  "notes": "Stair Family v1 source-authoring stage; zero Tripo."
+  "notes": "Stair Family v1 closed PRODUCTION FAMILY PASS; no next family authorized. Zero Tripo."
 }
