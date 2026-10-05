@@ -11,15 +11,15 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "8675a113d2a0b2225dc081ebc5d1d1fc071bd452e3a73703cc43951fdb468aa3",
-  "export_sha": "9cdcf53f32deb58b6a42042ba6764201eb2a5dbe8b6c0e02191d4ecfacff53dd",
+  "source_sha": "d9ecdad490086fa8ba25d4e516bc450e90435eed34693529d88243aed9e341ee",
+  "export_sha": "182cfe2fbcf200c0f357a6df41c39e79e5dc99c02188216420abe4662078c1b3",
   "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend",
   "export": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 27698,
-    "vertices": 16582,
+    "triangles": 22690,
+    "vertices": 11727,
     "modules": 9,
-    "materials": 10,
+    "materials": 9,
     "bounds_world_blender": [
       [
         -9.836312294006348,
@@ -35,7 +35,7 @@
     "uv": true,
     "normals": true,
     "tangents_exported": true,
-    "nonmanifold_edges": 4065,
+    "nonmanifold_edges": 0,
     "nonmanifold_explanation": "Open cloth border and arch pieces mating at internal interfaces; no collision source"
   },
   "material_families": [
@@ -47,8 +47,7 @@
     "banner_blue",
     "bastion_hero_masonry",
     "bastion_metal",
-    "bastion_timber",
-    "bastion_relief"
+    "bastion_timber"
   ],
   "texture_sets": {
     "masonry": [
@@ -57,6 +56,16 @@
       "albedo+normal"
     ],
     "stone_grain": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "hero_masonry": [
+      512,
+      512,
+      "albedo+normal"
+    ],
+    "timber": [
       512,
       512,
       "albedo+normal"
