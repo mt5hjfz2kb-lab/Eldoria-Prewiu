@@ -47,10 +47,10 @@
   "collider_state": "No source collider; isolated Unity capturer rejects all colliders.",
   "import_settings": "GLB metric scale1; glTFast isolated ArtTests import; explicit Unity placement [3.5,7.08,-18], yaw180.",
   "LOD_strategy": {
-    "LOD0": "1,944 triangles — below 3,000-triangle planning budget.",
-    "LOD1": "Deferred until integrated screen-space error review.",
-    "LOD2": "Deferred until mobile screen-space review."
+    "LOD0": "1,944 triangles; under 3,000-triangle preproduction budget.",
+    "LOD1": "Future 40–60% only if matched-camera/mobile screen-space error warrants it.",
+    "LOD2": "Future 15–25% only after mobile validation; road surface may remain material-driven."
   },
-  "mobile_suitability": "Source paving scale and value hierarchy pass isolated approved-camera review; integrated mobile landscape/portrait still required.",
+  "mobile_suitability": "Broad paving and restrained edges selected for landscape/portrait readability; integrated Unity review pending.",
   "tripo_credits_spent": 0
 }
