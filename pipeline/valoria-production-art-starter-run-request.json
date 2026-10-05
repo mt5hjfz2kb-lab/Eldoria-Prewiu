@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-wall-family-v1-source-02",
-  "nonce": "wall-source-02-battered-chamfered-reviewviews-retry",
+  "request_id": "valoria-wall-family-v1-source-03",
+  "nonce": "wall-source-03-exact-envelope-fix",
   "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/wall-family-v1",
   "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Source02 technical retry after preview schema error only. Geometry/material intent unchanged: battered/chamfered bodies, structural seating, grouped crenellation, lower-frequency stone; same approved Wall envelopes; zero Tripo; Unity blocked pending ART SOURCE review."
+  "scope": "Source03 exact-envelope correction after Source02 visual improvement / envelope hard-stop. Preserve Source02 design/materials; clamp all Wall geometry to owning approved blockout envelopes. 32 source vertices corrected. Zero Tripo. Unity blocked pending ART SOURCE PASS."
 }
