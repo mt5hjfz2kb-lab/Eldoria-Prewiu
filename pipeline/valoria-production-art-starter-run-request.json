@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-bridge-family-v1-source-01",
-  "nonce": "bridge-source-01-approved-blockout-envelope",
+  "request_id": "valoria-bridge-family-v1-source-02",
+  "nonce": "bridge-source-02-continuous-deck-segmented-arch",
   "mesh_spec": "docs/evidence/valoria-bridge-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/bridge-family-v1",
   "evidence_dir": "docs/evidence/valoria-bridge-family-v1/source",
   "credits": 0,
-  "scope": "Bridge only; exact approved blockout envelope; Lower Gate/camera/composition/gameplay immutable; zero Tripo"
+  "scope": "Bridge source02 only; fixes source01 deck seam/support form; approved blockout envelope unchanged; zero Tripo"
 }
