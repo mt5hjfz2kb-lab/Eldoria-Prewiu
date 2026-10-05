@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "mode": "preproduction_mesh_scene",
-  "nonce": "valoria-art-production-reset-v1-greybox-20261005",
+  "nonce": "valoria-art-production-reset-v1-greybox-20261005-compile-recovery",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
   "scope": "ISOLATED PREPRODUCTION ONLY; no canonical scene, assets or gameplay imported",

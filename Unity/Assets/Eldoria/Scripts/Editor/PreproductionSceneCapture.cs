@@ -17,12 +17,12 @@ namespace Eldoria.EditorTools
         [Serializable] public class Request { public string mode; public string input; public View[] views; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; }
-        [Serializable] public class Evidence { public string engine=Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
         {
-            var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../.."));
+            var root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../.."));
             var request=JsonUtility.FromJson<Request>(File.ReadAllText(Path.Combine(root,"pipeline/valoria-production-art-reset-run-request.json")));
             if(request.mode!="preproduction_mesh_scene") throw new Exception("Wrong preproduction mode");
             var input=JsonUtility.FromJson<Input>(File.ReadAllText(Path.Combine(root,request.input)));

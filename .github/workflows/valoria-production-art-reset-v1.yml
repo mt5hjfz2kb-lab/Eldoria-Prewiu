@@ -76,13 +76,24 @@ jobs:
           if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Reset tests timed out'}
           if($p.ExitCode -ne 0){Get-Content $log -Tail 120;throw "Reset tests failed $($p.ExitCode)"}
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.mode.outputs.preproduction != 'true'
         with:
           name: valoria-production-art-reset-v1
           path: |
             Unity/ValoriaProductionArtResetV1Captures/*
             art-source/valoria/production/starter-family-v2/*
             Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/*.glb
+            ${{ runner.temp }}/ProductionArtReset-PlayMode.*
+            ${{ runner.temp }}/ValoriaProductionArtResetV1.log
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Upload preproduction evidence only
+        uses: actions/upload-artifact@v4
+        if: always() && steps.mode.outputs.preproduction == 'true'
+        with:
+          name: valoria-art-production-reset-v1-preproduction
+          path: |
+            Unity/ValoriaProductionArtResetV1Captures/*
             ${{ runner.temp }}/ProductionArtReset-PlayMode.*
             ${{ runner.temp }}/ValoriaProductionArtResetV1.log
           if-no-files-found: warn
