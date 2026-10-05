@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "request_id": "valoria-golden-lookdev-slice-v1",
-  "asset_or_sector": "Valoria Golden Lookdev Slice v1 — Lower Gate edge + rock/ground/water/vegetation",
-  "profile": "environment_surface",
-  "geometry_gap_proven": false,
-  "geometry_gap_evidence": "docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md#geometry-policy",
+  "request_id": "valoria-premium-hero-contact-uplift-v1",
+  "asset_or_sector": "Valoria Premium Hero Test Zone v1 — Bridge / Lower Gate / Road local ground-rock contact uplift",
+  "profile": "environment_new_geometry",
+  "geometry_gap_proven": true,
+  "geometry_gap_evidence": "docs/VALORIA_PREMIUM_TARGET_GAP_REVIEW_VISUAL_UPLIFT_V1.md#iteration-06--visual-fail--unity-presentation-ceiling-proven",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -14,9 +14,9 @@
     "blender_material_consolidation": true
   },
   "validation": {
-    "camera": "approved reset orthographic yaw20/pitch35/span48/distance110 + official variants",
-    "source_gate": "Golden target translation + authored surface recipe before broad scale-out",
-    "final_gate": "GOLDEN LOOKDEV PASS only if materials/lighting/contact/environment integration/premium perception >=4/5 with mobile/gameplay/performance sanity PASS"
+    "camera": "locked reset orthographic yaw20/pitch35/span48/distance110 + official variants",
+    "source_gate": "BLENDER_PROFESSIONAL_V1 isolated review must prove non-flat terrain/contact read without redesigning accepted families",
+    "final_gate": "Hero zone central visual metrics >=4/5 in Reference vs Before vs After; mobile/gameplay/performance sanity PASS"
   },
-  "notes": "Surface/lookdev proof only. Unity materials/blending/lighting first; Blender only for evidence-proven geometry-limited defects. No Props+Background, no new family, no Tripo."
+  "notes": "Local evidence-proven geometry uplift only. Closed Bridge/Lower Gate/Road/Rock-Terrain assets remain immutable and retained. No Props+Background, no new family rollout, no Tripo."
 }
