@@ -1,3 +1,7 @@
+
+## VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1 — PASS / CLOSED (2026-10-05)
+
+Controlled uplift from Structural Quality Bar Review is complete. Rock/Terrain Source09 remains the base authority; only 11 UpperTerraceCliff band-3 material assignments changed from rock_shadow to existing rock_base. No geometry/silhouette/camera/platform/composition/gameplay or other-family authoring changed. Source run 37331798714 / artifact 11354318939; authoritative cumulative AFTER run 37333453008 / artifact 11355212258 SUCCESS; focused gameplay PASS; visual 16:9/mobile/3:2 PASS. The continuous dark Bastion-contact seam no longer reads as a single technical separator and no bright replacement band was introduced. Tripo 0. Workstream released; do not open Cabin/Sawmill + Camp without explicit owner instruction.
 ## 2026-10-05 — VALORIA STRUCTURAL QUALITY BAR REVIEW v1 — PASS WITH CONTROLLED UPLIFT RECOMMENDATIONS / CLOSED
 - Frame-level visual review only; no closed family was modified/reopened, no secondary family started, Tripo 0.
 - Review base HEAD: `2a38dc9d47ce68b0dacf7c60b52fc898cfa39b9b`. Latest integrated frame: Bastion Source08 cumulative Unity run **37328467482**, artifact **11352609605**. Approved blockout: run **37275659322**, artifact **11329019907**.
