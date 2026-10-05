@@ -22641,6 +22641,34 @@
     "curtain/base values are pulled closer to accepted Walls/Lower Gate so the Bastion no longer reads as a pasted white band",
     "trim remains the brightest stone family but no longer clips toward white at matched gameplay exposure",
     "timber scaffold is darkened to remain legible at official camera distance",
-    "no camera/target/composition/platform/adjacent-family change; zero Tripo"
-  ]
+    "no camera/target/composition/platform/adjacent-family change; zero Tripo",
+    "authoring now applies source-specific texture_tints so the Unity-consumed GLB changes materially; previous Source08 preflight run was intentionally not integrated because its export SHA matched Source07"
+  ],
+  "texture_tints": {
+    "masonry": [
+      0.61,
+      0.55,
+      0.46
+    ],
+    "stone_grain": [
+      0.64,
+      0.57,
+      0.48
+    ],
+    "hero_masonry": [
+      0.78,
+      0.69,
+      0.56
+    ],
+    "timber": [
+      0.38,
+      0.21,
+      0.1
+    ],
+    "paving": [
+      0.66,
+      0.6,
+      0.51
+    ]
+  }
 }
