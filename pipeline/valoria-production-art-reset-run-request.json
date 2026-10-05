@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "rock-terrain-source03-cumulative-gate-bridge-road-stair-matched-review-01",
+  "nonce": "rock-terrain-source08-cumulative-lower-gate-bridge-road-stair-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Rock/Terrain source03 rejected at ART SOURCE; Unity gate blocked pending source04.",
+  "scope": "Rock/Terrain Source08 cumulative Unity matched-camera gate: retain accepted Lower Gate + Bridge + Road + Stair identically; replace/suppress only ForegroundBank/MainPlatform/PlayableGround/UpperTerraceCliff/UpperTerraceGround/CliffShoulder_0..6; BackgroundTerrain/BridgeSupport/Bastion/Walls/gameplay untouched.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -242,14 +242,7 @@
       "MainPlatform",
       "PlayableGround",
       "UpperTerraceCliff",
-      "UpperTerraceGround",
-      "CliffShoulder_0",
-      "CliffShoulder_1",
-      "CliffShoulder_2",
-      "CliffShoulder_3",
-      "CliffShoulder_4",
-      "CliffShoulder_5",
-      "CliffShoulder_6"
+      "UpperTerraceGround"
     ],
     "position": {
       "x": 5,
