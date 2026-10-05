@@ -39,9 +39,9 @@ namespace Eldoria.EditorTools
                 if(center.z<treatment.hero_min_z||center.z>treatment.hero_max_z||center.x<treatment.hero_min_x||center.x>treatment.hero_max_x) continue;
                 string n=renderer.name.ToLowerInvariant();
                 SurfaceSet set=null;
-                if(n.StartsWith("lowergate_")||n.StartsWith("gatefoundation_")||n=="bridge_deck"||n=="bridge_parapetl"||n=="bridge_parapetr"||n=="bridge_support"||n=="gatethreshold") set=stone;
-                else if(n.StartsWith("rockcontact_")||n.StartsWith("shorerock_")||n=="foregroundbank") set=rock;
-                else if(n.StartsWith("heroground_")||n.StartsWith("heroroadverge_")||n=="gatewestberm"||n=="gateeastberm"||n=="roadwestverge"||n=="roadeastverge"||n=="bridgewestshoulder"||n=="bridgeeastshoulder"||n=="foregroundroad"||n=="mainroad") set=ground;
+                if(n.StartsWith("lowergate_")||n.StartsWith("gatefoundation_")||n.Contains("foundationcontact")||n=="bridge_deck"||n=="bridge_parapetl"||n=="bridge_parapetr"||n=="bridge_support"||n=="gatethreshold") set=stone;
+                else if(n.StartsWith("rockcontact_")||n.StartsWith("shorerock_")||n.StartsWith("rock_")||n=="foregroundbank") set=rock;
+                else if(n.StartsWith("heroground_")||n.StartsWith("heroroadverge_")||n.Contains("_berm")||n.Contains("_vergebreak")||n.Contains("_shoulder")||n=="gatewestberm"||n=="gateeastberm"||n=="roadwestverge"||n=="roadeastverge"||n=="bridgewestshoulder"||n=="bridgeeastshoulder"||n=="foregroundroad"||n=="mainroad") set=ground;
                 else if(n.StartsWith("valoria shore")) set=shore;
                 else if(n.StartsWith("tree_")) set=vegetation;
                 if(set==null) continue;
