@@ -326,7 +326,7 @@ namespace Eldoria.EditorTools
                     if(m.HasProperty("_Smoothness"))
                     {
                         string lower=m.name.ToLowerInvariant();
-                        float target=lower.Contains("metal")||lower.Contains("iron")?.34f:treatment.stone_smoothness;
+                        float target=(lower.Contains("metal")||lower.Contains("iron")) ? .34f:treatment.stone_smoothness;
                         m.SetFloat("_Smoothness",Mathf.Clamp01(Mathf.Max(m.GetFloat("_Smoothness"),target)));
                     }
                     m.enableInstancing=true;dst[i]=m;changed=true;
