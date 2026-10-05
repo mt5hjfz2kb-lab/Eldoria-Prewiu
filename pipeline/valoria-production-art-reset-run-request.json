@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "valoria-golden-local-shell-integration01",
+  "nonce": "valoria-golden-local-shell-integration02",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 local geometry escalation integration01. AFTER-only reviewed GoldenLocalVisualShellV1 supersedes PremiumHeroContactUpliftV3 and three local vegetation instances inside the bounded Golden Slice. Reuse persisted Golden Surface V2, shallow/deep water, stable lighting and official camera. Preserve gameplay, hotspots, macro positions, global platform and all closed families. Zero Tripo.",
+  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 local geometry escalation integration02. AFTER-only reviewed GoldenLocalVisualShellV2 replaces failed V1 shell and supersedes only the same three local vegetation instances. No broad cliff/ground sheets. Reuse persisted Golden Surface V2, shallow/deep water, stable lighting and official camera. Preserve gameplay, hotspots, macro positions, global platform and all closed families. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -127,9 +127,9 @@
       }
     }
   ],
-  "result": "PENDING GOLDEN LOCAL SHELL INTEGRATION01 VISUAL GATE",
+  "result": "PENDING GOLDEN LOCAL SHELL INTEGRATION02 VISUAL GATE",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-golden-lookdev-slice-v1-local-shell-integration01",
+  "artifact_name": "valoria-golden-lookdev-slice-v1-local-shell-integration02",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -329,9 +329,9 @@
       "scale": 1
     },
     {
-      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/GoldenLocalVisualShellV1.glb",
-      "source_glb": "art-source/valoria/lookdev/golden-slice-v1/geometry-v1/GoldenLocalVisualShellV1.glb",
-      "source_review": "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v1/source-review.json",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/GoldenLocalVisualShellV2.glb",
+      "source_glb": "art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.glb",
+      "source_review": "docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-review.json",
       "names": [],
       "position": {
         "x": 4,
