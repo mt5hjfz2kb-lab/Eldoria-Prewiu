@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-09",
-  "nonce": "rock-terrain-source-09-darker-compressed-facet-palette-authoritative",
-  "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
-  "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
+  "request_id": "valoria-wall-family-v1-source-01",
+  "nonce": "wall-source-01-authored-defensive-perimeter",
+  "mesh_spec": "docs/evidence/valoria-wall-family-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/wall-family-v1",
+  "evidence_dir": "docs/evidence/valoria-wall-family-v1/source",
   "credits": 0,
-  "scope": "Source09 ART SOURCE PASS and final Unity VISUAL PASS; Rock/Terrain closed PRODUCTION FAMILY PASS; parked."
+  "scope": "Wall Family v1 Source01 only. Preserve approved Wall envelopes; authored crenellation rhythm, real thickness and structural seating; zero Tripo; Unity blocked pending direct ART SOURCE review."
 }
