@@ -1,10 +1,10 @@
 {
   "enabled": true,
   "mode": "authored_family_instances",
-  "nonce": "vegetation-source03-water-shore02",
+  "nonce": "vegetation-source03-water-shore02-final-instancing",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Combined cumulative Vegetation Source03 + Water/Shore02 gate. Same accepted vegetation placement and shoreline geometry as iteration01; only shared opaque water material gains low-frequency albedo/normal/specular variation. No composition/camera/gameplay changes. Zero Tripo.",
+  "scope": "Final certification of accepted Vegetation Source03 placement + Water/Shore02. Identical visual composition; reusable vegetation shared materials explicitly enable GPU instancing in the cumulative gate. Zero Tripo.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -112,9 +112,9 @@
       }
     }
   ],
-  "result": "PENDING WATER/SHORE02 + COMBINED MATCHED-CAMERA GATE",
+  "result": "PENDING FINAL COMBINED CERTIFICATION",
   "source_glb": "art-source/valoria/production/vegetation-family-v1/representative/VegetationRepresentativeFamilyV1.glb",
-  "artifact_name": "valoria-vegetation-water-shore-v1-water02",
+  "artifact_name": "valoria-vegetation-water-shore-v1-final",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
