@@ -11,8 +11,8 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b",
-  "export_sha": "f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed",
+  "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+  "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
   "source": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.blend",
   "export": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
   "geometry_metrics": {
