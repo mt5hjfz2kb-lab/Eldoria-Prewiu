@@ -1,73 +1,45 @@
 {
   "verdict": "MATCHED-CAMERA TECH PASS",
   "reviewed_at": "2026-10-05",
-  "unity_run": 37315821080,
-  "unity_artifact_id": 11347388530,
-  "source_iteration": "source03",
-  "source_export_sha": "22495d62625c7c3c05c4a61a436eeb9e0bbbb68a08c5079b934479885023049b",
-  "official_views": [
-    {
-      "view": "UNITY-source-3x2",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983057195,
-      "wall_height_ratio_vs_blockout": 0.9793438608,
-      "wall_center_delta_px": 1.45733
+  "methodology": "Unity evidence.json BEFORE/AFTER projected renderer bounds at the same seven official cameras. Protected set excludes only the six Wall placeholders/replacement renderers.",
+  "protected_renderers_per_view": 62,
+  "max_protected_bbox_delta_px": 0,
+  "wall_union_metrics": {
+    "UNITY-source-3x2": {
+      "width_ratio": 0.9983057195,
+      "height_ratio": 0.9793438608,
+      "center_delta_px": 1.45733
     },
-    {
-      "view": "UNITY-16x9",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983057194,
-      "wall_height_ratio_vs_blockout": 0.9793438608,
-      "wall_center_delta_px": 1.45733
+    "UNITY-16x9": {
+      "width_ratio": 0.9983057194,
+      "height_ratio": 0.9793438608,
+      "center_delta_px": 1.45733
     },
-    {
-      "view": "UNITY-mobile-landscape",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983056922,
-      "wall_height_ratio_vs_blockout": 0.9793439448,
-      "wall_center_delta_px": 1.02472
+    "UNITY-mobile-landscape": {
+      "width_ratio": 0.9983056922,
+      "height_ratio": 0.9793439448,
+      "center_delta_px": 1.02472
     },
-    {
-      "view": "UNITY-portrait-home",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983058066,
-      "wall_height_ratio_vs_blockout": 0.979344492,
-      "wall_center_delta_px": 1.20116
+    "UNITY-portrait-home": {
+      "width_ratio": 0.9983058066,
+      "height_ratio": 0.979344492,
+      "center_delta_px": 1.20116
     },
-    {
-      "view": "UNITY-portrait-left",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983057569,
-      "wall_height_ratio_vs_blockout": 0.9793444052,
-      "wall_center_delta_px": 1.60153
+    "UNITY-portrait-left": {
+      "width_ratio": 0.9983057569,
+      "height_ratio": 0.9793444052,
+      "center_delta_px": 1.60153
     },
-    {
-      "view": "UNITY-portrait-right",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983057661,
-      "wall_height_ratio_vs_blockout": 0.9793444052,
-      "wall_center_delta_px": 1.60153
+    "UNITY-portrait-right": {
+      "width_ratio": 0.9983057661,
+      "height_ratio": 0.9793444052,
+      "center_delta_px": 1.60153
     },
-    {
-      "view": "UNITY-portrait-entry",
-      "protected_max_delta_px": 0,
-      "wall_width_ratio_vs_blockout": 0.9983057539,
-      "wall_height_ratio_vs_blockout": 0.9793444038,
-      "wall_center_delta_px": 1.60153
+    "UNITY-portrait-entry": {
+      "width_ratio": 0.9983057539,
+      "height_ratio": 0.9793444038,
+      "center_delta_px": 1.60153
     }
-  ],
-  "protected_families": [
-    "Lower Gate",
-    "Bridge",
-    "Road",
-    "Stair",
-    "Rock/Terrain Source09",
-    "Bastion",
-    "camera",
-    "target",
-    "composition",
-    "platform",
-    "gameplay"
-  ],
-  "result": "All seven official views preserve every protected projected bound at exactly 0 px. Wall replacement stays inside the approved screen-space envelope with no camera compensation."
+  },
+  "interpretation": "Wall remains inside the approved blockout envelope. The small ~2.1% height reduction is deliberate interior taper/crown articulation, not relocation or envelope expansion. All closed-family/protected renderers remain exactly stationary at 0 px delta."
 }
