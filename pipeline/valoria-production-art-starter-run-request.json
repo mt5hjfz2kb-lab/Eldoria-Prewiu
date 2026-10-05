@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_mesh_family",
   "request_id": "valoria-rock-terrain-bastion-contact-uplift-v1",
   "nonce": "source09-contact-uplift-material-only-01",
@@ -7,5 +7,6 @@
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Controlled uplift only. Source09 geometry locked; exactly 11 UpperTerraceCliff band-3 material assignments change rock_shadow -> rock_base to remove Bastion contact seam. No other terrain/family/camera/composition/platform/gameplay change. Zero Tripo."
+  "scope": "PARKED. Rock/Terrain Bastion contact uplift PASS/CLOSED. Source09 controlled material correction authoritative; no rerun without explicit owner instruction. Zero Tripo.",
+  "result": "PASS / CLOSED"
 }
