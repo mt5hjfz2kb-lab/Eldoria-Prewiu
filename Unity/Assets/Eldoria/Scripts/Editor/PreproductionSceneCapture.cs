@@ -24,7 +24,7 @@ namespace Eldoria.EditorTools
         [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; public WaterTreatment water; public PremiumTreatment premium; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; public bool premium_uplift; public bool shadows_enabled; public bool fog_enabled; public int premium_material_renderers; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; public bool premium_uplift; public bool shadows_enabled; public bool fog_enabled; public int premium_material_renderers; public int premium_ground_patches; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
@@ -302,9 +302,12 @@ namespace Eldoria.EditorTools
             foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
                 if(!renderer.enabled||!renderer.gameObject.activeInHierarchy)continue;
-                renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
+                var bounds=renderer.bounds;
+                string rendererName=renderer.name.ToLowerInvariant();
+                bool giantCaster=bounds.size.x>18f||bounds.size.z>18f||rendererName.Contains("ground")||rendererName.Contains("platform")||rendererName.Contains("cliff")||rendererName.Contains("water")||rendererName.Contains("shore");
+                renderer.shadowCastingMode=giantCaster?UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;
                 renderer.receiveShadows=true;
-                var center=renderer.bounds.center;
+                var center=bounds.center;
                 if(center.z<treatment.hero_min_z||center.z>treatment.hero_max_z||center.x<treatment.hero_min_x||center.x>treatment.hero_max_x)continue;
                 var src=renderer.sharedMaterials;if(src==null||src.Length==0)continue;
                 var dst=new Material[src.Length];bool changed=false;
@@ -333,7 +336,45 @@ namespace Eldoria.EditorTools
                 }
                 if(changed){renderer.sharedMaterials=dst;evidence.premium_material_renderers++;}
             }
+            var fill=new GameObject("Premium cool sky fill").AddComponent<Light>();
+            fill.type=LightType.Directional;fill.intensity=.16f;fill.color=new Color(.68f,.79f,.88f);fill.transform.rotation=Quaternion.Euler(58f,148f,0f);fill.shadows=LightShadows.None;
+
+            CreatePremiumGroundPatch("Gate west earth contact",new[]{
+                new Vector3(-8.6f,7.115f,-29.0f),new Vector3(-1.2f,7.115f,-27.5f),new Vector3(-.8f,7.115f,-19.2f),
+                new Vector3(-3.2f,7.115f,-13.0f),new Vector3(-10.2f,7.115f,-11.2f),new Vector3(-12.5f,7.115f,-20.6f)
+            },new Color(.31f,.34f,.22f),.06f,evidence);
+            CreatePremiumGroundPatch("Gate east earth contact",new[]{
+                new Vector3(8.1f,7.115f,-27.8f),new Vector3(17.8f,7.115f,-25.0f),new Vector3(19.1f,7.115f,-15.2f),
+                new Vector3(15.4f,7.115f,-10.1f),new Vector3(8.0f,7.115f,-12.7f),new Vector3(7.2f,7.115f,-20.7f)
+            },new Color(.34f,.35f,.23f),.055f,evidence);
+            CreatePremiumGroundPatch("Road west verge",new[]{
+                new Vector3(-.1f,7.12f,-17.7f),new Vector3(2.0f,7.12f,-17.0f),new Vector3(1.6f,7.12f,-7.8f),
+                new Vector3(-1.4f,7.12f,-5.8f),new Vector3(-3.3f,7.12f,-10.5f)
+            },new Color(.29f,.32f,.20f),.05f,evidence);
+            CreatePremiumGroundPatch("Road east verge",new[]{
+                new Vector3(5.2f,7.12f,-17.1f),new Vector3(8.0f,7.12f,-16.2f),new Vector3(9.6f,7.12f,-8.1f),
+                new Vector3(7.8f,7.12f,-5.7f),new Vector3(5.4f,7.12f,-7.4f)
+            },new Color(.32f,.34f,.21f),.05f,evidence);
+            CreatePremiumGroundPatch("Gate threshold soil break",new[]{
+                new Vector3(-.4f,7.118f,-25.4f),new Vector3(2.0f,7.118f,-27.2f),new Vector3(7.8f,7.118f,-26.3f),
+                new Vector3(9.1f,7.118f,-23.2f),new Vector3(6.9f,7.118f,-21.1f),new Vector3(1.2f,7.118f,-21.7f)
+            },new Color(.39f,.35f,.24f),.075f,evidence);
+
             evidence.premium_uplift=true;evidence.shadows_enabled=true;evidence.fog_enabled=RenderSettings.fog;
+        }
+
+        static void CreatePremiumGroundPatch(string name,Vector3[] points,Color color,float smoothness,Evidence evidence)
+        {
+            if(points==null||points.Length<3)return;
+            var go=new GameObject("Premium ground blend · "+name);
+            var mesh=new Mesh{name=name+" mesh"};var tris=new int[(points.Length-2)*3];
+            for(int i=0;i<points.Length-2;i++){tris[i*3]=0;tris[i*3+1]=i+1;tris[i*3+2]=i+2;}
+            mesh.vertices=points;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            var rr=go.AddComponent<MeshRenderer>();rr.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;rr.receiveShadows=true;
+            var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name+" material"};
+            mat.SetColor("_BaseColor",color);mat.SetFloat("_Smoothness",smoothness);mat.SetFloat("_Metallic",0f);mat.enableInstancing=true;
+            rr.sharedMaterial=mat;evidence.premium_ground_patches++;
         }
 
         static Transform FindNamed(Transform root,string name)
