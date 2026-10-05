@@ -1,0 +1,33 @@
+{
+  "verdict": "ART SOURCE PASS",
+  "reviewed_at": "2026-10-05",
+  "source_iteration": "source09",
+  "source_run": 37310029846,
+  "artifact_id": 11345358292,
+  "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+  "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
+  "tech_pass": true,
+  "geometry": {
+    "triangles": 1909,
+    "vertices": 3516,
+    "modules": 5,
+    "materials": 7,
+    "uv": true,
+    "normals": true,
+    "tangents": true
+  },
+  "change_from_source08": "MATERIAL ONLY — Source08 geometry and macro silhouette/interfaces are locked unchanged. Rock palette darkened/warmed, facet contrast compressed, earth values reduced to avoid integrated washout.",
+  "hard_questions": {
+    "greybox_reduction": "PASS — continuous geological mass remains intact and darker values strengthen the non-greybox read.",
+    "rock_rhythm": "PASS — geometry unchanged from Source08; broad diagonal/recessed facets remain the dominant rhythm.",
+    "silhouette": "PASS — Source09 is material-only; exact Source08 macro geometry retained.",
+    "depth_without_noise": "PASS — darker shadow/base values improve depth hierarchy without adding geometry or micro-noise.",
+    "authored_not_procedural": "PASS — continuous mass remains; palette variation is compressed rather than patterned.",
+    "mobile_scale": "PASS — contrast now supports the same large forms at small screen sizes instead of washing them into pale planes.",
+    "architecture_integration": "AUTHORIZED FOR UNITY — darker terrain is more subordinate to accepted civic architecture.",
+    "material_difference": "PASS — rock/earth/paving separation is stronger than Source08.",
+    "real_quality_jump": "PASS — Source09 preserves Source08 structural jump and fixes its integrated material washout."
+  },
+  "unity_gate": "AUTHORIZED — rerun cumulative seven-camera A/B with exact Source09 GLB; retain Lower Gate + Bridge + Road + Stair identically; Rock/Terrain only changes in material relative to Source08 geometry.",
+  "tripo_credits": 0
+}
