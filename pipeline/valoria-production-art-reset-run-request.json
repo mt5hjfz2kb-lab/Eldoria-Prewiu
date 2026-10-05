@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "bridge-source03-cumulative-lower-gate-matched-review-02",
+  "nonce": "road-source03-cumulative-lower-gate-bridge-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bridge cumulative Unity gate passed; request parked after PRODUCTION FAMILY PASS",
+  "scope": "Road-only replacement with accepted Lower Gate + Bridge retained identically BEFORE/AFTER; Stair/Terrain/Ground/Bastion/camera/gameplay immutable; no runtime promotion",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -113,8 +113,8 @@
     }
   ],
   "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
-  "artifact_name": "valoria-bridge-family-v1-unity",
+  "source_glb": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+  "artifact_name": "valoria-road-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -136,34 +136,53 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "BRIDGE ACCEPTED",
+      "source_glb": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/BridgeFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-bridge-family-v1/source-review.json",
+      "names": [
+        "BridgeDeck",
+        "BridgeParapetL",
+        "BridgeParapetR",
+        "BridgeSupport"
+      ],
+      "position": {
+        "x": 2,
+        "y": 3.2,
+        "z": -30
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "BRIDGE",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/BridgeFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-bridge-family-v1/source-review.json",
+    "label": "ROAD",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RoadFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-road-family-v1/source-review.json",
     "names": [
-      "BridgeDeck",
-      "BridgeParapetL",
-      "BridgeParapetR",
-      "BridgeSupport"
+      "ForegroundRoad",
+      "GateThreshold",
+      "MainRoad",
+      "UpperRoad"
     ],
     "metric_old_names": [
-      "BridgeDeck",
-      "BridgeParapetL",
-      "BridgeParapetR",
-      "BridgeSupport"
+      "ForegroundRoad",
+      "GateThreshold",
+      "MainRoad",
+      "UpperRoad"
     ],
     "new_names": [
-      "Bridge_Deck",
-      "Bridge_ParapetL",
-      "Bridge_ParapetR",
-      "Bridge_Support"
+      "ForegroundRoad",
+      "GateThreshold",
+      "MainRoad",
+      "UpperRoad"
     ],
     "position": {
-      "x": 2,
-      "y": 3.2,
-      "z": -30
+      "x": 3.5,
+      "y": 7.08,
+      "z": -18
     },
     "yaw": 180,
     "scale": 1
