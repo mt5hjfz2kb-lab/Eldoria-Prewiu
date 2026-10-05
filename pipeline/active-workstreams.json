@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T15:34:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T15:36:00Z",
+  "active": [
+    {
+      "id": "valoria-rock-terrain-bastion-contact-uplift-v1",
+      "title": "VALORIA ROCK/TERRAIN BASTION CONTACT UPLIFT v1",
+      "owner": "chat-valoria-rock-terrain-bastion-contact-uplift-v1",
+      "scope": [
+        "docs/evidence/valoria-rock-terrain-bastion-contact-uplift-v1/**",
+        "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
+        "art-source/valoria/production/rock-terrain-family-v1/**",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "rock-terrain-bastion-contact",
+        "github-hosted-blender",
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-05T15:36:00Z",
+      "base_main_sha": "63a5c2633d64a0f7a7b6ef612bed1366d271eb19",
+      "status": "active",
+      "phase": "VISUAL CORRECTION ITERATION 2",
+      "dependency": "Previous closure invalidated by direct authoritative BEFORE/AFTER inspection: intervention was localized but seam remained too visually continuous. Same 11 faces only; no geometry or scope expansion. Zero Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-structural-quality-bar-review-v1",
