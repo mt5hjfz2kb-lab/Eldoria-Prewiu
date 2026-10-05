@@ -11,15 +11,15 @@
     "uv_unwrap_texel_density"
   ],
   "primitive_role": "Boolean cutters only; primary architecture is explicit mesh/profile source",
-  "source_sha": "71113afe8d3f51d19fd9d4989813841e9eb5dc4ca9819a11a9d9729c2f893f2e",
-  "export_sha": "9b3fe4af696da266fa6651f56b676f9f1f2236215accad4b1b5a4a4e40295172",
+  "source_sha": "0c40c58798fb4700288c2a38ec821cd6d8ef97a6441febaad4b8e9ab408f2138",
+  "export_sha": "c963de3aeaf6268de006ac7c7535c40c7ff5f48493ef95830e25ee3a83dccc21",
   "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.blend",
   "export": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
   "geometry_metrics": {
-    "triangles": 13412,
-    "vertices": 6918,
+    "triangles": 18272,
+    "vertices": 9438,
     "modules": 9,
-    "materials": 6,
+    "materials": 8,
     "bounds_world_blender": [
       [
         -9.836312294006348,
@@ -44,7 +44,9 @@
     "bastion_face",
     "bastion_warm",
     "bastion_trim",
-    "banner_blue"
+    "banner_blue",
+    "bastion_hero_masonry",
+    "bastion_metal"
   ],
   "texture_sets": {
     "masonry": [
