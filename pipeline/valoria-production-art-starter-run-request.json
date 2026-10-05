@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-rock-terrain-family-v1-source-05",
-  "nonce": "rock-terrain-source-05-natural-shelf-cliffs",
+  "request_id": "valoria-rock-terrain-family-v1-source-06",
+  "nonce": "rock-terrain-source-06-continuous-near-perimeter-cliff",
   "mesh_spec": "docs/evidence/valoria-rock-terrain-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/rock-terrain-family-v1",
   "evidence_dir": "docs/evidence/valoria-rock-terrain-family-v1/source",
   "credits": 0,
-  "scope": "Rock/Terrain source05 strict ART SOURCE retry: thin exact silhouette lips, fully inset natural mid-wall, broad nonuniform shelf/recess rhythm, no repeated pillars/checker/micro-rock; exact interfaces and 3/7/11 anchors; zero Tripo; Unity blocked pending direct review."
+  "scope": "Rock/Terrain source06 strict ART SOURCE retry: continuous near-perimeter cliff wall with broad vertical/diagonal facets, shoulders visually embedded, no cavern/pillar read, exact silhouette and ground interfaces; zero Tripo; Unity blocked pending direct review."
 }
