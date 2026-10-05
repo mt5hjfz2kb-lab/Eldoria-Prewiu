@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-bastion-family-v1-source-03",
-  "nonce": "bastion-source03-hero-crown-heraldry-depth",
+  "nonce": "bastion-source03-keep-portal-limestone-heraldry-damage",
   "mesh_spec": "docs/evidence/valoria-bastion-family-v1/family-mesh-spec.json",
   "source_dir": "art-source/valoria/production/bastion-family-v1",
   "evidence_dir": "docs/evidence/valoria-bastion-family-v1/source",
   "credits": 0,
-  "scope": "Source03 after Source02 HERO ART SOURCE partial-fail. Preserve Source02 macro/envelopes; add full-depth Keep/East crown parapets + side/rear crenellation, selective command masonry, explicit heraldry UV, contained command flag and structural corbels. Zero Tripo. Unity blocked pending strict HERO ART SOURCE review."
+  "scope": "Source03 after Source02 HERO FAIL. Same nine Bastion envelopes; retain Source02 depth, add dominant Keep portal/arch, brighter hero limestone hierarchy, integrated heraldry, subordinate east standard and authored crest damage. Zero Tripo. Unity blocked pending strict HERO ART SOURCE PASS."
 }
