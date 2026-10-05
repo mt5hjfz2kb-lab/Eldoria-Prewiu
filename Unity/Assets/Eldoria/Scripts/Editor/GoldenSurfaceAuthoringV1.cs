@@ -176,7 +176,10 @@ namespace Eldoria.EditorTools
                 int idx=y*size+x;h[idx]=Mathf.Clamp01(height);ao[idx]=Mathf.Clamp01(occ);sm[idx]=Mathf.Clamp01(smooth);
                 col[idx]=new Color(Mathf.Clamp01(c.r),Mathf.Clamp01(c.g),Mathf.Clamp01(c.b),1f);
             }
-            var albedo=NewTex(kind+" Albedo",false),normal=NewTex(kind+" Normal",true),occlusion=NewTex(kind+" AO",true),metal=NewTex(kind+" MetallicSmooth",true);
+            Texture2D albedo=NewTex(kind+" Albedo",false);
+            Texture2D normal=NewTex(kind+" Normal",true);
+            Texture2D occlusion=NewTex(kind+" AO",true);
+            Texture2D metal=NewTex(kind+" MetallicSmooth",true);
             var nc=new Color[h.Length];var ac=new Color[h.Length];var mc=new Color[h.Length];
             for(int y=0;y<size;y++)for(int x=0;x<size;x++)
             {
