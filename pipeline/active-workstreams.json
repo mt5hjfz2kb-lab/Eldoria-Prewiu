@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T14:15:00Z",
-  "active": [
+  "updated_at": "2026-10-05T14:57:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-family-v1",
       "title": "VALORIA BASTION FAMILY v1",
@@ -29,12 +30,27 @@
       ],
       "claimed_at": "2026-10-05T13:30:00Z",
       "base_main_sha": "e1093da38df1d01d7045a5e63f4f01b77bfebcd2",
-      "status": "active",
-      "phase": "SOURCE AUTHORING — SOURCE05 DONOR RELIEF",
-      "dependency": "Bastion only. Source01–04 strict hero reviews exposed a generic-fortress ceiling. Source05 may use the already-certified historical Hero Bastion ONLY as zero-credit geometric relief donor inside the current Keep envelope. No donor macro silhouette, roofs, rock base, camera/composition movement, adjacent-family edits or Tripo."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "phase": "PRODUCTION FAMILY PASS / CLOSED",
+      "dependency": "Bastion only. Source01–04 strict hero reviews exposed a generic-fortress ceiling. Source05 may use the already-certified historical Hero Bastion ONLY as zero-credit geometric relief donor inside the current Keep envelope. No donor macro silhouette, roofs, rock base, camera/composition movement, adjacent-family edits or Tripo.",
+      "completed_at": "2026-10-05T16:57:00+02:00",
+      "result": "PRODUCTION FAMILY PASS / CLOSED / SOURCE08 AUTHORITATIVE / HERO QUALITY BAR PASS / 0 TRIPO",
+      "result_doc": "docs/VALORIA_BASTION_FAMILY_V1.md",
+      "source_iteration": "source08",
+      "source_run_id": 37327905027,
+      "source_artifact_id": 11353460819,
+      "source_sha": "5c7b7e0918ac2e7dc78984515991c3f3546dffc3927bd0fa23bcaf4e9b148893",
+      "export_sha": "3a731789c2454e27dd6e60346719b69189b7999d0ed6e5e535927c3d7163a477",
+      "source_art_gate": "ART SOURCE PASS",
+      "unity_run_id": 37328467482,
+      "unity_artifact_id": 11352609605,
+      "gameplay_regression": "PASS",
+      "visual_gate": "MATCHED-CAMERA VISUAL PASS",
+      "quality_bar": "HERO QUALITY BAR PASS",
+      "credits_spent": 0,
+      "supersedes": "Source07 passed isolated ART SOURCE but failed cumulative HERO QUALITY because its near-white material hierarchy read as a pasted high-value band. Source08 keeps Source07 geometry and corrects only exported material/value hierarchy.",
+      "next": "STOP. Bastion is closed. Do not open another family/workstream without explicit owner instruction."
+    },
     {
       "id": "valoria-wall-family-v1",
       "title": "VALORIA WALL FAMILY v1",
