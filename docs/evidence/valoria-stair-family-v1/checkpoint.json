@@ -1,0 +1,50 @@
+{
+  "family": "VALORIA STAIR FAMILY v1",
+  "result": "PRODUCTION FAMILY PASS / CLOSED",
+  "gates": {
+    "tech": "PASS",
+    "art_source": "PASS",
+    "unity_integration": "PASS",
+    "matched_camera_visual": "PASS"
+  },
+  "planner": {
+    "run_id": 37301748302,
+    "artifact_id": 11341384021
+  },
+  "source": {
+    "run_id": 37301752932,
+    "artifact_id": 11340838935,
+    "source_sha": "84b1e5f492a552c8452751fbe3d9872c827dc8f01a36cdddffeef73068c47a05",
+    "export_sha": "442fe2d2796c0db01760bd8b13bcdf28b3e5aa214108b0095e484309f6950c88"
+  },
+  "unity": {
+    "run_id": 37302198301,
+    "job_id": 111737317212,
+    "artifact_id": 11340779541,
+    "runner": "DESKTOP-R10PE55"
+  },
+  "gameplay": {
+    "focused_tests": "5/5 PASS",
+    "colliders": 0
+  },
+  "protected_families": [
+    "Lower Gate",
+    "Bridge",
+    "Road"
+  ],
+  "locked_unchanged": [
+    "camera",
+    "target",
+    "global composition",
+    "platform",
+    "Bastion",
+    "Terrain",
+    "Walls",
+    "Ground",
+    "gameplay"
+  ],
+  "credits": {
+    "tripo": 0
+  },
+  "next": "Owner review. Do not start Terrain, Walls, Bastion or another family without explicit instruction."
+}
