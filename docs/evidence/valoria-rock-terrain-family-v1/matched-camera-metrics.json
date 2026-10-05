@@ -1,15 +1,15 @@
 {
   "classification": "TECHNICAL_MATCHED_CAMERA_CHECK_NOT_VISUAL_VERDICT",
   "family": "VALORIA ROCK / TERRAIN FAMILY v1",
-  "source_iteration": "source08",
-  "unity_run_id": 37309039558,
-  "unity_job_id": 111759642435,
-  "unity_artifact_id": 11344907445,
+  "source_iteration": "source09",
+  "unity_run_id": 37310582556,
+  "unity_job_id": 111764702509,
+  "unity_artifact_id": 11345546113,
   "runner": "DESKTOP-R10PE55",
   "source_identity": {
     "path": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
-    "source_sha": "559c32476c4df3f590ab9a5377f449aa44ec4d2956f2d18204d5716a0b0ad64b",
-    "export_sha": "f9e66881cfcbf61d135ec1a8ddf13027e6dac06228dfaef745f13fa2450b02ed"
+    "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+    "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f"
   },
   "source_statistics": {
     "triangles": 1909,
