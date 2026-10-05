@@ -1,3 +1,6 @@
+## 2026-10-05 — Lower Gate Family v1 production proof in progress
+One isolated source→Unity proof is active after the owner's blockout approval. No runtime promotion and no gameplay change. Source surface transport is being corrected before isolated ART SOURCE acceptance. See `docs/VALORIA_LOWER_GATE_FAMILY_V1.md` and the active registry; retain the closed preproduction evidence and all other visual families.
+
 ## 2026-10-05 — VALORIA ART PRODUCTION RESET v1 — PREPRODUCTION PASS / OWNER REVIEW PENDING
 - New unchanged owner target: `docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg` (1536×1024 JPEG, SHA 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689).
 - New methodological workstream; no restart/deletion of Eldoria. Earlier artistic constraints are superseded for isolated preproduction, not gameplay.
