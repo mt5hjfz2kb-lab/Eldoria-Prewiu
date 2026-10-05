@@ -666,3 +666,11 @@ No Unity integration was attempted because the source itself remained visibly pr
 
 ## Golden Primary Forms source02 execution blocker — 2026-10-05
 GOLDEN PRIMARY FORMS REAUTHOR v1 has not reached a visual verdict. Source02 is authored as a material method change (void-first Gate, structural Bridge load path, plateau/cliff/wet-shelf terrain, continuous canopy masses), but the required isolated evidence has not executed through available automated GitHub event routes. Current state is **BLOCKED — HUMAN WORKFLOW DISPATCH REQUIRED**, not ART FAIL. Unity is not authorized; Tripo spend remains 0. Run `[PRODUCTION] Golden Primary Forms Source02 Manual Gate` once on `main`; the workflow persists the required clay/lit/official-proxy/report for immediate visual scoring.
+
+## 2026-10-05 — Golden Professional Primary Reconstruction v1 — code-authoring ceiling
+Run **37381915933** completed SUCCESS after stabilizing the Blender pipeline with a portable cached Blender distribution and sparse checkout. Artifact **11376050764** contains the authored .blend/.glb plus clay/lit/official-proxy/contact evidence.
+
+Visual verdict is **TECH PASS / VISUAL FAIL / CODE-AUTHORING CEILING / UNITY NOT AUTHORIZED**. Scores: Geometry/Silhouette **3.0/5**, Material **2.5/5**, Contact/Integration **2.5/5**, Environment Coherence **2.5/5**, Premium Perception **2.0/5**. The source materially improves authoring vocabulary over source02/source03 but still reads visibly algorithmic; Bridge, cliff integration, vegetation and Gate↔Bridge↔terrain contacts remain below the canonical premium target. Do not make another code-heavy cosmetic source iteration.
+
+The operational Actions blockage is separately resolved: cached portable Blender + sparse checkout removes the previous heavy Ubuntu apt/1GB-repo bottleneck; corrupted `pages.yml` was restored to the last healthy version. Tripo remains **0 credits**. Next meaningful method requires **interactive/artist-led Blender authoring** (preferred) or a separately authorized external geometry-source route followed by Blender reauthoring.
+
