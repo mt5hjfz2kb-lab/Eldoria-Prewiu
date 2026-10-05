@@ -1,10 +1,10 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_family_replacement",
   "nonce": "stair-source01-cumulative-lower-gate-bridge-road-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Stair cumulative Unity matched-camera gate: retain accepted Lower Gate + Bridge + Road identically; replace Stair only; Terrain/Ground/Bastion/Walls/gameplay untouched.",
+  "scope": "Stair cumulative Unity matched-camera gate passed: PRODUCTION FAMILY PASS; parked.",
   "views": [
     {
       "name": "UNITY-source-3x2",
