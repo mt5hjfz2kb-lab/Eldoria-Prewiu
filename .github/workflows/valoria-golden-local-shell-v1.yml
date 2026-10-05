@@ -53,11 +53,11 @@ jobs:
       - name: Build bounded Golden local shell
         shell: powershell
         run: |
-          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-local-shell-v2.py
+          & "${{ steps.blender.outputs.exe }}" -b --python-exit-code 1 --python tools/author-golden-local-shell-v3.py
           if($LASTEXITCODE -ne 0){throw "Blender authoring failed $LASTEXITCODE"}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.glb')){throw 'Missing GLB'}
-          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v2/GoldenLocalVisualShellV2.blend')){throw 'Missing BLEND'}
-          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/source-report.json')){throw 'Missing source report'}
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.glb')){throw 'Missing GLB'}
+          if(-not(Test-Path 'art-source/valoria/lookdev/golden-slice-v1/geometry-v3/GoldenLocalVisualShellV3.blend')){throw 'Missing BLEND'}
+          if(-not(Test-Path 'docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/source-report.json')){throw 'Missing source report'}
       - name: Persist source and evidence
         shell: powershell
         run: |
@@ -74,7 +74,7 @@ jobs:
         with:
           name: valoria-golden-local-shell-v1-source
           path: |
-            art-source/valoria/lookdev/golden-slice-v1/geometry-v2/*
-            docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v2/*
+            art-source/valoria/lookdev/golden-slice-v1/geometry-v3/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/geometry-v3/*
           if-no-files-found: error
           retention-days: 30
