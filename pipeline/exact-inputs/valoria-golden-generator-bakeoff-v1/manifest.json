@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "status": "AWAITING_EXACT_MULTIVIEW",
+  "package_id": "valoria-golden-generator-bakeoff-v1",
+  "canonical_reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "required_views": [
+    "front",
+    "left",
+    "back",
+    "right"
+  ],
+  "views": [
+    {
+      "role": "front",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "width": null,
+      "height": null,
+      "format": null
+    },
+    {
+      "role": "left",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "width": null,
+      "height": null,
+      "format": null
+    },
+    {
+      "role": "back",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "width": null,
+      "height": null,
+      "format": null
+    },
+    {
+      "role": "right",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "width": null,
+      "height": null,
+      "format": null
+    }
+  ],
+  "consistency_rules": [
+    "same Gate and Bridge identity in all views",
+    "same proportions and architectural features",
+    "no text UI borders arrows or contact-sheet layout",
+    "no whole-city redesign",
+    "front is canonical primary identity view"
+  ],
+  "execution_authorized": false
+}
