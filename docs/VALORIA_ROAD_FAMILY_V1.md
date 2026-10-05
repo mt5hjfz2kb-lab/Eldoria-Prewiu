@@ -60,4 +60,20 @@ Planning LOD0 budget: **≤3,000 triangles**. Source must carry UV, normals and 
 4. **MATCHED-CAMERA VISUAL PASS** — exact camera A/B in all official views; protected projection invariant; Road retains target/blockout route weight and continuity through Bridge → Lower Gate → Road → locked Stair → Bastion.
 5. **PRODUCTION FAMILY PASS** only after all previous gates pass.
 
-Current state: **FAMILY SPEC LOCKED / SOURCE AUTHORING NEXT**. Tripo: **0 credits**.
+## Result
+
+**PRODUCTION FAMILY PASS / CLOSED.**
+
+Road source01 (run **37299283226**, artifact **11340204745**) was TECH PASS but stopped at ART SOURCE because its layered paving read produced a dark/z-fighting surface failure. Source02 (run **37299687746**, artifact **11341090915**) made paving readable but still left a transverse break at the GateThreshold/MainRoad overlap. Source03 (run **37300130602**, artifact **11341026650**) corrected only that internal Road seam while preserving the approved outer envelopes; it is the authoritative **ART SOURCE PASS**. Source SHA-256 `0b672be9f522438754df5167c7376a65477b193c5251e4be39bedc722b98bc66`; GLB SHA-256 `683310d65fd83de40115b310b35ceae8b35b935baaf8305a068d8e1203709f67`.
+
+Unity cumulative gate retained accepted **Lower Gate + Bridge identically in BEFORE and AFTER** and replaced only `ForegroundRoad`, `GateThreshold`, `MainRoad`, `UpperRoad`. Run **37300556571**, job **111732031845**, runner **DESKTOP-R10PE55**, artifact **11341876912** — SUCCESS. Focused PlayMode: **5/5 PASS**.
+
+Matched-camera TECH PASS holds in all seven official views. **82 protected elements/view remain at 0 px delta**. In source 3:2 the Road union is **99.9927%** of approved blockout width and **99.9900%** of height, with only **0.0149 px** center delta; maximum center delta across all views is **0.0164 px**.
+
+Direct matched-camera review is **VISUAL PASS**. The Road now reads as the principal circulation spine while remaining subordinate to Lower Gate/Bridge. Coarse staggered paving and shallow real section prevent a flat terrain-decal read; material value is darker/earthier than Bridge stone; Bridge→Lower Gate→Road continuity is clean; the locked Stair remains visibly greybox and untouched, with Road terminating/resuming at its approved interfaces. Mobile landscape and portrait-entry/home preserve route legibility without microdetail collapse. Ground/Terrain were not edited to make Road fit.
+
+Real Unity import: **1,944 triangles, 5,556 imported vertices, 4 renderers, 3 materials, 4 textures, 12 submesh draws**, mesh bytes **587,056**, texture bytes **11,188,384**; UV/normals/tangents present; colliders **0**; production scene opened/saved **false**. Camera, target, global composition, platform, Bastion, Stair, Terrain, Walls, Lower Gate, Bridge and gameplay remain unchanged. Tripo: **0 credits**.
+
+Formal evidence: `docs/evidence/valoria-road-family-v1/source-review.json`, `production-sanity.json`, `matched-camera-metrics.json`, `integrated-visual-review.json`, `checkpoint.json`.
+
+**Do not start Stair, Terrain, Walls, Bastion or another family without a new owner instruction.**
