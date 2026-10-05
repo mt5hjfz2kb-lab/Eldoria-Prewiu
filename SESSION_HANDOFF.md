@@ -810,3 +810,14 @@ Repo + live workflow/artifact evidence remain authoritative over chat memory.
 - Closed structural families, Sawmill/Camp, camera, composition and gameplay remain unchanged; Tripo **0 credits**.
 - The full scene is explicitly **not** claimed premium-reference-close yet. Owner-authorized next block is **VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1**.
 - **Props + Background remains blocked and must not be opened automatically.**
+
+## 2026-10-05 — VALORIA GOLDEN LOOKDEV SLICE v1 — HUMAN SCOPE BLOCKER
+- Bounded surface and local-geometry methods have been exhausted below the required 4/5 Golden threshold.
+- Best bounded integrated result: run **37368033376**, artifact **11368942273** (GoldenLocalVisualShellV2 material-binding retry).
+- Final bounded proof: run **37368890740**, artifact **11368813433**; V3 cliff aprons are rejected as pasted substrate islands.
+- Gameplay regression remains PASS, colliders unchanged/zero in the review scene, mobile readability remains acceptable, Tripo spend remains 0.
+- Do not run source04, do not add more overlays, and do not compensate with lighting/fog/grading.
+- Owner authorization is now required to reopen either:
+  - continuous Rock/Terrain + local ground around Lower Gate/Bridge; or
+  - that substrate together with Lower Gate + Bridge edge profiles.
+- Until then, broad Valoria production remains blocked.
