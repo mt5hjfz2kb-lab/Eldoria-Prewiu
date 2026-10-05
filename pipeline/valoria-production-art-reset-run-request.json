@@ -1,10 +1,10 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "authored_family_replacement",
   "nonce": "bridge-source03-cumulative-lower-gate-matched-review-02",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Bridge-only isolated replacement over approved blockout with accepted Lower Gate retained identically in BEFORE/AFTER; no runtime promotion",
+  "scope": "Bridge cumulative Unity gate complete: PRODUCTION FAMILY PASS; parked.",
   "views": [
     {
       "name": "UNITY-source-3x2",
