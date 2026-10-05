@@ -18,10 +18,12 @@ namespace Eldoria.EditorTools
         [Serializable] public class Replacement { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; public Placement[] placements; }
         [Serializable] public class RetainedFamily { public string asset; public string source_review; public string[] names; public Vector3 position; public float yaw; public float scale=1; }
         [Serializable] public class SourceReview { public string verdict; }
-        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; }
+        [Serializable] public class ShoreSegment { public string name; public Vector3[] points; public float width=.8f; public int[] color; }
+        [Serializable] public class WaterTreatment { public bool enabled; public string water_name="Water"; public int[] color; public float smoothness=.34f; public float wave_amplitude=.025f; public int grid=16; public ShoreSegment[] shores; }
+        [Serializable] public class Request { public string mode; public string input; public View[] views; public Replacement replacement; public RetainedFamily[] retained_families; public WaterTreatment water; }
         [Serializable] public class Bound { public string name; public Vector4 bbox; }
         [Serializable] public class ViewResult { public string name; public int width; public int height; public Bound[] bounds; public string phase; }
-        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; }
+        [Serializable] public class Evidence { public string engine=UnityEngine.Application.unityVersion; public string classification="GREYBOX_ONLY"; public int meshes; public int triangles; public int colliders; public int tripo_credits=0; public bool production_scene_opened=false; public bool production_scene_saved=false; public ViewResult[] views; public string source_asset; public Vector3 source_position; public float source_yaw; public int source_triangles; public int source_vertices; public int source_renderers; public int source_materials; public int source_textures; public int source_submesh_draws; public string[] source_texture_sizes; public long source_mesh_bytes; public long source_texture_bytes; public bool source_uv; public bool source_normals; public bool source_tangents; public int placement_instances; public int placement_renderers; public int placement_triangles; public int placement_unique_materials; public int placement_unique_meshes; public bool water_treated; public bool water_opaque; public int water_grid_triangles; public int shore_segments; public int shore_triangles; }
         const string Folder="ValoriaProductionArtResetV1Captures";
 
         public static void Capture()
@@ -161,6 +163,11 @@ namespace Eldoria.EditorTools
                     evidence.classification="ISOLATED_PRODUCTION_FAMILY_REVIEW";
                 }
             }
+            if(phase==1 && request.water!=null && request.water.enabled)
+            {
+                ApplyWaterTreatment(request.water,evidence);
+                renderers.Clear();foreach(var rr in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))if(rr.enabled&&rr.gameObject.activeInHierarchy)renderers.Add(rr);
+            }
             foreach(var view in request.views)
             {
                 float pitch=view.pitch*Mathf.Deg2Rad,yaw=view.yaw*Mathf.Deg2Rad;
@@ -193,6 +200,50 @@ namespace Eldoria.EditorTools
             File.WriteAllText(Folder+"/evidence.json",JsonUtility.ToJson(evidence,true));
             Debug.Log("PREPRODUCTION_CAPTURE_TECH_PASS; VISUAL_REVIEW_REQUIRED");
             EditorApplication.Exit(0);
+        }
+
+        static void ApplyWaterTreatment(WaterTreatment treatment,Evidence evidence)
+        {
+            var water=GameObject.Find(treatment.water_name);if(water==null)throw new Exception("Water placeholder missing: "+treatment.water_name);
+            var mf=water.GetComponent<MeshFilter>();var rr=water.GetComponent<MeshRenderer>();if(mf==null||rr==null)throw new Exception("Water placeholder requires mesh renderer");
+            var old=rr.bounds;int grid=Mathf.Clamp(treatment.grid,4,32);float y=old.max.y+.015f;
+            var verts=new Vector3[(grid+1)*(grid+1)];var uv=new Vector2[verts.Length];var tris=new int[grid*grid*6];
+            int vi=0;for(int z=0;z<=grid;z++)for(int x=0;x<=grid;x++)
+            {
+                float u=(float)x/grid,v=(float)z/grid;
+                float px=Mathf.Lerp(old.min.x,old.max.x,u),pz=Mathf.Lerp(old.min.z,old.max.z,v);
+                float wave=treatment.wave_amplitude*(Mathf.Sin(px*.115f+pz*.071f)+Mathf.Sin(px*.043f-pz*.097f)*.55f);
+                verts[vi]=new Vector3(px,y+wave,pz);uv[vi]=new Vector2(u*9f,v*9f);vi++;
+            }
+            int ti=0;for(int z=0;z<grid;z++)for(int x=0;x<grid;x++)
+            {
+                int a=z*(grid+1)+x,b=a+1,c=a+(grid+1),d=c+1;
+                tris[ti++]=a;tris[ti++]=c;tris[ti++]=b;tris[ti++]=b;tris[ti++]=c;tris[ti++]=d;
+            }
+            var mesh=new Mesh{name="Valoria Water Surface v1"};mesh.vertices=verts;mesh.triangles=tris;mesh.uv=uv;mesh.RecalculateNormals();mesh.RecalculateBounds();mf.sharedMesh=mesh;
+            var mat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Water v1"};
+            var col=treatment.color!=null&&treatment.color.Length>=3?new Color(treatment.color[0]/255f,treatment.color[1]/255f,treatment.color[2]/255f,1f):new Color(.11f,.28f,.34f,1f);
+            mat.SetColor("_BaseColor",col);mat.SetFloat("_Smoothness",Mathf.Clamp01(treatment.smoothness));mat.SetFloat("_Metallic",.04f);mat.enableInstancing=true;rr.sharedMaterial=mat;
+            evidence.water_treated=true;evidence.water_opaque=true;evidence.water_grid_triangles=tris.Length/3;
+
+            if(treatment.shores!=null)foreach(var shore in treatment.shores)
+            {
+                if(shore.points==null||shore.points.Length<2)continue;
+                var go=new GameObject("Valoria Shore · "+shore.name);var smf=go.AddComponent<MeshFilter>();var sr=go.AddComponent<MeshRenderer>();
+                var sv=new Vector3[shore.points.Length*2];var su=new Vector2[sv.Length];var st=new int[(shore.points.Length-1)*6];
+                for(int i=0;i<shore.points.Length;i++)
+                {
+                    var p=shore.points[i];Vector3 tangent;
+                    if(i==0)tangent=shore.points[1]-p;else if(i==shore.points.Length-1)tangent=p-shore.points[i-1];else tangent=shore.points[i+1]-shore.points[i-1];
+                    tangent.y=0;tangent.Normalize();var side=new Vector3(-tangent.z,0,tangent.x)*(shore.width*.5f);
+                    sv[i*2]=p-side;sv[i*2+1]=p+side;su[i*2]=new Vector2(0,i*.45f);su[i*2+1]=new Vector2(1,i*.45f);
+                    if(i<shore.points.Length-1){int q=i*6,a=i*2;st[q]=a;st[q+1]=a+2;st[q+2]=a+1;st[q+3]=a+1;st[q+4]=a+2;st[q+5]=a+3;}
+                }
+                var sm=new Mesh{name="Irregular Shore Contact "+shore.name};sm.vertices=sv;sm.triangles=st;sm.uv=su;sm.RecalculateNormals();sm.RecalculateBounds();smf.sharedMesh=sm;
+                var sc=shore.color!=null&&shore.color.Length>=3?new Color(shore.color[0]/255f,shore.color[1]/255f,shore.color[2]/255f,1f):new Color(.16f,.20f,.18f,1f);
+                var shoreMat=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Valoria Wet Shore v1"};shoreMat.SetColor("_BaseColor",sc);shoreMat.SetFloat("_Smoothness",.18f);shoreMat.enableInstancing=true;sr.sharedMaterial=shoreMat;
+                evidence.shore_segments++;evidence.shore_triangles+=st.Length/3;
+            }
         }
 
         static Transform FindNamed(Transform root,string name)
