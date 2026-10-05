@@ -1,50 +1,8 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T12:31:00Z",
-  "active": [
-    {
-      "id": "valoria-rock-terrain-family-v1",
-      "title": "VALORIA ROCK / TERRAIN FAMILY v1",
-      "owner": "chat-rock-terrain-family-v1",
-      "scope": [
-        "docs/VALORIA_ROCK_TERRAIN_FAMILY_V1.md",
-        "docs/evidence/valoria-rock-terrain-family-v1/**",
-        "art-source/valoria/production/rock-terrain-family-v1/**",
-        "pipeline/art-production-request.json",
-        "pipeline/valoria-production-art-starter-run-request.json",
-        "pipeline/valoria-production-art-reset-run-request.json",
-        "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
-      ],
-      "resources": [
-        "art-production-planner",
-        "github-hosted-blender",
-        "windows-runner-heavy",
-        "valoria-rock-terrain-family"
-      ],
-      "claimed_at": "2026-10-05T11:31:00Z",
-      "base_main_sha": "18774d4e51c8136f0079b7a76595e8c9307a34b1",
-      "status": "active",
-      "phase": "SOURCE09 MATERIAL HIERARCHY RETRY → ART SOURCE GATE",
-      "dependency": "Repository contains newer Source09 material-only correction after Source08 Unity TECH pass. Source09 is authoritative candidate. Geometry/camera/composition/closed families remain locked. Zero Tripo.",
-      "source_iteration": "source08",
-      "source_run_id": 37308344056,
-      "source_artifact_id": 11344638101,
-      "source_art_gate": "ART SOURCE PASS",
-      "unity_run_id": 37309039558,
-      "unity_job_id": 111759642435,
-      "unity_artifact_id": 11344907445,
-      "runner": "DESKTOP-R10PE55",
-      "gameplay_regression": "5/5 PASS",
-      "credits_spent": 0,
-      "result_commit": "23204107398726f9923709de87d2c4c900db94a8",
-      "resumed_at": "2026-10-05T12:31:00Z",
-      "previous_source08_unity_run_id": 37309039558,
-      "previous_source08_unity_artifact_id": 11344907445
-    }
-  ],
+  "updated_at": "2026-10-05T12:41:00Z",
+  "active": [],
   "history": [
     {
       "id": "unity-runner-resilience-v1",
@@ -2557,6 +2515,55 @@
       "credits_spent": 0,
       "result_commit": "de318a25f6e2a98b07ef7d581c1db00a1c075211",
       "next": "Owner review. Do not start Terrain, Walls, Bastion or another family without explicit instruction."
+    },
+    {
+      "id": "valoria-rock-terrain-family-v1",
+      "title": "VALORIA ROCK / TERRAIN FAMILY v1",
+      "owner": "chat-rock-terrain-family-v1",
+      "scope": [
+        "docs/VALORIA_ROCK_TERRAIN_FAMILY_V1.md",
+        "docs/evidence/valoria-rock-terrain-family-v1/**",
+        "art-source/valoria/production/rock-terrain-family-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "art-production-planner",
+        "github-hosted-blender",
+        "windows-runner-heavy",
+        "valoria-rock-terrain-family"
+      ],
+      "claimed_at": "2026-10-05T11:31:00Z",
+      "base_main_sha": "18774d4e51c8136f0079b7a76595e8c9307a34b1",
+      "status": "completed",
+      "phase": "PRODUCTION FAMILY PASS / CLOSED",
+      "dependency": "Repository contains newer Source09 material-only correction after Source08 Unity TECH pass. Source09 is authoritative candidate. Geometry/camera/composition/closed families remain locked. Zero Tripo.",
+      "source_iteration": "source09",
+      "source_run_id": 37310029846,
+      "source_artifact_id": 11345358292,
+      "source_art_gate": "ART SOURCE PASS",
+      "unity_run_id": 37310582556,
+      "unity_job_id": 111764702509,
+      "unity_artifact_id": 11345546113,
+      "runner": "DESKTOP-R10PE55",
+      "gameplay_regression": "5/5 PASS",
+      "credits_spent": 0,
+      "result_commit": "23204107398726f9923709de87d2c4c900db94a8",
+      "resumed_at": "2026-10-05T12:31:00Z",
+      "previous_source08_unity_run_id": 37309039558,
+      "previous_source08_unity_artifact_id": 11344907445,
+      "completed_at": "2026-10-05T12:41:00Z",
+      "source_sha": "309a4cabac72e16b6bc6b13d66b8649b675ef668ad3a1ab367a355de0525d4cd",
+      "export_sha": "e842a7c64dc71b66d00cf1fbe3d31101927313a0f73111e0875f53ed3248863f",
+      "visual_gate": "VISUAL PASS",
+      "quality_bar": "REAL QUALITY JUMP PASS",
+      "gate_result": "PRODUCTION FAMILY PASS",
+      "supersedes": "Source08 closure was invalidated because its same Unity artifact had contradictory FAIL/PASS visual verdicts without changed evidence. Source09 materially corrects that defect and is the authoritative closed source.",
+      "next": "Owner review. Do not start Walls, Bastion or another family without explicit instruction."
     }
   ]
 }
