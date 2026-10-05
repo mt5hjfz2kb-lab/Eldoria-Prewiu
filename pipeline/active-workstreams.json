@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T15:45:00Z",
-  "active": [
+  "updated_at": "2026-10-05T16:43:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-cabin-sawmill-camp-production-v1",
       "title": "VALORIA CABIN / SAWMILL + CAMP PRODUCTION v1",
@@ -25,12 +26,18 @@
       ],
       "claimed_at": "2026-10-05T15:45:00Z",
       "base_main_sha": "ec59a8389c70c804681136b0aeaa834db9adb391",
-      "status": "active",
-      "phase": "SAWMILL STATES — TARGET / FAMILY SPEC",
-      "dependency": "All structural families and Rock/Terrain Bastion contact uplift are closed. Preserve camera, target, Bastion, Walls, Terrain, Gate, Bridge, Road, Stair and gameplay. First produce Sawmill states and validate integrated before Camp. Zero Tripo."
-    }
-  ],
-  "history": [
+      "status": "completed",
+      "phase": "PRODUCTION PASS / CLOSED",
+      "dependency": "All structural families and Rock/Terrain Bastion contact uplift are closed. Preserve camera, target, Bastion, Walls, Terrain, Gate, Bridge, Road, Stair and gameplay. First produce Sawmill states and validate integrated before Camp. Zero Tripo.",
+      "completed_at": "2026-10-05T16:23:02Z",
+      "result": "PRODUCTION PASS / CLOSED / SAWMILL STATE0-2 ART SOURCE PASS / CAMP ART SOURCE PASS / PROGRESSION PASS / MOBILE PASS / GAMEPLAY PASS / 0 TRIPO",
+      "result_doc": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/evidence-manifest.json",
+      "cumulative_run_id": 37339430238,
+      "cumulative_artifact_id": 11358071612,
+      "bastion1_initial_run_id": 37339834245,
+      "bastion1_initial_artifact_id": 11357369035,
+      "next": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1 — owner-authorized in current task; not yet claimed by this cleanup commit."
+    },
     {
       "id": "valoria-structural-quality-bar-review-v1",
       "title": "VALORIA STRUCTURAL QUALITY BAR REVIEW v1",
