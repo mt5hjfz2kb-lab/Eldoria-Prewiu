@@ -51,6 +51,36 @@
     "LOD1": "Future 40–60% only after matched-camera screen-space error review.",
     "LOD2": "Future 15–25% only after mobile silhouette review."
   },
-  "mobile_suitability": "Source proportions and paving scale authored for landscape/portrait-entry; integrated Unity review pending.",
-  "tripo_credits_spent": 0
+  "mobile_suitability": "Integrated readability PASS at mobile landscape and portrait-entry; no device FPS certification.",
+  "tripo_credits_spent": 0,
+  "unity_import_actual": {
+    "engine": "6000.3.23f1",
+    "run": 37298002864,
+    "job": 111723747578,
+    "artifact": 11339213616,
+    "runner": "DESKTOP-R10PE55",
+    "triangles": 2592,
+    "vertices": 7076,
+    "renderers": 4,
+    "materials": 3,
+    "textures": 6,
+    "submesh_draws": 8,
+    "mesh_bytes": 748128,
+    "texture_bytes": 16782576,
+    "texture_sizes": [
+      "masonry_albedo:512x512",
+      "masonry_normal:512x512",
+      "paving_albedo:512x512",
+      "paving_normal:512x512",
+      "stone_grain_albedo:512x512",
+      "stone_grain_normal:512x512"
+    ],
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "colliders": 0,
+    "production_scene_opened": false,
+    "production_scene_saved": false,
+    "focused_playmode": "5/5 PASS"
+  }
 }
