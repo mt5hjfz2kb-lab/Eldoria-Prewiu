@@ -1,8 +1,9 @@
 {
   "enabled": true,
-  "nonce": "golden-professional-primary-reconstruction-v1-dispatch-001",
+  "nonce": "golden-professional-primary-reconstruction-v1-dispatch-002",
   "request_id": "golden-professional-primary-reconstruction-v1",
   "scope": "Professional method pivot after source03 method exhaustion. Reconstruct only Lower Gate, Bridge, local cliff/ground/shore and local vegetation source using silhouette-first custom profile loops, direct vertex/edge authoring, tapered lofts, continuous geology and canopy massing. Preserve canonical camera/composition/macro positions/gameplay/Road/Stair/Bastion/platform/outside families. No Unity until all visual metrics >=4/5. No Tripo.",
   "credits": 0,
-  "requested_at": "2026-10-05T22:07:00Z"
+  "requested_at": "2026-10-05T22:18:00Z",
+  "retry_reason": "Run 37380445596 stalled abnormally in headless package installation; concurrency retry without method/scope change."
 }
