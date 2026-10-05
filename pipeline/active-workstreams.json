@@ -1,8 +1,38 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T16:43:00Z",
-  "active": [],
+  "updated_at": "2026-10-05T16:44:00Z",
+  "active": [
+    {
+      "id": "valoria-vegetation-water-shore-production-v1",
+      "title": "VALORIA VEGETATION + WATER/SHORE PRODUCTION v1",
+      "owner": "chat-valoria-vegetation-water-shore-production-v1",
+      "scope": [
+        "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md",
+        "docs/evidence/valoria-vegetation-water-shore-production-v1/**",
+        "art-source/valoria/production/vegetation-family-v1/**",
+        "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/VegetationFamilyV1/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVegetationWaterShoreV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaVegetationWaterShoreGateV1.cs",
+        "pipeline/art-production-request.json",
+        "pipeline/valoria-production-art-starter-run-request.json",
+        "pipeline/valoria-production-art-reset-run-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-vegetation-water-shore",
+        "github-hosted-blender",
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-10-05T16:44:00Z",
+      "base_main_sha": "cae2197e93704dc6aee7766df87d8dba99ecb786",
+      "status": "active",
+      "phase": "VEGETATION TARGET / REPRESENTATIVE FAMILY SOURCE",
+      "dependency": "Preserve all closed structural families plus Sawmill/Camp, camera, target, composition and gameplay. Vegetation first representative source -> source gate -> cumulative Unity; then water/shore. Zero Tripo."
+    }
+  ],
   "history": [
     {
       "id": "valoria-cabin-sawmill-camp-production-v1",
