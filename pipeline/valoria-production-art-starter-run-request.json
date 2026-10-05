@@ -2,10 +2,10 @@
   "enabled": true,
   "mode": "authored_mesh_family",
   "request_id": "valoria-sawmill-state2-v1",
-  "nonce": "sawmill-state2-early-functional-01",
+  "nonce": "sawmill-state2-early-functional-02-saw-rig",
   "mesh_spec": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2-mesh-spec.json",
   "source_dir": "art-source/valoria/production/sawmill-family-v1/state2",
   "evidence_dir": "docs/evidence/valoria-cabin-sawmill-camp-production-v1/sawmill-state2/source",
   "credits": 0,
-  "scope": "Sawmill STATE 2 only. Early functional Bastion-I mill: same foundation/frame DNA, complete roof, open work face/canopy, saw table, lumber rack and logs. Modest civil architecture, no fortification language. Zero Tripo."
+  "scope": "Sawmill STATE 2 Source02. Same footprint/DNA; add unmistakable cutting bay with log bed, saw frame and visible metal blade. No other family or camera change. Zero Tripo."
 }
