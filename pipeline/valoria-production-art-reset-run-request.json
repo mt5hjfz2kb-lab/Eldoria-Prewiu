@@ -1,10 +1,10 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_family_replacement",
-  "nonce": "stair-source01-cumulative-lower-gate-bridge-road-matched-review-01",
+  "nonce": "rock-terrain-source03-cumulative-gate-bridge-road-stair-matched-review-01",
   "input": "docs/evidence/valoria-art-production-reset-v1/unity-blockout-input.json",
   "credits": 0,
-  "scope": "Stair cumulative Unity matched-camera gate passed: PRODUCTION FAMILY PASS; parked.",
+  "scope": "Rock/Terrain cumulative Unity matched-camera gate: retain accepted Lower Gate + Bridge + Road + Stair identically; replace only 12 Rock/Terrain placeholders; BackgroundTerrain/Bastion/Walls/gameplay untouched.",
   "views": [
     {
       "name": "UNITY-source-3x2",
@@ -113,8 +113,8 @@
     }
   ],
   "result": "PRODUCTION PROOF",
-  "source_glb": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
-  "artifact_name": "valoria-stair-family-v1-unity",
+  "source_glb": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+  "artifact_name": "valoria-rock-terrain-family-v1-unity",
   "target_image": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "retained_families": [
     {
@@ -174,53 +174,87 @@
       },
       "yaw": 180,
       "scale": 1
+    },
+    {
+      "label": "STAIR ACCEPTED",
+      "source_glb": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+      "asset": "Assets/Eldoria/ArtTests/RetainedFamilies/StairFamilyV1.glb",
+      "source_review": "docs/evidence/valoria-stair-family-v1/source-review.json",
+      "names": [
+        "Stair_00",
+        "Stair_01",
+        "Stair_02",
+        "Stair_03",
+        "Stair_04",
+        "Stair_05",
+        "Stair_06",
+        "Stair_07",
+        "Stair_08",
+        "Stair_09",
+        "Stair_10",
+        "Stair_11",
+        "StairCheekLeft",
+        "StairCheekRight"
+      ],
+      "position": {
+        "x": 3.5,
+        "y": 7.039999961853027,
+        "z": 3.3499999046325684
+      },
+      "yaw": 180,
+      "scale": 1
     }
   ],
   "replacement": {
-    "label": "STAIR",
-    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/StairFamilyV1.glb",
-    "source_review": "docs/evidence/valoria-stair-family-v1/source-review.json",
+    "label": "ROCK / TERRAIN",
+    "asset": "Assets/Eldoria/ArtTests/FamilyUnderReview/RockTerrainFamilyV1.glb",
+    "source_review": "docs/evidence/valoria-rock-terrain-family-v1/source-review.json",
     "names": [
-      "Stair_00",
-      "Stair_01",
-      "Stair_02",
-      "Stair_03",
-      "Stair_04",
-      "Stair_05",
-      "Stair_06",
-      "Stair_07",
-      "Stair_08",
-      "Stair_09",
-      "Stair_10",
-      "Stair_11",
-      "StairCheekLeft",
-      "StairCheekRight"
+      "ForegroundBank",
+      "MainPlatform",
+      "PlayableGround",
+      "UpperTerraceCliff",
+      "UpperTerraceGround",
+      "CliffShoulder_0",
+      "CliffShoulder_1",
+      "CliffShoulder_2",
+      "CliffShoulder_3",
+      "CliffShoulder_4",
+      "CliffShoulder_5",
+      "CliffShoulder_6"
     ],
     "metric_old_names": [
-      "Stair_00",
-      "Stair_01",
-      "Stair_02",
-      "Stair_03",
-      "Stair_04",
-      "Stair_05",
-      "Stair_06",
-      "Stair_07",
-      "Stair_08",
-      "Stair_09",
-      "Stair_10",
-      "Stair_11",
-      "StairCheekLeft",
-      "StairCheekRight"
+      "ForegroundBank",
+      "MainPlatform",
+      "PlayableGround",
+      "UpperTerraceCliff",
+      "UpperTerraceGround",
+      "CliffShoulder_0",
+      "CliffShoulder_1",
+      "CliffShoulder_2",
+      "CliffShoulder_3",
+      "CliffShoulder_4",
+      "CliffShoulder_5",
+      "CliffShoulder_6"
     ],
     "new_names": [
-      "StairSteps",
-      "StairCheekLeft",
-      "StairCheekRight"
+      "ForegroundBank",
+      "MainPlatform",
+      "PlayableGround",
+      "UpperTerraceCliff",
+      "UpperTerraceGround",
+      "CliffShoulder_0",
+      "CliffShoulder_1",
+      "CliffShoulder_2",
+      "CliffShoulder_3",
+      "CliffShoulder_4",
+      "CliffShoulder_5",
+      "CliffShoulder_6"
     ],
     "position": {
-      "x": 3.5,
-      "y": 7.039999961853027,
-      "z": 3.3499999046325684
+      "x": 5,
+      "y": 7,
+      "z": -8
     },
     "yaw": 180,
     "scale": 1
