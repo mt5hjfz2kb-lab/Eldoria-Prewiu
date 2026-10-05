@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-05T21:10:00Z",
+  "updated_at": "2026-10-05T21:41:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -30,18 +30,18 @@
       ],
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "cb7d5d3ca2aad11c3aceb9f48f896be0ea8b1edd",
-      "status": "active",
-      "phase": "GOLDEN PRIMARY FORMS REAUTHOR v1 / SOURCE02 EVIDENCE PENDING",
+      "status": "blocked",
+      "phase": "GOLDEN PRIMARY FORMS REAUTHOR v1 / SOURCE02 EXECUTION BLOCKER",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Treat source01 as UNREVIEWED/INVALID FOR VISUAL ITERATION because no clay/lit/proxy evidence was persisted. Source02 is the first valid review candidate only if its required evidence is produced. Do not create source03 or enter Unity until source02 real images are reviewed against the canonical reference and all principal metrics are explicitly scored.",
+      "next": "HUMAN ACTION: GitHub > Actions > [PRODUCTION] Golden Primary Forms Source02 Manual Gate > Run workflow > branch main > Run workflow. Then resume immediately at isolated clay/lit/official-proxy visual review. Do not create source03 and do not enter Unity before >=4/5 source visual gate.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
       "strongest_bounded_artifact_id": 11368942273,
       "resumed_at": "2026-10-05T20:41:00Z",
       "authorization": "Owner explicitly authorizes selective full screen-visible PRIMARY FORM reauthor inside the Golden crop only: Lower Gate, Bridge, continuous local cliff/ground/shore, and local vegetation source. Preserve canonical camera, macro Gate/Bridge positions, Gate→Road→Stair→Bastion axis, gameplay topology, parcels, Bastion, Road, Stair, families outside Golden crop, hotspots and platform global. No Tripo; 0 credits. No integrated source03/source04 continuation, donor-hiding, cosmetic micro-adjustments, or Unity before isolated >=4/5 source gate.",
-      "blocked_at": null,
-      "blocker": null,
+      "blocked_at": "2026-10-05T21:41:00Z",
+      "blocker": "Source02 authoring is ready, but no GitHub Actions execution/evidence was produced through push, hosted/self-hosted dispatch, clean/minimal runner routes, issue/reopen, PR, diagnostic pings, or scheduled trigger. Connected GitHub tooling exposes no workflow_dispatch action. One human manual dispatch is required.",
       "integrated_source01_run_id": 37370017454,
       "integrated_source01_artifact_id": 11370535174,
       "integrated_source02_authoring_run_id": 37370511627,
@@ -52,7 +52,9 @@
       "credits_spent": 0,
       "source01_evidence_status": "NOT PRODUCED / NOT A VALID VISUAL ITERATION",
       "source02_authoring_commit": "f9e4243209618ed69d9d0b3ba81dafefe53ba65d",
-      "source02_dispatch_commit": "acf3f9cab3a8a0ee6c7c04e6c1fc88187063ed79"
+      "source02_dispatch_commit": "acf3f9cab3a8a0ee6c7c04e6c1fc88187063ed79",
+      "source02_execution_blocker_doc": "docs/evidence/valoria-golden-lookdev-slice-v1/GOLDEN_PRIMARY_FORMS_SOURCE02_EXECUTION_BLOCKER.md",
+      "source02_manual_workflow": ".github/workflows/valoria-golden-source02-issue-trigger.yml"
     }
   ],
   "history": [
