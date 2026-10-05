@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "mode": "authored_mesh_family",
-  "request_id": "valoria-bridge-family-v1-source-03",
-  "nonce": "bridge-source-03-metric-paving-surface",
-  "mesh_spec": "docs/evidence/valoria-bridge-family-v1/family-mesh-spec.json",
-  "source_dir": "art-source/valoria/production/bridge-family-v1",
-  "evidence_dir": "docs/evidence/valoria-bridge-family-v1/source",
+  "request_id": "valoria-road-family-v1-source-01",
+  "nonce": "road-source-01-exact-envelope-real-section",
+  "mesh_spec": "docs/evidence/valoria-road-family-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/road-family-v1",
+  "evidence_dir": "docs/evidence/valoria-road-family-v1/source",
   "credits": 0,
-  "scope": "Bridge source03 accepted and family gate closed; source workflow parked"
+  "scope": "Road only: ForegroundRoad/GateThreshold/MainRoad/UpperRoad exact approved envelopes; Lower Gate/Bridge/Stair/Terrain/Ground/camera/gameplay immutable; zero Tripo"
 }
