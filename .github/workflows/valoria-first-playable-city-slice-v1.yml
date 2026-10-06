@@ -5,6 +5,8 @@ on:
     paths:
       - "pipeline/valoria-first-playable-city-slice-v1.json"
       - "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs"
+      - "tools/valoria-parcel-splat-states.py"
   workflow_dispatch:
 concurrency:
   group: valoria-first-playable-city-slice-v1
@@ -14,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       capture_required: ${{ steps.gate.outputs.capture_required }}
+      parcels_required: ${{ steps.gate.outputs.parcels_required }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,10 +36,45 @@ jobs:
           required = "${{ github.event_name }}" == 'workflow_dispatch' or cfg.get('status') != 'completed'
           with open(os.environ['GITHUB_OUTPUT'],'a') as out:
               out.write('capture_required='+str(required).lower()+'\n')
+              out.write('parcels_required='+str(required and cfg.get('runtime_parcels_enabled',False)).lower()+'\n')
           print('Capture required:', required)
-  capture:
+  parcel-source:
     needs: request
-    if: vars.UNITY_RUNNER_READY == 'true' && needs.request.outputs.capture_required == 'true'
+    if: needs.request.outputs.parcels_required == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-parcel-splat-states.py
+            pipeline/valoria-first-playable-city-slice-v1.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install numpy scipy
+      - name: Download locked source and separate runtime parcel layers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          import json, os, urllib.request, zipfile, subprocess
+          cfg=json.load(open('pipeline/valoria-first-playable-city-slice-v1.json'))
+          artifact=cfg['visual_authority']['source_artifact_id']
+          req=urllib.request.Request(f'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/{artifact}/zip',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req) as response, open('source.zip','wb') as f:f.write(response.read())
+          with zipfile.ZipFile('source.zip') as z:z.extractall('sharp-source')
+          subprocess.run(['python','tools/valoria-parcel-splat-states.py','sharp-source/sharp-1.ply','parcel-source'],check=True)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-runtime-parcel-source
+          path: parcel-source/*
+          retention-days: 30
+  capture:
+    needs: [request, parcel-source]
+    if: always() && needs.request.result == 'success' && vars.UNITY_RUNNER_READY == 'true' && needs.request.outputs.capture_required == 'true' && (needs.parcel-source.result == 'success' || needs.parcel-source.result == 'skipped')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 70
     permissions:
@@ -105,6 +143,11 @@ jobs:
           if($meta.authority_sha256 -ne $authority.authority_sha256 -or $meta.clean_input_sha256 -ne $authority.clean_input_sha256){throw "VISUAL_AUTHORITY_MISMATCH: source lineage differs"}
           if((Get-FileHash (Join-Path $dst 'sharp-1.ply') -Algorithm SHA256).Hash.ToLowerInvariant() -ne $meta.ply_sha256){throw 'SHARP PLY fingerprint mismatch'}
           Copy-Item (Join-Path $dst 'canonical-target.png') "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ProductionSlice\VALORIA_SHARP_CLEAN_REFERENCE.png" -Force
+      - uses: actions/download-artifact@v4
+        if: needs.request.outputs.parcels_required == 'true'
+        with:
+          name: valoria-runtime-parcel-source
+          path: Unity/SharpParcelSource
       - name: Capture first playable city slice
         shell: powershell
         run: |
@@ -126,6 +169,9 @@ jobs:
         if: always()
         with:
           name: valoria-first-playable-city-slice-v1
-          path: Unity/ValoriaFirstPlayableCitySliceV1Captures/*
+          path: |
+            Unity/ValoriaFirstPlayableCitySliceV1Captures/*
+            Unity/Assets/Eldoria/ProductionSlice/Runtime/**
           if-no-files-found: warn
           retention-days: 30
+

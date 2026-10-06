@@ -1,25 +1,21 @@
 {
   "enabled": true,
-  "request_id": "valoria-visual-convergence-production-v1",
-  "asset_or_sector": "Valoria convergence — production recipe lock after Gate 5",
-  "profile": "environment_new_geometry",
-  "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
+  "request_id": "valoria-real-game-state-v1",
+  "asset_or_sector": "Locked Valoria left sawmill and right barracks/camp parcel runtime state",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
   },
   "capabilities": {
-    "blender_mesh_authoring": true,
-    "unity_material_blending": true,
-    "high_low_baking": false
+    "unity_material_blending": true
   },
   "validation": {
-    "source_gate": "Use only approved LowerGateFamilyV1 geometry and already-qualified appearance/depth components. No new geometry generation or method discovery.",
-    "final_gate": "Do not open new R&D. Lock one repeatable production recipe from Gates 1–5 with canonical inputs, SHARP 600K visual layer, approved real geometry, interaction semantics, target-conditioned appearance, bounded camera validation and explicit fallback classes."
+    "source_gate": "Exact locked SHARP source preserved; segment only player parcel content. Existing LocalGateway, FileStateStore, SliceRules and mission objectives own construction. No new geometry source or generator.",
+    "final_gate": "Runtime initial / available / under construction / built / save reload / both parcels / bounded camera / outside parcel visual regression."
   },
-  "notes": "Gate 5 PASS run 37464692130 / artifact 11414269587. LowerGateFamilyV1 alignment and interaction preserved; localized target-conditioned appearance visible at HOME/pan-left/pan-right; full-frame takeover guard passed; paid credits 0. Apparent capture stall was low observability, not a deadlock.",
-  "status": "CONVERGENCE_GATES_1_TO_5_PASS_RECIPE_LOCK",
-  "blocker": null
+  "notes": "Approved look and central route immutable. Runtime conditional SHARP parcel layers with scene-ground support, existing scaffold presentation and approved support meshes.",
+  "status": "ACTIVE"
 }

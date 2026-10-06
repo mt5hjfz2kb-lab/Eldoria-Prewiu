@@ -54,7 +54,7 @@
   ],
   "paid_credits": 0,
   "next_block": [],
-  "status": "completed",
+  "status": "runtime_parcel_validation_pending",
   "semantic_anchor_count": 9,
   "beauty_replacement_regions": [],
   "real_geometry_role": "editable support geometry hidden from beauty",
@@ -81,7 +81,7 @@
     "INTERACTION PASS",
     "BOUNDED CAMERA PASS"
   ],
-  "nonce": "20261006-correct-authority-slice-003",
+  "nonce": "20261006-real-state-001",
   "bounded_camera": {
     "pan_x": 0.5,
     "zoom_fov_multipliers": [
@@ -94,5 +94,7 @@
   "final_run_id": 37474695980,
   "final_artifact_id": 11418118004,
   "final_commit": "d912f89d0957aa5c49937736840070b1de6a753b",
-  "semantic_raycast_pass": "45/45"
+  "semantic_raycast_pass": "45/45",
+  "runtime_parcels_enabled": true,
+  "runtime_parcels_workstream": "valoria-real-game-state-v1"
 }
