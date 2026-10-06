@@ -44,5 +44,20 @@
   "next_block": [
     "LEFT CABIN PARCEL",
     "RIGHT CAMP PARCEL"
-  ]
+  ],
+  "status": "completed",
+  "final_verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+  "final_run_id": 37470805228,
+  "final_artifact_id": 11417486230,
+  "final_commit": "be54b44b0b08d56b27fe29755d76b26ce36161ff",
+  "semantic_anchor_count": 7,
+  "semantic_raycast_pass": "21/21",
+  "changed_pixels_vs_sharp": {
+    "home": 22,
+    "pan_left": 13,
+    "pan_right": 18
+  },
+  "beauty_replacement_regions": [],
+  "real_geometry_role": "editable support geometry hidden from beauty",
+  "evidence": "docs/evidence/valoria-first-playable-city-slice-v1/result.json"
 }
