@@ -14,14 +14,12 @@ namespace Eldoria.EditorTools
     public static class ValoriaCurrentWebGLBuildV1
     {
         const string ValoriaScene = "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity";
-        const string FrontierScene = "Assets/Eldoria/Scenes/Frontier.unity";
         const string Output = "Builds/WebGL";
 
         [MenuItem("Eldoria/Build current Valoria production WebGL")]
         public static void Build()
         {
             Require(ValoriaScene);
-            Require(FrontierScene);
             for (var i = 0; i < 4; i++)
                 Require($"Assets/Eldoria/ProductionSlice/Runtime/state-{i}.asset");
 
@@ -34,7 +32,7 @@ namespace Eldoria.EditorTools
 
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { ValoriaScene, FrontierScene },
+                scenes = new[] { ValoriaScene },
                 locationPathName = Output,
                 target = BuildTarget.WebGL,
                 options = BuildOptions.None
