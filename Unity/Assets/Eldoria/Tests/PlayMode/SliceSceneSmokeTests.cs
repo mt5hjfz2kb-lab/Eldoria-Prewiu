@@ -3,6 +3,7 @@ using Eldoria.Presentation;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
 using UnityEngine.TestTools;
 
 namespace Eldoria.Tests
@@ -320,7 +321,17 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("HÉROES"),Is.Not.Null);
             Assert.That(GameObject.Find("ARCÓN"),Is.Not.Null);
             Assert.That(GameObject.Find("CÓDICE"),Is.Not.Null);
-            Assert.That(RenderSettings.ambientLight.grayscale,Is.GreaterThan(.78f));
+            // The canonical final-look layer uses Trilight; the previous flat-ambient
+            // threshold described the superseded rig and falsely failed the real scene.
+            Assert.That(GameObject.Find("Valoria · Production Final Look v1"),Is.Not.Null);
+            Assert.That(RenderSettings.ambientMode,Is.EqualTo(AmbientMode.Trilight));
+            Assert.That(RenderSettings.ambientSkyColor,Is.EqualTo(new Color(.30f,.34f,.38f)));
+            Assert.That(RenderSettings.ambientEquatorColor,Is.EqualTo(new Color(.22f,.20f,.17f)));
+            Assert.That(RenderSettings.ambientGroundColor,Is.EqualTo(new Color(.10f,.09f,.075f)));
+            Assert.That(RenderSettings.ambientIntensity,Is.EqualTo(.72f).Within(.001f));
+            var key=GameObject.Find("Final Look · warm key")?.GetComponent<Light>();
+            Assert.That(key,Is.Not.Null);
+            Assert.That(key.intensity,Is.EqualTo(.38f).Within(.001f));
             var sun=GameObject.Find("Valoria · amber dusk")?.GetComponent<Light>();
             Assert.That(sun,Is.Not.Null);
             Assert.That(sun.intensity,Is.GreaterThanOrEqualTo(1.20f));

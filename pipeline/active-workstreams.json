@@ -19,7 +19,8 @@
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs.meta"
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -29,7 +30,7 @@
       "base_main_sha": "244aa1b7f85351a82b218d75b4af7ef135844516",
       "status": "active",
       "paid_credits": 0,
-      "phase": "Same workstream resumed: inspect verified local CPU PLY artifact 11423748153; generic parcel integration and Unity gates pending",
+      "phase": "Local PLY + generic parcel-source PASS; parcel UI PlayMode PASS; correcting stale legacy flat-ambient test without visual changes; integrated capture pending",
       "blocked_at": "2026-10-06T14:49:11Z",
       "blocker": null,
       "resume_same_id": true,
