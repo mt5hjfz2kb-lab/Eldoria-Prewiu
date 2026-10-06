@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T09:48:00Z",
+  "updated_at": "2026-10-06T10:12:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -65,6 +65,25 @@
       "phase": "ZERO-SPEND PUBLIC IMAGE-TO-3D API CAPABILITY PROBE",
       "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
       "next": "Probe official Stable Fast 3D Space API anonymously with public demo input. If unavailable, test another open-source public Space or local CPU feasibility without paid credits."
+    },
+    {
+      "id": "valoria-unique3d-gate-capability-v1",
+      "title": "VALORIA UNIQUE3D GATE CAPABILITY v1",
+      "owner": "chat-independent-unique3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-unique3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-unique3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-unique3d-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:12:00Z",
+      "base_main_sha": "bdbc2371d9806d31ffae5c8afd321703eefcef15",
+      "status": "active",
+      "phase": "ZERO-SPEND UNIQUE3D CANONICAL GATE PROOF",
+      "dependency": "Do not touch TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry donor, projection bake, citybuilder source, commercial KINGDOM acquisition, Unity, Windows runner, or paid credits.",
+      "next": "Run Wuvin/Unique3D public Space on the same canonical Lower Gate crop used by InstantMesh. Require actual mesh plus multi-angle visual evidence before any promotion."
     }
   ],
   "history": [
