@@ -50,19 +50,18 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/valoria-master-future.png",officialPosition+futureShift,officialTarget+futureShift,12f,1280,720);
             Save(camera,folder+"/valoria-mobile.png",officialPosition,officialTarget,12f,390,844);
 
-            // I-II owner-playtest visual wedge: capture the real Frontier runtime with the same
-            // This tracked Editor change also intentionally forces the full Unity certification gate.
-            // deterministic HUD-free reviewer instead of creating a parallel art pipeline.
+            // Region 1 canonical 4X visual proof. Do not capture the superseded procedural Frontier.
+            // The same runtime builder used by the player-facing MUNDO screen owns this evidence.
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var frontierState=new PlayerState {
                 BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
                 CorruptionDiscovered=true,ScoutDefeated=false,EngendroDefeated=false
             };
-            VisualWorld.Create(false,frontierState);
+            WorldRegion1Runtime.Create(frontierState);
             camera=Camera.main;
-            if(camera==null)throw new System.Exception("Frontier camera was not created");
-            var frontierPosition=new Vector3(20f,24f,-21f);
-            var frontierTarget=new Vector3(0f,.8f,1.5f);
+            if(camera==null)throw new System.Exception("World Region 1 camera was not created");
+            var frontierPosition=new Vector3(23f,25f,-27f);
+            var frontierTarget=new Vector3(0f,.4f,2.5f);
             Save(camera,folder+"/frontier-i-ii-19.png",frontierPosition,frontierTarget,19f,1280,720);
             Save(camera,folder+"/frontier-i-ii-12.png",frontierPosition,frontierTarget,12f,1280,720);
             Save(camera,folder+"/frontier-i-ii-9.png",frontierPosition,frontierTarget,9f,1280,720);
