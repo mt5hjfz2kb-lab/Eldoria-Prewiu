@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'pipeline/valoria-production-art-starter-run-request.json'
+      - 'docs/evidence/valoria-premium-square-metre-v1/family-mesh-spec.json'
+      - '.github/workflows/valoria-production-art-starter-source-v1.yml'
 
 permissions:
   contents: write
