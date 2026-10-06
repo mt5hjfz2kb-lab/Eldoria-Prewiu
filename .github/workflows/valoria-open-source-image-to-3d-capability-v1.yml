@@ -134,7 +134,7 @@ jobs:
                   # Prefer GLB if present, otherwise keep first mesh.
                   dst="/tmp/i2d/output/instantmesh"+ext
                   shutil.copy2(p,dst); copied.append(dst)
-                    print("COPIED",copied)
+          print("COPIED",copied)
           if not copied:
               raise SystemExit("InstantMesh returned no local mesh file")
           PY
