@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-first-depth-shell-unity-v1",
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "source_family": "art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1",
+  "camera_contract": "orthographic yaw20 pitch35",
+  "captures": [
+    "HOME",
+    "GOLDEN_CLOSE",
+    "PAN_LEFT",
+    "PAN_RIGHT",
+    "ZOOM_OUT",
+    "MOBILE_LANDSCAPE",
+    "PORTRAIT_ENTRY"
+  ],
+  "gameplay_signature_must_remain": true,
+  "zero_spend": true,
+  "vendor_calls": false,
+  "production_promotion": false,
+  "nonce": "camera-first-depth-shell-unity-v1-001",
+  "requested_at": "2026-10-06T08:12:00Z"
+}
