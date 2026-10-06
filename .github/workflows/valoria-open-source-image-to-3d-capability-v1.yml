@@ -27,34 +27,40 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install "gradio_client>=1.10,<2" pillow requests
 
-      - name: Prepare isolated canonical gate input
+      - name: Prepare isolated semantic gate input
         run: |
           mkdir -p /tmp/trellis/input /tmp/trellis/output /tmp/trellis/evidence
           python - <<'PY'
-          from PIL import Image
+          from PIL import Image, ImageChops
           src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
           im=Image.open(src).convert("RGBA")
           alpha=im.getchannel("A")
-          box=alpha.getbbox()
-          if not box:
-              raise SystemExit("semantic-gate has no alpha content")
-          # Small alpha-aware margin around the gate only.
-          x0,y0,x1,y1=box
-          pad=max(6,int(max(x1-x0,y1-y0)*0.04))
-          box=(max(0,x0-pad),max(0,y0-pad),min(im.width,x1+pad),min(im.height,y1+pad))
-          crop=im.crop(box)
-          w,h=crop.size
-          side=max(w,h)
+          bbox=alpha.getbbox()
+          # If semantic layer is opaque full-frame, fall back to non-empty visual bbox
+          # against its corner color; otherwise alpha bbox is authoritative.
+          if bbox is None or bbox==(0,0,*im.size):
+              bg=Image.new("RGBA",im.size,im.getpixel((0,0)))
+              diff=ImageChops.difference(im,bg).convert("L")
+              bbox=diff.getbbox()
+          if bbox is None:
+              raise SystemExit("Semantic gate layer has no isolatable content")
+          # small padding
+          l,t,r,b=bbox
+          pad=max(12,int(max(r-l,b-t)*0.06))
+          bbox=(max(0,l-pad),max(0,t-pad),min(im.width,r+pad),min(im.height,b+pad))
+          crop=im.crop(bbox)
+          # Composite to neutral transparent canvas centered square.
+          w,h=crop.size; side=max(w,h)
           canvas=Image.new("RGBA",(side,side),(255,255,255,0))
           canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
           canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
-          out="/tmp/trellis/input/eldoria-gate-crop.png"
+          out="/tmp/trellis/input/eldoria-semantic-gate.png"
           canvas.save(out)
           open("/tmp/trellis/evidence/input-spec.txt","w").write(
-              f"source={src}\nsource_size={im.size}\nalpha_bbox={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+              f"source={src}\nsource_size={im.size}\nisolation_bbox={bbox}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
           )
           PY
-          sha256sum /tmp/trellis/input/eldoria-gate-crop.png | tee /tmp/trellis/evidence/input.sha256
+          sha256sum /tmp/trellis/input/eldoria-semantic-gate.png | tee /tmp/trellis/evidence/input.sha256
 
       - name: Generate and extract GLB with community TRELLIS
         id: trellis
@@ -77,7 +83,7 @@ jobs:
           spec=endpoints[ep]
           params=spec.get("parameters",[])
           print("PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
-          image="/tmp/trellis/input/eldoria-gate-crop.png"
+          image="/tmp/trellis/input/eldoria-semantic-gate.png"
           if "/start_session" in endpoints:
               print("START_SESSION",client.predict(api_name="/start_session"))
           processed=image
@@ -108,9 +114,9 @@ jobs:
               elif n=="multiimage_algo":
                   kwargs[n]="stochastic"
               elif n=="mesh_simplify":
-                  kwargs[n]=0.95
+                  kwargs[n]=0.70
               elif n=="texture_size":
-                  kwargs[n]=1024
+                  kwargs[n]=2048
               elif n and d is not None:
                   kwargs[n]=d
           print("CALL",ep,kwargs)
@@ -194,9 +200,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-trellis-community-gate-capability-v1
+          name: valoria-trellis-semantic-gate-capability-v2
           path: |
             /tmp/trellis/evidence
             /tmp/trellis/output
-            /tmp/trellis/input/eldoria-gate-crop.png
+            /tmp/trellis/input/eldoria-semantic-gate.png
           retention-days: 14
