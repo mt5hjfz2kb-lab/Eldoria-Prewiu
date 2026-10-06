@@ -27,6 +27,11 @@ MonoBehaviour:
   CobbleRoad: {fileID: 1807949595683360, guid: 2db5cf884e24ae74ba5afa31151e2453, type: 3}
   SlavicTreeTall: {fileID: 1191365904497370, guid: 66b2ba6f28a15344e8faa85458712b9d, type: 3}
   SlavicBush: {fileID: 957204323108823746, guid: 18085d3fce37a864a89d6a5db7b67d3b, type: 3}
+  NatureTree01: {fileID: 100100000, guid: 393b236c42954a640b513d46de90ac38, type: 3}
+  NatureTree02: {fileID: 100100000, guid: c63ea781a273235439e583799176c846, type: 3}
+  NatureTree03: {fileID: 100100000, guid: 4e2dd32c733005a44b50004d673dc653, type: 3}
+  NatureTree04: {fileID: 100100000, guid: aae542b8a65f39b49b008fa689ce9804, type: 3}
+  NatureBush01: {fileID: 100100000, guid: d638ef2ca2fe20c4c9c08e125692d3f4, type: 3}
   SlavicCobbleRoad: {fileID: 1807949595683360, guid: 2db5cf884e24ae74ba5afa31151e2453, type: 3}
   SlavicStoneFence: {fileID: 1185029752378428, guid: 3db120a6c4288974c99d5e60c01fff6a, type: 3}
   SlavicRockGate: {fileID: 1163180236395570, guid: e784bd578603723449792fd7a2e8a9e3, type: 3}
