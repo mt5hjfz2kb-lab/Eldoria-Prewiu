@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/valoria-hi3dgen-semantic-gate-capability-v1.yml"
+      - ".github/workflows/valoria-hi3dgen-gate-capability-v1.yml"
 
 permissions:
   contents: read
