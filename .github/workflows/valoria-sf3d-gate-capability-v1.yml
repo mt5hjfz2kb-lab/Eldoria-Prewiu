@@ -1,0 +1,27 @@
+name: "[R&D] Valoria SF3D Gate Capability v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-sf3d-gate-capability-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install client
+        run: python -m pip install --quiet "gradio_client>=1.4" pillow
+      - name: Generate Gate with Stable Fast 3D ZeroGPU
+        env:
+          OUT_DIR: /tmp/sf3d-proof
+        run: python tools/valoria-sf3d-space-proof.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-sf3d-gate-capability-v1
+          path: /tmp/sf3d-proof
+          if-no-files-found: error
+          retention-days: 30
