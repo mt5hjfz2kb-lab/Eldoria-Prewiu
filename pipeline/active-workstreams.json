@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T08:00:00Z",
-  "active": [
+  "updated_at": "2026-10-06T08:30:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
       "title": "VALORIA GOLDEN LOOKDEV SLICE v1",
@@ -30,10 +31,10 @@
       ],
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "cb7d5d3ca2aad11c3aceb9f48f896be0ea8b1edd",
-      "status": "active",
-      "phase": "VALORIA CAMERA-FIRST 2.5D DEPTH SHELL v1 — SEMANTIC PARALLAX + SELECTIVE DEPTH",
+      "status": "completed",
+      "phase": "SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Replace rectangular Unity shell with semantic alpha layers, deterministic occlusion fill, Gate/Bridge back-depth cards and depth-dependent bounded parallax. Validate HOME, local LEFT/RIGHT pan, Golden close, mobile and portrait-entry; add selective real geometry only if semantic parallax still exposes flatness or seams.",
+      "next": "STOP. Await explicit owner selection of a genuinely different visual production method; do not resume camera-first semantic card iterations.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
@@ -79,10 +80,15 @@
       "houdini_pilot_config": "pipeline/houdini-golden-integration-pilot-v1.json",
       "camera_first_orthographic_run_id": 37425954567,
       "camera_first_orthographic_artifact_id": 11394723424,
-      "camera_first_orthographic_result": "CORE CAMERA FAMILY PASS / portrait-home top extension required / portrait-entry bottom extension required"
-    }
-  ],
-  "history": [
+      "camera_first_orthographic_result": "CORE CAMERA FAMILY PASS / portrait-home top extension required / portrait-entry bottom extension required",
+      "completed_at": "2026-10-06T08:30:00Z",
+      "result": "TECH PASS / VISUAL FAIL / CAMERA ENVELOPE FAIL / OCCLUSION-DEPTH FAIL / FUNCTIONAL 3D COMPATIBILITY PASS WITH VISUAL CAVEAT / PRODUCTION SCALABILITY FAIL",
+      "final_gate_doc": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
+      "final_source_run_id": 37434039330,
+      "final_source_artifact_id": 11397359251,
+      "final_unity_run_id": 37435725415,
+      "final_unity_artifact_id": 11398459304
+    },
     {
       "id": "valoria-premium-target-gap-review-visual-uplift-v1",
       "title": "VALORIA PREMIUM TARGET GAP REVIEW + VISUAL UPLIFT v1",
