@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "pipeline/valoria-target-derived-pbr-material-v1.json"
+      - ".github/workflows/valoria-target-derived-pbr-material-v1.yml"
   workflow_dispatch:
 permissions:
   contents: read
