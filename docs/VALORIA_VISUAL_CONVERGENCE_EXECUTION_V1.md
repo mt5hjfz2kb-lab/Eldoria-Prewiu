@@ -222,3 +222,48 @@ Gate 2 PASS requires:
 4. front/behind depth ordering remains valid;
 5. proxy geometry can be hidden from beauty render while remaining selectable/collidable;
 6. evidence JSON maps screen point → proxy ID → world hit position.
+
+
+## Gate 2 — interactive substrate HOME
+**Verdict: TECH PASS / INTERACTION PASS AT HOME / CAMERA-STABILITY UNPROVEN**
+
+Evidence:
+- Run: `37457903922`
+- Artifact: `11410576612`
+- Clean SHARP source: artifact `11408853949`
+- Unity visual layer: 589,824 splats
+- Invisible interaction proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Deterministic HOME raycasts: **4/4 PASS**
+- beauty-home: PASS; proxies remain invisible in production beauty
+- paid credits: 0
+
+Raycast evidence:
+- WestTower → WestTower
+- CentralKeep → CentralKeep
+- EastTower → EastTower
+- LowerGate → LowerGate
+
+What this proves:
+- a clean SHARP Gaussian visual layer can coexist with standard Unity colliders/raycast interaction;
+- gameplay selection does not need to come from Gaussian data itself;
+- the high-fidelity representation can remain purely visual while Unity owns interaction/gameplay semantics.
+
+What this does **not** yet prove:
+- proxy-to-visible-architecture alignment across bounded camera movement;
+- stable selection through pan/zoom;
+- gameplay callbacks/state changes;
+- mobile/runtime budget.
+
+Important evidence caveat:
+- debug proxy solids are depth-occluded by the Gaussian layer, so `proxy-debug.png` is not sufficient visual alignment evidence by itself.
+- Gate 2 is therefore promoted only as a HOME interaction substrate pass.
+
+### Gate 2B — bounded camera interaction stability
+Next production gate:
+1. keep the same four world-space proxies;
+2. test HOME, bounded pan-left, pan-right, zoom-in and zoom-out;
+3. project each proxy into each camera view and raycast back through its projected screen point;
+4. require the same semantic ID on every visible view;
+5. record projected viewport coordinates, pass/fail and selection state;
+6. preserve a clean SHARP beauty capture for every camera state;
+7. no new visual method or generator is authorized.
