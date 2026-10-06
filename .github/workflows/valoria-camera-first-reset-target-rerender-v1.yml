@@ -1,0 +1,82 @@
+name: "[PROOF] Valoria Reset-Target Layer Rerender v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-reset-target-rerender-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-camera-first-reset-target-rerender-v1
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/render-camera-first-reset-target-layers-v1.py
+            pipeline/camera-first-reset-target-rerender-v1-request.json
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1
+          sparse-checkout-cone-mode: false
+
+      - name: Cache portable Blender
+        id: blender-cache
+        uses: actions/cache@v4
+        with:
+          path: .ci/blender
+          key: blender-4.0.2-linux-x64-v1
+
+      - name: Install minimal headless libraries
+        run: |
+          sudo apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 install -y --no-install-recommends xvfb libegl1 libgl1 libglx-mesa0 ca-certificates curl xz-utils
+
+      - name: Install portable Blender on cache miss
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci
+          curl --fail --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 300 \
+            https://download.blender.org/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz \
+            -o /tmp/blender.tar.xz
+          tar -xf /tmp/blender.tar.xz -C .ci
+          mv .ci/blender-4.0.2-linux-x64 .ci/blender
+
+      - name: Render corrected authoritative layers
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" .ci/blender/blender -b --python-exit-code 1 --python tools/render-camera-first-reset-target-layers-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layered-base.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layered-occlusion-debug.png
+
+      - name: Persist corrected layer proof
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layered-*
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/ValoriaResetTargetLayeredProjectionV1.blend
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist corrected reset-target layer proof"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-reset-target-rerender-v1
+          path: |
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layered-*
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+          if-no-files-found: error
+          retention-days: 30
