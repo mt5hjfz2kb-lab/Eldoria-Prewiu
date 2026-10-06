@@ -17,9 +17,9 @@
   },
   "validation": {
     "source_gate": "No new method discovery. Consume only evidence classified in docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md. First gate: sanitized canonical SHARP PLY must load in Unity 6 URP without invalid numeric attributes.",
-    "final_gate": "Production method locks only after official HOME + bounded pan/zoom + depth/occlusion + interaction compatibility + runtime feasibility evidence. A green CI run is never sufficient."
+    "final_gate": "Gate 3 promotes only if the approved Lower Gate GLB imports/instantiates, aligns to the validated LowerGate region in canonical HOME, remains depth-stable under bounded camera, and preserves the clean SHARP beauty baseline."
   },
-  "notes": "Owner-directed convergence phase. Existing exploratory runs are archival only. Priority chain: SHARP sanitation → Unity proof → select real interactive geometry donor/human correction → target-conditioned surface/depth → integrated official-camera validation. No new generator family unless a bounded convergence dependency explicitly requires it.",
-  "status": "CONVERGENCE_ACTIVE",
-  "blocker": "Current SHARP Unity blocker is non-finite PLY scalar data (observed opacity at vertex 606538). Sanitize numeric attributes while preserving canonical source bytes for audit, then rerun Unity integration."
+  "notes": "Broad visual R&D remains frozen. Gate 2 closed PASS at run 37459082453 / artifact 11411280592 with canonical HOME artifact 11409079879 and 20/20 bounded-camera raycasts. Current production priority: import and align approved LowerGateFamilyV1.glb as visible real geometry over the locked SHARP layer, then capture debug/material/pan evidence. No new generator family.",
+  "status": "CONVERGENCE_GATE_3_ACTIVE",
+  "blocker": null
 }
