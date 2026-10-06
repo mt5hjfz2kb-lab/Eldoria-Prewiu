@@ -1,12 +1,9 @@
 name: "[PROOF] Valoria Camera-First Reset Target Unity Shell v1"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/camera-first-reset-target-unity-v1-request.json'
   workflow_dispatch:
 
+# Historical R&D: manual-only after Semantic 2.5D final rejection (2026-10-06).
 concurrency:
   group: valoria-camera-first-reset-target-unity-v1
   cancel-in-progress: true
