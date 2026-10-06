@@ -819,7 +819,14 @@ namespace Eldoria.Presentation
             SliceBoot.ResetLocalSaveAndRestart();
         }
 
-        void Zoom(float amount){if(productionParcels!=null){productionParcels.Zoom(amount);return;}if(OfficialCamera!=null)OfficialCamera.orthographicSize=Mathf.Clamp(OfficialCamera.orthographicSize+amount,9,19);}
+        void Zoom(float amount)
+        {
+            if(productionParcels!=null){productionParcels.Zoom(amount);return;}
+            if(OfficialCamera==null)return;
+            float min=city?9f:10f;
+            float max=city?19f:18f;
+            OfficialCamera.orthographicSize=Mathf.Clamp(OfficialCamera.orthographicSize+amount,min,max);
+        }
         void UpdateSafeArea()
         {
             lastWidth=Screen.width;lastHeight=Screen.height;
