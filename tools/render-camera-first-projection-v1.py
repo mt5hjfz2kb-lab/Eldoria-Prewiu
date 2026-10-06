@@ -46,23 +46,55 @@ scene.camera=cam
 cam_data.type='PERSP'
 cam_data.angle=math.radians(50.0)
 cam_data.sensor_fit='HORIZONTAL'
+cam_data.clip_start=0.01
+cam_data.clip_end=100.0
+
+# Use actual imported world-space bounds so axis conversion cannot make the proof look away.
+corners=[receiver.matrix_world @ Vector(v) for v in receiver.bound_box]
+mins=Vector((min(v.x for v in corners),min(v.y for v in corners),min(v.z for v in corners)))
+maxs=Vector((max(v.x for v in corners),max(v.y for v in corners),max(v.z for v in corners)))
+center=(mins+maxs)*0.5
+dims=maxs-mins
+print("RECEIVER_BOUNDS_MIN",tuple(round(x,5) for x in mins))
+print("RECEIVER_BOUNDS_MAX",tuple(round(x,5) for x in maxs))
+print("RECEIVER_CENTER",tuple(round(x,5) for x in center))
+print("RECEIVER_DIMS",tuple(round(x,5) for x in dims))
 
 def look_at(obj, target):
     direction=Vector(target)-obj.location
     obj.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
 
-def render(name, xoff=0.0, yaw_target_x=0.0):
-    # OBJ importer converts source Y-up / -Z-forward camera-space mesh
-    # into Blender Z-up / -Y-forward world coordinates.
+def render(name, xoff=0.0):
     cam.location=(xoff,0.0,0.0)
-    look_at(cam,(yaw_target_x,-10.0,0.0))
+    look_at(cam,center)
     scene.render.filepath=str(OUT/name)
     bpy.ops.render.render(write_still=True)
 
-render("projection-base.png",0.0,0.0)
-render("projection-left-small.png",-0.35,0.0)
-render("projection-right-small.png",0.35,0.0)
-render("projection-left-medium.png",-0.75,0.0)
-render("projection-right-medium.png",0.75,0.0)
+# Solid diagnostic proves camera/frustum independently of UV/material.
+solid=bpy.data.materials.new("ProjectionDiagnosticWhite")
+solid.use_nodes=True
+pn=solid.node_tree.nodes.get("Principled BSDF")
+pn.inputs["Base Color"].default_value=(1.0,0.2,0.1,1.0)
+pn.inputs["Roughness"].default_value=1.0
+receiver.data.materials.clear(); receiver.data.materials.append(solid)
+render("projection-debug-solid.png",0.0)
+
+# Restore exact canonical unlit projection.
+receiver.data.materials.clear(); receiver.data.materials.append(mat)
+render("projection-base.png",0.0)
+render("projection-left-small.png",-0.35)
+render("projection-right-small.png",0.35)
+render("projection-left-medium.png",-0.75)
+render("projection-right-medium.png",0.75)
+
+debug={
+    "bounds_min":list(mins),
+    "bounds_max":list(maxs),
+    "center":list(center),
+    "dimensions":list(dims),
+    "camera_base":list(cam.location),
+    "target":list(center)
+}
+(OUT/"render-debug.json").write_text(json.dumps(debug,indent=2)+"\n")
 
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/"art-source"/"valoria"/"lookdev"/"golden-slice-v1"/"camera-first-projection-v1"/"ValoriaCameraFirstProjectionV1.blend"))
