@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T12:02:00Z",
+  "updated_at": "2026-10-06T12:08:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -66,7 +66,9 @@
         "artifact_id": 11411280592,
         "verdict": "TECH PASS / 20-of-20 BOUNDED CAMERA RAYCAST PASS / BEAUTY PRESERVED"
       }
-    },
+    }
+  ],
+  "history": [
     {
       "id": "visual-fallback-generic-integration-v1",
       "title": "Visual fallback generic integration v1",
@@ -85,13 +87,26 @@
       ],
       "claimed_at": "2026-10-06T12:02:00Z",
       "base_main_sha": "3d63d0986a6680f4390b74b3a15a42ec05befe60",
-      "status": "active",
-      "phase": "GENERIC ZERO-SPEND INTEGRATION",
+      "status": "completed",
+      "phase": "GENERIC ZERO-SPEND INTEGRATION COMPLETE",
       "dependency": "Owner-authorized generic integration only. Must not modify any active SHARP/Unity convergence file, art-production-request.json, Unity package, evidence, or heavy runner workflow.",
-      "next": "Connect generic planner and reusable fallback workflow; validate by GitHub-hosted Node only."
-    }
-  ],
-  "history": [
+      "next": "Connect generic planner and reusable fallback workflow; validate by GitHub-hosted Node only.",
+      "completed_at": "2026-10-06T12:08:00Z",
+      "result": {
+        "planner_fallback_embedding": "implemented",
+        "generic_art_planner_hook": "implemented",
+        "reusable_zero_spend_workflow": "implemented",
+        "conservative_failure_classifier": "implemented",
+        "sharp_owned_workflows": "intentionally_untouched",
+        "paid_actions": "not_enabled",
+        "validation": {
+          "art_planner_run_id": 37460049415,
+          "art_planner_conclusion": "success",
+          "fallback_workflow_run_id": 37460105276,
+          "fallback_workflow_status": "in_progress_at_close"
+        }
+      }
+    },
     {
       "id": "valoria-visual-fallback-orchestrator-v1",
       "title": "VALORIA VISUAL FALLBACK ORCHESTRATOR v1",
