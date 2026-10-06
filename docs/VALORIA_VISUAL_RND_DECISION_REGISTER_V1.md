@@ -31,12 +31,13 @@ No single tested generator currently satisfies all requirements alone.
 ## Methods
 
 ### SHARP Gaussian full-frame
-**Status:** LEADER / UNITY RUNTIME REPRESENTATION PASS / PRODUCTION CLEANUP REQUIRED
+**Status:** LEADER / CLEAN 600K UNITY PRODUCTION BASELINE PASS
 - Run: 37448896124
 - Artifact: 11404383856
 - Output: ~64 MB Gaussian PLY + synthesized-view video.
 - Proven: strongest full-frame appearance retention observed so far.
 - Unity Gate 1 run 37455323684 / artifact 11409152206: bounded 294,912-splat representation renders successfully inside Unity 6 URP.
+- Clean production baseline: run 37456541286 / artifact 11409359136, generated from clean approved reference artifact 11408853949 at 589,824 splats. HUD-free HOME/pan/zoom and raster front/behind depth coexistence pass.
 - Proven in Unity: HOME render, bounded left/right pan, raster front-probe visibility and behind-probe occlusion.
 - Remaining unknowns: clean source without baked HUD/UI, final density/performance envelope, mobile runtime budget, interaction/hotspots and wider camera motion.
 - Workstream: `valoria-sharp-gaussian-pipeline-v1`.
