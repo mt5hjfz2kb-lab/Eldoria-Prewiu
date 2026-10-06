@@ -15,10 +15,51 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install client
         run: python -m pip install --quiet "gradio_client>=1.4" pillow
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
       - name: Generate Gate with Stable Fast 3D ZeroGPU
         env:
           OUT_DIR: /tmp/sf3d-proof
         run: python tools/valoria-sf3d-space-proof.py
+      - name: Render generated GLB evidence
+        run: |
+          cat > /tmp/sf3d-proof/render_glb.py <<'PY'
+          import bpy, os, math, json
+          from mathutils import Vector
+          root="/tmp/sf3d-proof"; glb=os.path.join(root,"sf3d-gate.glb")
+          if not os.path.exists(glb): raise RuntimeError("Missing generated GLB")
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.import_scene.gltf(filepath=glb)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+          if not meshes: raise RuntimeError("Generated GLB has no meshes")
+          pts=[]
+          for o in meshes:
+              for cc in o.bound_box: pts.append(o.matrix_world @ Vector(cc))
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          ctr=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
+          scene=bpy.context.scene; scene.render.engine="BLENDER_EEVEE"
+          scene.render.resolution_x=900; scene.render.resolution_y=900; scene.render.resolution_percentage=100
+          scene.render.image_settings.file_format="PNG"; scene.world.color=(0.035,0.04,0.05)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(ctr.x,ctr.y,mn.z-span*.015))
+          g=bpy.context.object
+          gm=bpy.data.materials.new("ground"); gm.diffuse_color=(.12,.12,.12,1); g.data.materials.append(gm)
+          bpy.ops.object.light_add(type="SUN"); sun=bpy.context.object; sun.rotation_euler=(math.radians(35),0,math.radians(135)); sun.data.energy=2.2
+          bpy.ops.object.light_add(type="AREA",location=ctr+Vector((-span*.7,-span*.9,span*1.1)))
+          bpy.context.object.data.energy=1000; bpy.context.object.data.size=span
+          bpy.ops.object.camera_add(); cam=bpy.context.object; scene.camera=cam; cam.data.lens=55
+          def track():
+              cam.rotation_euler=(ctr-cam.location).to_track_quat("-Z","Y").to_euler()
+          views={"front":Vector((0,-1.7,.45)),"three-quarter":Vector((1.15,-1.35,.72)),"side":Vector((1.7,0,.45))}
+          for name,v in views.items():
+              cam.location=ctr+v*span; track(); scene.render.filepath=os.path.join(root,name+".png"); bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          open(os.path.join(root,"mesh-report.json"),"w").write(json.dumps({"meshes":len(meshes),"triangles_approx":tris,"bounds":list(dims)},indent=2))
+          PY
+          blender -b --python /tmp/sf3d-proof/render_glb.py
+          test -s /tmp/sf3d-proof/front.png
+          test -s /tmp/sf3d-proof/three-quarter.png
+          test -s /tmp/sf3d-proof/side.png
       - uses: actions/upload-artifact@v4
         with:
           name: valoria-sf3d-gate-capability-v1
