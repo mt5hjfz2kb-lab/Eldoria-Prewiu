@@ -1,9 +1,8 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T14:49:11Z",
-  "active": [],
-  "history": [
+  "updated_at": "2026-10-06T15:10:23.343Z",
+  "active": [
     {
       "id": "valoria-real-game-state-v1",
       "title": "Valoria real runtime parcel and construction progression",
@@ -22,14 +21,17 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "sharp-local-official-checkpoint"
+      ],
       "claimed_at": "2026-10-06T14:13:16.777Z",
       "base_main_sha": "056df4b2e17b6ef8d773ac37fb8312c8c91db428",
-      "status": "blocked",
+      "status": "active",
       "paid_credits": 0,
-      "phase": "BLOCKED: same-route free ZeroGPU quota; NOT COMPLETED / NOT PROMOTED",
+      "phase": "Resume SAME block: owner-authorized local official Apple SHARP inference; no model/method change",
       "blocked_at": "2026-10-06T14:49:11Z",
-      "blocker": "ZeroGPU free quota insufficient: 180 seconds requested versus 163 remaining",
+      "blocker": null,
       "resume_same_id": true,
       "result": {
         "run_id": 37481997235,
@@ -40,8 +42,11 @@
         "completed": false,
         "paid_credits": 0,
         "next_block_started": false
-      }
-    },
+      },
+      "resumed_at": "2026-10-06T15:10:23.343Z"
+    }
+  ],
+  "history": [
     {
       "id": "valoria-visual-authority-reset-v1",
       "title": "Valoria correct reference authority and rerun first city slice",
