@@ -1,0 +1,82 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "purpose": "Pre-classify known world assets/systems for reuse before any Unity mutation.",
+  "reuseNow": [
+    {
+      "item": "Player City v1",
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+      "role": "Valoria strategic map-city visual",
+      "confidence": "high",
+      "constraints": [
+        "visual-only",
+        "independent interaction proxy",
+        "identity/power/alliance/protection remain data/UI-owned"
+      ]
+    }
+  ],
+  "reuseAsPatternOrCandidate": [
+    {
+      "item": "WorldRouteKit",
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs",
+      "role": "visual-only march corridor composition",
+      "confidence": "medium-high",
+      "reason": "Already designed to keep route visuals separate from gameplay topology and tested for mobile readability.",
+      "action": "Evaluate in the new current-art Region 1 scene; reuse design/pieces only if it passes the current Eldoria visual gate."
+    },
+    {
+      "item": "WorldResourceKit",
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs",
+      "role": "quarry/roadside hard-surface compositions",
+      "confidence": "medium-high",
+      "reason": "Visual-only with collider stripping; compatible with separate gameplay hotspots.",
+      "action": "Use as a candidate for quarry/roadside dressing, not as an automatic visual authority."
+    },
+    {
+      "item": "NatureStarterKit2",
+      "path": "Assets/NatureStarterKit2/... legacy Unity project path",
+      "role": "vegetation candidate",
+      "confidence": "medium",
+      "reason": "Previously compared under world lighting; not automatically promoted.",
+      "action": "Re-evaluate only if present and visually coherent with current Valoria. No broad R&D."
+    },
+    {
+      "item": "Quaternius ruins",
+      "role": "secondary ruin/POI source candidate",
+      "confidence": "medium",
+      "reason": "Concept docs identify useful ruin fragments after Eldoria material adaptation.",
+      "action": "Use only for low/medium-salience POIs if the visual gate passes."
+    },
+    {
+      "item": "Holotna Mountain candidate",
+      "role": "mountain/rock/geographic-base candidate",
+      "confidence": "medium",
+      "reason": "Previously audited as a strong free geographic source candidate.",
+      "action": "Do not depend on it for Region 1 until exact local availability/licensing/import status is reverified after runner release."
+    }
+  ],
+  "preserveAsKnowledgeNotFinalArt": [
+    {
+      "item": "Legacy Frontier",
+      "role": "topology, interaction, route, visual-kit evidence",
+      "rule": "Do not reuse as final player-facing world look without current visual revalidation."
+    },
+    {
+      "item": "world4x.html / v0220 web map",
+      "role": "functional semantics and UX seed",
+      "rule": "Do not copy HTML/CSS/emoji visual presentation."
+    }
+  ],
+  "rejectedOrRestricted": [
+    {
+      "item": "Slavic foliage",
+      "status": "rejected primary forest language",
+      "rule": "Do not reintroduce as Region 1 vegetation authority."
+    },
+    {
+      "item": "Slavic hard-surface subset",
+      "status": "conditional",
+      "rule": "Only low-salience rocks/roads/fences/props after current-camera validation."
+    }
+  ],
+  "productionRule": "Prefer existing proven functional assets and visual-only composition patterns; require current Region 1 visual continuity validation before promotion."
+}
