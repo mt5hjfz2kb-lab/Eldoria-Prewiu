@@ -60,8 +60,8 @@ namespace Eldoria.EditorTools
             WorldRegion1Runtime.Create(frontierState);
             camera=Camera.main;
             if(camera==null)throw new System.Exception("World Region 1 camera was not created");
-            var frontierPosition=new Vector3(23f,25f,-27f);
-            var frontierTarget=new Vector3(0f,.4f,2.5f);
+            var frontierPosition=new Vector3(20f,23f,-22f);
+            var frontierTarget=new Vector3(0f,.35f,1.5f);
             Save(camera,folder+"/frontier-i-ii-19.png",frontierPosition,frontierTarget,19f,1280,720);
             Save(camera,folder+"/frontier-i-ii-12.png",frontierPosition,frontierTarget,12f,1280,720);
             Save(camera,folder+"/frontier-i-ii-9.png",frontierPosition,frontierTarget,9f,1280,720);
