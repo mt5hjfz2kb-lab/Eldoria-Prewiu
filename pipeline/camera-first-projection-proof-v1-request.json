@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "valoria-camera-first-projection-shell-v1",
-  "nonce": "camera-first-projection-proof-002-da3-deps",
+  "nonce": "camera-first-projection-proof-003-exact-texture-blender4",
   "source": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
   "depth_model": "depth-anything/DA3-BASE",
   "depth_model_revision": "f4a6c9b3c95e41c82048423d3493a81ec3fa810e",
@@ -9,5 +9,5 @@
   "zero_spend": true,
   "vendor_calls": false,
   "unity": false,
-  "requested_at": "2026-10-06T06:21:00Z"
+  "requested_at": "2026-10-06T06:23:00Z"
 }
