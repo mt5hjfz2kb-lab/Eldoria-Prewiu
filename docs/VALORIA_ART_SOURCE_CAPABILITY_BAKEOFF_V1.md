@@ -97,3 +97,44 @@ Target architecture:
 A **Lower Gate modular grammar proof** must answer whether the canonical Lower Gate silhouette can be reconstructed from a deliberately small reusable kit while retaining >=4/5 identity at the official camera.
 
 Do not execute another Tripo/Meshy generation until this modular-system feasibility is evaluated. Paid credits remain 0.
+
+
+## 2026-10-06 — Modular-grammar feasibility audit
+
+The repository already contains the decisive historical experiment needed to avoid blindly rebuilding this idea.
+
+### Existing modular evidence
+`docs/VALORIA_MODULE_KIT.md` records six certified reusable families from the pre-reset era. Their isolated functional gates succeeded, but the combined Micro-Valoria inhabited-district proof ended **technical PASS / visual urban FAIL**. The later interface audit found that **zero families were interface-certified**: matching socket centers did not produce valid floor width, clearance, common rock support or visually continuous circulation. The focused Gate→Street→Terrace control again ended **INTERFACE FAIL / VISUAL FAIL**.
+
+That evidence rejects a return to the old model of assembling large fused Tripo/diorama modules.
+
+### Important positive evidence
+The reset-era `VALORIA LOWER GATE FAMILY v1` was authored with a deliberately modular semantic structure (WestTower, EastTower, Arch, WestWing, EastWing, Base), reusable tower/crown/wall vocabulary, repeated merlon/quoin trim modules and shared materials. It achieved its bounded family gate with 0 Tripo credits.
+
+However, later Golden Lookdev evidence proves that passing a bounded family gate did **not** mean the cumulative scene reached the canonical premium target. Therefore this Lower Gate is useful as a structural/modularity control, not as proof that the art problem is solved.
+
+### Corrected solution hypothesis
+Do **not** build a new kit by generating whole buildings/modules. Test a **fine-grained authored construction grammar** whose reusable pieces are smaller than the historical fused families and whose interfaces are designed first.
+
+Proposed minimal grammar for one Lower Gate:
+- wall field / masonry surface module;
+- square tower body segment;
+- tower crown / merlon rhythm;
+- arch/voussoir module;
+- buttress/pier;
+- plinth/base transition;
+- wall terminal/return;
+- banner/heraldry attachment;
+- rock/ground receiver interface as a separate contract, not fused into the architecture.
+
+The gate is not merely whether these pieces can reproduce Lower Gate. It must also demonstrate recombination into a **second distinct small structure** without new hero geometry. Otherwise the kit is a one-off decomposition and does not solve scalability.
+
+### Proof gates
+A. Lower Gate reconstruction at official camera: silhouette/identity/readability >=4/5.
+B. Recombination proof: use the same kit to create a distinct wall/tower/secondary gate fragment with no new primary mesh family.
+C. Interface proof: explicit floor/support/receiver dimensions and no fused terrain pedestal.
+D. Art proof: neutral clay first; no shaders/lighting used to rescue weak forms.
+E. Scalability proof: majority of visible architecture in the second composition must come from unchanged reusable pieces.
+
+### Decision
+Historical large-module modularity is **REJECTED as the answer**. Fine-grained authored grammar remains a genuinely different candidate and is the next zero-spend proof worth attempting. No Tripo/Meshy spend is justified before this proof.
