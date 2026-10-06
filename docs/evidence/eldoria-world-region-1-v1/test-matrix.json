@@ -3,11 +3,13 @@
   "cases": [
     {
       "id": "WR1-01",
-      "name": "Leave Valoria and enter Region 1",
+      "name": "Valoria city to World 4X screen",
       "assert": [
-        "gate resolves to world scene",
-        "entry pose inside bounds",
-        "Valoria save unchanged"
+        "Mundo button is visible and touch-reliable in Valoria",
+        "tap loads dedicated Region 1 world screen",
+        "world opens at bounded home pose centered on Valoria region",
+        "Valoria save/state remains authoritative and unchanged by transition itself",
+        "no physical gate-walk transition is required"
       ]
     },
     {
@@ -49,8 +51,9 @@
     },
     {
       "id": "WR1-05",
-      "name": "Return to Valoria",
+      "name": "World 4X screen back to Valoria",
       "assert": [
+        "Reino control or Valoria map selection returns to certified Valoria scene",
         "wallet value matches world result",
         "sawmill/build UI sees same authoritative state",
         "no second world state singleton"
@@ -70,9 +73,10 @@
       "id": "WR1-07",
       "name": "Mobile readability",
       "assert": [
-        "safe-area UI does not cover route fork",
-        "primary POIs legible at home zoom",
-        "touch proxy survives near-edge camera poses"
+        "safe-area UI does not cover strategic map controls or primary routes",
+        "Valoria landmark and primary POIs legible at home zoom",
+        "touch proxy survives near-edge camera poses",
+        "Mundo/Reino transition controls are comfortably touchable"
       ]
     },
     {
