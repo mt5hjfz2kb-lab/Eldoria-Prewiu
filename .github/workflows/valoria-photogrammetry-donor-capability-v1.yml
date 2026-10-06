@@ -40,21 +40,25 @@ jobs:
           # path is stable and account-free. Select a popular photogrammetric stone/wall asset.
           python - <<'PY'
           import json, os, urllib.parse, urllib.request
-          q=urllib.parse.urlencode({
-              "type":"Material",
-              "method":"PBRPhotogrammetry",
-              "q":"stone wall",
-              "sort":"Popular",
-              "limit":50,
-              "include":"tagData,downloadData"
-          })
-          url="https://ambientcg.com/api/v2/full_json?"+q
-          req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
-          with urllib.request.urlopen(req,timeout=90) as r:
-              data=json.load(r)
-          assets=data.get("assets",[])
+          def fetch_assets(params):
+              q=urllib.parse.urlencode(params)
+              url="https://ambientcg.com/api/v2/full_json?"+q
+              req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
+              with urllib.request.urlopen(req,timeout=90) as r:
+                  return json.load(r).get("assets",[])
+          queries=[
+              {"type":"Material","q":"stone wall","sort":"Popular","limit":100,"include":"tagData,downloadData"},
+              {"type":"Material","q":"stone","sort":"Popular","limit":150,"include":"tagData,downloadData"},
+              {"type":"Material","sort":"Popular","limit":250,"include":"tagData,downloadData"}
+          ]
+          assets=[]
+          for params in queries:
+              assets=fetch_assets(params)
+              print("AMBIENTCG_QUERY",params,"RESULTS",len(assets))
+              if assets:
+                  break
           if not assets:
-              raise SystemExit("ambientCG API returned no assets")
+              raise SystemExit("ambientCG API returned no assets after fallbacks")
           def score(a):
               txt=(str(a.get("id",""))+" "+str(a.get("name",""))+" "+json.dumps(a.get("tags",[]))).lower()
               s=0
