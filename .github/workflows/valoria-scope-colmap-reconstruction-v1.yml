@@ -1,0 +1,95 @@
+name: "[R&D] Valoria SCoPE COLMAP Reconstruction v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-scope-colmap-reconstruction-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install COLMAP and video tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y colmap ffmpeg python3-numpy python3-pil
+          colmap -h | head -20
+      - name: Fetch SCoPE lateral artifact and extract frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/scope-colmap/frames /tmp/scope-colmap/out
+          curl -L --fail -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/11407620741/zip"             -o /tmp/scope.zip
+          unzip -q /tmp/scope.zip -d /tmp/scope-artifact
+          cp /tmp/scope-artifact/scope-0.mp4 /tmp/scope-colmap/scope-0.mp4
+          ffmpeg -hide_banner -loglevel error -i /tmp/scope-colmap/scope-0.mp4 -vf "select='not(mod(n,4))',scale=640:-2" -vsync vfr /tmp/scope-colmap/frames/frame-%03d.png
+          test "$(find /tmp/scope-colmap/frames -name '*.png' | wc -l)" -ge 12
+      - name: Reconstruct with COLMAP CPU
+        run: |
+          set -euo pipefail
+          DB=/tmp/scope-colmap/database.db
+          IMG=/tmp/scope-colmap/frames
+          SPARSE=/tmp/scope-colmap/sparse
+          mkdir -p "$SPARSE"
+          colmap feature_extractor             --database_path "$DB"             --image_path "$IMG"             --ImageReader.single_camera 1             --ImageReader.camera_model SIMPLE_PINHOLE             --SiftExtraction.use_gpu 0
+          colmap sequential_matcher             --database_path "$DB"             --SiftMatching.use_gpu 0             --SequentialMatching.overlap 6             --SequentialMatching.loop_detection 0
+          colmap mapper             --database_path "$DB"             --image_path "$IMG"             --output_path "$SPARSE"             --Mapper.min_num_matches 12             --Mapper.init_min_num_inliers 30             --Mapper.abs_pose_min_num_inliers 12             --Mapper.ba_global_max_num_iterations 30
+          MODEL="$(find "$SPARSE" -mindepth 1 -maxdepth 1 -type d | head -1)"
+          test -n "$MODEL"
+          colmap model_analyzer --path "$MODEL" | tee /tmp/scope-colmap/out/model-analysis.txt
+          colmap model_converter --input_path "$MODEL" --output_path /tmp/scope-colmap/out/scope-colmap.ply --output_type PLY
+          colmap model_converter --input_path "$MODEL" --output_path /tmp/scope-colmap/out/text --output_type TXT
+          cp -R "$IMG" /tmp/scope-colmap/out/frames
+      - name: Create point-cloud visual evidence
+        run: |
+          python3 - <<'PY'
+          import os, re, numpy as np
+          from PIL import Image, ImageDraw
+          ply='/tmp/scope-colmap/out/scope-colmap.ply'
+          with open(ply,'rb') as f:
+              header=[]
+              n=None
+              while True:
+                  line=f.readline().decode('ascii','ignore').strip()
+                  header.append(line)
+                  if line.startswith('element vertex '): n=int(line.split()[-1])
+                  if line=='end_header': break
+              data=f.read()
+          # COLMAP PLY is binary little endian; use trimesh if present, otherwise parse model TXT for XYZ.
+          pts=[]; cols=[]
+          txt='/tmp/scope-colmap/out/text/points3D.txt'
+          for line in open(txt):
+              if not line.strip() or line.startswith('#'): continue
+              p=line.split()
+              if len(p)<7: continue
+              pts.append([float(p[1]),float(p[2]),float(p[3])]); cols.append([int(p[4]),int(p[5]),int(p[6])])
+          pts=np.asarray(pts,float); cols=np.asarray(cols,np.uint8)
+          if len(pts)<100: raise SystemExit(f'Insufficient sparse points: {len(pts)}')
+          # robust bounds
+          lo=np.percentile(pts,2,axis=0); hi=np.percentile(pts,98,axis=0)
+          mask=np.all((pts>=lo)&(pts<=hi),axis=1); pts=pts[mask]; cols=cols[mask]
+          for axes,name in [((0,1),'xy'),((0,2),'xz'),((2,1),'zy')]:
+              a,b=axes; W=1000; H=800
+              x=pts[:,a]; y=pts[:,b]
+              xmin,xmax=np.percentile(x,[1,99]); ymin,ymax=np.percentile(y,[1,99])
+              px=((x-xmin)/(xmax-xmin+1e-9)*(W-40)+20).clip(0,W-1).astype(int)
+              py=(H-1-((y-ymin)/(ymax-ymin+1e-9)*(H-40)+20)).clip(0,H-1).astype(int)
+              im=Image.new('RGB',(W,H),(18,18,22)); d=ImageDraw.Draw(im)
+              for xx,yy,c in zip(px,py,cols):
+                  d.ellipse((xx-1,yy-1,xx+1,yy+1),fill=tuple(map(int,c)))
+              im.save(f'/tmp/scope-colmap/out/points-{name}.png')
+          open('/tmp/scope-colmap/out/point-count.txt','w').write(str(len(pts))+'\n')
+          PY
+          test -s /tmp/scope-colmap/out/points-xy.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-scope-colmap-reconstruction-v1
+          path: /tmp/scope-colmap/out
+          if-no-files-found: error
+          retention-days: 30
