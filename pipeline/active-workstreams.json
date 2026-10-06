@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:31:00Z",
+  "updated_at": "2026-10-06T10:28:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -92,25 +92,6 @@
       "artifact_id": 11404088202
     },
     {
-      "id": "valoria-hi3dgen-gate-capability-v1",
-      "title": "VALORIA HI3DGEN GATE CAPABILITY v1",
-      "owner": "chat-independent-hi3dgen-rnd",
-      "scope": [
-        ".github/workflows/valoria-hi3dgen-gate-capability-v1.yml",
-        "docs/evidence/valoria-hi3dgen-gate-capability-v1/**",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [
-        "public-hf-space-hi3dgen-rnd"
-      ],
-      "claimed_at": "2026-10-06T10:20:00Z",
-      "base_main_sha": "c7a3ba14e64be994c372c9000a76958a146879e1",
-      "status": "active",
-      "phase": "ZERO-SPEND HI3DGEN CANONICAL GATE PROOF",
-      "dependency": "Independent of TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry, projection bake, citybuilder, commercial KINGDOM, Unity and paid credits.",
-      "next": "Probe Stable-X/Hi3DGen public API and, if callable, generate the same canonical Lower Gate crop and require multi-angle geometry evidence."
-    },
-    {
       "id": "valoria-sharp-gaussian-pipeline-v1",
       "title": "VALORIA SHARP GAUSSIAN PIPELINE v1",
       "owner": "chat-sharp-gaussian-pipeline",
@@ -133,6 +114,29 @@
     }
   ],
   "history": [
+    {
+      "id": "valoria-hi3dgen-gate-capability-v1",
+      "title": "VALORIA HI3DGEN GATE CAPABILITY v1",
+      "owner": "chat-independent-hi3dgen-rnd",
+      "scope": [
+        ".github/workflows/valoria-hi3dgen-gate-capability-v1.yml",
+        "docs/evidence/valoria-hi3dgen-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-hi3dgen-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:20:00Z",
+      "base_main_sha": "c7a3ba14e64be994c372c9000a76958a146879e1",
+      "status": "completed",
+      "phase": "ZERO-SPEND HI3DGEN CANONICAL GATE PROOF",
+      "dependency": "Independent of TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry, projection bake, citybuilder, commercial KINGDOM, Unity and paid credits.",
+      "next": "Do not promote as final art source. Reuse only as volumetric/reference donor if a later hybrid pipeline benefits from it.",
+      "completed_at": "2026-10-06T10:25:49Z",
+      "run_id": 37449400507,
+      "artifact_id": 11406435313,
+      "result": "TECH PASS / VISUAL PARTIAL. Canonical Lower Gate proof produced a valid mesh and multi-angle renders. Global gate/tower/arch silhouette is recognizable, but architectural identity is still deformed/invented and the mesh drags unwanted ground into the asset. Useful as a volumetric donor/blockout, not a final Valoria source."
+    },
     {
       "id": "valoria-sharp-gaussian-fullframe-v1",
       "title": "VALORIA SHARP GAUSSIAN FULLFRAME v1",
