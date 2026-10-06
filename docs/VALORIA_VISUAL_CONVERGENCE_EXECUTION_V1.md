@@ -465,3 +465,44 @@ Gate 5 PASS requires:
 
 Stop rule:
 - if target projection produces duplicate architecture, severe stretching or side-view collapse, do not micro-tune projection indefinitely; keep the real geometry and fall back to authored/PBR material treatment already allowed by the decision register.
+
+
+## Gate 5 FINAL — Lower Gate real-geometry appearance/depth integration
+**Verdict: TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS**
+
+Authoritative evidence:
+- Run: `37464692130`
+- Artifact: `11414269587`
+- Approved geometry: `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`
+- Clean SHARP source artifact: `11408853949`
+- SHARP visual layer: 589,824 splats
+- Imported renderers: 6
+- Canonical LowerGate viewport target: (0.748, 0.458)
+- Viewport error: ~5.96e-8
+- Semantic LowerGate interaction: PASS
+- target-conditioned HOME projection: PASS
+- bounded pan-left projection: PASS
+- bounded pan-right projection: PASS
+- full-frame takeover guard: PASS
+- changed pixels: HOME 1,160 / pan-left 1,089 / pan-right 1,124
+- selected projector Y convention: flipY=1
+- local MAE: flip0 ~0.00616 / flip1 ~0.00580
+- paid credits: 0
+
+Visual review:
+- the approved real LowerGateFamilyV1 mesh remains the editable geometry authority;
+- projection changes only the localized Lower Gate appearance and does not replace the scene with a flat card/shell;
+- HOME and bounded pan retain real mesh silhouette/parallax;
+- SHARP remains the full-scene visual authority outside the treated Lower Gate region;
+- semantic interaction and Gate 4B alignment remain intact.
+
+Run-behavior classification:
+- run 37464692130 appeared stalled because the Unity capture step emitted no intermediate console output for ~6m28s;
+- live-log inspection later showed the process completed normally and uploaded a 13-file artifact;
+- this was **slow capture / low observability**, not a Unity deadlock;
+- no cancellation, timeout patch or rerun is warranted after successful completion.
+
+**Gate 5 is CLOSED / PASS.**
+
+### Next convergence action — lock the repeatable production recipe
+Do not reopen visual-method R&D. Consolidate Gates 1–5 into one production recipe with explicit inputs, transforms, validation thresholds, failure classes and fallback rules. Scale only to the next representative production family after that recipe is documented and mechanically repeatable.
