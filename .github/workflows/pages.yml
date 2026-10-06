@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -132,12 +133,40 @@ jobs:
           if ($code -ne 0) { throw "Unity CLI WebGL module install failed with exit code $code." }
           if (-not (Test-Path $webgl)) { throw 'Unity CLI completed but WebGL Build Support path is still missing.' }
           Write-Host 'WebGL Build Support installed successfully.'
-      - name: Build Unity WebGL OWNER I-II
+      - name: Stage current certified Valoria production scene when requested
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          if ($cfg.mode -ne "current-valoria-production") {
+            Write-Host "Legacy Unity publication mode."
+            exit 0
+          }
+          if (-not $cfg.production_artifact_id) { throw "Current Valoria publication requires production_artifact_id." }
+          $zip = Join-Path $env:RUNNER_TEMP "valoria-current-production.zip"
+          $extract = Join-Path $env:RUNNER_TEMP "valoria-current-production"
+          Remove-Item $extract -Recurse -Force -ErrorAction SilentlyContinue
+          $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept="application/vnd.github+json"; "X-GitHub-Api-Version"="2022-11-28" }
+          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.production_artifact_id)/zip" -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath $extract -Force
+          $src = Join-Path $extract "Assets\Eldoria\ProductionSlice"
+          $dst = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\ProductionSlice"
+          if (-not (Test-Path (Join-Path $src "Runtime\Valoria.unity"))) { throw "Certified production Valoria scene missing from artifact." }
+          Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path (Split-Path $dst) -Force | Out-Null
+          Copy-Item $src $dst -Recurse -Force
+          Write-Host "Staged certified current Valoria production scene from artifact $($cfg.production_artifact_id)."
+
+      - name: Build Unity WebGL current requested slice
         shell: powershell
         run: |
           Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL" -Recurse -Force -ErrorAction SilentlyContinue
+          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          $method = if ($cfg.mode -eq "current-valoria-production") { "Eldoria.EditorTools.ValoriaCurrentWebGLBuildV1.Build" } else { "Eldoria.EditorTools.SceneSetup.BuildWebGL" }
+          Write-Host "Unity WebGL build method: $method"
           $log = "$env:RUNNER_TEMP/Eldoria-WebGL.log"
-          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWebGL","-logFile",$log)
+          $args = @("-batchmode","-nographics","-quit","-projectPath","$env:GITHUB_WORKSPACE/Unity","-executeMethod",$method,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if (-not $process.WaitForExit(1200000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -145,7 +174,7 @@ jobs:
             throw "Unity WebGL build timed out."
           }
           if ($process.ExitCode -ne 0) {
-            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            if (Test-Path $log) { Get-Content $log -Tail 300 }
             throw "Unity WebGL build failed with exit code $($process.ExitCode)."
           }
           if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
