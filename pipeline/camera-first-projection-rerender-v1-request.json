@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "nonce": "camera-first-projection-rerender-001-axis-fix",
+  "zero_spend": true,
+  "reuse_persisted_depth_mesh": true,
+  "requested_at": "2026-10-06T06:35:00Z"
+}
