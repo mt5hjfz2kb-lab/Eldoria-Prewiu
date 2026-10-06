@@ -51,13 +51,13 @@ namespace Eldoria.EditorTools
         struct PrepStats { public int OriginalCount, OutputCount, SanitizedCount, Step; }
 
         static readonly FamilySpec[] Families = {
-            new FamilySpec { Id="Bridge", AssetPath="Assets/Eldoria/ProductionSlice/BridgeFamilyV1.glb", Source="art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb", Viewport=new Vector2(.288618f,.100592f), DepthScale=.86f, TargetWidth=18f, TargetHeight=11f, BeautyVisible=false },
-            new FamilySpec { Id="LowerGate", AssetPath="Assets/Eldoria/ProductionSlice/LowerGateFamilyV1.glb", Source="art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb", Viewport=new Vector2(.394309f,.319527f), DepthScale=.90f, TargetWidth=15f, TargetHeight=20f, BeautyVisible=false },
-            new FamilySpec { Id="MainRoad", AssetPath="Assets/Eldoria/ProductionSlice/RoadFamilyV1.glb", Source="art-source/valoria/production/road-family-v1/RoadFamilyV1.glb", Viewport=new Vector2(.467480f,.508876f), DepthScale=.925f, TargetWidth=13f, TargetHeight=25f, BeautyVisible=false },
-            new FamilySpec { Id="CentralStair", AssetPath="Assets/Eldoria/ProductionSlice/StairFamilyV1.glb", Source="art-source/valoria/production/stair-family-v1/StairFamilyV1.glb", Viewport=new Vector2(.534959f,.673373f), DepthScale=.95f, TargetWidth=12f, TargetHeight=13f, BeautyVisible=false },
-            new FamilySpec { Id="UpperWalls", AssetPath="Assets/Eldoria/ProductionSlice/WallFamilyV1.glb", Source="art-source/valoria/production/wall-family-v1/WallFamilyV1.glb", Viewport=new Vector2(.788618f,.801183f), DepthScale=.975f, TargetWidth=28f, TargetHeight=15f, BeautyVisible=false },
-            new FamilySpec { Id="Bastion", AssetPath="Assets/Eldoria/ProductionSlice/BastionFamilyV1.glb", Source="art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb", Viewport=new Vector2(.604878f,.842604f), DepthScale=1.00f, TargetWidth=26f, TargetHeight=27f, BeautyVisible=false },
-            new FamilySpec { Id="TerrainCliffSupport", AssetPath="Assets/Eldoria/ProductionSlice/RockTerrainFamilyV1.glb", Source="art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb", Viewport=new Vector2(.720000f,.360000f), DepthScale=1.015f, TargetWidth=42f, TargetHeight=24f, BeautyVisible=false },
+            new FamilySpec { Id="Bridge", AssetPath="Assets/Eldoria/ProductionSlice/BridgeFamilyV1.glb", Source="art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb", Viewport=new Vector2(.288618f,.100592f), DepthScale=.86f, TargetWidth=.28f, TargetHeight=.22f, BeautyVisible=false },
+            new FamilySpec { Id="LowerGate", AssetPath="Assets/Eldoria/ProductionSlice/LowerGateFamilyV1.glb", Source="art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb", Viewport=new Vector2(.394309f,.319527f), DepthScale=.90f, TargetWidth=.21f, TargetHeight=.225f, BeautyVisible=false },
+            new FamilySpec { Id="MainRoad", AssetPath="Assets/Eldoria/ProductionSlice/RoadFamilyV1.glb", Source="art-source/valoria/production/road-family-v1/RoadFamilyV1.glb", Viewport=new Vector2(.467480f,.508876f), DepthScale=.925f, TargetWidth=.14f, TargetHeight=.25f, BeautyVisible=false },
+            new FamilySpec { Id="CentralStair", AssetPath="Assets/Eldoria/ProductionSlice/StairFamilyV1.glb", Source="art-source/valoria/production/stair-family-v1/StairFamilyV1.glb", Viewport=new Vector2(.534959f,.673373f), DepthScale=.95f, TargetWidth=.126f, TargetHeight=.12f, BeautyVisible=false },
+            new FamilySpec { Id="UpperWalls", AssetPath="Assets/Eldoria/ProductionSlice/WallFamilyV1.glb", Source="art-source/valoria/production/wall-family-v1/WallFamilyV1.glb", Viewport=new Vector2(.788618f,.801183f), DepthScale=.975f, TargetWidth=.51f, TargetHeight=.21f, BeautyVisible=false },
+            new FamilySpec { Id="Bastion", AssetPath="Assets/Eldoria/ProductionSlice/BastionFamilyV1.glb", Source="art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb", Viewport=new Vector2(.604878f,.842604f), DepthScale=1.00f, TargetWidth=.24f, TargetHeight=.21f, BeautyVisible=false },
+            new FamilySpec { Id="TerrainCliffSupport", AssetPath="Assets/Eldoria/ProductionSlice/RockTerrainFamilyV1.glb", Source="art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb", Viewport=new Vector2(.720000f,.360000f), DepthScale=1.015f, TargetWidth=.9f, TargetHeight=.6f, BeautyVisible=false },
         };
 
         public static void Capture()
@@ -144,8 +144,10 @@ namespace Eldoria.EditorTools
 
                 var b=CombinedBounds(rs);
                 if(b.size.sqrMagnitude<.001f) throw new Exception("Production slice: invalid bounds for "+spec.Id);
-                float sx=spec.TargetWidth/Mathf.Max(.01f,b.size.x);
-                float sy=spec.TargetHeight/Mathf.Max(.01f,b.size.y);
+                float familyDistance=anchorDistance*spec.DepthScale;
+                float familySpan=2f*familyDistance*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
+                float sx=spec.TargetWidth*familySpan*cam.aspect/Mathf.Max(.01f,b.size.x);
+                float sy=spec.TargetHeight*familySpan/Mathf.Max(.01f,b.size.y);
                 go.transform.localScale*=Mathf.Clamp(Mathf.Min(sx,sy),.001f,1000f);
                 b=CombinedBounds(go.GetComponentsInChildren<Renderer>(true));
 
@@ -183,14 +185,14 @@ namespace Eldoria.EditorTools
             // SHARP authority before real-family overlay.
             SetFamilyBeauty(runtimes,false);
             CaptureBeauty(gs,cam,output,"sharp-home");
-            cam.transform.position=new Vector3(-1.75f,0,0); CaptureBeauty(gs,cam,output,"sharp-pan-left");
-            cam.transform.position=new Vector3(1.75f,0,0); CaptureBeauty(gs,cam,output,"sharp-pan-right");
+            cam.transform.position=new Vector3(-.5f,0,0); CaptureBeauty(gs,cam,output,"sharp-pan-left");
+            cam.transform.position=new Vector3(.5f,0,0); CaptureBeauty(gs,cam,output,"sharp-pan-right");
 
             // Real playable slice over the same visual authority.
             SetFamilyBeauty(runtimes,true);
             cam.transform.position=Vector3.zero; CaptureBeauty(gs,cam,output,"integrated-home");
-            cam.transform.position=new Vector3(-1.75f,0,0); CaptureBeauty(gs,cam,output,"integrated-pan-left");
-            cam.transform.position=new Vector3(1.75f,0,0); CaptureBeauty(gs,cam,output,"integrated-pan-right");
+            cam.transform.position=new Vector3(-.5f,0,0); CaptureBeauty(gs,cam,output,"integrated-pan-left");
+            cam.transform.position=new Vector3(.5f,0,0); CaptureBeauty(gs,cam,output,"integrated-pan-right");
 
             // Geometry-only evidence proves all approved families exist as real 3D.
             // Use unlit diagnostic material only in this evidence view; never in beauty.
@@ -221,8 +223,8 @@ namespace Eldoria.EditorTools
 
             var states=new[]{
                 new {Name="home",Position=Vector3.zero,Fov=HomeFov},
-                new {Name="pan-left",Position=new Vector3(-1.75f,0,0),Fov=HomeFov},
-                new {Name="pan-right",Position=new Vector3(1.75f,0,0),Fov=HomeFov},
+                new {Name="pan-left",Position=new Vector3(-.5f,0,0),Fov=HomeFov},
+                new {Name="pan-right",Position=new Vector3(.5f,0,0),Fov=HomeFov},
                 new {Name="zoom-in",Position=Vector3.zero,Fov=HomeFov*.9f},
                 new {Name="zoom-out",Position=Vector3.zero,Fov=HomeFov*1.1f}
             };
@@ -289,7 +291,7 @@ namespace Eldoria.EditorTools
                 $"  \"semantic_raycast_pass\": {semanticPass},\n"+
                 $"  \"semantic_raycast_required\": {semanticRequired},\n"+
                 $"  \"changed_pixels\": {{\"home\":{homeChanged},\"pan_left\":{leftChanged},\"pan_right\":{rightChanged}}},\n"+
-                "  \"camera\": {\"home\":\"source intrinsic identity\",\"bounded_pan_x\":1.75,\"fov\":"+HomeFov.ToString(CultureInfo.InvariantCulture)+",\"width\":"+W+",\"height\":"+H+"},\n"+
+                "  \"camera\": {\"home\":\"source intrinsic identity\",\"bounded_pan_x\":0.5,\"fov\":"+HomeFov.ToString(CultureInfo.InvariantCulture)+",\"width\":"+W+",\"height\":"+H+"},\n"+
                 "  \"visual_authority\": \"clean SHARP 589824 beauty authority; approved central-axis GLBs are real editable support geometry hidden from beauty\",\n"+
                 "  \"route_order\": [\"Bridge\",\"LowerGate\",\"MainRoad\",\"CentralStair\",\"UpperWalls\",\"Bastion\"],\n"+
                 "  \"route_coherence_pass\": false,\n"+

@@ -81,5 +81,14 @@
     "INTERACTION PASS",
     "BOUNDED CAMERA PASS"
   ],
-  "nonce": "20261006-correct-authority-slice-001"
+  "nonce": "20261006-correct-authority-slice-003",
+  "bounded_camera": {
+    "pan_x": 0.5,
+    "zoom_fov_multipliers": [
+      0.9,
+      1.1
+    ],
+    "home": "exact PLY identity intrinsics",
+    "reason": "keep both side parcels complete and avoid unsupported edge extrapolation"
+  }
 }
