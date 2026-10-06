@@ -1,3 +1,15 @@
+## 2026-10-06 — SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED
+
+The Camera-First / Semantic 2.5D depth-shell experiment is closed. Final authoritative gate: `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`.
+
+Final evidence: source run **37434039330** / artifact **11397359251**; first Unity run **37434455097** / artifact **11397984610**; edge-zero source correction run **37434938898**; alpha-fixed Unity run **37435354553** / artifact **11398437953**; final renderer-suppression Unity run **37435725415** / artifact **11398459304**.
+
+Verdict: **TECH PASS / VISUAL FAIL / CAMERA ENVELOPE FAIL / OCCLUSION-DEPTH FAIL / FUNCTIONAL 3D COMPATIBILITY PASS WITH VISUAL CAVEAT / PRODUCTION SCALABILITY FAIL → REJECT — DOES NOT SOLVE THE PRODUCTION PROBLEM.**
+
+The rectangular plate defect was eliminated, proving the alpha path itself. The remaining structural failure is spatial integration: the projection remains detached from the functional city, and bounded pan exposes severe disocclusion/card seams. Final proof hid 393 legacy renderers visually while preserving collider/hotspot signature, yet the result still failed visually. Do not continue mask/inpainting/parallax micro-iterations of this method. Preserve all evidence as historical R&D. Do not start the BROKEN→REPAIRED transition because adoption prerequisite failed. Tripo/paid credits: 0.
+
+Broad Valoria production remains frozen until a genuinely different visual production method is explicitly selected.
+
 ## 2026-10-06 — Golden Primary Forms professional reconstruction: VISUAL FAIL / METHOD BLOCKED
 The owner-authorized Golden-crop professional reconstruction was executed source-first in Blender, run **37381915933**, artifact **11376050764**. It passed technical authoring/export but failed visual promotion: Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0 (threshold all >=4.0). Unity was not run and remains unauthorized. The headless fully code-authored mesh method is now closed; do not iterate it cosmetically. Broad Valoria production, Props+Background, world map and new families remain frozen. Next viable source requires interactive/artist-led Blender mesh/sculpt authoring from official camera, or fresh owner authorization for a genuinely different external geometry source. Tripo credits remain 0.
 
