@@ -2,11 +2,8 @@ name: "[R&D] Valoria Photogrammetry Donor Capability v1"
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml"
-      - "tools/valoria-photogrammetry-donor-capability-v1/**"
 
+# Quarantined R&D/capability workflow: manual-only. Production use requires canonical planner/fallback routing plus explicit owner dispatch.
 permissions:
   contents: read
 
