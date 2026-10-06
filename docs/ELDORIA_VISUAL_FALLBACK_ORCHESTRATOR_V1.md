@@ -55,3 +55,21 @@ Expected behavior: real geometry first, then existing depth/alignment components
 - conditional/in-progress evidence is never silently treated as certified.
 
 This router is subordinate to `VALORIA VISUAL CONVERGENCE & PRODUCTION v1` and does not mutate its current SHARP scale gate.
+
+
+## Generic integration status — 2026-10-06
+
+Implemented without touching the active SHARP/Unity convergence-owned files:
+
+1. `tools/plan-art-production.mjs` now consumes an optional `failure_class` from any future art-production request and embeds the deterministic fallback route in the generated plan.
+2. `.github/workflows/art-production-plan.yml` now invokes the fallback router when the request contains a diagnosed `failure_class`, and persists the route as evidence.
+3. `.github/workflows/visual-fallback-route.yml` is a reusable zero-spend GitHub-hosted workflow. Future gates can call it with a diagnosed failure class without waking the Windows/Unity runner.
+4. `tools/classify-visual-failure.mjs` provides conservative rule-based classification from explicit diagnostic signals. It auto-classifies only when exactly one known class matches; ambiguous or unknown cases stop instead of guessing.
+
+### Intentionally not connected yet
+
+The active central convergence workstream currently owns the SHARP clean-source, interactive-substrate, gameplay-selection, UnitySplats and related Unity/runtime gate files. This integration does not modify those files.
+
+When that workstream reaches a stable gate boundary, its workflows can emit one of the canonical diagnostic classes/signals and call `visual-fallback-route.yml`. That is the point at which the loop becomes automatic from SHARP/Unity failure -> classification -> fallback selection.
+
+Conditional components such as Marigold or SCoPE remain non-autonomous until their existing evidence is promoted by convergence. Paid/commercial routes remain hard-blocked without fresh owner approval.
