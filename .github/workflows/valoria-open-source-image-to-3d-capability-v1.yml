@@ -10,9 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  trellis-community-gate-proof:
+  hunyuan21-semantic-gate-proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,95 +29,80 @@ jobs:
 
       - name: Prepare isolated semantic gate input
         run: |
-          mkdir -p /tmp/trellis/input /tmp/trellis/output /tmp/trellis/evidence
+          mkdir -p /tmp/hy3d/input /tmp/hy3d/output /tmp/hy3d/evidence
           python - <<'PY'
           from PIL import Image, ImageChops
           src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
           im=Image.open(src).convert("RGBA")
           alpha=im.getchannel("A")
           bbox=alpha.getbbox()
-          # If semantic layer is opaque full-frame, fall back to non-empty visual bbox
-          # against its corner color; otherwise alpha bbox is authoritative.
           if bbox is None or bbox==(0,0,*im.size):
               bg=Image.new("RGBA",im.size,im.getpixel((0,0)))
-              diff=ImageChops.difference(im,bg).convert("L")
-              bbox=diff.getbbox()
+              bbox=ImageChops.difference(im,bg).convert("L").getbbox()
           if bbox is None:
-              raise SystemExit("Semantic gate layer has no isolatable content")
-          # small padding
+              raise SystemExit("No isolatable semantic gate content")
           l,t,r,b=bbox
           pad=max(12,int(max(r-l,b-t)*0.06))
           bbox=(max(0,l-pad),max(0,t-pad),min(im.width,r+pad),min(im.height,b+pad))
           crop=im.crop(bbox)
-          # Composite to neutral transparent canvas centered square.
           w,h=crop.size; side=max(w,h)
           canvas=Image.new("RGBA",(side,side),(255,255,255,0))
           canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
           canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
-          out="/tmp/trellis/input/eldoria-semantic-gate.png"
+          out="/tmp/hy3d/input/eldoria-semantic-gate.png"
           canvas.save(out)
-          open("/tmp/trellis/evidence/input-spec.txt","w").write(
+          open("/tmp/hy3d/evidence/input-spec.txt","w").write(
               f"source={src}\nsource_size={im.size}\nisolation_bbox={bbox}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
           )
           PY
-          sha256sum /tmp/trellis/input/eldoria-semantic-gate.png | tee /tmp/trellis/evidence/input.sha256
+          sha256sum /tmp/hy3d/input/eldoria-semantic-gate.png | tee /tmp/hy3d/evidence/input.sha256
 
-      - name: Generate and extract GLB with community TRELLIS
-        id: trellis
+      - name: Generate Hunyuan3D 2.1 mesh
+        id: hunyuan
         continue-on-error: true
         run: |
           set -o pipefail
-          python - <<'PY' 2>&1 | tee /tmp/trellis/evidence/trellis.log
-          import os, shutil
+          python - <<'PY' 2>&1 | tee /tmp/hy3d/evidence/hunyuan.log
+          import os, shutil, requests
           from gradio_client import Client, handle_file
-          client=Client("trellis-community/TRELLIS", verbose=True)
+
+          client=Client("tencent/Hunyuan3D-2.1", verbose=True)
           api=client.view_api(return_format="dict")
           print("API",api)
           endpoints=(api or {}).get("named_endpoints",{})
           print("ENDPOINTS",list(endpoints))
-          ep=next((e for e in endpoints if "generate" in e.lower() and ("glb" in e.lower() or "extract" in e.lower())),None)
-          if ep is None:
-              ep=next((e for e in endpoints if "generate" in e.lower()),None)
-          if ep is None:
-              raise SystemExit("No generation endpoint advertised")
-          spec=endpoints[ep]
-          params=spec.get("parameters",[])
-          print("PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
-          image="/tmp/trellis/input/eldoria-semantic-gate.png"
-          if "/start_session" in endpoints:
-              print("START_SESSION",client.predict(api_name="/start_session"))
-          processed=image
-          if "/preprocess_image" in endpoints:
-              processed=client.predict(image=handle_file(image),api_name="/preprocess_image")
-              print("PREPROCESSED",repr(processed))
+          ranked=[]
+          for ep,spec in endpoints.items():
+              names=[(p.get("parameter_name") or "").lower() for p in spec.get("parameters",[])]
+              ret=str(spec.get("returns",[])).lower()
+              score=0; low=ep.lower()
+              if "generate" in low or "generation" in low: score+=100
+              if "shape" in low or "mesh" in low or "model" in low: score+=50
+              if any(n in ("image","input_image","image_prompt") for n in names): score+=70
+              if "glb" in ret or "model3d" in ret or "filedata" in ret: score+=40
+              if "texture" in low and "shape" not in low: score-=20
+              ranked.append((score,ep,spec))
+          ranked.sort(reverse=True,key=lambda x:x[0])
+          print("RANKED",[(s,e,[(p.get("parameter_name"),p.get("parameter_default")) for p in sp.get("parameters",[])]) for s,e,sp in ranked[:10]])
+          chosen=next(((s,e,sp) for s,e,sp in ranked if s>=100),None)
+          if not chosen:
+              raise SystemExit("No plausible Hunyuan generation endpoint advertised")
+          _,ep,spec=chosen
           kwargs={}
-          for p in params:
+          image="/tmp/hy3d/input/eldoria-semantic-gate.png"
+          for p in spec.get("parameters",[]):
               n=p.get("parameter_name"); d=p.get("parameter_default")
-              if n in ("image","image_prompt","input_image"):
-                  kwargs[n]=handle_file(processed) if isinstance(processed,str) else processed
-              elif n in ("multiimages","multi_images"):
-                  kwargs[n]=[]
-              elif n=="is_multiimage":
-                  kwargs[n]=False
-              elif n=="seed":
+              if not n: continue
+              ln=n.lower()
+              if ln in ("image","input_image","image_prompt"):
+                  kwargs[n]=handle_file(image)
+              elif ln in ("seed","random_seed"):
                   kwargs[n]=42
-              elif n=="randomize_seed":
+              elif "randomize" in ln:
                   kwargs[n]=False
-              elif n=="ss_guidance_strength":
-                  kwargs[n]=7.5
-              elif n=="ss_sampling_steps":
-                  kwargs[n]=12
-              elif n=="slat_guidance_strength":
-                  kwargs[n]=3.0
-              elif n=="slat_sampling_steps":
-                  kwargs[n]=12
-              elif n=="multiimage_algo":
-                  kwargs[n]="stochastic"
-              elif n=="mesh_simplify":
-                  kwargs[n]=0.70
-              elif n=="texture_size":
-                  kwargs[n]=2048
-              elif n and d is not None:
+              elif ln in ("remove_background","do_remove_background","remove_bg"):
+                  kwargs[n]=True
+              elif d is not None:
                   kwargs[n]=d
           print("CALL",ep,kwargs)
           result=client.predict(api_name=ep,**kwargs)
@@ -132,44 +117,50 @@ jobs:
           walk(result)
           copied=[]
           for p in vals:
+              low=p.lower().split("?")[0]
+              ext=os.path.splitext(low)[1]
+              if ext not in (".glb",".gltf",".obj",".ply",".stl"): continue
+              dst="/tmp/hy3d/output/hunyuan"+ext
               if os.path.isfile(p):
-                  ext=os.path.splitext(p)[1].lower()
-                  if ext in (".glb",".gltf",".obj",".ply",".mp4"):
-                      dst="/tmp/trellis/output/trellis"+ext
-                      if not os.path.exists(dst):
-                          shutil.copy2(p,dst); copied.append(dst)
+                  shutil.copy2(p,dst); copied.append(dst)
+              elif p.startswith(("http://","https://")):
+                  rr=requests.get(p,timeout=240); rr.raise_for_status()
+                  open(dst,"wb").write(rr.content); copied.append(dst)
+              if copied and ext==".glb": break
           print("COPIED",copied)
-          if not os.path.isfile("/tmp/trellis/output/trellis.glb"):
-              raise SystemExit("Community TRELLIS returned no GLB")
+          if not copied:
+              raise SystemExit("Hunyuan returned no mesh file")
           PY
 
-      - name: Render GLB evidence
-        if: steps.trellis.outcome == 'success'
+      - name: Render Hunyuan mesh evidence
+        if: steps.hunyuan.outcome == 'success'
         run: |
-          cat > /tmp/trellis/render.py <<'PY'
+          cat > /tmp/hy3d/render.py <<'PY'
           import bpy, os, math
           from mathutils import Vector
-          glb="/tmp/trellis/output/trellis.glb"
-          ev="/tmp/trellis/evidence"
+          root="/tmp/hy3d/output"; ev="/tmp/hy3d/evidence"
+          files=[os.path.join(root,f) for f in os.listdir(root) if f.lower().endswith((".glb",".gltf",".obj",".ply",".stl"))]
+          if not files: raise RuntimeError("No mesh")
+          src=files[0]
           bpy.ops.wm.read_factory_settings(use_empty=True)
-          bpy.ops.import_scene.gltf(filepath=glb)
+          ext=os.path.splitext(src)[1].lower()
+          if ext in (".glb",".gltf"): bpy.ops.import_scene.gltf(filepath=src)
+          elif ext==".obj": bpy.ops.wm.obj_import(filepath=src)
+          elif ext==".ply": bpy.ops.wm.ply_import(filepath=src)
+          elif ext==".stl": bpy.ops.wm.stl_import(filepath=src)
           meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
-          if not meshes: raise RuntimeError("No mesh imported")
-          pts=[]
-          for o in meshes:
-              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
+          if not meshes: raise RuntimeError("No renderable mesh")
+          pts=[o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
           mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
           mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
-          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
-          sc=bpy.context.scene
-          sc.render.engine="BLENDER_EEVEE"
+          center=(mn+mx)*.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"
           sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
           sc.render.image_settings.file_format="PNG"
           if sc.world is None: sc.world=bpy.data.worlds.new("World")
-          sc.world.color=(0.045,0.045,0.045)
-          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*0.015))
-          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(0.14,0.14,0.14,1)
-          bpy.context.object.data.materials.append(gm)
+          sc.world.color=(.045,.045,.045)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*.015))
+          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(.14,.14,.14,1); bpy.context.object.data.materials.append(gm)
           bpy.ops.object.light_add(type="SUN",location=center+Vector((span,-span,span)))
           sun=bpy.context.object; sun.data.energy=2.2; sun.rotation_euler=(math.radians(35),0,math.radians(135))
           bpy.ops.object.light_add(type="AREA",location=center+Vector((-span*.7,-span*.9,span*.8)))
@@ -179,30 +170,27 @@ jobs:
           views=[("front",Vector((0,-1.8,.18))),("three-quarter",Vector((1.2,-1.45,.35))),("back",Vector((0,1.8,.18))),("side",Vector((1.8,0,.18)))]
           for name,v in views:
               cam.location=center+v*span; track(cam,center+Vector((0,0,dims.z*.05)))
-              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png")
-              bpy.ops.render.render(write_still=True)
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
           tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
-          with open(os.path.join(ev,"mesh-report.txt"),"w") as f:
-              f.write(f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=trellis-community/TRELLIS\ncredits=0\n")
+          open(os.path.join(ev,"mesh-report.txt"),"w").write(
+              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=tencent/Hunyuan3D-2.1\ncredits=0\n"
+          )
           PY
-          blender -b --python /tmp/trellis/render.py
-          test -s /tmp/trellis/evidence/mesh-front.png
-          test -s /tmp/trellis/evidence/mesh-three-quarter.png
-          test -s /tmp/trellis/evidence/mesh-back.png
-          test -s /tmp/trellis/evidence/mesh-side.png
+          blender -b --python /tmp/hy3d/render.py
+          test -s /tmp/hy3d/evidence/mesh-three-quarter.png
 
-      - name: Require usable GLB
+      - name: Require usable Hunyuan mesh
         run: |
-          test "${{ steps.trellis.outcome }}" = "success"
-          test -s /tmp/trellis/output/trellis.glb
-          test -s /tmp/trellis/evidence/mesh-three-quarter.png
+          test "${{ steps.hunyuan.outcome }}" = "success"
+          test -n "$(find /tmp/hy3d/output -maxdepth 1 -type f \( -name '*.glb' -o -name '*.gltf' -o -name '*.obj' -o -name '*.ply' -o -name '*.stl' \) -print -quit)"
+          test -s /tmp/hy3d/evidence/mesh-three-quarter.png
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-trellis-semantic-gate-capability-v2
+          name: valoria-hunyuan21-semantic-gate-capability-v1
           path: |
-            /tmp/trellis/evidence
-            /tmp/trellis/output
-            /tmp/trellis/input/eldoria-semantic-gate.png
+            /tmp/hy3d/evidence
+            /tmp/hy3d/output
+            /tmp/hy3d/input/eldoria-semantic-gate.png
           retention-days: 14
