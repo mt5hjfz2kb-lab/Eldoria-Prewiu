@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "nonce": "camera-first-ortho-plane-proof-001",
+  "source": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "camera_authority": "pipeline/valoria-production-art-reset-run-request.json",
+  "zero_spend": true,
+  "unity": false,
+  "requested_at": "2026-10-06T06:50:00Z"
+}
