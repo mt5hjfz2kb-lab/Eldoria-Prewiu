@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:49:00Z",
+  "updated_at": "2026-10-06T10:50:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -115,30 +115,11 @@
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
       "status": "active",
-      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / EXECUTION STALLED",
+      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / DISPATCHED",
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
-      "next": "RESUME PRIORITY: implement and dispatch the isolated SHARP PLY → Unity 6 URP proof. Validate HOME, bounded pan/zoom, 3D occlusion/depth, evidence captures and runtime feasibility before opening more unrelated visual-generation lanes.",
-      "blocker": "No technical dependency remains after the per-asset impostor Unity proof completed. Since commit f2a666f396233dea9d0f821e09ecb1b039d9b0c1 expanded the workstream to Unity, no SHARP Unity implementation commit or workflow run has been produced. This is an execution-resume issue, not a technical rejection."
-    },
-    {
-      "id": "valoria-scope-gate-camera-video-v1",
-      "title": "VALORIA SCOPE GATE CAMERA VIDEO v1",
-      "owner": "chat-independent-scope-camera-video-rnd",
-      "scope": [
-        ".github/workflows/valoria-scope-gate-camera-video-v1.yml",
-        "tools/valoria-scope-gate-camera-video-proof.py",
-        "docs/evidence/valoria-scope-gate-camera-video-v1/**",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [
-        "public-hf-space-scope-rnd"
-      ],
-      "claimed_at": "2026-10-06T10:42:14Z",
-      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
-      "status": "active",
-      "phase": "ZERO-SPEND CAMERA-CONTROLLED VIEW-SYNTHESIS PROOF",
-      "dependency": "Isolated R&D only. Must not touch SHARP Unity, production Unity, Lower Gate production, commercial acquisition or paid credits. This proof is visual/view-synthesis only and cannot be promoted without runtime/gameplay evidence.",
-      "next": "Complete rerun 37451749211 using the corrected public Space. Evaluate whether camera-controlled output preserves Valoria identity across motion. Treat as visual representation evidence only, not a gameplay/runtime pass."
+      "next": "Follow run 37452332232. Require canonical SHARP PLY load, HOME evidence, bounded pan/zoom, 3D occlusion/depth and runtime feasibility before any production promotion.",
+      "run_id": 37452332232,
+      "resume_commit": "679e2f108ef22e6260661455bd3608d9e73cfb83"
     },
     {
       "id": "valoria-craftsman3d-gate-capability-v1",
@@ -181,6 +162,30 @@
   ],
   "history": [
     {
+      "id": "valoria-scope-gate-camera-video-v1",
+      "title": "VALORIA SCOPE GATE CAMERA VIDEO v1",
+      "owner": "chat-independent-scope-camera-video-rnd",
+      "scope": [
+        ".github/workflows/valoria-scope-gate-camera-video-v1.yml",
+        "tools/valoria-scope-gate-camera-video-proof.py",
+        "docs/evidence/valoria-scope-gate-camera-video-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-scope-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:42:14Z",
+      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
+      "status": "completed",
+      "phase": "ZERO-SPEND CAMERA-CONTROLLED VIEW-SYNTHESIS PROOF",
+      "dependency": "Isolated R&D only. Must not touch SHARP Unity, production Unity, Lower Gate production, commercial acquisition or paid credits. This proof is visual/view-synthesis only and cannot be promoted without runtime/gameplay evidence.",
+      "next": "Reuse only as evidence that target appearance can survive bounded camera motion. Production priority remains SHARP PLY → Unity 6 URP plus real 3D interaction geometry.",
+      "completed_at": "2026-10-06T10:46:54Z",
+      "run_id": 37451749211,
+      "artifact_id": 11405329846,
+      "result": "TECH PASS / VISUAL REPRESENTATION PASS / RUNTIME UNPROVEN. Camera-controlled video preserved Lower Gate identity and appearance across bounded motion substantially better than most single-image mesh generators. Output is synthesized video, not interactive geometry; cannot replace Unity runtime/depth/clickability."
+    },
+    {
       "id": "valoria-step1x3d-gate-capability-v1",
       "title": "VALORIA STEP1X-3D GATE CAPABILITY v1",
       "owner": "chat-independent-step1x3d-rnd",
@@ -208,14 +213,14 @@
       "id": "valoria-marigold-depth-fullframe-v1",
       "title": "VALORIA MARIGOLD DEPTH FULLFRAME v1",
       "owner": "chat-independent-marigold-depth-rnd",
-      "status": "blocked",
+      "status": "completed",
       "phase": "ZERO-SPEND CONTINUOUS-DEPTH PROOF / API ADAPTER BLOCKED",
       "claimed_at": "2026-10-06T10:43:34Z",
-      "completed_at": "2026-10-06T10:44:42Z",
-      "run_id": 37451688012,
-      "artifact_id": 11406893621,
-      "result": "TECH BLOCKED / NO VISUAL VERDICT. Public Marigold Space was reachable and API schema discovered, but the adapter returned no extractable output (No Marigold output; last=None). No depth evidence was produced.",
-      "next": "Reopen only with a corrected API adapter that handles the Space's image-slider/gallery return structure. Do not treat this run as a depth-quality rejection."
+      "completed_at": "2026-10-06T10:47:22Z",
+      "run_id": 37451930411,
+      "artifact_id": 11406799072,
+      "result": "TECH PASS / COMPONENT PASS. Corrected Marigold v2 API produced continuous full-frame depth evidence that preserves major spatial hierarchy across the canonical Valoria frame (platform, cliffs, walls, gates, stairs, forest/background). Not final art; promising for depth alignment, camera/projection guidance and hybrid geometry registration.",
+      "next": "Evaluate only as a depth/alignment component alongside SHARP/real 3D geometry. Do not promote as standalone visual production method."
     },
     {
       "id": "valoria-hi3dgen-gate-capability-v1",
