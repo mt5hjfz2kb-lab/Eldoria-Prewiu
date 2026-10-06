@@ -53,7 +53,7 @@ jobs:
 
       - name: Install Blender for evidence
         run: |
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version
 
       - name: Render multi-angle mesh evidence
