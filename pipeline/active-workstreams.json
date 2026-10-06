@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T00:30:00+02:00",
+  "updated_at": "2026-10-07T00:34:00+02:00",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -82,7 +82,8 @@
         ".github/workflows/valoria-visual-authority-routing.yml",
         "docs/VALORIA_VISUAL_AUTHORITY_ROUTING_GUARD_V1.md",
         "AGENTS.md",
-        "pipeline/active-workstreams.json"
+        "pipeline/active-workstreams.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs"
       ],
       "resources": [
         "repo-governance"
@@ -91,9 +92,9 @@
       "base_main_sha": "f2189beab353c241fb33a5f1b1f54199842990f0",
       "status": "active",
       "paid_credits": 0,
-      "phase": "INSTALL CANONICAL-VS-LEGACY VISUAL AUTHORITY GUARD",
+      "phase": "INSTALL CANONICAL-VS-LEGACY VISUAL AUTHORITY + FAIL-CLOSED RUNTIME GUARD",
       "dependency": "Must not modify SlicePresenter.cs, ValoriaBenchmarkCapture.cs, Region 1 runtime, WebGL publishing files, or occupy the Windows Unity runner while their current owners are active.",
-      "next": "Install machine-readable authority map and GitHub-hosted guard; harden AGENTS so generic legacy/QA benchmark captures can never be presented as current Valoria. Runtime fallback removal remains deferred until owning workstream releases SlicePresenter.",
+      "next": "Install fail-closed player guard so canonical Valoria cannot silently fall back to VisualWorld; validate static routing guard without touching files owned by Region 1 or WebGL workstreams.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Repository governance only; no player-facing visual authoring."
     }
