@@ -57,22 +57,25 @@ No single tested generator currently satisfies all requirements alone.
 - Reuse: fast volumetric base only.
 
 ### Hi3DGen
-**Status:** TECH PASS / VISUAL PARTIAL
+**Status:** TECH PASS / VISUAL PARTIAL / HIGH SEED VARIANCE
 - Canonical proof run: 37449400507, artifact 11406435313.
 - Semantic proof run: 37450000430, artifact 11406576490.
+- Seed bake-off run: 37450920927, artifact 11406558410.
 - Proven: dense watertight geometry and improved architecture with semantic input.
-- Limitation: false holes/cuts, invented depth, unwanted attached ground in some variants.
-- Reuse: volumetric donor.
-- Current experiment: semantic seed bake-off to measure reproducibility.
+- Seed finding: seed 7 preserves a substantially more coherent gate/tower/arch structure; seed 137 breaks the architecture severely. Quality is therefore highly seed-dependent.
+- Limitation: false holes/cuts, invented depth, unwanted attached ground in some variants; reproducibility is not acceptable for automatic production.
+- Reuse: volumetric donor or fixed-seed isolated source only. Do not promote as a general production generator without a deterministic quality gate.
 
 ### Hunyuan3D 2.1
-**Status:** TECH PASS / HIGH VARIANCE / NOT PRODUCTION-SUITABLE YET
+**Status:** TECH PASS / HIGH VARIANCE / NOT PRODUCTION-SUITABLE
 - Semantic success run: 37449805027, artifact 11405242167.
 - Second semantic success: 37449955466, artifact 11405177537.
+- Octree-512 run: 37450709536, artifact 11406667481.
 - Proven: can return real GLB and sometimes preserve gate/tower/arch concept well.
-- Critical issue: strong run-to-run variance; second inspected result degraded heavily.
-- High-resolution attempt failed; octree-512 test pending at time of this register.
-- Do not treat a single good run as production proof.
+- Critical issue: strong run-to-run variance; inspected repeats degrade heavily.
+- Octree 512 does not solve the visual problem: the front view remains melted/soft with invented or collapsed structural regions.
+- High-resolution attempt also failed technically.
+- Reuse only as occasional volumetric donor. Do not treat a single good run as production proof.
 
 ### CraftsMan3D
 **Status:** BASE 3D PASS / VISUAL BELOW TARGET
