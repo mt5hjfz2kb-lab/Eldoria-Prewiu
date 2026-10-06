@@ -26,7 +26,7 @@ from depth_anything_3.api import DepthAnything3
 import torch
 
 device = torch.device("cpu")
-model = DepthAnything3.from_pretrained("depth-anything/DA3-BASE")
+model = DepthAnything3.from_pretrained("depth-anything/DA3-BASE", revision="f4a6c9b3c95e41c82048423d3493a81ec3fa810e")
 model = model.to(device=device)
 model.eval()
 
