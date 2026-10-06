@@ -1,3 +1,9 @@
+## 2026-10-06 — World Region 1 active
+
+`eldoria-world-region-1-v1` has begun from live main without reopening Valoria or visual R&D. Region 1 is defined as a scalable exterior region around certified Valoria, not a continent or detached abstract map. The first proof sector reuses the existing authoritative Unity world semantics (`forest-valoria`, `quarry-valoria`, `corrupt-scout`, march phases, one-time rewards and save/reload) and will replace only the old player-facing Frontier presentation.
+
+The region contract, bounded camera envelope, route/POI layout and test matrix are committed. Heavy Unity implementation/capture is intentionally not dispatched while `valoria-mobile-web-playtest-v1` owns the Windows Unity runner. Zero paid credits; no Valoria authority, SHARP line, parcels, GitHub Pages or mobile-WebGL resources changed by this block.
+
 ## 2026-10-06 — VALORIA REAL GAME STATE v1 — LOCAL PLY VERIFIED / UNITY GATES PENDING
 
 Same active workstream `valoria-real-game-state-v1`; no new block or research.
