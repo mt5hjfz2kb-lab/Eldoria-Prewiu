@@ -1,0 +1,63 @@
+name: "[SOURCE] Valoria Camera-First 2.5D Depth Shell v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-depth-shell-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-camera-first-depth-shell-v1
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1
+            tools/build-camera-first-depth-shell-v1.py
+            pipeline/camera-first-depth-shell-v1-request.json
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1
+          sparse-checkout-cone-mode: false
+
+      - run: pip install "numpy<2" pillow opencv-python-headless
+
+      - name: Build semantic depth-shell source
+        run: |
+          python tools/build-camera-first-depth-shell-v1.py
+          for f in far-environment cliff-ground-shore vegetation-mid gate-back gate-front bridge-back bridge-front vegetation-foreground; do
+            test -s "art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/$f.png"
+          done
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1/depth-shell-source-report.json
+
+      - name: Persist source evidence
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist semantic 2.5D depth-shell source"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-depth-shell-source-v1
+          path: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/*
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1/*
+          if-no-files-found: error
+          retention-days: 30
