@@ -1,28 +1,241 @@
 name: "[R&D] Valoria Pixal3D Gate Capability v1"
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pipeline/valoria-pixal3d-gate-capability-v1.json"
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-pixal3d-gate-capability-v1.yml"
+
 permissions:
   contents: read
+
 jobs:
-  proof:
+  pixal3d-gate-proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
-      - name: Install client
-        run: python -m pip install --quiet "gradio_client>=1.4" pillow
-      - name: Generate Gate with Pixal3D
-        env:
-          OUT_DIR: /tmp/pixal3d-proof
-        run: python tools/valoria-pixal3d-space-proof.py
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+          sparse-checkout-cone-mode: false
+
+      - name: Install clients and render tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" pillow requests
+
+      - name: Prepare isolated gate input
+        run: |
+          mkdir -p /tmp/pixal3d/input /tmp/pixal3d/output /tmp/pixal3d/evidence
+          python - <<'PY'
+          from PIL import Image, ImageChops
+          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
+          im=Image.open(src).convert("RGBA")
+          alpha=im.getchannel("A"); bbox=alpha.getbbox()
+          if bbox is None or bbox==(0,0,*im.size):
+              bg=Image.new("RGBA",im.size,im.getpixel((0,0)))
+              bbox=ImageChops.difference(im,bg).convert("L").getbbox()
+          if bbox is None: raise SystemExit("No gate content")
+          l,t,r,b=bbox; pad=max(12,int(max(r-l,b-t)*0.06))
+          bbox=(max(0,l-pad),max(0,t-pad),min(im.width,r+pad),min(im.height,b+pad))
+          crop=im.crop(bbox)
+          w,h=crop.size; side=max(w,h)
+          canvas=Image.new("RGBA",(side,side),(255,255,255,0))
+          canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
+          canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
+          out="/tmp/pixal3d/input/eldoria-semantic-gate.png"
+          canvas.save(out)
+          open("/tmp/pixal3d/evidence/input-spec.txt","w").write(
+              f"source={src}\nsource_size={im.size}\nisolation_bbox={bbox}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+          )
+          PY
+          sha256sum /tmp/pixal3d/input/eldoria-semantic-gate.png | tee /tmp/pixal3d/evidence/input.sha256
+
+      - name: Generate and extract Pixal3D GLB
+        id: pixal
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee /tmp/pixal3d/evidence/pixal3d.log
+          import os, shutil, requests
+          from gradio_client import Client, handle_file
+
+          client=Client("TencentARC/Pixal3D", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          endpoints=(api or {}).get("named_endpoints",{})
+          print("ENDPOINTS",list(endpoints))
+
+          # Use advertised preprocessing if it exists.
+          inp="/tmp/pixal3d/input/eldoria-semantic-gate.png"
+          processed=inp
+          prep=next((e for e in endpoints if "preprocess" in e.lower()),None)
+          if prep:
+              ps=endpoints[prep].get("parameters",[])
+              kw={}
+              for p in ps:
+                  n=p.get("parameter_name"); d=p.get("parameter_default")
+                  if not n: continue
+                  if "image" in n.lower(): kw[n]=handle_file(inp)
+                  elif d is not None: kw[n]=d
+              print("PREP_CALL",prep,kw)
+              pr=client.predict(api_name=prep,**kw)
+              print("PREP_RESULT",repr(pr))
+              if isinstance(pr,str): processed=pr
+              elif isinstance(pr,dict) and pr.get("path"): processed=pr["path"]
+              elif isinstance(pr,(list,tuple)) and pr:
+                  p0=pr[0]
+                  if isinstance(p0,str): processed=p0
+                  elif isinstance(p0,dict) and p0.get("path"): processed=p0["path"]
+
+          gen=None
+          for ep,spec in endpoints.items():
+              names=[(p.get("parameter_name") or "").lower() for p in spec.get("parameters",[])]
+              if any("image" in n for n in names) and ("3d" in ep.lower() or "generate" in ep.lower()):
+                  gen=(ep,spec); break
+          if gen is None:
+              # Pixal3D app normally exposes image_to_3d by its Gradio api name.
+              for ep,spec in endpoints.items():
+                  names=[(p.get("parameter_name") or "").lower() for p in spec.get("parameters",[])]
+                  if any("image" in n for n in names) and len(spec.get("returns",[]))>=1:
+                      gen=(ep,spec); break
+          if gen is None: raise SystemExit("No Pixal3D generation endpoint")
+          ep,spec=gen
+          kwargs={}
+          for p in spec.get("parameters",[]):
+              n=p.get("parameter_name"); d=p.get("parameter_default")
+              if not n: continue
+              ln=n.lower()
+              if "image" in ln:
+                  kwargs[n]=handle_file(processed) if isinstance(processed,str) else processed
+              elif ln=="seed":
+                  kwargs[n]=42
+              elif "resolution" in ln:
+                  typ=str(p.get("type") or {})
+                  # Prefer 1024 as a quality/cost balance; allow default if constrained.
+                  kwargs[n]=1024 if "1024" in typ or d in (1024,1536,512) else d
+              elif d is not None:
+                  kwargs[n]=d
+          print("GEN_CALL",ep,kwargs)
+          state_result=client.predict(api_name=ep,**kwargs)
+          print("GEN_RESULT_TYPE",type(state_result),repr(state_result)[:4000])
+
+          # image_to_3d returns state + preview. State is the first element.
+          state=state_result[0] if isinstance(state_result,(tuple,list)) else state_result
+
+          extract=None
+          for e,spec2 in endpoints.items():
+              if "extract" in e.lower() and ("glb" in e.lower() or "mesh" in e.lower()):
+                  extract=(e,spec2); break
+          if extract is None:
+              for e,spec2 in endpoints.items():
+                  ret=str(spec2.get("returns",[])).lower()
+                  if "model3d" in ret or "glb" in ret:
+                      # Avoid selecting generation again.
+                      if e!=ep: extract=(e,spec2); break
+          if extract is None: raise SystemExit("No Pixal3D GLB extraction endpoint")
+          ex_ep,ex_spec=extract
+          ex_kw={}
+          for p in ex_spec.get("parameters",[]):
+              n=p.get("parameter_name"); d=p.get("parameter_default")
+              if not n: continue
+              ln=n.lower()
+              if "state" in ln or "output_buf" in ln:
+                  ex_kw[n]=state
+              elif "decimation" in ln:
+                  ex_kw[n]=300000
+              elif "texture" in ln and "size" in ln:
+                  ex_kw[n]=2048
+              elif d is not None:
+                  ex_kw[n]=d
+          print("EXTRACT_CALL",ex_ep,{k:(type(v).__name__ if k.lower().find("state")>=0 else v) for k,v in ex_kw.items()})
+          result=client.predict(api_name=ex_ep,**ex_kw)
+          print("EXTRACT_RESULT",repr(result))
+
+          vals=[]
+          def walk(x):
+              if isinstance(x,str): vals.append(x)
+              elif isinstance(x,(list,tuple)):
+                  for v in x: walk(v)
+              elif isinstance(x,dict):
+                  for v in x.values(): walk(v)
+          walk(result)
+          copied=[]
+          for p in vals:
+              low=p.lower().split("?")[0]; ext=os.path.splitext(low)[1]
+              if ext not in (".glb",".gltf",".obj",".ply",".stl"): continue
+              dst=f"/tmp/pixal3d/output/candidate-{len(copied)+1}{ext}"
+              if os.path.isfile(p):
+                  shutil.copy2(p,dst); copied.append(dst)
+              elif p.startswith(("http://","https://")):
+                  rr=requests.get(p,timeout=240); rr.raise_for_status()
+                  open(dst,"wb").write(rr.content); copied.append(dst)
+          print("COPIED",[(p,os.path.getsize(p)) for p in copied])
+          if not copied: raise SystemExit("Pixal3D returned no mesh")
+          glbs=[p for p in copied if p.lower().endswith(".glb")]
+          chosen=max(glbs or copied,key=os.path.getsize)
+          shutil.copy2(chosen,"/tmp/pixal3d/output/pixal3d.glb")
+          print("AUTHORITATIVE",chosen,os.path.getsize(chosen))
+          PY
+
+      - name: Render Pixal3D evidence
+        if: steps.pixal.outcome == 'success'
+        run: |
+          cat > /tmp/pixal3d/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          src="/tmp/pixal3d/output/pixal3d.glb"; ev="/tmp/pixal3d/evidence"
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.import_scene.gltf(filepath=src)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
+          if not meshes: raise RuntimeError("No renderable mesh")
+          pts=[o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"
+          sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.045,.045,.045)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*.015))
+          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(.14,.14,.14,1); bpy.context.object.data.materials.append(gm)
+          bpy.ops.object.light_add(type="SUN",location=center+Vector((span,-span,span)))
+          sun=bpy.context.object; sun.data.energy=2.2; sun.rotation_euler=(math.radians(35),0,math.radians(135))
+          bpy.ops.object.light_add(type="AREA",location=center+Vector((-span*.7,-span*.9,span*.8)))
+          area=bpy.context.object; area.data.energy=650; area.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat("-Z","Y").to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; cam.data.lens=58; sc.camera=cam
+          views=[("front",Vector((0,-1.8,.18))),("three-quarter",Vector((1.2,-1.45,.35))),("back",Vector((0,1.8,.18))),("side",Vector((1.8,0,.18)))]
+          for name,v in views:
+              cam.location=center+v*span; track(cam,center+Vector((0,0,dims.z*.05)))
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          open(os.path.join(ev,"mesh-report.txt"),"w").write(
+              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=TencentARC/Pixal3D\ncredits=0\n"
+          )
+          PY
+          blender -b --python /tmp/pixal3d/render.py
+          test -s /tmp/pixal3d/evidence/mesh-front.png
+          test -s /tmp/pixal3d/evidence/mesh-three-quarter.png
+          test -s /tmp/pixal3d/evidence/mesh-back.png
+          test -s /tmp/pixal3d/evidence/mesh-side.png
+
+      - name: Require usable Pixal3D mesh
+        run: |
+          test "${{ steps.pixal.outcome }}" = "success"
+          test -s /tmp/pixal3d/output/pixal3d.glb
+          test -s /tmp/pixal3d/evidence/mesh-three-quarter.png
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: valoria-pixal3d-gate-capability-v1
-          path: /tmp/pixal3d-proof
-          if-no-files-found: error
-          retention-days: 30
+          path: |
+            /tmp/pixal3d/evidence
+            /tmp/pixal3d/output
+            /tmp/pixal3d/input/eldoria-semantic-gate.png
+          retention-days: 14
