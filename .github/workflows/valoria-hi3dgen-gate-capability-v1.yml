@@ -76,90 +76,90 @@ jobs:
           image="/tmp/hi3dgen/input/eldoria-gate-semantic.png"
           # generate_3d preprocesses the image internally in the Space code.
           # Pass the original file object directly; do not pass a downloaded path string.
-          result=client.predict(
-              image=handle_file(image),
-              seed=42,
-              ss_guidance_strength=3,
-              ss_sampling_steps=50,
-              slat_guidance_strength=3.0,
-              slat_sampling_steps=6,
-              api_name="/generate_3d"
-          )
-          print("RESULT",repr(result))
+          def collect(result, seed):
+              print("RESULT",seed,repr(result))
+              candidates=[]
+              def walk(x):
+                  if isinstance(x,str): candidates.append(x)
+                  elif isinstance(x,(list,tuple)):
+                      for v in x: walk(v)
+                  elif isinstance(x,dict):
+                      for v in x.values(): walk(v)
+              walk(result)
+              copied=[]
+              for p in candidates:
+                  if os.path.isfile(p):
+                      ext=os.path.splitext(p)[1].lower()
+                      if ext in (".glb",".gltf",".obj",".ply",".stl"):
+                          dst=f"/tmp/hi3dgen/output/hi3dgen-seed{seed}"+ext
+                          shutil.copy2(p,dst)
+                          copied.append(dst)
+                          break
+              print("COPIED",seed,copied)
+              if not copied:
+                  raise RuntimeError(f"Hi3DGen seed {seed} returned no local mesh file")
 
-          candidates=[]
-          def walk(x):
-              if isinstance(x,str): candidates.append(x)
-              elif isinstance(x,(list,tuple)):
-                  for v in x: walk(v)
-              elif isinstance(x,dict):
-                  for v in x.values(): walk(v)
-          walk(result)
-
-          copied=[]
-          for p in candidates:
-              if os.path.isfile(p):
-                  ext=os.path.splitext(p)[1].lower()
-                  if ext in (".glb",".gltf",".obj",".ply",".stl"):
-                      dst="/tmp/hi3dgen/output/hi3dgen"+ext
-                      shutil.copy2(p,dst)
-                      copied.append(dst)
-          print("COPIED",copied)
-          if not copied:
-              raise SystemExit("Hi3DGen returned no local mesh file")
+          for seed in (7,137):
+              result=client.predict(
+                  image=handle_file(image),
+                  seed=seed,
+                  ss_guidance_strength=3,
+                  ss_sampling_steps=50,
+                  slat_guidance_strength=3.0,
+                  slat_sampling_steps=6,
+                  api_name="/generate_3d"
+              )
+              collect(result,seed)
           PY
 
       - name: Require Hi3DGen mesh
         run: |
           test "${{ steps.hi3dgen.outcome }}" = "success"
-          test -n "$(find /tmp/hi3dgen/output -maxdepth 1 -type f \( -name '*.glb' -o -name '*.gltf' -o -name '*.obj' -o -name '*.ply' -o -name '*.stl' \) -print -quit)"
+          test -s /tmp/hi3dgen/output/hi3dgen-seed7.glb
+          test -s /tmp/hi3dgen/output/hi3dgen-seed137.glb
 
-      - name: Render multi-angle clay evidence
+      - name: Render seed comparison evidence
         run: |
-          cat > /tmp/hi3dgen/render.py <<'PY'
+          cat > /tmp/hi3dgen/render_compare.py <<'PY'
           import bpy, os, math
           from mathutils import Vector
-          root="/tmp/hi3dgen/output"; ev="/tmp/hi3dgen/evidence"
-          bpy.ops.wm.read_factory_settings(use_empty=True)
-          files=[os.path.join(root,f) for f in os.listdir(root) if f.lower().endswith((".glb",".gltf",".obj",".ply",".stl"))]
-          if not files: raise RuntimeError("no mesh")
-          p=files[0]
-          if p.lower().endswith((".glb",".gltf")): bpy.ops.import_scene.gltf(filepath=p)
-          elif p.lower().endswith(".obj"): bpy.ops.wm.obj_import(filepath=p)
-          elif p.lower().endswith(".ply"): bpy.ops.wm.ply_import(filepath=p)
-          elif p.lower().endswith(".stl"): bpy.ops.wm.stl_import(filepath=p)
-          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
-          if not meshes: raise RuntimeError("no mesh objects")
-          pts=[]; tris=0
-          for o in meshes:
-              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
-              tris+=sum(max(0,len(poly.vertices)-2) for poly in o.data.polygons)
-          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
-          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
-          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
-          mat=bpy.data.materials.new("Clay"); mat.diffuse_color=(0.72,0.72,0.72,1)
-          for o in meshes:
-              o.data.materials.clear(); o.data.materials.append(mat)
-          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
-          if sc.world is None: sc.world=bpy.data.worlds.new("World")
-          sc.world.color=(0.035,0.035,0.035)
-          bpy.ops.mesh.primitive_plane_add(size=span*4, location=(center.x,center.y,mn.z-0.02*span))
-          g=bpy.context.object; gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(0.18,0.18,0.18,1); g.data.materials.append(gm)
-          bpy.ops.object.light_add(type='SUN', location=(0,0,span)); bpy.context.object.data.energy=2.2; bpy.context.object.rotation_euler=(math.radians(35),0,math.radians(135))
-          bpy.ops.object.light_add(type='AREA', location=(center.x-span,center.y-span,mx.z+span))
-          a=bpy.context.object; a.data.energy=1000; a.data.size=span
-          def look(o,t):
-              o.rotation_euler=(t-o.location).to_track_quat('-Z','Y').to_euler()
-          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
-          views=[("front",Vector((0,-1.7,0.35))),("three-quarter",Vector((1.3,-1.3,0.55))),("side",Vector((1.7,0,0.35))),("back",Vector((0,1.7,0.35)))]
-          for name,v in views:
-              cam.location=center+v*span; look(cam,center); sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
-          with open(os.path.join(ev,"mesh-report.txt"),"w") as f:
-              f.write(f"source=Hi3DGen\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+
+          def render_file(path, seed):
+              bpy.ops.wm.read_factory_settings(use_empty=True)
+              bpy.ops.import_scene.gltf(filepath=path)
+              meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+              pts=[]; tris=0
+              for o in meshes:
+                  for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
+                  tris+=sum(max(0,len(poly.vertices)-2) for poly in o.data.polygons)
+              mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+              mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+              center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
+              mat=bpy.data.materials.new("Clay"); mat.diffuse_color=(0.72,0.72,0.72,1)
+              for o in meshes: o.data.materials.clear(); o.data.materials.append(mat)
+              sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100
+              if sc.world is None: sc.world=bpy.data.worlds.new("World")
+              sc.world.color=(0.035,0.035,0.035)
+              bpy.ops.mesh.primitive_plane_add(size=span*4, location=(center.x,center.y,mn.z-0.02*span))
+              g=bpy.context.object; gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(0.18,0.18,0.18,1); g.data.materials.append(gm)
+              bpy.ops.object.light_add(type='SUN', location=(0,0,span)); bpy.context.object.data.energy=2.2; bpy.context.object.rotation_euler=(math.radians(35),0,math.radians(135))
+              bpy.ops.object.light_add(type='AREA', location=(center.x-span,center.y-span,mx.z+span))
+              a=bpy.context.object; a.data.energy=1000; a.data.size=span
+              def look(o,t): o.rotation_euler=(t-o.location).to_track_quat('-Z','Y').to_euler()
+              bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
+              for name,v in [("front",Vector((0,-1.7,0.35))),("three-quarter",Vector((1.3,-1.3,0.55)))]:
+                  cam.location=center+v*span; look(cam,center)
+                  sc.render.filepath=f"/tmp/hi3dgen/evidence/seed{seed}-{name}.png"
+                  bpy.ops.render.render(write_still=True)
+              with open(f"/tmp/hi3dgen/evidence/seed{seed}-report.txt","w") as f:
+                  f.write(f"seed={seed}\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+
+          for seed in (7,137):
+              render_file(f"/tmp/hi3dgen/output/hi3dgen-seed{seed}.glb",seed)
           PY
-          blender -b --python /tmp/hi3dgen/render.py
-          test -s /tmp/hi3dgen/evidence/mesh-three-quarter.png
-          test -s /tmp/hi3dgen/evidence/mesh-front.png
+          blender -b --python /tmp/hi3dgen/render_compare.py
+          test -s /tmp/hi3dgen/evidence/seed7-three-quarter.png
+          test -s /tmp/hi3dgen/evidence/seed137-three-quarter.png
 
       - name: Record proof
         run: |
