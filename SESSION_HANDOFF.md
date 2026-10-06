@@ -1,3 +1,23 @@
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — LOCAL PLY VERIFIED / UNITY GATES PENDING
+
+Same active workstream `valoria-real-game-state-v1`; no new block or research.
+Implementation commit `b7fdd04039a133af791f255de1e3803d806647ba` integrates the verified
+local CPU terrain PLY through `pipeline/valoria-parcel-regions-v1.json` and one
+globally sorted SHARP scene. Local source run 37487411612 / artifact 11423748153
+produced a valid PLY in 136.706 seconds: SHA-256
+`d540d0fe80b766969bcfdb05129d8e7d15d567816a45f9ad02f4859f8b1e312e`.
+The workflow failed only after `LOCAL_SHARP_PLY_PASS` because Windows PowerShell
+read a null process exit code; the exact artifact was recovered and independently
+hashed. Do not repeat inference. Checkpoint SHA:
+`94211a75198c47f61fca7d739ba08a215418d8d398d48fddf023baccc24f073d`.
+
+Parcel-source generation and workflow governance PASS. Unity run **37488975868**
+is pending; actual capture, UI, save/reload, initial state and visual review must
+pass before closure. The manifest-driven generator verifies byte-identical
+out-of-mask working records and exact all-built working-source restoration.
+Look, reference, composition, camera, Gamma and authoritative gateway are retained.
+No final TECH/VISUAL PASS, runtime promotion or completed workstream is claimed.
+
 ## 2026-10-06 — VALORIA REAL GAME STATE v1 — RESUMED / LOCAL SHARP INFERENCE
 
 Owner explicitly authorized moving the same official Apple SHARP model/checkpoint from
