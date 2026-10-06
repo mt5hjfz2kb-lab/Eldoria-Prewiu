@@ -58,6 +58,7 @@ namespace Eldoria.EditorTools
             Save(camera,Folder+"/before-home-1536x1024.png",1536,1024);
 
             var shell=BuildShell(camera);
+            int hiddenLegacyRenderers=HideCoveredLegacyRenderers(camera,shell);
             Physics.SyncTransforms();
             var after=ValoriaVisualFormulaGate.CollisionSignature();
             if(after!=baseline)throw new Exception("Depth shell changed gameplay collider/hotspot signature.");
@@ -133,6 +134,7 @@ namespace Eldoria.EditorTools
                 "  \"gameplay_signature_preserved\": true,\n"+
                 "  \"shell_colliders\": 0,\n"+
                 "  \"shell_hotspots\": 0,\n"+
+                "  \"legacy_renderers_hidden_visual_only\": "+hiddenLegacyRenderers+",\n"+
                 "  \"production_scene_saved\": false,\n"+
                 "  \"paid_credits\": 0,\n"+
                 "  \"visual_review_required\": true\n"+
@@ -174,6 +176,28 @@ namespace Eldoria.EditorTools
             var go=Quad(name,pos,camera.transform.right,camera.transform.up,w,h,mat);
             go.transform.SetParent(root.transform,true);
             Layers.Add(new LayerState{Name=name,Go=go,BasePosition=pos,Compensation=compensation});
+        }
+
+        static int HideCoveredLegacyRenderers(Camera camera,GameObject shell)
+        {
+            var shellRenderers=new HashSet<Renderer>(shell.GetComponentsInChildren<Renderer>(true));
+            int hidden=0;
+            foreach(var r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if(r==null||!r.enabled||shellRenderers.Contains(r))continue;
+                var vp=camera.WorldToViewportPoint(r.bounds.center);
+                if(vp.z<=0f)continue;
+                // Canonical crop [300,420]-[1000,960] expressed in bottom-origin viewport coordinates.
+                bool inCrop=vp.x>=CropX0/(float)TargetWidth && vp.x<=CropX1/(float)TargetWidth &&
+                            vp.y>=(TargetHeight-CropY1)/(float)TargetHeight &&
+                            vp.y<=(TargetHeight-CropY0)/(float)TargetHeight;
+                if(!inCrop)continue;
+                // Keep broad terrain/world receivers; suppress local art renderers only.
+                if(r.bounds.size.magnitude>32f)continue;
+                r.enabled=false;
+                hidden++;
+            }
+            return hidden;
         }
 
         static void ResetParallax()
