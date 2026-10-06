@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+// Region 1 final shared visual adapter certification marker.
 namespace Eldoria.Presentation
 {
     // First reusable environment kit for Valoria.
