@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:59:00Z",
+  "updated_at": "2026-10-06T11:05:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -29,6 +29,25 @@
       "phase": "CONVERGENCE / PRODUCTION METHOD LOCK — SHARP SANITATION → UNITY GATE",
       "dependency": "Owner-directed freeze of broad method-discovery R&D. Existing in-flight runs may finish as archival evidence but must not spawn new lanes. No paid credits or commercial acquisition. No reopening rejected Semantic 2.5D/procedural-primary routes.",
       "next": "Close SHARP sanitized PLY → Unity gate first. Then lock the minimum production recipe: high-fidelity representation where viable + real interactive geometry + human correction + target-conditioned surface/depth + official-camera Unity validation."
+    },
+    {
+      "id": "valoria-sparc3d-gate-capability-v1",
+      "title": "VALORIA SPARC3D GATE CAPABILITY v1",
+      "owner": "chat-independent-sparc3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-sparc3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-sparc3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-sparc3d-rnd"
+      ],
+      "claimed_at": "2026-10-06T11:05:00Z",
+      "base_main_sha": "4a9ca69ccb274f73acab2dd8621129471b35a7ae",
+      "status": "active",
+      "phase": "ZERO-SPEND SPARC3D CANONICAL GATE PROOF",
+      "dependency": "Independent route. Must not touch active TripoSR, CraftsMan3D, SHARP, Marigold, photogrammetry, Qwen/SCoPE, commercial acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "Probe public Sparc3D Space on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
     }
   ],
   "history": [
