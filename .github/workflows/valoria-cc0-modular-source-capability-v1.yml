@@ -20,7 +20,7 @@ jobs:
       - name: Install Blender and unzip
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender unzip
+          sudo apt-get install -y blender unzip libegl1 libgl1 libglx0 libx11-6
           blender --version
 
       - name: Fetch Poly Haven CC0 source package
