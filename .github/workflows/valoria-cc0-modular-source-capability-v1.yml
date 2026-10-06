@@ -173,6 +173,8 @@ jobs:
           sc.render.resolution_percentage=100
           sc.render.image_settings.file_format="PNG"
           sc.render.film_transparent=False
+          if sc.world is None:
+              sc.world=bpy.data.worlds.new("World")
           sc.world.color=(0.04,0.04,0.04)
 
           # neutral ground
