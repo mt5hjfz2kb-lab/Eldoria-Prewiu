@@ -16,7 +16,7 @@ namespace Eldoria.EditorTools
     {
         const int W = 1280;
         const int H = 853;
-        const int MaxProofSplats = 300000;
+        const int MaxProofSplats = 600000;
         const int FloatsPerVertex = 14;
         const int VertexStride = FloatsPerVertex * 4;
 
@@ -38,7 +38,7 @@ namespace Eldoria.EditorTools
             if (!File.Exists(sourcePly)) throw new FileNotFoundException("Missing SHARP PLY", sourcePly);
 
             // Keep downloaded canonical bytes untouched. Convergence proof operates on a bounded working copy.
-            var workingPly = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-proof-sanitized-300k.ply"));
+            var workingPly = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-proof-sanitized-600k.ply"));
             var prep = PrepareProofPly(sourcePly, workingPly, MaxProofSplats);
             Debug.Log($"[SHARP] Proof PLY prepared: source={prep.OriginalCount}, output={prep.OutputCount}, sanitized={prep.SanitizedCount}, step={prep.Step}");
 
@@ -145,7 +145,7 @@ namespace Eldoria.EditorTools
                 $"  \"bounds_size\": \"{asset.Bounds.size}\",\n"+
                 "  \"source\": \"SHARP full canonical Valoria PLY artifact 11404383856\",\n"+
                 "  \"renderer\": \"UnitySplats 1.2.0 runtime PLY / URP\",\n"+
-                "  \"proof_mode\": \"bounded_300k_uniform_sample\",\n"+
+                "  \"proof_mode\": \"bounded_600k_uniform_sample\",\n"+
                 "  \"functional_substrate_collider\": true,\n"+
                 "  \"views\": [\"home\",\"pan-left\",\"pan-right\",\"zoom-in\",\"zoom-out\",\"occlusion-front\",\"occlusion-behind\"],\n"+
                 "  \"paid_credits\": 0\n"+
