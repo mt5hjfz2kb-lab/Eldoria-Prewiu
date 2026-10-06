@@ -1,0 +1,38 @@
+name: "[R&D] Valoria Reference-Conditioned Human Mesh Lookdev v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-reference-conditioned-human-mesh-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-reference-conditioned-human-mesh-v1.py
+            tools/valoria-reference-conditioned-human-mesh-render-v1.py
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1/gate-back.png
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1/gate-front.png
+          sparse-checkout-cone-mode: false
+      - name: Install dependencies
+        run: |
+          python -m pip install --quiet pillow numpy
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+      - name: Prepare human mesh and reference-conditioned material
+        run: python tools/valoria-reference-conditioned-human-mesh-v1.py
+      - name: Render hybrid lookdev
+        run: blender -b --python tools/valoria-reference-conditioned-human-mesh-render-v1.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-reference-conditioned-human-mesh-v1
+          path: /tmp/valoria-hybrid-proof/evidence
+          if-no-files-found: error
+          retention-days: 30
