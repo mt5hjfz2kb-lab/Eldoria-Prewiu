@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:27:00Z",
+  "updated_at": "2026-10-06T10:35:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -64,9 +64,12 @@
       "claimed_at": "2026-10-06T09:48:00Z",
       "base_main_sha": "d7905ec32309b12d97caa849cf036067c33f229e",
       "status": "active",
-      "phase": "ZERO-SPEND HUNYUAN3D-2.1 CANONICAL GATE PROOF",
+      "phase": "ZERO-SPEND TRIPOSR CANONICAL GATE PROOF",
       "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
-      "next": "Probe Hunyuan3D-2.1 on the isolated semantic Lower Gate input. Require real GLB plus multi-angle evidence; if the public ZeroGPU route is quota-blocked, search for a distinct no-cost executable route rather than reusing Hi3DGen/Unique3D/photogrammetry/commercial lanes."
+      "next": "Probe MIT-licensed TripoSR via free CPU Space on the isolated semantic Lower Gate input. Require real mesh plus multi-angle evidence. If architecture remains materially distorted/below hero threshold, close single-image reconstruction family and pivot to a non-duplicate route.",
+      "notes": [
+        "Hunyuan3D-2.1 produced real GLB but visual evidence was grossly deformed/melted and is not production-suitable; additionally do not promote Hunyuan as a clean EU production dependency."
+      ]
     },
     {
       "id": "valoria-unique3d-gate-capability-v1",
