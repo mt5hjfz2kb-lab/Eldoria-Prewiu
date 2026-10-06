@@ -1,28 +1,216 @@
 name: "[R&D] Valoria PartPacker Gate Capability v1"
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pipeline/valoria-partpacker-gate-capability-v1.json"
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-partpacker-gate-capability-v1.yml"
+
 permissions:
   contents: read
+
 jobs:
-  proof:
+  partpacker-gate-proof:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Install client
-        run: python -m pip install --quiet "gradio_client>=1.4" pillow
-      - name: Generate Gate with PartPacker
-        env:
-          OUT_DIR: /tmp/partpacker-proof
-        run: python tools/valoria-partpacker-space-proof.py
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+          sparse-checkout-cone-mode: false
+
+      - name: Install clients and render tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" pillow requests
+
+      - name: Prepare isolated gate input
+        run: |
+          mkdir -p /tmp/partpacker/input /tmp/partpacker/output /tmp/partpacker/evidence
+          python - <<'PY'
+          from PIL import Image, ImageChops
+          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
+          im=Image.open(src).convert("RGBA")
+          alpha=im.getchannel("A"); bbox=alpha.getbbox()
+          if bbox is None or bbox==(0,0,*im.size):
+              bg=Image.new("RGBA",im.size,im.getpixel((0,0)))
+              bbox=ImageChops.difference(im,bg).convert("L").getbbox()
+          if bbox is None: raise SystemExit("No gate content")
+          l,t,r,b=bbox; pad=max(12,int(max(r-l,b-t)*0.06))
+          bbox=(max(0,l-pad),max(0,t-pad),min(im.width,r+pad),min(im.height,b+pad))
+          crop=im.crop(bbox)
+          w,h=crop.size; side=max(w,h)
+          canvas=Image.new("RGBA",(side,side),(255,255,255,0))
+          canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
+          canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
+          out="/tmp/partpacker/input/eldoria-semantic-gate.png"
+          canvas.save(out)
+          open("/tmp/partpacker/evidence/input-spec.txt","w").write(
+              f"source={src}\nsource_size={im.size}\nisolation_bbox={bbox}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+          )
+          PY
+          sha256sum /tmp/partpacker/input/eldoria-semantic-gate.png | tee /tmp/partpacker/evidence/input.sha256
+
+      - name: Generate PartPacker GLB
+        id: partpacker
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee /tmp/partpacker/evidence/partpacker.log
+          import os, shutil, requests
+          from gradio_client import Client, handle_file
+
+          client=Client("nvidia/PartPacker", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          endpoints=(api or {}).get("named_endpoints",{})
+          print("ENDPOINTS",list(endpoints))
+
+          # First run advertised preprocessing when available.
+          inp="/tmp/partpacker/input/eldoria-semantic-gate.png"
+          processed=inp
+          preprocess_ep=next((e for e in endpoints if "process_image" in e.lower() or "preprocess" in e.lower()),None)
+          if preprocess_ep:
+              ps=endpoints[preprocess_ep].get("parameters",[])
+              kwargs={}
+              for p in ps:
+                  n=p.get("parameter_name"); d=p.get("parameter_default")
+                  if not n: continue
+                  if "image" in n.lower(): kwargs[n]=handle_file(inp)
+                  elif d is not None: kwargs[n]=d
+              print("PREPROCESS_CALL",preprocess_ep,kwargs)
+              pr=client.predict(api_name=preprocess_ep,**kwargs)
+              print("PREPROCESS_RESULT",repr(pr))
+              if isinstance(pr,str): processed=pr
+              elif isinstance(pr,dict) and pr.get("path"): processed=pr["path"]
+
+          ranked=[]
+          for ep,spec in endpoints.items():
+              low=ep.lower()
+              ps=spec.get("parameters",[])
+              names=[(p.get("parameter_name") or "").lower() for p in ps]
+              ret=str(spec.get("returns",[])).lower()
+              score=0
+              if "3d" in low or "generate" in low or "process_3d" in low: score+=120
+              if any("image" in n for n in names): score+=80
+              if "glb" in ret or "model3d" in ret or "filepath" in ret: score+=50
+              if "image" in low and "3d" not in low: score-=80
+              ranked.append((score,ep,spec))
+          ranked.sort(reverse=True,key=lambda x:x[0])
+          print("RANKED",[(s,e,[(p.get("parameter_name"),p.get("parameter_default")) for p in sp.get("parameters",[])]) for s,e,sp in ranked[:10]])
+          candidate=next(((s,e,sp) for s,e,sp in ranked if s>=120),None)
+          if not candidate: raise SystemExit("No PartPacker 3D endpoint advertised")
+          _,ep,spec=candidate
+          kwargs={}
+          for p in spec.get("parameters",[]):
+              n=p.get("parameter_name"); d=p.get("parameter_default")
+              if not n: continue
+              ln=n.lower()
+              if "image" in ln:
+                  kwargs[n]=handle_file(processed) if isinstance(processed,str) else processed
+              elif ln in ("seed","random_seed"):
+                  kwargs[n]=42
+              elif "randomize" in ln:
+                  kwargs[n]=False
+              elif "num_steps" in ln or ("step" in ln and isinstance(d,(int,float))):
+                  kwargs[n]=d if d is not None else 50
+              elif "cfg" in ln and isinstance(d,(int,float)):
+                  kwargs[n]=d
+              elif "grid" in ln and isinstance(d,(int,float)):
+                  kwargs[n]=d
+              elif "simplify" in ln:
+                  kwargs[n]=False
+              elif "target" in ln and "face" in ln:
+                  kwargs[n]=200000
+              elif d is not None:
+                  kwargs[n]=d
+          print("CALL",ep,kwargs)
+          result=client.predict(api_name=ep,**kwargs)
+          print("RESULT",repr(result))
+          vals=[]
+          def walk(x):
+              if isinstance(x,str): vals.append(x)
+              elif isinstance(x,(list,tuple)):
+                  for v in x: walk(v)
+              elif isinstance(x,dict):
+                  for v in x.values(): walk(v)
+          walk(result)
+          copied=[]
+          for p in vals:
+              low=p.lower().split("?")[0]; ext=os.path.splitext(low)[1]
+              if ext not in (".glb",".gltf",".obj",".ply",".stl"): continue
+              dst=f"/tmp/partpacker/output/candidate-{len(copied)+1}{ext}"
+              if os.path.isfile(p):
+                  shutil.copy2(p,dst); copied.append(dst)
+              elif p.startswith(("http://","https://")):
+                  rr=requests.get(p,timeout=240); rr.raise_for_status()
+                  open(dst,"wb").write(rr.content); copied.append(dst)
+          print("COPIED",[(p,os.path.getsize(p)) for p in copied])
+          if not copied: raise SystemExit("PartPacker returned no mesh")
+          glbs=[p for p in copied if p.lower().endswith(".glb")]
+          chosen=max(glbs or copied,key=os.path.getsize)
+          shutil.copy2(chosen,"/tmp/partpacker/output/partpacker.glb")
+          print("AUTHORITATIVE",chosen,os.path.getsize(chosen))
+          PY
+
+      - name: Render PartPacker evidence
+        if: steps.partpacker.outcome == 'success'
+        run: |
+          cat > /tmp/partpacker/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          src="/tmp/partpacker/output/partpacker.glb"; ev="/tmp/partpacker/evidence"
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.import_scene.gltf(filepath=src)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
+          if not meshes: raise RuntimeError("No renderable mesh")
+          pts=[o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"
+          sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.045,.045,.045)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*.015))
+          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(.14,.14,.14,1); bpy.context.object.data.materials.append(gm)
+          bpy.ops.object.light_add(type="SUN",location=center+Vector((span,-span,span)))
+          sun=bpy.context.object; sun.data.energy=2.2; sun.rotation_euler=(math.radians(35),0,math.radians(135))
+          bpy.ops.object.light_add(type="AREA",location=center+Vector((-span*.7,-span*.9,span*.8)))
+          area=bpy.context.object; area.data.energy=650; area.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat("-Z","Y").to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; cam.data.lens=58; sc.camera=cam
+          views=[("front",Vector((0,-1.8,.18))),("three-quarter",Vector((1.2,-1.45,.35))),("back",Vector((0,1.8,.18))),("side",Vector((1.8,0,.18)))]
+          for name,v in views:
+              cam.location=center+v*span; track(cam,center+Vector((0,0,dims.z*.05)))
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          open(os.path.join(ev,"mesh-report.txt"),"w").write(
+              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=nvidia/PartPacker\ncredits=0\n"
+          )
+          PY
+          blender -b --python /tmp/partpacker/render.py
+          test -s /tmp/partpacker/evidence/mesh-front.png
+          test -s /tmp/partpacker/evidence/mesh-three-quarter.png
+          test -s /tmp/partpacker/evidence/mesh-back.png
+          test -s /tmp/partpacker/evidence/mesh-side.png
+
+      - name: Require usable PartPacker mesh
+        run: |
+          test "${{ steps.partpacker.outcome }}" = "success"
+          test -s /tmp/partpacker/output/partpacker.glb
+          test -s /tmp/partpacker/evidence/mesh-three-quarter.png
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: valoria-partpacker-gate-capability-v1
-          path: /tmp/partpacker-proof
-          if-no-files-found: error
-          retention-days: 30
+          path: |
+            /tmp/partpacker/evidence
+            /tmp/partpacker/output
+            /tmp/partpacker/input/eldoria-semantic-gate.png
+          retention-days: 14
