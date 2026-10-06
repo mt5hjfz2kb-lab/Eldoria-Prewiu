@@ -37,6 +37,14 @@ const fallbackIndex = presenter.indexOf("else if(city) VisualWorld.Create(true,s
 if (parcelIndex < 0 || fallbackIndex < 0 || parcelIndex > fallbackIndex)
   fail("Canonical ValoriaParcelPresentation must remain preferred before the legacy VisualWorld fallback.");
 
+const runtimeGuard = read(manifest.legacy_fallback.fail_closed_guard);
+if (!runtimeGuard.includes("ValoriaCanonicalRuntimeGuard"))
+  fail("Fail-closed runtime guard is missing or renamed without updating authority routing.");
+if (!runtimeGuard.includes("ValoriaParcelPresentation"))
+  fail("Fail-closed guard no longer verifies canonical ValoriaParcelPresentation.");
+if (!runtimeGuard.includes("Legacy VisualWorld fallback is forbidden in production"))
+  fail("Fail-closed guard lost its explicit legacy fallback prohibition.");
+
 const benchmark = read(manifest.generic_benchmark.producer);
 if (!benchmark.includes("VisualWorld.Create(true,state)"))
   fail("Generic benchmark classification must be reviewed because it no longer exercises the known legacy Valoria fallback.");
@@ -51,5 +59,4 @@ console.log("VALORIA_VISUAL_AUTHORITY_ROUTING=PASS");
 console.log("CANONICAL_VALORIA=SHARP + ValoriaParcelPresentation");
 console.log("GENERIC_BENCHMARK=NONCANONICAL_MIXED_REGRESSION");
 console.log("LEGACY_VISUALWORLD=FALLBACK_QA_ONLY");
-if (manifest.legacy_fallback.runtime_cutover_pending)
-  console.log("RUNTIME_CUTOVER=PENDING_OWNER_RELEASE_OF_SLICEPRESENTER");
+console.log("RUNTIME_FAIL_CLOSED=INSTALLED");
