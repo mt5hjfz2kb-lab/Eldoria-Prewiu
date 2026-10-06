@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:45:00Z",
+  "updated_at": "2026-10-06T10:46:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -121,29 +121,6 @@
       "blocker": "No technical dependency remains after the per-asset impostor Unity proof completed. Since commit f2a666f396233dea9d0f821e09ecb1b039d9b0c1 expanded the workstream to Unity, no SHARP Unity implementation commit or workflow run has been produced. This is an execution-resume issue, not a technical rejection."
     },
     {
-      "id": "valoria-step1x3d-gate-capability-v1",
-      "title": "VALORIA STEP1X-3D GATE CAPABILITY v1",
-      "owner": "chat-independent-step1x3d-rnd",
-      "scope": [
-        ".github/workflows/valoria-step1x3d-gate-capability-v1.yml",
-        "docs/evidence/valoria-step1x3d-gate-capability-v1/**",
-        "pipeline/active-workstreams.json"
-      ],
-      "resources": [
-        "public-hf-space-step1x-rnd"
-      ],
-      "claimed_at": "2026-10-06T10:44:00Z",
-      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
-      "status": "blocked",
-      "phase": "ZERO-SPEND STEP1X-3D CANONICAL GATE PROOF / INFRASTRUCTURE BLOCKED",
-      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
-      "next": "Do not retry until the public Space is running again or a genuinely free executable route appears. Do not treat as visual pass/fail.",
-      "blocked_at": "2026-10-06T10:44:17Z",
-      "blocker": "Proof run 37451628769 reached the official/public Step1X-3D Space but the Space is PAUSED. No usable mesh was returned. This is an infrastructure/access blocker, not a visual rejection.",
-      "run_id": 37451628769,
-      "artifact_id": 11406708574
-    },
-    {
       "id": "valoria-scope-gate-camera-video-v1",
       "title": "VALORIA SCOPE GATE CAMERA VIDEO v1",
       "owner": "chat-independent-scope-camera-video-rnd",
@@ -162,9 +139,52 @@
       "phase": "ZERO-SPEND CAMERA-CONTROLLED VIEW-SYNTHESIS PROOF",
       "dependency": "Isolated R&D only. Must not touch SHARP Unity, production Unity, Lower Gate production, commercial acquisition or paid credits. This proof is visual/view-synthesis only and cannot be promoted without runtime/gameplay evidence.",
       "next": "Complete rerun 37451749211 using the corrected public Space. Evaluate whether camera-controlled output preserves Valoria identity across motion. Treat as visual representation evidence only, not a gameplay/runtime pass."
+    },
+    {
+      "id": "valoria-craftsman3d-gate-capability-v1",
+      "title": "VALORIA CRAFTSMAN3D GATE CAPABILITY v1",
+      "owner": "chat-independent-craftsman3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-craftsman3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-craftsman3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-craftsman-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:46:00Z",
+      "base_main_sha": "fad21a0c697bb5a605653466f5631775d8c3ac83",
+      "status": "active",
+      "phase": "ZERO-SPEND CRAFTSMAN3D CANONICAL GATE PROOF",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
+      "next": "Probe multimodalart/CraftsMan3D-zerogpu on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
     }
   ],
   "history": [
+    {
+      "id": "valoria-step1x3d-gate-capability-v1",
+      "title": "VALORIA STEP1X-3D GATE CAPABILITY v1",
+      "owner": "chat-independent-step1x3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-step1x3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-step1x3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-step1x-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:44:00Z",
+      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
+      "status": "blocked",
+      "phase": "ZERO-SPEND STEP1X-3D CANONICAL GATE PROOF / PUBLIC SPACE PAUSED",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
+      "next": "Do not wait on the paused official Space. Retry only if public execution becomes available; otherwise use a different zero-spend route.",
+      "blocked_at": "2026-10-06T10:46:00Z",
+      "blocker": "Proof run 37451628769 reached the official/public Step1X-3D Space but the Space is PAUSED. No usable mesh was returned. This is an infrastructure/access blocker, not a visual rejection.",
+      "run_id": 37451628769,
+      "artifact_id": 11406708574,
+      "result": "Official stepfun-ai/Step1X-3D Hugging Face Space reports PAUSED before inference. No visual verdict possible, no credits spent, no Unity touched."
+    },
     {
       "id": "valoria-marigold-depth-fullframe-v1",
       "title": "VALORIA MARIGOLD DEPTH FULLFRAME v1",
