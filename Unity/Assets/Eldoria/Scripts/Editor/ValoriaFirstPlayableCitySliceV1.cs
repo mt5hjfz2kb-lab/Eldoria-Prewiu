@@ -100,7 +100,9 @@ namespace Eldoria.EditorTools
 
             var sharpRoot=new GameObject("SHARP_Valoria_Clean_600K");
             var gs=sharpRoot.AddComponent<GsplatRenderer>();
-            gs.GsplatAsset=asset; gs.SHDegree=0; gs.GammaToLinear=true; gs.AsyncUpload=false; gs.RenderBeforeUploadComplete=false; gs.Update();
+            // SHARP exports sRGB colors. Convert only in a linear Unity project;
+            // converting in this project's Gamma path darkens the whole scene.
+            gs.GsplatAsset=asset; gs.SHDegree=0; gs.GammaToLinear=QualitySettings.activeColorSpace==ColorSpace.Linear; gs.AsyncUpload=false; gs.RenderBeforeUploadComplete=false; gs.Update();
             if(!gs.Valid||gs.SplatCount==0) throw new Exception("Production slice: Gaussian renderer invalid");
 
             var cam=new GameObject("ValoriaProductionCamera").AddComponent<Camera>();
@@ -280,6 +282,8 @@ namespace Eldoria.EditorTools
                 $"  \"interaction_pass\": {(interactionPass?"true":"false")},\n"+
                 $"  \"source_splat_count\": {prep.OriginalCount},\n"+
                 $"  \"proof_splat_count\": {asset.SplatCount},\n"+
+                "  \"color_space\": \""+QualitySettings.activeColorSpace+"\",\n"+
+                "  \"gamma_to_linear\": "+(gs.GammaToLinear?"true":"false")+",\n"+
                 $"  \"family_count\": {runtimes.Count},\n"+
                 $"  \"semantic_anchor_count\": {proxies.Count},\n"+
                 $"  \"semantic_raycast_pass\": {semanticPass},\n"+
