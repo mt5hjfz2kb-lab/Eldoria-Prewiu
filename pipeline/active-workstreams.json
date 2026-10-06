@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:51:00Z",
+  "updated_at": "2026-10-06T10:57:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -141,6 +141,27 @@
       "next": "Probe multimodalart/CraftsMan3D-zerogpu on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
     },
     {
+      "id": "valoria-triposg-gate-capability-v1",
+      "title": "VALORIA TRIPOSG GATE CAPABILITY v1",
+      "owner": "chat-independent-triposg-rnd",
+      "scope": [
+        ".github/workflows/valoria-triposg-gate-capability-v1.yml",
+        "docs/evidence/valoria-triposg-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-triposg-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:57:00Z",
+      "base_main_sha": "dba83387fff24aeb66f11d95dad4dbc5244531bb",
+      "status": "active",
+      "phase": "ZERO-SPEND TRIPOSG CANONICAL GATE PROOF",
+      "dependency": "Distinct from the active TripoSR workstream. Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "Probe open-source MIT VAST-AI TripoSG public Space on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
+    }
+  ],
+  "history": [
+    {
       "id": "valoria-direct3ds2-gate-capability-v1",
       "title": "VALORIA DIRECT3D-S2 GATE CAPABILITY v1",
       "owner": "chat-independent-direct3ds2-rnd",
@@ -154,13 +175,14 @@
       ],
       "claimed_at": "2026-10-06T10:51:00Z",
       "base_main_sha": "36f1eed9b313470fe122b5ba5ebbd3edf6dbcd7a",
-      "status": "active",
-      "phase": "ZERO-SPEND DIRECT3D-S2 CANONICAL GATE PROOF",
+      "status": "blocked",
+      "phase": "ZERO-SPEND DIRECT3D-S2 CANONICAL GATE PROOF / PUBLIC BACKENDS UNAVAILABLE",
       "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
-      "next": "Probe wushuang98/Direct3D-S2-v1.0-demo-zero on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence. Prefer highest free SDF resolution that executes."
-    }
-  ],
-  "history": [
+      "next": "Do not retry unless a callable Direct3D-S2 backend reappears.",
+      "blocked_at": "2026-10-06T10:57:00Z",
+      "result": "Official ZeroGPU wrapper is CONFIG_ERROR. Published api.zmkj.site/api1/api2 backends no longer resolve DNS; demo-api and demo expose no callable Gradio endpoints. No visual verdict possible, no credits spent, no Unity touched.",
+      "run_id": 37452905646
+    },
     {
       "id": "valoria-partpacker-gate-capability-v1",
       "title": "VALORIA PARTPACKER GATE CAPABILITY v1",
