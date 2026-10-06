@@ -1,0 +1,284 @@
+{
+  "method": "exact canonical reference mapped to locked orthographic yaw20/pitch35 camera plane",
+  "source": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "source_dimensions": [
+    1672,
+    941
+  ],
+  "baseline_view": "UNITY-16x9",
+  "baseline_span": 48.0,
+  "baseline_aspect": 1.77734375,
+  "camera_axes": {
+    "right": [
+      0.9396926207859084,
+      -0.0,
+      0.34202014332566866
+    ],
+    "up": [
+      -0.19617469496901105,
+      0.8191520442889919,
+      0.5389855446957562
+    ],
+    "forward": [
+      -0.2801664995932355,
+      -0.573576436351046,
+      0.7697511313200572
+    ]
+  },
+  "views": [
+    {
+      "name": "UNITY-source-3x2",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 48,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "screen_plane_center_world": [
+        0.0,
+        0.0
+      ],
+      "crop_box_reference_px": [
+        130.45274725274726,
+        0.0,
+        1541.5472527472527,
+        941.0
+      ],
+      "source_coverage_fraction": 1.0,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-source-3x2.png"
+    },
+    {
+      "name": "UNITY-16x9",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 48,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "screen_plane_center_world": [
+        0.0,
+        0.0
+      ],
+      "crop_box_reference_px": [
+        -1.1368683772161603e-13,
+        0.0,
+        1672.0,
+        941.0
+      ],
+      "source_coverage_fraction": 0.9999999999999999,
+      "overflow": {
+        "left_px": 1.1368683772161603e-13,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-16x9.png"
+    },
+    {
+      "name": "UNITY-mobile-landscape",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 48,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "screen_plane_center_world": [
+        0.0,
+        0.0
+      ],
+      "crop_box_reference_px": [
+        -0.20415140415138922,
+        0.0,
+        1672.2041514041514,
+        941.0
+      ],
+      "source_coverage_fraction": 0.9997558593750001,
+      "overflow": {
+        "left_px": 0.20415140415138922,
+        "top_px": 0.0,
+        "right_px": 0.20415140415138922,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-mobile-landscape.png"
+    },
+    {
+      "name": "UNITY-portrait-home",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 48,
+      "center": {
+        "x": -2.7271295734086154,
+        "y": 0,
+        "z": 16.401193454613995
+      },
+      "screen_plane_center_world": [
+        3.046874999999999,
+        9.375000000000002
+      ],
+      "crop_box_reference_px": [
+        678.365605958023,
+        -183.78906250000006,
+        1113.0629654705483,
+        757.2109375
+      ],
+      "source_coverage_fraction": 0.8046874999999999,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 183.78906250000006,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-portrait-home.png"
+    },
+    {
+      "name": "UNITY-portrait-left",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 36,
+      "center": {
+        "x": -16.167153620011856,
+        "y": 0,
+        "z": 1.2470901616785484
+      },
+      "screen_plane_center_world": [
+        -14.765625,
+        3.84375
+      ],
+      "crop_box_reference_px": [
+        383.60387479818746,
+        42.271484375,
+        709.6268944325816,
+        748.021484375
+      ],
+      "source_coverage_fraction": 1.0000000000000002,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-portrait-left.png"
+    },
+    {
+      "name": "UNITY-portrait-right",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 36,
+      "center": {
+        "x": 20.60277299047967,
+        "y": 0,
+        "z": 12.195118721845164
+      },
+      "screen_plane_center_world": [
+        23.53125,
+        2.531250000000001
+      ],
+      "crop_box_reference_px": [
+        1134.166512160825,
+        68.001953125,
+        1460.1895317952192,
+        773.751953125
+      ],
+      "source_coverage_fraction": 1.0000000000000002,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-portrait-right.png"
+    },
+    {
+      "name": "UNITY-portrait-entry",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 36,
+      "center": {
+        "x": 1.9469909754850867,
+        "y": 0,
+        "z": -15.902420247865848
+      },
+      "screen_plane_center_world": [
+        -3.6093749999999996,
+        -8.953125
+      ],
+      "crop_box_reference_px": [
+        602.2500286443415,
+        293.1435546875,
+        928.2730482787356,
+        998.8935546875
+      ],
+      "source_coverage_fraction": 0.9179687500000002,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 57.8935546875
+      },
+      "output": "UNITY-portrait-entry.png"
+    },
+    {
+      "name": "UNITY-golden-close",
+      "compatible": true,
+      "perspective": false,
+      "yaw": 20,
+      "pitch": 35,
+      "span": 22,
+      "center": {
+        "x": 3,
+        "y": 0,
+        "z": -21.5
+      },
+      "screen_plane_center_world": [
+        -4.534355219144151,
+        -12.176713295865792
+      ],
+      "crop_box_reference_px": [
+        363.87304538844944,
+        493.5684835710356,
+        1130.3935175089214,
+        924.8601502377023
+      ],
+      "source_coverage_fraction": 1.0,
+      "overflow": {
+        "left_px": 0.0,
+        "top_px": 0.0,
+        "right_px": 0.0,
+        "bottom_px": 0.0
+      },
+      "output": "UNITY-golden-close.png"
+    }
+  ],
+  "interpretation": {
+    "full_coverage": "source_coverage_fraction == 1 means no novel-view reconstruction is required for that official view",
+    "overflow": "overflow identifies only the exact pixels that require source extension; hero content inside source remains untouched"
+  },
+  "vendor_credits": 0,
+  "unity_touched": false
+}
