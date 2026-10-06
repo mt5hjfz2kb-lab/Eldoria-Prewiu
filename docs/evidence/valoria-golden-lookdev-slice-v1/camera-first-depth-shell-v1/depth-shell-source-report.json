@@ -40,18 +40,19 @@
     }
   },
   "pixel_counts": {
-    "far": 139450,
-    "cliff": 104064,
+    "far": 180116,
+    "cliff": 94186,
     "veg_mid": 35244,
     "gate": 36069,
     "bridge": 27936,
     "veg_fg": 35245
   },
   "vegetation_depth_split": 0.22785885632038116,
-  "support_nonzero_fraction": 0.9398412698412698,
+  "support_nonzero_fraction": 0.9058068783068783,
+  "support_border_max_alpha": 0,
   "occlusion_fill": "OpenCV Telea radius 7 behind Gate/Bridge/vegetation only",
   "home_rule": "front/back copies co-registered; back thickness invisible at HOME",
-  "edge_rule": "far plate alpha uses organic support envelope; no full rectangular alpha",
+  "edge_rule": "v2 support is object-driven and multiplied by a 54px crop-edge fade; full rectangular alpha impossible",
   "credits": 0,
   "unity_touched": false
 }
