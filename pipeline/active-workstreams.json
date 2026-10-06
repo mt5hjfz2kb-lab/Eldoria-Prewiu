@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T12:48:00Z",
+  "updated_at": "2026-10-06T12:49:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -38,7 +38,8 @@
         ".github/workflows/valoria-sharp-lower-gate-appearance-gate-v1.yml",
         "Unity/Assets/Eldoria/Shaders/ValoriaLowerGateProjection.shader",
         "pipeline/valoria-sharp-lower-gate-appearance-gate-v1.json",
-        "docs/evidence/valoria-sharp-lower-gate-appearance-gate-v1/**"
+        "docs/evidence/valoria-sharp-lower-gate-appearance-gate-v1/**",
+        "docs/VALORIA_PRODUCTION_RECIPE_V1.md"
       ],
       "resources": [
         "unity-sharp-gaussian-proof",
