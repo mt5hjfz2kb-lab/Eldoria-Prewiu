@@ -1,28 +1,76 @@
 name: "[R&D] Valoria Hi3DGen Gate Capability v1"
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pipeline/valoria-hi3dgen-gate-capability-v1.json"
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-hi3dgen-gate-capability-v1.yml"
+
 permissions:
   contents: read
+
 jobs:
-  proof:
+  probe:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Install client
-        run: python -m pip install --quiet "gradio_client>=1.4" pillow
-      - name: Generate Gate with Hi3DGen
-        env:
-          OUT_DIR: /tmp/hi3dgen-proof
-        run: python tools/valoria-hi3dgen-space-proof.py
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+          sparse-checkout-cone-mode: false
+
+      - name: Install client tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" pillow requests
+
+      - name: Prepare canonical gate crop
+        run: |
+          mkdir -p /tmp/hi3dgen/input /tmp/hi3dgen/output /tmp/hi3dgen/evidence
+          python - <<'PY'
+          from PIL import Image
+          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png"
+          im=Image.open(src).convert("RGBA")
+          box=(189,54,574,324)
+          crop=im.crop(box)
+          w,h=crop.size
+          side=max(w,h)
+          canvas=Image.new("RGBA",(side,side),(255,255,255,0))
+          canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
+          canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
+          out="/tmp/hi3dgen/input/eldoria-gate-crop.png"
+          canvas.save(out)
+          open("/tmp/hi3dgen/evidence/input-spec.txt","w").write(
+              f"source={src}\nsource_size={im.size}\ncrop_box={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+          )
+          PY
+          sha256sum /tmp/hi3dgen/input/eldoria-gate-crop.png | tee /tmp/hi3dgen/evidence/input.sha256
+
+      - name: Probe Hi3DGen public API
+        id: hi3dgen
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee /tmp/hi3dgen/evidence/hi3dgen.log
+          from gradio_client import Client
+          client=Client("Stable-X/Hi3DGen", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          print("ENDPOINTS",list((api or {}).get("named_endpoints",{})))
+          PY
+
+      - name: Record probe
+        run: |
+          {
+            echo "zero_spend=true"
+            echo "unity_touched=false"
+            echo "hi3dgen_probe_outcome=${{ steps.hi3dgen.outcome }}"
+          } | tee /tmp/hi3dgen/evidence/result.txt
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-hi3dgen-gate-capability-v1
-          path: /tmp/hi3dgen-proof
-          if-no-files-found: error
-          retention-days: 30
+          name: valoria-hi3dgen-gate-capability-probe
+          path: /tmp/hi3dgen/evidence
+          retention-days: 14
