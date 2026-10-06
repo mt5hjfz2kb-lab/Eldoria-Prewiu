@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-zero-spend-external-source-bakeoff-v1",
+  "scope": "isolated external-source capability proof only",
+  "sources": [
+    "3DAssets.dev Medieval Castle Construction CC0 starter scene",
+    "Quaternius Medieval Village MegaKit Standard CC0"
+  ],
+  "production_promotion": false,
+  "unity_integration": false,
+  "lower_gate_touched": false,
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "nonce": "2026-10-06-001"
+}
