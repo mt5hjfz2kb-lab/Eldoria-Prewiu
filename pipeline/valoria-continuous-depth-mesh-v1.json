@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-continuous-depth-mesh-v1",
+  "input": "canonical Valoria world crop without UI chrome",
+  "method": "Marigold V2 continuous depth -> dense UV mesh with discontinuity cuts",
+  "tests": [
+    "home",
+    "pan-left",
+    "pan-right"
+  ],
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
