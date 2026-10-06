@@ -35,10 +35,10 @@ for p in spec.get("parameters",[]):
     has=p.get("parameter_has_default",False)
     if name in ("image","image_prompt") or ("image" in name and "multi" not in name):
         args.append(handle_file(inp))
-    elif "multiimage" in name or "multi_image" in name or "gallery" in name:
-        args.append([])
     elif "is_multi" in name:
         args.append(False)
+    elif "multiimage" in name or "multi_image" in name or "gallery" in name:
+        args.append([])
     elif "seed"==name or name.endswith("_seed"):
         args.append(0)
     elif "random" in name:
