@@ -1,0 +1,171 @@
+{
+  "regionId": "region-1-valoria-frontier",
+  "coordinateSpace": "region-local-xz",
+  "entry": {
+    "id": "valoria-gate-road",
+    "position": {
+      "x": 0,
+      "z": -15
+    },
+    "facing": {
+      "x": 0,
+      "z": 1
+    }
+  },
+  "camera": {
+    "homeTarget": {
+      "x": 1,
+      "z": 4
+    },
+    "panBounds": {
+      "minX": -7,
+      "maxX": 8,
+      "minZ": -5,
+      "maxZ": 10
+    },
+    "zoomScale": {
+      "min": 0.86,
+      "home": 1,
+      "max": 1.18
+    },
+    "mobileRule": "POI interaction proxies >= 44 CSS-equivalent px at home zoom; no free rotation"
+  },
+  "routeSegments": [
+    {
+      "id": "gate-to-fork",
+      "from": {
+        "x": 0,
+        "z": -15
+      },
+      "to": {
+        "x": 0,
+        "z": -2
+      },
+      "width": 3.2
+    },
+    {
+      "id": "fork-to-forest",
+      "from": {
+        "x": 0,
+        "z": -2
+      },
+      "to": {
+        "x": -8,
+        "z": 9
+      },
+      "width": 2.6
+    },
+    {
+      "id": "fork-to-ruin",
+      "from": {
+        "x": 0,
+        "z": -2
+      },
+      "to": {
+        "x": 7,
+        "z": 8
+      },
+      "width": 2.4
+    },
+    {
+      "id": "ruin-to-threat",
+      "from": {
+        "x": 7,
+        "z": 8
+      },
+      "to": {
+        "x": 12,
+        "z": 16
+      },
+      "width": 2.1
+    }
+  ],
+  "pois": [
+    {
+      "id": "forest-valoria",
+      "position": {
+        "x": -9,
+        "z": 10
+      },
+      "kind": "resource",
+      "salience": "primary",
+      "interaction": "Gather",
+      "persist": "ForestRemaining"
+    },
+    {
+      "id": "old-watch-ruin",
+      "position": {
+        "x": 7,
+        "z": 8
+      },
+      "kind": "narrative",
+      "salience": "primary",
+      "interaction": "Inspect",
+      "persist": null
+    },
+    {
+      "id": "corrupt-scout",
+      "position": {
+        "x": 12,
+        "z": 16
+      },
+      "kind": "threat",
+      "salience": "hero",
+      "interaction": "Fight",
+      "persist": "ScoutDefeated"
+    },
+    {
+      "id": "quarry-valoria",
+      "position": {
+        "x": 13,
+        "z": 0
+      },
+      "kind": "resource",
+      "salience": "secondary",
+      "interaction": "Gather",
+      "persist": "QuarryRemaining"
+    },
+    {
+      "id": "valoria-return",
+      "position": {
+        "x": 0,
+        "z": -16
+      },
+      "kind": "return",
+      "salience": "primary",
+      "interaction": "ReturnToValoria",
+      "persist": null
+    }
+  ],
+  "naturalLimits": [
+    {
+      "edge": "west",
+      "language": "dense pine wall + descending rock shelf"
+    },
+    {
+      "edge": "east",
+      "language": "river/eroded bank + quarry rise"
+    },
+    {
+      "edge": "north",
+      "language": "corrupted ridge + fog falloff"
+    },
+    {
+      "edge": "south",
+      "language": "Valoria gate walls/foreground transition"
+    }
+  ],
+  "densityPriority": [
+    "valoria-gate-road",
+    "road-fork",
+    "old-watch-ruin",
+    "forest-valoria",
+    "corrupt-scout"
+  ],
+  "atmosphere": {
+    "base": "cool desaturated overcast continuity from Valoria",
+    "warmAccents": "rare human traces at road/ruin",
+    "corruption": "localized violet anomaly only near corrupt-scout/north ridge",
+    "depth": "fog + layered trees/rock; never a flat backdrop card"
+  }
+}
