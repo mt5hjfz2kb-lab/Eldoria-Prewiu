@@ -66,3 +66,34 @@ A candidate below 4/5 is not repaired into compliance by bespoke Blender sculpti
 
 ## Current verdict
 The previous project-wide question has been reduced to a measurable source-art question. No paid credits have been authorized or spent in this block. The immediate production bottleneck is now the **consistent exact multiview package**, not Unity.
+
+
+## 2026-10-06 — Strategic correction after pre-reset history review
+
+The owner correctly identified that returning to `image -> multiview -> Tripo -> Blender -> Unity` would repeat a pre-reset Eldoria production model. Therefore Tripo/Meshy are **not the default next solution** and no multiview package will be produced merely to rerun that historical route.
+
+The bake-off is redefined as a **solution search**, with scalability as a first-class gate.
+
+### Required properties of any adopted method
+1. It must produce or leverage premium authored visual identity.
+2. It must scale through a **small reusable modular grammar / kit**, not one paid generation per visible object.
+3. It must support broken/repaired/upgraded states without regenerating the entire city.
+4. It must remain compatible with the fixed/bounded Valoria camera and Unity gameplay contracts.
+5. It must be automatable after the initial art language is established.
+6. It must pass a cheap representative proof before broad production.
+
+### Candidate direction now prioritized
+**Authored modular kit + procedural assembly**, rather than per-object AI generation.
+
+Target architecture:
+- a bounded set of high-quality reusable architectural modules (wall segments, arches, buttresses, trims, stairs, roofs, cliff/ground interface pieces, etc.);
+- deterministic assembly/variation rules in Blender/Houdini;
+- shared material/trim/vertex-mask language;
+- hero landmarks assembled/augmented from the same grammar;
+- Unity remains integration/gameplay runtime;
+- generative 3D, if used at all, is limited to creating or seeding reusable master modules, not every city object.
+
+### Immediate proof to design
+A **Lower Gate modular grammar proof** must answer whether the canonical Lower Gate silhouette can be reconstructed from a deliberately small reusable kit while retaining >=4/5 identity at the official camera.
+
+Do not execute another Tripo/Meshy generation until this modular-system feasibility is evaluated. Paid credits remain 0.
