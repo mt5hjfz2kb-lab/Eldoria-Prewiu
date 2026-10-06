@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 // Final gate restart marker: no gameplay semantics.
+// Region 1 final visual certification marker.
 // Region 1 visual convergence candidate: certify full runtime + capture.
 namespace Eldoria.Presentation
 {
