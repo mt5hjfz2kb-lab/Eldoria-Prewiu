@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, math, os, sys
+import json, math, os, sys, shutil
 from pathlib import Path
 
 import cv2
@@ -97,7 +97,7 @@ for y in range(mesh_h-1):
 obj=MESH_DIR/"projection_receiver.obj"
 mtl=MESH_DIR/"projection_receiver.mtl"
 tex=MESH_DIR/"VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
-img.save(tex, quality=95)
+shutil.copyfile(SRC, tex)
 with mtl.open("w",encoding="utf8") as f:
     f.write("newmtl CanonicalProjection\n")
     f.write("Ka 1 1 1\nKd 1 1 1\nKs 0 0 0\nillum 1\n")
