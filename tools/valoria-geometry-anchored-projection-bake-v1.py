@@ -12,7 +12,19 @@ ev="docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1"
 back=Image.open(os.path.join(ev,"gate-back.png")).convert("RGBA")
 front=Image.open(os.path.join(ev,"gate-front.png")).convert("RGBA")
 target=Image.alpha_composite(back,front)
-target_path=os.path.join(OUT,"target-gate.png"); target.save(target_path)
+# Replace transparent regions with a stone tone sampled from the Gate itself so
+# geometry that extends beyond the semantic cutout never turns black.
+import numpy as np
+ta=np.asarray(target).astype(np.float32)
+mask=ta[...,3]>24
+rgb=ta[...,:3]
+valid=rgb[mask]
+median=np.median(valid,axis=0) if len(valid) else np.array([95,88,78],dtype=np.float32)
+filled=np.zeros_like(rgb); filled[:]=median
+a=(ta[...,3:4]/255.0)
+filled=rgb*a+filled*(1.0-a)
+target_rgb=Image.fromarray(np.clip(filled,0,255).astype(np.uint8),"RGB")
+target_path=os.path.join(OUT,"target-gate.png"); target_rgb.save(target_path)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
@@ -71,7 +83,8 @@ img=bpy.data.images.load(target_path,check_existing=True)
 mat_front=bpy.data.materials.new("CanonicalProjection"); mat_front.use_nodes=True
 n=mat_front.node_tree.nodes; l=mat_front.node_tree.links
 for x in list(n): n.remove(x)
-out=n.new("ShaderNodeOutputMaterial"); bs=n.new("ShaderNodeBsdfPrincipled"); tex=n.new("ShaderNodeTexImage"); tex.image=img; tex.extension="CLIP"
+out=n.new("ShaderNodeOutputMaterial"); bs=n.new("ShaderNodeBsdfPrincipled"); tex=n.new("ShaderNodeTexImage"); tex.image=img; tex.extension="EXTEND"
+uvn=n.new("ShaderNodeUVMap"); uvn.uv_map="CanonicalProjectionUV"; l.new(uvn.outputs["UV"],tex.inputs["Vector"])
 l.new(tex.outputs["Color"],bs.inputs["Base Color"]); bs.inputs["Roughness"].default_value=.72
 bump=n.new("ShaderNodeBump"); bump.inputs["Strength"].default_value=.18; bump.inputs["Distance"].default_value=.055
 bw=n.new("ShaderNodeRGBToBW"); l.new(tex.outputs["Color"],bw.inputs["Color"]); l.new(bw.outputs["Val"],bump.inputs["Height"]); l.new(bump.outputs["Normal"],bs.inputs["Normal"])
@@ -96,8 +109,10 @@ for o in all_meshes:
     for poly in me.polygons:
         wn=(o.matrix_world.to_3x3()@poly.normal).normalized()
         # visible/front if normal points substantially toward projector.
-        toward=wn.dot(-cam_dir)
-        poly.material_index=0 if toward>0.22 else 1
+        # Projection is appropriate on facade/back planes regardless of imported
+        # winding direction. Tangential side faces keep true fallback stone.
+        facing=abs(wn.dot(cam_dir))
+        poly.material_index=0 if facing>0.34 else 1
         for li in poly.loop_indices:
             vi=me.loops[li].vertex_index
             co=o.matrix_world@me.vertices[vi].co
