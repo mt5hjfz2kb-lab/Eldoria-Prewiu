@@ -78,13 +78,18 @@ namespace Eldoria.EditorTools
             substrate.transform.localScale = new Vector3(asset.Bounds.size.x, .25f, asset.Bounds.size.z);
             substrate.GetComponent<Renderer>().enabled = false;
 
-            // SHARP scene sits on negative Z after RUB->Unity conversion.
+            float sceneSign = Mathf.Sign(asset.Bounds.center.z);
+            if (sceneSign == 0f) sceneSign = 1f;
+            float nearestZ = sceneSign > 0f ? asset.Bounds.min.z : asset.Bounds.max.z;
+            float farthestZ = sceneSign > 0f ? asset.Bounds.max.z : asset.Bounds.min.z;
+            var homeRotation = sceneSign > 0f ? Quaternion.identity : Quaternion.Euler(0f,180f,0f);
+
             // Red probe is between camera and splats; green probe is behind the far scene.
             var frontProbe = CreateProbe("OcclusionFront", new Color(.9f,.15f,.1f),
-                new Vector3(0f, -20f, Mathf.Min(-2.5f, asset.Bounds.max.z * 0.5f)),
+                new Vector3(0f, 0f, sceneSign * Mathf.Max(1.5f, Mathf.Abs(nearestZ) * 0.45f)),
                 new Vector3(10f,10f,1f));
             var backProbe  = CreateProbe("OcclusionBack", new Color(.15f,.9f,.25f),
-                new Vector3(0f, -20f, asset.Bounds.min.z - 20f),
+                new Vector3(0f, 0f, farthestZ + sceneSign * 20f),
                 new Vector3(14f,14f,2f));
 
             var camGo = new GameObject("ProofCamera");
@@ -95,7 +100,7 @@ namespace Eldoria.EditorTools
             cam.farClipPlane = 1000f;
             cam.fieldOfView = 43.58f;
             cam.transform.position = Vector3.zero;
-            cam.transform.rotation = Quaternion.Euler(0f,180f,0f);
+            cam.transform.rotation = homeRotation;
 
             Debug.Log("[SHARP] ForceRefresh begin");
             gs.ForceRefresh();
@@ -107,17 +112,17 @@ namespace Eldoria.EditorTools
             cam.Render();
             Debug.Log("[SHARP] Warmup complete");
 
-            CaptureView(cam, output, "home", Vector3.zero, 43.58f);
-            CaptureView(cam, output, "pan-left", new Vector3(-1.75f,0,0), 43.58f);
-            CaptureView(cam, output, "pan-right", new Vector3(1.75f,0,0), 43.58f);
-            CaptureView(cam, output, "zoom-in", Vector3.zero, 36f);
-            CaptureView(cam, output, "zoom-out", Vector3.zero, 52f);
+            CaptureView(cam, output, "home", Vector3.zero, homeRotation, 43.58f);
+            CaptureView(cam, output, "pan-left", new Vector3(-1.75f,0,0), homeRotation, 43.58f);
+            CaptureView(cam, output, "pan-right", new Vector3(1.75f,0,0), homeRotation, 43.58f);
+            CaptureView(cam, output, "zoom-in", Vector3.zero, homeRotation, 36f);
+            CaptureView(cam, output, "zoom-out", Vector3.zero, homeRotation, 52f);
 
             frontProbe.SetActive(true); backProbe.SetActive(false);
-            CaptureView(cam, output, "occlusion-front", Vector3.zero, 43.58f);
+            CaptureView(cam, output, "occlusion-front", Vector3.zero, homeRotation, 43.58f);
 
             frontProbe.SetActive(false); backProbe.SetActive(true);
-            CaptureView(cam, output, "occlusion-behind", Vector3.zero, 43.58f);
+            CaptureView(cam, output, "occlusion-behind", Vector3.zero, homeRotation, 43.58f);
 
             File.WriteAllText(Path.Combine(output, "evidence.json"),
                 "{\n"+
@@ -231,10 +236,10 @@ namespace Eldoria.EditorTools
             return go;
         }
 
-        static void CaptureView(Camera cam, string output, string name, Vector3 position, float fov)
+        static void CaptureView(Camera cam, string output, string name, Vector3 position, Quaternion rotation, float fov)
         {
             cam.transform.position = position;
-            cam.transform.rotation = Quaternion.Euler(0f,180f,0f);
+            cam.transform.rotation = rotation;
             cam.fieldOfView = fov;
 
             var rt = new RenderTexture(W,H,24,RenderTextureFormat.ARGB32);
