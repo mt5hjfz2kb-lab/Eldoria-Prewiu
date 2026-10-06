@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "family_id": "valoria-premium-square-metre-v1",
+  "asset_name": "Valoria_PremiumSquareMetre_v1",
+  "intent": "isolated premium stone buttress source proof",
+  "source_method": "sculpt_detail_authored",
+  "dimensions_m": {
+    "width": 2,
+    "height": 2.2,
+    "depth": 0.65
+  },
+  "semantic_groups": [
+    "StoneMass",
+    "ButtressProfile",
+    "JointRelief",
+    "EdgeDamage"
+  ],
+  "requirements": {
+    "neutral_clay_preview": true,
+    "official_camera_preview": true,
+    "close_preview": true,
+    "uv": true,
+    "normals": true,
+    "tangents": true,
+    "nonmanifold_edges_max": 0
+  },
+  "visual_gate": {
+    "silhouette_profile": 4,
+    "authored_stone_mass": 4,
+    "mid_frequency_detail": 4,
+    "edge_erosion_language": 4,
+    "premium_perception": 4
+  },
+  "prohibitions": [
+    "whole_gate",
+    "unity_rescue",
+    "tripo",
+    "meshy",
+    "purchased_art",
+    "projection_2_5d"
+  ]
+}
