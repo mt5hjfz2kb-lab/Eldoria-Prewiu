@@ -100,6 +100,30 @@ jobs:
 
           meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
           if not meshes: raise RuntimeError("No renderable rock meshes")
+
+          # Explicitly rebuild the scanned PBR-ish material because OBJ import may not
+          # bind the companion TGA maps in headless Blender.
+          src_dir=os.path.dirname(src)
+          base=os.path.basename(src).split("-")[0]
+          diffuse=os.path.join(src_dir,base+"_diffuse.tga")
+          normal=os.path.join(src_dir,base+"_normals.tga")
+          occ=os.path.join(src_dir,base+"_occlusion.tga")
+          if os.path.exists(diffuse):
+              mat=bpy.data.materials.new("PhotogrammetryRock")
+              mat.use_nodes=True
+              nodes=mat.node_tree.nodes
+              links=mat.node_tree.links
+              bsdf=nodes.get("Principled BSDF")
+              tex=nodes.new("ShaderNodeTexImage"); tex.image=bpy.data.images.load(diffuse)
+              links.new(tex.outputs["Color"],bsdf.inputs["Base Color"])
+              bsdf.inputs["Roughness"].default_value=0.72
+              if os.path.exists(normal):
+                  n=nodes.new("ShaderNodeTexImage"); n.image=bpy.data.images.load(normal); n.image.colorspace_settings.name='Non-Color'
+                  nm=nodes.new("ShaderNodeNormalMap"); nm.inputs["Strength"].default_value=0.85
+                  links.new(n.outputs["Color"],nm.inputs["Color"]); links.new(nm.outputs["Normal"],bsdf.inputs["Normal"])
+              for o in meshes:
+                  o.data.materials.clear()
+                  o.data.materials.append(mat)
           pts=[o.matrix_world@Vector(c) for o in meshes for c in o.bound_box]
           mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
           mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
@@ -120,7 +144,7 @@ jobs:
               cam.location=center+v*span; track(cam,center); sc.render.filepath=os.path.join(ev,name+".png"); bpy.ops.render.render(write_still=True)
           tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
           with open(os.path.join(ev,"rock-report.txt"),"w") as f:
-              f.write(f"source=OpenGameArt Free Photogrammetric Rock\nlicense=CC0\nchosen={src}\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+              f.write(f"source=OpenGameArt Free Photogrammetric Rock\nlicense=CC0\nchosen={src}\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\ndiffuse={diffuse}\nnormal={normal}\nocclusion={occ}\n")
           PY
           blender -b --python /tmp/photo-proof/render_rock.py
           test -s /tmp/photo-proof/evidence/rock-3q.png
