@@ -23,13 +23,66 @@ The existing Unity architecture already contains the core semantics required for
 | Region data | NEW versioned `pipeline/world-region-1.json`, scalable to future regions |
 | Narrative ruin | NEW non-combat POI `old-watch-ruin`; it teaches orientation/lore without inventing a second progression system |
 
+
+## Recovered canonical world design — mandatory input
+
+A full audit of the earlier web implementation and world-design documents is now part of this workstream. Region 1 must consume, not overwrite, the established 4X product intent from:
+
+- `docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md`
+- `docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md`
+- `docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md`
+- `docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md`
+- `v0220/` web vertical slice
+- `world4x.html` standalone 4X experiment
+
+The recovered rule is stronger than the previous Region 1 draft: **the terrain is not the world map; terrain is only the geographic background of a persistent mobile 4X board.** The actual product combines geography with player cities, resources, PvE/hunts, neutral/hostile POIs, visible marches and, later, alliance/territorial systems.
+
+The first Unity Region 1 slice may remain deliberately small, but its spatial/data architecture must be compatible with the final shared-world model: world coordinates, region/sector/chunk partitioning, future randomized player-city placement, node distribution/respawn, long-range march distances, streaming/culling and expansion into higher-level regions. It must not become a bespoke small adventure map that would later be discarded.
+
+### What the web prototype already proved conceptually
+
+The web work is a **functional seed**, not final art. Preserve these meanings:
+
+- Valoria = the player's world-city origin;
+- Forest = wood gathering;
+- Quarry = stone gathering and a future contested-resource pattern;
+- Wolf / boar = hunt targets;
+- Rift enemies = PvE threat ladder;
+- Breach/Fissure = hostile strategic installation and a candidate persistent regional-state mechanic;
+- Nareth/ruins = narrative POI family;
+- March = preparation/deployment plus visible travel on the world map;
+- other city icons = future shared-world population, inspection, alliance/power/protection state.
+
+Do not copy the old HTML/CSS composition, emoji art, simulated-player values or prototype balancing literally.
+
+### Canonical world families
+
+Region 1 architecture must reserve first-class families for:
+
+1. geographic base: terrain, mountains/cliffs, forest masses, water, roads, corruption zones;
+2. economic nodes: wood, stone, food, later mineral/special nodes, with level/depletion/respawn state;
+3. beasts/PvE: hunt, common threat, elite, boss/event;
+4. neutral/hostile POIs: ruins, watchposts, Breach, camps, shrines, resource installations;
+5. player cities;
+6. marches/armies;
+7. future alliance/territorial structures.
+
+A visually denser terrain does not count as progress unless these 4X functions remain readable.
+
+### Player City v1
+
+A real strategic player-city asset already exists at `Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb`. Its v1 contract is one universal city mesh reused for all players, while name, alliance, owner/friendly/hostile state, power/level and protection remain UI/gameplay state. Do not rebuild miniature Valoria for every map city and do not block Region 1 on multiple city tiers.
+
+For the first Region 1 slice, Valoria should use this canonical strategic-city representation (or a demonstrably superior validated successor) as the origin of visible marches.
+
+
 ## Minimal validated sector
 
 Before expanding density, the first sector is only:
 
-**Valoria icon/home position → road network → forest resource node → old watch ruin → corrupt scout → return to Valoria via `Reino`/city selection.**
+**Valoria strategic city → road/corridor network → forest resource node → neutral ruin/watch POI → first corrupt PvE threat → visible returning march → Valoria via `Reino`/city selection.**
 
-The quarry may exist as secondary context, but it is not required to prove the first loop. Natural boundaries (rock shelves, forest walls, river/terrain falloff) constrain the camera and hide unbuilt territory. The World screen deliberately changes scale from the city: Valoria is represented as a compact, recognizable map-city landmark rather than the full city scene.
+The quarry may exist as secondary context, but it is not required to prove the first loop. Food nodes, wolf/boar hunts, L1/L2 node bands, Breach state, simulated/rival player cities and alliance territory remain architecturally reserved and are follow-on expansion after the minimum proof, not deleted concepts. Natural boundaries (rock shelves, forest walls, river/terrain falloff) constrain the camera and hide unbuilt territory. The World screen deliberately changes scale from the city: Valoria is represented as a compact, recognizable map-city landmark rather than the full city scene.
 
 ## Region pattern
 
