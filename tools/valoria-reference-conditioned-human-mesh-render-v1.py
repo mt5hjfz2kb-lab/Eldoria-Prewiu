@@ -55,17 +55,19 @@ for o in list(sc.objects):
     if o.type in ("CAMERA","LIGHT"): bpy.data.objects.remove(o,do_unlink=True)
 if sc.world is None: sc.world=bpy.data.worlds.new("ValoriaWorld")
 sc.world.use_nodes=True
-bg=sc.world.node_tree.nodes.get("Background"); bg.inputs["Color"].default_value=(.018,.025,.04,1); bg.inputs["Strength"].default_value=.38
+bg=sc.world.node_tree.nodes.get("Background"); bg.inputs["Color"].default_value=(.055,.07,.095,1); bg.inputs["Strength"].default_value=.85
 sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1280; sc.render.resolution_y=900; sc.render.resolution_percentage=100
+sc.view_settings.look="Medium High Contrast"
+sc.view_settings.exposure=1.7
 sc.render.image_settings.file_format="PNG"
 # ground
 bpy.ops.mesh.primitive_plane_add(size=span*4,location=(ctr.x,ctr.y,mn.z-.06))
 gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(.075,.07,.065,1); bpy.context.object.data.materials.append(gm)
 # warm key / cool fill / rim
 for loc,energy,size,color in [
- (ctr+Vector((-span*.8,-span*.9,span*1.3)),1700,span*1.2,(1.0,.70,.45)),
- (ctr+Vector((span*.9,span*.35,span*.65)),750,span,(.40,.58,1.0)),
- (ctr+Vector((0,span*.8,span*1.15)),900,span*.8,(.55,.68,1.0))]:
+ (ctr+Vector((-span*.8,-span*.9,span*1.3)),4200,span*1.2,(1.0,.70,.45)),
+ (ctr+Vector((span*.9,span*.35,span*.65)),1900,span,(.40,.58,1.0)),
+ (ctr+Vector((0,span*.8,span*1.15)),2300,span*.8,(.55,.68,1.0))]:
     bpy.ops.object.light_add(type="AREA",location=loc); L=bpy.context.object; L.data.energy=energy; L.data.size=size; L.data.color=color; L.rotation_euler=(0,0,0)
     L.rotation_euler=(ctr-L.location).to_track_quat("-Z","Y").to_euler()
 bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=58
