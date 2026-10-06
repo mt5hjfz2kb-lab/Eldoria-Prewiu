@@ -1,0 +1,112 @@
+name: "[R&D] Valoria TripoSR Gate Capability v1"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-triposr-gate-capability-v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  triposr-gate-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+            .github/workflows/valoria-triposr-gate-capability-v1.yml
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU inference stack
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential git libgl1 libegl1
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          git clone --depth 1 https://github.com/VAST-AI-Research/TripoSR.git /tmp/TripoSR
+          cd /tmp/TripoSR
+          python -m pip install omegaconf==2.3.0 Pillow==10.1.0 einops==0.7.0 transformers==4.45.0 trimesh==4.0.5 rembg==2.0.50 huggingface-hub==0.34.0 "imageio[ffmpeg]" xatlas==0.0.9 moderngl==5.10.0 onnxruntime scikit-image
+          python -m pip install git+https://github.com/tatsy/torchmcubes.git
+
+      - name: Prepare canonical gate input
+        run: |
+          mkdir -p /tmp/triposr/input /tmp/triposr/output /tmp/triposr/evidence
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png /tmp/triposr/input/gate.png
+          sha256sum /tmp/triposr/input/gate.png | tee /tmp/triposr/evidence/input.sha256
+          file /tmp/triposr/input/gate.png
+
+      - name: Run TripoSR CPU reconstruction
+        run: |
+          cd /tmp/TripoSR
+          /usr/bin/time -v python run.py /tmp/triposr/input/gate.png             --device cpu             --chunk-size 4096             --mc-resolution 128             --foreground-ratio 0.86             --output-dir /tmp/triposr/output             --model-save-format glb             2>&1 | tee /tmp/triposr/evidence/triposr.log
+          test -s /tmp/triposr/output/0/mesh.glb
+          cp /tmp/triposr/output/0/mesh.glb /tmp/triposr/evidence/triposr-gate.glb
+
+      - name: Install Blender for evidence
+        run: |
+          sudo apt-get install -y blender
+          blender --version
+
+      - name: Render multi-angle mesh evidence
+        run: |
+          cat > /tmp/triposr/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          src="/tmp/triposr/evidence/triposr-gate.glb"
+          ev="/tmp/triposr/evidence"
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.import_scene.gltf(filepath=src)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+          if not meshes: raise RuntimeError("no mesh")
+          pts=[]
+          for o in meshes:
+              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene
+          sc.render.engine='BLENDER_EEVEE'
+          sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.035,0.035,0.035)
+          bpy.ops.mesh.primitive_plane_add(size=span*3, location=(center.x,center.y,mn.z-0.03*span))
+          ground=bpy.context.object
+          gm=bpy.data.materials.new("ground"); gm.diffuse_color=(0.12,0.12,0.12,1); ground.data.materials.append(gm)
+          bpy.ops.object.light_add(type='SUN', location=center+Vector((0,0,span)))
+          sun=bpy.context.object; sun.rotation_euler=(math.radians(35),0,math.radians(135)); sun.data.energy=2.2
+          bpy.ops.object.light_add(type='AREA', location=center+Vector((-span*.7,-span*.8,span*.9)))
+          area=bpy.context.object; area.data.energy=850; area.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat('-Z','Y').to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
+          views=[("front",(0,-1.65,.45)),("three-quarter",(1.1,-1.3,.65)),("side",(1.65,0,.45)),("back",(0,1.65,.45))]
+          for name,v in views:
+              cam.location=center+Vector(v)*span
+              track(cam,center)
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png")
+              bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          verts=sum(len(o.data.vertices) for o in meshes)
+          with open(os.path.join(ev,"mesh-report.txt"),"w") as f:
+              f.write(f"meshes={len(meshes)}\nverts={verts}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+          PY
+          blender -b --python /tmp/triposr/render.py
+          test -s /tmp/triposr/evidence/mesh-three-quarter.png
+          test -s /tmp/triposr/evidence/mesh-front.png
+          test -s /tmp/triposr/evidence/mesh-side.png
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-triposr-gate-capability-v1
+          path: |
+            /tmp/triposr/evidence
+            /tmp/triposr/input/gate.png
+          retention-days: 14
