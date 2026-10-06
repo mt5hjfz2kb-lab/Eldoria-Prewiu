@@ -111,27 +111,20 @@ namespace Eldoria.EditorTools
             cam.transform.position = Vector3.zero;
             cam.transform.rotation = homeRotation;
 
-            Debug.Log("[SHARP] ForceRefresh begin");
-            gs.ForceRefresh();
-            Debug.Log("[SHARP] ForceRefresh complete");
-
-            Debug.Log("[SHARP] Warmup render 1");
+            PrepareSplatFrame(gs, cam, "warmup");
             cam.Render();
-            Debug.Log("[SHARP] Warmup render 2");
-            cam.Render();
-            Debug.Log("[SHARP] Warmup complete");
 
-            CaptureView(cam, output, "home", Vector3.zero, homeRotation, 43.58f);
-            CaptureView(cam, output, "pan-left", new Vector3(-1.75f,0,0), homeRotation, 43.58f);
-            CaptureView(cam, output, "pan-right", new Vector3(1.75f,0,0), homeRotation, 43.58f);
-            CaptureView(cam, output, "zoom-in", Vector3.zero, homeRotation, 36f);
-            CaptureView(cam, output, "zoom-out", Vector3.zero, homeRotation, 52f);
+            CaptureView(gs, cam, output, "home", Vector3.zero, homeRotation, 43.58f);
+            CaptureView(gs, cam, output, "pan-left", new Vector3(-1.75f,0,0), homeRotation, 43.58f);
+            CaptureView(gs, cam, output, "pan-right", new Vector3(1.75f,0,0), homeRotation, 43.58f);
+            CaptureView(gs, cam, output, "zoom-in", Vector3.zero, homeRotation, 36f);
+            CaptureView(gs, cam, output, "zoom-out", Vector3.zero, homeRotation, 52f);
 
             frontProbe.SetActive(true); backProbe.SetActive(false);
-            CaptureView(cam, output, "occlusion-front", Vector3.zero, homeRotation, 43.58f);
+            CaptureView(gs, cam, output, "occlusion-front", Vector3.zero, homeRotation, 43.58f);
 
             frontProbe.SetActive(false); backProbe.SetActive(true);
-            CaptureView(cam, output, "occlusion-behind", Vector3.zero, homeRotation, 43.58f);
+            CaptureView(gs, cam, output, "occlusion-behind", Vector3.zero, homeRotation, 43.58f);
 
             File.WriteAllText(Path.Combine(output, "evidence.json"),
                 "{\n"+
@@ -245,7 +238,43 @@ namespace Eldoria.EditorTools
             return go;
         }
 
-        static void CaptureView(Camera cam, string output, string name, Vector3 position, Quaternion rotation, float fov)
+        static void PrepareSplatFrame(GsplatRenderer gs, Camera cam, string label)
+        {
+            // Batchmode Camera.Render() does not advance UnitySplats' normal PlayerLoop hook.
+            // Reproduce the required D3D11 CPU-fallback lifecycle explicitly.
+            gs.Update();
+            gs.ForceRefresh();
+            if (gs.SorterResource != null)
+                gs.SorterResource.Initialized = false;
+
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            int loops = 0;
+            while (DateTime.UtcNow < deadline)
+            {
+                loops++;
+                gs.Update();
+                GsplatSorter.Instance.GatherGsplatsForCamera(cam);
+                GsplatSorter.Instance.Update();
+
+                bool ready = gs.Valid &&
+                             gs.SplatCount == gs.GsplatAsset.SplatCount &&
+                             gs.RemainingCount > 0 &&
+                             gs.SorterResource != null &&
+                             gs.SorterResource.Initialized;
+                if (ready)
+                {
+                    Debug.Log($"[SHARP] Frame ready {label}: resident={gs.SplatCount}, remaining={gs.RemainingCount}, loops={loops}, cpuFallback={GsplatSorter.Instance.CpuFallbackEnabled}");
+                    return;
+                }
+
+                System.Threading.Thread.Sleep(25);
+            }
+
+            throw new TimeoutException(
+                $"SHARP sorter did not initialize for {label}. resident={gs.SplatCount}, remaining={gs.RemainingCount}, valid={gs.Valid}, sorter={(gs.SorterResource != null)}, initialized={(gs.SorterResource != null && gs.SorterResource.Initialized)}");
+        }
+
+        static void CaptureView(GsplatRenderer gs, Camera cam, string output, string name, Vector3 position, Quaternion rotation, float fov)
         {
             cam.transform.position = position;
             cam.transform.rotation = rotation;
@@ -255,9 +284,8 @@ namespace Eldoria.EditorTools
             rt.Create();
             cam.targetTexture = rt;
 
-            Debug.Log("[SHARP] Capture " + name + " render 1");
-            cam.Render();
-            Debug.Log("[SHARP] Capture " + name + " render 2");
+            PrepareSplatFrame(gs, cam, name);
+            Debug.Log("[SHARP] Capture " + name + " render");
             cam.Render();
 
             var prev = RenderTexture.active;
