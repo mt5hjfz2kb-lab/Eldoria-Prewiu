@@ -46,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
           pip install "git+https://github.com/ByteDance-Seed/depth-anything-3.git@3d835ec1a5802d64a8b8b15f817a1ab54809bfe4"
-          pip install opencv-python-headless pillow numpy
+          pip install "numpy<2" addict pillow
 
       - name: Build depth-derived projection receiver
         run: |
