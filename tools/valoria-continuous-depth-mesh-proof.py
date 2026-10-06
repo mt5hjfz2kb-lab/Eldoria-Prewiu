@@ -21,7 +21,12 @@ by_caption={}
 for item in gallery:
     cap=item.get("caption") if isinstance(item,dict) else None
     data=item.get("image") if isinstance(item,dict) else None
-    p=data.get("path") if isinstance(data,dict) else None
+    if isinstance(data,str):
+        p=data
+    elif isinstance(data,dict):
+        p=data.get("path") or data.get("name")
+    else:
+        p=None
     if cap and p and os.path.exists(p):
         ext=os.path.splitext(p)[1] or ".webp"
         dst=os.path.join(OUT,cap.lower().replace(" ","-")+ext)
