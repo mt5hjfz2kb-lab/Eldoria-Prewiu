@@ -177,3 +177,48 @@ Next action:
 Current tooling note:
 - GitHub text/blob connector cannot materialize these binary PNG/JPG blobs directly in the present session (`fetch_blob` UTF-8 decode limitation).
 - This is a tooling/materialization blocker for Gate 1A source inspection, not a visual-method blocker.
+
+
+## Gate 1A/1B lock — clean SHARP 600k
+**Verdict: PRODUCTION BASELINE PASS for bounded high-fidelity visual representation**
+
+Canonical evidence:
+- Clean SHARP source run: `37456084187`
+- Clean SHARP source artifact: `11408853949`
+- Unity clean 600k run: `37456541286`
+- Unity clean 600k artifact: `11409359136`
+- Source: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`
+- proof_splat_count: 589,824
+- source_splat_count: 1,179,648
+- paid credits: 0
+
+Visual/runtime result:
+- HOME: PASS — HUD-free Valoria identity is retained in Unity 6 URP.
+- bounded pan left/right: PASS — nearby-view parallax remains coherent enough for the locked camera envelope.
+- zoom in/out: PASS.
+- raster foreground probe: PASS — real Unity geometry can render in front of the Gaussian layer.
+- raster behind probe: PASS — behind-probe remains occluded by the Gaussian scene.
+- runtime load / Spark packing / D3D11 CPU sort: PASS.
+
+Known limitations:
+- top-of-frame has uncovered black area outside useful Gaussian coverage; production camera/background framing must avoid or cover it.
+- 600k is a visual baseline, not yet a mobile performance certification.
+- Gaussian scene is a visual representation layer, not gameplay geometry.
+- wider free-camera motion is not authorized by this evidence.
+
+**LOCK:** use clean approved-reference SHARP at 600k as the current high-fidelity visual-layer baseline. Do not reopen visual-generator discovery while this convergence path can progress.
+
+## Gate 2 — interactive 3D substrate alignment
+Goal:
+- keep the locked SHARP visual layer;
+- add real Unity 3D proxy geometry/colliders for a representative architectural interaction region;
+- prove screen-space selection/raycast mapping, depth coexistence and bounded-camera stability;
+- keep gameplay interaction independent from Gaussian visual data.
+
+Gate 2 PASS requires:
+1. at least three named interactive proxy regions aligned to visible architecture;
+2. deterministic camera-ray hit evidence from representative screen points;
+3. no visual break of SHARP HOME/pan envelope;
+4. front/behind depth ordering remains valid;
+5. proxy geometry can be hidden from beauty render while remaining selectable/collidable;
+6. evidence JSON maps screen point → proxy ID → world hit position.
