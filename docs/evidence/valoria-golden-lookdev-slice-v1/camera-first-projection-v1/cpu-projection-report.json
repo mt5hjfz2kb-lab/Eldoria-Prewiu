@@ -1,0 +1,19 @@
+{
+  "method": "deterministic CPU forward projection from DA3 depth receiver",
+  "depth_model": "depth-anything/DA3-BASE",
+  "camera_offsets_world_units": {
+    "small": 0.2,
+    "medium": 0.45
+  },
+  "hole_rate": {
+    "cpu-projection-base.png": 0.0,
+    "cpu-projection-left-small.png": 0.040426587301587324,
+    "cpu-projection-right-small.png": 0.04064625850340131,
+    "cpu-projection-left-medium.png": 0.08628826530612244,
+    "cpu-projection-right-medium.png": 0.08730158730158732
+  },
+  "base_pixel_mae_0_255": 14.384511947631836,
+  "base_pixel_rmse_0_255": 24.179420471191406,
+  "vendor_credits": 0,
+  "unity_touched": false
+}
