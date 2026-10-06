@@ -222,7 +222,10 @@ namespace Eldoria.EditorTools
             var feedback = GameObject.CreatePrimitive(PrimitiveType.Cube);
             feedback.name = "GameplaySelectionFeedback_LowerGate";
             feedback.transform.position = selectedRay.origin + selectedRay.direction * frontDistance;
-            feedback.transform.localScale = new Vector3(5f,5f,1f);
+            const float desiredFeedbackPixels = 32f;
+            float worldHeightAtFront = 2f * frontDistance * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            float feedbackWorldSize = Mathf.Max(0.05f, worldHeightAtFront * (desiredFeedbackPixels / H));
+            feedback.transform.localScale = new Vector3(feedbackWorldSize, feedbackWorldSize, Mathf.Max(0.05f, feedbackWorldSize * 0.15f));
             var feedbackCollider = feedback.GetComponent<Collider>();
             if (feedbackCollider != null) feedbackCollider.enabled = false;
             var feedbackRenderer = feedback.GetComponent<Renderer>();
@@ -233,7 +236,10 @@ namespace Eldoria.EditorTools
             CaptureBeauty(gs, cam, output, "selection-feedback-home");
             string feedbackPath = Path.Combine(output,"selection-feedback-home.png");
             bool feedbackFile = File.Exists(feedbackPath) && new FileInfo(feedbackPath).Length > 1000;
+            int feedbackCyanTotal = 0;
+            int feedbackCyanLocal = 0;
             bool feedbackVisible = false;
+            bool feedbackLocalized = false;
             if (feedbackFile)
             {
                 var bytes = File.ReadAllBytes(feedbackPath);
@@ -241,17 +247,25 @@ namespace Eldoria.EditorTools
                 tex.LoadImage(bytes);
                 int px = Mathf.Clamp(Mathf.RoundToInt(selectedVp.x * (tex.width-1)),0,tex.width-1);
                 int py = Mathf.Clamp(Mathf.RoundToInt(selectedVp.y * (tex.height-1)),0,tex.height-1);
-                int radius = 18;
-                for (int yy=Mathf.Max(0,py-radius); yy<=Mathf.Min(tex.height-1,py+radius) && !feedbackVisible; yy++)
-                for (int xx=Mathf.Max(0,px-radius); xx<=Mathf.Min(tex.width-1,px+radius); xx++)
+                int radius = 28;
+                for (int yy=0; yy<tex.height; yy++)
+                for (int xx=0; xx<tex.width; xx++)
                 {
                     var col = tex.GetPixel(xx,yy);
-                    if (col.g > 0.70f && col.b > 0.70f && col.r < 0.40f) { feedbackVisible=true; break; }
+                    bool cyan = col.g > 0.70f && col.b > 0.70f && col.r < 0.40f;
+                    if (!cyan) continue;
+                    feedbackCyanTotal++;
+                    if (Mathf.Abs(xx-px) <= radius && Mathf.Abs(yy-py) <= radius)
+                        feedbackCyanLocal++;
                 }
+                feedbackVisible = feedbackCyanTotal >= 20;
+                feedbackLocalized = feedbackVisible &&
+                                    feedbackCyanTotal < (tex.width * tex.height * 0.02f) &&
+                                    feedbackCyanLocal >= Mathf.Max(20, Mathf.RoundToInt(feedbackCyanTotal * 0.70f));
                 UnityEngine.Object.DestroyImmediate(tex);
             }
 
-            bool gatePass = raycastPass && callbackPass && feedbackFile && feedbackVisible;
+            bool gatePass = raycastPass && callbackPass && feedbackFile && feedbackVisible && feedbackLocalized;
             File.WriteAllText(Path.Combine(output,"interaction-evidence.json"),
                 "{\n"+
                 $"  \"source_splat_count\": {prep.OriginalCount},\n"+
@@ -272,6 +286,9 @@ namespace Eldoria.EditorTools
                 "},\n"+
                 $"  \"selection_feedback_capture_pass\": {(feedbackFile ? "true":"false")},\n"+
                 $"  \"selection_feedback_visible_pass\": {(feedbackVisible ? "true":"false")},\n"+
+                $"  \"selection_feedback_localized_pass\": {(feedbackLocalized ? "true":"false")},\n"+
+                $"  \"selection_feedback_cyan_total\": {feedbackCyanTotal},\n"+
+                $"  \"selection_feedback_cyan_local\": {feedbackCyanLocal},\n"+
                 "  \"selected_feedback_proxy\": \"LowerGate\",\n"+
                 "  \"interaction_model\": \"fixed_world_space_proxies_reprojected_per_camera_with_gameplay_state_callback\",\n"+
                 "  \"hits\": [\n"+string.Join(",\n",hitRows)+"\n  ],\n"+
@@ -280,11 +297,11 @@ namespace Eldoria.EditorTools
                 "}\n");
 
             if (!gatePass)
-                throw new Exception($"Gate 3 failed: raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}.");
+                throw new Exception($"Gate 3 failed: raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}, feedbackLocalized={feedbackLocalized}, cyan={feedbackCyanLocal}/{feedbackCyanTotal}.");
 
             gs.GsplatAsset = null;
             UnityEngine.Object.DestroyImmediate(asset);
-            Debug.Log($"[GATE3] PASS raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}");
+            Debug.Log($"[GATE3] PASS raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackVisible={feedbackVisible}, feedbackLocalized={feedbackLocalized}, cyan={feedbackCyanLocal}/{feedbackCyanTotal}");
         }
 
         static int CountLocalizedDiff(string baselinePath, string feedbackPath, Vector3 viewport, int radius, float threshold)
