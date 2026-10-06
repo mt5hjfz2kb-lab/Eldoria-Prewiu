@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T00:34:00+02:00",
+  "updated_at": "2026-10-07T00:40:00+02:00",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -71,7 +71,9 @@
       "next": "Fix imported Nature Starter subobject instantiation without losing URP adaptation; rerun full Unity gate and inspect actual Region 1 captures.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-visual-authority-routing-guard-v1",
       "title": "Valoria canonical visual authority routing guard",
@@ -90,16 +92,30 @@
       ],
       "claimed_at": "2026-10-07T00:30:00+02:00",
       "base_main_sha": "f2189beab353c241fb33a5f1b1f54199842990f0",
-      "status": "active",
+      "status": "completed",
       "paid_credits": 0,
-      "phase": "INSTALL CANONICAL-VS-LEGACY VISUAL AUTHORITY + FAIL-CLOSED RUNTIME GUARD",
+      "phase": "CANONICAL VS LEGACY AUTHORITY GUARD INSTALLED / FAIL-CLOSED RUNTIME PROTECTION INSTALLED",
       "dependency": "Must not modify SlicePresenter.cs, ValoriaBenchmarkCapture.cs, Region 1 runtime, WebGL publishing files, or occupy the Windows Unity runner while their current owners are active.",
-      "next": "Install fail-closed player guard so canonical Valoria cannot silently fall back to VisualWorld; validate static routing guard without touching files owned by Region 1 or WebGL workstreams.",
+      "next": "Do not use generic eldoria-valoria-captures-* as current Valoria. Future cleanup may remove the legacy fallback branch from SlicePresenter after its owner releases the file, but production player builds are already fail-closed.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Repository governance only; no player-facing visual authoring."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "Repository governance only; no player-facing visual authoring.",
+      "completed_at": "2026-10-07T00:40:00+02:00",
+      "result": {
+        "authority_map": "pipeline/visual-authority-routing-v1.json",
+        "checker": "tools/check-valoria-visual-authority-routing.mjs",
+        "workflow": ".github/workflows/valoria-visual-authority-routing.yml",
+        "documentation": "docs/VALORIA_VISUAL_AUTHORITY_ROUTING_GUARD_V1.md",
+        "runtime_guard": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs",
+        "agents_rule": true,
+        "first_guard_run_id": 37544621740,
+        "first_guard_conclusion": "success",
+        "canonical_valoria": "SHARP + ValoriaParcelPresentation",
+        "generic_benchmark_classification": "mixed_regression_bundle_noncanonical",
+        "legacy_visualworld_classification": "fallback_qa_only",
+        "player_fail_closed": true,
+        "paid_credits": 0
+      }
+    },
     {
       "id": "art-production-governance-v1",
       "title": "Universal art production routing guard",
