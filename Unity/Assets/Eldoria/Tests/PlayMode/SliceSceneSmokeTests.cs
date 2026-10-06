@@ -450,20 +450,15 @@ namespace Eldoria.Tests
             Assert.That(trailRoot,Is.Not.Null);
             var trail=trailRoot.GetComponentInChildren<Renderer>();
             Assert.That(trail,Is.Not.Null);
-            Assert.That(trail.sharedMaterial,Is.Not.SameAs(valley.sharedMaterial));
 
-            Color SurfaceColor(Material material)
-            {
-                if(material.HasProperty("_BaseColor"))return material.GetColor("_BaseColor");
-                if(material.HasProperty("_Color"))return material.GetColor("_Color");
-                return material.color;
-            }
-            float Luma(Color value)=>.2126f*value.r+.7152f*value.g+.0722f*value.b;
-
-            var trailColor=SurfaceColor(trail.sharedMaterial);
-            var valleyColor=SurfaceColor(valley.sharedMaterial);
-            Assert.That(Luma(trailColor),Is.LessThan(Luma(valleyColor)-.025f),
-                "The authored Region 1 road must remain darker than the surrounding ground at 4X scale.");
+            float Luma(Color color)=>.2126f*color.r+.7152f*color.g+.0722f*color.b;
+            var trailColor=trail.sharedMaterial.color;
+            var valleyColor=valley.sharedMaterial.color;
+            Assert.That(Luma(trailColor),Is.LessThan(Luma(valleyColor)-.03f),
+                "Strategic route must remain visually distinct and darker than the surrounding terrain.");
+            foreach(var collider in trailRoot.GetComponentsInChildren<Collider>(true))
+                Assert.That(collider.enabled,Is.False,
+                    "Route presentation must stay visual-only; gameplay targeting lives in independent hotspots.");
         }
 
         [UnityTest]
