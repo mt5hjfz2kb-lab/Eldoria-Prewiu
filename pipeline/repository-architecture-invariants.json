@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "purpose": "Fail closed when Eldoria's canonical working architecture is missing or massively pruned.",
+  "requiredFiles": [
+    "AGENTS.md",
+    "SESSION_HANDOFF.md",
+    "PROJECT_STATE.md",
+    "README.md",
+    "pipeline/active-workstreams.json",
+    "pipeline/art-production-request.json",
+    "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+    "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
+    "tools/plan-art-production.mjs",
+    "tools/check-workflow-governance.mjs",
+    ".github/workflows/workflow-governance.yml",
+    ".github/workflows/unity-slice.yml",
+    ".github/workflows/ui-progression-cert.yml",
+    "Unity/ProjectSettings/ProjectVersion.txt"
+  ],
+  "requiredDirectories": [
+    ".github/workflows",
+    "docs",
+    "pipeline",
+    "tools",
+    "Unity/Assets/Eldoria"
+  ],
+  "minimumFileCounts": {
+    ".github/workflows": 100,
+    "docs": 50,
+    "tools": 20,
+    "Unity/Assets/Eldoria": 100
+  },
+  "registry": {
+    "path": "pipeline/active-workstreams.json",
+    "requiredArrays": [
+      "active",
+      "history"
+    ]
+  }
+}
