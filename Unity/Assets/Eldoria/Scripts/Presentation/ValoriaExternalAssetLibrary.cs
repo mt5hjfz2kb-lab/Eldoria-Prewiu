@@ -26,11 +26,11 @@ namespace Eldoria.Presentation
         public GameObject SlavicBush;
         // Nature Starter Kit 2 is a licensed in-project source used only for world-map
         // vegetation silhouettes after current-camera validation. It is not Valoria authority.
-        public GameObject NatureTree01;
-        public GameObject NatureTree02;
-        public GameObject NatureTree03;
-        public GameObject NatureTree04;
-        public GameObject NatureBush01;
+        public Object NatureTree01;
+        public Object NatureTree02;
+        public Object NatureTree03;
+        public Object NatureTree04;
+        public Object NatureBush01;
         // Coherent Slavic environment subset promoted after visual review.
         public GameObject SlavicCobbleRoad;
         public GameObject SlavicStoneFence;
