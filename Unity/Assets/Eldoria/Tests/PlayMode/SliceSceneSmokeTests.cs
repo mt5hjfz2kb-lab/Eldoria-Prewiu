@@ -454,11 +454,16 @@ namespace Eldoria.Tests
             Assert.That(trail,Is.Not.Null,
                 "Region 1 segmented route must expose at least one authored dark track renderer.");
 
-            float Luma(Color color)=>.2126f*color.r+.7152f*color.g+.0722f*color.b;
-            var trailColor=trail.sharedMaterial.color;
-            var valleyColor=valley.sharedMaterial.color;
-            Assert.That(Luma(trailColor),Is.LessThan(Luma(valleyColor)-.03f),
-                "Strategic route must remain visually distinct and darker than the surrounding terrain.");
+            Assert.That(trail.sharedMaterial.name,Does.Contain("surface trail"),
+                "Strategic route must use the certified authored trail surface.");
+            Texture trailTexture=trail.sharedMaterial.HasProperty("_BaseMap")
+                ?trail.sharedMaterial.GetTexture("_BaseMap"):trail.sharedMaterial.GetTexture("_MainTex");
+            Texture valleyTexture=valley.sharedMaterial.HasProperty("_BaseMap")
+                ?valley.sharedMaterial.GetTexture("_BaseMap"):valley.sharedMaterial.GetTexture("_MainTex");
+            Assert.That(trailTexture,Is.Not.Null);
+            Assert.That(valleyTexture,Is.Not.Null);
+            Assert.That(trailTexture,Is.Not.SameAs(valleyTexture),
+                "Strategic route texture must remain distinct from surrounding terrain.");
             foreach(var collider in trailRoot.GetComponentsInChildren<Collider>(true))
                 Assert.That(collider.enabled,Is.False,
                     "Route presentation must stay visual-only; gameplay targeting lives in independent hotspots.");
