@@ -49,7 +49,7 @@ namespace Eldoria.EditorTools
             var asset = GsplatRuntimeLoader.LoadFile(
                 workingPly,
                 CompressionMode.Spark,
-                SourceCoordinates.RUB,
+                SourceCoordinates.RDF,
                 (stage, progress) => Debug.Log($"[SHARP] {stage} {progress:P0}")
             );
             if (asset == null || asset.SplatCount < 100000)
@@ -67,7 +67,7 @@ namespace Eldoria.EditorTools
             gs.RenderBeforeUploadComplete = false;
             Debug.Log("[SHARP] Renderer configured");
 
-            // SHARP is OpenCV x-right/y-down/z-forward. UnitySplats converts RUB input to Unity RUF.
+            // SHARP is OpenCV x-right/y-down/z-forward (RDF). UnitySplats converts RDF input to Unity RUF.
             root.transform.position = Vector3.zero;
             root.transform.rotation = Quaternion.identity;
             root.transform.localScale = Vector3.one;
