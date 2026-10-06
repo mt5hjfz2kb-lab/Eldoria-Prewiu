@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -95,10 +96,10 @@ namespace Eldoria.EditorTools
             float anchorDistance = Mathf.Max(30f, Vector3.Distance(cam.transform.position, asset.Bounds.center));
             var proxies = new List<ProxySpec>
             {
-                new ProxySpec { Id="WestTower", Viewport=new Vector2(.38f,.53f), DepthScale=.98f, Size=new Vector3(22f,42f,14f), DebugColor=new Color(.15f,.55f,1f,.72f) },
-                new ProxySpec { Id="CentralKeep", Viewport=new Vector2(.51f,.50f), DepthScale=.98f, Size=new Vector3(30f,50f,16f), DebugColor=new Color(1f,.65f,.12f,.72f) },
-                new ProxySpec { Id="EastTower", Viewport=new Vector2(.63f,.54f), DepthScale=.98f, Size=new Vector3(22f,42f,14f), DebugColor=new Color(.65f,.25f,1f,.72f) },
-                new ProxySpec { Id="LowerGate", Viewport=new Vector2(.61f,.72f), DepthScale=.90f, Size=new Vector3(24f,28f,14f), DebugColor=new Color(.15f,1f,.45f,.72f) },
+                new ProxySpec { Id="WestTower", Viewport=new Vector2(.38f,.53f), DepthScale=.98f, Size=new Vector3(14f,30f,10f), DebugColor=new Color(.15f,.55f,1f,.72f) },
+                new ProxySpec { Id="CentralKeep", Viewport=new Vector2(.51f,.50f), DepthScale=.98f, Size=new Vector3(18f,36f,10f), DebugColor=new Color(1f,.65f,.12f,.72f) },
+                new ProxySpec { Id="EastTower", Viewport=new Vector2(.63f,.54f), DepthScale=.98f, Size=new Vector3(14f,30f,10f), DebugColor=new Color(.65f,.25f,1f,.72f) },
+                new ProxySpec { Id="LowerGate", Viewport=new Vector2(.61f,.72f), DepthScale=.90f, Size=new Vector3(14f,20f,10f), DebugColor=new Color(.15f,1f,.45f,.72f) },
             };
 
             foreach (var p in proxies)
@@ -113,6 +114,10 @@ namespace Eldoria.EditorTools
                 renderer.enabled = false;
                 p.Go = go;
             }
+
+            // Batch/editor transform changes are not guaranteed to be visible to PhysX until
+            // transforms are explicitly synchronized.
+            Physics.SyncTransforms();
 
             CaptureBeauty(gs, cam, output, "beauty-home");
 
