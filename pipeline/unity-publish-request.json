@@ -1,7 +1,12 @@
 {
   "enabled": true,
-  "reason": "Final owner-reference HUD visual certification after reference-spacing refinement.",
-  "source_sha": "9280a13a9a969ff2006e18592642294244099c2a",
-  "requested_by": "agent",
-  "updated_at": "2026-09-30"
+  "mode": "current-valoria-production",
+  "reason": "Owner requested a mobile-accessible browser playtest of the current certified Valoria production slice.",
+  "production_run_id": 37488975868,
+  "production_artifact_id": 11424983401,
+  "production_head_sha": "b7fdd04039a133af791f255de1e3803d806647ba",
+  "final_unity_gate_run_id": 37490346723,
+  "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "requested_by": "chat-mobile-web-playtest-20261006",
+  "updated_at": "2026-10-06T16:15:00Z"
 }
