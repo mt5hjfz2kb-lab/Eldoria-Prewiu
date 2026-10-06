@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-sharp-interactive-substrate-gate-v1",
+  "phase": "CONVERGENCE_GATE_2",
+  "source_artifact_id": 11408853949,
+  "visual_baseline_artifact_id": 11409359136,
+  "proof_splats": 600000,
+  "proxy_ids": [
+    "WestTower",
+    "CentralKeep",
+    "EastTower",
+    "LowerGate"
+  ],
+  "requirements": [
+    "hidden real 3D colliders",
+    "deterministic viewport raycasts",
+    "beauty render preserved",
+    "debug alignment capture"
+  ],
+  "paid_credits": 0,
+  "nonce": "2026-10-06-gate2-001"
+}
