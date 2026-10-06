@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:44:00Z",
+  "updated_at": "2026-10-06T10:45:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -134,13 +134,50 @@
       ],
       "claimed_at": "2026-10-06T10:44:00Z",
       "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
-      "status": "active",
-      "phase": "ZERO-SPEND STEP1X-3D CANONICAL GATE PROOF",
+      "status": "blocked",
+      "phase": "ZERO-SPEND STEP1X-3D CANONICAL GATE PROOF / INFRASTRUCTURE BLOCKED",
       "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
-      "next": "Probe Step1X-3D public Space on the isolated semantic Lower Gate. Prefer sharp-edge controllable geometry if exposed. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
+      "next": "Do not retry until the public Space is running again or a genuinely free executable route appears. Do not treat as visual pass/fail.",
+      "blocked_at": "2026-10-06T10:44:17Z",
+      "blocker": "Proof run 37451628769 reached the official/public Step1X-3D Space but the Space is PAUSED. No usable mesh was returned. This is an infrastructure/access blocker, not a visual rejection.",
+      "run_id": 37451628769,
+      "artifact_id": 11406708574
+    },
+    {
+      "id": "valoria-scope-gate-camera-video-v1",
+      "title": "VALORIA SCOPE GATE CAMERA VIDEO v1",
+      "owner": "chat-independent-scope-camera-video-rnd",
+      "scope": [
+        ".github/workflows/valoria-scope-gate-camera-video-v1.yml",
+        "tools/valoria-scope-gate-camera-video-proof.py",
+        "docs/evidence/valoria-scope-gate-camera-video-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-scope-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:42:14Z",
+      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
+      "status": "active",
+      "phase": "ZERO-SPEND CAMERA-CONTROLLED VIEW-SYNTHESIS PROOF",
+      "dependency": "Isolated R&D only. Must not touch SHARP Unity, production Unity, Lower Gate production, commercial acquisition or paid credits. This proof is visual/view-synthesis only and cannot be promoted without runtime/gameplay evidence.",
+      "next": "Complete rerun 37451749211 using the corrected public Space. Evaluate whether camera-controlled output preserves Valoria identity across motion. Treat as visual representation evidence only, not a gameplay/runtime pass."
     }
   ],
   "history": [
+    {
+      "id": "valoria-marigold-depth-fullframe-v1",
+      "title": "VALORIA MARIGOLD DEPTH FULLFRAME v1",
+      "owner": "chat-independent-marigold-depth-rnd",
+      "status": "blocked",
+      "phase": "ZERO-SPEND CONTINUOUS-DEPTH PROOF / API ADAPTER BLOCKED",
+      "claimed_at": "2026-10-06T10:43:34Z",
+      "completed_at": "2026-10-06T10:44:42Z",
+      "run_id": 37451688012,
+      "artifact_id": 11406893621,
+      "result": "TECH BLOCKED / NO VISUAL VERDICT. Public Marigold Space was reachable and API schema discovered, but the adapter returned no extractable output (No Marigold output; last=None). No depth evidence was produced.",
+      "next": "Reopen only with a corrected API adapter that handles the Space's image-slider/gallery return structure. Do not treat this run as a depth-quality rejection."
+    },
     {
       "id": "valoria-hi3dgen-gate-capability-v1",
       "title": "VALORIA HI3DGEN GATE CAPABILITY v1",
