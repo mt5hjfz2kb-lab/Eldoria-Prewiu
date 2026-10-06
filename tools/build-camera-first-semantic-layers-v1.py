@@ -23,7 +23,7 @@ finite=np.isfinite(depth)
 lo,hi=np.percentile(depth[finite],[2,98])
 dn=np.clip((depth-lo)/max(hi-lo,1e-6),0.0,1.0)
 
-predictor=SAM2ImagePredictor.from_pretrained("facebook/sam2.1-hiera-small")
+predictor=SAM2ImagePredictor.from_pretrained("facebook/sam2.1-hiera-small", device="cpu")
 predictor.set_image(rgb)
 
 def local_box(name):
