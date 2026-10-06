@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,6 +16,17 @@ namespace Eldoria.EditorTools
     {
         const int W = 1280;
         const int H = 853;
+        const int MaxProofSplats = 300000;
+        const int FloatsPerVertex = 14;
+        const int VertexStride = FloatsPerVertex * 4;
+
+        struct PrepStats
+        {
+            public int OriginalCount;
+            public int OutputCount;
+            public int SanitizedCount;
+            public int Step;
+        }
 
         public static void Capture()
         {
@@ -21,47 +34,50 @@ namespace Eldoria.EditorTools
             if (Directory.Exists(output)) Directory.Delete(output, true);
             Directory.CreateDirectory(output);
 
-            var ply = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-1.ply"));
-            if (!File.Exists(ply)) throw new FileNotFoundException("Missing SHARP PLY", ply);
+            var sourcePly = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-1.ply"));
+            if (!File.Exists(sourcePly)) throw new FileNotFoundException("Missing SHARP PLY", sourcePly);
+
+            // Keep downloaded canonical bytes untouched. Convergence proof operates on a bounded working copy.
+            var workingPly = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-proof-sanitized-300k.ply"));
+            var prep = PrepareProofPly(sourcePly, workingPly, MaxProofSplats);
+            Debug.Log($"[SHARP] Proof PLY prepared: source={prep.OriginalCount}, output={prep.OutputCount}, sanitized={prep.SanitizedCount}, step={prep.Step}");
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             SetupUrpFeature();
-            int sanitized = SanitizePlyInPlace(ply);
-            Debug.Log($"[SHARP] Sanitized non-finite splats: {sanitized}");
 
+            Debug.Log("[SHARP] Loading bounded Gaussian asset");
             var asset = GsplatRuntimeLoader.LoadFile(
-                ply,
+                workingPly,
                 CompressionMode.Spark,
                 SourceCoordinates.RUB,
                 (stage, progress) => Debug.Log($"[SHARP] {stage} {progress:P0}")
             );
             if (asset == null || asset.SplatCount < 100000)
                 throw new Exception("SHARP Gaussian asset did not load correctly");
+            Debug.Log($"[SHARP] Asset loaded: splats={asset.SplatCount}, bounds={asset.Bounds}");
 
+            Debug.Log("[SHARP] Creating renderer");
             var root = new GameObject("SHARP_Valoria_Gaussian");
             var gs = root.AddComponent<GsplatRenderer>();
+            Debug.Log("[SHARP] Assigning asset to renderer");
             gs.GsplatAsset = asset;
             gs.SHDegree = 0;
             gs.GammaToLinear = true;
             gs.AsyncUpload = false;
-            gs.RenderBeforeUploadComplete = true;
-            gs.SplatDownscaleFactor = 0f;
+            gs.RenderBeforeUploadComplete = false;
+            Debug.Log("[SHARP] Renderer configured");
 
             // SHARP is OpenCV x-right/y-down/z-forward. UnitySplats converts RUB input to Unity RUF.
-            // The prediction camera is identity, so HOME remains at origin looking +Z.
             root.transform.position = Vector3.zero;
             root.transform.rotation = Quaternion.identity;
             root.transform.localScale = Vector3.one;
 
-            // Functional 3D substrate / interaction proxy.
             var substrate = GameObject.CreatePrimitive(PrimitiveType.Cube);
             substrate.name = "Functional3D_Substrate_Collider";
             substrate.transform.position = new Vector3(0, -4f, 35f);
             substrate.transform.localScale = new Vector3(45f, .15f, 55f);
-            var subRenderer = substrate.GetComponent<Renderer>();
-            subRenderer.enabled = false; // collider/logical substrate remains, visual comes from SHARP.
+            substrate.GetComponent<Renderer>().enabled = false;
 
-            // Explicit visible 3D occlusion probes.
             var frontProbe = CreateProbe("OcclusionFront", new Color(.9f,.15f,.1f), new Vector3(-3.8f, 0.5f, 5f), new Vector3(1.1f,2.2f,1.1f));
             var backProbe  = CreateProbe("OcclusionBack", new Color(.15f,.9f,.25f), new Vector3(3.8f, 0.5f, 120f), new Vector3(2f,4f,2f));
 
@@ -71,13 +87,19 @@ namespace Eldoria.EditorTools
             cam.backgroundColor = new Color(.02f,.025f,.035f,1f);
             cam.nearClipPlane = .01f;
             cam.farClipPlane = 500f;
-            cam.fieldOfView = 43.58f; // derived from SHARP intrinsics fy=1066.538, h=853.
+            cam.fieldOfView = 43.58f;
             cam.transform.position = Vector3.zero;
             cam.transform.rotation = Quaternion.identity;
 
-            // Allow package registration/upload to settle deterministically in editor.
+            Debug.Log("[SHARP] ForceRefresh begin");
             gs.ForceRefresh();
-            for (int i=0;i<4;i++) cam.Render();
+            Debug.Log("[SHARP] ForceRefresh complete");
+
+            Debug.Log("[SHARP] Warmup render 1");
+            cam.Render();
+            Debug.Log("[SHARP] Warmup render 2");
+            cam.Render();
+            Debug.Log("[SHARP] Warmup complete");
 
             CaptureView(cam, output, "home", Vector3.zero, 43.58f);
             CaptureView(cam, output, "pan-left", new Vector3(-1.75f,0,0), 43.58f);
@@ -85,35 +107,38 @@ namespace Eldoria.EditorTools
             CaptureView(cam, output, "zoom-in", Vector3.zero, 36f);
             CaptureView(cam, output, "zoom-out", Vector3.zero, 52f);
 
-            // Occlusion A: front red probe must visibly cover splats.
             frontProbe.SetActive(true); backProbe.SetActive(false);
             CaptureView(cam, output, "occlusion-front", Vector3.zero, 43.58f);
 
-            // Occlusion B: green probe is behind the scene and should be largely/fully hidden by nearer splats.
             frontProbe.SetActive(false); backProbe.SetActive(true);
             CaptureView(cam, output, "occlusion-behind", Vector3.zero, 43.58f);
 
             File.WriteAllText(Path.Combine(output, "evidence.json"),
                 "{\n"+
-                $"  \"splat_count\": {asset.SplatCount},\n"+
+                $"  \"source_splat_count\": {prep.OriginalCount},\n"+
+                $"  \"proof_splat_count\": {asset.SplatCount},\n"+
+                $"  \"sanitized_source_vertices\": {prep.SanitizedCount},\n"+
+                $"  \"sampling_step\": {prep.Step},\n"+
                 $"  \"bounds_center\": \"{asset.Bounds.center}\",\n"+
                 $"  \"bounds_size\": \"{asset.Bounds.size}\",\n"+
                 "  \"source\": \"SHARP full canonical Valoria PLY artifact 11404383856\",\n"+
                 "  \"renderer\": \"UnitySplats 1.2.0 runtime PLY / URP\",\n"+
+                "  \"proof_mode\": \"bounded_300k_uniform_sample\",\n"+
                 "  \"functional_substrate_collider\": true,\n"+
                 "  \"views\": [\"home\",\"pan-left\",\"pan-right\",\"zoom-in\",\"zoom-out\",\"occlusion-front\",\"occlusion-behind\"],\n"+
                 "  \"paid_credits\": 0\n"+
                 "}\n");
 
+            gs.GsplatAsset = null;
             UnityEngine.Object.DestroyImmediate(asset);
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            Debug.Log("[SHARP] Unity proof complete: " + output);
+            Debug.Log("[SHARP] Unity convergence proof complete: " + output);
         }
 
-        static int SanitizePlyInPlace(string path)
+        static PrepStats PrepareProofPly(string sourcePath, string outputPath, int maxSplats)
         {
-            var data = File.ReadAllBytes(path);
-            var needle = System.Text.Encoding.ASCII.GetBytes("end_header\n");
+            var data = File.ReadAllBytes(sourcePath);
+            var needle = Encoding.ASCII.GetBytes("end_header\n");
             int end = -1;
             for (int i = 0; i <= data.Length - needle.Length; i++)
             {
@@ -123,37 +148,68 @@ namespace Eldoria.EditorTools
                 if (match) { end = i + needle.Length; break; }
             }
             if (end < 0) throw new InvalidDataException("PLY end_header not found");
-            var header = System.Text.Encoding.ASCII.GetString(data, 0, end);
-            var m = System.Text.RegularExpressions.Regex.Match(header, @"element vertex (\d+)");
+
+            var header = Encoding.ASCII.GetString(data, 0, end);
+            var m = Regex.Match(header, @"element vertex (\d+)");
             if (!m.Success) throw new InvalidDataException("PLY vertex count not found");
             int count = int.Parse(m.Groups[1].Value);
-            const int floatsPerVertex = 14;
-            const int stride = floatsPerVertex * 4;
-            int bad = 0;
-            for (int i = 0; i < count; i++)
+
+            int vertexPayloadEnd = end + count * VertexStride;
+            if (vertexPayloadEnd > data.Length) throw new EndOfStreamException("PLY vertex payload truncated");
+
+            int step = Math.Max(1, (int)Math.Ceiling(count / (double)maxSplats));
+            int outputCount = (count + step - 1) / step;
+            var rewrittenHeader = new Regex(@"element vertex \d+").Replace(header, "element vertex " + outputCount, 1);
+            var headerBytes = Encoding.ASCII.GetBytes(rewrittenHeader);
+
+            int sanitized = 0;
+            using (var ms = new MemoryStream(headerBytes.Length + outputCount * VertexStride + (data.Length - vertexPayloadEnd)))
             {
-                int off = end + i * stride;
-                if (off + stride > data.Length) throw new EndOfStreamException("PLY vertex payload truncated");
-                bool invalid = false;
-                float[] vals = new float[floatsPerVertex];
-                for (int k = 0; k < floatsPerVertex; k++)
+                ms.Write(headerBytes, 0, headerBytes.Length);
+                var vertex = new byte[VertexStride];
+                var vals = new float[FloatsPerVertex];
+
+                for (int src = 0; src < count; src += step)
                 {
-                    vals[k] = BitConverter.ToSingle(data, off + k * 4);
-                    if (float.IsNaN(vals[k]) || float.IsInfinity(vals[k])) invalid = true;
+                    int off = end + src * VertexStride;
+                    Buffer.BlockCopy(data, off, vertex, 0, VertexStride);
+
+                    bool invalid = false;
+                    for (int k = 0; k < FloatsPerVertex; k++)
+                    {
+                        vals[k] = BitConverter.ToSingle(vertex, k * 4);
+                        if (float.IsNaN(vals[k]) || float.IsInfinity(vals[k]))
+                        {
+                            vals[k] = 0f;
+                            invalid = true;
+                        }
+                    }
+
+                    if (invalid)
+                    {
+                        sanitized++;
+                        // Make a corrupted source splat effectively invisible rather than inventing geometry.
+                        vals[6] = -20f;
+                        for (int k = 0; k < FloatsPerVertex; k++)
+                        {
+                            var bytes = BitConverter.GetBytes(vals[k]);
+                            Buffer.BlockCopy(bytes, 0, vertex, k * 4, 4);
+                        }
+                    }
+
+                    ms.Write(vertex, 0, vertex.Length);
                 }
-                if (!invalid) continue;
-                bad++;
-                for (int k = 0; k < floatsPerVertex; k++)
-                    if (float.IsNaN(vals[k]) || float.IsInfinity(vals[k])) vals[k] = 0f;
-                vals[6] = -20f;
-                for (int k = 0; k < floatsPerVertex; k++)
-                {
-                    var b = BitConverter.GetBytes(vals[k]);
-                    Buffer.BlockCopy(b, 0, data, off + k * 4, 4);
-                }
+
+                ms.Write(data, vertexPayloadEnd, data.Length - vertexPayloadEnd);
+                File.WriteAllBytes(outputPath, ms.ToArray());
             }
-            if (bad > 0) File.WriteAllBytes(path, data);
-            return bad;
+
+            return new PrepStats {
+                OriginalCount = count,
+                OutputCount = outputCount,
+                SanitizedCount = sanitized,
+                Step = step
+            };
         }
 
         static GameObject CreateProbe(string name, Color color, Vector3 pos, Vector3 scale)
@@ -179,8 +235,9 @@ namespace Eldoria.EditorTools
             rt.Create();
             cam.targetTexture = rt;
 
-            // Multiple renders let CPU/GPU sort paths stabilize after camera change.
+            Debug.Log("[SHARP] Capture " + name + " render 1");
             cam.Render();
+            Debug.Log("[SHARP] Capture " + name + " render 2");
             cam.Render();
 
             var prev = RenderTexture.active;
@@ -194,6 +251,7 @@ namespace Eldoria.EditorTools
             UnityEngine.Object.DestroyImmediate(tex);
             rt.Release();
             UnityEngine.Object.DestroyImmediate(rt);
+            Debug.Log("[SHARP] Capture complete: " + name);
         }
 
         static void SetupUrpFeature()
