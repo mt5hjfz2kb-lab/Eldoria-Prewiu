@@ -71,11 +71,17 @@ jobs:
           params=spec.get("parameters",[])
           print("PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
           image="/tmp/trellis/input/eldoria-gate-crop.png"
+          if "/start_session" in endpoints:
+              print("START_SESSION",client.predict(api_name="/start_session"))
+          processed=image
+          if "/preprocess_image" in endpoints:
+              processed=client.predict(image=handle_file(image),api_name="/preprocess_image")
+              print("PREPROCESSED",repr(processed))
           kwargs={}
           for p in params:
               n=p.get("parameter_name"); d=p.get("parameter_default")
               if n in ("image","image_prompt","input_image"):
-                  kwargs[n]=handle_file(image)
+                  kwargs[n]=handle_file(processed) if isinstance(processed,str) else processed
               elif n in ("multiimages","multi_images"):
                   kwargs[n]=[]
               elif n=="is_multiimage":
