@@ -1,0 +1,75 @@
+{
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "source_crop": [
+    300,
+    420,
+    1000,
+    960
+  ],
+  "model": "facebook/sam2.1-hiera-small",
+  "model_license": "Apache-2.0",
+  "sam2_code_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+  "prompts": {
+    "Lower gate": {
+      "box_local": [
+        265.0,
+        106.0,
+        538.0,
+        317.0
+      ],
+      "score": 0.9261592030525208
+    },
+    "Bridge": {
+      "box_local": [
+        121.0,
+        268.0,
+        451.0,
+        465.0
+      ],
+      "score": 0.7395952939987183
+    }
+  },
+  "environment_depth_split": 0.2976236939430237,
+  "semantic_layers": [
+    {
+      "name": "gate",
+      "pixels": 36069,
+      "fraction": 0.09542063492063492,
+      "mean_depth_norm": 0.2866029143333435,
+      "median_depth_norm": 0.2851748764514923,
+      "min_depth_norm": 0.23330076038837433,
+      "max_depth_norm": 0.6412569880485535
+    },
+    {
+      "name": "bridge",
+      "pixels": 27936,
+      "fraction": 0.0739047619047619,
+      "mean_depth_norm": 0.17912986874580383,
+      "median_depth_norm": 0.1765381246805191,
+      "min_depth_norm": 0.043525245040655136,
+      "max_depth_norm": 0.3155975043773651
+    },
+    {
+      "name": "environment-near",
+      "pixels": 156998,
+      "fraction": 0.41533862433862434,
+      "mean_depth_norm": 0.13915972411632538,
+      "median_depth_norm": 0.13365814089775085,
+      "min_depth_norm": 0.0,
+      "max_depth_norm": 0.2976236939430237
+    },
+    {
+      "name": "environment-far",
+      "pixels": 156997,
+      "fraction": 0.41533597883597884,
+      "mean_depth_norm": 0.6381869316101074,
+      "median_depth_norm": 0.6362304091453552,
+      "min_depth_norm": 0.29762569069862366,
+      "max_depth_norm": 1.0
+    }
+  ],
+  "pixel_partition_complete": true,
+  "roundtrip_mae": 0.0,
+  "credits": 0,
+  "unity_touched": false
+}
