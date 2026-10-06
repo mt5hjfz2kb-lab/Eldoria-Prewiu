@@ -370,7 +370,7 @@ namespace Eldoria.Presentation
             var uc=upper.GetComponent<Collider>();if(uc!=null)uc.enabled=false;
         }
 
-        static GameObject NatureTreePrefab(int variant)
+        static Object NatureTreePrefab(int variant)
         {
             if(externalLibrary==null)return null;
             switch(Mathf.Abs(variant)%4)
