@@ -33,7 +33,9 @@ def build_args(spec, azimuth):
         elif "elevation" in pname or "vertical" in label or "pitch" in pname:
             args.append(0)
         elif "distance" in pname or "zoom" in pname:
-            args.append(0)
+            args.append(1.0)
+        elif "randomize" in pname:
+            args.append(False)
         elif "seed" in pname:
             args.append(1234)
         elif p.get("parameter_has_default"):
