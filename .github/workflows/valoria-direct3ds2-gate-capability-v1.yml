@@ -63,10 +63,30 @@ jobs:
           import os, shutil, requests
           from gradio_client import Client, handle_file
 
-          client=Client("wushuang98/Direct3D-S2-v1.0-demo-zero", verbose=True)
-          api=client.view_api(return_format="dict")
+          backends=[
+              "https://api.zmkj.site/",
+              "https://api1.zmkj.site/",
+              "https://api2.zmkj.site/",
+              "wushuang98/Direct3D-S2-v1.0-demo-api",
+              "wushuang98/Direct3D-S2-v1.0-demo",
+          ]
+          client=None; endpoints={}; api=None; selected=None; errors=[]
+          for target in backends:
+              try:
+                  print("TRY_BACKEND",target)
+                  cand=Client(target, verbose=True)
+                  view=cand.view_api(return_format="dict")
+                  eps=(view or {}).get("named_endpoints",{})
+                  print("BACKEND_ENDPOINTS",target,list(eps))
+                  if eps:
+                      client=cand; api=view; endpoints=eps; selected=target; break
+              except Exception as e:
+                  errors.append((target,repr(e)))
+                  print("BACKEND_ERROR",target,repr(e))
+          if client is None:
+              raise SystemExit("No callable Direct3D backend: "+repr(errors))
+          print("SELECTED_BACKEND",selected)
           print("API",api)
-          endpoints=(api or {}).get("named_endpoints",{})
           print("ENDPOINTS",list(endpoints))
 
           ranked=[]
@@ -181,7 +201,7 @@ jobs:
               sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
           tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
           open(os.path.join(ev,"mesh-report.txt"),"w").write(
-              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=wushuang98/Direct3D-S2-v1.0-demo-zero\ncredits=0\n"
+              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=Direct3D-S2 public backend\ncredits=0\n"
           )
           PY
           blender -b --python /tmp/direct3d/render.py
