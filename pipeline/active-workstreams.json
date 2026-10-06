@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T09:25:00Z",
+  "updated_at": "2026-10-06T09:45:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -28,6 +28,28 @@
       "blocker": "KINGDOM: Stylized Modular Castle Environment selected as strongest first external-source candidate. Commercial source is not in repo; purchase/acquisition requires owner authorization. Current public price observed: USD 74.50 plus tax. No Tripo/Meshy credits spent."
     },
     {
+      "id": "valoria-photogrammetry-donor-capability-v1",
+      "title": "VALORIA PHOTOGRAMMETRY DONOR CAPABILITY v1",
+      "owner": "chat-independent-photogrammetry-donor-rnd",
+      "scope": [
+        "docs/evidence/valoria-photogrammetry-donor-capability-v1/**",
+        ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml",
+        "tools/valoria-photogrammetry-donor-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "github-hosted-linux-photogrammetry-rnd"
+      ],
+      "claimed_at": "2026-10-06T09:45:00Z",
+      "base_main_sha": "a9cf888cc2ef77bc79b0eae8547c8e1c0d73c58d",
+      "status": "active",
+      "phase": "ZERO-SPEND PHOTOGRAMMETRY SURFACE/GEOMETRY DONOR PROOF",
+      "dependency": "Distinct from KINGDOM acquisition, SF3D/TRELLIS/TRELLIS2/Hunyuan3D, OpenGameArt gatehouse and production Lower Gate. No Unity, no Windows runner, no paid credits. Isolated donor-quality proof only.",
+      "next": "Test CC0 photogrammetric medieval masonry/rock sources for real surface relief and donor suitability; fail fast if visual benefit cannot materially exceed existing stylized/procedural sources."
+    }
+  ],
+  "history": [
+    {
       "id": "valoria-cc0-modular-source-capability-v1",
       "title": "VALORIA CC0 MODULAR SOURCE CAPABILITY v1",
       "owner": "chat-independent-cc0-source-research",
@@ -42,13 +64,15 @@
       ],
       "claimed_at": "2026-10-06T09:25:00Z",
       "base_main_sha": "276f996180197fd00df8d1aef9307311d5cda995",
-      "status": "active",
+      "status": "completed",
       "phase": "ISOLATED ZERO-SPEND CC0 SOURCE CAPABILITY PROOF",
       "dependency": "Must not touch Lower Gate production, art-production-request, commercial KINGDOM candidate, Unity, Windows runner, Tripo/Meshy credits, or the active commercial acquisition workstream. Generic isolated capability proof only.",
-      "next": "Test high-quality CC0 human-authored modular fort geometry and materials in isolation; if below >=4/5, close and pivot to open-source image-to-3D capability research."
-    }
-  ],
-  "history": [
+      "next": "Test high-quality CC0 human-authored modular fort geometry and materials in isolation; if below >=4/5, close and pivot to open-source image-to-3D capability research.",
+      "completed_at": "2026-10-06T09:45:00Z",
+      "result": "Poly Haven Modular Fort 01 zero-spend isolated proof completed technically (run 37443965876 / artifact 11402557139) but visual source remains generic modular fort and below Eldoria >=4/5 identity/premium threshold. No Unity, no credits. OpenGameArt gatehouse continuation is being handled elsewhere; this workstream released to avoid duplication.",
+      "run_id": 37443965876,
+      "artifact_id": 11402557139
+    },
     {
       "id": "valoria-golden-lookdev-slice-v1",
       "title": "VALORIA GOLDEN LOOKDEV SLICE v1",
