@@ -92,7 +92,8 @@ namespace Eldoria.Presentation
             cameraGo.transform.SetParent(root,true);
             var camera=cameraGo.AddComponent<Camera>();
             camera.orthographic=true;
-            camera.orthographicSize=14f;
+            float aspect=Screen.height>0?Screen.width/(float)Screen.height:1.777f;
+            camera.orthographicSize=aspect<.72f?18f:14f;
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=RenderSettings.fogColor;
             cameraGo.transform.position=new Vector3(20f,23f,-22f);
