@@ -65,7 +65,7 @@ namespace Eldoria.EditorTools
             Save(camera,folder+"/frontier-i-ii-19.png",frontierPosition,frontierTarget,19f,1280,720);
             Save(camera,folder+"/frontier-i-ii-12.png",frontierPosition,frontierTarget,12f,1280,720);
             Save(camera,folder+"/frontier-i-ii-9.png",frontierPosition,frontierTarget,9f,1280,720);
-            Save(camera,folder+"/frontier-i-ii-mobile.png",frontierPosition,frontierTarget,12f,390,844);
+            Save(camera,folder+"/frontier-i-ii-mobile.png",frontierPosition,frontierTarget,18f,390,844);
 
             Debug.Log("Valoria + Frontier benchmark captures saved to "+Path.GetFullPath(folder));
         }
