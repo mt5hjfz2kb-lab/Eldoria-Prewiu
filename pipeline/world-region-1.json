@@ -11,40 +11,41 @@
     "paidCredits": 0
   },
   "continuity": {
-    "exitId": "gate",
-    "regionId": "region-1-valoria-frontier",
-    "returnId": "valoria-return",
-    "rule": "World Region 1 is the physical exterior continuation of Valoria, never an abstract detached map."
+    "cityScreen": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity",
+    "worldScreen": "region-1-valoria-frontier",
+    "enterAction": "world-button",
+    "returnAction": "kingdom-button-or-valoria-map-selection",
+    "rule": "Valoria and World Region 1 are separate gameplay screens/scenes. Continuity is artistic, systemic and persistent-state continuity, not a 1:1 physical walk through Valoria's gate."
   },
   "bounds": {
     "logicalMin": {
-      "x": -24,
-      "z": -20
+      "x": -28,
+      "z": -22
     },
     "logicalMax": {
-      "x": 28,
-      "z": 34
+      "x": 32,
+      "z": 36
     },
     "cameraPanMin": {
-      "x": -7,
-      "z": -5
+      "x": -10,
+      "z": -7
     },
     "cameraPanMax": {
-      "x": 8,
-      "z": 10
+      "x": 11,
+      "z": 12
     },
     "zoom": {
-      "min": 0.86,
+      "min": 0.72,
       "home": 1,
-      "max": 1.18
+      "max": 1.28
     },
     "freeCamera": false
   },
   "route": [
     {
-      "id": "valoria-gate-road",
-      "kind": "route",
-      "gameplay": "transition"
+      "id": "valoria-map-city",
+      "kind": "home-city",
+      "gameplay": "selectable-origin-and-return"
     },
     {
       "id": "forest-valoria",
@@ -66,11 +67,6 @@
       "command": "Fight",
       "reward": "wood+stone",
       "persistentField": "ScoutDefeated"
-    },
-    {
-      "id": "valoria-return",
-      "kind": "return",
-      "gameplay": "scene-return"
     }
   ],
   "optionalContext": [
@@ -83,19 +79,22 @@
     }
   ],
   "gameplayLoop": [
-    "leave-valoria",
+    "start-in-valoria-city-screen",
+    "tap-world-button",
+    "load-world-4x-screen",
     "select-destination",
-    "march-outbound",
+    "march-outbound-on-world-map",
     "resource-or-threat-interaction",
-    "returning",
+    "returning-march",
     "credit-reward-once",
-    "return-valoria",
+    "tap-kingdom-or-select-valoria",
+    "return-to-valoria-city-screen",
     "kingdom-state-reflects-reward"
   ],
   "gates": {
     "tech": "required",
     "visual": "required",
-    "worldValoriaContinuity": "required",
+    "worldValoriaContinuity": "required: same Eldoria art direction/state continuity despite deliberate screen/scale change",
     "navigation": "required",
     "interaction": "required",
     "gameplayLoop": "required",
@@ -105,6 +104,8 @@
   },
   "nonGoals": [
     "continent",
+    "continuous walkable terrain between city and world",
+    "1:1 physical gate-to-world transition",
     "online multiplayer",
     "new combat system",
     "free unlimited camera",
