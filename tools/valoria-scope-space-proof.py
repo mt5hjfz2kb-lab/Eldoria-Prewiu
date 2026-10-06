@@ -16,7 +16,7 @@ canvas=Image.new("RGBA",(side,side),(0,0,0,0))
 canvas.alpha_composite(img,((side-img.width)//2,(side-img.height)//2))
 inp=os.path.join(OUT,"gate-input.png"); canvas.save(inp)
 
-client=Client("TencentARC/SCoPE")
+client=Client("TencentARC/scope-camera-video-generation")
 api=client.view_api(return_format="dict")
 open(os.path.join(OUT,"api.json"),"w").write(json.dumps(api,indent=2,default=str))
 eps=api.get("named_endpoints",{}) if isinstance(api,dict) else {}
