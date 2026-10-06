@@ -127,15 +127,13 @@ namespace Eldoria.Presentation
                     float a=i*2.39996f+cluster*.71f;
                     float radius=1.5f+Mathf.Sqrt(i+.5f)*1.25f;
                     var p=centre+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
-                    var tree=ValoriaKit.PineTree("World Region 1 · forest mass",p,.60f+(i%3)*.08f);
-                    Parent(tree);
+                    ValoriaKit.PineTree("World Region 1 · forest mass",p,.60f+(i%3)*.08f);
                 }
             }
             foreach(var p in new[]{new Vector3(-20f,0,-5f),new Vector3(20f,0,-6f),
                 new Vector3(-21f,0,28f),new Vector3(22f,0,27f)})
             {
-                var rocks=ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.15f,7);
-                Parent(rocks);
+                ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.15f,7);
             }
         }
 
@@ -183,9 +181,8 @@ namespace Eldoria.Presentation
                     ValoriaPosition+new Vector3(0,1.2f,0),new Vector3(3.5f,2.3f,3.1f),WarmStone);
                 keep.transform.SetParent(cityRoot.transform,true);
             }
-            var banner=ValoriaKit.Banner("World Region 1 · Valoria standard",
+            ValoriaKit.Banner("World Region 1 · Valoria standard",
                 ValoriaPosition+new Vector3(1.8f,.2f,.4f),new Vector3(.35f,1.45f,.06f),Blue);
-            Parent(banner);
             Hotspot("World Region 1 · Valoria target","valoria-map-city",
                 ValoriaPosition+new Vector3(0,1.2f,0),new Vector3(5.3f,3.0f,5.0f));
         }
@@ -197,8 +194,8 @@ namespace Eldoria.Presentation
             for(int i=0;i<8;i++)
             {
                 float a=i*.78f;float r=1.0f+(i%3)*.55f;
-                Parent(ValoriaKit.PineTree("World Region 1 · forest node pine",
-                    ForestPosition+new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r),.68f+(i%2)*.08f));
+                ValoriaKit.PineTree("World Region 1 · forest node pine",
+                    ForestPosition+new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r),.68f+(i%2)*.08f);
             }
             var stock=Resources.Load<GameObject>("Valoria/UrbanProps/Crate");
             if(stock!=null)Parent(ValoriaKit.BenchmarkPieceTinted("World Region 1 · forest timber stock",
@@ -226,7 +223,7 @@ namespace Eldoria.Presentation
                     RuinPosition+new Vector3(0,1.0f,0),new Vector3(2.4f,2f,2.0f),Stone);
                 tower.transform.SetParent(ruin.transform,true);
             }
-            Parent(ValoriaKit.RockCluster("World Region 1 · ruin rubble",RuinPosition+new Vector3(1.6f,0,-.5f),.7f,6));
+            ValoriaKit.RockCluster("World Region 1 · ruin rubble",RuinPosition+new Vector3(1.6f,0,-.5f),.7f,6);
             Hotspot("World Region 1 · ruin target","old-watch-ruin",
                 RuinPosition+new Vector3(0,1.2f,0),new Vector3(4.8f,3f,4.4f));
         }
@@ -238,7 +235,7 @@ namespace Eldoria.Presentation
             var body=Primitive("World Region 1 · scout silhouette",PrimitiveType.Capsule,
                 ScoutPosition+new Vector3(0,.85f,0),new Vector3(.65f,1.3f,.65f),new Color(.16f,.13f,.16f));
             body.transform.SetParent(scout.transform,true);
-            Parent(ValoriaKit.RockCluster("World Region 1 · corruption rocks",ScoutPosition+new Vector3(0,0,.7f),.9f,6));
+            ValoriaKit.RockCluster("World Region 1 · corruption rocks",ScoutPosition+new Vector3(0,0,.7f),.9f,6);
             var glowGo=new GameObject("World Region 1 · corruption glow");
             glowGo.transform.SetParent(scout.transform,true);glowGo.transform.position=ScoutPosition+Vector3.up*.65f;
             var glow=glowGo.AddComponent<Light>();glow.type=LightType.Point;glow.color=Violet;glow.intensity=.7f;glow.range=4.5f;
