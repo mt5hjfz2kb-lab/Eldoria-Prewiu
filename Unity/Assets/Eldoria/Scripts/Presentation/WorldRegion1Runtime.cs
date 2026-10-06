@@ -25,6 +25,8 @@ namespace Eldoria.Presentation
         static Transform root;
         static GameObject marchVisual;
         static ValoriaExternalAssetLibrary externalLibrary;
+        static Material worldLandscapeMaterial;
+        static Material worldTrailMaterial;
         static readonly Color Earth=new Color(.38f,.35f,.28f);
         static readonly Color EarthLight=new Color(.42f,.40f,.31f);
         static readonly Color Meadow=new Color(.29f,.34f,.23f);
@@ -384,9 +386,105 @@ namespace Eldoria.Presentation
             mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var terrainRenderer=go.AddComponent<MeshRenderer>();
-            terrainRenderer.sharedMaterial=externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null
-                ?ValoriaKit.PbrSurfaceMaterial(externalLibrary.ValoriaDirtSurface,Earth,new Vector2(12f,11f),.035f,.72f)
-                :ValoriaKit.SurfaceMaterial(Earth,"earth",new Vector2(12f,11f));
+            terrainRenderer.sharedMaterial=WorldLandscapeMaterial();
+        }
+
+        static Material WorldLandscapeMaterial()
+        {
+            if(worldLandscapeMaterial!=null)return worldLandscapeMaterial;
+            const int size=512;
+            var texture=new Texture2D(size,size,TextureFormat.RGB24,true)
+            {name="Eldoria Region 1 continuous soil and moss",wrapMode=TextureWrapMode.Repeat};
+            var pixels=new Color[size*size];
+            var soil=new Color(.27f,.245f,.19f);
+            var moss=new Color(.20f,.27f,.17f);
+            var gravel=new Color(.34f,.32f,.26f);
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                float broad=Mathf.PerlinNoise(x*.018f+14.3f,y*.018f+5.7f);
+                float medium=Mathf.PerlinNoise(x*.052f+31f,y*.052f+47f);
+                float detail=Mathf.PerlinNoise(x*.25f+3.1f,y*.25f+11.2f);
+                var col=Color.Lerp(soil,moss,Mathf.SmoothStep(.28f,.72f,broad));
+                col=Color.Lerp(col,gravel,Mathf.Clamp01((medium-.60f)*2.2f));
+                pixels[y*size+x]=col*(.90f+detail*.17f);
+            }
+            texture.SetPixels(pixels);texture.Apply(true,false);
+            worldLandscapeMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            {name="Eldoria Region 1 · continuous landscape"};
+            worldLandscapeMaterial.SetTexture("_BaseMap",texture);
+            worldLandscapeMaterial.SetTextureScale("_BaseMap",new Vector2(3.2f,2.8f));
+            worldLandscapeMaterial.SetColor("_BaseColor",Color.white);
+            worldLandscapeMaterial.SetFloat("_Smoothness",.018f);
+            worldLandscapeMaterial.SetFloat("_Metallic",0f);
+            return worldLandscapeMaterial;
+        }
+
+        static Material WorldAccentMaterial(Color tint,string key)
+        {
+            const int size=128;
+            var texture=new Texture2D(size,size,TextureFormat.RGBA32,true)
+            {name="Eldoria Region 1 accent "+key,wrapMode=TextureWrapMode.Clamp};
+            var pixels=new Color[size*size];
+            int seed=Mathf.Abs(key.GetHashCode()%997);
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                float u=x/(float)(size-1)*2f-1f;
+                float v=y/(float)(size-1)*2f-1f;
+                float d=Mathf.Sqrt(u*u+v*v);
+                float noise=Mathf.PerlinNoise(x*.07f+seed*.013f,y*.07f+seed*.021f);
+                float alpha=1f-Mathf.SmoothStep(.48f,.98f,d+(noise-.5f)*.22f);
+                var col=tint*(.88f+noise*.18f);col.a=alpha*.72f;
+                pixels[y*size+x]=col;
+            }
+            texture.SetPixels(pixels);texture.Apply(true,false);
+            var mat=new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            {name="Eldoria Region 1 · blended accent "+key,renderQueue=3000};
+            mat.SetTexture("_BaseMap",texture);
+            mat.SetColor("_BaseColor",Color.white);
+            mat.SetFloat("_Surface",1f);
+            mat.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_ZWrite",0f);
+            mat.SetFloat("_Smoothness",.01f);
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.SetOverrideTag("RenderType","Transparent");
+            return mat;
+        }
+
+        static Material WorldTrailMaterial()
+        {
+            if(worldTrailMaterial!=null)return worldTrailMaterial;
+            const int size=256;
+            var texture=new Texture2D(size,size,TextureFormat.RGBA32,true)
+            {name="Eldoria Region 1 worn trail",wrapMode=TextureWrapMode.Clamp};
+            var pixels=new Color[size*size];
+            var dirt=new Color(.19f,.145f,.095f);
+            for(int y=0;y<size;y++)
+            for(int x=0;x<size;x++)
+            {
+                float u=x/(float)(size-1)*2f-1f;
+                float grain=Mathf.PerlinNoise(x*.15f+7f,y*.15f+13f);
+                float broad=Mathf.PerlinNoise(x*.035f+4f,y*.035f+9f);
+                float alpha=1f-Mathf.SmoothStep(.54f,.98f,Mathf.Abs(u)+(broad-.5f)*.20f);
+                float rut=Mathf.Exp(-Mathf.Pow((u-.34f)/.13f,2f))+Mathf.Exp(-Mathf.Pow((u+.34f)/.13f,2f));
+                var col=dirt*(.86f+grain*.18f-rut*.07f);col.a=alpha;
+                pixels[y*size+x]=col;
+            }
+            texture.SetPixels(pixels);texture.Apply(true,false);
+            worldTrailMaterial=new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            {name="Eldoria Region 1 · blended worn trail",renderQueue=3000};
+            worldTrailMaterial.SetTexture("_BaseMap",texture);
+            worldTrailMaterial.SetColor("_BaseColor",Color.white);
+            worldTrailMaterial.SetFloat("_Surface",1f);
+            worldTrailMaterial.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);
+            worldTrailMaterial.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+            worldTrailMaterial.SetFloat("_ZWrite",0f);
+            worldTrailMaterial.SetFloat("_Smoothness",.01f);
+            worldTrailMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            worldTrailMaterial.SetOverrideTag("RenderType","Transparent");
+            return worldTrailMaterial;
         }
 
         static void WorldShrub(string name,Vector3 position,float scale,int variant)
@@ -424,45 +522,21 @@ namespace Eldoria.Presentation
             mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var patchRenderer=go.AddComponent<MeshRenderer>();
-            var tiling=new Vector2(Mathf.Max(1.5f,scale.x/3f),Mathf.Max(1.5f,scale.z/3f));
-            patchRenderer.sharedMaterial=externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null
-                ?ValoriaKit.PbrSurfaceMaterial(externalLibrary.ValoriaDirtSurface,color,tiling,.025f,.62f)
-                :ValoriaKit.SurfaceMaterial(color,"earth",tiling);
+            patchRenderer.sharedMaterial=WorldAccentMaterial(color,name);
         }
 
         static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
         {
-            if(externalLibrary!=null&&externalLibrary.SlavicCobbleRoad!=null)
-            {
-                var holder=new GameObject(name);
-                holder.transform.SetParent(root,true);
-                holder.transform.position=centre;
-                holder.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-                const int pieces=5;
-                float spacing=length/(pieces-1);
-                for(int i=0;i<pieces;i++)
-                {
-                    float z=(i-(pieces-1)*.5f)*spacing;
-                    var piece=ValoriaKit.BenchmarkPiece(name+" · track "+i,
-                        externalLibrary.SlavicCobbleRoad,Vector3.zero,
-                        width*1.75f,.28f,Quaternion.identity);
-                    if(piece==null)continue;
-                    piece.transform.SetParent(holder.transform,false);
-                    piece.transform.localPosition=new Vector3(
-                        Mathf.Sin(i*1.4f)*width*.10f,.018f,z);
-                    piece.transform.localRotation=Quaternion.Euler(0f,Mathf.Sin(i*.9f)*4f,0f);
-                    foreach(var col in piece.GetComponentsInChildren<Collider>(true))col.enabled=false;
-                }
-                return;
-            }
-
+            // Reuse the already-proven continuous march-route mesh, but skin it with a
+            // soft-edged strategic dirt material so roads read as terrain, not board pieces.
             var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
             if(route==null)return;
             route.transform.SetParent(root,true);
+            bool renamed=false;
             foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.gameObject.name=name+" · track 0";
-                break;
+                renderer.sharedMaterial=WorldTrailMaterial();
+                if(!renamed){renderer.gameObject.name=name+" · track 0";renamed=true;}
             }
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))
                 collider.enabled=false;
