@@ -43,16 +43,19 @@ jobs:
       - name: Skip parked request
         if: steps.request.outputs.enabled != 'true'
         run: echo "Starter source request parked."
-      - name: Install Blender
+      - name: Install Blender and validated headless libraries
         if: steps.request.outputs.enabled == 'true'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
+          sudo apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 install -y --no-install-recommends blender python3-numpy xvfb libegl1 libgl1 libglx-mesa0 ca-certificates
           blender --version
+          ldconfig -p | grep -E 'libEGL\.so\.1|libGL\.so\.1' || true
       - name: Build authored source
         if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source != 'true' && steps.request.outputs.surface_source != 'true'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
         run: |
-          blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
+          xvfb-run -a -s "-screen 0 1920x1080x24" blender -b --python tools/valoria-production-art-starter/build_starter_family_v1.py
           test -s art-source/valoria/production/starter-family/Valoria_StarterFamily_v1.blend
           for f in Valoria_MainGate_v1 Valoria_WallSegment_v1 Valoria_Tower_v1 Valoria_CivicHouse_v1 Valoria_Workshop_v1; do
             test -s "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/${f}.glb"
@@ -89,10 +92,12 @@ jobs:
 
       - name: Author persistent Golden surface maps in Blender
         if: steps.request.outputs.enabled == 'true' && steps.request.outputs.surface_source == 'true'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
-          blender -b --python-exit-code 1 --python tools/author-golden-surface-maps.py
+          xvfb-run -a -s "-screen 0 1920x1080x24" blender -b --python-exit-code 1 --python tools/author-golden-surface-maps.py
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2/texture-manifest.json
           test -s Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png
           test -s Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png
@@ -128,6 +133,8 @@ jobs:
 
       - name: Validate route and build editable mesh family source
         if: steps.request.outputs.enabled == 'true' && steps.request.outputs.mesh_source == 'true'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
@@ -141,7 +148,7 @@ jobs:
           PY
           )
           echo "Authoring with ${AUTHOR_SCRIPT}"
-          blender -b --python-exit-code 1 --python "${AUTHOR_SCRIPT}"
+          xvfb-run -a -s "-screen 0 1920x1080x24" blender -b --python-exit-code 1 --python "${AUTHOR_SCRIPT}"
           python3 - <<'PY'
           import json,pathlib
           d=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
@@ -166,6 +173,7 @@ jobs:
           subprocess.run(['git','add',*paths],check=True)
           if subprocess.run(['git','diff','--cached','--quiet']).returncode:
               subprocess.run(['git','commit','-m','Persist isolated editable family source: '+d['request_id']],check=True)
+              subprocess.run(['git','pull','rebase','origin','main'],check=False)
               subprocess.run(['git','pull','--rebase','origin','main'],check=True)
               subprocess.run(['git','push','origin','HEAD:main'],check=True)
           PY
@@ -180,4 +188,4 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-# trigger-refresh: premium-square-metre-v1-bounded-request-router
+# trigger-refresh: premium-square-metre-v1-validated-headless-runtime
