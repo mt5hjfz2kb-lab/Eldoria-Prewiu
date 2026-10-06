@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:36:00Z",
+  "updated_at": "2026-10-06T10:44:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -119,6 +119,25 @@
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
       "next": "RESUME PRIORITY: implement and dispatch the isolated SHARP PLY → Unity 6 URP proof. Validate HOME, bounded pan/zoom, 3D occlusion/depth, evidence captures and runtime feasibility before opening more unrelated visual-generation lanes.",
       "blocker": "No technical dependency remains after the per-asset impostor Unity proof completed. Since commit f2a666f396233dea9d0f821e09ecb1b039d9b0c1 expanded the workstream to Unity, no SHARP Unity implementation commit or workflow run has been produced. This is an execution-resume issue, not a technical rejection."
+    },
+    {
+      "id": "valoria-step1x3d-gate-capability-v1",
+      "title": "VALORIA STEP1X-3D GATE CAPABILITY v1",
+      "owner": "chat-independent-step1x3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-step1x3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-step1x3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-step1x-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:44:00Z",
+      "base_main_sha": "462967e6987546af35e222f4c065500ca2123331",
+      "status": "active",
+      "phase": "ZERO-SPEND STEP1X-3D CANONICAL GATE PROOF",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
+      "next": "Probe Step1X-3D public Space on the isolated semantic Lower Gate. Prefer sharp-edge controllable geometry if exposed. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
     }
   ],
   "history": [
