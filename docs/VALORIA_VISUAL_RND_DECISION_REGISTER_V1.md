@@ -1,0 +1,175 @@
+# VALORIA VISUAL R&D DECISION REGISTER v1
+
+Status: CANONICAL AUDIT MEMORY
+Date: 2026-10-06
+Rule: repository evidence overrides chat memory. A green CI run is not a visual pass.
+
+## Purpose
+Keep a durable record of which visual-production methods were tested, what they actually proved, what remains reusable, and what must not be reopened without materially new evidence.
+
+## Decision classes
+- **LEADER**: strongest current route toward the final production pipeline.
+- **COMPONENT PASS**: useful as one layer of the pipeline, not sufficient alone.
+- **BASE 3D PASS**: usable volumetric donor/blockout; not final art.
+- **TECH PASS / VISUAL PARTIAL**: technically functional but below final visual target.
+- **BLOCKED**: not evaluable because of infrastructure/access; not a visual rejection.
+- **REJECTED**: evidence shows the method should not be used as the main production route.
+
+## Current production hypothesis
+**LEADER — Hybrid Valoria pipeline**
+
+Target reference / semantic isolation
+→ high-fidelity visual representation where useful
+→ real 3D geometry for interaction, depth and occlusion
+→ human/professional geometry correction where generation invents forms
+→ appearance transfer / projection / PBR
+→ photogrammetry or high-quality donors for surface relief
+→ Unity 6 URP runtime, camera, interaction, gameplay and optimization.
+
+No single tested generator currently satisfies all requirements alone.
+
+## Methods
+
+### SHARP Gaussian full-frame
+**Status:** LEADER / VISUAL PROMISING / GAMEPLAY FITNESS UNPROVEN
+- Run: 37448896124
+- Artifact: 11404383856
+- Output: ~64 MB Gaussian PLY + synthesized-view video.
+- Proven: strongest full-frame appearance retention observed so far.
+- Unknown: Unity 6 URP integration, bounded camera envelope, 3D occlusion/depth, clickability/hotspots, mobile/runtime performance.
+- Workstream: `valoria-sharp-gaussian-pipeline-v1`.
+- Current governance: execution stalled after scope expansion to Unity; this is not a technical rejection.
+- **Next gate:** isolated SHARP PLY → Unity 6 URP proof.
+- Do not promote to production before that gate.
+
+### TRELLIS on isolated semantic Lower Gate
+**Status:** BASE 3D PASS
+- Runs include: 37449196984
+- Artifact: 11405445323
+- Proven: semantic isolation improves shape coherence versus raw crop; real GLB and multi-angle evidence.
+- Limitation: architecture still simplified/deformed; insufficient as final hero asset.
+- Reuse: volumetric donor/blockout.
+
+### InstantMesh
+**Status:** BASE 3D PASS
+- Proven: closed recognizable mesh; ~154k faces in inspected proof.
+- Limitation: melts upper silhouette/details and loses architectural identity.
+- Reuse: fast volumetric base only.
+
+### Hi3DGen
+**Status:** TECH PASS / VISUAL PARTIAL
+- Canonical proof run: 37449400507, artifact 11406435313.
+- Semantic proof run: 37450000430, artifact 11406576490.
+- Proven: dense watertight geometry and improved architecture with semantic input.
+- Limitation: false holes/cuts, invented depth, unwanted attached ground in some variants.
+- Reuse: volumetric donor.
+- Current experiment: semantic seed bake-off to measure reproducibility.
+
+### Hunyuan3D 2.1
+**Status:** TECH PASS / HIGH VARIANCE / NOT PRODUCTION-SUITABLE YET
+- Semantic success run: 37449805027, artifact 11405242167.
+- Second semantic success: 37449955466, artifact 11405177537.
+- Proven: can return real GLB and sometimes preserve gate/tower/arch concept well.
+- Critical issue: strong run-to-run variance; second inspected result degraded heavily.
+- High-resolution attempt failed; octree-512 test pending at time of this register.
+- Do not treat a single good run as production proof.
+
+### CraftsMan3D
+**Status:** BASE 3D PASS / VISUAL BELOW TARGET
+- Proven: dense watertight mesh (~424k faces in inspected proof).
+- Limitation: rendered architecture remains soft/melted; density did not translate to fidelity.
+- Reuse: coarse volume only.
+
+### Human-Mesh Projection Bake
+**Status:** COMPONENT PASS / VISUAL PARTIAL
+- Run: 37448457610
+- Artifact: 11404606995
+- Proven: human-authored mesh preserves real 3D parallax and can receive target-conditioned appearance.
+- Limitation: current transfer too dark/superficial for final identity.
+- Reuse: strong hybrid component.
+
+### Geometry-Anchored Projection Bake
+**Status:** COMPONENT PASS WITH CONDITION
+- Proven: tight-crop projection improves target appearance on real geometry.
+- Limitation: duplicate/overlapping architecture appears if base geometry is not well aligned.
+- Rule: appearance transfer comes after geometry alignment, never as a substitute for it.
+
+### PBR derived from target
+**Status:** COMPONENT PASS
+- Proven: generated BaseColor, Normal, Height, Metallic and Roughness maps.
+- Limitation: isolated material result does not reproduce Valoria architecture.
+- Reuse: material/lookdev layer on a correct mesh.
+
+### Photogrammetry donor
+**Status:** COMPONENT PASS / SOURCE SELECTION PENDING
+- Proven: real surface relief, joints, chips and wear can be transferred from donor geometry.
+- Limitation: tested donor was visually wrong for Valoria (modern/red brick).
+- Reuse: medieval stone/rock donor layer only after better source selection.
+
+### CC0 / human-authored modular geometry
+**Status:** COMPONENT PASS / GENERIC
+- Proven: robust editable professional geometry pipeline.
+- Limitation: tested free sources were too generic for Valoria identity.
+- Reuse: structural donor/correction pieces only.
+
+### KINGDOM commercial modular castle
+**Status:** BLOCKED — OWNER ACQUISITION REQUIRED
+- Observed price: USD 74.50 + tax.
+- No purchase authorized.
+- Do not buy while zero-spend routes remain informative unless owner gives fresh explicit authorization.
+
+### TripoSR
+**Status:** IN TECHNICAL PROBE
+- MIT/open-source route chosen as last reasonable single-image reconstruction check.
+- First attempts failed before generation due torchmcubes build dependencies.
+- Failures so far are infrastructure/install failures, not visual evidence.
+- Rule: allow only a bounded final technical correction; if geometry remains below hero threshold, close the single-image reconstruction family.
+
+### Unique3D
+**Status:** BLOCKED
+- Run: 37448430078
+- Artifact: 11404088202
+- ZeroGPU requested ~600s GPU and did not return usable mesh.
+- Infrastructure blocker, not visual pass.
+- Do not reopen unless execution conditions materially change.
+
+### Hunyuan initial ZeroGPU path
+**Status:** BLOCKED / SUPERSEDED
+- Earlier public route required ~270s GPU and was blocked.
+- Superseded by later executable Hunyuan3D-2.1 experiments above.
+
+### SF3D
+**Status:** REJECTED FOR CURRENT FLOW
+- Repeated upstream Gradio failures before usable model.
+- With other generators producing real meshes, further retries have poor expected value unless upstream behavior changes.
+
+### CityBuilder CC0 gate
+**Status:** REJECTED VISUALLY
+- Artifact rendered with broken/magenta materials and did not provide useful evidence above existing human-authored donors.
+
+### Semantic 2.5D Camera-First / projection cards
+**Status:** REJECTED AS PRODUCTION METHOD
+- Final verdict already established: TECH PASS / VISUAL FAIL / CAMERA ENVELOPE FAIL / OCCLUSION-DEPTH FAIL / PRODUCTION SCALABILITY FAIL.
+- Final gate: `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`.
+- Do not reopen mask/inpainting/parallax/card-shell iterations without materially new evidence.
+
+### Scripted Blender procedural reconstruction as primary authoring
+**Status:** REJECTED AS PRIMARY ART METHOD
+- Proven ceiling: geometry/silhouette and premium perception remained below target.
+- Reuse only for utilities, automation, evidence rendering or support geometry.
+
+## Current priority order
+1. **Resume SHARP → Unity 6 URP integration proof.**
+2. Finish reproducibility tests already running (Hi3DGen seeds / bounded Hunyuan variant).
+3. Finish one bounded TripoSR technical attempt; then either visually qualify it or close single-image reconstruction.
+4. Consolidate best real-3D donor + human correction + appearance/PBR path.
+5. Do not open additional unrelated visual-generator lanes until the SHARP Unity gate is evaluated.
+
+## Promotion rule
+No method becomes production-authoritative from:
+- a successful workflow alone,
+- polygon count,
+- a single good seed,
+- a single frontal render.
+
+Promotion requires evidence for the actual use case: target visual fidelity, multi-angle stability, editability, camera envelope, occlusion/depth, Unity/runtime compatibility, and scalability.
