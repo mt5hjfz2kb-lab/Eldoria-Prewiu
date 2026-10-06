@@ -42,8 +42,16 @@ for name,spec in candidates:
         comp=p.get("component"); pname=str(p.get("parameter_name","")).lower(); label=str(p.get("label","")).lower()
         if comp=="Image" or ("image" in pname and "num" not in pname):
             args.append(handle_file(inp))
+        elif "prompt" in pname:
+            args.append("A symmetrical medieval stone gatehouse with two square crenellated towers, a central rounded stone arch with a raised portcullis, blue fleur-de-lis banners, warm torchlight, realistic block masonry, preserve exact architecture and proportions.")
+        elif "trajectory" in pname:
+            args.append("truck_right")
+        elif "motion_scale" in pname:
+            args.append(0.65)
         elif "seed" in pname:
             args.append(1234)
+        elif "randomize" in pname:
+            args.append(False)
         elif p.get("parameter_has_default"):
             args.append(p.get("parameter_default"))
         elif comp=="Checkbox":
