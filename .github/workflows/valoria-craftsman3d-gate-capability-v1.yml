@@ -38,7 +38,9 @@ jobs:
           mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
           center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
           sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100
-          sc.render.image_settings.file_format="PNG"; sc.world.color=(0.04,0.04,0.04)
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.04,0.04,0.04)
           bpy.ops.object.light_add(type="AREA",location=(center.x-span,center.y-span,center.z+span*1.4)); bpy.context.object.data.energy=1600; bpy.context.object.data.size=span*1.2
           bpy.ops.object.light_add(type="AREA",location=(center.x+span,center.y,center.z+span*.5)); bpy.context.object.data.energy=500; bpy.context.object.data.size=span
           bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
