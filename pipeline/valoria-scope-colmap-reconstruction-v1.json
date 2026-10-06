@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-scope-colmap-reconstruction-v1",
+  "input_run_id": 37452647739,
+  "input_artifact_id": 11407620741,
+  "input": "SCoPE truck_right Lower Gate video",
+  "method": "SCoPE coherent novel views -> COLMAP CPU sequential SfM",
+  "success_gate": "register >=12 sampled frames and reconstruct >=100 robust sparse colored points with coherent architectural point-cloud projections",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
