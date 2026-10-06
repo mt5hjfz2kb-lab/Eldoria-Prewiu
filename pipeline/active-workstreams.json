@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T13:38:21.173Z",
+  "updated_at": "2026-10-06T13:50:11.449Z",
   "active": [
     {
       "id": "valoria-visual-authority-reset-v1",
@@ -16,7 +16,9 @@
         "docs/evidence/valoria*",
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
-        ".github/workflows/valoria*"
+        ".github/workflows/valoria*",
+        "tools/valoria-sharp-gaussian-space-proof.py",
+        "tools/validate-valoria-production-art-reset.mjs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -25,8 +27,11 @@
       "claimed_at": "2026-10-06T13:38:21.173Z",
       "base_main_sha": "b06029a2727c443b981ccb558f35dbaf6d296d22",
       "status": "active",
-      "phase": "VISUAL_AUTHORITY_MISMATCH investigation and canonical exact input",
-      "paid_credits": 0
+      "phase": "Correct SHARP generated; Unity capture pending direct six-criterion review",
+      "paid_credits": 0,
+      "source_run_id": 37472982237,
+      "source_artifact_id": 11418315301,
+      "capture_run_id": 37473740863
     }
   ],
   "history": [

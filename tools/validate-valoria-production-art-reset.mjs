@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import crypto from "node:crypto";
 
 const requiredFiles=[
   "docs/VALORIA_VISUAL_BIBLE.md",
@@ -33,9 +34,20 @@ for(const fam of ["Eldoria_Stone","Eldoria_Timber","Eldoria_Slate","Eldoria_Grou
 }
 if(!schema?.properties?.classification)failures.push("source_schema_missing_classification");
 if(!policy?.classifications?.includes("PRODUCTION_ART_SOURCE"))failures.push("policy_missing_production_class");
-if(!look?.profiles?.FINAL_LOOK_CANDIDATE)failures.push("final_look_missing_candidate");
-if(cam?.canonical_until_proven!=="ORTHOGRAPHIC")failures.push("camera_canonical_not_orthographic");
-if(!Array.isArray(density?.reject)||!density.reject.length)failures.push("density_missing_reject_rules");
+if(!look?.profiles?.FINAL_LOOK_CANDIDATE && !(look?.status==="BOUNDED_CANDIDATE_ACCEPTED" && look?.accepted?.length && look?.rejected?.length))failures.push("final_look_missing_candidate");
+if((cam?.canonical_until_proven ?? cam?.canonical)!=="ORTHOGRAPHIC")failures.push("camera_canonical_not_orthographic");
+if((!Array.isArray(density?.reject)||!density.reject.length) && !(density?.status==="CONTROLLED_LAYER_VALIDATED" && density?.next_rule && density?.reserved_parcels))failures.push("density_missing_reject_rules");
+// Current visual authority is exact owner input, independently of historical
+// camera/look profile schemas. Never certify an old SHARP merely for loading.
+if(fs.existsSync("pipeline/valoria-visual-authority-v1.json")){
+  const authority=json("pipeline/valoria-visual-authority-v1.json");
+  const hash=crypto.createHash("sha256").update(fs.readFileSync(authority.authority_path)).digest("hex");
+  if(hash!==authority.authority_sha256)failures.push("visual_authority_exact_bytes_mismatch");
+  const slice=json("pipeline/valoria-first-playable-city-slice-v1.json");
+  if(slice?.visual_authority?.source_artifact_id===authority.superseded_source_artifact_id)failures.push("slice_uses_superseded_sharp");
+  for(const criterion of ["TECH PASS","VISUAL PASS","REFERENCE MATCH PASS","COMPOSITION PASS","INTERACTION PASS","BOUNDED CAMERA PASS"])
+    if(!slice?.required_closure?.includes(criterion))failures.push("slice_missing_closure:"+criterion);
+}
 if(!Array.isArray(rollout?.sequence)||rollout.sequence.length<5)failures.push("rollout_too_short");
 
 const src=fs.readFileSync("tools/valoria-production-art-starter/build_starter_family_v1.py","utf8");
