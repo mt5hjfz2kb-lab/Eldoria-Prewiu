@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "eldoria-world-region-1-v1",
+  "request_id": "eldoria-world-region-1-v1",
+  "asset_or_sector": "World Region 1 — first bounded 4X visual production and correction",
+  "profile": "environment_composition",
+  "visual_gate_state": "failed",
+  "diagnosis": "composition_layout",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": true
+  },
+  "validation": {
+    "source_gate": "Preserve certified World gameplay/state/camera semantics. First correction route is composition in Unity; inherited/placeholder assets are not automatically promoted.",
+    "final_gate": "Actual Region 1 captures at strategic/normal/near/mobile must demonstrate World/Valoria continuity, natural strategic terrain, readable POIs/resources/march, portrait-safe composition and no prototype-board read."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Reclassify visible gaps by family. Do not continue ad-hoc cosmetic iterations. Route geometry identity/silhouette and surface/material gaps through known-evidence specialized production paths before another promotion attempt."
+  },
+  "notes": "First real capture failed visually. Current bounded correction is composition-first per canonical routing. If the next real visual gate fails, activate specialized family production rather than repeatedly polishing legacy placeholders.",
+  "status": "ACTIVE"
+}

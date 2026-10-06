@@ -6,8 +6,10 @@ on:
     branches: [main, pipeline/toolchain-automation-v2]
     paths:
       - 'pipeline/art-production-request.json'
+      - 'pipeline/art-production-requests/**'
       - 'pipeline/toolchain-capabilities.json'
       - 'tools/plan-art-production.mjs'
+      - 'tools/check-art-production-governance.mjs'
       - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
       - 'docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md'
       - 'pipeline/blender-professional-authoring-standard.json'
@@ -29,23 +31,26 @@ jobs:
           node-version: '24'
       - name: Validate Blender professional-authoring standard
         run: node tools/validate-blender-professional-authoring.mjs
-      - name: Build deterministic zero-spend art-production plan
-        run: |
-          node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plan.json
-      - name: Route fallback when request contains a diagnosed failure
+      - name: Validate universal art-production governance
+        run: node tools/check-art-production-governance.mjs
+      - name: Build deterministic plans
         shell: bash
         run: |
-          FAILURE_CLASS="$(node -e "const r=require('./pipeline/art-production-request.json'); process.stdout.write(r.failure_class || '')")"
-          if [ -n "$FAILURE_CLASS" ]; then
-            node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json "$FAILURE_CLASS" visual-fallback-route.json
-          fi
+          set -euo pipefail
+          mkdir -p art-production-plans
+          node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plans/legacy-singleton.json
+          shopt -s nullglob
+          for request in pipeline/art-production-requests/*.json; do
+            name="$(basename "$request" .json)"
+            node tools/plan-art-production.mjs "$request" "art-production-plans/$name.json"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: eldoria-art-production-plan-${{ github.sha }}
+          name: eldoria-art-production-plans-${{ github.sha }}
           path: |
-            art-production-plan.json
+            art-production-plans/
             pipeline/art-production-request.json
+            pipeline/art-production-requests/
             pipeline/toolchain-capabilities.json
             pipeline/blender-professional-authoring-standard.json
-            visual-fallback-route.json
           if-no-files-found: error

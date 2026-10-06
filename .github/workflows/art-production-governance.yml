@@ -1,0 +1,41 @@
+name: Art production governance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/active-workstreams.json'
+      - 'pipeline/art-production-request.json'
+      - 'pipeline/art-production-requests/**'
+      - 'tools/plan-art-production.mjs'
+      - 'tools/check-art-production-governance.mjs'
+      - 'pipeline/visual-fallback-policy.json'
+      - 'docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md'
+      - 'AGENTS.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'pipeline/active-workstreams.json'
+      - 'pipeline/art-production-requests/**'
+      - 'tools/plan-art-production.mjs'
+      - 'tools/check-art-production-governance.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-art-production-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Enforce universal art-production routing
+        run: node tools/check-art-production-governance.mjs

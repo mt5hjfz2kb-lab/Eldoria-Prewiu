@@ -106,9 +106,12 @@ if (req.failure_class) {
 }
 
 const plan = {
-  schema_version: 1,
+  schema_version: 2,
+  workstream_id: req.workstream_id || req.request_id,
   enabled: Boolean(req.enabled),
   request_id: req.request_id,
+  visual_gate_state: req.visual_gate_state || null,
+  diagnosis: req.diagnosis || null,
   asset_or_sector: req.asset_or_sector,
   profile: req.profile,
   zero_spend_default: true,

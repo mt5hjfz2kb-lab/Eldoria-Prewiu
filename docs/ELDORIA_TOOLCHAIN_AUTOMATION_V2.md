@@ -92,11 +92,11 @@ Future character/creature route. Kept separate until rigging/animation automatio
 
 ## Canonical-entry rule
 
-This contract is the mandatory first routing step for new Valoria visual/art production work on `main`.
+This contract is the mandatory first routing step for **all new Eldoria player-visible visual/art production work on `main`**, including Valoria, World 4X regions, future regions, buildings, environment families, creatures/characters and other presentation layers. Valoria remains the most mature reference implementation, not the scope boundary.
 
 Before heavy execution:
 1. classify the visual need through one of the supported profiles;
-2. represent the intended route in `pipeline/art-production-request.json`;
+2. represent the intended route in `pipeline/art-production-requests/<workstream-id>.json` (the legacy singleton `pipeline/art-production-request.json` remains compatibility/history only);
 3. validate the route with `tools/plan-art-production.mjs` or `.github/workflows/art-production-plan.yml`;
 4. execute the selected stages through the existing canonical Unity/Blender/Tripo engines;
 5. validate the integrated result at official 19/12/9/mobile views before promotion.
@@ -200,3 +200,8 @@ Rule: after a gate failure is classified, the router selects only already-audite
 The owner is not expected to name the technical tool. Production workflows should emit/derive a failure class and consume this router. Conditional components remain conditional until their existing evidence is promoted.
 
 Current integration boundary: the router is implemented and testable independently. Existing active SHARP convergence files are intentionally not modified while their workstream owns them; that workstream may consume the router at its next bounded gate without reopening R&D.
+
+
+## Universal workstream routing guard — 2026-10-06
+
+Every active workstream must declare `art_production_routing=required|not_applicable` in `pipeline/active-workstreams.json`. `required` means a matching `pipeline/art-production-requests/<workstream-id>.json` must exist and pass the planner. `not_applicable` requires a concrete reason. A real visual failure requires the matching request to be refreshed before another correction iteration. The GitHub-hosted `.github/workflows/art-production-governance.yml` enforces this without consuming the Windows Unity runner.
