@@ -184,3 +184,64 @@ This differs from historical Tripo families because:
 Public-market preflight found a particularly relevant candidate: LapaModels Medieval Fantasy Castle Pack, advertised as 400+ handcrafted modular pieces including walls, towers, gates, roofs, windows, columns, arches, stairs and details, with game-ready PBR textures and FBX/Blender availability. This is a candidate only, not approved or purchased.
 
 No purchase is authorized in this block. Next gate before spend: compare public visual evidence of the strongest 2–3 handcrafted modular libraries against the canonical Valoria reference and reject any whose shape/material language is fundamentally incompatible. Only then present one bounded purchase/test recommendation to the owner.
+
+
+## 2026-10-06 — Handcrafted modular market preflight result
+
+Three relevant source-library classes were compared from current public product evidence.
+
+### 1. Polyart Studio — KINGDOM: Stylized Modular Castle Environment
+Current Unity listing evidence:
+- 1,567 meshes/prefabs;
+- handcrafted, non-AI source;
+- modular castle/buildings/interiors plus mountain/cliff, foliage and water support;
+- UVs and LODs;
+- 2–32,000 polygons per asset;
+- Unity 2022.3+ and URP supported, with Unity 6000.0.62f1 compatibility listed;
+- current public price observed during this preflight: USD 74.50 sale price (regular USD 149), taxes excluded.
+
+Assessment: **STRONGEST FIRST CANDIDATE.** Its breadth and direct Unity/URP support make it capable of testing both architecture and environment language without per-object generation. Public imagery is stylized/painterly enough to justify an in-engine Valoria-specific trial, but public screenshots are not sufficient to grant a visual pass against the canonical target.
+
+### 2. Sugar Works — COLLECTION Stylized Medieval Modular
+Current Unity listing evidence:
+- 163 meshes;
+- handpainted PBR style;
+- castle, garrison, town and farm modules;
+- stone walls, gateways and bridges;
+- mobile platforms listed;
+- URP compatibility listed;
+- current price observed: USD 79.99, taxes excluded.
+
+Assessment: **SECONDARY CANDIDATE.** Strong handpainted modular vocabulary and mobile relevance, but substantially smaller breadth and no LODs listed. Keep as fallback/A-B only if candidate 1 fails identity.
+
+### 3. LapaModels — Medieval Fantasy Castle Pack
+Current public evidence:
+- 400+ handcrafted modular pieces;
+- walls, towers, gates, roofs, windows, columns, arches, stairs and details;
+- PBR 4K/2K source;
+- FBX and Blender-oriented availability;
+- low public purchase price observed on Superhive, but marketplace/license/package variants differ.
+
+Assessment: **SECONDARY SOURCE/BLENDER CANDIDATE.** Excellent fine-grained construction vocabulary, but less direct Unity production evidence than candidate 1 and public style appears more conventionally castle/gothic. Retain as a low-cost fallback if the direct Unity candidate fails.
+
+## Selection
+**Candidate 1 (KINGDOM) is selected for the first bounded external-source proof.**
+
+This is not a recommendation to replace Eldoria with the pack's demo scene. The proof may use only a small subset of raw modules to rebuild the canonical Lower Gate at the locked Valoria camera, with Eldoria's own composition/gameplay untouched. Imported materials may be normalized/re-authored to the Valoria target. No pack-specific demo layout becomes canonical.
+
+Required first proof after acquisition:
+1. inventory only the smallest gate/wall/tower/trim subset;
+2. assemble canonical Lower Gate dimensions/camera;
+3. neutral clay silhouette/identity review before material rescue;
+4. if clay identity is viable, apply a bounded Valoria material translation;
+5. compare official camera to canonical reference;
+6. create one second structure from the same subset;
+7. require >=4/5 visual identity plus reuse/scalability;
+8. reject immediately if the pack's authored style cannot be translated without replacing most source geometry.
+
+## Human blocker
+The repository does not contain this commercial source and the connected tooling cannot purchase/import a Unity Asset Store license on the owner's behalf. No substitute bytes may be scraped or copied from public previews.
+
+**HUMAN AUTHORIZATION / ACQUISITION REQUIRED:** owner approval to purchase/acquire KINGDOM at the currently observed USD 74.50 sale price plus applicable tax, or confirmation that the asset is already owned and can be made available to the project.
+
+Until then, no further implementation can honestly execute the selected candidate. No Tripo/Meshy credits have been spent.
