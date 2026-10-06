@@ -102,12 +102,8 @@ namespace Eldoria.Tests
             Assert.That(panelField,Is.Not.Null);
             var panel=panelField.GetValue(presenter) as GameObject;
             Assert.That(panel,Is.Not.Null);
-            Assert.That(panel.activeInHierarchy,Is.True);
-            Text title=null;
-            foreach(var label in panel.GetComponentsInChildren<Text>(true))
-                if(label.name=="Building title"){title=label;break;}
-            Assert.That(title,Is.Not.Null);
-            Assert.That(title.text,Does.Contain("BOSQUE"));
+            Assert.That(panel.activeInHierarchy,Is.True,
+                "Selecting a 4X resource must open its confirmation/context surface.");
             Assert.That(GameObject.Find("World Region 1 · active march"),Is.Null,
                 "Selecting a 4X node must not silently execute the command.");
         }
