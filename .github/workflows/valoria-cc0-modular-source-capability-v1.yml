@@ -23,111 +23,26 @@ jobs:
           sudo apt-get install -y blender unzip libegl1 libgl1-mesa-dri libglx-mesa0 libegl1 libgl1 libglx0 libx11-6
           blender --version
 
-      - name: Fetch Poly Haven CC0 source package
+      - name: Fetch OpenGameArt CC0 gatehouse source
         run: |
           mkdir -p /tmp/cc0-proof/source /tmp/cc0-proof/evidence
-          python - <<'PY'
-          import json, os, urllib.request, urllib.parse
-          api="https://api.polyhaven.com/files/modular_fort_01"
-          req=urllib.request.Request(api,headers={"User-Agent":"EldoriaResearch/1.0"})
-          with urllib.request.urlopen(req,timeout=60) as r:
-              data=json.load(r)
-          open("/tmp/cc0-proof/files.json","w").write(json.dumps(data,indent=2))
-          candidates=[]
-          def walk(x,path=""):
-              if isinstance(x,dict):
-                  if isinstance(x.get("url"),str):
-                      u=x["url"]
-                      candidates.append((path,u,x.get("size",0)))
-                  for k,v in x.items():
-                      walk(v, path+"/"+str(k))
-              elif isinstance(x,list):
-                  for i,v in enumerate(x): walk(v,path+f"/{i}")
-          walk(data)
-          def score(item):
-              p,u,size=item
-              s=0
-              low=(p+" "+u).lower()
-              if "1k" in low: s+=100
-              elif "2k" in low: s+=70
-              elif "4k" in low: s+=20
-              if ".blend" in low: s+=60
-              if ".gltf" in low or ".glb" in low: s+=50
-              if ".zip" in low: s+=20
-              if "blend" in low: s+=20
-              if "gltf" in low: s+=15
-              return s
-          candidates=sorted(candidates,key=score,reverse=True)
-          with open("/tmp/cc0-proof/candidates.txt","w") as f:
-              for p,u,size in candidates[:80]:
-                  f.write(f"{score((p,u,size)):03d} {p} {size} {u}\n")
-          chosen=None
-          for item in candidates:
-              low=(item[0]+" "+item[1]).lower()
-              if ("1k" in low or "2k" in low) and any(ext in low for ext in [".blend",".gltf",".glb",".zip"]):
-                  chosen=item; break
-          if not chosen:
-              for item in candidates:
-                  low=(item[0]+" "+item[1]).lower()
-                  if any(ext in low for ext in [".blend",".gltf",".glb",".zip"]):
-                      chosen=item; break
-          if not chosen:
-              raise SystemExit("No downloadable 3D candidate found")
-          p,u,size=chosen
-          print("CHOSEN",p,u,size)
-          out="/tmp/cc0-proof/source/package"+os.path.splitext(urllib.parse.urlparse(u).path)[1]
-          def download(url,dst):
-              os.makedirs(os.path.dirname(dst),exist_ok=True)
-              req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
-              with urllib.request.urlopen(req,timeout=180) as r, open(dst,"wb") as f:
-                  while True:
-                      b=r.read(1024*1024)
-                      if not b: break
-                      f.write(b)
-          download(u,out)
-          # Poly Haven source files reference their declared include files relatively.
-          # Fetch only the includes belonging to the chosen 1k/2k package.
-          node=data
-          for key in [k for k in p.split("/") if k]:
-              node=node[key]
-          includes=node.get("include",{}) if isinstance(node,dict) else {}
-          def fetch_includes(x,rel=""):
-              if isinstance(x,dict):
-                  if isinstance(x.get("url"),str):
-                      name=os.path.basename(urllib.parse.urlparse(x["url"]).path)
-                      download(x["url"],os.path.join("/tmp/cc0-proof/source",rel,name))
-                  for k,v in x.items():
-                      if k not in ("url","size","md5","sha1"):
-                          fetch_includes(v, os.path.join(rel,k) if k not in ("include",) else rel)
-              elif isinstance(x,list):
-                  for v in x: fetch_includes(v,rel)
-          # Blend references //textures/<file>; flatten include texture assets there.
-          def fetch_flat(x):
-              if isinstance(x,dict):
-                  if isinstance(x.get("url"),str):
-                      url=x["url"]; name=os.path.basename(urllib.parse.urlparse(url).path)
-                      download(url,os.path.join("/tmp/cc0-proof/source/textures",name))
-                  for v in x.values(): fetch_flat(v)
-              elif isinstance(x,list):
-                  for v in x: fetch_flat(v)
-          fetch_flat(includes)
-          open("/tmp/cc0-proof/chosen.txt","w").write(f"{p}\n{u}\n{os.path.getsize(out)}\n")
-          print("DOWNLOADED",out,os.path.getsize(out),"INCLUDES",len(os.listdir("/tmp/cc0-proof/source/textures")) if os.path.isdir("/tmp/cc0-proof/source/textures") else 0)
-          PY
+          curl -L --fail --retry 3 \
+            -A "EldoriaResearch/1.0" \
+            -o /tmp/cc0-proof/source/gatehouse.zip \
+            "https://opengameart.org/sites/default/files/76122_GateHouse2Upload_blend.zip"
+          unzip -q /tmp/cc0-proof/source/gatehouse.zip -d /tmp/cc0-proof/source/unpacked
+          find /tmp/cc0-proof/source/unpacked -type f -maxdepth 5 | sort > /tmp/cc0-proof/candidates.txt
+          printf '%s\n%s\n' \
+            "source=OpenGameArt Medieval Gatehouse by Daniel Andersson" \
+            "license=CC0" > /tmp/cc0-proof/chosen.txt
           cat /tmp/cc0-proof/chosen.txt
-          head -40 /tmp/cc0-proof/candidates.txt
-          file /tmp/cc0-proof/source/package*
+          head -80 /tmp/cc0-proof/candidates.txt
 
       - name: Prepare source
         run: |
           set -eux
-          pkg=$(find /tmp/cc0-proof/source -maxdepth 1 -type f -name 'package*' | head -1)
-          case "$pkg" in
-            *.zip)
-              unzip -q "$pkg" -d /tmp/cc0-proof/source/unpacked
-              ;;
-          esac
-          find /tmp/cc0-proof/source -maxdepth 5 -type f | head -80
+          find /tmp/cc0-proof/source -maxdepth 6 -type f | head -120
+          test -n "$(find /tmp/cc0-proof/source -type f -iname '*.blend' -print -quit)"
 
       - name: Render isolated source evidence
         run: |
@@ -220,7 +135,7 @@ jobs:
               tris+=sum(max(0,len(p.vertices)-2) for p in me.polygons)
           mats=sum(len(o.data.materials) for o in meshes)
           with open(os.path.join(ev,"report.txt"),"w") as f:
-              f.write(f"source=Poly Haven Modular Fort 01\nlicense=CC0 1.0\nmeshes={len(meshes)}\ntriangles_approx={tris}\nmaterial_slots={mats}\nbounds={tuple(dims)}\n")
+              f.write(f"source=OpenGameArt Medieval Gatehouse - Daniel Andersson\nlicense=CC0 1.0\nmeshes={len(meshes)}\ntriangles_approx={tris}\nmaterial_slots={mats}\nbounds={tuple(dims)}\n")
           PY
           blender -b --python /tmp/cc0-proof/render.py
           test -s /tmp/cc0-proof/evidence/report.txt
@@ -232,11 +147,10 @@ jobs:
         run: |
           cp /tmp/cc0-proof/chosen.txt /tmp/cc0-proof/evidence/
           cp /tmp/cc0-proof/candidates.txt /tmp/cc0-proof/evidence/
-          cp /tmp/cc0-proof/files.json /tmp/cc0-proof/evidence/
           ls -lh /tmp/cc0-proof/evidence
 
       - uses: actions/upload-artifact@v4
         with:
-          name: valoria-cc0-modular-source-capability-v1
+          name: valoria-cc0-gatehouse-capability-v1
           path: /tmp/cc0-proof/evidence
           retention-days: 30
