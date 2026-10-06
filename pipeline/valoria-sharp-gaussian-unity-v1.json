@@ -16,7 +16,21 @@
   ],
   "paid_credits": 0,
   "vendor_spend": 0,
-  "nonce": "2026-10-06-007",
+  "nonce": "2026-10-06-convergence-gate1b-600k-001",
   "graphics_api": "D3D11 CPU-sort fallback",
-  "camera_axis": "bounds-aware RDF/RUB"
+  "camera_axis": "bounds-aware RDF/RUB",
+  "phase": "CONVERGENCE_GATE_1B_600K",
+  "max_proof_splats": 600000,
+  "expected_proof_mode": "bounded_600k_uniform_sample",
+  "acceptance": {
+    "runtime_load": true,
+    "home_capture": true,
+    "bounded_pan": true,
+    "zoom_capture": true,
+    "occlusion_front": true,
+    "occlusion_behind": true,
+    "visual_comparison_against_300k": true,
+    "no_new_rnd_family": true
+  },
+  "note": "Authorized convergence-only density scale test. Same canonical SHARP source and validated Unity lifecycle; no method discovery."
 }
