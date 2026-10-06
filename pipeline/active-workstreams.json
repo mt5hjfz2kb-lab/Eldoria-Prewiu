@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T00:40:00+02:00",
+  "updated_at": "2026-10-07T00:50:00+02:00",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -71,6 +71,37 @@
       "next": "Fix imported Nature Starter subobject instantiation without losing URP adaptation; rerun full Unity gate and inspect actual Region 1 captures.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
+    },
+    {
+      "id": "historical-workflow-quarantine-v1",
+      "title": "Historical and conditional R&D workflow quarantine",
+      "owner": "chat-workflow-quarantine-20261007",
+      "scope": [
+        "pipeline/workflow-quarantine-v1.json",
+        "tools/check-workflow-quarantine.mjs",
+        ".github/workflows/workflow-quarantine.yml",
+        ".github/workflows/valoria-hunyuan3d-gate-capability-v1.yml",
+        ".github/workflows/valoria-instantmesh-gate-capability-v1.yml",
+        ".github/workflows/valoria-trellis-gate-capability-v1.yml",
+        ".github/workflows/valoria-trellis2-gate-capability-v1.yml",
+        ".github/workflows/valoria-triposr-gate-capability-v1.yml",
+        ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml",
+        "AGENTS.md",
+        "docs/ELDORIA_WORKFLOW_QUARANTINE_V1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "claimed_at": "2026-10-07T00:50:00+02:00",
+      "base_main_sha": "5cbbc7386c3eb49c2a0465e711470d76dc69b095",
+      "status": "active",
+      "paid_credits": 0,
+      "phase": "AUDIT BRAIN / QUARANTINE NONCANONICAL AUTO-TRIGGERS",
+      "dependency": "Preserve canonical brain architecture: ownership registry, art routing, planner, fallback router, repository architecture guard, workflow governance, full-frame convergence control, visual-authority routing and active Region 1 gates. Do not touch Region 1-owned runtime files or WebGL-owned files.",
+      "next": "Make conditional/historical R&D workflows manual-only, add fail-closed quarantine guard, validate canonical orchestration remains active.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Repository workflow governance only; no player-facing art production."
     }
   ],
   "history": [
