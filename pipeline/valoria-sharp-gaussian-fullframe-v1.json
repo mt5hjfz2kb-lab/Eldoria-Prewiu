@@ -6,7 +6,7 @@
   "paid_credits": 0,
   "vendor_spend": 0,
   "production_promotion": false,
-  "nonce": "2026-10-06-runtime-parcel-ground-local-001",
+  "nonce": "2026-10-06-runtime-parcel-ground-local-002",
   "convergence_gate": "VISUAL_AUTHORITY_MISMATCH production correction; existing SHARP route only",
   "source_authority_manifest": "pipeline/valoria-visual-authority-v1.json",
   "parcel_ground_input": {

@@ -10,7 +10,9 @@ def sha(path): return hashlib.sha256(open(path,'rb').read()).hexdigest()
 if sha(authority['authority_path']) != authority['authority_sha256']:
     raise RuntimeError('Canonical authority SHA mismatch')
 os.makedirs(os.path.dirname(src),exist_ok=True)
-Image.open(authority['authority_path']).convert('RGB').crop(authority['crop_box']).save(src)
+# Use the exact committed clean PNG; re-encoding on another OS changes its byte SHA.
+if not os.path.exists(src):
+    Image.open(authority['authority_path']).convert('RGB').crop(authority['crop_box']).save(src)
 if src != authority['clean_input_path'] or sha(src) != authority['clean_input_sha256']:
     raise RuntimeError('SHARP clean input is not derived from the current exact authority')
 ground=cfg.get("parcel_ground_input")

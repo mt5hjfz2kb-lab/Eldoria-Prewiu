@@ -26,6 +26,8 @@ jobs:
             $env:PATH="$dir;$env:PATH"
           }
       - uses: actions/checkout@v4
+        with:
+          clean: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -79,6 +81,7 @@ jobs:
             if(Test-Path $stdout){Get-Content $stdout -Tail 4}
             if(Test-Path $stderr){Get-Content $stderr -Tail 4}
           }
+          $p.WaitForExit()
           New-Item -ItemType Directory -Path $env:OUT_DIR -Force | Out-Null
           Copy-Item $stdout "$env:OUT_DIR\local-stdout.log" -Force
           Copy-Item $stderr "$env:OUT_DIR\local-stderr.log" -Force
