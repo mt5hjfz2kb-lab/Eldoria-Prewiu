@@ -185,3 +185,18 @@ Required separation of verdicts:
 - VISUAL PASS — integrated official-frame result materially improves the game.
 
 All three are required for promotion of new high-salience geometry.
+
+
+## Visual fallback orchestrator v1 — 2026-10-06
+
+Toolchain Automation v2 now has a deterministic known-evidence fallback layer:
+
+- policy: `pipeline/visual-fallback-policy.json`
+- router: `tools/route-visual-fallback.mjs`
+- contract: `docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md`
+
+Rule: after a gate failure is classified, the router selects only already-audited components for that failure class. It does not start broad research, reopen rejected methods, authorize paid work, or replace the active convergence authority.
+
+The owner is not expected to name the technical tool. Production workflows should emit/derive a failure class and consume this router. Conditional components remain conditional until their existing evidence is promoted.
+
+Current integration boundary: the router is implemented and testable independently. Existing active SHARP convergence files are intentionally not modified while their workstream owns them; that workstream may consume the router at its next bounded gate without reopening R&D.
