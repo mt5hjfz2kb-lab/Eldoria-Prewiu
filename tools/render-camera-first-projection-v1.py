@@ -42,7 +42,8 @@ cam=bpy.data.objects.new("ProjectionProofCamera",cam_data)
 scene.collection.objects.link(cam)
 scene.camera=cam
 cam_data.type='PERSP'
-cam_data.angle=math.radians(50.0)\ncam_data.sensor_fit='HORIZONTAL'
+cam_data.angle=math.radians(50.0)
+cam_data.sensor_fit='HORIZONTAL'
 
 def look_at(obj, target):
     direction=Vector(target)-obj.location
