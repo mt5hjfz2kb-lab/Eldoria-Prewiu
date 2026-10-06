@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T08:50:00Z",
+  "updated_at": "2026-10-06T09:25:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -26,6 +26,26 @@
       "dependency": "Semantic 2.5D rejected. Broad Valoria art frozen. Lower Gate only. No Unity integration until isolated art source >=4/5. No paid credits without fresh owner authorization after exact input and cost are shown.",
       "next": "After owner acquisition/authorization, inventory smallest gate/wall/tower/trim subset and execute Lower Gate + second-recombination proof. Do not use demo layout or broad-import into production.",
       "blocker": "KINGDOM: Stylized Modular Castle Environment selected as strongest first external-source candidate. Commercial source is not in repo; purchase/acquisition requires owner authorization. Current public price observed: USD 74.50 plus tax. No Tripo/Meshy credits spent."
+    },
+    {
+      "id": "valoria-cc0-modular-source-capability-v1",
+      "title": "VALORIA CC0 MODULAR SOURCE CAPABILITY v1",
+      "owner": "chat-independent-cc0-source-research",
+      "scope": [
+        "docs/evidence/valoria-cc0-modular-source-capability-v1/**",
+        ".github/workflows/valoria-cc0-modular-source-capability-v1.yml",
+        "tools/valoria-cc0-modular-source-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "github-hosted-linux-cc0-rnd"
+      ],
+      "claimed_at": "2026-10-06T09:25:00Z",
+      "base_main_sha": "276f996180197fd00df8d1aef9307311d5cda995",
+      "status": "active",
+      "phase": "ISOLATED ZERO-SPEND CC0 SOURCE CAPABILITY PROOF",
+      "dependency": "Must not touch Lower Gate production, art-production-request, commercial KINGDOM candidate, Unity, Windows runner, Tripo/Meshy credits, or the active commercial acquisition workstream. Generic isolated capability proof only.",
+      "next": "Test high-quality CC0 human-authored modular fort geometry and materials in isolation; if below >=4/5, close and pivot to open-source image-to-3D capability research."
     }
   ],
   "history": [
