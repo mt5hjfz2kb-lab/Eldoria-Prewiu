@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-target-derived-pbr-material-v1",
+  "method": "canonical target masonry patch -> StableMaterials image-conditioned PBR -> controlled real geometry",
+  "service": "gvecchio/StableMaterials public ZeroGPU Space",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
