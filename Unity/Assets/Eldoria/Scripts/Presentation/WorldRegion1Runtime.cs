@@ -117,6 +117,7 @@ namespace Eldoria.Presentation
         static void BuildGeography()
         {
             BuildTerrainBase();
+            BuildSurfaceDressing();
 
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
                 new Vector3(19f,.08f,25f),Meadow*.94f,-9f);
@@ -143,12 +144,12 @@ namespace Eldoria.Presentation
             {
                 GroundPatch("World Region 1 · forest floor",centres[cluster]+new Vector3(0,-.018f,0),
                     new Vector3(8.6f,.055f,7.8f),new Color(.245f,.30f,.21f),cluster*13f);
-                for(int i=0;i<12;i++)
+                for(int i=0;i<18;i++)
                 {
                     float a=i*2.39996f+cluster*.71f;
-                    float radius=.85f+Mathf.Sqrt(i+.5f)*1.12f;
+                    float radius=.75f+Mathf.Sqrt(i+.5f)*.98f;
                     var p=centres[cluster]+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
-                    WorldTree("World Region 1 · forest mass",p,.62f+(i%4)*.07f,i+cluster);
+                    WorldTree("World Region 1 · forest mass",p,.72f+(i%5)*.06f,i+cluster);
                 }
             }
 
@@ -157,6 +158,32 @@ namespace Eldoria.Presentation
                 new Vector3(-18f,0,24f),new Vector3(20f,0,23f),
                 new Vector3(-2f,0,12f),new Vector3(12f,0,6f)})
                 WorldRock("World Region 1 · edge geology",p,1.55f,geologyIndex++);
+        }
+
+        static void BuildSurfaceDressing()
+        {
+            if(externalLibrary==null)return;
+            var moss=externalLibrary.SlavicMoss;
+            var mud=externalLibrary.SlavicMudFlat;
+            var items=new[]{
+                (moss,new Vector3(-11f,-.30f,10f),5.8f,18f),
+                (moss,new Vector3(-2f,-.30f,18f),5.2f,-12f),
+                (mud,new Vector3(10f,-.30f,4f),5.6f,11f),
+                (mud,new Vector3(1f,-.30f,-5f),4.8f,-6f)
+            };
+            int i=0;
+            foreach(var item in items)
+            {
+                if(item.Item1==null)continue;
+                var patch=ValoriaKit.BenchmarkPiece("World Region 1 · authored surface "+i,
+                    item.Item1,item.Item2,item.Item3,.22f,Quaternion.Euler(0f,item.Item4,0f));
+                if(patch!=null)
+                {
+                    Parent(patch);
+                    foreach(var col in patch.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                }
+                i++;
+            }
         }
 
         static void BuildRoutes()
@@ -192,7 +219,7 @@ namespace Eldoria.Presentation
                     var bounds=rs[0].bounds;
                     for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     float span=Mathf.Max(bounds.size.x,bounds.size.z);
-                    if(span>.001f)city.transform.localScale*=7.0f/span;
+                    if(span>.001f)city.transform.localScale*=8.2f/span;
                     rs=city.GetComponentsInChildren<Renderer>(true);
                     bounds=rs[0].bounds;for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     city.transform.position+=ValoriaPosition-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
@@ -216,9 +243,9 @@ namespace Eldoria.Presentation
             node.transform.SetParent(root,true);node.transform.position=ForestPosition;
             GroundPatch("World Region 1 · forest resource floor",ForestPosition+new Vector3(0,-.01f,0),
                 new Vector3(6.8f,.09f,6.2f),new Color(.17f,.25f,.16f),8f);
-            for(int i=0;i<9;i++)
+            for(int i=0;i<13;i++)
             {
-                float a=i*.78f;float r=.8f+(i%3)*.50f;
+                float a=i*.64f;float r=.72f+(i%4)*.42f;
                 WorldTree("World Region 1 · forest node pine",
                     ForestPosition+new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r),.90f+(i%2)*.10f,20+i);
             }
@@ -240,9 +267,9 @@ namespace Eldoria.Presentation
             ruin.transform.SetParent(root,true);
 
             var arch=WorldInventoryPiece("Arch_Gothic","World Region 1 · ruin arch",
-                RuinPosition+new Vector3(-.65f,0f,.25f),3.6f,3.7f,Quaternion.Euler(0,-18f,0));
+                RuinPosition+new Vector3(-.75f,0f,.25f),4.8f,5.0f,Quaternion.Euler(0,-18f,0));
             var wall=WorldInventoryPiece("Wall_Broken","World Region 1 · ruin wall",
-                RuinPosition+new Vector3(1.05f,0f,.65f),3.3f,2.7f,Quaternion.Euler(0,38f,0));
+                RuinPosition+new Vector3(1.25f,0f,.65f),4.3f,3.6f,Quaternion.Euler(0,38f,0));
             Parent(arch);Parent(wall);
 
             if(arch==null&&wall==null)
@@ -269,7 +296,7 @@ namespace Eldoria.Presentation
             GroundPatch("World Region 1 · corruption stain",ScoutPosition+new Vector3(0,-.005f,0),
                 new Vector3(5.0f,.08f,4.4f),new Color(.24f,.14f,.25f),13f);
             var body=Primitive("World Region 1 · scout silhouette",PrimitiveType.Capsule,
-                ScoutPosition+new Vector3(0,.90f,0),new Vector3(.75f,1.45f,.75f),new Color(.18f,.13f,.19f));
+                ScoutPosition+new Vector3(0,.90f,0),new Vector3(1.0f,1.9f,1.0f),new Color(.18f,.13f,.19f));
             body.transform.SetParent(scout.transform,true);
             for(int i=0;i<3;i++)
             {
@@ -352,21 +379,10 @@ namespace Eldoria.Presentation
 
         static void WorldShrub(string name,Vector3 position,float scale,int variant)
         {
-            if(externalLibrary!=null&&externalLibrary.SlavicBush!=null)
-            {
-                var bush=ValoriaKit.BenchmarkPiece(name,externalLibrary.SlavicBush,position,
-                    1.25f*scale,.95f*scale,Quaternion.Euler(0f,(variant*53f)%360f,0f));
-                if(bush!=null)
-                {
-                    Parent(bush);
-                    foreach(var col in bush.GetComponentsInChildren<Collider>(true))col.enabled=false;
-                    return;
-                }
-            }
-
-            ValoriaKit.PineTree(name,position,scale*(.72f+(variant%2)*.08f));
             if(variant%2==0)
-                ValoriaKit.RockCluster(name+" · stones",position+new Vector3(.35f,0,-.18f),.28f,3);
+                WorldRock(name+" · stones",position+new Vector3(.18f,0,-.12f),.34f,variant);
+            if(variant%3==0)
+                ValoriaKit.PineTree(name+" · sapling",position+new Vector3(-.18f,0,.12f),scale*.55f);
         }
 
         static void GroundPatch(string name,Vector3 position,Vector3 scale,Color color,float yaw)
@@ -402,6 +418,30 @@ namespace Eldoria.Presentation
 
         static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
         {
+            if(externalLibrary!=null&&externalLibrary.SlavicCobbleRoad!=null)
+            {
+                var holder=new GameObject(name);
+                holder.transform.SetParent(root,true);
+                holder.transform.position=centre;
+                holder.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+                const int pieces=5;
+                float spacing=length/(pieces-1);
+                for(int i=0;i<pieces;i++)
+                {
+                    float z=(i-(pieces-1)*.5f)*spacing;
+                    var piece=ValoriaKit.BenchmarkPiece(name+" · track "+i,
+                        externalLibrary.SlavicCobbleRoad,Vector3.zero,
+                        width*1.75f,.28f,Quaternion.identity);
+                    if(piece==null)continue;
+                    piece.transform.SetParent(holder.transform,false);
+                    piece.transform.localPosition=new Vector3(
+                        Mathf.Sin(i*1.4f)*width*.10f,.018f,z);
+                    piece.transform.localRotation=Quaternion.Euler(0f,Mathf.Sin(i*.9f)*4f,0f);
+                    foreach(var col in piece.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                }
+                return;
+            }
+
             var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
             if(route==null)return;
             route.transform.SetParent(root,true);
@@ -416,21 +456,9 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
-            if(externalLibrary!=null&&externalLibrary.SlavicTreeTall!=null)
-            {
-                float variation=.92f+(variant%4)*.05f;
-                var tree=ValoriaKit.BenchmarkPiece(name,externalLibrary.SlavicTreeTall,position,
-                    1.55f*scale*variation,4.3f*scale*variation,
-                    Quaternion.Euler(0f,(variant*47f)%360f,0f));
-                if(tree!=null)
-                {
-                    Parent(tree);
-                    foreach(var col in tree.GetComponentsInChildren<Collider>(true))col.enabled=false;
-                    return;
-                }
-            }
-
-            ValoriaKit.PineTree(name,position,scale*(.92f+(variant%3)*.04f));
+            // Match Valoria's established conifer language in the strategic layer.
+            // Rotation/scale variation breaks repetition without switching foliage families.
+            ValoriaKit.PineTree(name,position,scale*(1.05f+(variant%4)*.06f));
         }
 
         static void WorldRock(string name,Vector3 position,float scale,int variant)
