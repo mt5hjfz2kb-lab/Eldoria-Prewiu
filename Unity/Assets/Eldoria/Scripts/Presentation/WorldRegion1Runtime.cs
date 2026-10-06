@@ -129,12 +129,30 @@ namespace Eldoria.Presentation
             GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.04f,-7f),
                 new Vector3(14f,.07f,8f),new Color(.40f,.36f,.28f),5f);
 
+            int mountainIndex=0;
+            foreach(var p in new[]{
+                new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
+                new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
+            {
+                var mountain=WorldInventoryPiece("Mountain01",
+                    "World Region 1 · mountain barrier",p,13.5f,8.8f,
+                    Quaternion.Euler(0f,(p.x+p.z)*5f+mountainIndex*23f,0f));
+                if(mountain==null)
+                    mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
+                        "World Region 1 · mountain barrier",p,11f,6.5f,
+                        Quaternion.Euler(0f,(p.x+p.z)*5f,0f),new Color(.34f,.36f,.34f,1f));
+                Parent(mountain);
+                mountainIndex++;
+            }
+
             var centres=new[]{new Vector3(-13f,0,7f),new Vector3(-11f,0,17f),
                 new Vector3(-1f,0,20f),new Vector3(16f,0,7f)};
             for(int cluster=0;cluster<centres.Length;cluster++)
             {
-                GroundPatch("World Region 1 · forest floor",centres[cluster]+new Vector3(0,-.018f,0),
-                    new Vector3(8.6f,.055f,7.8f),new Color(.245f,.30f,.21f),cluster*13f);
+                GroundPatch("World Region 1 · forest floor A",centres[cluster]+new Vector3(-1.2f,-.018f,.5f),
+                    new Vector3(6.6f,.045f,5.8f),new Color(.245f,.30f,.21f),cluster*13f-8f);
+                GroundPatch("World Region 1 · forest floor B",centres[cluster]+new Vector3(1.4f,-.017f,-.6f),
+                    new Vector3(5.8f,.042f,5.1f),new Color(.22f,.28f,.19f),cluster*13f+17f);
                 for(int i=0;i<18;i++)
                 {
                     float a=i*2.39996f+cluster*.71f;
@@ -451,13 +469,32 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
-            // Match Valoria's established conifer language in the strategic layer.
-            // Rotation/scale variation breaks repetition without switching foliage families.
+            var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",
+                name,position,2.45f*scale,4.1f*scale,
+                Quaternion.Euler(0f,(variant*47f)%360f,0f));
+            if(inventoryTree!=null)
+            {
+                Parent(inventoryTree);
+                foreach(var col in inventoryTree.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                return;
+            }
+
+            // Fallback keeps the Valoria conifer language if the donor is unavailable.
             ValoriaKit.PineTree(name,position,scale*(1.05f+(variant%4)*.06f));
         }
 
         static void WorldRock(string name,Vector3 position,float scale,int variant)
         {
+            var inventoryRock=WorldInventoryPiece(variant%2==0?"Rock01":"Rock02",
+                name,position,3.0f*scale,1.65f*scale,
+                Quaternion.Euler(0f,(variant*61f)%360f,0f));
+            if(inventoryRock!=null)
+            {
+                Parent(inventoryRock);
+                foreach(var col in inventoryRock.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                return;
+            }
+
             GameObject prefab=null;
             if(externalLibrary!=null)
                 prefab=variant%2==0?externalLibrary.SlavicBoulder:externalLibrary.SlavicFlatRock;
