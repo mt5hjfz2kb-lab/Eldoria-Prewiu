@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-human-mesh-projection-bake-v1",
+  "method": "tight canonical Gate projected onto silhouette-conformed human-authored CC0 gatehouse mesh; projection on facade planes only; fallback real stone on sides",
+  "source": "OpenGameArt GateHouse2Upload blend, already used by parallel human-mesh R&D",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
