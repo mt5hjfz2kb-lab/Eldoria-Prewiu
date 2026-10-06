@@ -29,7 +29,7 @@ links.new(em.outputs["Emission"],out.inputs["Surface"])
 receiver.data.materials.clear(); receiver.data.materials.append(mat)
 
 scene=bpy.context.scene
-scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.engine='BLENDER_EEVEE'
 scene.render.resolution_x=824
 scene.render.resolution_y=464
 scene.render.resolution_percentage=100
@@ -42,7 +42,7 @@ cam=bpy.data.objects.new("ProjectionProofCamera",cam_data)
 scene.collection.objects.link(cam)
 scene.camera=cam
 cam_data.type='PERSP'
-cam_data.angle=math.radians(50.0)
+cam_data.angle=math.radians(50.0)\ncam_data.sensor_fit='HORIZONTAL'
 
 def look_at(obj, target):
     direction=Vector(target)-obj.location
