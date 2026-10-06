@@ -62,15 +62,10 @@ jobs:
           print("API",api)
 
           image="/tmp/hi3dgen/input/eldoria-gate-crop.png"
-          try:
-              prepared=client.predict(image=handle_file(image), api_name="/preprocess_image")
-              print("PREPARED",repr(prepared))
-          except Exception as e:
-              print("PREPROCESS_ERROR",repr(e))
-              prepared=handle_file(image)
-
+          # generate_3d preprocesses the image internally in the Space code.
+          # Pass the original file object directly; do not pass a downloaded path string.
           result=client.predict(
-              image=prepared,
+              image=handle_file(image),
               seed=42,
               ss_guidance_strength=3,
               ss_sampling_steps=50,
