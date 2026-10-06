@@ -1,0 +1,115 @@
+{
+  "id": "world-region-1-valoria-frontier",
+  "version": 1,
+  "status": "active-slice-contract",
+  "authority": {
+    "valoriaScene": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity",
+    "visualAuthority": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "visualMethod": "Apple SHARP retained for Valoria; no new visual R&D",
+    "gameplayGateway": "Eldoria.Application.LocalGateway",
+    "saveAuthority": "existing versioned local PlayerState/FileStateStore path",
+    "paidCredits": 0
+  },
+  "continuity": {
+    "exitId": "gate",
+    "regionId": "region-1-valoria-frontier",
+    "returnId": "valoria-return",
+    "rule": "World Region 1 is the physical exterior continuation of Valoria, never an abstract detached map."
+  },
+  "bounds": {
+    "logicalMin": {
+      "x": -24,
+      "z": -20
+    },
+    "logicalMax": {
+      "x": 28,
+      "z": 34
+    },
+    "cameraPanMin": {
+      "x": -7,
+      "z": -5
+    },
+    "cameraPanMax": {
+      "x": 8,
+      "z": 10
+    },
+    "zoom": {
+      "min": 0.86,
+      "home": 1,
+      "max": 1.18
+    },
+    "freeCamera": false
+  },
+  "route": [
+    {
+      "id": "valoria-gate-road",
+      "kind": "route",
+      "gameplay": "transition"
+    },
+    {
+      "id": "forest-valoria",
+      "kind": "resource",
+      "command": "Gather",
+      "reward": "wood",
+      "persistentField": "ForestRemaining"
+    },
+    {
+      "id": "old-watch-ruin",
+      "kind": "narrative",
+      "command": null,
+      "reward": "orientation/lore",
+      "persistentField": null
+    },
+    {
+      "id": "corrupt-scout",
+      "kind": "threat",
+      "command": "Fight",
+      "reward": "wood+stone",
+      "persistentField": "ScoutDefeated"
+    },
+    {
+      "id": "valoria-return",
+      "kind": "return",
+      "gameplay": "scene-return"
+    }
+  ],
+  "optionalContext": [
+    {
+      "id": "quarry-valoria",
+      "kind": "resource",
+      "command": "Gather",
+      "reward": "stone",
+      "persistentField": "QuarryRemaining"
+    }
+  ],
+  "gameplayLoop": [
+    "leave-valoria",
+    "select-destination",
+    "march-outbound",
+    "resource-or-threat-interaction",
+    "returning",
+    "credit-reward-once",
+    "return-valoria",
+    "kingdom-state-reflects-reward"
+  ],
+  "gates": {
+    "tech": "required",
+    "visual": "required",
+    "worldValoriaContinuity": "required",
+    "navigation": "required",
+    "interaction": "required",
+    "gameplayLoop": "required",
+    "saveReload": "required",
+    "boundedCamera": "required",
+    "mobileReadability": "required"
+  },
+  "nonGoals": [
+    "continent",
+    "online multiplayer",
+    "new combat system",
+    "free unlimited camera",
+    "new Valoria authority",
+    "paid generation",
+    "visual-method research"
+  ]
+}
