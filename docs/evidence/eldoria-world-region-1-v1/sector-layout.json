@@ -1,71 +1,69 @@
 {
   "regionId": "region-1-valoria-frontier",
-  "coordinateSpace": "region-local-xz",
+  "coordinateSpace": "world-map-region-local-xz",
   "entry": {
-    "id": "valoria-gate-road",
+    "id": "valoria-map-city",
     "position": {
       "x": 0,
-      "z": -15
+      "z": -12
     },
-    "facing": {
-      "x": 0,
-      "z": 1
-    }
+    "role": "home-city-landmark",
+    "transitionSource": "Valoria Mundo button"
   },
   "camera": {
     "homeTarget": {
       "x": 1,
-      "z": 4
+      "z": 5
     },
     "panBounds": {
-      "minX": -7,
-      "maxX": 8,
-      "minZ": -5,
-      "maxZ": 10
+      "minX": -10,
+      "maxX": 11,
+      "minZ": -7,
+      "maxZ": 12
     },
     "zoomScale": {
-      "min": 0.86,
+      "min": 0.72,
       "home": 1,
-      "max": 1.18
+      "max": 1.28
     },
-    "mobileRule": "POI interaction proxies >= 44 CSS-equivalent px at home zoom; no free rotation"
+    "mobileRule": "POI interaction proxies >= 44 CSS-equivalent px at home zoom; no free rotation; strategic 4X readability has priority over city-scale detail"
   },
   "routeSegments": [
     {
-      "id": "gate-to-fork",
+      "id": "valoria-to-fork",
       "from": {
         "x": 0,
-        "z": -15
+        "z": -10
       },
       "to": {
         "x": 0,
-        "z": -2
+        "z": -1
       },
-      "width": 3.2
+      "width": 3
     },
     {
       "id": "fork-to-forest",
       "from": {
         "x": 0,
-        "z": -2
+        "z": -1
       },
       "to": {
-        "x": -8,
-        "z": 9
+        "x": -9,
+        "z": 10
       },
-      "width": 2.6
+      "width": 2.4
     },
     {
       "id": "fork-to-ruin",
       "from": {
         "x": 0,
-        "z": -2
+        "z": -1
       },
       "to": {
         "x": 7,
         "z": 8
       },
-      "width": 2.4
+      "width": 2.3
     },
     {
       "id": "ruin-to-threat",
@@ -77,10 +75,21 @@
         "x": 12,
         "z": 16
       },
-      "width": 2.1
+      "width": 2
     }
   ],
   "pois": [
+    {
+      "id": "valoria-map-city",
+      "position": {
+        "x": 0,
+        "z": -12
+      },
+      "kind": "home-city",
+      "salience": "hero",
+      "interaction": "ReturnToValoria",
+      "persist": null
+    },
     {
       "id": "forest-valoria",
       "position": {
@@ -124,17 +133,6 @@
       "salience": "secondary",
       "interaction": "Gather",
       "persist": "QuarryRemaining"
-    },
-    {
-      "id": "valoria-return",
-      "position": {
-        "x": 0,
-        "z": -16
-      },
-      "kind": "return",
-      "salience": "primary",
-      "interaction": "ReturnToValoria",
-      "persist": null
     }
   ],
   "naturalLimits": [
@@ -152,20 +150,26 @@
     },
     {
       "edge": "south",
-      "language": "Valoria gate walls/foreground transition"
+      "language": "lowland approach + atmospheric falloff around Valoria map landmark"
     }
   ],
   "densityPriority": [
-    "valoria-gate-road",
+    "valoria-map-city",
     "road-fork",
     "old-watch-ruin",
     "forest-valoria",
     "corrupt-scout"
   ],
   "atmosphere": {
-    "base": "cool desaturated overcast continuity from Valoria",
+    "base": "same dark-adult Eldoria family as Valoria, reinterpreted at strategic 4X scale",
     "warmAccents": "rare human traces at road/ruin",
     "corruption": "localized violet anomaly only near corrupt-scout/north ridge",
     "depth": "fog + layered trees/rock; never a flat backdrop card"
+  },
+  "screenTransition": {
+    "fromCity": "tap Mundo in Valoria",
+    "toWorld": "load dedicated World Region 1 screen",
+    "backToCity": "tap Reino or select Valoria map landmark",
+    "seamlessPhysicalWalkRequired": false
   }
 }
