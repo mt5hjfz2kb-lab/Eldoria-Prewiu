@@ -31,12 +31,14 @@ No single tested generator currently satisfies all requirements alone.
 ## Methods
 
 ### SHARP Gaussian full-frame
-**Status:** LEADER / VISUAL PROMISING / GAMEPLAY FITNESS UNPROVEN
+**Status:** LEADER / UNITY RUNTIME REPRESENTATION PASS / PRODUCTION CLEANUP REQUIRED
 - Run: 37448896124
 - Artifact: 11404383856
 - Output: ~64 MB Gaussian PLY + synthesized-view video.
 - Proven: strongest full-frame appearance retention observed so far.
-- Unknown: Unity 6 URP integration, bounded camera envelope, 3D occlusion/depth, clickability/hotspots, mobile/runtime performance.
+- Unity Gate 1 run 37455323684 / artifact 11409152206: bounded 294,912-splat representation renders successfully inside Unity 6 URP.
+- Proven in Unity: HOME render, bounded left/right pan, raster front-probe visibility and behind-probe occlusion.
+- Remaining unknowns: clean source without baked HUD/UI, final density/performance envelope, mobile runtime budget, interaction/hotspots and wider camera motion.
 - Workstream: `valoria-sharp-gaussian-pipeline-v1`.
 - Current governance: execution stalled after scope expansion to Unity; this is not a technical rejection.
 - **Next gate:** isolated SHARP PLY → Unity 6 URP proof.
