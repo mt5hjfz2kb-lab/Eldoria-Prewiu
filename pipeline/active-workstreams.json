@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T16:48:00Z",
+  "updated_at": "2026-10-06T17:00:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -50,10 +50,10 @@
       "claimed_at": "2026-10-06T16:39:00Z",
       "base_main_sha": "f7462f338f744beeb8b0c05e170d55fd63938206",
       "status": "active",
-      "phase": "ARCHITECTURE/SLICING — NO UNITY HEAVY RUNNER UNTIL MOBILE WEBGL OWNER RELEASES IT",
-      "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Must not mutate GitHub Pages, unity-webgl startup/publish surfaces, Valoria authority, or the Windows Unity runner while valoria-mobile-web-playtest-v1 owns them.",
+      "phase": "4X WORLD SCREEN CONTRACT LOCKED — NO UNITY HEAVY RUNNER UNTIL MOBILE WEBGL OWNER RELEASES IT",
+      "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 is a separate 4X World screen, not a physical gate-continuation. Must not mutate GitHub Pages, unity-webgl startup/publish surfaces, Valoria authority, or the Windows Unity runner while valoria-mobile-web-playtest-v1 owns them.",
       "paid_credits": 0,
-      "next": "Inspect canonical Unity/gameplay/world architecture; define minimal Region 1 contract; implement smallest non-conflicting slice and tests; acquire heavy runner only after current WebGL workstream releases it."
+      "next": "Implement Valoria Mundo button -> dedicated bounded Region 1 4X screen -> Reino/Valoria return; reuse real march/reward/save semantics; acquire heavy runner only after current WebGL workstream releases it."
     }
   ],
   "history": [
