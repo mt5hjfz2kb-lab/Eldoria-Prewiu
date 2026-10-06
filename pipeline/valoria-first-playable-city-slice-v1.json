@@ -72,16 +72,18 @@
     }
   },
   "final_verdict": "TECH PASS / VISUAL PASS / REFERENCE MATCH PASS / COMPOSITION PASS / INTERACTION PASS / BOUNDED CAMERA PASS",
-  "production_promotion": true,
+  "production_promotion": false,
   "required_closure": [
     "TECH PASS",
-    "VISUAL PASS",
-    "REFERENCE MATCH PASS",
-    "COMPOSITION PASS",
+    "INITIAL GAME STATE PASS",
+    "PARCEL STATE PASS",
+    "BUILD PROGRESSION PASS",
+    "SAVE/RELOAD PASS",
     "INTERACTION PASS",
+    "VISUAL REGRESSION PASS",
     "BOUNDED CAMERA PASS"
   ],
-  "nonce": "20261006-real-state-002",
+  "nonce": "20261006-real-state-local-ply-single-sort-v1",
   "bounded_camera": {
     "pan_x": 0.5,
     "zoom_fov_multipliers": [
@@ -96,5 +98,6 @@
   "final_commit": "d912f89d0957aa5c49937736840070b1de6a753b",
   "semantic_raycast_pass": "45/45",
   "runtime_parcels_enabled": true,
-  "runtime_parcels_workstream": "valoria-real-game-state-v1"
+  "runtime_parcels_workstream": "valoria-real-game-state-v1",
+  "parcel_manifest": "pipeline/valoria-parcel-regions-v1.json"
 }

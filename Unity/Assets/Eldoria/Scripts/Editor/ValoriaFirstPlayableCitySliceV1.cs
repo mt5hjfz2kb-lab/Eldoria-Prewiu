@@ -313,6 +313,13 @@ namespace Eldoria.EditorTools
             Debug.Log($"[PRODUCTION-SLICE] TECH PASS; DIRECT VISUAL REVIEW REQUIRED families={runtimes.Count} rays={semanticPass}/{semanticRequired} changed={homeChanged}/{leftChanged}/{rightChanged}");
         }
 
+        [Serializable] sealed class ParcelManifest { public ParcelRegion[] parcels; }
+        [Serializable] sealed class ParcelRegion
+        {
+            public string id, building_id;
+            public int variant_bit;
+            public float[] anchor, scaffold_size;
+        }
         sealed class ParcelClock : Eldoria.Application.IClock
         {
             public long UtcTicks {get;set;}=new DateTime(2026,10,6,14,0,0,DateTimeKind.Utc).Ticks;
@@ -331,17 +338,20 @@ namespace Eldoria.EditorTools
             var layers=new List<GsplatRenderer>();
             string assetFolder="Assets/Eldoria/ProductionSlice/Runtime";
             Directory.CreateDirectory(assetFolder);AssetDatabase.Refresh();
-            GameObject Layer(string name)
+            var manifest=JsonUtility.FromJson<ParcelManifest>(File.ReadAllText(Path.Combine(inputs,"parcel-regions.json")));
+            if(manifest.parcels==null || manifest.parcels.Length==0)throw new Exception("Missing parcel manifest");
+            visual.StateAssets=new GsplatAsset[1<<manifest.parcels.Length];
+            for(int i=0;i<visual.StateAssets.Length;i++)
             {
-                var a=GsplatRuntimeLoader.LoadFile(Path.Combine(inputs,name+".ply"),CompressionMode.Spark,SourceCoordinates.RDF);
-                string path=assetFolder+"/"+name+".asset";AssetDatabase.DeleteAsset(path);AssetDatabase.CreateAsset(a,path);
-                var go=new GameObject("SHARP parcel layer · "+name);go.transform.SetParent(root.transform);
-                var r=go.AddComponent<GsplatRenderer>();r.GsplatAsset=a;r.SHDegree=0;
-                r.GammaToLinear=QualitySettings.activeColorSpace==ColorSpace.Linear;r.AsyncUpload=false;r.RenderBeforeUploadComplete=false;r.Update();
-                layers.Add(r);return go;
+                var a=GsplatRuntimeLoader.LoadFile(Path.Combine(inputs,"state-"+i+".ply"),CompressionMode.Spark,SourceCoordinates.RDF);
+                string path=assetFolder+"/state-"+i+".asset";AssetDatabase.DeleteAsset(path);AssetDatabase.CreateAsset(a,path);
+                visual.StateAssets[i]=a;
             }
-            Layer("base");visual.LeftBuilt=Layer("left");visual.RightBuilt=Layer("right");
-            visual.LeftGround=Layer("left-ground");visual.RightGround=Layer("right-ground");
+            var beauty=new GameObject("SHARP authoritative runtime scene");beauty.transform.SetParent(root.transform);
+            var renderer=beauty.AddComponent<GsplatRenderer>();renderer.GsplatAsset=visual.StateAssets[0];renderer.SHDegree=0;
+            renderer.GammaToLinear=QualitySettings.activeColorSpace==ColorSpace.Linear;renderer.AsyncUpload=false;renderer.RenderBeforeUploadComplete=false;renderer.Update();
+            visual.SceneSplats=renderer;layers.Add(renderer);
+            GameObject Representation(string name){var go=new GameObject(name);go.transform.SetParent(root.transform);return go;}
             Vector3 Ground(float u,float y,float z)=>new Vector3((u-W*.5f)*z/1034.716f,-(y-H*.5f)*z/1034.716f,z);
             GameObject Scaffold(string name,Vector3 position,Vector3 size)
             {
@@ -354,29 +364,41 @@ namespace Eldoria.EditorTools
                     r.transform.SetParent(go.transform,true);
                     var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.30f,.18f,.09f));r.sharedMaterial=m;
                     foreach(var c in r.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(c);
-                    AssetDatabase.AddObjectToAsset(m,assetFolder+"/base.asset");
+                    AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
                 }
                 go.transform.rotation=sourceRotation;go.transform.position=position;return go;
             }
-            visual.LeftConstruction=Scaffold("Left parcel construction",Ground(258,351,19.8f),new Vector3(2.8f,1.6f,2.1f));
-            visual.RightConstruction=Scaffold("Right parcel construction",Ground(1050,413,17.4f),new Vector3(3.3f,1.6f,2.3f));
             GameObject Marker(string name,Vector3 position)
             {
                 var go=new GameObject(name);go.transform.SetParent(root.transform);go.transform.position=position;
                 var line=go.AddComponent<LineRenderer>();line.useWorldSpace=false;line.positionCount=41;line.startWidth=line.endWidth=.045f;
                 var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.82f,.57f,.24f));line.sharedMaterial=m;
-                AssetDatabase.AddObjectToAsset(m,assetFolder+"/base.asset");
+                AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
                 for(int i=0;i<41;i++){float angle=i/40f*Mathf.PI*2;line.SetPosition(i,new Vector3(Mathf.Cos(angle)*1.8f,Mathf.Sin(angle)*.46f,0));}
                 return go;
             }
-            visual.LeftAvailable=Marker("Left parcel available",Ground(258,351,19.6f));
-            visual.RightAvailable=Marker("Right parcel available",Ground(1050,413,17.2f));
-            foreach(var p in proxies)
+            var bindings=new List<Eldoria.Presentation.ValoriaParcelPresentation.Binding>();
+            foreach(var parcel in manifest.parcels)
             {
-                var h=p.Go.AddComponent<Eldoria.Presentation.WorldHotspot>();
-                h.Id=p.Id=="LeftCabinParcel"?"sawmill":p.Id=="RightCampParcel"?"barracks":p.Id=="LowerGate"?"gate":"bastion";
-                if(p.Id=="LeftCabinParcel"){visual.LeftTarget=p.Go.GetComponent<Collider>();p.Go.name="LeftCabinParcel · target";}
-                if(p.Id=="RightCampParcel"){visual.RightTarget=p.Go.GetComponent<Collider>();p.Go.name="RightCampParcel · target";}
+                var proxy=proxies.Single(p=>p.Id==parcel.id);
+                var binding=new Eldoria.Presentation.ValoriaParcelPresentation.Binding {
+                    ParcelId=parcel.id,BuildingId=parcel.building_id,VariantBit=parcel.variant_bit,
+                    Built=Representation(parcel.id+" built"),Ground=Representation(parcel.id+" empty"),
+                    Construction=Scaffold(parcel.id+" construction",Ground(parcel.anchor[0],parcel.anchor[1],parcel.anchor[2]),new Vector3(parcel.scaffold_size[0],parcel.scaffold_size[1],parcel.scaffold_size[2])),
+                    Available=Marker(parcel.id+" available",Ground(parcel.anchor[0],parcel.anchor[1],parcel.anchor[2]-.2f)),Target=proxy.Go.GetComponent<Collider>()
+                };
+                bindings.Add(binding);
+            }
+            visual.Bindings=bindings.ToArray();
+            // Existing proof observability; these aliases do not determine variant production.
+            var leftBinding=bindings.Single(p=>p.BuildingId=="sawmill");var rightBinding=bindings.Single(p=>p.BuildingId=="barracks");
+            visual.LeftBuilt=leftBinding.Built;visual.LeftGround=leftBinding.Ground;visual.LeftConstruction=leftBinding.Construction;visual.LeftAvailable=leftBinding.Available;visual.LeftTarget=leftBinding.Target;
+            visual.RightBuilt=rightBinding.Built;visual.RightGround=rightBinding.Ground;visual.RightConstruction=rightBinding.Construction;visual.RightAvailable=rightBinding.Available;visual.RightTarget=rightBinding.Target;
+            foreach(var proxy in proxies)
+            {
+                var parcel=bindings.FirstOrDefault(p=>p.ParcelId==proxy.Id);
+                var h=proxy.Go.AddComponent<Eldoria.Presentation.WorldHotspot>();
+                h.Id=parcel!=null?parcel.BuildingId:proxy.Id=="LowerGate"?"gate":"bastion";
             }
             var clock=new ParcelClock();string save=Path.Combine(output,"runtime-proof-save.json");
             var store=new Eldoria.Infrastructure.FileStateStore(save);store.DeleteLocalState();
@@ -394,7 +416,7 @@ namespace Eldoria.EditorTools
                 foreach(var r in layers.Where(r=>r.gameObject.activeInHierarchy))PrepareSplatFrame(r,cam,name);
                 CaptureRasterOnly(cam,output,name);
                 bool expectedLeft=s.SawmillLevel>0,expectedRight=s.BarracksLevel>0;
-                if(visual.LeftBuilt.activeSelf!=expectedLeft||visual.RightBuilt.activeSelf!=expectedRight)throw new Exception("Runtime layer disagrees with authoritative level");
+                if(visual.ActiveVariant!=((expectedLeft?1:0)|(expectedRight?2:0))||renderer.GsplatAsset!=visual.StateAssets[visual.ActiveVariant]||visual.LeftBuilt.activeSelf!=expectedLeft||visual.RightBuilt.activeSelf!=expectedRight)throw new Exception("Runtime layer disagrees with authoritative level");
                 rows.Add("{\"capture\":\""+name+"\",\"left\":\""+visual.LeftState+"\",\"right\":\""+visual.RightState+"\",\"objective\":\""+Eldoria.Domain.SliceRules.CurrentObjectiveKey(s)+"\",\"state\":"+JsonUtility.ToJson(s)+"}");
             }
             CaptureState("runtime-home-initial");
@@ -416,18 +438,24 @@ namespace Eldoria.EditorTools
             gateway=new Eldoria.Application.LocalGateway(clock,store);
             if(JsonUtility.ToJson(gateway.Snapshot())!=stable)throw new Exception("Reload/advance is not idempotent");
             int rayPass=0,rayRequired=0;
-            foreach(float pan in new[]{-.5f,0f,.5f})
-            foreach(float zoom in new[]{.9f,1f,1.1f})
+            var completedState=gateway.Snapshot();
+            foreach(var variantState in new[]{new Eldoria.Domain.PlayerState(),completedState})
             {
-                cam.transform.position=new Vector3(pan,0,0);cam.fieldOfView=HomeFov*zoom;Physics.SyncTransforms();
-                foreach(var p in proxies)
+                visual.Apply(variantState);
+                foreach(float pan in new[]{-.5f,0f,.5f})
+                foreach(float zoom in new[]{.9f,1f,1.1f})
                 {
-                    rayRequired++;var vp=cam.WorldToViewportPoint(p.Go.transform.position);
-                    if(vp.z<=0||vp.x<0||vp.x>1||vp.y<0||vp.y>1)throw new Exception("Runtime anchor leaves bounded camera "+p.Id);
-                    if(Physics.Raycast(cam.ViewportPointToRay(vp),out var hit,1000)&&hit.collider==p.Go.GetComponent<Collider>())rayPass++;
+                    cam.transform.position=new Vector3(pan,0,0);cam.fieldOfView=HomeFov*zoom;Physics.SyncTransforms();
+                    foreach(var proxy in proxies)
+                    {
+                        if(!proxy.Go.GetComponent<Collider>().enabled)continue;
+                        rayRequired++;var vp=cam.WorldToViewportPoint(proxy.Go.transform.position);
+                        if(vp.z<=0||vp.x<0||vp.x>1||vp.y<0||vp.y>1)throw new Exception("Runtime anchor leaves bounded camera "+proxy.Id);
+                        if(Physics.Raycast(cam.ViewportPointToRay(vp),out var hit,1000)&&hit.collider==proxy.Go.GetComponent<Collider>())rayPass++;
+                    }
+                    foreach(var r in layers.Where(r=>r.gameObject.activeInHierarchy))PrepareSplatFrame(r,cam,"runtime-camera");
+                    CaptureRasterOnly(cam,output,"runtime-state"+visual.ActiveVariant+"-pan"+pan.ToString(CultureInfo.InvariantCulture)+"-zoom"+zoom.ToString(CultureInfo.InvariantCulture));
                 }
-                foreach(var r in layers.Where(r=>r.gameObject.activeInHierarchy))PrepareSplatFrame(r,cam,"runtime-camera");
-                CaptureRasterOnly(cam,output,"runtime-built-pan"+pan.ToString(CultureInfo.InvariantCulture)+"-zoom"+zoom.ToString(CultureInfo.InvariantCulture));
             }
             if(rayPass!=rayRequired)throw new Exception("Runtime raycast mismatch "+rayPass+"/"+rayRequired);
             cam.transform.position=Vector3.zero;cam.fieldOfView=HomeFov;
@@ -437,6 +465,18 @@ namespace Eldoria.EditorTools
             UnityEngine.Object.DestroyImmediate(originalRoot);
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),assetFolder+"/Valoria.unity");
             string scene=assetFolder+"/Valoria.unity";
+            var request=File.ReadAllText(Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","pipeline","valoria-first-playable-city-slice-v1.json")));
+            if(Regex.IsMatch(request,@"""runtime_windows_build""\s*:\s*true"))
+            {
+                string playerFolder=Path.GetFullPath(Path.Combine(output,"..","ValoriaParcelRuntimePlayer"));
+                Directory.CreateDirectory(playerFolder);
+                PlayerSettings.defaultScreenWidth=W;PlayerSettings.defaultScreenHeight=H;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;
+                PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64,new[]{GraphicsDeviceType.Direct3D11});
+                var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{scene,"Assets/Eldoria/Scenes/Frontier.unity"},locationPathName=Path.Combine(playerFolder,"Eldoria-Valoria.exe"),target=BuildTarget.StandaloneWindows64,options=BuildOptions.Development});
+                if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Runtime player build failed "+report.summary.result);
+                File.WriteAllText(Path.Combine(playerFolder,"Jugar-Valoria.bat"),"@echo off\r\ncd /d %~dp0\r\nEldoria-Valoria.exe --eldoria-profile=OWNER_I_II\r\n");
+            }
+
             File.WriteAllText(Path.Combine(output,"runtime-state-evidence.json"),"{\"tech_pass\":true,\"final_pass\":false,\"visual_review\":\"PENDING\",\"real_gateway\":\"LocalGateway\",\"real_store\":\"FileStateStore\",\"runtime_scene\":\""+scene+"\",\"right_building_id\":\"barracks\",\"raycasts_pass\":"+rayPass+",\"raycasts_required\":"+rayRequired+",\"commands_are_real\":true,\"save_reload_pass\":true,\"idempotency_pass\":true,\"states\":["+string.Join(",",rows)+"]}");
             File.Copy(Path.Combine(inputs,"parcel-source.json"),Path.Combine(output,"parcel-source.json"),true);
             Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(null);
@@ -535,4 +575,5 @@ namespace Eldoria.EditorTools
         }
     }
 }
+
 

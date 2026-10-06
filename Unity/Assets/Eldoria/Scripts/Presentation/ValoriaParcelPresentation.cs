@@ -1,6 +1,7 @@
 using System;
 using Eldoria.Domain;
 using UnityEngine;
+using Gsplat;
 
 namespace Eldoria.Presentation
 {
@@ -8,10 +9,22 @@ namespace Eldoria.Presentation
     // The generated scene is reproducible from the locked PLY by the canonical capture gate.
     public sealed class ValoriaParcelPresentation : MonoBehaviour
     {
+        [Serializable] public sealed class Binding
+        {
+            public string ParcelId, BuildingId;
+            public int VariantBit;
+            public GameObject Built, Ground, Construction, Available;
+            public Collider Target;
+        }
+        public Binding[] Bindings = Array.Empty<Binding>();
+        // Compatibility handles for the existing two-building proof; binding iteration owns rendering.
         public GameObject LeftBuilt, RightBuilt, LeftGround, RightGround;
         public GameObject LeftConstruction, RightConstruction, LeftAvailable, RightAvailable;
         public Collider LeftTarget, RightTarget;
         public Camera ProductionCamera;
+        public GsplatRenderer SceneSplats;
+        public GsplatAsset[] StateAssets; // 0 empty, 1 left built, 2 right built, 3 both built
+        public int ActiveVariant { get; private set; }
         public float HomeFov = 44.42281f;
         public ParcelBuildingState LeftState { get; private set; }
         public ParcelBuildingState RightState { get; private set; }
@@ -20,8 +33,19 @@ namespace Eldoria.Presentation
         {
             LeftState=ParcelBuildingStates.For(state,"sawmill");
             RightState=ParcelBuildingStates.For(state,"barracks");
-            ApplyParcel(LeftState,LeftBuilt,LeftGround,LeftConstruction,LeftAvailable,LeftTarget);
-            ApplyParcel(RightState,RightBuilt,RightGround,RightConstruction,RightAvailable,RightTarget);
+            ActiveVariant=0;
+            foreach(var parcel in Bindings)
+            {
+                var phase=ParcelBuildingStates.For(state,parcel.BuildingId);
+                if(phase==ParcelBuildingState.BUILT)ActiveVariant|=parcel.VariantBit;
+                ApplyParcel(phase,parcel.Built,parcel.Ground,parcel.Construction,parcel.Available,parcel.Target);
+            }
+            if(SceneSplats!=null)
+            {
+                if(StateAssets==null || ActiveVariant>=StateAssets.Length || StateAssets[ActiveVariant]==null)
+                    throw new InvalidOperationException("Missing SHARP parcel variant "+ActiveVariant);
+                if(SceneSplats.GsplatAsset!=StateAssets[ActiveVariant])SceneSplats.GsplatAsset=StateAssets[ActiveVariant];
+            }
         }
         static void ApplyParcel(ParcelBuildingState state,GameObject built,GameObject ground,
             GameObject construction,GameObject available,Collider target)
@@ -51,3 +75,4 @@ namespace Eldoria.Presentation
         }
     }
 }
+

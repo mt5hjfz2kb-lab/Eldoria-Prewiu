@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "id": "valoria-parcel-regions-v1",
+  "coordinate_space": {
+    "width": 1230,
+    "height": 845,
+    "origin": "top-left",
+    "units": "pixels"
+  },
+  "working_source_max_splats": 600000,
+  "source_sha256": "c3992bc094db00ee81186a842716926da8ae90556f26669d1449ec19223313ac",
+  "ground": {
+    "artifact_id": 11423748153,
+    "run_id": 37487411612,
+    "ply_sha256": "d540d0fe80b766969bcfdb05129d8e7d15d567816a45f9ad02f4859f8b1e312e",
+    "input_sha256": "e8b85859da339d8dd0f71a245e623ff1f1a24fc0a093314751e70ec5888ada73",
+    "checkpoint_sha256": "94211a75198c47f61fca7d739ba08a215418d8d398d48fddf023baccc24f073d"
+  },
+  "parcels": [
+    {
+      "id": "LeftCabinParcel",
+      "building_id": "sawmill",
+      "variant_bit": 1,
+      "mask": {
+        "ellipse": [
+          258,
+          324,
+          143,
+          72
+        ],
+        "rectangles": [
+          [
+            204,
+            200,
+            240,
+            270
+          ]
+        ]
+      },
+      "calibration_ring": {
+        "inner": 1.05,
+        "outer": 1.3
+      },
+      "anchor": [
+        258,
+        351,
+        19.8
+      ],
+      "scaffold_size": [
+        2.8,
+        1.6,
+        2.1
+      ]
+    },
+    {
+      "id": "RightCampParcel",
+      "building_id": "barracks",
+      "variant_bit": 2,
+      "mask": {
+        "ellipse": [
+          1050,
+          390,
+          151,
+          72
+        ],
+        "rectangles": []
+      },
+      "calibration_ring": {
+        "inner": 1.05,
+        "outer": 1.3
+      },
+      "anchor": [
+        1050,
+        413,
+        17.4
+      ],
+      "scaffold_size": [
+        3.3,
+        1.6,
+        2.3
+      ]
+    }
+  ]
+}

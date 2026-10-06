@@ -77,6 +77,7 @@ jobs:
           $stdout=Join-Path $env:RUNNER_TEMP 'sharp-local-stdout.log'
           $stderr=Join-Path $env:RUNNER_TEMP 'sharp-local-stderr.log'
           $p=Start-Process -FilePath $env:SHARP_PYTHON -ArgumentList @('-u','tools/valoria-sharp-gaussian-space-proof.py') -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+          $processHandle=$p.Handle # Cache native handle before polling (Windows PowerShell ExitCode).
           while(-not $p.HasExited){
             Start-Sleep 15
             $p.Refresh()
@@ -88,6 +89,7 @@ jobs:
           New-Item -ItemType Directory -Path $env:OUT_DIR -Force | Out-Null
           Copy-Item $stdout "$env:OUT_DIR\local-stdout.log" -Force
           Copy-Item $stderr "$env:OUT_DIR\local-stderr.log" -Force
+          if($null -eq $p.ExitCode){throw "Local SHARP exit code unavailable"}
           if($p.ExitCode -ne 0){throw "Local SHARP failed $($p.ExitCode)"}
           if(-not(Test-Path "$env:OUT_DIR\sharp-1.ply")){throw 'Local SHARP PLY missing'}
           Get-Content "$env:OUT_DIR\source-authority.json"
@@ -98,3 +100,4 @@ jobs:
           path: ${{ runner.temp }}/sharp-proof
           if-no-files-found: warn
           retention-days: 30
+

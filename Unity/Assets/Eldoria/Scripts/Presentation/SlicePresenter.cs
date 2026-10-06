@@ -46,7 +46,9 @@ namespace Eldoria.Presentation
             renderedSawmill=state.SawmillLevel;renderedBarracks=state.BarracksLevel;renderedBastion=state.BastionLevel;
             renderedScout=state.ScoutDefeated;renderedEngendro=state.EngendroDefeated;
             renderedIdle=state.March.Phase=="idle";
-            productionParcels=UnityEngine.Object.FindFirstObjectByType<ValoriaParcelPresentation>();
+            productionParcels=null;
+            foreach(var sceneRoot in scene.GetRootGameObjects())
+            { productionParcels=sceneRoot.GetComponentInChildren<ValoriaParcelPresentation>(true);if(productionParcels!=null)break; }
             if(productionParcels!=null) productionParcels.Apply(state);
             else VisualWorld.Create(city,state);
             if(city&&OfficialCamera!=null&&productionParcels==null)
@@ -289,6 +291,8 @@ namespace Eldoria.Presentation
                     :"Parcela económica dañada · requiere "+SliceRules.SawmillWoodCost+" madera para reconstruirse.";
                 buildingAction.GetComponentInChildren<Text>().text=s.SawmillLevel>0?"ASERRADERO ACTIVO":"RECONSTRUIR";
                 buildingAction.interactable=ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.AVAILABLE&&s.BuildingCompletesUtcTicks==0;
+                if(ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.UNDER_CONSTRUCTION)
+                { buildingBody.text="Reconstrucción en curso · el aserradero aparecerá al terminar la obra.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
                 if(s.SawmillLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","sawmill");});
             }
             else if(id=="barracks")
@@ -299,6 +303,9 @@ namespace Eldoria.Presentation
                     buildingBody.text="Construir Cuartel · "+SliceRules.BarracksWoodCost+" madera / "+SliceRules.BarracksStoneCost+" piedra.";
                     buildingAction.GetComponentInChildren<Text>().text="CONSTRUIR CUARTEL";
                     buildingAction.interactable=ParcelBuildingStates.For(s,"barracks")==ParcelBuildingState.AVAILABLE&&s.BuildingCompletesUtcTicks==0;
+                    if(ParcelBuildingStates.For(s,"barracks")==ParcelBuildingState.UNDER_CONSTRUCTION)
+                    { buildingBody.text="Construcción del cuartel en curso · la parcela militar se activará al terminar.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
+                    else if(s.BastionLevel<2)buildingBody.text="Parcela militar reservada · disponible al alcanzar Bastión II.";
                     buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
                 }
                 else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
@@ -852,4 +859,5 @@ namespace Eldoria.Presentation
         }
     }
 }
+
 
