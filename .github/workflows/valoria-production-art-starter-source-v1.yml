@@ -8,6 +8,7 @@ on:
       - 'pipeline/valoria-production-art-starter-run-request.json'
       - 'docs/evidence/valoria-premium-square-metre-v1/family-mesh-spec.json'
       - '.github/workflows/valoria-production-art-starter-source-v1.yml'
+      - 'tools/author-premium-square-metre.py'
 
 permissions:
   contents: write
@@ -133,8 +134,10 @@ jobs:
           AUTHOR_SCRIPT=$(python3 - <<'PY'
           import json
           req=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
-          spec=json.load(open(req['mesh_spec']))
-          print('tools/author-premium-square-metre.py' if spec.get('source_method')=='sculpt_detail_authored' else 'tools/author-environment-family.py')
+          request_id=req.get('request_id','')
+          mesh_spec=req.get('mesh_spec','')
+          bounded = request_id.startswith('valoria-premium-square-metre-v1') or 'valoria-premium-square-metre-v1/' in mesh_spec
+          print('tools/author-premium-square-metre.py' if bounded else 'tools/author-environment-family.py')
           PY
           )
           echo "Authoring with ${AUTHOR_SCRIPT}"
@@ -177,4 +180,4 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-# trigger-refresh: premium-square-metre-v1-sculpt-route
+# trigger-refresh: premium-square-metre-v1-bounded-request-router
