@@ -48,7 +48,7 @@ jobs:
           New-Item -ItemType Directory -Path $dst | Out-Null
           $zip=Join-Path $env:RUNNER_TEMP "sharp-gaussian.zip"
           $headers=@{ Authorization="Bearer $env:GH_TOKEN"; Accept="application/vnd.github+json"; "X-GitHub-Api-Version"="2022-11-28" }
-          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/11404383856/zip" -OutFile $zip
+          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/11408853949/zip" -OutFile $zip
           Expand-Archive -Path $zip -DestinationPath $dst -Force
           if(-not (Test-Path (Join-Path $dst "sharp-1.ply"))){throw "SHARP PLY missing after artifact download"}
           Get-Item (Join-Path $dst "sharp-1.ply") | Format-List Name,Length,FullName
