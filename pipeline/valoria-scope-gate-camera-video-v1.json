@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-scope-gate-camera-video-v1",
+  "input": "semantic Lower Gate alpha composite",
+  "method": "TencentARC SCoPE camera-controlled novel-view video",
+  "next_if_pass": "GeometryCrafter video-to-pointcloud proof",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
