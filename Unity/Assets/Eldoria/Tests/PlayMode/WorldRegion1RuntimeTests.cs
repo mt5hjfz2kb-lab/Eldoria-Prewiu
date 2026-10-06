@@ -91,13 +91,13 @@ namespace Eldoria.Tests
             yield return null;
 
             var panelField=typeof(SlicePresenter).GetField("buildingPanel",BindingFlags.Instance|BindingFlags.NonPublic);
-            var titleField=typeof(SlicePresenter).GetField("buildingTitle",BindingFlags.Instance|BindingFlags.NonPublic);
             Assert.That(panelField,Is.Not.Null);
-            Assert.That(titleField,Is.Not.Null);
             var panel=panelField.GetValue(presenter) as GameObject;
-            var title=titleField.GetValue(presenter) as Text;
             Assert.That(panel,Is.Not.Null);
             Assert.That(panel.activeInHierarchy,Is.True);
+            Text title=null;
+            foreach(var label in panel.GetComponentsInChildren<Text>(true))
+                if(label.name=="Building title"){title=label;break;}
             Assert.That(title,Is.Not.Null);
             Assert.That(title.text,Does.Contain("BOSQUE"));
             Assert.That(GameObject.Find("World Region 1 · active march"),Is.Null,
