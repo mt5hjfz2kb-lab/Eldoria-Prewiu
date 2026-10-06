@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "request_id": "valoria-visual-convergence-production-v1",
-  "asset_or_sector": "Valoria visual production method — convergence gate, starting with canonical SHARP Gaussian → Unity integration",
+  "asset_or_sector": "Valoria convergence Gate 5 — approved Lower Gate real-geometry appearance/depth integration",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "geometry_gap_evidence": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
@@ -16,10 +16,10 @@
     "high_low_baking": false
   },
   "validation": {
-    "source_gate": "No new method discovery. Consume only evidence classified in docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md. First gate: sanitized canonical SHARP PLY must load in Unity 6 URP without invalid numeric attributes.",
-    "final_gate": "Gate 4 promotes only if LowerGateFamilyV1.glb imports and instantiates with valid bounds, aligns to canonical LowerGate viewport, preserves SHARP HOME, produces geometry-only/coexistence bounded-camera evidence, and retains semantic LowerGate interaction."
+    "source_gate": "Use only approved LowerGateFamilyV1 geometry and already-qualified appearance/depth components. No new geometry generation or method discovery.",
+    "final_gate": "Gate 5 promotes only if real LowerGateFamilyV1 geometry keeps Gate 4B alignment/interaction, target-conditioned appearance improves HOME, bounded pan retains real 3D silhouette/parallax, and SHARP outside the treated LowerGate region remains unchanged."
   },
-  "notes": "Broad visual R&D remains frozen. Gate 3 gameplay selection closed PASS at run 37461034965 / artifact 11412317590: 20/20 raycasts, 20/20 callbacks, localized 32px LowerGate feedback (1287/1287 cyan pixels local). Current priority: integrate already-approved LowerGateFamilyV1.glb as real editable geometry aligned to the locked SHARP visual layer.",
-  "status": "CONVERGENCE_GATE_4_ACTIVE",
+  "notes": "Gate 4A runtime density PASS run 37461644325 / artifact 11411669104. Gate 4B real-geometry substrate PASS run 37462916737 / artifact 11413795807. Current priority is appearance/depth on the same real editable Lower Gate mesh; no new generator or paid action.",
+  "status": "CONVERGENCE_GATE_5_ACTIVE",
   "blocker": null
 }
