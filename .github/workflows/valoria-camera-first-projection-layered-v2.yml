@@ -1,0 +1,85 @@
+name: "[PROOF] Valoria Camera-First Layered Projection v2"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-projection-layered-v2-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-camera-first-layered-projection-v2
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            tools/render-camera-first-projection-layered-v2.py
+            pipeline/camera-first-projection-layered-v2-request.json
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-projection-v1
+          sparse-checkout-cone-mode: false
+
+      - name: Cache portable Blender
+        id: blender-cache
+        uses: actions/cache@v4
+        with:
+          path: .ci/blender
+          key: blender-4.0.2-linux-x64-v1
+
+      - name: Install minimal headless libraries
+        run: |
+          sudo apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 install -y --no-install-recommends xvfb libegl1 libgl1 libglx-mesa0 ca-certificates curl xz-utils
+
+      - name: Install portable Blender on cache miss
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci
+          curl --fail --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 300 \
+            https://download.blender.org/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz \
+            -o /tmp/blender.tar.xz
+          tar -xf /tmp/blender.tar.xz -C .ci
+          mv .ci/blender-4.0.2-linux-x64 .ci/blender
+
+      - name: Render layered projection proof
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" .ci/blender/blender -b --python-exit-code 1 --python tools/render-camera-first-projection-layered-v2.py
+          for f in layered-base layered-left-small layered-right-small layered-left-medium layered-right-medium; do
+            test -s "docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/${f}.png"
+          done
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-debug.json
+
+      - name: Persist layered proof
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-*
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-projection-v1/ValoriaCameraFirstProjectionLayeredV2.blend
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist layered camera-first projection proof"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-layered-projection-v2
+          path: |
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-*
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/depth-preview.png
+          if-no-files-found: error
+          retention-days: 30
