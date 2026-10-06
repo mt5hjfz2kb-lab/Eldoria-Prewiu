@@ -186,7 +186,9 @@ Canonical evidence:
 - Clean SHARP source run: `37456084187`
 - Clean SHARP source artifact: `11408853949`
 - Unity clean 600k run: `37456541286`
-- Unity clean 600k artifact: `11409359136`
+- Unity clean 600k artifact (pre-camera-fix technical baseline): `11409359136`
+- Canonical HOME camera restore run: `37457026065`
+- **Canonical visual HOME authority artifact: `11409079879`**
 - Source: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`
 - proof_splat_count: 589,824
 - source_splat_count: 1,179,648
@@ -206,7 +208,7 @@ Known limitations:
 - Gaussian scene is a visual representation layer, not gameplay geometry.
 - wider free-camera motion is not authorized by this evidence.
 
-**LOCK:** use clean approved-reference SHARP at 600k as the current high-fidelity visual-layer baseline. Do not reopen visual-generator discovery while this convergence path can progress.
+**LOCK:** use clean approved-reference SHARP at 600k with the restored canonical identity HOME camera as the current high-fidelity visual-layer baseline. The visual framing authority is run `37457026065` / artifact `11409079879`; artifact `11409359136` remains only the pre-camera-fix technical baseline. Do not reopen visual-generator discovery while this convergence path can progress.
 
 ## Gate 2 — interactive 3D substrate alignment
 Goal:
