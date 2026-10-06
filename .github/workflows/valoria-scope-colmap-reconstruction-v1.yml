@@ -43,6 +43,7 @@ jobs:
           test -n "$MODEL"
           colmap model_analyzer --path "$MODEL" | tee /tmp/scope-colmap/out/model-analysis.txt
           colmap model_converter --input_path "$MODEL" --output_path /tmp/scope-colmap/out/scope-colmap.ply --output_type PLY
+          mkdir -p /tmp/scope-colmap/out/text
           colmap model_converter --input_path "$MODEL" --output_path /tmp/scope-colmap/out/text --output_type TXT
           cp -R "$IMG" /tmp/scope-colmap/out/frames
       - name: Create point-cloud visual evidence
