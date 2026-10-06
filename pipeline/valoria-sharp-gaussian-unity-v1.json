@@ -32,5 +32,15 @@
     "visual_comparison_against_300k": true,
     "no_new_rnd_family": true
   },
-  "note": "Authorized convergence-only density scale test. Same canonical SHARP source and validated Unity lifecycle; no method discovery."
+  "note": "Authorized convergence-only density scale test. Same canonical SHARP source and validated Unity lifecycle; no method discovery.",
+  "status": "CONVERGENCE_GATE_1B_PASS",
+  "last_run_id": 37455916168,
+  "last_artifact_id": 11409767660,
+  "provisional_baseline_splats": 600000,
+  "next_gate": "GATE_1A_CLEAN_SOURCE_600K",
+  "next_source_candidates": [
+    "art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png",
+    "docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-base.png"
+  ],
+  "blocker": "Binary source inspection/materialization is not available through the current GitHub UTF-8 blob connector; source candidates are located but must be visually verified before SHARP regeneration."
 }
