@@ -42,8 +42,9 @@
       "owner-facing current-Valoria screenshots",
       "production visual authority"
     ],
-    "runtime_cutover_pending": true,
-    "cutover_requirement": "When SlicePresenter ownership is released, remove silent production fallback to VisualWorld. Production must fail visibly if canonical ValoriaParcelPresentation is absent; legacy fallback may remain only behind an explicit QA/test switch."
+    "runtime_cutover_pending": false,
+    "cutover_requirement": "Production/player builds must fail closed when ValoriaParcelPresentation is absent. VisualWorld may remain only as legacy QA/fallback code and must never become visible silently in a player build.",
+    "fail_closed_guard": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs"
   },
   "generic_benchmark": {
     "producer": "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCapture.cs",
@@ -51,5 +52,10 @@
     "artifact_pattern": "eldoria-valoria-captures-*",
     "classification": "mixed_regression_bundle_noncanonical",
     "note": "This bundle intentionally contains legacy/procedural Valoria regression views and World Region 1 captures. It is never sufficient evidence of current Valoria beauty."
+  },
+  "runtime_safety": {
+    "status": "installed",
+    "behavior": "Outside UNITY_EDITOR, loading scene Valoria without ValoriaParcelPresentation disables existing cameras and presents an explicit BUILD INVALID overlay instead of allowing silent legacy VisualWorld presentation.",
+    "guard": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs"
   }
 }
