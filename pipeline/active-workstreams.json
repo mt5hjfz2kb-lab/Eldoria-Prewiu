@@ -1,8 +1,32 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T08:30:00Z",
-  "active": [],
+  "updated_at": "2026-10-06T08:36:00Z",
+  "active": [
+    {
+      "id": "valoria-art-source-capability-bakeoff-v1",
+      "title": "VALORIA ART SOURCE CAPABILITY BAKE-OFF v1",
+      "owner": "chat-audit-art-source-capability",
+      "scope": [
+        "docs/VALORIA_ART_SOURCE_CAPABILITY_BAKEOFF_V1.md",
+        "docs/evidence/valoria-art-source-capability-bakeoff-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-lower-gate-art-source-bakeoff",
+        "art-production-planner"
+      ],
+      "claimed_at": "2026-10-06T08:36:00Z",
+      "base_main_sha": "a59a3e1a67f95c056b8f246b6fbf1bd0fd5fbfa6",
+      "status": "active",
+      "phase": "METHOD INVENTORY / ZERO-SPEND PREFLIGHT",
+      "dependency": "Semantic 2.5D rejected. Broad Valoria art frozen. Lower Gate only. No Unity integration until isolated art source >=4/5. No paid credits without fresh owner authorization after exact input and cost are shown.",
+      "next": "Inventory genuinely different art-source methods already available to the repository/toolchain; build a zero-spend preflight and execute only reversible/no-credit candidates. Stop before any paid generation."
+    }
+  ],
   "history": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
