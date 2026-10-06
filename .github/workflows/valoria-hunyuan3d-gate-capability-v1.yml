@@ -2,10 +2,8 @@ name: "[R&D] Valoria Hunyuan3D Gate Capability v1"
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/valoria-hunyuan3d-gate-capability-v1.yml"
 
+# Quarantined R&D/capability workflow: manual-only. Production use requires canonical planner/fallback routing plus explicit owner dispatch.
 permissions:
   contents: read
 
