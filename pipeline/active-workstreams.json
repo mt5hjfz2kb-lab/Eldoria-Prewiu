@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:00:00Z",
+  "updated_at": "2026-10-06T10:59:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -116,11 +116,12 @@
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
       "status": "active",
-      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / DISPATCHED",
+      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / SANITATION FIX REQUIRED",
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
-      "next": "Follow run 37452332232. Require canonical SHARP PLY load, HOME evidence, bounded pan/zoom, 3D occlusion/depth and runtime feasibility before any production promotion.",
-      "run_id": 37452332232,
-      "resume_commit": "679e2f108ef22e6260661455bd3608d9e73cfb83"
+      "next": "PRIORITY: sanitize the single non-finite opacity before Unity load using PowerShell/.NET or add actions/setup-python explicitly on the Windows runner; preserve the original PLY for audit. Then rerun UnitySplats import and require HOME capture + bounded pan/zoom + depth/occlusion + runtime evidence. Do not open more unrelated generator lanes before this gate.",
+      "run_id": 37453051254,
+      "resume_commit": "1e67c8c39ae9bc7f9ac6e857a00d31da1a1eb597",
+      "blocker": "UnitySplats successfully opened and decoded the canonical SHARP PLY until vertex 606538, then rejected a single non-finite opacity value (+Inf). Independent audit of all 1,179,648 splats / 14 float properties found exactly ONE non-finite scalar in the entire file: opacity at vertex 606538. The first sanitation workflow did not run because the Windows Unity runner has no `python` executable in PATH. This is a bounded tooling/data-cleanliness issue, not a visual/runtime rejection."
     },
     {
       "id": "valoria-craftsman3d-gate-capability-v1",
