@@ -90,13 +90,12 @@ namespace Eldoria.Tests
             select.Invoke(presenter,new object[]{"forest-valoria"});
             yield return null;
 
-            GameObject panel=null;
-            Text title=null;
-            foreach(var candidate in Resources.FindObjectsOfTypeAll<RectTransform>())
-            {
-                if(candidate.name=="Building interaction panel")panel=candidate.gameObject;
-                if(candidate.name=="Building title")title=candidate.GetComponent<Text>();
-            }
+            var panelField=typeof(SlicePresenter).GetField("buildingPanel",BindingFlags.Instance|BindingFlags.NonPublic);
+            var titleField=typeof(SlicePresenter).GetField("buildingTitle",BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(panelField,Is.Not.Null);
+            Assert.That(titleField,Is.Not.Null);
+            var panel=panelField.GetValue(presenter) as GameObject;
+            var title=titleField.GetValue(presenter) as Text;
             Assert.That(panel,Is.Not.Null);
             Assert.That(panel.activeInHierarchy,Is.True);
             Assert.That(title,Is.Not.Null);
