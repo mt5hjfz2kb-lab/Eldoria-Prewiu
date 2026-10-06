@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:46:00Z",
+  "updated_at": "2026-10-06T10:49:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -158,6 +158,25 @@
       "phase": "ZERO-SPEND CRAFTSMAN3D CANONICAL GATE PROOF",
       "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
       "next": "Probe multimodalart/CraftsMan3D-zerogpu on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
+    },
+    {
+      "id": "valoria-partpacker-gate-capability-v1",
+      "title": "VALORIA PARTPACKER GATE CAPABILITY v1",
+      "owner": "chat-independent-partpacker-rnd",
+      "scope": [
+        ".github/workflows/valoria-partpacker-gate-capability-v1.yml",
+        "docs/evidence/valoria-partpacker-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-partpacker-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:49:00Z",
+      "base_main_sha": "281afe27a876453f530c60f8e0310ff160fdb774",
+      "status": "active",
+      "phase": "ZERO-SPEND PARTPACKER CANONICAL GATE PROOF",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "Probe nvidia/PartPacker on isolated semantic Lower Gate. Require actual GLB plus front/3-quarter/back/side evidence; reject if part decomposition or architecture fidelity is materially wrong."
     }
   ],
   "history": [
