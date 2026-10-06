@@ -235,7 +235,7 @@ namespace Eldoria.EditorTools
                 coexistence_pan_right_visible_pass = rightVisible,
                 interaction_pass = interactionPass,
                 source_splat_count = prep.OriginalCount,
-                proof_splat_count = asset.SplatCount,
+                proof_splat_count = checked((int)asset.SplatCount),
                 sanitized_source_vertices = prep.SanitizedCount,
                 renderer_count = renderers.Length,
                 disabled_imported_collider_count = disabledColliders,
