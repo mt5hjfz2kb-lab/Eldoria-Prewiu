@@ -167,3 +167,5 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+
+# trigger-refresh: premium-square-metre-v1
