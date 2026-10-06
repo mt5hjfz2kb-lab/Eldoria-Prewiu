@@ -49,20 +49,31 @@ veg_mid=veg & ~veg_fg
 
 occupied=gate|bridge|veg
 yy=np.arange(h)[:,None]/max(h-1,1)
-# Near geological/circulation receiver: depth-near environment plus lower-frame shore/cliff.
-cliff=((dn<=0.34)|(yy>=0.50)) & ~occupied
-# Keep cliff mask spatially coherent around hero assets.
+# Local geological/circulation receiver. V1 used a broad lower-frame rectangle and
+# created obvious pasted-card borders. V2 is intentionally object/support driven.
 hero=(gate|bridge).astype(np.uint8)*255
-hero_support=cv2.dilate(hero,np.ones((71,71),np.uint8))>0
-cliff &= (hero_support | (yy>=0.62))
+hero_support=cv2.dilate(hero,np.ones((95,95),np.uint8))>0
+near_geo=(dn<=0.36) & hero_support & ~occupied
+near_geo_u8=(near_geo.astype(np.uint8)*255)
+near_geo_u8=cv2.morphologyEx(near_geo_u8,cv2.MORPH_CLOSE,np.ones((17,17),np.uint8))
+near_geo_u8=cv2.dilate(near_geo_u8,np.ones((11,11),np.uint8))
+cliff=near_geo_u8>0
 far=~(gate|bridge|veg_fg|veg_mid|cliff)
 
-# Organic support envelope for the whole shell; never a rectangular full-crop alpha.
+# Organic context support. It must fade to zero before every crop edge so no
+# rectangular crop can ever become visible in Unity.
 support_seed=(gate|bridge|cliff|veg_fg|veg_mid).astype(np.uint8)*255
-support=cv2.dilate(support_seed,np.ones((61,61),np.uint8))
-support=cv2.morphologyEx(support,cv2.MORPH_CLOSE,np.ones((21,21),np.uint8))
-support=cv2.GaussianBlur(support,(0,0),9.0)
-support=np.clip(support,0,255).astype(np.uint8)
+support=cv2.dilate(support_seed,np.ones((41,41),np.uint8))
+support=cv2.morphologyEx(support,cv2.MORPH_CLOSE,np.ones((17,17),np.uint8))
+support=cv2.GaussianBlur(support,(0,0),11.0).astype(np.float32)
+edge=np.minimum.reduce([
+    np.tile(np.arange(w,dtype=np.float32),(h,1)),
+    np.tile(np.arange(w-1,-1,-1,dtype=np.float32),(h,1)),
+    np.tile(np.arange(h,dtype=np.float32)[:,None],(1,w)),
+    np.tile(np.arange(h-1,-1,-1,dtype=np.float32)[:,None],(1,w))
+])
+edge=np.clip(edge/54.0,0.0,1.0)
+support=np.clip(support*edge,0,255).astype(np.uint8)
 
 # Reconstruct only hidden content behind movable foreground cards.
 remove=((gate|bridge|veg_fg|veg_mid).astype(np.uint8)*255)
@@ -77,10 +88,13 @@ def rgba(name, image, alpha):
     Image.fromarray(out,"RGBA").save(EVID/f"{name}.png")
     Image.fromarray(a,"L").save(EVID/f"{name}-mask.png")
 
-# Far environment is an inpainted support plate with feathered organic perimeter.
-far_alpha=(support.astype(np.float32)*(far.astype(np.float32)*0.75 + 0.25)).clip(0,255).astype(np.uint8)
+# Far/context plate exists only under the irregular support envelope. It is not a
+# whole-crop photo plate. Foreground semantic cards cover it at HOME.
+far_alpha=support
 rgba("far-environment",background,far_alpha)
-rgba("cliff-ground-shore",rgb,cliff)
+# Feather the geological receiver slightly to avoid hard cutout islands.
+cliff_alpha=cv2.GaussianBlur((cliff.astype(np.uint8)*255),(0,0),1.2)
+rgba("cliff-ground-shore",rgb,cliff_alpha)
 rgba("vegetation-mid",rgb,veg_mid)
 rgba("gate-front",rgb,gate)
 rgba("bridge-front",rgb,bridge)
@@ -127,9 +141,10 @@ report={
  "pixel_counts":{name:int(mask.sum()) for name,mask in partition},
  "vegetation_depth_split":float(veg_depth),
  "support_nonzero_fraction":float(np.mean(support>4)),
+ "support_border_max_alpha":int(max(support[0,:].max(),support[-1,:].max(),support[:,0].max(),support[:,-1].max())),
  "occlusion_fill":"OpenCV Telea radius 7 behind Gate/Bridge/vegetation only",
  "home_rule":"front/back copies co-registered; back thickness invisible at HOME",
- "edge_rule":"far plate alpha uses organic support envelope; no full rectangular alpha",
+ "edge_rule":"v2 support is object-driven and multiplied by a 54px crop-edge fade; full rectangular alpha impossible",
  "credits":0,
  "unity_touched":False
 }
