@@ -287,6 +287,39 @@ namespace Eldoria.EditorTools
             Debug.Log($"[GATE3] PASS raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}");
         }
 
+        static int CountLocalizedDiff(string baselinePath, string feedbackPath, Vector3 viewport, int radius, float threshold)
+        {
+            if (!File.Exists(baselinePath) || !File.Exists(feedbackPath)) return 0;
+
+            var a = new Texture2D(2,2,TextureFormat.RGBA32,false);
+            var b = new Texture2D(2,2,TextureFormat.RGBA32,false);
+            a.LoadImage(File.ReadAllBytes(baselinePath));
+            b.LoadImage(File.ReadAllBytes(feedbackPath));
+            if (a.width != b.width || a.height != b.height)
+            {
+                UnityEngine.Object.DestroyImmediate(a);
+                UnityEngine.Object.DestroyImmediate(b);
+                return 0;
+            }
+
+            int cx = Mathf.Clamp(Mathf.RoundToInt(viewport.x * (a.width - 1)),0,a.width-1);
+            int cy = Mathf.Clamp(Mathf.RoundToInt(viewport.y * (a.height - 1)),0,a.height-1);
+            int minX=Mathf.Max(0,cx-radius), maxX=Mathf.Min(a.width-1,cx+radius);
+            int minY=Mathf.Max(0,cy-radius), maxY=Mathf.Min(a.height-1,cy+radius);
+            int changed=0;
+            for(int y=minY;y<=maxY;y++)
+            for(int x=minX;x<=maxX;x++)
+            {
+                var ca=a.GetPixel(x,y);
+                var cb=b.GetPixel(x,y);
+                float delta=Mathf.Abs(ca.r-cb.r)+Mathf.Abs(ca.g-cb.g)+Mathf.Abs(ca.b-cb.b);
+                if(delta>=threshold) changed++;
+            }
+            UnityEngine.Object.DestroyImmediate(a);
+            UnityEngine.Object.DestroyImmediate(b);
+            return changed;
+        }
+
         static void CaptureBeauty(GsplatRenderer gs, Camera cam, string output, string name)
         {
             var rt = new RenderTexture(W,H,24,RenderTextureFormat.ARGB32);
