@@ -55,7 +55,7 @@ namespace Eldoria.EditorTools
 
         public static void Capture()
         {
-            var output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ValoriaFirstPlayableCitySliceV1Captures"));
+            var output=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","ValoriaFirstPlayableCitySliceV1Captures"));
             if(Directory.Exists(output)) Directory.Delete(output,true);
             Directory.CreateDirectory(output);
 
@@ -69,9 +69,9 @@ namespace Eldoria.EditorTools
                 if(AssetDatabase.LoadAssetAtPath<GameObject>(f.AssetPath)==null)
                     throw new Exception("Production slice: approved GLB import missing: "+f.AssetPath);
 
-            var sourcePly=Path.GetFullPath(Path.Combine(Application.dataPath,"..","SharpGaussianSource","sharp-1.ply"));
+            var sourcePly=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","SharpGaussianSource","sharp-1.ply"));
             if(!File.Exists(sourcePly)) throw new FileNotFoundException("Missing clean SHARP source",sourcePly);
-            var workingPly=Path.GetFullPath(Path.Combine(Application.dataPath,"..","SharpGaussianSource","sharp-production-slice-600k.ply"));
+            var workingPly=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","SharpGaussianSource","sharp-production-slice-600k.ply"));
             var prep=PrepareProofPly(sourcePly,workingPly,MaxProofSplats);
 
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
