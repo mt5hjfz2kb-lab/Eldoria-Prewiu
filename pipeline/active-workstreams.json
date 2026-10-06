@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:18:00Z",
+  "updated_at": "2026-10-06T11:25:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -26,14 +26,20 @@
       "claimed_at": "2026-10-06T10:59:00Z",
       "base_main_sha": "2f599152d2f96f08ede1dddc876af2c3c1817729",
       "status": "active",
-      "phase": "CONVERGENCE — SHARP 300K UNITY PASS / 600K SCALE GATE",
+      "phase": "CONVERGENCE / PRODUCTION METHOD LOCK — SHARP 600K PASS → CLEAN SOURCE GATE",
       "dependency": "SOLE ACTIVE VISUAL PRODUCTION AUTHORITY. Independent visual-generator R&D is frozen. Existing in-flight legacy runs may finish naturally, but no new exploratory lanes are authorized unless this workstream documents a production blocker and explicitly reopens one.",
-      "next": "Scale the proven SHARP Unity path from ~300k to ~600k splats using preserved source bytes, sanitation, RDF coordinates and explicit D3D11 CPU-sort lifecycle. Compare HOME/pan/zoom/occlusion fidelity and stability. No new R&D family.",
+      "next": "Gate 1B PASS: run 37455916168 / artifact 11409767660. Next: verify canonical clean source candidate without HUD/UI, regenerate SHARP, then rerun identical ~600k Unity gate. Do not reopen broad R&D.",
       "last_pass": {
         "run_id": 37455174198,
         "artifact_id": 11409146782,
         "verdict": "TECH PASS / VISUAL PASS AT ~300K"
-      }
+      },
+      "result_gate_1b": {
+        "run_id": 37455916168,
+        "artifact_id": 11409767660,
+        "verdict": "TECH PASS / VISUAL PASS / PROVISIONAL BASELINE 600K"
+      },
+      "blocker": "Gate 1A source candidates are located in-repo, but current GitHub binary blob access cannot materialize them for visual inspection in this session. This blocks only clean-source verification, not the validated 600k runtime method."
     }
   ],
   "history": [
