@@ -1,0 +1,21 @@
+{
+  "camera": "orthographic fixed orientation",
+  "layer_depth_positions": [
+    12.0,
+    10.0,
+    8.0,
+    6.0
+  ],
+  "base_ortho_scale": 2.0,
+  "pan_offsets": [
+    -0.18,
+    0.18
+  ],
+  "zoom_scales": [
+    1.6,
+    2.0,
+    2.4
+  ],
+  "credits": 0,
+  "unity": false
+}

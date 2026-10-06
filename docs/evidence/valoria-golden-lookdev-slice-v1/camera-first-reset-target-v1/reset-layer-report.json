@@ -1,0 +1,64 @@
+{
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "source_dimensions": [
+    1536,
+    1024
+  ],
+  "crop_box": [
+    300,
+    420,
+    1000,
+    960
+  ],
+  "crop_dimensions": [
+    700,
+    540
+  ],
+  "crop_contains": [
+    "Lower Gate",
+    "Bridge",
+    "adjacent cliff",
+    "ground",
+    "water"
+  ],
+  "hud_intentionally_excluded": true,
+  "camera_projection": "orthographic",
+  "reset_camera_pitch": 35.0,
+  "reset_camera_yaw": 20.0,
+  "reset_vertical_span": 48.0,
+  "depth_model": "depth-anything/DA3-BASE",
+  "depth_model_license": "Apache-2.0",
+  "layers": [
+    {
+      "layer": 0,
+      "pixels": 158031,
+      "fraction": 0.4180714285714286,
+      "depth_min": 0.0,
+      "depth_max": 0.24999940395355225
+    },
+    {
+      "layer": 1,
+      "pixels": 110930,
+      "fraction": 0.2934656084656085,
+      "depth_min": 0.25000065565109253,
+      "depth_max": 0.4999993145465851
+    },
+    {
+      "layer": 2,
+      "pixels": 56623,
+      "fraction": 0.1497962962962963,
+      "depth_min": 0.5000013113021851,
+      "depth_max": 0.7499762773513794
+    },
+    {
+      "layer": 3,
+      "pixels": 52416,
+      "fraction": 0.13866666666666666,
+      "depth_min": 0.7500079274177551,
+      "depth_max": 1.0
+    }
+  ],
+  "credits": 0,
+  "unity_touched": false
+}
