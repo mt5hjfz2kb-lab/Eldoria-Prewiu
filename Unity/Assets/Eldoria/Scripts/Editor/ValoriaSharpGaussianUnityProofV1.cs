@@ -67,6 +67,15 @@ namespace Eldoria.EditorTools
             gs.RenderBeforeUploadComplete = false;
             Debug.Log("[SHARP] Renderer configured");
 
+            // In editor/batch capture there may be no normal frame tick between assigning the
+            // runtime asset and Camera.Render(). UnitySplats binds/creates its renderer resources
+            // from Update() when it detects a newly assigned GsplatAsset, so initialize it
+            // explicitly before the first proof render.
+            gs.Update();
+            Debug.Log($"[SHARP] Renderer initialized: valid={gs.Valid}, resident={gs.SplatCount}, expected={asset.SplatCount}");
+            if (!gs.Valid || gs.SplatCount == 0)
+                throw new Exception($"SHARP renderer did not initialize: valid={gs.Valid}, resident={gs.SplatCount}, expected={asset.SplatCount}");
+
             // SHARP is OpenCV x-right/y-down/z-forward (RDF). UnitySplats converts RDF input to Unity RUF.
             root.transform.position = Vector3.zero;
             root.transform.rotation = Quaternion.identity;
