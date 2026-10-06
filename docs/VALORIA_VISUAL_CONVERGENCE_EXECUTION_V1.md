@@ -83,3 +83,49 @@ Production method is locked only after:
 - official-camera integrated evidence.
 
 Green CI, polygon count, single frontal beauty shot, or one lucky seed never count as production certification.
+
+
+## Gate 1 result — SHARP in Unity
+**Verdict: RUNTIME REPRESENTATION PASS / VISUAL PARTIAL / PRODUCTION CLEANUP REQUIRED**
+
+Evidence:
+- Run: `37455323684`
+- Artifact: `11409152206`
+- Bounded proof: ~294,912 splats sampled from 1,179,648 source splats.
+- UnitySplats runtime PLY load: PASS.
+- Renderer initialization / CPU-sort lifecycle in batchmode: PASS.
+- HOME capture: PASS — visible Valoria scene.
+- bounded pan-left / pan-right: PASS — scene remains visible and preserves nearby-view parallax.
+- zoom captures: produced.
+- front raster probe: appears in front of Gaussian layer.
+- behind probe: occluded by Gaussian scene in captured evidence.
+- paid credits: 0.
+
+What this proves:
+- SHARP is no longer only an offline visual-reference technique.
+- A SHARP Gaussian representation can be loaded and rendered in Unity 6 URP using the current project runtime.
+- Real raster/3D gameplay substrate can coexist with the Gaussian layer in the same camera/render pipeline.
+
+What this does **not** yet prove:
+- production-ready image cleanliness,
+- final mobile performance,
+- final full-density quality,
+- free camera movement outside the bounded nearby-view envelope,
+- per-building click/selection from Gaussian data itself.
+
+Visible production issues:
+- the current SHARP source was generated from a canonical screenshot containing UI/HUD regions, so those UI elements are baked into the Gaussian representation;
+- the 300k uniform proof sample visibly aliases/sparsifies detail compared with the offline SHARP synthesis;
+- the source/render still needs exposure/color calibration and a clean production framing.
+
+**Production consequence:** SHARP is approved as a candidate high-fidelity visual representation layer inside the hybrid Valoria pipeline. It is not approved as the sole gameplay geometry or as final art in its current source form.
+
+### Gate 1A — clean visual source
+Next production action:
+1. use a canonical Valoria target with UI/HUD removed before SHARP generation;
+2. preserve the current contaminated artifact only as technical evidence;
+3. regenerate SHARP from the clean target;
+4. repeat the bounded Unity capture at 300k, then progressively test 450k / 600k / highest stable density;
+5. choose the best quality/performance density before moving to integrated interactive geometry.
+
+No new visual-method R&D is authorized for this gate.
