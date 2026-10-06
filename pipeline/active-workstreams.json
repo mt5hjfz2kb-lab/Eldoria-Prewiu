@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T13:31:00Z",
-  "active": [],
+  "updated_at": "2026-10-06T13:38:21.173Z",
+  "active": [
+    {
+      "id": "valoria-visual-authority-reset-v1",
+      "title": "Valoria correct reference authority and rerun first city slice",
+      "owner": "chat-visual-authority-reset-20261006",
+      "scope": [
+        "references/**",
+        "pipeline/valoria*",
+        "pipeline/exact-inputs/valoria-correct-authority-v1/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/Valoria*",
+        "docs/VALORIA*",
+        "docs/evidence/valoria*",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        ".github/workflows/valoria*"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "sharp-existing-production-route"
+      ],
+      "claimed_at": "2026-10-06T13:38:21.173Z",
+      "base_main_sha": "b06029a2727c443b981ccb558f35dbaf6d296d22",
+      "status": "active",
+      "phase": "VISUAL_AUTHORITY_MISMATCH investigation and canonical exact input",
+      "paid_credits": 0
+    }
+  ],
   "history": [
     {
       "id": "valoria-first-playable-city-slice-v1",
