@@ -1,0 +1,200 @@
+name: "[R&D] Valoria Photogrammetry Donor Capability v1"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml"
+      - "tools/valoria-photogrammetry-donor-capability-v1/**"
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install proof tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender p7zip-full libegl1 libgl1-mesa-dri libglx-mesa0 curl
+          blender --version
+          7z | head -4
+
+      - name: Fetch CC0 photogrammetry donors
+        run: |
+          mkdir -p /tmp/photo-proof/rock /tmp/photo-proof/wall /tmp/photo-proof/evidence
+
+          curl -L --fail --retry 3 \
+            -A "EldoriaResearch/1.0" \
+            -o /tmp/photo-proof/rock/rock.7z \
+            "https://opengameart.org/sites/default/files/Free%20-%20Photogrammetric%20Rock.7z"
+
+          7z x -y /tmp/photo-proof/rock/rock.7z -o/tmp/photo-proof/rock/unpacked >/tmp/photo-proof/rock-extract.log
+          find /tmp/photo-proof/rock/unpacked -type f | sort > /tmp/photo-proof/rock-files.txt
+
+          set +e
+          curl -L --fail --retry 2 \
+            -A "EldoriaResearch/1.0" \
+            -o /tmp/photo-proof/wall/wall-2k.rar \
+            "https://cdn.polyscann.com/PBR%2BTEXTURE/cb3c0ae7100cd7fa/2K.rar"
+          WALL_STATUS=$?
+          if [ "$WALL_STATUS" -eq 0 ]; then
+            7z x -y /tmp/photo-proof/wall/wall-2k.rar -o/tmp/photo-proof/wall/unpacked >/tmp/photo-proof/wall-extract.log
+            find /tmp/photo-proof/wall/unpacked -type f | sort > /tmp/photo-proof/wall-files.txt
+          else
+            echo "POLYSCAN_DOWNLOAD_UNAVAILABLE=$WALL_STATUS" > /tmp/photo-proof/wall-files.txt
+          fi
+          set -e
+
+          echo "--- ROCK FILES ---"
+          head -100 /tmp/photo-proof/rock-files.txt
+          echo "--- WALL FILES ---"
+          head -100 /tmp/photo-proof/wall-files.txt
+
+      - name: Render photogrammetry rock donor
+        run: |
+          cat > /tmp/photo-proof/render_rock.py <<'PY'
+          import bpy, os, math, re
+          from mathutils import Vector
+
+          root="/tmp/photo-proof/rock/unpacked"
+          ev="/tmp/photo-proof/evidence"
+          files=[]
+          for dp,ds,fs in os.walk(root):
+              for fn in fs:
+                  p=os.path.join(dp,fn)
+                  if fn.lower().endswith((".blend",".fbx",".obj",".glb",".gltf")):
+                      files.append(p)
+          if not files:
+              raise RuntimeError("No 3D source found in rock archive")
+          def score(p):
+              s=0; low=p.lower()
+              if low.endswith(".blend"): s+=100
+              elif low.endswith(".fbx"): s+=80
+              elif low.endswith(".obj"): s+=70
+              elif low.endswith((".glb",".gltf")): s+=60
+              for token,val in [("4k",45),("4000",45),("2k",35),("2000",35),("1k",25),("1000",25),("lod0",40),("high",30)]:
+                  if token in low: s+=val
+              if any(t in low for t in ["50tris","100tris","200tris"]): s-=100
+              return s
+          files=sorted(files,key=score,reverse=True)
+          src=files[0]
+          print("CHOSEN_ROCK",src,"score",score(src))
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          low=src.lower()
+          if low.endswith(".blend"):
+              bpy.ops.wm.open_mainfile(filepath=src)
+          elif low.endswith(".fbx"):
+              bpy.ops.import_scene.fbx(filepath=src)
+          elif low.endswith(".obj"):
+              if hasattr(bpy.ops.wm,"obj_import"):
+                  bpy.ops.wm.obj_import(filepath=src)
+              else:
+                  bpy.ops.import_scene.obj(filepath=src)
+          elif low.endswith((".glb",".gltf")):
+              bpy.ops.import_scene.gltf(filepath=src)
+
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
+          if not meshes: raise RuntimeError("No renderable rock meshes")
+          pts=[o.matrix_world@Vector(c) for o in meshes for c in o.bound_box]
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene
+          sc.render.engine="BLENDER_EEVEE"
+          sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.035,0.035,0.035)
+          bpy.ops.mesh.primitive_plane_add(size=span*4,location=(center.x,center.y,mn.z-span*0.015))
+          gm=bpy.data.materials.new("ground"); gm.diffuse_color=(0.08,0.08,0.08,1); bpy.context.object.data.materials.append(gm)
+          bpy.ops.object.light_add(type='SUN',location=(0,0,span*3)); sun=bpy.context.object; sun.rotation_euler=(math.radians(40),0,math.radians(135)); sun.data.energy=2.5
+          bpy.ops.object.light_add(type='AREA',location=(center.x-span,center.y-span,center.z+span)); area=bpy.context.object; area.data.energy=700; area.data.size=span*1.2
+          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=60
+          def track(o,target): o.rotation_euler=(target-o.location).to_track_quat('-Z','Y').to_euler()
+          for name,v in [("rock-3q",Vector((1.2,-1.4,0.9))),("rock-close",Vector((0.75,-0.95,0.5)))]:
+              cam.location=center+v*span; track(cam,center); sc.render.filepath=os.path.join(ev,name+".png"); bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          with open(os.path.join(ev,"rock-report.txt"),"w") as f:
+              f.write(f"source=OpenGameArt Free Photogrammetric Rock\nlicense=CC0\nchosen={src}\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+          PY
+          blender -b --python /tmp/photo-proof/render_rock.py
+          test -s /tmp/photo-proof/evidence/rock-3q.png
+          test -s /tmp/photo-proof/evidence/rock-close.png
+
+      - name: Build scanned masonry surface proof when available
+        run: |
+          cat > /tmp/photo-proof/render_wall.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          root="/tmp/photo-proof/wall/unpacked"
+          ev="/tmp/photo-proof/evidence"
+          if not os.path.isdir(root):
+              open(os.path.join(ev,"wall-report.txt"),"w").write("PolyScan 2K direct download unavailable in automated proof; no visual verdict.\n")
+              raise SystemExit(0)
+          imgs=[]
+          for dp,ds,fs in os.walk(root):
+              for fn in fs:
+                  p=os.path.join(dp,fn)
+                  if fn.lower().endswith((".jpg",".jpeg",".png",".tif",".tiff",".exr")):
+                      imgs.append(p)
+          def pick(tokens):
+              for p in imgs:
+                  low=os.path.basename(p).lower()
+                  if any(t in low for t in tokens): return p
+              return None
+          albedo=pick(["albedo","basecolor","base_color","diffuse","color"])
+          rough=pick(["rough"])
+          normal=pick(["normal","nor_gl"])
+          height=pick(["height","displacement","disp"])
+          print("WALL_MAPS",albedo,rough,normal,height)
+          if not albedo:
+              open(os.path.join(ev,"wall-report.txt"),"w").write("No albedo map found after extraction.\n")
+              raise SystemExit(0)
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.mesh.primitive_grid_add(x_subdivisions=161,y_subdivisions=161,size=2.0,location=(0,0,0))
+          wall=bpy.context.object; wall.name="PhotogrammetryWall"
+          # rotate grid vertical, scale to 5x3 m panel
+          wall.rotation_euler=(math.radians(90),0,0)
+          wall.scale=(2.5,1.5,1)
+          bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+          mat=bpy.data.materials.new("ScannedStone"); mat.use_nodes=True
+          bsdf=mat.node_tree.nodes.get("Principled BSDF")
+          tex=mat.node_tree.nodes.new("ShaderNodeTexImage"); tex.image=bpy.data.images.load(albedo)
+          mat.node_tree.links.new(tex.outputs["Color"],bsdf.inputs["Base Color"])
+          if rough:
+              r=mat.node_tree.nodes.new("ShaderNodeTexImage"); r.image=bpy.data.images.load(rough); r.image.colorspace_settings.name='Non-Color'; mat.node_tree.links.new(r.outputs["Color"],bsdf.inputs["Roughness"])
+          if normal:
+              n=mat.node_tree.nodes.new("ShaderNodeTexImage"); n.image=bpy.data.images.load(normal); n.image.colorspace_settings.name='Non-Color'
+              nm=mat.node_tree.nodes.new("ShaderNodeNormalMap"); mat.node_tree.links.new(n.outputs["Color"],nm.inputs["Color"]); mat.node_tree.links.new(nm.outputs["Normal"],bsdf.inputs["Normal"])
+          if height:
+              h=wall.modifiers.new("ScannedHeight","DISPLACE")
+              ht=bpy.data.textures.new("height","IMAGE"); ht.image=bpy.data.images.load(height); h.texture=ht; h.texture_coords='UV'; h.strength=0.09
+          wall.data.materials.append(mat)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100; sc.render.image_settings.file_format='PNG'
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.04,0.04,0.04)
+          bpy.ops.object.light_add(type='SUN',location=(0,-4,5)); sun=bpy.context.object; sun.rotation_euler=(math.radians(50),0,math.radians(145)); sun.data.energy=2
+          bpy.ops.object.light_add(type='AREA',location=(-2,-3,3)); area=bpy.context.object; area.data.energy=600; area.data.size=3
+          bpy.ops.object.camera_add(location=(4,-6,2.2)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=65; cam.rotation_euler=(Vector((0,0,0.5))-cam.location).to_track_quat('-Z','Y').to_euler()
+          sc.render.filepath=os.path.join(ev,"wall-scan.png"); bpy.ops.render.render(write_still=True)
+          with open(os.path.join(ev,"wall-report.txt"),"w") as f:
+              f.write(f"source=PolyScan Weathered Stone Wall\nlicense=CC0\nalbedo={albedo}\nrough={rough}\nnormal={normal}\nheight={height}\n")
+          PY
+          blender -b --python /tmp/photo-proof/render_wall.py
+
+      - name: Package evidence
+        run: |
+          cp /tmp/photo-proof/rock-files.txt /tmp/photo-proof/evidence/
+          cp /tmp/photo-proof/wall-files.txt /tmp/photo-proof/evidence/
+          ls -lh /tmp/photo-proof/evidence
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-photogrammetry-donor-capability-v1
+          path: /tmp/photo-proof/evidence
+          retention-days: 30
