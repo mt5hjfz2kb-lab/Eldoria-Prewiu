@@ -27,7 +27,7 @@ jobs:
           curl -L --fail --retry 3 -o /tmp/eldoria-bakeoff/3dassets/starter.glb https://cdn.3dassets.dev/assets/23508/v1/model.glb
           git clone --depth 1 --filter=blob:none --sparse https://github.com/agentkaerf/FreeModels.git /tmp/freemodels
           cd /tmp/freemodels
-          git sparse-checkout set 'Medieval Village MegaKit[Standard]'
+          git sparse-checkout set --skip-checks 'Medieval Village MegaKit[Standard]'
           cp -R 'Medieval Village MegaKit[Standard]' /tmp/eldoria-bakeoff/quaternius/source
       - name: Build deterministic visual bakeoff
         shell: bash
