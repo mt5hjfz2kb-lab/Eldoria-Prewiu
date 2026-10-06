@@ -94,6 +94,14 @@ namespace Eldoria.EditorTools
 
             float anchorDistance=Mathf.Max(30f,Vector3.Distance(cam.transform.position,asset.Bounds.center));
 
+            // Approved production families were authored/reviewed from the reset camera.
+            // Rotate source geometry into the locked SHARP identity-camera basis instead of
+            // viewing world-authored GLBs edge-on. This is transform alignment, not new art.
+            var resetCameraPosition=new Vector3(30.8183f,63.0934f,-84.6726f);
+            var resetCameraTarget=Vector3.zero;
+            var resetCameraRotation=Quaternion.LookRotation((resetCameraTarget-resetCameraPosition).normalized,Vector3.up);
+            var sourceToSharpRotation=Quaternion.Inverse(resetCameraRotation);
+
             var projectionMaterial=new Material(projectionShader);
             projectionMaterial.SetTexture("_ReferenceTex",reference);
             projectionMaterial.SetColor("_FallbackColor",new Color(.18f,.16f,.14f,1f));
@@ -111,6 +119,7 @@ namespace Eldoria.EditorTools
                 var go=UnityEngine.Object.Instantiate(prefab);
                 go.name=spec.Id+"_ApprovedRealGeometry";
                 foreach(var c in go.GetComponentsInChildren<Collider>(true)) c.enabled=false;
+                go.transform.rotation=sourceToSharpRotation;
                 var rs=go.GetComponentsInChildren<Renderer>(true);
                 if(rs.Length==0) throw new Exception("Production slice: no renderers for "+spec.Id);
 
@@ -130,7 +139,12 @@ namespace Eldoria.EditorTools
                 float err=Vector2.Distance(new Vector2(vp.x,vp.y),spec.Viewport);
                 if(vp.z<=0||err>.015f) throw new Exception($"Production slice: anchor alignment failed for {spec.Id}: {err:F5}");
 
-                OverrideMaterials(rs,projectionMaterial);
+                // Gate 5 proved target-conditioned projection specifically for LowerGate.
+                // All other already-certified production families keep their authored/PBR
+                // source materials; this is the recipe's approved fallback and avoids
+                // stretching/duplicate-projector artifacts.
+                if(spec.Id=="LowerGate")
+                    OverrideMaterials(rs,projectionMaterial);
                 SetRenderers(rs,spec.BeautyVisible);
                 runtimes.Add(new FamilyRuntime{Spec=spec,Go=go,Renderers=rs,Bounds=b,ViewportError=err});
             }
