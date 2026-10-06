@@ -38,7 +38,21 @@ namespace Eldoria.Presentation
             float footprint,float maxHeight,Quaternion rotation)
         {
             if(prefab==null)return null;
-            var go=Object.Instantiate(prefab);
+
+            // Some imported model assets serialize a GameObject-typed reference to a model
+            // subobject whose instantiated runtime wrapper is a Component (commonly Transform).
+            // Object.Instantiate<T> then throws an InvalidCastException even though the asset is
+            // otherwise usable. Instantiate non-generically and normalize the clone to its owning
+            // GameObject so licensed imported sources can still pass through the canonical URP
+            // material adapter. Unsupported object kinds fail closed to the caller's fallback.
+            var clone=Object.Instantiate((Object)prefab);
+            var go=clone as GameObject;
+            if(go==null&&clone is Component component)go=component.gameObject;
+            if(go==null)
+            {
+                if(clone!=null)Object.Destroy(clone);
+                return null;
+            }
             go.name=name;
             go.transform.SetPositionAndRotation(ground,rotation);
             foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
