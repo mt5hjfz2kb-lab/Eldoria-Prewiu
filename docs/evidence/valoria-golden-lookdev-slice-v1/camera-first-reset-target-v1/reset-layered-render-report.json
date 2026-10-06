@@ -6,7 +6,9 @@
     10.0,
     12.0
   ],
-  "base_ortho_scale": 2.0,
+  "base_ortho_scale": 2.5925925925925926,
+  "framing_contract": "aspect-correct exact crop fit",
+  "alpha_mode": "CLIP / depth-writing",
   "pan_offsets": [
     -0.18,
     0.18
