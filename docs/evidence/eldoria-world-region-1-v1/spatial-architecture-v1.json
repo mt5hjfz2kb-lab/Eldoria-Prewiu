@@ -1,0 +1,65 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "purpose": "Lock scalable spatial/data rules before Unity implementation without using the heavy runner.",
+  "world": {
+    "coordinateSystem": "continuous logical XZ world coordinates; rendering may be sector-local but IDs/positions remain stable",
+    "partition": {
+      "region": "large authored/progression territory",
+      "sector": "streamable gameplay subdivision inside a region",
+      "chunk": "runtime culling/loading unit; exact size intentionally deferred to profiling",
+      "rule": "Region 1 slice uses one visible sector but data must not assume the whole world fits in one scene."
+    },
+    "ids": {
+      "region": "region-1-valoria-frontier",
+      "homeCity": "valoria-map-city",
+      "entities": "stable string IDs independent of GameObject names and visual prefab names"
+    }
+  },
+  "placement": {
+    "futurePlayerCities": {
+      "mode": "server-authoritative randomized valid positions",
+      "constraints": [
+        "inside valid terrain",
+        "outside exclusion/barrier zones",
+        "minimum spacing from other cities",
+        "reachable strategic neighborhood",
+        "not hardcoded to Region 1 prototype coordinates"
+      ]
+    },
+    "nodes": {
+      "mode": "data-driven spawn slots / distributions",
+      "rules": [
+        "resource type separate from visual prefab",
+        "level separate from visual prefab",
+        "depletion and respawn state persistent/server-owned",
+        "visual variation does not alter gameplay identity"
+      ]
+    },
+    "poi": {
+      "rule": "narrative/neutral/hostile semantics separated from presentation asset"
+    }
+  },
+  "streaming": {
+    "now": "single bounded Region 1 sector may be fully resident",
+    "future": [
+      "sector/chunk load-unload boundary",
+      "camera-driven culling",
+      "entity-state source survives unload",
+      "visual instances rebuild from data",
+      "no save data stored only in scene objects"
+    ]
+  },
+  "navigation": {
+    "camera": "fixed direction, bounded pan/zoom",
+    "march": "logical origin/target/path/travel time stored independently from rendered march marker",
+    "routes": "authored/readable roads are presentation/navigation cues, not mandatory graph edges unless future pathfinding requires it"
+  },
+  "antiLockIn": [
+    "Do not key gameplay from Unity hierarchy names.",
+    "Do not store world state inside art prefabs.",
+    "Do not hardcode Region 1 POIs into camera controller.",
+    "Do not make Valoria scene own world state.",
+    "Do not assume one player city exists globally.",
+    "Do not assume one region or one loaded sector exists forever."
+  ]
+}
