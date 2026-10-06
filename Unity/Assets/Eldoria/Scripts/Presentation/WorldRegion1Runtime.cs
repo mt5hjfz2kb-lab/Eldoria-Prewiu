@@ -11,20 +11,25 @@ namespace Eldoria.Presentation
     /// </summary>
     public static class WorldRegion1Runtime
     {
-        public static readonly Vector3 ValoriaPosition=new Vector3(0f,.12f,-11.5f);
-        public static readonly Vector3 ForestPosition=new Vector3(-8.8f,.10f,7.8f);
-        public static readonly Vector3 RuinPosition=new Vector3(6.4f,.10f,7.2f);
-        public static readonly Vector3 ScoutPosition=new Vector3(11.4f,.10f,14.4f);
-        public static readonly Vector3 QuarryPosition=new Vector3(11.8f,.10f,-.5f);
+        public static readonly Vector3 ValoriaPosition=new Vector3(0f,.12f,-6.5f);
+        public static readonly Vector3 ForestPosition=new Vector3(-6.8f,.10f,5.6f);
+        public static readonly Vector3 RuinPosition=new Vector3(5.2f,.10f,4.8f);
+        public static readonly Vector3 ScoutPosition=new Vector3(8.4f,.10f,10.7f);
+        public static readonly Vector3 QuarryPosition=new Vector3(8.4f,.10f,-.8f);
 
         static Transform root;
         static GameObject marchVisual;
-        static readonly Color Earth=new Color(.225f,.215f,.185f);
-        static readonly Color Pine=new Color(.12f,.20f,.145f);
-        static readonly Color Stone=new Color(.34f,.34f,.315f);
-        static readonly Color WarmStone=new Color(.43f,.39f,.32f);
-        static readonly Color Violet=new Color(.34f,.16f,.42f);
-        static readonly Color Blue=new Color(.13f,.31f,.48f);
+        static readonly Color Earth=new Color(.30f,.29f,.24f);
+        static readonly Color EarthLight=new Color(.35f,.35f,.28f);
+        static readonly Color Meadow=new Color(.23f,.30f,.21f);
+        static readonly Color Pine=new Color(.16f,.27f,.18f);
+        static readonly Color PineLight=new Color(.21f,.34f,.22f);
+        static readonly Color Road=new Color(.28f,.22f,.16f);
+        static readonly Color RoadEdge=new Color(.37f,.31f,.22f);
+        static readonly Color Stone=new Color(.40f,.40f,.36f);
+        static readonly Color WarmStone=new Color(.49f,.44f,.34f);
+        static readonly Color Violet=new Color(.45f,.20f,.52f);
+        static readonly Color Blue=new Color(.18f,.38f,.58f);
 
         public static void Create(PlayerState state)
         {
@@ -70,13 +75,13 @@ namespace Eldoria.Presentation
         static void ConfigureEnvironment()
         {
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.29f,.33f,.35f);
-            RenderSettings.ambientEquatorColor=new Color(.20f,.19f,.17f);
-            RenderSettings.ambientGroundColor=new Color(.08f,.075f,.065f);
-            RenderSettings.ambientIntensity=.76f;
+            RenderSettings.ambientSkyColor=new Color(.38f,.42f,.42f);
+            RenderSettings.ambientEquatorColor=new Color(.28f,.27f,.23f);
+            RenderSettings.ambientGroundColor=new Color(.12f,.115f,.095f);
+            RenderSettings.ambientIntensity=.92f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.31f,.34f,.34f);
+            RenderSettings.fogColor=new Color(.40f,.42f,.40f);
             RenderSettings.fogStartDistance=38f;
             RenderSettings.fogEndDistance=92f;
 
@@ -88,15 +93,15 @@ namespace Eldoria.Presentation
             camera.orthographicSize=14f;
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=RenderSettings.fogColor;
-            cameraGo.transform.position=new Vector3(23f,25f,-27f);
-            cameraGo.transform.LookAt(new Vector3(0f,0f,2.5f));
+            cameraGo.transform.position=new Vector3(20f,23f,-22f);
+            cameraGo.transform.LookAt(new Vector3(0f,0f,1.5f));
 
             var sunGo=new GameObject("World Region 1 · dusk key");
             sunGo.transform.SetParent(root,true);
             var sun=sunGo.AddComponent<Light>();
             sun.type=LightType.Directional;
             sun.color=new Color(1f,.90f,.76f);
-            sun.intensity=1.18f;
+            sun.intensity=1.35f;
             sun.shadows=LightShadows.Soft;
             sun.shadowStrength=.48f;
             sun.transform.rotation=Quaternion.Euler(50f,-31f,0f);
@@ -105,50 +110,51 @@ namespace Eldoria.Presentation
         static void BuildGeography()
         {
             var baseGround=Primitive("World Region 1 · terrain base",PrimitiveType.Cube,
-                new Vector3(0f,-.48f,4f),new Vector3(74f,.8f,68f),Earth);
-            baseGround.GetComponent<Renderer>().sharedMaterial=
-                ValoriaKit.SurfaceMaterial(Earth,"earth",new Vector2(13f,12f));
+                new Vector3(0f,-.50f,3f),new Vector3(62f,.8f,56f),Earth);
+            var groundCollider=baseGround.GetComponent<Collider>();
+            if(groundCollider!=null)groundCollider.enabled=false;
+
+            // Broad low-frequency colour masses replace the old repeated checker texture.
+            GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.075f,8f),new Vector3(22f,.12f,30f),Meadow,-9f);
+            GroundPatch("World Region 1 · east dryland",new Vector3(14f,-.07f,5f),new Vector3(20f,.11f,26f),EarthLight,11f);
+            GroundPatch("World Region 1 · north moor",new Vector3(1f,-.06f,18f),new Vector3(34f,.10f,14f),new Color(.25f,.27f,.22f),-4f);
+            GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.05f,-7f),new Vector3(17f,.10f,10f),new Color(.36f,.32f,.24f),5f);
 
             foreach(var p in new[]{
-                new Vector3(-24f,-1.4f,11f),new Vector3(-20f,-1.6f,25f),
-                new Vector3(23f,-1.4f,18f),new Vector3(5f,-1.8f,31f)})
+                new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
+                new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
             {
                 var mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                    "World Region 1 · mountain barrier",p,12f,7f,
-                    Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.27f,.29f,.285f,1f));
+                    "World Region 1 · mountain barrier",p,11f,6.5f,
+                    Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.34f,.36f,.34f,1f));
                 Parent(mountain);
             }
 
-            // Forest masses form geography first; the interactable wood node remains independent.
-            for(int cluster=0;cluster<4;cluster++)
+            var centres=new[]{new Vector3(-13f,0,7f),new Vector3(-11f,0,17f),
+                new Vector3(-1f,0,20f),new Vector3(16f,0,7f)};
+            for(int cluster=0;cluster<centres.Length;cluster++)
             {
-                var centre=new[]{new Vector3(-15f,0,8f),new Vector3(-13f,0,20f),
-                    new Vector3(-3f,0,25f),new Vector3(19f,0,6f)}[cluster];
-                for(int i=0;i<10;i++)
+                GroundPatch("World Region 1 · forest floor",centres[cluster]+new Vector3(0,-.02f,0),
+                    new Vector3(10f,.08f,9f),new Color(.18f,.245f,.17f),cluster*13f);
+                for(int i=0;i<11;i++)
                 {
                     float a=i*2.39996f+cluster*.71f;
-                    float radius=1.5f+Mathf.Sqrt(i+.5f)*1.25f;
-                    var p=centre+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
-                    ValoriaKit.PineTree("World Region 1 · forest mass",p,.60f+(i%3)*.08f);
+                    float radius=1.0f+Mathf.Sqrt(i+.5f)*1.15f;
+                    var p=centres[cluster]+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
+                    WorldTree("World Region 1 · forest mass",p,.80f+(i%3)*.10f,i+cluster);
                 }
             }
-            foreach(var p in new[]{new Vector3(-20f,0,-5f),new Vector3(20f,0,-6f),
-                new Vector3(-21f,0,28f),new Vector3(22f,0,27f)})
-            {
-                ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.15f,7);
-            }
+            foreach(var p in new[]{new Vector3(-19f,0,-4f),new Vector3(18f,0,-5f),
+                new Vector3(-18f,0,24f),new Vector3(20f,0,23f)})
+                ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.05f,6);
         }
 
         static void BuildRoutes()
         {
-            Parent(WorldRouteKit.MarchRoute("World Region 1 · Valoria main route",
-                new Vector3(0f,.04f,-4.5f),14f,2.1f,0f));
-            Parent(WorldRouteKit.MarchRoute("World Region 1 · forest route",
-                new Vector3(-4.1f,.05f,3.2f),12f,1.65f,-39f));
-            Parent(WorldRouteKit.MarchRoute("World Region 1 · ruin route",
-                new Vector3(3.2f,.05f,3.1f),10.5f,1.55f,36f));
-            Parent(WorldRouteKit.MarchRoute("World Region 1 · threat route",
-                new Vector3(8.8f,.05f,10.5f),8.6f,1.35f,30f));
+            RoadSegment("World Region 1 · Valoria main route",new Vector3(0f,.035f,-2.5f),8.5f,1.55f,0f);
+            RoadSegment("World Region 1 · forest route",new Vector3(-3.0f,.04f,2.2f),8.2f,1.30f,-38f);
+            RoadSegment("World Region 1 · ruin route",new Vector3(2.7f,.04f,2.0f),7.0f,1.25f,38f);
+            RoadSegment("World Region 1 · threat route",new Vector3(6.7f,.04f,7.5f),6.2f,1.05f,29f);
         }
 
         static void BuildValoria()
@@ -171,7 +177,7 @@ namespace Eldoria.Presentation
                     var bounds=rs[0].bounds;
                     for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     float span=Mathf.Max(bounds.size.x,bounds.size.z);
-                    if(span>.001f)city.transform.localScale*=4.3f/span;
+                    if(span>.001f)city.transform.localScale*=5.3f/span;
                     rs=city.GetComponentsInChildren<Renderer>(true);
                     bounds=rs[0].bounds;for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     city.transform.position+=ValoriaPosition-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
@@ -193,11 +199,13 @@ namespace Eldoria.Presentation
         {
             var node=new GameObject("World Region 1 · forest resource");
             node.transform.SetParent(root,true);node.transform.position=ForestPosition;
-            for(int i=0;i<8;i++)
+            GroundPatch("World Region 1 · forest resource floor",ForestPosition+new Vector3(0,-.01f,0),
+                new Vector3(6.8f,.09f,6.2f),new Color(.17f,.25f,.16f),8f);
+            for(int i=0;i<9;i++)
             {
-                float a=i*.78f;float r=1.0f+(i%3)*.55f;
-                ValoriaKit.PineTree("World Region 1 · forest node pine",
-                    ForestPosition+new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r),.68f+(i%2)*.08f);
+                float a=i*.78f;float r=.8f+(i%3)*.50f;
+                WorldTree("World Region 1 · forest node pine",
+                    ForestPosition+new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r),.90f+(i%2)*.10f,20+i);
             }
             var stock=Resources.Load<GameObject>("Valoria/UrbanProps/Crate");
             if(stock!=null)Parent(ValoriaKit.BenchmarkPieceTinted("World Region 1 · forest timber stock",
@@ -234,10 +242,21 @@ namespace Eldoria.Presentation
         {
             var scout=new GameObject("World Region 1 · corrupt scout visual");
             scout.transform.SetParent(root,true);scout.transform.position=ScoutPosition;
+            GroundPatch("World Region 1 · corruption stain",ScoutPosition+new Vector3(0,-.005f,0),
+                new Vector3(5.0f,.08f,4.4f),new Color(.24f,.14f,.25f),13f);
             var body=Primitive("World Region 1 · scout silhouette",PrimitiveType.Capsule,
-                ScoutPosition+new Vector3(0,.85f,0),new Vector3(.65f,1.3f,.65f),new Color(.16f,.13f,.16f));
+                ScoutPosition+new Vector3(0,.90f,0),new Vector3(.75f,1.45f,.75f),new Color(.18f,.13f,.19f));
             body.transform.SetParent(scout.transform,true);
-            ValoriaKit.RockCluster("World Region 1 · corruption rocks",ScoutPosition+new Vector3(0,0,.7f),.9f,6);
+            for(int i=0;i<3;i++)
+            {
+                var shard=Primitive("World Region 1 · corruption shard",PrimitiveType.Cube,
+                    ScoutPosition+new Vector3((i-1)*.85f,.55f,.75f+Mathf.Abs(i-1)*.35f),
+                    new Vector3(.28f,1.05f,.28f),Violet);
+                shard.transform.rotation=Quaternion.Euler(0,25f+i*33f,18f*(i-1));
+                shard.transform.SetParent(scout.transform,true);
+                var col=shard.GetComponent<Collider>();if(col!=null)col.enabled=false;
+            }
+            ValoriaKit.RockCluster("World Region 1 · corruption rocks",ScoutPosition+new Vector3(0,0,.7f),.85f,5);
             var glowGo=new GameObject("World Region 1 · corruption glow");
             glowGo.transform.SetParent(scout.transform,true);glowGo.transform.position=ScoutPosition+Vector3.up*.65f;
             var glow=glowGo.AddComponent<Light>();glow.type=LightType.Point;glow.color=Violet;glow.intensity=.7f;glow.range=4.5f;
@@ -257,6 +276,53 @@ namespace Eldoria.Presentation
                 var c=target.GetComponent<Collider>();
                 if(c!=null)c.enabled=false;
             }
+        }
+
+        static void GroundPatch(string name,Vector3 position,Vector3 scale,Color color,float yaw)
+        {
+            var patch=Primitive(name,PrimitiveType.Cube,position,scale,color);
+            patch.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+            var col=patch.GetComponent<Collider>();
+            if(col!=null)col.enabled=false;
+        }
+
+        static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
+        {
+            var road=Primitive(name,PrimitiveType.Cube,centre,new Vector3(width,.08f,length),Road);
+            road.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+            var col=road.GetComponent<Collider>();if(col!=null)col.enabled=false;
+
+            var left=Primitive(name+" · shoulder L",PrimitiveType.Cube,
+                centre,new Vector3(width+0.45f,.045f,length+.35f),RoadEdge);
+            left.transform.rotation=road.transform.rotation;
+            left.transform.position+=Vector3.down*.025f;
+            var lc=left.GetComponent<Collider>();if(lc!=null)lc.enabled=false;
+            left.transform.SetSiblingIndex(road.transform.GetSiblingIndex());
+        }
+
+        static void WorldTree(string name,Vector3 position,float scale,int variant)
+        {
+            var holder=new GameObject(name);
+            holder.transform.SetParent(root,true);
+            holder.transform.position=position;
+
+            var trunk=Primitive(name+" · trunk",PrimitiveType.Cylinder,
+                position+new Vector3(0,.48f*scale,0),new Vector3(.20f*scale,.48f*scale,.20f*scale),
+                new Color(.27f,.20f,.13f));
+            trunk.transform.SetParent(holder.transform,true);
+            var tc=trunk.GetComponent<Collider>();if(tc!=null)tc.enabled=false;
+
+            var lower=Primitive(name+" · crown lower",PrimitiveType.Sphere,
+                position+new Vector3(0,1.00f*scale,0),new Vector3(1.00f,.68f,1.00f)*scale,
+                variant%2==0?Pine:PineLight);
+            lower.transform.SetParent(holder.transform,true);
+            var lc=lower.GetComponent<Collider>();if(lc!=null)lc.enabled=false;
+
+            var upper=Primitive(name+" · crown upper",PrimitiveType.Sphere,
+                position+new Vector3(.04f,1.48f*scale,-.02f),new Vector3(.74f,.64f,.74f)*scale,
+                variant%2==0?PineLight:Pine);
+            upper.transform.SetParent(holder.transform,true);
+            var uc=upper.GetComponent<Collider>();if(uc!=null)uc.enabled=false;
         }
 
         static void AdoptLooseVisuals()
