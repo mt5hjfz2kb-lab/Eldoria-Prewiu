@@ -24,66 +24,107 @@ jobs:
           blender --version
           7z | head -4
 
-      - name: Fetch CC0 photogrammetry masonry donor
+      - name: Fetch top CC0 stone masonry candidates
         run: |
           mkdir -p /tmp/photo-proof/wall /tmp/photo-proof/evidence
           echo "Rock donor already validated in run 37445549161 / artifact 11403535192" > /tmp/photo-proof/rock-files.txt
 
           python - <<'PY'
-          import json, os, urllib.parse, urllib.request
+          import json, os, urllib.parse, urllib.request, zipfile
+          UA={"User-Agent":"EldoriaResearch/1.0"}
+
           def get_json(url):
-              req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
+              req=urllib.request.Request(url,headers=UA)
               with urllib.request.urlopen(req,timeout=90) as r:
                   return json.load(r)
 
-          # ambientCG API v3 (current). Try focused searches and fall back broad.
-          payload=None
-          used=None
-          for q in ["stone wall","masonry stone","stone"]:
-              url="https://ambientcg.com/api/v3/assets?"+urllib.parse.urlencode({"q":q,"limit":100})
+          assets=[]
+          used=[]
+          for q in ["stone wall","masonry stone","stone rock wall","stone"]:
+              url="https://ambientcg.com/api/v3/assets?"+urllib.parse.urlencode({"q":q,"limit":150})
               try:
                   data=get_json(url)
-                  print("V3_QUERY",url,"TYPE",type(data).__name__)
                   items=data.get("assets",data.get("data",data.get("results",[]))) if isinstance(data,dict) else data
+                  print("V3_QUERY",q,"RESULTS",len(items or []))
                   if items:
-                      payload=items; used=url; break
+                      assets.extend(items)
+                      used.append(url)
               except Exception as e:
-                  print("V3_QUERY_FAIL",url,repr(e))
-          if not payload:
+                  print("V3_QUERY_FAIL",q,repr(e))
+
+          uniq={}
+          for a in assets:
+              aid=a.get("id") or a.get("assetId") or a.get("asset_id")
+              if aid: uniq[aid]=a
+          assets=list(uniq.values())
+          if not assets:
               raise SystemExit("ambientCG v3 returned no assets")
 
-          def tags_of(a):
-              tags=a.get("tags",[])
-              if isinstance(tags,dict): tags=list(tags.keys())
-              return " ".join(map(str,tags))
           def score(a):
-              txt=(" ".join([str(a.get("id","")),str(a.get("name","")),tags_of(a)])).lower()
+              txt=json.dumps(a,ensure_ascii=False).lower()
               s=0
-              for t,v in [("wall",40),("masonry",40),("stone",25),("rock",8),("medieval",30),("rough",5),("brick",8)]:
+              for t,v in [
+                  ("stone",70),("wall",55),("masonry",65),("rock",18),
+                  ("rough",8),("weathered",24),("old",12),("medieval",30),
+                  ("limestone",35),("sandstone",28),("granite",22),
+                  ("blocks",20),("block",10)
+              ]:
+                  if t in txt: s+=v
+              for t,v in [
+                  ("brick",-180),("red brick",-220),("tile",-90),("roof",-100),
+                  ("paving",-80),("floor",-75),("cobblestone",-45),("asphalt",-150),
+                  ("concrete",-90),("wood",-120),("metal",-120)
+              ]:
                   if t in txt: s+=v
               return s
-          payload=sorted(payload,key=score,reverse=True)
-          chosen=payload[0]
-          aid=chosen.get("id") or chosen.get("assetId") or chosen.get("asset_id")
-          if not aid:
-              raise SystemExit("ambientCG v3 asset missing id: "+repr(chosen)[:500])
-          dl=f"https://ambientcg.com/get?file={aid}_2K-JPG.zip"
-          print("AMBIENTCG_CHOSEN",aid,chosen.get("name"),"score",score(chosen),dl)
-          out="/tmp/photo-proof/wall/wall-2k.zip"
-          req=urllib.request.Request(dl,headers={"User-Agent":"EldoriaResearch/1.0"})
-          with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as fh:
-              while True:
-                  b=r.read(1024*1024)
-                  if not b: break
-                  fh.write(b)
-          open("/tmp/photo-proof/wall-source.txt","w").write(json.dumps({"id":aid,"name":chosen.get("name"),"api":used,"url":dl,"license":"CC0"},indent=2))
-          print("DOWNLOADED",out,os.path.getsize(out))
+
+          ranked=sorted(assets,key=score,reverse=True)
+          manifest=[]
+          for a in ranked:
+              aid=a.get("id") or a.get("assetId") or a.get("asset_id")
+              txt=json.dumps(a,ensure_ascii=False).lower()
+              if "brick" in txt or "roof" in txt or "wood" in txt or "metal" in txt:
+                  continue
+              if not any(t in txt for t in ["stone","masonry","rock","limestone","sandstone","granite"]):
+                  continue
+              manifest.append({
+                  "id":aid,
+                  "name":a.get("name"),
+                  "score":score(a),
+                  "raw":a
+              })
+              if len(manifest)>=3: break
+          if not manifest:
+              raise SystemExit("No non-brick stone candidates after ranking")
+
+          os.makedirs("/tmp/photo-proof/wall",exist_ok=True)
+          for idx,item in enumerate(manifest,1):
+              aid=item["id"]
+              dl=f"https://ambientcg.com/get?file={aid}_2K-JPG.zip"
+              item["url"]=dl
+              out=f"/tmp/photo-proof/wall/candidate-{idx}.zip"
+              req=urllib.request.Request(dl,headers=UA)
+              with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as fh:
+                  while True:
+                      b=r.read(1024*1024)
+                      if not b: break
+                      fh.write(b)
+              dest=f"/tmp/photo-proof/wall/candidate-{idx}"
+              os.makedirs(dest,exist_ok=True)
+              with zipfile.ZipFile(out) as z:
+                  z.extractall(dest)
+              print("CANDIDATE",idx,aid,"score",item["score"],"bytes",os.path.getsize(out))
+
+          open("/tmp/photo-proof/wall-source.txt","w").write(json.dumps({
+              "license":"CC0",
+              "api_queries":used,
+              "candidates":manifest
+          },indent=2,ensure_ascii=False))
           PY
 
-          mkdir -p /tmp/photo-proof/wall/unpacked
-          unzip -q /tmp/photo-proof/wall/wall-2k.zip -d /tmp/photo-proof/wall/unpacked
-          find /tmp/photo-proof/wall/unpacked -type f | sort > /tmp/photo-proof/wall-files.txt
-          head -100 /tmp/photo-proof/wall-files.txt
+          find /tmp/photo-proof/wall -type f | sort > /tmp/photo-proof/wall-files.txt
+          cat /tmp/photo-proof/wall-source.txt | head -160
+          head -120 /tmp/photo-proof/wall-files.txt
 
       - name: Render photogrammetry rock donor
         run: |
@@ -184,66 +225,101 @@ jobs:
             printf '%s\n' "Photogrammetry rock donor already validated: run 37445549161 / artifact 11403535192" > /tmp/photo-proof/evidence/rock-report.txt
           fi
 
-      - name: Build scanned masonry surface proof when available
+      - name: Render stone masonry candidate bakeoff
         run: |
-          cat > /tmp/photo-proof/render_wall.py <<'PY'
-          import bpy, os, math
+          cat > /tmp/photo-proof/render_wall_candidates.py <<'PY'
+          import bpy, os, math, json
           from mathutils import Vector
-          root="/tmp/photo-proof/wall/unpacked"
+
+          root="/tmp/photo-proof/wall"
           ev="/tmp/photo-proof/evidence"
-          if not os.path.isdir(root):
-              open(os.path.join(ev,"wall-report.txt"),"w").write("PolyScan 2K direct download unavailable in automated proof; no visual verdict.\n")
-              raise SystemExit(0)
-          imgs=[]
-          for dp,ds,fs in os.walk(root):
-              for fn in fs:
-                  p=os.path.join(dp,fn)
-                  if fn.lower().endswith((".jpg",".jpeg",".png",".tif",".tiff",".exr")):
-                      imgs.append(p)
-          def pick(tokens):
+          os.makedirs(ev,exist_ok=True)
+          manifest=json.load(open("/tmp/photo-proof/wall-source.txt"))
+          reports=[]
+
+          def pick(imgs,tokens,reject=()):
               for p in imgs:
                   low=os.path.basename(p).lower()
+                  if any(r in low for r in reject): continue
                   if any(t in low for t in tokens): return p
               return None
-          albedo=pick(["albedo","basecolor","base_color","diffuse","color"])
-          rough=pick(["rough"])
-          normal=pick(["normal","nor_gl"])
-          height=pick(["height","displacement","disp"])
-          print("WALL_MAPS",albedo,rough,normal,height)
-          if not albedo:
-              open(os.path.join(ev,"wall-report.txt"),"w").write("No albedo map found after extraction.\n")
-              raise SystemExit(0)
-          bpy.ops.wm.read_factory_settings(use_empty=True)
-          bpy.ops.mesh.primitive_grid_add(x_subdivisions=161,y_subdivisions=161,size=2.0,location=(0,0,0))
-          wall=bpy.context.object; wall.name="PhotogrammetryWall"
-          # rotate grid vertical, scale to 5x3 m panel
-          wall.rotation_euler=(math.radians(90),0,0)
-          wall.scale=(2.5,1.5,1)
-          bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
-          mat=bpy.data.materials.new("ScannedStone"); mat.use_nodes=True
-          bsdf=mat.node_tree.nodes.get("Principled BSDF")
-          tex=mat.node_tree.nodes.new("ShaderNodeTexImage"); tex.image=bpy.data.images.load(albedo)
-          mat.node_tree.links.new(tex.outputs["Color"],bsdf.inputs["Base Color"])
-          if rough:
-              r=mat.node_tree.nodes.new("ShaderNodeTexImage"); r.image=bpy.data.images.load(rough); r.image.colorspace_settings.name='Non-Color'; mat.node_tree.links.new(r.outputs["Color"],bsdf.inputs["Roughness"])
-          if normal:
-              n=mat.node_tree.nodes.new("ShaderNodeTexImage"); n.image=bpy.data.images.load(normal); n.image.colorspace_settings.name='Non-Color'
-              nm=mat.node_tree.nodes.new("ShaderNodeNormalMap"); mat.node_tree.links.new(n.outputs["Color"],nm.inputs["Color"]); mat.node_tree.links.new(nm.outputs["Normal"],bsdf.inputs["Normal"])
-          if height:
-              h=wall.modifiers.new("ScannedHeight","DISPLACE")
-              ht=bpy.data.textures.new("height","IMAGE"); ht.image=bpy.data.images.load(height); h.texture=ht; h.texture_coords='UV'; h.strength=0.09
-          wall.data.materials.append(mat)
-          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100; sc.render.image_settings.file_format='PNG'
-          if sc.world is None: sc.world=bpy.data.worlds.new("World")
-          sc.world.color=(0.04,0.04,0.04)
-          bpy.ops.object.light_add(type='SUN',location=(0,-4,5)); sun=bpy.context.object; sun.rotation_euler=(math.radians(50),0,math.radians(145)); sun.data.energy=2
-          bpy.ops.object.light_add(type='AREA',location=(-2,-3,3)); area=bpy.context.object; area.data.energy=600; area.data.size=3
-          bpy.ops.object.camera_add(location=(4,-6,2.2)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=65; cam.rotation_euler=(Vector((0,0,0.5))-cam.location).to_track_quat('-Z','Y').to_euler()
-          sc.render.filepath=os.path.join(ev,"wall-scan.png"); bpy.ops.render.render(write_still=True)
-          with open(os.path.join(ev,"wall-report.txt"),"w") as f:
-              f.write(f"source=ambientCG photogrammetry masonry\nlicense=CC0\nalbedo={albedo}\nrough={rough}\nnormal={normal}\nheight={height}\n")
+
+          for idx,item in enumerate(manifest["candidates"],1):
+              cdir=os.path.join(root,f"candidate-{idx}")
+              imgs=[]
+              for dp,ds,fs in os.walk(cdir):
+                  for fn in fs:
+                      p=os.path.join(dp,fn)
+                      if fn.lower().endswith((".jpg",".jpeg",".png",".tif",".tiff",".exr")):
+                          imgs.append(p)
+              albedo=pick(imgs,["color","albedo","basecolor","base_color","diffuse"],["normal","rough","disp","height","ao"])
+              rough=pick(imgs,["rough"])
+              normal=pick(imgs,["normalgl","normal_gl","nor_gl","normal"],["dx"])
+              height=pick(imgs,["displacement","height","disp"])
+              if not albedo:
+                  print("SKIP_NO_ALBEDO",idx,item["id"])
+                  continue
+
+              bpy.ops.wm.read_factory_settings(use_empty=True)
+              bpy.ops.mesh.primitive_grid_add(x_subdivisions=201,y_subdivisions=121,size=2.0,location=(0,0,0))
+              wall=bpy.context.object
+              wall.name=f"StoneCandidate{idx}"
+              wall.rotation_euler=(math.radians(90),0,0)
+              wall.scale=(2.7,1.6,1)
+              bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+
+              mat=bpy.data.materials.new(f"Stone_{item['id']}")
+              mat.use_nodes=True
+              nodes=mat.node_tree.nodes; links=mat.node_tree.links
+              bsdf=nodes.get("Principled BSDF")
+              tex=nodes.new("ShaderNodeTexImage"); tex.image=bpy.data.images.load(albedo)
+              links.new(tex.outputs["Color"],bsdf.inputs["Base Color"])
+              bsdf.inputs["Roughness"].default_value=0.72
+              if rough:
+                  r=nodes.new("ShaderNodeTexImage"); r.image=bpy.data.images.load(rough); r.image.colorspace_settings.name='Non-Color'
+                  links.new(r.outputs["Color"],bsdf.inputs["Roughness"])
+              if normal:
+                  n=nodes.new("ShaderNodeTexImage"); n.image=bpy.data.images.load(normal); n.image.colorspace_settings.name='Non-Color'
+                  nm=nodes.new("ShaderNodeNormalMap"); nm.inputs["Strength"].default_value=0.9
+                  links.new(n.outputs["Color"],nm.inputs["Color"]); links.new(nm.outputs["Normal"],bsdf.inputs["Normal"])
+              if height:
+                  ht=bpy.data.textures.new(f"height_{idx}",type="IMAGE"); ht.image=bpy.data.images.load(height)
+                  disp=wall.modifiers.new("ScannedHeight","DISPLACE")
+                  disp.texture=ht; disp.texture_coords='UV'; disp.strength=0.13
+
+              wall.data.materials.append(mat)
+              sc=bpy.context.scene
+              sc.render.engine="BLENDER_EEVEE"
+              sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100
+              sc.render.image_settings.file_format="PNG"
+              if sc.world is None: sc.world=bpy.data.worlds.new("World")
+              sc.world.color=(0.035,0.035,0.035)
+
+              bpy.ops.object.light_add(type='SUN',location=(0,-4,5))
+              sun=bpy.context.object; sun.rotation_euler=(math.radians(50),0,math.radians(145)); sun.data.energy=2.1
+              bpy.ops.object.light_add(type='AREA',location=(-2.5,-3.5,3))
+              area=bpy.context.object; area.data.energy=650; area.data.size=3.5
+              bpy.ops.object.camera_add(location=(4.2,-6.5,2.25))
+              cam=bpy.context.object; sc.camera=cam; cam.data.lens=66
+              cam.rotation_euler=(Vector((0,0,0.45))-cam.location).to_track_quat('-Z','Y').to_euler()
+
+              out=os.path.join(ev,f"wall-candidate-{idx}-{item['id']}.png")
+              sc.render.filepath=out
+              bpy.ops.render.render(write_still=True)
+              reports.append({
+                  "index":idx,"id":item["id"],"name":item.get("name"),"score":item["score"],
+                  "albedo":albedo,"roughness":rough,"normal":normal,"height":height,"render":out
+              })
+              print("RENDERED",out)
+
+          open(os.path.join(ev,"wall-candidate-report.json"),"w").write(json.dumps(reports,indent=2))
+          if not reports:
+              raise RuntimeError("No masonry candidate rendered")
           PY
-          blender -b --python /tmp/photo-proof/render_wall.py
+
+          blender -b --python /tmp/photo-proof/render_wall_candidates.py
+          test -s /tmp/photo-proof/evidence/wall-candidate-report.json
+          find /tmp/photo-proof/evidence -name 'wall-candidate-*.png' -size +10k | head -1 | grep .
 
       - name: Package evidence
         run: |
