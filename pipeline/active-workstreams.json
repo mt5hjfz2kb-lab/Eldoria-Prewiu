@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T20:18:30Z",
+  "updated_at": "2026-10-07T00:30:00+02:00",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -71,6 +71,31 @@
       "next": "Fix imported Nature Starter subobject instantiation without losing URP adaptation; rerun full Unity gate and inspect actual Region 1 captures.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
+    },
+    {
+      "id": "valoria-visual-authority-routing-guard-v1",
+      "title": "Valoria canonical visual authority routing guard",
+      "owner": "chat-valoria-authority-guard-20261007",
+      "scope": [
+        "pipeline/visual-authority-routing-v1.json",
+        "tools/check-valoria-visual-authority-routing.mjs",
+        ".github/workflows/valoria-visual-authority-routing.yml",
+        "docs/VALORIA_VISUAL_AUTHORITY_ROUTING_GUARD_V1.md",
+        "AGENTS.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "claimed_at": "2026-10-07T00:30:00+02:00",
+      "base_main_sha": "f2189beab353c241fb33a5f1b1f54199842990f0",
+      "status": "active",
+      "paid_credits": 0,
+      "phase": "INSTALL CANONICAL-VS-LEGACY VISUAL AUTHORITY GUARD",
+      "dependency": "Must not modify SlicePresenter.cs, ValoriaBenchmarkCapture.cs, Region 1 runtime, WebGL publishing files, or occupy the Windows Unity runner while their current owners are active.",
+      "next": "Install machine-readable authority map and GitHub-hosted guard; harden AGENTS so generic legacy/QA benchmark captures can never be presented as current Valoria. Runtime fallback removal remains deferred until owning workstream releases SlicePresenter.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Repository governance only; no player-facing visual authoring."
     }
   ],
   "history": [
