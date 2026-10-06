@@ -1,6 +1,6 @@
 # Eldoria — WORLD REGION 1 v1
 
-Status: **ACTIVE / 4X WORLD SCREEN CONTRACT LOCKED / HEAVY UNITY VALIDATION DEFERRED WHILE MOBILE WEBGL OWNS THE RUNNER**
+Status: **ACTIVE / 4X WORLD SCREEN IMPLEMENTED / UNITY + VISUAL VALIDATION IN PROGRESS**
 
 Canonical workstream: `eldoria-world-region-1-v1`.
 
@@ -123,4 +123,4 @@ Closure requires independent evidence for TECH, VISUAL, WORLD/VALORIA CONTINUITY
 
 ## Concurrency note
 
-At claim time `valoria-mobile-web-playtest-v1` owns the Windows Unity runner and GitHub Pages surfaces. Region 1 may prepare data/docs/code that does not dispatch or monopolize that resource. Heavy Unity generation/capture/build must wait until that workstream releases the runner, then the Region 1 claim may explicitly add the runner resource after re-reading the registry.
+`valoria-mobile-web-playtest-v1` is parked and no longer owns the Windows Unity runner. `eldoria-world-region-1-v1` now owns `windows-self-hosted-unity-6000-3-23f1` for its validation cycle. GitHub Pages remains outside this workstream; Region 1 must not mutate WebGL/Pages publishing surfaces.
