@@ -50,14 +50,23 @@ namespace Eldoria.Presentation
             foreach(var sceneRoot in scene.GetRootGameObjects())
             { productionParcels=sceneRoot.GetComponentInChildren<ValoriaParcelPresentation>(true);if(productionParcels!=null)break; }
             if(productionParcels!=null) productionParcels.Apply(state);
-            else VisualWorld.Create(city,state);
-            if(city&&OfficialCamera!=null&&productionParcels==null)
+            else if(city) VisualWorld.Create(true,state);
+            else WorldRegion1Runtime.Create(state);
+            if(OfficialCamera!=null&&productionParcels==null)
             {
-                float aspect=Screen.height>0?Screen.width/(float)Screen.height:OfficialCamera.aspect;
-                ValoriaMobileNavigableCityV1.ApplyHomePose(OfficialCamera,aspect);
+                if(city)
+                {
+                    float aspect=Screen.height>0?Screen.width/(float)Screen.height:OfficialCamera.aspect;
+                    ValoriaMobileNavigableCityV1.ApplyHomePose(OfficialCamera,aspect);
+                    ConfigureCityPanBounds(state.BastionLevel);
+                }
+                else
+                {
+                    panHalfX=10f;
+                    panHalfZ=8f;
+                }
                 cameraHome=OfficialCamera.transform.position;
                 cameraHomeOrthographicSize=OfficialCamera.orthographicSize;
-                ConfigureCityPanBounds(state.BastionLevel);
             }
             CreateHud();Refresh();
         }
@@ -80,7 +89,7 @@ namespace Eldoria.Presentation
             var mouse=Mouse.current;
             var touch=Touchscreen.current;
 
-            if(city&&HandlePinchZoom(touch,camera))return;
+            if(HandlePinchZoom(touch,camera))return;
 
             bool touchPressed=touch!=null&&touch.primaryTouch.press.wasPressedThisFrame;
             bool touchHeld=touch!=null&&touch.primaryTouch.press.isPressed;
@@ -108,7 +117,7 @@ namespace Eldoria.Presentation
             if(pointerActive&&held)
             {
                 if(IsPanGesture(pointerStart,point))pointerDragged=true;
-                if(city&&pointerDragged&&!pointerStartedOverUi)
+                if(pointerDragged&&!pointerStartedOverUi)
                     PanCameraByScreenDelta(point-pointerLast);
                 pointerLast=point;
             }
@@ -193,21 +202,31 @@ namespace Eldoria.Presentation
         void PanCameraByScreenDelta(Vector2 screenDelta)
         {
             var camera=OfficialCamera;
-            if(!city||camera==null)return;
-            if(productionParcels!=null){productionParcels.Pan(screenDelta);return;}
+            if(camera==null)return;
+            if(city&&productionParcels!=null){productionParcels.Pan(screenDelta);return;}
             float worldPerPixel=(camera.orthographicSize*2f)/Mathf.Max(1f,camera.pixelHeight);
             var right=Vector3.ProjectOnPlane(camera.transform.right,Vector3.up).normalized;
             var up=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
             if(up.sqrMagnitude<.001f)up=Vector3.forward;
             var desired=camera.transform.position+(-right*screenDelta.x-up*screenDelta.y)*worldPerPixel;
-            float aspect=camera.aspect>0f?camera.aspect:(Screen.height>0?Screen.width/(float)Screen.height:.5625f);
-            camera.transform.position=ValoriaMobileNavigableCityV1.ClampToEnvelope(cameraHome,desired,gateway.Snapshot().BastionLevel,aspect);
+            if(city)
+            {
+                float aspect=camera.aspect>0f?camera.aspect:(Screen.height>0?Screen.width/(float)Screen.height:.5625f);
+                camera.transform.position=ValoriaMobileNavigableCityV1.ClampToEnvelope(cameraHome,desired,gateway.Snapshot().BastionLevel,aspect);
+            }
+            else
+            {
+                var offset=desired-cameraHome;
+                offset.x=Mathf.Clamp(offset.x,-panHalfX,panHalfX);
+                offset.z=Mathf.Clamp(offset.z,-panHalfZ,panHalfZ);
+                camera.transform.position=new Vector3(cameraHome.x+offset.x,cameraHome.y,cameraHome.z+offset.z);
+            }
         }
 
         void RecenterCamera()
         {
-            if(!city||OfficialCamera==null)return;
-            if(productionParcels!=null){productionParcels.Home();return;}
+            if(OfficialCamera==null)return;
+            if(city&&productionParcels!=null){productionParcels.Home();return;}
             OfficialCamera.transform.position=cameraHome;
             OfficialCamera.orthographicSize=cameraHomeOrthographicSize;
         }
@@ -273,9 +292,56 @@ namespace Eldoria.Presentation
         void Select(string id)
         {
             if(id=="gate")SceneManager.LoadScene("Frontier");
+            else if(id=="valoria-map-city")SceneManager.LoadScene("Valoria");
+            else if(!city&&(id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin"))
+                OpenWorldPanel(id);
             else if(id=="forest-valoria"||id=="quarry-valoria")Send("Gather",id);
             else if(id=="corrupt-scout"||id=="engendro-valoria")Send("Fight",id);
             else if(id=="sawmill"||id=="barracks"||id=="bastion")OpenBuildingPanel(id);
+        }
+
+        void OpenWorldPanel(string id)
+        {
+            if(buildingPanel==null)return;
+            var s=gateway.Snapshot();
+            buildingPanel.SetActive(true);
+            buildingAction.onClick.RemoveAllListeners();
+            buildingAction.interactable=true;
+
+            if(id=="forest-valoria")
+            {
+                buildingTitle.text="BOSQUE DE VALORIA";
+                buildingBody.text="Nodo de madera · "+s.ForestRemaining+" disponibles.\nEnvía una Marcha desde Valoria y la recompensa se acredita al regresar.";
+                buildingAction.GetComponentInChildren<Text>().text="ENVIAR MARCHA";
+                buildingAction.interactable=s.ForestRemaining>0&&s.March.Phase=="idle";
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Gather",id);});
+            }
+            else if(id=="quarry-valoria")
+            {
+                buildingTitle.text="CANTERA";
+                buildingBody.text="Nodo de piedra · "+s.QuarryRemaining+" disponibles.\nLa cantera demuestra la segunda familia económica del mapa 4X.";
+                buildingAction.GetComponentInChildren<Text>().text="ENVIAR MARCHA";
+                buildingAction.interactable=s.QuarryRemaining>0&&s.March.Phase=="idle";
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Gather",id);});
+            }
+            else if(id=="old-watch-ruin")
+            {
+                buildingTitle.text="ANTIGUA ATALAYA";
+                buildingBody.text="Ruina neutral. Desde aquí se vigilaba la ruta antes de la Brecha.\nEs un POI narrativo: inspeccionarlo no concede recursos ni altera el combate.";
+                buildingAction.GetComponentInChildren<Text>().text="INSPECCIONADO";
+                buildingAction.interactable=false;
+            }
+            else
+            {
+                bool engendro=id=="engendro-valoria";
+                buildingTitle.text=engendro?"ENGENDRO DE LA FISURA":"EXPLORADOR CORRUPTO";
+                buildingBody.text=engendro
+                    ?"Amenaza de Bastión II. Requiere la Marcha preparada en Valoria."
+                    :"Primera amenaza PvE de la Región I. La victoria despeja la ruta y la recompensa vuelve con la Marcha.";
+                buildingAction.GetComponentInChildren<Text>().text="ATACAR";
+                buildingAction.interactable=s.March.Phase=="idle"&&!(engendro?s.EngendroDefeated:s.ScoutDefeated);
+                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Fight",id);});
+            }
         }
         void OpenBuildingPanel(string id)
         {
@@ -369,12 +435,13 @@ namespace Eldoria.Presentation
             if(heading==null)return;
             var s=gateway.Snapshot();
             if(productionParcels!=null) productionParcels.Apply(s);
-            if(productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
+            if(!city)WorldRegion1Runtime.Refresh(s);
+            if(city&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
                 s.ScoutDefeated!=renderedScout||s.EngendroDefeated!=renderedEngendro||
                 (s.March.Phase=="idle")!=renderedIdle))
             { feedback="";SceneManager.LoadScene(SceneManager.GetActiveScene().name);return; }
             var parts=SliceRules.TotalPower(s);
-            heading.text="VALORIA\nBastión "+s.BastionLevel;
+            heading.text=city?"VALORIA\nBastión "+s.BastionLevel:"MUNDO\nRegión I";
             resources.text="♣  MADERA\n"+s.Resources.Wood;
             if(stoneResource!=null)stoneResource.text="◆  PIEDRA\n"+s.Resources.Stone;
             var marchPreview=s.March.Phase!="idle"?s.March.Troops:
@@ -406,8 +473,8 @@ namespace Eldoria.Presentation
             message.text=string.IsNullOrEmpty(feedback)?
                 (s.EngendroDefeated?"Bastión II asegurado. La Brecha sigue siendo una amenaza.":
                  s.JourneyComplete&&s.BastionLevel==1?"Valoria vuelve a respirar. Asciende el Bastión para continuar.":
-                 city?"Toca la puerta para salir; vuelve con recursos para construir.":
-                 "Toca un objetivo o usa los botones para enviar la Marcha."):feedback;
+                 city?"Pulsa MUNDO para abrir el mapa 4X; vuelve con recursos para construir.":
+                 "Selecciona una ciudad, recurso, ruina o amenaza para actuar en la Región I."):feedback;
             RefreshClock();
         }
         string ObjectiveText(PlayerState s,ChapterProgressState cp)
@@ -503,12 +570,11 @@ namespace Eldoria.Presentation
             resources=ResourceChip("Wood resource",top,"♣","MADERA",62);
             stoneResource=ResourceChip("Stone resource",top,"◆","PIEDRA",62);
             power=ResourceChip("Power",top,"⚔","PODER",72,new Color(.085f,.075f,.045f,.96f));
-            if(city)
             {
                 var homeButton=Button(top,"⌂",RecenterCamera);
                 var homeLayout=homeButton.GetComponent<LayoutElement>();
                 homeLayout.minWidth=32;homeLayout.preferredWidth=32;homeLayout.minHeight=34;
-                homeButton.gameObject.name="City home / recenter";
+                homeButton.gameObject.name=city?"City home / recenter":"World home / recenter";
             }
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
