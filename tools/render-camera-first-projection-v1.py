@@ -52,8 +52,10 @@ def look_at(obj, target):
     obj.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
 
 def render(name, xoff=0.0, yaw_target_x=0.0):
+    # OBJ importer converts source Y-up / -Z-forward camera-space mesh
+    # into Blender Z-up / -Y-forward world coordinates.
     cam.location=(xoff,0.0,0.0)
-    look_at(cam,(yaw_target_x,0.0,-10.0))
+    look_at(cam,(yaw_target_x,-10.0,0.0))
     scene.render.filepath=str(OUT/name)
     bpy.ops.render.render(write_still=True)
 
