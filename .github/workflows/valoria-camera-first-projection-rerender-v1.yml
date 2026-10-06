@@ -1,12 +1,9 @@
 name: "[PROOF] Valoria Camera-First Projection Rerender v1"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'pipeline/camera-first-projection-rerender-v1-request.json'
   workflow_dispatch:
 
+# Historical R&D: manual-only after Semantic 2.5D final rejection (2026-10-06).
 permissions:
   contents: write
 
