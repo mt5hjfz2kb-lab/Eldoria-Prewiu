@@ -4,7 +4,7 @@ from gradio_client import Client, handle_file
 
 OUT=os.environ.get("OUT_DIR","/tmp/sharp-proof")
 os.makedirs(OUT,exist_ok=True)
-src="docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg"
+src="references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
 im=Image.open(src).convert("RGB")
 im.thumbnail((1280,1280),Image.LANCZOS)
 inp=os.path.join(OUT,"canonical-target.png"); im.save(inp)
