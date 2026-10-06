@@ -17,7 +17,8 @@
   "zero_spend": true,
   "vendor_calls": false,
   "production_promotion": false,
-  "nonce": "camera-first-depth-shell-unity-v1-002",
-  "requested_at": "2026-10-06T08:17:00Z",
-  "source_revision": "semantic-depth-shell-v2-edge-zero-support"
+  "nonce": "camera-first-depth-shell-unity-v1-003",
+  "requested_at": "2026-10-06T08:22:00Z",
+  "source_revision": "semantic-depth-shell-v2-edge-zero-support",
+  "integration_revision": "explicit-urp-alpha-blend"
 }
