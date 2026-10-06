@@ -1,3 +1,9 @@
+## 2026-10-06 — ELDORIA WORLD REGION 1 v1 — ARCHITECTURE PASS / UNITY IMPLEMENTATION WAITING FOR RUNNER RELEASE
+
+Workstream `eldoria-world-region-1-v1` is active. Canonical contract: `docs/ELDORIA_WORLD_REGION_1_V1.md` + `pipeline/world-region-1.json`. The minimum sector is locked as Valoria gate → road/fork → `forest-valoria` → `old-watch-ruin` → `corrupt-scout` → return, with `quarry-valoria` optional context. Existing `PlayerState`/`LocalGateway` march, Gather/Fight, idempotent reward and save semantics are to be reused; the historical Frontier presentation is not production authority and will be replaced rather than revived.
+
+Concurrency is currently the only blocker to Unity integration: `valoria-mobile-web-playtest-v1` still owns `windows-self-hosted-unity-6000-3-23f1` and GitHub Pages. Region 1 has not dispatched or occupied that runner and has not touched its WebGL scope. Layout/test evidence is under `docs/evidence/eldoria-world-region-1-v1/`. No gate beyond architecture/slice planning is claimed yet; TECH/VISUAL/CONTINUITY/NAVIGATION/INTERACTION/GAMEPLAY/SAVE/BOUNDED CAMERA/MOBILE remain pending integrated evidence.
+
 ## 2026-10-06 — VALORIA REAL GAME STATE v1 — LOCAL PLY VERIFIED / UNITY GATES PENDING
 
 Same active workstream `valoria-real-game-state-v1`; no new block or research.
