@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-first-reset-target-unity-shell-v1",
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "source_layers": "art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/layer-0..3.png",
+  "isolated_only": true,
+  "production_promotion": false,
+  "preserve_gameplay_signature": true,
+  "zero_spend": true,
+  "vendor_calls": false,
+  "nonce": "camera-first-reset-target-unity-shell-v1-001",
+  "requested_at": "2026-10-06T07:10:00Z"
+}
