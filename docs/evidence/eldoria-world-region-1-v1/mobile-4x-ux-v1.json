@@ -1,0 +1,78 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "purpose": "Lock mobile 4X interaction flow and hierarchy before visual implementation.",
+  "entry": {
+    "city": "Valoria",
+    "control": "Mundo",
+    "behavior": "single clear tap changes to dedicated World screen; no gate-walk animation required"
+  },
+  "worldHome": {
+    "focal": "Valoria strategic city representation",
+    "firstReadOrder": [
+      "Valoria/home",
+      "primary objective/target",
+      "major route/terrain structure",
+      "secondary POIs/resources",
+      "ambient dressing"
+    ],
+    "camera": "fixed isometric/top-down direction; bounded pan and bounded zoom"
+  },
+  "selection": {
+    "tapTarget": "visual proxy/hotspot independent of mesh",
+    "opens": "compact context panel anchored safely inside mobile frame",
+    "resourcePanel": [
+      "name/type",
+      "level if relevant",
+      "remaining/availability",
+      "march time",
+      "reward expectation",
+      "Send March"
+    ],
+    "pvePanel": [
+      "name/tier",
+      "recommended expedition power",
+      "reward/availability",
+      "Prepare/Send March"
+    ],
+    "poiPanel": [
+      "name",
+      "short lore/function",
+      "Inspect"
+    ]
+  },
+  "marchFeedback": {
+    "before": "optional confirmation only when composition/choice matters",
+    "outbound": "visible marker leaves Valoria and travels toward target",
+    "active": "target shows occupied/engaged/gathering state",
+    "returning": "visible return marker/path",
+    "completion": "reward feedback occurs when authoritative return completes"
+  },
+  "return": {
+    "controls": [
+      "persistent Reino control",
+      "tap/select own Valoria city"
+    ],
+    "behavior": "returns to certified Valoria city screen and preserves shared state"
+  },
+  "mobileRules": [
+    "primary touch targets >= 44 CSS-equivalent px",
+    "pan gesture must not accidentally select POIs",
+    "tap must not trigger after a drag threshold is exceeded",
+    "critical controls respect safe area",
+    "context panels must not cover the selected target if avoidable",
+    "home/reset camera affordance if user loses orientation",
+    "no free rotation",
+    "far zoom must preserve city/resource/PvE silhouettes",
+    "UI labels support recognition but cannot compensate for unreadable world silhouettes"
+  ],
+  "tutorialFirstUse": [
+    "Mundo button highlight",
+    "brief World intro explaining nodes/threats",
+    "highlight forest",
+    "tap forest -> context panel",
+    "send first march",
+    "watch outbound/return",
+    "return to Reino",
+    "show changed kingdom resources"
+  ]
+}
