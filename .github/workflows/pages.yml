@@ -144,9 +144,13 @@ jobs:
             exit 0
           }
           if (-not $cfg.production_artifact_id) { throw "Current Valoria publication requires production_artifact_id." }
+          if (-not $cfg.parcel_source_artifact_id) { throw "Current Valoria publication requires parcel_source_artifact_id." }
           $zip = Join-Path $env:RUNNER_TEMP "valoria-current-production.zip"
           $extract = Join-Path $env:RUNNER_TEMP "valoria-current-production"
+          $splatsZip = Join-Path $env:RUNNER_TEMP "valoria-webgl-splats.zip"
+          $splats = Join-Path $env:GITHUB_WORKSPACE "webgl-external-splats"
           Remove-Item $extract -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $splats -Recurse -Force -ErrorAction SilentlyContinue
           $headers = @{ Authorization="Bearer $env:GH_TOKEN"; Accept="application/vnd.github+json"; "X-GitHub-Api-Version"="2022-11-28" }
           Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.production_artifact_id)/zip" -OutFile $zip
           Expand-Archive -Path $zip -DestinationPath $extract -Force
@@ -156,7 +160,13 @@ jobs:
           Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path (Split-Path $dst) -Force | Out-Null
           Copy-Item $src $dst -Recurse -Force
-          Write-Host "Staged certified current Valoria production scene from artifact $($cfg.production_artifact_id)."
+          Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.parcel_source_artifact_id)/zip" -OutFile $splatsZip
+          Expand-Archive -Path $splatsZip -DestinationPath $splats -Force
+          foreach ($i in 0..3) {
+            $ply = Join-Path $splats "state-$i.ply"
+            if (-not (Test-Path $ply)) { throw "Certified SHARP WebGL state missing: $ply" }
+          }
+          Write-Host "Staged certified current Valoria scene and exact external SHARP states."
 
       - name: Build Unity WebGL current requested slice
         shell: powershell
@@ -178,6 +188,12 @@ jobs:
             throw "Unity WebGL build failed with exit code $($process.ExitCode)."
           }
           if (-not (Test-Path "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/index.html")) { throw "Unity WebGL index.html was not produced." }
+          if ($cfg.mode -eq "current-valoria-production") {
+            foreach ($i in 0..3) {
+              Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
+            }
+            Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
+          }
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-unity-webgl-${{ github.sha }}
