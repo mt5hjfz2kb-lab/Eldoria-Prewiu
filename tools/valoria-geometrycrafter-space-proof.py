@@ -27,7 +27,7 @@ for name,spec in cands:
     for p in spec.get("parameters",[]):
         comp=p.get("component"); pname=str(p.get("parameter_name","")).lower()
         if comp=="Video" or "video" in pname:
-            args.append(handle_file(video))
+            args.append({"video": handle_file(video), "subtitles": None})
         elif "process_length" in pname or ("length" in pname and comp in ("Slider","Number")):
             args.append(60)
         elif "max_res" in pname or "resolution" in pname:
