@@ -46,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
           pip install "git+https://github.com/facebookresearch/sam2.git@2b90b9f5ceec907a1c18123530e92e794ad901a4"
-          pip install "numpy<2" pillow
+          pip install "numpy<2" pillow huggingface_hub
 
       - name: Build semantic layers from canonical target boxes
         run: |
