@@ -22,13 +22,13 @@ namespace Eldoria.Presentation
         static Transform root;
         static GameObject marchVisual;
         static ValoriaExternalAssetLibrary externalLibrary;
-        static readonly Color Earth=new Color(.30f,.29f,.24f);
-        static readonly Color EarthLight=new Color(.35f,.35f,.28f);
-        static readonly Color Meadow=new Color(.23f,.30f,.21f);
-        static readonly Color Pine=new Color(.16f,.27f,.18f);
-        static readonly Color PineLight=new Color(.21f,.34f,.22f);
-        static readonly Color Road=new Color(.28f,.22f,.16f);
-        static readonly Color RoadEdge=new Color(.37f,.31f,.22f);
+        static readonly Color Earth=new Color(.38f,.35f,.28f);
+        static readonly Color EarthLight=new Color(.42f,.40f,.31f);
+        static readonly Color Meadow=new Color(.29f,.34f,.23f);
+        static readonly Color Pine=new Color(.12f,.24f,.15f);
+        static readonly Color PineLight=new Color(.18f,.31f,.19f);
+        static readonly Color Road=new Color(.20f,.145f,.095f);
+        static readonly Color RoadEdge=new Color(.33f,.27f,.19f);
         static readonly Color Stone=new Color(.40f,.40f,.36f);
         static readonly Color WarmStone=new Color(.49f,.44f,.34f);
         static readonly Color Violet=new Color(.45f,.20f,.52f);
@@ -79,15 +79,15 @@ namespace Eldoria.Presentation
         static void ConfigureEnvironment()
         {
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.38f,.42f,.42f);
-            RenderSettings.ambientEquatorColor=new Color(.28f,.27f,.23f);
-            RenderSettings.ambientGroundColor=new Color(.12f,.115f,.095f);
-            RenderSettings.ambientIntensity=.92f;
+            RenderSettings.ambientSkyColor=new Color(.46f,.47f,.43f);
+            RenderSettings.ambientEquatorColor=new Color(.34f,.32f,.27f);
+            RenderSettings.ambientGroundColor=new Color(.16f,.145f,.12f);
+            RenderSettings.ambientIntensity=1.08f;
             RenderSettings.fog=true;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogColor=new Color(.40f,.42f,.40f);
-            RenderSettings.fogStartDistance=38f;
-            RenderSettings.fogEndDistance=92f;
+            RenderSettings.fogColor=new Color(.46f,.46f,.40f);
+            RenderSettings.fogStartDistance=42f;
+            RenderSettings.fogEndDistance=104f;
 
             var cameraGo=new GameObject("Isometric camera");
             cameraGo.tag="MainCamera";
@@ -106,7 +106,7 @@ namespace Eldoria.Presentation
             var sun=sunGo.AddComponent<Light>();
             sun.type=LightType.Directional;
             sun.color=new Color(1f,.90f,.76f);
-            sun.intensity=1.35f;
+            sun.intensity=1.48f;
             sun.shadows=LightShadows.Soft;
             sun.shadowStrength=.48f;
             sun.transform.rotation=Quaternion.Euler(50f,-31f,0f);
@@ -114,73 +114,59 @@ namespace Eldoria.Presentation
 
         static void BuildGeography()
         {
-            var baseGround=Primitive("World Region 1 · terrain base",PrimitiveType.Cube,
-                new Vector3(0f,-.58f,4f),new Vector3(96f,.95f,86f),Earth);
-            var groundCollider=baseGround.GetComponent<Collider>();
-            if(groundCollider!=null)groundCollider.enabled=false;
-            if(externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null)
-                baseGround.GetComponent<Renderer>().sharedMaterial=externalLibrary.ValoriaDirtSurface;
+            BuildTerrainBase();
 
-            // Broad low-frequency colour masses replace the old repeated checker texture.
-            GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.075f,8f),new Vector3(22f,.12f,30f),Meadow,-9f);
-            GroundPatch("World Region 1 · east dryland",new Vector3(14f,-.07f,5f),new Vector3(20f,.11f,26f),EarthLight,11f);
-            GroundPatch("World Region 1 · north moor",new Vector3(1f,-.06f,18f),new Vector3(34f,.10f,14f),new Color(.25f,.27f,.22f),-4f);
-            GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.05f,-7f),new Vector3(17f,.10f,10f),new Color(.36f,.32f,.24f),5f);
+            GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.05f,8f),
+                new Vector3(19f,.08f,25f),Meadow*.94f,-9f);
+            GroundPatch("World Region 1 · east dryland",new Vector3(14f,-.05f,5f),
+                new Vector3(17f,.08f,22f),EarthLight*.91f,11f);
+            GroundPatch("World Region 1 · north moor",new Vector3(1f,-.045f,18f),
+                new Vector3(28f,.07f,11f),new Color(.31f,.32f,.25f),-4f);
+            GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.04f,-7f),
+                new Vector3(14f,.07f,8f),new Color(.40f,.36f,.28f),5f);
 
-            int mountainIndex=0;
             foreach(var p in new[]{
                 new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
                 new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
             {
-                var mountain=WorldInventoryPiece("Mountain01",
-                    "World Region 1 · mountain barrier",p,12.5f,8.2f,
-                    Quaternion.Euler(0,(p.x+p.z)*5f+mountainIndex*23f,0));
-                if(mountain==null)
-                    mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                        "World Region 1 · mountain barrier",p,11f,6.5f,
-                        Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.34f,.36f,.34f,1f));
+                var mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
+                    "World Region 1 · mountain barrier",p,11f,6.5f,
+                    Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.40f,.40f,.36f,1f));
                 Parent(mountain);
-                mountainIndex++;
             }
 
             var centres=new[]{new Vector3(-13f,0,7f),new Vector3(-11f,0,17f),
                 new Vector3(-1f,0,20f),new Vector3(16f,0,7f)};
             for(int cluster=0;cluster<centres.Length;cluster++)
             {
-                GroundPatch("World Region 1 · forest floor",centres[cluster]+new Vector3(0,-.02f,0),
-                    new Vector3(10f,.08f,9f),new Color(.18f,.245f,.17f),cluster*13f);
-                for(int i=0;i<11;i++)
+                GroundPatch("World Region 1 · forest floor",centres[cluster]+new Vector3(0,-.018f,0),
+                    new Vector3(8.6f,.055f,7.8f),new Color(.245f,.30f,.21f),cluster*13f);
+                for(int i=0;i<12;i++)
                 {
                     float a=i*2.39996f+cluster*.71f;
-                    float radius=1.0f+Mathf.Sqrt(i+.5f)*1.15f;
+                    float radius=.85f+Mathf.Sqrt(i+.5f)*1.12f;
                     var p=centres[cluster]+new Vector3(Mathf.Cos(a)*radius,0,Mathf.Sin(a)*radius);
-                    WorldTree("World Region 1 · forest mass",p,.80f+(i%3)*.10f,i+cluster);
+                    WorldTree("World Region 1 · forest mass",p,.62f+(i%4)*.07f,i+cluster);
                 }
             }
-            int edgeRock=0;
+
             foreach(var p in new[]{new Vector3(-19f,0,-4f),new Vector3(18f,0,-5f),
-                new Vector3(-18f,0,24f),new Vector3(20f,0,23f)})
-            {
-                var rock=WorldInventoryPiece(edgeRock%2==0?"Rock01":"Rock02",
-                    "World Region 1 · edge geology",p,4.0f,2.0f,
-                    Quaternion.Euler(0,edgeRock*61f,0));
-                if(rock==null)ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.05f,6);
-                else Parent(rock);
-                edgeRock++;
-            }
+                new Vector3(-18f,0,24f),new Vector3(20f,0,23f),
+                new Vector3(-2f,0,12f),new Vector3(12f,0,6f)})
+                ValoriaKit.RockCluster("World Region 1 · edge geology",p,.88f,5);
         }
 
         static void BuildRoutes()
         {
-            RoadSegment("World Region 1 · Valoria main route",new Vector3(0f,.035f,-2.5f),8.5f,1.55f,0f);
-            RoadSegment("World Region 1 · forest route",new Vector3(-3.0f,.04f,2.2f),8.2f,1.30f,-38f);
-            RoadSegment("World Region 1 · ruin route",new Vector3(2.7f,.04f,2.0f),7.0f,1.25f,38f);
-            RoadSegment("World Region 1 · threat route",new Vector3(6.7f,.04f,7.5f),6.2f,1.05f,29f);
+            RoadSegment("World Region 1 · Valoria main route",new Vector3(0f,.025f,-2.5f),8.5f,1.42f,0f);
+            RoadSegment("World Region 1 · forest route",new Vector3(-3.0f,.03f,2.2f),8.2f,1.18f,-38f);
+            RoadSegment("World Region 1 · ruin route",new Vector3(2.7f,.03f,2.0f),7.0f,1.13f,38f);
+            RoadSegment("World Region 1 · threat route",new Vector3(6.7f,.03f,7.5f),6.2f,.98f,29f);
             foreach(var p in new[]{
                 new Vector3(-2.0f,0f,-.8f),new Vector3(1.7f,0f,-.2f),
                 new Vector3(-4.7f,0f,3.6f),new Vector3(4.3f,0f,3.0f),
                 new Vector3(6.8f,0f,6.0f),new Vector3(-5.5f,0f,6.9f)})
-                NatureBush("World Region 1 · route scrub",p,.95f,(int)((p.x+12f)*7f+p.z));
+                WorldShrub("World Region 1 · route scrub",p,.42f,(int)((p.x+12f)*7f+p.z));
         }
 
         static void BuildValoria()
@@ -313,94 +299,109 @@ namespace Eldoria.Presentation
             }
         }
 
+        static void BuildTerrainBase()
+        {
+            const int xSteps=24;
+            const int zSteps=22;
+            const float width=108f;
+            const float depth=94f;
+            var vertices=new Vector3[(xSteps+1)*(zSteps+1)];
+            var uv=new Vector2[vertices.Length];
+            var triangles=new int[xSteps*zSteps*6];
+
+            int v=0;
+            for(int z=0;z<=zSteps;z++)
+            for(int x=0;x<=xSteps;x++)
+            {
+                float nx=x/(float)xSteps;
+                float nz=z/(float)zSteps;
+                float px=(nx-.5f)*width;
+                float pz=(nz-.5f)*depth+4f;
+                float broad=Mathf.Sin(px*.085f)*.18f+Mathf.Cos(pz*.071f)*.15f+
+                    Mathf.Sin((px+pz)*.043f)*.10f;
+                float centreFade=Mathf.Clamp01((Mathf.Abs(px)+Mathf.Abs(pz-3f))/34f);
+                float y=-.42f+broad*(.45f+.55f*centreFade);
+                vertices[v]=new Vector3(px,y,pz);
+                uv[v]=new Vector2(nx*10f,nz*9f);
+                v++;
+            }
+
+            int t=0;
+            for(int z=0;z<zSteps;z++)
+            for(int x=0;x<xSteps;x++)
+            {
+                int a=z*(xSteps+1)+x;
+                int b=a+1;
+                int c0=a+(xSteps+1);
+                int d=c0+1;
+                triangles[t++]=a;triangles[t++]=c0;triangles[t++]=b;
+                triangles[t++]=b;triangles[t++]=c0;triangles[t++]=d;
+            }
+
+            var go=new GameObject("World Region 1 · terrain base");
+            go.transform.SetParent(root,true);
+            var mesh=new Mesh{name="World Region 1 · terrain mesh",vertices=vertices,uv=uv,triangles=triangles};
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=
+                ValoriaKit.SurfaceMaterial(Earth,"earth",new Vector2(12f,11f));
+        }
+
+        static void WorldShrub(string name,Vector3 position,float scale,int variant)
+        {
+            ValoriaKit.PineTree(name,position,scale*(.72f+(variant%2)*.08f));
+            if(variant%2==0)
+                ValoriaKit.RockCluster(name+" · stones",position+new Vector3(.35f,0,-.18f),.28f,3);
+        }
+
         static void GroundPatch(string name,Vector3 position,Vector3 scale,Color color,float yaw)
         {
-            // Elliptical low-frequency masses avoid the tiled/checker-board read of large rectangles.
-            var patch=Primitive(name,PrimitiveType.Cylinder,position,
-                new Vector3(scale.x*.5f,scale.y*.5f,scale.z*.5f),color);
-            patch.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-            var col=patch.GetComponent<Collider>();
-            if(col!=null)col.enabled=false;
+            const int sides=12;
+            var vertices=new Vector3[sides+1];
+            var uv=new Vector2[sides+1];
+            var triangles=new int[sides*3];
+            vertices[0]=Vector3.zero;uv[0]=new Vector2(.5f,.5f);
+            int seed=Mathf.Abs(name.GetHashCode()%97);
+            for(int i=0;i<sides;i++)
+            {
+                float angle=i*Mathf.PI*2f/sides;
+                float jitter=.86f+(((i*37+seed*11)%17)/100f);
+                float x=Mathf.Cos(angle)*scale.x*.5f*jitter;
+                float z=Mathf.Sin(angle)*scale.z*.5f*(.90f+(((i*19+seed)%13)/100f));
+                vertices[i+1]=new Vector3(x,0,z);
+                uv[i+1]=new Vector2(.5f+x/Mathf.Max(.01f,scale.x),.5f+z/Mathf.Max(.01f,scale.z));
+                int n=(i+1)%sides;
+                triangles[i*3]=0;triangles[i*3+1]=i+1;triangles[i*3+2]=n+1;
+            }
+            var go=new GameObject(name);
+            go.transform.SetParent(root,true);
+            go.transform.position=position;
+            go.transform.rotation=Quaternion.Euler(0f,yaw,0f);
+            var mesh=new Mesh{name=name+" mesh",vertices=vertices,uv=uv,triangles=triangles};
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            go.AddComponent<MeshRenderer>().sharedMaterial=
+                ValoriaKit.SurfaceMaterial(color,"earth",new Vector2(
+                    Mathf.Max(1.5f,scale.x/3f),Mathf.Max(1.5f,scale.z/3f)));
         }
 
         static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
         {
-            // Slightly drifting short pieces keep the strategic path readable without looking like
-            // a rigid board-game strip. Gameplay topology stays entirely in independent hotspots.
-            var holder=new GameObject(name);
-            holder.transform.SetParent(root,true);
-            holder.transform.position=centre;
-            holder.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-
-            const int pieces=5;
-            float pieceLength=length/pieces*1.18f;
-            for(int i=0;i<pieces;i++)
+            var route=WorldRouteKit.MarchRoute(name,centre,length,width,yaw);
+            if(route==null)return;
+            route.transform.SetParent(root,true);
+            foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
             {
-                float t=(i-(pieces-1)*.5f)/(pieces-1);
-                float z=t*length*.82f;
-                float x=Mathf.Sin((i+1)*1.31f)*width*.13f;
-                float localYaw=Mathf.Sin(i*1.17f)*5.0f;
-
-                var shoulder=Primitive(name+" · shoulder "+i,PrimitiveType.Cylinder,Vector3.zero,
-                    new Vector3((width+.42f)*.5f,.022f,(pieceLength+.36f)*.5f),RoadEdge);
-                shoulder.transform.SetParent(holder.transform,false);
-                shoulder.transform.localPosition=new Vector3(x,-.018f,z);
-                shoulder.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
-                var sc=shoulder.GetComponent<Collider>();if(sc!=null)sc.enabled=false;
-
-                var shade=Road*(.93f+(i%3)*.035f);
-                var road=Primitive(name+" · track "+i,PrimitiveType.Cylinder,Vector3.zero,
-                    new Vector3(width*.5f,.032f,pieceLength*.5f),shade);
-                road.transform.SetParent(holder.transform,false);
-                road.transform.localPosition=new Vector3(x,.01f,z);
-                road.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
-                var rc=road.GetComponent<Collider>();if(rc!=null)rc.enabled=false;
+                renderer.gameObject.name=name+" · track 0";
+                break;
             }
+            foreach(var collider in route.GetComponentsInChildren<Collider>(true))
+                collider.enabled=false;
         }
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
-            var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",name,position,
-                2.35f*scale,3.7f*scale,Quaternion.Euler(0f,(variant*47)%360,0f));
-            if(inventoryTree!=null)
-            {
-                Parent(inventoryTree);
-                return;
-            }
-
-            var nature=NatureTreePrefab(variant);
-            if(nature!=null)
-            {
-                var instance=ValoriaKit.BenchmarkPiece(name,nature,position,
-                    2.05f*scale,2.9f*scale,Quaternion.Euler(0f,(variant*47)%360,0f));
-                if(instance!=null)
-                {
-                    Parent(instance);
-                    return;
-                }
-            }
-
-            var holder=new GameObject(name);
-            holder.transform.SetParent(root,true);
-            holder.transform.position=position;
-
-            var trunk=Primitive(name+" · trunk",PrimitiveType.Cylinder,
-                position+new Vector3(0,.48f*scale,0),new Vector3(.20f*scale,.48f*scale,.20f*scale),
-                new Color(.27f,.20f,.13f));
-            trunk.transform.SetParent(holder.transform,true);
-            var tc=trunk.GetComponent<Collider>();if(tc!=null)tc.enabled=false;
-
-            var lower=Primitive(name+" · crown lower",PrimitiveType.Sphere,
-                position+new Vector3(0,1.00f*scale,0),new Vector3(1.00f,.68f,1.00f)*scale,
-                variant%2==0?Pine:PineLight);
-            lower.transform.SetParent(holder.transform,true);
-            var lc=lower.GetComponent<Collider>();if(lc!=null)lc.enabled=false;
-
-            var upper=Primitive(name+" · crown upper",PrimitiveType.Sphere,
-                position+new Vector3(.04f,1.48f*scale,-.02f),new Vector3(.74f,.64f,.74f)*scale,
-                variant%2==0?PineLight:Pine);
-            upper.transform.SetParent(holder.transform,true);
-            var uc=upper.GetComponent<Collider>();if(uc!=null)uc.enabled=false;
+            ValoriaKit.PineTree(name,position,scale*(.92f+(variant%3)*.04f));
         }
 
         static GameObject WorldInventoryPiece(string resourceName,string name,Vector3 ground,
@@ -413,22 +414,12 @@ namespace Eldoria.Presentation
 
         static Object NatureTreePrefab(int variant)
         {
-            if(externalLibrary==null)return null;
-            switch(Mathf.Abs(variant)%4)
-            {
-                case 0:return externalLibrary.NatureTree01;
-                case 1:return externalLibrary.NatureTree02;
-                case 2:return externalLibrary.NatureTree03;
-                default:return externalLibrary.NatureTree04;
-            }
+            return null;
         }
 
         static void NatureBush(string name,Vector3 position,float scale,int variant)
         {
-            if(externalLibrary==null||externalLibrary.NatureBush01==null)return;
-            var bush=ValoriaKit.BenchmarkPiece(name,externalLibrary.NatureBush01,position,
-                1.35f*scale,.85f*scale,Quaternion.Euler(0f,(variant*71)%360,0f));
-            Parent(bush);
+            WorldShrub(name,position,scale*.42f,variant);
         }
 
         static void AdoptLooseVisuals()
