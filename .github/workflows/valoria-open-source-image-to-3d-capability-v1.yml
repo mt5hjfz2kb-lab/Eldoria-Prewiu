@@ -10,9 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  trellis2-gate-proof:
+  trellis-community-gate-proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,166 +20,170 @@ jobs:
             art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
           sparse-checkout-cone-mode: false
 
-      - name: Install client tools
+      - name: Install clients and render tools
         run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
           python -m pip install --upgrade pip
           python -m pip install "gradio_client>=1.10,<2" pillow requests
 
       - name: Prepare isolated canonical gate input
         run: |
-          mkdir -p /tmp/trellis2/input /tmp/trellis2/output /tmp/trellis2/evidence
+          mkdir -p /tmp/trellis/input /tmp/trellis/output /tmp/trellis/evidence
           python - <<'PY'
           from PIL import Image
           src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png"
           im=Image.open(src).convert("RGBA")
-          # Preserve exact same tested gate crop as the InstantMesh proof.
           box=(189,54,574,324)
           crop=im.crop(box)
-          # TRELLIS works best with alpha/object isolation; keep crop unchanged except square padding.
           w,h=crop.size
           side=max(w,h)
           canvas=Image.new("RGBA",(side,side),(255,255,255,0))
           canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
           canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
-          out="/tmp/trellis2/input/eldoria-gate-crop.png"
+          out="/tmp/trellis/input/eldoria-gate-crop.png"
           canvas.save(out)
-          open("/tmp/trellis2/evidence/input-spec.txt","w").write(
+          open("/tmp/trellis/evidence/input-spec.txt","w").write(
               f"source={src}\nsource_size={im.size}\ncrop_box={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
           )
           PY
-          sha256sum /tmp/trellis2/input/eldoria-gate-crop.png | tee /tmp/trellis2/evidence/input.sha256
+          sha256sum /tmp/trellis/input/eldoria-gate-crop.png | tee /tmp/trellis/evidence/input.sha256
 
-      - name: Probe and run TRELLIS.2 public Space
-        id: trellis2
+      - name: Generate and extract GLB with community TRELLIS
+        id: trellis
         continue-on-error: true
         run: |
           set -o pipefail
-          python - <<'PY' 2>&1 | tee /tmp/trellis2/evidence/trellis2.log
-          import os, json, shutil, traceback, inspect
+          python - <<'PY' 2>&1 | tee /tmp/trellis/evidence/trellis.log
+          import os, shutil
           from gradio_client import Client, handle_file
-
-          client=Client("microsoft/TRELLIS.2", verbose=True)
+          client=Client("trellis-community/TRELLIS", verbose=True)
           api=client.view_api(return_format="dict")
           print("API",api)
           endpoints=(api or {}).get("named_endpoints",{})
           print("ENDPOINTS",list(endpoints))
-
-          def pick(fragment):
-              for ep in endpoints:
-                  if fragment.lower() in ep.lower():
-                      return ep
-              return None
-
-          # Start a session if the Space exposes one.
-          ep=pick("start_session")
-          if ep:
-              try:
-                  print("START",ep,client.predict(api_name=ep))
-              except Exception as e:
-                  print("START_ERROR",repr(e))
-
-          # Preprocess/upload.
-          image_path="/tmp/trellis2/input/eldoria-gate-crop.png"
-          prep_ep=pick("preprocess")
-          prepared=handle_file(image_path)
-          if prep_ep:
-              try:
-                  out=client.predict(image_prompt=handle_file(image_path), api_name=prep_ep)
-              except Exception:
-                  try:
-                      out=client.predict(image=handle_file(image_path), api_name=prep_ep)
-                  except Exception:
-                      out=client.predict(handle_file(image_path), api_name=prep_ep)
-              print("PREPROCESS_RESULT",repr(out))
-              prepared=out if out is not None else prepared
-
-          gen_ep=pick("image_to_3d") or pick("generate")
-          if not gen_ep:
-              raise SystemExit("No TRELLIS.2 generation endpoint advertised")
-
-          spec=endpoints[gen_ep]
+          ep=next((e for e in endpoints if "generate" in e.lower() and ("glb" in e.lower() or "extract" in e.lower())),None)
+          if ep is None:
+              ep=next((e for e in endpoints if "generate" in e.lower()),None)
+          if ep is None:
+              raise SystemExit("No generation endpoint advertised")
+          spec=endpoints[ep]
           params=spec.get("parameters",[])
-          print("GEN_PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
+          print("PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
+          image="/tmp/trellis/input/eldoria-gate-crop.png"
           kwargs={}
           for p in params:
-              n=p.get("parameter_name")
-              default=p.get("parameter_default")
-              if n in ("image_prompt","image","input_image"):
-                  kwargs[n]=handle_file(image_path)
+              n=p.get("parameter_name"); d=p.get("parameter_default")
+              if n in ("image","image_prompt","input_image"):
+                  kwargs[n]=handle_file(image)
+              elif n in ("multiimages","multi_images"):
+                  kwargs[n]=[]
+              elif n=="is_multiimage":
+                  kwargs[n]=False
               elif n=="seed":
                   kwargs[n]=42
-              elif n=="resolution":
-                  kwargs[n]="512"
               elif n=="randomize_seed":
                   kwargs[n]=False
-              elif n and default is not None:
-                  kwargs[n]=default
-          print("GEN_CALL",gen_ep,kwargs)
-          result=client.predict(api_name=gen_ep, **kwargs)
-          print("GEN_RESULT",repr(result))
-
-          # Extract GLB. In Gradio, server-side State may be retained in this Client session,
-          # but if an explicit state value is returned we pass it back.
-          extract_ep=pick("extract_glb") or pick("extract")
-          if not extract_ep:
-              raise SystemExit("No TRELLIS.2 GLB extraction endpoint advertised")
-          espec=endpoints[extract_ep]
-          eparams=espec.get("parameters",[])
-          print("EXTRACT_PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in eparams])
-          ekw={}
-          state_candidates=[]
-          if isinstance(result,(list,tuple)):
-              state_candidates=list(result)
-          else:
-              state_candidates=[result]
-          for p in eparams:
-              n=p.get("parameter_name")
-              default=p.get("parameter_default")
-              if n in ("decimation_target","mesh_simplify","simplify"):
-                  ekw[n]=0.8 if n=="mesh_simplify" or n=="simplify" else 200000
+              elif n=="ss_guidance_strength":
+                  kwargs[n]=7.5
+              elif n=="ss_sampling_steps":
+                  kwargs[n]=12
+              elif n=="slat_guidance_strength":
+                  kwargs[n]=3.0
+              elif n=="slat_sampling_steps":
+                  kwargs[n]=12
+              elif n=="multiimage_algo":
+                  kwargs[n]="stochastic"
+              elif n=="mesh_simplify":
+                  kwargs[n]=0.95
               elif n=="texture_size":
-                  ekw[n]=1024
-              elif n in ("output_buf","state","model"):
-                  # Try first non-file/non-string generation result as explicit state.
-                  cand=next((x for x in state_candidates if not isinstance(x,(str,int,float,bool,type(None)))),None)
-                  if cand is not None: ekw[n]=cand
-              elif n and default is not None:
-                  ekw[n]=default
-          print("EXTRACT_CALL",extract_ep,ekw)
-          extracted=client.predict(api_name=extract_ep, **ekw)
-          print("EXTRACT_RESULT",repr(extracted))
-
-          candidates=[]
+                  kwargs[n]=1024
+              elif n and d is not None:
+                  kwargs[n]=d
+          print("CALL",ep,kwargs)
+          result=client.predict(api_name=ep,**kwargs)
+          print("RESULT",repr(result))
+          vals=[]
           def walk(x):
-              if isinstance(x,str): candidates.append(x)
+              if isinstance(x,str): vals.append(x)
               elif isinstance(x,(list,tuple)):
                   for v in x: walk(v)
               elif isinstance(x,dict):
                   for v in x.values(): walk(v)
-          walk(extracted)
+          walk(result)
           copied=[]
-          for p in candidates:
+          for p in vals:
               if os.path.isfile(p):
                   ext=os.path.splitext(p)[1].lower()
-                  if ext in (".glb",".gltf",".obj",".ply"):
-                      dst="/tmp/trellis2/output/trellis2"+ext
-                      shutil.copy2(p,dst); copied.append(dst)
+                  if ext in (".glb",".gltf",".obj",".ply",".mp4"):
+                      dst="/tmp/trellis/output/trellis"+ext
+                      if not os.path.exists(dst):
+                          shutil.copy2(p,dst); copied.append(dst)
           print("COPIED",copied)
-          if not any(p.endswith(".glb") for p in copied):
-              raise SystemExit("TRELLIS.2 did not return a local GLB")
+          if not os.path.isfile("/tmp/trellis/output/trellis.glb"):
+              raise SystemExit("Community TRELLIS returned no GLB")
           PY
 
-      - name: Require TRELLIS.2 mesh
+      - name: Render GLB evidence
+        if: steps.trellis.outcome == 'success'
         run: |
-          test "${{ steps.trellis2.outcome }}" = "success"
-          test -s /tmp/trellis2/output/trellis2.glb
+          cat > /tmp/trellis/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          glb="/tmp/trellis/output/trellis.glb"
+          ev="/tmp/trellis/evidence"
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.import_scene.gltf(filepath=glb)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
+          if not meshes: raise RuntimeError("No mesh imported")
+          pts=[]
+          for o in meshes:
+              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene
+          sc.render.engine="BLENDER_EEVEE"
+          sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.045,0.045,0.045)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*0.015))
+          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(0.14,0.14,0.14,1)
+          bpy.context.object.data.materials.append(gm)
+          bpy.ops.object.light_add(type="SUN",location=center+Vector((span,-span,span)))
+          sun=bpy.context.object; sun.data.energy=2.2; sun.rotation_euler=(math.radians(35),0,math.radians(135))
+          bpy.ops.object.light_add(type="AREA",location=center+Vector((-span*.7,-span*.9,span*.8)))
+          area=bpy.context.object; area.data.energy=650; area.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat("-Z","Y").to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; cam.data.lens=58; sc.camera=cam
+          views=[("front",Vector((0,-1.8,.18))),("three-quarter",Vector((1.2,-1.45,.35))),("back",Vector((0,1.8,.18))),("side",Vector((1.8,0,.18)))]
+          for name,v in views:
+              cam.location=center+v*span; track(cam,center+Vector((0,0,dims.z*.05)))
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png")
+              bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          with open(os.path.join(ev,"mesh-report.txt"),"w") as f:
+              f.write(f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=trellis-community/TRELLIS\ncredits=0\n")
+          PY
+          blender -b --python /tmp/trellis/render.py
+          test -s /tmp/trellis/evidence/mesh-front.png
+          test -s /tmp/trellis/evidence/mesh-three-quarter.png
+          test -s /tmp/trellis/evidence/mesh-back.png
+          test -s /tmp/trellis/evidence/mesh-side.png
+
+      - name: Require usable GLB
+        run: |
+          test "${{ steps.trellis.outcome }}" = "success"
+          test -s /tmp/trellis/output/trellis.glb
+          test -s /tmp/trellis/evidence/mesh-three-quarter.png
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-trellis2-gate-capability-v1
+          name: valoria-trellis-community-gate-capability-v1
           path: |
-            /tmp/trellis2/evidence
-            /tmp/trellis2/output
-            /tmp/trellis2/input/eldoria-gate-crop.png
+            /tmp/trellis/evidence
+            /tmp/trellis/output
+            /tmp/trellis/input/eldoria-gate-crop.png
           retention-days: 14
