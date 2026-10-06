@@ -1,16 +1,16 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Retry current Valoria mobile WebGL after fixing UnityEngine.Application.absoluteURL compile error in external SHARP loader.",
+  "reason": "Retry current Valoria WebGL after hard-stripping every serialized GsplatAsset reference and adding dependency guard.",
   "production_run_id": 37488975868,
   "production_artifact_id": 11424983401,
   "production_head_sha": "b7fdd04039a133af791f255de1e3803d806647ba",
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-mobile-web-playtest-20261006",
-  "updated_at": "2026-10-06T17:36:00Z",
+  "updated_at": "2026-10-06T18:08:00Z",
   "retry": 3,
   "retry_reason": "Externalize exact state-0..3 SHARP PLY payload from WebGL player; keep certified Valoria scene/gameplay unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "db77e519aace2eb24f48e0de9cdf7796e2e8f67f"
+  "retry_after_commit": "c72e339e33478fc73a8182f044aabb2754bbac0b"
 }
