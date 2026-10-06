@@ -97,10 +97,10 @@ namespace Eldoria.EditorTools
             float anchorDistance = Mathf.Max(30f, Vector3.Distance(cam.transform.position, asset.Bounds.center));
             var proxies = new List<ProxySpec>
             {
-                new ProxySpec { Id="WestTower", Viewport=new Vector2(.38f,.53f), DepthScale=.98f, Size=new Vector3(14f,30f,10f), DebugColor=new Color(.15f,.55f,1f,.72f) },
-                new ProxySpec { Id="CentralKeep", Viewport=new Vector2(.51f,.50f), DepthScale=.98f, Size=new Vector3(18f,36f,10f), DebugColor=new Color(1f,.65f,.12f,.72f) },
-                new ProxySpec { Id="EastTower", Viewport=new Vector2(.63f,.54f), DepthScale=.98f, Size=new Vector3(14f,30f,10f), DebugColor=new Color(.65f,.25f,1f,.72f) },
-                new ProxySpec { Id="LowerGate", Viewport=new Vector2(.61f,.72f), DepthScale=.90f, Size=new Vector3(14f,20f,10f), DebugColor=new Color(.15f,1f,.45f,.72f) },
+                new ProxySpec { Id="WestTower", Viewport=new Vector2(.418f,.760f), DepthScale=.98f, Size=new Vector3(12f,34f,10f), DebugColor=new Color(.15f,.55f,1f,.72f) },
+                new ProxySpec { Id="CentralKeep", Viewport=new Vector2(.548f,.775f), DepthScale=.98f, Size=new Vector3(16f,38f,10f), DebugColor=new Color(1f,.65f,.12f,.72f) },
+                new ProxySpec { Id="EastTower", Viewport=new Vector2(.700f,.735f), DepthScale=.98f, Size=new Vector3(13f,32f,10f), DebugColor=new Color(.65f,.25f,1f,.72f) },
+                new ProxySpec { Id="LowerGate", Viewport=new Vector2(.748f,.458f), DepthScale=.90f, Size=new Vector3(15f,20f,10f), DebugColor=new Color(.15f,1f,.45f,.72f) },
             };
 
             foreach (var p in proxies)
