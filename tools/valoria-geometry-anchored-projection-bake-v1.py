@@ -12,6 +12,9 @@ ev="docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-depth-shell-v1"
 back=Image.open(os.path.join(ev,"gate-back.png")).convert("RGBA")
 front=Image.open(os.path.join(ev,"gate-front.png")).convert("RGBA")
 target=Image.alpha_composite(back,front)
+tight=target.getbbox()
+if not tight: raise RuntimeError("empty canonical Gate composite")
+target=target.crop(tight)
 # Replace transparent regions with a stone tone sampled from the Gate itself so
 # geometry that extends beyond the semantic cutout never turns black.
 import numpy as np
