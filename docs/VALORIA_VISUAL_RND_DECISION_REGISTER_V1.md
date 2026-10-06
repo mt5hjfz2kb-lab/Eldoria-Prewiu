@@ -186,14 +186,17 @@ Promotion requires evidence for the actual use case: target visual fidelity, mul
 - Do not spend time on retries unless the Space becomes available again.
 
 ### TripoSR
-**Status:** TECHNICALLY CLOSE / VISUAL UNJUDGED
+**Status:** TECH PASS / VISUAL FAIL FOR HERO ART
 - Runs include 37450734133, 37450956954, 37451399945 and current pinned-NumPy rerun 37451859597.
 - Installation blockers were progressively removed (torchmcubes build isolation, scikit-build-core, pybind11).
 - Run 37451399945 reached actual mesh extraction successfully.
 - Current remaining failure was GLB export compatibility: `trimesh` called removed NumPy 2.x `ndarray.ptp`.
 - Current rerun pins compatible NumPy.
-- Important: the method has crossed from “cannot install” to “can reconstruct a mesh”; visual quality remains unjudged until GLB + evidence render completes.
-- Bound retries: once export is fixed, evaluate once visually; if below hero threshold, close this route.
+- Final evidence run: 37452367362, artifact 11407410847.
+- Proven: complete CPU reconstruction → GLB → Blender multi-angle evidence works end-to-end.
+- Visual verdict: FAIL for Valoria hero art. Front evidence is highly noisy and structurally broken; the gate/tower architecture is not preserved at a useful level.
+- Reuse: none for hero production. Keep only as a technical reference that the open CPU pipeline works.
+- Do not spend further cycles improving TripoSR for this target unless materially new model evidence appears.
 
 ### Marigold continuous depth
 **Status:** COMPONENT PROBE / INTEGRATION UNPROVEN
@@ -209,3 +212,13 @@ Promotion requires evidence for the actual use case: target visual fidelity, mul
 - Rerun 37451749211 uses the corrected Space and is currently generating camera-controlled video.
 - Purpose: measure whether target identity survives controlled camera motion.
 - Even a visual pass is not a gameplay/runtime pass; Unity interaction/depth still require separate proof.
+
+### SHARP Unity integration gate
+**Status:** HIGH-PRIORITY TECHNICAL BLOCKER / NOT VISUALLY REJECTED
+- Initial Unity proof: 37452332232 failed at compile time because `Application.dataPath` resolved against `Eldoria.Application`.
+- Namespace fix was applied and rerun 37452651535 progressed substantially further.
+- Rerun evidence: UnitySplats successfully opened the canonical SHARP PLY and read roughly half of the vertex stream.
+- Current blocker: `InvalidDataException: PLY vertex 606538 property 'opacity' is not finite.`
+- Interpretation: this is data sanitation/compatibility, not a visual or architectural rejection of SHARP.
+- **Next gate:** preprocess/sanitize SHARP PLY non-finite scalar properties (at minimum opacity; inspect all numeric attributes), preserve a byte-for-byte source copy for audit, rerun Unity import, then require HOME capture + bounded pan/zoom + 3D depth/occlusion + runtime evidence.
+- Do not abandon SHARP before this bounded sanitation rerun.
