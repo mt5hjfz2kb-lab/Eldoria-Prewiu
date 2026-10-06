@@ -1,10 +1,11 @@
 {
   "enabled": true,
-  "mode": "authored_surface_maps",
-  "request_id": "valoria-golden-lookdev-slice-v1-surface-v2",
-  "nonce": "golden-surface-v2-blender-maps-02",
-  "source_dir": "art-source/valoria/lookdev/golden-slice-v1/surface-v2",
-  "evidence_dir": "docs/evidence/valoria-golden-lookdev-slice-v1/surface-v2",
+  "mode": "authored_mesh_family",
+  "request_id": "valoria-premium-square-metre-v1-source01",
+  "nonce": "premium-square-metre-v1-source01",
+  "mesh_spec": "docs/evidence/valoria-premium-square-metre-v1/family-mesh-spec.json",
+  "source_dir": "art-source/valoria/production/premium-square-metre-v1",
+  "evidence_dir": "docs/evidence/valoria-premium-square-metre-v1/source01",
   "credits": 0,
-  "scope": "VALORIA GOLDEN LOOKDEV SLICE v1 surface iteration02 source authoring only. Refined Blender-authored masks: explicit masonry/mortar/dirt/wear, warped rock strata/fissures, ground patch/path/pebbles, shore wetness/silt and restrained vegetation breakup; multiscale procedural breakup is secondary only. Persistent PNG maps. No geometry creation/modification, no camera/composition/gameplay changes, zero Tripo."
+  "scope": "VALORIA PREMIUM SQUARE METRE v1. Isolated stone and buttress source proof only. Blender authored sculpt and detail method. No whole gate, no Unity integration, no paid generation."
 }
