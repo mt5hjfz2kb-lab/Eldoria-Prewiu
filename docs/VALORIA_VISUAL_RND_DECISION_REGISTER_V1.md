@@ -216,11 +216,17 @@ Promotion requires evidence for the actual use case: target visual fidelity, mul
 - Even a visual pass is not a gameplay/runtime pass; Unity interaction/depth still require separate proof.
 
 ### SHARP Unity integration gate
-**Status:** HIGH-PRIORITY TECHNICAL BLOCKER / NOT VISUALLY REJECTED
-- Initial Unity proof: 37452332232 failed at compile time because `Application.dataPath` resolved against `Eldoria.Application`.
-- Namespace fix was applied and rerun 37452651535 progressed substantially further.
-- Rerun evidence: UnitySplats successfully opened the canonical SHARP PLY and read roughly half of the vertex stream.
-- Current blocker: `InvalidDataException: PLY vertex 606538 property 'opacity' is not finite.`
-- Interpretation: this is data sanitation/compatibility, not a visual or architectural rejection of SHARP.
-- **Next gate:** preprocess/sanitize SHARP PLY non-finite scalar properties (at minimum opacity; inspect all numeric attributes), preserve a byte-for-byte source copy for audit, rerun Unity import, then require HOME capture + bounded pan/zoom + 3D depth/occlusion + runtime evidence.
-- Do not abandon SHARP before this bounded sanitation rerun.
+**Status:** TECH PASS / VISUAL PASS AT 300K / SCALE TEST REQUIRED
+- Canonical SHARP source: run 37448896124, artifact 11404383856 (~1.18M splats).
+- Unity convergence proof: run 37455174198, artifact 11409146782.
+- Proven:
+  - source PLY sanitation succeeds;
+  - RDF (OpenCV/COLMAP) coordinate conversion is correct;
+  - UnitySplats D3D11 CPU-sort lifecycle can be driven deterministically in batchmode;
+  - bounded ~300k-splat working copy renders the canonical Valoria scene inside Unity 6 URP;
+  - HOME and bounded left/right pan preserve scene identity;
+  - front 3D probe renders in front; behind probe is hidden by nearer scene content.
+- Visual caveat: 300k uniform sampling introduces visible sparse/punctate artifacts versus the full SHARP representation.
+- This is the first proof in this R&D cycle that preserves near-target full-frame appearance inside the actual Unity runtime/editor pipeline.
+- **Next gate:** repeat at ~600k splats with the same RDF + sanitation + explicit CPU-sort lifecycle. Compare fidelity, stability and capture cost. If stable, evaluate full density and runtime/mobile constraints.
+- Do not reopen broad method discovery while this scale path remains viable.
