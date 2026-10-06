@@ -1,0 +1,28 @@
+name: "[R&D] Valoria SHARP Gaussian Fullframe v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-sharp-gaussian-fullframe-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install client
+        run: python -m pip install --quiet "gradio_client>=1.4" pillow requests
+      - name: Generate canonical scene with SHARP
+        env:
+          OUT_DIR: /tmp/sharp-proof
+        run: python tools/valoria-sharp-gaussian-space-proof.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-sharp-gaussian-fullframe-v1
+          path: /tmp/sharp-proof
+          if-no-files-found: error
+          retention-days: 30
