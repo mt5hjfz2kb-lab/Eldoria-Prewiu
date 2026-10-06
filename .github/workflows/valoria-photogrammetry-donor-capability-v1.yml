@@ -36,19 +36,49 @@ jobs:
           7z x -y /tmp/photo-proof/rock/rock.7z -o/tmp/photo-proof/rock/unpacked >/tmp/photo-proof/rock-extract.log
           find /tmp/photo-proof/rock/unpacked -type f | sort > /tmp/photo-proof/rock-files.txt
 
-          set +e
-          curl -L --fail --retry 2 \
-            -A "EldoriaResearch/1.0" \
-            -o /tmp/photo-proof/wall/wall-2k.rar \
-            "https://cdn.polyscann.com/PBR%2BTEXTURE/cb3c0ae7100cd7fa/2K.rar"
-          WALL_STATUS=$?
-          if [ "$WALL_STATUS" -eq 0 ]; then
-            7z x -y /tmp/photo-proof/wall/wall-2k.rar -o/tmp/photo-proof/wall/unpacked >/tmp/photo-proof/wall-extract.log
-            find /tmp/photo-proof/wall/unpacked -type f | sort > /tmp/photo-proof/wall-files.txt
-          else
-            echo "POLYSCAN_DOWNLOAD_UNAVAILABLE=$WALL_STATUS" > /tmp/photo-proof/wall-files.txt
-          fi
-          set -e
+          # Prefer ambientCG for automated CC0 masonry because its API/download
+          # path is stable and account-free. Select a popular photogrammetric stone/wall asset.
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          q=urllib.parse.urlencode({
+              "type":"Material",
+              "method":"PBRPhotogrammetry",
+              "q":"stone wall",
+              "sort":"Popular",
+              "limit":50,
+              "include":"tagData,downloadData"
+          })
+          url="https://ambientcg.com/api/v2/full_json?"+q
+          req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
+          with urllib.request.urlopen(req,timeout=90) as r:
+              data=json.load(r)
+          assets=data.get("assets",[])
+          if not assets:
+              raise SystemExit("ambientCG API returned no assets")
+          def score(a):
+              txt=(str(a.get("id",""))+" "+str(a.get("name",""))+" "+json.dumps(a.get("tags",[]))).lower()
+              s=0
+              for t,v in [("stone",20),("wall",30),("masonry",30),("rock",10),("brick",8),("medieval",25),("rough",5)]:
+                  if t in txt: s+=v
+              return s
+          assets=sorted(assets,key=score,reverse=True)
+          chosen=assets[0]
+          aid=chosen["id"]
+          dl=f"https://ambientcg.com/get?file={aid}_2K-JPG.zip"
+          print("AMBIENTCG_CHOSEN",aid,chosen.get("name"),"score",score(chosen),dl)
+          out="/tmp/photo-proof/wall/wall-2k.zip"
+          req=urllib.request.Request(dl,headers={"User-Agent":"EldoriaResearch/1.0"})
+          with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as f:
+              while True:
+                  b=r.read(1024*1024)
+                  if not b: break
+                  f.write(b)
+          open("/tmp/photo-proof/wall-source.txt","w").write(json.dumps({"id":aid,"name":chosen.get("name"),"url":dl,"license":"CC0"},indent=2))
+          print("DOWNLOADED",out,os.path.getsize(out))
+          PY
+          mkdir -p /tmp/photo-proof/wall/unpacked
+          unzip -q /tmp/photo-proof/wall/wall-2k.zip -d /tmp/photo-proof/wall/unpacked
+          find /tmp/photo-proof/wall/unpacked -type f | sort > /tmp/photo-proof/wall-files.txt
 
           echo "--- ROCK FILES ---"
           head -100 /tmp/photo-proof/rock-files.txt
@@ -207,7 +237,7 @@ jobs:
           bpy.ops.object.camera_add(location=(4,-6,2.2)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=65; cam.rotation_euler=(Vector((0,0,0.5))-cam.location).to_track_quat('-Z','Y').to_euler()
           sc.render.filepath=os.path.join(ev,"wall-scan.png"); bpy.ops.render.render(write_still=True)
           with open(os.path.join(ev,"wall-report.txt"),"w") as f:
-              f.write(f"source=PolyScan Weathered Stone Wall\nlicense=CC0\nalbedo={albedo}\nrough={rough}\nnormal={normal}\nheight={height}\n")
+              f.write(f"source=ambientCG photogrammetry masonry\nlicense=CC0\nalbedo={albedo}\nrough={rough}\nnormal={normal}\nheight={height}\n")
           PY
           blender -b --python /tmp/photo-proof/render_wall.py
 
@@ -215,6 +245,7 @@ jobs:
         run: |
           cp /tmp/photo-proof/rock-files.txt /tmp/photo-proof/evidence/
           cp /tmp/photo-proof/wall-files.txt /tmp/photo-proof/evidence/
+          cp /tmp/photo-proof/wall-source.txt /tmp/photo-proof/evidence/
           ls -lh /tmp/photo-proof/evidence
 
       - uses: actions/upload-artifact@v4
