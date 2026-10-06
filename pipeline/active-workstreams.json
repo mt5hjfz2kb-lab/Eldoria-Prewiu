@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T06:00:00Z",
+  "updated_at": "2026-10-06T06:55:00Z",
   "active": [
     {
       "id": "valoria-golden-lookdev-slice-v1",
@@ -31,9 +31,9 @@
       "claimed_at": "2026-10-05T18:15:00Z",
       "base_main_sha": "cb7d5d3ca2aad11c3aceb9f48f896be0ea8b1edd",
       "status": "active",
-      "phase": "VALORIA CAMERA-FIRST PROJECTION SHELL v1 — ZERO-SPEND PROOF",
+      "phase": "VALORIA CAMERA-FIRST ORTHOGRAPHIC VISUAL SHELL v1 — CORE CAMERA FAMILY PASS / UNITY PROOF NEXT",
       "dependency": "Freeze broad Valoria production. Preserve canonical camera/composition/gameplay and closed family positions. No Props+Background, no world map, no new production family, no Tripo. Prove a tiny Lower Gate/rock/ground/water/vegetation slice with complete lookdev: authored surface response, lighting, contacts, atmosphere and mobile validation.",
-      "next": "Materialize the exact canonical reference bytes, build a bounded Lower Gate + Bridge + cliff projection proof from that source, validate home/left/right camera-envelope views, and decide PASS/FAIL before any Unity integration or paid generation.",
+      "next": "Run an isolated Unity orthographic visual-shell proof using the exact canonical reference. Preserve collider/hotspot signature and locked yaw20/pitch35 orthographic camera. Validate 16:9, mobile, portrait left/right and Golden close before any production adoption. Portrait home/entry source extension remains a later bounded task.",
       "final_bounded_run_id": 37368890740,
       "final_bounded_artifact_id": 11368813433,
       "strongest_bounded_run_id": 37368033376,
@@ -48,7 +48,7 @@
       "integrated_source02_evidence_run_id": 37370727523,
       "integrated_source02_artifact_id": 11369951282,
       "source_visual_gate": "FAIL — Geometry/Silhouette 3.0, Material 2.5, Contact 2.5, Environment 2.5, Premium 2.0",
-      "unity_integration": "NOT RUN / NOT AUTHORIZED",
+      "unity_integration": "AUTHORIZED ONLY AS ISOLATED ORTHOGRAPHIC VISUAL SHELL PROOF",
       "credits_spent": 0,
       "source01_evidence_status": "NOT PRODUCED / NOT A VALID VISUAL ITERATION",
       "source02_authoring_commit": "f9e4243209618ed69d9d0b3ba81dafefe53ba65d",
@@ -76,7 +76,10 @@
       "generator_bakeoff_doc": "docs/VALORIA_GOLDEN_GENERATOR_BAKEOFF_V1.md",
       "houdini_pilot_doc": "docs/VALORIA_HOUDINI_GOLDEN_INTEGRATION_PILOT_V1.md",
       "generator_bakeoff_config": "pipeline/golden-generator-bakeoff-v1.json",
-      "houdini_pilot_config": "pipeline/houdini-golden-integration-pilot-v1.json"
+      "houdini_pilot_config": "pipeline/houdini-golden-integration-pilot-v1.json",
+      "camera_first_orthographic_run_id": 37425954567,
+      "camera_first_orthographic_artifact_id": 11394723424,
+      "camera_first_orthographic_result": "CORE CAMERA FAMILY PASS / portrait-home top extension required / portrait-entry bottom extension required"
     }
   ],
   "history": [
