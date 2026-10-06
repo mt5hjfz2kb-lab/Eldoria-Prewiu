@@ -1,0 +1,50 @@
+name: "[PROOF] Valoria Camera-First Layered Projection v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-layered-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            tools/render-camera-first-layered-v1.py
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1
+            pipeline/camera-first-layered-v1-request.json
+          sparse-checkout-cone-mode: false
+      - run: pip install "numpy<2" pillow opencv-python-headless
+      - name: Render layered camera envelope
+        run: |
+          python tools/render-camera-first-layered-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-projection-base.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-projection-left-small.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-projection-right-small.png
+      - name: Persist layered proof
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-projection-*
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist camera-first layered projection proof"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-layered-projection-v1
+          path: docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/layered-projection-*
+          if-no-files-found: error
+          retention-days: 30
