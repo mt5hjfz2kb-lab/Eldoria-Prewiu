@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-marigold-depth-fullframe-v1",
+  "input": "full canonical Valoria target",
+  "method": "Marigold V2 continuous monocular depth",
+  "next_if_pass": "construct dense textured depth mesh and test bounded camera envelope",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
