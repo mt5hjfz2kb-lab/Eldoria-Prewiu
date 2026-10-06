@@ -17,6 +17,14 @@ Read `docs/VALORIA_ART_PRODUCTION_RESET_V1.md` before further Valoria artistic p
 
 The repository is the source of truth. Chat history is disposable.
 
+## Repository architecture integrity guard
+- Canonical repository architecture is a production dependency. A sparse checkout, partial tree, accidental mass deletion, or reconstructed mini-repo must never be treated as a valid `main` state.
+- `pipeline/repository-architecture-invariants.json` defines mandatory sentinels and conservative structural file-count floors. `tools/check-repository-architecture.mjs` must PASS before any agent trusts a materially changed `main` after broad file operations.
+- `.github/workflows/repository-architecture-guard.yml` runs on every push/PR to `main`. A red architecture guard is a **STOP gate**: do not continue gameplay, art, publishing, runner dispatch, or state promotion until canonical architecture is restored.
+- Never commit from a sparse/partial working tree in a way that records absent canonical paths as deletions. Before any broad commit, verify the diff scope matches the claimed workstream; unexpected mass deletion is a hard abort.
+- Recovery must preserve valid concurrent work: restore the canonical tree or revert only the destructive commit, then re-read live `main`, the workstream registry and source-of-truth docs before resuming.
+
+
 ## Source-of-truth hierarchy
 1. **AGENTS.md** — permanent working rules and protocol.
 2. **SESSION_HANDOFF.md** — current branch/version, current operational state, blockers and next task. Verify live `main` HEAD at session start.
