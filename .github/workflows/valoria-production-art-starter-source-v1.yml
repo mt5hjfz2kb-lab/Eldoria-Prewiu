@@ -128,9 +128,17 @@ jobs:
         run: |
           node tools/plan-art-production.mjs
           node tools/validate-blender-professional-authoring.mjs
-          blender -b --python-exit-code 1 --python tools/author-environment-family.py
+          AUTHOR_SCRIPT=$(python3 - <<'PY'
+          import json
+          req=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
+          spec=json.load(open(req['mesh_spec']))
+          print('tools/author-premium-square-metre.py' if spec.get('source_method')=='sculpt_detail_authored' else 'tools/author-environment-family.py')
+          PY
+          )
+          echo "Authoring with ${AUTHOR_SCRIPT}"
+          blender -b --python-exit-code 1 --python "${AUTHOR_SCRIPT}"
           python3 - <<'PY'
-          import json,pathlib,hashlib
+          import json,pathlib
           d=json.load(open('pipeline/valoria-production-art-starter-run-request.json'))
           r=json.load(open(pathlib.Path(d['evidence_dir'])/'source-report.json'))
           for key in ['source','export']:
@@ -167,5 +175,4 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-
-# trigger-refresh: premium-square-metre-v1
+# trigger-refresh: premium-square-metre-v1-sculpt-route
