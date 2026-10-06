@@ -10,76 +10,145 @@ permissions:
   contents: read
 
 jobs:
-  eldoria-gate-proof:
+  trellis2-gate-proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            .github/workflows/valoria-open-source-image-to-3d-capability-v1.yml
             art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
           sparse-checkout-cone-mode: false
 
-      - name: Install clients and Blender
+      - name: Install client tools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
-          python -m pip install "gradio_client>=1.10,<2" pillow
-          blender --version
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" pillow requests
 
       - name: Prepare isolated canonical gate input
         run: |
-          mkdir -p /tmp/i2d/input /tmp/i2d/output /tmp/i2d/evidence
+          mkdir -p /tmp/trellis2/input /tmp/trellis2/output /tmp/trellis2/evidence
           python - <<'PY'
-          from PIL import Image, ImageOps
+          from PIL import Image
           src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png"
-          im=Image.open(src).convert("RGB")
-          w,h=im.size
-          # Canonical gate mass: twin towers + arch + immediate side masonry.
-          # Deliberately excludes most bridge/cliff/road so image-to-3D does not fuse terrain into the asset.
-          box=(int(w*0.27), int(h*0.10), int(w*0.82), int(h*0.60))
+          im=Image.open(src).convert("RGBA")
+          # Preserve exact same tested gate crop as the InstantMesh proof.
+          box=(189,54,574,324)
           crop=im.crop(box)
-          # Add neutral margin for background-removal model.
-          side=max(crop.size)
-          canvas=Image.new("RGB",(side,side),(238,238,234))
-          x=(side-crop.width)//2; y=(side-crop.height)//2
-          canvas.paste(crop,(x,y))
+          # TRELLIS works best with alpha/object isolation; keep crop unchanged except square padding.
+          w,h=crop.size
+          side=max(w,h)
+          canvas=Image.new("RGBA",(side,side),(255,255,255,0))
+          canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
           canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
-          canvas.save("/tmp/i2d/input/eldoria-gate-crop.png")
-          open("/tmp/i2d/evidence/input-spec.txt","w").write(
-              f"source={src}\nsource_size={w}x{h}\ncrop_box={box}\nprepared=768x768\ncredits=0\nunity_touched=false\n"
+          out="/tmp/trellis2/input/eldoria-gate-crop.png"
+          canvas.save(out)
+          open("/tmp/trellis2/evidence/input-spec.txt","w").write(
+              f"source={src}\nsource_size={im.size}\ncrop_box={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
           )
           PY
-          file /tmp/i2d/input/eldoria-gate-crop.png
-          sha256sum /tmp/i2d/input/eldoria-gate-crop.png | tee /tmp/i2d/evidence/input.sha256
+          sha256sum /tmp/trellis2/input/eldoria-gate-crop.png | tee /tmp/trellis2/evidence/input.sha256
 
-      - name: Generate free InstantMesh geometry
+      - name: Probe and run TRELLIS.2 public Space
+        id: trellis2
+        continue-on-error: true
         run: |
           set -o pipefail
-          python - <<'PY' 2>&1 | tee /tmp/i2d/evidence/instantmesh.log
-          import os, shutil
+          python - <<'PY' 2>&1 | tee /tmp/trellis2/evidence/trellis2.log
+          import os, json, shutil, traceback, inspect
           from gradio_client import Client, handle_file
-          client=Client("TencentARC/InstantMesh", verbose=True)
-          endpoints=(client.view_api(return_format="dict") or {}).get("named_endpoints",{})
-          required=("/preprocess","/generate_mvs","/make3d")
-          if not all(ep in endpoints for ep in required):
-              raise SystemExit("Required InstantMesh chain unavailable: "+repr(list(endpoints)))
-          processed=client.predict(
-              input_image=handle_file("/tmp/i2d/input/eldoria-gate-crop.png"),
-              do_remove_background=True,
-              api_name="/preprocess"
-          )
-          print("PREPROCESSED",repr(processed))
-          mvs=client.predict(
-              input_image=handle_file(processed) if isinstance(processed,str) else processed,
-              sample_steps=75,
-              sample_seed=42,
-              api_name="/generate_mvs"
-          )
-          print("MVS",repr(mvs))
-          result=client.predict(api_name="/make3d")
-          print("RESULT",repr(result))
+
+          client=Client("microsoft/TRELLIS.2", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          endpoints=(api or {}).get("named_endpoints",{})
+          print("ENDPOINTS",list(endpoints))
+
+          def pick(fragment):
+              for ep in endpoints:
+                  if fragment.lower() in ep.lower():
+                      return ep
+              return None
+
+          # Start a session if the Space exposes one.
+          ep=pick("start_session")
+          if ep:
+              try:
+                  print("START",ep,client.predict(api_name=ep))
+              except Exception as e:
+                  print("START_ERROR",repr(e))
+
+          # Preprocess/upload.
+          image_path="/tmp/trellis2/input/eldoria-gate-crop.png"
+          prep_ep=pick("preprocess")
+          prepared=handle_file(image_path)
+          if prep_ep:
+              try:
+                  out=client.predict(image_prompt=handle_file(image_path), api_name=prep_ep)
+              except Exception:
+                  try:
+                      out=client.predict(image=handle_file(image_path), api_name=prep_ep)
+                  except Exception:
+                      out=client.predict(handle_file(image_path), api_name=prep_ep)
+              print("PREPROCESS_RESULT",repr(out))
+              prepared=out if out is not None else prepared
+
+          gen_ep=pick("image_to_3d") or pick("generate")
+          if not gen_ep:
+              raise SystemExit("No TRELLIS.2 generation endpoint advertised")
+
+          spec=endpoints[gen_ep]
+          params=spec.get("parameters",[])
+          print("GEN_PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in params])
+          kwargs={}
+          for p in params:
+              n=p.get("parameter_name")
+              default=p.get("parameter_default")
+              if n in ("image_prompt","image","input_image"):
+                  kwargs[n]=handle_file(image_path)
+              elif n=="seed":
+                  kwargs[n]=42
+              elif n=="resolution":
+                  kwargs[n]=512
+              elif n=="randomize_seed":
+                  kwargs[n]=False
+              elif n and default is not None:
+                  kwargs[n]=default
+          print("GEN_CALL",gen_ep,kwargs)
+          result=client.predict(api_name=gen_ep, **kwargs)
+          print("GEN_RESULT",repr(result))
+
+          # Extract GLB. In Gradio, server-side State may be retained in this Client session,
+          # but if an explicit state value is returned we pass it back.
+          extract_ep=pick("extract_glb") or pick("extract")
+          if not extract_ep:
+              raise SystemExit("No TRELLIS.2 GLB extraction endpoint advertised")
+          espec=endpoints[extract_ep]
+          eparams=espec.get("parameters",[])
+          print("EXTRACT_PARAMS",[(p.get("parameter_name"),p.get("parameter_default")) for p in eparams])
+          ekw={}
+          state_candidates=[]
+          if isinstance(result,(list,tuple)):
+              state_candidates=list(result)
+          else:
+              state_candidates=[result]
+          for p in eparams:
+              n=p.get("parameter_name")
+              default=p.get("parameter_default")
+              if n in ("decimation_target","mesh_simplify","simplify"):
+                  ekw[n]=0.8 if n=="mesh_simplify" or n=="simplify" else 200000
+              elif n=="texture_size":
+                  ekw[n]=1024
+              elif n in ("output_buf","state","model"):
+                  # Try first non-file/non-string generation result as explicit state.
+                  cand=next((x for x in state_candidates if not isinstance(x,(str,int,float,bool,type(None)))),None)
+                  if cand is not None: ekw[n]=cand
+              elif n and default is not None:
+                  ekw[n]=default
+          print("EXTRACT_CALL",extract_ep,ekw)
+          extracted=client.predict(api_name=extract_ep, **ekw)
+          print("EXTRACT_RESULT",repr(extracted))
+
           candidates=[]
           def walk(x):
               if isinstance(x,str): candidates.append(x)
@@ -87,85 +156,30 @@ jobs:
                   for v in x: walk(v)
               elif isinstance(x,dict):
                   for v in x.values(): walk(v)
-          walk(result)
-          found={}
+          walk(extracted)
+          copied=[]
           for p in candidates:
               if os.path.isfile(p):
                   ext=os.path.splitext(p)[1].lower()
-                  if ext in (".glb",".obj") and ext not in found:
-                      dst="/tmp/i2d/output/instantmesh"+ext
-                      shutil.copy2(p,dst); found[ext]=dst
-          print("COPIED",found)
-          if ".glb" not in found:
-              raise SystemExit("InstantMesh did not return GLB")
+                  if ext in (".glb",".gltf",".obj",".ply"):
+                      dst="/tmp/trellis2/output/trellis2"+ext
+                      shutil.copy2(p,dst); copied.append(dst)
+          print("COPIED",copied)
+          if not any(p.endswith(".glb") for p in copied):
+              raise SystemExit("TRELLIS.2 did not return a local GLB")
           PY
-          test -s /tmp/i2d/output/instantmesh.glb
 
-      - name: Render generated mesh evidence
+      - name: Require TRELLIS.2 mesh
         run: |
-          cat > /tmp/i2d/render_mesh.py <<'PY'
-          import bpy, os, math
-          from mathutils import Vector
-          glb="/tmp/i2d/output/instantmesh.glb"
-          ev="/tmp/i2d/evidence"
-          bpy.ops.wm.read_factory_settings(use_empty=True)
-          bpy.ops.import_scene.gltf(filepath=glb)
-          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
-          if not meshes: raise RuntimeError("No mesh imported")
-          pts=[]
-          for o in meshes:
-              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
-          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
-          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
-          center=(mn+mx)*0.5; dims=mx-mn; span=max(dims)
-          sc=bpy.context.scene
-          sc.render.engine="BLENDER_EEVEE"
-          sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
-          sc.render.image_settings.file_format="PNG"
-          if sc.world is None: sc.world=bpy.data.worlds.new("World")
-          sc.world.color=(0.055,0.055,0.055)
-          # ground
-          bpy.ops.mesh.primitive_plane_add(size=span*3, location=(center.x,center.y,mn.z-span*0.015))
-          g=bpy.context.object
-          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(0.16,0.16,0.16,1); g.data.materials.append(gm)
-          # lighting
-          bpy.ops.object.light_add(type="SUN", location=center+Vector((span, -span, span)))
-          sun=bpy.context.object; sun.data.energy=2.5; sun.rotation_euler=(math.radians(35),0,math.radians(135))
-          bpy.ops.object.light_add(type="AREA", location=center+Vector((-span*0.7,-span*0.9,span*0.8)))
-          area=bpy.context.object; area.data.energy=700; area.data.size=span
-          def track(o,t):
-              o.rotation_euler=(t-o.location).to_track_quat("-Z","Y").to_euler()
-          bpy.ops.object.camera_add()
-          cam=bpy.context.object; cam.data.lens=58; sc.camera=cam
-          views=[
-            ("front",Vector((0,-1.8,0.18))),
-            ("three-quarter",Vector((1.2,-1.45,0.35))),
-            ("back",Vector((0,1.8,0.18))),
-            ("side",Vector((1.8,0,0.18)))
-          ]
-          for name,v in views:
-              cam.location=center+v*span
-              track(cam,center+Vector((0,0,dims.z*0.05)))
-              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png")
-              bpy.ops.render.render(write_still=True)
-          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
-          with open(os.path.join(ev,"mesh-report.txt"),"w") as f:
-              f.write(f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=InstantMesh public Space\ncredits=0\n")
-          PY
-          blender -b --python /tmp/i2d/render_mesh.py
-          test -s /tmp/i2d/evidence/mesh-front.png
-          test -s /tmp/i2d/evidence/mesh-three-quarter.png
-          test -s /tmp/i2d/evidence/mesh-back.png
-          test -s /tmp/i2d/evidence/mesh-side.png
-
-      - name: Package proof
-        run: |
-          cp /tmp/i2d/input/eldoria-gate-crop.png /tmp/i2d/evidence/
-          cp /tmp/i2d/output/instantmesh.glb /tmp/i2d/evidence/
-          ls -lh /tmp/i2d/evidence
+          test "${{ steps.trellis2.outcome }}" = "success"
+          test -s /tmp/trellis2/output/trellis2.glb
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: valoria-instantmesh-gate-capability-v1
-          path: /tmp/i2d/evidence
+          name: valoria-trellis2-gate-capability-v1
+          path: |
+            /tmp/trellis2/evidence
+            /tmp/trellis2/output
+            /tmp/trellis2/input/eldoria-gate-crop.png
           retention-days: 14
