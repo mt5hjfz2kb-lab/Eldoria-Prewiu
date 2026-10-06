@@ -155,3 +155,32 @@ Pass requires, in neutral source review before Unity: geometry/silhouette >=4/5,
 Reject if one-off geometry dominates A, B needs a new primary family, either identity gate is below 4/5, a fused diorama/rock base is required, or Unity/shader presentation is needed to rescue the forms.
 
 Implementation must use the existing Blender professional-authoring route and existing reset/preproduction evidence infrastructure. Do not create a parallel asset pipeline. Do not use Tripo/Meshy or paid generation.
+
+
+## 2026-10-06 — Fine-grained self-authored grammar gate
+
+The zero-spend grammar hypothesis has now been checked against the repository's strongest relevant evidence.
+
+The accepted Lower Gate already contains the proposed fine-grained semantic vocabulary: tower bodies/crowns, arch, wall wings, repeated merlons/quoin trim and shared materials. It proved modular structure and zero-credit authoring, but the later Golden source gates demonstrated that this same authored source class remains below the canonical premium target when judged as dominant screen-visible primary forms.
+
+Therefore merely decomposing the same source into smaller reusable pieces can improve **scalability**, but cannot by itself solve the already-proven **source-art quality ceiling**. Re-running the same Blender/code-authored geometry under a new modular label would violate the anti-loop rule.
+
+Verdict for self-authored fine-grained grammar as the complete solution:
+**SCALABILITY PLAUSIBLE / PREMIUM SOURCE QUALITY NOT PROVEN / DO NOT SCALE OR RERUN SAME AUTHORING CLASS.**
+
+The grammar/interface concept is retained as the required assembly architecture, but it now needs a genuinely higher-quality source library.
+
+## New candidate class — handcrafted external modular source library
+
+A new route is admitted for investigation: use a professionally handcrafted, fine-grained modular medieval/fantasy source library as the **raw visual vocabulary**, then re-author palette/materials/proportions/assemblies to Valoria and keep gameplay topology independent.
+
+This differs from historical Tripo families because:
+- pieces are handcrafted and reusable rather than generated per building;
+- the library supplies hundreds of small components rather than fused dioramas;
+- one purchase/source library can feed many buildings and upgrade states;
+- Valoria identity is created by assembly, proportions, materials, selective custom hero pieces and the locked camera;
+- broken/repaired/upgraded states can add/remove/swap modules.
+
+Public-market preflight found a particularly relevant candidate: LapaModels Medieval Fantasy Castle Pack, advertised as 400+ handcrafted modular pieces including walls, towers, gates, roofs, windows, columns, arches, stairs and details, with game-ready PBR textures and FBX/Blender availability. This is a candidate only, not approved or purchased.
+
+No purchase is authorized in this block. Next gate before spend: compare public visual evidence of the strongest 2–3 handcrafted modular libraries against the canonical Valoria reference and reject any whose shape/material language is fundamentally incompatible. Only then present one bounded purchase/test recommendation to the owner.
