@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-sharp-gaussian-unity-v1",
+  "source_run_id": 37448896124,
+  "source_artifact_id": 11404383856,
+  "source_file": "sharp-1.ply",
+  "target": "Unity 6000.3.23f1 / URP 17.3 / UnitySplats",
+  "required_views": [
+    "home",
+    "pan-left",
+    "pan-right",
+    "zoom-in",
+    "zoom-out",
+    "occlusion-front",
+    "occlusion-behind"
+  ],
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "nonce": "2026-10-06-001"
+}
