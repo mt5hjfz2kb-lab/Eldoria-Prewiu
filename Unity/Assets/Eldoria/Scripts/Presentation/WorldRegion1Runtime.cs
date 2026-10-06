@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 // Region 1 final visual certification marker.
 // Region 1 visual convergence candidate: certify full runtime + capture.
 // Region 1 certified-terrain candidate restart marker.
+// Region 1 certified-terrain final gate retry.
 namespace Eldoria.Presentation
 {
     /// <summary>
