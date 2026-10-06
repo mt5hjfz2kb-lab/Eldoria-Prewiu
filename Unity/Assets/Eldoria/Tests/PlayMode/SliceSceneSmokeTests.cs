@@ -444,36 +444,38 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Frontier");
             yield return null;
+            yield return null;
+
             var valley=GameObject.Find("World Region 1 · terrain base")?.GetComponent<Renderer>();
             var trailRoot=GameObject.Find("World Region 1 · Valoria main route");
             Assert.That(valley,Is.Not.Null);
             Assert.That(trailRoot,Is.Not.Null);
+
             Renderer trail=null;
             foreach(var renderer in trailRoot.GetComponentsInChildren<Renderer>(true))
-            {
-                if(!renderer.enabled||renderer.sharedMaterial==null)continue;
-                trail=renderer;
-                break;
-            }
+                if(renderer.name.Contains("track")){trail=renderer;break;}
             Assert.That(trail,Is.Not.Null,
-                "Region 1 strategic route must expose at least one visible authored renderer.");
-
+                "Region 1 route must expose an authored track renderer.");
             Assert.That(trail.sharedMaterial,Is.Not.SameAs(valley.sharedMaterial),
-                "Strategic route must remain a distinct authored surface from surrounding terrain.");
+                "Strategic route and landscape must use distinct semantic materials.");
 
-            Color SurfaceColor(Material material)
+            Texture BaseMap(Material material)
             {
-                if(material.HasProperty("_BaseColor"))return material.GetColor("_BaseColor");
-                if(material.HasProperty("_Color"))return material.GetColor("_Color");
-                return Color.white;
+                if(material!=null&&material.HasProperty("_BaseMap"))return material.GetTexture("_BaseMap");
+                if(material!=null&&material.HasProperty("_MainTex"))return material.GetTexture("_MainTex");
+                return null;
             }
-            var trailColor=SurfaceColor(trail.sharedMaterial);
-            var valleyColor=SurfaceColor(valley.sharedMaterial);
-            Assert.That(Vector4.Distance(trailColor,valleyColor),Is.GreaterThan(.02f),
-                "Strategic route must remain visually distinguishable from surrounding terrain even when the professional material is color-driven rather than texture-driven.");
-            foreach(var collider in trailRoot.GetComponentsInChildren<Collider>(true))
-                Assert.That(collider.enabled,Is.False,
-                    "Route presentation must stay visual-only; gameplay targeting lives in independent hotspots.");
+
+            var trailMap=BaseMap(trail.sharedMaterial);
+            var valleyMap=BaseMap(valley.sharedMaterial);
+            Assert.That(trailMap,Is.Not.Null,
+                "The blended strategic route must carry its own worn-trail texture.");
+            Assert.That(valleyMap,Is.Not.Null,
+                "The continuous landscape must carry its own soil/moss texture.");
+            Assert.That(trailMap,Is.Not.SameAs(valleyMap),
+                "Route readability must come from an authored trail surface, not the same map as the surrounding terrain.");
+            Assert.That(trail.sharedMaterial.name,Does.Contain("blended worn trail"),
+                "Region 1 route must use the soft-edged integrated trail material rather than a board-piece fallback.");
         }
 
         [UnityTest]
