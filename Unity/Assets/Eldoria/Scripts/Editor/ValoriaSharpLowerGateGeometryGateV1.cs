@@ -144,7 +144,7 @@ namespace Eldoria.EditorTools
             // Place the visible production geometry slightly in front of the semantic proxy.
             // Screen alignment stays canonical while raster geometry is allowed to coexist visibly
             // with the Gaussian representation instead of being fully depth-occluded by it.
-            const float geometryDepthScale = .82f;
+            const float geometryDepthScale = .90f;
             var geometryRay = cam.ViewportPointToRay(new Vector3(LowerGateViewport.x, LowerGateViewport.y, 0f));
             var desiredCenter = geometryRay.origin + geometryRay.direction * anchorDistance * geometryDepthScale;
             gate.transform.position += desiredCenter - bounds.center;
@@ -173,13 +173,20 @@ namespace Eldoria.EditorTools
             SetRenderers(renderers, true);
             CaptureRasterOnly(cam, output, "geometry-original-home");
 
-            var debugMat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            var debugShader = Shader.Find("Hidden/Internal-Colored") ?? Shader.Find("Universal Render Pipeline/Unlit");
+            var debugMat = new Material(debugShader);
             debugMat.color = new Color(.1f,.95f,1f,1f);
+            debugMat.SetInt("_ZWrite",0);
+            debugMat.SetInt("_ZTest",(int)CompareFunction.Always);
+            debugMat.SetInt("_Cull",(int)CullMode.Off);
+            debugMat.renderQueue = 5000;
             OverrideMaterials(renderers, debugMat);
             CaptureRasterOnly(cam, output, "geometry-debug-home");
 
-            // Restore source materials for coexistence proof.
-            RestoreMaterials(renderers, originalMaterials);
+            // Gate 4B is a substrate/alignment gate, not an appearance pass.
+            // Keep the diagnostic material during coexistence so the real imported
+            // mesh can be inspected over SHARP without the Gaussian depth layer
+            // hiding it. Original source materials are captured separately below.
             sharpRoot.SetActive(true);
 
             var states = new[]
@@ -214,7 +221,9 @@ namespace Eldoria.EditorTools
                 else if(state.Name=="pan-right") rightChanged=changed;
             }
 
-            // Return to HOME for final source-material capture.
+            // Return to HOME for final source-material reference. This is evidence-only:
+            // appearance/depth blending is intentionally deferred to the next gate.
+            RestoreMaterials(renderers, originalMaterials);
             cam.transform.position = Vector3.zero;
             cam.fieldOfView = 43.58f;
             CaptureBeauty(gs,cam,output,"coexist-original-material-home");
