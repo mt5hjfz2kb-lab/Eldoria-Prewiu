@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "classification": "VISUAL_AUTHORITY_MISMATCH_RESOLVED",
+  "classification": "VISUAL_AUTHORITY_MISMATCH",
   "authority_path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
   "authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "authority_size_bytes": 702827,
@@ -34,14 +34,16 @@
   ],
   "superseded_source_artifact_id": 11408853949,
   "superseded_home_artifact_id": 11409079879,
-  "production_promotion": true,
+  "production_promotion": false,
   "paid_credits": 0,
   "clean_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
-  "status": "CORRECT_AUTHORITY_PASS",
-  "source_run_id": 37472982237,
-  "source_artifact_id": 11418315301,
-  "home_authority_run_id": 37474695980,
-  "home_authority_artifact_id": 11418118004,
-  "review": "docs/evidence/valoria-visual-authority-reset-v1/review.json",
-  "promotion_scope": "correct reference + bounded hybrid slice only"
+  "submitted_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
+  "submitted_dimensions": [
+    1230,
+    845
+  ],
+  "ply_sha256": "c3992bc094db00ee81186a842716926da8ae90556f26669d1449ec19223313ac",
+  "ply_file": "sharp-1.ply",
+  "space": "gagndeep/Apple-Sharp-Image-to-3D-View-Synthesis",
+  "endpoint": "/run_sharp"
 }

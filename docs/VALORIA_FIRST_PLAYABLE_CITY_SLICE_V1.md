@@ -1,84 +1,29 @@
-## 2026-10-06 — VISUAL AUTHORITY RESET — PREVIOUS VISUAL PASS REVOKED
-
-Owner-attached open Valoria is the binding literal composition: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, SHA-256 `8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689`. The vertical monumental reference and SHARP source artifact 11408853949/HOME artifact 11409079879 are historical technical evidence only. First playable slice run 37470805228 retains TECH/INTERACTION evidence, but its VISUAL PASS is revoked as **VISUAL_AUTHORITY_MISMATCH / NOT PROMOTED**. Gates 1–5 infrastructure is retained; reference match, composition and camera must be revalidated from this correct source. No further Valoria production or parcel block is authorized before all six correction criteria pass. Workstream: `valoria-visual-authority-reset-v1`.
-
 # VALORIA FIRST PLAYABLE CITY SLICE v1
 
-Status: ACTIVE PRODUCTION
+Status: CORRECT-REFERENCE SLICE PROOF PASS / CLOSED
 Date: 2026-10-06
-Authority: `valoria-first-playable-city-slice-v1`
 
-## Objective
-Build the first real playable Valoria production slice on top of the locked Gates 1–5 stack:
+The previous vertical-reference VISUAL PASS is revoked as VISUAL_AUTHORITY_MISMATCH. This correction re-runs the same approved technical recipe against the exact owner open-Valoria target.
 
-Bridge → Lower Gate → Main Road → Central Stair → Upper Walls / Bastion.
+## Authority and result
+- Reference: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg` (exact owner bytes).
+- Source run/artifact: **37472982237 / 11418315301**.
+- Final Unity run/artifact: **37474695980 / 11418118004**.
+- Capture commit: `d912f89d0957aa5c49937736840070b1de6a753b`.
+- **TECH PASS / VISUAL PASS / REFERENCE MATCH PASS / COMPOSITION PASS / INTERACTION PASS / BOUNDED CAMERA PASS**.
+- Manual review: `docs/evidence/valoria-visual-authority-reset-v1/review.json`.
+- Unmodified technical report: `docs/evidence/valoria-visual-authority-reset-v1/production-slice-evidence.json`. Its gate_pass=false intentionally requires the separate direct visual review.
 
-This is production, not visual-method R&D.
+## Correct route and composition
+Bridge → Lower Gate → Main Road → Central Stair → contained Upper Gate / Walls / Bastion. Broad central esplanade, cabin plot left and blue-tent camp plot right remain readable at HOME and both accepted pans. No vertical monumental citadel is current authority.
 
-## Locked dependencies
-- `docs/VALORIA_PRODUCTION_RECIPE_V1.md`
-- clean SHARP source artifact `11408853949`
-- SHARP runtime baseline 589,824 splats
-- Unity 6 URP
-- bounded HOME / pan camera
-- standard Unity semantic proxies/colliders
-- geometry-anchored target appearance using the already-proven projection shader
-- approved production GLBs only
-- zero paid credits
+## Real geometry / semantics
+Seven approved GLBs remain imported/editable: Bridge, Lower Gate, Road, Stair, Walls, Bastion and Rock/Terrain. All imports, bounds and reference anchors pass. Real GLBs remain hidden support geometry in beauty; there is no promoted visible-mesh override. SHARP provides the visible whole frame.
 
-## Real geometry included
-- BridgeFamilyV1
-- LowerGateFamilyV1
-- RoadFamilyV1
-- StairFamilyV1
-- WallFamilyV1
-- BastionFamilyV1
-- RockTerrainFamilyV1 as depth/support geometry
+Nine standard Unity proxy anchors cover those seven regions plus LeftCabinParcel and RightCampParcel. HOME, pan-left, pan-right, zoom-in and zoom-out give **45/45** semantic raycasts and five selection-counter events per proxy.
 
-## Semantic interaction
-Required semantic anchors:
-- LowerGate
-- CentralStair
-- BastionAccess
+## Corrected camera / appearance
+Camera comes from SHARP PLY intrinsics: 1230×845, FOV 44.42281°, identity extrinsic. Pan is x±0.5; bounded zoom FOV multipliers 0.9/1.1. The inherited ±1.75 envelope was rejected because it clipped the right parcel and exposed edge stretch. GammaToLinear is disabled in the actual Gamma project; the unnecessarily dark initial capture was rejected.
 
-They remain standard Unity colliders, hidden from beauty and reprojected/raycasted across HOME, pan-left and pan-right.
-
-## Visual ownership
-SHARP remains the whole-frame visual authority. Real geometry replaces/supports the central-axis production families only.
-
-Still represented primarily by SHARP in this slice:
-- background
-- vegetation
-- water/shore
-- left cabin parcel
-- right camp parcel
-- secondary props
-
-## PASS gate
-The slice may close only when:
-- all approved family GLBs import;
-- all family bounds/anchors are valid;
-- LowerGate plus at least one additional central-axis semantic point is selectable across the bounded camera;
-- HOME / pan-left / pan-right preserve global Valoria identity;
-- real-family integration is localized and does not take over the whole frame;
-- real geometry can be shown independently in evidence;
-- comparative SHARP-only vs integrated captures exist;
-- direct visual review is PASS;
-- evidence explicitly lists SHARP-only vs real-geometry regions;
-- paid credits remain 0.
-
-## Failure handling
-Use the locked recipe classifications only:
-- geometry/identity fail → source-family blocker;
-- alignment fail → transform/anchor correction only;
-- interaction fail → proxy/collider correction only;
-- appearance stretch/duplication → authored/PBR fallback;
-- runner/observability fail → infrastructure classification;
-- TECH PASS with visual fail → do not promote.
-
-No new visual R&D is authorized unless this production slice proves the recipe cannot progress.
-
-## Next prepared block
-After PASS:
-- LEFT CABIN PARCEL
-- RIGHT CAMP PARCEL
+## Scope
+PASS certifies this visual-authority / bounded hybrid slice correction. It does not certify a new full-game release, visible full-mesh replacement, free camera or mobile-device performance. Unity 6 URP, SHARP, existing projection/PBR path, colliders and approved source families are retained. No purchases, paid credits, new generator or research lane. No next production block started; wait for owner instruction.

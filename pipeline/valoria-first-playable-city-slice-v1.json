@@ -10,7 +10,7 @@
     "authority_manifest": "pipeline/valoria-visual-authority-v1.json",
     "source_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
     "splat_count": 589824,
-    "home_authority_artifact_id": null,
+    "home_authority_artifact_id": 11418118004,
     "superseded": false
   },
   "runtime": "Unity 6 URP",
@@ -54,11 +54,11 @@
   ],
   "paid_credits": 0,
   "next_block": [],
-  "status": "correct_authority_capture_pending",
-  "semantic_anchor_count": 7,
+  "status": "completed",
+  "semantic_anchor_count": 9,
   "beauty_replacement_regions": [],
   "real_geometry_role": "editable support geometry hidden from beauty",
-  "evidence": "docs/evidence/valoria-first-playable-city-slice-v1/result.json",
+  "evidence": "docs/evidence/valoria-visual-authority-reset-v1/review.json",
   "historical_result": {
     "final_verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
     "final_run_id": 37470805228,
@@ -71,8 +71,8 @@
       "pan_right": 18
     }
   },
-  "final_verdict": "PENDING TECH / VISUAL / REFERENCE / COMPOSITION / INTERACTION / CAMERA REVIEW",
-  "production_promotion": false,
+  "final_verdict": "TECH PASS / VISUAL PASS / REFERENCE MATCH PASS / COMPOSITION PASS / INTERACTION PASS / BOUNDED CAMERA PASS",
+  "production_promotion": true,
   "required_closure": [
     "TECH PASS",
     "VISUAL PASS",
@@ -90,5 +90,9 @@
     ],
     "home": "exact PLY identity intrinsics",
     "reason": "keep both side parcels complete and avoid unsupported edge extrapolation"
-  }
+  },
+  "final_run_id": 37474695980,
+  "final_artifact_id": 11418118004,
+  "final_commit": "d912f89d0957aa5c49937736840070b1de6a753b",
+  "semantic_raycast_pass": "45/45"
 }

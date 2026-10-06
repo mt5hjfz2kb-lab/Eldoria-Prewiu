@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "workstream": "valoria-visual-authority-reset-v1",
+  "reviewed_at": "2026-10-06T14:00:13.596857+00:00",
+  "verdict": "PASS FOR VISUAL AUTHORITY CORRECTION BLOCK",
+  "classification_resolved": "VISUAL_AUTHORITY_MISMATCH",
+  "production_promotion": "correct visual authority and bounded hybrid city-slice evidence only",
+  "criteria": {
+    "TECH": "PASS",
+    "VISUAL": "PASS",
+    "REFERENCE_MATCH": "PASS",
+    "COMPOSITION": "PASS",
+    "INTERACTION": "PASS",
+    "BOUNDED_CAMERA": "PASS"
+  },
+  "source_run_id": 37472982237,
+  "source_artifact_id": 11418315301,
+  "capture_run_id": 37474695980,
+  "capture_artifact_id": 11418118004,
+  "capture_commit": "d912f89d0957aa5c49937736840070b1de6a753b",
+  "reference_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+  "source_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
+  "source_ply_sha256": "c3992bc094db00ee81186a842716926da8ae90556f26669d1449ec19223313ac",
+  "crop_box": [
+    210,
+    50,
+    1440,
+    895
+  ],
+  "camera": {
+    "home": "source intrinsic identity",
+    "bounded_pan_x": 0.5,
+    "fov": 44.42281,
+    "width": 1230,
+    "height": 845
+  },
+  "metrics": {
+    "home_rgb_mae_vs_exact_clean_crop": 0.02237266441349876,
+    "source_mean_rgb": [
+      0.37245185103508355,
+      0.30267502785060646,
+      0.2400843589087279
+    ],
+    "home_mean_rgb": [
+      0.3623700672656544,
+      0.29435574458807245,
+      0.23375829350392072
+    ]
+  },
+  "visual_review": {
+    "review_type": "direct agent inspection of unmodified Unity HOME / pan-left / pan-right and owner exact reference",
+    "open_esplanade": "PASS: broad grassy central area retained; no vertical urban mass replaces it",
+    "central_axis": "PASS: bridge \u2192 lower gate \u2192 legible central road \u2192 stair \u2192 contained upper fortification",
+    "left_parcel": "PASS: fenced cabin plot remains left and fully readable at all accepted pans",
+    "right_parcel": "PASS: blue-tent camp plot remains right and fully readable at all accepted pans",
+    "premium_direction": "PASS within this correction: source stone/grass/warm fires/blue heraldry and full-frame hierarchy preserved",
+    "bounds": "PASS at x\u00b10.5; x\u00b11.75 was rejected because it clipped the right parcel and revealed stretched borders",
+    "color": "PASS: unnecessary sRGB-to-linear conversion disabled for actual Gamma project",
+    "reference_match": "Derived from exact source bytes and direct comparison; MAE is corroborating evidence, not automatic visual acceptance"
+  },
+  "interaction": {
+    "semantic_anchor_count": 9,
+    "camera_states": [
+      "HOME",
+      "pan-left",
+      "pan-right",
+      "zoom-in",
+      "zoom-out"
+    ],
+    "raycasts_required": 45,
+    "raycasts_pass": 45,
+    "callbacks": {
+      "Bridge": 5,
+      "LowerGate": 5,
+      "MainRoad": 5,
+      "CentralStair": 5,
+      "UpperWalls": 5,
+      "Bastion": 5,
+      "TerrainCliffSupport": 5,
+      "LeftCabinParcel": 5,
+      "RightCampParcel": 5
+    },
+    "scope": "deterministic semantic raycast/counter proof; not full player progression certification"
+  },
+  "families": [
+    {
+      "id": "Bridge",
+      "source": "art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 4,
+      "viewport_error": 1.1e-07
+    },
+    {
+      "id": "LowerGate",
+      "source": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 6,
+      "viewport_error": 4e-08
+    },
+    {
+      "id": "MainRoad",
+      "source": "art-source/valoria/production/road-family-v1/RoadFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 4,
+      "viewport_error": 0.0
+    },
+    {
+      "id": "CentralStair",
+      "source": "art-source/valoria/production/stair-family-v1/StairFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 3,
+      "viewport_error": 0.0
+    },
+    {
+      "id": "UpperWalls",
+      "source": "art-source/valoria/production/wall-family-v1/WallFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 6,
+      "viewport_error": 6e-08
+    },
+    {
+      "id": "Bastion",
+      "source": "art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 9,
+      "viewport_error": 0.0
+    },
+    {
+      "id": "TerrainCliffSupport",
+      "source": "art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb",
+      "real_geometry": true,
+      "beauty_visible": false,
+      "renderer_count": 5,
+      "viewport_error": 3e-08
+    }
+  ],
+  "representation": {
+    "sharp_beauty": "all visible appearance, including central architecture, cabin/camp, terrain, vegetation, water and background",
+    "real_geometry": "7 approved editable GLB families, sized/aligned to correct reference, hidden in beauty and present in independent diagnostic",
+    "proxies": "9 standard Unity colliders own semantic interaction",
+    "appearance_projection": "existing shader/infrastructure retained; no visible mesh appearance replacement promoted"
+  },
+  "attempts": [
+    {
+      "run_id": 37473740863,
+      "artifact_id": 11419020268,
+      "verdict": "TECH PASS / VISUAL FAIL",
+      "reason": "sRGB-to-linear applied in Gamma project; dark frame"
+    },
+    {
+      "run_id": 37474187903,
+      "artifact_id": 11418875904,
+      "verdict": "COLOR + HOME REFERENCE MATCH PASS / BOUNDED CAMERA FAIL",
+      "reason": "inherited \u00b11.75 pan clips right camp / exposes border stretch"
+    },
+    {
+      "run_id": 37474695980,
+      "artifact_id": 11418118004,
+      "verdict": "ALL SIX CORRECTION CRITERIA PASS"
+    }
+  ],
+  "not_certified": [
+    "free camera beyond accepted bounds",
+    "mobile device performance",
+    "fully meshed beauty replacement",
+    "new full-game release"
+  ],
+  "next_production_started": false,
+  "paid_credits": 0
+}
