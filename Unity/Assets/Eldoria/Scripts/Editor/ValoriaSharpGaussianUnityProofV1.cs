@@ -17,11 +17,11 @@ namespace Eldoria.EditorTools
 
         public static void Capture()
         {
-            var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "ValoriaSharpGaussianUnityProofV1Captures"));
+            var output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "ValoriaSharpGaussianUnityProofV1Captures"));
             if (Directory.Exists(output)) Directory.Delete(output, true);
             Directory.CreateDirectory(output);
 
-            var ply = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "SharpGaussianSource", "sharp-1.ply"));
+            var ply = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "SharpGaussianSource", "sharp-1.ply"));
             if (!File.Exists(ply)) throw new FileNotFoundException("Missing SHARP PLY", ply);
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
