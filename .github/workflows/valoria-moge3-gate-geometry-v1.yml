@@ -1,0 +1,182 @@
+name: "[R&D] Valoria MoGe-3 Gate Geometry v1"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-moge3-gate-geometry-v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  moge3-gate-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+            .github/workflows/valoria-moge3-gate-geometry-v1.yml
+          sparse-checkout-cone-mode: false
+
+      - name: Install client and render tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" requests
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
+
+      - name: Prepare canonical gate input
+        run: |
+          mkdir -p /tmp/moge3/input /tmp/moge3/output /tmp/moge3/evidence
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png /tmp/moge3/input/gate.png
+          sha256sum /tmp/moge3/input/gate.png | tee /tmp/moge3/evidence/input.sha256
+
+      - name: Run MoGe-3 public Space
+        run: |
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee /tmp/moge3/evidence/moge3.log
+          import os, shutil, requests, traceback
+          from gradio_client import Client, handle_file
+
+          client=Client("Ruicheng/MoGe-3", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          endpoints=(api or {}).get("named_endpoints",{})
+          chosen=None
+          for ep,spec in endpoints.items():
+              returns=spec.get("returns",[])
+              comps={str(r.get("component","")).lower() for r in returns}
+              params=spec.get("parameters",[])
+              names={p.get("parameter_name") for p in params}
+              if ("model3d" in comps or "file" in comps or "downloadbutton" in comps) and ({"image","input_image"} & names):
+                  chosen=(ep,spec); break
+          if chosen is None:
+              # Interface endpoints sometimes expose model files but component names vary.
+              for ep,spec in endpoints.items():
+                  names={p.get("parameter_name") for p in spec.get("parameters",[])}
+                  if {"image","input_image"} & names:
+                      chosen=(ep,spec); break
+          if chosen is None:
+              raise SystemExit("No image inference endpoint found")
+          ep,spec=chosen
+          kwargs={}
+          for p in spec.get("parameters",[]):
+              n=p.get("parameter_name")
+              if n in ("image","input_image"):
+                  kwargs[n]=handle_file("/tmp/moge3/input/gate.png")
+              elif n=="max_size":
+                  kwargs[n]=1024
+              elif n=="resolution_level":
+                  kwargs[n]="High"
+              elif n=="apply_mask":
+                  kwargs[n]=True
+              elif n=="remove_edge":
+                  kwargs[n]=True
+              elif n=="refine_steps":
+                  kwargs[n]=3
+              elif not p.get("parameter_has_default",False):
+                  print("UNHANDLED_REQUIRED",n,p)
+          print("CALL",ep,kwargs)
+          result=client.predict(api_name=ep,**kwargs)
+          print("RESULT",repr(result))
+          candidates=[]
+          def walk(x):
+              if isinstance(x,str): candidates.append(x)
+              elif isinstance(x,(list,tuple)):
+                  for v in x: walk(v)
+              elif isinstance(x,dict):
+                  for v in x.values(): walk(v)
+          walk(result)
+          print("CANDIDATES",candidates)
+          copied=[]
+          for p in candidates:
+              ext=os.path.splitext(p.split("?")[0])[1].lower() if isinstance(p,str) else ""
+              if ext not in (".glb",".gltf",".ply",".obj",".exr",".png",".jpg",".jpeg"):
+                  continue
+              base=os.path.basename(p.split("?")[0])
+              dst=os.path.join("/tmp/moge3/output",base)
+              if os.path.isfile(p):
+                  shutil.copy2(p,dst)
+              elif p.startswith(("http://","https://")):
+                  rr=requests.get(p,timeout=180); rr.raise_for_status()
+                  open(dst,"wb").write(rr.content)
+              else:
+                  continue
+              copied.append(dst)
+          print("COPIED",copied)
+          if not any(os.path.splitext(p)[1].lower() in (".glb",".gltf",".ply",".obj") for p in copied):
+              raise SystemExit("MoGe-3 returned no downloadable geometry file")
+          PY
+
+      - name: Normalize geometry source
+        run: |
+          set -eux
+          model=$(find /tmp/moge3/output -maxdepth 1 -type f ( -name '*.glb' -o -name '*.gltf' -o -name '*.ply' -o -name '*.obj' ) | head -1)
+          test -n "$model"
+          ext="${model##*.}"
+          cp "$model" "/tmp/moge3/evidence/moge3-gate.$ext"
+          ls -lh /tmp/moge3/output /tmp/moge3/evidence
+
+      - name: Render multi-angle geometry evidence
+        run: |
+          cat > /tmp/moge3/render.py <<'PY'
+          import bpy, os, math, glob
+          from mathutils import Vector
+          ev="/tmp/moge3/evidence"
+          files=glob.glob(ev+"/moge3-gate.*")
+          model=[p for p in files if os.path.splitext(p)[1].lower() in (".glb",".gltf",".ply",".obj")]
+          if not model: raise RuntimeError("no model")
+          src=model[0]; ext=os.path.splitext(src)[1].lower()
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          if ext in (".glb",".gltf"):
+              bpy.ops.import_scene.gltf(filepath=src)
+          elif ext==".ply":
+              try: bpy.ops.wm.ply_import(filepath=src)
+              except: bpy.ops.import_mesh.ply(filepath=src)
+          elif ext==".obj":
+              try: bpy.ops.wm.obj_import(filepath=src)
+              except: bpy.ops.import_scene.obj(filepath=src)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+          if not meshes: raise RuntimeError("no mesh")
+          pts=[]
+          for o in meshes:
+              for c in o.bound_box: pts.append(o.matrix_world @ Vector(c))
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene; sc.render.engine='BLENDER_EEVEE'
+          sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.035,.035,.035)
+          bpy.ops.mesh.primitive_plane_add(size=span*3, location=(center.x,center.y,mn.z-.03*span))
+          g=bpy.context.object; m=bpy.data.materials.new("ground"); m.diffuse_color=(.12,.12,.12,1); g.data.materials.append(m)
+          bpy.ops.object.light_add(type='SUN', location=center+Vector((0,0,span)))
+          sun=bpy.context.object; sun.rotation_euler=(math.radians(35),0,math.radians(135)); sun.data.energy=2.0
+          bpy.ops.object.light_add(type='AREA', location=center+Vector((-.7*span,-.8*span,.9*span)))
+          a=bpy.context.object; a.data.energy=850; a.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat('-Z','Y').to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
+          for name,v in [("front",(0,-1.65,.45)),("three-quarter",(1.1,-1.3,.65)),("side",(1.65,0,.45)),("back",(0,1.65,.45))]:
+              cam.location=center+Vector(v)*span; track(cam,center)
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png")
+              bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          verts=sum(len(o.data.vertices) for o in meshes)
+          open(os.path.join(ev,"mesh-report.txt"),"w").write(f"meshes={len(meshes)}\nverts={verts}\ntriangles_approx={tris}\nbounds={tuple(dims)}\n")
+          PY
+          blender -b --python /tmp/moge3/render.py
+          test -s /tmp/moge3/evidence/mesh-front.png
+          test -s /tmp/moge3/evidence/mesh-three-quarter.png
+          test -s /tmp/moge3/evidence/mesh-side.png
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-moge3-gate-geometry-v1
+          path: |
+            /tmp/moge3/evidence
+            /tmp/moge3/input/gate.png
+          retention-days: 14
