@@ -41,6 +41,7 @@ namespace Eldoria.Presentation
             BuildRuin();
             BuildScout(state);
             BuildQuarry(state);
+            AdoptLooseVisuals();
             Refresh(state);
             Physics.SyncTransforms();
         }
@@ -254,6 +255,20 @@ namespace Eldoria.Presentation
             {
                 var c=target.GetComponent<Collider>();
                 if(c!=null)c.enabled=false;
+            }
+        }
+
+        static void AdoptLooseVisuals()
+        {
+            // Several legacy ValoriaKit helpers intentionally create multiple sibling primitives and
+            // return void. Region 1 owns their lifecycle, so adopt every loose world-prefixed root
+            // before the frame is exposed. Rebuilding the world can then destroy one root without
+            // leaking or duplicating vegetation, rubble or banners.
+            foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+            {
+                if(tr==null||tr==root||tr.parent!=null)continue;
+                if(!tr.name.StartsWith("World Region 1 ·"))continue;
+                tr.SetParent(root,true);
             }
         }
 
