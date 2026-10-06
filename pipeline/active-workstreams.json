@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:56:00Z",
+  "updated_at": "2026-10-06T12:02:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -66,6 +66,29 @@
         "artifact_id": 11411280592,
         "verdict": "TECH PASS / 20-of-20 BOUNDED CAMERA RAYCAST PASS / BEAUTY PRESERVED"
       }
+    },
+    {
+      "id": "visual-fallback-generic-integration-v1",
+      "title": "Visual fallback generic integration v1",
+      "owner": "chat-fallback-generic-integration",
+      "scope": [
+        ".github/workflows/art-production-plan.yml",
+        ".github/workflows/visual-fallback-route.yml",
+        "tools/plan-art-production.mjs",
+        "tools/classify-visual-failure.mjs",
+        "pipeline/visual-fallback-policy.json",
+        "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "art-production-fallback-router-generic"
+      ],
+      "claimed_at": "2026-10-06T12:02:00Z",
+      "base_main_sha": "3d63d0986a6680f4390b74b3a15a42ec05befe60",
+      "status": "active",
+      "phase": "GENERIC ZERO-SPEND INTEGRATION",
+      "dependency": "Owner-authorized generic integration only. Must not modify any active SHARP/Unity convergence file, art-production-request.json, Unity package, evidence, or heavy runner workflow.",
+      "next": "Connect generic planner and reusable fallback workflow; validate by GitHub-hosted Node only."
     }
   ],
   "history": [
