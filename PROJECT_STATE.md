@@ -689,3 +689,14 @@ Visual verdict is **TECH PASS / VISUAL FAIL / CODE-AUTHORING CEILING / UNITY NOT
 
 The operational Actions blockage is separately resolved: cached portable Blender + sparse checkout removes the previous heavy Ubuntu apt/1GB-repo bottleneck; corrupted `pages.yml` was restored to the last healthy version. Tripo remains **0 credits**. Next meaningful method requires **interactive/artist-led Blender authoring** (preferred) or a separately authorized external geometry-source route followed by Blender reauthoring.
 
+
+
+## 2026-10-06 — Valoria first playable city slice
+
+Closed **VALORIA PRODUCTION PHASE v1 — FIRST PLAYABLE CITY SLICE** with **TECH PASS / INTERACTION PASS / VISUAL PASS**.
+
+Authoritative production run: `37470805228`; artifact: `11417486230`; evidence: `docs/evidence/valoria-first-playable-city-slice-v1/result.json`.
+
+Locked stack remains unchanged: clean SHARP 589,824 beauty authority, Unity 6 URP, bounded camera, real editable support geometry and standard Unity semantic colliders. Seven production families are present as real support geometry (Bridge, Lower Gate, Road, Stair, Walls, Bastion, Rock/Terrain) and seven semantic anchors pass **21/21** raycasts across HOME / pan-left / pan-right. Final beauty differs from SHARP-only by only **22 / 13 / 18** pixels respectively. No real-geometry beauty override is promoted yet; earlier localized appearance artifacts were explicitly rejected. Paid credits: **0**.
+
+Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1.md` / `pipeline/valoria-left-right-parcels-next-block-v1.json` for **LEFT CABIN PARCEL + RIGHT CAMP PARCEL**.
