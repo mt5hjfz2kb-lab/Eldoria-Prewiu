@@ -76,14 +76,43 @@ jobs:
           p,u,size=chosen
           print("CHOSEN",p,u,size)
           out="/tmp/cc0-proof/source/package"+os.path.splitext(urllib.parse.urlparse(u).path)[1]
-          req=urllib.request.Request(u,headers={"User-Agent":"EldoriaResearch/1.0"})
-          with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as f:
-              while True:
-                  b=r.read(1024*1024)
-                  if not b: break
-                  f.write(b)
+          def download(url,dst):
+              os.makedirs(os.path.dirname(dst),exist_ok=True)
+              req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
+              with urllib.request.urlopen(req,timeout=180) as r, open(dst,"wb") as f:
+                  while True:
+                      b=r.read(1024*1024)
+                      if not b: break
+                      f.write(b)
+          download(u,out)
+          # Poly Haven source files reference their declared include files relatively.
+          # Fetch only the includes belonging to the chosen 1k/2k package.
+          node=data
+          for key in [k for k in p.split("/") if k]:
+              node=node[key]
+          includes=node.get("include",{}) if isinstance(node,dict) else {}
+          def fetch_includes(x,rel=""):
+              if isinstance(x,dict):
+                  if isinstance(x.get("url"),str):
+                      name=os.path.basename(urllib.parse.urlparse(x["url"]).path)
+                      download(x["url"],os.path.join("/tmp/cc0-proof/source",rel,name))
+                  for k,v in x.items():
+                      if k not in ("url","size","md5","sha1"):
+                          fetch_includes(v, os.path.join(rel,k) if k not in ("include",) else rel)
+              elif isinstance(x,list):
+                  for v in x: fetch_includes(v,rel)
+          # Blend references //textures/<file>; flatten include texture assets there.
+          def fetch_flat(x):
+              if isinstance(x,dict):
+                  if isinstance(x.get("url"),str):
+                      url=x["url"]; name=os.path.basename(urllib.parse.urlparse(url).path)
+                      download(url,os.path.join("/tmp/cc0-proof/source/textures",name))
+                  for v in x.values(): fetch_flat(v)
+              elif isinstance(x,list):
+                  for v in x: fetch_flat(v)
+          fetch_flat(includes)
           open("/tmp/cc0-proof/chosen.txt","w").write(f"{p}\n{u}\n{os.path.getsize(out)}\n")
-          print("DOWNLOADED",out,os.path.getsize(out))
+          print("DOWNLOADED",out,os.path.getsize(out),"INCLUDES",len(os.listdir("/tmp/cc0-proof/source/textures")) if os.path.isdir("/tmp/cc0-proof/source/textures") else 0)
           PY
           cat /tmp/cc0-proof/chosen.txt
           head -40 /tmp/cc0-proof/candidates.txt
@@ -138,7 +167,7 @@ jobs:
           print("BOUNDS",tuple(mn),tuple(mx),"SPAN",span,"MESHES",len(meshes))
 
           sc=bpy.context.scene
-          sc.render.engine="BLENDER_EEVEE_NEXT"
+          sc.render.engine="BLENDER_EEVEE"
           sc.render.resolution_x=1200
           sc.render.resolution_y=900
           sc.render.resolution_percentage=100
@@ -192,6 +221,10 @@ jobs:
               f.write(f"source=Poly Haven Modular Fort 01\nlicense=CC0 1.0\nmeshes={len(meshes)}\ntriangles_approx={tris}\nmaterial_slots={mats}\nbounds={tuple(dims)}\n")
           PY
           blender -b --python /tmp/cc0-proof/render.py
+          test -s /tmp/cc0-proof/evidence/report.txt
+          test -s /tmp/cc0-proof/evidence/three-quarter.png
+          test -s /tmp/cc0-proof/evidence/front.png
+          test -s /tmp/cc0-proof/evidence/side.png
 
       - name: Package evidence
         run: |
