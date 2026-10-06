@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-sharp-gameplay-selection-gate-v1",
+  "phase": "CONVERGENCE_GATE_3",
+  "source_artifact_id": 11408853949,
+  "visual_authority_artifact_id": 11409079879,
+  "gate2_artifact_id": 11411280592,
+  "proof_splats": 600000,
+  "proxy_ids": [
+    "WestTower",
+    "CentralKeep",
+    "EastTower",
+    "LowerGate"
+  ],
+  "camera_states": [
+    "home",
+    "pan-left",
+    "pan-right",
+    "zoom-in",
+    "zoom-out"
+  ],
+  "requirements": [
+    "20/20 semantic raycasts remain stable",
+    "20/20 gameplay selection callbacks fire from semantic raycast results",
+    "each proxy receives one selection callback per camera state",
+    "SHARP beauty remains active and unchanged",
+    "selected LowerGate produces visible standard Unity raster feedback in front of the Gaussian layer"
+  ],
+  "paid_credits": 0,
+  "nonce": "2026-10-06-gate3-001"
+}
