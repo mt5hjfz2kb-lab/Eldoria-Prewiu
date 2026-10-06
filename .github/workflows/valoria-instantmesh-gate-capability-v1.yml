@@ -1,0 +1,52 @@
+name: "[R&D] Valoria InstantMesh Gate Capability v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-instantmesh-gate-capability-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install client and Blender
+        run: |
+          python -m pip install --quiet "gradio_client>=1.4" pillow
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+      - name: Generate Gate with InstantMesh ZeroGPU
+        env:
+          OUT_DIR: /tmp/instantmesh-proof
+        run: python tools/valoria-instantmesh-space-proof.py
+      - name: Render generated model
+        run: |
+          cat > /tmp/instantmesh-proof/render.py <<'PY'
+          import bpy,glob,os
+          from mathutils import Vector
+          root="/tmp/instantmesh-proof"
+          models=glob.glob(root+"/*.glb")+glob.glob(root+"/*.obj")
+          if not models: raise RuntimeError("no model")
+          p=models[0]; bpy.ops.wm.read_factory_settings(use_empty=True)
+          if p.endswith(".glb"): bpy.ops.import_scene.gltf(filepath=p)
+          else: bpy.ops.wm.obj_import(filepath=p)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH"]
+          pts=[o.matrix_world@Vector(c) for o in meshes for c in o.bound_box]
+          mn=Vector((min(q.x for q in pts),min(q.y for q in pts),min(q.z for q in pts))); mx=Vector((max(q.x for q in pts),max(q.y for q in pts),max(q.z for q in pts)))
+          center=(mn+mx)*.5; span=max(mx-mn); sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100; sc.world.color=(.04,.04,.04)
+          bpy.ops.object.light_add(type="AREA",location=(center.x-span,center.y-span,center.z+span*1.5)); bpy.context.object.data.energy=1200; bpy.context.object.data.size=span
+          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=55
+          for name,v in [("front",(0,-1.6,.45)),("three-quarter",(1.15,-1.25,.7)),("side",(1.6,0,.45))]:
+              cam.location=center+Vector(v)*span; cam.rotation_euler=(center-cam.location).to_track_quat("-Z","Y").to_euler()
+              sc.render.filepath=os.path.join(root,name+".png"); bpy.ops.render.render(write_still=True)
+          PY
+          blender -b --python /tmp/instantmesh-proof/render.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-instantmesh-gate-capability-v1
+          path: /tmp/instantmesh-proof
+          if-no-files-found: error
+          retention-days: 30
