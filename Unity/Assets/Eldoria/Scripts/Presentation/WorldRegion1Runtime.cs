@@ -152,10 +152,11 @@ namespace Eldoria.Presentation
                 }
             }
 
+            int geologyIndex=0;
             foreach(var p in new[]{new Vector3(-19f,0,-4f),new Vector3(18f,0,-5f),
                 new Vector3(-18f,0,24f),new Vector3(20f,0,23f),
                 new Vector3(-2f,0,12f),new Vector3(12f,0,6f)})
-                ValoriaKit.RockCluster("World Region 1 · edge geology",p,.88f,5);
+                WorldRock("World Region 1 · edge geology",p,1.55f,geologyIndex++);
         }
 
         static void BuildRoutes()
@@ -191,7 +192,7 @@ namespace Eldoria.Presentation
                     var bounds=rs[0].bounds;
                     for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     float span=Mathf.Max(bounds.size.x,bounds.size.z);
-                    if(span>.001f)city.transform.localScale*=5.3f/span;
+                    if(span>.001f)city.transform.localScale*=7.0f/span;
                     rs=city.GetComponentsInChildren<Renderer>(true);
                     bounds=rs[0].bounds;for(int i=1;i<rs.Length;i++)bounds.Encapsulate(rs[i].bounds);
                     city.transform.position+=ValoriaPosition-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
@@ -351,6 +352,18 @@ namespace Eldoria.Presentation
 
         static void WorldShrub(string name,Vector3 position,float scale,int variant)
         {
+            if(externalLibrary!=null&&externalLibrary.SlavicBush!=null)
+            {
+                var bush=ValoriaKit.BenchmarkPiece(name,externalLibrary.SlavicBush,position,
+                    1.25f*scale,.95f*scale,Quaternion.Euler(0f,(variant*53f)%360f,0f));
+                if(bush!=null)
+                {
+                    Parent(bush);
+                    foreach(var col in bush.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                    return;
+                }
+            }
+
             ValoriaKit.PineTree(name,position,scale*(.72f+(variant%2)*.08f));
             if(variant%2==0)
                 ValoriaKit.RockCluster(name+" · stones",position+new Vector3(.35f,0,-.18f),.28f,3);
@@ -403,7 +416,40 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
+            if(externalLibrary!=null&&externalLibrary.SlavicTreeTall!=null)
+            {
+                float variation=.92f+(variant%4)*.05f;
+                var tree=ValoriaKit.BenchmarkPiece(name,externalLibrary.SlavicTreeTall,position,
+                    1.55f*scale*variation,4.3f*scale*variation,
+                    Quaternion.Euler(0f,(variant*47f)%360f,0f));
+                if(tree!=null)
+                {
+                    Parent(tree);
+                    foreach(var col in tree.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                    return;
+                }
+            }
+
             ValoriaKit.PineTree(name,position,scale*(.92f+(variant%3)*.04f));
+        }
+
+        static void WorldRock(string name,Vector3 position,float scale,int variant)
+        {
+            GameObject prefab=null;
+            if(externalLibrary!=null)
+                prefab=variant%2==0?externalLibrary.SlavicBoulder:externalLibrary.SlavicFlatRock;
+            if(prefab!=null)
+            {
+                var rock=ValoriaKit.BenchmarkPiece(name,prefab,position,
+                    2.2f*scale,1.35f*scale,Quaternion.Euler(0f,(variant*61f)%360f,0f));
+                if(rock!=null)
+                {
+                    Parent(rock);
+                    foreach(var col in rock.GetComponentsInChildren<Collider>(true))col.enabled=false;
+                    return;
+                }
+            }
+            ValoriaKit.RockCluster(name,position,.88f*scale,5);
         }
 
         static GameObject WorldInventoryPiece(string resourceName,string name,Vector3 ground,
