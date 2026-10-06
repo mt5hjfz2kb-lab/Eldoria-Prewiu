@@ -354,3 +354,46 @@ Next production gate:
 4. preserve one beauty capture per density;
 5. choose the highest stable density with acceptable runtime cost and no visual collapse;
 6. no new visual method or generator is authorized.
+
+
+## Gate 3 FINAL — gameplay selection + localized feedback
+**Verdict: TECH PASS / GAMEPLAY CALLBACK PASS / LOCALIZED FEEDBACK PASS**
+
+Authoritative evidence:
+- Run: `37461034965`
+- Artifact: `11412317590`
+- Visual authority: run `37457026065` / artifact `11409079879`
+- Clean SHARP visual layer: 589,824 splats
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Semantic raycasts: **20/20 PASS**
+- Gameplay selection callbacks: **20/20 PASS**
+- Selection count: WestTower=5, CentralKeep=5, EastTower=5, LowerGate=5
+- Selected feedback target: LowerGate
+- Feedback cyan pixels: 1,287 total / 1,287 localized
+- full-frame takeover: NO
+- paid credits: 0
+
+Visual review:
+- selection feedback is now a bounded ~32px cyan raster marker centered on the selected LowerGate region;
+- SHARP beauty remains intact outside the localized marker;
+- feedback no longer disappears behind the Gaussian layer and no longer fills the frame;
+- the interaction substrate remains standard Unity world-space geometry/colliders reprojected per bounded camera state.
+
+**Gate 3 is CLOSED / PASS.**
+
+## Gate 4 — approved Lower Gate real-geometry substrate
+Goal:
+- keep the locked SHARP 600k visual authority and canonical HOME;
+- consume the already-approved editable source `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`;
+- use the existing glTFast Unity package to import it synchronously;
+- align its renderer bounds to the validated LowerGate interaction region;
+- prove real editable production geometry can occupy the same world/depth system without breaking SHARP beauty or bounded-camera selection.
+
+Gate 4 PASS requires:
+1. GLB import/instantiation succeeds with valid renderer bounds;
+2. projected renderer center aligns to LowerGate canonical viewport within a bounded tolerance;
+3. SHARP-only HOME remains unchanged;
+4. geometry-only debug evidence identifies actual imported mesh silhouette;
+5. coexistence HOME + bounded pan evidence is produced;
+6. interaction continues to resolve to LowerGate semantics;
+7. no new generator, paid credit or commercial acquisition is used.
