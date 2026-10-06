@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "workstream": "valoria-first-playable-city-slice-v1",
+  "reviewed_at": "2026-10-06",
+  "verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+  "production_mode": "HYBRID_SHARP_BEAUTY_REAL_GEOMETRY_SUPPORT",
+  "authority": {
+    "recipe": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
+    "final_commit": "be54b44b0b08d56b27fe29755d76b26ce36161ff",
+    "run_id": 37470805228,
+    "artifact_id": 11417486230,
+    "clean_sharp_source_artifact": 11408853949,
+    "visual_home_authority_artifact": 11409079879,
+    "runtime": "Unity 6 URP",
+    "splat_count": 589824
+  },
+  "families": {
+    "count": 7,
+    "real_geometry": [
+      "BridgeFamilyV1",
+      "LowerGateFamilyV1",
+      "RoadFamilyV1",
+      "StairFamilyV1",
+      "WallFamilyV1",
+      "BastionFamilyV1",
+      "RockTerrainFamilyV1"
+    ],
+    "all_import_pass": true,
+    "all_bounds_pass": true,
+    "all_viewport_alignment_pass": true,
+    "beauty_replacement_regions": [],
+    "role": "editable real 3D support geometry under SHARP beauty authority"
+  },
+  "route": {
+    "order": ["Bridge","LowerGate","MainRoad","CentralStair","UpperWalls","Bastion"],
+    "coherence_pass": true
+  },
+  "interaction": {
+    "semantic_anchor_count": 7,
+    "camera_states": ["HOME","pan-left","pan-right"],
+    "required_raycast_count": 21,
+    "raycast_pass_count": 21,
+    "pass": true
+  },
+  "visual": {
+    "home_pass": true,
+    "pan_left_pass": true,
+    "pan_right_pass": true,
+    "changed_pixels_vs_sharp": {
+      "home": 22,
+      "pan_left": 13,
+      "pan_right": 18
+    },
+    "global_identity_preserved": true,
+    "full_frame_takeover": false,
+    "manual_review": "PASS",
+    "note": "No real-geometry beauty override is promoted in this slice. An earlier visible projection attempt was rejected because it produced localized fragments. The final slice uses the recipe-authorized SHARP beauty + hidden real geometry/semantic substrate path."
+  },
+  "sharp_beauty_regions": [
+    "full city frame",
+    "background",
+    "vegetation",
+    "water/shore",
+    "left cabin parcel",
+    "right camp parcel",
+    "secondary props",
+    "central-axis appearance"
+  ],
+  "real_geometry_support_regions": [
+    "bridge",
+    "lower gate",
+    "main road",
+    "central stair",
+    "upper walls",
+    "bastion",
+    "terrain/cliff support"
+  ],
+  "attempt_history": [
+    {
+      "run_id": 37468812396,
+      "verdict": "COMPILE FAIL",
+      "classification": "RUNNER/TOOLING - namespace collision",
+      "resolution": "Application.dataPath qualified as UnityEngine.Application.dataPath; no visual method change"
+    },
+    {
+      "run_id": 37469072860,
+      "artifact_id": 11414984458,
+      "verdict": "TECH PASS / INTERACTION PASS / VISUAL FAIL",
+      "classification": "APPEARANCE/ORIENTATION FAIL",
+      "resolution": "Preserve approved reset-camera orientation and use authored/PBR fallback outside LowerGate"
+    },
+    {
+      "run_id": 37469907635,
+      "artifact_id": 11416840557,
+      "verdict": "TECH PASS / INTERACTION PASS / VISUAL FAIL",
+      "classification": "LOCALIZED APPEARANCE ARTIFACT",
+      "resolution": "Do not promote visible LowerGate override; retain SHARP beauty authority and real support geometry"
+    },
+    {
+      "run_id": 37470805228,
+      "artifact_id": 11417486230,
+      "verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS"
+    }
+  ],
+  "paid_credits": 0,
+  "human_blocker": null,
+  "next_block": ["LEFT CABIN PARCEL","RIGHT CAMP PARCEL"]
+}
