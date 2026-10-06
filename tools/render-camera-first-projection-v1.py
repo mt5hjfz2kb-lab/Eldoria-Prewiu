@@ -35,7 +35,9 @@ scene.render.resolution_y=464
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 scene.render.film_transparent=False
-scene.world.color=(0.02,0.02,0.02)
+world=bpy.data.worlds.new('ProjectionWorld')
+world.color=(0.02,0.02,0.02)
+scene.world=world
 
 cam_data=bpy.data.cameras.new("ProjectionProofCamera")
 cam=bpy.data.objects.new("ProjectionProofCamera",cam_data)
