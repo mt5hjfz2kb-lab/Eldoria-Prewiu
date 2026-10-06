@@ -287,7 +287,9 @@ namespace Eldoria.Presentation
 
         static void GroundPatch(string name,Vector3 position,Vector3 scale,Color color,float yaw)
         {
-            var patch=Primitive(name,PrimitiveType.Cube,position,scale,color);
+            // Elliptical low-frequency masses avoid the tiled/checker-board read of large rectangles.
+            var patch=Primitive(name,PrimitiveType.Cylinder,position,
+                new Vector3(scale.x*.5f,scale.y*.5f,scale.z*.5f),color);
             patch.transform.rotation=Quaternion.Euler(0f,yaw,0f);
             var col=patch.GetComponent<Collider>();
             if(col!=null)col.enabled=false;
@@ -295,16 +297,36 @@ namespace Eldoria.Presentation
 
         static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
         {
-            var road=Primitive(name,PrimitiveType.Cube,centre,new Vector3(width,.08f,length),Road);
-            road.transform.rotation=Quaternion.Euler(0f,yaw,0f);
-            var col=road.GetComponent<Collider>();if(col!=null)col.enabled=false;
+            // Slightly drifting short pieces keep the strategic path readable without looking like
+            // a rigid board-game strip. Gameplay topology stays entirely in independent hotspots.
+            var holder=new GameObject(name);
+            holder.transform.SetParent(root,true);
+            holder.transform.position=centre;
+            holder.transform.rotation=Quaternion.Euler(0f,yaw,0f);
 
-            var left=Primitive(name+" · shoulder L",PrimitiveType.Cube,
-                centre,new Vector3(width+0.45f,.045f,length+.35f),RoadEdge);
-            left.transform.rotation=road.transform.rotation;
-            left.transform.position+=Vector3.down*.025f;
-            var lc=left.GetComponent<Collider>();if(lc!=null)lc.enabled=false;
-            left.transform.SetSiblingIndex(road.transform.GetSiblingIndex());
+            const int pieces=5;
+            float pieceLength=length/pieces*1.18f;
+            for(int i=0;i<pieces;i++)
+            {
+                float t=(i-(pieces-1)*.5f)/(pieces-1);
+                float z=t*length*.82f;
+                float x=Mathf.Sin((i+1)*1.31f)*width*.13f;
+                float localYaw=Mathf.Sin(i*1.17f)*5.0f;
+
+                var shoulder=Primitive(name+" · shoulder "+i,PrimitiveType.Cube,Vector3.zero,
+                    new Vector3(width+.42f,.045f,pieceLength+.28f),RoadEdge);
+                shoulder.transform.SetParent(holder.transform,false);
+                shoulder.transform.localPosition=new Vector3(x,-.018f,z);
+                shoulder.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
+                var sc=shoulder.GetComponent<Collider>();if(sc!=null)sc.enabled=false;
+
+                var road=Primitive(name+" · track "+i,PrimitiveType.Cube,Vector3.zero,
+                    new Vector3(width,.07f,pieceLength),Road);
+                road.transform.SetParent(holder.transform,false);
+                road.transform.localPosition=new Vector3(x,.01f,z);
+                road.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
+                var rc=road.GetComponent<Collider>();if(rc!=null)rc.enabled=false;
+            }
         }
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
