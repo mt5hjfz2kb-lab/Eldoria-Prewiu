@@ -1,0 +1,57 @@
+{
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "source_crop": "camera-first-reset-target-v1/canonical-golden-crop.png",
+  "dimensions": [
+    700,
+    540
+  ],
+  "layers": {
+    "far-environment": {
+      "parallax_compensation": 0.34,
+      "depth_order": 0
+    },
+    "cliff-ground-shore": {
+      "parallax_compensation": 0.22,
+      "depth_order": 1
+    },
+    "vegetation-mid": {
+      "parallax_compensation": 0.16,
+      "depth_order": 2
+    },
+    "gate-back": {
+      "parallax_compensation": 0.12,
+      "depth_order": 3
+    },
+    "gate-front": {
+      "parallax_compensation": 0.07,
+      "depth_order": 4
+    },
+    "bridge-back": {
+      "parallax_compensation": 0.07,
+      "depth_order": 5
+    },
+    "bridge-front": {
+      "parallax_compensation": 0.02,
+      "depth_order": 6
+    },
+    "vegetation-foreground": {
+      "parallax_compensation": -0.04,
+      "depth_order": 7
+    }
+  },
+  "pixel_counts": {
+    "far": 139450,
+    "cliff": 104064,
+    "veg_mid": 35244,
+    "gate": 36069,
+    "bridge": 27936,
+    "veg_fg": 35245
+  },
+  "vegetation_depth_split": 0.22785885632038116,
+  "support_nonzero_fraction": 0.9398412698412698,
+  "occlusion_fill": "OpenCV Telea radius 7 behind Gate/Bridge/vegetation only",
+  "home_rule": "front/back copies co-registered; back thickness invisible at HOME",
+  "edge_rule": "far plate alpha uses organic support envelope; no full rectangular alpha",
+  "credits": 0,
+  "unity_touched": false
+}
