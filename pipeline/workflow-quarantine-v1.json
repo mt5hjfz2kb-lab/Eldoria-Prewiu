@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "policy_id": "eldoria-workflow-quarantine-v1",
+  "purpose": "Preserve historical/capability evidence while preventing noncanonical R&D from auto-running or interfering with production.",
+  "canonical_brain_do_not_disable": [
+    "pipeline/active-workstreams.json",
+    "tools/check-art-production-governance.mjs",
+    "tools/plan-art-production.mjs",
+    "pipeline/visual-fallback-policy.json",
+    "tools/route-visual-fallback.mjs",
+    ".github/workflows/art-production-governance.yml",
+    ".github/workflows/art-production-plan.yml",
+    ".github/workflows/repository-architecture-guard.yml",
+    ".github/workflows/workflow-governance.yml",
+    ".github/workflows/valoria-full-frame-convergence-control.yml",
+    ".github/workflows/valoria-visual-authority-routing.yml",
+    ".github/workflows/unity-slice.yml",
+    ".github/workflows/world-map-visual-formula.yml"
+  ],
+  "retired_manual_only_patterns": [
+    "valoria-camera-first-*"
+  ],
+  "conditional_manual_only": [
+    ".github/workflows/valoria-hunyuan3d-gate-capability-v1.yml",
+    ".github/workflows/valoria-instantmesh-gate-capability-v1.yml",
+    ".github/workflows/valoria-trellis-gate-capability-v1.yml",
+    ".github/workflows/valoria-trellis2-gate-capability-v1.yml",
+    ".github/workflows/valoria-triposr-gate-capability-v1.yml",
+    ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml"
+  ],
+  "rules": {
+    "evidence_preserved": true,
+    "deletion_required": false,
+    "allowed_trigger": [
+      "workflow_dispatch"
+    ],
+    "forbidden_trigger": [
+      "push",
+      "pull_request",
+      "schedule",
+      "repository_dispatch"
+    ],
+    "production_use": "Only after the canonical planner/fallback routing selects the capability and the owning workstream explicitly dispatches it.",
+    "rejected_methods": "Rejected/superseded methods may remain as historical evidence but must never auto-run or become production authority."
+  }
+}
