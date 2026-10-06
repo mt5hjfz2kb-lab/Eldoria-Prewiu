@@ -32,7 +32,7 @@ if ep is None:
 if ep is None: raise RuntimeError("No Hunyuan generation endpoint exposed")
 print("USING",ep)
 
-args=["",handle_file(inp),None,None,None,None,10,7.5,1234,256,False,200000,False]
+args=[handle_file(inp),None,None,None,None,10,5.0,1234,256,True,8000,False]
 res=client.predict(*args,api_name=ep)
 print("RESULT",repr(res))
 open(os.path.join(OUT,"result.json"),"w").write(json.dumps(res,indent=2,default=str))
