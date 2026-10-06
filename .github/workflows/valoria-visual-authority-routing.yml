@@ -1,0 +1,38 @@
+name: Valoria visual authority routing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/visual-authority-routing-v1.json'
+      - 'tools/check-valoria-visual-authority-routing.mjs'
+      - 'AGENTS.md'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCapture.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs'
+      - '.github/workflows/unity-slice.yml'
+      - '.github/workflows/valoria-first-playable-city-slice-v1.yml'
+  pull_request:
+    paths:
+      - 'pipeline/visual-authority-routing-v1.json'
+      - 'tools/check-valoria-visual-authority-routing.mjs'
+      - 'AGENTS.md'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCapture.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs'
+      - '.github/workflows/unity-slice.yml'
+      - '.github/workflows/valoria-first-playable-city-slice-v1.yml'
+  workflow_dispatch:
+
+jobs:
+  authority-routing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify canonical vs legacy Valoria routing
+        run: node tools/check-valoria-visual-authority-routing.mjs
