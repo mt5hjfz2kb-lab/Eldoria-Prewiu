@@ -112,5 +112,121 @@
     "new Valoria authority",
     "paid generation",
     "visual-method research"
-  ]
+  ],
+  "canonicalInputs": [
+    "docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md",
+    "docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md",
+    "docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md",
+    "docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md",
+    "v0220/",
+    "world4x.html",
+    "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb"
+  ],
+  "sliceNow": {
+    "purpose": "prove the real City <-> 4X World loop without building the full server world",
+    "required": [
+      "Valoria Mundo -> dedicated World screen",
+      "Valoria represented by canonical universal strategic city mesh or its validated successor",
+      "bounded strategic camera and mobile pan/zoom",
+      "real visible march from city origin to a target and back",
+      "wood resource node with persistent depletion/reward",
+      "one narrative/neutral POI",
+      "one early PvE corrupt threat",
+      "Reino/Valoria -> return to city with shared persistent state"
+    ],
+    "explicitlyDeferred": [
+      "real multiplayer networking",
+      "real rival players",
+      "territorial PvP",
+      "alliance structures",
+      "full node respawn economy",
+      "full L1/L2 resource matrix",
+      "full beast ladder",
+      "Breach server-state simulation",
+      "continent-scale streaming"
+    ]
+  },
+  "scalable4xTarget": {
+    "worldType": "persistent-mobile-4x-board",
+    "spatialArchitecture": [
+      "world-coordinate-system",
+      "region",
+      "sector",
+      "chunk",
+      "reserved-streaming/culling-boundaries"
+    ],
+    "playerCities": {
+      "rule": "many visible player cities; randomized valid starts with spacing rules in the future shared world",
+      "v1Visual": "one universal strategic city mesh reused for players; identity/alliance/power/protection remain gameplay/UI state",
+      "canonicalAsset": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb"
+    },
+    "economicNodes": [
+      "wood L1/L2+",
+      "stone L1/L2+",
+      "food L1/L2+",
+      "iron/mineral later",
+      "special/corruption/relic resources only when gameplay requires"
+    ],
+    "pveFamilies": [
+      "hunt: wolf",
+      "hunt: boar",
+      "common Rift enemy",
+      "uncommon/elite threat",
+      "world boss/event boss"
+    ],
+    "poiFamilies": [
+      "neutral ruin",
+      "watchtower/fort",
+      "Breach/Fissure",
+      "enemy camp",
+      "shrine/ritual site",
+      "resource installation",
+      "later event/boss landmark"
+    ],
+    "marchFamilies": [
+      "own",
+      "allied",
+      "hostile",
+      "NPC/neutral",
+      "gathering/stationed when required"
+    ],
+    "futureAllianceLayer": [
+      "alliance fortress",
+      "territory markers/borders",
+      "teleports",
+      "shared structures/resources",
+      "strategic towers/flags"
+    ],
+    "principle": "terrain is the background layer of the 4X board, not the map by itself"
+  },
+  "webSeed": {
+    "preserveMeaning": {
+      "forest": "wood/resource interaction",
+      "quarry": "stone/resource interaction and future contested ownership",
+      "wolfBoar": "hunt entities",
+      "riftEnemies": "PvE threat family",
+      "breach": "hostile strategic installation and possible persistent regional state",
+      "narethRuins": "narrative POI family",
+      "march": "army preparation/deployment and visible world movement",
+      "valoria": "player kingdom/city origin"
+    },
+    "doNotCopyLiterally": [
+      "HTML/CSS visual layout",
+      "emoji/icon placeholder art",
+      "prototype timings/balancing",
+      "simulated rival-player data as if it were real multiplayer"
+    ]
+  },
+  "visualScale": {
+    "camera": "fixed isometric/top-down direction with bounded zoom",
+    "legacyGate": "validate strategic readability across far/normal/near/detail and mobile; exact old orthographic numbers may be recalibrated for current Unity Region 1",
+    "rule": "same Eldoria dark medieval family as Valoria, but world-map strategic density; POIs/cities/armies/resources dominate over dressing",
+    "rejects": [
+      "generic prototype board",
+      "low-poly toy diorama",
+      "neon/plastic foliage",
+      "asset-pack seams",
+      "environment overwhelming gameplay targets"
+    ]
+  }
 }
