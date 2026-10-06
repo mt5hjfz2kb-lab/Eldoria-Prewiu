@@ -3,6 +3,8 @@ import fs from 'node:fs';
 const path = process.argv[2] || 'pipeline/art-production-request.json';
 const out = process.argv[3] || '';
 const req = JSON.parse(fs.readFileSync(path, 'utf8'));
+const fallbackPolicyPath = 'pipeline/visual-fallback-policy.json';
+const fallbackPolicy = fs.existsSync(fallbackPolicyPath) ? JSON.parse(fs.readFileSync(fallbackPolicyPath, 'utf8')) : null;
 
 const profiles = new Set([
   'environment_composition',
@@ -83,6 +85,26 @@ if (req.profile === 'animated_asset') {
   stages.push('character_validation');
 }
 
+let fallback = null;
+if (req.failure_class) {
+  if (!fallbackPolicy) fail('failure_class supplied but visual fallback policy is missing.');
+  const selected = fallbackPolicy.failure_classes?.[req.failure_class] || fallbackPolicy.failure_classes?.unknown;
+  const resolvedClass = fallbackPolicy.failure_classes?.[req.failure_class] ? req.failure_class : 'unknown';
+  fallback = {
+    failure_class: resolvedClass,
+    known_evidence_only: fallbackPolicy.default_mode === 'known_evidence_only',
+    automatic_route: Boolean(selected?.auto),
+    open_new_research: false,
+    owner_approval_required: false,
+    route: selected?.route || [],
+    tools: selected?.tools || [],
+    conditional_tools: selected?.conditional_tools || [],
+    exclusions: selected?.exclusions || [],
+    decision: selected?.auto ? 'ROUTE_KNOWN_FALLBACK' : 'STOP_AND_CLASSIFY'
+  };
+  if (fallback.open_new_research) fail('Fallback policy violation: new R&D cannot be opened automatically.');
+}
+
 const plan = {
   schema_version: 1,
   enabled: Boolean(req.enabled),
@@ -99,7 +121,8 @@ const plan = {
   validation: req.validation || {},
   capabilities_requested: cap,
   blender_authoring_standard: req.profile === 'environment_new_geometry' ? 'BLENDER_PROFESSIONAL_V1' : null,
-  required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS']
+  required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS'],
+  fallback
 };
 
 const json = JSON.stringify(plan, null, 2);
