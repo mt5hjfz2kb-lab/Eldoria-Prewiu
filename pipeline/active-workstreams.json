@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:50:00Z",
+  "updated_at": "2026-10-06T10:51:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -141,6 +141,27 @@
       "next": "Probe multimodalart/CraftsMan3D-zerogpu on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
     },
     {
+      "id": "valoria-direct3ds2-gate-capability-v1",
+      "title": "VALORIA DIRECT3D-S2 GATE CAPABILITY v1",
+      "owner": "chat-independent-direct3ds2-rnd",
+      "scope": [
+        ".github/workflows/valoria-direct3ds2-gate-capability-v1.yml",
+        "docs/evidence/valoria-direct3ds2-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-direct3ds2-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:51:00Z",
+      "base_main_sha": "36f1eed9b313470fe122b5ba5ebbd3edf6dbcd7a",
+      "status": "active",
+      "phase": "ZERO-SPEND DIRECT3D-S2 CANONICAL GATE PROOF",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "Probe wushuang98/Direct3D-S2-v1.0-demo-zero on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence. Prefer highest free SDF resolution that executes."
+    }
+  ],
+  "history": [
+    {
       "id": "valoria-partpacker-gate-capability-v1",
       "title": "VALORIA PARTPACKER GATE CAPABILITY v1",
       "owner": "chat-independent-partpacker-rnd",
@@ -154,13 +175,15 @@
       ],
       "claimed_at": "2026-10-06T10:49:00Z",
       "base_main_sha": "281afe27a876453f530c60f8e0310ff160fdb774",
-      "status": "active",
-      "phase": "ZERO-SPEND PARTPACKER CANONICAL GATE PROOF",
+      "status": "blocked",
+      "phase": "ZERO-SPEND PARTPACKER CANONICAL GATE PROOF / PUBLIC SPACE PAUSED",
       "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
-      "next": "Probe nvidia/PartPacker on isolated semantic Lower Gate. Require actual GLB plus front/3-quarter/back/side evidence; reject if part decomposition or architecture fidelity is materially wrong."
-    }
-  ],
-  "history": [
+      "next": "Retry only if public execution resumes; do not wait or spend credits.",
+      "blocked_at": "2026-10-06T10:51:00Z",
+      "result": "nvidia/PartPacker Hugging Face Space reports PAUSED before inference. No visual verdict possible, no credits spent, no Unity touched.",
+      "run_id": 37452194212,
+      "artifact_id": 11407130265
+    },
     {
       "id": "valoria-scope-gate-camera-video-v1",
       "title": "VALORIA SCOPE GATE CAMERA VIDEO v1",
