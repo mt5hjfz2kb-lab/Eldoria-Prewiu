@@ -1,3 +1,15 @@
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — RESUMED / LOCAL SHARP INFERENCE
+
+Owner explicitly authorized moving the same official Apple SHARP model/checkpoint from
+public Space hosting to local CLI inference. Same workstream reclaimed; no new R&D,
+model, visual method, composition, Gamma or authority. Local source run **37485441326**
+uses the existing self-hosted Windows runner, pinned official source commit
+`aed6527499ef91cba3b54c18d49a870f25947190`, official `sharp_2572gikvuh.pt`, persistent
+checkpoint/dependency cache and fingerprint lineage. Setup passed; local prediction
+is in progress. Public ZeroGPU is an explicit fallback, not a production dependency.
+No source PLY PASS or final parcel PASS until actual outputs and Unity gates pass.
+Resume only `valoria-real-game-state-v1`; no expansion.
+
 ## 2026-10-06 — VALORIA REAL GAME STATE v1 — BLOCKED / NOT COMPLETED
 
 Same workstream `valoria-real-game-state-v1`. Real gateway/store state capture
