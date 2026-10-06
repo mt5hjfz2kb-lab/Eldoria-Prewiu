@@ -24,7 +24,7 @@ jobs:
       - name: Install clients and Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender libegl1 libgl1 libglx0 libx11-6
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
           python -m pip install "gradio_client>=1.10,<2" pillow
           blender --version
 
