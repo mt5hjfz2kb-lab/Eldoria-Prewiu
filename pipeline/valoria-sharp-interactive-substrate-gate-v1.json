@@ -18,5 +18,17 @@
     "debug alignment capture"
   ],
   "paid_credits": 0,
-  "nonce": "2026-10-06-gate2-001"
+  "nonce": "2026-10-06-gate2-001",
+  "visual_authority": {
+    "run_id": 37457026065,
+    "artifact_id": 11409079879,
+    "camera": "canonical SHARP identity HOME",
+    "supersedes_for_visual_alignment": 11409359136
+  },
+  "gate2_requirements": {
+    "visible_proxy_debug_overlay": true,
+    "raycast_pass_required": "4/4",
+    "bounded_camera_alignment_required": true
+  },
+  "updated_at": "2026-10-06T11:47:00Z"
 }
