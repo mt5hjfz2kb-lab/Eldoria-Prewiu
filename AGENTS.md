@@ -1,3 +1,6 @@
+## Owner directive 2026-10-06 — Camera-First projection R&D retired
+Semantic 2.5D / Camera-First projection-shell R&D is **REJECTED as the Eldoria visual production pipeline** by `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`. Do not resume whole-crop plates, semantic card subdivision, larger inpainting margins, parallax micro-tuning, or renderer hiding as the next Valoria art method. All related experimental workflows are historical/manual-only. Preserve their evidence, but they do not govern new production. Broad Valoria art remains frozen until a genuinely different method is explicitly selected.
+
 # Eldoria — Agent entry point
 
 ## Owner directive 2026-10-05 — Golden Lookdev gate
