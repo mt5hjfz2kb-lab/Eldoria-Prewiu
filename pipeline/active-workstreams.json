@@ -1,8 +1,34 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T14:03:05.891Z",
-  "active": [],
+  "updated_at": "2026-10-06T14:13:16.777Z",
+  "active": [
+    {
+      "id": "valoria-real-game-state-v1",
+      "title": "Valoria real runtime parcel and construction progression",
+      "owner": "chat-real-game-state-20261006",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/**",
+        "Unity/Assets/Eldoria/Shaders/**",
+        "pipeline/valoria*",
+        "pipeline/art-production-request.json",
+        ".github/workflows/valoria*",
+        "tools/valoria*",
+        "docs/VALORIA*",
+        "docs/evidence/valoria-real-game-state-v1/**",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "sharp-existing-production-route"
+      ],
+      "claimed_at": "2026-10-06T14:13:16.777Z",
+      "base_main_sha": "056df4b2e17b6ef8d773ac37fb8312c8c91db428",
+      "status": "active",
+      "paid_credits": 0
+    }
+  ],
   "history": [
     {
       "id": "valoria-visual-authority-reset-v1",
