@@ -60,6 +60,7 @@ namespace Eldoria.EditorTools
                 renderer.GsplatAsset = null;
 
             var stripped = StripSerializedGsplatReferences(scene);
+            var remappedMaterials = RemapMaterialsOutOfStateAssets(scene);
 
             var loader = visual.GetComponent<ValoriaWebGLSplatStateLoader>();
             if (loader == null) loader = visual.gameObject.AddComponent<ValoriaWebGLSplatStateLoader>();
@@ -78,7 +79,7 @@ namespace Eldoria.EditorTools
             AssetDatabase.Refresh();
 
             AssertNoEmbeddedGsplatDependencies();
-            Debug.Log($"VALORIA_WEBGL_SPLAT_STRIP_PASS stripped_refs={stripped}");
+            Debug.Log($"VALORIA_WEBGL_SPLAT_STRIP_PASS stripped_refs={stripped} remapped_materials={remappedMaterials}");
 
             try
             {
@@ -137,6 +138,66 @@ namespace Eldoria.EditorTools
                 }
             }
             return stripped;
+        }
+
+
+        static int RemapMaterialsOutOfStateAssets(Scene scene)
+        {
+            var remapped = 0;
+            var cloned = new Dictionary<Material, Material>();
+
+            foreach (var root in scene.GetRootGameObjects())
+            {
+                foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+                {
+                    var mats = renderer.sharedMaterials;
+                    var changed = false;
+                    for (var i = 0; i < mats.Length; i++)
+                    {
+                        var source = mats[i];
+                        if (source == null) continue;
+                        var path = AssetDatabase.GetAssetPath(source);
+                        if (string.IsNullOrEmpty(path)) continue;
+                        if (!path.StartsWith("Assets/Eldoria/ProductionSlice/Runtime/state-", StringComparison.OrdinalIgnoreCase) ||
+                            !path.EndsWith(".asset", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        if (!cloned.TryGetValue(source, out var copy))
+                        {
+                            copy = new Material(source)
+                            {
+                                name = source.name + "_WebGL"
+                            };
+                            var safeName = MakeSafeAssetName(source.name);
+                            var assetPath = AssetDatabase.GenerateUniqueAssetPath(
+                                TempFolder + "/Material-" + safeName + ".mat");
+                            AssetDatabase.CreateAsset(copy, assetPath);
+                            cloned[source] = copy;
+                        }
+
+                        mats[i] = copy;
+                        changed = true;
+                        remapped++;
+                    }
+
+                    if (changed)
+                    {
+                        renderer.sharedMaterials = mats;
+                        EditorUtility.SetDirty(renderer);
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            return remapped;
+        }
+
+        static string MakeSafeAssetName(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "Unnamed";
+            foreach (var c in Path.GetInvalidFileNameChars())
+                value = value.Replace(c, '_');
+            return value;
         }
 
         static void AssertNoEmbeddedGsplatDependencies()
