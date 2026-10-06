@@ -7,6 +7,17 @@
     "com.unity.test-framework": "1.6.0",
     "com.unity.modules.imageconversion": "1.0.0",
     "com.unity.modules.unitywebrequest": "1.0.0",
-    "com.unity.modules.unitywebrequesttexture": "1.0.0"
-  }
+    "com.unity.modules.unitywebrequesttexture": "1.0.0",
+    "com.unity.mathematics": "1.3.2",
+    "com.arloopa.unitysplats": "https://github.com/arloopa/UnitySplats.git"
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.netpyoung"
+      ]
+    }
+  ]
 }
