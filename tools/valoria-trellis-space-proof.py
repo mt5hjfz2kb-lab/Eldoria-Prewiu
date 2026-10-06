@@ -17,6 +17,10 @@ canvas.alpha_composite(img,((side-img.width)//2,(side-img.height)//2))
 inp=os.path.join(OUT,"gate-input.png"); canvas.save(inp)
 
 client=Client("trellis-community/TRELLIS")
+# The Space creates its per-session tmp directory in demo.load/start_session.
+# API clients do not trigger browser load automatically, so initialize the
+# same Gradio session explicitly before generation.
+client.predict(api_name="/start_session")
 api=client.view_api(return_format="dict")
 open(os.path.join(OUT,"api.json"),"w").write(json.dumps(api,indent=2,default=str))
 names=list(api.get("named_endpoints",{}).keys())
