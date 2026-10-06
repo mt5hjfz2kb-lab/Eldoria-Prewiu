@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "valoria-golden-primary-forms-reauthor-v1",
   "asset_or_sector": "Valoria Golden crop full visible primary forms: Lower Gate + Bridge + continuous local cliff/ground/shore + local vegetation",
   "profile": "environment_new_geometry",
@@ -19,9 +19,9 @@
     "source_gate": "Purpose-built full primary forms source. Required evidence: clay/silhouette, lit 3/4, official-camera proxy, canonical-reference comparison, explicit visual review. Geometry/silhouette >=4/5, material response >=4/5, contact/integration >=4/5, environment coherence >=4/5, premium perception >=4/5.",
     "final_gate": "Only after source gate >=4/5: Unity matched official Golden close/16:9/mobile A/B, gameplay/performance sanity PASS, canonical camera/macro positions/topology preserved."
   },
-  "notes": "New method after Integrated Method B exhaustion. Rebuild the screen-visible primary forms purpose-built for the canonical frame. Do not continue integrated source03/source04, do not add donor geometry to hide inherited forms, and do not run Unity until isolated clay/lit/official-camera proxy all support >=4/5 principal metrics.",
-  "status": "OWNER_AUTHORIZED_SOURCE_PHASE",
-  "blocker": null,
+  "notes": "New method after Integrated Method B exhaustion. Rebuild the screen-visible primary forms purpose-built for the canonical frame. Do not continue integrated source03/source04, do not add donor geometry to hide inherited forms, and do not run Unity until isolated clay/lit/official-camera proxy all support >=4/5 principal metrics. RETIRED 2026-10-06: historical evidence only; superseded by docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md.",
+  "status": "RETIRED_HISTORICAL",
+  "blocker": "Semantic 2.5D Camera-First final gate rejected the active visual direction. Do not auto-resume this request.",
   "last_source_run_id": 37370727523,
   "last_source_artifact_id": 11369951282
 }
