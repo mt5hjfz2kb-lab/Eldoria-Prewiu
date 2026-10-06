@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:20:00Z",
+  "updated_at": "2026-10-06T10:21:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -80,10 +80,14 @@
       ],
       "claimed_at": "2026-10-06T10:12:00Z",
       "base_main_sha": "bdbc2371d9806d31ffae5c8afd321703eefcef15",
-      "status": "active",
-      "phase": "ZERO-SPEND UNIQUE3D CANONICAL GATE PROOF",
+      "status": "blocked",
+      "phase": "ZERO-SPEND UNIQUE3D CANONICAL GATE PROOF / INFRASTRUCTURE BLOCKED",
       "dependency": "Do not touch TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry donor, projection bake, citybuilder source, commercial KINGDOM acquisition, Unity, Windows runner, or paid credits.",
-      "next": "Run Wuvin/Unique3D public Space on the same canonical Lower Gate crop used by InstantMesh. Require actual mesh plus multi-angle visual evidence before any promotion."
+      "next": "STOP this zero-spend route unless the execution environment changes or a genuinely free endpoint removes the 600s GPU limit. Do not claim a visual pass and do not spend credits without fresh owner authorization.",
+      "blocked_at": "2026-10-06T10:15:35Z",
+      "blocker": "Canonical proof run 37448430078 reached the Wuvin/Unique3D generation endpoint but ZeroGPU rejected the requested 600s GPU duration. No usable mesh was returned; the Require Unique3D mesh gate failed. This is an infrastructure/access blocker, not a visual-quality pass.",
+      "run_id": 37448430078,
+      "artifact_id": 11404088202
     },
     {
       "id": "valoria-hi3dgen-gate-capability-v1",
@@ -103,6 +107,26 @@
       "phase": "ZERO-SPEND HI3DGEN CANONICAL GATE PROOF",
       "dependency": "Independent of TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry, projection bake, citybuilder, commercial KINGDOM, Unity and paid credits.",
       "next": "Probe Stable-X/Hi3DGen public API and, if callable, generate the same canonical Lower Gate crop and require multi-angle geometry evidence."
+    },
+    {
+      "id": "valoria-human-mesh-projection-bake-v1",
+      "title": "VALORIA HUMAN-MESH PROJECTION BAKE v1",
+      "owner": "chat-independent-human-mesh-projection-rnd",
+      "scope": [
+        ".github/workflows/valoria-human-mesh-projection-bake-v1.yml",
+        "tools/valoria-human-mesh-projection-bake-v1.py",
+        "docs/evidence/valoria-human-mesh-projection-bake-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "github-hosted-linux-human-mesh-projection-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:14:20Z",
+      "base_main_sha": "42a82f07c5d0f7d84bdaed3c9b747f283d9c0016",
+      "status": "active",
+      "phase": "ZERO-SPEND HUMAN-MESH + CANONICAL APPEARANCE PROJECTION PROOF",
+      "dependency": "Isolated R&D only. Must not reopen rejected Semantic 2.5D/card projection, touch Unity production, commercial KINGDOM acquisition, paid credits, or overwrite other image-to-3D/photogrammetry workstreams. Uses real human-authored 3D mesh and tests canonical appearance projection onto that geometry.",
+      "next": "Complete run 37448457610 and require multi-angle visual evidence. Promote only if real 3D parallax is preserved and canonical appearance materially improves without facade duplication, stretching, or side-view collapse."
     }
   ],
   "history": [
