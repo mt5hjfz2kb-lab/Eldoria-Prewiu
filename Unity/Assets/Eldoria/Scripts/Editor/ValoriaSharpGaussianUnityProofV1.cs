@@ -92,15 +92,11 @@ namespace Eldoria.EditorTools
             float nearestZ = sceneSign > 0f ? asset.Bounds.min.z : asset.Bounds.max.z;
             float farthestZ = sceneSign > 0f ? asset.Bounds.max.z : asset.Bounds.min.z;
 
-            // The SHARP camera origin is metric, but the predicted splat bounds can be vertically
-            // offset from world zero (the current Valoria proof centers around y≈86). Looking only
-            // along +/-Z can therefore miss the visible scene even though the PLY is resident.
-            // Aim HOME at the actual loaded bounds center while keeping the original camera origin.
-            var homeForward = asset.Bounds.center - Vector3.zero;
-            if (homeForward.sqrMagnitude < 1e-6f)
-                homeForward = sceneSign > 0f ? Vector3.forward : Vector3.back;
-            var homeRotation = Quaternion.LookRotation(homeForward.normalized, Vector3.up);
-            Debug.Log($"[SHARP] Camera HOME target={asset.Bounds.center}, forward={homeForward.normalized}, euler={homeRotation.eulerAngles}");
+            // SHARP's clean canonical source carries an identity extrinsic and OpenCV/RDF axes.
+            // Preserve that exact HOME camera rather than aiming at the reconstructed bounds:
+            // bounds-centering was an obsolete workaround from before the sorter lifecycle was fixed.
+            var homeRotation = Quaternion.identity;
+            Debug.Log($"[SHARP] Camera HOME canonical identity; bounds={asset.Bounds}");
 
             // Red probe is between camera and splats; green probe is behind the far scene.
             var frontProbe = CreateProbe("OcclusionFront", new Color(.9f,.15f,.1f),
