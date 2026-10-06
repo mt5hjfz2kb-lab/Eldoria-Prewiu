@@ -9,6 +9,6 @@
   "preserve_gameplay_signature": true,
   "zero_spend": true,
   "vendor_calls": false,
-  "nonce": "camera-first-reset-target-unity-shell-v1-001",
-  "requested_at": "2026-10-06T07:10:00Z"
+  "nonce": "camera-first-reset-target-unity-shell-v1-002-application-fix",
+  "requested_at": "2026-10-06T07:17:00Z"
 }
