@@ -3,10 +3,10 @@
   "request_id": "valoria-camera-first-depth-shell-v1",
   "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
   "inputs": "validated canonical crop + DA3 depth + SAM2 Gate/Bridge semantic masks",
-  "method": "semantic alpha layers + organic support + deterministic occlusion fill + co-registered hero back/front depth cards",
+  "method": "semantic alpha layers v2 + edge-zero organic support + deterministic occlusion fill + co-registered hero back/front depth cards",
   "zero_spend": true,
   "vendor_calls": false,
   "unity": false,
-  "nonce": "camera-first-depth-shell-v1-001",
-  "requested_at": "2026-10-06T08:03:00Z"
+  "nonce": "camera-first-depth-shell-v1-002",
+  "requested_at": "2026-10-06T08:20:00Z"
 }
