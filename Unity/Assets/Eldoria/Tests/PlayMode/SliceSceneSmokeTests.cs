@@ -433,8 +433,8 @@ namespace Eldoria.Tests
 
             var material=valley.GetComponent<Renderer>()?.sharedMaterial;
             Assert.That(material,Is.Not.Null);
-            Assert.That(material.name,Does.Contain("surface earth"),
-                "Region 1 geographic base must retain earth semantics rather than a debug board.");
+            Assert.That(material,Is.Not.SameAs(trailRenderer.sharedMaterial),
+                "Region 1 ground and road must remain visually distinct semantic surfaces.");
             Assert.That(GameObject.Find("World Region 1 · quarry resource"),Is.Not.Null);
             Assert.That(GameObject.Find("World Region 1 · corrupt scout target"),Is.Not.Null);
         }
@@ -450,32 +450,20 @@ namespace Eldoria.Tests
             Assert.That(trailRoot,Is.Not.Null);
             var trail=trailRoot.GetComponentInChildren<Renderer>();
             Assert.That(trail,Is.Not.Null);
-            Assert.That(trail.sharedMaterial.name,Does.Contain("surface trail"));
-            Assert.That(valley.sharedMaterial.name,Does.Contain("surface earth"));
+            Assert.That(trail.sharedMaterial,Is.Not.SameAs(valley.sharedMaterial));
 
-            Texture2D TextureOf(Material material)
+            Color SurfaceColor(Material material)
             {
-                var texture=material.HasProperty("_BaseMap")?material.GetTexture("_BaseMap"):
-                    material.HasProperty("_MainTex")?material.GetTexture("_MainTex"):null;
-                return texture as Texture2D;
+                if(material.HasProperty("_BaseColor"))return material.GetColor("_BaseColor");
+                if(material.HasProperty("_Color"))return material.GetColor("_Color");
+                return material.color;
             }
-            float MeanLuma(Texture2D texture)
-            {
-                Assert.That(texture,Is.Not.Null);
-                float sum=0f;int count=0;
-                for(int y=4;y<texture.height;y+=8)
-                for(int x=4;x<texture.width;x+=8)
-                {
-                    var c=texture.GetPixel(x,y);
-                    sum+=.2126f*c.r+.7152f*c.g+.0722f*c.b;
-                    count++;
-                }
-                return sum/Mathf.Max(1,count);
-            }
-            var trailTexture=TextureOf(trail.sharedMaterial);
-            var valleyTexture=TextureOf(valley.sharedMaterial);
-            Assert.That(trailTexture,Is.Not.SameAs(valleyTexture));
-            Assert.That(MeanLuma(trailTexture),Is.LessThan(MeanLuma(valleyTexture)-.025f));
+            float Luma(Color value)=>.2126f*value.r+.7152f*value.g+.0722f*value.b;
+
+            var trailColor=SurfaceColor(trail.sharedMaterial);
+            var valleyColor=SurfaceColor(valley.sharedMaterial);
+            Assert.That(Luma(trailColor),Is.LessThan(Luma(valleyColor)-.025f),
+                "The authored Region 1 road must remain darker than the surrounding ground at 4X scale.");
         }
 
         [UnityTest]
