@@ -26,6 +26,8 @@ namespace Eldoria.EditorTools
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             SetupUrpFeature();
+            int sanitized = SanitizePlyInPlace(ply);
+            Debug.Log($"[SHARP] Sanitized non-finite splats: {sanitized}");
 
             var asset = GsplatRuntimeLoader.LoadFile(
                 ply,
@@ -106,6 +108,52 @@ namespace Eldoria.EditorTools
             UnityEngine.Object.DestroyImmediate(asset);
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             Debug.Log("[SHARP] Unity proof complete: " + output);
+        }
+
+        static int SanitizePlyInPlace(string path)
+        {
+            var data = File.ReadAllBytes(path);
+            var needle = System.Text.Encoding.ASCII.GetBytes("end_header\n");
+            int end = -1;
+            for (int i = 0; i <= data.Length - needle.Length; i++)
+            {
+                bool match = true;
+                for (int k = 0; k < needle.Length; k++)
+                    if (data[i + k] != needle[k]) { match = false; break; }
+                if (match) { end = i + needle.Length; break; }
+            }
+            if (end < 0) throw new InvalidDataException("PLY end_header not found");
+            var header = System.Text.Encoding.ASCII.GetString(data, 0, end);
+            var m = System.Text.RegularExpressions.Regex.Match(header, @"element vertex (\d+)");
+            if (!m.Success) throw new InvalidDataException("PLY vertex count not found");
+            int count = int.Parse(m.Groups[1].Value);
+            const int floatsPerVertex = 14;
+            const int stride = floatsPerVertex * 4;
+            int bad = 0;
+            for (int i = 0; i < count; i++)
+            {
+                int off = end + i * stride;
+                if (off + stride > data.Length) throw new EndOfStreamException("PLY vertex payload truncated");
+                bool invalid = false;
+                float[] vals = new float[floatsPerVertex];
+                for (int k = 0; k < floatsPerVertex; k++)
+                {
+                    vals[k] = BitConverter.ToSingle(data, off + k * 4);
+                    if (float.IsNaN(vals[k]) || float.IsInfinity(vals[k])) invalid = true;
+                }
+                if (!invalid) continue;
+                bad++;
+                for (int k = 0; k < floatsPerVertex; k++)
+                    if (float.IsNaN(vals[k]) || float.IsInfinity(vals[k])) vals[k] = 0f;
+                vals[6] = -20f;
+                for (int k = 0; k < floatsPerVertex; k++)
+                {
+                    var b = BitConverter.GetBytes(vals[k]);
+                    Buffer.BlockCopy(b, 0, data, off + k * 4, 4);
+                }
+            }
+            if (bad > 0) File.WriteAllBytes(path, data);
+            return bad;
         }
 
         static GameObject CreateProbe(string name, Color color, Vector3 pos, Vector3 scale)
