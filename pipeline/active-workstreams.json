@@ -6,7 +6,7 @@
     {
       "id": "valoria-real-game-state-v1",
       "title": "Valoria real runtime parcel and construction progression",
-      "owner": "chat-real-game-state-20261006",
+      "owner": "chat-real-game-state-20261006-resume-1729",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/**",
         "Unity/Assets/Eldoria/Shaders/**",
@@ -26,10 +26,10 @@
         "sharp-local-official-checkpoint"
       ],
       "claimed_at": "2026-10-06T14:13:16.777Z",
-      "base_main_sha": "056df4b2e17b6ef8d773ac37fb8312c8c91db428",
+      "base_main_sha": "244aa1b7f85351a82b218d75b4af7ef135844516",
       "status": "active",
       "paid_credits": 0,
-      "phase": "Resume SAME block: owner-authorized local official Apple SHARP inference; no model/method change",
+      "phase": "Same workstream resumed: inspect verified local CPU PLY artifact 11423748153; generic parcel integration and Unity gates pending",
       "blocked_at": "2026-10-06T14:49:11Z",
       "blocker": null,
       "resume_same_id": true,
@@ -43,7 +43,7 @@
         "paid_credits": 0,
         "next_block_started": false
       },
-      "resumed_at": "2026-10-06T15:10:23.343Z"
+      "resumed_at": "2026-10-06T15:31:55.603Z"
     }
   ],
   "history": [
