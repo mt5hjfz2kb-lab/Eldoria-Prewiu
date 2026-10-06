@@ -84,10 +84,10 @@ jobs:
               ranked.append((score,ep,spec))
           ranked.sort(reverse=True,key=lambda x:x[0])
           print("RANKED",[(s,e,[(p.get("parameter_name"),p.get("parameter_default")) for p in sp.get("parameters",[])]) for s,e,sp in ranked[:10]])
-          chosen=next(((s,e,sp) for s,e,sp in ranked if s>=100),None)
-          if not chosen:
-              raise SystemExit("No plausible Hunyuan generation endpoint advertised")
-          _,ep,spec=chosen
+          ep="/generation_all" if "/generation_all" in endpoints else None
+          if ep is None:
+              raise SystemExit("Hunyuan full generation endpoint not advertised")
+          spec=endpoints[ep]
           kwargs={}
           image="/tmp/hy3d/input/eldoria-semantic-gate.png"
           for p in spec.get("parameters",[]):
@@ -102,6 +102,10 @@ jobs:
                   kwargs[n]=False
               elif ln in ("remove_background","do_remove_background","remove_bg"):
                   kwargs[n]=True
+              elif ln=="octree_resolution":
+                  kwargs[n]=512
+              elif ln=="steps":
+                  kwargs[n]=30
               elif d is not None:
                   kwargs[n]=d
           print("CALL",ep,kwargs)
@@ -116,20 +120,25 @@ jobs:
                   for v in x.values(): walk(v)
           walk(result)
           copied=[]
+          idx=0
           for p in vals:
               low=p.lower().split("?")[0]
               ext=os.path.splitext(low)[1]
               if ext not in (".glb",".gltf",".obj",".ply",".stl"): continue
-              dst="/tmp/hy3d/output/hunyuan"+ext
+              idx+=1
+              dst=f"/tmp/hy3d/output/candidate-{idx}{ext}"
               if os.path.isfile(p):
                   shutil.copy2(p,dst); copied.append(dst)
               elif p.startswith(("http://","https://")):
                   rr=requests.get(p,timeout=240); rr.raise_for_status()
                   open(dst,"wb").write(rr.content); copied.append(dst)
-              if copied and ext==".glb": break
-          print("COPIED",copied)
+          print("COPIED",[(p,os.path.getsize(p)) for p in copied])
           if not copied:
               raise SystemExit("Hunyuan returned no mesh file")
+          glbs=[p for p in copied if p.lower().endswith(".glb")]
+          chosen=max(glbs or copied,key=os.path.getsize)
+          shutil.copy2(chosen,"/tmp/hy3d/output/hunyuan.glb")
+          print("AUTHORITATIVE",chosen,os.path.getsize(chosen))
           PY
 
       - name: Render Hunyuan mesh evidence
@@ -139,9 +148,10 @@ jobs:
           import bpy, os, math
           from mathutils import Vector
           root="/tmp/hy3d/output"; ev="/tmp/hy3d/evidence"
+          authoritative=os.path.join(root,"hunyuan.glb")
           files=[os.path.join(root,f) for f in os.listdir(root) if f.lower().endswith((".glb",".gltf",".obj",".ply",".stl"))]
           if not files: raise RuntimeError("No mesh")
-          src=files[0]
+          src=authoritative if os.path.isfile(authoritative) else max(files,key=os.path.getsize)
           bpy.ops.wm.read_factory_settings(use_empty=True)
           ext=os.path.splitext(src)[1].lower()
           if ext in (".glb",".gltf"): bpy.ops.import_scene.gltf(filepath=src)
@@ -188,7 +198,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-hunyuan21-semantic-gate-capability-v1
+          name: valoria-hunyuan21-semantic-gate-highres-v2
           path: |
             /tmp/hy3d/evidence
             /tmp/hy3d/output
