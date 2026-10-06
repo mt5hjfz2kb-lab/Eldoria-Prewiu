@@ -42,7 +42,9 @@ def as_file(v):
         if p and os.path.exists(p): return handle_file(p)
     return handle_file(inp)
 
-res=client.predict("Run",handle_file(inp),as_file(bg),0.85,"Triangle",-1,1024,api_name="/run_button")
+# Keep the same Client session so Gradio's hidden State from requires_bg_remove
+# remains available, but call only the five PUBLIC run_button parameters.
+res=client.predict(handle_file(inp),0.85,"Triangle",-1,1024,api_name="/run_button")
 print("RUN",repr(res))
 open(os.path.join(OUT,"result.json"),"w").write(json.dumps(res,indent=2,default=str))
 cands=[]
