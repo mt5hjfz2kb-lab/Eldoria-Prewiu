@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "id": "valoria-left-right-parcels-next-block-v1",
+  "status": "prepared_not_started",
+  "depends_on": "valoria-first-playable-city-slice-v1",
+  "recipe": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
+  "zones": [
+    {"id":"LeftCabinParcel","role":"functional construction/gameplay parcel"},
+    {"id":"RightCampParcel","role":"functional construction/gameplay parcel","candidate":"art-source/valoria/production/camp-family-v1/CampFamilyV1.glb"}
+  ],
+  "protected_route": ["Bridge","LowerGate","MainRoad","CentralStair","UpperWalls","Bastion"],
+  "paid_credits": 0
+}
