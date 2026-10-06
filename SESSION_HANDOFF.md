@@ -1,3 +1,25 @@
+## 2026-10-06 — VALORIA REAL GAME STATE v1 — BLOCKED / NOT COMPLETED
+
+Same workstream `valoria-real-game-state-v1`. Real gateway/store state capture
+demonstrated both parcel builds, chapter-I unlock progression, reload/idempotency
+and 81/81 bounded-camera rays (run 37479037112, artifact 11420563514). The integrated
+panel test failed, and direct visual review rejected blurry ground and multilayer
+sorting artifacts. No final PASS and no promotion.
+
+Empty-ground input transfer fixed in commit `7eda2d6228170901b651975b10ec87bb6b05eb58`.
+Latest SHARP run 37481997235 now passes fingerprints but is blocked by public
+ZeroGPU quota: 180s requested / 163s remaining, reset indicated around
+2026-10-07 01:22:47 UTC. Artifact 11422270605 has metadata/input only, no PLY.
+Original visual authority/Gamma/composition remain LOCKED.
+
+Resume this same unfinished block after free quota reset or authorized credential
+access. Preserve existing progression; use one combined renderer and manifest-driven
+parcel regions; validate real UI, save/reload and visual regression before closure.
+Draft correction is archived, unvalidated and unapplied.
+Details: `docs/VALORIA_REAL_GAME_STATE_V1.md` and
+`docs/evidence/valoria-real-game-state-v1/blocker.json`.
+No paid credits, no commercial assets, no new workstream or expansion.
+
 ## 2026-10-06 — VALORIA VISUAL AUTHORITY RESET v1 — CORRECTION PASS / CLOSED
 
 The exact owner open-Valoria reference is canonical: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, SHA-256 `8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689`. The previous vertical source and its VISUAL PASS remain revoked as VISUAL_AUTHORITY_MISMATCH.

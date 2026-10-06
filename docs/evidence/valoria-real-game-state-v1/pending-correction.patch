@@ -1,0 +1,331 @@
+--- a/tools/valoria-parcel-splat-states.py
++++ b/tools/valoria-parcel-splat-states.py
+@@ -1,54 +1,62 @@
+-"""Separate the two player parcels from the LOCKED SHARP source, never regenerate it.
++"""Four runtime SHARP scenes, with only player parcel records replaced.
+ 
+-Unoccupied ground is transplanted from unoccupied terrain in the same SHARP scene.
+-This is a bounded surface fallback, not image cards or a new visual generator.
+-All vertex records outside the declared parcel masks are byte-identical.
++The built/built variant is byte-identical to the approved decimated source.
++Empty parcel records come from the same SHARP production route's empty-ground
++derivative. One renderer sorts the whole scene, avoiding inter-layer ordering.
+ """
+ import argparse, hashlib, json, re
+ from pathlib import Path
+ import numpy as np
+ from scipy.spatial import cKDTree
+ 
+-def main():
+-    ap=argparse.ArgumentParser(); ap.add_argument('source'); ap.add_argument('output'); a=ap.parse_args()
+-    source=Path(a.source); out=Path(a.output); out.mkdir(parents=True,exist_ok=True)
+-    data=source.read_bytes(); offset=data.index(b'end_header\n')+11; header=data[:offset]
+-    count=int(re.search(rb'element vertex (\d+)',header)[1]); end=offset+count*56
++def read(path):
++    data=Path(path).read_bytes(); offset=data.index(b'end_header\n')+11; header=data[:offset]
++    count=int(re.search(rb'element vertex (\d+)',header)[1])
+     v=np.frombuffer(data,dtype='<f4',count=count*14,offset=offset).reshape(count,14)[::2].copy()
+-    meta=data[end:]; intrinsic=np.frombuffer(meta,dtype='<f4',count=9,offset=64)
++    meta=data[offset+count*56:]
++    intrinsic=np.frombuffer(meta,dtype='<f4',count=9,offset=64)
++    dimensions=np.frombuffer(meta,dtype='<u4',count=2,offset=100)
+     f,cx,cy=float(intrinsic[0]),float(intrinsic[2]),float(intrinsic[5])
+     uv=np.column_stack((v[:,0]/v[:,2]*f+cx,v[:,1]/v[:,2]*f+cy))
+-    u,y=uv.T
++    return data,header,v,meta,uv,(f,cx,cy),dimensions
++
++def main():
++    ap=argparse.ArgumentParser();ap.add_argument('source');ap.add_argument('ground');ap.add_argument('output');a=ap.parse_args()
++    data,header,v,meta,uv,camera,dimensions=read(a.source)
++    gd,_,gv,_,guv,_,gdim=read(a.ground)
++    out=Path(a.output);out.mkdir(parents=True,exist_ok=True)
++    f,cx,cy=camera;u,y=uv.T
+     left=(((u-258)/143)**2+((y-324)/72)**2<1)|((u>204)&(u<240)&(y>200)&(y<270))
+     right=((u-1050)/151)**2+((y-390)/72)**2<1
+-    masks={'left':left,'right':right}; assert not np.any(left&right)
+-    def write(name,points):
++    assert not np.any(left&right)
++    # Match normalized image coordinates; the derivative has the same crop/aspect.
++    guv*=dimensions/gdim
++    valid=np.isfinite(gv).all(axis=1)&(gv[:,2]>0)
++    gv=gv[valid];guv=guv[valid]
++    replacements={}
++    for name,mask in [('left',left),('right',right)]:
++        q=uv[mask];ids=cKDTree(guv).query(q)[1];ground=gv[ids].copy()
++        # Calibrate metric depth at unchanged terrain around the parcel boundary.
++        ring=(np.linalg.norm((uv-[258,324])/[143,72],axis=1)>1.05)&(np.linalg.norm((uv-[258,324])/[143,72],axis=1)<1.3) if name=='left' else (np.linalg.norm((uv-[1050,390])/[151,72],axis=1)>1.05)&(np.linalg.norm((uv-[1050,390])/[151,72],axis=1)<1.3)
++        ring &= ~(left|right)
++        border_ids=cKDTree(guv).query(uv[ring])[1]
++        ratio=np.median(v[ring,2]/gv[border_ids,2])
++        depth=np.clip(ground[:,2]*ratio,5,100)
++        # Keep the original projected sample distribution, not a flat image card.
++        old_depth=ground[:,2].copy()
++        ground[:,0]=(q[:,0]-cx)*depth/f;ground[:,1]=(q[:,1]-cy)*depth/f;ground[:,2]=depth
++        ground[:,7:10]+=np.log(depth/old_depth*float(dimensions[0])/float(gdim[0]))[:,None]
++        replacements[name]=ground
++    records={}
++    for state in range(4):
++        points=v.copy()
++        if not state&1:points[left]=replacements['left']
++        if not state&2:points[right]=replacements['right']
++        assert np.array_equal(points[~(left|right)],v[~(left|right)])
+         h=re.sub(rb'element vertex \d+',b'element vertex '+str(len(points)).encode(),header,count=1)
+-        p=out/(name+'.ply'); p.write_bytes(h+points.astype('<f4').tobytes()+meta)
+-        return {'count':len(points),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+-    records={'base':write('base',v[~(left|right)])}
+-    for name,mask in masks.items():
+-        records[name]=write(name,v[mask])
+-        # Terrain donor: no building, path, vegetation, fire or player character.
+-        rect=(400,520,365,425) if name=='left' else (750,870,340,415)
+-        x0,x1,y0,y1=rect
+-        dm=(u>x0)&(u<x1)&(y>y0)&(y<y1)&np.isfinite(v).all(axis=1)
+-        donor=v[dm]; duv=uv[dm]
+-        q=uv[mask]
+-        sample=np.column_stack((x0+np.mod(q[:,0]-q[:,0].min(),x1-x0),y0+np.mod(q[:,1]-q[:,1].min(),y1-y0)))
+-        ids=cKDTree(duv).query(sample)[1]
+-        ground=donor[ids].copy()
+-        # Extrapolate the existing continuous terrain's reciprocal-depth plane.
+-        coef=np.linalg.lstsq(np.column_stack((duv,np.ones(len(duv)))),1/donor[:,2],rcond=None)[0]
+-        depth=1/(np.column_stack((q,np.ones(len(q))))@coef)
+-        depth=np.clip(depth,12,35)
+-        ratio=depth/ground[:,2]
+-        ground[:,0]=(q[:,0]-cx)*depth/f; ground[:,1]=(q[:,1]-cy)*depth/f; ground[:,2]=depth
+-        ground[:,7:10]+=np.log(ratio)[:,None]
+-        records[name+'-ground']=write(name+'-ground',ground)
+-    records['baseline']=write('baseline',v)
+-    assert records['base']['count']+records['left']['count']+records['right']['count']==len(v)
+-    (out/'parcel-source.json').write_text(json.dumps({'source_sha256':hashlib.sha256(data).hexdigest(),'splat_count':len(v),'outside_parcels_byte_identical':True,'method':'conditional original SHARP parcel layers + same-scene terrain Gaussian support','mask_pixels':{'left':{'ellipse':[258,324,143,72],'smoke':[204,200,240,270]},'right':{'ellipse':[1050,390,151,72]}},'layers':records},indent=2))
++        p=out/('state-'+str(state)+'.ply');p.write_bytes(h+points.astype('<f4').tobytes()+meta)
++        records[str(state)]={'count':len(points),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
++    (out/'parcel-source.json').write_text(json.dumps({'source_sha256':hashlib.sha256(data).hexdigest(),'ground_source_sha256':hashlib.sha256(gd).hexdigest(),'splat_count':len(v),'outside_parcels_byte_identical':True,'built_built_records_byte_identical':True,'method':'single sorted SHARP scene; four authoritative parcel variants; same-route empty-ground derivative','mask_pixels':{'left':{'ellipse':[258,324,143,72],'smoke':[204,200,240,270]},'right':{'ellipse':[1050,390,151,72]}},'states':records},indent=2))
+     print(json.dumps(records))
+ 
+-if __name__=='__main__': main()
++if __name__=='__main__':main()
+--- a/Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs
++++ b/Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs
+@@ -331,17 +331,20 @@
+             var layers=new List<GsplatRenderer>();
+             string assetFolder="Assets/Eldoria/ProductionSlice/Runtime";
+             Directory.CreateDirectory(assetFolder);AssetDatabase.Refresh();
+-            GameObject Layer(string name)
+-            {
+-                var a=GsplatRuntimeLoader.LoadFile(Path.Combine(inputs,name+".ply"),CompressionMode.Spark,SourceCoordinates.RDF);
+-                string path=assetFolder+"/"+name+".asset";AssetDatabase.DeleteAsset(path);AssetDatabase.CreateAsset(a,path);
+-                var go=new GameObject("SHARP parcel layer · "+name);go.transform.SetParent(root.transform);
+-                var r=go.AddComponent<GsplatRenderer>();r.GsplatAsset=a;r.SHDegree=0;
+-                r.GammaToLinear=QualitySettings.activeColorSpace==ColorSpace.Linear;r.AsyncUpload=false;r.RenderBeforeUploadComplete=false;r.Update();
+-                layers.Add(r);return go;
+-            }
+-            Layer("base");visual.LeftBuilt=Layer("left");visual.RightBuilt=Layer("right");
+-            visual.LeftGround=Layer("left-ground");visual.RightGround=Layer("right-ground");
++            visual.StateAssets=new GsplatAsset[4];
++            for(int i=0;i<4;i++)
++            {
++                var a=GsplatRuntimeLoader.LoadFile(Path.Combine(inputs,"state-"+i+".ply"),CompressionMode.Spark,SourceCoordinates.RDF);
++                string path=assetFolder+"/state-"+i+".asset";AssetDatabase.DeleteAsset(path);AssetDatabase.CreateAsset(a,path);
++                visual.StateAssets[i]=a;
++            }
++            var beauty=new GameObject("SHARP authoritative runtime scene");beauty.transform.SetParent(root.transform);
++            var renderer=beauty.AddComponent<GsplatRenderer>();renderer.GsplatAsset=visual.StateAssets[0];renderer.SHDegree=0;
++            renderer.GammaToLinear=QualitySettings.activeColorSpace==ColorSpace.Linear;renderer.AsyncUpload=false;renderer.RenderBeforeUploadComplete=false;renderer.Update();
++            visual.SceneSplats=renderer;layers.Add(renderer);
++            GameObject Representation(string name){var go=new GameObject(name);go.transform.SetParent(root.transform);return go;}
++            visual.LeftBuilt=Representation("Left built state");visual.RightBuilt=Representation("Right built state");
++            visual.LeftGround=Representation("Left empty state");visual.RightGround=Representation("Right empty state");
+             Vector3 Ground(float u,float y,float z)=>new Vector3((u-W*.5f)*z/1034.716f,-(y-H*.5f)*z/1034.716f,z);
+             GameObject Scaffold(string name,Vector3 position,Vector3 size)
+             {
+@@ -354,7 +357,7 @@
+                     r.transform.SetParent(go.transform,true);
+                     var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.30f,.18f,.09f));r.sharedMaterial=m;
+                     foreach(var c in r.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(c);
+-                    AssetDatabase.AddObjectToAsset(m,assetFolder+"/base.asset");
++                    AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
+                 }
+                 go.transform.rotation=sourceRotation;go.transform.position=position;return go;
+             }
+@@ -365,7 +368,7 @@
+                 var go=new GameObject(name);go.transform.SetParent(root.transform);go.transform.position=position;
+                 var line=go.AddComponent<LineRenderer>();line.useWorldSpace=false;line.positionCount=41;line.startWidth=line.endWidth=.045f;
+                 var m=new Material(Shader.Find("Universal Render Pipeline/Unlit"));m.SetColor("_BaseColor",new Color(.82f,.57f,.24f));line.sharedMaterial=m;
+-                AssetDatabase.AddObjectToAsset(m,assetFolder+"/base.asset");
++                AssetDatabase.AddObjectToAsset(m,assetFolder+"/state-0.asset");
+                 for(int i=0;i<41;i++){float angle=i/40f*Mathf.PI*2;line.SetPosition(i,new Vector3(Mathf.Cos(angle)*1.8f,Mathf.Sin(angle)*.46f,0));}
+                 return go;
+             }
+@@ -394,7 +397,7 @@
+                 foreach(var r in layers.Where(r=>r.gameObject.activeInHierarchy))PrepareSplatFrame(r,cam,name);
+                 CaptureRasterOnly(cam,output,name);
+                 bool expectedLeft=s.SawmillLevel>0,expectedRight=s.BarracksLevel>0;
+-                if(visual.LeftBuilt.activeSelf!=expectedLeft||visual.RightBuilt.activeSelf!=expectedRight)throw new Exception("Runtime layer disagrees with authoritative level");
++                if(visual.ActiveVariant!=((expectedLeft?1:0)|(expectedRight?2:0))||renderer.GsplatAsset!=visual.StateAssets[visual.ActiveVariant]||visual.LeftBuilt.activeSelf!=expectedLeft||visual.RightBuilt.activeSelf!=expectedRight)throw new Exception("Runtime layer disagrees with authoritative level");
+                 rows.Add("{\"capture\":\""+name+"\",\"left\":\""+visual.LeftState+"\",\"right\":\""+visual.RightState+"\",\"objective\":\""+Eldoria.Domain.SliceRules.CurrentObjectiveKey(s)+"\",\"state\":"+JsonUtility.ToJson(s)+"}");
+             }
+             CaptureState("runtime-home-initial");
+@@ -437,6 +440,18 @@
+             UnityEngine.Object.DestroyImmediate(originalRoot);
+             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(),assetFolder+"/Valoria.unity");
+             string scene=assetFolder+"/Valoria.unity";
++            var request=File.ReadAllText(Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","pipeline","valoria-first-playable-city-slice-v1.json")));
++            if(Regex.IsMatch(request,@"""runtime_windows_build""\s*:\s*true"))
++            {
++                string playerFolder=Path.GetFullPath(Path.Combine(output,"..","ValoriaParcelRuntimePlayer"));
++                Directory.CreateDirectory(playerFolder);
++                PlayerSettings.defaultScreenWidth=W;PlayerSettings.defaultScreenHeight=H;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;
++                PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64,new[]{GraphicsDeviceType.Direct3D11});
++                var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{scene,"Assets/Eldoria/Scenes/Frontier.unity"},locationPathName=Path.Combine(playerFolder,"Eldoria-Valoria.exe"),target=BuildTarget.StandaloneWindows64,options=BuildOptions.Development});
++                if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new Exception("Runtime player build failed "+report.summary.result);
++                File.WriteAllText(Path.Combine(playerFolder,"Jugar-Valoria.bat"),"@echo off\r\ncd /d %~dp0\r\nEldoria-Valoria.exe --eldoria-profile=OWNER_I_II\r\n");
++            }
++
+             File.WriteAllText(Path.Combine(output,"runtime-state-evidence.json"),"{\"tech_pass\":true,\"final_pass\":false,\"visual_review\":\"PENDING\",\"real_gateway\":\"LocalGateway\",\"real_store\":\"FileStateStore\",\"runtime_scene\":\""+scene+"\",\"right_building_id\":\"barracks\",\"raycasts_pass\":"+rayPass+",\"raycasts_required\":"+rayRequired+",\"commands_are_real\":true,\"save_reload_pass\":true,\"idempotency_pass\":true,\"states\":["+string.Join(",",rows)+"]}");
+             File.Copy(Path.Combine(inputs,"parcel-source.json"),Path.Combine(output,"parcel-source.json"),true);
+             Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(null);
+--- a/Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs
++++ b/Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs
+@@ -1,6 +1,7 @@
+ using System;
+ using Eldoria.Domain;
+ using UnityEngine;
++using Gsplat;
+ 
+ namespace Eldoria.Presentation
+ {
+@@ -12,6 +13,9 @@
+         public GameObject LeftConstruction, RightConstruction, LeftAvailable, RightAvailable;
+         public Collider LeftTarget, RightTarget;
+         public Camera ProductionCamera;
++        public GsplatRenderer SceneSplats;
++        public GsplatAsset[] StateAssets; // 0 empty, 1 left built, 2 right built, 3 both built
++        public int ActiveVariant { get; private set; }
+         public float HomeFov = 44.42281f;
+         public ParcelBuildingState LeftState { get; private set; }
+         public ParcelBuildingState RightState { get; private set; }
+@@ -20,6 +24,9 @@
+         {
+             LeftState=ParcelBuildingStates.For(state,"sawmill");
+             RightState=ParcelBuildingStates.For(state,"barracks");
++            ActiveVariant=(LeftState==ParcelBuildingState.BUILT?1:0)|(RightState==ParcelBuildingState.BUILT?2:0);
++            if(SceneSplats!=null && StateAssets!=null && StateAssets.Length==4 && SceneSplats.GsplatAsset!=StateAssets[ActiveVariant])
++                SceneSplats.GsplatAsset=StateAssets[ActiveVariant];
+             ApplyParcel(LeftState,LeftBuilt,LeftGround,LeftConstruction,LeftAvailable,LeftTarget);
+             ApplyParcel(RightState,RightBuilt,RightGround,RightConstruction,RightAvailable,RightTarget);
+         }
+--- a/Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs
++++ b/Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs
+@@ -46,7 +46,9 @@
+             renderedSawmill=state.SawmillLevel;renderedBarracks=state.BarracksLevel;renderedBastion=state.BastionLevel;
+             renderedScout=state.ScoutDefeated;renderedEngendro=state.EngendroDefeated;
+             renderedIdle=state.March.Phase=="idle";
+-            productionParcels=UnityEngine.Object.FindFirstObjectByType<ValoriaParcelPresentation>();
++            productionParcels=null;
++            foreach(var sceneRoot in scene.GetRootGameObjects())
++            { productionParcels=sceneRoot.GetComponentInChildren<ValoriaParcelPresentation>(true);if(productionParcels!=null)break; }
+             if(productionParcels!=null) productionParcels.Apply(state);
+             else VisualWorld.Create(city,state);
+             if(city&&OfficialCamera!=null&&productionParcels==null)
+@@ -289,6 +291,8 @@
+                     :"Parcela económica dañada · requiere "+SliceRules.SawmillWoodCost+" madera para reconstruirse.";
+                 buildingAction.GetComponentInChildren<Text>().text=s.SawmillLevel>0?"ASERRADERO ACTIVO":"RECONSTRUIR";
+                 buildingAction.interactable=ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.AVAILABLE&&s.BuildingCompletesUtcTicks==0;
++                if(ParcelBuildingStates.For(s,"sawmill")==ParcelBuildingState.UNDER_CONSTRUCTION)
++                { buildingBody.text="Reconstrucción en curso · el aserradero aparecerá al terminar la obra.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
+                 if(s.SawmillLevel==0)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","sawmill");});
+             }
+             else if(id=="barracks")
+@@ -299,6 +303,9 @@
+                     buildingBody.text="Construir Cuartel · "+SliceRules.BarracksWoodCost+" madera / "+SliceRules.BarracksStoneCost+" piedra.";
+                     buildingAction.GetComponentInChildren<Text>().text="CONSTRUIR CUARTEL";
+                     buildingAction.interactable=ParcelBuildingStates.For(s,"barracks")==ParcelBuildingState.AVAILABLE&&s.BuildingCompletesUtcTicks==0;
++                    if(ParcelBuildingStates.For(s,"barracks")==ParcelBuildingState.UNDER_CONSTRUCTION)
++                    { buildingBody.text="Construcción del cuartel en curso · la parcela militar se activará al terminar.";buildingAction.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN"; }
++                    else if(s.BastionLevel<2)buildingBody.text="Parcela militar reservada · disponible al alcanzar Bastión II.";
+                     buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Build","barracks");});
+                 }
+                 else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
+--- a/Unity/Assets/Eldoria/Scripts/Presentation/Eldoria.Presentation.asmdef
++++ b/Unity/Assets/Eldoria/Scripts/Presentation/Eldoria.Presentation.asmdef
+@@ -1 +1 @@
+-{"name":"Eldoria.Presentation","rootNamespace":"Eldoria.Presentation","references":["Eldoria.Application","Eldoria.Domain","Eldoria.Infrastructure","Unity.InputSystem","Unity.ugui","Unity.RenderPipelines.Universal.Runtime","Unity.RenderPipelines.Core.Runtime"],"autoReferenced":true}+{"name":"Eldoria.Presentation","rootNamespace":"Eldoria.Presentation","references":["Eldoria.Application","Eldoria.Domain","Eldoria.Infrastructure","Unity.InputSystem","Unity.ugui","Unity.RenderPipelines.Universal.Runtime","Unity.RenderPipelines.Core.Runtime","Gsplat"],"autoReferenced":true}--- a/Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs
++++ b/Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs
+@@ -19,25 +19,42 @@
+         static void Invoke(SlicePresenter presenter,string method,params object[] args)
+             => typeof(SlicePresenter).GetMethod(method,BindingFlags.Instance|BindingFlags.NonPublic).Invoke(presenter,args);
+ 
++        GameObject testRoot;
++        Scene testScene;
++        string previousProfile;
++        SlicePresenter testPresenter;
++        [UnityTearDown] public IEnumerator Cleanup()
++        {
++            if(testPresenter!=null)
++            {
++                var safe=typeof(SlicePresenter).GetField("safe",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(testPresenter) as RectTransform;
++                if(safe!=null)UnityEngine.Object.Destroy(safe.root.gameObject);
++            }
++            if(testRoot!=null)UnityEngine.Object.Destroy(testRoot);
++            SliceContentProfiles.SetRuntimeProfileOverride(previousProfile);
++            yield return null;
++            if(testScene.IsValid())yield return SceneManager.UnloadSceneAsync(testScene);
++        }
+         [UnityTest] public IEnumerator RealBuildingPanelDrivesExistingGatewayAndParcelLayers()
+         {
++            previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
+             SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+-            foreach(var old in UnityEngine.Object.FindObjectsByType<SlicePresenter>(FindObjectsSortMode.None))UnityEngine.Object.DestroyImmediate(old.gameObject);
++            testScene=SceneManager.CreateScene("Parcel runtime UI isolation");
+             var clock=new Clock();var store=new Store();var gateway=new LocalGateway(clock,store);
+-            var root=new GameObject("Runtime parcel test");var visual=root.AddComponent<ValoriaParcelPresentation>();
++            var root=new GameObject("Runtime parcel test");testRoot=root;SceneManager.MoveGameObjectToScene(root,testScene);var visual=root.AddComponent<ValoriaParcelPresentation>();
+             GameObject Child(string name){var go=new GameObject(name);go.transform.SetParent(root.transform);return go;}
+             visual.LeftBuilt=Child("left built");visual.RightBuilt=Child("right built");
+             visual.LeftGround=Child("left ground");visual.RightGround=Child("right ground");
+             visual.LeftConstruction=Child("left construction");visual.RightConstruction=Child("right construction");
+             visual.LeftTarget=Child("left target").AddComponent<BoxCollider>();visual.RightTarget=Child("right target").AddComponent<BoxCollider>();
+             var camera=Child("camera").AddComponent<Camera>();camera.tag="MainCamera";visual.ProductionCamera=camera;
+-            var uiRoot=Child("player UI");var presenter=uiRoot.AddComponent<SlicePresenter>();
+-            presenter.Initialize(gateway);presenter.OnSceneLoaded(SceneManager.GetActiveScene(),LoadSceneMode.Single);
++            var uiRoot=Child("player UI");var presenter=uiRoot.AddComponent<SlicePresenter>();testPresenter=presenter;
++            presenter.Initialize(gateway);presenter.OnSceneLoaded(testScene,LoadSceneMode.Single);
+             Assert.That(visual.LeftState,Is.EqualTo(ParcelBuildingState.AVAILABLE));
+             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.NOT_BUILT));
+             Assert.That(visual.LeftBuilt.activeSelf,Is.False);Assert.That(visual.RightTarget.enabled,Is.False);
+             Invoke(presenter,"Select","sawmill");
+-            Button action=null;foreach(var b in presenter.GetComponentsInChildren<Button>(true))if(b.gameObject.name=="Building action")action=b;
++            var action=(Button)typeof(SlicePresenter).GetField("buildingAction",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(presenter);
+             Assert.That(action,Is.Not.Null);Assert.That(action.interactable,Is.True);
+             action.onClick.Invoke();
+             Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(SliceContentProfiles.Active.InitialWood-SliceRules.SawmillWoodCost));
+@@ -49,9 +66,19 @@
+             Assert.That(visual.LeftGround.activeSelf,Is.False);Assert.That(visual.LeftConstruction.activeSelf,Is.False);
+             Assert.That(SliceRules.CurrentObjectiveKey(gateway.Snapshot()),Is.EqualTo("b1.gather-wood"));
+             int spend=gateway.Snapshot().Resources.Wood;gateway.Advance();Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(spend));
++            void Command(string kind,string target){var s=gateway.Snapshot();Assert.That(gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision)).Ok,Is.True);}
++            void March(string kind,string target){Command(kind,target);clock.Step(120);gateway.Advance();}
++            March("Gather","forest-valoria");March("Gather","forest-valoria");March("Gather","quarry-valoria");March("Fight","corrupt-scout");
++            Command("AdvanceBastion","bastion");Invoke(presenter,"Refresh");
++            Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.AVAILABLE));Assert.That(visual.RightTarget.enabled,Is.True);
++            Invoke(presenter,"Select","barracks");Assert.That(action.interactable,Is.True);action.onClick.Invoke();
++            Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.UNDER_CONSTRUCTION));Assert.That(visual.RightConstruction.activeSelf,Is.True);
++            resumed=new LocalGateway(clock,store);Assert.That(ParcelBuildingStates.For(resumed.Snapshot(),"barracks"),Is.EqualTo(ParcelBuildingState.UNDER_CONSTRUCTION));
++            clock.Step(SliceRules.BarracksBuildSeconds+1);gateway.Advance();Invoke(presenter,"Refresh");
++            Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.BUILT));Assert.That(visual.RightGround.activeSelf,Is.False);Assert.That(visual.ActiveVariant,Is.EqualTo(3));
+             visual.Pan(new Vector2(-10000,10000));Assert.That(camera.transform.position.x,Is.EqualTo(.5f));Assert.That(camera.transform.position.y,Is.Zero);
+             visual.Zoom(-1000);Assert.That(camera.fieldOfView,Is.EqualTo(visual.HomeFov*.9f).Within(.001));visual.Home();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));
+-            UnityEngine.Object.Destroy(root);SliceContentProfiles.SetRuntimeProfileOverride(null);yield return null;
++            yield return null;
+         }
+     }
+ }
+--- a/.github/workflows/valoria-first-playable-city-slice-v1.yml
++++ b/.github/workflows/valoria-first-playable-city-slice-v1.yml
+@@ -181,7 +181,7 @@
+           name: valoria-first-playable-city-slice-v1
+           path: |
+             Unity/ValoriaFirstPlayableCitySliceV1Captures/*
+-            Unity/Assets/Eldoria/ProductionSlice/Runtime/**
++            Unity/Assets/Eldoria/ProductionSlice/**
+           if-no-files-found: warn
+           retention-days: 30
+ 

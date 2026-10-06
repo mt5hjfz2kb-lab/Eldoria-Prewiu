@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T14:30:50.192Z",
-  "active": [
+  "updated_at": "2026-10-06T14:49:11Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-real-game-state-v1",
       "title": "Valoria real runtime parcel and construction progression",
@@ -21,18 +22,26 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs.meta"
       ],
-      "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
-        "sharp-existing-production-route"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-06T14:13:16.777Z",
       "base_main_sha": "056df4b2e17b6ef8d773ac37fb8312c8c91db428",
-      "status": "active",
+      "status": "blocked",
       "paid_credits": 0,
-      "phase": "Existing gateway/state integration implemented; conditional SHARP terrain/parcel layers authored; runtime and visual gates pending"
-    }
-  ],
-  "history": [
+      "phase": "BLOCKED: same-route free ZeroGPU quota; NOT COMPLETED / NOT PROMOTED",
+      "blocked_at": "2026-10-06T14:49:11Z",
+      "blocker": "ZeroGPU free quota insufficient: 180 seconds requested versus 163 remaining",
+      "resume_same_id": true,
+      "result": {
+        "run_id": 37481997235,
+        "artifact_id": 11422270605,
+        "evidence": "docs/evidence/valoria-real-game-state-v1/blocker.json",
+        "draft_patch": "docs/evidence/valoria-real-game-state-v1/pending-correction.patch",
+        "visual_pass": false,
+        "completed": false,
+        "paid_credits": 0,
+        "next_block_started": false
+      }
+    },
     {
       "id": "valoria-visual-authority-reset-v1",
       "title": "Valoria correct reference authority and rerun first city slice",
