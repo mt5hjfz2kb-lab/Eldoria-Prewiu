@@ -138,3 +138,42 @@ Next production action:
 5. choose the best quality/performance density before moving to integrated interactive geometry.
 
 No new visual-method R&D is authorized for this gate.
+
+
+## Gate 1B — 600k convergence density
+**Verdict: TECH PASS / VISUAL PASS / NEW PROVISIONAL BASELINE**
+
+Evidence:
+- Run: `37455916168`
+- Artifact: `11409767660`
+- Working density: ~600k splats via the same bounded/sanitized source path and UnitySplats lifecycle proven at ~300k.
+- HOME: PASS.
+- bounded pan-left / pan-right: PASS.
+- zoom captures: PASS.
+- occlusion-front / occlusion-behind: PASS.
+- paid credits: 0.
+
+Direct visual comparison versus ~300k:
+- 300k shows severe punctate/sparse breakup and loses architectural readability.
+- 600k materially restores the Lower Gate, walls, stair, road, vegetation and camp silhouettes into a coherent scene.
+- Bounded pan remains visually stable enough for the current camera envelope.
+- Occlusion proof remains functional.
+
+Decision:
+- **Adopt ~600k as the provisional SHARP Unity convergence baseline.**
+- Do not scale blindly beyond 600k until the clean-source gate is complete.
+- The current source still contains baked HUD/UI and is therefore evidence-only, not production-clean art.
+
+### Gate 1A — clean production source
+Next action:
+1. materialize/reuse the already-located canonical clean candidate if valid:
+   `art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png`
+   and compare against `semantic-base.png`;
+2. verify that the chosen source contains no baked gameplay HUD/UI and preserves the approved visual frame;
+3. regenerate SHARP from that clean source;
+4. repeat the ~600k Unity proof using the exact Gate 1B lifecycle;
+5. only after this PASS may SHARP be considered a production visual layer.
+
+Current tooling note:
+- GitHub text/blob connector cannot materialize these binary PNG/JPG blobs directly in the present session (`fetch_blob` UTF-8 decode limitation).
+- This is a tooling/materialization blocker for Gate 1A source inspection, not a visual-method blocker.
