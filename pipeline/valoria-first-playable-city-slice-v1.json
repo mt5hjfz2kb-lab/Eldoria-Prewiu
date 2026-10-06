@@ -81,7 +81,7 @@
     "INTERACTION PASS",
     "BOUNDED CAMERA PASS"
   ],
-  "nonce": "20261006-real-state-001",
+  "nonce": "20261006-real-state-002",
   "bounded_camera": {
     "pan_x": 0.5,
     "zoom_fov_multipliers": [

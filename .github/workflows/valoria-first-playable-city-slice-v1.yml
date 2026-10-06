@@ -64,7 +64,7 @@ jobs:
           cfg=json.load(open('pipeline/valoria-first-playable-city-slice-v1.json'))
           artifact=cfg['visual_authority']['source_artifact_id']
           req=urllib.request.Request(f'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/{artifact}/zip',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
-          with urllib.request.urlopen(req) as response, open('source.zip','wb') as f:f.write(response.read())
+          subprocess.run(['curl','-fsSL','-H','Authorization: Bearer '+os.environ['GH_TOKEN'],req.full_url,'-o','source.zip'],check=True)
           with zipfile.ZipFile('source.zip') as z:z.extractall('sharp-source')
           subprocess.run(['python','tools/valoria-parcel-splat-states.py','sharp-source/sharp-1.ply','parcel-source'],check=True)
       - uses: actions/upload-artifact@v4
@@ -165,6 +165,16 @@ jobs:
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Production slice timed out'}
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 800};throw "Production slice failed $($p.ExitCode)"}
           Get-Content (Join-Path $folder 'production-slice-evidence.json')
+      - name: Verify real parcel player UI in PlayMode
+        if: needs.request.outputs.parcels_required == 'true'
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP\ValoriaParcelPlayMode.log"
+          $result="$env:GITHUB_WORKSPACE\Unity\ValoriaFirstPlayableCitySliceV1Captures\parcel-playmode.xml"
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.ParcelProgressionRuntimeTests','-testResults',$result,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          Copy-Item $log "$env:GITHUB_WORKSPACE\Unity\ValoriaFirstPlayableCitySliceV1Captures\parcel-playmode.log" -Force
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'Runtime parcel PlayMode failed'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
