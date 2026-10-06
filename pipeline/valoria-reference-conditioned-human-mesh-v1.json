@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-reference-conditioned-human-mesh-v1",
+  "geometry_source": "OpenGameArt Medieval Gatehouse by Daniel Andersson CC0",
+  "surface_source": "Poly Haven Modular Fort 01 wall diffuse CC0",
+  "style_authority": "canonical Valoria semantic Gate layers",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
