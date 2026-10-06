@@ -45,7 +45,9 @@ jobs:
           o.data.materials.append(mat)
           disp=o.modifiers.new("TargetHeight","DISPLACE"); dt=bpy.data.textures.new("TargetHeightTex","IMAGE"); dt.image=bpy.data.images.load(height); disp.texture=dt; disp.texture_coords="UV"; disp.strength=.16; disp.mid_level=.5
           bev=o.modifiers.new("SoftStone","BEVEL"); bev.width=.02; bev.segments=2
-          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100; sc.world.color=(.035,.04,.05)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1100; sc.render.resolution_y=825; sc.render.resolution_percentage=100
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.035,.04,.05)
           bpy.ops.object.light_add(type="AREA",location=(-3,-4,5)); bpy.context.object.data.energy=900; bpy.context.object.data.size=5
           bpy.ops.object.light_add(type="AREA",location=(4,1,2)); bpy.context.object.data.energy=350; bpy.context.object.data.size=4
           bpy.ops.object.camera_add(location=(4,-5,3)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=60; cam.rotation_euler=(Vector((0,0,0))-cam.location).to_track_quat("-Z","Y").to_euler()
