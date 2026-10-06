@@ -148,6 +148,44 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("World Region 1 · active march"),Is.Null);
         }
 
+        [UnityTest]
+        public IEnumerator RebuildingRegionDoesNotLeakLooseWorldVisuals()
+        {
+            SceneManager.LoadScene("Frontier");
+            yield return null;
+            yield return null;
+
+            int CountWorldParts()
+            {
+                int count=0;
+                foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+                    if(tr.name.StartsWith("World Region 1 ·"))count++;
+                return count;
+            }
+
+            var state=new PlayerState();
+            WorldRegion1Runtime.Create(state);
+            yield return null;
+            int first=CountWorldParts();
+            Assert.That(first,Is.GreaterThan(20));
+
+            WorldRegion1Runtime.Create(state);
+            yield return null;
+            int second=CountWorldParts();
+            Assert.That(second,Is.EqualTo(first),
+                "Recreating Region 1 must replace its visual hierarchy rather than duplicate helper-created pieces.");
+
+            int roots=0;
+            foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+            {
+                if(!tr.name.StartsWith("World Region 1 ·"))continue;
+                if(tr.name=="World Region 1 · root"){roots++;continue;}
+                Assert.That(tr.parent,Is.Not.Null,
+                    tr.name+" escaped the Region 1 lifecycle root and would survive a rebuild.");
+            }
+            Assert.That(roots,Is.EqualTo(1));
+        }
+
         static void AssertHotspot(string objectName,string id)
         {
             var go=GameObject.Find(objectName);
