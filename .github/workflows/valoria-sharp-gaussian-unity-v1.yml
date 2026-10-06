@@ -52,34 +52,6 @@ jobs:
           Expand-Archive -Path $zip -DestinationPath $dst -Force
           if(-not (Test-Path (Join-Path $dst "sharp-1.ply"))){throw "SHARP PLY missing after artifact download"}
           Get-Item (Join-Path $dst "sharp-1.ply") | Format-List Name,Length,FullName
-      - name: Sanitize non-finite SHARP splats
-        shell: powershell
-        run: |
-          $py=@'
-          import math, re, struct, pathlib
-          p=pathlib.Path(r"Unity/SharpGaussianSource/sharp-1.ply")
-          data=bytearray(p.read_bytes())
-          end=data.index(b"end_header\n")+len(b"end_header\n")
-          header=data[:end].decode("ascii")
-          n=int(re.search(r"element vertex (\d+)",header).group(1))
-          stride=14*4
-          bad=0
-          for i in range(n):
-              off=end+i*stride
-              vals=list(struct.unpack_from("<14f",data,off))
-              if all(math.isfinite(v) for v in vals):
-                  continue
-              bad+=1
-              for k,v in enumerate(vals):
-                  if not math.isfinite(v):
-                      vals[k]=0.0
-              # hide invalid splat while preserving record count/order
-              vals[6]=-20.0
-              struct.pack_into("<14f",data,off,*vals)
-          p.write_bytes(data)
-          print(f"SANITIZED_NONFINITE_SPLATS={bad} TOTAL={n}")
-          '@
-          $py | python -
       - name: Capture SHARP Gaussian Unity proof
         shell: powershell
         run: |
