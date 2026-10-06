@@ -282,7 +282,7 @@ namespace Eldoria.EditorTools
                 $"  \"selection_callback_gate_pass\": {(callbackPass ? "true":"false")},\n"+
                 $"  \"selection_callback_count\": {selectionCallbacks},\n"+
                 "  \"selection_counts\": {"+
-                    string.Join(",", selectionCounts.Select(kv => $"\\\"{kv.Key}\\\":{kv.Value}"))+
+                    string.Join(",", selectionCounts.Select(kv => $"\"{kv.Key}\":{kv.Value}"))+
                 "},\n"+
                 $"  \"selection_feedback_capture_pass\": {(feedbackFile ? "true":"false")},\n"+
                 $"  \"selection_feedback_visible_pass\": {(feedbackVisible ? "true":"false")},\n"+
