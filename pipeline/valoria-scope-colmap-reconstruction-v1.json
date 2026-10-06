@@ -9,5 +9,10 @@
   "paid_credits": 0,
   "vendor_spend": 0,
   "production_promotion": false,
-  "nonce": "2026-10-06-001"
+  "nonce": "2026-10-06-002",
+  "prior_reconstruction": {
+    "registered_images": 21,
+    "points": 3033,
+    "mean_reprojection_error_px": 0.274449
+  }
 }
