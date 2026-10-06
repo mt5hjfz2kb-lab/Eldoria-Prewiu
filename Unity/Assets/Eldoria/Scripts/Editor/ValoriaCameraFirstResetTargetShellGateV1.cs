@@ -150,7 +150,7 @@ namespace Eldoria.EditorTools
             // All planes are in front of the inherited scene, but retain depth ordering within the shell.
             // camera.forward points from camera into the world; negative offsets move toward the camera.
             float[] depthOffsets={-18f,-16f,-14f,-12f};
-            var projectRoot=Path.GetFullPath(Path.Combine(Application.dataPath,"../.."));
+            var projectRoot=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../.."));
             for(int band=0;band<4;band++)
             {
                 string path=Path.Combine(projectRoot,"art-source","valoria","lookdev","golden-slice-v1","camera-first-reset-target-v1","layer-"+band+".png");
