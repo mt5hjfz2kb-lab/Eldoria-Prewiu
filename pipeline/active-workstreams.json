@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T20:18:00Z",
+  "updated_at": "2026-10-06T20:17:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -70,7 +70,9 @@
       "next": "Replace prototype-board read with natural strategic terrain, authored vegetation silhouettes, organic routes and portrait-safe composition; rerun full Unity + capture gates.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "art-production-governance-v1",
       "title": "Universal art production routing guard",
@@ -90,16 +92,30 @@
       ],
       "claimed_at": "2026-10-06T20:15:00Z",
       "base_main_sha": "6a4ffde760cb0072874c67f98620df8374c6e199",
-      "status": "active",
+      "status": "completed",
       "paid_credits": 0,
-      "phase": "IMPLEMENT UNIVERSAL VISUAL ROUTING ENFORCEMENT",
+      "phase": "UNIVERSAL ART ROUTING GUARD INSTALLED / PASS",
       "dependency": "Must not modify Region 1 runtime/assets/gameplay or occupy the Windows Unity runner.",
-      "next": "Create per-workstream art requests, enforce active visual workstreams through the planner, and register Region 1 without touching its runtime.",
+      "next": "All future workstreams must declare art_production_routing. Visual workstreams require a per-workstream request and planner PASS; after VISUAL FAIL the request must be refreshed before another correction iteration.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Repository governance workstream; no player-facing art production."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "Repository governance workstream; no player-facing art production.",
+      "completed_at": "2026-10-06T20:17:00Z",
+      "result": {
+        "commit": "cf230eecbcf9bc9b251c1c89328445ee07ed38a3",
+        "region1_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json",
+        "universal_checker": "tools/check-art-production-governance.mjs",
+        "workflow": ".github/workflows/art-production-governance.yml",
+        "art_governance_run": 37524932110,
+        "art_governance_conclusion": "success",
+        "planner_run": 37524932222,
+        "planner_conclusion": "success",
+        "architecture_guard_run": 37524932171,
+        "architecture_guard_conclusion": "success",
+        "workflow_governance_run": 37524932006,
+        "workflow_governance_conclusion": "failure",
+        "workflow_governance_note": "Unrelated pre-existing pages.yml heavy Windows self-trigger violation owned by parked WebGL delivery workstream; not modified here."
+      }
+    },
     {
       "id": "repo-historical-visual-cleanup-v1",
       "title": "Historical visual residue cleanup",
