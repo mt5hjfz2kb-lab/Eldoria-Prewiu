@@ -89,7 +89,7 @@ def add_plane(name,y,mat):
     return obj
 
 # Far to near, then alpha layers composite into the original crop.
-depth_positions=[12.0,10.0,8.0,6.0]  # layer0 near is y=6; layer3 far is y=12.
+depth_positions=[6.0,8.0,10.0,12.0]  # DA3 low normalized depth = near; camera looks +Y, so smaller Y is nearer.
 for band in reversed(range(4)):
     mat=layer_material(f"Layer{band}Mat",ASSET/f"layer-{band}.png")
     add_plane(f"DepthLayer{band}",depth_positions[band],mat)
@@ -108,7 +108,8 @@ render("reset-layered-pan-right.png",0.18,0,2.0)
 render("reset-layered-zoom-in.png",0,0,1.6)
 render("reset-layered-zoom-out.png",0,0,2.4)
 
-# Occlusion diagnostic: a magenta sphere lies between layer1 and layer2.
+# Occlusion diagnostic: a magenta sphere lies between layer1 (nearer) and layer2 (farther).
+# Near image content (layers 0/1) must occlude it; far content (layers 2/3) must remain behind it.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, radius=0.08, location=(0.0,9.0,0.0))
 sphere=bpy.context.object
 sphere.name="DynamicDepthProbe"
