@@ -58,6 +58,8 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: "1"
         run: |
           xvfb-run -a -s "-screen 0 1920x1080x24" .ci/blender/blender -b --python-exit-code 1 --python tools/render-camera-first-projection-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/projection-debug-solid.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/render-debug.json
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/projection-base.png
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/projection-left-small.png
           test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-projection-v1/projection-right-small.png
