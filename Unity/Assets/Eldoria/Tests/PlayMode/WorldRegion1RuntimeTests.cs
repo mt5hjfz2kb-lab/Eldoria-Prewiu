@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
+// Region 1 certified-terrain fast certification marker.
 namespace Eldoria.Tests
 {
     public sealed class WorldRegion1RuntimeTests
