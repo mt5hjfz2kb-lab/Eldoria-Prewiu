@@ -245,3 +245,52 @@ The repository does not contain this commercial source and the connected tooling
 **HUMAN AUTHORIZATION / ACQUISITION REQUIRED:** owner approval to purchase/acquire KINGDOM at the currently observed USD 74.50 sale price plus applicable tax, or confirmation that the asset is already owned and can be made available to the project.
 
 Until then, no further implementation can honestly execute the selected candidate. No Tripo/Meshy credits have been spent.
+
+
+## 2026-10-06 — Owner-authorized PREMIUM SQUARE METRE self-authoring proof
+
+The owner explicitly chose to test whether Eldoria can manufacture its own premium source art before any commercial pack purchase.
+
+This is **not** another whole Lower Gate iteration and must not reuse the exhausted scripted-primary-form method. The experiment is deliberately smaller than a family:
+
+**one approximately 2 m x 2 m screen-visible stone / buttress fragment derived from the canonical Lower Gate language.**
+
+Purpose: isolate the unresolved capability question: can the current owned toolchain manufacture a single reference-class architectural surface/form fragment when it is treated as an artist-authored sculpt/detail asset rather than as procedural building geometry?
+
+### Method class
+Use Blender as an authoring/sculpt environment, not as a primitive-stack generator:
+1. official-camera silhouette/profile target first;
+2. deliberately irregular primary stone mass and buttress edge profile;
+3. secondary block/joint depth that changes silhouette and catches light;
+4. tertiary chips/erosion only where they survive gameplay-scale review;
+5. high-detail source -> controlled low/game mesh or decimation as appropriate;
+6. bake normal/AO/curvature or equivalent reusable detail transport;
+7. UV/material separation designed for the existing Golden surface language;
+8. neutral-clay source render first;
+9. materialized source render second only if clay geometry passes.
+
+### Hard prohibitions
+- no whole gate;
+- no city assembly;
+- no Unity compensation before source gate;
+- no Tripo/Meshy;
+- no purchased art;
+- no projection/2.5D;
+- no repeating the source06/source07/source08 scripted primary-form loop;
+- no PASS based on technical metrics.
+
+### Gate
+At the official Valoria camera and a close crop, source must score >=4/5 in:
+- silhouette/profile quality;
+- believable authored stone mass;
+- mid-frequency architectural detail;
+- edge/chip/erosion language;
+- premium perception.
+
+It must also remain readable at gameplay scale.
+
+If this tiny fragment remains <4/5 after one genuinely sculpt/detail-based source attempt, record **SELF-AUTHORED PREMIUM SOURCE FAIL** and stop. Do not iterate cosmetics. That result would be strong evidence that the current automated/no-human authoring capability cannot manufacture the missing premium master source.
+
+If it passes, the next experiment is to turn the fragment's method into 3–5 reusable master modules before any complete building is attempted.
+
+Zero paid credits.
