@@ -1,0 +1,28 @@
+{
+  "method": "depth-derived multiplane projection with deterministic disocclusion reconstruction",
+  "depth_model": "depth-anything/DA3-BASE",
+  "depth_thresholds": [
+    0.05,
+    0.1,
+    0.15
+  ],
+  "representative_layer_depths": [
+    6.270252704620361,
+    6.859907150268555,
+    7.450693130493164,
+    12.155197143554688
+  ],
+  "camera_offsets_world_units": {
+    "small": 0.2,
+    "medium": 0.45
+  },
+  "overscan_crop_fraction": {
+    "x": 0.015,
+    "y": 0.005
+  },
+  "base_pixel_mae_0_255": 34.21849822998047,
+  "base_pixel_rmse_0_255": 48.794063568115234,
+  "vendor_credits": 0,
+  "unity_touched": false,
+  "decision_rule": "Judge small/medium views visually against canonical target. No Unity authorization implied."
+}
