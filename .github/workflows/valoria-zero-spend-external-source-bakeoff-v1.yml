@@ -1,0 +1,103 @@
+name: "[R&D] Valoria Zero-Spend External Source Bakeoff v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/valoria-zero-spend-external-source-bakeoff-v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bakeoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Fetch CC0 sources
+        run: |
+          mkdir -p /tmp/eldoria-bakeoff/3dassets /tmp/eldoria-bakeoff/quaternius
+          curl -L --fail --retry 3 -o /tmp/eldoria-bakeoff/3dassets/starter.glb https://cdn.3dassets.dev/assets/23508/v1/model.glb
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/agentkaerf/FreeModels.git /tmp/freemodels
+          cd /tmp/freemodels
+          git sparse-checkout set 'Medieval Village MegaKit[Standard]'
+          cp -R 'Medieval Village MegaKit[Standard]' /tmp/eldoria-bakeoff/quaternius/source
+      - name: Build deterministic visual bakeoff
+        shell: bash
+        run: |
+          mkdir -p /tmp/eldoria-bakeoff/out
+          cat > /tmp/eldoria-bakeoff/render.py <<'PY'
+          import bpy, os, sys, glob, math, json
+          from mathutils import Vector
+          args=sys.argv[sys.argv.index('--')+1:]
+          mode=args[0]; src=args[1]; out=args[2]
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          def import_gltf(p):
+              before=set(bpy.data.objects)
+              bpy.ops.import_scene.gltf(filepath=p)
+              return [o for o in bpy.data.objects if o not in before and o.type=='MESH']
+          objs=[]
+          if mode=='starter':
+              objs=import_gltf(src)
+          else:
+              files=glob.glob(os.path.join(src,'**','*.gltf'),recursive=True)
+              keys=('DoorFrame_Round_Brick','DoorFrame_Flat_Brick','Wall','Corner_Exterior_Brick','Roof','Stair')
+              chosen=[]
+              for k in keys:
+                  hit=next((f for f in files if k.lower() in os.path.basename(f).lower()),None)
+                  if hit and hit not in chosen: chosen.append(hit)
+              for i,p in enumerate(chosen[:8]):
+                  new=import_gltf(p)
+                  for o in new:
+                      o.location.x += (i%4)*4.0-6.0
+                      o.location.y += (i//4)*4.5
+                  objs += new
+          if not objs: raise RuntimeError('No mesh objects imported')
+          mins=Vector((1e9,1e9,1e9)); maxs=Vector((-1e9,-1e9,-1e9))
+          for o in objs:
+              for c in o.bound_box:
+                  w=o.matrix_world @ Vector(c)
+                  mins.x=min(mins.x,w.x); mins.y=min(mins.y,w.y); mins.z=min(mins.z,w.z)
+                  maxs.x=max(maxs.x,w.x); maxs.y=max(maxs.y,w.y); maxs.z=max(maxs.z,w.z)
+          center=(mins+maxs)*0.5; size=max(maxs-mins)
+          bpy.ops.object.light_add(type='AREA', location=(center.x-8,center.y-10,center.z+14))
+          key=bpy.context.object; key.data.energy=1800; key.data.size=12
+          bpy.ops.object.light_add(type='AREA', location=(center.x+10,center.y+5,center.z+7))
+          fill=bpy.context.object; fill.data.energy=650; fill.data.size=10
+          bpy.ops.object.camera_add(location=(center.x+size*1.15,center.y-size*1.35,center.z+size*0.85))
+          cam=bpy.context.object; bpy.context.scene.camera=cam
+          direction=center-cam.location; cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler(); cam.data.lens=55
+          scene=bpy.context.scene
+          scene.render.engine='BLENDER_EEVEE'
+          scene.render.resolution_x=1280; scene.render.resolution_y=720; scene.render.resolution_percentage=100
+          scene.render.image_settings.file_format='PNG'; scene.render.filepath=out
+          scene.world.color=(0.035,0.04,0.055)
+          bpy.ops.wm.save_as_mainfile(filepath=out.replace('.png','.blend'))
+          bpy.ops.render.render(write_still=True)
+          report={'mode':mode,'mesh_objects':len(objs),'bounds':[list(mins),list(maxs)],'source':src,'paid_credits':0}
+          open(out.replace('.png','.json'),'w').write(json.dumps(report,indent=2))
+          PY
+          blender -b --python /tmp/eldoria-bakeoff/render.py -- starter /tmp/eldoria-bakeoff/3dassets/starter.glb /tmp/eldoria-bakeoff/out/3dassets-starter.png
+          blender -b --python /tmp/eldoria-bakeoff/render.py -- quaternius /tmp/eldoria-bakeoff/quaternius/source /tmp/eldoria-bakeoff/out/quaternius-modular-board.png
+      - name: Record license/source evidence
+        run: |
+          cat > /tmp/eldoria-bakeoff/out/SOURCES.md <<'EOF'
+          # Zero-spend external-source bakeoff
+
+          - 3DAssets.dev Medieval Castle Construction starter scene: https://cdn.3dassets.dev/assets/23508/v1/model.glb — pack declares CC0 1.0 Universal.
+          - Quaternius Medieval Village MegaKit Standard mirrored at https://github.com/agentkaerf/FreeModels — upstream declares CC0 1.0 Universal.
+          - Purpose: isolated visual capability research only. No production promotion. No paid credits.
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-zero-spend-external-source-bakeoff-v1
+          path: /tmp/eldoria-bakeoff/out/*
+          if-no-files-found: error
+          retention-days: 30
