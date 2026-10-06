@@ -1,0 +1,29 @@
+name: "[R&D] Valoria Geometry-Anchored Projection Bake v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-geometry-anchored-projection-bake-v1.json"
+      - ".github/workflows/valoria-geometry-anchored-projection-bake-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and Pillow
+        run: |
+          python -m pip install --quiet pillow
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy
+      - name: Build and render geometry-anchored projection proof
+        run: blender -b --python tools/valoria-geometry-anchored-projection-bake-v1.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-geometry-anchored-projection-bake-v1
+          path: /tmp/valoria-geometry-projection-bake
+          if-no-files-found: error
+          retention-days: 30
