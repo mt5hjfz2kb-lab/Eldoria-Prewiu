@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
           sparse-checkout-cone-mode: false
 
       - name: Install clients and render tools
@@ -32,9 +32,16 @@ jobs:
           mkdir -p /tmp/trellis/input /tmp/trellis/output /tmp/trellis/evidence
           python - <<'PY'
           from PIL import Image
-          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png"
+          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
           im=Image.open(src).convert("RGBA")
-          box=(189,54,574,324)
+          alpha=im.getchannel("A")
+          box=alpha.getbbox()
+          if not box:
+              raise SystemExit("semantic-gate has no alpha content")
+          # Small alpha-aware margin around the gate only.
+          x0,y0,x1,y1=box
+          pad=max(6,int(max(x1-x0,y1-y0)*0.04))
+          box=(max(0,x0-pad),max(0,y0-pad),min(im.width,x1+pad),min(im.height,y1+pad))
           crop=im.crop(box)
           w,h=crop.size
           side=max(w,h)
@@ -44,7 +51,7 @@ jobs:
           out="/tmp/trellis/input/eldoria-gate-crop.png"
           canvas.save(out)
           open("/tmp/trellis/evidence/input-spec.txt","w").write(
-              f"source={src}\nsource_size={im.size}\ncrop_box={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+              f"source={src}\nsource_size={im.size}\nalpha_bbox={box}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
           )
           PY
           sha256sum /tmp/trellis/input/eldoria-gate-crop.png | tee /tmp/trellis/evidence/input.sha256
