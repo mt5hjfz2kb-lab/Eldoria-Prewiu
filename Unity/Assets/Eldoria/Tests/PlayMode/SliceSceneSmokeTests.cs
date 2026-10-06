@@ -448,8 +448,11 @@ namespace Eldoria.Tests
             var trailRoot=GameObject.Find("World Region 1 · Valoria main route");
             Assert.That(valley,Is.Not.Null);
             Assert.That(trailRoot,Is.Not.Null);
-            var trail=trailRoot.GetComponentInChildren<Renderer>();
-            Assert.That(trail,Is.Not.Null);
+            Renderer trail=null;
+            foreach(var renderer in trailRoot.GetComponentsInChildren<Renderer>(true))
+                if(renderer.name.Contains("track")){trail=renderer;break;}
+            Assert.That(trail,Is.Not.Null,
+                "Region 1 segmented route must expose at least one authored dark track renderer.");
 
             float Luma(Color color)=>.2126f*color.r+.7152f*color.g+.0722f*color.b;
             var trailColor=trail.sharedMaterial.color;
