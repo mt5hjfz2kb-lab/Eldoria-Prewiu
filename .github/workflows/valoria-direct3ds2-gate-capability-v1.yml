@@ -1,0 +1,208 @@
+name: "[R&D] Valoria Direct3D-S2 Gate Capability v1"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/valoria-direct3ds2-gate-capability-v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  direct3ds2-gate-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+          sparse-checkout-cone-mode: false
+
+      - name: Install clients and render tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1 libglx0 libx11-6
+          python -m pip install --upgrade pip
+          python -m pip install "gradio_client>=1.10,<2" pillow requests
+
+      - name: Prepare isolated gate input
+        run: |
+          mkdir -p /tmp/direct3d/input /tmp/direct3d/output /tmp/direct3d/evidence
+          python - <<'PY'
+          from PIL import Image, ImageChops
+          src="art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png"
+          im=Image.open(src).convert("RGBA")
+          alpha=im.getchannel("A"); bbox=alpha.getbbox()
+          if bbox is None or bbox==(0,0,*im.size):
+              bg=Image.new("RGBA",im.size,im.getpixel((0,0)))
+              bbox=ImageChops.difference(im,bg).convert("L").getbbox()
+          if bbox is None: raise SystemExit("No gate content")
+          l,t,r,b=bbox; pad=max(12,int(max(r-l,b-t)*0.06))
+          bbox=(max(0,l-pad),max(0,t-pad),min(im.width,r+pad),min(im.height,b+pad))
+          crop=im.crop(bbox)
+          w,h=crop.size; side=max(w,h)
+          canvas=Image.new("RGBA",(side,side),(255,255,255,0))
+          canvas.alpha_composite(crop,((side-w)//2,(side-h)//2))
+          canvas=canvas.resize((768,768),Image.Resampling.LANCZOS)
+          out="/tmp/direct3d/input/eldoria-semantic-gate.png"
+          canvas.save(out)
+          open("/tmp/direct3d/evidence/input-spec.txt","w").write(
+              f"source={src}\nsource_size={im.size}\nisolation_bbox={bbox}\nprepared={canvas.size}\ncredits=0\nunity_touched=false\n"
+          )
+          PY
+          sha256sum /tmp/direct3d/input/eldoria-semantic-gate.png | tee /tmp/direct3d/evidence/input.sha256
+
+      - name: Generate Direct3D-S2 mesh
+        id: direct3d
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee /tmp/direct3d/evidence/direct3d.log
+          import os, shutil, requests
+          from gradio_client import Client, handle_file
+
+          client=Client("wushuang98/Direct3D-S2-v1.0-demo-zero", verbose=True)
+          api=client.view_api(return_format="dict")
+          print("API",api)
+          endpoints=(api or {}).get("named_endpoints",{})
+          print("ENDPOINTS",list(endpoints))
+
+          ranked=[]
+          for ep,spec in endpoints.items():
+              low=ep.lower()
+              ps=spec.get("parameters",[])
+              names=[(p.get("parameter_name") or "").lower() for p in ps]
+              ret=str(spec.get("returns",[])).lower()
+              score=0
+              if "generate" in low or "3d" in low or "mesh" in low: score+=120
+              if any("image" in n for n in names): score+=80
+              if "obj" in ret or "glb" in ret or "model3d" in ret or "filepath" in ret: score+=50
+              if "preprocess" in low or "remove" in low: score-=70
+              ranked.append((score,ep,spec))
+          ranked.sort(reverse=True,key=lambda x:x[0])
+          print("RANKED",[(s,e,[(p.get("parameter_name"),p.get("parameter_default")) for p in sp.get("parameters",[])]) for s,e,sp in ranked[:12]])
+          candidate=next(((s,e,sp) for s,e,sp in ranked if s>=120),None)
+          if not candidate: raise SystemExit("No Direct3D-S2 generation endpoint advertised")
+          _,ep,spec=candidate
+
+          kwargs={}
+          inp="/tmp/direct3d/input/eldoria-semantic-gate.png"
+          for p in spec.get("parameters",[]):
+              n=p.get("parameter_name"); d=p.get("parameter_default")
+              if not n: continue
+              ln=n.lower()
+              if "image" in ln:
+                  kwargs[n]=handle_file(inp)
+              elif "resolution" in ln or "sdf" in ln:
+                  # Prefer 1024 if exposed and valid; otherwise default.
+                  typ=p.get("type") or {}
+                  desc=str(typ)
+                  kwargs[n]=1024 if "1024" in desc else (d if d is not None else 512)
+              elif "seed" in ln:
+                  kwargs[n]=42
+              elif "remesh" in ln:
+                  kwargs[n]=False
+              elif "remove_interior" in ln:
+                  kwargs[n]=True
+              elif "randomize" in ln:
+                  kwargs[n]=False
+              elif d is not None:
+                  kwargs[n]=d
+          print("CALL",ep,kwargs)
+          result=client.predict(api_name=ep,**kwargs)
+          print("RESULT",repr(result))
+          vals=[]
+          def walk(x):
+              if isinstance(x,str): vals.append(x)
+              elif isinstance(x,(list,tuple)):
+                  for v in x: walk(v)
+              elif isinstance(x,dict):
+                  for v in x.values(): walk(v)
+          walk(result)
+          copied=[]
+          for p in vals:
+              low=p.lower().split("?")[0]; ext=os.path.splitext(low)[1]
+              if ext not in (".glb",".gltf",".obj",".ply",".stl"): continue
+              dst=f"/tmp/direct3d/output/candidate-{len(copied)+1}{ext}"
+              if os.path.isfile(p):
+                  shutil.copy2(p,dst); copied.append(dst)
+              elif p.startswith(("http://","https://")):
+                  rr=requests.get(p,timeout=240); rr.raise_for_status()
+                  open(dst,"wb").write(rr.content); copied.append(dst)
+          print("COPIED",[(p,os.path.getsize(p)) for p in copied])
+          if not copied: raise SystemExit("Direct3D-S2 returned no mesh")
+          # Keep largest mesh. Convert OBJ/etc to GLB later in Blender if needed.
+          chosen=max(copied,key=os.path.getsize)
+          shutil.copy2(chosen,"/tmp/direct3d/output/direct3d"+os.path.splitext(chosen)[1])
+          print("AUTHORITATIVE",chosen,os.path.getsize(chosen))
+          PY
+
+      - name: Normalize and render Direct3D-S2 evidence
+        if: steps.direct3d.outcome == 'success'
+        run: |
+          cat > /tmp/direct3d/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          root="/tmp/direct3d/output"; ev="/tmp/direct3d/evidence"
+          files=[os.path.join(root,f) for f in os.listdir(root) if f.startswith("direct3d") and f.lower().endswith((".glb",".gltf",".obj",".ply",".stl"))]
+          if not files: raise RuntimeError("No Direct3D source mesh")
+          src=files[0]; ext=os.path.splitext(src)[1].lower()
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          if ext in (".glb",".gltf"): bpy.ops.import_scene.gltf(filepath=src)
+          elif ext==".obj": bpy.ops.wm.obj_import(filepath=src)
+          elif ext==".ply": bpy.ops.wm.ply_import(filepath=src)
+          elif ext==".stl": bpy.ops.wm.stl_import(filepath=src)
+          meshes=[o for o in bpy.context.scene.objects if o.type=="MESH" and not o.hide_render]
+          if not meshes: raise RuntimeError("No renderable mesh")
+          # Export normalized GLB for evidence.
+          bpy.ops.export_scene.gltf(filepath=os.path.join(root,"direct3d.glb"),export_format="GLB",use_selection=False)
+          pts=[o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*.5; dims=mx-mn; span=max(dims)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"
+          sc.render.resolution_x=1000; sc.render.resolution_y=1000; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.045,.045,.045)
+          bpy.ops.mesh.primitive_plane_add(size=span*3,location=(center.x,center.y,mn.z-span*.015))
+          gm=bpy.data.materials.new("Ground"); gm.diffuse_color=(.14,.14,.14,1); bpy.context.object.data.materials.append(gm)
+          bpy.ops.object.light_add(type="SUN",location=center+Vector((span,-span,span)))
+          sun=bpy.context.object; sun.data.energy=2.2; sun.rotation_euler=(math.radians(35),0,math.radians(135))
+          bpy.ops.object.light_add(type="AREA",location=center+Vector((-span*.7,-span*.9,span*.8)))
+          area=bpy.context.object; area.data.energy=650; area.data.size=span
+          def track(o,t): o.rotation_euler=(t-o.location).to_track_quat("-Z","Y").to_euler()
+          bpy.ops.object.camera_add(); cam=bpy.context.object; cam.data.lens=58; sc.camera=cam
+          views=[("front",Vector((0,-1.8,.18))),("three-quarter",Vector((1.2,-1.45,.35))),("back",Vector((0,1.8,.18))),("side",Vector((1.8,0,.18)))]
+          for name,v in views:
+              cam.location=center+v*span; track(cam,center+Vector((0,0,dims.z*.05)))
+              sc.render.filepath=os.path.join(ev,f"mesh-{name}.png"); bpy.ops.render.render(write_still=True)
+          tris=sum(sum(max(0,len(p.vertices)-2) for p in o.data.polygons) for o in meshes)
+          open(os.path.join(ev,"mesh-report.txt"),"w").write(
+              f"meshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\nsource=wushuang98/Direct3D-S2-v1.0-demo-zero\ncredits=0\n"
+          )
+          PY
+          blender -b --python /tmp/direct3d/render.py
+          test -s /tmp/direct3d/output/direct3d.glb
+          test -s /tmp/direct3d/evidence/mesh-front.png
+          test -s /tmp/direct3d/evidence/mesh-three-quarter.png
+          test -s /tmp/direct3d/evidence/mesh-back.png
+          test -s /tmp/direct3d/evidence/mesh-side.png
+
+      - name: Require usable Direct3D-S2 mesh
+        run: |
+          test "${{ steps.direct3d.outcome }}" = "success"
+          test -s /tmp/direct3d/output/direct3d.glb
+          test -s /tmp/direct3d/evidence/mesh-three-quarter.png
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-direct3ds2-gate-capability-v1
+          path: |
+            /tmp/direct3d/evidence
+            /tmp/direct3d/output
+            /tmp/direct3d/input/eldoria-semantic-gate.png
+          retention-days: 14
