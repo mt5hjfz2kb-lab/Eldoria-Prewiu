@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:57:00Z",
+  "updated_at": "2026-10-06T11:00:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -64,11 +64,12 @@
       "claimed_at": "2026-10-06T09:48:00Z",
       "base_main_sha": "d7905ec32309b12d97caa849cf036067c33f229e",
       "status": "active",
-      "phase": "ZERO-SPEND TRIPOSR CANONICAL GATE PROOF",
+      "phase": "ZERO-SPEND MOGE-3 CANONICAL GATE GEOMETRY PROOF",
       "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
-      "next": "Probe MIT-licensed TripoSR via free CPU Space on the isolated semantic Lower Gate input. Require real mesh plus multi-angle evidence. If architecture remains materially distorted/below hero threshold, close single-image reconstruction family and pivot to a non-duplicate route.",
+      "next": "Probe MoGe-3 on the isolated semantic Lower Gate as a scene/geometry reconstruction method, not object generation. Require mesh/point-map geometry plus multi-angle evidence. If it only preserves the front as a shallow open surface and cannot support the camera envelope, reject this family.",
       "notes": [
-        "Hunyuan3D-2.1 produced real GLB but visual evidence was grossly deformed/melted and is not production-suitable; additionally do not promote Hunyuan as a clean EU production dependency."
+        "Hunyuan3D-2.1 produced real GLB but visual evidence was grossly deformed/melted and is not production-suitable; additionally do not promote Hunyuan as a clean EU production dependency.",
+        "TripoSR CPU path was made fully reproducible and generated GLB, but visual evidence lost architectural identity and produced an organic/noisy mass. Single-object reconstruction rejected for the gate."
       ]
     },
     {
