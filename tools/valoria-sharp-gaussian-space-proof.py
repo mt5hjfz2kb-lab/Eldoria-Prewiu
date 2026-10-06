@@ -14,11 +14,15 @@ os.makedirs(os.path.dirname(src),exist_ok=True)
 Image.open(authority['authority_path']).convert('RGB').crop(authority['crop_box']).save(src)
 if src != authority['clean_input_path'] or sha(src) != authority['clean_input_sha256']:
     raise RuntimeError('SHARP clean input is not derived from the current exact authority')
+ground=cfg.get("parcel_ground_input")
+if ground:
+    if sha(ground["path"]) != ground["sha256"]: raise RuntimeError("Parcel ground source SHA mismatch")
+    src=ground["path"]
 im=Image.open(src).convert("RGB")
 im.thumbnail((1280,1280),Image.LANCZOS)
 inp=os.path.join(OUT,"canonical-target.png"); im.save(inp)
 source_manifest=dict(authority)
-source_manifest.update(submitted_input_sha256=sha(inp),submitted_dimensions=list(im.size),paid_credits=0)
+source_manifest.update(source_kind="parcel_ground_derivative" if ground else "canonical_authority", parcel_ground_input=ground, submitted_input_sha256=sha(inp),submitted_dimensions=list(im.size),paid_credits=0)
 open(os.path.join(OUT,'source-authority.json'),'w').write(json.dumps(source_manifest,indent=2)+'\n')
 
 spaces=[{'id':'gagndeep/Apple-Sharp-Image-to-3D-View-Synthesis'}]
