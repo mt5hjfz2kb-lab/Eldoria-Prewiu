@@ -227,7 +227,13 @@ namespace Eldoria.EditorTools
             {
                 if(mat.HasProperty("_Surface"))mat.SetFloat("_Surface",1f);
                 if(mat.HasProperty("_Blend"))mat.SetFloat("_Blend",0f);
+                if(mat.HasProperty("_AlphaClip"))mat.SetFloat("_AlphaClip",0f);
                 if(mat.HasProperty("_ZWrite"))mat.SetFloat("_ZWrite",0f);
+                if(mat.HasProperty("_SrcBlend"))mat.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);
+                if(mat.HasProperty("_DstBlend"))mat.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+                if(mat.HasProperty("_SrcBlendAlpha"))mat.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);
+                if(mat.HasProperty("_DstBlendAlpha"))mat.SetFloat("_DstBlendAlpha",(float)BlendMode.OneMinusSrcAlpha);
+                mat.DisableKeyword("_ALPHATEST_ON");
                 mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 mat.SetOverrideTag("RenderType","Transparent");
                 mat.renderQueue=(int)RenderQueue.Transparent;
