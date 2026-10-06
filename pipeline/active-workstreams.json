@@ -64,6 +64,26 @@
       "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 owns the released Windows Unity runner. WebGL delivery remains parked and its Pages/publish files remain untouched.",
       "paid_credits": 0,
       "next": "Certify corrected PlayMode gates and capture the actual WorldRegion1Runtime at strategic/normal/near/mobile views."
+    },
+    {
+      "id": "repository-architecture-guard-v1",
+      "title": "Repository Architecture Guard v1",
+      "owner": "chat-governance-intervention-20261006",
+      "scope": [
+        "pipeline/repository-architecture-invariants.json",
+        "tools/check-repository-architecture.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "AGENTS.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "claimed_at": "2026-10-06T19:02:00Z",
+      "base_main_sha": "95d6b0e1a98360d005318a287e7a09f7ea55df6b",
+      "status": "active",
+      "dependency": "Emergency governance hardening after detected sparse-tree regression. Must not alter World Region 1 runtime, visual assets, gameplay, runner ownership, or WebGL delivery.",
+      "next": "Add repository architecture invariants and automatic guard; verify on main; then close."
     }
   ],
   "history": [
