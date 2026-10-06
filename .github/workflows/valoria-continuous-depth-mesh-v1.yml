@@ -43,12 +43,16 @@ jobs:
           if sc.world is None: sc.world=bpy.data.worlds.new("World")
           sc.world.color=(0.02,0.02,0.025)
           bpy.ops.object.light_add(type="AREA",location=(-2,-1,4)); bpy.context.object.data.energy=700; bpy.context.object.data.size=5
-          bpy.ops.object.camera_add(location=(0,0,3.05)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=49
-          cam.rotation_euler=(0,0,0); cam.rotation_euler=(Vector((0,0,0.22))-cam.location).to_track_quat("-Z","Y").to_euler()
+          # Blender OBJ import maps source XY image plane to XZ; inferred depth becomes Y.
+          pts=[obj.matrix_world @ v.co for v in obj.data.vertices]
+          mn=Vector((min(p.x for p in pts),min(p.y for p in pts),min(p.z for p in pts)))
+          mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
+          center=(mn+mx)*0.5
+          bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam; cam.data.lens=49
           poses=[("home",0.0),("pan-left",-0.14),("pan-right",0.14)]
           for name,x in poses:
-              cam.location=(x,0,3.05)
-              target=Vector((x*0.35,0,0.22))
+              cam.location=(center.x+x, center.y-3.05, center.z)
+              target=Vector((center.x+x*0.35,center.y,center.z))
               cam.rotation_euler=(target-cam.location).to_track_quat("-Z","Y").to_euler()
               sc.render.filepath=os.path.join(root,name+".png"); bpy.ops.render.render(write_still=True)
           PY
