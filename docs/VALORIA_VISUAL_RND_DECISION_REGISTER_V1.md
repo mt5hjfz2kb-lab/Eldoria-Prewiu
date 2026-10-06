@@ -176,3 +176,36 @@ No method becomes production-authoritative from:
 - a single frontal render.
 
 Promotion requires evidence for the actual use case: target visual fidelity, multi-angle stability, editability, camera envelope, occlusion/depth, Unity/runtime compatibility, and scalability.
+
+### Step1X-3D
+**Status:** BLOCKED — PUBLIC SPACE PAUSED
+- Run: 37451628769
+- Artifact: 11406708574
+- The public `stepfun-ai/Step1X-3D` Space reported state `PAUSED` before returning any usable mesh.
+- This is infrastructure/access failure, not visual evidence.
+- Do not spend time on retries unless the Space becomes available again.
+
+### TripoSR
+**Status:** TECHNICALLY CLOSE / VISUAL UNJUDGED
+- Runs include 37450734133, 37450956954, 37451399945 and current pinned-NumPy rerun 37451859597.
+- Installation blockers were progressively removed (torchmcubes build isolation, scikit-build-core, pybind11).
+- Run 37451399945 reached actual mesh extraction successfully.
+- Current remaining failure was GLB export compatibility: `trimesh` called removed NumPy 2.x `ndarray.ptp`.
+- Current rerun pins compatible NumPy.
+- Important: the method has crossed from “cannot install” to “can reconstruct a mesh”; visual quality remains unjudged until GLB + evidence render completes.
+- Bound retries: once export is fixed, evaluate once visually; if below hero threshold, close this route.
+
+### Marigold continuous depth
+**Status:** COMPONENT PROBE / INTEGRATION UNPROVEN
+- First run: 37451688012, artifact 11406893621.
+- Public Marigold v2 Space and APIs were reachable, but the first wrapper returned no output.
+- Rerun 37451930411 uses the correct Imageslider first-process API.
+- Purpose: continuous depth representation/component, not final art.
+- Do not promote until a valid canonical depth artifact is produced and its value to Unity/occlusion is demonstrated.
+
+### SCoPE camera-controlled view synthesis
+**Status:** VISUAL REPRESENTATION PROBE / IN PROGRESS
+- Initial run 37451541486 failed because the wrong public Space identifier was used.
+- Rerun 37451749211 uses the corrected Space and is currently generating camera-controlled video.
+- Purpose: measure whether target identity survives controlled camera motion.
+- Even a visual pass is not a gameplay/runtime pass; Unity interaction/depth still require separate proof.
