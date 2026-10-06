@@ -1,10 +1,10 @@
 {
-  "enabled": false,
-  "request_id": "valoria-golden-primary-forms-reauthor-v1",
-  "asset_or_sector": "Valoria Golden crop full visible primary forms: Lower Gate + Bridge + continuous local cliff/ground/shore + local vegetation",
+  "enabled": true,
+  "request_id": "valoria-art-source-capability-bakeoff-v1",
+  "asset_or_sector": "Lower Gate only — isolated hero art-source capability proof",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
-  "geometry_gap_evidence": "docs/evidence/valoria-golden-lookdev-slice-v1/INTEGRATED_BASE_FINAL_SOURCE_GATE.md",
+  "geometry_gap_evidence": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -12,16 +12,14 @@
   },
   "capabilities": {
     "blender_mesh_authoring": true,
-    "unity_material_blending": true,
-    "high_low_baking": true
+    "unity_material_blending": false,
+    "high_low_baking": false
   },
   "validation": {
-    "source_gate": "Purpose-built full primary forms source. Required evidence: clay/silhouette, lit 3/4, official-camera proxy, canonical-reference comparison, explicit visual review. Geometry/silhouette >=4/5, material response >=4/5, contact/integration >=4/5, environment coherence >=4/5, premium perception >=4/5.",
-    "final_gate": "Only after source gate >=4/5: Unity matched official Golden close/16:9/mobile A/B, gameplay/performance sanity PASS, canonical camera/macro positions/topology preserved."
+    "source_gate": "Isolated Lower Gate only. Neutral clay + official-camera proxy + silhouette + canonical comparison. Require geometry/silhouette >=4/5 and architectural identity >=4/5 before any Unity integration.",
+    "final_gate": "Promote no method until isolated source >=4/5. Paid/vendor generation requires fresh owner approval after exact inputs and current cost are shown."
   },
-  "notes": "New method after Integrated Method B exhaustion. Rebuild the screen-visible primary forms purpose-built for the canonical frame. Do not continue integrated source03/source04, do not add donor geometry to hide inherited forms, and do not run Unity until isolated clay/lit/official-camera proxy all support >=4/5 principal metrics. RETIRED 2026-10-06: historical evidence only; superseded by docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md.",
-  "status": "RETIRED_HISTORICAL",
-  "blocker": "Semantic 2.5D Camera-First final gate rejected the active visual direction. Do not auto-resume this request.",
-  "last_source_run_id": 37370727523,
-  "last_source_artifact_id": 11369951282
+  "notes": "Method-selection bake-off after semantic 2.5D rejection. Do not resume projection/card methods or procedural primary-form iteration. Inventory genuinely different source-authoring methods. Zero-spend preflight only until exact multiview input is ready and owner approves any vendor cost.",
+  "status": "ACTIVE_ZERO_SPEND_PREFLIGHT",
+  "blocker": "Exact consistent Lower Gate multiview input is not yet ready. Vendor execution remains unauthorized."
 }
