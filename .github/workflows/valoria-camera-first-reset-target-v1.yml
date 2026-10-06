@@ -1,0 +1,112 @@
+name: "[PROOF] Valoria Reset-Target Orthographic Layers v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-reset-target-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-camera-first-reset-target-v1
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONUNBUFFERED: "1"
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg
+            tools/build-camera-first-reset-target-layers-v1.py
+            tools/render-camera-first-reset-target-layers-v1.py
+            pipeline/camera-first-reset-target-v1-request.json
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1
+          sparse-checkout-cone-mode: false
+
+      - name: Cache DA3 checkpoint
+        uses: actions/cache@v4
+        with:
+          path: .cache/huggingface
+          key: da3-base-f4a6c9b3-linux-cpu-v1
+
+      - name: Install DA3 CPU environment
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
+          pip install "git+https://github.com/ByteDance-Seed/depth-anything-3.git@3d835ec1a5802d64a8b8b15f817a1ab54809bfe4"
+          pip install "numpy<2" addict pillow
+
+      - name: Build authoritative target depth layers
+        run: |
+          python tools/build-camera-first-reset-target-layers-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-crop-depth-preview.png
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layer-report.json
+          for i in 0 1 2 3; do
+            test -s "art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/layer-${i}.png"
+          done
+
+      - name: Cache portable Blender
+        id: blender-cache
+        uses: actions/cache@v4
+        with:
+          path: .ci/blender
+          key: blender-4.0.2-linux-x64-v1
+
+      - name: Install minimal headless libraries
+        run: |
+          sudo apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 install -y --no-install-recommends xvfb libegl1 libgl1 libglx-mesa0 ca-certificates curl xz-utils
+
+      - name: Install portable Blender on cache miss
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci
+          curl --fail --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 300 \
+            https://download.blender.org/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz \
+            -o /tmp/blender.tar.xz
+          tar -xf /tmp/blender.tar.xz -C .ci
+          mv .ci/blender-4.0.2-linux-x64 .ci/blender
+
+      - name: Render orthographic layer proof
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" .ci/blender/blender -b --python-exit-code 1 --python tools/render-camera-first-reset-target-layers-v1.py
+          for f in reset-layered-base reset-layered-pan-left reset-layered-pan-right reset-layered-zoom-in reset-layered-zoom-out reset-layered-occlusion-debug; do
+            test -s "docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/${f}.png"
+          done
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/reset-layered-render-report.json
+
+      - name: Persist authoritative projection proof
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist canonical reset-target projection proof"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-camera-first-reset-target-v1
+          path: |
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/*
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/*
+          if-no-files-found: error
+          retention-days: 30
