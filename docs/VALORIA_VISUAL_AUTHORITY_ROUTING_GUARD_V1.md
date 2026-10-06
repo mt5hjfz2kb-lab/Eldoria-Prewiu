@@ -55,16 +55,11 @@ use only certified SHARP production evidence or a newer explicitly promoted succ
 
 Current `SlicePresenter` correctly prefers `ValoriaParcelPresentation` and only falls back to `VisualWorld.Create(true,state)` when the production component is absent.
 
-That fallback remains a maintenance risk because a malformed production scene could silently display the legacy city.
+A fail-closed player guard is now installed at `Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs`. Outside `UNITY_EDITOR`, if scene `Valoria` loads without `ValoriaParcelPresentation`, all existing cameras are disabled and an explicit `BUILD INVALID` overlay is shown. This prevents the legacy city from being silently exposed in a player build.
 
-Required cutover after the current owner of `SlicePresenter.cs` releases it:
+`VisualWorld` remains available for explicit QA/historical regression only. Future cleanup may remove the fallback branch from `SlicePresenter`, but production safety no longer depends on that cleanup.
 
-1. Production/player builds must fail visibly if `ValoriaParcelPresentation` is absent.
-2. `VisualWorld` may remain only behind an explicit QA/test switch.
-3. Generic benchmark outputs must be renamed or separately packaged as legacy/mixed regression evidence.
-4. A production test must prove that loading canonical Valoria cannot enter the legacy fallback.
-
-Until that cutover is applied, the authority-routing guard verifies that:
+The authority-routing guard verifies that:
 - SHARP production authority remains fingerprinted,
 - `ValoriaParcelPresentation` remains preferred before legacy fallback,
 - `VisualWorld` retains explicit legacy/provisional classification,
