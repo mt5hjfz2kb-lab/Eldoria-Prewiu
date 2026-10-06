@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T09:45:00Z",
+  "updated_at": "2026-10-06T09:48:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -46,6 +46,25 @@
       "phase": "ZERO-SPEND PHOTOGRAMMETRY SURFACE/GEOMETRY DONOR PROOF",
       "dependency": "Distinct from KINGDOM acquisition, SF3D/TRELLIS/TRELLIS2/Hunyuan3D, OpenGameArt gatehouse and production Lower Gate. No Unity, no Windows runner, no paid credits. Isolated donor-quality proof only.",
       "next": "Test CC0 photogrammetric medieval masonry/rock sources for real surface relief and donor suitability; fail fast if visual benefit cannot materially exceed existing stylized/procedural sources."
+    },
+    {
+      "id": "valoria-open-source-image-to-3d-capability-v1",
+      "title": "VALORIA OPEN-SOURCE IMAGE-TO-3D CAPABILITY v1",
+      "owner": "chat-independent-open-source-i2d-rnd",
+      "scope": [
+        ".github/workflows/valoria-open-source-image-to-3d-capability-v1.yml",
+        "docs/evidence/valoria-open-source-image-to-3d-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-rnd"
+      ],
+      "claimed_at": "2026-10-06T09:48:00Z",
+      "base_main_sha": "d7905ec32309b12d97caa849cf036067c33f229e",
+      "status": "active",
+      "phase": "ZERO-SPEND PUBLIC IMAGE-TO-3D API CAPABILITY PROBE",
+      "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
+      "next": "Probe official Stable Fast 3D Space API anonymously with public demo input. If unavailable, test another open-source public Space or local CPU feasibility without paid credits."
     }
   ],
   "history": [
