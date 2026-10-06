@@ -5,9 +5,13 @@
   "recipe": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
   "visual_authority": {
     "method": "SHARP",
-    "source_artifact_id": 11408853949,
+    "source_artifact_id": 11418315301,
+    "source_run_id": 37472982237,
+    "authority_manifest": "pipeline/valoria-visual-authority-v1.json",
+    "source_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
     "splat_count": 589824,
-    "home_authority_artifact_id": 11409079879
+    "home_authority_artifact_id": null,
+    "superseded": false
   },
   "runtime": "Unity 6 URP",
   "families": [
@@ -20,14 +24,22 @@
     "RockTerrainFamilyV1"
   ],
   "semantic_anchors": [
+    "Bridge",
     "LowerGate",
+    "MainRoad",
     "CentralStair",
-    "BastionAccess"
+    "UpperWalls",
+    "Bastion",
+    "TerrainCliffSupport",
+    "LeftCabinParcel",
+    "RightCampParcel"
   ],
   "camera_states": [
     "HOME",
     "pan-left",
-    "pan-right"
+    "pan-right",
+    "zoom-in",
+    "zoom-out"
   ],
   "required_evidence": [
     "sharp-home.png",
@@ -41,23 +53,33 @@
     "production-slice-evidence.json"
   ],
   "paid_credits": 0,
-  "next_block": [
-    "LEFT CABIN PARCEL",
-    "RIGHT CAMP PARCEL"
-  ],
-  "status": "completed",
-  "final_verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
-  "final_run_id": 37470805228,
-  "final_artifact_id": 11417486230,
-  "final_commit": "be54b44b0b08d56b27fe29755d76b26ce36161ff",
+  "next_block": [],
+  "status": "correct_authority_capture_pending",
   "semantic_anchor_count": 7,
-  "semantic_raycast_pass": "21/21",
-  "changed_pixels_vs_sharp": {
-    "home": 22,
-    "pan_left": 13,
-    "pan_right": 18
-  },
   "beauty_replacement_regions": [],
   "real_geometry_role": "editable support geometry hidden from beauty",
-  "evidence": "docs/evidence/valoria-first-playable-city-slice-v1/result.json"
+  "evidence": "docs/evidence/valoria-first-playable-city-slice-v1/result.json",
+  "historical_result": {
+    "final_verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+    "final_run_id": 37470805228,
+    "final_artifact_id": 11417486230,
+    "final_commit": "be54b44b0b08d56b27fe29755d76b26ce36161ff",
+    "semantic_raycast_pass": "21/21",
+    "changed_pixels_vs_sharp": {
+      "home": 22,
+      "pan_left": 13,
+      "pan_right": 18
+    }
+  },
+  "final_verdict": "PENDING TECH / VISUAL / REFERENCE / COMPOSITION / INTERACTION / CAMERA REVIEW",
+  "production_promotion": false,
+  "required_closure": [
+    "TECH PASS",
+    "VISUAL PASS",
+    "REFERENCE MATCH PASS",
+    "COMPOSITION PASS",
+    "INTERACTION PASS",
+    "BOUNDED CAMERA PASS"
+  ],
+  "nonce": "20261006-correct-authority-slice-001"
 }

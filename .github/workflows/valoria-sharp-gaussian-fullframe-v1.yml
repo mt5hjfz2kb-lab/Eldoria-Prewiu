@@ -1,4 +1,4 @@
-name: "[R&D] Valoria SHARP Gaussian Fullframe v1"
+name: "[PRODUCTION] Valoria SHARP Canonical Source v1"
 on:
   push:
     branches: [main]

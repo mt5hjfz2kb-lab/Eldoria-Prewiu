@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Globalization;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -15,8 +17,12 @@ namespace Eldoria.EditorTools
 {
     public static class ValoriaFirstPlayableCitySliceV1
     {
-        const int W=1280, H=853, MaxProofSplats=600000, FloatsPerVertex=14, VertexStride=FloatsPerVertex*4;
-        const string ReferenceAssetPath="Assets/Eldoria/ProductionSlice/VALORIA_APPROVED_VISUAL_REFERENCE.jpg";
+        static int W=1230, H=845;
+        static float HomeFov;
+        const int MaxProofSplats=600000, FloatsPerVertex=14, VertexStride=FloatsPerVertex*4;
+        const string CorrectAuthoritySha="8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689";
+        [Serializable] sealed class SourceAuthority { public string authority_sha256,clean_input_sha256,ply_sha256; public int[] clean_dimensions,crop_box; }
+        const string ReferenceAssetPath="Assets/Eldoria/ProductionSlice/VALORIA_SHARP_CLEAN_REFERENCE.png";
 
         sealed class FamilySpec
         {
@@ -38,19 +44,20 @@ namespace Eldoria.EditorTools
         sealed class ProxyRuntime
         {
             public string Id;
+            public Vector2 ExpectedViewport;
             public GameObject Go;
         }
 
         struct PrepStats { public int OriginalCount, OutputCount, SanitizedCount, Step; }
 
         static readonly FamilySpec[] Families = {
-            new FamilySpec { Id="Bridge", AssetPath="Assets/Eldoria/ProductionSlice/BridgeFamilyV1.glb", Source="art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb", Viewport=new Vector2(.825f,.345f), DepthScale=.86f, TargetWidth=18f, TargetHeight=11f, BeautyVisible=false },
-            new FamilySpec { Id="LowerGate", AssetPath="Assets/Eldoria/ProductionSlice/LowerGateFamilyV1.glb", Source="art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb", Viewport=new Vector2(.748f,.458f), DepthScale=.90f, TargetWidth=15f, TargetHeight=20f, BeautyVisible=false },
-            new FamilySpec { Id="MainRoad", AssetPath="Assets/Eldoria/ProductionSlice/RoadFamilyV1.glb", Source="art-source/valoria/production/road-family-v1/RoadFamilyV1.glb", Viewport=new Vector2(.675f,.555f), DepthScale=.925f, TargetWidth=13f, TargetHeight=25f, BeautyVisible=false },
-            new FamilySpec { Id="CentralStair", AssetPath="Assets/Eldoria/ProductionSlice/StairFamilyV1.glb", Source="art-source/valoria/production/stair-family-v1/StairFamilyV1.glb", Viewport=new Vector2(.603f,.665f), DepthScale=.95f, TargetWidth=12f, TargetHeight=13f, BeautyVisible=false },
-            new FamilySpec { Id="UpperWalls", AssetPath="Assets/Eldoria/ProductionSlice/WallFamilyV1.glb", Source="art-source/valoria/production/wall-family-v1/WallFamilyV1.glb", Viewport=new Vector2(.595f,.735f), DepthScale=.975f, TargetWidth=28f, TargetHeight=15f, BeautyVisible=false },
-            new FamilySpec { Id="Bastion", AssetPath="Assets/Eldoria/ProductionSlice/BastionFamilyV1.glb", Source="art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb", Viewport=new Vector2(.548f,.775f), DepthScale=1.00f, TargetWidth=26f, TargetHeight=27f, BeautyVisible=false },
-            new FamilySpec { Id="TerrainCliffSupport", AssetPath="Assets/Eldoria/ProductionSlice/RockTerrainFamilyV1.glb", Source="art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb", Viewport=new Vector2(.610f,.610f), DepthScale=1.015f, TargetWidth=42f, TargetHeight=24f, BeautyVisible=false },
+            new FamilySpec { Id="Bridge", AssetPath="Assets/Eldoria/ProductionSlice/BridgeFamilyV1.glb", Source="art-source/valoria/production/bridge-family-v1/BridgeFamilyV1.glb", Viewport=new Vector2(.288618f,.100592f), DepthScale=.86f, TargetWidth=18f, TargetHeight=11f, BeautyVisible=false },
+            new FamilySpec { Id="LowerGate", AssetPath="Assets/Eldoria/ProductionSlice/LowerGateFamilyV1.glb", Source="art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb", Viewport=new Vector2(.394309f,.319527f), DepthScale=.90f, TargetWidth=15f, TargetHeight=20f, BeautyVisible=false },
+            new FamilySpec { Id="MainRoad", AssetPath="Assets/Eldoria/ProductionSlice/RoadFamilyV1.glb", Source="art-source/valoria/production/road-family-v1/RoadFamilyV1.glb", Viewport=new Vector2(.467480f,.508876f), DepthScale=.925f, TargetWidth=13f, TargetHeight=25f, BeautyVisible=false },
+            new FamilySpec { Id="CentralStair", AssetPath="Assets/Eldoria/ProductionSlice/StairFamilyV1.glb", Source="art-source/valoria/production/stair-family-v1/StairFamilyV1.glb", Viewport=new Vector2(.534959f,.673373f), DepthScale=.95f, TargetWidth=12f, TargetHeight=13f, BeautyVisible=false },
+            new FamilySpec { Id="UpperWalls", AssetPath="Assets/Eldoria/ProductionSlice/WallFamilyV1.glb", Source="art-source/valoria/production/wall-family-v1/WallFamilyV1.glb", Viewport=new Vector2(.788618f,.801183f), DepthScale=.975f, TargetWidth=28f, TargetHeight=15f, BeautyVisible=false },
+            new FamilySpec { Id="Bastion", AssetPath="Assets/Eldoria/ProductionSlice/BastionFamilyV1.glb", Source="art-source/valoria/production/bastion-family-v1/BastionFamilyV1.glb", Viewport=new Vector2(.604878f,.842604f), DepthScale=1.00f, TargetWidth=26f, TargetHeight=27f, BeautyVisible=false },
+            new FamilySpec { Id="TerrainCliffSupport", AssetPath="Assets/Eldoria/ProductionSlice/RockTerrainFamilyV1.glb", Source="art-source/valoria/production/rock-terrain-family-v1/RockTerrainFamilyV1.glb", Viewport=new Vector2(.720000f,.360000f), DepthScale=1.015f, TargetWidth=42f, TargetHeight=24f, BeautyVisible=false },
         };
 
         public static void Capture()
@@ -72,6 +79,16 @@ namespace Eldoria.EditorTools
             var sourcePly=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","SharpGaussianSource","sharp-1.ply"));
             if(!File.Exists(sourcePly)) throw new FileNotFoundException("Missing clean SHARP source",sourcePly);
             var workingPly=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","SharpGaussianSource","sharp-production-slice-600k.ply"));
+            var sourceManifestPath=Path.Combine(Path.GetDirectoryName(sourcePly),"source-authority.json");
+            if(!File.Exists(sourceManifestPath)) throw new Exception("VISUAL_AUTHORITY_MISMATCH: source manifest missing");
+            var sourceAuthority=JsonUtility.FromJson<SourceAuthority>(File.ReadAllText(sourceManifestPath));
+            var referenceFile=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","..","references","VALORIA_APPROVED_VISUAL_REFERENCE.jpg"));
+            if(sourceAuthority.authority_sha256!=CorrectAuthoritySha||Sha256(referenceFile)!=CorrectAuthoritySha||Sha256(sourcePly)!=sourceAuthority.ply_sha256) throw new Exception("VISUAL_AUTHORITY_MISMATCH: source fingerprint rejected");
+            ReadSharpCamera(sourcePly);
+            if(W!=sourceAuthority.clean_dimensions[0]||H!=sourceAuthority.clean_dimensions[1]) throw new Exception("SHARP camera dimensions mismatch");
+            File.Copy(referenceFile,Path.Combine(output,"correct-reference.jpg"),true);
+            File.Copy(sourceManifestPath,Path.Combine(output,"source-authority.json"),true);
+            File.Copy(Path.Combine(Path.GetDirectoryName(sourcePly),"canonical-target.png"),Path.Combine(output,"sharp-clean-input.png"),true);
             var prep=PrepareProofPly(sourcePly,workingPly,MaxProofSplats);
 
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
@@ -88,7 +105,7 @@ namespace Eldoria.EditorTools
 
             var cam=new GameObject("ValoriaProductionCamera").AddComponent<Camera>();
             cam.clearFlags=CameraClearFlags.SolidColor; cam.backgroundColor=new Color(.02f,.025f,.035f,1f);
-            cam.nearClipPlane=.01f; cam.farClipPlane=1000f; cam.fieldOfView=43.58f; cam.aspect=W/(float)H;
+            cam.nearClipPlane=.01f; cam.farClipPlane=1000f; cam.fieldOfView=HomeFov; cam.aspect=W/(float)H;
             cam.transform.position=Vector3.zero; cam.transform.rotation=Quaternion.identity;
             PrepareSplatFrame(gs,cam,"production-warmup");
 
@@ -150,9 +167,15 @@ namespace Eldoria.EditorTools
             var proxies=new List<ProxyRuntime>();
             foreach(var spec in Families)
             {
-                var colliderSize=new Vector3(Mathf.Max(4f,spec.TargetWidth*.75f),Mathf.Max(4f,spec.TargetHeight*.75f),8f);
+                float z=anchorDistance*spec.DepthScale;
+                float span=2f*z*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
+                var colliderSize=new Vector3(span*cam.aspect*.035f,span*.035f,.2f);
                 AddProxy(proxies,cam,anchorDistance,spec.Id,spec.Viewport,spec.DepthScale,colliderSize);
             }
+            float proxySpan=2f*anchorDistance*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
+            var parcelProxySize=new Vector3(proxySpan*cam.aspect*.035f,proxySpan*.035f,.2f);
+            AddProxy(proxies,cam,anchorDistance,"LeftCabinParcel",new Vector2(.203252f,.627219f),.94f,parcelProxySize);
+            AddProxy(proxies,cam,anchorDistance,"RightCampParcel",new Vector2(.853659f,.519527f),.94f,parcelProxySize);
             Physics.SyncTransforms();
 
             // SHARP authority before real-family overlay.
@@ -195,16 +218,21 @@ namespace Eldoria.EditorTools
             bool visualLocalized=homeChanged<=identityTolerance&&leftChanged<=identityTolerance&&rightChanged<=identityTolerance;
 
             var states=new[]{
-                new {Name="home",Position=Vector3.zero,Fov=43.58f},
-                new {Name="pan-left",Position=new Vector3(-1.75f,0,0),Fov=43.58f},
-                new {Name="pan-right",Position=new Vector3(1.75f,0,0),Fov=43.58f}
+                new {Name="home",Position=Vector3.zero,Fov=HomeFov},
+                new {Name="pan-left",Position=new Vector3(-1.75f,0,0),Fov=HomeFov},
+                new {Name="pan-right",Position=new Vector3(1.75f,0,0),Fov=HomeFov},
+                new {Name="zoom-in",Position=Vector3.zero,Fov=HomeFov*.9f},
+                new {Name="zoom-out",Position=Vector3.zero,Fov=HomeFov*1.1f}
             };
             int semanticRequired=0,semanticPass=0;
+            var callbacks=new Dictionary<string,int>();
+            var homeAnchorRows=new List<string>();
             var hitRows=new List<string>();
             foreach(var state in states)
             {
                 cam.transform.position=state.Position; cam.fieldOfView=state.Fov; cam.transform.rotation=Quaternion.identity;
                 Physics.SyncTransforms();
+                if(state.Name.StartsWith("zoom")) CaptureBeauty(gs,cam,output,"integrated-"+state.Name);
                 foreach(var p in proxies)
                 {
                     var vp=cam.WorldToViewportPoint(p.Go.transform.position);
@@ -215,7 +243,8 @@ namespace Eldoria.EditorTools
                     bool hit=Physics.Raycast(ray,out var info,1000f);
                     string actual=hit&&info.collider!=null?info.collider.gameObject.name.Replace("InteractiveProxy_",""):"";
                     bool ok=hit&&actual==p.Id;
-                    if(ok) semanticPass++;
+                    if(ok) { semanticPass++; callbacks[p.Id]=callbacks.ContainsKey(p.Id)?callbacks[p.Id]+1:1; }
+                    if(state.Name=="home") { var error=Vector2.Distance(new Vector2(vp.x,vp.y),p.ExpectedViewport); if(error>.002f) throw new Exception("Reference anchor drift: "+p.Id); homeAnchorRows.Add("{\"id\":\""+p.Id+"\",\"x\":"+vp.x.ToString(CultureInfo.InvariantCulture)+",\"y\":"+vp.y.ToString(CultureInfo.InvariantCulture)+"}"); }
                     hitRows.Add($"{{\"camera\":\"{state.Name}\",\"semantic\":\"{p.Id}\",\"visible\":true,\"actual\":\"{actual}\",\"pass\":{(ok?"true":"false")}}}");
                 }
             }
@@ -228,7 +257,7 @@ namespace Eldoria.EditorTools
                 var m=new Material(Shader.Find("Universal Render Pipeline/Lit")); m.color=new Color(.1f,.85f,1f,.85f); r.sharedMaterial=m;
             }
             sharpRoot.SetActive(false); SetFamilyBeauty(runtimes,false);
-            cam.transform.position=Vector3.zero; CaptureRasterOnly(cam,output,"semantic-anchors-home");
+            cam.transform.position=Vector3.zero; cam.fieldOfView=HomeFov; CaptureRasterOnly(cam,output,"semantic-anchors-home");
             sharpRoot.SetActive(true); SetFamilyBeauty(runtimes,true);
             foreach(var p in proxies) p.Go.GetComponent<Renderer>().enabled=false;
 
@@ -240,7 +269,12 @@ namespace Eldoria.EditorTools
             );
 
             var json="{\n"+
-                $"  \"gate_pass\": {(gatePass?"true":"false")},\n"+
+                $"  \"tech_gate_pass\": {(gatePass?"true":"false")},\n"+
+                "  \"gate_pass\": false,\n"+
+                "  \"visual_review\": \"PENDING DIRECT REFERENCE REVIEW; workflow success is technical evidence only\",\n"+
+                "  \"reference_authority_sha256\": \""+CorrectAuthoritySha+"\",\n"+
+                "  \"home_anchors\": ["+string.Join(",",homeAnchorRows)+"],\n"+
+                "  \"callback_counts\": {"+string.Join(",",callbacks.Select(kv=>"\""+kv.Key+"\":"+kv.Value))+"},\n"+
                 $"  \"visual_pass_candidate\": {(visualLocalized?"true":"false")},\n"+
                 $"  \"imports_pass\": {(importsPass?"true":"false")},\n"+
                 $"  \"interaction_pass\": {(interactionPass?"true":"false")},\n"+
@@ -251,16 +285,17 @@ namespace Eldoria.EditorTools
                 $"  \"semantic_raycast_pass\": {semanticPass},\n"+
                 $"  \"semantic_raycast_required\": {semanticRequired},\n"+
                 $"  \"changed_pixels\": {{\"home\":{homeChanged},\"pan_left\":{leftChanged},\"pan_right\":{rightChanged}}},\n"+
-                "  \"camera\": {\"home\":\"locked\",\"bounded_pan_x\":1.75,\"fov\":43.58},\n"+
+                "  \"camera\": {\"home\":\"source intrinsic identity\",\"bounded_pan_x\":1.75,\"fov\":"+HomeFov.ToString(CultureInfo.InvariantCulture)+",\"width\":"+W+",\"height\":"+H+"},\n"+
                 "  \"visual_authority\": \"clean SHARP 589824 beauty authority; approved central-axis GLBs are real editable support geometry hidden from beauty\",\n"+
                 "  \"route_order\": [\"Bridge\",\"LowerGate\",\"MainRoad\",\"CentralStair\",\"UpperWalls\",\"Bastion\"],\n"+
-                "  \"route_coherence_pass\": true,\n"+
+                "  \"route_coherence_pass\": false,\n"+
+                "  \"composition_review_required\": true,\n"+
                 "  \"beauty_replacement_regions\": [],\n"+
                 "  \"sharp_only_regions\": [\"background\",\"vegetation\",\"water_shore\",\"left_cabin_parcel\",\"right_camp_parcel\",\"secondary_props\"],\n"+
                 "  \"real_geometry_regions\": [\"bridge\",\"lower_gate\",\"main_road\",\"central_stair\",\"upper_walls\",\"bastion\",\"terrain_cliff_support\"],\n"+
                 "  \"families\": ["+string.Join(",",familyRows)+"],\n"+
                 "  \"semantic_hits\": ["+string.Join(",",hitRows)+"],\n"+
-                "  \"next_block\": [\"LEFT CABIN PARCEL\",\"RIGHT CAMP PARCEL\"],\n"+
+                "  \"next_block\": [],\n"+
                 "  \"paid_credits\": 0\n"+
                 "}\n";
             File.WriteAllText(Path.Combine(output,"production-slice-evidence.json"),json);
@@ -268,7 +303,7 @@ namespace Eldoria.EditorTools
             if(!gatePass) throw new Exception($"Production slice gate failed imports={importsPass} interaction={interactionPass} visualLocalized={visualLocalized} changed={homeChanged}/{leftChanged}/{rightChanged} rays={semanticPass}/{semanticRequired}");
 
             gs.GsplatAsset=null; UnityEngine.Object.DestroyImmediate(asset);
-            Debug.Log($"[PRODUCTION-SLICE] PASS families={runtimes.Count} rays={semanticPass}/{semanticRequired} changed={homeChanged}/{leftChanged}/{rightChanged}");
+            Debug.Log($"[PRODUCTION-SLICE] TECH PASS; DIRECT VISUAL REVIEW REQUIRED families={runtimes.Count} rays={semanticPass}/{semanticRequired} changed={homeChanged}/{leftChanged}/{rightChanged}");
         }
 
         static void AddProxy(List<ProxyRuntime> list,Camera cam,float anchorDistance,string id,Vector2 viewport,float depthScale,Vector3 size)
@@ -279,7 +314,43 @@ namespace Eldoria.EditorTools
             go.transform.position=ray.origin+ray.direction*anchorDistance*depthScale;
             go.transform.localScale=size;
             go.GetComponent<Renderer>().enabled=false;
-            list.Add(new ProxyRuntime{Id=id,Go=go});
+            list.Add(new ProxyRuntime{Id=id,ExpectedViewport=viewport,Go=go});
+        }
+
+        static string Sha256(string p)
+        {
+            using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(p))).Replace("-","").ToLowerInvariant();
+        }
+
+        // SHARP PLY records its source camera. Derive framing instead of copying
+        // the vertical-reference FOV into a differently shaped input image.
+        static void ReadSharpCamera(string p)
+        {
+            using(var stream=File.OpenRead(p))
+            using(var reader=new BinaryReader(stream))
+            {
+                var lines=new List<string>();
+                while(true) { var chars=new List<byte>(); byte c; while((c=reader.ReadByte())!=10) chars.Add(c); string line=Encoding.ASCII.GetString(chars.ToArray()).TrimEnd('\r'); lines.Add(line); if(line=="end_header")break; }
+                if(!lines.Contains("format binary_little_endian 1.0")) throw new Exception("Unsupported SHARP PLY format");
+                float focal=0; int width=0,height=0;
+                for(int i=0;i<lines.Count;i++)
+                {
+                    if(!lines[i].StartsWith("element "))continue;
+                    var parts=lines[i].Split(' ');string name=parts[1];int count=int.Parse(parts[2]);int stride=0;
+                    for(int j=i+1;j<lines.Count&&lines[j].StartsWith("property ");j++)
+                    {
+                        string type=lines[j].Split(' ')[1];
+                        stride+=type=="float"||type=="uint"||type=="int"?4:type=="uchar"?1:throw new Exception("Unsupported SHARP metadata type "+type);
+                    }
+                    long start=stream.Position;
+                    if(name=="intrinsic") { if(count!=9&&count!=4)throw new Exception("Invalid SHARP intrinsics"); focal=reader.ReadSingle();if(count==4){reader.ReadSingle();width=(int)reader.ReadSingle();height=(int)reader.ReadSingle();} }
+                    if(name=="image_size") { width=(int)reader.ReadUInt32();height=(int)reader.ReadUInt32(); }
+                    stream.Position=start+(long)count*stride;
+                }
+                if(width<=0||height<=0||focal<=0)throw new Exception("Missing SHARP camera intrinsics");
+                W=width;H=height;HomeFov=2f*Mathf.Atan(height/(2f*focal))*Mathf.Rad2Deg;
+                Debug.Log($"[AUTHORITY] source camera {W}x{H} focal={focal} fov={HomeFov}");
+            }
         }
 
         static Bounds CombinedBounds(Renderer[] rs){var b=rs[0].bounds;for(int i=1;i<rs.Length;i++)b.Encapsulate(rs[i].bounds);return b;}
