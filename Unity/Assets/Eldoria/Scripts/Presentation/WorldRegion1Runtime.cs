@@ -112,7 +112,7 @@ namespace Eldoria.Presentation
         static void BuildGeography()
         {
             var baseGround=Primitive("World Region 1 · terrain base",PrimitiveType.Cube,
-                new Vector3(0f,-.50f,3f),new Vector3(62f,.8f,56f),Earth);
+                new Vector3(0f,-.58f,4f),new Vector3(96f,.95f,86f),Earth);
             var groundCollider=baseGround.GetComponent<Collider>();
             if(groundCollider!=null)groundCollider.enabled=false;
 
@@ -313,15 +313,16 @@ namespace Eldoria.Presentation
                 float x=Mathf.Sin((i+1)*1.31f)*width*.13f;
                 float localYaw=Mathf.Sin(i*1.17f)*5.0f;
 
-                var shoulder=Primitive(name+" · shoulder "+i,PrimitiveType.Cube,Vector3.zero,
-                    new Vector3(width+.42f,.045f,pieceLength+.28f),RoadEdge);
+                var shoulder=Primitive(name+" · shoulder "+i,PrimitiveType.Cylinder,Vector3.zero,
+                    new Vector3((width+.42f)*.5f,.022f,(pieceLength+.36f)*.5f),RoadEdge);
                 shoulder.transform.SetParent(holder.transform,false);
                 shoulder.transform.localPosition=new Vector3(x,-.018f,z);
                 shoulder.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
                 var sc=shoulder.GetComponent<Collider>();if(sc!=null)sc.enabled=false;
 
-                var road=Primitive(name+" · track "+i,PrimitiveType.Cube,Vector3.zero,
-                    new Vector3(width,.07f,pieceLength),Road);
+                var shade=Road*(.93f+(i%3)*.035f);
+                var road=Primitive(name+" · track "+i,PrimitiveType.Cylinder,Vector3.zero,
+                    new Vector3(width*.5f,.032f,pieceLength*.5f),shade);
                 road.transform.SetParent(holder.transform,false);
                 road.transform.localPosition=new Vector3(x,.01f,z);
                 road.transform.localRotation=Quaternion.Euler(0f,localYaw,0f);
