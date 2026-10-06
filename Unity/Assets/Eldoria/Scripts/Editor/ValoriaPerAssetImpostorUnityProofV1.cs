@@ -22,14 +22,14 @@ namespace Eldoria.EditorTools
         public static void Capture()
         {
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = Directory.GetParent(Application.dataPath).Parent.FullName;
+            var root = Directory.GetParent(UnityEngine.Application.dataPath).Parent.FullName;
             var sourceDir = Path.Combine(root,"docs","evidence","valoria-golden-lookdev-slice-v1","camera-first-depth-shell-v1");
             var back = LoadPng(Path.Combine(sourceDir,"gate-back.png"));
             var front = LoadPng(Path.Combine(sourceDir,"gate-front.png"));
             repairedTex = TightComposite(back,front,18);
             brokenTex = MakeBrokenVariant(repairedTex);
 
-            var outDir = Path.Combine(Directory.GetParent(Application.dataPath).FullName,OutFolder);
+            var outDir = Path.Combine(Directory.GetParent(UnityEngine.Application.dataPath).FullName,OutFolder);
             Directory.CreateDirectory(outDir);
             File.WriteAllBytes(Path.Combine(outDir,"gate-repaired.png"), repairedTex.EncodeToPNG());
             File.WriteAllBytes(Path.Combine(outDir,"gate-broken-proof.png"), brokenTex.EncodeToPNG());
