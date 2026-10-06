@@ -74,22 +74,28 @@ namespace Eldoria.EditorTools
 
             var substrate = GameObject.CreatePrimitive(PrimitiveType.Cube);
             substrate.name = "Functional3D_Substrate_Collider";
-            substrate.transform.position = new Vector3(0, -4f, 35f);
-            substrate.transform.localScale = new Vector3(45f, .15f, 55f);
+            substrate.transform.position = new Vector3(asset.Bounds.center.x, asset.Bounds.min.y - 2f, asset.Bounds.center.z);
+            substrate.transform.localScale = new Vector3(asset.Bounds.size.x, .25f, asset.Bounds.size.z);
             substrate.GetComponent<Renderer>().enabled = false;
 
-            var frontProbe = CreateProbe("OcclusionFront", new Color(.9f,.15f,.1f), new Vector3(-3.8f, 0.5f, 5f), new Vector3(1.1f,2.2f,1.1f));
-            var backProbe  = CreateProbe("OcclusionBack", new Color(.15f,.9f,.25f), new Vector3(3.8f, 0.5f, 120f), new Vector3(2f,4f,2f));
+            // SHARP scene sits on negative Z after RUB->Unity conversion.
+            // Red probe is between camera and splats; green probe is behind the far scene.
+            var frontProbe = CreateProbe("OcclusionFront", new Color(.9f,.15f,.1f),
+                new Vector3(0f, -20f, Mathf.Min(-2.5f, asset.Bounds.max.z * 0.5f)),
+                new Vector3(10f,10f,1f));
+            var backProbe  = CreateProbe("OcclusionBack", new Color(.15f,.9f,.25f),
+                new Vector3(0f, -20f, asset.Bounds.min.z - 20f),
+                new Vector3(14f,14f,2f));
 
             var camGo = new GameObject("ProofCamera");
             var cam = camGo.AddComponent<Camera>();
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = new Color(.02f,.025f,.035f,1f);
             cam.nearClipPlane = .01f;
-            cam.farClipPlane = 500f;
+            cam.farClipPlane = 1000f;
             cam.fieldOfView = 43.58f;
             cam.transform.position = Vector3.zero;
-            cam.transform.rotation = Quaternion.identity;
+            cam.transform.rotation = Quaternion.Euler(0f,180f,0f);
 
             Debug.Log("[SHARP] ForceRefresh begin");
             gs.ForceRefresh();
@@ -228,7 +234,7 @@ namespace Eldoria.EditorTools
         static void CaptureView(Camera cam, string output, string name, Vector3 position, float fov)
         {
             cam.transform.position = position;
-            cam.transform.rotation = Quaternion.identity;
+            cam.transform.rotation = Quaternion.Euler(0f,180f,0f);
             cam.fieldOfView = fov;
 
             var rt = new RenderTexture(W,H,24,RenderTextureFormat.ARGB32);
