@@ -1,0 +1,113 @@
+name: "[PROOF] Valoria Semantic Camera-First Layers v1"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/camera-first-semantic-layers-v1-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: valoria-camera-first-semantic-layers-v1
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONUNBUFFERED: "1"
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          sparse-checkout: |
+            docs/evidence/valoria-art-production-reset-v1/target-spec.json
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1
+            tools/build-camera-first-semantic-layers-v1.py
+            tools/render-camera-first-semantic-layers-v1.py
+            pipeline/camera-first-semantic-layers-v1-request.json
+          sparse-checkout-cone-mode: false
+
+      - name: Cache SAM2 checkpoint
+        uses: actions/cache@v4
+        with:
+          path: .cache/huggingface
+          key: sam2.1-hiera-small-linux-cpu-v1
+
+      - name: Install SAM2 CPU environment
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
+          pip install "git+https://github.com/facebookresearch/sam2.git@2b90b9f5ceec907a1c18123530e92e794ad901a4"
+          pip install "numpy<2" pillow
+
+      - name: Build semantic layers from canonical target boxes
+        run: |
+          python tools/build-camera-first-semantic-layers-v1.py
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-layer-report.json
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-roundtrip.png
+          for n in gate bridge environment-near environment-far; do
+            test -s "art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-${n}.png"
+          done
+
+      - name: Cache portable Blender
+        id: blender-cache
+        uses: actions/cache@v4
+        with:
+          path: .ci/blender
+          key: blender-4.0.2-linux-x64-v1
+
+      - name: Install minimal headless libraries
+        run: |
+          sudo apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=4 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 install -y --no-install-recommends xvfb libegl1 libgl1 libglx-mesa0 ca-certificates curl xz-utils
+
+      - name: Install portable Blender on cache miss
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .ci
+          curl --fail --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 300 \
+            https://download.blender.org/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz \
+            -o /tmp/blender.tar.xz
+          tar -xf /tmp/blender.tar.xz -C .ci
+          mv .ci/blender-4.0.2-linux-x64 .ci/blender
+
+      - name: Render semantic projection proof
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" .ci/blender/blender -b --python-exit-code 1 --python tools/render-camera-first-semantic-layers-v1.py
+          for f in semantic-base semantic-pan-left semantic-pan-right semantic-zoom-in semantic-zoom-out semantic-occlusion-debug; do
+            test -s "docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/${f}.png"
+          done
+          test -s docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-render-report.json
+
+      - name: Persist semantic proof
+        run: |
+          git config user.name "Eldoria Art Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-*
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-*
+          git add -f art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/ValoriaSemanticProjectionV1.blend
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist semantic camera-first projection proof"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-semantic-camera-first-layers-v1
+          path: |
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/semantic-*
+            docs/evidence/valoria-golden-lookdev-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-*
+          if-no-files-found: error
+          retention-days: 30
