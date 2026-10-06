@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:05:00Z",
+  "updated_at": "2026-10-06T11:08:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -31,6 +31,27 @@
       "next": "Close SHARP sanitized PLY → Unity gate first. Then lock the minimum production recipe: high-fidelity representation where viable + real interactive geometry + human correction + target-conditioned surface/depth + official-camera Unity validation."
     },
     {
+      "id": "valoria-pixal3d-gate-capability-v1",
+      "title": "VALORIA PIXAL3D GATE CAPABILITY v1",
+      "owner": "chat-independent-pixal3d-rnd",
+      "scope": [
+        ".github/workflows/valoria-pixal3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-pixal3d-gate-capability-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-pixal3d-rnd"
+      ],
+      "claimed_at": "2026-10-06T11:08:00Z",
+      "base_main_sha": "29f841953fb84f6fc20f72e5dd81a29f65164826",
+      "status": "active",
+      "phase": "ZERO-SPEND PIXAL3D PIXEL-ALIGNED CANONICAL GATE PROOF",
+      "dependency": "Independent route. Must not touch active TripoSR, CraftsMan3D, SHARP, Marigold, photogrammetry, Qwen/SCoPE, commercial acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "Probe TencentARC/Pixal3D ZeroGPU on isolated semantic Lower Gate. Preserve its pixel-aligned generation and require extracted GLB plus front/3-quarter/back/side evidence."
+    }
+  ],
+  "history": [
+    {
       "id": "valoria-sparc3d-gate-capability-v1",
       "title": "VALORIA SPARC3D GATE CAPABILITY v1",
       "owner": "chat-independent-sparc3d-rnd",
@@ -44,13 +65,13 @@
       ],
       "claimed_at": "2026-10-06T11:05:00Z",
       "base_main_sha": "4a9ca69ccb274f73acab2dd8621129471b35a7ae",
-      "status": "active",
-      "phase": "ZERO-SPEND SPARC3D CANONICAL GATE PROOF",
+      "status": "blocked",
+      "phase": "ZERO-SPEND SPARC3D CANONICAL GATE PROOF / HF SPACE IS IFRAME ONLY",
       "dependency": "Independent route. Must not touch active TripoSR, CraftsMan3D, SHARP, Marigold, photogrammetry, Qwen/SCoPE, commercial acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
-      "next": "Probe public Sparc3D Space on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
-    }
-  ],
-  "history": [
+      "next": "Do not treat the iframe as an open reproducible backend.",
+      "blocked_at": "2026-10-06T11:08:00Z",
+      "result": "Official ilcve21/Sparc3D Hugging Face Space is only an iframe to external hitem3d/zaohaowu service and exposes no native model inference endpoint suitable for the zero-spend reproducible pipeline. No credits spent; no Unity touched."
+    },
     {
       "id": "valoria-triposg-gate-capability-v1",
       "title": "VALORIA TRIPOSG GATE CAPABILITY v1",
