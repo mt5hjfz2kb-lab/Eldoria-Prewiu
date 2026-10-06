@@ -1,3 +1,11 @@
+## World Region 1 v1 — ACTIVE / dedicated 4X World screen
+
+- Canonical transition: **Valoria city → tap Mundo → separate bounded 4X World screen → tap Reino/select Valoria → Valoria city**.
+- Region 1 is **not** a continuous walkable exterior connected 1:1 to Valoria's gate.
+- Visual requirement: same Eldoria dark-medieval family and quality continuity, but at strategic-map scale; no requirement for city-density art across the full region.
+- World map minimum: recognizable Valoria landmark, roads, forest resource, old-watch ruin, corrupt scout, real marches/rewards/persistence.
+- Heavy Unity implementation remains deferred only while `valoria-mobile-web-playtest-v1` owns the Windows Unity runner.
+
 ## 2026-10-06 — World Region 1 active
 
 `eldoria-world-region-1-v1` has begun from live main without reopening Valoria or visual R&D. Region 1 is defined as a scalable exterior region around certified Valoria, not a continent or detached abstract map. The first proof sector reuses the existing authoritative Unity world semantics (`forest-valoria`, `quarry-valoria`, `corrupt-scout`, march phases, one-time rewards and save/reload) and will replace only the old player-facing Frontier presentation.
