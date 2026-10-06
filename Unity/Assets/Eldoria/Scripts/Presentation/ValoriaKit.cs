@@ -36,6 +36,10 @@ namespace Eldoria.Presentation
         // The source prefab is not modified, and missing assets leave the procedural fallback.
         public static GameObject BenchmarkPiece(string name,GameObject prefab,Vector3 ground,
             float footprint,float maxHeight,Quaternion rotation)
+            => BenchmarkPiece(name,(Object)prefab,ground,footprint,maxHeight,rotation);
+
+        public static GameObject BenchmarkPiece(string name,Object prefab,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation)
         {
             if(prefab==null)return null;
 
