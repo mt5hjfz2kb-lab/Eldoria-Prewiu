@@ -2,16 +2,26 @@
   "schema_version": 1,
   "request_id": "valoria-sharp-gaussian-fullframe-v1",
   "input": "docs/evidence/valoria-visual-authority-reset-v1/sharp-clean-input.png",
-  "method": "Apple SHARP single-image metric 3D Gaussian scene prediction via public Space",
+  "method": "Apple SHARP official single-image metric 3D Gaussian prediction; local CLI primary, identical model; public Space explicit fallback",
   "paid_credits": 0,
   "vendor_spend": 0,
   "production_promotion": false,
-  "nonce": "2026-10-06-runtime-parcel-ground-002",
+  "nonce": "2026-10-06-runtime-parcel-ground-local-001",
   "convergence_gate": "VISUAL_AUTHORITY_MISMATCH production correction; existing SHARP route only",
   "source_authority_manifest": "pipeline/valoria-visual-authority-v1.json",
   "parcel_ground_input": {
     "path": "docs/evidence/valoria-real-game-state-v1/empty-ground-source.png",
     "sha256": "e8b85859da339d8dd0f71a245e623ff1f1a24fc0a093314751e70ec5888ada73",
     "purpose": "empty terrain only; original canonical source remains built-state authority"
+  },
+  "inference_backend": "local",
+  "local_inference": {
+    "repository": "https://github.com/apple-aiml-research/ml-sharp.git",
+    "source_commit": "aed6527499ef91cba3b54c18d49a870f25947190",
+    "checkpoint_url": "https://ml-site.cdn-apple.com/models/sharp/sharp_2572gikvuh.pt",
+    "checkpoint_name": "sharp_2572gikvuh.pt",
+    "cache_policy": "persistent per-runner cache; verified SHA ledger on every load",
+    "render_video": false,
+    "device": "cuda-if-available-else-cpu"
   }
 }

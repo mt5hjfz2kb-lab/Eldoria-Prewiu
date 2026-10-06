@@ -1,6 +1,5 @@
 import json, os, shutil, requests, hashlib
 from PIL import Image
-from gradio_client import Client, handle_file
 
 OUT=os.environ.get("OUT_DIR","/tmp/sharp-proof")
 os.makedirs(OUT,exist_ok=True)
@@ -25,6 +24,45 @@ source_manifest=dict(authority)
 source_manifest.update(source_kind="parcel_ground_derivative" if ground else "canonical_authority", parcel_ground_input=ground, submitted_input_sha256=sha(inp),submitted_dimensions=list(im.size),paid_credits=0)
 open(os.path.join(OUT,'source-authority.json'),'w').write(json.dumps(source_manifest,indent=2)+'\n')
 
+if cfg.get("inference_backend", "space") == "local":
+    import platform, subprocess, sys, time
+    from pathlib import Path
+    import torch
+    local=cfg["local_inference"]
+    cache=Path(os.environ["SHARP_CHECKPOINT_CACHE"]);cache.mkdir(parents=True,exist_ok=True)
+    checkpoint=cache/"sharp_2572gikvuh.pt"
+    ledger=cache/"checkpoint-lineage.json"
+    url=local["checkpoint_url"]
+    if not checkpoint.exists():
+        temporary=checkpoint.with_suffix(".download")
+        print("Downloading official checkpoint:",url,flush=True)
+        with requests.get(url,stream=True,timeout=(30,300)) as response:
+            response.raise_for_status()
+            with temporary.open("wb") as file:
+                for chunk in response.iter_content(8*1024*1024):file.write(chunk)
+        temporary.replace(checkpoint)
+        ledger.write_text(json.dumps({"url":url,"sha256":sha(checkpoint)},indent=2))
+    fingerprint=sha(checkpoint)
+    cached=json.loads(ledger.read_text())
+    if cached["url"]!=url or cached["sha256"]!=fingerprint:raise RuntimeError("Cached checkpoint fingerprint/lineage mismatch")
+    if local.get("checkpoint_sha256") and local["checkpoint_sha256"]!=fingerprint:raise RuntimeError("Official checkpoint SHA mismatch")
+    device="cuda" if torch.cuda.is_available() else "cpu"
+    print("LOCAL_SHARP_DEVICE",device,"TORCH",torch.__version__,"CHECKPOINT_SHA256",fingerprint,flush=True)
+    command=[str(Path(sys.executable).parent/("sharp.exe" if os.name=="nt" else "sharp")),"predict","-i",inp,"-o",str(Path(OUT)/"prediction"),"-c",str(checkpoint),"--device",device,"--no-render"]
+    start=time.time();subprocess.run(command,check=True)
+    plys=list((Path(OUT)/"prediction").glob("*.ply"))
+    if len(plys)!=1:raise RuntimeError("Local SHARP did not produce exactly one PLY")
+    target=Path(OUT)/"sharp-1.ply";shutil.copy2(plys[0],target)
+    with target.open("rb") as file:
+        header=file.read(2048)
+    if b"format binary_little_endian 1.0" not in header or b"element vertex " not in header:raise RuntimeError("Invalid local SHARP PLY")
+    source_manifest.update(inference_backend="local",model="Apple SHARP",checkpoint_url=url,checkpoint_sha256=fingerprint,official_source_commit=local["source_commit"],device=device,torch_version=torch.__version__,python_version=platform.python_version(),inference_seconds=round(time.time()-start,3),ply_sha256=sha(target),ply_file=target.name,render_video=False)
+    open(os.path.join(OUT,"source-authority.json"),"w").write(json.dumps(source_manifest,indent=2)+"\n")
+    print("LOCAL_SHARP_PLY_PASS",target,"seconds",source_manifest["inference_seconds"],flush=True)
+    raise SystemExit(0)
+
+# Explicit fallback only. Production defaults to the same official model locally.
+from gradio_client import Client, handle_file
 spaces=[{'id':'gagndeep/Apple-Sharp-Image-to-3D-View-Synthesis'}]
 ids=[]
 for s in spaces:

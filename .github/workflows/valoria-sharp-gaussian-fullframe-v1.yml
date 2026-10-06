@@ -7,22 +7,88 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: valoria-sharp-source-v1
+  cancel-in-progress: false
 jobs:
   proof:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 120
     steps:
+      - name: Expose existing Git
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA\GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Git not found'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
       - uses: actions/checkout@v4
-      - name: Install client
-        run: python -m pip install --quiet "gradio_client>=1.4" pillow requests
-      - name: Generate canonical scene with SHARP
-        env:
-          OUT_DIR: /tmp/sharp-proof
-        run: python tools/valoria-sharp-gaussian-space-proof.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare persistent official SHARP environment
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $cfg=Get-Content 'pipeline/valoria-sharp-gaussian-fullframe-v1.json' -Raw | ConvertFrom-Json
+          $cache=Join-Path $env:LOCALAPPDATA 'Eldoria\sharp-local-v1'
+          New-Item -ItemType Directory -Path $cache -Force | Out-Null
+          $src=Join-Path $cache ("source-"+$cfg.local_inference.source_commit)
+          $venv=Join-Path $cache 'python313'
+          Write-Host "Physical memory / CPU"
+          Get-CimInstance Win32_ComputerSystem | Select-Object TotalPhysicalMemory,NumberOfLogicalProcessors
+          if(Get-Command nvidia-smi -ErrorAction SilentlyContinue){nvidia-smi}
+          if(-not (Test-Path "$src\.git")){
+            git clone $cfg.local_inference.repository $src
+            if($LASTEXITCODE -ne 0){throw 'Official SHARP clone failed'}
+          }
+          git -C $src checkout --detach $cfg.local_inference.source_commit
+          if($LASTEXITCODE -ne 0){throw 'Official source pin failed'}
+          if((git -C $src rev-parse HEAD) -ne $cfg.local_inference.source_commit){throw 'Official source pin mismatch'}
+          if(-not(Test-Path "$venv\Scripts\python.exe")){python -m venv $venv}
+          $python="$venv\Scripts\python.exe"
+          $marker=Join-Path $venv ("ready-"+$cfg.local_inference.source_commit)
+          if(-not(Test-Path $marker)){
+            & $python -m pip install --upgrade pip
+            if($LASTEXITCODE -ne 0){throw 'Pip setup failed'}
+            Push-Location $src
+            & $python -m pip install -r "$src\requirements.txt"
+            Pop-Location
+            if($LASTEXITCODE -ne 0){throw 'Official requirements install failed'}
+            Set-Content -Path $marker -Value $cfg.local_inference.source_commit
+          }
+          if($cfg.inference_backend -eq "space"){& $python -m pip install gradio_client;if($LASTEXITCODE -ne 0){throw "Fallback client install failed"}}
+          Add-Content -Path $env:GITHUB_ENV -Value "SHARP_PYTHON=$python"
+          Add-Content -Path $env:GITHUB_ENV -Value "SHARP_CHECKPOINT_CACHE=$cache\checkpoints"
+          Add-Content -Path $env:GITHUB_ENV -Value "OUT_DIR=$env:RUNNER_TEMP\sharp-proof"
+      - name: Predict PLY locally with official checkpoint
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Remove-Item $env:OUT_DIR -Recurse -Force -ErrorAction SilentlyContinue
+          $stdout=Join-Path $env:RUNNER_TEMP 'sharp-local-stdout.log'
+          $stderr=Join-Path $env:RUNNER_TEMP 'sharp-local-stderr.log'
+          $p=Start-Process -FilePath $env:SHARP_PYTHON -ArgumentList @('-u','tools/valoria-sharp-gaussian-space-proof.py') -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+          while(-not $p.HasExited){
+            Start-Sleep 15
+            $p.Refresh()
+            Write-Host "Local official SHARP running PID=$($p.Id)"
+            if(Test-Path $stdout){Get-Content $stdout -Tail 4}
+            if(Test-Path $stderr){Get-Content $stderr -Tail 4}
+          }
+          New-Item -ItemType Directory -Path $env:OUT_DIR -Force | Out-Null
+          Copy-Item $stdout "$env:OUT_DIR\local-stdout.log" -Force
+          Copy-Item $stderr "$env:OUT_DIR\local-stderr.log" -Force
+          if($p.ExitCode -ne 0){throw "Local SHARP failed $($p.ExitCode)"}
+          if(-not(Test-Path "$env:OUT_DIR\sharp-1.ply")){throw 'Local SHARP PLY missing'}
+          Get-Content "$env:OUT_DIR\source-authority.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: valoria-sharp-gaussian-fullframe-v1
-          path: /tmp/sharp-proof
-          if-no-files-found: error
+          path: ${{ runner.temp }}/sharp-proof
+          if-no-files-found: warn
           retention-days: 30
