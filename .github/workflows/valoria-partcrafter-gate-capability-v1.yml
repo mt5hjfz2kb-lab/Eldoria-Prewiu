@@ -1,0 +1,28 @@
+name: "[R&D] Valoria PartCrafter Gate Capability v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-partcrafter-gate-capability-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install client
+        run: python -m pip install --quiet "gradio_client>=1.4" pillow
+      - name: Generate structured Gate with PartCrafter
+        env:
+          OUT_DIR: /tmp/partcrafter-proof
+        run: python tools/valoria-partcrafter-space-proof.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-partcrafter-gate-capability-v1
+          path: /tmp/partcrafter-proof
+          if-no-files-found: error
+          retention-days: 30
