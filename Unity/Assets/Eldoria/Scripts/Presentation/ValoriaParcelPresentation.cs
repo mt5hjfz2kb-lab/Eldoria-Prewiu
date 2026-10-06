@@ -42,9 +42,16 @@ namespace Eldoria.Presentation
             }
             if(SceneSplats!=null)
             {
-                if(StateAssets==null || ActiveVariant>=StateAssets.Length || StateAssets[ActiveVariant]==null)
-                    throw new InvalidOperationException("Missing SHARP parcel variant "+ActiveVariant);
-                if(SceneSplats.GsplatAsset!=StateAssets[ActiveVariant])SceneSplats.GsplatAsset=StateAssets[ActiveVariant];
+                if(StateAssets!=null && ActiveVariant<StateAssets.Length && StateAssets[ActiveVariant]!=null)
+                {
+                    if(SceneSplats.GsplatAsset!=StateAssets[ActiveVariant])SceneSplats.GsplatAsset=StateAssets[ActiveVariant];
+                }
+                else
+                {
+                    var webLoader=GetComponent<ValoriaWebGLSplatStateLoader>();
+                    if(webLoader==null)throw new InvalidOperationException("Missing SHARP parcel variant "+ActiveVariant);
+                    webLoader.RequestVariant(ActiveVariant);
+                }
             }
         }
         static void ApplyParcel(ParcelBuildingState state,GameObject built,GameObject ground,
