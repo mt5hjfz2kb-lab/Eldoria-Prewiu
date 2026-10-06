@@ -28,9 +28,13 @@ print(json.dumps(api,indent=2,default=str)[:12000])
 
 prep=client.predict(handle_file(inp),0.85,api_name="/requires_bg_remove")
 print("PREP",repr(prep))
-if not isinstance(prep,(list,tuple)) or len(prep)<3:
+if not isinstance(prep,(list,tuple)) or len(prep)<1:
     raise RuntimeError("Unexpected requires_bg_remove output")
-bg=prep[2]
+# Gradio State outputs are hidden from the public API. The first public output
+# is the processed foreground preview and contains the exact prepared image path.
+bg=prep[0]
+if isinstance(bg,dict) and isinstance(bg.get("value"),str):
+    bg=bg["value"]
 def as_file(v):
     if isinstance(v,str) and os.path.exists(v): return handle_file(v)
     if isinstance(v,dict):
