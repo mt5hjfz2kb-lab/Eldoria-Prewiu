@@ -31,7 +31,7 @@ cam=bpy.data.objects.new("ResetTargetOrthographicCamera",cam_data)
 scene.collection.objects.link(cam)
 scene.camera=cam
 cam_data.type='ORTHO'
-cam_data.ortho_scale=2.0
+cam_data.ortho_scale=2.0*(scene.render.resolution_x/scene.render.resolution_y)
 cam_data.clip_start=0.01
 cam_data.clip_end=100
 
@@ -59,17 +59,17 @@ def layer_material(name,path):
     links=mat.node_tree.links
     nodes.clear()
     out=nodes.new("ShaderNodeOutputMaterial")
-    mix=nodes.new("ShaderNodeMixShader")
-    trans=nodes.new("ShaderNodeBsdfTransparent")
-    em=nodes.new("ShaderNodeEmission")
+    bsdf=nodes.new("ShaderNodeBsdfPrincipled")
     tex=nodes.new("ShaderNodeTexImage")
     tex.image=img
     tex.interpolation='Closest'
-    links.new(tex.outputs["Color"],em.inputs["Color"])
-    links.new(tex.outputs["Alpha"],mix.inputs[0])
-    links.new(trans.outputs[0],mix.inputs[1])
-    links.new(em.outputs[0],mix.inputs[2])
-    links.new(mix.outputs[0],out.inputs["Surface"])
+    bsdf.inputs["Base Color"].default_value=(0,0,0,1)
+    bsdf.inputs["Roughness"].default_value=1.0
+    bsdf.inputs["Metallic"].default_value=0.0
+    bsdf.inputs["Emission Strength"].default_value=1.0
+    links.new(tex.outputs["Color"],bsdf.inputs["Emission Color"])
+    links.new(tex.outputs["Alpha"],bsdf.inputs["Alpha"])
+    links.new(bsdf.outputs["BSDF"],out.inputs["Surface"])
     return mat
 
 def add_plane(name,y,mat):
@@ -97,7 +97,7 @@ for band in reversed(range(4)):
 def render(name,x=0.0,z=0.0,scale=2.0):
     cam.location=(x,0.0,z)
     cam.rotation_euler=base_rotation
-    cam.data.ortho_scale=scale
+    cam.data.ortho_scale=scale*aspect
     scene.render.filepath=str(OUT/name)
     bpy.ops.render.render(write_still=True)
 
@@ -126,7 +126,9 @@ render("reset-layered-occlusion-debug.png",0,0,2.0)
 report={
   "camera":"orthographic fixed orientation",
   "layer_depth_positions":depth_positions,
-  "base_ortho_scale":2.0,
+  "base_ortho_scale":2.0*aspect,
+  "framing_contract":"aspect-correct exact crop fit",
+  "alpha_mode":"CLIP / depth-writing",
   "pan_offsets":[-0.18,0.18],
   "zoom_scales":[1.6,2.0,2.4],
   "credits":0,
