@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:25:00Z",
+  "updated_at": "2026-10-06T11:30:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -40,6 +40,27 @@
         "verdict": "TECH PASS / VISUAL PASS / PROVISIONAL BASELINE 600K"
       },
       "blocker": "Gate 1A source candidates are located in-repo, but current GitHub binary blob access cannot materialize them for visual inspection in this session. This blocks only clean-source verification, not the validated 600k runtime method."
+    },
+    {
+      "id": "valoria-visual-fallback-orchestrator-v1",
+      "title": "VALORIA VISUAL FALLBACK ORCHESTRATOR v1",
+      "owner": "chat-fallback-orchestrator",
+      "scope": [
+        "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
+        "pipeline/visual-fallback-policy.json",
+        "tools/route-visual-fallback.mjs",
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "art-production-fallback-router"
+      ],
+      "claimed_at": "2026-10-06T11:30:00Z",
+      "base_main_sha": "3d63d0986a6680f4390b74b3a15a42ec05befe60",
+      "status": "active",
+      "phase": "IMPLEMENT DIAGNOSIS → KNOWN FALLBACK ROUTING",
+      "dependency": "Must not mutate SHARP Unity proof files, art-production-request.json, Unity packages, current convergence evidence, or dispatch heavy/paid work. Uses only already-classified R&D evidence and zero-spend routing.",
+      "next": "Add deterministic failure classifier and known-tool fallback policy; validate locally through static examples; no new R&D."
     }
   ],
   "history": [
