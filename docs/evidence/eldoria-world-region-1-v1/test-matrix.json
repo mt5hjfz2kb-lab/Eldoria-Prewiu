@@ -1,0 +1,88 @@
+{
+  "suite": "WorldRegion1 minimum gameplay proof",
+  "cases": [
+    {
+      "id": "WR1-01",
+      "name": "Leave Valoria and enter Region 1",
+      "assert": [
+        "gate resolves to world scene",
+        "entry pose inside bounds",
+        "Valoria save unchanged"
+      ]
+    },
+    {
+      "id": "WR1-02",
+      "name": "Forest march",
+      "command": {
+        "kind": "Gather",
+        "target": "forest-valoria"
+      },
+      "assert": [
+        "idle->outbound->gathering->returning->idle",
+        "wood credited once",
+        "ForestRemaining reduced once",
+        "troops reserved then restored"
+      ]
+    },
+    {
+      "id": "WR1-03",
+      "name": "Threat march",
+      "command": {
+        "kind": "Fight",
+        "target": "corrupt-scout"
+      },
+      "assert": [
+        "battle report generated",
+        "ScoutDefeated only on win",
+        "reward credited only on return",
+        "repeat fight rejected after defeat"
+      ]
+    },
+    {
+      "id": "WR1-04",
+      "name": "Save during outbound",
+      "assert": [
+        "reload preserves target/phase/due ticks",
+        "Advance reaches same deterministic result",
+        "no duplicate reward"
+      ]
+    },
+    {
+      "id": "WR1-05",
+      "name": "Return to Valoria",
+      "assert": [
+        "wallet value matches world result",
+        "sawmill/build UI sees same authoritative state",
+        "no second world state singleton"
+      ]
+    },
+    {
+      "id": "WR1-06",
+      "name": "Bounded camera",
+      "assert": [
+        "pan clamps",
+        "zoom clamps",
+        "no rotation/free camera",
+        "all primary POIs remain selectable at supported poses"
+      ]
+    },
+    {
+      "id": "WR1-07",
+      "name": "Mobile readability",
+      "assert": [
+        "safe-area UI does not cover route fork",
+        "primary POIs legible at home zoom",
+        "touch proxy survives near-edge camera poses"
+      ]
+    },
+    {
+      "id": "WR1-08",
+      "name": "Narrative ruin",
+      "assert": [
+        "inspection is non-economic",
+        "does not mutate combat/reward state",
+        "supports lore/orientation only"
+      ]
+    }
+  ]
+}
