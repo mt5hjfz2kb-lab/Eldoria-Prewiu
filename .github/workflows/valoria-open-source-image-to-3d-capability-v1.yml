@@ -84,9 +84,9 @@ jobs:
               ranked.append((score,ep,spec))
           ranked.sort(reverse=True,key=lambda x:x[0])
           print("RANKED",[(s,e,[(p.get("parameter_name"),p.get("parameter_default")) for p in sp.get("parameters",[])]) for s,e,sp in ranked[:10]])
-          ep="/generation_all" if "/generation_all" in endpoints else None
+          ep="/shape_generation" if "/shape_generation" in endpoints else None
           if ep is None:
-              raise SystemExit("Hunyuan full generation endpoint not advertised")
+              raise SystemExit("Hunyuan shape endpoint not advertised")
           spec=endpoints[ep]
           kwargs={}
           image="/tmp/hy3d/input/eldoria-semantic-gate.png"
@@ -198,7 +198,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: valoria-hunyuan21-semantic-gate-highres-v2
+          name: valoria-hunyuan21-semantic-gate-shape512-v3
           path: |
             /tmp/hy3d/evidence
             /tmp/hy3d/output
