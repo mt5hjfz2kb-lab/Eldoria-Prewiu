@@ -211,12 +211,18 @@ namespace Eldoria.EditorTools
             var selected = proxies.First(p => p.Id == "LowerGate");
             var selectedVp = cam.WorldToViewportPoint(selected.Go.transform.position);
             var selectedRay = cam.ViewportPointToRay(new Vector3(selectedVp.x, selectedVp.y, 0f));
-            float selectedDistance = Vector3.Distance(cam.transform.position, selected.Go.transform.position);
 
-            var feedback = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            // Use the exact front-raster strategy already proven by Gate 1:
+            // place the feedback definitively between the camera and the nearest SHARP splats.
+            float sceneSign = Mathf.Sign(asset.Bounds.center.z);
+            if (sceneSign == 0f) sceneSign = 1f;
+            float nearestZ = sceneSign > 0f ? asset.Bounds.min.z : asset.Bounds.max.z;
+            float frontDistance = Mathf.Max(1.5f, Mathf.Abs(nearestZ) * 0.45f);
+
+            var feedback = GameObject.CreatePrimitive(PrimitiveType.Cube);
             feedback.name = "GameplaySelectionFeedback_LowerGate";
-            feedback.transform.position = selectedRay.origin + selectedRay.direction * Mathf.Max(1f, selectedDistance - 8f);
-            feedback.transform.localScale = Vector3.one * 4f;
+            feedback.transform.position = selectedRay.origin + selectedRay.direction * frontDistance;
+            feedback.transform.localScale = new Vector3(5f,5f,1f);
             var feedbackCollider = feedback.GetComponent<Collider>();
             if (feedbackCollider != null) feedbackCollider.enabled = false;
             var feedbackRenderer = feedback.GetComponent<Renderer>();
@@ -225,10 +231,27 @@ namespace Eldoria.EditorTools
             feedbackRenderer.sharedMaterial = feedbackMat;
 
             CaptureBeauty(gs, cam, output, "selection-feedback-home");
-            bool feedbackFile = File.Exists(Path.Combine(output,"selection-feedback-home.png")) &&
-                                new FileInfo(Path.Combine(output,"selection-feedback-home.png")).Length > 1000;
+            string feedbackPath = Path.Combine(output,"selection-feedback-home.png");
+            bool feedbackFile = File.Exists(feedbackPath) && new FileInfo(feedbackPath).Length > 1000;
+            bool feedbackVisible = false;
+            if (feedbackFile)
+            {
+                var bytes = File.ReadAllBytes(feedbackPath);
+                var tex = new Texture2D(2,2,TextureFormat.RGBA32,false);
+                tex.LoadImage(bytes);
+                int px = Mathf.Clamp(Mathf.RoundToInt(selectedVp.x * (tex.width-1)),0,tex.width-1);
+                int py = Mathf.Clamp(Mathf.RoundToInt(selectedVp.y * (tex.height-1)),0,tex.height-1);
+                int radius = 18;
+                for (int yy=Mathf.Max(0,py-radius); yy<=Mathf.Min(tex.height-1,py+radius) && !feedbackVisible; yy++)
+                for (int xx=Mathf.Max(0,px-radius); xx<=Mathf.Min(tex.width-1,px+radius); xx++)
+                {
+                    var col = tex.GetPixel(xx,yy);
+                    if (col.g > 0.70f && col.b > 0.70f && col.r < 0.40f) { feedbackVisible=true; break; }
+                }
+                UnityEngine.Object.DestroyImmediate(tex);
+            }
 
-            bool gatePass = raycastPass && callbackPass && feedbackFile;
+            bool gatePass = raycastPass && callbackPass && feedbackFile && feedbackVisible;
             File.WriteAllText(Path.Combine(output,"interaction-evidence.json"),
                 "{\n"+
                 $"  \"source_splat_count\": {prep.OriginalCount},\n"+
@@ -248,6 +271,7 @@ namespace Eldoria.EditorTools
                     string.Join(",", selectionCounts.Select(kv => $"\\\"{kv.Key}\\\":{kv.Value}"))+
                 "},\n"+
                 $"  \"selection_feedback_capture_pass\": {(feedbackFile ? "true":"false")},\n"+
+                $"  \"selection_feedback_visible_pass\": {(feedbackVisible ? "true":"false")},\n"+
                 "  \"selected_feedback_proxy\": \"LowerGate\",\n"+
                 "  \"interaction_model\": \"fixed_world_space_proxies_reprojected_per_camera_with_gameplay_state_callback\",\n"+
                 "  \"hits\": [\n"+string.Join(",\n",hitRows)+"\n  ],\n"+
@@ -256,11 +280,11 @@ namespace Eldoria.EditorTools
                 "}\n");
 
             if (!gatePass)
-                throw new Exception($"Gate 3 failed: raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedback={feedbackFile}.");
+                throw new Exception($"Gate 3 failed: raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}.");
 
             gs.GsplatAsset = null;
             UnityEngine.Object.DestroyImmediate(asset);
-            Debug.Log($"[GATE3] PASS raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedback={feedbackFile}");
+            Debug.Log($"[GATE3] PASS raycasts={passed}/{required}, callbacks={selectionCallbacks}/{required}, feedbackFile={feedbackFile}, feedbackVisible={feedbackVisible}");
         }
 
         static void CaptureBeauty(GsplatRenderer gs, Camera cam, string output, string name)
