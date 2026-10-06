@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:22:00Z",
+  "updated_at": "2026-10-06T10:25:30Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -107,6 +107,27 @@
       "phase": "ZERO-SPEND HI3DGEN CANONICAL GATE PROOF",
       "dependency": "Independent of TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry, projection bake, citybuilder, commercial KINGDOM, Unity and paid credits.",
       "next": "Probe Stable-X/Hi3DGen public API and, if callable, generate the same canonical Lower Gate crop and require multi-angle geometry evidence."
+    },
+    {
+      "id": "valoria-sharp-gaussian-pipeline-v1",
+      "title": "VALORIA SHARP GAUSSIAN PIPELINE v1",
+      "owner": "chat-sharp-gaussian-pipeline",
+      "scope": [
+        "docs/evidence/valoria-sharp-gaussian-pipeline-v1/**",
+        ".github/workflows/valoria-sharp-gaussian-*.yml",
+        "tools/valoria-sharp-gaussian-*.py",
+        "pipeline/valoria-sharp-gaussian-*.json",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "github-hosted-linux-sharp-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:25:30Z",
+      "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
+      "status": "active",
+      "phase": "SHARP 3D GAUSSIAN SCENE VALIDATION / UNITY INTEGRATION PENDING RESOURCE CLEARANCE",
+      "dependency": "Distinct from per-asset impostor Unity proof and existing image-to-3D/photogrammetry workstreams. Do not touch Unity project or shared Unity runner until overlapping Unity experiments complete/release resources.",
+      "next": "Validate SHARP splat data, bounded novel-view envelope, pruning/compression feasibility, and then claim a non-conflicting Unity Gaussian integration proof when Unity resources are clear."
     }
   ],
   "history": [
