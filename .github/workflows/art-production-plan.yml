@@ -12,6 +12,9 @@ on:
       - 'docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md'
       - 'pipeline/blender-professional-authoring-standard.json'
       - 'tools/validate-blender-professional-authoring.mjs'
+      - 'pipeline/visual-fallback-policy.json'
+      - 'tools/route-visual-fallback.mjs'
+      - 'tools/classify-visual-failure.mjs'
 
 permissions:
   contents: read
@@ -29,6 +32,13 @@ jobs:
       - name: Build deterministic zero-spend art-production plan
         run: |
           node tools/plan-art-production.mjs pipeline/art-production-request.json art-production-plan.json
+      - name: Route fallback when request contains a diagnosed failure
+        shell: bash
+        run: |
+          FAILURE_CLASS="$(node -e "const r=require('./pipeline/art-production-request.json'); process.stdout.write(r.failure_class || '')")"
+          if [ -n "$FAILURE_CLASS" ]; then
+            node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json "$FAILURE_CLASS" visual-fallback-route.json
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-art-production-plan-${{ github.sha }}
@@ -37,4 +47,5 @@ jobs:
             pipeline/art-production-request.json
             pipeline/toolchain-capabilities.json
             pipeline/blender-professional-authoring-standard.json
+            visual-fallback-route.json
           if-no-files-found: error
