@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T16:26:00Z",
+  "updated_at": "2026-10-06T16:48:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -13,7 +13,8 @@
         ".github/workflows/pages.yml",
         ".github/workflows/unity-webgl-startup.yml",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
-        "docs/evidence/valoria-mobile-web-playtest-v1/**"
+        "docs/evidence/valoria-mobile-web-playtest-v1/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -23,9 +24,9 @@
       "base_main_sha": "d5136ff2df25f4b5c425fd435686111814050fbb",
       "status": "active",
       "paid_credits": 0,
-      "phase": "BUILD/PUBLISH CURRENT PRODUCTION VALORIA AS MOBILE-ACCESSIBLE WEBGL; NO VISUAL OR GAMEPLAY CHANGES",
+      "phase": "WEBGL FAILURE ROOT-CAUSED: LEGACY FRONTIER INCLUDED (1.13 GB COMPRESSED); RETRY VALORIA-ONLY",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
-      "next": "Add bounded current-production WebGL build entry, route Pages to it, publish, run mobile-UA startup probe, and return the GitHub Pages URL. Zero paid credits."
+      "next": "Build only Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity, publish to GitHub Pages, then require mobile-UA startup probe PASS."
     },
     {
       "id": "eldoria-world-region-1-v1",
