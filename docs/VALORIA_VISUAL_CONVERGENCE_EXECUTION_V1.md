@@ -30,19 +30,28 @@ Produce one repeatable Valoria visual-production recipe that can scale from the 
 10. Scale only after the isolated representative gate passes.
 
 ## Gate 1 — SHARP → Unity
+**Current gate status: 300K TECH PASS / VISUAL PASS.**
+
 Current evidence:
 - SHARP full-frame proof is the strongest visual-fidelity result.
 - UnitySplats compiles and loads the sanitized SHARP PLY through decoding and Spark packing.
-- Full 1.18M-splat proof crashes after asset packing completes.
-- This is not a visual rejection.
+- Full 1.18M-splat proof originally crashed after asset packing when driven without a bounded/runtime-safe lifecycle.
+- A bounded ~300k proof now renders successfully in Unity 6 URP after sanitation, RDF coordinate correction and explicit D3D11 CPU-sort initialization.
+- HOME + bounded pan preserve the canonical scene; behind-geometry probe is occluded, and a front probe renders in front.
+- 300k shows expected sparse/punctate quality loss; this is now a density/optimization question, not a basic compatibility question.
 
-Current bounded test:
-- preserve original artifact bytes,
-- create sanitized working copy,
-- uniformly sample to ~300k splats,
-- load as Spark,
-- instrument renderer creation / assignment / refresh / camera render,
-- capture HOME, bounded pan/zoom and occlusion probes.
+Current bounded test — **PASSED at ~300k**:
+- original artifact bytes preserved;
+- sanitized working copy;
+- uniform ~300k splat sample;
+- Spark load;
+- explicit renderer + D3D11 CPU-sort lifecycle;
+- HOME, bounded pan/zoom and occlusion captures.
+
+Next bounded test:
+- raise proof density to ~600k splats using the identical lifecycle;
+- compare visual fidelity and stability against the 300k artifact;
+- only then consider full-density/runtime profiling.
 
 Decision:
 - PASS: scale density upward and measure performance/quality.
