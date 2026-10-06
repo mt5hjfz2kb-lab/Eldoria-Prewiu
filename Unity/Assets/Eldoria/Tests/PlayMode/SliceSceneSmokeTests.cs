@@ -458,14 +458,19 @@ namespace Eldoria.Tests
             Assert.That(trail,Is.Not.Null,
                 "Region 1 strategic route must expose at least one visible authored renderer.");
 
-            Texture trailTexture=trail.sharedMaterial.HasProperty("_BaseMap")
-                ?trail.sharedMaterial.GetTexture("_BaseMap"):trail.sharedMaterial.GetTexture("_MainTex");
-            Texture valleyTexture=valley.sharedMaterial.HasProperty("_BaseMap")
-                ?valley.sharedMaterial.GetTexture("_BaseMap"):valley.sharedMaterial.GetTexture("_MainTex");
-            Assert.That(trailTexture,Is.Not.Null);
-            Assert.That(valleyTexture,Is.Not.Null);
-            Assert.That(trailTexture,Is.Not.SameAs(valleyTexture),
-                "Strategic route texture must remain distinct from surrounding terrain.");
+            Assert.That(trail.sharedMaterial,Is.Not.SameAs(valley.sharedMaterial),
+                "Strategic route must remain a distinct authored surface from surrounding terrain.");
+
+            Color SurfaceColor(Material material)
+            {
+                if(material.HasProperty("_BaseColor"))return material.GetColor("_BaseColor");
+                if(material.HasProperty("_Color"))return material.GetColor("_Color");
+                return Color.white;
+            }
+            var trailColor=SurfaceColor(trail.sharedMaterial);
+            var valleyColor=SurfaceColor(valley.sharedMaterial);
+            Assert.That(Vector4.Distance(trailColor,valleyColor),Is.GreaterThan(.02f),
+                "Strategic route must remain visually distinguishable from surrounding terrain even when the professional material is color-driven rather than texture-driven.");
             foreach(var collider in trailRoot.GetComponentsInChildren<Collider>(true))
                 Assert.That(collider.enabled,Is.False,
                     "Route presentation must stay visual-only; gameplay targeting lives in independent hotspots.");
