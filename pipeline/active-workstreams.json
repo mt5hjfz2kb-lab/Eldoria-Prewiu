@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T00:50:00+02:00",
+  "updated_at": "2026-10-07T01:00:00+02:00",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -71,7 +71,9 @@
       "next": "Fix imported Nature Starter subobject instantiation without losing URP adaptation; rerun full Unity gate and inspect actual Region 1 captures.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "historical-workflow-quarantine-v1",
       "title": "Historical and conditional R&D workflow quarantine",
@@ -95,16 +97,50 @@
       ],
       "claimed_at": "2026-10-07T00:50:00+02:00",
       "base_main_sha": "5cbbc7386c3eb49c2a0465e711470d76dc69b095",
-      "status": "active",
+      "status": "completed",
       "paid_credits": 0,
-      "phase": "AUDIT BRAIN / QUARANTINE NONCANONICAL AUTO-TRIGGERS",
+      "phase": "QUARANTINE PASS / CANONICAL BRAIN PROTECTED / CONDITIONAL R&D MANUAL-ONLY",
       "dependency": "Preserve canonical brain architecture: ownership registry, art routing, planner, fallback router, repository architecture guard, workflow governance, full-frame convergence control, visual-authority routing and active Region 1 gates. Do not touch Region 1-owned runtime files or WebGL-owned files.",
-      "next": "Make conditional/historical R&D workflows manual-only, add fail-closed quarantine guard, validate canonical orchestration remains active.",
+      "next": "Keep canonical brain workflows active. Historical/conditional R&D remains preserved but manual-only. Any future reactivation requires explicit reclassification through the planner/fallback route.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Repository workflow governance only; no player-facing art production."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "Repository workflow governance only; no player-facing art production.",
+      "completed_at": "2026-10-07T01:00:00+02:00",
+      "result": {
+        "policy": "pipeline/workflow-quarantine-v1.json",
+        "checker": "tools/check-workflow-quarantine.mjs",
+        "workflow": ".github/workflows/workflow-quarantine.yml",
+        "documentation": "docs/ELDORIA_WORKFLOW_QUARANTINE_V1.md",
+        "quarantined_manual_only": [
+          "valoria-hunyuan3d-gate-capability-v1.yml",
+          "valoria-instantmesh-gate-capability-v1.yml",
+          "valoria-trellis-gate-capability-v1.yml",
+          "valoria-trellis2-gate-capability-v1.yml",
+          "valoria-triposr-gate-capability-v1.yml",
+          "valoria-photogrammetry-donor-capability-v1.yml"
+        ],
+        "camera_first_manual_only_verified": true,
+        "brain_preserved": [
+          "art-production-governance",
+          "art-production-plan",
+          "visual-fallback-router",
+          "repository-architecture-guard",
+          "workflow-governance",
+          "valoria-full-frame-convergence-control",
+          "valoria-visual-authority-routing",
+          "unity-slice",
+          "world-map-visual-formula"
+        ],
+        "quarantine_run_id": 37545788675,
+        "quarantine_conclusion": "success",
+        "art_governance_run_id": 37545788709,
+        "art_governance_conclusion": "success",
+        "full_frame_control_run_id": 37545788840,
+        "full_frame_control_conclusion": "success",
+        "visual_authority_run_id": 37545788749,
+        "visual_authority_conclusion": "success",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "valoria-visual-authority-routing-guard-v1",
       "title": "Valoria canonical visual authority routing guard",
