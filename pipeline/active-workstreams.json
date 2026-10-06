@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:35:00Z",
+  "updated_at": "2026-10-06T10:36:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -115,9 +115,10 @@
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
       "status": "active",
-      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF",
+      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / EXECUTION STALLED",
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
-      "next": "Integrate the canonical SHARP PLY into an isolated Unity 6 URP proof; validate HOME, bounded pan/zoom, 3D occlusion/depth, and evidence captures before any production promotion."
+      "next": "RESUME PRIORITY: implement and dispatch the isolated SHARP PLY → Unity 6 URP proof. Validate HOME, bounded pan/zoom, 3D occlusion/depth, evidence captures and runtime feasibility before opening more unrelated visual-generation lanes.",
+      "blocker": "No technical dependency remains after the per-asset impostor Unity proof completed. Since commit f2a666f396233dea9d0f821e09ecb1b039d9b0c1 expanded the workstream to Unity, no SHARP Unity implementation commit or workflow run has been produced. This is an execution-resume issue, not a technical rejection."
     }
   ],
   "history": [
