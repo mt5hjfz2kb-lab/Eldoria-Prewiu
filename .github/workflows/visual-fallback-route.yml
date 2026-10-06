@@ -1,0 +1,60 @@
+name: Eldoria visual fallback router
+
+on:
+  workflow_dispatch:
+    inputs:
+      failure_class:
+        description: Known diagnosed visual failure class
+        required: true
+        default: unknown
+        type: choice
+        options:
+          - unknown
+          - runtime_density_or_gpu
+          - source_contamination_or_framing
+          - geometry_identity_or_silhouette
+          - interaction_clickability_or_collision
+          - depth_or_occlusion_alignment
+          - surface_material_or_relief
+          - semantic_isolation
+          - camera_disocclusion_or_parallax
+  workflow_call:
+    inputs:
+      failure_class:
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/visual-fallback-policy.json'
+      - 'tools/route-visual-fallback.mjs'
+      - 'tools/classify-visual-failure.mjs'
+      - '.github/workflows/visual-fallback-route.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Route known fallback
+        env:
+          FAILURE_CLASS: ${{ inputs.failure_class || 'unknown' }}
+        run: |
+          node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json "$FAILURE_CLASS" visual-fallback-route.json
+      - name: Policy smoke tests
+        run: |
+          node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json geometry_identity_or_silhouette /tmp/geometry.json
+          node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json depth_or_occlusion_alignment /tmp/depth.json
+          node tools/route-visual-fallback.mjs pipeline/visual-fallback-policy.json unknown /tmp/unknown.json
+          node -e "const fs=require('fs'); const u=JSON.parse(fs.readFileSync('/tmp/unknown.json')); if(u.decision!=='STOP_AND_CLASSIFY'||u.open_new_research!==false) process.exit(1)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-visual-fallback-route-${{ github.sha }}
+          path: visual-fallback-route.json
+          if-no-files-found: error
