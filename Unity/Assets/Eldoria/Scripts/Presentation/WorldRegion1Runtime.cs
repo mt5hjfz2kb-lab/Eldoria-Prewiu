@@ -2,6 +2,7 @@ using Eldoria.Domain;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+// Final gate restart marker: no gameplay semantics.
 namespace Eldoria.Presentation
 {
     /// <summary>
