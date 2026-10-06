@@ -46,7 +46,9 @@ jobs:
           mx=Vector((max(p.x for p in pts),max(p.y for p in pts),max(p.z for p in pts)))
           ctr=(mn+mx)*.5; dims=mx-mn; span=max(dims)
           sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=900; sc.render.resolution_y=900; sc.render.resolution_percentage=100
-          sc.render.image_settings.file_format="PNG"; sc.world.color=(.035,.04,.05)
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(.035,.04,.05)
           bpy.ops.mesh.primitive_plane_add(size=span*3,location=(ctr.x,ctr.y,mn.z-span*.015))
           gm=bpy.data.materials.new("ground"); gm.diffuse_color=(.12,.12,.12,1); bpy.context.object.data.materials.append(gm)
           bpy.ops.object.light_add(type="SUN"); bpy.context.object.rotation_euler=(math.radians(35),0,math.radians(135)); bpy.context.object.data.energy=2.2
@@ -63,6 +65,7 @@ jobs:
           test -s /tmp/trellis-proof/three-quarter.png
           test -s /tmp/trellis-proof/side.png
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: valoria-trellis-gate-capability-v1
           path: /tmp/trellis-proof
