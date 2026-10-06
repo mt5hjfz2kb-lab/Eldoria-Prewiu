@@ -87,6 +87,28 @@
         "does not mutate combat/reward state",
         "supports lore/orientation only"
       ]
+    },
+    {
+      "id": "WR1-09",
+      "name": "4X architecture continuity",
+      "assert": [
+        "Valoria world representation uses canonical Player City v1 contract or a validated successor",
+        "march visual originates from city representation and returns to it",
+        "gameplay state is not owned by visual meshes",
+        "region data model has explicit extensibility for L1/L2 resource families, hunt/PvE families, additional player cities and later alliance/territory systems",
+        "first slice does not hard-code a one-off adventure map topology that blocks future region/sector/chunk scaling"
+      ]
+    },
+    {
+      "id": "WR1-10",
+      "name": "Web functional seed parity",
+      "assert": [
+        "forest retains wood-resource meaning",
+        "quarry contract remains available for stone-resource expansion",
+        "PvE target family can expand to wolf/boar/Rift ladder without rewriting world navigation",
+        "neutral ruin family remains compatible with later Nareth-style narrative POIs",
+        "old HTML/CSS/emoji presentation is not treated as final art authority"
+      ]
     }
   ]
 }
