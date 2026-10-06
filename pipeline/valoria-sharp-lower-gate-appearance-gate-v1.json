@@ -22,5 +22,7 @@
     "require_pan_right_projection_visible": true,
     "full_frame_change_max_fraction": 0.03
   },
-  "paid_credits": 0
+  "paid_credits": 0,
+  "dispatch_revision": 2,
+  "dispatch_reason": "Clean redispatch after self-hosted runner checkout stall; no Gate 5 logic changed."
 }
