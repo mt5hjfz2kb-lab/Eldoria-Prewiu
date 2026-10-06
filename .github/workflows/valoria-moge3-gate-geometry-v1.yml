@@ -114,7 +114,11 @@ jobs:
       - name: Normalize geometry source
         run: |
           set -eux
-          model=$(find /tmp/moge3/output -maxdepth 1 -type f \\( -name '*.glb' -o -name '*.gltf' -o -name '*.ply' -o -name '*.obj' \\) | head -1)
+          model=""
+          for ext in glb gltf ply obj; do
+            model=$(find /tmp/moge3/output -maxdepth 1 -type f -name "*.$ext" -print -quit)
+            [ -n "$model" ] && break
+          done
           test -n "$model"
           ext="${model##*.}"
           cp "$model" "/tmp/moge3/evidence/moge3-gate.$ext"
