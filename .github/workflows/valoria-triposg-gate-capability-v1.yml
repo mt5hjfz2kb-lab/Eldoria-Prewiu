@@ -63,7 +63,7 @@ jobs:
           import os, shutil, requests
           from gradio_client import Client, handle_file
 
-          targets=["VAST-AI/TripoSG"]
+          targets=["kendaaa/trip_w_oblaka","VAST-AI/TripoSG"]
           client=None; endpoints={}; errors=[]
           for target in targets:
               try:
