@@ -1,3 +1,7 @@
+## World Region 1 v1 — canonical 4X design reconciled
+
+Legacy web + conceptual-world audit is complete and incorporated. Region 1 is not a bespoke exterior scene: it is the first bounded window into the future persistent shared 4X world. Canonical retained families: strategic player cities, resource nodes, hunt/PvE ladder, neutral/hostile POIs/Breach, visible marches and future alliance/territorial systems. `PlayerCity_v1.glb` is an existing reusable production asset. The minimum first slice remains intentionally small, but its architecture may not block region/sector/chunk scaling, randomized future player starts, node distribution/respawn, higher-level regions or streaming/culling. Old HTML/CSS/emoji and legacy Frontier visuals are functional/reference history only, not current art authority.
+
 ## World Region 1 v1 — ACTIVE / dedicated 4X World screen
 
 - Canonical transition: **Valoria city → tap Mundo → separate bounded 4X World screen → tap Reino/select Valoria → Valoria city**.
