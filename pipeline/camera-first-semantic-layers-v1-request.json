@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-camera-first-semantic-layers-v1",
+  "authority": "docs/evidence/valoria-art-production-reset-v1/canonical-target.jpeg",
+  "prompts_from": "docs/evidence/valoria-art-production-reset-v1/target-spec.json",
+  "sam2_model": "facebook/sam2.1-hiera-small",
+  "sam2_code_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+  "zero_spend": true,
+  "vendor_calls": false,
+  "unity": false,
+  "nonce": "camera-first-semantic-layers-v1-001",
+  "requested_at": "2026-10-06T07:08:00Z"
+}
