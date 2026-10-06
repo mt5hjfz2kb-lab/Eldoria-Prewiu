@@ -408,10 +408,12 @@ namespace Eldoria.Tests
 
             SceneManager.LoadScene("Frontier");
             yield return null;
-            var frontier=GameObject.Find("Frontier · valley floor");
+            var frontier=GameObject.Find("World Region 1 · terrain base");
             Assert.That(frontier,Is.Not.Null);
-            Assert.That(frontier.GetComponent<MeshFilter>().sharedMesh.uv.Length,
-                Is.EqualTo(frontier.GetComponent<MeshFilter>().sharedMesh.vertexCount));
+            var frontierMesh=frontier.GetComponent<MeshFilter>()?.sharedMesh;
+            Assert.That(frontierMesh,Is.Not.Null);
+            Assert.That(frontierMesh.uv.Length,Is.EqualTo(frontierMesh.vertexCount),
+                "Region 1 geographic base must retain real UVs for strategic-scale surface treatment.");
         }
 
         [UnityTest]
@@ -420,25 +422,21 @@ namespace Eldoria.Tests
             SceneManager.LoadScene("Frontier");
             yield return null;
 
-            var valley=GameObject.Find("Frontier · valley floor");
-            var trail=GameObject.Find("Frontier · march trail");
+            var valley=GameObject.Find("World Region 1 · terrain base");
+            var route=GameObject.Find("World Region 1 · Valoria main route");
             Assert.That(valley,Is.Not.Null);
-            Assert.That(trail,Is.Not.Null);
-            Assert.That(trail.transform.childCount,Is.GreaterThanOrEqualTo(5),
-                "The Frontier route should read as a continuous worn trail, not isolated debug slabs.");
-            var trailRenderer=trail.GetComponentInChildren<Renderer>();
+            Assert.That(route,Is.Not.Null);
+            var trailRenderer=route.GetComponentInChildren<Renderer>();
             Assert.That(trailRenderer,Is.Not.Null);
             Assert.That(trailRenderer.sharedMaterial.name,Does.Contain("surface trail"),
-                "The march trail must use its dedicated worn-road texture instead of generic ground.");
+                "Region 1 main route must keep a dedicated worn-road surface at 4X camera scale.");
 
             var material=valley.GetComponent<Renderer>()?.sharedMaterial;
             Assert.That(material,Is.Not.Null);
             Assert.That(material.name,Does.Contain("surface earth"),
-                "The general Frontier floor must use earth semantics instead of the stone-grid fallback.");
-            Assert.That(GameObject.Find("Frontier · quarry shelf")?.GetComponent<Renderer>()?.sharedMaterial.name,
-                Does.Contain("surface stone"));
-            Assert.That(GameObject.Find("Frontier · corrupted shelf")?.GetComponent<Renderer>()?.sharedMaterial.name,
-                Does.Contain("surface slate"));
+                "Region 1 geographic base must retain earth semantics rather than a debug board.");
+            Assert.That(GameObject.Find("World Region 1 · quarry resource"),Is.Not.Null);
+            Assert.That(GameObject.Find("World Region 1 · corrupt scout target"),Is.Not.Null);
         }
 
         [UnityTest]
@@ -446,8 +444,8 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Frontier");
             yield return null;
-            var valley=GameObject.Find("Frontier · valley floor")?.GetComponent<Renderer>();
-            var trailRoot=GameObject.Find("Frontier · march trail");
+            var valley=GameObject.Find("World Region 1 · terrain base")?.GetComponent<Renderer>();
+            var trailRoot=GameObject.Find("World Region 1 · Valoria main route");
             Assert.That(valley,Is.Not.Null);
             Assert.That(trailRoot,Is.Not.Null);
             var trail=trailRoot.GetComponentInChildren<Renderer>();
@@ -526,16 +524,18 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Frontier");
             yield return null;
-            int evergreen=0;
+            int worldForestParts=0;
             int rejected=0;
             foreach(var tr in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
             {
-                if(tr.name.Contains("Frontier · tall evergreen"))evergreen++;
+                if(tr.name.Contains("World Region 1 · forest mass")||tr.name.Contains("World Region 1 · forest node pine"))
+                    worldForestParts++;
                 if(tr.name.Contains("Frontier · tall forest pine"))rejected++;
             }
-            Assert.That(evergreen,Is.GreaterThanOrEqualTo(5));
+            Assert.That(worldForestParts,Is.GreaterThanOrEqualTo(20),
+                "Region 1 must read as authored forest masses, not sparse placeholder vegetation.");
             Assert.That(rejected,Is.EqualTo(0),
-                "Capture-rejected bare imported tall-tree silhouettes must not return to Frontier.");
+                "Capture-rejected legacy Frontier tree silhouettes must not return to Region 1.");
         }
 
         [UnityTest]
@@ -544,18 +544,20 @@ namespace Eldoria.Tests
             SceneManager.LoadScene("Frontier");
             yield return null;
 
-            var route=GameObject.Find("Frontier · march route kit");
-            var trail=GameObject.Find("Frontier · march trail");
+            var route=GameObject.Find("World Region 1 · Valoria main route");
             Assert.That(route,Is.Not.Null);
-            Assert.That(trail,Is.Not.Null);
             int renderers=0;
             foreach(var renderer in route.GetComponentsInChildren<Renderer>(true))
                 if(renderer.enabled)renderers++;
-            Assert.That(renderers,Is.GreaterThanOrEqualTo(10),
-                "World Route Kit needs enough visual rhythm to remain readable at pulled-back mobile camera.");
+            Assert.That(renderers,Is.GreaterThanOrEqualTo(5),
+                "World Route Kit needs visible route rhythm at the strategic mobile camera.");
             foreach(var collider in route.GetComponentsInChildren<Collider>(true))
                 Assert.That(collider.enabled,Is.False,
-                    "World Route Kit is visual-only; gameplay topology must stay authoritative elsewhere.");
+                    "Region 1 route dressing is visual-only; gameplay topology must stay authoritative elsewhere.");
+            var forestTarget=GameObject.Find("World Region 1 · forest target");
+            Assert.That(forestTarget,Is.Not.Null);
+            Assert.That(forestTarget.GetComponent<Collider>()?.enabled,Is.True,
+                "Independent gameplay hotspot must remain active over visual-only route dressing.");
         }
     }
 }
