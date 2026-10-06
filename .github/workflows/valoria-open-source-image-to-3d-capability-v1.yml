@@ -10,155 +10,35 @@ permissions:
   contents: read
 
 jobs:
-  probe:
+  preview-target-inputs:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             .github/workflows/valoria-open-source-image-to-3d-capability-v1.yml
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-bridge.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/gate-front.png
+            art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/gate-back.png
           sparse-checkout-cone-mode: false
 
-      - name: Install client
+      - name: Package canonical isolated inputs for visual selection
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install "gradio_client>=1.10,<2" requests
-
-      - name: Fetch public non-Eldoria test input
-        run: |
-          mkdir -p /tmp/i2d/input /tmp/i2d/output /tmp/i2d/evidence
-          curl -L --fail --retry 3 \
-            -o /tmp/i2d/input/chair.png \
-            "https://raw.githubusercontent.com/Stability-AI/stable-fast-3d/main/demo_files/examples/chair1.png"
-          file /tmp/i2d/input/chair.png
-          sha256sum /tmp/i2d/input/chair.png | tee /tmp/i2d/evidence/input.sha256
-
-      - name: Probe official Stable Fast 3D Space
-        id: sf3d
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          python - <<'PY' 2>&1 | tee /tmp/i2d/evidence/sf3d.log
-          import os, shutil, json, traceback
-          from gradio_client import Client, handle_file
-          client = Client("stabilityai/stable-fast-3d", verbose=True)
-          print("API_VIEW")
-          try:
-              print(client.view_api(return_format="dict"))
-          except Exception:
-              traceback.print_exc()
-          result = client.predict(
-              image=handle_file("/tmp/i2d/input/chair.png"),
-              fr=0.85,
-              api_name="/requires_bg_remove",
-          )
-          print("RESULT", repr(result))
-          candidates=[]
-          def walk(x):
-              if isinstance(x,str): candidates.append(x)
-              elif isinstance(x,(list,tuple)):
-                  for v in x: walk(v)
-              elif isinstance(x,dict):
-                  for v in x.values(): walk(v)
-          walk(result)
-          copied=[]
-          import requests
-          for p in candidates:
-              if os.path.isfile(p):
-                  ext=os.path.splitext(p)[1].lower()
-                  if ext in (".glb",".gltf",".obj",".ply"):
-                      dst="/tmp/i2d/output/sf3d"+ext
-                      shutil.copy2(p,dst); copied.append(dst); break
-              elif isinstance(p,str) and p.startswith(("http://","https://")):
-                  ext=os.path.splitext(p.split("?")[0])[1].lower()
-                  if ext in (".glb",".gltf",".obj",".ply"):
-                      dst="/tmp/i2d/output/sf3d"+ext
-                      rr=requests.get(p,timeout=180); rr.raise_for_status()
-                      open(dst,"wb").write(rr.content); copied.append(dst); break
-          print("COPIED",copied)
-          if not copied:
-              raise SystemExit("SF3D returned no local mesh file")
-          PY
-
-      - name: Probe free InstantMesh Space if SF3D unavailable
-        if: steps.sf3d.outcome != 'success'
-        id: instantmesh
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          python - <<'PY' 2>&1 | tee /tmp/i2d/evidence/instantmesh.log
-          import os, shutil, traceback
-          from gradio_client import Client, handle_file
-          client = Client("TencentARC/InstantMesh", verbose=True)
-          print("API_VIEW")
-          try:
-              print(client.view_api(return_format="dict"))
-          except Exception:
-              traceback.print_exc()
-          api=client.view_api(return_format="dict")
-          print("DISCOVERED",api)
-          endpoints=(api or {}).get("named_endpoints",{})
-          print("ENDPOINTS",list(endpoints))
-          # Execute the advertised public InstantMesh chain:
-          # preprocess -> generate_mvs -> make3d. State is kept by this Client session.
-          if not all(ep in endpoints for ep in ("/preprocess","/generate_mvs","/make3d")):
-              raise SystemExit("Required InstantMesh chain not advertised")
-          processed=client.predict(
-              input_image=handle_file("/tmp/i2d/input/chair.png"),
-              do_remove_background=True,
-              api_name="/preprocess"
-          )
-          print("PREPROCESSED",repr(processed))
-          mvs=client.predict(
-              input_image=handle_file(processed) if isinstance(processed,str) else processed,
-              sample_steps=50,
-              sample_seed=42,
-              api_name="/generate_mvs"
-          )
-          print("MVS",repr(mvs))
-          result=client.predict(api_name="/make3d")
-          print("RESULT",repr(result))
-          candidates=[]
-          def walk(x):
-              if isinstance(x,str): candidates.append(x)
-              elif isinstance(x,(list,tuple)):
-                  for v in x: walk(v)
-              elif isinstance(x,dict):
-                  for v in x.values(): walk(v)
-          walk(result)
-          copied=[]
-          for p in candidates:
-              if os.path.isfile(p) and os.path.splitext(p)[1].lower() in (".glb",".obj",".ply",".gltf"):
-                  ext=os.path.splitext(p)[1].lower()
-                  # Prefer GLB if present, otherwise keep first mesh.
-                  dst="/tmp/i2d/output/instantmesh"+ext
-                  shutil.copy2(p,dst); copied.append(dst)
-          print("COPIED",copied)
-          if not copied:
-              raise SystemExit("InstantMesh returned no local mesh file")
-          PY
-
-      - name: Record result
-        run: |
-          {
-            echo "zero_spend=true"
-            echo "eldoria_input_uploaded=false"
-            echo "sf3d_outcome=${{ steps.sf3d.outcome }}"
-            echo "instantmesh_outcome=${{ steps.instantmesh.outcome }}"
-            find /tmp/i2d/output -maxdepth 1 -type f -printf 'output=%f bytes=%s\n' || true
-          } | tee /tmp/i2d/evidence/result.txt
-
-      - name: Require actual mesh from free route
-        run: |
-          test -n "$(find /tmp/i2d/output -maxdepth 1 -type f \( -name '*.glb' -o -name '*.gltf' -o -name '*.obj' -o -name '*.ply' \) -print -quit)"
+          set -eux
+          mkdir -p /tmp/i2d-target-preview
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/canonical-golden-crop.png /tmp/i2d-target-preview/
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-gate.png /tmp/i2d-target-preview/
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-reset-target-v1/semantic-bridge.png /tmp/i2d-target-preview/
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/gate-front.png /tmp/i2d-target-preview/
+          cp art-source/valoria/lookdev/golden-slice-v1/camera-first-depth-shell-v1/gate-back.png /tmp/i2d-target-preview/
+          sha256sum /tmp/i2d-target-preview/* > /tmp/i2d-target-preview/SHA256SUMS.txt
+          file /tmp/i2d-target-preview/*.png
 
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: valoria-open-source-image-to-3d-capability-v1
-          path: |
-            /tmp/i2d/evidence
-            /tmp/i2d/output
-            /tmp/i2d/input/chair.png
-          retention-days: 14
+          name: valoria-i2d-canonical-input-preview
+          path: /tmp/i2d-target-preview
+          retention-days: 7
