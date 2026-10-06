@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:21:00Z",
+  "updated_at": "2026-10-06T10:22:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -107,6 +107,31 @@
       "phase": "ZERO-SPEND HI3DGEN CANONICAL GATE PROOF",
       "dependency": "Independent of TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry, projection bake, citybuilder, commercial KINGDOM, Unity and paid credits.",
       "next": "Probe Stable-X/Hi3DGen public API and, if callable, generate the same canonical Lower Gate crop and require multi-angle geometry evidence."
+    }
+  ],
+  "history": [
+    {
+      "id": "valoria-sharp-gaussian-fullframe-v1",
+      "title": "VALORIA SHARP GAUSSIAN FULLFRAME v1",
+      "owner": "chat-independent-sharp-gaussian-rnd",
+      "scope": [
+        ".github/workflows/valoria-sharp-gaussian-fullframe-v1.yml",
+        "docs/evidence/valoria-sharp-gaussian-fullframe-v1/**",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "public-hf-space-sharp-gaussian-rnd"
+      ],
+      "claimed_at": "2026-10-06T10:18:14Z",
+      "base_main_sha": "2d1eb82ec336e15a5bbdd896ea6e55d41d2372c2",
+      "status": "completed",
+      "phase": "ZERO-SPEND FULLFRAME GAUSSIAN / VIEW-SYNTHESIS PROOF",
+      "dependency": "Isolated R&D only. Does not reopen rejected Semantic 2.5D card/shell production. No Unity production integration, no paid credits.",
+      "completed_at": "2026-10-06T10:20:03Z",
+      "run_id": 37448896124,
+      "artifact_id": 11404383856,
+      "result": "TECH PASS / VISUAL PROMISING / GAMEPLAY FITNESS UNPROVEN. Produced a ~64 MB PLY Gaussian scene and synthesized-view MP4 from the canonical target with very high full-frame appearance retention. Must still prove bounded camera envelope, interaction/clickability, occlusion behavior and mobile/runtime feasibility before any production consideration.",
+      "next": "Treat as an isolated high-fidelity visual representation candidate. Do not promote until camera-envelope, gameplay interaction and mobile performance gates are explicitly tested."
     },
     {
       "id": "valoria-human-mesh-projection-bake-v1",
@@ -123,13 +148,15 @@
       ],
       "claimed_at": "2026-10-06T10:14:20Z",
       "base_main_sha": "42a82f07c5d0f7d84bdaed3c9b747f283d9c0016",
-      "status": "active",
+      "status": "completed",
       "phase": "ZERO-SPEND HUMAN-MESH + CANONICAL APPEARANCE PROJECTION PROOF",
       "dependency": "Isolated R&D only. Must not reopen rejected Semantic 2.5D/card projection, touch Unity production, commercial KINGDOM acquisition, paid credits, or overwrite other image-to-3D/photogrammetry workstreams. Uses real human-authored 3D mesh and tests canonical appearance projection onto that geometry.",
-      "next": "Complete run 37448457610 and require multi-angle visual evidence. Promote only if real 3D parallax is preserved and canonical appearance materially improves without facade duplication, stretching, or side-view collapse."
-    }
-  ],
-  "history": [
+      "next": "Complete run 37448457610 and require multi-angle visual evidence. Promote only if real 3D parallax is preserved and canonical appearance materially improves without facade duplication, stretching, or side-view collapse.",
+      "completed_at": "2026-10-06T10:18:01Z",
+      "run_id": 37448457610,
+      "artifact_id": 11404606995,
+      "result": "TECH PASS / VISUAL PARTIAL. Human-authored gatehouse geometry preserves real 3D parallax and accepts canonical appearance projection, but current evidence remains too dark and appearance transfer is insufficient for final Valoria identity. Keep as a component technique, not a standalone production solution."
+    },
     {
       "id": "valoria-cc0-modular-source-capability-v1",
       "title": "VALORIA CC0 MODULAR SOURCE CAPABILITY v1",
