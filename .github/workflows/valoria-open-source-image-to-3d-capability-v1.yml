@@ -100,24 +100,25 @@ jobs:
           print("DISCOVERED",api)
           endpoints=(api or {}).get("named_endpoints",{})
           print("ENDPOINTS",list(endpoints))
-          # Try known public InstantMesh contracts only when advertised.
-          result=None
-          errors=[]
-          attempts=[
-              ("/submit", dict(input_image=handle_file("/tmp/i2d/input/chair.png"), do_remove_background=True, sample_seed=42, sample_steps=75)),
-              ("/generate_mvs", dict(input_image=handle_file("/tmp/i2d/input/chair.png"), sample_seed=42, sample_steps=50)),
-          ]
-          for ep,kwargs in attempts:
-              if ep not in endpoints: continue
-              try:
-                  print("TRY",ep,kwargs.keys())
-                  result=client.predict(api_name=ep,**kwargs)
-                  print("RESULT",repr(result))
-                  break
-              except Exception as e:
-                  errors.append((ep,repr(e))); print("ERROR",ep,repr(e))
-          if result is None:
-              raise SystemExit("No usable advertised InstantMesh generation endpoint; "+repr(errors))
+          # Execute the advertised public InstantMesh chain:
+          # preprocess -> generate_mvs -> make3d. State is kept by this Client session.
+          if not all(ep in endpoints for ep in ("/preprocess","/generate_mvs","/make3d")):
+              raise SystemExit("Required InstantMesh chain not advertised")
+          processed=client.predict(
+              input_image=handle_file("/tmp/i2d/input/chair.png"),
+              do_remove_background=True,
+              api_name="/preprocess"
+          )
+          print("PREPROCESSED",repr(processed))
+          mvs=client.predict(
+              input_image=handle_file(processed) if isinstance(processed,str) else processed,
+              sample_steps=50,
+              sample_seed=42,
+              api_name="/generate_mvs"
+          )
+          print("MVS",repr(mvs))
+          result=client.predict(api_name="/make3d")
+          print("RESULT",repr(result))
           candidates=[]
           def walk(x):
               if isinstance(x,str): candidates.append(x)
@@ -130,9 +131,10 @@ jobs:
           for p in candidates:
               if os.path.isfile(p) and os.path.splitext(p)[1].lower() in (".glb",".obj",".ply",".gltf"):
                   ext=os.path.splitext(p)[1].lower()
+                  # Prefer GLB if present, otherwise keep first mesh.
                   dst="/tmp/i2d/output/instantmesh"+ext
-                  shutil.copy2(p,dst); copied.append(dst); break
-          print("COPIED",copied)
+                  shutil.copy2(p,dst); copied.append(dst)
+                    print("COPIED",copied)
           if not copied:
               raise SystemExit("InstantMesh returned no local mesh file")
           PY
