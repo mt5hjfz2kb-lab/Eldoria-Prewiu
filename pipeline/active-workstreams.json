@@ -4,96 +4,77 @@
   "updated_at": "2026-10-06T10:59:00Z",
   "active": [
     {
-      "id": "valoria-art-source-capability-bakeoff-v1",
-      "title": "VALORIA ART SOURCE CAPABILITY BAKE-OFF v1",
-      "owner": "chat-audit-art-source-capability",
+      "id": "valoria-visual-convergence-production-v1",
+      "title": "VALORIA VISUAL CONVERGENCE & PRODUCTION v1",
+      "owner": "chat-central-convergence",
       "scope": [
-        "docs/VALORIA_ART_SOURCE_CAPABILITY_BAKEOFF_V1.md",
-        "docs/evidence/valoria-art-source-capability-bakeoff-v1/**",
+        "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
+        "docs/VALORIA_VISUAL_CONVERGENCE_EXECUTION_V1.md",
         "pipeline/art-production-request.json",
         "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        ".github/workflows/valoria-sharp-gaussian-unity-proof-v1.yml",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSharpGaussianUnityProofV1.cs",
+        "Unity/Packages/manifest.json",
+        "Unity/Packages/packages-lock.json",
+        "docs/evidence/valoria-sharp-gaussian-pipeline-v1/**"
       ],
       "resources": [
-        "valoria-lower-gate-art-source-bakeoff",
-        "art-production-planner"
+        "unity-sharp-gaussian-proof",
+        "github-hosted-linux-convergence",
+        "windows-unity-convergence-when-required"
       ],
-      "claimed_at": "2026-10-06T08:36:00Z",
-      "base_main_sha": "a59a3e1a67f95c056b8f246b6fbf1bd0fd5fbfa6",
-      "status": "blocked",
-      "phase": "HANDCRAFTED MODULAR SOURCE SELECTED / ACQUISITION GATE",
-      "dependency": "Semantic 2.5D rejected. Broad Valoria art frozen. Lower Gate only. No Unity integration until isolated art source >=4/5. No paid credits without fresh owner authorization after exact input and cost are shown.",
-      "next": "After owner acquisition/authorization, inventory smallest gate/wall/tower/trim subset and execute Lower Gate + second-recombination proof. Do not use demo layout or broad-import into production.",
-      "blocker": "KINGDOM: Stylized Modular Castle Environment selected as strongest first external-source candidate. Commercial source is not in repo; purchase/acquisition requires owner authorization. Current public price observed: USD 74.50 plus tax. No Tripo/Meshy credits spent."
-    },
+      "claimed_at": "2026-10-06T10:59:00Z",
+      "base_main_sha": "2f599152d2f96f08ede1dddc876af2c3c1817729",
+      "status": "active",
+      "phase": "CONVERGENCE / PRODUCTION METHOD LOCK — SHARP SANITATION → UNITY GATE",
+      "dependency": "Owner-directed freeze of broad method-discovery R&D. Existing in-flight runs may finish as archival evidence but must not spawn new lanes. No paid credits or commercial acquisition. No reopening rejected Semantic 2.5D/procedural-primary routes.",
+      "next": "Close SHARP sanitized PLY → Unity gate first. Then lock the minimum production recipe: high-fidelity representation where viable + real interactive geometry + human correction + target-conditioned surface/depth + official-camera Unity validation."
+    }
+  ],
+  "history": [
     {
-      "id": "valoria-photogrammetry-donor-capability-v1",
-      "title": "VALORIA PHOTOGRAMMETRY DONOR CAPABILITY v1",
-      "owner": "chat-independent-photogrammetry-donor-rnd",
+      "id": "valoria-triposg-gate-capability-v1",
+      "title": "VALORIA TRIPOSG GATE CAPABILITY v1",
+      "owner": "chat-independent-triposg-rnd",
       "scope": [
-        "docs/evidence/valoria-photogrammetry-donor-capability-v1/**",
-        ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml",
-        "tools/valoria-photogrammetry-donor-capability-v1/**",
+        ".github/workflows/valoria-triposg-gate-capability-v1.yml",
+        "docs/evidence/valoria-triposg-gate-capability-v1/**",
         "pipeline/active-workstreams.json"
       ],
       "resources": [
-        "github-hosted-linux-photogrammetry-rnd"
+        "public-hf-space-triposg-rnd"
       ],
-      "claimed_at": "2026-10-06T09:45:00Z",
-      "base_main_sha": "a9cf888cc2ef77bc79b0eae8547c8e1c0d73c58d",
-      "status": "active",
-      "phase": "ZERO-SPEND PHOTOGRAMMETRY SURFACE/GEOMETRY DONOR PROOF",
-      "dependency": "Distinct from KINGDOM acquisition, SF3D/TRELLIS/TRELLIS2/Hunyuan3D, OpenGameArt gatehouse and production Lower Gate. No Unity, no Windows runner, no paid credits. Isolated donor-quality proof only.",
-      "next": "Test CC0 photogrammetric medieval masonry/rock sources for real surface relief and donor suitability; fail fast if visual benefit cannot materially exceed existing stylized/procedural sources."
+      "claimed_at": "2026-10-06T10:57:00Z",
+      "base_main_sha": "dba83387fff24aeb66f11d95dad4dbc5244531bb",
+      "status": "handoff",
+      "phase": "ZERO-SPEND TRIPOSG CANONICAL GATE PROOF",
+      "dependency": "Distinct from the active TripoSR workstream. Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
     },
     {
-      "id": "valoria-open-source-image-to-3d-capability-v1",
-      "title": "VALORIA OPEN-SOURCE IMAGE-TO-3D CAPABILITY v1",
-      "owner": "chat-independent-open-source-i2d-rnd",
+      "id": "valoria-craftsman3d-gate-capability-v1",
+      "title": "VALORIA CRAFTSMAN3D GATE CAPABILITY v1",
+      "owner": "chat-independent-craftsman3d-rnd",
       "scope": [
-        ".github/workflows/valoria-open-source-image-to-3d-capability-v1.yml",
-        "docs/evidence/valoria-open-source-image-to-3d-capability-v1/**",
-        "pipeline/active-workstreams.json",
-        ".github/workflows/valoria-hunyuan3d-gate-capability-v1.yml",
-        "docs/evidence/valoria-hunyuan3d-gate-capability-v1/**"
-      ],
-      "resources": [
-        "public-hf-space-rnd"
-      ],
-      "claimed_at": "2026-10-06T09:48:00Z",
-      "base_main_sha": "d7905ec32309b12d97caa849cf036067c33f229e",
-      "status": "active",
-      "phase": "ZERO-SPEND MOGE-3 CANONICAL GATE GEOMETRY PROOF",
-      "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
-      "next": "Probe MoGe-3 on the isolated semantic Lower Gate as a scene/geometry reconstruction method, not object generation. Require mesh/point-map geometry plus multi-angle evidence. If it only preserves the front as a shallow open surface and cannot support the camera envelope, reject this family.",
-      "notes": [
-        "Hunyuan3D-2.1 produced real GLB but visual evidence was grossly deformed/melted and is not production-suitable; additionally do not promote Hunyuan as a clean EU production dependency.",
-        "TripoSR CPU path was made fully reproducible and generated GLB, but visual evidence lost architectural identity and produced an organic/noisy mass. Single-object reconstruction rejected for the gate."
-      ]
-    },
-    {
-      "id": "valoria-unique3d-gate-capability-v1",
-      "title": "VALORIA UNIQUE3D GATE CAPABILITY v1",
-      "owner": "chat-independent-unique3d-rnd",
-      "scope": [
-        ".github/workflows/valoria-unique3d-gate-capability-v1.yml",
-        "docs/evidence/valoria-unique3d-gate-capability-v1/**",
+        ".github/workflows/valoria-craftsman3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-craftsman3d-gate-capability-v1/**",
         "pipeline/active-workstreams.json"
       ],
       "resources": [
-        "public-hf-space-unique3d-rnd"
+        "public-hf-space-craftsman-rnd"
       ],
-      "claimed_at": "2026-10-06T10:12:00Z",
-      "base_main_sha": "bdbc2371d9806d31ffae5c8afd321703eefcef15",
-      "status": "blocked",
-      "phase": "ZERO-SPEND UNIQUE3D CANONICAL GATE PROOF / INFRASTRUCTURE BLOCKED",
-      "dependency": "Do not touch TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry donor, projection bake, citybuilder source, commercial KINGDOM acquisition, Unity, Windows runner, or paid credits.",
-      "next": "STOP this zero-spend route unless the execution environment changes or a genuinely free endpoint removes the 600s GPU limit. Do not claim a visual pass and do not spend credits without fresh owner authorization.",
-      "blocked_at": "2026-10-06T10:15:35Z",
-      "blocker": "Canonical proof run 37448430078 reached the Wuvin/Unique3D generation endpoint but ZeroGPU rejected the requested 600s GPU duration. No usable mesh was returned; the Require Unique3D mesh gate failed. This is an infrastructure/access blocker, not a visual-quality pass.",
-      "run_id": 37448430078,
-      "artifact_id": 11404088202
+      "claimed_at": "2026-10-06T10:46:00Z",
+      "base_main_sha": "fad21a0c697bb5a605653466f5631775d8c3ac83",
+      "status": "handoff",
+      "phase": "ZERO-SPEND CRAFTSMAN3D CANONICAL GATE PROOF",
+      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
     },
     {
       "id": "valoria-sharp-gaussian-pipeline-v1",
@@ -115,54 +96,121 @@
       ],
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
-      "status": "active",
+      "status": "handoff",
       "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF / SANITATION FIX REQUIRED",
       "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
-      "next": "PRIORITY: sanitize the single non-finite opacity before Unity load using PowerShell/.NET or add actions/setup-python explicitly on the Windows runner; preserve the original PLY for audit. Then rerun UnitySplats import and require HOME capture + bounded pan/zoom + depth/occlusion + runtime evidence. Do not open more unrelated generator lanes before this gate.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
       "run_id": 37453051254,
       "resume_commit": "1e67c8c39ae9bc7f9ac6e857a00d31da1a1eb597",
-      "blocker": "UnitySplats successfully opened and decoded the canonical SHARP PLY until vertex 606538, then rejected a single non-finite opacity value (+Inf). Independent audit of all 1,179,648 splats / 14 float properties found exactly ONE non-finite scalar in the entire file: opacity at vertex 606538. The first sanitation workflow did not run because the Windows Unity runner has no `python` executable in PATH. This is a bounded tooling/data-cleanliness issue, not a visual/runtime rejection."
+      "blocker": "UnitySplats successfully opened and decoded the canonical SHARP PLY until vertex 606538, then rejected a single non-finite opacity value (+Inf). Independent audit of all 1,179,648 splats / 14 float properties found exactly ONE non-finite scalar in the entire file: opacity at vertex 606538. The first sanitation workflow did not run because the Windows Unity runner has no `python` executable in PATH. This is a bounded tooling/data-cleanliness issue, not a visual/runtime rejection.",
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
     },
     {
-      "id": "valoria-craftsman3d-gate-capability-v1",
-      "title": "VALORIA CRAFTSMAN3D GATE CAPABILITY v1",
-      "owner": "chat-independent-craftsman3d-rnd",
+      "id": "valoria-unique3d-gate-capability-v1",
+      "title": "VALORIA UNIQUE3D GATE CAPABILITY v1",
+      "owner": "chat-independent-unique3d-rnd",
       "scope": [
-        ".github/workflows/valoria-craftsman3d-gate-capability-v1.yml",
-        "docs/evidence/valoria-craftsman3d-gate-capability-v1/**",
+        ".github/workflows/valoria-unique3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-unique3d-gate-capability-v1/**",
         "pipeline/active-workstreams.json"
       ],
       "resources": [
-        "public-hf-space-craftsman-rnd"
+        "public-hf-space-unique3d-rnd"
       ],
-      "claimed_at": "2026-10-06T10:46:00Z",
-      "base_main_sha": "fad21a0c697bb5a605653466f5631775d8c3ac83",
-      "status": "active",
-      "phase": "ZERO-SPEND CRAFTSMAN3D CANONICAL GATE PROOF",
-      "dependency": "Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits. Isolated semantic Lower Gate proof only.",
-      "next": "Probe multimodalart/CraftsMan3D-zerogpu on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
+      "claimed_at": "2026-10-06T10:12:00Z",
+      "base_main_sha": "bdbc2371d9806d31ffae5c8afd321703eefcef15",
+      "status": "blocked",
+      "phase": "ZERO-SPEND UNIQUE3D CANONICAL GATE PROOF / INFRASTRUCTURE BLOCKED",
+      "dependency": "Do not touch TRELLIS.2, CraftsMan3D, PartCrafter, photogrammetry donor, projection bake, citybuilder source, commercial KINGDOM acquisition, Unity, Windows runner, or paid credits.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "blocked_at": "2026-10-06T10:15:35Z",
+      "blocker": "Canonical proof run 37448430078 reached the Wuvin/Unique3D generation endpoint but ZeroGPU rejected the requested 600s GPU duration. No usable mesh was returned; the Require Unique3D mesh gate failed. This is an infrastructure/access blocker, not a visual-quality pass.",
+      "run_id": 37448430078,
+      "artifact_id": 11404088202,
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
     },
     {
-      "id": "valoria-triposg-gate-capability-v1",
-      "title": "VALORIA TRIPOSG GATE CAPABILITY v1",
-      "owner": "chat-independent-triposg-rnd",
+      "id": "valoria-open-source-image-to-3d-capability-v1",
+      "title": "VALORIA OPEN-SOURCE IMAGE-TO-3D CAPABILITY v1",
+      "owner": "chat-independent-open-source-i2d-rnd",
       "scope": [
-        ".github/workflows/valoria-triposg-gate-capability-v1.yml",
-        "docs/evidence/valoria-triposg-gate-capability-v1/**",
+        ".github/workflows/valoria-open-source-image-to-3d-capability-v1.yml",
+        "docs/evidence/valoria-open-source-image-to-3d-capability-v1/**",
+        "pipeline/active-workstreams.json",
+        ".github/workflows/valoria-hunyuan3d-gate-capability-v1.yml",
+        "docs/evidence/valoria-hunyuan3d-gate-capability-v1/**"
+      ],
+      "resources": [
+        "public-hf-space-rnd"
+      ],
+      "claimed_at": "2026-10-06T09:48:00Z",
+      "base_main_sha": "d7905ec32309b12d97caa849cf036067c33f229e",
+      "status": "handoff",
+      "phase": "ZERO-SPEND MOGE-3 CANONICAL GATE GEOMETRY PROOF",
+      "dependency": "Must not touch active commercial KINGDOM acquisition workstream, photogrammetry donor workstream, Lower Gate production, Unity, Windows runner, or paid credits. First use only public non-Eldoria test input to verify anonymous/free capability.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "notes": [
+        "Hunyuan3D-2.1 produced real GLB but visual evidence was grossly deformed/melted and is not production-suitable; additionally do not promote Hunyuan as a clean EU production dependency.",
+        "TripoSR CPU path was made fully reproducible and generated GLB, but visual evidence lost architectural identity and produced an organic/noisy mass. Single-object reconstruction rejected for the gate."
+      ],
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
+    },
+    {
+      "id": "valoria-photogrammetry-donor-capability-v1",
+      "title": "VALORIA PHOTOGRAMMETRY DONOR CAPABILITY v1",
+      "owner": "chat-independent-photogrammetry-donor-rnd",
+      "scope": [
+        "docs/evidence/valoria-photogrammetry-donor-capability-v1/**",
+        ".github/workflows/valoria-photogrammetry-donor-capability-v1.yml",
+        "tools/valoria-photogrammetry-donor-capability-v1/**",
         "pipeline/active-workstreams.json"
       ],
       "resources": [
-        "public-hf-space-triposg-rnd"
+        "github-hosted-linux-photogrammetry-rnd"
       ],
-      "claimed_at": "2026-10-06T10:57:00Z",
-      "base_main_sha": "dba83387fff24aeb66f11d95dad4dbc5244531bb",
-      "status": "active",
-      "phase": "ZERO-SPEND TRIPOSG CANONICAL GATE PROOF",
-      "dependency": "Distinct from the active TripoSR workstream. Must not touch TripoSR, Zero123Plus, Unique3D, Hi3DGen, SHARP, SCoPE, Marigold, CraftsMan3D, photogrammetry, commercial KINGDOM acquisition, Lower Gate production, Unity, Windows runner, or paid credits.",
-      "next": "Probe open-source MIT VAST-AI TripoSG public Space on isolated semantic Lower Gate. Require actual mesh plus front/3-quarter/back/side evidence before any promotion."
-    }
-  ],
-  "history": [
+      "claimed_at": "2026-10-06T09:45:00Z",
+      "base_main_sha": "a9cf888cc2ef77bc79b0eae8547c8e1c0d73c58d",
+      "status": "handoff",
+      "phase": "ZERO-SPEND PHOTOGRAMMETRY SURFACE/GEOMETRY DONOR PROOF",
+      "dependency": "Distinct from KINGDOM acquisition, SF3D/TRELLIS/TRELLIS2/Hunyuan3D, OpenGameArt gatehouse and production Lower Gate. No Unity, no Windows runner, no paid credits. Isolated donor-quality proof only.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
+    },
+    {
+      "id": "valoria-art-source-capability-bakeoff-v1",
+      "title": "VALORIA ART SOURCE CAPABILITY BAKE-OFF v1",
+      "owner": "chat-audit-art-source-capability",
+      "scope": [
+        "docs/VALORIA_ART_SOURCE_CAPABILITY_BAKEOFF_V1.md",
+        "docs/evidence/valoria-art-source-capability-bakeoff-v1/**",
+        "pipeline/art-production-request.json",
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "valoria-lower-gate-art-source-bakeoff",
+        "art-production-planner"
+      ],
+      "claimed_at": "2026-10-06T08:36:00Z",
+      "base_main_sha": "a59a3e1a67f95c056b8f246b6fbf1bd0fd5fbfa6",
+      "status": "blocked",
+      "phase": "HANDCRAFTED MODULAR SOURCE SELECTED / ACQUISITION GATE",
+      "dependency": "Semantic 2.5D rejected. Broad Valoria art frozen. Lower Gate only. No Unity integration until isolated art source >=4/5. No paid credits without fresh owner authorization after exact input and cost are shown.",
+      "next": "No further independent R&D dispatch. Any reusable result must be consumed through VALORIA VISUAL CONVERGENCE & PRODUCTION v1.",
+      "blocker": "KINGDOM: Stylized Modular Castle Environment selected as strongest first external-source candidate. Commercial source is not in repo; purchase/acquisition requires owner authorization. Current public price observed: USD 74.50 plus tax. No Tripo/Meshy credits spent.",
+      "completed_at": "2026-10-06T10:59:00Z",
+      "handoff_to": "valoria-visual-convergence-production-v1",
+      "result": "OWNER FREEZE: exploratory visual R&D is closed as a source of new lanes. Preserve all evidence; do not dispatch further method-discovery runs unless the convergence workstream explicitly reopens a bounded dependency."
+    },
     {
       "id": "valoria-direct3ds2-gate-capability-v1",
       "title": "VALORIA DIRECT3D-S2 GATE CAPABILITY v1",
