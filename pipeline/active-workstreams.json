@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:26:00Z",
+  "updated_at": "2026-10-06T11:29:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -43,7 +43,9 @@
         "verdict": "TECH PASS / VISUAL PASS / PROVISIONAL BASELINE 600K"
       },
       "blocker": null
-    },
+    }
+  ],
+  "history": [
     {
       "id": "valoria-visual-fallback-orchestrator-v1",
       "title": "VALORIA VISUAL FALLBACK ORCHESTRATOR v1",
@@ -60,13 +62,13 @@
       ],
       "claimed_at": "2026-10-06T11:30:00Z",
       "base_main_sha": "3d63d0986a6680f4390b74b3a15a42ec05befe60",
-      "status": "active",
+      "status": "stopped_by_convergence",
       "phase": "IMPLEMENT DIAGNOSIS → KNOWN FALLBACK ROUTING",
       "dependency": "Must not mutate SHARP Unity proof files, art-production-request.json, Unity packages, current convergence evidence, or dispatch heavy/paid work. Uses only already-classified R&D evidence and zero-spend routing.",
-      "next": "Add deterministic failure classifier and known-tool fallback policy; validate locally through static examples; no new R&D."
-    }
-  ],
-  "history": [
+      "next": "Do not resume unless the central convergence workstream explicitly reopens it.",
+      "completed_at": "2026-10-06T11:29:00Z",
+      "result": "Stopped because central convergence is the sole active visual-production authority."
+    },
     {
       "id": "valoria-pixal3d-gate-capability-v1",
       "title": "VALORIA PIXAL3D GATE CAPABILITY v1",
