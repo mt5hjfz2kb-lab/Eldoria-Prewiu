@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-geometry-anchored-projection-bake-v1",
+  "method": "canonical Gate appearance camera-projected and baked to UVs of real modular gate+tower geometry; fallback 3D material on non-facing surfaces",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
