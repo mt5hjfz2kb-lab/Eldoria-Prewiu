@@ -397,3 +397,71 @@ Gate 4 PASS requires:
 5. coexistence HOME + bounded pan evidence is produced;
 6. interaction continues to resolve to LowerGate semantics;
 7. no new generator, paid credit or commercial acquisition is used.
+
+
+## Gate 4A FINAL — runtime density budget
+**Verdict: TECH PASS / RELATIVE RUNTIME PASS / 600K BASELINE RETAINED**
+
+Authoritative evidence:
+- Run: `37461644325`
+- Artifact: `11411669104`
+- Clean source artifact: `11408853949`
+- Visual authority artifact: `11409079879`
+- Scope: Windows Unity 6 batchmode relative benchmark; this is not mobile-device certification.
+
+Measured stable densities:
+- ~300k actual 294,912 splats: load 695.30 ms; repeated sort/render avg 0.469 ms; p95 0.693 ms.
+- ~450k actual 393,216 splats: load 934.44 ms; repeated sort/render avg 0.415 ms; p95 0.501 ms.
+- ~600k actual 589,824 splats: load 1349.67 ms; repeated sort/render avg 0.413 ms; p95 0.573 ms.
+- All three densities stable in this bounded runner proof.
+- Paid credits: 0.
+
+Decision:
+- retain 589,824 splats as the convergence visual baseline because it preserves materially more architectural readability and remains stable in the relative Windows proof;
+- do not call this mobile certification;
+- mobile/device profiling remains a later production/runtime gate.
+
+## Gate 4B FINAL — approved Lower Gate real-geometry substrate
+**Verdict: TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS**
+
+Authoritative evidence:
+- Run: `37462916737`
+- Artifact: `11413795807`
+- Approved geometry: `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`
+- Visual layer: clean SHARP 589,824 splats.
+- glTFast import: PASS.
+- Imported renderers: 6.
+- Bounds: PASS.
+- Canonical LowerGate viewport target: (0.748, 0.458).
+- Measured projected center: approximately (0.7480001, 0.4580000).
+- Viewport error: ~5.96e-8.
+- LowerGate semantic interaction: PASS.
+- Diagnostic coexistence changed pixels: HOME 1,176; pan-left 1,132; pan-right 1,139.
+- Paid credits: 0.
+
+Interpretation:
+- the already-approved editable Lower Gate geometry can occupy the same Unity world-space/interaction system as the locked SHARP visual representation;
+- the cyan diagnostic overlay proves the actual imported mesh silhouette remains aligned across the bounded camera;
+- original source materials remain evidence/reference only at this gate because the Gaussian layer depth-occludes them in the target region;
+- Gate 4B does **not** claim final material/appearance integration.
+
+**Gate 4A and Gate 4B are CLOSED / PASS.**
+
+## Gate 5 — real-geometry appearance/depth integration
+Goal:
+- keep the approved LowerGateFamilyV1 real geometry and semantic LowerGate interaction;
+- keep SHARP 589,824 as the full-scene visual authority;
+- consume only already-qualified appearance components: geometry-anchored target projection, target-derived PBR where useful, and Marigold depth only as alignment/occlusion assistance;
+- prove that the editable Lower Gate can carry a target-conditioned appearance without changing its geometry or reopening generator discovery.
+
+Gate 5 PASS requires:
+1. exact Gate 4B geometry/bounds/viewport alignment remains unchanged;
+2. target-conditioned appearance is applied to the real mesh, not to a card/shell substitute;
+3. HOME appearance materially approaches the canonical LowerGate region versus the raw source material;
+4. pan-left / pan-right do not collapse into a flat plate and retain real mesh silhouette/parallax;
+5. semantic LowerGate interaction remains PASS;
+6. SHARP outside the LowerGate treatment remains unchanged;
+7. no new generator, paid credit, commercial source or geometry regeneration is used.
+
+Stop rule:
+- if target projection produces duplicate architecture, severe stretching or side-view collapse, do not micro-tune projection indefinitely; keep the real geometry and fall back to authored/PBR material treatment already allowed by the decision register.
