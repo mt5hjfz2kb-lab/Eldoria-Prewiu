@@ -19,6 +19,7 @@ namespace Eldoria.Presentation
 
         static Transform root;
         static GameObject marchVisual;
+        static ValoriaExternalAssetLibrary externalLibrary;
         static readonly Color Earth=new Color(.30f,.29f,.24f);
         static readonly Color EarthLight=new Color(.35f,.35f,.28f);
         static readonly Color Meadow=new Color(.23f,.30f,.21f);
@@ -39,6 +40,7 @@ namespace Eldoria.Presentation
             if(prior!=null)Object.DestroyImmediate(prior);
 
             root=new GameObject("World Region 1 · root").transform;
+            externalLibrary=ValoriaExternalAssetLibrary.Load();
             ConfigureEnvironment();
             BuildGeography();
             BuildRoutes();
@@ -155,6 +157,11 @@ namespace Eldoria.Presentation
             RoadSegment("World Region 1 · forest route",new Vector3(-3.0f,.04f,2.2f),8.2f,1.30f,-38f);
             RoadSegment("World Region 1 · ruin route",new Vector3(2.7f,.04f,2.0f),7.0f,1.25f,38f);
             RoadSegment("World Region 1 · threat route",new Vector3(6.7f,.04f,7.5f),6.2f,1.05f,29f);
+            foreach(var p in new[]{
+                new Vector3(-2.0f,0f,-.8f),new Vector3(1.7f,0f,-.2f),
+                new Vector3(-4.7f,0f,3.6f),new Vector3(4.3f,0f,3.0f),
+                new Vector3(6.8f,0f,6.0f),new Vector3(-5.5f,0f,6.9f)})
+                NatureBush("World Region 1 · route scrub",p,.95f,(int)((p.x+12f)*7f+p.z));
         }
 
         static void BuildValoria()
@@ -302,6 +309,31 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
+            var nature=NatureTreePrefab(variant);
+            if(nature!=null)
+            {
+                var instance=Object.Instantiate(nature);
+                instance.name=name;
+                instance.transform.SetParent(root,true);
+                instance.transform.position=position;
+                instance.transform.rotation=Quaternion.Euler(0f,(variant*47)%360,0f);
+                foreach(var collider in instance.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+                foreach(var behaviour in instance.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+                var renderers=instance.GetComponentsInChildren<Renderer>(true);
+                if(renderers.Length>0)
+                {
+                    var bounds=renderers[0].bounds;
+                    for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                    float height=Mathf.Max(.01f,bounds.size.y);
+                    instance.transform.localScale*=2.6f*scale/height;
+                    renderers=instance.GetComponentsInChildren<Renderer>(true);
+                    bounds=renderers[0].bounds;
+                    for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                    instance.transform.position+=position-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+                }
+                return;
+            }
+
             var holder=new GameObject(name);
             holder.transform.SetParent(root,true);
             holder.transform.position=position;
@@ -323,6 +355,40 @@ namespace Eldoria.Presentation
                 variant%2==0?PineLight:Pine);
             upper.transform.SetParent(holder.transform,true);
             var uc=upper.GetComponent<Collider>();if(uc!=null)uc.enabled=false;
+        }
+
+        static GameObject NatureTreePrefab(int variant)
+        {
+            if(externalLibrary==null)return null;
+            switch(Mathf.Abs(variant)%4)
+            {
+                case 0:return externalLibrary.NatureTree01;
+                case 1:return externalLibrary.NatureTree02;
+                case 2:return externalLibrary.NatureTree03;
+                default:return externalLibrary.NatureTree04;
+            }
+        }
+
+        static void NatureBush(string name,Vector3 position,float scale,int variant)
+        {
+            if(externalLibrary==null||externalLibrary.NatureBush01==null)return;
+            var bush=Object.Instantiate(externalLibrary.NatureBush01);
+            bush.name=name;
+            bush.transform.SetParent(root,true);
+            bush.transform.position=position;
+            bush.transform.rotation=Quaternion.Euler(0f,(variant*71)%360,0f);
+            foreach(var collider in bush.GetComponentsInChildren<Collider>(true))collider.enabled=false;
+            foreach(var behaviour in bush.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
+            var renderers=bush.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length==0)return;
+            var bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            float span=Mathf.Max(.01f,Mathf.Max(bounds.size.x,bounds.size.z));
+            bush.transform.localScale*=1.45f*scale/span;
+            renderers=bush.GetComponentsInChildren<Renderer>(true);
+            bounds=renderers[0].bounds;
+            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+            bush.transform.position+=position-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
         }
 
         static void AdoptLooseVisuals()
