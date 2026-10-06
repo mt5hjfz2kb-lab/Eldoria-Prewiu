@@ -35,6 +35,8 @@ for p in spec.get("parameters",[]):
     has=p.get("parameter_has_default",False)
     if name in ("image","image_prompt") or ("image" in name and "multi" not in name):
         args.append(handle_file(inp))
+    elif "algo" in name:
+        args.append("stochastic")
     elif "is_multi" in name:
         args.append(False)
     elif "multiimage" in name or "multi_image" in name or "gallery" in name:
@@ -51,8 +53,6 @@ for p in spec.get("parameters",[]):
         args.append(3.0)
     elif "slat_sampling" in name or ("latent" in name and "step" in name):
         args.append(12)
-    elif "algo" in name:
-        args.append("stochastic")
     elif "simpl" in name:
         args.append(0.95)
     elif "texture" in name:
