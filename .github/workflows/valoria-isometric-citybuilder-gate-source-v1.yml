@@ -50,7 +50,15 @@ jobs:
               if o.type in ("LIGHT","CAMERA"): bpy.data.objects.remove(o,do_unlink=True)
           if sc.world is None: sc.world=bpy.data.worlds.new("World")
           sc.world.use_nodes=True
-          bg=sc.world.node_tree.nodes.get("Background")
+          wn=sc.world.node_tree.nodes; wl=sc.world.node_tree.links
+          bg=wn.get("Background")
+          outw=next((n for n in wn if n.type=="OUTPUT_WORLD"),None)
+          if bg is None:
+              bg=wn.new("ShaderNodeBackground")
+          if outw is None:
+              outw=wn.new("ShaderNodeOutputWorld")
+          if not any(l.to_node==outw and l.to_socket==outw.inputs.get("Surface") for l in wl):
+              wl.new(bg.outputs["Background"],outw.inputs["Surface"])
           bg.inputs["Color"].default_value=(0.03,0.035,0.05,1); bg.inputs["Strength"].default_value=.45
           sc.render.engine="BLENDER_EEVEE"
           sc.render.resolution_x=1200; sc.render.resolution_y=900; sc.render.resolution_percentage=100
