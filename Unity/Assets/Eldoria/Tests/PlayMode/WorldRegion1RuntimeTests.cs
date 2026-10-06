@@ -70,8 +70,16 @@ namespace Eldoria.Tests
             Assert.That(Mathf.Abs(moved.z-origin.z),Is.LessThanOrEqualTo(8.01f));
             Assert.That(Quaternion.Angle(rotation,camera.transform.rotation),Is.LessThan(.01f));
 
+            var zoom=typeof(SlicePresenter).GetMethod("Zoom",BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(zoom,Is.Not.Null);
+            zoom.Invoke(presenter,new object[]{-100f});
+            Assert.That(camera.orthographicSize,Is.EqualTo(10f).Within(.01f));
+            zoom.Invoke(presenter,new object[]{100f});
+            Assert.That(camera.orthographicSize,Is.EqualTo(18f).Within(.01f));
+
             home.Invoke(presenter,null);
             Assert.That(Vector3.Distance(camera.transform.position,origin),Is.LessThan(.01f));
+            Assert.That(camera.orthographicSize,Is.EqualTo(14f).Within(.01f));
         }
 
         [UnityTest]
