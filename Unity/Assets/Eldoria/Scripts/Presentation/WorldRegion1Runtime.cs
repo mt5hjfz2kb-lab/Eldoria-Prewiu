@@ -47,6 +47,7 @@ namespace Eldoria.Presentation
             externalLibrary=ValoriaExternalAssetLibrary.Load();
             ConfigureEnvironment();
             BuildGeography();
+            ValoriaWorldFrameMountainTerrainV1.Build(root,state);
             BuildRoutes();
             BuildValoria();
             BuildForest(state);
@@ -127,16 +128,6 @@ namespace Eldoria.Presentation
                 new Vector3(28f,.07f,11f),new Color(.31f,.32f,.25f),-4f);
             GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.04f,-7f),
                 new Vector3(14f,.07f,8f),new Color(.40f,.36f,.28f),5f);
-
-            foreach(var p in new[]{
-                new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
-                new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
-            {
-                var mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                    "World Region 1 · mountain barrier",p,11f,6.5f,
-                    Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.40f,.40f,.36f,1f));
-                Parent(mountain);
-            }
 
             var centres=new[]{new Vector3(-13f,0,7f),new Vector3(-11f,0,17f),
                 new Vector3(-1f,0,20f),new Vector3(16f,0,7f)};
@@ -373,8 +364,10 @@ namespace Eldoria.Presentation
             var mesh=new Mesh{name="World Region 1 · terrain mesh",vertices=vertices,uv=uv,triangles=triangles};
             mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=
-                ValoriaKit.SurfaceMaterial(Earth,"earth",new Vector2(12f,11f));
+            var terrainRenderer=go.AddComponent<MeshRenderer>();
+            terrainRenderer.sharedMaterial=externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null
+                ?ValoriaKit.PbrSurfaceMaterial(externalLibrary.ValoriaDirtSurface,Earth,new Vector2(12f,11f),.035f,.72f)
+                :ValoriaKit.SurfaceMaterial(Earth,"earth",new Vector2(12f,11f));
         }
 
         static void WorldShrub(string name,Vector3 position,float scale,int variant)
@@ -411,9 +404,11 @@ namespace Eldoria.Presentation
             var mesh=new Mesh{name=name+" mesh",vertices=vertices,uv=uv,triangles=triangles};
             mesh.RecalculateNormals();mesh.RecalculateBounds();
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            go.AddComponent<MeshRenderer>().sharedMaterial=
-                ValoriaKit.SurfaceMaterial(color,"earth",new Vector2(
-                    Mathf.Max(1.5f,scale.x/3f),Mathf.Max(1.5f,scale.z/3f)));
+            var patchRenderer=go.AddComponent<MeshRenderer>();
+            var tiling=new Vector2(Mathf.Max(1.5f,scale.x/3f),Mathf.Max(1.5f,scale.z/3f));
+            patchRenderer.sharedMaterial=externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null
+                ?ValoriaKit.PbrSurfaceMaterial(externalLibrary.ValoriaDirtSurface,color,tiling,.025f,.62f)
+                :ValoriaKit.SurfaceMaterial(color,"earth",tiling);
         }
 
         static void RoadSegment(string name,Vector3 centre,float length,float width,float yaw)
