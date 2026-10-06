@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "gate": "VALORIA SHARP LOWER GATE REAL-GEOMETRY APPEARANCE v1",
+  "status": "ACTIVE",
+  "visual_authority": {
+    "run_id": 37457026065,
+    "artifact_id": 11409079879,
+    "splats": 589824
+  },
+  "source_geometry": "art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb",
+  "reference": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "canonical_viewport": {
+    "x": 0.748,
+    "y": 0.458
+  },
+  "appearance_method": "HOME projector-conditioned canonical reference on real mesh with stone fallback",
+  "gates": {
+    "preserve_gate4b_alignment": true,
+    "interaction_semantic": "LowerGate",
+    "require_home_projection_visible": true,
+    "require_pan_left_projection_visible": true,
+    "require_pan_right_projection_visible": true,
+    "full_frame_change_max_fraction": 0.03
+  },
+  "paid_credits": 0
+}
