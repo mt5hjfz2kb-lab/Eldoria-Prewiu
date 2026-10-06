@@ -70,6 +70,9 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
+          $cfg=Get-Content 'pipeline/valoria-sharp-gaussian-fullframe-v1.json' -Raw | ConvertFrom-Json
+          git restore --source=HEAD --worktree -- $cfg.input
+          if($LASTEXITCODE -ne 0){throw 'Canonical input restore failed'}
           Remove-Item $env:OUT_DIR -Recurse -Force -ErrorAction SilentlyContinue
           $stdout=Join-Path $env:RUNNER_TEMP 'sharp-local-stdout.log'
           $stderr=Join-Path $env:RUNNER_TEMP 'sharp-local-stderr.log'

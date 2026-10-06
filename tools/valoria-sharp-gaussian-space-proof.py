@@ -14,7 +14,7 @@ os.makedirs(os.path.dirname(src),exist_ok=True)
 if not os.path.exists(src):
     Image.open(authority['authority_path']).convert('RGB').crop(authority['crop_box']).save(src)
 if src != authority['clean_input_path'] or sha(src) != authority['clean_input_sha256']:
-    raise RuntimeError('SHARP clean input is not derived from the current exact authority')
+    raise RuntimeError('SHARP clean input fingerprint mismatch: expected='+authority['clean_input_sha256']+' actual='+sha(src)+' path='+src)
 ground=cfg.get("parcel_ground_input")
 if ground:
     if sha(ground["path"]) != ground["sha256"]: raise RuntimeError("Parcel ground source SHA mismatch")
