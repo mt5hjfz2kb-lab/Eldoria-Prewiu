@@ -79,21 +79,14 @@ jobs:
           if client is None:
               raise SystemExit("No callable TripoSG Space: "+repr(errors))
 
-          # Handle preprocessing first when advertised.
           inp="/tmp/triposg/input/eldoria-semantic-gate.png"
           processed=inp
-          prep=next((e for e in endpoints if "preprocess" in e.lower() or "remove" in e.lower()),None)
-          if prep:
-              spec=endpoints[prep]; kwargs={}
-              for p in spec.get("parameters",[]):
-                  n=p.get("parameter_name"); d=p.get("parameter_default")
-                  if not n: continue
-                  ln=n.lower()
-                  if "image" in ln: kwargs[n]=handle_file(inp)
-                  elif d is not None: kwargs[n]=d
-              print("PREP_CALL",prep,kwargs)
-              pr=client.predict(api_name=prep,**kwargs)
-              print("PREP_RESULT",repr(pr))
+          if "/start_session" in endpoints:
+              sr=client.predict(api_name="/start_session")
+              print("START_SESSION",repr(sr))
+          if "/run_segmentation" in endpoints:
+              pr=client.predict(image=handle_file(inp),api_name="/run_segmentation")
+              print("SEGMENTATION_RESULT",repr(pr))
               if isinstance(pr,str): processed=pr
               elif isinstance(pr,dict) and pr.get("path"): processed=pr["path"]
               elif isinstance(pr,(list,tuple)) and pr:
