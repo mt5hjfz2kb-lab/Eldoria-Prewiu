@@ -310,3 +310,47 @@ Gate 3 PASS requires:
 4. visible geometry is depth-stable at HOME and bounded pan;
 5. original material view is captured for direct comparison;
 6. no new generator, paid credit or commercial acquisition is used.
+
+
+## Gate 2B result — bounded camera interaction stability
+**Verdict: TECH PASS / INTERACTION PASS / BOUNDED CAMERA PASS**
+
+Evidence:
+- Run: `37459082453`
+- Artifact: `11411280592`
+- Clean SHARP layer: 589,824 splats
+- Proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Required deterministic semantic raycasts: 20
+- Passed: **20/20**
+- Beauty proxies visible: false
+
+This proves the interaction substrate remains semantically stable across the locked bounded camera envelope.
+
+## Gate 3 result — gameplay selection + visible feedback
+**Verdict: TECH PASS / GAMEPLAY CALLBACK PASS / VISUAL FEEDBACK PASS**
+
+Authoritative evidence:
+- Run: `37461034965`
+- Artifact: `11412317590`
+- Raycasts: **20/20 PASS**
+- Gameplay selection callbacks: **20/20 PASS**
+- Per-proxy callbacks: WestTower 5, CentralKeep 5, EastTower 5, LowerGate 5
+- Selected feedback proxy: LowerGate
+- Localized cyan feedback pixels: **1287 / 1287**
+- Full-frame takeover guard: PASS
+- SHARP beauty remains active and the hidden proxy substrate remains non-visible.
+
+What this proves:
+- a standard Unity interaction callback can be driven from the hidden semantic 3D substrate while SHARP remains the visual authority;
+- selection feedback can be rendered as ordinary raster content in front of the Gaussian representation;
+- the gameplay state layer does not need to be encoded inside Gaussian data.
+
+### Gate 4 — runtime density budget
+Next production gate:
+1. keep the clean canonical SHARP source and the proven Unity lifecycle;
+2. benchmark 300k / 450k / 600k splat densities;
+3. record load time, resident splat count, repeated sort/render wall time and managed-memory delta;
+4. preserve one beauty capture per density;
+5. choose the highest stable density with acceptable runtime cost and no visual collapse;
+6. no new visual method or generator is authorized.
