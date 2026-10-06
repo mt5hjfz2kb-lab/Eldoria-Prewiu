@@ -57,7 +57,7 @@ jobs:
           python - <<'PY' 2>&1 | tee /tmp/unique3d/evidence/unique3d.log
           import os, shutil, traceback
           from gradio_client import Client, handle_file
-          client=Client("Wuvin/Unique3D", verbose=True)
+          client=Client("tabulasd/Unique3D", verbose=True)
           api=client.view_api(return_format="dict")
           print("API",api)
           result=client.predict(
