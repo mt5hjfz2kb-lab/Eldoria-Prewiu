@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T13:05:00Z",
-  "active": [
+  "updated_at": "2026-10-06T13:31:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-first-playable-city-slice-v1",
       "title": "VALORIA PRODUCTION PHASE v1 — FIRST PLAYABLE CITY SLICE",
@@ -22,15 +23,30 @@
       ],
       "claimed_at": "2026-10-06T13:05:00Z",
       "base_main_sha": "b182a3299212af294dced0a6838e0cda0f943042",
-      "status": "active",
-      "phase": "PRODUCTION / FIRST PLAYABLE CITY SLICE",
+      "status": "completed",
+      "phase": "PRODUCTION CLOSED / TECH + INTERACTION + VISUAL PASS",
       "dependency": "Consumes locked VALORIA_PRODUCTION_RECIPE_V1 and certified Gates 1–5 only. No new visual R&D, paid credits or commercial assets.",
       "next": "Build and validate Bridge → Lower Gate → Main Road → Central Stair → Upper Gate/Walls/Bastion as one playable Unity slice with SHARP visual authority, real geometry, semantic anchors, bounded camera and comparative evidence.",
       "blocker": null,
-      "paid_credits": 0
-    }
-  ],
-  "history": [
+      "paid_credits": 0,
+      "completed_at": "2026-10-06T13:31:00Z",
+      "result": {
+        "verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+        "run_id": 37470805228,
+        "artifact_id": 11417486230,
+        "final_evidence": "docs/evidence/valoria-first-playable-city-slice-v1/result.json",
+        "semantic_raycast_pass": "21/21",
+        "changed_pixels": {
+          "home": 22,
+          "pan_left": 13,
+          "pan_right": 18
+        },
+        "beauty_replacement_regions": [],
+        "real_geometry_support_families": 7,
+        "paid_credits": 0,
+        "next_prepared": "valoria-left-right-parcels-next-block-v1"
+      }
+    },
     {
       "id": "valoria-visual-convergence-production-v1",
       "title": "VALORIA VISUAL CONVERGENCE & PRODUCTION v1",
