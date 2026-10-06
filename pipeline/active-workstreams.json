@@ -66,6 +66,31 @@
       "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 owns the released Windows Unity runner. WebGL delivery remains parked and its Pages/publish files remain untouched.",
       "paid_credits": 0,
       "next": "Replace prototype-board read with natural strategic terrain, authored vegetation silhouettes, organic routes and portrait-safe composition; rerun full Unity + capture gates."
+    },
+    {
+      "id": "art-production-governance-v1",
+      "title": "Universal art production routing guard",
+      "owner": "chat-art-routing-governance-20261006",
+      "scope": [
+        "pipeline/art-production-requests/**",
+        "tools/check-art-production-governance.mjs",
+        ".github/workflows/art-production-governance.yml",
+        ".github/workflows/art-production-plan.yml",
+        "tools/plan-art-production.mjs",
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "AGENTS.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "repo-governance"
+      ],
+      "claimed_at": "2026-10-06T20:15:00Z",
+      "base_main_sha": "6a4ffde760cb0072874c67f98620df8374c6e199",
+      "status": "active",
+      "paid_credits": 0,
+      "phase": "IMPLEMENT UNIVERSAL VISUAL ROUTING ENFORCEMENT",
+      "dependency": "Must not modify Region 1 runtime/assets/gameplay or occupy the Windows Unity runner.",
+      "next": "Create per-workstream art requests, enforce active visual workstreams through the planner, and register Region 1 without touching its runtime."
     }
   ],
   "history": [
