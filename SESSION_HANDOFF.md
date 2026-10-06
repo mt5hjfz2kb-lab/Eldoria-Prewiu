@@ -1,3 +1,7 @@
+## 2026-10-06 — WORLD REGION 1 direction correction: dedicated 4X screen
+
+Owner direction is now explicit and canonical: **Valoria does not physically continue into World Region 1 through a walkable gate exit.** The player stays in the certified Valoria city screen and taps **Mundo** to change to a separate strategic 4X World screen. Region 1 represents Valoria as a compact recognizable map-city landmark and contains roads, resources, ruins, threats and march movement at strategic scale. Returning uses **Reino** or selection of Valoria on the world map. Continuity gate now measures shared Eldoria art direction, UI language and persistent state across the scene/scale change; it does not require 1:1 spatial continuity. Canonical updates: `pipeline/world-region-1.json`, `docs/ELDORIA_WORLD_REGION_1_V1.md`, sector layout and test matrix. No Unity runner, Pages, WebGL or paid credits touched.
+
 ## 2026-10-06 — ELDORIA WORLD REGION 1 v1 — ARCHITECTURE PASS / UNITY IMPLEMENTATION WAITING FOR RUNNER RELEASE
 
 Workstream `eldoria-world-region-1-v1` is active. Canonical contract: `docs/ELDORIA_WORLD_REGION_1_V1.md` + `pipeline/world-region-1.json`. The minimum sector is locked as Valoria gate → road/fork → `forest-valoria` → `old-watch-ruin` → `corrupt-scout` → return, with `quarry-valoria` optional context. Existing `PlayerState`/`LocalGateway` march, Gather/Fight, idempotent reward and save semantics are to be reused; the historical Frontier presentation is not production authority and will be replaced rather than revived.
