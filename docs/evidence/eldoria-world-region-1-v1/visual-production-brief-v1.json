@@ -1,0 +1,78 @@
+{
+  "workstream": "eldoria-world-region-1-v1",
+  "purpose": "Define a production visual brief that avoids both overproduction and a visible quality cliff from Valoria.",
+  "artDirection": {
+    "sameGameSignals": [
+      "dark adult medieval Eldoria palette",
+      "worn stone/timber/material restraint",
+      "cool atmospheric base with sparse warm human traces",
+      "localized corruption rather than global purple wash",
+      "cinematic depth without sacrificing 4X legibility"
+    ],
+    "deliberateDifferencesFromCity": [
+      "lower asset density",
+      "larger terrain/forest/relief masses",
+      "more negative space between strategic objects",
+      "strategic/iconographic city representation",
+      "POIs and marches read before micro-detail"
+    ]
+  },
+  "composition": {
+    "heroElements": [
+      "Valoria strategic city",
+      "first corrupt threat"
+    ],
+    "primary": [
+      "forest resource",
+      "neutral ruin/watch POI",
+      "main route fork"
+    ],
+    "secondary": [
+      "quarry context",
+      "rock clusters",
+      "minor road traces"
+    ],
+    "tertiary": [
+      "ambient vegetation",
+      "small debris",
+      "ground noise"
+    ]
+  },
+  "densityBudget": {
+    "high": [
+      "Valoria city landmark",
+      "main route junction",
+      "ruin",
+      "forest hotspot",
+      "corrupt threat"
+    ],
+    "medium": [
+      "approach corridors",
+      "quarry context",
+      "terrain transitions"
+    ],
+    "low": [
+      "between-route wilderness",
+      "screen edges",
+      "unbuilt reserved territory"
+    ],
+    "rule": "Use relief, forest masses, water/fog and natural barriers to make low-density space intentional rather than empty."
+  },
+  "readability": {
+    "far": "cities, major terrain masses, corruption zone and primary routes remain obvious",
+    "normal": "resource nodes, threat, POI and march direction are immediately distinguishable",
+    "near": "supporting environment can reveal additional detail but cannot become required for recognition",
+    "mobile": "no dependence on tiny props, fine text or micro-contrast"
+  },
+  "failConditions": [
+    "Valoria looks premium but World looks like greybox/prototype",
+    "toy-board or generic low-poly diorama read",
+    "roads look like artificial board-game strips",
+    "forest reads as repeated identical trees",
+    "UI labels are doing all recognition work",
+    "terrain dressing competes with resources/enemies/marches",
+    "asset packs visibly clash with each other",
+    "world attempts city-level density everywhere and becomes noisy or too expensive"
+  ],
+  "gateMeaning": "WORLD/VALORIA CONTINUITY passes when the deliberate scale change feels like another layer of the same Eldoria game, not when the World reproduces Valoria's city-level density."
+}
