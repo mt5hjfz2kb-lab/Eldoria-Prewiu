@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "request_id": "valoria-visual-convergence-production-v1",
-  "asset_or_sector": "Valoria convergence Gate 5 — approved Lower Gate real-geometry appearance/depth integration",
+  "asset_or_sector": "Valoria convergence — production recipe lock after Gate 5",
   "profile": "environment_new_geometry",
   "geometry_gap_proven": true,
   "geometry_gap_evidence": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
@@ -17,9 +17,9 @@
   },
   "validation": {
     "source_gate": "Use only approved LowerGateFamilyV1 geometry and already-qualified appearance/depth components. No new geometry generation or method discovery.",
-    "final_gate": "Gate 5 promotes only if real LowerGateFamilyV1 geometry keeps Gate 4B alignment/interaction, target-conditioned appearance improves HOME, bounded pan retains real 3D silhouette/parallax, and SHARP outside the treated LowerGate region remains unchanged."
+    "final_gate": "Do not open new R&D. Lock one repeatable production recipe from Gates 1–5 with canonical inputs, SHARP 600K visual layer, approved real geometry, interaction semantics, target-conditioned appearance, bounded camera validation and explicit fallback classes."
   },
-  "notes": "Gate 4A runtime density PASS run 37461644325 / artifact 11411669104. Gate 4B real-geometry substrate PASS run 37462916737 / artifact 11413795807. Current priority is appearance/depth on the same real editable Lower Gate mesh; no new generator or paid action.",
-  "status": "CONVERGENCE_GATE_5_ACTIVE",
+  "notes": "Gate 5 PASS run 37464692130 / artifact 11414269587. LowerGateFamilyV1 alignment and interaction preserved; localized target-conditioned appearance visible at HOME/pan-left/pan-right; full-frame takeover guard passed; paid credits 0. Apparent capture stall was low observability, not a deadlock.",
+  "status": "CONVERGENCE_GATES_1_TO_5_PASS_RECIPE_LOCK",
   "blocker": null
 }
