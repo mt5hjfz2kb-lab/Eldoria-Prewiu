@@ -143,7 +143,7 @@ namespace Eldoria.EditorTools
                 $"  \"sampling_step\": {prep.Step},\n"+
                 $"  \"bounds_center\": \"{asset.Bounds.center}\",\n"+
                 $"  \"bounds_size\": \"{asset.Bounds.size}\",\n"+
-                "  \"source\": \"SHARP full canonical Valoria PLY artifact 11404383856\",\n"+
+                "  \"source\": \"SHARP clean approved-reference PLY artifact 11408853949\",\n"+
                 "  \"renderer\": \"UnitySplats 1.2.0 runtime PLY / URP\",\n"+
                 "  \"proof_mode\": \"bounded_600k_uniform_sample\",\n"+
                 "  \"functional_substrate_collider\": true,\n"+
