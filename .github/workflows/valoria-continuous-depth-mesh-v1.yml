@@ -1,0 +1,65 @@
+name: "[R&D] Valoria Continuous Depth Mesh v1"
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pipeline/valoria-continuous-depth-mesh-v1.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          python -m pip install --quiet "gradio_client>=1.4" pillow numpy
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1-mesa-dri libglx-mesa0
+      - name: Build Marigold continuous depth mesh
+        env:
+          OUT_DIR: /tmp/depthmesh-proof
+        run: python tools/valoria-continuous-depth-mesh-proof.py
+      - name: Render home and bounded pan
+        run: |
+          cat > /tmp/depthmesh-proof/render.py <<'PY'
+          import bpy, os, math
+          from mathutils import Vector
+          root="/tmp/depthmesh-proof"
+          bpy.ops.wm.read_factory_settings(use_empty=True)
+          bpy.ops.wm.obj_import(filepath=os.path.join(root,"valoria-depthmesh.obj"))
+          obj=next(o for o in bpy.context.scene.objects if o.type=="MESH")
+          # Rebuild a deterministic image material to avoid MTL importer variance.
+          mat=bpy.data.materials.new("ValoriaImage"); mat.use_nodes=True
+          nodes=mat.node_tree.nodes; links=mat.node_tree.links
+          bsdf=nodes.get("Principled BSDF")
+          tex=nodes.new("ShaderNodeTexImage"); tex.image=bpy.data.images.load(os.path.join(root,"world-crop.png"))
+          links.new(tex.outputs["Color"],bsdf.inputs["Base Color"]); bsdf.inputs["Roughness"].default_value=0.85
+          obj.data.materials.clear(); obj.data.materials.append(mat)
+          sc=bpy.context.scene; sc.render.engine="BLENDER_EEVEE"; sc.render.resolution_x=1152; sc.render.resolution_y=740; sc.render.resolution_percentage=100
+          sc.render.image_settings.file_format="PNG"
+          if sc.world is None: sc.world=bpy.data.worlds.new("World")
+          sc.world.color=(0.02,0.02,0.025)
+          bpy.ops.object.light_add(type="AREA",location=(-2,-1,4)); bpy.context.object.data.energy=700; bpy.context.object.data.size=5
+          bpy.ops.object.camera_add(location=(0,0,3.05)); cam=bpy.context.object; sc.camera=cam; cam.data.lens=49
+          cam.rotation_euler=(0,0,0); cam.rotation_euler=(Vector((0,0,0.22))-cam.location).to_track_quat("-Z","Y").to_euler()
+          poses=[("home",0.0),("pan-left",-0.14),("pan-right",0.14)]
+          for name,x in poses:
+              cam.location=(x,0,3.05)
+              target=Vector((x*0.35,0,0.22))
+              cam.rotation_euler=(target-cam.location).to_track_quat("-Z","Y").to_euler()
+              sc.render.filepath=os.path.join(root,name+".png"); bpy.ops.render.render(write_still=True)
+          PY
+          blender -b --python /tmp/depthmesh-proof/render.py
+          test -s /tmp/depthmesh-proof/home.png
+          test -s /tmp/depthmesh-proof/pan-left.png
+          test -s /tmp/depthmesh-proof/pan-right.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-continuous-depth-mesh-v1
+          path: /tmp/depthmesh-proof
+          if-no-files-found: error
+          retention-days: 30
