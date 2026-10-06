@@ -37,7 +37,7 @@ namespace Eldoria.Tests
             var camera=GameObject.Find("Isometric camera")?.GetComponent<Camera>();
             Assert.That(camera,Is.Not.Null);
             Assert.That(camera.orthographic,Is.True);
-            Assert.That(camera.orthographicSize,Is.EqualTo(14f).Within(.01f));
+            Assert.That(camera.orthographicSize,Is.EqualTo(12.4f).Within(.01f));
 
             var cityVisual=GameObject.Find("World Region 1 · Player City v1");
             if(cityVisual!=null)
@@ -80,7 +80,7 @@ namespace Eldoria.Tests
 
             home.Invoke(presenter,null);
             Assert.That(Vector3.Distance(camera.transform.position,origin),Is.LessThan(.01f));
-            Assert.That(camera.orthographicSize,Is.EqualTo(14f).Within(.01f));
+            Assert.That(camera.orthographicSize,Is.EqualTo(12.4f).Within(.01f));
         }
 
         [UnityTest]
