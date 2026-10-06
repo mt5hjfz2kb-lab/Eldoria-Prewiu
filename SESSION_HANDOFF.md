@@ -1,3 +1,15 @@
+## 2026-10-06 — SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED
+
+The Camera-First / Semantic 2.5D depth-shell experiment is closed. Final authoritative gate: `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`.
+
+Final evidence: source run **37434039330** / artifact **11397359251**; first Unity run **37434455097** / artifact **11397984610**; edge-zero source correction run **37434938898**; alpha-fixed Unity run **37435354553** / artifact **11398437953**; final renderer-suppression Unity run **37435725415** / artifact **11398459304**.
+
+Verdict: **TECH PASS / VISUAL FAIL / CAMERA ENVELOPE FAIL / OCCLUSION-DEPTH FAIL / FUNCTIONAL 3D COMPATIBILITY PASS WITH VISUAL CAVEAT / PRODUCTION SCALABILITY FAIL → REJECT — DOES NOT SOLVE THE PRODUCTION PROBLEM.**
+
+The rectangular plate defect was eliminated, proving the alpha path itself. The remaining structural failure is spatial integration: the projection remains detached from the functional city, and bounded pan exposes severe disocclusion/card seams. Final proof hid 393 legacy renderers visually while preserving collider/hotspot signature, yet the result still failed visually. Do not continue mask/inpainting/parallax micro-iterations of this method. Preserve all evidence as historical R&D. Do not start the BROKEN→REPAIRED transition because adoption prerequisite failed. Tripo/paid credits: 0.
+
+Broad Valoria production remains frozen until a genuinely different visual production method is explicitly selected.
+
 ## 2026-10-06 — GOLDEN PRIMARY FORMS PROFESSIONAL RECONSTRUCTION v1 — BLOCKED / CODE-AUTHORING CEILING
 
 Authoritative source run **37381915933** / artifact **11376050764** completed successfully after the source02/source03 procedural-method ceiling. The method genuinely changed to custom profile loops, tapered lofts, direct mesh construction, continuous terrain banks and grouped canopy masses, reducing the source to 27 meshes / 2,660 tris. Direct evidence review still fails the canonical premium target: Geometry/Silhouette **3.0/5**, Material Response **2.5/5**, Contact/Integration **2.5/5**, Environment Coherence **2.5/5**, Premium Perception **2.0/5**. Gate/Bridge remain visibly algorithmic; bridge/cliff/gate contacts expose discontinuities; terrain remains schematic; vegetation remains placeholder-like. **Unity NOT AUTHORIZED. Tripo 0. Broad Valoria remains frozen.** Do not create another scripted source iteration. Next method must be interactive/artist-led Blender mesh/sculpt authoring from the official camera, or a separately owner-authorized genuinely different external geometry source. Canonical gate: `docs/evidence/valoria-golden-lookdev-slice-v1/professional-primary-reconstruction-v1/PROFESSIONAL_RECONSTRUCTION_VISUAL_GATE.md`.
