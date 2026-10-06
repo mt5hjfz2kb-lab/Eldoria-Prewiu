@@ -138,3 +138,20 @@ E. Scalability proof: majority of visible architecture in the second composition
 
 ### Decision
 Historical large-module modularity is **REJECTED as the answer**. Fine-grained authored grammar remains a genuinely different candidate and is the next zero-spend proof worth attempting. No Tripo/Meshy spend is justified before this proof.
+
+
+## Fine-grained grammar proof contract
+
+Status: EXECUTION AUTHORIZED, ZERO SPEND.
+
+The proof uses nine reusable construction roles: wall field, tower body, tower crown, arch/voussoir, buttress/pier, plinth/base, wall terminal/return, heraldry attachment, and a separate architecture-to-ground receiver interface.
+
+Locked camera: orthographic yaw 20 degrees, pitch 35 degrees, vertical span 48. Lower Gate control metrics inherit the accepted family: clear aperture 4.724 m, foundation Z 7.1 m, tower top Z 15.4 m.
+
+The proof has two mandatory compositions. Composition A reconstructs Lower Gate. Composition B must create a distinct secondary wall/tower/access fragment from the same primary pieces. B may introduce zero new primary mesh families and at least 80 percent of its visible architecture must be unchanged reusable grammar pieces.
+
+Pass requires, in neutral source review before Unity: geometry/silhouette >=4/5, architectural identity >=4/5, official-camera readability >=4/5 for A; Valoria identity >=4/5 for B; explicit support/receiver interfaces; no fused terrain pedestal.
+
+Reject if one-off geometry dominates A, B needs a new primary family, either identity gate is below 4/5, a fused diorama/rock base is required, or Unity/shader presentation is needed to rescue the forms.
+
+Implementation must use the existing Blender professional-authoring route and existing reset/preproduction evidence infrastructure. Do not create a parallel asset pipeline. Do not use Tripo/Meshy or paid generation.
