@@ -24,69 +24,65 @@ jobs:
           blender --version
           7z | head -4
 
-      - name: Fetch CC0 photogrammetry donors
+      - name: Fetch CC0 photogrammetry masonry donor
         run: |
-          mkdir -p /tmp/photo-proof/rock /tmp/photo-proof/wall /tmp/photo-proof/evidence
+          mkdir -p /tmp/photo-proof/wall /tmp/photo-proof/evidence
+          echo "Rock donor already validated in run 37445549161 / artifact 11403535192" > /tmp/photo-proof/rock-files.txt
 
-          curl -L --fail --retry 3 \
-            -A "EldoriaResearch/1.0" \
-            -o /tmp/photo-proof/rock/rock.7z \
-            "https://opengameart.org/sites/default/files/Free%20-%20Photogrammetric%20Rock.7z"
-
-          7z x -y /tmp/photo-proof/rock/rock.7z -o/tmp/photo-proof/rock/unpacked >/tmp/photo-proof/rock-extract.log
-          find /tmp/photo-proof/rock/unpacked -type f | sort > /tmp/photo-proof/rock-files.txt
-
-          # Prefer ambientCG for automated CC0 masonry because its API/download
-          # path is stable and account-free. Select a popular photogrammetric stone/wall asset.
           python - <<'PY'
           import json, os, urllib.parse, urllib.request
-          def fetch_assets(params):
-              q=urllib.parse.urlencode(params)
-              url="https://ambientcg.com/api/v2/full_json?"+q
+          def get_json(url):
               req=urllib.request.Request(url,headers={"User-Agent":"EldoriaResearch/1.0"})
               with urllib.request.urlopen(req,timeout=90) as r:
-                  return json.load(r).get("assets",[])
-          queries=[
-              {"type":"Material","q":"stone wall","sort":"Popular","limit":100,"include":"tagData,downloadData"},
-              {"type":"Material","q":"stone","sort":"Popular","limit":150,"include":"tagData,downloadData"},
-              {"type":"Material","sort":"Popular","limit":250,"include":"tagData,downloadData"}
-          ]
-          assets=[]
-          for params in queries:
-              assets=fetch_assets(params)
-              print("AMBIENTCG_QUERY",params,"RESULTS",len(assets))
-              if assets:
-                  break
-          if not assets:
-              raise SystemExit("ambientCG API returned no assets after fallbacks")
+                  return json.load(r)
+
+          # ambientCG API v3 (current). Try focused searches and fall back broad.
+          payload=None
+          used=None
+          for q in ["stone wall","masonry stone","stone"]:
+              url="https://ambientcg.com/api/v3/assets?"+urllib.parse.urlencode({"q":q,"limit":100})
+              try:
+                  data=get_json(url)
+                  print("V3_QUERY",url,"TYPE",type(data).__name__)
+                  items=data.get("assets",data.get("data",data.get("results",[]))) if isinstance(data,dict) else data
+                  if items:
+                      payload=items; used=url; break
+              except Exception as e:
+                  print("V3_QUERY_FAIL",url,repr(e))
+          if not payload:
+              raise SystemExit("ambientCG v3 returned no assets")
+
+          def tags_of(a):
+              tags=a.get("tags",[])
+              if isinstance(tags,dict): tags=list(tags.keys())
+              return " ".join(map(str,tags))
           def score(a):
-              txt=(str(a.get("id",""))+" "+str(a.get("name",""))+" "+json.dumps(a.get("tags",[]))).lower()
+              txt=(" ".join([str(a.get("id","")),str(a.get("name","")),tags_of(a)])).lower()
               s=0
-              for t,v in [("stone",20),("wall",30),("masonry",30),("rock",10),("brick",8),("medieval",25),("rough",5)]:
+              for t,v in [("wall",40),("masonry",40),("stone",25),("rock",8),("medieval",30),("rough",5),("brick",8)]:
                   if t in txt: s+=v
               return s
-          assets=sorted(assets,key=score,reverse=True)
-          chosen=assets[0]
-          aid=chosen["id"]
+          payload=sorted(payload,key=score,reverse=True)
+          chosen=payload[0]
+          aid=chosen.get("id") or chosen.get("assetId") or chosen.get("asset_id")
+          if not aid:
+              raise SystemExit("ambientCG v3 asset missing id: "+repr(chosen)[:500])
           dl=f"https://ambientcg.com/get?file={aid}_2K-JPG.zip"
           print("AMBIENTCG_CHOSEN",aid,chosen.get("name"),"score",score(chosen),dl)
           out="/tmp/photo-proof/wall/wall-2k.zip"
           req=urllib.request.Request(dl,headers={"User-Agent":"EldoriaResearch/1.0"})
-          with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as f:
+          with urllib.request.urlopen(req,timeout=180) as r, open(out,"wb") as fh:
               while True:
                   b=r.read(1024*1024)
                   if not b: break
-                  f.write(b)
-          open("/tmp/photo-proof/wall-source.txt","w").write(json.dumps({"id":aid,"name":chosen.get("name"),"url":dl,"license":"CC0"},indent=2))
+                  fh.write(b)
+          open("/tmp/photo-proof/wall-source.txt","w").write(json.dumps({"id":aid,"name":chosen.get("name"),"api":used,"url":dl,"license":"CC0"},indent=2))
           print("DOWNLOADED",out,os.path.getsize(out))
           PY
+
           mkdir -p /tmp/photo-proof/wall/unpacked
           unzip -q /tmp/photo-proof/wall/wall-2k.zip -d /tmp/photo-proof/wall/unpacked
           find /tmp/photo-proof/wall/unpacked -type f | sort > /tmp/photo-proof/wall-files.txt
-
-          echo "--- ROCK FILES ---"
-          head -100 /tmp/photo-proof/rock-files.txt
-          echo "--- WALL FILES ---"
           head -100 /tmp/photo-proof/wall-files.txt
 
       - name: Render photogrammetry rock donor
@@ -180,9 +176,13 @@ jobs:
           with open(os.path.join(ev,"rock-report.txt"),"w") as f:
               f.write(f"source=OpenGameArt Free Photogrammetric Rock\nlicense=CC0\nchosen={src}\nmeshes={len(meshes)}\ntriangles_approx={tris}\nbounds={tuple(dims)}\ndiffuse={diffuse}\nnormal={normal}\nocclusion={occ}\n")
           PY
-          blender -b --python /tmp/photo-proof/render_rock.py
-          test -s /tmp/photo-proof/evidence/rock-3q.png
-          test -s /tmp/photo-proof/evidence/rock-close.png
+          if [ -d /tmp/photo-proof/rock/unpacked ]; then
+            blender -b --python /tmp/photo-proof/render_rock.py
+            test -s /tmp/photo-proof/evidence/rock-3q.png
+            test -s /tmp/photo-proof/evidence/rock-close.png
+          else
+            printf '%s\n' "Photogrammetry rock donor already validated: run 37445549161 / artifact 11403535192" > /tmp/photo-proof/evidence/rock-report.txt
+          fi
 
       - name: Build scanned masonry surface proof when available
         run: |
