@@ -86,9 +86,10 @@ namespace Eldoria.EditorTools
             cam.aspect = W / (float)H;
             cam.transform.position = Vector3.zero;
 
-            var forward = asset.Bounds.center;
-            if (forward.sqrMagnitude < 1e-6f) forward = Vector3.forward;
-            var homeRotation = Quaternion.LookRotation(forward.normalized, Vector3.up);
+            // Gate 2 must inherit the exact clean SHARP production HOME camera.
+            // Do not re-aim at reconstructed bounds: interaction alignment is evaluated
+            // against the locked Gate 1 clean visual baseline.
+            var homeRotation = Quaternion.identity;
             cam.transform.rotation = homeRotation;
 
             PrepareSplatFrame(gs, cam, "gate2-warmup");
@@ -121,6 +122,11 @@ namespace Eldoria.EditorTools
 
             CaptureBeauty(gs, cam, output, "beauty-home");
 
+            // Batchmode does not advance a normal FixedUpdate before these deterministic
+            // raycasts. Explicitly synchronize newly-created proxy transforms/colliders
+            // into the physics scene before evaluating selection.
+            Physics.SyncTransforms();
+
             var hitRows = new List<string>();
             int passed = 0;
             foreach (var p in proxies)
@@ -131,7 +137,7 @@ namespace Eldoria.EditorTools
                 bool ok = hit && hitId == p.Id;
                 if (ok) passed++;
                 hitRows.Add(
-                    $"    {{\"expected\":\"{p.Id}\",\"viewport\":[{p.Viewport.x:F3},{p.Viewport.y:F3}],\"hit\":{(hit ? "true":"false")},\"actual\":\"{hitId}\",\"world\":\"{(hit ? info.point.ToString("F3") : "")}\",\"pass\":{(ok ? "true":"false")} }}"
+                    $"    {{\"expected\":\"{p.Id}\",\"viewport\":[{p.Viewport.x.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)},{p.Viewport.y.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)}],\"hit\":{(hit ? "true":"false")},\"actual\":\"{hitId}\",\"world\":\"{(hit ? info.point.ToString("F3") : "")}\",\"pass\":{(ok ? "true":"false")} }}"
                 );
             }
 
