@@ -1,8 +1,8 @@
 {
   "workstream": "eldoria-world-region-1-v1",
-  "captured_at": "2026-10-06T16:46:00Z",
-  "repo_head_seen": "a2759db948286476407719a148c516993f9af348",
-  "status": "ARCHITECTURE_PASS_IMPLEMENTATION_PENDING_RUNNER_RELEASE",
+  "captured_at": "2026-10-06T19:08:00Z",
+  "repo_head_seen": "5d0825af062826e8122251df64230b4d96ac035b",
+  "status": "IMPLEMENTED_VALIDATION_IN_PROGRESS",
   "protected": {
     "valoriaProductionScene": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity (artifact-staged canonical scene; not stored directly on main)",
     "valoriaVisualAuthority": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
@@ -13,43 +13,39 @@
   "reuse": [
     "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs :: PlayerState, MarchState, SliceRules",
     "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs :: Gather/Fight/march/idempotency/reward",
-    "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs :: prior Frontier knowledge only",
-    "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs :: existing transition/UI semantics"
+    "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs :: Mundo/Reino UI transition and command panels",
+    "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb :: strategic city representation",
+    "Historical Frontier/web implementations :: semantics/topology knowledge only, never player-facing authority"
   ],
   "replace": [
     "Historical Frontier player-facing procedural composition",
-    "Any abstract disconnected world-map presentation"
+    "Physical gate-walk interpretation of City -> World",
+    "Any world presentation that is only decorative terrain and omits 4X entities/marches"
   ],
   "minimalSector": [
-    "Valoria lower-gate continuation",
-    "primary road/fork",
+    "Valoria strategic map-city origin reached via the Mundo button",
+    "primary road/fork network",
     "forest-valoria",
     "old-watch-ruin",
     "corrupt-scout",
-    "return corridor"
+    "optional quarry-valoria context",
+    "Reino/Valoria map selection transition back to the city screen"
   ],
-  "blocker": {
-    "kind": "exclusive-runner-ownership",
-    "owner": "valoria-mobile-web-playtest-v1",
-    "resource": "windows-self-hosted-unity-6000-3-23f1",
-    "effect": "Do not commit/dispatch heavy Unity world integration until ownership is released because Unity/** pushes can auto-trigger the heavy job.",
-    "notBlocked": [
-      "region contract/data",
-      "architecture audit",
-      "test plan",
-      "documentation",
-      "non-Unity preparation"
-    ]
-  },
+  "blocker": null,
   "gates": {
-    "tech": "PENDING",
-    "visual": "PENDING",
-    "world_valoria_continuity": "PENDING",
-    "navigation": "PENDING",
-    "interaction": "PENDING",
-    "gameplay_loop": "PENDING",
-    "save_reload": "existing primitives verified; Region 1 integrated proof PENDING",
-    "bounded_camera": "PENDING",
-    "mobile_readability": "PENDING"
+    "tech": "IN_VALIDATION",
+    "visual": "PENDING_REAL_CAPTURE_REVIEW",
+    "world_valoria_continuity": "IN_VALIDATION",
+    "navigation": "IN_VALIDATION",
+    "interaction": "IN_VALIDATION",
+    "gameplay_loop": "IN_VALIDATION",
+    "save_reload": "existing LocalGateway persistence/idempotency verified; integrated Region 1 proof IN_VALIDATION",
+    "bounded_camera": "IN_VALIDATION",
+    "mobile_readability": "PENDING_REAL_CAPTURE_REVIEW"
+  },
+  "execution": {
+    "runner": "windows-self-hosted-unity-6000-3-23f1 acquired by eldoria-world-region-1-v1",
+    "webgl": "valoria-mobile-web-playtest-v1 remains parked and does not block Region 1",
+    "current": "UI progression, architecture guard and full Unity gate are validating the real Region 1 runtime"
   }
 }
