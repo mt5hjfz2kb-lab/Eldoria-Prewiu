@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T14:13:16.777Z",
+  "updated_at": "2026-10-06T14:30:50.192Z",
   "active": [
     {
       "id": "valoria-real-game-state-v1",
@@ -17,7 +17,9 @@
         "docs/VALORIA*",
         "docs/evidence/valoria-real-game-state-v1/**",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs.meta"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -26,7 +28,8 @@
       "claimed_at": "2026-10-06T14:13:16.777Z",
       "base_main_sha": "056df4b2e17b6ef8d773ac37fb8312c8c91db428",
       "status": "active",
-      "paid_credits": 0
+      "paid_credits": 0,
+      "phase": "Existing gateway/state integration implemented; conditional SHARP terrain/parcel layers authored; runtime and visual gates pending"
     }
   ],
   "history": [
