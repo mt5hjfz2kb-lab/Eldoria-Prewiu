@@ -34,7 +34,7 @@ jobs:
           git clone --depth 1 https://github.com/VAST-AI-Research/TripoSR.git /tmp/TripoSR
           cd /tmp/TripoSR
           python -m pip install omegaconf==2.3.0 Pillow==10.1.0 einops==0.7.0 transformers==4.45.0 trimesh==4.0.5 rembg==2.0.50 huggingface-hub==0.34.0 "imageio[ffmpeg]" xatlas==0.0.9 moderngl==5.10.0 onnxruntime scikit-image
-          python -m pip install scikit-build-core cmake ninja
+          python -m pip install scikit-build-core cmake ninja pybind11
           python -m pip install --no-build-isolation git+https://github.com/tatsy/torchmcubes.git
 
       - name: Prepare canonical gate input
