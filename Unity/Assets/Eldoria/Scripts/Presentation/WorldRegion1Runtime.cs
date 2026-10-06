@@ -334,26 +334,13 @@ namespace Eldoria.Presentation
             var nature=NatureTreePrefab(variant);
             if(nature!=null)
             {
-                var instance=Object.Instantiate(nature);
-                instance.name=name;
-                instance.transform.SetParent(root,true);
-                instance.transform.position=position;
-                instance.transform.rotation=Quaternion.Euler(0f,(variant*47)%360,0f);
-                foreach(var collider in instance.GetComponentsInChildren<Collider>(true))collider.enabled=false;
-                foreach(var behaviour in instance.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
-                var renderers=instance.GetComponentsInChildren<Renderer>(true);
-                if(renderers.Length>0)
+                var instance=ValoriaKit.BenchmarkPiece(name,nature,position,
+                    2.05f*scale,2.9f*scale,Quaternion.Euler(0f,(variant*47)%360,0f));
+                if(instance!=null)
                 {
-                    var bounds=renderers[0].bounds;
-                    for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-                    float height=Mathf.Max(.01f,bounds.size.y);
-                    instance.transform.localScale*=2.6f*scale/height;
-                    renderers=instance.GetComponentsInChildren<Renderer>(true);
-                    bounds=renderers[0].bounds;
-                    for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-                    instance.transform.position+=position-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+                    Parent(instance);
+                    return;
                 }
-                return;
             }
 
             var holder=new GameObject(name);
@@ -394,23 +381,9 @@ namespace Eldoria.Presentation
         static void NatureBush(string name,Vector3 position,float scale,int variant)
         {
             if(externalLibrary==null||externalLibrary.NatureBush01==null)return;
-            var bush=Object.Instantiate(externalLibrary.NatureBush01);
-            bush.name=name;
-            bush.transform.SetParent(root,true);
-            bush.transform.position=position;
-            bush.transform.rotation=Quaternion.Euler(0f,(variant*71)%360,0f);
-            foreach(var collider in bush.GetComponentsInChildren<Collider>(true))collider.enabled=false;
-            foreach(var behaviour in bush.GetComponentsInChildren<MonoBehaviour>(true))behaviour.enabled=false;
-            var renderers=bush.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length==0)return;
-            var bounds=renderers[0].bounds;
-            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-            float span=Mathf.Max(.01f,Mathf.Max(bounds.size.x,bounds.size.z));
-            bush.transform.localScale*=1.45f*scale/span;
-            renderers=bush.GetComponentsInChildren<Renderer>(true);
-            bounds=renderers[0].bounds;
-            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-            bush.transform.position+=position-new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            var bush=ValoriaKit.BenchmarkPiece(name,externalLibrary.NatureBush01,position,
+                1.35f*scale,.85f*scale,Quaternion.Euler(0f,(variant*71)%360,0f));
+            Parent(bush);
         }
 
         static void AdoptLooseVisuals()
