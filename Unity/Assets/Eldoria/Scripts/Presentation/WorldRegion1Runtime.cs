@@ -118,6 +118,8 @@ namespace Eldoria.Presentation
                 new Vector3(0f,-.58f,4f),new Vector3(96f,.95f,86f),Earth);
             var groundCollider=baseGround.GetComponent<Collider>();
             if(groundCollider!=null)groundCollider.enabled=false;
+            if(externalLibrary!=null&&externalLibrary.ValoriaDirtSurface!=null)
+                baseGround.GetComponent<Renderer>().sharedMaterial=externalLibrary.ValoriaDirtSurface;
 
             // Broad low-frequency colour masses replace the old repeated checker texture.
             GroundPatch("World Region 1 · west meadow",new Vector3(-14f,-.075f,8f),new Vector3(22f,.12f,30f),Meadow,-9f);
@@ -125,14 +127,20 @@ namespace Eldoria.Presentation
             GroundPatch("World Region 1 · north moor",new Vector3(1f,-.06f,18f),new Vector3(34f,.10f,14f),new Color(.25f,.27f,.22f),-4f);
             GroundPatch("World Region 1 · Valoria approach",new Vector3(0f,-.05f,-7f),new Vector3(17f,.10f,10f),new Color(.36f,.32f,.24f),5f);
 
+            int mountainIndex=0;
             foreach(var p in new[]{
                 new Vector3(-22f,-1.4f,11f),new Vector3(-16f,-1.6f,23f),
                 new Vector3(21f,-1.4f,16f),new Vector3(7f,-1.8f,27f)})
             {
-                var mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
-                    "World Region 1 · mountain barrier",p,11f,6.5f,
-                    Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.34f,.36f,.34f,1f));
+                var mountain=WorldInventoryPiece("Mountain01",
+                    "World Region 1 · mountain barrier",p,12.5f,8.2f,
+                    Quaternion.Euler(0,(p.x+p.z)*5f+mountainIndex*23f,0));
+                if(mountain==null)
+                    mountain=ValoriaKit.TerrainPieceTinted("SM_Mountains_11",
+                        "World Region 1 · mountain barrier",p,11f,6.5f,
+                        Quaternion.Euler(0,(p.x+p.z)*5f,0),new Color(.34f,.36f,.34f,1f));
                 Parent(mountain);
+                mountainIndex++;
             }
 
             var centres=new[]{new Vector3(-13f,0,7f),new Vector3(-11f,0,17f),
@@ -149,9 +157,17 @@ namespace Eldoria.Presentation
                     WorldTree("World Region 1 · forest mass",p,.80f+(i%3)*.10f,i+cluster);
                 }
             }
+            int edgeRock=0;
             foreach(var p in new[]{new Vector3(-19f,0,-4f),new Vector3(18f,0,-5f),
                 new Vector3(-18f,0,24f),new Vector3(20f,0,23f)})
-                ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.05f,6);
+            {
+                var rock=WorldInventoryPiece(edgeRock%2==0?"Rock01":"Rock02",
+                    "World Region 1 · edge geology",p,4.0f,2.0f,
+                    Quaternion.Euler(0,edgeRock*61f,0));
+                if(rock==null)ValoriaKit.RockCluster("World Region 1 · edge geology",p,1.05f,6);
+                else Parent(rock);
+                edgeRock++;
+            }
         }
 
         static void BuildRoutes()
@@ -233,17 +249,26 @@ namespace Eldoria.Presentation
         {
             var ruin=new GameObject("World Region 1 · old watch ruin");
             ruin.transform.SetParent(root,true);
-            var rescued=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
-            if(rescued!=null)
-                Parent(ValoriaKit.BenchmarkPieceTinted("World Region 1 · ruin authored",
-                    rescued,RuinPosition,4.2f,3.3f,Quaternion.Euler(0,-18f,0),Stone));
-            else
+
+            var arch=WorldInventoryPiece("Arch_Gothic","World Region 1 · ruin arch",
+                RuinPosition+new Vector3(-.65f,0f,.25f),3.6f,3.7f,Quaternion.Euler(0,-18f,0));
+            var wall=WorldInventoryPiece("Wall_Broken","World Region 1 · ruin wall",
+                RuinPosition+new Vector3(1.05f,0f,.65f),3.3f,2.7f,Quaternion.Euler(0,38f,0));
+            Parent(arch);Parent(wall);
+
+            if(arch==null&&wall==null)
             {
-                var tower=Primitive("World Region 1 · ruin fallback",PrimitiveType.Cube,
-                    RuinPosition+new Vector3(0,1.0f,0),new Vector3(2.4f,2f,2.0f),Stone);
-                tower.transform.SetParent(ruin.transform,true);
+                var rescued=Resources.Load<GameObject>("Valoria/Rescued/TowerWallRock");
+                if(rescued!=null)
+                    Parent(ValoriaKit.BenchmarkPieceTinted("World Region 1 · ruin authored",
+                        rescued,RuinPosition,4.2f,3.3f,Quaternion.Euler(0,-18f,0),Stone));
             }
-            ValoriaKit.RockCluster("World Region 1 · ruin rubble",RuinPosition+new Vector3(1.6f,0,-.5f),.7f,6);
+
+            var rubble=WorldInventoryPiece("Rock02","World Region 1 · ruin rubble",
+                RuinPosition+new Vector3(1.55f,0f,-.55f),2.5f,1.15f,Quaternion.Euler(0,27f,0));
+            if(rubble==null)ValoriaKit.RockCluster("World Region 1 · ruin rubble",RuinPosition+new Vector3(1.6f,0,-.5f),.7f,6);
+            else Parent(rubble);
+
             Hotspot("World Region 1 · ruin target","old-watch-ruin",
                 RuinPosition+new Vector3(0,1.2f,0),new Vector3(4.8f,3f,4.4f));
         }
@@ -335,6 +360,14 @@ namespace Eldoria.Presentation
 
         static void WorldTree(string name,Vector3 position,float scale,int variant)
         {
+            var inventoryTree=WorldInventoryPiece(variant%2==0?"Tree01A":"Tree01B",name,position,
+                2.35f*scale,3.7f*scale,Quaternion.Euler(0f,(variant*47)%360,0f));
+            if(inventoryTree!=null)
+            {
+                Parent(inventoryTree);
+                return;
+            }
+
             var nature=NatureTreePrefab(variant);
             if(nature!=null)
             {
@@ -368,6 +401,14 @@ namespace Eldoria.Presentation
                 variant%2==0?PineLight:Pine);
             upper.transform.SetParent(holder.transform,true);
             var uc=upper.GetComponent<Collider>();if(uc!=null)uc.enabled=false;
+        }
+
+        static GameObject WorldInventoryPiece(string resourceName,string name,Vector3 ground,
+            float footprint,float maxHeight,Quaternion rotation)
+        {
+            var prefab=Resources.Load<GameObject>("WorldInventory/"+resourceName);
+            if(prefab==null)return null;
+            return ValoriaKit.BenchmarkPiece(name,prefab,ground,footprint,maxHeight,rotation);
         }
 
         static Object NatureTreePrefab(int variant)
