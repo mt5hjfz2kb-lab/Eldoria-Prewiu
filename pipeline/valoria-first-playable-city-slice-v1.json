@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "workstream": "valoria-first-playable-city-slice-v1",
+  "mode": "PRODUCTION",
+  "recipe": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
+  "visual_authority": {
+    "method": "SHARP",
+    "source_artifact_id": 11408853949,
+    "splat_count": 589824,
+    "home_authority_artifact_id": 11409079879
+  },
+  "runtime": "Unity 6 URP",
+  "families": [
+    "BridgeFamilyV1",
+    "LowerGateFamilyV1",
+    "RoadFamilyV1",
+    "StairFamilyV1",
+    "WallFamilyV1",
+    "BastionFamilyV1",
+    "RockTerrainFamilyV1"
+  ],
+  "semantic_anchors": [
+    "LowerGate",
+    "CentralStair",
+    "BastionAccess"
+  ],
+  "camera_states": [
+    "HOME",
+    "pan-left",
+    "pan-right"
+  ],
+  "required_evidence": [
+    "sharp-home.png",
+    "sharp-pan-left.png",
+    "sharp-pan-right.png",
+    "integrated-home.png",
+    "integrated-pan-left.png",
+    "integrated-pan-right.png",
+    "real-geometry-home.png",
+    "semantic-anchors-home.png",
+    "production-slice-evidence.json"
+  ],
+  "paid_credits": 0,
+  "next_block": [
+    "LEFT CABIN PARCEL",
+    "RIGHT CAMP PARCEL"
+  ]
+}
