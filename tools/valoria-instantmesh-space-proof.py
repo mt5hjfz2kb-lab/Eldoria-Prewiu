@@ -35,7 +35,7 @@ if not (ep_pre and ep_mvs and ep_3d):
 
 processed=client.predict(handle_file(inp),False,api_name=ep_pre)
 print("PROCESSED",repr(processed))
-mv=client.predict(processed,30,42,api_name=ep_mvs)
+mv=client.predict(handle_file(processed),30,42,api_name=ep_mvs)
 print("MVS",repr(mv))
 open(os.path.join(OUT,"mvs-result.json"),"w").write(json.dumps(mv,indent=2,default=str))
 state=mv[0] if isinstance(mv,(list,tuple)) else mv
