@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T18:08:00Z",
+  "updated_at": "2026-10-06T18:30:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -19,16 +19,18 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs"
       ],
       "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
         "github-pages-unity-owner"
       ],
       "claimed_at": "2026-10-06T16:12:00Z",
       "base_main_sha": "d5136ff2df25f4b5c425fd435686111814050fbb",
-      "status": "active",
+      "status": "blocked",
       "paid_credits": 0,
-      "phase": "WEBGL ROOT CAUSE CONFIRMED: TEMP SCENE STILL EMBEDDED 1.14 GB; HARD SPLAT STRIP + DEPENDENCY GUARD RELAUNCHED",
+      "phase": "WEBGL DELIVERY PARKED / UNITY RUNNER RELEASED / DOES NOT BLOCK PRODUCTION",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
-      "next": "Require temp-scene GsplatAsset dependency PASS, materially smaller WebGL player, successful Pages deploy, then mobile-UA startup probe PASS."
+      "next": "Resume only as a bounded delivery/publishing task without blocking Valoria or World production. Prefer proving a materially smaller player before occupying the shared Windows runner again.",
+      "blocked_at": "2026-10-06T18:30:00Z",
+      "blocker": "Current WebGL delivery path remains too slow/unreliable for production gating. Publishing is decoupled from game development; resume as a bounded delivery task only.",
+      "runner_released": true
     },
     {
       "id": "eldoria-world-region-1-v1",
@@ -52,10 +54,10 @@
       "claimed_at": "2026-10-06T16:39:00Z",
       "base_main_sha": "f7462f338f744beeb8b0c05e170d55fd63938206",
       "status": "active",
-      "phase": "4X WORLD SCREEN CONTRACT + LEGACY WEB/CONCEPT CANON RECONCILED — WAITING FOR HEAVY UNITY RUNNER",
-      "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 is a separate 4X World screen, not a physical gate-continuation. Must not mutate GitHub Pages, unity-webgl startup/publish surfaces, Valoria authority, or the Windows Unity runner while valoria-mobile-web-playtest-v1 owns them.",
+      "phase": "4X WORLD SCREEN CONTRACT + LEGACY WEB/CONCEPT CANON RECONCILED — UNITY RUNNER RELEASED",
+      "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 is a separate 4X World screen, not a physical gate-continuation. WebGL delivery is now parked and no longer owns the Windows Unity runner.",
       "paid_credits": 0,
-      "next": "After WebGL releases the Unity runner: implement the smallest real 4X slice using canonical Player City v1, visible march, wood node, neutral POI, corrupt PvE target, shared save/reward and City<->World transitions; preserve scalable region/sector/chunk contracts."
+      "next": "Proceed with the smallest real 4X slice using canonical Player City v1, visible march, wood node, neutral POI, corrupt PvE target, shared save/reward and City<->World transitions; preserve scalable region/sector/chunk contracts."
     }
   ],
   "history": [
