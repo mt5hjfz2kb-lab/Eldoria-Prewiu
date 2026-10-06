@@ -1,10 +1,8 @@
 name: "[R&D] Valoria InstantMesh Gate Capability v1"
 on:
-  push:
-    branches: [main]
-    paths:
-      - "pipeline/valoria-instantmesh-gate-capability-v1.json"
   workflow_dispatch:
+
+# Quarantined R&D/capability workflow: manual-only. Production use requires canonical planner/fallback routing plus explicit owner dispatch.
 permissions:
   contents: read
 jobs:
