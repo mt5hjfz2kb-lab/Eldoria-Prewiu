@@ -38,6 +38,7 @@ jobs:
         id: sf3d
         continue-on-error: true
         run: |
+          set -o pipefail
           python - <<'PY' 2>&1 | tee /tmp/i2d/evidence/sf3d.log
           import os, shutil, json, traceback
           from gradio_client import Client, handle_file
@@ -48,12 +49,9 @@ jobs:
           except Exception:
               traceback.print_exc()
           result = client.predict(
-              input_image=handle_file("/tmp/i2d/input/chair.png"),
-              foreground_ratio=0.85,
-              remesh_option="None",
-              vertex_count=-1,
-              texture_size=1024,
-              api_name="/run_button",
+              image=handle_file("/tmp/i2d/input/chair.png"),
+              fr=0.85,
+              api_name="/requires_bg_remove",
           )
           print("RESULT", repr(result))
           candidates=[]
@@ -65,12 +63,19 @@ jobs:
                   for v in x.values(): walk(v)
           walk(result)
           copied=[]
+          import requests
           for p in candidates:
               if os.path.isfile(p):
                   ext=os.path.splitext(p)[1].lower()
                   if ext in (".glb",".gltf",".obj",".ply"):
                       dst="/tmp/i2d/output/sf3d"+ext
                       shutil.copy2(p,dst); copied.append(dst); break
+              elif isinstance(p,str) and p.startswith(("http://","https://")):
+                  ext=os.path.splitext(p.split("?")[0])[1].lower()
+                  if ext in (".glb",".gltf",".obj",".ply"):
+                      dst="/tmp/i2d/output/sf3d"+ext
+                      rr=requests.get(p,timeout=180); rr.raise_for_status()
+                      open(dst,"wb").write(rr.content); copied.append(dst); break
           print("COPIED",copied)
           if not copied:
               raise SystemExit("SF3D returned no local mesh file")
@@ -81,6 +86,7 @@ jobs:
         id: instantmesh
         continue-on-error: true
         run: |
+          set -o pipefail
           python - <<'PY' 2>&1 | tee /tmp/i2d/evidence/instantmesh.log
           import os, shutil, traceback
           from gradio_client import Client, handle_file
@@ -90,10 +96,45 @@ jobs:
               print(client.view_api(return_format="dict"))
           except Exception:
               traceback.print_exc()
-          # Discoverability probe first. Endpoint contracts vary across active clones.
           api=client.view_api(return_format="dict")
           print("DISCOVERED",api)
-          raise SystemExit("InstantMesh endpoint discovery captured; no guessed generation call.")
+          endpoints=(api or {}).get("named_endpoints",{})
+          print("ENDPOINTS",list(endpoints))
+          # Try known public InstantMesh contracts only when advertised.
+          result=None
+          errors=[]
+          attempts=[
+              ("/submit", dict(input_image=handle_file("/tmp/i2d/input/chair.png"), do_remove_background=True, sample_seed=42, sample_steps=75)),
+              ("/generate_mvs", dict(input_image=handle_file("/tmp/i2d/input/chair.png"), sample_seed=42, sample_steps=50)),
+          ]
+          for ep,kwargs in attempts:
+              if ep not in endpoints: continue
+              try:
+                  print("TRY",ep,kwargs.keys())
+                  result=client.predict(api_name=ep,**kwargs)
+                  print("RESULT",repr(result))
+                  break
+              except Exception as e:
+                  errors.append((ep,repr(e))); print("ERROR",ep,repr(e))
+          if result is None:
+              raise SystemExit("No usable advertised InstantMesh generation endpoint; "+repr(errors))
+          candidates=[]
+          def walk(x):
+              if isinstance(x,str): candidates.append(x)
+              elif isinstance(x,(list,tuple)):
+                  for v in x: walk(v)
+              elif isinstance(x,dict):
+                  for v in x.values(): walk(v)
+          walk(result)
+          copied=[]
+          for p in candidates:
+              if os.path.isfile(p) and os.path.splitext(p)[1].lower() in (".glb",".obj",".ply",".gltf"):
+                  ext=os.path.splitext(p)[1].lower()
+                  dst="/tmp/i2d/output/instantmesh"+ext
+                  shutil.copy2(p,dst); copied.append(dst); break
+          print("COPIED",copied)
+          if not copied:
+              raise SystemExit("InstantMesh returned no local mesh file")
           PY
 
       - name: Record result
