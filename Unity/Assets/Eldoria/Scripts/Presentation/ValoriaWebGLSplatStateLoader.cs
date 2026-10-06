@@ -76,9 +76,9 @@ namespace Eldoria.Presentation
 
         static string ResolveUrl(string file)
         {
-            if (string.IsNullOrWhiteSpace(Application.absoluteURL))
+            if (string.IsNullOrWhiteSpace(UnityEngine.Application.absoluteURL))
                 return file;
-            return new Uri(new Uri(Application.absoluteURL), file).AbsoluteUri;
+            return new Uri(new Uri(UnityEngine.Application.absoluteURL), file).AbsoluteUri;
         }
 
         void OnDestroy()
