@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "request_id": "valoria-scope-geometrycrafter-chain-v1",
+  "input_artifact_id": 11407620741,
+  "input_run_id": 37452647739,
+  "input": "SCoPE truck_right Gate video",
+  "method": "camera-controlled novel views -> GeometryCrafter video-to-point-map/3D",
+  "license_note": "GeometryCrafter evaluation is research-only; capability proof cannot itself become commercial production dependency",
+  "paid_credits": 0,
+  "vendor_spend": 0,
+  "production_promotion": false,
+  "nonce": "2026-10-06-001"
+}
