@@ -1,3 +1,7 @@
+## 2026-10-06 — VISUAL AUTHORITY RESET — PREVIOUS VISUAL PASS REVOKED
+
+Owner-attached open Valoria is the binding literal composition: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, SHA-256 `8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689`. The vertical monumental reference and SHARP source artifact 11408853949/HOME artifact 11409079879 are historical technical evidence only. First playable slice run 37470805228 retains TECH/INTERACTION evidence, but its VISUAL PASS is revoked as **VISUAL_AUTHORITY_MISMATCH / NOT PROMOTED**. Gates 1–5 infrastructure is retained; reference match, composition and camera must be revalidated from this correct source. No further Valoria production or parcel block is authorized before all six correction criteria pass. Workstream: `valoria-visual-authority-reset-v1`.
+
 # Valoria Visual Bible
 
 ## 2026-10-05 — New owner target / preproduction precedence

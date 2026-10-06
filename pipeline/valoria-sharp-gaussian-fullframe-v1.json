@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
   "request_id": "valoria-sharp-gaussian-fullframe-v1",
-  "input": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+  "input": "docs/evidence/valoria-visual-authority-reset-v1/sharp-clean-input.png",
   "method": "Apple SHARP single-image metric 3D Gaussian scene prediction via public Space",
   "paid_credits": 0,
   "vendor_spend": 0,
   "production_promotion": false,
-  "nonce": "2026-10-06-clean-approved-reference-002",
-  "convergence_gate": "Gate 1A — clean SHARP source"
+  "nonce": "2026-10-06-correct-open-valoria-001",
+  "convergence_gate": "VISUAL_AUTHORITY_MISMATCH production correction; existing SHARP route only",
+  "source_authority_manifest": "pipeline/valoria-visual-authority-v1.json"
 }

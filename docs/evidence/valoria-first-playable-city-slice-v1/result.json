@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workstream": "valoria-first-playable-city-slice-v1",
   "reviewed_at": "2026-10-06",
-  "verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+  "verdict": "TECH PASS HISTORICAL / VISUAL_AUTHORITY_MISMATCH / NOT PROMOTED",
   "production_mode": "HYBRID_SHARP_BEAUTY_REAL_GEOMETRY_SUPPORT",
   "authority": {
     "recipe": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
@@ -32,28 +32,39 @@
     "role": "editable real 3D support geometry under SHARP beauty authority"
   },
   "route": {
-    "order": ["Bridge","LowerGate","MainRoad","CentralStair","UpperWalls","Bastion"],
+    "order": [
+      "Bridge",
+      "LowerGate",
+      "MainRoad",
+      "CentralStair",
+      "UpperWalls",
+      "Bastion"
+    ],
     "coherence_pass": true
   },
   "interaction": {
     "semantic_anchor_count": 7,
-    "camera_states": ["HOME","pan-left","pan-right"],
+    "camera_states": [
+      "HOME",
+      "pan-left",
+      "pan-right"
+    ],
     "required_raycast_count": 21,
     "raycast_pass_count": 21,
     "pass": true
   },
   "visual": {
-    "home_pass": true,
-    "pan_left_pass": true,
-    "pan_right_pass": true,
+    "home_pass": false,
+    "pan_left_pass": false,
+    "pan_right_pass": false,
     "changed_pixels_vs_sharp": {
       "home": 22,
       "pan_left": 13,
       "pan_right": 18
     },
-    "global_identity_preserved": true,
+    "global_identity_preserved": false,
     "full_frame_takeover": false,
-    "manual_review": "PASS",
+    "manual_review": "REVOKED: SOURCE / VISUAL AUTHORITY MISMATCH",
     "note": "No real-geometry beauty override is promoted in this slice. An earlier visible projection attempt was rejected because it produced localized fragments. The final slice uses the recipe-authorized SHARP beauty + hidden real geometry/semantic substrate path."
   },
   "sharp_beauty_regions": [
@@ -104,5 +115,7 @@
   ],
   "paid_credits": 0,
   "human_blocker": null,
-  "next_block": ["LEFT CABIN PARCEL","RIGHT CAMP PARCEL"]
+  "next_block": [],
+  "previous_verdict": "TECH PASS / INTERACTION PASS / VISUAL PASS",
+  "correction_authority": "pipeline/valoria-visual-authority-v1.json"
 }

@@ -1,15 +1,27 @@
-import json, os, shutil, requests
+import json, os, shutil, requests, hashlib
 from PIL import Image
 from gradio_client import Client, handle_file
 
 OUT=os.environ.get("OUT_DIR","/tmp/sharp-proof")
 os.makedirs(OUT,exist_ok=True)
-src="references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
+cfg=json.load(open('pipeline/valoria-sharp-gaussian-fullframe-v1.json'))
+authority=json.load(open(cfg['source_authority_manifest']))
+src=cfg['input']
+def sha(path): return hashlib.sha256(open(path,'rb').read()).hexdigest()
+if sha(authority['authority_path']) != authority['authority_sha256']:
+    raise RuntimeError('Canonical authority SHA mismatch')
+os.makedirs(os.path.dirname(src),exist_ok=True)
+Image.open(authority['authority_path']).convert('RGB').crop(authority['crop_box']).save(src)
+if src != authority['clean_input_path'] or sha(src) != authority['clean_input_sha256']:
+    raise RuntimeError('SHARP clean input is not derived from the current exact authority')
 im=Image.open(src).convert("RGB")
 im.thumbnail((1280,1280),Image.LANCZOS)
 inp=os.path.join(OUT,"canonical-target.png"); im.save(inp)
+source_manifest=dict(authority)
+source_manifest.update(submitted_input_sha256=sha(inp),submitted_dimensions=list(im.size),paid_credits=0)
+open(os.path.join(OUT,'source-authority.json'),'w').write(json.dumps(source_manifest,indent=2)+'\n')
 
-spaces=requests.get("https://huggingface.co/api/spaces",params={"author":"gagndeep","limit":100},timeout=30).json()
+spaces=[{'id':'gagndeep/Apple-Sharp-Image-to-3D-View-Synthesis'}]
 ids=[]
 for s in spaces:
     sid=s.get("id") or s.get("name") or ""
@@ -65,6 +77,10 @@ for sid in ids:
                     if ext in (".ply",".splat",".spz",".zip",".mp4",".webm",".glb",".obj",".png",".jpg",".jpeg"):
                         shutil.copy2(p,os.path.join(OUT,f"sharp-{copied}{ext}")); copied+=1
                 if copied:
+                    plys=[os.path.join(OUT,n) for n in os.listdir(OUT) if n.endswith('.ply')]
+                    if not plys: raise RuntimeError('SHARP returned no PLY')
+                    source_manifest.update(ply_sha256=sha(plys[0]),ply_file=os.path.basename(plys[0]),space=sid,endpoint=name)
+                    open(os.path.join(OUT,'source-authority.json'),'w').write(json.dumps(source_manifest,indent=2)+'\n')
                     print("COPIED",copied)
                     raise SystemExit(0)
             except SystemExit: raise
