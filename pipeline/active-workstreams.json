@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T10:28:00Z",
+  "updated_at": "2026-10-06T10:27:00Z",
   "active": [
     {
       "id": "valoria-art-source-capability-bakeoff-v1",
@@ -100,17 +100,21 @@
         ".github/workflows/valoria-sharp-gaussian-*.yml",
         "tools/valoria-sharp-gaussian-*.py",
         "pipeline/valoria-sharp-gaussian-*.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSharpGaussian*",
+        "Unity/Packages/manifest.json",
+        "Unity/Packages/packages-lock.json",
         "pipeline/active-workstreams.json"
       ],
       "resources": [
-        "github-hosted-linux-sharp-rnd"
+        "github-hosted-linux-sharp-rnd",
+        "unity-sharp-gaussian-proof"
       ],
       "claimed_at": "2026-10-06T10:25:30Z",
       "base_main_sha": "fb931654aa2a86c01a98f9445e06c6f5638da231",
       "status": "active",
-      "phase": "SHARP 3D GAUSSIAN SCENE VALIDATION / UNITY INTEGRATION PENDING RESOURCE CLEARANCE",
-      "dependency": "Distinct from per-asset impostor Unity proof and existing image-to-3D/photogrammetry workstreams. Do not touch Unity project or shared Unity runner until overlapping Unity experiments complete/release resources.",
-      "next": "Validate SHARP splat data, bounded novel-view envelope, pruning/compression feasibility, and then claim a non-conflicting Unity Gaussian integration proof when Unity resources are clear."
+      "phase": "SHARP 3D GAUSSIAN SCENE → UNITY 6 URP INTEGRATION PROOF",
+      "dependency": "Per-asset impostor Unity proof is complete/failed and its Unity run is no longer active. Do not modify its files. SHARP proof may add isolated Gaussian package/config and editor gate only.",
+      "next": "Integrate the canonical SHARP PLY into an isolated Unity 6 URP proof; validate HOME, bounded pan/zoom, 3D occlusion/depth, and evidence captures before any production promotion."
     }
   ],
   "history": [
