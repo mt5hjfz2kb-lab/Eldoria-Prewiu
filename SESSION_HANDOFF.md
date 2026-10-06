@@ -1,3 +1,9 @@
+# OWNER CONVERGENCE HANDOFF — 2026-10-06
+
+**Visual method discovery is frozen.** The only active Valoria visual workstream is `valoria-visual-convergence-production-v1`. Do not launch new generator/depth/view-synthesis/donor R&D. Consume the canonical evidence register at `docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md` and execute `docs/VALORIA_VISUAL_CONVERGENCE_EXECUTION_V1.md`.
+
+Current convergence gate: **SHARP Gaussian → Unity 6 URP**. The canonical PLY has already passed sanitation and full decode/Spark packing. Full ~1.18M splats crashed after packing; the active bounded proof uses a preserved source plus a sanitized ~300k uniform working copy to isolate renderer/GPU stability. If 300k passes, scale density upward; if it fails, use the instrumentation to classify renderer assignment / refresh / first-render failure. No paid credits or commercial acquisition.
+
 ## 2026-10-06 — SEMANTIC 2.5D CAMERA-FIRST — FINAL FAIL / REJECTED
 
 The Camera-First / Semantic 2.5D depth-shell experiment is closed. Final authoritative gate: `docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md`.
