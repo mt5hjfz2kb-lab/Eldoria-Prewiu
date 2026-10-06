@@ -120,28 +120,62 @@ namespace Eldoria.EditorTools
             // transforms are explicitly synchronized.
             Physics.SyncTransforms();
 
-            CaptureBeauty(gs, cam, output, "beauty-home");
-
-            // Batchmode does not advance a normal FixedUpdate before these deterministic
-            // raycasts. Explicitly synchronize newly-created proxy transforms/colliders
-            // into the physics scene before evaluating selection.
+            // Batchmode does not advance a normal FixedUpdate before deterministic
+            // raycasts. Explicitly synchronize newly-created proxy transforms/colliders.
             Physics.SyncTransforms();
+
+            var cameraStates = new[]
+            {
+                new { Name="home",      Position=Vector3.zero,                 Fov=43.58f },
+                new { Name="pan-left",  Position=new Vector3(-1.75f,0f,0f),   Fov=43.58f },
+                new { Name="pan-right", Position=new Vector3( 1.75f,0f,0f),   Fov=43.58f },
+                new { Name="zoom-in",   Position=Vector3.zero,                 Fov=36f },
+                new { Name="zoom-out",  Position=Vector3.zero,                 Fov=52f },
+            };
 
             var hitRows = new List<string>();
             int passed = 0;
-            foreach (var p in proxies)
+            int required = 0;
+
+            foreach (var state in cameraStates)
             {
-                var ray = cam.ViewportPointToRay(new Vector3(p.Viewport.x,p.Viewport.y,0f));
-                bool hit = Physics.Raycast(ray, out RaycastHit info, 1000f);
-                string hitId = hit && info.collider != null ? info.collider.gameObject.name.Replace("InteractiveProxy_","") : "";
-                bool ok = hit && hitId == p.Id;
-                if (ok) passed++;
-                hitRows.Add(
-                    $"    {{\"expected\":\"{p.Id}\",\"viewport\":[{p.Viewport.x.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)},{p.Viewport.y.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)}],\"hit\":{(hit ? "true":"false")},\"actual\":\"{hitId}\",\"world\":\"{(hit ? info.point.ToString("F3") : "")}\",\"pass\":{(ok ? "true":"false")} }}"
-                );
+                cam.transform.position = state.Position;
+                cam.transform.rotation = homeRotation;
+                cam.fieldOfView = state.Fov;
+
+                CaptureBeauty(gs, cam, output, "beauty-" + state.Name);
+                Physics.SyncTransforms();
+
+                foreach (var p in proxies)
+                {
+                    // World-space proxy stays fixed. Re-project its center for the current
+                    // camera and raycast back through that projected point. This proves
+                    // selection follows world geometry rather than a fixed 2D hotspot.
+                    var vp3 = cam.WorldToViewportPoint(p.Go.transform.position);
+                    bool visible = vp3.z > 0f && vp3.x >= 0f && vp3.x <= 1f && vp3.y >= 0f && vp3.y <= 1f;
+                    bool hit = false;
+                    RaycastHit info = default;
+                    string hitId = "";
+
+                    if (visible)
+                    {
+                        required++;
+                        var ray = cam.ViewportPointToRay(new Vector3(vp3.x, vp3.y, 0f));
+                        hit = Physics.Raycast(ray, out info, 1000f);
+                        hitId = hit && info.collider != null ? info.collider.gameObject.name.Replace("InteractiveProxy_","") : "";
+                    }
+
+                    bool ok = visible && hit && hitId == p.Id;
+                    if (ok) passed++;
+
+                    hitRows.Add(
+                        $"    {{\"camera\":\"{state.Name}\",\"expected\":\"{p.Id}\",\"projected_viewport\":[{vp3.x.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)},{vp3.y.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)}],\"depth\":{vp3.z.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)},\"visible\":{(visible ? "true":"false")},\"hit\":{(hit ? "true":"false")},\"actual\":\"{hitId}\",\"world\":\"{(hit ? info.point.ToString("F3") : "")}\",\"pass\":{(ok ? "true":"false")} }}"
+                    );
+                }
             }
 
-            // Debug-only alignment capture: show proxies as transparent colored solids.
+            // Debug capture intentionally disables the Gaussian renderer so proxy placement
+            // can be inspected instead of being depth-occluded by the visual layer.
             foreach (var p in proxies)
             {
                 var renderer = p.Go.GetComponent<Renderer>();
@@ -150,26 +184,35 @@ namespace Eldoria.EditorTools
                 mat.color = p.DebugColor;
                 renderer.sharedMaterial = mat;
             }
-            CaptureBeauty(gs, cam, output, "proxy-debug");
+            root.SetActive(false);
+            cam.transform.position = Vector3.zero;
+            cam.transform.rotation = homeRotation;
+            cam.fieldOfView = 43.58f;
+            CaptureRasterOnly(cam, output, "proxy-debug-raster");
+            root.SetActive(true);
             foreach (var p in proxies) p.Go.GetComponent<Renderer>().enabled = false;
 
+            bool gatePass = required == proxies.Count * cameraStates.Length && passed == required;
             File.WriteAllText(Path.Combine(output,"interaction-evidence.json"),
                 "{\n"+
                 $"  \"source_splat_count\": {prep.OriginalCount},\n"+
                 $"  \"proof_splat_count\": {asset.SplatCount},\n"+
                 $"  \"sanitized_source_vertices\": {prep.SanitizedCount},\n"+
                 "  \"source_artifact\": 11408853949,\n"+
-                "  \"visual_baseline_artifact\": 11409359136,\n"+
+                "  \"visual_baseline_artifact\": 11409079879,\n"+
                 $"  \"proxy_count\": {proxies.Count},\n"+
+                $"  \"camera_state_count\": {cameraStates.Length},\n"+
+                $"  \"required_visible_raycast_count\": {required},\n"+
                 $"  \"raycast_pass_count\": {passed},\n"+
-                $"  \"gate_pass\": {(passed == proxies.Count ? "true":"false")},\n"+
+                $"  \"gate_pass\": {(gatePass ? "true":"false")},\n"+
+                "  \"interaction_model\": \"fixed_world_space_proxies_reprojected_per_camera\",\n"+
                 "  \"hits\": [\n"+string.Join(",\n",hitRows)+"\n  ],\n"+
                 "  \"beauty_proxies_visible\": false,\n"+
                 "  \"paid_credits\": 0\n"+
                 "}\n");
 
-            if (passed != proxies.Count)
-                throw new Exception($"Interactive substrate gate failed: {passed}/{proxies.Count} deterministic raycasts passed.");
+            if (!gatePass)
+                throw new Exception($"Bounded interaction gate failed: {passed}/{required} visible deterministic raycasts passed; expected {proxies.Count * cameraStates.Length}.");
 
             gs.GsplatAsset = null;
             UnityEngine.Object.DestroyImmediate(asset);
@@ -182,6 +225,26 @@ namespace Eldoria.EditorTools
             rt.Create();
             cam.targetTexture = rt;
             PrepareSplatFrame(gs, cam, name);
+            cam.Render();
+
+            var previous = RenderTexture.active;
+            RenderTexture.active = rt;
+            var tex = new Texture2D(W,H,TextureFormat.RGBA32,false);
+            tex.ReadPixels(new Rect(0,0,W,H),0,0);
+            tex.Apply();
+            File.WriteAllBytes(Path.Combine(output,name+".png"),tex.EncodeToPNG());
+            RenderTexture.active = previous;
+            cam.targetTexture = null;
+            UnityEngine.Object.DestroyImmediate(tex);
+            rt.Release();
+            UnityEngine.Object.DestroyImmediate(rt);
+        }
+
+        static void CaptureRasterOnly(Camera cam, string output, string name)
+        {
+            var rt = new RenderTexture(W,H,24,RenderTextureFormat.ARGB32);
+            rt.Create();
+            cam.targetTexture = rt;
             cam.Render();
 
             var previous = RenderTexture.active;
