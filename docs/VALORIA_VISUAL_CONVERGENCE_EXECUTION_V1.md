@@ -269,3 +269,44 @@ Next production gate:
 5. record projected viewport coordinates, pass/fail and selection state;
 6. preserve a clean SHARP beauty capture for every camera state;
 7. no new visual method or generator is authorized.
+
+
+## Gate 2 FINAL — canonical bounded interactive substrate
+**Verdict: TECH PASS / VISUAL ALIGNMENT PASS / BOUNDED CAMERA INTERACTION PASS**
+
+Authoritative evidence:
+- Run: `37459082453`
+- Artifact: `11411280592`
+- Canonical visual HOME authority: run `37457026065` / artifact `11409079879`
+- Clean SHARP source: artifact `11408853949`
+- Visual layer: 589,824 splats
+- Named proxies: WestTower, CentralKeep, EastTower, LowerGate
+- Camera states: HOME, pan-left, pan-right, zoom-in, zoom-out
+- Required visible raycasts: 20
+- Raycast result: **20/20 PASS**
+- paid credits: 0
+
+Visual review:
+- restored canonical identity HOME framing matches the Gate 2 beauty frame;
+- WestTower, CentralKeep, EastTower and LowerGate proxy footprints align to their named visible architecture;
+- proxies remain hidden in production beauty while standard Unity colliders own interaction;
+- bounded camera re-projection retains the same semantic proxy ID across all five camera states.
+
+**Gate 2 is CLOSED / PASS.**
+
+## Gate 3 — approved Lower Gate visible-geometry coexistence
+Goal:
+- keep the locked clean SHARP 600k visual layer and canonical HOME camera;
+- reuse the already-approved production source `art-source/valoria/production/lower-gate-family-v1/LowerGateFamilyV1.glb`;
+- import that real production geometry into Unity using the existing glTFast package;
+- align its world/screen-space center to the validated `LowerGate` interaction region;
+- capture SHARP-only, visible-geometry debug overlay, original-material overlay and bounded pan evidence;
+- prove that approved editable production geometry can coexist with the high-fidelity SHARP layer without reopening generator discovery.
+
+Gate 3 PASS requires:
+1. LowerGateFamilyV1.glb imports synchronously and instantiates in Unity;
+2. renderer bounds are valid and align to the canonical LowerGate screen region;
+3. SHARP-only beauty remains unchanged;
+4. visible geometry is depth-stable at HOME and bounded pan;
+5. original material view is captured for direct comparison;
+6. no new generator, paid credit or commercial acquisition is used.
