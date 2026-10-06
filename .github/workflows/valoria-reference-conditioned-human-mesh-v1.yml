@@ -24,7 +24,7 @@ jobs:
         run: |
           python -m pip install --quiet pillow numpy
           sudo apt-get update
-          sudo apt-get install -y blender python3-numpy
+          sudo apt-get install -y blender python3-numpy libegl1 libgl1-mesa-dri libglx-mesa0 libgl1 libglx0 libx11-6
       - name: Prepare human mesh and reference-conditioned material
         run: python tools/valoria-reference-conditioned-human-mesh-v1.py
       - name: Render hybrid lookdev
