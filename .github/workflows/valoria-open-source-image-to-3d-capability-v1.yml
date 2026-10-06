@@ -109,7 +109,7 @@ jobs:
               elif n=="seed":
                   kwargs[n]=42
               elif n=="resolution":
-                  kwargs[n]=512
+                  kwargs[n]="512"
               elif n=="randomize_seed":
                   kwargs[n]=False
               elif n and default is not None:
