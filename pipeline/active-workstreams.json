@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-06T11:45:00Z",
+  "updated_at": "2026-10-06T11:56:00Z",
   "active": [
     {
       "id": "valoria-visual-convergence-production-v1",
@@ -23,7 +23,10 @@
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSharpInteractiveSubstrateGateV1.cs",
         ".github/workflows/valoria-sharp-interactive-substrate-gate-v1.yml",
         "pipeline/valoria-sharp-interactive-substrate-gate-v1.json",
-        "docs/evidence/valoria-sharp-interactive-substrate-gate-v1/**"
+        "docs/evidence/valoria-sharp-interactive-substrate-gate-v1/**",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaSharpGameplaySelectionGateV1.cs",
+        ".github/workflows/valoria-sharp-gameplay-selection-gate-v1.yml",
+        "pipeline/valoria-sharp-gameplay-selection-gate-v1.json"
       ],
       "resources": [
         "unity-sharp-gaussian-proof",
@@ -33,9 +36,9 @@
       "claimed_at": "2026-10-06T10:59:00Z",
       "base_main_sha": "2f599152d2f96f08ede1dddc876af2c3c1817729",
       "status": "active",
-      "phase": "CONVERGENCE / GATE 2 — CANONICAL HOME LOCK + INTERACTIVE PROXY ALIGNMENT",
+      "phase": "CONVERGENCE / GATE 3 — GAMEPLAY SELECTION STATE + DEPTH-CONSISTENT FEEDBACK",
       "dependency": "SOLE ACTIVE VISUAL PRODUCTION AUTHORITY. Independent visual-generator R&D is frozen. Existing in-flight legacy runs may finish naturally, but no new exploratory lanes are authorized unless this workstream documents a production blocker and explicitly reopens one.",
-      "next": "Rerun Gate 2 against canonical HOME authority run 37457026065 / artifact 11409079879. Require 4/4 raycasts plus a visible proxy-debug overlay whose screen-space footprints align to the named architecture before advancing.",
+      "next": "Implement and dispatch Gate 3 on the locked clean SHARP 600K visual authority. Require deterministic proxy selection callback/state change, visible front-layer selection feedback, unchanged SHARP beauty, and bounded-camera stability. No new visual method or generator.",
       "last_pass": {
         "run_id": 37456541286,
         "artifact_id": 11409359136,
@@ -57,6 +60,11 @@
         "run_id": 37457026065,
         "artifact_id": 11409079879,
         "note": "Restored canonical SHARP identity HOME camera. Supersedes pre-camera-fix framing in artifact 11409359136 for visual alignment."
+      },
+      "result_gate_2b": {
+        "run_id": 37459082453,
+        "artifact_id": 11411280592,
+        "verdict": "TECH PASS / 20-of-20 BOUNDED CAMERA RAYCAST PASS / BEAUTY PRESERVED"
       }
     }
   ],
