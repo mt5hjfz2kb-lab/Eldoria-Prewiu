@@ -88,7 +88,7 @@ namespace Eldoria.Tests
             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.BUILT));Assert.That(visual.RightGround.activeSelf,Is.False);Assert.That(visual.ActiveVariant,Is.EqualTo(3));
             visual.Pan(new Vector2(-10000,10000));Assert.That(camera.transform.position.x,Is.EqualTo(ValoriaParcelPresentation.HorizontalPanHalfExtent));
             Assert.That(camera.transform.position.y,Is.EqualTo(-ValoriaParcelPresentation.VerticalPanHalfExtent));
-            visual.Zoom(-1000);Assert.That(camera.fieldOfView,Is.EqualTo(visual.HomeFov*.9f).Within(.001));visual.Home();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));
+            visual.Zoom(-1000);Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov*.92f).Within(.001));visual.Home();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov).Within(.001));
             yield return null;
         }
     }
