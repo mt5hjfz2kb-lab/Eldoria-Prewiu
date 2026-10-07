@@ -224,7 +224,18 @@ namespace Eldoria.Presentation
         {
             var camera=OfficialCamera;
             if(camera==null)return;
-            if(city&&productionParcels!=null){productionParcels.Pan(screenDelta);return;}
+            if(city&&productionParcels!=null)
+            {
+                productionParcels.Pan(screenDelta);
+#if UNITY_WEBGL && !UNITY_EDITOR
+                var pc = productionParcels.ProductionCamera;
+                if(pc!=null) Debug.Log("ELDORIA_PLAYABLE_TOUCH_PAN x=" + pc.transform.position.x.ToString("F3") +
+                    " y=" + pc.transform.position.y.ToString("F3") +
+                    " z=" + pc.transform.position.z.ToString("F3") +
+                    " dx=" + screenDelta.x.ToString("F1") + " dy=" + screenDelta.y.ToString("F1"));
+#endif
+                return;
+            }
             float worldPerPixel=(camera.orthographicSize*2f)/Mathf.Max(1f,camera.pixelHeight);
             var right=Vector3.ProjectOnPlane(camera.transform.right,Vector3.up).normalized;
             var up=Vector3.ProjectOnPlane(camera.transform.up,Vector3.up).normalized;
