@@ -69,13 +69,11 @@ jobs:
             throw new Error('Timed out waiting for '+label);
           }
           function screenPoint(ui,box,canvasInfo){
-            // SlicePresenter HUD uses CanvasScaler referenceResolution 390x844 with matchHeight=1.
-            // Logged RectTransform centers are therefore in that logical reference space, not the
-            // WebGL backing-store dimensions. Map reference-space coordinates into CSS canvas space.
-            const referenceWidth=390, referenceHeight=844;
+            // Runtime logs use RectTransformUtility.WorldToScreenPoint, i.e. physical Unity
+            // screen pixels with bottom-left origin. Map them directly into the CSS canvas box.
             return {
-              x:box.x+(ui.x/referenceWidth)*box.width,
-              y:box.y+((referenceHeight-ui.unityY)/referenceHeight)*box.height
+              x:box.x+(ui.x/canvasInfo.width)*box.width,
+              y:box.y+((canvasInfo.height-ui.unityY)/canvasInfo.height)*box.height
             };
           }
           function hotspotPoint(hotspot,box,canvasInfo){
@@ -214,6 +212,7 @@ jobs:
               const wn=screenPoint(worldNav,box,canvasInfo);
               const worldStart=logs.length;
               await touchTap(cdp,wn.x,wn.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),10000,'MUNDO button activation',worldStart);
               await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria'),10000,'forest hotspot geometry',worldStart);
               await sleep(1500);
