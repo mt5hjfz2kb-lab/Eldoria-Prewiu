@@ -26,5 +26,6 @@
     "on_next_visual_fail": "Correct presentation only. Do not reopen gameplay, World Region 1, SHARP, economy or paid generation."
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
-  "status": "ACTIVE"
+  "status": "ACTIVE",
+  "phase": "IMPLEMENTED / PRODUCTION VALIDATION REQUESTED"
 }
