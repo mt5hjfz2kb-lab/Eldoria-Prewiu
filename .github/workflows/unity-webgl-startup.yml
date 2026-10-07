@@ -211,8 +211,10 @@ jobs:
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
 
+              const worldUi=parseUi(logs,'worldNav');
+              if(!worldUi)throw new Error('MUNDO touch target was not published by runtime');
               const worldStart=logs.length;
-              const wn={x:box.x+box.width*.05,y:box.y+box.height*.91};
+              const wn=screenPoint(worldUi,box,canvasInfo);
               report.checks.worldTapCss=wn;
               await page.touchscreen.tap(wn.x,wn.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),10000,'MUNDO button activation',worldStart);
@@ -237,10 +239,14 @@ jobs:
               report.checks.rewardState=rewardState;
               await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
 
-              const cp={x:box.x+box.width*.96,y:box.y+box.height*.91};
+              const cityUi=parseUi(logs,'cityNav');
+              if(!cityUi)throw new Error('REINO/CIUDAD touch target was not published by runtime');
+              const cp=screenPoint(cityUi,box,canvasInfo);
               report.checks.cityTapCss=cp;
+              const cityReturnStart=logs.length;
               await page.touchscreen.tap(cp.x,cp.y);
-              const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_NAV target=Valoria city=False'),10000,'REINO/CIUDAD button activation',cityReturnStart);
+              const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return',cityReturnStart);
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
 
               const persisted={revision:returned.revision,wood:returned.wood,stone:returned.stone,gatheredWood:returned.gatheredWood,gatheredStone:returned.gatheredStone,sawmill:returned.sawmill};
