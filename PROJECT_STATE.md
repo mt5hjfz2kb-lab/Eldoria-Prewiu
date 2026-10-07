@@ -1,3 +1,16 @@
+## World Region 1 v1 — CLOSED / PASS
+
+Region 1 is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
+
+The first real 4X world loop is now certified: **Valoria city → Mundo → dedicated bounded 4X world screen → select resource/POI/threat → real march/interact/reward/persistence → Reino/Valoria → city state reflects result**.
+
+Final gates: TECH PASS, VISUAL PASS, WORLD/VALORIA CONTINUITY PASS, NAVIGATION PASS, INTERACTION PASS, GAMEPLAY LOOP PASS, SAVE/RELOAD PASS, BOUNDED CAMERA PASS, MOBILE READABILITY PASS, 4X ARCHITECTURE PASS.
+
+Final Unity run: `37549083306`. Final capture artifact: `eldoria-valoria-captures-255769573712e053790df3fdf369a9534d4fc7d1`.
+
+The accepted world is intentionally lower-density than Valoria but no longer reads as a generic/flat prototype. Future regions must preserve this strategic visual language and scalable region/sector/chunk architecture. Windows Unity runner released. Paid credits: 0.
+
+
 ## World Region 1 v1 — canonical 4X design reconciled
 
 Legacy web + conceptual-world audit is complete and incorporated. Region 1 is not a bespoke exterior scene: it is the first bounded window into the future persistent shared 4X world. Canonical retained families: strategic player cities, resource nodes, hunt/PvE ladder, neutral/hostile POIs/Breach, visible marches and future alliance/territorial systems. `PlayerCity_v1.glb` is an existing reusable production asset. The minimum first slice remains intentionally small, but its architecture may not block region/sector/chunk scaling, randomized future player starts, node distribution/respawn, higher-level regions or streaming/culling. Old HTML/CSS/emoji and legacy Frontier visuals are functional/reference history only, not current art authority.
