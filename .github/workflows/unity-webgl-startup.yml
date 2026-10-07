@@ -234,6 +234,22 @@ jobs:
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
 
+              const beforePanVerticalLogs=logs.length;
+              await touchDrag(cdp,cx,cy+70,cx,cy-70);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+) panY=([-0-9.]+)/);
+                return !!m&&Math.abs(+m[2])>=.10;
+              },15000,'real touch vertical pan',beforePanVerticalLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-vertical-landscape.png'});
+              const panVerticalDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-vertical-landscape.png');
+              report.checks.panVerticalDiffRatio=panVerticalDiff;
+              if(panVerticalDiff<.002)throw new Error('Vertical touch pan changed camera log but published view did not visibly change');
+              await page.touchscreen.tap(hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after vertical pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000 panY=-?0\.000/.test(t),10000,'HOME camera reset after vertical pan');
+              await sleep(500);
+
               const worldStart=logs.length;
               const worldTap=await tapVisibleBottomControl(page,box,logs,
                 t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),
