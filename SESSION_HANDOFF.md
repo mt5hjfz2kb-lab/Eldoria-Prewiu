@@ -1,3 +1,7 @@
+## 2026-10-07 — Bastion I-II controlled vertical-slice migration CLOSED
+
+Workstream `valoria-bastion-i-ii-vertical-slice-migration-v1` is **CLOSED / PASS**. The vertical slice now governs mobile presentation hierarchy/proportions for Bastion I-II, while real Unity gameplay/state/progression/persistence remains authoritative. Fake/future vertical-slice controls were deliberately not migrated. Production run **37667362790** and published probe **37670831297** both pass. Published URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ . Probe evidence artifact: **11505437542**. Paid credits: **0**.
+
 ## 2026-10-07 — VALORIA BASTION I → II v1 CLOSED / ALL GATES PASS
 
 Workstream `valoria-bastion-i-ii-progression-v1` is closed. It consumed the certified Valoria real-state substrate and World Region 1 without reopening visual R&D or creating a parallel gameplay architecture.

@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T18:13:00Z",
-  "active": [
+  "updated_at": "2026-10-07T19:06:30Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
       "title": "Valoria Bastion I-II controlled vertical-slice presentation migration",
@@ -31,15 +32,36 @@
       ],
       "claimed_at": "2026-10-07T18:03:00Z",
       "base_main_sha": "d5425db1e8db35f96f242eb55f8251015b69ba4f",
-      "status": "active",
-      "phase": "BASTION I VISUAL/UX CONVERGENCE",
+      "status": "completed",
+      "phase": "VERTICAL-SLICE PRESENTATION MIGRATION PASS / PUBLISHED MOBILE MACROLOOP PASS / CLOSED",
       "dependency": "Starts only after increment-of-production/Bastion I-II progression closure. Preserve real gameplay/state/persistence and World Region 1; vertical slice is presentation/UX authority only.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Run planner, migrate Bastion I presentation first, certify, then Bastion II, publish and complete full mobile macroloop."
-    }
-  ],
-  "history": [
+      "next": "Do not extend to Bastion III or migrate future/mock vertical-slice controls automatically. Any next visual/UI block requires explicit owner authorization.",
+      "completed_at": "2026-10-07T19:05:57Z",
+      "runner_released": true,
+      "blocker": null,
+      "result": {
+        "verdict": "SOURCE PASS / UI CONTRACT PASS / PRODUCTION PASS / BASTION I-II PRESENTATION MIGRATION PASS / REAL-GAMEPLAY PRESERVATION PASS / PUBLISHED WEBGL PASS / MOBILE MACROLOOP PASS / SAVE-RELOAD PASS / LANDSCAPE-PORTRAIT PASS",
+        "implementation_commit": "400ea35d8a74b83b138c6e7cb2e146e5314c00af",
+        "publish_request_commit": "9c8477b5de7b8c67f23ac23e3297559d9e65cbf1",
+        "ui_certification_run_id": 37667362780,
+        "source_editor_gate_run_id": 37667362728,
+        "architecture_guard_run_id": 37667362876,
+        "visual_authority_run_id": 37667362763,
+        "production_run_id": 37667362790,
+        "production_artifact_id": 11503463174,
+        "parcel_source_artifact_id": 11502478603,
+        "publish_run_id": 37668173503,
+        "published_probe_run_id": 37670831297,
+        "published_probe_artifact_id": 11505437542,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "published_probe_result": "PASS: HOME, horizontal touch pan both directions, moderate vertical pan, MUNDO, Region 1 real gather/reward, REINO/Valoria return, reload persistence, landscape and portrait visual checks; no white screen.",
+        "persistence_after_reload": "revision 4; wood 590; stone 150; gatheredWood 360; gatheredStone 0; sawmill 0; bastion 1",
+        "presentation_rule": "Vertical slice governs hierarchy/composition/safe-area proportions only. Fake/future controls and hardcoded mock state were intentionally not migrated; real Unity gameplay/state/progression/persistence remain authoritative.",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "valoria-bastion-i-ii-progression-v1",
       "title": "Valoria Bastion I to II first complete city progression loop v1",

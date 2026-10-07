@@ -1,3 +1,7 @@
+## 2026-10-07 — Valoria Bastion I-II vertical-slice presentation migration
+
+The controlled Bastion I-II migration from the canonical web vertical slice to the real Unity gameplay is **COMPLETE / PASS**. Presentation hierarchy is compact/city-first and mobile-safe; only gameplay-backed controls are exposed. Real state/progression/persistence, SHARP authority and World Region 1 remain unchanged in authority. Final production **37667362790**, publish **37668173503**, published probe **37670831297** all pass. The published macroloop survives reload with revision 4 / wood 590 / gatheredWood 360. No paid credits were used.
+
 ## Bastion I → II first complete city progression loop — CLOSED / PASS
 
 The first real city progression segment is now certified and published.

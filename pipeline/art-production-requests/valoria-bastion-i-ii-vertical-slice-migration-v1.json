@@ -5,7 +5,7 @@
   "request_id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
   "asset_or_sector": "Valoria Bastion I-II mobile composition, HUD hierarchy and UX migration from canonical web vertical slice onto real Unity gameplay",
   "profile": "environment_composition",
-  "visual_gate_state": "not_evaluated",
+  "visual_gate_state": "pass",
   "diagnosis": "Current Unity/WebGL gameplay loop is certified but presentation hierarchy diverges from the web vertical slice: HUD/panels occupy too much screen space and Valoria does not retain the same city-first mobile hierarchy.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -26,5 +26,18 @@
     "on_next_visual_fail": "Classify as composition/interaction/presentation. Correct through the existing Unity presentation route only. Do not replace gameplay/state, reopen World art, or introduce new geometry/R&D without a separately proven need."
   },
   "notes": "Owner-authorized controlled migration. Vertical slice governs presentation/UX; current Unity gameplay governs state/progression/persistence. Bastion I must converge before Bastion II. Zero spend.",
-  "status": "ACTIVE"
+  "status": "COMPLETED",
+  "completed_at": "2026-10-07T19:05:57Z",
+  "result": {
+    "verdict": "PASS",
+    "implementation_commit": "400ea35d8a74b83b138c6e7cb2e146e5314c00af",
+    "production_run_id": 37667362790,
+    "production_artifact_id": 11503463174,
+    "publish_run_id": 37668173503,
+    "published_probe_run_id": 37670831297,
+    "published_probe_artifact_id": 11505437542,
+    "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+    "paid_credits": 0,
+    "note": "Controlled presentation migration completed without importing fake/future vertical-slice controls or replacing real gameplay."
+  }
 }
