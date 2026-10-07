@@ -509,10 +509,24 @@ namespace Eldoria.Presentation
             else
             {
                 buildingTitle.text="BASTIÓN";
-                buildingBody.text="Núcleo de Valoria · nivel "+s.BastionLevel+". Ascender a II cuesta "+SliceRules.Bastion2WoodCost+" madera / "+SliceRules.Bastion2StoneCost+" piedra.";
-                buildingAction.GetComponentInChildren<Text>().text="ASCENDER BASTIÓN";
-                buildingAction.interactable=s.JourneyComplete&&s.BastionLevel==1;
-                if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
+                if(s.BastionLevel>=2)
+                {
+                    buildingBody.text="Bastión II consolidado · Valoria ha crecido. Desbloqueos: Cuartel, Capítulo II, preparación de Marcha y amenaza Engendro.";
+                    buildingAction.GetComponentInChildren<Text>().text="BASTIÓN II ACTIVO";
+                    buildingAction.interactable=false;
+                }
+                else
+                {
+                    var next=BastionProgressionCatalog.ForLevel(2);
+                    var missing=BastionProgressionCatalog.MissingSummary(s,next);
+                    buildingBody.text="Núcleo de Valoria · nivel I.\nRequisitos para Bastión II: objetivos de Bastión I completos · "+
+                        next.WoodCost+" madera · "+next.StoneCost+" piedra.\n"+
+                        (string.IsNullOrEmpty(missing)?"LISTO PARA ASCENDER":"Falta: "+missing)+
+                        "\nDesbloquea: Cuartel · Capítulo II · preparación de Marcha.";
+                    buildingAction.GetComponentInChildren<Text>().text="ASCENDER A BASTIÓN II";
+                    buildingAction.interactable=BastionProgressionCatalog.RequirementsMet(s,next);
+                    if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
+                }
             }
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
@@ -541,8 +555,15 @@ namespace Eldoria.Presentation
         void Send(string kind,string target)
         {
             var s=gateway.Snapshot();
+            int powerBefore=SliceRules.TotalPower(s).Total;
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision));
             feedback=result.Message;
+            if(result.Ok&&kind=="AdvanceBastion")
+            {
+                var after=gateway.Snapshot();
+                int gain=Math.Max(0,SliceRules.TotalPower(after).Total-powerBefore);
+                feedback="BASTIÓN II · MI REINO HA CRECIDO · +"+gain+" PODER · Cuartel y Capítulo II desbloqueados";
+            }
 #if UNITY_WEBGL && !UNITY_EDITOR
             Debug.Log("ELDORIA_PLAYABLE_COMMAND kind="+kind+" target="+target+" ok="+result.Ok+" revision="+result.Revision);
 #endif
