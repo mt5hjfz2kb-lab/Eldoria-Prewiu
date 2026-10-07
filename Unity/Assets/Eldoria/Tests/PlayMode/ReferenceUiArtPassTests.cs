@@ -51,7 +51,7 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("CIUDAD")?.GetComponent<Button>(),Is.Not.Null);
             Assert.That(GameObject.Find("MUNDO")?.GetComponent<Button>(),Is.Not.Null);
 
-            // Presentation parity correction: city is visibly alive without adding gameplay; final-light assertions are semantic,
+            // Presentation parity correction: city is visibly alive without adding gameplay; final-light and mobile-budget assertions are semantic,
             // and the contextual building CTA is a compact building-associated surface.
             var ambient=GameObject.Find("City ambient life");
             Assert.That(ambient,Is.Not.Null);
