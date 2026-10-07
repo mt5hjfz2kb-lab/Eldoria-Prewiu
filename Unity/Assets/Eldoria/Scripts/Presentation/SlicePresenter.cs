@@ -38,6 +38,17 @@ namespace Eldoria.Presentation
         public const float MaxOrthographicZoom=19f;
         const float PinchZoomSensitivity=1f;
         Camera OfficialCamera => GameObject.Find("Isometric camera")?.GetComponent<Camera>() ?? Camera.main;
+        static string CitySceneName
+        {
+            get
+            {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                return "ValoriaWebGL";
+#else
+                return "Valoria";
+#endif
+            }
+        }
         public void Initialize(ICommandGateway commands){gateway=commands;}
         public void OnSceneLoaded(Scene scene,LoadSceneMode mode)
         {
@@ -184,7 +195,7 @@ namespace Eldoria.Presentation
             yield return null;
             if(SceneManager.GetActiveScene().name!=before)yield break;
             Debug.Log("ELDORIA_PLAYABLE_NAV target="+target+" city="+expectedCity+" source=webgl-touch-fallback");
-            SceneManager.LoadScene(target);
+            SceneManager.LoadScene(target=="Valoria"?CitySceneName:target);
         }
 #endif
 
@@ -383,7 +394,7 @@ namespace Eldoria.Presentation
         void Select(string id)
         {
             if(id=="gate")SceneManager.LoadScene("Frontier");
-            else if(id=="valoria-map-city")SceneManager.LoadScene("Valoria");
+            else if(id=="valoria-map-city")SceneManager.LoadScene(CitySceneName);
             else if(!city&&(id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin"))
                 OpenWorldPanel(id);
             else if(id=="forest-valoria"||id=="quarry-valoria")Send("Gather",id);
@@ -719,7 +730,7 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
                 Debug.Log("ELDORIA_PLAYABLE_NAV target=Valoria city="+city);
 #endif
-                if(!city)SceneManager.LoadScene("Valoria");
+                if(!city)SceneManager.LoadScene(CitySceneName);
             });
             worldNavButton=NavButton(nav,"◎","MUNDO",()=>{
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -940,10 +951,10 @@ namespace Eldoria.Presentation
             {
                 if(s.Resources.Wood<SliceRules.RecruitWoodCost)Send("Gather","forest-valoria");
                 else if(s.Resources.Stone<SliceRules.RecruitStoneCost)Send("Gather","quarry-valoria");
-                else SceneManager.LoadScene("Valoria");
+                else SceneManager.LoadScene(CitySceneName);
             }
             else if(key=="b2.defeat-engendro")Send("Fight","engendro-valoria");
-            else SceneManager.LoadScene("Valoria");
+            else SceneManager.LoadScene(CitySceneName);
         }
         void CreateBuildingPanel(Transform parent)
         {
