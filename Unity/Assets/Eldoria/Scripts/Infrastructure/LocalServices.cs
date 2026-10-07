@@ -27,9 +27,22 @@ namespace Eldoria.Infrastructure
     public sealed class FileStateStore : IStateStore
     {
         public string PathName { get; }
+#if UNITY_WEBGL && !UNITY_EDITOR
+        string WebGlKey => "eldoria.save." + System.IO.Path.GetFileName(PathName);
+#endif
         public FileStateStore(string path) { PathName = path; }
         public PlayerState Load()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (!PlayerPrefs.HasKey(WebGlKey)) return null;
+            try
+            {
+                var state = JsonUtility.FromJson<PlayerState>(PlayerPrefs.GetString(WebGlKey));
+                if (state == null || state.SchemaVersion != 1) throw new InvalidDataException("Unknown save version");
+                return state;
+            }
+            catch (Exception e) { throw new InvalidDataException("WebGL save unreadable. Existing browser save preserved.", e); }
+#else
             if (!File.Exists(PathName)) return null;
             try
             {
@@ -38,19 +51,30 @@ namespace Eldoria.Infrastructure
                 return state;
             }
             catch (Exception e) { throw new InvalidDataException("Save unreadable. Backup preserved at " + PathName + ".bak", e); }
+#endif
         }
         public void Save(PlayerState state)
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            PlayerPrefs.SetString(WebGlKey, JsonUtility.ToJson(state, true));
+            PlayerPrefs.Save();
+#else
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(PathName));
             string temp = PathName + ".tmp";
             File.WriteAllText(temp, JsonUtility.ToJson(state, true));
             if (File.Exists(PathName)) File.Replace(temp, PathName, PathName + ".bak");
             else File.Move(temp, PathName);
+#endif
         }
         public void DeleteLocalState()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            PlayerPrefs.DeleteKey(WebGlKey);
+            PlayerPrefs.Save();
+#else
             foreach (var candidate in new[] { PathName, PathName + ".bak", PathName + ".tmp" })
                 if (File.Exists(candidate)) File.Delete(candidate);
+#endif
         }
     }
 }
