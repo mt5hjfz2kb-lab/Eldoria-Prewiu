@@ -28,7 +28,7 @@
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
-  "phase": "IMPLEMENTED / PRODUCTION VALIDATION REQUESTED",
-  "retry": 2,
-  "retry_reason": "Presentation parity test fixture corrected to inspect inactive runtime UI through hierarchy."
+  "phase": "IMPLEMENTED / FINAL PRODUCTION VALIDATION REQUESTED",
+  "retry": 3,
+  "retry_reason": "Final parity source repaired; UI certification now validates responsive contextual panel and semantic final-look lighting."
 }
