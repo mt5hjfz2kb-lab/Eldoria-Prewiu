@@ -17,7 +17,10 @@ namespace Eldoria.Presentation
         ValoriaParcelPresentation productionParcels;
         RectTransform safe;
         Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
-        GameObject buildingPanel;
+        GameObject buildingPanel, cityAmbientLayer, constructionActivityFx;
+        string currentBuildingId="";
+        RectTransform[] ambientMotes=Array.Empty<RectTransform>();
+        Vector2[] ambientMoteOrigins=Array.Empty<Vector2>();
         Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton;
         string feedback="";
         float refreshAt;
@@ -101,6 +104,8 @@ namespace Eldoria.Presentation
             }
             if(lastWidth!=Screen.width||lastHeight!=Screen.height) UpdateSafeArea();
             HandlePointerInput();
+            AnimateCityAmbientation();
+            if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city) PositionBuildingPanel(currentBuildingId);
         }
         void HandlePointerInput()
         {
@@ -449,7 +454,9 @@ namespace Eldoria.Presentation
         {
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
+            currentBuildingId=id;
             buildingPanel.SetActive(true);
+            PositionBuildingPanel(id);
             buildingAction.onClick.RemoveAllListeners();
             if(id=="sawmill")
             {
@@ -521,16 +528,53 @@ namespace Eldoria.Presentation
                     if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
                 }
             }
+            RefreshBuildingPanelClock(s);
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
 #endif
         }
+
+        void PositionBuildingPanel(string id)
+        {
+            if(!city||buildingPanel==null||safe==null||string.IsNullOrEmpty(id))return;
+            string objectName=id=="sawmill"?"Aserradero · target":id=="barracks"?"Cuartel · target":id=="bastion"?"Bastion · target":null;
+            if(objectName==null)return;
+            var target=GameObject.Find(objectName);var camera=OfficialCamera;
+            if(target==null||camera==null)return;
+            var collider=target.GetComponent<Collider>();
+            var world=collider!=null?collider.bounds.center:target.transform.position;
+            var screen=camera.WorldToScreenPoint(world);
+            if(screen.z<=0)return;
+            if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe,screen,null,out var local))return;
+            var rt=buildingPanel.GetComponent<RectTransform>();
+            float halfW=Mathf.Max(1f,safe.rect.width*.5f), halfH=Mathf.Max(1f,safe.rect.height*.5f);
+            local.x=Mathf.Clamp(local.x,-halfW+rt.rect.width*.5f+8f,halfW-rt.rect.width*.5f-8f);
+            // Place the CTA below the selected building while keeping it above the nav/dock.
+            local.y=Mathf.Clamp(local.y-118f,-halfH+250f,halfH-rt.rect.height*.5f-90f);
+            rt.anchoredPosition=local;
+        }
+
+        void RefreshBuildingPanelClock(PlayerState s)
+        {
+            if(buildingPanel==null||!buildingPanel.activeInHierarchy||string.IsNullOrEmpty(currentBuildingId))return;
+            int seconds=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+            if(s.BuildingCompletesUtcTicks>0&&(currentBuildingId=="sawmill"||currentBuildingId=="barracks"))
+            {
+                string label=currentBuildingId=="sawmill"?"ASERRADERO":"CUARTEL";
+                buildingBody.text=label+" · obra en curso\nTiempo restante: "+seconds+" s";
+                buildingAction.GetComponentInChildren<Text>().text="CONSTRUYENDO · "+seconds+" s";
+                buildingAction.interactable=false;
+            }
+        }
+
         void OpenMarchPanel()
         {
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
             var prepared=SliceRules.Expedition(s.Available,"aldric");
+            currentBuildingId="barracks";
             buildingPanel.SetActive(true);
+            PositionBuildingPanel("barracks");
             buildingAction.onClick.RemoveAllListeners();
             buildingTitle.text="PREPARAR MARCHA";
             buildingBody.text="Sir Aldric · "+s.Available.Total+" Arqueros disponibles\n"+
@@ -689,6 +733,8 @@ namespace Eldoria.Presentation
                 message.text="Marcha: "+s.March.Phase+" · destino "+s.March.TargetId+" · regreso y recompensa automáticos";
             else if(s.BuildingCompletesUtcTicks>0)
                 message.text="Reconstrucción: "+Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
+            RefreshBuildingPanelClock(s);
+            if(constructionActivityFx!=null)constructionActivityFx.SetActive(city&&s.BuildingCompletesUtcTicks>0);
             else if(s.RecruitmentCompletesUtcTicks>0)
                 message.text="Entrenamiento: "+Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond))+" s";
         }
@@ -704,6 +750,7 @@ namespace Eldoria.Presentation
             scaler.matchWidthOrHeight=1f;
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
+            CreateCityAmbientation(safe);
 
             // Port the canonical v0.26.4 reference grammar into Unity:
             // compact kingdom header, separate quest card, floating objective dock, fixed bottom navigation.
@@ -971,9 +1018,9 @@ namespace Eldoria.Presentation
         {
             buildingPanel=new GameObject("Building interaction panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
-            rt.anchorMin=new Vector2(0,0);rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(.5f,0);
-            rt.sizeDelta=new Vector2(-20,178);rt.anchoredPosition=new Vector2(0,70);
-            buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.98f);
+            rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);rt.pivot=new Vector2(.5f,.5f);
+            rt.sizeDelta=new Vector2(276,166);rt.anchoredPosition=new Vector2(0,-70);
+            buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.94f);
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(13,13,12,12);
             layout.spacing=6;layout.childControlHeight=true;layout.childForceExpandHeight=false;
             buildingTitle=Label("Building title",buildingPanel.transform,14,new Color(.96f,.88f,.69f),24);
@@ -994,6 +1041,52 @@ namespace Eldoria.Presentation
             var closeText=Label("Text",closeGo.transform,9,new Color(.78f,.82f,.84f),32);closeText.text="CERRAR";closeText.alignment=TextAnchor.MiddleCenter;
             var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
             buildingPanel.SetActive(false);
+        }
+
+        void CreateCityAmbientation(Transform parent)
+        {
+            if(!city)return;
+            cityAmbientLayer=new GameObject("City ambient life",typeof(RectTransform));
+            var layer=cityAmbientLayer.GetComponent<RectTransform>();layer.SetParent(parent,false);
+            layer.anchorMin=Vector2.zero;layer.anchorMax=Vector2.one;layer.offsetMin=layer.offsetMax=Vector2.zero;
+            ambientMotes=new RectTransform[8];ambientMoteOrigins=new Vector2[8];
+            for(int i=0;i<ambientMotes.Length;i++)
+            {
+                var go=new GameObject("Ambient ember "+i,typeof(RectTransform),typeof(Image));
+                var rt=go.GetComponent<RectTransform>();rt.SetParent(layer,false);
+                rt.anchorMin=rt.anchorMax=new Vector2(.12f+.105f*i,.22f+.035f*(i%3));
+                rt.sizeDelta=new Vector2(3f+(i%2),3f+(i%2));
+                ambientMoteOrigins[i]=new Vector2((i%2==0?-10f:12f),i*2f);
+                rt.anchoredPosition=ambientMoteOrigins[i];
+                var image=go.GetComponent<Image>();image.color=new Color(.94f,.72f,.34f,.24f);image.raycastTarget=false;
+                ambientMotes[i]=rt;
+            }
+            var mist=new GameObject("Ambient drifting mist",typeof(RectTransform),typeof(Image));
+            var mrt=mist.GetComponent<RectTransform>();mrt.SetParent(layer,false);mrt.anchorMin=new Vector2(0,.18f);mrt.anchorMax=new Vector2(1,.34f);
+            mrt.offsetMin=new Vector2(-30,0);mrt.offsetMax=new Vector2(30,0);
+            var mi=mist.GetComponent<Image>();mi.color=new Color(.72f,.78f,.72f,.035f);mi.raycastTarget=false;
+            constructionActivityFx=new GameObject("Construction activity FX",typeof(RectTransform),typeof(Image));
+            var crt=constructionActivityFx.GetComponent<RectTransform>();crt.SetParent(layer,false);crt.anchorMin=crt.anchorMax=new Vector2(.22f,.43f);
+            crt.sizeDelta=new Vector2(44,44);
+            var ci=constructionActivityFx.GetComponent<Image>();ci.color=new Color(.95f,.70f,.28f,.11f);ci.raycastTarget=false;
+            constructionActivityFx.SetActive(false);
+        }
+
+        void AnimateCityAmbientation()
+        {
+            if(!city||ambientMotes==null)return;
+            float t=Time.unscaledTime;
+            for(int i=0;i<ambientMotes.Length;i++)
+            {
+                var rt=ambientMotes[i];if(rt==null)continue;
+                var origin=ambientMoteOrigins[i];
+                rt.anchoredPosition=origin+new Vector2(Mathf.Sin(t*.55f+i)*7f,Mathf.Repeat(t*(4.5f+i*.35f)+i*11f,52f));
+            }
+            if(constructionActivityFx!=null&&constructionActivityFx.activeSelf)
+            {
+                var rt=constructionActivityFx.GetComponent<RectTransform>();
+                float pulse=1f+Mathf.Sin(t*4f)*.12f;rt.localScale=new Vector3(pulse,pulse,1f);
+            }
         }
 #if UNITY_WEBGL && !UNITY_EDITOR
         IEnumerator LogPlayableButtonRectNextFrame(Button button,string name)
