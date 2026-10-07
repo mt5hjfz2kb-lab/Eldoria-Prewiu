@@ -169,6 +169,19 @@ jobs:
           }
           Write-Host "Staged certified current Valoria scene and exact external SHARP states."
 
+      - name: Quarantine heavyweight Eldoria Resources for owner WebGL transport
+        shell: powershell
+        run: |
+          $resources = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\Resources"
+          $resourcesMeta = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\Resources.meta"
+          $stash = Join-Path $env:RUNNER_TEMP "eldoria-webgl-excluded-resources"
+          $stashMeta = Join-Path $env:RUNNER_TEMP "eldoria-webgl-excluded-resources.meta"
+          Remove-Item $stash -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item $stashMeta -Force -ErrorAction SilentlyContinue
+          if (Test-Path $resources) { Move-Item $resources $stash -Force }
+          if (Test-Path $resourcesMeta) { Move-Item $resourcesMeta $stashMeta -Force }
+          Write-Host "WEBGL_TRANSPORT_RESOURCES_QUARANTINED"
+
       - name: Build Unity WebGL current requested slice
         shell: powershell
         run: |
