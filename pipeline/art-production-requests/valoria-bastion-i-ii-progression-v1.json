@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "enabled": true,
+  "enabled": false,
   "workstream_id": "valoria-bastion-i-ii-progression-v1",
   "request_id": "valoria-bastion-i-ii-progression-v1",
   "asset_or_sector": "Valoria Bastion I to II incremental visual progression and city progression UI",
   "profile": "environment_composition",
-  "visual_gate_state": "pending",
+  "visual_gate_state": "pass",
   "diagnosis": "existing certified Valoria remains authority; add only bounded incremental Bastion II growth cues and progression-state presentation without replacing SHARP beauty",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -26,5 +26,13 @@
     "on_next_visual_fail": "Classify the failure. Fix composition/placement/material through existing Unity composition route only. Do not open new geometry or R&D unless a proven geometry gap is documented and owner-authorized."
   },
   "notes": "Zero-spend continuation of certified production recipe. Gameplay/progression systems are reused; this request covers only player-visible incremental Bastion II presentation and progression UI.",
-  "status": "ACTIVE"
+  "status": "COMPLETED",
+  "completed_at": "2026-10-07T17:37:26Z",
+  "final_evidence": {
+    "production_run_id": 37656607306,
+    "publish_run_id": 37657298925,
+    "published_probe_run_id": 37660181336,
+    "published_probe_artifact_id": 11499884413,
+    "paid_credits": 0
+  }
 }
