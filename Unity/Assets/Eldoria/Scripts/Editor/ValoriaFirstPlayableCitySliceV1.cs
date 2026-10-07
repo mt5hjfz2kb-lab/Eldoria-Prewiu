@@ -396,32 +396,37 @@ namespace Eldoria.EditorTools
             visual.RightBuilt=rightBinding.Built;visual.RightGround=rightBinding.Ground;visual.RightConstruction=rightBinding.Construction;visual.RightAvailable=rightBinding.Available;visual.RightTarget=rightBinding.Target;
 
             // Bastion II must read as the same Bastion grown, not a replacement asset.
-            // Use restrained, state-driven heraldry/authority cues layered over the locked SHARP beauty.
+            // Author the cues in locked-camera screen space at the Bastion depth. This keeps
+            // them visible over SHARP without moving/rebuilding the canonical fortress.
             var bastionProxy=proxies.Single(p=>p.Id=="Bastion");
             var bastionCues=new List<GameObject>();
             var bannerMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-            bannerMaterial.SetColor("_BaseColor",new Color(.30f,.055f,.045f,1f));
+            bannerMaterial.SetColor("_BaseColor",new Color(.10f,.18f,.34f,1f));
             AssetDatabase.AddObjectToAsset(bannerMaterial,assetFolder+"/state-0.asset");
-            GameObject Banner(string name,float xOffset,float yOffset,float scale)
+            var authorityMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            authorityMaterial.SetColor("_BaseColor",new Color(.64f,.48f,.20f,1f));
+            AssetDatabase.AddObjectToAsset(authorityMaterial,assetFolder+"/state-0.asset");
+            float bastionDepth=Vector3.Distance(cam.transform.position,bastionProxy.Go.transform.position)*.985f;
+            float bastionViewSpan=2f*bastionDepth*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
+            GameObject ScreenCue(string name,Vector2 viewport,float widthFrac,float heightFrac,Material material)
             {
-                var go=GameObject.CreatePrimitive(PrimitiveType.Quad);
+                var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 go.name=name;go.transform.SetParent(root.transform);
-                go.transform.position=bastionProxy.Go.transform.position+new Vector3(xOffset,yOffset,-.22f);
-                go.transform.rotation=Quaternion.Euler(0,180,0);
-                go.transform.localScale=new Vector3(.44f*scale,1.05f*scale,1f);
-                go.GetComponent<Renderer>().sharedMaterial=bannerMaterial;
+                go.transform.position=cam.ViewportPointToRay(new Vector3(viewport.x,viewport.y,0)).GetPoint(bastionDepth);
+                go.transform.rotation=cam.transform.rotation;
+                go.transform.localScale=new Vector3(
+                    bastionViewSpan*cam.aspect*widthFrac,
+                    bastionViewSpan*heightFrac,
+                    bastionViewSpan*.0035f);
+                go.GetComponent<Renderer>().sharedMaterial=material;
                 foreach(var col in go.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
                 bastionCues.Add(go);return go;
             }
-            Banner("Bastion II banner left",-.88f,.62f,1f);
-            Banner("Bastion II banner right",.88f,.62f,1f);
-            var crest=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            crest.name="Bastion II crown reinforcement";crest.transform.SetParent(root.transform);
-            crest.transform.position=bastionProxy.Go.transform.position+new Vector3(0,.98f,-.18f);
-            crest.transform.localScale=new Vector3(1.55f,.14f,.08f);
-            crest.GetComponent<Renderer>().sharedMaterial=bannerMaterial;
-            foreach(var col in crest.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
-            bastionCues.Add(crest);
+            // Two additional banners flank the existing central standard. A narrow upper
+            // reinforcement gives a second, architectural cue while preserving the silhouette.
+            ScreenCue("Bastion II banner left",new Vector2(.557f,.842f),.018f,.068f,bannerMaterial);
+            ScreenCue("Bastion II banner right",new Vector2(.653f,.842f),.018f,.068f,bannerMaterial);
+            ScreenCue("Bastion II upper authority reinforcement",new Vector2(.605f,.906f),.095f,.016f,authorityMaterial);
             visual.BastionLevelTwoVisuals=bastionCues.ToArray();
 
             foreach(var proxy in proxies)
