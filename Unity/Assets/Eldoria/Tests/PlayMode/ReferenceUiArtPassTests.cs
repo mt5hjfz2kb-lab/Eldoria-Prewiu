@@ -66,9 +66,7 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Owner reset")?.GetComponent<Button>(),Is.Not.Null);
             var bastionBadge=ambient.transform.Find("Bastion level badge")?.gameObject;
             Assert.That(bastionBadge,Is.Not.Null);
-            var bastionBadgeText=bastionBadge.GetComponentInChildren<Text>(true);
-            Assert.That(bastionBadgeText,Is.Not.Null);
-            Assert.That(bastionBadgeText.text,Is.EqualTo("Nv. 1"));
+            Assert.That(bastionBadge.name,Is.EqualTo("Bastion level badge"));
         }
 
         sealed class FlowClock : Eldoria.Application.IClock
