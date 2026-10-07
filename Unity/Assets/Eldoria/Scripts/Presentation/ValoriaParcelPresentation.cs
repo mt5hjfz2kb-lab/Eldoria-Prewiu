@@ -28,7 +28,7 @@ namespace Eldoria.Presentation
         public GameObject[] BastionLevelTwoVisuals = Array.Empty<GameObject>();
         public int PresentedBastionLevel { get; private set; } = 1;
         public float HomeFov = 44.42281f;
-        public const float PresentationHomeScale=.88f;
+        public const float PresentationHomeScale=.80f;
         public float PresentationHomeFov => HomeFov*PresentationHomeScale;
         public ParcelBuildingState LeftState { get; private set; }
         public ParcelBuildingState RightState { get; private set; }
@@ -73,8 +73,8 @@ namespace Eldoria.Presentation
             // Locked parcels remain visible empty space, with no premature building panel.
             if(target!=null)target.enabled=state!=ParcelBuildingState.NOT_BUILT;
         }
-        public const float HorizontalPanHalfExtent=.58f;
-        public const float VerticalPanHalfExtent=.18f;
+        public const float HorizontalPanHalfExtent=.80f;
+        public const float VerticalPanHalfExtent=.32f;
         public void Pan(Vector2 delta)
         {
             var p=ProductionCamera.transform.position;
