@@ -1,3 +1,9 @@
+## 2026-10-07 — BASTION I-II PRESENTATION PARITY CORRECTION v1 CLOSED / PUBLISHED PASS
+
+Workstream `valoria-bastion-i-ii-presentation-parity-correction-v1` is **CLOSED / PASS**. Final production **37681793700** (artifact **11509591694**), UI certification **37681793717**, and source/editor gate **37681794138** passed. Certified owner WebGL publication **37684790661** passed. Published mobile probe **37687592179** (artifact **11511827528**) returned `playablePass=true` with HOME, horizontal/vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, reload persistence, landscape and portrait checks, and no white screen. Published owner URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ .
+
+Presentation corrections include tighter city-first HOME, building-associated contextual CTA, live construction timing feedback, ambient city motion/activity cues, repeatable canonical owner reset, and real state-driven building level indicators. Gameplay/state/persistence/economy and SHARP authority remain canonical; World Region 1 was not redesigned; Bastion III remains unopened. Paid credits: **0**.
+
 ## 2026-10-07 — Bastion I-II controlled vertical-slice migration CLOSED
 
 Workstream `valoria-bastion-i-ii-vertical-slice-migration-v1` is **CLOSED / PASS**. The vertical slice now governs mobile presentation hierarchy/proportions for Bastion I-II, while real Unity gameplay/state/progression/persistence remains authoritative. Fake/future vertical-slice controls were deliberately not migrated. Production run **37667362790** and published probe **37670831297** both pass. Published URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ . Probe evidence artifact: **11505437542**. Paid credits: **0**.
