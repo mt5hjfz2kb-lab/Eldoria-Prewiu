@@ -30,7 +30,7 @@ namespace Eldoria.Presentation
         string requestedVisualKey = "";
         Coroutine visualLoading;
         const float CertifiedAspect = 1230f / 845f;
-        const float CertifiedHalfPanWorld = .5f;
+        const float CertifiedHalfPanWorld = .80f;
         const float CertifiedHalfPanPixels = 22.8f;
         const float CertifiedWebOverscan = 1.025f;
 
@@ -150,13 +150,13 @@ namespace Eldoria.Presentation
             webBackgroundRect.anchoredPosition = Vector2.zero;
             webBackgroundRect.sizeDelta = Vector2.one;
             var fitter = imageObject.GetComponent<AspectRatioFitter>();
-            fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
             fitter.aspectRatio = CertifiedAspect;
             webBackground = imageObject.GetComponent<RawImage>();
             webBackground.raycastTarget = false;
             if (webBackgroundTexture != null) webBackground.texture = webBackgroundTexture;
             SyncCertifiedWebView();
-            Debug.Log("VALORIA_WEBGL_HUD_BACKGROUND_READY policy=FIT_IN_PARENT");
+            Debug.Log("VALORIA_WEBGL_HUD_BACKGROUND_READY policy=ENVELOPE_PARENT_CITY_CROP");
         }
         void SyncCertifiedWebView()
         {
