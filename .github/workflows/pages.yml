@@ -169,6 +169,30 @@ jobs:
           }
           Write-Host "Staged certified current Valoria scene and exact external SHARP states."
 
+      - name: Stage minimal Eldoria Resources for owner WebGL transport
+        shell: powershell
+        run: |
+          $cfg = Get-Content "$env:GITHUB_WORKSPACE\pipeline\unity-publish-request.json" -Raw | ConvertFrom-Json
+          if ($cfg.mode -ne "current-valoria-production") {
+            Write-Host "Legacy Unity publication mode; Resources staging unchanged."
+            exit 0
+          }
+
+          $resources = Join-Path $env:GITHUB_WORKSPACE "Unity\Assets\Eldoria\Resources"
+          $stash = Join-Path $env:RUNNER_TEMP "eldoria-full-resources"
+          Remove-Item $stash -Recurse -Force -ErrorAction SilentlyContinue
+          if (-not (Test-Path $resources)) { throw "Eldoria Resources folder missing before WebGL staging." }
+
+          Move-Item $resources $stash -Force
+          New-Item -ItemType Directory -Path $resources -Force | Out-Null
+
+          $playerCitySource = Join-Path $stash "WorldPlayerCity"
+          $playerCityDest = Join-Path $resources "WorldPlayerCity"
+          if (-not (Test-Path $playerCitySource)) { throw "WorldPlayerCity resource missing from full Resources stash." }
+          Copy-Item $playerCitySource $playerCityDest -Recurse -Force
+
+          Write-Host "WEBGL_MINIMAL_RESOURCES_PASS kept=WorldPlayerCity excluded=historical-world-and-valoria-resources"
+
       - name: Build Unity WebGL current requested slice
         shell: powershell
         run: |
