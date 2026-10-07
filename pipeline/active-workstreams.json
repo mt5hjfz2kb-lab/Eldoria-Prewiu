@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T15:05:00Z",
+  "updated_at": "2026-10-07T15:06:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -19,7 +19,8 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
         "pipeline/art-production-requests/valoria-mobile-web-playtest-v1.json",
         "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
-        "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs"
+        "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs"
       ],
       "resources": [
         "github-pages-unity-owner",
@@ -47,7 +48,7 @@
         ],
         "authority": "owner physical iPhone observation supersedes static automated probe"
       },
-      "scope_note": "SlicePresenter.cs ownership is limited to WebGL/mobile pointer classification and diagnostic instrumentation; gameplay/state/navigation semantics must remain unchanged. Persistence ownership additionally includes LocalServices.cs only for the WebGL storage backend; domain/gameplay semantics remain unchanged."
+      "scope_note": "SlicePresenter.cs ownership remains limited to WebGL/mobile pointer classification and diagnostics. SliceBoot.cs is now additionally owned only for the demonstrated WebGL browser-persistence adapter required by the published reload gate; gameplay/state/navigation semantics remain unchanged."
     }
   ],
   "history": [
