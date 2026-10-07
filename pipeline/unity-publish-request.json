@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T14:23:00Z",
-  "retry": 29,
-  "retry_reason": "WebGL mobile usability correction: align the touch-navigation fallback with the owner-approved landscape HUD positions (MUNDO far-left, BASTIÓN/REINO far-right) and the real visible nav height. Gameplay/state/visual authority unchanged.",
+  "updated_at": "2026-10-07T14:27:00Z",
+  "retry": 30,
+  "retry_reason": "WebGL transport correction: Reino/Valoria returns must load the packaged temporary scene ValoriaWebGL while preserving semantic navigation and canonical Valoria unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "63d1a668d1f157f1641a0e607bd70d994445f63f",
+  "retry_after_commit": "999b11deddf7704c2ef3517eeb0f4ed6c8635de3",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
