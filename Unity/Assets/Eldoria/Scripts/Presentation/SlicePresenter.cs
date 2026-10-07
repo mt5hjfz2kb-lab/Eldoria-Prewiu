@@ -77,7 +77,11 @@ namespace Eldoria.Presentation
             if(Time.unscaledTime>refreshAt)
             {
                 refreshAt=Time.unscaledTime+.22f;
-                if(gateway.Advance())Refresh();
+                if(gateway.Advance())
+                {
+                    Refresh();
+                    LogPlayableState("advance");
+                }
                 else RefreshClock();
             }
             if(lastWidth!=Screen.width||lastHeight!=Screen.height) UpdateSafeArea();
