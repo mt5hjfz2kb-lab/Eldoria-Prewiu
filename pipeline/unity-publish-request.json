@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T11:18:00Z",
-  "retry": 21,
-  "retry_reason": "Validation-only republish after playable-probe bug fix: accept staged scene name ValoriaWebGL as the WebGL transport of canonical Valoria. No gameplay/art change; rerun full physical-iPhone-like touch/navigation/persistence probe.",
+  "updated_at": "2026-10-07T11:45:00Z",
+  "retry": 22,
+  "retry_reason": "Validation-only rerun after playable-probe path fix: use real MUNDO navigation and Region 1 forest hotspot/action instead of the landscape-overlapped primary objective button. Runtime/gameplay/art unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "31f2580af836ec5131c63816aa2167be1f6fcc0d",
+  "retry_after_commit": "5fcf4d4b64613f1531f167bdb5f5eea782b9fef4",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
