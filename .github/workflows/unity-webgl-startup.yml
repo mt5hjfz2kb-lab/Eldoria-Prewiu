@@ -68,7 +68,18 @@ jobs:
             }
             throw new Error('Timed out waiting for '+label);
           }
-          function screenPoint(ui,height){return {x:ui.x,y:height-ui.unityY};}
+          function screenPoint(ui,box,canvasInfo){
+            return {
+              x:box.x+(ui.x/canvasInfo.width)*box.width,
+              y:box.y+((canvasInfo.height-ui.unityY)/canvasInfo.height)*box.height
+            };
+          }
+          function hotspotPoint(hotspot,box,canvasInfo){
+            return {
+              x:box.x+(hotspot.x/canvasInfo.width)*box.width,
+              y:box.y+(hotspot.y/canvasInfo.height)*box.height
+            };
+          }
           async function touchTap(cdp,x,y){
             await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,radiusX:5,radiusY:5,force:1,id:1}]});
             await sleep(80);
@@ -148,8 +159,12 @@ jobs:
               report.checks.homeVisual=homeStats;
               if(homeStats.stdev<28||homeStats.whiteRatio>.28)throw new Error('HOME lacks sufficient Valoria visual content');
 
-              const box=await page.locator('canvas').boundingBox();
+              const canvasLocator=page.locator('canvas');
+              const box=await canvasLocator.boundingBox();
               if(!box)throw new Error('Unity canvas missing');
+              const canvasInfo=await canvasLocator.evaluate(c=>({width:c.width,height:c.height,clientWidth:c.clientWidth,clientHeight:c.clientHeight}));
+              report.checks.canvas=canvasInfo;
+              if(!canvasInfo.width||!canvasInfo.height)throw new Error('Unity canvas has invalid internal dimensions');
               const cx=box.x+box.width*.56, cy=box.y+box.height*.48;
               const beforePanRightLogs=logs.length;
               await touchDrag(cdp,cx+100,cy,cx-120,cy);
@@ -165,7 +180,7 @@ jobs:
 
               const homeUi=parseUi(logs,'home');
               if(!homeUi)throw new Error('HOME touch target was not published by runtime');
-              const hp=screenPoint(homeUi,390);
+              const hp=screenPoint(homeUi,box,canvasInfo);
               await touchTap(cdp,hp.x,hp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after right pan');
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after right pan');
@@ -192,7 +207,7 @@ jobs:
 
               const worldNav=parseUi(logs,'worldNav');
               if(!worldNav)throw new Error('MUNDO touch target missing');
-              const wn=screenPoint(worldNav,390);
+              const wn=screenPoint(worldNav,box,canvasInfo);
               const worldStart=logs.length;
               await touchTap(cdp,wn.x,wn.y);
               await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
@@ -203,11 +218,12 @@ jobs:
               const forest=parseHotspot(logs,'forest-valoria');
               if(!forest)throw new Error('Forest hotspot screen coordinate missing');
               const forestTapStart=logs.length;
-              await touchTap(cdp,forest.x,forest.y);
+              const fp=hotspotPoint(forest,box,canvasInfo);
+              await touchTap(cdp,fp.x,fp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'forest action target',forestTapStart);
               const worldAction=parseUi(logs,'buildingAction');
               if(!worldAction)throw new Error('Forest action button missing');
-              const wa=screenPoint(worldAction,390);
+              const wa=screenPoint(worldAction,box,canvasInfo);
               const gatherStart=logs.length;
               await touchTap(cdp,wa.x,wa.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command',gatherStart);
@@ -217,7 +233,7 @@ jobs:
 
               const cityUi=parseUi(logs,'cityNav');
               if(!cityUi)throw new Error('Reino/City touch target missing');
-              const cp=screenPoint(cityUi,390);
+              const cp=screenPoint(cityUi,box,canvasInfo);
               await touchTap(cdp,cp.x,cp.y);
               const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
