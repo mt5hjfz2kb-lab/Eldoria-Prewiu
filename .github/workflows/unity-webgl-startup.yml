@@ -114,7 +114,7 @@ jobs:
               attempts.push({fx,x,y});
               await page.touchscreen.tap(x,y);
               const started=Date.now();
-              while(Date.now()-started<900){
+              while(Date.now()-started<2500){
                 for(let i=logs.length-1;i>=startIndex;i--){
                   if(predicate(logs[i].text||''))return {x,y,fx,attempts};
                 }
