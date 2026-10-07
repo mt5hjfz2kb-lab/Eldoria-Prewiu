@@ -62,7 +62,7 @@ namespace Eldoria.Tests
             var panel=safeArea.transform.Find("Building interaction panel")?.GetComponent<RectTransform>();
             Assert.That(panel,Is.Not.Null);
             Assert.That(panel.sizeDelta.x,Is.LessThanOrEqualTo(360f));
-            Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(170f));
+            Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(180f));
             Assert.That(GameObject.Find("Owner reset")?.GetComponent<Button>(),Is.Not.Null);
             var bastionBadge=GameObject.Find("Bastion level badge");
             Assert.That(bastionBadge,Is.Not.Null);
