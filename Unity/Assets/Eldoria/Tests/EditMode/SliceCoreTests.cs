@@ -354,6 +354,28 @@ namespace Eldoria.Tests
                 Is.EqualTo(SliceContentProfiles.WebContract.RecruitStonePerArcher*SliceContentProfiles.OwnerIiiCandidate.RecruitArchers));
         }
 
+        [Test] public void BastionProgressionCatalogOwnsRequirementsCostsAndUnlocks()
+        {
+            SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+            try
+            {
+                var definition=BastionProgressionCatalog.ForLevel(2);
+                Assert.That(definition.RequiredPreviousLevel,Is.EqualTo(1));
+                Assert.That(definition.WoodCost,Is.EqualTo(SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost));
+                Assert.That(definition.StoneCost,Is.EqualTo(SliceContentProfiles.OwnerIiiCandidate.Bastion2StoneCost));
+                Assert.That(definition.Unlocks,Does.Contain("barracks"));
+                Assert.That(definition.Unlocks,Does.Contain("chapter-ii"));
+                var state=new PlayerState();
+                Assert.That(BastionProgressionCatalog.RequirementsMet(state,definition),Is.False);
+                state.JourneyComplete=true;
+                state.Resources.Wood=definition.WoodCost;
+                state.Resources.Stone=definition.StoneCost;
+                Assert.That(BastionProgressionCatalog.RequirementsMet(state,definition),Is.True);
+                Assert.That(BastionProgressionCatalog.MissingSummary(state,definition),Is.Empty);
+            }
+            finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
+        }
+
         [Test] public void SnapshotCannotEditAuthoritativeState()
         {
             var g=new LocalGateway(new Clock(),new Memory());var outside=g.Snapshot();
