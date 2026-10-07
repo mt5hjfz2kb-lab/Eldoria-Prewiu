@@ -20,6 +20,7 @@ namespace Eldoria.Presentation
         Coroutine loading;
         GsplatAsset runtimeAsset;
         RawImage webBackground;
+        GameObject webBackgroundCanvas;
         Texture2D webBackgroundTexture;
 
         void Start()
@@ -104,16 +105,15 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
         void CreateWebBackground()
         {
-            var canvasObject = new GameObject("Valoria certified WebGL background",
+            webBackgroundCanvas = new GameObject("Valoria certified WebGL background",
                 typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvasObject.transform.SetParent(transform, false);
-            var canvas = canvasObject.GetComponent<Canvas>();
+            var canvas = webBackgroundCanvas.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = -1000;
-            canvasObject.GetComponent<GraphicRaycaster>().enabled = false;
+            canvas.sortingOrder = 50;
+            webBackgroundCanvas.GetComponent<GraphicRaycaster>().enabled = false;
 
             var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage));
-            imageObject.transform.SetParent(canvasObject.transform, false);
+            imageObject.transform.SetParent(webBackgroundCanvas.transform, false);
             var rect = imageObject.GetComponent<RectTransform>();
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
@@ -135,6 +135,7 @@ namespace Eldoria.Presentation
         {
             if (runtimeAsset != null) Destroy(runtimeAsset);
             if (webBackgroundTexture != null) Destroy(webBackgroundTexture);
+            if (webBackgroundCanvas != null) Destroy(webBackgroundCanvas);
         }
     }
 }
