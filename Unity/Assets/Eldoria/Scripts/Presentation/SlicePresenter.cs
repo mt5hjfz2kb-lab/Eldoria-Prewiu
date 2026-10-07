@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Eldoria.Application;
 using Eldoria.Domain;
 using UnityEngine;
@@ -388,6 +389,9 @@ namespace Eldoria.Presentation
                 buildingAction.interactable=s.March.Phase=="idle"&&!(engendro?s.EngendroDefeated:s.ScoutDefeated);
                 if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("Fight",id);});
             }
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogPlayableButtonRectNextFrame(buildingAction,"WORLD_ACTION"));
+#endif
         }
         void OpenBuildingPanel(string id)
         {
@@ -911,6 +915,38 @@ namespace Eldoria.Presentation
             var cr=closeText.rectTransform;cr.anchorMin=Vector2.zero;cr.anchorMax=Vector2.one;cr.offsetMin=cr.offsetMax=Vector2.zero;
             buildingPanel.SetActive(false);
         }
+#if UNITY_WEBGL && !UNITY_EDITOR
+        IEnumerator LogPlayableButtonRectNextFrame(Button button,string name)
+        {
+            yield return null;
+            if(button==null)yield break;
+            var rt=button.GetComponent<RectTransform>();
+            if(rt==null)yield break;
+            var corners=new Vector3[4];
+            rt.GetWorldCorners(corners);
+            var a=RectTransformUtility.WorldToScreenPoint(null,corners[0]);
+            var b=RectTransformUtility.WorldToScreenPoint(null,corners[2]);
+            float x=(a.x+b.x)*.5f;
+            float y=Screen.height-(a.y+b.y)*.5f;
+            Debug.Log("ELDORIA_PLAYABLE_UI name="+name+" x="+x.ToString("F1")+" y="+y.ToString("F1")+
+                " w="+Mathf.Abs(b.x-a.x).ToString("F1")+" h="+Mathf.Abs(b.y-a.y).ToString("F1"));
+        }
+
+        IEnumerator LogWorldHotspotNextFrame(string objectName,string id)
+        {
+            yield return null;
+            var camera=OfficialCamera;
+            var target=GameObject.Find(objectName);
+            if(camera==null||target==null)yield break;
+            var collider=target.GetComponent<Collider>();
+            var world=collider!=null?collider.bounds.center:target.transform.position;
+            var point=camera.WorldToScreenPoint(world);
+            if(point.z<=0)yield break;
+            Debug.Log("ELDORIA_PLAYABLE_HOTSPOT id="+id+" x="+point.x.ToString("F1")+
+                " y="+(Screen.height-point.y).ToString("F1"));
+        }
+#endif
+
         void ResetQaFreshSave()
         {
             if(Time.unscaledTime>resetQaArmedUntil)
