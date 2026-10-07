@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T08:35:00Z",
-  "retry": 12,
-  "retry_reason": "Fix certified WebGL Valoria background render order: use root ScreenSpaceOverlay canvas at sorting order 50 so it renders above camera background and below Eldoria HUD (100).",
+  "updated_at": "2026-10-07T09:05:00Z",
+  "retry": 13,
+  "retry_reason": "Fix certified WebGL Valoria presentation by placing the certified frame as the first child of the canonical Eldoria HUD canvas, guaranteeing it renders behind HUD controls and above the white scene background.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "38d6963ec69b995f4d0819790197548a2d083d18",
+  "retry_after_commit": "87bf4dafb9e4ed34997fe5b1994008f6c925b3a0",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
