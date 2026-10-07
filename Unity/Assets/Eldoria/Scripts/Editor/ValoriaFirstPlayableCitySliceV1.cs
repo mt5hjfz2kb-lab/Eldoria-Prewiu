@@ -394,6 +394,36 @@ namespace Eldoria.EditorTools
             var leftBinding=bindings.Single(p=>p.BuildingId=="sawmill");var rightBinding=bindings.Single(p=>p.BuildingId=="barracks");
             visual.LeftBuilt=leftBinding.Built;visual.LeftGround=leftBinding.Ground;visual.LeftConstruction=leftBinding.Construction;visual.LeftAvailable=leftBinding.Available;visual.LeftTarget=leftBinding.Target;
             visual.RightBuilt=rightBinding.Built;visual.RightGround=rightBinding.Ground;visual.RightConstruction=rightBinding.Construction;visual.RightAvailable=rightBinding.Available;visual.RightTarget=rightBinding.Target;
+
+            // Bastion II must read as the same Bastion grown, not a replacement asset.
+            // Use restrained, state-driven heraldry/authority cues layered over the locked SHARP beauty.
+            var bastionProxy=proxies.Single(p=>p.Id=="Bastion");
+            var bastionCues=new List<GameObject>();
+            var bannerMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            bannerMaterial.SetColor("_BaseColor",new Color(.30f,.055f,.045f,1f));
+            AssetDatabase.AddObjectToAsset(bannerMaterial,assetFolder+"/state-0.asset");
+            GameObject Banner(string name,float xOffset,float yOffset,float scale)
+            {
+                var go=GameObject.CreatePrimitive(PrimitiveType.Quad);
+                go.name=name;go.transform.SetParent(root.transform);
+                go.transform.position=bastionProxy.Go.transform.position+new Vector3(xOffset,yOffset,-.22f);
+                go.transform.rotation=Quaternion.Euler(0,180,0);
+                go.transform.localScale=new Vector3(.44f*scale,1.05f*scale,1f);
+                go.GetComponent<Renderer>().sharedMaterial=bannerMaterial;
+                foreach(var col in go.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
+                bastionCues.Add(go);return go;
+            }
+            Banner("Bastion II banner left",-.88f,.62f,1f);
+            Banner("Bastion II banner right",.88f,.62f,1f);
+            var crest=GameObject.CreatePrimitive(PrimitiveType.Cube);
+            crest.name="Bastion II crown reinforcement";crest.transform.SetParent(root.transform);
+            crest.transform.position=bastionProxy.Go.transform.position+new Vector3(0,.98f,-.18f);
+            crest.transform.localScale=new Vector3(1.55f,.14f,.08f);
+            crest.GetComponent<Renderer>().sharedMaterial=bannerMaterial;
+            foreach(var col in crest.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
+            bastionCues.Add(crest);
+            visual.BastionLevelTwoVisuals=bastionCues.ToArray();
+
             foreach(var proxy in proxies)
             {
                 var parcel=bindings.FirstOrDefault(p=>p.ParcelId==proxy.Id);
@@ -417,7 +447,7 @@ namespace Eldoria.EditorTools
                 CaptureRasterOnly(cam,output,name);
                 bool expectedLeft=s.SawmillLevel>0,expectedRight=s.BarracksLevel>0;
                 if(visual.ActiveVariant!=((expectedLeft?1:0)|(expectedRight?2:0))||renderer.GsplatAsset!=visual.StateAssets[visual.ActiveVariant]||visual.LeftBuilt.activeSelf!=expectedLeft||visual.RightBuilt.activeSelf!=expectedRight)throw new Exception("Runtime layer disagrees with authoritative level");
-                rows.Add("{\"capture\":\""+name+"\",\"left\":\""+visual.LeftState+"\",\"right\":\""+visual.RightState+"\",\"objective\":\""+Eldoria.Domain.SliceRules.CurrentObjectiveKey(s)+"\",\"state\":"+JsonUtility.ToJson(s)+"}");
+                rows.Add("{\"capture\":\""+name+"\",\"left\":\""+visual.LeftState+"\",\"right\":\""+visual.RightState+"\",\"bastion_level\":"+s.BastionLevel+",\"bastion_visual_level\":"+visual.PresentedBastionLevel+",\"objective\":\""+Eldoria.Domain.SliceRules.CurrentObjectiveKey(s)+"\",\"state\":"+JsonUtility.ToJson(s)+"}");
             }
             CaptureState("runtime-home-initial");
             if(visual.LeftState!=Eldoria.Domain.ParcelBuildingState.AVAILABLE||visual.RightState!=Eldoria.Domain.ParcelBuildingState.NOT_BUILT)throw new Exception("Initial progression mismatch");
@@ -430,7 +460,10 @@ namespace Eldoria.EditorTools
             void March(string kind,string target){Command(kind,target);clock.Elapse(120);gateway.Advance();}
             March("Gather","forest-valoria");March("Gather","forest-valoria");March("Gather","quarry-valoria");March("Fight","corrupt-scout");
             if(!gateway.Snapshot().JourneyComplete)throw new Exception("Existing chapter-I missions not completed");
-            Command("AdvanceBastion","bastion");CaptureState("runtime-right-available");
+            Command("AdvanceBastion","bastion");CaptureState("runtime-bastion-ii");
+            if(visual.PresentedBastionLevel!=2 || visual.BastionLevelTwoVisuals.Any(v=>v==null||!v.activeSelf))
+                throw new Exception("Bastion II visual evolution did not follow authoritative state");
+            CaptureState("runtime-right-available");
             Command("Build","barracks");CaptureState("runtime-right-under-construction");
             gateway=new Eldoria.Application.LocalGateway(clock,store);CaptureState("runtime-right-reloaded-under-construction");
             clock.Elapse(Eldoria.Domain.SliceRules.BarracksBuildSeconds+1);gateway.Advance();CaptureState("runtime-both-built");
