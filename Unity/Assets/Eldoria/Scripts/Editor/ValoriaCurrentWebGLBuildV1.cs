@@ -15,10 +15,12 @@ namespace Eldoria.EditorTools
     /// Builds the certified Valoria production runtime scene for browser playtesting.
     /// The original production scene is never regenerated or saved. For WebGL only, a temporary
     /// scene copy strips every serialized GsplatAsset reference and loads the exact external PLY variants at runtime.
+    /// Region 1 is included as the already-certified dedicated 4X World scene so Mundo/Reino navigation works in-player.
     /// </summary>
     public static class ValoriaCurrentWebGLBuildV1
     {
         const string ValoriaScene = "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity";
+        const string FrontierScene = "Assets/Eldoria/Scenes/Frontier.unity";
         const string TempFolder = "Assets/Eldoria/WebGLTemp";
         const string TempScene = TempFolder + "/ValoriaWebGL.unity";
         const string Output = "Builds/WebGL";
@@ -27,6 +29,7 @@ namespace Eldoria.EditorTools
         public static void Build()
         {
             Require(ValoriaScene);
+            Require(FrontierScene);
             for (var i = 0; i < 4; i++)
                 Require($"Assets/Eldoria/ProductionSlice/Runtime/state-{i}.asset");
 
@@ -85,19 +88,19 @@ namespace Eldoria.EditorTools
             {
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
                 {
-                    scenes = new[] { TempScene },
+                    scenes = new[] { TempScene, FrontierScene },
                     locationPathName = Output,
                     target = BuildTarget.WebGL,
                     options = BuildOptions.None
                 });
 
                 if (report.summary.result != BuildResult.Succeeded)
-                    throw new Exception("Current Valoria WebGL build failed: " + report.summary.result);
+                    throw new Exception("Current Valoria + Region 1 WebGL build failed: " + report.summary.result);
 
                 if (!File.Exists(Path.Combine(Output, "index.html")))
-                    throw new Exception("Current Valoria WebGL build did not produce index.html.");
+                    throw new Exception("Current Valoria + Region 1 WebGL build did not produce index.html.");
 
-                Debug.Log($"VALORIA_CURRENT_WEBGL_PASS size={report.summary.totalSize} bytes");
+                Debug.Log($"VALORIA_REGION1_CURRENT_WEBGL_PASS size={report.summary.totalSize} bytes");
             }
             finally
             {
@@ -139,7 +142,6 @@ namespace Eldoria.EditorTools
             }
             return stripped;
         }
-
 
         static int RemapMaterialsOutOfStateAssets(Scene scene)
         {
