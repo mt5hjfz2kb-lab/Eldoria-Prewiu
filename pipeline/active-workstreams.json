@@ -1,8 +1,41 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T17:37:26Z",
-  "active": [],
+  "updated_at": "2026-10-07T18:03:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
+      "title": "Valoria Bastion I-II controlled vertical-slice presentation migration",
+      "owner": "chat-valoria-bastion-i-ii-migration-20261007",
+      "scope": [
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-requests/valoria-bastion-i-ii-vertical-slice-migration-v1.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        ".github/workflows/valoria-first-playable-city-slice-v1.yml",
+        ".github/workflows/pages.yml",
+        "pipeline/unity-publish-request.json",
+        "docs/VALORIA_BASTION_I_II_VERTICAL_SLICE_MIGRATION_V1.md",
+        "docs/evidence/valoria-bastion-i-ii-vertical-slice-migration-v1/**",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-07T18:03:00Z",
+      "base_main_sha": "d5425db1e8db35f96f242eb55f8251015b69ba4f",
+      "status": "active",
+      "phase": "BASTION I VISUAL/UX CONVERGENCE",
+      "dependency": "Starts only after increment-of-production/Bastion I-II progression closure. Preserve real gameplay/state/persistence and World Region 1; vertical slice is presentation/UX authority only.",
+      "paid_credits": 0,
+      "art_production_routing": "required",
+      "next": "Run planner, migrate Bastion I presentation first, certify, then Bastion II, publish and complete full mobile macroloop."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-i-ii-progression-v1",

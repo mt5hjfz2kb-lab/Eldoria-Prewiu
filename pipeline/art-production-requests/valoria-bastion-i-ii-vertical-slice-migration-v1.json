@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
+  "request_id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
+  "asset_or_sector": "Valoria Bastion I-II mobile composition, HUD hierarchy and UX migration from canonical web vertical slice onto real Unity gameplay",
+  "profile": "environment_composition",
+  "visual_gate_state": "not_evaluated",
+  "diagnosis": "Current Unity/WebGL gameplay loop is certified but presentation hierarchy diverges from the web vertical slice: HUD/panels occupy too much screen space and Valoria does not retain the same city-first mobile hierarchy.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": false,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Reuse certified SHARP Valoria, current Bastion I/II progression visuals, real PlayerState/LocalGateway/persistence and existing World Region 1. Migrate only composition, hierarchy, safe areas, HUD/panel proportions and compatible visual behavior from the web vertical slice. No gameplay mocks, no new art R&D, no paid generation.",
+    "final_gate": "Bastion I and II must each preserve real touch pan, city-first framing, compact vertical-slice-like HUD hierarchy and real contextual actions; published mobile loop HOME -> pan -> MUNDO -> Region 1 action/reward -> REINO/Valoria -> reload must pass with persistence and no white screen."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Classify as composition/interaction/presentation. Correct through the existing Unity presentation route only. Do not replace gameplay/state, reopen World art, or introduce new geometry/R&D without a separately proven need."
+  },
+  "notes": "Owner-authorized controlled migration. Vertical slice governs presentation/UX; current Unity gameplay governs state/progression/persistence. Bastion I must converge before Bastion II. Zero spend.",
+  "status": "ACTIVE"
+}
