@@ -162,15 +162,20 @@ namespace Eldoria.Application
                     if (!CanDepart()) return Fail("Marcha no disponible");
                     Depart(command.TargetId); break;
                 case "AdvanceBastion":
-                    if (command.TargetId != "bastion" || !state.JourneyComplete || state.BastionLevel != 1)
-                        return Fail("El Bastión todavía no puede ascender");
-                    if (state.Resources.Wood < SliceRules.Bastion2WoodCost || state.Resources.Stone < SliceRules.Bastion2StoneCost)
-                        return Fail("Faltan recursos para ascender el Bastión");
-                    state.Resources.Wood -= SliceRules.Bastion2WoodCost;
-                    state.Resources.Stone -= SliceRules.Bastion2StoneCost;
-                    state.BastionLevel = 2;
+                    if (command.TargetId != "bastion") return Fail("El Bastión todavía no puede ascender");
+                    BastionProgressionDefinition next;
+                    try { next = BastionProgressionCatalog.ForLevel(state.BastionLevel + 1); }
+                    catch (ArgumentOutOfRangeException) { return Fail("No hay un siguiente nivel de Bastión disponible"); }
+                    if (!BastionProgressionCatalog.RequirementsMet(state,next))
+                    {
+                        var missing=BastionProgressionCatalog.MissingSummary(state,next);
+                        return Fail(string.IsNullOrEmpty(missing)?"El Bastión todavía no puede ascender":"Falta: "+missing);
+                    }
+                    state.Resources.Wood -= next.WoodCost;
+                    state.Resources.Stone -= next.StoneCost;
+                    state.BastionLevel = next.Level;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
-                    state.ChapterProgress.BastionTwoReached = true;
+                    state.ChapterProgress.BastionTwoReached = state.BastionLevel >= 2;
                     break;
                 case "Build":
                     if (state.BuildingCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
