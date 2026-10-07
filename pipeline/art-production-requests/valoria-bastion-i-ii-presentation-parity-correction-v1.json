@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "workstream_id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
+  "request_id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
+  "asset_or_sector": "Valoria Bastion I-II published Unity presentation parity against canonical v0220 web vertical slice",
+  "profile": "environment_composition",
+  "visual_gate_state": "correction",
+  "diagnosis": "Technical migration passed, but direct owner review found presentation parity gaps: detached CTA, weak construction timing feedback, HOME too distant, and static-photo feel. Canonical web also demonstrates contextual building emphasis, particle/atmosphere motion and stronger feedback hierarchy.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_material_blending": false,
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": false
+  },
+  "validation": {
+    "source_gate": "Confront v0220/index.html presentation behavior and current published Unity. Preserve PlayerState/LocalGateway, persistence, economy, SHARP, World Region 1 and Bastion I-II gameplay.",
+    "final_gate": "Published Unity must show building-associated contextual CTA, visible live construction countdown, tighter ~80%-feeling HOME with bounded pan, safe ambient motion, Bastion I/II readability, intact gameplay/save-reload, no Bastion III."
+  },
+  "escalation": {
+    "on_next_visual_fail": "Correct presentation only. Do not reopen gameplay, World Region 1, SHARP, economy or paid generation."
+  },
+  "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
+  "status": "ACTIVE"
+}
