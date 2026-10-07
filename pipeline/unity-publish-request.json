@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T09:45:00Z",
-  "retry": 14,
-  "retry_reason": "Fix mobile portrait presentation: preserve certified Valoria 1230x845 aspect ratio with EnvelopeParent inside the canonical HUD canvas so browser playtest crops instead of stretching.",
+  "updated_at": "2026-10-07T09:55:00Z",
+  "retry": 15,
+  "retry_reason": "Final mobile presentation fix: preserve certified Valoria 1230x845 aspect ratio using EnvelopeParent so landscape remains correct and portrait crops without vertical stretching.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "ff279f7102be470aadcd36224259a34a864a02e6",
+  "retry_after_commit": "c42e00f416b06427c824be1619d53598bf9c9b92",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
