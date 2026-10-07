@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T15:53:17Z",
-  "active": [
+  "updated_at": "2026-10-07T17:37:26Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-i-ii-progression-v1",
       "title": "Valoria Bastion I to II first complete city progression loop v1",
@@ -31,15 +32,30 @@
         "github-pages"
       ],
       "claimed_at": "2026-10-07T15:53:17Z",
-      "status": "active",
-      "phase": "VALIDATION / VISUAL + MOBILE WEBGL CERTIFICATION",
+      "status": "completed",
+      "phase": "ALL I-II GATES PASS / PUBLISHED WEBGL PASS / CLOSED",
       "dependency": "Consumes closed Valoria game state, mobile WebGL playtest, and World Region 1. Preserve canonical Valoria visual authority.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "base_main_sha": "2b4fd22749eccb8cffcf9de3c5dfb789a878e7fa"
-    }
-  ],
-  "history": [
+      "base_main_sha": "2b4fd22749eccb8cffcf9de3c5dfb789a878e7fa",
+      "completed_at": "2026-10-07T17:37:26Z",
+      "runner_released": true,
+      "blocker": null,
+      "next": "Do not start Bastion III automatically. Next work requires explicit owner authorization.",
+      "result": {
+        "verdict": "SOURCE PASS / TECH PASS / INITIAL STATE PASS / CONSTRUCTION PASS / ECONOMY PASS / PROGRESSION PASS / BASTION VISUAL EVOLUTION PASS / INTERACTION PASS / SAVE-RELOAD PASS / IDEMPOTENCY PASS / VISUAL REGRESSION PASS / MOBILE READABILITY PASS / PAYLOAD SANITY PASS / CITY-WORLD PASS / FIRST COMPLETE MACROLOOP PASS",
+        "final_production_commit": "725035ded5d003b20582f8e3ca5d43e5ee967a15",
+        "final_publish_commit": "b5046f98c0fef689c109190611271ecce6d001ea",
+        "production_run_id": 37656607306,
+        "publish_run_id": 37657298925,
+        "published_probe_run_id": 37660181336,
+        "published_probe_artifact_id": 11499884413,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "published_probe_result": "PASS: HOME, horizontal/vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, reload persistence, landscape and portrait visual checks.",
+        "persistence_after_reload": "revision 4; wood 590; gatheredWood 360; sawmill 0; bastion 1",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "valoria-mobile-web-playtest-v1",
       "title": "Valoria current production slice WebGL mobile playtest",
