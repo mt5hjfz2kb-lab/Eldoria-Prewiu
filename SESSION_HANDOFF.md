@@ -1,3 +1,21 @@
+## 2026-10-07 — POST-LINK FOLLOW-UP REQUIRED: WebGL compatibility isolation + legacy delivery quarantine
+
+Owner follow-up after the playable-link block closes and is user-tested:
+
+1. Treat any WebGL-only visual fallback/transport (for example certified Valoria frames when SHARP/splat rendering is unavailable) as **platform compatibility presentation only**, never as canonical gameplay/state authority.
+2. Audit the playable delivery path for legacy contamination. A previous/old-project link was surfaced during the current publishing work, and historical content inside `Resources` has also been observed inflating WebGL staging. This proves that preserved legacy material can still leak into delivery even when it is not current production authority.
+3. Add a bounded production-asset/runtime authority classification for player builds, at minimum:
+   - `CANONICAL_PRODUCTION`
+   - `RUNTIME_REQUIRED`
+   - `EDITOR_QA_ONLY`
+   - `HISTORICAL_EVIDENCE`
+   - `EXPERIMENTAL_QUARANTINED`
+   - `SAFE_TO_ARCHIVE`
+4. Enforce that historical/experimental assets, routes, URLs and project entry points cannot enter a production/player build unless an explicit canonical dependency requires them.
+5. Do not duplicate gameplay, progression, persistence, World state or navigation for WebGL. One canonical game state; platform-specific presentation only where technically necessary.
+
+Do **not** start this audit before the current playable-link workstream is correctly closed and tested. This is a post-link hardening task, not permission to interrupt publishing or reopen broad cleanup now.
+
 ## 2026-10-07 — ELDORIA WORLD REGION 1 v1 CLOSED / PASS
 
 `eldoria-world-region-1-v1` is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
