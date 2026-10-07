@@ -1,6 +1,6 @@
 # Eldoria — WORLD REGION 1 v1
 
-Status: **ACTIVE / 4X WORLD SCREEN IMPLEMENTED / UNITY + VISUAL VALIDATION IN PROGRESS**
+Status: **PASS / CLOSED — FIRST COMPLETE 4X WORLD REGION SLICE**
 
 Canonical workstream: `eldoria-world-region-1-v1`.
 
@@ -124,3 +124,30 @@ Closure requires independent evidence for TECH, VISUAL, WORLD/VALORIA CONTINUITY
 ## Concurrency note
 
 `valoria-mobile-web-playtest-v1` is parked and no longer owns the Windows Unity runner. `eldoria-world-region-1-v1` now owns `windows-self-hosted-unity-6000-3-23f1` for its validation cycle. GitHub Pages remains outside this workstream; Region 1 must not mutate WebGL/Pages publishing surfaces.
+
+
+## Closure
+
+Region 1 v1 is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
+
+Final certification:
+
+- TECH: PASS
+- VISUAL: PASS
+- WORLD/VALORIA CONTINUITY: PASS
+- NAVIGATION: PASS
+- INTERACTION: PASS
+- GAMEPLAY LOOP: PASS
+- SAVE/RELOAD: PASS
+- BOUNDED CAMERA: PASS
+- MOBILE READABILITY: PASS
+- 4X ARCHITECTURE CONTINUITY: PASS
+
+Final Unity certification run: `37549083306`.
+
+Final capture artifact: `eldoria-valoria-captures-255769573712e053790df3fdf369a9534d4fc7d1`.
+
+The accepted visual result deliberately uses lower strategic-map density than the city, but retains Eldoria identity through the strategic Valoria landmark, authored forest masses, terrain/geology, routes, POI hierarchy and mobile-safe composition. It must not be interpreted as permission to regress future regions to flat prototype boards.
+
+No paid credits were used.
+
