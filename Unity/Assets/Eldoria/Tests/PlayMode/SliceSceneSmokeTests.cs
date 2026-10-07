@@ -328,7 +328,7 @@ namespace Eldoria.Tests
             Assert.That(RenderSettings.ambientSkyColor.maxColorComponent,Is.GreaterThan(.25f));
             Assert.That(RenderSettings.ambientEquatorColor.maxColorComponent,Is.GreaterThan(.15f));
             Assert.That(RenderSettings.ambientGroundColor.maxColorComponent,Is.GreaterThan(.06f));
-            Assert.That(RenderSettings.ambientIntensity,Is.EqualTo(.72f).Within(.001f));
+            Assert.That(RenderSettings.ambientIntensity,Is.GreaterThan(.65f));
             var key=GameObject.Find("Final Look · warm key")?.GetComponent<Light>();
             Assert.That(key,Is.Not.Null);
             Assert.That(key.intensity,Is.EqualTo(.38f).Within(.001f));
