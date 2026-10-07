@@ -1,3 +1,25 @@
+## 2026-10-07 — VALORIA BASTION I → II v1 CLOSED / ALL GATES PASS
+
+Workstream `valoria-bastion-i-ii-progression-v1` is closed. It consumed the certified Valoria real-state substrate and World Region 1 without reopening visual R&D or creating a parallel gameplay architecture.
+
+Certified progression:
+`NEW GAME → BASTION I → Aserradero → World resources → corrupt route → Bastion II → visible incremental Bastion growth → Cuartel → recruitment → prepared March → Engendro → save/reload`.
+
+Final evidence:
+- final production implementation commit: `725035ded5d003b20582f8e3ca5d43e5ee967a15`
+- final publish commit: `b5046f98c0fef689c109190611271ecce6d001ea`
+- production run: `37656607306` — SUCCESS
+- Unity gate: `37656607356` — SUCCESS
+- Pages/WebGL publish: `37657298925` — SUCCESS
+- published mobile probe: `37660181336` — SUCCESS
+- probe artifact: `11499884413`
+- published URL: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`
+- paid credits: 0
+
+The published probe passed HOME, real horizontal/vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, landscape/portrait checks and browser reload persistence. Deeper production/EditMode/PlayMode gates passed the Bastion I→II progression, construction, economy, state-driven visual evolution, interaction and idempotency contracts.
+
+Bastion II keeps the same certified SHARP Valoria and adds only bounded heraldic/fortification growth. Bastion III is not opened. `pipeline/active-workstreams.json` is empty after closure.
+
 ## 2026-10-07 — VALORIA MOBILE WEB PLAYTEST v1 CLOSED / PLAYABLE LINK PASS
 
 Workstream `valoria-mobile-web-playtest-v1` is closed after a real published-link probe, not merely a local or static build check.
