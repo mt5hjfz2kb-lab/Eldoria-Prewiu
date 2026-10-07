@@ -39,6 +39,19 @@ namespace Eldoria.Tests
             Assert.That(Resources.Load<TextAsset>("UI/eldoria_ui_reference_atlas_0"),Is.Null);
             Assert.That(Resources.Load<TextAsset>("UI/eldoria_ui_reference_atlas_v2_0"),Is.Null);
             Assert.That(Resources.Load<Texture2D>("UI/aldric_reference_portrait"),Is.Not.Null);
+
+            // Presentation migration must not surface fake/future controls or hard-coded chapter state.
+            Assert.That(GameObject.Find("Reference VIP"),Is.Null);
+            Assert.That(GameObject.Find("Reference chat"),Is.Null);
+            Assert.That(GameObject.Find("Reference future resources"),Is.Null);
+            Assert.That(GameObject.Find("Reference extra nav"),Is.Null);
+            Assert.That(GameObject.Find("HÉROES"),Is.Null);
+            Assert.That(GameObject.Find("ARCÓN"),Is.Null);
+            Assert.That(GameObject.Find("CÓDICE"),Is.Null);
+            var kicker=GameObject.Find("Quest kicker").GetComponent<Text>();
+            Assert.That(kicker.text,Is.EqualTo("OBJETIVO ACTUAL"));
+            Assert.That(GameObject.Find("CIUDAD").GetComponent<Button>(),Is.Not.Null);
+            Assert.That(GameObject.Find("MUNDO").GetComponent<Button>(),Is.Not.Null);
         }
 
         sealed class FlowClock : Eldoria.Application.IClock

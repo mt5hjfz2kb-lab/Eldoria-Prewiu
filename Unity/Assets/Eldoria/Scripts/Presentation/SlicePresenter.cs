@@ -170,20 +170,13 @@ namespace Eldoria.Presentation
             float navHeight=Mathf.Max(28f,area.height*(landscape?.18f:(68f/844f)));
             if(point.y<area.yMin||point.y>area.yMin+navHeight)return;
             float nx=Mathf.Clamp01((point.x-area.xMin)/Mathf.Max(1f,area.width));
-            if(landscape)
-            {
-                if(city&&nx<=.13f)
-                    StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
-                else if(!city&&nx>=.87f)
-                    StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
-                return;
-            }
-            // Portrait keeps the original five-slot navigation order.
-            if(nx<.2f)
+            // The controlled vertical-slice migration exposes only two real navigation
+            // surfaces: CIUDAD/REINO on the left and MUNDO on the right.
+            if(nx<.5f)
             {
                 if(!city) StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
             }
-            else if(nx<.4f)
+            else
             {
                 if(city) StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
             }
@@ -759,12 +752,9 @@ namespace Eldoria.Presentation
 #endif
                 if(city)SceneManager.LoadScene("Frontier");
             });
-            var heroesNav=NavButton(nav,"♞","HÉROES",()=>{});
-            var chestNav=NavButton(nav,"▣","ARCÓN",()=>{});
-            var codexNav=NavButton(nav,"⌘","CÓDICE",()=>{});
-            heroesNav.interactable=false;chestNav.interactable=false;codexNav.interactable=false;
+            // Do not expose prototype/future buttons without real gameplay behind them.
+            // The migrated vertical-slice hierarchy keeps only the two live navigation surfaces.
             StyleNavButton(cityNavButton,city);StyleNavButton(worldNavButton,!city);
-            StyleNavButton(heroesNav,false);StyleNavButton(chestNav,false);StyleNavButton(codexNav,false);
 
             var dock=new GameObject("World objective dock",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var drt=dock.GetComponent<RectTransform>();drt.SetParent(safe,false);

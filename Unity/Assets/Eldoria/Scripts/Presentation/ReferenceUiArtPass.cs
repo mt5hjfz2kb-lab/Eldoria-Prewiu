@@ -93,20 +93,10 @@ namespace Eldoria.Presentation
 
         void EnsureReferenceChrome()
         {
-            if (safe == null) return;
-            if (safe.Find("Reference portrait") == null) CreatePortrait();
-            if (safe.Find("Reference VIP") == null) CreateVip();
-            if (safe.Find("Reference quest subtitle") == null) CreateQuestSubtitle();
-            if (safe.Find("Reference left actions") == null) CreateLeftActions();
-            if (safe.Find("Reference chat") == null) CreateChat();
-            if (safe.Find("Reference top menu") == null) CreateTopMenu();
-            if (safe.Find("Reference top plus") == null) CreateTopPlus();
-            if (safe.Find("Reference future resources") == null) CreateFutureResources();
-            if (safe.Find("Reference extra nav") == null) CreateExtraNav();
-            EnsureWorldLabel("Bastion · target","Bastión","⬡");
-            EnsureWorldLabel("Aserradero · target","Aserradero","⚒");
-            EnsureWorldLabel("Cuartel · target","Cuartel","⚔");
-            EnsureWorldLabel("Granero · target","Granero","✥");
+            // Controlled vertical-slice migration: only decorate controls that have real
+            // gameplay behind them. The previous reference pass added VIP/chat/future
+            // resources/menu/army/alliance chrome with placeholder values; that conflicts
+            // with the real-gameplay-first contract and is intentionally no longer created.
         }
 
         void CreatePortrait()
@@ -219,212 +209,194 @@ namespace Eldoria.Presentation
         {
             float w=safe.rect.width;
             float h=safe.rect.height;
+            float topH=Mathf.Clamp(h*.13f,48f,58f);
+            float navH=Mathf.Clamp(h*.15f,54f,62f);
 
             var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
             if(top!=null)
             {
                 top.anchorMin=new Vector2(0,1);top.anchorMax=new Vector2(1,1);top.pivot=new Vector2(.5f,1);
-                top.sizeDelta=new Vector2(0,h*.075f);top.anchoredPosition=Vector2.zero;
-                var g=top.GetComponent<HorizontalLayoutGroup>();if(g!=null)g.enabled=false;
-                var topImage=top.GetComponent<Image>();if(topImage!=null)topImage.color=new Color(0,0,0,0);
-                var topFrame=top.Find("ReferenceArtFrame");if(topFrame!=null)topFrame.gameObject.SetActive(false);
-
-                var crest=top.Find("Realm crest chip") as RectTransform;
-                if(crest!=null)crest.gameObject.SetActive(false);
-                var headingRt=top.Find("Heading") as RectTransform;
-                if(headingRt!=null)headingRt.gameObject.SetActive(false);
-
-                Place(top,"Power chip",new Vector2(w*.092f,-h*.008f),new Vector2(w*.15f,h*.060f),new Vector2(0,1));
-                Place(top,"Wood resource chip",new Vector2(w*.405f,-h*.008f),new Vector2(w*.135f,h*.060f),new Vector2(0,1));
-                Place(top,"Stone resource chip",new Vector2(w*.535f,-h*.008f),new Vector2(w*.125f,h*.060f),new Vector2(0,1));
-                SetFont(top,"Power chip",16);
-                SetFont(top,"Wood resource chip",15);
-                SetFont(top,"Stone resource chip",15);
-                ApplyReferenceChip(top,"Power chip","power");
-                ApplyReferenceChip(top,"Wood resource chip","wood");
-                ApplyReferenceChip(top,"Stone resource chip","stone");
+                top.sizeDelta=new Vector2(0,topH);top.anchoredPosition=Vector2.zero;
+                var g=top.GetComponent<HorizontalLayoutGroup>();
+                if(g!=null)
+                {
+                    g.enabled=true;g.padding=new RectOffset(8,8,6,6);g.spacing=5;
+                    g.childForceExpandWidth=false;g.childControlWidth=true;
+                }
+                var image=top.GetComponent<Image>();if(image!=null)image.color=new Color(.02f,.03f,.04f,.90f);
+                var frame=top.Find("ReferenceArtFrame");if(frame!=null)frame.gameObject.SetActive(true);
+                var crest=top.Find("Realm crest chip");if(crest!=null)crest.gameObject.SetActive(true);
+                var heading=top.Find("Heading");if(heading!=null)heading.gameObject.SetActive(true);
+                SetFont(top,"Power chip",10);SetFont(top,"Wood resource chip",10);SetFont(top,"Stone resource chip",10);
             }
-
-            float portraitSize=h*.132f;
-            var portrait=safe.Find("Reference portrait") as RectTransform;
-            if(portrait!=null){portrait.anchoredPosition=new Vector2(w*.006f,-h*.004f);portrait.sizeDelta=new Vector2(portraitSize,portraitSize);}
-            var vip=safe.Find("Reference VIP") as RectTransform;
-            if(vip!=null){vip.anchoredPosition=new Vector2(w*.068f,-h*.077f);vip.sizeDelta=new Vector2(w*.104f,h*.038f);SetFont(vip,"VIP text",14);}
 
             var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
             if(quest!=null)
             {
                 quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
-                quest.anchoredPosition=new Vector2(w*.012f,-h*.126f);quest.sizeDelta=new Vector2(w*.238f,h*.245f);
-                var questImage=quest.GetComponent<Image>();if(questImage!=null)questImage.color=new Color(.015f,.020f,.024f,.84f);
-                var v=quest.GetComponent<VerticalLayoutGroup>();if(v!=null)v.enabled=false;
+                quest.anchoredPosition=new Vector2(10,-topH-8);
+                quest.sizeDelta=new Vector2(Mathf.Min(280f,w*.34f),72f);
+                var image=quest.GetComponent<Image>();if(image!=null)image.color=new Color(.025f,.035f,.045f,.88f);
+                var layout=quest.GetComponent<VerticalLayoutGroup>();
+                if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(10,10,7,7);layout.spacing=2;}
                 var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
-                if(kicker!=null)
-                {
-                    kicker.text="❓   Capítulo I                         3/5   ›";
-                    kicker.fontSize=16;kicker.alignment=TextAnchor.MiddleLeft;
-                    var rt=kicker.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(10,-8);rt.sizeDelta=new Vector2(quest.sizeDelta.x-20,h*.038f);
-                }
-                var subtitle=quest.transform.Find("Reference quest subtitle")?.GetComponent<Text>();
-                if(subtitle!=null){subtitle.fontSize=14;var rt=subtitle.rectTransform;rt.anchoredPosition=new Vector2(13,-h*.055f);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.036f);}
-                var checks=quest.transform.Find("Reference quest checks")?.GetComponent<Text>();
-                if(checks!=null){checks.fontSize=12;var rt=checks.rectTransform;rt.anchoredPosition=new Vector2(13,-h*.093f);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.09f);}
+                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=8;}
                 var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
-                if(obj!=null)
-                {
-                    obj.fontSize=10;obj.color=new Color(.82f,.84f,.84f,1);obj.alignment=TextAnchor.LowerLeft;
-                    var rt=obj.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(13,7);rt.sizeDelta=new Vector2(quest.sizeDelta.x-26,h*.038f);
-                }
+                if(obj!=null){obj.fontSize=10;obj.alignment=TextAnchor.UpperLeft;}
             }
-
-            var left=safe.Find("Reference left actions") as RectTransform;
-            if(left!=null){left.anchoredPosition=new Vector2(w*.012f,-h*.39f);left.localScale=Vector3.one;}
-
-            var chat=safe.Find("Reference chat") as RectTransform;
-            if(chat!=null)
-            {
-                chat.anchoredPosition=new Vector2(w*.073f,h*.010f);chat.sizeDelta=new Vector2(w*.315f,h*.135f);
-                SetFont(chat,"Chat copy",13);
-            }
-
-            var future=safe.Find("Reference future resources") as RectTransform;
-            if(future!=null)
-            {
-                future.gameObject.SetActive(true);future.anchorMin=future.anchorMax=new Vector2(0,1);future.pivot=new Vector2(0,1);
-                future.anchoredPosition=new Vector2(w*.60f,-h*.006f);future.sizeDelta=new Vector2(w*.235f,h*.060f);future.localScale=Vector3.one;
-                float slot=w*.078f;
-                for(int i=0;i<future.childCount;i++){var child=future.GetChild(i) as RectTransform;if(child!=null){child.anchoredPosition=new Vector2(i*slot,0);child.sizeDelta=new Vector2(slot-3,h*.056f);}}
-            }
-            var plus=safe.Find("Reference top plus") as RectTransform;
-            if(plus!=null){plus.gameObject.SetActive(true);plus.anchorMin=plus.anchorMax=new Vector2(0,1);plus.pivot=new Vector2(0,1);plus.anchoredPosition=new Vector2(w*.837f,-h*.008f);plus.sizeDelta=new Vector2(h*.058f,h*.058f);}
-            var menu=safe.Find("Reference top menu") as RectTransform;
-            if(menu!=null)
-            {
-                menu.anchorMin=menu.anchorMax=new Vector2(0,1);menu.pivot=new Vector2(0,1);menu.anchoredPosition=new Vector2(w*.875f,-h*.006f);menu.sizeDelta=new Vector2(w*.12f,h*.060f);menu.localScale=Vector3.one;
-                float menuSlot=w*.04f;
-                for(int i=0;i<menu.childCount;i++){var child=menu.GetChild(i) as RectTransform;if(child!=null){child.anchoredPosition=new Vector2(i*menuSlot,0);child.sizeDelta=new Vector2(menuSlot-3,h*.056f);}}
-            }
-
-            var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
-            if(dock!=null)
-            {
-                dock.GetComponent<Image>().color=new Color(0,0,0,0);
-                var frame=dock.Find("ReferenceArtFrame");if(frame!=null)frame.gameObject.SetActive(false);
-                dock.anchorMin=dock.anchorMax=new Vector2(0,1);dock.pivot=new Vector2(0,1);
-                dock.anchoredPosition=new Vector2(w*.205f,-h*.108f);dock.sizeDelta=new Vector2(w*.032f,h*.036f);
-                var vg=dock.GetComponent<VerticalLayoutGroup>();if(vg!=null)vg.enabled=false;
-                foreach(Transform child in dock)child.gameObject.SetActive(false);
-                var actionRow=dock.Find("Primary objective action") as RectTransform;
-                if(actionRow!=null)
-                {
-                    actionRow.gameObject.SetActive(true);
-                    actionRow.anchorMin=Vector2.zero;actionRow.anchorMax=Vector2.one;actionRow.offsetMin=actionRow.offsetMax=Vector2.zero;
-                    var primary=actionRow.Find("CONTINUAR")?.gameObject;
-                    if(primary!=null)
-                    {
-                        primary.SetActive(true);
-                        var pr=primary.GetComponent<RectTransform>();pr.anchorMin=Vector2.zero;pr.anchorMax=Vector2.one;pr.offsetMin=pr.offsetMax=Vector2.zero;
-                        primary.GetComponent<Image>().color=new Color(.82f,.65f,.31f,.12f);
-                        var t=primary.GetComponentInChildren<Text>();if(t!=null)t.color=Color.clear;
-                        var arrow=primary.transform.Find("Reference quest arrow");
-                        Text arrowText=arrow!=null?arrow.GetComponent<Text>():null;
-                        if(arrowText==null)
-                        {
-                            arrowText=MakeText("Reference quest arrow",primary.transform,20,GoldSoft,TextAnchor.MiddleCenter);
-                            Stretch(arrowText.rectTransform,0f);
-                        }
-                        arrowText.gameObject.SetActive(true);arrowText.text="›";arrowText.fontSize=20;arrowText.color=GoldSoft;
-                    }
-                }
-            }
-
-            LayoutBottomNavigation(w,h);
-            var extra=safe.Find("Reference extra nav") as RectTransform;
-            if(extra!=null)
-            {
-                extra.gameObject.SetActive(true);extra.anchorMin=extra.anchorMax=new Vector2(0,0);extra.pivot=new Vector2(0,0);
-                extra.anchoredPosition=new Vector2(w*.605f,h*.010f);extra.sizeDelta=new Vector2(w*.30f,h*.13f);extra.localScale=Vector3.one;
-                var army=extra.Find("Ejército") as RectTransform;if(army!=null){army.anchoredPosition=Vector2.zero;army.sizeDelta=new Vector2(h*.125f,h*.125f);}
-                var alliance=extra.Find("Alianza") as RectTransform;if(alliance!=null){alliance.anchoredPosition=new Vector2(w*.225f,0);alliance.sizeDelta=new Vector2(h*.125f,h*.125f);}
-            }
-        }
-
-        void ApplyPortrait()
-        {
-            var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
-            if(top!=null)
-            {
-                top.anchorMin=new Vector2(0,1);top.anchorMax=new Vector2(1,1);top.pivot=new Vector2(.5f,1);top.sizeDelta=new Vector2(0,68);
-                var g=top.GetComponent<HorizontalLayoutGroup>();if(g!=null)g.enabled=true;
-            }
-            var portrait=safe.Find("Reference portrait") as RectTransform;if(portrait!=null){portrait.anchoredPosition=new Vector2(8,-72);portrait.sizeDelta=new Vector2(58,58);}
-            var vip=safe.Find("Reference VIP") as RectTransform;if(vip!=null){vip.anchoredPosition=new Vector2(71,-81);vip.sizeDelta=new Vector2(82,24);}
-            var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
-            if(quest!=null)
-            {
-                quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
-                quest.anchoredPosition=new Vector2(10,-142);quest.sizeDelta=new Vector2(Mathf.Min(300,safe.rect.width-20),150);
-                var ql=quest.GetComponent<VerticalLayoutGroup>();if(ql!=null)ql.enabled=false;
-                var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
-                if(kicker!=null){kicker.text="❓   Capítulo I                    3/5   ›";kicker.fontSize=11;var rt=kicker.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(10,-7);rt.sizeDelta=new Vector2(quest.sizeDelta.x-20,25);}
-                var subtitle=quest.transform.Find("Reference quest subtitle")?.GetComponent<Text>();
-                if(subtitle!=null){subtitle.fontSize=10;var rt=subtitle.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(12,-34);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,22);}
-                var checks=quest.transform.Find("Reference quest checks")?.GetComponent<Text>();
-                if(checks!=null){checks.fontSize=8;var rt=checks.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,1);rt.pivot=new Vector2(0,1);rt.anchoredPosition=new Vector2(12,-58);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,58);}
-                var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
-                if(obj!=null){obj.fontSize=7;obj.alignment=TextAnchor.LowerLeft;var rt=obj.rectTransform;rt.anchorMin=rt.anchorMax=new Vector2(0,0);rt.pivot=new Vector2(0,0);rt.anchoredPosition=new Vector2(12,6);rt.sizeDelta=new Vector2(quest.sizeDelta.x-24,28);}
-            }
-            var left=safe.Find("Reference left actions") as RectTransform;if(left!=null)left.anchoredPosition=new Vector2(8,-310);
-            var chat=safe.Find("Reference chat") as RectTransform;if(chat!=null){chat.anchoredPosition=new Vector2(8,82);chat.sizeDelta=new Vector2(Mathf.Min(270,safe.rect.width-16),68);}
-            var menu=safe.Find("Reference top menu") as RectTransform;if(menu!=null)menu.anchoredPosition=new Vector2(-5,-72);
-            var future=safe.Find("Reference future resources");if(future!=null)future.gameObject.SetActive(false);
-            var plus=safe.Find("Reference top plus");if(plus!=null)plus.gameObject.SetActive(false);
 
             var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
             if(dock!=null)
             {
                 dock.gameObject.SetActive(true);
-                dock.anchorMin=dock.anchorMax=new Vector2(.5f,0);dock.pivot=new Vector2(.5f,0);dock.sizeDelta=new Vector2(Mathf.Min(360,safe.rect.width-20),94);dock.anchoredPosition=new Vector2(0,78);
-                var vg=dock.GetComponent<VerticalLayoutGroup>();if(vg!=null)vg.enabled=true;
-                dock.GetComponent<Image>().color=Panel;
-                foreach(Transform child in dock)child.gameObject.SetActive(true);
+                dock.anchorMin=dock.anchorMax=new Vector2(.5f,0);dock.pivot=new Vector2(.5f,0);
+                dock.sizeDelta=new Vector2(Mathf.Min(320f,w*.46f),66f);
+                dock.anchoredPosition=new Vector2(0,navH+8);
+                var layout=dock.GetComponent<VerticalLayoutGroup>();
+                if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(8,8,6,6);layout.spacing=2;}
+                var image=dock.GetComponent<Image>();if(image!=null)image.color=new Color(.025f,.035f,.045f,.90f);
+                var story=dock.Find("Story and world");if(story!=null)story.gameObject.SetActive(false);
+                var feedback=dock.Find("Feedback")?.GetComponent<Text>();
+                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=7;}
+                var row=dock.Find("Primary objective action") as RectTransform;
+                if(row!=null){row.gameObject.SetActive(true);row.GetComponent<LayoutElement>().preferredHeight=42;}
+                var primary=GameObject.Find("CONTINUAR");
+                if(primary!=null)
+                {
+                    primary.SetActive(true);
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=9;}
+                    var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
+                }
             }
-            var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();
-            if(nav!=null)
+
+            ApplyCompactNavigation(navH);
+
+            var building=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            if(building!=null)
             {
-                nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);nav.sizeDelta=new Vector2(0,68);nav.anchoredPosition=Vector2.zero;
-                var hg=nav.GetComponent<HorizontalLayoutGroup>();if(hg!=null)hg.enabled=true;
+                building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
+                building.sizeDelta=new Vector2(Mathf.Min(360f,w-20f),178f);
+                building.anchoredPosition=new Vector2(0,navH+8);
             }
-            var primary=GameObject.Find("CONTINUAR");
-            if(primary!=null)
+
+            HideLegacyReferenceChrome();
+        }
+
+        void ApplyPortrait()
+        {
+            float w=safe.rect.width;
+            float topH=56f;
+            float navH=62f;
+
+            var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
+            if(top!=null)
             {
-                var liveText=primary.GetComponentInChildren<Text>();if(liveText!=null)liveText.color=Ink;
-                var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
+                top.anchorMin=new Vector2(0,1);top.anchorMax=new Vector2(1,1);top.pivot=new Vector2(.5f,1);
+                top.sizeDelta=new Vector2(0,topH);top.anchoredPosition=Vector2.zero;
+                var g=top.GetComponent<HorizontalLayoutGroup>();
+                if(g!=null)
+                {
+                    g.enabled=true;g.padding=new RectOffset(6,6,6,6);g.spacing=4;
+                    g.childForceExpandWidth=false;g.childControlWidth=true;
+                }
+                var crest=top.Find("Realm crest chip") as RectTransform;
+                if(crest!=null){crest.gameObject.SetActive(true);crest.GetComponent<LayoutElement>().preferredWidth=36;}
+                var heading=top.Find("Heading") as RectTransform;
+                if(heading!=null){heading.gameObject.SetActive(true);heading.GetComponent<LayoutElement>().preferredWidth=64;}
+                SetFont(top,"Power chip",8);SetFont(top,"Wood resource chip",8);SetFont(top,"Stone resource chip",8);
             }
-            var extra=safe.Find("Reference extra nav");if(extra!=null)extra.gameObject.SetActive(false);
+
+            var quest=GameObject.Find("Quest panel")?.GetComponent<RectTransform>();
+            if(quest!=null)
+            {
+                quest.anchorMin=quest.anchorMax=new Vector2(0,1);quest.pivot=new Vector2(0,1);
+                quest.anchoredPosition=new Vector2(8,-topH-8);
+                quest.sizeDelta=new Vector2(Mathf.Min(286f,w-16f),76f);
+                var layout=quest.GetComponent<VerticalLayoutGroup>();
+                if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(10,10,7,7);layout.spacing=2;}
+                var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
+                if(kicker!=null){kicker.text="OBJETIVO ACTUAL";kicker.fontSize=8;}
+                var obj=quest.transform.Find("Objective")?.GetComponent<Text>();
+                if(obj!=null){obj.fontSize=10;obj.alignment=TextAnchor.UpperLeft;}
+            }
+
+            var dock=GameObject.Find("World objective dock")?.GetComponent<RectTransform>();
+            if(dock!=null)
+            {
+                dock.gameObject.SetActive(true);
+                dock.anchorMin=dock.anchorMax=new Vector2(.5f,0);dock.pivot=new Vector2(.5f,0);
+                dock.sizeDelta=new Vector2(Mathf.Min(350f,w-16f),72f);
+                dock.anchoredPosition=new Vector2(0,navH+8);
+                var layout=dock.GetComponent<VerticalLayoutGroup>();
+                if(layout!=null){layout.enabled=true;layout.padding=new RectOffset(8,8,6,6);layout.spacing=2;}
+                var story=dock.Find("Story and world");if(story!=null)story.gameObject.SetActive(false);
+                var feedback=dock.Find("Feedback")?.GetComponent<Text>();
+                if(feedback!=null){feedback.gameObject.SetActive(true);feedback.fontSize=7;}
+                var row=dock.Find("Primary objective action") as RectTransform;
+                if(row!=null){row.gameObject.SetActive(true);row.GetComponent<LayoutElement>().preferredHeight=44;}
+                var primary=GameObject.Find("CONTINUAR");
+                if(primary!=null)
+                {
+                    var text=primary.GetComponentInChildren<Text>();if(text!=null){text.color=Ink;text.fontSize=9;}
+                    var arrow=primary.transform.Find("Reference quest arrow");if(arrow!=null)arrow.gameObject.SetActive(false);
+                }
+            }
+
+            ApplyCompactNavigation(navH);
+
+            var building=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            if(building!=null)
+            {
+                building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
+                building.sizeDelta=new Vector2(Mathf.Min(360f,w-16f),184f);
+                building.anchoredPosition=new Vector2(0,navH+8);
+            }
+
+            HideLegacyReferenceChrome();
         }
 
         void LayoutBottomNavigation(float width,float height)
         {
-            var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();if(nav==null)return;
-            nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);nav.sizeDelta=new Vector2(0,height*.145f);nav.anchoredPosition=Vector2.zero;
-            var hg=nav.GetComponent<HorizontalLayoutGroup>();if(hg!=null)hg.enabled=false;
-            nav.GetComponent<Image>().color=new Color(.01f,.015f,.018f,.72f);
+            ApplyCompactNavigation(Mathf.Clamp(height*.15f,54f,62f));
+        }
 
-            var world=nav.Find("MUNDO")?.GetComponent<RectTransform>();
-            var city=nav.Find("CIUDAD")?.GetComponent<RectTransform>();
-            var heroes=nav.Find("HÉROES")?.GetComponent<RectTransform>();
-            var chest=nav.Find("ARCÓN")?.GetComponent<RectTransform>();
-            var codex=nav.Find("CÓDICE")?.GetComponent<RectTransform>();
-            if(world!=null)PlaceBottom(world,width*.018f,height*.010f,height*.135f,height*.135f,"world");
-            if(heroes!=null)PlaceBottom(heroes,width*.53f,height*.010f,height*.125f,height*.125f,"heroes");
-            if(codex!=null)PlaceBottom(codex,width*.68f,height*.010f,height*.125f,height*.125f,"missions");
-            if(chest!=null)PlaceBottom(chest,width*.755f,height*.010f,height*.125f,height*.125f,"inventory");
-            if(city!=null)
+        void ApplyCompactNavigation(float navHeight)
+        {
+            var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();if(nav==null)return;
+            nav.anchorMin=new Vector2(0,0);nav.anchorMax=new Vector2(1,0);nav.pivot=new Vector2(.5f,0);
+            nav.sizeDelta=new Vector2(0,navHeight);nav.anchoredPosition=Vector2.zero;
+            var group=nav.GetComponent<HorizontalLayoutGroup>();
+            if(group!=null)
             {
-                PlaceBottom(city,width-height*.17f,height*.004f,height*.16f,height*.16f,"bastion");
-                var im=city.GetComponent<Image>();if(im!=null)im.color=new Color(.025f,.055f,.075f,.98f);
+                group.enabled=true;group.padding=new RectOffset(8,8,6,6);group.spacing=6;
+                group.childForceExpandWidth=true;group.childControlWidth=true;
+                group.childForceExpandHeight=true;group.childControlHeight=true;
             }
+            var image=nav.GetComponent<Image>();if(image!=null)image.color=new Color(.02f,.03f,.04f,.94f);
+            SetNavVisible(nav,"CIUDAD",true);
+            SetNavVisible(nav,"MUNDO",true);
+            SetNavVisible(nav,"HÉROES",false);
+            SetNavVisible(nav,"ARCÓN",false);
+            SetNavVisible(nav,"CÓDICE",false);
+        }
+
+        static void SetNavVisible(RectTransform nav,string name,bool visible)
+        {
+            var child=nav.Find(name);if(child!=null)child.gameObject.SetActive(visible);
+        }
+
+        void HideLegacyReferenceChrome()
+        {
+            string[] names={
+                "Reference portrait","Reference VIP","Reference left actions","Reference chat",
+                "Reference top menu","Reference top plus","Reference future resources","Reference extra nav"
+            };
+            foreach(var name in names)
+            {
+                var t=safe.Find(name);
+                if(t!=null)t.gameObject.SetActive(false);
+            }
+            foreach(var kv in labels)if(kv.Value!=null)kv.Value.SetActive(false);
         }
 
         void UpdateWorldLabels()
