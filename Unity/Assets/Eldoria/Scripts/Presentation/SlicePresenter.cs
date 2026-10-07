@@ -131,6 +131,9 @@ namespace Eldoria.Presentation
             if(pointerActive&&released)
             {
                 bool shouldSelect=!pointerStartedOverUi&&!pointerDragged;
+#if UNITY_WEBGL && !UNITY_EDITOR
+                if(usingTouch&&!pointerDragged) TryScheduleWebBottomNavFallback(point);
+#endif
                 pointerActive=false;
                 if(shouldSelect)
                 {
@@ -139,6 +142,33 @@ namespace Eldoria.Presentation
                 }
             }
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        void TryScheduleWebBottomNavFallback(Vector2 point)
+        {
+            var area=Screen.safeArea;
+            float navHeight=Mathf.Max(28f,area.height*(68f/844f));
+            if(point.y<area.yMin||point.y>area.yMin+navHeight)return;
+            float nx=Mathf.Clamp01((point.x-area.xMin)/Mathf.Max(1f,area.width));
+            if(nx<.2f)
+            {
+                if(!city) StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
+            }
+            else if(nx<.4f)
+            {
+                if(city) StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
+            }
+        }
+
+        IEnumerator WebNavFallbackAfterUi(string target,bool expectedCity)
+        {
+            string before=SceneManager.GetActiveScene().name;
+            yield return null;
+            if(SceneManager.GetActiveScene().name!=before)yield break;
+            Debug.Log("ELDORIA_PLAYABLE_NAV target="+target+" city="+expectedCity+" source=webgl-touch-fallback");
+            SceneManager.LoadScene(target);
+        }
+#endif
 
         bool IsPointerOverInteractiveUi(Vector2 point)
         {
