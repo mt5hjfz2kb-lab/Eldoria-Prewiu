@@ -1,6 +1,6 @@
 # VALORIA BASTION I-II — PRESENTATION PARITY CORRECTION v1
 
-Status: **ACTIVE — production validation pending**
+Status: **CLOSED / PASS — production + published WebGL probe certified**
 Workstream: `valoria-bastion-i-ii-presentation-parity-correction-v1`
 
 ## Authority and scope
@@ -60,6 +60,10 @@ Relevant real buildings must display a small but clearly legible level number be
 
 These requirements are additive. They do not replace the existing HOME framing, contextual construction CTA, live countdown, ambient-life and full vertical-slice parity obligations.
 
-## Final gate
+## Final gate — PASS / CLOSED
 
-Do not close until production run, screenshots/artifacts, publication, published probe, gameplay/save-reload and mobile checks pass, including a published fresh-start reset proof and real building-level indicator proof. Any regression is corrected in this same workstream.
+Final production run **37681793700** passed with artifact **11509591694**; UI certification run **37681793717** and source/editor gate **37681794138** also passed. The certified owner WebGL was published by run **37684790661**. Published mobile probe **37687592179** passed with artifact **11511827528** and `playablePass=true`: HOME, horizontal touch pan both directions, vertical pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, reload persistence, and landscape/portrait checks all passed without a white screen. Persisted reload state remained revision 4 / wood 590 / stone 150 / gatheredWood 360 / gatheredStone 0 / sawmill 0 / Bastion I.
+
+The presentation correction remains bounded to Bastion I-II. Bastion III was not opened; World Region 1 gameplay/state authority, economy, persistence and SHARP authority were not redesigned. Paid credits: **0**.
+
+Published owner build: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`.
