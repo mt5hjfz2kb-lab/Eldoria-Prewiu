@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T00:10:00Z",
-  "active": [
+  "updated_at": "2026-10-07T10:18:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-mobile-web-playtest-v1",
       "title": "Valoria current production slice WebGL mobile playtest",
@@ -23,19 +24,31 @@
       ],
       "claimed_at": "2026-10-06T16:12:00Z",
       "base_main_sha": "d5136ff2df25f4b5c425fd435686111814050fbb",
-      "status": "blocked",
+      "status": "completed",
       "paid_credits": 0,
-      "phase": "WEBGL DELIVERY PARKED / UNITY RUNNER RELEASED / DOES NOT BLOCK PRODUCTION",
+      "phase": "WEBGL PLAYABLE LINK PASS / MOBILE LANDSCAPE + PORTRAIT VISUAL PASS / RUNNER RELEASED",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
       "next": "Resume only as a bounded delivery/publishing task without blocking Valoria or World production. Prefer proving a materially smaller player before occupying the shared Windows runner again.",
       "blocked_at": "2026-10-06T18:30:00Z",
-      "blocker": "Current WebGL delivery path remains too slow/unreliable for production gating. Publishing is decoupled from game development; resume as a bounded delivery task only.",
+      "blocker": null,
       "runner_released": true,
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Publishing/delivery-only workstream; it must not author or visually promote player-facing art."
-    }
-  ],
-  "history": [
+      "art_production_routing_reason": "Publishing/delivery-only workstream; it must not author or visually promote player-facing art.",
+      "completed_at": "2026-10-07T10:18:00Z",
+      "result": {
+        "verdict": "BUILD PASS / DEPLOY PASS / STARTUP PASS / LANDSCAPE VISUAL PASS / PORTRAIT VISUAL PASS",
+        "publish_run_id": 37603763672,
+        "startup_probe_run_id": 37606247704,
+        "startup_artifact_id": 11475446139,
+        "publish_head_sha": "c029f59b17826866a598ff7cf8306a179e0f6fa2",
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "webgl_visual_transport": "Certified Valoria runtime frames are used for browser presentation because native Gaussian/SHARP rendering is not reliable in WebGL; canonical native Unity authority remains unchanged.",
+        "world_region_1_included": true,
+        "mobile_landscape_review": "PASS",
+        "mobile_portrait_review": "PASS",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "historical-workflow-quarantine-v1",
       "title": "Historical and conditional R&D workflow quarantine",
