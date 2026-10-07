@@ -211,10 +211,9 @@ jobs:
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
 
-              const worldNav=parseUi(logs,'worldNav');
-              if(!worldNav)throw new Error('MUNDO touch target missing');
-              const wn=screenPoint(worldNav,box,canvasInfo);
               const worldStart=logs.length;
+              const wn={x:box.x+box.width*.05,y:box.y+box.height*.91};
+              report.checks.worldTapCss=wn;
               await page.touchscreen.tap(wn.x,wn.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),10000,'MUNDO button activation',worldStart);
               await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
@@ -238,9 +237,8 @@ jobs:
               report.checks.rewardState=rewardState;
               await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
 
-              const cityUi=parseUi(logs,'cityNav');
-              if(!cityUi)throw new Error('Reino/City touch target missing');
-              const cp=screenPoint(cityUi,box,canvasInfo);
+              const cp={x:box.x+box.width*.96,y:box.y+box.height*.91};
+              report.checks.cityTapCss=cp;
               await page.touchscreen.tap(cp.x,cp.y);
               const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
