@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T13:08:00Z",
-  "retry": 25,
-  "retry_reason": "Validation rerun after restoring direct physical HUD coordinate mapping (runtime logs already use WorldToScreenPoint) and adding WebGL-only nav activation evidence for MUNDO/CIUDAD. Runtime navigation/gameplay unchanged.",
+  "updated_at": "2026-10-07T13:35:00Z",
+  "retry": 26,
+  "retry_reason": "Physical iPhone WebGL input correction: retain normal Unity UI navigation, but add WebGL-only one-frame bottom-nav touch fallback for CIUDAD/MUNDO when GraphicRaycaster misses the touch. Same SceneManager navigation, no gameplay/state duplication.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "d51d4664f2cd0e58687322579fae9dbe9346ebe9",
+  "retry_after_commit": "3e7538cfd599804bbfc813b952bc2dfb95c08d29",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
