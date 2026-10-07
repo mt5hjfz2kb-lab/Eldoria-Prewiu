@@ -1,3 +1,23 @@
+## 2026-10-07 — VALORIA MOBILE WEB PLAYTEST v1 CLOSED / PLAYABLE LINK PASS
+
+Workstream `valoria-mobile-web-playtest-v1` is closed after a real published-link probe, not merely a local or static build check.
+
+Authoritative delivery:
+- closure commit: `1937d9117f8c5252363aae67828ac153936989e7`
+- published candidate source: `b725a69fbd0aba536d097242aee1745b3451705c`
+- Pages publish run: `37642420392` — SUCCESS
+- WebGL artifact: `11493522998`
+- published mobile probe run: `37646186097` — SUCCESS
+- probe evidence artifact: `11493999067`
+- paid credits: 0
+
+Published probe PASS covered the required loop:
+`HOME → horizontal touch pan → moderate vertical touch pan → MUNDO → Región 1 → gather/reward → REINO/Valoria → browser reload → persisted state retained`.
+
+Persistence correction is verified in the published build. Before reload the probe recorded revision 4, wood 590 and gatheredWood 360; after reload the same values were restored. Landscape and portrait visual checks also passed, and the probe recorded `playablePass=true`.
+
+The Windows Unity runner and GitHub Pages ownership are released by this workstream. Do not reopen this block unless a real physical-device regression is demonstrated. Owner physical iPhone observation remains higher authority for experiential/mobile defects. Post-link WebGL compatibility/legacy-delivery quarantine, World Region 1 visual convergence correction, and Bastion I→II are separate future blocks and must not be folded back into this closed workstream.
+
 ## 2026-10-07 — FUTURE BRAIN UPGRADE: PLAYABILITY RECONSTRUCTION + SAFE AUTO-REPAIR LOOP
 
 Owner decision: add a future structural capability to Eldoria's automation brain, after the current playable-link block and the next major content blocks are stable.
