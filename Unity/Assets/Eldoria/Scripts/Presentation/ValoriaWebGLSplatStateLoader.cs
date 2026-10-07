@@ -20,7 +20,6 @@ namespace Eldoria.Presentation
         Coroutine loading;
         GsplatAsset runtimeAsset;
         RawImage webBackground;
-        GameObject webBackgroundCanvas;
         Texture2D webBackgroundTexture;
 
         void Start()
@@ -29,7 +28,7 @@ namespace Eldoria.Presentation
             if (Renderer == null && Presentation != null) Renderer = Presentation.SceneSplats;
 #if UNITY_WEBGL && !UNITY_EDITOR
             if (Renderer != null) Renderer.enabled = false;
-            CreateWebBackground();
+            StartCoroutine(CreateWebBackgroundWhenHudReady());
 #endif
             RequestVariant(Presentation != null ? Presentation.ActiveVariant : 0);
         }
@@ -103,17 +102,23 @@ namespace Eldoria.Presentation
         }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        void CreateWebBackground()
+        IEnumerator CreateWebBackgroundWhenHudReady()
         {
-            webBackgroundCanvas = new GameObject("Valoria certified WebGL background",
-                typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            var canvas = webBackgroundCanvas.GetComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 50;
-            webBackgroundCanvas.GetComponent<GraphicRaycaster>().enabled = false;
+            GameObject hud = null;
+            for (var i = 0; i < 300 && hud == null; i++)
+            {
+                hud = GameObject.Find("Eldoria HUD");
+                if (hud == null) yield return null;
+            }
+            if (hud == null)
+            {
+                Debug.LogError("VALORIA_WEBGL_HUD_BACKGROUND_FAIL missing Eldoria HUD");
+                yield break;
+            }
 
             var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage));
-            imageObject.transform.SetParent(webBackgroundCanvas.transform, false);
+            imageObject.transform.SetParent(hud.transform, false);
+            imageObject.transform.SetAsFirstSibling();
             var rect = imageObject.GetComponent<RectTransform>();
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
@@ -121,6 +126,8 @@ namespace Eldoria.Presentation
             rect.offsetMax = Vector2.zero;
             webBackground = imageObject.GetComponent<RawImage>();
             webBackground.raycastTarget = false;
+            if (webBackgroundTexture != null) webBackground.texture = webBackgroundTexture;
+            Debug.Log("VALORIA_WEBGL_HUD_BACKGROUND_READY");
         }
 #endif
 
@@ -135,7 +142,6 @@ namespace Eldoria.Presentation
         {
             if (runtimeAsset != null) Destroy(runtimeAsset);
             if (webBackgroundTexture != null) Destroy(webBackgroundTexture);
-            if (webBackgroundCanvas != null) Destroy(webBackgroundCanvas);
         }
     }
 }
