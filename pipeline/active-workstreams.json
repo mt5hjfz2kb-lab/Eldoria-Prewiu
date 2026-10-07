@@ -1,13 +1,12 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T10:18:00Z",
-  "active": [],
-  "history": [
+  "updated_at": "2026-10-07T10:25:00Z",
+  "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
       "title": "Valoria current production slice WebGL mobile playtest",
-      "owner": "chat-mobile-web-playtest-20261006",
+      "owner": "chat-mobile-web-playtest-20261007-physical-iphone-reopen",
       "scope": [
         "pipeline/active-workstreams.json",
         "pipeline/unity-publish-request.json",
@@ -17,38 +16,38 @@
         "docs/evidence/valoria-mobile-web-playtest-v1/**",
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
+        "pipeline/art-production-requests/valoria-mobile-web-playtest-v1.json"
       ],
       "resources": [
-        "github-pages-unity-owner"
+        "github-pages-unity-owner",
+        "windows-self-hosted-unity-6000-3-23f1"
       ],
       "claimed_at": "2026-10-06T16:12:00Z",
-      "base_main_sha": "d5136ff2df25f4b5c425fd435686111814050fbb",
-      "status": "completed",
+      "base_main_sha": "21f4a278d7bc8450973503048794f3d6946930a5",
+      "status": "active",
       "paid_credits": 0,
-      "phase": "WEBGL PLAYABLE LINK PASS / MOBILE LANDSCAPE + PORTRAIT VISUAL PASS / RUNNER RELEASED",
+      "phase": "PHYSICAL IPHONE PLAYABLE FAIL / WEBGL PRESENTATION + TOUCH CORRECTION ACTIVE",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
       "next": "Resume only as a bounded delivery/publishing task without blocking Valoria or World production. Prefer proving a materially smaller player before occupying the shared Windows runner again.",
       "blocked_at": "2026-10-06T18:30:00Z",
       "blocker": null,
-      "runner_released": true,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Publishing/delivery-only workstream; it must not author or visually promote player-facing art.",
-      "completed_at": "2026-10-07T10:18:00Z",
-      "result": {
-        "verdict": "BUILD PASS / DEPLOY PASS / STARTUP PASS / LANDSCAPE VISUAL PASS / PORTRAIT VISUAL PASS",
-        "publish_run_id": 37603763672,
-        "startup_probe_run_id": 37606247704,
-        "startup_artifact_id": 11475446139,
-        "publish_head_sha": "c029f59b17826866a598ff7cf8306a179e0f6fa2",
-        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
-        "webgl_visual_transport": "Certified Valoria runtime frames are used for browser presentation because native Gaussian/SHARP rendering is not reliable in WebGL; canonical native Unity authority remains unchanged.",
-        "world_region_1_included": true,
-        "mobile_landscape_review": "PASS",
-        "mobile_portrait_review": "PASS",
-        "paid_credits": 0
+      "runner_released": false,
+      "art_production_routing": "required",
+      "reopened_at": "2026-10-07T10:25:00Z",
+      "physical_device_override": {
+        "verdict": "PLAYABLE PASS REVOKED",
+        "observed": [
+          "link loads",
+          "Valoria visible",
+          "HOME over-zoom/crop",
+          "touch pan ineffective on physical iPhone"
+        ],
+        "authority": "owner physical iPhone observation supersedes static automated probe"
       }
-    },
+    }
+  ],
+  "history": [
     {
       "id": "historical-workflow-quarantine-v1",
       "title": "Historical and conditional R&D workflow quarantine",
