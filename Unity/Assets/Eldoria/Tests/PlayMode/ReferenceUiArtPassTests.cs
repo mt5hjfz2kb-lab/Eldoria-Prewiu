@@ -64,7 +64,7 @@ namespace Eldoria.Tests
             Assert.That(panel.sizeDelta.x,Is.LessThanOrEqualTo(360f));
             Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(180f));
             Assert.That(GameObject.Find("Owner reset")?.GetComponent<Button>(),Is.Not.Null);
-            var bastionBadge=GameObject.Find("Bastion level badge");
+            var bastionBadge=ambient.transform.Find("Bastion level badge")?.gameObject;
             Assert.That(bastionBadge,Is.Not.Null);
             var bastionBadgeText=bastionBadge.GetComponentInChildren<Text>(true);
             Assert.That(bastionBadgeText,Is.Not.Null);
