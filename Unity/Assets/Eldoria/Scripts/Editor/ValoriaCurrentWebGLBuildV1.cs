@@ -8,6 +8,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 
 namespace Eldoria.EditorTools
 {
@@ -24,6 +25,7 @@ namespace Eldoria.EditorTools
         const string TempFolder = "Assets/Eldoria/WebGLTemp";
         const string TempScene = TempFolder + "/ValoriaWebGL.unity";
         const string Output = "Builds/WebGL";
+        const string RendererDataPath = "Assets/Eldoria/Content/EldoriaForwardRenderer.asset";
 
         [MenuItem("Eldoria/Build current Valoria production WebGL")]
         public static void Build()
@@ -86,6 +88,7 @@ namespace Eldoria.EditorTools
 
             var externalLibrary = Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
             var externalBackup = PruneExternalLibraryForWebGL(externalLibrary);
+            var webglRendererFeature = EnsureGsplatUrpFeatureForWebGL(out var webglRendererFeatureAdded);
 
             try
             {
@@ -107,10 +110,65 @@ namespace Eldoria.EditorTools
             }
             finally
             {
+                RestoreGsplatUrpFeatureAfterWebGL(webglRendererFeature, webglRendererFeatureAdded);
                 RestoreExternalLibraryAfterWebGL(externalLibrary, externalBackup);
                 AssetDatabase.DeleteAsset(TempFolder);
                 AssetDatabase.Refresh();
             }
+        }
+
+        static ScriptableRendererFeature EnsureGsplatUrpFeatureForWebGL(out bool added)
+        {
+            added = false;
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(RendererDataPath);
+            if (rendererData == null)
+                throw new Exception("Active Eldoria URP renderer data is missing: " + RendererDataPath);
+
+            foreach (var existing in rendererData.rendererFeatures)
+            {
+                if (existing != null && existing.GetType().FullName == "Gsplat.GsplatURPFeature")
+                {
+                    Debug.Log("VALORIA_WEBGL_GSPLAT_URP_FEATURE_PASS existing=true");
+                    return existing;
+                }
+            }
+
+            Type featureType = null;
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                featureType = assembly.GetType("Gsplat.GsplatURPFeature", false);
+                if (featureType != null) break;
+            }
+            if (featureType == null || !typeof(ScriptableRendererFeature).IsAssignableFrom(featureType))
+                throw new Exception("UnitySplats GsplatURPFeature type is unavailable; WebGL cannot render certified SHARP beauty.");
+
+            var feature = ScriptableObject.CreateInstance(featureType) as ScriptableRendererFeature;
+            if (feature == null)
+                throw new Exception("Could not instantiate UnitySplats GsplatURPFeature.");
+            feature.name = "Gsplat URP Feature · WebGL transport";
+            AssetDatabase.AddObjectToAsset(feature, rendererData);
+            rendererData.rendererFeatures.Add(feature);
+            feature.Create();
+            EditorUtility.SetDirty(feature);
+            EditorUtility.SetDirty(rendererData);
+            AssetDatabase.SaveAssets();
+            added = true;
+            Debug.Log("VALORIA_WEBGL_GSPLAT_URP_FEATURE_PASS existing=false added=true");
+            return feature;
+        }
+
+        static void RestoreGsplatUrpFeatureAfterWebGL(ScriptableRendererFeature feature, bool added)
+        {
+            if (!added || feature == null) return;
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(RendererDataPath);
+            if (rendererData != null)
+            {
+                rendererData.rendererFeatures.Remove(feature);
+                EditorUtility.SetDirty(rendererData);
+            }
+            UnityEngine.Object.DestroyImmediate(feature, true);
+            AssetDatabase.SaveAssets();
+            Debug.Log("VALORIA_WEBGL_GSPLAT_URP_FEATURE_RESTORE_PASS");
         }
 
         static Dictionary<string, UnityEngine.Object> PruneExternalLibraryForWebGL(ValoriaExternalAssetLibrary library)
