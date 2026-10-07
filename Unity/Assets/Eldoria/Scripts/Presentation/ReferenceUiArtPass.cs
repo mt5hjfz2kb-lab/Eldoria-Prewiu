@@ -274,9 +274,9 @@ namespace Eldoria.Presentation
             var building=FindRect("Building interaction panel");
             if(building!=null)
             {
-                building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
-                building.sizeDelta=new Vector2(Mathf.Min(360f,w-20f),178f);
-                building.anchoredPosition=new Vector2(0,navH+8);
+                building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-20f),166f);
+                // SlicePresenter owns the contextual position under the selected building.
             }
 
             HideLegacyReferenceChrome();
@@ -347,9 +347,9 @@ namespace Eldoria.Presentation
             var building=FindRect("Building interaction panel");
             if(building!=null)
             {
-                building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
-                building.sizeDelta=new Vector2(Mathf.Min(360f,w-16f),184f);
-                building.anchoredPosition=new Vector2(0,navH+8);
+                building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-16f),166f);
+                // SlicePresenter owns the contextual position under the selected building.
             }
 
             HideLegacyReferenceChrome();
