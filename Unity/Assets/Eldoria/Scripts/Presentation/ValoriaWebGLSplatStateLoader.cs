@@ -3,6 +3,7 @@ using System.Collections;
 using Gsplat;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace Eldoria.Presentation
 {
@@ -18,11 +19,17 @@ namespace Eldoria.Presentation
         int loadedVariant = -1;
         Coroutine loading;
         GsplatAsset runtimeAsset;
+        RawImage webBackground;
+        Texture2D webBackgroundTexture;
 
         void Start()
         {
             if (Presentation == null) Presentation = GetComponent<ValoriaParcelPresentation>();
             if (Renderer == null && Presentation != null) Renderer = Presentation.SceneSplats;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (Renderer != null) Renderer.enabled = false;
+            CreateWebBackground();
+#endif
             RequestVariant(Presentation != null ? Presentation.ActiveVariant : 0);
         }
 
@@ -43,6 +50,25 @@ namespace Eldoria.Presentation
             while (requestedVariant != loadedVariant)
             {
                 int variant = requestedVariant;
+#if UNITY_WEBGL && !UNITY_EDITOR
+                string imageUrl = ResolveUrl("valoria-state-" + variant + ".png");
+                using var imageRequest = UnityWebRequestTexture.GetTexture(imageUrl, true);
+                yield return imageRequest.SendWebRequest();
+                if (imageRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("VALORIA_WEBGL_BACKGROUND_LOAD_FAIL variant=" + variant + " url=" + imageUrl + " error=" + imageRequest.error);
+                    loading = null;
+                    yield break;
+                }
+                if (variant != requestedVariant) continue;
+                var previousTexture = webBackgroundTexture;
+                webBackgroundTexture = DownloadHandlerTexture.GetContent(imageRequest);
+                webBackgroundTexture.name = "Valoria certified WebGL state " + variant;
+                if (webBackground != null) webBackground.texture = webBackgroundTexture;
+                loadedVariant = variant;
+                if (previousTexture != null) Destroy(previousTexture);
+                Debug.Log("VALORIA_WEBGL_CERTIFIED_BACKGROUND_READY variant=" + variant + " bytes=" + imageRequest.downloadedBytes);
+#else
                 string url = ResolveUrl(FilePrefix + variant + ".ply");
                 using var request = UnityWebRequest.Get(url);
                 yield return request.SendWebRequest();
@@ -70,9 +96,33 @@ namespace Eldoria.Presentation
                 Renderer.GsplatAsset = runtimeAsset;
                 if (previous != null) Destroy(previous);
                 Debug.Log("VALORIA_WEBGL_SPLAT_READY variant=" + variant + " bytes=" + request.downloadedBytes);
+#endif
             }
             loading = null;
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        void CreateWebBackground()
+        {
+            var canvasObject = new GameObject("Valoria certified WebGL background",
+                typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            canvasObject.transform.SetParent(transform, false);
+            var canvas = canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = -1000;
+            canvasObject.GetComponent<GraphicRaycaster>().enabled = false;
+
+            var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage));
+            imageObject.transform.SetParent(canvasObject.transform, false);
+            var rect = imageObject.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            webBackground = imageObject.GetComponent<RawImage>();
+            webBackground.raycastTarget = false;
+        }
+#endif
 
         static string ResolveUrl(string file)
         {
@@ -84,6 +134,7 @@ namespace Eldoria.Presentation
         void OnDestroy()
         {
             if (runtimeAsset != null) Destroy(runtimeAsset);
+            if (webBackgroundTexture != null) Destroy(webBackgroundTexture);
         }
     }
 }
