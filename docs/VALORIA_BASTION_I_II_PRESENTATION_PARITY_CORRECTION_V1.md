@@ -34,6 +34,32 @@ The canonical web slice contains continuous atmosphere (mist, ember motion, reso
 - Tests lock the contextual panel footprint, ambient layer presence and corrected HOME FOV.
 - Paid credits: **0**.
 
+
+## Owner additions — mandatory before closure
+
+The owner has identified two additional requirements on the published owner build. They are part of this same workstream and must not be deferred or moved to another block.
+
+### Repeatable owner reset to the real start
+
+The current published link can reopen from persisted Bastion II/progress, which prevents reliable owner validation of Bastion I and the I→II loop.
+
+Add a clear, explicit reset/new-start action suitable for the owner build that:
+- returns to the canonical initial game state so Bastion I can be tested again from zero;
+- clears/reinitializes only the canonical persisted state required for a true fresh start;
+- does not introduce a second state system, fake progression or parallel persistence;
+- is deliberate enough to avoid accidental reset;
+- is validated in the published owner build, including that a subsequent reload remains at the reset canonical state.
+
+### Art-integrated building level indicator
+
+Relevant real buildings must display a small but clearly legible level number beside/near the building.
+- The value must come from real canonical building state, never hardcoded mock data.
+- It must visually belong to the city art/UI language rather than look like debug text.
+- It must remain readable on mobile without cluttering the scene or competing with the contextual CTA.
+- Validate at least the relevant Bastion I/Bastion II building states and capture evidence.
+
+These requirements are additive. They do not replace the existing HOME framing, contextual construction CTA, live countdown, ambient-life and full vertical-slice parity obligations.
+
 ## Final gate
 
-Do not close until production run, screenshots/artifacts, publication, published probe, gameplay/save-reload and mobile checks pass. Any regression is corrected in this same workstream.
+Do not close until production run, screenshots/artifacts, publication, published probe, gameplay/save-reload and mobile checks pass, including a published fresh-start reset proof and real building-level indicator proof. Any regression is corrected in this same workstream.
