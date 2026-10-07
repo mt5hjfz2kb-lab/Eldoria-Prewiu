@@ -2,7 +2,8 @@
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
   "updated_at": "2026-10-07T15:06:00Z",
-  "active": [
+  "active": [],
+  "history": [
     {
       "id": "valoria-mobile-web-playtest-v1",
       "title": "Valoria current production slice WebGL mobile playtest",
@@ -28,14 +29,14 @@
       ],
       "claimed_at": "2026-10-06T16:12:00Z",
       "base_main_sha": "21f4a278d7bc8450973503048794f3d6946930a5",
-      "status": "active",
+      "status": "completed",
       "paid_credits": 0,
-      "phase": "WEBGL BROWSER PERSISTENCE CORRECTION ACTIVE / FULL PLAYABLE LOOP REVALIDATION",
+      "phase": "PLAYABLE LINK PASS / CLOSED",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
-      "next": "Publish WebGL browser-persistence correction and require full HOME → pan → MUNDO → Región 1 reward → REINO → reload persistence probe before closure.",
+      "next": "Owner physical-device confirmation remains higher authority for experiential issues, but the automated published-link gate is closed. Post-link WebGL compatibility/legacy-delivery audit and later World visual convergence/Bastion progression must be separate explicitly authorized work.",
       "blocked_at": "2026-10-06T18:30:00Z",
       "blocker": null,
-      "runner_released": false,
+      "runner_released": true,
       "art_production_routing": "required",
       "reopened_at": "2026-10-07T10:25:00Z",
       "physical_device_override": {
@@ -48,10 +49,16 @@
         ],
         "authority": "owner physical iPhone observation supersedes static automated probe"
       },
-      "scope_note": "SlicePresenter.cs ownership remains limited to WebGL/mobile pointer classification and diagnostics. SliceBoot.cs is now additionally owned only for the demonstrated WebGL browser-persistence adapter required by the published reload gate; gameplay/state/navigation semantics remain unchanged."
-    }
-  ],
-  "history": [
+      "scope_note": "SlicePresenter.cs ownership remains limited to WebGL/mobile pointer classification and diagnostics. SliceBoot.cs is now additionally owned only for the demonstrated WebGL browser-persistence adapter required by the published reload gate; gameplay/state/navigation semantics remain unchanged.",
+      "completed_at": "2026-10-07T15:46:02Z",
+      "result_commit": "b725a69fbd0aba536d097242aee1745b3451705c",
+      "publish_run_id": 37642420392,
+      "publish_artifact_id": 11493522998,
+      "published_probe_run_id": 37646186097,
+      "published_probe_artifact_id": 11493999067,
+      "gate_result": "PLAYABLE LINK PASS",
+      "result": "Published WebGL mobile loop passed HOME, real horizontal touch pan, moderate vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, browser reload persistence, landscape and portrait visual checks. Persistence survived reload at revision 4 with wood 590 and gatheredWood 360. Zero paid credits."
+    },
     {
       "id": "historical-workflow-quarantine-v1",
       "title": "Historical and conditional R&D workflow quarantine",
