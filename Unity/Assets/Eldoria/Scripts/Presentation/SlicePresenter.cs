@@ -750,8 +750,10 @@ namespace Eldoria.Presentation
             var canvasGo=new GameObject("Eldoria HUD",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
             var canvas=canvasGo.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=100;
             var scaler=canvasGo.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution=new Vector2(390,844);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight=1f;
+            bool landscapeHud=Screen.width>Screen.height;
+            scaler.referenceResolution=landscapeHud?new Vector2(844,390):new Vector2(390,844);
+            scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight=.5f;
             safe=new GameObject("Safe area",typeof(RectTransform)).GetComponent<RectTransform>();safe.SetParent(canvasGo.transform,false);
             UpdateSafeArea();
             CreateCityAmbientation(safe);
@@ -1302,15 +1304,11 @@ namespace Eldoria.Presentation
 
         void InvokeOwnerReset()
         {
-            if(!ownerResetArmed)
-            {
-                ownerResetArmed=true;
-                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
-                feedback="Pulsa otra vez para reiniciar desde Bastión I.";
-                message.text=feedback;
-                return;
-            }
             ownerResetArmed=false;
+            if(resetButton!=null)resetButton.interactable=false;
+            if(resetButtonText!=null)resetButtonText.text="REINICIANDO…";
+            feedback="Reiniciando desde Bastión I…";
+            if(message!=null)message.text=feedback;
             SliceBoot.ResetLocalSaveAndRestart();
         }
 
