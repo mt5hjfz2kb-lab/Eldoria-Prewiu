@@ -9,19 +9,30 @@
       "owner": "automation-bastion-i-ii-20261007",
       "scope": [
         "pipeline/active-workstreams.json",
+        "pipeline/art-production-requests/valoria-bastion-i-ii-progression-v1.json",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+        ".github/workflows/valoria-first-playable-city-slice-v1.yml",
+        "docs/VALORIA_BASTION_I_II_PROGRESSION_V1.md",
+        "docs/evidence/valoria-bastion-i-ii-progression-v1/**",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md",
-        "docs/VALORIA_BASTION_I_II_PROGRESSION_V1.md"
+        "PROJECT_STATE.md"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1"
       ],
       "claimed_at": "2026-10-07T15:53:17Z",
       "status": "active",
-      "phase": "AUDIT / CONTRACT DEFINITION",
+      "phase": "IMPLEMENTATION / DATA-DRIVEN PROGRESSION + BASTION II VISUAL EVOLUTION",
       "dependency": "Consumes closed Valoria game state, mobile WebGL playtest, and World Region 1. Preserve canonical Valoria visual authority.",
       "paid_credits": 0,
-      "art_production_routing": "required"
+      "art_production_routing": "required",
+      "base_main_sha": "2b4fd22749eccb8cffcf9de3c5dfb789a878e7fa"
     }
   ],
   "history": [
