@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T10:25:00Z",
+  "updated_at": "2026-10-07T10:28:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -17,7 +17,8 @@
         "Unity/Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
-        "pipeline/art-production-requests/valoria-mobile-web-playtest-v1.json"
+        "pipeline/art-production-requests/valoria-mobile-web-playtest-v1.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
       "resources": [
         "github-pages-unity-owner",
@@ -44,7 +45,8 @@
           "touch pan ineffective on physical iPhone"
         ],
         "authority": "owner physical iPhone observation supersedes static automated probe"
-      }
+      },
+      "scope_note": "SlicePresenter.cs ownership is limited to WebGL/mobile pointer classification and diagnostic instrumentation; gameplay/state/navigation semantics must remain unchanged."
     }
   ],
   "history": [
