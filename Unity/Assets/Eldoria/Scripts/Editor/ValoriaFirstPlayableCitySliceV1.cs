@@ -405,10 +405,6 @@ namespace Eldoria.EditorTools
             var goldMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             goldMaterial.SetColor("_BaseColor",new Color(.62f,.44f,.18f,1f));
             AssetDatabase.AddObjectToAsset(goldMaterial,assetFolder+"/state-0.asset");
-            var stoneMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-            stoneMaterial.SetColor("_BaseColor",new Color(.43f,.35f,.28f,1f));
-            AssetDatabase.AddObjectToAsset(stoneMaterial,assetFolder+"/state-0.asset");
-
             float cueDepth=4f;
             float cueViewSpan=2f*cueDepth*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
             Vector3 CuePosition(Vector2 viewport)
@@ -455,11 +451,6 @@ namespace Eldoria.EditorTools
             // Small banners sit on the two upper side towers rather than covering the gates.
             ScreenPennant("Bastion II pennant left",new Vector2(.535f,.892f),.012f,.047f);
             ScreenPennant("Bastion II pennant right",new Vector2(.674f,.892f),.012f,.047f);
-
-            // A restrained five-block crenellation lift makes the keep read as fortified at II.
-            foreach(var x in new[]{.579f,.592f,.605f,.618f,.631f})
-                ScreenRect("Bastion II upper merlon "+x.ToString("F3",CultureInfo.InvariantCulture),
-                    new Vector2(x,.936f),.008f,.014f,stoneMaterial);
 
             // Static authority captures represent Bastion I. Runtime Apply() alone owns upgrade visibility.
             foreach(var cue in bastionCues) cue.SetActive(false);
