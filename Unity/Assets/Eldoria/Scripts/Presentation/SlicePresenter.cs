@@ -436,6 +436,9 @@ namespace Eldoria.Presentation
                 buildingAction.interactable=s.JourneyComplete&&s.BastionLevel==1;
                 if(buildingAction.interactable)buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("AdvanceBastion","bastion");});
             }
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
+#endif
         }
         void OpenMarchPanel()
         {
@@ -453,6 +456,9 @@ namespace Eldoria.Presentation
             buildingAction.interactable=s.March.Phase=="idle"&&s.Available.Total>0;
             if(buildingAction.interactable)
                 buildingAction.onClick.AddListener(()=>{buildingPanel.SetActive(false);Send("ConfigureMarch","march-main");});
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
+#endif
         }
         void Send(string kind,string target)
         {
@@ -684,6 +690,13 @@ namespace Eldoria.Presentation
             LogPlayableButtonCenter("cityNav",cityNavButton);
             LogPlayableButtonCenter("worldNav",worldNavButton);
             LogPlayableButtonCenter("primary",primaryAction);
+        }
+
+        System.Collections.IEnumerator LogPlayableButtonCenterNextFrame(string id,Button button)
+        {
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            LogPlayableButtonCenter(id,button);
         }
 
         static void LogPlayableButtonCenter(string id,Button button)
