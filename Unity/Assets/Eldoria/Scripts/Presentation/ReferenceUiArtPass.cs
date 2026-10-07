@@ -271,7 +271,7 @@ namespace Eldoria.Presentation
 
             ApplyCompactNavigation(navH);
 
-            var building=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            var building=FindRect("Building interaction panel");
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
@@ -344,7 +344,7 @@ namespace Eldoria.Presentation
 
             ApplyCompactNavigation(navH);
 
-            var building=GameObject.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            var building=FindRect("Building interaction panel");
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,0);building.pivot=new Vector2(.5f,0);
@@ -378,6 +378,13 @@ namespace Eldoria.Presentation
             SetNavVisible(nav,"HÉROES",false);
             SetNavVisible(nav,"ARCÓN",false);
             SetNavVisible(nav,"CÓDICE",false);
+        }
+
+        static RectTransform FindRect(string name)
+        {
+            foreach(var candidate in Resources.FindObjectsOfTypeAll<RectTransform>())
+                if(candidate!=null&&candidate.name==name&&candidate.gameObject.scene.IsValid())return candidate;
+            return null;
         }
 
         static void SetNavVisible(RectTransform nav,string name,bool visible)

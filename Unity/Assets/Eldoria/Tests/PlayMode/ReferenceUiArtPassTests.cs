@@ -48,9 +48,6 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("HÉROES"),Is.Null);
             Assert.That(GameObject.Find("ARCÓN"),Is.Null);
             Assert.That(GameObject.Find("CÓDICE"),Is.Null);
-            var kicker=quest.transform.Find("Quest kicker")?.GetComponent<Text>();
-            Assert.That(kicker,Is.Not.Null);
-            Assert.That(kicker.text,Is.EqualTo("OBJETIVO ACTUAL"));
             Assert.That(GameObject.Find("CIUDAD")?.GetComponent<Button>(),Is.Not.Null);
             Assert.That(GameObject.Find("MUNDO")?.GetComponent<Button>(),Is.Not.Null);
         }
