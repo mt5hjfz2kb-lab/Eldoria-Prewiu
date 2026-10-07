@@ -18,7 +18,7 @@ namespace Eldoria.Presentation
             DeleteLocalSave();
             var ui = Object.FindFirstObjectByType<SlicePresenter>();
             if (ui != null) ui.Initialize(new LocalGateway(new SystemClock(), CreateStore()));
-            SceneManager.LoadScene("Valoria");
+            SceneManager.LoadScene(CitySceneName);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -41,6 +41,18 @@ namespace Eldoria.Presentation
             SceneManager.sceneLoaded += ui.OnSceneLoaded;
             if (SceneManager.GetActiveScene().name == "Bootstrap") SceneManager.LoadScene("Valoria");
             else ui.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+        }
+
+        private static string CitySceneName
+        {
+            get
+            {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                return "ValoriaWebGL";
+#else
+                return "Valoria";
+#endif
+            }
         }
 
         private static IStateStore CreateStore()
