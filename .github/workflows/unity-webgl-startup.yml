@@ -143,24 +143,43 @@ jobs:
               const box=await page.locator('canvas').boundingBox();
               if(!box)throw new Error('Unity canvas missing');
               const cx=box.x+box.width*.56, cy=box.y+box.height*.48;
-              const beforePanLogs=logs.length;
+              const beforePanRightLogs=logs.length;
               await touchDrag(cdp,cx+100,cy,cx-120,cy);
               await waitLog(logs,t=>{
                 const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
-                return !!m&&Math.abs(+m[1])>=.35;
-              },15000,'real touch pan',beforePanLogs);
+                return !!m&&(+m[1])>=.35;
+              },15000,'real touch pan right',beforePanRightLogs);
               await sleep(800);
-              await page.screenshot({path:'webgl-startup-evidence/pan-landscape.png'});
-              const panDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-landscape.png');
-              report.checks.panDiffRatio=panDiff;
-              if(panDiff<.008)throw new Error('Touch pan changed camera log but published view did not visibly change');
+              await page.screenshot({path:'webgl-startup-evidence/pan-right-landscape.png'});
+              const panRightDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-right-landscape.png');
+              report.checks.panRightDiffRatio=panRightDiff;
+              if(panRightDiff<.008)throw new Error('Right touch pan changed camera log but published view did not visibly change');
 
               const homeUi=parseUi(logs,'home');
               if(!homeUi)throw new Error('HOME touch target was not published by runtime');
               const hp=screenPoint(homeUi,390);
               await touchTap(cdp,hp.x,hp.y);
-              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action');
-              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset');
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after right pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after right pan');
+              await sleep(500);
+
+              const beforePanLeftLogs=logs.length;
+              await touchDrag(cdp,cx-100,cy,cx+120,cy);
+              await waitLog(logs,t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
+                return !!m&&(+m[1])<=-.35;
+              },15000,'real touch pan left',beforePanLeftLogs);
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-left-landscape.png'});
+              const panLeftDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-left-landscape.png');
+              const panSidesDiff=diffRatio('webgl-startup-evidence/pan-right-landscape.png','webgl-startup-evidence/pan-left-landscape.png');
+              report.checks.panLeftDiffRatio=panLeftDiff;
+              report.checks.panSidesDiffRatio=panSidesDiff;
+              if(panLeftDiff<.008||panSidesDiff<.008)throw new Error('Left/right touch pan views are not visually distinct');
+
+              await touchTap(cdp,hp.x,hp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after left pan');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
 
               const primary=parseUi(logs,'primary');
