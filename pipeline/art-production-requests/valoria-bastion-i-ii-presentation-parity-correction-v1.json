@@ -20,12 +20,14 @@
   },
   "validation": {
     "source_gate": "Confront v0220/index.html presentation behavior and current published Unity. Preserve PlayerState/LocalGateway, persistence, economy, SHARP, World Region 1 and Bastion I-II gameplay.",
-    "final_gate": "Published Unity must show building-associated contextual CTA, visible live construction countdown, tighter ~80%-feeling HOME with bounded pan, safe ambient motion, Bastion I/II readability, intact gameplay/save-reload, no Bastion III."
+    "final_gate": "Published Unity must show building-associated contextual CTA, visible live construction countdown, tighter ~80%-feeling HOME with bounded pan, safe ambient motion, Bastion I/II readability, intact gameplay/save-reload, no Bastion III.",
+    "presentation_playmode_gate": "ReferenceUiArtPassTests required"
   },
   "escalation": {
     "on_next_visual_fail": "Correct presentation only. Do not reopen gameplay, World Region 1, SHARP, economy or paid generation."
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
-  "phase": "IMPLEMENTED / PRODUCTION VALIDATION REQUESTED"
+  "phase": "IMPLEMENTED / PRODUCTION VALIDATION REQUESTED",
+  "retry": 1
 }
