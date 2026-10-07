@@ -41,18 +41,18 @@ jobs:
             }
             return null;
           }
-          async function waitLog(logs,predicate,timeout=60000,label='log'){
+          async function waitLog(logs,predicate,timeout=60000,label='log',startIndex=0){
             const started=Date.now();
             while(Date.now()-started<timeout){
-              for(let i=logs.length-1;i>=0;i--) if(predicate(logs[i].text||'')) return logs[i].text;
+              for(let i=logs.length-1;i>=startIndex;i--) if(predicate(logs[i].text||'')) return logs[i].text;
               await sleep(250);
             }
             throw new Error('Timed out waiting for '+label);
           }
-          async function waitState(logs,predicate,timeout=60000,label='state'){
+          async function waitState(logs,predicate,timeout=60000,label='state',startIndex=0){
             const started=Date.now();
             while(Date.now()-started<timeout){
-              for(let i=logs.length-1;i>=0;i--){
+              for(let i=logs.length-1;i>=startIndex;i--){
                 const state=parseState(logs[i].text||'');
                 if(state&&predicate(state)){report.states.push(state);return state;}
               }
@@ -145,10 +145,10 @@ jobs:
               const cx=box.x+box.width*.56, cy=box.y+box.height*.48;
               const beforePanLogs=logs.length;
               await touchDrag(cdp,cx+100,cy,cx-120,cy);
-              await waitLog(logs.slice(beforePanLogs),t=>{
+              await waitLog(logs,t=>{
                 const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
                 return !!m&&Math.abs(+m[1])>=.35;
-              },15000,'real touch pan');
+              },15000,'real touch pan',beforePanLogs);
               await sleep(800);
               await page.screenshot({path:'webgl-startup-evidence/pan-landscape.png'});
               const panDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-landscape.png');
@@ -157,7 +157,8 @@ jobs:
 
               const homeUi=parseUi(logs,'home');
               if(!homeUi)throw new Error('HOME touch target was not published by runtime');
-              await touchTap(cdp,...Object.values(screenPoint(homeUi,390)));
+              const hp=screenPoint(homeUi,390);
+              await touchTap(cdp,hp.x,hp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action');
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset');
               await sleep(500);
@@ -202,7 +203,7 @@ jobs:
               const preReloadCount=logs.length;
               await page.reload({waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
-              const reloaded=await waitState(logs.slice(preReloadCount),s=>s.scene==='Valoria',90000,'Valoria after reload');
+              const reloaded=await waitState(logs,s=>s.scene==='Valoria',90000,'Valoria after reload',preReloadCount);
               report.checks.afterReload=reloaded;
               if(reloaded.gatheredWood<persisted.gatheredWood||reloaded.sawmill<persisted.sawmill||reloaded.wood!==persisted.wood)
                 throw new Error('Persistence mismatch after reload');
@@ -224,7 +225,6 @@ jobs:
             await browser.close();
             if(report.failure)throw new Error(report.failure);
           })().catch(e=>{console.error(e);process.exit(1);});
-          JS
           JS
           node /tmp/eldoria-startup.cjs
       - uses: actions/upload-artifact@v4
