@@ -1082,6 +1082,62 @@ namespace Eldoria.Presentation
             crt.sizeDelta=new Vector2(44,44);
             var ci=constructionActivityFx.GetComponent<Image>();ci.color=new Color(.95f,.70f,.28f,.11f);ci.raycastTarget=false;
             constructionActivityFx.SetActive(false);
+
+            sawmillLevelBadge=CreateBuildingLevelBadge(layer,"Sawmill level badge");
+            barracksLevelBadge=CreateBuildingLevelBadge(layer,"Barracks level badge");
+            bastionLevelBadge=CreateBuildingLevelBadge(layer,"Bastion level badge");
+        }
+
+        Text CreateBuildingLevelBadge(Transform parent,string name)
+        {
+            var go=new GameObject(name,typeof(RectTransform),typeof(Image));
+            var rt=go.GetComponent<RectTransform>();rt.SetParent(parent,false);rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);rt.sizeDelta=new Vector2(46,22);
+            var image=go.GetComponent<Image>();image.color=new Color(.035f,.055f,.075f,.90f);image.raycastTarget=false;
+            var text=Label(name+" text",go.transform,8,new Color(.96f,.82f,.48f),22);
+            text.alignment=TextAnchor.MiddleCenter;text.fontStyle=FontStyle.Bold;
+            var tr=text.rectTransform;tr.anchorMin=Vector2.zero;tr.anchorMax=Vector2.one;tr.offsetMin=tr.offsetMax=Vector2.zero;
+            go.SetActive(false);
+            return text;
+        }
+
+        void UpdateBuildingLevelBadges(PlayerState s)
+        {
+            SetBuildingLevelBadge(sawmillLevelBadge,"sawmill",s.SawmillLevel);
+            SetBuildingLevelBadge(barracksLevelBadge,"barracks",s.BarracksLevel);
+            SetBuildingLevelBadge(bastionLevelBadge,"bastion",s.BastionLevel);
+        }
+
+        void SetBuildingLevelBadge(Text badge,string id,int level)
+        {
+            if(badge==null)return;
+            badge.transform.parent.gameObject.SetActive(city&&level>0);
+            badge.text="Nv. "+level;
+        }
+
+        void UpdateBuildingLevelBadgePositions()
+        {
+            if(!city||safe==null)return;
+            PositionBuildingLevelBadge(sawmillLevelBadge,"sawmill",new Vector2(34,20));
+            PositionBuildingLevelBadge(barracksLevelBadge,"barracks",new Vector2(34,20));
+            PositionBuildingLevelBadge(bastionLevelBadge,"bastion",new Vector2(38,24));
+        }
+
+        void PositionBuildingLevelBadge(Text badge,string id,Vector2 offset)
+        {
+            if(badge==null||!badge.transform.parent.gameObject.activeSelf)return;
+            var target=GameObject.Find(InteractiveTargetName(id));var camera=OfficialCamera;
+            if(target==null||camera==null)return;
+            var collider=target.GetComponent<Collider>();
+            var world=collider!=null?collider.bounds.center:target.transform.position;
+            var screen=camera.WorldToScreenPoint(world);
+            if(screen.z<=0)return;
+            if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe,screen,null,out var local))return;
+            badge.transform.parent.GetComponent<RectTransform>().anchoredPosition=local+offset;
+        }
+
+        static string InteractiveTargetName(string id)
+        {
+            return id=="sawmill"?"InteractiveProxy_LeftCabinParcel":id=="barracks"?"InteractiveProxy_RightCampParcel":id=="bastion"?"InteractiveProxy_Bastion":null;
         }
 
         void AnimateCityAmbientation()
