@@ -1240,6 +1240,21 @@ namespace Eldoria.Presentation
             var layout=t.GetComponent<HorizontalLayoutGroup>();layout.spacing=7;layout.childForceExpandWidth=true;
             layout.childControlWidth=true;return t;
         }
+
+        void InvokeOwnerReset()
+        {
+            if(!ownerResetArmed)
+            {
+                ownerResetArmed=true;
+                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
+                feedback="Pulsa otra vez para reiniciar desde Bastión I.";
+                message.text=feedback;
+                return;
+            }
+            ownerResetArmed=false;
+            SliceBoot.ResetLocalSaveAndRestart();
+        }
+
         static Button Button(Transform parent,string label,Action onClick)
         {
             var go=new GameObject(label,typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
@@ -1256,19 +1271,4 @@ namespace Eldoria.Presentation
         }
     }
 }
-
-        void InvokeOwnerReset()
-        {
-            if(!ownerResetArmed)
-            {
-                ownerResetArmed=true;
-                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
-                feedback="Pulsa otra vez para reiniciar desde Bastión I.";
-                message.text=feedback;
-                return;
-            }
-            ownerResetArmed=false;
-            SliceBoot.ResetLocalSaveAndRestart();
-        }
-
 
