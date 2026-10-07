@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T19:41:30Z",
-  "active": [
+  "updated_at": "2026-10-07T21:15:00Z",
+  "active": [],
+  "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
       "title": "Valoria Bastion I-II presentation parity correction v1",
@@ -32,15 +33,30 @@
       ],
       "claimed_at": "2026-10-07T19:18:00Z",
       "base_main_sha": "74990f0558b5f08d49528c5d6b7db962bb815783",
-      "status": "active",
-      "phase": "CONFRONTATION / DIAGNOSIS",
+      "status": "completed",
+      "phase": "PRESENTATION PARITY PASS / PUBLISHED MOBILE MACROLOOP PASS / CLOSED",
       "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions are in-scope: explicit owner-build reset to canonical initial Bastion I for repeatable testing, and small art-integrated real building-level indicators beside relevant buildings.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Confront canonical web vertical slice against published Unity; also add an owner-build reset-to-initial-state control using canonical persistence/state and integrated real building-level badges; validate both in published build; correct remaining parity gaps, rerun, publish, probe and close."
-    }
-  ],
-  "history": [
+      "next": "Do not open Bastion III automatically. Any next visual/UI/gameplay block requires explicit owner authorization.",
+      "completed_at": "2026-10-07T21:15:00Z",
+      "runner_released": true,
+      "blocker": null,
+      "result": {
+        "verdict": "SOURCE PASS / PRESENTATION PARITY PASS / PRODUCTION PASS / UI PASS / PUBLISHED WEBGL PASS / MOBILE MACROLOOP PASS / SAVE-RELOAD PASS / LANDSCAPE-PORTRAIT PASS",
+        "final_certification_commit": "d88ab7fe4d6d09d05f1b3cf4fe52b4d492c9f3c3",
+        "production_run_id": 37681793700,
+        "production_artifact_id": 11509591694,
+        "ui_certification_run_id": 37681793717,
+        "source_editor_gate_run_id": 37681794138,
+        "publish_run_id": 37684790661,
+        "published_probe_run_id": 37687592179,
+        "published_probe_artifact_id": 11511827528,
+        "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+        "published_probe_result": "PASS / playablePass=true: HOME, horizontal/vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, reload persistence, landscape/portrait, no white screen.",
+        "paid_credits": 0
+      }
+    },
     {
       "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
       "title": "Valoria Bastion I-II controlled vertical-slice presentation migration",
