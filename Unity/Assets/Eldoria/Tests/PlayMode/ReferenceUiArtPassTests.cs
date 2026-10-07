@@ -53,9 +53,10 @@ namespace Eldoria.Tests
 
             // Presentation parity correction: city is visibly alive without adding gameplay,
             // and the contextual building CTA is a compact building-associated surface.
-            Assert.That(GameObject.Find("City ambient life"),Is.Not.Null);
-            Assert.That(GameObject.Find("Ambient drifting mist"),Is.Not.Null);
-            Assert.That(GameObject.Find("Construction activity FX"),Is.Not.Null);
+            var ambient=GameObject.Find("City ambient life");
+            Assert.That(ambient,Is.Not.Null);
+            Assert.That(ambient.transform.Find("Ambient drifting mist"),Is.Not.Null);
+            Assert.That(ambient.transform.Find("Construction activity FX"),Is.Not.Null);
             var panel=GameObject.Find("Building interaction panel").GetComponent<RectTransform>();
             Assert.That(panel.sizeDelta.x,Is.LessThanOrEqualTo(280f));
             Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(170f));
