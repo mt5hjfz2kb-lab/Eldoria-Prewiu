@@ -24,7 +24,8 @@ namespace Eldoria.Presentation
         Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton, resetButton;
         string feedback="";
         float refreshAt;
-        float resetQaArmedUntil;\n        bool ownerResetArmed;
+        float resetQaArmedUntil;
+        bool ownerResetArmed;
         int lastWidth,lastHeight;
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
@@ -629,7 +630,8 @@ namespace Eldoria.Presentation
         void Refresh()
         {
             if(heading==null)return;
-            var s=gateway.Snapshot();\n            UpdateBuildingLevelBadges(s);
+            var s=gateway.Snapshot();
+            UpdateBuildingLevelBadges(s);
             if(productionParcels!=null) productionParcels.Apply(s);
             if(!city)WorldRegion1Runtime.Refresh(s);
             if(city&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
