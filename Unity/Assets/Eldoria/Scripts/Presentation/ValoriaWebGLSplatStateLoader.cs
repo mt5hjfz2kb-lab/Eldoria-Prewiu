@@ -25,6 +25,9 @@ namespace Eldoria.Presentation
         Texture2D webBackgroundTexture;
         float lastLoggedPanX = float.NaN;
         float lastLoggedFov = float.NaN;
+        string loadedVisualKey = "";
+        string requestedVisualKey = "";
+        Coroutine visualLoading;
         const float CertifiedAspect = 1230f / 845f;
         const float CertifiedHalfPanWorld = .5f;
         const float CertifiedHalfPanPixels = 22.8f;
@@ -51,11 +54,19 @@ namespace Eldoria.Presentation
         {
             if (variant < 0 || variant > 3) throw new ArgumentOutOfRangeException(nameof(variant));
             requestedVariant = variant;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (loadedVariant == variant)
+            {
+                RequestWebVisualForCurrentCamera();
+                return;
+            }
+#else
             if (loadedVariant == variant && runtimeAsset != null)
             {
                 if (Renderer != null && Renderer.GsplatAsset != runtimeAsset) Renderer.GsplatAsset = runtimeAsset;
                 return;
             }
+#endif
             if (loading == null) loading = StartCoroutine(LoadRequested());
         }
 
@@ -65,23 +76,9 @@ namespace Eldoria.Presentation
             {
                 int variant = requestedVariant;
 #if UNITY_WEBGL && !UNITY_EDITOR
-                string imageUrl = ResolveUrl("valoria-state-" + variant + ".png");
-                using var imageRequest = UnityWebRequestTexture.GetTexture(imageUrl, true);
-                yield return imageRequest.SendWebRequest();
-                if (imageRequest.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError("VALORIA_WEBGL_BACKGROUND_LOAD_FAIL variant=" + variant + " url=" + imageUrl + " error=" + imageRequest.error);
-                    loading = null;
-                    yield break;
-                }
-                if (variant != requestedVariant) continue;
-                var previousTexture = webBackgroundTexture;
-                webBackgroundTexture = DownloadHandlerTexture.GetContent(imageRequest);
-                webBackgroundTexture.name = "Valoria certified WebGL state " + variant;
-                if (webBackground != null) webBackground.texture = webBackgroundTexture;
                 loadedVariant = variant;
-                if (previousTexture != null) Destroy(previousTexture);
-                Debug.Log("VALORIA_WEBGL_CERTIFIED_BACKGROUND_READY variant=" + variant + " bytes=" + imageRequest.downloadedBytes);
+                RequestWebVisualForCurrentCamera();
+                yield return null;
 #else
                 string url = ResolveUrl(FilePrefix + variant + ".ply");
                 using var request = UnityWebRequest.Get(url);
@@ -163,15 +160,19 @@ namespace Eldoria.Presentation
         {
             if (webBackgroundRect == null || Presentation == null || Presentation.ProductionCamera == null) return;
             var camera = Presentation.ProductionCamera;
+            RequestWebVisualForCurrentCamera();
+
             float panX = Mathf.Clamp(camera.transform.position.x, -CertifiedHalfPanWorld, CertifiedHalfPanWorld);
-            float panNormalized = panX / CertifiedHalfPanWorld;
+            float panAnchor = VisualPanAnchor(panX, loadedVariant);
+            float residualPan = panX - panAnchor;
             float renderedWidth = Mathf.Max(1f, webBackgroundRect.rect.width);
-            float shift = -panNormalized * renderedWidth * (CertifiedHalfPanPixels / 1230f);
+            float shift = -(residualPan / CertifiedHalfPanWorld) * renderedWidth * (CertifiedHalfPanPixels / 1230f);
             webBackgroundRect.anchoredPosition = new Vector2(shift, 0f);
 
-            float homeFov = Mathf.Max(.01f, Presentation.HomeFov);
-            float zoomScale = Mathf.Clamp(homeFov / Mathf.Max(.01f, camera.fieldOfView), .9f, 1.1f);
-            webBackgroundRect.localScale = new Vector3(zoomScale, zoomScale, 1f);
+            float zoomRatio = Mathf.Clamp(camera.fieldOfView / Mathf.Max(.01f, Presentation.HomeFov), .9f, 1.1f);
+            float zoomAnchor = VisualZoomAnchor(zoomRatio, loadedVariant);
+            float residualScale = Mathf.Clamp(zoomAnchor / zoomRatio, .97f, 1.03f);
+            webBackgroundRect.localScale = new Vector3(residualScale, residualScale, 1f);
 
             if (float.IsNaN(lastLoggedPanX) || Mathf.Abs(panX - lastLoggedPanX) >= .08f ||
                 float.IsNaN(lastLoggedFov) || Mathf.Abs(camera.fieldOfView - lastLoggedFov) >= .5f)
@@ -180,9 +181,75 @@ namespace Eldoria.Presentation
                 lastLoggedFov = camera.fieldOfView;
                 Debug.Log("ELDORIA_PLAYABLE_VIEW panX=" + panX.ToString("F3") +
                     " fov=" + camera.fieldOfView.ToString("F3") +
-                    " shift=" + shift.ToString("F2"));
+                    " key=" + requestedVisualKey +
+                    " residualShift=" + shift.ToString("F2"));
             }
         }
+
+        void RequestWebVisualForCurrentCamera()
+        {
+            if (loadedVariant < 0 || Presentation == null || Presentation.ProductionCamera == null) return;
+            requestedVisualKey = VisualKey(loadedVariant, Presentation.ProductionCamera);
+            if (requestedVisualKey == loadedVisualKey || visualLoading != null) return;
+            visualLoading = StartCoroutine(LoadRequestedWebVisual());
+        }
+
+        IEnumerator LoadRequestedWebVisual()
+        {
+            while (!string.IsNullOrEmpty(requestedVisualKey) && requestedVisualKey != loadedVisualKey)
+            {
+                string key = requestedVisualKey;
+                string imageUrl = ResolveUrl(key);
+                using var imageRequest = UnityWebRequestTexture.GetTexture(imageUrl, true);
+                yield return imageRequest.SendWebRequest();
+                if (imageRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("VALORIA_WEBGL_BACKGROUND_LOAD_FAIL key=" + key + " url=" + imageUrl + " error=" + imageRequest.error);
+                    visualLoading = null;
+                    yield break;
+                }
+                if (key != requestedVisualKey) continue;
+                var previousTexture = webBackgroundTexture;
+                webBackgroundTexture = DownloadHandlerTexture.GetContent(imageRequest);
+                webBackgroundTexture.name = "Valoria certified WebGL " + key;
+                if (webBackground != null) webBackground.texture = webBackgroundTexture;
+                loadedVisualKey = key;
+                if (previousTexture != null) Destroy(previousTexture);
+                Debug.Log("VALORIA_WEBGL_CERTIFIED_BACKGROUND_READY variant=" + loadedVariant +
+                    " key=" + key + " bytes=" + imageRequest.downloadedBytes);
+            }
+            visualLoading = null;
+        }
+
+        string VisualKey(int variant, Camera camera)
+        {
+            if (variant != 0 && variant != 3) return "valoria-state-" + variant + ".png";
+            float pan = VisualPanAnchor(Mathf.Clamp(camera.transform.position.x, -.5f, .5f), variant);
+            float zoom = VisualZoomAnchor(Mathf.Clamp(camera.fieldOfView / Mathf.Max(.01f, Presentation.HomeFov), .9f, 1.1f), variant);
+            return "valoria-state" + variant + "-pan" + PanToken(pan) + "-zoom" + ZoomToken(zoom) + ".png";
+        }
+
+        static float VisualPanAnchor(float panX, int variant)
+        {
+            if (variant != 0 && variant != 3) return 0f;
+            if (panX <= -.25f) return -.5f;
+            if (panX >= .25f) return .5f;
+            return 0f;
+        }
+
+        static float VisualZoomAnchor(float zoomRatio, int variant)
+        {
+            if (variant != 0 && variant != 3) return 1f;
+            if (zoomRatio <= .95f) return .9f;
+            if (zoomRatio >= 1.05f) return 1.1f;
+            return 1f;
+        }
+
+        static string PanToken(float pan)
+            => pan < -.25f ? "-0.5" : (pan > .25f ? "0.5" : "0");
+
+        static string ZoomToken(float zoom)
+            => zoom < .95f ? "0.9" : (zoom > 1.05f ? "1.1" : "1");
 #endif
 
         static string ResolveUrl(string file)
