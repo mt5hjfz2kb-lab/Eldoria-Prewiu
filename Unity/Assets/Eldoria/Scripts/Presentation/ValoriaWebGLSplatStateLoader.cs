@@ -20,7 +20,14 @@ namespace Eldoria.Presentation
         Coroutine loading;
         GsplatAsset runtimeAsset;
         RawImage webBackground;
+        RectTransform webBackgroundRect;
+        Image webLetterbox;
         Texture2D webBackgroundTexture;
+        float lastLoggedPanX = float.NaN;
+        float lastLoggedFov = float.NaN;
+        const float CertifiedAspect = 1230f / 845f;
+        const float CertifiedHalfPanWorld = .5f;
+        const float CertifiedHalfPanPixels = 22.8f;
 
         void Start()
         {
@@ -31,6 +38,13 @@ namespace Eldoria.Presentation
             StartCoroutine(CreateWebBackgroundWhenHudReady());
 #endif
             RequestVariant(Presentation != null ? Presentation.ActiveVariant : 0);
+        }
+
+        void LateUpdate()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            SyncCertifiedWebView();
+#endif
         }
 
         public void RequestVariant(int variant)
@@ -116,21 +130,58 @@ namespace Eldoria.Presentation
                 yield break;
             }
 
+            var backdropObject = new GameObject("Valoria WebGL letterbox", typeof(RectTransform), typeof(Image));
+            backdropObject.transform.SetParent(hud.transform, false);
+            backdropObject.transform.SetAsFirstSibling();
+            var backdropRect = backdropObject.GetComponent<RectTransform>();
+            backdropRect.anchorMin = Vector2.zero;
+            backdropRect.anchorMax = Vector2.one;
+            backdropRect.offsetMin = Vector2.zero;
+            backdropRect.offsetMax = Vector2.zero;
+            webLetterbox = backdropObject.GetComponent<Image>();
+            webLetterbox.color = new Color(.018f, .026f, .034f, 1f);
+            webLetterbox.raycastTarget = false;
+
             var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage), typeof(AspectRatioFitter));
             imageObject.transform.SetParent(hud.transform, false);
-            imageObject.transform.SetAsFirstSibling();
-            var rect = imageObject.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(.5f, .5f);
-            rect.anchorMax = new Vector2(.5f, .5f);
-            rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = Vector2.one;
+            imageObject.transform.SetSiblingIndex(1);
+            webBackgroundRect = imageObject.GetComponent<RectTransform>();
+            webBackgroundRect.anchorMin = new Vector2(.5f, .5f);
+            webBackgroundRect.anchorMax = new Vector2(.5f, .5f);
+            webBackgroundRect.anchoredPosition = Vector2.zero;
+            webBackgroundRect.sizeDelta = Vector2.one;
             var fitter = imageObject.GetComponent<AspectRatioFitter>();
-            fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
-            fitter.aspectRatio = 1230f / 845f;
+            fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            fitter.aspectRatio = CertifiedAspect;
             webBackground = imageObject.GetComponent<RawImage>();
             webBackground.raycastTarget = false;
             if (webBackgroundTexture != null) webBackground.texture = webBackgroundTexture;
-            Debug.Log("VALORIA_WEBGL_HUD_BACKGROUND_READY");
+            SyncCertifiedWebView();
+            Debug.Log("VALORIA_WEBGL_HUD_BACKGROUND_READY policy=FIT_IN_PARENT");
+        }
+        void SyncCertifiedWebView()
+        {
+            if (webBackgroundRect == null || Presentation == null || Presentation.ProductionCamera == null) return;
+            var camera = Presentation.ProductionCamera;
+            float panX = Mathf.Clamp(camera.transform.position.x, -CertifiedHalfPanWorld, CertifiedHalfPanWorld);
+            float panNormalized = panX / CertifiedHalfPanWorld;
+            float renderedWidth = Mathf.Max(1f, webBackgroundRect.rect.width);
+            float shift = -panNormalized * renderedWidth * (CertifiedHalfPanPixels / 1230f);
+            webBackgroundRect.anchoredPosition = new Vector2(shift, 0f);
+
+            float homeFov = Mathf.Max(.01f, Presentation.HomeFov);
+            float zoomScale = Mathf.Clamp(homeFov / Mathf.Max(.01f, camera.fieldOfView), .9f, 1.1f);
+            webBackgroundRect.localScale = new Vector3(zoomScale, zoomScale, 1f);
+
+            if (float.IsNaN(lastLoggedPanX) || Mathf.Abs(panX - lastLoggedPanX) >= .08f ||
+                float.IsNaN(lastLoggedFov) || Mathf.Abs(camera.fieldOfView - lastLoggedFov) >= .5f)
+            {
+                lastLoggedPanX = panX;
+                lastLoggedFov = camera.fieldOfView;
+                Debug.Log("ELDORIA_PLAYABLE_VIEW panX=" + panX.ToString("F3") +
+                    " fov=" + camera.fieldOfView.ToString("F3") +
+                    " shift=" + shift.ToString("F2"));
+            }
         }
 #endif
 
@@ -145,6 +196,7 @@ namespace Eldoria.Presentation
         {
             if (runtimeAsset != null) Destroy(runtimeAsset);
             if (webBackgroundTexture != null) Destroy(webBackgroundTexture);
+            if (webLetterbox != null) Destroy(webLetterbox.gameObject);
         }
     }
 }
