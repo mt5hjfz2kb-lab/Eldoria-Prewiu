@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T14:31:00Z",
-  "retry": 31,
-  "retry_reason": "Mobile owner camera + return correction: package ValoriaWebGL return target and bounded secondary vertical pan with WebGL-safe overscan; validate full published loop.",
+  "updated_at": "2026-10-07T15:06:00Z",
+  "retry": 32,
+  "retry_reason": "WebGL persistence correction: keep gameplay/state schema unchanged; store WebGL PlayerState through PlayerPrefs + Save so Region 1 rewards survive browser reload. Re-run full published mobile loop.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "de7a3c7881314443456c049eff45b1e54176def5",
+  "retry_after_commit": "8a826046fcfd80700d64f5530a5531467fffdc01",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
