@@ -71,6 +71,9 @@ namespace Eldoria.Presentation
             }
             CreateHud();Refresh();
             LogPlayableState("scene-loaded");
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(!city) StartCoroutine(LogWorldHotspotNextFrame("World Region 1 · forest target","forest-valoria"));
+#endif
         }
         void Update()
         {
