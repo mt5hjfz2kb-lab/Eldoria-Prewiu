@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T15:06:00Z",
-  "retry": 32,
-  "retry_reason": "WebGL persistence correction: keep gameplay/state schema unchanged; store WebGL PlayerState through PlayerPrefs + Save so Region 1 rewards survive browser reload. Re-run full published mobile loop.",
+  "updated_at": "2026-10-07T15:08:00Z",
+  "retry": 33,
+  "retry_reason": "Published end-to-end probe passed HOME, horizontal+vertical pan, Mundo, Region 1 gather/reward and Reino return but proved WebGL state loss on reload. Republish with browser-backed PlayerPrefs persistence adapter; gameplay/state semantics unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "8a826046fcfd80700d64f5530a5531467fffdc01",
+  "retry_after_commit": "384593584e6b41a2bfe13c6786d113a199d70960",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
