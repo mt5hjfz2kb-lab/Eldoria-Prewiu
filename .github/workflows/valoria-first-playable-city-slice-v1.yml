@@ -13,6 +13,7 @@ on:
       - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
       - "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
       - "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+      - "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs"
       - "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs"
       - "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
       - "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
