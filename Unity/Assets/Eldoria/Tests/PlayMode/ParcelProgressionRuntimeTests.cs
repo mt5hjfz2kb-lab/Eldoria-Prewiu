@@ -45,6 +45,7 @@ namespace Eldoria.Tests
             GameObject Child(string name){var go=new GameObject(name);go.transform.SetParent(root.transform);return go;}
             visual.LeftBuilt=Child("left built");visual.RightBuilt=Child("right built");
             visual.LeftGround=Child("left ground");visual.RightGround=Child("right ground");
+            visual.BastionLevelTwoVisuals=new[]{Child("bastion ii banner"),Child("bastion ii reinforcement")};
             visual.LeftConstruction=Child("left construction");visual.RightConstruction=Child("right construction");
             visual.LeftTarget=Child("left target").AddComponent<BoxCollider>();visual.RightTarget=Child("right target").AddComponent<BoxCollider>();
             visual.Bindings=new[]{
@@ -56,6 +57,8 @@ namespace Eldoria.Tests
             presenter.Initialize(gateway);presenter.OnSceneLoaded(testScene,LoadSceneMode.Single);
             Assert.That(visual.LeftState,Is.EqualTo(ParcelBuildingState.AVAILABLE));
             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.NOT_BUILT));
+            Assert.That(visual.PresentedBastionLevel,Is.EqualTo(1));
+            Assert.That(visual.BastionLevelTwoVisuals[0].activeSelf,Is.False);
             Assert.That(visual.LeftBuilt.activeSelf,Is.False);Assert.That(visual.RightTarget.enabled,Is.False);
             Invoke(presenter,"Select","sawmill");
             var action=(Button)typeof(SlicePresenter).GetField("buildingAction",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(presenter);
@@ -74,6 +77,9 @@ namespace Eldoria.Tests
             void March(string kind,string target){Command(kind,target);clock.Step(120);gateway.Advance();}
             March("Gather","forest-valoria");March("Gather","forest-valoria");March("Gather","quarry-valoria");March("Fight","corrupt-scout");
             Command("AdvanceBastion","bastion");Invoke(presenter,"Refresh");
+            Assert.That(visual.PresentedBastionLevel,Is.EqualTo(2));
+            Assert.That(visual.BastionLevelTwoVisuals[0].activeSelf,Is.True);
+            Assert.That(visual.BastionLevelTwoVisuals[1].activeSelf,Is.True);
             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.AVAILABLE));Assert.That(visual.RightTarget.enabled,Is.True);
             Invoke(presenter,"Select","barracks");Assert.That(action.interactable,Is.True);action.onClick.Invoke();
             Assert.That(visual.RightState,Is.EqualTo(ParcelBuildingState.UNDER_CONSTRUCTION));Assert.That(visual.RightConstruction.activeSelf,Is.True);
