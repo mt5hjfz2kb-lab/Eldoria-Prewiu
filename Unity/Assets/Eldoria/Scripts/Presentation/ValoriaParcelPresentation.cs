@@ -65,10 +65,16 @@ namespace Eldoria.Presentation
             // Locked parcels remain visible empty space, with no premature building panel.
             if(target!=null)target.enabled=state!=ParcelBuildingState.NOT_BUILT;
         }
+        public const float HorizontalPanHalfExtent=.5f;
+        public const float VerticalPanHalfExtent=.16f;
         public void Pan(Vector2 delta)
         {
             var p=ProductionCamera.transform.position;
-            p.x=Mathf.Clamp(p.x-delta.x*.005f,-.5f,.5f); p.y=0; p.z=0;
+            p.x=Mathf.Clamp(p.x-delta.x*.005f,-HorizontalPanHalfExtent,HorizontalPanHalfExtent);
+            // Owner camera rule: Valoria is primarily a wide left/right space, but must
+            // retain a smaller genuine vertical browse range on touch.
+            p.y=Mathf.Clamp(p.y-delta.y*.002f,-VerticalPanHalfExtent,VerticalPanHalfExtent);
+            p.z=0;
             ProductionCamera.transform.position=p;
         }
         public void Zoom(float delta)
