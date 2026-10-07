@@ -29,6 +29,6 @@
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
   "phase": "IMPLEMENTED / FINAL PRODUCTION VALIDATION REQUESTED",
-  "retry": 7,
-  "retry_reason": "Production capture passed and real parcel UI passed; final presentation test fixture no longer dereferences inactive badge text. Trigger clean authoritative validation."
+  "retry": 8,
+  "retry_reason": "Removed invalid inactive badge child-text assertion from current main; trigger final clean production validation."
 }
