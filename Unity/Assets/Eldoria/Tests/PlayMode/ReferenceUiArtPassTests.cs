@@ -57,7 +57,7 @@ namespace Eldoria.Tests
             Assert.That(ambient,Is.Not.Null);
             Assert.That(ambient.transform.Find("Ambient drifting mist"),Is.Not.Null);
             Assert.That(ambient.transform.Find("Construction activity FX"),Is.Not.Null);
-            var panel=GameObject.Find("Building interaction panel").GetComponent<RectTransform>();
+            var safeArea=GameObject.Find("Safe area");\n            Assert.That(safeArea,Is.Not.Null);\n            var panel=safeArea.transform.Find("Building interaction panel")?.GetComponent<RectTransform>();\n            Assert.That(panel,Is.Not.Null);
             Assert.That(panel.sizeDelta.x,Is.LessThanOrEqualTo(280f));
             Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(170f));
         }
