@@ -25,6 +25,8 @@ namespace Eldoria.Presentation
         public GsplatRenderer SceneSplats;
         public GsplatAsset[] StateAssets; // 0 empty, 1 left built, 2 right built, 3 both built
         public int ActiveVariant { get; private set; }
+        public GameObject[] BastionLevelTwoVisuals = Array.Empty<GameObject>();
+        public int PresentedBastionLevel { get; private set; } = 1;
         public float HomeFov = 44.42281f;
         public ParcelBuildingState LeftState { get; private set; }
         public ParcelBuildingState RightState { get; private set; }
@@ -34,6 +36,10 @@ namespace Eldoria.Presentation
             LeftState=ParcelBuildingStates.For(state,"sawmill");
             RightState=ParcelBuildingStates.For(state,"barracks");
             ActiveVariant=0;
+            PresentedBastionLevel=Math.Max(1,state.BastionLevel);
+            bool bastionTwo=PresentedBastionLevel>=2;
+            if(BastionLevelTwoVisuals!=null)
+                foreach(var cue in BastionLevelTwoVisuals) if(cue!=null) cue.SetActive(bastionTwo);
             foreach(var parcel in Bindings)
             {
                 var phase=ParcelBuildingStates.For(state,parcel.BuildingId);
