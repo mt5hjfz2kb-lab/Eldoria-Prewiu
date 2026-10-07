@@ -64,8 +64,9 @@ namespace Eldoria.Presentation
             productionParcels=null;
             foreach(var sceneRoot in scene.GetRootGameObjects())
             { productionParcels=sceneRoot.GetComponentInChildren<ValoriaParcelPresentation>(true);if(productionParcels!=null)break; }
-            if(productionParcels!=null) { productionParcels.Apply(state);productionParcels.Home(); }
+            if(productionParcels!=null) productionParcels.Apply(state);
             else if(city) VisualWorld.Create(true,state);
+            if(productionParcels!=null) productionParcels.Home();
             else WorldRegion1Runtime.Create(state);
             if(OfficialCamera!=null&&productionParcels==null)
             {
