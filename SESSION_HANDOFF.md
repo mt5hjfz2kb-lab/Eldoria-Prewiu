@@ -1,3 +1,46 @@
+## 2026-10-07 — FUTURE BRAIN UPGRADE: PLAYABILITY RECONSTRUCTION + SAFE AUTO-REPAIR LOOP
+
+Owner decision: add a future structural capability to Eldoria's automation brain, after the current playable-link block and the next major content blocks are stable.
+
+Goal:
+Build a recurring **playability reconstruction and regression-repair gate** that can automatically replay representative end-to-end game flows, detect minor regressions, classify them, repair only safe/deterministic categories, rebuild, retest and repeat until PASS or a genuine human/creative blocker is reached.
+
+Representative flows should eventually include, at minimum:
+- HOME → bounded pan/navigation → building interaction/construction → MUNDO → Region action/hotspot → reward → REINO → Valoria → reload/persistence;
+- Bastion progression flows once Bastion I → II is stable;
+- portrait / landscape / desktop/mobile variants where relevant.
+
+Safe auto-repair candidates may include:
+- UI anchors/safe-area/layout defects;
+- button/listener/binding/reference defects;
+- deterministic touch/click coordinate or input-routing issues;
+- scene/navigation wiring;
+- hotspot alignment/interaction proxies;
+- bounded camera/input regressions;
+- persistence/load wiring regressions;
+- required runtime asset/reference omissions;
+- similarly deterministic, evidence-backed technical regressions.
+
+The auto-repair loop MUST NOT autonomously:
+- change Valoria/world visual authority or art direction;
+- redesign composition;
+- invent or rebalance gameplay/economy/progression;
+- replace canonical pipelines/methods;
+- spend paid credits;
+- promote experimental/historical routes;
+- make owner-level creative decisions.
+
+Required architecture:
+`build/playtest → end-to-end probe → classify failure → safe repair when eligible → rebuild → replay → repeat → PASS or HUMAN BLOCKER`.
+
+This should integrate with existing workstream ownership, planner/fallback governance, visual-authority guards, quarantine rules and continuous-execution policy rather than creating a second parallel brain.
+
+Timing:
+Do **not** implement during the current WebGL/playable-link rescue. Revisit after:
+1. playable link is genuinely closed/tested;
+2. World Region 1 visual convergence correction is completed;
+3. Bastion I → II first complete progression loop is stable enough to provide additional canonical gameplay contracts.
+
 ## 2026-10-07 — OWNER CAMERA INTENT: VALORIA MUST FEEL LARGE + LOCALLY NAVIGABLE, NOT FULLY FRAMED LIKE A MAP
 
 Owner clarification for the active `valoria-mobile-web-playtest-v1` correction:
