@@ -1,7 +1,7 @@
 {
   "id": "world-region-1-valoria-frontier",
   "version": 1,
-  "status": "active-slice-contract",
+  "status": "PASS",
   "authority": {
     "valoriaScene": "Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity",
     "visualAuthority": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
@@ -92,15 +92,16 @@
     "kingdom-state-reflects-reward"
   ],
   "gates": {
-    "tech": "required",
-    "visual": "required",
-    "worldValoriaContinuity": "required: same Eldoria art direction/state continuity despite deliberate screen/scale change",
-    "navigation": "required",
-    "interaction": "required",
-    "gameplayLoop": "required",
-    "saveReload": "required",
-    "boundedCamera": "required",
-    "mobileReadability": "required"
+    "tech": "PASS",
+    "visual": "PASS",
+    "worldValoriaContinuity": "PASS",
+    "navigation": "PASS",
+    "interaction": "PASS",
+    "gameplayLoop": "PASS",
+    "saveReload": "PASS",
+    "boundedCamera": "PASS",
+    "mobileReadability": "PASS",
+    "architecture4x": "PASS"
   },
   "nonGoals": [
     "continent",
@@ -228,5 +229,12 @@
       "asset-pack seams",
       "environment overwhelming gameplay targets"
     ]
+  },
+  "closedAt": "2026-10-07T00:10:00Z",
+  "finalHead": "255769573712e053790df3fdf369a9534d4fc7d1",
+  "finalEvidence": {
+    "unityRun": 37549083306,
+    "capturesArtifact": "eldoria-valoria-captures-255769573712e053790df3fdf369a9534d4fc7d1",
+    "visualReview": "PASS — strategic world is deliberately simpler than Valoria but remains recognizably Eldoria; city, forest masses, routes, geology, POIs and portrait composition are coherent and no longer read as a flat prototype board."
   }
 }
