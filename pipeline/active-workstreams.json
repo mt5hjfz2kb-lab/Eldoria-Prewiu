@@ -1,8 +1,42 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T19:06:30Z",
-  "active": [],
+  "updated_at": "2026-10-07T19:18:00Z",
+  "active": [
+    {
+      "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
+      "title": "Valoria Bastion I-II presentation parity correction v1",
+      "owner": "chat-valoria-presentation-parity-20261007",
+      "scope": [
+        "pipeline/active-workstreams.json",
+        "pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
+        ".github/workflows/valoria-first-playable-city-slice-v1.yml",
+        ".github/workflows/pages.yml",
+        "pipeline/unity-publish-request.json",
+        "docs/VALORIA_BASTION_I_II_PRESENTATION_PARITY_CORRECTION_V1.md",
+        "docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/**",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-07T19:18:00Z",
+      "base_main_sha": "74990f0558b5f08d49528c5d6b7db962bb815783",
+      "status": "active",
+      "phase": "CONFRONTATION / DIAGNOSIS",
+      "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III.",
+      "paid_credits": 0,
+      "art_production_routing": "required",
+      "next": "Confront canonical web vertical slice against published Unity, correct parity gaps, rerun, publish, probe and close."
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
