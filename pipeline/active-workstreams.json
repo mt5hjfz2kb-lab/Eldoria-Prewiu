@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T01:00:00+02:00",
+  "updated_at": "2026-10-07T00:10:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -33,44 +33,6 @@
       "runner_released": true,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Publishing/delivery-only workstream; it must not author or visually promote player-facing art."
-    },
-    {
-      "id": "eldoria-world-region-1-v1",
-      "title": "Eldoria World Region 1 v1",
-      "owner": "chat-world-region-1-20261006",
-      "scope": [
-        "docs/ELDORIA_WORLD_REGION_1_V1.md",
-        "docs/evidence/eldoria-world-region-1-v1/**",
-        "Unity/Assets/Eldoria/World/**",
-        "Unity/Assets/Eldoria/Scripts/Runtime/World/**",
-        "Unity/Assets/Eldoria/Tests/**WorldRegion1**",
-        "pipeline/world-region-1.json",
-        "pipeline/active-workstreams.json",
-        "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md",
-        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs",
-        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCapture.cs",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaExternalAssetLibrary.cs",
-        "Unity/Assets/Eldoria/Resources/Valoria/ExternalAssetLibrary.asset",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs"
-      ],
-      "resources": [
-        "eldoria-world-region-1-data",
-        "eldoria-world-region-1-runtime",
-        "windows-self-hosted-unity-6000-3-23f1"
-      ],
-      "claimed_at": "2026-10-06T16:39:00Z",
-      "base_main_sha": "f7462f338f744beeb8b0c05e170d55fd63938206",
-      "status": "active",
-      "phase": "TECH FIX — SAFE IMPORTED PREFAB INSTANTIATION / FINAL VISUAL CERTIFICATION",
-      "dependency": "Consumes certified Valoria.unity and closed valoria-real-game-state-v1. Region 1 owns the released Windows Unity runner. WebGL delivery remains parked and its Pages/publish files remain untouched.",
-      "paid_credits": 0,
-      "next": "Fix imported Nature Starter subobject instantiation without losing URP adaptation; rerun full Unity gate and inspect actual Region 1 captures.",
-      "art_production_routing": "required",
-      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-v1.json"
     }
   ],
   "history": [
