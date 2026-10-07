@@ -29,6 +29,6 @@
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
   "phase": "IMPLEMENTED / FINAL PRODUCTION VALIDATION REQUESTED",
-  "retry": 3,
-  "retry_reason": "ReferenceUiArtPass no longer overrides contextual building CTA anchor/size."
+  "retry": 5,
+  "retry_reason": "Trigger clean final production run from current head after contextual CTA skin and runtime contract corrections."
 }
