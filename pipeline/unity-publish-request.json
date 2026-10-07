@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T07:22:00Z",
-  "retry": 9,
-  "retry_reason": "Correct invalid fallback-heavy WebGL: retain certified Region 1 runtime resource set (WorldPlayerCity, WorldInventory, pruned ExternalAssetLibrary, Crate) while excluding historical Valoria Resources that caused 1.11 GB builds.",
+  "updated_at": "2026-10-07T07:50:00Z",
+  "retry": 10,
+  "retry_reason": "WebGL visual fix: install UnitySplats GsplatURPFeature on the active EldoriaForwardRenderer only for the build, because published probe loaded PLY but rendered black while rendererFeatures was empty; restore renderer asset after build.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "8ed083c28be03bc314ae69d72d0562af14dc44bc",
+  "retry_after_commit": "32f0c522587f52aa8ef7fd4fd1d1a9403fa53f69",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
