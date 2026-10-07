@@ -110,6 +110,52 @@ namespace Eldoria.Domain
         public CombatReport(bool won, int remainingHealth, int rounds, string reason)
         { Won = won; RemainingHealth = remainingHealth; Rounds = rounds; Reason = reason; }
     }
+    public sealed class BastionProgressionDefinition
+    {
+        public readonly int Level, RequiredPreviousLevel, WoodCost, StoneCost, PowerReward;
+        public readonly bool RequiresJourneyComplete;
+        public readonly string[] Unlocks;
+        public BastionProgressionDefinition(int level,int requiredPreviousLevel,int woodCost,int stoneCost,
+            int powerReward,bool requiresJourneyComplete,string[] unlocks)
+        {
+            Level=level;RequiredPreviousLevel=requiredPreviousLevel;WoodCost=woodCost;StoneCost=stoneCost;
+            PowerReward=powerReward;RequiresJourneyComplete=requiresJourneyComplete;Unlocks=unlocks??Array.Empty<string>();
+        }
+    }
+
+    /// <summary>
+    /// Data contract for Bastion growth. Future Bastion levels extend this catalog instead of adding
+    /// one-off gateway/UI branches. Costs remain sourced from the active content profile.
+    /// </summary>
+    public static class BastionProgressionCatalog
+    {
+        public static BastionProgressionDefinition ForLevel(int level)
+        {
+            if(level==2) return new BastionProgressionDefinition(
+                2,1,SliceContentProfiles.Active.Bastion2WoodCost,SliceContentProfiles.Active.Bastion2StoneCost,
+                600,true,new[]{"barracks","chapter-ii","world-engendro","march-preparation"});
+            throw new ArgumentOutOfRangeException(nameof(level),"Bastion level is not authored in the current progression catalog.");
+        }
+
+        public static bool RequirementsMet(PlayerState state,BastionProgressionDefinition definition)
+        {
+            if(state==null||definition==null)return false;
+            if(state.BastionLevel!=definition.RequiredPreviousLevel)return false;
+            if(definition.RequiresJourneyComplete&&!state.JourneyComplete)return false;
+            return state.Resources.Wood>=definition.WoodCost&&state.Resources.Stone>=definition.StoneCost;
+        }
+
+        public static string MissingSummary(PlayerState state,BastionProgressionDefinition definition)
+        {
+            if(state==null||definition==null)return "";
+            var missing=new List<string>();
+            if(definition.RequiresJourneyComplete&&!state.JourneyComplete)missing.Add("completa los objetivos de Bastión I");
+            if(state.Resources.Wood<definition.WoodCost)missing.Add("madera "+state.Resources.Wood+"/"+definition.WoodCost);
+            if(state.Resources.Stone<definition.StoneCost)missing.Add("piedra "+state.Resources.Stone+"/"+definition.StoneCost);
+            return string.Join(" · ",missing);
+        }
+    }
+
     public static class SliceRules
     {
         public static int SawmillWoodCost => SliceContentProfiles.Active.SawmillWoodCost;
