@@ -1,3 +1,18 @@
+## 2026-10-07 — PHYSICAL IPHONE FOLLOW-UP: WORLD RETURN + MOBILE UI USABILITY ARE PLAYABLE-GATE REQUIREMENTS
+
+Additional owner observations from the real physical iPhone playtest, to be consumed by the active `valoria-mobile-web-playtest-v1` workstream before any new PLAYABLE PASS:
+
+- After entering **Mundo / World Region 1**, the owner could not reliably return to **Reino / Valoria**.
+- Mobile interface/buttons are not yet sufficiently usable/correct in the physical-device experience.
+- These are NOT deferred Bastion I → II polish items when they block navigation or interaction. They are current playable-link defects.
+- Required minimum loop remains:
+  `Valoria → Mundo → Region 1 interaction/action → Reino → Valoria`.
+- Any button that is off-screen, overlapped, untappable, visually disconnected from its action, or prevents the return path is a PLAYABLE FAIL.
+- Bastion I → II may later improve/polish the city progression UI, but must not inherit unresolved navigation/input defects from this WebGL playable-link block.
+- Physical-device owner observation supersedes static startup/screenshot probes.
+
+Do not close `valoria-mobile-web-playtest-v1` until WORLD RETURN PASS and MOBILE UI USABILITY PASS are evidenced together with HOME, touch/pan, visual, transition and persistence gates.
+
 ## 2026-10-07 — POST-LINK FOLLOW-UP REQUIRED: WebGL compatibility isolation + legacy delivery quarantine
 
 Owner follow-up after the playable-link block closes and is user-tested:
