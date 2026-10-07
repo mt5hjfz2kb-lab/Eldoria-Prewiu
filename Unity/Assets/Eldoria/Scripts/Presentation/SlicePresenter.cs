@@ -17,7 +17,7 @@ namespace Eldoria.Presentation
         RectTransform safe;
         Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
         GameObject buildingPanel;
-        Button buildingAction, primaryAction;
+        Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton;
         string feedback="";
         float refreshAt;
         float resetQaArmedUntil;
@@ -333,6 +333,10 @@ namespace Eldoria.Presentation
             var s=gateway.Snapshot();
             buildingPanel.SetActive(true);
             buildingAction.onClick.RemoveAllListeners();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Canvas.ForceUpdateCanvases();
+            LogPlayableButtonCenter("buildingAction",buildingAction);
+#endif
             buildingAction.interactable=true;
 
             if(id=="forest-valoria")
@@ -620,7 +624,7 @@ namespace Eldoria.Presentation
             stoneResource=ResourceChip("Stone resource",top,"◆","PIEDRA",62);
             power=ResourceChip("Power",top,"⚔","PODER",72,new Color(.085f,.075f,.045f,.96f));
             {
-                var homeButton=Button(top,"⌂",RecenterCamera);
+                homeButton=Button(top,"⌂",RecenterCamera);
                 var homeLayout=homeButton.GetComponent<LayoutElement>();
                 homeLayout.minWidth=32;homeLayout.preferredWidth=32;homeLayout.minHeight=34;
                 homeButton.gameObject.name=city?"City home / recenter":"World home / recenter";
@@ -638,13 +642,13 @@ namespace Eldoria.Presentation
             objective=Label("Objective",quest.transform,10,new Color(.88f,.90f,.90f),40);
 
             var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),68,false);
-            var cityNav=NavButton(nav,"⌂","CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
-            var worldNav=NavButton(nav,"◎","MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
+            cityNavButton=NavButton(nav,"⌂","CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
+            worldNavButton=NavButton(nav,"◎","MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
             var heroesNav=NavButton(nav,"♞","HÉROES",()=>{});
             var chestNav=NavButton(nav,"▣","ARCÓN",()=>{});
             var codexNav=NavButton(nav,"⌘","CÓDICE",()=>{});
             heroesNav.interactable=false;chestNav.interactable=false;codexNav.interactable=false;
-            StyleNavButton(cityNav,city);StyleNavButton(worldNav,!city);
+            StyleNavButton(cityNavButton,city);StyleNavButton(worldNavButton,!city);
             StyleNavButton(heroesNav,false);StyleNavButton(chestNav,false);StyleNavButton(codexNav,false);
 
             var dock=new GameObject("World objective dock",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
@@ -666,7 +670,31 @@ namespace Eldoria.Presentation
 
             ConfigurePrimaryAction(gateway.Snapshot());
             CreateBuildingPanel(safe);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            StartCoroutine(LogPlayableUiGeometryNextFrame());
+#endif
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        System.Collections.IEnumerator LogPlayableUiGeometryNextFrame()
+        {
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            LogPlayableButtonCenter("home",homeButton);
+            LogPlayableButtonCenter("cityNav",cityNavButton);
+            LogPlayableButtonCenter("worldNav",worldNavButton);
+            LogPlayableButtonCenter("primary",primaryAction);
+        }
+
+        static void LogPlayableButtonCenter(string id,Button button)
+        {
+            if(button==null)return;
+            var rect=button.GetComponent<RectTransform>();
+            if(rect==null)return;
+            var point=RectTransformUtility.WorldToScreenPoint(null,rect.TransformPoint(rect.rect.center));
+            Debug.Log("ELDORIA_PLAYABLE_UI id="+id+" x="+point.x.ToString("F1")+" y="+point.y.ToString("F1"));
+        }
+#endif
 
         static void StyleNavButton(Button button,bool active)
         {
