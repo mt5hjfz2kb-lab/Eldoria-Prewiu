@@ -186,12 +186,32 @@ jobs:
           Move-Item $resources $stash -Force
           New-Item -ItemType Directory -Path $resources -Force | Out-Null
 
-          $playerCitySource = Join-Path $stash "WorldPlayerCity"
-          $playerCityDest = Join-Path $resources "WorldPlayerCity"
-          if (-not (Test-Path $playerCitySource)) { throw "WorldPlayerCity resource missing from full Resources stash." }
-          Copy-Item $playerCitySource $playerCityDest -Recurse -Force
+          $keepDirs = @("WorldPlayerCity","WorldInventory")
+          foreach ($name in $keepDirs) {
+            $src = Join-Path $stash $name
+            $dst = Join-Path $resources $name
+            if (-not (Test-Path $src)) { throw "$name resource missing from full Resources stash." }
+            Copy-Item $src $dst -Recurse -Force
+          }
 
-          Write-Host "WEBGL_MINIMAL_RESOURCES_PASS kept=WorldPlayerCity excluded=historical-world-and-valoria-resources"
+          $valoriaDst = Join-Path $resources "Valoria"
+          New-Item -ItemType Directory -Path $valoriaDst -Force | Out-Null
+          foreach ($name in @("ExternalAssetLibrary.asset","ExternalAssetLibrary.asset.meta")) {
+            $src = Join-Path (Join-Path $stash "Valoria") $name
+            if (-not (Test-Path $src)) { throw "Required Valoria resource missing: $name" }
+            Copy-Item $src (Join-Path $valoriaDst $name) -Force
+          }
+
+          $urbanSrc = Join-Path (Join-Path $stash "Valoria") "UrbanProps"
+          $urbanDst = Join-Path $valoriaDst "UrbanProps"
+          New-Item -ItemType Directory -Path $urbanDst -Force | Out-Null
+          foreach ($name in @("Crate.prefab","Crate.prefab.meta")) {
+            $src = Join-Path $urbanSrc $name
+            if (-not (Test-Path $src)) { throw "Required world prop missing: $name" }
+            Copy-Item $src (Join-Path $urbanDst $name) -Force
+          }
+
+          Write-Host "WEBGL_MINIMAL_RESOURCES_PASS kept=WorldPlayerCity,WorldInventory,ExternalAssetLibrary,Crate excluded=historical-valoria-resources"
 
       - name: Build Unity WebGL current requested slice
         shell: powershell
