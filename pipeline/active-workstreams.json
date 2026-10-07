@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T19:18:00Z",
+  "updated_at": "2026-10-07T19:24:00Z",
   "active": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
@@ -21,7 +21,9 @@
         "docs/VALORIA_BASTION_I_II_PRESENTATION_PARITY_CORRECTION_V1.md",
         "docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/**",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
@@ -31,10 +33,10 @@
       "base_main_sha": "74990f0558b5f08d49528c5d6b7db962bb815783",
       "status": "active",
       "phase": "CONFRONTATION / DIAGNOSIS",
-      "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III.",
+      "dependency": "Presentation-only correction after closed Bastion I-II vertical-slice migration. Preserve gameplay/state/persistence/economy/SHARP and World Region 1. No Bastion III. Owner additions are in-scope: explicit owner-build reset to canonical initial Bastion I for repeatable testing, and small art-integrated real building-level indicators beside relevant buildings.",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Confront canonical web vertical slice against published Unity, correct parity gaps, rerun, publish, probe and close."
+      "next": "Confront canonical web vertical slice against published Unity; also add an owner-build reset-to-initial-state control using canonical persistence/state and integrated real building-level badges; validate both in published build; correct remaining parity gaps, rerun, publish, probe and close."
     }
   ],
   "history": [
