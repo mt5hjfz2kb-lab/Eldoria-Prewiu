@@ -1,3 +1,31 @@
+## 2026-10-07 — OWNER CAMERA INTENT: VALORIA MUST FEEL LARGE + LOCALLY NAVIGABLE, NOT FULLY FRAMED LIKE A MAP
+
+Owner clarification for the active `valoria-mobile-web-playtest-v1` correction:
+
+The fix for current over-zoom/crop must **NOT** swing to the opposite extreme of showing all of Valoria at once.
+
+Target camera feeling:
+
+- HOME is a strong composed city view, not a full-city overview.
+- Valoria should extend modestly beyond the viewport so the player can discover nearby areas by moving the camera.
+- Support bounded local navigation:
+  - meaningful left/right travel;
+  - smaller but real up/down travel;
+  - optional restrained zoom only if it preserves city scale.
+- Horizontal freedom should be greater than vertical freedom.
+- The city must feel **large and inhabitable**, not like a strategic map, miniature, postcard or fully revealed board.
+- HUD remains fixed; the city/world presentation moves underneath it.
+- HOME/reset/return-to-city must restore the intended composed starting view.
+- Camera bounds must prevent empty edges, un-authored zones, or leaving the visual authority.
+- Do not interpret `FitInParent` or `full-frame HOME` as “show 100% of the city”. The correct result is a balanced HOME with some authored city area intentionally outside the viewport.
+- As a practical visual target, HOME may expose roughly 70–85% of the immediately relevant authored city area, with the remainder discoverable through bounded pan. This is a directional composition target, not a hard numeric game rule.
+- The WebGL presentation must have enough visual coverage around HOME to support this bounded pan coherently; a single tightly cropped static frame that can only shift a few pixels is insufficient if it fails to create the intended navigable-city feeling.
+
+Acceptance criterion:
+`HOME COMPOSITION PASS + BOUNDED CITY NAVIGATION PASS + NO MAP-LIKE FULL OVERVIEW + NO EXCESSIVE CROP/ZOOM`.
+
+This camera intent applies to the current WebGL playable correction and should preserve the same product feeling as canonical Valoria without changing canonical gameplay/state authority.
+
 ## 2026-10-07 — PHYSICAL IPHONE FOLLOW-UP: WORLD RETURN + MOBILE UI USABILITY ARE PLAYABLE-GATE REQUIREMENTS
 
 Additional owner observations from the real physical iPhone playtest, to be consumed by the active `valoria-mobile-web-playtest-v1` workstream before any new PLAYABLE PASS:
