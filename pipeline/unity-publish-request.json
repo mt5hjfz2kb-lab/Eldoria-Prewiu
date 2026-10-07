@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T10:32:00Z",
-  "retry": 16,
-  "retry_reason": "Physical-iPhone playable correction: preserve full HOME framing with FitInParent, synchronize certified WebGL frame to real ProductionCamera pan/zoom, harden one-finger touch classification, and require real playable probe (pan/home/progression/world/reward/return/persistence).",
+  "updated_at": "2026-10-07T10:36:00Z",
+  "retry": 17,
+  "retry_reason": "Physical iPhone PLAYABLE FAIL correction: responsive FitInParent framing plus certified-frame synchronization to the real Valoria ProductionCamera pan/FOV. Relaunch for real touch/pan and navigation validation.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "d3904d76610726301d34bdda60ab1cde29aa89f4",
+  "retry_after_commit": "4c2e81adfc327c1c27766c331bee162cbb573b23",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
