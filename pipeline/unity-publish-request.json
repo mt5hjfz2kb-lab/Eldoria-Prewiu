@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T13:35:00Z",
-  "retry": 26,
-  "retry_reason": "Physical iPhone WebGL input correction: retain normal Unity UI navigation, but add WebGL-only one-frame bottom-nav touch fallback for CIUDAD/MUNDO when GraphicRaycaster misses the touch. Same SceneManager navigation, no gameplay/state duplication.",
+  "updated_at": "2026-10-07T13:48:00Z",
+  "retry": 27,
+  "retry_reason": "Validation-only rerun: playable probe now taps the visible mobile MUNDO and REINO controls by stable canvas-relative positions, while verifying the real ELDORIA_PLAYABLE_NAV logs. Runtime/gameplay/art unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "3e7538cfd599804bbfc813b952bc2dfb95c08d29",
+  "retry_after_commit": "d9c704bca779deae88f0f31ffd3ab4c55798b2cc",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
