@@ -1,0 +1,50 @@
+{
+  "workstream_id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
+  "status": "CLOSED_PASS",
+  "certified_at": "2026-10-07T21:15:00Z",
+  "final_certification_commit": "d88ab7fe4d6d09d05f1b3cf4fe52b4d492c9f3c3",
+  "publish_request_commit": "62ca5a4499124c5b8df2439101a5579c0134019c",
+  "production": {
+    "run_id": 37681793700,
+    "artifact_id": 11509591694,
+    "result": "PASS"
+  },
+  "ui_certification": {
+    "run_id": 37681793717,
+    "result": "PASS"
+  },
+  "source_editor_gate": {
+    "run_id": 37681794138,
+    "result": "PASS"
+  },
+  "publication": {
+    "run_id": 37684790661,
+    "result": "PASS",
+    "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/"
+  },
+  "published_probe": {
+    "run_id": 37687592179,
+    "artifact_id": 11511827528,
+    "result": "PASS",
+    "playablePass": true,
+    "checks": [
+      "HOME",
+      "touch pan left/right",
+      "vertical pan",
+      "MUNDO",
+      "Region 1 gather/reward",
+      "REINO/Valoria return",
+      "reload persistence",
+      "landscape",
+      "portrait",
+      "no white screen"
+    ]
+  },
+  "constraints": {
+    "bastion_iii_opened": false,
+    "world_region_1_redesigned": false,
+    "gameplay_state_persistence_economy_rewritten": false,
+    "sharp_authority_changed": false,
+    "paid_credits": 0
+  }
+}
