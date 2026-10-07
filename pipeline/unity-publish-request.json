@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T15:08:00Z",
-  "retry": 33,
-  "retry_reason": "Published end-to-end probe passed HOME, horizontal+vertical pan, Mundo, Region 1 gather/reward and Reino return but proved WebGL state loss on reload. Republish with browser-backed PlayerPrefs persistence adapter; gameplay/state semantics unchanged.",
+  "updated_at": "2026-10-07T15:13:00Z",
+  "retry": 34,
+  "retry_reason": "Clean relaunch after the prior browser-persistence publication failed before jobs were created. Republish the already-scoped WebGL persistence correction and require the full published playable loop including reload persistence.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "384593584e6b41a2bfe13c6786d113a199d70960",
+  "retry_after_commit": "bae07f35cd4f5824b3b0d1034248245219474c55",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
