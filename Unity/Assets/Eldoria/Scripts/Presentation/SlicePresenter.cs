@@ -972,7 +972,7 @@ namespace Eldoria.Presentation
             buildingPanel=new GameObject("Building interaction panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
             rt.anchorMin=new Vector2(0,0);rt.anchorMax=new Vector2(1,0);rt.pivot=new Vector2(.5f,0);
-            rt.sizeDelta=new Vector2(-20,206);rt.anchoredPosition=new Vector2(0,78);
+            rt.sizeDelta=new Vector2(-20,178);rt.anchoredPosition=new Vector2(0,70);
             buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.98f);
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(13,13,12,12);
             layout.spacing=6;layout.childControlHeight=true;layout.childForceExpandHeight=false;
