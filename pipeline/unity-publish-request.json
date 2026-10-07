@@ -1,11 +1,11 @@
 {
   "enabled": true,
   "mode": "current-valoria-production",
-  "reason": "Publish certified Bastion I-II presentation parity correction v1.",
-  "production_run_id": 37681793700,
-  "production_artifact_id": 11509591694,
-  "production_head_sha": "d88ab7fe4d6d09d05f1b3cf4fe52b4d492c9f3c3",
-  "final_unity_gate_run_id": 37667362728,
+  "reason": "Publish owner-rejected parity correction: functional reset, prototype-scale HUD, true 80%-style HOME crop with pan.",
+  "production_run_id": 37690670379,
+  "production_artifact_id": 11512464946,
+  "production_head_sha": "e4a5ce369ec0765100de956c03e0a221768e1dda",
+  "final_unity_gate_run_id": 37690670408,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "valoria-bastion-i-ii-presentation-parity-correction-v1",
   "updated_at": "2026-10-07T20:50:00Z",
@@ -13,5 +13,6 @@
   "retry_reason": "Final parity production PASS; publish corrected HOME, contextual CTA/timer, ambient life, owner reset and real building level indicators.",
   "parcel_source_artifact_id": 11502478603,
   "retry_after_commit": "bae07f35cd4f5824b3b0d1034248245219474c55",
-  "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
+  "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1",
+  "paid_credits": 0
 }
