@@ -1,3 +1,16 @@
+## 2026-10-07 — ELDORIA WORLD REGION 1 v1 CLOSED / PASS
+
+`eldoria-world-region-1-v1` is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
+
+Certified loop: Valoria city → **Mundo** → separate bounded 4X World screen → strategic Valoria origin → resource/POI/PvE selection → visible authoritative march → reward/persistence → **Reino**/Valoria → city reflects the same state.
+
+Final gates all PASS: TECH, VISUAL, WORLD/VALORIA CONTINUITY, NAVIGATION, INTERACTION, GAMEPLAY LOOP, SAVE/RELOAD, BOUNDED CAMERA, MOBILE READABILITY and 4X ARCHITECTURE.
+
+Final Unity run: `37549083306`; capture artifact: `eldoria-valoria-captures-255769573712e053790df3fdf369a9534d4fc7d1`.
+
+Important visual rule retained: World may be strategically simpler than Valoria, but cannot regress to a flat/generic prototype board. The accepted slice uses a strong strategic Valoria landmark, denser forest masses, authored terrain/geology/routes and mobile-safe framing. No paid credits were used. The Windows Unity runner is released. WebGL delivery remains a separate parked workstream and was not touched by this closure.
+
+
 ## 2026-10-06 — WORLD REGION 1 canonical web/concept audit integrated
 
 Region 1 has now audited and reconciled the earlier world implementation and conceptual canon: `docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md`, `docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md`, `docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md`, `docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md`, `v0220/` and `world4x.html`. Canonical rule: Eldoria's World is a persistent mobile 4X board; terrain is only its geographic background. The small first Unity slice must preserve scalable world-coordinate/region/sector/chunk logic and first-class families for player cities, resources, hunts/PvE, neutral/hostile POIs, visible marches and later alliance/territory systems. Web gameplay semantics are preserved, web placeholder art/layout is not. A real universal `PlayerCity_v1.glb` already exists and should be reused as the v1 strategic city representation. Evidence: `docs/evidence/eldoria-world-region-1-v1/legacy-web-concept-audit.json`. No paid credits or heavy Unity runner used.
