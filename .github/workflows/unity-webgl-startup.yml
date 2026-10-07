@@ -131,7 +131,7 @@ jobs:
             try{
               await page.goto(target+'?playable-probe='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
-              await waitState(logs,s=>s.scene==='Valoria',90000,'initial Valoria state');
+              await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL',90000,'initial Valoria state');
               await waitLog(logs,t=>t.includes('VALORIA_WEBGL_HUD_BACKGROUND_READY'),60000,'Valoria certified background');
               await sleep(2500);
 
@@ -214,7 +214,7 @@ jobs:
               if(!cityUi)throw new Error('Reino/City touch target missing');
               const cp=screenPoint(cityUi,390);
               await touchTap(cdp,cp.x,cp.y);
-              const returned=await waitState(logs,s=>s.scene==='Valoria'&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
+              const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
 
               const persisted={revision:returned.revision,wood:returned.wood,stone:returned.stone,gatheredWood:returned.gatheredWood,gatheredStone:returned.gatheredStone,sawmill:returned.sawmill};
@@ -222,7 +222,7 @@ jobs:
               const preReloadCount=logs.length;
               await page.reload({waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
-              const reloaded=await waitState(logs,s=>s.scene==='Valoria',90000,'Valoria after reload',preReloadCount);
+              const reloaded=await waitState(logs,s=>s.scene==='Valoria'||s.scene==='ValoriaWebGL',90000,'Valoria after reload',preReloadCount);
               report.checks.afterReload=reloaded;
               if(reloaded.gatheredWood<persisted.gatheredWood||reloaded.sawmill<persisted.sawmill||reloaded.wood!==persisted.wood)
                 throw new Error('Persistence mismatch after reload');
