@@ -2,6 +2,10 @@ name: Unity WebGL published startup probe
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unity-webgl-startup.yml'
   workflow_run:
     workflows: ['Publish Eldoria Preview']
     types: [completed]
@@ -183,7 +187,7 @@ jobs:
               const homeUi=parseUi(logs,'home');
               if(!homeUi)throw new Error('HOME touch target was not published by runtime');
               const hp=screenPoint(homeUi,box,canvasInfo);
-              await touchTap(cdp,hp.x,hp.y);
+              await page.touchscreen.tap(hp.x,hp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after right pan');
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after right pan');
               await sleep(500);
@@ -202,7 +206,7 @@ jobs:
               report.checks.panSidesDiffRatio=panSidesDiff;
               if(panLeftDiff<.008||panSidesDiff<.008)throw new Error('Left/right touch pan views are not visually distinct');
 
-              await touchTap(cdp,hp.x,hp.y);
+              await page.touchscreen.tap(hp.x,hp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action after left pan');
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
@@ -211,7 +215,7 @@ jobs:
               if(!worldNav)throw new Error('MUNDO touch target missing');
               const wn=screenPoint(worldNav,box,canvasInfo);
               const worldStart=logs.length;
-              await touchTap(cdp,wn.x,wn.y);
+              await page.touchscreen.tap(wn.x,wn.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_NAV target=Frontier city=True'),10000,'MUNDO button activation',worldStart);
               await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria'),10000,'forest hotspot geometry',worldStart);
@@ -222,13 +226,13 @@ jobs:
               if(!forest)throw new Error('Forest hotspot screen coordinate missing');
               const forestTapStart=logs.length;
               const fp=hotspotPoint(forest,box,canvasInfo);
-              await touchTap(cdp,fp.x,fp.y);
+              await page.touchscreen.tap(fp.x,fp.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'forest action target',forestTapStart);
               const worldAction=parseUi(logs,'buildingAction');
               if(!worldAction)throw new Error('Forest action button missing');
               const wa=screenPoint(worldAction,box,canvasInfo);
               const gatherStart=logs.length;
-              await touchTap(cdp,wa.x,wa.y);
+              await page.touchscreen.tap(wa.x,wa.y);
               await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command',gatherStart);
               const rewardState=await waitState(logs,s=>s.scene==='Frontier'&&s.march==='idle'&&s.gatheredWood>=360,20000,'Region 1 return/reward');
               report.checks.rewardState=rewardState;
@@ -237,7 +241,7 @@ jobs:
               const cityUi=parseUi(logs,'cityNav');
               if(!cityUi)throw new Error('Reino/City touch target missing');
               const cp=screenPoint(cityUi,box,canvasInfo);
-              await touchTap(cdp,cp.x,cp.y);
+              await page.touchscreen.tap(cp.x,cp.y);
               const returned=await waitState(logs,s=>(s.scene==='Valoria'||s.scene==='ValoriaWebGL')&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
               await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
 
