@@ -29,6 +29,6 @@
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
   "status": "ACTIVE",
   "phase": "IMPLEMENTED / FINAL PRODUCTION VALIDATION REQUESTED",
-  "retry": 4,
-  "retry_reason": "Observed runtime panel resolves to 360x178 under responsive layout; final-look lighting values are production-owned. Contracts now validate compactness/readability semantically."
+  "retry": 3,
+  "retry_reason": "ReferenceUiArtPass no longer overrides contextual building CTA anchor/size."
 }
