@@ -57,9 +57,16 @@ namespace Eldoria.Tests
             Assert.That(ambient,Is.Not.Null);
             Assert.That(ambient.transform.Find("Ambient drifting mist"),Is.Not.Null);
             Assert.That(ambient.transform.Find("Construction activity FX"),Is.Not.Null);
-            var safeArea=GameObject.Find("Safe area");\n            Assert.That(safeArea,Is.Not.Null);\n            var panel=safeArea.transform.Find("Building interaction panel")?.GetComponent<RectTransform>();\n            Assert.That(panel,Is.Not.Null);
+            var safeArea=GameObject.Find("Safe area");
+            Assert.That(safeArea,Is.Not.Null);
+            var panel=safeArea.transform.Find("Building interaction panel")?.GetComponent<RectTransform>();
+            Assert.That(panel,Is.Not.Null);
             Assert.That(panel.sizeDelta.x,Is.LessThanOrEqualTo(280f));
-            Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(170f));\n            Assert.That(GameObject.Find("Owner reset")?.GetComponent<Button>(),Is.Not.Null);\n            var bastionBadge=GameObject.Find("Bastion level badge");\n            Assert.That(bastionBadge,Is.Not.Null);\n            Assert.That(bastionBadge.GetComponentInChildren<Text>().text,Is.EqualTo("Nv. 1"));
+            Assert.That(panel.sizeDelta.y,Is.LessThanOrEqualTo(170f));
+            Assert.That(GameObject.Find("Owner reset")?.GetComponent<Button>(),Is.Not.Null);
+            var bastionBadge=GameObject.Find("Bastion level badge");
+            Assert.That(bastionBadge,Is.Not.Null);
+            Assert.That(bastionBadge.GetComponentInChildren<Text>().text,Is.EqualTo("Nv. 1"));
         }
 
         sealed class FlowClock : Eldoria.Application.IClock
