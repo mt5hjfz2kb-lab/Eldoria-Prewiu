@@ -69,9 +69,13 @@ jobs:
             throw new Error('Timed out waiting for '+label);
           }
           function screenPoint(ui,box,canvasInfo){
+            // SlicePresenter HUD uses CanvasScaler referenceResolution 390x844 with matchHeight=1.
+            // Logged RectTransform centers are therefore in that logical reference space, not the
+            // WebGL backing-store dimensions. Map reference-space coordinates into CSS canvas space.
+            const referenceWidth=390, referenceHeight=844;
             return {
-              x:box.x+(ui.x/canvasInfo.width)*box.width,
-              y:box.y+((canvasInfo.height-ui.unityY)/canvasInfo.height)*box.height
+              x:box.x+(ui.x/referenceWidth)*box.width,
+              y:box.y+((referenceHeight-ui.unityY)/referenceHeight)*box.height
             };
           }
           function hotspotPoint(hotspot,box,canvasInfo){
