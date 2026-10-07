@@ -15,58 +15,216 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+      - run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 pixelmatch@5.3.0 && npx playwright install --with-deps chromium
       - name: Probe actual published Unity startup
         run: |
           mkdir -p webgl-startup-evidence
           cat > /tmp/eldoria-startup.cjs <<'JS'
           const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          const { PNG } = require(process.cwd() + '/node_modules/pngjs');
+          const pixelmatch = require(process.cwd() + '/node_modules/pixelmatch');
           const fs = require('fs');
-          (async () => {
-            const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
+
+          const target='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/';
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          const report={failure:null,logs:[],requests:[],checks:{},states:[],scope:'Published mobile PLAYABLE probe: real touch pan/home, real UI progression, Valoria↔World, Region 1 gather/reward, return, reload persistence, landscape+portrait screenshots. Chromium mobile emulation; physical iPhone owner test remains higher authority.'};
+
+          function parseState(text){
+            const m=text.match(/ELDORIA_PLAYABLE_STATE tag=([^ ]+) scene=([^ ]+) revision=(\d+) wood=(\d+) stone=(\d+) gatheredWood=(\d+) gatheredStone=(\d+) march=([^ ]+) sawmill=(\d+) bastion=(\d+)/);
+            return m?{tag:m[1],scene:m[2],revision:+m[3],wood:+m[4],stone:+m[5],gatheredWood:+m[6],gatheredStone:+m[7],march:m[8],sawmill:+m[9],bastion:+m[10]}:null;
+          }
+          function parseUi(logs,id){
+            for(let i=logs.length-1;i>=0;i--){
+              const t=logs[i].text||'';
+              const m=t.match(new RegExp('ELDORIA_PLAYABLE_UI id='+id+' x=([0-9.]+) y=([0-9.]+)'));
+              if(m)return {x:+m[1],unityY:+m[2]};
+            }
+            return null;
+          }
+          async function waitLog(logs,predicate,timeout=60000,label='log'){
+            const started=Date.now();
+            while(Date.now()-started<timeout){
+              for(let i=logs.length-1;i>=0;i--) if(predicate(logs[i].text||'')) return logs[i].text;
+              await sleep(250);
+            }
+            throw new Error('Timed out waiting for '+label);
+          }
+          async function waitState(logs,predicate,timeout=60000,label='state'){
+            const started=Date.now();
+            while(Date.now()-started<timeout){
+              for(let i=logs.length-1;i>=0;i--){
+                const state=parseState(logs[i].text||'');
+                if(state&&predicate(state)){report.states.push(state);return state;}
+              }
+              await sleep(250);
+            }
+            throw new Error('Timed out waiting for '+label);
+          }
+          function screenPoint(ui,height){return {x:ui.x,y:height-ui.unityY};}
+          async function touchTap(cdp,x,y){
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,radiusX:5,radiusY:5,force:1,id:1}]});
+            await sleep(80);
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+          }
+          async function touchDrag(cdp,x1,y1,x2,y2){
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:x1,y:y1,radiusX:5,radiusY:5,force:1,id:1}]});
+            for(let i=1;i<=8;i++){
+              const t=i/8;
+              await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x1+(x2-x1)*t,y:y1+(y2-y1)*t,radiusX:5,radiusY:5,force:1,id:1}]});
+              await sleep(35);
+            }
+            await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+          }
+          function imageStats(path){
+            const png=PNG.sync.read(fs.readFileSync(path));
+            let n=0, sum=0, sum2=0, white=0;
+            const x0=Math.floor(png.width*.18), x1=Math.floor(png.width*.82);
+            const y0=Math.floor(png.height*.12), y1=Math.floor(png.height*.88);
+            for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){
+              const i=(y*png.width+x)*4;
+              const r=png.data[i],g=png.data[i+1],b=png.data[i+2];
+              const v=(r+g+b)/3; n++; sum+=v; sum2+=v*v;
+              if(r>245&&g>245&&b>245)white++;
+            }
+            const mean=sum/n, variance=sum2/n-mean*mean;
+            return {width:png.width,height:png.height,mean,stdev:Math.sqrt(Math.max(0,variance)),whiteRatio:white/n};
+          }
+          function diffRatio(aPath,bPath){
+            const a=PNG.sync.read(fs.readFileSync(aPath)), b=PNG.sync.read(fs.readFileSync(bPath));
+            if(a.width!==b.width||a.height!==b.height)throw new Error('Screenshot dimensions differ');
+            const out=new PNG({width:a.width,height:a.height});
+            const changed=pixelmatch(a.data,b.data,out.data,a.width,a.height,{threshold:.12});
+            return changed/(a.width*a.height);
+          }
+
+          (async()=>{
             let compressed=false;
             for(let attempt=0;attempt<20;attempt++){
               const response=await fetch(target+'?compression-check='+Date.now());
               const html=await response.text();
               if(html.includes('.unityweb')){compressed=true;break;}
-              console.log('Waiting for compressed publication',attempt+1);
-              await new Promise(resolve=>setTimeout(resolve,30000));
+              await sleep(30000);
             }
-            if(!compressed) throw new Error('Compressed publication was not observed');
-            const browser = await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
-            const page = await browser.newPage({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'});
-            const logs=[], requests=[];
-            page.on('console', m=>logs.push({type:m.type(),text:m.text()}));
-            page.on('pageerror', e=>logs.push({type:'pageerror',text:String(e)}));
-            page.on('response', r=>{ if(r.url().includes('/unity-owner/')) requests.push({url:r.url(),status:r.status()}); });
-            page.on('requestfailed', r=>requests.push({url:r.url(),failure:r.failure()}));
-            page.on('dialog', async d=>{logs.push({type:'dialog',text:d.message()}); await d.dismiss();});
-            // Instrument only Unity's standard promise callback; downloaded player bytes stay unchanged.
-            await page.route(/^https:\/\/mt5hjfz2kb-lab\.github\.io\/Eldoria-Prewiu\/unity-owner\/(?:\?.*)?$/, async route=>{
+            if(!compressed)throw new Error('Compressed publication was not observed');
+
+            const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+            const context=await browser.newContext({
+              viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1,
+              userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
+            });
+            const page=await context.newPage();
+            const cdp=await context.newCDPSession(page);
+            const logs=report.logs, requests=report.requests;
+            page.on('console',m=>logs.push({type:m.type(),text:m.text()}));
+            page.on('pageerror',e=>logs.push({type:'pageerror',text:String(e)}));
+            page.on('response',r=>{if(r.url().includes('/unity-owner/'))requests.push({url:r.url(),status:r.status()});});
+            page.on('requestfailed',r=>requests.push({url:r.url(),failure:r.failure()}));
+            page.on('dialog',async d=>{logs.push({type:'dialog',text:d.message()});await d.dismiss();});
+            await page.route(/^https:\/\/mt5hjfz2kb-lab\.github\.io\/Eldoria-Prewiu\/unity-owner\/(?:\?.*)?$/,async route=>{
               const response=await route.fetch();
               const html=await response.text();
               const token='.then((unityInstance) => {';
-              if(!html.includes(token)) throw new Error('Published Unity loader callback changed');
+              if(!html.includes(token))throw new Error('Published Unity loader callback changed');
               await route.fulfill({response,body:html.replace(token,token+" document.body.dataset.eldoriaEngineReady='true';")});
             });
-            let failure=null;
-            try {
-              await page.goto('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/?startup-probe=' + Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
+
+            try{
+              await page.goto(target+'?playable-probe='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
               await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
-              await page.waitForTimeout(15000);
-              await page.screenshot({path:'webgl-startup-evidence/mobile-landscape.png'});
+              await waitState(logs,s=>s.scene==='Valoria',90000,'initial Valoria state');
+              await waitLog(logs,t=>t.includes('VALORIA_WEBGL_HUD_BACKGROUND_READY'),60000,'Valoria certified background');
+              await sleep(2500);
+
+              await page.screenshot({path:'webgl-startup-evidence/home-landscape.png'});
+              const homeStats=imageStats('webgl-startup-evidence/home-landscape.png');
+              report.checks.homeVisual=homeStats;
+              if(homeStats.stdev<28||homeStats.whiteRatio>.28)throw new Error('HOME lacks sufficient Valoria visual content');
+
+              const box=await page.locator('canvas').boundingBox();
+              if(!box)throw new Error('Unity canvas missing');
+              const cx=box.x+box.width*.56, cy=box.y+box.height*.48;
+              const beforePanLogs=logs.length;
+              await touchDrag(cdp,cx+100,cy,cx-120,cy);
+              await waitLog(logs.slice(beforePanLogs),t=>{
+                const m=t.match(/ELDORIA_PLAYABLE_VIEW panX=([-0-9.]+)/);
+                return !!m&&Math.abs(+m[1])>=.35;
+              },15000,'real touch pan');
+              await sleep(800);
+              await page.screenshot({path:'webgl-startup-evidence/pan-landscape.png'});
+              const panDiff=diffRatio('webgl-startup-evidence/home-landscape.png','webgl-startup-evidence/pan-landscape.png');
+              report.checks.panDiffRatio=panDiff;
+              if(panDiff<.008)throw new Error('Touch pan changed camera log but published view did not visibly change');
+
+              const homeUi=parseUi(logs,'home');
+              if(!homeUi)throw new Error('HOME touch target was not published by runtime');
+              await touchTap(cdp,...Object.values(screenPoint(homeUi,390)));
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOME'),10000,'HOME action');
+              await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset');
+              await sleep(500);
+
+              const primary=parseUi(logs,'primary');
+              if(!primary)throw new Error('Primary action touch target missing');
+              const p0=screenPoint(primary,390);
+              await touchTap(cdp,p0.x,p0.y);
+              const buildUiText=await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'sawmill action target');
+              const buildUi=parseUi(logs,'buildingAction');
+              if(!buildUi)throw new Error('Sawmill action target missing');
+              const b0=screenPoint(buildUi,390);
+              await touchTap(cdp,b0.x,b0.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True'),10000,'sawmill Build command');
+              await waitState(logs,s=>s.scene==='Valoria'&&s.sawmill>=1,20000,'sawmill completion');
+
+              const primaryAfterBuild=parseUi(logs,'primary');
+              const p1=screenPoint(primaryAfterBuild,390);
+              await touchTap(cdp,p1.x,p1.y);
+              await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition');
+              await sleep(1500);
+              await page.screenshot({path:'webgl-startup-evidence/world-before-action.png'});
+
+              const worldPrimary=parseUi(logs,'primary');
+              if(!worldPrimary)throw new Error('World primary action touch target missing');
+              const wp=screenPoint(worldPrimary,390);
+              await touchTap(cdp,wp.x,wp.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command');
+              const rewardState=await waitState(logs,s=>s.scene==='Frontier'&&s.march==='idle'&&s.gatheredWood>=360,20000,'Region 1 return/reward');
+              report.checks.rewardState=rewardState;
+              await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
+
+              const cityUi=parseUi(logs,'cityNav');
+              if(!cityUi)throw new Error('Reino/City touch target missing');
+              const cp=screenPoint(cityUi,390);
+              await touchTap(cdp,cp.x,cp.y);
+              const returned=await waitState(logs,s=>s.scene==='Valoria'&&s.gatheredWood>=rewardState.gatheredWood,15000,'World to Reino/Valoria return');
+              await page.screenshot({path:'webgl-startup-evidence/return-valoria.png'});
+
+              const persisted={revision:returned.revision,wood:returned.wood,stone:returned.stone,gatheredWood:returned.gatheredWood,gatheredStone:returned.gatheredStone,sawmill:returned.sawmill};
+              report.checks.beforeReload=persisted;
+              const preReloadCount=logs.length;
+              await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+              await page.waitForFunction(()=>document.body.dataset.eldoriaEngineReady==='true',{},{timeout:300000});
+              const reloaded=await waitState(logs.slice(preReloadCount),s=>s.scene==='Valoria',90000,'Valoria after reload');
+              report.checks.afterReload=reloaded;
+              if(reloaded.gatheredWood<persisted.gatheredWood||reloaded.sawmill<persisted.sawmill||reloaded.wood!==persisted.wood)
+                throw new Error('Persistence mismatch after reload');
+
               await page.setViewportSize({width:390,height:844});
-              await page.waitForTimeout(3000);
+              await sleep(2500);
               await page.screenshot({path:'webgl-startup-evidence/portrait.png'});
-              if(logs.some(x=>x.type==='pageerror'||x.type==='dialog')) throw new Error('Runtime raised JavaScript error or dialog');
-            } catch(e) {
-              failure=String(e);
+              const portraitStats=imageStats('webgl-startup-evidence/portrait.png');
+              report.checks.portraitVisual=portraitStats;
+              if(portraitStats.stdev<24||portraitStats.whiteRatio>.32)throw new Error('Portrait lacks sufficient Valoria visual content');
+
+              if(logs.some(x=>x.type==='pageerror'||x.type==='dialog'))throw new Error('Runtime raised JavaScript error or dialog');
+              report.checks.playablePass=true;
+            }catch(e){
+              report.failure=String(e);
               await page.screenshot({path:'webgl-startup-evidence/failure.png'}).catch(()=>{});
             }
-            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify({failure,logs,requests,scope:'Compressed published engine startup with mobile UA/layout + manual screenshot review; Chromium software WebGL, not physical iPhone certification'},null,2));
+            fs.writeFileSync('webgl-startup-evidence/report.json',JSON.stringify(report,null,2));
             await browser.close();
-            if(failure) throw new Error(failure);
+            if(report.failure)throw new Error(report.failure);
           })().catch(e=>{console.error(e);process.exit(1);});
+          JS
           JS
           node /tmp/eldoria-startup.cjs
       - uses: actions/upload-artifact@v4
