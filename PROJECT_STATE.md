@@ -1,3 +1,21 @@
+## Mobile WebGL playable link — CLOSED / PASS
+
+The current Valoria production slice is now published and certified through the complete mobile WebGL loop.
+
+Certified published flow:
+**HOME → bounded horizontal pan → moderate vertical pan → Mundo → Region 1 gather/reward → Reino/Valoria → reload with state persistence retained**.
+
+Evidence:
+- Pages run `37642420392`: SUCCESS
+- published probe `37646186097`: SUCCESS
+- WebGL artifact `11493522998`
+- probe evidence artifact `11493999067`
+- persistence after reload retained revision 4, wood 590, gatheredWood 360
+- published probe reported `playablePass=true`
+- zero paid credits
+
+This closes `valoria-mobile-web-playtest-v1`. The published-link gate is no longer blocking World visual convergence or the next explicitly authorized gameplay progression block. Physical-device owner feedback remains higher authority if a real iPhone regression is later observed.
+
 ## World Region 1 v1 — CLOSED / PASS
 
 Region 1 is closed on `main` at `255769573712e053790df3fdf369a9534d4fc7d1`.
