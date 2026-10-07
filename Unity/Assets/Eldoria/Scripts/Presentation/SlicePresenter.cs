@@ -16,15 +16,15 @@ namespace Eldoria.Presentation
         ICommandGateway gateway;
         ValoriaParcelPresentation productionParcels;
         RectTransform safe;
-        Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText;
+        Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText, sawmillLevelBadge, barracksLevelBadge, bastionLevelBadge, resetButtonText;
         GameObject buildingPanel, cityAmbientLayer, constructionActivityFx;
         string currentBuildingId="";
         RectTransform[] ambientMotes=Array.Empty<RectTransform>();
         Vector2[] ambientMoteOrigins=Array.Empty<Vector2>();
-        Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton;
+        Button buildingAction, primaryAction, homeButton, cityNavButton, worldNavButton, resetButton;
         string feedback="";
         float refreshAt;
-        float resetQaArmedUntil;
+        float resetQaArmedUntil;\n        bool ownerResetArmed;
         int lastWidth,lastHeight;
         bool city;
         int renderedSawmill, renderedBarracks, renderedBastion;
@@ -538,7 +538,7 @@ namespace Eldoria.Presentation
         void PositionBuildingPanel(string id)
         {
             if(!city||buildingPanel==null||safe==null||string.IsNullOrEmpty(id))return;
-            string objectName=id=="sawmill"?"Aserradero · target":id=="barracks"?"Cuartel · target":id=="bastion"?"Bastion · target":null;
+            string objectName=InteractiveTargetName(id);
             if(objectName==null)return;
             var target=GameObject.Find(objectName);var camera=OfficialCamera;
             if(target==null||camera==null)return;
@@ -629,7 +629,7 @@ namespace Eldoria.Presentation
         void Refresh()
         {
             if(heading==null)return;
-            var s=gateway.Snapshot();
+            var s=gateway.Snapshot();\n            UpdateBuildingLevelBadges(s);
             if(productionParcels!=null) productionParcels.Apply(s);
             if(!city)WorldRegion1Runtime.Refresh(s);
             if(city&&productionParcels==null&&(s.SawmillLevel!=renderedSawmill||s.BarracksLevel!=renderedBarracks||s.BastionLevel!=renderedBastion||
@@ -775,6 +775,15 @@ namespace Eldoria.Presentation
                 homeLayout.minWidth=32;homeLayout.preferredWidth=32;homeLayout.minHeight=34;
                 homeButton.gameObject.name=city?"City home / recenter":"World home / recenter";
             }
+
+            resetButton=Button(safe,"REINICIAR",InvokeOwnerReset);
+            resetButton.gameObject.name="Owner reset";
+            var resetRt=resetButton.GetComponent<RectTransform>();
+            resetRt.anchorMin=resetRt.anchorMax=new Vector2(1,1);resetRt.pivot=new Vector2(1,1);
+            resetRt.sizeDelta=new Vector2(78,30);resetRt.anchoredPosition=new Vector2(-10,-78);
+            resetButton.GetComponent<LayoutElement>().ignoreLayout=true;
+            resetButtonText=resetButton.GetComponentInChildren<Text>();
+            if(resetButtonText!=null)resetButtonText.fontSize=9;
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
@@ -1247,5 +1256,19 @@ namespace Eldoria.Presentation
         }
     }
 }
+
+        void InvokeOwnerReset()
+        {
+            if(!ownerResetArmed)
+            {
+                ownerResetArmed=true;
+                if(resetButtonText!=null)resetButtonText.text="CONFIRMAR";
+                feedback="Pulsa otra vez para reiniciar desde Bastión I.";
+                message.text=feedback;
+                return;
+            }
+            ownerResetArmed=false;
+            SliceBoot.ResetLocalSaveAndRestart();
+        }
 
 
