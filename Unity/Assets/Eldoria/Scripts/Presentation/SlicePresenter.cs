@@ -107,6 +107,7 @@ namespace Eldoria.Presentation
             if(lastWidth!=Screen.width||lastHeight!=Screen.height) UpdateSafeArea();
             HandlePointerInput();
             AnimateCityAmbientation();
+            UpdateBuildingLevelBadgePositions();
             if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city) PositionBuildingPanel(currentBuildingId);
         }
         void HandlePointerInput()
