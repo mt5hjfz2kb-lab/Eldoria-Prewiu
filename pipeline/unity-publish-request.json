@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T10:45:00Z",
-  "retry": 19,
-  "retry_reason": "Physical iPhone PLAYABLE FAIL correction, integrated retry: FitInParent responsive framing; certified state0/state3 pan/zoom grid driven by real ProductionCamera; touch targets/state instrumentation; playable probe now requires both left/right touch pan, HOME, real UI build, Valoria→World, Region 1 gather/reward, return and reload persistence.",
+  "updated_at": "2026-10-07T11:18:00Z",
+  "retry": 20,
+  "retry_reason": "Integrated physical-iPhone playable retry from current main HEAD: previous publish run predated the final synchronized pan/zoom runtime instrumentation and bidirectional playable probe, causing a stale-build false negative at initial Valoria state.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "6f68f5e50ba53444044443b32de650513d00bf8f",
+  "retry_after_commit": "531f93777501cfeffd8ca1841a3d1025212957e6",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
