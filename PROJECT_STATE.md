@@ -1,3 +1,23 @@
+## Bastion I → II first complete city progression loop — CLOSED / PASS
+
+The first real city progression segment is now certified and published.
+
+Certified loop:
+**NEW GAME → Bastion I → rebuild Aserradero → recover resources in World Region 1 → clear route → ascend Bastion → visible Bastion II → build Cuartel → recruit → prepare March → Engendro → reward → save/reload**.
+
+Final gates are PASS across source/architecture, tech, initial state, construction, economy, progression, Bastion visual evolution, interaction, save/reload, idempotency, visual regression, mobile readability, payload sanity, City↔World and first macroloop.
+
+Evidence:
+- production run `37656607306`: SUCCESS
+- Unity gate `37656607356`: SUCCESS
+- publish run `37657298925`: SUCCESS
+- published probe `37660181336`: SUCCESS
+- probe artifact `11499884413`
+- public build: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`
+- paid credits: 0
+
+Bastion III remains closed/not started. Current workstream registry is empty.
+
 ## Mobile WebGL playable link — CLOSED / PASS
 
 The current Valoria production slice is now published and certified through the complete mobile WebGL loop.
