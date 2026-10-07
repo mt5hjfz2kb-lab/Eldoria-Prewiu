@@ -27,8 +27,25 @@
     "on_next_visual_fail": "Correct presentation only. Do not reopen gameplay, World Region 1, SHARP, economy or paid generation."
   },
   "notes": "Owner-authorized parity correction. Ambient motion is presentation-only and must not imply gameplay. Zero spend.",
-  "status": "ACTIVE",
-  "phase": "IMPLEMENTED / FINAL PRODUCTION VALIDATION REQUESTED",
+  "status": "COMPLETED",
+  "phase": "PUBLISHED PARITY PASS / MOBILE MACROLOOP PASS / CLOSED",
   "retry": 8,
-  "retry_reason": "Removed invalid inactive badge child-text assertion from current main; trigger final clean production validation."
+  "retry_reason": "Removed invalid inactive badge child-text assertion from current main; trigger final clean production validation.",
+  "completed_at": "2026-10-07T21:15:00Z",
+  "result": {
+    "verdict": "SOURCE PASS / PRESENTATION PARITY PASS / PRODUCTION PASS / UI PASS / PUBLISHED WEBGL PASS / MOBILE MACROLOOP PASS / SAVE-RELOAD PASS / LANDSCAPE-PORTRAIT PASS",
+    "final_certification_commit": "d88ab7fe4d6d09d05f1b3cf4fe52b4d492c9f3c3",
+    "publish_request_commit": "62ca5a4499124c5b8df2439101a5579c0134019c",
+    "production_run_id": 37681793700,
+    "production_artifact_id": 11509591694,
+    "ui_certification_run_id": 37681793717,
+    "source_editor_gate_run_id": 37681794138,
+    "publish_run_id": 37684790661,
+    "published_probe_run_id": 37687592179,
+    "published_probe_artifact_id": 11511827528,
+    "published_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/",
+    "published_probe_result": "PASS: HOME, horizontal touch pan both directions, vertical pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, reload persistence, landscape and portrait visual checks; playablePass=true; no white screen.",
+    "persistence_after_reload": "revision 4; wood 590; stone 150; gatheredWood 360; gatheredStone 0; sawmill 0; bastion 1",
+    "paid_credits": 0
+  }
 }
