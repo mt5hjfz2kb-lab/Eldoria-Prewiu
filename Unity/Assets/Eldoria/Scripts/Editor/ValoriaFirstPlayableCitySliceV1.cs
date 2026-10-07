@@ -396,42 +396,72 @@ namespace Eldoria.EditorTools
             visual.RightBuilt=rightBinding.Built;visual.RightGround=rightBinding.Ground;visual.RightConstruction=rightBinding.Construction;visual.RightAvailable=rightBinding.Available;visual.RightTarget=rightBinding.Target;
 
             // Bastion II must read as the same Bastion grown, not a replacement asset.
-            // Author the cues in locked-camera screen space at the Bastion depth. This keeps
-            // them visible over SHARP without moving/rebuilding the canonical fortress.
-            var bastionProxy=proxies.Single(p=>p.Id=="Bastion");
+            // The upgrade stays subtle: two heraldic pennants and a small crenellation lift
+            // reinforce authority while preserving the locked SHARP fortress silhouette.
             var bastionCues=new List<GameObject>();
             var bannerMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-            bannerMaterial.SetColor("_BaseColor",new Color(.10f,.18f,.34f,1f));
+            bannerMaterial.SetColor("_BaseColor",new Color(.055f,.15f,.31f,1f));
             AssetDatabase.AddObjectToAsset(bannerMaterial,assetFolder+"/state-0.asset");
-            var authorityMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-            authorityMaterial.SetColor("_BaseColor",new Color(.64f,.48f,.20f,1f));
-            AssetDatabase.AddObjectToAsset(authorityMaterial,assetFolder+"/state-0.asset");
-            // SHARP is the beauty authority and can contain broad depth around the semantic
-            // proxy. Put the tiny upgrade cues on a camera-near authored overlay plane so they
-            // remain visible without altering or duplicating the SHARP fortress.
+            var goldMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            goldMaterial.SetColor("_BaseColor",new Color(.62f,.44f,.18f,1f));
+            AssetDatabase.AddObjectToAsset(goldMaterial,assetFolder+"/state-0.asset");
+            var stoneMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            stoneMaterial.SetColor("_BaseColor",new Color(.43f,.35f,.28f,1f));
+            AssetDatabase.AddObjectToAsset(stoneMaterial,assetFolder+"/state-0.asset");
+
             float cueDepth=4f;
             float cueViewSpan=2f*cueDepth*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
-            GameObject ScreenCue(string name,Vector2 viewport,float widthFrac,float heightFrac,Material material)
+            Vector3 CuePosition(Vector2 viewport)
+                => cam.ViewportPointToRay(new Vector3(viewport.x,viewport.y,0)).GetPoint(cueDepth);
+
+            GameObject ScreenRect(string name,Vector2 viewport,float widthFrac,float heightFrac,Material material)
             {
                 var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 go.name=name;go.transform.SetParent(root.transform);
-                go.transform.position=cam.ViewportPointToRay(new Vector3(viewport.x,viewport.y,0)).GetPoint(cueDepth);
+                go.transform.position=CuePosition(viewport);
                 go.transform.rotation=cam.transform.rotation;
                 go.transform.localScale=new Vector3(
                     cueViewSpan*cam.aspect*widthFrac,
                     cueViewSpan*heightFrac,
-                    cueViewSpan*.002f);
+                    cueViewSpan*.0015f);
                 go.GetComponent<Renderer>().sharedMaterial=material;
                 foreach(var col in go.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
                 bastionCues.Add(go);return go;
             }
-            // Two additional banners flank the existing central standard. A narrow upper
-            // reinforcement gives a second, architectural cue while preserving the silhouette.
-            ScreenCue("Bastion II banner left",new Vector2(.557f,.842f),.018f,.068f,bannerMaterial);
-            ScreenCue("Bastion II banner right",new Vector2(.653f,.842f),.018f,.068f,bannerMaterial);
-            ScreenCue("Bastion II upper authority reinforcement",new Vector2(.605f,.906f),.095f,.016f,authorityMaterial);
-            // Static authority captures represent Bastion I. Runtime Apply() is the sole owner
-            // of progression visibility, so future-level cues must never leak into baseline.
+
+            GameObject ScreenPennant(string name,Vector2 viewport,float widthFrac,float heightFrac)
+            {
+                var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));
+                go.transform.SetParent(root.transform);
+                var mesh=new Mesh { name=name+" mesh" };
+                mesh.vertices=new[]{
+                    new Vector3(-.5f,.5f,0),new Vector3(.5f,.5f,0),
+                    new Vector3(.5f,-.28f,0),new Vector3(0,-.5f,0),new Vector3(-.5f,-.28f,0)
+                };
+                mesh.triangles=new[]{0,1,2,0,2,4,4,2,3};
+                mesh.RecalculateNormals();
+                go.GetComponent<MeshFilter>().sharedMesh=mesh;
+                go.GetComponent<MeshRenderer>().sharedMaterial=bannerMaterial;
+                go.transform.position=CuePosition(viewport);
+                go.transform.rotation=cam.transform.rotation;
+                go.transform.localScale=new Vector3(
+                    cueViewSpan*cam.aspect*widthFrac,
+                    cueViewSpan*heightFrac,1f);
+                bastionCues.Add(go);
+                ScreenRect(name+" gold rail",new Vector2(viewport.x,viewport.y+heightFrac*.48f),widthFrac*1.18f,.0045f,goldMaterial);
+                return go;
+            }
+
+            // Small banners sit on the two upper side towers rather than covering the gates.
+            ScreenPennant("Bastion II pennant left",new Vector2(.535f,.892f),.012f,.047f);
+            ScreenPennant("Bastion II pennant right",new Vector2(.674f,.892f),.012f,.047f);
+
+            // A restrained five-block crenellation lift makes the keep read as fortified at II.
+            foreach(var x in new[]{.579f,.592f,.605f,.618f,.631f})
+                ScreenRect("Bastion II upper merlon "+x.ToString("F3",CultureInfo.InvariantCulture),
+                    new Vector2(x,.936f),.008f,.014f,stoneMaterial);
+
+            // Static authority captures represent Bastion I. Runtime Apply() alone owns upgrade visibility.
             foreach(var cue in bastionCues) cue.SetActive(false);
             visual.BastionLevelTwoVisuals=bastionCues.ToArray();
 
