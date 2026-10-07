@@ -502,7 +502,9 @@ namespace Eldoria.Tests
             Assert.That(quest.rect.height,Is.LessThanOrEqualTo(72.5f));
             Assert.That(dock.rect.height,Is.LessThanOrEqualTo(66.5f));
             Assert.That(panel.rect.height,Is.LessThanOrEqualTo(178.5f));
-            Assert.That(panel.anchoredPosition.y,Is.InRange(61f,71f));
+            Assert.That(panel.anchorMin,Is.EqualTo(new Vector2(.5f,.5f)));
+            Assert.That(panel.anchorMax,Is.EqualTo(new Vector2(.5f,.5f)));
+            Assert.That(panel.rect.width,Is.LessThanOrEqualTo(276.5f));
             var primary=GameObject.Find("CONTINUAR")?.GetComponent<RectTransform>();
             Assert.That(primary,Is.Not.Null);
             Assert.That(primary.rect.height,Is.GreaterThanOrEqualTo(44f));
