@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T13:58:00Z",
-  "retry": 28,
-  "retry_reason": "WebGL-only evidence fix: restore emission of the real Region 1 forest hotspot screen coordinate on Frontier entry so the playable probe can perform the actual hotspot tap. Runtime/gameplay/art unchanged.",
+  "updated_at": "2026-10-07T14:23:00Z",
+  "retry": 29,
+  "retry_reason": "WebGL mobile usability correction: align the touch-navigation fallback with the owner-approved landscape HUD positions (MUNDO far-left, BASTIÓN/REINO far-right) and the real visible nav height. Gameplay/state/visual authority unchanged.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "3bf476d18b150f793d555dbf3bf80a0fea24e829",
+  "retry_after_commit": "63d1a668d1f157f1641a0e607bd70d994445f63f",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
