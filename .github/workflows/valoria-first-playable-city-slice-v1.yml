@@ -14,7 +14,6 @@ on:
       - "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       - "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs"
       - "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
-      - ".github/workflows/valoria-first-playable-city-slice-v1.yml"
   workflow_dispatch:
 concurrency:
   group: valoria-first-playable-city-slice-v1
