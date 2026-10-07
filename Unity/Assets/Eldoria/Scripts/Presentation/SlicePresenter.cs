@@ -1216,6 +1216,13 @@ namespace Eldoria.Presentation
         {
             lastWidth=Screen.width;lastHeight=Screen.height;
             if(safe==null||lastWidth==0||lastHeight==0)return;
+            var canvas=safe.GetComponentInParent<Canvas>();
+            var scaler=canvas!=null?canvas.GetComponent<CanvasScaler>():null;
+            if(scaler!=null)
+            {
+                scaler.referenceResolution=lastWidth>lastHeight?new Vector2(844,390):new Vector2(390,844);
+                scaler.matchWidthOrHeight=.5f;
+            }
             Rect r=Screen.safeArea;
             safe.anchorMin=new Vector2(r.xMin/lastWidth,r.yMin/lastHeight);
             safe.anchorMax=new Vector2(r.xMax/lastWidth,r.yMax/lastHeight);
