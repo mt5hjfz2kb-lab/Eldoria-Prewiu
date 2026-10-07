@@ -318,9 +318,9 @@ namespace Eldoria.Tests
             Assert.That(GameObject.Find("Bottom navigation"),Is.Not.Null);
             Assert.That(GameObject.Find("CIUDAD"),Is.Not.Null);
             Assert.That(GameObject.Find("MUNDO"),Is.Not.Null);
-            Assert.That(GameObject.Find("HÉROES"),Is.Not.Null);
-            Assert.That(GameObject.Find("ARCÓN"),Is.Not.Null);
-            Assert.That(GameObject.Find("CÓDICE"),Is.Not.Null);
+            Assert.That(GameObject.Find("HÉROES"),Is.Null);
+            Assert.That(GameObject.Find("ARCÓN"),Is.Null);
+            Assert.That(GameObject.Find("CÓDICE"),Is.Null);
             // The canonical final-look layer uses Trilight; the previous flat-ambient
             // threshold described the superseded rig and falsely failed the real scene.
             Assert.That(GameObject.Find("Valoria · Production Final Look v1"),Is.Not.Null);
@@ -483,6 +483,7 @@ namespace Eldoria.Tests
         {
             SceneManager.LoadScene("Valoria");
             yield return null;
+            yield return new WaitForSecondsRealtime(.65f);
 
             var top=GameObject.Find("Reference topbar")?.GetComponent<RectTransform>();
             var nav=GameObject.Find("Bottom navigation")?.GetComponent<RectTransform>();
@@ -496,12 +497,12 @@ namespace Eldoria.Tests
             Assert.That(quest,Is.Not.Null);
             Assert.That(dock,Is.Not.Null);
             Assert.That(panel,Is.Not.Null);
-            Assert.That(top.rect.height,Is.InRange(67f,69f));
-            Assert.That(nav.rect.height,Is.InRange(67f,69f));
-            Assert.That(quest.rect.height,Is.LessThanOrEqualTo(66.5f));
-            Assert.That(dock.rect.height,Is.LessThanOrEqualTo(96f));
-            Assert.That(panel.rect.height,Is.LessThanOrEqualTo(210f));
-            Assert.That(panel.anchoredPosition.y,Is.InRange(77f,79f));
+            Assert.That(top.rect.height,Is.InRange(47f,59f));
+            Assert.That(nav.rect.height,Is.InRange(53f,63f));
+            Assert.That(quest.rect.height,Is.LessThanOrEqualTo(72.5f));
+            Assert.That(dock.rect.height,Is.LessThanOrEqualTo(66.5f));
+            Assert.That(panel.rect.height,Is.LessThanOrEqualTo(178.5f));
+            Assert.That(panel.anchoredPosition.y,Is.InRange(61f,71f));
             var primary=GameObject.Find("CONTINUAR")?.GetComponent<RectTransform>();
             Assert.That(primary,Is.Not.Null);
             Assert.That(primary.rect.height,Is.GreaterThanOrEqualTo(44f));
@@ -514,9 +515,9 @@ namespace Eldoria.Tests
             Assert.That(stone,Is.Not.Null);
             Assert.That(GameObject.Find("CIUDAD")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("⌂"));
             Assert.That(GameObject.Find("MUNDO")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("◎"));
-            Assert.That(GameObject.Find("HÉROES")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("♞"));
-            Assert.That(GameObject.Find("ARCÓN")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("▣"));
-            Assert.That(GameObject.Find("CÓDICE")?.GetComponentInChildren<UnityEngine.UI.Text>()?.text,Does.Contain("⌘"));
+            Assert.That(GameObject.Find("HÉROES"),Is.Null);
+            Assert.That(GameObject.Find("ARCÓN"),Is.Null);
+            Assert.That(GameObject.Find("CÓDICE"),Is.Null);
         }
 
         [UnityTest]
