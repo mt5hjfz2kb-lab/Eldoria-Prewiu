@@ -69,6 +69,7 @@ namespace Eldoria.Presentation
                 cameraHomeOrthographicSize=OfficialCamera.orthographicSize;
             }
             CreateHud();Refresh();
+            LogPlayableState("scene-loaded");
         }
         void Update()
         {
@@ -111,7 +112,7 @@ namespace Eldoria.Presentation
                 pointerActive=true;
                 pointerDragged=false;
                 pointerStart=pointerLast=point;
-                pointerStartedOverUi=EventSystem.current!=null&&EventSystem.current.IsPointerOverGameObject();
+                pointerStartedOverUi=IsPointerOverInteractiveUi(point);
             }
 
             if(pointerActive&&held)
@@ -132,6 +133,22 @@ namespace Eldoria.Presentation
                     if(spot!=null)Select(spot.Id);
                 }
             }
+        }
+
+        bool IsPointerOverInteractiveUi(Vector2 point)
+        {
+            if(EventSystem.current==null)return false;
+            var data=new PointerEventData(EventSystem.current){position=point};
+            var hits=new System.Collections.Generic.List<RaycastResult>();
+            EventSystem.current.RaycastAll(data,hits);
+            foreach(var hit in hits)
+            {
+                if(hit.gameObject==null)continue;
+                if(hit.gameObject.GetComponentInParent<Selectable>()!=null)return true;
+                if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&
+                    hit.gameObject.transform.IsChildOf(buildingPanel.transform))return true;
+            }
+            return false;
         }
 
         bool HandlePinchZoom(Touchscreen touch,Camera camera)
@@ -226,9 +243,19 @@ namespace Eldoria.Presentation
         void RecenterCamera()
         {
             if(OfficialCamera==null)return;
-            if(city&&productionParcels!=null){productionParcels.Home();return;}
+            if(city&&productionParcels!=null)
+            {
+                productionParcels.Home();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Debug.Log("ELDORIA_PLAYABLE_HOME production=1");
+#endif
+                return;
+            }
             OfficialCamera.transform.position=cameraHome;
             OfficialCamera.orthographicSize=cameraHomeOrthographicSize;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("ELDORIA_PLAYABLE_HOME production=0");
+#endif
         }
 
         void FocusCityHotspot(string objectName)
@@ -428,7 +455,29 @@ namespace Eldoria.Presentation
             var s=gateway.Snapshot();
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision));
             feedback=result.Message;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.Log("ELDORIA_PLAYABLE_COMMAND kind="+kind+" target="+target+" ok="+result.Ok+" revision="+result.Revision);
+#endif
             Refresh();
+            LogPlayableState("command-"+kind+"-"+target);
+        }
+
+        void LogPlayableState(string tag)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(gateway==null)return;
+            var state=gateway.Snapshot();
+            Debug.Log("ELDORIA_PLAYABLE_STATE tag="+tag+
+                " scene="+SceneManager.GetActiveScene().name+
+                " revision="+state.Revision+
+                " wood="+state.Resources.Wood+
+                " stone="+state.Resources.Stone+
+                " gatheredWood="+(state.ChapterProgress?.GatheredWood??0)+
+                " gatheredStone="+(state.ChapterProgress?.GatheredStone??0)+
+                " march="+state.March.Phase+
+                " sawmill="+state.SawmillLevel+
+                " bastion="+state.BastionLevel);
+#endif
         }
         void Refresh()
         {
