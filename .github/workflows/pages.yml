@@ -161,6 +161,21 @@ jobs:
           Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path (Split-Path $dst) -Force | Out-Null
           Copy-Item $src $dst -Recurse -Force
+
+          $captures = Join-Path $extract "ValoriaFirstPlayableCitySliceV1Captures"
+          $backgrounds = Join-Path $env:GITHUB_WORKSPACE "webgl-certified-backgrounds"
+          Remove-Item $backgrounds -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $backgrounds -Force | Out-Null
+          $backgroundMap = @{
+            "runtime-home-initial.png" = "valoria-state-0.png"
+            "runtime-left-built.png" = "valoria-state-1.png"
+            "runtime-home-initial.png#state2" = "valoria-state-2.png"
+            "runtime-both-built.png" = "valoria-state-3.png"
+          }
+          Copy-Item (Join-Path $captures "runtime-home-initial.png") (Join-Path $backgrounds "valoria-state-0.png") -Force
+          Copy-Item (Join-Path $captures "runtime-left-built.png") (Join-Path $backgrounds "valoria-state-1.png") -Force
+          Copy-Item (Join-Path $captures "runtime-home-initial.png") (Join-Path $backgrounds "valoria-state-2.png") -Force
+          Copy-Item (Join-Path $captures "runtime-both-built.png") (Join-Path $backgrounds "valoria-state-3.png") -Force
           Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.parcel_source_artifact_id)/zip" -OutFile $splatsZip
           Expand-Archive -Path $splatsZip -DestinationPath $splats -Force
           foreach ($i in 0..3) {
@@ -238,6 +253,9 @@ jobs:
               Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/state-$i.ply" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/splat-state-$i.ply" -Force
             }
             Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
+            foreach ($i in 0..3) {
+              Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
+            }
           }
       - uses: actions/upload-artifact@v4
         with:
