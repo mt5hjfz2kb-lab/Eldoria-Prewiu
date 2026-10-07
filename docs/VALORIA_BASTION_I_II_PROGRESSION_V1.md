@@ -1,6 +1,6 @@
 # Eldoria — Valoria Bastion I → II — First Complete City Progression Loop v1
 
-Status: **ACTIVE — implementation integrated, certification pending**
+Status: **CLOSED — ALL REQUIRED GATES PASS / PUBLISHED WEBGL PASS**
 Workstream: `valoria-bastion-i-ii-progression-v1`
 
 ## Scope
@@ -106,9 +106,11 @@ The certified SHARP Valoria remains authority. Bastion II is the same Bastion gr
 
 `ValoriaParcelPresentation` now binds `BastionLevelTwoVisuals` directly to persisted `PlayerState.BastionLevel`.
 
-The first bounded II layer adds only:
-- two restrained heraldic banners;
-- one small upper reinforcement/authority cue.
+The final bounded II layer adds:
+- two restrained heraldic pennants on the upper side towers;
+- a small crenellation/authority lift on the upper keep.
+
+This is deliberately an incremental level change, not a replacement castle.
 
 They are OFF at I, ON at II, non-interactive, additive, tiny in payload, and use the existing Unity composition route. The production capture includes `runtime-bastion-ii` and asserts visual state follows authoritative level.
 
@@ -180,3 +182,30 @@ Closure requires:
 Automated gates may accelerate elapsed time, but the accepted progression starts from fresh authoritative state and uses normal game commands—no injected Bastion/building completion or wallet cheats.
 
 Paid credits: **0**.
+
+
+## Final certification — CLOSED
+
+Closure commit chain:
+- final production implementation: `725035ded5d003b20582f8e3ca5d43e5ee967a15`
+- final publication request: `b5046f98c0fef689c109190611271ecce6d001ea`
+- workstream closure: `3de462440278d2cf16bfd34e95e0cc0850c3d245`
+
+Final evidence:
+- production run `37656607306`: SUCCESS
+- Unity source/editor gate `37656607356`: SUCCESS
+- visual-authority routing `37656607230`: SUCCESS
+- Pages/WebGL publish `37657298925`: SUCCESS
+- published mobile playable probe `37660181336`: SUCCESS
+- published probe artifact `11499884413`
+- published URL: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`
+
+Published mobile probe verified HOME, real horizontal and vertical touch pan, MUNDO, Region 1 gather/reward, REINO/Valoria return, browser reload persistence, landscape and portrait presentation. The probe reported `playablePass=true` and restored revision 4 with wood 590 and gatheredWood 360 after reload.
+
+The full Bastion I→II progression contract, construction, economy, Bastion II state binding, interaction, idempotency and save/reload are covered by the successful production/EditMode/PlayMode gates. The published probe is a transport/mobile regression gate and does not replace those deeper progression tests.
+
+Final verdict: **SOURCE PASS / TECH PASS / INITIAL GAME STATE PASS / CONSTRUCTION PASS / ECONOMY PASS / PROGRESSION PASS / BASTION VISUAL EVOLUTION PASS / INTERACTION PASS / SAVE-RELOAD PASS / IDEMPOTENCY PASS / VISUAL REGRESSION PASS / MOBILE READABILITY PASS / PERFORMANCE/PAYLOAD SANITY PASS / CITY↔WORLD PASS / FIRST COMPLETE MACROLOOP PASS.**
+
+Paid credits: **0**.
+
+Bastion III is **not opened** by this closure.
