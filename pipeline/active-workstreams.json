@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T18:09:00Z",
+  "updated_at": "2026-10-07T18:13:00Z",
   "active": [
     {
       "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
@@ -22,7 +22,8 @@
         "SESSION_HANDOFF.md",
         "PROJECT_STATE.md",
         "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1",
