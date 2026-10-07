@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T10:28:00Z",
+  "updated_at": "2026-10-07T15:05:00Z",
   "active": [
     {
       "id": "valoria-mobile-web-playtest-v1",
@@ -18,7 +18,8 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
         "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
         "pipeline/art-production-requests/valoria-mobile-web-playtest-v1.json",
-        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs"
       ],
       "resources": [
         "github-pages-unity-owner",
@@ -28,9 +29,9 @@
       "base_main_sha": "21f4a278d7bc8450973503048794f3d6946930a5",
       "status": "active",
       "paid_credits": 0,
-      "phase": "PHYSICAL IPHONE PLAYABLE FAIL / WEBGL PRESENTATION + TOUCH CORRECTION ACTIVE",
+      "phase": "WEBGL BROWSER PERSISTENCE CORRECTION ACTIVE / FULL PLAYABLE LOOP REVALIDATION",
       "dependency": "Consumes closed valoria-real-game-state-v1 only. Must publish Assets/Eldoria/ProductionSlice/Runtime/Valoria.unity rather than regenerating the legacy Bootstrap/Valoria/Frontier slice.",
-      "next": "Resume only as a bounded delivery/publishing task without blocking Valoria or World production. Prefer proving a materially smaller player before occupying the shared Windows runner again.",
+      "next": "Publish WebGL browser-persistence correction and require full HOME → pan → MUNDO → Región 1 reward → REINO → reload persistence probe before closure.",
       "blocked_at": "2026-10-06T18:30:00Z",
       "blocker": null,
       "runner_released": false,
@@ -46,7 +47,7 @@
         ],
         "authority": "owner physical iPhone observation supersedes static automated probe"
       },
-      "scope_note": "SlicePresenter.cs ownership is limited to WebGL/mobile pointer classification and diagnostic instrumentation; gameplay/state/navigation semantics must remain unchanged."
+      "scope_note": "SlicePresenter.cs ownership is limited to WebGL/mobile pointer classification and diagnostic instrumentation; gameplay/state/navigation semantics must remain unchanged. Persistence ownership additionally includes LocalServices.cs only for the WebGL storage backend; domain/gameplay semantics remain unchanged."
     }
   ],
   "history": [
