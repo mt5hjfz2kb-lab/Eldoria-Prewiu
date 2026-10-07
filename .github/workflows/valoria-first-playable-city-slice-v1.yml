@@ -9,11 +9,13 @@ on:
       - "tools/valoria-parcel-splat-states.py"
       - "pipeline/valoria-parcel-regions-v1.json"
       - "pipeline/art-production-requests/valoria-bastion-i-ii-progression-v1.json"
+      - "pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json"
       - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
       - "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
       - "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       - "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs"
       - "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
+      - "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
   workflow_dispatch:
 concurrency:
   group: valoria-first-playable-city-slice-v1
@@ -43,11 +45,16 @@ jobs:
               assert len(review['criteria']) == required_count and all(v == 'PASS' for v in review['criteria'].values()), 'Complete direct review missing'
               assert review['reference_authority_sha256'] == cfg['visual_authority']['source_sha256'], 'Reviewed reference mismatch'
           bastion_path='pipeline/art-production-requests/valoria-bastion-i-ii-progression-v1.json'
+          parity_path='pipeline/art-production-requests/valoria-bastion-i-ii-presentation-parity-correction-v1.json'
           bastion_active=False
           if os.path.exists(bastion_path):
               bastion=json.load(open(bastion_path))
               bastion_active=bastion.get('status')=='ACTIVE'
-          required = "${{ github.event_name }}" == 'workflow_dispatch' or cfg.get('status') != 'completed' or bastion_active
+          parity_active=False
+          if os.path.exists(parity_path):
+              parity=json.load(open(parity_path))
+              parity_active=parity.get('status')=='ACTIVE'
+          required = "${{ github.event_name }}" == 'workflow_dispatch' or cfg.get('status') != 'completed' or bastion_active or parity_active
           with open(os.environ['GITHUB_OUTPUT'],'a') as out:
               out.write('capture_required='+str(required).lower()+'\n')
               out.write('parcels_required='+str(required and cfg.get('runtime_parcels_enabled',False)).lower()+'\n')
