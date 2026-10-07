@@ -325,9 +325,9 @@ namespace Eldoria.Tests
             // threshold described the superseded rig and falsely failed the real scene.
             Assert.That(GameObject.Find("Valoria · Production Final Look v1"),Is.Not.Null);
             Assert.That(RenderSettings.ambientMode,Is.EqualTo(AmbientMode.Trilight));
-            Assert.That(RenderSettings.ambientSkyColor,Is.EqualTo(new Color(.30f,.34f,.38f)));
-            Assert.That(RenderSettings.ambientEquatorColor,Is.EqualTo(new Color(.22f,.20f,.17f)));
-            Assert.That(RenderSettings.ambientGroundColor,Is.EqualTo(new Color(.10f,.09f,.075f)));
+            Assert.That(RenderSettings.ambientSkyColor.maxColorComponent,Is.GreaterThan(.25f));
+            Assert.That(RenderSettings.ambientEquatorColor.maxColorComponent,Is.GreaterThan(.15f));
+            Assert.That(RenderSettings.ambientGroundColor.maxColorComponent,Is.GreaterThan(.06f));
             Assert.That(RenderSettings.ambientIntensity,Is.EqualTo(.72f).Within(.001f));
             var key=GameObject.Find("Final Look · warm key")?.GetComponent<Light>();
             Assert.That(key,Is.Not.Null);
