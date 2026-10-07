@@ -406,18 +406,21 @@ namespace Eldoria.EditorTools
             var authorityMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             authorityMaterial.SetColor("_BaseColor",new Color(.64f,.48f,.20f,1f));
             AssetDatabase.AddObjectToAsset(authorityMaterial,assetFolder+"/state-0.asset");
-            float bastionDepth=Vector3.Distance(cam.transform.position,bastionProxy.Go.transform.position)*.985f;
-            float bastionViewSpan=2f*bastionDepth*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
+            // SHARP is the beauty authority and can contain broad depth around the semantic
+            // proxy. Put the tiny upgrade cues on a camera-near authored overlay plane so they
+            // remain visible without altering or duplicating the SHARP fortress.
+            float cueDepth=4f;
+            float cueViewSpan=2f*cueDepth*Mathf.Tan(HomeFov*Mathf.Deg2Rad*.5f);
             GameObject ScreenCue(string name,Vector2 viewport,float widthFrac,float heightFrac,Material material)
             {
                 var go=GameObject.CreatePrimitive(PrimitiveType.Cube);
                 go.name=name;go.transform.SetParent(root.transform);
-                go.transform.position=cam.ViewportPointToRay(new Vector3(viewport.x,viewport.y,0)).GetPoint(bastionDepth);
+                go.transform.position=cam.ViewportPointToRay(new Vector3(viewport.x,viewport.y,0)).GetPoint(cueDepth);
                 go.transform.rotation=cam.transform.rotation;
                 go.transform.localScale=new Vector3(
-                    bastionViewSpan*cam.aspect*widthFrac,
-                    bastionViewSpan*heightFrac,
-                    bastionViewSpan*.0035f);
+                    cueViewSpan*cam.aspect*widthFrac,
+                    cueViewSpan*heightFrac,
+                    cueViewSpan*.002f);
                 go.GetComponent<Renderer>().sharedMaterial=material;
                 foreach(var col in go.GetComponents<Collider>())UnityEngine.Object.DestroyImmediate(col);
                 bastionCues.Add(go);return go;
