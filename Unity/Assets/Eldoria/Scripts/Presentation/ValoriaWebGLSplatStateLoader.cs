@@ -116,14 +116,17 @@ namespace Eldoria.Presentation
                 yield break;
             }
 
-            var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage));
+            var imageObject = new GameObject("Certified Valoria frame", typeof(RectTransform), typeof(RawImage), typeof(AspectRatioFitter));
             imageObject.transform.SetParent(hud.transform, false);
             imageObject.transform.SetAsFirstSibling();
             var rect = imageObject.GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            rect.anchorMin = new Vector2(.5f, .5f);
+            rect.anchorMax = new Vector2(.5f, .5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = Vector2.one;
+            var fitter = imageObject.GetComponent<AspectRatioFitter>();
+            fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            fitter.aspectRatio = 1230f / 845f;
             webBackground = imageObject.GetComponent<RawImage>();
             webBackground.raycastTarget = false;
             if (webBackgroundTexture != null) webBackground.texture = webBackgroundTexture;
