@@ -1,3 +1,9 @@
+## 2026-10-07 — Valoria Bastion I-II presentation parity correction CLOSED / PASS
+
+The presentation-parity correction against the canonical web vertical slice is complete and published. Production run **37681793700**, UI certification **37681793717**, source/editor gate **37681794138**, Pages/WebGL publication **37684790661**, and published mobile macroloop probe **37687592179** all passed. Probe artifact **11511827528** reports `playablePass=true` and preserves reload state (revision 4; wood 590; stone 150; gatheredWood 360; gatheredStone 0; sawmill 0; Bastion I). Owner build: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/ .
+
+Closed scope: tighter city-first HOME with bounded pan, building-associated CTA, live construction countdown/feedback, safe ambient life/activity presentation, repeatable canonical owner reset, and real state-driven building-level indicators. No Bastion III, no World Region 1 redesign, no gameplay/economy/persistence/SHARP authority rewrite, and **0 paid credits**.
+
 ## 2026-10-07 — Valoria Bastion I-II vertical-slice presentation migration
 
 The controlled Bastion I-II migration from the canonical web vertical slice to the real Unity gameplay is **COMPLETE / PASS**. Presentation hierarchy is compact/city-first and mobile-safe; only gameplay-backed controls are exposed. Real state/progression/persistence, SHARP authority and World Region 1 remain unchanged in authority. Final production **37667362790**, publish **37668173503**, published probe **37670831297** all pass. The published macroloop survives reload with revision 4 / wood 590 / gatheredWood 360. No paid credits were used.
