@@ -150,9 +150,24 @@ namespace Eldoria.Presentation
         void TryScheduleWebBottomNavFallback(Vector2 point)
         {
             var area=Screen.safeArea;
-            float navHeight=Mathf.Max(28f,area.height*(68f/844f));
+            bool landscape=area.width>area.height*1.08f;
+            // ReferenceUiArtPass deliberately moves the visible landscape controls:
+            // MUNDO is the far-left medallion and BASTIÓN/REINO is the far-right medallion.
+            // Keep this WebGL fallback aligned with what the player actually sees. It exists
+            // only to recover a touch that the overlay/raycast stack fails to deliver to the
+            // underlying Unity Button; normal Button navigation remains the primary path.
+            float navHeight=Mathf.Max(28f,area.height*(landscape?.18f:(68f/844f)));
             if(point.y<area.yMin||point.y>area.yMin+navHeight)return;
             float nx=Mathf.Clamp01((point.x-area.xMin)/Mathf.Max(1f,area.width));
+            if(landscape)
+            {
+                if(city&&nx<=.13f)
+                    StartCoroutine(WebNavFallbackAfterUi("Frontier",true));
+                else if(!city&&nx>=.87f)
+                    StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
+                return;
+            }
+            // Portrait keeps the original five-slot navigation order.
             if(nx<.2f)
             {
                 if(!city) StartCoroutine(WebNavFallbackAfterUi("Valoria",false));
