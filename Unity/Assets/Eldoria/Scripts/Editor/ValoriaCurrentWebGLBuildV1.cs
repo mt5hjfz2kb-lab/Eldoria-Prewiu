@@ -84,6 +84,9 @@ namespace Eldoria.EditorTools
             AssertNoEmbeddedGsplatDependencies();
             Debug.Log($"VALORIA_WEBGL_SPLAT_STRIP_PASS stripped_refs={stripped} remapped_materials={remappedMaterials}");
 
+            var externalLibrary = Resources.Load<ValoriaExternalAssetLibrary>("Valoria/ExternalAssetLibrary");
+            var externalBackup = PruneExternalLibraryForWebGL(externalLibrary);
+
             try
             {
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
@@ -104,9 +107,53 @@ namespace Eldoria.EditorTools
             }
             finally
             {
+                RestoreExternalLibraryAfterWebGL(externalLibrary, externalBackup);
                 AssetDatabase.DeleteAsset(TempFolder);
                 AssetDatabase.Refresh();
             }
+        }
+
+        static Dictionary<string, UnityEngine.Object> PruneExternalLibraryForWebGL(ValoriaExternalAssetLibrary library)
+        {
+            var backup = new Dictionary<string, UnityEngine.Object>();
+            if (library == null) return backup;
+
+            var keep = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "SlavicBoulder", "SlavicFlatRock", "SlavicMudFlat", "SlavicMoss"
+            };
+            var so = new SerializedObject(library);
+            var iterator = so.GetIterator();
+            while (iterator.Next(true))
+            {
+                if (iterator.propertyType != SerializedPropertyType.ObjectReference) continue;
+                if (iterator.name == "m_Script") continue;
+                backup[iterator.propertyPath] = iterator.objectReferenceValue;
+                if (!keep.Contains(iterator.name))
+                    iterator.objectReferenceValue = null;
+            }
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(library);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"VALORIA_WEBGL_EXTERNAL_LIBRARY_PRUNE_PASS kept={keep.Count} fields={backup.Count}");
+            return backup;
+        }
+
+        static void RestoreExternalLibraryAfterWebGL(ValoriaExternalAssetLibrary library,
+            Dictionary<string, UnityEngine.Object> backup)
+        {
+            if (library == null || backup == null || backup.Count == 0) return;
+            var so = new SerializedObject(library);
+            foreach (var pair in backup)
+            {
+                var property = so.FindProperty(pair.Key);
+                if (property != null && property.propertyType == SerializedPropertyType.ObjectReference)
+                    property.objectReferenceValue = pair.Value;
+            }
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(library);
+            AssetDatabase.SaveAssets();
+            Debug.Log("VALORIA_WEBGL_EXTERNAL_LIBRARY_RESTORE_PASS");
         }
 
         static int StripSerializedGsplatReferences(Scene scene)
