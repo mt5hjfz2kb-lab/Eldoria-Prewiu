@@ -9,6 +9,34 @@ Prevent two ChatGPT/agent sessions from silently converging onto the same Eldori
 
 The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence.
 
+## Permanent continuous-execution rule
+
+Once an agent successfully claims a workstream, it must continue autonomously through diagnosis, correction, rerun, validation and closeout. **Progress updates are informational only and MUST NOT suspend execution.** The agent must not wait for the owner to say `continúa`, `sigue`, `reanuda` or equivalent when the next action is already determined by the repository, existing evidence, canonical planner/routing, tests or zero-cost tooling.
+
+A failed gate is the beginning of the next bounded diagnostic/correction cycle; it is **not** a valid reason to end the work session. Completing a sub-step, producing an artifact, dispatching a run, reaching a new phase, needing to inspect captures, or needing to reroute through the canonical planner are also not valid stopping points.
+
+An owned workstream may stop only when one of these terminal conditions is true:
+
+1. **COMPLETED / CLOSED** — the requested work is actually finished and all required technical, gameplay, visual and/or release gates for that workstream have passed with the required evidence.
+2. **GENUINE HUMAN BLOCKER** — progress requires a decision or input that cannot be derived safely from the repository, existing evidence, canonical tooling or an available zero-cost route. Examples include fresh authorization to spend money/credits, credentials the agent cannot access, an irreducible owner-only creative choice between incompatible directions, or an external dependency that has no viable alternative path.
+3. **SESSION/PLATFORM INTERRUPTION** — the execution environment itself is no longer available. This is not a project-state completion and must never be recorded as one. On the next live session, the matching workstream must be reconstructed from `main` and resumed without waiting for the owner to restate prior instructions.
+
+Not valid reasons to stop include:
+
+- a workflow/run is still executing when its result can be checked in the same live session;
+- a test or gate failed but the failure is diagnosable/correctable;
+- one phase or artifact completed while the workstream remains open;
+- captures still need visual inspection;
+- the planner/fallback router needs to be rerun;
+- a known zero-cost alternative remains available;
+- the agent already sent a progress message;
+- the owner is offline/asleep;
+- the task is long or has required many tool calls.
+
+If a run must finish before the next action is known, the agent should continue checking it while the session remains live and proceed immediately when the result is available. A progress message must never be phrased as a request for permission to continue unless a genuine human blocker exists.
+
+This rule is permanent project governance. Any future prompt, chat habit or local workflow convention that asks an agent to stop at intermediate milestones is subordinate to this rule unless the owner explicitly instructs that specific workstream to pause.
+
 ## Canonical registry
 
 Live ownership is stored in:
