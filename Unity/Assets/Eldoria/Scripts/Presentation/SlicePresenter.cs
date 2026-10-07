@@ -667,8 +667,18 @@ namespace Eldoria.Presentation
             objective=Label("Objective",quest.transform,10,new Color(.88f,.90f,.90f),40);
 
             var nav=HorizontalPanel("Bottom navigation",safe,new Color(.035f,.055f,.075f,.97f),68,false);
-            cityNavButton=NavButton(nav,"⌂","CIUDAD",()=>{if(!city)SceneManager.LoadScene("Valoria");});
-            worldNavButton=NavButton(nav,"◎","MUNDO",()=>{if(city)SceneManager.LoadScene("Frontier");});
+            cityNavButton=NavButton(nav,"⌂","CIUDAD",()=>{
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Debug.Log("ELDORIA_PLAYABLE_NAV target=Valoria city="+city);
+#endif
+                if(!city)SceneManager.LoadScene("Valoria");
+            });
+            worldNavButton=NavButton(nav,"◎","MUNDO",()=>{
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Debug.Log("ELDORIA_PLAYABLE_NAV target=Frontier city="+city);
+#endif
+                if(city)SceneManager.LoadScene("Frontier");
+            });
             var heroesNav=NavButton(nav,"♞","HÉROES",()=>{});
             var chestNav=NavButton(nav,"▣","ARCÓN",()=>{});
             var codexNav=NavButton(nav,"⌘","CÓDICE",()=>{});
