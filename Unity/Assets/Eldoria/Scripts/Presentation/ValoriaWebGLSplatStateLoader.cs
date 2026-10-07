@@ -239,6 +239,12 @@ namespace Eldoria.Presentation
 
         string VisualKey(int variant, Camera camera)
         {
+            // Bastion II can share the same parcel-bit variant as late Bastion I (sawmill
+            // built, barracks not yet built). WebGL uses certified frame transport, so the
+            // Bastion level must participate in the visual key instead of being lost behind
+            // the HUD background.
+            if (Presentation != null && Presentation.PresentedBastionLevel >= 2 && variant == 1)
+                return "valoria-bastion-ii.png";
             if (variant != 0 && variant != 3) return "valoria-state-" + variant + ".png";
             float pan = VisualPanAnchor(Mathf.Clamp(camera.transform.position.x, -.5f, .5f), variant);
             float zoom = VisualZoomAnchor(Mathf.Clamp(camera.fieldOfView / Mathf.Max(.01f, Presentation.HomeFov), .9f, 1.1f), variant);
