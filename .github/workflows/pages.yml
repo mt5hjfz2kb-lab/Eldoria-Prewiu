@@ -176,6 +176,16 @@ jobs:
           Copy-Item (Join-Path $captures "runtime-left-built.png") (Join-Path $backgrounds "valoria-state-1.png") -Force
           Copy-Item (Join-Path $captures "runtime-home-initial.png") (Join-Path $backgrounds "valoria-state-2.png") -Force
           Copy-Item (Join-Path $captures "runtime-both-built.png") (Join-Path $backgrounds "valoria-state-3.png") -Force
+          foreach ($state in @(0,3)) {
+            foreach ($pan in @("-0.5","0","0.5")) {
+              foreach ($zoom in @("0.9","1","1.1")) {
+                $name = "runtime-state$state-pan$pan-zoom$zoom.png"
+                $srcCapture = Join-Path $captures $name
+                if (-not (Test-Path $srcCapture)) { throw "Certified pan/zoom capture missing: $name" }
+                Copy-Item $srcCapture (Join-Path $backgrounds ("valoria-state$state-pan$pan-zoom$zoom.png")) -Force
+              }
+            }
+          }
           Invoke-WebRequest -Headers $headers -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$($cfg.parcel_source_artifact_id)/zip" -OutFile $splatsZip
           Expand-Archive -Path $splatsZip -DestinationPath $splats -Force
           foreach ($i in 0..3) {
@@ -255,6 +265,14 @@ jobs:
             Copy-Item "$env:GITHUB_WORKSPACE/webgl-external-splats/parcel-source.json" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/parcel-source.json" -Force
             foreach ($i in 0..3) {
               Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/valoria-state-$i.png" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/valoria-state-$i.png" -Force
+            }
+            foreach ($state in @(0,3)) {
+              foreach ($pan in @("-0.5","0","0.5")) {
+                foreach ($zoom in @("0.9","1","1.1")) {
+                  $name = "valoria-state$state-pan$pan-zoom$zoom.png"
+                  Copy-Item "$env:GITHUB_WORKSPACE/webgl-certified-backgrounds/$name" "$env:GITHUB_WORKSPACE/Unity/Builds/WebGL/$name" -Force
+                }
+              }
             }
           }
       - uses: actions/upload-artifact@v4
