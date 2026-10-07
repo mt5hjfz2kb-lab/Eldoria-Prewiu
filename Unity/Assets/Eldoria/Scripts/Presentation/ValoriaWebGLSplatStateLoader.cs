@@ -24,6 +24,7 @@ namespace Eldoria.Presentation
         Image webLetterbox;
         Texture2D webBackgroundTexture;
         float lastLoggedPanX = float.NaN;
+        float lastLoggedPanY = float.NaN;
         float lastLoggedFov = float.NaN;
         string loadedVisualKey = "";
         string requestedVisualKey = "";
@@ -31,6 +32,7 @@ namespace Eldoria.Presentation
         const float CertifiedAspect = 1230f / 845f;
         const float CertifiedHalfPanWorld = .5f;
         const float CertifiedHalfPanPixels = 22.8f;
+        const float CertifiedWebOverscan = 1.025f;
 
         void Start()
         {
@@ -163,26 +165,40 @@ namespace Eldoria.Presentation
             RequestWebVisualForCurrentCamera();
 
             float panX = Mathf.Clamp(camera.transform.position.x, -CertifiedHalfPanWorld, CertifiedHalfPanWorld);
+            float panY = Mathf.Clamp(camera.transform.position.y,
+                -ValoriaParcelPresentation.VerticalPanHalfExtent,
+                ValoriaParcelPresentation.VerticalPanHalfExtent);
             float panAnchor = VisualPanAnchor(panX, loadedVariant);
             float residualPan = panX - panAnchor;
             float renderedWidth = Mathf.Max(1f, webBackgroundRect.rect.width);
+            float renderedHeight = Mathf.Max(1f, webBackgroundRect.rect.height);
             float shift = -(residualPan / CertifiedHalfPanWorld) * renderedWidth * (CertifiedHalfPanPixels / 1230f);
-            webBackgroundRect.anchoredPosition = new Vector2(shift, 0f);
 
             float zoomRatio = Mathf.Clamp(camera.fieldOfView / Mathf.Max(.01f, Presentation.HomeFov), .9f, 1.1f);
             float zoomAnchor = VisualZoomAnchor(zoomRatio, loadedVariant);
             float residualScale = Mathf.Clamp(zoomAnchor / zoomRatio, .97f, 1.03f);
-            webBackgroundRect.localScale = new Vector3(residualScale, residualScale, 1f);
+            float visualScale = residualScale * CertifiedWebOverscan;
+            // The small overscan is only a safety margin for the deliberately smaller Y pan.
+            // Vertical travel never exceeds the covered margin, so no un-authored edge can appear.
+            float verticalMargin = renderedHeight * (visualScale - residualScale) * .5f;
+            float verticalShift = -(panY / ValoriaParcelPresentation.VerticalPanHalfExtent) *
+                Mathf.Max(0f, verticalMargin * .90f);
+            webBackgroundRect.anchoredPosition = new Vector2(shift, verticalShift);
+            webBackgroundRect.localScale = new Vector3(visualScale, visualScale, 1f);
 
             if (float.IsNaN(lastLoggedPanX) || Mathf.Abs(panX - lastLoggedPanX) >= .08f ||
+                float.IsNaN(lastLoggedPanY) || Mathf.Abs(panY - lastLoggedPanY) >= .05f ||
                 float.IsNaN(lastLoggedFov) || Mathf.Abs(camera.fieldOfView - lastLoggedFov) >= .5f)
             {
                 lastLoggedPanX = panX;
+                lastLoggedPanY = panY;
                 lastLoggedFov = camera.fieldOfView;
                 Debug.Log("ELDORIA_PLAYABLE_VIEW panX=" + panX.ToString("F3") +
+                    " panY=" + panY.ToString("F3") +
                     " fov=" + camera.fieldOfView.ToString("F3") +
                     " key=" + requestedVisualKey +
-                    " residualShift=" + shift.ToString("F2"));
+                    " residualShift=" + shift.ToString("F2") +
+                    " verticalShift=" + verticalShift.ToString("F2"));
             }
         }
 
