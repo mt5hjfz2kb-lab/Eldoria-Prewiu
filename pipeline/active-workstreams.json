@@ -1,8 +1,29 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-07T15:06:00Z",
-  "active": [],
+  "updated_at": "2026-10-07T15:53:17Z",
+  "active": [
+    {
+      "id": "valoria-bastion-i-ii-progression-v1",
+      "title": "Valoria Bastion I to II first complete city progression loop v1",
+      "owner": "automation-bastion-i-ii-20261007",
+      "scope": [
+        "pipeline/active-workstreams.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "docs/VALORIA_BASTION_I_II_PROGRESSION_V1.md"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
+      "claimed_at": "2026-10-07T15:53:17Z",
+      "status": "active",
+      "phase": "AUDIT / CONTRACT DEFINITION",
+      "dependency": "Consumes closed Valoria game state, mobile WebGL playtest, and World Region 1. Preserve canonical Valoria visual authority.",
+      "paid_credits": 0,
+      "art_production_routing": "required"
+    }
+  ],
   "history": [
     {
       "id": "valoria-mobile-web-playtest-v1",
