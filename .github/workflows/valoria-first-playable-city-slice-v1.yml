@@ -211,6 +211,19 @@ jobs:
           if(-not(Test-Path $result)){throw 'Missing runtime PlayMode XML'}
           [xml]$tests=Get-Content $result
           if([int]$tests.'test-run'.failed -gt 0 -or [int]$tests.'test-run'.passed -lt 1){throw 'Runtime parcel tests not PASS'}
+      - name: Verify presentation parity UI in PlayMode
+        if: needs.request.outputs.parcels_required == 'true'
+        shell: powershell
+        run: |
+          $log="$env:RUNNER_TEMP\ValoriaPresentationParity.log"
+          $result="$env:GITHUB_WORKSPACE\Unity\ValoriaFirstPlayableCitySliceV1Captures\presentation-parity-playmode.xml"
+          $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE\Unity",'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.ReferenceUiArtPassTests','-testResults',$result,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          Copy-Item $log "$env:GITHUB_WORKSPACE\Unity\ValoriaFirstPlayableCitySliceV1Captures\presentation-parity-playmode.log" -Force
+          if($p.ExitCode -ne 0){Get-Content $log -Tail 160;throw 'Presentation parity PlayMode failed'}
+          if(-not(Test-Path $result)){throw 'Missing presentation parity PlayMode XML'}
+          [xml]$tests=Get-Content $result
+          if([int]$tests.'test-run'.failed -gt 0 -or [int]$tests.'test-run'.passed -lt 1){throw 'Presentation parity PlayMode tests not PASS'}
       - name: Verify Bastion I-II domain progression in EditMode
         if: needs.request.outputs.parcels_required == 'true'
         shell: powershell
