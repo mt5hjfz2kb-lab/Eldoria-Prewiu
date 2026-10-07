@@ -41,6 +41,14 @@ jobs:
             }
             return null;
           }
+          function parseHotspot(logs,id){
+            for(let i=logs.length-1;i>=0;i--){
+              const t=logs[i].text||'';
+              const m=t.match(new RegExp('ELDORIA_PLAYABLE_HOTSPOT id='+id+' x=([0-9.]+) y=([0-9.]+)'));
+              if(m)return {x:+m[1],y:+m[2]};
+            }
+            return null;
+          }
           async function waitLog(logs,predicate,timeout=60000,label='log',startIndex=0){
             const started=Date.now();
             while(Date.now()-started<timeout){
@@ -182,30 +190,27 @@ jobs:
               await waitLog(logs,t=>/ELDORIA_PLAYABLE_VIEW panX=-?0\.000/.test(t),10000,'HOME camera reset after left pan');
               await sleep(500);
 
-              const primary=parseUi(logs,'primary');
-              if(!primary)throw new Error('Primary action touch target missing');
-              const p0=screenPoint(primary,390);
-              await touchTap(cdp,p0.x,p0.y);
-              const buildUiText=await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'sawmill action target');
-              const buildUi=parseUi(logs,'buildingAction');
-              if(!buildUi)throw new Error('Sawmill action target missing');
-              const b0=screenPoint(buildUi,390);
-              await touchTap(cdp,b0.x,b0.y);
-              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Build target=sawmill ok=True'),10000,'sawmill Build command');
-              await waitState(logs,s=>s.scene==='Valoria'&&s.sawmill>=1,20000,'sawmill completion');
-
-              const primaryAfterBuild=parseUi(logs,'primary');
-              const p1=screenPoint(primaryAfterBuild,390);
-              await touchTap(cdp,p1.x,p1.y);
-              await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition');
+              const worldNav=parseUi(logs,'worldNav');
+              if(!worldNav)throw new Error('MUNDO touch target missing');
+              const wn=screenPoint(worldNav,390);
+              const worldStart=logs.length;
+              await touchTap(cdp,wn.x,wn.y);
+              await waitState(logs,s=>s.scene==='Frontier',15000,'Valoria to World transition',worldStart);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_HOTSPOT id=forest-valoria'),10000,'forest hotspot geometry',worldStart);
               await sleep(1500);
               await page.screenshot({path:'webgl-startup-evidence/world-before-action.png'});
 
-              const worldPrimary=parseUi(logs,'primary');
-              if(!worldPrimary)throw new Error('World primary action touch target missing');
-              const wp=screenPoint(worldPrimary,390);
-              await touchTap(cdp,wp.x,wp.y);
-              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command');
+              const forest=parseHotspot(logs,'forest-valoria');
+              if(!forest)throw new Error('Forest hotspot screen coordinate missing');
+              const forestTapStart=logs.length;
+              await touchTap(cdp,forest.x,forest.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_UI id=buildingAction'),10000,'forest action target',forestTapStart);
+              const worldAction=parseUi(logs,'buildingAction');
+              if(!worldAction)throw new Error('Forest action button missing');
+              const wa=screenPoint(worldAction,390);
+              const gatherStart=logs.length;
+              await touchTap(cdp,wa.x,wa.y);
+              await waitLog(logs,t=>t.includes('ELDORIA_PLAYABLE_COMMAND kind=Gather target=forest-valoria ok=True'),10000,'Region 1 gather command',gatherStart);
               const rewardState=await waitState(logs,s=>s.scene==='Frontier'&&s.march==='idle'&&s.gatheredWood>=360,20000,'Region 1 return/reward');
               report.checks.rewardState=rewardState;
               await page.screenshot({path:'webgl-startup-evidence/world-after-reward.png'});
