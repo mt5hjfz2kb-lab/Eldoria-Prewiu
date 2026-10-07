@@ -427,6 +427,9 @@ namespace Eldoria.EditorTools
             ScreenCue("Bastion II banner left",new Vector2(.557f,.842f),.018f,.068f,bannerMaterial);
             ScreenCue("Bastion II banner right",new Vector2(.653f,.842f),.018f,.068f,bannerMaterial);
             ScreenCue("Bastion II upper authority reinforcement",new Vector2(.605f,.906f),.095f,.016f,authorityMaterial);
+            // Static authority captures represent Bastion I. Runtime Apply() is the sole owner
+            // of progression visibility, so future-level cues must never leak into baseline.
+            foreach(var cue in bastionCues) cue.SetActive(false);
             visual.BastionLevelTwoVisuals=bastionCues.ToArray();
 
             foreach(var proxy in proxies)
