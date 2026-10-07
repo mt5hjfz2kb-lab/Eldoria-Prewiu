@@ -8,10 +8,10 @@
   "final_unity_gate_run_id": 37490346723,
   "visual_authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "requested_by": "chat-playable-link-after-world-20261007",
-  "updated_at": "2026-10-07T05:58:00Z",
-  "retry": 4,
-  "retry_reason": "Include the certified Region 1 Frontier scene in the owner WebGL player while preserving certified Valoria and external SHARP state transport.",
+  "updated_at": "2026-10-07T06:30:00Z",
+  "retry": 5,
+  "retry_reason": "WebGL delivery fix: prune unused ExternalAssetLibrary references only during build after Region 1 inflated player to 1.14 GB and timed out; preserve certified runtime and restore canonical asset after build.",
   "parcel_source_artifact_id": 11424418707,
-  "retry_after_commit": "f88ce6950bb932eb0113058f2a3c7a6992062029",
+  "retry_after_commit": "4c72cf123a80669f9390fa18999d2eec9626061c",
   "world_region_1_closed_sha": "255769573712e053790df3fdf369a9534d4fc7d1"
 }
