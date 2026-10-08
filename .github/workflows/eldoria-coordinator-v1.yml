@@ -6,6 +6,7 @@ on:
     paths:
       - pipeline/active-workstreams.json
       - tools/eldoria-coordinator-v1.cjs
+      - tests/eldoria-coordinator-v1.test.cjs
       - .github/workflows/eldoria-coordinator-v1.yml
   schedule:
     - cron: '23 8 * * *'
@@ -25,6 +26,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Run coordinator regression tests
+        run: node --test tests/eldoria-coordinator-v1.test.cjs
       - name: Evaluate handoff gates without side effects
         run: node tools/eldoria-coordinator-v1.cjs
       - uses: actions/upload-artifact@v4
