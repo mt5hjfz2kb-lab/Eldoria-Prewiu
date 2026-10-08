@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M03 Evaluation Result V1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "gates",
+    "errors",
+    "insufficient"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "ACCEPTED",
+        "REJECTED",
+        "BLOCKED"
+      ]
+    },
+    "gates": {
+      "$ref": "gates.schema.json"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "insufficient": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "TECH",
+          "FUNCTIONAL",
+          "PUBLISHED",
+          "MOBILE_INTERACTION",
+          "VISUAL",
+          "EXPERIENCE_REVIEW"
+        ]
+      }
+    },
+    "candidate_id": {
+      "type": "string"
+    },
+    "source_sha": {
+      "type": "string"
+    },
+    "build_sha256": {
+      "type": "string"
+    },
+    "policy_digest": {
+      "type": "string"
+    },
+    "evidence_digest": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "string"
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

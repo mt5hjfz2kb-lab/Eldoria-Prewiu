@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M03 Gate Results V1",
+  "type": "object",
+  "required": [
+    "TECH",
+    "FUNCTIONAL",
+    "PUBLISHED",
+    "MOBILE_INTERACTION",
+    "VISUAL",
+    "EXPERIENCE_REVIEW"
+  ],
+  "properties": {
+    "TECH": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "FUNCTIONAL": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "PUBLISHED": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "MOBILE_INTERACTION": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "VISUAL": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "EXPERIENCE_REVIEW": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT_VERIFIED",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    }
+  }
+}
