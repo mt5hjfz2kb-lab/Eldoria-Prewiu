@@ -2,7 +2,7 @@
 
 ## Estado verificable a 8 de octubre de 2026
 
-**PREPARADO / INSTALACIÓN Y PRUEBA REAL PENDIENTES. No es un cierre satisfactorio.**
+**OLLAMA INSTALADO / MODELO DESCARGADO Y RESPUESTA LOCAL VERIFICADA / PRUEBA NATIVA FINAL PENDIENTE. La misión no está cerrada.**
 
 La conexión GitHub funciona. El [preflight 37792004269](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37792004269) terminó correctamente en `DESKTOP-R10PE55`: 16 procesadores lógicos, 8,75 GB RAM libre, RTX 3060 de 12288 MiB, 11701 MiB VRAM libre, GPU al 0 %, 488,8 GB libres en el disco consultado. El inventario encontró el comando Python; el segundo intento ha confirmado que es un alias de Microsoft Store sin intérprete disponible. Ollama no se encontró en PATH y no tenía proceso activo. Esto acredita acceso mediante Actions en aquel momento, no instalación ni disponibilidad futura.
 
@@ -76,3 +76,13 @@ Reparación: eliminado actions/checkout; se obtienen solamente los dos scripts d
 Se sustituye la prueba Python por `tools/local-ai-proof-v1.ps1`, intérprete cerrado de una función PowerShell generada, con los mismos nueve casos y preservación de respuesta/digest/métricas. No se instala Python ni se modifican aliases/PATH o Blender. El harness anterior Python se conserva como historia, no lo utiliza el workflow vigente. La gramática se comprobó contra un ejemplo puro y cuatro intentos de inyección; esto es validación estática, no ejecución nativa Windows ni prueba real del modelo.
 
 El nuevo workflow todavía debe activarse con **Run workflow → main → Run workflow**. No usar Re-run del run anterior. La ausencia de dispatch en el conector sigue siendo el bloqueo para ejecutar la definición nueva.
+
+## Tercer intento — instalación y respuesta local reales, defecto del verificador
+
+[Run 37798837659](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/37798837659), artifact **11559797875**, ZIP SHA-256 `14629db8819ad8ac72dc7e5c1a28415892a05166ba029db77d57c2b6e7f5a689`. Artifact descargado, hash comprobado y contenido abierto directamente.
+
+**Verificado:** Ollama **0.40.1** instalado y sirviendo en 127.0.0.1:11434; log `Ollama cloud disabled: true`; NVIDIA RTX 3060, CUDA, 37/37 capas descargadas a GPU. Modelo qwen2.5-coder:3b descargado con comprobación SHA-256 por Ollama; blob GGUF `4a188102020e9c9530b687fd6400f775c45e90a0d7baafe65bd0a36963fbb7ba`. Respuesta local completa de 65 tokens, 515051000 ns de generación, 3132765100 ns total. Antes y después: 11701 MiB VRAM libre, 0 % GPU; el servidor de prueba se terminó mediante el bloque finally.
+
+El run figura **FAIL** porque el verificador admitía únicamente `function Clamp { param(...) ... }`, mientras que el modelo generó la variante válida `function Clamp(...) { ... }`. No es un fallo de instalación ni de inferencia. La fuente real se revalidó independientemente en un intérprete de gramática cerrada: **9/9 casos PASS**, cuatro intentos de inyección rechazados. Fuente/respuesta original y reporte quedan en `docs/evidence/local-ai-v1/attempt3-*`; esa revalidación es local a la sesión y no se presenta como ejecución nativa Windows posterior al arreglo.
+
+Corregido el verificador para admitir ambas cabeceras con los mismos parámetros y el mismo cuerpo restringido, sin permitir comandos nuevos. No se relajan permisos ni se ejecuta código generado. Hace falta una nueva activación **Run workflow → main** para ejecutar el harness corregido en Windows, persistir el lanzador local y comprobar `proof.json`, `installation.json` y `final-check.json`. Reutilizará binarios y modelo existentes. No se necesita repetir las descargas pesadas. Hasta entonces NO CERRADO.

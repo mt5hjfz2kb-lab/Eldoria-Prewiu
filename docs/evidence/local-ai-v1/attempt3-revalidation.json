@@ -1,0 +1,105 @@
+{
+  "status": "LOCAL_REVALIDATION_PASS",
+  "native_windows_post_repair_verified": false,
+  "source_run_id": 37798837659,
+  "artifact_id": 11559797875,
+  "artifact_sha256": "14629db8819ad8ac72dc7e5c1a28415892a05166ba029db77d57c2b6e7f5a689",
+  "model": "qwen2.5-coder:3b",
+  "source_sha256": "3ff393a1747f815029f468f9758e813811fd627857850bf1bbf76a55a6cb0f33",
+  "method": "closed-grammar independent interpretation of actual locally generated function; no generated commands executed",
+  "cases": [
+    {
+      "input": [
+        -3,
+        0,
+        10
+      ],
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "input": [
+        5,
+        0,
+        10
+      ],
+      "expected": 5,
+      "actual": 5,
+      "pass": true
+    },
+    {
+      "input": [
+        14,
+        0,
+        10
+      ],
+      "expected": 10,
+      "actual": 10,
+      "pass": true
+    },
+    {
+      "input": [
+        0,
+        0,
+        10
+      ],
+      "expected": 0,
+      "actual": 0,
+      "pass": true
+    },
+    {
+      "input": [
+        10,
+        0,
+        10
+      ],
+      "expected": 10,
+      "actual": 10,
+      "pass": true
+    },
+    {
+      "input": [
+        -7,
+        -10,
+        -2
+      ],
+      "expected": -7,
+      "actual": -7,
+      "pass": true
+    },
+    {
+      "input": [
+        -20,
+        -10,
+        -2
+      ],
+      "expected": -10,
+      "actual": -10,
+      "pass": true
+    },
+    {
+      "input": [
+        20,
+        -10,
+        -2
+      ],
+      "expected": -2,
+      "actual": -2,
+      "pass": true
+    },
+    {
+      "input": [
+        5,
+        3,
+        3
+      ],
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    }
+  ],
+  "security_rejections_passed": 4,
+  "eval_count": 65,
+  "eval_duration_ns": 515051000
+}

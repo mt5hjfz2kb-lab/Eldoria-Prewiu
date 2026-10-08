@@ -29,7 +29,7 @@ $source | Set-Content (Join-Path $EvidenceDir 'generated-clamp.txt') -Encoding U
 # Parse an intentionally tiny closed grammar. Generated text is never executed.
 $var='(?:value|low|high)'
 $op='(?:lt|gt|le|ge|eq|ne)'
-$pattern='(?is)^\s*function\s+Clamp\s*\{\s*param\s*\(\s*\$value\s*,\s*\$low\s*,\s*\$high\s*\)\s*'
+$pattern='(?is)^\s*function\s+Clamp\s*(?:\{\s*param\s*\(\s*\$value\s*,\s*\$low\s*,\s*\$high\s*\)|\(\s*\$value\s*,\s*\$low\s*,\s*\$high\s*\)\s*\{)\s*'
 for ($i=1;$i -le 2;$i++) {
   $pattern+='if\s*\(\s*\$(?<a'+$i+'>'+$var+')\s+-(?<op'+$i+'>'+$op+')\s+\$(?<b'+$i+'>'+$var+')\s*\)\s*\{\s*return\s+\$(?<r'+$i+'>'+$var+')\s*;?\s*\}\s*'
 }

@@ -22,7 +22,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $target | Out-Null
           $files=@{
             'local-ai-install-v1.ps1'='e2223764b5d4fb17c4f5f6a1f7ad77bd2dd1a668d613dab3843704d25fd1f9dd'
-            'local-ai-proof-v1.ps1'='c9eb99403ab6a039deb0758bb5aa1c1d7013830045ea70fcdd32fc8a181f673c'
+            'local-ai-proof-v1.ps1'='3a5e67a423c35f4e76bbf29a6af58aae0f32e38a454b6bf1bce12355f10601b0'
           }
           foreach($name in $files.Keys) {
             $dest=Join-Path $target $name

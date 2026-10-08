@@ -58,7 +58,8 @@
         "tools/local-ai-install-v1.ps1",
         "tools/local-ai-proof-v1.py",
         "docs/ELDORIA_LOCAL_AI_V1.md",
-        "tools/local-ai-proof-v1.ps1"
+        "tools/local-ai-proof-v1.ps1",
+        "docs/evidence/local-ai-v1/**"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T14:35:02.943Z",
@@ -68,15 +69,15 @@
       "art_production_routing_reason": "Local developer inference infrastructure only; no player-visible assets/game changes.",
       "paid_credits": 0,
       "dependency": "Consume completed read-only preflight run 37792004269; do not mutate its owner's workflows or request. No Unity/Blender changes, M11, QA or external API.",
-      "phase": "SECOND RUN FAILED AT PYTHON ALIAS / NATIVE POWERSHELL PROOF PREPARED / DISPATCH REQUIRED",
-      "next": "Run updated workflow manually on main, inspect real local model response/proof/final-check, repair and close only with evidence.",
+      "phase": "OLLAMA INSTALLED / MODEL DOWNLOADED / LOCAL RESPONSE VERIFIED / HARNESS HEADER FIX / FINAL NATIVE RERUN REQUIRED",
+      "next": "Manually dispatch corrected workflow on main (not rerun old SHA). Reuses installed binaries/model; inspect final native proof and persisted launcher, final-check, artifact, then document closure.",
       "runner_released": true,
-      "blocker": "Run 37797719180 verified script fetch but failed before installation: Python is Microsoft Store alias. Proof now uses existing PowerShell/.NET; new definition requires manual workflow_dispatch absent in connected tools.",
+      "blocker": "Run 37798837659 installed Ollama and downloaded/responded using qwen2.5-coder:3b on CUDA with cloud disabled. Valid function-header variant was rejected by overstrict harness. Actual source independently passes 9/9 cases; corrected Windows harness still needs manual dispatch unavailable in connected tools.",
       "result": {
         "preparation_commit": "a3cfc5657e6a4b4326558fd33869048352dceaa7",
         "preflight_run_id": 37792004269,
-        "installed_verified": false,
-        "model_downloaded_verified": false,
+        "installed_verified": true,
+        "model_downloaded_verified": true,
         "real_proof_verified": false,
         "local_harness_validation": "YAML parsed; pure grammar sample accepted, four injection samples rejected in independent grammar check; native execution pending",
         "doc": "docs/ELDORIA_LOCAL_AI_V1.md",
@@ -87,7 +88,18 @@
         "repair": "Direct immutable-SHA two-file download with SHA256 verification; .NET standalone ZIP extraction",
         "second_install_run_id": 37797719180,
         "second_install_run_conclusion": "failed at Python alias before installer",
-        "proof_harness": "native PowerShell closed-grammar interpreter; no Python required"
+        "proof_harness": "native PowerShell closed-grammar interpreter; no Python required",
+        "third_install_run_id": 37798837659,
+        "third_install_run_conclusion": "failure in overly strict grammar after real inference; installation and local response verified",
+        "third_artifact_id": 11559797875,
+        "third_artifact_digest": "sha256:14629db8819ad8ac72dc7e5c1a28415892a05166ba029db77d57c2b6e7f5a689",
+        "local_response_verified": true,
+        "ollama_version": "0.40.1",
+        "local_only_log_verified": true,
+        "gpu_backend": "CUDA; 37/37 layers offloaded; RTX 3060",
+        "independent_generated_code_cases_passed": 9,
+        "final_native_proof_verified": false,
+        "gpu_free_before_after_mib": 11701
       }
     }
   ],
