@@ -467,7 +467,8 @@ jobs:
           set -euo pipefail
           test -s r2b-webgl-candidate/index.html
           test -d r2b-webgl-candidate/Build
-          find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.br|wasm\.gz)
+          find r2b-webgl-candidate/Build -type f | grep -Eq '\.(wasm|wasm\.unityweb|wasm\.br|wasm\.gz)$'
+          test -s r2b-webgl-candidate/splat-state-0.ply
           printf 'WEBGL_CANDIDATE_PACKAGE_PASS; no stable Pages deployment; runtime choice QA and mobile screenshots NOT YET PROVEN\n'
       - name: Report verifiable candidate artifact to Directorate
         if: always()
