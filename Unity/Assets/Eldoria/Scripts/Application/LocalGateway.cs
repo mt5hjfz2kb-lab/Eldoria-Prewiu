@@ -73,6 +73,7 @@ namespace Eldoria.Application
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
+                RegionOneForestChoice=s.RegionOneForestChoice ?? "",
                 ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
                 BuildingTaskId=s.BuildingTaskId, RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
@@ -114,6 +115,30 @@ namespace Eldoria.Application
             if (command.ExpectedRevision != state.Revision) return Fail("Estado desactualizado");
             switch (command.Kind)
             {
+                case "ChooseRegionOneForest":
+                    // Two deterministic, once-only alternatives for the existing Region 1 forest POI.
+                    // Rewards are below the normal 360-wood gather, and never change gathering reserves.
+                    if (!string.IsNullOrEmpty(state.RegionOneForestChoice))
+                        return Fail("Esta decisión ya está tomada");
+                    if (command.TargetId != "forest-valoria:survey" &&
+                        command.TargetId != "forest-valoria:harvest")
+                        return Fail("Decisión desconocida");
+                    if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
+                    state.RegionOneForestChoice = command.TargetId == "forest-valoria:survey"
+                        ? "survey" : "harvest";
+                    // Survey: lower reward, no costs; harvest: larger reward, finite forest stock spent.
+                    int choiceReward = state.RegionOneForestChoice == "survey" ? 20 : 40;
+                    if (state.RegionOneForestChoice == "harvest")
+                    {
+                        if (state.ForestRemaining < choiceReward)
+                        {
+                            state.RegionOneForestChoice = "";
+                            return Fail("No queda suficiente madera en este bosque");
+                        }
+                        state.ForestRemaining -= choiceReward;
+                    }
+                    state.Resources.Wood += choiceReward;
+                    break;
                 case "Gather":
                     if (command.TargetId!="forest-valoria" && command.TargetId!="quarry-valoria")
                         return Fail("Nodo desconocido");
