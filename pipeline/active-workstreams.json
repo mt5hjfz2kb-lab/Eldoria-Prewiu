@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T06:10:00Z",
+  "updated_at": "2026-10-08T07:18:00Z",
   "active": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
@@ -42,7 +42,9 @@
       "runner_released": false,
       "blocker": null,
       "reopened_at": "2026-10-07T21:30:00Z"
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-published-probe-integrity-v1",
       "title": "Published probe integrity and explicit certification coverage",
@@ -58,15 +60,32 @@
       ],
       "claimed_at": "2026-10-08T07:08:00Z",
       "base_main_sha": "294ce05284d99e152983f4d761bc845e6b0478ab",
-      "status": "active",
-      "phase": "IMPLEMENTATION",
+      "status": "completed",
+      "phase": "QA INTEGRITY INSTALLED / PUBLISHED BUILD FAIL / GAME REPAIR UNVERIFIED",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "QA integrity only: classify engine errors, assert exact state persistence and named navigation controls, explicitly limit coverage. No visual/art assets, camera, scene, Unity presentation, economy or publication mutations.",
       "dependency": "Consumes current published build read-only. Existing parity owner retains Unity, Windows runner, Pages and project state; this stream cannot repair or certify their presentation. Owner authorized corrections following independent audit.",
-      "next": "Implement contract, test it against historical PASS-with-error artifact and navigation/persistence counterexamples, integrate current workflow, verify CI and close QA-only scope."
-    }
-  ],
-  "history": [
+      "next": "Presentation owner must diagnose observed Unity engine errors and validate full published Bastion I-II; no human/visual/gameplay certification granted.",
+      "completed_at": "2026-10-08T07:18:00Z",
+      "runner_released": true,
+      "result": {
+        "implementation_commits": [
+          "78ea9b228b0cb3a6d17f92bf2924eca3502336e2",
+          "57369a0c4a5be91be3e261e722ad69ddab50e6f4"
+        ],
+        "contract_tests": "5/5 PASS",
+        "architecture_run": 37741999838,
+        "workflow_governance_run": 37741999918,
+        "quarantine_run": 37741999718,
+        "published_probe_run": 37741999794,
+        "published_probe_conclusion": "failure",
+        "observed_engine_errors": 3,
+        "full_bastion_i_ii_verified": false,
+        "visual_quality_verified": false,
+        "independent_human_playthrough_verified": false,
+        "documentation": "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md"
+      }
+    },
     {
       "id": "valoria-bastion-i-ii-vertical-slice-migration-v1",
       "title": "Valoria Bastion I-II controlled vertical-slice presentation migration",
