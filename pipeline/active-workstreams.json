@@ -90,20 +90,19 @@
         "tests/m04/incidents.test.mjs",
         "docs/evidence/eldoria-m04-limited-recovery-v1/**",
         "pipeline/active-workstreams.json",
-        ".github/workflows/eldoria-m04-tests.yml"
+        ".github/workflows/eldoria-m04-tests.yml",
+        ".github/workflows/eldoria-coordinator-failure-recovery.yml"
       ],
       "resources": [],
       "claimed_at": "2026-10-08T20:38:00+02:00",
       "base_main_sha": "fcf544acb6584101181eeb3b2c4b0ff148f355ee",
-      "status": "blocked",
-      "phase": "M04 QA PASS / PR27 DEPLOYMENT AND AUTHENTIC E2E NOT AUTHORIZED",
+      "status": "active",
+      "phase": "PR27/PR29 INTEGRATED / CONNECT M04 WITH EXISTING LISTENER",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pure Node incident management; no Unity, art or production workflows",
       "paid_credits": 0,
       "dependency": "Preserve PR #27, PR #26, M07 and existing local agent preflight; no shared runner, no merge; independent QA required",
-      "next": "Continue after authorized integration/deployment of PR #27 and #29: connect only existing listener, authenticated M04 ingestion, durable claims, bounded correction and independent M03 QA; real event proof. Do not create replacement.",
-      "runner_released": true,
-      "blocker": "PR #27 remains draft/unmerged; its workflow_run listener cannot trigger from main. Owner explicitly prohibited autonomous merges; no authenticated durable correction→QA→DG chain deployed. PR #29 22/22 PASS isolated; code not deployed to main. No full autonomy PASS."
+      "next": "Wire existing one listener to M04 classification and incident report, no auto repair or shared runner; then verify live event, independent QA and delivery under existing authorized round"
     }
   ],
   "history": [
