@@ -480,7 +480,7 @@ jobs:
 
   game-experience-directorate:
     needs: startup
-    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_run')
+    if: always() && needs.startup.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: read
