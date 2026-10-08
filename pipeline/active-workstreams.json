@@ -1,8 +1,38 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:19:45Z",
-  "active": [],
+  "updated_at": "2026-10-08T13:15:00Z",
+  "active": [
+    {
+      "id": "m07-r1-sawmill-construction-visual-correction",
+      "title": "M07-R1 Sawmill construction state local visual correction",
+      "owner": "chat-art-m07-r1-20261008",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+        "pipeline/art-production-requests/m07-r1-sawmill-construction-visual-correction.json",
+        "docs/evidence/m07-r1-sawmill-construction-visual-correction/**",
+        "pipeline/unity-publish-request.json",
+        "SESSION_HANDOFF.md",
+        "PROJECT_STATE.md",
+        "pipeline/active-workstreams.json"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1",
+        "github-pages-unity-owner"
+      ],
+      "claimed_at": "2026-10-08T13:15:00Z",
+      "base_main_sha": "869c163b395a49136fba36a760f3bbf31308b31c",
+      "status": "active",
+      "phase": "SOURCE-LOCALIZED ART CORRECTION",
+      "dependency": "M05-R1 verified; preserve finished SHARP sawmill, all gameplay, global camera and HUD; zero credits; no M11",
+      "paid_credits": 0,
+      "art_production_routing": "required",
+      "next": "Create local sawmill-only scaffold correction, production native screenshots, inspect three states, published WebGL macroloop and evidence; close on actual PASS or blocker",
+      "completed_at": null,
+      "runner_released": false,
+      "blocker": null
+    }
+  ],
   "history": [
     {
       "id": "valoria-bastion-i-ii-presentation-parity-correction-v1",
