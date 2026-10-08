@@ -150,19 +150,28 @@ jobs:
             return null;
           }
           async function tapLoggedUi(page,logs,id,start=0){
-            let ui;
+            let ui,lastMappingError=null;
+            const locator=page.locator('canvas');
             const begin=Date.now();
             while(Date.now()-begin<90000){
               ui=detailedUi(logs,id,start);
-              if(ui&&ui.enabled&&ui.visible)break;
+              if(ui&&ui.enabled&&ui.visible){
+                const box=await locator.boundingBox();
+                const dimensions=await locator.evaluate(c=>({width:c.width,height:c.height}));
+                try{
+                  const point=controlPoint(ui,box,dimensions);
+                  await page.touchscreen.tap(point.x,point.y);
+                  return {...ui,css:point};
+                }catch(error){
+                  // After a mobile orientation resize Unity can briefly expose the
+                  // previous frame's UI coordinates. Do not accept those stale
+                  // coordinates, but wait for the next runtime geometry publication.
+                  lastMappingError=error;
+                }
+              }
               await sleep(200);
             }
-            if(!ui||!ui.enabled||!ui.visible)throw new Error('No usable named control '+id);
-            const locator=page.locator('canvas'),box=await locator.boundingBox();
-            const dimensions=await locator.evaluate(c=>({width:c.width,height:c.height}));
-            const point=controlPoint(ui,box,dimensions);
-            await page.touchscreen.tap(point.x,point.y);
-            return {...ui,css:point};
+            throw new Error('No usable named control '+id+(lastMappingError?': '+lastMappingError.message:''));
           }
           function fullSnapshot(s){
             return Object.fromEntries(['revision','wood','stone','gatheredWood','gatheredStone','march','sawmill','bastion','barracks','archers','trained','configured','scout','engendro','objective'].map(k=>[k,s[k]]));
