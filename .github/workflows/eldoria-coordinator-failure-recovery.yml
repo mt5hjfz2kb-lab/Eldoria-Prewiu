@@ -246,8 +246,7 @@ jobs:
       github.event_name == 'workflow_run') ||
       (github.event_name == 'push' &&
       (github.event.head_commit.message == 'ops(r2-b): resume already built candidate WebGL QA without Unity' ||
-       (startsWith(github.event.head_commit.message, 'fix(r2-e): ') &&
-        contains(github.event.head_commit.modified, 'qa/r2b-webgl-choice-probe.cjs'))))
+       startsWith(github.event.head_commit.message, 'fix(r2-e): ')))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -262,6 +261,17 @@ jobs:
         with:
           script: |
             const {owner,repo}=context.repo;
+            // GitHub push webhook head_commit.modified can be absent for API file writes;
+            // inspect the exact commit through the authenticated API instead. Never
+            // launch arbitrary work for an unrelated R2-E commit.
+            if(context.eventName==='push' && (context.payload.head_commit?.message||'').startsWith('fix(r2-e): ')){
+              const revision=await github.rest.repos.getCommit({owner,repo,ref:context.sha});
+              const paths=(revision.data.files||[]).map(f=>f.filename);
+              if(paths.length!==1||paths[0]!=='qa/r2b-webgl-choice-probe.cjs'){
+                core.warning('Unauthorized or non-isolated R2-E QA source update');
+                core.setOutput('authorized','false');return;
+              }
+            }
             const run=context.payload.workflow_run || (await github.rest.actions.getWorkflowRun({owner,repo,run_id:37855962045})).data;
             let request;
             try{
