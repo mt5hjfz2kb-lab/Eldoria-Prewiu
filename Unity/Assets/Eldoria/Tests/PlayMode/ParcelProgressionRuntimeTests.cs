@@ -96,6 +96,44 @@ namespace Eldoria.Tests
             visual.Zoom(-1000);Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov*.92f).Within(.001));visual.Home();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));Assert.That(camera.fieldOfView,Is.EqualTo(visual.PresentationHomeFov).Within(.001));
             yield return null;
         }
+
+        [UnityTest] public IEnumerator PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom()
+        {
+            previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
+            testScene=SceneManager.CreateScene("Presented frame coordinate isolation");
+            testRoot=new GameObject("Presented projection test");SceneManager.MoveGameObjectToScene(testRoot,testScene);
+            var visual=testRoot.AddComponent<ValoriaParcelPresentation>();
+            var cameraGo=new GameObject("Projection camera");cameraGo.transform.SetParent(testRoot.transform);
+            var camera=cameraGo.AddComponent<Camera>();visual.ProductionCamera=camera;
+            camera.transform.position=new Vector3(2.8f,1.1f,0);
+            var loader=testRoot.AddComponent<ValoriaWebGLSplatStateLoader>();loader.enabled=false;loader.Presentation=visual;
+            var canvasGo=new GameObject("Projection test canvas",typeof(RectTransform),typeof(Canvas));canvasGo.transform.SetParent(testRoot.transform);
+            canvasGo.GetComponent<Canvas>().renderMode=RenderMode.ScreenSpaceOverlay;
+            var frameGo=new GameObject("Presented texture",typeof(RectTransform));frameGo.transform.SetParent(canvasGo.transform,false);
+            var rect=frameGo.GetComponent<RectTransform>();rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
+            var flags=BindingFlags.Instance|BindingFlags.NonPublic;
+            typeof(ValoriaWebGLSplatStateLoader).GetField("webBackgroundRect",flags).SetValue(loader,rect);
+            var texture=new Texture2D(2,2);
+            typeof(ValoriaWebGLSplatStateLoader).GetField("webBackgroundTexture",flags).SetValue(loader,texture);
+            foreach(bool portrait in new[]{false,true})
+            foreach(var key in new[]{"valoria-state0-pan-0.5-zoom0.9.png","valoria-state0-pan0.5-zoom1.1.png","valoria-bastion-ii.png"})
+            {
+                rect.sizeDelta=portrait?new Vector2(1230,845):new Vector2(844,844*845f/1230f);
+                rect.anchoredPosition=new Vector2(portrait?140f:5f,-7f);rect.localScale=Vector3.one*1.025f;
+                typeof(ValoriaWebGLSplatStateLoader).GetField("loadedVisualKey",flags).SetValue(loader,key);
+                Canvas.ForceUpdateCanvases();
+                var target=new Vector3(.2f,-.3f,12f);
+                Assert.That(loader.TryProjectPresentedPoint(target,out var pixel),Is.True);
+                Assert.That(loader.TryPresentedRay(new Vector2(pixel.x,pixel.y),out var ray),Is.True);
+                var closest=ray.origin+ray.direction*Vector3.Dot(target-ray.origin,ray.direction);
+                Assert.That(Vector3.Distance(closest,target),Is.LessThan(.001f),"Picking must follow displayed frame after "+key+(portrait?" portrait":" landscape"));
+            }
+            typeof(ValoriaWebGLSplatStateLoader).GetField("webBackgroundTexture",flags).SetValue(loader,null);
+            Assert.That(loader.TryPresentedRay(Vector2.zero,out _),Is.False,"An unavailable frame must not allow invisible building selection");
+            UnityEngine.Object.Destroy(texture);
+            yield return null;
+        }
     }
 }
+
 

@@ -275,7 +275,7 @@ namespace Eldoria.Presentation
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
-                building.sizeDelta=new Vector2(Mathf.Min(276f,w-20f),180f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-20f),178f);
                 // SlicePresenter owns the contextual position under the selected building.
             }
 
@@ -348,7 +348,7 @@ namespace Eldoria.Presentation
             if(building!=null)
             {
                 building.anchorMin=building.anchorMax=new Vector2(.5f,.5f);building.pivot=new Vector2(.5f,.5f);
-                building.sizeDelta=new Vector2(Mathf.Min(276f,w-16f),180f);
+                building.sizeDelta=new Vector2(Mathf.Min(276f,w-16f),178f);
                 // SlicePresenter owns the contextual position under the selected building.
             }
 

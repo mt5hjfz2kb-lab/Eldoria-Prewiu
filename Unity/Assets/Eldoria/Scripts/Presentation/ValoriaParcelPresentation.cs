@@ -85,7 +85,8 @@ namespace Eldoria.Presentation
             var p=ProductionCamera.transform.position;
             float horizontalLimit=HorizontalPanHalfExtent;
 #if UNITY_WEBGL && !UNITY_EDITOR
-            horizontalLimit=Screen.width<Screen.height?HorizontalPanHalfExtent:.80f;
+            var loader=GetComponent<ValoriaWebGLSplatStateLoader>();
+            horizontalLimit=loader!=null?loader.WebHorizontalPanLimit:.80f;
 #endif
             p.x=Mathf.Clamp(p.x-delta.x*.012f,-horizontalLimit,horizontalLimit);
             // Owner camera rule: Valoria is primarily a wide left/right space, but must

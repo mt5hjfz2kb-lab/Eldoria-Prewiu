@@ -345,7 +345,16 @@ namespace Eldoria.Presentation
             var camera=OfficialCamera;
             var target=GameObject.Find(objectName);
             if(!city||camera==null||target==null)return;
-            if(productionParcels!=null){productionParcels.Home();return;}
+            if(productionParcels!=null)
+            {
+                productionParcels.Home();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                var frameLoader=productionParcels.GetComponent<ValoriaWebGLSplatStateLoader>();
+                var targetCollider=target.GetComponent<Collider>();
+                if(frameLoader!=null)frameLoader.FocusPresentedPoint(targetCollider!=null?targetCollider.bounds.center:target.transform.position);
+#endif
+                return;
+            }
             var collider=target.GetComponent<Collider>();
             var focus=collider!=null?collider.bounds.center:target.transform.position;
 
@@ -655,6 +664,7 @@ namespace Eldoria.Presentation
                 " bastion="+state.BastionLevel+
                 " barracks="+state.BarracksLevel+
                 " archers="+(state.Available?.ArcherT1??0)+
+                " trained="+(state.ChapterProgress?.TrainedArchers??0)+
                 " configured="+state.MarchConfigured+
                 " scout="+state.ScoutDefeated+
                 " engendro="+state.EngendroDefeated+
@@ -1074,18 +1084,18 @@ namespace Eldoria.Presentation
             buildingPanel=new GameObject("Building interaction panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
             rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);rt.pivot=new Vector2(.5f,.5f);
-            rt.sizeDelta=new Vector2(276,180);rt.anchoredPosition=new Vector2(0,-70);
+            rt.sizeDelta=new Vector2(276,178);rt.anchoredPosition=new Vector2(0,-70);
             buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.94f);
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(12,12,8,8);
-            layout.spacing=4;layout.childControlHeight=true;layout.childForceExpandHeight=false;
+            layout.spacing=2;layout.childControlHeight=true;layout.childForceExpandHeight=false;
             buildingTitle=Label("Building title",buildingPanel.transform,15,new Color(.96f,.88f,.69f),24);
-            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.86f,.89f,.90f),38);
+            buildingBody=Label("Building body",buildingPanel.transform,12,new Color(.86f,.89f,.90f),56);
             var actionGo=new GameObject("Building action",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));
             actionGo.transform.SetParent(buildingPanel.transform,false);
             actionGo.GetComponent<Image>().color=new Color(.73f,.61f,.36f,.98f);
-            actionGo.GetComponent<LayoutElement>().preferredHeight=46;
+            actionGo.GetComponent<LayoutElement>().preferredHeight=44;
             buildingAction=actionGo.GetComponent<Button>();
-            var actionText=Label("Text",actionGo.transform,10,new Color(.07f,.09f,.11f),46);
+            var actionText=Label("Text",actionGo.transform,13,new Color(.07f,.09f,.11f),44);
             actionText.text="ACCIÓN";actionText.alignment=TextAnchor.MiddleCenter;
             var ar=actionText.rectTransform;ar.anchorMin=Vector2.zero;ar.anchorMax=Vector2.one;ar.offsetMin=ar.offsetMax=Vector2.zero;
             var closeGo=new GameObject("Cerrar",typeof(RectTransform),typeof(Image),typeof(Button),typeof(LayoutElement));

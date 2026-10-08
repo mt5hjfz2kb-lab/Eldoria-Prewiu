@@ -40,7 +40,6 @@ namespace Eldoria.Presentation
         public bool TryProjectPresentedPoint(Vector3 world,out Vector3 screen)
         {
             screen=Vector3.zero;
-#if UNITY_WEBGL && !UNITY_EDITOR
             if(webBackgroundRect==null||webBackgroundTexture==null||Presentation==null)return false;
             var view=PresentedViewMatrix();
             var local=view.MultiplyPoint(world);
@@ -53,14 +52,10 @@ namespace Eldoria.Presentation
             var pixel=RectTransformUtility.WorldToScreenPoint(null,webBackgroundRect.TransformPoint(new Vector3(rect.xMin+uv.x*rect.width,rect.yMin+uv.y*rect.height,0)));
             screen=new Vector3(pixel.x,pixel.y,-local.z);
             return true;
-#else
-            return false;
-#endif
         }
         public bool TryPresentedRay(Vector2 screen,out Ray ray)
         {
             ray=default;
-#if UNITY_WEBGL && !UNITY_EDITOR
             if(webBackgroundRect==null||webBackgroundTexture==null||Presentation==null)return false;
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(webBackgroundRect,screen,null,out var local))return false;
             var rect=webBackgroundRect.rect;
@@ -70,15 +65,34 @@ namespace Eldoria.Presentation
             var direction=new Vector3((uv.x*2-1)*tangent*CertifiedAspect,(uv.y*2-1)*tangent,1).normalized;
             ray=new Ray(new Vector3(LoadedPan(),0,0),direction);
             return true;
-#else
-            return false;
-#endif
         }
-#if UNITY_WEBGL && !UNITY_EDITOR
         float LoadedPan()=>loadedVisualKey.Contains("pan-0.5")?-.5f:(loadedVisualKey.Contains("pan0.5")?.5f:0f);
         float LoadedZoom()=>loadedVisualKey.Contains("zoom0.9")?.9f:(loadedVisualKey.Contains("zoom1.1")?1.1f:1f);
         Matrix4x4 PresentedViewMatrix()=>Matrix4x4.Scale(new Vector3(1,1,-1))*Matrix4x4.TRS(new Vector3(LoadedPan(),0,0),Quaternion.identity,Vector3.one).inverse;
+
+        public float WebHorizontalPanLimit
+        {
+            get
+            {
+                float width=Mathf.Max(Screen.width,Screen.height*CertifiedAspect);
+                float margin=Mathf.Max(0f,(width*CertifiedWebOverscan-Screen.width)*.5f);
+                float pixelsPerPan=width*(CertifiedHalfPanPixels/1230f)/CertifiedHalfPanWorld;
+                return Mathf.Max(CertifiedHalfPanWorld,margin/Mathf.Max(1f,pixelsPerPan));
+            }
+        }
+        public void FocusPresentedPoint(Vector3 world)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(!TryProjectPresentedPoint(world,out var point)||webBackgroundRect==null)return;
+            var canvas=webBackgroundRect.GetComponentInParent<Canvas>();
+            float pixelsPerPan=webBackgroundRect.rect.width*(CertifiedHalfPanPixels/1230f)/CertifiedHalfPanWorld*(canvas!=null?canvas.scaleFactor:1f);
+            var camera=Presentation.ProductionCamera;
+            var position=camera.transform.position;
+            position.x=Mathf.Clamp(position.x+(point.x-Screen.width*.5f)/Mathf.Max(1f,pixelsPerPan),-WebHorizontalPanLimit,WebHorizontalPanLimit);
+            camera.transform.position=position;
+            SyncCertifiedWebView();
 #endif
+        }
 
         void Start()
         {
@@ -210,7 +224,7 @@ namespace Eldoria.Presentation
             var camera = Presentation.ProductionCamera;
             RequestWebVisualForCurrentCamera();
 
-            float panLimit=Screen.width<Screen.height?ValoriaParcelPresentation.HorizontalPanHalfExtent:CertifiedHalfPanWorld;
+            float panLimit=WebHorizontalPanLimit;
             float panX = Mathf.Clamp(camera.transform.position.x,-panLimit,panLimit);
             float panY = Mathf.Clamp(camera.transform.position.y,
                 -ValoriaParcelPresentation.VerticalPanHalfExtent,
