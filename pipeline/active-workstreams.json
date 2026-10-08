@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T13:15:00Z",
+  "updated_at": "2026-10-08T13:25:00Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -16,21 +16,18 @@
         "PROJECT_STATE.md",
         "pipeline/active-workstreams.json"
       ],
-      "resources": [
-        "windows-self-hosted-unity-6000-3-23f1",
-        "github-pages-unity-owner"
-      ],
+      "resources": [],
       "claimed_at": "2026-10-08T13:15:00Z",
       "base_main_sha": "869c163b395a49136fba36a760f3bbf31308b31c",
-      "status": "active",
-      "phase": "SOURCE-LOCALIZED ART CORRECTION",
+      "status": "blocked",
+      "phase": "PLATFORM BLOCKER — NATIVE/WEBGL EVIDENCE UNAVAILABLE TO THIS CONNECTOR",
       "dependency": "M05-R1 verified; preserve finished SHARP sawmill, all gameplay, global camera and HUD; zero credits; no M11",
       "paid_credits": 0,
       "art_production_routing": "required",
-      "next": "Create local sawmill-only scaffold correction, production native screenshots, inspect three states, published WebGL macroloop and evidence; close on actual PASS or blocker",
+      "next": "Resume same M07-R1 after obtaining new production run/artifact from commit f9d1f5b3f44f5a084c7ac09140ad6d1c12ff6d73; visually inspect runtime-home-initial / runtime-left-under-construction / runtime-left-built, then WebGL publish full regression only after visual acceptance.",
       "completed_at": null,
-      "runner_released": false,
-      "blocker": null
+      "runner_released": true,
+      "blocker": "No available GitHub connector action to list/dispatch current push-triggered GitHub Actions runs; cannot retrieve new Unity native/WebGL screenshots, visually validate or publish certified build from this session. Source change committed but NOT certified."
     }
   ],
   "history": [
