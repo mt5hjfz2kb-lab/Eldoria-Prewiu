@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-08T16:54:47.634Z",
+  "updated_at": "2026-10-08T16:57:37.598Z",
   "active": [
     {
       "id": "m07-r1-sawmill-construction-visual-correction",
@@ -48,6 +48,28 @@
       "phase": "RUNNER GOVERNANCE REPAIR AND READ-ONLY LOCAL AGENT PREFLIGHT",
       "dependency": "Do not touch M07/Unity or launch QA. No paid API or installation until runtime proof.",
       "next": "Repair existing failed workflow guard, assess Ollama availability and safe resource capacity using existing runner."
+    },
+    {
+      "id": "eldoria-local-agent-first-maintenance-v1",
+      "title": "First useful local agent contribution — coordinator evidence BOM regression fixture",
+      "owner": "chat-direction-local-agent-maintenance-20261008",
+      "scope": [
+        ".github/workflows/eldoria-local-agent-isolated-pilot-v1.yml",
+        "pipeline/active-workstreams.json",
+        "tools/tests/eldoria-coordinator-bom-cases.json",
+        "tools/tests/eldoria-coordinator-bom-regression.test.cjs",
+        "docs/evidence/local-agent-first-maintenance-v1/**"
+      ],
+      "resources": [
+        "windows-self-hosted-unity-6000-3-23f1"
+      ],
+      "claimed_at": "2026-10-08T16:57:37.596Z",
+      "base_main_sha": "43127345bed56e91f84a153fda2b1fc37ebb2bc7",
+      "status": "active",
+      "phase": "AUTHORIZED FIRST USEFUL LOCAL GENERATION / PR ONLY",
+      "paid_credits": 0,
+      "dependency": "Do not modify Unity, M07, M11 or other active workstreams; maintain prior pilot completed.",
+      "next": "Generate bounded BOM/JSON regression cases by local Ollama, independently test against existing coordinator evidence parser, create reviewable PR only, release runner."
     }
   ],
   "history": [
