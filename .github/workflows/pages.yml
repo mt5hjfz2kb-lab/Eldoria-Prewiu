@@ -35,11 +35,11 @@ permissions:
 
 concurrency:
   # Candidate build is isolated from normal Pages source/QA pushes; a routine QA commit must never cancel Unity candidate.
-  group: eldoria-pages-${{ (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable' }}
+  group: eldoria-pages-${{ inputs.candidate_run_id > 0 && 'r2b-preview' || ((github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable') }}
   # Each coherent green push certifies and publishes the exact candidate.
   # Only the newest main candidate matters during an active development block.
   # Superseded runs are cancelled so stale candidates cannot block final certification.
-  cancel-in-progress: true
+  cancel-in-progress: ${{ inputs.candidate_run_id == 0 }}
 
 jobs:
   source-preflight:
@@ -330,6 +330,9 @@ jobs:
           retention-days: 7
 
   deploy:
+    concurrency:
+      group: eldoria-pages-site-publication
+      cancel-in-progress: false
     needs: [source-preflight, unity-webgl]
     if: inputs.candidate_run_id == 0 && needs.source-preflight.outputs.candidate_only != 'true'
     environment:
@@ -491,6 +494,9 @@ jobs:
 
   r2b-candidate-pages-preview:
     if: inputs.candidate_run_id > 0
+    concurrency:
+      group: eldoria-pages-site-publication
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment:
