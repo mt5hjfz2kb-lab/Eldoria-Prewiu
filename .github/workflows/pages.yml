@@ -26,7 +26,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: eldoria-pages-main
+  # Candidate build is isolated from normal Pages source/QA pushes; a routine QA commit must never cancel Unity candidate.
+  group: eldoria-pages-${{ (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ops(r2-b):')) && 'r2b-candidate' || 'stable' }}
   # Each coherent green push certifies and publishes the exact candidate.
   # Only the newest main candidate matters during an active development block.
   # Superseded runs are cancelled so stale candidates cannot block final certification.
