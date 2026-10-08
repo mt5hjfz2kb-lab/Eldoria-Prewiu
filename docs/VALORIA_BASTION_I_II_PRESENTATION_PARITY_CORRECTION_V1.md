@@ -1,6 +1,6 @@
 # VALORIA BASTION I-II — PRESENTATION PARITY CORRECTION v1
 
-Status: **CLOSED / PASS — production + published WebGL probe certified**
+Status: **REOPENED — latest HOME/drag correction on current main requires full autonomous recertification and republish before close**
 Workstream: `valoria-bastion-i-ii-presentation-parity-correction-v1`
 
 ## Authority and scope
@@ -67,3 +67,9 @@ Final production run **37681793700** passed with artifact **11509591694**; UI ce
 The presentation correction remains bounded to Bastion I-II. Bastion III was not opened; World Region 1 gameplay/state authority, economy, persistence and SHARP authority were not redesigned. Paid credits: **0**.
 
 Published owner build: `https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/`.
+
+## 2026-10-08 autonomous closure policy
+
+Owner/manual physical-device confirmation is no longer a mandatory closure condition for this workstream. The owning execution must continue automatically from current `main` through current-head production, matched visual evidence, gameplay/UI/persistence gates, WebGL publication and published device-equivalent probe. If those declared gates pass, close and release the workstream autonomously; do not leave it active merely awaiting owner review. Concrete later owner feedback remains authoritative evidence and may revoke/reopen the PASS.
+
+Intermediate commits, queued/in-progress runs, capture availability, publication, probe completion, or chat/context boundaries are not stopping points. Continue diagnosis → correction → rerun → validation → publish → probe → close until completion or a genuine human/platform blocker.
