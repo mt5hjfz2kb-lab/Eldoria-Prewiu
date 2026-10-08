@@ -58,7 +58,9 @@
         "tools/local-agent-isolated-pilot-v1.ps1",
         "docs/evidence/local-agent-isolated-pilot-v1/**",
         "pipeline/active-workstreams.json",
-        "pipeline/local-agent-pilot-dispatch.json"
+        "pipeline/local-agent-pilot-dispatch.json",
+        "tools/eldoria-coordinator-v1.cjs",
+        ".github/workflows/eldoria-dg-pilot-intake.yml"
       ],
       "resources": [
         "windows-self-hosted-unity-6000-3-23f1"
@@ -66,12 +68,12 @@
       "claimed_at": "2026-10-08T15:43:00Z",
       "base_main_sha": "f35d23865569b39f9bfa71af86dcf588e187b231",
       "status": "active",
-      "phase": "REPAIR SELF-TRIGGER GOVERNANCE VIOLATION / SAFE REQUEST DISPATCH",
+      "phase": "REAL WORKER 9/9 PASS / INDEPENDENT COORDINATOR VERIFICATION INTEGRATION",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Infrastructure-only local inference; no player-visible artifacts or Unity writes",
       "paid_credits": 0,
       "dependency": "Issue #25; do not touch M07, M11 or gameplay; respect current preflight owner",
-      "next": "Replace forbidden heavy Windows self-trigger with authorized dedicated request file, dispatch once, collect independent evidence and release runner.",
+      "next": "Integrate existing coordinator read-only independent local pilot evidence verification and rerun the same existing pilot end-to-end, release resources only after verified evidence.",
       "blocker": null,
       "runner_released": false
     }
